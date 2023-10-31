@@ -36,6 +36,7 @@ class ProductCard extends Component {
     }
 
     const url = new URL(image);
+    url.protocol = 'https:';
     url.search = '';
 
     return html`<picture>
