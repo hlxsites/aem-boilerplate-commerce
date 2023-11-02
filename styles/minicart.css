@@ -94,9 +94,6 @@
     font-size: 1.2rem;
 }
 
-.minicart-panel .minicart-list .minicart-product .info .options {
-}
-
 .minicart-panel .minicart-list .minicart-product .info .options label {
     cursor: pointer;
 }
@@ -148,9 +145,6 @@
 .minicart-panel .minicart-list .minicart-product .info .options input:checked~label::after {
     transform: rotate(90deg);
     background-position: 3px center;
-}
-
-.minicart-panel .minicart-list .minicart-product .info .price {
 }
 
 .minicart-panel .minicart-list .minicart-product .info .quantity {
@@ -271,7 +265,6 @@
     display: block;
     background: url('../../icons/x-lg.svg') center center;
     background-repeat: no-repeat;
-    font-size: 0;
     width: 18px;
     height: 18px;
     padding: 18px;
@@ -326,7 +319,6 @@
         background-color: transparent;
         background-image: url('../../icons/x-lg.svg');
         color: var(--text-color);
-        font-size: 1.2rem;
         line-height: 1.2rem;;
         padding: 5px 3px 0 0;
         text-align: center;

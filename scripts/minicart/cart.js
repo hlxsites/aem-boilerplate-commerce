@@ -173,7 +173,7 @@ export async function createCart() {
   }
 }
 
-export async function addToCart(sku, options, quantity, addType = 'pdp') {
+export async function addToCart(sku, options, quantity) {
   const done = waitForCart();
   try {
     const variables = {
@@ -216,18 +216,6 @@ export async function removeItemFromCart(uid) {
     uid,
   };
 
-  /* let removedProduct = [];
-
-  try {
-    // Retrieve the cart from local storage before mutation
-    const currentCart = store.getCart();
-    removedProduct = currentCart.items
-      ? currentCart.items.filter((cartItem) => cartItem.uid === uid)
-      : [];
-  } catch (error) {
-    console.warn('Error while computing removed product:', error);
-  } */
-
   try {
     const { data, errors } = await performMonolithGraphQLQuery(
       removeItemFromCartMutation,
@@ -237,16 +225,6 @@ export async function removeItemFromCart(uid) {
     );
     handleCartErrors(errors);
     store.setCart(data.removeItemFromCart.cart);
-    /* const mseCart = mapCartToMSE(data.removeItemFromCart.cart);
-    getMagentoStorefrontEvents((mse) => {
-      mse.context.setProduct({
-        ...removedProduct[0],
-        removeLocation,
-      });
-      mse.context.setShoppingCart(mseCart);
-      mse.context.setChangedProducts({ items: mseCart.items });
-      mse.publish.removeFromCart();
-    }); */
   } catch (err) {
     console.error('Could not remove item from cart', err);
   } finally {
@@ -272,13 +250,6 @@ export async function updateQuantityOfCartItem(cartItemUid, quantity) {
     );
     handleCartErrors(errors);
     store.setCart(data.updateCartItems.cart);
-
-    /* const mseCart = mapCartToMSE(data.updateCartItems.cart);
-    getMagentoStorefrontEvents((mse) => {
-      mse.context.setShoppingCart(mseCart);
-      mse.context.setChangedProducts({ items: mseCart.items });
-      mse.publish.updateCart();
-    }); */
 
     console.debug('Update quantity of item in cart', variables, data.updateCartItems.cart);
   } catch (err) {

@@ -111,14 +111,14 @@ class Store {
 export const store = new Store();
 
 export const cartApi = {
-  addToCart: async (sku, options, quantity, addType = 'pdp') => {
+  addToCart: async (sku, options, quantity) => {
     const { addToCart, createCart } = await import('./cart.js');
     const { showCart } = await import('./Minicart.js');
     if (!store.getCartId()) {
       console.debug('Cannot add item to cart, need to create a new cart first.');
       await createCart();
     }
-    await addToCart(sku, options, quantity, addType);
+    await addToCart(sku, options, quantity);
     showCart();
   },
   toggleCart: async () => {

@@ -111,7 +111,7 @@ class ProductDetailPage extends Component {
       console.debug('onAddToCart', {
         sku: this.state.product.sku, optionsUIDs, quantity: this.state.selectedQuantity ?? 1,
       });
-      cartApi.addToCart(this.state.product.sku, optionsUIDs, this.state.selectedQuantity ?? 1, 'pdp');
+      cartApi.addToCart(this.state.product.sku, optionsUIDs, this.state.selectedQuantity ?? 1);
     }
   };
 
