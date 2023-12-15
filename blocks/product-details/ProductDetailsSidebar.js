@@ -86,7 +86,7 @@ function Options({ product, updateSelection, selection }) {
 function CartSection({ onAddToCart, canAddToCart, onAddToWishlist }) {
   return html`<div class="sidebar-section cart">
     <button disabled=${!canAddToCart()} onclick=${onAddToCart} class="button primary cart-button">Add to Bag</button>
-    <button onclick=${onAddToWishlist} class="button secondary secondary-action"><${Icon} name="heart" />ADD TO FAVORITES</button>
+    <button onclick=${onAddToWishlist} class="button secondary secondary-action"><${Icon} name="heart" />Add to Favorites</button>
   </div>`;
 }
 
