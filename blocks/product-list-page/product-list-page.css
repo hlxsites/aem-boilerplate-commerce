@@ -315,7 +315,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .products .title h1 ~ span {
   display: none;
-  margin-inline: 1rem 3rem;
+  margin-inline: 1rem 48px;
   white-space: nowrap;
 }
 
@@ -335,7 +335,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   border: var(--shape-border-width-3) solid currentcolor;
   background: var(--color-neutral-50);
   color: var(--color-brand-700);
-  padding: 1rem;
+  padding: 16px;
   margin: 0;
 }
 
@@ -352,7 +352,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   background: var(--color-neutral-50);
   color: var(--color-brand-700);
   line-height: 1;
-  padding: .5rem 1.5rem;
+  padding: .5rem 24px;
   margin: 0;
   min-width: 10rem;
 }
@@ -430,7 +430,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   text-decoration: none;
   text-overflow: ellipsis;
   overflow: hidden;
-  height: 3.9rem;
+  height: 6.1rem;
 }
 
 .product-list-page .products .list > ol > li .name a:hover {
@@ -461,16 +461,16 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
 
 .product-list-page .products .list > ol > li .price .price-range .price-from:first-child::after {
   content: "-";
-  padding: 0 .5rem;
+  padding: 0 8px;
 }
 
 .product-list-page .products .list > ol > li .price .price-range .price-regular {
-  margin-left: .4rem;
+  margin-left: 6.4px;
 }
 
 @media (width >= 600px) {
   .product-list-page .products .list > ol > li .price .price-range .price-regular {
-    margin-left: .6rem;
+    margin-left: 9.6rem;
   }
 }
 
@@ -508,7 +508,7 @@ main .section.product-list-page-container > .default-content-wrapper h1:first-ch
   background: transparent;
   border: 0;
   padding: 0;
-  margin: 0 0 0 2rem;
+  margin: 0 0 0 32px;
   color: var(--color-brand-700);
   border-radius: 0;
 }

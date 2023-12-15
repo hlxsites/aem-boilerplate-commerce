@@ -11,7 +11,7 @@
 }
 
 .product-details>*:not(.product-detail-carousel) {
-  padding: .5rem 1.6rem 1.6rem;
+  padding: 8px 25px 25px;
 }
 
 .product-details .product-detail-description {
@@ -20,22 +20,22 @@
 }
 
 .product-details .product-detail-description h3 {
-  margin: 0 0 1rem;
+  margin: 0 0 16px;
 }
 
 .product-details .product-detail-description ul {
   margin: 1.6rem 0;
-  padding: 0 0 0 2.4rem;
+  padding: 0 0 0 38px;
 }
 
 .product-details .product-detail-description ul li {
-  margin: 0 0 1rem;
+  margin: 0 0 16px;
 }
 
 .product-details .product-title h1 {
   font: var(--type-headline-1-font);
   letter-spacing: var(--type-headline-1-letter-spacing);
-  margin: 0 0 1rem;
+  margin: 0 0 16px;
 }
 
 .product-details .sidebar-section {
@@ -53,7 +53,7 @@
   display: grid;
   justify-content: center;
   text-align: center;
-  gap:1rem 0;
+  gap:16px 0;
   grid-template: 'favorites favorites' 'email help' /1fr 1fr;
 }
 
@@ -114,7 +114,7 @@
 
 .product-details .product-title .price .price-range .price-from:first-child::after {
   content: "-";
-  padding: 0 .5rem;
+  padding: 0 8px;
 }
 
 .product-details .product-title .price .price-final {
@@ -152,11 +152,11 @@
 }
 
 .product-details .swatches .swatch-spacer {
-  width: 3.6rem;
+  width: 64px;
 }
 
 .product-details .sidebar .sidebar-section.color-selector {
-  padding-bottom: 5rem;
+  padding-bottom: 80px;
 }
 
 .product-details .sidebar .sidebar-section.color-selector button {
@@ -277,7 +277,7 @@
   list-style: none;
   padding: 0;
   gap: 12px;
-  margin: 2rem 0 1rem;
+  margin: 32px 0 16px;
 }
 
 .product-details .sizes-selector ul li button {
@@ -413,7 +413,7 @@
   }
 
   .product-details .product-detail-carousel {
-    margin: 1.6rem 0;
+    margin: 25px 0;
   }
 }
 
@@ -421,8 +421,8 @@
   .product-details .product-title .style-id {
     text-align: right;
     position: absolute;
-    right: 1.6rem;
-    bottom: 1.6rem;
+    right: 25px;
+    bottom: 25px;
   }
 
   .product-details .sidebar.shimmer {
@@ -466,7 +466,7 @@
   }
 
   .product-details .sidebar .sidebar-section {
-    padding: 1.6rem;
+    padding: 25px;
     margin: 0;
     position: relative;
   }
