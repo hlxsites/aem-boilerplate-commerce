@@ -84,6 +84,10 @@
   align-items: center;
 }
 
+.product-details .sidebar-section.cart button {
+  max-width: 100%;
+}
+
 .product-details .product-title .price .price-regular {
   font: var(--type-headline-2-default-font);
   letter-spacing: var(--type-headline-2-default-letter-spacing);
@@ -161,7 +165,7 @@
 
 .product-details .selected-color {
   text-overflow: ellipsis;
-  overflow: hidden;  
+  overflow: hidden;
   white-space: nowrap;
   max-width: 34rem;
 }

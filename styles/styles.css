@@ -126,7 +126,7 @@
   /* Additional tokens */
   --type-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono', monospace;
   --background-color: var(--color-neutral-50);
-  --nav-height: 64px;
+  --nav-height: 6.4rem;
 }
 
 @font-face {
