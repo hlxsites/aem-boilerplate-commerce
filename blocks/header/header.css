@@ -274,7 +274,24 @@ header nav .nav-tools {
 }
 
 header nav .nav-tools button {
+  color: var(--color-brand-700);
+  background: transparent;
   padding: 5px 10px;
+}
+
+header nav .nav-tools button.nav-cart-button {
+  background-image: url('../../icons/cart.svg');
+  background-repeat: no-repeat;
+  background-position: left center;
+  padding-left: 27px;
+}
+
+header nav .nav-tools button.nav-search-button {
+  font-size: 0;
+  background-image: url('../../icons/search.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 5px 15px;
 }
 
 header .nav-search-input {
