@@ -261,8 +261,8 @@ a > u, button > u {
 /* buttons */
 a.button:any-link,
 button {
-  font: var(--type-button-1-font);
-  letter-spacing: var(--type-button-1-letter-spacing);
+  font: var(--type-button-2-font);
+  letter-spacing: var(--type-button-2-letter-spacing);
   display: inline-block;
   box-sizing: border-box;
   text-decoration: none;
