@@ -259,6 +259,10 @@
         left: unset;
     }
 
+    .minicart-panel .minicart-header > button:only-child {
+        margin-left: auto;
+    }
+
     .minicart-panel .minicart-header .close {
         display: block;
         width: 22px;
