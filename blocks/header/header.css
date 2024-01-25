@@ -319,6 +319,7 @@ header .nav-search-input input {
     left: unset;
     right: 20px;
   }
+
   header .nav-search-input input {
     min-width: 400px;
   }
