@@ -367,14 +367,3 @@ main .section.highlight {
 .elsie-base-design.elsie-base-design {
   --background-none: none 0 0% no-repeat padding-box;
 }
-
-/* de-normalizing */
-.elsie-base-design button[class^="elsie-incrementer__"],
-.elsie-base-design input[class^="elsie-incrementer__"] {
-  margin: unset;
-  padding: unset;
-}
-
-.elsie-base-design ul {
-  margin-top: 0;
-}

@@ -21,19 +21,14 @@ export default async function decorate(block) {
   });
   initializers.register(productApi.initialize);
 
-  const heading = document.createElement('h2');
-  heading.classList.add('pdp-product__heading');
-  heading.textContent = 'product description';
-
   return productRenderer.render(ProductDetails, {
     sku: getSkuFromUrl(),
-    hideQuantity: false,
     slots: {
       Actions: (ctx) => {
         // Add to Cart Button
         ctx.appendButton({
           text: 'Add to Cart',
-          icon: 'cart',
+          icon: 'Cart',
           variant: 'primary',
           onClick: async () => {
             const { cartApi } = await import('../../scripts/minicart/api.js');
@@ -49,9 +44,6 @@ export default async function decorate(block) {
           variant: 'primary',
           onClick: () => console.debug('Add to Wishlist', ctx.data),
         });
-
-        // Add Product Details Description header
-        ctx.appendHTMLElement(heading);
       },
     },
   })(block);
