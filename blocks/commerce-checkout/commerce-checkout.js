@@ -1,7 +1,4 @@
 /* eslint-disable import/no-unresolved */
-import * as adyenApi from '@dropins/adyen-checkout-extension/api.js';
-import AdyenExtension from '@dropins/adyen-checkout-extension/containers/AdyenPaymentMethod.js';
-import { render as adyenRenderer } from '@dropins/adyen-checkout-extension/render.js';
 import { events } from '@dropins/elsie/event-bus.js';
 import { setEndpoint } from '@dropins/elsie/fetch-graphql.js';
 import { initializers } from '@dropins/elsie/initializer.js';
@@ -16,7 +13,6 @@ import { store } from '../../scripts/minicart/api.js';
  */
 export default async function decorate(block) {
   const commerceEndpoint = await getConfigValue('commerce-core-endpoint');
-  const adyenClientKey = await getConfigValue('adyen-client-key');
 
   setEndpoint(commerceEndpoint);
 
@@ -24,24 +20,9 @@ export default async function decorate(block) {
     cartId: store.getCartId(),
   });
 
-  initializers.register(adyenApi.initialize, {
-    clientKey: adyenClientKey,
-    locale: 'en-US',
-    environment: 'test',
-  });
-
   checkoutRenderer.render(Checkout, {
     slots: {
       PaymentMethods: async (context) => {
-        context.addPaymentMethodHandler('adyen_cc', {
-          render: (ctx, element) => {
-            if (element) {
-              // clear the element first
-              element.innerHTML = '';
-              adyenRenderer.render(AdyenExtension, ctx)(element);
-            }
-          },
-        });
         context.addPaymentMethodHandler('checkmo', {
           render: (ctx, element) => {
             if (element) {
@@ -71,7 +52,6 @@ export default async function decorate(block) {
   // events.emit('locale', 'en_US')
   //--------------------
   events.on('checkout/order', (data) => {
-    console.log('order placed successfully');
     // redirect to order confirmation page
     window.location.replace(`/order-confirmation?orderRef=${data.masked_order_id}`);
   });
