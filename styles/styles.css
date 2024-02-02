@@ -287,25 +287,30 @@ button:not([class^='elsie-']) {
   box-sizing: border-box;
   text-decoration: none;
   border: var(--shape-border-width-3) solid transparent;
+  padding: 5px 3.0rem;
   text-align: center;
   cursor: pointer;
   color: var(--color-neutral-50);
   background-color: var(--color-brand-500);
+  margin: 16px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-radius: 30px;
 }
 
 a.button:hover,
 a.button:focus,
 button:not([class^='elsie-']):hover,
 button:not([class^='elsie-']):focus {
+  background-color: var(--color-brand-600);
   cursor: pointer;
 }
 
 a.button.disabled,
 button:not([class^='elsie-']):disabled,
 button:not([class^='elsie-']):disabled:hover {
+  background-color: var(--color-neutral-300);
   cursor: unset;
 }
 
