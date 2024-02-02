@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@dropins/elsie": "latest",
-    "@dropins/storefront-cart": "~0.1.0-alpha2",
+    "@dropins/storefront-cart": "~0.1.0-alpha6",
     "@dropins/storefront-checkout": "~0.1.0-alpha12",
     "@dropins/storefront-order-confirmation": "~0.1.0-alpha8",
     "@dropins/storefront-pdp": "latest"

@@ -151,9 +151,9 @@ export default async function decorate(block) {
   });
 
   // Cart Item Counter
-  events.on('cart/data', ({ totalQuantity }) => {
-    navTools.querySelector('.nav-cart-button').textContent = totalQuantity || '';
-  });
+  events.on('cart/data', (data) => {
+    navTools.querySelector('.nav-cart-button').textContent = data?.totalQuantity || '0';
+  }, { eager: true });
 
   // Search
   const searchInput = document.createRange().createContextualFragment('<div class="nav-search-input hidden"><form action="/search" method="GET"><input type="search" name="q" placeholder="Search" /></form></div>');

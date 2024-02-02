@@ -47,7 +47,12 @@ export default async function decorate(block) {
           icon: 'Cart',
           variant: 'primary',
           onClick: async () => {
-            addProductsToCart([{ ...ctx.values }]);
+            try {
+              await addProductsToCart([{ ...ctx.values }]);
+              window.location.href = '/cart';
+            } catch (error) {
+              console.warn('Error adding product to cart', error);
+            }
           },
         });
 
