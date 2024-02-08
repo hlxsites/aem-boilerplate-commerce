@@ -1,4 +1,4 @@
-import { readBlockConfig, loadScript } from '../../scripts/aem.js';
+import { loadScript, readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
@@ -10,7 +10,7 @@ export default async function decorate(block) {
 
   const storeDetails = {
     environmentId: await getConfigValue('commerce-environment-id'),
-    environmentType: (await getConfigValue('commerce-environment-id')).includes('sandbox') ? 'testing' : '',
+    environmentType: 'testing',
     apiKey: await getConfigValue('commerce-x-api-key'),
     websiteCode: await getConfigValue('commerce-website-code'),
     storeCode: await getConfigValue('commerce-store-code'),
