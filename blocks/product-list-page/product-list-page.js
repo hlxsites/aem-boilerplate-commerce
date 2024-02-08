@@ -8,11 +8,9 @@ export default async function decorate(block) {
   const widgetProd = '/scripts/widgets/search.js';
   await loadScript(widgetProd);
 
-  const { cartApi } = await import('../../scripts/minicart/api.js');
-
   const storeDetails = {
     environmentId: await getConfigValue('commerce-environment-id'),
-    environmentType: 'testing',
+    environmentType: (await getConfigValue('commerce-environment-id')).includes('sandbox') ? 'testing' : '',
     apiKey: await getConfigValue('commerce-x-api-key'),
     websiteCode: await getConfigValue('commerce-website-code'),
     storeCode: await getConfigValue('commerce-store-code'),
@@ -31,8 +29,12 @@ export default async function decorate(block) {
       imageCarousel: false,
       optimizeImages: true,
       imageBaseWidth: 200,
+      listview: true,
       displayMode: '', // "" for plp || "PAGE" for category/catalog
-      addToCart: cartApi.addToCart,
+      addToCart: async (...args) => {
+        const { cartApi } = await import('../../scripts/minicart/api.js');
+        return cartApi.addToCart(...args);
+      },
     },
     context: {
       customerGroup: await getConfigValue('commerce-customer-group'),
