@@ -8,6 +8,8 @@ export default async function decorate(block) {
   const widgetProd = '/scripts/widgets/search.js';
   await loadScript(widgetProd);
 
+  const { cartApi } = await import('../../scripts/minicart/api.js');
+
   const storeDetails = {
     environmentId: await getConfigValue('commerce-environment-id'),
     environmentType: 'testing',
@@ -26,9 +28,11 @@ export default async function decorate(block) {
       currencyRate: '1',
       displayOutOfStock: true,
       allowAllProducts: false,
-      displayMode: '', // "" for plp || "PAGE" for category/catalog
+      imageCarousel: false,
       optimizeImages: true,
-      imageBaseWidth: 185,
+      imageBaseWidth: 200,
+      displayMode: '', // "" for plp || "PAGE" for category/catalog
+      addToCart: cartApi.addToCart,
     },
     context: {
       customerGroup: await getConfigValue('commerce-customer-group'),
