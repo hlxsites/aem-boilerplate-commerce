@@ -1,4 +1,5 @@
 /* stylelint-disable selector-class-pattern */
 .product-list-page .ds-sdk-product-item__image img {
     aspect-ratio: 185 / 230;
+    object-fit: contain;
 }
