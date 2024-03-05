@@ -70,7 +70,6 @@ main .section>div.product-recommendations-wrapper {
 
 .product-recommendations .product-grid-item {
     margin: 0;
-    width: 65vw;
     scroll-snap-align: start;
 }
 

@@ -341,6 +341,7 @@ export async function getProduct(sku) {
 // You can get this list via attributeMetadata query
 export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family'];
 
+// TODO: Move to custom block, since not needed anymore
 export async function loadCategory(state) {
   try {
     // TODO: Be careful if query exceeds GET size limits, then switch to POST
@@ -394,6 +395,7 @@ export async function loadCategory(state) {
       } else {
         searchInputContext.units[index] = unit;
       }
+      // TODO: Add eventInfo
       dl.push({ searchInputContext }, { event: 'search-request-sent', eventInfo: { searchUnitId } });
     });
 

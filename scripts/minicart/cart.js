@@ -241,6 +241,7 @@ export async function addToCart(sku, options, quantity, source) {
 
     // TODO: Find exact item by comparing options UIDs
     const mseChangedItems = cart.items.filter((item) => item.product.sku === sku).map(mapCartItem);
+    // TODO: Add eventInfo
     window.adobeDataLayer.push(
       { shoppingCartContext: mseCart },
       { changedProductsContext: { items: mseChangedItems } },

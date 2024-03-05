@@ -47,6 +47,7 @@ class ProductCard extends Component {
   }
 
   onProductClick(product) {
+    // TODO: Add eventInfo
     window.adobeDataLayer.push({ event: 'search-product-click', eventInfo: { searchUnitId: 'searchUnitId', sku: product.sku } });
   }
 

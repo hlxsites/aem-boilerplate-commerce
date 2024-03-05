@@ -195,11 +195,14 @@ class ProductListPage extends Component {
         } else {
           searchResultsContext.units[index] = searchResultUnit;
         }
+        // TODO: Add eventInfo
         dl.push({ searchResultsContext }, { event: 'search-response-received', eventInfo: { searchUnitId } });
         if (this.props.type === 'search') {
+          // TODO: Add eventInfo
           dl.push({ event: 'search-results-view', eventInfo: { searchUnitId } });
         } else {
           dl.push(
+            // TODO: Add eventInfo
             { event: 'category-results-view', eventInfo: { searchUnitId } },
             {
               categoryContext: {
