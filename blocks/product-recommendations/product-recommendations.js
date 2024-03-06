@@ -90,7 +90,8 @@ async function loadRecommendation(block, context) {
   // Only proceed if all required data is available
   if (!context.pageType
     || (context.pageType === 'Product' && !context.currentSku)
-    || (context.pageType === 'Category' && !context.category)) {
+    || (context.pageType === 'Category' && !context.category)
+    || (context.pageType === 'Cart' && !context.cartSkus)) {
     return;
   }
 
@@ -98,22 +99,14 @@ async function loadRecommendation(block, context) {
     return;
   }
 
-  // Get user view history
-  // TODO
-  /* let productViews = window
-    .adobeDataLayer.getState('productContext', [-10, 0], { flatten: false }) || [];
-  if (!Array.isArray(productViews) && productViews) {
-    productViews = [productViews];
+  // Get product view history
+  try {
+    const viewHistory = window.sessionStorage.getItem('productViewHistory') || '[]';
+    context.userViewHistory = JSON.parse(viewHistory).map((sku) => ({ sku }));
+  } catch (e) {
+    window.sessionStorage.removeItem('productViewHistory');
+    console.error('Error parsing product view history', e);
   }
-  context.userViewHistory = productViews
-    .map(({ sku }) => ({ sku }))
-    .reduce((acc, current) => {
-      const x = acc.find((p) => p.sku === current.sku);
-      if (!x) {
-        return acc.concat([current]);
-      }
-      return acc;
-    }, []); */
 
   recommendationsPromise = performCatalogServiceQuery(recommendationsQuery, context);
   const { recommendations } = await recommendationsPromise;
@@ -140,9 +133,15 @@ export default async function decorate(block) {
     loadRecommendation(block, context);
   }
 
+  function handleCartChanges({ shoppingCartContext }) {
+    context.cartSkus = shoppingCartContext.items.map(({ product }) => product.sku);
+    loadRecommendation(block, context);
+  }
+
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, { path: 'pageContext' });
     dl.addEventListener('adobeDataLayer:change', handleProductChanges, { path: 'productContext' });
     dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
+    dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });
 }

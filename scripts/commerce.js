@@ -335,6 +335,18 @@ export async function getProduct(sku) {
   return productPromise;
 }
 
+// TODO: Listen to placeOrder events to store purchase history
+// Store product view history in session storage
+window.adobeDataLayer.push((dl) => {
+  dl.addEventListener('adobeDataLayer:change', (event) => {
+    const viewHistory = JSON.parse(window.sessionStorage.getItem('productViewHistory') || '[]');
+    if (!viewHistory.includes(event.productContext.sku)) {
+      viewHistory.push(event.productContext.sku);
+      window.sessionStorage.setItem('productViewHistory', JSON.stringify(viewHistory.slice(-10)));
+    }
+  }, { path: 'productContext' });
+});
+
 /* PLP specific functionality */
 
 // TODO
