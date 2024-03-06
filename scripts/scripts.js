@@ -85,15 +85,6 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
 
   window.adobeDataLayer = window.adobeDataLayer || [];
-  window.acdlIndex = (parseInt(window.sessionStorage.acdlIndex, 10) || 0) + 1;
-  if (!window.acdlDisableStorage) window.sessionStorage.setItem('acdlIndex', window.acdlIndex);
-  window.adobeDataLayer.push = function (...args) {
-    Array.prototype.push.apply(window.adobeDataLayer, args);
-    if (window.acdlDisableStorage) return;
-    const array = JSON.parse(window.sessionStorage.getItem(`acdl:${window.acdlIndex}`)) || [];
-    array.push(...args.filter((a) => typeof a !== 'function'));
-    window.sessionStorage.setItem(`acdl:${window.acdlIndex}`, JSON.stringify(array));
-  };
 
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
@@ -152,7 +143,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  await import('./acdl/acdl2.min.js');
+  await import('./acdl/adobe-client-data-layer.min.js');
   if (sessionStorage.getItem('acdl:debug')) {
     import('./acdl/validate.js');
   }

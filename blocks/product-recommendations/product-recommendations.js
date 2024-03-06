@@ -99,7 +99,9 @@ async function loadRecommendation(block, context) {
   }
 
   // Get user view history
-  let productViews = window.adobeDataLayer.getState('productContext', [-10, 0], { flatten: false }) || [];
+  // TODO
+  /* let productViews = window
+    .adobeDataLayer.getState('productContext', [-10, 0], { flatten: false }) || [];
   if (!Array.isArray(productViews) && productViews) {
     productViews = [productViews];
   }
@@ -111,7 +113,7 @@ async function loadRecommendation(block, context) {
         return acc.concat([current]);
       }
       return acc;
-    }, []);
+    }, []); */
 
   recommendationsPromise = performCatalogServiceQuery(recommendationsQuery, context);
   const { recommendations } = await recommendationsPromise;
