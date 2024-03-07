@@ -169,12 +169,11 @@ export async function performMonolithGraphQLQuery(query, variables, GET = true, 
       }),
     });
   } else {
-    const params = new URLSearchParams({
-      query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-      variables: JSON.stringify(variables),
-    });
+    const endpoint = new URL(GRAPHQL_ENDPOINT);
+    endpoint.searchParams.set('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '));
+    endpoint.searchParams.set('variables', JSON.stringify(variables));
     response = await fetch(
-      `${GRAPHQL_ENDPOINT}?${params.toString()}`,
+      endpoint.toString(),
       { headers },
     );
   }
