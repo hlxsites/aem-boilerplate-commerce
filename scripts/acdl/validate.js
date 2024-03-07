@@ -9,6 +9,12 @@ const schemas = [
     'productContext',
     'categoryContext',
     'product-page-view',
+    'recommendationsContext',
+    'recs-api-request-sent',
+    'recs-api-response-received',
+    'recs-item-click',
+    'recs-unit-impression-render',
+    'recs-unit-view'
 ];
 (await Promise.all(
     schemas.map(async schema => {

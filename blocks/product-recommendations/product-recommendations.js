@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 
 const recommendationsQuery = `query GetRecommendations(
@@ -24,6 +25,8 @@ const recommendationsQuery = `query GetRecommendations(
         images {
           url
         }
+        externalId
+        __typename
       }
       storefrontLabel
       totalProducts
@@ -50,11 +53,17 @@ function renderPlaceholder(block) {
   </div>`;
 }
 
-function renderItem(product) {
+function renderItem(unitId, product) {
   const urlKey = product.url.split('/').pop().replace('.html', '');
   const image = product.images[0]?.url;
 
-  return document.createRange().createContextualFragment(`<div class="product-grid-item">
+  const clickHandler = () => {
+    window.adobeDataLayer.push((dl) => {
+      dl.push({ event: 'recs-item-click', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
+    });
+  };
+
+  const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
     <a href="/products/${urlKey}/${product.sku.toLowerCase()}">
       <picture>
         <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
@@ -63,6 +72,9 @@ function renderItem(product) {
       <span>${product.name}</span>
     </a>
   </div>`);
+  item.querySelector('a').addEventListener('click', clickHandler);
+
+  return item;
 }
 
 function renderItems(block, recommendations) {
@@ -74,6 +86,10 @@ function renderItems(block, recommendations) {
     return;
   }
 
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ event: 'recs-unit-impression-render', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+  });
+
   // Title
   block.querySelector('h2').textContent = recommendation.storefrontLabel;
 
@@ -82,9 +98,37 @@ function renderItems(block, recommendations) {
   grid.innerHTML = '';
   const { productsView } = recommendation;
   productsView.forEach((product) => {
-    grid.appendChild(renderItem(product));
+    grid.appendChild(renderItem(recommendation.unitId, product));
   });
+
+  const inViewObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        window.adobeDataLayer.push((dl) => {
+          dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+        });
+        inViewObserver.disconnect();
+      }
+    });
+  });
+  inViewObserver.observe(block);
 }
+
+const mapUnit = (unit) => ({
+  ...unit,
+  unitType: 'primary',
+  searchTime: 0,
+  primaryProducts: unit.totalProducts,
+  backupProducts: 0,
+  products: unit.productsView.map((product, index) => ({
+    ...product,
+    rank: index,
+    score: 0,
+    productId: parseInt(product.externalId, 10) || 0,
+    type: '?',
+    queryType: product.__typename,
+  })),
+});
 
 async function loadRecommendation(block, context) {
   // Only proceed if all required data is available
@@ -108,8 +152,18 @@ async function loadRecommendation(block, context) {
     console.error('Error parsing product view history', e);
   }
 
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
+  });
+
   recommendationsPromise = performCatalogServiceQuery(recommendationsQuery, context);
   const { recommendations } = await recommendationsPromise;
+
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
+    dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+  });
+
   renderItems(block, recommendations);
 }
 
