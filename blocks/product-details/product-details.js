@@ -147,6 +147,7 @@ class ProductDetailPage extends Component {
     const { loading, product } = this.state;
     if (!loading && product) {
       setJsonLdProduct(product);
+      document.title = product.name;
       window.adobeDataLayer.push((dl) => {
         dl.push({
           productContext: {
