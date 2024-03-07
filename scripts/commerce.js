@@ -335,17 +335,30 @@ export async function getProduct(sku) {
   return productPromise;
 }
 
-// TODO: Listen to placeOrder events to store purchase history
 // Store product view history in session storage
-window.adobeDataLayer.push((dl) => {
-  dl.addEventListener('adobeDataLayer:change', (event) => {
-    const viewHistory = JSON.parse(window.sessionStorage.getItem('productViewHistory') || '[]');
-    if (!viewHistory.includes(event.productContext.sku)) {
-      viewHistory.push(event.productContext.sku);
-      window.sessionStorage.setItem('productViewHistory', JSON.stringify(viewHistory.slice(-10)));
-    }
-  }, { path: 'productContext' });
-});
+(async () => {
+  const storeViewCode = await getConfigValue('commerce-store-view-code');
+  window.adobeDataLayer.push((dl) => {
+    dl.addEventListener('adobeDataLayer:change', (event) => {
+      const key = `${storeViewCode}:productViewHistory`;
+      let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+      viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
+      viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
+      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-10)));
+    }, { path: 'productContext' });
+    dl.addEventListener('place-order', () => {
+      const shoppingCartContext = dl.getState('shoppingCartContext');
+      if (!shoppingCartContext) {
+        return;
+      }
+      const key = `${storeViewCode}:purchaseHistory`;
+      const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+      const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+      purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+      window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
+    });
+  });
+})();
 
 /* PLP specific functionality */
 

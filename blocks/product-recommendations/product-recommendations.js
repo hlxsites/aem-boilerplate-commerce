@@ -1,18 +1,21 @@
 /* eslint-disable no-underscore-dangle */
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
 const recommendationsQuery = `query GetRecommendations(
   $pageType: PageType!
   $category: String
   $currentSku: String
+  $cartSkus: [String]
+  $userPurchaseHistory: [PurchaseHistory]
   $userViewHistory: [ViewHistory]
 ) {
   recommendations(
-    cartSkus: []
+    cartSkus: $cartSkus
     category: $category
     currentSku: $currentSku
     pageType: $pageType
-    userPurchaseHistory: []
+    userPurchaseHistory: $userPurchaseHistory
     userViewHistory: $userViewHistory
   ) {
     results {
@@ -143,13 +146,23 @@ async function loadRecommendation(block, context) {
     return;
   }
 
+  const storeViewCode = await getConfigValue('commerce-store-view-code');
   // Get product view history
   try {
-    const viewHistory = window.sessionStorage.getItem('productViewHistory') || '[]';
-    context.userViewHistory = JSON.parse(viewHistory).map((sku) => ({ sku }));
+    const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
+    context.userViewHistory = JSON.parse(viewHistory);
   } catch (e) {
-    window.sessionStorage.removeItem('productViewHistory');
+    window.localStorage.removeItem('productViewHistory');
     console.error('Error parsing product view history', e);
+  }
+
+  // Get purchase history
+  try {
+    const purchaseHistory = window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
+    context.userPurchaseHistory = JSON.parse(purchaseHistory);
+  } catch (e) {
+    window.localStorage.removeItem('purchaseHistory');
+    console.error('Error parsing purchase history', e);
   }
 
   window.adobeDataLayer.push((dl) => {
