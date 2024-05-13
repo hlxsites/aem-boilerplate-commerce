@@ -1,5 +1,9 @@
 helix-importer-ui
 scripts/preact.js
 scripts/htm.js
+scripts/acdl
 tools/picker
+scripts/commerce-events-collector.js
+scripts/commerce-events-sdk.js
+scripts/widgets
 plugins/

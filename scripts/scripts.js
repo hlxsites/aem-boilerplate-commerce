@@ -19,6 +19,7 @@ import {
 
 const LCP_BLOCKS = [
   'product-list-page',
+  'product-list-page-custom',
   'product-details',
   'commerce-cart',
   'commerce-checkout',
@@ -153,6 +154,9 @@ async function loadEager(doc) {
       minYOffset: 0,
     },
   });
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
+  });
 
   const main = doc.querySelector('main');
   if (main) {
@@ -188,6 +192,11 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  await import('./acdl/adobe-client-data-layer.min.js');
+  if (sessionStorage.getItem('acdl:debug')) {
+    import('./acdl/validate.js');
+  }
 
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));

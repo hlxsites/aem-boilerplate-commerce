@@ -13,7 +13,13 @@ export default async function decorate(block) {
   }
 
   if (type === 'category') {
-    const categoryId = document.querySelector('.block.product-list-page')?.dataset?.category;
+    const plpBlock = document.querySelector('.block.product-list-page');
+    if (!plpBlock) return;
+
+    let categoryId = plpBlock.dataset?.category;
+    if (!categoryId) {
+      categoryId = readBlockConfig(plpBlock).category;
+    }
     if (!categoryId) return;
     filters.categories = categoryId;
   }
@@ -33,10 +39,21 @@ export default async function decorate(block) {
   (await Promise.all(matchingFragments.map((path) => loadFragment(path))))
     .filter((fragment) => fragment)
     .forEach((fragment) => {
-      const section = fragment.querySelector(':scope .section');
-      if (section) {
-        block.closest('.section').classList.add(...section.classList);
-        block.closest('.section').append(...section.childNodes);
+      const sections = fragment.querySelectorAll(':scope .section');
+
+      // If only single section, replace block with content of section
+      if (sections.length === 1) {
+        block.closest('.section').classList.add(...sections[0].classList);
+        const wrapper = block.closest('.enrichment-wrapper');
+        Array.from(sections[0].children)
+          .forEach((child) => wrapper.parentNode.insertBefore(child, wrapper));
+      } else if (sections.length > 1) {
+        // If multiple sections, insert them after section of block
+        const blockSection = block.closest('.section');
+        Array.from(sections)
+          .reverse()
+          .forEach((section) => blockSection
+            .parentNode.insertBefore(section, blockSection.nextSibling));
       }
     });
 

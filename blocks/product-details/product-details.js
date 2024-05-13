@@ -108,10 +108,7 @@ class ProductDetailPage extends Component {
     if (Object.keys(this.state.selection).length === (this.state.product.options?.length || 0)) {
       const optionsUIDs = Object.values(this.state.selection).map((option) => option.id);
       const { cartApi } = await import('../../scripts/minicart/api.js');
-      console.debug('onAddToCart', {
-        sku: this.state.product.sku, optionsUIDs, quantity: this.state.selectedQuantity ?? 1,
-      });
-      cartApi.addToCart(this.state.product.sku, optionsUIDs, this.state.selectedQuantity ?? 1);
+      cartApi.addToCart(this.state.product.sku, optionsUIDs, this.state.selectedQuantity ?? 1, 'product-detail');
     }
   };
 
@@ -150,8 +147,17 @@ class ProductDetailPage extends Component {
     const { loading, product } = this.state;
     if (!loading && product) {
       setJsonLdProduct(product);
-      // TODO: productId not exposed by catalog service as number
-      window.adobeDataLayer.push({ productContext: { productId: 0, ...product } }, { event: 'product-page-view' });
+      document.title = product.name;
+      window.adobeDataLayer.push((dl) => {
+        dl.push({
+          productContext: {
+            productId: parseInt(product.externalId, 10) || 0,
+            ...product,
+          },
+        });
+        // TODO: Remove eventInfo once collector is updated
+        dl.push({ event: 'product-page-view', eventInfo: { ...dl.getState() } });
+      });
     }
   }
 
