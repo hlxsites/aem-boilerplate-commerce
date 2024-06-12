@@ -39,18 +39,12 @@ const getConfigForEnvironment = async (environment) => {
   const env = environment || calcEnvironment();
   let configJSON = window.sessionStorage.getItem(`config:${env}`);
   if (!configJSON) {
-    try {
-      configJSON = await fetch(buildConfigURL(env));
-      if (!configJSON.ok) {
-        throw new Error(`Failed to fetch config for ${env}`);
-      }
-      configJSON = await configJSON.text();
-      window.sessionStorage.setItem(`config:${env}`, configJSON);
-    } catch (e) {
-      console.error('Falling back to prod config', e);
-      configJSON = await fetch(buildConfigURL('prod'));
-      configJSON = await configJSON.text();
+    configJSON = await fetch(buildConfigURL(env));
+    if (!configJSON.ok) {
+      throw new Error(`Failed to fetch config for ${env}`);
     }
+    configJSON = await configJSON.text();
+    window.sessionStorage.setItem(`config:${env}`, configJSON);
   }
   return configJSON;
 };
