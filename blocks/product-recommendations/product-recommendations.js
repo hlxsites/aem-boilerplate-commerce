@@ -200,22 +200,22 @@ export default async function decorate(block) {
   let visibility = false;
 
   function handleProductChanges({ productContext }) {
-    context.currentSku = productContext.sku;
+    context.currentSku = productContext?.sku;
     loadRecommendation(block, context, visibility, filters);
   }
 
   function handleCategoryChanges({ categoryContext }) {
-    context.category = categoryContext.name;
+    context.category = categoryContext?.name;
     loadRecommendation(block, context, visibility, filters);
   }
 
   function handlePageTypeChanges({ pageContext }) {
-    context.pageType = pageContext.pageType;
+    context.pageType = pageContext?.pageType;
     loadRecommendation(block, context, visibility, filters);
   }
 
   function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext.items.map(({ product }) => product.sku);
+    context.cartSkus = shoppingCartContext?.items?.map(({ product }) => product.sku);
     loadRecommendation(block, context, visibility, filters);
   }
 
