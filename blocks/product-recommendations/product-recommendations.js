@@ -3,6 +3,8 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
 
+const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
+
 const recommendationsQuery = `query GetRecommendations(
   $pageType: PageType!
   $category: String
@@ -197,7 +199,7 @@ export default async function decorate(block) {
   renderPlaceholder(block);
 
   const context = {};
-  let visibility = false;
+  let visibility = !isMobile;
 
   function handleProductChanges({ productContext }) {
     context.currentSku = productContext?.sku;
@@ -226,15 +228,17 @@ export default async function decorate(block) {
     dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });
 
-  const section = block.closest('.section');
-  const inViewObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        visibility = true;
-        loadRecommendation(block, context, visibility, filters);
-        inViewObserver.disconnect();
-      }
+  if (isMobile) {
+    const section = block.closest('.section');
+    const inViewObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          visibility = true;
+          loadRecommendation(block, context, visibility, filters);
+          inViewObserver.disconnect();
+        }
+      });
     });
-  });
-  inViewObserver.observe(section);
+    inViewObserver.observe(section);
+  }
 }
