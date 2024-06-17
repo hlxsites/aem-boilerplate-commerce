@@ -260,6 +260,7 @@ export default async function decorate(block) {
               });
             },
           },
+          useACDL: true,
         })(block);
       } catch (e) {
         console.error(e);
