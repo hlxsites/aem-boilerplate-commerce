@@ -200,7 +200,6 @@ export default async function decorate(block) {
     setJsonLdProduct(product);
     setMetaTags(product);
     document.title = product.name;
-
   }, { eager: true });
 
   // Render Containers
