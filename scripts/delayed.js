@@ -37,3 +37,30 @@ if (getConsent('commerce-collection')) {
   import('./commerce-events-sdk.js');
   import('./commerce-events-collector.js');
 }
+
+// Conversion tracking
+function convert(event, extraData = {}) {
+  sampleRUM('convert', { source: event, ...extraData });
+}
+
+window.adobeDataLayer.push((dl) => {
+  dl.addEventListener('add-to-cart', ({ eventInfo }) => {
+    convert('addToCart', { skus: eventInfo?.shoppingCartContext?.items?.map((item) => item.product.sku), element: 'cart' });
+  });
+
+  dl.addEventListener('recs-item-add-to-cart-click', ({ eventInfo }) => {
+    convert('addToCart', { skus: eventInfo?.shoppingCartContext?.items?.map((item) => item.product.sku), element: 'precs' });
+  });
+
+  dl.addEventListener('create-account', () => {
+    convert('createAccount');
+  });
+
+  dl.addEventListener('sign-in', () => {
+    convert('signIn');
+  });
+
+  dl.addEventListener('place-order', ({ eventInfo }) => {
+    convert('placeOrder', { skus: eventInfo?.shoppingCartContext?.items?.map((item) => item.product.sku) });
+  });
+});
