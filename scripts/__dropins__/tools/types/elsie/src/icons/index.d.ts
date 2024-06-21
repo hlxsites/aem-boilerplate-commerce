@@ -32,4 +32,5 @@ export { default as WarningFilled } from './WarningFilled.svg';
 export { default as InfoFilled } from './InfoFilled.svg';
 export { default as HeartFilled } from './HeartFilled.svg';
 export { default as Trash } from './Trash.svg';
+export { default as Date } from './Date.svg';
 //# sourceMappingURL=index.d.ts.map
