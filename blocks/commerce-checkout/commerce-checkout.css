@@ -1,1 +1,7 @@
 /* stylelint-disable no-empty-source */
+
+header .nav-hamburger,
+header .nav-sections,
+header .nav-tools {
+  display: none !important;
+}

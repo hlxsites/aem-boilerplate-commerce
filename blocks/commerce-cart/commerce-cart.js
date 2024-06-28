@@ -1,13 +1,19 @@
-import { readBlockConfig } from '../../scripts/aem.js';
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/no-extraneous-dependencies */
 
-export default function decorate(block) {
-  const config = readBlockConfig(block);
+// Dropin Providers
+import { render as provider } from '@dropins/storefront-cart/render.js';
 
-  const content = document.createRange().createContextualFragment(`<div>
-    Commerce Cart dropin
-    <pre>${JSON.stringify(config, null, 2)}</pre>
-  </div>`);
+// Dropin Containers
+import Cart from '@dropins/storefront-cart/containers/Cart.js';
 
-  block.textContent = '';
-  block.append(content);
+export default async function decorate(block) {
+  // Initialize Dropins – already initialized in scripts/dropins.js
+
+  // Render Containers
+  return provider.render(Cart, {
+    routeEmptyCartCTA: () => '/',
+    routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+    routeCheckout: () => '/checkout',
+  })(block);
 }

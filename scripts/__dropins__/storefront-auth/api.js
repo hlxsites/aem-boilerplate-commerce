@@ -1,0 +1,9 @@
+import{c as v,a as x,g as R}from"./chunks/createCustomerAddress.js";import{C as s,d as m,p as i,E as n}from"./chunks/getStoreConfig.js";import{g as w,a as G,b as K}from"./chunks/getStoreConfig.js";import{r as b}from"./chunks/requestPasswordResetEmail.js";import{r as F}from"./chunks/resetPassword.js";import{f as c,h as u}from"./chunks/network-error.js";import{g as Q,r as U,s as H,a as P,b as I}from"./chunks/network-error.js";import{events as f}from"@dropins/tools/event-bus.js";import{c as q}from"./chunks/confirmEmail.js";import{r as z}from"./chunks/resendConfirmationEmail.js";import{c as L,i as $}from"./chunks/initialize.js";import"./chunks/transform-attributes-form.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/lib.js";const E=e=>{var r,o,a;let t="";return(r=e==null?void 0:e.errors)!=null&&r.length&&(t=((o=e==null?void 0:e.errors[0])==null?void 0:o.message)||"Unknown error"),{message:t,success:!!((a=e==null?void 0:e.data)!=null&&a.revokeCustomerToken)}},h=`
+  mutation REVOKE_CUSTOMER_TOKEN {
+    revokeCustomerToken {
+      result
+    }
+  }
+`,p=async()=>await c(h,{method:"POST"}).then(e=>{const t=E(e);if(t!=null&&t.success)[s.auth_dropin_user_token,s.auth_dropin_firstname].forEach(r=>{m(r)}),f.emit("authenticated",!1),i(n.SIGN_OUT,{logoutAttempt:!0});else{const r=`
+          ERROR revokeCustomerToken: ${t.message}`;console.error(r)}return t}).catch(u);export{L as config,q as confirmEmail,v as createCustomer,x as createCustomerAddress,c as fetchGraphQl,R as getAttributesForm,Q as getConfig,w as getCustomerData,G as getCustomerToken,K as getStoreConfig,$ as initialize,U as removeFetchGraphQlHeader,b as requestPasswordResetEmail,z as resendConfirmationEmail,F as resetPassword,p as revokeCustomerToken,H as setEndpoint,P as setFetchGraphQlHeader,I as setFetchGraphQlHeaders};
+//# sourceMappingURL=api.js.map

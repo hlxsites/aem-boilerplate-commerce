@@ -4,6 +4,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import * as productApi from '@dropins/storefront-pdp/api.js';
 import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
 
 // Libs
@@ -23,14 +24,6 @@ async function errorGettingProduct(code = 404) {
   const doc = parser.parseFromString(htmlText, 'text/html');
   document.body.innerHTML = doc.body.innerHTML;
   document.head.innerHTML = doc.head.innerHTML;
-}
-
-async function addToCart({
-  sku, quantity, optionsUIDs, product,
-}) {
-  const { cartApi } = await import('../../../scripts/minicart/api.js');
-
-  return cartApi.addToCart(sku, optionsUIDs, quantity, product);
 }
 
 async function setJsonLdProduct(product) {
@@ -229,18 +222,20 @@ export default async function decorate(block) {
                     : next.dictionary.PDP.Product.AddToCart?.label,
                   icon: 'Cart',
                   variant: 'primary',
-                  disabled: adding || !next.data?.inStock || !next.valid,
+                  disabled: adding || !next.data.inStock,
                   onClick: async () => {
                     try {
                       state.set('adding', true);
-                      await addToCart({
-                        sku: next.values?.sku,
-                        quantity: next.values?.quantity,
-                        optionsUIDs: next.values?.optionsUIDs,
-                        product: next.data,
-                      });
+                      if (!next.valid) {
+                        // eslint-disable-next-line no-console
+                        console.warn('Invalid product', next.values);
+                        return;
+                      }
+
+                      await addProductsToCart([{ ...next.values }]);
                     } catch (error) {
-                      console.error('Could not add to cart: ', error);
+                      // eslint-disable-next-line no-console
+                      console.warn('Error adding product to cart', error);
                     } finally {
                       state.set('adding', false);
                     }
