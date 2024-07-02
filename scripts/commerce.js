@@ -293,3 +293,27 @@ export function setJsonLd(data, name) {
   script.dataset.name = name;
   document.head.appendChild(script);
 }
+
+export async function loadErrorPage(code = 404) {
+  const htmlText = await fetch(`/${code}.html`).then((response) => {
+    if (response.ok) {
+      return response.text();
+    }
+    throw new Error(`Error getting ${code} page`);
+  });
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlText, 'text/html');
+  document.body.innerHTML = doc.body.innerHTML;
+  document.head.innerHTML = doc.head.innerHTML;
+  Array.from(doc.head.querySelectorAll('script'))
+    .filter((c) => c.textContent && c.type !== 'importmap')
+    .forEach((oldScript) => {
+      const newScript = document.createElement('script');
+      Array.from(oldScript.attributes).forEach(({ name, value }) => {
+        newScript.setAttribute(name, value);
+      });
+      const scriptText = document.createTextNode(oldScript.innerHTML);
+      newScript.appendChild(scriptText);
+      document.head.appendChild(newScript);
+    });
+}
