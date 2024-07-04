@@ -33,10 +33,13 @@
 
   /* 1st column */
 
+  /* Latest Products Header */
   .columns-container:nth-of-type(1) > .default-content-wrapper p {
     letter-spacing: 2px;
     font-size: 20px;
   }
+
+  /* <p> in columns */
   .columns-container:nth-of-type(1)
     > .columns-wrapper:nth-of-type(2)
     p:nth-child(2),
@@ -50,6 +53,7 @@
     margin: 1px 0;
   }
 
+  /* Column title */
   .columns-container:nth-of-type(1)
     > .columns-wrapper:nth-of-type(2)
     p:nth-child(2) {
@@ -57,6 +61,7 @@
     font-size: 14px;
   }
 
+  /* Column Colour */
   .columns-container:nth-of-type(1)
     > .columns-wrapper:nth-of-type(2)
     p:nth-child(3) {
@@ -64,6 +69,7 @@
     font-size: 13px;
   }
 
+  /* Column Price */
   .columns-container:nth-of-type(1)
     > .columns-wrapper:nth-of-type(2)
     p:nth-child(4) {
@@ -72,11 +78,23 @@
 
   /* 2nd column */
 
+  .columns-container:nth-child(2) {
+    padding: 2% 0;
+  }
+  /* Secion Background Colour */
   .columns-container:nth-of-type(2) {
     background-color: rgb(240, 243, 244);
   }
+
+  /* Trending Header */
+  .columns-container:nth-of-type(2) > .default-content-wrapper p {
+    letter-spacing: 2px;
+    font-size: 20px;
+  }
+
+  /* Column Header */
   .columns-container:nth-of-type(2)
-    > .columns-wrapper:nth-of-type(1)
+    > .columns-wrapper:nth-of-type(2)
     p:nth-child(2) {
     text-transform: uppercase;
     font-weight: bold;
@@ -85,8 +103,9 @@
     margin: 5px 0;
   }
 
+  /* Column Colour */
   .columns-container:nth-of-type(2)
-    > .columns-wrapper:nth-of-type(1)
+    > .columns-wrapper:nth-of-type(2)
     p:nth-child(3) {
     color: rgb(168, 168, 168);
     font-size: 13px;
