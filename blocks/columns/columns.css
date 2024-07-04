@@ -1,6 +1,7 @@
 .columns > div {
   display: flex;
   flex-direction: column;
+  background-color: aliceblue;
 }
 
 .columns img {
