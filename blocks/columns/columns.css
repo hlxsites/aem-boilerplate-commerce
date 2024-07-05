@@ -34,9 +34,29 @@
   /* 1st column */
 
   /* Latest Products Header */
-  .columns-container:nth-of-type(1) > .default-content-wrapper p {
+  .columns-container:nth-child(1)
+    > .columns-wrapper:nth-of-type(1)
+    div:nth-child(1) {
     letter-spacing: 2px;
     font-size: 20px;
+  }
+
+  /* View All Button */
+  .columns-container:nth-child(1)
+    > .columns-wrapper:nth-of-type(1)
+    div:nth-child(2)
+    p
+    a {
+    font-size: 14px;
+    text-align: right;
+  }
+
+  /* View All Button */
+  .columns-container:nth-child(1)
+    > .columns-wrapper:nth-of-type(1)
+    div:nth-child(2)
+    p {
+    text-align: right;
   }
 
   /* <p> in columns */
@@ -115,6 +135,14 @@
 
   /* 3rd column */
 
+  /* Launches */
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(1)
+    div:nth-child(1) {
+    letter-spacing: 2px;
+    font-size: 20px;
+  }
+
   /* Button */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(1)
@@ -122,22 +150,86 @@
     text-align: right;
   }
 
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(1)
+    div:nth-child(2)
+    p
+    a {
+    font-size: 14px;
+    text-align: right;
+  }
+
+  /* Table container */
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div
+    p:nth-child(1) {
+    background-color: rgb(240, 243, 244);
+    display: flex;
+    padding: 4% 2%;
+    margin: auto;
+    border-radius: 4px;
+  }
+
+  /* Image */
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div
+    p:nth-child(1)
+    picture {
+    margin: 2%;
+    padding-right: 2%;
+  }
+
   /* 05 text */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(2)
     div
     > div:nth-child(1)
-    > div:nth-child(1)
-    p
-    u,
-  div:nth-child(2) p u,
-  div:nth-child(3) p u {
+    > div
+    p:nth-child(1)
+    u {
     background-color: white;
     text-decoration: none;
+  }
+
+  /* 1st P in table */
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div
+    p:nth-child(1)
+    u,
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div
+    p:nth-child(1)
+    strong {
+    line-height: 1;
     padding: 1%;
   }
 
-  /* JULY */
+  /* 05 JULY with image */
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div
+    p:nth-child(1) {
+    display: flex;
+    align-items: flex-start;
+
+    width: 100%;
+  }
+
+  /* * JULY */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(2)
     div
@@ -145,46 +237,90 @@
     > div:nth-child(1)
     p
     strong,
-  div:nth-child(2) p strong {
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(2)
+    p
+    strong,
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(3)
+    p
+    strong {
     color: rgb(168, 168, 168);
     font-weight: lighter;
+    padding-right: 20px;
   }
 
   /* table * <P> content */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(2)
     div
-    > div:nth-child(2)
-    > div {
+    > div:nth-child(1)
+    > div
+    p {
     letter-spacing: 2px;
     font-weight: lighter;
     text-transform: uppercase;
+    line-height: 1px;
   }
 
   /* BRAND */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(2)
     div
-    > div:nth-child(2)
+    > div:nth-child(1)
     > div:nth-child(1)
     p:nth-child(2),
-  div:nth-child(2) p:nth-child(2) {
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(2)
+    p:nth-child(2),
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(3)
+    p:nth-child(2) {
     font-weight: lighter;
     font-size: 13px;
     color: rgb(168, 168, 168);
     line-height: 1;
   }
 
-  /* COLOUMNS BLOCK and price */
+  /* COLOUMNS BLOCK */
   .columns-container:nth-child(3)
     > .columns-wrapper:nth-of-type(2)
     div
-    > div:nth-child(2)
+    > div:nth-child(1)
     > div:nth-child(1)
     p:nth-child(3),
-  div:nth-child(3) p:nth-child(3),
-  p:nth-child(4) {
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(2)
+    p:nth-child(3),
+  .columns-container:nth-child(3)
+    > .columns-wrapper:nth-of-type(2)
+    div
+    > div:nth-child(1)
+    > div:nth-child(3)
+    p:nth-child(3) {
     font-weight: bold;
     font-size: 14px;
+  }
+
+  hr {
+    border: none; /* Remove default border */
+    border-top: 1px solid black; /* Add a 1px light gray line */
+    margin: 20px 0; /* Add some margin for spacing */
+    width: 80%; /* Control the width of the line */
   }
 }
