@@ -317,10 +317,83 @@
     font-size: 14px;
   }
 
-  hr {
-    border: none; /* Remove default border */
-    border-top: 1px solid black; /* Add a 1px light gray line */
-    margin: 20px 0; /* Add some margin for spacing */
-    width: 80%; /* Control the width of the line */
+  /* Balenciaga */
+  .columns-container:nth-child(4) > .columns-wrapper div:nth-child(1) ul li,
+  .columns-container:nth-child(4) > .columns-wrapper div:nth-child(1) ul li a {
+    text-decoration: none;
+    letter-spacing: 4px;
+    font-size: 20px;
+    list-style-type: square;
+    text-transform: uppercase;
+    line-height: 1;
+    font-weight: bold;
   }
+
+  /* Shop Now Button */
+  .columns-container:nth-child(4) > .columns-wrapper a.button {
+    border: none;
+    background-color: transparent;
+    text-transform: capitalize;
+    font-size: 13px;
+    color: rgb(168, 168, 168);
+    padding: 1% 3%;
+  }
+
+  /* Balenciaga and Shop now positioning */
+  .columns-container:nth-child(4) > .columns-wrapper ul {
+    margin: auto;
+    padding: auto;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .columns-container:nth-child(4) > .columns-wrapper p.button-container {
+    margin-top: auto;
+  }
+  /* End Balenciaga and Shop now positioning */
+
+  .columns-container:nth-child(4)
+    > .columns-wrapper
+    > .columns-2-cols
+    > div:nth-child(2),
+  .columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols {
+    display: flex;
+  }
+
+  .columns-container:nth-child(4)
+    > .columns-wrapper
+    > .columns-2-cols
+    div:nth-child(2)
+    div:nth-child(1) {
+    flex: 2;
+    align-self: stretch;
+  }
+
+  .columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols {
+    flex-direction: column;
+    flex: 1;
+    flex-wrap: wrap;
+  }
+
+  /* .columns-container:nth-child(4)
+    > .columns-wrapper
+    > .columns-2-cols
+    > div:nth-child(2)
+    > div:nth-child(2),
+  .columns-wrapper > .columns-2-cols > div:nth-child(2) > div:nth-child(3),
+  .columns-container:nth-child(4)
+    > .columns-wrapper
+    > .columns-2-cols
+    > div:nth-child(2)
+    > div:nth-child(4),
+  .columns-container:nth-child(4)
+    > .columns-wrapper
+    > .columns-2-cols
+    > div:nth-child(2)
+    > div:nth-child(5) {
+    border: 1px solid rebeccapurple;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+  } */
 }
