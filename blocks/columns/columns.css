@@ -444,3 +444,69 @@
   margin: 5% 5%;
   padding: 0 5%;
 }
+
+/* Latest Sneakers Header */
+.columns-container:nth-child(5)
+  > .columns-wrapper:nth-of-type(1)
+  div:nth-child(1) {
+  text-transform: capitalize;
+  letter-spacing: 2px;
+  font-size: 20px;
+}
+
+/* View All Button */
+.columns-container:nth-child(5)
+  > .columns-wrapper:nth-of-type(1)
+  div:nth-child(2)
+  p
+  a {
+  font-size: 14px;
+  text-align: right;
+}
+
+/* View All Button */
+.columns-container:nth-child(5)
+  > .columns-wrapper:nth-of-type(1)
+  div:nth-child(2)
+  p {
+  text-align: right;
+}
+
+/* Shoes div column */
+.columns-container:nth-child(5)
+  > .columns-wrapper:nth-of-type(2)
+  div
+  > div
+  div
+  p {
+  display: flex;
+  padding: auto;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+}
+
+/* Shoes Colour */
+.columns-container:nth-child(5)
+  > .columns-wrapper:nth-of-type(2)
+  div
+  p:nth-of-type(2) {
+  text-transform: capitalize;
+  font-size: 13px;
+  color: rgb(168, 168, 168);
+  font-weight: lighter;
+}
+
+.columns-container:nth-child(6) .columns-img-col {
+  /* border: 10px solid navy !important; */
+  width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+.default-content-wrapper img {
+  border: 10px solid navy;
+  width: 100%;
+  height: auto;
+  display: block;
+}
