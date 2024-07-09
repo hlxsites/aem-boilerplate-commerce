@@ -83,71 +83,10 @@
 }
 
 /* Shop Now > button */
-.columns-container:nth-child(4)
-  > .columns-wrapper
-  > .columns-2-cols
-  div:nth-child(2)
-  div:nth-child(1)
-  p:nth-child(2) {
-  display: flex;
-  position: absolute;
-  right: -0.2%;
-  bottom: 1%;
-  padding: 0 2%;
+.featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2) {
   background-color: white;
 }
-
-.columns-container:nth-child(4)
-  > .columns-wrapper:nth-child(1)
-  div:nth-child(2)
-  div:nth-child(1)
-  a.button {
-  color: black;
-  text-align: center;
-  justify-content: center;
-  display: flex;
-}
 /* End Shop Now > button */
-
-/* Images container */
-.columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols {
-  flex-direction: column;
-  flex: 1;
-  flex-wrap: wrap;
-}
-
-.columns-container:nth-child(4)
-  > .columns-wrapper
-  > .columns-2-cols
-  div:nth-child(2)
-  div:nth-child(2)
-  p {
-  margin: 5% 5%;
-  padding: 0 5%;
-}
-
-/* Latest Sneakers Header */
-.columns-container:nth-child(5)
-  > .columns-wrapper:nth-of-type(1)
-  div:nth-child(1) {
-  text-transform: capitalize;
-  letter-spacing: 2px;
-  font-size: 20px;
-}
-
-/* Shoes div column */
-.columns-container:nth-child(5)
-  > .columns-wrapper:nth-of-type(2)
-  div
-  > div
-  div
-  p {
-  display: flex;
-  padding: auto;
-  flex-direction: column;
-  justify-content: center;
-  margin: auto;
-}
 
 /* Shoes Colour */
 .columns-container:nth-child(5)

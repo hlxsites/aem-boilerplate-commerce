@@ -20,7 +20,8 @@ export default function decorate(block) {
   const columnHeader = document.querySelectorAll(
     ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div p strong, \
   .columns-container:nth-of-type(2) > .default-content-wrapper p, \
-  .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div p strong "
+  .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div p strong, \
+  .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(1) "
   );
 
   columnHeader.forEach((element) => {
@@ -85,6 +86,29 @@ export default function decorate(block) {
   featuredBrand.forEach((element) => {
     if (element) {
       element.classList.add("featured-brand");
+    }
+  });
+
+  //Nested Columns
+  const nestedColumns = document.querySelectorAll(
+    ".columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols"
+  );
+
+  nestedColumns.forEach((element) => {
+    if (element) {
+      element.classList.add("nested-columns");
+    }
+  });
+
+  //Latest Sneakers
+  const latestSneakers = document.querySelectorAll(
+    ".columns-container:nth-child(5) \
+  > .columns-wrapper:nth-of-type(2) div"
+  );
+
+  latestSneakers.forEach((element) => {
+    if (element) {
+      element.classList.add("latest-sneakers");
     }
   });
 
