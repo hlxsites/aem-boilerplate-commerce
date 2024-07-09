@@ -39,12 +39,16 @@ footer .footer p {
 /*Remove styling from the lists of the footer menus*/
 .footer-two ul li
 {
-  background-color: aqua;
+  list-style-type: none;
+}
+
+.footer-two ul li a
+{
   list-style-type: none;
   padding-top: 0;
   letter-spacing: 0.02rem;
   line-height: 22px;
-  font-weight: 400;
+  font-weight: 200;
   text-transform: none;
 }
 
