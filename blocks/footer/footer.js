@@ -17,4 +17,15 @@ export default async function decorate(block) {
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
   block.append(footer);
+
+  //adding a subscribe div to the footer first section
+  const searchInput = document.createRange().createContextualFragment(
+    `<form id="mail_mini_form" action="/mail" method="GET">
+        <div>
+          <input id="mail" type="email" placeholder="" />
+        </div>
+      </div>`
+    );
+
+  document.getElementsByClassName("footer-one").innerHTML += searchInput;
 }

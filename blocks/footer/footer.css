@@ -50,6 +50,7 @@ footer .footer p {
   line-height: 22px;
   font-weight: 200;
   text-transform: none;
+  color: rgb(51, 51, 51);
 }
 
 #contact-us, #about, #customer-service
