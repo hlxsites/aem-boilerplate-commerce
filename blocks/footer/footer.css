@@ -10,6 +10,31 @@ footer .footer {
   margin: auto;
 }
 
+.footer-one
+{
+  display: flex;
+}
+
+.sub-form
+{
+  margin: 0 auto;
+  align-content: center;
+}
+
+.sign-up
+{
+  background-color: #F4F4F4; /* Green */
+  border: none;
+  color: #999999;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 1em;
+  cursor: pointer;
+}
+
 .footer-one,.footer-two
 {
   padding-bottom: 5rem;
@@ -19,6 +44,7 @@ footer .footer {
 {
   display: flex;
 }
+
 
 /*Stretch the columns to be same height*/
 .footer-two .columns-3-cols > div > div
@@ -58,3 +84,5 @@ footer .footer p {
   margin: 0;
   padding-top: 1rem;
 }
+
+
