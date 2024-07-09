@@ -145,6 +145,11 @@
     monospace;
   --background-color: var(--color-neutral-50);
   --nav-height: 6.4rem;
+
+  /*------------------------- Daniel Font Colours -------------------------*/
+  --sub-text: rgb(168, 168, 168);
+  --sub-text-header: 13px;
+  --sub-text-p: 11px;
 }
 
 @font-face {
@@ -420,12 +425,13 @@ main .section.highlight {
 }
 
 .view-all-button em a {
-  font-size: 14px;
+  font-size: var(--sub-text-header);
   border: none;
+  text-transform: capitalize;
 }
 
 .latest-product-text {
-  font-size: 13px;
+  font-size: var(--sub-text-header);
   margin: 1px 0;
 }
 
@@ -437,7 +443,7 @@ main .section.highlight {
 
 /* Column Colour text */
 .latest-product-text:nth-child(3) {
-  font-size: 13px;
+  font-size: var(--sub-text-header);
 }
 
 /* Column Colour text */
@@ -462,7 +468,7 @@ main .section.highlight {
 
 /* Trending Column Colour */
 .trending-section p:nth-child(3) {
-  font-size: 13px;
+  font-size: var(--sub-text-header);
   margin: 1px 0;
 }
 
@@ -486,7 +492,7 @@ main .section.highlight {
 .launches-section u {
   text-decoration: none;
   line-height: 1;
-  font-size: 13px;
+  font-size: var(--sub-text-header);
   padding: 2.5%;
 }
 
@@ -499,14 +505,14 @@ main .section.highlight {
 .launches-section strong {
   font-weight: lighter;
   padding: 1.5% 0;
-  font-size: 13px;
+  font-size: var(--sub-text-header);
 }
 
 /* table * <P> content */
 .launches-section:nth-child(2) {
   font-weight: lighter;
   margin-top: 3%;
-  font-size: 11px;
+  font-size: var(--sub-text-p);
   line-height: 1;
 }
 
@@ -550,7 +556,7 @@ main .section.highlight {
   border: none;
   background-color: transparent;
   text-transform: capitalize;
-  font-size: 13px;
+  font-size: var(--sub-text-header);
   padding: auto 3%;
   margin: auto;
 }
@@ -579,16 +585,20 @@ main .section.highlight {
 /* Featured Items * Columns */
 
 /* Clothes and price text */
-.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(2),
-.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(4) {
+.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(2) {
   text-transform: capitalize;
   font-weight: normal;
+  font-size: var(--sub-text-header);
+}
+
+.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(4) {
+  font-size: 14px;
 }
 
 /* Colour */
 .featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(3) {
   text-transform: capitalize;
-
+  font-size: var(--sub-text-p);
   font-weight: lighter;
 }
 
@@ -602,7 +612,7 @@ main .section.highlight {
 
 .featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
   border: none;
-  font-size: 13px;
+  font-size: var(--sub-text-header);
   padding: auto;
   display: flex;
 }
@@ -628,6 +638,22 @@ main .section.highlight {
   flex-direction: column;
   justify-content: center;
   margin: auto;
+}
+
+/* Shoes Name */
+.latest-sneakers div p:nth-child(1) a,
+.latest-sneakers div p:nth-child(2) {
+  text-transform: capitalize;
+  font-size: var(--sub-text-header);
+}
+
+/* Shoes colour */
+.latest-sneakers div p:nth-child(2) {
+  font-weight: lighter;
+}
+
+.latest-sneakers div p:nth-child(3) {
+  font-size: 14px;
 }
 
 /*   border: 1px solid black; */

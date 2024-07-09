@@ -36,7 +36,7 @@
 
 /* Latest Product Column Colour text */
 .latest-product-text:nth-child(3) {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 
 /* Trending Secion Background Colour */
@@ -46,7 +46,7 @@
 
 /* Trending Column Colour */
 .trending-section p:nth-child(3) {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 
 /* 3rd column */
@@ -63,23 +63,23 @@
 
 /* * JULY */
 .launches-section strong {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 
 /* BRAND */
 .launches-section:nth-child(2) {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 
 /* Shop Now Button */
 .featured-brand div:nth-child(1) div:nth-child(1) p a.button {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 /* End Balenciaga and Shop now positioning */
 
 /* Colour text */
 .featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(3) {
-  color: rgb(168, 168, 168);
+  color: var(--sub-text);
 }
 
 /* Shop Now > button */
@@ -89,14 +89,8 @@
 /* End Shop Now > button */
 
 /* Shoes Colour */
-.columns-container:nth-child(5)
-  > .columns-wrapper:nth-of-type(2)
-  div
-  p:nth-of-type(2) {
-  text-transform: capitalize;
-  font-size: 13px;
-  color: rgb(168, 168, 168);
-  font-weight: lighter;
+.latest-sneakers div p:nth-child(2) {
+  color: var(--sub-text);
 }
 /* Banner */
 .columns-wrapper:nth-child(1) > .columns-1-cols div:nth-child(1) div {
@@ -105,17 +99,6 @@
   align-items: center;
   justify-content: center;
 }
-/* End of Banner */
-
-/* .columns-wrapper:nth-child(1) .columns-1-cols div div div,
-p:nth-child(1) {
-
-  text-transform: capitalize;
-  font-size: 14px;
-  font-weight: bold;
-  word-spacing: 10px;
-  float: left;
-} */
 
 .columns-wrapper:nth-child(1)
   > .columns-1-cols
