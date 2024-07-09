@@ -10,17 +10,39 @@ footer .footer {
   margin: auto;
 }
 
+.footer-one,.footer-two
+{
+  padding-bottom: 5rem;
+}
+.footer-two .columns-3-cols > div
+{
+  display: flex;
+}
+
+.footer-two .columns-3-cols > div > div
+{
+  flex: 1;
+  align-self: stretch;
+}
+
 footer .footer p {
   margin: 0;
 }
 
-.footerone
+.footer-two ul
 {
-  background-color:   #fafafa;
+  padding-left: 0;
 }
 
-.footertwo ul li
+.footer-two ul li
 {
-  background-color: aqua;
   list-style-type: none;
+  padding-top: 0;
+  height: max-content;
+}
+
+#contact-us, #about, #customer-service
+{
+  margin: 0;
+  padding-top: 1rem;
 }
