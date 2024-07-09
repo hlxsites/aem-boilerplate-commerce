@@ -14,11 +14,13 @@ footer .footer {
 {
   padding-bottom: 5rem;
 }
+/*Change the column into a flexbox*/
 .footer-two .columns-3-cols > div
 {
   display: flex;
 }
 
+/*Stretch the columns to be same height*/
 .footer-two .columns-3-cols > div > div
 {
   flex: 1;
@@ -34,6 +36,7 @@ footer .footer p {
   padding-left: 0;
 }
 
+/*Remove styling from the lists of the footer menus*/
 .footer-two ul li
 {
   list-style-type: none;
