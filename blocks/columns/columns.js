@@ -16,6 +16,78 @@ export default function decorate(block) {
     });
   });
 
+  //Column Headers
+  const columnHeader = document.querySelectorAll(
+    ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div p strong, \
+  .columns-container:nth-of-type(2) > .default-content-wrapper p, \
+  .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div p strong "
+  );
+
+  columnHeader.forEach((element) => {
+    if (element) {
+      element.classList.add("column-headers");
+    }
+  });
+
+  //View all buttons
+  const viewAllElements = document.querySelectorAll(
+    ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
+    .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div:nth-child(2), \
+    .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p "
+  );
+
+  viewAllElements.forEach((element) => {
+    if (element) {
+      element.classList.add("view-all-button");
+    }
+  });
+
+  //Latest Products
+  const latestProductText = document.querySelectorAll(
+    ".columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(2), \
+    .columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(3), \
+    .columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(4) "
+  );
+
+  latestProductText.forEach((element) => {
+    if (element) {
+      element.classList.add("latest-product-text");
+    }
+  });
+
+  //Trending
+  const trending = document.querySelectorAll(".columns-container:nth-child(2)");
+
+  trending.forEach((element) => {
+    if (element) {
+      element.classList.add("trending-section");
+    }
+  });
+
+  //Launches
+  const launches = document.querySelectorAll(
+    ".columns-container:nth-child(3)> .columns-wrapper:nth-of-type(2) div > div:nth-child(1) \
+    > div p:nth-child(1), .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(2) \
+    div > div:nth-child(1) > div p"
+  );
+
+  launches.forEach((element) => {
+    if (element) {
+      element.classList.add("launches-section");
+    }
+  });
+
+  //Featured
+  const featuredBrand = document.querySelectorAll(
+    ".columns-container:nth-child(4) > .columns-wrapper div:nth-child(1)"
+  );
+
+  featuredBrand.forEach((element) => {
+    if (element) {
+      element.classList.add("featured-brand");
+    }
+  });
+
   // SHOP NOW > onhover animation
   const button = document.querySelector(
     "  .columns-container:nth-child(4)> .columns-wrapper> .columns-2-cols div:nth-child(2) div:nth-child(1) p:nth-child(2)"
