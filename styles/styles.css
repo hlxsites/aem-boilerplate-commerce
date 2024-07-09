@@ -443,7 +443,7 @@ main .section.highlight {
   font-size: 14px;
 }
 
-/* Srending Section */
+/* Trending Section */
 .trending-section:nth-child(2) {
   padding: 2% 0;
   margin: auto 0;
@@ -484,20 +484,27 @@ main .section.highlight {
 .launches-section u {
   text-decoration: none;
   line-height: 1;
+  font-size: 13px;
   padding: 1%;
+}
+
+.launches-section u,
+.launches-section strong {
+  margin: 5% 1%;
 }
 
 /* Month */
 .launches-section strong {
-  padding: 0 1%;
   font-weight: lighter;
-  padding-right: 20px;
+  padding: 0.5% 0;
+  font-size: 13px;
 }
 
 /* table * <P> content */
 .launches-section:nth-child(2) {
   font-weight: lighter;
-  font-size: 13px;
+  margin-top: 3%;
+  font-size: 11px;
   line-height: 1;
 }
 
@@ -507,9 +514,12 @@ main .section.highlight {
   font-size: 14px;
 }
 
-/* Featured Brand Balenciaga */
-.featured-brand {
+/* Price */
+.launches-section:nth-child(4) {
+  margin-bottom: 2%;
 }
+
+/* Featured Brand (Balenciaga) */
 
 /* Bullet */
 .featured-brand ul li {
@@ -563,4 +573,19 @@ main .section.highlight {
   position: relative;
   flex: 1.5;
 }
+/* End Main Picture */
+
+/* Clothes and price text */
+.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(2),
+.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(4) {
+  text-transform: capitalize;
+  font-weight: normal;
+}
+
+.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(3) {
+  text-transform: capitalize;
+  font-size: 14px;
+  font-weight: lighter;
+}
+
 /*   border: 1px solid black; */
