@@ -21,5 +21,6 @@ footer .footer p {
 
 .footertwo ul li
 {
+  background-color: aqua;
   list-style-type: none;
 }
