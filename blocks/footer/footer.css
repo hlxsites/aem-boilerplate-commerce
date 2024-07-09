@@ -14,7 +14,12 @@ footer .footer p {
   margin: 0;
 }
 
-.section .footerone
+.footerone
 {
-  background-color: red;
+  background-color:   #fafafa;
+}
+
+.footertwo ul li
+{
+  list-style-type: none;
 }
