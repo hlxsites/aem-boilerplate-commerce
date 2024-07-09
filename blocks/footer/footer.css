@@ -1,5 +1,4 @@
 footer {
-  padding: 2rem;
   background-color: var(--color-neutral-100);
   font: var(--type-body-2-default-font);
   letter-spacing: var(--type-body-2-default-letter-spacing);
@@ -17,8 +16,9 @@ footer .footer {
 
 .sub-form
 {
+  padding-top: 3rem;
   margin: 0 auto;
-  align-content: center;
+  align-self: center;
 }
 
 .sign-up
@@ -33,6 +33,15 @@ footer .footer {
   font-size: 16px;
   margin-left: 1em;
   cursor: pointer;
+}
+
+#mail
+{
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 1px solid #999999;;
 }
 
 .footer-one,.footer-two

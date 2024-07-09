@@ -27,7 +27,7 @@ export default async function decorate(block) {
             <div>
               <label for="fname">EMAIL ADDRESS</label><br>
               <input id="mail" type="email" placeholder="" size="40"/>
-              <button class="sign-up" type="button">Click Me!</button>
+              <button class="sign-up" type="button">SIGN UP</button>
             </div>
         <form/>
     </div>
