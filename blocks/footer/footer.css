@@ -39,9 +39,13 @@ footer .footer p {
 /*Remove styling from the lists of the footer menus*/
 .footer-two ul li
 {
+  background-color: aqua;
   list-style-type: none;
   padding-top: 0;
-  height: max-content;
+  letter-spacing: 0.02rem;
+  line-height: 22px;
+  font-weight: 400;
+  text-transform: none;
 }
 
 #contact-us, #about, #customer-service
