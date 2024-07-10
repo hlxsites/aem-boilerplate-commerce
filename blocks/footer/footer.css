@@ -99,6 +99,13 @@ footer .footer p {
   opacity: 0.5;
 }
 
+#mail-lbl
+{
+  font-size: 12px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: lighter;
+}
+
 .footer-two ul li a:hover
 {
   padding-top: 0;
@@ -126,6 +133,7 @@ footer .footer p {
   height: 18px;
   fill: black;
 }
+
 /*Flex box of last section of the footer*/
 .footer-three
 {
