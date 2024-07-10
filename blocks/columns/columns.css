@@ -71,23 +71,6 @@
   color: var(--sub-text);
 }
 
-/* Shop Now Button */
-.featured-brand div:nth-child(1) div:nth-child(1) p a.button {
-  color: var(--sub-text);
-}
-/* End Balenciaga and Shop now positioning */
-
-/* Colour text */
-.featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(3) {
-  color: var(--sub-text);
-}
-
-/* Shop Now > button */
-.featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2) {
-  background-color: white;
-}
-/* End Shop Now > button */
-
 /* Shoes Colour */
 .latest-sneakers div p:nth-child(2) {
   color: var(--sub-text);

@@ -100,6 +100,28 @@ export default function decorate(block) {
     }
   });
 
+  //Featured Mirror
+  const featuredBrandMirror = document.querySelectorAll(
+    ".columns-container:nth-child(7) > .columns-wrapper div:nth-child(1)"
+  );
+
+  featuredBrandMirror.forEach((element) => {
+    if (element) {
+      element.classList.add("featured-brand-mirror");
+    }
+  });
+
+  //Nested Columns Mirror
+  const nestedColumnsMirror = document.querySelectorAll(
+    ".columns-container:nth-child(7) > .columns-wrapper > .columns-2-cols"
+  );
+
+  nestedColumnsMirror.forEach((element) => {
+    if (element) {
+      element.classList.add("nested-columns-mirror");
+    }
+  });
+
   //Latest Sneakers
   const latestSneakers = document.querySelectorAll(
     ".columns-container:nth-child(5) \
@@ -123,17 +145,22 @@ export default function decorate(block) {
     }
   });
 
-  // SHOP NOW > onhover animation
-  const button = document.querySelector(
-    "  .columns-container:nth-child(4)> .columns-wrapper> .columns-2-cols div:nth-child(2) div:nth-child(1) p:nth-child(2)"
+  // Button on featured brands onhover
+  const buttons = document.querySelectorAll(
+    ".featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2), \
+    .featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2)"
   );
 
-  button.addEventListener("mouseover", () => {
-    button.style.opacity = 0.5;
-  });
+  buttons.forEach((button) => {
+    if (button) {
+      button.addEventListener("mouseover", () => {
+        button.style.opacity = 0.5;
+      });
 
-  button.addEventListener("mouseout", () => {
-    button.style.opacity = 1;
+      button.addEventListener("mouseout", () => {
+        button.style.opacity = 1;
+      });
+    }
   });
 
   // Banner SHOP NOW
