@@ -66,6 +66,7 @@ export default async function decorate(block) {
     </div>
     `;
 
+    //adding the End logo next to the terms and condition menus
     document.querySelector(".footer-three").innerHTML += 
     `<div id="footer-logo">
         <svg viewBox="0 0 123 45" xmlns="http://www.w3.org/2000/svg" class=""><defs>
@@ -77,7 +78,7 @@ export default async function decorate(block) {
       </div>`;
 
       //change styling of signup button on text input - work in progress
-      
+
 
   
   }
