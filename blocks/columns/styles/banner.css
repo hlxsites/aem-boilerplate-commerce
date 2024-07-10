@@ -1,0 +1,109 @@
+/* Banner Section */
+.banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+  display: flex;
+  text-transform: uppercase;
+}
+
+/* Banner */
+.banner-section > .columns-wrapper div:nth-child(1) {
+  position: relative;
+  width: 100%;
+  flex: 1.5;
+  padding-bottom: -2%;
+}
+
+/* Publications */
+.banner-section p em:nth-child(1) a {
+  color: white;
+  text-decoration: none;
+  font-size: 25px;
+  letter-spacing: 5px;
+  position: absolute;
+  align-self: flex-start;
+  margin: 5% 9%;
+  left: 0;
+  bottom: 0;
+}
+
+/* shop now */
+.banner-section p em:nth-child(2) a {
+  color: white;
+  border: 1px solid white;
+  font-size: 14px;
+  text-decoration: none;
+  position: absolute;
+  align-self: flex-end;
+  text-align: center;
+  margin: 4% 9%;
+  padding: 1% 2.5%;
+  right: 0;
+  bottom: 0;
+}
+
+@media (max-width: 500px) {
+  /* Banner Section */
+  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Banner */
+  .banner-section > .columns-wrapper div:nth-child(1) {
+    position: relative;
+    width: 100%;
+    height: 15vh;
+    flex: 1.5;
+  }
+
+  /* Publications */
+  .banner-section p em:nth-child(1) a {
+    font-size: 18px;
+    margin: auto;
+    left: 28%;
+    top: 40%;
+  }
+
+  /* shop now */
+  .banner-section p em:nth-child(2) a {
+    font-size: 11px;
+    margin: auto;
+    padding: 0.25% 2.5%;
+    right: 40%;
+    bottom: 1%;
+  }
+}
+
+@media (501px < max-width < 1024px) {
+  /* Banner Section */
+  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Banner */
+  .banner-section > .columns-wrapper div:nth-child(1) {
+    position: relative;
+    width: 100%;
+    flex: 1.5;
+    margin-bottom: 5%;
+    padding-bottom: -5%;
+  }
+
+  /* Publications */
+  .banner-section p em:nth-child(1) a {
+    font-size: 18px;
+    margin: 0;
+    left: 10%;
+    bottom: -42%;
+    margin: 1%;
+  }
+
+  /* shop now */
+  .banner-section p em:nth-child(2) a {
+    font-size: 11px;
+    margin: auto;
+    padding: 0.25% 2.5%;
+    right: 10%;
+    bottom: -40%;
+  }
+}

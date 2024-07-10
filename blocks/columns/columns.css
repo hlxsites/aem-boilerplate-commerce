@@ -1,5 +1,10 @@
 @import url(../../styles/styles.css);
 @import url(./styles/featured-columns.css);
+@import url(./styles/banner.css);
+@import url(./styles/latest-sneakers.css);
+@import url(./styles/launches.css);
+@import url(./styles/trending.css);
+@import url(./styles/latest-products.css);
 
 .columns > div {
   display: flex;
@@ -30,9 +35,27 @@
   }
 }
 
+/* Column Headers */
+.column-headers {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
 .columns > div > div {
   flex: 1;
   order: unset;
+}
+
+/* View all buttons */
+.view-all-button {
+  text-align: right;
+}
+
+.view-all-button em a {
+  font-size: var(--sub-text-header);
+  border: none;
+  text-transform: capitalize;
 }
 
 /* Latest Product Column Colour text */
@@ -77,3 +100,5 @@
   color: var(--sub-text);
 }
 /* Banner */
+
+/*   border: 1px solid black; */

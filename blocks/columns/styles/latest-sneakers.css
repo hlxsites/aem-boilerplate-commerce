@@ -1,0 +1,16 @@
+/* Shoes Name */
+.latest-sneakers div p:nth-child(1) a,
+.latest-sneakers div p:nth-child(2) {
+  text-transform: capitalize;
+  font-size: var(--sub-text-header);
+}
+
+/* Shoes Colour */
+.latest-sneakers div p:nth-child(2) {
+  font-weight: lighter;
+}
+
+/* Shoes Price */
+.latest-sneakers div p:nth-child(3) {
+  font-size: 14px;
+}

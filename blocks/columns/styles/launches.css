@@ -1,0 +1,54 @@
+/* Launches Card */
+.launches-section {
+  display: flex;
+  padding: 1% 2%;
+  margin: auto;
+  border-radius: 4px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+/* Launches Image */
+.launches-section picture {
+  margin: 2%;
+  padding-right: 2%;
+}
+
+/* Date 05 text */
+.launches-section u {
+  text-decoration: none;
+  line-height: 1;
+  font-size: var(--sub-text-header);
+  padding: 2.5%;
+}
+
+.launches-section u,
+.launches-section strong {
+  margin: 5% 1%;
+}
+
+/* Month */
+.launches-section strong {
+  font-weight: lighter;
+  padding: 1.5% 0;
+  font-size: var(--sub-text-header);
+}
+
+/* table * <P> content */
+.launches-section:nth-child(2) {
+  font-weight: lighter;
+  margin-top: 3%;
+  font-size: var(--sub-text-p);
+  line-height: 1;
+}
+
+/* COLOUMNS BLOCK */
+.launches-section:nth-child(3) {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* Price */
+.launches-section:nth-child(4) {
+  margin-bottom: 1.8%;
+}

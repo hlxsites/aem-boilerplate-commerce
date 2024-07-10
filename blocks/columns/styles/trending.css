@@ -1,0 +1,20 @@
+/* Trending Section */
+.trending-section:nth-child(2) {
+  padding: 2% 0;
+  margin: auto 0;
+}
+
+/* Trending Column Header */
+.trending-section p:nth-child(2) {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin: 5px 0;
+}
+
+/* Trending Column Colour */
+.trending-section p:nth-child(3) {
+  font-size: var(--sub-text-header);
+  margin: 1px 0;
+}
