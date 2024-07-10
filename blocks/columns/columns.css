@@ -1,10 +1,11 @@
 @import url(../../styles/styles.css);
-@import url(./styles/featured-columns.css);
-@import url(./styles/banner.css);
-@import url(./styles/latest-sneakers.css);
-@import url(./styles/launches.css);
-@import url(./styles/trending.css);
 @import url(./styles/latest-products.css);
+@import url(./styles/trending.css);
+@import url(./styles/launches.css);
+@import url(./styles/featured-columns.css);
+@import url(./styles/latest-sneakers.css);
+@import url(./styles/banner.css);
+@import url(./styles/featured-mirror.css);
 
 .columns > div {
   display: flex;

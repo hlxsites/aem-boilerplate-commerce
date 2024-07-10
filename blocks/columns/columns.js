@@ -144,43 +144,4 @@ export default function decorate(block) {
       element.classList.add("banner-section");
     }
   });
-
-  // Button on featured brands onhover
-  const buttons = document.querySelectorAll(
-    ".featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2), \
-    .featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2)"
-  );
-
-  buttons.forEach((button) => {
-    if (button) {
-      button.addEventListener("mouseover", () => {
-        button.style.opacity = 0.5;
-      });
-
-      button.addEventListener("mouseout", () => {
-        button.style.opacity = 1;
-      });
-    }
-  });
-
-  // Banner SHOP NOW
-  const bannerButton = document.querySelector(
-    ".banner-section p em:nth-child(2) a"
-  );
-
-  if (bannerButton) {
-    bannerButton.addEventListener("mouseover", () => {
-      bannerButton.style.backgroundColor = "white";
-      bannerButton.style.color = "black";
-      bannerButton.style.opacity = 0.5;
-    });
-
-    bannerButton.addEventListener("mouseout", () => {
-      bannerButton.style.backgroundColor = "transparent";
-      bannerButton.style.color = "white";
-      bannerButton.style.opacity = 1;
-    });
-  } else {
-    console.error("Banner button not found.");
-  }
 }

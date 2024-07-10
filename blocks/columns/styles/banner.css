@@ -38,6 +38,16 @@
   padding: 1% 2.5%;
   right: 0;
   bottom: 0;
+  background-color: transparent;
+  color: white;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.banner-section p em:nth-child(2) a:hover {
+  background-color: white;
+  color: black;
+  opacity: 0.5;
 }
 
 @media (max-width: 500px) {

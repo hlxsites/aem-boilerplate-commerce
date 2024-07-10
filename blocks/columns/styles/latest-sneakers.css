@@ -1,3 +1,12 @@
+/* Shoes div column */
+.latest-sneakers div div p {
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
 /* Shoes Name */
 .latest-sneakers div p:nth-child(1) a,
 .latest-sneakers div p:nth-child(2) {

@@ -92,6 +92,13 @@
   right: 0;
   background-color: white;
   text-transform: uppercase;
+  opacity: 1; /* Initial opacity */
+  transition: opacity 0.3s ease;
+}
+
+/* Apply hover effect */
+.featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
+  opacity: 0.5;
 }
 
 .featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
@@ -115,156 +122,8 @@
   padding: 0 5%;
 }
 
-/* Shoes div column */
-.latest-sneakers div div p {
-  display: flex;
-  flex-direction: column;
-  margin: auto 0;
-  justify-content: space-evenly;
-  width: 100%;
-}
-
-/* Featured Brand mirror (COMME DES GARÇONS HOMME) */
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) {
-  display: flex;
-  position: relative;
-  right: 11.8%;
-  flex-direction: column;
-}
-
-/* Bullet */
-.featured-brand-mirror ul li {
-  list-style-type: square;
-}
-
-/* COMME DES GARÇONS HOMME */
-.featured-brand-mirror ul li a {
-  color: var(--sub-text-featured-color);
-  letter-spacing: var(--sub-text-featured-spacing);
-  font-size: var(--sub-text-featured);
-  text-transform: var(--sub-text-featured-transform);
-  font-weight: var(--sub-text-featured-weight);
-}
-
-.featured-brand-mirror ul li a:hover {
-  text-decoration: none;
-}
-
-/* COMME DES GARÇONS HOMME and Online Now positioning */
-.featured-brand-mirror div div:nth-child(2) ul {
-  margin: auto 0;
-  padding: auto;
-  display: flex;
-}
-
-/* Shop Now button on top of image */
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) p a.button {
-  border: none;
-  background-color: transparent;
-  text-transform: capitalize;
-  font-size: var(--sub-text-header);
-  padding: auto;
-  margin: auto;
-  color: var(--sub-text);
-}
-
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) p.button-container {
-  margin-top: auto;
-}
-/* End Shop Now button on top of image */
-
-/* COMME DES GARÇONS HOMME Columns */
-.featured-brand-mirror div:nth-child(2) div {
-  display: flex;
-}
-
-/* Main Picture */
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p {
-  margin-top: auto;
-}
-
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) {
-  position: relative;
-  order: 1;
-  flex: 1.5;
-}
-/* End Main Picture */
-
-/* Featured Items * Columns */
-
-/* Clothes and price text */
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(2) {
-  text-transform: capitalize;
-  font-weight: normal;
-  font-size: var(--sub-text-header);
-}
-
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(4) {
-  font-size: 14px;
-}
-
-/* Colour */
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(3) {
-  text-transform: capitalize;
-  font-size: var(--sub-text-p);
-  font-weight: lighter;
-  color: var(--sub-text);
-}
-
-/* Online Now > button */
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
-  display: flex;
-  position: absolute;
-  align-self: flex-end;
-  right: 0;
-  background-color: white;
-  text-transform: uppercase;
-}
-
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) a {
-  border: none;
-  font-size: var(--sub-text-header);
-  padding: auto;
-  display: flex;
-}
-/* End Shop Now > button */
-
-/* Images container */
-.nested-columns-mirror {
-  flex-direction: column;
-  flex: 1;
-  flex-wrap: wrap;
-}
-
-/* Images P containers */
-.nested-columns-mirror div:nth-child(2) div:nth-child(1) p {
-  margin: 5% 5%;
-  padding: 0 5%;
-}
-
 @media (max-width: 500px) {
   .featured-brand div:nth-child(1) div:nth-child(1) {
     right: 5.6%;
-  }
-
-  .featured-brand-mirror div:nth-child(2) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Featured Brand mirror (COMME DES GARÇONS HOMME) */
-  .featured-brand-mirror div:nth-child(1) div:nth-child(2) {
-    right: 5.8%;
-  }
-
-  .featured-brand-mirror div:nth-child(2) div:nth-child(2) {
-    order: -1;
-  }
-  .featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
-    bottom: 0;
-  }
-
-  .nested-columns-mirror {
-    flex-direction: column;
   }
 }
