@@ -157,6 +157,56 @@
   --sub-text-featured: 20px;
   --sub-text-featured-transform: uppercase;
   --sub-text-featured-weight: bold;
+
+  /* Featured Brand Header */
+  --sub-text-featured-display: flex;
+  --sub-text-featured-position: relative;
+  --sub-text-featured-location: 2%;
+  --sub-text-featured-flex-direction: column;
+  --sub-text-featured-flex-decoration: none;
+
+  /* secondary button under title */
+  --sub-text-featured-button-secondary-color: rgb(168, 168, 168);
+  --sub-text-featured-button-secondary-border: none;
+  --sub-text-featured-button-secondary-background-color: transparent;
+  --sub-text-featured-button-secondary-transform: capitalize;
+  --sub-text-featured-button-secondary-text: 13px;
+  --sub-text-featured-button-secondary-padding: auto 3%;
+  --sub-text-featured-button-secondary-margin: auto;
+
+  /* Main Image */
+  --sub-text-featured-main-image-margin: auto;
+  --sub-text-featured-main-image-position: relative;
+  --sub-text-featured-main-image-flex: 1.5;
+
+  /* Nested Columns Item Name */
+  --sub-text-featured-nested-column-item-name-transform: capitalize;
+  --sub-text-featured-nested-column-item-name-weight: normal;
+  --sub-text-featured-nested-column-item-name-size: 13px;
+
+  /* Nested Columns Item Colour */
+  --sub-text-featured-nested-column-item-color-transform: capitalize;
+  --sub-text-featured-nested-column-item-color-size: 11px;
+  --sub-text-featured-nested-column-item-color-weight: lighter;
+  --sub-text-featured-nested-column-item-color-color: rgb(168, 168, 168);
+
+  /* Nested Columns Price  */
+  --sub-text-featured-nested-column-price-size: 14px;
+
+  /* Button on Main Image */
+  --sub-text-featured-main-button-display: flex;
+  --sub-text-featured-main-button-position: absolute;
+  --sub-text-featured-main-button-align: flex-end;
+  --sub-text-featured-main-button-right: 0;
+  --sub-text-featured-main-button-background-color: white;
+  --sub-text-featured-main-button-text-transform: uppercase;
+
+  /* Featured Brand Mirror Header */
+  --sub-text-featured-display: flex;
+  --sub-text-featured-position: relative;
+  --sub-text-featured-location-mirror: 11.8%;
+  --sub-text-featured-flex-direction: column;
+
   /*---------------- End Featured ----------------*/
 }
 
