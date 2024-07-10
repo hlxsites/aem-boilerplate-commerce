@@ -112,6 +112,17 @@ export default function decorate(block) {
     }
   });
 
+  //Banner Section
+  const bannerSection = document.querySelectorAll(
+    ".columns-container:nth-child(6)"
+  );
+
+  bannerSection.forEach((element) => {
+    if (element) {
+      element.classList.add("banner-section");
+    }
+  });
+
   // SHOP NOW > onhover animation
   const button = document.querySelector(
     "  .columns-container:nth-child(4)> .columns-wrapper> .columns-2-cols div:nth-child(2) div:nth-child(1) p:nth-child(2)"
@@ -124,4 +135,25 @@ export default function decorate(block) {
   button.addEventListener("mouseout", () => {
     button.style.opacity = 1;
   });
+
+  // Banner SHOP NOW
+  const bannerButton = document.querySelector(
+    ".banner-section p em:nth-child(2) a"
+  );
+
+  if (bannerButton) {
+    bannerButton.addEventListener("mouseover", () => {
+      bannerButton.style.backgroundColor = "white";
+      bannerButton.style.color = "black";
+      bannerButton.style.opacity = 0.5;
+    });
+
+    bannerButton.addEventListener("mouseout", () => {
+      bannerButton.style.backgroundColor = "transparent";
+      bannerButton.style.color = "white";
+      bannerButton.style.opacity = 1;
+    });
+  } else {
+    console.error("Banner button not found.");
+  }
 }

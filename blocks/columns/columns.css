@@ -93,27 +93,3 @@
   color: var(--sub-text);
 }
 /* Banner */
-.columns-wrapper:nth-child(1) > .columns-1-cols div:nth-child(1) div {
-  width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.columns-wrapper:nth-child(1)
-  > .columns-1-cols
-  div:nth-child(2)
-  div:nth-child(1)
-  p {
-  display: flex;
-  float: left;
-  border: 10px solid navy;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 5px;
-  font-size: 20px;
-}
-
-.columns-wrapper:nth-child(1) .columns-1-cols div div:nth-child(2) p {
-  float: right;
-}
