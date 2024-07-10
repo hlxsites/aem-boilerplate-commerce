@@ -1,4 +1,5 @@
 @import url(../../styles/styles.css);
+@import url(./featured-columns.css);
 
 .columns > div {
   display: flex;
