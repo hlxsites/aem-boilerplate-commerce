@@ -76,7 +76,8 @@ export default async function decorate(block) {
         </svg>
       </div>`;
 
-      //change styling of signup button on text input
+      //change styling of signup button on text input - work in progress
+      
 
   
   }
