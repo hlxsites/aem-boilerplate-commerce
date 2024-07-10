@@ -59,14 +59,14 @@ footer .footer {
 }
 
 /*Change the column into a flexbox*/
-.footer-two .columns-3-cols > div
+.footer-two .columns-4-cols > div
 {
   display: flex;
 }
 
 
 /*Stretch the columns to be same height*/
-.footer-two .columns-3-cols > div > div
+.footer-two .columns-4-cols > div > div
 {
   align-self: stretch;
 }
