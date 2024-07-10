@@ -16,6 +16,11 @@ footer .footer {
   padding: 50px 0px 0px;
 }
 
+.footer-two,.footer-three
+{
+  padding-bottom: 2rem;
+}
+
 .sub-form
 {
   padding-top: 3rem;
@@ -37,13 +42,20 @@ footer .footer {
   cursor: pointer;
 }
 
+/*styling signup*/
 #mail
 {
+  background: transparent;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
   border: none;
   border-bottom: 1px solid #999999;;
+}
+
+#mail:focus
+{
+  background: inherit;
 }
 
 /*Change the column into a flexbox*/
@@ -56,7 +68,6 @@ footer .footer {
 /*Stretch the columns to be same height*/
 .footer-two .columns-3-cols > div > div
 {
-  flex: 1;
   align-self: stretch;
 }
 
@@ -75,13 +86,17 @@ footer .footer p {
   list-style-type: none;
 }
 
-/* styling */
+/* styling of footer menu */
 .footer-two ul li a
 {
+  font-size: 14px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 100;
   padding-top: 0;
   line-height: 3rem;
   text-transform: none;
   color: rgb(51, 51, 51);
+  opacity: 0.5;
 }
 
 .footer-two ul li a:hover
@@ -104,14 +119,54 @@ footer .footer p {
   padding: 30px 0px 30px;
   word-spacing: 2rem;
 }
-
+/*icons resizing*/
 #instagram,#facebook, #twitter
 {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   fill: black;
 }
+/*Flex box of last section of the footer*/
+.footer-three
+{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+}
 
+#footer-logo
+{
+  width: 6rem;
+  height: 4rem;
+}
+#footer-logo svg
+{
+  width: inherit;
+  height: inherit;
+}
+
+.footer-three > div > div
+{
+  padding: 1rem;
+}
+
+.footer-three > div > div > div > div > p > a
+{
+  padding: 0;
+  padding-left: 1rem;
+  font-size: 14px;
+  color: rgb(51, 51, 51);
+  opacity: 0.5;
+}
+
+.footer-three > div > div > div > div > p > a:hover
+{
+  text-decoration: none;
+  text-transform: none;
+  color: #A3A3A3;
+}
+
+/*Responsiveness*/
 @media (width <= 900px)
 {
   footer{
@@ -124,7 +179,7 @@ footer .footer p {
   {
     text-align: left;
   }
-  .footer-one
+  .footer-one,.footer-three
   {
     flex-direction: column;
     align-items: center;
@@ -142,4 +197,5 @@ footer .footer p {
   {
     text-align: center;
   }
+
 }
