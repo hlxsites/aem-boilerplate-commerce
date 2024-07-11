@@ -37,3 +37,7 @@
   letter-spacing: 2px;
   font-size: var(--sub-text-title-large);
 }
+
+.columns-container:nth-child(10) {
+  border: 1px solid var(--sub-text-border-divider);
+}

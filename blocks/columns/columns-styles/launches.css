@@ -1,62 +1,67 @@
-/* Launches Card */
-.launches-section {
+/* date with images */
+.launches-section div div p:nth-child(1) {
   display: flex;
-  padding: 1% 2%;
-  margin: auto;
-  border-radius: 4px;
-  align-items: flex-start;
-  width: 100%;
+  align-items: center;
 }
 
-/* Launches Image */
-.launches-section picture {
-  margin: 2%;
-  padding-right: 2%;
+/* images */
+.launches-section div div img {
+  position: relative;
+  flex: 1;
 }
 
-/* Date 05 text */
-.launches-section u {
-  text-decoration: none;
-  line-height: 1;
-  text-align: center;
-  justify-content: center;
-  background-color: white;
+/* date */
+.launches-section div:nth-child(1) div p:nth-child(1) {
+  display: flex;
+  position: absolute;
+  text-transform: uppercase;
   font-size: var(--sub-text-small);
-  padding: 2%;
-}
-
-.launches-section u,
-.launches-section strong {
-  margin: 5% 1%;
+  padding: 2% 1%;
+  margin: auto;
+  color: black;
+  z-index: 1;
 }
 
 /* Month */
-.launches-section strong {
-  font-weight: lighter;
-  padding: 1.5% 0;
+.launches-section div:nth-child(1) div p:nth-child(1) u {
   color: var(--sub-text-grey);
-  font-size: var(--sub-text-small);
+  text-decoration: none;
 }
 
-/* table * <P> content */
-
-/* BRAND */
-.launches-section:nth-child(2) {
-  color: var(--sub-text-grey);
-  font-size: var(--sub-text-small);
-  font-weight: lighter;
-  margin-top: 3%;
-  line-height: 1;
+/* number background */
+.launches-section div:nth-child(1) div p:nth-child(1) strong {
+  padding: 15%;
+  margin-right: 10%;
+  background-color: white;
+  align-items: center;
 }
 
-/* COLOUMNS BLOCK */
-.launches-section:nth-child(3) {
+/* Brand */
+.launches-section div p:nth-child(2) {
+  text-transform: uppercase;
+  font-size: var(--sub-text-small);
+  color: var(--sub-text-grey);
+}
+
+/* Product Name */
+.launches-section div p:nth-child(3) {
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);
+  color: var(--sub-text-title-color);
 }
 
-/* Price */
-.launches-section:nth-child(4) {
-  margin-bottom: 1.8%;
+/* Product Price */
+.launches-section div p:nth-child(4) {
+  text-transform: uppercase;
   font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+.launches-section div:nth-child(2) div p {
+  margin: 2% auto;
+  display: flex;
+}
+
+.columns-container:nth-child(3) {
+  border: 1px solid var(--sub-text-border-divider);
 }

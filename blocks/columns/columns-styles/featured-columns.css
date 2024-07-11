@@ -121,6 +121,14 @@
   padding: 0 5%;
 }
 
+.columns-container:nth-child(4) {
+  border: 1px solid var(--sub-text-border-divider);
+}
+
+.columns-container:nth-child(9) {
+  border: 1px solid var(--sub-text-border-divider);
+}
+
 @media (max-width: 500px) {
   .featured-brand div:nth-child(1) div:nth-child(1) {
     right: 5.6%;

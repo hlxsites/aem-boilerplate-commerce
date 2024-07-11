@@ -73,9 +73,7 @@ export default function decorate(block) {
 
   //Launches
   const launches = document.querySelectorAll(
-    ".columns-container:nth-child(3)> .columns-wrapper:nth-of-type(2) div > div:nth-child(1) \
-    > div p:nth-child(1), .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(2) \
-    div > div:nth-child(1) > div p"
+    ".columns-container:nth-child(3) .columns-wrapper:nth-child(2) .columns-3-cols"
   );
 
   launches.forEach((element) => {

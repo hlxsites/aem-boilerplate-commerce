@@ -19,3 +19,13 @@
   text-transform: capitalize;
   margin: 1px 0;
 }
+
+/* Trending Secion Background Colour */
+.trending-section {
+  background-color: var(--sub-text-background-color);
+}
+
+/* Trending Column Colour */
+.trending-section p:nth-child(3) {
+  color: var(--sub-text-grey);
+}

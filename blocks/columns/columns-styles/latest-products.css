@@ -9,3 +9,8 @@
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
 }
+
+/* Latest Product Column Colour text */
+.latest-product-text:nth-child(3) {
+  color: var(--sub-text-grey);
+}

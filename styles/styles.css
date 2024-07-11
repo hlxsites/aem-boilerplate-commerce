@@ -148,7 +148,8 @@
 
   /*------------------------- Daniel Global -------------------------*/
   --sub-text-grey: #999999;
-  --sub-text-background-color: rgb(240, 243, 244);
+  --sub-text-border-divider: rgba(153, 153, 153, 0.2);
+  --sub-text-background-color: #f8f8f8;
   --sub-text-title-color: #1a1a1a;
 
   --sub-text-title-size: 22px;
@@ -156,6 +157,7 @@
   --sub-text-secondary-size: 14px;
   --sub-text-small: 12px;
 
+  --sub-text-title-transform: uppercase;
   --sub-text-spacing: 2px;
 
   --sub-text-title-weight: 455;
