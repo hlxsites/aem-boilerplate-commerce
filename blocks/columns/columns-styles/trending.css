@@ -7,15 +7,15 @@
 /* Trending Column Header */
 .trending-section p:nth-child(2) {
   text-transform: uppercase;
-  font-weight: bold;
-  font-size: 15px;
+  font-size: var(--sub-text-title-large);
+  font-weight: var(--sub-text-title-weight);
   letter-spacing: 2px;
   margin: 5px 0;
 }
 
 /* Trending Column Colour */
 .trending-section p:nth-child(3) {
-  font-size: var(--sub-text-header);
+  font-size: var(--sub-text-secondary-size);
   text-transform: capitalize;
   margin: 1px 0;
 }

@@ -39,11 +39,12 @@
 
 /* Column Headers */
 .column-headers {
-  color: var(--sub-text-featured-color);
-  letter-spacing: var(--sub-text-featured-spacing);
-  font-size: var(--sub-text-featured);
-  text-transform: var(--sub-text-featured-transform);
-  font-weight: var(--sub-text-featured-weight);
+  color: var(--sub-text-title-color);
+  letter-spacing: var(--sub-text-spacing);
+  font-size: var(--sub-text-title-size);
+  text-transform: var(--sub-text-title-transform);
+  font-weight: var(--sub-text-title-weight);
+  font-family: "Proxima Nova", "Helvetica Neue", Verdana, Arial, sans-serif;
 }
 
 .columns > div > div {
@@ -57,31 +58,32 @@
 }
 
 .view-all-button em a {
-  font-size: var(--sub-text-header);
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
   border: none;
   text-transform: capitalize;
 }
 
 /* Latest Product Column Colour text */
 .latest-product-text:nth-child(3) {
-  color: var(--sub-text);
+  color: var(--sub-text-grey);
 }
 
 /* Trending Secion Background Colour */
 .trending-section {
-  background-color: rgb(240, 243, 244);
+  background-color: var(--sub-text-background-color);
 }
 
 /* Trending Column Colour */
 .trending-section p:nth-child(3) {
-  color: var(--sub-text);
+  color: var(--sub-text-grey);
 }
 
 /* 3rd column */
 
 /* Table container */
 .launches-section:nth-child(1) {
-  background-color: rgb(240, 243, 244);
+  background-color: var(--sub-text-background-color);
 }
 
 /* 05 text */
@@ -90,18 +92,20 @@
 }
 
 /* * JULY */
-.launches-section strong {
-  color: var(--sub-text);
-}
+/* .launches-section strong {
+  color: var(--sub-text-grey);
+  font-size: var(--sub-text-small);
+} */
 
 /* BRAND */
-.launches-section:nth-child(2) {
-  color: var(--sub-text);
-}
+/* .launches-section:nth-child(2) {
+  color: var(--sub-text-grey);
+  font-size: var(--sub-text-small);
+} */
 
 /* Shoes Colour */
 .latest-sneakers div p:nth-child(2) {
-  color: var(--sub-text);
+  color: var(--sub-text-grey);
 }
 
 /*   border: 1px solid black; */

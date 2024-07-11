@@ -18,8 +18,11 @@
 .launches-section u {
   text-decoration: none;
   line-height: 1;
-  font-size: var(--sub-text-header);
-  padding: 2.5%;
+  text-align: center;
+  justify-content: center;
+  background-color: white;
+  font-size: var(--sub-text-small);
+  padding: 2%;
 }
 
 .launches-section u,
@@ -31,24 +34,29 @@
 .launches-section strong {
   font-weight: lighter;
   padding: 1.5% 0;
-  font-size: var(--sub-text-header);
+  color: var(--sub-text-grey);
+  font-size: var(--sub-text-small);
 }
 
 /* table * <P> content */
+
+/* BRAND */
 .launches-section:nth-child(2) {
+  color: var(--sub-text-grey);
+  font-size: var(--sub-text-small);
   font-weight: lighter;
   margin-top: 3%;
-  font-size: var(--sub-text-p);
   line-height: 1;
 }
 
 /* COLOUMNS BLOCK */
 .launches-section:nth-child(3) {
-  font-weight: bold;
-  font-size: 14px;
+  text-transform: uppercase;
+  font-size: var(--sub-text-title-large);
 }
 
 /* Price */
 .launches-section:nth-child(4) {
   margin-bottom: 1.8%;
+  font-size: var(--sub-text-secondary-size);
 }

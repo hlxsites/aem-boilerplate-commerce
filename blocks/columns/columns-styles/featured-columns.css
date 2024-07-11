@@ -13,11 +13,11 @@
 
 /* Balenciaga */
 .featured-brand ul li a {
-  color: var(--sub-text-featured-color);
-  letter-spacing: var(--sub-text-featured-spacing);
-  font-size: var(--sub-text-featured);
-  text-transform: var(--sub-text-featured-transform);
-  font-weight: var(--sub-text-featured-weight);
+  color: var(--sub-text-title-color);
+  letter-spacing: var(--sub-text-spacing);
+  font-size: var(--sub-text-title-size);
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
 .featured-brand ul li a:hover {
@@ -35,9 +35,9 @@
 .featured-brand div:nth-child(1) div:nth-child(1) p a.button {
   border: none;
   background-color: transparent;
-  text-transform: capitalize;
-  font-size: var(--sub-text-header);
-  color: var(--sub-text);
+  text-transform: var(--sub-text-button-transform);
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-grey);
   padding: auto 3%;
   margin: auto;
 }
@@ -69,7 +69,7 @@
 .featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(2) {
   text-transform: capitalize;
   font-weight: normal;
-  font-size: var(--sub-text-header);
+  font-size: var(--sub-text-secondary-size);
 }
 
 .featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(4) {
@@ -79,9 +79,9 @@
 /* Colour */
 .featured-brand div:nth-child(2) div:nth-child(2) p:nth-child(3) {
   text-transform: capitalize;
-  font-size: var(--sub-text-p);
+  font-size: var(--sub-text-secondary-size);
   font-weight: lighter;
-  color: var(--sub-text);
+  color: var(--sub-text-grey);
 }
 
 /* Shop Now > button */
@@ -92,18 +92,17 @@
   right: 0;
   background-color: white;
   text-transform: uppercase;
-  opacity: 1; /* Initial opacity */
+  opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-/* Apply hover effect */
 .featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
   opacity: 0.5;
 }
 
 .featured-brand div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
   border: none;
-  font-size: var(--sub-text-header);
+  font-size: var(--sub-text-secondary-size);
   padding: auto;
   display: flex;
 }

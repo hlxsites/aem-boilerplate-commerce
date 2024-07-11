@@ -1,20 +1,11 @@
 .latest-product-text {
-  font-size: var(--sub-text-header);
   margin: 1px 0;
 }
 
-/* Column title */
-.latest-product-text:nth-child(2) {
-  text-transform: capitalize;
-  font-size: 14px;
-}
-
-/* Column Colour text */
-.latest-product-text:nth-child(3) {
-  font-size: var(--sub-text-header);
-}
-
-/* Column Colour text */
+/* Column title, colour and Price text */
+.latest-product-text:nth-child(2),
+.latest-product-text:nth-child(3),
 .latest-product-text:nth-child(4) {
-  font-size: 14px;
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
 }

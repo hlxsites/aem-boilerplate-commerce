@@ -11,15 +11,17 @@
 .latest-sneakers div p:nth-child(1) a,
 .latest-sneakers div p:nth-child(2) {
   text-transform: capitalize;
-  font-size: var(--sub-text-header);
+  font-size: var(--sub-text-secondary-size);
 }
 
 /* Shoes Colour */
 .latest-sneakers div p:nth-child(2) {
+  color: var(--sub-text-grey);
   font-weight: lighter;
+  font-size: var(--sub-text-secondary-size);
 }
 
 /* Shoes Price */
 .latest-sneakers div p:nth-child(3) {
-  font-size: 14px;
+  font-size: var(--sub-text-secondary-size);
 }

@@ -25,7 +25,8 @@
 .features-section p:nth-child(2) {
   font-weight: lighter;
   margin-top: 3%;
-  color: var(--sub-text);
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-grey);
   font-size: 14px;
   line-height: 1;
 }
@@ -34,5 +35,5 @@
 .features-section p:nth-child(3) {
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 15px;
+  font-size: var(--sub-text-title-large);
 }
