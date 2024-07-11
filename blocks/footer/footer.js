@@ -128,7 +128,5 @@ export default async function decorate(block) {
       giftCardDiv.innerHTML += giftCardsSvg;
 
       //change styling of signup button on text input - work in progress
-
-
-  
+      
   }

@@ -10,15 +10,16 @@ footer .footer {
   margin: auto;
 }
 
+.footer-one,.footer-two,.footer-three
+{
+  border-bottom: 1px solid rgb(229, 229, 229);
+  padding: 3rem 0px 3rem 0;
+  margin: 0;
+}
+
 .footer-one
 {
   display: flex;
-  padding: 50px 0px 0px;
-}
-
-.footer-two,.footer-three
-{
-  padding-bottom: 2rem;
 }
 
 .sub-form
@@ -30,9 +31,9 @@ footer .footer {
 
 .sign-up
 {
-  background-color: #dfdfdf; /* Green */
+  background-color: rgb(244, 244, 244); /* Green */
   border: none;
-  color: #777777;
+  color: rgb(153, 153, 153);
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -50,7 +51,7 @@ footer .footer {
   margin: 8px 0;
   box-sizing: border-box;
   border: none;
-  border-bottom: 1px solid #999999;;
+  border-bottom: 0.5px solid #999999;
 }
 
 #mail:focus
