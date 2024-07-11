@@ -84,7 +84,8 @@ export default function decorate(block) {
 
   //Featured
   const featuredBrand = document.querySelectorAll(
-    ".columns-container:nth-child(4) > .columns-wrapper div:nth-child(1)"
+    ".columns-container:nth-child(4) > .columns-wrapper div:nth-child(1), \
+    .columns-container:nth-child(9) > .columns-wrapper div:nth-child(1)"
   );
 
   featuredBrand.forEach((element) => {
@@ -95,7 +96,8 @@ export default function decorate(block) {
 
   //Nested Columns
   const nestedColumns = document.querySelectorAll(
-    ".columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols"
+    ".columns-container:nth-child(4) > .columns-wrapper > .columns-2-cols, \
+    .columns-container:nth-child(9) > .columns-wrapper > .columns-2-cols"
   );
 
   nestedColumns.forEach((element) => {
