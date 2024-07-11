@@ -6,6 +6,7 @@
 @import url(./columns-styles/latest-sneakers.css);
 @import url(./columns-styles/banner.css);
 @import url(./columns-styles/featured-mirror.css);
+@import url(./columns-styles/features-columns.css);
 
 .columns > div {
   display: flex;
@@ -38,9 +39,11 @@
 
 /* Column Headers */
 .column-headers {
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-size: 20px;
+  color: var(--sub-text-featured-color);
+  letter-spacing: var(--sub-text-featured-spacing);
+  font-size: var(--sub-text-featured);
+  text-transform: var(--sub-text-featured-transform);
+  font-weight: var(--sub-text-featured-weight);
 }
 
 .columns > div > div {
@@ -100,6 +103,5 @@
 .latest-sneakers div p:nth-child(2) {
   color: var(--sub-text);
 }
-/* Banner */
 
 /*   border: 1px solid black; */

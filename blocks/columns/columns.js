@@ -22,7 +22,8 @@ export default function decorate(block) {
   .columns-container:nth-of-type(2) > .default-content-wrapper p, \
   .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div p strong, \
   .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(1), \
-  .columns-container:nth-child(8) > div:nth-child(1) p strong  "
+  .columns-container:nth-child(8) > div:nth-child(1) p strong, \
+   .columns-container:nth-child(10) > div:nth-child(1) p  "
   );
 
   columnHeader.forEach((element) => {
@@ -148,6 +149,19 @@ export default function decorate(block) {
   bannerSection.forEach((element) => {
     if (element) {
       element.classList.add("banner-section");
+    }
+  });
+
+  //Features
+  const featuresColumn = document.querySelectorAll(
+    ".columns-container:nth-child(10)> .columns-wrapper:nth-of-type(2) div > div:nth-child(1) \
+    > div p:nth-child(1), .columns-container:nth-child(10) > .columns-wrapper:nth-of-type(2) \
+    div > div:nth-child(1) > div"
+  );
+
+  featuresColumn.forEach((element) => {
+    if (element) {
+      element.classList.add("features-section");
     }
   });
 }

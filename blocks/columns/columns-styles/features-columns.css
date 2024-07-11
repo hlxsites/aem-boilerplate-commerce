@@ -1,0 +1,38 @@
+.features-section {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  padding: auto;
+  justify-content: space-evenly;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+/* Launches Card */
+.features-section p {
+  padding: 1% 0;
+  margin: auto 0;
+}
+
+.features-section:nth-child(3) p:nth-child(1) {
+  margin: -3% 0;
+  padding-bottom: 2%;
+}
+
+/* table * <P> content */
+.features-section p:nth-child(2) {
+  font-weight: lighter;
+  margin-top: 3%;
+  color: var(--sub-text);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* COLOUMNS BLOCK */
+.features-section p:nth-child(3) {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 15px;
+}
