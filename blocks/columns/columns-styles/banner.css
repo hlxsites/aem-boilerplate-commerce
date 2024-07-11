@@ -11,6 +11,37 @@
   flex: 1.5;
   padding-bottom: -2%;
 }
+/* Banner */
+
+main .banner-section > div {
+  max-width: unset;
+}
+
+main .banner-section {
+  padding: 0;
+}
+
+.banner-section {
+  position: relative;
+  padding: 32px;
+  min-height: 78vh;
+}
+
+.banner-section picture {
+  position: absolute;
+  height: 100%;
+  z-index: -1;
+  inset: 0;
+  object-fit: cover;
+  box-sizing: border-box;
+  color: white;
+}
+
+.banner-section img {
+  object-fit: cover;
+  width: 100%;
+  height: 76vh;
+}
 
 /* Publications */
 .banner-section p em:nth-child(1) a {
@@ -20,7 +51,7 @@
   letter-spacing: 5px;
   position: absolute;
   align-self: flex-start;
-  margin: 5% 9%;
+  margin: -32% 9%;
   left: 0;
   bottom: 0;
 }
@@ -34,7 +65,7 @@
   position: absolute;
   align-self: flex-end;
   text-align: center;
-  margin: 4% 9%;
+  margin: -33% 9%;
   padding: 1% 2.5%;
   right: 0;
   bottom: 0;
@@ -60,7 +91,7 @@
   }
 
   /* Banner */
-  .banner-section > .columns-wrapper div:nth-child(1) {
+  .banner-section > .columns-wrapper {
     position: relative;
     width: 100%;
     height: 15vh;
@@ -73,6 +104,7 @@
     margin: auto;
     left: 28%;
     top: 40%;
+    border: 5px solid rebeccapurple;
   }
 
   /* shop now */
@@ -82,6 +114,7 @@
     padding: 0.25% 2.5%;
     right: 40%;
     bottom: 1%;
+    border: 5px solid rebeccapurple;
   }
 }
 
