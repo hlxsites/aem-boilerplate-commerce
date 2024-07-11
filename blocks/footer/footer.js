@@ -27,7 +27,7 @@ export default async function decorate(block) {
             <div>
               <label id="mail-lbl" for="email">EMAIL ADDRESS</label><br>
               <input id="mail" type="email" placeholder="" size="40"/>
-              <button class="sign-up" type="button" disabled>SIGN UP</button>
+              <button class="sign-up" disabled type="button" disabled>SIGN UP</button>
             </div>
         <form/>
         <div class="socials">
@@ -128,5 +128,15 @@ export default async function decorate(block) {
       giftCardDiv.innerHTML += giftCardsSvg;
 
       //change styling of signup button on text input - work in progress
+      const mail = document.getElementById("mail");
+      const signupBtn = document.getElementsByClassName("sign-up");
+
+      const changeButtonStyle = function(e)
+      {
+        signupBtn[0].style.backgroundColor = "black";
+        signupBtn[0].style.color = "white";
+        signupBtn[0].style.cursor = "pointer";
+      }
       
+      mail.addEventListener('input',changeButtonStyle);
   }

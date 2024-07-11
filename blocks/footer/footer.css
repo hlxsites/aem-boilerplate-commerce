@@ -40,7 +40,7 @@ footer .footer {
   display: inline-block;
   font-size: 16px;
   margin-left: 1em;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 /*styling signup*/
@@ -133,7 +133,7 @@ footer .footer p {
 
 .socials
 {
-  padding: 30px 0px 30px;
+  padding: 30px 0 0 0;
   word-spacing: 2rem;
 }
 /*icons resizing*/
@@ -240,5 +240,18 @@ footer .footer p {
   {
     justify-content: center;
     margin-left: 2rem;
+  }
+
+  .footer-three
+  {
+    display: flex;
+    flex-direction: column;
+  }
+  .footer-three .columns.block.columns-1-cols > div > div > p
+  {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding-bottom: 8px;
   }
 }
