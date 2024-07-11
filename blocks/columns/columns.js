@@ -21,7 +21,8 @@ export default function decorate(block) {
     ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div p strong, \
   .columns-container:nth-of-type(2) > .default-content-wrapper p, \
   .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div p strong, \
-  .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(1) "
+  .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(1), \
+  .columns-container:nth-child(8) > div:nth-child(1) p strong  "
   );
 
   columnHeader.forEach((element) => {
@@ -56,8 +57,11 @@ export default function decorate(block) {
     }
   });
 
-  //Trending
-  const trending = document.querySelectorAll(".columns-container:nth-child(2)");
+  //Trending & for you
+  const trending = document.querySelectorAll(
+    ".columns-container:nth-child(2), \
+    .columns-container:nth-child(8)"
+  );
 
   trending.forEach((element) => {
     if (element) {
