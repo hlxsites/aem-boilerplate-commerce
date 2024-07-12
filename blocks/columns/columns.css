@@ -97,7 +97,7 @@
     margin-top: -13%;
   }
 
-  /* carousel */
+  /* Latest Carousel */
   .latest-products div div {
     width: auto;
     height: 35vh;
@@ -125,6 +125,41 @@
   }
 
   .latest-products-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  /* Launches Carousel */
+  .launches-section {
+    width: auto;
+  }
+
+  .launches-section * p {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 1%;
+  }
+
+  .launches-section div:nth-child(1) {
+    flex-direction: row;
+  }
+
+  .launches-section div:nth-child(2) {
+    flex-direction: row;
+  }
+
+  .launches-section div:nth-child(1) div p:nth-child(1) {
+    flex-direction: row;
+    border: 1px solid rebeccapurple;
+  }
+
+  .launches-section picture {
+    width: 314px;
+    height: auto;
+  }
+  /* check if you need to add an id since the data has its own row */
+  .launches-section-carousel {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
   }

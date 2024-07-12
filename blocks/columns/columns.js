@@ -94,6 +94,17 @@ export default function decorate(block) {
     }
   });
 
+  //Launches Products carousel
+  const launchesSectionCarousel = document.querySelectorAll(
+    ".columns-container:nth-child(3) .columns-wrapper:nth-child(2) "
+  );
+
+  launchesSectionCarousel.forEach((element) => {
+    if (element) {
+      element.classList.add("launches-section-carousel");
+    }
+  });
+
   //Featured
   const featuredBrand = document.querySelectorAll(
     ".columns-container:nth-child(4) > .columns-wrapper div:nth-child(1), \
