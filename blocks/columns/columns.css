@@ -90,6 +90,11 @@
 
   .column-headers {
     font-size: 16px;
+    width: auto;
+  }
+
+  .view-all-button {
+    margin-top: -13%;
   }
 
   /* carousel */
@@ -122,5 +127,73 @@
   .latest-products-carousel {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+  }
+
+  /* Banner Section */
+  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .banner-section {
+    margin-bottom: -35%;
+  }
+
+  .banner-section img {
+    object-fit: none;
+    width: 100%;
+    height: 25vh;
+    zoom: 2.5;
+  }
+
+  /* Publications */
+  .banner-section p em:nth-child(1) a {
+    font-size: 22px;
+    margin: auto;
+    left: 28%;
+    top: 45vh;
+  }
+
+  /* shop now */
+  .banner-section p em:nth-child(2) a {
+    font-size: 14px;
+    margin: -97% 0;
+    padding: 12px 14%;
+    right: 25%;
+  }
+
+  @media (501px < max-width < 1024px) {
+    /* Banner Section */
+    .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Banner */
+    .banner-section > .columns-wrapper div:nth-child(1) {
+      position: relative;
+      width: 100%;
+      flex: 1.5;
+      margin-bottom: 5%;
+      padding-bottom: -5%;
+    }
+
+    /* Publications */
+    .banner-section p em:nth-child(1) a {
+      font-size: 18px;
+      margin: 0;
+      left: 10%;
+      bottom: -42%;
+      margin: 1%;
+    }
+
+    /* shop now */
+    .banner-section p em:nth-child(2) a {
+      font-size: 11px;
+      margin: auto;
+      padding: 0.25% 2.5%;
+      right: 10%;
+      bottom: -40%;
+    }
   }
 }
