@@ -47,15 +47,27 @@ export default function decorate(block) {
   });
 
   //Latest Products
-  const latestProductText = document.querySelectorAll(
-    ".columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(2), \
-    .columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(3), \
-    .columns-container:nth-of-type(1) > .columns-wrapper:nth-of-type(2) p:nth-child(4) "
+  const latestProduct = document.querySelectorAll(
+    ".columns-container:nth-child(1) \
+  > .columns-wrapper:nth-of-type(2) div,.columns-container:nth-child(5) \
+  > .columns-wrapper:nth-of-type(2) div"
   );
 
-  latestProductText.forEach((element) => {
+  latestProduct.forEach((element) => {
     if (element) {
-      element.classList.add("latest-product-text");
+      element.classList.add("latest-products");
+    }
+  });
+
+  //Latest Products carousel
+  const latestProductCarousel = document.querySelectorAll(
+    ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(2), \
+    .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(2) "
+  );
+
+  latestProductCarousel.forEach((element) => {
+    if (element) {
+      element.classList.add("latest-products-carousel");
     }
   });
 

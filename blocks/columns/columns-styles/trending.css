@@ -1,7 +1,7 @@
 /* Trending Section */
 .trending-section:nth-child(2) {
-  padding: 2% 0;
-  margin: auto 0;
+  padding: 2% auto;
+  margin: auto;
 }
 
 /* Trending Column Header */
