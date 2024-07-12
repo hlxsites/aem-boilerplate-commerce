@@ -23,11 +23,11 @@ export default async function decorate(block) {
   document.querySelector(".footer-one").innerHTML += 
   `
     <div class="sub-form">
-        <form id="mail_mini_form" action="/mail" method="GET">
+        <form name="mail_mini_form" action="/mail" method="GET">
             <div>
               <label id="mail-lbl" for="email">EMAIL ADDRESS</label><br>
-              <input id="mail" type="email" placeholder="" size="40"/>
-              <button class="sign-up" disabled type="button" disabled>SIGN UP</button>
+              <input id="mail" name="mail" type="email" placeholder="" size="40"/>
+              <button class="sign-up" type="button">SIGN UP</button>
             </div>
         <form/>
         <div class="socials">
@@ -130,13 +130,12 @@ export default async function decorate(block) {
       //change styling of signup button on text input - work in progress
       const mail = document.getElementById("mail");
       const signupBtn = document.getElementsByClassName("sign-up");
+      //const text = document.forms["mail-mini-form"]["mail"].value;
 
-      const changeButtonStyle = function(e)
-      {
+      mail.addEventListener('input',function(){
         signupBtn[0].style.backgroundColor = "black";
         signupBtn[0].style.color = "white";
         signupBtn[0].style.cursor = "pointer";
-      }
-      
-      mail.addEventListener('input',changeButtonStyle);
+        //console.log(text);
+      });
   }
