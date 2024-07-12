@@ -94,15 +94,24 @@
 
   /* carousel */
   .latest-products div div {
+    width: auto;
+    height: 35vh;
+  }
+
+  .latest-products * p {
     display: flex;
-    justify-content: flex-start;
-    text-align: left;
     flex-direction: column;
-    border: 5px solid rebeccapurple;
+    flex-wrap: wrap;
+    padding: 1%;
+    width: 100%;
+  }
+
+  .latest-products picture {
+    width: 173px;
+    height: auto;
   }
 
   .latest-products div:nth-child(1) {
-    display: flex;
     flex-direction: row;
   }
 
@@ -110,14 +119,8 @@
     flex-direction: row;
   }
 
-  .latest-products p {
-    flex-direction: column;
-  }
-
   .latest-products-carousel {
-    display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    border: 5px solid rebeccapurple;
   }
 }
