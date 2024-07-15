@@ -1,3 +1,5 @@
+@import url(./modal-content/latest/latest.css);
+
 /* stylelint-disable selector-class-pattern */
 
 /* header and nav layout */
@@ -12,8 +14,8 @@ header nav {
   box-sizing: border-box;
   display: grid;
   grid-template:
-    'hamburger brand tools' var(--nav-height)
-    'sections sections sections' 1fr / auto 1fr auto;
+    "hamburger brand tools" var(--nav-height)
+    "sections sections sections" 1fr / auto 1fr auto;
   align-items: center;
   gap: 0 32px;
   margin: auto;
@@ -23,11 +25,11 @@ header nav {
   font-family: var(--type-base-font-family);
 }
 
-header nav[aria-expanded='true'] {
+header nav[aria-expanded="true"] {
   grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr
-    'tools tools' var(--nav-height) / auto 1fr;
+    "hamburger brand" var(--nav-height)
+    "sections sections" 1fr
+    "tools tools" var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100vh;
 }
@@ -44,7 +46,7 @@ header nav[aria-expanded='true'] {
     justify-content: space-between;
   }
 
-  header nav[aria-expanded='true'] {
+  header nav[aria-expanded="true"] {
     min-height: 0;
     overflow: visible;
   }
@@ -91,33 +93,33 @@ header nav .nav-hamburger-icon::after {
 
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
-  content: '';
+  content: "";
   position: absolute;
   background: currentcolor;
 }
 
-header nav[aria-expanded='false'] .nav-hamburger-icon,
-header nav[aria-expanded='false'] .nav-hamburger-icon::before,
-header nav[aria-expanded='false'] .nav-hamburger-icon::after {
+header nav[aria-expanded="false"] .nav-hamburger-icon,
+header nav[aria-expanded="false"] .nav-hamburger-icon::before,
+header nav[aria-expanded="false"] .nav-hamburger-icon::after {
   height: 2px;
   border-radius: 2px;
   background: currentcolor;
 }
 
-header nav[aria-expanded='false'] .nav-hamburger-icon::before {
+header nav[aria-expanded="false"] .nav-hamburger-icon::before {
   top: -6px;
 }
 
-header nav[aria-expanded='false'] .nav-hamburger-icon::after {
+header nav[aria-expanded="false"] .nav-hamburger-icon::after {
   top: 6px;
 }
 
-header nav[aria-expanded='true'] .nav-hamburger-icon {
+header nav[aria-expanded="true"] .nav-hamburger-icon {
   height: 22px;
 }
 
-header nav[aria-expanded='true'] .nav-hamburger-icon::before,
-header nav[aria-expanded='true'] .nav-hamburger-icon::after {
+header nav[aria-expanded="true"] .nav-hamburger-icon::before,
+header nav[aria-expanded="true"] .nav-hamburger-icon::after {
   top: 3px;
   left: 1px;
   transform: rotate(45deg);
@@ -127,7 +129,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   border-radius: 2px;
 }
 
-header nav[aria-expanded='true'] .nav-hamburger-icon::after {
+header nav[aria-expanded="true"] .nav-hamburger-icon::after {
   top: unset;
   bottom: 3px;
   transform: rotate(-45deg);
@@ -161,7 +163,7 @@ header nav .nav-sections {
   visibility: hidden;
 }
 
-header nav[aria-expanded='true'] .nav-sections {
+header nav[aria-expanded="true"] .nav-sections {
   display: block;
   visibility: visible;
   align-self: start;
@@ -193,7 +195,7 @@ header nav .nav-sections ul > li > ul > li {
     white-space: nowrap;
   }
 
-  header nav[aria-expanded='true'] .nav-sections {
+  header nav[aria-expanded="true"] .nav-sections {
     align-self: unset;
   }
 
@@ -204,7 +206,7 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .nav-drop::after {
-    content: '';
+    content: "";
     display: inline-block;
     position: absolute;
     top: 0.4rem;
@@ -217,7 +219,7 @@ header nav .nav-sections ul > li > ul > li {
     border-width: 2px 2px 0 0;
   }
 
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
+  header nav .nav-sections .nav-drop[aria-expanded="true"]::after {
     top: unset;
     bottom: 0.5em;
     transform: rotate(315deg);
@@ -240,7 +242,13 @@ header nav .nav-sections ul > li > ul > li {
     position: relative;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+  header
+    nav
+    .nav-sections
+    .default-content-wrapper
+    > ul
+    > li[aria-expanded="true"]
+    > ul {
     display: block;
     position: absolute;
     left: -1em;
@@ -252,7 +260,7 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -8px;
     left: 8px;
@@ -275,14 +283,16 @@ header nav .nav-tools {
   gap: 10px;
 }
 
-header nav .nav-tools > button, header nav .nav-tools .minicart-wrapper > button {
+header nav .nav-tools > button,
+header nav .nav-tools .minicart-wrapper > button {
   color: var(--color-brand-700);
   background: transparent;
   padding: 5px 10px;
+  margin-bottom: 65%;
 }
 
 header nav .nav-tools button.nav-cart-button {
-  background-image: url('../../icons/cart.svg');
+  background-image: url("../../icons/cart.svg");
   background-repeat: no-repeat;
   background-position: left center;
   padding-left: 27px;
@@ -290,7 +300,7 @@ header nav .nav-tools button.nav-cart-button {
 
 header nav .nav-tools button.nav-search-button {
   font-size: 0;
-  background-image: url('../../icons/search.svg');
+  background-image: url("../../icons/search.svg");
   background-repeat: no-repeat;
   background-position: center;
   padding: 5px 15px;
@@ -329,4 +339,43 @@ header .nav-search-input .search_autocomplete .popover-container {
   header .nav-search-input input {
     min-width: 400px;
   }
+}
+
+/* Daniel */
+.nav-brand .columns-2-cols {
+  padding: 1% 0;
+  margin-bottom: 10%;
+}
+
+.nav-sections {
+  text-align: center;
+}
+
+.nav-sections img {
+  width: 65.51px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-sections .columns-1-cols div div em a {
+  margin: auto;
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
+  text-transform: capitalize;
+}
+
+.nav-sections .columns-1-cols div div:nth-child(1) img {
+  margin-top: 60%;
+  padding: 1% 0;
+}
+
+.nav-sections .columns-1-cols div div em a {
+  color: var(--sub-text-title-color);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-sections .columns-1-cols div:hover div em a:not(:hover) {
+  color: var(--sub-text-grey);
 }

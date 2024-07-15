@@ -21,7 +21,8 @@
 }
 
 /* Trending Secion Background Colour */
-.trending-section {
+
+.columns-container:nth-child(8) {
   background-color: var(--sub-text-background-color);
 }
 

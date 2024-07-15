@@ -144,7 +144,7 @@
   --type-fixed-font-family: "Roboto Mono", menlo, consolas, "Liberation Mono",
     monospace;
   --background-color: var(--color-neutral-50);
-  --nav-height: 6.4rem;
+  --nav-height: 10rem;
 
   /*------------------------- Daniel Global -------------------------*/
   --sub-text-grey: #999999;
@@ -423,4 +423,15 @@ main .section.highlight {
 /* Base Design System Tokens */
 .dropin-design.dropin-design {
   --background-none: none 0 0% no-repeat padding-box;
+}
+/* View all buttons */
+.view-all-button {
+  text-align: right;
+}
+
+.view-all-button em a {
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
+  border: none;
+  text-transform: capitalize;
 }

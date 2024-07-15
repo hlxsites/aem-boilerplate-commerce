@@ -52,18 +52,6 @@
   order: unset;
 }
 
-/* View all buttons */
-.view-all-button {
-  text-align: right;
-}
-
-.view-all-button em a {
-  color: var(--sub-text-title-color);
-  font-size: var(--sub-text-secondary-size);
-  border: none;
-  text-transform: capitalize;
-}
-
 /*   border: 1px solid black; */
 
 @media (max-width: 600px) {
@@ -130,40 +118,42 @@
   }
 
   /* Launches Carousel */
-  .launches-section {
+  /* 
+  .launches-section div div {
     width: auto;
+    height: 35vh;
+    align-items: flex-start;
   }
-
-  .launches-section * p {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    padding: 1%;
-  }
-
-  .launches-section div:nth-child(1) {
-    flex-direction: row;
-  }
-
-  .launches-section div:nth-child(2) {
-    flex-direction: row;
-  }
-
   .launches-section div:nth-child(1) div p:nth-child(1) {
-    flex-direction: row;
-    border: 1px solid rebeccapurple;
+    display: flex;
+
+    margin: 7% 5%;
   }
 
   .launches-section picture {
-    width: 314px;
+    width: 367px;
     height: auto;
+    padding-right: 4%;
   }
-  /* check if you need to add an id since the data has its own row */
+
+  .launches-section div:nth-child(1) div p:nth-child(1),
+  .launches-section div:nth-child(2) {
+    flex-direction: row;
+  } */
+
+  /* .launches-section div div p {
+    border: 1px solid black;
+  } */
+  /* 
   .launches-section-carousel {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    width: auto;
   }
 
+  .launches-section-carousel > div {
+    width: auto;
+  } */
   /* Banner Section */
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;

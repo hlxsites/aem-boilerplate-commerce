@@ -1,0 +1,25 @@
+.modal-content {
+  width: 100%;
+}
+
+.modal-content .columns-3-cols div div p:nth-child(1) {
+  list-style-type: none;
+  border: 1px solid rebeccapurple;
+  margin: 8% 0;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 555;
+}
+
+.modal-content .columns-3-cols div ul {
+  list-style-type: none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  line-height: 2;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 100;
+}
+
+.modal-content .columns-3-cols div div {
+  align-self: start;
+}
