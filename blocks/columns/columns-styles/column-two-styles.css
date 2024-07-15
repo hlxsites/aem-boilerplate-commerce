@@ -13,7 +13,7 @@
 }
 
 
-.section-two-col > div > div > p,h4
+.section-two-col > div > div > p,h4,ul
 {
     display: inline-block;
     width:50%;
@@ -22,7 +22,12 @@
     padding: 0.5rem 0 0.5rem 0;
 }
 
-.section-two-col > div > div > p
+.section-two-col > div > div > ul
+{
+    margin-left: 30px;
+}
+
+.section-two-col > div > div > p, li
 {
     font-size: 13px;
     margin: 0;
@@ -32,6 +37,21 @@
     text-transform: none;
     vertical-align: baseline;
     margin-bottom: 16px;
+}
+
+.section-two-col > div > div > ul li
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    font-weight: 500;
+    text-transform: none;
+    vertical-align: baseline;
+}
+
+.section-two-col > div > div > ul li::marker
+{
+    color: rgba(121, 121, 121, 0.5)
 }
 
 .section-two-col > div > div > h4
@@ -81,4 +101,5 @@
     font-weight: 600;
     padding-bottom: 48px;
 }
+
 
