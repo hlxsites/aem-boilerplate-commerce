@@ -1,3 +1,6 @@
+@import url(./columns-styles/column-two-styles.css);
+@import url(./columns-styles/Column-two-img-styles.css);
+
 .columns > div {
   display: flex;
   flex-direction: column;
@@ -19,7 +22,8 @@
   display: block;
 }
 
-@media (width >= 900px) {
+@media (width >= 900px) 
+{
   .columns > div {
     align-items: center;
     flex-direction: unset;

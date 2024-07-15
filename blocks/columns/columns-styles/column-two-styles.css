@@ -1,0 +1,84 @@
+.section-two-col
+{
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.section-two-col > div
+{
+    text-align: center;
+}
+
+
+.section-two-col > div > div > p,h4
+{
+    display: inline-block;
+    width:50%;
+    text-align: left;
+    margin: 0;
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.section-two-col > div > div > p
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    line-height: 22px;
+    font-weight: 400;
+    text-transform: none;
+    vertical-align: baseline;
+    margin-bottom: 16px;
+}
+
+.section-two-col > div > div > h4
+{
+    font-size: 2.3rem;
+    margin-bottom: 16px;
+    letter-spacing: 0.2rem;
+    font-weight: 500;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+
+.section-two-col > div > div > .button-container > a
+{
+    text-decoration: underline;
+    text-transform: uppercase;
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-two-col .columns-img-col
+{
+    width: 661px;
+    height: 600px;
+}
+
+.section-two-col .columns-img-col > picture > img
+{
+    width: 100%;
+    height: 100%;
+}
+
+.section-two-col > div:not(:last-child)
+{
+    margin-bottom: 115px;
+}
+
+.heading > div > div > h3
+{
+    border-bottom: 0.5px solid rgba(187, 187, 187,0.4);
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 2rem;
+    line-height: 30px;
+    font-weight: 600;
+    padding-bottom: 48px;
+}
+
