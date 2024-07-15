@@ -3,7 +3,9 @@ import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
 
-const configFile = 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs.json?sheet=prod';
+const basePath = 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live';
+const configFile = `${basePath}/configs.json?sheet=prod`;
+
 
 async function performCatalogServiceQuery(config, query, variables) {
   const headers = {
@@ -16,7 +18,7 @@ async function performCatalogServiceQuery(config, query, variables) {
     'x-api-key': config['commerce-x-api-key'],
   };
 
-  const apiCall = new URL('https://catalog-service.adobe.io/graphql');
+  const apiCall = new URL(config['commerce-endpoint']);
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
     .replace(/\s\s+/g, ' '));
   apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
@@ -49,7 +51,7 @@ const getProducts = async (config, pageNumber) => {
   if (response && response.productSearch) {
     const products = await Promise.all(response.productSearch.items.map(async (item) => {
       const {
-        url,
+        urlKey,
         sku,
         metaDescription,
         name,
@@ -59,8 +61,6 @@ const getProducts = async (config, pageNumber) => {
         shortDescription,
       } = item.productView;
       const { url: imageUrl } = item.product.image ?? {};
-      const productUrl = new URL(url);
-      const urlKey = productUrl.pathname.substring(1, productUrl.pathname.length - 5);
 
       let baseImageUrl = imageUrl;
       if (baseImageUrl.startsWith('//')) {
@@ -83,7 +83,6 @@ const getProducts = async (config, pageNumber) => {
       return {
         productView: {
           ...item.productView,
-          urlKey,
           image: baseImageUrl,
           path: `/products/${urlKey}/${sku.toLowerCase()}`,
           meta_keyword: (metaKeyword !== null) ? metaKeyword : '',
@@ -121,15 +120,39 @@ const getProducts = async (config, pageNumber) => {
   const products = await getProducts(config, 1);
 
   const data = [
-    ['URL', 'keywords', 'title', 'og:title', 'description', 'og:description', 'og:image', 'og:image:secure_url', 'twitter:image'],
+    [
+      'URL',
+      'title',
+      'description',
+      'keywords',
+      'og:type',
+      'og:title',
+      'og:description',
+      'og:url',
+      'og:image',
+      'og:image:secure_url',
+      'twitter:card',
+      'twitter:title',
+      'twitter:image'
+    ],
   ];
   products.forEach(({ productView: metaData }) => {
     data.push(
-      [metaData.path, metaData.meta_keyword,
-        metaData.meta_title, metaData.meta_title,
-        metaData.meta_description, metaData.meta_description,
-        metaData['og:image'], metaData['og:image:secure_url'],
-        metaData['twitter:image']],
+      [
+        metaData.path, // URL
+        metaData.meta_title, // title
+        metaData.meta_description, // description
+        metaData.meta_keyword, // keywords
+        'og:product', // og:type
+        metaData.meta_title, // og:title
+        metaData.meta_description, // og:description
+        `${basePath}${metaData.path}`, // og:url
+        metaData['og:image'], // og:image
+        metaData['og:image:secure_url'], // og:image:secure_url
+        metaData.meta_description, // twitter:card
+        metaData.meta_title, // twitter:title
+        metaData['twitter:image'], // twitter:image
+      ],
     );
   });
 

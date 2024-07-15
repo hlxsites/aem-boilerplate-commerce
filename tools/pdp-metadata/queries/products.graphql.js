@@ -5,7 +5,7 @@ export default `query productSearch($currentPage: Int = 1) {
         __typename
         sku
         name
-        url
+        urlKey
         shortDescription
         description
         metaDescription
