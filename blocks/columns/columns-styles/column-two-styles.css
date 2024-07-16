@@ -77,11 +77,6 @@
     padding: 0;
 }
 
-.section-two-col .columns-img-col > picture > img
-{
-    width: 100%;
-    height: 100%;
-}
 
 .section-two-col > div:not(:last-child)
 {

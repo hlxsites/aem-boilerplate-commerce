@@ -1,17 +1,27 @@
 /* Christopher */
-
+/* styling for a  section with 2 columns including an image */
 .section-two-img-col
 {
     display: flex;
     flex-direction: column;
+    margin: auto;
+    padding: auto;
+    justify-content: space-evenly;
+    left: 0;
+    flex: 1;
+    width: 100%;
+    height: 100%;
 }
 
 .section-two-img-col > div
 {
-    align-items: stretch;
+    padding: 1% 0;
+    margin: auto 0;
 }
 
-/* styling for a  section with 2 columns including an image */
+
+/* styling text and links */
+
 .section-two-img-col > div > div > .button-container > a
 {
     text-decoration: underline;
@@ -21,7 +31,6 @@
     padding: 0;
 }
 
-/* styling text and links */
 .section-two-img-col > div > div > h4
 {
     width: 100%;
