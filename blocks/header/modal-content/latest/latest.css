@@ -2,18 +2,40 @@
   width: 100%;
 }
 
-.modal-content .columns-3-cols div div p:nth-child(1) {
+.modal-content .columns-3-cols div div p:nth-child(1):only-of-type {
   list-style-type: none;
-  border: 1px solid rebeccapurple;
-  margin: 8% 0;
+  display: flex;
+  margin: 0;
   font-size: var(--sub-text-secondary-size);
   font-weight: 555;
+}
+.modal-content .columns-3-cols div ul,
+.modal-content .columns-3-cols div div p picture {
+  display: flex;
+}
+
+.modal-content .columns-3-cols div:nth-child(3) {
+  flex: 2;
+}
+
+.modal-content .columns-3-cols div:nth-child(3) table p {
+  margin: 5% 0;
+  padding: 0;
+  margin-bottom: 0%;
+  padding-right: 8%;
+  line-height: 0.5;
+  font-size: var(--sub-text-secondary-size);
+}
+
+.modal-content .columns-3-cols div:nth-child(3) table p:nth-child(2) {
+  margin-bottom: 4%;
 }
 
 .modal-content .columns-3-cols div ul {
   list-style-type: none;
+  flex-direction: column;
   float: left;
-  margin: 0;
+  margin: 5% 0;
   padding: 0;
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
@@ -23,3 +45,4 @@
 .modal-content .columns-3-cols div div {
   align-self: start;
 }
+/* check how to show model next to nav */
