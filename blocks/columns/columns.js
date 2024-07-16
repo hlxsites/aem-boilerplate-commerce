@@ -19,8 +19,8 @@ export default function decorate(block) {
   //Christopher - Banner
   //Banner Section
   const bannerSection = document.querySelectorAll(
-    `.columns-container:nth-child(1):not(.footer-one),
-     .columns-container:nth-child(6)`
+    `.columns-container:nth-child(1):not(.footer-one,.heading,.section-two-col),
+     .columns-container:nth-child(6):not(.heading,.section-two-col)`
   );
 
   bannerSection.forEach((element) => {
