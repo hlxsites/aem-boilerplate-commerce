@@ -1,6 +1,7 @@
 @import url(./columns-styles/column-two-styles.css);
 @import url(./columns-styles/Column-two-img-styles.css);
 @import url(./columns-styles/column-three-styles.css);
+@import url(../../styles/styles.css);
 
 .columns > div {
   display: flex;
@@ -22,13 +23,6 @@
 .columns > div > .columns-img-col img {
   display: block;
 }
-
-.section .hero
-{
-  border: 1px solid red;
-  position: relative;
-}
-
 
 @media (width >= 900px) 
 {
