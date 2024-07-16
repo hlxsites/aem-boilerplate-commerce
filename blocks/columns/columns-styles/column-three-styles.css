@@ -9,9 +9,16 @@
     margin-bottom: 20px;
 }
 
+.section-three-col
+{
+    display: flex;
+    flex-direction: column;
+}
+
 .section-three-col > div:first-child
 {
     text-align: center;
+    flex-grow: 1;
 }
 
 .section-three-col > div:first-child p
@@ -21,17 +28,9 @@
     margin: 0;
     padding: 0;
     font-weight: 400;
-    justify-content: center;
     text-transform: none;
     margin-bottom: 20px;
     display: inline-block;
-}
-
-.section-three-col > div:not(:first-child)
-{
-    height: 500px;
-    margin: 0;
-    padding: 0;
 }
 
 .section-three-col > div:not(:first-child) > div
@@ -40,6 +39,7 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    flex-grow: 3;
 }
 
 .section-three-col > div:not(:first-child) > div > h4

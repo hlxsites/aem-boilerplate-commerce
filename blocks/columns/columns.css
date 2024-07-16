@@ -1,6 +1,7 @@
 @import url(./columns-styles/column-two-styles.css);
 @import url(./columns-styles/Column-two-img-styles.css);
 @import url(./columns-styles/column-three-styles.css);
+@import url(./columns-styles/banner.css);
 @import url(../../styles/styles.css);
 
 .columns > div {

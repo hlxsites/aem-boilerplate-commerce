@@ -15,4 +15,17 @@ export default function decorate(block) {
       }
     });
   });
+
+  //Christopher - Banner
+  //Banner Section
+  const bannerSection = document.querySelectorAll(
+    `.columns-container:nth-child(1):not(.footer-one),
+     .columns-container:nth-child(6)`
+  );
+
+  bannerSection.forEach((element) => {
+    if (element) {
+      element.classList.add("banner-footer-section");
+    }
+  });
 }

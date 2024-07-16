@@ -1,0 +1,87 @@
+/* Banner Section */
+.banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) 
+{
+  display: flex;
+  text-transform: uppercase;
+}
+
+/* Banner */
+.banner-footer-section > .columns-wrapper div:nth-child(1) {
+  position: relative;
+  width: 100%;
+  flex: 1.5;
+  padding-bottom: -2%;
+}
+/* Banner */
+
+main .banner-footer-section > div {
+  max-width: unset;
+}
+
+main .banner-footer-section {
+  padding: 0;
+}
+
+.banner-footer-section {
+  position: relative;
+  padding: 32px;
+  min-height: 78vh;
+}
+
+.banner-footer-section picture
+{
+  position: absolute;
+  height: 100%;
+  z-index: -1;
+  inset: 0;
+  object-fit: cover;
+  box-sizing: border-box;
+  color: white;
+}
+
+.banner-footer-section img {
+  object-fit: cover;
+  width: 100%;
+  height: 70vh;
+}
+
+/* Come work for us */
+.banner-footer-section p em:nth-child(1) a {
+  color: white;
+  text-decoration: none;
+  font-size: 25px;
+  letter-spacing: 5px;
+  position: absolute;
+  align-self: flex-start;
+  margin: -50% 9%;
+  left: 0;
+  bottom: 0;
+  border: none;
+}
+
+/* view all jobs */
+.banner-footer-section p em:nth-child(2) a {
+  color: white;
+  border: 1px solid white;
+  font-size: 14px;
+  text-decoration: none;
+  position: absolute;
+  align-self: flex-end;
+  text-align: center;
+  margin: -51% 9%;
+  padding: 1% 2.5%;
+  right: 0;
+  bottom: 0;
+  /* animation */
+  background-color: transparent;
+  color: white;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* animation onHover*/
+.banner-footer-section p em:nth-child(2) a:hover {
+  background-color: white;
+  color: black;
+  opacity: 0.5;
+}
