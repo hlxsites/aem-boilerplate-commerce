@@ -1,3 +1,6 @@
+/* Christopher */
+
+/* Styling for a section with 2 columns */
 .section-two-col
 {
     display: flex;
@@ -10,9 +13,10 @@
 .section-two-col > div
 {
     text-align: center;
+    flex-grow: 1;
 }
 
-
+/* styling of text in one of the columns */
 .section-two-col > div > div > p,h4,ul
 {
     display: inline-block;
@@ -27,6 +31,7 @@
     margin-left: 30px;
 }
 
+/* styling of lists */
 .section-two-col > div > div > p, li
 {
     font-size: 13px;
@@ -70,12 +75,6 @@
     background-color: transparent;
     margin: 0;
     padding: 0;
-}
-
-.section-two-col .columns-img-col
-{
-    width: 661px;
-    height: 600px;
 }
 
 .section-two-col .columns-img-col > picture > img

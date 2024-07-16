@@ -13,6 +13,11 @@
   width: 100%;
 }
 
+main .section:first-child:not(.banner-footer-section)
+{
+  padding: 30px 0;
+}
+
 .columns > div > div {
   order: 1;
 }
