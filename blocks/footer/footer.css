@@ -59,19 +59,12 @@ footer .footer {
   background: inherit;
 }
 
-#contact-us, #about, #customer-service
+.footer-two .columns-4-cols > div h6
 {
   font-size: 14px;
   line-height: 20px;
-  font-family:Arial, Helvetica, sans-serif;
   text-transform: uppercase;
   margin: 0;
-}
-
-#our-apps,#gift-cards
-{
-  margin: 0;
-  font-size: 14px;
   padding: 1rem 0 1rem 0;
 }
 
@@ -219,6 +212,10 @@ footer .footer p {
   .footer-two
   {
     flex-direction: column;
+    text-align: center;
+  }
+  .footer-two ul
+  {
     text-align: center;
   }
   .footer-one p
