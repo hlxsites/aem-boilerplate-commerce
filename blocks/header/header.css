@@ -480,3 +480,7 @@ header .nav-search-input .search_autocomplete .popover-container {
   background-color: lightgray !important;
   border-radius: 0 !important;
 }
+
+.grecaptcha-badge {
+  margin-top: 20px;
+}

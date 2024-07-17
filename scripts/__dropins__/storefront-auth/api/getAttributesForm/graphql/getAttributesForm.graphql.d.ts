@@ -1,0 +1,2 @@
+export declare const GET_ATTRIBUTES_FORM = "\n  query GET_ATTRIBUTES_FORM($formCode: String!) {\n    attributesForm(formCode: $formCode) {\n      items {\n        code\n        default_value\n        entity_type\n        frontend_class\n        frontend_input\n        is_required\n        is_unique\n        label\n        options {\n          is_default\n          label\n          value\n        }\n      }\n      errors {\n        type\n        message\n      }\n    }\n  }\n";
+//# sourceMappingURL=getAttributesForm.graphql.d.ts.map

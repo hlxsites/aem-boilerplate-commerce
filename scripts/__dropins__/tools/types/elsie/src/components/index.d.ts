@@ -3,6 +3,8 @@ export * from './UIProvider';
 export * from './Incrementer';
 export * from './Input';
 export * from './InputDate';
+export * from './InputPassword';
+export * from './TextArea';
 export * from './Image';
 export * from './Divider';
 export * from './Icon';

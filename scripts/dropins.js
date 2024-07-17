@@ -14,6 +14,8 @@ import { initializers } from '@dropins/tools/initializer.js';
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 
+/** Recaptcha **/
+import * as recaptcha from '@dropins/tools/recaptcha.js';
 // Libs
 import { getConfigValue, getCookie } from './configs.js';
 
@@ -24,6 +26,10 @@ export default async function initializeDropins() {
 
   // Set Fetch Endpoint (Global)
   setEndpoint(await getConfigValue('commerce-core-endpoint'));
+
+  /** Recaptcha **/
+  recaptcha.setEndpoint(await getConfigValue('commerce-core-endpoint'));
+  recaptcha.setConfig();
 
   // Initializers (Global)
   initializers.register(authApi.initialize, {});
@@ -45,9 +51,7 @@ export default async function initializeDropins() {
     const token = getUserTokenCookie();
     const orderRef = token ? data.number : data.token;
 
-    window.location.replace(
-      `/order-confirmation?orderRef=${encodeURIComponent(orderRef)}`,
-    );
+    window.location.replace(`/order-confirmation?orderRef=${encodeURIComponent(orderRef)}`);
   });
 
   // Cache cartId in session storage

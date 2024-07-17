@@ -17,6 +17,17 @@ export declare const definition: {
                     label: string;
                 };
             };
+            InputPassword: {
+                requiredFieldError: string;
+                placeholder: string;
+                buttonTitle: string;
+            };
+            PasswordStatusIndicator: {
+                chartTwoSymbols: string;
+                chartThreeSymbols: string;
+                chartFourSymbols: string;
+                messageLengthPassword: string;
+            };
             InlineAlert: {
                 dismissLabel: string;
             };
@@ -136,6 +147,17 @@ export declare const definition: {
                 Close: {
                     label: string;
                 };
+            };
+            InputPassword: {
+                requiredFieldError: string;
+                placeholder: string;
+                buttonTitle: string;
+            };
+            PasswordStatusIndicator: {
+                chartTwoSymbols: string;
+                chartThreeSymbols: string;
+                chartFourSymbols: string;
+                messageLengthPassword: string;
             };
             InlineAlert: {
                 dismissLabel: string;
@@ -258,6 +280,17 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
             Close: {
                 label: string;
             };
+        };
+        InputPassword: {
+            requiredFieldError: string;
+            placeholder: string;
+            buttonTitle: string;
+        };
+        PasswordStatusIndicator: {
+            chartTwoSymbols: string;
+            chartThreeSymbols: string;
+            chartFourSymbols: string;
+            messageLengthPassword: string;
         };
         InlineAlert: {
             dismissLabel: string;

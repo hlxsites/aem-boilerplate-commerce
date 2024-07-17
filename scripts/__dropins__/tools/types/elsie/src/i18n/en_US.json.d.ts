@@ -15,6 +15,17 @@ declare const _default: {
         "label": "Close"
       }
     },
+    "InputPassword": {
+      "requiredFieldError": "This is a required field.",
+      "placeholder": "Password",
+      "buttonTitle": "Click to show or hide password"
+    },
+    "PasswordStatusIndicator": {
+      "chartTwoSymbols": "Use characters and numbers or symbols",
+      "chartThreeSymbols": "Use characters, numbers and symbols",
+      "chartFourSymbols": "Use uppercase characters, lowercase characters, numbers and symbols",
+      "messageLengthPassword": "At least {minLength} characters long"
+    },
     "InlineAlert": {
       "dismissLabel": "Dismiss Alert"
     },
