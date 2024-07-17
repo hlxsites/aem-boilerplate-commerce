@@ -63,7 +63,7 @@
     line-height: 40px;
     text-transform: uppercase;
 }
-
+/* styling buttons used in 2 columns content */
 .section-two-col > div > div > .button-container > a
 {
     color: black;

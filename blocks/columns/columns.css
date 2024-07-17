@@ -44,6 +44,7 @@ main .section:first-child:not(.banner-footer-section)
   }
 }
 
+/* christopher */
 @media (max-width < 600px)
 {
   /* Banner Section */
@@ -133,7 +134,7 @@ main .section:first-child:not(.banner-footer-section)
       bottom: -28vh;
     }
   }
-
+/* christopher */
 @media (width < 900px) 
 {
   .section-three-col > div:not(:first-child) > div > p:first-child
