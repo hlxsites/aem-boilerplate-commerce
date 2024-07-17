@@ -85,6 +85,86 @@ main .section:first-child:not(.banner-footer-section)
   }
 }
 
+/* Christopher Banner */
+@media (max-width: 600px) {
+
+  /* Banner Section */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .banner-footer-section {
+    margin-bottom: -35%;
+  }
+
+  .banner-footer-section img {
+    object-fit: none;
+    width: 100%;
+  }
+
+  /* Publications */
+  .banner-footer-section p em:nth-child(1) a {
+    font-size: 22px;
+    margin: auto;
+    left: 24%;
+    top: 55vh;
+  }
+
+  /* shop now */
+  .banner-footer-section p em:nth-child(2) a {
+    font-size: 14px;
+    margin: -90% 0;
+    padding: 12px 14%;
+    right: 25%;
+  }
+}
+
+@media (max-width: 1024px) {
+    /* Banner Section */
+    .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Banner */
+    .banner-footer-section > .columns-wrapper div:nth-child(1) {
+      position: relative;
+      width: 100%;
+      flex: 1.5;
+      margin-bottom: 5%;
+      padding-bottom: -5%;
+    }
+    .banner-footer-section
+    {
+      min-height: 25vh;
+    }
+
+    .banner-footer-section img {
+      object-fit: cover;
+      max-height: 29vh;
+      width: 100%;
+    }
+
+    /* Come work with us */
+    .banner-footer-section p em:nth-child(1) a {
+      font-size: 18px;
+      margin: 0;
+      left: 10%;
+      bottom: -250%;
+      margin: 1%;
+    }
+
+    /* View all jobs */
+    .banner-footer-section p em:nth-child(2) a {
+      font-size: 11px;
+      margin: auto;
+      padding: 0.25% 2.5%;
+      right: 10%;
+      bottom: -250%;
+    }
+  }
+
 @media (width < 900px) 
 {
   .section-three-col > div:not(:first-child) > div > p:first-child
@@ -109,3 +189,5 @@ main .section:first-child:not(.banner-footer-section)
     padding-bottom: 1rem;
   }
 }
+
+
