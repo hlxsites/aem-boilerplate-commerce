@@ -44,19 +44,19 @@ main .section:first-child:not(.banner-footer-section)
   }
 }
 
-@media (max-width: 600px)
+@media (max-width < 600px)
 {
   /* Banner Section */
-  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;
     flex-direction: column;
   }
 
-  .banner-footer-section {
+  .banner-section {
     margin-bottom: -35%;
   }
 
-  .banner--footer-section img {
+  .banner-section img {
     object-fit: none;
     width: 100%;
     height: 25vh;
@@ -64,17 +64,18 @@ main .section:first-child:not(.banner-footer-section)
   }
 
   /* Publications */
-  .banner-footer-section p em:nth-child(1) a {
+  .banner-section p em:nth-child(1) a {
     font-size: 22px;
     margin: auto;
-    left: 25%;
-    top: 48vh;
+    left: 28%;
+    top: 45vh;
+    border: 1px solid red;
   }
 
   /* shop now */
-  .banner-footer-section p em:nth-child(2) a {
+  .banner-section p em:nth-child(2) a {
     font-size: 14px;
-    margin: -80% 0;
+    margin: -97% 0;
     padding: 12px 14%;
     right: 25%;
   }
@@ -86,53 +87,9 @@ main .section:first-child:not(.banner-footer-section)
 }
 
 /* Christopher Banner */
-@media (max-width: 600px) {
 
-  /* Banner Section */
-  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .banner-footer-section {
-    margin-bottom: -35%;
-  }
-
-  .banner-footer-section img {
-    object-fit: none;
-    width: 100%;
-  }
-
-  /* Publications */
-  .banner-footer-section p em:nth-child(1) a {
-    font-size: 22px;
-    margin: auto;
-    left: 24%;
-    top: 55vh;
-  }
-
-  /* shop now */
-  .banner-footer-section p em:nth-child(2) a {
-    font-size: 14px;
-    margin: -90% 0;
-    padding: 12px 14%;
-    right: 25%;
-  }
-}
-
-@media (max-width: 1024px) {
-
-    /* Footer section */
-    .footer
-    {
-      padding: 0 40px;
-    }
-
-    .footer-one > :first-child
-    {
-      width: 40%;
-    }
-
+@media (max-width: 1024px)
+{
     /* Banner Section */
     .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
       display: flex;
@@ -149,12 +106,12 @@ main .section:first-child:not(.banner-footer-section)
     }
     .banner-footer-section
     {
-      min-height: 25vh;
+      min-height: 38vh;
     }
 
     .banner-footer-section img {
       object-fit: cover;
-      max-height: 29vh;
+      max-height: 40vh;
       width: 100%;
     }
 
@@ -162,18 +119,18 @@ main .section:first-child:not(.banner-footer-section)
     .banner-footer-section p em:nth-child(1) a {
       font-size: 18px;
       margin: 0;
-      left: 10%;
-      bottom: -250%;
-      margin: 1%;
+      left: 9%;
+      top: 32vh;
+      margin: 1%; 
     }
 
     /* View all jobs */
     .banner-footer-section p em:nth-child(2) a {
       font-size: 11px;
-      margin: auto;
-      padding: 0.25% 2.5%;
-      right: 10%;
-      bottom: -250%;
+      margin: auto 10px;
+      padding: 10px 10px;
+      left: 70%;
+      bottom: -28vh;
     }
   }
 
