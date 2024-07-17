@@ -66,12 +66,14 @@
 
 .section-two-col > div > div > .button-container > a
 {
-    text-decoration: underline;
-    text-transform: uppercase;
-    color: rgb(153, 153, 153);
+    color: black;
+    border: 1px solid black;
     background-color: transparent;
-    margin: 0;
-    padding: 0;
+    padding: 11px 40px;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 0;
 }
 
 

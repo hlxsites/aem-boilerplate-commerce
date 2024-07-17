@@ -92,15 +92,20 @@ main .section:first-child:not(.banner-footer-section)
       max-height: fit-content;
   }
 
-  .section-two-col > div > div > p
+  .section-two-col > div > div > p,h4,ul
   {
       display: inline-block;
-      width:80%;
-      text-align: left;
+      width: 100%;
   }
 
-  .section-two-col > div > div > h4
+  .section-two-col > div > div > ul,h4
   {
-      padding-top: 2rem;
+    padding: 0;
+    margin: auto;
+  }
+
+  .section-two-col .columns-img-col img
+  {
+    padding-bottom: 1rem;
   }
 }
