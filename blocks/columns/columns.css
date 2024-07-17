@@ -121,6 +121,18 @@ main .section:first-child:not(.banner-footer-section)
 }
 
 @media (max-width: 1024px) {
+
+    /* Footer section */
+    .footer
+    {
+      padding: 0 40px;
+    }
+
+    .footer-one > :first-child
+    {
+      width: 40%;
+    }
+
     /* Banner Section */
     .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
       display: flex;
