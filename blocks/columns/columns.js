@@ -186,4 +186,13 @@ export default function decorate(block) {
       element.classList.add("features-section");
     }
   });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const viewAllButtons = document.querySelectorAll(
+      ".nav-sections .columns-1-cols div div a.button"
+    );
+    viewAllButtons.forEach((button) => {
+      button.textContent = button.textContent.toLowerCase();
+    });
+  });
 }

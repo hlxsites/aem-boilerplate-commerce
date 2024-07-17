@@ -210,4 +210,13 @@ export default async function decorate(block) {
   navWrapper.className = "nav-wrapper";
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  const navSubHeader = document.querySelectorAll(
+    ".nav-sections .columns-1-cols div div p  "
+  );
+  navSubHeader.forEach((element) => {
+    if (element) {
+      element.classList.add("nav-button");
+    }
+  });
 }
