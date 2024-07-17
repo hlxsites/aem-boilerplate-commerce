@@ -43,3 +43,64 @@ main .section:first-child:not(.banner-footer-section)
     order: unset;
   }
 }
+
+@media (max-width: 600px)
+{
+  /* Banner Section */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .banner-footer-section {
+    margin-bottom: -35%;
+  }
+
+  .banner--footer-section img {
+    object-fit: none;
+    width: 100%;
+    height: 25vh;
+    zoom: 2.5;
+  }
+
+  /* Publications */
+  .banner-footer-section p em:nth-child(1) a {
+    font-size: 22px;
+    margin: auto;
+    left: 25%;
+    top: 48vh;
+  }
+
+  /* shop now */
+  .banner-footer-section p em:nth-child(2) a {
+    font-size: 14px;
+    margin: -80% 0;
+    padding: 12px 14%;
+    right: 25%;
+  }
+
+  .section-two-col > div:first-child
+  {
+    margin-top: 8vh;
+  }
+}
+
+@media (width < 900px) 
+{
+  .section-three-col > div:not(:first-child) > div > p:first-child
+  {
+      max-height: fit-content;
+  }
+
+  .section-two-col > div > div > p
+  {
+      display: inline-block;
+      width:80%;
+      text-align: left;
+  }
+
+  .section-two-col > div > div > h4
+  {
+      padding-top: 2rem;
+  }
+}
