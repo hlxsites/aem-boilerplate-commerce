@@ -4,6 +4,7 @@
 @import url(./columns-styles/banner.css);
 @import url(./columns-styles/brands-col-styles.css);
 @import url(./columns-styles/desc-styles.css);
+@import url(./columns-styles/affiliate-styles.css);
 @import url(../../styles/styles.css);
 
 .columns > div {
@@ -38,6 +39,8 @@ main .section:first-child:not(.banner-footer-section)
   width: 80%;
   margin: auto;
 }
+
+/* ----------------------------------------- */
 
 @media (width >= 900px) 
 {

@@ -1,0 +1,44 @@
+/* styling for affiliate page */
+.affiliate-section
+{
+  width: 80%;
+  margin: auto;
+}
+.affiliate-section h1
+{
+  text-align: center;
+  font-size: 2.5em;
+  line-height: 40px;
+  font-weight: 600;
+}
+
+.affiliate-section h3
+{
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.affiliate-section p
+{
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: lighter;
+}
+
+.affiliate-section p a
+{
+    font-weight: bold;
+    border-bottom: 1px solid rgb(241,241,241);
+}
+
+.affiliate-section p a:hover
+{
+    text-decoration: none;
+}
+
+.affiliate-section ul
+{
+  margin-left: 10px;
+  padding: 0;
+}
