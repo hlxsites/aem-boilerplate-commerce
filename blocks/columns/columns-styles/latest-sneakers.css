@@ -7,7 +7,7 @@
   width: 100%;
 }
 
-/* Shoes Name */
+/* Shoes Name and colour*/
 .latest-sneakers div p:nth-child(1) a,
 .latest-sneakers div p:nth-child(2) {
   text-transform: capitalize;

@@ -28,6 +28,7 @@
   margin-bottom: 0%;
   padding-right: 8%;
   line-height: 0.5;
+  color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
 }
 

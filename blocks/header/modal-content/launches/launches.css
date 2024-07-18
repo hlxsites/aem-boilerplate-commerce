@@ -1,0 +1,45 @@
+@import url(./modal-launches.js);
+
+.modal-content .columns-4-cols div div {
+  width: auto;
+  height: 30vh;
+  margin-left: -2%;
+
+  margin-bottom: -9%;
+}
+
+.modal-content * p {
+  display: flex;
+  padding: 0;
+  flex: 1;
+  margin: 0;
+  font-size: var(--sub-text-secondary-size);
+  line-height: 1.5;
+  text-transform: capitalize;
+}
+
+.modal-content div div p:nth-child(1):only-of-type {
+  font-weight: 550;
+  margin-left: -2%;
+  margin-bottom: 2%;
+}
+
+.modal-content div div p:nth-child(2) {
+  color: var(--sub-text-grey);
+  font-weight: 100;
+}
+
+.modal-par a.button.secondary {
+  border: none;
+  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+  margin: 0;
+
+  text-transform: capitalize;
+}
+
+.modal-content picture {
+  display: flex;
+  flex: 2;
+  width: 280px;
+}

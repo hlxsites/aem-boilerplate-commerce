@@ -75,4 +75,14 @@ export async function openModal(fragmentUrl) {
   const fragment = await loadFragment(path);
   const { showModal } = await createModal(fragment.childNodes);
   showModal();
+
+  const modalPar = document.querySelectorAll(
+    ".modal-content .columns-4-cols div div:nth-child(2), \
+    .modal-content .columns-4-cols div div:nth-child(4)"
+  );
+  modalPar.forEach((element) => {
+    if (element) {
+      element.classList.add("modal-par");
+    }
+  });
 }
