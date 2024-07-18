@@ -1,0 +1,15 @@
+.modal-content
+  .columns-4-cols
+  div
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a {
+  border: none;
+  color: black;
+  background-color: white;
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+  margin: 0;
+  font-weight: 555;
+}

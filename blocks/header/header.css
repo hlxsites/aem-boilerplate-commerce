@@ -1,6 +1,8 @@
-@import url(./modal-content/latest.css);
+@import url(./modal-content/latest-clothing.css);
 @import url(./modal-content/shop-by.css);
 @import url(./modal-content/launches/launches.css);
+@import url(./modal-content/brands.css);
+@import url(./modal-content/footwear.css);
 
 /* stylelint-disable selector-class-pattern */
 

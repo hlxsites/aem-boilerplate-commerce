@@ -22,6 +22,7 @@
   padding-right: 8%;
   line-height: 0.5;
   font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
 }
 
 .modal-content .columns-3-cols div:nth-child(3) table p:nth-child(2) {
@@ -37,6 +38,7 @@
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
   font-weight: 100;
+  text-transform: capitalize;
 }
 
 .modal-content .columns-3-cols div div {
