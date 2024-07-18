@@ -1,9 +1,17 @@
-.modal-content .columns-3-cols div div p:nth-child(1):only-of-type {
+/* This includes Latest, Clothing and Accessories */
+
+.modal-content .columns-3-cols div div:nth-child(2) p:nth-child(1):only-of-type,
+.modal-content
+  .columns-3-cols
+  div
+  div:nth-child(3)
+  p:nth-child(1):only-of-type {
   list-style-type: none;
   display: flex;
   margin: 0;
   font-size: var(--sub-text-secondary-size);
   font-weight: 555;
+  text-transform: uppercase;
 }
 
 .modal-content .columns-3-cols div ul,
@@ -43,4 +51,20 @@
 
 .modal-content .columns-3-cols div div {
   align-self: start;
+}
+
+.modal-content
+  .columns-3-cols
+  div
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a {
+  border: none;
+  color: black;
+  background-color: white;
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+  margin: 0;
+  font-weight: 555;
 }
