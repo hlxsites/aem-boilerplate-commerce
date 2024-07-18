@@ -57,45 +57,11 @@ main .section:first-child:not(.banner-footer-section)
 }
 
 /* christopher */
-@media (max-width < 600px)
+@media only screen and (max-width: 600px)
 {
-  /* Banner Section */
-  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .banner-section {
-    margin-bottom: -35%;
-  }
-
-  .banner-section img {
-    object-fit: none;
-    width: 100%;
-    height: 25vh;
-    zoom: 2.5;
-  }
-
-  /* Publications */
-  .banner-section p em:nth-child(1) a {
-    font-size: 22px;
-    margin: auto;
-    left: 28%;
-    top: 45vh;
-    border: 1px solid red;
-  }
-
-  /* shop now */
-  .banner-section p em:nth-child(2) a {
-    font-size: 14px;
-    margin: -97% 0;
-    padding: 12px 14%;
-    right: 25%;
-  }
-
-  .section-two-col > div:first-child
+  .banner-footer-section p em:nth-child(1) a
   {
-    margin-top: 8vh;
+    border: 1px solid red;
   }
 }
 
@@ -132,7 +98,7 @@ main .section:first-child:not(.banner-footer-section)
     .banner-footer-section p em:nth-child(1) a {
       font-size: 18px;
       margin: 0;
-      left: 9%;
+      left: 2%;
       top: 32vh;
       margin: 1%; 
     }
@@ -142,8 +108,34 @@ main .section:first-child:not(.banner-footer-section)
       font-size: 11px;
       margin: auto 10px;
       padding: 10px 10px;
-      left: 70%;
-      bottom: -28vh;
+      left: 80%;
+      bottom: -25vh;
+    }
+
+    .section-two-col
+    {
+      padding: 5%;
+    }
+    .affiliate-section
+    {
+      width: 95%;
+    }
+    .affiliate-section h1
+    {
+      text-align: center;
+      font-size: 2.5rem;
+      line-height: 40px;
+      font-weight: 600;
+    }
+
+    .footer
+    {
+      padding: 1.5em;
+    }
+
+    .footer-one > div:first-child
+    {
+      width: 40%;
     }
   }
 /* christopher */
@@ -159,6 +151,10 @@ main .section:first-child:not(.banner-footer-section)
       display: inline-block;
       width: 100%;
   }
+  .section-two-col > div > div > ul li
+  {
+      margin-left: 1em;
+  }
 
   .section-two-col > div > div > ul,h4
   {
@@ -170,6 +166,17 @@ main .section:first-child:not(.banner-footer-section)
   {
     padding-bottom: 1rem;
   }
+
+  .footer
+    {
+      padding: 0em;
+    }
+
+    .footer-one > div:first-child
+    {
+      width: 100%;
+      text-align: center;
+    }
 }
 
 
