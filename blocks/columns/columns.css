@@ -57,13 +57,41 @@ main .section:first-child:not(.banner-footer-section)
 }
 
 /* christopher */
-@media only screen and (max-width: 600px)
-{
-  .banner-footer-section p em:nth-child(1) a
-  {
-    border: 1px solid red;
+@media (600px < max-width < 1024px) {
+  /* Banner Section */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;`
+    flex-direction: column;
+  }
+
+  /* Banner */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) {
+    position: relative;
+    width: 100%;
+    flex: 1.5;
+    margin-bottom: 5%;
+    padding-bottom: -5%;
+  }
+
+  /* Publications */
+  .banner-footer-section p em:nth-child(1) a {
+    font-size: 18px;
+    margin: 0;
+    left: 10%;
+    bottom: -42%;
+    margin: 1%;
+  }
+
+  /* shop now */
+  .banner-footer-section p em:nth-child(2) a {
+    font-size: 11px;
+    margin: auto;
+    padding: 0.25% 2.5%;
+    right: 10%;
+    bottom: -40%;
   }
 }
+
 
 /* Christopher Banner */
 
