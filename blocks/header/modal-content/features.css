@@ -1,0 +1,74 @@
+.modal-content
+  .columns-2-cols
+  div
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a {
+  border: none;
+  color: black;
+  background-color: white;
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+  margin: 0;
+  font-weight: 555;
+}
+
+.modal-content .columns-2-cols div ul {
+  list-style-type: none;
+  flex-direction: column;
+  float: left;
+  margin: 5% 0;
+  padding: 0;
+  line-height: 2;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 100;
+  text-transform: capitalize;
+}
+
+.modal-content .columns-2-cols div ul,
+.modal-content .columns-2-cols div div p picture {
+  display: flex;
+}
+.modal-content .columns-2-cols div div table td p:nth-child(3) {
+  height: 60px;
+}
+
+.modal-content .columns-2-cols div:nth-child(2) {
+  flex: 2;
+}
+
+.modal-content .columns-2-cols div:nth-child(2) table p {
+  padding: 0;
+  margin-bottom: 1%;
+  padding-right: 8%;
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+.modal-content .columns-2-cols div:nth-child(2) table p:nth-child(2) {
+  margin-bottom: 4%;
+  font-size: 10px;
+  color: var(--sub-text-grey);
+}
+
+.modal-content .columns-2-cols div:nth-child(2) table p:nth-child(3) {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+.modal-content .columns-2-cols div ul {
+  list-style-type: none;
+  flex-direction: column;
+  float: left;
+  margin: 5% 0;
+  padding: 0;
+  line-height: 2;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 100;
+  text-transform: capitalize;
+}
+
+.modal-content .columns-2-cols div div {
+  align-self: start;
+}

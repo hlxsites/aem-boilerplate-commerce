@@ -4,6 +4,7 @@
 @import url(./modal-content/brands.css);
 @import url(./modal-content/4-cols-2-img.css);
 @import url(./modal-content/footwear.css);
+@import url(./modal-content/features.css);
 
 /* stylelint-disable selector-class-pattern */
 
@@ -348,8 +349,8 @@ header .nav-search-input .search_autocomplete .popover-container {
 
 /* Daniel */
 .nav-brand .columns-2-cols {
-  padding: 1% 0;
-  margin-bottom: 10%;
+  font-size: var(--sub-text-small);
+  border: 1px solid rebeccapurple;
 }
 
 .nav-sections {
@@ -368,6 +369,14 @@ header .nav-search-input .search_autocomplete .popover-container {
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
   text-transform: capitalize;
+}
+
+.nav-sections .columns-1-cols div:nth-child(2) div {
+  margin-top: -2%;
+}
+
+.nav-sections .columns-1-cols div div:nth-child(10) em a {
+  color: var(--sub-text-sale-color);
 }
 
 .nav-sections .columns-1-cols div div:nth-child(1) img {
