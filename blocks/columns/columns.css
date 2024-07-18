@@ -32,6 +32,7 @@ main .section:first-child:not(.banner-footer-section)
   display: block;
 }
 
+/* styling for the 2 images in Press page */
 .section-two-img > div > div >  picture img
 {
   width: 80%;

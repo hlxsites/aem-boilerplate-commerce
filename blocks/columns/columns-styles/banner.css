@@ -1,3 +1,9 @@
+/* Christopher Banner */
+.default-content-wrapper:has(picture)
+{
+  border: 1px solid red;
+}
+
 /* Banner Section */
 .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) 
 {

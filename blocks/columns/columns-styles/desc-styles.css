@@ -1,14 +1,13 @@
 :has(.section-desc):first-child
 {
-    padding-top: 60px;
-    padding-bottom: 90px;
-    margin-top: -100px;
+    padding-bottom: 8%;
 }
 
 .section-desc
 {
     width: 60%;
     margin: auto;
+    
 }
 
 .section-desc h4
