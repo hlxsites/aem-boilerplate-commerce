@@ -68,3 +68,6 @@
   margin: 0;
   font-weight: 555;
 }
+
+@media (width < 600) {
+}

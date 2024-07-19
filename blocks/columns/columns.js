@@ -34,10 +34,10 @@ export default function decorate(block) {
 
   //View all buttons
   const viewAllElements = document.querySelectorAll(
-    ".columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
-    .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
-    .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
-    .columns-container:nth-child(10) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p"
+    "main .columns-container:nth-child(1) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
+    main .columns-container:nth-child(3) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
+    main .columns-container:nth-child(5) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p, \
+    main .columns-container:nth-child(10) > .columns-wrapper:nth-of-type(1) div:nth-child(2) p"
   );
 
   viewAllElements.forEach((element) => {

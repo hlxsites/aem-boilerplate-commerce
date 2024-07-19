@@ -1,5 +1,4 @@
 @import url(./modal-content/3-cols-4-img.css);
-@import url(./modal-content/shop-by.css);
 @import url(./modal-content/launches/launches.css);
 @import url(./modal-content/brands.css);
 @import url(./modal-content/4-cols-2-img.css);
@@ -38,6 +37,81 @@ header nav[aria-expanded="true"] {
     "tools tools" var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100vh;
+}
+
+@media (width < 599px) {
+  /* .columns-container .columns-2-cols div {
+    display: none;
+  } */
+
+  header nav[aria-expanded="true"] {
+    /* men and women */
+    .columns-container {
+      width: 100%;
+    }
+
+    .columns-container .columns-2-cols {
+      display: flex;
+      margin-top: calc(var(--nav-height) + 5px);
+      flex-direction: row;
+      margin-left: -17%;
+      height: 5vh;
+      padding: 0;
+      border-top: 1px solid var(--sub-text-border-divider);
+      border-bottom: 1px solid var(--sub-text-border-divider);
+      background-color: var(--sub-text-background-color);
+      padding: 0.1%;
+    }
+
+    .columns-container .columns-2-cols div {
+      margin: 0;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      flex: 2;
+    }
+
+    .columns-container .columns-2-cols div div:nth-child(1) .active {
+      display: flex;
+      width: 50vw;
+      height: 5.2vh;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      box-shadow: 4px 0px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .columns-container .columns-2-cols div div:nth-child(2) .active {
+      display: flex;
+      width: 50vw;
+      height: 5.2vh;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      box-shadow: -4px 0px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    /* image */
+    .columns-container .columns-1-cols div div p:nth-child(1) img {
+      display: flex;
+    }
+
+    /* table header */
+    .nav-sections {
+      display: flex;
+      height: 100%;
+      margin-top: -20%;
+    }
+
+    .nav-sections div .nav-button em a {
+      display: flex;
+      margin-top: 10%;
+      padding-top: 2%;
+      font-size: var(--sub-text-title-large);
+      border: 1px solid rebeccapurple;
+    }
+  }
 }
 
 @media (width >= 600px) {
@@ -348,9 +422,14 @@ header .nav-search-input .search_autocomplete .popover-container {
 }
 
 /* Daniel */
-.nav-brand .columns-2-cols {
+.nav-brand .columns-2-cols a {
   font-size: var(--sub-text-small);
-  border: 1px solid rebeccapurple;
+  color: var(--sub-text-title-color);
+  text-transform: uppercase;
+}
+
+.nav-brand .columns-2-cols .active {
+  font-weight: bold;
 }
 
 .nav-sections {
@@ -369,6 +448,7 @@ header .nav-search-input .search_autocomplete .popover-container {
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
   text-transform: capitalize;
+  letter-spacing: var(--type-display-1-letter-spacing);
 }
 
 .nav-sections .columns-1-cols div:nth-child(2) div {

@@ -217,6 +217,16 @@ export default async function decorate(block) {
   navSubHeader.forEach((element) => {
     if (element) {
       element.classList.add("nav-button");
+      element.classList.remove("view-all-button");
+    }
+  });
+
+  const navMen = document.querySelectorAll(
+    ".nav-brand .columns-2-cols div div:nth-child(1) p a "
+  );
+  navMen.forEach((element) => {
+    if (element) {
+      element.classList.add("active");
     }
   });
 }
