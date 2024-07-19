@@ -73,8 +73,8 @@ export default function decorate(block) {
 
   //Trending & for you
   const trending = document.querySelectorAll(
-    ".columns-container:nth-child(2), \
-    .columns-container:nth-child(8)"
+    "main .columns-container:nth-child(2), \
+    main .columns-container:nth-child(8)"
   );
 
   trending.forEach((element) => {

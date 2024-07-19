@@ -69,5 +69,57 @@
   font-weight: 555;
 }
 
-@media (width < 600) {
+@media (width < 599px) {
+  .modal-content
+    .columns-3-cols
+    div
+    div:nth-child(1)
+    p:nth-child(1):only-of-type
+    a {
+    width: 100vw;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    border-radius: 0;
+    margin-left: auto;
+  }
+
+  .modal-content
+    .columns-3-cols
+    div
+    div:nth-child(1)
+    p:nth-child(1):only-of-type
+    a::before {
+    border-bottom: 1px solid var(--sub-text-border-divider);
+    content: "< Latest";
+    display: flex;
+    font-size: 1.2em;
+    padding: 2% 0;
+    margin-bottom: 2%;
+    justify-content: flex-start;
+  }
+
+  .modal-content
+    .columns-3-cols
+    div
+    div:nth-child(2)
+    p:nth-child(1):only-of-type,
+  .modal-content
+    .columns-3-cols
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
+    padding: 5% 0;
+  }
+
+  .modal-content .columns-3-cols div:nth-child(3) table p,
+  .modal-content
+    .columns-3-cols
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
+    display: none;
+  }
 }
+
+/*  border: 1px solid rebeccapurple; */

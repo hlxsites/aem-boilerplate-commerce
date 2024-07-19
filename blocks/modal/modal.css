@@ -22,10 +22,6 @@
     width: 100vw;
     max-width: 100vw;
   }
-
-  .modal dialog .modal-content {
-    max-height: calc(100vh - 90px);
-  }
 }
 
 .modal dialog::backdrop {

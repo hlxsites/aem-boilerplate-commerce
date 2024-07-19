@@ -11,7 +11,7 @@
 header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
-  z-index: 1000; /* Ensure header is below the modal */
+  z-index: 1000;
   position: fixed;
 }
 
@@ -40,9 +40,14 @@ header nav[aria-expanded="true"] {
 }
 
 @media (width < 599px) {
-  /* .columns-container .columns-2-cols div {
-    display: none;
-  } */
+  .modal dialog {
+    min-height: 100% !important;
+    margin: 0 !important;
+  }
+
+  .nav-sections .columns-1-cols div:hover div a:not(:hover) {
+    color: var(--sub-text-title-color);
+  }
 
   header nav[aria-expanded="true"] {
     /* men and women */
@@ -104,12 +109,15 @@ header nav[aria-expanded="true"] {
       margin-top: -20%;
     }
 
-    .nav-sections div .nav-button em a {
+    .nav-sections div .nav-button a {
       display: flex;
-      margin-top: 10%;
-      padding-top: 2%;
-      font-size: var(--sub-text-title-large);
-      border: 1px solid rebeccapurple;
+      top: 10%;
+      padding-top: 1%;
+      font-size: var(secondary-size);
+    }
+    .nav-sections div.button-container {
+      margin-top: 5%;
+      padding: 2% 0;
     }
   }
 }
@@ -269,6 +277,16 @@ header nav .nav-sections ul > li > ul > li {
 }
 
 @media (width >= 900px) {
+  .nav-sections .columns-1-cols div div a {
+    color: var(--sub-text-title-color);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-sections .columns-1-cols div:hover div a:not(:hover) {
+    color: var(--sub-text-grey);
+  }
+
   header nav .nav-sections {
     display: block;
     visibility: visible;
@@ -443,7 +461,7 @@ header .nav-search-input .search_autocomplete .popover-container {
   align-items: center;
 }
 
-.nav-sections .columns-1-cols div div em a {
+.nav-sections .columns-1-cols div div a {
   margin: auto;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
@@ -455,21 +473,11 @@ header .nav-search-input .search_autocomplete .popover-container {
   margin-top: -2%;
 }
 
-.nav-sections .columns-1-cols div div:nth-child(10) em a {
+.nav-sections .columns-1-cols div div:nth-child(10) a {
   color: var(--sub-text-sale-color);
 }
 
 .nav-sections .columns-1-cols div div:nth-child(1) img {
   margin-top: 60%;
   padding: 1% 0;
-}
-
-.nav-sections .columns-1-cols div div em a {
-  color: var(--sub-text-title-color);
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.nav-sections .columns-1-cols div:hover div em a:not(:hover) {
-  color: var(--sub-text-grey);
 }
