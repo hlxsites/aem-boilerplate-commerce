@@ -243,8 +243,12 @@ async function loadLazy(doc) {
     import('./acdl/adobe-client-data-layer.min.js'),
   ]);
 
-  if (sessionStorage.getItem('acdl:debug')) {
-    import('./acdl/validate.js');
+  try {
+    if (sessionStorage.getItem('acdl:debug')) {
+      import('./acdl/validate.js');
+    }
+  } catch (e) {
+    // do nothing
   }
 
   trackHistory();

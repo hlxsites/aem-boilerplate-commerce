@@ -159,8 +159,12 @@ async function loadRecommendation(block, context, visibility, filters) {
       const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
       context.userViewHistory = JSON.parse(viewHistory);
     } catch (e) {
-      window.localStorage.removeItem('productViewHistory');
-      console.error('Error parsing product view history', e);
+      try {
+        window.localStorage.removeItem('productViewHistory');
+      } catch (f) {
+        // Do nothing
+      }
+      console.warn('Error parsing product view history', e);
     }
 
     // Get purchase history
@@ -168,8 +172,12 @@ async function loadRecommendation(block, context, visibility, filters) {
       const purchaseHistory = window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
       context.userPurchaseHistory = JSON.parse(purchaseHistory);
     } catch (e) {
-      window.localStorage.removeItem('purchaseHistory');
-      console.error('Error parsing purchase history', e);
+      try {
+        window.localStorage.removeItem('purchaseHistory');
+      } catch (f) {
+        // Do nothing
+      }
+      console.warn('Error parsing purchase history', e);
     }
 
     window.adobeDataLayer.push((dl) => {
