@@ -49,10 +49,16 @@ header nav[aria-expanded="true"] {
     color: var(--sub-text-title-color);
   }
 
+  header nav[aria-expanded="false"] {
+    .columns-container {
+      display: none;
+    }
+  }
   header nav[aria-expanded="true"] {
     /* men and women */
     .columns-container {
       width: 100%;
+      border: none;
     }
 
     .columns-container .columns-2-cols {
@@ -112,12 +118,12 @@ header nav[aria-expanded="true"] {
     .nav-sections div .nav-button a {
       display: flex;
       top: 10%;
-      padding-top: 1%;
-      font-size: var(secondary-size);
+      margin-top: 5%;
+      font-size: var(--sub-text-secondary-size);
     }
     .nav-sections div.button-container {
       margin-top: 5%;
-      padding: 2% 0;
+      padding: 1% 0;
     }
   }
 }
@@ -255,6 +261,20 @@ header nav[aria-expanded="true"] .nav-sections {
   display: block;
   visibility: visible;
   align-self: start;
+}
+
+header nav[aria-expanded="false"] .nav-sections {
+  display: block;
+  margin-top: -20%;
+  text-align: center;
+  visibility: visible;
+  align-self: start;
+}
+
+header nav[aria-expanded="false"] .columns-1-cols div:nth-child(2) {
+  border: 1px solid yellow;
+  display: none;
+  visibility: hidden;
 }
 
 header nav .nav-sections ul {
@@ -480,4 +500,12 @@ header .nav-search-input .search_autocomplete .popover-container {
 .nav-sections .columns-1-cols div div:nth-child(1) img {
   margin-top: 60%;
   padding: 1% 0;
+}
+
+.columns-container:nth-child(3) {
+  border: none;
+}
+
+.columns-container:nth-child(4) {
+  border: 2px solid yellow;
 }

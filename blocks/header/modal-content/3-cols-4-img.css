@@ -59,7 +59,6 @@
   div:nth-child(1)
   p:nth-child(1):only-of-type
   a {
-  border: none;
   color: black;
   background-color: white;
   text-transform: capitalize;
@@ -77,28 +76,10 @@
     p:nth-child(1):only-of-type
     a {
     width: 100vw;
-    align-items: flex-start;
-    justify-content: flex-start;
     text-align: left;
     border-radius: 0;
     margin-left: auto;
-  }
-
-  /* This is used to create '< Latest' on top of the mobile modal */
-  .modal-content
-    .columns-3-cols
-    div
-    div:nth-child(1)
-    p:nth-child(1):only-of-type
-    a::before {
-    border-bottom: 1px solid var(--sub-text-border-divider);
-    content: "< Latest";
-    display: flex;
-    font-size: 1.2em;
-    padding: 2% 0;
-    margin-bottom: 8%;
-    font-weight: lighter;
-    justify-content: flex-start;
+    padding-top: 8%;
   }
 
   .modal-content

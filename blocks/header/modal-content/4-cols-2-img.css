@@ -56,27 +56,10 @@
     div:nth-child(1)
     p:nth-child(1):only-of-type {
     width: 100vw;
-    flex-wrap: wrap;
-    flex-direction: column;
     text-align: left;
     border-radius: 0;
     margin-left: auto;
-  }
-
-  /* This is used to create '< Shop By' on top of the mobile modal */
-  .modal-content
-    .columns-4-cols
-    div
-    div:nth-child(1)
-    p:nth-child(1):only-of-type::before {
-    border-bottom: 1px solid var(--sub-text-border-divider);
-    content: "< Shop by";
-    text-transform: capitalize;
-    display: flex;
-    font-size: 1.2em;
-    padding: 2% 0;
-    margin-bottom: 8%;
-    justify-content: flex-start;
+    padding-top: 8%;
   }
 
   .modal-content
@@ -89,13 +72,13 @@
     div
     div:nth-child(3)
     p:nth-child(1):only-of-type {
-    margin-top: 8%;
+    margin-top: 2%;
     line-height: 4;
   }
 
   .modal-content .columns-4-cols div div ul {
     line-height: 4;
-    margin-bottom: 10%;
+    margin-bottom: 7%;
     font-size: var(--sub-text-title-large);
   }
   .modal-content .columns-4-cols div div p {

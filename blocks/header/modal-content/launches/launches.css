@@ -4,7 +4,7 @@
   width: auto;
   height: 40vh;
   margin-left: -2%;
-  margin-bottom: -9%;
+  margin-bottom: -16%;
 }
 
 .modal-content * p {
@@ -17,10 +17,14 @@
   text-transform: capitalize;
 }
 
-.modal-content div div p:nth-child(1):only-of-type {
+.modal-content .default-content-wrapper p:nth-child(2) {
+  font-weight: 550;
+  color: var(--sub-text-title-color);
+}
+.modal-content .default-content-wrapper p:nth-child(2) {
   font-weight: 550;
   margin-left: -2%;
-  margin-bottom: 2%;
+  margin-bottom: 3%;
 }
 
 .modal-content div div p:nth-child(2) {
@@ -43,6 +47,10 @@
   width: 280px;
 }
 
+.modal-content .default-content-wrapper p:nth-child(1) {
+  display: none;
+}
+
 @media (width < 599px) {
   .modal-content .columns-4-cols div div {
     width: auto;
@@ -61,22 +69,27 @@
   }
 
   /* This is used to create '< Launches' on top of the mobile modal */
-  .modal-content div div p:nth-child(1):only-of-type::before {
-    border-bottom: 1px solid var(--sub-text-border-divider);
-    content: "< Launches";
+
+  .modal-content .default-content-wrapper p:nth-child(1) a {
     text-transform: capitalize;
-    display: flex;
-    font-size: 1.2em;
-    padding: 2% 0;
-    margin-bottom: 8%;
-    justify-content: flex-start;
+    font-size: var(--sub-text-title-large);
+    padding: 0;
+    margin-top: 2%;
+    border: none;
+    background-color: white;
+    color: var(--sub-text-title-color);
   }
 
-  .modal-content div div p:nth-child(1):only-of-type {
-    flex-wrap: wrap;
-    flex-direction: column;
+  .modal-content .default-content-wrapper p:nth-child(1) {
+    border-bottom: 1px solid var(--sub-text-border-divider);
+    align-items: center;
+    display: flex;
+  }
+
+  .modal-content .default-content-wrapper p:nth-child(2) {
     font-weight: 550;
-    margin-bottom: 8%;
+    margin: 8% 0;
+    color: var(--sub-text-title-color);
   }
 
   .modal-content div div p:nth-child(2) {
@@ -100,6 +113,6 @@
   .modal-content picture {
     display: flex;
     flex: 2;
-    width: 360px;
+    width: 400px;
   }
 }
