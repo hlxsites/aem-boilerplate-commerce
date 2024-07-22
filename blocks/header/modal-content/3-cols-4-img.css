@@ -84,7 +84,7 @@
     margin-left: auto;
   }
 
-  /* This is used to create <Latest on top of the mobile modal */
+  /* This is used to create '< Latest' on top of the mobile modal */
   .modal-content
     .columns-3-cols
     div
@@ -96,7 +96,8 @@
     display: flex;
     font-size: 1.2em;
     padding: 2% 0;
-    margin-bottom: 2%;
+    margin-bottom: 8%;
+    font-weight: lighter;
     justify-content: flex-start;
   }
 
@@ -110,7 +111,16 @@
     div
     div:nth-child(3)
     p:nth-child(1):only-of-type {
-    padding: 5% 0;
+    margin-bottom: 8%;
+    border: 1px solid rebeccapurple;
+  }
+
+  .modal-content .columns-3-cols div div ul {
+    line-height: 4;
+    font-size: var(--sub-text-title-large);
+  }
+  .modal-content .columns-3-cols div div p {
+    font-size: var(--sub-text-title-large);
   }
 
   .modal-content .columns-3-cols div:nth-child(3) table p,
