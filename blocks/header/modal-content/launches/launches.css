@@ -2,9 +2,8 @@
 
 .modal-content .columns-4-cols div div {
   width: auto;
-  height: 30vh;
+  height: 40vh;
   margin-left: -2%;
-
   margin-bottom: -9%;
 }
 
@@ -42,4 +41,65 @@
   display: flex;
   flex: 2;
   width: 280px;
+}
+
+@media (width < 599px) {
+  .modal-content .columns-4-cols div div {
+    width: auto;
+    margin-left: -2%;
+    margin-bottom: 5%;
+  }
+
+  .modal-content * p {
+    display: flex;
+    padding: 0;
+    flex: 1;
+    margin: 0;
+    font-size: var(--sub-text-secondary-size);
+    line-height: 1.5;
+    text-transform: capitalize;
+  }
+
+  /* This is used to create '< Launches' on top of the mobile modal */
+  .modal-content div div p:nth-child(1):only-of-type::before {
+    border-bottom: 1px solid var(--sub-text-border-divider);
+    content: "< Launches";
+    text-transform: capitalize;
+    display: flex;
+    font-size: 1.2em;
+    padding: 2% 0;
+    margin-bottom: 8%;
+    justify-content: flex-start;
+  }
+
+  .modal-content div div p:nth-child(1):only-of-type {
+    flex-wrap: wrap;
+    flex-direction: column;
+    font-weight: 550;
+    margin-bottom: 8%;
+  }
+
+  .modal-content div div p:nth-child(2) {
+    color: var(--sub-text-grey);
+    font-weight: 100;
+  }
+
+  .modal-content div div p:nth-child(2),
+  .modal-content div div p:nth-child(3) {
+    font-size: var(--sub-text-secondary-size);
+  }
+
+  .modal-par a.button.secondary {
+    border: none;
+    font-size: var(--sub-text-secondary-size);
+    padding: 0;
+    margin: 0;
+    text-transform: capitalize;
+  }
+
+  .modal-content picture {
+    display: flex;
+    flex: 2;
+    width: 360px;
+  }
 }
