@@ -1,16 +1,7 @@
-.section-brands-col
+/* /christopher Brands section */
+.section-brands-col > div:nth-child(1)
 {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-}
-
-.section-brands-col > div
-{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .section-brands-col > div > div
@@ -24,4 +15,12 @@
 {
     width: 150px;
     margin: auto;
+}
+
+@media (width < 900px) 
+{
+    .section-brands-col > div > div:not(:last-child)
+    {
+        margin-bottom: 20px;
+    }
 }

@@ -19,6 +19,51 @@ main .hero-container {
   color: white;
 }
 
+.hero > div > div > :has(span)
+{
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  width: 70%;
+  margin: auto;
+  display: flex;
+  column-gap: 10px;
+}
+
+.hero > div > div > p .icon
+{
+  opacity:  0.5;
+  position: relative;
+  left: 5px;
+  top: 4px;
+}
+
+#search-input
+{
+  position: relative;
+  left: 5px;
+  top: 4px;
+  border: none;
+  max-width: 1000px;
+}
+
+#search-input::placeholder
+{
+  opacity: 0.5;
+}
+
+#heyhow-can-we-help
+{
+  margin-top: 10%;
+  text-align: center;
+  margin-bottom: calc(16px* 1.5);
+  font-size: calc(40px * 0.8);
+  line-height: 1.1;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+}
+
 .hero picture {
   position: absolute;
   z-index: -1;

@@ -172,6 +172,20 @@ main .section:first-child:not(.banner-footer-section)
 /* christopher */
 @media (width < 900px) 
 {
+  /* image responsiveness in Press */
+  .section-two-img > div > div:first-child
+  {
+    border: 1px solid red;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .section-two-img > div > div picture img
+  {
+    border: 1px solid blue;
+    width: 100%;
+  }
+
   .section-three-col > div:not(:first-child) > div > p:first-child
   {
       max-height: fit-content;

@@ -1,3 +1,4 @@
+/* Christopher Press Section desc */
 :has(.section-desc):first-child
 {
     padding-bottom: 8%;
@@ -40,4 +41,12 @@
 .section-desc p:nth-child(4)
 {
     cursor: pointer;
+}
+
+@media (width < 900px) 
+{
+    .section-desc
+    {
+        width: 90%;
+    }
 }
