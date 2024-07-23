@@ -14,6 +14,18 @@ header .nav-wrapper {
   z-index: 1000;
   position: fixed;
 }
+nav .columns-container:nth-child(4) {
+  border: none;
+}
+
+nav .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div img {
+  margin-top: calc(var(--nav-height) - 135px);
+}
+
+nav .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
+  border-top: 1px solid var(--sub-text-border-divider);
+  margin-top: 5%;
+}
 
 header nav {
   box-sizing: border-box;
@@ -55,9 +67,46 @@ header nav[aria-expanded="true"] {
     }
   }
 
+  header nav[aria-expanded="true"] {
+    position: relative;
+    animation-name: slideIn;
+    animation-duration: 0.8s;
+  }
+
+  @keyframes slideIn {
+    0% {
+      left: -100px;
+    }
+
+    100% {
+      left: 0px;
+    }
+  }
+
   header nav[aria-expanded="true"] .nav-tools button.nav-cart-button,
   .nav-tools button.nav-search-button {
     display: none;
+  }
+
+  header nav[aria-expanded="false"] {
+    .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
+      position: fixed;
+      width: 100%;
+      margin: 0 -4%;
+      top: 0;
+      height: 7%;
+      padding: 0;
+      background-color: white;
+      border-bottom: 1px solid var(--sub-text-border-divider);
+    }
+
+    /* image */
+    .columns-container .columns-1-cols div div p:nth-child(1) img {
+      position: fixed;
+      width: 45px;
+      height: auto;
+      bottom: 94.5%;
+    }
   }
 
   header nav[aria-expanded="true"] {
@@ -234,7 +283,6 @@ header nav a:any-link {
 /* hamburger */
 header nav .nav-hamburger {
   grid-area: hamburger;
-
   height: 22px;
   display: flex;
   align-items: center;
@@ -268,6 +316,9 @@ header nav .nav-hamburger-icon::after {
   content: "";
   position: absolute;
   background: currentcolor;
+}
+header nav[aria-expanded="false"] .nav-hamburger-icon {
+  margin-top: -60%;
 }
 
 header nav[aria-expanded="false"] .nav-hamburger-icon,
@@ -544,6 +595,10 @@ header .nav-search-input .search_autocomplete .popover-container {
 }
 
 /* Daniel */
+
+.nav-brand .columns-2-cols {
+  margin-top: calc(var(--nav-height) - 130px);
+}
 .nav-brand .columns-2-cols a {
   font-size: var(--sub-text-small);
   color: var(--sub-text-title-color);

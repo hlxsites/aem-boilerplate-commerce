@@ -22,7 +22,8 @@
 
 /* Trending Secion Background Colour */
 
-.columns-container:nth-child(8) {
+main .columns-container:nth-child(3),
+.columns-container:nth-child(9) {
   background-color: var(--sub-text-background-color);
 }
 

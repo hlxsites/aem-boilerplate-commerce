@@ -60,6 +60,10 @@
     flex-direction: column;
   }
 
+  .columns-container:nth-child(8) {
+    border: 3px solid rebeccapurple;
+  }
+
   /* Featured Brand mirror (COMME DES GARÇONS HOMME) */
   .featured-brand-mirror div:nth-child(1) div:nth-child(2) {
     right: 5.8%;
