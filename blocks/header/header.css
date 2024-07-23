@@ -149,13 +149,13 @@ header nav[aria-expanded="true"] {
       flex-direction: column;
       width: auto;
       border: 2px solid var(--sub-text-border-divider);
-      padding: 6%;
+      padding: 9%;
       background-color: white;
       margin: 2% 0;
     }
 
     .nav-tools {
-      margin-bottom: -50%;
+      margin-bottom: -60%;
       flex-direction: column;
     }
 
@@ -170,9 +170,10 @@ header nav[aria-expanded="true"] {
     /* Column title Account & Shipping Country */
     .nav-tools .columns-2-cols div:nth-child(1) div p {
       color: var(--sub-text-grey);
-      margin-top: -5%;
-      padding-bottom: 4%;
+      margin-top: -30%;
       font-size: var(--sub-text-secondary-size);
+      line-height: 4;
+      padding-top: 5%;
     }
 
     .nav-tools .columns-2-cols div:nth-child(2) div p {
