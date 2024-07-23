@@ -107,8 +107,8 @@ export default function decorate(block) {
 
   //Featured
   const featuredBrand = document.querySelectorAll(
-    ".columns-container:nth-child(4) > .columns-wrapper div:nth-child(1), \
-    .columns-container:nth-child(9) > .columns-wrapper div:nth-child(1)"
+    "main .columns-container:nth-child(4) > .columns-wrapper div:nth-child(1), \
+    main .columns-container:nth-child(9) > .columns-wrapper div:nth-child(1)"
   );
 
   featuredBrand.forEach((element) => {

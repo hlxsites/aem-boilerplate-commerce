@@ -54,6 +54,7 @@ header nav[aria-expanded="true"] {
       display: none;
     }
   }
+
   header nav[aria-expanded="true"] {
     /* men and women */
     .columns-container {
@@ -121,9 +122,57 @@ header nav[aria-expanded="true"] {
       margin-top: 5%;
       font-size: var(--sub-text-secondary-size);
     }
+
     .nav-sections div.button-container {
       margin-top: 5%;
       padding: 1% 0;
+    }
+
+    .nav-tools .columns-2-cols {
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      border: 2px solid var(--sub-text-border-divider);
+      padding: 8% 0;
+      background-color: white;
+      margin: 2%;
+    }
+
+    .nav-tools {
+      margin-bottom: -220%;
+      flex-direction: column;
+    }
+
+    .nav-tools .columns-2-cols div div:nth-child(1) p {
+      text-align: left;
+      padding: 0;
+      align-items: flex-start;
+      width: 130px;
+    }
+
+    /* Column title Account & Shipping Country */
+    .nav-tools .columns-2-cols div:nth-child(1) div p {
+      color: var(--sub-text-grey);
+      font-size: var(--sub-text-secondary-size);
+    }
+
+    /*  Malta | EUR  */
+    .nav-tools
+      .columns-wrapper:nth-child(2)
+      .columns-2-cols
+      div:nth-child(2)
+      div:nth-child(1)
+      p {
+      color: var(--sub-text-title-color);
+      font-size: var(--sub-text-secondary-size);
+      font-weight: 550;
+    }
+
+    /* Arrow */
+    .nav-tools .columns-2-cols div:nth-child(2) div:nth-child(2) p {
+      color: var(--sub-text-title-color);
+      font-size: var(--sub-text-title-large);
+      margin-right: -65%;
     }
   }
 }
@@ -261,6 +310,11 @@ header nav[aria-expanded="true"] .nav-sections {
   display: block;
   visibility: visible;
   align-self: start;
+}
+
+/* Account and country */
+header nav[aria-expanded="true"] .nav-tools .columns-2-cols {
+  visibility: visible;
 }
 
 header nav[aria-expanded="false"] .nav-sections {
@@ -506,6 +560,6 @@ header .nav-search-input .search_autocomplete .popover-container {
   border: none;
 }
 
-.columns-container:nth-child(4) {
-  border: 2px solid yellow;
+.nav-tools .columns-2-cols {
+  display: none;
 }
