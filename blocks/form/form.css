@@ -134,3 +134,48 @@
 .form .toggle-wrapper input:checked + .slider::before {
   transform: translateX(24px);
 }
+
+.login-form div div div div p {
+  justify-content: center;
+  margin-bottom: 2%;
+  color: var(--sub-text-title-color);
+}
+
+.login-form div div div:nth-child(1) div p {
+  font-size: 18px;
+  letter-spacing: 3px;
+  line-height: 26px;
+  font-weight: 550;
+  text-transform: uppercase;
+}
+
+.login-form div div div:nth-child(2) div p {
+  font-size: var(--sub-text-secondary-size);
+  text-transform: inherit;
+}
+
+.login-form .email-wrapper {
+  margin-top: 10%;
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-small);
+}
+
+.login-form .email-wrapper #form-email {
+  color: var(--sub-text-grey);
+  font-size: var(--sub-text-title-large);
+}
+
+.login-form .submit-wrapper {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 1% 0;
+
+  justify-content: center;
+}
+
+.login-form .submit-wrapper button {
+  border-radius: 0;
+  width: 100%;
+  margin: 0;
+}

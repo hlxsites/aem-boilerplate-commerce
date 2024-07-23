@@ -55,6 +55,11 @@ header nav[aria-expanded="true"] {
     }
   }
 
+  header nav[aria-expanded="true"] .nav-tools button.nav-cart-button,
+  .nav-tools button.nav-search-button {
+    display: none;
+  }
+
   header nav[aria-expanded="true"] {
     /* men and women */
     .columns-container {
@@ -118,7 +123,6 @@ header nav[aria-expanded="true"] {
 
     .nav-sections div .nav-button a {
       display: flex;
-      top: 10%;
       margin-top: 5%;
       font-size: var(--sub-text-secondary-size);
     }
@@ -133,7 +137,7 @@ header nav[aria-expanded="true"] {
       flex-direction: column;
       width: auto;
       border: 2px solid var(--sub-text-border-divider);
-      padding: 8% 0;
+      padding: 6% 0;
       background-color: white;
       margin: 2%;
     }
@@ -153,7 +157,11 @@ header nav[aria-expanded="true"] {
     /* Column title Account & Shipping Country */
     .nav-tools .columns-2-cols div:nth-child(1) div p {
       color: var(--sub-text-grey);
+      margin-top: -8%;
       font-size: var(--sub-text-secondary-size);
+    }
+    .nav-tools .columns-2-cols div:nth-child(2) div p {
+      margin-top: 12%;
     }
 
     /*  Malta | EUR  */
@@ -173,6 +181,7 @@ header nav[aria-expanded="true"] {
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-title-large);
       margin-right: -65%;
+      margin-top: 12%;
     }
   }
 }
