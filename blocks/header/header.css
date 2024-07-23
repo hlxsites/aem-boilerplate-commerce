@@ -69,12 +69,11 @@ header nav[aria-expanded="true"] {
 
     .columns-container .columns-2-cols {
       display: flex;
-      margin-top: calc(var(--nav-height) + 5px);
-      flex-direction: row;
-      margin-left: -17%;
-      height: 5vh;
-      padding: 0;
-      border-top: 1px solid var(--sub-text-border-divider);
+      height: 5%;
+      width: auto;
+      margin: auto -5%;
+      margin-top: 20%;
+      margin-left: -15%;
       border-bottom: 1px solid var(--sub-text-border-divider);
       background-color: var(--sub-text-background-color);
       padding: 0.1%;
@@ -111,14 +110,27 @@ header nav[aria-expanded="true"] {
 
     /* image */
     .columns-container .columns-1-cols div div p:nth-child(1) img {
-      display: flex;
+      position: fixed;
+      width: 45px;
+      height: auto;
+      bottom: 94.5%;
+    }
+
+    .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
+      position: fixed;
+      width: 100%;
+      margin: 0 -4%;
+      top: 0;
+      height: 7%;
+      padding: 0;
+      background-color: white;
+      border-bottom: 1px solid var(--sub-text-border-divider);
     }
 
     /* table header */
     .nav-sections {
       display: flex;
       height: 100%;
-      margin-top: -20%;
     }
 
     .nav-sections div .nav-button a {
@@ -137,13 +149,13 @@ header nav[aria-expanded="true"] {
       flex-direction: column;
       width: auto;
       border: 2px solid var(--sub-text-border-divider);
-      padding: 6% 0;
+      padding: 6%;
       background-color: white;
-      margin: 2%;
+      margin: 2% 0;
     }
 
     .nav-tools {
-      margin-bottom: -220%;
+      margin-bottom: -50%;
       flex-direction: column;
     }
 
@@ -152,16 +164,20 @@ header nav[aria-expanded="true"] {
       padding: 0;
       align-items: flex-start;
       width: 130px;
+      margin-left: -25%;
     }
 
     /* Column title Account & Shipping Country */
     .nav-tools .columns-2-cols div:nth-child(1) div p {
       color: var(--sub-text-grey);
-      margin-top: -8%;
+      margin-top: -5%;
+      padding-bottom: 4%;
       font-size: var(--sub-text-secondary-size);
     }
+
     .nav-tools .columns-2-cols div:nth-child(2) div p {
-      margin-top: 12%;
+      margin-top: 0%;
+      margin-bottom: -10%;
     }
 
     /*  Malta | EUR  */
@@ -174,14 +190,15 @@ header nav[aria-expanded="true"] {
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-secondary-size);
       font-weight: 550;
+      margin-bottom: -10%;
     }
 
     /* Arrow */
     .nav-tools .columns-2-cols div:nth-child(2) div:nth-child(2) p {
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-title-large);
-      margin-right: -65%;
-      margin-top: 12%;
+      margin-right: -80%;
+      margin-top: auto;
     }
   }
 }
@@ -216,9 +233,11 @@ header nav a:any-link {
 /* hamburger */
 header nav .nav-hamburger {
   grid-area: hamburger;
+
   height: 22px;
   display: flex;
   align-items: center;
+  z-index: 2;
 }
 
 header nav .nav-hamburger button {
@@ -266,8 +285,11 @@ header nav[aria-expanded="false"] .nav-hamburger-icon::after {
   top: 6px;
 }
 
+/* cross */
 header nav[aria-expanded="true"] .nav-hamburger-icon {
   height: 22px;
+  position: fixed;
+  top: 24px;
 }
 
 header nav[aria-expanded="true"] .nav-hamburger-icon::before,
@@ -335,7 +357,6 @@ header nav[aria-expanded="false"] .nav-sections {
 }
 
 header nav[aria-expanded="false"] .columns-1-cols div:nth-child(2) {
-  border: 1px solid yellow;
   display: none;
   visibility: hidden;
 }
@@ -449,7 +470,6 @@ header nav .nav-sections ul > li > ul > li {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--color-neutral-500);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
