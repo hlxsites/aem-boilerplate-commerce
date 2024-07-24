@@ -121,11 +121,8 @@
   padding: 0 5%;
 }
 
-.columns-container:nth-child(4) {
-  border: 1px solid var(--sub-text-border-divider);
-}
-
-.columns-container:nth-child(9) {
+main .columns-container:nth-child(4),
+main .columns-container:nth-child(5) {
   border: 1px solid var(--sub-text-border-divider);
 }
 
