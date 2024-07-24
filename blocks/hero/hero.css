@@ -38,7 +38,7 @@ main .hero-container {
   top: 4px;
 }
 
-#search-input
+#search-help-input
 {
   position: relative;
   left: 5px;
@@ -47,7 +47,7 @@ main .hero-container {
   max-width: 1000px;
 }
 
-#search-input::placeholder
+#search-help-input::placeholder
 {
   opacity: 0.5;
 }

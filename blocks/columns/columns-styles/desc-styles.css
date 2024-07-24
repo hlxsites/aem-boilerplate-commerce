@@ -1,14 +1,13 @@
 /* Christopher Press Section desc */
-:has(.section-desc):first-child
+:has(.section-desc):first-child 
 {
-    padding-bottom: 8%;
+    padding-bottom: 100px;
 }
 
 .section-desc
 {
     width: 60%;
     margin: auto;
-    
 }
 
 .section-desc h4
@@ -19,6 +18,47 @@
     font-weight: 500;
     line-height: 40px;
     text-transform: uppercase;
+}
+
+.section-desc a:hover
+{
+    text-decoration: none;
+    color: rgb(26, 26,26); 
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-desc a:hover
+{
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-desc a:hover
+{
+    text-decoration: none;
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+/* change styling of shipping dates */
+.green-text
+{
+    color: rgb(37, 138, 62);
+    font-weight: 600;
+    font-style: normal;
+}
+
+.section-desc > div ul
+{
+    width: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 .section-desc p

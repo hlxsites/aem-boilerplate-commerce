@@ -19,7 +19,7 @@ export default function decorate(block) {
   //Christopher - Banner
   //Banner Section
   const bannerSection = document.querySelectorAll(
-    `.columns-container:nth-child(1):not(.footer-one,.heading,.section-two-col,:has(.section-two-col,.affiliate-section)),
+    `.columns-container:nth-child(1):not(.footer-one,.heading,.section-two-col,:has(.article-section,.section-two-col,.affiliate-section,.section-desc)),
      .columns-container:nth-child(6):not(.heading,.section-two-col)`
   );
 
@@ -28,4 +28,21 @@ export default function decorate(block) {
       element.classList.add("banner-footer-section");
     }
   });
+
+  //Christopher - Shipping
+  changeShippingColor();
+}
+
+
+// replacing string to add a span to be able to style the dates in color green 
+function changeShippingColor()
+{
+    const getShippingString = document.querySelectorAll(`.section-desc ul li:has(br)`);
+    
+    for(var i = 0;i < 3;++i)
+    {
+      getShippingString[0].innerHTML = getShippingString[0].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
+      getShippingString[1].innerHTML = getShippingString[1].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
+      getShippingString[2].innerHTML = getShippingString[2].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`); 
+    }
 }

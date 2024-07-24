@@ -5,6 +5,7 @@
 @import url(./columns-styles/brands-col-styles.css);
 @import url(./columns-styles/desc-styles.css);
 @import url(./columns-styles/affiliate-styles.css);
+@import url(./columns-styles/article-section-styles.css);
 @import url(./columns-styles/help-styles.css);
 @import url(../../styles/styles.css);
 
@@ -175,14 +176,12 @@ main .section:first-child:not(.banner-footer-section)
   /* image responsiveness in Press */
   .section-two-img > div > div:first-child
   {
-    border: 1px solid red;
     margin-bottom: 20px;
     width: 100%;
   }
 
   .section-two-img > div > div picture img
   {
-    border: 1px solid blue;
     width: 100%;
   }
 

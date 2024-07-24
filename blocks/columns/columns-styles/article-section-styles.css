@@ -1,0 +1,113 @@
+.article-section > div
+{
+    display: flex;
+    align-content: space-evenly;
+    padding: 0 4rem 0;
+}
+
+.article-section > div > div:nth-child(1)
+{
+    flex-grow: 2.5;
+}
+
+.article-section > div > div:nth-child(2)
+{
+    align-self: baseline;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.article-section > div > div:nth-child(2) ul,li
+{
+    margin: 0;
+    padding: 4px;
+    width: 100%;
+    text-decoration: none;
+    list-style: none;
+}
+
+.article-section > div h3
+{
+    font-weight: 900;
+}
+
+.article-section > div > div p:nth-child(3)
+{
+    border-bottom: 1px solid rgba(26, 26,26, 0.2);
+    font-size: 12px;
+    padding-bottom: 20px;
+}
+
+.article-section > div > div > p:not(:nth-child(1),:nth-child(3),:nth-child(4),:nth-last-child(2),:nth-last-child(3))
+{
+    padding: 0;
+    margin: 0;
+}
+
+.article-section > div > div > table:has(em)
+{
+    width: 100%;
+}
+
+.article-section > div > div > table > tbody > tr:has(em)
+{
+    display:flex;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1)
+{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 10px;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2)
+{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    text-align: right;
+    gap: 10px;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) a,td:has(a):nth-child(2) a
+{
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) a:hover
+{
+    text-decoration: none;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2) a:hover
+{
+    text-decoration: none;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
+{
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+.article-section > div > div > table:nth-child(1)
+{
+    border-bottom: 1px solid rgba(26, 26,26, 0.2);
+    padding-bottom: 20px;
+}
+
+.article-section > div > div > table h5
+{
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 900;
+    line-height: 26px;
+    margin: 0;
+    margin-left: 10px;
+    padding-top: 20px;
+}
