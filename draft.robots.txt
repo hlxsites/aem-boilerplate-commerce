@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /drafts/
+Disallow: /tools/picker/
+
+Sitemap: https://aemshop.net/sitemap.xml
