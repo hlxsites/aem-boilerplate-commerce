@@ -1,6 +1,9 @@
-main .banner-section .new-this-week {
-  height: 20vh;
-  border: 5px solid yellow;
+.view-all-latest-banner img {
+  height: 50vh;
+}
+
+.view-all-latest-banner {
+  margin-bottom: calc(50vh - 42%);
 }
 
 .new-this-week div {
@@ -8,12 +11,13 @@ main .banner-section .new-this-week {
   flex-direction: column;
 }
 
-.new-this-week table {
+.new-this-week table:nth-child(1) {
   background-color: white;
   border-radius: 2%;
   width: 27%;
-  margin: 5% 20%;
+  margin: 2% 20%;
   padding: 0 2%;
+  box-shadow: 5px 5px 10px rgba(189, 152, 110, 0.8);
 }
 
 /* Paragraph title */

@@ -241,13 +241,14 @@ export default async function decorate(block) {
     }
   });
 
+  // view-all-latest banner
   const bannerSections = document.querySelectorAll(".banner-section");
 
   bannerSections.forEach((banner) => {
     const newThisWeekElement = banner.querySelector(".new-this-week");
 
     if (newThisWeekElement) {
-      banner.classList.add("new-this-week-banner");
+      banner.classList.add("view-all-latest-banner");
     }
   });
 
