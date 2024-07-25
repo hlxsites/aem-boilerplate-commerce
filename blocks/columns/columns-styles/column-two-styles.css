@@ -29,7 +29,7 @@
 }
 
 /* styling of lists */
-.section-two-col > div > div > p, li
+.section-two-col > div > div > p
 {
     font-size: 13px;
     margin: 0;
