@@ -5,11 +5,12 @@
     padding: 0 4rem 0;
 }
 
+/* Article */
 .article-section > div > div:nth-child(1)
 {
     flex-grow: 2.5;
 }
-
+/* Side Navigation */
 .article-section > div > div:nth-child(2)
 {
     align-self: baseline;
@@ -55,7 +56,7 @@
     display:flex;
 }
 
-.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1)
+.article-section > div > div > table > tbody > tr > td:has(em a):nth-child(1)
 {
     display: flex;
     flex-direction: column;
@@ -63,7 +64,7 @@
     gap: 10px;
 }
 
-.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2)
+.article-section > div > div > table > tbody > tr > td:has(em a):nth-child(2)
 {
     display: flex;
     flex-direction: column;
@@ -72,33 +73,65 @@
     gap: 10px;
 }
 
-.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) a,td:has(a):nth-child(2) a
+/* Next and Previous buttons */
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em a,td:has(a):nth-child(2) em a:any-link
 {
     border: 1px solid black;
     border-radius: 10px;
+    color: black;
+    text-decoration: none;
     padding: 10px;
+    /* transition */
+    transition: background-color 0.3s ease-in-out;
 }
 
-.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) a:hover
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em a:hover
 {
     text-decoration: none;
+    background-color: black;
+    color: white;
 }
 
-.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2) a:hover
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2) em a:hover
 {
     text-decoration: none;
+    background-color: black;
+    color: white;
 }
 
+/* wording underneath the buttons */
 .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
 {
     opacity: 0.5;
     font-size: 12px;
 }
 
+/* Article side navigation */
 .article-section > div > div > table:nth-child(1)
 {
     border-bottom: 1px solid rgba(26, 26,26, 0.2);
     padding-bottom: 20px;
+}
+/* Side navigation links */
+.article-section > div > div > table:nth-child(1) a:any-link,table:nth-child(2) a:any-link
+{
+    text-decoration: none;
+    line-height: 26px;
+    color: rgb(26, 26, 26);
+    /* transition */
+    transition: color 0.3s ease-in-out;
+}
+
+.article-section > div > div > table:nth-child(1) a:hover,table:nth-child(2) a:hover
+{
+    text-decoration: none;
+    line-height: 26px;
+    color: rgb(153, 153, 153);
+}
+
+.article-section > div > div > table:nth-child(1) tbody
+{
+    width: 100%;
 }
 
 .article-section > div > div > table h5
