@@ -230,4 +230,53 @@ export default async function decorate(block) {
       element.classList.add("active");
     }
   });
+
+  const newThisWeek = document.querySelectorAll(
+    ".banner-section:nth-child(1) .columns-2-cols"
+  );
+
+  newThisWeek.forEach((element) => {
+    if (element) {
+      element.classList.add("new-this-week");
+    }
+  });
+
+  // read more/show less
+  const readMore = document.querySelectorAll(
+    ".new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u"
+  );
+
+  readMore.forEach((element) => {
+    if (element) {
+      element.classList.add("read-more");
+    }
+  });
+
+  // hidden par
+  const hidePar = document.querySelectorAll(
+    ".new-this-week div div table tbody tr:nth-child(3) td"
+  );
+
+  hidePar.forEach((element) => {
+    if (element) {
+      element.classList.add("hidden-content");
+    }
+  });
+
+  const readMoreLink = document.querySelector(".read-more");
+  const hiddenContent = document.querySelector(".hidden-content");
+
+  hiddenContent.style.display = "none";
+
+  readMoreLink.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    if (hiddenContent.style.display === "none") {
+      hiddenContent.style.display = "block";
+      readMoreLink.textContent = "Show Less";
+    } else {
+      hiddenContent.style.display = "none";
+      readMoreLink.textContent = "Read More";
+    }
+  });
 }

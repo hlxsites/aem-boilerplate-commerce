@@ -1,7 +1,15 @@
 /* Banner Section */
+.banner-section
+  > .columns-wrapper
+  .columns-1-cols
+  > div:nth-child(1)
+  div:nth-child(1)
+  a {
+  text-transform: uppercase;
+}
+
 .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
   display: flex;
-  text-transform: uppercase;
 }
 
 /* Banner */

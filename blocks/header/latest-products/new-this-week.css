@@ -1,10 +1,77 @@
-@import url(./new-this-week.js);
-
-section {
-  flex-direction: column;
-  background-color: white;
-  border: 1px solid rebeccapurple;
+.columns-container .banner-section {
+  border: 5px solid tan;
 }
-.banner-section .new-this-week .columns-1-cols {
-  width: 50vw;
+
+.new-this-week div {
+  display: flex;
+  flex-direction: column;
+}
+
+.new-this-week table {
+  background-color: white;
+  border-radius: 2%;
+  width: 27%;
+  margin: 5% 20%;
+  padding: 0 2%;
+}
+
+/* Paragraph title */
+.new-this-week div div table tbody tr:nth-child(2) td p:nth-child(1) {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: var(--sub-text-title-large);
+  color: var(--sub-text-title-color);
+  letter-spacing: 2px;
+}
+
+/* paragraph */
+.new-this-week div p:nth-child(2),
+.new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u,
+.new-this-week div div table tbody tr:nth-child(3) td {
+  text-transform: inherit;
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+  margin: auto 0;
+}
+
+.new-this-week div div table tbody tr:nth-child(3) td {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+/* links in paragraph */
+.new-this-week div p:nth-child(2) strong a,
+.new-this-week div div table tbody tr:nth-child(3) td strong a {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+  font-weight: 100;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* Show more/less */
+.new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u {
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: lowercase;
+  cursor: pointer;
+}
+
+.new-this-week div table table {
+  margin: 2% 0;
+  padding: 0;
+  width: 50%;
+}
+
+/* Shop men & women */
+.new-this-week div table table td a {
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-small);
+  width: auto;
+  letter-spacing: 2px;
+
+  margin: auto;
+  text-align: left;
 }
