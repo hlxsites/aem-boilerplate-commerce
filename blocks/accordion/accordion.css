@@ -33,14 +33,15 @@
 .accordion details summary::after {
   content: "";
   position: absolute;
-  top: 50%;
+  top: 45%;
   right: 18px;
   transform: translateY(-50%) rotate(135deg);
   width: 9px;
   height: 9px;
   border: 2px solid;
-  border-width: 2px 2px 0 0;
+  border-width: 1px 1px 0 0;
   transition: transform 0.2s;
+  z-index: 1;
 }
 
 .accordion details[open] summary::after {
@@ -48,10 +49,10 @@
 }
 
 .accordion details .accordion-item-body {
-  padding: 0 16px;
+  padding: 0;
 }
 
 .accordion details[open] .accordion-item-body {
   border-top: 1px solid var(--dark-color);
-  background-color: var(--background-color);
+  background-color: var(--sub-text-background-color);
 }
