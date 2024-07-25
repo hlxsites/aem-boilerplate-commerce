@@ -1,0 +1,10 @@
+@import url(./new-this-week.js);
+
+section {
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid rebeccapurple;
+}
+.banner-section .new-this-week .columns-1-cols {
+  width: 50vw;
+}
