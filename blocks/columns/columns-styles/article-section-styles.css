@@ -1,3 +1,8 @@
+/* Christopher */
+.article-section
+{
+    padding-bottom: 100px;
+}
 .article-section > div
 {
     display: flex;
@@ -19,9 +24,11 @@
     padding: 0;
 }
 
-.article-section > div > div:nth-child(2) ul,li
+.article-section > div > div:nth-child(2) ul ,
+.article-section > div > div:nth-child(2) ul li
 {
     margin: 0;
+    font-size: 13px;
     padding: 4px;
     width: 100%;
     text-decoration: none;
@@ -33,17 +40,12 @@
     font-weight: 900;
 }
 
-.article-section > div > div p:nth-child(3)
+.article-section > div > div p:nth-child(2)
 {
     border-bottom: 1px solid rgba(26, 26,26, 0.2);
-    font-size: 12px;
+    font-size: 13px;
     padding-bottom: 20px;
-}
-
-.article-section > div > div > p:not(:nth-child(1),:nth-child(3),:nth-child(4),:nth-last-child(2),:nth-last-child(3))
-{
-    padding: 0;
-    margin: 0;
+    margin-bottom:80px;
 }
 
 .article-section > div > div > table:has(em)
@@ -60,7 +62,8 @@
 {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    text-align: left;
+    width: 100%;
     gap: 10px;
 }
 
@@ -68,7 +71,7 @@
 {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 100%;
     text-align: right;
     gap: 10px;
 }
