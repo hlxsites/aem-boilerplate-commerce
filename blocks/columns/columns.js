@@ -165,7 +165,7 @@ export default function decorate(block) {
 
   //Banner Section
   const bannerSection = document.querySelectorAll(
-    ".columns-container:nth-child(7),.columns-container:nth-child(1)"
+    "main .columns-container:nth-child(7), main .columns-container:nth-child(1)"
   );
 
   bannerSection.forEach((element) => {

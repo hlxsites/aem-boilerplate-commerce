@@ -241,6 +241,16 @@ export default async function decorate(block) {
     }
   });
 
+  const bannerSections = document.querySelectorAll(".banner-section");
+
+  bannerSections.forEach((banner) => {
+    const newThisWeekElement = banner.querySelector(".new-this-week");
+
+    if (newThisWeekElement) {
+      banner.classList.add("new-this-week-banner");
+    }
+  });
+
   // read more/show less
   const readMore = document.querySelectorAll(
     ".new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u"
@@ -252,7 +262,7 @@ export default async function decorate(block) {
     }
   });
 
-  // hidden par
+  // Hidden par
   const hidePar = document.querySelectorAll(
     ".new-this-week div div table tbody tr:nth-child(3) td"
   );
@@ -279,4 +289,6 @@ export default async function decorate(block) {
       readMoreLink.textContent = "Read More";
     }
   });
+
+  // End Hidden Par fn
 }

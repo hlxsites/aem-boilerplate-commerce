@@ -1,5 +1,6 @@
-.columns-container .banner-section {
-  border: 5px solid tan;
+main .banner-section .new-this-week {
+  height: 20vh;
+  border: 5px solid yellow;
 }
 
 .new-this-week div {
