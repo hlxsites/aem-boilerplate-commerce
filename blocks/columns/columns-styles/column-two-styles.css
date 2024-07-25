@@ -14,7 +14,9 @@
 }
 
 /* styling of text in one of the columns */
-.section-two-col > div > div > p,h4,ul
+.section-two-col > div > div > p,
+.section-two-col > div > div > h4,
+.section-two-col > div > div > ul
 {
     display: inline-block;
     width:50%;
