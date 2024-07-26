@@ -116,14 +116,26 @@
 
 /* Accordion Categories */
 .form-wrapper {
+  position: relative;
   display: flex;
+  width: auto;
+}
+
+.form-container {
+  margin-right: 20%;
+  margin-top: calc(var(--nav-height) - 435px);
 }
 
 .form-container .heading-wrapper {
-  border: 1px solid yellow;
+  display: flex;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  min-width: 213.33px;
   position: relative;
+  margin: 12% 0;
+  height: 20px;
+  border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
 .form-container .heading-wrapper h2 {
@@ -133,8 +145,9 @@
 
 .form-container .heading-wrapper::after {
   content: "";
+  display: flex;
   position: absolute;
-  right: 2%;
+  right: 5%;
   transform: translateY(-50%) rotate(135deg);
   width: 9px;
   height: 9px;
@@ -145,9 +158,12 @@
 }
 
 .form-container.active .heading-wrapper::after {
-  transform: translateY(-50%) rotate(-45deg); /* Rotate upwards */
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 .form-container div div .checkbox-wrapper {
-  border: 1px solid rebeccapurple;
+  display: none;
+}
+.form-container.active div div .checkbox-wrapper {
+  display: flex;
 }
