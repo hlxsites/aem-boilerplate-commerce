@@ -54,5 +54,4 @@
 
 .accordion details[open] .accordion-item-body {
   border-top: 1px solid var(--dark-color);
-  background-color: var(--sub-text-background-color);
 }

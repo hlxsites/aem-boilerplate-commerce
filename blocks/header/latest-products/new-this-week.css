@@ -84,7 +84,6 @@
 .default-content-wrapper p {
   display: flex;
   margin-left: 20%;
-  
 }
 
 /* Accordions */
@@ -116,27 +115,39 @@
 }
 
 /* Accordion Categories */
-.accordion-container:nth-child(4) .block {
+.form-wrapper {
   display: flex;
-  flex-direction: column;
 }
 
-.accordion-container:nth-child(4) .accordion-wrapper {
+.form-container .heading-wrapper {
+  border: 1px solid yellow;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+}
+
+.form-container .heading-wrapper h2 {
   font-size: var(--sub-text-secondary-size);
-  margin-left: 15%;
-  margin-top: -17.5%;
+  cursor: pointer;
 }
 
-.accordion-container:nth-child(4) .accordion-wrapper .accordion-item-label {
-  text-transform: uppercase;
+.form-container .heading-wrapper::after {
+  content: "";
+  position: absolute;
+  right: 2%;
+  transform: translateY(-50%) rotate(135deg);
+  width: 9px;
+  height: 9px;
+  border: 2px solid;
+  border-width: 1px 1px 0 0;
+  transition: transform 0.2s;
+  z-index: 1;
 }
 
-.accordion-container:nth-child(3)
-  .accordion-wrapper
-  .accordion-item-body
-  ul
-  li {
-  border: 1px solid var(--sub-text-border-divider);
-  list-style-type:rad
-  font-size: var(--sub-text-secondary-size);
+.form-container.active .heading-wrapper::after {
+  transform: translateY(-50%) rotate(-45deg); /* Rotate upwards */
+}
+
+.form-container div div .checkbox-wrapper {
+  border: 1px solid rebeccapurple;
 }

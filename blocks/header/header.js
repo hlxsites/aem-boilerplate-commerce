@@ -290,6 +290,22 @@ export default async function decorate(block) {
       readMoreLink.textContent = "Read More";
     }
   });
-
   // End Hidden Par fn
+
+  const headingWrappers = document.querySelectorAll(
+    ".form-container .heading-wrapper"
+  );
+
+  headingWrappers.forEach((wrapper) => {
+    wrapper.addEventListener("click", (event) => {
+      const arrow = event.target.closest(".form-container .heading-wrapper");
+
+      if (arrow) {
+        event.preventDefault();
+
+        const formContainer = wrapper.closest(".form-container");
+        formContainer.classList.toggle("active");
+      }
+    });
+  });
 }
