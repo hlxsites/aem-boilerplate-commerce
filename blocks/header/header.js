@@ -308,4 +308,40 @@ export default async function decorate(block) {
       }
     });
   });
+
+  // const checkboxWrappers = document.querySelectorAll(
+  //   ".form-container div div .checkbox-wrapper"
+  // );
+
+  // checkboxWrappers.forEach((checkboxWrapper) => {
+  //   if (checkboxWrapper) {
+  //     const newContainer = document.createElement("div");
+  //     newContainer.classList.add("all-checkboxes-container");
+
+  //     while (checkboxWrapper.firstChild) {
+  //       newContainer.appendChild(checkboxWrapper.firstChild);
+  //     }
+
+  //     checkboxWrapper.parentNode.replaceChild(newContainer, checkboxWrapper);
+  //   }
+  // });
+
+  const newProducts = document.querySelectorAll(
+    "main .columns-container:nth-child(5) .columns-4-cols, \
+    main .columns-container:nth-child(5) .columns-4-cols div"
+  );
+  newProducts.forEach((element) => {
+    if (element) {
+      element.classList.remove("featured-brand");
+    }
+  });
+
+  const newProductsCol = document.querySelectorAll(
+    "main .columns-container:nth-child(5) .columns-4-cols  "
+  );
+  newProductsCol.forEach((element) => {
+    if (element) {
+      element.classList.add("new-products");
+    }
+  });
 }

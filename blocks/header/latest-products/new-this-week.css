@@ -81,10 +81,10 @@
   text-align: left;
 }
 
-.default-content-wrapper p {
+/* .product-qty {
   display: flex;
   margin-left: 20%;
-}
+} */
 
 /* Accordions */
 .accordion-container {
@@ -164,6 +164,17 @@
 .form-container div div .checkbox-wrapper {
   display: none;
 }
+
 .form-container.active div div .checkbox-wrapper {
   display: flex;
+}
+
+.all-checkboxes-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Products */
+.new-products .columns-wrapper {
+  border: 2px solid rebeccapurple;
 }

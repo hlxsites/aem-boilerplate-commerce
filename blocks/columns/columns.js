@@ -107,7 +107,7 @@ export default function decorate(block) {
 
   //Featured
   const featuredBrand = document.querySelectorAll(
-    "main .columns-container:nth-child(5) > .columns-wrapper div:nth-child(1), \
+    "main .columns-container:nth-child(5) > .columns-wrapper div:nth-child(1) , \
     main .columns-container:nth-child(10) > .columns-wrapper div:nth-child(1)"
   );
 
