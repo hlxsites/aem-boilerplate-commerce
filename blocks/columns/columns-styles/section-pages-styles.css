@@ -1,0 +1,62 @@
+.section:has(.sections-page)
+{
+    padding: 0 4rem 0;
+}
+
+.sections-page ul
+{
+    padding: 0;
+    list-style: none;
+}
+
+.sections-page h3
+{
+    font-weight: 900;
+    font-size: 2.5rem;
+    padding: 0;
+    margin: 0;
+}
+.sections-page > div > div > table td
+{
+    padding-bottom: 20px
+}
+
+.sections-page > div > div > table a
+{
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    /* transition */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.sections-page > div > div > table a:hover
+{
+    text-decoration: none;
+    background-color: black;
+    color: white;
+}
+
+.sections-page ul
+{
+    margin-top: 4rem;
+}
+
+.sections-page ul li:first-child
+{
+    border-top: 1px solid #D7D6DC;
+}
+
+.sections-page ul:last-child li
+{
+    padding: 1rem 0;
+    border-bottom: 1px solid #D7D6DC;
+}
+
+.sections-page ul li a:any-link
+{
+    text-decoration: none;
+    color: #0D151A;
+}
