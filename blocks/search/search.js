@@ -220,7 +220,7 @@ import {
     input.setAttribute('type', 'search');
     input.className = 'search-input';
   
-    const searchPlaceholder = config.placeholders.searchPlaceholder || 'Search...';
+    const searchPlaceholder = config.placeholders.searchPlaceholder || 'search articles';
     input.placeholder = searchPlaceholder;
     input.setAttribute('aria-label', searchPlaceholder);
   

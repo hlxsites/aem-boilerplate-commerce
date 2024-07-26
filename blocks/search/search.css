@@ -4,16 +4,26 @@
     grid-template-columns: 24px 1fr;
     gap: 8px;
     align-items: center;
-    padding: 10px;
-    width:80%;
+    padding: 5px;
     margin: auto;
+    border: 1px solid black;
+    border-radius: 50px;
   }
   
   .search .search-box input 
   {
-    width: 100%;
-    padding: 5px 15px;
+    position: relative;
+    top: 4px;
+    border: none;
     font: inherit;
+  }
+
+  .search .search-box .icon
+  {
+    opacity:  0.5;
+    position: relative;
+    left: 8px;
+    scale: 1.2;
   }
   
   /* search results */
