@@ -195,4 +195,14 @@ export default function decorate(block) {
       button.textContent = button.textContent.toLowerCase();
     });
   });
+
+  const newProducts = document.querySelectorAll(
+    "main .columns-container:nth-child(5) .columns-4-cols, \
+    main .columns-container:nth-child(5) .columns-4-cols div"
+  );
+  newProducts.forEach((element) => {
+    if (element) {
+      element.classList.remove("featured-brand");
+    }
+  });
 }

@@ -326,18 +326,9 @@ export default async function decorate(block) {
   //   }
   // });
 
-  const newProducts = document.querySelectorAll(
-    "main .columns-container:nth-child(5) .columns-4-cols, \
-    main .columns-container:nth-child(5) .columns-4-cols div"
-  );
-  newProducts.forEach((element) => {
-    if (element) {
-      element.classList.remove("featured-brand");
-    }
-  });
-
   const newProductsCol = document.querySelectorAll(
-    "main .columns-container:nth-child(5) .columns-4-cols  "
+    "main .columns-container:nth-child(5) \
+    >.columns-wrapper:nth-of-type(1) .columns-4-cols div"
   );
   newProductsCol.forEach((element) => {
     if (element) {
