@@ -335,4 +335,37 @@ export default async function decorate(block) {
       element.classList.add("new-products");
     }
   });
+  const productCount = document.querySelectorAll(
+    "main .columns-container:nth-child(5) .default-content-wrapper \
+     p strong:nth-child(1)"
+  );
+  productCount.forEach((element) => {
+    if (element) {
+      element.classList.add("product-count");
+    }
+  });
+
+  // Function for dynamic ammount of products
+  const productCountElements = document.querySelectorAll(
+    "main .columns-container:nth-child(5) .default-content-wrapper p strong:nth-child(1)"
+  );
+  const newProductsContainers = document.querySelectorAll(".new-products");
+
+  function updateProductCount() {
+    let totalProductCount = 0;
+    newProductsContainers.forEach((container) => {
+      const productItems = container.querySelectorAll(".new-products > div");
+      totalProductCount += productItems.length;
+    });
+    productCountElements.forEach((countElement) => {
+      countElement.textContent = totalProductCount - 1;
+    });
+  }
+
+  updateProductCount();
+
+  newProductsContainers.forEach((container) => {
+    const observer = new MutationObserver(updateProductCount);
+    observer.observe(container, { childList: true });
+  });
 }
