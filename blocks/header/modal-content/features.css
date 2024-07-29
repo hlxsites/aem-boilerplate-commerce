@@ -50,11 +50,13 @@
   margin-bottom: 4%;
   font-size: 10px;
   color: var(--sub-text-grey);
+  text-transform: uppercase;
 }
 
 .modal-content .columns-2-cols div:nth-child(2) table p:nth-child(3) {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
+  text-transform: uppercase;
 }
 
 .modal-content .columns-2-cols div ul {

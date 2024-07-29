@@ -81,11 +81,6 @@
   text-align: left;
 }
 
-/* .product-qty {
-  display: flex;
-  margin-left: 20%;
-} */
-
 /* Accordions */
 .accordion-container {
   display: flex;
@@ -116,7 +111,7 @@
 
 /* Accordion Categories */
 .form-wrapper {
-  position: relative;
+  position: absolute;
   display: flex;
   width: auto;
 }
@@ -135,7 +130,6 @@
   position: relative;
   margin: 12% 0;
   height: 20px;
-  border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
 .form-container .heading-wrapper h2 {
