@@ -255,7 +255,7 @@
 
 .new-products:nth-child(3) div:nth-child(3) p:nth-child(1),
 .new-products:nth-child(3) div:nth-child(3) p:nth-child(2) {
-  width: 75%;
+  width: 80%;
   padding: 5% 0;
 }
 
@@ -272,7 +272,7 @@
 
 .new-products:nth-child(3) div:nth-child(3) table td:nth-child(2) img {
   height: 40vh;
-  width: 100vw;
+  width: 80vw;
 
   border-radius: 0 3% 3% 0;
 }
