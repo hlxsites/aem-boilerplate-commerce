@@ -205,4 +205,18 @@ export default function decorate(block) {
       element.classList.remove("featured-brand");
     }
   });
+
+  const currentURL = window.location.href;
+  const targetURL =
+    "http://localhost/header/features/the-visceral-world-of-david-von-bahr";
+  console.log(currentURL);
+  if (currentURL == targetURL) {
+    const vonBahrTitle = document.querySelectorAll("main p:nth-child(1)");
+
+    vonBahrTitle.forEach((element) => {
+      if (element) {
+        element.classList.add("von-bahr-title");
+      }
+    });
+  }
 }
