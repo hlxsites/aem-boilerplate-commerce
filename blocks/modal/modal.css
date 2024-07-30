@@ -1,20 +1,20 @@
 body.modal-open {
     overflow: hidden;
   }
-  
+
   .modal dialog {
     --dialog-border-radius: 16px;
-  
     overscroll-behavior: none;
     border: 1px solid #ccc;
     border-radius: var(--dialog-border-radius);
     width: 100vw;
   }
-  
+
   .modal dialog .modal-content {
     overflow-y: auto;
     overscroll-behavior: none;
     max-height: calc(100dvh - 60px);
+    min-height: calc(100dvh - 60px);
   }
   
   @media (width >= 600px) {
@@ -23,7 +23,8 @@ body.modal-open {
       width: 80vw;
       max-width: 700px;
     }
-  
+
+
     .modal dialog .modal-content {
       max-height: calc(100vh - 90px);
     }
