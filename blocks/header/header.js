@@ -212,6 +212,31 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
+  const currentURL = window.location.href;
+  const targetURL =
+    "http://localhost:3000/main/features/the-visceral-world-of-david-von-bahr";
+  console.log(targetURL);
+  if (currentURL === targetURL) {
+    const vonBahrTitle = document.querySelectorAll(
+      "main .default-content-wrapper, \
+      main .columns-wrapper .columns-2-cols, \
+      main .columns-wrapper .columns-2-cols div"
+    );
+    const modalWrapper = document.querySelectorAll("main .modal-wrapper");
+
+    vonBahrTitle.forEach((element) => {
+      if (element) {
+        element.classList.add("von-bahr-text");
+        element.classList.remove("featured-brand");
+        element.classList.remove("featured-brand-mirror");
+        element.classList.remove("nested-columns-mirror");
+      }
+      if (element == modalWrapper) {
+        element.classList.remove("von-bahr-text");
+      }
+    });
+  }
+
   const navSubHeader = document.querySelectorAll(
     ".nav-sections .columns-1-cols div div p  "
   );

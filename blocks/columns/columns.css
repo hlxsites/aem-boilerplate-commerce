@@ -52,6 +52,10 @@
   order: unset;
 }
 
+main div.section.columns-container div:nth-child(7) {
+  border: 1px solid black;
+}
+
 /*   border: 1px solid black; */
 
 @media (max-width: 600px) {

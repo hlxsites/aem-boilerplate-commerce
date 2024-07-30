@@ -1,3 +1,237 @@
-main p:nth-child(1) {
+/* removes divider border */
+/* div.section.columns-container {
+  border: none;
+} */
+
+.von-bahr-text p {
+  display: flex;
+}
+
+/* interviews button */
+.von-bahr-text p:nth-child(1) {
+  border: none;
+  width: 100%;
+  padding: 0;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.von-bahr-text p:nth-child(1) a {
+  background-color: transparent;
+  color: var(--sub-text-title-color);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 350;
+  border-radius: 0;
+  padding: 0.1% 1%;
+  text-transform: uppercase;
+  border: 2px solid var(--sub-text-border-divider);
+}
+
+/* Title */
+div:nth-child(1) .von-bahr-text:nth-child(1) p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  letter-spacing: var(--sub-text-spacing);
+  font-size: 30px;
+  text-transform: uppercase;
+  margin: 0 auto;
+  padding: 0;
+  justify-content: center;
+}
+
+/* Date */
+div:nth-child(1) .von-bahr-text:nth-child(1) p:nth-child(3) {
+  color: var(--sub-text-grey);
+  opacity: 50%;
+  letter-spacing: var(--sub-text-spacing);
+  font-size: var(--sub-text-secondary-size);
+  text-transform: uppercase;
+  margin: 0 auto;
+  padding: 0;
+  justify-content: center;
+  margin-bottom: 2%;
+}
+
+/* summary */
+div:nth-child(1) .von-bahr-text:nth-child(1) p:nth-child(4) {
+  color: var(--sub-text-title-color);
+  text-transform: inherit;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  font-weight: 450;
+  width: 45%;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: -5%;
+}
+
+/* 2 images */
+div:nth-child(2) .von-bahr-text:nth-child(1) {
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Par (Physicality) */
+div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  text-transform: inherit;
+  margin: -6% auto;
+  margin-bottom: 4%;
+  padding: 0;
+  font-size: 24px;
+  letter-spacing: 1.5px;
+  font-weight: 450;
+  width: 67%;
+  justify-content: center;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Sub Par (Physicality) */
+div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(2),
+div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(3),
+div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(4) {
+  color: var(--sub-text-title-color);
+  text-transform: inherit;
+  margin: 3.5% auto;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  font-weight: 450;
+  width: 67%;
+  justify-content: center;
+  text-align: left;
+}
+
+/* Video */
+div:nth-child(4) .video-wrapper div {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 24%;
+  margin-top: -9%;
+}
+
+/* 2 cols imgs */
+div:nth-child(5) .von-bahr-text {
+  margin: 0 auto;
+  padding: 0;
+  margin-bottom: -2%;
+}
+
+/* First of all par */
+div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* 3 Par */
+div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(2),
+div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(3),
+div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(4) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+}
+
+/* A lot of your work bold */
+div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  margin-top: -8%;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* A lot of your work par */
+div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: -6%;
+}
+
+/* 1 img and par on right */
+div:nth-child(8) .von-bahr-text:nth-child(1) div:nth-child(2) p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  width: 80%;
+  font-size: 24px;
+  font-weight: 550;
+  text-align: center;
+}
+
+/* Your method of action bold */
+div:nth-child(9) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  margin-top: -5%;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* Your method of action par */
+div:nth-child(9) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: -6%;
+}
+
+/* Your work also captures bold */
+div:nth-child(10) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* Your work also captures par */
+div:nth-child(10) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+}
+
+/* 3 images */
+div:nth-child(10) .von-bahr-text:nth-child(1) img {
+  margin: 4% auto;
+}
+
+/* Carousel Brand */
+div:nth-child(11) .von-bahr-text:nth-child(1) p {
+  font-size: 18px;
+  margin: 0 auto;
+  padding: 0;
+  margin-top: -8%;
+}
+
+/* Carousel */
+main .columns-6-cols {
   border: 2px solid rebeccapurple;
 }

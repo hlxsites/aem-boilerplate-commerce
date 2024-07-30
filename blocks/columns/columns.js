@@ -131,7 +131,7 @@ export default function decorate(block) {
 
   //Featured Mirror
   const featuredBrandMirror = document.querySelectorAll(
-    ".columns-container:nth-child(8) > .columns-wrapper div:nth-child(1)"
+    "main .columns-container:nth-child(8) > .columns-wrapper div:nth-child(1)"
   );
 
   featuredBrandMirror.forEach((element) => {
@@ -206,17 +206,11 @@ export default function decorate(block) {
     }
   });
 
-  const currentURL = window.location.href;
-  const targetURL =
-    "http://localhost/header/features/the-visceral-world-of-david-von-bahr";
-  console.log(currentURL);
-  if (currentURL == targetURL) {
-    const vonBahrTitle = document.querySelectorAll("main p:nth-child(1)");
+  const vonBahrTitle = document.querySelectorAll(".von-bahr-text");
 
-    vonBahrTitle.forEach((element) => {
-      if (element) {
-        element.classList.add("von-bahr-title");
-      }
-    });
-  }
+  vonBahrTitle.forEach((element) => {
+    if (element) {
+      element.classList.remove("featured-brand-mirror");
+    }
+  });
 }
