@@ -231,14 +231,14 @@ main pre {
 }
 
 /* links */
-a:not(.sections-page a,.article-section a,.section-desc a,.affiliate-section p a,.dropin-design a) {
+a:not(.footer-two ul li a,.sections-page a,.article-section a,.section-desc a,.affiliate-section p a,.dropin-design a) {
   color: var(--color-brand-500);
   font: var(--type-body-1-strong-font);
   letter-spacing: var(--type-body-1-strong-letter-spacing);
   text-decoration: none;
 }
 
-a:not(.sections-page a,.article-section a,.section-desc, .affiliate-section p a,.dropin-design a):hover {
+a:not(.footer-two ul li a,.sections-page a,.article-section a,.section-desc, .affiliate-section p a,.dropin-design a):hover {
   text-decoration: solid underline var(--color-brand-700);
   text-underline-offset: 6px;
   color: var(--color-brand-700);

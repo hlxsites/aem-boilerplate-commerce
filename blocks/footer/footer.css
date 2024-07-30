@@ -103,7 +103,7 @@ footer .footer p {
   font-weight: 100;
   padding-top: 0;
   line-height: 3rem;
-  text-transform: none;
+  text-decoration: none;
   color: rgb(51, 51, 51);
   opacity: 0.5;
 }
