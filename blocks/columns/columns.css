@@ -19,7 +19,7 @@
   width: 100%;
 }
 
-main .section:first-child:not(.banner-footer-section)
+main .section:first-child:not(.banner-footer-section,.section:has(.email-us-header))
 {
   padding: 30px 0;
 }
