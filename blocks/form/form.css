@@ -135,6 +135,9 @@
   transform: translateX(24px);
 }
 
+.login-form {
+  margin: auto;
+}
 .login-form div div div div p {
   justify-content: center;
   margin-bottom: 2%;
@@ -155,9 +158,15 @@
 }
 
 .login-form .email-wrapper {
-  margin-top: 10%;
+  margin-top: 20%;
+  padding: 0;
+  width: 100%;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-small);
+}
+.login-form .email-wrapper #form-email-1 {
+  width: 88vw;
+  padding: 2%;
 }
 
 .login-form .email-wrapper #form-email {
@@ -168,14 +177,17 @@
 .login-form .submit-wrapper {
   display: flex;
   width: 100%;
-  margin: 0;
-  padding: 1% 0;
-
+  margin: 2% 0;
+  padding: 0;
   justify-content: center;
 }
 
 .login-form .submit-wrapper button {
+  display: flex;
+  justify-content: center;
   border-radius: 0;
-  width: 100%;
+  width: 100vw;
+  padding: 2%;
   margin: 0;
+  border: 5px solid yellow;
 }

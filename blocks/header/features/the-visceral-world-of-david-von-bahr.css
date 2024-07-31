@@ -1,7 +1,7 @@
 /* removes divider border */
-/* div.section.columns-container {
+div.section.columns-container {
   border: none;
-} */
+}
 
 .von-bahr-text p {
   display: flex;
@@ -232,6 +232,24 @@ div:nth-child(11) .von-bahr-text:nth-child(1) p {
 }
 
 /* Carousel */
-main .columns-6-cols {
-  border: 2px solid rebeccapurple;
+main div .columns-6-cols,
+main div .columns-6-cols div {
+  display: flex;
+  margin: auto 0;
+  flex: 1;
+  justify-content: space-between;
+}
+
+main div .columns-6-cols div div p {
+  flex-direction: column;
+  padding: auto;
+  margin: auto 0;
+  justify-content: center;
+  text-align: center;
+  width: auto;
+  height: auto;
+}
+
+main div .columns-6-cols div div {
+  justify-content: space-evenly;
 }
