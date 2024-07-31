@@ -1,3 +1,5 @@
+@import url(../form/form-styles/email-us-styles.css);
+
 .form .field-wrapper {
   display: grid;
   grid-auto-flow: row;
@@ -62,7 +64,7 @@
   border: 1px solid var(--text-color);
 }
 
-.form .button {
+.form .button :not(.email-us .button){
   max-width: 225px;
   font-size: var(--body-font-size-m);
   padding: 0.2em 0.4em;
