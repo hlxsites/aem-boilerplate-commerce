@@ -10,6 +10,16 @@ body.modal-open {
     width: 100vw;
   }
 
+  .modal dialog .modal-content > div > div:first-child 
+  {
+    text-align: center;
+  }
+
+  .modal dialog .modal-content > div > div:first-child img
+  {
+    scale: 3.5;
+  }
+
   .modal dialog .modal-content {
     overflow-y: auto;
     overscroll-behavior: none;
