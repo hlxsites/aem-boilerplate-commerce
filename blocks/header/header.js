@@ -222,6 +222,36 @@ export default async function decorate(block) {
       main .columns-wrapper .columns-2-cols, \
       main .columns-wrapper .columns-2-cols div"
     );
+
+    const vonBahrCarousel = document.querySelectorAll(
+      "main div:nth-child(11)  .columns-6-cols, \
+      main div .columns-7-cols"
+    );
+
+    const vonBahrCarouselContent = document.querySelectorAll(
+      "main div:nth-child(11) .columns-6-cols, \
+    main div:nth-child(11)  .columns-6-cols div, \
+    main div .columns-7-cols, \
+    main div .columns-7-cols div"
+    );
+
+    const vonBahrTeam = document.querySelectorAll(
+      "main div:nth-child(20) .columns-3-cols"
+    );
+
+    const featuredNextPost = document.querySelectorAll(
+      "main div:nth-child(21) .columns-1-cols"
+    );
+
+    const viewAllArticles = document.querySelectorAll(
+      "main div:nth-child(22) .von-bahr-text \
+      .von-bahr-text:nth-child(1) div"
+    );
+
+    const latestArticles = document.querySelectorAll(
+      "main div:nth-child(22) .columns-3-cols"
+    );
+
     const modalWrapper = document.querySelectorAll("main .modal-wrapper");
 
     vonBahrTitle.forEach((element) => {
@@ -233,6 +263,40 @@ export default async function decorate(block) {
       }
       if (element == modalWrapper) {
         element.classList.remove("von-bahr-text");
+      }
+      if (element == viewAllArticles) {
+        element.classList.remove("von-bahr-text");
+      }
+    });
+
+    vonBahrCarousel.forEach((element) => {
+      if (element) {
+        element.classList.add("von-bahr-carousel");
+      }
+    });
+
+    vonBahrCarouselContent.forEach((element) => {
+      if (element) {
+        element.classList.add("von-bahr-carousel-content");
+        element.classList.remove("features-section");
+      }
+    });
+
+    vonBahrTeam.forEach((element) => {
+      if (element) {
+        element.classList.add("von-bahr-team");
+      }
+    });
+
+    featuredNextPost.forEach((element) => {
+      if (element) {
+        element.classList.add("featured-next-post");
+      }
+    });
+
+    latestArticles.forEach((element) => {
+      if (element) {
+        element.classList.add("featured-latest-articles");
       }
     });
   }

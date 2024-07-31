@@ -1,3 +1,6 @@
+@import url(./next-post.css);
+@import url(./latest-posts.css);
+
 /* removes divider border */
 div.section.columns-container {
   border: none;
@@ -16,7 +19,11 @@ div.section.columns-container {
   justify-content: center;
 }
 
-.von-bahr-text p:nth-child(1) a {
+div:nth-child(1)
+  .von-bahr-text:nth-child(1)
+  p:nth-child(1)
+  strong
+  a:nth-child(1) {
   background-color: transparent;
   color: var(--sub-text-title-color);
   font-size: 10px;
@@ -224,32 +231,286 @@ div:nth-child(10) .von-bahr-text:nth-child(1) img {
 }
 
 /* Carousel Brand */
-div:nth-child(11) .von-bahr-text:nth-child(1) p {
+div:nth-child(11) .von-bahr-text:nth-child(1) p,
+div:nth-child(19) .von-bahr-text:nth-child(1) p {
   font-size: 18px;
   margin: 0 auto;
   padding: 0;
   margin-top: -8%;
 }
 
-/* Carousel */
-main div .columns-6-cols,
-main div .columns-6-cols div {
-  display: flex;
-  margin: auto 0;
-  flex: 1;
-  justify-content: space-between;
+/* Carousel content */
+.von-bahr-carousel {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin-bottom: -5%;
 }
 
-main div .columns-6-cols div div p {
+.von-bahr-carousel-content div div p {
   flex-direction: column;
-  padding: auto;
-  margin: auto 0;
   justify-content: center;
   text-align: center;
-  width: auto;
+  flex: 1;
   height: auto;
 }
 
-main div .columns-6-cols div div {
-  justify-content: space-evenly;
+/* Product Pictures */
+.von-bahr-carousel-content div div p:nth-child(1) {
+  width: 220px;
+  height: 220px;
+  border: 2px solid transparent;
+}
+
+/* Product name and colour content */
+.von-bahr-carousel-content div div p:nth-child(2),
+.von-bahr-carousel-content div div p:nth-child(3) {
+  margin: 1% 0;
+}
+
+/* Product name and colour text */
+.von-bahr-carousel-content div div p:nth-child(2) a,
+.von-bahr-carousel-content div div p:nth-child(3) a {
+  display: flex;
+  background-color: transparent;
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
+  text-wrap: wrap;
+  padding: 0;
+  margin: 0;
+  line-height: 2;
+  border-radius: 0;
+  justify-content: center;
+}
+
+/* Product Brand Name */
+.von-bahr-carousel-content div div p:nth-child(2) a {
+  text-transform: uppercase;
+  font-weight: 550;
+}
+
+/* Product Colour */
+.von-bahr-carousel-content div div p:nth-child(3) a {
+  text-transform: capitalize;
+  color: var(--sub-text-grey);
+  opacity: 0.5;
+}
+
+/* end carousel */
+
+/* Despite the obvious bold */
+div:nth-child(12) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* Despite the obvious par */
+div:nth-child(12) .von-bahr-text p:nth-child(2),
+div:nth-child(12) .von-bahr-text p:nth-child(3) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+}
+
+div:nth-child(12) .von-bahr-text p:nth-child(3) {
+  padding: 0;
+  margin-bottom: -4%;
+}
+
+/* The mediums you use for your work bold */
+div:nth-child(13) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* The mediums you use for your work par */
+div:nth-child(13) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: -5%;
+}
+
+/* 1 img and par on ledt */
+div:nth-child(14) .von-bahr-text:nth-child(1) div:nth-child(1) p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  width: 80%;
+  font-size: 24px;
+  font-weight: 550;
+  text-align: center;
+}
+
+/* Similarly, a lot of bold */
+div:nth-child(15) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+  margin-top: -5%;
+}
+
+/* Similarly, a lot of par */
+div:nth-child(15) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: -5%;
+}
+
+/* Beyond just bold */
+div:nth-child(16) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* Beyond just par */
+div:nth-child(16) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: 4%;
+}
+
+/* Emotion is bold */
+div:nth-child(17) .von-bahr-text p:nth-child(1) {
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  margin-top: -5%;
+  padding: 0;
+  font-size: 18px;
+  font-weight: 550;
+  width: 60%;
+  text-align: left;
+}
+
+/* Emotion is par */
+div:nth-child(17) .von-bahr-text p:nth-child(2) {
+  color: var(--sub-text-title-color);
+  margin: 2% auto;
+  padding: 0;
+  font-size: 16px;
+  width: 60%;
+  text-align: left;
+  margin-bottom: -4%;
+}
+
+div:nth-child(18) .von-bahr-text {
+  margin-bottom: 1%;
+}
+
+/* SHOP C.P. COMPANY button */
+div:nth-child(20) .von-bahr-text p {
+  margin: 0 auto;
+  margin-top: -2%;
+  margin-bottom: 4%;
+}
+
+/* SHOP C.P. COMPANY button text*/
+div:nth-child(20) .von-bahr-text p a {
+  border-radius: 0;
+  margin: 0 auto;
+  text-transform: uppercase;
+  font-size: var(--sub-text-title-large);
+  padding: 1% 8%;
+}
+
+/* Team Content */
+div:nth-child(20) .von-bahr-team:nth-child(1) div:nth-child(1) {
+  margin: auto 0;
+}
+
+/* Writer, Photographer and Stylist */
+div:nth-child(20) .von-bahr-team p strong {
+  display: flex;
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
+  letter-spacing: 2px;
+  margin-right: 5%;
+}
+
+/* Name of Writer, Photographer and Stylist*/
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(1) p {
+  justify-content: end;
+}
+
+/* Dividers */
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) {
+  margin: 0 1%;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  height: 16px;
+}
+
+/* PHOTOGRAPHER Adam Thirtle */
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) p {
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Normal par */
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(1) p,
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) p,
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(3) p {
+  display: flex;
+  align-items: center;
+  color: var(--sub-text-title-color);
+  text-transform: capitalize;
+  width: 100%;
+}
+
+/* Border divider */
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(1) p,
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) p,
+div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(3) p {
+  display: flex;
+  height: 16px;
+}
+
+/* X logo */
+div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(1) p {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Facebook logo */
+div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p {
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Both logos */
+div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(1) p img,
+div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p img {
+  border-left: 2px solid black;
+  margin: 0 auto;
 }

@@ -1,0 +1,112 @@
+/* Latest */
+main
+  div:nth-child(22)
+  .von-bahr-text
+  .von-bahr-text:nth-child(1)
+  div:nth-child(1)
+  p {
+  display: flex;
+  justify-content: flex-start;
+}
+
+main div:nth-child(22) .von-bahr-text .von-bahr-text:nth-child(1) strong {
+  letter-spacing: 4px;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* View All */
+main
+  div:nth-child(22)
+  .von-bahr-text
+  .von-bahr-text:nth-child(1)
+  div:nth-child(2)
+  p {
+  font-size: var(--sub-text-secondary-size);
+  justify-content: flex-end;
+  text-transform: uppercase;
+}
+
+/* Card div */
+.featured-latest-articles div div {
+  display: flex;
+  flex-direction: column;
+  margin: 1% 0;
+  padding: 0;
+  height: 470px;
+}
+
+/* all p content */
+.featured-latest-articles div div p {
+  margin: 0;
+  width: 378px;
+}
+
+/* Article Category & Article Name*/
+.featured-latest-articles div p:nth-child(2) a,
+.featured-latest-articles div p:nth-child(3) a {
+  text-transform: uppercase;
+  background-color: transparent;
+  color: var(--sub-text-title-color);
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  text-wrap: wrap;
+  text-align: left;
+}
+
+/* Article Category */
+.featured-latest-articles div p:nth-child(2) a.button {
+  margin: auto;
+  padding: 0 2%;
+  border: 2px solid var(--sub-text-border-divider);
+  font-size: 10px;
+  margin-left: 0;
+  margin-top: 2%;
+  margin-bottom: 4%;
+}
+
+/* Article Name */
+.featured-latest-articles div p:nth-child(3) a {
+  color: var(--sub-text-title-color);
+  font-weight: 520;
+  font-size: 20px;
+}
+
+.featured-latest-articles div div img {
+  height: 255px;
+  flex: 1;
+  margin-bottom: 2%;
+}
+
+/* Article Publish Date */
+.featured-latest-articles div p:nth-child(4) a {
+  text-transform: capitalize;
+  background-color: transparent;
+  color: var(--sub-text-grey);
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  text-wrap: wrap;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* VIEW ALL LATEST button */
+div:nth-child(23) .von-bahr-text p {
+  margin: 0 auto;
+  margin-top: -10%;
+  margin-bottom: 20%;
+}
+
+/* VIEW ALL LATEST button */
+div:nth-child(23) .von-bahr-text p a {
+  border-radius: 0;
+  margin: 0 auto;
+  text-transform: uppercase;
+  font-size: var(--sub-text-title-large);
+  padding: 1% 10%;
+  background-color: white;
+  color: var(--sub-text-title-color);
+  border: 2px solid black;
+}

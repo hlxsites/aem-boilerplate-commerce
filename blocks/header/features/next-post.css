@@ -1,0 +1,42 @@
+/* Next Post */
+.featured-next-post {
+  margin: 0 auto;
+  margin-top: -8%;
+}
+
+/* Title NEXT POST */
+.featured-next-post div:nth-child(1) div:nth-child(1) p:nth-child(1) {
+  letter-spacing: 4px;
+  font-weight: 400;
+  margin: 1% auto;
+}
+
+/* Images with post name and date */
+.featured-next-post div:nth-child(2) p {
+  margin: 0 auto;
+}
+
+/* Post name and date */
+.featured-next-post div:nth-child(2) div p:nth-child(2) a {
+  color: var(--sub-text-title-color);
+  font-weight: 550;
+  text-transform: uppercase;
+  border-radius: 0;
+  padding: 0;
+  margin: auto;
+  margin-top: 2%;
+  background-color: transparent;
+}
+
+/* Post Date */
+.featured-next-post div:nth-child(2) div p:nth-child(3) a {
+  color: var(--sub-text-grey);
+  opacity: 50%;
+  font-weight: 400;
+  font-size: var(--sub-text-secondary-size);
+  border-radius: 0;
+  padding: 0;
+  margin: 0 auto;
+  margin-top: -2%;
+  background-color: transparent;
+}
