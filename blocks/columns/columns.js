@@ -101,9 +101,10 @@ export default function decorate(block) {
   const launchesSectionCarousel = document.querySelectorAll(
     ".columns-container:nth-child(4) .columns-wrapper:nth-child(2) "
   );
+  const navTools = document.querySelectorAll(".columns-container .nav-tools");
 
   launchesSectionCarousel.forEach((element) => {
-    if (element) {
+    if (element !== navTools) {
       element.classList.add("launches-section-carousel");
     }
   });
