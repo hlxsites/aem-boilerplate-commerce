@@ -213,29 +213,28 @@ export default async function decorate(block) {
   block.append(navWrapper);
 
   const currentURL = window.location.href;
-  const targetURL =
-    "http://localhost:3000/main/features/the-visceral-world-of-david-von-bahr";
-  console.log(targetURL);
-  if (currentURL === targetURL) {
-    const vonBahrTitle = document.querySelectorAll(
+  const targetURL = "http://localhost:3000/main/features/";
+
+  if (currentURL.startsWith(targetURL)) {
+    const featuresTitle = document.querySelectorAll(
       "main .default-content-wrapper, \
       main .columns-wrapper .columns-2-cols, \
       main .columns-wrapper .columns-2-cols div"
     );
 
-    const vonBahrCarousel = document.querySelectorAll(
+    const featuresCarousel = document.querySelectorAll(
       "main div:nth-child(11)  .columns-6-cols, \
       main div .columns-7-cols"
     );
 
-    const vonBahrCarouselContent = document.querySelectorAll(
+    const featuresCarouselContent = document.querySelectorAll(
       "main div:nth-child(11) .columns-6-cols, \
     main div:nth-child(11)  .columns-6-cols div, \
     main div .columns-7-cols, \
     main div .columns-7-cols div"
     );
 
-    const vonBahrTeam = document.querySelectorAll(
+    const featuresTeam = document.querySelectorAll(
       "main div:nth-child(20) .columns-3-cols"
     );
 
@@ -244,47 +243,53 @@ export default async function decorate(block) {
     );
 
     const viewAllArticles = document.querySelectorAll(
-      "main div:nth-child(22) .von-bahr-text \
-      .von-bahr-text:nth-child(1) div"
+      "main div:nth-child(22) .features-text \
+      .features-text:nth-child(1) div"
     );
 
     const latestArticles = document.querySelectorAll(
       "main div:nth-child(22) .columns-3-cols"
     );
 
+    const removeBackgroundColor = document.querySelectorAll(
+      "main .columns-container:nth-child(3), \
+      .columns-container:nth-child(9)"
+    );
+
     const modalWrapper = document.querySelectorAll("main .modal-wrapper");
 
-    vonBahrTitle.forEach((element) => {
+    featuresTitle.forEach((element) => {
       if (element) {
-        element.classList.add("von-bahr-text");
+        element.classList.add("features-text");
         element.classList.remove("featured-brand");
         element.classList.remove("featured-brand-mirror");
         element.classList.remove("nested-columns-mirror");
+        element.classList.remove("trending-section");
       }
       if (element == modalWrapper) {
-        element.classList.remove("von-bahr-text");
+        element.classList.remove("features-text");
       }
       if (element == viewAllArticles) {
-        element.classList.remove("von-bahr-text");
+        element.classList.remove("features-text");
       }
     });
 
-    vonBahrCarousel.forEach((element) => {
+    featuresCarousel.forEach((element) => {
       if (element) {
-        element.classList.add("von-bahr-carousel");
+        element.classList.add("features-carousel");
       }
     });
 
-    vonBahrCarouselContent.forEach((element) => {
+    featuresCarouselContent.forEach((element) => {
       if (element) {
-        element.classList.add("von-bahr-carousel-content");
+        element.classList.add("features-carousel-content");
         element.classList.remove("features-section");
       }
     });
 
-    vonBahrTeam.forEach((element) => {
+    featuresTeam.forEach((element) => {
       if (element) {
-        element.classList.add("von-bahr-team");
+        element.classList.add("features-team");
       }
     });
 
@@ -299,12 +304,19 @@ export default async function decorate(block) {
         element.classList.add("featured-latest-articles");
       }
     });
+
+    removeBackgroundColor.forEach((element) => {
+      if (element) {
+        element.classList.add("features-remove-background");
+        element.classList.remove("trending-section");
+      }
+    });
   }
 
   const featuresBoldTitleText = document.querySelectorAll(
-    "div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(1), \
-     div:nth-child(8) .von-bahr-text:nth-child(1) div:nth-child(2) p:nth-child(1), \
-    div:nth-child(14) .von-bahr-text:nth-child(1) div:nth-child(1) p:nth-child(1)"
+    "main div:nth-child(3) .features-text:nth-child(1) p:nth-child(1), \
+     main div:nth-child(8) .features-text:nth-child(1) div:nth-child(2) p:nth-child(1), \
+    main div:nth-child(14) .features-text:nth-child(1) div:nth-child(1) p:nth-child(1)"
   );
 
   featuresBoldTitleText.forEach((element) => {
@@ -314,15 +326,18 @@ export default async function decorate(block) {
   });
 
   const featuresBoldText = document.querySelectorAll(
-    "div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(1), \
-     div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(1), \
-     div:nth-child(9) .von-bahr-text p:nth-child(1), \
-     div:nth-child(10) .von-bahr-text p:nth-child(1), \
-     div:nth-child(12) .von-bahr-text p:nth-child(1), \
-     div:nth-child(13) .von-bahr-text p:nth-child(1), \
-     div:nth-child(15) .von-bahr-text p:nth-child(1), \
-     div:nth-child(16) .von-bahr-text p:nth-child(1), \
-     div:nth-child(17) .von-bahr-text p:nth-child(1)"
+    "div:nth-child(6) .features-text:nth-child(1) p:nth-child(1), \
+     div:nth-child(7) .features-text:nth-child(1) p:nth-child(1), \
+     div:nth-child(9) .features-text p:nth-child(1), \
+     div:nth-child(10) .features-text p:nth-child(1), \
+     div:nth-child(12) .features-text p:nth-child(1), \
+     div:nth-child(13) .features-text p:nth-child(1), \
+     div:nth-child(15) .features-text p:nth-child(1), \
+     div:nth-child(16) .features-text p:nth-child(1), \
+     div:nth-child(17) .features-text p:nth-child(1), \
+     main div:nth-child(2) .columns-1-cols div div p, \
+     .features-remove-background .features-text:nth-child(2) \
+      p:nth-child(1) "
   );
 
   featuresBoldText.forEach((element) => {
@@ -332,24 +347,35 @@ export default async function decorate(block) {
   });
 
   const featuresText = document.querySelectorAll(
-    "div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(2), \
-    div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(3), \
-    div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(4), \
-    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(2), \
-    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(3), \
-    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(4), \
-    div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(2), \
-    div:nth-child(9) .von-bahr-text p:nth-child(2), div:nth-child(10) \
-    .von-bahr-text p:nth-child(2), div:nth-child(12) .von-bahr-text \
-    p:nth-child(2), div:nth-child(12) .von-bahr-text p:nth-child(3), \
-    div:nth-child(13) .von-bahr-text p:nth-child(2), div:nth-child(15) \
-    .von-bahr-text p:nth-child(2), div:nth-child(16) .von-bahr-text \
-    p:nth-child(2), div:nth-child(17) .von-bahr-text p:nth-child(2)"
+    "div:nth-child(3) .features-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(3) .features-text:nth-child(1) p:nth-child(3), \
+    div:nth-child(3) .features-text:nth-child(1) p:nth-child(4), \
+    div:nth-child(6) .features-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(6) .features-text:nth-child(1) p:nth-child(3), \
+    div:nth-child(6) .features-text:nth-child(1) p:nth-child(4), \
+    div:nth-child(7) .features-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(9) .features-text p:nth-child(2), div:nth-child(10) \
+    .features-text p:nth-child(2), div:nth-child(12) .features-text \
+    p:nth-child(2), div:nth-child(12) .features-text p:nth-child(3), \
+    div:nth-child(13) .features-text p:nth-child(2), div:nth-child(15) \
+    .features-text p:nth-child(2), div:nth-child(16) .features-text \
+    p:nth-child(2), div:nth-child(17) .features-text p:nth-child(2)"
   );
 
   featuresText.forEach((element) => {
     if (element) {
       element.classList.add("featured-text");
+    }
+  });
+
+  const threeImgCol = document.querySelectorAll(
+    "main div:nth-child(10) .features-text:nth-child(1) img, \
+    main div:nth-child(3) .features-text:nth-child(1) img "
+  );
+
+  threeImgCol.forEach((element) => {
+    if (element) {
+      element.classList.add("featured-3-img-cols");
     }
   });
 

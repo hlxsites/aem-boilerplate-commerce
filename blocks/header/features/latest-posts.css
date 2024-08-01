@@ -1,15 +1,15 @@
 /* Latest */
 main
   div:nth-child(22)
-  .von-bahr-text
-  .von-bahr-text:nth-child(1)
+  .features-text
+  .features-text:nth-child(1)
   div:nth-child(1)
   p {
   display: flex;
   justify-content: flex-start;
 }
 
-main div:nth-child(22) .von-bahr-text .von-bahr-text:nth-child(1) strong {
+main div:nth-child(22) .features-text .features-text:nth-child(1) strong {
   letter-spacing: 4px;
   font-weight: 400;
   margin: 0;
@@ -18,8 +18,8 @@ main div:nth-child(22) .von-bahr-text .von-bahr-text:nth-child(1) strong {
 /* View All */
 main
   div:nth-child(22)
-  .von-bahr-text
-  .von-bahr-text:nth-child(1)
+  .features-text
+  .features-text:nth-child(1)
   div:nth-child(2)
   p {
   font-size: var(--sub-text-secondary-size);
@@ -94,14 +94,14 @@ main
 }
 
 /* VIEW ALL LATEST button */
-div:nth-child(23) .von-bahr-text p {
+div:nth-child(23) .features-text p {
   margin: 0 auto;
   margin-top: -10%;
   margin-bottom: 20%;
 }
 
 /* VIEW ALL LATEST button */
-div:nth-child(23) .von-bahr-text p a {
+div:nth-child(23) .features-text p a {
   border-radius: 0;
   margin: 0 auto;
   text-transform: uppercase;

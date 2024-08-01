@@ -24,9 +24,9 @@ export default function decorate(block) {
   .columns-container:nth-child(6) > .columns-wrapper:nth-of-type(1) div:nth-child(1), \
   .columns-container:nth-child(9) > div:nth-child(1) p strong, \
    .columns-container:nth-child(11) > div:nth-child(1) p, \
-   div:nth-child(19) .von-bahr-text:nth-child(1) p, \
+   div:nth-child(19) .features-text:nth-child(1) p, \
    .featured-next-post div:nth-child(1) div:nth-child(1) p:nth-child(1), \
-   main div:nth-child(22) .von-bahr-text .von-bahr-text:nth-child(1) strong "
+   main div:nth-child(22) .features-text .features-text:nth-child(1) strong "
   );
 
   columnHeader.forEach((element) => {
@@ -210,25 +210,32 @@ export default function decorate(block) {
     }
   });
 
-  const vonBahrTitle = document.querySelectorAll(".von-bahr-text");
+  const featuresTitle = document.querySelectorAll(
+    ".features-text, \
+    .features-remove-background .features-text:nth-child(2) p"
+  );
 
-  vonBahrTitle.forEach((element) => {
+  featuresTitle.forEach((element) => {
     if (element) {
       element.classList.remove("featured-brand-mirror");
       element.classList.remove("featured-brand");
       element.classList.remove("nested-columns");
       element.classList.remove("nested-columns-mirror");
+      element.classList.remove("column-headers");
+      element.classList.remove("trending-section");
     }
   });
 
-  const vonBahrCarousel = document.querySelectorAll(
+  const featuresCarousel = document.querySelectorAll(
     "main div .columns-6-cols, \
   main div .columns-6-cols div, \
   main div .columns-6-cols div p"
   );
-  vonBahrCarousel.forEach((element) => {
+  featuresCarousel.forEach((element) => {
     if (element) {
       element.classList.remove("features-section");
     }
   });
+
+  const featuresText = document.querySelectorAll;
 }
