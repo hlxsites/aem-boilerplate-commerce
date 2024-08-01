@@ -92,7 +92,6 @@ div:nth-child(2) .von-bahr-text:nth-child(1) {
   justify-content: center;
   line-height: 1.5;
   text-align: center;
-  border: 2px solid yellow;
 }
 
 /* All bold Paragraphs */
@@ -105,12 +104,10 @@ div:nth-child(2) .von-bahr-text:nth-child(1) {
   font-weight: 550;
   width: 65%;
   text-align: left;
-  border: 2px solid blue;
 }
 
 /* All normal Paragraphs */
 .featured-text {
-  border: 2px solid red;
   color: var(--sub-text-title-color);
   text-transform: inherit;
   margin: 2% auto;
@@ -324,12 +321,6 @@ div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p img {
 }
 
 @media (max-width: 600px) {
-  .von-bahr-text p {
-    display: flex;
-    margin: 0 auto;
-    padding: 0;
-    border: 1px solid rebeccapurple;
-  }
   div:nth-child(1)
     .von-bahr-text:nth-child(1)
     p:nth-child(1)
@@ -363,14 +354,8 @@ div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p img {
     margin-top: 10%;
   }
 
-  /* 2 images */
-  div:nth-child(2) .von-bahr-text:nth-child(1) {
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  /* Par (Physicality) */
-  div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(1) {
+  /* Big Bold titles */
+  .features-bold-title {
     margin: 0 auto;
     margin-top: -15%;
     margin-bottom: 15%;
@@ -378,14 +363,19 @@ div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p img {
     width: 100%;
   }
 
-  /* Sub Par (Physicality) */
-  div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(2),
-  div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(3),
-  div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(4) {
-    color: var(--sub-text-title-color);
-    text-transform: inherit;
-    margin: 3.5% auto;
+  /* All bold Paragraphs */
+  .features-bold-text {
     font-size: 18px;
+    width: 100%;
+    text-align: left;
+    margin: auto;
+    margin-top: -15%;
+  }
+
+  /* All normal Paragraphs */
+  .featured-text {
+    margin: 3.5% auto;
+    font-size: 16px;
     width: 100%;
     margin-bottom: 5%;
   }
@@ -394,15 +384,132 @@ div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p img {
   div:nth-child(4) .video-wrapper div {
     margin: 0;
     padding: 0;
-    margin-bottom: -15%;
-    margin-top: -15%;
+    margin-bottom: -20%;
+    margin-top: -27%;
   }
 
   div:nth-child(4) .video-wrapper div div iframe {
-    border: 20px solid rebeccapurple;
     width: 100% !important;
     height: 100% !important;
     padding: 0;
     margin: 0 auto;
+  }
+
+  div:nth-child(5)
+    .columns-wrapper:nth-child(1)
+    .columns-2-cols
+    .von-bahr-text
+    div {
+    padding: 0;
+    margin: 0 auto;
+  }
+
+  div:nth-child(5)
+    .columns-wrapper:nth-child(1)
+    .columns-2-cols
+    .von-bahr-text
+    div:nth-child(2) {
+    margin-top: 12%;
+    margin-bottom: -15%;
+  }
+
+  div:nth-child(7) .features-bold-text {
+    margin-top: -25%;
+  }
+
+  div:nth-child(7) .featured-text {
+    margin-bottom: -15%;
+  }
+
+  div:nth-child(8) .von-bahr-text div:nth-child(1) div:nth-child(1) {
+    margin-bottom: 25%;
+  }
+
+  div:nth-child(14) .von-bahr-text div:nth-child(1) div:nth-child(1) {
+    margin-top: -25%;
+    margin-bottom: 25%;
+  }
+
+  div:nth-child(18) .von-bahr-text img {
+    margin-top: -25%;
+    margin-bottom: -20%;
+  }
+
+  /* Carousel content */
+  .von-bahr-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    display: flex;
+  }
+
+  .von-bahr-carousel-content div {
+    flex-direction: row;
+    margin-top: 1%;
+  }
+  /* end carousel */
+
+  /* SHOP C.P. COMPANY button */
+  div:nth-child(20) .von-bahr-text p {
+    margin-top: -20%;
+    margin-bottom: 4%;
+  }
+
+  /* Name of Writer, Photographer and Stylist*/
+  div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(1) p,
+  div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) p,
+  div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(3) p {
+    display: flex;
+    margin: 2% auto;
+    color: var(--sub-text-title-color);
+    text-transform: capitalize;
+    width: 100%;
+    justify-content: center;
+  }
+  div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(3) p {
+    margin-bottom: 5%;
+  }
+  /* Dividers */
+  div:nth-child(20) .von-bahr-team div:nth-child(1) div:nth-child(2) {
+    border-left: none;
+    border-right: none;
+  }
+
+  /* X/twitter logo */
+  div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(1) {
+    margin: 0 auto;
+    margin-left: 40%;
+  }
+
+  /* Facebook logo */
+  div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) {
+    margin: -9% auto;
+    margin-right: 40%;
+  }
+
+  /* Both logos */
+  div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(1) p,
+  div:nth-child(20) .von-bahr-team div:nth-child(2) div:nth-child(2) p {
+    justify-content: center;
+    margin: 2% auto;
+  }
+
+  /* Latest */
+  main
+    div:nth-child(22)
+    .von-bahr-text
+    .von-bahr-text:nth-child(1)
+    div:nth-child(1)
+    p {
+    margin: 0;
+  }
+  /* View All */
+  main
+    div:nth-child(22)
+    .von-bahr-text
+    .von-bahr-text:nth-child(1)
+    div:nth-child(2)
+    p {
+    margin: 0;
+    margin-top: -6.5%;
   }
 }

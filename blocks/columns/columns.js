@@ -215,6 +215,9 @@ export default function decorate(block) {
   vonBahrTitle.forEach((element) => {
     if (element) {
       element.classList.remove("featured-brand-mirror");
+      element.classList.remove("featured-brand");
+      element.classList.remove("nested-columns");
+      element.classList.remove("nested-columns-mirror");
     }
   });
 
