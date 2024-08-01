@@ -301,6 +301,58 @@ export default async function decorate(block) {
     });
   }
 
+  const featuresBoldTitleText = document.querySelectorAll(
+    "div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(1), \
+     div:nth-child(8) .von-bahr-text:nth-child(1) div:nth-child(2) p:nth-child(1), \
+    div:nth-child(14) .von-bahr-text:nth-child(1) div:nth-child(1) p:nth-child(1)"
+  );
+
+  featuresBoldTitleText.forEach((element) => {
+    if (element) {
+      element.classList.add("features-bold-title");
+    }
+  });
+
+  const featuresBoldText = document.querySelectorAll(
+    "div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(1), \
+     div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(1), \
+     div:nth-child(9) .von-bahr-text p:nth-child(1), \
+     div:nth-child(10) .von-bahr-text p:nth-child(1), \
+     div:nth-child(12) .von-bahr-text p:nth-child(1), \
+     div:nth-child(13) .von-bahr-text p:nth-child(1), \
+     div:nth-child(15) .von-bahr-text p:nth-child(1), \
+     div:nth-child(16) .von-bahr-text p:nth-child(1), \
+     div:nth-child(17) .von-bahr-text p:nth-child(1)"
+  );
+
+  featuresBoldText.forEach((element) => {
+    if (element) {
+      element.classList.add("features-bold-text");
+    }
+  });
+
+  const featuresText = document.querySelectorAll(
+    "div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(3), \
+    div:nth-child(3) .von-bahr-text:nth-child(1) p:nth-child(4), \
+    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(3), \
+    div:nth-child(6) .von-bahr-text:nth-child(1) p:nth-child(4), \
+    div:nth-child(7) .von-bahr-text:nth-child(1) p:nth-child(2), \
+    div:nth-child(9) .von-bahr-text p:nth-child(2), div:nth-child(10) \
+    .von-bahr-text p:nth-child(2), div:nth-child(12) .von-bahr-text \
+    p:nth-child(2), div:nth-child(12) .von-bahr-text p:nth-child(3), \
+    div:nth-child(13) .von-bahr-text p:nth-child(2), div:nth-child(15) \
+    .von-bahr-text p:nth-child(2), div:nth-child(16) .von-bahr-text \
+    p:nth-child(2), div:nth-child(17) .von-bahr-text p:nth-child(2)"
+  );
+
+  featuresText.forEach((element) => {
+    if (element) {
+      element.classList.add("featured-text");
+    }
+  });
+
   const navSubHeader = document.querySelectorAll(
     ".nav-sections .columns-1-cols div div p  "
   );
