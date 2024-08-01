@@ -401,6 +401,8 @@ header .nav-search-input .search_autocomplete .popover-container {
   width: 800px;
   min-height: max-content;
   margin: 0 10px;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 /* TODO - CSS for auth dropdown demo (Auth Drop-In) */
