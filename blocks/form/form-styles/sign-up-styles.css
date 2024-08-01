@@ -1,6 +1,7 @@
 .sign-up
 {
     background-color: transparent;
+    width: 100%;
 }
 
 .sign-up form
@@ -23,8 +24,16 @@
     background: transparent;
     padding: 12px 20px;
     margin: 8px 0;
+    color: black;
+    min-width: 24vw;
     box-sizing: border-box;
     border: none;
+    border-bottom: 0.5px solid #999999;
+    border-radius: 0;
+}
+
+.sign-up form input:hover
+{
     border-bottom: 0.5px solid #999999;
     border-radius: 0;
 }
