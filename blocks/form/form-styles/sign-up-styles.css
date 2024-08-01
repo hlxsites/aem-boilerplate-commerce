@@ -7,7 +7,7 @@
 .sign-up form
 {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
 }
 
 .sign-up form label
@@ -52,3 +52,25 @@
     cursor: not-allowed;
   }
 
+  @media (width <= 900px)
+  {
+    .sign-up form
+    {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .sign-up form input
+    {       
+        width: 70vw;
+        margin: auto;
+    }
+
+    .sign-up form .button
+    {
+        width: 70vw;
+        margin: auto;
+    }
+
+  }

@@ -13,14 +13,14 @@ footer .footer {
 .footer-one,.footer-two,.footer-three
 {
   border-bottom: 1px solid rgb(229, 229, 229);
-  padding: 20px 0px 10px 0;
+  padding: 60px 10px 32px 10px;
 }
 
 .footer-one
 {
   display: flex;
-  height: 20vh;
-  margin-top: 20px;
+  height: 120px;
+  column-gap: 90px;
 }
 
 .footer-one .form-wrapper
@@ -164,11 +164,16 @@ footer .footer p {
 @media (width <= 900px)
 {
   footer{
-    padding: 0 4rem 0;
     display: flex;
     flex-direction: column;
     align-content: center;
   }
+
+  .footer-one,.footer-two,.footer-three
+  {
+    padding: 60px 2px 32px 2px;
+  }
+
   .footer-one,.footer-three
   {
     flex-direction: column;
@@ -177,8 +182,17 @@ footer .footer p {
 
   .footer-one
   {
-    padding-bottom: 70px;
+    height: 400px;
+    width: 100%;
   }
+
+  .footer-one > div:first-child > div h5
+  {
+    margin: auto;
+    padding: 30px 0;
+    width: 76vw;
+  }
+
   .socials
   {
     display: flex;
@@ -188,7 +202,8 @@ footer .footer p {
 
   .footer-one > div:first-child p
   {
-    width: 100%;
+    width: 90%;
+    margin: auto;
   }
 
   .footer-two
@@ -203,10 +218,6 @@ footer .footer p {
   .footer-one p
   {
     text-align: center;
-  }
-  .social-icons
-  {
-    
   }
 
   .Column-4-Icons
