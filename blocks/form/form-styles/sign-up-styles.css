@@ -7,7 +7,7 @@
 .sign-up form
 {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
 }
 
 .sign-up form label
