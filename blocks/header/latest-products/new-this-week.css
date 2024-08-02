@@ -1,17 +1,18 @@
-.view-all-latest-banner img {
+.banner-section-latest .hero-latest img {
   height: 50vh;
 }
 
-.view-all-latest-banner {
-  margin-bottom: calc(50vh - 42%);
+.banner-section-latest {
+  margin-bottom: calc(0vh - 16%);
+  border: 2px solid rebeccapurple;
 }
 
-.new-this-week div {
+.hero-latest div {
   display: flex;
   flex-direction: column;
 }
 
-.new-this-week table:nth-child(1) {
+.hero-latest table:nth-child(1) {
   background-color: white;
   border-radius: 2%;
   width: 27%;
@@ -21,7 +22,7 @@
 }
 
 /* Paragraph title */
-.new-this-week div div table tbody tr:nth-child(2) td p:nth-child(1) {
+.hero-latest div div table tbody tr:nth-child(2) td p:nth-child(1) {
   text-transform: uppercase;
   font-weight: bold;
   font-size: var(--sub-text-title-large);
@@ -30,53 +31,53 @@
 }
 
 /* paragraph */
-.new-this-week div p:nth-child(2),
-.new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u,
-.new-this-week div div table tbody tr:nth-child(3) td {
+.hero-latest div p:nth-child(2),
+.hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u,
+.hero-latest div div table tbody tr:nth-child(3) td {
   text-transform: inherit;
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
   margin: auto 0;
 }
 
-.new-this-week div div table tbody tr:nth-child(3) td {
+.hero-latest div div table tbody tr:nth-child(3) td {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
 }
 
 /* links in paragraph */
-.new-this-week div p:nth-child(2) strong a,
-.new-this-week div div table tbody tr:nth-child(3) td strong a {
+.hero-latest div p:nth-child(2) strong a,
+.hero-latest div div table tbody tr:nth-child(3) td strong a {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
   font-weight: 100;
   font-weight: bold;
   text-decoration: underline;
+  text-transform: lowercase;
 }
 
 /* Show more/less */
-.new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u {
+.hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u {
   font-weight: bold;
   text-decoration: none;
   text-transform: lowercase;
   cursor: pointer;
 }
 
-.new-this-week div table table {
+.hero-latest div table table {
   margin: 2% 0;
   padding: 0;
   width: 50%;
 }
 
 /* Shop men & women */
-.new-this-week div table table td a {
+.hero-latest div table table td a {
   font-weight: bold;
   text-transform: uppercase;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-small);
   width: auto;
   letter-spacing: 2px;
-
   margin: auto;
   text-align: left;
 }

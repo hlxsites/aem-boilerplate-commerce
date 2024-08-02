@@ -10,25 +10,24 @@ div.section.columns-container {
 /* .features-text p {
   display: flex;
 }
+*/
 
 .features-intro p {
   display: flex;
-} */
-
-/* interviews button */
-.features-intro div p:nth-child(1) {
   margin: 0 auto;
+  padding: 0;
   justify-content: center;
 }
 
+/* interviews button */
 .features-intro p:nth-child(1) strong a:nth-child(1) {
   background-color: transparent;
   color: var(--sub-text-title-color);
   font-size: 10px;
-  letter-spacing: 1.5px;
+  letter-spacing: var(--sub-text-spacing);
   font-weight: 350;
   border-radius: 0;
-  padding: 0.2% 2%;
+  padding: 0 8px;
   text-transform: uppercase;
   border: 2px solid var(--sub-text-border-divider);
 }
@@ -39,9 +38,6 @@ div.section.columns-container {
   letter-spacing: var(--sub-text-spacing);
   font-size: 30px;
   text-transform: uppercase;
-  margin: 0 auto;
-  padding: 0;
-  justify-content: center;
 }
 
 /* Date */
@@ -51,21 +47,17 @@ div.section.columns-container {
   letter-spacing: var(--sub-text-spacing);
   font-size: var(--sub-text-secondary-size);
   text-transform: uppercase;
-  margin: 0 auto;
-  padding: 0;
-  justify-content: center;
-  margin-bottom: 2%;
 }
 
 /* summary */
 .features-intro div:nth-child(1) p:nth-child(4) {
   color: var(--sub-text-title-color);
   text-transform: inherit;
-  margin: 0 auto;
+  margin: 4% auto;
   padding: 0;
   font-size: 20px;
   letter-spacing: 1.5px;
-  font-weight: 450;
+  font-weight: 500;
   width: 45%;
   justify-content: center;
   text-align: center;
@@ -73,27 +65,22 @@ div.section.columns-container {
 }
 
 /* 2 images */
-div:nth-child(2) .features-text:nth-child(1) {
+.one-img-cols {
   margin: 0 auto;
   padding: 0;
-
-  border: 2px solid rebeccapurple;
+  margin-bottom: -5%;
 }
 
-/* Big Bold titles */
-.features-bold-title {
+/* Block Quote */
+.block-quote p {
   color: var(--sub-text-title-color);
   text-transform: inherit;
-  margin: 0% auto;
-  margin-top: -5%;
-  margin-bottom: 5%;
+  margin: 0 auto;
   padding: 0;
   font-size: 24px;
   letter-spacing: 1.5px;
   font-weight: 500;
-  width: 79%;
-  justify-content: center;
-  line-height: 1.5;
+  width: 72%;
   text-align: center;
 }
 
@@ -103,10 +90,9 @@ main div:nth-child(2) .columns-1-cols div div p {
 }
 
 /* All bold Paragraphs */
-.features-bold-text {
+.text-section-title p:nth-child(1) {
   color: var(--sub-text-title-color);
   margin: 0 auto;
-  /* margin-top: -5%; */
   padding: 0;
   font-size: 18px;
   font-weight: 550;
@@ -114,25 +100,31 @@ main div:nth-child(2) .columns-1-cols div div p {
   text-align: left;
 }
 
-/* All normal Paragraphs */
-.featured-text {
+.text-section {
+  margin-top: -4%;
+}
+
+/* Text Section */
+.text-section p,
+.text-section-title p:not(:first-child) {
   color: var(--sub-text-title-color);
   text-transform: inherit;
-  /* margin: 2% auto; */
   margin: 2% auto;
   font-size: 16px;
   letter-spacing: 1.5px;
-  font-weight: 450;
-  width: 65%;
+  font-weight: 480;
+  width: 62%;
   text-align: left;
+  justify-content: center;
+  border: 2px solid rebeccapurple;
 }
 
 /* Video */
-div:nth-child(4) .video-wrapper div {
+div:nth-child(5) .video-wrapper div {
   margin: 0;
   padding: 0;
   margin-bottom: 24%;
-  margin-top: -9%;
+  margin-top: -5%;
 }
 
 /* Img left par on right */
@@ -146,7 +138,7 @@ div:nth-child(4) .video-wrapper div {
 
 .img-side-content div div:nth-child(2) {
   flex: 1;
-  border: 2px solid rebeccapurple;
+
   color: var(--sub-text-title-color);
   text-transform: inherit;
   font-size: 24px;

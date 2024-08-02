@@ -149,7 +149,7 @@ header nav[aria-expanded="true"] {
       box-shadow: 4px 0px 3px rgba(0, 0, 0, 0.2);
     }
 
-    .columns-container .columns-2-cols div div:nth-child(2) .active {
+    .columns-container .gender-cols div div:nth-child(2) .active {
       display: flex;
       width: 50vw;
       height: 5.2vh;
@@ -184,18 +184,18 @@ header nav[aria-expanded="true"] {
       height: 100%;
     }
 
-    .nav-sections div .nav-button a {
+    .nav-sections .main-nav-content div .nav-button a {
       display: flex;
       margin-top: 5%;
       font-size: var(--sub-text-secondary-size);
     }
 
-    .nav-sections div.button-container {
+    .nav-sections .main-nav-content div.button-container {
       margin-top: 5%;
       padding: 1% 0;
     }
 
-    .nav-tools .columns-2-cols {
+    .nav-tools .burger-sub-menu {
       display: flex;
       flex-direction: column;
       width: auto;
@@ -210,7 +210,7 @@ header nav[aria-expanded="true"] {
       flex-direction: column;
     }
 
-    .nav-tools .columns-2-cols div div:nth-child(1) p {
+    .nav-tools .burger-sub-menu div div:nth-child(1) p {
       text-align: left;
       padding: 0;
       align-items: flex-start;
@@ -219,7 +219,7 @@ header nav[aria-expanded="true"] {
     }
 
     /* Column title Account & Shipping Country */
-    .nav-tools .columns-2-cols div:nth-child(1) div p {
+    .nav-tools .burger-sub-menu div:nth-child(1) div p {
       color: var(--sub-text-grey);
       margin-top: -30%;
       font-size: var(--sub-text-secondary-size);
@@ -227,7 +227,7 @@ header nav[aria-expanded="true"] {
       padding-top: 5%;
     }
 
-    .nav-tools .columns-2-cols div:nth-child(2) div p {
+    .nav-tools .burger-sub-menu div:nth-child(2) div p {
       margin-top: 0%;
       margin-bottom: -10%;
     }
@@ -235,7 +235,7 @@ header nav[aria-expanded="true"] {
     /*  Malta | EUR  */
     .nav-tools
       .columns-wrapper:nth-child(2)
-      .columns-2-cols
+      .burger-sub-menu
       div:nth-child(2)
       div:nth-child(1)
       p {
@@ -598,16 +598,16 @@ header .nav-search-input .search_autocomplete .popover-container {
 
 /* Daniel */
 
-.nav-brand .columns-2-cols {
+.nav-brand .gender-cols {
   margin-top: calc(var(--nav-height) - 130px);
 }
-.nav-brand .columns-2-cols a {
+.nav-brand .gender-cols a {
   font-size: var(--sub-text-small);
   color: var(--sub-text-title-color);
   text-transform: uppercase;
 }
 
-.nav-brand .columns-2-cols .active {
+.nav-brand .gender-cols .active {
   font-weight: bold;
 }
 
@@ -619,10 +619,9 @@ header .nav-search-input .search_autocomplete .popover-container {
   width: 65.51px;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
-.nav-sections .columns-1-cols div div a {
+.nav-sections .main-nav-content div div a {
   margin: auto;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
@@ -630,17 +629,12 @@ header .nav-search-input .search_autocomplete .popover-container {
   letter-spacing: var(--type-display-1-letter-spacing);
 }
 
-.nav-sections .columns-1-cols div:nth-child(2) div {
+.nav-sections .main-nav-content div:nth-child(2) div {
   margin-top: -2%;
 }
 
-.nav-sections .columns-1-cols div div:nth-child(10) a {
+.nav-sections .main-nav-content div div:nth-child(10) a {
   color: var(--sub-text-sale-color);
-}
-
-.nav-sections .columns-1-cols div div:nth-child(1) img {
-  margin-top: 60%;
-  padding: 1% 0;
 }
 
 .columns-container:nth-child(3) {

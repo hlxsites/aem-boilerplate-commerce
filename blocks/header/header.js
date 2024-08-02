@@ -242,30 +242,9 @@ export default async function decorate(block) {
     }
   });
 
-  const newThisWeek = document.querySelectorAll(
-    ".banner-section:nth-child(1) .columns-2-cols"
-  );
-
-  newThisWeek.forEach((element) => {
-    if (element) {
-      element.classList.add("new-this-week");
-    }
-  });
-
-  // view-all-latest banner
-  const bannerSections = document.querySelectorAll(".banner-section");
-
-  bannerSections.forEach((banner) => {
-    const newThisWeekElement = banner.querySelector(".new-this-week");
-
-    if (newThisWeekElement) {
-      banner.classList.add("view-all-latest-banner");
-    }
-  });
-
   // read more/show less
   const readMore = document.querySelectorAll(
-    ".new-this-week div div table tbody tr:nth-child(4) td p:nth-child(1) u"
+    ".banner-section-latest:nth-child(1) .hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u"
   );
 
   readMore.forEach((element) => {
@@ -276,7 +255,7 @@ export default async function decorate(block) {
 
   // Hidden par
   const hidePar = document.querySelectorAll(
-    ".new-this-week div div table tbody tr:nth-child(3) td"
+    ".banner-section-latest:nth-child(1) .hero-latest  div div table tbody tr:nth-child(3) td"
   );
 
   hidePar.forEach((element) => {
@@ -287,6 +266,9 @@ export default async function decorate(block) {
 
   const readMoreLink = document.querySelector(".read-more");
   const hiddenContent = document.querySelector(".hidden-content");
+  const hideParenthesis = document.querySelector(
+    ".hero-latest div p:nth-child(2) strong:nth-child(6)"
+  );
 
   hiddenContent.style.display = "none";
 
@@ -295,9 +277,11 @@ export default async function decorate(block) {
 
     if (hiddenContent.style.display === "none") {
       hiddenContent.style.display = "block";
+      hideParenthesis.style.display = "none";
       readMoreLink.textContent = "Show Less";
     } else {
       hiddenContent.style.display = "none";
+      hideParenthesis.style.display = "inline";
       readMoreLink.textContent = "Read More";
     }
   });
@@ -319,23 +303,6 @@ export default async function decorate(block) {
       }
     });
   });
-
-  // const checkboxWrappers = document.querySelectorAll(
-  //   ".form-container div div .checkbox-wrapper"
-  // );
-
-  // checkboxWrappers.forEach((checkboxWrapper) => {
-  //   if (checkboxWrapper) {
-  //     const newContainer = document.createElement("div");
-  //     newContainer.classList.add("all-checkboxes-container");
-
-  //     while (checkboxWrapper.firstChild) {
-  //       newContainer.appendChild(checkboxWrapper.firstChild);
-  //     }
-
-  //     checkboxWrapper.parentNode.replaceChild(newContainer, checkboxWrapper);
-  //   }
-  // });
 
   const newProductsCol = document.querySelectorAll(
     "main .columns-container:nth-child(5) \

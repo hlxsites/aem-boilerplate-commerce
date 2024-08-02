@@ -1,8 +1,12 @@
 /* This includes Latest, Clothing and Accessories */
 
-.modal-content .columns-3-cols div div:nth-child(2) p:nth-child(1):only-of-type,
 .modal-content
-  .columns-3-cols
+  .three-cols-four-img
+  div
+  div:nth-child(2)
+  p:nth-child(1):only-of-type,
+.modal-content
+  .three-cols-four-img
   div
   div:nth-child(3)
   p:nth-child(1):only-of-type {
@@ -14,16 +18,16 @@
   text-transform: uppercase;
 }
 
-.modal-content .columns-3-cols div ul,
-.modal-content .columns-3-cols div div p picture {
+.modal-content .three-cols-four-img div ul,
+.modal-content .three-cols-four-img div div p picture {
   display: flex;
 }
 
-.modal-content .columns-3-cols div:nth-child(3) {
+.modal-content .three-cols-four-img div:nth-child(3) {
   flex: 2;
 }
 
-.modal-content .columns-3-cols div:nth-child(3) table p {
+.modal-content .three-cols-four-img div:nth-child(3) table p {
   margin: 5% 0;
   padding: 0;
   margin-bottom: 0%;
@@ -33,11 +37,11 @@
   color: var(--sub-text-title-color);
 }
 
-.modal-content .columns-3-cols div:nth-child(3) table p:nth-child(2) {
+.modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2) {
   margin-bottom: 4%;
 }
 
-.modal-content .columns-3-cols div ul {
+.modal-content .three-cols-four-img div ul {
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -49,18 +53,19 @@
   text-transform: capitalize;
 }
 
-.modal-content .columns-3-cols div div {
+.modal-content .three-cols-four-img div div {
   align-self: start;
 }
 
 .modal-content
-  .columns-3-cols
+  .three-cols-four-img
   div
   div:nth-child(1)
   p:nth-child(1):only-of-type
   a {
   color: black;
   background-color: white;
+  border-radius: 0;
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
   padding: 0;
@@ -70,7 +75,7 @@
 
 @media (width < 599px) {
   .modal-content
-    .columns-3-cols
+    .three-cols-four-img
     div
     div:nth-child(1)
     p:nth-child(1):only-of-type
@@ -83,29 +88,29 @@
   }
 
   .modal-content
-    .columns-3-cols
+    .three-cols-four-img
     div
     div:nth-child(2)
     p:nth-child(1):only-of-type,
   .modal-content
-    .columns-3-cols
+    .three-cols-four-img
     div
     div:nth-child(3)
     p:nth-child(1):only-of-type {
     margin-bottom: 8%;
   }
 
-  .modal-content .columns-3-cols div div ul {
+  .modal-content .three-cols-four-img div div ul {
     line-height: 4;
     font-size: var(--sub-text-title-large);
   }
-  .modal-content .columns-3-cols div div p {
+  .modal-content .three-cols-four-img div div p {
     font-size: var(--sub-text-title-large);
   }
 
-  .modal-content .columns-3-cols div:nth-child(3) table p,
+  .modal-content .three-cols-four-img div:nth-child(3) table p,
   .modal-content
-    .columns-3-cols
+    .three-cols-four-img
     div
     div:nth-child(3)
     p:nth-child(1):only-of-type {

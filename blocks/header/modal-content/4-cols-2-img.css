@@ -1,7 +1,7 @@
-/* Shop by, Brands, Footwear, Lifestyle, Active, Sale and Features uses this as well */
+/* Shop by, Brands, Footwear, Lifestyle, Active, and Sale uses this as well */
 
-.modal-content .columns-4-cols div div p:nth-child(1):only-of-type,
-.modal-content .columns-4-cols div div p:nth-child(1) {
+.modal-content .four-cols-two-img div div p:nth-child(1):only-of-type,
+.modal-content .four-cols-two-img div div p:nth-child(1) {
   list-style-type: none;
   display: flex;
   margin: 0;
@@ -10,21 +10,21 @@
   text-transform: uppercase;
 }
 
-.modal-content .columns-4-cols div div {
+.modal-content .four-cols-two-img div div {
   align-self: start;
 }
 
-.modal-content .columns-4-cols div ul,
-.modal-content .columns-4-cols div div p picture {
+.modal-content .four-cols-two-img div ul,
+.modal-content .four-cols-two-img div div p picture {
   display: flex;
   flex-direction: column;
 }
 
-.modal-content .columns-4-cols div:nth-child(4) {
+.modal-content .four-cols-two-img div:nth-child(4) {
   flex: 1;
 }
 
-.modal-content .columns-4-cols div:nth-child(4) table p {
+.modal-content .four-cols-two-img div:nth-child(4) table p {
   margin: 5% 0;
   padding: 0;
   margin-bottom: 0%;
@@ -34,11 +34,11 @@
   font-size: var(--sub-text-secondary-size);
 }
 
-.modal-content .columns-4-cols div:nth-child(4) table p:nth-child(2) {
+.modal-content .four-cols-two-img div:nth-child(4) table p:nth-child(2) {
   margin-bottom: 4%;
 }
 
-.modal-content .columns-4-cols div ul {
+.modal-content .four-cols-two-img div ul {
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -49,9 +49,17 @@
   font-weight: 100;
 }
 
+.modal-content
+  .four-cols-two-img
+  div
+  div:nth-child(1)
+  p:nth-child(1):only-of-type {
+  border-radius: 0;
+}
+
 @media (width < 599px) {
   .modal-content
-    .columns-4-cols
+    .four-cols-two-img
     div
     div:nth-child(1)
     p:nth-child(1):only-of-type {
@@ -63,12 +71,12 @@
   }
 
   .modal-content
-    .columns-4-cols
+    .four-cols-two-img
     div
     div:nth-child(2)
     p:nth-child(1):only-of-type,
   .modal-content
-    .columns-4-cols
+    .four-cols-two-img
     div
     div:nth-child(3)
     p:nth-child(1):only-of-type {
@@ -76,16 +84,16 @@
     line-height: 4;
   }
 
-  .modal-content .columns-4-cols div div ul {
+  .modal-content .four-cols-two-img div div ul {
     line-height: 4;
     margin-bottom: 7%;
     font-size: var(--sub-text-title-large);
   }
-  .modal-content .columns-4-cols div div p {
+  .modal-content .four-cols-two-img div div p {
     font-size: var(--sub-text-title-large);
   }
 
-  .modal-content .columns-4-cols div:nth-child(4) table {
+  .modal-content .four-cols-two-img div:nth-child(4) table {
     display: none;
   }
 }

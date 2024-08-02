@@ -1,6 +1,6 @@
 @import url(./modal-launches.js);
 
-.modal-content .columns-4-cols div div {
+.modal-content .launches-modal div div {
   width: auto;
   height: 40vh;
   margin-left: -2%;
