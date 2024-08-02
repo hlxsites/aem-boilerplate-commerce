@@ -249,13 +249,18 @@ div:nth-child(20) .features-text p {
   margin-bottom: 4%;
 }
 
-/* SHOP C.P. COMPANY button text*/
-div:nth-child(20) .features-text p a {
+/* SHOP C.P. COMPANY button text/ Enter draw */
+div:nth-child(20) .features-text p a,
+main div:nth-child(6) .features-text:nth-child(1) p:nth-child(2) a {
   border-radius: 0;
   margin: 0 auto;
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);
   padding: 1% 8%;
+}
+
+main div:nth-child(6) .features-text:nth-child(1) {
+  border: 2px solid yellow;
 }
 
 /* Team Content */
@@ -527,6 +532,29 @@ div:nth-child(20) .features-team div:nth-child(2) div:nth-child(2) p img {
   border: 2px solid rebeccapurple;
 } */
 
-main div:nth-child(3) div:nth-child(1) .features-text {
-  border: 2px solid yellow;
+main div:nth-child(4) div:nth-child(1) .features-text {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 1% 0;
+}
+
+/* 4 imgs diagonal bigger*/
+main
+  div:nth-child(4)
+  div:nth-child(1)
+  .features-text:nth-child(1)
+  div:nth-child(1)
+  .features-text:nth-child(2),
+main
+  div:nth-child(4)
+  div:nth-child(1)
+  .features-text:nth-child(2)
+  div:nth-child(1) {
+  flex: 1.3;
+}
+
+main div:nth-child(6) .features-text:nth-child(1) p:nth-child(1) strong {
+  width: 100%;
+  font-weight: 500;
 }

@@ -236,6 +236,4 @@ export default function decorate(block) {
       element.classList.remove("features-section");
     }
   });
-
-  const featuresText = document.querySelectorAll;
 }

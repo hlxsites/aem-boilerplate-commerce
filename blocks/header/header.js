@@ -316,7 +316,8 @@ export default async function decorate(block) {
   const featuresBoldTitleText = document.querySelectorAll(
     "main div:nth-child(3) .features-text:nth-child(1) p:nth-child(1), \
      main div:nth-child(8) .features-text:nth-child(1) div:nth-child(2) p:nth-child(1), \
-    main div:nth-child(14) .features-text:nth-child(1) div:nth-child(1) p:nth-child(1)"
+    main div:nth-child(14) .features-text:nth-child(1) div:nth-child(1) p:nth-child(1), \
+    main div:nth-child(6) .features-text:nth-child(1) p:nth-child(1) strong"
   );
 
   featuresBoldTitleText.forEach((element) => {
@@ -337,7 +338,7 @@ export default async function decorate(block) {
      div:nth-child(17) .features-text p:nth-child(1), \
      main div:nth-child(2) .columns-1-cols div div p, \
      .features-remove-background .features-text:nth-child(2) \
-      p:nth-child(1) "
+      p:nth-child(1), main div:nth-child(4) div:nth-child(2) p "
   );
 
   featuresBoldText.forEach((element) => {
