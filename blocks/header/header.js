@@ -213,9 +213,9 @@ export default async function decorate(block) {
   block.append(navWrapper);
 
   const currentURL = window.location.href;
-  const targetURL = "http://localhost:3000/main/features/";
+  const targetURL = "/main/features/";
 
-  if (currentURL.startsWith(targetURL)) {
+  if (currentURL.includes(targetURL)) {
     const featuresTitle = document.querySelectorAll(
       "main .default-content-wrapper, \
       main .columns-wrapper .columns-2-cols, \
