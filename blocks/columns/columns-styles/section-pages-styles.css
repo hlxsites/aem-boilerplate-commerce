@@ -2,6 +2,7 @@
 .section:has(.sections-page)
 {
     padding: 0 4rem 0;
+    margin-bottom: 150px;
 }
 
 .sections-page ul
@@ -21,7 +22,7 @@
 {
     padding-bottom: 20px
 }
-
+/* Follow button */
 .sections-page > div > div > table a
 {
     border: 1px solid black;
@@ -59,5 +60,14 @@
 .sections-page ul li a:any-link
 {
     text-decoration: none;
-    color: #0D151A;
+    color: black;
+    /* transition */
+    transition: color 0.4s ease-in-out;
+
+}
+
+.sections-page ul li a:hover
+{
+    text-decoration: none;
+    color: #D7D6DC;
 }
