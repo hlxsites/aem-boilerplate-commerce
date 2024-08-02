@@ -38,7 +38,7 @@
 }
 
 /* Column Headers */
-.column-headers {
+.column-headers div:nth-child(1) p {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: var(--sub-text-title-size);
@@ -55,42 +55,42 @@
 /*   border: 1px solid black; */
 
 @media (max-width: 600px) {
-  .featured-brand-mirror div:nth-child(2) {
+  .brand-showcase-mirror div:nth-child(2) {
     display: flex;
     flex-direction: column;
   }
   /* Featured Brand mirror (COMME DES GARÇONS HOMME) */
-  .featured-brand-mirror div:nth-child(1) div:nth-child(2) {
+  .brand-showcase-mirror div:nth-child(1) div:nth-child(2) {
     right: 5.8%;
   }
 
-  .featured-brand-mirror div:nth-child(2) div:nth-child(2) {
+  .brand-showcase-mirror div:nth-child(2) div:nth-child(2) {
     order: -1;
   }
-  .featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
+  .brand-showcase-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
     bottom: 0;
   }
 
-  .nested-columns-mirror {
+  .brand-showcase-mirror {
     flex-direction: column;
   }
 
-  .column-headers {
+  .column-headers p {
     font-size: 16px;
     width: auto;
   }
 
-  .view-all-button {
-    margin-top: -13%;
+  .column-headers div:nth-child(2) p {
+    margin-top: -19%;
   }
 
   /* Latest Carousel */
-  .latest-products div div {
+  .products-carousel div div {
     width: auto;
     height: 38vh;
   }
 
-  .latest-products * p {
+  .products-carousel * p {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -98,61 +98,24 @@
     width: 100%;
   }
 
-  .latest-products picture {
+  .products-carousel picture {
     width: 173px;
     height: auto;
   }
 
-  .latest-products div:nth-child(1) {
+  .products-carousel div:nth-child(1) {
     flex-direction: row;
   }
 
-  .latest-products div:nth-child(2) {
+  .products-carousel div:nth-child(2) {
     flex-direction: row;
   }
 
-  .latest-products-carousel {
+  .products-carousel {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
   }
 
-  /* Launches Carousel */
-  /* 
-  .launches-section div div {
-    width: auto;
-    height: 35vh;
-    align-items: flex-start;
-  }
-  .launches-section div:nth-child(1) div p:nth-child(1) {
-    display: flex;
-
-    margin: 7% 5%;
-  }
-
-  .launches-section picture {
-    width: 367px;
-    height: auto;
-    padding-right: 4%;
-  }
-
-  .launches-section div:nth-child(1) div p:nth-child(1),
-  .launches-section div:nth-child(2) {
-    flex-direction: row;
-  } */
-
-  /* .launches-section div div p {
-    border: 1px solid black;
-  } */
-  /* 
-  .launches-section-carousel {
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    width: auto;
-  }
-
-  .launches-section-carousel > div {
-    width: auto;
-  } */
   /* Banner Section */
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;

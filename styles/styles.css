@@ -426,11 +426,11 @@ main .section.highlight {
   --background-none: none 0 0% no-repeat padding-box;
 }
 /* View all buttons */
-.view-all-button {
+.column-headers div:nth-child(2) p {
   text-align: right;
 }
 
-.view-all-button em a {
+.column-headers div:nth-child(2) p em a {
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
   border: none;

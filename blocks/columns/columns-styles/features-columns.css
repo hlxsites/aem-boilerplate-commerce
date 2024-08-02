@@ -1,4 +1,4 @@
-.features-section {
+.featured-articles-cols {
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -11,18 +11,18 @@
 }
 
 /* Launches Card */
-.features-section p {
+.featured-articles-cols p {
   padding: 1% 0;
   margin: auto 0;
 }
 
-.features-section:nth-child(3) p:nth-child(1) {
+.featured-articles-cols:nth-child(3) p:nth-child(1) {
   margin: -3% 0;
   padding-bottom: 2%;
 }
 
 /* table * <P> content */
-.features-section p:nth-child(2) {
+.featured-articles-cols p:nth-child(2) {
   font-weight: lighter;
   margin-top: 3%;
   font-size: var(--sub-text-secondary-size);
@@ -32,7 +32,7 @@
 }
 
 /* COLOUMNS BLOCK */
-.features-section p:nth-child(3) {
+.featured-articles-cols p:nth-child(3) {
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: var(--sub-text-title-large);

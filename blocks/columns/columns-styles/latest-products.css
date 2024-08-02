@@ -1,25 +1,25 @@
 /* Default styles */
-.latest-products div div p {
+.products-carousel div div p {
   display: flex;
   flex-direction: column;
   margin: auto 0;
 }
 
 /* Product Name */
-.latest-products div p:nth-child(1) a,
-.latest-products div p:nth-child(2) {
+.products-carousel div p:nth-child(1) a,
+.products-carousel div p:nth-child(2) {
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
 }
 
 /* Product Colour */
-.latest-products div p:nth-child(2) {
+.products-carousel div p:nth-child(2) {
   color: var(--sub-text-grey);
   font-weight: lighter;
   font-size: var(--sub-text-secondary-size);
 }
 
 /* Product Price */
-.latest-products div p:nth-child(3) {
+.products-carousel div p:nth-child(3) {
   font-size: var(--sub-text-secondary-size);
 }

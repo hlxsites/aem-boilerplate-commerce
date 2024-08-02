@@ -1,11 +1,11 @@
 /* Trending Section */
-.trending-section:nth-child(2) {
+.content-feature:nth-child(2) {
   padding: 2% auto;
   margin: auto;
 }
 
 /* Trending Column Header */
-.trending-section p:nth-child(2) {
+.content-feature p:nth-child(2) {
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);
   font-weight: var(--sub-text-title-weight);
@@ -14,7 +14,7 @@
 }
 
 /* Trending Column Colour */
-.trending-section p:nth-child(3) {
+.content-feature p:nth-child(3) {
   font-size: var(--sub-text-secondary-size);
   text-transform: capitalize;
   margin: 1px 0;
@@ -28,6 +28,6 @@ main .columns-container:nth-child(3),
 }
 
 /* Trending Column Colour */
-.trending-section p:nth-child(3) {
+.content-feature p:nth-child(3) {
   color: var(--sub-text-grey);
 }

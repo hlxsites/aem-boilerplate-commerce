@@ -1,11 +1,61 @@
 /* Next Post */
 .featured-next-post {
-  margin: 0 auto;
+  margin: 0;
   margin-top: -8%;
+}
+
+.title-two-img-link-columns div:nth-child(2) {
+  display: flex;
+  margin: 0 2%;
+}
+
+.title-two-img-link-columns div:nth-child(2) div:nth-child(2) {
+  flex-direction: column;
+}
+/* Title NEXT POST */
+.title-two-img-link-columns-wrapper
+  div:nth-child(1)
+  div:nth-child(1)
+  div:nth-child(1)
+  p:nth-child(1) {
+  letter-spacing: 4px;
+  font-weight: 400;
+  margin: 1% auto;
+}
+
+/* Images with post name and date */
+.title-two-img-link-columns-wrapper div:nth-child(2) p {
+  margin: 0 auto;
+}
+
+/* Post name and date */
+.title-two-img-link-columns-wrapper div:nth-child(2) div p:nth-child(2) a {
+  color: var(--sub-text-title-color);
+  font-weight: 550;
+  text-transform: uppercase;
+  border-radius: 0;
+  padding: 0;
+  margin: auto;
+  margin-top: 2%;
+  background-color: transparent;
+}
+
+/* Post Date */
+.title-two-img-link-columns-wrapper div:nth-child(2) div p:nth-child(3) a {
+  color: var(--sub-text-grey);
+  opacity: 50%;
+  font-weight: 400;
+  font-size: var(--sub-text-secondary-size);
+  border-radius: 0;
+  padding: 0;
+  margin: 0 auto;
+  margin-top: -2%;
+  background-color: transparent;
 }
 
 /* Title NEXT POST */
 .featured-next-post div:nth-child(1) div:nth-child(1) p:nth-child(1) {
+  /* border: 2px solid rebeccapurple; */
   letter-spacing: 4px;
   font-weight: 400;
   margin: 1% auto;

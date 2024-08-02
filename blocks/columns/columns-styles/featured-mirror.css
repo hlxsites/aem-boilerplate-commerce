@@ -1,5 +1,5 @@
 /* Featured Brand mirror (COMME DES GARÇONS HOMME) */
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) {
+.brand-showcase-mirror div:nth-child(1) div:nth-child(2) {
   display: flex;
   position: relative;
   right: 11.8%;
@@ -7,12 +7,12 @@
 }
 
 /* Bullet */
-.featured-brand-mirror ul li {
+.brand-showcase-mirror ul li {
   list-style-type: square;
 }
 
 /* COMME DES GARÇONS HOMME */
-.featured-brand-mirror ul li a {
+.brand-showcase-mirror ul li a {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: var(--sub-text-title-size);
@@ -20,19 +20,19 @@
   font-weight: bold;
 }
 
-.featured-brand-mirror ul li a:hover {
+.brand-showcase-mirror ul li a:hover {
   text-decoration: none;
 }
 
 /* COMME DES GARÇONS HOMME and Online Now positioning */
-.featured-brand-mirror div div:nth-child(2) ul {
+.brand-showcase-mirror div div:nth-child(2) ul {
   margin: auto 0;
   padding: auto;
   display: flex;
 }
 
 /* Shop Now button on top of image */
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) p a.button {
+.brand-showcase-mirror div:nth-child(1) div:nth-child(2) p a.button {
   border: none;
   background-color: transparent;
   text-transform: var(--sub-text-button-transform);
@@ -42,22 +42,22 @@
   color: var(--sub-text-grey);
 }
 
-.featured-brand-mirror div:nth-child(1) div:nth-child(2) p.button-container {
+.brand-showcase-mirror div:nth-child(1) div:nth-child(2) p.button-container {
   margin-top: auto;
 }
 /* End Shop Now button on top of image */
 
 /* COMME DES GARÇONS HOMME Columns */
-.featured-brand-mirror div:nth-child(2) div {
+.brand-showcase-mirror div:nth-child(2) div {
   display: flex;
 }
 
 /* Main Picture */
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(2) p {
   margin-top: auto;
 }
 
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(2) {
   position: relative;
   order: 1;
   flex: 1.5;
@@ -67,18 +67,18 @@
 /* Featured Items * Columns */
 
 /* Clothes and price text */
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(2) {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(1) p:nth-child(2) {
   text-transform: capitalize;
   font-weight: normal;
   font-size: var(--sub-text-secondary-size);
 }
 
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(4) {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(1) p:nth-child(4) {
   font-size: 14px;
 }
 
 /* Colour */
-.featured-brand-mirror div:nth-child(2) div:nth-child(1) p:nth-child(3) {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(1) p:nth-child(3) {
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
   font-weight: lighter;
@@ -86,7 +86,7 @@
 }
 
 /* Online Now > button */
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
   display: flex;
   position: absolute;
   align-self: flex-end;
@@ -97,11 +97,11 @@
   transition: opacity 0.3s ease;
 }
 
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2):hover {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2):hover {
   opacity: 0.5;
 }
 
-.featured-brand-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) a {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) a {
   border: none;
   font-size: var(--sub-text-secondary-size);
   padding: auto;
@@ -110,14 +110,14 @@
 /* End Shop Now > button */
 
 /* Images container */
-.nested-columns-mirror {
+.brand-showcase-mirror {
   flex-direction: column;
   flex: 1;
   flex-wrap: wrap;
 }
 
 /* Images P containers */
-.nested-columns-mirror div:nth-child(2) div:nth-child(1) p {
+.brand-showcase-mirror div:nth-child(2) div:nth-child(1) p {
   margin: 5% 5%;
   padding: 0 5%;
 }

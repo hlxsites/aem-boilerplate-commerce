@@ -1,15 +1,7 @@
 /* Banner Section */
-.banner-section
-  > .columns-wrapper
-  .columns-1-cols
-  > div:nth-child(1)
-  div:nth-child(1)
-  a {
-  text-transform: uppercase;
-}
-
 .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
   display: flex;
+  text-transform: uppercase;
 }
 
 /* Banner */
@@ -52,7 +44,7 @@ main .banner-section {
 }
 
 /* Publications */
-.banner-section p em:nth-child(1) a {
+.banner-section .hero-content p em:nth-child(1) a {
   color: white;
   text-decoration: none;
   font-size: 25px;
@@ -66,7 +58,7 @@ main .banner-section {
 }
 
 /* shop now */
-.banner-section p em:nth-child(2) a {
+.banner-section .hero-content p em:nth-child(2) a {
   color: white;
   border: 1px solid white;
   font-size: 14px;
@@ -86,7 +78,7 @@ main .banner-section {
 }
 
 /* animation onHover*/
-.banner-section p em:nth-child(2) a:hover {
+.banner-section .hero-content p em:nth-child(2) a:hover {
   background-color: white;
   color: black;
   opacity: 0.5;
