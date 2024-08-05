@@ -22,8 +22,7 @@
 
 /* Trending Secion Background Colour */
 
-main .columns-container:nth-child(3),
-.columns-container:nth-child(9) {
+.gray-background {
   background-color: var(--sub-text-background-color);
 }
 
