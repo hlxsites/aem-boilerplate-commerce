@@ -117,13 +117,15 @@
   }
 
   /* Banner Section */
+  /* Banner Section */
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;
     flex-direction: column;
+    margin-top: -9%;
   }
 
   .banner-section {
-    margin-bottom: -35%;
+    margin-bottom: -42%;
   }
 
   .banner-section img {
@@ -150,20 +152,7 @@
   }
 
   @media (501px < max-width < 1024px) {
-    /* Banner Section */
-    .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
-      display: flex;
-      flex-direction: column;
-    }
-
     /* Banner */
-    .banner-section > .columns-wrapper div:nth-child(1) {
-      position: relative;
-      width: 100%;
-      flex: 1.5;
-      margin-bottom: 5%;
-      padding-bottom: -5%;
-    }
 
     /* Publications */
     .banner-section p em:nth-child(1) a {

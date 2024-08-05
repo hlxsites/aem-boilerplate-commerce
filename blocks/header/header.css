@@ -54,6 +54,9 @@ header nav[aria-expanded="true"] {
 }
 
 @media (width < 599px) {
+  header nav {
+    height: calc(var(--nav-height) - 35px);
+  }
   .modal dialog {
     min-height: 100% !important;
     margin: 0 !important;
@@ -103,7 +106,7 @@ header nav[aria-expanded="true"] {
     }
 
     /* image */
-    .columns-container .columns-1-cols div div p:nth-child(1) img {
+    .main-nav-content div div p:nth-child(1) img {
       position: fixed;
       width: 45px;
       height: auto;
@@ -118,7 +121,7 @@ header nav[aria-expanded="true"] {
       border: none;
     }
 
-    .columns-container .columns-2-cols {
+    .nav-brand .gender-cols {
       display: flex;
       height: 5%;
       width: auto;
@@ -130,7 +133,7 @@ header nav[aria-expanded="true"] {
       padding: 0.1%;
     }
 
-    .columns-container .columns-2-cols div {
+    .nav-brand .gender-cols div {
       margin: 0;
       justify-content: center;
       align-items: center;
@@ -139,7 +142,7 @@ header nav[aria-expanded="true"] {
       flex: 2;
     }
 
-    .columns-container .columns-2-cols div div:nth-child(1) .active {
+    .nav-brand .gender-cols div div:nth-child(1) .active {
       display: flex;
       width: 50vw;
       height: 5.2vh;
@@ -149,7 +152,7 @@ header nav[aria-expanded="true"] {
       box-shadow: 4px 0px 3px rgba(0, 0, 0, 0.2);
     }
 
-    .columns-container .gender-cols div div:nth-child(2) .active {
+    .nav-brand .gender-cols div div:nth-child(2) .active {
       display: flex;
       width: 50vw;
       height: 5.2vh;
@@ -160,14 +163,14 @@ header nav[aria-expanded="true"] {
     }
 
     /* image */
-    .columns-container .columns-1-cols div div p:nth-child(1) img {
+    .main-nav-content div div p:nth-child(1) img {
       position: fixed;
       width: 45px;
       height: auto;
       bottom: 94.5%;
     }
 
-    .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
+    .main-nav-content:nth-child(1) div:nth-child(1) div:nth-child(1) {
       position: fixed;
       width: 100%;
       margin: 0 -4%;
@@ -192,43 +195,46 @@ header nav[aria-expanded="true"] {
 
     .nav-sections .main-nav-content div.button-container {
       margin-top: 5%;
+      margin-bottom: 3%;
       padding: 1% 0;
+      /* border: 2px solid rebeccapurple; */
     }
 
     .nav-tools .burger-sub-menu {
       display: flex;
       flex-direction: column;
       width: auto;
+      margin: 1% 0;
       border: 2px solid var(--sub-text-border-divider);
-      padding: 9%;
+      padding: 8%;
       background-color: white;
-      margin: 2% 0;
+    }
+
+    .nav-tools .burger-sub-menu div:nth-child(2) p {
+      display: flex;
+      padding: 4%;
     }
 
     .nav-tools {
-      margin-bottom: -60%;
       flex-direction: column;
+      display: flex;
+      margin-top: 30%;
     }
 
     .nav-tools .burger-sub-menu div div:nth-child(1) p {
       text-align: left;
       padding: 0;
       align-items: flex-start;
-      width: 130px;
-      margin-left: -25%;
+      width: auto;
     }
 
     /* Column title Account & Shipping Country */
     .nav-tools .burger-sub-menu div:nth-child(1) div p {
       color: var(--sub-text-grey);
-      margin-top: -30%;
       font-size: var(--sub-text-secondary-size);
-      line-height: 4;
-      padding-top: 5%;
     }
 
     .nav-tools .burger-sub-menu div:nth-child(2) div p {
-      margin-top: 0%;
       margin-bottom: -10%;
     }
 
@@ -242,15 +248,15 @@ header nav[aria-expanded="true"] {
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-secondary-size);
       font-weight: 550;
-      margin-bottom: -10%;
     }
 
     /* Arrow */
     .nav-tools .columns-2-cols div:nth-child(2) div:nth-child(2) p {
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-title-large);
-      margin-right: -80%;
-      margin-top: auto;
+      margin-top: -4%;
+      text-align: right;
+      justify-content: flex-end;
     }
   }
 }
@@ -622,7 +628,6 @@ header .nav-search-input .search_autocomplete .popover-container {
 }
 
 .nav-sections .main-nav-content div div a {
-  margin: auto;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
   text-transform: capitalize;
@@ -630,15 +635,13 @@ header .nav-search-input .search_autocomplete .popover-container {
 }
 
 .nav-sections .main-nav-content div:nth-child(2) div {
-  margin-top: -2%;
+  text-align: left;
+  margin-bottom: 3%;
 }
 
 .nav-sections .main-nav-content div div:nth-child(10) a {
   color: var(--sub-text-sale-color);
-}
-
-.columns-container:nth-child(3) {
-  border: none;
+  margin: 2% 0;
 }
 
 .nav-tools .columns-2-cols {
