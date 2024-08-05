@@ -496,13 +496,14 @@ div:nth-child(5) .video-wrapper div {
   /* X/twitter logo */
   .article-team div:nth-child(2) div:nth-child(1) p {
     margin: 0;
-    padding-right: 5%;
+    padding-right: 8%;
   }
 
   /* Facebook logo */
   .article-team div:nth-child(2) div:nth-child(2) p {
     justify-content: flex-start;
     margin: 1% 0;
+    padding-left: 4%;
   }
 
   /* next article */
