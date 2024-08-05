@@ -212,27 +212,6 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
-  const threeImgCol = document.querySelectorAll(
-    "main div:nth-child(10) .features-text:nth-child(1) img, \
-    main div:nth-child(3) .features-text:nth-child(1) img "
-  );
-
-  threeImgCol.forEach((element) => {
-    if (element) {
-      element.classList.add("featured-3-img-cols");
-    }
-  });
-
-  const navSubHeader = document.querySelectorAll(
-    ".nav-sections .columns-1-cols div div p  "
-  );
-  navSubHeader.forEach((element) => {
-    if (element) {
-      element.classList.add("nav-button");
-      element.classList.remove("view-all-button");
-    }
-  });
-
   const navMen = document.querySelectorAll(
     ".nav-brand .columns-2-cols div div:nth-child(1) p a "
   );
@@ -303,6 +282,7 @@ export default async function decorate(block) {
       }
     });
   });
+  // Function for dynamic ammount of products
 
   const newProductsCol = document.querySelectorAll(
     "main .columns-container:nth-child(5) \
@@ -323,7 +303,6 @@ export default async function decorate(block) {
     }
   });
 
-  // Function for dynamic ammount of products
   const productCountElements = document.querySelectorAll(
     "main .columns-container:nth-child(5) .default-content-wrapper p strong:nth-child(1)"
   );
