@@ -64,11 +64,21 @@ div.section.columns-container {
   color: var(--sub-text-title-color);
   text-transform: inherit;
   margin: 0 auto;
+  margin-top: -4%;
   padding: 0;
   font-size: 24px;
   letter-spacing: 1.5px;
   font-weight: 500;
   width: 72%;
+  text-align: center;
+}
+
+.bold-text-column-title {
+  color: var(--sub-text-title-color);
+  text-transform: inherit;
+  margin: auto;
+  font-size: 24px;
+  width: 66%;
   text-align: center;
 }
 
@@ -254,11 +264,11 @@ div:nth-child(5) .video-wrapper div {
 .more-content-button p {
   display: flex;
   justify-content: center;
+  margin: auto;
 }
 
 .more-content-button .button-container p a {
   border-radius: 0;
-  margin: 0 auto;
   margin-top: 4%;
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);
@@ -285,20 +295,34 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* Team Content */
+.article-writer:nth-child(1) {
+  margin-top: 8%;
+}
 .article-team:nth-child(1) div:nth-child(1) {
   margin: auto 0;
 }
 
 /* Writer, Photographer and Stylist */
+.article-writer p,
 .article-team p strong {
   display: flex;
   color: var(--sub-text-title-color);
-  font-size: var(--sub-text-secondary-size);
+  font-size: 16px;
   letter-spacing: 2px;
+}
+
+.article-writer p strong {
+  margin-right: 1%;
+}
+
+.article-team p strong {
   margin-right: 5%;
 }
 
 /* Name of Writer, Photographer and Stylist*/
+.article-writer div:nth-child(1) div:nth-child(1) p {
+  justify-content: center;
+}
 .article-team div:nth-child(1) div:nth-child(1) p {
   justify-content: end;
 }
@@ -312,12 +336,14 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* PHOTOGRAPHER Adam Thirtle */
+.article-writer div:nth-child(1) div:nth-child(2) p,
 .article-team div:nth-child(1) div:nth-child(2) p {
   justify-content: center;
   margin: 0 auto;
 }
 
 /* Normal par */
+.article-writer div:nth-child(1) div:nth-child(1) p,
 .article-team div:nth-child(1) div:nth-child(1) p,
 .article-team div:nth-child(1) div:nth-child(2) p,
 .article-team div:nth-child(1) div:nth-child(3) p {
@@ -329,6 +355,7 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* Border divider */
+.article-writer div:nth-child(1) div:nth-child(1) p,
 .article-team div:nth-child(1) div:nth-child(1) p,
 .article-team div:nth-child(1) div:nth-child(2) p,
 .article-team div:nth-child(1) div:nth-child(3) p {
@@ -337,18 +364,28 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* X logo */
+.article-writer div:nth-child(2) div:nth-child(1) p {
+  margin-right: -1%;
+}
+.article-writer div:nth-child(2) div:nth-child(1) p,
 .article-team div:nth-child(2) div:nth-child(1) p {
   display: flex;
   justify-content: flex-end;
 }
 
 /* Facebook logo */
+.article-writer div:nth-child(2) div:nth-child(2) p {
+  margin-left: 2%;
+}
+.article-writer div:nth-child(2) div:nth-child(2) p,
 .article-team div:nth-child(2) div:nth-child(2) p {
   display: flex;
   justify-content: flex-start;
 }
 
 /* Both logos */
+.article-writer div:nth-child(2) div:nth-child(1) p img,
+.article-writer div:nth-child(2) div:nth-child(2) p img,
 .article-team div:nth-child(2) div:nth-child(1) p img,
 .article-team div:nth-child(2) div:nth-child(2) p img {
   border-left: 2px solid black;
@@ -391,6 +428,7 @@ div:nth-child(5) .video-wrapper div {
   }
 
   /* Block Quote */
+  .bold-text-column-title,
   .block-quote p {
     width: 100%;
     font-size: 22px;
@@ -428,6 +466,10 @@ div:nth-child(5) .video-wrapper div {
     margin-bottom: 8%;
   }
 
+  .two-big-two-small div div {
+    margin: auto;
+    margin-top: 6%;
+  }
   /* Quote */
   .img-side-content div div:nth-child(2),
   .img-side-content-mirror div div:nth-child(1) {
@@ -476,6 +518,7 @@ div:nth-child(5) .video-wrapper div {
   }
 
   /* Name of Writer, Photographer and Stylist*/
+  .article-writer div:nth-child(1) div:nth-child(1) p,
   .article-team div:nth-child(1) div:nth-child(1) p,
   .article-team div:nth-child(1) div:nth-child(2) p,
   .article-team div:nth-child(1) div:nth-child(3) p {
@@ -493,6 +536,7 @@ div:nth-child(5) .video-wrapper div {
   }
 
   /* Both logos */
+  .article-writer div:nth-child(2),
   .article-team div:nth-child(2) {
     display: flex;
     flex-direction: row;
@@ -502,13 +546,23 @@ div:nth-child(5) .video-wrapper div {
   .article-team div:nth-child(2) div:nth-child(2) p img {
     margin: 0;
   }
+
   /* X/twitter logo */
+  .article-writer div:nth-child(2) div:nth-child(1) p {
+    margin: 0;
+    margin-right: 4%;
+  }
   .article-team div:nth-child(2) div:nth-child(1) p {
     margin: 0;
-    padding-right: 8%;
+    margin-right: 8%;
   }
 
   /* Facebook logo */
+  .article-writer div:nth-child(2) div:nth-child(2) p {
+    justify-content: flex-start;
+    margin: 0;
+    margin-left: 10%;
+  }
   .article-team div:nth-child(2) div:nth-child(2) p {
     justify-content: flex-start;
     margin: 1% 0;
