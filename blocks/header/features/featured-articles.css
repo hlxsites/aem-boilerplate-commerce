@@ -76,7 +76,7 @@ div.section.columns-container {
 .bold-text-column-title {
   color: var(--sub-text-title-color);
   text-transform: inherit;
-  margin: auto;
+  margin: 2% auto;
   font-size: 24px;
   width: 66%;
   text-align: center;
@@ -138,6 +138,7 @@ div:nth-child(5) .video-wrapper div {
   margin: 0 auto;
   padding: 0;
   margin-bottom: -5%;
+  width: 100%;
 }
 
 /* Img left par on right */
@@ -169,6 +170,7 @@ div:nth-child(5) .video-wrapper div {
 /* 3 images */
 .two-cols-three-img-feat div {
   margin: 0% auto;
+  margin-top: 2%;
   margin-bottom: 2%;
   padding: 0;
 }
@@ -250,6 +252,7 @@ div:nth-child(5) .video-wrapper div {
 .one-img-cols {
   padding: 0;
   margin: 2% auto;
+  width: 100%;
 }
 
 /* 2 Images */
