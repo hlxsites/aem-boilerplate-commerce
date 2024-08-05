@@ -76,7 +76,9 @@ div.section.columns-container {
 .bold-text-column-title {
   color: var(--sub-text-title-color);
   text-transform: inherit;
-  margin: 2% auto;
+  margin: auto;
+  margin-top: 2%;
+  margin-bottom: -2%;
   font-size: 24px;
   width: 66%;
   text-align: center;
@@ -298,7 +300,7 @@ div:nth-child(5) .video-wrapper div {
 
 /* Team Content */
 .article-writer:nth-child(1) {
-  margin-top: 8%;
+  margin-top: 2%;
 }
 .article-team:nth-child(1) div:nth-child(1) {
   margin: auto 0;
