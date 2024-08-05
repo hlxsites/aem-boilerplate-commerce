@@ -137,6 +137,7 @@ div:nth-child(5) .video-wrapper div {
 
 /* 2 images */
 .one-img-cols {
+  display: flex;
   margin: 0 auto;
   padding: 0;
   margin-bottom: -5%;
