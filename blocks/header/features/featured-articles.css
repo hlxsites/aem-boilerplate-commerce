@@ -77,10 +77,9 @@ div.section.columns-container {
   color: var(--sub-text-title-color);
   margin: 0 auto;
   margin-top: 6%;
-
   padding: 0;
   font-size: 18px;
-  font-weight: 550;
+  font-weight: 500;
   width: 62%;
   justify-content: center;
   text-align: left;
@@ -102,12 +101,6 @@ div.section.columns-container {
   text-wrap: wrap;
   justify-content: center;
 }
-
-/* Text Column */
-/* .text-column-title div:nth-child(2) p:last-child {
-  border: 2px solid red;
-  margin-bottom: -15%;
-} */
 
 .text-column-title div:nth-child(2) {
   color: var(--sub-text-title-color);
@@ -157,7 +150,7 @@ div:nth-child(5) .video-wrapper div {
   text-transform: inherit;
   font-size: 24px;
   letter-spacing: 1.5px;
-  font-weight: 500;
+  font-weight: 510;
   width: 100%;
   line-height: 1.5;
   text-align: center;
@@ -250,15 +243,17 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* 2 Images */
-.two-img img {
+.two-img div img {
+  display: flex;
   margin-top: -15%;
 }
 
+/* SHOP C.P. COMPANY button text/ Enter draw */
 .more-content-button p {
   display: flex;
   justify-content: center;
 }
-/* SHOP C.P. COMPANY button text/ Enter draw */
+
 .more-content-button .button-container p a {
   border-radius: 0;
   margin: 0 auto;
@@ -267,6 +262,23 @@ div:nth-child(5) .video-wrapper div {
   padding: 1% 8%;
   text-align: center;
   align-items: center;
+}
+.more-content-button-no-background p {
+  display: flex;
+  justify-content: center;
+}
+
+.more-content-button-no-background .button-container p a {
+  border-radius: 0;
+  color: var(--sub-text-title-color);
+  margin: 0 auto;
+  text-transform: uppercase;
+  font-size: var(--sub-text-title-large);
+  padding: 1% 8%;
+  text-align: center;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid black;
 }
 
 /* Team Content */
@@ -341,155 +353,214 @@ div:nth-child(5) .video-wrapper div {
 }
 
 @media (max-width: 600px) {
-  div:nth-child(1)
-    .features-text:nth-child(1)
-    p:nth-child(1)
-    strong
-    a:nth-child(1) {
+  /* interviews button */
+  .features-intro p:nth-child(1) strong a:nth-child(1) {
     margin-top: calc(var(--nav-height) - 150px);
-    padding: 0;
-    font-size: 10px;
   }
 
   /* Title */
-  div:nth-child(1) .features-text:nth-child(1) p:nth-child(2) {
+  .features-intro div:nth-child(1) p:nth-child(2) {
     font-size: 24px;
     text-align: center;
-    margin: 0 auto;
-    padding: 0;
   }
 
   /* Date */
-  div:nth-child(1) .features-text:nth-child(1) p:nth-child(3) {
+  .features-intro div:nth-child(1) p:nth-child(3) {
     font-size: var(--sub-text-secondary-size);
   }
 
   /* summary */
-  div:nth-child(1) .features-text:nth-child(1) p:nth-child(4) {
-    font-weight: 500;
+  .features-intro div:nth-child(1) p:nth-child(4) {
     width: 100%;
-    justify-content: center;
     text-align: center;
     margin-bottom: -15%;
     margin-top: 10%;
   }
 
-  /* Big Bold titles */
-  .features-bold-title {
-    margin: 0 auto;
-    margin-top: -15%;
-    margin-bottom: 15%;
-    font-size: 22px;
+  .one-img-cols {
+    margin-bottom: -10%;
+  }
+
+  /* Block Quote */
+  .block-quote p {
     width: 100%;
+    font-size: 22px;
+    margin: -4% auto;
   }
 
   /* All bold Paragraphs */
-  .features-bold-text {
+  .text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1) {
     font-size: 18px;
     width: 100%;
     text-align: left;
-    margin: auto;
-    margin-top: -15%;
   }
 
-  /* All normal Paragraphs */
-  .featured-text {
-    margin: 3.5% auto;
-    font-size: 16px;
+  /* Text Section */
+  .text-section p,
+  .text-column-title div:nth-child(2) {
     width: 100%;
-    margin-bottom: 5%;
   }
 
   /* Video */
-  div:nth-child(4) .video-wrapper div {
+  div:nth-child(5) .video-wrapper div {
     margin: 0;
     padding: 0;
   }
 
-  div:nth-child(4) .video-wrapper div div iframe {
+  div:nth-child(5) .video-wrapper div div iframe {
     width: 100% !important;
     height: 100% !important;
     padding: 0;
     margin: 0 auto;
     margin-bottom: 35%;
   }
+  .two-img div:nth-child(2) img {
+    margin-top: 10%;
+    margin-bottom: 8%;
+  }
+
+  /* Quote */
+  .img-side-content div div:nth-child(2),
+  .img-side-content-mirror div div:nth-child(1) {
+    font-size: 22px;
+  }
+
+  /* 3 images */
+  .two-cols-three-img-feat div {
+    margin-top: 8%;
+  }
 
   /* Carousel content */
-  .features-carousel {
+
+  /* SHOP C.P. COMPANY button */
+  .carousel-title {
+    margin-bottom: -4%;
+  }
+  .carousel-content {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     display: flex;
   }
 
-  .features-carousel-content div {
+  .carousel-content div {
     flex-direction: row;
     margin-top: 1%;
   }
+
+  /* Product Pictures */
+  .carousel-content div div p:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    margin: 2px auto;
+    border: 1px solid transparent;
+  }
+
+  .carousel-content div div p:nth-child(2) a,
+  .carousel-content div div p:nth-child(3) a {
+    font-size: 12px;
+  }
   /* end carousel */
 
-  /* SHOP C.P. COMPANY button */
-  div:nth-child(20) .features-text p {
-    margin-top: -20%;
-    margin-bottom: 4%;
+  /* Main Img */
+  .one-img-cols {
+    margin: 2% auto;
   }
 
   /* Name of Writer, Photographer and Stylist*/
-  div:nth-child(20) .features-team div:nth-child(1) div:nth-child(1) p,
-  div:nth-child(20) .features-team div:nth-child(1) div:nth-child(2) p,
-  div:nth-child(20) .features-team div:nth-child(1) div:nth-child(3) p {
+  .article-team div:nth-child(1) div:nth-child(1) p,
+  .article-team div:nth-child(1) div:nth-child(2) p,
+  .article-team div:nth-child(1) div:nth-child(3) p {
     display: flex;
     margin: 2% auto;
-    color: var(--sub-text-title-color);
-    text-transform: capitalize;
-    width: 100%;
     justify-content: center;
   }
   div:nth-child(20) .features-team div:nth-child(1) div:nth-child(3) p {
     margin-bottom: 5%;
   }
   /* Dividers */
-  div:nth-child(20) .features-team div:nth-child(1) div:nth-child(2) {
+  .article-team div:nth-child(1) div:nth-child(2) {
     border-left: none;
     border-right: none;
   }
 
+  /* Both logos */
+  .article-team div:nth-child(2) {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .article-team div:nth-child(2) div:nth-child(1) p img,
+  .article-team div:nth-child(2) div:nth-child(2) p img {
+    margin: 0;
+  }
   /* X/twitter logo */
-  div:nth-child(20) .features-team div:nth-child(2) div:nth-child(1) {
-    margin: 0 auto;
-    margin-left: 40%;
+  .article-team div:nth-child(2) div:nth-child(1) p {
+    margin: 0;
+    padding-right: 5%;
   }
 
   /* Facebook logo */
-  div:nth-child(20) .features-team div:nth-child(2) div:nth-child(2) {
-    margin: -9% auto;
-    margin-right: 40%;
+  .article-team div:nth-child(2) div:nth-child(2) p {
+    justify-content: flex-start;
+    margin: 1% 0;
   }
 
-  /* Both logos */
-  div:nth-child(20) .features-team div:nth-child(2) div:nth-child(1) p,
-  div:nth-child(20) .features-team div:nth-child(2) div:nth-child(2) p {
-    justify-content: center;
-    margin: 2% auto;
+  /* next article */
+  /* 2 imgs */
+  .featured-next-post p {
+    width: 365px;
+  }
+  .featured-next-post div p:nth-child(2) a {
+    text-wrap: wrap;
   }
 
   /* Latest */
-  main
-    div:nth-child(22)
-    .features-text
-    .features-text:nth-child(1)
-    div:nth-child(1)
-    p {
-    margin: 0;
+  .featured-latest-articles div div p {
+    width: 365px;
   }
-  /* View All */
-  main
-    div:nth-child(22)
-    .features-text
-    .features-text:nth-child(1)
-    div:nth-child(2)
-    p {
-    margin: 0;
-    margin-top: -6.5%;
-    margin-bottom: 2%;
+
+  .more-content-button .button-container p a {
+    overflow: visible;
+    padding: 2% 26%;
+  }
+
+  .more-content-button-no-background .button-container p a {
+    overflow: visible;
+    padding: 2% 30%;
   }
 }
+/* 4 imgs diagonal bigger*/
+/* main
+  div:nth-child(4)
+  div:nth-child(1)
+  .features-text:nth-child(1)
+  div:nth-child(1)
+  .features-text:nth-child(2),
+main
+  div:nth-child(4)
+  div:nth-child(1)
+  .features-text:nth-child(2)
+  div:nth-child(1) {
+  flex: 1.3;
+} */
+
+/* main div:nth-child(6) .features-text:nth-child(1) p:nth-child(1) strong {
+  width: 100%;
+  font-weight: 500;
+} */
+
+/* Post name and date */
+
+/* Next Post */
+/* .featured-next-post {
+  margin: 0;
+}
+
+.title-two-img-link-columns div:nth-child(2) {
+  display: flex;
+  margin: 0 2%;
+}
+
+.title-two-img-link-columns div:nth-child(2) div:nth-child(2) {
+  flex-direction: column;
+} */
