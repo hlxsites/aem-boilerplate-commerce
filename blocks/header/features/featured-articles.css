@@ -85,7 +85,8 @@
 }
 
 /* All bold Paragraphs */
-.text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1) {
+.text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1),
+.text-column-bold {
   color: var(--sub-text-title-color);
   margin: 0 auto;
   margin-top: 6%;
