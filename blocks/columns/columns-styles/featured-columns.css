@@ -26,8 +26,11 @@
 
 /* Balenciaga and Shop now positioning */
 .brand-showcase div div:nth-child(1) ul {
-  margin: auto 0;
+  margin: 0;
+
+  margin-top: 6%;
   padding: auto;
+
   display: flex;
 }
 
