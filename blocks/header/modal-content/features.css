@@ -1,9 +1,5 @@
-.modal-content
-  .columns-2-cols
-  div
-  div:nth-child(1)
-  p:nth-child(1):only-of-type
-  a {
+.features-modal div div:nth-child(1) p a {
+  border-radius: 0;
   border: none;
   color: black;
   background-color: white;
@@ -14,7 +10,7 @@
   font-weight: 555;
 }
 
-.modal-content .columns-2-cols div ul {
+.features-modal div ul {
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -26,51 +22,49 @@
   text-transform: capitalize;
 }
 
-.modal-content .columns-2-cols div ul,
-.modal-content .columns-2-cols div div p picture {
+.features-modal div ul,
+.features-modal div div:nth-child(2) {
   display: flex;
 }
-.modal-content .columns-2-cols div div table td p:nth-child(3) {
+
+.features-modal div div table td p:nth-child(3) {
   height: 60px;
 }
 
-.modal-content .columns-2-cols div:nth-child(2) {
+.features-modal div:nth-child(2) {
   flex: 2;
 }
 
-.modal-content .columns-2-cols div:nth-child(2) table p {
+.features-modal div:nth-child(2) table p {
+  margin: 0 auto;
   padding: 0;
-  margin-bottom: 1%;
-  padding-right: 8%;
+  width: 326px;
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
 }
+.features-modal div:nth-child(2) table p:nth-child(2) a,
+.features-modal div:nth-child(2) table p:nth-child(3) a {
+  text-transform: uppercase;
+  background-color: transparent;
+  border-radius: 0;
+  text-wrap: wrap;
+  margin: 0;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 0;
+}
 
-.modal-content .columns-2-cols div:nth-child(2) table p:nth-child(2) {
-  margin-bottom: 4%;
+.features-modal div:nth-child(2) table p:nth-child(2) a {
+  padding-top: 4%;
   font-size: 10px;
   color: var(--sub-text-grey);
-  text-transform: uppercase;
 }
 
-.modal-content .columns-2-cols div:nth-child(2) table p:nth-child(3) {
+.features-modal div:nth-child(2) table p:nth-child(3) a {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
-  text-transform: uppercase;
 }
 
-.modal-content .columns-2-cols div ul {
-  list-style-type: none;
-  flex-direction: column;
-  float: left;
-  margin: 5% 0;
-  padding: 0;
-  line-height: 2;
-  font-size: var(--sub-text-secondary-size);
-  font-weight: 100;
-  text-transform: capitalize;
-}
-
-.modal-content .columns-2-cols div div {
+.features-modal div div {
   align-self: start;
 }

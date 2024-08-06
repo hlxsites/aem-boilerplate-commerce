@@ -57,8 +57,19 @@
 }
 
 /*   border: 1px solid black; */
-
+@media (min-width: 601px) {
+  main .section {
+    margin: auto;
+    padding-top: 0;
+    padding-bottom: auto;
+    padding-left: auto;
+    padding-right: auto;
+  }
+}
 @media (max-width: 600px) {
+  main .section {
+    margin: 0 auto;
+  }
   .brand-showcase-mirror div:nth-child(2) {
     display: flex;
     flex-direction: column;
@@ -121,21 +132,16 @@
   }
 
   /* Banner Section */
-  /* Banner Section */
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;
     flex-direction: column;
-    margin-top: -9%;
-  }
-
-  .banner-section {
-    margin-bottom: -42%;
+    margin-top: -10%;
   }
 
   .banner-section img {
     object-fit: none;
     width: 100%;
-    height: 25vh;
+    height: 32vh;
     zoom: 2.5;
   }
 

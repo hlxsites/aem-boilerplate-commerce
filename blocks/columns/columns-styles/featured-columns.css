@@ -121,11 +121,6 @@
   padding: 0 5%;
 }
 
-/* main .columns-container:nth-child(4),
-main .columns-container:nth-child(5) {
-  border: 1px solid var(--sub-text-border-divider);
-} */
-
 @media (max-width: 500px) {
   .brand-showcase div:nth-child(1) div:nth-child(1) {
     right: 5.6%;

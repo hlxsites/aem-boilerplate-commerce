@@ -3,14 +3,13 @@
 
 /* removes divider border */
 
-.reduce-margin {
+/* .reduce-margin {
   margin-bottom: -10%;
-}
+} */
 
 .features-intro p {
   display: flex;
   margin: 0 auto;
-  padding: 0;
   justify-content: center;
 }
 
@@ -32,6 +31,8 @@
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: 30px;
+  text-align: center;
+  width: 65%;
   text-transform: uppercase;
 }
 
@@ -56,7 +57,6 @@
   width: 45%;
   justify-content: center;
   text-align: center;
-  margin-bottom: -5%;
 }
 
 /* Block Quote */
@@ -88,8 +88,7 @@
 .text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1),
 .text-column-bold {
   color: var(--sub-text-title-color);
-  margin: 0 auto;
-  margin-top: 6%;
+  margin: auto;
   padding: 0;
   font-size: 18px;
   font-weight: 500;
@@ -98,24 +97,20 @@
   text-align: left;
 }
 
-.text-section {
-  margin-top: -4%;
-}
-/* Text Section */
-.text-section p {
+.text-column {
   color: var(--sub-text-title-color);
-  text-transform: inherit;
-  margin: 2% auto;
+  margin: auto;
+  padding: 0;
   font-size: 16px;
-  letter-spacing: 1.5px;
-  font-weight: 480;
+  font-weight: 500;
   width: 62%;
-  text-align: left;
-  text-wrap: wrap;
   justify-content: center;
+  text-align: left;
 }
 
-.text-column-title div:nth-child(2) {
+/* Text Section */
+.text-column-title div:nth-child(2),
+.text-column-par {
   color: var(--sub-text-title-color);
   text-transform: inherit;
   margin: 0% auto;
@@ -138,9 +133,6 @@ div:nth-child(5) .video-wrapper div {
 
 /* 2 images */
 .one-img-cols {
-  margin: 0 auto;
-  padding: 0;
-  margin-bottom: -5%;
   width: 100%;
 }
 
@@ -170,11 +162,9 @@ div:nth-child(5) .video-wrapper div {
   text-align: center;
 }
 
-/* 3 images */
-.two-cols-three-img-feat div {
-  margin: 0% auto;
-  margin-top: 2%;
-  margin-bottom: 2%;
+/* 2 Columns with images */
+.two-cols-img-feat div {
+  margin: 2% auto;
   padding: 0;
 }
 
@@ -191,9 +181,11 @@ div:nth-child(5) .video-wrapper div {
 
 /* Carousel content */
 .carousel-content {
-  margin: 0;
+  /* margin: 0; */
+  margin: auto;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  justify-content: center;
 }
 
 .carousel-content div div p {
@@ -258,11 +250,11 @@ div:nth-child(5) .video-wrapper div {
 }
 
 /* 2 Images */
-.two-img div img {
+.two-img div {
+  margin: 2% auto;
   display: flex;
   width: 100%;
   height: 100%;
-  margin-top: -15%;
 }
 
 /* SHOP C.P. COMPANY button text/ Enter draw */
@@ -404,6 +396,14 @@ div:nth-child(5) .video-wrapper div {
 }
 
 @media (max-width: 600px) {
+  main .section {
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: auto;
+    padding-left: auto;
+    padding-right: auto;
+  }
+
   /* interviews button */
   .features-intro p:nth-child(1) strong a:nth-child(1) {
     margin-top: calc(var(--nav-height) - 150px);
@@ -413,6 +413,7 @@ div:nth-child(5) .video-wrapper div {
   .features-intro div:nth-child(1) p:nth-child(2) {
     font-size: 24px;
     text-align: center;
+    width: 90%;
   }
 
   /* Date */
@@ -424,12 +425,8 @@ div:nth-child(5) .video-wrapper div {
   .features-intro div:nth-child(1) p:nth-child(4) {
     width: 100%;
     text-align: center;
-    margin-bottom: -15%;
+    /* margin-bottom: -15%; */
     margin-top: 10%;
-  }
-
-  .one-img-cols {
-    margin-bottom: -10%;
   }
 
   /* Block Quote */
@@ -437,20 +434,29 @@ div:nth-child(5) .video-wrapper div {
   .block-quote p {
     width: 100%;
     font-size: 22px;
-    margin: -4% auto;
   }
 
   /* All bold Paragraphs */
-  .text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1) {
+  .text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1),
+  .text-column-bold {
     font-size: 18px;
     width: 100%;
     text-align: left;
   }
 
+  .text-column {
+    width: 100%;
+    text-align: left;
+  }
+
   /* Text Section */
-  .text-section p,
+  .text-column-par,
   .text-column-title div:nth-child(2) {
     width: 100%;
+  }
+
+  .text-column-title div:nth-child(1) {
+    padding: auto;
   }
 
   /* Video */
@@ -464,11 +470,11 @@ div:nth-child(5) .video-wrapper div {
     height: 100% !important;
     padding: 0;
     margin: 0 auto;
-    margin-bottom: 35%;
+    /* margin-bottom: -35%; */
   }
+
   .two-img div:nth-child(2) img {
     margin-top: 10%;
-    margin-bottom: 8%;
   }
 
   .two-big-two-small div div {
@@ -481,16 +487,12 @@ div:nth-child(5) .video-wrapper div {
     font-size: 22px;
   }
 
-  /* 3 images */
-  .two-cols-three-img-feat div {
-    margin-top: 8%;
-  }
-
   /* Carousel content */
 
   /* SHOP C.P. COMPANY button */
   .carousel-title {
     margin-bottom: -4%;
+    text-align: center;
   }
   .carousel-content {
     overflow-x: auto;
@@ -519,7 +521,8 @@ div:nth-child(5) .video-wrapper div {
 
   /* Main Img */
   .one-img-cols {
-    margin: 2% auto;
+    margin: 0 auto;
+    padding: 0;
   }
 
   /* Name of Writer, Photographer and Stylist*/
