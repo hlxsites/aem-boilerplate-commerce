@@ -1,7 +1,7 @@
 /* Christopher Press Section desc */
 :has(.section-desc):first-child 
 {
-    padding-bottom: 100px;
+    padding-bottom: 50px;
 }
 
 .section-desc
