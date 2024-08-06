@@ -3,9 +3,9 @@
 
 /* removes divider border */
 
-/* nav div.section.columns-container {
-  border: none;
-} */
+.reduce-margin {
+  margin-bottom: -10%;
+}
 
 .features-intro p {
   display: flex;
