@@ -1,0 +1,79 @@
+.gift-cards-form,
+.gift-cards-buttons,
+.gift-cards
+{
+    width: 60%;
+    margin: auto;
+}
+
+.gift-cards-form > form > .heading-wrapper h2
+{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.gift-cards-form form label
+{
+    font-size: 13px;
+    font-weight: lighter;
+}
+
+.gift-cards-form form input,
+.gift-cards-form form input:hover
+{
+    border-bottom: 0.5px solid #999999;
+    border-radius: 0;
+    max-width: 100%;
+}
+
+.gift-cards-form form input:focus
+{
+    border-bottom: 1px solid black;
+    border-radius: 0;
+}
+
+.gift-cards-form form input::placeholder
+{
+    opacity: 0.5;
+}
+
+.gift-cards
+{
+    border-top: 0.5px solid #999999;
+    padding-top: 50px;
+}
+
+.gift-cards ul
+{
+    display: flex;
+    margin: 0;
+    padding: 0;
+    justify-content: space-evenly;
+}
+
+.gift-cards ul li
+{
+    border: 1px solid black;
+    padding: 10px 40px;
+    list-style: none;
+}
+
+.gift-cards-buttons > div p
+{
+    text-align: center;
+}
+
+.gift-cards-buttons > div > div:nth-child(1) p a
+{
+    border: 1px solid black;
+    padding: 10px 30%;
+    text-decoration: none;
+}
+
+.gift-cards-buttons > div > div:nth-child(2) p a
+{
+    color: white;
+    background-color: black;
+    padding: 10px 30%;
+    text-decoration: none;
+}
