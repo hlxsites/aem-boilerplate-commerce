@@ -19,7 +19,7 @@ header .nav-wrapper {
 
 /* END. Logo nav */
 .main-nav-content div:nth-child(1) div img {
-  margin-top: calc(var(--nav-height) - 135px);
+  margin-top: -140%;
 }
 
 /* Nav Directories */
