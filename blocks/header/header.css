@@ -14,13 +14,13 @@ header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
   z-index: 1000;
+
   position: fixed;
 }
 
 /* END. Logo nav */
 .main-nav-content div:nth-child(1) div img {
-  margin: -150% 0;
-  text-align: center;
+  margin-top: calc(var(--nav-height) - 135px);
 }
 
 /* Nav Directories */
@@ -56,7 +56,7 @@ header nav[aria-expanded="true"] {
 
 @media (width < 599px) {
   header nav {
-    height: calc(var(--nav-height) - 35px);
+    height: calc(var(--nav-height) / 2);
   }
   .modal dialog {
     min-height: 100% !important;
@@ -393,10 +393,11 @@ header nav .nav-brand a {
   letter-spacing: var(--type-headline-1-letter-spacing);
 }
 
-header nav .nav-brand img {
+/* header nav .nav-brand img {
   width: 128px;
   height: auto;
-}
+
+} */
 
 /* sections */
 header nav .nav-sections {
@@ -462,7 +463,7 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections {
     display: block;
     visibility: visible;
-    white-space: nowrap;
+    text-wrap: nowrap;
   }
 
   header nav[aria-expanded="true"] .nav-sections {
@@ -499,6 +500,7 @@ header nav .nav-sections ul > li > ul > li {
     display: flex;
     gap: 2em;
     margin: 0;
+    border: 2px solid rebeccapurple;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li {
