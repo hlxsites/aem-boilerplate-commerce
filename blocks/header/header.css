@@ -26,7 +26,8 @@ header .nav-wrapper {
 /* Nav Directories */
 .main-nav-content div:nth-child(1) div {
   border-top: 1px solid var(--sub-text-border-divider);
-  margin-top: 8%;
+  margin-top: calc(var(--nav-height) / 2 + 10px);
+  border: 2px solid rebeccapurple;
 }
 
 /* Nav content */
@@ -58,7 +59,8 @@ header nav[aria-expanded="true"] {
   header nav {
     height: calc(var(--nav-height) / 2);
   }
-  .modal dialog {
+
+  main .modal dialog {
     min-height: 100% !important;
     margin: 0 !important;
   }
@@ -79,6 +81,10 @@ header nav[aria-expanded="true"] {
     animation-duration: 0.8s;
   }
 
+  /* Nav Directories */
+  .main-nav-content div:nth-child(1) div {
+    border-top: none;
+  }
   @keyframes slideIn {
     0% {
       left: -100px;
@@ -100,9 +106,9 @@ header nav[aria-expanded="true"] {
     .columns-1-cols:nth-child(1)
     div:nth-child(1)
     div {
-    position: fixed;
+    position: relative;
     width: 100%;
-    margin: auto -4%;
+    margin: 0;
     height: auto;
     padding: 0;
     border-bottom: 1px solid var(--sub-text-border-divider);
@@ -116,10 +122,10 @@ header nav[aria-expanded="true"] {
     div
     p:nth-child(1)
     img {
-    position: fixed;
-    width: 45px;
+    position: relative;
+    width: 55px;
     height: auto;
-    bottom: 94.5%;
+    top: calc(var(--nav-height) / 3);
   }
 
   header nav[aria-expanded="true"] {
@@ -169,12 +175,12 @@ header nav[aria-expanded="true"] {
       box-shadow: -4px 0px 3px rgba(0, 0, 0, 0.2);
     }
 
-    /* image */
+    /* END. image */
     .main-nav-content div div p:nth-child(1) img {
-      position: fixed;
-      width: 45px;
+      position: relative;
+      width: 60px;
       height: auto;
-      bottom: 94.5%;
+      top: calc(var(--nav-height) / 2);
     }
 
     .main-nav-content:nth-child(1) div:nth-child(1) div:nth-child(1) {
@@ -200,11 +206,11 @@ header nav[aria-expanded="true"] {
       font-size: var(--sub-text-secondary-size);
     }
 
+    /* navigation in burger */
     .nav-sections .main-nav-content div.button-container {
       margin-top: 5%;
       margin-bottom: 3%;
       padding: 1% 0;
-      /* border: 2px solid rebeccapurple; */
     }
 
     .nav-tools .burger-sub-menu {
@@ -286,8 +292,11 @@ header nav[aria-expanded="true"] {
 }
 
 header nav p {
+  display: flex;
+  justify-content: center;
   margin: 0;
   line-height: 1;
+  border-top: none;
 }
 
 header nav a:any-link {
