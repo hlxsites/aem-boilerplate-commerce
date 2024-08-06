@@ -52,6 +52,10 @@
   order: unset;
 }
 
+.divider-border {
+  border-bottom: 1px solid var(--sub-text-border-divider);
+}
+
 /*   border: 1px solid black; */
 
 @media (max-width: 600px) {

@@ -61,7 +61,3 @@
   margin: 2% auto;
   display: flex;
 }
-
-.columns-container:nth-child(3) {
-  border: 1px solid var(--sub-text-border-divider);
-}
