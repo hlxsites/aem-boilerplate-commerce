@@ -118,10 +118,10 @@ header nav[aria-expanded="true"] {
     div
     p:nth-child(1)
     img {
-    position: fixed;
     width: 45px;
     height: auto;
     bottom: 94.5%;
+    border: 2px solid rebeccapurple;
   }
 
   header nav[aria-expanded="true"] {
@@ -173,7 +173,6 @@ header nav[aria-expanded="true"] {
 
     /* image */
     .main-nav-content div div p:nth-child(1) img {
-      position: fixed;
       width: 45px;
       height: auto;
       bottom: 94.5%;
