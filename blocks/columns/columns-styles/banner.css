@@ -113,7 +113,7 @@ main .banner-section-latest {
 .banner-section-latest {
   position: relative;
   padding: 32px;
-  min-height: 78vh;
+  min-height: 58vh;
 }
 
 .banner-section-latest picture {

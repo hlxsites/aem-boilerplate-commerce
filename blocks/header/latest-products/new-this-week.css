@@ -2,11 +2,6 @@
   height: 50vh;
 }
 
-.banner-section-latest {
-  margin-bottom: calc(0vh - 16%);
-  border: 2px solid rebeccapurple;
-}
-
 .hero-latest div {
   display: flex;
   flex-direction: column;
@@ -64,21 +59,23 @@
   cursor: pointer;
 }
 
+/* Shop men & women */
 .hero-latest div table table {
   margin: 2% 0;
   padding: 0;
-  width: 50%;
+  width: 80%;
 }
 
-/* Shop men & women */
 .hero-latest div table table td a {
   font-weight: bold;
   text-transform: uppercase;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-small);
-  width: auto;
+  width: 100%;
   letter-spacing: 2px;
+  margin-right: 2%;
   margin: auto;
+  text-wrap: nowrap;
   text-align: left;
 }
 
@@ -116,13 +113,12 @@
   display: flex;
   width: auto;
 }
-
-.form-container {
+.form-container .categories-form {
   margin-right: 20%;
-  margin-top: calc(var(--nav-height) - 435px);
+  margin-top: calc(var(--nav-height) - 335px);
 }
 
-.form-container .heading-wrapper {
+.form-container .categories-form .heading-wrapper {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -133,12 +129,12 @@
   height: 20px;
 }
 
-.form-container .heading-wrapper h2 {
+.form-container .categories-form .heading-wrapper h2 {
   font-size: var(--sub-text-secondary-size);
   cursor: pointer;
 }
 
-.form-container .heading-wrapper::after {
+.form-container .categories-form .heading-wrapper::after {
   content: "";
   display: flex;
   position: absolute;
@@ -152,15 +148,15 @@
   z-index: 1;
 }
 
-.form-container.active .heading-wrapper::after {
+.form-container.active .categories-form .heading-wrapper::after {
   transform: translateY(-50%) rotate(-45deg);
 }
 
-.form-container div div .checkbox-wrapper {
+.form-container .categories-form .checkbox-wrapper {
   display: none;
 }
 
-.form-container.active div div .checkbox-wrapper {
+.form-container.active .categories-form .checkbox-wrapper {
   display: flex;
 }
 
@@ -280,4 +276,7 @@
 /* Total products */
 main .columns-container:nth-child(5) .default-content-wrapper {
   text-align: center;
+}
+.product-list-page .ds-sdk-product-list p {
+  border: 2px solid rebeccapurple;
 }
