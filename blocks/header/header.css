@@ -16,19 +16,19 @@ header .nav-wrapper {
   z-index: 1000;
   position: fixed;
 }
-nav .columns-container:nth-child(4) {
-  border: none;
-}
 
-nav .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div img {
+/* END. Logo nav */
+.main-nav-content div:nth-child(1) div img {
   margin-top: calc(var(--nav-height) - 135px);
 }
 
-nav .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
+/* Nav Directories */
+.main-nav-content div:nth-child(1) div {
   border-top: 1px solid var(--sub-text-border-divider);
-  margin-top: 5%;
+  margin-top: 8%;
 }
 
+/* Nav content */
 header nav {
   box-sizing: border-box;
   display: grid;
@@ -62,7 +62,7 @@ header nav[aria-expanded="true"] {
     margin: 0 !important;
   }
 
-  .nav-sections .columns-1-cols div:hover div a:not(:hover) {
+  .main-nav-content div:hover div a:not(:hover) {
     color: var(--sub-text-title-color);
   }
 
@@ -93,32 +93,40 @@ header nav[aria-expanded="true"] {
     display: none;
   }
 
-  header nav[aria-expanded="false"] {
-    .columns-container .columns-1-cols:nth-child(1) div:nth-child(1) div {
-      position: fixed;
-      width: 100%;
-      margin: 0 -4%;
-      top: 0;
-      height: 7%;
-      padding: 0;
-      background-color: white;
-      border-bottom: 1px solid var(--sub-text-border-divider);
-    }
+  header
+    nav[aria-expanded="false"]
+    .columns-container
+    .columns-1-cols:nth-child(1)
+    div:nth-child(1)
+    div {
+    position: fixed;
+    width: 100%;
+    margin: 0 -4%;
+    top: 0;
+    height: 7%;
+    padding: 0;
+    background-color: white;
+    border-bottom: 1px solid var(--sub-text-border-divider);
+  }
 
-    /* image */
-    .main-nav-content div div p:nth-child(1) img {
-      position: fixed;
-      width: 45px;
-      height: auto;
-      bottom: 94.5%;
-    }
+  /* image */
+  header
+    nav[aria-expanded="false"]
+    .main-nav-content
+    div
+    div
+    p:nth-child(1)
+    img {
+    position: fixed;
+    width: 45px;
+    height: auto;
+    bottom: 94.5%;
   }
 
   header nav[aria-expanded="true"] {
     /* men and women */
     .columns-container {
       width: 100%;
-      border: none;
     }
 
     .nav-brand .gender-cols {
@@ -376,7 +384,7 @@ header nav[aria-expanded="true"] .nav-hamburger-icon::after {
   }
 }
 
-/* brand */
+/* Gender Category */
 header nav .nav-brand a {
   grid-area: brand;
   flex-basis: 128px;
@@ -393,8 +401,6 @@ header nav .nav-brand img {
 header nav .nav-sections {
   grid-area: sections;
   flex: 1 1 auto;
-  display: none;
-  visibility: hidden;
 }
 
 header nav[aria-expanded="true"] .nav-sections {
@@ -416,6 +422,7 @@ header nav[aria-expanded="false"] .nav-sections {
   align-self: start;
 }
 
+/* Mobile nav menu */
 header nav[aria-expanded="false"] .columns-1-cols div:nth-child(2) {
   display: none;
   visibility: hidden;
@@ -644,6 +651,7 @@ header .nav-search-input .search_autocomplete .popover-container {
   margin: 2% 0;
 }
 
+/* log in and currency */
 .nav-tools .columns-2-cols {
   display: none;
 }

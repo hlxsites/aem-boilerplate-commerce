@@ -63,10 +63,10 @@
     div
     div:nth-child(1)
     p:nth-child(1):only-of-type {
-    width: 100vw;
+    width: 100%;
     text-align: left;
     border-radius: 0;
-    margin-left: auto;
+
     padding-top: 8%;
   }
 
@@ -91,9 +91,5 @@
   }
   .modal-content .four-cols-two-img div div p {
     font-size: var(--sub-text-title-large);
-  }
-
-  .modal-content .four-cols-two-img div:nth-child(4) table {
-    display: none;
   }
 }
