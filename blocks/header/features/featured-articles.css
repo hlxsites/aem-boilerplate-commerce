@@ -503,6 +503,7 @@ div:nth-child(5) .video-wrapper div {
   .carousel-content div {
     flex-direction: row;
     margin-top: 1%;
+    width: 100%;
   }
 
   /* Product Pictures */
