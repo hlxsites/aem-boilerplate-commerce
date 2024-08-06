@@ -101,9 +101,10 @@ header nav[aria-expanded="true"] {
     div:nth-child(1)
     div {
     position: fixed;
+    border: 2px solid rebeccapurple;
     width: 100%;
     margin: 0 -4%;
-    top: 0;
+
     height: 7%;
     padding: 0;
     background-color: white;
