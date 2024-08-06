@@ -101,13 +101,10 @@ header nav[aria-expanded="true"] {
     div:nth-child(1)
     div {
     position: fixed;
-    border: 2px solid rebeccapurple;
     width: 100%;
-    margin: 0 -4%;
-
-    height: 7%;
+    margin: auto -4%;
+    height: auto;
     padding: 0;
-    background-color: white;
     border-bottom: 1px solid var(--sub-text-border-divider);
   }
 
@@ -217,7 +214,6 @@ header nav[aria-expanded="true"] {
       margin: 1% 0;
       border: 2px solid var(--sub-text-border-divider);
       padding: 8%;
-      background-color: white;
     }
 
     .nav-tools .burger-sub-menu div:nth-child(2) p {
@@ -313,7 +309,7 @@ header nav .nav-hamburger button {
   border: 0;
   border-radius: 0;
   padding: 0;
-  background-color: var(--color-neutral-50);
+  background-color: transparent;
   color: inherit;
   overflow: initial;
   text-overflow: initial;
@@ -393,12 +389,6 @@ header nav .nav-brand a {
   font: var(--type-headline-1-font);
   letter-spacing: var(--type-headline-1-letter-spacing);
 }
-
-/* header nav .nav-brand img {
-  width: 128px;
-  height: auto;
-
-} */
 
 /* sections */
 header nav .nav-sections {
