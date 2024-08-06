@@ -19,8 +19,8 @@ header .nav-wrapper {
 
 /* END. Logo nav */
 .main-nav-content div:nth-child(1) div img {
-  margin-top: calc(var(--nav-height) - 605px);
-  position: fixed;
+  margin: -150% 0;
+  text-align: center;
 }
 
 /* Nav Directories */
