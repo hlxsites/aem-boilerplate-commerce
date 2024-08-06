@@ -1,5 +1,6 @@
 @import url(../form/form-styles/email-us-styles.css);
 @import url(../form/form-styles/sign-up-styles.css);
+@import url(../form/form-styles/gift-cards-styles.css);
 
 .form .field-wrapper {
   display: grid;
