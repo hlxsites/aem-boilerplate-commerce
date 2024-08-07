@@ -125,7 +125,7 @@ header nav[aria-expanded="true"] {
     position: relative;
     width: 55px;
     height: auto;
-    top: calc(var(--nav-height) / 3);
+    top: calc(var(--nav-height) / 3 - 10px);
   }
 
   header nav[aria-expanded="true"] {
