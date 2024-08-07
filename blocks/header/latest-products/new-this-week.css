@@ -178,6 +178,7 @@
   flex: 1;
   min-width: 250px;
   margin-top: 1%;
+  border: 2px solid rebeccapurple;
 }
 
 .new-products div p {
@@ -276,7 +277,4 @@
 /* Total products */
 main .columns-container:nth-child(5) .default-content-wrapper {
   text-align: center;
-}
-.product-list-page .ds-sdk-product-list p {
-  border: 2px solid rebeccapurple;
 }

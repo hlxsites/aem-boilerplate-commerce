@@ -1,9 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import { readBlockConfig } from '../../scripts/aem.js';
-import { performCatalogServiceQuery } from '../../scripts/commerce.js';
-import { getConfigValue } from '../../scripts/configs.js';
+import { readBlockConfig } from "../../scripts/aem.js";
+import { performCatalogServiceQuery } from "../../scripts/commerce.js";
+import { getConfigValue } from "../../scripts/configs.js";
 
-const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
+const isMobile = window.matchMedia(
+  "only screen and (max-width: 900px)"
+).matches;
 
 const recommendationsQuery = `query GetRecommendations(
   $pageType: PageType!
@@ -50,36 +52,50 @@ function renderPlaceholder(block) {
   block.innerHTML = `<h2></h2>
   <div class="scrollable">
     <div class="product-grid">
-      ${[...Array(5)].map(() => `
+      ${[...Array(5)]
+        .map(
+          () => `
         <div class="placeholder">
           <picture><img width="300" height="375" src="" /></picture>
         </div>
-      `).join('')}
+      `
+        )
+        .join("")}
     </div>
   </div>`;
 }
 
 function renderItem(unitId, product) {
-  const urlKey = product.url.split('/').pop().replace('.html', '');
+  const urlKey = product.url.split("/").pop().replace(".html", "");
   let image = product.images[0]?.url;
-  image = image.replace('http://', '//');
+  image = image.replace("http://", "//");
 
   const clickHandler = () => {
     window.adobeDataLayer.push((dl) => {
-      dl.push({ event: 'recs-item-click', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
+      dl.push({
+        event: "recs-item-click",
+        eventInfo: {
+          ...dl.getState(),
+          unitId,
+          productId: parseInt(product.externalId, 10) || 0,
+        },
+      });
     });
   };
 
-  const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
+  const item = document.createRange()
+    .createContextualFragment(`<div class="product-grid-item">
     <a href="/products/${urlKey}/${product.sku.toLowerCase()}">
       <picture>
         <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
-        <img loading="lazy" alt="${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
+        <img loading="lazy" alt="${
+          product.name
+        }" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
       </picture>
       <span>${product.name}</span>
     </a>
   </div>`);
-  item.querySelector('a').addEventListener('click', clickHandler);
+  item.querySelector("a").addEventListener("click", clickHandler);
 
   return item;
 }
@@ -89,20 +105,23 @@ function renderItems(block, results) {
   const [recommendation] = results;
   if (!recommendation) {
     // Hide block content if no recommendations are available
-    block.textContent = '';
+    block.textContent = "";
     return;
   }
 
   window.adobeDataLayer.push((dl) => {
-    dl.push({ event: 'recs-unit-impression-render', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+    dl.push({
+      event: "recs-unit-impression-render",
+      eventInfo: { ...dl.getState(), unitId: recommendation.unitId },
+    });
   });
 
   // Title
-  block.querySelector('h2').textContent = recommendation.storefrontLabel;
+  block.querySelector("h2").textContent = recommendation.storefrontLabel;
 
   // Grid
-  const grid = block.querySelector('.product-grid');
-  grid.innerHTML = '';
+  const grid = block.querySelector(".product-grid");
+  grid.innerHTML = "";
   const { productsView } = recommendation;
   productsView.forEach((product) => {
     grid.appendChild(renderItem(recommendation.unitId, product));
@@ -112,7 +131,10 @@ function renderItems(block, results) {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         window.adobeDataLayer.push((dl) => {
-          dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
+          dl.push({
+            event: "recs-unit-view",
+            eventInfo: { ...dl.getState(), unitId: recommendation.unitId },
+          });
         });
         inViewObserver.disconnect();
       }
@@ -123,7 +145,7 @@ function renderItems(block, results) {
 
 const mapUnit = (unit) => ({
   ...unit,
-  unitType: 'primary',
+  unitType: "primary",
   searchTime: 0,
   primaryProducts: unit.totalProducts,
   backupProducts: 0,
@@ -132,7 +154,7 @@ const mapUnit = (unit) => ({
     rank: index,
     score: 0,
     productId: parseInt(product.externalId, 10) || 0,
-    type: '?',
+    type: "?",
     queryType: product.__typename,
   })),
 });
@@ -144,48 +166,63 @@ async function loadRecommendation(block, context, visibility, filters) {
   }
 
   // Only proceed if all required data is available
-  if (!context.pageType
-    || (context.pageType === 'Product' && !context.currentSku)
-    || (context.pageType === 'Category' && !context.category)
-    || (context.pageType === 'Cart' && !context.cartSkus)) {
+  if (
+    !context.pageType ||
+    (context.pageType === "Product" && !context.currentSku) ||
+    (context.pageType === "Category" && !context.category) ||
+    (context.pageType === "Cart" && !context.cartSkus)
+  ) {
     return;
   }
 
   if (!unitsPromise) {
-    const storeViewCode = await getConfigValue('commerce-store-view-code');
+    const storeViewCode = await getConfigValue("commerce-store-view-code");
     // Get product view history
     try {
-      const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
+      const viewHistory =
+        window.localStorage.getItem(`${storeViewCode}:productViewHistory`) ||
+        "[]";
       context.userViewHistory = JSON.parse(viewHistory);
     } catch (e) {
-      window.localStorage.removeItem('productViewHistory');
-      console.error('Error parsing product view history', e);
+      window.localStorage.removeItem("productViewHistory");
+      console.error("Error parsing product view history", e);
     }
 
     // Get purchase history
     try {
-      const purchaseHistory = window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
+      const purchaseHistory =
+        window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || "[]";
       context.userPurchaseHistory = JSON.parse(purchaseHistory);
     } catch (e) {
-      window.localStorage.removeItem('purchaseHistory');
-      console.error('Error parsing purchase history', e);
+      window.localStorage.removeItem("purchaseHistory");
+      console.error("Error parsing purchase history", e);
     }
 
     window.adobeDataLayer.push((dl) => {
-      dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
+      dl.push({
+        event: "recs-api-request-sent",
+        eventInfo: { ...dl.getState() },
+      });
     });
 
     unitsPromise = performCatalogServiceQuery(recommendationsQuery, context);
     const { recommendations } = await unitsPromise;
 
     window.adobeDataLayer.push((dl) => {
-      dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
-      dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+      dl.push({
+        recommendationsContext: { units: recommendations.results.map(mapUnit) },
+      });
+      dl.push({
+        event: "recs-api-response-received",
+        eventInfo: { ...dl.getState() },
+      });
     });
   }
 
   let { results } = (await unitsPromise).recommendations;
-  results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
+  results = results.filter((unit) =>
+    filters.typeId ? unit.typeId === filters.typeId : true
+  );
 
   renderItems(block, results);
 }
@@ -217,19 +254,29 @@ export default async function decorate(block) {
   }
 
   function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext?.items?.map(({ product }) => product.sku);
+    context.cartSkus = shoppingCartContext?.items?.map(
+      ({ product }) => product.sku
+    );
     loadRecommendation(block, context, visibility, filters);
   }
 
   window.adobeDataLayer.push((dl) => {
-    dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, { path: 'pageContext' });
-    dl.addEventListener('adobeDataLayer:change', handleProductChanges, { path: 'productContext' });
-    dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
-    dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
+    dl.addEventListener("adobeDataLayer:change", handlePageTypeChanges, {
+      path: "pageContext",
+    });
+    dl.addEventListener("adobeDataLayer:change", handleProductChanges, {
+      path: "productContext",
+    });
+    dl.addEventListener("adobeDataLayer:change", handleCategoryChanges, {
+      path: "categoryContext",
+    });
+    dl.addEventListener("adobeDataLayer:change", handleCartChanges, {
+      path: "shoppingCartContext",
+    });
   });
 
   if (isMobile) {
-    const section = block.closest('.section');
+    const section = block.closest(".section");
     const inViewObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
