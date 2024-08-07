@@ -6,6 +6,11 @@
     margin: auto;
 }
 
+.gift-cards-form > form
+{
+    padding-bottom: 30px;
+}
+
 .gift-cards-form > form > .heading-wrapper h2
 {
     font-size: 15px;
@@ -74,6 +79,35 @@
 {
     color: white;
     background-color: black;
-    padding: 10px 30%;
+    padding: 10px 26%;
     text-decoration: none;
+}
+
+.gift-cards-buttons > div > div:nth-child(1) p a:hover
+{
+    text-decoration: none;
+}
+
+.gift-cards-buttons > div > div:nth-child(2) p a:hover
+{
+    text-decoration: none;
+    color: white;
+}
+
+@media (width <= 600px) 
+{    
+    .gift-cards-form,
+    .gift-cards-buttons,
+    .gift-cards
+    {
+        width: 100%;
+    }
+
+    .gift-cards ul
+    {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 20px;
+        text-align: center;
+    }
 }
