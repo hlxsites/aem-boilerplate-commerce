@@ -339,6 +339,7 @@ header nav .nav-hamburger-icon::after {
   display: block;
   position: relative;
   width: 20px;
+  top: calc(var(--nav-height) / 50 - 10px);
 }
 
 header nav .nav-hamburger-icon::before,
