@@ -228,19 +228,19 @@ header nav[aria-expanded="true"] {
 
     .nav-tools .burger-sub-menu div:nth-child(2) p {
       display: flex;
-      padding: 4%;
+      padding: 6%;
       justify-content: flex-start;
     }
 
     .nav-tools {
       flex-direction: column;
       display: flex;
-      margin-top: 30%;
+      margin-top: 55%;
     }
 
     .nav-tools .burger-sub-menu div div:nth-child(1) p {
-      padding: 0;
-      width: auto;
+      padding: 2%;
+      width: 40%;
     }
 
     /* Column title Account & Shipping Country */
@@ -268,11 +268,14 @@ header nav[aria-expanded="true"] {
 
     /* Arrow */
     .nav-tools .columns-2-cols div:nth-child(2) div:nth-child(2) p {
+      display: flex;
       color: var(--sub-text-title-color);
       font-size: var(--sub-text-title-large);
       margin-top: -4%;
       text-align: right;
+      margin-left: 70%;
       justify-content: flex-end;
+      width: 20%;
     }
   }
 }
