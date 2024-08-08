@@ -3,13 +3,114 @@
   min-height: 700px;
 }
 
-.product-list-page .ds-sdk-product-item__image img {
-  aspect-ratio: 185 / 230;
+/* .product-list-page .ds-sdk-product-item__image img {
+  aspect-ratio: 250 / 250;
   object-fit: contain;
+} */
+
+.product-list-page
+  .ds-widgets-_actions
+  .pb-4
+  .ds-sdk-filter-button-desktop
+  button {
+  border-radius: 0;
+  display: flex;
+}
+
+/* Show Filters */
+.product-list-page .ds-sdk-filter-button-desktop button span,
+.product-list-page .ds-sdk-filter-button-desktop .bg-background {
+  margin: auto;
+  outline-color: transparent;
+  font-weight: 520;
+  font-size: var(--sub-text-secondary-size);
+}
+/* Sort By */
+.product-list-page .ds-sdk-sort-dropdown .bg-background span,
+.product-list-page .ds-sdk-sort-dropdown .bg-background {
+  margin: auto;
+  outline-color: transparent;
+  font-weight: 520;
+  font-size: var(--sub-text-secondary-size);
+  border: none;
+}
+
+/* Categories tab */
+/* Categries Headers */
+.product-list-page .ds-widgets-_actions .ds-sdk-input__label {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+/* Categries Content */
+.product-list-page .ds-widgets-_actions .ds-sdk-labelled-input,
+.product-list-page .ds-widgets-_actions .ds-sdk-labelled-input label {
+  color: var(--sub-text-title-color);
+  font-size: var(--sub-text-small);
+}
+
+/* Product Columns*/
+.product-list-page .ds-sdk-product-list {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+/* Product Card*/
+.product-list-page .ds-sdk-product-list .ds-sdk-product-item {
+  margin: auto;
+}
+
+/* Product Image*/
+.product-list-page
+  .ds-sdk-product-list
+  .ds-sdk-product-item__image
+  .overflow-hidden {
+  margin: auto 0;
+  min-width: 360px;
+}
+
+.product-list-page .ds-sdk-product-item__image img {
+  min-width: 250px;
+  margin: auto 0;
+}
+
+/* Product Name and Price*/
+.product-list-page .ds-sdk-product-list .ds-sdk-product-item__product-name,
+.product-list-page .ds-sdk-product-list .ds-sdk-product-price p {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+}
+
+.product-list-page .ds-widgets_results .ds-sdk-per-page-picker {
+  border: none;
+  outline-color: transparent;
 }
 
 @media (width >= 750px) {
   .product-list-page {
     min-height: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Categories tab */
+  /* Categries Headers */
+  .product-list-page .pb-4 .ds-sdk-filter-button button span,
+  .product-list-page .pb-4 .ds-sdk-filter-button button {
+    outline-color: transparent;
+    font-weight: 520;
+  }
+
+  /* Product Image*/
+  .product-list-page
+    .ds-sdk-product-list
+    .ds-sdk-product-item__image
+    .overflow-hidden {
+    margin: auto 0;
+    min-width: 150px;
+  }
+
+  .product-list-page .ds-sdk-product-item__image img {
+    min-width: 150px;
+    margin: auto 0;
   }
 }

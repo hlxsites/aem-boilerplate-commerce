@@ -135,7 +135,7 @@
 }
 
 .form-container .categories-form .heading-wrapper::after {
-  content: "";
+  content: '';
   display: flex;
   position: absolute;
   right: 5%;
@@ -178,7 +178,6 @@
   flex: 1;
   min-width: 250px;
   margin-top: 1%;
-  border: 2px solid rebeccapurple;
 }
 
 .new-products div p {

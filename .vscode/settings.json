@@ -1,1 +1,10 @@
-{}
+{
+  "vetur.completion.scaffoldSnippetSources": {
+    "workspace": "💼",
+    "user": "🗒️",
+    "vetur": "✌"
+  },
+  "prettier.jsxSingleQuote": false,
+  "prettier.singleQuote": true,
+  "prettier.quoteProps": "preserve"
+}
