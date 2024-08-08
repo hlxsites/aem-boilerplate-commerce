@@ -94,6 +94,11 @@
 @media (max-width: 600px) {
   /* Categories tab */
   /* Categries Headers */
+
+  .product-list-page .ds-sdk-product-list__grid {
+    margin: auto 0;
+    margin-left: -2%;
+  }
   .product-list-page .pb-4 .ds-sdk-filter-button button span,
   .product-list-page .pb-4 .ds-sdk-filter-button button {
     outline-color: transparent;
