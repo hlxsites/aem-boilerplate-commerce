@@ -44,7 +44,7 @@
   font-size: var(--sub-text-title-size);
   text-transform: var(--sub-text-title-transform);
   font-weight: var(--sub-text-title-weight);
-  font-family: "Proxima Nova", "Helvetica Neue", Verdana, Arial, sans-serif;
+  font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial, sans-serif;
 }
 
 .columns > div > div {
@@ -146,19 +146,20 @@
   }
 
   /* Publications */
-  .banner-section p em:nth-child(1) a {
+  .banner-section .hero-content div div p em:nth-child(1) a {
     font-size: 22px;
-    margin: auto;
-    left: 28%;
+    margin: -20% auto;
+    text-align: center;
+    width: 100%;
     top: 45vh;
   }
 
   /* shop now */
-  .banner-section p em:nth-child(2) a {
+  .banner-section .hero-content div div p em:nth-child(2) a {
     font-size: 14px;
-    margin: -97% 0;
+    margin: -77% 0;
     padding: 12px 14%;
-    right: 25%;
+    right: 26%;
   }
 
   @media (501px < max-width < 1024px) {

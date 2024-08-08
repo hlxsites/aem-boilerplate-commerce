@@ -92,6 +92,11 @@
 }
 
 @media (max-width: 600px) {
+  .product-list-page .ds-sdk-filter-button svg:nth-child(1) {
+    margin-top: -3%;
+    margin-right: 1%;
+  }
+
   .product-list-page .ds-sdk-sort-dropdown {
     margin: 0;
     margin-right: -2%;
