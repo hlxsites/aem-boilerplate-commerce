@@ -92,6 +92,11 @@
 }
 
 @media (max-width: 600px) {
+  .product-list-page .ds-sdk-sort-dropdown {
+    margin: 0;
+    margin-right: -2%;
+    padding: 0;
+  }
   /* Categories tab */
   /* Categries Headers */
 
