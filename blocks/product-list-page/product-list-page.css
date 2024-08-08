@@ -97,12 +97,15 @@
 
   .product-list-page .ds-sdk-product-list__grid {
     margin: auto 0;
+
     margin-left: -2%;
+    border: 2px solid rebeccapurple;
   }
   .product-list-page .pb-4 .ds-sdk-filter-button button span,
   .product-list-page .pb-4 .ds-sdk-filter-button button {
     outline-color: transparent;
     font-weight: 520;
+    margin-bottom: 4%;
   }
 
   /* Product Image*/
