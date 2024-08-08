@@ -280,7 +280,6 @@ main .columns-container:nth-child(5) .default-content-wrapper {
 
 @media (max-width: 600px) {
   .banner-section-latest {
-    min-height: 30vh;
   }
   .banner-section-latest .hero-latest img {
     height: 20%;
@@ -291,7 +290,7 @@ main .columns-container:nth-child(5) .default-content-wrapper {
     border-radius: 0;
     width: 100%;
     margin: auto 0;
-
+    margin-top: -11%;
     box-shadow: none;
     margin-bottom: 4%;
   }
