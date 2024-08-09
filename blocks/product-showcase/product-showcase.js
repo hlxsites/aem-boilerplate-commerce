@@ -165,14 +165,11 @@ function renderProduct(product, config, block) {
     });
   }
 
-  // Create a new container element for each product
   const productContainer = document.createElement('div');
   productContainer.classList.add('product');
 
-  // Append the product fragment to the container
   productContainer.appendChild(fragment);
 
-  // Append the container to the block
   block.appendChild(productContainer);
 }
 
