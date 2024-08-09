@@ -1,8 +1,3 @@
-/* Wrapper */
-/*   .product-showcase-carousel-wrapper {
-
-} */
-
 /* Div */
 .product-showcase-carousel {
   display: flex;
@@ -15,6 +10,10 @@
 }
 .product-showcase-carousel div div {
   max-width: 214px;
+}
+
+.featured-articles-cols div div {
+  max-width: 378px;
 }
 
 /* image */
@@ -31,7 +30,19 @@
 
 .product-showcase-carousel .image picture > img {
   display: block;
-  width: 250px;
+  width: 378px;
+  height: 252px;
+  margin-bottom: 5%;
+}
+.featured-articles-cols .image .placeholder {
+  width: 378px;
+  height: 252px;
+  background-color: var(--color-neutral-200);
+}
+
+.featured-articles-cols .image picture > img {
+  display: block;
+  width: 378px;
   height: 250px;
   margin-bottom: 5%;
 }
@@ -115,7 +126,7 @@
 
 @media (max-width: 600px) {
   .product-showcase-carousel-wrapper {
-    width: 100%;
+    width: auto;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -123,7 +134,7 @@
 
   .product-showcase-carousel {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: auto;
     grid-auto-rows: auto;
     gap: 10px;
     width: max-content;
