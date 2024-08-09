@@ -73,6 +73,13 @@ footer .footer {
   font-weight: 600;
 }
 
+.footer-two .columns-4-cols > div > div:nth-last-child(1) > p a,
+.footer-two .columns-4-cols > div > div:nth-last-child(1) > p a:hover
+{
+  font-weight: bold;
+  text-decoration: none;
+}
+
 /* giftcard and end app icon alignment */
 .footer-two .columns-4-cols > div > div:nth-last-child(1) p span
 {
