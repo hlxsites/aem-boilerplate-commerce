@@ -1,0 +1,48 @@
+.search-container:has(.brands-search)
+{
+    width: 30%;
+    margin: 0;
+    padding: 0;
+}
+
+.brands-letters
+{
+    max-width: max-content;
+    border: 1px solid red;
+    text-align: left;
+}
+
+.brands-letters p 
+{
+    margin: 0;
+    padding: 0;
+}
+
+.brands-letters p:nth-child(2)
+{
+    color: rgba(153, 153, 153,0.8);
+}
+
+.brands-letters ul
+{
+    display: grid;
+    grid-template-columns: repeat(7,auto);
+    list-style: none;
+    text-align: center;
+    padding: 5px;
+}
+
+.brands-name-section
+{
+    border: 1px solid red;
+}
+
+.brands-name-section ul
+{
+    border: 1px solid red;
+    display: grid;
+}
+
+
+
+
