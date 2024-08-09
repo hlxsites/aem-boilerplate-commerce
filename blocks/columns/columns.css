@@ -9,6 +9,7 @@
 @import url(./columns-styles/section-pages-styles.css);
 @import url(./columns-styles/help-styles.css);
 @import url(./columns-styles/bread-crum-menu-styles.css);
+@import url(./columns-styles/brands-page-styles.css);
 @import url(../../styles/styles.css);
 
 .columns > div {

@@ -19,7 +19,7 @@ export default function decorate(block) {
   //Christopher - Banner
   //Banner Section
   const bannerSection = document.querySelectorAll(
-    `.columns-container:nth-child(1):not(.footer-one,.heading,.section-two-col,:has(.sections-page,.article-section,.section-two-col,.affiliate-section,.section-desc)),
+    `.columns-container:nth-child(1):not(.breadcrum-menu,.footer-one,.heading,.section-two-col,:has(.breadcrum-menu,.sections-page,.article-section,.section-two-col,.affiliate-section,.section-desc)),
      .columns-container:nth-child(6):not(.heading,.section-two-col)`
   );
 
