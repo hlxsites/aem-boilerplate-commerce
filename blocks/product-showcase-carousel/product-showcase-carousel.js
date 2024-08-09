@@ -51,12 +51,12 @@ function renderPlaceholder(config, block) {
   block.textContent = '';
   block.appendChild(
     document.createRange().createContextualFragment(`
-    <div class="image">
+   <div class="image"> 
       <div class="placeholder"></div>
     </div>
     <div class="details">
-      <h1></h1>
-      <div class="price"></div>
+     <h1></h1>
+     <div class="price"></div>
       <div class="actions">
         ${
           config['details-button']
@@ -68,7 +68,7 @@ function renderPlaceholder(config, block) {
             ? '<button class="secondary" disabled>Add to Cart</button>'
             : ''
         }
-      </div>
+     </div>
     </div>
   `)
   );
@@ -127,11 +127,11 @@ function renderProduct(product, config, block) {
 
   // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
-    <div class="image">
+   <div class="image"><a href="/products/${urlKey}/${sku}"></a>
     </div>
     <div class="details">
-      <h1>${name}</h1>
-      <div class="price">${renderPrice(product, priceFormatter.format)}</div>
+      <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
+     <div class="price"> ${renderPrice(product, priceFormatter.format)}</div>
       <div class="actions">
         ${
           config['details-button']
@@ -217,6 +217,7 @@ export default async function decorate(block) {
   } catch (error) {
     console.error('Error fetching product data:', error);
   }
+
   const carousels = document.querySelectorAll('.product-showcase-carousel');
 
   carousels.forEach((carousel) => {

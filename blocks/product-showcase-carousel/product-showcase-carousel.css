@@ -52,6 +52,9 @@
   display: flex;
   flex-direction: column;
 }
+.product-showcase-carousel h1 a {
+  text-decoration: none;
+}
 
 .product-showcase-carousel .actions {
   display: flex;
@@ -68,6 +71,11 @@
   height: auto;
   line-height: 1;
   padding: 0;
+}
+.product-showcase-carousel h1 a:hover {
+  color: var(--sub-text-grey);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 /* Product Price */
