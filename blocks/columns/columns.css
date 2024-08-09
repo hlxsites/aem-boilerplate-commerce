@@ -184,3 +184,113 @@
     }
   }
 }
+@media (max-width: 1024px) {
+  main .section {
+    margin: 0 auto;
+  }
+  .brand-showcase-mirror div:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+  }
+  /* Featured Brand mirror (COMME DES GARÇONS HOMME) */
+  .brand-showcase-mirror div:nth-child(1) div:nth-child(2) {
+    right: 5.8%;
+  }
+
+  .brand-showcase-mirror div:nth-child(2) div:nth-child(2) {
+    order: -1;
+  }
+  .brand-showcase-mirror div:nth-child(2) div:nth-child(2) p:nth-child(2) {
+    bottom: 0;
+  }
+
+  .brand-showcase-mirror {
+    flex-direction: column;
+  }
+
+  .column-headers p {
+    font-size: 16px;
+    width: auto;
+  }
+
+  .column-headers div:nth-child(2) p {
+    margin-top: -10%;
+  }
+
+  /* Latest Carousel */
+  .products-carousel div div {
+    width: auto;
+    height: auto;
+  }
+
+  .products-carousel * p {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 1%;
+    width: 100%;
+  }
+
+  .products-carousel picture {
+    width: 173px;
+    height: auto;
+  }
+
+  .products-carousel div:nth-child(1) {
+    flex-direction: row;
+  }
+
+  .products-carousel div:nth-child(2) {
+    flex-direction: row;
+  }
+
+  .products-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  /* Trending Section */
+  /* .content-feature {
+    border: 2px solid yellow !important;
+  }
+  .content-feature div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    width: 100%;
+    border: 2px solid rebeccapurple !important;
+  } */
+
+  /* Trending Column Header */
+  /* .content-feature p:nth-child(2) {
+    text-transform: uppercase;
+    font-size: var(--sub-text-title-large);
+    font-weight: var(--sub-text-title-weight);
+    letter-spacing: 2px;
+    margin: 5px 0;
+  } */
+
+  /* Banner Section */
+  .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Publications */
+  .banner-section .hero-content div div p em:nth-child(1) a {
+    font-size: 22px;
+    margin: -10% auto;
+    text-align: center;
+    width: 100%;
+    top: 45vh;
+  }
+
+  /* shop now */
+  .banner-section .hero-content div div p em:nth-child(2) a {
+    font-size: 14px;
+    margin: -10% 0;
+    padding: 8px 8%;
+    right: 36.9%;
+  }
+}

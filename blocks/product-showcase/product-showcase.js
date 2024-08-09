@@ -4,8 +4,8 @@ import {
   renderPrice,
 } from '../../scripts/commerce.js';
 
-const productTeaserQuery = `query productTeaser($sku: String!) {
-  products(skus: [$sku]) {
+const productShowcaseQuery = `query productShowcase($skus: [String!]!) {
+  products(skus: $skus) {
     sku
     urlKey
     name
@@ -125,7 +125,7 @@ function renderProduct(product, config, block) {
     currency,
   });
 
-  block.textContent = '';
+  // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
     <div class="image">
     </div>
@@ -165,7 +165,15 @@ function renderProduct(product, config, block) {
     });
   }
 
-  block.appendChild(fragment);
+  // Create a new container element for each product
+  const productContainer = document.createElement('div');
+  productContainer.classList.add('product');
+
+  // Append the product fragment to the container
+  productContainer.appendChild(fragment);
+
+  // Append the container to the block
+  block.appendChild(productContainer);
 }
 
 export default async function decorate(block) {
@@ -177,19 +185,39 @@ export default async function decorate(block) {
     config['cart-button'] || config['cart-button'] === 'true'
   );
 
+  block.textContent = '';
   renderPlaceholder(config, block);
 
-  const { products } = await performCatalogServiceQuery(productTeaserQuery, {
-    sku: config.sku,
-  });
-  if (!products || !products.length > 0 || !products[0].sku) {
-    return;
-  }
-  const [product] = products;
-  product.images = product.images.map((image) => ({
-    ...image,
-    url: image.url.replace(/^https?:/, ''),
-  }));
+  let skus = Array.isArray(config.sku)
+    ? config.sku
+    : config.sku
+        .split('\n')
+        .map((sku) => sku.trim())
+        .filter((sku) => sku !== '');
 
-  renderProduct(product, config, block);
+  try {
+    const result = await performCatalogServiceQuery(productShowcaseQuery, {
+      skus,
+    });
+
+    block.textContent = '';
+
+    if (
+      result &&
+      Array.isArray(result.products) &&
+      result.products.length > 0
+    ) {
+      result.products.forEach((product) => {
+        product.images = product.images.map((image) => ({
+          ...image,
+          url: image.url.replace(/^https?:/, ''),
+        }));
+        renderProduct(product, config, block);
+      });
+    } else {
+      console.error('No products found for the provided SKUs');
+    }
+  } catch (error) {
+    console.error('Error fetching product data:', error);
+  }
 }
