@@ -103,35 +103,4 @@
 }
 
 @media (max-width: 600px) {
-  .product-showcase-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-  }
-
-  .product-showcase {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-auto-rows: auto;
-    gap: 10px;
-    width: max-content;
-    height: auto;
-    box-sizing: border-box;
-  }
-
-  .product-showcase .product {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 160px;
-  }
-
-  .product-showcase .product img {
-    width: 100%;
-    height: auto;
-  }
 }

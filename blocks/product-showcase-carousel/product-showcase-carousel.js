@@ -4,7 +4,7 @@ import {
   renderPrice,
 } from '../../scripts/commerce.js';
 
-const productShowcaseCarouselQuery = `query productShowcase($skus: [String!]!) {
+const productShowcaseQuery = `query productShowcase($skus: [String!]!) {
   products(skus: $skus) {
     sku
     urlKey
@@ -193,12 +193,9 @@ export default async function decorate(block) {
         .filter((sku) => sku !== '');
 
   try {
-    const result = await performCatalogServiceQuery(
-      productShowcaseCarouselQuery,
-      {
-        skus,
-      }
-    );
+    const result = await performCatalogServiceQuery(productShowcaseQuery, {
+      skus,
+    });
 
     block.textContent = '';
 
