@@ -11,6 +11,10 @@ import { getProduct, getSkuFromUrl, setJsonLd } from '../../scripts/commerce.js'
 import { getConfigValue } from '../../scripts/configs.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
+//Slots
+import Actions from './slots/Actions.js';
+import InfoContent from './slots/InfoContent.js';
+
 // Error Handling (404)
 async function errorGettingProduct(code = 404) {
   const htmlText = await fetch(`/${code}.html`).then((response) => {
@@ -219,35 +223,8 @@ export default async function decorate(block) {
             gap: 'small',
           },
           slots: {
-            Actions: (ctx) => {
-              // Add to Cart Button
-              ctx.appendButton((next, state) => {
-                const adding = state.get('adding');
-                return {
-                  text: adding
-                    ? next.dictionary.Custom.AddingToCart?.label
-                    : next.dictionary.PDP.Product.AddToCart?.label,
-                  icon: 'Cart',
-                  variant: 'primary',
-                  disabled: adding || !next.data?.inStock || !next.valid,
-                  onClick: async () => {
-                    try {
-                      state.set('adding', true);
-                      await addToCart({
-                        sku: next.values?.sku,
-                        quantity: next.values?.quantity,
-                        optionsUIDs: next.values?.optionsUIDs,
-                        product: next.data,
-                      });
-                    } catch (error) {
-                      console.error('Could not add to cart: ', error);
-                    } finally {
-                      state.set('adding', false);
-                    }
-                  },
-                };
-              });
-            },
+            Actions: (ctx) => Actions(ctx),
+            InfoContent: (ctx) => InfoContent(ctx)
           },
           useACDL: true,
         })(block);

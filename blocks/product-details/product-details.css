@@ -1,1 +1,123 @@
 /* stylelint-disable no-empty-source */
+
+.pdp-product__header
+{
+    margin-bottom: 0;
+}
+
+.pdp-product__title,.pdp-product__sku,.pdp-price-range
+{
+    text-align: center;
+}
+
+.pdp-product__prices
+{
+    justify-content: center;
+    margin-top: var(--spacing-xxsmall);
+}
+
+.pdp-product__title
+{
+    /* border: 1px solid red; */
+    font-size: 1.8rem;
+    letter-spacing: 0.3rem;
+    line-height: 26px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.pdp-product__sku
+{
+    font-size: 1rem;
+    color: rgb(153,153,153);
+    font-weight: 400;
+    letter-spacing: 0.2rem;
+    line-height: 22px;
+    text-transform: none;
+}
+
+.pdp-price-range .dropin-price
+{
+    font-size: 1.14286rem;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
+}
+
+.dropin-button
+{
+    border-radius: 0;
+}
+
+.dropin-button--primary
+{
+    background-color: black;
+}
+
+.SpecialMessageText
+{
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+[data-test-id='ShippingMessage__OrderText']
+{
+    font-weight: 600;
+}
+
+[data-test-id='ShippingMessage__DeliveryEstimate']
+{
+    font-weight: 600;
+    color: var(--color-positive-800);
+    font-style: normal;
+}
+
+.tabs-index
+{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid rgb(204, 204, 204);
+    position: relative;
+}
+
+.line
+{
+    position: absolute;
+    top: 36px;
+    left: 36px;
+    width: 99px;
+    height: 2px;
+    background-color: black;
+    border-radius: 10px;
+    transition: all .3s ease-in-out;
+}
+
+.tab-button
+{
+   font-size: 14px;
+   font-weight: 600;
+   color: rgb(204, 204, 204);
+   background-color: transparent;
+   border: none;
+   padding: 10px;
+   cursor: pointer;
+}
+
+.active
+{
+    color: black;
+}
+
+.tab-content
+{
+    margin-top: 20px;
+    display: none;
+}
+
+.tab-content.active
+{
+    display: block;
+}
