@@ -11,14 +11,19 @@
 }
 
 /* date */
+
 .launches-section div:nth-child(1) div p:nth-child(1) {
   display: flex;
-  position: absolute;
+  flex-direction: row;
+  /* position: absolute; */
+  justify-content: flex-start;
   text-transform: uppercase;
   font-size: var(--sub-text-small);
-  padding: 2% 1%;
-  margin: auto;
+  /* padding: 2% 1%; */
+  margin: 2%;
   color: black;
+
+  gap: 10px;
   z-index: 1;
 }
 
@@ -30,8 +35,13 @@
 
 /* number background */
 .launches-section div:nth-child(1) div p:nth-child(1) strong {
-  padding: 15%;
-  margin-right: 10%;
+  /* padding: 15%; */
+  /* margin-right: 12%; */
+
+  display: flex;
+  height: 25px;
+  width: 25px;
+  justify-content: center;
   background-color: white;
   align-items: center;
 }
@@ -60,4 +70,14 @@
 .launches-section div:nth-child(2) div p {
   margin: 2% auto;
   display: flex;
+}
+
+@media (max-width: 600px) {
+  .product-showcase-carousel-container .columns-wrapper:nth-child(2) {
+    border: 2px solid rebeccapurple;
+  }
+  .launches-section div:nth-child(1) {
+    flex-direction: row;
+    position: relative;
+  }
 }
