@@ -1,0 +1,146 @@
+/* Featured Brand (Balenciaga) */
+.product-main-brand-showcase .product div:nth-child(1),
+.brand-showcase div:nth-child(1) div:nth-child(1) {
+  display: flex;
+  position: relative;
+  right: 2%;
+  flex-direction: column;
+}
+
+/* Bullet */
+.product-main-brand-showcase ul li,
+.brand-showcase ul li {
+  list-style-type: square;
+}
+
+/* Balenciaga */
+.product-main-brand-showcase ul li a,
+.brand-showcase ul li a {
+  color: var(--sub-text-title-color);
+  letter-spacing: var(--sub-text-spacing);
+  font-size: var(--sub-text-title-size);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.product-main-brand-showcase ul li a:hover,
+.brand-showcase ul li a:hover {
+  text-decoration: none;
+}
+
+/* Balenciaga and Shop now positioning */
+.product-main-brand-showcase .product div:nth-child(1) ul,
+.brand-showcase div div:nth-child(1) ul {
+  margin: 0;
+  margin-top: 6%;
+  padding: auto;
+  display: flex;
+}
+
+/* Shop Now button on top of image */
+.product-main-brand-showcase .product div:nth-child(1) p a.button,
+.brand-showcase div:nth-child(1) div:nth-child(1) p a.button {
+  border: none;
+  background-color: transparent;
+  text-transform: var(--sub-text-button-transform);
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-grey);
+  padding: auto 0%;
+  margin: auto;
+  border-radius: 0;
+}
+
+.product-main-brand-showcase .product div:nth-child(1) p.button-container,
+.brand-showcase div:nth-child(1) div:nth-child(1) p.button-container {
+  margin-top: auto;
+}
+/* End Shop Now button on top of image */
+
+/* Main Picture */
+.product-main-brand-showcase .image picture > img,
+.brand-showcase div:nth-child(2) div:nth-child(1) p {
+  margin-top: auto;
+}
+
+.brand-showcase div:nth-child(2) div:nth-child(1) {
+  position: relative;
+  flex: 1.5;
+}
+/* End Main Picture */
+
+/* dynamic data */
+.product-main-brand-showcase-wrapper {
+  width: 700px;
+}
+
+.product-main-brand-showcase-wrapper .product {
+  display: flex;
+  max-width: 700px;
+  flex-direction: column;
+  position: relative;
+  flex: 1.5;
+}
+
+.product-main-brand-showcase-wrapper .image picture > img {
+  width: 700px;
+}
+
+/* Shop Now > button */
+
+.product-main-brand-showcase .btn-on-img p {
+  bottom: -2%;
+}
+.product-main-brand-showcase .btn-on-img p,
+.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) {
+  display: flex;
+  position: absolute;
+  align-self: flex-end;
+  right: 0;
+  background-color: white;
+  text-transform: uppercase;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.product-main-brand-showcase .btn-on-img p :hover,
+.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
+  opacity: 0.5;
+}
+
+.product-main-brand-showcase .btn-on-img p a,
+.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
+  border: none;
+  border-radius: 0;
+  font-size: var(--sub-text-secondary-size);
+  padding: auto;
+  display: flex;
+}
+/* End Shop Now > button */
+
+@media (width >= 600px) {
+  .product-showcase {
+    flex-direction: row;
+  }
+
+  .product-showcase .details {
+    flex: 1;
+  }
+
+  .product-showcase .actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-showcase .product {
+    width: 352px;
+    text-align: left;
+  }
+
+  .product-showcase .image picture > img {
+    display: block;
+    width: 352px;
+    height: 352px;
+    margin-bottom: 5%;
+  }
+}

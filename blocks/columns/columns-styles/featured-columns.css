@@ -1,117 +1,31 @@
-/* Featured Brand mirror (Balenciaga) */
-.brand-showcase div:nth-child(1) div:nth-child(1) {
-  display: flex;
-  position: relative;
-  right: 2%;
-  flex-direction: column;
-}
-
-/* Bullet */
-.brand-showcase ul li {
-  list-style-type: square;
-}
-
-/* Balenciaga */
-.brand-showcase ul li a {
-  color: var(--sub-text-title-color);
-  letter-spacing: var(--sub-text-spacing);
-  font-size: var(--sub-text-title-size);
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-.brand-showcase ul li a:hover {
-  text-decoration: none;
-}
-
-/* Balenciaga and Shop now positioning */
-.brand-showcase div div:nth-child(1) ul {
-  margin: 0;
-
-  margin-top: 6%;
-  padding: auto;
-
-  display: flex;
-}
-
-/* Shop Now button on top of image */
-.brand-showcase div:nth-child(1) div:nth-child(1) p a.button {
-  border: none;
-  background-color: transparent;
-  text-transform: var(--sub-text-button-transform);
-  font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-grey);
-  padding: auto 3%;
-  margin: auto;
-}
-
-.brand-showcase div:nth-child(1) div:nth-child(1) p.button-container {
-  margin-top: auto;
-}
-/* End Shop Now button on top of image */
+@import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase.css);
+@import url(../../../blocks/product-brand-showcase/product-brand-showcase.css);
 
 /* Balenciaga Columns */
+
 .brand-showcase div:nth-child(2) div {
   display: flex;
 }
 
-/* Main Picture */
-.brand-showcase div:nth-child(2) div:nth-child(1) p {
-  margin-top: auto;
+.product-main-brand-showcase-wrapper,
+.product-brand-showcase-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  display: block;
+  top: 0;
 }
-
-.brand-showcase div:nth-child(2) div:nth-child(1) {
+.featured-brand-showcase div div div div {
+  border: 2px solid rebeccapurple;
+}
+.product-main-brand-showcase-wrapper {
   position: relative;
-  flex: 1.5;
+  left: 0;
+  margin: 0;
 }
-/* End Main Picture */
-
-/* Featured Items * Columns */
-
-/* Clothes and price text */
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2) {
-  text-transform: capitalize;
-  font-weight: normal;
-  font-size: var(--sub-text-secondary-size);
-}
-
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4) {
-  font-size: 14px;
-}
-
-/* Colour */
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3) {
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  font-weight: lighter;
-  color: var(--sub-text-grey);
-}
-
-/* Shop Now > button */
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) {
-  display: flex;
-  position: absolute;
-  align-self: flex-end;
-  right: 0;
-  background-color: white;
-  text-transform: uppercase;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
-  opacity: 0.5;
-}
-
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
-  border: none;
-  font-size: var(--sub-text-secondary-size);
-  padding: auto;
-  display: flex;
-}
-/* End Shop Now > button */
 
 /* Images container */
+
 .brand-showcase {
   flex-direction: column;
   flex: 1;
@@ -119,6 +33,7 @@
 }
 
 /* Images P containers */
+
 .brand-showcase div:nth-child(2) div:nth-child(2) p {
   margin: 5% 5%;
   padding: 0 5%;

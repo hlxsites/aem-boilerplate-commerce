@@ -1,0 +1,73 @@
+/* Featured Items * Columns */
+.product-brand-showcase-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  width: 467px;
+}
+
+.product-brand-showcase {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  width: 230px;
+  flex: 1;
+}
+
+.product-brand-showcase .product {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 230px;
+  flex: 1;
+}
+
+/* Clothes and price text */
+.product-brand-showcase-wrapper .details h1,
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2) {
+  text-transform: capitalize;
+  font-weight: normal;
+  font-size: var(--sub-text-secondary-size);
+}
+
+.product-brand-showcase-wrapper .details .price,
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4) {
+  font-size: 14px;
+}
+
+/* Colour */
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3) {
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: lighter;
+  color: var(--sub-text-grey);
+}
+
+@media (width >= 600px) {
+  .product-showcase {
+    flex-direction: row;
+  }
+
+  .product-showcase .details {
+    flex: 1;
+  }
+
+  .product-showcase .actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .product-showcase .product {
+    width: 352px;
+    text-align: left;
+  }
+
+  .product-showcase .image picture > img {
+    display: block;
+    width: 352px;
+    height: 352px;
+    margin-bottom: 5%;
+  }
+}
