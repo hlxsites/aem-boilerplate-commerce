@@ -1,5 +1,10 @@
 /* stylelint-disable no-empty-source */
 
+.pdp-product__quantity
+{
+    /* display: none; */
+}
+
 .pdp-product__header
 {
     margin-bottom: 0;
@@ -18,7 +23,6 @@
 
 .pdp-product__title
 {
-    /* border: 1px solid red; */
     font-size: 1.8rem;
     letter-spacing: 0.3rem;
     line-height: 26px;
