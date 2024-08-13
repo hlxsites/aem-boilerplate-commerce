@@ -12,6 +12,9 @@ export default function decorate(block)
     inputField.setAttribute("size","1000");
     inputField.setAttribute("maxlength","1000");
     inputField.setAttribute("placeholder","Search articles");
-    
-    searchIconSecion.appendChild(inputField);
+
+    if(searchIconSecion != null)
+    {
+      searchIconSecion.appendChild(inputField);
+    }
   }

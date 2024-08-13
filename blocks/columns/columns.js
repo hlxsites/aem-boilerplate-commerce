@@ -39,10 +39,13 @@ function changeShippingColor()
 {
     const getShippingString = document.querySelectorAll(`.section-desc ul li:has(br)`);
     
-    for(var i = 0;i < 3;++i)
+    if(getShippingString.length != 0)
     {
-      getShippingString[0].innerHTML = getShippingString[0].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
-      getShippingString[1].innerHTML = getShippingString[1].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
-      getShippingString[2].innerHTML = getShippingString[2].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`); 
+      for(var i = 0;i < 3;++i)
+        {
+          getShippingString[0].innerHTML = getShippingString[0].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
+          getShippingString[1].innerHTML = getShippingString[1].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`);
+          getShippingString[2].innerHTML = getShippingString[2].innerHTML.replace("Fri 2 Aug - Mon 5 Aug",`<span class="green-text">Fri 2 Aug - Mon 5 Aug</span>`); 
+        }
     }
 }
