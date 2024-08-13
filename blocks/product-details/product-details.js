@@ -212,6 +212,7 @@ export default async function decorate(block) {
       try {
         await productRenderer.render(ProductDetails, {
           sku: getSkuFromUrl(),
+          hideQuantity: true,
           carousel: {
             controls: 'thumbnailsColumn',
             arrowsOnMainImage: true,
@@ -224,7 +225,8 @@ export default async function decorate(block) {
           },
           slots: {
             Actions: (ctx) => Actions(ctx),
-            InfoContent: (ctx) => InfoContent(ctx)
+            InfoContent: (ctx) => InfoContent(ctx),
+            Options: (ctx) => Options(ctx)
           },
           useACDL: true,
         })(block);
