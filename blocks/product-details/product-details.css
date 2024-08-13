@@ -1,10 +1,5 @@
 /* stylelint-disable no-empty-source */
 
-.pdp-product__quantity
-{
-    /* display: none; */
-}
-
 .pdp-product__header
 {
     margin-bottom: 0;
@@ -57,6 +52,23 @@
 .dropin-button--primary
 {
     background-color: black;
+}
+
+.loading
+{
+    display: flex;
+}
+
+.loadingSpinner
+{
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    background-image: url('../../icons/spinner.svg');
+    background-repeat: no-repeat;
+    background-size: 23px 23px;
+    width: 23px;
+    height: 23px;
 }
 
 .SpecialMessageText
