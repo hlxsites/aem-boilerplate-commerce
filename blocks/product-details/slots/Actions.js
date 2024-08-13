@@ -9,16 +9,29 @@ export default function Actions(ctx)
 
     ctx.appendChild(SpecialMessage);
 
-    ctx.appendButton(() => {
+    ctx.appendButton((next,state) => {
+        const adding = state.get('adding');
+        const addingSpinner = `<div class="loadingSpinner"></div>`;
+
         return{
-            text: "Add to Cart"
+            type: 'submit',
+            innerHTML: adding ? addingSpinner : 'Add to Cart',
+            className: adding ? 'loading' : '',
+            onClick: async () => 
+            {
+                state.set('adding',true);
+            }
         }
     });
 
-    ctx.appendButton((next, state) => {
+    ctx.appendButton(() => {
         return {
-            text: "Add to Wishlist",
-            variant: "Primary"
+            innerHTML: "Add to Wishlist",
+            variant: "Primary",
+            onClick: async () => 
+            {
+                console.log('Add to Wishlist  clicked');
+            }
         };
     });
     
