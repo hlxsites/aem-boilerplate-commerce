@@ -141,7 +141,7 @@
   .banner-section img {
     object-fit: cover;
     width: 100%;
-    height: 300px;
+    height: 250px;
     zoom: 2.5;
   }
 
@@ -151,7 +151,7 @@
     margin: -20% auto;
     text-align: center;
     width: 100%;
-    top: 45vh;
+    top: 45%;
   }
 
   /* shop now */
@@ -223,10 +223,10 @@
     margin: 4% auto;
   }
 
-  .column-headers {
+  /* .column-headers {
     -webkit-margin-top: 35%;
-    margin-top: 55%;
-  }
+    margin-top: 15%;
+  } */
 
   .column-headers div:nth-child(1) p {
     margin: auto 0;
@@ -307,7 +307,7 @@
     margin: -10% auto;
     text-align: center;
     width: 100%;
-    top: 45vh;
+    top: 380px;
   }
 
   /* shop now */
