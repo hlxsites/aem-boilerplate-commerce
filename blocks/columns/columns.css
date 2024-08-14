@@ -234,7 +234,6 @@
 
   .column-headers div:nth-child(1) strong {
     margin: auto;
-    border: 2px solid rebeccapurple;
   }
 
   .column-headers div:nth-child(2) p {
