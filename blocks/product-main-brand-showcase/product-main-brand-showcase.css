@@ -3,7 +3,6 @@
   display: flex;
   position: relative;
   line-height: 1;
-  right: 2%;
 
   flex-direction: column;
 }
@@ -106,5 +105,15 @@
 
   .product-main-brand-showcase .btn-on-img p {
     right: -1.5%;
+  }
+
+  /* Brand Name */
+  .product-main-brand-showcase .product div:nth-child(1) ul {
+    padding-left: 5%;
+  }
+
+  /* Shop now */
+  .product-main-brand-showcase .product div:nth-child(1) p a.button {
+    padding-left: 5%;
   }
 }

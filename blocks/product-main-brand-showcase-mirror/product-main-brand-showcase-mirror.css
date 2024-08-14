@@ -107,4 +107,14 @@
   .product-main-brand-showcase-mirror .btn-on-img p {
     right: -1.5%;
   }
+
+  /* Brand Name */
+  .product-main-brand-showcase-mirror .product div:nth-child(1) ul {
+    padding-left: 7%;
+  }
+
+  /* Shop now */
+  .product-main-brand-showcase-mirror .product div:nth-child(1) p a.button {
+    padding-left: 7%;
+  }
 }
