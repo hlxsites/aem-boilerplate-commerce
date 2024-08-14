@@ -220,15 +220,21 @@
     flex-direction: row;
     text-wrap: nowrap;
     justify-content: baseline;
-    margin: 2% auto;
+    margin: 4% auto;
   }
 
   .column-headers {
-    margin-top: 15%;
+    -webkit-margin-top: 25%;
+    margin-top: 25%;
   }
 
   .column-headers div:nth-child(1) p {
+    margin: auto 0;
+  }
+
+  .column-headers div:nth-child(1) strong {
     margin: auto;
+    border: 2px solid rebeccapurple;
   }
 
   .column-headers div:nth-child(2) p {
