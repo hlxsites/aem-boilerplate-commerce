@@ -1,5 +1,7 @@
 @import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase.css);
-@import url(../../../blocks/product-brand-showcase/product-main-brand-showcase.css);
+@import url(../../../blocks/product-brand-showcase/product-brand-showcase.css);
+@import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase-mirror.css);
+@import url(../../../blocks/product-brand-showcase/product-brand-showcase-mirror.css);
 
 /* Featured Brand (Balenciaga) */
 .divider-border-grid {
@@ -39,12 +41,45 @@
 
 .divider-border-grid .product-brand-showcase-wrapper .product {
   flex: 1;
-  /* width: 230px; */
+}
+
+/* Mirror Main Image wrapper */
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+  display: flex;
+  margin: auto;
+  margin-top: 0;
+  max-width: fit-content;
+  flex: 1.5;
+  width: 100%;
+  margin-left: 2%;
+}
+
+/* Products wrapper */
+.divider-border-grid .product-brand-showcase-mirror-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: auto;
+  margin: auto;
+  margin-right: 0%;
+  gap: 20px;
+  max-width: fit-content;
+  margin-bottom: 0%;
+  flex: 1;
+}
+
+.divider-border-grid .product-main-brand-showcase-wrapper .product {
+  flex: 1.5;
+}
+
+.divider-border-grid .product-brand-showcase-wrapper .product {
+  flex: 1;
 }
 
 /* Balenciaga Columns */
 .product-main-brand-showcase,
 .product-brand-showcase,
+.product-main-brand-showcase-mirror,
+.product-brand-showcase-mirror,
 .brand-showcase div:nth-child(2) div {
   display: flex;
 }
@@ -83,6 +118,7 @@
 
 /* Shop Now > button */
 
+.product-main-brand-showcase-mirror .btn-on-img p,
 .product-main-brand-showcase .btn-on-img p {
   margin: auto;
   padding: 0;
@@ -90,6 +126,7 @@
 }
 
 .product-main-brand-showcase .btn-on-img p,
+.product-main-brand-showcase-mirror .btn-on-img p,
 .brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) {
   display: flex;
   position: absolute;
@@ -102,11 +139,13 @@
 }
 
 .product-main-brand-showcase .btn-on-img p :hover,
+.product-main-brand-showcase-mirror .btn-on-img p :hover,
 .brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
   opacity: 0.5;
 }
 
 .product-main-brand-showcase .btn-on-img p a,
+.product-main-brand-showcase-mirror .btn-on-img p a,
 .brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
   border: none;
   border-radius: 0;
@@ -130,6 +169,7 @@
   margin: 5% 5%;
   padding: 0 5%;
 }
+
 @media (max-width: 1024px) {
   .divider-border-grid {
     flex-direction: column;
@@ -144,21 +184,44 @@
   .brand-showcase div:nth-child(1) div:nth-child(1) {
     right: 5.6%;
   }
-
+  .divider-border-grid .product-brand-showcase-mirror-wrapper,
   .divider-border-grid .product-brand-showcase-wrapper {
     margin-top: 5%;
   }
+  /* Mirror Main Image wrapper */
+  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+    order: 1;
+  }
+
+  /* Products wrapper */
+  .divider-border-grid .product-brand-showcase-mirror-wrapper {
+    order: 2;
+  }
 }
 @media (600px < width <= 1024px) {
-  .divider-border-grid .product-main-brand-showcase-wrapper {
+  .divider-border-grid .product-main-brand-showcase-wrapper,
+  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
     display: flex;
     margin: 0 auto;
   }
+
+  .divider-border-grid .product-brand-showcase-mirror-wrapper,
   .divider-border-grid .product-brand-showcase-wrapper {
     margin: 2% auto;
   }
+  .product-main-brand-showcase-mirror .product .image picture > img,
   .product-main-brand-showcase .product .image picture > img {
     height: auto;
     width: 70vw;
+  }
+
+  /* Mirror Main Image wrapper */
+  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+    order: 1;
+  }
+
+  /* Products wrapper */
+  .divider-border-grid .product-brand-showcase-mirror-wrapper {
+    order: 2;
   }
 }
