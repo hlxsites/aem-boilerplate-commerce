@@ -136,8 +136,10 @@ function renderProduct(product, config, block) {
 
   // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
+
     <div class="image">
-</div>
+    </div>
+
     <div class="details">
       <h1>${name}</h1>
       <div class="price">${renderPrice(product, priceFormatter.format)}</div>

@@ -136,29 +136,27 @@ function renderProduct(product, config, block) {
 
   // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
-        <div>
-        <ul>
-          <li>
-            <em> 
-              <a href="/" title="Balenciaga">Balenciaga</a>
-            </em>
-          </li>
-        </ul>
-        <p class="button-container">
+    <div>
+      <ul>
+        <li>
+          <em> 
+            <a href="/" title="Balenciaga">Balenciaga</a>
+          </em>
+        </li>
+      </ul>
+      <p class="button-container">
         <a href="" title=Shop Now" class="button">Shop Now</a>
-        </p>
-        </div>
+      </p>
+    </div>
     
     <div class="image">
     </div>
-           <div class="btn-on-img">
-        <p class="button-container">
-          <em>
+    <div class="btn-on-img">
+      <p class="button-container">
+        <em>
           <a href="/" title="SHOP NOW >" class="button secondary">SHOP NOW &gt;</a>
-          </em>
-        </p>
-      </div>
-   
+        </em>
+      </p>
     </div>
   `);
 
