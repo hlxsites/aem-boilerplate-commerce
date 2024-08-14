@@ -141,7 +141,7 @@
   .banner-section img {
     object-fit: none;
     width: 100%;
-    height: 32vh;
+    height: 300px;
     zoom: 2.5;
   }
 
@@ -161,29 +161,29 @@
     padding: 12px 14%;
     right: 26%;
   }
+}
+@media (501px < max-width < 1024px) {
+  /* Banner */
 
-  @media (501px < max-width < 1024px) {
-    /* Banner */
+  /* Publications */
+  .banner-section p em:nth-child(1) a {
+    font-size: 18px;
+    margin: 0;
+    left: 10%;
+    bottom: -42%;
+    margin: 1%;
+  }
 
-    /* Publications */
-    .banner-section p em:nth-child(1) a {
-      font-size: 18px;
-      margin: 0;
-      left: 10%;
-      bottom: -42%;
-      margin: 1%;
-    }
-
-    /* shop now */
-    .banner-section p em:nth-child(2) a {
-      font-size: 11px;
-      margin: auto;
-      padding: 0.25% 2.5%;
-      right: 10%;
-      bottom: -40%;
-    }
+  /* shop now */
+  .banner-section p em:nth-child(2) a {
+    font-size: 11px;
+    margin: auto;
+    padding: 0.25% 2.5%;
+    right: 10%;
+    bottom: -40%;
   }
 }
+
 @media (max-width: 1024px) {
   main .section {
     margin: 0 auto;
