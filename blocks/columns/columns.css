@@ -224,8 +224,8 @@
   }
 
   .column-headers {
-    -webkit-margin-top: 25%;
-    margin-top: 25%;
+    -webkit-margin-top: 35%;
+    margin-top: 55%;
   }
 
   .column-headers div:nth-child(1) p {
