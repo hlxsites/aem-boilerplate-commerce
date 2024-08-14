@@ -139,7 +139,7 @@
   }
 
   .banner-section img {
-    object-fit: none;
+    object-fit: cover;
     width: 100%;
     height: 300px;
     zoom: 2.5;
@@ -162,6 +162,7 @@
     right: 26%;
   }
 }
+
 @media (501px < max-width < 1024px) {
   /* Banner */
 
@@ -213,8 +214,26 @@
     width: auto;
   }
 
+  .column-headers div {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    text-wrap: nowrap;
+    justify-content: baseline;
+    margin: 2% auto;
+  }
+
+  .column-headers {
+    margin-top: 15%;
+  }
+
+  .column-headers div:nth-child(1) p {
+    margin: auto;
+  }
+
   .column-headers div:nth-child(2) p {
-    margin-top: -10%;
+    margin: auto;
+    margin-right: 0;
   }
 
   /* Latest Carousel */
