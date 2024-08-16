@@ -25,7 +25,7 @@ header .nav-wrapper {
 }
 
 /* Nav Directories */
-.main-nav-content div:nth-child(2) {
+.main-nav-content div:nth-child(2):not(.button-container) {
   display: flex;
   justify-content: center;
   margin: 0 auto;
@@ -81,6 +81,18 @@ header nav[aria-expanded='true'] {
   /* Categories */
   .main-nav-content div:hover div a:not(:hover) {
     color: var(--sub-text-title-color);
+  }
+
+  header nav[aria-expanded='true'] .nav-sections .main-nav-content div div {
+    margin-left: 5%;
+  }
+
+  header
+    nav[aria-expanded='true']
+    .nav-sections
+    .main-nav-content
+    .button-container:nth-child(1) {
+    margin-top: 10%;
   }
 
   /* Navigation Web */
@@ -280,8 +292,10 @@ header nav[aria-expanded='true'] {
 
   .nav-tools .burger-sub-menu div:nth-child(2) p {
     display: flex;
-    padding: 6%;
+
     justify-content: flex-start;
+    padding: 0% 6%;
+    margin-bottom: -10%;
   }
 
   .nav-tools {
@@ -300,10 +314,7 @@ header nav[aria-expanded='true'] {
     color: var(--sub-text-grey);
     font-size: var(--sub-text-secondary-size);
     justify-content: start;
-  }
-
-  .nav-tools .burger-sub-menu div:nth-child(2) div p {
-    margin-bottom: -10%;
+    width: auto;
   }
 
   /*  Malta | EUR  */
@@ -447,6 +458,7 @@ header nav[aria-expanded='true'] .nav-sections {
 /* Account and country */
 header nav[aria-expanded='true'] .nav-tools .columns-2-cols {
   visibility: visible;
+  margin: 0 5%;
 }
 
 /* Mobile nav menu */
@@ -454,8 +466,8 @@ header nav[aria-expanded='false'] .columns-1-cols div:nth-child(2) {
   display: none;
   visibility: hidden;
 }
-
-/* header nav .nav-sections ul {
+/* 
+header nav .nav-sections ul {
   list-style: none;
   padding-left: 0;
   font: var(--type-body-1-default-font);
@@ -592,6 +604,7 @@ header nav .nav-tools {
   gap: 10px;
 }
 
+/* cart and search */
 header nav .nav-tools > button,
 header nav .nav-tools .minicart-wrapper > button {
   color: var(--color-brand-700);
