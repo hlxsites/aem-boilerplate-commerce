@@ -63,10 +63,8 @@ header nav[aria-expanded='true'] {
   }
 
   header.header-wrapper {
-    height: auto;
     padding: 0;
     margin-bottom: 0;
-    border: 2px solid yellow;
   }
 
   main .modal dialog {
@@ -118,14 +116,9 @@ header nav[aria-expanded='true'] {
     div {
     display: flex;
     justify-content: center;
-
     width: 100%;
-    margin-top: 0;
-    padding-top: 0;
     top: var(--nav-height);
     margin: 0;
-    /* padding: 0; */
-    border: 2px solid yellow;
   }
 
   /* image */
