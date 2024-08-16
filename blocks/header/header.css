@@ -75,6 +75,7 @@ header nav[aria-expanded='true'] {
   /* Categories modal */
   main .modal dialog {
     min-height: 100% !important;
+    max-height: auto;
     margin: 0 !important;
   }
 
