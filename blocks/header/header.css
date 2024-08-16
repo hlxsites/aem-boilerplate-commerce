@@ -250,6 +250,11 @@ header nav[aria-expanded='true'] {
     .main-nav-content:nth-child(1)
     div:nth-child(1)
     div:nth-child(1) {
+    -webkit-position: fixed;
+    -webkit-width: 100%;
+    -webkit-margin: 0;
+    -webkit-top: 0;
+    -webkit-height: 7%;
     position: fixed;
     width: 100%;
     margin: 0;
