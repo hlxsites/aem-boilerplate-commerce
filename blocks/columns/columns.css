@@ -273,28 +273,6 @@
     scroll-snap-type: x mandatory;
   }
 
-  /* Trending Section */
-  /* .content-feature {
-    border: 2px solid yellow !important;
-  }
-  .content-feature div {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    width: 100%;
-    border: 2px solid rebeccapurple !important;
-  } */
-
-  /* Trending Column Header */
-  /* .content-feature p:nth-child(2) {
-    text-transform: uppercase;
-    font-size: var(--sub-text-title-large);
-    font-weight: var(--sub-text-title-weight);
-    letter-spacing: 2px;
-    margin: 5px 0;
-  } */
-
   /* Banner Section */
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     display: flex;
@@ -309,12 +287,4 @@
     width: 100%;
     top: 380px;
   }
-
-  /* shop now */
-  /* .banner-section .hero-content div div p em:nth-child(2) a {
-    font-size: 14px;
-    margin: -10% 0;
-    padding: 8px 8%;
-    right: 36.9%;
-  } */
 }

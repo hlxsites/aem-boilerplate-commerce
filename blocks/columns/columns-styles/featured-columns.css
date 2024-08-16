@@ -1,7 +1,7 @@
 @import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase.css);
 @import url(../../../blocks/product-brand-showcase/product-brand-showcase.css);
-@import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase-mirror.css);
-@import url(../../../blocks/product-brand-showcase/product-brand-showcase-mirror.css);
+@import url(../../../blocks/product-main-brand-showcase-mirror/product-main-brand-showcase-mirror.css);
+@import url(../../../blocks/product-brand-showcase-mirror/product-brand-showcase-mirror.css);
 
 /* Featured Brand (Balenciaga) */
 .divider-border-grid {
