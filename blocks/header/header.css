@@ -14,7 +14,6 @@ header .nav-wrapper {
   background-color: var(--background-color);
   width: 100%;
   z-index: 1000;
-
   position: fixed;
 }
 
@@ -38,10 +37,11 @@ header nav {
     'sections sections sections' 1fr / auto 1fr auto;
   align-items: center;
   gap: 0 32px;
-  margin: auto;
+  margin: 0 auto;
   max-width: 1264px;
   height: var(--nav-height);
-  padding: 0 16px;
+  padding: 0;
+  /* padding: 0 16px; */
   font-family: var(--type-base-font-family);
 }
 
@@ -50,14 +50,23 @@ header nav[aria-expanded='true'] {
     'hamburger brand' var(--nav-height)
     'sections sections' 1fr
     'tools tools' var(--nav-height) / auto 1fr;
-  overflow-y: auto;
+  overflow-y: scroll;
   min-height: 100vh;
 }
 
 @media (width < 599px) {
   header nav {
-    height: calc(var(--nav-height) / 2 + 6px);
+    height: calc(var(--nav-height) / 2);
+    margin-bottom: 0;
+    padding-bottom: 0;
     border-bottom: 2px solid var(--sub-text-border-divider);
+  }
+
+  header.header-wrapper {
+    height: auto;
+    padding: 0;
+    margin-bottom: 0;
+    border: 2px solid yellow;
   }
 
   main .modal dialog {
@@ -79,6 +88,7 @@ header nav[aria-expanded='true'] {
     position: relative;
     animation-name: slideIn;
     animation-duration: 0.8s;
+    margin: auto;
   }
 
   /* Nav Directories */
@@ -106,12 +116,16 @@ header nav[aria-expanded='true'] {
     .columns-1-cols:nth-child(1)
     div:nth-child(1)
     div {
-    position: relative;
-    width: 100%;
-    margin: 0;
-    height: 100%;
+    display: flex;
+    justify-content: center;
 
-    padding: 0;
+    width: 100%;
+    margin-top: 0;
+    padding-top: 0;
+    top: var(--nav-height);
+    margin: 0;
+    /* padding: 0; */
+    border: 2px solid yellow;
   }
 
   /* image */
@@ -122,10 +136,18 @@ header nav[aria-expanded='true'] {
     div
     p:nth-child(1)
     img {
-    position: relative;
     width: 55px;
-    height: auto;
-    top: calc(var(--nav-height) / 3 - 10px);
+    /* height: auto; */
+    margin: 0;
+    padding: 0;
+  }
+
+  header nav[aria-expanded='true'] .nav-brand {
+    display: flex;
+    flex-direction: row;
+    border: 2px solid rebeccapurple;
+
+    justify-content: center;
   }
 
   header nav[aria-expanded='true'] {
@@ -135,35 +157,33 @@ header nav[aria-expanded='true'] {
     }
 
     .nav-brand .gender-cols {
-      display: flex;
-      height: 5%;
-      width: auto;
-      margin: auto -5%;
-      margin-top: 20%;
-      margin-left: -15%;
+      width: 100%;
+      margin-top: var(--nav-height);
       border-bottom: 1px solid var(--sub-text-border-divider);
       background-color: var(--sub-text-background-color);
-      padding: 0.1%;
     }
 
     .nav-brand .gender-cols div {
       margin: 0;
+      padding: 0;
       justify-content: center;
       align-items: center;
       display: flex;
       flex-direction: row;
       flex: 2;
+      border: 2px solid red;
     }
 
     .nav-brand .gender-cols div div:nth-child(1) .active {
       display: flex;
-      width: 50vw;
+      width: calc(347px / 2);
       height: 5.2vh;
       align-items: center;
       justify-content: center;
       background-color: white;
       padding: 0 18%;
       box-shadow: 4px 0px 3px rgba(0, 0, 0, 0.2);
+      border: 2px solid blue;
     }
 
     .nav-brand .gender-cols div div:nth-child(2) .active {
