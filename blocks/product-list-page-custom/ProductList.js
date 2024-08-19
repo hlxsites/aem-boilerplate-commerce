@@ -1,11 +1,7 @@
 /* eslint-disable object-curly-spacing, class-methods-use-this */
-import {
-  h, Component, Fragment,
-} from '../../scripts/preact.js';
+import { h, Component, Fragment } from '../../scripts/preact.js';
 import htm from '../../scripts/htm.js';
-import {
-  renderPrice,
-} from '../../scripts/commerce.js';
+import { renderPrice } from '../../scripts/commerce.js';
 
 const html = htm.bind(h);
 
@@ -39,26 +35,26 @@ class ProductCard extends Component {
     url.protocol = 'https:';
     url.search = '';
 
-    return html`<picture>
-      <source type="image/webp" srcset="${url}?width=163&bg-color=255,255,255&format=webply&optimize=medium 1x,${url}?width=326&bg-color=255,255,255&format=webply&optimize=medium 2x, ${url}?width=489&bg-color=255,255,255&format=webply&optimize=medium 3x" media="(max-width: 900px)" />
-      <source type="image/webp" srcset="${url}?width=330&bg-color=255,255,255&format=webply&optimize=medium 1x, ${url}?width=660&bg-color=255,255,255&format=webply&optimize=medium 2x, ${url}?width=990&bg-color=255,255,255&format=webply&optimize=medium 3x" />
-      <img class="product-image-photo" src="${url}?width=330&quality=100&bg-color=255,255,255" max-width="330" max-height="396" alt=${product.name} loading=${loading} />
-    </picture>`;
+    return html`<picture> </picture>`;
   }
 
   onProductClick(product) {
     window.adobeDataLayer.push((dl) => {
       // TODO: Remove eventInfo once collector is updated
-      dl.push({ event: 'search-product-click', eventInfo: { ...dl.getState(), searchUnitId: 'searchUnitId', sku: product.sku } });
+      dl.push({
+        event: 'search-product-click',
+        eventInfo: {
+          ...dl.getState(),
+          searchUnitId: 'searchUnitId',
+          sku: product.sku,
+        },
+      });
     });
   }
 
-  render({
-    product, loading, index, secondLastProduct,
-  }) {
+  render({ product, loading, index, secondLastProduct }) {
     if (loading) {
-      return html`
-      <li>
+      return html` <li>
         <div class="picture shimmer"></div>
         <div class="variants"></div>
         <div class="name">
@@ -72,45 +68,72 @@ class ProductCard extends Component {
       </li>`;
     }
 
-    const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
+    const isMobile = window.matchMedia(
+      'only screen and (max-width: 900px)'
+    ).matches;
     const numberOfEagerImages = isMobile ? 2 : 4;
 
-    return html`
-      <li index=${index} ref=${secondLastProduct}>
-        <div class="picture">
-          <a onClick=${() => this.onProductClick(product)} href="/products/${product.urlKey}/${product.sku.toLowerCase()}">
-            ${this.renderImage(index < numberOfEagerImages ? 'eager' : 'lazy')}
-          </a>
-        </div>
-        <div class="name">
-          <a onClick=${() => this.onProductClick(product)} href="/products/${product.urlKey}/${product.sku.toLowerCase()}" dangerouslySetInnerHTML=${{__html: product.name}} />
-        </div>
-        <div class="price">${renderPrice(product, this.formatter.format, html, Fragment)}</div>
-      </li>`;
+    return html` <li index=${index} ref=${secondLastProduct}>
+      <div class="picture">
+        <a
+          onClick=${() => this.onProductClick(product)}
+          href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
+        >
+          ${this.renderImage(index < numberOfEagerImages ? 'eager' : 'lazy')}
+        </a>
+      </div>
+      <div class="name">
+        <a
+          onClick=${() => this.onProductClick(product)}
+          href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
+          dangerouslySetInnerHTML=${{ __html: product.name }}
+        />
+      </div>
+      <div class="price">
+        ${renderPrice(product, this.formatter.format, html, Fragment)}
+      </div>
+    </li>`;
   }
 }
 
 const ProductList = ({
-  products, loading, currentPageSize, secondLastProduct,
+  products,
+  loading,
+  currentPageSize,
+  secondLastProduct,
 }) => {
   if (loading) {
     return html`<div class="list">
       <ol>
-        ${Array(currentPageSize).fill().map(() => html`<${ProductCard} loading=${true} />`)}
+        ${Array(currentPageSize)
+          .fill()
+          .map(() => html`<${ProductCard} loading=${true} />`)}
       </ol>
     </div>`;
   }
 
   if (products.items.length === 0) {
     return html`<div class="list">
-      <div class="empty">We're sorry, we couldn't find anything that matches your query.</div>
+      <div class="empty">
+        We're sorry, we couldn't find anything that matches your query.
+      </div>
     </div>`;
   }
 
-  const gridItems = products.items.map((product, index) => html`<${ProductCard} key=${product.sku} product=${product} index=${index} secondLastProduct=${index === products.items.length - 2 ? secondLastProduct : null} />`);
+  const gridItems = products.items.map(
+    (product, index) =>
+      html`<${ProductCard}
+        key=${product.sku}
+        product=${product}
+        index=${index}
+        secondLastProduct=${index === products.items.length - 2
+          ? secondLastProduct
+          : null}
+      />`
+  );
   return html`<div class="list">
     <ol>
-        ${gridItems}
+      ${gridItems}
     </ol>
   </div>`;
 };
