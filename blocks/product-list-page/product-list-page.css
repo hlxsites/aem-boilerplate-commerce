@@ -151,12 +151,13 @@
     .ds-sdk-product-item__image
     .overflow-hidden {
     margin: auto 0;
-    width: auto;
+    width: 100%;
     flex: 1;
   }
 
   .product-list-page .ds-sdk-product-item__image img {
     min-width: 150px;
+    width: 100%;
     margin: auto 0;
   }
 }
