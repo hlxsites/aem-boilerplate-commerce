@@ -145,6 +145,9 @@
     height: 250px;
     zoom: 2.5;
   }
+  .banner-section-latest .hero-latest div:nth-child(2) {
+    display: none;
+  }
 
   /* Publications */
   .banner-section .hero-content div div p em:nth-child(1) a {
