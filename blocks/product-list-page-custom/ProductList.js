@@ -39,10 +39,11 @@ class ProductCard extends Component {
       <source
         type="image/webp"
         srcset="
-          ${url}?width=163&bg-color=255,255,255&format=webply&optimize=medium 1x,
-          ${url}?width=326&bg-color=255,255,255&format=webply&optimize=medium 2x,
-          ${url}?width=489&bg-color=255,255,255&format=webply&optimize=medium 3x
+          ${url}?width=150&format=webp&q=80 1x,
+          ${url}?width=300&format=webp&q=80 2x,
+          ${url}?width=450&format=webp&q=80 3x
         "
+        sizes="(max-width: 900px) 100vw, 33vw"
         media="(max-width: 900px)"
       />
       <source
