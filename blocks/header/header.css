@@ -64,7 +64,7 @@ header nav[aria-expanded='true'] {
   min-height: 100vh;
 }
 
-@media (width < 599px) {
+@media (width < 900px) {
   /* main nav mob */
   header nav {
     height: calc(var(--nav-height) / 2);
@@ -348,7 +348,7 @@ header nav[aria-expanded='true'] {
   }
 }
 
-@media (width >= 600px) {
+@media (width >= 601px) {
   header nav {
     padding: 0 32px;
   }
