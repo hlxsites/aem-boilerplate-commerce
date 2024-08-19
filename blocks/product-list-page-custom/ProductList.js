@@ -55,10 +55,14 @@ class ProductCard extends Component {
           3}&bg-color=255,255,255&format=webply&optimize=medium 3x
         "
       />
-      <img class="product-image-photo"
-      src="${url}?width=${imageWidth}&quality=100&bg-color=255,255,255"
-      width="${imageWidth}" // Explicit width height="${imageHeight}" //
-      Explicit height alt=${product.name} loading=${loading} />
+      <img
+        class="product-image-photo"
+        src="${url}?width=${imageWidth}&quality=100&bg-color=255,255,255"
+        width="${imageWidth}"
+        height="${imageHeight}"
+        alt=${product.name}
+        loading=${loading}
+      />
     </picture>`;
   }
 
