@@ -1,12 +1,13 @@
 //Creating Elements
-const oldPrice = document.createElement('span');
-oldPrice.classList.add('old-price');
+const wasPrice = document.createElement('span');
+wasPrice.classList.add('was-price');
 
 export default function RegularPrice(ctx)
 {
-    ctx.prependChild(oldPrice);
+    ctx.appendChild(wasPrice);
 
-    ctx.onChange((next) => {
-        oldPrice.innerHTML = next?.dictionary?.PDP?.Price?.Was?.label || 'old-price';
+    ctx.onChange(() => {
+        wasPrice.innerHTML = 'test';
+        console.log("test");
     });
 }

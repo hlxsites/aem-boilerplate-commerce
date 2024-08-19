@@ -14,6 +14,7 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 //Slots
 import Actions from './slots/Actions.js';
 import InfoContent from './slots/InfoContent.js';
+import RegularPrice from './slots/RegularPrice.js';
 
 // Error Handling (404)
 async function errorGettingProduct(code = 404) {
@@ -119,13 +120,14 @@ function setMetaTags(product) {
 }
 
 export default async function decorate(block) {
+  
   if (!window.getProductPromise) {
     window.getProductPromise = getProduct(this.props.sku);
   }
 
   const [product, placeholders] = await Promise.all([
     window.getProductPromise, fetchPlaceholders()]);
-
+  
   if (!product) {
     await errorGettingProduct();
     return Promise.reject();
@@ -224,9 +226,10 @@ export default async function decorate(block) {
             gap: 'small',
           },
           slots: {
+            RegularPrice: (ctx) => RegularPrice(ctx),
+            Options: (ctx) => Options(ctx),
             Actions: (ctx) => Actions(ctx),
-            InfoContent: (ctx) => InfoContent(ctx),
-            Options: (ctx) => Options(ctx)
+            InfoContent: (ctx) => InfoContent(ctx)
           },
           useACDL: true,
         })(block);
