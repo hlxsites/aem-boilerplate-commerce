@@ -12,56 +12,61 @@ class ProductCard extends Component {
       style: 'currency',
       currency: 'USD',
     });
+
+    this.baseProduct = props.product;
   }
 
   renderImage(loading = 'lazy') {
     const { product } = this.props;
 
+    // Placeholder as fallback
     let image;
-    if (product.images?.length > 0) {
+
+    // Use base image if available
+    if (product.images && product.images.length > 0) {
       image = product.images[0].url;
     }
 
     if (!image) {
-      return html`<div class="no-image" aria-hidden="true"></div>`;
+      return html`<div class="no-image"></div>`;
     }
 
     const url = new URL(image);
     url.protocol = 'https:';
     url.search = '';
 
-    return html` <picture>
+    return html`<picture>
       <source
-        type="image/avif"
+        type="image/webp"
         srcset="
-          ${url}?width=163&bg-color=255,255,255&format=avif&optimize=medium 1x,
-          ${url}?width=326&bg-color=255,255,255&format=avif&optimize=medium 2x,
-          ${url}?width=489&bg-color=255,255,255&format=avif&optimize=medium 3x
+          ${url}?width=163&bg-color=255,255,255&format=webply&optimize=medium 1x,
+          ${url}?width=326&bg-color=255,255,255&format=webply&optimize=medium 2x,
+          ${url}?width=489&bg-color=255,255,255&format=webply&optimize=medium 3x
         "
         media="(max-width: 900px)"
       />
       <source
         type="image/webp"
         srcset="
-          ${url}?width=163&bg-color=255,255,255&format=webp&optimize=medium 1x,
-          ${url}?width=326&bg-color=255,255,255&format=webp&optimize=medium 2x,
-          ${url}?width=489&bg-color=255,255,255&format=webp&optimize=medium 3x
+          ${url}?width=330&bg-color=255,255,255&format=webply&optimize=medium 1x,
+          ${url}?width=660&bg-color=255,255,255&format=webply&optimize=medium 2x,
+          ${url}?width=990&bg-color=255,255,255&format=webply&optimize=medium 3x
         "
-        media="(max-width: 900px)"
       />
       <img
         class="product-image-photo"
-        src="${url}?width=330&quality=85&bg-color=255,255,255"
-        width="330"
-        height="396"
-        alt="${product.name}"
-        loading="${loading}"
+        src="${url}?width=330&quality=100&bg-color=255,255,255"
+        max-width="330"
+        max-height="396"
+        alt=${product.name}
+        loading=${loading}
       />
     </picture>`;
   }
 
   onProductClick(product) {
     window.adobeDataLayer.push((dl) => {
+      // TODO: Remove eventInfo once collector is updated
       dl.push({
         event: 'search-product-click',
         eventInfo: {
@@ -76,16 +81,16 @@ class ProductCard extends Component {
   render({ product, loading, index, secondLastProduct }) {
     if (loading) {
       return html` <li>
-        <div class="picture shimmer" aria-hidden="true"></div>
-        <div class="variants" aria-hidden="true"></div>
-        <div class="name" aria-hidden="true">
+        <div class="picture shimmer"></div>
+        <div class="variants"></div>
+        <div class="name">
           <div class="shimmer shimmer-text"></div>
           <div class="shimmer shimmer-text" style="max-width: 70%"></div>
         </div>
-        <div class="price" aria-hidden="true">
+        <div class="price">
           <div class="shimmer shimmer-text" style="max-width: 30%"></div>
         </div>
-        <div class="rating" aria-hidden="true"></div>
+        <div class="rating"></div>
       </li>`;
     }
 
@@ -94,21 +99,20 @@ class ProductCard extends Component {
     ).matches;
     const numberOfEagerImages = isMobile ? 2 : 4;
 
-    return html` <li index="${index}" ref="${secondLastProduct}">
+    return html` <li index=${index} ref=${secondLastProduct}>
       <div class="picture">
         <a
-          onClick="${() => this.onProductClick(product)}"
+          onClick=${() => this.onProductClick(product)}
           href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
-          aria-label="${product.name}"
         >
           ${this.renderImage(index < numberOfEagerImages ? 'eager' : 'lazy')}
         </a>
       </div>
       <div class="name">
         <a
-          onClick="${() => this.onProductClick(product)}"
+          onClick=${() => this.onProductClick(product)}
           href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
-          dangerouslySetInnerHTML="${{ __html: product.name }}"
+          dangerouslySetInnerHTML=${{ __html: product.name }}
         />
       </div>
       <div class="price">
@@ -125,17 +129,17 @@ const ProductList = ({
   secondLastProduct,
 }) => {
   if (loading) {
-    return html` <div class="list">
+    return html`<div class="list">
       <ol>
         ${Array(currentPageSize)
           .fill()
-          .map(() => html`<${ProductCard} loading="${true}" />`)}
+          .map(() => html`<${ProductCard} loading=${true} />`)}
       </ol>
     </div>`;
   }
 
   if (products.items.length === 0) {
-    return html` <div class="list">
+    return html`<div class="list">
       <div class="empty">
         We're sorry, we couldn't find anything that matches your query.
       </div>
@@ -143,17 +147,17 @@ const ProductList = ({
   }
 
   const gridItems = products.items.map(
-    (product, index) => html` <${ProductCard}
-      key="${product.sku}"
-      product="${product}"
-      index="${index}"
-      secondLastProduct="${index === products.items.length - 2
-        ? secondLastProduct
-        : null}"
-    />`
+    (product, index) =>
+      html`<${ProductCard}
+        key=${product.sku}
+        product=${product}
+        index=${index}
+        secondLastProduct=${index === products.items.length - 2
+          ? secondLastProduct
+          : null}
+      />`
   );
-
-  return html` <div class="list">
+  return html`<div class="list">
     <ol>
       ${gridItems}
     </ol>
