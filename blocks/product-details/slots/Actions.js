@@ -7,7 +7,7 @@ export default function Actions(ctx)
     SpecialMessage.innerHTML = `<span data-test-id="ShippingMessage__OrderText"></span> 
                                 to receive <em data-test-id="ShippingMessage__DeliveryEstimate"></em>`;
 
-    ctx.appendChild(SpecialMessage);
+    ctx.prependSibling(SpecialMessage);
 
     ctx.appendButton((next,state) => {
         const adding = state.get('adding');
@@ -20,6 +20,7 @@ export default function Actions(ctx)
             onClick: async () => 
             {
                 state.set('adding',true);
+                console.log('Add to Cart clicked');
             }
         }
     });
@@ -28,25 +29,33 @@ export default function Actions(ctx)
         return {
             innerHTML: "Add to Wishlist",
             variant: "Primary",
+            className: "wish-list-button",
             onClick: async () => 
             {
-                console.log('Add to Wishlist  clicked');
+                console.log('Add to Wishlist clicked');
             }
         };
     });
+
+    /* TODO: make counter of shipping message dynamic
+    https://www.youtube.com/watch?v=mmD7LWeM9TY */
     
-    // TODO: make counter of shipping message dynamic
     events.on('eds/lcp', () => {
+
+        document.querySelector(".pdp-product__buttons > button:nth-child(1)").classList.add("addToCart");
+
         const deadline = new Date();
         
+        //setting the time that a user has left to have same day delivery
         deadline.setHours(17);
 
         const x = setInterval(function(){
             var now = new Date().getTime();
 
+            //get distance between deadline and current time
             var distance = deadline - now;
-            // var distance = 0;
 
+            //convert the distance into hours and minutes
             var hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60));
             var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
             
@@ -64,17 +73,16 @@ export default function Actions(ctx)
                 document.querySelector(`[data-test-id='ShippingMessage__OrderText']`).innerHTML = "Order Now";
             }
 
+            const weekday = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+            const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            const day = weekday[tomorrow.getDay()];
+            const month = months[tomorrow.getMonth()];
+
+            document.querySelector(`[data-test-id='ShippingMessage__DeliveryEstimate']`).innerHTML = day + " " + tomorrow.getDate() + " " + month;
         });
-
-        const weekday = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
-        const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-
-        const day = weekday[tomorrow.getDay()];
-        const month = months[tomorrow.getMonth()];
-
-        document.querySelector(`[data-test-id='ShippingMessage__DeliveryEstimate']`).innerHTML = day + " " + tomorrow.getDate() + " " + month;
     });
 }
