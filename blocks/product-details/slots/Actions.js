@@ -3,11 +3,18 @@ import { events } from '@dropins/tools/event-bus.js';
 export default function Actions(ctx)
 {
     const SpecialMessage = document.createElement('div');
+    
     SpecialMessage.classList.add('SpecialMessageText');
     SpecialMessage.innerHTML = `<span data-test-id="ShippingMessage__OrderText"></span> 
                                 to receive <em data-test-id="ShippingMessage__DeliveryEstimate"></em>`;
-
+    
     ctx.prependSibling(SpecialMessage);
+
+    const mobileResponsive = document.createElement('div');
+    mobileResponsive.classList.add('mobile-responsive-section');
+
+    ctx.prependSibling(mobileResponsive);
+    
 
     ctx.appendButton((next,state) => {
         const adding = state.get('adding');
@@ -42,7 +49,10 @@ export default function Actions(ctx)
     
     events.on('eds/lcp', () => {
 
-        document.querySelector(".pdp-product__buttons > button:nth-child(1)").classList.add("addToCart");
+        const cartButton  = document.querySelector(".pdp-product__buttons > button:nth-child(1)");
+        cartButton.classList.add("add-to-cart");
+
+        document.querySelector(".mobile-responsive-section").append(cartButton);
 
         const deadline = new Date();
         

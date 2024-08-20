@@ -14,7 +14,8 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 //Slots
 import Actions from './slots/Actions.js';
 import InfoContent from './slots/InfoContent.js';
-// import RegularPrice from './slots/RegularPrice.js';
+import SpecialPrice from './slots/SpecialPrice.js';
+import RegularPrice from './slots/RegularPrice.js';
 
 // Error Handling (404)
 async function errorGettingProduct(code = 404) {
@@ -226,9 +227,8 @@ export default async function decorate(block) {
             gap: 'small',
           },
           slots: {
-            RegularPrice: (ctx) => {
-              alert("test");
-            },
+            RegularPrice: (ctx) => RegularPrice(ctx),
+            SpecialPrice: (ctx) => SpecialPrice(ctx),
             Options: (ctx) => Options(ctx),
             Actions: (ctx) => Actions(ctx),
             InfoContent: (ctx) => InfoContent(ctx)
