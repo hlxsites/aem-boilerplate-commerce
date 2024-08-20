@@ -125,12 +125,13 @@
 
 /* Video */
 div:nth-child(5) .video-wrapper div {
-  margin: 0 auto;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 30%;
 }
 
 div:nth-child(5) .video-wrapper div div iframe {
-  width: 100% !important;
-  height: 100% !important;
+  margin-bottom: 15%;
 }
 
 /* 2 images */
@@ -400,15 +401,15 @@ div:nth-child(5) .video-wrapper div div iframe {
   margin: 4% auto;
 }
 
-@media (width <= 600px) {
-  main .section {
-    margin: 0 auto;
-    padding-top: 0;
-    padding-bottom: auto;
-    padding-left: auto;
-    padding-right: auto;
-  }
+main .section {
+  margin: 0 auto;
+  padding-top: 0;
+  padding-bottom: auto;
+  padding-left: auto;
+  padding-right: auto;
+}
 
+@media (width <= 900px) {
   /* interviews button */
   .features-intro p:nth-child(1) strong a:nth-child(1) {
     margin-top: calc(var(--nav-height) - 150px);
