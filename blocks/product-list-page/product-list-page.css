@@ -17,7 +17,6 @@
 .product-list-page .ds-sdk-filter-button-desktop .bg-background,
 .product-list-page .ds-sdk-sort-dropdown .bg-background span,
 .product-list-page .ds-sdk-sort-dropdown .bg-background {
-  margin: auto;
   outline-color: transparent;
   font-weight: 520;
   color: var(--sub-text-title-color);

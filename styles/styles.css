@@ -141,7 +141,7 @@
   --type-details-overline-letter-spacing: 0.16em;
 
   /* Additional tokens */
-  --type-fixed-font-family: "Roboto Mono", menlo, consolas, "Liberation Mono",
+  --type-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono',
     monospace;
   --background-color: var(--color-neutral-50);
   --nav-height: 10rem;
@@ -170,7 +170,8 @@
   font-family: roboto-fallback;
   size-adjust: 100.06%;
   ascent-override: 95%;
-  src: local("Arial");
+  src: local('Arial');
+  font-display: swap;
 }
 
 html {
@@ -371,12 +372,12 @@ main blockquote {
 }
 
 main blockquote p::before {
-  content: "“";
+  content: '“';
   line-height: 0;
 }
 
 main blockquote p::after {
-  content: "”";
+  content: '”';
   line-height: 0;
 }
 
