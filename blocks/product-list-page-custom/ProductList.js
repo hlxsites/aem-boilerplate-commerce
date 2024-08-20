@@ -16,7 +16,7 @@ class ProductCard extends Component {
     this.baseProduct = props.product;
   }
 
-  renderImage(loading = 'lazy') {
+  renderImage(loading = 'eager') {
     const { product } = this.props;
 
     // Placeholder as fallback
@@ -55,10 +55,8 @@ class ProductCard extends Component {
       />
       <img
         class="product-image-photo"
-        src="${url}?width=330&quality=100&bg-color=255,255,255"
+        src="${url}?height=300&width=330&quality=100&bg-color=255,255,255"
         max-width="330"
-        width="330"
-        height="330"
         max-height="396"
         alt=${product.name}
         loading=${loading}
