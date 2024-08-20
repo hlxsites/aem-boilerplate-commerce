@@ -35,31 +35,29 @@ class ProductCard extends Component {
     url.protocol = 'https:';
     url.search = '';
 
-    // Set explicit width and height attributes
-    const imageWidth = 330;
-    const imageHeight = 396;
-
     return html`<picture>
       <source
         type="image/webp"
-        srcset="${url}, ${url}, ${url}"
+        srcset="
+          ${url}?height=330&width=330&bg-color=255,255,255&format=webply&optimize=medium 1x,
+          ${url}?height=330&width=330&bg-color=255,255,255&format=webply&optimize=medium 2x,
+          ${url}?height=330&width=330&bg-color=255,255,255&format=webply&optimize=medium 3x
+        "
         media="(max-width: 900px)"
       />
       <source
         type="image/webp"
         srcset="
-          ${url}?width=${imageWidth}&bg-color=255,255,255&format=webply&optimize=medium 1x,
-          ${url}?width=${imageWidth *
-          2}&bg-color=255,255,255&format=webply&optimize=medium 2x,
-          ${url}?width=${imageWidth *
-          3}&bg-color=255,255,255&format=webply&optimize=medium 3x
+          ${url}?width=330&bg-color=255,255,255&format=webply&optimize=medium 1x,
+          ${url}?width=660&bg-color=255,255,255&format=webply&optimize=medium 2x,
+          ${url}?width=990&bg-color=255,255,255&format=webply&optimize=medium 3x
         "
       />
       <img
         class="product-image-photo"
-        src="${url}?width=${imageWidth}&quality=100&bg-color=255,255,255"
-        width="${imageWidth}"
-        height="${imageHeight}"
+        src="${url}?width=330&quality=100&bg-color=255,255,255"
+        max-width="330"
+        max-height="396"
         alt=${product.name}
         loading=${loading}
       />
