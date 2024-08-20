@@ -1,21 +1,17 @@
-.product-main-brand-showcase .product div:nth-child(1),
-.brand-showcase div:nth-child(1) div:nth-child(1) {
+.product-main-brand-showcase .product div:nth-child(1) {
   display: flex;
   position: relative;
   line-height: 1;
-
   flex-direction: column;
 }
 
 /* Bullet */
-.product-main-brand-showcase ul li,
-.brand-showcase ul li {
+.product-main-brand-showcase ul li {
   list-style-type: square;
 }
 
 /* Balenciaga */
-.product-main-brand-showcase ul li a,
-.brand-showcase ul li a {
+.product-main-brand-showcase ul li a {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: var(--sub-text-title-size);
@@ -23,14 +19,12 @@
   font-weight: bold;
 }
 
-.product-main-brand-showcase ul li a:hover,
-.brand-showcase ul li a:hover {
+.product-main-brand-showcase ul li a:hover {
   text-decoration: none;
 }
 
 /* Balenciaga and Shop now positioning */
-.product-main-brand-showcase .product div:nth-child(1) ul,
-.brand-showcase div div:nth-child(1) ul {
+.product-main-brand-showcase .product div:nth-child(1) ul {
   margin: 0;
   margin-top: 6%;
   margin-bottom: -4%;
@@ -39,8 +33,7 @@
 }
 
 /* Shop Now button on top of image */
-.product-main-brand-showcase .product div:nth-child(1) p a.button,
-.brand-showcase div:nth-child(1) div:nth-child(1) p a.button {
+.product-main-brand-showcase .product div:nth-child(1) p a.button {
   border: none;
   background-color: transparent;
   text-transform: var(--sub-text-button-transform);
@@ -82,7 +75,7 @@
   }
 }
 
-@media (600px < width <= 1024px) {
+@media (600px < width < 1024px) {
   .product-main-brand-showcase-wrapper {
     display: flex;
     margin: 0 auto;
