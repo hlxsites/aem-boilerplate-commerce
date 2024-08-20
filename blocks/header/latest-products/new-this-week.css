@@ -12,6 +12,7 @@
   background-color: white;
   border-radius: 2%;
   width: 27%;
+  height: 100%;
   margin: 2% 20%;
   padding: 0 2%;
   box-shadow: 5px 5px 10px rgba(189, 152, 110, 0.8);
@@ -83,12 +84,14 @@
 @media (max-width: 600px) {
   .banner-section-latest {
     min-height: 30vh;
+    width: 100%;
   }
 
   .hero-latest table:nth-child(1) {
     background-color: var(--sub-text-background-color);
     border-radius: 0;
     width: 100%;
+    height: 100%;
     margin: auto 0;
     margin-top: -11%;
     box-shadow: none;
@@ -107,6 +110,7 @@
   .hero-latest div div table tbody tr:nth-child(3) td {
     text-align: center;
     width: 98%;
+    height: 100%;
     margin: auto;
   }
 
