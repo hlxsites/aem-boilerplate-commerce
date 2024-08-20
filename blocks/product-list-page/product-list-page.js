@@ -22,8 +22,8 @@ export default async function decorate(block) {
     config: {
       pageSize: 8,
       perPageConfig: {
-        pageSizeOptions: '12,24,36',
-        defaultPageSizeOption: '12',
+        pageSizeOptions: '8,12,24,36',
+        defaultPageSizeOption: '8',
       },
       minQueryLength: '2',
       currencySymbol: '$',
