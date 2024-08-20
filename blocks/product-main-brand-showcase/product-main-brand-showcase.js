@@ -140,7 +140,7 @@ function renderProduct(product, config, block) {
       <ul>
         <li>
           <em> 
-            <a href="/" title="Balenciaga">Balenciaga</a>
+            <a href="/" title="${name}">${name}</a>
           </em>
         </li>
       </ul>

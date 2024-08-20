@@ -64,32 +64,24 @@
 }
 
 /* End Main Picture */
-
-@media (width >= 1024px) {
-  .product-main-brand-showcase .product .image picture > img {
-    margin: 0 auto;
-    width: 700px;
-    height: 700px;
-    height: auto;
-    object-fit: contain;
-  }
+.product-main-brand-showcase-wrapper {
+  display: flex;
+  margin: 0 auto;
+  justify-content: flex-start;
+  align-items: flex-start;
+  left: 0;
+  padding: 0;
 }
 
-@media (600px < width < 1024px) {
-  .product-main-brand-showcase-wrapper {
-    display: flex;
-    margin: 0 auto;
-    justify-content: flex-start;
-    align-items: flex-start;
-    left: 0;
-    padding: 0;
-  }
-  .product-main-brand-showcase .product .image picture > img {
-    height: auto;
-    width: 70vw;
-  }
+.product-main-brand-showcase .product .image picture > img {
+  margin: 0 auto;
+  width: 700px;
+  height: 700px;
+  height: auto;
+  object-fit: contain;
 }
-@media (max-width: 600px) {
+
+@media (width <= 600px) {
   /* Main Picture */
   .product-main-brand-showcase .product .image picture > img {
     height: auto;
