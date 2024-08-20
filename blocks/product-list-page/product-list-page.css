@@ -1,6 +1,7 @@
 /* stylelint-disable selector-class-pattern */
 .product-list-page {
-  min-height: 700px;
+  height: 100%;
+  width: 100%;
 }
 
 .product-list-page
@@ -56,7 +57,8 @@
   display: flex;
   margin: auto;
   max-width: 250px;
-  width: auto;
+  width: 100%;
+  height: 100%;
   flex: 1;
 }
 
@@ -109,6 +111,7 @@
   .product-list-page .ds-sdk-product-list .ds-sdk-product-item__product-name {
     text-wrap: wrap;
     width: 150px;
+    height: auto;
   }
 }
 
