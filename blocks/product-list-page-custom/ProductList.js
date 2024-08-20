@@ -48,9 +48,9 @@ class ProductCard extends Component {
       <source
         type="image/webp"
         srcset="
-          ${url}?width=330&bg-color=255,255,255&format=webply&optimize=medium 1x,
-          ${url}?width=660&bg-color=255,255,255&format=webply&optimize=medium 2x,
-          ${url}?width=990&bg-color=255,255,255&format=webply&optimize=medium 3x
+          ${url}?height=330&width=330&bg-color=255,255,255&format=webply&optimize=medium 1x,
+          ${url}?height=330&width=660&bg-color=255,255,255&format=webply&optimize=medium 2x,
+          ${url}?height=330&width=990&bg-color=255,255,255&format=webply&optimize=medium 3x
         "
       />
       <img
