@@ -97,6 +97,7 @@ main .banner-section {
 .banner-section-latest > .columns-wrapper div:nth-child(1) {
   position: relative;
   width: 100%;
+  height: 100%;
   flex: 1.5;
   padding-bottom: -2%;
 }
@@ -114,11 +115,13 @@ main .banner-section-latest {
   position: relative;
   padding: 32px;
   min-height: 58vh;
+  width: 100%;
 }
 
 .banner-section-latest picture {
   position: absolute;
   height: 100%;
+  width: 100%;
   z-index: -1;
   inset: 0;
   object-fit: cover;
