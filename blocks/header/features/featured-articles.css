@@ -2,6 +2,9 @@
 @import url(./next-post.css);
 @import url(./featured-latest-articles.css);
 
+main {
+  width: 100%;
+}
 /* Video */
 div:nth-child(5) .video-wrapper div {
   margin: 0;
