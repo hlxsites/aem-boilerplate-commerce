@@ -85,7 +85,8 @@
 
 @media (1300px >= width >= 750px) {
   .product-list-page {
-    min-height: auto;
+    height: 100%;
+    width: 100%;
   }
 
   /* Product Columns*/
@@ -106,6 +107,9 @@
     .ds-sdk-product-item__image
     .overflow-hidden {
     margin: 0;
+    width: 100%;
+    height: 100%;
+    flex: 1;
   }
 
   .product-list-page .ds-sdk-product-list .ds-sdk-product-item__product-name {
