@@ -40,21 +40,3 @@
   font-weight: lighter;
   color: var(--sub-text-grey);
 }
-
-/* 
-@media (width >= 600px) {
-  .product-showcase {
-    flex-direction: row;
-  }
-
-  .product-showcase .details {
-    flex: 1;
-  }
-
-  .product-showcase .actions {
-    justify-content: flex-start;
-  }
-} */
-
-@media (max-width: 600px) {
-}
