@@ -57,6 +57,8 @@ class ProductCard extends Component {
         class="product-image-photo"
         src="${url}?width=330&quality=100&bg-color=255,255,255"
         max-width="330"
+        width="330"
+        height="330"
         max-height="396"
         alt=${product.name}
         loading=${loading}
@@ -97,7 +99,7 @@ class ProductCard extends Component {
     const isMobile = window.matchMedia(
       'only screen and (max-width: 900px)'
     ).matches;
-    const numberOfEagerImages = isMobile ? 4 : 4;
+    const numberOfEagerImages = isMobile ? 2 : 4;
 
     return html` <li index=${index} ref=${secondLastProduct}>
       <div class="picture">
