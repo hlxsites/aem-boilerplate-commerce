@@ -66,5 +66,19 @@ export default async function decorate(block) {
     }, 200);
   });
 
+  const bannerImage = document.querySelectorAll('.banner-section-latest img');
+
+  bannerImage.forEach((image) => {
+    if (image) {
+      const imageUrl = image.src;
+
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = imageUrl;
+      document.head.appendChild(link);
+    }
+  });
+
   return window.LiveSearchPLP({ storeDetails, root: block });
 }
