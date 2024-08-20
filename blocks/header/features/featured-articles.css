@@ -398,7 +398,7 @@ div:nth-child(5) .video-wrapper div {
   margin: 4% auto;
 }
 
-@media (max-width: 600px) {
+@media (max-width <= 600px) {
   main .section {
     margin: 0 auto;
     padding-top: 0;
