@@ -289,6 +289,20 @@ main .section {
   padding-right: auto;
 }
 
+@media (width <= 1260px) {
+  /* Video */
+  div:nth-child(5) .video-wrapper div {
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  div:nth-child(5) .video-wrapper div div iframe {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0;
+    margin: 0 auto;
+  }
+}
 @media (width <= 900px) {
   /* interviews button */
   .features-intro p:nth-child(1) strong a:nth-child(1) {
@@ -342,19 +356,6 @@ main .section {
 
   .text-column-title div:nth-child(1) {
     padding: auto;
-  }
-
-  /* Video */
-  div:nth-child(5) .video-wrapper div {
-    margin: 0;
-    padding: 0;
-  }
-
-  div:nth-child(5) .video-wrapper div div iframe {
-    width: 100% !important;
-    height: 100% !important;
-    padding: 0;
-    margin: 0 auto;
   }
 
   .two-img div:nth-child(2) img {
