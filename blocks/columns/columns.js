@@ -16,12 +16,17 @@ export default function decorate(block) {
     });
   });
 
-  const bannerImageUrl =
-    '/media/18aba752689a24ec295872285c1e651c43fd8a443.png?width=2000&format=webply&optimize=medium';
+  const bannerImage = document.querySelectorAll('.banner-section-latest img');
 
-  const link = document.createElement('link');
-  link.rel = 'preload';
-  link.as = 'image';
-  link.href = bannerImageUrl;
-  document.head.appendChild(link);
+  bannerImage.forEach((image) => {
+    if (image) {
+      const imageUrl = image.src;
+
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = imageUrl;
+      document.head.appendChild(link);
+    }
+  });
 }
