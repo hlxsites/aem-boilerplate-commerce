@@ -3,7 +3,6 @@
   border: 2px solid rebeccapurple;
 }
 
-/* Product Name */
 .product-brand-showcase-mirror-wrapper {
   align-items: flex-end;
 }
@@ -14,7 +13,6 @@
 
 .product-brand-showcase-mirror-wrapper .product {
   display: flex;
-
   flex-direction: column;
   width: fit-content;
   flex-wrap: wrap;
@@ -40,22 +38,4 @@
   font-size: var(--sub-text-secondary-size);
   font-weight: lighter;
   color: var(--sub-text-grey);
-}
-
-/* 
-@media (width >= 600px) {
-  .product-showcase {
-    flex-direction: row;
-  }
-
-  .product-showcase .details {
-    flex: 1;
-  }
-
-  .product-showcase .actions {
-    justify-content: flex-start;
-  }
-} */
-
-@media (max-width: 600px) {
 }
