@@ -1,13 +1,13 @@
 //Creating Elements
 const wasPrice = document.createElement('span');
-wasPrice.classList.add('was-price');
 
 export default function RegularPrice(ctx)
 {
-    ctx.appendChild(wasPrice);
+    ctx.prependChild(wasPrice);
 
-    ctx.onChange(() => {
-        wasPrice.innerHTML = 'test';
-        console.log("test");
+    ctx.onChange((next) => {
+        // wasPrice.classList.add('was-price');
+        // wasPrice.innerHTML = next?.dictionary?.PDP?.Was?.label || 'Was';
+        // console.log("test");
     });
 }
