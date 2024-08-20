@@ -45,6 +45,7 @@
   text-transform: var(--sub-text-title-transform);
   font-weight: var(--sub-text-title-weight);
   font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial, sans-serif;
+  font-display: swap;
 }
 
 .columns > div > div {
@@ -226,11 +227,6 @@
     justify-content: baseline;
     margin: 4% auto;
   }
-
-  /* .column-headers {
-    -webkit-margin-top: 35%;
-    margin-top: 15%;
-  } */
 
   .column-headers div:nth-child(1) p {
     margin: auto 0;
