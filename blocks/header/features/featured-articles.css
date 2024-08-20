@@ -125,10 +125,12 @@
 
 /* Video */
 div:nth-child(5) .video-wrapper div {
-  margin: 0;
-  padding: 0;
-  margin-bottom: 30%;
-  margin-top: -5%;
+  margin: 0 auto;
+}
+
+div:nth-child(5) .video-wrapper div div iframe {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* 2 images */
@@ -398,7 +400,7 @@ div:nth-child(5) .video-wrapper div {
   margin: 4% auto;
 }
 
-@media (max-width <= 600px) {
+@media (width <= 600px) {
   main .section {
     margin: 0 auto;
     padding-top: 0;
