@@ -4,13 +4,14 @@
   flex-direction: column;
   margin: 1% 0;
   padding: 0;
+  width: auto;
   height: 470px;
 }
 
 /* all p content */
 .featured-latest-articles div div p {
   margin: 0;
-  width: 378px;
+  height: auto;
 }
 
 /* Article Category & Article Name*/
@@ -46,6 +47,7 @@
 
 .featured-latest-articles div div img {
   height: 255px;
+  width: auto;
   flex: 1;
   margin-bottom: 2%;
 }
