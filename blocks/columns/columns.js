@@ -22,7 +22,7 @@ export default function decorate(block) {
               false,
               [{ width: 'auto' }]
             );
-            pic.replaceWith(optimizedPicture); // Replace the existing picture with the optimized one
+            pic.replaceWith(optimizedPicture);
           }
         }
       }
