@@ -73,7 +73,7 @@
   font-weight: 555;
 }
 
-@media (width < 599px) {
+@media (width <= 600px) {
   .modal-content
     .three-cols-four-img
     div

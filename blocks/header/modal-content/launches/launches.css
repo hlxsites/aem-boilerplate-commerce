@@ -49,7 +49,7 @@
   display: none;
 }
 
-@media (width < 599px) {
+@media (width <= 600px) {
   .modal-content .columns-4-cols div div {
     width: auto;
     margin-left: -2%;
