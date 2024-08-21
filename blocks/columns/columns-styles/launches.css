@@ -71,13 +71,3 @@
   margin: 2% auto;
   display: flex;
 }
-
-@media (max-width: 600px) {
-  .product-showcase-carousel-container .columns-wrapper:nth-child(2) {
-    border: 2px solid rebeccapurple;
-  }
-  .launches-section div:nth-child(1) {
-    flex-direction: row;
-    position: relative;
-  }
-}

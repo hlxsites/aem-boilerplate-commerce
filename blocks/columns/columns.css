@@ -88,7 +88,6 @@ main .section {
   .product-main-brand-showcase .product .image picture > img {
     height: auto;
     width: auto;
-    border: 2px solid rebeccapurple;
   }
 
   /* Mirror Main Image wrapper */
@@ -157,6 +156,12 @@ main .section {
   .products-carousel {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+  }
+
+  /* Launches */
+  .launches-section div:nth-child(1) {
+    flex-direction: row;
+    position: relative;
   }
 
   /* Banner Section */

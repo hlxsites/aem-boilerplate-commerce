@@ -134,7 +134,6 @@ function renderProduct(product, config, block) {
     currency,
   });
 
-  // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
 
     <div class="image">
