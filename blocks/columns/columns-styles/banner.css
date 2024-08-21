@@ -1,15 +1,14 @@
-/* Banner Section */
-.banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
-  display: flex;
-}
-
 /* Banner */
 .banner-section > .columns-wrapper div:nth-child(1) {
   position: relative;
-  width: 100%;
-  flex: 1.5;
-  padding-bottom: -2%;
 }
+/* Banner Section */
+.banner-section > .columns-wrapper div div div p {
+  display: flex;
+  width: 100%;
+  height: 450px;
+}
+
 /* Banner */
 
 main .banner-section > div {
@@ -17,13 +16,14 @@ main .banner-section > div {
 }
 
 main .banner-section {
-  padding: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
 }
 
 .banner-section {
-  position: relative;
-  padding: 32px;
-  min-height: 78vh;
+  min-height: 70vh;
+  height: 100%;
 }
 
 .banner-section picture {
@@ -31,9 +31,6 @@ main .banner-section {
   height: 100%;
   z-index: -1;
   inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
-  color: white;
 }
 
 .banner-section img {
@@ -42,22 +39,26 @@ main .banner-section {
   height: 76vh;
 }
 
+.banner-section .hero-content div div p:nth-child(2) {
+  width: 100%;
+  height: 100%;
+}
+
 /* Publications */
 .banner-section .hero-content p em a {
   text-transform: uppercase;
   color: white;
   text-decoration: none;
   position: absolute;
-  bottom: 0;
 }
 
 /* Publications */
 .banner-section .hero-content p em:nth-child(1) a {
   font-size: 25px;
   letter-spacing: 5px;
-  align-self: flex-start;
-  margin: -32% 9%;
-  left: 0;
+  margin: 0 auto;
+  left: 13.5%;
+  bottom: 0%;
   border: none;
 }
 
@@ -65,12 +66,11 @@ main .banner-section {
 .banner-section .hero-content p em:nth-child(2) a {
   border: 1px solid white;
   font-size: 14px;
-
-  align-self: flex-end;
   text-align: center;
-  margin: -33% 9%;
+  margin: 0 auto;
   padding: 0.5% 2.5%;
-  right: 0;
+  right: 13.5%;
+  bottom: -2%;
   /* animation */
   background-color: transparent;
   color: white;
