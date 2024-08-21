@@ -1,19 +1,21 @@
-.product-brand-showcase {
+.product-brand-showcase,
+.product-brand-showcase-mirror {
   display: contents;
 }
 
-/* Product Name */
-.product-brand-showcase-wrapper {
+.product-brand-showcase-wrapper,
+.product-brand-showcase-mirror-wrapper {
   align-items: flex-end;
 }
 /* Product Name */
-.product-brand-showcase-wrapper .details h1 {
+.product-brand-showcase-wrapper .details h1,
+.product-brand-showcase-mirror-wrapper .details h1 {
   line-height: 1;
 }
 
-.product-brand-showcase-wrapper .product {
+.product-brand-showcase-wrapper .product,
+.product-brand-showcase-mirror-wrapper .product {
   display: flex;
-
   flex-direction: column;
   width: fit-content;
   flex-wrap: wrap;
@@ -22,6 +24,8 @@
 
 /* Clothes and price text */
 .product-brand-showcase-wrapper .details h1,
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2),
+.product-brand-showcase-mirror-wrapper .details h1,
 .brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2) {
   text-transform: capitalize;
   font-weight: normal;
@@ -29,11 +33,14 @@
 }
 
 .product-brand-showcase-wrapper .details .price,
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4),
+.product-brand-showcase-mirror-wrapper .details .price,
 .brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4) {
   font-size: 14px;
 }
 
 /* Colour */
+.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3),
 .brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3) {
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);

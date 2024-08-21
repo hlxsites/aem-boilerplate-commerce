@@ -1,17 +1,24 @@
-.product-main-brand-showcase .product div:nth-child(1) {
+.product-main-brand-showcase .product div:nth-child(1),
+.product-main-brand-showcase-mirror .product div:nth-child(1) {
   display: flex;
   position: relative;
   line-height: 1;
   flex-direction: column;
 }
 
+.product-main-brand-showcase-mirror .product div:nth-child(1) {
+  right: 2%;
+}
+
 /* Bullet */
-.product-main-brand-showcase ul li {
+.product-main-brand-showcase ul li,
+.product-main-brand-showcase-mirror ul li {
   list-style-type: square;
 }
 
-/* Balenciaga */
-.product-main-brand-showcase ul li a {
+/* Brand Name */
+.product-main-brand-showcase ul li a,
+.product-main-brand-showcase-mirror ul li a {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: var(--sub-text-title-size);
@@ -19,12 +26,14 @@
   font-weight: bold;
 }
 
-.product-main-brand-showcase ul li a:hover {
+.product-main-brand-showcase ul li a:hover,
+.product-main-brand-showcase-mirror ul li a:hover {
   text-decoration: none;
 }
 
-/* Balenciaga and Shop now positioning */
-.product-main-brand-showcase .product div:nth-child(1) ul {
+/* Brand Name and Shop now positioning */
+.product-main-brand-showcase .product div:nth-child(1) ul,
+.product-main-brand-showcase-mirror .product div:nth-child(1) ul {
   margin: 0;
   margin-top: 6%;
   margin-bottom: -4%;
@@ -33,7 +42,8 @@
 }
 
 /* Shop Now button on top of image */
-.product-main-brand-showcase .product div:nth-child(1) p a.button {
+.product-main-brand-showcase .product div:nth-child(1) p a.button,
+.product-main-brand-showcase-mirror .product div:nth-child(1) p a.button {
   border: none;
   background-color: transparent;
   text-transform: var(--sub-text-button-transform);
@@ -46,7 +56,8 @@
 /* End Shop Now button on top of image */
 
 /* Main Picture */
-.product-main-brand-showcase .product {
+.product-main-brand-showcase .product,
+.product-main-brand-showcase-mirror .product {
   display: flex;
   position: relative;
   flex-direction: column;
@@ -56,7 +67,8 @@
   object-fit: cover;
 }
 
-.product-main-brand-showcase .product .image picture > img {
+.product-main-brand-showcase .product .image picture > img,
+.product-main-brand-showcase-mirror .product .image picture > img {
   display: flex;
   width: auto;
   height: auto;
@@ -64,16 +76,8 @@
 }
 
 /* End Main Picture */
-.product-main-brand-showcase-wrapper {
-  display: flex;
-  margin: 0 auto;
-  justify-content: flex-start;
-  align-items: flex-start;
-  left: 0;
-  padding: 0;
-}
-
-.product-main-brand-showcase .product .image picture > img {
+.product-main-brand-showcase .product .image picture > img,
+.product-main-brand-showcase-mirror .product .image picture > img {
   margin: 0 auto;
   width: 700px;
   height: 700px;
@@ -81,24 +85,42 @@
   object-fit: contain;
 }
 
+@media (600px < width <= 1024px) {
+  .product-main-brand-showcase-wrapper
+    .product-main-brand-showcase-mirror-wrapper {
+    display: flex;
+    margin: 0 auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    left: 0;
+    padding: 0;
+  }
+
+  .product-main-brand-showcase .product .image picture > img,
+  .product-main-brand-showcase-mirror .product .image picture > img {
+    height: auto;
+    width: 70vw;
+  }
+}
 @media (width <= 600px) {
   /* Main Picture */
-  .product-main-brand-showcase .product .image picture > img {
+  .product-main-brand-showcase .product .image picture > img,
+  .product-main-brand-showcase-mirror .product .image picture > img {
     height: auto;
     width: 90vw;
   }
 
-  .product-main-brand-showcase .btn-on-img p {
+  .product-main-brand-showcase-mirror .btn-on-img p {
     right: -1.5%;
   }
 
   /* Brand Name */
-  .product-main-brand-showcase .product div:nth-child(1) ul {
-    padding-left: 5%;
+  .product-main-brand-showcase-mirror .product div:nth-child(1) ul {
+    padding-left: 7%;
   }
 
   /* Shop now */
-  .product-main-brand-showcase .product div:nth-child(1) p a.button {
-    padding-left: 5%;
+  .product-main-brand-showcase-mirror .product div:nth-child(1) p a.button {
+    padding-left: 7%;
   }
 }

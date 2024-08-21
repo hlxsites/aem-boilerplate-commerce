@@ -1,7 +1,5 @@
 @import url(../../../blocks/product-main-brand-showcase/product-main-brand-showcase.css);
 @import url(../../../blocks/product-brand-showcase/product-brand-showcase.css);
-@import url(../../../blocks/product-main-brand-showcase-mirror/product-main-brand-showcase-mirror.css);
-@import url(../../../blocks/product-brand-showcase-mirror/product-brand-showcase-mirror.css);
 
 /* Featured Brand (Balenciaga) */
 .divider-border-grid {
@@ -10,40 +8,7 @@
 }
 
 /* Main Image wrapper */
-.divider-border-grid .product-main-brand-showcase-wrapper {
-  display: flex;
-  margin: auto;
-  margin-top: 0;
-  margin-right: 2%;
-  max-width: fit-content;
-  flex: 1.5;
-  order: 1;
-  width: 100%;
-}
-
-/* Products wrapper */
-.divider-border-grid .product-brand-showcase-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: auto;
-  margin: auto;
-  margin-left: 0%;
-  gap: 20px;
-  max-width: fit-content;
-  margin-bottom: 0%;
-  order: 2;
-  flex: 1;
-}
-
-.divider-border-grid .product-main-brand-showcase-wrapper .product {
-  flex: 1.5;
-}
-
-.divider-border-grid .product-brand-showcase-wrapper .product {
-  flex: 1;
-}
-
-/* Mirror Main Image wrapper */
+.divider-border-grid .product-main-brand-showcase-wrapper,
 .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
   display: flex;
   margin: auto;
@@ -51,27 +16,44 @@
   max-width: fit-content;
   flex: 1.5;
   width: 100%;
+}
+
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
   margin-left: 2%;
 }
 
+.divider-border-grid .product-main-brand-showcase-wrapper {
+  margin-right: 2%;
+}
+
 /* Products wrapper */
+.divider-border-grid .product-brand-showcase-wrapper,
 .divider-border-grid .product-brand-showcase-mirror-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: auto;
   margin: auto;
-  margin-right: 0%;
   gap: 20px;
   max-width: fit-content;
   margin-bottom: 0%;
   flex: 1;
 }
+/* Products wrapper */
+.divider-border-grid .product-brand-showcase-wrapper {
+  margin-left: 0%;
+}
 
-.divider-border-grid .product-main-brand-showcase-wrapper .product {
+.divider-border-grid .product-brand-showcase-mirror-wrapper {
+  margin-right: 0%;
+}
+
+.divider-border-grid .product-main-brand-showcase-wrapper .product,
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper .product {
   flex: 1.5;
 }
 
-.divider-border-grid .product-brand-showcase-wrapper .product {
+.divider-border-grid .product-brand-showcase-wrapper .product,
+.divider-border-grid .product-brand-showcase-mirror-wrapper .product {
   flex: 1;
 }
 
@@ -79,41 +61,8 @@
 .product-main-brand-showcase,
 .product-brand-showcase,
 .product-main-brand-showcase-mirror,
-.product-brand-showcase-mirror,
-.brand-showcase div:nth-child(2) div {
+.product-brand-showcase-mirror {
   display: flex;
-}
-
-/* Main Picture */
-.brand-showcase div:nth-child(2) div:nth-child(1) p {
-  margin-top: auto;
-}
-
-.brand-showcase div:nth-child(2) div:nth-child(1) {
-  position: relative;
-  flex: 1.5;
-}
-/* End Main Picture */
-
-/* Featured Items * Columns */
-
-/* Clothes and price text */
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2) {
-  text-transform: capitalize;
-  font-weight: normal;
-  font-size: var(--sub-text-secondary-size);
-}
-
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4) {
-  font-size: 14px;
-}
-
-/* Colour */
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3) {
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  font-weight: lighter;
-  color: var(--sub-text-grey);
 }
 
 /* Shop Now > button */
@@ -126,8 +75,7 @@
 }
 
 .product-main-brand-showcase .btn-on-img p,
-.product-main-brand-showcase-mirror .btn-on-img p,
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) {
+.product-main-brand-showcase-mirror .btn-on-img p {
   display: flex;
   position: absolute;
   align-self: flex-end;
@@ -139,14 +87,12 @@
 }
 
 .product-main-brand-showcase .btn-on-img p :hover,
-.product-main-brand-showcase-mirror .btn-on-img p :hover,
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2):hover {
+.product-main-brand-showcase-mirror .btn-on-img p :hover {
   opacity: 0.5;
 }
 
 .product-main-brand-showcase .btn-on-img p a,
-.product-main-brand-showcase-mirror .btn-on-img p a,
-.brand-showcase div:nth-child(2) div:nth-child(1) p:nth-child(2) a {
+.product-main-brand-showcase-mirror .btn-on-img p a {
   border: none;
   border-radius: 0;
   font-size: var(--sub-text-secondary-size);
@@ -154,74 +100,3 @@
   display: flex;
 }
 /* End Shop Now > button */
-
-/* Images container */
-
-.brand-showcase {
-  flex-direction: column;
-  flex: 1;
-  flex-wrap: wrap;
-}
-
-/* Images P containers */
-
-.brand-showcase div:nth-child(2) div:nth-child(2) p {
-  margin: 5% 5%;
-  padding: 0 5%;
-}
-
-@media (max-width: 1024px) {
-  .divider-border-grid {
-    flex-direction: column;
-  }
-
-  .divider-border-grid .product-brand-showcase-wrapper {
-    margin-top: 5%;
-  }
-}
-
-@media (max-width: 600px) {
-  .brand-showcase div:nth-child(1) div:nth-child(1) {
-    right: 5.6%;
-  }
-  .divider-border-grid .product-brand-showcase-mirror-wrapper,
-  .divider-border-grid .product-brand-showcase-wrapper {
-    margin-top: 5%;
-  }
-  /* Mirror Main Image wrapper */
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
-    order: 1;
-  }
-
-  /* Products wrapper */
-  .divider-border-grid .product-brand-showcase-mirror-wrapper {
-    order: 2;
-  }
-}
-@media (600px < width <= 1024px) {
-  .divider-border-grid .product-main-brand-showcase-wrapper,
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
-    display: flex;
-    margin: 0 auto;
-  }
-
-  .divider-border-grid .product-brand-showcase-mirror-wrapper,
-  .divider-border-grid .product-brand-showcase-wrapper {
-    margin: 2% auto;
-  }
-  .product-main-brand-showcase-mirror .product .image picture > img,
-  .product-main-brand-showcase .product .image picture > img {
-    height: auto;
-    width: 70vw;
-  }
-
-  /* Mirror Main Image wrapper */
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
-    order: 1;
-  }
-
-  /* Products wrapper */
-  .divider-border-grid .product-brand-showcase-mirror-wrapper {
-    order: 2;
-  }
-}
