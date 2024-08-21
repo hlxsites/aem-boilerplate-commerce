@@ -1,4 +1,68 @@
 @media (width <= 600px) {
+  /* Launches */
+  .modal-content .columns-4-cols div div {
+    width: auto;
+    margin-left: -2%;
+    margin-bottom: 10%;
+  }
+
+  .modal-content * p {
+    display: flex;
+    padding: 0;
+    flex: 1;
+    margin: 0;
+    font-size: var(--sub-text-secondary-size);
+    line-height: 1.5;
+    text-transform: capitalize;
+  }
+
+  /* This is used to create '< Launches' on top of the mobile modal */
+  .modal-content .default-content-wrapper p:nth-child(1) a {
+    text-transform: capitalize;
+    font-size: var(--sub-text-title-large);
+    padding: 0;
+    margin-top: 2%;
+    border: none;
+    background-color: white;
+    color: var(--sub-text-title-color);
+  }
+
+  .modal-content .default-content-wrapper p:nth-child(1) {
+    border-bottom: 1px solid var(--sub-text-border-divider);
+    align-items: center;
+    display: flex;
+  }
+
+  .modal-content .default-content-wrapper p:nth-child(2) {
+    font-weight: 550;
+    margin: 8% 0;
+    color: var(--sub-text-title-color);
+  }
+
+  .modal-content div div p:nth-child(2) {
+    color: var(--sub-text-grey);
+    font-weight: 100;
+  }
+
+  .modal-content div div p:nth-child(2),
+  .modal-content div div p:nth-child(3) {
+    font-size: var(--sub-text-secondary-size);
+  }
+
+  .modal-par a.button.secondary {
+    border: none;
+    font-size: var(--sub-text-secondary-size);
+    padding: 0;
+    margin: 0;
+    text-transform: capitalize;
+  }
+
+  .modal-content picture {
+    display: flex;
+    flex: 2;
+    width: 400px;
+  }
+
   /* 3-cols-4-img */
   .modal-content
     .three-cols-four-img

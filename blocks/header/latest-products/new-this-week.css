@@ -81,7 +81,7 @@
   text-align: left;
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .banner-section-latest {
     min-height: 30vh;
     width: 100%;
