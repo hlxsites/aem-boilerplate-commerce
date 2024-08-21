@@ -24,12 +24,14 @@ import initializeDropins from './dropins.js';
 
 const LCP_BLOCKS = [
   'product-list-page',
-  'product-list-page-custom',
   'product-details',
   'commerce-cart',
   'commerce-checkout',
   'commerce-account',
   'commerce-login',
+  'product-brand-showcase',
+  'product-main-brand-showcase',
+  'latest-products',
 ]; // add your LCP blocks to the list
 
 const AUDIENCES = {

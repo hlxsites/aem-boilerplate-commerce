@@ -1,4 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 import {
   performCatalogServiceQuery,
   renderPrice,
