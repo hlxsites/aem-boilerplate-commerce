@@ -308,28 +308,28 @@ main .section {
 }
 @media (width <= 900px) {
   /* interviews button */
-  .features-intro p:nth-child(1) strong a:nth-child(1) {
+  /* .features-intro p:nth-child(1) strong a:nth-child(1) {
     margin-top: calc(var(--nav-height) - 150px);
-  }
+  } */
 
   /* Title */
-  .features-intro div:nth-child(1) p:nth-child(2) {
+  /* .features-intro div:nth-child(1) p:nth-child(2) {
     font-size: 24px;
     text-align: center;
     width: 90%;
-  }
+  } */
 
   /* Date */
-  .features-intro div:nth-child(1) p:nth-child(3) {
+  /* .features-intro div:nth-child(1) p:nth-child(3) {
     font-size: var(--sub-text-secondary-size);
-  }
+  } */
 
   /* summary */
-  .features-intro div:nth-child(1) p:nth-child(4) {
+  /* .features-intro div:nth-child(1) p:nth-child(4) {
     width: 100%;
     text-align: center;
     margin-top: 10%;
-  }
+  } */
 
   /* Block Quote */
   .bold-text-column-title,

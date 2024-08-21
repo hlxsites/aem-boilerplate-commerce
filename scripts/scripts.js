@@ -32,6 +32,7 @@ const LCP_BLOCKS = [
   'product-brand-showcase',
   'product-main-brand-showcase',
   'latest-products',
+  'featured-intro',
 ]; // add your LCP blocks to the list
 
 const AUDIENCES = {
