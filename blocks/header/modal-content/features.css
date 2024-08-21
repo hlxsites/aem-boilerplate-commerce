@@ -1,3 +1,5 @@
+@import url(./sub-heading-modal.css);
+
 .features-modal div div:nth-child(1) p a {
   border-radius: 0;
   border: none;
@@ -67,28 +69,4 @@
 
 .features-modal div div {
   align-self: start;
-}
-
-@media (width < 599px) {
-  .features-modal table {
-    border-top: 2px solid var(--sub-text-border-divider);
-    margin-top: 5%;
-    margin-bottom: 15%;
-  }
-
-  .features-modal table td {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-  }
-
-  .features-modal table {
-    width: 100%;
-  }
-
-  .features-modal table picture {
-    width: 325px;
-    padding: auto;
-    margin: 2% auto;
-  }
 }

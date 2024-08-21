@@ -1,0 +1,104 @@
+@media (width <= 600px) {
+  /* 3-cols-4-img */
+  .modal-content
+    .three-cols-four-img
+    div
+    div:nth-child(1)
+    p:nth-child(1):only-of-type
+    a {
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+    margin-left: auto;
+    padding-top: 8%;
+  }
+
+  .modal-content
+    .three-cols-four-img
+    div
+    div:nth-child(2)
+    p:nth-child(1):only-of-type,
+  .modal-content
+    .three-cols-four-img
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
+    margin-bottom: 8%;
+  }
+
+  .modal-content .three-cols-four-img div div ul {
+    line-height: 4;
+    font-size: var(--sub-text-title-large);
+  }
+  .modal-content .three-cols-four-img div div p {
+    font-size: var(--sub-text-title-large);
+  }
+
+  .modal-content .three-cols-four-img div:nth-child(3) table p,
+  .modal-content
+    .three-cols-four-img
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
+    display: none;
+  }
+
+  /* 4-cols-2-img */
+  .modal-content
+    .four-cols-two-img
+    div
+    div:nth-child(1)
+    p:nth-child(1):only-of-type {
+    width: 100%;
+    text-align: left;
+    border-radius: 0;
+
+    padding-top: 8%;
+  }
+
+  .modal-content
+    .four-cols-two-img
+    div
+    div:nth-child(2)
+    p:nth-child(1):only-of-type,
+  .modal-content
+    .four-cols-two-img
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
+    margin-top: 2%;
+    line-height: 4;
+  }
+
+  .modal-content .four-cols-two-img div div ul {
+    line-height: 4;
+    margin-bottom: 7%;
+    font-size: var(--sub-text-title-large);
+  }
+  .modal-content .four-cols-two-img div div p {
+    font-size: var(--sub-text-title-large);
+  }
+
+  /* Features */
+  .features-modal table {
+    border-top: 2px solid var(--sub-text-border-divider);
+    margin-top: 5%;
+    margin-bottom: 15%;
+  }
+
+  .features-modal table td {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .features-modal table {
+    width: 100%;
+  }
+
+  .features-modal table picture {
+    width: 325px;
+    padding: auto;
+    margin: 2% auto;
+  }
+}

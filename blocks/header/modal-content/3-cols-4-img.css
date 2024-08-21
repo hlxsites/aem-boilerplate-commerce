@@ -1,3 +1,4 @@
+@import url(./sub-heading-modal.css);
 /* This includes Latest, Clothing and Accessories */
 
 .modal-content
@@ -71,51 +72,6 @@
   padding: 0;
   margin: 0;
   font-weight: 555;
-}
-
-@media (width <= 600px) {
-  .modal-content
-    .three-cols-four-img
-    div
-    div:nth-child(1)
-    p:nth-child(1):only-of-type
-    a {
-    width: 100vw;
-    text-align: left;
-    border-radius: 0;
-    margin-left: auto;
-    padding-top: 8%;
-  }
-
-  .modal-content
-    .three-cols-four-img
-    div
-    div:nth-child(2)
-    p:nth-child(1):only-of-type,
-  .modal-content
-    .three-cols-four-img
-    div
-    div:nth-child(3)
-    p:nth-child(1):only-of-type {
-    margin-bottom: 8%;
-  }
-
-  .modal-content .three-cols-four-img div div ul {
-    line-height: 4;
-    font-size: var(--sub-text-title-large);
-  }
-  .modal-content .three-cols-four-img div div p {
-    font-size: var(--sub-text-title-large);
-  }
-
-  .modal-content .three-cols-four-img div:nth-child(3) table p,
-  .modal-content
-    .three-cols-four-img
-    div
-    div:nth-child(3)
-    p:nth-child(1):only-of-type {
-    display: none;
-  }
 }
 
 /*  border: 1px solid rebeccapurple; */
