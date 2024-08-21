@@ -20,7 +20,7 @@ export default function decorate(block) {
               img.src,
               img.alt,
               false,
-              [{ width: 'auto' }]
+              [{ width: 'auto', height: 'auto' }]
             );
             pic.replaceWith(optimizedPicture);
           }
