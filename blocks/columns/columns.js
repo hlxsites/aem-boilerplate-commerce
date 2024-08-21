@@ -1,3 +1,5 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 export default function decorate(block) {
   const cols = [...block.firstElementChild.children];
   block.classList.add(`columns-${cols.length}-cols`);
@@ -11,6 +13,17 @@ export default function decorate(block) {
         if (picWrapper && picWrapper.children.length === 1) {
           // picture is only content in column
           picWrapper.classList.add('columns-img-col');
+
+          const img = pic.querySelector('img');
+          if (img) {
+            const optimizedPicture = createOptimizedPicture(
+              img.src,
+              img.alt,
+              false,
+              [{ width: 'auto' }]
+            );
+            pic.replaceWith(optimizedPicture); // Replace the existing picture with the optimized one
+          }
         }
       }
     });
