@@ -66,24 +66,41 @@ export default async function decorate(block) {
       }
     }, 200);
   });
-  const pic = col.querySelector('picture');
-  if (pic) {
-    const picWrapper = pic.closest('div');
-    if (picWrapper && picWrapper.children.length === 1) {
-      // picture is only content in column
 
-      const img = pic.querySelector('img');
-      if (img) {
-        const optimizedPicture = createOptimizedPicture(
-          img.src,
-          img.alt,
-          false,
-          [{ width: '800', height: 'auto' }]
-        );
-        pic.replaceWith(optimizedPicture);
-      }
-    }
+  // Hypothetical customization of window.LiveSearchPLP, if it allows it
+  const liveSearchInstance = window.LiveSearchPLP({
+    storeDetails,
+    root: block,
+    // Assuming there's an option to provide a custom image renderer
+    imageRenderer: (imageUrl, altText) => {
+      return createOptimizedPicture(imageUrl, altText, false, [
+        { width: '750' },
+      ]); // Adjust widths as needed
+    },
+  });
+
+  // If direct customization isn't possible, use MutationObserver
+  if (!liveSearchInstance.imageRenderer) {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeName === 'IMG') {
+              const optimizedPicture = createOptimizedPicture(
+                node.src,
+                node.alt,
+                false,
+                [{ width: '750' }]
+              );
+              node.parentNode.replaceChild(optimizedPicture, node);
+            }
+          });
+        }
+      });
+    });
+
+    observer.observe(block, { childList: true, subtree: true });
   }
 
-  return window.LiveSearchPLP({ storeDetails, root: block });
+  return liveSearchInstance;
 }
