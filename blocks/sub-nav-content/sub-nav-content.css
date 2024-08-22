@@ -1,0 +1,19 @@
+.sub-nav-content {
+  /* height: var(--nav-height); */
+  height: auto;
+}
+
+.sub-nav-content > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* Nav Links */
+.sub-nav-content div:nth-child(1) div a {
+  font-size: var(--sub-text-small);
+  text-wrap: nowrap;
+
+  letter-spacing: 1px;
+  text-transform: capitalize;
+}

@@ -17,11 +17,10 @@ header nav {
   align-items: center;
   gap: 0 32px;
   margin: auto;
-  max-width: 1264px;
+  max-width: fit-content;
   height: var(--nav-height);
   padding: 0 16px;
   font-family: var(--type-base-font-family);
-  border: 2px solid rebeccapurple;
 }
 
 header nav[aria-expanded='true'] {
@@ -35,7 +34,7 @@ header nav[aria-expanded='true'] {
 
 @media (width >= 600px) {
   header nav {
-    padding: 0 32px;
+    padding: 0 2px;
   }
 }
 
@@ -286,7 +285,7 @@ header nav .nav-tools > button,
 header nav .nav-tools .minicart-wrapper > button {
   color: var(--color-brand-700);
   background: transparent;
-  padding: 5px 10px;
+  /* padding: 0px 10px; */
 }
 
 header nav .nav-tools button.nav-cart-button {
@@ -301,7 +300,7 @@ header nav .nav-tools button.nav-search-button {
   background-image: url('../../icons/search.svg');
   background-repeat: no-repeat;
   background-position: center;
-  padding: 5px 15px;
+  /* padding: 5px 15px; */
 }
 
 header .nav-search-input {

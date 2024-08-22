@@ -1,0 +1,50 @@
+.main-nav-content {
+  margin-top: calc(var(--nav-height) / 3);
+  position: relative;
+  width: 100vw;
+  height: 56px;
+  border: 2px solid rebeccapurple;
+}
+
+.main-nav-content div {
+  display: flex;
+  margin: auto;
+  align-items: center;
+}
+
+/* Men and Women */
+.main-nav-content table {
+  margin: auto;
+  height: auto;
+}
+.main-nav-content table tbody tr td {
+  border: 2px solid rebeccapurple;
+}
+
+.main-nav-content div:nth-child(1) div:nth-child(1) {
+  position: absolute;
+  left: 5%;
+}
+
+.main-nav-content div:nth-child(1) div:nth-child(1) a {
+  font-size: var(--sub-text-small);
+  text-wrap: nowrap;
+  width: 100%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Highlighed Men and Women */
+.main-nav-content div:nth-child(1) div:nth-child(1) strong a {
+  font-weight: bold;
+}
+
+/* End. Img */
+.main-nav-content div:nth-child(2) img {
+  position: absolute; /* Position the image container absolutely */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 65.59px;
+  height: auto;
+}
