@@ -185,7 +185,6 @@ main .section {
 
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
     flex-direction: column;
-
     margin-top: 0%;
   }
 
