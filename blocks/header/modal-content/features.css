@@ -30,7 +30,8 @@
 }
 
 .features-modal div div table td p:nth-child(3) {
-  height: 60px;
+  min-height: 80px;
+  height: auto;
 }
 
 .features-modal div:nth-child(2) {
@@ -40,10 +41,12 @@
 .features-modal div:nth-child(2) table p {
   margin: 0 auto;
   padding: 0;
-  width: 326px;
+  width: auto;
+  height: auto;
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
 }
+
 .features-modal div:nth-child(2) table p:nth-child(2) a,
 .features-modal div:nth-child(2) table p:nth-child(3) a {
   text-transform: uppercase;
@@ -62,6 +65,11 @@
   color: var(--sub-text-grey);
 }
 
+.features-modal div:nth-child(2) table p:nth-child(1) a picture img {
+  width: 280px;
+  height: 187px;
+}
+
 .features-modal div:nth-child(2) table p:nth-child(3) a {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
@@ -69,4 +77,8 @@
 
 .features-modal div div {
   align-self: start;
+  padding-bottom: 2%;
+}
+
+@media (width <= 600px) {
 }

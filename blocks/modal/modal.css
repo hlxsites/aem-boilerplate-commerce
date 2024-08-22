@@ -13,7 +13,7 @@
 }
 
 .modal dialog .modal-content {
-  max-height: calc(100dvh - 60px);
+  max-height: calc(100vh - 60px);
 }
 
 @media (width >= 600px) {

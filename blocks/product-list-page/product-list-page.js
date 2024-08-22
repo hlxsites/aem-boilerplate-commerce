@@ -1,6 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
   // eslint-disable-next-line import/no-absolute-path, import/no-unresolved
@@ -67,38 +66,19 @@ export default async function decorate(block) {
     }, 200);
   });
 
-  const liveSearchInstance = window.LiveSearchPLP({
-    storeDetails,
-    root: block,
+  const bannerImage = document.querySelectorAll('.banner-section-latest img');
 
-    imageRenderer: (imageUrl, altText) => {
-      return createOptimizedPicture(imageUrl, altText, false, [
-        { width: '800', height: 'auto' },
-      ]);
-    },
+  bannerImage.forEach((image) => {
+    if (image) {
+      const imageUrl = image.src;
+
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = imageUrl;
+      document.head.appendChild(link);
+    }
   });
 
-  if (!liveSearchInstance.imageRenderer) {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'childList' && mutation.addedNodes.length) {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeName === 'IMG') {
-              const optimizedPicture = createOptimizedPicture(
-                node.src,
-                node.alt,
-                false,
-                [{ width: '750' }]
-              );
-              node.parentNode.replaceChild(optimizedPicture, node);
-            }
-          });
-        }
-      });
-    });
-
-    observer.observe(block, { childList: true, subtree: true });
-  }
-
-  return liveSearchInstance;
+  return window.LiveSearchPLP({ storeDetails, root: block });
 }
