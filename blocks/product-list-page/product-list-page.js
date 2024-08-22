@@ -67,19 +67,17 @@ export default async function decorate(block) {
     }, 200);
   });
 
-  // Hypothetical customization of window.LiveSearchPLP, if it allows it
   const liveSearchInstance = window.LiveSearchPLP({
     storeDetails,
     root: block,
-    // Assuming there's an option to provide a custom image renderer
+
     imageRenderer: (imageUrl, altText) => {
       return createOptimizedPicture(imageUrl, altText, false, [
-        { width: '750' },
-      ]); // Adjust widths as needed
+        { width: '800', height: 'auto' },
+      ]);
     },
   });
 
-  // If direct customization isn't possible, use MutationObserver
   if (!liveSearchInstance.imageRenderer) {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
