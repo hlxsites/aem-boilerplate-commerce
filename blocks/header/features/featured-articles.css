@@ -311,7 +311,7 @@ main .section {
   .bold-text-column-title,
   .block-quote p {
     width: 100%;
-    font-size: 22px;
+    font-size: 20px;
   }
 
   /* All bold Paragraphs */
