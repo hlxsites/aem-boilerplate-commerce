@@ -1,5 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
   // eslint-disable-next-line import/no-absolute-path, import/no-unresolved
@@ -56,6 +57,15 @@ export default async function decorate(block) {
     // Enable enrichment
     block.dataset.category = category;
   }
+
+  await new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (window.LiveSearchPLP) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 200);
+  });
   const pic = col.querySelector('picture');
   if (pic) {
     const picWrapper = pic.closest('div');
@@ -74,15 +84,6 @@ export default async function decorate(block) {
       }
     }
   }
-
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (window.LiveSearchPLP) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 200);
-  });
 
   return window.LiveSearchPLP({ storeDetails, root: block });
 }
