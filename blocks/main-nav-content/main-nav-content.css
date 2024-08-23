@@ -1,9 +1,10 @@
 .main-nav-content {
-  margin-top: calc(var(--nav-height) / 3);
+  margin-top: 0%;
+  padding-top: 0;
   position: relative;
   width: 100vw;
   height: 56px;
-  border: 2px solid rebeccapurple;
+  border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
 .main-nav-content div {
@@ -18,11 +19,13 @@
   height: auto;
 }
 .main-nav-content table tbody tr td {
-  border: 2px solid rebeccapurple;
+  padding: 1px 20px;
 }
 
 .main-nav-content div:nth-child(1) div:nth-child(1) {
   position: absolute;
+  margin: auto;
+  height: 100%;
   left: 5%;
 }
 
@@ -41,10 +44,35 @@
 
 /* End. Img */
 .main-nav-content div:nth-child(2) img {
-  position: absolute; /* Position the image container absolutely */
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 65.59px;
   height: auto;
+}
+
+/* Nav Cart and Search */
+.main-nav-content button.nav-cart-button,
+header nav .nav-tools button.nav-search-button {
+  position: absolute;
+  margin: auto;
+  right: 0;
+  top: 1%;
+  bottom: 1%;
+  border-radius: 0;
+}
+
+/* Cart Button */
+.main-nav-content button.nav-cart-button {
+  right: 10%;
+}
+
+/* Search Button */
+header nav .nav-tools button.nav-search-button {
+  right: 7%;
+}
+
+header nav .nav-tools button.nav-search-button:hover {
+  background-color: transparent;
 }

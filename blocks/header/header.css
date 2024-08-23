@@ -1,4 +1,12 @@
 /* stylelint-disable selector-class-pattern */
+@import url(./latest-products/new-this-week.css);
+@import url(./modal-content/3-cols-4-img.css);
+@import url(./modal-content/launches/launches.css);
+@import url(./modal-content/brands.css);
+@import url(./modal-content/4-cols-2-img.css);
+@import url(./modal-content/footwear.css);
+@import url(./modal-content/features.css);
+@import url(./features/featured-articles.css);
 
 /* header and nav layout */
 header .nav-wrapper {
@@ -21,6 +29,7 @@ header nav {
   height: var(--nav-height);
   padding: 0 16px;
   font-family: var(--type-base-font-family);
+  border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
 header nav[aria-expanded='true'] {
@@ -32,13 +41,13 @@ header nav[aria-expanded='true'] {
   min-height: 100vh;
 }
 
-@media (width >= 600px) {
+/* @media (width >= 600px) {
   header nav {
     padding: 0 2px;
   }
-}
+} */
 
-@media (width >= 900px) {
+@media (width >= 992px) {
   header nav {
     display: flex;
     justify-content: space-between;
@@ -133,10 +142,128 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 900px) {
+@media (width >= 992px) {
   header nav .nav-hamburger {
     display: none;
     visibility: hidden;
+  }
+}
+
+@media (width <= 991px) {
+  /* Header block */
+  header nav {
+    display: flex;
+    height: auto;
+    border-bottom: 1px solid var(--sub-text-border-divider);
+  }
+
+  header.header-wrapper {
+    height: 56px;
+  }
+
+  /* Hamburger Menu */
+  header nav .nav-hamburger {
+    position: absolute;
+    padding-right: 2px;
+    z-index: 2;
+  }
+
+  /* Account and Shipping Country Mobile Only */
+  header nav[aria-expanded='true'] .sub-nav-content div:nth-child(12),
+  header nav[aria-expanded='true'] .sub-nav-content div:nth-child(13) {
+    display: flex;
+  }
+
+  /* Genders and Nav Links Hiddenv*/
+  .main-nav-content table,
+  .sub-nav-content {
+    display: none;
+    visibility: hidden;
+  }
+
+  /* Main nav moved left */
+  .main-nav-content {
+    justify-content: center;
+    border-bottom: transparent !important;
+  }
+
+  /* Search Button */
+  header nav .nav-tools button.nav-search-button {
+    margin-right: 0;
+  }
+
+  /* Hamburger Close Icon */
+  header nav[aria-expanded='true'] .nav-hamburger {
+    right: 15%;
+  }
+
+  /* Sliding Nav For Tablets and Mobiles */
+  header nav[aria-expanded='true'] {
+    position: relative;
+    animation-name: slideIn;
+    animation-duration: 0.8s;
+    margin: auto 0;
+    width: 400px;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* Sliding Nav For Tablets and Mobiles */
+  header nav[aria-expanded='true'] .sub-nav-content {
+    display: flex;
+    visibility: visible;
+    height: 0px;
+  }
+
+  header nav[aria-expanded='true'] .sub-nav-content > div {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    flex-direction: column;
+    height: 100vh;
+    visibility: visible;
+    min-width: 376px;
+    overflow-y: auto;
+    background-color: tan;
+  }
+
+  /* Nav Links */
+  header nav[aria-expanded='true'] .sub-nav-content div p a {
+    position: absolute;
+    left: 5%;
+  }
+
+  /* Account and Shipping */
+  header nav[aria-expanded='true'] .sub-nav-content div table {
+    width: 340px;
+    height: 100px;
+    padding-left: 5%;
+    border: 2px solid var(--sub-text-border-divider);
+  }
+
+  /* Arrow > */
+  header nav[aria-expanded='true'] .sub-nav-content div table td:nth-child(2) {
+    position: absolute;
+    right: 10%;
+    justify-content: flex-end;
+  }
+
+  /* Nav Directories */
+  .main-nav-content div:nth-child(1) div {
+    border-top: none;
+  }
+
+  @keyframes slideIn {
+    0% {
+      left: -100px;
+    }
+
+    100% {
+      left: 0px;
+    }
   }
 }
 
@@ -186,7 +313,7 @@ header nav .nav-sections ul > li > ul > li {
   font-weight: 500;
 }
 
-@media (width >= 900px) {
+@media (width >= 992px) {
   header nav .nav-sections {
     display: block;
     visibility: visible;
