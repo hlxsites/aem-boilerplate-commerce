@@ -37,7 +37,7 @@ header nav[aria-expanded='true'] {
     'hamburger brand' var(--nav-height)
     'sections sections' 1fr
     'tools tools' var(--nav-height) / auto 1fr;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   min-height: 100vh;
 }
 
@@ -128,7 +128,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon {
 header nav[aria-expanded='true'] .nav-hamburger-icon::before,
 header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   top: 3px;
-  left: 1px;
+  left: 100%;
   transform: rotate(45deg);
   transform-origin: 2px 1px;
   width: 24px;
@@ -146,6 +146,10 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   header nav .nav-hamburger {
     display: none;
     visibility: hidden;
+  }
+  /* On Hover other links are greyed aout */
+  .sub-nav-content div:nth-child(1):hover div a:not(:hover) {
+    color: var(--sub-text-grey);
   }
 }
 
@@ -168,17 +172,78 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     z-index: 2;
   }
 
+  /* Genders and Nav Links Hidden */
+  header nav[aria-expanded='false'] .main-nav-content table,
+  .sub-nav-content {
+    display: none;
+    visibility: hidden;
+  }
+
   /* Account and Shipping Country Mobile Only */
   header nav[aria-expanded='true'] .sub-nav-content div:nth-child(12),
   header nav[aria-expanded='true'] .sub-nav-content div:nth-child(13) {
     display: flex;
   }
 
-  /* Genders and Nav Links Hiddenv*/
-  .main-nav-content table,
-  .sub-nav-content {
+  /* Shopping cart and search */
+  header nav[aria-expanded='false'] .nav-tools button.nav-cart-button {
+    display: block;
+    visibility: visible;
+  }
+
+  /* Shopping cart and search hidden on open mobile menu */
+  header nav[aria-expanded='true'] .nav-tools button.nav-search-button,
+  .nav-tools button.nav-cart-button {
     display: none;
     visibility: hidden;
+  }
+
+  /* Showing END. and Gender Category */
+  header nav[aria-expanded='true'] .main-nav-content table,
+  .main-nav-content div:nth-child(2) img {
+    z-index: 2;
+  }
+
+  /* Showing END. and Gender Category */
+  header nav[aria-expanded='true'] .main-nav-content div div:nth-child(1) {
+    margin-left: -5.5%;
+  }
+
+  /* Genders table */
+  header nav[aria-expanded='true'] .main-nav-content table {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: calc(var(--nav-height) / 1.8);
+    height: 56px;
+    min-width: 375px;
+    background-color: #f8f8f8;
+    border-top: 1px solid var(--sub-text-border-divider);
+    border-bottom: 1px solid var(--sub-text-border-divider);
+  }
+
+  /* MEN */
+  header nav[aria-expanded='true'] .main-nav-content table td:nth-child(1) {
+    align-content: center;
+    text-align: center;
+    position: absolute;
+    width: 38%;
+    left: 1%;
+    top: 0;
+    bottom: 0;
+    background-color: white;
+    box-shadow: 4px 0px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Women */
+  header nav[aria-expanded='true'] .main-nav-content table td:nth-child(2) {
+    align-content: center;
+    text-align: center;
+    position: absolute;
+    width: 38%;
+    right: 0%;
+    top: 0;
+    bottom: 0;
   }
 
   /* Main nav moved left */
@@ -203,36 +268,36 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     animation-name: slideIn;
     animation-duration: 0.8s;
     margin: auto 0;
-    width: 400px;
+    min-width: 375px;
+    max-width: 400px;
+    width: auto;
     min-height: 0;
-    overflow: visible;
+
+    padding: 0;
   }
 
   /* Sliding Nav For Tablets and Mobiles */
   header nav[aria-expanded='true'] .sub-nav-content {
-    display: flex;
+    display: block;
     visibility: visible;
     height: 0px;
   }
 
   header nav[aria-expanded='true'] .sub-nav-content > div {
-    display: flex;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 0;
+    position: relative;
     margin: 0;
     flex-direction: column;
     height: 100vh;
-    visibility: visible;
-    min-width: 376px;
-    overflow-y: auto;
-    background-color: tan;
+    min-width: 375px;
+    max-width: 390px;
+    width: auto;
+    background-color: white;
   }
 
   /* Nav Links */
   header nav[aria-expanded='true'] .sub-nav-content div p a {
     position: absolute;
+    margin-top: 15%;
     left: 5%;
   }
 
@@ -252,8 +317,9 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   }
 
   /* Nav Directories */
-  .main-nav-content div:nth-child(1) div {
-    border-top: none;
+  header nav[aria-expanded='true'] .sub-nav-content div div:nth-child(12) {
+    overflow-y: auto;
+    margin-top: 25%;
   }
 
   @keyframes slideIn {
@@ -265,52 +331,52 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
       left: 0px;
     }
   }
-}
 
-/* brand */
-header nav .nav-brand a {
-  grid-area: brand;
-  flex-basis: 128px;
-  font: var(--type-headline-1-font);
-  letter-spacing: var(--type-headline-1-letter-spacing);
-}
+  /* brand */
+  header nav .nav-brand a {
+    grid-area: brand;
+    flex-basis: 128px;
+    font: var(--type-headline-1-font);
+    letter-spacing: var(--type-headline-1-letter-spacing);
+  }
 
-header nav .nav-brand img {
-  width: 128px;
-  height: auto;
-}
+  header nav .nav-brand img {
+    width: 128px;
+    height: auto;
+  }
 
-/* sections */
-header nav .nav-sections {
-  grid-area: sections;
-  flex: 1 1 auto;
-  display: none;
-  visibility: hidden;
-}
+  /* sections */
+  header nav .nav-sections {
+    grid-area: sections;
+    flex: 1 1 auto;
+    display: none;
+    visibility: hidden;
+  }
 
-header nav[aria-expanded='true'] .nav-sections {
-  display: block;
-  visibility: visible;
-  align-self: start;
-}
+  header nav[aria-expanded='true'] .nav-sections {
+    display: block;
+    visibility: visible;
+    align-self: start;
+  }
 
-header nav .nav-sections ul {
-  list-style: none;
-  padding-left: 0;
-  font: var(--type-body-1-default-font);
-  letter-spacing: var(--type-body-1-default-letter-spacing);
-}
+  header nav .nav-sections ul {
+    list-style: none;
+    padding-left: 0;
+    font: var(--type-body-1-default-font);
+    letter-spacing: var(--type-body-1-default-letter-spacing);
+  }
 
-header nav .nav-sections ul > li {
-  font-weight: 700;
-}
+  header nav .nav-sections ul > li {
+    font-weight: 700;
+  }
 
-header nav .nav-sections ul > li > ul {
-  margin-top: 0;
-}
+  header nav .nav-sections ul > li > ul {
+    margin-top: 0;
+  }
 
-header nav .nav-sections ul > li > ul > li {
-  font-weight: 500;
+  header nav .nav-sections ul > li > ul > li {
+    font-weight: 500;
+  }
 }
 
 @media (width >= 992px) {
