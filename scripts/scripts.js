@@ -3,8 +3,6 @@ import { events } from '@dropins/tools/event-bus.js';
 import {
   sampleRUM,
   buildBlock,
-  loadHeader,
-  loadFooter,
   decorateButtons,
   decorateIcons,
   decorateSections,
@@ -14,6 +12,8 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
+  loadHeader,
+  loadFooter,
   loadScript,
   toCamelCase,
   toClassName,
