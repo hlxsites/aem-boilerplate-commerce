@@ -54,7 +54,6 @@
   /* interviews button */
   .features-intro p:nth-child(1) strong a:nth-child(1) {
     margin-top: calc(var(--nav-height) - 50px);
-    border: 2px solid rebeccapurple;
   }
 
   /* Title */
