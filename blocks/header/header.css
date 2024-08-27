@@ -32,23 +32,6 @@ header nav {
   border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
-/* header nav[aria-expanded='true'] {
-  grid-template:
-    'hamburger brand' var(--nav-height)
-    'sections sections' 1fr
-    'tools tools' var(--nav-height) / auto 1fr;
-  height: auto;
-  min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: visible;
-} */
-
-/* @media (width >= 600px) {
-  header nav {
-    padding: 0 2px;
-  }
-} */
-
 @media (width >= 992px) {
   header nav {
     display: flex;

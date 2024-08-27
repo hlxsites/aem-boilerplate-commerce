@@ -16,7 +16,7 @@
   max-height: calc(100vh - 60px);
 }
 
-@media (width >= 600px) {
+@media (width > 600px) {
   .modal dialog {
     padding: 30px;
     width: 100vw;
@@ -50,4 +50,21 @@
 
 .modal dialog .section {
   padding: 0;
+}
+
+@media (width <= 600px) {
+  .modal dialog {
+    margin-top: 0;
+    min-width: 375px;
+    max-width: 390px;
+    width: 370px;
+    margin-left: 0;
+    height: 100vh;
+  }
+
+  .modal dialog::backdrop {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+  }
 }
