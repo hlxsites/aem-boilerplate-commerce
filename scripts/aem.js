@@ -777,11 +777,11 @@ async function waitForLCP(lcpBlocks) {
 init();
 
 export {
-  loadHeader,
   buildBlock,
   createOptimizedPicture,
   decorateBlock,
   decorateBlocks,
+  loadHeader,
   decorateButtons,
   decorateIcons,
   decorateSections,
