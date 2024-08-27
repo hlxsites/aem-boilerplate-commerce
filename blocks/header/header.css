@@ -269,7 +269,6 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     animation-name: slideIn;
     animation-duration: 0.8s;
     overflow-y: scroll;
-    min-height: 100vh;
     width: fit-content;
     max-width: 400px;
     overflow-x: hidden;
@@ -283,7 +282,6 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     display: block;
     visibility: visible;
     width: fit-content;
-    height: auto;
     min-height: calc(100vh - var(--nav-height) + 40px);
   }
 
@@ -326,14 +324,24 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
   /* Account and Shipping */
   header nav[aria-expanded='true'] .sub-nav-content div table {
-    width: auto;
     margin-left: 2%;
+    margin-right: 2%;
     min-width: 350px;
     width: fit-content;
     max-width: 400px;
     height: 100px;
     padding-left: 5%;
     border: 2px solid var(--sub-text-border-divider);
+  }
+
+  /* Account Tab */
+  header nav[aria-expanded='true'] .sub-nav-content div table {
+    margin-top: 5%;
+  }
+
+  /* Shipping Country */
+  header nav[aria-expanded='true'] .sub-nav-content div:nth-child(13) table {
+    margin-bottom: 15%;
   }
 
   /* Arrow > */
