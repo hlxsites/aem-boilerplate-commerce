@@ -777,6 +777,7 @@ async function waitForLCP(lcpBlocks) {
 init();
 
 export {
+  loadHeader,
   buildBlock,
   createOptimizedPicture,
   decorateBlock,
@@ -787,7 +788,6 @@ export {
   decorateTemplateAndTheme,
   fetchPlaceholders,
   getMetadata,
-  loadHeader,
   loadBlock,
   loadBlocks,
   loadCSS,
