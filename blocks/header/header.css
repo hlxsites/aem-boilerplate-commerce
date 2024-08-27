@@ -183,6 +183,17 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     visibility: hidden;
   }
 
+  /* END. img */
+  .main-nav-content div:nth-child(2) img {
+    display: flex;
+    margin: 0 auto;
+    margin-left: -3%;
+  }
+
+  header nav[aria-expanded='true'] .main-nav-content div:nth-child(2) img {
+    margin-left: 3%;
+  }
+
   /* Showing END. and Gender Category */
   header nav[aria-expanded='true'] .main-nav-content table,
   .main-nav-content div:nth-child(2) img {
@@ -303,6 +314,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
   header nav[aria-expanded='true'] .sub-nav-content div p {
     margin-left: 7%;
+    text-decoration: none;
   }
 
   /* Account and Shipping */

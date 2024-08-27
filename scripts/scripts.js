@@ -1,9 +1,9 @@
 /* eslint-disable import/no-cycle */
 import { events } from '@dropins/tools/event-bus.js';
 import {
+  loadHeader,
   sampleRUM,
   buildBlock,
-  loadHeader,
   loadFooter,
   decorateButtons,
   decorateIcons,

@@ -126,6 +126,12 @@ main .section {
   }
 }
 
+@media (width <= 992px) {
+  .banner-section-latest .hero-latest div:nth-child(2) {
+    display: none;
+  }
+}
+
 /* Column Headers */
 .column-headers div:nth-child(1) p {
   color: var(--sub-text-title-color);
@@ -201,9 +207,6 @@ main .section {
     zoom: 2.5;
   }
 
-  .banner-section-latest .hero-latest div:nth-child(2) {
-    display: none;
-  }
   /* Publications */
   .banner-section .hero-content p em:nth-child(1) a {
     left: 22%;
