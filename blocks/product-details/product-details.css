@@ -81,11 +81,6 @@
     background-color: black;
 }
 
-.loading
-{
-    display: flex;
-}
-
 .loadingSpinner
 {
     display: flex;
@@ -113,14 +108,6 @@
     font-weight: 600;
     color: var(--color-positive-800);
     font-style: normal;
-}
-
-
-.mobile-responsive-section
-{
-    margin: 0;
-    padding: 0;
-    border: 1px solid red;
 }
 
 .add-to-cart,.loading
@@ -240,35 +227,28 @@
         background: url("../../icons/wishlist.svg") 0% 0% / contain no-repeat;
     }
 
-    .pdp-product__actions
+    .pdp-product
     {
         position: relative;
-        bottom: 0;
-    }
-
-    .pdp-product__actions
-    {
-        position: unset;
     }
 
     .mobile-responsive-section
     {
-        z-index: 50;
         position: fixed;
-        top: unset;
-        bottom: 0px;
-        left: 0px;
+        z-index: 50;
+        bottom: 0;
+        left: 0;
         width: 100%;
         box-shadow: rgba(0, 0, 0, 0.2) 0px -3px 13px 0px;
         background: rgb(255, 255, 255);
-        margin: -100px 0px 0px;
-        height: 75px;
+        min-height: 75px;
         display: flex;
     }
 
-    .add-to-cart
+    .add-to-cart,.loading
     {
-        width: 80%;
+        width: 93%;
+        text-transform: uppercase;
         margin: auto;
     }
 }

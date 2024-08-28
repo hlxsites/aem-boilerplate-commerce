@@ -120,8 +120,8 @@ function setMetaTags(product) {
   createMetaTag('twitter:image', metaImage, 'name');
 }
 
-export default async function decorate(block) {
-  
+export default async function decorate(block) 
+{ 
   if (!window.getProductPromise) {
     window.getProductPromise = getProduct(this.props.sku);
   }
