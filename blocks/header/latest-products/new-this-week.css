@@ -11,7 +11,7 @@
 .hero-latest table:nth-child(1) {
   background-color: white;
   border-radius: 2%;
-  width: 27%;
+  width: 469px;
   height: 100%;
   margin: 2% 20%;
   padding: 0 2%;
@@ -35,6 +35,12 @@
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
   margin: auto 0;
+}
+/* paragraph */
+.hero-latest div p:nth-child(2),
+.hero-latest div div table tbody tr:nth-child(3) td {
+  margin-left: 5%;
+  width: 92%;
 }
 
 .hero-latest div div table tbody tr:nth-child(3) td {
