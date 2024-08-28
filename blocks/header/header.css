@@ -516,6 +516,7 @@ header nav .nav-tools .minicart-header {
   top: 0;
 }
 
+/* Cart display */
 header nav .nav-tools .minicart-panel {
   animation-name: slideLeft;
   animation-duration: 0.6s;
