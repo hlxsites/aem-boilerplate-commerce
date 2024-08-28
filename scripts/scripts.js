@@ -290,7 +290,9 @@ async function loadLazy(doc) {
   autolinkModals(doc);
 
   const main = doc.querySelector('main');
+  const headerPromise = loadHeader(doc.querySelector('header'));
   await loadBlocks(main);
+  await headerPromise;
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
