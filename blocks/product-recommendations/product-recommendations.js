@@ -1,11 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import {fetchPlaceholders, readBlockConfig} from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
-import { ProductCard } from '../product-list-page/ProductList.js';
-import { getConfig, getConfigValue } from '../../scripts/configs.js';
-import { h, render } from '../../scripts/preact.js';
-import { htm } from "../../scripts/htm.js";
-const html = htm.bind(h);
+import { getConfigValue } from '../../scripts/configs.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -49,34 +45,46 @@ const recommendationsQuery = `query GetRecommendations(
 }`;
 
 let unitsPromise;
-let placeholders;
 
-function renderPlaceholder(block,config) {
-  const c = config.hasOwnProperty('count') ? parseInt(config.count) : 5;
-  const p = html`<div class="product-grid"><ol>
-    ${Array(c).fill().map(() => html`<${ProductCard} loading=${true} />`)}
-  </ol></div>`;
-
-  block.innerHTML = '';
-  render(p, block);
+function renderPlaceholder(block) {
+  block.innerHTML = `<h2></h2>
+  <div class="scrollable">
+    <div class="product-grid">
+      ${[...Array(5)].map(() => `
+        <div class="placeholder">
+          <picture><img width="300" height="375" src="" /></picture>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
 }
 
-function renderItem(unitId, product, config) {
+function renderItem(unitId, product) {
+  const urlKey = product.url.split('/').pop().replace('.html', '');
+  let image = product.images[0]?.url;
+  image = image.replace('http://', '//');
+
   const clickHandler = () => {
     window.adobeDataLayer.push((dl) => {
       dl.push({ event: 'recs-item-click', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
     });
   };
 
-  const item = document.createDocumentFragment();
+  const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
+    <a href="/products/${urlKey}/${product.sku.toLowerCase()}">
+      <picture>
+        <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
+        <img loading="lazy" alt="${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
+      </picture>
+      <span>${product.name}</span>
+    </a>
+  </div>`);
+  item.querySelector('a').addEventListener('click', clickHandler);
 
-  const i = html`<${ProductCard} key=${product.sku} product=${product} locale=${config['store-locale']} currency=${config['store-currency-code']} placeholders=${placeholders} />`;
-  render(i, item);
-  item.firstElementChild.querySelector('a').addEventListener('click', clickHandler);
-  return item.firstElementChild;
+  return item;
 }
 
-function renderItems(block, results, config, count) {
+function renderItems(block, results) {
   // Render only first recommendation
   const [recommendation] = results;
   if (!recommendation) {
@@ -89,19 +97,15 @@ function renderItems(block, results, config, count) {
     dl.push({ event: 'recs-unit-impression-render', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
   });
 
-  const h2 = block.querySelector('h2');
-  h2.classList.remove('shimmer');
-  h2.classList.remove('shimmer-text');
-  if(recommendation.productsView.length > 0){
-    h2.textContent = recommendation.storefrontLabel;
-  }
+  // Title
+  block.querySelector('h2').textContent = recommendation.storefrontLabel;
 
   // Grid
-  const grid = block.querySelector('.product-grid ol');
+  const grid = block.querySelector('.product-grid');
   grid.innerHTML = '';
   const { productsView } = recommendation;
-  productsView.slice(0, count).forEach((product) => {
-    grid.appendChild(renderItem(recommendation.unitId, product, config));
+  productsView.forEach((product) => {
+    grid.appendChild(renderItem(recommendation.unitId, product));
   });
 
   const inViewObserver = new IntersectionObserver((entries) => {
@@ -186,45 +190,17 @@ async function loadRecommendation(block, context, visibility, filters) {
   renderItems(block, results);
 }
 
-export default async function decorate(block,config = null) 
-{
-  if (!config) {
-    config = readBlockConfig(block);
-  }
+export default async function decorate(block) {
+  const config = readBlockConfig(block);
   const filters = {};
   if (config.typeid) {
     filters.typeId = config.typeid;
   }
-
-  if (config.count) {
-    filters.count = config.count;
-  }
-
-  renderPlaceholder(block, config);
+  renderPlaceholder(block);
 
   const context = {};
-
-  if (config.pageType) {
-    context.pageType = config.pageType;
-  }
-
-  if (config.callFrom) {
-    filters.callFrom = config.callFrom;
-  }
-
   let visibility = !isMobile;
 
-  if (config.callFrom) {
-    unitsPromise = null;
-    visibility = true
-  }
-
-  const h2 = document.createElement('h2');
-  h2.classList.add('product-grid-buy-box-header');
-  h2.classList.add('shimmer');
-  h2.classList.add('shimmer-text');
-  block.prepend(h2);
-  
   function handleProductChanges({ productContext }) {
     context.currentSku = productContext?.sku;
     loadRecommendation(block, context, visibility, filters);
@@ -252,17 +228,17 @@ export default async function decorate(block,config = null)
     dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });
 
-  if (isMobile && !config.callFrom) {
+  if (isMobile) {
     const section = block.closest('.section');
-      const inViewObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            visibility = true;
-            loadRecommendation(block, context, visibility, filters);
-            inViewObserver.disconnect();
-          }
-        });
+    const inViewObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          visibility = true;
+          loadRecommendation(block, context, visibility, filters);
+          inViewObserver.disconnect();
+        }
       });
-      inViewObserver.observe(section);
+    });
+    inViewObserver.observe(section);
   }
 }
