@@ -87,7 +87,8 @@
   --spacing-huge: 120px;
   --spacing-xhuge: 144px;
   --spacing-xxhuge: 192px;
-  --type-base-font-family: roboto, roboto-fallback;
+  --type-base-font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial,
+    sans-serif;
   --type-display-1-font: normal normal 300 6rem/7.2rem
     var(--type-base-font-family);
   --type-display-1-letter-spacing: 0.04em;
@@ -141,8 +142,8 @@
   --type-details-overline-letter-spacing: 0.16em;
 
   /* Additional tokens */
-  --type-fixed-font-family: 'Roboto Mono', menlo, consolas, 'Liberation Mono',
-    monospace;
+  --type-fixed-font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial,
+    sans-serif;
   --background-color: var(--color-neutral-50);
   --nav-height: 10rem;
 
@@ -161,13 +162,19 @@
   --sub-text-title-transform: uppercase;
   --sub-text-spacing: 2px;
 
-  --sub-text-title-weight: 455;
+  --sub-text-title-weight: 600;
 
   /*---------------- End Featured ----------------*/
 }
 
+html * {
+  font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial, sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+}
 @font-face {
-  font-family: roboto-fallback;
+  font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial, sans-serif;
+
   size-adjust: 100.06%;
   ascent-override: 95%;
   src: local('Arial');

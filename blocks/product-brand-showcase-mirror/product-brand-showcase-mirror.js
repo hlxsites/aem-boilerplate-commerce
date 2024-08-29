@@ -142,6 +142,7 @@ function renderProduct(product, config, block) {
     </div>
     <div class="details">
       <h1>${name}</h1>
+          <h1 class="colour">black</h1>
       <div class="price">${renderPrice(product, priceFormatter.format)}</div>
       <div class="actions">
         ${

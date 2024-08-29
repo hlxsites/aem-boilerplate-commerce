@@ -66,7 +66,6 @@
 }
 
 /* Shop Now > button */
-
 .product-main-brand-showcase-mirror .btn-on-img p,
 .product-main-brand-showcase .btn-on-img p {
   margin: auto;
@@ -93,10 +92,12 @@
 
 .product-main-brand-showcase .btn-on-img p a,
 .product-main-brand-showcase-mirror .btn-on-img p a {
+  display: flex;
   border: none;
   border-radius: 0;
+  color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
   padding: auto;
-  display: flex;
+  font-weight: 500;
 }
 /* End Shop Now > button */

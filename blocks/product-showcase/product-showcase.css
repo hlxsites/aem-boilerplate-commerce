@@ -3,10 +3,11 @@
   display: flex;
   flex-wrap: wrap;
   margin: 0 auto;
-  padding: 0;
   gap: 30px;
   width: 100%;
   justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 .product-showcase div div {
   width: auto;
@@ -46,44 +47,33 @@
 
 /* Product Name */
 .product-showcase h1 {
-  font-size: var(--sub-text-title-large);
+  font-size: 1.14286rem;
   text-transform: uppercase;
   letter-spacing: var(--sub-text-spacing);
   color: var(--sub-text-title-color);
   margin: 5px 0;
   height: auto;
+
   line-height: 1;
+
   padding: 0;
 }
-
-/* Product Price */
-.product-showcase .price {
-  font: var(--type-headline-2-strong-font);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+.product-showcase h1 a {
+  line-height: 24px;
+  text-transform: uppercase;
+  color: var(--sub-text-title-color);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-weight: 500;
 }
 
-.product-showcase .price .price-regular {
-  font: var(--type-headline-2-default-font);
-  letter-spacing: var(--type-headline-2-default-letter-spacing);
-  color: var(--color-neutral-600);
-  text-decoration: line-through;
-}
-
-.product-showcase .price .price-range {
-  display: flex;
-  gap: 20px;
-  align-items: baseline;
-}
-
-.product-showcase .price .price-range .price-from {
-  font: var(--type-headline-2-strong-font);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
-}
-
-.product-showcase .price .price-final {
+/* Product Page */
+.product-showcase .product-path {
+  text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-grey);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  letter-spacing: 0.35px;
 }
 
 @media (width >= 600px) {
@@ -100,7 +90,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (width < 600px) {
   .product-showcase .product {
     width: 352px;
     text-align: left;

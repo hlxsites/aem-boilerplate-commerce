@@ -127,25 +127,13 @@ function renderProduct(product, config, block) {
 
   // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
-   <div class="image"><a href="/products/${urlKey}/${sku}"></a>
-    </div>
+   <a href="/products/${urlKey}/${sku}"><div class="image">
+    </div></a>
     <div class="details">
       <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
+      <h1 class="colour">black</h1>
      <div class="price"> ${renderPrice(product, priceFormatter.format)}</div>
-      <div class="actions">
-        ${
-          config['details-button']
-            ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>`
-            : ''
-        }
-        ${
-          config['cart-button'] &&
-          addToCartAllowed &&
-          __typename === 'SimpleProductView'
-            ? '<button class="add-to-cart secondary">Add to Cart</button>'
-            : ''
-        }
-      </div>
+     
     </div>
   `);
 

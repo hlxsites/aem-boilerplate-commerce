@@ -22,28 +22,21 @@
   padding: 0;
 }
 
-/* Clothes and price text */
+/* Product Name, Colour and price text */
 .product-brand-showcase-wrapper .details h1,
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2),
 .product-brand-showcase-mirror-wrapper .details h1,
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(2) {
+.product-brand-showcase-wrapper .details .price,
+.product-brand-showcase-mirror-wrapper .details .price {
   text-transform: capitalize;
   font-weight: normal;
   font-size: var(--sub-text-secondary-size);
-}
-
-.product-brand-showcase-wrapper .details .price,
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4),
-.product-brand-showcase-mirror-wrapper .details .price,
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(4) {
-  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02rem;
+  line-height: 1;
 }
 
 /* Colour */
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3),
-.brand-showcase div:nth-child(2) div:nth-child(2) p:nth-child(3) {
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  font-weight: lighter;
+.product-brand-showcase-wrapper .details .colour,
+.product-brand-showcase-mirror-wrapper .details .colour {
   color: var(--sub-text-grey);
 }

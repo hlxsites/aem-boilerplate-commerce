@@ -51,12 +51,12 @@ function renderPlaceholder(config, block) {
   block.textContent = '';
   block.appendChild(
     document.createRange().createContextualFragment(`
-    <div class="image">
+   <div class="image"> 
       <div class="placeholder"></div>
     </div>
     <div class="details">
-      <h1></h1>
-      <div class="price"></div>
+     <h1></h1>
+     <div class="price"></div>
       <div class="actions">
         ${
           config['details-button']
@@ -68,7 +68,7 @@ function renderPlaceholder(config, block) {
             ? '<button class="secondary" disabled>Add to Cart</button>'
             : ''
         }
-      </div>
+     </div>
     </div>
   `)
   );
@@ -130,22 +130,11 @@ function renderProduct(product, config, block) {
    <a href="/products/${urlKey}/${sku}"><div class="image">
     </div></a>
     <div class="details">
-     <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
-      <a href=<div class="product-path">Shop Now</div>
-      <div class="actions">
-        ${
-          config['details-button']
-            ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>`
-            : ''
-        }
-        ${
-          config['cart-button'] &&
-          addToCartAllowed &&
-          __typename === 'SimpleProductView'
-            ? '<button class="add-to-cart secondary">Add to Cart</button>'
-            : ''
-        }
-      </div>
+  
+      <h1 class="brand">brand</h1>
+          <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
+     <div class="price"> ${renderPrice(product, priceFormatter.format)}</div>
+     
     </div>
   `);
 
@@ -217,4 +206,17 @@ export default async function decorate(block) {
   } catch (error) {
     console.error('Error fetching product data:', error);
   }
+
+  const carousels = document.querySelectorAll('.product-showcase-carousel');
+
+  carousels.forEach((carousel) => {
+    const totalProducts = carousel.children.length;
+    if (totalProducts >= 4) {
+      const columns = Math.ceil(totalProducts / 2);
+      carousel.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    } else if (totalProducts < 4) {
+      const columns = Math.ceil(totalProducts);
+      carousel.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    }
+  });
 }
