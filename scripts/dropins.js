@@ -66,7 +66,7 @@ export default async function initializeDropins() {
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
-    setEndpoint(await getConfigValue('commerce-core-endpoint'));
+    setEndpoint('https://mcstaging.aemshop.net/graphql');
     // Recaptcha
     recaptcha.setConfig();
     // Mount all registered drop-ins
