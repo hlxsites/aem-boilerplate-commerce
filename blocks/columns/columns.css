@@ -60,7 +60,7 @@ main .section {
 .column-headers div:nth-child(1) p {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
-  font-size: var(--sub-text-sub-title-size);
+  font-size: var(--sub-text-title-size);
   text-transform: var(--sub-text-title-transform);
   font-weight: var(--sub-text-title-weight);
   letter-spacing: 0.157143rem;
