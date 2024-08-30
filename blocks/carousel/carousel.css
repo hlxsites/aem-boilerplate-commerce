@@ -28,7 +28,8 @@
   align-items: flex-start;
   justify-content: center;
   position: relative;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   min-height: min(50vw, calc(100dvh - var(--header-height)));
 }
 
@@ -48,7 +49,6 @@
 .carousel .carousel-slide .carousel-slide-image picture > img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
 }
 
 .carousel .carousel-slide .carousel-slide-content {
@@ -58,6 +58,7 @@
   color: white;
   background-color: rgba(19 19 19 / 75%);
   position: relative;
+
   width: var(--slide-content-width, auto);
 }
 
@@ -143,7 +144,6 @@
 
   .carousel .carousel-slide .carousel-slide-content {
     --slide-content-width: calc((100% - 184px) / 2);
-
     margin: 92px;
   }
 

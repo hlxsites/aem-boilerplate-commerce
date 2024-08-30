@@ -1,5 +1,6 @@
 .carousel-border {
   border-bottom: 1px solid var(--sub-text-border-divider);
+  width: auto;
 }
 /* Div */
 .launches-product-showcase-carousel {
@@ -120,7 +121,7 @@
   border-radius: 0;
 }
 
-@media (width >= 600px) {
+@media (width >= 200px) {
   .launches-product-showcase-carousel {
     flex-direction: row;
   }
@@ -168,7 +169,9 @@
     justify-content: space-evenly;
     padding-top: 1%;
     padding-left: 2%;
-    width: 374px;
+    max-width: 1000px;
+    min-width: 329px;
+    width: auto;
     z-index: 1;
   }
 }
@@ -176,13 +179,12 @@
 @media (width <= 1000px) {
   .launches-section div {
     flex-direction: row;
-    max-width: 1000px;
   }
 
   .carousel-border {
     width: auto;
     position: relative;
-    width: 590px;
+    width: auto;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -242,6 +244,6 @@
     text-align: left;
     justify-content: flex-start;
     margin: 0;
-    margin-left: -35%;
+    margin-left: -5%;
   }
 }
