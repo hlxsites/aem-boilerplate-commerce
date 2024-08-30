@@ -28,7 +28,7 @@
   align-items: flex-start;
   justify-content: center;
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   min-height: min(50vw, calc(100dvh - var(--header-height)));
 }
@@ -53,15 +53,72 @@
 
 .carousel .carousel-slide .carousel-slide-content {
   z-index: 1;
-  margin: 68px;
   padding: 16px;
-  color: white;
-  background-color: rgba(19 19 19 / 75%);
+  top: 20%;
+  left: 1%;
   position: relative;
-
-  width: var(--slide-content-width, auto);
+  line-height: 1;
+  width: 70%;
 }
 
+.carousel .carousel-slide .carousel-slide-content h2,
+.carousel .carousel-slide .carousel-slide-content p.button-container {
+  line-height: 1;
+  height: 1px;
+}
+
+/* Brand Name */
+.carousel .carousel-slide .carousel-slide-content h2 a {
+  color: var(--sub-text-title-color-light);
+  font-weight: 600;
+  letter-spacing: 0.228571rem;
+  line-height: 40px;
+  text-transform: uppercase;
+  font-size: 32px;
+}
+
+/* Buttons */
+.carousel .carousel-slide .carousel-slide-content p a {
+  background-color: transparent;
+  border-radius: 0;
+}
+
+/* Buttons P */
+.carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
+  font-weight: 400;
+  text-transform: capitalize;
+  letter-spacing: 0.1rem;
+  padding-left: 0;
+  font-size: var(--sub-text-secondary-size);
+}
+
+/* Buttons redirect*/
+.carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
+  border: 2px solid white;
+  position: absolute;
+  left: 100%;
+  align-content: center;
+  display: block;
+  width: 182px;
+  height: 46px;
+  justify-content: flex-end;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  font-size: var(--sub-text-secondary-size);
+  /* animation */
+  background-color: transparent;
+  color: white;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* animation onHover*/
+.carousel .carousel-slide .carousel-slide-content p:nth-child(3) a:hover {
+  background-color: white;
+  color: black;
+  opacity: 0.5;
+}
 .carousel .carousel-slide-indicators {
   display: flex;
   flex-wrap: wrap;
