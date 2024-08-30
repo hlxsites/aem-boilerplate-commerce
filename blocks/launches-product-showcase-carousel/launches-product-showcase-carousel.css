@@ -1,7 +1,7 @@
 .carousel-border {
   border-bottom: 1px solid var(--sub-text-border-divider);
-  width: auto;
 }
+
 /* Div */
 .launches-product-showcase-carousel {
   display: flex;
@@ -143,11 +143,6 @@
     flex: 1;
   }
 
-  .launches-section-products div div:nth-child(1) {
-    margin: 0;
-    margin-right: 2%;
-  }
-
   .launches-section-products .image picture > img {
     width: 438px;
     height: 243px;
@@ -160,31 +155,33 @@
   }
 
   .launches-section {
-    height: auto;
-    position: absolute;
-    justify-content: space-evenly;
+    display: block;
+    position: relative;
+    margin: auto;
+    z-index: 1;
+    width: 100%;
+    height: 0px;
   }
 
   .launches-section div div {
-    justify-content: space-evenly;
+    display: flex;
+    position: relative;
     padding-top: 1%;
-    padding-left: 2%;
-    max-width: 1000px;
-    min-width: 329px;
-    width: auto;
-    z-index: 1;
+    padding-left: 1%;
+    width: 100%;
   }
 }
 
 @media (width <= 1000px) {
+  .launches-section {
+    width: 1020px;
+  }
   .launches-section div {
-    flex-direction: row;
+    flex-direction: unset;
   }
 
   .carousel-border {
-    width: auto;
-    position: relative;
-    width: auto;
+    width: 80%;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
@@ -192,7 +189,6 @@
   }
 
   .launches-product-showcase-carousel {
-    position: relative;
     grid-template-columns: auto;
     grid-auto-rows: auto;
     gap: 10px;
@@ -231,7 +227,7 @@
   .launches-section-products .product {
     min-width: 329px;
     display: flex;
-    margin: 0;
+
     padding: 0;
     justify-content: flex-start;
   }
