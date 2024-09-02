@@ -132,6 +132,7 @@ export default async function decorate(block) {
   block.prepend(slidesWrapper);
 
   let slideIndicators;
+
   if (!isSingleSlide) {
     const slideIndicatorsNav = document.createElement('nav');
     slideIndicatorsNav.setAttribute(
@@ -176,7 +177,28 @@ export default async function decorate(block) {
   container.append(slidesWrapper);
   block.prepend(container);
 
+  // Auto sliding animation
   if (!isSingleSlide) {
     bindEvents(block);
+
+    const slides = block.querySelectorAll('.carousel-slide');
+
+    let currentSlideIndex = 0;
+    let autoSlideInterval = setInterval(() => {
+      currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+      showSlide(block, currentSlideIndex);
+    }, 5000);
+
+    // Stops auto slide if clicks on image
+    block.addEventListener('mouseover', () => {
+      clearInterval(autoSlideInterval);
+    });
+
+    block.addEventListener('mouseout', () => {
+      autoSlideInterval = setInterval(() => {
+        currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+        showSlide(block, currentSlideIndex);
+      }, 5000);
+    });
   }
 }
