@@ -85,6 +85,18 @@ function createSlide(row, slideIndex, carouselId) {
     column.classList.add(
       `carousel-slide-${colIdx === 0 ? 'image' : 'content'}`
     );
+
+    // Creates Img from URL
+    const url = column.textContent.trim();
+
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = `Slide ${slideIndex + 1} Image`;
+    img.style.width = '100vw';
+    img.style.height = '800px';
+    column.innerHTML = '';
+    column.append(img);
+
     slide.append(column);
   });
 
