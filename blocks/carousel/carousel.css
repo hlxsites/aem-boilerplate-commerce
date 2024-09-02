@@ -1,13 +1,12 @@
 div.section.carousel-container {
-  border: 2px solid yellow;
   padding: 0;
   margin: 0;
+  height: auto;
 }
 .carousel {
-  border: 2px solid rebeccapurple;
   padding: 0;
-  width: 100vw;
-  max-width: fit-content;
+  /* width: 100vw; */
+  height: 100%;
 }
 
 .carousel .carousel-slides-container {
@@ -43,8 +42,7 @@ div.section.carousel-container {
   justify-content: center;
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: min(50vw, calc(100dvh - var(--header-height)));
+  height: auto;
 }
 
 .carousel .carousel-slide:has(.carousel-slide-content[data-align='center']) {
@@ -161,7 +159,7 @@ div.section.carousel-container {
 
 .carousel .carousel-navigation-buttons {
   position: absolute;
-  top: 50%;
+  top: 35%;
   transform: translateY(-50%);
   left: 12px;
   right: 12px;
@@ -215,7 +213,6 @@ div.section.carousel-container {
 
   .carousel .carousel-slide .carousel-slide-content {
     --slide-content-width: calc((100% - 184px) / 2);
-    margin: 92px;
   }
 
   .carousel .carousel-slide .carousel-slide-content[data-align='justify'] {
