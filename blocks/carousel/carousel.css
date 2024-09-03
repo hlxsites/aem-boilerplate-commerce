@@ -270,7 +270,8 @@ div.section.carousel-container {
     flex-direction: column;
     width: 100vw;
     justify-content: center;
-
+    padding-left: 2%;
+    padding-right: 2%;
     padding: 0;
     flex-wrap: wrap;
     left: 0;
@@ -295,7 +296,9 @@ div.section.carousel-container {
   }
 
   .carousel .carousel-slide-indicators {
-    left: 23%;
+    left: 0;
     bottom: 8%;
+
+    width: 100vw;
   }
 }
