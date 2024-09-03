@@ -22,7 +22,7 @@
 .product-main-brand-showcase-mirror ul li a {
   color: var(--sub-text-title-color);
   letter-spacing: var(--sub-text-spacing);
-  font-size: var(--sub-text-sub-title-size);
+  font-size: var(--sub-text-title-size);
   text-transform: uppercase;
   font-weight: bold;
 }
