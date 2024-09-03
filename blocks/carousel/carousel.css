@@ -293,4 +293,9 @@ div.section.carousel-container {
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     left: 25%;
   }
+
+  .carousel .carousel-slide-indicators {
+    left: 23%;
+    bottom: 10%;
+  }
 }
