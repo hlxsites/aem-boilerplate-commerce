@@ -301,3 +301,9 @@ div.section.carousel-container {
     width: 95vw;
   }
 }
+
+@media (width < 500px) {
+  .carousel .carousel-slide-indicators {
+    width: 100vw;
+  }
+}
