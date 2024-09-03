@@ -29,7 +29,7 @@
 
 .modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
-  font-weight: 100;
+  font-weight: 400;
 }
 
 .modal-par a.button.secondary {

@@ -34,6 +34,7 @@
   line-height: 0.5;
   color: var(--sub-text-title-color);
   font-size: var(--sub-text-secondary-size);
+  font-weight: 400;
 }
 
 .modal-content .four-cols-two-img div:nth-child(4) table p:nth-child(2) {
@@ -48,7 +49,7 @@
   padding: 0;
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
-  font-weight: 100;
+  font-weight: 400;
 }
 
 .modal-content

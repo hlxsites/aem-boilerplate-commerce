@@ -4,7 +4,7 @@
   border-radius: 0;
   border: none;
   color: black;
-  background-color: white;
+  background-color: transparent;
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
   padding: 0;
@@ -20,7 +20,7 @@
   padding: 0;
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
-  font-weight: 100;
+  font-weight: 400;
   text-transform: capitalize;
 }
 

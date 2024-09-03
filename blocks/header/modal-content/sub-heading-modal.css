@@ -25,6 +25,7 @@
     border: none;
     background-color: white;
     color: var(--sub-text-title-color);
+    font-weight: 400;
   }
 
   .modal-content .default-content-wrapper p:nth-child(1) {
@@ -93,6 +94,8 @@
   .modal-content .three-cols-four-img div div ul {
     line-height: 4;
     font-size: var(--sub-text-title-large);
+    color: var(--sub-text-title-color);
+    font-weight: 400;
   }
   .modal-content .three-cols-four-img div div p {
     font-size: var(--sub-text-title-large);

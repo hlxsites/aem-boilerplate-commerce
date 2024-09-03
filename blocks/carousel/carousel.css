@@ -138,7 +138,7 @@ div.section.carousel-container {
   display: flex;
   bottom: 10%;
   left: 20%;
-  z-index: 2;
+  z-index: 1;
   flex-wrap: wrap;
   justify-content: center;
   gap: 6px 8px;
