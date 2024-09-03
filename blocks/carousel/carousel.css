@@ -138,7 +138,6 @@ div.section.carousel-container {
   position: absolute;
   display: flex;
   height: auto;
-
   top: 90%;
   bottom: 0%;
   left: 20%;
@@ -272,12 +271,14 @@ div.section.carousel-container {
   /* Brand Name */
   .carousel .carousel-slide .carousel-slide-content {
     display: flex;
+    position: relative;
     flex-direction: column;
     width: 100vw;
     justify-content: center;
     padding-left: 2%;
     padding-right: 2%;
-    padding: 0;
+    padding-top: 0;
+    padding-bottom: 0;
     flex-wrap: wrap;
     left: 0;
     bottom: 30%;
@@ -295,13 +296,16 @@ div.section.carousel-container {
     justify-content: center;
   }
 
-  /* SHOP NOEW Button redirect*/
+  /* SHOP NOW Button redirect*/
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     left: 25%;
   }
 
   .carousel .carousel-slide-indicators {
+    position: absolute;
+    padding: 0;
     left: 0;
+    margin-top: 8%;
     bottom: 5%;
     width: 94vw;
   }
