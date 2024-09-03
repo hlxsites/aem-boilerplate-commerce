@@ -19,6 +19,7 @@ div.section.carousel-container {
   list-style: none;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 .carousel .carousel-slides {
@@ -105,7 +106,7 @@ div.section.carousel-container {
   font-size: var(--sub-text-secondary-size);
 }
 
-/* SHOP NOEW Button redirect*/
+/* SHOP NOW Button redirect*/
 .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
   border: 2px solid white;
   position: absolute;
@@ -136,7 +137,10 @@ div.section.carousel-container {
 .carousel .carousel-slide-indicators {
   position: absolute;
   display: flex;
-  bottom: 10%;
+  height: auto;
+
+  top: 90%;
+  bottom: 0%;
   left: 20%;
   z-index: 1;
   flex-wrap: wrap;

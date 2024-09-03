@@ -94,7 +94,7 @@ function createSlide(row, slideIndex, carouselId) {
       img.src = url;
       img.alt = `Slide ${slideIndex + 1} Image`;
       img.style.width = '100vw';
-      img.style.height = 'calc(100vh - 100px)';
+      img.style.height = '100vh';
       column.innerHTML = '';
       column.append(img);
     }
