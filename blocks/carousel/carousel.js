@@ -89,15 +89,16 @@ function createSlide(row, slideIndex, carouselId) {
     // Creates Img from URL
     const url = column.textContent.trim();
 
-    const img = document.createElement('img');
-    img.src = url;
-    img.alt = `Slide ${slideIndex + 1} Image`;
-    img.style.width = '100vw';
-    img.style.height = '650px';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = `Slide ${slideIndex + 1} Image`;
+      img.style.width = '100vw';
+      img.style.height = '650px';
 
-    column.innerHTML = '';
-    column.append(img);
-
+      column.innerHTML = '';
+      column.append(img);
+    }
     slide.append(column);
   });
 

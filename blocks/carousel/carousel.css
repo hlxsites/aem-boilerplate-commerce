@@ -1,12 +1,11 @@
 div.section.carousel-container {
   padding: 0;
   margin: 0;
-  height: auto;
+  height: 78vh;
 }
 .carousel {
   padding: 0;
-  /* width: 100vw; */
-  height: 100%;
+  height: auto;
 }
 
 .carousel .carousel-slides-container {
@@ -66,11 +65,11 @@ div.section.carousel-container {
 .carousel .carousel-slide .carousel-slide-content {
   z-index: 1;
   padding: 16px;
-  top: 20%;
-  left: 1%;
+  bottom: 30%;
+  left: 20%;
   position: relative;
   line-height: 1;
-  width: 70%;
+  width: 50%;
 }
 
 .carousel .carousel-slide .carousel-slide-content h2,
@@ -87,6 +86,7 @@ div.section.carousel-container {
   line-height: 40px;
   text-transform: uppercase;
   font-size: 32px;
+  color: var(--sub-text-title-color-light);
 }
 
 /* Buttons */
@@ -131,30 +131,59 @@ div.section.carousel-container {
   color: black;
   opacity: 0.5;
 }
+
 .carousel .carousel-slide-indicators {
+  position: absolute;
   display: flex;
+  bottom: 18%;
+  left: 20%;
+  z-index: 2;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px 12px;
+  gap: 6px 8px;
   padding: 12px;
-  background-color: var(--light-color);
+  background-color: transparent;
   line-height: 0;
 }
 
 .carousel .carousel-slide-indicator button {
-  width: 24px;
-  height: 24px;
+  width: 37px;
+  height: 2px;
   margin: 0;
   padding: 0;
-  border-radius: 50%;
-  background-color: #dadada;
+  border-radius: 0%;
+  background-color: #dadada54;
   transition: background-color 0.2s;
+  border: none;
+  position: relative;
+  overflow: hidden;
 }
 
-.carousel .carousel-slide-indicator button:disabled,
-.carousel .carousel-slide-indicator button:hover,
-.carousel .carousel-slide-indicator button:focus-visible {
-  background-color: var(--text-color);
+.carousel .carousel-slide-indicator button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: white;
+  transition: width 0s;
+}
+
+.carousel .carousel-slide-indicator button:disabled::before,
+.carousel .carousel-slide-indicator button:hover::before,
+.carousel .carousel-slide-indicator button:focus-visible::before {
+  animation: slideProgress 5s linear forwards;
+}
+
+.carousel .carousel-slide-indicator button {
+  width: 37px;
+}
+
+@keyframes slideProgress {
+  to {
+    width: 37px;
+  }
 }
 
 .carousel .carousel-navigation-buttons {
