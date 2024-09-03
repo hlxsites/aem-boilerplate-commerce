@@ -11,6 +11,7 @@
 
 /* Banner */
 
+main .banner-section-carousel > div,
 main .banner-section > div {
   max-width: unset;
 }

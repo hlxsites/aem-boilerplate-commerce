@@ -1,7 +1,7 @@
 div.section.carousel-container {
   padding: 0;
   margin: 0;
-  height: 78vh;
+  /* height: 78vh; */
 }
 .carousel {
   padding: 0;
@@ -86,6 +86,7 @@ div.section.carousel-container {
   line-height: 40px;
   text-transform: uppercase;
   font-size: 32px;
+  text-decoration: none;
   color: var(--sub-text-title-color-light);
 }
 
@@ -104,7 +105,7 @@ div.section.carousel-container {
   font-size: var(--sub-text-secondary-size);
 }
 
-/* Buttons redirect*/
+/* SHOP NOEW Button redirect*/
 .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
   border: 2px solid white;
   position: absolute;
@@ -125,7 +126,7 @@ div.section.carousel-container {
   transition: all 0.3s ease;
 }
 
-/* animation onHover*/
+/* SHOP NOW animation onHover*/
 .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a:hover {
   background-color: white;
   color: black;
@@ -135,7 +136,7 @@ div.section.carousel-container {
 .carousel .carousel-slide-indicators {
   position: absolute;
   display: flex;
-  bottom: 18%;
+  bottom: 10%;
   left: 20%;
   z-index: 2;
   flex-wrap: wrap;
@@ -234,6 +235,10 @@ div.section.carousel-container {
   left: calc(50% - 2px);
 }
 
+.carousel-slides-container {
+  height: 100vh;
+}
+
 @media (width >= 600px) {
   .carousel .carousel-navigation-buttons {
     left: 24px;
@@ -246,5 +251,46 @@ div.section.carousel-container {
 
   .carousel .carousel-slide .carousel-slide-content[data-align='justify'] {
     --slide-content-width: auto;
+  }
+}
+
+@media (width < 600px) {
+  .carousel-slide-image img {
+    width: 100vw;
+    height: calc(100vh - 20 px) !important;
+  }
+
+  .carousel .carousel-navigation-buttons button {
+    display: none;
+  }
+
+  /* Brand Name */
+  .carousel .carousel-slide .carousel-slide-content {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    justify-content: center;
+
+    padding: 0;
+    flex-wrap: wrap;
+    left: 0;
+    bottom: 40%;
+    text-align: center;
+  }
+  /* Brand Name */
+  .carousel .carousel-slide .carousel-slide-content h2 a {
+    font-size: 22px;
+  }
+
+  /* Buttons P */
+  .carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+  }
+
+  /* SHOP NOEW Button redirect*/
+  .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
+    left: 25%;
   }
 }
