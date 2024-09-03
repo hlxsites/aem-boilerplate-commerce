@@ -276,7 +276,7 @@ div.section.carousel-container {
     padding: 0;
     flex-wrap: wrap;
     left: 0;
-    bottom: 40%;
+    bottom: 30%;
     text-align: center;
   }
   /* Brand Name */
@@ -298,7 +298,7 @@ div.section.carousel-container {
 
   .carousel .carousel-slide-indicators {
     left: 0;
-    bottom: 8%;
+    bottom: 5%;
     width: 94vw;
   }
 }
