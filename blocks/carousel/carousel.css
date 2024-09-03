@@ -59,7 +59,7 @@ div.section.carousel-container {
 
 .carousel .carousel-slide .carousel-slide-image picture > img {
   height: 100%;
-  width: 100%;
+  width: 100vw;
 }
 
 .carousel .carousel-slide .carousel-slide-content {
@@ -256,8 +256,9 @@ div.section.carousel-container {
 
 @media (width < 600px) {
   .carousel-slide-image img {
-    width: 100vw;
-    height: calc(100vh - 20 px) !important;
+    object-fit: cover;
+    display: flex;
+    justify-content: center;
   }
 
   .carousel .carousel-navigation-buttons button {
@@ -298,12 +299,6 @@ div.section.carousel-container {
   .carousel .carousel-slide-indicators {
     left: 0;
     bottom: 8%;
-    width: 95vw;
-  }
-}
-
-@media (width < 500px) {
-  .carousel .carousel-slide-indicators {
-    width: 100vw;
+    width: 94vw;
   }
 }
