@@ -298,7 +298,6 @@ div.section.carousel-container {
   .carousel .carousel-slide-indicators {
     left: 0;
     bottom: 8%;
-
-    width: 100vw;
+    width: 95vw;
   }
 }
