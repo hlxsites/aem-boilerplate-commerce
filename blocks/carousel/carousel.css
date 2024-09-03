@@ -299,6 +299,7 @@ div.section.carousel-container {
   /* SHOP NOW Button redirect*/
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     left: 25%;
+    top: 90%;
   }
 
   .carousel .carousel-slide-indicators {
