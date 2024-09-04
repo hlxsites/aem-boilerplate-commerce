@@ -87,6 +87,7 @@ function renderItem(unitId, product) {
 function renderItems(block, results) {
   // Render only first recommendation
   const [recommendation] = results;
+
   if (!recommendation) {
     // Hide block content if no recommendations are available
     block.textContent = '';
@@ -102,10 +103,15 @@ function renderItems(block, results) {
 
   // Grid
   const grid = block.querySelector('.product-grid');
-  grid.innerHTML = '';
+  // grid.innerHTML = '';
   const { productsView } = recommendation;
+  
   productsView.forEach((product) => {
-    grid.appendChild(renderItem(recommendation.unitId, product));
+    try {
+      grid.appendChild(renderItem(recommendation.unitId, product));
+    } catch (error) {
+      console.error("error");
+    }
   });
 
   const inViewObserver = new IntersectionObserver((entries) => {
@@ -186,7 +192,7 @@ async function loadRecommendation(block, context, visibility, filters) {
 
   let { results } = (await unitsPromise).recommendations;
   results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
-
+  
   renderItems(block, results);
 }
 
