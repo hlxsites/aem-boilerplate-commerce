@@ -276,14 +276,19 @@ div.section.carousel-container {
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
     text-align: center;
     margin: auto;
+    left: 0;
+    width: 100vw;
   }
 
+  .carousel .carousel-slide .carousel-slide-content h2 {
+    font-size: 22px;
+  }
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
   }
 
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
-    margin-bottom: 5%;
+    margin-bottom: 10%;
   }
 
   .carousel .carousel-slide-indicators {
