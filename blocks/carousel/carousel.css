@@ -281,10 +281,13 @@ div.section.carousel-container {
     padding-bottom: 0;
     flex-wrap: wrap;
     left: 0;
-    bottom: 30%;
+    bottom: 35%;
     text-align: center;
   }
   /* Brand Name */
+  .carousel .carousel-slide .carousel-slide-content h2 {
+    width: 95%;
+  }
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
   }
