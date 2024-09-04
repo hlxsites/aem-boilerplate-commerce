@@ -1,7 +1,6 @@
 div.section.carousel-container {
   padding: 0;
   margin: 0;
-  /* height: 78vh; */
 }
 .carousel {
   padding: 0;
@@ -65,18 +64,19 @@ div.section.carousel-container {
 
 .carousel .carousel-slide .carousel-slide-content {
   z-index: 1;
-  padding: 16px;
-  bottom: 30%;
-  left: 20%;
-  position: relative;
+  position: absolute;
+  bottom: 12%;
+  left: 14.5%;
   line-height: 1;
-  width: 50%;
+  width: 72%;
 }
 
 .carousel .carousel-slide .carousel-slide-content h2,
 .carousel .carousel-slide .carousel-slide-content p.button-container {
   line-height: 1;
-  height: 1px;
+  height: auto;
+  padding: 0;
+  margin: auto 0;
 }
 
 /* Brand Name */
@@ -88,7 +88,6 @@ div.section.carousel-container {
   text-transform: uppercase;
   font-size: 32px;
   text-decoration: none;
-  color: var(--sub-text-title-color-light);
 }
 
 /* Buttons */
@@ -107,15 +106,18 @@ div.section.carousel-container {
 }
 
 /* SHOP NOW Button redirect*/
+.carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
+  text-align: right;
+}
+
 .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
   border: 2px solid white;
-  position: absolute;
-  left: 100%;
   align-content: center;
-  display: block;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 2%;
   width: 182px;
   height: 46px;
-  justify-content: flex-end;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1rem;
@@ -138,9 +140,9 @@ div.section.carousel-container {
   position: absolute;
   display: flex;
   height: auto;
-  top: 90%;
+  top: 92%;
   bottom: 0%;
-  left: 20%;
+  left: 14%;
   z-index: 1;
   flex-wrap: wrap;
   justify-content: center;
@@ -192,7 +194,7 @@ div.section.carousel-container {
 
 .carousel .carousel-navigation-buttons {
   position: absolute;
-  top: 35%;
+  top: 40%;
   transform: translateY(-50%);
   left: 12px;
   right: 12px;
@@ -249,7 +251,8 @@ div.section.carousel-container {
   }
 
   .carousel .carousel-slide .carousel-slide-content {
-    --slide-content-width: calc((100% - 184px) / 2);
+    --slide-content-width: calc(100% / 2);
+    padding: 0;
   }
 
   .carousel .carousel-slide .carousel-slide-content[data-align='justify'] {
@@ -268,49 +271,22 @@ div.section.carousel-container {
     display: none;
   }
 
-  /* Brand Name */
-  .carousel .carousel-slide .carousel-slide-content {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-    width: 100vw;
-    justify-content: center;
-    padding-left: 2%;
-    padding-right: 2%;
-    padding-top: 0;
-    padding-bottom: 0;
-    flex-wrap: wrap;
-    left: 0;
-    bottom: 35%;
+  /* Text */
+  .carousel .carousel-slide .carousel-slide-content,
+  .carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
     text-align: center;
+    margin: auto;
   }
-  /* Brand Name */
-  .carousel .carousel-slide .carousel-slide-content h2 {
-    width: 95%;
-  }
+
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
-  }
-
-  /* Buttons P */
-  .carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
-    display: flex;
-    width: 100vw;
-    justify-content: center;
-  }
-
-  /* SHOP NOW Button redirect*/
-  .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
-    left: 25%;
-    top: 90%;
   }
 
   .carousel .carousel-slide-indicators {
     position: absolute;
     padding: 0;
     left: 0;
-    margin-top: 10%;
-    top: 89%;
-    width: 94vw;
+    top: 96%;
+    width: 100vw;
   }
 }
