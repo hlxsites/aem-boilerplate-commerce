@@ -286,7 +286,7 @@ div.section.carousel-container {
     position: absolute;
     padding: 0;
     left: 0;
-    top: 96%;
+    top: 97vh;
     width: 100vw;
   }
 }
