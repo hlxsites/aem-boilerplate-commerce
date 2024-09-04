@@ -271,15 +271,6 @@ main .section {
     order: 2;
   }
 
-  .column-headers p {
-    font-size: 16px;
-    width: auto;
-  }
-
-  .column-headers div:nth-child(2) p {
-    margin-top: -19%;
-  }
-
   /* Latest Carousel */
   .products-carousel div div {
     width: auto;
