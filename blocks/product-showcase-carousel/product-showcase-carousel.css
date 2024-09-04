@@ -210,3 +210,24 @@
     margin-left: -35%;
   }
 }
+
+@media (max-width: 768px) {
+  .product-showcase-carousel {
+    height: auto;
+    overflow: visible;
+  }
+
+  .product-showcase-carousel .product {
+    width: 345px;
+  }
+  .product-showcase-carousel .product .details {
+    width: 340px;
+    max-width: unset;
+  }
+
+  .product-showcase-carousel .image picture > img {
+    width: 345px;
+    height: auto;
+    max-width: unset;
+  }
+}
