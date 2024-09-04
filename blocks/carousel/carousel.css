@@ -282,6 +282,10 @@ div.section.carousel-container {
     font-size: 22px;
   }
 
+  .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
+    margin-bottom: 5%;
+  }
+
   .carousel .carousel-slide-indicators {
     position: absolute;
     padding: 0;
