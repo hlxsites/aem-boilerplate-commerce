@@ -1,11 +1,11 @@
-import { loadFragment } from "../fragment/fragment.js";
+import { loadFragment } from '../fragment/fragment.js';
 import {
   buildBlock,
   decorateBlock,
   decorateIcons,
   loadBlock,
   loadCSS,
-} from "../../scripts/aem.js";
+} from '../../scripts/aem.js';
 
 // This is not a traditional block, so there is no decorate function. Instead, links to
 // a */modals/* path  are automatically transformed into a modal. Other blocks can also use
@@ -13,24 +13,24 @@ import {
 
 export async function createModal(contentNodes) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/modal/modal.css`);
-  const dialog = document.createElement("dialog");
-  const dialogContent = document.createElement("div");
-  dialogContent.classList.add("modal-content");
+  const dialog = document.createElement('dialog');
+  const dialogContent = document.createElement('div');
+  dialogContent.classList.add('modal-content');
   dialogContent.append(...contentNodes);
   dialog.append(dialogContent);
 
-  const closeButton = document.createElement("button");
-  closeButton.classList.add("close-button");
-  closeButton.setAttribute("aria-label", "Close");
-  closeButton.type = "button";
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('close-button');
+  closeButton.setAttribute('aria-label', 'Close');
+  closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  closeButton.addEventListener("mouseout", () => dialog.close());
-  closeButton.addEventListener("click", () => dialog.close());
+  closeButton.addEventListener('mouseout', () => dialog.close());
+  closeButton.addEventListener('click', () => dialog.close());
 
   dialog.append(closeButton);
 
   // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
-  dialog.addEventListener("mouseout", (event) => {
+  dialog.addEventListener('mouseout', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
     if (
       event.clientX < dialogDimensions.left ||
@@ -41,19 +41,7 @@ export async function createModal(contentNodes) {
       dialog.close();
     }
   });
-  dialog.addEventListener("mouseover", (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
-      dialog.close();
-    }
-  });
-
-  dialog.addEventListener("click", (event) => {
+  dialog.addEventListener('mouseover', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
     if (
       event.clientX < dialogDimensions.left ||
@@ -65,14 +53,26 @@ export async function createModal(contentNodes) {
     }
   });
 
-  const block = buildBlock("modal", "");
-  document.querySelector("main").append(block);
+  dialog.addEventListener('click', (event) => {
+    const dialogDimensions = dialog.getBoundingClientRect();
+    if (
+      event.clientX < dialogDimensions.left ||
+      event.clientX > dialogDimensions.right ||
+      event.clientY < dialogDimensions.top ||
+      event.clientY > dialogDimensions.bottom
+    ) {
+      dialog.close();
+    }
+  });
+
+  const block = buildBlock('modal', '');
+  document.querySelector('main').append(block);
   decorateBlock(block);
   await loadBlock(block);
   decorateIcons(closeButton);
 
-  dialog.addEventListener("close", () => {
-    document.body.classList.remove("modal-open");
+  dialog.addEventListener('close', () => {
+    document.body.classList.remove('modal-open');
     block.remove();
   });
 
@@ -87,27 +87,40 @@ export async function createModal(contentNodes) {
         dialogContent.scrollTop = 0;
       }, 0);
 
-      document.body.classList.add("modal-open");
+      document.body.classList.add('modal-open');
     },
   };
 }
+document.addEventListener('DOMContentLoaded', () => {
+  const hoverTrigger = document.querySelector(
+    '.sub-nav-content div:nth-child(1) div '
+  );
+
+  if (hoverTrigger) {
+    hoverTrigger.addEventListener('mouseover', () => {
+      alert('currently hovering');
+      openModal();
+    });
+  }
+});
 
 export async function openModal(fragmentUrl) {
-  const path = fragmentUrl.startsWith("http")
+  const path = fragmentUrl.startsWith('http')
     ? new URL(fragmentUrl, window.location).pathname
     : fragmentUrl;
 
   const fragment = await loadFragment(path);
   const { showModal } = await createModal(fragment.childNodes);
+
   showModal();
 
   const modalPar = document.querySelectorAll(
-    ".modal-content .columns-4-cols div div:nth-child(2), \
-    .modal-content .columns-4-cols div div:nth-child(4)"
+    '.modal-content .columns-4-cols div div:nth-child(2), \
+    .modal-content .columns-4-cols div div:nth-child(4)'
   );
   modalPar.forEach((element) => {
     if (element) {
-      element.classList.add("modal-par");
+      element.classList.add('modal-par');
     }
   });
 }

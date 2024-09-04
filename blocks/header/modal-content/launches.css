@@ -17,18 +17,29 @@
   text-transform: capitalize;
 }
 
+/* Title */
 .modal-content .default-content-wrapper p:nth-child(2) {
   font-weight: 550;
   color: var(--sub-text-title-color);
-}
-.modal-content .default-content-wrapper p:nth-child(2) {
-  font-weight: 550;
   margin-left: -2%;
   margin-bottom: 3%;
 }
 
+/* Product Name */
 .modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
+  font-weight: 400;
+}
+
+/* Colour */
+.modal-content div div p:nth-child(2) {
+  color: var(--sub-text-grey);
+  font-weight: 400;
+}
+
+/* Date */
+.modal-content div div p:nth-child(3) {
+  color: var(--text-date-color);
   font-weight: 400;
 }
 
