@@ -16,7 +16,7 @@
   max-height: calc(100vh - 60px);
 }
 
-@media (width > 600px) {
+@media (width > 998px) {
   .modal dialog {
     padding: 30px;
     width: 100vw;
@@ -36,8 +36,8 @@
 
 .modal .close-button {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 1%;
+  right: 4%;
   width: 20px;
   height: 100%;
   max-height: 54px;
@@ -52,12 +52,12 @@
   padding: 0;
 }
 
-@media (width <= 600px) {
+@media (width <= 998px) {
   .modal dialog {
     margin-top: 0;
     min-width: 375px;
     max-width: 390px;
-    width: 370px;
+    width: 400px;
     margin-left: 0;
     height: 100vh;
   }

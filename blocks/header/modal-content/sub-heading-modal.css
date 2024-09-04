@@ -1,4 +1,4 @@
-@media (width <= 600px) {
+@media (width <= 998px) {
   /* Launches */
   .modal-content .columns-4-cols div div {
     width: auto;

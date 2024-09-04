@@ -91,18 +91,6 @@ export async function createModal(contentNodes) {
     },
   };
 }
-document.addEventListener('DOMContentLoaded', () => {
-  const hoverTrigger = document.querySelector(
-    '.sub-nav-content div:nth-child(1) div '
-  );
-
-  if (hoverTrigger) {
-    hoverTrigger.addEventListener('mouseover', () => {
-      alert('currently hovering');
-      openModal();
-    });
-  }
-});
 
 export async function openModal(fragmentUrl) {
   const path = fragmentUrl.startsWith('http')
