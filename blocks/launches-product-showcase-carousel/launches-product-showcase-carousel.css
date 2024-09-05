@@ -240,6 +240,6 @@
     text-align: left;
     justify-content: flex-start;
     margin: 0;
-    margin-left: -5%;
+    width: 100%;
   }
 }

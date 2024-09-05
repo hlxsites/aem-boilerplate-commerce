@@ -397,7 +397,7 @@ main img {
 }
 
 .icon {
-  display: inline-block;
+  /* display: inline-block; */
   height: 2.4rem;
   width: 2.4rem;
 }
