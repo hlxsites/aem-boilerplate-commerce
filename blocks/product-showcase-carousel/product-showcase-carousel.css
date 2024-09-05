@@ -12,9 +12,9 @@
   max-width: 214px;
 }
 
-.featured-articles-cols div div {
+/* .featured-articles-cols div div {
   max-width: 378px;
-}
+} */
 
 /* image */
 .product-showcase-carousel .image {
@@ -34,7 +34,7 @@
   height: 252px;
   margin-bottom: 5%;
 }
-.featured-articles-cols .image .placeholder {
+/* .featured-articles-cols .image .placeholder {
   width: 378px;
   height: 252px;
   background-color: var(--color-neutral-200);
@@ -45,7 +45,7 @@
   width: 378px;
   height: 250px;
   margin-bottom: 5%;
-}
+} */
 
 /* Product details */
 .product-showcase-carousel .details {
@@ -137,20 +137,43 @@
 
   .product-showcase-carousel .details {
     flex: 1;
+    width: 100%;
   }
 
   .product-showcase-carousel .actions {
     justify-content: flex-start;
   }
+
+  /* .featured-articles-cols {
+    gap: 0px 30px !important;
+  } */
 }
 
-@media (max-width: 1000px) {
+@media (width > 1000px) {
+  .product-showcase-carousel {
+    display: grid;
+    grid-template-rows: repeat(2, auto);
+    gap: 10px 5px;
+    justify-items: center;
+    align-items: start;
+  }
+
+  .product-showcase-carousel .product {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
+@media (width <= 1000px) {
   .product-showcase-carousel-wrapper:not(.launches-section-products) {
     width: auto;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scroll-snap-align: start;
+    display: flex;
   }
 
   .product-showcase-carousel {
@@ -233,10 +256,10 @@
     max-width: unset;
   }
 
-  .featured-articles-cols .image picture > img {
+  /* .featured-articles-cols .image picture > img {
     width: 340px;
     height: 212px;
-  }
+  } */
 }
 
 @media (width < 600px) {
@@ -258,10 +281,10 @@
     height: auto;
   }
 
-  .featured-articles-cols .image picture > img {
+  /* .featured-articles-cols .image picture > img {
     width: 340px;
     height: 212px;
-  }
+  } */
 }
 @media (width < 500px) {
   .product-showcase-carousel .product .details {
@@ -274,16 +297,17 @@
     height: auto;
   }
 
-  .featured-articles-cols .image picture > img {
+  /* .featured-articles-cols .image picture > img {
     width: auto;
     height: 212px;
-  }
-
+  } */
+  /* 
   .featured-articles-cols {
     gap: 0 20px;
   }
+
   .featured-articles-cols .product .details {
     width: 100%;
     margin: 0;
-  }
+  } */
 }

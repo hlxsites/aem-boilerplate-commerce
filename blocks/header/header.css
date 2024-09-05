@@ -157,6 +157,12 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     z-index: 2;
   }
 
+  header nav .minicart-wrapper .nav-cart-button {
+    margin-right: 5%;
+    width: 10px;
+    padding: 0;
+  }
+
   /* Genders and Nav Links Hidden */
   header nav[aria-expanded='false'] .main-nav-content table,
   .sub-nav-content {
@@ -500,7 +506,7 @@ header nav .nav-tools > button,
 header nav .nav-tools .minicart-wrapper > button {
   color: var(--color-brand-700);
   background: transparent;
-  padding: 0px 10px;
+  padding: 0px 20px;
 }
 
 /* Shopping cart background */
@@ -552,9 +558,10 @@ header nav .nav-tools button.nav-search-button {
 header .nav-search-input {
   position: absolute;
   z-index: 99;
-  top: var(--nav-height);
+  top: calc(var(--nav-height) / 1.8);
   box-shadow: var(--shape-shadow-2);
   background: var(--color-neutral-50);
+
   left: 0;
   right: 0;
   padding: 20px;
