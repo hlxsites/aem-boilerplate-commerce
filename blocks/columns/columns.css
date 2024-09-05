@@ -231,9 +231,10 @@ main .section {
 
   /* Publications */
   .banner-section .hero-content p em:nth-child(1) a {
-    left: 22%;
+    width: 99vw;
+    text-align: center;
+    left: 0;
     text-wrap: nowrap;
-    right: 30%;
   }
 
   /* Shop by */
@@ -250,8 +251,10 @@ main .section {
     bottom: -20%;
     padding: 2%;
     width: 120px;
-    right: 33%;
-    left: 32%;
+    /* right: 33%;
+    left: 32%; */
+    left: 0;
+    right: 0;
   }
 }
 

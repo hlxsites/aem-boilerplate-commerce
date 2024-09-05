@@ -227,7 +227,6 @@
   .launches-section-products .product {
     min-width: 329px;
     display: flex;
-
     padding: 0;
     justify-content: flex-start;
   }
