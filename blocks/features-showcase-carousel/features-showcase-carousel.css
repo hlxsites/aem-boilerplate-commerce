@@ -1,9 +1,5 @@
-.carousel-border {
-  border-bottom: 1px solid var(--sub-text-border-divider);
-}
-
 /* Div */
-.features-product-showcase-carousel {
+.features-showcase-carousel {
   display: flex;
   flex-wrap: wrap;
   margin: 0 auto;
@@ -14,17 +10,17 @@
 }
 
 /* image */
-.features-product-showcase-carousel .image {
+.features-showcase-carousel .image {
   display: flex;
   justify-content: center;
 }
 
-.features-product-showcase-carousel .image .placeholder {
+.features-showcase-carousel .image .placeholder {
   width: 250px;
   height: 250px;
 }
 
-.features-product-showcase-carousel .image picture > img {
+.features-showcase-carousel .image picture > img {
   display: block;
   width: 378px;
   height: 252px;
@@ -32,12 +28,12 @@
 }
 
 /* Product details */
-.features-product-showcase-carousel .details {
+.features-showcase-carousel .details {
   display: flex;
   flex-direction: column;
 }
 
-.features-product-showcase-carousel .actions {
+.features-showcase-carousel .actions {
   display: flex;
   gap: 20px;
   margin-top: auto;
@@ -45,7 +41,7 @@
 }
 
 /* Product Brand */
-.features-product-showcase-carousel .brand {
+.features-showcase-carousel .brand {
   color: var(--sub-text-grey);
   font-size: var(--sub-text-small);
   text-transform: uppercase;
@@ -55,7 +51,7 @@
 }
 
 /* Product Name */
-.features-product-showcase-carousel h1 a {
+.features-showcase-carousel h1 a {
   text-decoration: none;
   letter-spacing: 0.114286rem;
   font-size: var(--sub-text-title-large);
@@ -64,7 +60,7 @@
   font-weight: 500;
 }
 
-.features-product-showcase-carousel h1 {
+.features-showcase-carousel h1 {
   font-size: var(--sub-text-secondary-size);
   letter-spacing: var(--type-headline-1-letter-spacing);
   text-transform: capitalize;
@@ -74,68 +70,45 @@
   padding: 0;
 }
 
-.features-product-showcase-carousel h1 a:hover {
+.features-showcase-carousel h1 a:hover {
   color: var(--sub-text-grey);
   cursor: pointer;
   text-decoration: none;
 }
 
-/* Product Price */
-.features-product-showcase-carousel .price {
-  font-weight: 400;
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
-  color: var(--sub-text-title-color);
-}
-
-.features-product-showcase-carousel .price .price-regular {
-  font: var(--type-headline-2-default-font);
-  letter-spacing: var(--type-headline-2-default-letter-spacing);
-  color: var(--color-neutral-600);
-  text-decoration: line-through;
-}
-
-.features-product-showcase-carousel .price .price-range {
-  display: flex;
-  gap: 20px;
-  align-items: baseline;
-}
-
-.features-product-showcase-carousel .price .price-range .price-from {
-  font: var(--type-headline-2-strong-font);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
-}
-
-.features-product-showcase-carousel .price .price-final {
-  font-size: var(--sub-text-secondary-size);
-  letter-spacing: var(--type-headline-2-strong-letter-spacing);
-}
-
 /* Details button */
-.features-product-showcase-carousel .product .actions {
+.features-showcase-carousel .product .actions {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.features-product-showcase-carousel .product .actions a {
+.features-showcase-carousel .product .actions a {
   border-radius: 0;
 }
 
+.features-carousel-section div p {
+  color: var(--sub-text-grey);
+  text-decoration: none;
+  font-weight: 400;
+  font-size: var(--sub-text-secondary-size);
+}
+
 @media (width >= 200px) {
-  .features-product-showcase-carousel {
+  .features-showcase-carousel {
     flex-direction: row;
   }
 
-  .features-product-showcase-carousel .details {
+  .features-showcase-carousel .details {
     flex: 1;
-    padding-top: 3%;
+    padding-top: 10%;
   }
 
-  .features-product-showcase-carousel .actions {
+  .features-showcase-carousel .actions {
     justify-content: flex-start;
   }
 
-  .features-section-products .product {
+  .features-section .product {
     position: relative;
     margin: 0 auto;
     width: 376px;
@@ -143,13 +116,13 @@
     flex: 1;
   }
 
-  .features-section-products .image picture > img {
+  .features-section .image picture > img {
     width: 438px;
     height: 243px;
     margin: 0 auto;
   }
 
-  .features-section-products .product .details {
+  .features-section .product .details {
     justify-content: flex-start;
     margin: 0;
   }
@@ -160,17 +133,21 @@
     margin: auto;
     z-index: 1;
     width: 100%;
+    height: auto;
   }
 
-  .features-carousel-section {
-    height: 0px;
+  .features-carousel-section div {
+    position: absolute;
+    padding-bottom: 1%;
+    bottom: 1%;
+    width: 100%;
   }
 
   .features-carousel-section div div {
     display: flex;
     position: relative;
-    padding-top: 1%;
-    padding-left: 1%;
+    margin: 0;
+    padding: 0;
     width: 100%;
   }
 }
@@ -179,11 +156,13 @@
   .features-carousel-section {
     width: 1020px;
   }
+
   .features-carousel-section div {
     flex-direction: unset;
+    gap: 0;
   }
 
-  .carousel-border {
+  .features-carousel-border {
     width: 80%;
     overflow-x: auto;
     overflow-y: hidden;
@@ -191,7 +170,7 @@
     scroll-snap-align: start;
   }
 
-  .features-product-showcase-carousel {
+  .features-showcase-carousel {
     grid-template-columns: auto;
     grid-auto-rows: auto;
     gap: 10px;
@@ -200,7 +179,7 @@
     box-sizing: border-box;
   }
 
-  .features-product-showcase-carousel .product {
+  .features-showcase-carousel .product {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -210,38 +189,27 @@
     width: 160px;
   }
 
-  /* Details button */
-  .features-product-showcase-carousel .product .actions {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .features-product-showcase-carousel .product .actions a {
-    border-radius: 0;
-  }
-
-  .features-product-showcase-carousel .product img {
+  .features-showcase-carousel .product img {
     width: 100%;
     height: auto;
   }
 
   /* Dynamic data */
-  .features-section-products .product {
+  .features-section .product {
     min-width: 329px;
     display: flex;
     padding: 0;
     justify-content: flex-start;
   }
 
-  .features-section-products .image picture > img {
+  .features-section .image picture > img {
     max-width: 329px;
   }
 
-  .features-section-products .product .details {
+  .features-section .product .details {
     text-align: left;
     justify-content: flex-start;
     margin: 0;
-    margin-left: -5%;
+    width: 100%;
   }
 }
