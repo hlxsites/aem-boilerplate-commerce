@@ -159,6 +159,9 @@ main .section {
 }
 
 @media (width <= 992px) {
+  .banner-section {
+    min-height: 50vh;
+  }
   .banner-section-latest .hero-latest div:nth-child(2) {
     display: none;
   }

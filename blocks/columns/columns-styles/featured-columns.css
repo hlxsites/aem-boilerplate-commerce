@@ -85,8 +85,8 @@
   transition: opacity 0.3s ease;
 }
 
-.product-main-brand-showcase .btn-on-img p :hover,
-.product-main-brand-showcase-mirror .btn-on-img p :hover {
+.product-main-brand-showcase .btn-on-img:hover,
+.product-main-brand-showcase-mirror .btn-on-img:hover {
   opacity: 0.5;
 }
 
