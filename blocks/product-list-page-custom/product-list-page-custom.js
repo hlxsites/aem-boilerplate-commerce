@@ -4,31 +4,31 @@ import {
   Fragment,
   render,
   createRef,
-} from "../../scripts/preact.js";
-import htm from "../../scripts/htm.js";
-import ProductList from "./ProductList.js";
-import FacetList from "./FacetList.js";
-import { readBlockConfig, sampleRUM } from "../../scripts/aem.js";
+} from '../../scripts/preact.js';
+import htm from '../../scripts/htm.js';
+import ProductList from './ProductList.js';
+import FacetList from './FacetList.js';
+import { readBlockConfig, sampleRUM } from '../../scripts/aem.js';
 import {
   priceFieldsFragment,
   performCatalogServiceQuery,
-} from "../../scripts/commerce.js";
+} from '../../scripts/commerce.js';
 
 const html = htm.bind(h);
 
 // You can get this list via attributeMetadata query
 export const ALLOWED_FILTER_PARAMETERS = [
-  "page",
-  "pageSize",
-  "sort",
-  "sortDirection",
-  "q",
-  "price",
-  "size",
-  "color_family",
+  'page',
+  'pageSize',
+  'sort',
+  'sortDirection',
+  'q',
+  'price',
+  'size',
+  'color_family',
 ];
 const isMobile = window.matchMedia(
-  "only screen and (max-width: 900px)"
+  'only screen and (max-width: 900px)'
 ).matches;
 
 export const productSearchQuery = (addCategory = false) => `query ProductSearch(
@@ -37,7 +37,7 @@ export const productSearchQuery = (addCategory = false) => `query ProductSearch(
   $phrase: String = ""
   $sort: [ProductSearchSortInput!] = []
   $filter: [SearchClauseInput!] = []
-  ${addCategory ? "$categoryId: String!" : ""}
+  ${addCategory ? '$categoryId: String!' : ''}
 ) {
   ${
     addCategory
@@ -46,7 +46,7 @@ export const productSearchQuery = (addCategory = false) => `query ProductSearch(
       urlKey
       urlPath
   }`
-      : ""
+      : ''
   }
   productSearch(
       current_page: $currentPage
@@ -125,17 +125,17 @@ async function loadCategory(state) {
       sort: [
         {
           attribute: state.sort,
-          direction: state.sortDirection === "desc" ? "DESC" : "ASC",
+          direction: state.sortDirection === 'desc' ? 'DESC' : 'ASC',
         },
       ],
     };
 
-    variables.phrase = state.type === "search" ? state.searchTerm : "";
+    variables.phrase = state.type === 'search' ? state.searchTerm : '';
 
     if (Object.keys(state.filters).length > 0) {
       variables.filter = [];
       Object.keys(state.filters).forEach((key) => {
-        if (key === "price") {
+        if (key === 'price') {
           const [from, to] = state.filters[key];
           if (from && to) {
             variables.filter.push({ attribute: key, range: { from, to } });
@@ -148,17 +148,17 @@ async function loadCategory(state) {
       });
     }
 
-    if (state.type === "category" && state.category.id) {
+    if (state.type === 'category' && state.category.id) {
       variables.categoryId = state.category.id;
       variables.filter = variables.filter || [];
       if (state.category.urlPath) {
         variables.filter.push({
-          attribute: "categoryPath",
+          attribute: 'categoryPath',
           eq: state.category.urlPath,
         });
       } else if (state.category.id) {
         variables.filter.push({
-          attribute: "categoryIds",
+          attribute: 'categoryIds',
           eq: state.category.id,
         });
       }
@@ -166,15 +166,15 @@ async function loadCategory(state) {
 
     window.adobeDataLayer.push((dl) => {
       const requestId = crypto.randomUUID();
-      window.sessionStorage.setItem("searchRequestId", requestId);
-      const searchInputContext = dl.getState("searchInputContext") ?? {
+      window.sessionStorage.setItem('searchRequestId', requestId);
+      const searchInputContext = dl.getState('searchInputContext') ?? {
         units: [],
       };
-      const searchUnitId = "livesearch-plp";
+      const searchUnitId = 'livesearch-plp';
       const unit = {
         searchUnitId,
         searchRequestId: requestId,
-        queryTypes: ["products", "suggestions"],
+        queryTypes: ['products', 'suggestions'],
         ...variables,
       };
       const index = searchInputContext.units.findIndex(
@@ -188,13 +188,13 @@ async function loadCategory(state) {
       dl.push({ searchInputContext });
       // TODO: Remove eventInfo once collector is updated
       dl.push({
-        event: "search-request-sent",
+        event: 'search-request-sent',
         eventInfo: { ...dl.getState(), searchUnitId },
       });
     });
 
     const response = await performCatalogServiceQuery(
-      productSearchQuery(state.type === "category"),
+      productSearchQuery(state.type === 'category'),
       variables
     );
 
@@ -209,11 +209,11 @@ async function loadCategory(state) {
       },
       category: { ...state.category, ...(response.categories?.[0] ?? {}) },
       facets: response.productSearch.facets.filter(
-        (facet) => facet.attribute !== "categories"
+        (facet) => facet.attribute !== 'categories'
       ),
     };
   } catch (e) {
-    console.error("Error loading products", e);
+    console.error('Error loading products', e);
     return {
       pages: 1,
       products: {
@@ -229,7 +229,7 @@ function parseQueryParams() {
   const params = new URLSearchParams(window.location.search);
   const newState = {
     filters: {
-      inStock: ["true"],
+      inStock: ['true'],
     },
   };
   params.forEach((value, key) => {
@@ -237,20 +237,20 @@ function parseQueryParams() {
       return;
     }
 
-    if (key === "page") {
+    if (key === 'page') {
       newState.currentPage = parseInt(value, 10) || 1;
-    } else if (key === "pageSize") {
+    } else if (key === 'pageSize') {
       newState.currentPageSize = parseInt(value, 10) || 12;
-    } else if (key === "sort") {
+    } else if (key === 'sort') {
       newState.sort = value;
-    } else if (key === "sortDirection") {
-      newState.sortDirection = value === "desc" ? "desc" : "asc";
-    } else if (key === "q") {
+    } else if (key === 'sortDirection') {
+      newState.sortDirection = value === 'desc' ? 'desc' : 'asc';
+    } else if (key === 'q') {
       newState.searchTerm = value;
-    } else if (key === "price") {
-      newState.filters[key] = value.split(",").map((v) => parseInt(v, 10) || 0);
+    } else if (key === 'price') {
+      newState.filters[key] = value.split(',').map((v) => parseInt(v, 10) || 0);
     } else {
-      newState.filters[key] = value.split(",");
+      newState.filters[key] = value.split(',');
     }
   });
   return newState;
@@ -264,11 +264,11 @@ export async function preloadCategory(category) {
     category,
     basePageSize: isMobile ? 6 : 12,
     currentPageSize: isMobile ? 6 : 12,
-    locale: "en-US",
-    currency: "USD",
-    type: "category",
-    sort: "position",
-    sortDirection: "asc",
+    locale: 'en-US',
+    currency: 'USD',
+    type: 'category',
+    sort: 'position',
+    sortDirection: 'asc',
     ...queryParams,
   });
 }
@@ -315,7 +315,7 @@ function Pagination(props) {
           >
             Previous
           </button>`
-        : ""}
+        : ''}
       ${props.currentPage < props.pages
         ? html`<button
             class="next"
@@ -323,7 +323,7 @@ function Pagination(props) {
           >
             Next
           </button>`
-        : ""}
+        : ''}
     </div>
   </div>`;
 }
@@ -331,12 +331,12 @@ function Pagination(props) {
 function Sort(props) {
   const { type, disabled, sortMenuRef, onSort } = props;
   const options = [
-    { label: "Price: High to Low", value: "price-desc" },
-    { label: "Price: Low to High", value: "price-asc" },
-    { label: "Product Name", value: "name-asc" },
+    { label: 'Price (High)', value: 'price-desc' },
+    { label: 'Price (Low)', value: 'price-asc' },
+    { label: 'Product Name', value: 'name-asc' },
     {
-      label: "Relevance",
-      value: type === "category" ? "position-asc" : "relevance-desc",
+      label: 'Relevance',
+      value: type === 'category' ? 'position-asc' : 'relevance-desc',
     },
   ];
 
@@ -346,11 +346,11 @@ function Sort(props) {
     ) || options[3];
 
   return html`<div class="sort" disabled=${disabled}>
-    <button disabled=${disabled}>Sort By: ${currentSort.label}</button>
+    <button disabled=${disabled}>${currentSort.label}</button>
     <div class="overlay" ref=${sortMenuRef}>
       <button
         class="close"
-        onClick=${() => sortMenuRef.current.classList.toggle("active")}
+        onClick=${() => sortMenuRef.current.classList.toggle('active')}
       >
         Close
       </button>
@@ -359,10 +359,10 @@ function Sort(props) {
           (option) => html`<li>
             <a
               href="#"
-              class="${currentSort.value === option.value ? "active" : ""}"
+              class="${currentSort.value === option.value ? 'active' : ''}"
               onClick=${(e) => {
-                sortMenuRef.current.classList.toggle("active");
-                const [sort, direction = "asc"] = option.value.split("-");
+                sortMenuRef.current.classList.toggle('active');
+                const [sort, direction = 'asc'] = option.value.split('-');
                 onSort?.(sort, direction);
                 e.preventDefault();
               }}
@@ -377,7 +377,7 @@ function Sort(props) {
 
 class ProductListPage extends Component {
   constructor(props) {
-    const { type = "category", category, urlpath } = props;
+    const { type = 'category', category, urlpath } = props;
     super();
 
     this.facetMenuRef = createRef();
@@ -386,22 +386,22 @@ class ProductListPage extends Component {
 
     const queryParams = parseQueryParams();
 
-    let headline = "Search Results";
-    let sort = "relevance";
-    let sortDirection = "desc";
+    let headline = 'Search Results';
+    let sort = 'relevance';
+    let sortDirection = 'desc';
     const defaultPageSize = 12;
-    if (type === "category") {
+    if (type === 'category') {
       // Get from H1
       headline = document.querySelector(
-        ".default-content-wrapper > h1"
+        '.default-content-wrapper > h1'
       )?.innerText;
-      sort = "position";
-      sortDirection = "asc";
+      sort = 'position';
+      sortDirection = 'asc';
     }
 
-    if (type === "search") {
-      sampleRUM("search", {
-        source: ".search-input",
+    if (type === 'search') {
+      sampleRUM('search', {
+        source: '.search-input',
         target: queryParams.searchTerm,
       });
     }
@@ -447,7 +447,7 @@ class ProductListPage extends Component {
       }
 
       if (Array.isArray(params[key]) && params[key].length > 0) {
-        newParams.set(key, params[key].join(","));
+        newParams.set(key, params[key].join(','));
       } else if (!Array.isArray(params[key]) && params[key]) {
         newParams.set(key, params[key]);
       }
@@ -463,7 +463,7 @@ class ProductListPage extends Component {
 
     window.history.pushState(
       {},
-      "",
+      '',
       `${window.location.pathname}?${newParams.toString()}`
     );
   };
@@ -478,12 +478,12 @@ class ProductListPage extends Component {
 
     if (this.state.loading === false) {
       window.adobeDataLayer.push((dl) => {
-        const searchResultsContext = dl.getState("searchResultsContext") ?? {
+        const searchResultsContext = dl.getState('searchResultsContext') ?? {
           units: [],
         };
         const searchRequestId =
-          window.sessionStorage.getItem("searchRequestId");
-        const searchUnitId = "livesearch-plp";
+          window.sessionStorage.getItem('searchRequestId');
+        const searchUnitId = 'livesearch-plp';
         const searchResultUnit = {
           searchUnitId,
           searchRequestId,
@@ -494,7 +494,7 @@ class ProductListPage extends Component {
               `/products/${p.url_key}/${p.sku.toLowerCase()}`,
               window.location
             ).toString(),
-            imageUrl: p.images?.length ? p.images[0].url : "",
+            imageUrl: p.images?.length ? p.images[0].url : '',
             price:
               p.price?.final?.amount?.value ??
               p.priceRange?.minimum?.final?.amount?.value,
@@ -517,13 +517,13 @@ class ProductListPage extends Component {
         dl.push({ searchResultsContext });
         // TODO: Remove eventInfo once collector is updated
         dl.push({
-          event: "search-response-received",
+          event: 'search-response-received',
           eventInfo: { ...dl.getState(), searchUnitId },
         });
-        if (this.props.type === "search") {
+        if (this.props.type === 'search') {
           // TODO: Remove eventInfo once collector is updated
           dl.push({
-            event: "search-results-view",
+            event: 'search-results-view',
             eventInfo: { ...dl.getState(), searchUnitId },
           });
         } else {
@@ -536,7 +536,7 @@ class ProductListPage extends Component {
           });
           // TODO: Remove eventInfo once collector is updated
           dl.push({
-            event: "category-results-view",
+            event: 'category-results-view',
             eventInfo: { ...dl.getState(), searchUnitId },
           });
         }
@@ -561,7 +561,7 @@ class ProductListPage extends Component {
 
     // Special optimization for mobile
     if (
-      "IntersectionObserver" in window &&
+      'IntersectionObserver' in window &&
       isMobile &&
       this.state.products.items.length === 6 &&
       this.state.products.total > 6
@@ -604,12 +604,12 @@ class ProductListPage extends Component {
     );
 
     const keysToCheck = [
-      "filters",
-      "sort",
-      "sortDirection",
-      "searchTerm",
-      "currentPageSize",
-      "currentPage",
+      'filters',
+      'sort',
+      'sortDirection',
+      'searchTerm',
+      'currentPageSize',
+      'currentPage',
     ];
     if (keysToCheck.some((key) => diff.includes(key))) {
       this.loadProducts();
@@ -619,7 +619,7 @@ class ProductListPage extends Component {
   onPageChange(page) {
     this.setState({ currentPage: page });
     this.paginationClick = true;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   handleFilterChange(filters) {
@@ -628,7 +628,7 @@ class ProductListPage extends Component {
   }
 
   render(props, state) {
-    const { type = "category" } = props;
+    const { type = 'category' } = props;
 
     return html`<${Fragment}>
       <${FacetList}
@@ -644,8 +644,8 @@ class ProductListPage extends Component {
           ${
             !state.loading &&
             html`<span
-              >(${state.products.total}
-              ${state.products.total === 1 ? "Product" : "Products"})</span
+              >${state.products.total}
+              ${state.products.total === 1 ? ' Product' : ' Products'}</span
             >`
           }
           <${Sort}
@@ -663,14 +663,14 @@ class ProductListPage extends Component {
             disabled=${state.loading}
             id="toggle-filters"
             onClick=${() =>
-              this.facetMenuRef.current.classList.toggle("active")}
+              this.facetMenuRef.current.classList.toggle('active')}
           >
             Filters
           </button>
           <button
             disabled=${state.loading}
             id="toggle-sortby"
-            onClick=${() => this.sortMenuRef.current.classList.toggle("active")}
+            onClick=${() => this.sortMenuRef.current.classList.toggle('active')}
           >
             Sort By
           </button>
@@ -699,7 +699,7 @@ class ProductListPage extends Component {
 export default async function decorate(block) {
   const config = readBlockConfig(block);
 
-  block.textContent = "";
+  block.textContent = '';
   block.dataset.category = config.category;
   block.dataset.urlpath = config.urlpath;
 

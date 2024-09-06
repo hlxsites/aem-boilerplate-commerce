@@ -4,6 +4,10 @@
   width: 100%;
 }
 
+.product-list-page .ds-widgets_actions_header {
+  border: 2px solid rebeccapurple;
+}
+/* Hide Filters button */
 .product-list-page
   .ds-widgets-_actions
   .pb-4
