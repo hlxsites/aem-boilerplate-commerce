@@ -45,6 +45,7 @@ main
   border: 0;
 }
 
+/* Sort Optons */
 .product-list-page-custom .products .title .sort > .overlay {
   display: none;
   position: fixed;
@@ -68,6 +69,7 @@ main
   padding: 5px 0;
 }
 
+/* Filters */
 .product-list-page-custom .facets .facet-list .facet {
   border-bottom: var(--shape-border-width-1) solid
     var(--sub-text-border-divider);
@@ -145,6 +147,7 @@ main
   .facet-content
   ol
   li {
+  height: 32px;
   margin-bottom: 6px;
 }
 
@@ -170,6 +173,7 @@ main
   input[type='checkbox'] {
   vertical-align: middle;
   margin: 3px;
+  width: auto;
 }
 
 .product-list-page-custom
@@ -187,7 +191,6 @@ main
   ol
   label {
   text-transform: inherit;
-
   font-size: var(--sub-text-small);
   font-weight: 400;
   color: var(--sub-text-title-color);
@@ -486,14 +489,17 @@ main
 }
 
 .product-list-page-custom .products .title h1 {
-  margin: 0;
-  padding: 0;
+  display: none;
 }
 
+/* Total Products */
 .product-list-page-custom .products .title h1 ~ span {
   display: none;
-  margin-inline: 1rem 48px;
   white-space: nowrap;
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
+  font-weight: 600;
+  text-transform: none;
 }
 
 /* sort by */

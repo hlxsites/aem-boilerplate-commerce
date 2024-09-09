@@ -645,7 +645,7 @@ class ProductListPage extends Component {
             !state.loading &&
             html`<span
               >${state.products.total}
-              ${state.products.total === 1 ? ' Product' : ' Products'}</span
+              ${state.products.total === 1 ? ' product' : ' products'}</span
             >`
           }
           <${Sort}
