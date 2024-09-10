@@ -214,7 +214,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     height: 56px;
     min-width: 375px;
     max-width: 400px;
-    width: 400px;
+    width: 100vw;
     background-color: #f8f8f8;
     border-top: 1px solid var(--sub-text-border-divider);
     border-bottom: 1px solid var(--sub-text-border-divider);
@@ -226,7 +226,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     align-content: center;
     text-align: center;
     position: absolute;
-    width: 40%;
+    width: 40vw;
     left: 0%;
     top: 0;
     bottom: 0;
@@ -593,5 +593,12 @@ header .nav-search-input .search_autocomplete .popover-container {
   /* Search Button */
   header nav .nav-tools button.nav-search-button {
     padding: 0 20px;
+  }
+}
+@media (width <= 400px) {
+  /* Search Button */
+  header nav[aria-expanded='true'] .sub-nav-content div table {
+    min-width: unset;
+    width: 90vw;
   }
 }
