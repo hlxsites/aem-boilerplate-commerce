@@ -93,6 +93,7 @@
     min-height: unset !important;
     height: auto;
     width: 100%;
+    min-height: 300px;
   }
 
   .hero-latest table:nth-child(1) {
@@ -127,6 +128,6 @@
 
   /* Shop men & women */
   .hero-latest div table table {
-    display: none;
+    visibility: hidden;
   }
 }
