@@ -97,7 +97,7 @@ class ProductCard extends Component {
     const isMobile = window.matchMedia(
       'only screen and (max-width: 900px)'
     ).matches;
-    const numberOfEagerImages = isMobile ? 6 : 4;
+    const numberOfEagerImages = isMobile ? 4 : 4;
 
     return html` <li index=${index} ref=${secondLastProduct}>
       <div class="picture">
