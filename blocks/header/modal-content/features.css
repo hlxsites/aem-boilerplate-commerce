@@ -65,11 +65,6 @@
   color: var(--sub-text-grey);
 }
 
-.features-modal div:nth-child(2) table p:nth-child(1) a picture img {
-  width: 280px;
-  height: 187px;
-}
-
 .features-modal div:nth-child(2) table p:nth-child(3) a {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
@@ -80,8 +75,19 @@
   padding-bottom: 2%;
 }
 
-@media (width <= 600px) {
+@media (width > 991px) {
+  .features-modal div:nth-child(2) table p:nth-child(1) a picture img {
+    width: 280px;
+    height: 187px;
+  }
+}
+@media (width <= 991px) {
   /* Features */
+
+  .features-modal > div {
+    flex-direction: column !important;
+  }
+
   .features-modal table {
     border-top: 2px solid var(--sub-text-border-divider);
     margin-top: 5%;
@@ -92,7 +98,10 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    width: 90vw;
+    padding: 0;
   }
+
   .features-modal div:nth-child(2) table p:nth-child(2),
   .features-modal div:nth-child(2) table p:nth-child(3) {
     margin: auto 0;
@@ -103,17 +112,14 @@
     margin: auto 2%;
   }
 
-  .features-modal table {
-    width: 100%;
-  }
   .features-modal div:nth-child(2) table p:nth-child(1) a picture img {
     width: 100%;
-    height: 100%;
+    height: auto;
   }
 
   .features-modal table picture {
-    width: 325px;
-    padding: auto;
+    width: 90vw;
+    padding: 0;
     margin: 2% auto;
   }
 }

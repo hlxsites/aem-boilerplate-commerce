@@ -874,7 +874,7 @@ main
 }
 
 .product-list-page-custom .shimmer {
-  background: var(--color-neutral-500);
+  background: transparent;
   border-radius: 4px;
 }
 
