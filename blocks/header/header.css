@@ -158,9 +158,8 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   }
 
   header nav .minicart-wrapper .nav-cart-button {
-    margin-right: 5%;
-    width: 10px;
-    padding: 0;
+    margin-right: 6%;
+    padding: 1%;
   }
 
   /* Genders and Nav Links Hidden */
@@ -506,7 +505,6 @@ header nav .nav-tools > button,
 header nav .nav-tools .minicart-wrapper > button {
   color: var(--color-brand-700);
   background: transparent;
-  padding: 0px 20px;
 }
 
 /* Shopping cart background */
@@ -588,5 +586,12 @@ header .nav-search-input .search_autocomplete .popover-container {
 
   header .nav-search-input input {
     min-width: 400px;
+  }
+}
+
+@media (width <= 600px) {
+  /* Search Button */
+  header nav .nav-tools button.nav-search-button {
+    padding: 0 20px;
   }
 }
