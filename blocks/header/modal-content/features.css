@@ -109,7 +109,7 @@
   .features-modal table {
     border-top: 1px solid var(--sub-text-border-divider);
     width: 90vw;
-
+    max-width: 372px;
     margin-bottom: 15%;
   }
 
