@@ -29,45 +29,54 @@
   display: flex;
 }
 
-.features-modal div div table td p:nth-child(3) {
-  min-height: 80px;
-  height: auto;
-}
-
 .features-modal div:nth-child(2) {
   flex: 2;
 }
 
-.features-modal div:nth-child(2) table p {
+.features-modal div:nth-child(2) table p a {
   margin: 0 auto;
   padding: 0;
-  width: auto;
+  width: 100%;
   height: auto;
-  font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
-}
-
-.features-modal div:nth-child(2) table p:nth-child(2) a,
-.features-modal div:nth-child(2) table p:nth-child(3) a {
   text-transform: uppercase;
   background-color: transparent;
   border-radius: 0;
-  text-wrap: wrap;
-  margin: 0;
   justify-content: flex-start;
+  text-wrap: wrap;
+  font-size: var(--sub-text-secondary-size);
+  color: var(--sub-text-title-color);
   text-align: left;
-  padding: 0;
+}
+.features-modal div:nth-child(2) table {
+  display: flex;
+  flex: 2;
+  justify-content: flex-start;
 }
 
 .features-modal div:nth-child(2) table p:nth-child(2) a {
   padding-top: 4%;
   font-size: 10px;
   color: var(--sub-text-grey);
+  flex: 1;
 }
 
 .features-modal div:nth-child(2) table p:nth-child(3) a {
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-title-color);
+  flex: 1;
+}
+
+.features-modal div:nth-child(2) table tr:nth-child(2) td,
+.features-modal div:nth-child(2) table tr:nth-child(3) td {
+  padding: 0;
+  width: 100%;
+  max-width: 280px;
+  flex: 1;
+  align-content: flex-start;
+}
+
+.features-modal div:nth-child(2) table tr:nth-child(2) td {
+  padding-bottom: 2%;
 }
 
 .features-modal div div {
@@ -75,30 +84,49 @@
   padding-bottom: 2%;
 }
 
-@media (width > 991px) {
-  .features-modal div:nth-child(2) table p:nth-child(1) a picture img {
-    width: 280px;
-    height: 187px;
-  }
+.features-modal > div > div:nth-child(1) {
+  flex: 0.5;
 }
+
+.features-modal div:nth-child(2) table p:nth-child(1) a picture img {
+  max-height: 187px;
+  width: auto;
+}
+
 @media (width <= 991px) {
   /* Features */
+  .features-modal > div > div:nth-child(1) li:nth-child(1) {
+    margin-top: 10%;
+  }
+  .features-modal > div > div:nth-child(1) li {
+    margin-bottom: 20%;
+  }
 
   .features-modal > div {
     flex-direction: column !important;
   }
 
   .features-modal table {
-    border-top: 2px solid var(--sub-text-border-divider);
-    margin-top: 5%;
+    border-top: 1px solid var(--sub-text-border-divider);
+    width: 90vw;
+
     margin-bottom: 15%;
+  }
+
+  .features-modal table tbody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 5%;
   }
 
   .features-modal table td {
     display: flex;
     flex-wrap: wrap;
+
+    margin-bottom: 5%;
     flex-direction: column;
-    width: 90vw;
     padding: 0;
   }
 
@@ -118,7 +146,7 @@
   }
 
   .features-modal table picture {
-    width: 90vw;
+    width: 284px;
     padding: 0;
     margin: 2% auto;
   }

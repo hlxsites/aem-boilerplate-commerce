@@ -62,7 +62,7 @@
     display: block;
     position: absolute;
     top: 1%;
-    right: 4%;
+    right: 10%;
     width: auto;
     height: 100%;
     max-height: 50px;
@@ -70,7 +70,11 @@
     background-color: unset;
     margin: 0;
     border: none;
+  }
+}
 
-    /* padding-right: 20px; */
+@media (width <= 400px) {
+  .modal .close-button {
+    right: 20%;
   }
 }
