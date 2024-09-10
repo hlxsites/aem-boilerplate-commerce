@@ -34,21 +34,6 @@
   z-index: 1;
 }
 
-.modal .close-button {
-  position: absolute;
-  top: 1%;
-  right: 4%;
-  width: auto;
-  height: 100%;
-  max-height: 50px;
-  border-radius: 0 var(--dialog-border-radius) 0 0;
-  background-color: unset;
-  margin: 0;
-  border: none;
-
-  /* padding-right: 20px; */
-}
-
 .modal dialog .section {
   padding: 0;
 }
@@ -67,5 +52,20 @@
     position: fixed;
     top: 0;
     height: 100vh;
+  }
+
+  .modal .close-button {
+    position: absolute;
+    top: 1%;
+    right: 4%;
+    width: auto;
+    height: 100%;
+    max-height: 50px;
+    border-radius: 0 var(--dialog-border-radius) 0 0;
+    background-color: unset;
+    margin: 0;
+    border: none;
+
+    /* padding-right: 20px; */
   }
 }
