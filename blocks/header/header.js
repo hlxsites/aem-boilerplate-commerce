@@ -168,28 +168,43 @@ export default async function decorate(block) {
   });
 
   // Search
-  const searchInput = document.createRange()
-    .createContextualFragment(`<div class="nav-search-input hidden">
-      <form id="search_mini_form" action="/search" method="GET">
-        <input id="search" type="search" name="q" placeholder="Search" />
-        <div id="search_autocomplete" class="search-autocomplete"></div>
-      </form>
-    </div>`);
+  const searchInput = document.createRange().createContextualFragment(`
+  <div class="nav-search-input hidden">
+    <form id="search_mini_form" action="/search" method="GET">
+      <input id="search" type="search" name="q" placeholder="Search" />
+      <div id="search_autocomplete" class="search-autocomplete"></div>
+      <button type="button" class="button close-search-button">
+      <img src="../../icons/close.svg" alt="Close" /></button>
+    </form>
+  </div>
+`);
   document.body.querySelector('header').append(searchInput);
 
-  const searchButton = document
-    .createRange()
-    .createContextualFragment(
-      '<button type="button" class="button nav-search-button">Search</button>'
-    );
+  const searchButton = document.createRange().createContextualFragment(`
+  <button type="button" class="button nav-search-button">Search</button>
+`);
   navTools.append(searchButton);
+
+  // Search button toggle logic
   navTools
     .querySelector('.nav-search-button')
     .addEventListener('click', async () => {
       await import('./searchbar.js');
-      document
-        .querySelector('header .nav-search-input')
-        .classList.toggle('hidden');
+
+      const searchInputElement = document.querySelector(
+        'header .nav-search-input'
+      );
+      searchInputElement.classList.toggle('hidden');
+    });
+
+  // Close button logic
+  document
+    .querySelector('.close-search-button')
+    .addEventListener('click', () => {
+      const searchInputElement = document.querySelector(
+        'header .nav-search-input'
+      );
+      searchInputElement.classList.add('hidden');
     });
 
   // hamburger for mobile

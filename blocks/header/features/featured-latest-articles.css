@@ -46,8 +46,6 @@
 }
 
 .featured-latest-articles div div img {
-  height: 255px;
-  width: auto;
   flex: 1;
   margin-bottom: 2%;
 }
