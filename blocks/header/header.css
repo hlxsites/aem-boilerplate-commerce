@@ -592,13 +592,16 @@ header .nav-search-input .close-search-button {
   padding: 0;
   margin: 0 auto;
   top: 3%;
-  right: 0%;
+  right: 0.5%;
   height: auto;
   background-color: transparent;
 }
 
 header .nav-search-input .close-search-button img {
   width: 30px;
+}
+header .nav-search-input .close-search-button:hover {
+  background-color: transparent;
 }
 
 header .nav-search-input form #search {
@@ -611,7 +614,7 @@ header .nav-search-input .search_autocomplete .popover-container {
 }
 
 header .nav-search-input .products-container {
-  margin-top: 10%;
+  margin-top: 14%;
   margin-left: 2%;
   height: 70vh;
 }
