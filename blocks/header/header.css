@@ -552,7 +552,13 @@ header nav .nav-tools button.nav-search-button {
   background-position: center;
 }
 
+header .nav-search-input.hidden {
+  /* display: none; */
+  top: -100%;
+}
+
 header .nav-search-input {
+  transition: top 0.5s ease;
   position: fixed;
   z-index: 2;
   box-shadow: var(--shape-shadow-2);
@@ -560,11 +566,8 @@ header .nav-search-input {
   height: 86vh;
   width: 100vw;
   margin: 0;
+  top: 0;
   padding: 0;
-}
-
-header .nav-search-input.hidden {
-  display: none;
 }
 
 header .nav-search-input input {
