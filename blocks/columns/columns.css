@@ -259,10 +259,12 @@ main .section {
     bottom: -20%;
     padding: 2%;
     width: 120px;
-    /* right: 33%;
-    left: 32%; */
     left: 0;
     right: 0;
+  }
+
+  .hero-content {
+    height: 55vh;
   }
 }
 
@@ -318,5 +320,11 @@ main .section {
   .launches-section div:nth-child(1) {
     flex-direction: row;
     position: relative;
+  }
+}
+
+@media (width <=375px) {
+  .hero-content {
+    height: 70vh;
   }
 }
