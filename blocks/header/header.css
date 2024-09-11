@@ -624,6 +624,7 @@ header .nav-search-input .products-container {
     margin: 0 auto;
     padding-left: 4%;
     width: 94vw;
+    font-size: 16px;
   }
 }
 
