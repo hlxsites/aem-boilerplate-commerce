@@ -553,14 +553,14 @@ header nav .nav-tools button.nav-search-button {
 }
 
 header .nav-search-input {
-  position: relative;
-  z-index: 99;
+  position: fixed;
+  z-index: 2;
   box-shadow: var(--shape-shadow-2);
-  background: var(--color-neutral-50);
-  height: 80vh;
-  left: 0;
-  right: 0;
-  padding: 20px;
+  background: white;
+  height: 86vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
 }
 
 header .nav-search-input.hidden {
@@ -568,28 +568,31 @@ header .nav-search-input.hidden {
 }
 
 header .nav-search-input input {
-  width: 100%;
-  padding: 5px;
+  position: absolute;
   height: 48px;
-  background-color: #f5f5f5;
+  top: 2%;
+  left: 2%;
   border: none;
+  background-color: #f5f5f5;
 }
 
 header .nav-search-input form::before {
   display: flex;
   position: absolute;
-  top: 4%;
-  left: 6%;
+  top: 3.5%;
+  left: 3%;
+  z-index: 3;
   content: url('../../icons/search.svg');
 }
 
+/* Search Close button */
 header .nav-search-input .close-search-button {
   position: absolute;
   border-radius: 0;
   padding: 0;
   margin: 0 auto;
   top: 3%;
-  right: 2%;
+  right: 0%;
   height: auto;
   background-color: transparent;
 }
@@ -599,22 +602,33 @@ header .nav-search-input .close-search-button img {
 }
 
 header .nav-search-input form #search {
-  padding-left: 8%;
-  width: 100%;
+  padding-left: 3%;
+  width: 95vw;
 }
 
 header .nav-search-input .search_autocomplete .popover-container {
   width: 100%;
 }
 
-@media (width >= 1024px) {
-  header .nav-search-input {
-    left: unset;
-    right: 20px;
-  }
+header .nav-search-input .products-container {
+  margin-top: 10%;
+  margin-left: 2%;
+  height: 70vh;
+}
 
-  header .nav-search-input input {
-    min-width: 400px;
+@media (width <= 1124px) {
+  header .nav-search-input form #search {
+    margin: 0 auto;
+    padding-left: 4%;
+    width: 94vw;
+  }
+}
+
+@media (width <= 730px) {
+  header .nav-search-input form #search {
+    margin: 0 auto;
+    padding-left: 5%;
+    width: 93vw;
   }
 }
 
@@ -623,11 +637,34 @@ header .nav-search-input .search_autocomplete .popover-container {
   header nav .nav-tools button.nav-search-button {
     padding: 0 20px;
   }
+
+  header .nav-search-input form #search {
+    margin: 0 auto;
+    padding-left: 6%;
+    width: 92vw;
+  }
 }
+
+@media (width <= 430px) {
+  header .nav-search-input form #search {
+    margin: 0 auto;
+    padding-left: 7.5%;
+    width: 90vw;
+  }
+}
+
 @media (width <= 400px) {
   /* Search Button */
   header nav[aria-expanded='true'] .sub-nav-content div table {
     min-width: unset;
     width: 90vw;
+  }
+}
+
+@media (width <= 345px) {
+  header .nav-search-input form #search {
+    margin: 0 auto;
+    padding-left: 9%;
+    width: 89vw;
   }
 }
