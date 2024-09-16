@@ -20,7 +20,6 @@ it('is sent on product page view/render', () => {
         expect(pageContextIndex).to.be.greaterThan(-1);
         expect(storefrontInstanceContextIndex).to.be.greaterThan(-1);
         expect(productContextIndex).to.be.greaterThan(-1);
-        // TODO: this context is not pushed because it is "owned" by the cart dropin. See DINT-1656.
         expect(shoppingCartContextIndex).to.be.greaterThan(-1);
       });
     });
