@@ -42,7 +42,6 @@ it("is sent on mini cart Checkout button click", () => {
             const shoppingCartContextIndex = adobeDataLayerPush.args.findIndex(
               (event) => !!event[0]?.shoppingCartContext
             );
-            // TODO: USF-1498
             expect(targetEventIndex).to.be.greaterThan(-1);
             expect(shoppingCartContextIndex).to.be.greaterThan(-1);
           });
@@ -94,7 +93,6 @@ it("is sent on cart page Checkout button click", () => {
             const shoppingCartContextIndex = adobeDataLayerPush.args.findIndex(
               (event) => !!event[0]?.shoppingCartContext
             );
-            // TODO: USF-1498
             expect(targetEventIndex).to.be.greaterThan(-1);
             expect(shoppingCartContextIndex).to.be.greaterThan(-1);
           });
