@@ -1,4 +1,4 @@
-/********************************************************************
+/** ******************************************************************
  * ADOBE CONFIDENTIAL
  * __________________
  *
@@ -13,7 +13,7 @@
  * Dissemination of this information or reproduction of this material
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
- *******************************************************************/
+ ****************************************************************** */
 
 // Dropin Tools
 import {
@@ -74,7 +74,7 @@ const heading = createElementWithClass('div', 'checkout__heading');
 const headingTitle = createElementWithClass('h1', 'checkout__heading-title');
 const headingDivider = createElementWithClass(
   'div',
-  'checkout__heading-divider'
+  'checkout__heading-divider',
 );
 const main = createElementWithClass('div', 'checkout__main');
 const aside = createElementWithClass('div', 'checkout__aside');
@@ -83,27 +83,27 @@ const emptyCart = createElementWithClass('div', 'checkout__empty-cart');
 const errorBanner = createElementWithClass('div', 'checkout__error-banner');
 const mergedCartBanner = createElementWithClass(
   'div',
-  'checkout__merged-cart-banner'
+  'checkout__merged-cart-banner',
 );
 const overlaySpinner = createElementWithClass(
   'div',
-  'checkout__overlay-spinner'
+  'checkout__overlay-spinner',
 );
 const outOfStock = createElementWithClass('div', 'checkout__out-of-stock');
 const login = createElementWithClass('div', 'checkout__login');
 const shippingForm = createElementWithClass('div', 'checkout__shipping-form');
 const billToShippingAddress = createElementWithClass(
   'div',
-  'checkout__bill-to-shipping-address'
+  'checkout__bill-to-shipping-address',
 );
 const billingForm = createElementWithClass('div', 'checkout__billing-form');
 const shippingMethods = createElementWithClass(
   'div',
-  'checkout__shipping-methods'
+  'checkout__shipping-methods',
 );
 const paymentMethods = createElementWithClass(
   'div',
-  'checkout__payment-methods'
+  'checkout__payment-methods',
 );
 const orderSummary = createElementWithClass('div', 'checkout__order-summary');
 const cartSummaryList = createElementWithClass('div', 'cart-summary-list');
@@ -132,7 +132,7 @@ function renderMobileLayout(block) {
     paymentMethods,
     orderSummary,
     placeOrder,
-    overlaySpinner
+    overlaySpinner,
   );
 
   block.replaceChildren(root);
@@ -147,7 +147,7 @@ function renderDesktopLayout(block) {
     billToShippingAddress,
     billingForm,
     shippingMethods,
-    paymentMethods
+    paymentMethods,
   );
 
   aside.replaceChildren(orderSummary, cartSummaryList);
@@ -158,7 +158,7 @@ function renderDesktopLayout(block) {
     main,
     aside,
     placeOrder,
-    overlaySpinner
+    overlaySpinner,
   );
 
   block.replaceChildren(root);
@@ -302,10 +302,10 @@ export default async function decorate(block) {
   })(login);
 
   checkoutProvider.render(ShippingForm, { hideOnVirtualCart: true })(
-    shippingForm
+    shippingForm,
   );
   checkoutProvider.render(BillToShippingAddress, { hideOnVirtualCart: true })(
-    billToShippingAddress
+    billToShippingAddress,
   );
   checkoutProvider.render(BillingForm)(billingForm);
 
@@ -352,12 +352,12 @@ export default async function decorate(block) {
 
         const cartSummaryListHeadingText = document.createElement('div');
         cartSummaryListHeadingText.classList.add(
-          'cart-summary-list__heading-text'
+          'cart-summary-list__heading-text',
         );
 
         cartSummaryListHeadingText.innerText = title.replace(
           '({count})',
-          headingCtx.count ? `(${headingCtx.count})` : ''
+          headingCtx.count ? `(${headingCtx.count})` : '',
         );
         const editCartLink = document.createElement('a');
         editCartLink.classList.add('cart-summary-list__edit');
@@ -372,7 +372,7 @@ export default async function decorate(block) {
         headingCtx.onChange((nextHeadingCtx) => {
           cartSummaryListHeadingText.innerText = title.replace(
             '({count})',
-            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : ''
+            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
           );
         });
       },

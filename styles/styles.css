@@ -12,6 +12,7 @@
  * governing permissions and limitations under the License.
  */
 
+/* stylelint-disable no-empty-source */
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
   --color-brand-300: #6d6d6d;
