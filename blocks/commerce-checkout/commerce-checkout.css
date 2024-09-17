@@ -1,3 +1,6 @@
+/* stylelint-disable no-empty-source */
+/* stylelint-disable selector-class-pattern */
+
 /********************************************************************
 * ADOBE CONFIDENTIAL
 * __________________
@@ -21,8 +24,7 @@
     display: grid;
     align-items: start;
     grid-template-columns: repeat(var(--grid-4-columns), 1fr);
-    column-gap: var(--grid-4-gutters);
-    row-gap: var(--spacing-big);
+    gap: var(--spacing-big) var(--grid-4-gutters);
 }
 
 .checkout__heading-title {
@@ -117,11 +119,10 @@
     margin: var(--spacing-medium) auto;
 }
 
-@media only screen and (min-width: 320px) and (max-width: 768px) {
+@media only screen and (width >= 320px) and (width <= 768px) {
     .checkout__content {
         grid-template-columns: 1fr;
-        row-gap: var(--spacing-big);
-        column-gap: 0;
+        gap: var(--spacing-big) 0;
     }
 
     .checkout__heading,
@@ -171,16 +172,21 @@
 }
 
 /* Extra small devices (phones, 600px and down) */
+
 /* @media only screen and (max-width: 600px) { } */
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
+
 /* @media only screen and (min-width: 600px) { } */
 
 /* Medium devices (landscape tablets, 768px and up) */
+
 /* @media only screen and (min-width: 768px) { } */
 
 /* Large devices (laptops/desktops, 992px and up) */
+
 /* @media only screen and (min-width: 992px) { } */
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
+
 /* @media only screen and (min-width: 1200px) { } */
