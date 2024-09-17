@@ -1,4 +1,4 @@
-import{Initializer as p}from"@dropins/tools/lib.js";import{events as s}from"@dropins/tools/event-bus.js";import{f as n,h as d,a as o}from"./chunks/fetch-graphql.js";import{g as B,r as N,s as $,b as w,c as A}from"./chunks/fetch-graphql.js";import{O as m,a as c,A as _,t as u,b as h}from"./chunks/getGuestOrder.js";import{g as C}from"./chunks/getGuestOrder.js";import{g as F}from"./chunks/getAttributesForm.js";import"@dropins/tools/fetch-graphql.js";const O=`
+import{Initializer as c}from"@dropins/tools/lib.js";import{events as s}from"@dropins/tools/event-bus.js";import{f as n,h as o,a as _}from"./chunks/fetch-graphql.js";import{g as A,r as C,s as S,b as F,c as M}from"./chunks/fetch-graphql.js";import{O as l,a as p,A as u,t as O,b as R}from"./chunks/getCustomer.js";import{c as x,g as L}from"./chunks/getCustomer.js";import{g as q}from"./chunks/getAttributesForm.js";import"@dropins/tools/fetch-graphql.js";const y=`
 query ORDER_BY_NUMBER($orderNumber: String!) {
   customer {
     orders(
@@ -77,10 +77,10 @@ query ORDER_BY_NUMBER($orderNumber: String!) {
     }
   }
 }
-${m}
-${c}
-${_}
-`,g=async(e,r)=>await n(O,{method:"GET",cache:"force-cache",variables:{orderNumber:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?d(t.errors):u(r??"orderData",t)}).catch(o),b=`
+${l}
+${p}
+${u}
+`,b=async(e,r)=>await n(y,{method:"GET",cache:"force-cache",variables:{orderNumber:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?o(t.errors):O(r??"orderData",t)}).catch(_),E=`
 query ORDER_BY_TOKEN($token: String!) {
   guestOrderByToken(input: { token: $token }) {
     email
@@ -159,7 +159,7 @@ query ORDER_BY_TOKEN($token: String!) {
     }
   }
 }
-${m}
-${c}
-${_}
-`,f=async e=>await n(b,{method:"GET",cache:"no-cache",variables:{token:e}}).then(r=>{var t;return(t=r.errors)!=null&&t.length?d(r.errors):h(r)}).catch(o),y=async e=>{let r=null;const t=(e==null?void 0:e.orderNumber)??"",a=(e==null?void 0:e.orderToken)??"",i=(e==null?void 0:e.orderData)??null;if(i){s.emit("order/data",i);return}if(!t&&!a){console.error("Order Token or number not received.");return}if(t&&a){console.error("Error: You cannot pass both number and token together. You should pass only one identifier.");return}t&&(r=await g(t)),a&&(r=await f(a)),r?s.emit("order/data",r):s.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},l=new p({init:async e=>{const r={};l.config.setConfig({...r,...e}),y(e).catch(console.error)},listeners:()=>[]}),T=l.config;export{T as config,n as fetchGraphQl,F as getAttributesForm,B as getConfig,C as getGuestOrder,g as getOrderDetailsById,f as guestOrderByToken,l as initialize,N as removeFetchGraphQlHeader,$ as setEndpoint,w as setFetchGraphQlHeader,A as setFetchGraphQlHeaders};
+${l}
+${p}
+${u}
+`,k=async e=>await n(E,{method:"GET",cache:"no-cache",variables:{token:e}}).then(r=>{var t;return(t=r.errors)!=null&&t.length?o(r.errors):R(r)}).catch(_),D=async e=>{var m,i;let r=null;const t=e!=null&&e.orderRef&&typeof(e==null?void 0:e.orderRef)=="string"&&((m=e==null?void 0:e.orderRef)==null?void 0:m.length)>20?e==null?void 0:e.orderRef:null,a=e!=null&&e.orderRef&&typeof(e==null?void 0:e.orderRef)=="string"&&((i=e==null?void 0:e.orderRef)==null?void 0:i.length)<20?e==null?void 0:e.orderRef:null,d=(e==null?void 0:e.orderData)??null;if(d){s.emit("order/data",d);return}if(!a&&!t){console.error("Order Token or number not received.");return}a&&(r=await b(a)),t&&(r=await k(t)),r?s.emit("order/data",r):s.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},h=new c({init:async e=>{const r={};h.config.setConfig({...r,...e}),D(e).catch(console.error)},listeners:()=>[]}),$=h.config;export{$ as config,n as fetchGraphQl,q as getAttributesForm,A as getConfig,x as getCustomer,L as getGuestOrder,b as getOrderDetailsById,k as guestOrderByToken,h as initialize,C as removeFetchGraphQlHeader,S as setEndpoint,F as setFetchGraphQlHeader,M as setFetchGraphQlHeaders};
