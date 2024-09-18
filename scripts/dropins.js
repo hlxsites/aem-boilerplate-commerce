@@ -23,7 +23,7 @@ import { getMetadata } from "./aem.js";
 
 export const getUserTokenCookie = () => getCookie("auth_dropin_user_token");
 
-const helderInitializers = (orderRef) => {
+const setupInitialHandlers = (orderRef) => {
   initializers.register(orderApi.initialize, {
     orderRef,
   });
@@ -51,16 +51,21 @@ const handleUserOrdersRedirects = () => {
   const ORDER_REF_URL_QUERY = `?orderRef=${orderRef}`;
 
   if (isOrderPage) {
+    console.log("top");
+    console.log("isOrderPage", isOrderPage);
     let targetPath = null;
     if (currentUrl.pathname.includes(CUSTOMER_ORDERS_PATH)) {
       return;
     }
 
     events.on("order/error", ({ error }) => {
-      const defaultErrorMessage = "Please login to view the order.";
+      const defaultErrorMessage =
+        "We couldn't locate an order with the information provided.";
+
+      console.log("error", error);
 
       if (error.includes(defaultErrorMessage)) {
-        window.location.href = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
+        window.location.href = `${ORDER_STATUS_PATH}`;
       } else if (isAuthenticated) {
         window.location.href = `${CUSTOMER_ORDERS_PATH}`;
       } else {
@@ -75,19 +80,23 @@ const handleUserOrdersRedirects = () => {
         if (isToken) {
           targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
         } else {
-          helderInitializers(orderRef);
+          setupInitialHandlers(orderRef);
         }
       } else if (isToken) {
-        helderInitializers(orderRef);
+        setupInitialHandlers(orderRef);
       } else {
         targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       }
-    } else if (!orderRef) {
-      targetPath = ORDER_STATUS_PATH;
-    } else if (isToken) {
-      helderInitializers(orderRef);
     } else {
-      targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+      if (!orderRef) {
+        targetPath = `${ORDER_STATUS_PATH}`;
+      } else {
+        if (isToken) {
+          setupInitialHandlers(orderRef);
+        } else {
+          targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+        }
+      }
     }
 
     if (targetPath) {
