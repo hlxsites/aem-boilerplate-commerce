@@ -24,6 +24,7 @@ import { getMetadata } from "./aem.js";
 export const getUserTokenCookie = () => getCookie("auth_dropin_user_token");
 
 const setupInitialHandlers = (orderRef) => {
+  console.log("orderRef", orderRef);
   initializers.register(orderApi.initialize, {
     orderRef,
   });

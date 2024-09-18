@@ -38,7 +38,7 @@ export default async function decorate(block) {
     // routeCustomerOrder
     routeCustomerOrderDetails: () => "/customer/order-details/1",
     // routeGuestOrder
-    routeOrderDetails: () => "/order-details/1",
+    routeOrderDetails: () => "/order-details/",
     onError: async (errorInformation) => {
       console.info("errorInformation", errorInformation);
     },
