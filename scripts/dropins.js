@@ -57,11 +57,10 @@ const handleUserOrdersRedirects = () => {
     }
 
     events.on("order/error", ({ error }) => {
-      const defaultErrorMessage =
-        "We couldn't locate an order with the information provided.";
+      const defaultErrorMessage = "Please login to view the order.";
 
       if (error.includes(defaultErrorMessage)) {
-        window.location.href = `${ORDER_STATUS_PATH}`;
+        window.location.href = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       } else if (isAuthenticated) {
         window.location.href = `${CUSTOMER_ORDERS_PATH}`;
       } else {
