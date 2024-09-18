@@ -147,7 +147,9 @@ export default async function initializeDropins() {
   initializers.register(authApi.initialize, {});
   initializers.register(cartApi.initialize, {});
 
+  console.log("-------------------------------");
   handleUserOrdersRedirects();
+  console.log("-------------------------------)");
 
   const mount = async () => {
     // Event Bus Logger
