@@ -1,3 +1,7 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable no-lonely-if */
+/* eslint-disable no-console */
+/* eslint-disable quotes */
 /* eslint-disable import/no-unresolved */
 
 // Drop-in Tools
