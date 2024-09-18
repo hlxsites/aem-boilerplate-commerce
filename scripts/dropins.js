@@ -23,6 +23,80 @@ import { getMetadata } from './aem.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
+const helderInitializers = (orderRef) => {
+  initializers.register(orderApi.initialize, {
+    orderRef,
+  });
+};
+
+const redirectTo = (path) => {
+  window.location.href = path;
+};
+
+const handleUserOrdersRedirects = () => {
+  // Get current page template metadata
+  const currentUrl = new URL(window.location.href);
+  const templateMeta = getMetadata('template');
+  const isOrderPage = templateMeta.includes('Order');
+  const isAccountPage = currentUrl.pathname.includes('/customer');
+  const isAuthenticated = !!getCookie('auth_dropin_user_token') ?? false;
+
+  const orderRef = currentUrl.searchParams.get('orderRef');
+  const isToken = orderRef && orderRef.length > 20 ? orderRef : null;
+
+  const ORDER_STATUS_PATH = '/order-status';
+  const ORDER_DETAILS_PATH = '/order-details';
+  const CUSTOMER_ORDER_DETAILS_PATH = '/customer/order-details';
+  const CUSTOMER_ORDERS_PATH = '/customer/orders';
+  const ORDER_REF_URL_QUERY = `?orderRef=${orderRef}`;
+
+  if (isOrderPage) {
+    let targetPath = null;
+    if (currentUrl.pathname.includes(CUSTOMER_ORDERS_PATH)) {
+      return;
+    }
+
+    events.on('order/error', ({ error }) => {
+      const defaultErrorMessage =
+        "We couldn't locate an order with the information provided.";
+
+      if (error.includes(defaultErrorMessage)) {
+        window.location.href = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+      } else if (isAuthenticated) {
+        window.location.href = `${CUSTOMER_ORDERS_PATH}`;
+      } else {
+        window.location.href = `${ORDER_STATUS_PATH}`;
+      }
+    });
+
+    if (isAuthenticated) {
+      if (!orderRef) {
+        targetPath = CUSTOMER_ORDERS_PATH;
+      } else if (isAccountPage) {
+        if (isToken) {
+          targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
+        } else {
+          helderInitializers(orderRef);
+        }
+      } else if (isToken) {
+        helderInitializers(orderRef);
+      } else {
+        targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
+      }
+    } else if (!orderRef) {
+      targetPath = ORDER_STATUS_PATH;
+    } else if (isToken) {
+      helderInitializers(orderRef);
+    } else {
+      targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+    }
+
+    if (targetPath) {
+      redirectTo(targetPath);
+    }
+  }
+};
+
 // Update auth headers
 const setAuthHeaders = (state) => {
   if (state) {
@@ -64,68 +138,7 @@ export default async function initializeDropins() {
   initializers.register(authApi.initialize, {});
   initializers.register(cartApi.initialize, {});
 
-  // Get current page template metadata
-  const templateMeta = getMetadata('template');
-  const isOrderPage = templateMeta.includes('Order');
-
-  if (isOrderPage) {
-    const isAuthenticated = !!getCookie('auth_dropin_user_token');
-
-    const currentUrl = new URL(window.location.href);
-    const orderRef = currentUrl.searchParams.get('orderRef');
-    const orderToken = orderRef && orderRef.length > 20 ? orderRef : null;
-    const orderNumber = orderRef && orderRef.length < 20 ? orderRef : null;
-
-    if (!isAuthenticated) {
-      if (orderToken) {
-        window.location.href = `/order-details?orderRef=${orderToken}`;
-      } else if (orderNumber) {
-        window.location.href = `/order-status?orderRef=${orderNumber}`;
-      } else {
-        window.location.href = '/order-status';
-      }
-    } else {
-      events.on('order/error', () => {
-        const isAuthenticatedOnErrorEvent = !!getCookie('auth_dropin_user_token');
-
-        if (isAuthenticatedOnErrorEvent) {
-          window.location.href = '/customer/orders';
-        } else {
-          window.location.href = '/order-status';
-        }
-      });
-
-      events.on('order/data', (orderData) => {
-        if (!orderData) {
-          const isAuthenticatedOnDataEvent = !!getCookie('auth_dropin_user_token');
-
-          if (isAuthenticatedOnDataEvent) {
-            window.location.href = '/customer/orders';
-          } else {
-            window.location.href = '/order-status';
-          }
-        }
-      });
-
-      if (orderNumber && !isAuthenticated) {
-        window.location.href = `/order-status?orderRef=${orderNumber}`;
-      } else if (orderNumber && isAuthenticated) {
-        if (!window.location.href.includes(`/customer/order-details?orderRef=${orderNumber}`)) {
-          window.location.href = `/customer/order-details?orderRef=${orderNumber}`;
-        } else {
-          initializers.register(orderApi.initialize, {
-            orderRef: orderNumber,
-          });
-        }
-      }
-
-      if (orderToken) {
-        initializers.register(orderApi.initialize, {
-          orderRef: orderToken,
-        });
-      }
-    }
-  }
+  handleUserOrdersRedirects();
 
   const mount = async () => {
     // Event Bus Logger

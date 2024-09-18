@@ -7,18 +7,25 @@ export interface inLineAlertProps {
     text: string;
     type: 'success' | 'warning' | 'error';
 }
+type RouteSignInProps = {
+    render: boolean;
+    formValues?: {
+        number: number | string;
+        email?: string;
+    };
+};
 export interface OrderSearchProps {
     className?: string;
     onError?: (errorInformation: errorInformationProps) => boolean | Promise<boolean> | undefined;
     isAuth: boolean;
-    routeSignIn: () => string;
+    renderSignIn: ({ render, formValues }: RouteSignInProps) => boolean;
     routeCustomerOrderDetails: () => string;
     routeOrderDetails: () => string;
 }
 export interface useOrderSearchProps {
     onError?: (errorInformation: errorInformationProps) => boolean | Promise<boolean> | undefined;
     isAuth?: boolean;
-    routeSignIn?: () => string;
+    renderSignIn: ({ render, formValues }: RouteSignInProps) => boolean;
     routeCustomerOrderDetails?: () => string;
     routeOrderDetails?: () => string;
 }
