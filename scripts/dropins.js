@@ -1,27 +1,27 @@
 /* eslint-disable import/no-unresolved */
 
 // Drop-in Tools
-import { events } from '@dropins/tools/event-bus.js';
+import { events } from "@dropins/tools/event-bus.js";
 import {
   removeFetchGraphQlHeader,
   setEndpoint,
   setFetchGraphQlHeader,
-} from '@dropins/tools/fetch-graphql.js';
-import { initializers, Initializer } from '@dropins/tools/initializer.js';
+} from "@dropins/tools/fetch-graphql.js";
+import { initializers, Initializer } from "@dropins/tools/initializer.js";
 
 // Drop-ins
-import * as authApi from '@dropins/storefront-auth/api.js';
-import * as cartApi from '@dropins/storefront-cart/api.js';
-import * as orderApi from '@dropins/storefront-order/api.js';
+import * as authApi from "@dropins/storefront-auth/api.js";
+import * as cartApi from "@dropins/storefront-cart/api.js";
+import * as orderApi from "@dropins/storefront-order/api.js";
 
 // Recaptcha
-import * as recaptcha from '@dropins/tools/recaptcha.js';
+import * as recaptcha from "@dropins/tools/recaptcha.js";
 
 // Libs
-import { getConfigValue, getCookie } from './configs.js';
-import { getMetadata } from './aem.js';
+import { getConfigValue, getCookie } from "./configs.js";
+import { getMetadata } from "./aem.js";
 
-export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
+export const getUserTokenCookie = () => getCookie("auth_dropin_user_token");
 
 const helderInitializers = (orderRef) => {
   initializers.register(orderApi.initialize, {
@@ -36,18 +36,18 @@ const redirectTo = (path) => {
 const handleUserOrdersRedirects = () => {
   // Get current page template metadata
   const currentUrl = new URL(window.location.href);
-  const templateMeta = getMetadata('template');
-  const isOrderPage = templateMeta.includes('Order');
-  const isAccountPage = currentUrl.pathname.includes('/customer');
-  const isAuthenticated = !!getCookie('auth_dropin_user_token') ?? false;
+  const templateMeta = getMetadata("template");
+  const isOrderPage = templateMeta.includes("Order");
+  const isAccountPage = currentUrl.pathname.includes("/customer");
+  const isAuthenticated = !!getCookie("auth_dropin_user_token") ?? false;
 
-  const orderRef = currentUrl.searchParams.get('orderRef');
+  const orderRef = currentUrl.searchParams.get("orderRef");
   const isToken = orderRef && orderRef.length > 20 ? orderRef : null;
 
-  const ORDER_STATUS_PATH = '/order-status';
-  const ORDER_DETAILS_PATH = '/order-details';
-  const CUSTOMER_ORDER_DETAILS_PATH = '/customer/order-details';
-  const CUSTOMER_ORDERS_PATH = '/customer/orders';
+  const ORDER_STATUS_PATH = "/order-status";
+  const ORDER_DETAILS_PATH = "/order-details";
+  const CUSTOMER_ORDER_DETAILS_PATH = "/customer/order-details";
+  const CUSTOMER_ORDERS_PATH = "/customer/orders";
   const ORDER_REF_URL_QUERY = `?orderRef=${orderRef}`;
 
   if (isOrderPage) {
@@ -56,42 +56,59 @@ const handleUserOrdersRedirects = () => {
       return;
     }
 
-    events.on('order/error', ({ error }) => {
+    // TEST
+    events.on("order/error", ({ error }) => {
       const defaultErrorMessage =
         "We couldn't locate an order with the information provided.";
 
       if (error.includes(defaultErrorMessage)) {
+        console.log("defaultErrorMessage", 1);
         window.location.href = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
       } else if (isAuthenticated) {
+        console.log("defaultErrorMessage", 2);
         window.location.href = `${CUSTOMER_ORDERS_PATH}`;
       } else {
+        console.log("defaultErrorMessage", 3);
         window.location.href = `${ORDER_STATUS_PATH}`;
       }
     });
 
     if (isAuthenticated) {
+      console.log("0", 0);
       if (!orderRef) {
+        console.log("1", 1);
         targetPath = CUSTOMER_ORDERS_PATH;
       } else if (isAccountPage) {
+        console.log("2", 2);
         if (isToken) {
+          console.log("3", 3);
           targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
         } else {
+          console.log("4", 4);
           helderInitializers(orderRef);
         }
       } else if (isToken) {
+        console.log("5", 5);
         helderInitializers(orderRef);
       } else {
+        console.log("6", 6);
         targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       }
     } else if (!orderRef) {
+      console.log("7", 7);
       targetPath = ORDER_STATUS_PATH;
     } else if (isToken) {
+      console.log("8", 8);
       helderInitializers(orderRef);
     } else {
+      console.log("9", 9);
       targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
     }
 
     if (targetPath) {
+      console.log("targetPath", targetPath);
+      window.test.push(targetPath);
+
       redirectTo(targetPath);
     }
   }
@@ -101,17 +118,17 @@ const handleUserOrdersRedirects = () => {
 const setAuthHeaders = (state) => {
   if (state) {
     const token = getUserTokenCookie();
-    setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
+    setFetchGraphQlHeader("Authorization", `Bearer ${token}`);
   } else {
-    removeFetchGraphQlHeader('Authorization');
+    removeFetchGraphQlHeader("Authorization");
   }
 };
 
 const persistCartDataInSession = (data) => {
   if (data?.id) {
-    sessionStorage.setItem('DROPINS_CART_ID', data.id);
+    sessionStorage.setItem("DROPINS_CART_ID", data.id);
   } else {
-    sessionStorage.removeItem('DROPINS_CART_ID');
+    sessionStorage.removeItem("DROPINS_CART_ID");
   }
 };
 
@@ -122,13 +139,13 @@ const initialize = new Initializer({
     // set auth headers
     setAuthHeaders(!!token);
     // emit authenticated event if token has changed
-    events.emit('authenticated', !!token);
+    events.emit("authenticated", !!token);
   },
   listeners: () => [
     // Set auth headers on authenticated event
-    events.on('authenticated', setAuthHeaders),
+    events.on("authenticated", setAuthHeaders),
     // Cache cart data in session storage
-    events.on('cart/data', persistCartDataInSession, { eager: true }),
+    events.on("cart/data", persistCartDataInSession, { eager: true }),
   ],
 });
 
@@ -144,7 +161,7 @@ export default async function initializeDropins() {
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
-    setEndpoint(await getConfigValue('commerce-core-endpoint'));
+    setEndpoint(await getConfigValue("commerce-core-endpoint"));
     // Recaptcha
     recaptcha.setConfig();
     // Mount all registered drop-ins
@@ -152,6 +169,6 @@ export default async function initializeDropins() {
   };
 
   // Mount Drop-ins
-  window.addEventListener('pageshow', mount);
-  document.addEventListener('prerenderingchange', mount);
+  window.addEventListener("pageshow", mount);
+  document.addEventListener("prerenderingchange", mount);
 }
