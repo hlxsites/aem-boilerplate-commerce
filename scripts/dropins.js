@@ -106,8 +106,15 @@ const handleUserOrdersRedirects = () => {
     }
 
     if (targetPath) {
-      console.log("targetPath", targetPath);
-      window.test.push(targetPath);
+      function addListPathToWindow(listPathArray) {
+        if (!window.listPath) {
+          window.listPath = listPathArray;
+        } else {
+          window.listPath.push(...listPathArray);
+        }
+      }
+
+      addListPathToWindow(targetPath);
 
       redirectTo(targetPath);
     }
