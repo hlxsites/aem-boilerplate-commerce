@@ -37,6 +37,42 @@ async function performCatalogServiceQuery(config, query, variables) {
   return queryResponse.data;
 }
 
+function getJsonLd(product) {
+  const amount = product.priceRange?.minimum?.final?.amount || product.price?.final?.amount;
+  const brand = product.attributes.find((attr) => attr.name === 'brand');
+
+  const schema = {
+    '@context': 'http://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.meta_description,
+    image: product['og:image'],
+    offers: [],
+    productID: product.sku,
+    sku: product.sku,
+    url: product.path,
+    '@id': product.path,
+  };
+
+  if (brand?.value) {
+    product.brand = {
+      '@type': 'Brand',
+        name: brand?.value,
+    };
+  }
+
+  if (amount?.value && amount?.currency) {
+    schema.offers.push({
+      '@type': 'http://schema.org/Offer',
+      price: amount?.value,
+      priceCurrency: amount?.currency,
+      availability: product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+    });
+  }
+
+  return JSON.stringify(schema);
+}
+
 /**
  * Get products by page number
  * @param {INT} pageNumber - pass the pagenumber to retrieved paginated results
@@ -130,6 +166,7 @@ const getProducts = async (config, pageNumber) => {
       'og:url',
       'og:image',
       'og:image:secure_url',
+      'json-ld',
     ],
   ];
   products.forEach(({ productView: metaData }) => {
@@ -145,6 +182,7 @@ const getProducts = async (config, pageNumber) => {
         `${basePath}${metaData.path}`, // og:url
         metaData['og:image'], // og:image
         metaData['og:image:secure_url'], // og:image:secure_url
+        getJsonLd(metaData), // json-ld
       ],
     );
   });

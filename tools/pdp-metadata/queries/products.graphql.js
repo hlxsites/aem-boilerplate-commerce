@@ -6,11 +6,32 @@ export default `query productSearch($currentPage: Int = 1) {
         sku
         name
         urlKey
+        url
         shortDescription
         description
         metaDescription
         metaKeyword
         metaTitle
+        inStock
+        attributes(roles: []) {
+          name
+          value
+        }
+        ... on SimpleProductView {
+          price {
+            ...priceFields
+          }
+        }
+        ... on ComplexProductView {
+          priceRange {
+            maximum {
+              ...priceFields
+            }
+            minimum {
+              ...priceFields
+            }
+          }
+        }
       }
       product {
         image {
@@ -25,4 +46,19 @@ export default `query productSearch($currentPage: Int = 1) {
     }
     total_count
   }
-}`;
+}
+fragment priceFields on ProductViewPrice {
+  regular {
+      amount {
+          currency
+          value
+      }
+  }
+  final {
+      amount {
+          currency
+          value
+      }
+  }
+}
+`;
