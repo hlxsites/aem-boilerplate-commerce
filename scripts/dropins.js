@@ -56,66 +56,42 @@ const handleUserOrdersRedirects = () => {
       return;
     }
 
-    // TODO
     events.on("order/error", ({ error }) => {
       const defaultErrorMessage =
         "We couldn't locate an order with the information provided.";
 
       if (error.includes(defaultErrorMessage)) {
-        console.log("defaultErrorMessage", 1);
-        window.location.href = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+        window.location.href = `${ORDER_STATUS_PATH}`;
       } else if (isAuthenticated) {
-        console.log("defaultErrorMessage", 2);
         window.location.href = `${CUSTOMER_ORDERS_PATH}`;
       } else {
-        console.log("defaultErrorMessage", 3);
         window.location.href = `${ORDER_STATUS_PATH}`;
       }
     });
 
     if (isAuthenticated) {
-      console.log("0", 0);
       if (!orderRef) {
-        console.log("1", 1);
         targetPath = CUSTOMER_ORDERS_PATH;
       } else if (isAccountPage) {
-        console.log("2", 2);
         if (isToken) {
-          console.log("3", 3);
           targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
         } else {
-          console.log("4", 4);
           helderInitializers(orderRef);
         }
       } else if (isToken) {
-        console.log("5", 5);
         helderInitializers(orderRef);
       } else {
-        console.log("6", 6);
         targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       }
     } else if (!orderRef) {
-      console.log("7", 7);
       targetPath = ORDER_STATUS_PATH;
     } else if (isToken) {
-      console.log("8", 8);
       helderInitializers(orderRef);
     } else {
-      console.log("9", 9);
       targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
     }
 
     if (targetPath) {
-      function addListPathToWindow(listPathArray) {
-        if (!window.listPath) {
-          window.listPath = listPathArray;
-        } else {
-          window.listPath.push(...listPathArray);
-        }
-      }
-
-      addListPathToWindow(targetPath);
-
       redirectTo(targetPath);
     }
   }
