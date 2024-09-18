@@ -1,6 +1,6 @@
 import { FieldEnumList, inLineAlertProps, useOrderSearchProps } from '../../types';
 
-export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCustomerOrderDetails, routeOrderDetails, }: useOrderSearchProps) => {
+export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCustomerOrder, routeGuestOrder, }: useOrderSearchProps) => {
     onSubmit: (event: Event, valid: boolean) => Promise<null | undefined>;
     inLineAlert: inLineAlertProps;
     loading: boolean;

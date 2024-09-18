@@ -7,7 +7,7 @@ export interface inLineAlertProps {
     text: string;
     type: 'success' | 'warning' | 'error';
 }
-type RouteSignInProps = {
+export type RouteSignInProps = {
     render: boolean;
     formValues?: {
         number: number | string;
@@ -16,18 +16,13 @@ type RouteSignInProps = {
 };
 export interface OrderSearchProps {
     className?: string;
-    onError?: (errorInformation: errorInformationProps) => boolean | Promise<boolean> | undefined;
+    onError?: (errorInformation: errorInformationProps) => void;
     isAuth: boolean;
-    renderSignIn: ({ render, formValues }: RouteSignInProps) => boolean;
-    routeCustomerOrderDetails: () => string;
-    routeOrderDetails: () => string;
+    renderSignIn?: ({ render, formValues, }: RouteSignInProps) => boolean | undefined;
+    routeCustomerOrder?: () => string;
+    routeGuestOrder?: () => string;
 }
-export interface useOrderSearchProps {
-    onError?: (errorInformation: errorInformationProps) => boolean | Promise<boolean> | undefined;
-    isAuth?: boolean;
-    renderSignIn: ({ render, formValues }: RouteSignInProps) => boolean;
-    routeCustomerOrderDetails?: () => string;
-    routeOrderDetails?: () => string;
+export interface useOrderSearchProps extends Omit<OrderSearchProps, 'className'> {
 }
 export interface OrderSearchFormProps {
     onSubmit?: (event: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
