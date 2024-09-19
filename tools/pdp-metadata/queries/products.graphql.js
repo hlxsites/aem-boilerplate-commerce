@@ -13,6 +13,9 @@ export default `query productSearch($currentPage: Int = 1) {
         metaKeyword
         metaTitle
         inStock
+        images(roles: ["image"]) {
+          url
+        }
         attributes(roles: []) {
           name
           value
@@ -31,11 +34,6 @@ export default `query productSearch($currentPage: Int = 1) {
               ...priceFields
             }
           }
-        }
-      }
-      product {
-        image {
-          url
         }
       }
     }

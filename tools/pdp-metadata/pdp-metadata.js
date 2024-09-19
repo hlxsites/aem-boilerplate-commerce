@@ -63,7 +63,7 @@ function getJsonLd(product) {
 
   if (amount?.value && amount?.currency) {
     schema.offers.push({
-      '@type': 'http://schema.org/Offer',
+      '@type': 'Offer',
       price: amount?.value,
       priceCurrency: amount?.currency,
       availability: product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
@@ -96,7 +96,7 @@ const getProducts = async (config, pageNumber) => {
         description,
         shortDescription,
       } = item.productView;
-      const { url: imageUrl } = item.product.image ?? {};
+      const { url: imageUrl } = item.productView.images[0];
 
       let baseImageUrl = imageUrl;
       if (baseImageUrl.startsWith('//')) {
