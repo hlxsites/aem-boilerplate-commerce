@@ -18,5 +18,6 @@ export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCust
         id: string;
         code: string;
     }[];
+    key: string;
 };
 //# sourceMappingURL=useOrderSearch.d.ts.map
