@@ -63,9 +63,12 @@ const handleUserOrdersRedirects = () => {
     // }
   });
 
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("orderRef", orderRef);
+
   if (isAuthenticated) {
     if (!orderRef) {
-      targetPath = CUSTOMER_ORDERS_PATH;
+      // targetPath = CUSTOMER_ORDERS_PATH;
     } else if (isAccountPage) {
       if (isToken) {
         targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
