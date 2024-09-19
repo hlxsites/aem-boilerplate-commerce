@@ -39,8 +39,9 @@ function disableCacheForPage() {
   document.head.appendChild(metaExpires);
 }
 
+disableCacheForPage();
+
 export default async function decorate(block) {
-  disableCacheForPage();
   block.innerHTML = "";
 
   const isAuthenticated = !!getCookie("auth_dropin_user_token") || false;
