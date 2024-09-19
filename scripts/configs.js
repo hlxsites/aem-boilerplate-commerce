@@ -1,4 +1,4 @@
-const ALLOWED_CONFIGS = ["prod", "stage", "dev"];
+const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
 
 /**
  * This function calculates the environment in which the site is running based on the URL.
@@ -9,19 +9,19 @@ const ALLOWED_CONFIGS = ["prod", "stage", "dev"];
  */
 export const calcEnvironment = () => {
   const { host, href } = window.location;
-  let environment = "prod";
-  if (href.includes(".aem.page") || host.includes("staging")) {
-    environment = "stage";
+  let environment = 'prod';
+  if (href.includes('.aem.page') || host.includes('staging')) {
+    environment = 'stage';
   }
-  if (href.includes("localhost")) {
-    environment = "dev";
+  if (href.includes('localhost')) {
+    environment = 'dev';
   }
 
-  const environmentFromConfig = window.sessionStorage.getItem("environment");
+  const environmentFromConfig = window.sessionStorage.getItem('environment');
   if (
-    environmentFromConfig &&
-    ALLOWED_CONFIGS.includes(environmentFromConfig) &&
-    environment !== "prod"
+    environmentFromConfig
+    && ALLOWED_CONFIGS.includes(environmentFromConfig)
+    && environment !== 'prod'
   ) {
     return environmentFromConfig;
   }
@@ -31,8 +31,8 @@ export const calcEnvironment = () => {
 
 function buildConfigURL(environment) {
   const env = environment || calcEnvironment();
-  let fileName = "configs.json?sheet=prod";
-  if (env !== "prod") {
+  let fileName = 'configs.json?sheet=prod';
+  if (env !== 'prod') {
     fileName = `configs-${env}.json`;
   }
   const configURL = new URL(`${window.location.origin}/${fileName}`);
@@ -69,11 +69,11 @@ export const getConfigValue = async (configParam, environment) => {
 };
 
 export const getCookie = (cookieName) => {
-  const cookies = document.cookie.split(";");
+  const cookies = document.cookie.split(';');
   let foundValue;
 
   cookies.forEach((cookie) => {
-    const [name, value] = cookie.trim().split("=");
+    const [name, value] = cookie.trim().split('=');
     if (name === cookieName) {
       foundValue = decodeURIComponent(value);
     }
