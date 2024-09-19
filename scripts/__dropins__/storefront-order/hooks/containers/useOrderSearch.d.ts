@@ -1,7 +1,7 @@
 import { FieldEnumList, inLineAlertProps, useOrderSearchProps } from '../../types';
 
 export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCustomerOrder, routeGuestOrder, }: useOrderSearchProps) => {
-    onSubmit: (event: Event, valid: boolean, cleanForm: () => void) => Promise<null | undefined>;
+    onSubmit: (event: Event, valid: boolean) => Promise<null | undefined>;
     inLineAlert: inLineAlertProps;
     loading: boolean;
     normalizeFieldsConfig: {
@@ -18,6 +18,5 @@ export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCust
         id: string;
         code: string;
     }[];
-    key: string;
 };
 //# sourceMappingURL=useOrderSearch.d.ts.map

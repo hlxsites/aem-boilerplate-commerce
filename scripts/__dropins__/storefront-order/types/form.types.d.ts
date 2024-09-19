@@ -43,7 +43,7 @@ export interface FormProps {
     className?: string;
     children?: any;
     loading?: boolean;
-    onSubmit?: (event: SubmitEvent, isValid: boolean, cleanForm: () => void) => Promise<void | null | undefined>;
+    onSubmit?: (event: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
 }
 export interface useFormProps extends Omit<FormProps, 'children' | 'className' | 'name'> {
 }
