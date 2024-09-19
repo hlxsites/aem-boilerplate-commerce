@@ -27,6 +27,8 @@ export default async function decorate(block) {
   await orderRenderer.render(OrderSearch, {
     isAuth: isAuthenticated,
     renderSignIn: async ({ render, formValues }) => {
+      console.log("formValues", formValues);
+      console.log("render", render);
       if (render) {
         console.log("formValues", formValues);
         // renderSignIn(block, formValues?.email ?? "", formValues?.number ?? "");
