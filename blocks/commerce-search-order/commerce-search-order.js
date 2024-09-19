@@ -20,6 +20,8 @@ const renderSignIn = async (element, email, orderNumber) => authRenderer.render(
 })(element);
 
 export default async function decorate(block) {
+  block.innerHTML = '';
+
   const isAuthenticated = !!getCookie('auth_dropin_user_token') || false;
 
   await orderRenderer.render(OrderSearch, {
