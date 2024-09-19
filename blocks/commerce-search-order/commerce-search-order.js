@@ -36,7 +36,11 @@ export default async function decorate(block) {
       return true;
     },
     routeCustomerOrder: () => '/customer/order-details',
-    routeGuestOrder: () => '/order-details',
+    routeGuestOrder: () => {
+      block.innerHTML = '';
+
+      return '/order-details';
+    },
     onError: async (errorInformation) => {
       console.info('errorInformation', errorInformation);
     },
