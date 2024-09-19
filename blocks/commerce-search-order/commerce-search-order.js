@@ -58,5 +58,9 @@ export default async function decorate(block) {
     renderComponent();
   };
 
-  window.addEventListener('popstate', handlePopState);
+  window.addEventListener('popstate', (event)=> {
+    console.log('event', event);
+
+    handlePopState();
+  });
 }
