@@ -23,7 +23,7 @@ import { getMetadata } from "./aem.js";
 
 export const getUserTokenCookie = () => getCookie("auth_dropin_user_token");
 
-const helderInitializers = (orderRef) => {
+const setupAppEnvironment = (orderRef) => {
   initializers.register(orderApi.initialize, {
     orderRef,
   });
@@ -71,17 +71,17 @@ const handleUserOrdersRedirects = () => {
       if (isToken) {
         targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       } else {
-        helderInitializers(orderRef);
+        setupAppEnvironment(orderRef);
       }
     } else if (isToken) {
-      helderInitializers(orderRef);
+      setupAppEnvironment(orderRef);
     } else {
       targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
     }
   } else if (!orderRef) {
     targetPath = ORDER_STATUS_PATH;
   } else if (isToken) {
-    helderInitializers(orderRef);
+    setupAppEnvironment(orderRef);
   } else {
     targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
   }

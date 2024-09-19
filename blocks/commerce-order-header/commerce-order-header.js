@@ -9,5 +9,5 @@ export default async function decorate(block) {
 
   events.on('order/data', (orderData) => {
     orderRenderer.render(Header, { title: `Order ${orderData.number}` })(block);
-  });
+  }, { eager: true });
 }
