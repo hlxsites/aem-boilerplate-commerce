@@ -52,23 +52,21 @@ const handleUserOrdersRedirects = () => {
   }
 
   events.on("order/error", ({ error }) => {
-    // const defaultErrorMessage =
-    //   "We couldn't locate an order with the information provided.";
-    // if (error.includes(defaultErrorMessage)) {
-    //   window.location.href = `${ORDER_STATUS_PATH}`;
-    // } else if (isAuthenticated) {
-    //   window.location.href = `${CUSTOMER_ORDERS_PATH}`;
-    // } else {
-    //   window.location.href = `${ORDER_STATUS_PATH}`;
-    // }
-  });
+    const defaultErrorMessage =
+      "We couldn't locate an order with the information provided.";
 
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("orderRef", orderRef);
+    if (error.includes(defaultErrorMessage)) {
+      window.location.href = `${ORDER_STATUS_PATH}`;
+    } else if (isAuthenticated) {
+      window.location.href = `${CUSTOMER_ORDERS_PATH}`;
+    } else {
+      window.location.href = `${ORDER_STATUS_PATH}`;
+    }
+  });
 
   if (isAuthenticated) {
     if (!orderRef) {
-      // targetPath = CUSTOMER_ORDERS_PATH;
+      targetPath = CUSTOMER_ORDERS_PATH;
     } else if (isAccountPage) {
       if (isToken) {
         targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
