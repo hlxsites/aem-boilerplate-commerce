@@ -52,16 +52,15 @@ const handleUserOrdersRedirects = () => {
   }
 
   events.on("order/error", ({ error }) => {
-    const defaultErrorMessage =
-      "We couldn't locate an order with the information provided.";
-
-    if (error.includes(defaultErrorMessage)) {
-      window.location.href = `${ORDER_STATUS_PATH}`;
-    } else if (isAuthenticated) {
-      window.location.href = `${CUSTOMER_ORDERS_PATH}`;
-    } else {
-      window.location.href = `${ORDER_STATUS_PATH}`;
-    }
+    // const defaultErrorMessage =
+    //   "We couldn't locate an order with the information provided.";
+    // if (error.includes(defaultErrorMessage)) {
+    //   window.location.href = `${ORDER_STATUS_PATH}`;
+    // } else if (isAuthenticated) {
+    //   window.location.href = `${CUSTOMER_ORDERS_PATH}`;
+    // } else {
+    //   window.location.href = `${ORDER_STATUS_PATH}`;
+    // }
   });
 
   if (isAuthenticated) {
