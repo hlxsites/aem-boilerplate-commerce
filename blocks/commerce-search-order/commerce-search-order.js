@@ -22,27 +22,41 @@ const renderSignIn = async (element, email, orderNumber) => authRenderer.render(
 export default async function decorate(block) {
   block.innerHTML = '';
 
-  const isAuthenticated = !!getCookie('auth_dropin_user_token') || false;
+  const renderComponent = async () => {
+    const isAuthenticated = !!getCookie('auth_dropin_user_token') || false;
 
-  await orderRenderer.render(OrderSearch, {
-    isAuth: isAuthenticated,
-    renderSignIn: async ({ render, formValues }) => {
-      if (render) {
-        renderSignIn(block, formValues?.email ?? '', formValues?.number ?? '');
+    await orderRenderer.render(OrderSearch, {
+      isAuth: isAuthenticated,
+      renderSignIn: async ({ render, formValues }) => {
+        if (render) {
+          renderSignIn(
+            block,
+            formValues?.email ?? '',
+            formValues?.number ?? ''
+          );
 
-        return false;
-      }
+          return false;
+        }
 
-      return true;
-    },
-    routeCustomerOrder: () => '/customer/order-details',
-    routeGuestOrder: () => {
-      block.innerHTML = '';
+        return true;
+      },
+      routeCustomerOrder: () => '/customer/order-details',
+      routeGuestOrder: () => {
+        block.innerHTML = '';
 
-      return '/order-details';
-    },
-    onError: async (errorInformation) => {
-      console.info('errorInformation', errorInformation);
-    },
-  })(block);
+        return '/order-details';
+      },
+      onError: async (errorInformation) => {
+        console.info('errorInformation', errorInformation);
+      },
+    })(block);
+  };
+
+  renderComponent();
+
+  const handlePopState = () => {
+    renderComponent();
+  };
+
+  window.addEventListener('popstate', handlePopState);
 }
