@@ -41,6 +41,14 @@ function disableCacheForPage() {
 
 disableCacheForPage();
 
+const handleBeforeUnload = () => {
+  window.location.reload();
+};
+
+window.addEventListener("beforeunload", handleBeforeUnload);
+
+window.removeEventListener("beforeunload", handleBeforeUnload);
+
 export default async function decorate(block) {
   block.innerHTML = "";
 
