@@ -28,7 +28,6 @@
   line-height: 1;
   padding: 0;
   margin: 4% 0;
-  margin-left: 4%;
 }
 
 /* paragraph */
@@ -44,7 +43,6 @@
 /* paragraph */
 .hero-latest div p:nth-child(2),
 .hero-latest div div table tbody tr:nth-child(3) td {
-  margin-left: 5%;
   width: 92%;
   font-weight: 400;
 }
@@ -75,7 +73,6 @@
   text-decoration: none;
   text-transform: lowercase;
   cursor: pointer;
-  margin-left: 4%;
 }
 
 /* Shop men & women */
@@ -83,8 +80,6 @@
   margin: 0;
   padding: 0;
   width: 80%;
-
-  margin-left: 3%;
 }
 
 .hero-latest div table table td a {
@@ -100,6 +95,26 @@
   text-align: left;
 }
 
+@media (width >= 993px) {
+  /* Paragraph title */
+  .hero-latest div div table tbody tr:nth-child(2) td p:nth-child(1) {
+    margin-left: 4%;
+  }
+  /* paragraph */
+  .hero-latest div p:nth-child(2),
+  .hero-latest div div table tbody tr:nth-child(3) td {
+    margin-left: 5%;
+  }
+
+  .hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u {
+    margin-left: 4%;
+  }
+
+  /* Shop men & women */
+  .hero-latest div table table {
+    margin-left: 3%;
+  }
+}
 @media (width <= 992px) {
   .banner-section-latest {
     min-height: unset !important;
