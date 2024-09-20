@@ -24,10 +24,9 @@ export async function createModal(contentNodes) {
   dialog.append(closeButton);
 
   // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
-  dialog.addEventListener('click', (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (event.clientX < dialogDimensions.left || event.clientX > dialogDimensions.right
-      || event.clientY < dialogDimensions.top || event.clientY > dialogDimensions.bottom) {
+ // If you confirm this implementation, then I suggest removing the comment. 
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) {
       dialog.close();
     }
   });
