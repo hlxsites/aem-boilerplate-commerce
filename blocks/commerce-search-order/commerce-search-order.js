@@ -1,36 +1,34 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-import { SignIn } from "@dropins/storefront-auth/containers/SignIn.js";
-import { OrderSearch } from "@dropins/storefront-order/containers/OrderSearch.js";
-import { render as authRenderer } from "@dropins/storefront-auth/render.js";
-import { render as orderRenderer } from "@dropins/storefront-order/render.js";
-import { getCookie } from "../../scripts/configs.js";
-import { events } from "@dropins/tools/event-bus.js";
+import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
+import { OrderSearch } from '@dropins/storefront-order/containers/OrderSearch.js';
+import { render as authRenderer } from '@dropins/storefront-auth/render.js';
+import { render as orderRenderer } from '@dropins/storefront-order/render.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { getCookie } from '../../scripts/configs.js';
 
-const renderSignIn = async (element, email, orderNumber) =>
-  authRenderer.render(SignIn, {
-    initialEmailValue: email,
-    renderSignUpLink: false,
-    labels: {
-      formTitleText: email
-        ? "Enter your password to view order details"
-        : "Sign in to view order details",
-      primaryButtonText: "View order",
-    },
-    routeForgotPassword: () => "reset-password.html",
-    routeRedirectOnSignIn: () =>
-      `/customer/order-details?orderRef=${orderNumber}`,
-  })(element);
+const renderSignIn = async (element, email, orderNumber) => authRenderer.render(SignIn, {
+  initialEmailValue: email,
+  renderSignUpLink: false,
+  labels: {
+    formTitleText: email
+      ? 'Enter your password to view order details'
+      : 'Sign in to view order details',
+    primaryButtonText: 'View order',
+  },
+  routeForgotPassword: () => 'reset-password.html',
+  routeRedirectOnSignIn: () => `/customer/order-details?orderRef=${orderNumber}`,
+})(element);
 
 export default async function decorate(block) {
-  block.innerHTML = "";
+  block.innerHTML = '';
 
-  const isAuthenticated = !!getCookie("auth_dropin_user_token") || false;
+  const isAuthenticated = !!getCookie('auth_dropin_user_token') || false;
 
-  events.on("order/data", async (order) => {
+  events.on('order/data', async (order) => {
     if (!order) return;
 
-    block.innerHTML = "";
+    block.innerHTML = '';
 
     await orderRenderer.render(OrderSearch, {
       isAuth: isAuthenticated,
@@ -38,8 +36,8 @@ export default async function decorate(block) {
         if (render) {
           renderSignIn(
             block,
-            formValues?.email ?? "",
-            formValues?.number ?? ""
+            formValues?.email ?? '',
+            formValues?.number ?? '',
           );
 
           return false;
@@ -47,10 +45,10 @@ export default async function decorate(block) {
 
         return true;
       },
-      routeCustomerOrder: () => "/customer/order-details",
-      routeGuestOrder: () => "/order-details",
+      routeCustomerOrder: () => '/customer/order-details',
+      routeGuestOrder: () => '/order-details',
       onError: async (errorInformation) => {
-        console.info("errorInformation", errorInformation);
+        console.info('errorInformation', errorInformation);
       },
     })(block);
   });
@@ -59,17 +57,17 @@ export default async function decorate(block) {
     isAuth: isAuthenticated,
     renderSignIn: async ({ render, formValues }) => {
       if (render) {
-        renderSignIn(block, formValues?.email ?? "", formValues?.number ?? "");
+        renderSignIn(block, formValues?.email ?? '', formValues?.number ?? '');
 
         return false;
       }
 
       return true;
     },
-    routeCustomerOrder: () => "/customer/order-details",
-    routeGuestOrder: () => "/order-details",
+    routeCustomerOrder: () => '/customer/order-details',
+    routeGuestOrder: () => '/order-details',
     onError: async (errorInformation) => {
-      console.info("errorInformation", errorInformation);
+      console.info('errorInformation', errorInformation);
     },
   })(block);
 }
