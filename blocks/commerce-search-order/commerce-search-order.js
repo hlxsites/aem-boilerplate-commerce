@@ -28,10 +28,11 @@ export default async function decorate(block) {
   const isAuthenticated = !!getCookie("auth_dropin_user_token") || false;
 
   events.on("order/data", async (order) => {
+    if (!order) return;
+
     block.innerHTML = "";
 
     await orderRenderer.render(OrderSearch, {
-      orderSearch: order,
       isAuth: isAuthenticated,
       renderSignIn: async ({ render, formValues }) => {
         if (render) {
