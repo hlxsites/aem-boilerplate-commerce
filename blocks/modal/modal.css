@@ -4,6 +4,7 @@ body.modal-open {
 
 .modal dialog {
   --dialog-border-radius: 16px;
+  
   padding: 0;
   overscroll-behavior: none;
   border: 1px solid #ccc;
