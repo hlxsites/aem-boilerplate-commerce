@@ -13,7 +13,7 @@
   border-radius: 2%;
   width: 469px;
   height: 100%;
-  margin: 2% 20%;
+  margin: 7% 20%;
   padding: 0 2%;
   box-shadow: 5px 5px 10px rgba(189, 152, 110, 0.8);
 }
@@ -25,6 +25,10 @@
   font-size: var(--sub-text-title-large);
   color: var(--sub-text-title-color);
   letter-spacing: 2px;
+  line-height: 1;
+  padding: 0;
+  margin: 4% 0;
+  margin-left: 4%;
 }
 
 /* paragraph */
@@ -36,6 +40,7 @@
   color: var(--sub-text-title-color);
   margin: auto 0;
 }
+
 /* paragraph */
 .hero-latest div p:nth-child(2),
 .hero-latest div div table tbody tr:nth-child(3) td {
@@ -61,18 +66,25 @@
 }
 
 /* Show more/less */
+.hero-latest div div table tbody tr:nth-child(4) td p {
+  margin: 3% 0;
+}
+
 .hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u {
   font-weight: bold;
   text-decoration: none;
   text-transform: lowercase;
   cursor: pointer;
+  margin-left: 4%;
 }
 
 /* Shop men & women */
 .hero-latest div table table {
-  margin: 2% 0;
+  margin: 0;
   padding: 0;
   width: 80%;
+
+  margin-left: 3%;
 }
 
 .hero-latest div table table td a {

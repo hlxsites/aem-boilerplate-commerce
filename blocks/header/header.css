@@ -9,9 +9,19 @@
 @import url(./features/featured-articles.css);
 
 /* header and nav layout */
-header .nav-wrapper {
+
+header .nav-wrapper .main-nav-content {
   background-color: var(--background-color);
   width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  position: fixed;
+}
+header .nav-wrapper .sub-nav-content {
+  background-color: var(--background-color);
+  width: 100%;
+  left: 0;
   z-index: 2;
   position: fixed;
 }
@@ -627,10 +637,15 @@ header .breadcrumbs {
   display: none;
   margin: auto;
   max-width: 1248px;
+  top: calc(var(--nav-height) + 1vh);
   height: var(--breadcrumbs-height);
   padding: 0 24px;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--sub-text-small);
   overflow: hidden;
+}
+
+header .breadcrumbs ol a {
+  font-size: var(--sub-text-small);
 }
 
 header .breadcrumbs ol {
@@ -645,26 +660,32 @@ header .breadcrumbs ol {
 
 /* stylelint-disable-next-line no-descending-specificity */
 header .breadcrumbs ol li {
+  display: flex;
   padding: 0;
-  color: var(--dark-color);
+  color: var(--sub-text-title-color);
+  align-items: center;
 }
 
 header .breadcrumbs ol li:not(:last-child)::after {
-  content: '/';
-  padding-left: 1ch;
+  content: '>';
+  padding-left: 5px;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
 header .breadcrumbs ol li[aria-current] {
-  color: var(--text-color);
+  color: var(--sub-text-title-color);
 }
 
-@media (width >= 900px) {
+@media (width >= 1024px) {
   header .breadcrumbs {
     display: block;
+    position: absolute;
     max-width: 1264px;
-    padding: 0 32px;
-    border: 2px solid rebeccapurple;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    top: calc(var(--nav-height) + 2vh);
+    left: 11%;
   }
 }
 
