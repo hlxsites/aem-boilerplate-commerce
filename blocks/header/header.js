@@ -1,6 +1,7 @@
 import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { cartApi } from '../../scripts/minicart/api.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 992px)');
