@@ -8,24 +8,6 @@
 @import url(./modal-content/features.css);
 @import url(./features/featured-articles.css);
 
-/* header and nav layout */
-
-header .nav-wrapper .main-nav-content {
-  background-color: var(--background-color);
-  width: 100%;
-  left: 0;
-  top: 0;
-  z-index: 2;
-  position: fixed;
-}
-header .nav-wrapper .sub-nav-content {
-  background-color: var(--background-color);
-  width: 100%;
-  left: 0;
-  z-index: 2;
-  position: fixed;
-}
-
 header nav {
   box-sizing: border-box;
   display: grid;
@@ -43,6 +25,23 @@ header nav {
 }
 
 @media (width >= 992px) {
+  header .nav-wrapper .main-nav-content {
+    background-color: var(--background-color);
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    position: fixed;
+  }
+
+  header .nav-wrapper .sub-nav-content {
+    background-color: var(--background-color);
+    width: 100%;
+    left: 0;
+    z-index: 2;
+    position: fixed;
+  }
+
   header nav {
     display: flex;
     justify-content: space-between;
@@ -51,17 +50,6 @@ header nav {
   header nav[aria-expanded='true'] {
     min-height: 0;
     overflow: visible;
-  }
-
-  header .breadcrumbs {
-    display: block;
-    position: absolute;
-    max-width: 1264px;
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    top: var(--nav-height);
-    left: 11%;
   }
 }
 
@@ -148,19 +136,19 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   transform: rotate(-45deg);
 }
 
-@media (width >= 992px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
-  /* On Hover other links are greyed aout */
-  .sub-nav-content div:nth-child(1):hover div a:not(:hover) {
-    color: var(--sub-text-grey);
-  }
-}
-
 @media (width <= 991px) {
   /* Header block */
+  /* header and nav layout */
+  .breadcrumbs {
+    display: none;
+  }
+
+  header .nav-wrapper {
+    background-color: var(--background-color);
+    width: 100%;
+    z-index: 2;
+    position: fixed;
+  }
   header nav {
     display: flex;
     height: auto;
@@ -428,6 +416,14 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 }
 
 @media (width >= 992px) {
+  header nav .nav-hamburger {
+    display: none;
+    visibility: hidden;
+  }
+  /* On Hover other links are greyed aout */
+  .sub-nav-content div:nth-child(1):hover div a:not(:hover) {
+    color: var(--sub-text-grey);
+  }
   header nav .nav-sections {
     display: block;
     visibility: visible;
@@ -646,10 +642,12 @@ header .nav-search-input .products-container {
 /* breadcrumbs */
 header .breadcrumbs {
   margin: auto;
+  position: absolute;
   max-width: 1248px;
-  top: calc(var(--nav-height) + 1vh);
+  top: calc(var(--nav-height) + 3vh);
   height: var(--breadcrumbs-height);
   padding: 0 24px;
+  left: 11vw;
   font-size: var(--sub-text-small);
   overflow: hidden;
 }
@@ -686,13 +684,12 @@ header .breadcrumbs ol li[aria-current] {
   color: var(--sub-text-title-color);
 }
 
-@media (width <= 992px) {
+@media (width <= 1125px) {
+  /* breadcrumbs */
   header .breadcrumbs {
-    display: none;
+    top: calc(var(--nav-height) + 2vh);
+    left: 10vw;
   }
-}
-
-@media (width <= 1124px) {
   header .nav-search-input form #search {
     margin: 0 auto;
     padding-left: 4%;
