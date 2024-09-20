@@ -1,4 +1,4 @@
-import { getMetadata } from '../../scripts/aem.js';
+import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { cartApi } from '../../scripts/minicart/api.js';
 
@@ -20,6 +20,23 @@ function closeOnEscape(e) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
       nav.querySelector('button').focus();
+    }
+  }
+}
+
+function closeOnFocusLost(e) {
+  const nav = e.currentTarget;
+  if (!nav.contains(e.relatedTarget)) {
+    const navSections = nav.querySelector('.nav-sections');
+    const navSectionExpanded = navSections.querySelector(
+      '[aria-expanded="true"]'
+    );
+    if (navSectionExpanded && isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleAllNavSections(navSections, false);
+    } else if (!isDesktop.matches) {
+      // eslint-disable-next-line no-use-before-define
+      toggleMenu(nav, navSections, false);
     }
   }
 }
@@ -96,15 +113,30 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   if (!expanded || isDesktop.matches) {
     // collapse menu on escape press
     window.addEventListener('keydown', closeOnEscape);
+    nav.addEventListener('focusout', closeOnFocusLost);
   } else {
     window.removeEventListener('keydown', closeOnEscape);
+    nav.removeEventListener('focusout', closeOnFocusLost);
   }
+}
+
+function getDirectTextContent(menuItem) {
+  const menuLink = menuItem.querySelector(':scope > a');
+  if (menuLink) {
+    return menuLink.textContent.trim();
+  }
+  return Array.from(menuItem.childNodes)
+    .filter((n) => n.nodeType === Node.TEXT_NODE)
+    .map((n) => n.textContent)
+    .join(' ');
 }
 
 async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   const crumbs = [];
 
-  const homeUrl = document.querySelector('.nav-brand a[href]').href;
+  const homeUrl = document.querySelector(
+    '.nav-brand .sub-nav-content a[href]'
+  ).href;
 
   let menuItem = Array.from(nav.querySelectorAll('a')).find(
     (a) => a.href === currentUrl
@@ -140,7 +172,7 @@ async function buildBreadcrumbs() {
   breadcrumbs.className = 'breadcrumbs';
 
   const crumbs = await buildBreadcrumbsFromNavTree(
-    document.querySelector('.nav-sections'),
+    document.querySelector('.sub-nav-content'),
     document.location.href
   );
 
@@ -217,7 +249,12 @@ export default async function decorate(block) {
   }
 
   const navTools = nav.querySelector('.nav-tools');
-
+  if (navTools) {
+    const search = navTools.querySelector('a[href*="search"]');
+    if (search && search.textContent === '') {
+      search.setAttribute('aria-label', 'Search');
+    }
+  }
   // Minicart
   const minicartButton = document.createRange()
     .createContextualFragment(`<div class="minicart-wrapper">
