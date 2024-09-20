@@ -50,7 +50,7 @@ function renderPlaceholder(block) {
   block.innerHTML = `<h2></h2>
   <div class="scrollable">
     <div class="product-grid">
-      ${[...Array(5)].map(() => `
+      ${[...Array(4)].map(() => `
         <div class="placeholder">
           <picture><img width="300" height="375" src="" /></picture>
         </div>
