@@ -18,39 +18,18 @@ export default async function decorate(block) {
   if (!isAuthenticated) {
     window.location.href = '/customer/login';
   } else {
-    const currentUrl = new URL(window.location.href);
-    const orderNumberUrlParam = currentUrl.searchParams.get('orderNumber');
-
-    if (orderNumberUrlParam) {
-      events.on('order/data', (orderData) => {
-        if (!orderData) {
-          window.location.href = '/customer/orders';
-        } else {
-          // TODO
-          const indentedOrderData = JSON.stringify(orderData, null, 4);
-          block.innerHTML = `<pre>${indentedOrderData}</pre>`;
-        }
-      });
-
-      // Initialize order data if token provided
-      initializers.register(orderApi.initialize, {
-        oderNumber: orderNumberUrlParam,
-      });
-    } else {
-      await accountRenderer.render(OrdersList, {
-        minifiedView: minifiedViewConfig === 'true',
-        withThumbnails: true,
-        routeOrdersList: () => '/customer/orders',
-        routeOrderDetails: (orderNumber) => `/customer/order-details?orderRef=${orderNumber}`,
-        slots: {
-          // OrdersListCard: (ctx) => {
-          //   console.log('OrdersListCard', ctx);
-          // },
-          // OrdersListAction: (ctx) => {
-          //   console.log('OrdersListAction', ctx);
-          // },
-        },
-      })(block);
-    }
+    await accountRenderer.render(OrdersList, {
+      minifiedView: minifiedViewConfig === 'true',
+      routeOrdersList: () => '/customer/orders',
+      routeOrderDetails: (orderNumber) => `/customer/order-details?orderRef=${orderNumber}`,
+      slots: {
+        // OrdersListCard: (ctx) => {
+        //   console.log('OrdersListCard', ctx);
+        // },
+        // OrdersListAction: (ctx) => {
+        //   console.log('OrdersListAction', ctx);
+        // },
+      },
+    })(block);
   }
 }
