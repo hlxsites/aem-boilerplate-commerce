@@ -515,6 +515,9 @@ main
   display: block;
   margin-left: auto;
   min-width: 20rem;
+  /* position: absolute;
+  right: 15vw;
+  top: 0; */
 }
 
 .product-list-page-custom .products .title .sort > * {
@@ -529,6 +532,7 @@ main
   font-size: var(--sub-text-secondary-size);
   font-weight: 400;
   padding: 16px;
+
   margin: 0;
 }
 
@@ -540,7 +544,7 @@ main
 .product-list-page-custom .products .list > ol {
   list-style-type: none;
   display: grid;
-  gap: 20px;
+  gap: 0 10px;
 }
 
 .product-list-page-custom .products .list > ol > li {
@@ -742,6 +746,12 @@ main
 @media (width >= 993px) {
   .product-list-page-custom {
     display: flex;
+  }
+
+  .product-list-page-custom-container {
+    padding: 0 !important;
+    margin-left: 10vw !important;
+    margin-right: 10vw !important;
   }
 
   main .section > div.product-list-page-custom-wrapper {
