@@ -170,6 +170,23 @@
     padding-left: 1%;
     width: 100%;
   }
+
+  .launches-page-date {
+    display: block;
+    position: relative;
+    margin: auto;
+    z-index: 1;
+    width: 100%;
+    height: 0px;
+  }
+
+  .launches-page-date div div {
+    display: flex;
+    position: relative;
+    padding-top: 1%;
+    padding-left: 1%;
+    width: 100%;
+  }
 }
 
 @media (width <= 1000px) {
@@ -178,6 +195,13 @@
   }
 
   .launches-section div {
+    flex-direction: unset;
+  }
+  .launches-page-date {
+    width: 1020px;
+  }
+
+  .launches-page-date div {
     flex-direction: unset;
   }
 

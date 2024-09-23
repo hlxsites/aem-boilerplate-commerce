@@ -1,12 +1,14 @@
 /* date with images */
 .features-carousel-section div div p:nth-child(1),
-.launches-section div div p:nth-child(1) {
+.launches-section div div p:nth-child(1),
+.launches-page-date div div p:nth-child(1) {
   display: flex;
   align-items: center;
 }
 
 /* date */
-.launches-section div:nth-child(1) div p:nth-child(1) {
+.launches-section div:nth-child(1) div p:nth-child(1),
+.launches-page-date div:nth-child(1) div p:nth-child(1) {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -19,18 +21,31 @@
 }
 
 /* Month */
-.launches-section div:nth-child(1) div p:nth-child(1) u {
+.launches-section div:nth-child(1) div p:nth-child(1) u,
+.launches-page-date div:nth-child(1) div p:nth-child(1) u {
   color: var(--sub-text-grey);
   text-decoration: none;
   font-weight: 600;
 }
 
+.launches-page-date div:nth-child(1) div p:nth-child(1) u {
+  color: var(--sub-text-title-color-light);
+  text-decoration: none;
+  font-weight: 600;
+}
+
 /* number background */
-.launches-section div:nth-child(1) div p:nth-child(1) strong {
+.launches-section div:nth-child(1) div p:nth-child(1) strong,
+.launches-page-date div:nth-child(1) div p:nth-child(1) strong {
   display: flex;
   height: 32px;
   width: 32px;
   justify-content: center;
   background-color: white;
   align-items: center;
+}
+
+.launches-page-date div div p {
+  background-color: rgba(26, 26, 26, 0.25);
+  padding: 2%;
 }
