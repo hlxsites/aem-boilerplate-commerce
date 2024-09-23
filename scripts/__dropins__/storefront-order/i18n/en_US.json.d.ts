@@ -17,7 +17,7 @@ declare const _default: {
       "trackButton": "Track package",
       "carrier": "Carrier:",
       "prepositionOf": "of",
-      "shippingCardTitle": "Package",
+      "shippingCardTitle": "Package details",
       "shippingInfoTitle": "Shipping info",
       "notYetShippedTitle": "Not yet shipped",
       "notYetShippedImagesTitle": "Package contents"
