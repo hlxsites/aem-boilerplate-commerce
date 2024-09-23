@@ -1,0 +1,56 @@
+.our-apps-hero
+{
+    text-align: center;
+    color: white;
+    vertical-align: middle;
+    margin: auto;
+}
+
+.our-apps-hero > div > div p:nth-child(2)
+{
+    max-width: 550px;
+    font-size: 1.22rem;
+    line-height: 22px;
+    font-weight: 400;
+    text-transform: none;
+    opacity: 0.6;
+    margin: auto;
+}
+
+#apps-icons
+{
+    margin-top: 10px;
+    max-width: 256px;
+    height: 37px;
+    margin: 0px auto;
+    display: grid;
+    grid-template-columns: 50% 50%;    
+}
+
+#google-play,#apple-store
+{
+    margin: auto;
+}
+
+#google-play
+{
+    width: 116px;
+    height: inherit;
+    background-image: url("https://media.endclothing.com/end-cms/prodcms/4a97b6d3-486c-4263-95a5-0a0b8df1c3c7_Google+Play+Button%403x.png?auto=compress,format");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+#apple-store
+{
+    width: 116px;
+    height: inherit;
+    background-image: url("https://media.endclothing.com/end-cms/prodcms/a2435b0d-01ff-4fe5-ad29-78d1789498c9_Apple+Store+Button%403x.png?auto=compress,format");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+
+
