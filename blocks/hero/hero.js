@@ -17,4 +17,21 @@ export default function decorate(block)
     {
       searchIconSecion.appendChild(inputField);
     }
-  }
+
+    const getAppHero = document.querySelector(`.our-apps-hero > div > div`);
+
+    const appsNewDiv = document.createElement("div")
+    appsNewDiv.setAttribute("id","apps-icons");
+
+    const googlePlayIcon = document.createElement("div");
+    googlePlayIcon.setAttribute("id","google-play");
+    const appleStoreIcon = document.createElement("div");
+    appleStoreIcon.setAttribute("id","apple-store")
+
+    if(getAppHero != null)
+    {
+      getAppHero.appendChild(appsNewDiv);
+      appsNewDiv.appendChild(googlePlayIcon);
+      appsNewDiv.appendChild(appleStoreIcon);
+    }
+}
