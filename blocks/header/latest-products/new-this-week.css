@@ -135,13 +135,26 @@
   /* Paragraph title */
   .hero-latest div div table tbody tr:nth-child(2) td p:nth-child(1) {
     text-align: center;
+    margin: auto 0;
+    margin-top: 10%;
+    padding: auto;
     letter-spacing: 2px;
   }
 
   /* paragraph */
   .hero-latest div p:nth-child(2),
-  .hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u,
   .hero-latest div div table tbody tr:nth-child(3) td {
+    text-align: center;
+    max-width: 379px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .hero-latest div p:nth-child(2) {
+    margin-top: 4%;
+  }
+
+  .hero-latest div div table tbody tr:nth-child(4) td p:nth-child(1) u {
     text-align: center;
     max-width: 379px;
     height: 100%;
