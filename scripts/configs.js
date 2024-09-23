@@ -8,9 +8,9 @@ const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
  * @returns {string} - environment identifier (dev, stage or prod'.
  */
 export const calcEnvironment = () => {
-  const { href } = window.location;
+  const { host, href } = window.location;
   let environment = 'prod';
-  if (href.includes('.aem.page')) {
+  if (href.includes('.aem.page') || host.includes('staging')) {
     environment = 'stage';
   }
   if (href.includes('localhost')) {
@@ -61,4 +61,18 @@ export const getConfigValue = async (configParam, environment) => {
   const configJSON = await getConfigForEnvironment(env);
   const configElements = JSON.parse(configJSON).data;
   return configElements.find((c) => c.key === configParam)?.value;
+};
+
+export const getCookie = (cookieName) => {
+  const cookies = document.cookie.split(';');
+  let foundValue;
+
+  cookies.forEach((cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    if (name === cookieName) {
+      foundValue = decodeURIComponent(value);
+    }
+  });
+
+  return foundValue;
 };
