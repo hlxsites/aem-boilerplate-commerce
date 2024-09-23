@@ -18,11 +18,7 @@ export const calcEnvironment = () => {
   }
 
   const environmentFromConfig = window.sessionStorage.getItem('environment');
-  if (
-    environmentFromConfig
-    && ALLOWED_CONFIGS.includes(environmentFromConfig)
-    && environment !== 'prod'
-  ) {
+  if (environmentFromConfig && ALLOWED_CONFIGS.includes(environmentFromConfig) && environment !== 'prod') {
     return environmentFromConfig;
   }
 
@@ -64,7 +60,6 @@ export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const configJSON = await getConfigForEnvironment(env);
   const configElements = JSON.parse(configJSON).data;
-
   return configElements.find((c) => c.key === configParam)?.value;
 };
 
