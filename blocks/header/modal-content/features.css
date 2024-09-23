@@ -49,7 +49,7 @@
 }
 .features-modal div:nth-child(2) table {
   display: flex;
-  flex: 2;
+  width: 100%;
   justify-content: flex-start;
 }
 
@@ -68,10 +68,9 @@
 
 .features-modal div:nth-child(2) table tr:nth-child(2) td,
 .features-modal div:nth-child(2) table tr:nth-child(3) td {
-  padding: 0;
+  padding: 0 4px;
   width: 100%;
   max-width: 280px;
-  flex: 1;
   align-content: flex-start;
 }
 
@@ -108,7 +107,7 @@
 
   .features-modal table {
     border-top: 1px solid var(--sub-text-border-divider);
-    width: 90vw;
+    width: 90vw !important;
     max-width: 372px;
     margin-bottom: 15%;
   }
