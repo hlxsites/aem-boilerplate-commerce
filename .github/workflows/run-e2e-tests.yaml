@@ -1,0 +1,5 @@
+name: Cypress E2E Tests
+on: push
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
