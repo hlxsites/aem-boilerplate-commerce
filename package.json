@@ -41,6 +41,6 @@
     "@dropins/storefront-order": "0.1.0-alpha6",
     "@dropins/storefront-order-confirmation": "0.1.0-alpha33",
     "@dropins/storefront-pdp": "0.4.0-alpha3",
-    "@dropins/tools": "0.30.0"
+    "@dropins/tools": "0.30.1-alpha917833"
   }
 }
