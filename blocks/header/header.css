@@ -30,7 +30,7 @@ header nav {
     width: 100%;
     left: 0;
     top: 0;
-    z-index: 2;
+    z-index: 3;
     position: fixed;
   }
 
@@ -38,8 +38,9 @@ header nav {
     background-color: var(--background-color);
     width: 100%;
     left: 0;
-    z-index: 1;
+    z-index: 2;
     position: fixed;
+    border-bottom: 1px solid var(--sub-text-border-divider);
   }
 
   header nav {

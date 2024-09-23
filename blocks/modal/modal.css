@@ -7,7 +7,7 @@
 .modal dialog {
   position: fixed;
   min-height: 48%;
-  margin-top: calc(var(--nav-height) - 8px);
+  margin-top: calc(var(--nav-height));
   border: 1px solid #ccc;
   width: auto;
 }
