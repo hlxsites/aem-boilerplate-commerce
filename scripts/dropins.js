@@ -23,7 +23,7 @@ import { getMetadata } from './aem.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
-const setupAppEnvironment = (orderRef) => {
+const initializeOrderApi = (orderRef) => {
   initializers.register(orderApi.initialize, {
     orderRef,
   });
@@ -38,7 +38,7 @@ const handleUserOrdersRedirects = () => {
   const isAccountPage = currentUrl.pathname.includes('/customer');
   const isAuthenticated = !!getCookie('auth_dropin_user_token') ?? false;
   const orderRef = currentUrl.searchParams.get('orderRef');
-  const isToken = orderRef && orderRef.length > 20 ? orderRef : null;
+  const isTokenProvided = orderRef && orderRef.length > 20;
 
   const ORDER_STATUS_PATH = '/order-status';
   const ORDER_DETAILS_PATH = '/order-details';
@@ -55,11 +55,11 @@ const handleUserOrdersRedirects = () => {
     const defaultErrorMessage = "We couldn't locate an order with the information provided.";
 
     if (error.includes(defaultErrorMessage)) {
-      window.location.href = `${ORDER_STATUS_PATH}`;
+      redirectTo(ORDER_STATUS_PATH);
     } else if (isAuthenticated) {
-      window.location.href = `${CUSTOMER_ORDERS_PATH}`;
+      redirectTo(CUSTOMER_ORDERS_PATH);
     } else {
-      window.location.href = `${ORDER_STATUS_PATH}`;
+      redirectTo(ORDER_STATUS_PATH);
     }
   });
 
@@ -67,20 +67,20 @@ const handleUserOrdersRedirects = () => {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
     } else if (isAccountPage) {
-      if (isToken) {
+      if (isTokenProvided) {
         targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
       } else {
-        setupAppEnvironment(orderRef);
+        initializeOrderApi(orderRef);
       }
-    } else if (isToken) {
-      setupAppEnvironment(orderRef);
+    } else if (isTokenProvided) {
+      initializeOrderApi(orderRef);
     } else {
       targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
     }
   } else if (!orderRef) {
     targetPath = ORDER_STATUS_PATH;
-  } else if (isToken) {
-    setupAppEnvironment(orderRef);
+  } else if (isTokenProvided) {
+    initializeOrderApi(orderRef);
   } else {
     targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
   }
@@ -133,9 +133,9 @@ export default async function initializeDropins() {
 
   // Get current page template metadata
   const templateMeta = getMetadata('template');
-  const isOrderPage = templateMeta.includes('Order');
+  const isOrderDetailsPage = templateMeta.includes('Order-Details');
 
-  if (isOrderPage) {
+  if (isOrderDetailsPage) {
     handleUserOrdersRedirects();
   }
 
