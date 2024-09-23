@@ -38,7 +38,7 @@ header nav {
     background-color: var(--background-color);
     width: 100%;
     left: 0;
-    z-index: 2;
+    z-index: 1;
     position: fixed;
   }
 
