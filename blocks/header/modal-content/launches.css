@@ -11,11 +11,16 @@
 }
 
 /* Title */
-.modal-content .default-content-wrapper p:nth-child(2) {
+.modal-content .default-content-wrapper p:nth-child(2) a {
   font-weight: 550;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
   color: var(--sub-text-title-color);
+  font-size: var(--sub-text-secondary-size);
   margin-left: -2%;
   margin-bottom: 3%;
+  background-color: transparent;
 }
 
 /* Product Name */
