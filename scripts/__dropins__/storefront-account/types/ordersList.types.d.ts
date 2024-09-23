@@ -44,5 +44,6 @@ export interface useOrdersListProps {
     pageSize: number;
     ordersInMinifiedView: number;
     selectedDate: string;
+    handleSetFirstOrderDate: (date: string) => void;
 }
 //# sourceMappingURL=ordersList.types.d.ts.map

@@ -59,5 +59,6 @@ export interface OrderHistory {
     items: OrderDetails[];
     pageInfo: PaginationInfo;
     totalCount: number;
+    dateOfFirstOrder: string;
 }
 //# sourceMappingURL=order-history-list.d.ts.map

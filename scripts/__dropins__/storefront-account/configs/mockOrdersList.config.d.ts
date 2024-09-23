@@ -7,6 +7,7 @@ export declare const mockOrdersListResponse: {
                 current_page: number;
             };
             total_count: number;
+            date_of_first_order: string;
             items: {
                 token: string;
                 email: string;

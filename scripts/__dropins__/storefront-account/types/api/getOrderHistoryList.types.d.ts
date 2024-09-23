@@ -59,6 +59,7 @@ export interface OrdersProps {
     page_info: PageInfoProps;
     total_count: number;
     items: OrderProps[];
+    date_of_first_order: string;
 }
 export interface OrderHistoryListResponse {
     data: {

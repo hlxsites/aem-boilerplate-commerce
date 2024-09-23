@@ -1,4 +1,4 @@
-import{c as i,f as l,h as u,a as m}from"./convertCase.js";import{t as d}from"./transform-customer-address.js";const _=(e,r="en-US",o={})=>{const t={...{day:"2-digit",month:"2-digit",year:"numeric"},...o},s=new Date(e);return isNaN(s.getTime())?"Invalid Date":new Intl.DateTimeFormat(r,t).format(s)},p=e=>{var t,s;if(!((s=(t=e.data)==null?void 0:t.customer)!=null&&s.orders))return null;const{items:r,page_info:o,total_count:a}=e.data.customer.orders;return{items:r.map(n=>{const c={...n,order_date:_(n.order_date),shipping_address:d(n.shipping_address),billing_address:d(n.billing_address)};return i(c,"camelCase",{})}),pageInfo:i(o,"camelCase",{}),totalCount:i(a,"camelCase",{})}},g=`
+import{c as i,f as u,h as m,a as _}from"./convertCase.js";import{t as c}from"./transform-customer-address.js";const f=(t,e="en-US",o={})=>{const a={...{day:"2-digit",month:"2-digit",year:"numeric"},...o},s=new Date(t);return isNaN(s.getTime())?"Invalid Date":new Intl.DateTimeFormat(e,a).format(s)},p=t=>{var s,d;if(!((d=(s=t.data)==null?void 0:s.customer)!=null&&d.orders))return null;const{items:e,page_info:o,total_count:r,date_of_first_order:a}=t.data.customer.orders;return{items:e.map(n=>{const l={...n,order_date:f(n.order_date),shipping_address:c(n.shipping_address),billing_address:c(n.billing_address)};return i(l,"camelCase",{})}),pageInfo:i(o,"camelCase",{}),totalCount:i(r,"camelCase",{}),dateOfFirstOrder:i(a,"camelCase",{})}},g=`
   query GET_CUSTOMER_ORDERS_LIST($pageSize: Int, $filter: CustomerOrdersFilterInput, $sort: CustomerOrderSortInput) {
   customer {
     orders(pageSize: $pageSize, filter: $filter, sort: $sort) {
@@ -7,6 +7,7 @@ import{c as i,f as l,h as u,a as m}from"./convertCase.js";import{t as d}from"./t
         total_pages
         current_page
       }
+      date_of_first_order
       total_count
       items {
         token
@@ -87,4 +88,4 @@ import{c as i,f as l,h as u,a as m}from"./convertCase.js";import{t as d}from"./t
     }
   }
 }
-`,y=async(e,r)=>{const o=r?{order_date:JSON.parse(r)}:{};return await l(g,{method:"GET",cache:"no-cache",variables:{pageSize:e,filter:o,sort:{sort_direction:"DESC",sort_field:"CREATED_AT"}}}).then(a=>{var t;return(t=a.errors)!=null&&t.length?u(a.errors):p(a)}).catch(m)};export{y as g};
+`,O=async(t,e)=>{const o=e?{order_date:JSON.parse(e)}:{};return await u(g,{method:"GET",cache:"no-cache",variables:{pageSize:t,filter:o,sort:{sort_direction:"DESC",sort_field:"CREATED_AT"}}}).then(r=>{var a;return(a=r.errors)!=null&&a.length?m(r.errors):p(r)}).catch(_)};export{O as g};
