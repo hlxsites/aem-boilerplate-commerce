@@ -571,7 +571,6 @@ header nav .nav-tools button.nav-search-button {
 }
 
 header .nav-search-input.hidden {
-  /* display: none; */
   top: -100%;
 }
 
