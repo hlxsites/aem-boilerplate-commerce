@@ -3,26 +3,30 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { Header, provider as uiProvider } from '@dropins/tools/components.js';
 
-export default function decorate(block) {
+export default async function decorate(block) {
   block.innerHTML = '';
 
-  return new Promise((resolve) => {
-    events.on('order/data', async (orderData) => {
-      const headerContainer = document.createElement('div');
-      await uiProvider.render(Header, { title: `Order ${orderData.number}` })(headerContainer);
+  const headerContainer = document.createElement('div');
+  await uiProvider.render(Header, { title: 'Order' })(headerContainer);
 
-      if (window.location.href.includes('customer/order-details')) {
-        const link = document.createElement('a');
-        link.innerText = '< Back to all orders';
-        link.href = '/customer/orders';
-        link.classList.add('orders-list-link');
+  if (window.location.href.includes('customer/order-details')) {
+    const link = document.createElement('a');
 
-        block.appendChild(link);
-      }
+    // TODO: Add i18n when appropriate functionality will be introduced in boilerplate
+    link.innerText = '< Back to all orders';
+    link.href = '/customer/orders';
+    link.classList.add('orders-list-link');
 
-      block.appendChild(headerContainer);
+    block.appendChild(link);
+  }
 
-      resolve();
-    }, { eager: true });
-  });
+  block.appendChild(headerContainer);
+
+  events.on('order/data', async (orderData) => {
+    const orderTitleEl = document.querySelector('.dropin-header-container__title');
+
+    if (orderTitleEl) {
+      orderTitleEl.innerText = `Order ${orderData.number}`;
+    }
+  }, { eager: true });
 }
