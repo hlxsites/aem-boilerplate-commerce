@@ -64,7 +64,7 @@ async function setJsonLdProduct(product) {
     })));
   } else {
     ldJson.offers.push({
-      '@type': 'http://schema.org/Offer',
+      '@type': 'Offer',
       price: amount?.value,
       priceCurrency: amount?.currency,
       availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
