@@ -16,6 +16,10 @@
   list-style-type: square;
   font-size: var(--sub-text-sub-title-size);
 }
+.product-main-brand-showcase ul li::marker {
+  font-size: var(--sub-text-sub-title-size);
+  border: 2px solid rebeccapurple;
+}
 
 /* Brand Name */
 .product-main-brand-showcase ul li a,
@@ -84,6 +88,23 @@
   height: 700px;
   height: auto;
   object-fit: contain;
+}
+
+.featured-bestseller-post {
+  flex-wrap: nowrap;
+}
+
+.featured-bestseller-post p:nth-child(2) a {
+  visibility: hidden;
+  padding-top: 4%;
+}
+
+.featured-bestseller-post ul {
+  padding: 0 4%;
+}
+
+.featured-bestseller-post div div {
+  padding: 0 2%;
 }
 
 @media (600px < width <= 1024px) {

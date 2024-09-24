@@ -66,7 +66,7 @@ div:nth-child(5) .video-wrapper div div iframe {
   padding: 0;
   justify-content: center;
   text-transform: uppercase;
-  font-weight: 510;
+  font-weight: 500;
 }
 
 /* Carousel content */
@@ -117,7 +117,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 /* Product Brand Name */
 .carousel-content div div p:nth-child(2) a {
   text-transform: uppercase;
-  font-weight: 550;
+  font-weight: 400;
 }
 
 /* Product Colour */

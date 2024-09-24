@@ -8,8 +8,14 @@
   width: 100%;
   justify-content: center;
 }
+
 .latest-products div div {
   max-width: 214px;
+}
+
+.bestsellers-products {
+  display: flex !important;
+  flex-wrap: nowrap;
 }
 
 /* .featured-articles-cols div div {
