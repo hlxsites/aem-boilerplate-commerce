@@ -51,12 +51,8 @@ const handleUserOrdersRedirects = () => {
     return;
   }
 
-  events.on('order/error', ({ error }) => {
-    const defaultErrorMessage = "We couldn't locate an order with the information provided.";
-
-    if (error.includes(defaultErrorMessage)) {
-      redirectTo(ORDER_STATUS_PATH);
-    } else if (isAuthenticated) {
+  events.on('order/error', () => {
+    if (isAuthenticated) {
       redirectTo(CUSTOMER_ORDERS_PATH);
     } else {
       redirectTo(ORDER_STATUS_PATH);
