@@ -16,10 +16,13 @@ export const calcEnvironment = () => {
   if (href.includes('localhost')) {
     environment = 'dev';
   }
-
-  const environmentFromConfig = window.sessionStorage.getItem('environment');
-  if (environmentFromConfig && ALLOWED_CONFIGS.includes(environmentFromConfig) && environment !== 'prod') {
-    return environmentFromConfig;
+  try {
+    const environmentFromConfig = window.sessionStorage.getItem('environment');
+    if (environmentFromConfig && ALLOWED_CONFIGS.includes(environmentFromConfig) && environment !== 'prod') {
+      return environmentFromConfig;
+    }
+  } catch (e) {
+    // Do nothing
   }
 
   return environment;
@@ -37,15 +40,31 @@ function buildConfigURL(environment) {
 
 const getConfigForEnvironment = async (environment) => {
   const env = environment || calcEnvironment();
-  let configJSON = window.sessionStorage.getItem(`config:${env}`);
+  let configJSON;
+
+  try {
+    configJSON = window.sessionStorage.getItem(`config:${env}`);
+    if (!configJSON) {
+      throw new Error('No config in sessionStorage');
+    }
+  } catch (e) {
+    // Do nothing
+  }
+
   if (!configJSON) {
     configJSON = await fetch(buildConfigURL(env));
     if (!configJSON.ok) {
       throw new Error(`Failed to fetch config for ${env}`);
     }
     configJSON = await configJSON.text();
-    window.sessionStorage.setItem(`config:${env}`, configJSON);
+
+    try {
+      window.sessionStorage.setItem(`config:${env}`, configJSON);
+    } catch (e) {
+      // Do nothing
+    }
   }
+
   return configJSON;
 };
 

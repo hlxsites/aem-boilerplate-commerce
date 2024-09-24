@@ -25,7 +25,12 @@ class Store {
   };
 
   static getCartId() {
-    const cartIdField = window.localStorage.getItem(Store.CARTID_STORE);
+    let cartIdField;
+    try {
+      cartIdField = window.localStorage.getItem(Store.CARTID_STORE);
+    } catch (e) {
+      // Do nothing
+    }
     if (!cartIdField) {
       return null;
     }
@@ -91,14 +96,22 @@ class Store {
       const parsed = JSON.parse(window.localStorage.getItem(`${this.key}_${this.cartId}`)) || Store.DEFAULT_CART;
       return parsed;
     } catch (err) {
-      console.error('Failed to parse cart from localStore. Resetting it.');
-      window.localStorage.removeItem(`${this.key}_${this.cartId}`);
+      console.warn('Failed to parse cart from localStore. Resetting it.');
+      try {
+        window.localStorage.removeItem(`${this.key}_${this.cartId}`);
+      } catch (e) {
+        // Do nothing
+      }
     }
     return Store.DEFAULT_CART;
   }
 
   resetCart() {
-    window.localStorage.removeItem(`${this.key}_${this.cartId}`);
+    try {
+      window.localStorage.removeItem(`${this.key}_${this.cartId}`);
+    } catch (e) {
+      // Do nothing
+    }
     this.cartId = null;
   }
 
