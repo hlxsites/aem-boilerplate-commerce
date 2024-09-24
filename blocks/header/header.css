@@ -578,7 +578,7 @@ header .nav-search-input.hidden {
 header .nav-search-input {
   transition: top 0.5s ease;
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   box-shadow: var(--shape-shadow-2);
   background: white;
   height: 86vh;
