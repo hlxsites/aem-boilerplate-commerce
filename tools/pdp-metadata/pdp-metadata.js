@@ -150,6 +150,9 @@ const getProducts = async (config, pageNumber) => {
     const totalPages = response.productSearch.page_info.total_pages;
     const currentPage = response.productSearch.page_info.current_page;
     console.log(`Retrieved page ${currentPage} of ${totalPages} pages`);
+
+    await addVariantsToProducts(products, config);
+
     if (currentPage !== totalPages) {
       return [...products, ...(await getProducts(config, currentPage + 1))];
     }
@@ -159,7 +162,6 @@ const getProducts = async (config, pageNumber) => {
 };
 
 async function addVariantsToProducts(products, config) {
-  console.log('Fetching variants');
   const query = `
   query Q {
       ${products.map((product, i) => {
@@ -176,8 +178,6 @@ async function addVariantsToProducts(products, config) {
   if (!response) {
     throw new Error('Could not fetch variants');
   }
-
-  console.log('Fetched variants');
 
   products.forEach((product, i) => {
     product.variants = response[`item_${i}`];
@@ -197,8 +197,6 @@ async function addVariantsToProducts(products, config) {
   }
 
   const products = await getProducts(config, 1);
-
-  await addVariantsToProducts(products, config);
 
   const data = [
     [
