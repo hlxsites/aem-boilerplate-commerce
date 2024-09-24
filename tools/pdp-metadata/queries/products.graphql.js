@@ -1,5 +1,5 @@
 export default `query productSearch($currentPage: Int = 1) {
-  productSearch(current_page: $currentPage, page_size: 20, phrase: "") {
+  productSearch(current_page: $currentPage, page_size: 50, phrase: "") {
     items {
       productView {
         __typename

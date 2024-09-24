@@ -2,9 +2,10 @@ import XLSX from 'xlsx';
 import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
+import { variantsFragment } from './queries/variants.graphql.js';
 
 const basePath = 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live';
-const configFile = `${basePath}/configs.json?sheet=prod`;
+const configFile = `${basePath}/configs-dev.json`; // When running in prod, change to configs.json
 
 
 async function performCatalogServiceQuery(config, query, variables) {
@@ -19,13 +20,14 @@ async function performCatalogServiceQuery(config, query, variables) {
   };
 
   const apiCall = new URL(config['commerce-endpoint']);
-  apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
-    .replace(/\s\s+/g, ' '));
-  apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
 
   const response = await fetch(apiCall, {
-    method: 'GET',
+    method: 'POST',
     headers,
+    body: JSON.stringify({
+      query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
+      variables,
+    }),
   });
 
   if (!response.ok) {
@@ -37,7 +39,7 @@ async function performCatalogServiceQuery(config, query, variables) {
   return queryResponse.data;
 }
 
-function getJsonLd(product) {
+function getJsonLd(product, { variants }) {
   const amount = product.priceRange?.minimum?.final?.amount || product.price?.final?.amount;
   const brand = product.attributes.find((attr) => attr.name === 'brand');
 
@@ -61,13 +63,29 @@ function getJsonLd(product) {
     };
   }
 
-  if (amount?.value && amount?.currency) {
-    schema.offers.push({
-      '@type': 'Offer',
-      price: amount?.value,
-      priceCurrency: amount?.currency,
-      availability: product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-    });
+  if (variants.length <= 1) {
+    // simple products
+    if (amount?.value && amount?.currency) {
+      schema.offers.push({
+        '@type': 'Offer',
+        price: amount?.value,
+        priceCurrency: amount?.currency,
+        availability: product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+      });
+    }
+  } else {
+    // complex products
+    variants.forEach((variant) => {
+      schema.offers.push({
+        name: variant.product.name,
+        image: variant.product.images[0]?.url,
+        '@type': 'Offer',
+        price: variant.product.price.final.amount.value,
+        priceCurrency: variant.product.price.final.amount.currency,
+        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+        sku: variant.product.sku
+      });
+    })
   }
 
   return JSON.stringify(schema);
@@ -96,7 +114,7 @@ const getProducts = async (config, pageNumber) => {
         description,
         shortDescription,
       } = item.productView;
-      const { url: imageUrl } = item.productView.images[0];
+      const { url: imageUrl } = item.productView.images?.[0] ?? { url: '' };
 
       let baseImageUrl = imageUrl;
       if (baseImageUrl.startsWith('//')) {
@@ -140,6 +158,32 @@ const getProducts = async (config, pageNumber) => {
   return [];
 };
 
+async function addVariantsToProducts(products, config) {
+  console.log('Fetching variants');
+  const query = `
+  query Q {
+      ${products.map((product, i) => {
+        return `
+        item_${i}: variants(sku: "${product.productView.sku}") {
+          ...ProductVariant
+        }
+        `  
+      }).join('\n')}
+    }${variantsFragment}`;
+
+  const response = await performCatalogServiceQuery(config, query, null);
+
+  if (!response) {
+    throw new Error('Could not fetch variants');
+  }
+
+  console.log('Fetched variants');
+
+  products.forEach((product, i) => {
+    product.variants = response[`item_${i}`];
+  });
+}
+
 (async () => {
   const config = {};
   try {
@@ -153,6 +197,8 @@ const getProducts = async (config, pageNumber) => {
   }
 
   const products = await getProducts(config, 1);
+
+  await addVariantsToProducts(products, config);
 
   const data = [
     [
@@ -169,7 +215,7 @@ const getProducts = async (config, pageNumber) => {
       'json-ld',
     ],
   ];
-  products.forEach(({ productView: metaData }) => {
+  products.forEach(({ productView: metaData, variants }) => {
     data.push(
       [
         metaData.path, // URL
@@ -182,7 +228,7 @@ const getProducts = async (config, pageNumber) => {
         `${basePath}${metaData.path}`, // og:url
         metaData['og:image'], // og:image
         metaData['og:image:secure_url'], // og:image:secure_url
-        getJsonLd(metaData), // json-ld
+        getJsonLd(metaData, variants), // json-ld
       ],
     );
   });
