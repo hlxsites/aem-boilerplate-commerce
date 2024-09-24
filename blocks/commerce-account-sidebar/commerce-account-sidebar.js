@@ -39,8 +39,12 @@ export default async function decorate(block) {
   });
 
   block.innerHTML = '';
-  sidebarItems.forEach((el) => {
-    block.appendChild(el);
+
+  return new Promise((resolve) => {
+    sidebarItems.forEach((el) => {
+      block.appendChild(el);
+    });
+    resolve();
   });
 }
 
