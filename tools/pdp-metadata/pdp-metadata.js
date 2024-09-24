@@ -77,9 +77,9 @@ function getJsonLd(product, { variants }) {
     // complex products
     variants.forEach((variant) => {
       schema.offers.push({
+        '@type': 'Offer',
         name: variant.product.name,
         image: variant.product.images[0]?.url,
-        '@type': 'Offer',
         price: variant.product.price.final.amount.value,
         priceCurrency: variant.product.price.final.amount.currency,
         availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
