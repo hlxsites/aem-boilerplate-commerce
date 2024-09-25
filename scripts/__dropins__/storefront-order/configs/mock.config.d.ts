@@ -903,22 +903,32 @@ export declare const storyBookNormalizeAddress: {
         orderNumber: number;
         value: string;
         label: null;
-    }[] | {
+    } | {
         name: string;
         orderNumber: number;
         value: string[];
         label: null;
-    }[])[];
+    } | {
+        name: string;
+        orderNumber: number;
+        value: string;
+        label: string;
+    })[];
     shippingAddress: ({
         name: string;
         orderNumber: number;
         value: string;
         label: null;
-    }[] | {
+    } | {
         name: string;
         orderNumber: number;
         value: string[];
         label: null;
-    }[])[];
+    } | {
+        name: string;
+        orderNumber: number;
+        value: string;
+        label: string;
+    })[];
 };
 //# sourceMappingURL=mock.config.d.ts.map

@@ -3,10 +3,10 @@
 import { ResetPassword } from '@dropins/storefront-auth/containers/ResetPassword.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { getCookie } from '../../scripts/configs.js';
+import checkIsAuthenticated from './utils/checkIsAuthenticated.js';
 
 export default async function decorate(block) {
-  const isAuthenticated = !!getCookie('auth_dropin_user_token');
+  const isAuthenticated = checkIsAuthenticated();
 
   if (isAuthenticated) {
     window.location.href = '/customer/account';

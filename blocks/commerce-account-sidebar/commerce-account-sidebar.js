@@ -1,6 +1,7 @@
 import { Icon, provider as uiProvider } from '@dropins/tools/components.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { CUSTOMER_ORDERS_PATH } from '../../scripts/constants.js';
 
 export default async function decorate(block) {
   const fragment = await loadFragment('/customer/sidebar-fragment');
@@ -19,8 +20,8 @@ export default async function decorate(block) {
     menuItemEl.href = itemConfig.itemLink;
 
     const isItemActive = (
-      itemConfig.itemLink === '/customer/orders'
-        ? window.location.href.includes('/customer/order')
+      itemConfig.itemLink === CUSTOMER_ORDERS_PATH
+        ? window.location.href.includes(CUSTOMER_ORDERS_PATH)
         : window.location.href.includes(itemConfig.itemLink)
     );
     if (isItemActive) {

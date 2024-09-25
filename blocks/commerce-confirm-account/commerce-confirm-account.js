@@ -5,10 +5,10 @@ import { SuccessNotification } from '@dropins/storefront-auth/containers/Success
 import * as authApi from '@dropins/storefront-auth/api.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { Button } from '@dropins/tools/components.js';
-import { getCookie } from '../../scripts/configs.js';
+import checkIsAuthenticated from './utils/checkIsAuthenticated.js';
 
 export default async function decorate(block) {
-  const isAuthenticated = !!getCookie('auth_dropin_user_token');
+  const isAuthenticated = checkIsAuthenticated();
 
   if (isAuthenticated) {
     window.location.href = '/customer/account';
