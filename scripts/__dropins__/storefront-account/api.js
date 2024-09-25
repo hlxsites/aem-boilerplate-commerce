@@ -1,9 +1,165 @@
-import{Initializer as c}from"@dropins/tools/lib.js";import{f as n,h as d,a as f}from"./chunks/convertCase.js";import{g as T,r as y,s as Q,b,d as w}from"./chunks/convertCase.js";import{c as O,g as R,a as k,b as v,u as M}from"./chunks/updateCustomerAddress.js";import{g as U,r as _}from"./chunks/removeCustomerAddress.js";import{g as B}from"./chunks/getOrderHistoryList.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/event-bus.js";import"./chunks/transform-customer-address.js";const s=new c({init:async t=>{const r={authHeaderConfig:{header:"Authorization",tokenPrefix:"Bearer"}};s.config.setConfig({...r,...t})},listeners:()=>[]}),x=s.config,u=t=>{var r,a,e,o,i,m;return{email:((a=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:a.email)||"",firstname:((o=(e=t==null?void 0:t.data)==null?void 0:e.customer)==null?void 0:o.firstname)||"",lastname:((m=(i=t==null?void 0:t.data)==null?void 0:i.customer)==null?void 0:m.lastname)||""}},h=`
-  query GET_CUSTOMER {
-    customer {
-     firstname
-     lastname
-     email
+import{Initializer as u}from"@dropins/tools/lib.js";import{events as s}from"@dropins/tools/event-bus.js";import{f as n,h as m,a as o}from"./chunks/fetch-graphql.js";import{g as $,r as w,s as A,b as C,c as N}from"./chunks/fetch-graphql.js";import{O as c,a as _,A as p,t as h,b as O}from"./chunks/getCustomer.js";import{c as F,g as M}from"./chunks/getCustomer.js";import{g as x}from"./chunks/getAttributesForm.js";import"@dropins/tools/fetch-graphql.js";const y=`
+query ORDER_BY_NUMBER($orderNumber: String!) {
+  customer {
+    orders(
+    filter: {number: {eq: $orderNumber}},
+    ) {
+      items {
+        email
+        available_actions
+        status
+        number
+        id
+        order_date
+        carrier
+        shipping_method
+        is_virtual
+        applied_coupons {
+          code
+        }
+        shipments {
+        id
+        number
+        tracking {
+          title
+          number
+          carrier
+        }
+        comments {
+          message
+          timestamp
+        }
+        items {
+          id
+          product_sku
+          product_name
+          order_item {
+            ...OrderItems
+            ... on GiftCardOrderItem {
+              gift_card {
+                recipient_name
+                recipient_email
+                sender_name
+                sender_email
+                message
+              }
+            }
+          }
+         }
+      }
+        payment_methods {
+          name
+          type
+        }
+        shipping_address {
+        ...AddressesList
+        }
+        billing_address {
+        ...AddressesList
+        }
+        items {
+          ...OrderItems
+          ... on GiftCardOrderItem {
+            __typename
+            gift_card {
+              recipient_name
+              recipient_email
+              sender_name
+              sender_email
+              message
+            }
+          }
+        }
+        total {
+        ...OrderSummary
+        }
+      }
     }
   }
-`,A=async()=>await n(h,{method:"GET",cache:"force-cache"}).then(t=>{var r;return(r=t.errors)!=null&&r.length?d(t.errors):u(t)}).catch(f);export{x as config,O as createCustomerAddress,n as fetchGraphQl,R as getAttributesForm,T as getConfig,k as getCountries,A as getCustomer,U as getCustomerAddress,B as getOrderHistoryList,v as getRegions,s as initialize,_ as removeCustomerAddress,y as removeFetchGraphQlHeader,Q as setEndpoint,b as setFetchGraphQlHeader,w as setFetchGraphQlHeaders,M as updateCustomerAddress};
+}
+${c}
+${_}
+${p}
+`,g=async(e,r)=>await n(y,{method:"GET",cache:"force-cache",variables:{orderNumber:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?m(t.errors):h(r??"orderData",t)}).catch(o),R=`
+query ORDER_BY_TOKEN($token: String!) {
+  guestOrderByToken(input: { token: $token }) {
+    email
+    id
+    number
+    order_date
+    status
+    token
+    carrier
+    shipping_method
+    printed_card_included
+    gift_receipt_included
+    available_actions
+    is_virtual
+    payment_methods {
+      name
+      type
+    }
+    applied_coupons {
+      code
+    }
+    shipments {
+      id
+      tracking {
+        title
+        number
+        carrier
+      }
+      comments {
+        message
+        timestamp
+      }
+      items {
+        id
+        product_sku
+        product_name
+        order_item {
+          ...OrderItems
+          ... on GiftCardOrderItem {
+            gift_card {
+              recipient_name
+              recipient_email
+              sender_name
+              sender_email
+              message
+            }
+          }
+        }
+      }
+    }
+    payment_methods {
+      name
+      type
+    }
+    shipping_address {
+      ...AddressesList
+    }
+    billing_address {
+      ...AddressesList
+    }
+    items {
+      ...OrderItems
+      ... on GiftCardOrderItem {
+        __typename
+        gift_card {
+          recipient_name
+          recipient_email
+          sender_name
+          sender_email
+          message
+        }
+      }
+    }
+    total {
+      ...OrderSummary
+    }
+  }
+}
+${c}
+${_}
+${p}
+`,b=async e=>await n(R,{method:"GET",cache:"no-cache",variables:{token:e}}).then(r=>{var t;return(t=r.errors)!=null&&t.length?m(r.errors):O(r)}).catch(o),f=async e=>{var d;const r=(e==null?void 0:e.orderRef)??"",t=r&&typeof(e==null?void 0:e.orderRef)=="string"&&((d=e==null?void 0:e.orderRef)==null?void 0:d.length)>20,a=(e==null?void 0:e.orderData)??null;if(a){s.emit("order/data",a);return}if(!r){console.error("Order Token or number not received.");return}const i=t?await b(r):await g(r);i?s.emit("order/data",i):s.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},l=new u({init:async e=>{const r={};l.config.setConfig({...r,...e}),f(e).catch(console.error)},listeners:()=>[]}),T=l.config;export{T as config,n as fetchGraphQl,x as getAttributesForm,$ as getConfig,F as getCustomer,M as getGuestOrder,g as getOrderDetailsById,b as guestOrderByToken,l as initialize,w as removeFetchGraphQlHeader,A as setEndpoint,C as setFetchGraphQlHeader,N as setFetchGraphQlHeaders};

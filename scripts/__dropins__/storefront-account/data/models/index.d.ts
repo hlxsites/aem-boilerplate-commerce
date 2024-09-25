@@ -1,6 +1,4 @@
-export * from './customer-address';
+export * from './order-details';
 export * from './attributes-form';
-export * from './country';
-export * from './region';
-export * from './order-history-list';
+export * from './customer';
 //# sourceMappingURL=index.d.ts.map

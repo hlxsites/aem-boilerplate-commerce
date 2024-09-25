@@ -1,40 +1,60 @@
-import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
-import { AttributesFormModel, Country, FieldEnumList } from '../data/models';
-
-export interface FieldsProps extends Omit<AttributesFormModel, 'options'> {
-    className?: string;
+export declare enum FieldEnumList {
+    BOOLEAN = "BOOLEAN",
+    DATE = "DATE",
+    DATETIME = "DATETIME",
+    DROPDOWN = "DROPDOWN",
+    FILE = "FILE",
+    GALLERY = "GALLERY",
+    HIDDEN = "HIDDEN",
+    IMAGE = "IMAGE",
+    MEDIA_IMAGE = "MEDIA_IMAGE",
+    MULTILINE = "MULTILINE",
+    MULTISELECT = "MULTISELECT",
+    PRICE = "PRICE",
+    SELECT = "SELECT",
+    TEXT = "TEXT",
+    TEXTAREA = "TEXTAREA",
+    UNDEFINED = "UNDEFINED",
+    VISUAL = "VISUAL",
+    WEIGHT = "WEIGHT",
+    EMPTY = ""
+}
+export interface FieldsProps {
+    className: string;
     fieldType: FieldEnumList;
     id: string;
-    options: Country[];
-}
-interface AddressFormInputsContext {
-    formActions: {
-        handleChange: (event: Event) => void;
-    };
+    code: string;
+    name: string;
+    defaultValue: string | boolean | number;
+    entityType: string;
+    required: boolean;
+    is_unique: boolean;
+    label: string;
+    orderNumber: number;
+    options?: {
+        is_default?: boolean;
+        label?: string;
+        value?: string;
+    }[];
 }
 export interface FormProps {
-    fieldsConfig: FieldsProps[] | [];
+    fieldsConfig?: FieldsProps[] | [];
     name?: string;
     className?: string;
     children?: any;
     loading?: boolean;
     onSubmit?: (event: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
-    handleSetCountryCode: (value: string) => void;
-    slots?: {
-        AddressFormInputs?: SlotProps<AddressFormInputsContext>;
-    };
-    onChange?: (values: Record<string, FormDataEntryValue>, inputValue: Record<string, string>, event: Event) => void;
 }
 export interface useFormProps extends Omit<FormProps, 'children' | 'className' | 'name'> {
 }
+export type FormValues = Record<string, string | number | boolean | undefined>;
 export interface FormInputsProps {
     className?: string;
     errors?: Record<string, string>;
-    values?: Record<string, string | number | boolean>;
-    fields?: any;
+    values?: FormValues;
+    fields?: FieldsProps[];
     loading?: boolean;
     onChange?: (event: Event) => void;
     onBlur?: (event: Event) => void;
 }
-export {};
 //# sourceMappingURL=form.types.d.ts.map
