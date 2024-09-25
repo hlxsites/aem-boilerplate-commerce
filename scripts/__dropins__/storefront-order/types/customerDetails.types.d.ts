@@ -6,7 +6,10 @@ export interface KeysSortOrderProps {
     label?: string | null;
 }
 export interface NormalizeAddressProps extends KeysSortOrderProps {
-    value: any;
+    name: string;
+    orderNumber: number;
+    value?: string | string[];
+    label?: string | null;
 }
 export interface CustomerDetailsProps {
     className?: string;
@@ -22,8 +25,8 @@ export interface CustomerDetailsContentProps extends Omit<CustomerDetailsProps, 
     loading: boolean;
     order?: OrderDataModel;
     normalizeAddress?: {
-        billingAddress: NormalizeAddressProps[];
-        shippingAddress: NormalizeAddressProps[];
+        billingAddress: NormalizeAddressProps[][];
+        shippingAddress: NormalizeAddressProps[][];
     };
 }
 export interface CustomerAddressesModel {
