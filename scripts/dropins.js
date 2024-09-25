@@ -63,6 +63,8 @@ const handleUserOrdersRedirects = () => {
     }
   });
 
+  console.log('isAuthenticated', isAuthenticated)
+
   if (isAuthenticated) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
