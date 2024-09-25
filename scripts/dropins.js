@@ -82,32 +82,6 @@ const handleUserOrdersRedirects = () => {
   } else {
     initializeOrderApi(orderRef);
   }
-
-  // if (isAuthenticated) {
-  //   if (!orderRef) {
-  //     targetPath = CUSTOMER_ORDERS_PATH;
-  //   } else if (isAccountPage) {
-  //     if (isTokenProvided) {
-  //       targetPath = `${ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
-  //     } else {
-  //       initializeOrderApi(orderRef);
-  //     }
-  //   } else if (isTokenProvided) {
-  //     initializeOrderApi(orderRef);
-  //   } else {
-  //     targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
-  //   }
-  // } else if (!orderRef) {
-  //   targetPath = ORDER_STATUS_PATH;
-  // } else if (isTokenProvided) {
-  //   initializeOrderApi(orderRef);
-  // } else {
-  //   targetPath = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
-  // }
-
-  // if (targetPath) {
-  //   window.location.href = targetPath;
-  // }
 };
 
 // Update auth headers
