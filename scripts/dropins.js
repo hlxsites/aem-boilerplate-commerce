@@ -24,7 +24,6 @@ import {
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_ORDERS_PATH,
   ORDER_DETAILS_PATH,
-  ORDER_REF_URL_QUERY,
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
 } from './constants.js';
@@ -60,43 +59,27 @@ const handleUserOrdersRedirects = () => {
   if (isAuthenticated) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
-    } else if (isAccountPage && isTokenProvided) {
-      targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-    } else if (!isAccountPage && !isTokenProvided) {
-      targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+    } else if (isAccountPage) {
+      if (isTokenProvided) {
+        targetPath = `${ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
+      } else {
+        initializeOrderApi(orderRef);
+      }
+    } else if (isTokenProvided) {
+      initializeOrderApi(orderRef);
+    } else {
+      targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
     }
   } else if (!orderRef) {
     targetPath = ORDER_STATUS_PATH;
-  } else if (!isTokenProvided) {
-    targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+  } else if (isTokenProvided) {
+    initializeOrderApi(orderRef);
+  } else {
+    targetPath = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
   }
-
-  // if (isAuthenticated) {
-  //   if (!orderRef) {
-  //     targetPath = CUSTOMER_ORDERS_PATH;
-  //   } else if (isAccountPage) {
-  //     if (isTokenProvided) {
-  //       targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  //     } else {
-  //       initializeOrderApi(orderRef);
-  //     }
-  //   } else if (isTokenProvided) {
-  //     initializeOrderApi(orderRef);
-  //   } else {
-  //     targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  //   }
-  // } else if (!orderRef) {
-  //   targetPath = ORDER_STATUS_PATH;
-  // } else if (isTokenProvided) {
-  //   initializeOrderApi(orderRef);
-  // } else {
-  //   targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  // }
 
   if (targetPath) {
     window.location.href = targetPath;
-  } else {
-    initializeOrderApi(orderRef);
   }
 };
 
