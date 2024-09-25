@@ -105,13 +105,13 @@ function setMetaTags(product) {
   const price = product.priceRange
     ? product.priceRange.minimum.final.amount : product.price.final.amount;
 
-  createMetaTag('title', product.metaTitle, 'name');
+  createMetaTag('title', product.metaTitle || product.name, 'name');
   createMetaTag('description', product.metaDescription, 'name');
   createMetaTag('keywords', product.metaKeyword, 'name');
 
   createMetaTag('og:type', 'og:product', 'property');
   createMetaTag('og:description', product.shortDescription, 'property');
-  createMetaTag('og:title', product.metaTitle, 'property');
+  createMetaTag('og:title', product.metaTitle || product.name, 'property');
   createMetaTag('og:url', window.location.href, 'property');
   const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
   const metaImage = mainImage?.url || product?.images[0]?.url;
