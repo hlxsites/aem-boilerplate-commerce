@@ -18,8 +18,16 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 import * as recaptcha from '@dropins/tools/recaptcha.js';
 
 // Libs
-import { getConfigValue, getCookie } from './configs.js';
+import { checkIsAuthenticated, getConfigValue, getCookie } from './configs.js';
 import { getMetadata } from './aem.js';
+import {
+  CUSTOMER_ORDER_DETAILS_PATH,
+  CUSTOMER_ORDERS_PATH,
+  ORDER_DETAILS_PATH,
+  ORDER_REF_URL_QUERY,
+  ORDER_STATUS_PATH,
+  CUSTOMER_PATH,
+} from './constants.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -29,22 +37,12 @@ const initializeOrderApi = (orderRef) => {
   });
 };
 
-const redirectTo = (path) => {
-  window.location.href = path;
-};
-
 const handleUserOrdersRedirects = () => {
   const currentUrl = new URL(window.location.href);
-  const isAccountPage = currentUrl.pathname.includes('/customer');
-  const isAuthenticated = !!getCookie('auth_dropin_user_token') ?? false;
+  const isAccountPage = currentUrl.pathname.includes(CUSTOMER_PATH);
+  const isAuthenticated = checkIsAuthenticated();
   const orderRef = currentUrl.searchParams.get('orderRef');
   const isTokenProvided = orderRef && orderRef.length > 20;
-
-  const ORDER_STATUS_PATH = '/order-status';
-  const ORDER_DETAILS_PATH = '/order-details';
-  const CUSTOMER_ORDER_DETAILS_PATH = '/customer/order-details';
-  const CUSTOMER_ORDERS_PATH = '/customer/orders';
-  const ORDER_REF_URL_QUERY = `?orderRef=${orderRef}`;
 
   let targetPath = null;
   if (currentUrl.pathname.includes(CUSTOMER_ORDERS_PATH)) {
@@ -53,36 +51,52 @@ const handleUserOrdersRedirects = () => {
 
   events.on('order/error', () => {
     if (isAuthenticated) {
-      redirectTo(CUSTOMER_ORDERS_PATH);
+      window.location.href = CUSTOMER_ORDERS_PATH;
     } else {
-      redirectTo(ORDER_STATUS_PATH);
+      window.location.href = ORDER_STATUS_PATH;
     }
   });
 
   if (isAuthenticated) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
-    } else if (isAccountPage) {
-      if (isTokenProvided) {
-        targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
-      } else {
-        initializeOrderApi(orderRef);
-      }
-    } else if (isTokenProvided) {
-      initializeOrderApi(orderRef);
-    } else {
-      targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}`;
+    } else if (isAccountPage && isTokenProvided) {
+      targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+    } else if (!isAccountPage && !isTokenProvided) {
+      targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
     }
   } else if (!orderRef) {
     targetPath = ORDER_STATUS_PATH;
-  } else if (isTokenProvided) {
-    initializeOrderApi(orderRef);
-  } else {
-    targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}`;
+  } else if (!isTokenProvided) {
+    targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
   }
 
+  // if (isAuthenticated) {
+  //   if (!orderRef) {
+  //     targetPath = CUSTOMER_ORDERS_PATH;
+  //   } else if (isAccountPage) {
+  //     if (isTokenProvided) {
+  //       targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+  //     } else {
+  //       initializeOrderApi(orderRef);
+  //     }
+  //   } else if (isTokenProvided) {
+  //     initializeOrderApi(orderRef);
+  //   } else {
+  //     targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+  //   }
+  // } else if (!orderRef) {
+  //   targetPath = ORDER_STATUS_PATH;
+  // } else if (isTokenProvided) {
+  //   initializeOrderApi(orderRef);
+  // } else {
+  //   targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+  // }
+
   if (targetPath) {
-    redirectTo(targetPath);
+    window.location.href = targetPath;
+  } else {
+    initializeOrderApi(orderRef);
   }
 };
 
