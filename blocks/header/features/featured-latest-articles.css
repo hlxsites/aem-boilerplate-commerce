@@ -41,7 +41,7 @@
 /* Article Name */
 .featured-latest-articles div p:nth-child(3) a {
   color: var(--sub-text-title-color);
-  font-weight: 520;
+  font-weight: 600;
   font-size: 20px;
 }
 

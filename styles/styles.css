@@ -174,9 +174,9 @@ html * {
 
   -webkit-font-smoothing: antialiased;
 }
+
 @font-face {
   font-family: 'Proxima Nova', 'Helvetica Neue', Verdana, Arial, sans-serif;
-
   size-adjust: 100.06%;
   ascent-override: 95%;
   src: local('Arial');

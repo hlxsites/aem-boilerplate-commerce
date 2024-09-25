@@ -1,7 +1,8 @@
 /* date with images */
 .features-carousel-section div div p:nth-child(1),
 .launches-section div div p:nth-child(1),
-.launches-page-date div div p:nth-child(1) {
+.launches-page-date div div p:nth-child(1),
+.featured-articles-category div div p:nth-child(1) {
   display: flex;
   align-items: center;
 }
