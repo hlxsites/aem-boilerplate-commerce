@@ -5,7 +5,7 @@ import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { SuccessNotification } from '@dropins/storefront-auth/containers/SuccessNotification.js';
 import { Button } from '@dropins/tools/components.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
-import checkIsAuthenticated from './utils/checkIsAuthenticated.js';
+import { checkIsAuthenticated } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
   const isAuthenticated = checkIsAuthenticated();

@@ -3,7 +3,7 @@
 import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import checkIsAuthenticated from '../../scripts/utils/checkIsAuthenticated.js';
+import { checkIsAuthenticated } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
   const isAuthenticated = checkIsAuthenticated();

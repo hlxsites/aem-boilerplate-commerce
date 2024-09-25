@@ -3,7 +3,7 @@
 import { ResetPassword } from '@dropins/storefront-auth/containers/ResetPassword.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { events } from '@dropins/tools/event-bus.js';
-import checkIsAuthenticated from './utils/checkIsAuthenticated.js';
+import { checkIsAuthenticated } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
   const isAuthenticated = checkIsAuthenticated();
