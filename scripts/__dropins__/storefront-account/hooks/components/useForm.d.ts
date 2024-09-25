@@ -1,10 +1,11 @@
-import { FormValues, useFormProps } from '../../types';
+import { useFormProps } from '../../types';
 
-export declare const useForm: ({ fieldsConfig, onSubmit }: useFormProps) => {
-    formData: FormValues;
+export declare const useForm: ({ fieldsConfig, onSubmit, handleSetCountryCode, onChange, }: useFormProps) => {
+    formData: Record<string, string | number | boolean>;
     errors: Record<string, string>;
     formRef: import('preact').RefObject<HTMLFormElement>;
-    handleChange: (event: Event) => void;
+    handleInputChange: (event: Event) => void;
+    handleFormChange: (event: Event) => void;
     handleBlur: (event: Event) => void;
     handleSubmit: (event: SubmitEvent) => void;
 };
