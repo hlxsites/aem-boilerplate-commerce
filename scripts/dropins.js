@@ -1,25 +1,25 @@
 /* eslint-disable import/no-unresolved */
 
 // Drop-in Tools
-import { events } from "@dropins/tools/event-bus.js";
+import { events } from '@dropins/tools/event-bus.js';
 import {
   removeFetchGraphQlHeader,
   setEndpoint,
   setFetchGraphQlHeader,
-} from "@dropins/tools/fetch-graphql.js";
-import { initializers, Initializer } from "@dropins/tools/initializer.js";
+} from '@dropins/tools/fetch-graphql.js';
+import { initializers, Initializer } from '@dropins/tools/initializer.js';
 
 // Drop-ins
-import * as authApi from "@dropins/storefront-auth/api.js";
-import * as cartApi from "@dropins/storefront-cart/api.js";
-import * as orderApi from "@dropins/storefront-order/api.js";
+import * as authApi from '@dropins/storefront-auth/api.js';
+import * as cartApi from '@dropins/storefront-cart/api.js';
+import * as orderApi from '@dropins/storefront-order/api.js';
 
 // Recaptcha
-import * as recaptcha from "@dropins/tools/recaptcha.js";
+import * as recaptcha from '@dropins/tools/recaptcha.js';
 
 // Libs
-import { checkIsAuthenticated, getConfigValue, getCookie } from "./configs.js";
-import { getMetadata } from "./aem.js";
+import { checkIsAuthenticated, getConfigValue, getCookie } from './configs.js';
+import { getMetadata } from './aem.js';
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_ORDERS_PATH,
@@ -27,9 +27,9 @@ import {
   ORDER_REF_URL_QUERY,
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
-} from "./constants.js";
+} from './constants.js';
 
-export const getUserTokenCookie = () => getCookie("auth_dropin_user_token");
+export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
 const initializeOrderApi = (orderRef) => {
   initializers.register(orderApi.initialize, {
@@ -41,7 +41,7 @@ const handleUserOrdersRedirects = () => {
   const currentUrl = new URL(window.location.href);
   const isAccountPage = currentUrl.pathname.includes(CUSTOMER_PATH);
   const isAuthenticated = checkIsAuthenticated();
-  const orderRef = currentUrl.searchParams.get("orderRef");
+  const orderRef = currentUrl.searchParams.get('orderRef');
   const isTokenProvided = orderRef && orderRef.length > 20;
 
   let targetPath = null;
@@ -49,7 +49,7 @@ const handleUserOrdersRedirects = () => {
     return;
   }
 
-  events.on("order/error", () => {
+  events.on('order/error', () => {
     if (isAuthenticated) {
       window.location.href = CUSTOMER_ORDERS_PATH;
     } else {
@@ -60,38 +60,24 @@ const handleUserOrdersRedirects = () => {
   if (isAuthenticated) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
-    } else if (isAccountPage && isTokenProvided) {
-      targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+    } else if (isAccountPage) {
+      if (isTokenProvided) {
+        targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
+      } else {
+        initializeOrderApi(orderRef);
+      }
+    } else if (isTokenProvided) {
+      initializeOrderApi(orderRef);
     } else {
       targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
     }
   } else if (!orderRef) {
     targetPath = ORDER_STATUS_PATH;
+  } else if (isTokenProvided) {
+    initializeOrderApi(orderRef);
   } else {
     targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
   }
-
-  // if (isAuthenticated) {
-  //   if (!orderRef) {
-  //     targetPath = CUSTOMER_ORDERS_PATH;
-  //   } else if (isAccountPage) {
-  //     if (isTokenProvided) {
-  //       targetPath = `${ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  //     } else {
-  //       initializeOrderApi(orderRef);
-  //     }
-  //   } else if (isTokenProvided) {
-  //     initializeOrderApi(orderRef);
-  //   } else {
-  //     targetPath = `${CUSTOMER_ORDER_DETAILS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  //   }
-  // } else if (!orderRef) {
-  //   targetPath = ORDER_STATUS_PATH;
-  // } else if (isTokenProvided) {
-  //   initializeOrderApi(orderRef);
-  // } else {
-  //   targetPath = `${ORDER_STATUS_PATH}${ORDER_REF_URL_QUERY}${orderRef}`;
-  // }
 
   if (targetPath) {
     window.location.href = targetPath;
@@ -104,17 +90,17 @@ const handleUserOrdersRedirects = () => {
 const setAuthHeaders = (state) => {
   if (state) {
     const token = getUserTokenCookie();
-    setFetchGraphQlHeader("Authorization", `Bearer ${token}`);
+    setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
   } else {
-    removeFetchGraphQlHeader("Authorization");
+    removeFetchGraphQlHeader('Authorization');
   }
 };
 
 const persistCartDataInSession = (data) => {
   if (data?.id) {
-    sessionStorage.setItem("DROPINS_CART_ID", data.id);
+    sessionStorage.setItem('DROPINS_CART_ID', data.id);
   } else {
-    sessionStorage.removeItem("DROPINS_CART_ID");
+    sessionStorage.removeItem('DROPINS_CART_ID');
   }
 };
 
@@ -125,13 +111,13 @@ const initialize = new Initializer({
     // set auth headers
     setAuthHeaders(!!token);
     // emit authenticated event if token has changed
-    events.emit("authenticated", !!token);
+    events.emit('authenticated', !!token);
   },
   listeners: () => [
     // Set auth headers on authenticated event
-    events.on("authenticated", setAuthHeaders),
+    events.on('authenticated', setAuthHeaders),
     // Cache cart data in session storage
-    events.on("cart/data", persistCartDataInSession, { eager: true }),
+    events.on('cart/data', persistCartDataInSession, { eager: true }),
   ],
 });
 
@@ -142,8 +128,8 @@ export default async function initializeDropins() {
   initializers.register(cartApi.initialize, {});
 
   // Get current page template metadata
-  const templateMeta = getMetadata("template");
-  const isOrderDetailsPage = templateMeta.includes("Order-Details");
+  const templateMeta = getMetadata('template');
+  const isOrderDetailsPage = templateMeta.includes('Order-Details');
 
   if (isOrderDetailsPage) {
     handleUserOrdersRedirects();
@@ -153,7 +139,7 @@ export default async function initializeDropins() {
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
-    setEndpoint(await getConfigValue("commerce-core-endpoint"));
+    setEndpoint(await getConfigValue('commerce-core-endpoint'));
     // Recaptcha
     recaptcha.setConfig();
     // Mount all registered drop-ins
@@ -161,6 +147,6 @@ export default async function initializeDropins() {
   };
 
   // Mount Drop-ins
-  window.addEventListener("pageshow", mount);
-  document.addEventListener("prerenderingchange", mount);
+  window.addEventListener('pageshow', mount);
+  document.addEventListener('prerenderingchange', mount);
 }
