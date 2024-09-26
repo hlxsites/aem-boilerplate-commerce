@@ -3,6 +3,7 @@
 @import url(./columns-styles/featured-columns.css);
 @import url(./columns-styles/banner.css);
 @import url(./columns-styles/features-columns.css);
+@import url(../../blocks/latest-featured-articles/latest-featured-articles.css);
 
 main .section {
   margin: auto;

@@ -124,7 +124,6 @@ function renderProduct(product, config, block) {
 
   // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
-       </br>
    <a href="/products/${urlKey}/${sku}"><div class="image">
     </div></a>
     <div class="details">      
