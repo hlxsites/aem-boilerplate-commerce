@@ -6,6 +6,7 @@ import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
+import { CUSTOMER_ORDER_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/constants.js';
 
 const renderSignIn = async (element, email, orderNumber) => authRenderer.render(SignIn, {
   initialEmailValue: email,
@@ -17,13 +18,11 @@ const renderSignIn = async (element, email, orderNumber) => authRenderer.render(
     primaryButtonText: 'View order',
   },
   routeForgotPassword: () => 'reset-password.html',
-  routeRedirectOnSignIn: () => `/customer/order-details?orderRef=${orderNumber}`,
+  routeRedirectOnSignIn: () => `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderNumber}`,
 })(element);
 
 export default async function decorate(block) {
   block.innerHTML = '';
-
-  const isAuthenticated = checkIsAuthenticated();
 
   events.on('order/data', async (order) => {
     if (!order) return;
@@ -31,7 +30,7 @@ export default async function decorate(block) {
     block.innerHTML = '';
 
     await orderRenderer.render(OrderSearch, {
-      isAuth: isAuthenticated,
+      isAuth: checkIsAuthenticated(),
       renderSignIn: async ({ render, formValues }) => {
         if (render) {
           renderSignIn(
@@ -45,8 +44,8 @@ export default async function decorate(block) {
 
         return true;
       },
-      routeCustomerOrder: () => '/customer/order-details',
-      routeGuestOrder: () => '/order-details',
+      routeCustomerOrder: () => CUSTOMER_ORDER_DETAILS_PATH,
+      routeGuestOrder: () => ORDER_DETAILS_PATH,
       onError: async (errorInformation) => {
         console.info('errorInformation', errorInformation);
       },
@@ -54,7 +53,7 @@ export default async function decorate(block) {
   });
 
   await orderRenderer.render(OrderSearch, {
-    isAuth: isAuthenticated,
+    isAuth: checkIsAuthenticated(),
     renderSignIn: async ({ render, formValues }) => {
       if (render) {
         renderSignIn(block, formValues?.email ?? '', formValues?.number ?? '');
@@ -64,8 +63,8 @@ export default async function decorate(block) {
 
       return true;
     },
-    routeCustomerOrder: () => '/customer/order-details',
-    routeGuestOrder: () => '/order-details',
+    routeCustomerOrder: () => CUSTOMER_ORDER_DETAILS_PATH,
+    routeGuestOrder: () => ORDER_DETAILS_PATH,
     onError: async (errorInformation) => {
       console.info('errorInformation', errorInformation);
     },

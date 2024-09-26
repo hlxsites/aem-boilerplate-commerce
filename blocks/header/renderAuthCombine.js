@@ -9,10 +9,11 @@ import * as authApi from '@dropins/storefront-auth/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { Button } from '@dropins/tools/components.js';
 import { getCookie } from '../../scripts/configs.js';
+import { CUSTOMER_ACCOUNT_PATH, CUSTOMER_FORGOTPASSWORD_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/constants.js';
 
 const signInFormConfig = {
   renderSignUpLink: true,
-  routeForgotPassword: () => '/customer/forgotpassword',
+  routeForgotPassword: () => CUSTOMER_FORGOTPASSWORD_PATH,
   slots: {
     SuccessNotification: (ctx) => {
       const userName = ctx?.isSuccessful?.userName || '';
@@ -32,7 +33,7 @@ const signInFormConfig = {
               children: 'My Account',
 
               onClick: () => {
-                window.location.href = '/customer/account';
+                window.location.href = CUSTOMER_ACCOUNT_PATH;
               },
             })(primaryBtn);
 
@@ -63,8 +64,8 @@ const signInFormConfig = {
 };
 
 const signUpFormConfig = {
-  routeSignIn: () => '/customer/login',
-  routeRedirectOnSignIn: () => '/customer/account',
+  routeSignIn: () => CUSTOMER_LOGIN_PATH,
+  routeRedirectOnSignIn: () => CUSTOMER_ACCOUNT_PATH,
   isAutoSignInEnabled: false,
   slots: {
     SuccessNotification: (ctx) => {
@@ -83,7 +84,7 @@ const signUpFormConfig = {
               children: 'Sign in',
 
               onClick: () => {
-                window.location.href = '/customer/login';
+                window.location.href = CUSTOMER_LOGIN_PATH;
               },
             })(primaryBtn);
 
@@ -113,7 +114,7 @@ const signUpFormConfig = {
 };
 
 const resetPasswordFormConfig = {
-  routeSignIn: () => '/customer/login',
+  routeSignIn: () => CUSTOMER_LOGIN_PATH,
 };
 
 const onHeaderLinkClick = () => {
@@ -121,7 +122,7 @@ const onHeaderLinkClick = () => {
   const originalViewportContent = viewportMeta.getAttribute('content');
 
   if (getCookie('auth_dropin_firstname')) {
-    window.location.href = '/customer/account';
+    window.location.href = CUSTOMER_ACCOUNT_PATH;
     return;
   }
   const signInModal = document.createElement('div');

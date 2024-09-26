@@ -39,7 +39,6 @@ const initializeOrderApi = (orderRef) => {
 const handleUserOrdersRedirects = () => {
   const currentUrl = new URL(window.location.href);
   const isAccountPage = currentUrl.pathname.includes(CUSTOMER_PATH);
-  const isAuthenticated = checkIsAuthenticated();
   const orderRef = currentUrl.searchParams.get('orderRef');
   const isTokenProvided = orderRef && orderRef.length > 20;
 
@@ -49,14 +48,14 @@ const handleUserOrdersRedirects = () => {
   }
 
   events.on('order/error', () => {
-    if (isAuthenticated) {
+    if (checkIsAuthenticated()) {
       window.location.href = `${CUSTOMER_ORDERS_PATH}`;
     } else {
       window.location.href = `${ORDER_STATUS_PATH}`;
     }
   });
 
-  if (isAuthenticated) {
+  if (checkIsAuthenticated()) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
     } else if (isAccountPage) {

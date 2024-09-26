@@ -4,19 +4,18 @@ import { ResetPassword } from '@dropins/storefront-auth/containers/ResetPassword
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
+import { CUSTOMER_LOGIN_PATH, CUSTOMER_ACCOUNT_PATH } from '../../scripts/constants.js';
 
 export default async function decorate(block) {
-  const isAuthenticated = checkIsAuthenticated();
-
-  if (isAuthenticated) {
-    window.location.href = '/customer/account';
+  if (checkIsAuthenticated()) {
+    window.location.href = CUSTOMER_ACCOUNT_PATH;
   } else {
     await authRenderer.render(ResetPassword, {
-      routeSignIn: () => '/customer/login',
+      routeSignIn: () => CUSTOMER_LOGIN_PATH,
     })(block);
   }
 
   events.on('authenticated', (authenticated) => {
-    if (authenticated) window.location.href = '/customer/account';
+    if (authenticated) window.location.href = CUSTOMER_ACCOUNT_PATH;
   });
 }

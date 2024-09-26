@@ -8,9 +8,7 @@ import { Button } from '@dropins/tools/components.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
-  const isAuthenticated = checkIsAuthenticated();
-
-  if (isAuthenticated) {
+  if (checkIsAuthenticated()) {
     window.location.href = '/customer/account';
   } else {
     await authRenderer.render(SignIn, {
