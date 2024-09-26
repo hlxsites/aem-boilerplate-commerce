@@ -49,9 +49,9 @@ const handleUserOrdersRedirects = () => {
 
   events.on('order/error', () => {
     if (checkIsAuthenticated()) {
-      window.location.href = `${CUSTOMER_ORDERS_PATH}`;
+      window.location.href = CUSTOMER_ORDERS_PATH;
     } else {
-      window.location.href = `${ORDER_STATUS_PATH}`;
+      window.location.href = ORDER_STATUS_PATH;
     }
   });
 
