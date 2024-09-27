@@ -128,6 +128,7 @@ function renderProduct(product, config, block) {
    <a href="/products/${urlKey}/${sku}"><div class="image">
     </div></a>
     <div class="details">      
+     <div class="launches-page-products-big"> 
       <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
       <div class="actions">
         ${
