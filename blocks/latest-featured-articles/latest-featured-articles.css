@@ -239,7 +239,7 @@
     margin: 0;
   }
 
-  .launches-page-products {
+  .features-highlights-products {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -249,24 +249,24 @@
     margin-top: -13vh;
   }
 
-  .launches-page-products div:nth-child(2) div {
+  .features-highlights-products div:nth-child(2) div {
     padding-top: 3%;
   }
 
-  .launches-page-products div:nth-child(2) div p {
+  .features-highlights-products div:nth-child(2) div p {
     font-size: var(--sub-text-secondary-size);
     color: var(--sub-text-grey);
     font-weight: 400;
   }
 
-  .launches-page-products div div {
+  .features-highlights-products div div {
     display: flex;
     position: relative;
     height: 50px;
     width: 100%;
   }
 
-  .launches-page-products div:nth-child(1) div p {
+  .features-highlights-products div:nth-child(1) div p {
     display: flex;
     font-size: 10px;
     color: var(--sub-text-title-color);
@@ -278,11 +278,11 @@
 }
 
 @media (width <= 1130px) {
-  .launches-page-products {
+  .features-highlights-products {
     margin-top: -12vh;
   }
 
-  .launches-page-products div:nth-child(2) div {
+  .features-highlights-products div:nth-child(2) div {
     padding-top: 2%;
   }
 }
@@ -318,12 +318,12 @@
   .launches-section div {
     flex-direction: unset;
   }
-  .launches-page-products {
+  .features-highlights-products {
     width: 1340px;
     padding-left: 2%;
   }
 
-  .launches-page-products div {
+  .features-highlights-products div {
     flex-direction: unset;
   }
 
@@ -397,7 +397,7 @@
 }
 
 @media (width <= 900px) {
-  .launches-page-products div {
+  .features-highlights-products div {
     flex-direction: row;
   }
 
