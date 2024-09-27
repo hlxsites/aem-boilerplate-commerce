@@ -135,6 +135,7 @@
     justify-content: flex-start;
   }
 
+  .launches-section-products .product,
   .launches-page-products .product {
     position: relative;
     margin: 0 auto;
@@ -146,6 +147,12 @@
   .launches-page-products .product {
     margin-bottom: 2%;
     background-color: #f5f5f5c6;
+  }
+
+  .launches-section-products .image picture > img {
+    width: 438px;
+    height: 243px;
+    margin: 0 auto;
   }
 
   .launches-page-products .image picture > img {

@@ -127,7 +127,7 @@ function renderProduct(product, config, block) {
    <a href="/products/${urlKey}/${sku}"><div class="image">
     </div></a>
     <div class="details">      
-      <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
+      <h3><a href="/products/${urlKey}/${sku}">${name}</a></h3>
       <div class="actions">
         ${
           config['details-button']
