@@ -16,7 +16,6 @@ import {
     assertOrderConfirmationShippingDetails,
     assertOrderConfirmationBillingDetails,
     assertOrderConfirmationShippingMethod,
-    assertAuthUser,
 } from '../../assertions';
 import {
 
@@ -69,7 +68,8 @@ describe('Verify auth user can place order', () => {
         cy.get('.minicart-wrapper').should('be.visible')
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
-            assertAuthUser(sign_up);
+            // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
+            // assertAuthUser(sign_up);
         });
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
