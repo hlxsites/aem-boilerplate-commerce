@@ -2,8 +2,18 @@
 {
     text-align: center;
     color: white;
-    vertical-align: middle;
     margin: auto;
+}
+
+.our-apps-hero > div > div p:nth-child(1)
+{
+    font-size: 2rem;
+    line-height: 30px;
+    letter-spacing: 0.15rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0;
+    margin: 0 0 10px 0;
 }
 
 .our-apps-hero > div > div p:nth-child(2)
@@ -40,6 +50,7 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
+    cursor: pointer;
 }
 
 #apple-store
@@ -50,6 +61,7 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
+    cursor: pointer;
 }
 
 

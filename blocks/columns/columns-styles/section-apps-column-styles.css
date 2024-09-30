@@ -1,0 +1,99 @@
+.section-apps-column > div
+{
+    width: 45%;
+    margin: auto;
+}
+
+.section-apps-column > div > div
+{
+    display: grid;
+    column-gap: 10px;
+    position: relative;
+    -webkit-box-pack: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0px auto;
+}
+
+.section-apps-column > div:last-child div
+{
+    align-self: stretch;
+    margin-top: 30px;
+}
+
+.section-apps-column > div:last-child div::before
+{
+    content: "";
+    display: block;
+    margin: 0 auto;
+    position: absolute;
+    width: 50%;
+    top: 0;
+    left: 60px;
+    border-top: 1px solid #DDDDDD;
+}
+
+.section-apps-column > div > div:nth-child(1)::after
+{
+    content: "";
+    display: block; 
+    margin: 0 auto;
+    position: absolute;
+    right: -20px;
+    top: 40px;
+    padding-top: 40px; 
+    border-right: 1px solid #DDDDDD;
+}
+
+.section-apps-column > div img
+{
+    width: auto;
+    height: 33px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.section-apps-column > div > div p:nth-child(2)
+{
+    width: 158px;
+    font-size: 1.39rem;
+    font-weight: 100;
+    line-height: 24px;
+    text-align: center;
+    text-transform: none;
+    color: rgb(153, 153, 153);
+    padding: 0;
+    margin: 0;
+}
+
+@media (width < 900px)
+{
+    .section-apps-column > div > div:nth-child(1)::after
+    {
+        border: none;
+    }
+
+    .section-apps-column > div:last-child div::before
+    {
+        top: 0px;
+        left: 44px;
+    }
+
+    .section-apps-column > div:first-child > div:first-child
+    {
+        /* border: 1px solid red; */
+        padding-bottom: 25px;
+    }
+    .section-apps-column > div:first-child > div:first-child::after
+    {
+        content: "";
+        display: block;
+        position: absolute;
+        left: -15px;
+        bottom: 0;
+        margin: 0 auto;
+        width: 55%;
+        border-bottom: 1px solid #DDDDDD;
+    }
+    
+}

@@ -36,3 +36,39 @@
 {
     margin-top: 100px;
 }
+
+@media (width < 900px)
+{
+    .section-one-column
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    .section-one-column > div:nth-child(1)
+    {
+        order: 1;
+        padding-top: 20px;
+    }
+    .section-one-column > div:nth-child(1) h4
+    {
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 0.4rem;
+        max-width: 290px;   
+    }
+    .section-one-column > div:nth-child(1) p:last-child
+    {
+       font-size: 1.4rem; 
+       padding: 0;
+       margin: 0 auto;
+       max-width: 90%;
+    }
+    .section-one-column > div:nth-child(2)
+    {
+        order: 0;
+    }
+    .section-one-column > div:nth-child(3)
+    {
+        order: 2;
+    }
+}
