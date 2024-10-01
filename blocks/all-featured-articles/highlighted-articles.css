@@ -1,0 +1,22 @@
+.highlighted-articles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.highlighted-articles img {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  aspect-ratio: 289/180;
+}
+
+.highlighted-articles h3 a {
+  font-size: 20px;
+}
+
+.highlighted-articles .category,
+.highlighted-articles h3,
+.highlighted-articles .date {
+  padding-left: 4%;
+}

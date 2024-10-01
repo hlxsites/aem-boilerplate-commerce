@@ -21,29 +21,30 @@ export default async function decorate(block) {
         const category = matchingItem.category || '';
         const date = matchingItem.date || '';
 
-        console.log('Image path:', imagePath);
-
         // Creates div for content
         const contentDiv = document.createElement('div');
 
         // Image
         if (imagePath) {
+          const imgLink = document.createElement('a');
           const img = document.createElement('img');
+          imgLink.href = path;
           img.src = imagePath;
           img.alt = title;
-          contentDiv.appendChild(img);
+          imgLink.appendChild(img);
+          contentDiv.appendChild(imgLink);
         }
 
         // Category, Title, and Date
+        const articleCategory = document.createElement('p');
+        articleCategory.classList.add('category');
         const articleCategoryLink = document.createElement('a');
         articleCategoryLink.href = `/${category
           .toLowerCase()
           .replace(/\s+/g, '-')}`;
-        const articleCategory = document.createElement('p');
-        articleCategory.classList.add('category');
-        articleCategory.textContent = category;
-        articleCategoryLink.appendChild(articleCategory);
-        contentDiv.appendChild(articleCategoryLink);
+        articleCategoryLink.textContent = category;
+        articleCategory.appendChild(articleCategoryLink);
+        contentDiv.appendChild(articleCategory);
 
         const titleLink = document.createElement('a');
         const articleTitle = document.createElement('h3');
