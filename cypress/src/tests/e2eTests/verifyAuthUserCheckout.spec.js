@@ -28,8 +28,7 @@ import {
 } from '../../fixtures/index';
 
 describe('Verify auth user can place order', () => {
-  // TODO: unskip when recaptcha console allows localhost
-    it.skip('Verify auth user can place order', () => {
+    it('Verify auth user can place order', () => {
         // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
         cy.visit('/products/hollister-backyard-sweatshirt/MH05');
         cy.get('[id="Y29uZmlndXJhYmxlLzI3Ny8yMDI="]').click({
@@ -71,7 +70,6 @@ describe('Verify auth user can place order', () => {
         cy.get('.minicart-wrapper').should('be.visible')
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
-            // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
             assertAuthUser(sign_up);
             cy.wait(5000);
         });

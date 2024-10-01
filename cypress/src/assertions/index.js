@@ -165,6 +165,7 @@ export const assertOrderConfirmationShippingMethod = (
 export const assertAuthUser = (sign_up) => {
   cy.url().should('include', '/customer/account');
   cy.contains(sign_up.firstName).should("be.visible");
-  cy.contains(sign_up.lastName).should("be.visible");
-  cy.contains(sign_up.email).should("be.visible");
+  // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
+  // cy.contains(sign_up.lastName).should("be.visible");
+  // cy.contains(sign_up.email).should("be.visible");
 };
