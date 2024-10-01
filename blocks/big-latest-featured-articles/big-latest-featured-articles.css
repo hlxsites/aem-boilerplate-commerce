@@ -54,7 +54,6 @@
   font-size: var(--sub-text-secondary-size);
   color: var(--date-color);
   font-weight: 400;
-  /* margin-bottom: 10%; */
 }
 
 @media (width <= 991px) {

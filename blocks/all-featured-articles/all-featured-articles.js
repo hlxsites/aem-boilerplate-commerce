@@ -1,62 +1,74 @@
-async function decorateAllFeaturedArticles(block) {
-  const config = readBlockConfig(block); // Assuming you have `readBlockConfig` defined elsewhere
+export default async function decorate(block) {
+  // Gets all p tags in the block
+  const pathElements = block.querySelectorAll('p');
 
-  // Fetch product data (replace with your actual data fetching logic)
-  const productData = await fetchProductData(config.skus);
+  try {
+    // Fetch data
+    const response = await fetch('/query-index.json');
+    const indexData = await response.json();
 
-  // Fetch index sheet data (replace with your actual logic)
-  const indexSheetData = await fetchIndexSheetData();
+    block.querySelectorAll('p, div').forEach((element) => element.remove());
+    // Process each p tag
+    pathElements.forEach((pathElement) => {
+      const path = pathElement.textContent.trim();
 
-  block.innerHTML = ''; // Clear existing content
+      // Finds matching item
+      const matchingItem = indexData.data.find((item) => item.path === path);
 
-  productData.forEach((product) => {
-    // Find image path from index sheet
-    const imagePath =
-      indexSheetData.find((row) => row.path === product.urlKey)?.image || '';
+      if (matchingItem) {
+        const imagePath = matchingItem.image || '';
+        const title = matchingItem.title || '';
+        const category = matchingItem.category || '';
+        const date = matchingItem.date || '';
 
-    // Create article element
-    const article = document.createElement('article');
-    article.classList.add('featured-article');
+        console.log('Image path:', imagePath);
 
-    // Create image element
-    const image = document.createElement('img');
-    image.src = imagePath;
-    image.alt = product.name;
+        // Creates div for content
+        const contentDiv = document.createElement('div');
 
-    // Create details section
-    const details = document.createElement('div');
-    details.classList.add('details');
+        // Image
+        if (imagePath) {
+          const img = document.createElement('img');
+          img.src = imagePath;
+          img.alt = title;
+          contentDiv.appendChild(img);
+        }
 
-    // Add index label (if available)
-    const indexLabel = getIndexLabelFromPath(product.urlKey); // Assuming you have `getIndexLabelFromPath` defined
-    if (indexLabel) {
-      const indexLabelElement = document.createElement('p');
-      indexLabelElement.classList.add('index-label');
-      indexLabelElement.textContent = indexLabel;
-      details.appendChild(indexLabelElement);
-    }
+        // Category, Title, and Date
+        const articleCategoryLink = document.createElement('a');
+        articleCategoryLink.href = `/${category
+          .toLowerCase()
+          .replace(/\s+/g, '-')}`;
+        const articleCategory = document.createElement('p');
+        articleCategory.classList.add('category');
+        articleCategory.textContent = category;
+        articleCategoryLink.appendChild(articleCategory);
+        contentDiv.appendChild(articleCategoryLink);
 
-    // Add title
-    const title = document.createElement('h3');
-    const titleLink = document.createElement('a');
-    titleLink.href = `/products/${product.urlKey}/${product.sku}`;
-    titleLink.textContent = product.name;
-    title.appendChild(titleLink);
-    details.appendChild(title);
+        const titleLink = document.createElement('a');
+        const articleTitle = document.createElement('h3');
+        titleLink.href = path;
+        titleLink.textContent = title;
+        articleTitle.appendChild(titleLink);
+        contentDiv.appendChild(articleTitle);
 
-    // Add other details or actions as needed
+        const dateLink = document.createElement('a');
+        const articleDate = document.createElement('p');
+        articleDate.classList.add('date');
+        dateLink.href = path;
+        dateLink.textContent = date;
+        articleDate.appendChild(dateLink);
+        contentDiv.appendChild(articleDate);
 
-    // Append image and details to article
-    article.appendChild(image);
-    article.appendChild(details);
+        block.appendChild(contentDiv);
+      } else {
+        console.error('No matching data found for path:', path);
+      }
+    });
 
-    // Append article to the block
-    block.appendChild(article);
-  });
+    // Clears p tags
+    pathElements.forEach((pathElement) => pathElement.remove());
+  } catch (error) {
+    console.error('Error fetching or processing index data:', error);
+  }
 }
-
-// Call the function to decorate the block
-const allFeaturedArticlesBlock = document.querySelector(
-  '.latest-featured-articles'
-);
-decorateAllFeaturedArticles(allFeaturedArticlesBlock);
