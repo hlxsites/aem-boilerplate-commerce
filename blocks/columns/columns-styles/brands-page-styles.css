@@ -1,14 +1,26 @@
-.search-container:has(.brands-search)
+/* .search-container:has(.brands-search)
 {
     width: 30%;
     margin: 0;
     padding: 0;
+} */
+
+.brands
+{
+    display: flex;
+}
+
+.brands div.columns-wrapper:first-child
+{
+    position: sticky;
+    margin: 0;
+    top: 70px;
+    max-height: max-content;
 }
 
 .brands-letters
 {
     max-width: max-content;
-    border: 1px solid red;
     text-align: left;
 }
 
@@ -32,15 +44,26 @@
     padding: 5px;
 }
 
-.brands-name-section
+.brands-name-section h2
 {
-    border: 1px solid red;
+    margin: 40px auto;
+}
+
+.brands-name-section table:not(:last-child)
+{
+    width: 100%;
+    border-bottom: 1px solid rgb(204, 204, 204);
+    margin: 0;
 }
 
 .brands-name-section ul
 {
-    border: 1px solid red;
     display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 200px;
+    list-style: none;
+    padding: 10px 0 40px;
+    margin: 0;
 }
 
 
