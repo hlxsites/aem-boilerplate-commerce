@@ -33,5 +33,17 @@ export default function decorate(block)
       getAppHero.appendChild(appsNewDiv);
       appsNewDiv.appendChild(googlePlayIcon);
       appsNewDiv.appendChild(appleStoreIcon);
+
+      document.getElementById('google-play').addEventListener('click', function () {
+        window.location.href = 'https://play.google.com/store/apps/details?id=com.endclothing.endroid';
+      });
+  
+      document.getElementById('apple-store').addEventListener('click', function () {
+        window.location.href = 'https://apps.apple.com/gb/app/end/id1132649509';
+      });
     }
+
+    
+
+
 }

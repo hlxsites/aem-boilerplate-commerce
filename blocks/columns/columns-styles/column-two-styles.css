@@ -95,4 +95,16 @@
     padding-bottom: 48px;
 }
 
-
+@media (width < 900px)
+{
+    .section-two-col > div > div > p,
+    .section-two-col > div > div > h4,
+    .section-two-col > div > div > ul
+    {
+        display: inline-block;
+        width:80%;
+        text-align: center;
+        margin: 0;
+        padding: 0.5rem 0 0.5rem 0;
+    }
+}
