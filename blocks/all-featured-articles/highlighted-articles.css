@@ -9,18 +9,13 @@
   gap: 30px;
 }
 
-.highlighted-articles img {
-  display: flex;
-  flex: 1;
-  width: 100%;
-}
-
 .highlighted-articles h3 a {
   font-size: 20px;
 }
 
-.highlighted-articles .category,
-.highlighted-articles h3,
-.highlighted-articles .date {
-  padding-left: 4%;
+.highlighted-articles img {
+  display: flex;
+  flex: 1;
+  aspect-ratio: 289/180;
+  width: 100%;
 }

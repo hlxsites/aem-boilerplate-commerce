@@ -59,8 +59,10 @@
 
 @media (width >= 992px) {
   /* Highlights Section */
-  .highlighted-articles img {
-    aspect-ratio: 289/180;
+  .highlighted-articles .category,
+  .highlighted-articles h3,
+  .highlighted-articles .date {
+    padding-left: 4%;
   }
 
   /* 2 Cols & Rows Section */
@@ -80,6 +82,24 @@
 
 @media (width <= 991px) {
   /* Banner Section */
+  .banner-section-articles {
+    height: 643px; 
+  }
+}
+
+/* Banner Section Articles  */
+.banner-section-articles {
+  min-height: 50vh; 
+  height: auto;     
+}
+
+.banner-section-articles picture,
+.banner-section-articles img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; 
+}
+
   .banner-section-article h3 a {
     font-size: 22px;
   }
@@ -90,6 +110,7 @@
 
   /* Highlights Section */
   .highlighted-articles {
+    display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-snap-align: start;
@@ -97,23 +118,25 @@
     scrollbar-width: none;
   }
 
-  .highlighted-articles div {
-    width: 650px;
+  .highlighted-articles::-webkit-scrollbar {
+    display: none;
   }
 
-  .highlighted-articles::-webkit-scrollbar {
-    display: none; /* Hide scrollbar (Chrome, Safari, Opera) */
+  .highlighted-articles .article-card {
+    flex: 0 0 auto;
+    flex-basis: 70%;
+    width: 652px;
+    max-width: 100%;
   }
 
   .highlighted-articles img {
-    aspect-ratio: 1.52;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   }
 
-  .highlighted-articles .category,
-  .highlighted-articles h3,
-  .highlighted-articles .date {
-    padding-left: 0%;
-    margin-left: 0;
+  .highlighted-articles h3 a {
+    font-size: 16px;
   }
 
   /* 2 Cols & Rows Section */
@@ -137,11 +160,32 @@
   }
 
   .three-cols-articles div {
-    border: 2px solid rebeccapurple;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .three-cols-articles div div {
+    flex-direction: column;
   }
 
   .three-cols-articles img {
-    width: 465px;
-    height: 293px;
+    aspect-ratio: 465/293;
+  }
+
+  .three-cols-articles .article-image,
+  .three-cols-articles .article-content {
+    flex: 1;
+  }
+
+  .three-cols-articles .article-content {
+    margin-left: 2%;
+  }
+
+  .three-cols-articles .category a {
+    font-size: 12px;
+  }
+
+  .three-cols-articles h3 a {
+    font-size: 16px;
   }
 }

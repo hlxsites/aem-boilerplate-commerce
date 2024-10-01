@@ -23,10 +23,11 @@ export default async function decorate(block) {
 
         // Creates div for content
         const contentDiv = document.createElement('div');
+        contentDiv.classList.add('article-card');
 
         // Image
         const imageWrapperDiv = document.createElement('div');
-        imageWrapperDiv.classList.add('image-wrapper');
+        imageWrapperDiv.classList.add('article-image');
         if (imagePath) {
           const imgLink = document.createElement('a');
           const img = document.createElement('img');
@@ -40,7 +41,7 @@ export default async function decorate(block) {
 
         // Category, Title, and Date
         const textContentDiv = document.createElement('div');
-        textContentDiv.classList.add('text-content-wrapper');
+        textContentDiv.classList.add('article-content');
 
         const articleCategory = document.createElement('p');
         articleCategory.classList.add('category');
