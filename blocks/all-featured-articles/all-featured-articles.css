@@ -1,11 +1,7 @@
+@import url(./banner-section-article.css);
 @import url(./highlighted-articles.css);
 @import url(./two-cols-rows-featured-articles.css);
 @import url(./three-cols-articles.css);
-
-.article-highlights-section {
-  background-color: var(--sub-text-background-color);
-  margin-bottom: 5vh !important;
-}
 
 .all-featured-articles .category a:hover,
 .all-featured-articles h3 a:hover,
@@ -48,6 +44,7 @@
   width: 100%;
   font-weight: 600;
   text-transform: inherit;
+  color: var(--sub-text-title-color);
 }
 
 /* Date */
@@ -58,4 +55,93 @@
   font-size: var(--sub-text-secondary-size);
   color: var(--date-color);
   font-weight: 400;
+}
+
+@media (width >= 992px) {
+  /* Highlights Section */
+  .highlighted-articles img {
+    aspect-ratio: 289/180;
+  }
+
+  /* 2 Cols & Rows Section */
+  .two-cols-rows-featured-articles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Three cols articles */
+  .three-cols-articles {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .three-cols-articles img {
+    aspect-ratio: 480/302;
+  }
+}
+
+@media (width <= 991px) {
+  /* Banner Section */
+  .banner-section-article h3 a {
+    font-size: 22px;
+  }
+
+  .banner-section-article .category a {
+    font-size: 12px;
+  }
+
+  /* Highlights Section */
+  .highlighted-articles {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-snap-align: start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .highlighted-articles div {
+    width: 650px;
+  }
+
+  .highlighted-articles::-webkit-scrollbar {
+    display: none; /* Hide scrollbar (Chrome, Safari, Opera) */
+  }
+
+  .highlighted-articles img {
+    aspect-ratio: 1.52;
+  }
+
+  .highlighted-articles .category,
+  .highlighted-articles h3,
+  .highlighted-articles .date {
+    padding-left: 0%;
+    margin-left: 0;
+  }
+
+  /* 2 Cols & Rows Section */
+  .two-cols-rows-featured-articles {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .two-cols-rows-featured-articles img {
+    margin-top: 2%;
+  }
+
+  .two-cols-rows-featured-articles .category,
+  .two-cols-rows-featured-articles h3,
+  .two-cols-rows-featured-articles .date {
+    margin-left: 0;
+  }
+
+  /* Three cols articles */
+  .three-cols-articles {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .three-cols-articles div {
+    border: 2px solid rebeccapurple;
+  }
+
+  .three-cols-articles img {
+    width: 465px;
+    height: 293px;
+  }
 }

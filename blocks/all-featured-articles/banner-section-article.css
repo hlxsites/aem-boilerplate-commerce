@@ -1,0 +1,21 @@
+.banner-section-article h3 a {
+  margin-bottom: 0;
+}
+.banner-section-article h3 a {
+  font-size: 36px;
+}
+
+.banner-section-article .category,
+.banner-section-article h3 {
+  padding-left: 2%;
+}
+
+.banner-section-article .date {
+  padding-left: 1%;
+  display: flex;
+  margin-top: 0.5% !important;
+}
+
+.banner-section-article .category a {
+  padding: 0 0.5% !important;
+}

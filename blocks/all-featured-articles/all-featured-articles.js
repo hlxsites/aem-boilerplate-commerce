@@ -25,6 +25,8 @@ export default async function decorate(block) {
         const contentDiv = document.createElement('div');
 
         // Image
+        const imageWrapperDiv = document.createElement('div');
+        imageWrapperDiv.classList.add('image-wrapper');
         if (imagePath) {
           const imgLink = document.createElement('a');
           const img = document.createElement('img');
@@ -32,10 +34,14 @@ export default async function decorate(block) {
           img.src = imagePath;
           img.alt = title;
           imgLink.appendChild(img);
-          contentDiv.appendChild(imgLink);
+          imageWrapperDiv.appendChild(imgLink);
         }
+        contentDiv.appendChild(imageWrapperDiv);
 
         // Category, Title, and Date
+        const textContentDiv = document.createElement('div');
+        textContentDiv.classList.add('text-content-wrapper');
+
         const articleCategory = document.createElement('p');
         articleCategory.classList.add('category');
         const articleCategoryLink = document.createElement('a');
@@ -44,14 +50,14 @@ export default async function decorate(block) {
           .replace(/\s+/g, '-')}`;
         articleCategoryLink.textContent = category;
         articleCategory.appendChild(articleCategoryLink);
-        contentDiv.appendChild(articleCategory);
+        textContentDiv.appendChild(articleCategory);
 
         const titleLink = document.createElement('a');
         const articleTitle = document.createElement('h3');
         titleLink.href = path;
         titleLink.textContent = title;
         articleTitle.appendChild(titleLink);
-        contentDiv.appendChild(articleTitle);
+        textContentDiv.appendChild(articleTitle);
 
         const dateLink = document.createElement('a');
         const articleDate = document.createElement('p');
@@ -59,7 +65,9 @@ export default async function decorate(block) {
         dateLink.href = path;
         dateLink.textContent = date;
         articleDate.appendChild(dateLink);
-        contentDiv.appendChild(articleDate);
+        textContentDiv.appendChild(articleDate);
+
+        contentDiv.appendChild(textContentDiv);
 
         block.appendChild(contentDiv);
       } else {

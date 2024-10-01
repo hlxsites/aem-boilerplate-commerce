@@ -2,6 +2,7 @@
 .banner-section > .columns-wrapper div:nth-child(1) {
   position: relative;
 }
+
 /* Banner Section */
 .banner-section > .columns-wrapper div div div p {
   display: flex;
@@ -12,7 +13,8 @@
 /* Banner */
 
 main .banner-section-carousel > div,
-main .banner-section > div {
+main .banner-section > div,
+main .banner-section-articles > div {
   max-width: unset;
 }
 
@@ -22,19 +24,26 @@ main .banner-section {
   padding-top: 0;
 }
 
-.banner-section {
+main .banner-section-articles {
+  padding: 0;
+}
+
+.banner-section,
+.banner-section-articles {
   min-height: 70vh;
   height: 100%;
 }
 
-.banner-section picture {
+.banner-section picture,
+.banner-section-articles picture {
   position: absolute;
   height: 100%;
   z-index: -1;
   inset: 0;
 }
 
-.banner-section img {
+.banner-section img,
+.banner-section-articles img {
   width: 100%;
   height: 76vh;
 }
