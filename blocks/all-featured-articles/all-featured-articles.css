@@ -7,6 +7,16 @@
   margin-bottom: 5vh !important;
 }
 
+.all-featured-articles .category a:hover,
+.all-featured-articles h3 a:hover,
+.all-featured-articles .date a:hover {
+  text-decoration: none;
+}
+
+.all-featured-articles .date a:hover {
+  color: var(--date-color);
+}
+
 /* Article Category */
 .all-featured-articles .category {
   display: flex;
