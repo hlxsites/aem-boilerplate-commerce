@@ -117,6 +117,9 @@ declare const _default: {
       "each": {
         "label": "each"
       },
+      "pricePerItem": {
+        "label": "price per item"
+      },
       "quantity": {
         "label": "Quantity"
       },

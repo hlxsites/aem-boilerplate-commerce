@@ -119,6 +119,9 @@ export declare const definition: {
                 each: {
                     label: string;
                 };
+                pricePerItem: {
+                    label: string;
+                };
                 quantity: {
                     label: string;
                 };
@@ -260,6 +263,9 @@ export declare const definition: {
             };
             CartItem: {
                 each: {
+                    label: string;
+                };
+                pricePerItem: {
                     label: string;
                 };
                 quantity: {
@@ -405,6 +411,9 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
         };
         CartItem: {
             each: {
+                label: string;
+            };
+            pricePerItem: {
                 label: string;
             };
             quantity: {
