@@ -17,6 +17,7 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
     slots?: {
         Heading?: SlotProps;
         EmptyCart?: SlotProps;
+        ProductAttributes?: SlotProps;
     };
     enableRemoveItem?: boolean;
     enableUpdateItemQuantity?: boolean;

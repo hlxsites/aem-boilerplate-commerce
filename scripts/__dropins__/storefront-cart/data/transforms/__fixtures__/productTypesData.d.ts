@@ -940,5 +940,84 @@ declare const complexInsufficientQuantityGeneralMessage: {
         };
     };
 };
-export { bundleOptions, bundleOptionsEmpty, giftCardPhysical, giftCardVirtual, simple, simpleCustomizable, configurable, configurableCustomizable, giftCard, downloadbleWithMultipleLinks, simpleLowInventory, complexInsufficientQuantity, complexInsufficientQuantityGeneralMessage, };
+declare const complexWithProductAttributes: {
+    product: {
+        custom_attributesV2: {
+            items: ({
+                code: string;
+                value: string;
+                selected_options?: undefined;
+            } | {
+                code: string;
+                selected_options: {
+                    value: string;
+                    label: string;
+                }[];
+                value?: undefined;
+            })[];
+        };
+        name: string;
+        sku: string;
+        thumbnail: {
+            url: string;
+            label: string;
+        };
+        url_key: string;
+        url_suffix: string;
+        categories: {
+            url_path: string;
+            url_key: string;
+        }[];
+        price_range: {
+            maximum_price: {
+                regular_price: {
+                    value: number;
+                    currency: string;
+                };
+                final_price: {
+                    value: number;
+                    currency: string;
+                };
+                discount: {
+                    amount_off: number;
+                    percent_off: number;
+                };
+            };
+        };
+    };
+    __typename: string;
+    links: {
+        title: string;
+        url: string;
+    }[];
+    uid: string;
+    quantity: number;
+    errors: null;
+    prices: {
+        price: {
+            value: number;
+            currency: string;
+        };
+        total_item_discount: {
+            value: number;
+            currency: string;
+        };
+        row_total: {
+            value: number;
+            currency: string;
+        };
+        price_including_tax: {
+            value: number;
+            currency: string;
+        };
+        row_total_including_tax: {
+            value: number;
+        };
+        original_row_total: {
+            value: number;
+            currency: string;
+        };
+    };
+};
+export { bundleOptions, bundleOptionsEmpty, giftCardPhysical, giftCardVirtual, simple, simpleCustomizable, configurable, configurableCustomizable, giftCard, downloadbleWithMultipleLinks, simpleLowInventory, complexInsufficientQuantity, complexInsufficientQuantityGeneralMessage, complexWithProductAttributes, };
 //# sourceMappingURL=productTypesData.d.ts.map
