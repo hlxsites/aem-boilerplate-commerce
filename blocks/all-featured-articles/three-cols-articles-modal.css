@@ -1,0 +1,19 @@
+.three-cols-articles-modal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  width: fit-content;
+}
+
+.three-cols-articles-modal img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-width: 326px;
+  max-height: 183px;
+}
+
+.three-cols-articles-modal .article-card {
+  max-width: 326px;
+}

@@ -27,6 +27,9 @@
     color: var(--sub-text-title-color);
     font-weight: 400;
   }
+  .features-modal-section .default-content-wrapper p {
+    margin-left: 7%;
+  }
 
   .modal-content .default-content-wrapper p:nth-child(1) {
     border-bottom: 1px solid var(--sub-text-border-divider);
@@ -119,7 +122,6 @@
     width: 100%;
     text-align: left;
     border-radius: 0;
-
     padding-top: 8%;
   }
 

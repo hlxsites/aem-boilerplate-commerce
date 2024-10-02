@@ -1,0 +1,39 @@
+.sub-nav-categories {
+  height: 56px;
+}
+
+/* Nav Links */
+
+.sub-nav-categories > div {
+  display: flex;
+  margin: auto;
+  height: calc(var(--nav-height) / 2);
+  justify-content: center;
+  align-items: center;
+}
+
+.sub-nav-categories div {
+  display: flex;
+  margin: auto 1%;
+  align-items: center;
+  gap: 1px;
+}
+
+/* Nav Links */
+.sub-nav-categories div:nth-child(1) div a {
+  font-size: var(--sub-text-secondary-size);
+  text-wrap: nowrap;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+}
+
+/* Sale Button Red */
+.sub-nav-categories div:nth-child(10) {
+  color: var(--sub-text-sale-color);
+}
+
+/* Account and Shipping Country Mobile Only */
+.sub-nav-categories div:nth-child(12),
+.sub-nav-categories div:nth-child(13) {
+  display: none;
+}

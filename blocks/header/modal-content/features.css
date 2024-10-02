@@ -1,4 +1,22 @@
 @import url(./sub-heading-modal.css);
+@import url(../../all-featured-articles/three-cols-articles-modal.css);
+
+.features-modal-section {
+  display: flex;
+  flex-direction: row;
+  width: 90vw;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.features-modal {
+  width: fit-content;
+}
+
+.features-modal-section .columns-wrapper,
+.features-modal-section div.default-content-wrapper {
+  margin: 0 !important;
+}
 
 .features-modal div div:nth-child(1) p a {
   border-radius: 0;
@@ -9,10 +27,12 @@
   font-size: var(--sub-text-secondary-size);
   padding: 0;
   margin: 0;
-  font-weight: 555;
+  font-weight: 600;
 }
 
+/* Categories */
 .features-modal div ul {
+  display: flex;
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -24,129 +44,48 @@
   text-transform: capitalize;
 }
 
-.features-modal div ul,
-.features-modal div div:nth-child(2) {
-  display: flex;
-}
-
-.features-modal div:nth-child(2) {
-  flex: 2;
-}
-
-.features-modal div:nth-child(2) table p a {
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  height: auto;
-  text-transform: uppercase;
-  background-color: transparent;
-  border-radius: 0;
-  justify-content: flex-start;
-  text-wrap: wrap;
-  font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
-  text-align: left;
-}
-.features-modal div:nth-child(2) table {
-  display: flex;
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.features-modal div:nth-child(2) table p:nth-child(2) a {
-  padding-top: 4%;
-  font-size: 10px;
-  color: var(--sub-text-grey);
-  flex: 1;
-}
-
-.features-modal div:nth-child(2) table p:nth-child(3) a {
-  font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
-  flex: 1;
-}
-
-.features-modal div:nth-child(2) table tr:nth-child(2) td,
-.features-modal div:nth-child(2) table tr:nth-child(3) td {
-  padding: 0 4px;
-  width: 100%;
-  max-width: 280px;
-  align-content: flex-start;
-}
-
-.features-modal div:nth-child(2) table tr:nth-child(2) td {
-  padding-bottom: 2%;
-}
-
-.features-modal div div {
-  align-self: start;
-  padding-bottom: 2%;
-}
-
 .features-modal > div > div:nth-child(1) {
   flex: 0.5;
 }
 
-.features-modal div:nth-child(2) table p:nth-child(1) a picture img {
-  max-height: 187px;
-  width: auto;
+.three-cols-articles-modal {
+  justify-content: center;
+  flex: 2;
 }
 
 @media (width <= 991px) {
   /* Features */
-  .features-modal > div > div:nth-child(1) li:nth-child(1) {
+  .features-modal {
+    margin: 10% 0;
+  }
+
+  .features-modal div div:nth-child(1) p a {
+    font-size: 16px;
+  }
+  .features-modal div div:nth-child(1) p a,
+  .features-modal ul {
+    margin-left: 3vw !important;
+  }
+
+  .features-modal ul li {
+    margin-bottom: 10%;
+    font-size: 16px;
+  }
+
+  .features-modal ul li:last-child {
+    margin-bottom: 0%;
+  }
+
+  .features-modal ul li:nth-child(1) {
     margin-top: 10%;
   }
-  .features-modal > div > div:nth-child(1) li {
-    margin-bottom: 20%;
-  }
 
-  .features-modal > div {
-    flex-direction: column !important;
-  }
-
-  .features-modal table {
-    border-top: 1px solid var(--sub-text-border-divider);
-    width: 90vw !important;
-    max-width: 372px;
-    margin-bottom: 15%;
-  }
-
-  .features-modal table tbody {
+  .features-modal-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 100%;
-    margin-top: 5%;
-  }
-
-  .features-modal table td {
-    display: flex;
-    flex-wrap: wrap;
-
-    margin-bottom: 5%;
-    flex-direction: column;
-    padding: 0;
-  }
-
-  .features-modal div:nth-child(2) table p:nth-child(2),
-  .features-modal div:nth-child(2) table p:nth-child(3) {
-    margin: auto 0;
-  }
-
-  .features-modal div:nth-child(2) table p:nth-child(2) a,
-  .features-modal div:nth-child(2) table p:nth-child(3) a {
-    margin: auto 2%;
-  }
-
-  .features-modal div:nth-child(2) table p:nth-child(1) a picture img {
-    width: 100%;
-    height: auto;
-  }
-
-  .features-modal table picture {
-    width: 284px;
-    padding: 0;
-    margin: 2% auto;
+    justify-content: center;
+    margin: 0 !important;
+    margin-left: -3.5vw !important;
   }
 }

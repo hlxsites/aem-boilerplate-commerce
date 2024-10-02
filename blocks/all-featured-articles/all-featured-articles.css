@@ -2,6 +2,7 @@
 @import url(./highlighted-articles.css);
 @import url(./two-cols-rows-featured-articles.css);
 @import url(./three-cols-articles.css);
+@import url(./three-cols-articles-modal.css);
 
 .all-featured-articles .category a:hover,
 .all-featured-articles h3 a:hover,
@@ -139,7 +140,8 @@
   }
 
   /* 2 Cols & Rows Section */
-  .two-cols-rows-featured-articles {
+  .two-cols-rows-featured-articles,
+  .three-cols-articles-modal {
     grid-template-columns: repeat(1, 1fr);
   }
 
@@ -191,5 +193,38 @@
   .three-cols-articles .article-content .category {
     display: flex;
     margin-top: 0;
+  }
+
+  /* features-modal */
+  .three-cols-articles-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .three-cols-articles-modal .article-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 80%;
+    flex-basis: 30%;
+    width: 344px;
+    margin-left: 6vw;
+  }
+
+  .three-cols-articles-modal .article-card:nth-child(1) {
+    border-top: 1px solid var(--sub-text-border-divider);
+    padding-top: 10%;
+  }
+
+  .three-cols-articles-modal img {
+    width: 344px;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .three-cols-articles-modal .article-content {
+    justify-content: flex-start;
+    width: 100%;
   }
 }
