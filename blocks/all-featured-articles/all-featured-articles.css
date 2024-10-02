@@ -187,4 +187,9 @@
   .three-cols-articles h3 a {
     font-size: 16px;
   }
+
+  .three-cols-articles .article-content .category {
+    display: flex;
+    margin-top: 0;
+  }
 }
