@@ -88,6 +88,8 @@ export interface Item {
     outOfStock?: boolean;
     notAvailableMessage?: string;
     stockLevel?: String;
+    discountPercentage?: number;
+    savingsAmount?: Price;
 }
 interface ItemError {
     id: string;

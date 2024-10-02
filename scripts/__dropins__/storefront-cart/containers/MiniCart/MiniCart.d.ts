@@ -10,6 +10,8 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     slots?: {
         ProductList?: SlotProps;
     };
+    showDiscount?: boolean;
+    showSavings?: boolean;
 }
 export declare const MiniCart: Container<MiniCartProps, CartModel | null>;
 //# sourceMappingURL=MiniCart.d.ts.map

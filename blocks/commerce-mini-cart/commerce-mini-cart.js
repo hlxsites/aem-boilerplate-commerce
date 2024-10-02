@@ -7,6 +7,8 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
     'cart-url': cartURL = '',
     'checkout-url': checkoutURL = '',
+    'show-discount': showDiscount = 'false',
+    'show-savings': showSavings = 'false',
   } = readBlockConfig(block);
 
   block.innerHTML = '';
@@ -16,5 +18,7 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => cartURL : undefined,
     routeCheckout: checkoutURL ? () => checkoutURL : undefined,
     routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+    showDiscount: showDiscount === 'true',
+    showSavings: showSavings === 'true',
   })(block);
 }

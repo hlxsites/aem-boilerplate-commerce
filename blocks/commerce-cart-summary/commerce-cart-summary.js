@@ -10,7 +10,23 @@ export default async function decorate(block) {
     'hide-attributes': hideAttributes = '',
     'enable-item-quantity-update': enableUpdateItemQuantity = 'false',
     'enable-item-remove': enableRemoveItem = 'true',
+    'show-discount': showDiscount = 'false',
+    'show-savings': showSavings = 'false',
+    'quantity-type': quantityType = 'stepper',
   } = readBlockConfig(block);
+
+  const DROPDOWN_MAX_QUANTITY = 20;
+
+  const dropdownOptions = Array.from(
+    { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
+    (_, i) => {
+      const quantityOption = i + 1;
+      return {
+        value: `${quantityOption}`,
+        text: `${quantityOption}`,
+      };
+    },
+  );
 
   block.innerHTML = '';
 
@@ -22,5 +38,9 @@ export default async function decorate(block) {
     attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
     enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
     enableRemoveItem: enableRemoveItem === 'true',
+    showDiscount: showDiscount === 'true',
+    showSavings: showSavings === 'true',
+    quantityType,
+    dropdownOptions,
   })(block);
 }

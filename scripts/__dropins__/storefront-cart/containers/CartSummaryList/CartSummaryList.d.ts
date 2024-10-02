@@ -21,6 +21,13 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
     enableRemoveItem?: boolean;
     enableUpdateItemQuantity?: boolean;
     onItemsErrorsChange?: (errors: Map<string, string>) => void;
+    showDiscount?: boolean;
+    showSavings?: boolean;
+    quantityType?: 'stepper' | 'dropdown';
+    dropdownOptions?: {
+        value: string;
+        text: string;
+    }[];
 }
 export type SwitchableAttributes = 'name' | 'image' | 'configurations' | 'warning' | 'alert' | 'sku' | 'price' | 'quantity' | 'total' | 'totalDiscount' | 'totalExcludingTax';
 export declare const CartSummaryList: Container<CartSummaryListProps, CartModel | null>;

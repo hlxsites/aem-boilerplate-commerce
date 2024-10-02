@@ -18,10 +18,17 @@ export interface CartItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'tit
     };
     warning?: VNode;
     alert?: VNode;
+    discount?: VNode;
+    savings?: VNode;
     loading?: boolean;
     updating?: boolean;
     onRemove?: () => void;
     onQuantity?: (value: number) => void;
+    quantityType?: 'stepper' | 'dropdown';
+    dropdownOptions?: {
+        value: string;
+        text: string;
+    }[];
 }
 export declare const CartItem: FunctionComponent<CartItemProps>;
 //# sourceMappingURL=CartItem.d.ts.map
