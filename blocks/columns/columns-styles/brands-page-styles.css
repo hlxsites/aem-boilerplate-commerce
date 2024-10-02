@@ -8,14 +8,26 @@
 .brands
 {
     display: flex;
+    /* margin: 0px;
+    padding: 0px; */
 }
 
 .brands div.columns-wrapper:first-child
 {
     position: sticky;
-    margin: 0;
+    margin: 0px;
+    margin-left: 13%;
+    padding: 0px;
     top: 70px;
     max-height: max-content;
+    min-width: 250px;
+}
+
+.brands div.columns-wrapper:not(:first-child)
+{
+    margin: 0;
+    margin-left: 45px;
+    max-width: fit-content;
 }
 
 .brands-letters
@@ -38,10 +50,15 @@
 .brands-letters ul
 {
     display: grid;
-    grid-template-columns: repeat(7,auto);
+    grid-template-columns: repeat(11,auto);
     list-style: none;
     text-align: center;
     padding: 5px;
+}
+
+.brands-letters ul li
+{
+    font-size: 1.4rem;
 }
 
 .brands-name-section h2
@@ -60,12 +77,87 @@
 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 200px;
+    column-gap: 250px;
     list-style: none;
-    padding: 10px 0 40px;
+    padding: 0px 10px 50px 10px;
     margin: 0;
 }
 
+.brands-name-section ul li
+{
+    font-size: 1.4rem;
+    font-weight: 200;
+    letter-spacing: 0.02rem;
+    line-height: 30px;
+    margin: 0;
+}
 
+@media(width < 900px) 
+{
+    .brands
+    {
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 0;
+        margin: 0;
+        width: fit-content;
+    }
+    .brands div.columns-wrapper:first-child
+    {
+        position: sticky;
+        margin: 0px;
+        margin-left: 0;
+        top: 50px;
+        min-width: 10px;
+    }
 
+    .brands div.columns-wrapper:not(:first-child)
+    {
+        margin: 0;
+    }
 
+    .brands-letters img,
+    .brands-letters p:nth-child(2),
+    .brands-letters p:nth-child(3)
+    {
+        display: none;
+    }
+
+    .brands-letters ul
+    {
+        grid-template-columns: repeat(1, 1fr);
+        text-align: center;
+        opacity: 1;
+        animation: fadeout 5ms;
+        animation-timing-function: linear;
+        animation-timeline: view();
+    }
+
+    @keyframes fadeout {
+        to {opacity: 0;}
+    }
+
+    .brands-name-section table:not(:last-child)
+    {
+        border-bottom: none;
+    }
+
+    .brands-name-section h2
+    {
+        border-bottom: 1px solid rgb(204, 204, 204);
+        padding-bottom: 10px;
+        width: 98%;
+        margin-left: 0;
+    }
+
+    .brands-name-section ul
+    {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        column-gap: normal;
+        list-style: none;
+        padding: 0px 10px 50px 10px;
+        margin: 0;
+        min-width: 300px;
+    }
+}
