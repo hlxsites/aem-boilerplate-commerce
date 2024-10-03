@@ -12,6 +12,8 @@ import { initializers, Initializer } from '@dropins/tools/initializer.js';
 // Drop-ins
 import * as authApi from '@dropins/storefront-auth/api.js';
 import * as cartApi from '@dropins/storefront-cart/api.js';
+import * as checkoutApi from '@dropins/storefront-checkout/api.js';
+import * as orderConfirmationApi from '@dropins/storefront-order-confirmation/api.js';
 
 // Recaptcha
 import * as recaptcha from '@dropins/tools/recaptcha.js';
@@ -61,6 +63,8 @@ export default async function initializeDropins() {
   initializers.register(initialize, {});
   initializers.register(authApi.initialize, {});
   initializers.register(cartApi.initialize, {});
+  initializers.register(checkoutApi.initialize, {});
+  initializers.register(orderConfirmationApi.initialize, {});
 
   const mount = async () => {
     // Event Bus Logger

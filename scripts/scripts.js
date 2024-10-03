@@ -178,7 +178,7 @@ async function applyTemplates(doc) {
     buildTemplateColumns(doc);
   }
 
-  if (doc.body.classList.contains('cart')) {
+  if (doc.body.classList.contains('cart') || doc.body.classList.contains('checkout')) {
     await buildTemplateCart(doc);
   }
 }

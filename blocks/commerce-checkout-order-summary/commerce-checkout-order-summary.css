@@ -1,0 +1,6 @@
+/* stylelint-disable no-empty-source */
+
+/* To add into the cart dropin **/
+.cart-cart-order-summary__taxes .dropin-accordion .dropin-divider {
+    margin: var(--spacing-medium) auto;
+}
