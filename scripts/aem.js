@@ -574,17 +574,40 @@ async function fetchPlaceholders(prefix = 'default') {
           return {};
         })
         .then((json) => {
+          console.log('Fetched JSON:', json);
+
+          if (!json.data) {
+            console.warn(
+              'The property "data" is undefined in the response:',
+              json
+            );
+            return {};
+          }
+
+          if (!Array.isArray(json.data)) {
+            console.warn(
+              'Expected json.data to be an array, but got:',
+              json.data
+            );
+            return {};
+          }
+
           const placeholders = {};
           json.data
             .filter((placeholder) => placeholder.Key)
             .forEach((placeholder) => {
-              placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+              if (placeholder.Text) {
+                placeholders[toCamelCase(placeholder.Key)] = placeholder.Text;
+              }
             });
+
           window.placeholders[prefix] = placeholders;
           resolve(window.placeholders[prefix]);
         })
-        .catch(() => {
-          // error loading placeholders
+        .catch((error) => {
+          console.error('Error loading placeholders:', error);
+          // You can log more details about the fetch error if available
+          console.error('Error details:', error.message);
           window.placeholders[prefix] = {};
           resolve(window.placeholders[prefix]);
         });

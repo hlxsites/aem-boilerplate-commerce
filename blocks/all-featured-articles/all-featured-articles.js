@@ -72,13 +72,13 @@ export default async function decorate(block) {
 
         block.appendChild(contentDiv);
       } else {
-        console.error('No matching data found for path:', path);
+        console.error('No matching data found for path: ', path);
       }
     });
 
     // Clears p tags
     pathElements.forEach((pathElement) => pathElement.remove());
   } catch (error) {
-    console.error('Error fetching or processing index data:', error);
+    console.error('Error fetching or processing index data: ', error);
   }
 }
