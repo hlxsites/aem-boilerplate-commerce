@@ -19,8 +19,29 @@ export default async function decorate(block) {
     routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
     routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
     maxItems: parseInt(maxItems, 10) || undefined,
-    attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
+    attributesToHide: hideAttributes
+      .split(',')
+      .map((attr) => attr.trim().toLowerCase()),
     enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
     enableRemoveItem: enableRemoveItem === 'true',
+    slots: {
+      Footer: (ctx) => {
+        // Runs on mount
+        const wrapper = document.createElement('div');
+        ctx.appendChild(wrapper);
+
+        // Append Product Promotions on every update
+        ctx.onChange((next) => {
+          wrapper.innerHTML = '';
+
+          next.item?.discount?.label?.forEach((label) => {
+            const discount = document.createElement('div');
+            discount.style.color = '#3d3d3d';
+            discount.innerText = label;
+            wrapper.appendChild(discount);
+          });
+        });
+      },
+    },
   })(block);
 }
