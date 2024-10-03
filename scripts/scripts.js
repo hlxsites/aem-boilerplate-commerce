@@ -117,7 +117,6 @@ function autolinkModals(element) {
     }
   };
 
-  // Attach both event listeners
   element.addEventListener('mouseover', openTheModal);
   element.addEventListener('click', openTheModal);
 }

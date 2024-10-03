@@ -40,6 +40,7 @@ export async function createModal(contentNodes) {
       dialog.close();
     }
   });
+
   dialog.addEventListener('click', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
     if (
