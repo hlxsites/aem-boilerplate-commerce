@@ -24,12 +24,22 @@ export async function createModal(contentNodes) {
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  // closeButton.addEventListener('mouseout', () => dialog.close());
+  closeButton.addEventListener('mouseout', () => dialog.close());
   closeButton.addEventListener('click', () => dialog.close());
-
   dialog.append(closeButton);
 
   // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
+  dialog.addEventListener('mouseout', (event) => {
+    const dialogDimensions = dialog.getBoundingClientRect();
+    if (
+      event.clientX < dialogDimensions.left ||
+      event.clientX > dialogDimensions.right ||
+      event.clientY < dialogDimensions.top ||
+      event.clientY > dialogDimensions.bottom
+    ) {
+      dialog.close();
+    }
+  });
   dialog.addEventListener('click', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
     if (
@@ -48,13 +58,9 @@ export async function createModal(contentNodes) {
   await loadBlock(block);
   decorateIcons(closeButton);
 
-  dialog.addEventListener('close', () => {
-    document.body.classList.remove('modal-open');
-    block.remove();
-  });
+  dialog.addEventListener('close', () => block.remove());
 
   block.append(dialog);
-
   return {
     block,
     showModal: () => {
@@ -64,7 +70,6 @@ export async function createModal(contentNodes) {
       setTimeout(() => {
         dialogContent.scrollTop = 0;
       }, 0);
-      document.body.classList.add('modal-open');
     },
   };
 }
@@ -76,17 +81,5 @@ export async function openModal(fragmentUrl) {
 
   const fragment = await loadFragment(path);
   const { showModal } = await createModal(fragment.childNodes);
-  const modalTrigger = document.querySelectorAll('.sub-nav-categories p a');
-  if (modalTrigger) {
-    modalTrigger.forEach((trigger) => {
-      trigger.addEventListener('mouseenter', async () => {
-        showModal();
-      });
-      trigger.addEventListener('mouseleave', () => {
-        dialog.close(); // Assuming 'dialog' is accessible here
-      });
-    });
-  } else {
-    console.error('Modal trigger element not found.');
-  }
+  showModal();
 }

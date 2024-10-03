@@ -574,7 +574,7 @@ async function fetchPlaceholders(prefix = 'default') {
           return {};
         })
         .then((json) => {
-          console.log('Fetched JSON:', json);
+          // console.log('Fetched JSON:', json);
 
           if (!json.data) {
             console.warn(
