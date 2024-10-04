@@ -41,11 +41,6 @@ main .section {
   width: 100%;
 }
 
-main .section:first-child:not(.banner-footer-section,.section:has(.email-us-header))
-{
-  padding: 30px 0;
-}
-
 .columns > div > div {
   order: 1;
 }
@@ -356,92 +351,8 @@ main .section:first-child:not(.banner-footer-section,.section:has(.email-us-head
   }
 }
 
-/* christopher */
-@media (600px < max-width < 1024px)
-{
-  /* Banner Section */
-  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1)
-  {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Banner */
-  .banner-footer-section > .columns-wrapper div:nth-child(1) {
-    position: relative;
-    width: 100%;
-    flex: 1.5;
-    margin-bottom: 5%;
-    padding-bottom: -5%;
-  }
-
-  /* Publications */
-  .banner-footer-section p em:nth-child(1) a {
-    font-size: 18px;
-    margin: 0;
-    left: 10%;
-    bottom: -42%;
-    margin: 1%;
-  }
-
-  /* shop now */
-  .banner-footer-section p em:nth-child(2) a {
-    font-size: 11px;
-    margin: auto;
-    padding: 0.25% 2.5%;
-    right: 10%;
-    bottom: -40%;
-  }
-}
-
-
-/* Christopher Banner */
-
 @media (max-width: 1024px)
 {
-    /* Banner Section */
-    .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Banner */
-    .banner-footer-section > .columns-wrapper div:nth-child(1) {
-      position: relative;
-      width: 100%;
-      flex: 1.5;
-      margin-bottom: 5%;
-      padding-bottom: -5%;
-    }
-    .banner-footer-section
-    {
-      min-height: 38vh;
-    }
-
-    .banner-footer-section img {
-      object-fit: cover;
-      max-height: 40vh;
-      width: 100%;
-    }
-
-    /* Come work with us */
-    .banner-footer-section p em:nth-child(1) a {
-      font-size: 18px;
-      margin: 0;
-      left: 2%;
-      top: 32vh;
-      margin: 1%;
-    }
-
-    /* View all jobs */
-    .banner-footer-section p em:nth-child(2) a {
-      font-size: 11px;
-      margin: auto 10px;
-      padding: 10px 10px;
-      left: 80%;
-      bottom: -25vh;
-    }
-
     .section-two-col
     {
       padding: 5%;
