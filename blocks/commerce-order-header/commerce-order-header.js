@@ -23,11 +23,7 @@ export default async function decorate(block) {
 
   block.appendChild(headerContainer);
 
-  events.on('order/data', async (orderData) => {
-    const orderTitleEl = document.querySelector('.dropin-header-container__title');
-
-    if (orderTitleEl) {
-      orderTitleEl.innerText = `Order ${orderData.number}`;
-    }
+  events.on('order/data', (orderData) => {
+    uiProvider.render(Header, { title: `Order ${orderData.number}` })(headerContainer);
   }, { eager: true });
 }
