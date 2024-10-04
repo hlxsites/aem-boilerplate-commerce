@@ -68,7 +68,7 @@ const handleUserOrdersRedirects = () => {
         : `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
     }
   } else {
-    targetPath = orderRef && !isTokenProvided ? null : ORDER_STATUS_PATH;
+    targetPath = !orderRef ? ORDER_STATUS_PATH : null;
   }
 
   if (targetPath) {
