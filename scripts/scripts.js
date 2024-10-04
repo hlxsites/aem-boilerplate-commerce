@@ -121,6 +121,22 @@ function autolinkModals(element) {
   element.addEventListener('click', openTheModal);
 }
 
+function autolinkNavModals(element) {
+  const openTheModal = async (e) => {
+    const origin = e.target.closest('a');
+    if (origin && origin.href && origin.href.includes('/nav-modals/')) {
+      e.preventDefault();
+      const { openNavModal } = await import(
+        `${window.hlx.codeBasePath}/blocks/nav-modal/nav-modal.js`
+      );
+      openNavModal(origin.href);
+    }
+  };
+
+  element.addEventListener('mouseover', openTheModal);
+  element.addEventListener('click', openTheModal);
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -290,6 +306,7 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   autolinkModals(doc);
+  autolinkNavModals(doc);
 
   const main = doc.querySelector('main');
   const headerPromise = loadHeader(doc.querySelector('header'));

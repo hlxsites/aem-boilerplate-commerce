@@ -1,0 +1,80 @@
+.nav-modal {
+  position: fixed;
+  left: 0;
+  width: 100%;
+}
+
+.nav-modal dialog {
+  position: fixed;
+  min-height: 48%;
+  margin-top: var(--nav-height);
+  border: 1px solid #ccc;
+  width: auto;
+}
+
+.nav-modal dialog .nav-modal-content {
+  max-height: calc(100vh - 60px);
+}
+
+@media (width > 998px) {
+  .nav-modal dialog {
+    padding: 30px;
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
+
+.nav-modal dialog::backdrop {
+  position: fixed;
+  top: 20%;
+  left: 0;
+  width: 100%;
+  height: calc(100% - var(--nav-height));
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.nav-modal dialog .section {
+  padding: 0;
+}
+
+.nav-modal .close-button {
+  display: none;
+}
+
+@media (width <= 998px) {
+  .nav-modal dialog {
+    margin-top: 0;
+    min-width: 375px;
+    max-width: 390px;
+    width: 400px;
+    margin-left: 0;
+    height: 100vh;
+  }
+
+  .nav-modal dialog::backdrop {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+  }
+
+  .nav-modal .close-button {
+    display: block;
+    position: absolute;
+    top: 1%;
+    right: 10%;
+    width: auto;
+    height: 100%;
+    max-height: 50px;
+    border-radius: 0 var(--dialog-border-radius) 0 0;
+    background-color: unset;
+    margin: 0;
+    border: none;
+  }
+}
+
+@media (width <= 400px) {
+  .nav-modal .close-button {
+    right: 20%;
+  }
+}
