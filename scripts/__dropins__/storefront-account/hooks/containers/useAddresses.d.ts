@@ -1,7 +1,7 @@
 import { CustomerAddressesModel } from '../../data/models';
 import { KeysSortOrderProps, useAddressesProps } from '../../types';
 
-export declare const useAddresses: ({ minifiedView, routeAddressesPage, onSuccess, }: useAddressesProps) => {
+export declare const useAddresses: ({ selectShipping, selectBilling, defaultSelectAddressId, onAddressData, minifiedView, routeAddressesPage, onSuccess, }: useAddressesProps) => {
     keysSortOrder: [] | KeysSortOrderProps[];
     submitLoading: boolean;
     isModalRendered: boolean;
@@ -18,5 +18,7 @@ export declare const useAddresses: ({ minifiedView, routeAddressesPage, onSucces
     closeNewAddressForm: () => void;
     redirectToAddressesRoute: () => void;
     handleOnSuccess: () => Promise<void>;
+    handleSelectAddressOption: (event: Event, item?: {} | CustomerAddressesModel | undefined) => void;
+    selectedAddressOption: string;
 };
 //# sourceMappingURL=useAddresses.d.ts.map

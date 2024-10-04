@@ -7,6 +7,9 @@ export type Product = {
     smallImage: ProductImage;
 };
 export type OrderItem = {
+    quantityOrdered?: number;
+    quantityShipped?: number;
+    quantityInvoiced?: number;
     status: string;
     productName: string;
     id: string;
@@ -36,18 +39,29 @@ export type OrderTotals = {
     totalTax: MoneyAmount;
     totalShipping: MoneyAmount;
 };
+export type ShipmentsTracingModel = {
+    carrier: string;
+    number: string;
+    title: string;
+};
+export type ShipmentsModel = {
+    id: string;
+    number: string;
+    tracking: ShipmentsTracingModel[];
+};
 export type OrderDetails = {
+    status: string;
     token: string;
-    billingAddress: CustomerAddressesModel;
     carrier: string;
     email: string;
     id: string;
-    items: OrderItem[];
     number: string;
     orderDate: string;
+    items: OrderItem[];
+    shipments: ShipmentsModel[];
     paymentMethods: PaymentMethod[];
     shippingAddress: CustomerAddressesModel;
-    status: string;
+    billingAddress: CustomerAddressesModel;
     total: OrderTotals;
 };
 export type PaginationInfo = {

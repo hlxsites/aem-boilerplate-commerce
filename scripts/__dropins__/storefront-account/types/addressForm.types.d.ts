@@ -1,5 +1,5 @@
 import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { AttributesFormModel, Country } from '../data/models';
+import { CustomerAddressesModel } from '../data/models';
 
 interface AddressFormActionsContext {
     handleUpdateAddress?: (event: Event, valid: boolean) => void;
@@ -12,10 +12,15 @@ interface AddressFormInputsContext {
     };
 }
 export interface AddressFormProps {
+    formName?: string;
+    showFormLoader?: boolean;
+    showSaveCheckBox?: boolean;
+    saveCheckBoxValue?: boolean;
+    forwardFormRef?: HTMLInputElement;
     addressFormId?: string;
     className?: string;
     addressesFormTitle?: string;
-    inputsDefaultValueSet?: AttributesFormModel;
+    inputsDefaultValueSet?: CustomerAddressesModel;
     shippingCheckBoxValue?: boolean;
     billingCheckBoxValue?: boolean;
     showShippingCheckBox?: boolean;
@@ -34,8 +39,7 @@ export interface AddressFormProps {
 }
 export interface AddressFormWrapperProps extends AddressFormProps {
 }
-export interface useAddressFormProps extends Omit<AddressFormProps, 'className' | 'addressesFormTitle' | 'handleCloseForm'> {
-    countryRegionOptions: Record<string, Country[]>;
+export interface useAddressFormProps extends Omit<AddressFormProps, 'className' | 'addressesFormTitle' | 'handleCloseForm' | 'forwardFormRef'> {
 }
 export {};
 //# sourceMappingURL=addressForm.types.d.ts.map

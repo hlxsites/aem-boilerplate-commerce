@@ -6,5 +6,6 @@ export type Region = {
 export interface RegionTransform {
     text: string;
     value: string;
+    id?: string | number;
 }
 //# sourceMappingURL=region.d.ts.map

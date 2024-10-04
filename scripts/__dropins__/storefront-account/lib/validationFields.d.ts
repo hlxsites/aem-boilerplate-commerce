@@ -2,7 +2,8 @@ type TranslationList = Record<string, string>;
 type ErrorsList = Record<string, string>;
 export type ValidationFieldsConfig = {
     validateRules: Record<string, string>[];
-    code: string;
+    code?: string;
+    customUpperCode: string;
     required: boolean;
 };
 export declare enum InputValidation {

@@ -1,6 +1,6 @@
 export interface CustomerAddressesModel {
-    firstname?: string;
-    lastname?: string;
+    firstName?: string;
+    lastName?: string;
     city?: string;
     company?: string;
     countryCode?: string;
@@ -14,7 +14,7 @@ export interface CustomerAddressesModel {
     vatId?: string;
     postcode?: string;
     street?: string;
-    street_2?: string;
+    streetMultiline_2?: string;
     defaultShipping?: boolean;
     defaultBilling?: boolean;
 }

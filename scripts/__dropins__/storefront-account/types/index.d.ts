@@ -11,6 +11,5 @@ export * from './api/getCustomer.types';
 export * from './api/removeCustomerAddress.types';
 export * from './api/getOrderHistoryList.types';
 export * from './ordersList.types';
-export * from './translations.types';
 export * from './emptyList.types';
 //# sourceMappingURL=index.d.ts.map

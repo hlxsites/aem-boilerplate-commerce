@@ -91,7 +91,7 @@ export declare const mockDefaultAddress: {
     vatId: string;
     postcode: string;
     street: string;
-    street_2: string;
+    streetMultiline_2: string;
     defaultShipping: boolean;
     defaultBilling: boolean;
 };

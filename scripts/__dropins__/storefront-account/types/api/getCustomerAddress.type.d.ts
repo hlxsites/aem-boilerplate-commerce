@@ -15,7 +15,7 @@ export interface UserAddressesProps {
     vat_id: string;
     postcode: string;
     street: string | string[] | [];
-    street_2?: string;
+    street_multiline_2?: string;
     default_shipping: boolean;
     default_billing: boolean;
     custom_attributesV2: {

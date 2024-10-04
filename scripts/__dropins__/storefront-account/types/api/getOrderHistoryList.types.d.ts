@@ -9,6 +9,9 @@ export interface ProductProps {
     };
 }
 export interface OrderItemProps {
+    quantity_ordered?: number;
+    quantity_shipped?: number;
+    quantity_invoiced?: number;
     status: string;
     product_name: string;
     id: string;

@@ -1,16 +1,38 @@
 import { HTMLAttributes } from 'preact/compat';
-import { AttributesFormModel, CustomerAddressesModel } from '../data/models';
+import { CustomerAddressesModel } from '../data/models';
 import { FieldsProps } from './form.types';
+import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
 
 export interface DefaultCheckBox extends Omit<FieldsProps, 'options'> {
 }
+export interface AddressCardContext {
+    addressData: {
+        label?: string | null;
+        name?: string;
+        orderNumber?: number;
+        value?: string;
+    }[];
+}
 export interface AddressesProps {
+    slots?: {
+        AddressCard: SlotProps<AddressCardContext>;
+    };
+    title?: string;
+    addressFormTitle?: string;
+    defaultSelectAddressId?: number | string;
+    showFormLoader?: boolean;
+    forwardFormRef?: HTMLInputElement;
+    selectShipping?: boolean;
+    selectBilling?: boolean;
+    showSaveCheckBox?: boolean;
+    saveCheckBoxValue?: boolean;
+    selectable?: boolean;
     className?: string;
     withHeader?: boolean;
     minifiedView: boolean;
     withActionsInMinifiedView?: boolean;
     withActionsInFullSizeView?: boolean;
-    inputsDefaultValueSet?: AttributesFormModel;
+    inputsDefaultValueSet?: CustomerAddressesModel;
     addressesFormTitle?: string;
     showShippingCheckBox?: boolean;
     showBillingCheckBox?: boolean;
@@ -19,10 +41,12 @@ export interface AddressesProps {
     routeAddressesPage?: () => string;
     onSuccess?: () => void;
     onError?: (error: string) => void;
+    onSubmit?: () => Promise<void>;
+    onAddressData?: (values: {} | CustomerAddressesModel | undefined) => void;
 }
 export interface AddressesWrapperProps extends AddressesProps {
 }
-export interface useAddressesProps extends Omit<AddressesProps, 'className' | 'inputsDefaultValueSet' | 'addressesFormTitle' | 'shippingCheckBoxValue' | 'billingCheckBoxValue'> {
+export interface useAddressesProps extends Omit<AddressesProps, 'className' | 'inputsDefaultValueSet' | 'addressesFormTitle' | 'shippingCheckBoxValue' | 'billingCheckBoxValue' | 'showFormLoader' | 'title' | 'slots'> {
 }
 export interface KeysSortOrderProps {
     name?: string;
@@ -30,6 +54,13 @@ export interface KeysSortOrderProps {
     label?: string | null;
 }
 export interface AddressCardProps {
+    slots?: {
+        AddressCard: SlotProps<AddressCardContext>;
+    };
+    selectShipping?: boolean;
+    selectBilling?: boolean;
+    selectable?: boolean;
+    variant?: 'secondary' | 'primary';
     minifiedView: boolean;
     addressData: CustomerAddressesModel | undefined;
     keysSortOrder?: KeysSortOrderProps[];
@@ -39,10 +70,11 @@ export interface AddressCardProps {
     handleRenderForm?: () => void | undefined;
 }
 export interface AddressActionsProps extends HTMLAttributes<HTMLButtonElement> {
-    minifiedView: boolean;
-    addNewAddress: boolean;
+    selectable?: boolean;
+    minifiedView?: boolean;
+    addNewAddress?: boolean;
     viewAllAddressesText?: string;
-    routeAddressesPage: () => void;
+    routeAddressesPage: (event: Event) => void;
 }
 export interface AddressModalProps {
     minifiedView: boolean;

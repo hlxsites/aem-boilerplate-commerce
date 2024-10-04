@@ -1,56 +1,65 @@
 declare const _default: {
   "Account": {
-    "EmptyList": {
-      "minifiedView": {
-        "Addresses": {
-          "message": "No saved addresses"
+    "minifiedView": {
+      "Addresses": {
+        "containerTitle": "Addresses",
+        "editAddressFormTitle": "Edit address",
+        "differentAddressFormTitle": "Deliver to new address",
+        "viewAllAddressesButton": "View address list",
+        "differentAddressButton": "Use a different address",
+        "addressCard": {
+          "actionRemove": "Remove",
+          "actionEdit": "Edit",
+          "cardLabelShipping": "Shipping",
+          "cardLabelBilling": "Billing",
+          "defaultLabelText": "DEFAULT"
         },
-        "OrdersList": {
-          "message": "No orders"
+        "removeAddressModal": {
+          "title": "Remove address",
+          "description": "Are you sure you would like to remove this address?",
+          "actionCancel": "Cancel",
+          "actionConfirm": "Remove"
         }
       },
-      "fullSizeView": {
-        "Addresses": {
-          "message": "No saved addresses"
-        },
-        "OrdersList": {
-          "message": "No orders"
-        }
-      }
-    },
-    "OrdersList": {
-      "minifiedView": {
+      "OrdersList": {
         "containerTitle": "Recent orders",
         "viewAllOrdersButton": "View all orders",
+        "ariaLabelLink": "Redirect to full order information",
         "OrdersListCard": {
           "orderNumber": "Order number:",
-          "itemsAmount": "items"
-        }
-      },
-      "fullSizeView": {
-        "containerTitle": "Your orders",
-        "titleSelectOrder": "Date order placed",
-        "OrdersListCard": {
-          "orderNumber": "Order number:",
-          "itemsAmount": "items"
+          "itemsAmount": "items",
+          "carrier": "Carrier:",
+          "orderDate": "Placed on"
         },
-        "OrdersListSelectDate":{
+        "OrdersListSelectDate": {
           "pastSixMonths": "Past 6 months",
           "currentYear": "Current year",
           "viewAll": "View all"
         }
+      },
+      "EmptyList": {
+        "Addresses": {
+          "message": "No saved addresses"
+        },
+        "OrdersList": {
+          "message": "No orders"
+        }
       }
     },
-    "Addresses": {
-      "minifiedView": {
+    "fullSizeView": {
+      "Addresses": {
         "containerTitle": "Addresses",
         "editAddressFormTitle": "Edit address",
-        "viewAllAddressesButton": "View address list",
+        "differentAddressFormTitle": "Deliver to new address",
+        "newAddressFormTitle": "Add address",
+        "addNewAddressButton": "Create new",
+        "differentAddressButton": "Use a different address",
         "addressCard": {
           "actionRemove": "Remove",
           "actionEdit": "Edit",
           "cardLabelShipping": "Shipping",
-          "cardLabelBilling": "Billing"
+          "cardLabelBilling": "Billing",
+          "defaultLabelText": "DEFAULT"
         },
         "removeAddressModal": {
           "title": "Remove address",
@@ -59,22 +68,27 @@ declare const _default: {
           "actionConfirm": "Remove"
         }
       },
-      "fullSizeView": {
-        "containerTitle": "Addresses",
-        "editAddressFormTitle": "Edit address",
-        "newAddressFormTitle": "Add address",
-        "addNewAddressButton": "Create new",
-        "addressCard": {
-          "actionRemove": "Remove",
-          "actionEdit": "Edit",
-          "cardLabelShipping": "Shipping",
-          "cardLabelBilling": "Billing"
+      "OrdersList": {
+        "containerTitle": "Your orders",
+        "ariaLabelLink": "Redirect to full order information",
+        "OrdersListCard": {
+          "orderNumber": "Order number:",
+          "itemsAmount": "items",
+          "carrier": "Carrier:",
+          "orderDate": "Placed on"
         },
-        "removeAddressModal": {
-          "title": "Remove address",
-          "description": "Are you sure you would like to remove this address?",
-          "actionCancel": "Cancel",
-          "actionConfirm": "Remove"
+        "OrdersListSelectDate": {
+          "pastSixMonths": "Past 6 months",
+          "currentYear": "Current year",
+          "viewAll": "View all"
+        }
+      },
+      "EmptyList": {
+        "Addresses": {
+          "message": "No saved addresses"
+        },
+        "OrdersList": {
+          "message": "No orders"
         }
       }
     },
@@ -83,7 +97,8 @@ declare const _default: {
         "secondaryButton": "Cancel",
         "primaryButton": "Save",
         "defaultShippingLabel": "Set as default shipping address",
-        "defaultBillingLabel": "Set as default billing address"
+        "defaultBillingLabel": "Set as default billing address",
+        "saveAddressBook": "Save in address book"
       }
     },
     "FormText": {
