@@ -10,6 +10,7 @@
     text-align: center;
     padding: 0;
     margin: 0;
+    font-weight: 400;
 }
 
 .preview-body
@@ -36,6 +37,8 @@
     font-size: 13px;
     top: 12vh;
     left: 8.8vw;
+    font-weight: 400;
+    color: white;
 }
 
 .preview-body > div > div p:nth-child(3)
@@ -69,8 +72,8 @@
 .preview-body > div > div p:nth-child(7)
 {
     color: black;
-    text-align: center;
     font-size: 11px;
+    text-align: center;
 }
 
 .preview-footer
@@ -109,7 +112,7 @@
     text-decoration: none;
 }
 
-@media (width <= 600px) {
+@media (width < 900px) {
     .modal dialog:has(.preview-body)
     {
         position: fixed;
@@ -128,8 +131,10 @@
     {
         position: absolute;
         font-size: 12px;
-        top: 8.5vh;
+        top: 8vh;
         left: 11vh;
+        color: white;
+        font-weight: 400;
     }
 
     .preview-body > div > div p:nth-child(3)
@@ -137,13 +142,14 @@
         position: absolute;
         top: 2vh;
         right: 10.5vh;
+        color: white;
     }
 
     .preview-body > div > div p:nth-child(4)
     {
         position: absolute;
         font-size: 8px;
-        top: 15vh;
+        top: 14.7vh;
         left: 11vh;
         color: white;
     }
@@ -152,8 +158,14 @@
     {
         position: absolute;
         font-size: 8px;
-        top: 15vh;
+        top: 14.7vh;
         right: 10vh;
+    }
+
+    .preview-body > div > div p:nth-child(7)
+    {
+        width: 90%;
+        margin: auto;
     }
 
     .preview-footer > div
