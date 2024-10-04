@@ -1,15 +1,5 @@
 @import url(./sub-heading-modal.css);
 
-.modal-content * p {
-  display: flex;
-  padding: 0;
-  flex: 1;
-  margin: 0;
-  font-size: var(--sub-text-secondary-size);
-  line-height: 1.5;
-  text-transform: capitalize;
-}
-
 /* Title */
 .modal-content .default-content-wrapper p:nth-child(2) a {
   font-weight: 550;
