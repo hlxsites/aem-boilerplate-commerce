@@ -168,7 +168,10 @@ header nav .nav-sections ul {
   letter-spacing: var(--type-body-1-default-letter-spacing);
 }
 
-header nav .nav-sections ul > li {
+header nav .nav-sections ul > li,
+header nav .nav-sections ul > li > a {
+    font-weight: 500;
+}{
   font-weight: 500;
 }
 

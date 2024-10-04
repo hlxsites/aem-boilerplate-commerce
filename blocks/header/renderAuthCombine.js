@@ -170,10 +170,13 @@ const renderAuthCombine = (navSections) => {
 
   const navListEl = navSections.querySelector('.default-content-wrapper > ul');
 
-  const test = document.createElement('li');
-  test.classList.add('authCombineNavElement');
-  test.innerText = 'Combined Auth';
-  test.addEventListener('click', () => {
+  const listItems = navListEl.querySelectorAll('.default-content-wrapper > ul > li');
+  const accountLi = Array.from(listItems).find((li) => li.textContent.includes('Account'));
+  const accountLiItems = accountLi.querySelectorAll('ul > li');
+  const authCombineLink = accountLiItems[accountLiItems.length - 1];
+
+  authCombineLink.classList.add('authCombineNavElement');
+  authCombineLink.addEventListener('click', () => {
     onHeaderLinkClick();
 
     function getPopupElements() {
@@ -217,8 +220,6 @@ const renderAuthCombine = (navSections) => {
       }
     });
   });
-
-  navListEl.appendChild(test);
 };
 
 export default renderAuthCombine;
