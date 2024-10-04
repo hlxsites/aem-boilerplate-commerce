@@ -68,12 +68,7 @@ const handleUserOrdersRedirects = () => {
         : `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
     }
   } else {
-    /* eslint-disable no-nested-ternary */
-    targetPath = !orderRef
-      ? ORDER_STATUS_PATH
-      : isTokenProvided
-        ? null
-        : `${ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
+    targetPath = orderRef && !isTokenProvided ? null : ORDER_STATUS_PATH;
   }
 
   if (targetPath) {
