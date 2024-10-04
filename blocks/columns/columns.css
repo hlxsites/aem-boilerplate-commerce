@@ -269,6 +269,7 @@ main .section:first-child:not(.banner-footer-section,.section:has(.email-us-head
     text-align: center;
     left: 0;
     text-wrap: nowrap;
+    font-size: 22px;
   }
 
   /* Shop by */
