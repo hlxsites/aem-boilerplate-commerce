@@ -1,0 +1,77 @@
+/* Christopher Help section with icons*/
+.help-section
+{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.help-section > div
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width:100%;
+}
+
+.help-section > div > div
+{   
+    text-align: center;
+    /* transition */
+    transition: box-shadow 0.4s ease-in-out;
+}
+
+/* box styling to make it pop on hover */
+.help-section > div > div:hover
+{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.help-section > div
+{
+    padding: 10px;
+}
+
+.help-section > div > div > p > a picture img
+{
+    width: 50%;
+}
+
+.help-section > div > div > p:nth-child(2)
+{
+    padding-bottom: 10px;
+    margin-top: -20px;
+}
+
+/* responsiveness */
+@media (width > 1024px) {
+    .help-section
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .help-section > div
+    {
+        display: flex;
+        flex: 1;
+    }
+}
+
+@media (width < 900px) {
+    .help-section
+    {
+        display: flex;
+        flex-direction: row;
+    }
+    .help-section > div > div
+    {
+        min-height: 250px;
+        margin-bottom: 10px;
+    }
+}
+
+
+

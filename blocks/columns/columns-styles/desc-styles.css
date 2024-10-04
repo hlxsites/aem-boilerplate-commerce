@@ -1,0 +1,92 @@
+/* Christopher Press Section desc */
+:has(.section-desc):first-child 
+{
+    padding-bottom: 50px;
+}
+
+.section-desc
+{
+    width: 60%;
+    margin: auto;
+}
+
+.section-desc h4
+{
+    font-size: 2.3rem;
+    letter-spacing: 0.2rem;
+    padding-top: 10px;
+    font-weight: 500;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+
+.section-desc a:hover
+{
+    text-decoration: none;
+    color: rgb(26, 26,26); 
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-desc a:hover
+{
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-desc a:hover
+{
+    text-decoration: none;
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+/* change styling of shipping dates */
+.green-text
+{
+    color: rgb(37, 138, 62);
+    font-weight: 600;
+    font-style: normal;
+}
+
+.section-desc > div ul
+{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.section-desc p
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 1rem 0 0 0;
+    font-weight: 400;
+    text-transform: none;
+    margin-bottom: 16px;
+}
+
+.section-desc p:nth-child(3)
+{
+    font-size: 13px;
+    text-transform: uppercase;
+    color: rgb(153, 153, 153);
+}
+
+.section-desc p:nth-child(4)
+{
+    cursor: pointer;
+}
+
+@media (width < 900px) 
+{
+    .section-desc
+    {
+        width: 90%;
+    }
+}

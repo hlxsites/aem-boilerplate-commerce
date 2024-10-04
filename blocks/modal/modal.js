@@ -1,10 +1,6 @@
 import { loadFragment } from '../fragment/fragment.js';
 import {
-  buildBlock,
-  decorateBlock,
-  decorateIcons,
-  loadBlock,
-  loadCSS,
+  buildBlock, decorateBlock, decorateIcons, loadBlock, loadCSS,
 } from '../../scripts/aem.js';
 
 // This is not a traditional block, so there is no decorate function. Instead, links to
@@ -55,12 +51,8 @@ export async function createModal(contentNodes) {
 
   dialog.addEventListener('click', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
+    if (event.clientX < dialogDimensions.left || event.clientX > dialogDimensions.right
+      || event.clientY < dialogDimensions.top || event.clientY > dialogDimensions.bottom) {
       dialog.close();
     }
   });
@@ -83,9 +75,7 @@ export async function createModal(contentNodes) {
       dialog.showModal();
       // Google Chrome restores the scroll position when the dialog is reopened,
       // so we need to reset it.
-      setTimeout(() => {
-        dialogContent.scrollTop = 0;
-      }, 0);
+      setTimeout(() => { dialogContent.scrollTop = 0; }, 0);
 
       document.body.classList.add('modal-open');
     },

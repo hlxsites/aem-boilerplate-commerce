@@ -1,0 +1,110 @@
+/* Christopher */
+
+/* Styling for a section with 2 columns */
+.section-two-col
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.section-two-col > div
+{
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* styling of text in one of the columns */
+.section-two-col > div > div > p,
+.section-two-col > div > div > h4,
+.section-two-col > div > div > ul
+{
+    display: inline-block;
+    width:50%;
+    text-align: left;
+    margin: 0;
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.section-two-col > div > div > ul
+{
+    margin-left: 30px;
+}
+
+/* styling of lists */
+.section-two-col > div > div > p
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 1rem 0 0 0;
+    font-weight: 400;
+    text-transform: none;
+    margin-bottom: 16px;
+}
+
+.section-two-col > div > div > ul li
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    font-weight: 500;
+    text-transform: none;
+    vertical-align: baseline;
+}
+
+.section-two-col > div > div > ul li::marker
+{
+    color: rgba(121, 121, 121, 0.5)
+}
+
+.section-two-col > div > div > h4
+{
+    font-size: 2.3rem;
+    margin-bottom: 16px;
+    letter-spacing: 0.2rem;
+    font-weight: 500;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+/* styling buttons used in 2 columns content */
+.section-two-col > div > div > .button-container > a
+{
+    color: black;
+    border: 1px solid black;
+    background-color: transparent;
+    padding: 11px 40px;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 0;
+}
+
+
+.section-two-col > div:not(:last-child)
+{
+    margin-bottom: 115px;
+}
+
+.heading > div > div > h3
+{
+    border-bottom: 0.5px solid rgba(187, 187, 187,0.4);
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 2rem;
+    line-height: 30px;
+    font-weight: 600;
+    padding-bottom: 48px;
+}
+
+@media (width < 900px)
+{
+    .section-two-col > div > div > p,
+    .section-two-col > div > div > h4,
+    .section-two-col > div > div > ul
+    {
+        display: inline-block;
+        width:80%;
+        text-align: center;
+        margin: 0;
+        padding: 0.5rem 0 0.5rem 0;
+    }
+}

@@ -52,9 +52,7 @@ function renderPlaceholder(block) {
   block.innerHTML = `<h2></h2>
   <div class="scrollable">
     <div class="product-grid">
-      ${[...Array(5)]
-        .map(
-          () => `
+      ${[...Array(4)].map(() => `
         <div class="placeholder">
           <picture><img width="300" height="375" src="" /></picture>
         </div>
@@ -103,6 +101,7 @@ function renderItem(unitId, product) {
 function renderItems(block, results) {
   // Render only first recommendation
   const [recommendation] = results;
+
   if (!recommendation) {
     // Hide block content if no recommendations are available
     block.textContent = "";
@@ -120,11 +119,16 @@ function renderItems(block, results) {
   block.querySelector("h2").textContent = recommendation.storefrontLabel;
 
   // Grid
-  const grid = block.querySelector(".product-grid");
-  grid.innerHTML = "";
+  const grid = block.querySelector('.product-grid');
+  // grid.innerHTML = '';
   const { productsView } = recommendation;
+
   productsView.forEach((product) => {
-    grid.appendChild(renderItem(recommendation.unitId, product));
+    try {
+      grid.appendChild(renderItem(recommendation.unitId, product));
+    } catch (error) {
+      console.error("error");
+    }
   });
 
   const inViewObserver = new IntersectionObserver((entries) => {
@@ -220,9 +224,7 @@ async function loadRecommendation(block, context, visibility, filters) {
   }
 
   let { results } = (await unitsPromise).recommendations;
-  results = results.filter((unit) =>
-    filters.typeId ? unit.typeId === filters.typeId : true
-  );
+  results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
 
   renderItems(block, results);
 }

@@ -1,8 +1,8 @@
 main .section>div.product-recommendations-wrapper {
-    max-width: 100%;
-    padding: 0;
-    text-align: left;
-    margin: 0 0 5rem;
+    max-width: 70%;
+    padding: 0 10px;
+    text-align: center;
+    /* margin: 0 0 5rem; */
 }
 
 .product-recommendations {
@@ -76,5 +76,12 @@ main .section>div.product-recommendations-wrapper {
 @media (width >= 900px) {
     .product-recommendations {
         min-height: 534px;
+    }
+}
+
+@media (width <= 900px) {
+    main .section>div.product-recommendations-wrapper {
+        border: 1px solid red;
+        max-width: 100%;
     }
 }

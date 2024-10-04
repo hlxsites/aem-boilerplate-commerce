@@ -280,14 +280,14 @@ main pre {
 }
 
 /* links */
-a:not(.dropin-design a) {
+a:not(.footer-two ul li a,.sections-page a,.article-section a,.section-desc a,.affiliate-section p a,.dropin-design a) {
   color: var(--color-brand-500);
   font: var(--type-body-1-strong-font);
   letter-spacing: var(--type-body-1-strong-letter-spacing);
   text-decoration: none;
 }
 
-a:not(.dropin-design a):hover {
+a:not(.footer-two ul li a,.sections-page a,.article-section a,.section-desc, .affiliate-section p a,.dropin-design a):hover {
   text-decoration: solid underline var(--color-brand-700);
   text-underline-offset: 6px;
   color: var(--color-brand-700);
@@ -310,7 +310,7 @@ button > u {
 
 /* buttons */
 main a.button:any-link,
-button.button {
+button.button:not(.form .button) {
   font: var(--type-button-2-font);
   letter-spacing: var(--type-button-2-letter-spacing);
   display: inline-block;

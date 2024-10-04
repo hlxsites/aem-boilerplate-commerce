@@ -1,0 +1,127 @@
+.email-us-header > div > div
+{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+.email-us-header > div > div span
+{
+    scale: 3.5;
+}
+
+.modal dialog:has(.email-us)
+{
+    border-radius: 0;
+    position: fixed;
+    background-color: white;
+    height: calc(100vh - 60px);
+    max-width: 900px;
+}
+
+.email-us
+{   
+    background-color: rgba(247, 247, 248, 1);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    line-height: 1.5;
+}
+
+.email-us form
+{
+    display: flex;
+    flex-direction: column;
+    margin: 40px 86px;
+}
+
+.email-us > form input,
+.email-us > form select
+{
+    border: 1px solid black;
+    max-width: 100%;
+}
+
+.email-us > form input:hover,
+.email-us > form select:hover
+{
+    border: 1px solid black;
+}
+
+.email-us .button
+{
+    border: 1px solid black;
+    color: black;
+    padding: 10px;
+    margin-top: 15px;
+    font-size: 16px;
+    max-width: 100px;
+    background-color: white;
+    /* transition */
+    transition: background-color 0.4s ease-in-out;
+}
+
+.email-us .button:hover
+{
+    border: 1px solid black;
+    color: white;
+    padding: 10px;
+    background-color: black;
+}
+
+.email-us input[type="file"]
+{
+    border: 1px solid black;
+    padding: 40px;
+}
+
+.email-us input[type="file"]::file-selector-button
+{
+    border: none;
+    background-color: transparent;
+}
+
+.email-us .field-wrapper:not(:has(input[type="file"]),:has(button)) label
+{
+    margin-bottom: 10px;
+}
+
+.email-us .field-wrapper:has(input[type="file"]) label
+{
+    margin-bottom: 30px;
+}
+
+@media (width <= 900px) {
+    .modal dialog:has(.email-us)
+    {
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        margin: 0;
+        padding: 0;
+        overflow-y:scroll;
+        overflow-x: hidden;
+    }
+
+    .email-us-header > div > div
+    {
+        padding: 40px 0px 20px 0px;
+    }
+    .email-us input[type="file"]::file-selector-button
+    {
+        border: none;
+        background-color: transparent;
+        font-size: 13px;
+        margin-left: 20px;
+    }
+
+    .email-us input[type="file"]
+    {
+        border: 1px solid black;
+        padding: 40px;
+        color: transparent;
+    }
+}
+
+
+

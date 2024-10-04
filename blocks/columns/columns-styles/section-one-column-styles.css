@@ -1,0 +1,74 @@
+.section-one-column > div > div
+{
+    text-align: center;
+}
+
+.section-one-column > div > div p:first-child,
+.section-one-column > div:nth-child(3) p
+{
+    font-size: 1.2rem;
+    font-family: "Proxima Nova", "Helvetica Neue", Verdana, Arial, sans-serif;
+    letter-spacing: 0.0857143rem;
+    line-height: 20px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: rgb(153, 153, 153);
+    max-width: 300px;
+    margin: auto;
+}
+
+.section-one-column h4
+{
+    max-width: 300px;
+    margin: 20px auto;
+    text-transform: uppercase;
+}
+
+.section-one-column > div > div p:nth-child(3)
+{
+    /* border: 1px solid red; */
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 30px auto 60px;
+}
+
+.section-one-column > div:nth-child(3)
+{
+    margin-top: 100px;
+}
+
+@media (width < 900px)
+{
+    .section-one-column
+    {
+        display: flex;
+        flex-direction: column;
+    }
+    .section-one-column > div:nth-child(1)
+    {
+        order: 1;
+        padding-top: 20px;
+    }
+    .section-one-column > div:nth-child(1) h4
+    {
+        font-size: 1.5rem;
+        font-weight: 500;
+        letter-spacing: 0.4rem;
+        max-width: 290px;   
+    }
+    .section-one-column > div:nth-child(1) p:last-child
+    {
+       font-size: 1.4rem; 
+       padding: 0;
+       margin: 0 auto;
+       max-width: 90%;
+    }
+    .section-one-column > div:nth-child(2)
+    {
+        order: 0;
+    }
+    .section-one-column > div:nth-child(3)
+    {
+        order: 2;
+    }
+}

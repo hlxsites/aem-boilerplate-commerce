@@ -1,0 +1,204 @@
+/* Christopher help articles*/
+.article-section
+{
+    padding-bottom: 100px;
+}
+
+.section:has(.article-section)
+{
+    padding: 0;
+}
+
+.search-container > div
+{
+    padding: 0 30px;
+}
+.search-container:nth-child(1) p
+{
+    opacity: 0.8;
+}
+
+.search-container:nth-child(1) p .icon
+{
+    width: 10px;
+    opacity: 0.5;
+    padding: 0 5px;
+    height: auto;
+}
+
+.search-container:nth-child(1) p a:hover
+{
+    text-decoration: none;
+}
+
+.article-section > div
+{
+    display: flex;
+    align-content: space-evenly;
+    flex-wrap: wrap;
+    padding: 0 4rem 0;
+}
+
+/* Article */
+.article-section > div > div:nth-child(1)
+{
+    flex-grow: 2.5;
+}
+/* Side Navigation */
+.article-section > div > div:nth-child(2)
+{
+    align-self: baseline;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.article-section > div > div:nth-child(2) ul ,
+.article-section > div > div:nth-child(2) ul li
+{
+    margin: 0;
+    font-size: 13px;
+    padding: 4px;
+    width: 100%;
+    text-decoration: none;
+    list-style: none;
+}
+
+.article-section > div h3
+{
+    font-weight: 900;
+}
+
+.article-section > div > div p:nth-child(2)
+{
+    border-bottom: 1px solid rgba(26, 26,26, 0.2);
+    font-size: 13px;
+    padding-bottom: 20px;
+    margin-bottom:40px;
+}
+
+.article-section > div > div > table:has(em)
+{
+    width: 100%;
+}
+
+.article-section > div > div > table > tbody > tr:has(em)
+{
+    display:flex;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(em a):nth-child(1)
+{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 100%;
+    gap: 10px;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(em a):nth-child(2)
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: right;
+    gap: 10px;
+}
+
+/* Next and Previous buttons */
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em a,td:has(a):nth-child(2) em a:any-link
+{
+    border: 1px solid black;
+    border-radius: 5px;
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    /* transition */
+    transition: background-color 0.3s ease-in-out;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em a:hover
+{
+    text-decoration: none;
+    background-color: black;
+    color: white;
+}
+
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(2) em a:hover
+{
+    text-decoration: none;
+    background-color: black;
+    color: white;
+}
+
+/* wording underneath the buttons */
+.article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
+{
+    opacity: 0.5;
+    font-size: 12px;
+}
+
+/* Article side navigation */
+.article-section > div > div > table:nth-child(1)
+{
+    border-bottom: 1px solid rgba(26, 26,26, 0.2);
+    padding-bottom: 20px;
+}
+/* Side navigation links */
+.article-section > div > div > table:nth-child(1) a:any-link,table:nth-child(2) a:any-link
+{
+    text-decoration: none;
+    line-height: 26px;
+    color: rgb(26, 26, 26);
+    /* transition */
+    transition: color 0.3s ease-in-out;
+}
+
+.article-section > div > div > table:nth-child(1) a:hover,table:nth-child(2) a:hover
+{
+    text-decoration: none;
+    line-height: 26px;
+    color: rgb(153, 153, 153);
+}
+
+.article-section > div > div > table:nth-child(1) tbody
+{
+    width: 100%;
+}
+
+.article-section > div > div > table h5
+{
+    font-size: 0.9em;
+    text-transform: uppercase;
+    font-weight: 900;
+    line-height: 26px;
+    margin: 0;
+    margin-left: 10px;
+    padding-top: 20px;
+}
+
+@media (max-width: 1024px) 
+{
+    .article-section > div
+    {
+        display: flex;
+    }
+
+    /* Article */
+    .article-section > div > div:nth-child(1)
+    {
+        flex: unset;
+    }
+    /* Article side navigation */
+    .article-section > div > div > table:nth-child(1)
+    {
+        border-bottom: 1px solid rgba(26, 26,26, 0.2);
+        width: 100%;
+        margin-top: 25px;
+        padding-bottom: 20px;
+    }
+    .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
+    {
+        font-size: 14px;
+    }
+}

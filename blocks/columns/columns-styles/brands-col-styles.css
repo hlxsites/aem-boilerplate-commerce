@@ -1,0 +1,26 @@
+/* /christopher Brands section */
+.section-brands-col > div:nth-child(1)
+{
+    margin-bottom: 20px;
+}
+
+.section-brands-col > div > div
+{
+    background-color: rgb(241,241,241);
+    padding: 60px 40px;
+    cursor: pointer;
+}
+
+.section-brands-col > div > div > picture > img
+{
+    width: 150px;
+    margin: auto;
+}
+
+@media (width < 900px) 
+{
+    .section-brands-col > div > div:not(:last-child)
+    {
+        margin-bottom: 20px;
+    }
+}

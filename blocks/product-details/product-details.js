@@ -11,6 +11,12 @@ import { getProduct, getSkuFromUrl, setJsonLd } from '../../scripts/commerce.js'
 import { getConfigValue } from '../../scripts/configs.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
+//Slots
+import Actions from './slots/Actions.js';
+import InfoContent from './slots/InfoContent.js';
+import SpecialPrice from './slots/SpecialPrice.js';
+import RegularPrice from './slots/RegularPrice.js';
+
 // Error Handling (404)
 async function errorGettingProduct(code = 404) {
   const htmlText = await fetch(`/${code}.html`).then((response) => {
@@ -114,7 +120,8 @@ function setMetaTags(product) {
   createMetaTag('twitter:image', metaImage, 'name');
 }
 
-export default async function decorate(block) {
+export default async function decorate(block) 
+{ 
   if (!window.getProductPromise) {
     window.getProductPromise = getProduct(this.props.sku);
   }
@@ -208,6 +215,7 @@ export default async function decorate(block) {
       try {
         await productRenderer.render(ProductDetails, {
           sku: getSkuFromUrl(),
+          hideQuantity: true,
           carousel: {
             controls: 'thumbnailsColumn',
             arrowsOnMainImage: true,
@@ -219,35 +227,11 @@ export default async function decorate(block) {
             gap: 'small',
           },
           slots: {
-            Actions: (ctx) => {
-              // Add to Cart Button
-              ctx.appendButton((next, state) => {
-                const adding = state.get('adding');
-                return {
-                  text: adding
-                    ? next.dictionary.Custom.AddingToCart?.label
-                    : next.dictionary.PDP.Product.AddToCart?.label,
-                  icon: 'Cart',
-                  variant: 'primary',
-                  disabled: adding || !next.data?.inStock || !next.valid,
-                  onClick: async () => {
-                    try {
-                      state.set('adding', true);
-                      await addToCart({
-                        sku: next.values?.sku,
-                        quantity: next.values?.quantity,
-                        optionsUIDs: next.values?.optionsUIDs,
-                        product: next.data,
-                      });
-                    } catch (error) {
-                      console.error('Could not add to cart: ', error);
-                    } finally {
-                      state.set('adding', false);
-                    }
-                  },
-                };
-              });
-            },
+            RegularPrice: (ctx) => RegularPrice(ctx),
+            SpecialPrice: (ctx) => SpecialPrice(ctx),
+            Options: (ctx) => Options(ctx),
+            Actions: (ctx) => Actions(ctx),
+            InfoContent: (ctx) => InfoContent(ctx)
           },
           useACDL: true,
         })(block);

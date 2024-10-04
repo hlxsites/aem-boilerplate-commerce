@@ -1,7 +1,20 @@
 @import url(../../styles/styles.css);
+@import url(./columns-styles/column-two-styles.css);
+@import url(./columns-styles/Column-two-img-styles.css);
+@import url(./columns-styles/section-one-column-styles.css);
+@import url(./columns-styles/column-three-styles.css);
 @import url(./columns-styles/launches.css);
 @import url(./columns-styles/featured-columns.css);
 @import url(./columns-styles/banner.css);
+@import url(./columns-styles/brands-col-styles.css);
+@import url(./columns-styles/desc-styles.css);
+@import url(./columns-styles/affiliate-styles.css);
+@import url(./columns-styles/article-section-styles.css);
+@import url(./columns-styles/section-pages-styles.css);
+@import url(./columns-styles/help-styles.css);
+@import url(./columns-styles/bread-crum-menu-styles.css);
+@import url(./columns-styles/brands-page-styles.css);
+@import url(./columns-styles/section-apps-column-styles.css);
 @import url(./columns-styles/features-columns.css);
 @import url(../../blocks/all-featured-articles/all-featured-articles.css);
 
@@ -28,6 +41,11 @@ main .section {
   width: 100%;
 }
 
+main .section:first-child:not(.banner-footer-section,.section:has(.email-us-header))
+{
+  padding: 30px 0;
+}
+
 .columns > div > div {
   order: 1;
 }
@@ -38,6 +56,13 @@ main .section {
 
 .columns > div > .columns-img-col img {
   display: block;
+}
+
+/* styling for the 2 images in Press page */
+.section-two-img > div > div >  picture img
+{
+    width: 80%;
+    margin: auto;
 }
 
 .divider-border-grid {
@@ -329,3 +354,170 @@ main .section {
     height: 70vh;
   }
 }
+
+/* christopher */
+@media (600px < max-width < 1024px)
+{
+  /* Banner Section */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1)
+  {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Banner */
+  .banner-footer-section > .columns-wrapper div:nth-child(1) {
+    position: relative;
+    width: 100%;
+    flex: 1.5;
+    margin-bottom: 5%;
+    padding-bottom: -5%;
+  }
+
+  /* Publications */
+  .banner-footer-section p em:nth-child(1) a {
+    font-size: 18px;
+    margin: 0;
+    left: 10%;
+    bottom: -42%;
+    margin: 1%;
+  }
+
+  /* shop now */
+  .banner-footer-section p em:nth-child(2) a {
+    font-size: 11px;
+    margin: auto;
+    padding: 0.25% 2.5%;
+    right: 10%;
+    bottom: -40%;
+  }
+}
+
+
+/* Christopher Banner */
+
+@media (max-width: 1024px)
+{
+    /* Banner Section */
+    .banner-footer-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Banner */
+    .banner-footer-section > .columns-wrapper div:nth-child(1) {
+      position: relative;
+      width: 100%;
+      flex: 1.5;
+      margin-bottom: 5%;
+      padding-bottom: -5%;
+    }
+    .banner-footer-section
+    {
+      min-height: 38vh;
+    }
+
+    .banner-footer-section img {
+      object-fit: cover;
+      max-height: 40vh;
+      width: 100%;
+    }
+
+    /* Come work with us */
+    .banner-footer-section p em:nth-child(1) a {
+      font-size: 18px;
+      margin: 0;
+      left: 2%;
+      top: 32vh;
+      margin: 1%;
+    }
+
+    /* View all jobs */
+    .banner-footer-section p em:nth-child(2) a {
+      font-size: 11px;
+      margin: auto 10px;
+      padding: 10px 10px;
+      left: 80%;
+      bottom: -25vh;
+    }
+
+    .section-two-col
+    {
+      padding: 5%;
+    }
+    .affiliate-section
+    {
+      width: 95%;
+    }
+    .affiliate-section h1
+    {
+      text-align: center;
+      font-size: 2.5rem;
+      line-height: 40px;
+      font-weight: 600;
+    }
+
+    .footer
+    {
+      padding: 1.5em;
+    }
+
+    .footer-one > div:first-child
+    {
+      width: 40%;
+    }
+  }
+/* christopher */
+@media (width < 900px)
+{
+  /* image responsiveness in Press */
+  .section-two-img > div > div:first-child
+  {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
+  .section-two-img > div > div picture img
+  {
+    width: 100%;
+  }
+
+  .section-three-col > div:not(:first-child) > div > p:first-child
+  {
+      max-height: fit-content;
+  }
+
+  .section-two-col > div > div > p,h4,ul
+  {
+      display: inline-block;
+      width: 100%;
+  }
+  .section-two-col > div > div > ul li
+  {
+      margin-left: 1em;
+  }
+
+  .section-two-col > div > div > ul,h4
+  {
+    padding: 0;
+    margin: auto;
+  }
+
+  .section-two-col .columns-img-col img
+  {
+    padding-bottom: 1rem;
+  }
+
+  .footer
+    {
+      padding: 0em;
+    }
+
+    .footer-one > div:first-child
+    {
+      width: 100%;
+      text-align: center;
+    }
+}
+
+

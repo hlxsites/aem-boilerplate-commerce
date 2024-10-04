@@ -1,0 +1,51 @@
+/* Christopher */
+/* styling for a  section with 2 columns including an image */
+.section-two-img-col
+{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: auto;
+    justify-content: space-evenly;
+    left: 0;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.section-two-img-col > div
+{
+    padding: 1% 0;
+    margin: auto 0;
+}
+
+
+/* styling text and links */
+
+.section-two-img-col > div > div > .button-container > a
+{
+    text-decoration: underline;
+    color: rgb(153, 153, 153);
+    background-color: transparent;
+    margin: 0;
+    padding: 0;
+}
+
+.section-two-img-col > div > div > h4
+{
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 2rem;
+}
+
+.section-two-img-col > div > div > p
+{
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    line-height: 22px;
+    font-weight: 400;
+    text-transform: none;
+    vertical-align: baseline;
+    margin-bottom: 16px;
+}
