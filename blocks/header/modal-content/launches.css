@@ -1,7 +1,7 @@
 @import url(./sub-heading-modal.css);
 
 /* Title */
-.modal-content .default-content-wrapper p:nth-child(2) a {
+/* .modal-content .default-content-wrapper p:nth-child(2) a {
   font-weight: 550;
   padding: 0;
   margin: 0;
@@ -11,41 +11,41 @@
   margin-left: -2%;
   margin-bottom: 3%;
   background-color: transparent;
-}
+} */
 
 /* Product Name */
-.modal-content div div p:nth-child(2) {
+/* .modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
   font-weight: 400;
-}
+} */
 
 /* Colour */
-.modal-content div div p:nth-child(2) {
+/* .modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
   font-weight: 400;
-}
+} */
 
 /* Date */
-.modal-content div div p:nth-child(3) {
+/* .modal-content div div p:nth-child(3) {
   color: var(--text-date-color);
   font-weight: 400;
-}
+} */
 
-.modal-par a.button.secondary {
+/* .modal-par a.button.secondary {
   border: none;
   font-size: var(--sub-text-secondary-size);
   padding: 0;
   margin: 0;
 
   text-transform: capitalize;
-}
+} */
 
-.modal-content picture {
+/* .modal-content picture {
   display: flex;
   flex: 2;
   width: 280px;
-}
+} */
 
-.modal-content .default-content-wrapper p:nth-child(1) {
+/* .modal-content .default-content-wrapper p:nth-child(1) {
   display: none;
-}
+} */
