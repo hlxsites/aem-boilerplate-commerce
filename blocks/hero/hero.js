@@ -42,8 +42,4 @@ export default function decorate(block)
         window.location.href = 'https://apps.apple.com/gb/app/end/id1132649509';
       });
     }
-
-    
-
-
 }
