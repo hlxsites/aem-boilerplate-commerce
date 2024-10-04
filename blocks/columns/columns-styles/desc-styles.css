@@ -1,13 +1,8 @@
 /* Christopher Press Section desc */
-:has(.section-desc):first-child 
-{
-    padding-bottom: 50px;
-}
-
 .section-desc
 {
     width: 60%;
-    margin: auto;
+    margin: 70px auto;
 }
 
 .section-desc h4
