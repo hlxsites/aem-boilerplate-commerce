@@ -1,12 +1,12 @@
 @media (width <= 998px) {
   /* Launches */
-  .modal-content .columns-4-cols div div {
+  .nav-modal-content .columns-4-cols div div {
     width: auto;
     margin-left: -2%;
     margin-bottom: 10%;
   }
 
-  .modal-content * p {
+  .nav-modal-content * p {
     display: flex;
     padding: 0;
     flex: 1;
@@ -17,7 +17,7 @@
   }
 
   /* This is used to create '< Launches' on top of the mobile modal */
-  .modal-content .default-content-wrapper p:nth-child(1) a {
+  .nav-modal-content .default-content-wrapper p:nth-child(1) a {
     text-transform: capitalize;
     font-size: var(--sub-text-title-large);
     padding: 0;
@@ -31,25 +31,25 @@
     margin-left: 7%;
   }
 
-  .modal-content .default-content-wrapper p:nth-child(1) {
+  .nav-modal-content .default-content-wrapper p:nth-child(1) {
     border-bottom: 1px solid var(--sub-text-border-divider);
     align-items: center;
     display: flex;
   }
 
-  .modal-content .default-content-wrapper p:nth-child(2) {
+  .nav-modal-content .default-content-wrapper p:nth-child(2) {
     font-weight: 550;
     margin: 8% 0;
     color: var(--sub-text-title-color);
   }
 
-  .modal-content div div p:nth-child(2) {
+  .nav-modal-content div div p:nth-child(2) {
     color: var(--sub-text-grey);
     font-weight: 100;
   }
 
-  .modal-content div div p:nth-child(2),
-  .modal-content div div p:nth-child(3) {
+  .nav-modal-content div div p:nth-child(2),
+  .nav-modal-content div div p:nth-child(3) {
     font-size: var(--sub-text-secondary-size);
   }
 
@@ -61,14 +61,14 @@
     text-transform: capitalize;
   }
 
-  .modal-content picture {
+  .nav-modal-content picture {
     display: flex;
     flex: 2;
     width: 400px;
   }
 
   /* 3-cols-4-img */
-  .modal-content
+  .nav-modal-content
     .three-cols-four-img
     div
     div:nth-child(1)
@@ -81,12 +81,12 @@
     padding-top: 8%;
   }
 
-  .modal-content
+  .nav-modal-content
     .three-cols-four-img
     div
     div:nth-child(2)
     p:nth-child(1):only-of-type,
-  .modal-content
+  .nav-modal-content
     .three-cols-four-img
     div
     div:nth-child(3)
@@ -94,18 +94,18 @@
     margin-bottom: 8%;
   }
 
-  .modal-content .three-cols-four-img div div ul {
+  .nav-modal-content .three-cols-four-img div div ul {
     line-height: 4;
     font-size: var(--sub-text-title-large);
     color: var(--sub-text-title-color);
     font-weight: 400;
   }
-  .modal-content .three-cols-four-img div div p {
+  .nav-modal-content .three-cols-four-img div div p {
     font-size: var(--sub-text-title-large);
   }
 
-  .modal-content .three-cols-four-img div:nth-child(3) table p,
-  .modal-content
+  .nav-modal-content .three-cols-four-img div:nth-child(3) table p,
+  .nav-modal-content
     .three-cols-four-img
     div
     div:nth-child(3)
@@ -114,7 +114,7 @@
   }
 
   /* 4-cols-2-img */
-  .modal-content
+  .nav-modal-content
     .four-cols-two-img
     div
     div:nth-child(1)
@@ -125,12 +125,12 @@
     padding-top: 8%;
   }
 
-  .modal-content
+  .nav-modal-content
     .four-cols-two-img
     div
     div:nth-child(2)
     p:nth-child(1):only-of-type,
-  .modal-content
+  .nav-modal-content
     .four-cols-two-img
     div
     div:nth-child(3)
@@ -139,12 +139,12 @@
     line-height: 4;
   }
 
-  .modal-content .four-cols-two-img div div ul {
+  .nav-modal-content .four-cols-two-img div div ul {
     line-height: 4;
     margin-bottom: 7%;
     font-size: var(--sub-text-title-large);
   }
-  .modal-content .four-cols-two-img div div p {
+  .nav-modal-content .four-cols-two-img div div p {
     font-size: var(--sub-text-title-large);
   }
 }

@@ -1,6 +1,6 @@
 @import url(./sub-heading-modal.css);
 
-.modal-content * p {
+.nav-modal-content * p {
   display: flex;
   padding: 0;
   flex: 1;
@@ -11,7 +11,7 @@
 }
 
 /* Title */
-.modal-content .default-content-wrapper p:nth-child(2) a {
+.nav-modal-content .default-content-wrapper p:nth-child(2) a {
   font-weight: 550;
   padding: 0;
   margin: 0;
@@ -24,19 +24,19 @@
 }
 
 /* Product Name */
-.modal-content div div p:nth-child(2) {
+.nav-modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
   font-weight: 400;
 }
 
 /* Colour */
-.modal-content div div p:nth-child(2) {
+.nav-modal-content div div p:nth-child(2) {
   color: var(--sub-text-grey);
   font-weight: 400;
 }
 
 /* Date */
-.modal-content div div p:nth-child(3) {
+.nav-modal-content div div p:nth-child(3) {
   color: var(--text-date-color);
   font-weight: 400;
 }
@@ -50,12 +50,12 @@
   text-transform: capitalize;
 }
 
-.modal-content picture {
+.nav-modal-content picture {
   display: flex;
   flex: 2;
   width: 280px;
 }
 
-.modal-content .default-content-wrapper p:nth-child(1) {
+.nav-modal-content .default-content-wrapper p:nth-child(1) {
   display: none;
 }
