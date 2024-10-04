@@ -10,13 +10,6 @@
 }
 
 /* Banner */
-.banner-footer-section > .columns-wrapper div:nth-child(1) {
-  position: relative;
-  width: 100%;
-  height: 450px;
-}
-
-/* Banner */
 
 main .banner-section-carousel > div,
 main .banner-section > div,
