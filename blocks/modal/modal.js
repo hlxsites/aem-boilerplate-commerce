@@ -68,11 +68,10 @@ export async function createModal(contentNodes) {
     block,
     showModal: () => {
       if (activeModal) {
-        activeModal.close(); // Close the existing modal if any
+        activeModal.close();
       }
       dialog.showModal();
-      activeModal = dialog; // Update the activeModal
-      // ... (rest of your showModal function)
+      activeModal = dialog;
 
       // Google Chrome restores the scroll position when the dialog is reopened,
       // so we need to reset it.
