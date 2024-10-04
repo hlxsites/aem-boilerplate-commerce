@@ -116,8 +116,6 @@ function autolinkModals(element) {
       openModal(origin.href);
     }
   };
-
-  element.addEventListener('mouseover', openTheModal);
   element.addEventListener('click', openTheModal);
 }
 

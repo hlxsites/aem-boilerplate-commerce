@@ -244,6 +244,7 @@ main .section {
     text-align: center;
     left: 0;
     text-wrap: nowrap;
+    font-size: 22px;
   }
 
   /* Shop by */
