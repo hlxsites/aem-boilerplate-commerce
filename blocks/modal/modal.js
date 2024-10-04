@@ -7,6 +7,8 @@ import {
   loadCSS,
 } from '../../scripts/aem.js';
 
+let activeModal = null;
+
 // This is not a traditional block, so there is no decorate function. Instead, links to
 // a */modals/* path  are automatically transformed into a modal. Other blocks can also use
 // the createModal() and openModal() functions.
@@ -65,7 +67,13 @@ export async function createModal(contentNodes) {
   return {
     block,
     showModal: () => {
+      if (activeModal) {
+        activeModal.close(); // Close the existing modal if any
+      }
       dialog.showModal();
+      activeModal = dialog; // Update the activeModal
+      // ... (rest of your showModal function)
+
       // Google Chrome restores the scroll position when the dialog is reopened,
       // so we need to reset it.
       setTimeout(() => {
