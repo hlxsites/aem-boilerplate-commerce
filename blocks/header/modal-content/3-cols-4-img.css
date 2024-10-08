@@ -70,9 +70,10 @@
   border-radius: 0;
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
-  padding: 0;
+  padding: 0.5%;
   margin: 0;
   font-weight: 555;
+  border-radius: 0;
 }
 
 /*  border: 1px solid rebeccapurple; */

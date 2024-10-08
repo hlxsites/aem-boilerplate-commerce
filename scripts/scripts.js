@@ -296,6 +296,7 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+  autolinkNavModals(doc);
 }
 
 /**
@@ -304,7 +305,6 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   autolinkModals(doc);
-  autolinkNavModals(doc);
 
   const main = doc.querySelector('main');
   const headerPromise = loadHeader(doc.querySelector('header'));

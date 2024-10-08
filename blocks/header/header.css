@@ -2,9 +2,7 @@
 @import url(./latest-products/new-this-week.css);
 @import url(./modal-content/3-cols-4-img.css);
 @import url(./modal-content/launches.css);
-@import url(./modal-content/brands.css);
 @import url(./modal-content/4-cols-2-img.css);
-@import url(./modal-content/footwear.css);
 @import url(./modal-content/features.css);
 @import url(./features/featured-articles.css);
 
@@ -21,7 +19,6 @@ header nav {
   height: var(--nav-height);
   padding: 0 16px;
   font-family: var(--type-base-font-family);
-  border-bottom: 1px solid var(--sub-text-border-divider);
 }
 
 @media (width >= 992px) {
@@ -38,9 +35,13 @@ header nav {
     background-color: var(--background-color);
     width: 100%;
     left: 0;
-    z-index: 2;
+    z-index: 3;
     position: fixed;
     border-bottom: 1px solid var(--sub-text-border-divider);
+  }
+
+  header .nav-wrapper .sub-nav-categories p a {
+    z-index: 3;
   }
 
   header nav {

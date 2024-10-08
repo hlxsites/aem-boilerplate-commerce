@@ -8,6 +8,7 @@ import {
 } from '../../scripts/aem.js';
 
 let activeModal = null;
+let timeoutId;
 
 // This is not a traditional block, so there is no decorate function. Instead, links to
 // a */modals/* path  are automatically transformed into a modal. Other blocks can also use
@@ -15,45 +16,20 @@ let activeModal = null;
 
 export async function createModal(contentNodes) {
   await loadCSS(`${window.hlx.codeBasePath}/blocks/nav-modal/nav-modal.css`);
-  const dialog = document.createElement('dialog');
-  const dialogContent = document.createElement('div');
-  dialogContent.classList.add('nav-modal-content');
-  dialogContent.append(...contentNodes);
-  dialog.append(dialogContent);
+  const modal = document.createElement('div');
+  modal.classList.add('nav-modal');
+  const modalContent = document.createElement('div');
+  modalContent.classList.add('nav-modal-content');
+  modalContent.append(...contentNodes);
+  modal.append(modalContent);
 
   const closeButton = document.createElement('button');
   closeButton.classList.add('close-button');
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  closeButton.addEventListener('mouseout', () => dialog.close());
-  closeButton.addEventListener('click', () => dialog.close());
-  dialog.append(closeButton);
-
-  // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
-  dialog.addEventListener('mouseout', (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
-      dialog.close();
-    }
-  });
-
-  dialog.addEventListener('click', (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
-      dialog.close();
-    }
-  });
+  closeButton.addEventListener('click', () => closeModal(modal));
+  modal.append(closeButton);
 
   const block = buildBlock('nav-modal', '');
   document.querySelector('main').append(block);
@@ -61,33 +37,48 @@ export async function createModal(contentNodes) {
   await loadBlock(block);
   decorateIcons(closeButton);
 
-  dialog.addEventListener('close', () => block.remove());
-
-  block.append(dialog);
+  block.append(modal);
   return {
     block,
     showModal: () => {
       if (activeModal) {
-        activeModal.close();
+        closeModal(activeModal);
       }
-      dialog.showModal();
-      activeModal = dialog;
+      modal.classList.add('visible');
+      activeModal = modal;
 
-      // Google Chrome restores the scroll position when the dialog is reopened,
+      // Google Chrome restores the scroll position when the modal is reopened,
       // so we need to reset it.
       setTimeout(() => {
-        dialogContent.scrollTop = 0;
+        modalContent.scrollTop = 0;
       }, 0);
     },
+    closeModal: () => closeModal(modal),
   };
 }
 
+function closeModal(modal) {
+  modal.classList.remove('visible');
+  activeModal = null;
+  modal.parentElement.remove();
+}
+
 export async function openNavModal(fragmentUrl) {
+  clearTimeout(timeoutId);
   const path = fragmentUrl.startsWith('http')
     ? new URL(fragmentUrl, window.location).pathname
     : fragmentUrl;
 
   const fragment = await loadFragment(path);
-  const { showModal } = await createModal(fragment.childNodes);
+  const { block, showModal, closeModal } = await createModal(
+    fragment.childNodes
+  );
+  block.querySelector('.nav-modal').fragmentUrl = fragmentUrl;
+
   showModal();
+
+  block.addEventListener('mouseover', showModal);
+  block.addEventListener('mouseout', () => {
+    timeoutId = setTimeout(closeModal, 200);
+  });
 }
