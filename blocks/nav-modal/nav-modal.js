@@ -73,12 +73,22 @@ export async function openNavModal(fragmentUrl) {
   const { block, showModal, closeModal } = await createModal(
     fragment.childNodes
   );
-  block.querySelector('.nav-modal').fragmentUrl = fragmentUrl;
+  const modal = block.querySelector('.nav-modal');
+  modal.fragmentUrl = fragmentUrl;
 
   showModal();
 
-  block.addEventListener('mouseover', showModal);
-  block.addEventListener('mouseout', () => {
-    timeoutId = setTimeout(closeModal, 200);
-  });
+  const handleClickOutside = (event) => {
+    if (!modal.contains(event.target)) {
+      closeModal();
+    }
+  };
+
+  const handleMouseOut = (event) => {
+    if (!modal.contains(event.relatedTarget)) {
+      closeModal();
+    }
+  };
+  document.addEventListener('click', handleClickOutside);
+  modal.addEventListener('mouseout', handleMouseOut);
 }
