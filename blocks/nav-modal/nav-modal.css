@@ -1,7 +1,7 @@
 .nav-modal {
   position: fixed;
   left: 0;
-  top: calc(var(--nav-height) + 0.2vh);
+  top: var(--nav-height);
   width: 100%;
   z-index: 2;
 }
