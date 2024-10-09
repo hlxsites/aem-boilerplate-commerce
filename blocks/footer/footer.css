@@ -36,6 +36,7 @@ footer .footer {
 .footer-one > div:first-child p
 {
   width: calc(60% - 10px);
+  font-weight: 400;
 }
 
 .footer-one > div:first-child > div h5
@@ -100,6 +101,7 @@ footer .footer p {
 .footer-two ul
 {
   padding-left: 0;
+  margin: 0;
 }
 
 /*Remove styling from the lists of the footer menus*/
