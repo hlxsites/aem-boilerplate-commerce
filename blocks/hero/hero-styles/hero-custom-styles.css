@@ -1,5 +1,6 @@
 .our-apps-hero,
-.help-hero
+.help-hero,
+.gift-cards-hero
 {
     text-align: center;
     color: white;
@@ -12,7 +13,9 @@
 main .hero-container:has(.our-apps-hero),
 main .hero-wrapper:has(.our-apps-hero),
 main .hero-container:has(.help-hero),
-main .hero-wrapper:has(.help-hero)
+main .hero-wrapper:has(.help-hero),
+main .hero-container:has(.gift-cards-hero),
+main .hero-wrapper:has(.gift-cards-hero)
 {
     max-width: unset;
     padding: 0;
