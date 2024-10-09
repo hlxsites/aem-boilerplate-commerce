@@ -59,7 +59,7 @@
 .section-three-col > div:not(:first-child) > div > .button-container > a
 {
     font-size: 13px;
-    text-decoration: underline;
+    text-decoration: none;
     text-transform: uppercase;
     color: rgb(153, 153, 153);
     background-color: transparent;

@@ -24,11 +24,17 @@
 
 .section-two-img-col > div > div > .button-container > a
 {
-    text-decoration: underline;
+    text-decoration: none;
     color: rgb(153, 153, 153);
     background-color: transparent;
     margin: 0;
     padding: 0;
+}
+
+.section-two-img-col > div > div > .button-container > a:hover
+{
+    text-decoration: none;
+    color: rgb(153, 153, 153);
 }
 
 .section-two-img-col > div > div > h4
