@@ -1,4 +1,4 @@
-@import url(./hero-styles/our-apps-hero-styles.css);
+@import url(./hero-styles/hero-custom-styles.css);
 
 main .hero-container > div {
   max-width: unset;
@@ -38,32 +38,6 @@ main .hero-container {
   position: relative;
   left: 5px;
   top: 4px;
-}
-
-#search-help-input
-{
-  position: relative;
-  left: 5px;
-  top: 4px;
-  border: none;
-  max-width: 1000px;
-}
-
-#search-help-input::placeholder
-{
-  opacity: 0.5;
-}
-
-#heyhow-can-we-help
-{
-  margin-top: 10%;
-  text-align: center;
-  margin-bottom: calc(16px* 1.5);
-  font-size: calc(40px * 0.8);
-  line-height: 1.1;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 1);
 }
 
 .hero picture {

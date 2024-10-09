@@ -1,4 +1,5 @@
-.our-apps-hero
+.our-apps-hero,
+.help-hero
 {
     text-align: center;
     color: white;
@@ -8,9 +9,20 @@
     align-items: center;
 }
 
-main .hero-wrapper:has(.our-apps-hero)
+main .hero-container:has(.our-apps-hero),
+main .hero-wrapper:has(.our-apps-hero),
+main .hero-container:has(.help-hero),
+main .hero-wrapper:has(.help-hero)
 {
     max-width: unset;
+    padding: 0;
+}
+
+/* Our Apps Styling */
+.our-apps-hero picture,
+.help-hero picture
+{
+    width: 100%;
 }
 
 .our-apps-hero > div > div p:nth-child(1)
@@ -69,5 +81,25 @@ main .hero-wrapper:has(.our-apps-hero)
     cursor: pointer;
 }
 
+/* Help Hero Styling */
+#search-help-input
+{
+  position: relative;
+  left: 5px;
+  border: none;
+  max-width: 1000px;
+}
 
+#search-help-input::placeholder
+{
+  opacity: 0.5;
+}
+
+#heyhow-can-we-help
+{
+  font-size: calc(40px * 0.8);
+  line-height: 1.1;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+}
 
