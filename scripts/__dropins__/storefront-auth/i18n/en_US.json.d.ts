@@ -31,7 +31,16 @@ declare const _default: {
       "buttonPrimary": "Update password"
     },
     "FormText": {
-      "requiredFieldError": "This is a required field."
+      "requiredFieldError": "This is a required field.",
+      "numericError": "Only numeric values are allowed.",
+      "alphaNumWithSpacesError": "Only alphanumeric characters and spaces are allowed.",
+      "alphaNumericError": "Only alphanumeric characters are allowed.",
+      "alphaError": "Only alphabetic characters are allowed.",
+      "emailError": "Please enter a valid email address.",
+      "dateError": "Please enter a valid date.",
+      "dateLengthError": "Date must be between {min} and {max}.",
+      "urlError": "Please enter a valid URL, e.g., https://www.website.com.",
+      "lengthTextError": "Text length must be between {min} and {max} characters."
     },
     "EmailConfirmationForm": {
       "title": "Verify your email address",
