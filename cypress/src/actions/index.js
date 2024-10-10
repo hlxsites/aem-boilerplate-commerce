@@ -20,18 +20,27 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
-  cy.get(fields.billingFormFirstName).clear().type(customerAddress.firstName);
-  cy.get(fields.billingFormLastName).clear().type(customerAddress.lastName);
-  cy.get(fields.billingFormStreet).clear().type(customerAddress.street);
-  cy.get(fields.billingFormStreet1).clear().type(customerAddress.street1);
+  cy.wait(1000);
+  cy.get(fields.billingFormFirstName).should("not.be.disabled").clear().type(customerAddress.firstName, { force: true });
+  cy.wait(1000);
+  cy.get(fields.billingFormLastName).should("not.be.disabled").clear().type(customerAddress.lastName, { force: true });
+  cy.wait(1000);
+  cy.get(fields.billingFormStreet).should("not.be.disabled").clear().type(customerAddress.street, { force: true });
+  cy.wait(1000);
+  cy.get(fields.billingFormStreet1).should("not.be.disabled").clear().type(customerAddress.street1, { force: true });
   if (isSelectableState) {
-    cy.get(fields.billingFormState).select(customerAddress.region);
+    cy.wait(1000);
+    cy.get(fields.billingFormState).should("not.be.disabled").select(customerAddress.region, { force: true });
   } else {
-    cy.get(fields.billingFormInputState).type(customerAddress.region);
+    cy.wait(1000);
+    cy.get(fields.billingFormInputState).should("not.be.disabled").type(customerAddress.region, { force: true });
   }
-  cy.get(fields.billingFormCity).clear().type(customerAddress.city);
-  cy.get(fields.billingFormPostCode).clear().type(customerAddress.postCode);
-  cy.get(fields.billingFormTelephone).clear().type(customerAddress.telephone);
+  cy.wait(1000);
+  cy.get(fields.billingFormCity).should("not.be.disabled").clear().type(customerAddress.city, { force: true });
+  cy.wait(1000);
+  cy.get(fields.billingFormPostCode).should("not.be.disabled").clear().type(customerAddress.postCode, { force: true });
+  cy.wait(1000);
+  cy.get(fields.billingFormTelephone).should("not.be.disabled").clear().type(customerAddress.telephone, { force: true });
 };
 
 export const uncheckBillToShippingAddress = () => {
@@ -51,6 +60,9 @@ export const signUpUser = (sign_up, isValid = true) => {
   const random = Cypress._.random(0, 10000000);
   const username = `${random}${sign_up.email}`;
   cy.contains("Create account").should('be.visible');
+  if (sign_up.company) {
+    cy.get(fields.authFormUserCompany).clear().type(sign_up.company);
+  }
   if (sign_up.email) {
     cy.get(fields.authFormUserEmail).eq(1).clear({force: true}).type(username);
   }
@@ -63,6 +75,6 @@ export const signUpUser = (sign_up, isValid = true) => {
   } else {
     cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.shortPassword);
   }
-
+  cy.get('.dropin-picker__select').select('Male');
   createAccount();
 };

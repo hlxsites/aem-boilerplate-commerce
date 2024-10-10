@@ -81,9 +81,38 @@ export const productDetailQuery = `query ProductQuery($sku: String!) {
           id
           title
           inStock
+          __typename
           ...on ProductViewOptionValueSwatch {
             type
             value
+          }
+          ... on ProductViewOptionValueProduct {
+            title
+            quantity
+            isDefault
+            product {
+              sku
+              shortDescription
+              metaDescription
+              metaKeyword
+              metaTitle
+              name
+              price {
+                final {
+                  amount {
+                    value
+                    currency
+                  }
+                }
+                regular {
+                  amount {
+                    value
+                    currency
+                  }
+                }
+                roles
+              }
+            }
           }
         }
       }
@@ -99,6 +128,28 @@ export const productDetailQuery = `query ProductQuery($sku: String!) {
   }
 }
 ${priceFieldsFragment}`;
+
+export const variantsQuery = `
+query($sku: String!) {
+  variants(sku: $sku) {
+    variants {
+      product {
+        sku
+        name
+        inStock
+        images(roles: ["image"]) {
+          url
+        }
+        ...on SimpleProductView {
+          price {
+            final { amount { currency value } }
+          }
+        }
+      }
+    }
+  }
+}
+`;
 
 /* Common functionality */
 

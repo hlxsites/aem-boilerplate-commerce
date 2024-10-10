@@ -29,6 +29,7 @@ describe('Verify guest user can place order', () => {
         cy.get('.nav-drop')
             .contains('Catalog')
             .click();
+        cy.wait(1000);    
         cy.contains('Crown Summit Backpack').click();
         cy.get('.dropin-incrementer__increase-button').click();
         cy.get('.dropin-incrementer__input').should('have.value', '2');
@@ -98,5 +99,10 @@ describe('Verify guest user can place order', () => {
         assertOrderConfirmationShippingDetails(customerShippingAddress);
         assertOrderConfirmationBillingDetails(customerShippingAddress);
         assertOrderConfirmationShippingMethod(customerShippingAddress);
+        /**
+         * TODO - when /order-details page will be ready
+         * Redirect to /order-details?orderRef={ORDER_TOKEN}
+         * Confirm that elements similar to orderConfirmation page present (not exactly the same, separate assert needed)
+         */
     });
 });

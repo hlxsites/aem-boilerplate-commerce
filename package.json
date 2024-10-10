@@ -25,7 +25,7 @@
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.25.1",
-    "@dropins/build-tools": "0.1.0-alpha4",
+    "@dropins/build-tools": "0.1.0",
     "eslint": "8.57.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.29.1",
@@ -35,11 +35,13 @@
   "dependencies": {
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
-    "@dropins/storefront-auth": "0.0.1-alpha20",
-    "@dropins/storefront-cart": "0.7.0-alpha007",
+    "@dropins/storefront-cart": "0.7.0",
     "@dropins/storefront-checkout": "0.1.0-alpha49",
+    "@dropins/storefront-auth": "0.0.1-alpha21",
+    "@dropins/storefront-account": "0.1.0-alpha11",
+    "@dropins/storefront-order": "0.1.0-alpha9",
     "@dropins/storefront-order-confirmation": "0.1.0-alpha33",
-    "@dropins/storefront-pdp": "0.4.0-alpha3",
-    "@dropins/tools": "0.31.0-alpha007"
+    "@dropins/storefront-pdp": "0.4.0",
+    "@dropins/tools": "^0.34.0"
   }
 }
