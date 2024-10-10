@@ -29,7 +29,7 @@ const e=`
       }
     }
   }
-`,a=`
+`,t=`
   fragment CUSTOMIZABLE_OPTIONS_FRAGMENT on SelectedCustomizableOption {
     type
     customizable_option_uid
@@ -45,7 +45,7 @@ const e=`
       }
     }
   }
-`,t=`
+`,a=`
 fragment CART_ITEM_FRAGMENT on CartItemInterface {
   __typename
   uid
@@ -56,11 +56,18 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
     code
     message
   }
-  
+
   prices {
     price {
       value
       currency
+    }
+    discounts {
+      amount {
+        value
+        currency
+      }
+      label
     }
     total_item_discount {
       value
@@ -103,6 +110,21 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
     categories {
       url_path
       url_key
+    }
+    custom_attributesV2(filters: {is_visible_on_front: true}){
+      items{
+        code
+        ...on AttributeValue{
+          value
+        }
+        ...on AttributeSelectedOptions{
+          selected_options {
+            value
+            label
+          }
+          
+        }
+      }
     }
     only_x_left_in_stock
     stock_status     
@@ -173,7 +195,7 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
 }
 
 ${e}
-${a}
+${t}
 `,r=`
 fragment CART_FRAGMENT on Cart {
   id
@@ -235,5 +257,5 @@ fragment CART_FRAGMENT on Cart {
   }
 }
 
-${t}
-`;export{r as CART_FRAGMENT,t as CART_ITEM_FRAGMENT};
+${a}
+`;export{r as CART_FRAGMENT,a as CART_ITEM_FRAGMENT};
