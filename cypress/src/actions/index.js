@@ -44,6 +44,7 @@ export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const uncheckBillToShippingAddress = () => {
+  cy.wait(1000);
   cy.get(fields.billToShippingAddress).uncheck({ force: true });
 };
 
@@ -64,7 +65,7 @@ export const signUpUser = (sign_up, isValid = true) => {
     cy.get(fields.authFormUserCompany).clear().type(sign_up.company);
   }
   if (sign_up.email) {
-    cy.get(fields.authFormUserEmail).eq(1).clear({force: true}).type(username);
+    cy.get(fields.authFormUserEmail).eq(1).clear({ force: true }).type(username);
   }
   cy.get(fields.authFormUserFirstName).clear().type(sign_up.firstName);
   cy.get(fields.authFormUserLastName).clear().type(sign_up.lastName);
@@ -76,5 +77,12 @@ export const signUpUser = (sign_up, isValid = true) => {
     cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.shortPassword);
   }
   cy.get('.dropin-picker__select').select('Male');
+  // cy.contains('Male').click();
+  cy.wait(2000);
+  cy
+    .viewport('iphone-x')
+    .percySnapshot('Auth Create Account', { width: 375 })
+    .viewport(1280, 1024)
+    .percySnapshot('Auth Create Account', { width: 1280 });
   createAccount();
 };
