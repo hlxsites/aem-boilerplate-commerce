@@ -145,137 +145,123 @@ export default async function decorate(block) {
 
   block.appendChild(fragment);
 
+  // Render Containers
+
   // Alert
   let inlineAlert = null;
 
-  // Render Containers
+  // Gallery (Desktop)
+  const gallery = await PDPProvider.render(ProductGallery, {
+    controls: 'thumbnailsColumn',
+    arrows: true,
+    peak: false,
+    gap: 'small',
+    // TODO: there is a bug in the Carousel component that renders the wrong default image
+    loop: false,
+  })($gallery);
 
-  const [
-    gallery,
-    header,
-    price,
-    galleryMobile,
-    shortDescription,
-    options,
-    quantity,
-    addToCart,
-    addToWishlist,
-    description,
-    attributes,
-  ] = await Promise.all([
-    // Gallery (Desktop)
-    PDPProvider.render(ProductGallery, {
-      controls: 'thumbnailsColumn',
-      arrows: true,
-      peak: false,
-      gap: 'small',
-      // TODO: there is a bug in the Carousel component that renders the wrong default image
-      loop: false,
-    })($gallery),
+  // Header
+  const header = await PDPProvider.render(ProductHeader, {})($header);
 
-    // Header
-    PDPProvider.render(ProductHeader, {})($header),
+  // Price
+  const price = await PDPProvider.render(ProductPrice, {})($price);
 
-    // Price
-    PDPProvider.render(ProductPrice, {})($price),
+  // Gallery (Mobile)
+  const galleryMobile = await PDPProvider.render(ProductGallery, {
+    controls: 'dots',
+    arrows: true,
+    peak: true,
+    gap: 'small',
+    // TODO: there is a bug in the Carousel component that renders the wrong default image
+    loop: false,
+  })($galleryMobile);
 
-    // Gallery (Mobile)
-    PDPProvider.render(ProductGallery, {
-      controls: 'dots',
-      arrows: true,
-      peak: true,
-      gap: 'small',
-      // TODO: there is a bug in the Carousel component that renders the wrong default image
-      loop: false,
-    })($galleryMobile),
+  // Short Descriptiom
+  const shortDescription = await PDPProvider.render(ProductShortDescription, {})($shortDescription);
 
-    // Short Descriptiom
-    PDPProvider.render(ProductShortDescription, {})($shortDescription),
+  // Configuration - Swatches
+  const options = await PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options);
 
-    // Configuration - Swatches
-    PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options),
+  // Configuration  Quantity
+  const quantity = await PDPProvider.render(ProductQuantity, {})($quantity);
 
-    // Configuration  Quantity
-    PDPProvider.render(ProductQuantity, {})($quantity),
+  // Configuration – Button - Add to Cart
+  const addToCart = await UI.render(Button, {
+    children: labels.pdpProductAddtocart,
+    icon: Icon({ source: 'Cart' }),
+    onClick: async () => {
+      try {
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: labels.pdpCustomAddingtocart,
+          disabled: true,
+        }));
 
-    // Configuration – Button - Add to Cart
-    UI.render(Button, {
-      children: labels.pdpProductAddtocart,
-      icon: Icon({ source: 'Cart' }),
-      onClick: async () => {
-        try {
-          addToCart.setProps((prev) => ({
-            ...prev,
-            children: labels.pdpCustomAddingtocart,
-            disabled: true,
-          }));
+        // get the current selection values
+        const values = PDP.getProductConfigurationValues();
 
-          // get the current selection values
-          const values = PDP.getProductConfigurationValues();
-
-          // add the product to the cart
-          if (values) {
-            await addProductsToCart([{ ...values }]);
-          }
-
-          // reset any previous alerts if successful
-          inlineAlert?.remove();
-        } catch (error) {
-          // add alert message
-          inlineAlert = await UI.render(InLineAlert, {
-            heading: 'Error',
-            description: error.message,
-            icon: Icon({ source: 'Warning' }),
-            'aria-live': 'assertive',
-            role: 'alert',
-            onDismiss: () => {
-              inlineAlert.remove();
-            },
-          })($alert);
-
-          // Scroll the alertWrapper into view
-          $alert.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-        } finally {
-          addToCart.setProps((prev) => ({
-            ...prev,
-            children: labels.pdpProductAddtocart,
-            disabled: false,
-          }));
+        // add the product to the cart
+        if (values) {
+          await addProductsToCart([{ ...values }]);
         }
-      },
-    })($addToCart),
 
-    // Configuration - Add to Wishlist
-    UI.render(Button, {
-      icon: Icon({ source: 'Heart' }),
-      variant: 'secondary',
-      onClick: async () => {
-        try {
-          addToWishlist.setProps((prev) => ({ ...prev, disabled: true }));
+        // reset any previous alerts if successful
+        inlineAlert?.remove();
+      } catch (error) {
+        // add alert message
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Error',
+          description: error.message,
+          icon: Icon({ source: 'Warning' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          onDismiss: () => {
+            inlineAlert.remove();
+          },
+        })($alert);
 
-          const values = PDP.getProductConfigurationValues();
+        // Scroll the alertWrapper into view
+        $alert.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      } finally {
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: labels.pdpProductAddtocart,
+          disabled: false,
+        }));
+      }
+    },
+  })($addToCart);
 
-          if (values?.sku) {
-            const wishlist = await import('../../scripts/wishlist/api.js');
-            await wishlist.addToWishlist(values.sku);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          addToWishlist.setProps((prev) => ({ ...prev, disabled: false }));
+  // Configuration - Add to Wishlist
+  const addToWishlist = await UI.render(Button, {
+    icon: Icon({ source: 'Heart' }),
+    variant: 'secondary',
+    onClick: async () => {
+      try {
+        addToWishlist.setProps((prev) => ({ ...prev, disabled: true }));
+
+        const values = PDP.getProductConfigurationValues();
+
+        if (values?.sku) {
+          const wishlist = await import('../../scripts/wishlist/api.js');
+          await wishlist.addToWishlist(values.sku);
         }
-      },
-    })($addToWishlist),
+      } catch (error) {
+        console.error(error);
+      } finally {
+        addToWishlist.setProps((prev) => ({ ...prev, disabled: false }));
+      }
+    },
+  })($addToWishlist);
 
-    // Description
-    PDPProvider.render(ProductDescription, {})($description),
+  // Description
+  const description = await PDPProvider.render(ProductDescription, {})($description);
 
-    // Attributes
-    PDPProvider.render(ProductAttributes, {})($attributes),
-  ]);
+  // Attributes
+  const attributes = await PDPProvider.render(ProductAttributes, {})($attributes);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
