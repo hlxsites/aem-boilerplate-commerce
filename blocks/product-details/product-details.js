@@ -150,6 +150,16 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
 
+  // Gallery (Mobile)
+  const galleryMobile = await PDPProvider.render(ProductGallery, {
+    controls: 'dots',
+    arrows: true,
+    peak: true,
+    gap: 'small',
+    // TODO: there is a bug in the Carousel component that renders the wrong default image
+    loop: false,
+  })($galleryMobile);
+
   // Gallery (Desktop)
   const gallery = await PDPProvider.render(ProductGallery, {
     controls: 'thumbnailsColumn',
@@ -165,16 +175,6 @@ export default async function decorate(block) {
 
   // Price
   const price = await PDPProvider.render(ProductPrice, {})($price);
-
-  // Gallery (Mobile)
-  const galleryMobile = await PDPProvider.render(ProductGallery, {
-    controls: 'dots',
-    arrows: true,
-    peak: true,
-    gap: 'small',
-    // TODO: there is a bug in the Carousel component that renders the wrong default image
-    loop: false,
-  })($galleryMobile);
 
   // Short Descriptiom
   const shortDescription = await PDPProvider.render(ProductShortDescription, {})($shortDescription);
