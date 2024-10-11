@@ -29,52 +29,50 @@ import {
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
 } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
-// import { fetchPlaceholders } from '../../scripts/aem.js';
+import { fetchPlaceholders } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
   //  Fetch i18n labels
-  // const labels = await fetchPlaceholders();
+  const labels = await fetchPlaceholders();
 
-  // const langDefinitions = {
-  //   default: {
-  //     PDP: {
-  //       Product: {
-  //         Incrementer: { label: labels.pdpProductIncrementer },
-  //         OutOfStock: { label: labels.pdpProductOutofstock },
-  //         AddToCart: { label: labels.pdpProductAddtocart },
-  //         Details: { label: labels.pdpProductDetails },
-  //         RegularPrice: { label: labels.pdpProductRegularprice },
-  //         SpecialPrice: { label: labels.pdpProductSpecialprice },
-  //         PriceRange: {
-  //           From: { label: labels.pdpProductPricerangeFrom },
-  //           To: { label: labels.pdpProductPricerangeTo },
-  //         },
-  //         Image: { label: labels.pdpProductImage },
-  //       },
-  //       Swatches: {
-  //         Required: { label: labels.pdpSwatchesRequired },
-  //       },
-  //       Carousel: {
-  //         label: labels.pdpCarousel,
-  //         Next: { label: labels.pdpCarouselNext },
-  //         Previous: { label: labels.pdpCarouselPrevious },
-  //         Slide: { label: labels.pdpCarouselSlide },
-  //         Controls: {
-  //           label: labels.pdpCarouselControls,
-  //           Button: { label: labels.pdpCarouselControlsButton },
-  //         },
-  //       },
-  //       Overlay: {
-  //         Close: { label: labels.pdpOverlayClose },
-  //       },
-  //     },
-  //     Custom: {
-  //       AddingToCart: { label: labels.pdpCustomAddingtocart },
-  //     },
-  //   },
-  // };
-
-  const labels= {};
+  const langDefinitions = {
+    default: {
+      PDP: {
+        Product: {
+          Incrementer: { label: labels.pdpProductIncrementer },
+          OutOfStock: { label: labels.pdpProductOutofstock },
+          AddToCart: { label: labels.pdpProductAddtocart },
+          Details: { label: labels.pdpProductDetails },
+          RegularPrice: { label: labels.pdpProductRegularprice },
+          SpecialPrice: { label: labels.pdpProductSpecialprice },
+          PriceRange: {
+            From: { label: labels.pdpProductPricerangeFrom },
+            To: { label: labels.pdpProductPricerangeTo },
+          },
+          Image: { label: labels.pdpProductImage },
+        },
+        Swatches: {
+          Required: { label: labels.pdpSwatchesRequired },
+        },
+        Carousel: {
+          label: labels.pdpCarousel,
+          Next: { label: labels.pdpCarouselNext },
+          Previous: { label: labels.pdpCarouselPrevious },
+          Slide: { label: labels.pdpCarouselSlide },
+          Controls: {
+            label: labels.pdpCarouselControls,
+            Button: { label: labels.pdpCarouselControlsButton },
+          },
+        },
+        Overlay: {
+          Close: { label: labels.pdpOverlayClose },
+        },
+      },
+      Custom: {
+        AddingToCart: { label: labels.pdpCustomAddingtocart },
+      },
+    },
+  };
 
   // Set Fetch Endpoint (Service)
   PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
@@ -93,7 +91,7 @@ export default async function decorate(block) {
   // Initialize Dropins
   initializers.register(PDP.initialize, {
     sku: getSkuFromUrl(),
-    // langDefinitions,
+    langDefinitions,
     acdl: true,
     persistURLParams: true,
   });
