@@ -1,4 +1,6 @@
 /* Christopher search box */
+@import url(../search/search-custom-styles/search-article-styling.css);
+
 .search .search-box {
     display: grid;
     grid-template-columns: 24px 1fr;

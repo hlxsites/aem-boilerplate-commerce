@@ -1,7 +1,11 @@
+.section:has(.breadcrum-menu)
+{
+    padding: 0;
+}
+
 .breadcrum-menu
 {
     opacity: 0.8;
-    font-size: 14px;
 }
 
 .breadcrum-menu:nth-child(1) p .icon
