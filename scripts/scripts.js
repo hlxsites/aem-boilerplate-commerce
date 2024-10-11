@@ -49,7 +49,7 @@ export function getAllMetadata(scope) {
 }
 
 export function getPlaceholders() {
-  return JSON.parse(document.getElementById('eds-placeholders').dataset.labels ?? '{}');
+  return window.DROPINS?.placeholders || {};
 }
 
 // Define an execution context
@@ -310,10 +310,8 @@ async function loadEager(doc) {
 
     // apply placeholders
     await fetchPlaceholders().then((labels) => {
-      const labelsElem = document.createElement('script');
-      labelsElem.setAttribute('id', 'eds-placeholders');
-      labelsElem.setAttribute('data-labels', JSON.stringify(labels));
-      document.body.appendChild(labelsElem);
+      window.DROPINS = window.DROPINS || {};
+      window.DROPINS.placeholders = labels;
     });
 
     // Load LCP blocks
