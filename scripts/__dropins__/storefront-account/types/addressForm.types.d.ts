@@ -2,8 +2,8 @@ import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { CustomerAddressesModel } from '../data/models';
 
 interface AddressFormActionsContext {
-    handleUpdateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;
-    handleCreateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;
+    handleUpdateAddress?: (event: Event, valid: boolean) => void;
+    handleCreateAddress?: (event: Event, valid: boolean) => void;
     addressId: string | number;
 }
 interface AddressFormInputsContext {
@@ -12,7 +12,6 @@ interface AddressFormInputsContext {
     };
 }
 export interface AddressFormProps {
-    hideActionFormButtons?: boolean;
     formName?: string;
     showFormLoader?: boolean;
     showSaveCheckBox?: boolean;
@@ -40,7 +39,7 @@ export interface AddressFormProps {
 }
 export interface AddressFormWrapperProps extends AddressFormProps {
 }
-export interface useAddressFormProps extends Omit<AddressFormProps, 'className' | 'addressesFormTitle' | 'handleCloseForm' | 'forwardFormRef' | 'hideActionFormButtons'> {
+export interface useAddressFormProps extends Omit<AddressFormProps, 'className' | 'addressesFormTitle' | 'handleCloseForm' | 'forwardFormRef'> {
 }
 export {};
 //# sourceMappingURL=addressForm.types.d.ts.map

@@ -16,16 +16,15 @@ export type FormRef = {
     handleValidationSubmit: () => boolean;
 };
 export interface FormProps {
-    isWaitingForResponse?: boolean;
-    showSaveCheckBox?: boolean;
-    saveCheckBoxAddress?: boolean;
-    handleSaveCheckBoxAddress?: (event: Event) => void;
-    regionOptions?: RegionTransform[] | [];
+    showSaveCheckBox: boolean;
+    saveCheckBoxAddress: boolean;
+    handleSaveCheckBoxAddress: (event: Event) => void;
+    regionOptions: RegionTransform[] | [];
     slots?: {
         AddressFormInputs?: SlotProps<AddressFormInputsContext>;
     };
-    forwardFormRef?: HTMLInputElement | any;
-    fieldsConfig?: FieldsProps[] | [];
+    forwardFormRef: HTMLInputElement | any;
+    fieldsConfig: FieldsProps[] | [];
     name?: string;
     className?: string;
     children?: any;

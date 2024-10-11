@@ -1,2 +1,0 @@
-export declare const UPDATE_CUSTOMER_V2 = "\n  mutation UPDATE_CUSTOMER_V2($input: CustomerUpdateInput!) {\n    updateCustomerV2(input:$input) {\n      customer {\n       email\n      }\n    }\n  }\n";
-//# sourceMappingURL=updateCustomerV2.graphql.d.ts.map

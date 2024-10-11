@@ -5,7 +5,6 @@ import { HTMLAttributes } from 'preact/compat';
 
 export declare const findNonEmptyObject: (obj1: Record<string, unknown> | undefined, obj2: CustomerAddressesModel | undefined) => CustomerAddressesModel | Record<string, unknown>;
 export declare const useAddressForm: ({ showFormLoader, showSaveCheckBox, saveCheckBoxValue, addressFormId, billingCheckBoxValue, shippingCheckBoxValue, showShippingCheckBox, showBillingCheckBox, inputsDefaultValueSet, onCloseBtnClick, onSuccess, onError, formName, }: useAddressFormProps) => {
-    isWaitingForResponse: boolean;
     regionOptions: [] | RegionTransform[];
     saveCheckBoxAddress: boolean;
     inLineAlert: {
@@ -23,8 +22,8 @@ export declare const useAddressForm: ({ showFormLoader, showSaveCheckBox, saveCh
         disabled?: boolean | undefined;
     }[];
     handleSaveCheckBoxAddress: (event: Event) => void;
-    handleUpdateAddress: (event: Event, valid: boolean) => Promise<void | null | undefined>;
-    handleCreateAddress: (event: Event, valid: boolean) => Promise<void | null | undefined>;
+    handleUpdateAddress: (event: Event, valid: boolean) => Promise<null | undefined>;
+    handleCreateAddress: (event: Event, valid: boolean) => Promise<void>;
     handleOnCloseForm: () => void;
     handleInputChange: (values: Record<string, string | number | boolean>) => void;
 };
