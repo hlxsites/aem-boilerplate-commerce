@@ -13,14 +13,14 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from '@dropins/storefront-pdp/api/initialize';
-export * from '@dropins/storefront-pdp/api/fetch-graphql';
-export * from '@dropins/storefront-pdp/api/getProductData';
-export * from '@dropins/storefront-pdp/api/getRefinedProduct';
-export * from '@dropins/storefront-pdp/api/fetchPDPData';
-export * from '@dropins/storefront-pdp/api/setProductConfigurationValues';
-export * from '@dropins/storefront-pdp/api/getProductConfigurationValues';
-export * from '@dropins/storefront-pdp/api/setProductConfigurationValid';
-export * from '@dropins/storefront-pdp/api/getFetchedProductData';
-export * from '@dropins/storefront-pdp/api/isProductConfigurationValid';
+export * from './initialize';
+export * from './fetch-graphql';
+export * from './getProductData';
+export * from './getRefinedProduct';
+export * from './fetchPDPData';
+export * from './setProductConfigurationValues';
+export * from './getProductConfigurationValues';
+export * from './setProductConfigurationValid';
+export * from './getFetchedProductData';
+export * from './isProductConfigurationValid';
 //# sourceMappingURL=index.d.ts.map

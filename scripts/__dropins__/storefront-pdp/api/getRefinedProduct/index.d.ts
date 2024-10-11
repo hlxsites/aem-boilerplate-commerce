@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from '@dropins/storefront-pdp/api/getRefinedProduct/getRefinedProduct';
+export * from './getRefinedProduct';
 //# sourceMappingURL=index.d.ts.map

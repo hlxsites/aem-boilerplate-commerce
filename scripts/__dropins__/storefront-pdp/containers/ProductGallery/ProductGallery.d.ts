@@ -4,7 +4,7 @@ import { ProductModel } from '../../data/models/product-model';
 
 export interface ProductGalleryProps extends Omit<HTMLAttributes<HTMLDivElement>, 'controls'> {
     controls?: 'thumbnailsRow' | 'thumbnailsColumn' | 'dots' | null;
-    loopable?: boolean;
+    loop?: boolean;
     peak?: boolean;
     gap?: 'small' | 'medium' | 'large' | null;
     arrows?: boolean;

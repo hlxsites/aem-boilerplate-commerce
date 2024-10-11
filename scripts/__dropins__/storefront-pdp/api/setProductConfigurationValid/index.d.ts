@@ -1,2 +1,2 @@
-export * from '@dropins/storefront-pdp/api/setProductConfigurationValid/setProductConfigurationValid';
+export * from './setProductConfigurationValid';
 //# sourceMappingURL=index.d.ts.map

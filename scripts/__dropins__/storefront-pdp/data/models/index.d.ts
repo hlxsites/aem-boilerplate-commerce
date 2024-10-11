@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from '@dropins/storefront-pdp/data/models/product-model';
-export * from '@dropins/storefront-pdp/data/models/values-model';
+export * from './product-model';
+export * from './values-model';
 //# sourceMappingURL=index.d.ts.map

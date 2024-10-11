@@ -1,6 +1,6 @@
 import { Initializer } from '@dropins/tools/types/elsie/src/lib';
 import { Lang } from '@dropins/tools/types/elsie/src/i18n';
-import { ProductModel } from '@dropins/storefront-pdp/data/models';
+import { ProductModel } from '../../data/models';
 
 type ConfigProps = {
     langDefinitions?: Lang;

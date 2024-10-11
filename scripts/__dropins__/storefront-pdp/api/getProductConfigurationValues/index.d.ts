@@ -1,2 +1,2 @@
-export * from '@dropins/storefront-pdp/api/getProductConfigurationValues/getProductConfigurationValues';
+export * from './getProductConfigurationValues';
 //# sourceMappingURL=index.d.ts.map

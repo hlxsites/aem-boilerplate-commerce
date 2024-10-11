@@ -1,2 +1,2 @@
-export * from '@dropins/storefront-pdp/api/fetchPDPData/fetchPDPData';
+export * from './fetchPDPData';
 //# sourceMappingURL=index.d.ts.map

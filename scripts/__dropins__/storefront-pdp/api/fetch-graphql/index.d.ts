@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from '@dropins/storefront-pdp/api/fetch-graphql/fetch-graphql';
+export * from './fetch-graphql';
 //# sourceMappingURL=index.d.ts.map
