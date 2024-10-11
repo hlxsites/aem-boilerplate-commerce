@@ -105,31 +105,50 @@ export default async function decorate(block) {
   }
 
   // Layout
-  const $wrapper = document.createElement('div');
-  $wrapper.classList.add('product-details__wrapper');
-  block.appendChild($wrapper);
+  const fragment = document.createRange().createContextualFragment(`
+    <div class="product-details__wrapper">
+      <div class="product-details__alert"></div>
+      <div class="product-details__left-column">
+        <div class="product-details__gallery"></div>
+      </div>
+      <div class="product-details__right-column">
+        <div class="product-details__header"></div>
+        <div class="product-details__price"></div>
+        <div class="product-details__gallery"></div>
+        <div class="product-details__short-description"></div>
+        <div class="product-details__configuration">
+          <div class="product-details__options"></div>
+          <div class="product-details__quantity"></div>
+          <div class="product-details__buttons">
+            <div class="product-details__buttons__add-to-cart"></div>
+            <div class="product-details__buttons__add-to-wishlist"></div>
+          </div>
+        </div>
+        <div class="product-details__description"></div>
+        <div class="product-details__attributes"></div>
+      </div>
+    </div>
+  `);
+
+  const $alert = fragment.querySelector('.product-details__alert');
+  const $gallery = fragment.querySelector('.product-details__gallery');
+  const $header = fragment.querySelector('.product-details__header');
+  const $price = fragment.querySelector('.product-details__price');
+  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
+  const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $options = fragment.querySelector('.product-details__options');
+  const $quantity = fragment.querySelector('.product-details__quantity');
+  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $description = fragment.querySelector('.product-details__description');
+  const $attributes = fragment.querySelector('.product-details__attributes');
+
+  block.appendChild(fragment);
 
   // Alert
-  const $alert = document.createElement('div');
-  $alert.classList.add('product-details__alert');
-  $wrapper.appendChild($alert);
   let inlineAlert = null;
 
-  // Layout - Left Column
-  const $leftColumn = document.createElement('div');
-  $leftColumn.classList.add('product-details__left-column');
-  $wrapper.appendChild($leftColumn);
-
-  // Layout - Right Column
-  const $rightColumn = document.createElement('div');
-  $rightColumn.classList.add('product-details__right-column');
-  $wrapper.appendChild($rightColumn);
-
-  // Gallery (Tablet & Desktop)
-  const $gallery = document.createElement('div');
-  $gallery.classList.add('product-details__gallery');
-  $leftColumn.appendChild($gallery);
-
+  // Gallery (Desktop)
   await PDPProvider.render(ProductGallery, {
     controls: 'thumbnailsColumn',
     arrows: true,
@@ -138,24 +157,12 @@ export default async function decorate(block) {
   })($gallery);
 
   // Header
-  const $header = document.createElement('div');
-  $header.classList.add('product-details__header');
-  $rightColumn.appendChild($header);
-
   await PDPProvider.render(ProductHeader, {})($header);
 
   // Price
-  const $price = document.createElement('div');
-  $price.classList.add('product-details__price');
-  $rightColumn.appendChild($price);
-
   await PDPProvider.render(ProductPrice, {})($price);
 
   // Gallery (Mobile)
-  const $galleryMobile = document.createElement('div');
-  $galleryMobile.classList.add('product-details__gallery');
-  $rightColumn.appendChild($galleryMobile);
-
   await PDPProvider.render(ProductGallery, {
     controls: 'dots',
     arrows: true,
@@ -164,41 +171,15 @@ export default async function decorate(block) {
   })($galleryMobile);
 
   // Short Descriptiom
-  const $shortDescription = document.createElement('div');
-  $shortDescription.classList.add('product-details__short-description');
-  $rightColumn.appendChild($shortDescription);
-
   await PDPProvider.render(ProductShortDescription, {})($shortDescription);
 
-  // Configuration
-  const $configuration = document.createElement('div');
-  $configuration.classList.add('product-details__configuration');
-  $rightColumn.appendChild($configuration);
-
   // Configuration - Swatches
-  const $options = document.createElement('div');
-  $options.classList.add('product-details__options');
-  $configuration.appendChild($options);
-
   await PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options);
 
   // Configuration  Quantity
-  const $quantity = document.createElement('div');
-  $quantity.classList.add('product-details__quantity');
-  $configuration.appendChild($quantity);
-
   await PDPProvider.render(ProductQuantity, {})($quantity);
 
-  // Configuration - Buttons
-  const $buttons = document.createElement('div');
-  $buttons.classList.add('product-details__buttons');
-  $configuration.appendChild($buttons);
-
   // Configuration – Button - Add to Cart
-  const $addToCart = document.createElement('div');
-  $addToCart.classList.add('product-details__buttons__add-to-cart');
-  $buttons.appendChild($addToCart);
-
   const addToCart = await UI.render(Button, {
     children: labels.pdpProductAddtocart,
     icon: Icon({ source: 'Cart' }),
@@ -249,10 +230,6 @@ export default async function decorate(block) {
   })($addToCart);
 
   // Configuration - Add to Wishlist
-  const $addToWishlist = document.createElement('div');
-  $addToWishlist.classList.add('product-details__buttons__add-to-wishlist');
-  $buttons.appendChild($addToWishlist);
-
   const addToWishlist = await UI.render(Button, {
     icon: Icon({ source: 'Heart' }),
     variant: 'secondary',
@@ -275,17 +252,9 @@ export default async function decorate(block) {
   })($addToWishlist);
 
   // Description
-  const $description = document.createElement('div');
-  $description.classList.add('product-details__description');
-  $rightColumn.appendChild($description);
-
   await PDPProvider.render(ProductDescription, {})($description);
 
   // Attributes
-  const $attributes = document.createElement('div');
-  $attributes.classList.add('product-details__attributes');
-  $rightColumn.appendChild($attributes);
-
   await PDPProvider.render(ProductAttributes, {})($attributes);
 
   // Lifecycle Events
