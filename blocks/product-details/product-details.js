@@ -29,11 +29,11 @@ import {
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
 } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
-import { fetchPlaceholders } from '../../scripts/aem.js';
+import { getPlaceholders } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
-  //  Fetch i18n labels
-  const labels = await fetchPlaceholders();
+  //  get i18n labels
+  const labels = getPlaceholders();
 
   const langDefinitions = {
     default: {

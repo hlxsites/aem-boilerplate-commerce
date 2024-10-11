@@ -20,6 +20,7 @@ import {
   loadSections,
   loadCSS,
   sampleRUM,
+  fetchPlaceholders,
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
 import initializeDropins from './dropins.js';
@@ -45,6 +46,10 @@ export function getAllMetadata(scope) {
       res[id] = meta.getAttribute('content');
       return res;
     }, {});
+}
+
+export function getPlaceholders() {
+  return JSON.parse(document.getElementById('eds-placeholders').dataset.labels ?? '{}');
 }
 
 // Define an execution context
@@ -302,6 +307,14 @@ async function loadEager(doc) {
 
     // Template Decorations
     await applyTemplates(doc);
+
+    // apply placeholders
+    await fetchPlaceholders().then((labels) => {
+      const labelsElem = document.createElement('script');
+      labelsElem.setAttribute('id', 'eds-placeholders');
+      labelsElem.setAttribute('data-labels', JSON.stringify(labels));
+      document.body.appendChild(labelsElem);
+    });
 
     // Load LCP blocks
     document.body.classList.add('appear');
