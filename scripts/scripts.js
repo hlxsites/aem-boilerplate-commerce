@@ -231,6 +231,10 @@ async function loadEager(doc) {
     pageType = 'Product';
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getProductConfigurationValues.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/isProductConfigurationValid.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getFetchedProductData.js', 'script');
   } else if (document.body.querySelector('main .product-details-custom')) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
