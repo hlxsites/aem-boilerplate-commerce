@@ -235,6 +235,14 @@ async function loadEager(doc) {
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getProductConfigurationValues.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/isProductConfigurationValid.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getFetchedProductData.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
   } else if (document.body.querySelector('main .product-details-custom')) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
