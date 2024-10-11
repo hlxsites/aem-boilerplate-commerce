@@ -43,7 +43,9 @@
 .article-section > div > div:nth-child(1)
 {
     flex-grow: 2.5;
+    font-weight: 400;
 }
+
 /* Side Navigation */
 .article-section > div > div:nth-child(2)
 {
@@ -58,6 +60,7 @@
 {
     margin: 0;
     font-size: 13px;
+    font-weight: 400;
     padding: 4px;
     width: 100%;
     text-decoration: none;
@@ -77,6 +80,7 @@
     margin-bottom:40px;
 }
 
+/* Previous and Next styling */
 .article-section > div > div > table:has(em)
 {
     width: 100%;
@@ -111,6 +115,7 @@
     border: 1px solid black;
     border-radius: 5px;
     color: black;
+    font-weight: 400;
     text-decoration: none;
     padding: 10px;
     /* transition */
@@ -136,6 +141,7 @@
 {
     opacity: 0.5;
     font-size: 12px;
+    font-weight: 400;
 }
 
 /* Article side navigation */
