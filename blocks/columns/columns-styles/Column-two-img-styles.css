@@ -50,7 +50,7 @@
     margin: 0;
     padding: 0;
     line-height: 22px;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-transform: none;
     vertical-align: baseline;
     margin-bottom: 16px;

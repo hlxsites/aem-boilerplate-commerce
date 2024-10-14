@@ -43,7 +43,7 @@
 .article-section > div > div:nth-child(1)
 {
     flex-grow: 2.5;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
 }
 
 /* Side Navigation */
@@ -60,7 +60,7 @@
 {
     margin: 0;
     font-size: 13px;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     padding: 4px;
     width: 100%;
     text-decoration: none;
@@ -115,7 +115,7 @@
     border: 1px solid black;
     border-radius: 5px;
     color: black;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-decoration: none;
     padding: 10px;
     /* transition */
@@ -141,7 +141,7 @@
 {
     opacity: 0.5;
     font-size: 12px;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
 }
 
 /* Article side navigation */

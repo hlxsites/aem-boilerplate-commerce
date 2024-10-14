@@ -57,7 +57,7 @@
 {
     width: 158px;
     font-size: 1.39rem;
-    font-weight: 200;
+    font-weight: var(--sub-text-weight);
     line-height: 24px;
     text-align: center;
     text-transform: none;

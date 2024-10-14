@@ -10,7 +10,7 @@
     font-family: "Proxima Nova", "Helvetica Neue", Verdana, Arial, sans-serif;
     letter-spacing: 0.0857143rem;
     line-height: 20px;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-transform: uppercase;
     color: rgb(153, 153, 153);
     max-width: 300px;
@@ -19,7 +19,7 @@
 
 .section-one-column h4
 {
-    max-width: 300px;
+    max-width: 320px;
     margin: 20px auto;
     text-transform: uppercase;
 }
@@ -28,6 +28,7 @@
 {
     /* border: 1px solid red; */
     font-size: 1.2rem;
+    font-weight: var(--sub-text-weight);
     max-width: 600px;
     margin: 30px auto 60px;
 }

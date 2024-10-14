@@ -28,7 +28,7 @@
     font-size: 13px;
     margin: 0;
     padding: 0;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-transform: none;
     margin-bottom: 20px;
     display: inline-block;
