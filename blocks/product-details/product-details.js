@@ -40,11 +40,6 @@ export default async function decorate(block) {
     return Promise.reject();
   }
 
-  // Set JSON-LD and Meta Tags
-  setJsonLdProduct(product);
-  setMetaTags(product);
-  document.title = product.name;
-
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__wrapper">
@@ -208,6 +203,15 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+  }, { eager: true });
+
+  events.on('eds/lcp', () => {
+    if (product) {
+      // Set JSON-LD and Meta Tags
+      setJsonLdProduct(product);
+      setMetaTags(product);
+      document.title = product.name;
+    }
   }, { eager: true });
 
   return Promise.resolve();
