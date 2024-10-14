@@ -95,7 +95,7 @@ export default async function decorate(block) {
     acdl: true,
     persistURLParams: true,
   });
-  
+
   // Get Initialized product data
   const product = await PDP.getFetchedProductData();
 
@@ -103,6 +103,11 @@ export default async function decorate(block) {
     await loadErrorPage();
     return Promise.reject();
   }
+
+  // Set JSON-LD and Meta Tags
+  setJsonLdProduct(product);
+  setMetaTags(product);
+  document.title = product.name;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -268,11 +273,6 @@ export default async function decorate(block) {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
-
-  // Set JSON-LD and Meta Tags
-  setJsonLdProduct(product);
-  setMetaTags(product);
-  document.title = product.name;
 
   return Promise.resolve();
 }
