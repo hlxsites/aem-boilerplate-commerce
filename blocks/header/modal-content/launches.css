@@ -47,7 +47,6 @@
   font-size: var(--sub-text-secondary-size);
   padding: 0;
   margin: 0;
-
   text-transform: capitalize;
 }
 
@@ -55,8 +54,4 @@
   display: flex;
   flex: 2;
   width: 280px;
-}
-
-.nav-modal-content .default-content-wrapper p:nth-child(1) {
-  display: none;
 }

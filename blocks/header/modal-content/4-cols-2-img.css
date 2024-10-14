@@ -1,10 +1,10 @@
 @import url(./sub-heading-modal.css);
 
 /* Shop by, Brands, Footwear, Lifestyle, Active, and Sale uses this as well */
-.nav-modal-content .columns-4-cols div div:nth-child(2) p:nth-child(1) u,
+/* .nav-modal-content .columns-4-cols div div:nth-child(2) p:nth-child(1) u,
 .nav-modal-content .columns-4-cols div div:nth-child(3) p:nth-child(1) u {
   visibility: hidden;
-}
+} */
 
 .nav-modal-content .four-cols-two-img div div p:nth-child(1):only-of-type {
   list-style-type: none;
@@ -24,7 +24,7 @@
   border: none;
   color: black;
   background-color: white;
-  text-transform: capitalize;
+  text-transform: uppercase;
   font-size: var(--sub-text-secondary-size);
   padding: 0.5%;
   margin: 0;

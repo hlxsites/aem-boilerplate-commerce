@@ -35,7 +35,7 @@
   display: none;
 }
 
-@media (width <= 998px) {
+@media (width <= 991px) {
   .nav-modal .close-button {
     display: block;
     position: absolute;
@@ -48,6 +48,12 @@
     background-color: unset;
     margin: 0;
     border: none;
+  }
+
+  .nav-modal {
+    top: 0;
+    width: 100vw;
+    max-width: 400px;
   }
 }
 
