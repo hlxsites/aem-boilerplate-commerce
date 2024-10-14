@@ -95,6 +95,7 @@ export default async function decorate(block) {
     acdl: true,
     persistURLParams: true,
   });
+  
   // Get Initialized product data
   const product = await PDP.getFetchedProductData();
 
