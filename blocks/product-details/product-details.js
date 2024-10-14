@@ -31,63 +31,63 @@ import {
 import { getConfigValue } from '../../scripts/configs.js';
 import { getPlaceholders } from '../../scripts/scripts.js';
 
-export default async function decorate(block) {
-  //  get i18n labels
-  const labels = getPlaceholders();
+//  get i18n labels
+const labels = getPlaceholders();
 
-  const langDefinitions = {
-    default: {
-      PDP: {
-        Product: {
-          Incrementer: { label: labels.pdpProductIncrementer },
-          OutOfStock: { label: labels.pdpProductOutofstock },
-          AddToCart: { label: labels.pdpProductAddtocart },
-          Details: { label: labels.pdpProductDetails },
-          RegularPrice: { label: labels.pdpProductRegularprice },
-          SpecialPrice: { label: labels.pdpProductSpecialprice },
-          PriceRange: {
-            From: { label: labels.pdpProductPricerangeFrom },
-            To: { label: labels.pdpProductPricerangeTo },
-          },
-          Image: { label: labels.pdpProductImage },
+const langDefinitions = {
+  default: {
+    PDP: {
+      Product: {
+        Incrementer: { label: labels.pdpProductIncrementer },
+        OutOfStock: { label: labels.pdpProductOutofstock },
+        AddToCart: { label: labels.pdpProductAddtocart },
+        Details: { label: labels.pdpProductDetails },
+        RegularPrice: { label: labels.pdpProductRegularprice },
+        SpecialPrice: { label: labels.pdpProductSpecialprice },
+        PriceRange: {
+          From: { label: labels.pdpProductPricerangeFrom },
+          To: { label: labels.pdpProductPricerangeTo },
         },
-        Swatches: {
-          Required: { label: labels.pdpSwatchesRequired },
-        },
-        Carousel: {
-          label: labels.pdpCarousel,
-          Next: { label: labels.pdpCarouselNext },
-          Previous: { label: labels.pdpCarouselPrevious },
-          Slide: { label: labels.pdpCarouselSlide },
-          Controls: {
-            label: labels.pdpCarouselControls,
-            Button: { label: labels.pdpCarouselControlsButton },
-          },
-        },
-        Overlay: {
-          Close: { label: labels.pdpOverlayClose },
+        Image: { label: labels.pdpProductImage },
+      },
+      Swatches: {
+        Required: { label: labels.pdpSwatchesRequired },
+      },
+      Carousel: {
+        label: labels.pdpCarousel,
+        Next: { label: labels.pdpCarouselNext },
+        Previous: { label: labels.pdpCarouselPrevious },
+        Slide: { label: labels.pdpCarouselSlide },
+        Controls: {
+          label: labels.pdpCarouselControls,
+          Button: { label: labels.pdpCarouselControlsButton },
         },
       },
-      Custom: {
-        AddingToCart: { label: labels.pdpCustomAddingtocart },
+      Overlay: {
+        Close: { label: labels.pdpOverlayClose },
       },
     },
-  };
+    Custom: {
+      AddingToCart: { label: labels.pdpCustomAddingtocart },
+    },
+  },
+};
 
-  // Set Fetch Endpoint (Service)
-  PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
+// Set Fetch Endpoint (Service)
+PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
 
-  // Set Fetch Headers (Service)
-  PDP.setFetchGraphQlHeaders({
-    'Content-Type': 'application/json',
-    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
-  });
+// Set Fetch Headers (Service)
+PDP.setFetchGraphQlHeaders({
+  'Content-Type': 'application/json',
+  'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
+  'Magento-Website-Code': await getConfigValue('commerce-website-code'),
+  'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
+  'Magento-Store-Code': await getConfigValue('commerce-store-code'),
+  'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
+  'x-api-key': await getConfigValue('commerce-x-api-key'),
+});
 
+export default async function decorate(block) {
   // Initialize Dropins
   initializers.register(PDP.initialize, {
     sku: getSkuFromUrl(),
@@ -95,7 +95,6 @@ export default async function decorate(block) {
     acdl: true,
     persistURLParams: true,
   });
-
   // Get Initialized product data
   const product = await PDP.getFetchedProductData();
 
