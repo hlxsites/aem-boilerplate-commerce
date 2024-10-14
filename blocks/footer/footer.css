@@ -36,7 +36,7 @@ footer .footer {
 .footer-one > div:first-child p
 {
   width: calc(60% - 10px);
-  font-weight: 400;
+  font-weight: var(--sub-text-weight);
 }
 
 .footer-one > div:first-child > div h5
@@ -114,8 +114,7 @@ footer .footer p {
 .footer-two ul li a
 {
   font-size: 13px;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 100;
+  font-weight: var(--sub-text-weight);
   padding-top: 0;
   line-height: 3rem;
   text-decoration: none;

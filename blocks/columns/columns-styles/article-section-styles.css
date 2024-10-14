@@ -154,7 +154,7 @@
 .article-section > div > div > table:nth-child(1) a:any-link,table:nth-child(2) a:any-link
 {
     text-decoration: none;
-    line-height: 26px;
+    line-height: var(--text-line-height);
     color: rgb(26, 26, 26);
     /* transition */
     transition: color 0.3s ease-in-out;
@@ -163,7 +163,7 @@
 .article-section > div > div > table:nth-child(1) a:hover,table:nth-child(2) a:hover
 {
     text-decoration: none;
-    line-height: 26px;
+    line-height: var(--text-line-height);
     color: rgb(153, 153, 153);
 }
 
@@ -176,8 +176,8 @@
 {
     font-size: 0.9em;
     text-transform: uppercase;
-    font-weight: 900;
-    line-height: 26px;
+    font-weight: var(--sub-text-title-weight);
+    line-height: var(--text-line-height);
     margin: 0;
     margin-left: 10px;
     padding-top: 20px;

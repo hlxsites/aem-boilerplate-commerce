@@ -10,8 +10,8 @@
     font-size: 2.3rem;
     letter-spacing: 0.2rem;
     padding-top: 10px;
-    font-weight: 600;
-    line-height: 40px;
+    font-weight: var(--sub-text-title-weight);
+    line-height: var(--text-title-line-height);
     text-transform: uppercase;
 }
 
@@ -45,7 +45,7 @@
 .green-text
 {
     color: rgb(37, 138, 62);
-    font-weight: 600;
+    font-weight: var(--sub-text-title-weight);
     font-style: normal;
 }
 

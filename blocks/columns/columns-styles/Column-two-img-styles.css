@@ -49,7 +49,7 @@
     font-size: 13px;
     margin: 0;
     padding: 0;
-    line-height: 22px;
+    line-height: var(--text-line-height);
     font-weight: var(--sub-text-weight);
     text-transform: none;
     vertical-align: baseline;

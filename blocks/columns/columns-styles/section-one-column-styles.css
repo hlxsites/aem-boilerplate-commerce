@@ -7,9 +7,8 @@
 .section-one-column > div:nth-child(3) p
 {
     font-size: 1.2rem;
-    font-family: "Proxima Nova", "Helvetica Neue", Verdana, Arial, sans-serif;
     letter-spacing: 0.0857143rem;
-    line-height: 20px;
+    line-height: var(--text-line-height);
     font-weight: var(--sub-text-weight);
     text-transform: uppercase;
     color: rgb(153, 153, 153);
@@ -53,7 +52,7 @@
     .section-one-column > div:nth-child(1) h4
     {
         font-size: 1.5rem;
-        font-weight: 500;
+        font-weight: var(--sub-text-title-weight);
         letter-spacing: 0.4rem;
         max-width: 290px;   
     }

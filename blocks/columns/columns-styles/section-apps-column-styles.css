@@ -58,7 +58,7 @@
     width: 158px;
     font-size: 1.39rem;
     font-weight: var(--sub-text-weight);
-    line-height: 24px;
+    line-height: var(--text-line-height);
     text-align: center;
     text-transform: none;
     color: rgb(153, 153, 153);

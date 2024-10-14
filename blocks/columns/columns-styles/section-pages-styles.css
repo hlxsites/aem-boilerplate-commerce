@@ -13,7 +13,7 @@
 
 .sections-page h3
 {
-    font-weight: 600;
+    font-weight: var(--sub-text-title-weight);
     font-size: 2.5rem;
     padding: 0;
     margin: 0;

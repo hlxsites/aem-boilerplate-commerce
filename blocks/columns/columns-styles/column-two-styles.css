@@ -37,7 +37,7 @@
     font-size: 13px;
     margin: 0;
     padding: 1rem 0 0 0;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-transform: none;
     margin-bottom: 16px;
 }
@@ -47,9 +47,8 @@
     font-size: 13px;
     margin: 0;
     padding: 0;
-    font-weight: 500;
+    font-weight: var(--sub-text-weight);
     text-transform: none;
-    vertical-align: baseline;
 }
 
 .section-two-col > div > div > ul li::marker
@@ -62,8 +61,8 @@
     font-size: 2.3rem;
     margin-bottom: 16px;
     letter-spacing: 0.2rem;
-    font-weight: 500;
-    line-height: 40px;
+    font-weight: var(--sub-text-title-weight);
+    line-height: var(--text-title-line-height);
     text-transform: uppercase;
 }
 /* styling buttons used in 2 columns content */
@@ -95,8 +94,8 @@
     text-align: center;
     text-transform: uppercase;
     font-size: 2rem;
-    line-height: 30px;
-    font-weight: 600;
+    line-height: var(--text-title-line-height);
+    font-weight: var(--sub-text-title-weight);
     padding-bottom: 48px;
 }
 
