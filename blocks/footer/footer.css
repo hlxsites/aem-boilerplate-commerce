@@ -60,10 +60,13 @@ footer .footer {
 .footer-two h6
 {
   font-size: 14px;
-  line-height: 20px;
+  line-height: var(--text-line-height);
+  font-weight: var(--sub-text-weight);
   text-transform: uppercase;
   margin: 0;
   padding: 1rem 0 1rem 0;
+  text-transform: uppercase;
+  color: rgb(26, 26, 26);
 }
 
 .footer-two .columns-4-cols > div > div:nth-last-child(1) p
@@ -71,13 +74,12 @@ footer .footer {
   margin: auto;
   display: inline block;
   padding: 10px;
-  font-weight: 600;
 }
 
 .footer-two .columns-4-cols > div > div:nth-last-child(1) > p a,
 .footer-two .columns-4-cols > div > div:nth-last-child(1) > p a:hover
 {
-  font-weight: bold;
+  font-weight: var(--sub-text-title-weight);
   text-decoration: none;
 }
 
@@ -138,7 +140,6 @@ footer .footer p {
   width: 20px;
   height: 20px;
   margin-right: 20px;
-  /* fill: black; */
 }
 
 /*Flex box of last section of the footer*/
