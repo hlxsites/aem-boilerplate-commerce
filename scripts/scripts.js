@@ -234,6 +234,8 @@ async function loadEager(doc) {
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
     pageType = 'Product';
+
+    // Preload PDP Dropins assets
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');

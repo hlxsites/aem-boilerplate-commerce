@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
 import {
   InLineAlert,
   Icon,
@@ -24,78 +23,15 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 
 // Libs
 import {
-  getSkuFromUrl,
   setJsonLd,
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
 } from '../../scripts/commerce.js';
-import { getConfigValue } from '../../scripts/configs.js';
 import { getPlaceholders } from '../../scripts/scripts.js';
 
 //  get i18n labels
 const labels = getPlaceholders();
 
-const langDefinitions = {
-  default: {
-    PDP: {
-      Product: {
-        Incrementer: { label: labels.pdpProductIncrementer },
-        OutOfStock: { label: labels.pdpProductOutofstock },
-        AddToCart: { label: labels.pdpProductAddtocart },
-        Details: { label: labels.pdpProductDetails },
-        RegularPrice: { label: labels.pdpProductRegularprice },
-        SpecialPrice: { label: labels.pdpProductSpecialprice },
-        PriceRange: {
-          From: { label: labels.pdpProductPricerangeFrom },
-          To: { label: labels.pdpProductPricerangeTo },
-        },
-        Image: { label: labels.pdpProductImage },
-      },
-      Swatches: {
-        Required: { label: labels.pdpSwatchesRequired },
-      },
-      Carousel: {
-        label: labels.pdpCarousel,
-        Next: { label: labels.pdpCarouselNext },
-        Previous: { label: labels.pdpCarouselPrevious },
-        Slide: { label: labels.pdpCarouselSlide },
-        Controls: {
-          label: labels.pdpCarouselControls,
-          Button: { label: labels.pdpCarouselControlsButton },
-        },
-      },
-      Overlay: {
-        Close: { label: labels.pdpOverlayClose },
-      },
-    },
-    Custom: {
-      AddingToCart: { label: labels.pdpCustomAddingtocart },
-    },
-  },
-};
-
-// Set Fetch Endpoint (Service)
-PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
-
-// Set Fetch Headers (Service)
-PDP.setFetchGraphQlHeaders({
-  'Content-Type': 'application/json',
-  'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-  'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-  'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-  'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-  'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-  'x-api-key': await getConfigValue('commerce-x-api-key'),
-});
-
 export default async function decorate(block) {
-  // Initialize Dropins
-  initializers.register(PDP.initialize, {
-    sku: getSkuFromUrl(),
-    langDefinitions,
-    acdl: true,
-    persistURLParams: true,
-  });
-
   // Get Initialized product data
   const product = await PDP.getFetchedProductData();
 
