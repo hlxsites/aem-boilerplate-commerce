@@ -11,17 +11,18 @@
 .product-details__left-column {
   display: none;
 }
+
 .product-details__right-column {
   grid-column: 1 / span 4;
   color: var(--color-neutral-800);
 }
 
-.product-details__alert:empty {
-  display: none;
-}
-
 .product-details__alert {
   margin-bottom: var(--spacing-small);
+}
+
+.product-details__alert:empty {
+  display: none;
 }
 
 .product-details__header {
@@ -100,8 +101,7 @@
 
   .product-details__configuration {
     grid-template-columns: repeat(var(--grid-1-columns), 1fr);
-    grid-column-gap: var(--grid-1-gutters);
-    grid-row-gap: var(--spacing-xxbig);
+    grid-gap: var(--grid-1-gutters);
     margin-top: var(--spacing-xxbig);
   }
 

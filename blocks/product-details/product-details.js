@@ -156,7 +156,7 @@ export default async function decorate(block) {
   let inlineAlert = null;
 
   // Gallery (Mobile)
-  const galleryMobile = await PDPProvider.render(ProductGallery, {
+  await PDPProvider.render(ProductGallery, {
     controls: 'dots',
     arrows: true,
     peak: true,
@@ -166,7 +166,7 @@ export default async function decorate(block) {
   })($galleryMobile);
 
   // Gallery (Desktop)
-  const gallery = await PDPProvider.render(ProductGallery, {
+  await PDPProvider.render(ProductGallery, {
     controls: 'thumbnailsColumn',
     arrows: true,
     peak: false,
@@ -176,19 +176,19 @@ export default async function decorate(block) {
   })($gallery);
 
   // Header
-  const header = await PDPProvider.render(ProductHeader, {})($header);
+  await PDPProvider.render(ProductHeader, {})($header);
 
   // Price
-  const price = await PDPProvider.render(ProductPrice, {})($price);
+  await PDPProvider.render(ProductPrice, {})($price);
 
   // Short Descriptiom
-  const shortDescription = await PDPProvider.render(ProductShortDescription, {})($shortDescription);
+  await PDPProvider.render(ProductShortDescription, {})($shortDescription);
 
   // Configuration - Swatches
-  const options = await PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options);
+  await PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options);
 
   // Configuration  Quantity
-  const quantity = await PDPProvider.render(ProductQuantity, {})($quantity);
+  await PDPProvider.render(ProductQuantity, {})($quantity);
 
   // Configuration – Button - Add to Cart
   const addToCart = await UI.render(Button, {
@@ -263,10 +263,10 @@ export default async function decorate(block) {
   })($addToWishlist);
 
   // Description
-  const description = await PDPProvider.render(ProductDescription, {})($description);
+  await PDPProvider.render(ProductDescription, {})($description);
 
   // Attributes
-  const attributes = await PDPProvider.render(ProductAttributes, {})($attributes);
+  await PDPProvider.render(ProductAttributes, {})($attributes);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
