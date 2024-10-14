@@ -24,7 +24,12 @@ declare const _default: {
       "privacyPolicyDefaultText": "I’ve read and accept the Terms of Use and Privacy Policy.",
       "subscribedDefaultText": "Subscribe to our newsletter and be the first to know about new arrivals, sales and exclusive offers.",
       "keepMeLoggedText": "Keep me logged in after account creation",
-      "failedCreateCustomerAddress": "Failed to create customer addresses:"
+      "failedCreateCustomerAddress": "Failed to create customer addresses:",
+      "confirmPassword": {
+        "placeholder": "Confirm password",
+        "floatingLabel": "Confirm password *",
+        "passwordMismatch": "Passwords do not match. Please make sure both password fields are identical."
+      }
     },
     "UpdatePasswordForm": {
       "title": "Update password",
@@ -68,10 +73,10 @@ declare const _default: {
       }
     },
     "SuccessNotification": {
-      "headingText":"Welcome!",
-      "messageText":"We are glad to see you!",
-      "primaryButtonText":"Continue shopping",
-      "secondaryButtonText":"Logout"
+      "headingText": "Welcome!",
+      "messageText": "We are glad to see you!",
+      "primaryButtonText": "Continue shopping",
+      "secondaryButtonText": "Logout"
     },
     "Api": {
       "customerTokenErrorMessage": "Unable to log in. Please try again later or contact support if the issue persists."
@@ -81,7 +86,6 @@ declare const _default: {
       "floatingLabel": "Password *"
     }
   }
-}
-;
+};
 
 export default _default;
