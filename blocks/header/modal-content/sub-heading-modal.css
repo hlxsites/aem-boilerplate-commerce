@@ -149,11 +149,11 @@
   }
 
   .nav-modal-content-section .columns-wrapper {
-    border: 2px solid rebeccapurple;
     min-height: 100vh;
     margin-bottom: var(--nav-height);
     padding-bottom: var(--nav-height);
   }
+
   .nav-modal-content .launches-modal picture {
     width: 100%;
   }
