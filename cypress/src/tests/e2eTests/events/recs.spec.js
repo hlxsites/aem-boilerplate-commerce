@@ -55,6 +55,16 @@ it('recs-unit-view', () => {
         ['pageContext', 'storefrontInstanceContext', 'recommendationsContext'],
         adobeDataLayer,
       );
+
+      return adobeDataLayer;
+    }).then(adobeDataLayer => {
+      // triggers a second view when scrolled again
+      cy.get('.pdp-product__title').scrollIntoView({ duration: 50 }).then(() => {
+        cy.get('.product-recommendations-wrapper').scrollIntoView({ duration: 50 }).then(() => {
+          const eventCount = adobeDataLayer.filter(data => data?.event === 'recs-unit-view');
+          expect(eventCount).to.have.lengthOf(2);
+        });
+      });
     });
   });
 });
