@@ -53,7 +53,7 @@ export default async function decorate(block) {
 
   const [product, labels] = await Promise.all([
     PDP.fetchPDPData(sku, { optionsUIDs }),
-    await fetchPlaceholders(),
+    fetchPlaceholders(),
   ]);
 
   // Initialize
