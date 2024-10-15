@@ -1,7 +1,7 @@
 /* Christopher Press Section desc */
 .section-desc
 {
-    width: 60%;
+    max-width: 500px;
     margin: 70px auto;
 }
 
@@ -58,7 +58,9 @@
 
 .section-desc p
 {
-    font-size: 13px;
+    font-size: 1.45rem;
+    text-wrap: balance;
+    max-width: 500px;
     margin: 0;
     padding: 1rem 0 0 0;
     font-weight: var(--sub-text-weight);
