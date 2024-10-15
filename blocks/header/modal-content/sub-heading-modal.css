@@ -146,6 +146,7 @@
     margin: 0 auto;
     margin-top: 4vh !important;
     margin-bottom: var(--nav-height);
+    padding-bottom: var(--nav-height);
   }
 
   .nav-modal-content .launches-modal picture {
