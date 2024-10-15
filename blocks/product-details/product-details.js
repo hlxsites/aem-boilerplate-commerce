@@ -48,11 +48,13 @@ export default async function decorate(block) {
 
   // pre-fetch PDP data
   const sku = getSkuFromUrl();
+
   const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
 
-  PDP.config.setConfig({ sku, optionsUIDs });
-
-  const [product, labels] = await Promise.all([PDP.fetchPDPData(sku), await fetchPlaceholders()]);
+  const [product, labels] = await Promise.all([
+    PDP.fetchPDPData(sku, { optionsUIDs }),
+    await fetchPlaceholders(),
+  ]);
 
   // Initialize
   initializers.register(PDP.initialize, {
