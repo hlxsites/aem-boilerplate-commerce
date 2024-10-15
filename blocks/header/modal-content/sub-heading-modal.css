@@ -102,6 +102,7 @@
     font-weight: 400;
     color: var(--text-date-color);
   }
+
   /* Ul content */
   .nav-modal-content .three-cols-four-img > div div,
   .nav-modal-content .four-cols-two-img > div div {
@@ -145,10 +146,14 @@
     align-items: center;
     margin: 0 auto;
     margin-top: 4vh !important;
+  }
+
+  .nav-modal-content-section .columns-wrapper {
+    border: 2px solid rebeccapurple;
+    min-height: 100vh;
     margin-bottom: var(--nav-height);
     padding-bottom: var(--nav-height);
   }
-
   .nav-modal-content .launches-modal picture {
     width: 100%;
   }
