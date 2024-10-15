@@ -138,7 +138,6 @@ function renderItems(block, results) {
         window.adobeDataLayer.push((dl) => {
           dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
         });
-        inViewObserver.disconnect();
       }
     });
   }, { threshold: 0.5 });
