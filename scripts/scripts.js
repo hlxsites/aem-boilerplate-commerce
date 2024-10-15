@@ -48,10 +48,6 @@ export function getAllMetadata(scope) {
     }, {});
 }
 
-export function getPlaceholders() {
-  return window.DROPINS?.placeholders || {};
-}
-
 // Define an execution context
 const pluginContext = {
   getAllMetadata,
@@ -217,7 +213,6 @@ function preloadFile(href, as) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  await initializeDropins();
   decorateTemplateAndTheme();
 
   // Instrument experimentation plugin
@@ -309,12 +304,6 @@ async function loadEager(doc) {
 
     // Template Decorations
     await applyTemplates(doc);
-
-    // apply placeholders
-    await fetchPlaceholders().then((labels) => {
-      window.DROPINS = window.DROPINS || {};
-      window.DROPINS.placeholders = labels;
-    });
 
     // Load LCP blocks
     document.body.classList.add('appear');
@@ -436,6 +425,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
+  await initializeDropins();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

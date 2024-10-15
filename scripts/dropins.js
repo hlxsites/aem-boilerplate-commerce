@@ -20,7 +20,7 @@ import * as recaptcha from '@dropins/tools/recaptcha.js';
 
 // Libs
 import { checkIsAuthenticated, getConfigValue, getCookie } from './configs.js';
-import { getMetadata } from './aem.js';
+import { fetchPlaceholders, getMetadata } from './aem.js';
 import { getSkuFromUrl } from './commerce.js';
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
@@ -29,7 +29,6 @@ import {
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
 } from './constants.js';
-import { getPlaceholders } from './scripts.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -119,53 +118,58 @@ const initialize = new Initializer({
 });
 
 export default async function initializeDropins() {
+  const langDefinitions = getLangDefinitions();
+
   // Register Initializers (Global)
   initializers.register(initialize, {
-    langDefinitions: getLangDefinitions(),
+    langDefinitions,
   });
 
   initializers.register(authApi.initialize, {
-    langDefinitions: getLangDefinitions(),
+    langDefinitions,
   });
 
   initializers.register(cartApi.initialize, {
-    langDefinitions: getLangDefinitions(),
+    langDefinitions,
   });
 
   // Product Details Page (PDP)
-  if (document.body.querySelector('main .product-details')) {
-    const PDP = await import('@dropins/storefront-pdp/api.js');
+  if (isPageType('pdp')) {
+    import('@dropins/storefront-pdp/api.js').then(async (pdpApi) => {
+      // Set Fetch Endpoint (Service)
+      pdpApi.setEndpoint(await getConfigValue('commerce-endpoint'));
 
-    // Set Fetch Endpoint (Service)
-    PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
+      // Set Fetch Headers (Service)
+      pdpApi.setFetchGraphQlHeaders({
+        'Content-Type': 'application/json',
+        'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
+        'Magento-Website-Code': await getConfigValue('commerce-website-code'),
+        'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
+        'Magento-Store-Code': await getConfigValue('commerce-store-code'),
+        'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
+        'x-api-key': await getConfigValue('commerce-x-api-key'),
+      });
 
-    // Set Fetch Headers (Service)
-    PDP.setFetchGraphQlHeaders({
-      'Content-Type': 'application/json',
-      'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-      'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-      'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-      'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-      'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-      'x-api-key': await getConfigValue('commerce-x-api-key'),
-    });
+      const sku = getSkuFromUrl();
+      const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
 
-    const sku = getSkuFromUrl();
-    const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
+      // pre-fetch PDP data
+      pdpApi.config.setConfig({ sku, optionsUIDs });
+      const initialData = await pdpApi.fetchPDPData(sku, { skipDataEvent: true });
 
-    // Initialize
-    initializers.register(PDP.initialize, {
-      sku,
-      optionsUIDs,
-      langDefinitions: getLangDefinitions(),
-      models: {
-        ProductDetails: {
-          // pre-fetch PDP data
-          initialData: await PDP.fetchPDPData(sku),
+      // Initialize
+      initializers.register(pdpApi.initialize, {
+        sku,
+        optionsUIDs,
+        langDefinitions,
+        models: {
+          ProductDetails: {
+            initialData,
+          },
         },
-      },
-      acdl: true,
-      persistURLParams: true,
+        acdl: true,
+        persistURLParams: true,
+      });
     });
   }
 
@@ -193,8 +197,8 @@ export default async function initializeDropins() {
   document.addEventListener('prerenderingchange', mount);
 }
 
-function getLangDefinitions() {
-  const labels = getPlaceholders();
+async function getLangDefinitions() {
+  const labels = await fetchPlaceholders();
 
   return {
     default: {
@@ -234,4 +238,13 @@ function getLangDefinitions() {
       },
     },
   };
+}
+
+function isPageType(pageType) {
+  switch (pageType) {
+    case 'pdp':
+      return !!document.body.querySelector('main .product-details');
+    default:
+      return false;
+  }
 }

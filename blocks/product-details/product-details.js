@@ -26,12 +26,12 @@ import {
   setJsonLd,
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
 } from '../../scripts/commerce.js';
-import { getPlaceholders } from '../../scripts/scripts.js';
-
-//  get i18n labels
-const labels = getPlaceholders();
+import { fetchPlaceholders } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
+  //  get i18n labels
+  const labels = await fetchPlaceholders();
+
   // Get Initialized product data
   const product = await PDP.getFetchedProductData();
 
