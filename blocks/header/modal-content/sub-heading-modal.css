@@ -146,12 +146,12 @@
     align-items: center;
     margin: 0 auto;
     margin-top: 4vh !important;
+    padding-bottom: var(--nav-height);
   }
 
   .nav-modal-content-section .columns-wrapper {
     min-height: 100vh;
     margin-bottom: var(--nav-height);
-    padding-bottom: var(--nav-height);
   }
 
   .nav-modal-content .launches-modal picture {
