@@ -79,15 +79,15 @@
   }
 
   .features-modal-section {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     width: 100%;
     justify-content: center;
-    margin: 0 !important;
-    margin-left: -3.5vw !important;
+    margin: 0 auto;
+    margin-bottom: 50%;
   }
 
-  .features-modal .columns-wrapper {
-    border: 2px solid rebeccapurple;
+  .three-cols-articles-modal {
+    margin-bottom: 10vh !important;
   }
 }

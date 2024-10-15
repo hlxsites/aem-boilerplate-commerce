@@ -19,7 +19,7 @@
   }
 
   .nav-modal-content .nav-modal-content-section,
-  .nav-modal-content .features-modal-section {
+  .features-modal-section {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-snap-align: start;
@@ -27,6 +27,11 @@
     min-height: 100vh;
     max-height: 100vh;
     height: fit-content;
+  }
+
+  .nav-modal-content .features-modal-section {
+    padding: 0;
+    max-width: 400px;
   }
 
   .nav-modal-content div:nth-child(1) .default-content-wrapper p:nth-child(1) {
@@ -65,17 +70,18 @@
   }
 
   .nav-modal-content .features-modal {
-    width: 100%;
+    margin: 0;
+  }
+
+  .nav-modal-content .features-modal div {
     margin: 0;
   }
 
   .nav-modal-content .features-modal div p {
     width: 100%;
     margin-top: 2vh;
-  }
-
-  .nav-modal-content .features-modal ul {
-    margin-top: 0;
+    width: 100%;
+    border: 2px solid transparent;
   }
 
   /* Titles */
