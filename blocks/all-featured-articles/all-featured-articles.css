@@ -198,9 +198,10 @@
   .three-cols-articles-modal {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
     width: 100%;
+    max-width: 400px;
   }
 
   .three-cols-articles-modal .article-card {

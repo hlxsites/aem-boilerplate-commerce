@@ -59,21 +59,4 @@
   align-self: start;
 }
 
-.nav-modal-content
-  .three-cols-four-img
-  div
-  div:nth-child(1)
-  p:nth-child(1):only-of-type
-  a {
-  color: black;
-  background-color: white;
-  border-radius: 0;
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  padding: 0.5%;
-  margin: 0;
-  font-weight: 555;
-  border-radius: 0;
-}
-
 /*  border: 1px solid rebeccapurple; */

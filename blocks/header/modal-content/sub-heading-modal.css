@@ -1,28 +1,48 @@
-.nav-modal-content .default-content-wrapper p:nth-child(1) {
-  display: none;
+@media (width >=992px) {
+  .nav-modal-content div:nth-child(1) .default-content-wrapper p:nth-child(1) {
+    display: none;
+  }
+
+  .nav-modal-content
+    div:nth-child(2)
+    .default-content-wrapper
+    p:nth-child(1)
+    a {
+    margin-bottom: 4vh;
+  }
 }
 @media (width <= 991px) {
-  .nav-modal-content .section {
-    padding: 0;
+  .nav-modal-content .columns > div {
+    margin-bottom: 10vh;
+    flex-direction: column !important;
+    gap: 0;
+  }
+
+  .nav-modal-content .nav-modal-content-section {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-snap-align: start;
-    height: 100vh;
     position: relative;
+    min-height: 100vh;
+    max-height: 100vh;
+    height: fit-content;
   }
 
-  .nav-modal-content .default-content-wrapper p:nth-child(1) {
+  .nav-modal-content div:nth-child(1) .default-content-wrapper p:nth-child(1) {
     display: flex;
     position: fixed;
-    margin-top: 0;
-    border-bottom: 1px solid var(--sub-text-border-divider);
+    margin-top: 1.5vh;
+    height: auto;
+    align-items: center;
     width: 100vw;
     max-width: 352px;
-    background-color: white;
-    padding-left: 5% !important;
   }
 
-  .nav-modal-content .default-content-wrapper p:nth-child(1) a {
+  .nav-modal-content
+    div:nth-child(1)
+    .default-content-wrapper
+    p:nth-child(1)
+    a {
     background-color: transparent;
     color: var(--sub-text-title-color);
     font-weight: 400;
@@ -32,24 +52,28 @@
     border-radius: 0;
   }
 
-  /* Titles */
-  .nav-modal-content .four-cols-two-img > div div p,
-  .nav-modal-content .three-cols-four-img > div div p {
-    padding-top: 8vh;
-    border: 2px solid transparent;
-    margin: 10% 0;
-    width: 100%;
-  }
-
-  .nav-modal-content .three-cols-four-img > div div p a,
-  .nav-modal-content .four-cols-two-img > div div p a {
+  .nav-modal-content
+    div:nth-child(2)
+    .default-content-wrapper
+    p:nth-child(1)
+    a {
+    margin-top: 4vh;
     font-size: 16px;
-    font-weight: 400;
-    color: var(--text-date-color);
+    display: flex;
+    align-items: center;
   }
 
+  /* Titles */
+  .nav-modal-content .three-cols-four-img > div div p,
+  .nav-modal-content .four-cols-two-img > div div p {
+    width: 100%;
+    border: 2px solid transparent;
+  }
+
+  /* Titles */
   .nav-modal-content .three-cols-four-img > div div p a,
   .nav-modal-content .four-cols-two-img > div div p a {
+    margin: 0;
     font-size: 16px;
     font-weight: 400;
     color: var(--text-date-color);
@@ -81,15 +105,27 @@
   .nav-modal-content .four-cols-two-img table,
   .nav-modal-content .four-cols-two-img div div:nth-child(2) p,
   .nav-modal-content .four-cols-two-img div div:nth-child(3) p,
-  .nav-modal-content .four-cols-two-img div div:nth-child(4) p {
+  .nav-modal-content .four-cols-two-img div div:nth-child(4) p,
+  .nav-modal-content
+    .three-cols-four-img
+    div
+    div:nth-child(3)
+    p:nth-child(1):only-of-type {
     display: none !important;
   }
 
   .nav-modal-content .product-releases-showcase {
-    margin-top: 4vh !important;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    margin-top: 4vh !important;
+    margin-bottom: 10vh !important;
+  }
+
+  .nav-modal-content .launches-modal picture {
+    width: 100%;
   }
 
   .nav-modal-content .default-content-wrapper p:nth-child(2) a,
@@ -99,12 +135,8 @@
     font-size: 16px;
   }
 
-  .nav-modal-content .launches-modal {
+  /* .nav-modal-content .launches-modal {
     width: 95vw;
     margin: 2%;
-  }
-
-  .nav-modal-content .launches-modal .details {
-    margin-bottom: 5%;
-  }
+  } */
 }

@@ -1,17 +1,11 @@
 @import url(./sub-heading-modal.css);
 
-.nav-modal-content * p {
-  display: flex;
-  padding: 0;
-  flex: 1;
-  margin: 0;
-  font-size: var(--sub-text-secondary-size);
-  line-height: 1.5;
-  text-transform: capitalize;
-}
-
 /* Title */
-.nav-modal-content .default-content-wrapper p:nth-child(2) a {
+.nav-modal-content
+  .product-releases-showcase-container
+  .default-content-wrapper
+  p:nth-child(2)
+  a {
   font-weight: 550;
   padding: 0.5%;
   margin: 0;
@@ -21,37 +15,22 @@
   margin-left: -2%;
   margin-bottom: 3%;
   border-radius: 0;
-  background-color: transparent;
 }
 
-/* Product Name */
-.nav-modal-content div div p:nth-child(2) {
-  color: var(--sub-text-grey);
-  font-weight: 400;
-}
-
-/* Colour */
-.nav-modal-content div div p:nth-child(2) {
-  color: var(--sub-text-grey);
-  font-weight: 400;
-}
-
-/* Date */
-.nav-modal-content div div p:nth-child(3) {
-  color: var(--text-date-color);
-  font-weight: 400;
-}
-
-.modal-par a.button.secondary {
-  border: none;
-  font-size: var(--sub-text-secondary-size);
-  padding: 0;
-  margin: 0;
-  text-transform: capitalize;
-}
-
-.nav-modal-content picture {
+.nav-modal-content .launches-modal picture {
   display: flex;
   flex: 2;
   width: 280px;
+}
+
+.nav-modal-content div:nth-child(2) .default-content-wrapper p:nth-child(1) a {
+  border-radius: 0;
+  border: none;
+  color: black;
+  background-color: transparent;
+  text-transform: capitalize;
+  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
 }
