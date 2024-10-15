@@ -145,15 +145,10 @@
     align-items: center;
     margin: 0 auto;
     margin-top: 4vh !important;
-    margin-bottom: 10vh !important;
+    margin-bottom: var(--nav-height);
   }
 
   .nav-modal-content .launches-modal picture {
     width: 100%;
   }
-
-  /* .nav-modal-content .launches-modal {
-    width: 95vw;
-    margin: 2%;
-  } */
 }

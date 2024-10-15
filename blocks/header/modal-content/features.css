@@ -72,6 +72,6 @@
   }
 
   .three-cols-articles-modal {
-    margin-bottom: 100px;
+    margin-bottom: var(--nav-height);
   }
 }
