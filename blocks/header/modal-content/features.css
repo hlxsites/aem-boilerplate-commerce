@@ -10,25 +10,9 @@
   gap: 30px;
 }
 
-.features-modal {
-  width: fit-content;
-}
-
 .features-modal-section .columns-wrapper,
 .features-modal-section div.default-content-wrapper {
   margin: 0 !important;
-}
-
-.features-modal div div:nth-child(1) p a {
-  border-radius: 0;
-  border: none;
-  color: black;
-  background-color: transparent;
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  padding: 0;
-  margin: 0;
-  font-weight: 600;
 }
 
 /* Categories */
