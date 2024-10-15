@@ -155,7 +155,7 @@ export default async function initializeDropins() {
 
       // pre-fetch PDP data
       pdpApi.config.setConfig({ sku, optionsUIDs });
-      const initialData = await pdpApi.fetchPDPData(sku, { skipDataEvent: true });
+      const initialData = await pdpApi.fetchPDPData(sku);
 
       // Initialize
       initializers.register(pdpApi.initialize, {
