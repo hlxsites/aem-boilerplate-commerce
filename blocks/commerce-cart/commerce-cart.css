@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 .cart__wrapper {
   display: flex;
   flex-direction: column;
