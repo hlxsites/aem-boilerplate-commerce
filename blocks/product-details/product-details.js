@@ -27,6 +27,7 @@ import {
   setJsonLd,
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
   getSkuFromUrl,
+  getOptionsUIDsFromUrl,
 } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 import { getConfigValue } from '../../scripts/configs.js';
@@ -48,8 +49,7 @@ export default async function decorate(block) {
 
   // pre-fetch PDP data
   const sku = getSkuFromUrl();
-
-  const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
+  const optionsUIDs = getOptionsUIDsFromUrl();
 
   const [product, labels] = await Promise.all([
     PDP.fetchPDPData(sku, { optionsUIDs }),
