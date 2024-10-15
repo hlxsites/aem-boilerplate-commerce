@@ -64,9 +64,10 @@
   text-transform: capitalize;
   font-size: var(--sub-text-secondary-size);
   padding: 0.5%;
-
   font-weight: 555;
   border-radius: 0;
+  margin-top: 0;
+  margin-bottom: 1%;
 }
 
 @media (width <= 991px) {

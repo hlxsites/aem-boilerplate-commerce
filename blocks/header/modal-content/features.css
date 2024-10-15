@@ -56,13 +56,10 @@
 
 @media (width <= 991px) {
   /* Features */
-  .features-modal {
-    margin: 10% 0;
-  }
-
   .features-modal div div:nth-child(1) p a {
     font-size: 16px;
   }
+
   .features-modal div div:nth-child(1) p a,
   .features-modal ul {
     margin-left: 3vw !important;
@@ -88,5 +85,9 @@
     justify-content: center;
     margin: 0 !important;
     margin-left: -3.5vw !important;
+  }
+
+  .features-modal .columns-wrapper {
+    border: 2px solid rebeccapurple;
   }
 }
