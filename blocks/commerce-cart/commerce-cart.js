@@ -30,7 +30,7 @@ export default async function decorate(block) {
 
   const cart = Cart.getCartDataFromCache();
 
-  const isEmptyCart = cart?.totalQuantity < 1;
+  const isEmptyCart = isCartEmpty(cart);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -84,7 +84,7 @@ export default async function decorate(block) {
 
   // Events
   events.on('cart/data', (payload) => {
-    const next = payload?.totalQuantity < 1;
+    const next = isCartEmpty(payload);
 
     if (next !== isEmptyCart) {
       renderEmptyCart({ wrapper: $wrapper, startShoppingURL });
@@ -92,6 +92,11 @@ export default async function decorate(block) {
   }, { eager: true });
 
   return Promise.resolve();
+}
+
+function isCartEmpty(cart) {
+  if (!cart) return true;
+  return cart.totalQuantity < 1;
 }
 
 async function renderEmptyCart({ wrapper, startShoppingURL }) {
