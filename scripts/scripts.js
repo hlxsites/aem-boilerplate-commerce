@@ -230,6 +230,7 @@ async function loadEager(doc) {
     pageType = 'Product';
 
     // Preload PDP Dropins assets
+    preloadFile('/placeholders.json', 'fetch');
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');
