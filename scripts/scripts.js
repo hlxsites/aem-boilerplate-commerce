@@ -296,7 +296,6 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
-  autolinkNavModals(doc);
 }
 
 /**
@@ -304,6 +303,7 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  autolinkNavModals(doc);
   autolinkModals(doc);
 
   const main = doc.querySelector('main');
