@@ -68,10 +68,10 @@
     width: 100%;
     justify-content: center;
     margin: 0 auto;
-    margin-bottom: 50%;
   }
 
   .three-cols-articles-modal {
+    padding-bottom: var(--nav-height);
     margin-bottom: var(--nav-height);
   }
 }
