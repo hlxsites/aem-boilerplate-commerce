@@ -20,8 +20,7 @@ import * as recaptcha from '@dropins/tools/recaptcha.js';
 
 // Libs
 import { checkIsAuthenticated, getConfigValue, getCookie } from './configs.js';
-import { fetchPlaceholders, getMetadata } from './aem.js';
-import { getSkuFromUrl } from './commerce.js';
+import { getMetadata } from './aem.js';
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_ORDERS_PATH,
@@ -133,46 +132,6 @@ export default async function initializeDropins() {
     langDefinitions,
   });
 
-  // Product Details Page (PDP)
-  if (isPageType('pdp')) {
-    import('@dropins/storefront-pdp/api.js').then(async (pdpApi) => {
-      // Set Fetch Endpoint (Service)
-      pdpApi.setEndpoint(await getConfigValue('commerce-endpoint'));
-
-      // Set Fetch Headers (Service)
-      pdpApi.setFetchGraphQlHeaders({
-        'Content-Type': 'application/json',
-        'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-        'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-        'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-        'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-        'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-        'x-api-key': await getConfigValue('commerce-x-api-key'),
-      });
-
-      const sku = getSkuFromUrl();
-      const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
-
-      // pre-fetch PDP data
-      pdpApi.config.setConfig({ sku, optionsUIDs });
-      const initialData = await pdpApi.fetchPDPData(sku);
-
-      // Initialize
-      initializers.register(pdpApi.initialize, {
-        sku,
-        optionsUIDs,
-        langDefinitions,
-        models: {
-          ProductDetails: {
-            initialData,
-          },
-        },
-        acdl: true,
-        persistURLParams: true,
-      });
-    });
-  }
-
   // Get current page template metadata
   const templateMeta = getMetadata('template');
   const isOrderDetailsPage = templateMeta.includes('Order-Details');
@@ -198,53 +157,6 @@ export default async function initializeDropins() {
 }
 
 async function getLangDefinitions() {
-  const labels = await fetchPlaceholders();
-
-  return {
-    default: {
-      PDP: {
-        Product: {
-          Incrementer: { label: labels.pdpProductIncrementer },
-          OutOfStock: { label: labels.pdpProductOutofstock },
-          AddToCart: { label: labels.pdpProductAddtocart },
-          Details: { label: labels.pdpProductDetails },
-          RegularPrice: { label: labels.pdpProductRegularprice },
-          SpecialPrice: { label: labels.pdpProductSpecialprice },
-          PriceRange: {
-            From: { label: labels.pdpProductPricerangeFrom },
-            To: { label: labels.pdpProductPricerangeTo },
-          },
-          Image: { label: labels.pdpProductImage },
-        },
-        Swatches: {
-          Required: { label: labels.pdpSwatchesRequired },
-        },
-        Carousel: {
-          label: labels.pdpCarousel,
-          Next: { label: labels.pdpCarouselNext },
-          Previous: { label: labels.pdpCarouselPrevious },
-          Slide: { label: labels.pdpCarouselSlide },
-          Controls: {
-            label: labels.pdpCarouselControls,
-            Button: { label: labels.pdpCarouselControlsButton },
-          },
-        },
-        Overlay: {
-          Close: { label: labels.pdpOverlayClose },
-        },
-      },
-      Custom: {
-        AddingToCart: { label: labels.pdpCustomAddingtocart },
-      },
-    },
-  };
-}
-
-function isPageType(pageType) {
-  switch (pageType) {
-    case 'pdp':
-      return !!document.body.querySelector('main .product-details');
-    default:
-      return false;
-  }
+  // const labels = await fetchPlaceholders();
+  return {};
 }

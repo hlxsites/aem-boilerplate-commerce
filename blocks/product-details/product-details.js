@@ -1,12 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-import { events } from '@dropins/tools/event-bus.js';
 import {
   InLineAlert,
   Icon,
   Button,
   provider as UI,
 } from '@dropins/tools/components.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { initializers } from '@dropins/tools/initializer.js';
 import * as PDP from '@dropins/storefront-pdp/api.js';
 import { render as PDPProvider } from '@dropins/storefront-pdp/render.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
@@ -25,15 +26,47 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import {
   setJsonLd,
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
+  getSkuFromUrl,
 } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
 export default async function decorate(block) {
-  //  get i18n labels
-  const labels = await fetchPlaceholders();
+  // Set Fetch Endpoint (Service)
+  PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
 
-  // Get Initialized product data
-  const product = await PDP.getFetchedProductData();
+  // Set Fetch Headers (Service)
+  PDP.setFetchGraphQlHeaders({
+    'Content-Type': 'application/json',
+    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
+    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
+    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
+    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
+    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
+    'x-api-key': await getConfigValue('commerce-x-api-key'),
+  });
+
+  // pre-fetch PDP data
+  const sku = getSkuFromUrl();
+  const optionsUIDs = new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
+
+  PDP.config.setConfig({ sku, optionsUIDs });
+
+  const [product, labels] = await Promise.all([PDP.fetchPDPData(sku), await fetchPlaceholders()]);
+
+  // Initialize
+  initializers.register(PDP.initialize, {
+    sku,
+    optionsUIDs,
+    langDefinitions: getLangDefinitions(labels),
+    models: {
+      ProductDetails: {
+        initialData: product,
+      },
+    },
+    acdl: true,
+    persistURLParams: true,
+  });
 
   if (!product) {
     await loadErrorPage();
@@ -80,8 +113,6 @@ export default async function decorate(block) {
   const $attributes = fragment.querySelector('.product-details__attributes');
 
   block.appendChild(fragment);
-
-  // Render Containers
 
   // Alert
   let inlineAlert = null;
@@ -319,4 +350,45 @@ function setMetaTags(product) {
   createMetaTag('og:image:secure_url', metaImage, 'property');
   createMetaTag('og:product:price:amount', price.value, 'property');
   createMetaTag('og:product:price:currency', price.currency, 'property');
+}
+
+function getLangDefinitions(labels) {
+  return {
+    default: {
+      PDP: {
+        Product: {
+          Incrementer: { label: labels.pdpProductIncrementer },
+          OutOfStock: { label: labels.pdpProductOutofstock },
+          AddToCart: { label: labels.pdpProductAddtocart },
+          Details: { label: labels.pdpProductDetails },
+          RegularPrice: { label: labels.pdpProductRegularprice },
+          SpecialPrice: { label: labels.pdpProductSpecialprice },
+          PriceRange: {
+            From: { label: labels.pdpProductPricerangeFrom },
+            To: { label: labels.pdpProductPricerangeTo },
+          },
+          Image: { label: labels.pdpProductImage },
+        },
+        Swatches: {
+          Required: { label: labels.pdpSwatchesRequired },
+        },
+        Carousel: {
+          label: labels.pdpCarousel,
+          Next: { label: labels.pdpCarouselNext },
+          Previous: { label: labels.pdpCarouselPrevious },
+          Slide: { label: labels.pdpCarouselSlide },
+          Controls: {
+            label: labels.pdpCarouselControls,
+            Button: { label: labels.pdpCarouselControlsButton },
+          },
+        },
+        Overlay: {
+          Close: { label: labels.pdpOverlayClose },
+        },
+      },
+      Custom: {
+        AddingToCart: { label: labels.pdpCustomAddingtocart },
+      },
+    },
+  };
 }
