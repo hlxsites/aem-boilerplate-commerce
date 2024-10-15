@@ -118,7 +118,7 @@ const initialize = new Initializer({
 export default async function initializeDropins() {
   // Register Initializers (Global)
   initializers.register(initialize, {});
-  initializers.register(authApi.initialize, { });
+  initializers.register(authApi.initialize, {});
   initializers.register(cartApi.initialize, {});
 
   // Get current page template metadata
