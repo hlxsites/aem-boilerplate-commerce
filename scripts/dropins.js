@@ -1,5 +1,4 @@
 /* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-cycle */
 
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
@@ -117,20 +116,12 @@ const initialize = new Initializer({
 });
 
 export default async function initializeDropins() {
-  const langDefinitions = getLangDefinitions();
-
   // Register Initializers (Global)
-  initializers.register(initialize, {
-    langDefinitions,
-  });
+  initializers.register(initialize, {});
 
-  initializers.register(authApi.initialize, {
-    langDefinitions,
-  });
+  initializers.register(authApi.initialize, { });
 
-  initializers.register(cartApi.initialize, {
-    langDefinitions,
-  });
+  initializers.register(cartApi.initialize, {});
 
   // Get current page template metadata
   const templateMeta = getMetadata('template');
@@ -154,9 +145,4 @@ export default async function initializeDropins() {
   // Mount Drop-ins
   window.addEventListener('pageshow', mount);
   document.addEventListener('prerenderingchange', mount);
-}
-
-async function getLangDefinitions() {
-  // const labels = await fetchPlaceholders();
-  return {};
 }
