@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
+import { Button, provider as UI } from '@dropins/tools/components.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
@@ -101,10 +102,14 @@ function renderItem(unitId, product) {
       </picture>
       <span>${product.name}</span>
     </a>
-    <button>${ctaText}</button>
+    <span class="product-grid-cta"></span>
   </div>`);
   item.querySelector('a').addEventListener('click', clickHandler);
-  item.querySelector('button').addEventListener('click', addToCartHandler);
+  const buttonEl = item.querySelector('.product-grid-cta');
+  UI.render(Button, {
+    children: ctaText,
+    onClick: addToCartHandler,
+  })(buttonEl);
   return item;
 }
 

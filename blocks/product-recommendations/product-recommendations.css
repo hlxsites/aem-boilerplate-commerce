@@ -31,27 +31,12 @@ main .section>div.product-recommendations-wrapper {
     text-decoration: none;
 }
 
-.product-recommendations .product-grid .product-grid-item span {
+.product-recommendations .product-grid .product-grid-item a span {
     overflow: hidden;
     box-sizing: border-box;
     margin: 0;
     padding: .5rem 1rem 0 0;
     display: inline-block;
-}
-
-.product-recommendations .product-grid  .product-grid-item button {
-  border-radius: var(--shape-border-radius-3);
-  border:none;
-  padding: var(--spacing-xsmall) var(--spacing-medium);
-  cursor:pointer;
-  font: var(--type-button-2-font);
-  letter-spacing: var(--type-button-2-letter-spacing);
-  background: var(--color-brand-500) 0 0% no-repeat padding-box;
-  color: var(--color-neutral-50);
-}
-
-.product-recommendations .product-grid  .product-grid-item button:hover {
-  background-color: var(--color-button-hover);
 }
 
 .product-recommendations .product-grid picture {
