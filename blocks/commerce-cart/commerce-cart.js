@@ -42,19 +42,30 @@ export default async function decorate(block) {
         <div class="cart__order-summary"></div>
       </div>
     </div>
+
+    <div class="cart__empty-cart"></div>
   `);
 
   const $wrapper = fragment.querySelector('.cart__wrapper');
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
+  const $emptyCart = fragment.querySelector('.cart__empty-cart');
 
   block.innerHTML = '';
   block.appendChild(fragment);
 
-  // Render Empty Cart
-  if (isEmptyCart) {
-    return renderEmptyCart({ wrapper: $wrapper, startShoppingURL });
+  // Toggle Empty Cart
+  function toggleEmptyCart(state) {
+    if (state) {
+      $wrapper.setAttribute('hidden', '');
+      $emptyCart.removeAttribute('hidden');
+    } else {
+      $wrapper.removeAttribute('hidden');
+      $emptyCart.setAttribute('hidden', '');
+    }
   }
+
+  toggleEmptyCart(isEmptyCart);
 
   // Render Containers
   await Promise.all([
@@ -83,27 +94,21 @@ export default async function decorate(block) {
         },
       },
     })($summary),
+
+    // Empty Cart
+    provider.render(EmptyCart, {
+      routeCTA: startShoppingURL ? () => startShoppingURL : undefined,
+    })($emptyCart),
   ]);
 
   // Events
   events.on('cart/data', (payload) => {
-    const next = isCartEmpty(payload);
-
-    if (next !== isEmptyCart) {
-      renderEmptyCart({ wrapper: $wrapper, startShoppingURL });
-    }
+    toggleEmptyCart(isCartEmpty(payload));
   }, { eager: true });
 
   return Promise.resolve();
 }
 
 function isCartEmpty(cart) {
-  if (!cart) return true;
-  return cart.totalQuantity < 1;
-}
-
-async function renderEmptyCart({ wrapper, startShoppingURL }) {
-  return provider.render(EmptyCart, {
-    routeCTA: startShoppingURL ? () => startShoppingURL : undefined,
-  })(wrapper);
+  return cart ? cart.totalQuantity < 1 : true;
 }

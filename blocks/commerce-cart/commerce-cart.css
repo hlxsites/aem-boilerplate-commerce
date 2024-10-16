@@ -1,15 +1,19 @@
 /* stylelint-disable selector-class-pattern */
 
+.commerce-cart {
+  padding: var(--spacing-large) 0;
+}
+
 .cart__wrapper {
   display: flex;
   flex-direction: column;
   gap: var(--grid-4-gutters);
-  padding: var(--spacing-large) 0;
 }
 
-.cart__wrapper > .cart-empty-cart {
-  flex: 1;
-} 
+.cart__wrapper[hidden],
+.cart__empty-cart[hidden] {
+  display: none;
+}
 
 @media (width >= 900px) {
   .cart__wrapper {
