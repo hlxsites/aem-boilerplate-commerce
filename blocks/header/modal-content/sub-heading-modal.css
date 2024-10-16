@@ -11,7 +11,8 @@
     margin-bottom: 4vh;
   }
 
-  .nav-modal-content .features-modal div p {
+  .nav-modal-content .features-modal div p,
+  .nav-modal-content .latest-modal div p {
     width: 100%;
     border: 2px solid transparent;
   }
@@ -24,7 +25,8 @@
   }
 
   .nav-modal-content .nav-modal-content-section,
-  .features-modal-section {
+  .features-modal-section,
+  .nav-modal-latest-content-section {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-snap-align: start;
@@ -34,7 +36,8 @@
     height: fit-content;
   }
 
-  .nav-modal-content .features-modal-section {
+  .nav-modal-content .features-modal-section,
+  .nav-modal-content .nav-modal-latest-content-section {
     padding: 0;
     max-width: 400px;
   }
@@ -74,15 +77,18 @@
     align-items: center;
   }
 
-  .nav-modal-content .features-modal {
+  .nav-modal-content .features-modal,
+  .nav-modal-content .latest-modal {
     margin: 0;
   }
 
-  .nav-modal-content .features-modal div {
+  .nav-modal-content .features-modal div,
+  .nav-modal-content .latest-modal div {
     margin: 0;
   }
 
-  .nav-modal-content .features-modal div p {
+  .nav-modal-content .features-modal div p,
+  .nav-modal-content .latest-modal div p {
     margin-top: 2vh;
   }
 

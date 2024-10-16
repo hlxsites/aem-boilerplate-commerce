@@ -1,14 +1,13 @@
 export default async function decorate(block) {
-  // Gets all p tags in the block
   const pathElements = block.querySelectorAll('p');
 
   try {
-    // Fetch data
+    // Fetch data from json folder
     const response = await fetch('/query-index.json');
     const indexData = await response.json();
 
     block.querySelectorAll('p, div').forEach((element) => element.remove());
-    // Process each p tag
+    // Processes each p tag
     pathElements.forEach((pathElement) => {
       const path = pathElement.textContent.trim();
 
@@ -76,7 +75,6 @@ export default async function decorate(block) {
       }
     });
 
-    // Clears p tags
     pathElements.forEach((pathElement) => pathElement.remove());
   } catch (error) {
     console.error('Error fetching or processing index data: ', error);

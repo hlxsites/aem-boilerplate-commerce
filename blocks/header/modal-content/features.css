@@ -16,7 +16,9 @@
 }
 
 /* Categories */
-.features-modal div ul {
+.features-modal div ul,
+.latest-modal-brands div ul,
+.latest-modal div ul {
   display: flex;
   list-style-type: none;
   flex-direction: column;
@@ -26,6 +28,10 @@
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
   font-weight: 400;
+  text-transform: inherit;
+}
+
+.latest-modal div ul {
   text-transform: capitalize;
 }
 

@@ -3,6 +3,7 @@
 @import url(./two-cols-rows-featured-articles.css);
 @import url(./three-cols-articles.css);
 @import url(./three-cols-articles-modal.css);
+@import url(./featured-title.css);
 
 .all-featured-articles .category a:hover,
 .all-featured-articles h3 a:hover,
@@ -79,6 +80,23 @@
   .three-cols-articles img {
     aspect-ratio: 480/302;
   }
+}
+
+/* Title only */
+.featured-title .category a,
+.featured-title .date {
+  display: none;
+}
+
+.featured-title .category {
+  margin-top: 0;
+}
+
+.featured-title h3 a {
+  font-weight: 400;
+  font-size: var(--sub-text-secondary-size);
+  color: var(--text-date-color);
+  text-transform: inherit;
 }
 
 @media (width <= 991px) {
