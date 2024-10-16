@@ -70,7 +70,7 @@
 
 .section-desc p:nth-child(3)
 {
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     text-transform: uppercase;
     color: rgb(153, 153, 153);
 }

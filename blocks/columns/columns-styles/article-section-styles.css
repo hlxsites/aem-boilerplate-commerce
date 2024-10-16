@@ -59,7 +59,7 @@
 .article-section > div > div:nth-child(2) ul li
 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     font-weight: var(--sub-text-weight);
     padding: 4px;
     width: 100%;
@@ -75,7 +75,7 @@
 .article-section > div > div p:nth-child(2)
 {
     border-bottom: 1px solid rgba(26, 26,26, 0.2);
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     padding-bottom: 20px;
     margin-bottom:40px;
 }
@@ -140,7 +140,7 @@
 .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
 {
     opacity: 0.5;
-    font-size: 12px;
+    font-size: var(--sub-text-secondary-size);
     font-weight: var(--sub-text-weight);
 }
 
@@ -205,6 +205,6 @@
     }
     .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
     {
-        font-size: 14px;
+        font-size: 13px;
     }
 }

@@ -25,7 +25,7 @@
 .section-three-col > div:first-child p
 {
     width: 50%;
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     margin: 0;
     padding: 0;
     font-weight: var(--sub-text-weight);
@@ -58,7 +58,7 @@
 
 .section-three-col > div:not(:first-child) > div > .button-container > a
 {
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     text-decoration: none;
     text-transform: uppercase;
     color: rgb(153, 153, 153);

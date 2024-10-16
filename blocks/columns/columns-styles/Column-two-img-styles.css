@@ -46,7 +46,7 @@
 
 .section-two-img-col > div > div > p
 {
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     margin: 0;
     padding: 0;
     line-height: var(--text-line-height);
