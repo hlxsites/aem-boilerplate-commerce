@@ -56,31 +56,34 @@ export default async function decorate(block) {
     return renderEmptyCart({ wrapper: $wrapper, startShoppingURL });
   }
 
-  // Cart List
-  await provider.render(CartSummaryList, {
-    hideHeading: hideHeading === 'true',
-    routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
-    routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
-    maxItems: parseInt(maxItems, 10) || undefined,
-    attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
-    enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
-    enableRemoveItem: enableRemoveItem === 'true',
-  })($list);
+  // Render Containers
+  await Promise.all([
+    // Cart List
+    provider.render(CartSummaryList, {
+      hideHeading: hideHeading === 'true',
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+      routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
+      maxItems: parseInt(maxItems, 10) || undefined,
+      attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
+      enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
+      enableRemoveItem: enableRemoveItem === 'true',
+    })($list),
 
-  // Order Summary
-  await provider.render(OrderSummary, {
-    routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
-    routeCheckout: checkoutURL ? () => checkoutURL : undefined,
-    slots: {
-      EstimateShipping: async (ctx) => {
-        if (enableEstimateShipping === 'true') {
-          const wrapper = document.createElement('div');
-          await provider.render(EstimateShipping, {})(wrapper);
-          ctx.replaceWith(wrapper);
-        }
+    // Order Summary
+    provider.render(OrderSummary, {
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+      routeCheckout: checkoutURL ? () => checkoutURL : undefined,
+      slots: {
+        EstimateShipping: async (ctx) => {
+          if (enableEstimateShipping === 'true') {
+            const wrapper = document.createElement('div');
+            await provider.render(EstimateShipping, {})(wrapper);
+            ctx.replaceWith(wrapper);
+          }
+        },
       },
-    },
-  })($summary);
+    })($summary),
+  ]);
 
   // Events
   events.on('cart/data', (payload) => {
