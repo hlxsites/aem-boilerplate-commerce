@@ -1,3 +1,4 @@
+import { expectsEventWithContext } from "../../../assertions";
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/recs-request-sent.md
  *   required contexts: page, storefront
@@ -11,19 +12,9 @@
  *
  */
 
-function expectsEventWithContext(event, contexts, adobeDataLayer) {
-  const targetEventIndex = adobeDataLayer.findIndex(data => data?.event === event);
-  expect(targetEventIndex, event).to.be.greaterThan(-1);
-  contexts.forEach((context) => {
-    const contextIndex = adobeDataLayer.findIndex(data => !!data[context]);
-    expect(contextIndex, context).to.be.greaterThan(-1);
-  });
-}
-
 it('api-request-sent, api-response-received, unit-impression-render', () => {
   cy.visit('/products/crown-summit-backpack/24-MB03');
-  cy.waitForResource('commerce-events-collector.js')
-  .then(() => {
+  cy.waitForResource('commerce-events-collector.js').then(() => {
     cy.window().its('adobeDataLayer').then((adobeDataLayer) => {
       expectsEventWithContext(
         'recs-api-request-sent',
@@ -46,8 +37,7 @@ it('api-request-sent, api-response-received, unit-impression-render', () => {
 
 it('recs-unit-view', () => {
   cy.visit('/products/crown-summit-backpack/24-MB03');
-  cy.waitForResource('commerce-events-collector.js')
-  .then(() => {
+  cy.waitForResource('commerce-events-collector.js').then(() => {
     cy.get('.product-recommendations-wrapper').scrollIntoView({ duration: 1000 });
     cy.window().its('adobeDataLayer').then((adobeDataLayer) => {
       expectsEventWithContext(
