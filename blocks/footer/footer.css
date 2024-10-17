@@ -172,12 +172,12 @@ footer .footer p {
 /* footer three second div */
 .footer-three > div > div > div > div:nth-child(2)
 {
-  flex: 1 0 80%;
+  flex: 1 0 70%;
 }
 
 .footer-three > div > div > div > div:nth-child(3)
 {
-  flex: 1 0 40%;
+  flex: 1 0 45%;
   /* word-break: normal; */
   margin-top: 60px;
 }
@@ -228,7 +228,7 @@ footer .footer p {
   /* footer three second div */
   .footer-three > div > div > div > div:nth-child(2)
   {
-    flex: 1 0 55%;
+    flex: 1 0 50%;
   }
 }
 
