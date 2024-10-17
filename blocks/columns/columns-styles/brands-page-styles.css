@@ -105,7 +105,7 @@
     .brands div.columns-wrapper:first-child
     {
         position: sticky;
-        margin: 0px;
+        margin: 0;
         margin-left: 0;
         top: 50px;
         min-width: 10px;
