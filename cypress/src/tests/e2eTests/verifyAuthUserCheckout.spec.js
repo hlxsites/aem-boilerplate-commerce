@@ -31,13 +31,14 @@ describe('Verify auth user can place order', () => {
     it('Verify auth user can place order', () => {
         // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
         cy.visit('/products/hollister-backyard-sweatshirt/MH05');
-        cy.get('[id="Y29uZmlndXJhYmxlLzI3Ny8yMDI="]').click({
+        cy.get('[aria-label="Color: White swatch"]').click({
             force: true,
-          });
-          cy.get('[id="Y29uZmlndXJhYmxlLzU1Ni81MjM="]').click({
+        });
+        cy.get('[aria-label="Size: XS swatch"]').click({
             force: true,
-          });
-        cy.wait(5000);
+        });
+        cy.get('[aria-label="Color: White swatch selected"]').should('exist');
+        cy.get('[aria-label="Size: XS swatch selected"]').should('exist');
         cy.contains('Add to Cart').click();
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
@@ -71,7 +72,6 @@ describe('Verify auth user can place order', () => {
         cy.fixture('userInfo').then(({ sign_up }) => {
             signUpUser(sign_up);
             assertAuthUser(sign_up);
-            cy.wait(5000);
         });
         cy.get('.minicart-wrapper').click();
         assertCartSummaryProduct(
@@ -166,9 +166,8 @@ describe('Verify auth user can place order', () => {
             '$52.00',
             '1'
         );
-        setGuestShippingAddress(customerShippingAddress, true);
         uncheckBillToShippingAddress();
-        cy.wait(2000);
+        setGuestShippingAddress(customerShippingAddress, true);
         setGuestBillingAddress(customerBillingAddress, true);
         assertOrderSummaryMisc('$90.00', '$10.00', '$86.50');
         assertSelectedPaymentMethod('checkmo', 0);

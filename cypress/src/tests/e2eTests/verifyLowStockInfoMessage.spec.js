@@ -1,3 +1,9 @@
+import {
+    closeHamburgerMenu,
+} from '../../actions';
+import {
+    assertSearchIconVisible,
+} from '../../assertions';
 describe('Verify stock notification message', () => {
     it('Verify low stock and max qty allowed notification message', () => {
         cy.visit('/products/compete-track-tote/24-WB02');
@@ -18,5 +24,8 @@ describe('Verify stock notification message', () => {
         cy.wait(1000);
         cy.contains('Add to Cart').click();
         cy.contains('The requested qty exceeds the maximum qty allowed in shopping cart').should('be.visible');
+        assertSearchIconVisible();
+        closeHamburgerMenu();
+        cy.percyTakeSnapshot('PDP page with Low Stock Notifiction', 1280);
     });
 });
