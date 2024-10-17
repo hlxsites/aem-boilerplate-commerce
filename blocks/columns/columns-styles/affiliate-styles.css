@@ -7,31 +7,32 @@
 .affiliate-section h1
 {
   text-align: center;
-  font-size: 2.5em;
-  line-height: 40px;
-  font-weight: 600;
+  font-size: 1.875em;
+  line-height: var(--text-title-line-height);
+  font-weight: var(--sub-text-title-weight);
 }
 
 .affiliate-section h3
 {
   font-size: 16px;
-  font-weight: bold;
+  font-weight: var(--sub-text-title-weight);
   margin: 0;
 }
 
 .affiliate-section p
 {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: lighter;
+  font-size: 0.875em;
+  line-height: var(--text-line-height);
+  font-weight: var(--sub-text-weight);
 }
 
 .affiliate-section p a
 {
     color: #1a1a1a;
-    font-weight: 600;
+    font-weight: var(--sub-text-title-weight);
     border-bottom: 1px solid #ccc;
     text-decoration: none;
+    font-size: 0.875em;
 }
 
 .affiliate-section p a:hover
@@ -49,6 +50,8 @@
 .affiliate-section ul li
 {
   margin:0;
-  line-height: 24px;
+  line-height: var(--text-line-height);
   padding: 0;
+  font-size: 0.875em;
+  font-weight: var(--sub-text-weight);
 }

@@ -1,0 +1,4 @@
+.search-container:has(.article-search)
+{
+    padding-bottom: 0;
+}

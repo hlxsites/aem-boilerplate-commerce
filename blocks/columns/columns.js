@@ -28,23 +28,9 @@ export default function decorate(block) {
     });
   });
 
-  //Christopher - Banner
-  //Banner Section
-  const bannerSection = document.querySelectorAll(
-    `.columns-container:nth-child(1):not(.breadcrum-menu,.footer-one,.heading,.section-two-col,:has(.breadcrum-menu,.sections-page,.article-section,.section-two-col,.affiliate-section,.section-desc)),
-     .columns-container:nth-child(6):not(.heading,.section-two-col)`
-  );
-
-  bannerSection.forEach((element) => {
-    if (element) {
-      element.classList.add("banner-footer-section");
-    }
-  });
-
   //Christopher - Shipping
   changeShippingColor();
 }
-
 
 // replacing string to add a span to be able to style the dates in color green 
 function changeShippingColor()

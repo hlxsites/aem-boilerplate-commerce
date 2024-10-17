@@ -24,11 +24,17 @@
 
 .section-two-img-col > div > div > .button-container > a
 {
-    text-decoration: underline;
+    text-decoration: none;
     color: rgb(153, 153, 153);
     background-color: transparent;
     margin: 0;
     padding: 0;
+}
+
+.section-two-img-col > div > div > .button-container > a:hover
+{
+    text-decoration: none;
+    color: rgb(153, 153, 153);
 }
 
 .section-two-img-col > div > div > h4
@@ -40,11 +46,11 @@
 
 .section-two-img-col > div > div > p
 {
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     margin: 0;
     padding: 0;
-    line-height: 22px;
-    font-weight: 400;
+    line-height: var(--text-line-height);
+    font-weight: var(--sub-text-weight);
     text-transform: none;
     vertical-align: baseline;
     margin-bottom: 16px;

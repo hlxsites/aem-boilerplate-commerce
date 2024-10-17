@@ -43,7 +43,9 @@
 .article-section > div > div:nth-child(1)
 {
     flex-grow: 2.5;
+    font-weight: var(--sub-text-weight);
 }
+
 /* Side Navigation */
 .article-section > div > div:nth-child(2)
 {
@@ -57,7 +59,8 @@
 .article-section > div > div:nth-child(2) ul li
 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
+    font-weight: var(--sub-text-weight);
     padding: 4px;
     width: 100%;
     text-decoration: none;
@@ -72,11 +75,12 @@
 .article-section > div > div p:nth-child(2)
 {
     border-bottom: 1px solid rgba(26, 26,26, 0.2);
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     padding-bottom: 20px;
     margin-bottom:40px;
 }
 
+/* Previous and Next styling */
 .article-section > div > div > table:has(em)
 {
     width: 100%;
@@ -111,6 +115,7 @@
     border: 1px solid black;
     border-radius: 5px;
     color: black;
+    font-weight: var(--sub-text-weight);
     text-decoration: none;
     padding: 10px;
     /* transition */
@@ -135,7 +140,8 @@
 .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
 {
     opacity: 0.5;
-    font-size: 12px;
+    font-size: var(--sub-text-secondary-size);
+    font-weight: var(--sub-text-weight);
 }
 
 /* Article side navigation */
@@ -148,7 +154,7 @@
 .article-section > div > div > table:nth-child(1) a:any-link,table:nth-child(2) a:any-link
 {
     text-decoration: none;
-    line-height: 26px;
+    line-height: var(--text-line-height);
     color: rgb(26, 26, 26);
     /* transition */
     transition: color 0.3s ease-in-out;
@@ -157,7 +163,7 @@
 .article-section > div > div > table:nth-child(1) a:hover,table:nth-child(2) a:hover
 {
     text-decoration: none;
-    line-height: 26px;
+    line-height: var(--text-line-height);
     color: rgb(153, 153, 153);
 }
 
@@ -170,8 +176,8 @@
 {
     font-size: 0.9em;
     text-transform: uppercase;
-    font-weight: 900;
-    line-height: 26px;
+    font-weight: var(--sub-text-title-weight);
+    line-height: var(--text-line-height);
     margin: 0;
     margin-left: 10px;
     padding-top: 20px;
@@ -199,6 +205,6 @@
     }
     .article-section > div > div > table > tbody > tr > td:has(a):nth-child(1) em:last-child,td:has(a):nth-child(2) em:last-child
     {
-        font-size: 14px;
+        font-size: 13px;
     }
 }

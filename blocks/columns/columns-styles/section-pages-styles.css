@@ -13,7 +13,7 @@
 
 .sections-page h3
 {
-    font-weight: 900;
+    font-weight: var(--sub-text-title-weight);
     font-size: 2.5rem;
     padding: 0;
     margin: 0;
@@ -29,6 +29,7 @@
     border-radius: 5px;
     color: black;
     text-decoration: none;
+    font-weight: var(--sub-text-weight);
     padding: 10px;
     /* transition */
     transition: background-color 0.3s ease-in-out;
@@ -38,6 +39,7 @@
 {
     text-decoration: none;
     background-color: black;
+    font-weight: var(--sub-text-weight);
     color: white;
 }
 
@@ -55,6 +57,7 @@
 {
     padding: 1rem 0;
     border-bottom: 1px solid #D7D6DC;
+    font-weight: var(--sub-text-weight);
 }
 
 .sections-page ul li a:any-link

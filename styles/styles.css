@@ -167,6 +167,11 @@
 
   --sub-text-title-weight: 600;
 
+    /*------------------------- Chris Global -------------------------*/
+    --sub-text-weight: 400;
+    --text-line-height: 24px;
+    --text-title-line-height: 40px;
+
   /*---------------- End Featured ----------------*/
 }
 

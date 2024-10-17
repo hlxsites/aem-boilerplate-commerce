@@ -5,7 +5,7 @@
     text-transform: uppercase;
     font-size: 2rem;
     line-height: 30px;
-    font-weight: 600;
+    font-weight: var(--sub-text-title-weight);
     padding: 0;
     margin-bottom: 20px;
 }
@@ -25,10 +25,10 @@
 .section-three-col > div:first-child p
 {
     width: 50%;
-    font-size: 13px;
+    font-size: var(--sub-text-secondary-size);
     margin: 0;
     padding: 0;
-    font-weight: 400;
+    font-weight: var(--sub-text-weight);
     text-transform: none;
     margin-bottom: 20px;
     display: inline-block;
@@ -58,8 +58,8 @@
 
 .section-three-col > div:not(:first-child) > div > .button-container > a
 {
-    font-size: 13px;
-    text-decoration: underline;
+    font-size: var(--sub-text-secondary-size);
+    text-decoration: none;
     text-transform: uppercase;
     color: rgb(153, 153, 153);
     background-color: transparent;
