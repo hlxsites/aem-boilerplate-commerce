@@ -3,6 +3,8 @@ import {
   buildBlock, decorateBlock, decorateIcons, loadBlock, loadCSS,
 } from '../../scripts/aem.js';
 
+let activeModal = null;
+
 // This is not a traditional block, so there is no decorate function. Instead, links to
 // a */modals/* path  are automatically transformed into a modal. Other blocks can also use
 // the createModal() and openModal() functions.
@@ -20,34 +22,10 @@ export async function createModal(contentNodes) {
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  closeButton.addEventListener('mouseout', () => dialog.close());
   closeButton.addEventListener('click', () => dialog.close());
-
   dialog.append(closeButton);
 
   // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
-  dialog.addEventListener('mouseout', (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
-      dialog.close();
-    }
-  });
-  dialog.addEventListener('mouseover', (event) => {
-    const dialogDimensions = dialog.getBoundingClientRect();
-    if (
-      event.clientX < dialogDimensions.left ||
-      event.clientX > dialogDimensions.right ||
-      event.clientY < dialogDimensions.top ||
-      event.clientY > dialogDimensions.bottom
-    ) {
-      dialog.close();
-    }
-  });
 
   dialog.addEventListener('click', (event) => {
     const dialogDimensions = dialog.getBoundingClientRect();
@@ -63,19 +41,23 @@ export async function createModal(contentNodes) {
   await loadBlock(block);
   decorateIcons(closeButton);
 
-  dialog.addEventListener('close', () => {
-    document.body.classList.remove('modal-open');
-    block.remove();
-  });
+  dialog.addEventListener('close', () => block.remove());
 
   block.append(dialog);
   return {
     block,
     showModal: () => {
+      if (activeModal) {
+        activeModal.close();
+      }
       dialog.showModal();
+      activeModal = dialog;
+
       // Google Chrome restores the scroll position when the dialog is reopened,
       // so we need to reset it.
-      setTimeout(() => { dialogContent.scrollTop = 0; }, 0);
+      setTimeout(() => {
+        dialogContent.scrollTop = 0;
+      }, 0);
 
       document.body.classList.add('modal-open');
     },
@@ -89,16 +71,5 @@ export async function openModal(fragmentUrl) {
 
   const fragment = await loadFragment(path);
   const { showModal } = await createModal(fragment.childNodes);
-
   showModal();
-
-  const modalPar = document.querySelectorAll(
-    '.modal-content .columns-4-cols div div:nth-child(2), \
-    .modal-content .columns-4-cols div div:nth-child(4)'
-  );
-  modalPar.forEach((element) => {
-    if (element) {
-      element.classList.add('modal-par');
-    }
-  });
 }

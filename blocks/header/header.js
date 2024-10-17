@@ -1,6 +1,7 @@
 import { fetchPlaceholders, getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { cartApi } from '../../scripts/minicart/api.js';
+
 // import { getConfigValue } from '../../scripts/configs.js';
 
 // media query match that indicates mobile/tablet width
@@ -117,7 +118,7 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   const crumbs = [];
 
   const homeUrl = document.querySelector(
-    '.nav-brand .sub-nav-content a[href]'
+    '.nav-brand .sub-nav-categories a[href]'
   ).href;
 
   let menuItem = Array.from(nav.querySelectorAll('a')).find(
@@ -154,7 +155,7 @@ async function buildBreadcrumbs() {
   breadcrumbs.className = 'breadcrumbs';
 
   const crumbs = await buildBreadcrumbsFromNavTree(
-    document.querySelector('.sub-nav-content'),
+    document.querySelector('.sub-nav-categories'),
     document.location.href
   );
 

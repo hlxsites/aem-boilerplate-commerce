@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
-import { readBlockConfig } from "../../scripts/aem.js";
-import { performCatalogServiceQuery } from "../../scripts/commerce.js";
-import { getConfigValue } from "../../scripts/configs.js";
+import { readBlockConfig } from '../../scripts/aem.js';
+import { performCatalogServiceQuery } from '../../scripts/commerce.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
 const isMobile = window.matchMedia(
-  "only screen and (max-width: 900px)"
+  'only screen and (max-width: 900px)'
 ).matches;
 
 const recommendationsQuery = `query GetRecommendations(
@@ -58,20 +58,20 @@ function renderPlaceholder(block) {
         </div>
       `
         )
-        .join("")}
+        .join('')}
     </div>
   </div>`;
 }
 
 function renderItem(unitId, product) {
-  const urlKey = product.url.split("/").pop().replace(".html", "");
+  const urlKey = product.url.split('/').pop().replace('.html', '');
   let image = product.images[0]?.url;
-  image = image.replace("http://", "//");
+  image = image.replace('http://', '//');
 
   const clickHandler = () => {
     window.adobeDataLayer.push((dl) => {
       dl.push({
-        event: "recs-item-click",
+        event: 'recs-item-click',
         eventInfo: {
           ...dl.getState(),
           unitId,
@@ -93,7 +93,7 @@ function renderItem(unitId, product) {
       <span>${product.name}</span>
     </a>
   </div>`);
-  item.querySelector("a").addEventListener("click", clickHandler);
+  item.querySelector('a').addEventListener('click', clickHandler);
 
   return item;
 }
@@ -104,23 +104,23 @@ function renderItems(block, results) {
 
   if (!recommendation) {
     // Hide block content if no recommendations are available
-    block.textContent = "";
+    block.textContent = '';
     return;
   }
 
   window.adobeDataLayer.push((dl) => {
     dl.push({
-      event: "recs-unit-impression-render",
+      event: 'recs-unit-impression-render',
       eventInfo: { ...dl.getState(), unitId: recommendation.unitId },
     });
   });
 
   // Title
-  block.querySelector("h2").textContent = recommendation.storefrontLabel;
+  block.querySelector('h2').textContent = recommendation.storefrontLabel;
 
   // Grid
   const grid = block.querySelector('.product-grid');
-  // grid.innerHTML = '';
+  grid.innerHTML = '';
   const { productsView } = recommendation;
 
   productsView.forEach((product) => {
@@ -136,7 +136,7 @@ function renderItems(block, results) {
       if (entry.isIntersecting) {
         window.adobeDataLayer.push((dl) => {
           dl.push({
-            event: "recs-unit-view",
+            event: 'recs-unit-view',
             eventInfo: { ...dl.getState(), unitId: recommendation.unitId },
           });
         });
@@ -149,7 +149,7 @@ function renderItems(block, results) {
 
 const mapUnit = (unit) => ({
   ...unit,
-  unitType: "primary",
+  unitType: 'primary',
   searchTime: 0,
   primaryProducts: unit.totalProducts,
   backupProducts: 0,
@@ -158,7 +158,7 @@ const mapUnit = (unit) => ({
     rank: index,
     score: 0,
     productId: parseInt(product.externalId, 10) || 0,
-    type: "?",
+    type: '?',
     queryType: product.__typename,
   })),
 });
@@ -172,39 +172,39 @@ async function loadRecommendation(block, context, visibility, filters) {
   // Only proceed if all required data is available
   if (
     !context.pageType ||
-    (context.pageType === "Product" && !context.currentSku) ||
-    (context.pageType === "Category" && !context.category) ||
-    (context.pageType === "Cart" && !context.cartSkus)
+    (context.pageType === 'Product' && !context.currentSku) ||
+    (context.pageType === 'Category' && !context.category) ||
+    (context.pageType === 'Cart' && !context.cartSkus)
   ) {
     return;
   }
 
   if (!unitsPromise) {
-    const storeViewCode = await getConfigValue("commerce-store-view-code");
+    const storeViewCode = await getConfigValue('commerce-store-view-code');
     // Get product view history
     try {
       const viewHistory =
         window.localStorage.getItem(`${storeViewCode}:productViewHistory`) ||
-        "[]";
+        '[]';
       context.userViewHistory = JSON.parse(viewHistory);
     } catch (e) {
-      window.localStorage.removeItem("productViewHistory");
-      console.error("Error parsing product view history", e);
+      window.localStorage.removeItem('productViewHistory');
+      console.error('Error parsing product view history', e);
     }
 
     // Get purchase history
     try {
       const purchaseHistory =
-        window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || "[]";
+        window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
       context.userPurchaseHistory = JSON.parse(purchaseHistory);
     } catch (e) {
-      window.localStorage.removeItem("purchaseHistory");
-      console.error("Error parsing purchase history", e);
+      window.localStorage.removeItem('purchaseHistory');
+      console.error('Error parsing purchase history', e);
     }
 
     window.adobeDataLayer.push((dl) => {
       dl.push({
-        event: "recs-api-request-sent",
+        event: 'recs-api-request-sent',
         eventInfo: { ...dl.getState() },
       });
     });
@@ -217,7 +217,7 @@ async function loadRecommendation(block, context, visibility, filters) {
         recommendationsContext: { units: recommendations.results.map(mapUnit) },
       });
       dl.push({
-        event: "recs-api-response-received",
+        event: 'recs-api-response-received',
         eventInfo: { ...dl.getState() },
       });
     });
@@ -263,22 +263,22 @@ export default async function decorate(block) {
   }
 
   window.adobeDataLayer.push((dl) => {
-    dl.addEventListener("adobeDataLayer:change", handlePageTypeChanges, {
-      path: "pageContext",
+    dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, {
+      path: 'pageContext',
     });
-    dl.addEventListener("adobeDataLayer:change", handleProductChanges, {
-      path: "productContext",
+    dl.addEventListener('adobeDataLayer:change', handleProductChanges, {
+      path: 'productContext',
     });
-    dl.addEventListener("adobeDataLayer:change", handleCategoryChanges, {
-      path: "categoryContext",
+    dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, {
+      path: 'categoryContext',
     });
-    dl.addEventListener("adobeDataLayer:change", handleCartChanges, {
-      path: "shoppingCartContext",
+    dl.addEventListener('adobeDataLayer:change', handleCartChanges, {
+      path: 'shoppingCartContext',
     });
   });
 
   if (isMobile) {
-    const section = block.closest(".section");
+    const section = block.closest('.section');
     const inViewObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {

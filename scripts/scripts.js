@@ -108,15 +108,31 @@ async function loadFonts() {
 // modal function
 
 function autolinkModals(element) {
-  element.addEventListener('click', async (e) => {
+  const openTheModal = async (e) => {
     const origin = e.target.closest('a');
-
     if (origin && origin.href && origin.href.includes('/modals/')) {
       e.preventDefault();
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
       openModal(origin.href);
     }
-  });
+  };
+  element.addEventListener('click', openTheModal);
+}
+
+function autolinkNavModals(element) {
+  const openTheModal = async (e) => {
+    const origin = e.target.closest('a');
+    if (origin && origin.href && origin.href.includes('/nav-modals/')) {
+      e.preventDefault();
+      const { openNavModal } = await import(
+        `${window.hlx.codeBasePath}/blocks/nav-modal/nav-modal.js`
+      );
+      openNavModal(origin.href);
+    }
+  };
+
+  element.addEventListener('mouseover', openTheModal);
+  element.addEventListener('click', openTheModal);
 }
 
 /**
@@ -287,6 +303,7 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  autolinkNavModals(doc);
   autolinkModals(doc);
 
   const main = doc.querySelector('main');

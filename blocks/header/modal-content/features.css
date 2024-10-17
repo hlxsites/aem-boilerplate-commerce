@@ -7,10 +7,7 @@
   width: 90vw;
   justify-content: center;
   margin: 0 auto;
-}
-
-.features-modal {
-  width: fit-content;
+  gap: 30px;
 }
 
 .features-modal-section .columns-wrapper,
@@ -18,20 +15,10 @@
   margin: 0 !important;
 }
 
-.features-modal div div:nth-child(1) p a {
-  border-radius: 0;
-  border: none;
-  color: black;
-  background-color: transparent;
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  padding: 0;
-  margin: 0;
-  font-weight: 600;
-}
-
 /* Categories */
-.features-modal div ul {
+.features-modal div ul,
+.latest-modal-brands div ul,
+.latest-modal div ul {
   display: flex;
   list-style-type: none;
   flex-direction: column;
@@ -41,11 +28,15 @@
   line-height: 2;
   font-size: var(--sub-text-secondary-size);
   font-weight: 400;
+  text-transform: inherit;
+}
+
+.latest-modal div ul {
   text-transform: capitalize;
 }
 
 .features-modal > div > div:nth-child(1) {
-  flex: 0.5;
+  flex: 1;
 }
 
 .three-cols-articles-modal {
@@ -55,13 +46,10 @@
 
 @media (width <= 991px) {
   /* Features */
-  .features-modal {
-    margin: 10% 0;
-  }
-
   .features-modal div div:nth-child(1) p a {
     font-size: 16px;
   }
+
   .features-modal div div:nth-child(1) p a,
   .features-modal ul {
     margin-left: 3vw !important;
@@ -81,11 +69,15 @@
   }
 
   .features-modal-section {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     width: 100%;
     justify-content: center;
-    margin: 0 !important;
-    margin-left: -3.5vw !important;
+    margin: 0 auto;
+  }
+
+  .three-cols-articles-modal {
+    padding-bottom: var(--nav-height);
+    margin-bottom: var(--nav-height);
   }
 }

@@ -1,3 +1,4 @@
+import borderMaker from '../sub-nav-content/sub-nav-content.js';
 export default function decorate(block) {
   const subNavContent = [...block.firstElementChild.children];
   block.classList.add(`columns-${subNavContent.length}-cols`);
@@ -14,4 +15,5 @@ export default function decorate(block) {
       }
     });
   });
+  borderMaker();
 }

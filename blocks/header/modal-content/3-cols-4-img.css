@@ -1,12 +1,12 @@
 @import url(./sub-heading-modal.css);
 /* This includes Latest, Clothing and Accessories */
 
-.modal-content
+.nav-modal-content
   .three-cols-four-img
   div
   div:nth-child(2)
   p:nth-child(1):only-of-type,
-.modal-content
+.nav-modal-content
   .three-cols-four-img
   div
   div:nth-child(3)
@@ -19,16 +19,16 @@
   text-transform: uppercase;
 }
 
-.modal-content .three-cols-four-img div ul,
-.modal-content .three-cols-four-img div div p picture {
+.nav-modal-content .three-cols-four-img div ul,
+.nav-modal-content .three-cols-four-img div div p picture {
   display: flex;
 }
 
-.modal-content .three-cols-four-img div:nth-child(3) {
+.nav-modal-content .three-cols-four-img div:nth-child(3) {
   flex: 2;
 }
 
-.modal-content .three-cols-four-img div:nth-child(3) table p {
+.nav-modal-content .three-cols-four-img div:nth-child(3) table p {
   margin: 5% 0;
   padding: 0;
   margin-bottom: 0%;
@@ -39,11 +39,11 @@
   font-weight: 400;
 }
 
-.modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2) {
+.nav-modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2) {
   margin-bottom: 4%;
 }
 
-.modal-content .three-cols-four-img div ul {
+.nav-modal-content .three-cols-four-img div ul {
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -55,24 +55,8 @@
   text-transform: capitalize;
 }
 
-.modal-content .three-cols-four-img div div {
+.nav-modal-content .three-cols-four-img div div {
   align-self: start;
-}
-
-.modal-content
-  .three-cols-four-img
-  div
-  div:nth-child(1)
-  p:nth-child(1):only-of-type
-  a {
-  color: black;
-  background-color: white;
-  border-radius: 0;
-  text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
-  padding: 0;
-  margin: 0;
-  font-weight: 555;
 }
 
 /*  border: 1px solid rebeccapurple; */
