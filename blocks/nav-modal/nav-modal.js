@@ -8,7 +8,6 @@ import {
 } from '../../scripts/aem.js';
 
 let activeModal = null;
-let timeoutId;
 
 // This is not a traditional block, so there is no decorate function. Instead, links to
 // a */modals/* path  are automatically transformed into a modal. Other blocks can also use
@@ -64,31 +63,57 @@ function closeModal(modal) {
 }
 
 export async function openNavModal(fragmentUrl) {
-  clearTimeout(timeoutId);
   const path = fragmentUrl.startsWith('http')
     ? new URL(fragmentUrl, window.location).pathname
     : fragmentUrl;
 
-  const fragment = await loadFragment(path);
-  const { block, showModal, closeModal } = await createModal(
-    fragment.childNodes
-  );
+  let fragmentHtml;
+
+  const cachedFragment = localStorage.getItem(path);
+  const cacheExpiration = localStorage.getItem(`${path}-expiration`);
+
+  // Check if cache exists and is not expired (10 minutes)
+  if (cachedFragment && (!cacheExpiration || Date.now() < cacheExpiration)) {
+    fragmentHtml = cachedFragment;
+  } else {
+    const fragment = await loadFragment(path);
+    fragmentHtml = fragment.innerHTML;
+    localStorage.setItem(path, fragmentHtml);
+
+    // Cache expiration in 10 minutes
+    const expirationTime = Date.now() + 10 * 60 * 1000;
+    localStorage.setItem(`${path}-expiration`, expirationTime);
+  }
+
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = fragmentHtml;
+
+  const { block, showModal, closeModal } = await createModal([
+    ...tempDiv.childNodes,
+  ]);
+
   const modal = block.querySelector('.nav-modal');
   modal.fragmentUrl = fragmentUrl;
 
   showModal();
 
-  const handleClickOutside = (event) => {
-    if (!modal.contains(event.target)) {
+  const handleInteraction = (event) => {
+    const isClickOutside =
+      event.type === 'click' && !modal.contains(event.target);
+    const isMouseOut =
+      event.type === 'mouseout' && !modal.contains(event.relatedTarget);
+
+    if (isClickOutside || isMouseOut) {
       closeModal();
+      document.removeEventListener('click', handleInteraction);
+      modal.removeEventListener('mouseout', handleInteraction);
     }
   };
 
-  const handleMouseOut = (event) => {
-    if (!modal.contains(event.relatedTarget)) {
-      closeModal();
-    }
-  };
-  document.addEventListener('click', handleClickOutside);
-  modal.addEventListener('mouseout', handleMouseOut);
+  document.addEventListener('click', handleInteraction);
+  modal.addEventListener('mouseout', handleInteraction);
+
+  requestAnimationFrame(() => {
+    modal.scrollTop = 0;
+  });
 }
