@@ -56,7 +56,7 @@
   letter-spacing: 0.114286rem;
   font-size: var(--sub-text-title-large);
   text-transform: uppercase;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-weight: 500;
 }
 

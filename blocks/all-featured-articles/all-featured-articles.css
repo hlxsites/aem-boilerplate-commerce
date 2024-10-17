@@ -28,7 +28,7 @@
   font-size: 10px;
   text-transform: uppercase;
   font-weight: 600;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   border: 1px solid rgb(204, 204, 204);
   padding: 0% 2%;
   letter-spacing: 1.5px;
@@ -46,7 +46,7 @@
   width: 100%;
   font-weight: 600;
   text-transform: inherit;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
 }
 
 /* Date */

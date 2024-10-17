@@ -27,9 +27,14 @@
   text-transform: capitalize;
 }
 
+.sub-nav-categories div:nth-child(1) div a:hover {
+  text-decoration: none;
+}
+
 /* Sale Button Red */
-.sub-nav-categories div:nth-child(10) {
-  color: var(--sub-text-sale-color);
+.sub-nav-categories div:nth-child(10) a,
+.sub-nav-categories div:nth-child(10) a:hover {
+  color: var(--sale-color);
 }
 
 /* Account and Shipping Country Mobile Only */

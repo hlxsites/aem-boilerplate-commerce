@@ -23,7 +23,7 @@
   text-transform: uppercase;
   font-weight: bold;
   font-size: var(--sub-text-title-large);
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   letter-spacing: 2px;
   line-height: 1;
   padding: 0;
@@ -36,7 +36,7 @@
 .hero-latest div div table tbody tr:nth-child(3) td {
   text-transform: inherit;
   font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   margin: auto 0;
 }
 
@@ -49,14 +49,14 @@
 
 .hero-latest div div table tbody tr:nth-child(3) td {
   font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
 }
 
 /* links in paragraph */
 .hero-latest div p:nth-child(2) strong a,
 .hero-latest div div table tbody tr:nth-child(3) td strong a {
   font-size: var(--sub-text-secondary-size);
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-weight: 100;
   font-weight: bold;
   text-decoration: none;
@@ -85,7 +85,7 @@
 .hero-latest div table table td a {
   font-weight: bold;
   text-transform: uppercase;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: var(--sub-text-small);
   width: 100%;
   letter-spacing: 2px;

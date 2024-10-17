@@ -1,3 +1,77 @@
+.nav-modal-content
+  div:nth-child(2)
+  div:nth-child(1)
+  p:nth-child(1):only-of-type,
+.nav-modal-content
+  div:nth-child(2)
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 555;
+  text-transform: uppercase;
+}
+
+.nav-modal-content div div ul,
+.nav-modal-content div div div p picture {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-modal-content .three-cols-four-img div:nth-child(3) table p,
+.nav-modal-content .four-cols-two-img div:nth-child(4) table p {
+  margin: 5% 0;
+  padding: 0;
+  margin-bottom: 0%;
+  padding-right: 8%;
+  line-height: 0.5;
+  color: var(--main-text-color);
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 400;
+}
+
+.nav-modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2),
+.nav-modal-content .four-cols-two-img div:nth-child(4) table p:nth-child(2) {
+  margin-bottom: 4%;
+}
+
+.nav-modal-content div div ul {
+  list-style-type: none;
+  flex-direction: column;
+  float: left;
+  margin: 5% 0;
+  padding: 0;
+  line-height: 2;
+  font-size: var(--sub-text-secondary-size);
+  font-weight: 400;
+  text-transform: inherit;
+}
+
+.nav-modal-content div div div {
+  align-self: start;
+}
+
+/* This includes Latest, Clothing and Accessories */
+.nav-modal-content .three-cols-four-img div:nth-child(3) {
+  flex: 2;
+}
+
+/* Shop by, Brands, Footwear, Lifestyle, Active, and Sale uses this as well */
+.nav-modal-content .four-cols-two-img div:nth-child(4) {
+  flex: 1;
+}
+
+.nav-modal-content
+  .four-cols-two-img
+  div
+  div:nth-child(1)
+  p:nth-child(1):only-of-type {
+  border-radius: 0;
+}
+
 @media (width >=992px) {
   .nav-modal-content div:nth-child(1) .default-content-wrapper p:nth-child(1) {
     display: none;
@@ -58,7 +132,7 @@
     p:nth-child(1)
     a {
     background-color: transparent;
-    color: var(--sub-text-title-color);
+    color: var(--main-text-color);
     font-weight: 400;
     text-align: left;
     margin: 2%;

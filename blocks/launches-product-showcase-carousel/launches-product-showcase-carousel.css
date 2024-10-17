@@ -74,12 +74,6 @@
   padding: 0;
 }
 
-.launches-product-showcase-carousel h1 a:hover {
-  color: var(--sub-text-grey);
-  cursor: pointer;
-  text-decoration: none;
-}
-
 /* Product Price */
 .launches-product-showcase-carousel .price {
   font-weight: 400;

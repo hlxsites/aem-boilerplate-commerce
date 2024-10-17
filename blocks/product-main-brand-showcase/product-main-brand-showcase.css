@@ -18,7 +18,6 @@
 }
 .product-main-brand-showcase ul li::marker {
   font-size: var(--sub-text-sub-title-size);
-  border: 2px solid rebeccapurple;
 }
 
 /* Brand Name */
@@ -31,8 +30,10 @@
   font-weight: bold;
 }
 
-.product-main-brand-showcase ul li a:hover,
-.product-main-brand-showcase-mirror ul li a:hover {
+.product-main-brand-showcase ul li em a:hover,
+.product-main-brand-showcase-mirror ul li em a:hover,
+.product-main-brand-showcase .product div:nth-child(1) p a.button:hover,
+.product-main-brand-showcase-mirror .product div:nth-child(1) p a.button:hover {
   text-decoration: none;
 }
 

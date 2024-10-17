@@ -2,6 +2,7 @@ div.section.carousel-container {
   padding: 0;
   margin: 0;
 }
+
 .carousel {
   padding: 0;
   height: auto;
@@ -81,7 +82,7 @@ div.section.carousel-container {
 
 /* Brand Name */
 .carousel .carousel-slide .carousel-slide-content h2 a {
-  color: var(--sub-text-title-color-light);
+  color: var(--main-color-light);
   font-weight: 600;
   letter-spacing: 0.228571rem;
   line-height: 40px;
@@ -103,6 +104,10 @@ div.section.carousel-container {
   letter-spacing: 0.1rem;
   padding-left: 0;
   font-size: var(--sub-text-secondary-size);
+  text-decoration: none;
+}
+.carousel .carousel-slide .carousel-slide-content p:nth-child(2) a:hover {
+  color: var(--main-color-light);
 }
 
 /* SHOP NOW Button redirect*/
@@ -124,7 +129,7 @@ div.section.carousel-container {
   font-size: var(--sub-text-secondary-size);
   /* animation */
   background-color: transparent;
-  color: white;
+  color: var(--main-color-light);
   opacity: 1;
   transition: all 0.3s ease;
 }
@@ -134,6 +139,8 @@ div.section.carousel-container {
   background-color: white;
   color: black;
   opacity: 0.5;
+  align-content: center;
+  text-decoration: none;
 }
 
 .carousel .carousel-slide-indicators {
@@ -280,13 +287,16 @@ div.section.carousel-container {
     width: 100vw;
   }
 
+  .carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
+    padding-left: 30px;
+  }
+
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
   }
 
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     margin-bottom: 1%;
-    align-content: center;
   }
 
   .carousel .carousel-slide-indicators {

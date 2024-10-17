@@ -150,12 +150,12 @@
   /*------------------------- Daniel Global -------------------------*/
   --sub-text-grey: #999999;
   --date-color: #cccccc;
-  --sub-text-title-color-light: white;
+  --main-color-light: white;
   --sub-text-border-divider: rgba(153, 153, 153, 0.2);
   --sub-text-background-color: #f8f8f8;
-  --sub-text-title-color: #1a1a1a;
+  --main-text-color: #1a1a1a;
   --text-date-color: #000000;
-  --sub-text-sale-color: #ae0000;
+  --sale-color: #ae0000;
 
   --sub-text-title-size: 22px;
   --sub-text-title-large: 16px;
@@ -284,14 +284,7 @@ main pre {
 }
 
 /* links */
-a:not(
-    .footer-two ul li a,
-    .sections-page a,
-    .article-section a,
-    .section-desc a,
-    .affiliate-section p a,
-    .dropin-design a
-  ) {
+a:not(.dropin-design a) {
   color: var(--color-brand-500);
   font: var(--type-body-1-strong-font);
   letter-spacing: var(--type-body-1-strong-letter-spacing);
@@ -306,9 +299,9 @@ a:not(
     .affiliate-section p a,
     .dropin-design a
   ):hover {
-  text-decoration: solid underline var(--color-brand-700);
-  text-underline-offset: 6px;
-  color: var(--color-brand-700);
+  text-decoration: none;
+  /* text-underline-offset: 6px;
+  color: var(--color-brand-700); */
 }
 
 a:not(.dropin-design a):focus-visible {
@@ -453,15 +446,4 @@ main .section.highlight {
 /* Base Design System Tokens */
 .dropin-design.dropin-design {
   --background-none: none 0 0% no-repeat padding-box;
-}
-/* View all buttons */
-.column-headers div:nth-child(2) p {
-  text-align: right;
-}
-
-.column-headers div:nth-child(2) p em a {
-  color: var(--sub-text-title-color);
-  font-size: var(--sub-text-secondary-size);
-  border: none;
-  text-transform: capitalize;
 }

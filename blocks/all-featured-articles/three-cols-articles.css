@@ -36,7 +36,7 @@
 
 .more-content-button-no-background .button-container p a {
   border-radius: 0;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   margin: 0 auto;
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);

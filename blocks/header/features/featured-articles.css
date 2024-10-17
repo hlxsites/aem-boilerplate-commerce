@@ -41,7 +41,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 .img-side-content div div:nth-child(2),
 .img-side-content-mirror div div:nth-child(1) {
   flex: 1;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: inherit;
   font-size: 24px;
   letter-spacing: 1.5px;
@@ -103,7 +103,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 .carousel-content div div p:nth-child(2) a {
   display: flex;
   background-color: transparent;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: var(--sub-text-secondary-size);
   text-wrap: wrap;
   padding: 0;
@@ -171,7 +171,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 
 .more-content-button-no-background .button-container p a {
   border-radius: 0;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   margin: 0 auto;
   text-transform: uppercase;
   font-size: var(--sub-text-title-large);
@@ -194,7 +194,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 .article-writer p,
 .article-team p strong {
   display: flex;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: 16px;
   letter-spacing: 2px;
 }
@@ -237,7 +237,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 .article-team div:nth-child(1) div:nth-child(3) p {
   display: flex;
   align-items: center;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: capitalize;
   width: 100%;
 }

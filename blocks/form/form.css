@@ -66,7 +66,7 @@
   border: 1px solid var(--text-color);
 }
 
-.form .button :not(.email-us .button){
+.form .button :not(.email-us .button) {
   max-width: 225px;
   font-size: var(--body-font-size-m);
   padding: 0.2em 0.4em;
@@ -87,7 +87,7 @@
 }
 
 .form input[required] + label::after {
-  content: "*";
+  content: '*';
   color: firebrick;
   margin-inline-start: 1ch;
 }
@@ -116,7 +116,7 @@
 
 .form .toggle-wrapper .slider::before {
   position: absolute;
-  content: "";
+  content: '';
   height: 20px;
   width: 20px;
   left: 2px;
@@ -145,7 +145,7 @@
 .login-form div div div div p {
   justify-content: center;
   margin-bottom: 2%;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
 }
 
 .login-form div div div:nth-child(1) div p {
@@ -165,7 +165,7 @@
   margin-top: 20%;
   padding: 0;
   width: 100%;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: var(--sub-text-small);
 }
 .login-form .email-wrapper #form-email-1 {

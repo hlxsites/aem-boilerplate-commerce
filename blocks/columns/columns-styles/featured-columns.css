@@ -90,12 +90,17 @@
   opacity: 0.5;
 }
 
+.product-main-brand-showcase .btn-on-img a:hover,
+.product-main-brand-showcase-mirror .btn-on-img a:hover {
+  text-decoration: none;
+}
+
 .product-main-brand-showcase .btn-on-img p a,
 .product-main-brand-showcase-mirror .btn-on-img p a {
   display: flex;
   border: none;
   border-radius: 0;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: var(--sub-text-secondary-size);
   padding: auto;
   font-weight: 500;

@@ -13,6 +13,16 @@
   line-height: 1;
 }
 
+.product-brand-showcase-wrapper .details .brand a,
+.product-brand-showcase-mirror-wrapper .details .brand a {
+  transition: opacity 0.3s ease;
+}
+
+.product-brand-showcase-wrapper .details .brand a:hover,
+.product-brand-showcase-mirror-wrapper .details .brand a:hover {
+  opacity: 0.5;
+}
+
 .product-brand-showcase-wrapper .product,
 .product-brand-showcase-mirror-wrapper .product {
   display: flex;

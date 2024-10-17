@@ -63,6 +63,11 @@
   font-size: var(--sub-text-secondary-size);
   color: var(--sub-text-grey);
   letter-spacing: 0.35px;
+  transition: opacity 0.3s ease;
+}
+
+.product-showcase .product-path:hover {
+  opacity: 0.5;
 }
 
 @media (min-width: 1024px) {

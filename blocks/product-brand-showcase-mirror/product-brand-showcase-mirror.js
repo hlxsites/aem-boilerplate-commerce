@@ -140,25 +140,27 @@ function renderProduct(product, config, block) {
 
     <div class="image">
     </div>
-    <div class="details">
-      <h1>${name}</h1>
-          <h1 class="colour">black</h1>
-      <div class="price">${renderPrice(product, priceFormatter.format)}</div>
-      <div class="actions">
-        ${
-          config['details-button']
-            ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>`
-            : ''
-        }
-        ${
-          config['cart-button'] &&
-          addToCartAllowed &&
-          __typename === 'SimpleProductView'
-            ? '<button class="add-to-cart secondary">Add to Cart</button>'
-            : ''
-        }
+    <a href=''>
+      <div class="details">
+        <h1 class="brand"><a href=''>${name}</a></h1>
+              <h1 class="colour">black</h1>
+        <div class="price">${renderPrice(product, priceFormatter.format)}</div>
+        <div class="actions">
+          ${
+            config['details-button']
+              ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>`
+              : ''
+          }
+          ${
+            config['cart-button'] &&
+            addToCartAllowed &&
+            __typename === 'SimpleProductView'
+              ? '<button class="add-to-cart secondary">Add to Cart</button>'
+              : ''
+          }
+        </div>
       </div>
-    </div>
+    </a>
   `);
 
   fragment

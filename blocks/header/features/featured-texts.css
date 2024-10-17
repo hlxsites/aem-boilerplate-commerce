@@ -1,6 +1,6 @@
 /* Block Quote */
 .block-quote p {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: inherit;
   margin: 0 auto;
   margin-top: -4%;
@@ -14,7 +14,7 @@
 }
 
 .bold-text-column-title {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: inherit;
   margin: auto;
   margin-top: 2%;
@@ -28,7 +28,7 @@
 /* All bold Paragraphs */
 .text-column-title div:nth-child(1) div:nth-child(1) p:nth-child(1),
 .text-column-bold {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   margin: auto;
   padding: 0;
   font-size: 18px;
@@ -40,7 +40,7 @@
 }
 
 .text-column {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   margin: auto;
   padding: 0;
   font-size: 16px;
@@ -54,7 +54,7 @@
 /* Text Section */
 .text-column-title div:nth-child(2),
 .text-column-par {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: inherit;
   margin: 0% auto;
   font-size: 16px;

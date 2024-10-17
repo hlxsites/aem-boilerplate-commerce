@@ -7,7 +7,7 @@
 /* interviews button */
 .features-intro p:nth-child(1) strong a:nth-child(1) {
   background-color: transparent;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-size: 10px;
   letter-spacing: var(--sub-text-spacing);
   font-weight: 350;
@@ -19,7 +19,7 @@
 
 /* Title */
 .features-intro div:nth-child(1) p:nth-child(2) {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   letter-spacing: var(--sub-text-spacing);
   font-size: 30px;
   text-align: center;
@@ -38,7 +38,7 @@
 
 /* summary */
 .features-intro div:nth-child(1) p:nth-child(4) {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   text-transform: inherit;
   margin: 4% auto;
   padding: 0;

@@ -19,7 +19,7 @@
 .featured-latest-articles div p:nth-child(3) a {
   text-transform: uppercase;
   background-color: transparent;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   border-radius: 0;
   margin: 0;
   padding: 0;
@@ -40,7 +40,7 @@
 
 /* Article Name */
 .featured-latest-articles div p:nth-child(3) a {
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   font-weight: 600;
   font-size: 20px;
 }
@@ -79,6 +79,6 @@ div:nth-child(23) .features-text p a {
   font-size: var(--sub-text-title-large);
   padding: 1% 10%;
   background-color: white;
-  color: var(--sub-text-title-color);
+  color: var(--main-text-color);
   border: 2px solid black;
 }

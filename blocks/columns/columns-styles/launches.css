@@ -30,7 +30,7 @@
 }
 
 .launches-page-date div:nth-child(1) div p:nth-child(1) u {
-  color: var(--sub-text-title-color-light);
+  color: var(--main-text-color-light);
   text-decoration: none;
   font-weight: 600;
 }

@@ -58,16 +58,23 @@
   div:nth-child(1)
   p:nth-child(1):only-of-type
   a {
-  color: black;
+  color: var(--text-date-color);
   background-color: transparent;
   border-radius: 0;
   text-transform: capitalize;
-  font-size: var(--sub-text-secondary-size);
   padding: 0.5%;
-  font-weight: 555;
   border-radius: 0;
   margin-top: 0;
   margin-bottom: 1%;
+  transition: opacity 0.3s ease;
+}
+
+.nav-modal-content
+  div:nth-child(2)
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a:hover {
+  opacity: 0.5;
 }
 
 @media (width <= 991px) {
