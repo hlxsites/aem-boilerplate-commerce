@@ -166,7 +166,6 @@ function preloadFile(href, as) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  await initializeDropins();
   decorateTemplateAndTheme();
 
   // Instrument experimentation plugin
@@ -183,14 +182,23 @@ async function loadEager(doc) {
   let pageType = 'CMS';
   if (document.body.querySelector('main .product-details')) {
     pageType = 'Product';
-    const sku = getSkuFromUrl();
-    window.getProductPromise = getProduct(sku);
 
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDetails.js', 'script');
+    // Preload PDP Dropins assets
+    preloadFile('/placeholders.json', 'fetch');
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/initialize.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getRefinedProduct.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getProductConfigurationValues.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/isProductConfigurationValid.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getFetchedProductData.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
   } else if (document.body.querySelector('main .product-details-custom')) {
     pageType = 'Product';
     preloadFile('/scripts/preact.js', 'script');
@@ -367,6 +375,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
+  await initializeDropins();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

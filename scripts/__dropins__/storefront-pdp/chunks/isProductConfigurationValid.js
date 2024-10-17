@@ -1,0 +1,1 @@
+import{events as o}from"@dropins/tools/event-bus.js";const r=t=>{const n=a(),i=t(n);o.emit("pdp/valid",i)},a=()=>{var t;return((t=o._lastEvent["pdp/valid"])==null?void 0:t.payload)??null};export{a as i,r as s};

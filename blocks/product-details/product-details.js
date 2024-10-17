@@ -1,26 +1,270 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
-import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
+
 import {
   InLineAlert,
   Icon,
+  Button,
   provider as UI,
 } from '@dropins/tools/components.js';
-import * as productApi from '@dropins/storefront-pdp/api.js';
-import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { initializers } from '@dropins/tools/initializer.js';
+import * as PDP from '@dropins/storefront-pdp/api.js';
+import { render as PDPProvider } from '@dropins/storefront-pdp/render.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
-import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
+
+// Containers
+import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
+import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
+import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
+import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
+import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.js';
+import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
+import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
+import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
 // Libs
 import {
-  getProduct,
-  getSkuFromUrl,
   setJsonLd,
   loadErrorPage, performCatalogServiceQuery, variantsQuery,
+  getSkuFromUrl,
+  getOptionsUIDsFromUrl,
 } from '../../scripts/commerce.js';
-import { getConfigValue } from '../../scripts/configs.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { getConfigValue } from '../../scripts/configs.js';
+
+export default async function decorate(block) {
+  // Set Fetch Endpoint (Service)
+  PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
+
+  // Set Fetch Headers (Service)
+  PDP.setFetchGraphQlHeaders({
+    'Content-Type': 'application/json',
+    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
+    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
+    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
+    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
+    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
+    'x-api-key': await getConfigValue('commerce-x-api-key'),
+  });
+
+  // pre-fetch PDP data
+  const sku = getSkuFromUrl();
+  const optionsUIDs = getOptionsUIDsFromUrl();
+
+  const [product, labels] = await Promise.all([
+    PDP.fetchPDPData(sku, { optionsUIDs }),
+    fetchPlaceholders(),
+  ]);
+
+  // Initialize
+  initializers.register(PDP.initialize, {
+    sku,
+    optionsUIDs,
+    langDefinitions: getLangDefinitions(labels),
+    models: {
+      ProductDetails: {
+        initialData: product,
+      },
+    },
+    acdl: true,
+    persistURLParams: true,
+  });
+
+  if (!product) {
+    await loadErrorPage();
+    return Promise.reject();
+  }
+
+  // Layout
+  const fragment = document.createRange().createContextualFragment(`
+    <div class="product-details__wrapper">
+      <div class="product-details__alert"></div>
+      <div class="product-details__left-column">
+        <div class="product-details__gallery"></div>
+      </div>
+      <div class="product-details__right-column">
+        <div class="product-details__header"></div>
+        <div class="product-details__price"></div>
+        <div class="product-details__gallery"></div>
+        <div class="product-details__short-description"></div>
+        <div class="product-details__configuration">
+          <div class="product-details__options"></div>
+          <div class="product-details__quantity"></div>
+          <div class="product-details__buttons">
+            <div class="product-details__buttons__add-to-cart"></div>
+            <div class="product-details__buttons__add-to-wishlist"></div>
+          </div>
+        </div>
+        <div class="product-details__description"></div>
+        <div class="product-details__attributes"></div>
+      </div>
+    </div>
+  `);
+
+  const $alert = fragment.querySelector('.product-details__alert');
+  const $gallery = fragment.querySelector('.product-details__gallery');
+  const $header = fragment.querySelector('.product-details__header');
+  const $price = fragment.querySelector('.product-details__price');
+  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
+  const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $options = fragment.querySelector('.product-details__options');
+  const $quantity = fragment.querySelector('.product-details__quantity');
+  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $description = fragment.querySelector('.product-details__description');
+  const $attributes = fragment.querySelector('.product-details__attributes');
+
+  block.appendChild(fragment);
+
+  // Alert
+  let inlineAlert = null;
+
+  // Render Containers
+  const [
+    _galleryMobile,
+    _gallery,
+    _header,
+    _price,
+    _shortDescription,
+    _options,
+    _quantity,
+    addToCart,
+    addToWishlist,
+    _description,
+    _attributes,
+  ] = await Promise.all([
+    // Gallery (Mobile)
+    PDPProvider.render(ProductGallery, {
+      controls: 'dots',
+      arrows: true,
+      peak: true,
+      gap: 'small',
+      // TODO: there is a bug in the Carousel component that renders the wrong default image
+      loop: false,
+    })($galleryMobile),
+
+    // Gallery (Desktop)
+    PDPProvider.render(ProductGallery, {
+      controls: 'thumbnailsColumn',
+      arrows: true,
+      peak: false,
+      gap: 'small',
+      // TODO: there is a bug in the Carousel component that renders the wrong default image
+      loop: false,
+    })($gallery),
+
+    // Header
+    PDPProvider.render(ProductHeader, {})($header),
+
+    // Price
+    PDPProvider.render(ProductPrice, {})($price),
+
+    // Short Description
+    PDPProvider.render(ProductShortDescription, {})($shortDescription),
+
+    // Configuration - Swatches
+    PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options),
+
+    // Configuration  Quantity
+    PDPProvider.render(ProductQuantity, {})($quantity),
+
+    // Configuration – Button - Add to Cart
+    UI.render(Button, {
+      children: labels.pdpProductAddtocart,
+      icon: Icon({ source: 'Cart' }),
+      onClick: async () => {
+        try {
+          addToCart.setProps((prev) => ({
+            ...prev,
+            children: labels.pdpCustomAddingtocart,
+            disabled: true,
+          }));
+
+          // get the current selection values
+          const values = PDP.getProductConfigurationValues();
+
+          // add the product to the cart
+          if (values) {
+            await addProductsToCart([{ ...values }]);
+          }
+
+          // reset any previous alerts if successful
+          inlineAlert?.remove();
+        } catch (error) {
+          // add alert message
+          inlineAlert = await UI.render(InLineAlert, {
+            heading: 'Error',
+            description: error.message,
+            icon: Icon({ source: 'Warning' }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              inlineAlert.remove();
+            },
+          })($alert);
+
+          // Scroll the alertWrapper into view
+          $alert.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        } finally {
+          addToCart.setProps((prev) => ({
+            ...prev,
+            children: labels.pdpProductAddtocart,
+            disabled: false,
+          }));
+        }
+      },
+    })($addToCart),
+
+    // Configuration - Add to Wishlist
+    UI.render(Button, {
+      icon: Icon({ source: 'Heart' }),
+      variant: 'secondary',
+      onClick: async () => {
+        try {
+          addToWishlist.setProps((prev) => ({ ...prev, disabled: true }));
+
+          const values = PDP.getProductConfigurationValues();
+
+          if (values?.sku) {
+            const wishlist = await import('../../scripts/wishlist/api.js');
+            await wishlist.addToWishlist(values.sku);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          addToWishlist.setProps((prev) => ({ ...prev, disabled: false }));
+        }
+      },
+    })($addToWishlist),
+
+    // Description
+    PDPProvider.render(ProductDescription, {})($description),
+
+    // Attributes
+    PDPProvider.render(ProductAttributes, {})($attributes),
+  ]);
+
+  // Lifecycle Events
+  events.on('pdp/valid', (valid) => {
+    // update add to cart button disabled state based on product selection validity
+    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+  }, { eager: true });
+
+  events.on('eds/lcp', () => {
+    if (product) {
+      // Set JSON-LD and Meta Tags
+      setJsonLdProduct(product);
+      setMetaTags(product);
+      document.title = product.name;
+    }
+  }, { eager: true });
+
+  return Promise.resolve();
+}
 
 async function setJsonLdProduct(product) {
   const {
@@ -108,9 +352,7 @@ function setMetaTags(product) {
     return;
   }
 
-  const price = product.priceRange
-    ? product.priceRange.minimum.final.amount
-    : product.price.final.amount;
+  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
 
   createMetaTag('title', product.metaTitle || product.name, 'name');
   createMetaTag('description', product.metaDescription, 'name');
@@ -128,192 +370,43 @@ function setMetaTags(product) {
   createMetaTag('og:product:price:currency', price.currency, 'property');
 }
 
-export default async function decorate(block) {
-  if (!window.getProductPromise) {
-    window.getProductPromise = getProduct(this.props.sku);
-  }
-
-  const [product, placeholders] = await Promise.all([
-    window.getProductPromise,
-    fetchPlaceholders(),
-  ]);
-
-  if (!product) {
-    await loadErrorPage();
-    return Promise.reject();
-  }
-
-  const langDefinitions = {
+function getLangDefinitions(labels) {
+  return {
     default: {
       PDP: {
         Product: {
-          Incrementer: { label: placeholders.pdpProductIncrementer },
-          OutOfStock: { label: placeholders.pdpProductOutofstock },
-          AddToCart: { label: placeholders.pdpProductAddtocart },
-          Details: { label: placeholders.pdpProductDetails },
-          RegularPrice: { label: placeholders.pdpProductRegularprice },
-          SpecialPrice: { label: placeholders.pdpProductSpecialprice },
+          Incrementer: { label: labels.pdpProductIncrementer },
+          OutOfStock: { label: labels.pdpProductOutofstock },
+          AddToCart: { label: labels.pdpProductAddtocart },
+          Details: { label: labels.pdpProductDetails },
+          RegularPrice: { label: labels.pdpProductRegularprice },
+          SpecialPrice: { label: labels.pdpProductSpecialprice },
           PriceRange: {
-            From: { label: placeholders.pdpProductPricerangeFrom },
-            To: { label: placeholders.pdpProductPricerangeTo },
+            From: { label: labels.pdpProductPricerangeFrom },
+            To: { label: labels.pdpProductPricerangeTo },
           },
-          Image: { label: placeholders.pdpProductImage },
+          Image: { label: labels.pdpProductImage },
         },
         Swatches: {
-          Required: { label: placeholders.pdpSwatchesRequired },
+          Required: { label: labels.pdpSwatchesRequired },
         },
         Carousel: {
-          label: placeholders.pdpCarousel,
-          Next: { label: placeholders.pdpCarouselNext },
-          Previous: { label: placeholders.pdpCarouselPrevious },
-          Slide: { label: placeholders.pdpCarouselSlide },
+          label: labels.pdpCarousel,
+          Next: { label: labels.pdpCarouselNext },
+          Previous: { label: labels.pdpCarouselPrevious },
+          Slide: { label: labels.pdpCarouselSlide },
           Controls: {
-            label: placeholders.pdpCarouselControls,
-            Button: { label: placeholders.pdpCarouselControlsButton },
+            label: labels.pdpCarouselControls,
+            Button: { label: labels.pdpCarouselControlsButton },
           },
         },
         Overlay: {
-          Close: { label: placeholders.pdpOverlayClose },
+          Close: { label: labels.pdpOverlayClose },
         },
       },
       Custom: {
-        AddingToCart: { label: placeholders.pdpCustomAddingtocart },
+        AddingToCart: { label: labels.pdpCustomAddingtocart },
       },
     },
   };
-
-  const models = {
-    ProductDetails: {
-      initialData: { ...product },
-    },
-  };
-
-  // Initialize Dropins
-  initializers.register(productApi.initialize, {
-    langDefinitions,
-    models,
-  });
-
-  // Set Fetch Endpoint (Service)
-  productApi.setEndpoint(await getConfigValue('commerce-endpoint'));
-
-  // Set Fetch Headers (Service)
-  productApi.setFetchGraphQlHeaders({
-    'Content-Type': 'application/json',
-    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
-  });
-
-  events.on(
-    'eds/lcp',
-    () => {
-      if (!product) {
-        return;
-      }
-
-      setJsonLdProduct(product);
-      setMetaTags(product);
-      document.title = product.name;
-    },
-    { eager: true },
-  );
-
-  // Alert Message Wrapper
-  const alertWrapper = document.createElement('div');
-  alertWrapper.classList.add('product-details__alert');
-  block.appendChild(alertWrapper);
-  let inlineAlert;
-
-  // PDP Wrapper
-  const pdpWrapper = document.createElement('div');
-  block.appendChild(pdpWrapper);
-
-  // Render Containers
-  try {
-    return await productRenderer.render(ProductDetails, {
-      sku: getSkuFromUrl(),
-      carousel: {
-        controls: {
-          desktop: 'thumbnailsColumn',
-          mobile: 'thumbnailsRow',
-        },
-        arrowsOnMainImage: true,
-        peak: {
-          mobile: true,
-          desktop: false,
-        },
-        gap: 'small',
-      },
-      slots: {
-        Actions: (ctx) => {
-          // Add to Cart Button
-          ctx.appendButton((next, state) => {
-            const adding = state.get('adding');
-            return {
-              text: adding
-                ? next.dictionary.Custom.AddingToCart?.label
-                : next.dictionary.PDP.Product.AddToCart?.label,
-              icon: 'Cart',
-              variant: 'primary',
-              disabled: adding || !next.data?.inStock || !next.valid,
-              onClick: async () => {
-                try {
-                  state.set('adding', true);
-                  await addProductsToCart([{ ...next.values }]);
-                  // reset any previous alerts if successful
-                  inlineAlert?.remove();
-                } catch (error) {
-                  // add alert message
-                  inlineAlert = await UI.render(InLineAlert, {
-                    heading: 'Error',
-                    description: error.message,
-                    icon: Icon({ source: 'Warning' }),
-                    'aria-live': 'assertive',
-                    role: 'alert',
-                    onDismiss: () => {
-                      inlineAlert.remove();
-                    },
-                  })(alertWrapper);
-                  // Scroll the alertWrapper into view
-                  alertWrapper.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
-                  });
-                } finally {
-                  state.set('adding', false);
-                }
-              },
-            };
-          });
-
-          ctx.appendButton((next, state) => {
-            const adding = state.get('adding');
-            return ({
-              disabled: adding,
-              icon: 'Heart',
-              variant: 'secondary',
-              onClick: async () => {
-                try {
-                  state.set('adding', true);
-                  const { addToWishlist } = await import('../../scripts/wishlist/api.js');
-                  await addToWishlist(next.values.sku);
-                } finally {
-                  state.set('adding', false);
-                }
-              },
-            });
-          });
-        },
-      },
-      useACDL: true,
-    })(pdpWrapper);
-  } catch (e) {
-    console.error(e);
-    await loadErrorPage();
-  }
-  return undefined;
 }

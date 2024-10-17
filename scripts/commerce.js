@@ -278,6 +278,10 @@ export function getSkuFromUrl() {
   return result?.[1];
 }
 
+export function getOptionsUIDsFromUrl() {
+  return new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
+}
+
 const productsCache = {};
 export async function getProduct(sku) {
   if (productsCache[sku]) {
