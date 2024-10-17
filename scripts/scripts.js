@@ -2,13 +2,13 @@
 import { events } from '@dropins/tools/event-bus.js';
 import {
   buildBlock,
-  loadHeader,
-  loadFooter,
+  decorateBlocks,
   decorateButtons,
   decorateIcons,
   decorateSections,
-  decorateBlocks,
   decorateTemplateAndTheme,
+  loadFooter,
+  loadHeader,
   getMetadata,
   loadScript,
   toCamelCase,
@@ -83,6 +83,18 @@ async function loadFonts() {
   }
 }
 
+function autolinkModals(element) {
+  element.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      openModal(origin.href);
+    }
+  });
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -93,6 +105,35 @@ function buildAutoBlocks(main) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
+  }
+}
+
+/**
+ * Decorate Columns Template to the main element.
+ * @param {Element} main The container element
+ */
+function buildTemplateColumns(doc) {
+  const columns = doc.querySelectorAll('main > div.section[data-column-width]');
+
+  columns.forEach((column) => {
+    const columnWidth = column.getAttribute('data-column-width');
+    const gap = column.getAttribute('data-gap');
+
+    if (columnWidth) {
+      column.style.setProperty('--column-width', columnWidth);
+      column.removeAttribute('data-column-width');
+    }
+
+    if (gap) {
+      column.style.setProperty('--gap', `var(--spacing-${gap.toLocaleLowerCase()})`);
+      column.removeAttribute('data-gap');
+    }
+  });
+}
+
+async function applyTemplates(doc) {
+  if (doc.body.classList.contains('columns')) {
+    buildTemplateColumns(doc);
   }
 }
 
@@ -202,9 +243,15 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
+    // Main Decorations
     decorateMain(main);
-    document.body.classList.add('appear');
+
+    // Template Decorations
+    await applyTemplates(doc);
+
+    // Load LCP blocks
     await loadSection(main.querySelector('.section'), waitForFirstImage);
+    document.body.classList.add('appear');
   }
 
   events.emit('eds/lcp', true);
@@ -224,6 +271,8 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  autolinkModals(doc);
+
   const main = doc.querySelector('main');
   await loadSections(main);
 
