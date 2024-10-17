@@ -437,56 +437,6 @@ main .section.highlight {
   z-index: 2;
 }
 
-/* Layout: Columns */
-body.columns main {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1264px;
-  margin: 0 auto;
-  padding: var(--spacing-large) var(--spacing-small);
-  box-sizing: border-box;
-  gap: var(--grid-4-gutters);
-}
-
-body.columns main > .section {
-  flex: 1;
-  flex-basis: 100%;
-  max-width: unset;
-  margin: unset;
-  padding: unset;
-}
-
-body.columns main > .section > div {
-  max-width: unset;
-  padding: unset;
-}
-
-body.columns main > .section > div:not(:last-child) {
-  margin-bottom: var(--gap, unset);
-}
-
-body.columns main > .section:empty {
-  display: none;
-}
-
-@media (width >= 600px) {
-  body.columns main {
-      padding: var(--spacing-large) var(--spacing-big);
-  }
-}
-
-@media (width >= 900px) {
-  body.columns main {
-    flex-direction: row;
-  }
-
-  body.columns main > .section {
-    flex: 1;
-    flex-basis: var(--column-width, auto);
-  }
-}
-
 /**
 * Reset main element visibility
 * https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden

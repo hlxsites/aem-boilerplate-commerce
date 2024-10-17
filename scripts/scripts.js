@@ -23,6 +23,8 @@ import {
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
 import initializeDropins from './dropins.js';
 
+const TEMPLATES = ['columns', 'order-details'];
+
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
   desktop: () => window.innerWidth >= 600,
@@ -109,32 +111,19 @@ function buildAutoBlocks(main) {
 }
 
 /**
- * Decorate Columns Template to the main element.
- * @param {Element} main The container element
+ * Applies templates defined in the metadata.
+ * @param {Element} doc
+ * @return Promise
  */
-function buildTemplateColumns(doc) {
-  const columns = doc.querySelectorAll('main > div.section[data-column-width]');
-
-  columns.forEach((column) => {
-    const columnWidth = column.getAttribute('data-column-width');
-    const gap = column.getAttribute('data-gap');
-
-    if (columnWidth) {
-      column.style.setProperty('--column-width', columnWidth);
-      column.removeAttribute('data-column-width');
-    }
-
-    if (gap) {
-      column.style.setProperty('--gap', `var(--spacing-${gap.toLocaleLowerCase()})`);
-      column.removeAttribute('data-gap');
-    }
-  });
-}
-
 async function applyTemplates(doc) {
-  if (doc.body.classList.contains('columns')) {
-    buildTemplateColumns(doc);
-  }
+  const templates = getMetadata('template').split(',').map((t) => toClassName(t.trim()));
+  return Promise.all([
+    ...templates.filter((t) => !!TEMPLATES.find((x) => x === t))
+      .map((t) => [
+        import(`../templates/${t}/${t}.js`).then((mod) => mod.default(doc)),
+        loadCSS(`${window.hlx.codeBasePath}/templates/${t}/${t}.css`),
+      ]),
+  ]);
 }
 
 /**
