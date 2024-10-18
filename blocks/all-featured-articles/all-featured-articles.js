@@ -32,9 +32,7 @@ export default async function decorate(block) {
           const img = document.createElement('img');
           imgLink.href = path;
           img.src = `${imagePath}?width=750&format=webply&optimize=medium`;
-          img.srcset = `${imagePath}?width=750&format=webply&optimize=medium 750w,
-          ${imagePath}?width=1440&format=webply&optimize=medium 1440w,
-          ${imagePath}?width=2000&format=webply&optimize=medium 2000w`;
+          img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
           img.loading = 'lazy';
           img.alt = title;
           imgLink.appendChild(img);
