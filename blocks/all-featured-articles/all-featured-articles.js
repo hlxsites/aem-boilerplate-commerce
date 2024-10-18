@@ -8,7 +8,7 @@ export default async function decorate(block) {
 
     block.querySelectorAll('p, div').forEach((element) => element.remove());
     // Processes each p tag
-    pathElements.forEach((pathElement) => {
+    pathElements.forEach((pathElement, index) => {
       const path = pathElement.textContent.trim();
 
       // Finds matching item
@@ -33,7 +33,12 @@ export default async function decorate(block) {
           imgLink.href = path;
           img.src = `${imagePath}?width=750&format=webply&optimize=medium`;
           img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
-          img.loading = 'lazy';
+          if (index === 0) {
+            img.loading = 'eager';
+            img.fetchPriority = 'high';
+          } else {
+            img.loading = 'lazy';
+          }
           img.alt = title;
           imgLink.appendChild(img);
           imageWrapperDiv.appendChild(imgLink);
