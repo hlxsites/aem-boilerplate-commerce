@@ -111,13 +111,20 @@ function createSlide(row, slideIndex, carouselId) {
 
       const sourcePngLarge = document.createElement('source');
       sourcePngLarge.type = 'image/png';
-      sourcePngLarge.srcset = `${url}?width=auto&format=png&optimize=medium`;
+
+      sourcePngLarge.srcset = `${url}?width=1080&format=png&optimize=medium`;
       sourcePngLarge.media = '(min-width: 600px)';
       picture.appendChild(sourcePngLarge);
+
+      const sourcePngSmall = document.createElement('source');
+      sourcePngSmall.type = 'image/png';
+      sourcePngSmall.srcset = `${url}?width=750&format=png&optimize=medium`;
+      picture.appendChild(sourcePngSmall);
 
       const img = document.createElement('img');
       if (slideIndex === 0) {
         img.loading = 'eager';
+        img.fetchPriority = 'high';
         console.log('first img: ', img);
       } else if (slideIndex > 0) {
         img.loading = 'lazy';
@@ -125,8 +132,14 @@ function createSlide(row, slideIndex, carouselId) {
       }
       img.src = `${url}?width=auto&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
-      // img.width = 1600;
-      // img.height = 504;
+      if (img == sourcePngLarge) {
+        img.width = 1600;
+        img.height = 504;
+      } else if (img == sourcePngSmall) {
+        img.width = 750;
+        img.height = 472;
+      }
+
       picture.appendChild(img);
 
       column.innerHTML = '';
