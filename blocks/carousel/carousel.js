@@ -125,8 +125,8 @@ function createSlide(row, slideIndex, carouselId) {
       }
       img.src = `${url}?width=750&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
-      img.width = 1600;
-      img.height = 504;
+      // img.width = 1600;
+      // img.height = 504;
       picture.appendChild(img);
 
       column.innerHTML = '';
