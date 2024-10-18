@@ -132,14 +132,8 @@ function createSlide(row, slideIndex, carouselId) {
       }
       img.src = `${url}?width=auto&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
-      if (img == sourcePngLarge) {
-        img.width = 1600;
-        img.height = 504;
-      } else if (img == sourcePngSmall) {
-        img.width = 750;
-        img.height = 472;
-      }
-
+      // img.width = 1600;
+      // img.height = 504;
       picture.appendChild(img);
 
       column.innerHTML = '';
