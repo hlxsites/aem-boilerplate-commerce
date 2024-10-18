@@ -100,36 +100,29 @@ function createSlide(row, slideIndex, carouselId) {
     if (url.startsWith('http://') || url.startsWith('https://')) {
       const picture = document.createElement('picture');
 
-      const sourceWebPLarge = document.createElement('source');
-      sourceWebPLarge.type = 'image/webp';
-      sourceWebPLarge.srcset = `${url.replace(
-        /\.we$/,
-        '.webp'
-      )}?width=2000&format=webp&optimize=medium`;
-      sourceWebPLarge.media = '(min-width: 600px)';
-      picture.appendChild(sourceWebPLarge);
-      console.log(sourceWebPLarge);
+      // const sourceWebPLarge = document.createElement('source');
+      // sourceWebPLarge.type = 'image/webp';
+      // sourceWebPLarge.srcset = `${url.replace(
+      //   /\.we$/,
+      //   '.webp'
+      // )}?width=2000&format=webp&optimize=medium`;
+      // sourceWebPLarge.media = '(min-width: 600px)';
+      // picture.appendChild(sourceWebPLarge);
 
-      const sourceWebPSmall = document.createElement('source');
-      sourceWebPSmall.type = 'image/webp';
-      sourceWebPSmall.srcset = `${url}?width=750&format=webp&optimize=medium`;
-      picture.appendChild(sourceWebPSmall);
+      // const sourceWebPSmall = document.createElement('source');
+      // sourceWebPSmall.type = 'image/webp';
+      // sourceWebPSmall.srcset = `${url}?width=750&format=webp&optimize=medium`;
+      // picture.appendChild(sourceWebPSmall);
 
       const sourcePngLarge = document.createElement('source');
       sourcePngLarge.type = 'image/png';
-      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
+      sourcePngLarge.srcset = `${url}?width=1600&format=png&optimize=medium`;
       sourcePngLarge.media = '(min-width: 600px)';
       picture.appendChild(sourcePngLarge);
 
       const img = document.createElement('img');
-      if (slideIndex === 0) {
-        preloadImage(`${url}?width=2000&format=png&optimize=medium`);
-        img.loading = 'eager';
-        img.fetchPriority = 'high';
-      } else {
-        img.loading = 'lazy';
-      }
-      img.src = `${url}?width=750&format=png&optimize=medium`;
+
+      img.src = `${url}?width=1600&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
       img.width = 1600;
       img.height = 504;
