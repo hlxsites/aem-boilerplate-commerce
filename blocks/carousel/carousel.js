@@ -116,7 +116,13 @@ function createSlide(row, slideIndex, carouselId) {
       picture.appendChild(sourcePngLarge);
 
       const img = document.createElement('img');
-      img.loading = 'lazy';
+      if (slideIndex === 0) {
+        img.loading = 'eager';
+        console.log('first img: ', img);
+      } else if (slideIndex > 0) {
+        img.loading = 'lazy';
+        console.log('other imgs: ', img);
+      }
       img.src = `${url}?width=750&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
       img.width = 1600;
