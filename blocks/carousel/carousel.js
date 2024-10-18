@@ -1,5 +1,13 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
+function preloadImage(imageUrl) {
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = 'image';
+  link.href = imageUrl;
+  document.head.appendChild(link);
+}
+
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
   const slideIndex = parseInt(slide.dataset.slideIndex, 10);
@@ -114,6 +122,7 @@ function createSlide(row, slideIndex, carouselId) {
 
       const img = document.createElement('img');
       if (slideIndex === 0) {
+        preloadImage(`${url}?width=750&format=png&optimize=medium`);
         img.loading = 'eager';
         img.fetchPriority = 'high';
       } else {
