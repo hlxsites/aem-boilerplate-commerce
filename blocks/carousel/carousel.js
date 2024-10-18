@@ -97,7 +97,7 @@ function createSlide(row, slideIndex, carouselId) {
       sourceWebPLarge.srcset = `${url.replace(
         /\.we$/,
         '.webp'
-      )}?width=2000&format=webp&optimize=medium`;
+      )}?width=auto&format=webp&optimize=medium`;
       sourceWebPLarge.media = '(min-width: 600px)';
       picture.appendChild(sourceWebPLarge);
 
@@ -106,12 +106,12 @@ function createSlide(row, slideIndex, carouselId) {
       sourceWebPSmall.srcset = `${url.replace(
         /\.we$/,
         '.webp'
-      )}?width=750&format=webp&optimize=medium`;
+      )}?width=auto&format=webp&optimize=medium`;
       picture.appendChild(sourceWebPSmall);
 
       const sourcePngLarge = document.createElement('source');
       sourcePngLarge.type = 'image/png';
-      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
+      sourcePngLarge.srcset = `${url}?width=auto&format=png&optimize=medium`;
       sourcePngLarge.media = '(min-width: 600px)';
       picture.appendChild(sourcePngLarge);
 
@@ -123,7 +123,7 @@ function createSlide(row, slideIndex, carouselId) {
         img.loading = 'lazy';
         console.log('other img: ', img);
       }
-      img.src = `${url}?width=750&format=png&optimize=medium`;
+      img.src = `${url}?width=auto&format=png&optimize=medium`;
       img.alt = `Slide ${slideIndex + 1} Image`;
       // img.width = 1600;
       // img.height = 504;
