@@ -20,6 +20,14 @@ export default async function decorate(block) {
         const category = matchingItem.category || '';
         const date = matchingItem.date || '';
 
+        const dateParts = date.split(' ');
+        const day = dateParts[0];
+        const month = new Date(`${dateParts[1]} 1, 2000`).getMonth() + 1;
+        const year = dateParts[2].slice(-2);
+        const formattedDate = `${day.padStart(2, '0')}/${month
+          .toString()
+          .padStart(2, '0')}/${year}`;
+
         // Creates div for content
         const contentDiv = document.createElement('div');
         contentDiv.classList.add('article-card');
@@ -49,36 +57,57 @@ export default async function decorate(block) {
         const textContentDiv = document.createElement('div');
         textContentDiv.classList.add('article-content');
 
-        const articleCategory = document.createElement('p');
-        articleCategory.classList.add('category');
-        const articleCategoryLink = document.createElement('a');
-        articleCategoryLink.href = `/${category
-          .toLowerCase()
-          .replace(/\s+/g, '-')}`;
-        articleCategoryLink.textContent = category;
-        articleCategory.appendChild(articleCategoryLink);
-        textContentDiv.appendChild(articleCategory);
+        if (block.classList.contains('featured-date-title')) {
+          const dateLink = document.createElement('a');
+          const articleDate = document.createElement('p');
+          articleDate.classList.add('date');
+          dateLink.href = path;
+          dateLink.textContent = formattedDate;
 
-        const titleLink = document.createElement('a');
-        const articleTitle = document.createElement('h3');
-        titleLink.href = path;
-        titleLink.textContent = title;
-        articleTitle.appendChild(titleLink);
-        textContentDiv.appendChild(articleTitle);
+          articleDate.appendChild(dateLink);
+          textContentDiv.appendChild(articleDate);
 
-        const dateLink = document.createElement('a');
-        const articleDate = document.createElement('p');
-        articleDate.classList.add('date');
-        dateLink.href = path;
-        dateLink.textContent = date;
-        articleDate.appendChild(dateLink);
-        textContentDiv.appendChild(articleDate);
+          const titleLink = document.createElement('a');
+          const articleTitle = document.createElement('h3');
+          titleLink.href = path;
+          titleLink.textContent = title;
+          articleTitle.appendChild(titleLink);
+          textContentDiv.appendChild(articleTitle);
 
-        contentDiv.appendChild(textContentDiv);
+          contentDiv.appendChild(textContentDiv);
 
-        block.appendChild(contentDiv);
-      } else {
-        console.error('No matching data found for path: ', path);
+          // Append contentDiv to block (moved outside the else block)
+          block.appendChild(contentDiv);
+        } else {
+          const articleCategory = document.createElement('p');
+          articleCategory.classList.add('category');
+          const articleCategoryLink = document.createElement('a');
+          articleCategoryLink.href = `/${category
+            .toLowerCase()
+            .replace(/\s+/g, '-')}`;
+          articleCategoryLink.textContent = category;
+          articleCategory.appendChild(articleCategoryLink);
+          textContentDiv.appendChild(articleCategory);
+
+          const titleLink = document.createElement('a');
+          const articleTitle = document.createElement('h3');
+          titleLink.href = path;
+          titleLink.textContent = title;
+          articleTitle.appendChild(titleLink);
+          textContentDiv.appendChild(articleTitle);
+
+          const dateLink = document.createElement('a');
+          const articleDate = document.createElement('p');
+          articleDate.classList.add('date');
+          dateLink.href = path;
+          dateLink.textContent = date;
+          articleDate.appendChild(dateLink);
+          textContentDiv.appendChild(articleDate);
+
+          contentDiv.appendChild(textContentDiv);
+
+          block.appendChild(contentDiv);
+        }
       }
     });
 

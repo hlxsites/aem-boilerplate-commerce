@@ -1,0 +1,18 @@
+.featured-date-title {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.featured-date-title img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-width: 442px;
+  max-height: 223px;
+}
+
+.featured-date-title .article-card {
+  max-width: 442px;
+}

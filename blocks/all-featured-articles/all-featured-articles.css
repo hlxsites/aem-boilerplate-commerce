@@ -4,6 +4,7 @@
 @import url(./three-cols-articles.css);
 @import url(./three-cols-articles-modal.css);
 @import url(./featured-title.css);
+@import url(./featured-date-title.css);
 
 .all-featured-articles .category a:hover,
 .all-featured-articles h3 a:hover,
@@ -57,6 +58,22 @@
   font-size: var(--sub-text-secondary-size);
   color: var(--date-color);
   font-weight: 400;
+}
+
+.featured-date-title h3 {
+  margin-top: 0;
+}
+
+.featured-date-title h3 a {
+  font-weight: 400;
+}
+
+.featured-date-title .date {
+  margin-top: 13px;
+}
+
+.featured-date-title .date a {
+  color: var(--sub-text-grey);
 }
 
 @media (width >= 992px) {
@@ -127,7 +144,8 @@
   }
 
   /* Highlights Section */
-  .highlighted-articles {
+  .highlighted-articles,
+  .featured-date-title {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -136,7 +154,8 @@
     scrollbar-width: none;
   }
 
-  .highlighted-articles::-webkit-scrollbar {
+  .highlighted-articles::-webkit-scrollbar,
+  .featured-date-title::-webkit-scrollbar {
     display: none;
   }
 
@@ -248,5 +267,22 @@
   .three-cols-articles-modal .article-content {
     justify-content: flex-start;
     width: 100%;
+  }
+
+  .featured-date-title .article-card {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    flex-basis: 70%;
+    width: 408px;
+    max-width: 408px;
+  }
+
+  .featured-date-title img {
+    width: 100%;
+    max-width: 408px;
+    max-height: 270px;
+    height: auto;
+    object-fit: cover;
   }
 }
