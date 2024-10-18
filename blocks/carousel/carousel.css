@@ -269,6 +269,8 @@ div.section.carousel-container {
 
 @media (width < 768px) {
   .carousel-slide-image img {
+    width: 100%;
+    height: auto;
     object-fit: cover;
     display: flex;
     justify-content: center;
