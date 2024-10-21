@@ -26,11 +26,12 @@
   margin: 5% 0;
   padding: 0;
   margin-bottom: 0%;
-  padding-right: 8%;
+  /* padding-right: 8%; */
   line-height: 0.5;
   color: var(--main-text-color);
   font-size: var(--sub-text-secondary-size);
   font-weight: 400;
+  max-width: 341px;
 }
 
 .nav-modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2),
@@ -38,6 +39,20 @@
   margin-bottom: 4%;
 }
 
+.nav-modal-content .three-cols-four-img table {
+  width: auto;
+}
+.nav-modal-content .three-cols-four-img table tbody img {
+  display: grid;
+  width: auto;
+  gap: 0 30px;
+  padding-right: 4%;
+}
+
+.nav-modal-content .three-cols-four-img img,
+.nav-modal-content .four-cols-two-img img {
+  width: 100%;
+}
 .nav-modal-content div div ul {
   list-style-type: none;
   flex-direction: column;

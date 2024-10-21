@@ -1,12 +1,15 @@
 div.section.carousel-container {
   padding: 0;
   margin: 0;
+  height: 100vh;
 }
 
 .carousel {
+  position: absolute;
+  left: 0;
   padding: 0;
   height: auto;
-  margin-left: 0;
+  max-height: 934px;
   width: 100vw;
 }
 
@@ -47,13 +50,13 @@ div.section.carousel-container {
   height: auto;
 }
 
-.carousel .carousel-slide:has(.carousel-slide-content[data-align='center']) {
+/* .carousel .carousel-slide:has(.carousel-slide-content[data-align='center']) {
   align-items: center;
 }
 
 .carousel .carousel-slide:has(.carousel-slide-content[data-align='right']) {
   align-items: flex-end;
-}
+} */
 
 .carousel .carousel-slide .carousel-slide-image picture {
   position: absolute;
