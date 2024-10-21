@@ -45,8 +45,8 @@ export default async function decorate(block) {
           } else {
             img.loading = 'lazy';
           }
-          img.src = `${imagePath}?width=450&format=webply&optimize=medium`;
           img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
+          img.src = `${imagePath}?width=450&format=webply&optimize=medium`;
           img.alt = title;
           imgLink.appendChild(img);
           imageWrapperDiv.appendChild(imgLink);
