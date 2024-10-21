@@ -113,7 +113,6 @@ function createSlide(row, slideIndex, carouselId) {
       if (slideIndex == 0) {
         img.loading = 'eager';
         img.fetchPriority = 'high';
-        img.rel = 'preload';
       } else {
         img.loading = 'lazy';
       }
