@@ -111,7 +111,6 @@ function createSlide(row, slideIndex, carouselId) {
 
       const img = document.createElement('img');
       if (slideIndex == 0) {
-        img.rel = 'preload';
         img.loading = 'eager';
         img.fetchPriority = 'high';
       } else {
