@@ -48,6 +48,8 @@ export default async function decorate(block) {
           img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
           img.src = `${imagePath}?width=450&format=webply&optimize=medium`;
           img.alt = title;
+          img.width = 442;
+          img.height = 223;
           imgLink.appendChild(img);
           imageWrapperDiv.appendChild(imgLink);
         }
