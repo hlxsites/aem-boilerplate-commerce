@@ -1,4 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
@@ -90,7 +91,12 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = document.createElement('picture');
+      const picture = createOptimizedPicture(
+        url,
+        `Slide ${slideIndex + 1} Image`,
+        false,
+        [{ width: 2000, format: 'webp' }, { width: 2000 }]
+      );
 
       const sourceWebPLarge = document.createElement('source');
       sourceWebPLarge.type = 'image/webp';
