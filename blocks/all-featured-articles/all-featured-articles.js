@@ -39,14 +39,14 @@ export default async function decorate(block) {
           const imgLink = document.createElement('a');
           const img = document.createElement('img');
           imgLink.href = path;
-          img.src = `${imagePath}?width=750&format=webply&optimize=medium`;
-          img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
           if (index === 0) {
             img.loading = 'eager';
             img.fetchPriority = 'high';
           } else {
             img.loading = 'lazy';
           }
+          img.src = `${imagePath}?width=450&format=webply&optimize=medium`;
+          img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
           img.alt = title;
           imgLink.appendChild(img);
           imageWrapperDiv.appendChild(imgLink);
