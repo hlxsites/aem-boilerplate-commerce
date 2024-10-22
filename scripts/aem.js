@@ -338,6 +338,7 @@ function createOptimizedPicture(
   eager = false,
   breakpoints = [
     { media: '(min-width: 600px)', width: '2000' },
+    { media: '(max-width: 600px)', width: '450' },
     { width: '750' },
   ]
 ) {
