@@ -91,34 +91,26 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = document.createElement('picture');
-
-      const sourceWebPLarge = document.createElement('source');
-      sourceWebPLarge.type = 'image/webp';
-      sourceWebPLarge.srcset = `${url}?width=2000&format=webply&optimize=medium`;
-      sourceWebPLarge.media = '(min-width: 600px)';
-      picture.appendChild(sourceWebPLarge);
-
-      const sourceWebPSmall = document.createElement('source');
-      sourceWebPSmall.type = 'image/webp';
-      sourceWebPSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
-      picture.appendChild(sourceWebPSmall);
-
-      const sourcePngLarge = document.createElement('source');
-      sourcePngLarge.type = 'image/png';
-      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
-      sourcePngLarge.media = '(min-width: 600px)';
-      picture.appendChild(sourcePngLarge);
+      const picture = createOptimizedPicture(
+        url,
+        `Slide ${slideIndex + 1} Image`,
+        slideIndex === 0,
+        [
+          { width: 2000, format: 'webp' },
+          { width: 450, height: 915, format: 'webp' },
+          { width: 2000, format: 'png' },
+        ]
+      );
 
       const img = document.createElement('img');
-      if (slideIndex == 0) {
-        img.loading = 'eager';
-        img.fetchPriority = 'high';
-        img.rel = 'preload';
+
+      const pngSource = picture.querySelector('source[type="image/png"]');
+      if (pngSource) {
+        img.src = pngSource.srcset;
       } else {
-        img.loading = 'lazy';
+        img.src = `${url}?width=2000&format=png&optimize=medium`;
       }
-      img.src = `${url}?width=2000&format=png&optimize=medium`;
+
       img.alt = `Slide ${slideIndex + 1} Image`;
       picture.appendChild(img);
 
