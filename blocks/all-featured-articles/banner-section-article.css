@@ -1,6 +1,7 @@
 .banner-section-articles img {
   width: 100vw;
   height: auto;
+  max-height: 609px;
 }
 
 .banner-section-article h3 a {
