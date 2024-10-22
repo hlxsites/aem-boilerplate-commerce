@@ -91,12 +91,7 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = createOptimizedPicture(
-        url,
-        `Slide ${slideIndex + 1} Image`,
-        false,
-        [{ width: 2000, format: 'webp' }, { width: 2000 }]
-      );
+      const picture = document.createElement('picture');
 
       const sourceWebPLarge = document.createElement('source');
       sourceWebPLarge.type = 'image/webp';
