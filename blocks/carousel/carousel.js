@@ -101,7 +101,7 @@ function createSlide(row, slideIndex, carouselId) {
 
       const sourceWebPSmall = document.createElement('source');
       sourceWebPSmall.type = 'image/webp';
-      sourceWebPSmall.srcset = `${url}?width=450&format=webply&optimize=medium`;
+      sourceWebPSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
       picture.appendChild(sourceWebPSmall);
 
       const sourcePngLarge = document.createElement('source');
