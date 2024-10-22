@@ -57,8 +57,8 @@ export default async function decorate(block) {
 
             imageWrapperDiv.appendChild(imgLink);
 
-            // img.width = 442;
-            // img.height = 223;
+            img.width = 442;
+            img.height = 223;
           }
         }
         contentDiv.appendChild(imageWrapperDiv);
