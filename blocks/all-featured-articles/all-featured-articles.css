@@ -59,11 +59,6 @@
   color: var(--date-color);
   font-weight: 400;
 }
-/* 
-.banner-section-article .article-image {
-  min-height: 70vh;
-  border: 2px solid rebeccapurple;
-} */
 
 .featured-date-title h3 {
   margin-top: 0;
@@ -122,24 +117,6 @@
 }
 
 @media (width <= 991px) {
-  /* Banner Section */
-  .banner-section-articles {
-    height: 643px;
-  }
-
-  /* Banner Section Articles  */
-  .banner-section-articles {
-    min-height: 50vh;
-    height: auto;
-  }
-
-  .banner-section-articles picture,
-  .banner-section-articles img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-  }
-
   .banner-section-article h3 a {
     font-size: 22px;
   }
