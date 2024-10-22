@@ -21,7 +21,7 @@ import {
   sampleRUM,
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
-import initializeDropins from './dropins.js';
+import initializeDropins from './initializers/index.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -166,7 +166,6 @@ function preloadFile(href, as) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  await initializeDropins();
   decorateTemplateAndTheme();
 
   // Instrument experimentation plugin
@@ -367,6 +366,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
+  await initializeDropins();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

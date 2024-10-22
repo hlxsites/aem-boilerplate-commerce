@@ -12,6 +12,11 @@ import { render as productRenderer } from '@dropins/storefront-pdp/render.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 import ProductDetails from '@dropins/storefront-pdp/containers/ProductDetails.js';
 
+// Initializers
+import '../../scripts/initializers/cart.js';
+// TODO: Move initializer to /scripts/initializers/pdp.js
+import '../../scripts/initializers/pdp.js';
+
 // Libs
 import {
   getProduct,
