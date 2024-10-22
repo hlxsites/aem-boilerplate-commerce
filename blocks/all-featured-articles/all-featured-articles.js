@@ -44,7 +44,7 @@ export default async function decorate(block) {
             index === 0,
             [
               { width: 2000, format: 'webp' },
-              { width: 450, format: 'webp' },
+              { width: 450, height: 915, format: 'webp' },
               { width: 2000, format: 'png' },
             ]
           );
