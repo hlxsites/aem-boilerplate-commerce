@@ -353,7 +353,7 @@ function createOptimizedPicture(
     source.setAttribute('type', 'image/webp');
     source.setAttribute(
       'srcset',
-      `${pathname}?width=${br.width}&format=webp&optimize=medium`
+      `${pathname}?width=${br.width}&format=webply&optimize=medium`
     );
     picture.appendChild(source);
   });
