@@ -1,8 +1,8 @@
 import { FunctionComponent } from 'preact';
-import { CheckboxProps } from '@dropins/tools/types/elsie/src/components';
+import { HTMLAttributes } from 'preact/compat';
 
-export interface BillToShippingAddressProps extends Omit<CheckboxProps, 'name' | 'label'> {
-    isInitialized?: boolean;
+export interface BillToShippingAddressProps extends Omit<HTMLAttributes<HTMLInputElement>, 'loading'> {
+    loading?: boolean;
 }
 export declare const BillToShippingAddress: FunctionComponent<BillToShippingAddressProps>;
 //# sourceMappingURL=BillToShippingAddress.d.ts.map
