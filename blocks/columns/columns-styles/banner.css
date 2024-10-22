@@ -47,7 +47,7 @@ main .banner-section-articles {
 
 .banner-section img,
 .banner-section-articles img {
-  width: 100%;
+  width: 100vw;
   height: 76vh;
 }
 
