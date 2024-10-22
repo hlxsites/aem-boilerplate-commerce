@@ -94,13 +94,13 @@ function createSlide(row, slideIndex, carouselId) {
 
       const ssourceWebpLarge = document.createElement('source');
       ssourceWebpLarge.type = 'image/webp';
-      ssourceWebpLarge.srcset = `${url}?width=2000&format=webply&optimize=medium`;
+      ssourceWebpLarge.srcset = `${url}?width=2000&format=webp&optimize=medium`;
       ssourceWebpLarge.media = '(min-width: 600px)';
       picture.appendChild(ssourceWebpLarge);
 
       const sourceWebpSmall = document.createElement('source');
       sourceWebpSmall.type = 'image/webp';
-      sourceWebpSmall.srcset = `${url}?width=450&format=webply&optimize=medium`;
+      sourceWebpSmall.srcset = `${url}?width=450&format=webp&optimize=medium`;
       picture.appendChild(sourceWebpSmall);
 
       const sourcePngLarge = document.createElement('source');
