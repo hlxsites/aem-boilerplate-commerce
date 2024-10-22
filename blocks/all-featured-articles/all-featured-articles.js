@@ -46,7 +46,6 @@ export default async function decorate(block) {
               { width: 2000, format: 'webp' },
               { width: 450, height: 915, format: 'webp' },
               { width: 2000, format: 'png' },
-              { width: 450, format: 'png' },
             ]
           );
           const img = picture.querySelector('img');
