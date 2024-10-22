@@ -101,7 +101,7 @@ function createSlide(row, slideIndex, carouselId) {
           { width: 2000, format: 'png' },
         ]
       );
-
+      console.log(url);
       column.innerHTML = '';
       column.append(picture);
     }
