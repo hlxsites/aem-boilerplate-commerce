@@ -91,15 +91,19 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = createOptimizedPicture(
-        url,
-        `Slide ${slideIndex + 1} Image`,
+      const tempImage = document.createElement('img');
+      tempImage.src = url;
+      tempImage.alt = `Slide ${slideIndex + 1} Image`;
+
+      const optimizedPicture = createOptimizedPicture(
+        tempImage.src,
+        tempImage.alt,
         slideIndex === 0,
         [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]
       );
 
       column.innerHTML = '';
-      column.append(picture);
+      column.append(optimizedPicture);
     }
 
     slide.append(column);
