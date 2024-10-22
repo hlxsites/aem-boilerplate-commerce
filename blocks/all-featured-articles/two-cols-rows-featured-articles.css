@@ -7,6 +7,9 @@
   display: flex;
   flex: 1;
   width: 100%;
+  height: auto;
+  max-width: 618px;
+  max-height: 389px;
   aspect-ratio: 618/389;
 }
 
