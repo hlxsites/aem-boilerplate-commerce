@@ -51,6 +51,9 @@ export default async function decorate(block) {
           const img = picture.querySelector('img');
 
           if (img) {
+            if (index !== 0) {
+              img.loading = 'lazy';
+            }
             const imgLink = document.createElement('a');
             imgLink.href = path;
             imgLink.appendChild(img);
