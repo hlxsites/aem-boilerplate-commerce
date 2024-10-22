@@ -94,13 +94,13 @@ function createSlide(row, slideIndex, carouselId) {
       const picture = document.createElement('picture');
 
       const ssourceWebpLarge = document.createElement('source');
-      ssourceWebpLarge.type = 'image/webply';
+      ssourceWebpLarge.type = 'image/webp';
       ssourceWebpLarge.srcset = `${url}?width=2000&format=webply&optimize=medium`;
       ssourceWebpLarge.media = '(min-width: 600px)';
       picture.appendChild(ssourceWebpLarge);
 
       const soureWebpSmall = document.createElement('source');
-      soureWebpSmall.type = 'image/webply';
+      soureWebpSmall.type = 'image/webp';
       soureWebpSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
       picture.appendChild(soureWebpSmall);
 
@@ -118,20 +118,12 @@ function createSlide(row, slideIndex, carouselId) {
       } else {
         img.loading = 'lazy';
       }
-      if (img) {
-        const optimizedPicture = createOptimizedPicture(
-          (img.src = `${url}?width=2000&format=png&optimize=medium`),
-          (img.alt = `Slide ${slideIndex + 1} Image`),
-          false
-        );
-        picture.replaceWith(optimizedPicture);
-        optimizedPicture.appendChild(img);
+      img.src = `${url}?width=2000&format=png&optimize=medium`;
+      img.alt = `Slide ${slideIndex + 1} Image`;
+      picture.appendChild(img);
 
-        column.innerHTML = '';
-        column.append(optimizedPicture);
-
-        console.log(optimizedPicture);
-      }
+      column.innerHTML = '';
+      column.append(picture);
     }
     slide.append(column);
   });
