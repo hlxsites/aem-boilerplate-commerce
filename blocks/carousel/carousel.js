@@ -102,6 +102,17 @@ function createSlide(row, slideIndex, carouselId) {
         ]
       );
 
+      const img = picture.querySelector('img');
+
+      if (img) {
+        // Set the correct src for the <img> element
+        img.src = `${url}?width=2000&format=png&optimize=medium`;
+      } else {
+        console.error(
+          'Error: <img> element not found in the generated <picture>'
+        );
+      }
+
       column.innerHTML = '';
       column.append(picture);
     }
