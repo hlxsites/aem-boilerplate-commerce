@@ -2,6 +2,7 @@
   width: 100vw;
   height: auto;
   max-height: 609px;
+  border: 2px solid rebeccapurple;
 }
 
 .banner-section-article h3 a {
