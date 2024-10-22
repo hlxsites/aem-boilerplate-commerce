@@ -102,17 +102,15 @@ function createSlide(row, slideIndex, carouselId) {
         ]
       );
 
-      const img = document.createElement('img');
+      // const pngSource = picture.querySelector('source[type="image/png"]');
+      // if (pngSource) {
+      //   img.src = pngSource.srcset;
+      // } else {
+      //   img.src = `${url}?width=2000&format=png&optimize=medium`;
+      // }
 
-      const pngSource = picture.querySelector('source[type="image/png"]');
-      if (pngSource) {
-        img.src = pngSource.srcset;
-      } else {
-        img.src = `${url}?width=2000&format=png&optimize=medium`;
-      }
-
-      img.alt = `Slide ${slideIndex + 1} Image`;
-      picture.appendChild(img);
+      // img.alt = `Slide ${slideIndex + 1} Image`;
+      // picture.appendChild(img);
 
       column.innerHTML = '';
       column.append(picture);
