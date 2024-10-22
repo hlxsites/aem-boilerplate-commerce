@@ -38,28 +38,13 @@ export default async function decorate(block) {
         const imageWrapperDiv = document.createElement('div');
         imageWrapperDiv.classList.add('article-image');
         if (imagePath) {
-          const picture = createOptimizedPicture(
-            imagePath,
-            title,
-            index === 0,
-            [
-              { width: 2000, format: 'webp' },
-              { width: 450, height: 915, format: 'webp' },
-              { width: 2000, format: 'png' },
-            ]
-          );
-          const img = picture.querySelector('img');
-
-          if (img) {
-            if (index !== 0) {
-              img.loading = 'lazy';
-            }
-            const imgLink = document.createElement('a');
-            imgLink.href = path;
-            imgLink.appendChild(img);
-
-            imageWrapperDiv.appendChild(imgLink);
-          }
+          const imgLink = document.createElement('a');
+          const img = document.createElement('img');
+          imgLink.href = path;
+          img.src = imagePath;
+          img.alt = title;
+          imgLink.appendChild(img);
+          imageWrapperDiv.appendChild(imgLink);
         }
         contentDiv.appendChild(imageWrapperDiv);
 
