@@ -1,4 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
@@ -90,36 +91,46 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = document.createElement('picture');
+      const picture = createOptimizedPicture(
+        url,
+        `Slide ${slideIndex + 1} Image`,
+        slideIndex === 0,
+        [
+          { width: 2000, format: 'webp' },
+          { width: 450, height: 915, format: 'webp' },
+          { width: 2000, format: 'png' },
+        ]
+      );
+      // const picture = document.createElement('picture');
 
-      const ssourceWebpLarge = document.createElement('source');
-      ssourceWebpLarge.type = 'image/webp';
-      ssourceWebpLarge.srcset = `${url}?width=2000&format=webp&optimize=medium`;
-      ssourceWebpLarge.media = '(min-width: 600px)';
-      picture.appendChild(ssourceWebpLarge);
+      // const ssourceWebpLarge = document.createElement('source');
+      // ssourceWebpLarge.type = 'image/webp';
+      // ssourceWebpLarge.srcset = `${url}?width=2000&format=webp&optimize=medium`;
+      // ssourceWebpLarge.media = '(min-width: 600px)';
+      // picture.appendChild(ssourceWebpLarge);
 
-      const sourceWebpSmall = document.createElement('source');
-      sourceWebpSmall.type = 'image/webp';
-      sourceWebpSmall.srcset = `${url}?width=450&format=webp&optimize=medium`;
-      picture.appendChild(sourceWebpSmall);
+      // const sourceWebpSmall = document.createElement('source');
+      // sourceWebpSmall.type = 'image/webp';
+      // sourceWebpSmall.srcset = `${url}?width=450&format=webp&optimize=medium`;
+      // picture.appendChild(sourceWebpSmall);
 
-      const sourcePngLarge = document.createElement('source');
-      sourcePngLarge.type = 'image/png';
-      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
-      sourcePngLarge.media = '(min-width: 600px)';
-      picture.appendChild(sourcePngLarge);
+      // const sourcePngLarge = document.createElement('source');
+      // sourcePngLarge.type = 'image/png';
+      // sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
+      // sourcePngLarge.media = '(min-width: 600px)';
+      // picture.appendChild(sourcePngLarge);
 
-      const img = document.createElement('img');
-      if (slideIndex == 0) {
-        img.loading = 'eager';
-        img.fetchPriority = 'high';
-        img.rel = 'preload';
-      } else {
-        img.loading = 'lazy';
-      }
-      img.src = `${url}?width=2000&format=png&optimize=medium`;
-      img.alt = `Slide ${slideIndex + 1} Image`;
-      picture.appendChild(img);
+      // const img = document.createElement('img');
+      // if (slideIndex == 0) {
+      //   img.loading = 'eager';
+      //   img.fetchPriority = 'high';
+      //   img.rel = 'preload';
+      // } else {
+      //   img.loading = 'lazy';
+      // }
+      // img.src = `${url}?width=2000&format=png&optimize=medium`;
+      // img.alt = `Slide ${slideIndex + 1} Image`;
+      // picture.appendChild(img);
 
       column.innerHTML = '';
       column.append(picture);
