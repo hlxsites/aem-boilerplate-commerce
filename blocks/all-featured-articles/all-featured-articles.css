@@ -59,6 +59,11 @@
   color: var(--date-color);
   font-weight: 400;
 }
+/* 
+.banner-section-article .article-image {
+  min-height: 70vh;
+  border: 2px solid rebeccapurple;
+} */
 
 .featured-date-title h3 {
   margin-top: 0;

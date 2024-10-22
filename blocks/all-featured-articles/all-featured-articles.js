@@ -1,3 +1,5 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 export default async function decorate(block) {
   const pathElements = block.querySelectorAll('p');
 
@@ -36,22 +38,28 @@ export default async function decorate(block) {
         const imageWrapperDiv = document.createElement('div');
         imageWrapperDiv.classList.add('article-image');
         if (imagePath) {
-          const imgLink = document.createElement('a');
-          const img = document.createElement('img');
-          imgLink.href = path;
-          if (index === 0) {
-            img.loading = 'eager';
-            img.fetchPriority = 'high';
-          } else {
-            img.loading = 'lazy';
+          const picture = createOptimizedPicture(
+            imagePath,
+            title,
+            index === 0,
+            [
+              { width: 2000, format: 'webp' },
+              { width: 450, format: 'webp' },
+              { width: 2000, format: 'png' },
+            ]
+          );
+          const img = picture.querySelector('img');
+
+          if (img) {
+            const imgLink = document.createElement('a');
+            imgLink.href = path;
+            imgLink.appendChild(img);
+
+            imageWrapperDiv.appendChild(imgLink);
+
+            // img.width = 442;
+            // img.height = 223;
           }
-          img.srcset = `${imagePath}?width=2000&format=png&optimize=medium`;
-          img.src = `${imagePath}?width=450&format=webply&optimize=medium`;
-          img.alt = title;
-          img.width = 442;
-          img.height = 223;
-          imgLink.appendChild(img);
-          imageWrapperDiv.appendChild(imgLink);
         }
         contentDiv.appendChild(imageWrapperDiv);
 

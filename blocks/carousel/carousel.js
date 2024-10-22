@@ -99,6 +99,7 @@ function createSlide(row, slideIndex, carouselId) {
           { width: 2000, format: 'webp' },
           { width: 450, height: 915, format: 'webp' },
           { width: 2000, format: 'png' },
+          { width: 450, format: 'png' },
         ]
       );
 
