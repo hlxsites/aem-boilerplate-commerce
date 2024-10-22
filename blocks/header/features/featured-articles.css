@@ -1,4 +1,3 @@
-@import url(./featured-latest-articles.css);
 @import url(./featured-texts.css);
 @import url(./next-post.css);
 
@@ -15,12 +14,6 @@ div:nth-child(5) .video-wrapper div {
 
 div:nth-child(5) .video-wrapper div div iframe {
   margin-bottom: 15%;
-}
-
-/* 2 images */
-.one-img-cols {
-  width: 100%;
-  height: 100%;
 }
 
 /* Img left par on right */
@@ -131,12 +124,6 @@ div:nth-child(5) .video-wrapper div div iframe {
   padding: 0;
 }
 /* end carousel */
-
-/* Main Img */
-.one-img-cols {
-  padding: 0;
-  margin: 2% auto;
-}
 
 /* 2 Images */
 .two-img div {
@@ -385,12 +372,6 @@ main .section {
     font-size: 12px;
   }
   /* end carousel */
-
-  /* Main Img */
-  .one-img-cols {
-    margin: 0 auto;
-    padding: 0;
-  }
 
   /* Name of Writer, Photographer and Stylist*/
   .article-writer div:nth-child(1) div:nth-child(1) p,

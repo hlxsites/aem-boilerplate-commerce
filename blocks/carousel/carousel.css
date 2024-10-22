@@ -10,6 +10,10 @@ div.section.carousel-container {
   padding: 0;
   height: auto;
   max-height: 934px;
+  width: 100%;
+}
+
+.brands-carousel {
   width: 100vw;
 }
 
@@ -58,19 +62,19 @@ div.section.carousel-container {
   align-items: flex-end;
 } */
 
-.carousel .carousel-slide .carousel-slide-image picture {
+.brands-carousel .carousel-slide .carousel-slide-image picture {
   position: absolute;
   inset: 0;
   left: 0;
   min-width: 100vw;
 }
 
-.carousel .carousel-slide .carousel-slide-image picture > img {
+.brands-carousel .carousel .carousel-slide .carousel-slide-image picture > img {
   height: 100%;
   width: 100vw;
 }
 
-.carousel .carousel-slide .carousel-slide-content {
+.brands-carousel .carousel-slide .carousel-slide-content {
   z-index: 1;
   position: absolute;
   bottom: 12%;

@@ -337,7 +337,7 @@ function createOptimizedPicture(
   alt = '',
   eager = false,
   breakpoints = [
-    { media: '(min-width: 600px)', width: '2000' },
+    { media: '(min-width: 601px)', width: '2000' },
     { media: '(max-width: 600px)', width: '450' },
     { width: '750' },
   ]
