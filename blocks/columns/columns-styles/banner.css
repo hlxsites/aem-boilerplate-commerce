@@ -28,8 +28,7 @@ main .banner-section-articles {
   padding: 0;
 }
 
-.banner-section,
-.banner-section-articles {
+.banner-section {
   min-height: 70vh;
   height: 100%;
 }
