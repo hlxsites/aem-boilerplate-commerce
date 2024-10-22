@@ -102,18 +102,12 @@ function createSlide(row, slideIndex, carouselId) {
         ]
       );
 
-      // const pngSource = picture.querySelector('source[type="image/png"]');
-      // if (pngSource) {
-      //   img.src = pngSource.srcset;
-      // } else {
-      //   img.src = `${url}?width=2000&format=png&optimize=medium`;
-      // }
-
-      // img.alt = `Slide ${slideIndex + 1} Image`;
-      // picture.appendChild(img);
+      const link = document.createElement('a');
+      link.href = url;
+      link.appendChild(picture);
 
       column.innerHTML = '';
-      column.append(picture);
+      column.append(link);
     }
     slide.append(column);
   });
