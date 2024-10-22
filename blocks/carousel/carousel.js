@@ -1,5 +1,4 @@
 import { fetchPlaceholders } from '../../scripts/aem.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
 
 function updateActiveSlide(slide) {
   const block = slide.closest('.carousel');
@@ -99,10 +98,10 @@ function createSlide(row, slideIndex, carouselId) {
       ssourceWebpLarge.media = '(min-width: 600px)';
       picture.appendChild(ssourceWebpLarge);
 
-      const soureWebpSmall = document.createElement('source');
-      soureWebpSmall.type = 'image/webp';
-      soureWebpSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
-      picture.appendChild(soureWebpSmall);
+      const sourceWebpSmall = document.createElement('source');
+      sourceWebpSmall.type = 'image/webp';
+      sourceWebpSmall.srcset = `${url}?width=450&format=webply&optimize=medium`;
+      picture.appendChild(sourceWebpSmall);
 
       const sourcePngLarge = document.createElement('source');
       sourcePngLarge.type = 'image/png';
