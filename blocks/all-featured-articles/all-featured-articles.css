@@ -188,6 +188,8 @@
 
   .two-cols-rows-featured-articles img {
     margin-top: 2%;
+    max-width: 955px;
+    max-height: 599px;
   }
 
   .two-cols-rows-featured-articles .category,
