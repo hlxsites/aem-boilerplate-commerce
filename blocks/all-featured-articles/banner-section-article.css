@@ -1,3 +1,8 @@
+.banner-section-articles img {
+  width: 100vw;
+  height: auto;
+}
+
 .banner-section-article h3 a {
   margin-bottom: 0;
 }

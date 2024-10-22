@@ -45,8 +45,7 @@ main .banner-section-articles {
   color: white;
 }
 
-.banner-section img,
-.banner-section-articles img {
+.banner-section img {
   width: 100vw;
   height: 76vh;
 }
