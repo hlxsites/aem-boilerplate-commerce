@@ -91,21 +91,48 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const tempImage = document.createElement('img');
-      tempImage.src = url;
-      tempImage.alt = `Slide ${slideIndex + 1} Image`;
+      const picture = document.createElement('picture');
 
-      const optimizedPicture = createOptimizedPicture(
-        tempImage.src,
-        tempImage.alt,
-        slideIndex === 0,
-        [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]
-      );
+      const ssourceWebpLarge = document.createElement('source');
+      ssourceWebpLarge.type = 'image/webp';
+      ssourceWebpLarge.srcset = `${url}?width=2000&format=webply&optimize=medium`;
+      ssourceWebpLarge.media = '(min-width: 600px)';
+      picture.appendChild(ssourceWebpLarge);
 
-      column.innerHTML = '';
-      column.append(optimizedPicture);
+      const soureWebpSmall = document.createElement('source');
+      soureWebpSmall.type = 'image/webp';
+      soureWebpSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
+      picture.appendChild(soureWebpSmall);
+
+      const sourcePngLarge = document.createElement('source');
+      sourcePngLarge.type = 'image/png';
+      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
+      sourcePngLarge.media = '(min-width: 600px)';
+      picture.appendChild(sourcePngLarge);
+
+      const img = document.createElement('img');
+      if (slideIndex == 0) {
+        img.loading = 'eager';
+        img.fetchPriority = 'high';
+        img.rel = 'preload';
+      } else {
+        img.loading = 'lazy';
+      }
+      if (img) {
+        const optimizedPicture = createOptimizedPicture(
+          (img.src = `${url}?width=2000&format=png&optimize=medium`),
+          (img.alt = `Slide ${slideIndex + 1} Image`),
+          false
+        );
+        picture.replaceWith(optimizedPicture);
+        optimizedPicture.appendChild(img);
+
+        column.innerHTML = '';
+        column.append(optimizedPicture);
+
+        console.log(optimizedPicture);
+      }
     }
-
     slide.append(column);
   });
 
