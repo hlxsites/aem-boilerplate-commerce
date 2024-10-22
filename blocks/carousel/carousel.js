@@ -91,30 +91,47 @@ function createSlide(row, slideIndex, carouselId) {
     const url = column.textContent.trim();
 
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      const picture = createOptimizedPicture(
-        url,
-        `Slide ${slideIndex + 1} Image`,
-        slideIndex === 0,
-        [
-          { width: 2000, format: 'webp' },
-          { width: 450, height: 915, format: 'webp' },
-          { width: 2000, format: 'png' },
-        ]
-      );
+      const picture = document.createElement('picture');
 
-      const img = picture.querySelector('img');
+      const ssourceWebpLarge = document.createElement('source');
+      ssourceWebpLarge.type = 'image/webply';
+      ssourceWebpLarge.srcset = `${url}?width=2000&format=webply&optimize=medium`;
+      ssourceWebpLarge.media = '(min-width: 600px)';
+      picture.appendChild(ssourceWebpLarge);
 
-      if (img) {
-        // Set the correct src for the <img> element
-        img.src = `${url}?width=2000&format=png&optimize=medium`;
+      const soureWebpSmall = document.createElement('source');
+      soureWebpSmall.type = 'image/webply';
+      soureWebpSmall.srcset = `${url}?width=450&height=915&format=webply&optimize=medium`;
+      picture.appendChild(soureWebpSmall);
+
+      const sourcePngLarge = document.createElement('source');
+      sourcePngLarge.type = 'image/png';
+      sourcePngLarge.srcset = `${url}?width=2000&format=png&optimize=medium`;
+      sourcePngLarge.media = '(min-width: 600px)';
+      picture.appendChild(sourcePngLarge);
+
+      const img = document.createElement('img');
+      if (slideIndex == 0) {
+        img.loading = 'eager';
+        img.fetchPriority = 'high';
+        img.rel = 'preload';
       } else {
-        console.error(
-          'Error: <img> element not found in the generated <picture>'
-        );
+        img.loading = 'lazy';
       }
+      if (img) {
+        const optimizedPicture = createOptimizedPicture(
+          (img.src = `${url}?width=2000&format=png&optimize=medium`),
+          (img.alt = `Slide ${slideIndex + 1} Image`),
+          false
+        );
+        picture.replaceWith(optimizedPicture);
+        optimizedPicture.appendChild(img);
 
-      column.innerHTML = '';
-      column.append(picture);
+        column.innerHTML = '';
+        column.append(optimizedPicture);
+
+        console.log(optimizedPicture);
+      }
     }
     slide.append(column);
   });
