@@ -95,20 +95,13 @@ function createSlide(row, slideIndex, carouselId) {
         url,
         `Slide ${slideIndex + 1} Image`,
         slideIndex === 0,
-        [
-          { width: 2000, format: 'webp' },
-          { width: 450, height: 915, format: 'webp' },
-          { width: 2000, format: 'png' },
-        ]
+        [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]
       );
 
-      const link = document.createElement('a');
-      link.href = url;
-      link.appendChild(picture);
-
       column.innerHTML = '';
-      column.append(link);
+      column.append(picture);
     }
+
     slide.append(column);
   });
 
