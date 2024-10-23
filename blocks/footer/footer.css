@@ -10,55 +10,47 @@ footer .footer {
   margin: auto;
 }
 
-.footer-one,.footer-two
-{
+.footer-one,
+.footer-two {
   border-bottom: 1px solid rgb(229, 229, 229);
   padding: 60px 10px 60px 10px;
 }
 
-.footer-one
-{
+.footer-one {
   display: flex;
   height: 120px;
   column-gap: 90px;
 }
 
-.footer-one .form-wrapper
-{
+.footer-one .form-wrapper {
   flex-grow: 1;
 }
 
-.footer-one > div:first-child
-{
-    flex: 1 0 45%;
+.footer-one > div:first-child {
+  flex: 1 0 45%;
 }
 
-.footer-one > div:first-child p
-{
+.footer-one > div:first-child p {
   width: calc(60% - 10px);
   font-weight: var(--sub-text-weight);
 }
 
-.footer-one > div:first-child > div h5
-{
+.footer-one > div:first-child > div h5 {
   margin: 20px 0 20px 0;
 }
 
 /*Change the column into a flexbox*/
-.footer-two .columns-4-cols > div
-{
+.footer-two .columns-4-cols > div {
   display: flex;
 }
 
 /*Stretch the columns to be same height*/
-.footer-two .columns-4-cols > div > div
-{
+.footer-two .columns-4-cols > div > div {
   align-self: stretch;
 }
 
 /* footer second section heading */
-.footer-two h6
-{
+.footer-two h6 {
   font-size: 14px;
   line-height: var(--text-line-height);
   font-weight: var(--sub-text-weight);
@@ -69,28 +61,24 @@ footer .footer {
   color: rgb(26, 26, 26);
 }
 
-.footer-two .columns-4-cols > div > div:nth-last-child(1) p
-{
+.footer-two .columns-4-cols > div > div:nth-last-child(1) p {
   margin: auto;
   display: inline block;
   padding: 10px;
 }
 
 .footer-two .columns-4-cols > div > div:nth-last-child(1) > p a,
-.footer-two .columns-4-cols > div > div:nth-last-child(1) > p a:hover
-{
+.footer-two .columns-4-cols > div > div:nth-last-child(1) > p a:hover {
   font-weight: var(--sub-text-title-weight);
   text-decoration: none;
 }
 
 /* giftcard and end app icon alignment */
-.footer-two .columns-4-cols > div > div:nth-last-child(1) p span
-{
+.footer-two .columns-4-cols > div > div:nth-last-child(1) p span {
   vertical-align: middle;
 }
 
-.footer-two .icon
-{
+.footer-two .icon {
   width: 40px;
   height: 40px;
   margin-right: 5px;
@@ -100,21 +88,18 @@ footer .footer p {
   margin: 0;
 }
 
-.footer-two ul
-{
+.footer-two ul {
   padding-left: 0;
   margin: 0;
 }
 
 /*Remove styling from the lists of the footer menus*/
-.footer-two ul li
-{
+.footer-two ul li {
   list-style-type: none;
 }
 
 /* styling of footer menu */
-.footer-two ul li a
-{
+.footer-two ul li a {
   font-size: var(--sub-text-secondary-size);
   font-weight: var(--sub-text-weight);
   padding-top: 0;
@@ -124,18 +109,16 @@ footer .footer p {
   opacity: 0.5;
 }
 
-.footer-two ul li a:hover
-{
+.footer-two ul li a:hover {
   padding-top: 0;
   text-decoration: none;
   line-height: 3rem;
   text-transform: none;
-  color: #A3A3A3;
+  color: #a3a3a3;
 }
 
 /*icons resizing*/
-.social-icons
-{
+.social-icons {
   padding: 20px 0;
   width: 20px;
   height: 20px;
@@ -144,47 +127,39 @@ footer .footer p {
 
 /*Flex box of last section of the footer*/
 /* end logo */
-.footer-three .icon
-{
+.footer-three .icon {
   width: 6rem;
   height: auto;
 }
 
 /* footer three parent */
-.footer-three
-{
+.footer-three {
   max-width: 1200px;
 }
 
-.footer-three > div > div
-{
+.footer-three > div > div {
   display: flex;
   margin-bottom: 100px;
   justify-content: flex-start;
 }
 
 /* footer three first div */
-.footer-three > div > div > div > div:nth-child(1)
-{
+.footer-three > div > div > div > div:nth-child(1) {
   flex: 1 0 1%;
 }
 
 /* footer three second div */
-.footer-three > div > div > div > div:nth-child(2)
-{
+.footer-three > div > div > div > div:nth-child(2) {
   flex: 1 0 70%;
 }
 
-.footer-three > div > div > div > div:nth-child(3)
-{
+.footer-three > div > div > div > div:nth-child(3) {
   flex: 1 0 45%;
   /* word-break: normal; */
   margin-top: 60px;
 }
 
-
-.footer-three > div > div > div > div > p > a
-{
+.footer-three > div > div > div > div > p > a {
   padding: 0;
   padding-left: 1rem;
   font-size: var(--sub-text-secondary-size);
@@ -192,8 +167,7 @@ footer .footer p {
   opacity: 0.5;
 }
 
-.footer-three > div > div > div > div:last-child p:not(:first-child)
-{
+.footer-three > div > div > div > div:last-child p:not(:first-child) {
   padding: 0;
   font-size: 10px;
   color: rgb(51, 51, 51);
@@ -202,162 +176,139 @@ footer .footer p {
   opacity: 0.4;
 }
 
-.footer-three > div > div > div > div:last-child p:first-child
-{
+.footer-three > div > div > div > div:last-child p:first-child {
   display: flex;
   column-gap: 15px;
 }
 
-.footer-three > div > div > div > div:last-child p:first-child .icon
-{
+.footer-three > div > div > div > div:last-child p:first-child .icon {
   width: 30px;
   height: auto;
   padding: 0 0 10px;
 }
 
-.footer-three > div > div > div > div > p > a:hover
-{
+.footer-three > div > div > div > div > p > a:hover {
   text-decoration: none;
   text-transform: none;
-  color: #A3A3A3;
+  color: #a3a3a3;
 }
 
 /*Responsiveness*/
-@media (width <= 1024px) 
-{
+@media (width <= 1024px) {
   /* footer three second div */
-  .footer-three > div > div > div > div:nth-child(2)
-  {
+  .footer-three > div > div > div > div:nth-child(2) {
     flex: 1 0 50%;
   }
 }
 
-@media (width <= 900px)
-{
-  footer{
+@media (width <= 900px) {
+  footer {
     display: flex;
     flex-direction: column;
     align-content: center;
   }
 
-  .footer-one,.footer-two
-  {
+  .footer-one,
+  .footer-two {
     padding: 60px 2px 32px 2px;
   }
 
-  .footer-one,.footer-three
-  {
+  .footer-one,
+  .footer-three div div {
     flex-direction: column;
     align-items: center;
   }
 
-  .footer-one
-  {
+  .footer-one {
     height: 400px;
     width: 100%;
   }
 
-  .footer-one > div:first-child > div h5
-  {
+  .footer-one > div:first-child > div h5 {
     margin: auto;
     padding: 30px 0;
     width: 76vw;
   }
 
-  .socials
-  {
+  .socials {
     display: flex;
     justify-content: center;
     padding: 10px;
   }
 
-  .footer-one > div:first-child p
-  {
+  .footer-one > div:first-child p {
     width: 90%;
     margin: auto;
   }
 
-  .footer-two
-  {
+  .footer-two {
     flex-direction: column;
     text-align: center;
   }
   /* footer menu list */
-  .footer-two ul
-  {
+  .footer-two ul {
     text-align: center;
   }
 
   /* footer two giftcard and end app icons */
-  .footer-two .columns-4-cols > div > div:nth-last-child(1)
-  {
+  .footer-two .columns-4-cols > div > div:nth-last-child(1) {
     display: flex;
     margin: auto;
     width: 75%;
   }
 
-  .footer-one p
-  {
+  .footer-one p {
     text-align: center;
   }
 
-  .footer-three
-  {
+  .footer-three {
     padding: 0;
     margin-top: 4vh;
   }
 
-  .footer-three > div > div
-  {
+  .footer-three > div > div {
     display: flex;
     flex-direction: column;
   }
 
   /* footer three first div */
-  .footer-three > div > div > div > div:nth-child(1)
-  {
+  .footer-three > div > div > div > div:nth-child(1) {
     margin: auto;
     padding: 40px;
     order: 2;
   }
 
   /* footer three second div */
-  .footer-three > div > div > div > div:nth-child(2)
-  {
+  .footer-three > div > div > div > div:nth-child(2) {
     margin-left: -20px;
   }
 
   /* terms and conditions links styling */
-  .footer-three > div > div > div > div:nth-child(2) a
-  {
+  .footer-three > div > div > div > div:nth-child(2) a {
     line-height: 35px;
   }
 
   /* last section of footer 3 with the payment icons and copy rights*/
-  .footer-three > div > div > div > div:nth-child(3)
-  {
+  .footer-three > div > div > div > div:nth-child(3) {
     text-align: center;
     margin: auto;
   }
 
   /* payment icons */
-  .footer-three > div > div > div > div:nth-child(3) p:first-child
-  {
+  .footer-three > div > div > div > div:nth-child(3) p:first-child {
     display: flex;
     margin-top: 40px;
     justify-content: center;
   }
 
   /* copy right text */
-  .footer-three > div > div > div > div:nth-child(3) p:not(:nth-child(1))
-  {
+  .footer-three > div > div > div > div:nth-child(3) p:not(:nth-child(1)) {
     margin: auto;
     width: 75%;
   }
 
   /* footer terms and conditions menu */
-  .footer-three > div > div > div > div:nth-child(2) p
-  {
+  .footer-three > div > div > div > div:nth-child(2) p {
     display: flex;
     flex-direction: column;
     text-align: center;
