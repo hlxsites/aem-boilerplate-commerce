@@ -1,6 +1,7 @@
 import { initializers } from '@dropins/tools/initializer.js';
 // import { events } from '@dropins/tools/event-bus.js';
 import * as Order from '@dropins/storefront-order/api.js';
+import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated } from '../configs.js';
 import { initializeDropin } from './index.js';
 
@@ -51,15 +52,15 @@ initializeDropin(() => {
   // TODO: Is this the best way to handle this?
   //       This is causing inifinte redirects.
   //       Can this be fixed or can we handle this on a callback from the initialize method instead?
-  // events.on('order/error', () => {
-  //   if (checkIsAuthenticated()) {
-  //     window.location.href = CUSTOMER_ORDERS_PATH;
-  //   } else if (isTokenProvided) {
-  //     window.location.href = ORDER_STATUS_PATH;
-  //   } else {
-  //     window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
-  //   }
-  // });
+  events.on('order/error', () => {
+    if (checkIsAuthenticated()) {
+      window.location.href = CUSTOMER_ORDERS_PATH;
+    } else if (isTokenProvided) {
+      window.location.href = ORDER_STATUS_PATH;
+    } else {
+      window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
+    }
+  });
 
   // eslint-disable-next-line no-console
   console.log('🟢 Order Dropin Initialized');
