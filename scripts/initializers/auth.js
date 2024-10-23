@@ -3,8 +3,8 @@ import { initializers } from '@dropins/tools/initializer.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 import { initializeDropin } from './index.js';
 
-initializeDropin(() => {
-  initializers.register(authApi.initialize, {});
+initializeDropin(async () => {
+  await initializers.mountImmediately(authApi.initialize, {});
 
   // eslint-disable-next-line no-console
   console.log('🟢 Auth Dropin Initialized');

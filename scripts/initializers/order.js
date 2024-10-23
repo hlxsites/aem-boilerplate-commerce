@@ -12,7 +12,7 @@ import {
   CUSTOMER_PATH,
 } from '../constants.js';
 
-initializeDropin(() => {
+initializeDropin(async () => {
   const { pathname, searchParams } = new URL(window.location.href);
   const isAccountPage = pathname.includes(CUSTOMER_PATH);
   const orderRef = searchParams.get('orderRef');
@@ -20,14 +20,14 @@ initializeDropin(() => {
 
   // Handle redirects for user details pages
   if (pathname === ORDER_DETAILS_PATH || pathname === CUSTOMER_ORDER_DETAILS_PATH) {
-    handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided);
+    await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided);
   }
 
   // eslint-disable-next-line no-console
   console.log('🟢 Order Dropin Initialized');
 })();
 
-function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided) {
+async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided) {
   let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
@@ -62,7 +62,7 @@ function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenPro
   if (targetPath) {
     window.location.href = targetPath;
   } else {
-    initializers.register(Order.initialize, {
+    await initializers.mountImmediately(Order.initialize, {
       orderRef,
     });
   }

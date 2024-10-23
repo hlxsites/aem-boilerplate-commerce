@@ -56,7 +56,7 @@ export default async function initializeDropins() {
 
   // Initialize Global Drop-ins
   await import('./auth.js');
-  await import('./cart.js');
+  import('./cart.js');
 }
 
 export function initializeDropin(cb) {
@@ -68,13 +68,6 @@ export function initializeDropin(cb) {
     // initialize drop-in
     await cb();
     initialized = true;
-
-    // TODO: new `initializers.registerAndMount()` method to mount a single initializer
-    // mount drop-ins after initialization
-    initializers.mount();
-    // reset initializers to avoid duplicate registration
-    // eslint-disable-next-line no-underscore-dangle
-    initializers._initializers = [];
   };
 
   // re-initialize on prerendering changes

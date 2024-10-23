@@ -74,7 +74,7 @@ await initializeDropin(async () => {
   };
 
   // Initialize Dropins
-  initializers.register(pdp.initialize, {
+  await initializers.mountImmediately(pdp.initialize, {
     langDefinitions,
     models,
   });
