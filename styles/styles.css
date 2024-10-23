@@ -148,11 +148,11 @@
   --nav-height: 10rem;
 
   /*------------------------- Daniel Global -------------------------*/
-  --sub-text-grey: #999999;
+  --sub-text-grey: #5f5e5edf;
   --date-color: #cccccc;
   --main-color-light: white;
   --sub-text-border-divider: rgba(153, 153, 153, 0.2);
-  --sub-text-background-color: #f8f8f8;
+  --sub-text-background-color: rgba(248, 248, 248, 0.581);
   --main-text-color: #1a1a1a;
   --text-date-color: #000000;
   --sale-color: #ae0000;
