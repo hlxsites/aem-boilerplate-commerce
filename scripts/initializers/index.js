@@ -62,11 +62,11 @@ export default async function initializeDropins() {
 export function initializeDropin(cb) {
   let initialized = false;
 
-  const init = (force = false) => {
+  const init = async (force = false) => {
     // prevent re-initialization
     if (initialized && !force) return;
     // initialize drop-in
-    cb();
+    await cb();
     initialized = true;
 
     // TODO: new `initializers.registerAndMount()` method to mount a single initializer
