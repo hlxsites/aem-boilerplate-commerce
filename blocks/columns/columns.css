@@ -34,7 +34,6 @@ main .section {
 
 .columns > div {
   display: flex;
-  flex-direction: column;
 }
 
 .columns img {
@@ -188,7 +187,6 @@ main .section {
 @media (width >= 900px) {
   .columns > div {
     align-items: center;
-    flex-direction: unset;
     gap: 32px;
   }
 }
