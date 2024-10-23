@@ -125,12 +125,11 @@ function renderProduct(product, config, block) {
     currency,
   });
 
-  // block.textContent = '';
   const fragment = document.createRange().createContextualFragment(`
    <a href="/products/${urlKey}/${sku}"><div class="image">
     </div></a>
     <div class="details">
-     <h1><a href="/products/${urlKey}/${sku}">${name}</a></h1>
+     <h1><a href="/products/${urlKey}/${sku}" aria-label="${name} product details">${name}</a></h1>
       <a href=<div class="product-path">Shop Now</div>
       <div class="actions">
         ${
