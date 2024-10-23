@@ -9,6 +9,7 @@ import { initializers } from '@dropins/tools/initializer.js';
 
 // Initialize Auth Dropin Globally
 import './auth.js';
+import './cart.js';
 
 // Recaptcha
 import * as recaptcha from '@dropins/tools/recaptcha.js';
