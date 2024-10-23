@@ -49,10 +49,6 @@ main .banner-section-articles {
   height: 76vh;
 }
 
-.banner-section-carousel img {
-  width: 100vw;
-}
-
 .banner-section .hero-content div div p:nth-child(2) {
   width: 100%;
   height: 100%;

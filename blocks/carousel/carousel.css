@@ -1,20 +1,10 @@
 div.section.carousel-container {
   padding: 0;
   margin: 0;
-  height: 100vh;
 }
-
 .carousel {
-  position: absolute;
-  left: 0;
   padding: 0;
   height: auto;
-  max-height: 934px;
-  width: 100%;
-}
-
-.carousel {
-  width: 100vw;
 }
 
 .carousel .carousel-slides-container {
@@ -65,11 +55,9 @@ div.section.carousel-container {
 .carousel .carousel-slide .carousel-slide-image picture {
   position: absolute;
   inset: 0;
-  left: 0;
-  min-width: 100vw;
 }
 
-.carousel .carousel .carousel-slide .carousel-slide-image picture > img {
+.carousel .carousel-slide .carousel-slide-image picture > img {
   height: 100%;
   width: 100vw;
 }
@@ -115,10 +103,6 @@ div.section.carousel-container {
   letter-spacing: 0.1rem;
   padding-left: 0;
   font-size: var(--sub-text-secondary-size);
-  text-decoration: none;
-}
-.carousel .carousel-slide .carousel-slide-content p:nth-child(2) a:hover {
-  color: var(--main-color-light);
 }
 
 /* SHOP NOW Button redirect*/
@@ -140,7 +124,7 @@ div.section.carousel-container {
   font-size: var(--sub-text-secondary-size);
   /* animation */
   background-color: transparent;
-  color: var(--main-color-light);
+  color: white;
   opacity: 1;
   transition: all 0.3s ease;
 }
@@ -150,15 +134,13 @@ div.section.carousel-container {
   background-color: white;
   color: black;
   opacity: 0.5;
-  align-content: center;
-  text-decoration: none;
 }
 
 .carousel .carousel-slide-indicators {
   position: absolute;
   display: flex;
   height: auto;
-  top: 84%;
+  top: 92%;
   bottom: 0%;
   left: 14%;
   z-index: 1;
@@ -280,8 +262,6 @@ div.section.carousel-container {
 
 @media (width < 768px) {
   .carousel-slide-image img {
-    width: 100%;
-    height: auto;
     object-fit: cover;
     display: flex;
     justify-content: center;
@@ -300,16 +280,13 @@ div.section.carousel-container {
     width: 100vw;
   }
 
-  .carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
-    padding-left: 30px;
-  }
-
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
   }
 
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     margin-bottom: 1%;
+    align-content: center;
   }
 
   .carousel .carousel-slide-indicators {
