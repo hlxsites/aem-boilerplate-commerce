@@ -16,6 +16,7 @@
   list-style-type: square;
   font-size: var(--sub-text-sub-title-size);
 }
+
 .product-main-brand-showcase ul li::marker {
   font-size: var(--sub-text-sub-title-size);
 }
@@ -139,6 +140,11 @@
   }
 
   /* Brand Name */
+  .product-main-brand-showcase .product div:nth-child(1) ul,
+  .product-main-brand-showcase-mirror .product div:nth-child(1) ul {
+    max-width: 80vw;
+  }
+
   .product-main-brand-showcase-mirror .product div:nth-child(1) ul {
     padding-left: 7%;
   }
