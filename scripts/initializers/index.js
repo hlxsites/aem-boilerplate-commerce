@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 import {
@@ -6,10 +7,6 @@ import {
   setFetchGraphQlHeader,
 } from '@dropins/tools/fetch-graphql.js';
 import { initializers } from '@dropins/tools/initializer.js';
-
-// Initialize Auth Dropin Globally
-import './auth.js';
-import './cart.js';
 
 // Recaptcha
 import * as recaptcha from '@dropins/tools/recaptcha.js';
@@ -56,6 +53,10 @@ export default async function initializeDropins() {
   setEndpoint(await getConfigValue('commerce-core-endpoint'));
   // Recaptcha
   recaptcha.setConfig();
+
+  // Initialize Global Drop-ins
+  await import('./auth.js');
+  await import('./cart.js');
 }
 
 export function initializeDropin(cb) {
