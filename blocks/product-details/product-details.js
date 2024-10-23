@@ -126,7 +126,7 @@ function setMetaTags(product) {
 }
 
 export default async function decorate(block) {
-  const product = window.getProductPromise;
+  const product = await window.getProductPromise;
 
   if (!product) {
     await loadErrorPage();
