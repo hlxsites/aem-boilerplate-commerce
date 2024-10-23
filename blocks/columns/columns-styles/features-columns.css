@@ -1,16 +1,3 @@
-/* .featured-articles-cols {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  padding: auto;
-  justify-content: space-evenly;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  flex: 1;
-} */
-
 /* Launches Card */
 .featured-articles-cols p {
   padding: 1% 0;
@@ -77,9 +64,4 @@
     text-align: left;
     margin-left: -23%;
   }
-  /* 
-.featured-articles-cols div div {
-  width: 348px;
-
-} */
 }

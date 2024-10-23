@@ -1,5 +1,4 @@
 @import url(./featured-texts.css);
-@import url(./next-post.css);
 
 main {
   width: 100%;
@@ -279,6 +278,22 @@ main .section {
   padding-bottom: auto;
   padding-left: auto;
   padding-right: auto;
+}
+
+/* Title NEXT & PREVIOUS POST */
+.featured-next-post-title div:nth-child(1) div p:nth-child(1) {
+  letter-spacing: 4px;
+  font-weight: 600;
+  margin: 0% auto;
+  text-transform: uppercase;
+  font-size: 22px;
+  margin-top: 4%;
+  margin-bottom: -2%;
+}
+
+/* Title PREVIOUS POST */
+.featured-next-post-title div:nth-child(1) div:nth-child(2) p:nth-child(1) {
+  text-align: right;
 }
 
 @media (width <= 1260px) {
