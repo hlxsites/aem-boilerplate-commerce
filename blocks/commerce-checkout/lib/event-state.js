@@ -41,6 +41,6 @@ export function handleEvent(event, callback, options) {
       eventState[event].current = payload;
       callback(payload);
     },
-    options
+    options,
   );
 }

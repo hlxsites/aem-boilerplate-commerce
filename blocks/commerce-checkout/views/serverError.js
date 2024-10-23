@@ -1,7 +1,7 @@
 // Block-level modules
 import { root, heading, serverError } from '../dom.js';
 
-export const serverErrorViewHandler = { layout, init, cleanup };
+const serverErrorViewHandler = { layout, init, cleanup };
 
 function layout() {
   root.replaceChildren(heading, serverError);
@@ -14,3 +14,5 @@ function init() {
 function cleanup() {
   root.classList.remove('checkout-root__server-error');
 }
+
+export default serverErrorViewHandler;

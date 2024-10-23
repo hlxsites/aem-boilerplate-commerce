@@ -19,7 +19,7 @@ import {
   BILLING_ADDRESS_DATA_KEY,
 } from '../constants.js';
 
-export const orderConfirmationViewHandler = { layout, init, cleanup };
+const orderConfirmationViewHandler = { layout, init, cleanup };
 
 function layout() {}
 
@@ -60,3 +60,5 @@ function init({ block }) {
 }
 
 function cleanup() {}
+
+export default orderConfirmationViewHandler;

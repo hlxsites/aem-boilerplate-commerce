@@ -3,6 +3,7 @@
  */
 
 let viewUpdateHandlers;
+// eslint-disable-next-line import/no-mutable-exports
 export let view;
 
 export const View = {

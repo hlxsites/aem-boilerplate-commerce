@@ -42,7 +42,7 @@ import {
 import { Events, eventState } from '../lib/event-state.js';
 import { setAddressOnCart, getCartAddress } from '../lib/utils.js';
 
-export const guestViewHandler = { layout, init, cleanup };
+const guestViewHandler = { layout, init, cleanup };
 
 function layout({ screen }) {
   if (screen === 'mobile') {
@@ -61,7 +61,7 @@ function layout({ screen }) {
       billingForm,
       orderSummary,
       placeOrder,
-      overlaySpinner
+      overlaySpinner,
     );
   } else {
     main.replaceChildren(
@@ -75,7 +75,7 @@ function layout({ screen }) {
       paymentDivider,
       paymentMethods,
       billingForm,
-      placeOrderDivider
+      placeOrderDivider,
     );
 
     aside.replaceChildren(orderSummary, cartSummaryList);
@@ -85,7 +85,7 @@ function layout({ screen }) {
 }
 
 function init({ store }) {
-  const isVirtual = eventState[Events.CheckoutData].current.isVirtual;
+  const { isVirtual } = eventState[Events.CheckoutData].current;
 
   if (isVirtual) {
     shippingDivider.replaceChildren();
@@ -93,10 +93,10 @@ function init({ store }) {
   } else {
     const shippingAddressOnCart = getCartAddress(
       eventState[Events.CheckoutData].current,
-      'shipping'
+      'shipping',
     );
     const persistedShippingAddress = sessionStorage.getItem(
-      SHIPPING_ADDRESS_DATA_KEY
+      SHIPPING_ADDRESS_DATA_KEY,
     );
 
     // clear persisted shipping address if cart has a shipping address
@@ -130,7 +130,7 @@ function init({ store }) {
       forwardFormRef: containerRefs.shippingForm,
       onChange: debounce((values) => {
         const hasCartShippingAddress = Boolean(
-          eventState[Events.CheckoutData].current.shippingAddresses?.[0]
+          eventState[Events.CheckoutData].current.shippingAddresses?.[0],
         );
 
         if (!isFirstRenderShipping || !hasCartShippingAddress) {
@@ -144,10 +144,10 @@ function init({ store }) {
         if (hasCartShippingAddress || isDataValid) return;
 
         if (
-          prevEstimateShippingData.countryCode === data.countryCode &&
-          prevEstimateShippingData.regionCode === data.region.regionCode &&
-          prevEstimateShippingData.regionId === data.region.regionId &&
-          prevEstimateShippingData.postcode === data.postcode
+          prevEstimateShippingData.countryCode === data.countryCode
+          && prevEstimateShippingData.regionCode === data.region.regionCode
+          && prevEstimateShippingData.regionId === data.region.regionId
+          && prevEstimateShippingData.postcode === data.postcode
         ) {
           return;
         }
@@ -183,10 +183,10 @@ function init({ store }) {
 
   const billingAddressOnCart = getCartAddress(
     eventState[Events.CheckoutData].current,
-    'billing'
+    'billing',
   );
   const persistedBillingAddress = sessionStorage.getItem(
-    BILLING_ADDRESS_DATA_KEY
+    BILLING_ADDRESS_DATA_KEY,
   );
 
   // clear persisted billing address if cart has a billing address
@@ -211,7 +211,7 @@ function init({ store }) {
       store.billingFormValues = values;
 
       const hasCartBillingAddress = Boolean(
-        eventState[Events.CheckoutData].current.billingAddress
+        eventState[Events.CheckoutData].current.billingAddress,
       );
 
       if (!isFirstRenderBilling || !hasCartBillingAddress) {
@@ -226,3 +226,5 @@ function init({ store }) {
 }
 
 function cleanup() {}
+
+export default guestViewHandler;

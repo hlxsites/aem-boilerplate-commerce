@@ -1,7 +1,9 @@
 /**
  * @typedef {Object} Store
- * @property {Object|undefined} billingFormValues - The billing form values, initially undefined but expected to be an object.
- * @property {boolean} isBillToShipping - A flag indicating whether the billing address is the same as the shipping address. Defaults to true.
+ * @property {Object|undefined} billingFormValues - The billing form values, initially undefined
+ *  but expected to be an object.
+ * @property {boolean} isBillToShipping - A flag indicating whether the billing address is the same
+ *  as the shipping address. Defaults to true.
  */
 
 /**
@@ -9,10 +11,10 @@
  *
  * @returns {Store} The store object.
  */
-export const createStore = () => {
-  return {
-    billingFormValues: undefined,
-    isBillToShipping: true,
-    storeConfig: undefined,
-  };
-};
+const createStore = () => ({
+  billingFormValues: undefined,
+  isBillToShipping: true,
+  storeConfig: undefined,
+});
+
+export default createStore;

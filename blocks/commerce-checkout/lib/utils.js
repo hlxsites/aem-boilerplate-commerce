@@ -6,13 +6,13 @@ export function scrollTo(element) {
 export function getCartAddress(checkoutData, type) {
   if (!checkoutData) return;
 
-  const address =
-    type === 'shipping'
-      ? checkoutData.shippingAddresses?.[0]
-      : checkoutData.billingAddress;
+  const address = type === 'shipping'
+    ? checkoutData.shippingAddresses?.[0]
+    : checkoutData.billingAddress;
 
   if (!address) return;
 
+  // eslint-disable-next-line consistent-return
   return {
     id: address?.id,
     city: address.city,
@@ -47,26 +47,26 @@ export function setAddressOnCart(values, setAddressApi) {
   const address = !isNewAddress
     ? { customerAddressId: data.id }
     : {
-        address: {
-          city: data.city,
-          company: data?.company,
-          countryCode: data.countryCode,
-          customAttributes,
-          // TODO fax
-          firstName: data.firstName,
-          lastName: data.lastName,
-          // TODO middleName
-          postcode: data.postcode,
-          // TODO prefix
-          region: data?.region?.regionCode,
-          regionId: data?.region?.regionId,
-          street: data.street,
-          // TODO suffix
-          telephone: data.telephone,
-          vatId: data.vatId,
-          saveInAddressBook: data.saveAddressBook,
-        },
-      };
+      address: {
+        city: data.city,
+        company: data?.company,
+        countryCode: data.countryCode,
+        customAttributes,
+        // TODO fax
+        firstName: data.firstName,
+        lastName: data.lastName,
+        // TODO middleName
+        postcode: data.postcode,
+        // TODO prefix
+        region: data?.region?.regionCode,
+        regionId: data?.region?.regionId,
+        street: data.street,
+        // TODO suffix
+        telephone: data.telephone,
+        vatId: data.vatId,
+        saveInAddressBook: data.saveAddressBook,
+      },
+    };
 
   setAddressApi(address);
 }

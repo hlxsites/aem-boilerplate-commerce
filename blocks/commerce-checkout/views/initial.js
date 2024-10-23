@@ -71,7 +71,7 @@ import { showModal } from '../lib/modal.js';
 import { View, updateView } from '../lib/view.js';
 import { setAddressOnCart, scrollTo } from '../lib/utils.js';
 
-export const initialViewHandler = { layout, init, cleanup };
+const initialViewHandler = { layout, init, cleanup };
 
 function layout({ screen }) {
   if (screen === 'mobile') {
@@ -89,7 +89,7 @@ function layout({ screen }) {
       paymentMethods,
       orderSummary,
       placeOrder,
-      overlaySpinner
+      overlaySpinner,
     );
   } else {
     main.replaceChildren(
@@ -100,7 +100,7 @@ function layout({ screen }) {
       billToShippingAddress,
       shippingMethods,
       billingForm,
-      paymentMethods
+      paymentMethods,
     );
 
     aside.replaceChildren(orderSummary, cartSummaryList);
@@ -111,7 +111,7 @@ function layout({ screen }) {
       main,
       aside,
       placeOrder,
-      overlaySpinner
+      overlaySpinner,
     );
   }
 }
@@ -224,12 +224,12 @@ function init({ store, block }) {
 
         const cartSummaryListHeadingText = document.createElement('div');
         cartSummaryListHeadingText.classList.add(
-          'cart-summary-list__heading-text'
+          'cart-summary-list__heading-text',
         );
 
         cartSummaryListHeadingText.innerText = title.replace(
           '({count})',
-          headingCtx.count ? `(${headingCtx.count})` : ''
+          headingCtx.count ? `(${headingCtx.count})` : '',
         );
         const editCartLink = document.createElement('a');
         editCartLink.classList.add('cart-summary-list__edit');
@@ -244,7 +244,7 @@ function init({ store, block }) {
         headingCtx.onChange((nextHeadingCtx) => {
           cartSummaryListHeadingText.innerText = title.replace(
             '({count})',
-            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : ''
+            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
           );
         });
       },
@@ -254,7 +254,7 @@ function init({ store, block }) {
   checkoutProvider.render(PlaceOrder, {
     handleValidation: () => {
       let success = true;
-      const forms = document.forms;
+      const { forms } = document;
 
       const loginForm = forms[LOGIN_FORM_NAME];
       if (loginForm) {
@@ -262,24 +262,24 @@ function init({ store, block }) {
         if (!success) scrollTo(login);
       }
 
-      const shippingForm = forms[SHIPPING_FORM_NAME];
+      const shippingAddressForm = forms[SHIPPING_FORM_NAME];
       const shippingContainerRef = containerRefs.shippingForm.current;
       if (
-        success &&
-        shippingContainerRef &&
-        shippingForm &&
-        shippingForm.checkVisibility()
+        success
+        && shippingContainerRef
+        && shippingAddressForm
+        && shippingAddressForm.checkVisibility()
       ) {
         success = shippingContainerRef.handleValidationSubmit(false);
       }
 
-      const billingForm = forms[BILLING_FORM_NAME];
+      const billingAddressForm = forms[BILLING_FORM_NAME];
       const billingContainerRef = containerRefs.billingForm.current;
       if (
-        success &&
-        billingContainerRef &&
-        billingForm &&
-        billingForm.checkVisibility()
+        success
+        && billingContainerRef
+        && billingAddressForm
+        && billingAddressForm.checkVisibility()
       ) {
         success = billingContainerRef.handleValidationSubmit(false);
       }
@@ -304,3 +304,5 @@ function init({ store, block }) {
 }
 
 function cleanup() {}
+
+export default initialViewHandler;

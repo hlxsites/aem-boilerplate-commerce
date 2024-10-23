@@ -6,7 +6,7 @@ import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import * as accountApi from '@dropins/storefront-account/api.js';
 
 // Block-level modules
-import { createStore } from './lib/store.js';
+import createStore from './lib/store.js';
 import {
   initialViewHandler,
   emptyCartViewHandler,
@@ -16,7 +16,12 @@ import {
   serverErrorViewHandler,
 } from './views/index.js';
 import { eventState, handleEvent, Events } from './lib/event-state.js';
-import { view, updateView, setViewHandlers, View } from './lib/view.js';
+import {
+  view,
+  updateView,
+  setViewHandlers,
+  View,
+} from './lib/view.js';
 import { removeModal } from './lib/modal.js';
 
 /*
@@ -65,7 +70,7 @@ export default async function decorate(block) {
     () => {
       if (eventState[Events.Authenticated].current) removeModal();
     },
-    { eager: true }
+    { eager: true },
   );
 
   /*
@@ -79,8 +84,8 @@ export default async function decorate(block) {
        * Handle sign out or empty cart state.
        */
       if (
-        !eventState[Events.CheckoutData].current ||
-        eventState[Events.CheckoutData].current.isEmpty
+        !eventState[Events.CheckoutData].current
+        || eventState[Events.CheckoutData].current.isEmpty
       ) {
         updateView(View.EmptyCart);
         return;
@@ -102,9 +107,9 @@ export default async function decorate(block) {
        */
 
       if (
-        (eventState[Events.CheckoutData].prev === null ||
-          eventState[Events.CheckoutData].prev.isEmpty) &&
-        eventState[Events.CheckoutData].current.isEmpty === false
+        (eventState[Events.CheckoutData].prev === null
+          || eventState[Events.CheckoutData].prev.isEmpty)
+        && eventState[Events.CheckoutData].current.isEmpty === false
       ) {
         updateView(View.Guest, { store });
         return;
@@ -116,10 +121,9 @@ export default async function decorate(block) {
 
       if (view === View.ServerError) {
         updateView(View.Guest, { store });
-        return;
       }
     },
-    { eager: true }
+    { eager: true },
   );
 
   /*
@@ -134,21 +138,19 @@ export default async function decorate(block) {
        */
 
       if (
-        !eventState[Events.CheckoutData].current ||
-        eventState[Events.CheckoutData].current.isEmpty
+        !eventState[Events.CheckoutData].current
+        || eventState[Events.CheckoutData].current.isEmpty
       ) {
         return;
       }
 
       updateView(View.SignedIn, { store });
     },
-    { eager: true }
+    { eager: true },
   );
   /*
    * Event handler for when order is placed.
    */
 
-  handleEvent(Events.CheckoutOrder, () =>
-    updateView(View.OrderConfirmation, { block })
-  );
+  handleEvent(Events.CheckoutOrder, () => updateView(View.OrderConfirmation, { block }));
 }
