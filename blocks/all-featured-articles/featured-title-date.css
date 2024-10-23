@@ -1,0 +1,19 @@
+.featured-title-date {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.featured-title-date img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-width: 710px;
+  max-height: 445px;
+  aspect-ratio: 710/445;
+}
+
+.featured-title-date .article-card {
+  max-width: 710px;
+}

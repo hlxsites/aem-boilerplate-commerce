@@ -5,6 +5,7 @@
 @import url(./three-cols-articles-modal.css);
 @import url(./featured-title.css);
 @import url(./featured-date-title.css);
+@import url(./featured-title-date.css);
 
 .all-featured-articles .category a:hover,
 .all-featured-articles h3 a:hover,
@@ -101,7 +102,8 @@
 
 /* Title only */
 .featured-title .category a,
-.featured-title .date {
+.featured-title .date,
+.featured-title-date .category {
   display: none;
 }
 
