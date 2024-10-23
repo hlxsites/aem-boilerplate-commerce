@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { initializers } from '@dropins/tools/initializer.js';
 import * as cart from '@dropins/storefront-cart/api.js';
 import { initializeDropin } from './index.js';
