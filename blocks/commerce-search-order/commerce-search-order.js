@@ -10,7 +10,7 @@ import { CUSTOMER_ORDER_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/c
 
 // Initialize
 import '../../scripts/initializers/auth.js';
-import '../../scripts/initializers/order.js';
+// import '../../scripts/initializers/order.js';
 
 const renderSignIn = async (element, email, orderNumber) => authRenderer.render(SignIn, {
   initialEmailValue: email,
