@@ -6,7 +6,6 @@ import {
   setEndpoint,
   setFetchGraphQlHeader,
 } from '@dropins/tools/fetch-graphql.js';
-import { initializers } from '@dropins/tools/initializer.js';
 
 // Recaptcha
 import * as recaptcha from '@dropins/tools/recaptcha.js';
