@@ -1,76 +1,65 @@
-.sign-up
-{
-    background-color: transparent;
-    width: 100%;
+.sign-up {
+  background-color: transparent;
+  width: 100%;
 }
 
-.sign-up form
-{
+.sign-up form {
+  display: flex;
+  align-items: flex-end;
+}
+
+.sign-up form label {
+  color: black;
+  font-size: 0.8em;
+  font-weight: var(--sub-text-title-weight);
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.sign-up form input {
+  background: transparent;
+  padding: 12px 20px;
+  margin: 8px 0;
+  color: black;
+  min-width: 20vw;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 0.5px solid #999999;
+  border-radius: 0;
+}
+
+.sign-up form input:hover {
+  border-bottom: 0.5px solid #999999;
+  border-radius: 0;
+}
+
+.sign-up form .button {
+  background-color: rgba(218, 218, 218, 0.09); /* Green */
+  border: none;
+  color: var(--sub-text-grey);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 1em;
+  cursor: not-allowed;
+}
+
+@media (width <= 900px) {
+  .sign-up form {
     display: flex;
-    align-items: flex-end;
-}
-
-.sign-up form label
-{
-    color: black;
-    font-size: 0.8em;
-    font-weight: var( --sub-text-title-weight);
-    text-align: left;
-    text-transform: uppercase;
-}
-
-.sign-up form input
-{
-    background: transparent;
-    padding: 12px 20px;
-    margin: 8px 0;
-    color: black;
-    min-width: 20vw;
-    box-sizing: border-box;
-    border: none;
-    border-bottom: 0.5px solid #999999;
-    border-radius: 0;
-}
-
-.sign-up form input:hover
-{
-    border-bottom: 0.5px solid #999999;
-    border-radius: 0;
-}
-
-.sign-up form .button
-{
-    background-color: rgb(244, 244, 244); /* Green */
-    border: none;
-    color: rgb(153, 153, 153);
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin-left: 1em;
-    cursor: not-allowed;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  @media (width <= 900px)
-  {
-    .sign-up form
-    {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .sign-up form input
-    {       
-        width: 70vw;
-        margin: auto;
-    }
-
-    .sign-up form .button
-    {
-        width: 70vw;
-        margin: auto;
-    }
-
+  .sign-up form input {
+    width: 70vw;
+    margin: auto;
   }
+
+  .sign-up form .button {
+    width: 70vw;
+    margin: auto;
+  }
+}

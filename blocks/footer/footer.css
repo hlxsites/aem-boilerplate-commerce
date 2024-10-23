@@ -1,5 +1,5 @@
 footer {
-  background-color: var(--color-neutral-100);
+  background-color: var(--sub-text-background-color);
   border: 1px solid rgb(229, 229, 229);
   font: var(--type-body-2-default-font);
   letter-spacing: var(--type-body-2-default-letter-spacing);
