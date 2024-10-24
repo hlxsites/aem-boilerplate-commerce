@@ -57,7 +57,7 @@
 }
 .all-featured-articles .date a {
   font-size: var(--sub-text-secondary-size);
-  color: var(--date-color);
+  color: var(--sub-text-grey);
   font-weight: 400;
 }
 
