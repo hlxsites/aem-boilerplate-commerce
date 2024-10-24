@@ -55,7 +55,7 @@ function renderPlaceholder(config, block) {
         <ul>
           <li>
             <em> 
-              <a title="Balenciaga">Balenciaga</a>
+              <a href="/" title="Balenciaga">Balenciaga</a>
             </em>
           </li>
         </ul>
@@ -135,18 +135,17 @@ function renderProduct(product, config, block) {
   });
 
   const fragment = document.createRange().createContextualFragment(`
-
     <div class="image">
     </div>
-       <a href="/products/${urlKey}/${sku}">
+    <a href='/products/${urlKey}/${sku}' aria-label="View details for ${name}">
       <div class="details">
-         <h1><a href="/products/${urlKey}/${sku}" aria-label="${name} product details">${name}</a></h1>
-              <h1 class="colour">black</h1>
+        <h1 class="brand"><a href='/products/${urlKey}/${sku}'>${name}</a></h1>
+        <h1 class="colour">black</h1>
         <div class="price">${renderPrice(product, priceFormatter.format)}</div>
         <div class="actions">
           ${
             config['details-button']
-              ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>`
+              ? `<a href="/products/${urlKey}/${sku}" class="button primary">View ${name}</a>`
               : ''
           }
           ${
