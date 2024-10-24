@@ -209,4 +209,33 @@ export default async function decorate(block) {
       }, 5000);
     });
   }
+
+  const readMoreLinks = block.querySelectorAll(
+    '.content-block-carousel .carousel-slide .carousel-slide-content p u'
+  );
+  const hiddenContent = block.querySelectorAll(
+    '.content-block-carousel .carousel-slide .carousel-slide-content p:nth-child(3)'
+  );
+
+  hiddenContent.forEach((element) => {
+    element.style.display = 'none';
+  });
+
+  readMoreLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      const slideContent = link.closest('.carousel-slide-content');
+      const contentToToggle = slideContent.querySelector('p:nth-child(3)');
+
+      if (contentToToggle.style.display === 'none') {
+        contentToToggle.style.display = 'block';
+
+        link.textContent = 'Show Less';
+      } else {
+        contentToToggle.style.display = 'none';
+        link.textContent = 'Read More';
+      }
+    });
+  });
 }
