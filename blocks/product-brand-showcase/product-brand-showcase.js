@@ -55,7 +55,7 @@ function renderPlaceholder(config, block) {
         <ul>
           <li>
             <em> 
-              <a href="/" title="Balenciaga">Balenciaga</a>
+              <a href="/products/${urlKey}/${sku}" title="Balenciaga">Balenciaga</a>
             </em>
           </li>
         </ul>
