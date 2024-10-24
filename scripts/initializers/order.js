@@ -1,6 +1,6 @@
-import { initializers } from '@dropins/tools/initializer.js';
 import { events } from '@dropins/tools/event-bus.js';
-import * as Order from '@dropins/storefront-order/api.js';
+import { initializers } from '@dropins/tools/initializer.js';
+import { initialize } from '@dropins/storefront-order/api.js';
 import { checkIsAuthenticated } from '../configs.js';
 import { initializeDropin } from './index.js';
 
@@ -22,9 +22,6 @@ initializeDropin(async () => {
   if (pathname === ORDER_DETAILS_PATH || pathname === CUSTOMER_ORDER_DETAILS_PATH) {
     await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided);
   }
-
-  // eslint-disable-next-line no-console
-  console.log('🟢 Order Dropin Initialized');
 })();
 
 async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided) {
@@ -62,7 +59,7 @@ async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTo
   if (targetPath) {
     window.location.href = targetPath;
   } else {
-    await initializers.mountImmediately(Order.initialize, {
+    await initializers.mountImmediately(initialize, {
       orderRef,
     });
   }

@@ -1,5 +1,5 @@
 import { initializers } from '@dropins/tools/initializer.js';
-import * as pdp from '@dropins/storefront-pdp/api.js';
+import { initialize, setEndpoint, setFetchGraphQlHeaders } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
 import { getProduct, getSkuFromUrl } from '../commerce.js';
 import { getConfigValue } from '../configs.js';
@@ -7,10 +7,10 @@ import { fetchPlaceholders } from '../aem.js';
 
 await initializeDropin(async () => {
   // Set Fetch Endpoint (Service)
-  pdp.setEndpoint(await getConfigValue('commerce-endpoint'));
+  setEndpoint(await getConfigValue('commerce-endpoint'));
 
   // Set Fetch Headers (Service)
-  pdp.setFetchGraphQlHeaders({
+  setFetchGraphQlHeaders({
     'Content-Type': 'application/json',
     'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
     'Magento-Website-Code': await getConfigValue('commerce-website-code'),
@@ -74,11 +74,8 @@ await initializeDropin(async () => {
   };
 
   // Initialize Dropins
-  await initializers.mountImmediately(pdp.initialize, {
+  await initializers.mountImmediately(initialize, {
     langDefinitions,
     models,
   });
-
-  // eslint-disable-next-line no-console
-  console.log('🟢 PDP Dropin Initialized');
 })();
