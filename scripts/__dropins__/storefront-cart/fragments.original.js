@@ -235,7 +235,15 @@ fragment CART_FRAGMENT on Cart {
         currency
       }
       label
+      coupon {
+        code
+      }
+      applied_to
+      type
     }
+  }
+  applied_coupons {
+    code
   }
   itemsV2 (
       pageSize:$pageSize,
