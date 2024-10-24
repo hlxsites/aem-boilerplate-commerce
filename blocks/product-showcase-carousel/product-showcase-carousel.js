@@ -131,7 +131,7 @@ function renderProduct(product, config, block) {
         <div class="image"></div>
       </a>
       <div class="details">
-        <h1><a href="/products/${urlKey}/${sku}" aria-label="${name} product details">${name}</a></h1>
+        <h1><a href="/products/${urlKey}/${sku}" aria-label="${name} class="product-details">${name}</a></h1>
         <h1 class="colour">black</h1>
         <div class="price">${renderPrice(product, priceFormatter.format)}</div>
       </div>
