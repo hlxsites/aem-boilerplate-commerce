@@ -196,10 +196,6 @@ main .section {
     min-height: 50vh;
   }
 
-  .banner-section-latest .hero-latest div:nth-child(2) {
-    display: none;
-  }
-
   .hero-content {
     height: 74vh;
   }

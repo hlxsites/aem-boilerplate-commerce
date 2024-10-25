@@ -353,6 +353,13 @@ div.section.carousel-container {
 }
 
 @media (width <= 991px) {
+  .banner-section-latest {
+    min-height: unset !important;
+    height: auto;
+    width: 100%;
+    min-height: 300px;
+  }
+
   .content-block-carousel img,
   .carousel-slide-content .button-container {
     display: none !important;
