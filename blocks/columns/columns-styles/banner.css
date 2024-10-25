@@ -145,9 +145,3 @@ main .banner-section-latest {
   box-sizing: border-box;
   color: white;
 }
-
-.banner-section-latest img {
-  object-fit: cover;
-  width: 100%;
-  max-height: 435px;
-}

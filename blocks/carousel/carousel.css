@@ -362,6 +362,12 @@ div.carousel-wrapper {
   cursor: pointer;
 }
 
+.banner-section-latest img {
+  object-fit: cover;
+  width: 100vw;
+  max-height: 435px;
+}
+
 @media (width <= 991px) {
   .banner-section-latest {
     min-height: unset !important;
