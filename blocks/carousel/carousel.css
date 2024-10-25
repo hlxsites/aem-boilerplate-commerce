@@ -2,9 +2,17 @@ div.section.carousel-container {
   padding: 0;
   margin: 0;
 }
+
+div.carousel-wrapper {
+  left: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 .carousel {
+  margin: 0;
   padding: 0;
   height: auto;
+  width: 100vw;
 }
 
 .content-block-carousel {
@@ -67,10 +75,12 @@ div.section.carousel-container {
 
 .carousel .carousel-slide .carousel-slide-image picture {
   position: absolute;
+  left: 0;
   inset: 0;
 }
 
 .carousel .carousel-slide .carousel-slide-image picture > img {
+  margin-left: 0;
   height: 100%;
   width: 100vw;
 }
