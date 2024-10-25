@@ -226,14 +226,16 @@ export default async function decorate(block) {
       event.preventDefault();
 
       const slideContent = link.closest('.carousel-slide-content');
+
       const contentToToggle = slideContent.querySelector('p:nth-child(3)');
 
       if (contentToToggle.style.display === 'none') {
         contentToToggle.style.display = 'block';
-
+        contentToToggle.classList.add('hidden-content');
         link.textContent = 'Show Less';
       } else {
         contentToToggle.style.display = 'none';
+        contentToToggle.classList.remove('hidden-content');
         link.textContent = 'Read More';
       }
     });
