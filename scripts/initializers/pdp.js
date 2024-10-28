@@ -1,7 +1,12 @@
 import { initializers } from '@dropins/tools/initializer.js';
-import { initialize, setEndpoint, setFetchGraphQlHeaders } from '@dropins/storefront-pdp/api.js';
+import {
+  initialize,
+  setEndpoint,
+  setFetchGraphQlHeaders,
+  fetchPDPData,
+} from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
-import { getProduct, getSkuFromUrl } from '../commerce.js';
+import { getOptionsUIDsFromUrl, getSkuFromUrl } from '../commerce.js';
 import { getConfigValue } from '../configs.js';
 import { fetchPlaceholders } from '../aem.js';
 
@@ -21,10 +26,10 @@ await initializeDropin(async () => {
   });
 
   const sku = getSkuFromUrl();
-  window.getProductPromise = getProduct(sku);
+  const optionsUIDs = getOptionsUIDsFromUrl();
 
   const [product, placeholders] = await Promise.all([
-    window.getProductPromise,
+    fetchPDPData(sku, { optionsUIDs }),
     fetchPlaceholders(),
   ]);
 
@@ -75,7 +80,11 @@ await initializeDropin(async () => {
 
   // Initialize Dropins
   await initializers.mountImmediately(initialize, {
+    sku,
+    optionsUIDs,
     langDefinitions,
     models,
+    acdl: true,
+    persistURLParams: true,
   });
 })();
