@@ -53,7 +53,8 @@
 .nav-modal-content .four-cols-two-img img {
   width: 100%;
 }
-.nav-modal-content div div ul {
+.nav-modal-content div div ul,
+.nav-modal-content div div ul a {
   list-style-type: none;
   flex-direction: column;
   float: left;
@@ -205,7 +206,9 @@
   }
 
   .nav-modal-content .three-cols-four-img > div div ul li,
-  .nav-modal-content .four-cols-two-img > div div ul li {
+  .nav-modal-content .four-cols-two-img > div div ul li,
+  .nav-modal-content .three-cols-four-img > div div ul li a,
+  .nav-modal-content .four-cols-two-img > div div ul li a {
     display: flex;
     font-size: 16px;
     font-weight: 400;

@@ -545,11 +545,14 @@ class ProductListPage extends Component {
   };
 
   loadProducts = async () => {
-    this.setState({ loading: true });
-
     const state = await loadCategory(this.state);
     await this.loadState(state);
   };
+
+  handleFilterChange(filters) {
+    this.setState({ filters, currentPage: 1, loading: true });
+    this.filterChange = true;
+  }
 
   async componentDidMount() {
     if (window.loadCategoryPromise) {
