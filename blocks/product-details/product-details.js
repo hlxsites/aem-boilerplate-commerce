@@ -9,7 +9,6 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
-import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -151,9 +150,11 @@ export default async function decorate(block) {
 
           // get the current selection values
           const values = pdpApi.getProductConfigurationValues();
+          const valid = pdpApi.isProductConfigurationValid();
 
           // add the product to the cart
-          if (values) {
+          if (valid) {
+            const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
             await addProductsToCart([{ ...values }]);
           }
 
