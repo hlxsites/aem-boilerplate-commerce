@@ -186,13 +186,8 @@ async function loadEager(doc) {
     // Preload PDP Dropins assets
     preloadFile('/placeholders.json', 'fetch');
     preloadFile('/scripts/initializers/pdp.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDetails.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getProductConfigurationValues.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/isProductConfigurationValid.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/chunks/getFetchedProductData.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
