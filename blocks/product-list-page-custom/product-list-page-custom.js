@@ -275,7 +275,7 @@ export async function preloadCategory(category) {
 
 function Pagination(props) {
   if (props.loading) {
-    return html`<div class="pagination shimmer"></div>`;
+    return html`<div class="pagination"></div>`;
   }
 
   return html`<div class="pagination">

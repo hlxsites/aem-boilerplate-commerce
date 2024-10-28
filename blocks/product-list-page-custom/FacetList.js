@@ -253,13 +253,10 @@ export default class FacetList extends Component {
   // eslint-disable-next-line class-methods-use-this
   render({ facetMenuRef, facets, filters, loading }) {
     if (loading) {
-      return html`<div class="facets shimmer"></div>`;
+      return html`<div class="facets"></div>`;
     }
 
-    return html` <div
-      class="facets ${loading ? 'shimmer' : ''}"
-      ref=${facetMenuRef}
-    >
+    return html` <div class="facets ${loading}" ref=${facetMenuRef}>
       <button
         class="close"
         onClick=${() => facetMenuRef.current.classList.toggle('active')}

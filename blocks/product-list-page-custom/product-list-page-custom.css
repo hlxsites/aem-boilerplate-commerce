@@ -882,7 +882,7 @@ main
     font-weight: 600;
   }
 }
-
+/* 
 .product-list-page-custom .shimmer {
   background: transparent;
   border-radius: 4px;
@@ -892,7 +892,7 @@ main
   border-radius: 8px;
   min-height: 1.5rem;
   margin-bottom: 4px;
-}
+} */
 
 @media (width < 993px) {
   .product-section {
