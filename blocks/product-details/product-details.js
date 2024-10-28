@@ -106,7 +106,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductGallery, {
       controls: 'dots',
       arrows: true,
-      peak: true,
+      peak: false,
       gap: 'small',
       // TODO: there is a bug in the Carousel component that renders the wrong default image
       loop: false,
@@ -116,7 +116,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductGallery, {
       controls: 'thumbnailsColumn',
       arrows: true,
-      peak: false,
+      peak: true,
       gap: 'small',
       // TODO: there is a bug in the Carousel component that renders the wrong default image
       loop: false,
