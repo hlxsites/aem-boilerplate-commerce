@@ -7,7 +7,7 @@ export const assertCartSummaryProduct =
     totalPrice,
     productPosition
   ) =>
-    (elem = '.commerce-cart-summary-wrapper') => {
+    (elem = '.commerce-cart-wrapper') => {
       cy.get(`${elem} .dropin-cart-item__title`)
         .eq(productPosition)
         .should('contain', productName);
@@ -15,7 +15,7 @@ export const assertCartSummaryProduct =
         .eq(productPosition)
         .should('contain', productSku);
 
-      if (elem === '.commerce-cart-summary-wrapper') {
+      if (elem === '.commerce-cart-wrapper') {
         cy.get(`${elem} .dropin-incrementer__input`)
           .eq(productPosition)
           .should('have.value', productQty);
@@ -169,3 +169,6 @@ export const assertAuthUser = (sign_up) => {
   // cy.contains(sign_up.lastName).should("be.visible");
   // cy.contains(sign_up.email).should("be.visible");
 };
+
+// imports and re-exports the functions from ./adobeDataLayer.js
+export * from './adobeDataLayer';

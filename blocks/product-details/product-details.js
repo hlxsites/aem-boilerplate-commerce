@@ -1,5 +1,4 @@
 /* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 
 import {
   InLineAlert,
@@ -8,9 +7,8 @@ import {
   provider as UI,
 } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
-import * as PDP from '@dropins/storefront-pdp/api.js';
-import { render as PDPProvider } from '@dropins/storefront-pdp/render.js';
+import * as pdpApi from '@dropins/storefront-pdp/api.js';
+import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Containers
@@ -26,50 +24,20 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 // Libs
 import {
   setJsonLd,
-  loadErrorPage, performCatalogServiceQuery, variantsQuery,
-  getSkuFromUrl,
-  getOptionsUIDsFromUrl,
+  loadErrorPage,
+  performCatalogServiceQuery,
+  variantsQuery,
 } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
-import { getConfigValue } from '../../scripts/configs.js';
+
+// Initializers
+import '../../scripts/initializers/pdp.js';
+import '../../scripts/initializers/cart.js';
 
 export default async function decorate(block) {
-  // Set Fetch Endpoint (Service)
-  PDP.setEndpoint(await getConfigValue('commerce-endpoint'));
-
-  // Set Fetch Headers (Service)
-  PDP.setFetchGraphQlHeaders({
-    'Content-Type': 'application/json',
-    'Magento-Environment-Id': await getConfigValue('commerce-environment-id'),
-    'Magento-Website-Code': await getConfigValue('commerce-website-code'),
-    'Magento-Store-View-Code': await getConfigValue('commerce-store-view-code'),
-    'Magento-Store-Code': await getConfigValue('commerce-store-code'),
-    'Magento-Customer-Group': await getConfigValue('commerce-customer-group'),
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
-  });
-
-  // pre-fetch PDP data
-  const sku = getSkuFromUrl();
-  const optionsUIDs = getOptionsUIDsFromUrl();
-
-  const [product, labels] = await Promise.all([
-    PDP.fetchPDPData(sku, { optionsUIDs }),
-    fetchPlaceholders(),
-  ]);
-
-  // Initialize
-  initializers.register(PDP.initialize, {
-    sku,
-    optionsUIDs,
-    langDefinitions: getLangDefinitions(labels),
-    models: {
-      ProductDetails: {
-        initialData: product,
-      },
-    },
-    acdl: true,
-    persistURLParams: true,
-  });
+  // eslint-disable-next-line no-underscore-dangle
+  const product = events._lastEvent?.['pdp/data']?.payload ?? null;
+  const labels = await fetchPlaceholders();
 
   if (!product) {
     await loadErrorPage();
@@ -135,7 +103,7 @@ export default async function decorate(block) {
     _attributes,
   ] = await Promise.all([
     // Gallery (Mobile)
-    PDPProvider.render(ProductGallery, {
+    pdpRendered.render(ProductGallery, {
       controls: 'dots',
       arrows: true,
       peak: true,
@@ -145,7 +113,7 @@ export default async function decorate(block) {
     })($galleryMobile),
 
     // Gallery (Desktop)
-    PDPProvider.render(ProductGallery, {
+    pdpRendered.render(ProductGallery, {
       controls: 'thumbnailsColumn',
       arrows: true,
       peak: false,
@@ -155,19 +123,19 @@ export default async function decorate(block) {
     })($gallery),
 
     // Header
-    PDPProvider.render(ProductHeader, {})($header),
+    pdpRendered.render(ProductHeader, {})($header),
 
     // Price
-    PDPProvider.render(ProductPrice, {})($price),
+    pdpRendered.render(ProductPrice, {})($price),
 
     // Short Description
-    PDPProvider.render(ProductShortDescription, {})($shortDescription),
+    pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    PDPProvider.render(ProductOptions, { hideSelectedValue: false })($options),
+    pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
 
     // Configuration  Quantity
-    PDPProvider.render(ProductQuantity, {})($quantity),
+    pdpRendered.render(ProductQuantity, {})($quantity),
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
@@ -182,7 +150,7 @@ export default async function decorate(block) {
           }));
 
           // get the current selection values
-          const values = PDP.getProductConfigurationValues();
+          const values = pdpApi.getProductConfigurationValues();
 
           // add the product to the cart
           if (values) {
@@ -227,7 +195,7 @@ export default async function decorate(block) {
         try {
           addToWishlist.setProps((prev) => ({ ...prev, disabled: true }));
 
-          const values = PDP.getProductConfigurationValues();
+          const values = pdpApi.getProductConfigurationValues();
 
           if (values?.sku) {
             const wishlist = await import('../../scripts/wishlist/api.js');
@@ -242,10 +210,10 @@ export default async function decorate(block) {
     })($addToWishlist),
 
     // Description
-    PDPProvider.render(ProductDescription, {})($description),
+    pdpRendered.render(ProductDescription, {})($description),
 
     // Attributes
-    PDPProvider.render(ProductAttributes, {})($attributes),
+    pdpRendered.render(ProductAttributes, {})($attributes),
   ]);
 
   // Lifecycle Events
@@ -368,45 +336,4 @@ function setMetaTags(product) {
   createMetaTag('og:image:secure_url', metaImage, 'property');
   createMetaTag('og:product:price:amount', price.value, 'property');
   createMetaTag('og:product:price:currency', price.currency, 'property');
-}
-
-function getLangDefinitions(labels) {
-  return {
-    default: {
-      PDP: {
-        Product: {
-          Incrementer: { label: labels.pdpProductIncrementer },
-          OutOfStock: { label: labels.pdpProductOutofstock },
-          AddToCart: { label: labels.pdpProductAddtocart },
-          Details: { label: labels.pdpProductDetails },
-          RegularPrice: { label: labels.pdpProductRegularprice },
-          SpecialPrice: { label: labels.pdpProductSpecialprice },
-          PriceRange: {
-            From: { label: labels.pdpProductPricerangeFrom },
-            To: { label: labels.pdpProductPricerangeTo },
-          },
-          Image: { label: labels.pdpProductImage },
-        },
-        Swatches: {
-          Required: { label: labels.pdpSwatchesRequired },
-        },
-        Carousel: {
-          label: labels.pdpCarousel,
-          Next: { label: labels.pdpCarouselNext },
-          Previous: { label: labels.pdpCarouselPrevious },
-          Slide: { label: labels.pdpCarouselSlide },
-          Controls: {
-            label: labels.pdpCarouselControls,
-            Button: { label: labels.pdpCarouselControlsButton },
-          },
-        },
-        Overlay: {
-          Close: { label: labels.pdpOverlayClose },
-        },
-      },
-      Custom: {
-        AddingToCart: { label: labels.pdpCustomAddingtocart },
-      },
-    },
-  };
 }

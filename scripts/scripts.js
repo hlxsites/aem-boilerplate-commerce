@@ -1,6 +1,5 @@
 /* eslint-disable import/no-cycle */
 import { events } from '@dropins/tools/event-bus.js';
-import { getCartDataFromCache } from '@dropins/storefront-cart/api.js';
 import {
   buildBlock,
   decorateBlocks,
@@ -22,8 +21,7 @@ import {
   sampleRUM,
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
-import initializeDropins from './dropins.js';
-import { loadFragment } from '../blocks/fragment/fragment.js';
+import initializeDropins from './initializers/index.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -133,53 +131,9 @@ function buildTemplateColumns(doc) {
   });
 }
 
-async function buildTemplateCart(doc) {
-  const main = doc.querySelector('main');
-
-  // load fragment for empty cart
-  const emptyCartMeta = getMetadata('empty-cart');
-  const emptyCartPath = emptyCartMeta ? new URL(emptyCartMeta, window.location).pathname : '/empty-cart';
-  const emptyCartFragment = await loadFragment(emptyCartPath);
-
-  // append emptyCartFragment next to main
-  main.after(emptyCartFragment);
-
-  const hasProducts = getCartDataFromCache()?.totalQuantity > 0 || false;
-
-  // toggle view based on cart data
-  function toggleView(next) {
-    if (next) {
-      emptyCartFragment.setAttribute('hidden', 'hidden');
-      main.removeAttribute('hidden');
-    } else {
-      main.setAttribute('hidden', 'hidden');
-      emptyCartFragment.removeAttribute('hidden');
-    }
-  }
-
-  // initial state (cached)
-  toggleView(hasProducts);
-
-  // update state on cart data event
-  let prev = hasProducts;
-
-  events.on('cart/data', (payload) => {
-    const next = payload?.totalQuantity > 0 || false;
-
-    if (next !== prev) {
-      prev = next;
-      toggleView(next);
-    }
-  }, { eager: true });
-}
-
 async function applyTemplates(doc) {
   if (doc.body.classList.contains('columns')) {
     buildTemplateColumns(doc);
-  }
-
-  if (doc.body.classList.contains('cart')) {
-    await buildTemplateCart(doc);
   }
 }
 
@@ -231,6 +185,8 @@ async function loadEager(doc) {
 
     // Preload PDP Dropins assets
     preloadFile('/placeholders.json', 'fetch');
+    preloadFile('/scripts/initializers/pdp.js', 'script');
+    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDetails.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/chunks/fetchPDPData.js', 'script');
@@ -291,11 +247,9 @@ async function loadEager(doc) {
       totalQuantity: 0,
     },
   });
-  if (pageType !== 'Product') {
-    window.adobeDataLayer.push((dl) => {
-      dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
-    });
-  }
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
+  });
 
   const main = doc.querySelector('main');
   if (main) {
@@ -306,13 +260,11 @@ async function loadEager(doc) {
     await applyTemplates(doc);
 
     // Load LCP blocks
-    document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
+    document.body.classList.add('appear');
   }
 
   events.emit('eds/lcp', true);
-
-  sampleRUM.enhance();
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */

@@ -1,7 +1,12 @@
 /* eslint-disable no-underscore-dangle */
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
+import { Button, provider as UI } from '@dropins/tools/components.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
+
+// initialize dropins
+import '../../scripts/initializers/cart.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -70,6 +75,28 @@ function renderItem(unitId, product) {
     });
   };
 
+  const addToCartHandler = async () => {
+    // Always emit the add-to-cart event, regardless of product type.
+    window.adobeDataLayer.push((dl) => {
+      dl.push({ event: 'recs-item-add-to-cart', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
+    });
+    if (product.__typename === 'SimpleProductView') {
+      // Only add simple products directly to cart (no options selections needed)
+      try {
+        await addProductsToCart([{
+          sku: product.sku,
+          quantity: 1,
+        }]);
+      } catch (error) {
+        console.error('Error adding products to cart', error);
+      }
+    } else {
+      // Navigate to page for non-simple products
+      window.location.href = `/products/${urlKey}/${product.sku}`;
+    }
+  };
+
+  const ctaText = product.__typename === 'SimpleProductView' ? 'Add to Cart' : 'Select Options';
   const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
     <a href="/products/${urlKey}/${product.sku}">
       <picture>
@@ -78,9 +105,14 @@ function renderItem(unitId, product) {
       </picture>
       <span>${product.name}</span>
     </a>
+    <span class="product-grid-cta"></span>
   </div>`);
   item.querySelector('a').addEventListener('click', clickHandler);
-
+  const buttonEl = item.querySelector('.product-grid-cta');
+  UI.render(Button, {
+    children: ctaText,
+    onClick: addToCartHandler,
+  })(buttonEl);
   return item;
 }
 
@@ -114,10 +146,9 @@ function renderItems(block, results) {
         window.adobeDataLayer.push((dl) => {
           dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
         });
-        inViewObserver.disconnect();
       }
     });
-  });
+  }, { threshold: 0.5 });
   inViewObserver.observe(block);
 }
 
@@ -152,8 +183,13 @@ async function loadRecommendation(block, context, visibility, filters) {
     return;
   }
 
-  if (!unitsPromise) {
-    const storeViewCode = await getConfigValue('commerce-store-view-code');
+  const storeViewCode = await getConfigValue('commerce-store-view-code');
+
+  if (unitsPromise) {
+    return;
+  }
+
+  unitsPromise = new Promise((resolve, reject) => {
     // Get product view history
     try {
       const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
@@ -176,16 +212,19 @@ async function loadRecommendation(block, context, visibility, filters) {
       dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
     });
 
-    unitsPromise = performCatalogServiceQuery(recommendationsQuery, context);
-    const { recommendations } = await unitsPromise;
-
-    window.adobeDataLayer.push((dl) => {
-      dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
-      dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+    performCatalogServiceQuery(recommendationsQuery, context).then(({ recommendations }) => {
+      window.adobeDataLayer.push((dl) => {
+        dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
+        dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+      });
+      resolve(recommendations);
+    }).catch((error) => {
+      console.error('Error fetching recommendations', error);
+      reject(error);
     });
-  }
+  });
 
-  let { results } = (await unitsPromise).recommendations;
+  let { results } = await unitsPromise;
   results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
 
   renderItems(block, results);

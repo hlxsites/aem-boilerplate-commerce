@@ -8,7 +8,7 @@
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
     "start": "aem up --print-index",
-    "install:dropins": "node postinstall.js",
+    "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins"
   },
@@ -24,23 +24,24 @@
   "homepage": "https://github.com/adobe/aem-boilerplate#readme",
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
-    "@babel/eslint-parser": "7.25.1",
-    "eslint": "8.57.0",
+    "@babel/eslint-parser": "7.25.8",
+    "@dropins/build-tools": "0.1.0",
+    "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
-    "eslint-plugin-import": "2.29.1",
-    "stylelint": "16.8.2",
+    "eslint-plugin-import": "2.31.0",
+    "stylelint": "16.10.0",
     "stylelint-config-standard": "36.0.1"
   },
   "dependencies": {
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
-    "@dropins/storefront-cart": "0.6.0",
+    "@dropins/storefront-account": "0.1.0-alpha13",
+    "@dropins/storefront-auth": "0.0.1-alpha24",
+    "@dropins/storefront-cart": "0.7.0",
     "@dropins/storefront-checkout": "0.1.0-alpha49",
-    "@dropins/storefront-auth": "0.0.1-alpha21",
-    "@dropins/storefront-account": "0.1.0-alpha11",
-    "@dropins/storefront-order": "0.1.0-alpha9",
+    "@dropins/storefront-order": "0.1.0-alpha10",
     "@dropins/storefront-order-confirmation": "0.1.0-alpha33",
     "@dropins/storefront-pdp": "0.4.0",
-    "@dropins/tools": "^0.33.0"
+    "@dropins/tools": "^0.35.0-alpha001"
   }
 }
