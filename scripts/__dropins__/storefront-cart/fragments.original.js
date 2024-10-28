@@ -239,7 +239,6 @@ fragment CART_FRAGMENT on Cart {
         code
       }
       applied_to
-      type
     }
   }
   applied_coupons {
