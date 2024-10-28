@@ -1,0 +1,58 @@
+import { signUpUser } from '../../../actions';
+import { assertAuthUser } from '../../../assertions';
+
+it('has shopperId as logged-in when authenticated, and guest when not', () => {
+  // 1. checks that shopperContext is guest on first non-authenticated page load
+  cy.visit('/');
+  cy.waitForResource('commerce-events-collector.js')
+    .then(() => {
+      cy.window().its('adobeDataLayer').then((dl) => {
+        expect(dl[0].shopperContext).to.have.property('shopperId', 'guest');
+      });
+    });
+
+  // 2. creates customer and checks that shopperContext is set to logged-in
+  cy.visit("/customer/create");
+  cy.fixture('userInfo').then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+  });
+  cy.waitForResource('commerce-events-collector.js')
+    .then(() => {
+      cy.window().its('adobeDataLayer').then((dl) => {
+        expect(dl[0].shopperContext).to.have.property('shopperId', 'logged-in');
+      });
+    });
+
+  // 3. Loads a new page and checks that shopperContext is still set to logged-in
+  cy.visit('/');
+  cy.waitForResource('commerce-events-collector.js')
+    .then(() => {
+      cy.window().its('adobeDataLayer').then((dl) => {
+        expect(dl[0].shopperContext).to.have.property('shopperId', 'logged-in');
+      });
+    });
+
+  // 4. Logs out / deletes customer and checks that shopperContext is set to guest
+  cy.get('.nav-dropdown-button').contains('Hi, John').click();
+  cy.get('#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(3) > button').click();
+  cy.get('.auth-sign-in-form__button--submit');
+  cy.waitForResource('commerce-events-collector.js')
+    .then(() => {
+      cy.window().its('adobeDataLayer').then((dl) => {
+        // TODO: After auth dropin pushes context on logout this should work
+        // Will need to set proper dl index for _last_ pushed shopperContext.
+        // const lastIndex = getLastPushedshopperContext();
+        // expect(dl[lastIndex].shopperContext).to.have.property('shopperId', 'guest');
+      });
+    });
+
+  // 5. Loads a new page and checks that shopperContext is still set to guest
+  cy.visit('/');
+  cy.waitForResource('commerce-events-collector.js')
+    .then(() => {
+      cy.window().its('adobeDataLayer').then((dl) => {
+        expect(dl[0].shopperContext).to.have.property('shopperId', 'guest');
+      });
+    });
+});

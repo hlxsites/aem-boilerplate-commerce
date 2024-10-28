@@ -21,7 +21,7 @@ import {
   sampleRUM,
 } from './aem.js';
 import { getProduct, getSkuFromUrl, trackHistory } from './commerce.js';
-import initializeDropins from './initializers/index.js';
+import initializeDropins, { getUserTokenCookie } from './initializers/index.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -232,6 +232,9 @@ async function loadEager(doc) {
     },
     shoppingCartContext: {
       totalQuantity: 0,
+    },
+    shopperContext: {
+      shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
     },
   });
   window.adobeDataLayer.push((dl) => {
