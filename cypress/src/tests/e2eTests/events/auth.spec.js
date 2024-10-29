@@ -40,12 +40,12 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
   cy.get('.nav-dropdown-button').contains('Hi, John').click();
   cy.get('#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(3) > button').click();
   cy.get('.auth-sign-in-form__button--submit');
+  cy.wait(1000); // TODO: find better way to wait for auth acdl push to have occurred after logout click.
   cy.waitForResource('commerce-events-collector.js')
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
-        // TODO: After auth dropin pushes context on logout this should work
-        // const index = dl.findLastIndex(el => el.shopperContext);
-        // cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'guest'}});
+        const index = dl.findLastIndex(el => el.shopperContext);
+        cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'guest'}});
       });
     });
 
