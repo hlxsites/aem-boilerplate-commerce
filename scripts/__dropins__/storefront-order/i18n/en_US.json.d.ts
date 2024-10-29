@@ -1,5 +1,68 @@
 declare const _default: {
   "Order": {
+    "OrderCostSummary": {
+      "headerText": "Order summary",
+      "subtotal": {
+        "title": "Subtotal"
+      },
+      "shipping": {
+        "title": "Shipping",
+        "freeShipping": "Free shipping"
+      },
+      "tax": {
+        "accordionTitle": "Taxes",
+        "accordionTotalTax": "Tax Total",
+        "totalExcludingTaxes":"Total excluding taxes",
+        "title": "Tax",
+        "incl": "Including taxes",
+        "excl": "Excluding taxes"
+      },
+      "discount": {
+        "title": "Discount",
+        "subtitle": "discounted"
+      },
+      "total": {
+        "title": "Total"
+      }
+    },
+    "Returns": {
+      "minifiedView": {
+        "returnsList": {
+          "viewAllOrdersButton": "View all returns",
+          "ariaLabelLink": "Redirect to full order information",
+          "emptyOrdersListMessage": "No returns",
+          "minifiedViewTitle": "Recent returns",
+          "orderNumber": "Order Number:",
+          "carrier": "Carrier:",
+          "itemsText": "items"
+        }
+      },
+      "fullSizeView": {
+        "returnsList": {
+          "viewAllOrdersButton": "View all orders",
+          "ariaLabelLink": "Redirect to full order information",
+          "emptyOrdersListMessage": "No returns",
+          "minifiedViewTitle": "Returns",
+          "orderNumber": "Order Number:",
+          "carrier": "Carrier:",
+          "itemsText": "items"
+        }
+      }
+    },
+    "OrderProductListContent": {
+      "cancelledTitle": "Cancelled",
+      "allOrdersTitle": "Your order",
+      "downloadableCount": "Files",
+      "stockStatus": {
+        "inStock": "In stock",
+        "outOfStock": "Out of stock"
+      },
+      "GiftCard": {
+        "sender": "Sender",
+        "recipient": "Recipient",
+        "message": "Note"
+      }
+    },
     "OrderSearchForm": {
       "title": "Enter your information to view order details",
       "description": "You can find your order number in the receipt you received via email.",
@@ -55,7 +118,8 @@ declare const _default: {
       },
       "orderCanceled": {
         "title": "Canceled",
-        "message": "This order was cancelled by you. You should see a refund to your original payment method with 5-7 business days."
+        "message": "This order was cancelled by you. You should see a refund to your original payment method with 5-7 business days.",
+        "messageWithoutDate": "This order was cancelled by you. You should see a refund to your original payment method with 5-7 business days."
       },
       "orderSuspectedFraud": {
         "title": "Suspected fraud",
@@ -69,7 +133,8 @@ declare const _default: {
       },
       "guestOrderCancellationRequested": {
         "title": "cancellation requested",
-        "message": "The cancellation has been requested. Check your email for further instructions."
+        "message": "The cancellation has been requested on {DATE}. Check your email for further instructions.",
+        "messageWithoutDate": "The cancellation has been requested. Check your email for further instructions."
       }
     },
     "CustomerDetails": {
@@ -98,7 +163,7 @@ declare const _default: {
     "OrderCancel": {
       "buttonText": "Cancel Order"
     },
-    "OrderCancellationReasonsModal": {
+    "OrderCancellationReasonsForm": {
       "title": "Cancel order",
       "description": "Select a reason for canceling the order",
       "label": "Reason for cancel",
@@ -107,7 +172,6 @@ declare const _default: {
       "errorDescription": "There was an error processing your order cancellation."
     }
   }
-}
-;
+};
 
 export default _default;
