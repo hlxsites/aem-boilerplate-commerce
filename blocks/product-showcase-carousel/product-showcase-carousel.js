@@ -211,10 +211,10 @@ export default async function decorate(block) {
 
   carousels.forEach((carousel) => {
     const totalProducts = carousel.children.length;
-    if (totalProducts >= 4) {
+    if (totalProducts >= 6) {
       const columns = Math.ceil(totalProducts / 2);
       carousel.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
-    } else if (totalProducts < 4) {
+    } else if (totalProducts < 6) {
       const columns = Math.ceil(totalProducts);
       carousel.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
     }

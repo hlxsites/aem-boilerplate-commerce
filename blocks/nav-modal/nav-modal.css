@@ -92,13 +92,8 @@
   div:nth-child(1)
   p:nth-child(1):only-of-type
   a {
-  color: var(--text-date-color);
-  background-color: transparent;
-  border-radius: 0;
   text-transform: capitalize;
-  padding: 0;
-  border-radius: 0;
-  margin-top: 0;
+  font-weight: 555;
   margin-bottom: 1%;
   transition: opacity 0.3s ease;
 }

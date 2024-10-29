@@ -1,3 +1,22 @@
+.main-brand-showcase-horizontal .product-main-brand-showcase {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.main-brand-showcase-horizontal
+  .product-main-brand-showcase
+  .product
+  .image
+  picture
+  > img {
+  width: 550px;
+  height: auto;
+}
+.main-brand-showcase-horizontal .product-main-brand-showcase .product {
+  height: fit-content;
+}
+
 .product-main-brand-showcase .product div:nth-child(1),
 .product-main-brand-showcase-mirror .product div:nth-child(1) {
   display: flex;
@@ -152,5 +171,11 @@
   /* Shop now */
   .product-main-brand-showcase-mirror .product div:nth-child(1) p a.button {
     padding-left: 7%;
+  }
+}
+
+@media (width <= 991px) {
+  .main-brand-showcase-horizontal .product-main-brand-showcase {
+    grid-template-columns: 1fr;
   }
 }

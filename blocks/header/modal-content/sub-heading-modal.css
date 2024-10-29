@@ -3,7 +3,14 @@
 .nav-modal-content .latest-modal ul,
 .nav-modal-content .latest-modal ul a,
 .nav-modal-content .latest-modal-brands ul,
-.nav-modal-content .latest-modal-brands ul a {
+.nav-modal-content .latest-modal-brands ul a,
+.nav-modal-content
+  .nav-modal-content-section
+  div:nth-child(1)
+  p:nth-child(1):only-of-type
+  a {
+  background-color: transparent;
+  border-radius: 0;
   font-size: var(--sub-text-secondary-size);
   color: var(--text-date-color);
   list-style-type: none;
@@ -62,6 +69,7 @@
     div:nth-child(1)
     p:nth-child(1):only-of-type
     a {
+    text-wrap: nowrap;
     height: 35px;
   }
 

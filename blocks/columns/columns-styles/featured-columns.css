@@ -2,14 +2,17 @@
 @import url(../../../blocks/product-brand-showcase/product-brand-showcase.css);
 
 /* Featured Brand (Balenciaga) */
-.divider-border-grid {
+.divider-border-grid,
+.build-product-block {
   display: flex;
   margin: auto 0;
 }
 
 /* Main Image wrapper */
 .divider-border-grid .product-main-brand-showcase-wrapper,
-.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+.build-product-block .product-main-brand-showcase-wrapper,
+.build-product-block .product-main-brand-showcase-mirror-wrapper {
   display: flex;
   margin: auto;
   margin-top: 0;
@@ -18,17 +21,21 @@
   width: 100%;
 }
 
-.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+.build-product-block .product-main-brand-showcase-mirror-wrapper {
   margin-left: 2%;
 }
 
-.divider-border-grid .product-main-brand-showcase-wrapper {
+.divider-border-grid .product-main-brand-showcase-wrapper,
+.build-product-block .product-main-brand-showcase-wrapper {
   margin-right: 2%;
 }
 
 /* Products wrapper */
 .divider-border-grid .product-brand-showcase-wrapper,
-.divider-border-grid .product-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-brand-showcase-mirror-wrapper,
+.build-product-block .product-brand-showcase-wrapper,
+.build-product-block .product-brand-showcase-mirror-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   height: auto;
@@ -39,21 +46,27 @@
   flex: 1;
 }
 /* Products wrapper */
-.divider-border-grid .product-brand-showcase-wrapper {
+.divider-border-grid .product-brand-showcase-wrapper,
+.build-product-block .product-brand-showcase-wrapper {
   margin-left: 0%;
 }
 
-.divider-border-grid .product-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-brand-showcase-mirror-wrapper,
+.build-product-block .product-brand-showcase-mirror-wrapper {
   margin-right: 0%;
 }
 
 .divider-border-grid .product-main-brand-showcase-wrapper .product,
-.divider-border-grid .product-main-brand-showcase-mirror-wrapper .product {
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper .product,
+.build-product-block .product-main-brand-showcase-wrapper,
+.build-product-block .product-main-brand-showcase-mirror-wrapper {
   flex: 1.5;
 }
 
 .divider-border-grid .product-brand-showcase-wrapper .product,
-.divider-border-grid .product-brand-showcase-mirror-wrapper .product {
+.divider-border-grid .product-brand-showcase-mirror-wrapper .product,
+.build-product-block .product-brand-showcase-wrapper,
+.build-product-block .product-brand-showcase-mirror-wrapper {
   flex: 1;
 }
 
