@@ -62,9 +62,10 @@
   background-color: transparent;
   border-radius: 0;
   text-transform: capitalize;
-  padding: 0.5%;
+  padding: 0;
   border-radius: 0;
   margin-top: 0;
+
   margin-bottom: 1%;
   transition: opacity 0.3s ease;
 }

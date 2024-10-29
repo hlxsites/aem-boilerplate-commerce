@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 25px;
+  align-content: start;
 }
 
 /* Featured Text */
@@ -20,9 +21,15 @@
 }
 
 .nav-modal-latest-content-section .columns-wrapper {
+  border: 2px solid transparent;
   margin: 0 auto;
+  display: flex;
 }
 
+.nav-modal-latest-content-section .latest-modal-brands p {
+  padding: 0.5%;
+  width: 100%;
+}
 .featured-title img {
   display: block;
   width: 100%;
@@ -38,12 +45,18 @@
 
 @media (width >= 992px) {
   .nav-modal-latest-content-section {
+    position: relative;
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
     width: 90vw;
-    justify-content: center;
-    margin: 0 auto;
+    /* height: 80vh; */
     gap: 40px;
+  }
+  .all-featured-articles-wrapper {
+    margin: 0 !important;
+    padding: auto;
   }
 }
 
