@@ -74,7 +74,7 @@ function renderPlaceholder(config, block) {
   );
 }
 
-function renderImage(image, size = 250) {
+function renderImage(image, size = 350) {
   const { url: imageUrl, label } = image;
   const createUrlForWidth = (url, w, useWebply = true) => {
     const newUrl = new URL(url, window.location);
