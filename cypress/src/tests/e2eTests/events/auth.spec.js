@@ -1,5 +1,5 @@
 import { signUpUser } from '../../../actions';
-import { assertAuthUser } from '../../../assertions';
+import { assertAuthUser, expectsEventWithContext } from '../../../assertions';
 
 it('has shopperId as logged-in when authenticated, and guest when not', () => {
   // 1. checks that shopperContext is guest on first non-authenticated page load
@@ -7,7 +7,8 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
   cy.waitForResource('commerce-events-collector.js')
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
-        expect(dl[0].shopperContext).to.have.property('shopperId', 'guest');
+        const index = dl.findLastIndex(el => el.shopperContext);
+        cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'guest'}});
       });
     });
 
@@ -20,7 +21,8 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
   cy.waitForResource('commerce-events-collector.js')
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
-        expect(dl[0].shopperContext).to.have.property('shopperId', 'logged-in');
+        const index = dl.findLastIndex(el => el.shopperContext);
+        cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'logged-in'}});
       });
     });
 
@@ -29,7 +31,8 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
   cy.waitForResource('commerce-events-collector.js')
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
-        expect(dl[0].shopperContext).to.have.property('shopperId', 'logged-in');
+        const index = dl.findLastIndex(el => el.shopperContext);
+        cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'logged-in'}});
       });
     });
 
@@ -41,9 +44,8 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
         // TODO: After auth dropin pushes context on logout this should work
-        // Will need to set proper dl index for _last_ pushed shopperContext.
-        // const lastIndex = getLastPushedshopperContext();
-        // expect(dl[lastIndex].shopperContext).to.have.property('shopperId', 'guest');
+        // const index = dl.findLastIndex(el => el.shopperContext);
+        // cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'guest'}});
       });
     });
 
@@ -52,7 +54,8 @@ it('has shopperId as logged-in when authenticated, and guest when not', () => {
   cy.waitForResource('commerce-events-collector.js')
     .then(() => {
       cy.window().its('adobeDataLayer').then((dl) => {
-        expect(dl[0].shopperContext).to.have.property('shopperId', 'guest');
+        const index = dl.findLastIndex(el => el.shopperContext);;
+        cy.wrap(dl).its(index).should('eql', { shopperContext: { shopperId: 'guest'}});
       });
     });
 });
