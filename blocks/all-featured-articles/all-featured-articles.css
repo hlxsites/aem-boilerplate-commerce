@@ -246,7 +246,8 @@
   .three-cols-articles-modal img {
     width: 358px;
     max-width: 396px;
-    height: 200px;
+    height: 240px;
+    min-height: 240px;
     object-fit: cover;
   }
 
@@ -268,7 +269,7 @@
     width: 100%;
     max-width: 408px;
     max-height: 270px;
-    height: auto;
+    height: 200px;
     object-fit: cover;
   }
 }

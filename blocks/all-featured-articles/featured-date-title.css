@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
+  align-content: center;
 }
 
 .featured-date-title img {

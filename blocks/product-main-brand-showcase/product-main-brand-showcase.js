@@ -162,7 +162,7 @@ function renderProduct(product, config, block) {
 
   fragment
     .querySelector('.image')
-    .appendChild(renderImage(product.images[0], 250));
+    .appendChild(renderImage(product.images[0], 750));
 
   const addToCartButton = fragment.querySelector('.add-to-cart');
   if (addToCartButton) {

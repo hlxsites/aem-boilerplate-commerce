@@ -376,8 +376,8 @@ div.carousel-wrapper {
     min-height: 300px;
   }
 
-  .content-block-carousel img,
-  .carousel-slide-content .button-container {
+  .banner-section-latest .content-block-carousel img,
+  .banner-section-latest .carousel-slide-content .button-container {
     display: none !important;
   }
 

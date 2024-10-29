@@ -1,6 +1,6 @@
-.featured-title {
+.nav-modal-latest-content-section .featured-title {
   display: grid;
-  grid-template-columns: auto;
+  grid-template-columns: repeat(2, 1fr);
   gap: 25px;
   align-content: start;
 }
@@ -22,14 +22,11 @@
 
 .nav-modal-latest-content-section .columns-wrapper {
   border: 2px solid transparent;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
+  flex: 1;
 }
 
-.nav-modal-latest-content-section .latest-modal-brands p {
-  padding: 0.5%;
-  width: 100%;
-}
 .featured-title img {
   display: block;
   width: 100%;
@@ -44,46 +41,24 @@
 }
 
 @media (width >= 992px) {
-  .nav-modal-latest-content-section {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 90vw;
-    /* height: 80vh; */
-    gap: 40px;
-  }
-  .all-featured-articles-wrapper {
+  .nav-modal-content > .all-featured-articles-wrapper {
     margin: 0 !important;
-    padding: auto;
+    padding: auto !important;
+    max-width: 143px;
+  }
+
+  .nav-modal-latest-content-section .latest-modal-brands p {
+    padding: 0.5%;
+    width: 100%;
   }
 }
 
 @media (width <= 991px) {
-  .featured-title {
-    display: none;
-  }
-
-  .nav-modal-latest-content-section {
-    flex-direction: column;
-  }
-
-  .nav-modal-latest-content-section .columns-wrapper {
-    margin: 0;
-    margin-left: 5vw;
-  }
-
   .latest-modal-brands div div p {
-    display: none;
     margin-top: 0;
     padding-top: 0;
   }
 
-  .latest-modal div ul li,
-  .latest-modal-brands div ul li {
-    margin-bottom: 4vh;
-  }
   .latest-modal div ul {
     margin-bottom: 0%;
   }

@@ -1,16 +1,19 @@
-.nav-modal-content
-  div:nth-child(2)
-  div:nth-child(1)
-  p:nth-child(1):only-of-type,
-.nav-modal-content
-  div:nth-child(2)
-  div:nth-child(1)
-  p:nth-child(1):only-of-type
-  a {
+.nav-modal-content .latest-modal p:nth-child(1) a,
+.nav-modal-content .latest-modal-brands p:nth-child(1),
+.nav-modal-content .latest-modal ul,
+.nav-modal-content .latest-modal ul a,
+.nav-modal-content .latest-modal-brands ul,
+.nav-modal-content .latest-modal-brands ul a {
+  font-size: var(--sub-text-secondary-size);
+  color: var(--text-date-color);
   list-style-type: none;
   display: flex;
   margin: 0;
-  font-size: var(--sub-text-secondary-size);
+  padding: 0;
+}
+
+.nav-modal-content .latest-modal p:nth-child(1) a,
+.nav-modal-content .latest-modal-brands p:nth-child(1) {
   font-weight: 555;
   text-transform: uppercase;
 }
@@ -21,46 +24,13 @@
   flex-direction: column;
 }
 
-.nav-modal-content .three-cols-four-img div:nth-child(3) table p,
-.nav-modal-content .four-cols-two-img div:nth-child(4) table p {
-  margin: 5% 0;
-  padding: 0;
-  margin-bottom: 0%;
-  /* padding-right: 8%; */
-  line-height: 0.5;
-  color: var(--main-text-color);
-  font-size: var(--sub-text-secondary-size);
-  font-weight: 400;
-  max-width: 341px;
-}
-
-.nav-modal-content .three-cols-four-img div:nth-child(3) table p:nth-child(2),
-.nav-modal-content .four-cols-two-img div:nth-child(4) table p:nth-child(2) {
-  margin-bottom: 4%;
-}
-
-.nav-modal-content .three-cols-four-img table {
-  width: auto;
-}
-.nav-modal-content .three-cols-four-img table tbody img {
-  display: grid;
-  width: auto;
-  gap: 0 30px;
-  padding-right: 4%;
-}
-
-.nav-modal-content .three-cols-four-img img,
-.nav-modal-content .four-cols-two-img img {
-  width: 100%;
-}
-.nav-modal-content div div ul,
-.nav-modal-content div div ul a {
+.nav-modal-content .latest-modal ul,
+.nav-modal-content .latest-modal ul a,
+.nav-modal-content .latest-modal-brands ul,
+.nav-modal-content .latest-modal-brands ul a {
   list-style-type: none;
   flex-direction: column;
   float: left;
-  margin: 5% 0;
-  padding: 0;
-  line-height: 2;
   font-size: var(--sub-text-secondary-size);
   font-weight: 400;
   text-transform: inherit;
@@ -68,16 +38,6 @@
 
 .nav-modal-content div div div {
   align-self: start;
-}
-
-/* This includes Latest, Clothing and Accessories */
-.nav-modal-content .three-cols-four-img div:nth-child(3) {
-  flex: 2;
-}
-
-/* Shop by, Brands, Footwear, Lifestyle, Active, and Sale uses this as well */
-.nav-modal-content .four-cols-two-img div:nth-child(4) {
-  flex: 1;
 }
 
 .nav-modal-content
@@ -95,6 +55,25 @@
 
   .nav-modal-content
     div:nth-child(2)
+    div:nth-child(1)
+    p:nth-child(1):only-of-type,
+  .nav-modal-content
+    div:nth-child(2)
+    div:nth-child(1)
+    p:nth-child(1):only-of-type
+    a {
+    height: 35px;
+  }
+
+  .nav-modal-content .latest-modal ul,
+  .nav-modal-content .latest-modal ul a,
+  .nav-modal-content .latest-modal-brands ul,
+  .nav-modal-content .latest-modal-brands ul a {
+    line-height: 2;
+  }
+
+  .nav-modal-content
+    div:nth-child(2)
     .default-content-wrapper
     p:nth-child(1)
     a {
@@ -108,15 +87,48 @@
   }
 }
 @media (width <= 991px) {
-  .nav-modal-content .columns > div {
-    margin-bottom: 10vh;
-    flex-direction: column !important;
-    gap: 0;
+  .nav-modal-content .latest-modal p:nth-child(1) a,
+  .nav-modal-content .latest-modal-brands p:nth-child(1),
+  .nav-modal-content .latest-modal ul,
+  .nav-modal-content .latest-modal ul a,
+  .nav-modal-content .latest-modal-brands ul,
+  .nav-modal-content .latest-modal-brands ul a {
+    font-size: 16px;
+  }
+
+  .nav-modal-content .latest-modal p:nth-child(1) a,
+  .nav-modal-content .latest-modal ul a,
+  .nav-modal-content .latest-modal-brands ul a {
+    height: 56px;
+  }
+
+  .featured-title,
+  .nav-modal-latest-content-section .featured-title,
+  .nav-modal-quad-content-section .featured-title,
+  .latest-modal-brands div div p {
+    display: none !important;
+  }
+
+  .nav-modal-latest-content-section,
+  .nav-modal-quad-content-section {
+    flex-direction: column;
+  }
+
+  .nav-modal-latest-content-section .columns-wrapper,
+  .nav-modal-quad-content-section .columns-wrapper,
+  .features-modal-section .columns-wrapper {
+    margin: 0;
+    margin-left: 5vw !important;
+  }
+
+  .features-modal-section .columns-wrapper {
+    padding-left: 40px;
   }
 
   .nav-modal-content .nav-modal-content-section,
   .features-modal-section,
-  .nav-modal-latest-content-section {
+  .nav-modal-latest-content-section,
+  .nav-modal-quad-content-section {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     scroll-snap-align: start;
@@ -127,7 +139,8 @@
   }
 
   .nav-modal-content .features-modal-section,
-  .nav-modal-content .nav-modal-latest-content-section {
+  .nav-modal-content .nav-modal-latest-content-section,
+  .nav-modal-content .nav-modal-quad-content-section {
     padding: 0;
     max-width: 400px;
   }
@@ -164,6 +177,7 @@
     margin-top: 4vh;
     font-size: 16px;
     display: flex;
+    font-weight: 550;
     align-items: center;
   }
 
@@ -175,66 +189,6 @@
   .nav-modal-content .features-modal div,
   .nav-modal-content .latest-modal div {
     margin: 0;
-  }
-
-  .nav-modal-content .features-modal div p,
-  .nav-modal-content .latest-modal div p {
-    margin-top: 2vh;
-  }
-
-  /* Titles */
-  .nav-modal-content .three-cols-four-img > div div p,
-  .nav-modal-content .four-cols-two-img > div div p {
-    width: 100%;
-    border: 2px solid transparent;
-  }
-
-  /* Titles */
-  .nav-modal-content .three-cols-four-img > div div p a,
-  .nav-modal-content .four-cols-two-img > div div p a {
-    margin: 0;
-    margin-top: 2vh !important;
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--text-date-color);
-  }
-
-  /* Ul content */
-  .nav-modal-content .three-cols-four-img > div div,
-  .nav-modal-content .four-cols-two-img > div div {
-    padding-left: 5%;
-  }
-
-  .nav-modal-content .three-cols-four-img > div div ul li,
-  .nav-modal-content .four-cols-two-img > div div ul li,
-  .nav-modal-content .three-cols-four-img > div div ul li a,
-  .nav-modal-content .four-cols-two-img > div div ul li a {
-    display: flex;
-    font-size: 16px;
-    font-weight: 400;
-    height: 56px;
-    align-items: center;
-    color: var(--text-date-color);
-  }
-
-  .nav-modal-content .three-cols-four-img > div div:nth-child(2) ul,
-  .nav-modal-content .four-cols-two-img > div div:nth-child(2) ul {
-    margin-top: 0;
-    padding-top: 0;
-  }
-
-  .nav-modal-content .three-cols-four-img > div div:nth-child(2) p:nth-child(1),
-  .nav-modal-content .three-cols-four-img table,
-  .nav-modal-content .four-cols-two-img table,
-  .nav-modal-content .four-cols-two-img div div:nth-child(2) p,
-  .nav-modal-content .four-cols-two-img div div:nth-child(3) p,
-  .nav-modal-content .four-cols-two-img div div:nth-child(4) p,
-  .nav-modal-content
-    .three-cols-four-img
-    div
-    div:nth-child(3)
-    p:nth-child(1):only-of-type {
-    display: none !important;
   }
 
   .nav-modal-content .product-releases-showcase {

@@ -1,15 +1,5 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-function adjustFeaturedTitleGridLayout() {
-  const featuredTitle = document.querySelector('.featured-title');
-  const images = featuredTitle.querySelectorAll('img');
-  if (images.length <= 2) {
-    featuredTitle.style.gridTemplateColumns = '1fr';
-  } else {
-    featuredTitle.style.gridTemplateColumns = 'repeat(2, 1fr)';
-  }
-}
-
 export default async function decorate(block) {
   const pathElements = block.querySelectorAll('p');
 
@@ -116,7 +106,6 @@ export default async function decorate(block) {
       }
     });
 
-    adjustFeaturedTitleGridLayout();
     pathElements.forEach((pathElement) => pathElement.remove());
   } catch (error) {
     console.error('Error fetching or processing index data: ', error);
