@@ -206,22 +206,28 @@ main .section {
 }
 
 @media (width <= 767px) {
-  .divider-border-grid {
+  .divider-border-grid,
+  .build-product-block {
     flex-direction: column;
   }
 
-  .divider-border-grid .product-brand-showcase-wrapper {
+  .divider-border-grid .product-brand-showcase-wrapper,
+  .build-product-block .product-brand-showcase-wrapper {
     margin-top: 5%;
   }
 
   .divider-border-grid .product-main-brand-showcase-wrapper,
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+  .divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+  .build-product-block .product-main-brand-showcase-wrapper,
+  .build-product-block .product-main-brand-showcase-mirror-wrapper {
     display: flex;
     margin: 0 auto;
   }
 
   .divider-border-grid .product-brand-showcase-mirror-wrapper,
-  .divider-border-grid .product-brand-showcase-wrapper {
+  .divider-border-grid .product-brand-showcase-wrapper,
+  .build-product-block .product-brand-showcase-mirror-wrapper,
+  .build-product-block .product-brand-showcase-wrapper {
     margin: 2% auto;
   }
   .product-main-brand-showcase-mirror .product .image picture > img,
@@ -255,16 +261,20 @@ main .section {
 @media (width <= 600px) {
   /* Featured Brand  */
   .divider-border-grid .product-brand-showcase-mirror-wrapper,
-  .divider-border-grid .product-brand-showcase-wrapper {
+  .divider-border-grid .product-brand-showcase-wrapper,
+  .build-product-block .product-brand-showcase-mirror-wrapper,
+  .build-product-block .product-brand-showcase-wrapper {
     margin-top: 5%;
   }
   /* Mirror Main Image wrapper */
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+  .divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+  .build-product-block .product-main-brand-showcase-mirror-wrapper {
     order: 1;
   }
 
   /* Products wrapper */
-  .divider-border-grid .product-brand-showcase-mirror-wrapper {
+  .divider-border-grid .product-brand-showcase-mirror-wrapper,
+  .build-product-block .product-brand-showcase-mirror-wrapper {
     order: 2;
   }
 
