@@ -26,7 +26,9 @@ div.carousel-wrapper {
 }
 
 .brands-carousel .carousel-slides,
-.brands-carousel .carousel-slide-indicators {
+.brands-carousel .carousel-slide-indicators,
+.banner-carousel-content .carousel-slides,
+.banner-carousel-content .carousel-slide-indicators {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -91,7 +93,8 @@ div.carousel-wrapper {
   position: absolute;
 }
 
-.brands-carousel .carousel-slide .carousel-slide-content {
+.brands-carousel .carousel-slide .carousel-slide-content,
+.banner-carousel-content .carousel-slide .carousel-slide-content {
   bottom: 12%;
   left: 14.5%;
   width: 72%;
@@ -117,7 +120,8 @@ div.carousel-wrapper {
 }
 
 /* Brand Name */
-.brands-carousel .carousel-slide .carousel-slide-content h2 a {
+.brands-carousel .carousel-slide .carousel-slide-content h2 a,
+.banner-carousel-content .carousel-slide .carousel-slide-content h2 a {
   color: var(--main-color-light);
   font-weight: 600;
   letter-spacing: 0.228571rem;
@@ -134,7 +138,12 @@ div.carousel-wrapper {
 }
 
 /* Buttons P */
-.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(2) a {
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(2) a,
+.banner-carousel-content
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(2)
+  a {
   font-weight: 400;
   text-transform: capitalize;
   letter-spacing: 0.1rem;
@@ -142,17 +151,36 @@ div.carousel-wrapper {
   font-size: var(--sub-text-secondary-size);
 }
 
+/* Buttons P */
+.banner-carousel-content
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(2) {
+  display: none;
+}
+
+.banner-carousel-content .carousel-slide .carousel-slide-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
 /* SHOP NOW Button redirect*/
-.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3),
+.banner-carousel-content
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(3) {
   text-align: right;
 }
 
-.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
-  border: 2px solid white;
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a,
+.banner-carousel-content
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(3)
+  a {
   align-content: center;
-  padding: 0;
-  margin-top: 0;
-  margin-bottom: 2%;
   width: 182px;
   height: 46px;
   font-weight: 600;
@@ -166,8 +194,24 @@ div.carousel-wrapper {
   transition: all 0.3s ease;
 }
 
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
+  border: 2px solid white;
+  padding: 0;
+  margin-top: 0;
+  margin-bottom: 2%;
+}
+
+.banner-carousel-content
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(3)
+  a {
+  border: 1px solid white;
+}
+
 /* SHOP NOW animation onHover*/
-.brands-carousel
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a:hover,
+.banner-carousel-content
   .carousel-slide
   .carousel-slide-content
   p:nth-child(3)
@@ -486,6 +530,10 @@ div.carousel-wrapper {
     left: 0;
     top: 100vh;
     width: 100vw;
+  }
+
+  .banner-carousel-content .carousel-slide .carousel-slide-content {
+    display: block;
   }
 }
 

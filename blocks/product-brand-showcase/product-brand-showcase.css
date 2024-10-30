@@ -50,3 +50,15 @@
 .product-brand-showcase-mirror-wrapper .details .colour {
   color: var(--sub-text-grey);
 }
+
+.divider-border-grid .product-brand-showcase-wrapper,
+.divider-border-grid .product-brand-showcase-mirror-wrapper {
+  align-content: end;
+  max-height: 700px;
+}
+
+.divider-border-grid .product-brand-showcase h1 a,
+.divider-border-grid .product-brand-showcase-mirror h1 a {
+  font-size: 14px;
+  color: var(--main-text-color);
+}
