@@ -119,6 +119,7 @@
     background-color: unset;
     margin: 0;
     border: none;
+    z-index: 1;
   }
 
   .nav-modal {
@@ -127,13 +128,29 @@
     max-width: 400px;
   }
 
-  .nav-modal-border {
+  div.section.nav-modal-border {
     padding: 0;
     margin: 0;
     border-bottom: 1px solid var(--sub-text-border-divider);
+    position: fixed;
+    width: 100vw;
+    max-width: 400px !important;
+    background-color: white;
+    height: 56px;
+    z-index: 1;
   }
 
   .nav-modal-content div:nth-child(2) div:nth-child(1) p:nth-child(1) {
     padding-top: 2vh;
+  }
+
+  .nav-modal-content:not(div.nav-modal-border) {
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-snap-align: start;
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    max-height: 100vh;
   }
 }

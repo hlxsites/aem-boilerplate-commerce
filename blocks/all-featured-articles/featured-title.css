@@ -66,4 +66,10 @@
   .latest-modal-brands div ul {
     margin-top: 0;
   }
+
+  .nav-modal-latest-content-section .columns-wrapper {
+    height: auto;
+    position: relative;
+    display: flex;
+  }
 }

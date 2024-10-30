@@ -133,19 +133,6 @@
     padding-left: 40px;
   }
 
-  .nav-modal-content .nav-modal-content-section,
-  .features-modal-section,
-  .nav-modal-latest-content-section,
-  .nav-modal-quad-content-section {
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    scroll-snap-align: start;
-    position: relative;
-    min-height: 100vh;
-    max-height: 100vh;
-    height: fit-content;
-  }
-
   .nav-modal-content .features-modal-section,
   .nav-modal-content .nav-modal-latest-content-section,
   .nav-modal-content .nav-modal-quad-content-section {
@@ -206,13 +193,10 @@
     align-items: center;
     margin: 0 auto;
     margin-top: 4vh !important;
-    margin-bottom: var(--nav-height);
-    padding-bottom: var(--nav-height);
   }
 
   .nav-modal-content-section .columns-wrapper {
     min-height: 100vh;
-    margin-bottom: var(--nav-height);
   }
 
   .nav-modal-content .launches-modal picture {
