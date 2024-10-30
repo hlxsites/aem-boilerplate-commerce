@@ -131,3 +131,11 @@
 .build-product-block .product-main-brand-showcase-mirror-wrapper {
   order: 2;
 }
+
+@media (width < 1024px) {
+  /* Product Name, Colour and price text */
+
+  .product-main-brand-showcase ul li a {
+    font-size: 18px !important;
+  }
+}
