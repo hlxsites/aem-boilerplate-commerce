@@ -234,16 +234,6 @@ main .section {
     width: auto;
   }
 
-  /* Mirror Main Image wrapper */
-  .divider-border-grid .product-main-brand-showcase-mirror-wrapper {
-    order: 1;
-  }
-
-  /* Products wrapper */
-  .divider-border-grid .product-brand-showcase-mirror-wrapper {
-    order: 2;
-  }
-
   /* Banner Section */
 
   .banner-section > .columns-wrapper div:nth-child(1) div div:nth-child(1) {
