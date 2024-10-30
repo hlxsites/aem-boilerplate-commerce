@@ -21,13 +21,13 @@
   width: 100%;
 }
 
-.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+.build-product-block .product-main-brand-showcase-mirror-wrapper {
   margin-left: 2%;
 }
 
 .divider-border-grid .product-main-brand-showcase-wrapper,
-.build-product-block .product-main-brand-showcase-wrapper,
-.build-product-block .product-main-brand-showcase-mirror-wrapper {
+.build-product-block .product-main-brand-showcase-wrapper {
   margin-right: 2%;
 }
 
@@ -58,15 +58,15 @@
 
 .divider-border-grid .product-main-brand-showcase-wrapper .product,
 .divider-border-grid .product-main-brand-showcase-mirror-wrapper .product,
-.build-product-block .product-main-brand-showcase-wrapper,
-.build-product-block .product-main-brand-showcase-mirror-wrapper {
+.build-product-block .product-main-brand-showcase-wrapper .product,
+.build-product-block .product-main-brand-showcase-mirror-wrapper .product {
   flex: 1.5;
 }
 
 .divider-border-grid .product-brand-showcase-wrapper .product,
 .divider-border-grid .product-brand-showcase-mirror-wrapper .product,
-.build-product-block .product-brand-showcase-wrapper,
-.build-product-block .product-brand-showcase-mirror-wrapper {
+.build-product-block .product-brand-showcase-wrapper .product,
+.build-product-block .product-brand-showcase-mirror-wrapper .product {
   flex: 1;
 }
 
@@ -121,11 +121,13 @@
 
 /* End Shop Now > button */
 /* Mirror Main Image wrapper */
-.divider-border-grid .product-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-brand-showcase-mirror-wrapper,
+.build-product-block .product-brand-showcase-mirror-wrapper {
   order: 1;
 }
 
 /* Products wrapper */
-.divider-border-grid .product-main-brand-showcase-mirror-wrapper {
+.divider-border-grid .product-main-brand-showcase-mirror-wrapper,
+.build-product-block .product-main-brand-showcase-mirror-wrapper {
   order: 2;
 }
