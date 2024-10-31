@@ -6,28 +6,26 @@ export const assertCartSummaryProduct =
     productPrice,
     totalPrice,
     productPosition
-  ) =>
-    (elem = '.commerce-cart-wrapper') => {
-      cy.get(`${elem} .dropin-cart-item__title`)
+  ) => (elem = '.commerce-cart-wrapper') => {
+    cy.get(`${elem} .dropin-cart-item__title`)
+      .eq(productPosition)
+      .should('contain', productName);
+    cy.get(`${elem} .dropin-cart-item__sku`)
+      .eq(productPosition)
+      .should('contain', productSku);
+    if (elem === '.commerce-cart-wrapper') {
+      cy.get(`${elem} .dropin-incrementer__input`)
         .eq(productPosition)
-        .should('contain', productName);
-      cy.get(`${elem} .dropin-cart-item__sku`)
-        .eq(productPosition)
-        .should('contain', productSku);
+        .should('have.value', productQty);
+    }
 
-      if (elem === '.commerce-cart-wrapper') {
-        cy.get(`${elem} .dropin-incrementer__input`)
-          .eq(productPosition)
-          .should('have.value', productQty);
-      }
-
-      cy.get(`${elem} .dropin-cart-item__price`)
-        .eq(productPosition)
-        .should('contain', productPrice);
-      cy.get(`${elem} .dropin-cart-item__total`)
-        .eq(productPosition)
-        .should('contain', totalPrice);
-    };
+    cy.get(`${elem} .dropin-cart-item__price`)
+      .eq(productPosition)
+      .should('contain', productPrice);
+    cy.get(`${elem} .dropin-cart-item__total`)
+      .eq(productPosition)
+      .should('contain', totalPrice);
+  };
 
 
 export const assertCartSummaryProductsOnCheckout = (
@@ -85,7 +83,7 @@ export const assertOrderSummaryMisc = (subtotal, shipping, total) => {
 export const assertTitleHasLink =
   (productName, productHref) =>
     (elem = '.cart-cart') => {
-      cy.get(`${elem} .dropin-cart-item`)
+      cy.get(`${elem} .dropin-cart-item__title`)
         .contains(productName)
         .should('have.attr', 'href', productHref);
     };
@@ -170,5 +168,10 @@ export const assertAuthUser = (sign_up) => {
   // cy.contains(sign_up.email).should("be.visible");
 };
 
+export const assertSearchIconVisible = () => {
+  cy.get('.nav-search-button').should('be.visible');
+};
+
 // imports and re-exports the functions from ./adobeDataLayer.js
 export * from './adobeDataLayer';
+
