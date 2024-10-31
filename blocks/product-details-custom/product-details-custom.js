@@ -166,7 +166,6 @@ class ProductDetailPage extends Component {
     if (!loading && product) {
       setJsonLdProduct(product);
       document.title = product.name;
-      console.log('product', product);
       window.adobeDataLayer.push((dl) => {
         dl.push({
           productContext: mapProductAcdl(product),
