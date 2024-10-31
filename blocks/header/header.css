@@ -136,6 +136,16 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 }
 
 @media (width <= 991px) {
+  div.nav-backdrop {
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+    display: block;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
   /* End icon for mobile */
   header nav[aria-expanded='false'] .nav-end-icon {
     display: none;
@@ -158,9 +168,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     height: 56px;
     justify-content: center;
     align-items: center;
-    z-index: 0;
     border-bottom: 1px solid var(--sub-text-border-divider);
-    background-color: white;
     width: 100vw;
   }
   /* end End icon for mobile */
@@ -175,7 +183,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     background-color: var(--background-color);
     width: 100%;
     z-index: 3;
-    /* position: fixed; */
+    position: fixed;
   }
 
   header nav {
@@ -213,17 +221,6 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     display: flex;
   }
 
-  div.nav-backdrop {
-    position: fixed;
-    height: 100vh;
-    width: 100%;
-    display: block;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-
   header nav[aria-expanded='true'] .nav-tools .minicart-wrapper,
   header nav[aria-expanded='true'] .nav-tools .nav-search-button {
     display: flex;
@@ -234,6 +231,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     height: 56px;
     align-items: center;
     z-index: 0;
+    pointer-events: none;
   }
 
   header nav[aria-expanded='true'] .nav-tools .minicart-wrapper {
@@ -305,12 +303,12 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     position: fixed;
     z-index: 2;
   }
-  header nav[aria-expanded='true'] .nav-tools div:not(div:nth-child(1)) p,
+
+  header nav[aria-expanded='true'] .nav-tools div p,
   header nav[aria-expanded='true'] span.nav-hamburger-icon {
     position: fixed;
-    background-color: white;
-    z-index: -1 !important;
   }
+
   header nav[aria-expanded='true'] .main-nav-content div:nth-child(2) p {
     margin: 0;
     left: 0;
@@ -322,6 +320,12 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   }
 
   /* Sliding Nav For Tablets and Mobiles */
+  header nav[aria-expanded='true'] .nav-tools div p {
+    animation-name: slideIn;
+    animation-duration: 0.8s;
+    background-color: white;
+  }
+
   header nav[aria-expanded='true'] {
     position: absolute;
     animation-name: slideIn;
@@ -658,7 +662,6 @@ header .nav-search-input form::before {
   position: absolute;
   top: 3.5%;
   left: 3%;
-
   z-index: 4;
   content: url('../../icons/search.svg');
 }

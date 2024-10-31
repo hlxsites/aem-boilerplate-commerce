@@ -3,7 +3,7 @@
   left: 0;
   top: var(--nav-height);
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 
 .nav-modal::before {

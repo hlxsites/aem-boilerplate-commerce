@@ -1,16 +1,11 @@
 /* stylelint-disable no-descending-specificity */
 .minicart-panel {
-  z-index: 1;
-  /* 
-  top: var(--nav-height);
-  right: 0; */
+  z-index: 2;
   left: 0;
   box-shadow: var(--shape-shadow-2);
   padding: 20px;
   background: var(--background-color);
-  /* display: flex; */
   flex-direction: column;
-  /* gap: 20px; */
   box-sizing: content-box;
 }
 

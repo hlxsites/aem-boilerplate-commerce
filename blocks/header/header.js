@@ -103,11 +103,17 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 
   const backdrop = document.createElement('div');
-  backdrop.classList.add('nav-backdrop'); // Add a class for styling
-
-  if (!expanded) {
-    document.body.append(backdrop);
-  } else {
+  backdrop.classList.add('nav-backdrop');
+  if (!isDesktop.matches && nav.getAttribute('aria-expanded') === 'true') {
+    if (!expanded) {
+      document.body.append(backdrop);
+    } else {
+      const existingBackdrop = document.querySelector('.nav-backdrop');
+      if (existingBackdrop) {
+        existingBackdrop.remove();
+      }
+    }
+  } else if (isDesktop.matches) {
     const existingBackdrop = document.querySelector('.nav-backdrop');
     if (existingBackdrop) {
       existingBackdrop.remove();
