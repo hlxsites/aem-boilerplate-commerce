@@ -387,8 +387,9 @@ export function mapProductAcdl(product) {
     || product?.price?.regular?.amount.value || 0;
   const specialPrice = product?.priceRange?.minimum?.final?.amount.value
     || product?.price?.final?.amount.value;
+  // storefront-events-collector will use storefrontInstanceContext.storeViewCurrencyCode if undefined, no default value is necessary.
   const currencyCode = product?.priceRange?.minimum?.final?.amount.currency
-    || product?.price?.final?.amount.currency || 'USD';
+    || product?.price?.final?.amount.currency || undefined;
   const minimalPrice = product?.priceRange ? regularPrice : undefined;
   const maximalPrice = product?.priceRange
     ? product?.priceRange?.maximum?.regular?.amount.value : undefined;
