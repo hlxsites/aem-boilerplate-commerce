@@ -101,6 +101,18 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   } else {
     window.removeEventListener('keydown', closeOnEscape);
   }
+
+  const backdrop = document.createElement('div');
+  backdrop.classList.add('nav-backdrop'); // Add a class for styling
+
+  if (!expanded) {
+    document.body.append(backdrop);
+  } else {
+    const existingBackdrop = document.querySelector('.nav-backdrop');
+    if (existingBackdrop) {
+      existingBackdrop.remove();
+    }
+  }
 }
 
 function getDirectTextContent(menuItem) {

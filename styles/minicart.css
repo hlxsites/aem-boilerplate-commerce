@@ -1,17 +1,16 @@
 /* stylelint-disable no-descending-specificity */
-
 .minicart-panel {
-  z-index: 100;
-  position: fixed;
+  z-index: 1;
+  /* 
   top: var(--nav-height);
-  right: 0;
+  right: 0; */
   left: 0;
   box-shadow: var(--shape-shadow-2);
   padding: 20px;
   background: var(--background-color);
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
-  gap: 20px;
+  /* gap: 20px; */
   box-sizing: content-box;
 }
 
