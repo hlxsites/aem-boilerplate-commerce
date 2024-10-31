@@ -13,7 +13,9 @@ import {
   performCatalogServiceQuery,
   refineProductQuery,
   setJsonLd,
-  loadErrorPage, variantsQuery,
+  loadErrorPage,
+  variantsQuery,
+  mapProductAcdl,
 } from '../../scripts/commerce.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 
@@ -164,12 +166,10 @@ class ProductDetailPage extends Component {
     if (!loading && product) {
       setJsonLdProduct(product);
       document.title = product.name;
+      console.log('product', product);
       window.adobeDataLayer.push((dl) => {
         dl.push({
-          productContext: {
-            productId: parseInt(product.externalId, 10) || 0,
-            ...product,
-          },
+          productContext: mapProductAcdl(product),
         });
         // TODO: Remove eventInfo once collector is updated
         dl.push({ event: 'product-page-view', eventInfo: { ...dl.getState() } });
