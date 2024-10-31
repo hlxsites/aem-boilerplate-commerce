@@ -261,7 +261,7 @@ export function renderPrice(product, format, html = (strings, ...values) => stri
 
     if (finalMin.amount.value !== regularMin.amount.value) {
       return html`<${Fragment}>
-      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span> 
+      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span>
     </${Fragment}>`;
     }
 
@@ -387,7 +387,8 @@ export function mapProductAcdl(product) {
     || product?.price?.regular?.amount.value || 0;
   const specialPrice = product?.priceRange?.minimum?.final?.amount.value
     || product?.price?.final?.amount.value;
-  // storefront-events-collector will use storefrontInstanceContext.storeViewCurrencyCode if undefined, no default value is necessary.
+  // storefront-events-collector will use storefrontInstanceContext.storeViewCurrencyCode
+  // if undefined, no default value is necessary.
   const currencyCode = product?.priceRange?.minimum?.final?.amount.currency
     || product?.price?.final?.amount.currency || undefined;
   const minimalPrice = product?.priceRange ? regularPrice : undefined;
