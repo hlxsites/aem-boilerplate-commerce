@@ -12,6 +12,7 @@ import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import { OrderSummary } from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as cartProvider } from '@dropins/storefront-cart/render.js';
+import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 
 // Checkout Dropin Modules
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
@@ -317,6 +318,13 @@ export default async function decorate(block) {
         checkoutProvider.render(EstimateShipping)(estimateShippingForm);
 
         esCtx.appendChild(estimateShippingForm);
+      },
+      Coupons: (ctx) => {
+        const coupons = document.createElement('div');
+
+        cartProvider.render(Coupons)(coupons);
+
+        ctx.appendChild(coupons);
       },
     },
   })(orderSummary);
