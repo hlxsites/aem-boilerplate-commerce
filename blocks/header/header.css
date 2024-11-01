@@ -236,7 +236,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
   header nav[aria-expanded='true'] .nav-tools .minicart-wrapper {
     right: 15.5vw;
-    z-index: 2;
+    /* z-index: 2; */
   }
 
   header nav[aria-expanded='true'] .nav-tools .nav-search-button {
@@ -324,6 +324,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     animation-name: slideIn;
     animation-duration: 0.8s;
     background-color: white;
+    z-index: 1;
   }
 
   header nav[aria-expanded='true'] {

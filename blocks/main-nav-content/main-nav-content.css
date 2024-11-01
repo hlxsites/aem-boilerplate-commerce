@@ -5,6 +5,7 @@
   width: 100vw;
   height: 56px;
   border-bottom: 1px solid var(--sub-text-border-divider);
+  /* z-index: 30; */
 }
 
 .main-nav-content div {
