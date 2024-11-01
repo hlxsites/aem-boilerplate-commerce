@@ -91,7 +91,7 @@ export default async function decorate(block) {
             ctx.replaceWith(wrapper);
           }
         },
-        Coupons:  (ctx) => {
+        Coupons: (ctx) => {
           const coupons = document.createElement('div');
 
           provider.render(Coupons)(coupons);
