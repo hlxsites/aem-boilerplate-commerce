@@ -9,11 +9,12 @@ import "../../scripts/initializers/order.js";
 export default async function decorate(block) {
   await orderRenderer.render(ShippingStatus, {
     routeProductDetails: (data) => {
-      // if (data.orderItem) {
-      //   return `/products/${data.orderItem.productUrlKey}/${data.orderItem.product.sku}`;
-      // } if (data.product) {
-      //   return `/products/${data.product.urlKey}/${data.product.sku}`;
-      // }
+      if (data.orderItem) {
+        return `/products/${data.orderItem.productUrlKey}/${data.orderItem.product.sku}`;
+      }
+      if (data.product) {
+        return `/products/${data.product.urlKey}/${data.product.sku}`;
+      }
       return "#";
     },
   })(block);
