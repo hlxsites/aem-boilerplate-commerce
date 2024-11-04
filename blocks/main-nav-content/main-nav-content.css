@@ -43,7 +43,7 @@
 }
 
 /* End. Img */
-.main-nav-content div:nth-child(2) img {
+.main-nav-content .icon-end img {
   width: 65.59px;
   height: auto;
 }
@@ -74,7 +74,7 @@ header nav .nav-tools button.nav-search-button:hover {
 }
 
 /* End. Img */
-.main-nav-content div:nth-child(2) img {
+.main-nav-content .icon-end img {
   position: absolute;
   top: 50%;
   left: 50%;

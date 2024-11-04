@@ -88,12 +88,16 @@ class ProductCard extends Component {
 
     const maxQuantity = this.props.item.product.max_sale_qty;
 
+    // Check if the new quantity exceeds the maximum and prevent further increase
     if (parsedQuantity > maxQuantity) {
+      // If it exceeds, set the quantity to the maximum and update the state
       parsedQuantity = maxQuantity;
       this.setState({ quantity: maxQuantity, quantityValid: true });
     } else if (parsedQuantity > 0) {
+      // Otherwise, if the quantity is valid, update the state
       this.setState({ quantity: parsedQuantity, quantityValid: true });
     } else {
+      // If the quantity is invalid, set quantityValid to false
       this.setState({ quantity: event.target.value, quantityValid: false }); // Use event.target.value here
       return;
     }
@@ -179,6 +183,7 @@ class ProductCard extends Component {
                   this.onQuantityChange({
                     target: { value: state.quantity - 1 },
                   })}
+                disabled=${state.quantity <= 1}
               >
                 -
               </button>
@@ -273,23 +278,47 @@ export class Minicart extends Component {
             />`
         )}
       </ul>
-      <div class="minicart-actions">
-        <button
-          class="button"
-          onClick=${() => {
-            window.location.href = '/cart';
-          }}
-        >
-          Go to cart
-        </button>
-      </div>
-      <div class="subtotal">
-        Sub-Total:
-        <span class="price"
-          >${this.formatter.format(
-            cart.prices.subtotal_excluding_tax.value
-          )}</span
-        >
+      <div class="minicart-checkout">
+        <div class="checkout-message">
+          <img src="/icons/truck.svg" alt="Free shipping icon" />
+          <p>This order qualifies for <b>free shipping</b></p>
+        </div>
+        <div class="subtotal">
+          <p>Sub-Total:</p>
+          <p class="price">
+            ${this.formatter.format(cart.prices.subtotal_excluding_tax.value)}
+          </p>
+        </div>
+        <div class="import-fees">
+          <p>Import Duties:</p>
+          <p class="import-fee">Paid</p>
+        </div>
+        <div class="shipping">
+          <p>Shipping:</p>
+          <p class="shipping-fee">FREE</p>
+        </div>
+        <div class="total">
+          <h2>total:</h2>
+          <h2 class="total-price">
+            ${this.formatter.format(cart.prices.subtotal_excluding_tax.value)}
+          </h2>
+        </div>
+        <div class="promo">
+          <div class="promo-accordion">
+            <div class="promo-text" onclick=${() => this.togglePromoCode()}>
+              <img src="/icons/promo-code.svg" alt="promo code image" />
+              <p>Add promo code / gift card</p>
+              <p class="extend-accordion">+</p>
+            </div>
+            <div
+              class="promo-code-input"
+              id="promoCodeInput"
+              style="display: none;"
+            >
+              <input placeholder="Enter code" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>`;
   }
@@ -306,11 +335,12 @@ export async function toggle(refetch = true) {
 
     const backdrop = document.createElement('div');
     backdrop.classList.add('minicart-backdrop');
-    document.body.appendChild(backdrop);
     backdrop.addEventListener('click', () => {
       toggle(false);
     });
+    document.body.appendChild(backdrop);
   } else {
+    // Remove backdrop element from the DOM
     const backdrop = document.querySelector('.minicart-backdrop');
     if (backdrop) {
       backdrop.remove();
@@ -329,6 +359,7 @@ export async function toggle(refetch = true) {
     }}
   />`;
   render(app, document.querySelector('.minicart-wrapper > div'));
+  toggleAccordion();
 }
 
 export async function showCart() {

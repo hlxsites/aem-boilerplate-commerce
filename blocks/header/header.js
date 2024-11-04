@@ -135,9 +135,10 @@ function getDirectTextContent(menuItem) {
 async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   const crumbs = [];
 
-  const homeUrl = document.querySelector(
+  const homeLink = document.querySelector(
     '.nav-brand .sub-nav-categories a[href]'
-  ).href;
+  );
+  const homeUrl = homeLink ? homeLink.href : '/';
 
   let menuItem = Array.from(nav.querySelectorAll('a')).find(
     (a) => a.href === currentUrl

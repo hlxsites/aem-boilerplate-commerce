@@ -1,5 +1,5 @@
 /* stylelint-disable no-descending-specificity */
-
+/* box-shadow: rgba(0, 0, 0, 0.03) 4px -10px 12px; */
 .minicart-backdrop {
   position: fixed;
   height: 100vh;
@@ -206,6 +206,99 @@ header nav .nav-tools .minicart-panel {
 /* Delete Button */
 .minicart-panel .minicart-product .actions .remove-product {
   background-image: url('../../icons/trash.svg');
+}
+
+/* Checkout */
+.minicart-checkout {
+  padding: 0;
+  position: absolute;
+  bottom: 2vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 396px;
+  box-shadow: rgba(0, 0, 0, 0.03) 4px -10px 12px;
+}
+
+.minicart-checkout .checkout-message {
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 26px;
+  margin-top: 24px;
+  max-width: 326px;
+  background-color: var(--free-shipping-background);
+  border: var(--free-shipping-border);
+}
+.minicart-checkout .checkout-message p b {
+  font-weight: 500;
+}
+
+.minicart-checkout .checkout-message img {
+  width: 21px;
+  height: 13px;
+}
+
+.minicart-checkout .checkout-message p {
+  color: var(--free-shipping-color);
+  font-weight: 400;
+}
+
+.minicart-checkout > div {
+  padding: 0;
+  margin: 5px 2px;
+  display: flex;
+
+  width: 90%;
+  justify-content: space-between;
+}
+
+.minicart-checkout p {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--text-date-color);
+}
+.minicart-checkout h2 {
+  font-weight: 500;
+  margin: 0;
+  font-size: 16px;
+  text-transform: capitalize;
+  color: var(--text-date-color);
+  letter-spacing: 0.0228571rem;
+}
+
+.minicart-checkout .promo-accordian {
+  flex-direction: row;
+  width: 100%;
+  margin: 0;
+  height: 48px;
+  justify-content: space-between;
+  border-top: 1px solid var(--sub-text-border-divider);
+  border-bottom: 1px solid var(--sub-text-border-divider);
+}
+
+.minicart-checkout .promo-accordian span {
+  width: 15px;
+  height: 10px;
+}
+
+.minicart-checkout .promo-accordian .promo-text {
+  margin: 0;
+  gap: 10px;
+}
+
+.minicart-checkout .promo-accordian .promo-text p {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--main-text-color);
+}
+
+.minicart-checkout .promo-accordian .extend-accordian {
+  color: var(--sub-text-grey);
+}
+
+.minicart-checkout .promo {
+  flex-direction: column;
 }
 
 /* .minicart-panel .minicart-list {

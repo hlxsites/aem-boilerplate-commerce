@@ -156,6 +156,9 @@
   --main-text-color: #1a1a1a;
   --text-date-color: #000000;
   --sale-color: #ae0000;
+  --free-shipping-color: #258a3e;
+  --free-shipping-background: rgb(243, 248, 244);
+  --free-shipping-border: 1px solid rgb(211, 232, 216);
 
   --sub-text-title-size: 22px;
   --sub-text-title-large: 16px;
