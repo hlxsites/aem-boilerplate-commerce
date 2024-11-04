@@ -1,4 +1,4 @@
-import{Initializer as E}from"@dropins/tools/lib.js";import{events as s}from"@dropins/tools/event-bus.js";import{f as i,h as n}from"./chunks/fetch-graphql.js";import{g as x,r as P,s as U,a as Y,b as q}from"./chunks/fetch-graphql.js";import{h as m}from"./chunks/network-error.js";import{P as l,a as u,G as c,O as _,B as p,R as O,b as f}from"./chunks/transform-order-details.js";import{O as h,A as D}from"./chunks/getGuestOrder.graphql.js";import{t as T}from"./chunks/getCustomer.js";import{g as z,a as H}from"./chunks/getCustomer.js";import{g as j}from"./chunks/getAttributesForm.js";import{g as V}from"./chunks/getStoreConfig.js";import{g as X}from"./chunks/getCustomerOrdersReturn.js";import{c as ee,r as re}from"./chunks/requestGuestOrderCancel.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/convertCase.js";const G=`
+import{Initializer as T}from"@dropins/tools/lib.js";import{events as d}from"@dropins/tools/event-bus.js";import{f as n,h as m}from"./chunks/fetch-graphql.js";import{g as P,r as U,s as Y,a as q,b as Q}from"./chunks/fetch-graphql.js";import{h as u}from"./chunks/network-error.js";import{P as l,a as _,G as c,O as p,B as O,R as h,b}from"./chunks/transform-order-details.js";import{O as D,A as R}from"./chunks/getGuestOrder.graphql.js";import{t as G}from"./chunks/getCustomer.js";import{g as H,a as K}from"./chunks/getCustomer.js";import{g as J}from"./chunks/getAttributesForm.js";import{g as W}from"./chunks/getStoreConfig.js";import{g as Z}from"./chunks/getCustomerOrdersReturn.js";import{c as re,r as te}from"./chunks/requestGuestOrderCancel.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/convertCase.js";const I=`
 query ORDER_BY_NUMBER($orderNumber: String!) {
  customer {
     orders(
@@ -85,14 +85,14 @@ query ORDER_BY_NUMBER($orderNumber: String!) {
   }
 }
 ${l}
-${u}
-${c}
 ${_}
+${c}
 ${p}
-${h}
-${D}
 ${O}
-`,I=async(e,r)=>await i(G,{method:"GET",cache:"force-cache",variables:{orderNumber:e}}).then(t=>{var a;return(a=t.errors)!=null&&a.length?n(t.errors):f(r??"orderData",t)}).catch(m),b=`
+${D}
+${R}
+${h}
+`,f=async(e,t,r)=>await n(I,{method:"GET",cache:"force-cache",variables:{orderNumber:e}}).then(a=>{var s;return(s=a.errors)!=null&&s.length?m(a.errors):b(t??"orderData",a,r)}).catch(u),y=`
 query ORDER_BY_TOKEN($token: String!) {
   guestOrderByToken(input: { token: $token }) {
     email
@@ -179,11 +179,11 @@ query ORDER_BY_TOKEN($token: String!) {
   }
 }
 ${l}
-${u}
-${c}
 ${_}
+${c}
 ${p}
-${h}
-${D}
 ${O}
-`,g=async e=>await i(b,{method:"GET",cache:"no-cache",variables:{token:e}}).then(r=>{var t;return(t=r.errors)!=null&&t.length?n(r.errors):T(r)}).catch(m),y=async e=>{var o;const r=(e==null?void 0:e.orderRef)??"",t=r&&typeof(e==null?void 0:e.orderRef)=="string"&&((o=e==null?void 0:e.orderRef)==null?void 0:o.length)>20,a=(e==null?void 0:e.orderData)??null;if(a){s.emit("order/data",a);return}if(!r){console.error("Order Token or number not received.");return}const d=t?await g(r):await I(r);d?s.emit("order/data",d):s.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},R=new E({init:async e=>{const r={};R.config.setConfig({...r,...e}),y(e).catch(console.error)},listeners:()=>[]}),M=R.config;export{ee as cancelOrder,M as config,i as fetchGraphQl,j as getAttributesForm,x as getConfig,z as getCustomer,X as getCustomerOrdersReturn,H as getGuestOrder,I as getOrderDetailsById,V as getStoreConfig,g as guestOrderByToken,R as initialize,P as removeFetchGraphQlHeader,re as requestGuestOrderCancel,U as setEndpoint,Y as setFetchGraphQlHeader,q as setFetchGraphQlHeaders};
+${D}
+${R}
+${h}
+`,A=async(e,t)=>await n(y,{method:"GET",cache:"no-cache",variables:{token:e}}).then(r=>{var a;return(a=r.errors)!=null&&a.length?m(r.errors):G(r)}).catch(u),$=async e=>{var i;const t=(e==null?void 0:e.orderRef)??"",r=(e==null?void 0:e.returnRef)??"",a=t&&typeof(e==null?void 0:e.orderRef)=="string"&&((i=e==null?void 0:e.orderRef)==null?void 0:i.length)>20,s=(e==null?void 0:e.orderData)??null;if(s){d.emit("order/data",s),r&&d.emit("order/returnNumber",r);return}if(!t){console.error("Order Token or number not received.");return}const o=a?await A(t):await f(t,"orderData",r);o?(d.emit("order/data",o),r&&d.emit("order/returnNumber",r)):d.emit("order/error",{source:"order",type:"network",error:"The data was not received."})},E=new T({init:async e=>{const t={};E.config.setConfig({...t,...e}),$(e).catch(console.error)},listeners:()=>[]}),v=E.config;export{re as cancelOrder,v as config,n as fetchGraphQl,J as getAttributesForm,P as getConfig,H as getCustomer,Z as getCustomerOrdersReturn,K as getGuestOrder,f as getOrderDetailsById,W as getStoreConfig,A as guestOrderByToken,E as initialize,U as removeFetchGraphQlHeader,te as requestGuestOrderCancel,Y as setEndpoint,q as setFetchGraphQlHeader,Q as setFetchGraphQlHeaders};

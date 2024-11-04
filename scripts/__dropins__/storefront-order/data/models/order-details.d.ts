@@ -120,6 +120,7 @@ export type OrderDataModel = {
     totalQuantity: number;
     shippingMethod?: string;
     carrier?: string;
+    orderDate: string;
     returns: OrdersReturnPropsModel[];
     discounts: {
         amount: MoneyProps;
