@@ -1707,4 +1707,16 @@ export declare const returnOrderListMock: {
         trackingNumber: string;
     }[];
 }[];
+export declare const translationsOrderCostSummaryMock: {
+    headerText: string;
+    subtotal: string;
+    shipping: string;
+    freeShipping: string;
+    tax: string;
+    incl: string;
+    excl: string;
+    discount: string;
+    discountSubtitle: string;
+    total: string;
+};
 //# sourceMappingURL=mock.config.d.ts.map

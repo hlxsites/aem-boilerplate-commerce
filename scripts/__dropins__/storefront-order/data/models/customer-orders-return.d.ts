@@ -1,6 +1,6 @@
 import { OrderItemModel } from './order-details';
 
-export interface OrdersReturnItemsProps {
+export interface OrdersReturnItemsPropsModel {
     orderItem: OrderItemModel;
     quantity: number;
     requestQuantity: number;
@@ -18,11 +18,13 @@ export interface OrdersReturnTrackingProps {
     };
     trackingNumber: string;
 }
-export interface OrdersReturnProps {
+export interface OrdersReturnPropsModel {
     token: string;
     orderNumber: string;
+    returnStatus: string;
+    returnNumber: string;
     tracking: OrdersReturnTrackingProps[];
-    items: OrdersReturnItemsProps[];
+    items: OrdersReturnItemsPropsModel[];
 }
 export interface PageInfoProps {
     pageSize: number;
@@ -30,7 +32,7 @@ export interface PageInfoProps {
     currentPage: number;
 }
 export interface CustomerOrdersReturnModel {
-    ordersReturn: OrdersReturnProps[];
-    pageInfo: PageInfoProps;
+    ordersReturn: OrdersReturnPropsModel[];
+    pageInfo?: PageInfoProps;
 }
 //# sourceMappingURL=customer-orders-return.d.ts.map

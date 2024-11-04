@@ -24,6 +24,7 @@ export interface ProductProps {
     thumbnail?: ThumbnailImageProps;
     image: ThumbnailImageProps;
     canonical_url: string;
+    url_key: string;
     id: string;
     uid: string;
     name: string;
@@ -181,6 +182,34 @@ export declare enum AvailableActionsProps {
     RETURN = "RETURN",
     REORDER = "REORDER"
 }
+export interface ReturnsItemsProps {
+    number: string;
+    status: string;
+    order: {
+        number: string;
+        token: string;
+    };
+    shipping: {
+        tracking: {
+            status: {
+                text: string;
+                type: string;
+            };
+            carrier: {
+                uid: string;
+                label: string;
+            };
+            tracking_number: string;
+        }[];
+    };
+    items: {
+        quantity: number;
+        status: string;
+        uid: string;
+        request_quantity: number;
+        order_item: OrderItemProps;
+    }[];
+}
 export interface OrderProps {
     available_actions: AvailableActionsProps[];
     shipping_method: string;
@@ -197,8 +226,8 @@ export interface OrderProps {
         code: string;
     }[];
     returns: {
-        pageSize: number;
-        currentPage: number;
+        __typename: string;
+        items: ReturnsItemsProps[];
     };
     shipments: ShipmentsProps[];
     items_eligible_for_return: OrderItemProps[];

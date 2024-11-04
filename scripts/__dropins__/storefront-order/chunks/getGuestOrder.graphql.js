@@ -1,4 +1,4 @@
-import{P as e,a as t,G as r,O as a,B as s}from"./transform-order-details.js";const d=`
+import{P as e,a as t,G as r,O as a,B as s,R as d}from"./transform-order-details.js";const n=`
 fragment OrderSummary on OrderTotal {
   grand_total {
     value
@@ -35,7 +35,7 @@ fragment OrderSummary on OrderTotal {
     }
     label
   }
-}`,n=`
+}`,i=`
 fragment AddressesList on OrderAddress {
   city
   company
@@ -52,7 +52,7 @@ fragment AddressesList on OrderAddress {
   suffix
   telephone
   vat_id
-}`,i=`
+}`,o=`
   fragment guestOrderData on CustomerOrder {
     email
     id
@@ -67,6 +67,9 @@ fragment AddressesList on OrderAddress {
     gift_receipt_included
     available_actions
     is_virtual
+    returns {
+      ...OrderReturns
+    }
     payment_methods {
       name
       type
@@ -138,13 +141,14 @@ ${t}
 ${r}
 ${a}
 ${s}
-${d}
 ${n}
+${i}
+${d}
 `,_=`
   query GET_GUEST_ORDER($input: OrderInformationInput!) {
   guestOrder(input:$input) {
     ...guestOrderData
     }
   }
-${i}
-`;export{n as A,i as G,d as O,_ as a};
+${o}
+`;export{i as A,o as G,n as O,_ as a};

@@ -1,4 +1,5 @@
 import { AvailableActionsProps, MoneyProps, QueryType } from '../../types';
+import { OrdersReturnPropsModel } from './customer-orders-return';
 
 export type OrderAddressModel = {
     city: string;
@@ -20,6 +21,7 @@ export type OrderAddressModel = {
 export type OrderItemProductModel = {
     stockStatus?: string;
     canonicalUrl?: string;
+    urlKey?: string;
     id: string;
     image?: string;
     imageAlt?: string;
@@ -36,6 +38,7 @@ export type OrderItemModel = {
     discounted?: boolean;
     id: string;
     productName?: string;
+    productUrlKey?: string;
     regularPrice?: MoneyProps;
     price?: MoneyProps;
     product?: OrderItemProductModel;
@@ -117,6 +120,7 @@ export type OrderDataModel = {
     totalQuantity: number;
     shippingMethod?: string;
     carrier?: string;
+    returns: OrdersReturnPropsModel[];
     discounts: {
         amount: MoneyProps;
         label: string;

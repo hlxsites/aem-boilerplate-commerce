@@ -32,7 +32,7 @@ import{h as l}from"./network-error.js";import{f as m,h as _}from"./fetch-graphql
   }
 `,p=`
   query GET_ATTRIBUTES_FORM_SHORT {
-      attributesForm(formCode: customer_register_address) {
+      attributesForm(formCode: "customer_register_address") {
       items {
         frontend_input
         label

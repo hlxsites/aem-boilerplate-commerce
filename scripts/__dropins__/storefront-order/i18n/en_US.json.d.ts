@@ -12,7 +12,7 @@ declare const _default: {
       "tax": {
         "accordionTitle": "Taxes",
         "accordionTotalTax": "Tax Total",
-        "totalExcludingTaxes":"Total excluding taxes",
+        "totalExcludingTaxes": "Total excluding taxes",
         "title": "Tax",
         "incl": "Including taxes",
         "excl": "Excluding taxes"
@@ -32,9 +32,28 @@ declare const _default: {
           "ariaLabelLink": "Redirect to full order information",
           "emptyOrdersListMessage": "No returns",
           "minifiedViewTitle": "Recent returns",
-          "orderNumber": "Order Number:",
+          "orderNumber": "Order number:",
+          "returnNumber": "Return number:",
           "carrier": "Carrier:",
-          "itemsText": "items"
+          "itemText": {
+            "none": "",
+            "one": "item",
+            "many": "items"
+          },
+          "resturnStatus": {
+            "pending": "Pending",
+            "authorized": "Authorized",
+            "partiallyAuthorized": "Partially authorized",
+            "received": "Received",
+            "partiallyReceived": "Partially received",
+            "approved": "Approved",
+            "partiallyApproved": "Partially approved",
+            "rejected": "Rejected",
+            "partiallyRejected": "Partially rejected",
+            "denied": "Denied",
+            "processedAndClosed": "Processed and closed",
+            "closed": "Closed"
+          }
         }
       },
       "fullSizeView": {
@@ -43,9 +62,28 @@ declare const _default: {
           "ariaLabelLink": "Redirect to full order information",
           "emptyOrdersListMessage": "No returns",
           "minifiedViewTitle": "Returns",
-          "orderNumber": "Order Number:",
+          "orderNumber": "Order number:",
+          "returnNumber": "Return number:",
           "carrier": "Carrier:",
-          "itemsText": "items"
+          "itemText": {
+            "none": "",
+            "one": "item",
+            "many": "items"
+          },
+          "resturnStatus": {
+            "pending": "Pending",
+            "authorized": "Authorized",
+            "partiallyAuthorized": "Partially authorized",
+            "received": "Received",
+            "partiallyReceived": "Partially received",
+            "approved": "Approved",
+            "partiallyApproved": "Partially approved",
+            "rejected": "Rejected",
+            "partiallyRejected": "Partially rejected",
+            "denied": "Denied",
+            "processedAndClosed": "Processed and closed",
+            "closed": "Closed"
+          }
         }
       }
     },
@@ -83,7 +121,11 @@ declare const _default: {
       "shippingCardTitle": "Package details",
       "shippingInfoTitle": "Shipping info",
       "notYetShippedTitle": "Not yet shipped",
-      "notYetShippedImagesTitle": "Package contents"
+      "notYetShippedImagesTitle": "Package contents",
+      "notYetShippedItem": {
+        "singular": "item",
+        "plural": "items"
+      }
     },
     "OrderStatusContent": {
       "noInfoTitle": "Check back later for more details.",

@@ -1,4 +1,4 @@
-import { OrdersReturnProps } from '../../data/models';
+import { OrdersReturnPropsModel } from '../../data/models';
 
 export declare const useReturnsList: () => {
     pageInfo: {
@@ -8,7 +8,7 @@ export declare const useReturnsList: () => {
     };
     selectedPage: number;
     loading: boolean;
-    returnOrderList: [] | OrdersReturnProps[];
+    orderReturns: [] | OrdersReturnPropsModel[];
     handleSetSelectPage: (value: number) => void;
 };
 //# sourceMappingURL=useReturnsList.d.ts.map
