@@ -5,7 +5,6 @@
   width: 100vw;
   height: 56px;
   border-bottom: 1px solid var(--sub-text-border-divider);
-  /* z-index: 30; */
 }
 
 .main-nav-content div {
@@ -23,7 +22,7 @@
   padding: 1px 20px;
 }
 
-.main-nav-content div:nth-child(1) div:nth-child(1) {
+.main-nav-content > div:nth-child(1) div:nth-child(1) {
   position: absolute;
   margin: auto;
   height: 100%;

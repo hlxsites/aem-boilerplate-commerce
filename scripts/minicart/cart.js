@@ -142,20 +142,30 @@ const handleCartErrors = (errors) => {
   }
 
   // Cart cannot be found
-  if (errors.some(({ extensions }) => extensions?.category === 'graphql-no-such-entity')) {
+  if (
+    errors.some(
+      ({ extensions }) => extensions?.category === 'graphql-no-such-entity'
+    )
+  ) {
     console.error('Cart does not exist, resetting cart');
     store.resetCart();
     return;
   }
 
   // No access to cart
-  if (errors.some(({ extensions }) => extensions?.category === 'graphql-authorization')) {
+  if (
+    errors.some(
+      ({ extensions }) => extensions?.category === 'graphql-authorization'
+    )
+  ) {
     console.error('No access to cart, resetting cart');
     store.resetCart();
     return;
   }
 
-  if (errors.some(({ extensions }) => extensions?.category === 'graphql-input')) {
+  if (
+    errors.some(({ extensions }) => extensions?.category === 'graphql-input')
+  ) {
     console.error('Some items in the cart might not be available anymore');
     return;
   }
@@ -165,10 +175,16 @@ const handleCartErrors = (errors) => {
 };
 
 export function waitForCart() {
-  const buttons = document.querySelectorAll('button.nav-cart-button, .minicart-header > .close');
-  buttons.forEach((button) => { button.disabled = true; });
+  const buttons = document.querySelectorAll(
+    'button.nav-cart-button, .minicart-header > .close'
+  );
+  buttons.forEach((button) => {
+    button.disabled = true;
+  });
   return () => {
-    buttons.forEach((button) => { button.disabled = false; });
+    buttons.forEach((button) => {
+      button.disabled = false;
+    });
   };
 }
 
@@ -185,7 +201,7 @@ export async function getCart() {
       getCartQuery,
       { cartId: store.getCartId() },
       false,
-      true,
+      true
     ));
     handleCartErrors(errors);
 
@@ -200,7 +216,11 @@ export async function getCart() {
 
 export async function createCart() {
   try {
-    const { data, errors } = await performMonolithGraphQLQuery(createCartMutation, {}, false);
+    const { data, errors } = await performMonolithGraphQLQuery(
+      createCartMutation,
+      {},
+      false
+    );
     handleCartErrors(errors);
     const { cartId } = data;
     store.setCartId(cartId);
@@ -215,18 +235,20 @@ export async function addToCart(sku, options, quantity, source) {
   try {
     const variables = {
       cartId: store.getCartId(),
-      cartItems: [{
-        sku,
-        quantity,
-        selected_options: options,
-      }],
+      cartItems: [
+        {
+          sku,
+          quantity,
+          selected_options: options,
+        },
+      ],
     };
 
     const { data, errors } = await performMonolithGraphQLQuery(
       addProductsToCartMutation,
       variables,
       false,
-      true,
+      true
     );
     handleCartErrors(errors);
 
@@ -240,7 +262,9 @@ export async function addToCart(sku, options, quantity, source) {
     const mseCart = mapCartToMSE(cart, source);
 
     // TODO: Find exact item by comparing options UIDs
-    const mseChangedItems = cart.items.filter((item) => item.product.sku === sku).map(mapCartItem);
+    const mseChangedItems = cart.items
+      .filter((item) => item.product.sku === sku)
+      .map(mapCartItem);
     window.adobeDataLayer.push((dl) => {
       dl.push({ shoppingCartContext: mseCart });
       dl.push({ changedProductsContext: { items: mseChangedItems } });
@@ -268,7 +292,7 @@ export async function removeItemFromCart(uid) {
       removeItemFromCartMutation,
       variables,
       false,
-      true,
+      true
     );
     handleCartErrors(errors);
     store.setCart(data.removeItemFromCart.cart);
@@ -283,22 +307,28 @@ export async function updateQuantityOfCartItem(cartItemUid, quantity) {
   const done = waitForCart();
   const variables = {
     cartId: store.getCartId(),
-    items: [{
-      cart_item_uid: cartItemUid,
-      quantity,
-    }],
+    items: [
+      {
+        cart_item_uid: cartItemUid,
+        quantity,
+      },
+    ],
   };
   try {
     const { data, errors } = await performMonolithGraphQLQuery(
       updateCartItemsMutation,
       variables,
       false,
-      true,
+      true
     );
     handleCartErrors(errors);
     store.setCart(data.updateCartItems.cart);
 
-    console.debug('Update quantity of item in cart', variables, data.updateCartItems.cart);
+    console.debug(
+      'Update quantity of item in cart',
+      variables,
+      data.updateCartItems.cart
+    );
   } catch (err) {
     console.error('Could not update quantity of item in cart', err);
   } finally {
