@@ -92,6 +92,7 @@ declare const _default: {
       "cancelledTitle": "Cancelled",
       "allOrdersTitle": "Your order",
       "returnedTitle": "Your return",
+      "refundedTitle": "Your refunded",
       "downloadableCount": "Files",
       "stockStatus": {
         "inStock": "In stock",
