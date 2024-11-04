@@ -110,6 +110,7 @@ export type ShipmentsModel = {
     items: ShipmentItemsModel[];
 };
 export type OrderDataModel = {
+    returnNumber: string;
     id: string;
     orderStatusChangeDate?: string;
     number: string;

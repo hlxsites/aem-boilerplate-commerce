@@ -26,7 +26,6 @@ export interface UseCustomerDetails {
     orderData?: OrderDataModel;
 }
 export interface CustomerDetailsContentProps extends Omit<CustomerDetailsProps, 'orderData' | 'className'> {
-    returnNumber?: string;
     translations: Record<string, string>;
     loading: boolean;
     order?: OrderDataModel;
