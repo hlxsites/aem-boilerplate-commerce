@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'preact/compat';
 import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { OrderDataModel, OrderItemModel, OrdersReturnPropsModel, OrdersReturnTrackingProps } from '../data/models';
+import { OrderDataModel, OrdersReturnPropsModel, OrdersReturnTrackingProps } from '../data/models';
 
 type routeTypes = {
     returnNumber?: string;
@@ -15,9 +15,7 @@ export interface ShippingStatusProps extends HTMLAttributes<HTMLDivElement> {
         DeliveryTrackActions?: SlotProps;
         ReturnItemsDetails?: SlotProps;
     };
-    routeReturnDetails?: ({ returnNumber, token, orderNumber, }: routeTypes) => string;
     routeOrderDetails?: ({ returnNumber, token, orderNumber, }: routeTypes) => string;
-    routeProductDetails?: (orderItem?: OrderItemModel) => string;
     routeTracking?: (track: OrdersReturnTrackingProps) => string;
 }
 export interface UseShippingStatusProps {
@@ -26,7 +24,7 @@ export interface UseShippingStatusProps {
 export interface ShippingStatusCardProps extends ShippingStatusProps {
     translations: Record<string, string>;
 }
-export interface ShippingStatusOrderCardProps extends ShippingStatusCardProps {
+export interface ShippingStatusReturnCardProps extends ShippingStatusCardProps {
     collapseThreshold: number;
     orderReturn: OrdersReturnPropsModel[];
 }

@@ -122,13 +122,13 @@ declare const _default: {
       "returnNumber": "Return number:",
       "itemText": {
         "none": "",
-        "one": "Package contents {{count}} item",
-        "many": "Package contents {{count}} items"
+        "one": "Package contents ({{count}} item)",
+        "many": "Package contents ({{count}} items)"
       },
       "trackButton": "Track package",
       "carrier": "Carrier:",
       "prepositionOf": "of",
-      "returnOrderCardTitle": "Return details",
+      "returnOrderCardTitle": "Package details",
       "shippingCardTitle": "Package details",
       "shippingInfoTitle": "Shipping info",
       "notYetShippedTitle": "Not yet shipped",
