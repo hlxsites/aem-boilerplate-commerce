@@ -4,6 +4,7 @@ import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderReturns } from '@dropins/storefront-order/containers/OrderReturns.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
 import {
+  CUSTOMER_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
   RETURN_DETAILS_PATH,
 } from '../../scripts/constants.js';
@@ -18,7 +19,13 @@ export default async function decorate(block) {
     : RETURN_DETAILS_PATH;
 
   await orderRenderer.render(OrderReturns, {
-    routeReturnDetails: ({ orderNumber, returnNumber, token }) => `${returnDetailsPath}?orderRef=${isAuthenticated ? orderNumber : token}&returnRef=${returnNumber}`,
+    routeReturnDetails: ({ orderNumber, returnNumber, token }) => {
+      const { searchParams } = new URL(window.location.href);
+      const orderRefFromUrl = searchParams.get('orderRef');
+      const newOrderRef = isAuthenticated ? orderNumber : token;
+
+      return `${returnDetailsPath}?orderRef=${orderRefFromUrl || newOrderRef}&returnRef=${returnNumber}`;
+    },
     routeProductDetails: (productData) => (productData ? `/products/${productData.product.urlKey}/${productData.product.sku}` : '#'),
   })(block);
 }
