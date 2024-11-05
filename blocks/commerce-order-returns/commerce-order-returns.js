@@ -12,12 +12,13 @@ import {
 import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
-  const returnDetailsPath = checkIsAuthenticated()
+  const isAuthenticated = checkIsAuthenticated();
+  const returnDetailsPath = isAuthenticated
     ? CUSTOMER_RETURN_DETAILS_PATH
     : RETURN_DETAILS_PATH;
 
   await orderRenderer.render(OrderReturns, {
-    routeReturnDetails: ({ orderNumber, returnNumber }) => `${returnDetailsPath}?orderRef=${orderNumber}&returnRef=${returnNumber}`,
+    routeReturnDetails: ({ orderNumber, returnNumber, token }) => `${returnDetailsPath}?orderRef=${isAuthenticated ? orderNumber : token}&returnRef=${returnNumber}`,
     routeProductDetails: (productData) => (productData ? `/products/${productData.product.urlKey}/${productData.product.sku}` : '#'),
   })(block);
 }
