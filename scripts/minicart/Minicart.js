@@ -256,6 +256,11 @@ export class Minicart extends Component {
       </div>`;
     }
 
+    let shippingFee = 50;
+    if (cart.prices.subtotal_excluding_tax.value >= 150) {
+      shippingFee = 0;
+    }
+
     return html` <div class="minicart-panel">
       <div class="minicart-header">
         <div class="title">Your Cart (${cart.total_quantity})</div>
@@ -275,7 +280,17 @@ export class Minicart extends Component {
       <div class="minicart-checkout">
         <div class="checkout-message">
           <img src="/icons/truck.svg" alt="Free shipping icon" />
-          <p>This order qualifies for <b>free shipping</b></p>
+          ${shippingFee === 0
+            ? html`<p>This order qualifies for <b>free shipping</b></p>`
+            : html`<p>
+                You are
+                <b
+                  >$${(150 - cart.prices.subtotal_excluding_tax.value).toFixed(
+                    2
+                  )}</b
+                >
+                away from free shipping
+              </p>`}
         </div>
         <div class="subtotal">
           <p>Sub-Total:</p>
@@ -289,12 +304,16 @@ export class Minicart extends Component {
         </div>
         <div class="shipping">
           <p>Shipping:</p>
-          <p class="shipping-fee">FREE</p>
+          <p class="shipping-fee">
+            ${shippingFee === 0 ? 'FREE' : this.formatter.format(shippingFee)}
+          </p>
         </div>
         <div class="total">
           <h2>total:</h2>
           <h2 class="total-price">
-            ${this.formatter.format(cart.prices.subtotal_excluding_tax.value)}
+            ${this.formatter.format(
+              cart.prices.subtotal_excluding_tax.value + shippingFee
+            )}
           </h2>
         </div>
         <div class="promo">

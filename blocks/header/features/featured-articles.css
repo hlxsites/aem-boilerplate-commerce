@@ -234,6 +234,7 @@ div:nth-child(5) .video-wrapper div div iframe {
 .article-team div:nth-child(1) div:nth-child(3) p {
   display: flex;
   height: 16px;
+  font-weight: 400;
 }
 
 /* X logo */
@@ -270,14 +271,6 @@ div:nth-child(5) .video-wrapper div div iframe {
   flex: 1.3;
   margin: 4% auto;
 }
-/* 
-main .section {
-  margin: 0 auto;
-  padding-top: 0;
-  padding-bottom: auto;
-  padding-left: auto;
-  padding-right: auto;
-} */
 
 /* Title NEXT & PREVIOUS POST */
 .featured-next-post-title div:nth-child(1) div p:nth-child(1) {
@@ -295,6 +288,14 @@ main .section {
   text-align: right;
 }
 
+.two-big-two-small div,
+.two-cols-img-feat div,
+.two-img div,
+.img-side-content div,
+.img-side-content-mirror div {
+  gap: 32px;
+}
+
 @media (width <= 1260px) {
   /* Video */
   div:nth-child(5) .video-wrapper div {
@@ -309,7 +310,28 @@ main .section {
     margin: 0 auto;
   }
 }
-@media (width <= 900px) {
+
+@media (width > 991px) {
+  .article-team div:nth-child(2) div:nth-child(1) p {
+    margin-right: 2%;
+  }
+  .article-team div:nth-child(2) div:nth-child(2) p {
+    margin-left: 2%;
+  }
+}
+@media (width <= 991px) {
+  .two-big-two-small div,
+  .two-cols-img-feat div,
+  .two-img div,
+  .img-side-content div,
+  .article-team div {
+    flex-direction: column;
+  }
+
+  .img-side-content-mirror div {
+    flex-direction: column-reverse;
+  }
+
   /* Block Quote */
   .bold-text-column-title,
   .block-quote p {
@@ -340,9 +362,9 @@ main .section {
     padding: auto;
   }
 
-  .two-img div:nth-child(2) img {
+  /* .two-img div:nth-child(2) img {
     margin-top: 10%;
-  }
+  } */
 
   .two-big-two-small div div {
     margin: auto;
@@ -392,10 +414,17 @@ main .section {
   .article-team div:nth-child(1) div:nth-child(1) p,
   .article-team div:nth-child(1) div:nth-child(2) p,
   .article-team div:nth-child(1) div:nth-child(3) p {
-    display: flex;
-    margin: 2% auto;
+    margin: 2% 0;
+    width: 100%;
     justify-content: center;
+    font-size: 14px;
   }
+
+  .article-team p strong {
+    margin-right: 1%;
+    font-size: 14px;
+  }
+
   div:nth-child(20) .features-team div:nth-child(1) div:nth-child(3) p {
     margin-bottom: 5%;
   }
@@ -418,13 +447,9 @@ main .section {
   }
 
   /* X/twitter logo */
-  .article-writer div:nth-child(2) div:nth-child(1) p {
-    margin: 0;
-    margin-right: 4%;
-  }
   .article-team div:nth-child(2) div:nth-child(1) p {
     margin: 0;
-    margin-right: 8%;
+    margin-right: 2%;
   }
 
   /* Facebook logo */
