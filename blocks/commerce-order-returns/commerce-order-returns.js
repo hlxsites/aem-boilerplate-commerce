@@ -4,7 +4,6 @@ import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderReturns } from '@dropins/storefront-order/containers/OrderReturns.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
 import {
-  CUSTOMER_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
   RETURN_DETAILS_PATH,
 } from '../../scripts/constants.js';
