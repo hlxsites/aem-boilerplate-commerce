@@ -239,7 +239,7 @@ declare const _default: {
       "billingAddress": {
         "title": "Billing address"
       },
-      "billingMethods": {
+      "paymentMethods": {
         "title": "Payment method"
       },
       "returnInformation": {
