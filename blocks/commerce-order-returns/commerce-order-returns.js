@@ -23,7 +23,9 @@ export default async function decorate(block) {
       const orderRefFromUrl = searchParams.get('orderRef');
       const newOrderRef = isAuthenticated ? orderNumber : token;
 
-      return `${returnDetailsPath}?orderRef=${orderRefFromUrl || newOrderRef}&returnRef=${returnNumber}`;
+      const encodedOrderRef = encodeURIComponent(orderRefFromUrl || newOrderRef);
+
+      return `${returnDetailsPath}?orderRef=${encodedOrderRef}&returnRef=${returnNumber}`;
     },
     routeProductDetails: (productData) => (productData ? `/products/${productData.product.urlKey}/${productData.product.sku}` : '#'),
   })(block);
