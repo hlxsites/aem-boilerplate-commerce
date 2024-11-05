@@ -3,6 +3,7 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { Header, provider as uiProvider } from '@dropins/tools/components.js';
 import { CUSTOMER_RETURN_DETAILS_PATH, CUSTOMER_RETURNS_PATH } from '../../scripts/constants.js';
+import { fetchPlaceholders } from '../../scripts/aem.js';
 
 // TODO - Will be refactored after https://jira.corp.adobe.com/browse/USF-1393 | https://atwix.atlassian.net/browse/EDS-426
 // Initialize
@@ -15,10 +16,11 @@ export default async function decorate(block) {
   await uiProvider.render(Header, { title: 'Return' })(headerContainer);
 
   if (window.location.href.includes(CUSTOMER_RETURN_DETAILS_PATH)) {
+    const placeholders = await fetchPlaceholders();
+
     const link = document.createElement('a');
 
-    // TODO: Add i18n when appropriate functionality will be introduced in boilerplate
-    link.innerText = '< Back to all returns';
+    link.innerText = placeholders.orderReturnDetailsBack;
     link.href = CUSTOMER_RETURNS_PATH;
     link.classList.add('returns-list-header');
 
