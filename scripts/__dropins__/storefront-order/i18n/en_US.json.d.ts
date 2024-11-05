@@ -205,7 +205,7 @@ declare const _default: {
     "OrderCancel": {
       "buttonText": "Cancel Order"
     },
-    "OrderCancellationReasonsForm": {
+    "OrderCancelForm": {
       "title": "Cancel order",
       "description": "Select a reason for canceling the order",
       "label": "Reason for cancel",
