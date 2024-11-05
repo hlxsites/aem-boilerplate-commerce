@@ -17,6 +17,7 @@ export interface ShippingStatusProps extends HTMLAttributes<HTMLDivElement> {
     };
     routeOrderDetails?: ({ returnNumber, token, orderNumber, }: routeTypes) => string;
     routeTracking?: (track: OrdersReturnTrackingProps) => string;
+    routeProductDetails?: (product: any) => string;
 }
 export interface UseShippingStatusProps {
     orderData?: OrderDataModel;

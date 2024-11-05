@@ -156,10 +156,8 @@ declare const _default: {
       },
       "actions": {
         "cancel": "Cancel order",
-        "return": {
-          "none": "Return or replace",
-          "many": "Start another return"
-        },
+        "createReturn": "Return or replace",
+        "createAnotherReturn": "Start another return",
         "reorder": "Reorder"
       },
       "orderPending": {
@@ -212,10 +210,10 @@ declare const _default: {
       "freeShipping": "Free shipping",
       "orderReturnLabels": {
         "createdReturnAt": "Return requested on: ",
-        "returnStatus": "Return status: ",
-        "orderNumber": "Order number: "
+        "returnStatusLabel": "Return status: ",
+        "orderNumberLabel": "Order number: "
       },
-      "resturnStatus": {
+      "returnStatus": {
         "pending": "Pending",
         "authorized": "Authorized",
         "partiallyAuthorized": "Partially authorized",

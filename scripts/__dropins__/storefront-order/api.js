@@ -1,5 +1,3 @@
-/*! Copyright 2024 Adobe
-All Rights Reserved. */
 import{Initializer as T}from"@dropins/tools/lib.js";import{events as d}from"@dropins/tools/event-bus.js";import{f as n,h as m}from"./chunks/fetch-graphql.js";import{g as P,r as U,s as Y,a as q,b as Q}from"./chunks/fetch-graphql.js";import{h as u}from"./chunks/network-error.js";import{P as l,a as _,G as c,O as p,B as O,R as h,b}from"./chunks/transform-order-details.js";import{O as D,A as R}from"./chunks/getGuestOrder.graphql.js";import{t as G}from"./chunks/getCustomer.js";import{g as H,a as K}from"./chunks/getCustomer.js";import{g as J}from"./chunks/getAttributesForm.js";import{g as W}from"./chunks/getStoreConfig.js";import{g as Z}from"./chunks/getCustomerOrdersReturn.js";import{c as re,r as te}from"./chunks/requestGuestOrderCancel.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/convertCase.js";const I=`
 query ORDER_BY_NUMBER($orderNumber: String!) {
  customer {
