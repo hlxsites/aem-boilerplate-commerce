@@ -170,6 +170,8 @@
 
   --sub-text-title-weight: 600;
 
+  --btn-secondary:
+
   /*------------------------- Chris Global -------------------------*/
   --sub-text-weight: 400;
   --text-line-height: 24px;
@@ -368,6 +370,20 @@ button.button.secondary {
 main a.button.secondary:hover,
 button.button.secondary:hover {
   color: var(--color-brand-600);
+}
+
+
+.btn-primary{
+  background-color: #1A1A1A;
+  border: none;
+  color: #FFFF;
+  letter-spacing: 0.1rem;
+}
+
+.btn-secondary{
+  background-color: #F2F2F2; 
+  border: none;
+  letter-spacing: 0.1rem;
 }
 
 main input {

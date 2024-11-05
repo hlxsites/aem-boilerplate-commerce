@@ -13,30 +13,12 @@ import {
 const html = htm.bind(h);
 let cartVisible = false;
 
-function ConfirmDeletionOverlay(props) {
-  const { close, confirm } = props;
-
-  return html`<div class="overlay-background">
-    <div class="overlay">
-      <button class="close" onclick=${close}>Close</button>
-      <div class="content">
-        Are you sure you would like to remove this item from the shopping cart?
-      </div>
-      <div class="actions">
-        <button onclick=${close}>Cancel</button>
-        <button onclick=${confirm}>OK</button>
-      </div>
-    </div>
-  </div>`;
-}
-
 class ProductCard extends Component {
   constructor(props) {
     super();
     this.state = {
       quantity: props.item.quantity,
       quantityValid: true,
-      confirmDelete: false,
     };
   }
 
@@ -88,16 +70,12 @@ class ProductCard extends Component {
 
     const maxQuantity = this.props.item.product.max_sale_qty;
 
-    // Check if the new quantity exceeds the maximum and prevent further increase
     if (parsedQuantity > maxQuantity) {
-      // If it exceeds, set the quantity to the maximum and update the state
       parsedQuantity = maxQuantity;
       this.setState({ quantity: maxQuantity, quantityValid: true });
     } else if (parsedQuantity > 0) {
-      // Otherwise, if the quantity is valid, update the state
       this.setState({ quantity: parsedQuantity, quantityValid: true });
     } else {
-      // If the quantity is invalid, set quantityValid to false
       this.setState({ quantity: event.target.value, quantityValid: false }); // Use event.target.value here
       return;
     }
@@ -141,7 +119,6 @@ class ProductCard extends Component {
   render(props, state) {
     const { item, index, formatter } = props;
     const { product, prices, configurable_options } = props.item;
-    const maxQuantity = props.item.product.max_sale_qty;
 
     return html`<li>
       <div class="minicart-product">
@@ -201,22 +178,16 @@ class ProductCard extends Component {
             </div>
           </form>
         </div>
-
         <div class="actions">
           <button
             class="remove-product"
-            onclick=${() => this.setState({ confirmDelete: true })}
+            onclick=${() =>
+              this.props.api.removeItemFromCart(item.uid, 'Cart Quick View')}
           >
             Remove
           </button>
           <div class="price">${formatter.format(prices.price.value)}</div>
         </div>
-        ${state.confirmDelete &&
-        html`<${ConfirmDeletionOverlay}
-          close=${() => this.setState({ confirmDelete: false })}
-          confirm=${() =>
-            this.props.api.removeItemFromCart(item.uid, 'Cart Quick View')}
-        />`}
       </div>
     </li>`;
   }
@@ -236,11 +207,34 @@ export class Minicart extends Component {
   }
 
   componentDidMount() {
-    // Subscribe to store changes
     this.props.api.store.subscribe((cart) => {
       this.setState({ cart, loading: false });
     });
   }
+
+  togglePromoCode = () => {
+    const promoInput = document.getElementById('promoCodeInput');
+    const arrow = document.querySelector('.extend-accordion');
+
+    this.setState((prevState) => ({
+      showPromoButtons: !prevState.showPromoButtons,
+    }));
+
+    if (promoInput.style.display === 'none') {
+      promoInput.style.display = 'flex';
+      arrow.textContent = '-';
+    } else {
+      promoInput.style.display = 'none';
+      arrow.textContent = '+';
+    }
+  };
+
+  alertCode = () => {
+    alert('Code does not exist');
+  };
+  alertCheckout = () => {
+    alert('Checkout');
+  };
 
   render(props, state) {
     if (!props.visible) {
@@ -249,11 +243,12 @@ export class Minicart extends Component {
 
     const { close } = props.api;
 
-    const { cart } = state;
+    const { cart, showPromoButtons } = state;
     if (!cart.items || cart.items.length === 0) {
       return html`<div class="minicart-panel empty">
         <div class="minicart-header">
           <button class="close" onClick=${() => close(false)}>Close</button>
+          <div class="title">Your Cart</div>
         </div>
         <div className="cart-empty">
           You have no shopping items in your cart.
@@ -264,7 +259,6 @@ export class Minicart extends Component {
     return html` <div class="minicart-panel">
       <div class="minicart-header">
         <div class="title">Your Cart (${cart.total_quantity})</div>
-
         <button class="close" onClick=${() => close(false)}>Close</button>
       </div>
       <ul class="minicart-list">
@@ -306,8 +300,10 @@ export class Minicart extends Component {
         <div class="promo">
           <div class="promo-accordion">
             <div class="promo-text" onclick=${() => this.togglePromoCode()}>
-              <img src="/icons/promo-code.svg" alt="promo code image" />
-              <p>Add promo code / gift card</p>
+              <div class="extend-trigger">
+                <img src="/icons/promo-code.svg" alt="promo code image" />
+                <p>Add promo code / gift card</p>
+              </div>
               <p class="extend-accordion">+</p>
             </div>
             <div
@@ -316,8 +312,21 @@ export class Minicart extends Component {
               style="display: none;"
             >
               <input placeholder="Enter code" />
+              ${showPromoButtons &&
+              html`<div class="promo-buttons">
+                <button class="btn-secondary">Check Balance</button>
+                <button class="btn-primary" onclick=${() => this.alertCode()}>
+                  Apply
+                </button>
+              </div>`}
             </div>
           </div>
+        </div>
+        <div class="checkout">
+          <button class="btn-primary" onclick=${() => this.alertCheckout()}>
+            <img src="/icons/lock.svg" alt="Lock icon" class="lock-icon" />
+            <span>Checkout Securely</span>
+          </button>
         </div>
       </div>
     </div>`;
@@ -340,7 +349,6 @@ export async function toggle(refetch = true) {
     });
     document.body.appendChild(backdrop);
   } else {
-    // Remove backdrop element from the DOM
     const backdrop = document.querySelector('.minicart-backdrop');
     if (backdrop) {
       backdrop.remove();
@@ -359,7 +367,6 @@ export async function toggle(refetch = true) {
     }}
   />`;
   render(app, document.querySelector('.minicart-wrapper > div'));
-  toggleAccordion();
 }
 
 export async function showCart() {
