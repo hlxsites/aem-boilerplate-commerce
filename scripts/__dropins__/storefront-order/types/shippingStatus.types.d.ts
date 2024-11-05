@@ -27,7 +27,7 @@ export interface ShippingStatusCardProps extends ShippingStatusProps {
 }
 export interface ShippingStatusReturnCardProps extends ShippingStatusCardProps {
     collapseThreshold: number;
-    orderReturn: OrdersReturnPropsModel[];
+    returnData: OrdersReturnPropsModel;
 }
 export {};
 //# sourceMappingURL=shippingStatus.types.d.ts.map
