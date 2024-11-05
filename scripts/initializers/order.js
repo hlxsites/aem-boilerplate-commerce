@@ -6,9 +6,10 @@ import { initializeDropin } from './index.js';
 
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
-  CUSTOMER_RETURN_DETAILS_PATH,
-  CUSTOMER_ORDERS_PATH,
   ORDER_DETAILS_PATH,
+  CUSTOMER_RETURN_DETAILS_PATH,
+  RETURN_DETAILS_PATH,
+  CUSTOMER_ORDERS_PATH,
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
 } from '../constants.js';
@@ -23,12 +24,19 @@ initializeDropin(async () => {
   // Handle redirects for user details pages
   if (pathname === ORDER_DETAILS_PATH
     || pathname === CUSTOMER_ORDER_DETAILS_PATH
+    || pathname === RETURN_DETAILS_PATH
     || pathname === CUSTOMER_RETURN_DETAILS_PATH) {
     await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, returnRef, isTokenProvided);
   }
 })();
 
-async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, returnRef, isTokenProvided) {
+async function handleUserOrdersRedirects(
+  pathname,
+  isAccountPage,
+  orderRef,
+  returnRef,
+  isTokenProvided,
+) {
   let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;

@@ -77,6 +77,9 @@ export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const config = await getConfigForEnvironment(env);
   const configElements = config.data;
+
+  if (configParam === 'commerce-core-endpoint') return 'https://mcstaging.aemshop.net/graphql';
+
   return configElements.find((c) => c.key === configParam)?.value;
 };
 

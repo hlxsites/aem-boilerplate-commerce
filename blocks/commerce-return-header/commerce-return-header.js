@@ -5,10 +5,6 @@ import { Header, provider as uiProvider } from '@dropins/tools/components.js';
 import { CUSTOMER_RETURN_DETAILS_PATH, CUSTOMER_RETURNS_PATH } from '../../scripts/constants.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
-// TODO - Will be refactored after https://jira.corp.adobe.com/browse/USF-1393 | https://atwix.atlassian.net/browse/EDS-426
-// Initialize
-import '../../scripts/initializers/order.js';
-
 export default async function decorate(block) {
   block.innerHTML = '';
 
@@ -29,7 +25,6 @@ export default async function decorate(block) {
 
   block.appendChild(headerContainer);
 
-  // TODO - Will be refactored after https://jira.corp.adobe.com/browse/USF-1393 | https://atwix.atlassian.net/browse/EDS-426
   events.on('order/data', (orderData) => {
     const urlParams = new URLSearchParams(window.location.search);
     const returnNumber = urlParams.get('returnRef');
