@@ -18,7 +18,6 @@ export default async function decorate(block) {
     : RETURN_DETAILS_PATH;
 
   await orderRenderer.render(OrderReturns, {
-    withHeader: false,
     routeReturnDetails: ({ orderNumber, returnNumber, token }) => {
       const { searchParams } = new URL(window.location.href);
       const orderRefFromUrl = searchParams.get('orderRef');
