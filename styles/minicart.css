@@ -605,25 +605,32 @@ header nav .nav-tools .minicart-panel {
 }
 
 @media (width >= 1024px) {
-  .minicart-panel {
+  /* .minicart-panel {
     width: 398px;
     position: absolute;
     right: 20px;
     top: var(--nav-height);
     padding: 20px;
     left: unset;
-  }
-
+  } */
+  /* 
   .minicart-panel .minicart-header > button:only-child {
     margin-left: auto;
-  }
+  } */
 
-  .minicart-panel .minicart-header .close:disabled {
+  /* .minicart-panel .minicart-header .close:disabled {
     color: transparent;
     background-image: url('../../icons/loader.gif');
   }
 
   .minicart-panel .minicart-actions {
     flex-direction: row;
+  } */
+}
+
+@media (width < 900px) {
+  .minicart-list li {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
