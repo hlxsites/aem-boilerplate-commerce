@@ -106,12 +106,10 @@ describe('Verify guest user can place order', () => {
      * Confirm that elements similar to orderConfirmation page present (not exactly the same, separate assert needed)
      */
 
-    // ORDER SEARCH
+    // Obtain order reference from URL and visit order details page
 
     cy.url().then((url) => {
-      cy.log('Current URL is: ' + url);
       const orderRef = url.split('?')[1];
-      cy.log(orderRef);
       cy.visit('/order-details?' + orderRef)
     })
 
