@@ -4,11 +4,10 @@ import { PickerOption } from '@dropins/tools/types/elsie/src/components';
 export interface OrderCancelProps {
     orderRef: string;
 }
-export interface OrderCancelReasonFormProps {
+export interface OrderCancelFormProps {
     orderRef: string;
     pickerProps?: PickerProps;
     submitButtonProps?: ButtonProps;
-    cancelOrder: (orderId: string, reason: string, onSuccess: Function, onError: Function) => Promise<void | null | undefined>;
     cancelReasons: PickerOption[];
 }
 export interface ConfirmCancelOrderProps {

@@ -87,6 +87,7 @@ export type OrderItemModel = {
     quantityRefunded: number;
     quantityReturned: number;
     quantityShipped: number;
+    requestQuantity: number;
 };
 export type ShipmentItemsModel = {
     id: string;

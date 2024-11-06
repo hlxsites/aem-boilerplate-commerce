@@ -9,5 +9,5 @@ export * from './EmptyList';
 export * from './ReturnsListContent';
 export * from './OrderProductListContent';
 export * from './OrderCostSummaryContent';
-export * from './OrderCancelReasonsForm';
+export * from './OrderCancel';
 //# sourceMappingURL=index.d.ts.map
