@@ -130,7 +130,7 @@ declare const _default: {
       "prepositionOf": "of",
       "returnOrderCardTitle": "Package details",
       "shippingCardTitle": "Package details",
-      "shippingInfoTitle": "Shipping info",
+      "shippingInfoTitle": "Shipping information",
       "notYetShippedTitle": "Not yet shipped",
       "notYetShippedImagesTitle": {
         "singular": "Package contents ({{count}} item)",
