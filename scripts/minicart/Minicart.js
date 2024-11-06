@@ -256,7 +256,7 @@ export class Minicart extends Component {
       </div>`;
     }
 
-    const taxRate = 0;
+    const taxRate = 0.18;
     const subtotal = cart.prices.subtotal_excluding_tax.value;
     const taxAmount = subtotal * taxRate;
 
