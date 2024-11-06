@@ -295,34 +295,26 @@ div.carousel-wrapper {
   width: 44px;
   height: 44px;
   margin: 0;
-  border-radius: 50%;
   padding: 0;
-  background-color: rgba(19 19 19 / 25%);
-  transition: background-color 0.2s;
+  border: none;
+  border-radius: 40px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  transition: background-color 0.8s ease;
 }
 
-.carousel .carousel-navigation-buttons button:hover,
-.carousel .carousel-navigation-buttons button:focus-visible {
-  background-color: rgba(19 19 19 / 75%);
+.carousel .carousel-navigation-buttons button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-.carousel .carousel-navigation-buttons button::after {
-  display: block;
-  content: '';
-  border: 2px solid;
-  border-bottom: 0;
-  border-left: 0;
-  height: 12px;
-  width: 12px;
-  position: absolute;
-  top: 50%;
-  left: calc(50% + 2px);
-  transform: translate(-50%, -50%) rotate(-135deg);
+.carousel .carousel-navigation-buttons .slide-next {
+  background-image: url('../../icons/arrow.svg');
+  transform: rotate(180deg);
 }
 
-.carousel .carousel-navigation-buttons button.slide-next::after {
-  transform: translate(-50%, -50%) rotate(45deg);
-  left: calc(50% - 2px);
+.carousel .carousel-navigation-buttons .slide-prev {
+  background-image: url('../../icons/arrow.svg');
 }
 
 .brands-carousel .carousel-slides-container {
@@ -541,7 +533,4 @@ div.carousel-wrapper {
   .carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
     margin-bottom: 10%;
   }
-}
-
-@media (width <= 450px) {
 }
