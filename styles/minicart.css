@@ -431,7 +431,7 @@ header nav .nav-tools .minicart-panel {
   gap: 5px;
 }
 
-@media (width < 900px) {
+@media (width <= 991px) {
   .minicart-list li {
     padding-left: 24px;
     padding-right: 24px;

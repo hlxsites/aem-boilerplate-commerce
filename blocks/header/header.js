@@ -257,19 +257,6 @@ export default async function decorate(block) {
       search.setAttribute('aria-label', 'Search');
     }
   }
-  // Minicart
-  const minicartButton = document.createRange()
-    .createContextualFragment(`<div class="minicart-wrapper">
-    <button type="button" class="button nav-cart-button">0</button>
-    <div></div>
-  </div>`);
-  navTools.append(minicartButton);
-  navTools.querySelector('.nav-cart-button').addEventListener('click', () => {
-    cartApi.toggleCart();
-  });
-  cartApi.cartItemsQuantity.watch((quantity) => {
-    navTools.querySelector('.nav-cart-button').textContent = quantity;
-  });
 
   // Search
   const searchInput = document.createRange().createContextualFragment(`
@@ -288,6 +275,20 @@ export default async function decorate(block) {
   <button type="button" class="button nav-search-button">Search</button>
 `);
   navTools.append(searchButton);
+
+  // Minicart
+  const minicartButton = document.createRange()
+    .createContextualFragment(`<div class="minicart-wrapper">
+    <button type="button" class="button nav-cart-button">0</button>
+    <div></div>
+  </div>`);
+  navTools.append(minicartButton);
+  navTools.querySelector('.nav-cart-button').addEventListener('click', () => {
+    cartApi.toggleCart();
+  });
+  cartApi.cartItemsQuantity.watch((quantity) => {
+    navTools.querySelector('.nav-cart-button').textContent = quantity;
+  });
 
   // Search button toggle logic
   navTools
