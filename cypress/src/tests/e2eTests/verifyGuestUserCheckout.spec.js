@@ -127,7 +127,7 @@ describe('Verify guest user can place order', () => {
     cy.get('.dropin-header-container__title', {timeout: 3000})
       .should('exist')
       .and('be.visible')
-      .and('contain.text', 'Canceled');
+      .and('contain.text', 'cancellation requested');
 
     cy.get(fields.cancellationReasonsModal).should('not.exist');
 
@@ -136,9 +136,10 @@ describe('Verify guest user can place order', () => {
       .and('be.visible')
       .and(
         'contain.text',
-        'This order was cancelled by you. You should see a refund to your original payment method with 5-7 business days.'
-      );
-
-    cy.get(fields.cancelButton).should('not.exist');
+        'The cancellation has been requested'
+      ).and(
+      'contain.text',
+      'Check your email for further instructions.'
+    );
   });
 });
