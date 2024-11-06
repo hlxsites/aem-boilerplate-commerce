@@ -54,7 +54,7 @@ import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSumm
 import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
-import { getUserTokenCookie } from '../../scripts/dropins.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level
 import {
