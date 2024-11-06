@@ -19,6 +19,7 @@ export type OrderAddressModel = {
     }[];
 } | null;
 export type OrderItemProductModel = {
+    __typename: string;
     stockStatus?: string;
     canonicalUrl?: string;
     urlKey?: string;
