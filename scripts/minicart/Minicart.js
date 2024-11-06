@@ -256,6 +256,10 @@ export class Minicart extends Component {
       </div>`;
     }
 
+    const taxRate = 0;
+    const subtotal = cart.prices.subtotal_excluding_tax.value;
+    const taxAmount = subtotal * taxRate;
+
     let shippingFee = 50;
     if (cart.prices.subtotal_excluding_tax.value >= 150) {
       shippingFee = 0;
@@ -294,14 +298,16 @@ export class Minicart extends Component {
         </div>
         <div class="subtotal">
           <p>Sub-Total:</p>
-          <p class="price">
-            ${this.formatter.format(cart.prices.subtotal_excluding_tax.value)}
-          </p>
+          <p class="price">${this.formatter.format(subtotal)}</p>
         </div>
-        <div class="import-fees">
-          <p>Import Duties:</p>
-          <p class="import-fee">Paid</p>
-        </div>
+
+        ${taxAmount > 0 &&
+        html`
+          <div class="import-fees">
+            <p>Estimated Tax:</p>
+            <p class="import-fee">${this.formatter.format(taxAmount)}</p>
+          </div>
+        `}
         <div class="shipping">
           <p>Shipping:</p>
           <p class="shipping-fee">
@@ -311,9 +317,7 @@ export class Minicart extends Component {
         <div class="total">
           <h2>total:</h2>
           <h2 class="total-price">
-            ${this.formatter.format(
-              cart.prices.subtotal_excluding_tax.value + shippingFee
-            )}
+            ${this.formatter.format(subtotal + taxAmount + shippingFee)}
           </h2>
         </div>
         <div class="promo">

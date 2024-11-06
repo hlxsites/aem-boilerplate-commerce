@@ -225,17 +225,12 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     right: 0vw;
   }
 
-  /* header nav[aria-expanded='true'] .nav-tools .nav-search-button {
-    right: 0vw;
-  } */
-
   /* END. img */
   header nav[aria-expanded='true'] .main-nav-content div:nth-child(2) img {
     margin-left: 3%;
   }
 
   /* Showing END. and Gender Category */
-
   /* Genders table */
   header nav[aria-expanded='true'] .main-nav-content table {
     display: flex;

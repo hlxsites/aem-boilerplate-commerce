@@ -103,7 +103,7 @@ class ProductCard extends Component {
       <div class="picture">
         <a
           onClick=${() => this.onProductClick(product)}
-          href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
+          href="/products/${product.urlKey}/${product.sku.toUpperCase()}"
         >
           ${this.renderImage(index < numberOfEagerImages ? 'eager' : 'lazy')}
         </a>
@@ -111,7 +111,7 @@ class ProductCard extends Component {
       <div class="name">
         <a
           onClick=${() => this.onProductClick(product)}
-          href="/products/${product.urlKey}/${product.sku.toLowerCase()}"
+          href="/products/${product.urlKey}/${product.sku.toUpperCase()}"
           dangerouslySetInnerHTML=${{ __html: product.name }}
         />
       </div>
