@@ -116,6 +116,7 @@ describe('Verify guest user can place order', () => {
     })
 
     // CANCEL ORDER
+    cy.get(fields.cancelButton).should('exist');
     cy.get(fields.cancelButton).click();
 
     cy.get(fields.cancellationReasonsSelector).select('1');
