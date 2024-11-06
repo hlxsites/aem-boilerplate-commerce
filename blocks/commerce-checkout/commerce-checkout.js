@@ -16,7 +16,6 @@ import * as authApi from '@dropins/storefront-auth/api.js';
 import AuthCombine from '@dropins/storefront-auth/containers/AuthCombine.js';
 import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
-import { getUserTokenCookie } from '../../scripts/dropins.js';
 
 // Account Dropin
 import Addresses from '@dropins/storefront-account/containers/Addresses.js';
@@ -52,6 +51,7 @@ import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSumm
 import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
+import { getUserTokenCookie } from '../../scripts/dropins.js';
 
 // Block-level
 import {
