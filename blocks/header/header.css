@@ -217,16 +217,16 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     top: 0;
     height: 56px;
     align-items: center;
-    z-index: 0;
+    z-index: -1;
     pointer-events: none;
   }
 
-  /* header nav[aria-expanded='true'] .nav-tools .minicart-wrapper {
-    right: 15.5vw;
+  header nav[aria-expanded='true'] .nav-tools .minicart-wrapper {
+    right: 0vw;
   }
 
-  header nav[aria-expanded='true'] .nav-tools .nav-search-button {
-    right: 5.5vw;
+  /* header nav[aria-expanded='true'] .nav-tools .nav-search-button {
+    right: 0vw;
   } */
 
   /* END. img */
