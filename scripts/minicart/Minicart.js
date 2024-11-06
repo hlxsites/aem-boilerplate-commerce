@@ -76,7 +76,7 @@ class ProductCard extends Component {
     } else if (parsedQuantity > 0) {
       this.setState({ quantity: parsedQuantity, quantityValid: true });
     } else {
-      this.setState({ quantity: event.target.value, quantityValid: false }); // Use event.target.value here
+      this.setState({ quantity: event.target.value, quantityValid: false });
       return;
     }
 
@@ -284,7 +284,7 @@ export class Minicart extends Component {
             ? html`<p>This order qualifies for <b>free shipping</b></p>`
             : html`<p>
                 You are
-                <b
+                <b style="margin: 0 5px;"
                   >$${(150 - cart.prices.subtotal_excluding_tax.value).toFixed(
                     2
                   )}</b
