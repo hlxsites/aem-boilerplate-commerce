@@ -630,7 +630,7 @@ header .nav-search-input input {
 header .nav-search-input form::before {
   display: flex;
   position: absolute;
-  top: 3.5%;
+  top: 3.3vh;
   left: 3%;
   z-index: 4;
   content: url('../../icons/search.svg');
