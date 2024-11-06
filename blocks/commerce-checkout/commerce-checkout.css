@@ -1,7 +1,4 @@
-/* stylelint-disable no-empty-source */
 /* stylelint-disable selector-class-pattern */
-
-/* https://cssguidelin.es/#bem-like-naming */
 .checkout__content {
     display: grid;
     grid-template-columns: 1fr;
@@ -72,6 +69,13 @@
     display: none;
 }
 
+/* Integrate place order button into Order Summary - mobile */
+.checkout__place-order {
+    grid-column: unset;
+    justify-items: unset;
+    margin-top: calc(var(--spacing-big) * -1);
+}
+
 /* Hide the place order button when the cart is empty or there is a server error */
 .checkout__content--error .checkout__place-order,
 .checkout__content--empty .checkout__place-order {
@@ -99,13 +103,6 @@
 .checkout__error-banner,
 .checkout__merged-cart-banner {
     grid-column: 1;
-}
-
-/* Integrate place order button into Order Summary - mobile */
-.checkout__place-order {
-    grid-column: unset;
-    justify-items: unset;
-    margin-top: calc(var(--spacing-big) * -1);
 }
 
 /* remove margin from the heading divider */

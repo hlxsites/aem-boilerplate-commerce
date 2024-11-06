@@ -1,3 +1,6 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
+
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
@@ -110,28 +113,28 @@ export default async function decorate(block) {
   const $heading = checkoutFragment.querySelector('.checkout__heading');
   const $emptyCart = checkoutFragment.querySelector('.checkout__empty-cart');
   const $serverError = checkoutFragment.querySelector(
-    '.checkout__server-error'
+    '.checkout__server-error',
   );
   const $outOfStock = checkoutFragment.querySelector('.checkout__out-of-stock');
   const $login = checkoutFragment.querySelector('.checkout__login');
   const $shippingForm = checkoutFragment.querySelector(
-    '.checkout__shipping-form'
+    '.checkout__shipping-form',
   );
   const $billToShipping = checkoutFragment.querySelector(
-    '.checkout__bill-to-shipping'
+    '.checkout__bill-to-shipping',
   );
   const $delivery = checkoutFragment.querySelector('.checkout__delivery');
   const $paymentMethods = checkoutFragment.querySelector(
-    '.checkout__payment-methods'
+    '.checkout__payment-methods',
   );
   const $billingForm = checkoutFragment.querySelector(
-    '.checkout__billing-form'
+    '.checkout__billing-form',
   );
   const $orderSummary = checkoutFragment.querySelector(
-    '.checkout__order-summary'
+    '.checkout__order-summary',
   );
   const $cartSummary = checkoutFragment.querySelector(
-    '.checkout__cart-summary'
+    '.checkout__cart-summary',
   );
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
 
@@ -141,6 +144,22 @@ export default async function decorate(block) {
   let shippingFormRef = { current: null };
   let billingFormRef = { current: null };
 
+  let loader;
+  const displayOverlaySpinner = async () => {
+    if (loader) return;
+
+    loader = await UI.render(ProgressSpinner, {
+      className: '.checkout__overlay-spinner',
+    })($loader);
+  };
+
+  const removeOverlaySpinner = () => {
+    if (!loader) return;
+
+    loader.remove();
+    loader = null;
+    $loader.innerHTML = '';
+  };
   const [
     _heading,
     _serverError,
@@ -216,7 +235,7 @@ export default async function decorate(block) {
 
           setAddressOnCart(
             { data: billingFormRef.current.formData, isDataValid },
-            checkoutApi.setBillingAddress
+            checkoutApi.setBillingAddress,
           );
         }
       },
@@ -257,12 +276,12 @@ export default async function decorate(block) {
 
           const cartSummaryListHeadingText = document.createElement('div');
           cartSummaryListHeadingText.classList.add(
-            'cart-summary-list__heading-text'
+            'cart-summary-list__heading-text',
           );
 
           cartSummaryListHeadingText.innerText = title.replace(
             '({count})',
-            headingCtx.count ? `(${headingCtx.count})` : ''
+            headingCtx.count ? `(${headingCtx.count})` : '',
           );
           const editCartLink = document.createElement('a');
           editCartLink.classList.add('cart-summary-list__edit');
@@ -277,7 +296,7 @@ export default async function decorate(block) {
           headingCtx.onChange((nextHeadingCtx) => {
             cartSummaryListHeadingText.innerText = title.replace(
               '({count})',
-              nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : ''
+              nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
             );
           });
         },
@@ -287,7 +306,7 @@ export default async function decorate(block) {
     CheckoutProvider.render(PlaceOrder, {
       handleValidation: () => {
         let success = true;
-        const forms = document.forms;
+        const { forms } = document;
 
         const loginForm = forms[LOGIN_FORM_NAME];
 
@@ -299,10 +318,10 @@ export default async function decorate(block) {
         const shippingForm = forms[SHIPPING_FORM_NAME];
 
         if (
-          success &&
-          shippingFormRef.current &&
-          shippingForm &&
-          shippingForm.checkVisibility()
+          success
+          && shippingFormRef.current
+          && shippingForm
+          && shippingForm.checkVisibility()
         ) {
           success = shippingFormRef.current.handleValidationSubmit(false);
         }
@@ -310,10 +329,10 @@ export default async function decorate(block) {
         const billingForm = forms[BILLING_FORM_NAME];
 
         if (
-          success &&
-          billingFormRef.current &&
-          billingForm &&
-          billingForm.checkVisibility()
+          success
+          && billingFormRef.current
+          && billingForm
+          && billingForm.checkVisibility()
         ) {
           success = billingFormRef.current.handleValidationSubmit(false);
         }
@@ -334,25 +353,6 @@ export default async function decorate(block) {
       },
     })($placeOrder),
   ]);
-
-  // Update and display dynamic containers
-
-  let loader;
-  const displayOverlaySpinner = async () => {
-    if (loader) return;
-
-    loader = await UI.render(ProgressSpinner, {
-      className: '.checkout__overlay-spinner',
-    })($loader);
-  };
-
-  const removeOverlaySpinner = () => {
-    if (!loader) return;
-
-    loader.remove();
-    loader = null;
-    $loader.innerHTML = '';
-  };
 
   let emptyCart;
   const displayEmptyCart = async () => {
@@ -386,7 +386,7 @@ export default async function decorate(block) {
       const cartShippingAddress = getCartAddress(data, 'shipping');
 
       const shippingAddressCache = sessionStorage.getItem(
-        SHIPPING_ADDRESS_DATA_KEY
+        SHIPPING_ADDRESS_DATA_KEY,
       );
 
       if (cartShippingAddress && shippingAddressCache) {
@@ -423,6 +423,7 @@ export default async function decorate(block) {
             setAddressOnCart(values, checkoutApi.setShippingAddress);
           }
 
+          // eslint-disable-next-line no-shadow
           const { data, isDataValid } = values;
 
           if (isFirstRenderShipping) isFirstRenderShipping = false;
@@ -430,10 +431,10 @@ export default async function decorate(block) {
           if (hasCartShippingAddress || isDataValid) return;
 
           if (
-            prevEstimateShippingData.countryCode === data.countryCode &&
-            prevEstimateShippingData.regionCode === data.region.regionCode &&
-            prevEstimateShippingData.regionId === data.region.regionId &&
-            prevEstimateShippingData.postcode === data.postcode
+            prevEstimateShippingData.countryCode === data.countryCode
+            && prevEstimateShippingData.regionCode === data.region.regionCode
+            && prevEstimateShippingData.regionId === data.region.regionId
+            && prevEstimateShippingData.postcode === data.postcode
           ) {
             return;
           }
@@ -472,7 +473,7 @@ export default async function decorate(block) {
       const cartBillingAddress = getCartAddress(data, 'billing');
 
       const billingAddressCache = sessionStorage.getItem(
-        BILLING_ADDRESS_DATA_KEY
+        BILLING_ADDRESS_DATA_KEY,
       );
 
       if (cartBillingAddress && billingAddressCache) {
@@ -527,7 +528,7 @@ export default async function decorate(block) {
         : undefined;
 
       const shippingAddressCache = sessionStorage.getItem(
-        SHIPPING_ADDRESS_DATA_KEY
+        SHIPPING_ADDRESS_DATA_KEY,
       );
 
       // clear persisted shipping address if cart has a shipping address
@@ -544,10 +545,9 @@ export default async function decorate(block) {
         });
       }
 
-      const inputsDefaultValueSet =
-        cartShippingAddress && cartShippingAddress.id === undefined
-          ? cartShippingAddress
-          : { countryCode: storeConfig.defaultCountry };
+      const inputsDefaultValueSet = cartShippingAddress && cartShippingAddress.id === undefined
+        ? cartShippingAddress
+        : { countryCode: storeConfig.defaultCountry };
 
       const hasCartShippingAddress = Boolean(data.shippingAddresses?.[0]);
       let isFirstRenderShipping = true;
@@ -587,7 +587,7 @@ export default async function decorate(block) {
         : undefined;
 
       const billingAddressCache = sessionStorage.getItem(
-        BILLING_ADDRESS_DATA_KEY
+        BILLING_ADDRESS_DATA_KEY,
       );
 
       // clear persisted billing address if cart has a billing address
@@ -595,10 +595,9 @@ export default async function decorate(block) {
         sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
       }
 
-      const inputsDefaultValueSet =
-        cartBillingAddress && cartBillingAddress.id === undefined
-          ? cartBillingAddress
-          : { countryCode: storeConfig.defaultCountry };
+      const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.id === undefined
+        ? cartBillingAddress
+        : { countryCode: storeConfig.defaultCountry };
 
       const hasCartBillingAddress = Boolean(data.billingAddress);
       let isFirstRenderBilling = true;
@@ -648,25 +647,25 @@ export default async function decorate(block) {
 
     // Order confirmation elements
     const $orderConfirmationHeader = orderConfirmationFragment.querySelector(
-      '.order-confirmation__header'
+      '.order-confirmation__header',
     );
     const $orderStatus = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-status'
+      '.order-confirmation__order-status',
     );
     const $shippingStatus = orderConfirmationFragment.querySelector(
-      '.order-confirmation__shipping-status'
+      '.order-confirmation__shipping-status',
     );
     const $customerDetails = orderConfirmationFragment.querySelector(
-      '.order-confirmation__customer-details'
+      '.order-confirmation__customer-details',
     );
     const $orderCostSummary = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-cost-summary'
+      '.order-confirmation__order-cost-summary',
     );
     const $orderProductList = orderConfirmationFragment.querySelector(
-      '.order-confirmation__order-product-list'
+      '.order-confirmation__order-product-list',
     );
     const $orderConfirmationFooter = orderConfirmationFragment.querySelector(
-      '.order-confirmation__footer'
+      '.order-confirmation__footer',
     );
 
     await initializers.mountImmediately(orderApi.initialize, { orderData });
@@ -691,7 +690,7 @@ export default async function decorate(block) {
     })($orderConfirmationHeader);
 
     OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(
-      $orderStatus
+      $orderStatus,
     );
     OrderProvider.render(ShippingStatus)($shippingStatus);
     OrderProvider.render(CustomerDetails)($customerDetails);
@@ -715,10 +714,9 @@ export default async function decorate(block) {
       </div>
     `;
 
-    const $orderConfirmationFooterContinueBtn =
-      $orderConfirmationFooter.querySelector(
-        '.order-confirmation-footer__continue-button'
-      );
+    const $orderConfirmationFooterContinueBtn = $orderConfirmationFooter.querySelector(
+      '.order-confirmation-footer__continue-button',
+    );
 
     UI.render(Button, {
       children: 'Continue shopping',
@@ -778,7 +776,7 @@ export default async function decorate(block) {
     window.history.pushState(
       {},
       '',
-      `/order-details?orderRef=${encodedOrderRef}`
+      `/order-details?orderRef=${encodedOrderRef}`,
     );
 
     // TODO cleanup checkout containers
