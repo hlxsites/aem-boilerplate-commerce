@@ -525,6 +525,7 @@ async function fetchPlaceholders(prefix = 'default') {
     window.placeholders[prefix] = placeholders;
   } catch (error) {
     window.placeholders[prefix] = {}; // Set empty object on error
+    console.error(error);
   }
 
   return window.placeholders[prefix];
