@@ -18,7 +18,7 @@
 import { loadCSS, buildBlock } from '../../scripts/aem.js';
 
 // eslint-disable-next-line import/prefer-default-export
-export async function createModal(contentNodes) {
+export default async function createModal(contentNodes) {
   await loadCSS('./blocks/modal/modal.css');
   const dialog = document.createElement('dialog');
   const dialogContent = document.createElement('div');
