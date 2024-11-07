@@ -143,6 +143,7 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   let menuItem = Array.from(nav.querySelectorAll('a')).find(
     (a) => a.href === currentUrl
   );
+
   if (menuItem) {
     do {
       const link = menuItem.querySelector(':scope > a');
@@ -157,11 +158,33 @@ async function buildBreadcrumbsFromNavTree(nav, currentUrl) {
   }
 
   const placeholders = await fetchPlaceholders();
-  const homePlaceholder = placeholders.breadcrumbsHomeLabel || 'Home';
+  let homePlaceholder =
+    placeholders.breadcrumbsHomeLabel ||
+    new URL(document.location.href).pathname;
 
-  crumbs.unshift({ title: homePlaceholder, url: homeUrl });
+  const pageName = homePlaceholder.split('/').pop().replace(/-/g, ' ');
 
-  // last link is current page and should not be linked
+  homePlaceholder = homePlaceholder.substring(
+    0,
+    homePlaceholder.lastIndexOf('/')
+  );
+
+  const transformedPlaceholder = homePlaceholder
+    .replace(/^\//, '')
+    .replace(/^\/$/, '')
+    .replace(/\//g, ' > ')
+    .replace(/-/g, ' ')
+    .trim();
+
+  crumbs.unshift({
+    title: `${transformedPlaceholder}`,
+    url: homeUrl,
+  });
+
+  if (crumbs.length > 1 && crumbs[crumbs.length - 1].title.endsWith(pageName)) {
+    crumbs.pop();
+  }
+
   if (crumbs.length > 1) {
     crumbs[crumbs.length - 1].url = null;
   }

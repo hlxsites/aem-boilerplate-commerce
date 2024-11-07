@@ -704,6 +704,11 @@ header .breadcrumbs ol li {
   padding: 0;
   color: var(--sub-text-title-color);
   align-items: center;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+header .breadcrumbs ol li[aria-current='page'] {
+  text-transform: inherit;
 }
 
 header .breadcrumbs ol li:not(:last-child)::after {
