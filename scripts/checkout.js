@@ -4,15 +4,14 @@ export function scrollToElement(element) {
 }
 
 export function getCartAddress(checkoutData, type) {
-  if (!checkoutData) return;
+  if (!checkoutData) return null;
 
   const address = type === 'shipping'
     ? checkoutData.shippingAddresses?.[0]
     : checkoutData.billingAddress;
 
-  if (!address) return;
+  if (!address) return null;
 
-  // eslint-disable-next-line consistent-return
   return {
     id: address?.id,
     city: address.city,
@@ -32,7 +31,14 @@ export function getCartAddress(checkoutData, type) {
   };
 }
 
-export function setAddressOnCart(values, setAddressApi) {
+export function getCartDeliveryMethod(data) {
+  if (!data) return;
+  const shippingAddresses = data.shippingAddresses || [];
+  if (shippingAddresses.length === 0) return;
+  return shippingAddresses[0]?.selectedShippingMethod;
+}
+
+export function setAddressOnCart(values, setCartAddress) {
   const { data, isDataValid } = values;
   const isNewAddress = !data?.id;
 
@@ -68,5 +74,5 @@ export function setAddressOnCart(values, setAddressApi) {
       },
     };
 
-  setAddressApi(address);
+  setCartAddress(address);
 }

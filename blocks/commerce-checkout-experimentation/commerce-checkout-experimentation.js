@@ -69,7 +69,6 @@ import {
 } from '../../scripts/checkout.js';
 
 // Initializers
-import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/auth.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/checkout.js';
@@ -86,7 +85,7 @@ export default async function decorate(block) {
   const storeConfig = await checkoutApi.getStoreConfig();
 
   // Define the Layout for the Checkout
-  const checkoutFragment = document.createRange().createContextualFragment(`
+  const fragment = document.createRange().createContextualFragment(`
     <div class="checkout__wrapper">
       <div class="checkout__loader"></div>
       <div class="checkout__content">
@@ -98,7 +97,10 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__login"></div>
           <div class="checkout__block checkout__shipping-form"></div>
           <div class="checkout__block checkout__bill-to-shipping"></div>
-          <div class="checkout__block checkout__delivery"></div>
+          <div class="checkout__block checkout__delivery">
+            <h3 class="checkout__delivery-title">Shipping options</h3>
+            <div class="checkout__delivery-banner">Enter your shipping address to view available shipping methods.</div>
+          </div>
           <div class="checkout__block checkout__payment-methods"></div>
           <div class="checkout__block checkout__billing-form"></div>
         </div>
@@ -111,37 +113,24 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $content = checkoutFragment.querySelector('.checkout__content');
-  const $loader = checkoutFragment.querySelector('.checkout__loader');
-  const $heading = checkoutFragment.querySelector('.checkout__heading');
-  const $emptyCart = checkoutFragment.querySelector('.checkout__empty-cart');
-  const $serverError = checkoutFragment.querySelector(
-    '.checkout__server-error',
-  );
-  const $outOfStock = checkoutFragment.querySelector('.checkout__out-of-stock');
-  const $login = checkoutFragment.querySelector('.checkout__login');
-  const $shippingForm = checkoutFragment.querySelector(
-    '.checkout__shipping-form',
-  );
-  const $billToShipping = checkoutFragment.querySelector(
-    '.checkout__bill-to-shipping',
-  );
-  const $delivery = checkoutFragment.querySelector('.checkout__delivery');
-  const $paymentMethods = checkoutFragment.querySelector(
-    '.checkout__payment-methods',
-  );
-  const $billingForm = checkoutFragment.querySelector(
-    '.checkout__billing-form',
-  );
-  const $orderSummary = checkoutFragment.querySelector(
-    '.checkout__order-summary',
-  );
-  const $cartSummary = checkoutFragment.querySelector(
-    '.checkout__cart-summary',
-  );
-  const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
+  const $content = fragment.querySelector('.checkout__content');
+  const $loader = fragment.querySelector('.checkout__loader');
+  const $heading = fragment.querySelector('.checkout__heading');
+  const $emptyCart = fragment.querySelector('.checkout__empty-cart');
+  const $serverError = fragment.querySelector('.checkout__server-error');
+  const $outOfStock = fragment.querySelector('.checkout__out-of-stock');
+  const $login = fragment.querySelector('.checkout__login');
+  const $shippingForm = fragment.querySelector('.checkout__shipping-form');
+  const $billToShipping = fragment.querySelector('.checkout__bill-to-shipping');
+  const $delivery = fragment.querySelector('.checkout__delivery');
+  const $deliveryBanner = fragment.querySelector('.checkout__delivery-banner');
+  const $paymentMethods = fragment.querySelector('.checkout__payment-methods');
+  const $billingForm = fragment.querySelector('.checkout__billing-form');
+  const $orderSummary = fragment.querySelector('.checkout__order-summary');
+  const $cartSummary = fragment.querySelector('.checkout__cart-summary');
+  const $placeOrder = fragment.querySelector('.checkout__place-order');
 
-  block.appendChild(checkoutFragment);
+  block.appendChild(fragment);
 
   // Render main containers
   let shippingFormRef = { current: null };
@@ -183,10 +172,9 @@ export default async function decorate(block) {
     _login,
     shippingFormSkeleton,
     _billToShipping,
-    _delivery,
     _paymentMethods,
     billingFormSkeleton,
-    _orderSummary,
+    orderSummary,
     _cartSummary,
     _placeOrder,
   ] = await Promise.all([
@@ -229,7 +217,7 @@ export default async function decorate(block) {
           resetPasswordFormConfig: {},
         })(signInForm);
 
-        showModal(signInForm);
+        await showModal(signInForm);
       },
       onSignOutClick: () => {
         authApi.revokeCustomerToken();
@@ -257,13 +245,6 @@ export default async function decorate(block) {
       },
     })($billToShipping),
 
-    CheckoutProvider.render(ShippingMethods, {
-      hideOnVirtualCart: true,
-      onCheckoutDataUpdate: () => {
-        cartApi.refreshCart().catch(console.error);
-      },
-    })($delivery),
-
     CheckoutProvider.render(PaymentMethods)($paymentMethods),
 
     AccountProvider.render(AddressForm, {
@@ -271,15 +252,7 @@ export default async function decorate(block) {
       showFormLoader: true,
     })($billingForm),
 
-    CartProvider.render(OrderSummary, {
-      slots: {
-        EstimateShipping: (esCtx) => {
-          const estimateShippingForm = document.createElement('div');
-          CheckoutProvider.render(EstimateShipping)(estimateShippingForm);
-          esCtx.appendChild(estimateShippingForm);
-        },
-      },
-    })($orderSummary),
+    CartProvider.render(OrderSummary)($orderSummary),
 
     CartProvider.render(CartSummaryList, {
       variant: 'secondary',
@@ -389,6 +362,31 @@ export default async function decorate(block) {
     $emptyCart.innerHTML = '';
 
     $content.classList.remove('checkout__content--empty');
+  };
+
+  let shippingMethods;
+  const displayShippingMethods = async () => {
+    if (shippingMethods) return;
+
+    $delivery.replaceChildren();
+
+    shippingMethods = await CheckoutProvider.render(ShippingMethods, {
+      hideOnVirtualCart: true,
+      onCheckoutDataUpdate: () => {
+        cartApi.refreshCart().catch(console.error);
+      },
+    })($delivery);
+
+    orderSummary.setProps((prev) => ({
+      ...prev,
+      slots: {
+        EstimateShipping: (esCtx) => {
+          const estimateShippingForm = document.createElement('div');
+          CheckoutProvider.render(EstimateShipping)(estimateShippingForm);
+          esCtx.appendChild(estimateShippingForm);
+        },
+      },
+    }));
   };
 
   let shippingForm;
@@ -641,8 +639,8 @@ export default async function decorate(block) {
     }
   };
 
-  // Define the Layout for the Order Confirmation
   const displayOrderConfirmation = async (orderData) => {
+    // Define the Layout for the Order Confirmation
     const orderConfirmationFragment = document.createRange()
       .createContextualFragment(`
       <div class="order-confirmation">
@@ -696,7 +694,7 @@ export default async function decorate(block) {
         addressesData,
       })(signUpForm);
 
-      await showModal(signUpForm);
+      showModal(signUpForm);
     };
 
     CheckoutProvider.render(OrderConfirmationHeader, {
@@ -751,6 +749,12 @@ export default async function decorate(block) {
       return;
     }
 
+    const canDisplayDelivery = !!getCartAddress(data, 'shipping');
+
+    if (canDisplayDelivery) {
+      await displayShippingMethods();
+    }
+
     if (data.isGuest) {
       await displayGuestAddressForms(data);
     } else {
@@ -765,6 +769,12 @@ export default async function decorate(block) {
     }
 
     removeEmptyCart();
+
+    const canDisplayDelivery = !!getCartAddress(data, 'shipping');
+
+    if (canDisplayDelivery) {
+      await displayShippingMethods();
+    }
 
     if (data.isGuest) {
       await displayGuestAddressForms(data);
