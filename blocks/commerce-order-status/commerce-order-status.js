@@ -10,5 +10,6 @@ import '../../scripts/initializers/order.js';
 export default async function decorate(block) {
   await orderRenderer.render(OrderStatus, {
     routeCreateReturn: (orderData) => (checkIsAuthenticated() ? `/customer/create-return?orderId=${orderData.id}` : `/create-return?orderId=${orderData.id}`),
+    routeOnSuccess: () => '/cart',
   })(block);
 }

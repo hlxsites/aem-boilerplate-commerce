@@ -16,7 +16,7 @@ export default async function decorate(block) {
 
     const link = document.createElement('a');
 
-    link.innerText = placeholders.orderReturnDetailsBack;
+    link.innerText = placeholders?.Custom?.CommerceReturnHeader?.backToAllReturns;
     link.href = CUSTOMER_RETURNS_PATH;
     link.classList.add('returns-list-header');
 
