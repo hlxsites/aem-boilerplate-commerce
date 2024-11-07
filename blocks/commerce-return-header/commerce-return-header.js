@@ -3,6 +3,7 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { Header, provider as uiProvider } from '@dropins/tools/components.js';
 import { CUSTOMER_RETURN_DETAILS_PATH, CUSTOMER_RETURNS_PATH } from '../../scripts/constants.js';
+import { fetchPlaceholders } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
   block.innerHTML = '';
@@ -11,9 +12,11 @@ export default async function decorate(block) {
   await uiProvider.render(Header, { title: 'Return' })(headerContainer);
 
   if (window.location.href.includes(CUSTOMER_RETURN_DETAILS_PATH)) {
+    const placeholders = await fetchPlaceholders();
+
     const link = document.createElement('a');
 
-    link.innerText = window?.placeholders?.default?.Custom?.CommerceReturnHeader?.backToAllReturns;
+    link.innerText = placeholders?.Custom?.CommerceReturnHeader?.backToAllReturns;
     link.href = CUSTOMER_RETURNS_PATH;
     link.classList.add('returns-list-header');
 
