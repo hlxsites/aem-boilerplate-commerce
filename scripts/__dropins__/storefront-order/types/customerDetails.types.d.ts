@@ -1,4 +1,5 @@
-import { OrderDataModel } from '../data/models';
+import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { OrderDataModel, OrdersReturnPropsModel } from '../data/models';
 
 export interface KeysSortOrderProps {
     name: string;
@@ -17,11 +18,15 @@ export interface CustomerDetailsProps {
     orderData?: OrderDataModel;
     withHeader?: boolean;
     title?: string;
+    slots: {
+        OrderReturnInformation: SlotProps<OrdersReturnPropsModel | undefined>;
+    };
 }
 export interface UseCustomerDetails {
     orderData?: OrderDataModel;
 }
 export interface CustomerDetailsContentProps extends Omit<CustomerDetailsProps, 'orderData' | 'className'> {
+    translations: Record<string, string>;
     loading: boolean;
     order?: OrderDataModel;
     normalizeAddress?: {
