@@ -35,6 +35,7 @@ export function getCartDeliveryMethod(data) {
   if (!data) return;
   const shippingAddresses = data.shippingAddresses || [];
   if (shippingAddresses.length === 0) return;
+  // eslint-disable-next-line consistent-return
   return shippingAddresses[0]?.selectedShippingMethod;
 }
 
