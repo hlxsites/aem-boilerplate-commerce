@@ -72,4 +72,10 @@
     position: relative;
     display: flex;
   }
+
+  .nav-modal-latest-content-section .columns-wrapper:nth-child(1),
+  .nav-modal-quad-content-section .columns-wrapper:nth-child(1),
+  .features-modal-section .columns-wrapper:nth-child(1) {
+    margin-top: 8vh !important;
+  }
 }

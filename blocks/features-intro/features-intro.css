@@ -50,6 +50,12 @@
   justify-content: center;
   text-align: center;
 }
+
+@media (width > 991px) {
+  .features-intro-container {
+    padding-top: 10vh !important;
+  }
+}
 @media (width <= 900px) {
   /* interviews button */
   .features-intro p:nth-child(1) strong a:nth-child(1) {

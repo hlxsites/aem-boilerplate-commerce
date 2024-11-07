@@ -14,7 +14,7 @@ header nav {
   margin: auto;
   max-width: fit-content;
   height: var(--nav-height);
-  padding: 0 16px;
+
   font-family: var(--type-base-font-family);
 }
 
@@ -59,6 +59,7 @@ header nav .nav-hamburger {
   height: 22px;
   display: flex;
   align-items: center;
+  padding: 0 16px;
 }
 
 header nav .nav-hamburger button {

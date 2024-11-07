@@ -173,8 +173,11 @@
     display: flex;
     position: relative;
     padding-top: 1%;
-    padding-left: 1%;
     width: 100%;
+  }
+
+  .launches-section div {
+    gap: 30px;
   }
 
   .launches-page-date {

@@ -107,6 +107,10 @@
 }
 
 @media (width <= 991px) {
+  .nav-modal-content-section {
+    padding-top: 7vh !important;
+  }
+
   .nav-modal .close-button {
     display: block;
     position: absolute;
