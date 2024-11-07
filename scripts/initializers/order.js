@@ -3,6 +3,7 @@ import { initializers } from '@dropins/tools/initializer.js';
 import { initialize } from '@dropins/storefront-order/api.js';
 import { checkIsAuthenticated } from '../configs.js';
 import { initializeDropin } from './index.js';
+import { fetchPlaceholders } from '../aem.js';
 
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
@@ -37,6 +38,14 @@ async function handleUserOrdersRedirects(
   returnRef,
   isTokenProvided,
 ) {
+  const labels = await fetchPlaceholders();
+
+  const langDefinitions = {
+    default: {
+      ...labels,
+    },
+  };
+
   let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
@@ -72,6 +81,7 @@ async function handleUserOrdersRedirects(
     window.location.href = targetPath;
   } else {
     await initializers.mountImmediately(initialize, {
+      langDefinitions,
       orderRef,
       returnRef,
     });
