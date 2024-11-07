@@ -8,6 +8,7 @@ div.carousel-wrapper {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 .carousel {
   margin: 0;
   padding: 0;
@@ -33,6 +34,14 @@ div.carousel-wrapper {
   margin: 0;
   padding: 0;
   height: 100vh;
+}
+
+.banner-feat-carousel .carousel-slides,
+.banner-feat-carousel .carousel-slide-indicators {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 640px;
 }
 
 .content-block-carousel .carousel-slides,
@@ -101,6 +110,26 @@ div.carousel-wrapper {
   line-height: 1;
 }
 
+.banner-feat-carousel .carousel-slide .carousel-slide-content {
+  line-height: 1;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+}
+
+.banner-feat-carousel .carousel-slide .carousel-slide-content h2,
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(2) {
+  padding-left: 4vw !important;
+  margin-bottom: 1vh !important;
+}
+
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
+  padding-right: 4vw !important;
+  position: absolute;
+  right: 0;
+  bottom: 2vh;
+}
+
 .content-block-carousel .carousel-slide .carousel-slide-content {
   background-color: white;
   border-radius: 4px;
@@ -121,7 +150,8 @@ div.carousel-wrapper {
 
 /* Brand Name */
 .brands-carousel .carousel-slide .carousel-slide-content h2 a,
-.banner-carousel-content .carousel-slide .carousel-slide-content h2 a {
+.banner-carousel-content .carousel-slide .carousel-slide-content h2 a,
+.banner-feat-carousel .carousel-slide .carousel-slide-content h2 a {
   color: var(--main-color-light);
   font-weight: 600;
   letter-spacing: 0.228571rem;
@@ -139,6 +169,7 @@ div.carousel-wrapper {
 
 /* Buttons P */
 .brands-carousel .carousel-slide .carousel-slide-content p:nth-child(2) a,
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(2) a,
 .banner-carousel-content
   .carousel-slide
   .carousel-slide-content
@@ -167,6 +198,7 @@ div.carousel-wrapper {
 
 /* SHOP NOW Button redirect*/
 .brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3),
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3),
 .banner-carousel-content
   .carousel-slide
   .carousel-slide-content
@@ -175,6 +207,7 @@ div.carousel-wrapper {
 }
 
 .brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a,
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a,
 .banner-carousel-content
   .carousel-slide
   .carousel-slide-content
@@ -194,7 +227,8 @@ div.carousel-wrapper {
   transition: all 0.3s ease;
 }
 
-.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
+.brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a,
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
   border: 2px solid white;
   padding: 0;
   margin-top: 0;
@@ -205,12 +239,18 @@ div.carousel-wrapper {
   .carousel-slide
   .carousel-slide-content
   p:nth-child(3)
-  a {
+  a,
+.banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a {
   border: 1px solid white;
 }
 
 /* SHOP NOW animation onHover*/
 .brands-carousel .carousel-slide .carousel-slide-content p:nth-child(3) a:hover,
+.banner-feat-carousel
+  .carousel-slide
+  .carousel-slide-content
+  p:nth-child(3)
+  a:hover,
 .banner-carousel-content
   .carousel-slide
   .carousel-slide-content
@@ -319,6 +359,10 @@ div.carousel-wrapper {
 
 .brands-carousel .carousel-slides-container {
   height: 100vh;
+}
+
+.banner-feat-carousel .carousel-slides-container {
+  height: 640px;
 }
 
 /* .content-block-carousel */
@@ -504,9 +548,21 @@ div.carousel-wrapper {
     text-align: center;
     margin: auto;
     left: 0;
+
     width: 100vw;
   }
 
+  .banner-feat-carousel .carousel-slide .carousel-slide-content h2 {
+    padding-left: 1vh !important;
+  }
+
+  .banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(2) {
+    margin-bottom: 2vh !important;
+  }
+
+  .banner-feat-carousel .carousel-slide .carousel-slide-content p:nth-child(3) {
+    position: relative;
+  }
   .carousel .carousel-slide .carousel-slide-content h2 a {
     font-size: 22px;
   }

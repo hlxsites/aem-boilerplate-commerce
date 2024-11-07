@@ -145,7 +145,7 @@ function renderProduct(product, config, block) {
         </li>
       </ul>
       <p class="button-container">
-        <a href="" title=Shop Now" class="button">Shop Now</a>
+          <a href="/products/${urlKey}/${sku}"title=Shop Now" class="button">Shop Now</a>
       </p>
     </div>
     
@@ -154,7 +154,7 @@ function renderProduct(product, config, block) {
     <div class="btn-on-img">
       <p class="button-container">
         <em>
-          <a href="/" title="SHOP NOW >" class="button secondary">SHOP NOW &gt;</a>
+            <a href="/products/${urlKey}/${sku}" title="SHOP NOW >" class="button secondary">SHOP NOW &gt;</a>
         </em>
       </p>
     </div>
