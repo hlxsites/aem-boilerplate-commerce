@@ -14,9 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export * from './convertCase';
 export * from './getDisplayName';
 export * from './isEmpty';
 export * from './isUnexpectedError';
-export * from './refetchEstimatedShippingMethods';
-export * from './convertCase';
 //# sourceMappingURL=index.d.ts.map
