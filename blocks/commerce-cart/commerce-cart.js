@@ -76,6 +76,34 @@ export default async function decorate(block) {
       attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      slots: {
+        ProductAttributes: (ctx) => {
+          // Prepend Product Attributes
+          const productAttributes = ctx.item?.productAttributes;
+
+          productAttributes?.forEach((attr) => {
+            if ((attr.code === 'Delivery Timeline')) {
+              if (attr.selected_options) {
+                const selectedOptions = attr.selected_options
+                  .filter((option) => option.label.trim() !== '')
+                  .map((option) => option.label)
+                  .join(', ');
+
+                if (selectedOptions) {
+                  const productAttribute = document.createElement('div');
+                  productAttribute.innerText = `${attr.code}: ${selectedOptions}`;
+                  return ctx.appendChild(productAttribute);
+                }
+              } else if (attr.value) {
+                const productAttribute = document.createElement('div');
+                productAttribute.innerText = `${attr.value}`;
+                return ctx.appendChild(productAttribute);
+              }
+            }
+            return null;
+          });
+        },
+      },
     })($list),
 
     // Order Summary
