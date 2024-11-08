@@ -144,7 +144,7 @@ export default async function decorate(block) {
       setMetaTags(product);
       document.title = product.name;
     },
-    { eager: true },
+    { eager: true }
   );
 
   // Alert Message Wrapper
