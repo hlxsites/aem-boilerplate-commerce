@@ -159,6 +159,7 @@
 .login-form div div div:nth-child(2) div p {
   font-size: var(--sub-text-secondary-size);
   text-transform: inherit;
+  font-weight: 500;
 }
 
 .login-form .email-wrapper {
