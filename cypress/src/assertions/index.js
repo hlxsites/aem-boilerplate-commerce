@@ -16,9 +16,12 @@ export const assertCartSummaryProduct =
         .should('contain', productSku);
 
       if (elem === '.commerce-cart-wrapper') {
-        cy.get(`${elem} .dropin-incrementer__input`)
+        // Temporary change, for GA demo purpose
+        // cy.get(`${elem} .dropin-incrementer__input`)
+        cy.get(`${elem} .dropin-cart-item__quantity`)
           .eq(productPosition)
-          .should('have.value', productQty);
+          // .should('have.value', productQty);
+          .should('contain.text', productQty);
       }
 
       cy.get(`${elem} .dropin-cart-item__price`)
