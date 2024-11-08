@@ -20,5 +20,7 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => cartURL : undefined,
     routeCheckout: checkoutURL ? () => checkoutURL : undefined,
     routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+    showDiscount: 'true',
+    showSavings: 'true',
   })(block);
 }
