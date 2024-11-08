@@ -30,6 +30,19 @@ export default async function decorate(block) {
 
   const isEmptyCart = isCartEmpty(cart);
 
+  const DROPDOWN_MAX_QUANTITY = 20;
+
+  const dropdownOptions = Array.from(
+    { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
+    (_, i) => {
+      const quantityOption = i + 1;
+      return {
+        value: `${quantityOption}`,
+        text: `${quantityOption}`,
+      };
+    },
+  );
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="cart__wrapper">
@@ -76,6 +89,10 @@ export default async function decorate(block) {
       attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      showDiscount: 'true',
+      showSavings: 'true',
+      quantityType: 'dropdown',
+      dropdownOptions,
     })($list),
 
     // Order Summary
