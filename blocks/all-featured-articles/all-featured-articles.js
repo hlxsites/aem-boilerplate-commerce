@@ -34,14 +34,13 @@ export default async function decorate(block) {
     articlesWithDates.forEach((item) => {
       const { path, image: imagePath, title, category, date } = item;
 
-      // Date formatting (if date exists)
       let formattedDate = '';
       if (date) {
         const dateParts = date.split(' ');
         const day = dateParts[0];
-        const month = dateParts[1]; // Get the month name directly
+        const month = dateParts[1];
         const year = dateParts[2];
-        formattedDate = `${day} ${month} ${year}`; // Combine day, month, and year
+        formattedDate = `${day} ${month} ${year}`;
       }
 
       // Create article card elements
