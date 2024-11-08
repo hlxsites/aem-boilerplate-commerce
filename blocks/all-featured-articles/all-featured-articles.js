@@ -9,100 +9,119 @@ export default async function decorate(block) {
     const indexData = await response.json();
 
     block.querySelectorAll('p, div').forEach((element) => element.remove());
-    // Processes each p tag
-    pathElements.forEach((pathElement, index) => {
-      const path = pathElement.textContent.trim();
 
-      // Finds matching item
-      const matchingItem = indexData.data.find((item) => item.path === path);
+    const pathsInBlock = Array.from(pathElements).map((pathElement) =>
+      pathElement.textContent.trim()
+    );
 
-      if (matchingItem) {
-        const imagePath = matchingItem.image || '';
-        const title = matchingItem.title || '';
-        const category = matchingItem.category || '';
-        const date = matchingItem.date || '';
+    const articlesWithDates = indexData.data
+      .filter((item) => pathsInBlock.includes(item.path))
+      .map((item) => {
+        let dateObj;
+        try {
+          dateObj = item.date
+            ? new Date(item.date.split(' ').slice(1).join(' '))
+            : new Date(0);
+        } catch (error) {
+          console.warn(`Invalid date format for item: ${item.path}`, error);
+          dateObj = new Date(0);
+        }
+        return { ...item, dateObj };
+      });
 
+    articlesWithDates.sort((a, b) => b.dateObj - a.dateObj);
+
+    articlesWithDates.forEach((item) => {
+      const { path, image: imagePath, title, category, date } = item;
+
+      // Date formatting (if date exists)
+      let formattedDate = '';
+      if (date) {
         const dateParts = date.split(' ');
         const day = dateParts[0];
-        const month = new Date(`${dateParts[1]} 1, 2000`).getMonth() + 1;
-        const year = dateParts[2].slice(-2);
-        const formattedDate = `${day.padStart(2, '0')}/${month
-          .toString()
-          .padStart(2, '0')}/${year}`;
+        const month = dateParts[1]; // Get the month name directly
+        const year = dateParts[2];
+        formattedDate = `${day} ${month} ${year}`; // Combine day, month, and year
+      }
 
-        // Creates div for content
-        const contentDiv = document.createElement('div');
-        contentDiv.classList.add('article-card');
+      // Create article card elements
+      const contentDiv = document.createElement('div');
+      contentDiv.classList.add('article-card');
 
-        // Image
-        const imageWrapperDiv = document.createElement('div');
-        imageWrapperDiv.classList.add('article-image');
-        if (imagePath) {
-          const imgLink = document.createElement('a');
-          const img = document.createElement('img');
-          imgLink.href = path;
-          img.src = imagePath;
-          img.alt = title;
-          imgLink.appendChild(img);
-          imageWrapperDiv.appendChild(imgLink);
-        }
-        contentDiv.appendChild(imageWrapperDiv);
+      const imageWrapperDiv = document.createElement('div');
+      imageWrapperDiv.classList.add('article-image');
 
-        // Category, Title, and Date
-        const textContentDiv = document.createElement('div');
-        textContentDiv.classList.add('article-content');
+      if (imagePath) {
+        const imgLink = document.createElement('a');
+        const img = document.createElement('img');
+        imgLink.href = path;
+        img.src = imagePath;
+        img.alt = title;
+        imgLink.appendChild(img);
+        imageWrapperDiv.appendChild(imgLink);
+      }
 
-        if (block.classList.contains('featured-date-title')) {
+      contentDiv.appendChild(imageWrapperDiv);
+
+      const textContentDiv = document.createElement('div');
+      textContentDiv.classList.add('article-content');
+
+      if (block.classList.contains('featured-date-title')) {
+        if (date) {
           const dateLink = document.createElement('a');
-          const articleDate = document.createElement('p');
-          articleDate.classList.add('date');
           dateLink.href = path;
           dateLink.textContent = formattedDate;
 
-          articleDate.appendChild(dateLink);
-          textContentDiv.appendChild(articleDate);
-
-          const titleLink = document.createElement('a');
-          const articleTitle = document.createElement('h3');
-          titleLink.href = path;
-          titleLink.textContent = title;
-          articleTitle.appendChild(titleLink);
-          textContentDiv.appendChild(articleTitle);
-
-          contentDiv.appendChild(textContentDiv);
-
-          // Append contentDiv to block (moved outside the else block)
-          block.appendChild(contentDiv);
-        } else {
-          const articleCategory = document.createElement('p');
-          articleCategory.classList.add('category');
-          const articleCategoryLink = document.createElement('a');
-          articleCategoryLink.href = `/${category
-            .toLowerCase()
-            .replace(/\s+/g, '-')}`;
-          articleCategoryLink.textContent = category;
-          articleCategory.appendChild(articleCategoryLink);
-          textContentDiv.appendChild(articleCategory);
-
-          const titleLink = document.createElement('a');
-          const articleTitle = document.createElement('h3');
-          titleLink.href = path;
-          titleLink.textContent = title;
-          articleTitle.appendChild(titleLink);
-          textContentDiv.appendChild(articleTitle);
-
-          const dateLink = document.createElement('a');
           const articleDate = document.createElement('p');
           articleDate.classList.add('date');
-          dateLink.href = path;
-          dateLink.textContent = date;
           articleDate.appendChild(dateLink);
           textContentDiv.appendChild(articleDate);
-
-          contentDiv.appendChild(textContentDiv);
-
-          block.appendChild(contentDiv);
         }
+
+        const titleLink = document.createElement('a');
+        titleLink.href = path;
+        titleLink.textContent = title;
+
+        const articleTitle = document.createElement('h3');
+        articleTitle.appendChild(titleLink);
+        textContentDiv.appendChild(articleTitle);
+
+        contentDiv.appendChild(textContentDiv);
+        block.appendChild(contentDiv);
+      } else {
+        const articleCategory = document.createElement('p');
+        articleCategory.classList.add('category');
+
+        const articleCategoryLink = document.createElement('a');
+        articleCategoryLink.href = `/${category
+          .toLowerCase()
+          .replace(/\s+/g, '-')}`;
+        articleCategoryLink.textContent = category;
+
+        articleCategory.appendChild(articleCategoryLink);
+        textContentDiv.appendChild(articleCategory);
+
+        const titleLink = document.createElement('a');
+        titleLink.href = path;
+        titleLink.textContent = title;
+
+        const articleTitle = document.createElement('h3');
+        articleTitle.appendChild(titleLink);
+        textContentDiv.appendChild(articleTitle);
+
+        if (date) {
+          const dateLink = document.createElement('a');
+          dateLink.href = path;
+          dateLink.textContent = formattedDate;
+
+          const articleDate = document.createElement('p');
+          articleDate.classList.add('date');
+          articleDate.appendChild(dateLink);
+          textContentDiv.appendChild(articleDate);
+        }
+
+        contentDiv.appendChild(textContentDiv);
+        block.appendChild(contentDiv);
       }
     });
 
