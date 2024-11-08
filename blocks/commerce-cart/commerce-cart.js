@@ -1,29 +1,29 @@
-import { events } from "@dropins/tools/event-bus.js";
-import { render as provider } from "@dropins/storefront-cart/render.js";
-import * as Cart from "@dropins/storefront-cart/api.js";
+import { events } from '@dropins/tools/event-bus.js';
+import { render as provider } from '@dropins/storefront-cart/render.js';
+import * as Cart from '@dropins/storefront-cart/api.js';
 
 // Dropin Containers
-import CartSummaryList from "@dropins/storefront-cart/containers/CartSummaryList.js";
-import OrderSummary from "@dropins/storefront-cart/containers/OrderSummary.js";
-import EstimateShipping from "@dropins/storefront-cart/containers/EstimateShipping.js";
-import EmptyCart from "@dropins/storefront-cart/containers/EmptyCart.js";
+import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
+import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
+import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 
 // Initializers
-import "../../scripts/initializers/cart.js";
+import '../../scripts/initializers/cart.js';
 
-import { readBlockConfig } from "../../scripts/aem.js";
+import { readBlockConfig } from '../../scripts/aem.js';
 
 export default async function decorate(block) {
   // Configuration
   const {
-    "hide-heading": hideHeading = "false",
-    "max-items": maxItems,
-    "hide-attributes": hideAttributes = "",
-    "enable-item-quantity-update": enableUpdateItemQuantity = "false",
-    "enable-item-remove": enableRemoveItem = "true",
-    "enable-estimate-shipping": enableEstimateShipping = "false",
-    "start-shopping-url": startShoppingURL = "",
-    "checkout-url": checkoutURL = "",
+    'hide-heading': hideHeading = 'false',
+    'max-items': maxItems,
+    'hide-attributes': hideAttributes = '',
+    'enable-item-quantity-update': enableUpdateItemQuantity = 'false',
+    'enable-item-remove': enableRemoveItem = 'true',
+    'enable-estimate-shipping': enableEstimateShipping = 'false',
+    'start-shopping-url': startShoppingURL = '',
+    'checkout-url': checkoutURL = '',
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
@@ -40,7 +40,7 @@ export default async function decorate(block) {
         value: `${quantityOption}`,
         text: `${quantityOption}`,
       };
-    }
+    },
   );
 
   // Layout
@@ -57,22 +57,22 @@ export default async function decorate(block) {
     <div class="cart__empty-cart"></div>
   `);
 
-  const $wrapper = fragment.querySelector(".cart__wrapper");
-  const $list = fragment.querySelector(".cart__list");
-  const $summary = fragment.querySelector(".cart__order-summary");
-  const $emptyCart = fragment.querySelector(".cart__empty-cart");
+  const $wrapper = fragment.querySelector('.cart__wrapper');
+  const $list = fragment.querySelector('.cart__list');
+  const $summary = fragment.querySelector('.cart__order-summary');
+  const $emptyCart = fragment.querySelector('.cart__empty-cart');
 
-  block.innerHTML = "";
+  block.innerHTML = '';
   block.appendChild(fragment);
 
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
     if (state) {
-      $wrapper.setAttribute("hidden", "");
-      $emptyCart.removeAttribute("hidden");
+      $wrapper.setAttribute('hidden', '');
+      $emptyCart.removeAttribute('hidden');
     } else {
-      $wrapper.removeAttribute("hidden");
-      $emptyCart.setAttribute("hidden", "");
+      $wrapper.removeAttribute('hidden');
+      $emptyCart.setAttribute('hidden', '');
     }
   }
 
@@ -82,19 +82,18 @@ export default async function decorate(block) {
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
-      hideHeading: hideHeading === "true",
-      routeProduct: (product) =>
-        `/products/${product.url.urlKey}/${product.sku}`,
+      hideHeading: hideHeading === 'true',
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
       routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
-        .split(",")
+        .split(',')
         .map((attr) => attr.trim().toLowerCase()),
-      enableUpdateItemQuantity: enableUpdateItemQuantity === "true",
-      enableRemoveItem: enableRemoveItem === "true",
-      showDiscount: "true",
-      showSavings: "true",
-      quantityType: "dropdown",
+      enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
+      enableRemoveItem: enableRemoveItem === 'true',
+      showDiscount: 'true',
+      showSavings: 'true',
+      quantityType: 'dropdown',
       dropdownOptions,
       slots: {
         ProductAttributes: (ctx) => {
@@ -102,20 +101,20 @@ export default async function decorate(block) {
           const productAttributes = ctx.item?.productAttributes;
 
           productAttributes?.forEach((attr) => {
-            if (attr.code === "Delivery Timeline") {
+            if (attr.code === 'Delivery Timeline') {
               if (attr.selected_options) {
                 const selectedOptions = attr.selected_options
-                  .filter((option) => option.label.trim() !== "")
+                  .filter((option) => option.label.trim() !== '')
                   .map((option) => option.label)
-                  .join(", ");
+                  .join(', ');
 
                 if (selectedOptions) {
-                  const productAttribute = document.createElement("div");
+                  const productAttribute = document.createElement('div');
                   productAttribute.innerText = `${attr.code}: ${selectedOptions}`;
                   return ctx.appendChild(productAttribute);
                 }
               } else if (attr.value) {
-                const productAttribute = document.createElement("div");
+                const productAttribute = document.createElement('div');
                 productAttribute.innerText = `${attr.value}`;
                 return ctx.appendChild(productAttribute);
               }
@@ -128,13 +127,12 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: (product) =>
-        `/products/${product.url.urlKey}/${product.sku}`,
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
       routeCheckout: checkoutURL ? () => checkoutURL : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
-          if (enableEstimateShipping === "true") {
-            const wrapper = document.createElement("div");
+          if (enableEstimateShipping === 'true') {
+            const wrapper = document.createElement('div');
             await provider.render(EstimateShipping, {})(wrapper);
             ctx.replaceWith(wrapper);
           }
@@ -150,11 +148,11 @@ export default async function decorate(block) {
 
   // Events
   events.on(
-    "cart/data",
+    'cart/data',
     (payload) => {
       toggleEmptyCart(isCartEmpty(payload));
     },
-    { eager: true }
+    { eager: true },
   );
 
   return Promise.resolve();
