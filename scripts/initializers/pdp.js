@@ -31,9 +31,6 @@ await initializeDropin(async () => {
   const langDefinitions = {
     default: {
       ...labels,
-      Custom: {
-        AddingToCart: { label: labels.pdpCustomAddingtocart },
-      },
     },
   };
 
@@ -44,7 +41,7 @@ await initializeDropin(async () => {
   };
 
   // Initialize Dropins
-  await initializers.mountImmediately(initialize, {
+  return initializers.mountImmediately(initialize, {
     langDefinitions,
     models,
   });
