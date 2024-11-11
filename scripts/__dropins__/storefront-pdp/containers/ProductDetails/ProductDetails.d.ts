@@ -4,7 +4,7 @@ import { ButtonProps } from '@dropins/tools/types/elsie/src/components';
 import { ProductModel } from '../../data/models';
 
 type IconType = keyof typeof import('@dropins/tools/types/elsie/src/icons');
-type Values = {
+export type Values = {
     sku: string;
     quantity: number;
     optionsUIDs?: string[];
@@ -15,13 +15,15 @@ type DefaultSlotContext = {
     valid: boolean;
 };
 export type CarouselConfig = {
-    mobile?: boolean;
-    controls?: 'thumbnailsRow' | 'thumbnailsColumn' | 'dots' | null;
+    controls?: {
+        desktop?: 'thumbnailsRow' | 'thumbnailsColumn' | 'dots' | null;
+        mobile?: 'dots' | 'thumbnailsRow' | null;
+    };
     arrowsOnMainImage?: boolean;
     loopable?: boolean;
     peak?: {
-        mobile: boolean;
         desktop: boolean;
+        mobile: boolean;
     };
     gap?: 'small' | 'medium' | 'large' | null;
     thumbnailsLoadingMode?: 'lazy' | 'eager';
@@ -72,6 +74,8 @@ export interface ProductDetailsProps extends HTMLAttributes<HTMLDivElement> {
     optionsConfig?: OptionsConfig;
     useACDL?: boolean;
     onAddToCart?: (values: Values) => void;
+    zoomType?: 'zoom' | 'overlay';
+    closeButton?: boolean;
 }
 export declare const ProductDetails: Container<ProductDetailsProps, ProductModel | null>;
 export {};

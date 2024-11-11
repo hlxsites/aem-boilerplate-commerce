@@ -3,6 +3,14 @@
 
 <head>
   <title>Page not found</title>
+  <script type="importmap">
+    {
+        "imports": {
+            "@dropins/tools/": "/scripts/__dropins__/tools/",
+            "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/"
+        }
+    }
+  </script>
   <script type="text/javascript">
     window.isErrorPage = true;
     window.errorCode = '404';
@@ -43,7 +51,7 @@
     }
 
     main.error .error-number text {
-      font-family: var(--type-fixed-font-family);
+      font-family: monospace;
     }
   </style>
   <link rel="stylesheet" href="/styles/lazy-styles.css">
