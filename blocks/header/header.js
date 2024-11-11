@@ -103,14 +103,22 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 
   const backdrop = document.createElement('div');
+  const shadowBackdropElements = document.querySelectorAll(
+    '.nav-shadow-backdrop *'
+  );
+
   backdrop.classList.add('nav-backdrop');
   if (!isDesktop.matches) {
     if (!expanded) {
       document.body.append(backdrop);
+      shadowBackdropElements.forEach((el) => (el.style.pointerEvents = 'none'));
     } else {
       const existingBackdrop = document.querySelector('.nav-backdrop');
       if (existingBackdrop) {
         existingBackdrop.remove();
+        shadowBackdropElements.forEach(
+          (el) => (el.style.pointerEvents = 'auto')
+        );
       }
     }
   } else if (isDesktop.matches) {

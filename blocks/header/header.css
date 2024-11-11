@@ -135,9 +135,22 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     width: 100%;
     display: block;
     top: 0;
+    left: 400px;
     right: 0;
-    z-index: 2;
+    z-index: 3;
+    animation: fadeIn 0.8s ease;
     background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      left: 300px;
+    }
+    to {
+      opacity: 1;
+      left: 400px;
+    }
   }
   /* End icon for mobile */
   header nav[aria-expanded='false'] .nav-end-icon {
@@ -147,10 +160,11 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
   header nav[aria-expanded='true'] .main-nav-content .icon-end {
     display: flex;
-    width: 100%;
+    /* width: 100%; */
     height: 56px;
     align-items: center;
     justify-content: center;
+    border: 2px solid rebeccapurple;
   }
 
   header nav[aria-expanded='true'] .nav-brand {
@@ -163,9 +177,10 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     align-items: center;
     border-bottom: 1px solid var(--sub-text-border-divider);
     width: 100vw;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: white;
     z-index: -1;
   }
+
   /* end End icon for mobile */
 
   /* Header block */
@@ -311,11 +326,6 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     animation-duration: 0.8s;
     background-color: white;
   }
-
-  /* header nav[aria-expanded='true'] .nav-tools div p {
-    z-index: 1;
-   
-  } */
 
   header nav[aria-expanded='true'] {
     position: absolute;
@@ -727,7 +737,7 @@ header .breadcrumbs ol li[aria-current] {
 @media (width <= 1125px) {
   /* breadcrumbs */
   header .breadcrumbs {
-    top: calc(var(--nav-height) + 2vh);
+    /* top: calc(var(--nav-height) + 2vh); */
     left: 10vw;
   }
   header .nav-search-input form #search {
