@@ -3,13 +3,14 @@ import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
 // Dropin Containers
-import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
-import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
-import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
-import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
+import CartSummaryList from "@dropins/storefront-cart/containers/CartSummaryList.js";
+import OrderSummary from "@dropins/storefront-cart/containers/OrderSummary.js";
+import EstimateShipping from "@dropins/storefront-cart/containers/EstimateShipping.js";
+import EmptyCart from "@dropins/storefront-cart/containers/EmptyCart.js";
+import Coupons from "@dropins/storefront-cart/containers/Coupons.js";
 
 // Initializers
-import '../../scripts/initializers/cart.js';
+import "../../scripts/initializers/cart.js";
 
 import { readBlockConfig } from '../../scripts/aem.js';
 
@@ -96,6 +97,23 @@ export default async function decorate(block) {
       quantityType: 'dropdown',
       dropdownOptions,
       slots: {
+        Footer: (ctx) => {
+          // Runs on mount
+          const wrapper = document.createElement("div");
+          ctx.appendChild(wrapper);
+
+          // Append Product Promotions on every update
+          ctx.onChange((next) => {
+            wrapper.innerHTML = "";
+
+            next.item?.discount?.label?.forEach((label) => {
+              const discount = document.createElement("div");
+              discount.style.color = "#3d3d3d";
+              discount.innerText = label;
+              wrapper.appendChild(discount);
+            });
+          });
+        },
         ProductAttributes: (ctx) => {
           // Prepend Product Attributes
           const productAttributes = ctx.item?.productAttributes;
@@ -136,6 +154,14 @@ export default async function decorate(block) {
             await provider.render(EstimateShipping, {})(wrapper);
             ctx.replaceWith(wrapper);
           }
+        },
+        Coupons: (ctx) => {
+          // Prepend Coupons
+          const coupons = document.createElement("div");
+
+          provider.render(Coupons)(coupons);
+
+          ctx.appendChild(coupons);
         },
       },
     })($summary),
