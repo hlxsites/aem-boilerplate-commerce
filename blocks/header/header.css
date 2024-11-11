@@ -163,6 +163,8 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
     align-items: center;
     border-bottom: 1px solid var(--sub-text-border-divider);
     width: 100vw;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: -1;
   }
   /* end End icon for mobile */
 
@@ -228,7 +230,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
   /* END. img */
   header nav[aria-expanded='true'] .main-nav-content div:nth-child(2) img {
-    margin-left: 3%;
+    margin-left: 1vw;
   }
 
   /* Showing END. and Gender Category */

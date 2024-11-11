@@ -104,7 +104,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
   const backdrop = document.createElement('div');
   backdrop.classList.add('nav-backdrop');
-  if (!isDesktop.matches && nav.getAttribute('aria-expanded') === 'true') {
+  if (!isDesktop.matches) {
     if (!expanded) {
       document.body.append(backdrop);
     } else {
