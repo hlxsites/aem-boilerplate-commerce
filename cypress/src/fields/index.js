@@ -3,15 +3,15 @@ export const checkoutButton = '[data-testid="checkout-button"]';
 // Shipping Form
 export const shippingFormGuestEmail = 'input[name="customer-email"]';
 export const shippingFormFirstName =
-  'form[name="shipping_address"] input[name="firstname"]';
+  'form[name="shipping_address"] input[name="firstName"]';
 export const shippingFormLastName =
-  'form[name="shipping_address"] input[name="lastname"]';
+  'form[name="shipping_address"] input[name="lastName"]';
 export const shippingFormCompany =
   'form[name="shipping_address"] input[name="company"]';
 export const shippingFormStreet =
-  'form[name="shipping_address"] input[name="street-0"]';
+  'form[name="shipping_address"] input[name="street"]';
 export const shippingFormStreet1 =
-  'form[name="shipping_address"] input[name="street-1"]';
+  'form[name="shipping_address"] input[name="streetMultiline_2"]';
 export const shippingFormStreet2 =
   'form[name="shipping_address"] input[name="street-2"]';
 export const shippingFormCity =
@@ -23,9 +23,9 @@ export const shippingFormPostCode =
 export const shippingFormTelephone =
   'form[name="shipping_address"] input[name="telephone"]';
 export const shippingFormVat =
-  'form[name="shipping_address"] input[name="vat_id"]';
+  'form[name="shipping_address"] input[name="vatId"]';
 export const shippingFormCountry =
-  'form[name="shipping_address"] select[name="country_id"]';
+  'form[name="shipping_address"] select[name="countryCode"]';
 export const shippingFormState =
   'form[name="shipping_address"] select[name="region"]';
 export const shippingFormInputState =
@@ -34,15 +34,15 @@ export const shippingFormInputState =
 // Billing Form
 export const billingFormGuestEmail = 'input[name="customer-email"]';
 export const billingFormFirstName =
-  'form[name="billing_address"] input[name="firstname"]';
+  'form[name="billing_address"] input[name="firstName"]';
 export const billingFormLastName =
-  'form[name="billing_address"] input[name="lastname"]';
+  'form[name="billing_address"] input[name="lastName"]';
 export const billingFormCompany =
   'form[name="billing_address"] input[name="company"]';
 export const billingFormStreet =
-  'form[name="billing_address"] input[name="street-0"]';
+  'form[name="billing_address"] input[name="street"]';
 export const billingFormStreet1 =
-  'form[name="billing_address"] input[name="street-1"]';
+  'form[name="billing_address"] input[name="streetMultiline_2"]';
 export const billingFormStreet2 =
   'form[name="billing_address"] input[name="street-2"]';
 export const billingFormCity =
@@ -54,9 +54,9 @@ export const billingFormPostCode =
 export const billingFormTelephone =
   'form[name="billing_address"] input[name="telephone"]';
 export const billingFormVat =
-  'form[name="billing_address"] input[name="vat_id"]';
+  'form[name="billing_address"] input[name="vatId"]';
 export const billingFormCountry =
-  'form[name="billing_address"] select[name="country_id"]';
+  'form[name="billing_address"] select[name="countryCode"]';
 export const billingFormState =
   'form[name="billing_address"] select[name="region"]';
 export const billingFormInputState =
