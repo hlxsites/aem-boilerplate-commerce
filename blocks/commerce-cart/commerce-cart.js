@@ -98,16 +98,16 @@ export default async function decorate(block) {
       slots: {
         Footer: (ctx) => {
           // Runs on mount
-          const wrapper = document.createElement("div");
+          const wrapper = document.createElement('div');
           ctx.appendChild(wrapper);
 
           // Append Product Promotions on every update
           ctx.onChange((next) => {
-            wrapper.innerHTML = "";
+            wrapper.innerHTML = '';
 
             next.item?.discount?.label?.forEach((label) => {
-              const discount = document.createElement("div");
-              discount.style.color = "#3d3d3d";
+              const discount = document.createElement('div');
+              discount.style.color = '#3d3d3d';
               discount.innerText = label;
               wrapper.appendChild(discount);
             });
