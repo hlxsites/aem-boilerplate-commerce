@@ -281,9 +281,9 @@ export default async function decorate(block) {
         },
         Coupons: (ctx) => {
           const coupons = document.createElement('div');
-  
+
           CartProvider.render(Coupons)(coupons);
-  
+
           ctx.appendChild(coupons);
         },
       },
