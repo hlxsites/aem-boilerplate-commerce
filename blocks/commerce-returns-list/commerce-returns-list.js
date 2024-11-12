@@ -19,12 +19,17 @@ export default async function decorate(block) {
     'minified-view': minifiedViewConfig = 'false',
   } = readBlockConfig(block);
 
+console.log("21212121");
+
   if (!checkIsAuthenticated()) {
     window.location.href = CUSTOMER_LOGIN_PATH;
   } else {
     await orderRenderer.render(ReturnsList, {
       minifiedView: minifiedViewConfig === 'true',
-      routeReturnDetails: ({ orderNumber, returnNumber }) => `${CUSTOMER_RETURN_DETAILS_PATH}?orderRef=${orderNumber}&returnRef=${returnNumber}`,
+      routeReturnDetails: (props) => {
+        console.log('props', props);
+        return `${CUSTOMER_RETURN_DETAILS_PATH}?orderRef=${props?.orderNumber}&returnRef=${props?.returnNumber}`
+      },
       routeOrderDetails: ({ orderNumber }) => `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderNumber}`,
       routeReturnsList: () => CUSTOMER_RETURNS_PATH,
       routeProductDetails: (productData) => (productData ? `/products/${productData.product.urlKey}/${productData.product.sku}` : '#'),
