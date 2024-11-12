@@ -92,7 +92,6 @@ fragment AddressesList on OrderAddress {
       timestamp
     }
     items {
-      __typename
       id
       product_sku
       product_name
