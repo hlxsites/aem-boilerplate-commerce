@@ -1,7 +1,7 @@
 import { initializers } from '@dropins/tools/initializer.js';
 import { initialize, setEndpoint, setFetchGraphQlHeaders } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
-import {commerceEndpointWithQueryParams, getProduct, getSkuFromUrl} from '../commerce.js';
+import { commerceEndpointWithQueryParams, getProduct, getSkuFromUrl } from '../commerce.js';
 import { getConfigValue } from '../configs.js';
 import { fetchPlaceholders } from '../aem.js';
 

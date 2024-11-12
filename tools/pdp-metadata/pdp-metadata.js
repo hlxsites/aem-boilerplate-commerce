@@ -3,7 +3,7 @@ import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
 import { variantsFragment } from './queries/variants.graphql.js';
-import {commerceEndpointWithQueryParams} from "../../scripts/commerce.js";
+import { commerceEndpointWithQueryParams } from "../../scripts/commerce.js";
 
 const basePath = 'https://www.aemshop.net';
 const configFile = `${basePath}/configs.json?sheet=prod`;
