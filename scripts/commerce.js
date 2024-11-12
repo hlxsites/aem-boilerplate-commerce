@@ -159,9 +159,9 @@ export async function commerceEndpointWithQueryParams() {
   queryParameters.append('Magento-Store-View-Code', await getConfigValue('commerce-store-view-code'));
   queryParameters.append('Magento-Store-Code', await getConfigValue('commerce-store-code'));
   queryParameters.append('Magento-Customer-Group', await getConfigValue('commerce-customer-group'));
-  const url = new URL(await getConfigValue('commerce-endpoint'));
-  url.search = queryParameters.toString();
-  return url;
+  const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
+  urlWithQueryParams.search = queryParameters.toString();
+  return urlWithQueryParams;
 }
 
 /* Common functionality */
@@ -172,7 +172,7 @@ export async function performCatalogServiceQuery(query, variables) {
     'x-api-key': await getConfigValue('commerce-x-api-key'),
   };
 
-  const apiCall = commerceEndpointWithQueryParams();
+  const apiCall = await commerceEndpointWithQueryParams();
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
     .replace(/\s\s+/g, ' '));
   apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);

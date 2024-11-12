@@ -128,10 +128,10 @@ async function performCatalogServiceQuery(query, config, variables) {
     queryParameters.append('Magento-Store-View-Code', config['commerce-store-view-code']);
     queryParameters.append('Magento-Store-Code',config['commerce-store-code']);
     queryParameters.append('Magento-Customer-Group', config['commerce-customer-group']);
-    const url = new URL(config['commerce-endpoint']);
-    url.search = queryParameters.toString()
+    const urlWithQueryParams = new URL(config['commerce-endpoint']);
+    urlWithQueryParams.search = queryParameters.toString()
 
-    const apiCall = url;
+    const apiCall = urlWithQueryParams;
     apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
         .replace(/\s\s+/g, ' '));
     apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
