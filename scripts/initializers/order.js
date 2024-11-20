@@ -14,7 +14,7 @@ import {
   CREATE_RETURN_PATH,
   CUSTOMER_ORDERS_PATH,
   ORDER_STATUS_PATH,
-  CUSTOMER_PATH,
+  CUSTOMER_PATH, SALES_GUEST_VIEW_PATH, SALES_ORDER_VIEW_PATH,
 } from '../constants.js';
 
 await initializeDropin(async () => {
@@ -40,7 +40,9 @@ await initializeDropin(async () => {
     || pathname === RETURN_DETAILS_PATH
     || pathname === CUSTOMER_RETURN_DETAILS_PATH
     || pathname === CREATE_RETURN_PATH
-    || pathname === CUSTOMER_CREATE_RETURN_PATH) {
+    || pathname === CUSTOMER_CREATE_RETURN_PATH
+    || pathname === SALES_GUEST_VIEW_PATH
+    || pathname === SALES_ORDER_VIEW_PATH) {
     await handleUserOrdersRedirects(
       pathname,
       isAccountPage,
@@ -49,20 +51,14 @@ await initializeDropin(async () => {
       isTokenProvided,
       langDefinitions,
     );
-  } else if (!checkIsAuthenticated() && orderRef) {
-    events.on('order/error', () => {
-      if (isTokenProvided) {
-        window.location.href = ORDER_STATUS_PATH;
-      } else {
-        window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
-      }
-    });
-    await initializers.mountImmediately(initialize, {
-      langDefinitions,
-      orderRef,
-      returnRef,
-    });
+    return;
   }
+
+  await initializers.mountImmediately(initialize, {
+    langDefinitions,
+    orderRef,
+    returnRef,
+  });
 })();
 
 async function handleUserOrdersRedirects(
