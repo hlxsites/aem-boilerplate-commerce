@@ -122,16 +122,12 @@ async function performCatalogServiceQuery(query, config, variables) {
     };
 
     // Set Query Parameters so they can be appended to the endpoint
-    const queryParameters = new URLSearchParams();
-    queryParameters.append('Magento-Environment-Id', config['commerce-environment-id']);
-    queryParameters.append('Magento-Website-Code', config['commerce-website-code']);
-    queryParameters.append('Magento-Store-View-Code', config['commerce-store-view-code']);
-    queryParameters.append('Magento-Store-Code',config['commerce-store-code']);
-    queryParameters.append('Magento-Customer-Group', config['commerce-customer-group']);
-    const urlWithQueryParams = new URL(config['commerce-endpoint']);
-    urlWithQueryParams.search = queryParameters.toString()
-
-    const apiCall = urlWithQueryParams;
+    const apiCall = new URL(config['commerce-endpoint']);
+    apiCall.searchParams.append("Magento-Environment-Id", config['commerce-environment-id']);
+    apiCall.searchParams.append("Magento-Website-Code", config['commerce-website-code']);
+    apiCall.searchParams.append("Magento-Store-View-Code", config['commerce-store-view-code']);
+    apiCall.searchParams.append("Magento-Store-Code", config['commerce-store-code']);
+    apiCall.searchParams.append("Magento-Customer-Group", config['commerce-customer-group']);
     apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
         .replace(/\s\s+/g, ' '));
     apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);

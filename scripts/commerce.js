@@ -153,14 +153,12 @@ query($sku: String!) {
 
 export async function commerceEndpointWithQueryParams() {
   // Set Query Parameters so they can be appended to the endpoint
-  const queryParameters = new URLSearchParams();
-  queryParameters.append('Magento-Environment-Id', await getConfigValue('commerce-environment-id'));
-  queryParameters.append('Magento-Website-Code', await getConfigValue('commerce-website-code'));
-  queryParameters.append('Magento-Store-View-Code', await getConfigValue('commerce-store-view-code'));
-  queryParameters.append('Magento-Store-Code', await getConfigValue('commerce-store-code'));
-  queryParameters.append('Magento-Customer-Group', await getConfigValue('commerce-customer-group'));
   const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
-  urlWithQueryParams.search = queryParameters.toString();
+  urlWithQueryParams.searchParams.append('Magento-Environment-Id', await getConfigValue('commerce-environment-id'));
+  urlWithQueryParams.searchParams.append('Magento-Website-Code', await getConfigValue('commerce-website-code'));
+  urlWithQueryParams.searchParams.append('Magento-Store-View-Code', await getConfigValue('commerce-store-view-code'));
+  urlWithQueryParams.searchParams.append('Magento-Store-Code', await getConfigValue('commerce-store-code'));
+  urlWithQueryParams.searchParams.append('Magento-Customer-Group', await getConfigValue('commerce-customer-group'));
   return urlWithQueryParams;
 }
 
