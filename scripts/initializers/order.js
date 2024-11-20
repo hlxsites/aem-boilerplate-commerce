@@ -23,6 +23,12 @@ await initializeDropin(async () => {
   const orderRef = searchParams.get('orderRef');
   const returnRef = searchParams.get('returnRef');
   const isTokenProvided = orderRef && orderRef.length > 20;
+  const labels = await fetchPlaceholders();
+  const langDefinitions = {
+    default: {
+      ...labels,
+    },
+  };
 
   // Handle redirects for user details pages
   if (pathname === ORDER_DETAILS_PATH
@@ -31,8 +37,22 @@ await initializeDropin(async () => {
     || pathname === CUSTOMER_RETURN_DETAILS_PATH
     || pathname === CREATE_RETURN_PATH
     || pathname === CUSTOMER_CREATE_RETURN_PATH) {
-    await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, returnRef, isTokenProvided);
+    await handleUserOrdersRedirects(
+      pathname,
+      isAccountPage,
+      orderRef,
+      returnRef,
+      isTokenProvided,
+      langDefinitions,
+    );
+    return;
   }
+
+  await initializers.mountImmediately(initialize, {
+    langDefinitions,
+    orderRef,
+    returnRef,
+  });
 })();
 
 async function handleUserOrdersRedirects(
@@ -41,15 +61,8 @@ async function handleUserOrdersRedirects(
   orderRef,
   returnRef,
   isTokenProvided,
+  langDefinitions,
 ) {
-  const labels = await fetchPlaceholders();
-
-  const langDefinitions = {
-    default: {
-      ...labels,
-    },
-  };
-
   let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
