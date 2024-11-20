@@ -49,9 +49,14 @@ await initializeDropin(async () => {
       isTokenProvided,
       langDefinitions,
     );
-  } else if (!checkIsAuthenticated()
-    && !isTokenProvided
-    && orderRef) {
+  } else if (!checkIsAuthenticated() && orderRef) {
+    events.on('order/error', () => {
+      if (isTokenProvided) {
+        window.location.href = ORDER_STATUS_PATH;
+      } else {
+        window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
+      }
+    });
     await initializers.mountImmediately(initialize, {
       langDefinitions,
       orderRef,
