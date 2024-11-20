@@ -30,6 +30,10 @@ await initializeDropin(async () => {
     },
   };
 
+  if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
+    return;
+  }
+
   // Handle redirects for user details pages
   if (pathname === ORDER_DETAILS_PATH
     || pathname === CUSTOMER_ORDER_DETAILS_PATH
@@ -45,10 +49,7 @@ await initializeDropin(async () => {
       isTokenProvided,
       langDefinitions,
     );
-    return;
-  }
-
-  if (!checkIsAuthenticated()
+  } else if (!checkIsAuthenticated()
     && !isTokenProvided
     && orderRef) {
     await initializers.mountImmediately(initialize, {
@@ -68,9 +69,6 @@ async function handleUserOrdersRedirects(
   langDefinitions,
 ) {
   let targetPath = null;
-  if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
-    return;
-  }
 
   events.on('order/error', () => {
     if (checkIsAuthenticated()) {
