@@ -29,7 +29,6 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   { from: '@adobe/magento-storefront-event-collector/dist/index.js', to: 'commerce-events-collector.js' },
   { from: '@adobe/magento-storefront-events-sdk/dist/index.js', to: 'commerce-events-sdk.js' },
   { from: 'htm/dist/htm.module.js', to: 'htm.js' },
-  { from: 'preact/dist/preact.module.js', to: 'preact.js' },
 ].forEach((file) => {
   fs.copyFileSync(path.resolve(__dirname, 'node_modules', file.from), path.resolve(__dirname, 'scripts', file.to));
 });
