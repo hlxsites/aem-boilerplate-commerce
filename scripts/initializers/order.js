@@ -48,11 +48,15 @@ await initializeDropin(async () => {
     return;
   }
 
-  await initializers.mountImmediately(initialize, {
-    langDefinitions,
-    orderRef,
-    returnRef,
-  });
+  if (!checkIsAuthenticated()
+    && !isTokenProvided
+    && orderRef) {
+    await initializers.mountImmediately(initialize, {
+      langDefinitions,
+      orderRef,
+      returnRef,
+    });
+  }
 })();
 
 async function handleUserOrdersRedirects(
