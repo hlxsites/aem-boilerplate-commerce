@@ -6,7 +6,6 @@ import getCategoriesInCategory from './queries/categories.graphql.js';
 import getProductsInCategory from './queries/products.graphql.js';
 
 import './styles.css';
-import {getConfigValue} from "../../../scripts/configs";
 
 /**
  * Object containing all configuration files that should be exposed in the picker.
