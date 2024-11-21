@@ -81,7 +81,7 @@ async function handleUserOrdersRedirects(
     if (checkIsAuthenticated()) {
       window.location.href = CUSTOMER_ORDERS_PATH;
     } else if (isTokenProvided) {
-      window.location.href = orderNumber ? ORDER_STATUS_PATH : `${ORDER_STATUS_PATH}?orderRef=${orderNumber}`;
+      window.location.href = orderNumber ? `${ORDER_STATUS_PATH}?orderRef=${orderNumber}` : ORDER_STATUS_PATH;
     } else {
       window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
     }
