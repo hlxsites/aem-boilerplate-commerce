@@ -18,7 +18,7 @@ export type Options = {
     optionsUIDs?: string[];
     preselectFirstOption?: boolean;
     isBundle?: boolean;
-    initialData?: any;
+    skipTransform?: boolean;
 };
 export declare const fetchProductData: (sku: string, options?: Options) => Promise<import('../../data/models/product-model').ProductModel | null>;
 //# sourceMappingURL=fetchProductData.d.ts.map

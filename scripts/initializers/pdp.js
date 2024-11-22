@@ -24,7 +24,7 @@ await initializeDropin(async () => {
   const optionsUIDs = getOptionsUIDsFromUrl();
 
   const [product, labels] = await Promise.all([
-    fetchProductData(sku, { optionsUIDs }),
+    fetchProductData(sku, { optionsUIDs, skipTransform: true }),
     fetchPlaceholders(),
   ]);
 

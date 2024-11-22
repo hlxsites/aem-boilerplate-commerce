@@ -107,7 +107,6 @@ export default async function decorate(block) {
       arrows: true,
       peak: false,
       gap: 'small',
-      // TODO: there is a bug in the Carousel component that renders the wrong default image
       loop: false,
     })($galleryMobile),
 
@@ -117,7 +116,6 @@ export default async function decorate(block) {
       arrows: true,
       peak: true,
       gap: 'small',
-      // TODO: there is a bug in the Carousel component that renders the wrong default image
       loop: false,
     })($gallery),
 
@@ -138,13 +136,13 @@ export default async function decorate(block) {
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
-      children: labels.pdpProductAddtocart,
+      children: labels.PDP.Product.AddToCart.label,
       icon: Icon({ source: 'Cart' }),
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.pdpCustomAddingtocart,
+            children: labels.Custom.AddingToCart.label,
             disabled: true,
           }));
 
@@ -181,7 +179,7 @@ export default async function decorate(block) {
         } finally {
           addToCart.setProps((prev) => ({
             ...prev,
-            children: labels.pdpProductAddtocart,
+            children: labels.PDP.Product.AddToCart.label,
             disabled: false,
           }));
         }
@@ -223,14 +221,10 @@ export default async function decorate(block) {
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
-  events.on('eds/lcp', () => {
-    if (product) {
-      // Set JSON-LD and Meta Tags
-      setJsonLdProduct(product);
-      setMetaTags(product);
-      document.title = product.name;
-    }
-  }, { eager: true });
+  // Set JSON-LD and Meta Tags
+  setJsonLdProduct(product);
+  setMetaTags(product);
+  document.title = product.name;
 
   return Promise.resolve();
 }
@@ -326,7 +320,6 @@ function setMetaTags(product) {
   createMetaTag('title', product.metaTitle || product.name, 'name');
   createMetaTag('description', product.metaDescription, 'name');
   createMetaTag('keywords', product.metaKeyword, 'name');
-
   createMetaTag('og:type', 'og:product', 'property');
   createMetaTag('og:description', product.shortDescription, 'property');
   createMetaTag('og:title', product.metaTitle || product.name, 'property');
