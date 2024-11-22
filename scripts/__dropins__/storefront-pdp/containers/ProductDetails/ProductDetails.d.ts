@@ -1,12 +1,17 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps, SlotMethod, ResolveImageUrlOptions } from '@dropins/tools/types/elsie/src/lib';
 import { ButtonProps } from '@dropins/tools/types/elsie/src/components';
-import { ProductModel, ValuesModel } from '../../data/models';
+import { ProductModel } from '../../data/models';
 
 type IconType = keyof typeof import('@dropins/tools/types/elsie/src/icons');
+export type Values = {
+    sku: string;
+    quantity: number;
+    optionsUIDs?: string[];
+};
 type DefaultSlotContext = {
     data: ProductModel | null;
-    values: ValuesModel;
+    values: Values;
     valid: boolean;
 };
 export type CarouselConfig = {
@@ -68,9 +73,10 @@ export interface ProductDetailsProps extends HTMLAttributes<HTMLDivElement> {
     carousel?: CarouselConfig;
     optionsConfig?: OptionsConfig;
     useACDL?: boolean;
-    onAddToCart?: (values: ValuesModel) => void;
+    onAddToCart?: (values: Values) => void;
     zoomType?: 'zoom' | 'overlay';
     closeButton?: boolean;
+    disableDropdownPreselection?: boolean;
 }
 export declare const ProductDetails: Container<ProductDetailsProps, ProductModel | null>;
 export {};

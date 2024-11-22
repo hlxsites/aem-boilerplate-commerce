@@ -17,7 +17,7 @@ export * from './initialize';
 export * from './fetch-graphql';
 export * from './getProductData';
 export * from './getRefinedProduct';
-export * from './fetchPDPData';
+export * from './fetchProductData';
 export * from './setProductConfigurationValues';
 export * from './getProductConfigurationValues';
 export * from './setProductConfigurationValid';

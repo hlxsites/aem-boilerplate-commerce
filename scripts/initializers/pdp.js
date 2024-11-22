@@ -3,7 +3,7 @@ import {
   initialize,
   setEndpoint,
   setFetchGraphQlHeaders,
-  fetchPDPData,
+  fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
 import { getOptionsUIDsFromUrl, getSkuFromUrl } from '../commerce.js';
@@ -29,7 +29,7 @@ await initializeDropin(async () => {
   const optionsUIDs = getOptionsUIDsFromUrl();
 
   const [product, placeholders] = await Promise.all([
-    fetchPDPData(sku, { optionsUIDs }),
+    fetchProductData(sku, { optionsUIDs }),
     fetchPlaceholders(),
   ]);
 

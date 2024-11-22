@@ -9,11 +9,14 @@ type ConfigProps = {
     acdl?: boolean;
     anchors?: string[];
     persistURLParams?: boolean;
+    preselectFirstOption?: boolean;
     optionsUIDs?: string[];
     models?: {
         [name: string]: {
             initialData: any;
-            transform: (data?: ProductModel) => ProductModel;
+            /** @deprecated Use "transformer" instead */
+            transform?: (data?: ProductModel) => ProductModel;
+            transformer?: (data?: ProductModel) => ProductModel;
             fallbackData?: (parentProduct: any, simpleProduct: ProductModel) => ProductModel;
         };
     };

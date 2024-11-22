@@ -13,5 +13,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './setProductConfigurationValid';
-//# sourceMappingURL=index.d.ts.map
+export type Options = {
+    anchors?: string[];
+    optionsUIDs?: string[];
+    preselectFirstOption?: boolean;
+    isBundle?: boolean;
+    initialData?: any;
+};
+export declare const fetchProductData: (sku: string, options?: Options) => Promise<import('../../data/models/product-model').ProductModel | null>;
+//# sourceMappingURL=fetchProductData.d.ts.map
