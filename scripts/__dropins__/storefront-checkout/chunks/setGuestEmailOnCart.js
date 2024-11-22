@@ -1,17 +1,13 @@
-import{a as r,g as s,u as e,k as l,M as n,l as o}from"./fixtures.js";import"@dropins/tools/event-bus.js";import{C as m,t as c}from"./getCart.graphql.js";const u=a=>!!(a!=null&&a.is_email_available),E=`
-  query isEmailAvailable($email: String!) {
-    isEmailAvailable(email: $email) {
-      is_email_available
-    }
-  }
-`,h=a=>{if(!(!a||a.length===0))throw Error(a.map(t=>t.message).join(" "))},A=async a=>{if(!a)throw new r;const{data:t,errors:i}=await s(E,{method:"GET",cache:"no-cache",variables:{email:a}}).catch(e);return i&&h(i),u(t.isEmailAvailable)},p=`
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
+import{s as i,M as s,d as e}from"./fetch-graphql.js";import{CHECKOUT_DATA_FRAGMENT as o}from"../fragments.js";import{b as m}from"./synchronizeCheckout.js";import"./store-config.js";import"./ServerErrorSignal.js";import{events as n}from"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";const c=`
   mutation setGuestEmail($cartId: String!, $email: String!) {
     setGuestEmailOnCart(input: { cart_id: $cartId, email: $email }) {
       cart {
-        id
-        ...CheckoutData
+        ...CHECKOUT_DATA_FRAGMENT
       }
     }
   }
-  ${m}
-`,C=async a=>{const t=l.cartId;if(!t)throw new n;return await o({type:"mutation",query:p,options:{variables:{cartId:t,email:a}},path:"setGuestEmailOnCart.cart",signalType:"cart",transformer:c})};export{A as i,C as s};
+
+  ${o}
+`,A=async r=>{const t=i.cartId;if(!t)throw new s;const a=await e({type:"mutation",query:c,options:{variables:{cartId:t,email:r}},path:"setGuestEmailOnCart.cart",signalType:"cart",transformer:m});return n.emit("checkout/updated",a||null),a};export{A as s};

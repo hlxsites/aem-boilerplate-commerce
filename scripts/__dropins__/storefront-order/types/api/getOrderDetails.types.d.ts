@@ -24,6 +24,8 @@ export interface ProductProps {
     thumbnail?: ThumbnailImageProps;
     image: ThumbnailImageProps;
     canonical_url: string;
+    url_key: string;
+    id: string;
     uid: string;
     name: string;
     __typename: string;
@@ -35,8 +37,8 @@ export interface ProductProps {
     };
 }
 export interface MoneyProps {
-    value?: number;
-    currency?: string;
+    value: number;
+    currency: string;
 }
 interface GrandTotalProps extends MoneyProps {
 }
@@ -54,10 +56,11 @@ interface TaxDetailProps {
     title?: string;
 }
 export interface DiscountProps {
-    amount?: MoneyProps;
-    label?: string;
+    amount: MoneyProps;
+    label: string;
 }
 export interface TotalProps {
+    total_giftcard?: MoneyProps;
     grand_total?: GrandTotalProps;
     subtotal?: SubtotalProps;
     taxes?: TaxDetailProps[];
@@ -78,11 +81,9 @@ interface InvoiceProps {
     }[];
 }
 export interface GiftMessageProps {
-    gift_message: {
-        form: string;
-        message: string;
-        to: string;
-    };
+    form: string;
+    message: string;
+    to: string;
 }
 export interface GiftWrappingProps {
     gift_wrapping: {
@@ -100,6 +101,7 @@ export interface giftCardProps {
     sender_email: string;
     recipient_email: string;
     recipient_name: string;
+    message: string;
 }
 export interface OrderItemProps {
     __typename: string;
@@ -124,12 +126,31 @@ export interface OrderItemProps {
     quantity_refunded: number;
     quantity_returned: number;
     quantity_shipped: number;
+    quantity_return_requested: number;
     selected_options: {
         label: string;
         value: string;
     }[];
+    bundle_options: any;
     status: string;
     gift_card?: giftCardProps;
+    downloadable_links: {
+        title: string;
+    }[];
+    prices: {
+        price_including_tax: MoneyProps;
+        original_price: MoneyProps;
+        original_price_including_tax: MoneyProps;
+        price: MoneyProps;
+        discounts: [
+            {
+                label: string;
+                amount: {
+                    value: number;
+                };
+            }
+        ];
+    };
 }
 export interface PaymentMethodsProps {
     name: string;
@@ -162,6 +183,35 @@ export declare enum AvailableActionsProps {
     RETURN = "RETURN",
     REORDER = "REORDER"
 }
+export interface ReturnsItemsProps {
+    number: string;
+    status: string;
+    created_at: string;
+    order: {
+        number: string;
+        token: string;
+    };
+    shipping: {
+        tracking: {
+            status: {
+                text: string;
+                type: string;
+            };
+            carrier: {
+                uid: string;
+                label: string;
+            };
+            tracking_number: string;
+        }[];
+    };
+    items: {
+        quantity: number;
+        status: string;
+        uid: string;
+        request_quantity: number;
+        order_item: OrderItemProps;
+    }[];
+}
 export interface OrderProps {
     available_actions: AvailableActionsProps[];
     shipping_method: string;
@@ -178,8 +228,8 @@ export interface OrderProps {
         code: string;
     }[];
     returns: {
-        pageSize: number;
-        currentPage: number;
+        __typename: string;
+        items: ReturnsItemsProps[];
     };
     shipments: ShipmentsProps[];
     items_eligible_for_return: OrderItemProps[];
@@ -196,6 +246,14 @@ export interface ErrorProps {
     errors?: {
         message?: string;
     }[];
+}
+type GetOrderDetailsByParams<T extends QueryType> = {
+    orderId?: string;
+    returnRef?: string;
+    queryType: T;
+    returnsPageSize?: number;
+};
+export interface GetOrderDetailsByIdProps extends GetOrderDetailsByParams<QueryType> {
 }
 export interface OrdersResponse extends ErrorProps {
     data?: {

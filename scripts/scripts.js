@@ -177,6 +177,8 @@ async function loadEager(doc) {
     await runEager(document, { audiences: AUDIENCES }, pluginContext);
   }
 
+  await initializeDropins();
+
   window.adobeDataLayer = window.adobeDataLayer || [];
 
   let pageType = 'CMS';
@@ -227,20 +229,24 @@ async function loadEager(doc) {
     pageType = 'Checkout';
   }
 
-  window.adobeDataLayer.push({
-    pageContext: {
-      pageType,
-      pageName: document.title,
-      eventType: 'visibilityHidden',
-      maxXOffset: 0,
-      maxYOffset: 0,
-      minXOffset: 0,
-      minYOffset: 0,
+  window.adobeDataLayer.push(
+    {
+      pageContext: {
+        pageType,
+        pageName: document.title,
+        eventType: 'visibilityHidden',
+        maxXOffset: 0,
+        maxYOffset: 0,
+        minXOffset: 0,
+        minYOffset: 0,
+      },
     },
-    shoppingCartContext: {
-      totalQuantity: 0,
+    {
+      shoppingCartContext: {
+        totalQuantity: 0,
+      },
     },
-  });
+  );
   window.adobeDataLayer.push((dl) => {
     dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
   });
@@ -371,7 +377,6 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
-  await initializeDropins();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

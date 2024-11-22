@@ -14,6 +14,7 @@ interface AddressFormInputsContext {
 }
 export type FormRef = {
     handleValidationSubmit: () => boolean;
+    isDataValid: boolean;
 };
 export interface FormProps {
     isWaitingForResponse?: boolean;
@@ -47,6 +48,9 @@ export interface FormInputsProps {
     onChange?: (event: Event) => void;
     onBlur?: (event: Event) => void;
     onFocus?: (event: Event) => void;
+    slots?: {
+        [key: string]: SlotProps;
+    };
 }
 export {};
 //# sourceMappingURL=form.types.d.ts.map

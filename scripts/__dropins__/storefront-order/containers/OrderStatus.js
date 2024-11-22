@@ -1,80 +1,22 @@
-import{jsx as r,jsxs as p,Fragment as A}from"@dropins/tools/preact-jsx-runtime.js";import{Card as U,Header as F,Button as h,Modal as k,InLineAlert as q,Picker as G}from"@dropins/tools/components.js";import{F as V}from"../chunks/CustomerDetailsContent.js";import{Slot as D,classes as v}from"@dropins/tools/lib.js";import{useMemo as W}from"@dropins/tools/preact-compat.js";import{O as j,a as J,A as P,t as z}from"../chunks/transform-order-details.js";import{f as B,h as Q}from"../chunks/fetch-graphql.js";import{useState as u,useEffect as y}from"@dropins/tools/preact-hooks.js";import{g as Y}from"../chunks/getStoreConfig.js";import{events as N}from"@dropins/tools/event-bus.js";import{useText as O,Text as S}from"@dropins/tools/i18n.js";import{C as K}from"../chunks/OrderLoaders.js";import"@dropins/tools/fetch-graphql.js";const E={pending:"orderPending",shiping:"orderShipped",complete:"orderComplete",processing:"orderProcessing","on hold":"orderOnHold",canceled:"orderCanceled","suspected fraud":"orderSuspectedFraud","payment Review":"orderPaymentReview","order received":"orderReceived","guest order cancellation requested":"guestOrderCancellationRequested"},X=({slots:t,title:d,status:n,orderData:e})=>{const s=String(n).toLocaleLowerCase(),o=O(`Order.OrderStatusContent.${E[s]}.title`),a=O(`Order.OrderStatusContent.${E[s]}.message`),i=O(`Order.OrderStatusContent.${E[s]}.messageWithoutDate`);if(!n)return r("div",{});const m=e!=null&&e.orderStatusChangeDate?a==null?void 0:a.message.replace("{DATE}",e==null?void 0:e.orderStatusChangeDate):i.messageWithoutDate;return p(U,{className:"order-order-status-content",variant:"secondary",children:[r(F,{title:d??o.title}),p("div",{className:"order-order-status-content__wrapper",children:[r("div",{className:"order-order-status-content__wrapper-description",children:r("p",{children:m})}),r(ne,{orderData:e,slots:t})]})]})};var f=(t=>(t.CANCEL="CANCEL",t.RETURN="RETURN",t.REORDER="REORDER",t))(f||{});const Z=`
-mutation CANCEL_ORDER_MUTATION($orderId: ID!, $reason: String!) {
-  cancelOrder(input: { order_id: $orderId, reason: $reason }) {
-    error
-    order {
-      email
-      available_actions
-      status
-      number
-      id
-      order_date
-      carrier
-      shipping_method
-      is_virtual
-      applied_coupons {
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
+import{jsx as c,jsxs as N,Fragment as S}from"@dropins/tools/preact-jsx-runtime.js";import{Card as F,Header as P,Button as E,InLineAlert as G,Modal as V}from"@dropins/tools/components.js";import"../chunks/OrderCancel.js";import{f as K}from"../chunks/returnOrdersHelper.js";import{classes as y,Slot as q}from"@dropins/tools/lib.js";import{f as x}from"../chunks/formatDateToLocale.js";import{useState as O,useEffect as v,useCallback as H}from"@dropins/tools/preact-hooks.js";import{events as I}from"@dropins/tools/event-bus.js";import"@dropins/tools/preact.js";import{useMemo as W,useState as j}from"@dropins/tools/preact-compat.js";import{r as k}from"../chunks/redirectTo.js";import{O as J}from"../chunks/OrderCancelForm.js";import{useText as C,Text as $}from"@dropins/tools/i18n.js";import{r as z}from"../chunks/reorderItems.js";import{C as B}from"../chunks/OrderLoaders.js";import{G as Q}from"../chunks/getGuestOrder.graphql.js";import{f as X,h as Y}from"../chunks/fetch-graphql.js";import{b as Z}from"../chunks/transform-order-details.js";import{g as D}from"../chunks/getStoreConfig.js";import"../chunks/getFormValues.js";import"../chunks/requestGuestOrderCancel.js";import"../chunks/network-error.js";import"@dropins/tools/fetch-graphql.js";import"../chunks/convertCase.js";var _=(r=>(r.CANCEL="CANCEL",r.RETURN="RETURN",r.REORDER="REORDER",r))(_||{});const w={pending:"orderPending",shiping:"orderShipped",complete:"orderComplete",processing:"orderProcessing","on hold":"orderOnHold",canceled:"orderCanceled","suspected fraud":"orderSuspectedFraud","payment Review":"orderPaymentReview","order received":"orderReceived","guest order cancellation requested":"guestOrderCancellationRequested"},ee=({slots:r,title:t,status:n,orderData:e,routeCreateReturn:i,onError:s,routeOnSuccess:a})=>{var M,L,b;const l=!!(e!=null&&e.returnNumber),d=String(n).toLocaleLowerCase(),o=(M=e==null?void 0:e.returns)==null?void 0:M[0],m=(o==null?void 0:o.returnStatus)??"",p=(o==null?void 0:o.createdReturnAt)??"",g=C(`Order.OrderStatusContent.${w[d]}.title`),h=C(`Order.OrderStatusContent.${w[d]}.message`),R=C(`Order.OrderStatusContent.${w[d]}.messageWithoutDate`),u=C({title:`Order.OrderStatusContent.returnStatus.${K(m)}`,returnMessage:"Order.OrderStatusContent.returnMessage"});if(!n)return c("div",{});const f=e!=null&&e.orderStatusChangeDate?h==null?void 0:h.message.replace("{DATE}",e==null?void 0:e.orderStatusChangeDate):R.messageWithoutDate,A=((b=(L=u==null?void 0:u.returnMessage)==null?void 0:L.replace("{ORDER_CREATE_DATE}",x(e==null?void 0:e.orderDate)))==null?void 0:b.replace("{RETURN_CREATE_DATE}",x(p)))??"",T=l?t??u.title:t??g.title;return N(F,{className:"order-order-status-content",variant:"secondary",children:[c(P,{title:T}),N("div",{className:"order-order-status-content__wrapper",children:[c("div",{className:y(["order-order-status-content__wrapper-description",["order-order-status-content__wrapper-description--actions-slot",!!(r!=null&&r.OrderActions)]]),children:c("p",{children:l?A:f})}),c(re,{orderData:e,slots:r,routeCreateReturn:i,routeOnSuccess:a,onError:s})]})]})},te=({orderData:r})=>{const[t,n]=O(r),[e,i]=O(r==null?void 0:r.status);return v(()=>{const s=I.on("order/data",a=>{n(a),i(a.status)},{eager:!0});return()=>{s==null||s.off()}},[]),{orderStatus:e,order:t}},re=({className:r,orderData:t,slots:n,routeCreateReturn:e,routeOnSuccess:i,onError:s})=>{const a=C({cancel:"Order.OrderStatusContent.actions.cancel",createReturn:"Order.OrderStatusContent.actions.createReturn",createAnotherReturn:"Order.OrderStatusContent.actions.createAnotherReturn",reorder:"Order.OrderStatusContent.actions.reorder"}),l=W(()=>{const d=t==null?void 0:t.availableActions,o=!!(d!=null&&d.length),m=!!(t!=null&&t.returnNumber),p=()=>{k(e,{},t)};return c(S,{children:n!=null&&n.OrderActions?c(q,{"data-testid":"OrderActionsSlot",name:"OrderCanceledActions",slot:n==null?void 0:n.OrderActions,context:t}):c("div",{"data-testid":"availableActionsList",className:y(["order-order-actions__wrapper",["order-order-actions__wrapper--empty",!o]]),children:d==null?void 0:d.map(g=>{switch(g){case _.CANCEL:return c(S,{children:m?null:c(ce,{orderRef:(t==null?void 0:t.token)??atob(t==null?void 0:t.id)})});case _.RETURN:return c(E,{variant:"secondary",onClick:p,children:m?a.createAnotherReturn:a.createReturn});case _.REORDER:return c(S,{children:m?null:c(ie,{orderData:t,onError:s,routeOnSuccess:i,children:a.reorder})})}})})})},[s,t,i,e,n,a]);return c("div",{className:y(["order-order-actions",r]),children:l})},U=()=>{const[r,t]=O(null);return v(()=>{const n=sessionStorage.getItem("orderStoreConfig"),e=n?JSON.parse(n):null;e?t(e):D().then(i=>{i&&(sessionStorage.setItem("orderStoreConfig",JSON.stringify(i)),t(i))})},[]),r},ne=`
+  mutation CONFIRM_CANCEL_ORDER_MUTATION(
+      $orderId: ID!,
+      $confirmationKey: String!
+    ) {
+    confirmCancelOrder(input: {
+      order_id: $orderId,
+      confirmation_key: $confirmationKey
+    }) {
+      order {
+        ...guestOrderData
+      }
+      errorV2 {
+        message
         code
-      }
-      shipments {
-        id
-        number
-        tracking {
-          title
-          number
-          carrier
-        }
-        comments {
-          message
-          timestamp
-        }
-        items {
-          id
-          product_sku
-          product_name
-          order_item {
-            ...OrderItems
-            ... on GiftCardOrderItem {
-              gift_card {
-                recipient_name
-                recipient_email
-                sender_name
-                sender_email
-                message
-              }
-            }
-          }
-        }
-      }
-      payment_methods {
-        name
-        type
-      }
-      shipping_address {
-        ...AddressesList
-      }
-      billing_address {
-        ...AddressesList
-      }
-      items {
-        ...OrderItems
-        ... on GiftCardOrderItem {
-          __typename
-          gift_card {
-            recipient_name
-            recipient_email
-            sender_name
-            sender_email
-            message
-          }
-        }
-      }
-      total {
-        ...OrderSummary
       }
     }
   }
-}
-${j}
-${J}
-${P}  
-`,ee=async(t,d,n,e)=>{if(!t)throw new Error("No order ID found");if(!d)throw new Error("No reason found");return B(Z,{variables:{orderId:t,reason:d}}).then(({errors:s,data:o})=>{if(s)return Q(s);if(o.cancelOrder.error!=null){e();return}const a=z(o.cancelOrder.order);n(a)})},re=()=>{const[t,d]=u(null);return y(()=>{const n=sessionStorage.getItem("orderStoreConfig"),e=n?JSON.parse(n):null;e?d(e):Y().then(s=>{s&&(sessionStorage.setItem("orderStoreConfig",JSON.stringify(s)),d(s))})},[]),t},te=({cancelButtonProps:t,modalProps:d,pickerProps:n,submitButtonProps:e,orderId:s})=>{const o=O({buttonText:"Order.OrderCancel.buttonText",ErrorHeading:"Order.OrderCancellationReasonsModal.errorHeading",ErrorDescription:"Order.OrderCancellationReasonsModal.errorDescription",orderCancellationLabel:"Order.OrderCancellationReasonsModal.label"}),[a,i]=u(!1),[m,g]=u(0),[C,M]=u(!1),[I,T]=u(!1),w=()=>{i(!0)},L=()=>{i(!1)},x=c=>{c.preventDefault();const l=Number(c.target.value);g(l)},R=re(),_=(R==null?void 0:R.orderCancellationReasons)??[];N.on("authenticated",c=>{c&&T(!0)},{eager:!0});const b=c=>c.map((l,H)=>({text:l==null?void 0:l.description,value:H.toString()})),$=async c=>(c.preventDefault(),ee(s,_[m].description,l=>{i(!1),I||(l.status="guest order cancellation requested"),N.emit("order/data",l)},()=>{M(!0)}));return p(A,{children:[r(h,{onClick:w,type:"button",variant:"secondary",...t,children:o.buttonText}),a&&p(k,{size:"medium",onClose:L,className:"order-order-cancel__modal",title:r("h2",{className:"order-order-cancel__title",children:r(S,{id:"Order.OrderCancellationReasonsModal.title"})}),"data-testid":"order-cancellation-reasons-modal",...d,children:[C&&r(q,{heading:o.ErrorHeading,description:o.ErrorDescription}),p(V,{onSubmit:$,children:[r("div",{className:"order-order-cancel__text",children:r(S,{id:"Order.OrderCancellationReasonsModal.description"})}),r(G,{name:"cancellationReasons",floatingLabel:o.orderCancellationLabel,defaultOption:b(_)[0],variant:"primary",options:b(_),value:String(m),handleSelect:x,required:!0,"data-testid":"order-cancellation-reasons-selector",...n}),r("div",{className:"order-order-cancel__button-container",children:r(h,{variant:"primary",...e,children:r(S,{id:"Order.OrderCancellationReasonsModal.button"})})})]})]})]})},ne=({className:t,children:d,orderData:n,slots:e,...s})=>{const o=O({cancel:"Order.OrderStatusContent.actions.cancel",return:"Order.OrderStatusContent.actions.return",reorder:"Order.OrderStatusContent.actions.reorder"}),a=W(()=>{const i=n==null?void 0:n.availableActions,m=!!(i!=null&&i.length);return r(A,{children:e!=null&&e.OrderActions?r(D,{"data-testid":"OrderActionsSlot",name:"OrderCanceledActions",slot:e==null?void 0:e.OrderActions,context:n}):r("div",{"data-testid":"availableActionsList",className:v(["order-order-actions__wrapper",["order-order-actions__wrapper--empty",!m]]),children:i==null?void 0:i.map((g,C)=>{switch(g){case f.CANCEL:return r(te,{orderId:atob(n.id)});case f.RETURN:return r(h,{variant:"secondary",children:o.return},C);case f.REORDER:return r(h,{variant:"secondary",children:o.reorder},C)}})})})},[n,e==null?void 0:e.OrderActions,o]);return r("div",{...s,className:v(["order-order-actions",t]),children:a})},oe=({orderData:t})=>{const[d,n]=u(t),[e,s]=u(t==null?void 0:t.status);return y(()=>{const o=N.on("order/data",a=>{n(a),s(a.status)},{eager:!0});return()=>{o==null||o.off()}},[]),{orderStatus:e,order:d}},ge=({slots:t,orderData:d,className:n,statusTitle:e,status:s})=>{const{orderStatus:o,order:a}=oe({orderData:d});return r("div",{className:v(["order-order-status",n]),children:a?r(X,{title:e,status:s||o,slots:t,orderData:a}):r(K,{withCard:!1})})};export{ge as OrderStatus,ge as default};
+${Q}
+`,se=async(r,t)=>X(ne,{variables:{orderId:r,confirmationKey:t}}).then(async({errors:n,data:e})=>{var a,l,d,o;const i=[...(a=e==null?void 0:e.confirmCancelOrder)!=null&&a.errorV2?[(l=e==null?void 0:e.confirmCancelOrder)==null?void 0:l.errorV2]:[],...n??[]];let s=null;return(d=e==null?void 0:e.confirmCancelOrder)!=null&&d.order&&(s=Z((o=e==null?void 0:e.confirmCancelOrder)==null?void 0:o.order),I.emit("order/data",s)),i.length>0?Y(i):s}),oe=({enableOrderCancellation:r})=>{const t=C({orderCancelled:"Order.OrderStatusContent.orderCanceled.message"}),[n,e]=O({text:"",status:void 0});return v(()=>{if(!r)return;const i=new URLSearchParams(window.location.search),s=i.get("order_id"),a=i.get("confirmation_key");s&&a&&se(s,a).then(()=>{e({text:t.orderCancelled,status:"success"})}).catch(l=>{e({text:l.message,status:"warning"})})},[r,t.orderCancelled]),{confirmOrderCancellation:n}},be=({slots:r,orderData:t,className:n,statusTitle:e,status:i,routeCreateReturn:s,onError:a,routeOnSuccess:l})=>{const{orderStatus:d,order:o}=te({orderData:t}),[m,p]=j(!1),g=()=>{p(!0);const f=new URL(window.location.href),A=f.searchParams.get("order_id"),T=f.searchParams.get("confirmation_key");A&&T&&(f.searchParams.delete("order_id"),f.searchParams.delete("confirmation_key"),window.history.replaceState({},document.title,f.toString()))},h=C({cancelOrder:"Order.OrderStatusContent.actions.cancel"}),R=U(),{confirmOrderCancellation:u}=oe({enableOrderCancellation:R==null?void 0:R.orderCancellationEnabled});return N("div",{className:y(["order-order-status",n]),children:[!m&&(u==null?void 0:u.status)!==void 0&&c(G,{heading:h.cancelOrder,onDismiss:g,description:u.text,type:u.status}),o?c(ee,{title:e,status:i||d,slots:r,orderData:o,routeCreateReturn:s,onError:a,routeOnSuccess:l}):c(B,{withCard:!1})]})},ce=({orderRef:r})=>{const[t,n]=O(!1),e=()=>{n(!0)},i=()=>{n(!1)},s=U(),a=(s==null?void 0:s.orderCancellationReasons)??[],l=d=>d.map((o,m)=>({text:o==null?void 0:o.description,value:m.toString()}));return I.on("order/data",d=>{const o=String(d.status).toLocaleLowerCase();(o==="guest order cancellation requested"||o==="canceled")&&i()}),N(S,{children:[c(E,{variant:"secondary",onClick:e,"data-testid":"cancel-button",children:c($,{id:"Order.OrderStatusContent.actions.cancel"})}),t&&c(V,{centered:!0,size:"medium",onClose:i,className:"order-order-cancel__modal",title:c("h2",{className:"order-order-cancel__title",children:c($,{id:"Order.OrderCancelForm.title"})}),"data-testid":"order-cancellation-reasons-modal",children:c(J,{orderRef:r,cancelReasons:l(a)})})]})},ie=({onError:r,routeOnSuccess:t,orderData:n,children:e})=>{const[i,s]=O(!1),a=H(()=>{s(!0);const l=n==null?void 0:n.number;z(l).then(({success:d,userInputErrors:o})=>{d&&k(t,{}),o.length&&(r==null||r(o))}).catch(d=>{r==null||r(d.message)}).finally(()=>{s(!1)})},[n,t,r]);return c(E,{type:"button",disabled:i,variant:"secondary",className:"order-reorder",onClick:a,children:e})};export{be as OrderStatus,be as default};

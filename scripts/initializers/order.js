@@ -3,38 +3,85 @@ import { initializers } from '@dropins/tools/initializer.js';
 import { initialize } from '@dropins/storefront-order/api.js';
 import { checkIsAuthenticated } from '../configs.js';
 import { initializeDropin } from './index.js';
+import { fetchPlaceholders } from '../aem.js';
 
 import {
   CUSTOMER_ORDER_DETAILS_PATH,
-  CUSTOMER_ORDERS_PATH,
   ORDER_DETAILS_PATH,
+  CUSTOMER_RETURN_DETAILS_PATH,
+  RETURN_DETAILS_PATH,
+  CUSTOMER_CREATE_RETURN_PATH,
+  CREATE_RETURN_PATH,
+  CUSTOMER_ORDERS_PATH,
   ORDER_STATUS_PATH,
-  CUSTOMER_PATH,
+  CUSTOMER_PATH, SALES_GUEST_VIEW_PATH, SALES_ORDER_VIEW_PATH,
 } from '../constants.js';
 
-initializeDropin(async () => {
+await initializeDropin(async () => {
   const { pathname, searchParams } = new URL(window.location.href);
   const isAccountPage = pathname.includes(CUSTOMER_PATH);
   const orderRef = searchParams.get('orderRef');
+  const returnRef = searchParams.get('returnRef');
+  const orderNumber = searchParams.get('orderNumber');
   const isTokenProvided = orderRef && orderRef.length > 20;
+  const labels = await fetchPlaceholders();
+  const langDefinitions = {
+    default: {
+      ...labels,
+    },
+  };
 
-  // Handle redirects for user details pages
-  if (pathname === ORDER_DETAILS_PATH || pathname === CUSTOMER_ORDER_DETAILS_PATH) {
-    await handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided);
-  }
-})();
-
-async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTokenProvided) {
-  let targetPath = null;
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
   }
+
+  const pathsRequiringRedirects = [
+    ORDER_DETAILS_PATH,
+    CUSTOMER_ORDER_DETAILS_PATH,
+    RETURN_DETAILS_PATH,
+    CUSTOMER_RETURN_DETAILS_PATH,
+    CREATE_RETURN_PATH,
+    CUSTOMER_CREATE_RETURN_PATH,
+    SALES_GUEST_VIEW_PATH,
+    SALES_ORDER_VIEW_PATH,
+  ];
+
+  if (pathsRequiringRedirects.includes(pathname)) {
+    await handleUserOrdersRedirects(
+      pathname,
+      isAccountPage,
+      orderRef,
+      returnRef,
+      isTokenProvided,
+      langDefinitions,
+      orderNumber,
+    );
+    return;
+  }
+
+  await initializers.mountImmediately(initialize, {
+    langDefinitions,
+    orderRef,
+    returnRef,
+  });
+})();
+
+async function handleUserOrdersRedirects(
+  pathname,
+  isAccountPage,
+  orderRef,
+  returnRef,
+  isTokenProvided,
+  langDefinitions,
+  orderNumber,
+) {
+  let targetPath = null;
 
   events.on('order/error', () => {
     if (checkIsAuthenticated()) {
       window.location.href = CUSTOMER_ORDERS_PATH;
     } else if (isTokenProvided) {
-      window.location.href = ORDER_STATUS_PATH;
+      window.location.href = orderNumber ? `${ORDER_STATUS_PATH}?orderRef=${orderNumber}` : ORDER_STATUS_PATH;
     } else {
       window.location.href = `${ORDER_STATUS_PATH}?orderRef=${orderRef}`;
     }
@@ -60,7 +107,9 @@ async function handleUserOrdersRedirects(pathname, isAccountPage, orderRef, isTo
     window.location.href = targetPath;
   } else {
     await initializers.mountImmediately(initialize, {
+      langDefinitions,
       orderRef,
+      returnRef,
     });
   }
 }
