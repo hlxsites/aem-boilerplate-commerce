@@ -1,3 +1,5 @@
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
 import{f as o,h as w}from"./network-error.js";import{s as d}from"./setReCaptchaToken.js";const i=`
   mutation RESET_PASSWORD($email: String!, $resetPasswordToken: String!, $newPassword: String!){
     resetPassword(email: $email,resetPasswordToken: $resetPasswordToken,newPassword: $newPassword)

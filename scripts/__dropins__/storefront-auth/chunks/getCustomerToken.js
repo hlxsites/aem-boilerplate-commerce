@@ -1,3 +1,5 @@
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
 import{a as y,f as k,h as x}from"./network-error.js";import"@dropins/tools/recaptcha.js";import{h as R,p as T,E as g,a as v,C as O}from"./getStoreConfig.js";import{events as D}from"@dropins/tools/event-bus.js";import{c as U}from"./initialize.js";import{s as K}from"./setReCaptchaToken.js";const F=t=>{var m,r,e,c,a,f;return{email:((r=(m=t==null?void 0:t.data)==null?void 0:m.customer)==null?void 0:r.email)||"",firstname:((c=(e=t==null?void 0:t.data)==null?void 0:e.customer)==null?void 0:c.firstname)||"",lastname:((f=(a=t==null?void 0:t.data)==null?void 0:a.customer)==null?void 0:f.lastname)||""}},H=`
   query GET_CUSTOMER_DATA {
     customer {

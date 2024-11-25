@@ -1,3 +1,5 @@
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
 import{f as a,h as s}from"./network-error.js";import{s as n}from"./setReCaptchaToken.js";import{t as u}from"./transform-attributes-form.js";import{h as o}from"./getStoreConfig.js";const i=`
   mutation CREATE_CUSTOMER($input: CustomerInput!) {
     createCustomer(input: $input) {
