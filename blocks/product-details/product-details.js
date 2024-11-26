@@ -21,12 +21,7 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
 // Libs
-import {
-  setJsonLd,
-  loadErrorPage,
-  performCatalogServiceQuery,
-  variantsQuery,
-} from '../../scripts/commerce.js';
+import { setJsonLd, loadErrorPage } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
 // Initializers
@@ -222,9 +217,17 @@ export default async function decorate(block) {
   }, { eager: true });
 
   // Set JSON-LD and Meta Tags
-  setJsonLdProduct(product);
-  setMetaTags(product);
-  document.title = product.name;
+  events.on(
+    'eds/lcp',
+    () => {
+      if (product) {
+        setJsonLdProduct(product);
+        setMetaTags(product);
+        document.title = product.name;
+      }
+    },
+    { eager: true },
+  );
 
   return Promise.resolve();
 }
@@ -245,8 +248,32 @@ async function setJsonLdProduct(product) {
   const brand = attributes.find((attr) => attr.name === 'brand');
 
   // get variants
-  const { variants } = (await performCatalogServiceQuery(variantsQuery, { sku }))?.variants
-    || { variants: [] };
+  const { data } = await pdpApi.fetchGraphQl(`
+    query GET_PRODUCT_VARIANTS($sku: String!) {
+      variants(sku: $sku) {
+        variants {
+          product {
+            sku
+            name
+            inStock
+            images(roles: ["image"]) {
+              url
+            }
+            ...on SimpleProductView {
+              price {
+                final { amount { currency value } }
+              }
+            }
+          }
+        }
+      }
+    }
+  `, {
+    method: 'GET',
+    variables: { sku },
+  });
+
+  const variants = data?.variants?.variants || [];
 
   const ldJson = {
     '@context': 'http://schema.org',
