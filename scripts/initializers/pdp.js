@@ -1,3 +1,5 @@
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
+
 import { initializers } from '@dropins/tools/initializer.js';
 import {
   initialize,
