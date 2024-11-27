@@ -60,18 +60,21 @@ await initializeDropin(async () => {
   });
 })();
 
-function preloadImageMiddleware(data) {
+async function preloadImageMiddleware(data) {
   const image = data?.images?.[0]?.url;
 
   if (image) {
-    UI.render(Image, {
+    const $wrapper = document.createElement('div');
+    await UI.render(Image, {
       src: image,
       ...IMAGES_SIZES.mobile,
       params: {
         ...IMAGES_SIZES,
       },
       loading: 'eager',
-    })(document.createElement('div'));
+    })($wrapper);
+
+    console.log($wrapper);
   }
   return data;
 }
