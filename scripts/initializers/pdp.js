@@ -74,7 +74,7 @@ async function preloadImageMiddleware(data) {
       loading: 'eager',
     })($wrapper);
 
-    console.log($wrapper);
+    console.log(image, $wrapper);
   }
   return data;
 }
