@@ -61,10 +61,9 @@ await initializeDropin(async () => {
 })();
 
 async function preloadImageMiddleware(data) {
-  const image = data?.images?.[0]?.url;
+  const image = data?.images?.[0]?.url?.replace(/^https?:/, '');
 
   if (image) {
-    const $wrapper = document.createElement('div');
     await UI.render(Image, {
       src: image,
       ...IMAGES_SIZES.mobile,
@@ -72,9 +71,7 @@ async function preloadImageMiddleware(data) {
         ...IMAGES_SIZES,
       },
       loading: 'eager',
-    })($wrapper);
-
-    console.log(image, $wrapper);
+    })(document.createElement('div'));
   }
   return data;
 }
