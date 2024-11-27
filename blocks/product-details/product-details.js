@@ -25,7 +25,7 @@ import { setJsonLd, loadErrorPage } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
 // Initializers
-import '../../scripts/initializers/pdp.js';
+import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 
 export default async function decorate(block) {
@@ -103,6 +103,9 @@ export default async function decorate(block) {
       peak: false,
       gap: 'small',
       loop: false,
+      imageParams: {
+        ...IMAGES_SIZES,
+      },
     })($galleryMobile),
 
     // Gallery (Desktop)
@@ -112,6 +115,9 @@ export default async function decorate(block) {
       peak: true,
       gap: 'small',
       loop: false,
+      imageParams: {
+        ...IMAGES_SIZES,
+      },
     })($gallery),
 
     // Header
