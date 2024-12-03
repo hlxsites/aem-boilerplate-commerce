@@ -1,7 +1,6 @@
 import { products } from "../../../fixtures";
-import { expectsEventWithContext } from "../../../assertions";
 /**
- * https://github.com/adobe/commerce-events/blob/main/examples/events/initiate-checkout.md
+ * https://github.com/adobe/commerce-events/blob/main/examples/events/add-to-cart.md
  *
  * Required Contexts: page, storefront, shoppingCart
  */
