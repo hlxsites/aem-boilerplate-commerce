@@ -66,7 +66,9 @@ function renderPlaceholder(block) {
 
 function renderItem(unitId, product) {
   let image = product.images[0]?.url;
-  image = image.replace('http://', '//');
+  if (image) {
+    image = image.replace('http://', '//');
+  }
 
   const clickHandler = () => {
     window.adobeDataLayer.push((dl) => {
@@ -100,7 +102,7 @@ function renderItem(unitId, product) {
     <a href="/products/${product.urlKey}/${product.sku}">
       <picture>
         <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
-        <img loading="lazy" alt="${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
+        <img loading="lazy" alt="Image of ${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
       </picture>
       <span>${product.name}</span>
     </a>
