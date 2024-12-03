@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
-import * as authApi from '@dropins/storefront-auth/api.js';
-import { render as authRenderer } from '@dropins/storefront-auth/render.js';
-import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
-import { events } from '@dropins/tools/event-bus.js';
-import { getCookie } from '../../scripts/configs.js';
-import { CUSTOMER_FORGOTPASSWORD_PATH } from '../../scripts/constants.js';
+import * as authApi from "@dropins/storefront-auth/api.js";
+import { render as authRenderer } from "@dropins/storefront-auth/render.js";
+import { SignIn } from "@dropins/storefront-auth/containers/SignIn.js";
+import { events } from "@dropins/tools/event-bus.js";
+import { getCookie } from "../../scripts/configs.js";
+import { CUSTOMER_FORGOTPASSWORD_PATH } from "../../scripts/constants.js";
 
 function checkAndRedirect(redirections) {
   Object.entries(redirections).some(([currentPath, redirectPath]) => {
@@ -19,7 +19,7 @@ function checkAndRedirect(redirections) {
 function renderSignIn(element) {
   authRenderer.render(SignIn, {
     onSuccessCallback: () => {},
-    formSize: 'small',
+    formSize: "small",
     routeForgotPassword: () => CUSTOMER_FORGOTPASSWORD_PATH,
   })(element);
 }
@@ -27,7 +27,7 @@ function renderSignIn(element) {
 export function renderAuthDropdown(navTools) {
   const dropdownElement = document.createRange().createContextualFragment(`
  <div class="dropdown-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-dropdown-button"></button>
+    <button type="button" class="nav-dropdown-button" aria-haspopup="dialog" aria-expanded="false" aria-controls="login-modal"></button>
     <div class="nav-auth-menu-panel nav-tools-panel">
       <div id="auth-dropin-container"></div>
       <ul class="authenticated-user-menu">
@@ -42,22 +42,27 @@ export function renderAuthDropdown(navTools) {
 
   navTools.append(dropdownElement);
 
-  const authDropDownPanel = navTools.querySelector('.nav-auth-menu-panel');
-  const authDropDownMenuList = navTools.querySelector('.authenticated-user-menu');
-  const authDropinContainer = navTools.querySelector('#auth-dropin-container');
-  const loginButton = navTools.querySelector('.nav-dropdown-button');
-  const logoutButtonElement = navTools.querySelector('.authenticated-user-menu > li > button');
+  const authDropDownPanel = navTools.querySelector(".nav-auth-menu-panel");
+  const authDropDownMenuList = navTools.querySelector(
+    ".authenticated-user-menu"
+  );
+  const authDropinContainer = navTools.querySelector("#auth-dropin-container");
+  const loginButton = navTools.querySelector(".nav-dropdown-button");
+  const logoutButtonElement = navTools.querySelector(
+    ".authenticated-user-menu > li > button"
+  );
 
-  authDropDownPanel.addEventListener('click', (e) => e.stopPropagation());
+  authDropDownPanel.addEventListener("click", (e) => e.stopPropagation());
 
   async function toggleDropDownAuthMenu(state) {
-    const show = state ?? !authDropDownPanel.classList.contains('nav-tools-panel--show');
+    const show =
+      state ?? !authDropDownPanel.classList.contains("nav-tools-panel--show");
 
-    authDropDownPanel.classList.toggle('nav-tools-panel--show', show);
+    authDropDownPanel.classList.toggle("nav-tools-panel--show", show);
   }
 
-  loginButton.addEventListener('click', () => toggleDropDownAuthMenu());
-  document.addEventListener('click', async (e) => {
+  loginButton.addEventListener("click", () => toggleDropDownAuthMenu());
+  document.addEventListener("click", async (e) => {
     const clickOnDropDownPanel = authDropDownPanel.contains(e.target);
     const clickOnLoginButton = loginButton.contains(e.target);
 
@@ -66,27 +71,27 @@ export function renderAuthDropdown(navTools) {
     }
   });
 
-  logoutButtonElement.addEventListener('click', async () => {
+  logoutButtonElement.addEventListener("click", async () => {
     await authApi.revokeCustomerToken();
     checkAndRedirect({
-      '/customer': '/customer/login',
-      '/order-details': '/',
+      "/customer": "/customer/login",
+      "/order-details": "/",
     });
   });
 
   renderSignIn(authDropinContainer);
 
   const updateDropDownUI = (isAuthenticated) => {
-    const getUserTokenCookie = getCookie('auth_dropin_user_token');
-    const getUserNameCookie = getCookie('auth_dropin_firstname');
+    const getUserTokenCookie = getCookie("auth_dropin_user_token");
+    const getUserNameCookie = getCookie("auth_dropin_firstname");
 
     if (isAuthenticated || getUserTokenCookie) {
-      authDropDownMenuList.style.display = 'block';
-      authDropinContainer.style.display = 'none';
+      authDropDownMenuList.style.display = "block";
+      authDropinContainer.style.display = "none";
       loginButton.textContent = `Hi, ${getUserNameCookie}`;
     } else {
-      authDropDownMenuList.style.display = 'none';
-      authDropinContainer.style.display = 'block';
+      authDropDownMenuList.style.display = "none";
+      authDropinContainer.style.display = "block";
       loginButton.innerHTML = `
       <svg
           width="25"
@@ -101,7 +106,7 @@ export function renderAuthDropdown(navTools) {
     }
   };
 
-  events.on('authenticated', (isAuthenticated) => {
+  events.on("authenticated", (isAuthenticated) => {
     updateDropDownUI(isAuthenticated);
   });
 
