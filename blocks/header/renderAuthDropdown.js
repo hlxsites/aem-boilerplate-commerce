@@ -63,7 +63,7 @@ export function renderAuthDropdown(navTools) {
     authDropDownPanel.setAttribute("aria-hidden", "false");
     authDropDownPanel.setAttribute("aria-labelledby", "modal-title");
     authDropDownPanel.setAttribute("aria-describedby", "modal-description");
-    authDropDownPanel.querySelector('input[name="email"]').focus();
+    authDropDownPanel.focus();
   }
 
   loginButton.addEventListener("click", () => toggleDropDownAuthMenu());
