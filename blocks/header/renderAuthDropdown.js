@@ -58,6 +58,8 @@ export function renderAuthDropdown(navTools) {
     const show =
       state ?? !authDropDownPanel.classList.contains("nav-tools-panel--show");
 
+    console.log("authDropDownPanel", authDropDownPanel);
+
     authDropDownPanel.classList.toggle("nav-tools-panel--show", show);
   }
 
