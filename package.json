@@ -41,6 +41,7 @@
     "@dropins/storefront-checkout": "0.1.0-alpha60",
     "@dropins/storefront-order": "0.1.0-alpha24",
     "@dropins/storefront-pdp": "1.0.0-beta3",
+    "@dropins/storefront-payment-services": "0.0.1-alpha16",
     "@dropins/tools": "^0.36.0"
   }
 }
