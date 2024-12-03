@@ -59,8 +59,16 @@ export function renderAuthDropdown(navTools) {
       state ?? !authDropDownPanel.classList.contains("nav-tools-panel--show");
 
     console.log("authDropDownPanel", authDropDownPanel);
+    console.log("show", show);
 
     authDropDownPanel.classList.toggle("nav-tools-panel--show", show);
+
+    authDropDownPanel.setAttribute("role", "dialog");
+    authDropDownPanel.setAttribute("aria-hidden", "false");
+    authDropDownPanel.setAttribute("aria-labelledby", "modal-title");
+    authDropDownPanel.setAttribute("aria-describedby", "modal-description");
+
+    authDropDownPanel.querySelector('input[name="email"]').focus();
   }
 
   loginButton.addEventListener("click", () => toggleDropDownAuthMenu());
