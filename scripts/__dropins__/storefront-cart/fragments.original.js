@@ -58,6 +58,7 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
     code
     message
   }
+
   prices {
     price {
       value
@@ -98,6 +99,7 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
       currency
     }
   }
+
   product {
     name
     sku
@@ -193,6 +195,7 @@ fragment CART_ITEM_FRAGMENT on CartItemInterface {
     is_available
   }
 }
+
 ${e}
 ${t}
 `,r=`
@@ -262,5 +265,6 @@ fragment CART_FRAGMENT on Cart {
     postcode
   }
 }
+
 ${a}
 `;export{r as CART_FRAGMENT,a as CART_ITEM_FRAGMENT};
