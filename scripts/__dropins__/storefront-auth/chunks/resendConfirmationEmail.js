@@ -1,5 +1,3 @@
-/*! Copyright 2024 Adobe
-All Rights Reserved. */
 import{f as r,h as e}from"./network-error.js";const i=`
 mutation RESEND_CONFIRMATION_EMAIL($email: String!) {
   resendConfirmationEmail(email: $email)
