@@ -10,7 +10,7 @@ import {
   fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
-import { commerceEndpointWithQueryParams, getOptionsUIDsFromUrl, getSkuFromUrl } from '../commerce.js';
+import { commerceEndpointWithQueryParams, getOptionsUIDsFromUrl, getSkuFromUrl, loadErrorPage } from '../commerce.js';
 import { getConfigValue } from '../configs.js';
 import { fetchPlaceholders } from '../aem.js';
 
@@ -36,6 +36,10 @@ await initializeDropin(async () => {
     fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
     fetchPlaceholders(),
   ]);
+
+  if (!product?.sku) {
+    return loadErrorPage();
+  }
 
   const langDefinitions = {
     default: {
