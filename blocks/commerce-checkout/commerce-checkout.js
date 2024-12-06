@@ -58,7 +58,14 @@ import OrderProductList from '@dropins/storefront-order/containers/OrderProductL
 import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
+
+// Payment Services Dropin
+import CreditCard, { CREDIT_CARD_CODE } from '@dropins/payment-services/containers/CreditCard.js';
+import { render as paymentServicesProvider } from '@dropins/payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+
+// Get Config Value
+import { getConfigValue } from '../../scripts/configs.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -221,6 +228,10 @@ export default async function decorate(block) {
     modal = null;
   };
 
+  const apiUrl = await getConfigValue('commerce-core-endpoint');
+
+  let paymentServicesSubmit;
+
   const [
     _mergedCartBanner,
     _heading,
@@ -311,7 +322,44 @@ export default async function decorate(block) {
       },
     })($delivery),
 
-    CheckoutProvider.render(PaymentMethods)($paymentMethods),
+    CheckoutProvider.render(PaymentMethods, {
+      slots: {
+        Handlers: {
+          checkmo: (_ctx) => {
+            const $content = document.createElement('div');
+            $content.innerText = 'checkmo';
+            _ctx.replaceHTML($content);
+          },
+          // Render Payment Services Dropin
+          [CREDIT_CARD_CODE]: (_ctx) => {
+            const $content = document.createElement('div');
+            $content.innerText = CREDIT_CARD_CODE;
+            _ctx.replaceHTML($content);
+            paymentServicesProvider.render(CreditCard, {
+              location: 'CHECKOUT',
+              apiUrl,
+              getCustomerToken: getUserTokenCookie,
+              getCartId: () => _ctx.cartId,
+              onFormValidityChange: (isValid) => {
+                placeOrder.setProps((props) => ({ ...props, disabled: !isValid }));
+              },
+              setSubmit: (submit) => {
+                paymentServicesSubmit = submit;
+              },
+              onRender: () => {
+                placeOrder.setProps((props) => ({ ...props, disabled: true }));
+              },
+              onStart: () => {
+              },
+              onError: (error) => {
+              },
+              onSuccess: async () => {
+              },
+            })($content);
+          },
+        },
+      },
+    })($paymentMethods),
 
     AccountProvider.render(AddressForm, {
       isOpen: true,
@@ -413,6 +461,10 @@ export default async function decorate(block) {
         await displayOverlaySpinner();
 
         try {
+          if (paymentServicesSubmit !== undefined) {
+            await paymentServicesSubmit();
+          }
+
           await checkoutApi.placeOrder();
         } catch (error) {
           console.error(error);
