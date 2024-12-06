@@ -115,7 +115,7 @@ export default async function decorate(block) {
   events.on('cart/data', (payload) => {
     toggleEmptyCart(isCartEmpty(payload));
 
-    if(!cartViewEventPublished) {
+    if (!cartViewEventPublished) {
       cartViewEventPublished = true;
       publishShoppingCartViewEvent();
     }
