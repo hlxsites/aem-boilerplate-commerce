@@ -9,6 +9,9 @@ import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShippi
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 
+// API
+import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
+
 // Initializers
 import '../../scripts/initializers/cart.js';
 
@@ -107,9 +110,15 @@ export default async function decorate(block) {
     })($emptyCart),
   ]);
 
+  let cartViewEventPublished = false;
   // Events
   events.on('cart/data', (payload) => {
     toggleEmptyCart(isCartEmpty(payload));
+
+    if (!cartViewEventPublished) {
+      cartViewEventPublished = true;
+      publishShoppingCartViewEvent();
+    }
   }, { eager: true });
 
   return Promise.resolve();
