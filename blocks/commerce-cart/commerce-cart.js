@@ -1,4 +1,5 @@
 import { events } from '@dropins/tools/event-bus.js';
+import { Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
@@ -13,6 +14,7 @@ import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import '../../scripts/initializers/cart.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
+import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -25,6 +27,7 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
+    'promo-banner': promotion,
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
@@ -88,7 +91,29 @@ export default async function decorate(block) {
           if (enableEstimateShipping === 'true') {
             const wrapper = document.createElement('div');
             await provider.render(EstimateShipping, {})(wrapper);
-            ctx.replaceWith(wrapper);
+            ctx.appendChild(wrapper);
+          }
+
+          // Promo Banner
+          if (promotion) {
+            await loadFragment(promotion).then(async (promoFragment) => {
+              const $promo = document.createRange().createContextualFragment(`
+                <div class="cart__promo-banner">
+                  <div class="cart__promo-banner__icon"></div>
+                  <div class="cart__promo-banner__content"></div>
+                </div>            
+              `);
+
+              const $icon = $promo.querySelector('.cart__promo-banner__icon');
+
+              await UI.render(Icon, { source: 'CheckWithCircle' })($icon);
+
+              const content = promoFragment.querySelector('.default-content-wrapper');
+              const $content = $promo.querySelector('.cart__promo-banner__content');
+              $content.appendChild(content);
+
+              ctx.appendSibling($promo);
+            });
           }
         },
         Coupons: (ctx) => {
