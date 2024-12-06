@@ -1,6 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{s,f as d,h as T}from"./chunks/resetCart.js";import{g as $,r as v,d as Q,a as H,b as k,c as z}from"./chunks/resetCart.js";import{C as l,t as f,c as g,g as h,a as A}from"./chunks/getStoreConfig.js";import{b as j,e as q,i as B,d as J}from"./chunks/getStoreConfig.js";import{events as p}from"@dropins/tools/event-bus.js";import{CART_FRAGMENT as I}from"./fragments.js";import{c as _,p as E}from"./chunks/acdl.js";import{u as L}from"./chunks/updateProductsFromCart.js";import{g as W,b as X,a as Z}from"./chunks/getEstimateShipping.js";import{g as at}from"./chunks/getEstimatedTotals.js";import{g as et}from"./chunks/persisted-data.js";import{A as ot,a as nt}from"./chunks/applyCouponsToCart.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/lib.js";const R=`
+import{s as o,f as d,h as T}from"./chunks/resetCart.js";import{g as $,r as Q,d as H,a as k,b as z,c as V}from"./chunks/resetCart.js";import{C as l,t as g,c as f}from"./chunks/refreshCart.js";import{g as q,b as B,d as J,e as K,i as L,a as W,r as X}from"./chunks/refreshCart.js";import{events as C}from"@dropins/tools/event-bus.js";import{CART_FRAGMENT as h}from"./fragments.js";import{b as A,a as I,c as _}from"./chunks/acdl.js";import{u as Z}from"./chunks/updateProductsFromCart.js";import{g as rt,b as at,a as et}from"./chunks/getEstimateShipping.js";import{g as ot}from"./chunks/getEstimatedTotals.js";import{g as E}from"./chunks/persisted-data.js";import{A as it,a as ct}from"./chunks/applyCouponsToCart.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/lib.js";const G=`
   mutation ADD_PRODUCTS_TO_CART_MUTATION(
       $cartId: String!, 
       $cartItems: [CartItemInput!]!,
@@ -20,9 +20,13 @@ import{s,f as d,h as T}from"./chunks/resetCart.js";import{g as $,r as v,d as Q,a
     }
   }
     
-  ${I}
-`,b=async a=>{let o=!1;const n=s.cartId||await P().then(e=>(o=!0,e));return d(R,{variables:{cartId:n,cartItems:a.map(({sku:e,parentSku:r,quantity:c,optionsUIDs:t,enteredOptions:i})=>({sku:e,parent_sku:r,quantity:c,selected_options:t,entered_options:i}))}}).then(({errors:e,data:r})=>{var i;const c=[...((i=r==null?void 0:r.addProductsToCart)==null?void 0:i.user_errors)??[],...e??[]];if(c.length>0)return T(c);const t=f(r.addProductsToCart.cart);if(p.emit("cart/updated",t),p.emit("cart/data",t),t){const m=t.items.filter(C=>a.some(({sku:u})=>u===C.sku));o?_(t,m,s.locale??"en-US"):E(t,m,s.locale??"en-US")}return t})},y=`
-    mutation CREATE_EMPTY_CART_MUTATION {
-        createEmptyCart
+  ${h}
+`,M=async a=>{let r=!1;const n=o.cartId||await R().then(s=>(r=!0,s));return d(G,{variables:{cartId:n,cartItems:a.map(({sku:s,parentSku:e,quantity:i,optionsUIDs:t,enteredOptions:c})=>({sku:s,parent_sku:e,quantity:i,selected_options:t,entered_options:c}))}}).then(({errors:s,data:e})=>{var c;const i=[...((c=e==null?void 0:e.addProductsToCart)==null?void 0:c.user_errors)??[],...s??[]];if(i.length>0)return T(i);const t=g(e.addProductsToCart.cart);if(C.emit("cart/updated",t),C.emit("cart/data",t),t){const p=t.items.filter(m=>a.some(({sku:u})=>u===m.sku));r?A(t,p,o.locale??"en-US"):I(t,p,o.locale??"en-US")}return t})},S=`
+    mutation CREATE_GUEST_CART_MUTATION {
+        createGuestCart {
+          cart {
+            id
+          }
+        }
     }
-`,P=async()=>{const{disableGuestCart:a}=g.getConfig();if(a)throw new Error("Guest cart is disabled");return await d(y).then(({data:o})=>{const n=o.createEmptyCart;return s.cartId=n,n})},x=async()=>{const a=s.authenticated?await h():await A();return p.emit("cart/updated",a),p.emit("cart/data",a),a};export{ot as ApplyCouponsStrategy,b as addProductsToCart,nt as applyCouponsToCart,g as config,P as createEmptyCart,d as fetchGraphQl,j as getCartData,et as getCartDataFromCache,$ as getConfig,W as getCountries,h as getCustomerCartPayload,X as getEstimateShipping,at as getEstimatedTotals,A as getGuestCartPayload,Z as getRegions,q as getStoreConfig,B as initialize,J as initializeCart,x as refreshCart,v as removeFetchGraphQlHeader,Q as resetCart,H as setEndpoint,k as setFetchGraphQlHeader,z as setFetchGraphQlHeaders,L as updateProductsFromCart};
+`,R=async()=>{const{disableGuestCart:a}=f.getConfig();if(a)throw new Error("Guest cart is disabled");return await d(S).then(({data:r})=>{const n=r.createGuestCart.cart.id;return o.cartId=n,n})},v=()=>{const a=o.locale??"en-US",r=E();r&&_(r,a)};export{it as ApplyCouponsStrategy,M as addProductsToCart,ct as applyCouponsToCart,f as config,R as createGuestCart,d as fetchGraphQl,q as getCartData,E as getCartDataFromCache,$ as getConfig,rt as getCountries,B as getCustomerCartPayload,at as getEstimateShipping,ot as getEstimatedTotals,J as getGuestCartPayload,et as getRegions,K as getStoreConfig,L as initialize,W as initializeCart,v as publishShoppingCartViewEvent,X as refreshCart,Q as removeFetchGraphQlHeader,H as resetCart,k as setEndpoint,z as setFetchGraphQlHeader,V as setFetchGraphQlHeaders,Z as updateProductsFromCart};
