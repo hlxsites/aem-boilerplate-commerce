@@ -31,6 +31,19 @@ export default async function decorate(block) {
 
   const isEmptyCart = isCartEmpty(cart);
 
+  const DROPDOWN_MAX_QUANTITY = 20;
+
+  const dropdownOptions = Array.from(
+    { length: parseInt(DROPDOWN_MAX_QUANTITY, 10) },
+    (_, i) => {
+      const quantityOption = i + 1;
+      return {
+        value: `${quantityOption}`,
+        text: `${quantityOption}`,
+      };
+    },
+  );
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="cart__wrapper">
@@ -74,9 +87,60 @@ export default async function decorate(block) {
       routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
       routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
-      attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
+      attributesToHide: hideAttributes
+        .split(',')
+        .map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      showDiscount: 'true',
+      showSavings: 'true',
+      quantityType: 'dropdown',
+      dropdownOptions,
+      slots: {
+        Footer: (ctx) => {
+          // Runs on mount
+          const wrapper = document.createElement('div');
+          ctx.appendChild(wrapper);
+
+          // Append Product Promotions on every update
+          ctx.onChange((next) => {
+            wrapper.innerHTML = '';
+
+            next.item?.discount?.label?.forEach((label) => {
+              const discount = document.createElement('div');
+              discount.style.color = '#3d3d3d';
+              discount.innerText = label;
+              wrapper.appendChild(discount);
+            });
+          });
+        },
+        ProductAttributes: (ctx) => {
+          // Prepend Product Attributes
+          const productAttributes = ctx.item?.productAttributes;
+
+          productAttributes?.forEach((attr) => {
+            if (attr.code === 'Delivery Timeline') {
+              if (attr.selected_options) {
+                const selectedOptions = attr.selected_options
+                  .filter((option) => option.label.trim() !== '')
+                  .map((option) => option.label)
+                  .join(', ');
+
+                if (selectedOptions) {
+                  const productAttribute = document.createElement('div');
+                  productAttribute.innerText = `${attr.code}: ${selectedOptions}`;
+                  return ctx.appendChild(productAttribute);
+                }
+              } else if (attr.value) {
+                const productAttribute = document.createElement('div');
+                productAttribute.innerText = `${attr.value}`;
+                return ctx.appendChild(productAttribute);
+              }
+            }
+            return null;
+          });
+        },
+      },
     })($list),
 
     // Order Summary
@@ -108,9 +172,13 @@ export default async function decorate(block) {
   ]);
 
   // Events
-  events.on('cart/data', (payload) => {
-    toggleEmptyCart(isCartEmpty(payload));
-  }, { eager: true });
+  events.on(
+    'cart/data',
+    (payload) => {
+      toggleEmptyCart(isCartEmpty(payload));
+    },
+    { eager: true },
+  );
 
   return Promise.resolve();
 }
