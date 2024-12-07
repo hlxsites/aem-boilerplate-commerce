@@ -183,6 +183,8 @@ declare const _default: {
       },
       "actions": {
         "cancel": "Cancel order",
+        "confirmGuestReturn": "Return request confirmed",
+        "confirmGuestReturnMessage": "Your return request has been successfully confirmed.",
         "createReturn": "Return or replace",
         "createAnotherReturn": "Start another return",
         "reorder": "Reorder"
@@ -232,7 +234,7 @@ declare const _default: {
         "messageWithoutDate": "Your order is processing. Check back for more details when your order ships."
       },
       "guestOrderCancellationRequested": {
-        "title": "cancellation requested",
+        "title": "Cancellation requested",
         "message": "The cancellation has been requested on {DATE}. Check your email for further instructions.",
         "messageWithoutDate": "The cancellation has been requested. Check your email for further instructions."
       },

@@ -7,6 +7,7 @@ export * from './containers/useOrderSearch';
 export * from './containers/useOrderStatus';
 export * from './containers/useReturnsList';
 export * from './containers/useShippingStatus';
+export * from './containers/useOrderActions';
 export * from './useInLineAlert';
 export * from './useIsMobile';
 export * from './api/useGetStoreConfig';

@@ -39,7 +39,8 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
         totalGiftcard?: import('../../types').MoneyProps | undefined;
         grandTotal?: import('../../types').MoneyProps | undefined;
         totalShipping?: import('../../types').MoneyProps | undefined;
-        subtotal?: import('../../types').MoneyProps | undefined;
+        subtotalExclTax?: import('../../types').MoneyProps | undefined;
+        subtotalInclTax?: import('../../types').MoneyProps | undefined;
         totalTax?: import('../../types').MoneyProps | undefined;
         shippingAddress?: import('../../data/models').OrderAddressModel | undefined;
         billingAddress?: import('../../data/models').OrderAddressModel | undefined;

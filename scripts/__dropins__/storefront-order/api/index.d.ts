@@ -13,4 +13,7 @@ export * from './placeOrder';
 export * from './reorderItems';
 export * from './requestGuestOrderCancel';
 export * from './requestReturn';
+export * from './requestGuestReturn';
+export * from './confirmGuestReturn';
+export * from './confirmCancelOrder';
 //# sourceMappingURL=index.d.ts.map

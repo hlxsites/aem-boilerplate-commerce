@@ -8,6 +8,7 @@ export * from './api/guestOrderByToken.types';
 export * from './api/placeOrder.types';
 export * from './api/reorderItems.types';
 export * from './api/requestReturn.types';
+export * from './api/confirmGuestReturn.types';
 export * from './createReturn.types';
 export * from './customerDetails.types';
 export * from './emptyList.types';
@@ -22,4 +23,5 @@ export * from './orderStatus.types';
 export * from './reorder.types';
 export * from './returnsList.types';
 export * from './shippingStatus.types';
+export * from './orderEmailActionHandler.types';
 //# sourceMappingURL=index.d.ts.map
