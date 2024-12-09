@@ -1,10 +1,13 @@
 # Edge Delivery Services + Adobe Commerce Boilerplate
+
 This project boilerplate is for Edge Delivery Services projects that integrate with Adobe Commerce.
 
 ## Documentation
+
 https://experienceleague.adobe.com/developer/commerce/storefront/
 
 ## Environments
+
 - Preview: https://main--{repo}--{owner}.aem.page/
 - Live: https://main--{repo}--{owner}.aem.live/
 
