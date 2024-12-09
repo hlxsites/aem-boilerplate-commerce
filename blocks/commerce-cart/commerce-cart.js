@@ -74,7 +74,7 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
       routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
@@ -84,7 +84,7 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: (product) => `/products/${product.url.urlKey}/${product.sku}`,
+      routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
       routeCheckout: checkoutURL ? () => checkoutURL : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
