@@ -1,59 +1,6 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{t as T,m as s,f as A,l as M}from"./removeCustomerAddress.js";import{c as C}from"./getStoreConfig.js";import"@dropins/tools/event-bus.js";import{merge as v}from"@dropins/tools/lib.js";const I=(t,r="en-US",a={})=>{const e={...{day:"2-digit",month:"2-digit",year:"numeric"},...a},d=new Date(t);return isNaN(d.getTime())?"Invalid Date":new Intl.DateTimeFormat(r,e).format(d)},N=t=>{var m,u,l,_,f,g,p,R,E,S,n,y;if(!((u=(m=t.data)==null?void 0:m.customer)!=null&&u.orders))return null;const{page_info:r,total_count:a,date_of_first_order:i}=t.data.customer.orders,e=((_=(l=t==null?void 0:t.data)==null?void 0:l.customer)==null?void 0:_.returns)??[],c={items:(((p=(g=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:g.orders)==null?void 0:p.items)??[]).map(o=>{var O;const D={...o,returns:(O=e==null?void 0:e.items)==null?void 0:O.filter(h=>h.order.id===o.id),order_date:I(o.order_date),shipping_address:T(o.shipping_address),billing_address:T(o.billing_address)};return s(D,"camelCase",{})}),pageInfo:s(r,"camelCase",{}),totalCount:s(a,"camelCase",{}),dateOfFirstOrder:s(i,"camelCase",{})};return v(c,(y=(n=(S=(E=(R=C)==null?void 0:R.getConfig())==null?void 0:E.models)==null?void 0:S.OrderHistoryModel)==null?void 0:n.transformer)==null?void 0:y.call(n,t.data))},b=`
-  fragment ADDRESS_FRAGMENT on OrderAddress {
-    city
-    company
-    country_code
-    fax
-    firstname
-    lastname
-    middlename
-    postcode
-    prefix
-    region
-    region_id
-    street
-    suffix
-    telephone
-    vat_id
-  }
-`,G=`
-  fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
-    __typename
-    grand_total {
-      value
-      currency
-    }
-    subtotal {
-      currency
-      value
-    }
-    taxes {
-      amount {
-        currency
-        value
-      }
-      rate
-      title
-    }
-    total_tax {
-      currency
-      value
-    }
-    total_shipping {
-      currency
-      value
-    }
-    discounts {
-      amount {
-        currency
-        value
-      }
-      label
-    }
-  }
-`,F=`
+import{t as h,k as d,f as A,l as C}from"./removeCustomerAddress.js";import{c as I}from"./getStoreConfig.js";import"@dropins/tools/event-bus.js";import{merge as M}from"@dropins/tools/lib.js";import{ADDRESS_FRAGMENT as N,ORDER_SUMMARY_FRAGMENT as $}from"../fragments.js";const b=(t,e="en-US",a={})=>{const r={...{day:"2-digit",month:"2-digit",year:"numeric"},...a},n=new Date(t);return isNaN(n.getTime())?"Invalid Date":new Intl.DateTimeFormat(e,r).format(n)},G=t=>{var c,_,l,u,f,g,p,R,S,E,s,O;if(!((_=(c=t.data)==null?void 0:c.customer)!=null&&_.orders))return null;const{page_info:e,total_count:a,date_of_first_order:i}=t.data.customer.orders,r=((u=(l=t==null?void 0:t.data)==null?void 0:l.customer)==null?void 0:u.returns)??[],m={items:(((p=(g=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:g.orders)==null?void 0:p.items)??[]).map(o=>{var T;const D={...o,returns:(T=r==null?void 0:r.items)==null?void 0:T.filter(y=>y.order.id===o.id),order_date:b(o.order_date),shipping_address:h(o.shipping_address),billing_address:h(o.billing_address)};return d(D,"camelCase",{})}),pageInfo:d(e,"camelCase",{}),totalCount:d(a,"camelCase",{}),dateOfFirstOrder:d(i,"camelCase",{})};return M(m,(O=(s=(E=(S=(R=I)==null?void 0:R.getConfig())==null?void 0:S.models)==null?void 0:E.OrderHistoryModel)==null?void 0:s.transformer)==null?void 0:O.call(s,t.data))},F=`
   query GET_CUSTOMER_ORDERS_LIST(
     $currentPage: Int
     $pageSize: Int
@@ -133,6 +80,6 @@ import{t as T,m as s,f as A,l as M}from"./removeCustomerAddress.js";import{c as 
       }
     }
   }
-  ${b}
-  ${G}
-`,$={sort_direction:"DESC",sort_field:"CREATED_AT"},L=async(t,r,a)=>{const i=r.includes("viewAll")?{}:{order_date:JSON.parse(r)};return await A(F,{method:"GET",cache:"no-cache",variables:{pageSize:t,currentPage:a,filter:i,sort:$}}).then(e=>N(e)).catch(M)};export{L as g};
+  ${N}
+  ${$}
+`,k={sort_direction:"DESC",sort_field:"CREATED_AT"},z=async(t,e,a)=>{const i=e.includes("viewAll")?{}:{order_date:JSON.parse(e)};return await A(F,{method:"GET",cache:"no-cache",variables:{pageSize:t,currentPage:a,filter:i,sort:k}}).then(r=>G(r)).catch(C)};export{z as g};
