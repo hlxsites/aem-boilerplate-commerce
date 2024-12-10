@@ -12,6 +12,7 @@ import{c as H,r as q}from"./chunks/requestGuestOrderCancel.js";import{f as E,h a
         available_actions
         status
         number
+        token
         id
         order_date
         carrier
@@ -89,4 +90,4 @@ import{c as H,r as q}from"./chunks/requestGuestOrderCancel.js";import{f as E,h a
   ${h}
   ${f}
   ${C}
-`,k=async t=>{if(!t)throw new Error("No cart ID found");return E(S,{variables:{cartId:t}}).then(r=>{var a;(a=r.errors)!=null&&a.length&&_(r.errors);const e=N(r);return e&&(u.emit("order/placed",e),u.emit("cart/reset",void 0),L(t,e)),e}).catch(R)};export{H as cancelOrder,ce as config,Te as confirmCancelOrder,Re as confirmGuestReturn,E as fetchGraphQl,W as getAttributesForm,ee as getAttributesList,V as getConfig,oe as getCustomer,ie as getCustomerOrdersReturn,ne as getGuestOrder,ue as getOrderDetailsById,Ee as getStoreConfig,de as guestOrderByToken,le as initialize,k as placeOrder,Y as removeFetchGraphQlHeader,De as reorderItems,q as requestGuestOrderCancel,te as requestGuestReturn,re as requestReturn,z as setEndpoint,j as setFetchGraphQlHeader,J as setFetchGraphQlHeaders};
+`,$=async t=>{if(!t)throw new Error("No cart ID found");return E(S,{variables:{cartId:t}}).then(r=>{var a;(a=r.errors)!=null&&a.length&&_(r.errors);const e=N(r);return e&&(u.emit("order/placed",e),u.emit("cart/reset",void 0),L(t,e)),e}).catch(R)};export{H as cancelOrder,ce as config,Te as confirmCancelOrder,Re as confirmGuestReturn,E as fetchGraphQl,W as getAttributesForm,ee as getAttributesList,V as getConfig,oe as getCustomer,ie as getCustomerOrdersReturn,ne as getGuestOrder,ue as getOrderDetailsById,Ee as getStoreConfig,de as guestOrderByToken,le as initialize,$ as placeOrder,Y as removeFetchGraphQlHeader,De as reorderItems,q as requestGuestOrderCancel,te as requestGuestReturn,re as requestReturn,z as setEndpoint,j as setFetchGraphQlHeader,J as setFetchGraphQlHeaders};
