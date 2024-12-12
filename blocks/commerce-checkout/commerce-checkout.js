@@ -390,11 +390,7 @@ export default async function decorate(block) {
       handlePlaceOrder: async ({ cartId }) => {
         await displayOverlaySpinner();
 
-        orderApi.placeOrder(cartId)
-          .catch(console.error)
-          .finally(() => {
-            removeOverlaySpinner();
-          });
+        await orderApi.placeOrder(cartId).finally(removeOverlaySpinner);
       },
     })($placeOrder),
   ]);
