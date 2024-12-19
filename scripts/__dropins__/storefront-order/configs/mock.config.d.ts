@@ -166,6 +166,7 @@ export declare const transformMockOrderInput: {
                     available_actions: string[];
                     status: string;
                     number: string;
+                    token: string;
                     id: string;
                     order_date: string;
                     carrier: string;
@@ -405,6 +406,7 @@ export declare const transformMockOrderOutput: {
     availableActions: string[];
     status: string;
     number: string;
+    email: string;
     id: string;
     orderDate: string;
     carrier: string;
@@ -544,6 +546,7 @@ export declare const transformMockOrderOutput: {
             recipientName: string;
         };
         id: undefined;
+        selectedOptions?: undefined;
     } | {
         type: string;
         id: string;
@@ -570,6 +573,57 @@ export declare const transformMockOrderOutput: {
             value: number;
             currency: string;
         };
+        product: {
+            canonicalUrl: string;
+            id: string;
+            name: string;
+            sku: string;
+            image: string;
+            productType: string;
+            thumbnail: {
+                label: string;
+                url: string;
+            };
+        };
+        thumbnail: {
+            label: string;
+            url: string;
+        };
+        configurableOptions: {
+            Size?: undefined;
+            Color?: undefined;
+        };
+        selectedOptions?: undefined;
+    } | {
+        type: string;
+        id: string;
+        giftCard: undefined;
+        discounted: boolean;
+        total: {
+            value: number;
+            currency: string;
+        };
+        totalInclTax: {
+            value: number;
+            currency: string;
+        };
+        price: {
+            value: number;
+            currency: string;
+        };
+        priceInclTax: {
+            value: number;
+            currency: string;
+        };
+        totalQuantity: number;
+        regularPrice: {
+            value: number;
+            currency: string;
+        };
+        selectedOptions: {
+            label: string;
+            value: string;
+        }[];
         product: {
             canonicalUrl: string;
             id: string;
@@ -636,6 +690,7 @@ export declare const transformMockOrderOutput: {
             Size: string;
             Color: string;
         };
+        selectedOptions?: undefined;
     })[];
     totalQuantity: number;
     shipping: {
@@ -3657,5 +3712,18 @@ export declare const customerReturnDetailsFullMock: {
             label: string;
         })[];
     };
+};
+export declare const storeConfigMock: {
+    baseMediaUrl: string;
+    orderCancellationEnabled: boolean;
+    orderCancellationReasons: {
+        description: string;
+    }[];
+    shoppingCartDisplayPrice: number;
+    shoppingOrdersDisplaySubtotal: number;
+    shoppingOrdersDisplayShipping: number;
+    shoppingOrdersDisplayGrandTotal: boolean;
+    shoppingOrdersDisplayFullSummary: boolean;
+    shoppingOrdersDisplayZeroTax: boolean;
 };
 //# sourceMappingURL=mock.config.d.ts.map

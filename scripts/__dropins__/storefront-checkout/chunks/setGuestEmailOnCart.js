@@ -1,6 +1,12 @@
 /*! Copyright 2024 Adobe
 All Rights Reserved. */
-import{s as i,M as s,d as e}from"./fetch-graphql.js";import{CHECKOUT_DATA_FRAGMENT as o}from"../fragments.js";import{b as m}from"./synchronizeCheckout.js";import"./store-config.js";import"./ServerErrorSignal.js";import{events as n}from"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";const c=`
+import{s as r}from"./store-config.js";import{h as e}from"./transform-store-config.js";import"./ServerErrorSignal.js";import{c as s,M as l}from"./errors.js";import{j as o,d as m,b as n}from"./synchronizeCheckout.js";import"@dropins/tools/lib.js";import"@dropins/tools/event-bus.js";import{CHECKOUT_DATA_FRAGMENT as c}from"../fragments.js";const u=a=>!!(a!=null&&a.is_email_available),p=`
+  query isEmailAvailable($email: String!) {
+    isEmailAvailable(email: $email) {
+      is_email_available
+    }
+  }
+`,E=a=>{if(!(!a||a.length===0))throw Error(a.map(t=>t.message).join(" "))},g=async a=>{if(!a)throw new s;const{data:t,errors:i}=await e(p,{method:"GET",cache:"no-cache",variables:{email:a}}).catch(o);return i&&E(i),u(t.isEmailAvailable)},h=`
   mutation setGuestEmail($cartId: String!, $email: String!) {
     setGuestEmailOnCart(input: { cart_id: $cartId, email: $email }) {
       cart {
@@ -9,5 +15,5 @@ import{s as i,M as s,d as e}from"./fetch-graphql.js";import{CHECKOUT_DATA_FRAGME
     }
   }
 
-  ${o}
-`,A=async r=>{const t=i.cartId;if(!t)throw new s;const a=await e({type:"mutation",query:c,options:{variables:{cartId:t,email:r}},path:"setGuestEmailOnCart.cart",signalType:"cart",transformer:m});return n.emit("checkout/updated",a||null),a};export{A as s};
+  ${c}
+`,w=async a=>{const t=r.cartId;if(!t)throw new l;return await m({options:{variables:{cartId:t,email:a}},path:"setGuestEmailOnCart.cart",query:h,queueName:"cartUpdate",signalType:"cart",transformer:n,type:"mutation"})};export{g as i,w as s};

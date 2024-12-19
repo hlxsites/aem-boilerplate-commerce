@@ -24,7 +24,6 @@ export * from './getStoreConfig';
 export * from './initialize';
 export * from './initializeCheckout';
 export * from './isEmailAvailable';
-export * from './placeOrder';
 export * from './resetCheckout';
 export * from './setBillingAddress';
 export * from './setGuestEmailOnCart';
@@ -32,4 +31,5 @@ export * from './setPaymentMethod';
 export * from './setShippingAddress';
 export * from './setShippingMethods';
 export * from './synchronizeCheckout';
+export { getStoreConfigCache } from '../lib/state';
 //# sourceMappingURL=index.d.ts.map
