@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getConfigValue, getCookie } from './configs.js';
+import { getConfigValue, getCookie, getHeaders } from './configs.js';
 import { getConsent } from './scripts.js';
 
 /* Common query fragments */
@@ -22,11 +22,12 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 export async function commerceEndpointWithQueryParams() {
   // Set Query Parameters so they can be appended to the endpoint
   const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
-  urlWithQueryParams.searchParams.append('Magento-Environment-Id', await getConfigValue('commerce-environment-id'));
-  urlWithQueryParams.searchParams.append('Magento-Website-Code', await getConfigValue('commerce-website-code'));
-  urlWithQueryParams.searchParams.append('Magento-Store-View-Code', await getConfigValue('commerce-store-view-code'));
-  urlWithQueryParams.searchParams.append('Magento-Store-Code', await getConfigValue('commerce-store-code'));
-  urlWithQueryParams.searchParams.append('Magento-Customer-Group', await getConfigValue('commerce-customer-group'));
+  await getHeaders('pdp').then((headers) => {
+    Object.keys(headers).forEach((key) => {
+      // TODO: is it OK to apply all headers as query param even if they include things like api-key and content-type which was not previously a query param?
+      urlWithQueryParams.searchParams.append(key, headers[key]);
+    });
+  });
   return urlWithQueryParams;
 }
 
