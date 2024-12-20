@@ -16,7 +16,7 @@ import {
   getSkuFromUrl,
   loadErrorPage,
 } from '../commerce.js';
-import { getConfigValue } from '../configs.js';
+import { getHeaders } from '../configs.js';
 import { fetchPlaceholders } from '../aem.js';
 
 export const IMAGES_SIZES = {
@@ -29,10 +29,7 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders({
-    'Content-Type': 'application/json',
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
-  });
+  setFetchGraphQlHeaders(await getHeaders('pdp'));
 
   const sku = getSkuFromUrl();
   const optionsUIDs = getOptionsUIDsFromUrl();
