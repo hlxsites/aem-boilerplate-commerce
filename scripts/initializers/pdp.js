@@ -29,7 +29,6 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  // TODO: is it OK to apply all headers even though the commerceEndpointWithQueryParams also applies them?
   setFetchGraphQlHeaders(await getHeaders('pdp'));
 
   const sku = getSkuFromUrl();
