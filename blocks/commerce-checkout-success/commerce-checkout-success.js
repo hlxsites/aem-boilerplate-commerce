@@ -1,14 +1,12 @@
 // Dropin Components
-import {
-  Button,
-  provider as UI,
-} from '@dropins/tools/components.js';
+import { Button, provider as UI } from '@dropins/tools/components.js';
 
 // Auth Dropin
 import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Order Dropin Modules
+import * as orderApi from '@dropins/storefront-order/api.js';
 import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
 import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
 import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
@@ -72,7 +70,10 @@ export default async function decorate(block) {
 
   block.replaceChildren(orderConfirmationFragment);
 
-  const handleSignUpClick = async ({ inputsDefaultValueSet, addressesData }) => {
+  const handleSignUpClick = async ({
+    inputsDefaultValueSet,
+    addressesData,
+  }) => {
     const signUpForm = document.createElement('div');
     AuthProvider.render(SignUp, {
       routeSignIn: () => '/customer/login',
@@ -85,7 +86,22 @@ export default async function decorate(block) {
   };
 
   OrderProvider.render(OrderHeader, {
-    // handleEmailAvailability: checkoutApi.isEmailAvailable,
+    handleEmailAvailability: async (email) => {
+      const { data } = await orderApi.fetchGraphQl(
+        `
+        query isEmailAvailable($email: String!) {
+          isEmailAvailable(email: $email) {
+            is_email_available
+          }
+        }`,
+        {
+          method: 'GET',
+          variables: { email },
+        },
+      );
+
+      return Boolean(data?.isEmailAvailable?.is_email_available);
+    },
     handleSignUpClick,
   })($orderConfirmationHeader);
 
