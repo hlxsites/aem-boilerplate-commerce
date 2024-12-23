@@ -1,4 +1,6 @@
-import{P as T,a as d,G as i,O as A,B as D,b as c,A as u}from"./ReturnsFragment.graphql.js";import{f as E,h as s}from"./fetch-graphql.js";import{a as R}from"./initialize.js";import{G}from"./GurestOrderFragment.graphql.js";const m=`
+/*! Copyright 2024 Adobe
+All Rights Reserved. */
+import{PRODUCT_DETAILS_FRAGMENT as d,PRICE_DETAILS_FRAGMENT as s,GIFT_CARD_DETAILS_FRAGMENT as i,ORDER_ITEM_DETAILS_FRAGMENT as A,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as D,ORDER_SUMMARY_FRAGMENT as c,ADDRESS_FRAGMENT as u,GUEST_ORDER_FRAGMENT as G}from"../fragments.js";import{f as a,h as R}from"./fetch-graphql.js";import{a as T}from"./initialize.js";const N=`
   mutation CANCEL_ORDER_MUTATION($orderId: ID!, $reason: String!) {
     cancelOrder(input: { order_id: $orderId, reason: $reason }) {
       error
@@ -77,14 +79,14 @@ import{P as T,a as d,G as i,O as A,B as D,b as c,A as u}from"./ReturnsFragment.g
       }
     }
   }
-  ${T}
   ${d}
+  ${s}
   ${i}
   ${A}
   ${D}
   ${c}
   ${u}
-`,S=async(r,e,_,t)=>{if(!r)throw new Error("No order ID found");if(!e)throw new Error("No reason found");return E(m,{variables:{orderId:r,reason:e}}).then(({errors:o,data:n})=>{if(o)return s(o);if(n.cancelOrder.error!=null){t();return}const a=R(n.cancelOrder.order);_(a)}).catch(()=>t())},O=`
+`,M=async(r,e,_,t)=>{if(!r)throw new Error("No order ID found");if(!e)throw new Error("No reason found");return a(N,{variables:{orderId:r,reason:e}}).then(({errors:o,data:n})=>{if(o)return R(o);if(n.cancelOrder.error!=null){t();return}const E=T(n.cancelOrder.order);_(E)}).catch(()=>t())},O=`
   mutation REQUEST_GUEST_ORDER_CANCEL_MUTATION(
     $token: String!
     $reason: String!
@@ -97,4 +99,4 @@ import{P as T,a as d,G as i,O as A,B as D,b as c,A as u}from"./ReturnsFragment.g
     }
   }
   ${G}
-`,p=async(r,e,_,t)=>{if(!r)throw new Error("No order token found");if(!e)throw new Error("No reason found");return E(O,{variables:{token:r,reason:e}}).then(({errors:o,data:n})=>{if(o)return s(o);n.requestGuestOrderCancel.error!=null&&t();const a=R(n.requestGuestOrderCancel.order);_(a)}).catch(()=>t())};export{S as c,p as r};
+`,S=async(r,e,_,t)=>{if(!r)throw new Error("No order token found");if(!e)throw new Error("No reason found");return a(O,{variables:{token:r,reason:e}}).then(({errors:o,data:n})=>{if(o)return R(o);n.requestGuestOrderCancel.error!=null&&t();const E=T(n.requestGuestOrderCancel.order);_(E)}).catch(()=>t())};export{M as c,S as r};
