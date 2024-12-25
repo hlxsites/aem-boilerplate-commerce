@@ -46,7 +46,9 @@ export interface AddressesProps {
     onSubmit?: () => Promise<void>;
     onAddressData?: (values: {} | CustomerAddressesModel | undefined) => void;
 }
-export interface AddressesWrapperProps extends AddressesProps {
+export interface AddressesWrapperProps extends Omit<AddressesProps, 'formName'> {
+    inputName: string;
+    minifiedViewKey: 'minifiedView' | 'fullSizeView';
 }
 export interface useAddressesProps extends Omit<AddressesProps, 'className' | 'inputsDefaultValueSet' | 'addressesFormTitle' | 'shippingCheckBoxValue' | 'billingCheckBoxValue' | 'showFormLoader' | 'title' | 'slots' | 'formName' | 'hideActionFormButtons'> {
 }
