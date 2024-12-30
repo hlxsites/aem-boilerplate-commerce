@@ -1,0 +1,95 @@
+/* stylelint-disable selector-class-pattern */
+
+.checkout__progress {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-big);
+  margin-bottom: var(--spacing-big);
+}
+
+.checkout__progress--empty {
+  display: none;
+}
+
+.checkout__progress__step {
+  flex: 1;
+}
+
+.checkout__progress__step .dropin-button {
+  width: 100%;
+}
+
+/* select active dropin-button using active attribute */
+.checkout__progress__step .dropin-button[active] {
+  background: var(--color-button-active);
+}
+
+.checkout_login {
+  order: 1;
+}
+
+.checkout__steps {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(var(--grid-4-columns), 1fr);
+  gap: var(--spacing-big);
+  padding-top: 1.5rem;
+}
+
+.checkout__steps--empty {
+  display: none;
+}
+
+.checkout__steps__main {
+  grid-column: 1 / span 7;
+}
+
+.checkout__steps__aside {
+  grid-column: 9 / span 4;
+}
+
+.checkout__shipping,
+.checkout__payment {
+  display: grid;
+  gap: var(--spacing-big);
+}
+
+.checkout__continue-to-payment {
+  display: flex;
+  justify-content: end;
+}
+
+.checkout__loader {
+  align-items: center;
+  background: var(--color-neutral-50);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+/* temporary fix to hide the default cart heading */
+[data-testid='default-cart-heading'] {
+  display: none;
+}
+
+@media only screen and (width >= 320px) and (width <= 768px) {
+  .checkout__steps {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-big) 0;
+  }
+
+  .checkout__steps__main,
+  .checkout__steps__aside {
+    grid-column: auto;
+  }
+
+  .checkout__steps__aside {
+    order: -1;
+  }
+}

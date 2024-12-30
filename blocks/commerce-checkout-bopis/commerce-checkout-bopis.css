@@ -1,0 +1,198 @@
+/* stylelint-disable selector-class-pattern */
+
+.checkout__content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-big) 0;
+}
+
+.checkout__shipping-form:empty,
+.checkout__shipping-methods:has(> div:empty),
+.checkout__bill-to-shipping-address:has(> div:empty) {
+  display: none;
+}
+
+.checkout__main {
+  display: grid;
+  row-gap: var(--spacing-xbig);
+  margin-top: var(--spacing-medium);
+}
+
+.checkout__aside {
+  display: grid;
+  gap: var(--spacing-xbig);
+}
+
+.checkout__block.checkout__heading .dropin-header-container {
+  gap: var(--spacing-xsmall);
+}
+
+.checkout__place-order {
+  grid-column: unset;
+  justify-items: unset;
+  margin-top: calc(var(--spacing-big) * -1);
+}
+
+.checkout__heading .dropin-divider {
+  margin: 0;
+}
+
+/* To add into the cart dropin **/
+.cart-order-summary__taxes.dropin-accordion .dropin-divider {
+  margin: var(--spacing-medium) auto;
+}
+
+/* CartSummaryList */
+
+.cart-summary-list {
+  padding: var(--spacing-medium);
+  background-color: var(--color-neutral-200);
+}
+
+.cart-summary-list__heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-summary-list__heading-text {
+  font: var(--type-headline-2-strong-font);
+  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  color: var(--color-neutral-800);
+}
+
+.cart-cart-summary-list__heading {
+  row-gap: var(--spacing-small);
+  padding-top: 0;
+}
+
+.cart-cart-summary-list__heading-text {
+  font: var(--type-headline-2-strong-font);
+  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  color: var(--color-neutral-800);
+}
+
+.cart-summary-list__edit {
+  font: var(--type-body-2-strong-font);
+  letter-spacing: var(--type-body-2-strong-letter-spacing);
+}
+
+/* BOPIS specific styles */
+
+.checkout__in-store-pickup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.checkout__in-store-pickup[hidden] {
+  display:none;
+}
+
+.checkout-delivery-method__title {
+  color: var(--color-neutral-800);
+  font: var(--type-headline-2-strong-font);
+  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+.checkout-delivery-method__toggle-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-big);
+}
+
+@media only screen and (width >= 320px) and (width <= 768px) {
+    .checkout__main,
+    .checkout__aside {
+        display: contents;
+    }
+
+    .checkout__block {
+        order: 3;
+    }
+
+    .checkout__heading {
+        order: 1;
+    }
+
+    .checkout__cart-summary {
+        order: 2;
+    }
+
+    .checkout__place-order {
+        order: 4;
+    }
+
+    .order-confirmation {
+        grid-template-columns: repeat(var(--grid-1-columns), 1fr);
+        padding-top: 0;
+    }
+
+    .order-confirmation__main,
+    .order-confirmation__aside {
+        grid-row-gap: var(--spacing-medium);
+    }
+
+    .order-confirmation > div {
+        grid-column: 1 / span 4;
+    }
+
+    .order-confirmation__block .dropin-card {
+        border: 0;
+    }
+}
+
+@media only screen and (width >= 768px) {
+    .checkout__content {
+        display: grid;
+        align-items: start;
+        grid-template-columns: repeat(var(--grid-4-columns), 1fr);
+        gap: var(--spacing-big) var(--grid-4-gutters);
+    }
+
+    .checkout__content--error,
+    .checkout__content--empty {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .checkout__main {
+        grid-column: 1 / span 7;
+        row-gap: var(--spacing-xbig);
+    }
+
+    .checkout__aside {
+        grid-column: 9 / span 4;
+        gap: var(--spacing-xbig);
+    }
+
+    .checkout__error-banner,
+    .checkout__merged-cart-banner {
+        display: grid;
+        grid-column: 1 / span 12;
+    }
+
+    .checkout__place-order {
+        margin-top: 0;
+    }
+}
+
+/* Extra small devices (phones, 600px and down) */
+
+/* @media only screen and (max-width: 600px) { } */
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+
+/* @media only screen and (min-width: 600px) { } */
+
+/* Medium devices (landscape tablets, 768px and up) */
+
+/* @media only screen and (min-width: 768px) { } */
+
+/* Large devices (laptops/desktops, 992px and up) */
+
+/* @media only screen and (min-width: 992px) { } */
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+
+/* @media only screen and (min-width: 1200px) { } */
