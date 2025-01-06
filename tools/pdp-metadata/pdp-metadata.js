@@ -3,36 +3,10 @@ import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
 import { variantsFragment } from './queries/variants.graphql.js';
-import { commerceEndpointWithQueryParams } from "../../scripts/commerce.js";
+import { commerceEndpointWithQueryParams, performCatalogServiceQuery } from "../../scripts/commerce.js";
 
 const basePath = 'https://www.aemshop.net';
-const configFile = `${basePath}/configs.json?sheet=prod`;
-
-async function performCatalogServiceQuery(config, query, variables) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-api-key': config['commerce-x-api-key'],
-  };
-
-  const apiCall = await commerceEndpointWithQueryParams();
-
-  const response = await fetch(apiCall, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-      variables,
-    }),
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const queryResponse = await response.json();
-
-  return queryResponse.data;
-}
+const configFile = `${basePath}/configs.json`;
 
 function getJsonLd(product, { variants }) {
   const amount = product.priceRange?.minimum?.final?.amount || product.price?.final?.amount;
@@ -92,9 +66,9 @@ function getJsonLd(product, { variants }) {
  */
 const getProducts = async (config, pageNumber) => {
   const response = await performCatalogServiceQuery(
-    config,
     productSearchQuery,
     { currentPage: pageNumber },
+    "POST"
   );
 
   if (response && response.productSearch) {
@@ -166,11 +140,11 @@ async function addVariantsToProducts(products, config) {
         item_${i}: variants(sku: "${product.productView.sku}") {
           ...ProductVariant
         }
-        `  
+        `
       }).join('\n')}
     }${variantsFragment}`;
 
-  const response = await performCatalogServiceQuery(config, query, null);
+  const response = await performCatalogServiceQuery(query, null, "POST");
 
   if (!response) {
     throw new Error('Could not fetch variants');

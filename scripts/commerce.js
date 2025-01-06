@@ -32,21 +32,35 @@ export async function commerceEndpointWithQueryParams() {
 
 /* Common functionality */
 
-export async function performCatalogServiceQuery(query, variables) {
+export async function performCatalogServiceQuery(query, variables, method = 'GET') {
   const headers = {
     'Content-Type': 'application/json',
     'x-api-key': await getConfigValue('commerce-x-api-key'),
   };
 
   const apiCall = await commerceEndpointWithQueryParams();
-  apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
-    .replace(/\s\s+/g, ' '));
-  apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
+  let response;
+  if (method === 'GET') {
+    apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
+      .replace(/\s\s+/g, ' '));
+    apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
 
-  const response = await fetch(apiCall, {
-    method: 'GET',
-    headers,
-  });
+    response = await fetch(apiCall, {
+      method: 'GET',
+      headers,
+    });
+  } else if (method === 'POST') {
+    response = await fetch(apiCall, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
+        variables,
+      }),
+    });
+  } else {
+    throw new Error(`Unsupported method: ${method}`);
+  }
 
   if (!response.ok) {
     return null;
