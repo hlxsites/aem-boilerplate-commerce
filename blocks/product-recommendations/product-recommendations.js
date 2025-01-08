@@ -226,18 +226,21 @@ async function loadRecommendation(block, context, visibility, filters) {
     });
 
     performCatalogServiceQuery(recommendationsQuery, context).then(({ recommendations }) => {
-      window.adobeDataLayer.push((dl) => {
-        dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
-        dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
-      });
-      resolve(recommendations);
+      if (recommendations) {
+        window.adobeDataLayer.push((dl) => {
+          dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
+          dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
+        });
+        resolve(recommendations);
+      }
+      resolve();
     }).catch((error) => {
       console.error('Error fetching recommendations', error);
       reject(error);
     });
   });
 
-  let { results } = await unitsPromise;
+  let results = await unitsPromise?.results || [];
   results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
 
   renderItems(block, results);
