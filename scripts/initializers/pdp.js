@@ -29,7 +29,10 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders(await getHeaders('cs'));
+  setFetchGraphQlHeaders({
+    ...(await getHeaders('cs')),
+    'Content-Type': 'application/json',
+  });
 
   const sku = getSkuFromUrl();
   const optionsUIDs = getOptionsUIDsFromUrl();

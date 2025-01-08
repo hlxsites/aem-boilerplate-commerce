@@ -35,7 +35,10 @@ export async function commerceEndpointWithQueryParams() {
 /* Common functionality */
 
 export async function performCatalogServiceQuery(query, variables) {
-  const headers = await getHeaders('cs');
+  const headers = {
+    ...(await getHeaders('cs')),
+    'Content-Type': 'application/json',
+  };
 
   const apiCall = await commerceEndpointWithQueryParams();
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
@@ -65,7 +68,7 @@ export async function performMonolithGraphQLQuery(query, variables, GET = true, 
 
   const headers = {
     'Content-Type': 'application/json',
-    Store: await getConfigValue('commerce-store-view-code'),
+    Store: await getConfigValue('commerce.queryparam.cs.Magento-Store-View-Code'),
   };
 
   if (USE_TOKEN) {
@@ -160,7 +163,7 @@ export async function trackHistory() {
     return;
   }
   // Store product view history in session storage
-  const storeViewCode = await getConfigValue('commerce-store-view-code');
+  const storeViewCode = await getConfigValue('commerce.queryparam.cs.Magento-Store-View-Code');
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', (event) => {
       if (!event.productContext) {

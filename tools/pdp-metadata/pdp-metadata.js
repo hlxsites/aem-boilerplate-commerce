@@ -11,7 +11,7 @@ const configFile = `${basePath}/configs.json?sheet=prod`;
 async function performCatalogServiceQuery(config, query, variables) {
   const headers = {
     'Content-Type': 'application/json',
-    'x-api-key': config['commerce-x-api-key'],
+    'x-api-key': config['commerce.headers.cs.x-api-key'],
   };
 
   const apiCall = await commerceEndpointWithQueryParams();
@@ -166,7 +166,7 @@ async function addVariantsToProducts(products, config) {
         item_${i}: variants(sku: "${product.productView.sku}") {
           ...ProductVariant
         }
-        `  
+        `
       }).join('\n')}
     }${variantsFragment}`;
 
