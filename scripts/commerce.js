@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export, import/no-cycle */
 import {
-  getConfigValue, getCookie, getQueryParams,
+  getConfigValue, getCookie, getHeaders, getQueryParams,
 } from './configs.js';
 import { getConsent } from './scripts.js';
 
@@ -24,7 +24,7 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 export async function commerceEndpointWithQueryParams() {
   // Set Query Parameters so they can be appended to the endpoint
   const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
-  await getQueryParams('pdp').then((params) => {
+  await getQueryParams('cs').then((params) => {
     Object.keys(params).forEach((key) => {
       urlWithQueryParams.searchParams.append(key, params[key]);
     });
@@ -35,10 +35,7 @@ export async function commerceEndpointWithQueryParams() {
 /* Common functionality */
 
 export async function performCatalogServiceQuery(query, variables) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-api-key': await getConfigValue('commerce-x-api-key'),
-  };
+  const headers = await getHeaders('cs');
 
   const apiCall = await commerceEndpointWithQueryParams();
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
