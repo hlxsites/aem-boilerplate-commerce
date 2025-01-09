@@ -1,4 +1,4 @@
-/*! Copyright 2024 Adobe
+/*! Copyright 2025 Adobe
 All Rights Reserved. */
 import{a as U,f as w,h as k}from"./network-error.js";import"@dropins/tools/recaptcha.js";import{events as x}from"@dropins/tools/event-bus.js";import{merge as y}from"@dropins/tools/lib.js";import{c as C}from"./initialize.js";import{CUSTOMER_INFORMATION_FRAGMENT as F}from"../fragments.js";import{p as E,E as O,a as S,C as R}from"./getStoreConfig.js";import{s as v}from"./setReCaptchaToken.js";const D=t=>{var f,e,i,a,r,o,u,T,s,g,N,c,_;const m={email:((e=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:e.email)??"",firstName:((a=(i=t==null?void 0:t.data)==null?void 0:i.customer)==null?void 0:a.firstname)??"",lastName:((o=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:o.lastname)??"",isSubscribed:((T=(u=t==null?void 0:t.data)==null?void 0:u.customer)==null?void 0:T.is_subscribed)??!1};return y(m,(_=(c=(N=(g=(s=C)==null?void 0:s.getConfig())==null?void 0:g.models)==null?void 0:N.CustomerModel)==null?void 0:c.transformer)==null?void 0:_.call(c,t.data))},K=`
   query GET_CUSTOMER_DATA {

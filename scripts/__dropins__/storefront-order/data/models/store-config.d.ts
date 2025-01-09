@@ -13,13 +13,14 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+type OrderDisplayPriceProps = 1 | 2 | 3;
 export interface StoreConfigModel {
     baseMediaUrl: string;
     orderCancellationEnabled: boolean;
     orderCancellationReasons: OrderCancellationReason[];
-    shoppingCartDisplayPrice: 1 | 2 | 3;
-    shoppingOrdersDisplayShipping: 1 | 2 | 3;
-    shoppingOrdersDisplaySubtotal: 1 | 2 | 3;
+    shoppingOrderDisplayPrice: OrderDisplayPriceProps;
+    shoppingOrdersDisplayShipping: OrderDisplayPriceProps;
+    shoppingOrdersDisplaySubtotal: OrderDisplayPriceProps;
     shoppingOrdersDisplayFullSummary: boolean;
     shoppingOrdersDisplayGrandTotal: boolean;
     shoppingOrdersDisplayZeroTax: boolean;
@@ -27,4 +28,5 @@ export interface StoreConfigModel {
 export interface OrderCancellationReason {
     description: string;
 }
+export {};
 //# sourceMappingURL=store-config.d.ts.map

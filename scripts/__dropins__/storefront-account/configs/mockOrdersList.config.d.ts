@@ -39,7 +39,6 @@ export declare const mockOrdersListResponse: {
                         region_code: string;
                         region_id: string;
                     };
-                    shipments: never[];
                     telephone: string;
                     id: string;
                     vat_id: string;
@@ -140,7 +139,6 @@ export declare const mockOrdersListResponse: {
                     default_shipping: boolean;
                     default_billing: boolean;
                     custom_attributesV2: never[];
-                    shipments?: undefined;
                 };
                 billing_address: {
                     firstname: string;

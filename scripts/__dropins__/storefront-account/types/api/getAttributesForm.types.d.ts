@@ -30,6 +30,10 @@ export interface ResponseAttributesFormItemsProps {
         label: string;
         value: string;
     }[];
+    validate_rules: {
+        name: string;
+        value: string | number | boolean;
+    }[];
 }
 export interface GetAttributesFormResponse {
     data: {

@@ -36,6 +36,8 @@ interface ThumbnailImageProps {
     label?: string;
 }
 export interface ProductProps {
+    only_x_left_in_stock?: number;
+    stock_status?: string;
     thumbnail?: ThumbnailImageProps;
     image: ThumbnailImageProps;
     canonical_url: string;
@@ -191,7 +193,9 @@ export interface ShipmentsProps {
         id: string;
         product_sku: string;
         product_name: string;
-    };
+        quantity_shipped: number;
+        order_item: OrderItemProps;
+    }[];
 }
 export declare enum AvailableActionsProps {
     CANCEL = "CANCEL",
@@ -228,6 +232,8 @@ export interface ReturnsItemsProps {
     }[];
 }
 export interface OrderProps {
+    is_virtual?: boolean;
+    order_status_change_date?: string;
     available_actions: AvailableActionsProps[];
     shipping_method: string;
     status: string;

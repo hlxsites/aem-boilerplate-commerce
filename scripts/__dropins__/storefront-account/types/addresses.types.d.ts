@@ -1,4 +1,3 @@
-import { HTMLAttributes } from 'preact/compat';
 import { CustomerAddressesModel } from '../data/models';
 import { FieldsProps } from './form.types';
 import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
@@ -73,7 +72,8 @@ export interface AddressCardProps {
     handleRenderModal?: () => void | undefined;
     handleRenderForm?: () => void | undefined;
 }
-export interface AddressActionsProps extends HTMLAttributes<HTMLButtonElement> {
+export interface AddressActionsProps {
+    className?: string;
     selectable?: boolean;
     minifiedView?: boolean;
     addNewAddress?: boolean;

@@ -1,4 +1,4 @@
-/*! Copyright 2024 Adobe
+/*! Copyright 2025 Adobe
 All Rights Reserved. */
 import{CUSTOMER_INFORMATION_FRAGMENT as N}from"../fragments.js";import{f as m,h as u}from"./network-error.js";import{s as I}from"./setReCaptchaToken.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/recaptcha.js";import{merge as U}from"@dropins/tools/lib.js";import{c as g}from"./initialize.js";import{t as $}from"./transform-attributes-form.js";import{h as F}from"./getStoreConfig.js";const v=`
   mutation CREATE_CUSTOMER($input: CustomerInput!) {
