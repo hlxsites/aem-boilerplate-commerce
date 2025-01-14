@@ -26,7 +26,7 @@ export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
   await getQueryParams('cs').then((params) => {
     Object.keys(params).forEach((key) => {
-      urlWithQueryParams.searchParams.append(key, params[key]);
+      if (params[key]) urlWithQueryParams.searchParams.append(key, params[key]);
     });
   });
   return urlWithQueryParams;
