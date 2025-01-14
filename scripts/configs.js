@@ -99,7 +99,7 @@ export const getHeaders = async (scope, environment) => {
 };
 
 /**
- * Retrieves query params from config entries like commerce.queryparams.pdp.my-param, etc and
+ * Retrieves query params from config entries like commerce.queryparam.pdp.my-param, etc and
  * returns as object of all params like { my-query-param: value, ... }
 */
 export const getQueryParams = async (scope, environment) => {
