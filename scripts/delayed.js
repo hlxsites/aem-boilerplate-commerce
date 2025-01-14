@@ -7,15 +7,15 @@ async function initAnalytics() {
   // Load Commerce events SDK and collector
   if (getConsent('commerce-collection')) {
     const config = {
-      environmentId: await getConfigValue('commerce.queryparam.cs.Magento-Environment-Id'),
+      environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
       environment: await getConfigValue('commerce-environment'),
       storeUrl: await getConfigValue('commerce-store-url'),
       websiteId: parseInt(await getConfigValue('commerce-website-id'), 10),
-      websiteCode: await getConfigValue('commerce.queryparam.cs.Magento-Website-Code'),
+      websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
       storeId: parseInt(await getConfigValue('commerce-store-id'), 10),
-      storeCode: await getConfigValue('commerce.queryparam.cs.Magento-Store-Code'),
+      storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
       storeViewId: parseInt(await getConfigValue('commerce-store-view-id'), 10),
-      storeViewCode: await getConfigValue('commerce.queryparam.cs.Magento-Store-View-Code'),
+      storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
       websiteName: await getConfigValue('commerce-website-name'),
       storeName: await getConfigValue('commerce-store-name'),
       storeViewName: await getConfigValue('commerce-store-view-name'),
