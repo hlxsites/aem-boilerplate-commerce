@@ -125,7 +125,6 @@ async function performCatalogServiceQuery(query, config, variables) {
         'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
     };
 
-    // set query params if provided, or fall back to header value
     const apiCall = new URL(config['commerce-endpoint']);
     apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
         .replace(/\s\s+/g, ' '));
