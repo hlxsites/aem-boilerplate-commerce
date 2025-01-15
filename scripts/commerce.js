@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export, import/no-cycle */
 import {
-  getConfigValue, getCookie, getHeaders, getQueryParams,
+  getConfigValue, getCookie, getHeaders,
 } from './configs.js';
 import { getConsent } from './scripts.js';
 
@@ -22,13 +22,9 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 }`;
 
 export async function commerceEndpointWithQueryParams() {
-  // Set Query Parameters so they can be appended to the endpoint
   const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
-  await getQueryParams('cs').then((params) => {
-    Object.keys(params).forEach((key) => {
-      if (params[key]) urlWithQueryParams.searchParams.append(key, params[key]);
-    });
-  });
+  // Set some query parameters for use as a cache-buster. No other purpose.
+  urlWithQueryParams.searchParams.append('ac-storecode', await getConfigValue('commerce.headers.cs.Magento-Store-Code'));
   return urlWithQueryParams;
 }
 

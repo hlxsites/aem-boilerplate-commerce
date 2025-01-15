@@ -98,24 +98,6 @@ export const getHeaders = async (scope, environment) => {
   }, {});
 };
 
-/**
- * Retrieves query params from config entries like commerce.queryparam.pdp.my-param, etc and
- * returns as object of all params like { my-query-param: value, ... }
-*/
-export const getQueryParams = async (scope, environment) => {
-  const env = environment || calcEnvironment();
-  const config = await getConfigForEnvironment(env);
-  const configElements = config.data.filter((el) => el?.key.includes(`queryparam.${scope}`));
-
-  return configElements.reduce((obj, item) => {
-    let { key } = item;
-    if (key.includes(`commerce.queryparam.${scope}.`)) {
-      key = key.replace(`commerce.queryparam.${scope}.`, '');
-    }
-    return { ...obj, [key]: item.value };
-  }, {});
-};
-
 export const getCookie = (cookieName) => {
   const cookies = document.cookie.split(';');
   let foundValue;

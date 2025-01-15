@@ -116,22 +116,17 @@ const blocks = {
 
 async function performCatalogServiceQuery(query, config, variables) {
     const headers = {
-        'x-api-key': config['commerce.headers.cs.x-api-key'],
         'Content-Type': 'application/json',
+        'x-api-key': config['commerce.headers.cs.x-api-key'],
+        'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
+        'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
+        'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
+        'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
+        'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
     };
 
     // set query params if provided, or fall back to header value
     const apiCall = new URL(config['commerce-endpoint']);
-    apiCall.searchParams.append("Magento-Environment-Id",
-      config['commerce.queryparam.cs.Magento-Environment-Id'] || config['commerce.headers.cs.Magento-Environment-Id']);
-    apiCall.searchParams.append("Magento-Website-Code",
-      config['commerce.queryparam.cs.Magento-Website-Code']) || config['commerce.headers.cs.Magento-Website-Code']);
-    apiCall.searchParams.append("Magento-Store-View-Code",
-      config['commerce.queryparam.cs.Magento-Store-View-Code']) || config['commerce.headers.cs.Magento-Store-View-Code']);
-    apiCall.searchParams.append("Magento-Store-Code",
-      config['commerce.queryparam.cs.Magento-Store-Code']) || config['commerce.headers.cs.Magento-Store-Code']);
-    apiCall.searchParams.append("Magento-Customer-Group",
-      config['commerce.headers.cs.Magento-Customer-Group']) || config['commerce.headers.cs.Magento-Customer-Group']);
     apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
         .replace(/\s\s+/g, ' '));
     apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
