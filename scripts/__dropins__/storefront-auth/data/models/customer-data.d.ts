@@ -24,4 +24,15 @@ export interface CustomerModel {
         message: string;
     }[];
 }
+export interface AccountModel {
+    firstName?: string;
+    lastName?: string;
+    emailAddress?: string;
+    phoneNumber?: string;
+    countryCode?: string;
+    accountId?: string;
+    accountType?: string;
+    company?: string;
+    customerGroup?: string;
+}
 //# sourceMappingURL=customer-data.d.ts.map

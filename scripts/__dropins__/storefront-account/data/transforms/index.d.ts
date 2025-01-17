@@ -21,4 +21,5 @@ export * from './transform-countries';
 export * from './transform-regions';
 export * from './transform-order-history-list';
 export * from './transform-store-config';
+export * from './transform-account';
 //# sourceMappingURL=index.d.ts.map

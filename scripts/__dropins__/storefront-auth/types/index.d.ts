@@ -35,4 +35,5 @@ export * from './api/confirmEmail.types';
 export * from './api/resendConfirmationEmail.types';
 export * from './emailConfirmationForm.types';
 export * from './api/createCustomerAddress.types';
+export * from './validationErrors.types';
 //# sourceMappingURL=index.d.ts.map

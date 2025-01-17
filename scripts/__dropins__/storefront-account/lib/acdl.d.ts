@@ -14,27 +14,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface CustomerDataModelShort {
-    firstName: string;
-    lastName: string;
-    middleName: string;
-    dateOfBirth: string;
-    prefix: string;
-    gender: 1 | 2 | string;
-    suffix: string;
-    email: string;
-    createdAt: string;
-    [key: string]: string | boolean | number;
+declare enum EventsList {
+    EDIT_ACCOUNT_EVENT = "edit-account"
 }
-export interface AccountModel {
-    firstName?: string;
-    lastName?: string;
-    emailAddress?: string;
-    phoneNumber?: string;
-    countryCode?: string;
-    accountId?: string;
-    accountType?: string;
-    company?: string;
-    customerGroup?: string;
-}
-//# sourceMappingURL=customer.d.ts.map
+export declare function getAdobeDataLayer(): any;
+/**
+ * Pushes an event to the Adobe Client Data Layer (ACDL)
+ * Logic based on: https://github.com/adobe/commerce-events/blob/1973d0ce28471ef190fa06dad6359ffa0ab51db6/packages/storefront-events-sdk/src/Base.ts#L34
+ */
+declare function pushEvent(event: string, additionalContext?: any): void;
+declare const publishEvents: (eventType: string, eventParams: any) => null | undefined;
+export { EventsList, publishEvents, pushEvent };
+//# sourceMappingURL=acdl.d.ts.map

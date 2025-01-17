@@ -18,6 +18,7 @@ export interface StoreConfigProps {
     base_media_url: string;
     minimum_password_length: number;
     required_character_classes_number: string;
+    store_code: string;
 }
 export interface GetStoreConfigResponse {
     data: {

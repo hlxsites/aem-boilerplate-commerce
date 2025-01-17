@@ -14,6 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './FormInputs';
-export { FormInputs as default } from './FormInputs';
-//# sourceMappingURL=index.d.ts.map
+/**
+ * A custom hook for handling translations with support for extensible error messages.
+ *
+ * @param defaultKeys - A mapping of keys to their translation paths.
+ * @returns A complete set of translations, including dynamically updated values for null error keys.
+ */
+export declare const useCustomTranslations: (defaultKeys: Record<string, string>) => Record<string, string>;
+//# sourceMappingURL=useCustomTranslations.d.ts.map

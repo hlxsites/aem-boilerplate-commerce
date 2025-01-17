@@ -19,7 +19,12 @@ declare enum EventsList {
     SIGN_IN = "sign-in",
     SIGN_OUT = "sign-out"
 }
-declare function pushEvent(event: string): void;
+export declare function getAdobeDataLayer(): any;
+/**
+ * Pushes an event to the Adobe Client Data Layer (ACDL)
+ * Logic based on: https://github.com/adobe/commerce-events/blob/1973d0ce28471ef190fa06dad6359ffa0ab51db6/packages/storefront-events-sdk/src/Base.ts#L34
+ */
+declare function pushEvent(event: string, additionalContext?: any): void;
 declare const publishEvents: (eventType: string, eventParams: any) => null | undefined;
 export { EventsList, publishEvents, pushEvent };
 //# sourceMappingURL=acdl.d.ts.map
