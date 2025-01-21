@@ -40,31 +40,15 @@ const Picker = props => {
   const activeConfig = state.selectedConfig ? state.configs[state.selectedConfig] : null;
 
   const clickListItem = (key) => {
-    const block = blocks[state.block] || {};
-    if (!key.startsWith('category:') || block?.selection === 'multiple') {
-      return;
-    }
-    selectFolder(key.replace('category:', ''));
-  }
-
-  const selectSegment = (segment) => {
     setState(state => ({
       ...state,
-      selectedSegment: segment,
+      selectedSegment: key,
     }));
-  };
+    copyToClipboard(key);
+  }
 
-  const copyToClipboard = key => {
-
-    let segment = [...key].map(k => state.customerSegments[k]);
-    console.log(segment);
-    const html = blocks[state.block].output(segment);
-    navigator.clipboard.write([
-      new ClipboardItem({
-        'text/plain': new Blob([html], {type: 'text/plain'}),
-        'text/html': new Blob([html], {type: 'text/html'}),
-      }),
-    ]);
+  const copyToClipboard = (key) => {
+    navigator.clipboard.writeText(key ?? '');
   };
 
   const renderEmptyState = () => (
@@ -199,10 +183,10 @@ const Picker = props => {
           <ActionButton aria-label="Settings" isQuiet onPress={toggleSettings}>
             <Settings/>
           </ActionButton>
-            <ActionButton isDisabled={state.selectedSegment === null} aria-label="Copy"
-                          onPress={() => copyToClipboard(state.selectedSegment)}>
-              <Copy/>
-            </ActionButton>
+          <ActionButton isDisabled={state.selectedSegment === null} aria-label="Copy"
+                        onPress={() => copyToClipboard(state.selectedSegment)}>
+            <Copy/>
+          </ActionButton>
           {/*}*/}
         </Flex>
       </View>
