@@ -44,7 +44,6 @@ const Picker = props => {
       ...state,
       selectedSegment: key,
     }));
-    copyToClipboard(key);
   }
 
   const copyToClipboard = (key) => {
@@ -183,15 +182,10 @@ const Picker = props => {
           <ActionButton aria-label="Settings" isQuiet onPress={toggleSettings}>
             <Settings/>
           </ActionButton>
-          <ActionButton isDisabled={state.selectedSegment === null} aria-label="Copy"
-                        onPress={() => copyToClipboard(state.selectedSegment)}>
-            <Copy/>
-          </ActionButton>
-          {/*}*/}
         </Flex>
       </View>
       <Breadcrumbs onAction={clickListItem}>
-        <Item key="customer_segments">Customer Segments</Item>
+        <Item key="customer_segments">Personalisation</Item>
       </Breadcrumbs>
       <ListView aria-label="List of Customer Segments"
                 items={state.customerSegments}
@@ -206,8 +200,7 @@ const Picker = props => {
           return (
             <Item>
               <Text><span dangerouslySetInnerHTML={{__html: item.name}}/></Text>
-              {/*{currentBlock.selection === 'single' && (currentBlock.type === 'any' || currentBlock.type === 'item') &&*/}
-              {/*  <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.key)}><Copy/></ActionButton>}*/}
+                <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.key)}><Copy/></ActionButton>
             </Item>
           );
         }}
