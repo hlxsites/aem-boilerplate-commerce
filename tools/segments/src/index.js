@@ -19,34 +19,6 @@ const configFiles = {
  */
 const defaultConfig = 'dev';
 
-/**
- * List of blocks to be available in the picker.
- *
- * Format: Object with key -> block mapping. Each block is defined by the following properties:
- *   key: Unique key, must be same as the key in the object
- *   name: Displayed name of the block
- *   output: Function that receives the selected product(s) and/or category(ies) and returns the HTML to be copied into the clipboard
- *   selection: Define if single or multi selection: single or multiple
- *   type: Define what can be selected: any, item or folder
- */
-const blocks = {
-  'segments-list': {
-    'key': 'segments-list',
-    'name': 'Segments',
-    'output': i => `<table width="100%" style="border: 1px solid black;">
-            <tr>
-                <th colspan="2" style="border: 1px solid black; background: lightgray;">Segments</th>
-            </tr>
-            <tr>
-                <td style="border: 1px solid black">segment</td>
-                <td style="border: 1px solid black">segment</td>
-            </tr>
-        </table>`,
-    'selection': 'single',
-    'type': 'folder',
-  },
-};
-
 async function executeCustomerSegmentsQuery(query, config, variables = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -93,11 +65,39 @@ const getCustomerSegments = async (config) => {
   return customerSegments;
 }
 
+const personalisationCategories = [
+  {
+    'key': 'segments',
+    'title': 'Customer Segments',
+    'initializer': getCustomerSegments,
+  },
+  {
+    'key': 'groups',
+    'title': 'Customer Groups',
+    'initializer': null,
+  },
+  {
+    'key': 'cartRules',
+    'title': 'Cart Rules',
+    'initializer': null,
+  },
+  {
+    'key': 'catalogRules',
+    'title': 'Catalog Rules',
+    'initializer': null,
+  },
+  {
+    'key': 'utmParams',
+    'title': 'UTM URL Parameters',
+    'initializer': null,
+  },
+];
+
+
 const app = document.getElementById("app");
 if (app) {
   ReactDOM.render(<Picker
-    blocks={blocks}
-    getCustomerSegments={getCustomerSegments}
+    personalisationCategories={personalisationCategories}
     configFiles={configFiles}
     defaultConfig={defaultConfig}/>, app);
 }

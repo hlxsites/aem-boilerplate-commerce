@@ -15,6 +15,7 @@ import {
   View,
   IllustratedMessage
 } from '@adobe/react-spectrum';
+import Folder from '@spectrum-icons/illustrations/Folder';
 import NotFound from '@spectrum-icons/illustrations/NotFound';
 import Error from '@spectrum-icons/illustrations/Error';
 import Copy from '@spectrum-icons/workflow/Copy';
@@ -22,48 +23,58 @@ import Settings from '@spectrum-icons/workflow/Settings';
 
 
 const Picker = props => {
-  const {blocks, configFiles, getCustomerSegments, defaultConfig} = props;
+  const {configFiles, personalisationCategories, defaultConfig} = props;
 
   const [state, setState] = useState({
     configs: {},
     selectedConfig: null,
-    customerSegments: [],
+    personalisationCategories: personalisationCategories,
+    items: personalisationCategories,
     selectedSegment: null,
+    selectedCategory: null,
     loadingState: 'loading',
-    block: null,
-    disabledKeys: new Set(),
-    selectedItems: new Set(),
     showSettings: false,
     error: null,
   });
 
-  const activeConfig = state.selectedConfig ? state.configs[state.selectedConfig] : null;
+  const activeConfig = state.selectedConfig ? state.configs[state.selectedConfig] : state.configs[2];
 
   const clickListItem = (key) => {
+    let isFolder = key.startsWith('category');
+    let selected = isFolder ? key.split(':')[1] : key;
+    if (isFolder) {
+      const categoryInitializer = getCategoryCallback(selected)['initializer'];
+      if (categoryInitializer) {
+        state.selectedCategory = selected;
+        categoryInitializer(activeConfig)
+        .then(response => {
+          setState(state => ({
+            ...state,
+            items: response,
+            loadingState: 'idle',
+          }));
+        });}
+    } else {
+      copyToClipboard(key);
+    }
+
     setState(state => ({
       ...state,
-      selectedSegment: key,
+      loadingState: 'idle',
+    }));
+  }
+
+  const resetSelection = () => {
+    setState(state => ({
+      ...state,
+      selectedCategory: null,
+      loadingState: 'idle',
     }));
   }
 
   const copyToClipboard = (key) => {
     navigator.clipboard.writeText(key ?? '');
   };
-
-  const renderEmptyState = () => (
-    <IllustratedMessage>
-      <NotFound/>
-      <Heading>No items found</Heading>
-    </IllustratedMessage>
-  );
-
-  const renderErrorState = () => (
-    <IllustratedMessage>
-      <Error/>
-      <Heading>Something went wrong</Heading>
-      <Content>{state.error}</Content>
-    </IllustratedMessage>
-  );
 
   const toggleSettings = () => {
     setState(state => ({
@@ -76,10 +87,7 @@ const Picker = props => {
     setState(state => ({
       ...state,
       selectedConfig: config,
-      customerSegments: [],
       loadingState: 'loading',
-      disabledKeys: new Set(),
-      selectedItems: new Set(),
     }));
   }
 
@@ -92,6 +100,16 @@ const Picker = props => {
     return config;
   }
 
+  const getCategoryCallback = (selected) => {
+    let selectedCategory = personalisationCategories.filter(category => {
+      return category.key === selected;
+    })[0];
+    return selectedCategory;
+  }
+
+  /**
+   * Load configurations, set default config
+   */
   useEffect(() => {
     (async () => {
       const selectedConfig = defaultConfig || Object.keys(configFiles)[0];
@@ -116,40 +134,10 @@ const Picker = props => {
         ...state,
         configs,
         selectedConfig,
-        loadingState: 'loading',
-        disabledKeys: new Set(),
-        selectedItems: new Set(),
+        loadingState: 'idle',
       }));
     })();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (!activeConfig) {
-        return;
-      }
-
-      let customerSegments = [];
-      try {
-        customerSegments = await getCustomerSegments(activeConfig);
-      } catch (err) {
-        console.error(err);
-        setState(state => ({
-          ...state,
-          error: 'Could not load customer segments',
-        }));
-        return;
-      }
-
-      setState(state => {
-        return {
-          ...state,
-          customerSegments: customerSegments,
-          loadingState: 'idle',
-        }
-      });
-    })();
-  }, [state.selectedConfig])
 
   if (state.error) {
     return <Provider theme={defaultTheme} height="100%">
@@ -161,6 +149,26 @@ const Picker = props => {
     </Provider>;
   }
 
+  console.log('items before render:', state.items);
+
+  const renderEmptyState = () => (
+    <IllustratedMessage>
+      <NotFound/>
+      <Heading>No items found</Heading>
+    </IllustratedMessage>
+  );
+
+  const renderErrorState = () => (
+    <IllustratedMessage>
+      <Error/>
+      <Heading>Something went wrong</Heading>
+      <Content>{state.error}</Content>
+    </IllustratedMessage>
+  );
+
+  /**
+   * Render component
+   */
   return <Provider theme={defaultTheme} height="100%">
     <Flex direction="column" height="100%">
       {
@@ -177,6 +185,7 @@ const Picker = props => {
           </RSPicker>
         </View>
       }
+
       <View padding="size-100">
         <Flex direction="row" gap="size-100">
           <ActionButton aria-label="Settings" isQuiet onPress={toggleSettings}>
@@ -184,11 +193,13 @@ const Picker = props => {
           </ActionButton>
         </Flex>
       </View>
-      <Breadcrumbs onAction={clickListItem}>
-        <Item key="customer_segments">Personalisation</Item>
+
+      <Breadcrumbs onAction={resetSelection}>
+          <Item onPress={resetSelection} ocClick={resetSelection}>Personalisation { state.selectedCategory && <span>{getCategoryCallback(state.selectedCategory)['title']}</span>}</Item>
       </Breadcrumbs>
-      <ListView aria-label="List of Customer Segments"
-                items={state.customerSegments}
+
+      <ListView aria-label="Personalisation"
+                items={state.items}
                 loadingState={state.loadingState}
                 width="100%"
                 height="100%"
@@ -197,10 +208,17 @@ const Picker = props => {
                 renderEmptyState={renderEmptyState}
       >
         {item => {
+          if (item.title) {
+            return <Item key={'category:' + item.key} textValue={item.title}>
+              <Folder/>
+              <Text>{item.title}</Text>
+            </Item>
+          }
+
           return (
             <Item>
-              <Text><span dangerouslySetInnerHTML={{__html: item.name}}/></Text>
-                <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.key)}><Copy/></ActionButton>
+              <Text>{item.name}</Text>
+              <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.key)}><Copy/></ActionButton>
             </Item>
           );
         }}
