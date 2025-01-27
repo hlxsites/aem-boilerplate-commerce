@@ -104,10 +104,9 @@ const Picker = props => {
   }
 
   const getCategory = (selected) => {
-    let selectedCategory = personalisationCategories.filter(category => {
+    return personalisationCategories.filter(category => {
       return category.key === selected;
     })[0];
-    return selectedCategory;
   }
 
   /**
