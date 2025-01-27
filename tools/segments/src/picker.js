@@ -139,16 +139,6 @@ const Picker = props => {
     })();
   }, []);
 
-  if (state.error) {
-    return <Provider theme={defaultTheme} height="100%">
-      <Flex direction="column" height="100%">
-        <View padding="size-500">
-          {renderErrorState()}
-        </View>
-      </Flex>
-    </Provider>;
-  }
-
   const renderEmptyState = () => (
     <IllustratedMessage>
       <NotFound/>
