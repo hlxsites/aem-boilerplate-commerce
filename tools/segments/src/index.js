@@ -71,26 +71,26 @@ const personalisationCategories = [
     'title': 'Customer Segments',
     'initializer': getCustomerSegments,
   },
-  {
-    'key': 'groups',
-    'title': 'Customer Groups',
-    'initializer': null,
-  },
-  {
-    'key': 'cartRules',
-    'title': 'Cart Rules',
-    'initializer': null,
-  },
-  {
-    'key': 'catalogRules',
-    'title': 'Catalog Rules',
-    'initializer': null,
-  },
-  {
-    'key': 'utmParams',
-    'title': 'UTM URL Parameters',
-    'initializer': null,
-  },
+  // {
+  //   'key': 'groups',
+  //   'title': 'Customer Groups',
+  //   'initializer': null,
+  // },
+  // {
+  //   'key': 'cartRules',
+  //   'title': 'Cart Rules',
+  //   'initializer': null,
+  // },
+  // {
+  //   'key': 'catalogRules',
+  //   'title': 'Catalog Rules',
+  //   'initializer': null,
+  // },
+  // {
+  //   'key': 'utmParams',
+  //   'title': 'UTM URL Parameters',
+  //   'initializer': null,
+  // },
 ];
 
 

@@ -47,13 +47,14 @@ const Picker = props => {
       if (categoryInitializer) {
         state.selectedCategory = selected;
         categoryInitializer(activeConfig)
-        .then(response => {
-          setState(state => ({
-            ...state,
-            items: response,
-            loadingState: 'idle',
-          }));
-        });}
+          .then(response => {
+            setState(state => ({
+              ...state,
+              items: response,
+              loadingState: 'idle',
+            }));
+          });
+      }
     } else {
       copyToClipboard(key);
     }
@@ -68,6 +69,7 @@ const Picker = props => {
     setState(state => ({
       ...state,
       selectedCategory: null,
+      items: state.personalisationCategories,
       loadingState: 'idle',
     }));
   }
@@ -194,8 +196,12 @@ const Picker = props => {
         </Flex>
       </View>
 
-      <Breadcrumbs onAction={resetSelection}>
-          <Item onPress={resetSelection} ocClick={resetSelection}>Personalisation { state.selectedCategory && <span>{getCategoryCallback(state.selectedCategory)['title']}</span>}</Item>
+      <Breadcrumbs>
+        <Item ocClick={resetSelection}>Personalisation
+          {state.selectedCategory &&
+            <span onClick={resetSelection}> &lt;&lt;&lt; {getCategoryCallback(state.selectedCategory)['title']}</span>
+          }
+        </Item>
       </Breadcrumbs>
 
       <ListView aria-label="Personalisation"
