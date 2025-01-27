@@ -1,5 +1,5 @@
 {
-  "name": "franklin-picker",
+  "name": "franklin-personalisation-picker",
   "version": "1.0.0",
   "description": "",
   "source": "src/index.html",
@@ -9,7 +9,7 @@
     "prebuild": "rm -rf dist",
     "build": "parcel build --public-url '.' --dist-dir dist src/index.html"
   },
-  "author": "Mark J. Becker <mabecker@adobe.com>",
+  "author": "Rafal Janicki <rjanicki@adobe.com>",
   "license": "Apache-2.0",
   "devDependencies": {
     "@parcel/transformer-inline-string": "^2.10.1",
