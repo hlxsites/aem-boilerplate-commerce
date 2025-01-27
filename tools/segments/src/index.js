@@ -17,7 +17,7 @@ const configFiles = {
 /**
  * Default configuration to be loaded.
  */
-const defaultConfig = 'dev';
+const defaultConfig = 'stage';
 
 async function executeCustomerSegmentsQuery(query, config, variables = {}) {
   const headers = {
