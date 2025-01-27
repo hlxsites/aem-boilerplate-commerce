@@ -104,9 +104,7 @@ const Picker = props => {
   }
 
   const getCategory = (selected) => {
-    return personalisationCategories.filter(category => {
-      return category.key === selected;
-    })[0];
+    return personalisationCategories.find(category => category.key === selected);
   }
 
   /**
@@ -150,8 +148,6 @@ const Picker = props => {
       </Flex>
     </Provider>;
   }
-
-  console.log('items before render:', state.items);
 
   const renderEmptyState = () => (
     <IllustratedMessage>
