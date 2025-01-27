@@ -54,9 +54,9 @@ const getCustomerSegments = async (config) => {
     const segments = await executeCustomerSegmentsQuery(customerSegmentsQuery, config);
     segments?.allCustomerSegments?.forEach(segment => {
       customerSegments.push({
-        "key": segment.name,
-        "name": segment.name,
-        "apply_to": segment.apply_to,
+        'key': segment.name,
+        'name': segment.name,
+        'apply_to': segment.apply_to,
       });
     });
   } catch (err) {

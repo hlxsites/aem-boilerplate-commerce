@@ -40,23 +40,24 @@ const Picker = props => {
   const activeConfig = state.selectedConfig ? state.configs[state.selectedConfig] : state.configs[2];
 
   const clickListItem = (key) => {
-    let isFolder = key.startsWith('category');
-    let selected = isFolder ? key.split(':')[1] : key;
-    if (isFolder) {
-      const categoryInitializer = getCategoryCallback(selected)['initializer'];
-      if (categoryInitializer) {
-        state.selectedCategory = selected;
-        categoryInitializer(activeConfig)
-          .then(response => {
-            setState(state => ({
-              ...state,
-              items: response,
-              loadingState: 'idle',
-            }));
-          });
-      }
-    } else {
+
+    if (!key.startsWith('category')) {
       copyToClipboard(key);
+      return;
+    }
+
+    let selected = key.split(':')[1];
+    const categoryInitializer = getCategory(selected)['initializer'];
+    if (categoryInitializer) {
+      state.selectedCategory = selected;
+      categoryInitializer(activeConfig)
+        .then(response => {
+          setState(state => ({
+            ...state,
+            items: response,
+            loadingState: 'idle',
+          }));
+        });
     }
 
     setState(state => ({
@@ -102,7 +103,7 @@ const Picker = props => {
     return config;
   }
 
-  const getCategoryCallback = (selected) => {
+  const getCategory = (selected) => {
     let selectedCategory = personalisationCategories.filter(category => {
       return category.key === selected;
     })[0];
@@ -160,13 +161,19 @@ const Picker = props => {
     </IllustratedMessage>
   );
 
-  const renderErrorState = () => (
-    <IllustratedMessage>
-      <Error/>
-      <Heading>Something went wrong</Heading>
-      <Content>{state.error}</Content>
-    </IllustratedMessage>
-  );
+  if (state.error) {
+    return <Provider theme={defaultTheme} height="100%">
+      <Flex direction="column" height="100%">
+        <View padding="size-500">
+          <IllustratedMessage>
+            <Error/>
+            <Heading>Something went wrong</Heading>
+            <Content>{state.error}</Content>
+          </IllustratedMessage>
+        </View>
+      </Flex>
+    </Provider>;
+  }
 
   /**
    * Render component
@@ -181,9 +188,7 @@ const Picker = props => {
                     width="100%"
                     selectedKey={state.selectedConfig}
                     onSelectionChange={key => changeSelectedConfig(key)}>
-            {Object.keys(state.configs).map(key => (
-              <Item key={key} value={key}>{key}</Item>
-            ))}
+            {Object.keys(state.configs).map(key => (<Item key={key} value={key}>{key}</Item>))}
           </RSPicker>
         </View>
       }
@@ -199,7 +204,7 @@ const Picker = props => {
       <Breadcrumbs>
         <Item ocClick={resetSelection}>Personalisation
           {state.selectedCategory &&
-            <span onClick={resetSelection}> &lt;&lt;&lt; {getCategoryCallback(state.selectedCategory)['title']}</span>
+            <span onClick={resetSelection}> &lt;&lt;&lt; {getCategory(state.selectedCategory)['title']}</span>
           }
         </Item>
       </Breadcrumbs>
