@@ -2,7 +2,7 @@
   "project": "Boilerplate",
   "plugins": [
     {
-      "id": "products",
+      "id": "cif",
       "title": "Commerce",
       "environments": [
         "edit"
