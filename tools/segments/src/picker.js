@@ -90,7 +90,9 @@ const Picker = props => {
     setState(state => ({
       ...state,
       selectedConfig: config,
-      loadingState: 'loading',
+      selectedCategory: null,
+      items: state.personalisationCategories,
+      loadingState: 'idle',
     }));
   }
 
