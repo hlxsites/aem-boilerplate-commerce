@@ -30,7 +30,7 @@ async function executeCustomerSegmentsQuery(query, config, variables = {}) {
     'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
   };
 
-  const apiCall = new URL(config['commerce-endpoint']);
+  const apiCall = new URL(config['commerce-core-endpoint']);
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
     .replace(/\s\s+/g, ' '));
   apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
