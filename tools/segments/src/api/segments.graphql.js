@@ -3,8 +3,7 @@
  * All Rights Reserved.
  */
 import executeGraphQlQuery from './query.graphql.js';
-
-const customerSegments = [];
+import queryCache from './query.cache';
 
 const query = `
   query {
@@ -17,11 +16,11 @@ const query = `
 `;
 
 const getCustomerSegments = async (config) => {
-  if (!customerSegments.length > 0) {
+  if (!queryCache['customerSegments'].length > 0) {
     try {
       const segments = await executeGraphQlQuery(query, config);
       segments?.allCustomerSegments?.forEach(segment => {
-        customerSegments.push({
+        queryCache['customerSegments'].push({
           'key': segment.name,
           'name': segment.name,
           'apply_to': segment.apply_to,
@@ -31,7 +30,7 @@ const getCustomerSegments = async (config) => {
       console.error('Could not retrieve customer segments', err);
     }
   }
-  return customerSegments;
+  return queryCache['customerSegments'];
 }
 
 export default getCustomerSegments;

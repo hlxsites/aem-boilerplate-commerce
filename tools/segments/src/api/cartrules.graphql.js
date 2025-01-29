@@ -3,8 +3,7 @@
  * All Rights Reserved.
  */
 import executeGraphQlQuery from './query.graphql.js';
-
-const cartRules = [];
+import queryCache from './query.cache';
 
 const query = `
   query {
@@ -15,18 +14,20 @@ const query = `
 `;
 
 const getCartRules = async (config) => {
-  if (!cartRules.length > 0) {try {
-    const rules = await executeGraphQlQuery(query, config);
-    rules?.allCartRules?.forEach(rule => {
-      cartRules.push({
-        'key': rule.name,
-        'name': rule.name,
+  if (!queryCache['cartRules'].length > 0) {
+    try {
+      const rules = await executeGraphQlQuery(query, config);
+      rules?.allCartRules?.forEach(rule => {
+        queryCache['cartRules'].push({
+          'key': rule.name,
+          'name': rule.name,
+        });
       });
-    });
-  } catch (err) {
-    console.error('Could not retrieve customer segments', err);
-  }}
-  return cartRules;
+    } catch (err) {
+      console.error('Could not retrieve customer segments', err);
+    }
+  }
+  return queryCache['cartRules'];
 }
 
 export default getCartRules;

@@ -24,7 +24,8 @@ import NotFound from '@spectrum-icons/illustrations/NotFound';
 import Error from '@spectrum-icons/illustrations/Error';
 import Copy from '@spectrum-icons/workflow/Copy';
 import Settings from '@spectrum-icons/workflow/Settings';
-
+import Refresh from "@spectrum-icons/workflow/Refresh";
+import queryCache from './api/query.cache';
 
 const Picker = props => {
   const {configFiles, personalisationCategories, defaultConfig} = props;
@@ -109,6 +110,10 @@ const Picker = props => {
     return config;
   }
 
+  const clearCache = () => {
+    Object.keys(queryCache).map(key => queryCache[key] = []);
+  }
+
   const getCategory = (selected) => {
     return personalisationCategories.find(category => category.key === selected);
   }
@@ -188,6 +193,9 @@ const Picker = props => {
         <Flex direction="row" gap="size-100">
           <ActionButton aria-label="Settings" isQuiet onPress={toggleSettings}>
             <Settings/>
+          </ActionButton>
+          <ActionButton aria-label="Refresh" isQuiet onPress={clearCache} alt="Clear cache">
+            <Refresh/>
           </ActionButton>
         </Flex>
       </View>

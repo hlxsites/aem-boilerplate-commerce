@@ -2,9 +2,8 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import executeGraphQlQuery from './query.graphql.js';
-
-const catalogRules = [];
+import executeGraphQlQuery from './query.graphql';
+import queryCache from './query.cache';
 
 const query = `
   query {
@@ -15,11 +14,11 @@ const query = `
 `;
 
 const getCatalogRules = async (config) => {
-  if (!catalogRules.length > 0) {
+  if (!queryCache['catalogRules'].length > 0) {
     try {
       const rules = await executeGraphQlQuery(query, config);
       rules?.allCatalogRules?.forEach(rule => {
-        catalogRules.push({
+        queryCache['catalogRules'].push({
           'key': rule.name,
           'name': rule.name,
         });
@@ -29,7 +28,7 @@ const getCatalogRules = async (config) => {
     }
   }
 
-  return catalogRules;
+  return queryCache['catalogRules'];
 }
 
 export default getCatalogRules;

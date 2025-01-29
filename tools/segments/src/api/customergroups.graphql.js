@@ -3,8 +3,7 @@
  * All Rights Reserved.
  */
 import executeGraphQlQuery from './query.graphql.js';
-
-const customerGroups = [];
+import queryCache from './query.cache';
 
 const query = `
   query {
@@ -15,11 +14,11 @@ const query = `
 `;
 
 const getCustomerGroups = async (config) => {
-  if (!customerGroups.length > 0) {
+  if (!queryCache['customerGroups'].length > 0) {
     try {
       const groups = await executeGraphQlQuery(query, config);
       groups?.allCustomerGroups?.forEach(group => {
-        customerGroups.push({
+        queryCache['customerGroups'].push({
           'key': group.name,
           'name': group.name,
         });
@@ -28,7 +27,7 @@ const getCustomerGroups = async (config) => {
       console.error('Could not retrieve customer segments', err);
     }
   }
-  return customerGroups;
+  return queryCache['customerGroups'];
 }
 
 export default getCustomerGroups;
