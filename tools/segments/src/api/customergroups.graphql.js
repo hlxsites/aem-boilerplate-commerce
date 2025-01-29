@@ -24,7 +24,7 @@ const getCustomerGroups = async (config) => {
         });
       });
     } catch (err) {
-      console.error('Could not retrieve customer segments', err);
+      console.error('Could not retrieve customer groups', err);
     }
   }
   return queryCache['customerGroups'];

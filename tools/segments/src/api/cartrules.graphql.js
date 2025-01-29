@@ -24,7 +24,7 @@ const getCartRules = async (config) => {
         });
       });
     } catch (err) {
-      console.error('Could not retrieve customer segments', err);
+      console.error('Could not retrieve cart rules', err);
     }
   }
   return queryCache['cartRules'];
