@@ -9,18 +9,19 @@ import Picker from './picker.js';
 import getCustomerSegments from './api/segments.graphql.js';
 import getCatalogRules from './api/catalogrules.graphql.js';
 import getCartRules from './api/cartrules.graphql.js';
+import getCustomerGroups from "./api/customergroups.graphql";
 
 import './styles.css';
-import getCustomerGroups from "./api/customergroups.graphql";
 
 /**
  * Object containing all configuration files that should be exposed in the picker.
  */
 const configFiles = {
-  'prod': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs.json?sheet=prod',
-  'stage': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-stage.json',
-  'dev': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-dev.json',
+  'prod': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs.json?sheet=prod',
+  'stage': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs-stage.json',
+  'dev': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs-dev.json',
 }
+
 /**
  * Default configuration to be loaded.
  */

@@ -4,6 +4,8 @@
  */
 import executeGraphQlQuery from './query.graphql.js';
 
+const catalogRules = [];
+
 const query = `
   query {
     allCatalogRules {
@@ -13,18 +15,20 @@ const query = `
 `;
 
 const getCatalogRules = async (config) => {
-  let catalogRules = [];
-  try {
-    const rules = await executeGraphQlQuery(query, config);
-    rules?.allCatalogRules?.forEach(rule => {
-      catalogRules.push({
-        'key': rule.name,
-        'name': rule.name,
+  if (!catalogRules.length > 0) {
+    try {
+      const rules = await executeGraphQlQuery(query, config);
+      rules?.allCatalogRules?.forEach(rule => {
+        catalogRules.push({
+          'key': rule.name,
+          'name': rule.name,
+        });
       });
-    });
-  } catch (err) {
-    console.error('Could not retrieve customer segments', err);
+    } catch (err) {
+      console.error('Could not retrieve customer segments', err);
+    }
   }
+
   return catalogRules;
 }
 

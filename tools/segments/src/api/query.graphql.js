@@ -3,7 +3,7 @@
  * All Rights Reserved.
  */
 
-async function executeGraphQlQuery(query, config, variables = {}) {
+async function executeGraphQlQuery(query, config) {
   const headers = {
     'Content-Type': 'application/json',
     'x-api-key': config['commerce.headers.cs.x-api-key'],
@@ -17,7 +17,6 @@ async function executeGraphQlQuery(query, config, variables = {}) {
   const apiCall = new URL(config['commerce-core-endpoint']);
   apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
     .replace(/\s\s+/g, ' '));
-  apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
 
   const response = await fetch(apiCall, {
     method: 'GET',

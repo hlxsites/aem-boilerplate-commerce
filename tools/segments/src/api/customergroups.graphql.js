@@ -4,6 +4,8 @@
  */
 import executeGraphQlQuery from './query.graphql.js';
 
+const customerGroups = [];
+
 const query = `
   query {
     allCustomerGroups {
@@ -13,17 +15,18 @@ const query = `
 `;
 
 const getCustomerGroups = async (config) => {
-  let customerGroups = [];
-  try {
-    const groups = await executeGraphQlQuery(query, config);
-    groups?.allCustomerGroups?.forEach(group => {
-      customerGroups.push({
-        'key': group.name,
-        'name': group.name,
+  if (!customerGroups.length > 0) {
+    try {
+      const groups = await executeGraphQlQuery(query, config);
+      groups?.allCustomerGroups?.forEach(group => {
+        customerGroups.push({
+          'key': group.name,
+          'name': group.name,
+        });
       });
-    });
-  } catch (err) {
-    console.error('Could not retrieve customer segments', err);
+    } catch (err) {
+      console.error('Could not retrieve customer segments', err);
+    }
   }
   return customerGroups;
 }

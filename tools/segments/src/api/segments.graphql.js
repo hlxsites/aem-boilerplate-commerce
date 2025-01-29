@@ -4,6 +4,8 @@
  */
 import executeGraphQlQuery from './query.graphql.js';
 
+const customerSegments = [];
+
 const query = `
   query {
     allCustomerSegments {
@@ -15,18 +17,19 @@ const query = `
 `;
 
 const getCustomerSegments = async (config) => {
-  let customerSegments = [];
-  try {
-    const segments = await executeGraphQlQuery(query, config);
-    segments?.allCustomerSegments?.forEach(segment => {
-      customerSegments.push({
-        'key': segment.name,
-        'name': segment.name,
-        'apply_to': segment.apply_to,
+  if (!customerSegments.length > 0) {
+    try {
+      const segments = await executeGraphQlQuery(query, config);
+      segments?.allCustomerSegments?.forEach(segment => {
+        customerSegments.push({
+          'key': segment.name,
+          'name': segment.name,
+          'apply_to': segment.apply_to,
+        });
       });
-    });
-  } catch (err) {
-    console.error('Could not retrieve customer segments', err);
+    } catch (err) {
+      console.error('Could not retrieve customer segments', err);
+    }
   }
   return customerSegments;
 }

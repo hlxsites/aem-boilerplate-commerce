@@ -4,6 +4,8 @@
  */
 import executeGraphQlQuery from './query.graphql.js';
 
+const cartRules = [];
+
 const query = `
   query {
     allCartRules {
@@ -13,8 +15,7 @@ const query = `
 `;
 
 const getCartRules = async (config) => {
-  let cartRules = [];
-  try {
+  if (!cartRules.length > 0) {try {
     const rules = await executeGraphQlQuery(query, config);
     rules?.allCartRules?.forEach(rule => {
       cartRules.push({
@@ -24,7 +25,7 @@ const getCartRules = async (config) => {
     });
   } catch (err) {
     console.error('Could not retrieve customer segments', err);
-  }
+  }}
   return cartRules;
 }
 
