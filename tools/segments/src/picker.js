@@ -1,3 +1,7 @@
+/**
+ * Copyright 2025 Adobe
+ * All Rights Reserved.
+ */
 import React, {useEffect, useState} from 'react';
 
 import {
