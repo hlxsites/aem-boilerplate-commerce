@@ -194,7 +194,7 @@ const Picker = props => {
           <ActionButton aria-label="Settings" isQuiet onPress={toggleSettings}>
             <Settings/>
           </ActionButton>
-          <ActionButton aria-label="Refresh" isQuiet onPress={clearCache} alt="Clear cache">
+          <ActionButton aria-label="Refresh" isQuiet onPress={clearCache} title="Clear cache">
             <Refresh/>
           </ActionButton>
         </Flex>
