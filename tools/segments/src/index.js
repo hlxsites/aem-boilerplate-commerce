@@ -5,10 +5,10 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Picker from './picker.js';
-import getCustomerSegments from './api/segments.graphql.js';
-import getCatalogRules from './api/catalogrules.graphql.js';
-import getCartRules from './api/cartrules.graphql.js';
+import Picker from './picker';
+import getCustomerSegments from './api/segments.graphql';
+import getCatalogRules from './api/catalogrules.graphql';
+import getCartRules from './api/cartrules.graphql';
 import getCustomerGroups from "./api/customergroups.graphql";
 
 import './styles.css';
