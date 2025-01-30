@@ -13,10 +13,10 @@ const query = `
   }
 `;
 
-const getCartRules = async (config) => {
+const getCartRules = async (environment) => {
   if (!queryCache['cartRules'].length > 0) {
     try {
-      const rules = await executeGraphQlQuery(query, config);
+      const rules = await executeGraphQlQuery(query, environment);
       rules?.allCartRules?.forEach(rule => {
         queryCache['cartRules'].push({
           'key': rule.name,

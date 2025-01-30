@@ -48,11 +48,6 @@ const personalisationCategories = [
     'title': 'Catalog Rules',
     'initializer': getCatalogRules,
   },
-  // {
-  //   'key': 'utmParams',
-  //   'title': 'UTM URL Parameters',
-  //   'initializer': null,
-  // },
 ];
 
 

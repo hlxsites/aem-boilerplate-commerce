@@ -42,8 +42,6 @@ const Picker = props => {
     error: null,
   });
 
-  const activeConfig = state.selectedConfig ? state.configs[state.selectedConfig] : state.configs[2];
-
   const clickListItem = (key) => {
 
     if (!key.startsWith('category')) {
@@ -55,7 +53,7 @@ const Picker = props => {
     const categoryInitializer = getCategory(selected)['initializer'];
     if (categoryInitializer) {
       state.selectedCategory = selected;
-      categoryInitializer(activeConfig)
+      categoryInitializer(state.selectedConfig)
         .then(response => {
           setState(state => ({
             ...state,
@@ -92,6 +90,7 @@ const Picker = props => {
   }
 
   const changeSelectedConfig = (config) => {
+    clearCache();
     setState(state => ({
       ...state,
       selectedConfig: config,
@@ -112,6 +111,11 @@ const Picker = props => {
 
   const clearCache = () => {
     Object.keys(queryCache).map(key => queryCache[key] = []);
+    setState(state => ({
+      ...state,
+      selectedCategory: null,
+      items: state.personalisationCategories,
+    }));
   }
 
   const getCategory = (selected) => {

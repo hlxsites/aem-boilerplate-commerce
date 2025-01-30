@@ -15,10 +15,10 @@ const query = `
   }
 `;
 
-const getCustomerSegments = async (config) => {
+const getCustomerSegments = async (environment) => {
   if (!queryCache['customerSegments'].length > 0) {
     try {
-      const segments = await executeGraphQlQuery(query, config);
+      const segments = await executeGraphQlQuery(query, environment);
       segments?.allCustomerSegments?.forEach(segment => {
         queryCache['customerSegments'].push({
           'key': segment.name,

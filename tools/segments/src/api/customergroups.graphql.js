@@ -13,10 +13,10 @@ const query = `
   }
 `;
 
-const getCustomerGroups = async (config) => {
+const getCustomerGroups = async (environment) => {
   if (!queryCache['customerGroups'].length > 0) {
     try {
-      const groups = await executeGraphQlQuery(query, config);
+      const groups = await executeGraphQlQuery(query, environment);
       groups?.allCustomerGroups?.forEach(group => {
         queryCache['customerGroups'].push({
           'key': group.name,
