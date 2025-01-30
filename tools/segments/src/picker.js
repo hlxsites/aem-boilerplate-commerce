@@ -154,6 +154,12 @@ const Picker = props => {
     })();
   }, []);
 
+
+  const getPath = (categories) => {
+    const pathString = categories[state.folder]?.path || '';
+    return pathString.split('/').map(p => categories[p]).filter(p => p);
+  }
+
   const renderEmptyState = () => (
     <IllustratedMessage>
       <NotFound/>
@@ -204,12 +210,11 @@ const Picker = props => {
         </Flex>
       </View>
 
-      <Breadcrumbs>
-        <Item ocClick={resetSelection}>Personalisation
-          {state.selectedCategory &&
-            <span onClick={resetSelection}> &gt; {getCategory(state.selectedCategory)['title']}</span>
-          }
-        </Item>
+      <Breadcrumbs onAction={resetSelection}>
+        <Item key='Personalisation'>Personalisation</Item>
+        {state.selectedCategory &&
+          <Item key={getCategory(state.selectedCategory)['key']} onClick={resetSelection}>{getCategory(state.selectedCategory)['title']}</Item>
+        }
       </Breadcrumbs>
 
       <ListView aria-label="Personalisation"

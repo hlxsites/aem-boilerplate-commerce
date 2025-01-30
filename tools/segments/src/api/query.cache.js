@@ -8,7 +8,8 @@
  * the result is cached and re-used.
  *
  * In order to clear teh cache (eg. when new rule or segment was added to the backend), there is
- * 'Refresh' button added to the plugin
+ * 'Refresh' button added to the plugin. Also, cache is cleared every time when the environment
+ * is changed as data comes from different endpoint.
  */
 const queryCache = {
   catalogRules: [],
