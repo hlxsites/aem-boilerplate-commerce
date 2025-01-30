@@ -2,15 +2,13 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import executeGraphQlQuery from './query.graphql.js';
+import executeGraphQlQuery from './query.graphql';
 import queryCache from './query.cache';
 
 const query = `
   query {
     allCustomerSegments {
       name
-      description
-      apply_to
     }
   }
 `;
@@ -21,9 +19,7 @@ const getCustomerSegments = async (environment) => {
       const segments = await executeGraphQlQuery(query, environment);
       segments?.allCustomerSegments?.forEach(segment => {
         queryCache['customerSegments'].push({
-          'key': segment.name,
           'name': segment.name,
-          'apply_to': segment.apply_to,
         });
       });
     } catch (err) {

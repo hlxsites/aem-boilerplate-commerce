@@ -35,7 +35,6 @@ const Picker = props => {
     selectedConfig: null,
     personalisationCategories: personalisationCategories,
     items: personalisationCategories,
-    selectedSegment: null,
     selectedCategory: null,
     loadingState: 'loading',
     showSettings: false,
@@ -51,7 +50,7 @@ const Picker = props => {
 
     let selected = key.split(':')[1];
     const categoryInitializer = getCategory(selected)['initializer'];
-    if (categoryInitializer) {
+    if (categoryInitializer && categoryInitializer instanceof Function) {
       state.selectedCategory = selected;
       categoryInitializer(state.selectedConfig)
         .then(response => {
@@ -154,12 +153,6 @@ const Picker = props => {
     })();
   }, []);
 
-
-  const getPath = (categories) => {
-    const pathString = categories[state.folder]?.path || '';
-    return pathString.split('/').map(p => categories[p]).filter(p => p);
-  }
-
   const renderEmptyState = () => (
     <IllustratedMessage>
       <NotFound/>
@@ -213,7 +206,7 @@ const Picker = props => {
       <Breadcrumbs onAction={resetSelection}>
         <Item key='Personalisation'>Personalisation</Item>
         {state.selectedCategory &&
-          <Item key={getCategory(state.selectedCategory)['key']} onClick={resetSelection}>{getCategory(state.selectedCategory)['title']}</Item>
+          <Item key={getCategory(state.selectedCategory)['key']}>{getCategory(state.selectedCategory)['title']}</Item>
         }
       </Breadcrumbs>
 
@@ -235,9 +228,9 @@ const Picker = props => {
           }
 
           return (
-            <Item>
+            <Item key={item.name}>
               <Text>{item.name}</Text>
-              <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.key)}><Copy/></ActionButton>
+              <ActionButton aria-label="Copy" onPress={() => copyToClipboard(item.name)}><Copy/></ActionButton>
             </Item>
           );
         }}

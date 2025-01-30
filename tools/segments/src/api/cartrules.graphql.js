@@ -2,7 +2,7 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import executeGraphQlQuery from './query.graphql.js';
+import executeGraphQlQuery from './query.graphql';
 import queryCache from './query.cache';
 
 const query = `
@@ -19,7 +19,6 @@ const getCartRules = async (environment) => {
       const rules = await executeGraphQlQuery(query, environment);
       rules?.allCartRules?.forEach(rule => {
         queryCache['cartRules'].push({
-          'key': rule.name,
           'name': rule.name,
         });
       });

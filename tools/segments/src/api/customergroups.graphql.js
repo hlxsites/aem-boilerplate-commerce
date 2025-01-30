@@ -2,7 +2,7 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import executeGraphQlQuery from './query.graphql.js';
+import executeGraphQlQuery from './query.graphql';
 import queryCache from './query.cache';
 
 const query = `
@@ -19,7 +19,6 @@ const getCustomerGroups = async (environment) => {
       const groups = await executeGraphQlQuery(query, environment);
       groups?.allCustomerGroups?.forEach(group => {
         queryCache['customerGroups'].push({
-          'key': group.name,
           'name': group.name,
         });
       });

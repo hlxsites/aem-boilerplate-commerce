@@ -19,7 +19,6 @@ const getCatalogRules = async (environment) => {
       const rules = await executeGraphQlQuery(query, environment);
       rules?.allCatalogRules?.forEach(rule => {
         queryCache['catalogRules'].push({
-          'key': rule.name,
           'name': rule.name,
         });
       });

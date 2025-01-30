@@ -2,7 +2,7 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import { getConfigValue } from '../../../../scripts/configs.js';
+import { getConfigValue } from '../../../../scripts/configs';
 
 async function executeGraphQlQuery(query, environment) {
   const apiCall = new URL(await getConfigValue('commerce-core-endpoint', environment));
