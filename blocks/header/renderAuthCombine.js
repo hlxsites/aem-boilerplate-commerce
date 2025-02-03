@@ -9,58 +9,11 @@ import * as authApi from '@dropins/storefront-auth/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { Button } from '@dropins/tools/components.js';
 import { getCookie } from '../../scripts/configs.js';
-import { CUSTOMER_ACCOUNT_PATH, CUSTOMER_FORGOTPASSWORD_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/constants.js';
-
-function cycleFocus(element) {
-  document.addEventListener('keydown', (event) => {
-    const authCombineModal = document.querySelector('#auth-combine-modal');
-
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      authCombineModal.click();
-
-      element?.focus();
-
-      return;
-    }
-
-    if (!authCombineModal) return;
-
-    const focusableElements = authCombineModal.querySelectorAll(
-      'input[name="email"], input, button, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'
-    );
-
-    if (focusableElements.length === 0) return;
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    if (!authCombineModal.dataset.focusInitialized) {
-      authCombineModal.dataset.focusInitialized = 'true';
-      setTimeout(() => firstElement.focus(), 10);
-    }
-
-    if (event.key === 'Tab') {
-      if (document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
-      } else if (document.activeElement === authCombineModal) {
-        event.preventDefault();
-        firstElement.focus();
-      }
-    }
-  });
-
-  const authCombineModal = document.querySelector('#auth-combine-modal');
-  if (authCombineModal) {
-    setTimeout(() => {
-      const firstElement = authCombineModal.querySelector(
-        'form, input, button, textarea, select, a[href], [tabindex]:not([tabindex="-1"])',
-      );
-      if (firstElement) firstElement.focus();
-    }, 10);
-  }
-}
+import {
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_FORGOTPASSWORD_PATH,
+  CUSTOMER_LOGIN_PATH,
+} from '../../scripts/constants.js';
 
 const signInFormConfig = {
   renderSignUpLink: true,
@@ -168,7 +121,7 @@ const resetPasswordFormConfig = {
   routeSignIn: () => CUSTOMER_LOGIN_PATH,
 };
 
-const onHeaderLinkClick = () => {
+const onHeaderLinkClick = (element) => {
   const viewportMeta = document.querySelector('meta[name="viewport"]');
   const originalViewportContent = viewportMeta.getAttribute('content');
 
@@ -186,13 +139,44 @@ const onHeaderLinkClick = () => {
   signInModal.setAttribute('id', 'auth-combine-modal');
   signInModal.classList.add('auth-combine-modal-overlay');
 
-  const closeModalWindow = (event) => {
-    if ((event.key === 'Escape' || event.key === 'Esc') && event.target.nodeName === 'BODY') {
-      signInModal.remove();
+  const cycleFocus = (event) => {
+    if (!signInModal) return;
+
+    const key = event.key.toLowerCase();
+
+    if (key === 'escape') {
+      event.preventDefault();
+      signInModal.click();
+      element?.focus();
+      return;
+    }
+
+    const focusableElements = signInModal.querySelectorAll(
+      'input[name="email"], input, button, textarea, select, a[href], [tabindex]:not([tabindex="-1"])',
+    );
+
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (!signInModal.dataset.focusInitialized) {
+      signInModal.dataset.focusInitialized = 'true';
+      requestAnimationFrame(() => firstElement.focus(), 10);
+    }
+
+    if (key === 'tab') {
+      if (document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (document.activeElement === signInModal) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     }
   };
 
-  window.addEventListener('keydown', closeModalWindow);
+  window.addEventListener('keydown', cycleFocus);
 
   signInModal.onclick = () => {
     signInModal.remove();
@@ -221,8 +205,11 @@ const renderAuthCombine = (navSections, toggleMenu) => {
 
   const navListEl = navSections.querySelector('.default-content-wrapper > ul');
 
-  const listItems = navListEl.querySelectorAll('.default-content-wrapper > ul > li');
-  const accountLi = Array.from(listItems).find((li) => li.textContent.includes('Account'));
+  const listItems = navListEl.querySelectorAll(
+    '.default-content-wrapper > ul > li',
+  );
+  const accountLi = Array.from(listItems).find((li) =>
+    li.textContent.includes('Account'));
   const accountLiItems = accountLi.querySelectorAll('ul > li');
   const authCombineLink = accountLiItems[accountLiItems.length - 1];
 
@@ -231,7 +218,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
   authCombineLink.innerHTML = `<a href="#">${text}</a>`;
   authCombineLink.addEventListener('click', (event) => {
     event.preventDefault();
-    onHeaderLinkClick();
+    onHeaderLinkClick(accountLi);
 
     function getPopupElements() {
       const headerBlock = document.querySelector('.header.block');
@@ -248,11 +235,18 @@ const renderAuthCombine = (navSections, toggleMenu) => {
     }
 
     events.on('authenticated', (isAuthenticated) => {
-      const authCombineNavElement = document.querySelector('.authCombineNavElement');
+      const authCombineNavElement = document.querySelector(
+        '.authCombineNavElement',
+      );
       if (isAuthenticated) {
         const { headerLoginButton, popupElement, popupMenuContainer } = getPopupElements();
 
-        if (!authCombineNavElement || !headerLoginButton || !popupElement || !popupMenuContainer) {
+        if (
+          !authCombineNavElement
+          || !headerLoginButton
+          || !popupElement
+          || !popupMenuContainer
+        ) {
           return;
         }
 
@@ -261,7 +255,9 @@ const renderAuthCombine = (navSections, toggleMenu) => {
         popupElement.style.minWidth = '250px';
         if (headerLoginButton) {
           const spanElementText = headerLoginButton.querySelector('span');
-          spanElementText.textContent = `Hi, ${getCookie('auth_dropin_firstname')}`;
+          spanElementText.textContent = `Hi, ${getCookie(
+            'auth_dropin_firstname',
+          )}`;
         }
         popupMenuContainer.insertAdjacentHTML(
           'afterend',
@@ -273,8 +269,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
         );
       }
     });
-
-    cycleFocus(accountLi);
+    toggleMenu?.();
   });
 };
 
