@@ -11,6 +11,57 @@ import { Button } from '@dropins/tools/components.js';
 import { getCookie } from '../../scripts/configs.js';
 import { CUSTOMER_ACCOUNT_PATH, CUSTOMER_FORGOTPASSWORD_PATH, CUSTOMER_LOGIN_PATH } from '../../scripts/constants.js';
 
+function cycleFocus(element) {
+  document.addEventListener('keydown', (event) => {
+    const authCombineModal = document.querySelector('#auth-combine-modal');
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      authCombineModal.click();
+
+      element?.focus();
+
+      return;
+    }
+
+    if (!authCombineModal) return;
+
+    const focusableElements = authCombineModal.querySelectorAll(
+      'input[name="email"], input, button, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    if (!authCombineModal.dataset.focusInitialized) {
+      authCombineModal.dataset.focusInitialized = 'true';
+      setTimeout(() => firstElement.focus(), 10);
+    }
+
+    if (event.key === 'Tab') {
+      if (document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      } else if (document.activeElement === authCombineModal) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    }
+  });
+
+  const authCombineModal = document.querySelector('#auth-combine-modal');
+  if (authCombineModal) {
+    setTimeout(() => {
+      const firstElement = authCombineModal.querySelector(
+        'form, input, button, textarea, select, a[href], [tabindex]:not([tabindex="-1"])',
+      );
+      if (firstElement) firstElement.focus();
+    }, 10);
+  }
+}
+
 const signInFormConfig = {
   renderSignUpLink: true,
   routeForgotPassword: () => CUSTOMER_FORGOTPASSWORD_PATH,
@@ -223,7 +274,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
       }
     });
 
-    toggleMenu?.();
+    cycleFocus(accountLi);
   });
 };
 
