@@ -9,10 +9,7 @@ async function executeGraphQlQuery(query, environment) {
   try {
     setEndpoint(new URL(await getConfigValue('commerce-core-endpoint', environment)).href);
     const response = await fetchGraphQl(query, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      method: 'GET'
     });
 
     return response.data ? response.data : [];
