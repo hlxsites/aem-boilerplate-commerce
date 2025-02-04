@@ -2,26 +2,23 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import { getConfigValue } from '../../../../scripts/configs';
+import {getConfigValue} from '../../../../scripts/configs';
+import {fetchGraphQl, setEndpoint} from '@dropins/tools/fetch-graphql.js';
 
 async function executeGraphQlQuery(query, environment) {
-  const apiCall = new URL(await getConfigValue('commerce-core-endpoint', environment));
-  apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
-    .replace(/\s\s+/g, ' '));
+  try {
+    setEndpoint(new URL(await getConfigValue('commerce-core-endpoint', environment)).href);
+    const response = await fetchGraphQl(query, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  const response = await fetch(apiCall, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    return null;
+    return response.data ? response.data : [];
+  } catch (err) {
+    console.error('Could not execute GraphQl query to ', environment);
   }
-
-  const queryResponse = await response.json();
-  return queryResponse.data;
 }
 
 export default executeGraphQlQuery;
