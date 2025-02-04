@@ -14,11 +14,11 @@ const query = `
 `;
 
 const getCartRules = async (environment) => {
-  if (!queryCache['cartRules'].length > 0) {
+  if (!queryCache.cartRules.length > 0) {
     try {
       const rules = await executeGraphQlQuery(query, environment);
       rules?.allCartRules?.forEach(rule => {
-        queryCache['cartRules'].push({
+        queryCache.cartRules.push({
           'name': rule.name,
         });
       });
@@ -26,7 +26,7 @@ const getCartRules = async (environment) => {
       console.error('Could not retrieve cart rules', err);
     }
   }
-  return queryCache['cartRules'];
+  return queryCache.cartRules;
 }
 
 export default getCartRules;

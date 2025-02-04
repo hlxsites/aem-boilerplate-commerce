@@ -28,31 +28,30 @@ import Refresh from "@spectrum-icons/workflow/Refresh";
 import queryCache from './api/query.cache';
 
 const Picker = props => {
-  const {configFiles, personalisationCategories, defaultConfig} = props;
+  const { environments, defaultEnvironment, personalisationCategories } = props;
 
   const [state, setState] = useState({
     configs: {},
-    selectedConfig: null,
+    selectedEnvironment: defaultEnvironment,
     personalisationCategories: personalisationCategories,
     items: personalisationCategories,
     selectedCategory: null,
-    loadingState: 'loading',
+    loadingState: 'idle',
     showSettings: false,
     error: null,
   });
 
   const clickListItem = (key) => {
-
     if (!key.startsWith('category')) {
       copyToClipboard(key);
       return;
     }
 
     let selected = key.split(':')[1];
-    const categoryInitializer = getCategory(selected)['initializer'];
+    const categoryInitializer = getCategory(selected).initializer;
     if (categoryInitializer && categoryInitializer instanceof Function) {
       state.selectedCategory = selected;
-      categoryInitializer(state.selectedConfig)
+      categoryInitializer(state.selectedEnvironment)
         .then(response => {
           setState(state => ({
             ...state,
@@ -88,24 +87,15 @@ const Picker = props => {
     }));
   }
 
-  const changeSelectedConfig = (config) => {
+  const changeSelectedEnvironment = (environment) => {
     clearCache();
     setState(state => ({
       ...state,
-      selectedConfig: config,
+      selectedEnvironment: environment,
       selectedCategory: null,
-      items: state.personalisationCategories,
+      items: personalisationCategories,
       loadingState: 'idle',
     }));
-  }
-
-  const fetchConfig = async (env) => {
-    const configData = await fetch(configFiles[env]).then(r => r.json());
-    let config = {};
-    configData.data.forEach(e => {
-      config[e.key] = e.value;
-    });
-    return config;
   }
 
   const clearCache = () => {
@@ -120,38 +110,6 @@ const Picker = props => {
   const getCategory = (selected) => {
     return personalisationCategories.find(category => category.key === selected);
   }
-
-  /**
-   * Load configurations, set default config
-   */
-  useEffect(() => {
-    (async () => {
-      const selectedConfig = defaultConfig || Object.keys(configFiles)[0];
-
-      // Get configs and select default config
-      let configs = {};
-      try {
-        const promises = await Promise.all(Object.keys(configFiles).map(async key => {
-          return [key, await fetchConfig(key)];
-        }));
-        configs = Object.fromEntries(promises);
-      } catch (err) {
-        console.error(err);
-        setState(state => ({
-          ...state,
-          error: `Could not load ${selectedConfig} config file`,
-        }));
-        return;
-      }
-
-      setState(state => ({
-        ...state,
-        configs,
-        selectedConfig,
-        loadingState: 'idle',
-      }));
-    })();
-  }, []);
 
   const renderEmptyState = () => (
     <IllustratedMessage>
@@ -185,9 +143,9 @@ const Picker = props => {
           <RSPicker label="Configuration"
                     isRequired
                     width="100%"
-                    selectedKey={state.selectedConfig}
-                    onSelectionChange={key => changeSelectedConfig(key)}>
-            {Object.keys(state.configs).map(key => (<Item key={key} value={key}>{key}</Item>))}
+                    selectedKey={state.selectedEnvironment}
+                    onSelectionChange={environment => changeSelectedEnvironment(environment)}>
+            {environments.map(environment => (<Item key={environment} value={environment}>{environment}</Item>))}
           </RSPicker>
         </View>
       }
@@ -206,7 +164,7 @@ const Picker = props => {
       <Breadcrumbs onAction={resetSelection}>
         <Item key='Personalisation'>Personalisation</Item>
         {state.selectedCategory &&
-          <Item key={getCategory(state.selectedCategory)['key']}>{getCategory(state.selectedCategory)['title']}</Item>
+          <Item key={getCategory(state.selectedCategory).key}>{getCategory(state.selectedCategory).title}</Item>
         }
       </Breadcrumbs>
 

@@ -2,8 +2,8 @@
  * Copyright 2025 Adobe
  * All Rights Reserved.
  */
-import {getConfigValue} from '../../../../scripts/configs';
-import {fetchGraphQl, setEndpoint} from '@dropins/tools/fetch-graphql.js';
+import { getConfigValue } from '../../../../scripts/configs';
+import { fetchGraphQl, setEndpoint } from '@dropins/tools/fetch-graphql.js';
 
 async function executeGraphQlQuery(query, environment) {
   try {

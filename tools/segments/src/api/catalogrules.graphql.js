@@ -14,11 +14,11 @@ const query = `
 `;
 
 const getCatalogRules = async (environment) => {
-  if (!queryCache['catalogRules'].length > 0) {
+  if (!queryCache.catalogRules.length > 0) {
     try {
       const rules = await executeGraphQlQuery(query, environment);
       rules?.allCatalogRules?.forEach(rule => {
-        queryCache['catalogRules'].push({
+        queryCache.catalogRules.push({
           'name': rule.name,
         });
       });
@@ -26,7 +26,7 @@ const getCatalogRules = async (environment) => {
       console.error('Could not retrieve catalog rules', err);
     }
   }
-  return queryCache['catalogRules'];
+  return queryCache.catalogRules;
 }
 
 export default getCatalogRules;

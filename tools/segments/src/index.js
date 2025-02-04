@@ -13,20 +13,6 @@ import getCustomerGroups from "./api/customergroups.graphql";
 
 import './styles.css';
 
-/**
- * Object containing all configuration files that should be exposed in the picker.
- */
-const configFiles = {
-  'prod': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs.json?sheet=prod',
-  'stage': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs-stage.json',
-  'dev': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs-dev.json',
-}
-
-/**
- * Default configuration to be loaded.
- */
-const defaultConfig = 'stage';
-
 const personalisationCategories = [
   {
     'key': 'segments',
@@ -50,11 +36,12 @@ const personalisationCategories = [
   },
 ];
 
-
 const app = document.getElementById("app");
 if (app) {
-  ReactDOM.render(<Picker
-    personalisationCategories={personalisationCategories}
-    configFiles={configFiles}
-    defaultConfig={defaultConfig}/>, app);
+  ReactDOM.render(
+    <Picker
+      environments={['prod', 'stage', 'dev']}
+      defaultEnvironment='stage'
+      personalisationCategories={personalisationCategories}
+    />, app);
 }

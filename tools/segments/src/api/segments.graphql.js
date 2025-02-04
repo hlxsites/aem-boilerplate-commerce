@@ -14,11 +14,11 @@ const query = `
 `;
 
 const getCustomerSegments = async (environment) => {
-  if (!queryCache['customerSegments'].length > 0) {
+  if (!queryCache.customerSegments.length > 0) {
     try {
       const segments = await executeGraphQlQuery(query, environment);
       segments?.allCustomerSegments?.forEach(segment => {
-        queryCache['customerSegments'].push({
+        queryCache.customerSegments.push({
           'name': segment.name,
         });
       });
@@ -26,7 +26,7 @@ const getCustomerSegments = async (environment) => {
       console.error('Could not retrieve customer segments', err);
     }
   }
-  return queryCache['customerSegments'];
+  return queryCache.customerSegments;
 }
 
 export default getCustomerSegments;

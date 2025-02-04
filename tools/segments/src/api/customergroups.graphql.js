@@ -14,11 +14,11 @@ const query = `
 `;
 
 const getCustomerGroups = async (environment) => {
-  if (!queryCache['customerGroups'].length > 0) {
+  if (!queryCache.customerGroups.length > 0) {
     try {
       const groups = await executeGraphQlQuery(query, environment);
       groups?.allCustomerGroups?.forEach(group => {
-        queryCache['customerGroups'].push({
+        queryCache.customerGroups.push({
           'name': group.name,
         });
       });
@@ -26,7 +26,7 @@ const getCustomerGroups = async (environment) => {
       console.error('Could not retrieve customer groups', err);
     }
   }
-  return queryCache['customerGroups'];
+  return queryCache.customerGroups;
 }
 
 export default getCustomerGroups;
