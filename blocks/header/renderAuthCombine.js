@@ -148,6 +148,7 @@ const onHeaderLinkClick = (element) => {
       event.preventDefault();
       signInModal.click();
       element?.focus();
+      window.removeEventListener('keydown', cycleFocus);
       return;
     }
 
@@ -182,6 +183,7 @@ const onHeaderLinkClick = (element) => {
     signInModal.remove();
     document.body.style.overflow = 'auto';
     viewportMeta.setAttribute('content', originalViewportContent);
+    window.removeEventListener('keydown', cycleFocus);
   };
 
   const signInForm = document.createElement('div');
