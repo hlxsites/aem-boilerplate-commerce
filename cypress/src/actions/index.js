@@ -78,3 +78,14 @@ export const signUpUser = (sign_up, isValid = true) => {
   cy.get('.dropin-picker__select').select('Male');
   createAccount();
 };
+
+export const setPaymentMethod = (paymentMethod, params) => {
+  if (paymentMethod === 'Credit Card') {
+    cy.get(fields.creditCardPaymentMethod).click({force: true});
+    cy.wait(5000);
+    cy.getIFrameField(fields.creditCardNumberIFrame, fields.creditCardNumber).type(params.cc_number);
+    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(params.cc_exp);
+    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(params.cc_cid);
+  }
+}
+

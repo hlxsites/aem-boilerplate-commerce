@@ -12,7 +12,7 @@ export const customerShippingAddress = {
   countryFull: 'United States',
   countryCode: 'US',
   shippingMethod: 'Flat Rate - Fixed',
-  paymentMethod: 'Check / Money order',
+  paymentMethod: 'Credit Card',
 };
 
 export const customerBillingAddress = {
@@ -29,7 +29,7 @@ export const customerBillingAddress = {
   regionFull: 'New York',
   countryFull: 'United States',
   countryCode: 'US',
-  paymentMethod: 'Check / Money order',
+  paymentMethod: 'Credit Card',
 }
 
 export const products = {

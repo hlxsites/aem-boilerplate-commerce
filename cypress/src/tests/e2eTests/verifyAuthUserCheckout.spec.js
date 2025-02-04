@@ -3,7 +3,8 @@ import {
   setGuestBillingAddress,
   placeOrder,
   signUpUser,
-  uncheckBillToShippingAddress
+  uncheckBillToShippingAddress,
+  setPaymentMethod,
 } from '../../actions';
 import {
   assertCartSummaryProduct,
@@ -173,6 +174,7 @@ describe('Verify auth user can place order', () => {
     setGuestBillingAddress(customerBillingAddress, true);
     assertOrderSummaryMisc('$90.00', '$10.00', '$86.50');
     assertSelectedPaymentMethod('checkmo', 0);
+    setPaymentMethod('Credit Card', {cc_number: '4111111111111111', cc_exp: '12/2030', cc_cid: '123'});
     cy.wait(5000);
     placeOrder();
     assertOrderConfirmationCommonDetails(customerBillingAddress);

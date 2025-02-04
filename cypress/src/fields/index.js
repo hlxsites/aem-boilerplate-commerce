@@ -69,6 +69,17 @@ export const billToShippingAddress =
 // Shipping Methods
 export const shippingMethods = 'div[class*="checkout-shipping-methods"]';
 
+// Payment Methods
+export const creditCardPaymentMethod = 'input[name="payment-method"][value="payment_services_paypal_hosted_fields"]';
+export const creditCardNumberIFrame = 'braintree-hosted-field-number';
+export const creditCardNumber = 'input[name="credit-card-number"]';
+export const creditCardExpIFrame = 'braintree-hosted-field-expirationDate';
+export const creditCardExp = 'input[name="expiration"]';
+export const creditCardCvvIFrame = 'braintree-hosted-field-cvv';
+export const creditCardCvv = 'input[name="cvv"]';
+
+
+
 // Place Order
 export const placeOrderButton = 'button[class*="checkout-place-order__button"]';
 
