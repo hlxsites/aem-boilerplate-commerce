@@ -86,7 +86,7 @@ const updateTargetedBlocksVisibility = async () => {
     const index = blocks.indexOf(blockConfig);
     const { fragment, type } = blockConfig;
     if (displayedBlockTypes.includes(type)) {
-      return false;
+      return;
     }
 
     const block = document.querySelector(`[data-targeted-block-key="${index}"]`);
