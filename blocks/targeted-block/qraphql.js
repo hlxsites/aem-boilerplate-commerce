@@ -57,7 +57,7 @@ export const getCatalogPriceRules = async (sku) => {
     );
     return response.data?.products?.items[0];
   } catch (error) {
-    console.error('Could not retrieve customer segments', error);
+    console.error(`Could not retrieve catalog rules for ${sku}`, error);
   }
   return [];
 };
