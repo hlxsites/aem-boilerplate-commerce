@@ -70,7 +70,6 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import createModal from '../modal/modal.js';
 
 // Scripts
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   estimateShippingCost,
   getCartAddress,
