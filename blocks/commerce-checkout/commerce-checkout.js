@@ -58,11 +58,12 @@ import OrderProductList from '@dropins/storefront-order/containers/OrderProductL
 import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
 
+// Scripts
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   estimateShippingCost, getCartAddress,
   isCartEmpty,
@@ -70,6 +71,7 @@ import {
   scrollToElement,
   setAddressOnCart,
 } from '../../scripts/checkout.js';
+import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -186,31 +188,6 @@ export default async function decorate(block) {
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
 
   block.appendChild(checkoutFragment);
-
-  const authPrivacyPolicyConsentSlot = {
-    PrivacyPolicyConsent: async (ctx) => {
-      const wrapper = document.createElement('span');
-      Object.assign(wrapper.style, {
-        color: 'var(--color-neutral-700)',
-        font: 'var(--type-details-caption-2-font)',
-        display: 'block',
-        marginBottom: 'var(--spacing-medium)',
-      });
-
-      const link = document.createElement('a');
-      link.href = '/privacy-policy';
-      link.target = '_blank';
-      link.textContent = 'Privacy Policy';
-
-      wrapper.append(
-        'By creating an account, you acknowledge that you have read and agree to our ',
-        link,
-        ', which outlines how we collect, use, and protect your personal data.',
-      );
-
-      ctx.appendChild(wrapper);
-    },
-  };
 
   // Global state
   let initialized = false;
