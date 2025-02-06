@@ -59,29 +59,6 @@ events.on('cart/updated', () => {
   updateTargetedBlocksVisibility();
 });
 
-//
-// events.on('cart/data', (evt) => {
-//   console.error("TU : " , evt.data);
-//   updateTargetedBlocksVisibility();
-// });
-//
-// events.on('pdp/data', (evt) => {
-//   console.error("TU : " , evt.data);
-//   updateTargetedBlocksVisibility();
-// });
-//
-//
-// events.on('pdp/values', (evt) => {
-//   console.error("TU : " , evt.data);
-//   updateTargetedBlocksVisibility();
-// });
-//
-//
-// events.on('pdp/valid', (evt) => {
-//   console.error("TU : " , evt.data);
-//   updateTargetedBlocksVisibility();
-// });
-
 export default function decorate(block) {
   block.style.display = 'none';
   blocks.push(readBlockConfig(block));

@@ -3,7 +3,7 @@ const rulesMatched = (activeRules, rules) => {
     return false;
   }
   return rules.filter(
-    (rule) => (activeRules?.includes(rule)),
+    (rule) => (activeRules.includes(rule)),
   ).length >= 1;
 };
 
