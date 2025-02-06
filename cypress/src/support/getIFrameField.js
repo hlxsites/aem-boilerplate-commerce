@@ -1,6 +1,5 @@
 const getIFrameField = (iframe, field) => {
-  // return getIframeBody(iframe).find(field);
-  return cy.get(`${iframe} ${field}`);
+  return getIframeBody(iframe).find(field);
 };
 
 const getIframeDocument = (iframe) => {
