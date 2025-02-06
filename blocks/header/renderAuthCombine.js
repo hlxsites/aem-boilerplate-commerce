@@ -1,5 +1,4 @@
 /* eslint-disable implicit-arrow-linebreak */
-// TODO - This module supposed to add link to authCombine container for demo purposes
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
