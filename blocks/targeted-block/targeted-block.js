@@ -1,85 +1,25 @@
 import { events } from '@dropins/tools/event-bus.js';
-import * as Cart from '@dropins/storefront-cart/api.js';
-import { fetchGraphQl } from '@dropins/tools/fetch-graphql.js';
+import { getActiveRules, getCatalogPriceRules } from './qraphql.js';
+import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
 
-const getActiveRules = async () => {
-  try {
-    const response = await fetchGraphQl(
-      `query CUSTOMER_SEGMENTS($cartId: String!){
-          customerSegments(cartId: $cartId) {
-            name
-          }
-          CustomerGroup {
-            name
-          }
-          cart(cart_id: $cartId) {
-            rules {
-              name
-            }
-          }
-        }
-      `,
-      {
-        method: 'GET',
-        variables: {
-          cartId: Cart.getCartDataFromCache().id,
-        },
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Could not retrieve customer segments', error);
-  }
-  return [];
-};
-
-const segmentsMatched = (activeSegments, segments) => segments.filter(
-  (segment) => (activeSegments.includes(segment)),
-).length >= 1;
-
-const groupMatched = (activeGroup, groups) => groups.includes(activeGroup);
-
-const cartRulesMatched = (activeRules, rules) => rules.filter(
-  (rule) => (activeRules.includes(rule)),
-).length >= 1;
-
-const conditionsMatched = (activeRules, blockConfig) => {
-  const {
-    'customer-segments': customerSegments,
-    'customer-groups': customerGroups,
-    'cart-rules': cartRules,
-  } = blockConfig;
-
-  const activeSegments = activeRules.customerSegments?.map(
-    (segment) => segment.name,
-  );
-  const activeGroup = activeRules.CustomerGroup?.name;
-  const activeCartRules = activeRules.cart?.rules?.map(
-    (rule) => rule.name,
-  );
-
-  if (customerSegments !== undefined && !segmentsMatched(activeSegments, customerSegments.split(','))) {
-    return false;
-  }
-
-  if (customerGroups !== undefined && !groupMatched(activeGroup, customerGroups.split(','))) {
-    return false;
-  }
-
-  if (cartRules !== undefined && !cartRulesMatched(activeCartRules, cartRules.split(','))) {
-    return false;
-  }
-
-  return true;
+const getSkuFromUrl = () => {
+  const path = window.location.pathname;
+  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
+  return result?.[1];
 };
 
 const updateTargetedBlocksVisibility = async () => {
-  const activeRules = await getActiveRules();
+  const activeRules = await getActiveRules() || {};
+  const sku = getSkuFromUrl() || null;
+
+  if (sku) {
+    activeRules.catalogPriceRules = await getCatalogPriceRules(sku);
+  }
 
   displayedBlockTypes.length = 0;
   blocks.forEach(async (blockConfig) => {
@@ -105,15 +45,15 @@ const updateTargetedBlocksVisibility = async () => {
   });
 };
 
-export default function decorate(block) {
-  block.style.display = 'none';
-  blocks.push(readBlockConfig(block));
-  block.setAttribute('data-targeted-block-key', blocks.length - 1);
-}
-
 events.on('cart/initialized', () => {
   updateTargetedBlocksVisibility();
 });
 events.on('cart/updated', () => {
   updateTargetedBlocksVisibility();
 });
+
+export default function decorate(block) {
+  block.style.display = 'none';
+  blocks.push(readBlockConfig(block));
+  block.setAttribute('data-targeted-block-key', blocks.length - 1);
+}
