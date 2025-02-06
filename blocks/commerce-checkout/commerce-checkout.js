@@ -69,6 +69,8 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 // Block-level
 import createModal from '../modal/modal.js';
 
+// Scripts
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   estimateShippingCost,
   getCartAddress,
@@ -77,6 +79,7 @@ import {
   scrollToElement,
   setAddressOnCart,
 } from '../../scripts/checkout.js';
+import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -266,7 +269,11 @@ export default async function decorate(block) {
               displayOverlaySpinner();
             },
           },
-          signUpFormConfig: {},
+          signUpFormConfig: {
+            slots: {
+              ...authPrivacyPolicyConsentSlot,
+            },
+          },
           resetPasswordFormConfig: {},
         })(signInForm);
 
@@ -796,6 +803,9 @@ export default async function decorate(block) {
         routeRedirectOnEmailConfirmationClose: () => '/customer/account',
         inputsDefaultValueSet,
         addressesData,
+        slots: {
+          ...authPrivacyPolicyConsentSlot,
+        },
       })(signUpForm);
 
       await showModal(signUpForm);
