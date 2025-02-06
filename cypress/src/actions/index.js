@@ -113,7 +113,7 @@ export const signUpUser = (sign_up, isValid = true) => {
 export const setPaymentMethod = (paymentMethod, params) => {
   cy.get(fields.paymentMethods).contains(paymentMethod).click();
   if (paymentMethod === 'Credit Card') {
-    cy.wait(5000);
+    cy.wait(2000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
       fields.creditCardNumber
