@@ -1,7 +1,6 @@
 import { fetchGraphQl } from '@dropins/tools/fetch-graphql.js';
-import * as Cart from '@dropins/storefront-cart/api.js';
 
-export const getActiveRules = async () => {
+export const getActiveRules = async (cartId) => {
   try {
     const response = await fetchGraphQl(
       `query CUSTOMER_SEGMENTS($cartId: String!){
@@ -20,9 +19,7 @@ export const getActiveRules = async () => {
       `,
       {
         method: 'GET',
-        variables: {
-          cartId: Cart.getCartDataFromCache().id,
-        },
+        variables: { cartId },
       },
     );
     return response.data;
@@ -37,7 +34,7 @@ export const getCatalogPriceRules = async (sku) => {
     const query = `query {
           products(filter: {
             sku: {
-              eq: "${sku}"
+              eq: $sku
             } 
           })
           {
@@ -53,9 +50,19 @@ export const getCatalogPriceRules = async (sku) => {
       query,
       {
         method: 'GET',
+        variables: { sku },
       },
     );
     return response.data?.products?.items[0];
+
+    /** For testing, will remove later: */
+    // return {
+    //     rules: [
+    //       {name : 'discount'}
+    //     ]
+    //   };
+    /** For testing, will remove later: */
+
   } catch (error) {
     console.error(`Could not retrieve catalog rules for ${sku}`, error);
   }

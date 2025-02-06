@@ -1,4 +1,5 @@
 import { events } from '@dropins/tools/event-bus.js';
+import * as Cart from '@dropins/storefront-cart/api.js';
 import { getActiveRules, getCatalogPriceRules } from './qraphql.js';
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
@@ -14,7 +15,14 @@ const getSkuFromUrl = () => {
 };
 
 const updateTargetedBlocksVisibility = async () => {
-  const activeRules = await getActiveRules() || {};
+  const activeRules = (Cart.getCartDataFromCache() === null) ? {
+    customerSegments: [],
+    CustomerGroup: [],
+    cart: {
+      rules: [],
+    },
+  } : await getActiveRules(Cart.getCartDataFromCache().id);
+
   const sku = getSkuFromUrl() || null;
 
   if (sku) {
@@ -25,13 +33,11 @@ const updateTargetedBlocksVisibility = async () => {
   blocks.forEach(async (blockConfig) => {
     const index = blocks.indexOf(blockConfig);
     const { fragment, type } = blockConfig;
-    if (displayedBlockTypes.includes(type)) {
-      return;
-    }
 
     const block = document.querySelector(`[data-targeted-block-key="${index}"]`);
     block.style.display = 'none';
-    if (conditionsMatched(activeRules, blockConfig)) {
+
+    if (!displayedBlockTypes.includes(type) && conditionsMatched(activeRules, blockConfig)) {
       displayedBlockTypes.push(type);
       if (fragment !== undefined) {
         const content = await loadFragment(fragment);
@@ -48,9 +54,33 @@ const updateTargetedBlocksVisibility = async () => {
 events.on('cart/initialized', () => {
   updateTargetedBlocksVisibility();
 });
+
 events.on('cart/updated', () => {
   updateTargetedBlocksVisibility();
 });
+
+//
+// events.on('cart/data', (evt) => {
+//   console.error("TU : " , evt.data);
+//   updateTargetedBlocksVisibility();
+// });
+//
+// events.on('pdp/data', (evt) => {
+//   console.error("TU : " , evt.data);
+//   updateTargetedBlocksVisibility();
+// });
+//
+//
+// events.on('pdp/values', (evt) => {
+//   console.error("TU : " , evt.data);
+//   updateTargetedBlocksVisibility();
+// });
+//
+//
+// events.on('pdp/valid', (evt) => {
+//   console.error("TU : " , evt.data);
+//   updateTargetedBlocksVisibility();
+// });
 
 export default function decorate(block) {
   block.style.display = 'none';

@@ -1,6 +1,11 @@
-const rulesMatched = (activeRules, rules) => rules.filter(
-  (rule) => (activeRules.includes(rule)),
-).length >= 1;
+const rulesMatched = (activeRules, rules) => {
+  if (!activeRules) {
+    return false;
+  }
+  return rules.filter(
+    (rule) => (activeRules?.includes(rule)),
+  ).length >= 1;
+};
 
 const groupMatched = (activeGroup, groups) => groups.includes(activeGroup);
 
