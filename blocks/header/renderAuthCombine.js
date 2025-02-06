@@ -138,7 +138,7 @@ const onHeaderLinkClick = (element) => {
   signInModal.setAttribute('id', 'auth-combine-modal');
   signInModal.classList.add('auth-combine-modal-overlay');
 
-  const cycleFocus = (event) => {
+  const trapFocus = (event) => {
     if (!signInModal) return;
 
     const key = event.key.toLowerCase();
@@ -147,7 +147,7 @@ const onHeaderLinkClick = (element) => {
       event.preventDefault();
       signInModal.click();
       element?.focus();
-      window.removeEventListener('keydown', cycleFocus);
+      window.removeEventListener('keydown', trapFocus);
       return;
     }
 
@@ -165,7 +165,12 @@ const onHeaderLinkClick = (element) => {
       requestAnimationFrame(() => firstElement.focus(), 10);
     }
 
-    if (key === 'tab') {
+    if (key === 'tab' && event.shiftKey) {
+      if (document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+    } else if (key === 'tab') {
       if (document.activeElement === lastElement) {
         event.preventDefault();
         firstElement.focus();
@@ -176,13 +181,13 @@ const onHeaderLinkClick = (element) => {
     }
   };
 
-  window.addEventListener('keydown', cycleFocus);
+  window.addEventListener('keydown', trapFocus);
 
   signInModal.onclick = () => {
     signInModal.remove();
     document.body.style.overflow = 'auto';
     viewportMeta.setAttribute('content', originalViewportContent);
-    window.removeEventListener('keydown', cycleFocus);
+    window.removeEventListener('keydown', trapFocus);
   };
 
   const signInForm = document.createElement('div');
