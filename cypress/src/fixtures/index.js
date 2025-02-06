@@ -12,7 +12,21 @@ export const customerShippingAddress = {
   countryFull: 'United States',
   countryCode: 'US',
   shippingMethod: 'Flat Rate - Fixed',
-  paymentMethod: 'Credit Card',
+};
+
+export const paymentServicesCreditCard = {
+  name: 'Credit Card',
+  code: 'payment_services_paypal_hosted_fields',
+  params: {
+    cc_number: '4111111111111111',
+    cc_exp: '12/2030',
+    cc_cid: '123',
+  }
+};
+
+export const checkMoneyOrder = {
+  name: 'Check / Money order',
+  code: 'checkmo',
 };
 
 export const customerBillingAddress = {
@@ -29,7 +43,6 @@ export const customerBillingAddress = {
   regionFull: 'New York',
   countryFull: 'United States',
   countryCode: 'US',
-  paymentMethod: 'Credit Card',
 }
 
 export const products = {

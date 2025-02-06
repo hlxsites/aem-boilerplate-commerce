@@ -110,19 +110,20 @@ export const signUpUser = (sign_up, isValid = true) => {
   createAccount();
 };
 
-export const setPaymentMethod = (paymentMethod, params) => {
-  cy.get(fields.paymentMethods).contains(paymentMethod).click();
-  if (paymentMethod === 'Credit Card') {
+export const setPaymentMethod = (paymentMethod) => {
+  cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
+  if (paymentMethod.name === 'Credit Card') {
+    const {cc_number, cc_exp, cc_cid} = paymentMethod.params;
     cy.wait(2000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
       fields.creditCardNumber
-    ).type(params.cc_number);
+    ).type(cc_number);
     cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      params.cc_exp
+      cc_exp
     );
     cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      params.cc_cid
+      cc_cid
     );
   }
 };

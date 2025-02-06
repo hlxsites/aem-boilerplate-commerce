@@ -20,12 +20,13 @@ import {
   assertAuthUser
 } from '../../assertions';
 import {
-
   assertSelectedPaymentMethod,
 } from '../../assertions';
 import {
   customerShippingAddress,
   customerBillingAddress,
+  paymentServicesCreditCard,
+  checkMoneyOrder,
 } from '../../fixtures/index';
 import * as fields from "../../fields";
 
@@ -173,12 +174,12 @@ describe('Verify auth user can place order', () => {
     cy.wait(2000);
     setGuestBillingAddress(customerBillingAddress, true);
     assertOrderSummaryMisc('$90.00', '$10.00', '$86.50');
-    assertSelectedPaymentMethod('checkmo', 0);
-    setPaymentMethod('Credit Card', {cc_number: '4111111111111111', cc_exp: '12/2030', cc_cid: '123'});
-    assertSelectedPaymentMethod('payment_services_paypal_hosted_fields', 1);
+    assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
+    setPaymentMethod(paymentServicesCreditCard);
+    assertSelectedPaymentMethod(paymentServicesCreditCard.code, 1);
     cy.wait(5000);
     placeOrder();
-    assertOrderConfirmationCommonDetails(customerBillingAddress);
+    assertOrderConfirmationCommonDetails(customerBillingAddress, paymentServicesCreditCard);
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
