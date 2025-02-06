@@ -187,6 +187,31 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
+  const authPrivacyPolicyConsentSlot = {
+    PrivacyPolicyConsent: async (ctx) => {
+      const wrapper = document.createElement('span');
+      Object.assign(wrapper.style, {
+        color: 'var(--color-neutral-700)',
+        font: 'var(--type-details-caption-2-font)',
+        display: 'block',
+        marginBottom: 'var(--spacing-medium)',
+      });
+
+      const link = document.createElement('a');
+      link.href = '/privacy-policy';
+      link.target = '_blank';
+      link.textContent = 'Privacy Policy';
+
+      wrapper.append(
+        'By creating an account, you acknowledge that you have read and agree to our ',
+        link,
+        ', which outlines how we collect, use, and protect your personal data.',
+      );
+
+      ctx.appendChild(wrapper);
+    },
+  };
+
   // Global state
   let initialized = false;
 
@@ -250,7 +275,11 @@ export default async function decorate(block) {
               displayOverlaySpinner();
             },
           },
-          signUpFormConfig: {},
+          signUpFormConfig: {
+            slots: {
+              ...authPrivacyPolicyConsentSlot,
+            },
+          },
           resetPasswordFormConfig: {},
         })(signInForm);
 
@@ -738,6 +767,9 @@ export default async function decorate(block) {
         routeRedirectOnEmailConfirmationClose: () => '/customer/account',
         inputsDefaultValueSet,
         addressesData,
+        slots: {
+          ...authPrivacyPolicyConsentSlot,
+        },
       })(signUpForm);
 
       await showModal(signUpForm);
