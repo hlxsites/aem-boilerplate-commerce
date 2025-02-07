@@ -46,21 +46,21 @@ export const getCatalogPriceRules = async (sku) => {
           }
         }
       `;
-    const response = await fetchGraphQl(
-      query,
-      {
-        method: 'GET',
-        variables: { sku },
-      },
-    );
-    return response.data?.products?.items[0];
+    // const response = await fetchGraphQl(
+    //   query,
+    //   {
+    //     method: 'GET',
+    //     variables: { sku },
+    //   },
+    // );
+    // return response.data?.products?.items[0];
 
     /** For testing, will remove later: */
-    // return {
-    //     rules: [
-    //       {name : 'discount'}
-    //     ]
-    //   };
+    return {
+        rules: [
+          {name : 'discount'}
+        ]
+      };
     /** For testing, will remove later: */
 
   } catch (error) {

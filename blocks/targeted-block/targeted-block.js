@@ -51,16 +51,16 @@ const updateTargetedBlocksVisibility = async () => {
   });
 };
 
-events.on('cart/initialized', () => {
-  updateTargetedBlocksVisibility();
-});
-
-events.on('cart/updated', () => {
-  updateTargetedBlocksVisibility();
-});
-
 export default function decorate(block) {
   block.style.display = 'none';
   blocks.push(readBlockConfig(block));
   block.setAttribute('data-targeted-block-key', blocks.length - 1);
 }
+
+events.on('cart/initialized', () => {
+  updateTargetedBlocksVisibility();
+}, { eager: true });
+
+events.on('cart/updated', () => {
+  updateTargetedBlocksVisibility();
+}, { eager: true });
