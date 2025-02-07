@@ -2,18 +2,13 @@
   margin-top: var(--spacing-xbig);
 }
 
-.cards-card-body strong {
-  font: var(--type-body-1-strong-font);
-  letter-spacing: var(--type-body-1-strong-letter-spacing);
-}
-
 .cards > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  grid-gap: 24px;
+  grid-gap: var(--spacing-medium);
 }
 
 .cards > ul > li {
