@@ -419,6 +419,10 @@ main > .section {
   margin: var(--spacing-xbig) 0;
 }
 
+.section:empty {
+  display: none;
+}
+
 main > .section > div {
   max-width: 1200px;
   margin: auto;
@@ -438,7 +442,7 @@ main > .section:first-of-type {
 /* section metadata */
 main .section.light,
 main .section.highlight {
-  background-color: var(--color-neutral-200);
+  background-color: #F8F8F8;
   margin: 0;
   padding: var(--spacing-xbig) 0;
 }
