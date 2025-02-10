@@ -442,7 +442,7 @@ main > .section:first-of-type {
 /* section metadata */
 main .section.light,
 main .section.highlight {
-  background-color: #F8F8F8;
+  background-color: var(--color-neutral-100);
   margin: 0;
   padding: var(--spacing-xbig) 0;
 }
