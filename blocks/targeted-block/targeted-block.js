@@ -8,12 +8,6 @@ import { loadFragment } from '../fragment/fragment.js';
 const blocks = [];
 const displayedBlockTypes = [];
 
-const getSkuFromUrl = () => {
-  const path = window.location.pathname;
-  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
-  return result?.[1];
-};
-
 const updateTargetedBlocksVisibility = async () => {
   const activeRules = (Cart.getCartDataFromCache() === null) ? {
     customerSegments: [],
@@ -23,10 +17,11 @@ const updateTargetedBlocksVisibility = async () => {
     },
   } : await getActiveRules(Cart.getCartDataFromCache().id);
 
-  const sku = getSkuFromUrl() || null;
+  // eslint-disable-next-line no-underscore-dangle
+  const productData = events._lastEvent?.['pdp/data']?.payload ?? null;
 
-  if (sku) {
-    activeRules.catalogPriceRules = await getCatalogPriceRules(sku);
+  if (productData?.sku) {
+    activeRules.catalogPriceRules = await getCatalogPriceRules(productData.sku);
   }
 
   displayedBlockTypes.length = 0;
@@ -52,6 +47,8 @@ const updateTargetedBlocksVisibility = async () => {
 };
 
 export default function decorate(block) {
+  const product = events._lastEvent?.['pdp/data']?.payload ?? null;
+
   block.style.display = 'none';
   blocks.push(readBlockConfig(block));
   block.setAttribute('data-targeted-block-key', blocks.length - 1);
