@@ -1,6 +1,6 @@
 function rulesMatched(activeRules, rules) {
   return activeRules && rules.some((rule) => activeRules.includes(rule));
-};
+}
 
 const groupMatched = (activeGroup, groups) => groups.includes(activeGroup);
 
