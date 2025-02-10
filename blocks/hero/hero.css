@@ -5,8 +5,9 @@
 
 .hero {
   position: relative;
-  padding: 40px 24px;
-  min-height: 300px;
+  padding: 1px 24px;
+  height: 40vw;
+  max-height:40vw;
 }
 
 .hero h1 {
@@ -32,6 +33,6 @@
 
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    padding: 1px 32px;
   }
 }

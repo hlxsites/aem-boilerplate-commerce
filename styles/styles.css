@@ -16,7 +16,7 @@
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
   --color-brand-300: #6d6d6d;
-  --color-brand-500: #454545;
+  --color-brand-500: #eb1000;
   --color-brand-600: #383838;
   --color-brand-700: #2b2b2b;
   --color-neutral-50: #fff;
@@ -312,7 +312,7 @@ button {
 
 /* links */
 a:not(.dropin-design a) {
-  color: var(--color-brand-500);
+  color: var(--color-neutral-900);
   font: var(--type-body-1-strong-font);
   letter-spacing: var(--type-body-1-strong-letter-spacing);
   text-decoration: none;
@@ -320,7 +320,7 @@ a:not(.dropin-design a) {
 }
 
 a:not(.dropin-design a):hover {
-  color: var(--color-brand-600);
+  color: var(--color-brand-300);
   text-decoration: underline;
 }
 

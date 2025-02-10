@@ -1,5 +1,7 @@
 mountpoints:
-  /: https://adobe.sharepoint.com/:f:/r/sites/HelixProjects/Shared%20Documents/sites/starter-content-commerce
+  /:
+    url: https://content.da.live/adobe-commerce/adobe-demo-store/
+    type: markup
 
 folders:
   /products/: /products/default

@@ -140,6 +140,7 @@ header nav .nav-brand a {
   flex-basis: 128px;
   font: var(--type-headline-1-font);
   letter-spacing: var(--type-headline-1-letter-spacing);
+  color: var(--color-brand-500);
 }
 
 header nav .nav-brand img {
