@@ -15,7 +15,7 @@ export default function conditionsMatched(activeRules, blockConfig) {
   const activeSegments = activeRules.customerSegments?.map(
     (segment) => segment.name,
   );
-  const activeGroup = activeRules.CustomerGroup?.name;
+  const activeGroup = activeRules.customerGroup?.name;
   const activeCartRules = activeRules.cart?.rules?.map(
     (rule) => rule.name,
   );

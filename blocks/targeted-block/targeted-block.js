@@ -11,7 +11,7 @@ const displayedBlockTypes = [];
 const updateTargetedBlocksVisibility = async () => {
   const activeRules = (Cart.getCartDataFromCache() === null) ? {
     customerSegments: [],
-    CustomerGroup: [],
+    customerGroup: [],
     cart: {
       rules: [],
     },

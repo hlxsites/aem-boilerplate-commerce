@@ -7,7 +7,7 @@ export const getActiveRules = async (cartId) => {
           customerSegments(cartId: $cartId) {
             name
           }
-          CustomerGroup {
+          customerGroup {
             name
           }
           cart(cart_id: $cartId) {
@@ -46,23 +46,14 @@ export const getCatalogPriceRules = async (sku) => {
           }
         }
       `;
-    // const response = await fetchGraphQl(
-    //   query,
-    //   {
-    //     method: 'GET',
-    //     variables: { sku },
-    //   },
-    // );
-    // return response.data?.products?.items[0];
-
-    /** For testing, will remove later: */
-    return {
-        rules: [
-          {name : 'discount'}
-        ]
-      };
-    /** For testing, will remove later: */
-
+    const response = await fetchGraphQl(
+      query,
+      {
+        method: 'GET',
+        variables: { sku },
+      },
+    );
+    return response.data?.products?.items[0];
   } catch (error) {
     console.error(`Could not retrieve catalog rules for ${sku}`, error);
   }
