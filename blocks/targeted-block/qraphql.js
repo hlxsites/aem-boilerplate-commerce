@@ -31,7 +31,7 @@ export const getActiveRules = async (cartId) => {
 
 export const getCatalogPriceRules = async (sku) => {
   try {
-    const query = `query {
+    const query = `query CATALOG_PRICE_RULES($sku: String!) {
           products(filter: {
             sku: {
               eq: $sku
