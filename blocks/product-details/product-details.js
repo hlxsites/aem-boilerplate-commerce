@@ -19,7 +19,7 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
-import { trackViewedProduct } from '../../scripts/api/productTracking.js';
+import trackViewedProduct from '../../scripts/api/productTracking.js';
 
 // Libs
 import { setJsonLd } from '../../scripts/commerce.js';

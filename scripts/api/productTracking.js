@@ -11,15 +11,13 @@ mutation trackViewedProduct($sku: String!) {
  * @param sku SKU of the product viewed
  * @returns {Promise<void>}
  */
-export async function trackViewedProduct(sku) {
+export default async function trackViewedProduct(sku) {
   const token = getSignInToken();
 
-  const response = await performMonolithGraphQLQuery(
+  return performMonolithGraphQLQuery(
     trackViewedProductMutation,
     { sku },
     false,
     token,
   );
-
-  return response;
 }
