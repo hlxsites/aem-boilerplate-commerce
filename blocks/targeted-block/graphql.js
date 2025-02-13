@@ -1,17 +1,55 @@
 import { fetchGraphQl, setFetchGraphQlHeaders } from '@dropins/tools/fetch-graphql.js';
 import { getHeaders } from '../../scripts/configs.js';
 
-export const getActiveRules = async (cartId) => {
+const getCustomerGroups = async () => {
   try {
-    setFetchGraphQlHeaders(await getHeaders('cart'));
+    // setFetchGraphQlHeaders(await getHeaders('cart'));
     const response = await fetchGraphQl(
-      `query CUSTOMER_SEGMENTS($cartId: String!){
-          customerSegments(cartId: $cartId) {
-            name
-          }
+      `query {
           customerGroup {
             name
           }
+        }
+      `,
+      {
+        method: 'GET',
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Could not retrieve customer groups', error);
+  }
+  return [];
+};
+
+const getCustomerSegments = async () => {
+  try {
+    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    const response = await fetchGraphQl(
+      `query {
+          customer {
+            segments {
+              name
+            }
+          }
+        }
+      `,
+      {
+        method: 'GET',
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Could not retrieve customer segments', error);
+  }
+  return [];
+};
+
+const getCartRules = async (cartId) => {
+  try {
+    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    const response = await fetchGraphQl(
+      `query CART_RULES($cartId: String!){
           cart(cart_id: $cartId) {
             rules {
               name
@@ -31,7 +69,7 @@ export const getActiveRules = async (cartId) => {
   return [];
 };
 
-export const getCatalogPriceRules = async (sku) => {
+const getCatalogPriceRules = async (sku) => {
   try {
     const query = `query CATALOG_PRICE_RULES($sku: String!) {
           products(filter: {
@@ -48,7 +86,7 @@ export const getCatalogPriceRules = async (sku) => {
           }
         }
       `;
-    setFetchGraphQlHeaders(await getHeaders('cart'));
+    // setFetchGraphQlHeaders(await getHeaders('cart'));
     const response = await fetchGraphQl(
       query,
       {
@@ -61,4 +99,11 @@ export const getCatalogPriceRules = async (sku) => {
     console.error(`Could not retrieve catalog rules for ${sku}`, error);
   }
   return [];
+};
+
+export {
+  getCustomerGroups,
+  getCustomerSegments,
+  getCartRules,
+  getCatalogPriceRules,
 };

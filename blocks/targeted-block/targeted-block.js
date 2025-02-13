@@ -1,6 +1,11 @@
 import { events } from '@dropins/tools/event-bus.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
-import { getActiveRules, getCatalogPriceRules } from './qraphql.js';
+import {
+  getCustomerGroups,
+  getCustomerSegments,
+  getCartRules,
+  getCatalogPriceRules,
+} from './graphql.js';
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
@@ -9,18 +14,21 @@ const blocks = [];
 const displayedBlockTypes = [];
 
 const updateTargetedBlocksVisibility = async () => {
-  const activeRules = (Cart.getCartDataFromCache() === null) ? {
-    customerSegments: [],
-    customerGroup: [],
+  const activeRules = {
+    customerSegments: await getCustomerSegments(),
+    customerGroup: await getCustomerGroups(),
     cart: {
       rules: [],
     },
     catalogPriceRules: [],
-  } : await getActiveRules(Cart.getCartDataFromCache().id);
+  };
+
+  if (Cart.getCartDataFromCache() !== null) {
+    activeRules.cart = await getCartRules(Cart.getCartDataFromCache().id);
+  }
 
   // eslint-disable-next-line no-underscore-dangle
   const productData = events._lastEvent?.['pdp/data']?.payload ?? null;
-
   if (productData?.sku) {
     activeRules.catalogPriceRules = await getCatalogPriceRules(productData.sku);
   }
