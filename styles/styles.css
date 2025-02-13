@@ -15,10 +15,32 @@
 /* stylelint-disable no-empty-source */
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
-  --color-brand-300: #6d6d6d;
-  --color-brand-500: #eb1000;
-  --color-brand-600: #383838;
-  --color-brand-700: #2b2b2b;
+    --color-modal-grey: #606061;
+    --color-modal-overlay: rgb(0 0 0 / 50%);
+    --color-indicators-active: #505050;
+    --color-indicators: #d3d3d3;
+    --color-email-black: #141517;
+    --color-nav-black: #2c2c2c;
+    --color-anchor-links: #d1d1d1;
+    --color-anchor-links-hover: #3174de;
+    --color-category-header: #000;
+    --color-button-bkg-black: #1e1e1e;
+    --color-footer-tagline: #4e4f51;
+    --color-onhover-link-bg: #efefef;
+    --color-bsc-lightgrey2: #eaeaec;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-grey: #555;
+    --color-header-bg: #f7f7f7;
+    --color-price-info: #7a7a7a;
+    --color-button-bkg-blue: #1473e6;
+    --color-input-field: #1c93d1;
+    --color-input: #aab1b7;
+    --color-lightgrey: #eaeaec;
+    --color-brand-300: #6d6d6d;
+    --color-brand-500: #454545;
+    --color-brand-600: #383838;
+    --color-brand-700: #eb1000;
   --color-neutral-50: #fff;
   --color-neutral-100: #fafafa;
   --color-neutral-200: #f5f5f5;
@@ -41,13 +63,19 @@
   --color-alert-200: #ffebeb;
   --color-alert-500: #db7070;
   --color-alert-800: #c35050;
-  --color-button-active: var(--color-brand-700);
-  --color-button-focus: var(--color-neutral-400);
-  --color-button-hover: var(--color-brand-600);
-  --color-action-button-active: var(--color-neutral-50);
-  --color-action-button-hover: var(--color-neutral-300);
-  --color-opacity-16: rgb(255 255 255 / 16%);
-  --color-opacity-24: rgb(255 255 255 / 24%);
+    --color-bsa-black: #141517;
+    --color-button-active: var(--color-brand-700);
+    --color-button-focus: var(--color-neutral-400);
+    --color-button-hover: var(--color-brand-600);
+    --color-action-button-active: var(--color-neutral-50);
+    --color-action-button-hover: var(--color-neutral-300);
+    --color-opacity-16: rgb(255 255 255 / 16%);
+    --color-opacity-24: rgb(255 255 255 / 24%);
+    --color-cookie-popup: rgb(61 120 186);
+    --color-notify-orange: rgb(252 77 15);
+    --color-notify-white: rgb(255 255 255);
+    --color-swatch: rgb(0 0 0 / 25%);
+    --color-notify-black: #212529;
   --grid-1-columns: 4;
   --grid-1-margins: 0;
   --grid-1-gutters: 16px;
@@ -90,8 +118,9 @@
   --spacing-huge: 120px;
   --spacing-xhuge: 144px;
   --spacing-xxhuge: 192px;
-  --type-base-font-family: adobe-clean, roboto, roboto-fallback;
-  --type-condensed-font-family: adobe-clean-condensed, roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --type-base-font-family: 'Adobe Clean', adobe-clean, source sans pro, -apple-system,blinkmacsystemfont, segoe ui, roboto, sans-serif;
+  --base-font-family-h3: 'Adobe Clean';
+  --type-condensed-font-family: 'Adobe Clean', adobe-clean, roboto-condensed, roboto-condensed-fallback, sans-serif;
   --type-display-1-font: normal normal 300 6.0rem/7.2rem var(--type-base-font-family);
   --type-display-1-letter-spacing: 0.04em;
   --type-display-2-font: normal normal 300 4.8rem/5.6rem
@@ -139,40 +168,54 @@
   --type-details-overline-font: normal normal 400 1.2rem/2rem
     var(--type-base-font-family);
   --type-details-overline-letter-spacing: 0.16em;
+    --font-size-xxxxsmall: 5px;
+    --font-size-8: 8px;
+    --font-size-xxxsmall: 10px;
+    --font-size-xxsmall: 12px;
+    --font-size-13: 13px;
+    --font-size-xsmall-1: 14px;
+    --font-size-xsmall-2: 15px;
+    --font-size-xs: 16px;
+    --font-size-s: 18px;
+    --font-size-m-1: 20px;
+    --font-size-24: 24px;
+    --font-size-m-2: 26px;
+    --font-size-28: 28px;
+    --font-size-xl: 30px;
+    --spacing-xxs: 5px;
+    --spacing-xs: 10px;
+    --spacing-14: 14px;
+    --spacing-s: 15px;
+    --spacing-m: 20px;
+    --spacing-25: 25px;
+    --spacing-28: 28px;
+    --spacing-30: 30px;
+    --spacing-l: 40px;
+    --spacing-xl: 50px;
+    --spacing-xxl: 60px;
+    --screen-max-width: 1200px;
+    --footer-max-width: 530px;
 
-  /* Additional tokens */
-  --type-fixed-font-family: adobe-clean, 'Roboto Mono', menlo, consolas, 'Liberation Mono',
+    /* Additional tokens */
+    --type-fixed-font-family: 'Adobe Clean', 'Roboto Mono', menlo, consolas, 'Liberation Mono',
     monospace;
-  --background-color: var(--color-neutral-50);
-  --nav-height: 6.4rem;
+    --background-color: var(--color-white);
+    --nav-height: 80px;
+    --nav-max-width: 100%;
+    --nav-icon-height: 18px;
 }
 
 /* fallback fonts */
 @font-face {
-    font-family: adobe-clean;
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url('../fonts/AdobeClean-Light.otf') format('opentype');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    font-family: roboto-condensed-fallback;
+    size-adjust: 88.82%;
+    src: local('Arial');
 }
 
 @font-face {
-    font-family: adobe-clean;
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('../fonts/AdobeClean-Regular.otf') format('opentype');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-    font-family: adobe-clean-condensed;
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url('../fonts/AdobeClean-BoldCond.otf') format('opentype');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    font-family: roboto-fallback;
+    size-adjust: 99.529%;
+    src: local('Arial');
 }
 
 html, body {
@@ -181,6 +224,12 @@ html, body {
 
 html {
   font-size: 62.5%;
+}
+
+@media (width >= 900px) {
+    body[data-breadcrumbs] {
+        --header-height: calc(var(--nav-height) + 34px);
+    }
 }
 
 body {
@@ -424,7 +473,7 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1200px;
+  max-width: 1320px;
   margin: auto;
   padding: 0 var(--spacing-medium);
 }

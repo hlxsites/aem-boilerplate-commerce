@@ -3,9 +3,23 @@
   padding: 0;
 }
 
+.hero-container .default-content-wrapper {
+    margin: 0 auto;
+}
+
+.hero-container .default-content-wrapper h2 {
+    margin: 0;
+    padding: var(--spacing-xxlarge);
+    text-align: center;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 44px;
+    color: var(--color-button-bkg-black);
+}
+
 .hero {
   position: relative;
-  padding: 1px 24px;
+  padding: 0 var(--spacing-medium);
   height: 40vw;
   max-height:40vw;
 }
@@ -33,6 +47,6 @@
 
 @media (width >= 900px) {
   .hero {
-    padding: 1px 32px;
+    padding: 0 var(--spacing-big);
   }
 }
