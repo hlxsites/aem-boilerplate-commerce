@@ -29,7 +29,6 @@ function updateActiveSlide(slide) {
 }
 
 function showSlide(block, slideIndex = 0) {
-  console.log('show slide');
   const slides = block.querySelectorAll('.carousel-slide');
   let realSlideIndex = slideIndex < 0 ? slides.length - 1 : slideIndex;
   if (slideIndex >= slides.length) realSlideIndex = 0;

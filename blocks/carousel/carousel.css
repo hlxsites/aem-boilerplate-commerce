@@ -96,8 +96,6 @@ main > .section .carousel-wrapper {
     display: inline-block;
     margin: 0 var(--spacing-xsmall) 0 var(--spacing-xxsmall);
     border-radius: var(--shape-border-radius-2);
-    -moz-border-radius: var(--shape-border-radius-2);
-    -webkit-border-radius: var(--shape-border-radius-2);
 }
 
 .carousel .carousel-slide-indicator button {
