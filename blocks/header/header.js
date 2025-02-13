@@ -44,7 +44,7 @@ function closeOnFocusLost(e) {
       document.getElementsByTagName('main')[0].classList.remove('overlay');
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections, false);
+      toggleMenu(nav, navSections, true);
     }
   }
 }
@@ -118,6 +118,42 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+const activeSubmenu = document.createElement('div');
+activeSubmenu.classList.add('active-submenu');
+activeSubmenu.innerHTML = `
+    <button>All Categories<span class="back">✕</span></button>
+    <h6>Title</h6><ul><li class="nav-drop"></li></ul>
+`;
+
+function setupMobileMenu(navSection) {
+  if (!isDesktop.matches && navSection.querySelector('ul')) {
+    const checkboxId = `nav-checkbox-${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
+    let label;
+    if (navSection.childNodes.length) {
+      [label] = navSection.childNodes;
+      navSection.childNodes[0].remove();
+    }
+    const submenuToggle = document.createRange()
+      .createContextualFragment(
+        `<label for="${checkboxId}" class="nav-toggle">${label.textContent}</label>
+            <input type="checkbox"  id="${checkboxId}" />`,
+      );
+
+    const subMenu = navSection.querySelector('ul');
+    const clonedSubMenu = subMenu.cloneNode(true);
+
+    navSection.addEventListener('click', () => {
+      activeSubmenu.classList.add('visible');
+      activeSubmenu.querySelector('h6').textContent = label.textContent;
+      activeSubmenu.querySelector('li')
+        .append(clonedSubMenu);
+    });
+    navSection.prepend(submenuToggle);
+  }
+}
+
 /**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -147,41 +183,13 @@ export default async function decorate(block) {
     brandLink.closest('.button-container').className = '';
   }
 
-  const activeSubmenu = document.createElement('div');
-  activeSubmenu.classList.add('active-submenu');
-  activeSubmenu.innerHTML = `
-    <button>All Categories<span class="back">✕</span></button>
-    <h6>Title</h6><ul><li class="nav-drop"></li></ul>
-  `;
-
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-        if (!isDesktop.matches && navSection.querySelector('ul')) {
-          const checkboxId = `nav-checkbox-${Math.random().toString(36).substr(2, 9)}`;
-          let label;
-          if (navSection.childNodes.length) {
-            [label] = navSection.childNodes;
-            navSection.childNodes[0].remove();
-          }
-          const submenuToggle = document.createRange().createContextualFragment(
-            `<label for="${checkboxId}" class="nav-toggle">${label.textContent}</label>
-            <input type="checkbox"  id="${checkboxId}" />`,
-          );
-
-          const subMenu = navSection.querySelector('ul');
-          const clonedSubMenu = subMenu.cloneNode(true);
-
-          navSection.addEventListener('click', () => {
-            activeSubmenu.classList.add('visible');
-            activeSubmenu.querySelector('h6').textContent = label.textContent;
-            activeSubmenu.querySelector('li').append(clonedSubMenu);
-          });
-          navSection.prepend(submenuToggle);
-        }
+        setupMobileMenu(navSection);
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
@@ -330,3 +338,7 @@ export default async function decorate(block) {
   );
   renderAuthDropdown(navTools);
 }
+
+window.addEventListener('resize', () => {
+  window.location.reload();
+});
