@@ -49,7 +49,10 @@ const getCartRules = async (cartId) => {
   try {
     // setFetchGraphQlHeaders(await getHeaders('cart'));
     const response = await fetchGraphQl(
-      `query CART_RULES($cartId: String!){
+      `query CUSTOMER_SEGMENTS($cartId: String!){
+          customerSegments(cartId: $cartId) {
+            name
+          }
           cart(cart_id: $cartId) {
             rules {
               name
@@ -62,7 +65,7 @@ const getCartRules = async (cartId) => {
         variables: { cartId },
       },
     );
-    return response.data?.cart?.rules || [];
+    return response.data || [];
   } catch (error) {
     console.error('Could not retrieve customer cart rules', error);
   }

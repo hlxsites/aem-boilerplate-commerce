@@ -9,20 +9,30 @@ import {
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
 
 const updateTargetedBlocksVisibility = async () => {
   const activeRules = {
-    customerSegments: await getCustomerSegments(),
+    customerSegments: [],
     customerGroup: await getCustomerGroups(),
     cart: [],
     catalogPriceRules: [],
   };
 
-  if (Cart.getCartDataFromCache() !== null) {
-    activeRules.cart = await getCartRules(Cart.getCartDataFromCache().id);
+  if (getUserTokenCookie()) {
+    if (Cart.getCartDataFromCache() === null) {
+      activeRules.customerSegments = await getCustomerSegments();
+    } else {
+      const cartId = Cart.getCartDataFromCache().id;
+      if (cartId) {
+        const response = await getCartRules(cartId);
+        activeRules.cart = response.cart?.rules || [];
+        activeRules.customerSegments = response.customerSegments || [];
+      }
+    }
   }
 
   // eslint-disable-next-line no-underscore-dangle
