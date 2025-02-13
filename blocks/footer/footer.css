@@ -11,7 +11,6 @@ footer .footer p {
 
 footer .footer ul {
     display: flex;
-    justify-content: center;
     list-style-type: none;
     clear: both;
     text-align: center;
@@ -19,8 +18,7 @@ footer .footer ul {
     justify-content: space-between;
     padding: 50px;
     margin: 0 auto;
-
-    font-family: adobe-clean, 'Source Sans Pro', -apple-system, 'system-ui',
+    font-family: adobe-clean, 'Source Sans Pro', -apple-system, system-ui,
         'Segoe UI', Roboto, sans-serif;
 }
 
