@@ -17,9 +17,7 @@ const updateTargetedBlocksVisibility = async () => {
   const activeRules = {
     customerSegments: await getCustomerSegments(),
     customerGroup: await getCustomerGroups(),
-    cart: {
-      rules: [],
-    },
+    cart: [],
     catalogPriceRules: [],
   };
 

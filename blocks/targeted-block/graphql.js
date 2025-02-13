@@ -15,7 +15,7 @@ const getCustomerGroups = async () => {
         method: 'GET',
       },
     );
-    return response.data;
+    return response.data?.customerGroup;
   } catch (error) {
     console.error('Could not retrieve customer groups', error);
   }
@@ -38,7 +38,7 @@ const getCustomerSegments = async () => {
         method: 'GET',
       },
     );
-    return response.data;
+    return response.data?.customer?.segments || [];
   } catch (error) {
     console.error('Could not retrieve customer segments', error);
   }
@@ -62,9 +62,9 @@ const getCartRules = async (cartId) => {
         variables: { cartId },
       },
     );
-    return response.data;
+    return response.data?.cart?.rules || [];
   } catch (error) {
-    console.error('Could not retrieve customer segments', error);
+    console.error('Could not retrieve customer cart rules', error);
   }
   return [];
 };
@@ -96,7 +96,7 @@ const getCatalogPriceRules = async (sku) => {
     );
     return response.data?.products?.items[0];
   } catch (error) {
-    console.error(`Could not retrieve catalog rules for ${sku}`, error);
+    console.error(`Could not retrieve catalog price rules for ${sku}`, error);
   }
   return [];
 };
