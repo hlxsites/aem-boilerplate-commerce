@@ -8,7 +8,6 @@ export interface ProductGalleryProps extends Omit<HTMLAttributes<HTMLDivElement>
     peak?: boolean;
     gap?: 'small' | 'medium' | 'large' | null;
     arrows?: boolean;
-    arrowsOnMainImage?: boolean;
     imageParams?: ResolveImageUrlOptions;
     thumbnailParams?: ResolveImageUrlOptions;
     zoom?: {
