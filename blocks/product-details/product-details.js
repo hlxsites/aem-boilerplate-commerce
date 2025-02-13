@@ -222,7 +222,7 @@ export default async function decorate(block) {
   ]);
 
   if (product) {
-    await trackViewedProduct(product.sku);
+    trackViewedProduct(product.sku);
   }
 
   // Lifecycle Events
