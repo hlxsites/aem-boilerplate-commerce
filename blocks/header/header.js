@@ -152,16 +152,15 @@ export default async function decorate(block) {
   activeSubmenu.innerHTML = `
     <button>All Categories<span class="back">✕</span></button>
     <h6>Title</h6><ul><li class="nav-drop"></li></ul>
-    `;
+  `;
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
-        if (navSection.querySelector('ul')) {
-          navSection.classList.add('nav-drop');
-
+        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        if (!isDesktop.matches && navSection.querySelector('ul')) {
           const checkboxId = `nav-checkbox-${Math.random().toString(36).substr(2, 9)}`;
           let label;
           if (navSection.childNodes.length) {
@@ -198,13 +197,14 @@ export default async function decorate(block) {
       });
   }
 
-  activeSubmenu.querySelector('button').addEventListener('click', () => {
-    activeSubmenu.classList.remove('visible');
-    activeSubmenu.querySelector('.nav-drop').removeChild(activeSubmenu.querySelector('.nav-drop ul'));
-  });
+  if (!isDesktop.matches) {
+    activeSubmenu.querySelector('button').addEventListener('click', () => {
+      activeSubmenu.classList.remove('visible');
+      activeSubmenu.querySelector('.nav-drop').removeChild(activeSubmenu.querySelector('.nav-drop ul'));
+    });
 
-  navSections.append(activeSubmenu);
-
+    navSections.append(activeSubmenu);
+  }
   const navTools = nav.querySelector('.nav-tools');
 
   /** Mini Cart */

@@ -513,6 +513,10 @@ main.overlay {
   z-index: 2;
 }
 
+header nav .nav-sections .active-submenu {
+  display: none;
+}
+
 @media (width < 900px) {
   header nav .nav-sections {
     position: relative;
