@@ -25,6 +25,10 @@
   margin: var(--spacing-small);
 }
 
+.cards-card-body p:first-child {
+    min-height: 80px;
+}
+
 .cards .cards-card-image {
   line-height: 0;
 }
