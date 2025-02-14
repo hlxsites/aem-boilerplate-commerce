@@ -306,13 +306,16 @@ header nav .nav-tools button.nav-cart-button {
   background-repeat: no-repeat;
   background-position: center;
   position: relative;
+  font: var(--type-body-1-default-font);
+  letter-spacing: var(--type-headline-1-letter-spacing);
+  font-weight: bold;
 }
 
 header nav .nav-tools button.nav-cart-button[data-count]::after {
   content: attr(data-count);
   position: absolute;
   top: 0;
-  right: -2px;
+  right: -4px;
   background-color: var(--color-brand-700);
   color: var(--color-neutral-100);
   border-radius: 50%;

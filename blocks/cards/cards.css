@@ -25,6 +25,10 @@
   margin: var(--spacing-small);
 }
 
+.cards-card-body p:first-child {
+    min-height: 80px;
+}
+
 .cards .cards-card-image {
   line-height: 0;
 }
@@ -33,4 +37,10 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+}
+
+@media (width <= 600px) {
+.cards-card-body p:first-child {
+    min-height: 50px;
+}
 }
