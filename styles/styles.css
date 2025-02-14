@@ -15,32 +15,10 @@
 /* stylelint-disable no-empty-source */
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
-    --color-modal-grey: #606061;
-    --color-modal-overlay: rgb(0 0 0 / 50%);
-    --color-indicators-active: #505050;
-    --color-indicators: #d3d3d3;
-    --color-email-black: #141517;
-    --color-nav-black: #2c2c2c;
-    --color-anchor-links: #d1d1d1;
-    --color-anchor-links-hover: #3174de;
-    --color-category-header: #000;
-    --color-button-bkg-black: #1e1e1e;
-    --color-footer-tagline: #4e4f51;
-    --color-onhover-link-bg: #efefef;
-    --color-bsc-lightgrey2: #eaeaec;
-    --color-white: #fff;
-    --color-black: #000;
-    --color-grey: #555;
-    --color-header-bg: #f7f7f7;
-    --color-price-info: #7a7a7a;
-    --color-button-bkg-blue: #1473e6;
-    --color-input-field: #1c93d1;
-    --color-input: #aab1b7;
-    --color-lightgrey: #eaeaec;
-    --color-brand-300: #6d6d6d;
-    --color-brand-500: #454545;
-    --color-brand-600: #383838;
-    --color-brand-700: #eb1000;
+  --color-brand-300: #6d6d6d;
+  --color-brand-500: #454545;
+  --color-brand-600: #383838;
+  --color-brand-700: #eb1000;
   --color-neutral-50: #fff;
   --color-neutral-100: #fafafa;
   --color-neutral-200: #f5f5f5;
@@ -63,19 +41,13 @@
   --color-alert-200: #ffebeb;
   --color-alert-500: #db7070;
   --color-alert-800: #c35050;
-    --color-bsa-black: #141517;
-    --color-button-active: var(--color-brand-700);
-    --color-button-focus: var(--color-neutral-400);
-    --color-button-hover: var(--color-brand-600);
-    --color-action-button-active: var(--color-neutral-50);
-    --color-action-button-hover: var(--color-neutral-300);
-    --color-opacity-16: rgb(255 255 255 / 16%);
-    --color-opacity-24: rgb(255 255 255 / 24%);
-    --color-cookie-popup: rgb(61 120 186);
-    --color-notify-orange: rgb(252 77 15);
-    --color-notify-white: rgb(255 255 255);
-    --color-swatch: rgb(0 0 0 / 25%);
-    --color-notify-black: #212529;
+  --color-button-active: var(--color-brand-700);
+  --color-button-focus: var(--color-neutral-400);
+  --color-button-hover: var(--color-brand-600);
+  --color-action-button-active: var(--color-neutral-50);
+  --color-action-button-hover: var(--color-neutral-300);
+  --color-opacity-16: rgb(255 255 255 / 16%);
+  --color-opacity-24: rgb(255 255 255 / 24%);
   --grid-1-columns: 4;
   --grid-1-margins: 0;
   --grid-1-gutters: 16px;
@@ -168,38 +140,13 @@
   --type-details-overline-font: normal normal 400 1.2rem/2rem
     var(--type-base-font-family);
   --type-details-overline-letter-spacing: 0.16em;
-    --font-size-xxxxsmall: 5px;
-    --font-size-8: 8px;
-    --font-size-xxxsmall: 10px;
-    --font-size-xxsmall: 12px;
-    --font-size-13: 13px;
-    --font-size-xsmall-1: 14px;
-    --font-size-xsmall-2: 15px;
-    --font-size-xs: 16px;
-    --font-size-s: 18px;
-    --font-size-m-1: 20px;
-    --font-size-24: 24px;
-    --font-size-m-2: 26px;
-    --font-size-28: 28px;
-    --font-size-xl: 30px;
-    --spacing-xxs: 5px;
-    --spacing-xs: 10px;
-    --spacing-14: 14px;
-    --spacing-s: 15px;
-    --spacing-m: 20px;
-    --spacing-25: 25px;
-    --spacing-28: 28px;
-    --spacing-30: 30px;
-    --spacing-l: 40px;
-    --spacing-xl: 50px;
-    --spacing-xxl: 60px;
-    --screen-max-width: 1200px;
-    --footer-max-width: 530px;
+    --screen-max-width: 1320px;
+    --footer-max-width: 1200px;
 
     /* Additional tokens */
     --type-fixed-font-family: 'Adobe Clean', 'Roboto Mono', menlo, consolas, 'Liberation Mono',
     monospace;
-    --background-color: var(--color-white);
+    --background-color: var(--color-neutral-50);
     --nav-height: 80px;
     --nav-max-width: 100%;
     --nav-icon-height: 18px;
@@ -224,6 +171,9 @@ html, body {
 
 html {
   font-size: 62.5%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 @media (width >= 900px) {
@@ -473,7 +423,7 @@ main > .section {
 }
 
 main > .section > div {
-  max-width: 1320px;
+  max-width: var(--screen-max-width);
   margin: auto;
   padding: 0 var(--spacing-medium);
 }

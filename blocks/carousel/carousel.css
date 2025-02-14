@@ -106,7 +106,7 @@ main > .section .carousel-wrapper {
     border: 0 none;
     border-radius: 50%;
     text-decoration: none;
-    background-color: var(--color-indicators);
+    background-color: var(--color-neutral-400);
     margin: 0;
     padding: 0;
     transition: background-color 0.2s;
@@ -115,7 +115,7 @@ main > .section .carousel-wrapper {
 .carousel .carousel-slide-indicator button:disabled,
 .carousel .carousel-slide-indicator button:hover,
 .carousel .carousel-slide-indicator button:focus-visible {
-    background-color: var(--color-indicators-active);
+    background-color: var(--color-neutral-700);
 }
 
 .carousel .carousel-navigation-buttons {
