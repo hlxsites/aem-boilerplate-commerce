@@ -121,7 +121,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 const activeSubmenu = document.createElement('div');
 activeSubmenu.classList.add('active-submenu');
 activeSubmenu.innerHTML = `
-    <button>All Categories<span class="back">✕</span></button>
+    <button>All Categories</button>
     <h6>Title</h6><ul><li class="nav-drop"></li></ul>
 `;
 

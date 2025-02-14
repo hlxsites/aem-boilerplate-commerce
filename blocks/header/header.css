@@ -593,6 +593,12 @@ header nav .nav-sections .active-submenu {
     margin-right: .5em;
   }
 
+  header nav .nav-sections .active-submenu button::after {
+    content: '✕';
+    position: absolute;
+    right: 3em;
+  }
+
   header nav .nav-sections .active-submenu button {
     background: none;
     border: 0;
@@ -602,12 +608,7 @@ header nav .nav-sections .active-submenu {
     padding: 0 2em 1em;
     position: relative;
     text-align: left;
-    width: 120%;
-  }
-
-  header nav .nav-sections .active-submenu span.back {
-    position: fixed;
-    right: 2em;
+    width: 117%;
   }
 
   header nav .nav-sections .active-submenu ul > li.nav-drop::after {
