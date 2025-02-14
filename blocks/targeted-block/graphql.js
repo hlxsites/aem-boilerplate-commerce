@@ -1,9 +1,16 @@
-import { fetchGraphQl, setFetchGraphQlHeaders } from '@dropins/tools/fetch-graphql.js';
+import { fetchGraphQl, setFetchGraphQlHeader } from '@dropins/tools/fetch-graphql.js';
 import { getHeaders } from '../../scripts/configs.js';
+
+const addCartHeaders = async () => {
+  const cartHeaders = await getHeaders('cart');
+  cartHeaders.keys().forEach((key) => {
+    setFetchGraphQlHeader(key, cartHeaders[key]);
+  });
+};
 
 const getCustomerGroups = async () => {
   try {
-    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    addCartHeaders();
     const response = await fetchGraphQl(
       `query {
           customerGroup {
@@ -24,7 +31,7 @@ const getCustomerGroups = async () => {
 
 const getCustomerSegments = async () => {
   try {
-    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    addCartHeaders();
     const response = await fetchGraphQl(
       `query {
           customer {
@@ -47,7 +54,7 @@ const getCustomerSegments = async () => {
 
 const getCartRules = async (cartId) => {
   try {
-    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    addCartHeaders();
     const response = await fetchGraphQl(
       `query TB_GET_CUSTOMER_SEGMENTS_CART_RULES($cartId: String!){
           customerSegments(cartId: $cartId) {
@@ -89,7 +96,7 @@ const getCatalogPriceRules = async (sku) => {
           }
         }
       `;
-    // setFetchGraphQlHeaders(await getHeaders('cart'));
+    addCartHeaders();
     const response = await fetchGraphQl(
       query,
       {
