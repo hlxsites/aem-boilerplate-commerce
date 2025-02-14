@@ -13,13 +13,8 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
-let updated = false;
 
 const updateTargetedBlocksVisibility = async () => {
-  if (updated) {
-    return;
-  }
-  
   const activeRules = {
     customerSegments: [],
     customerGroup: await getCustomerGroups(),
@@ -66,7 +61,6 @@ const updateTargetedBlocksVisibility = async () => {
       block.style.display = '';
     }
   });
-  updated = true;
 };
 
 export default function decorate(block) {
@@ -75,14 +69,14 @@ export default function decorate(block) {
   block.setAttribute('data-targeted-block-key', blocks.length - 1);
 }
 
-events.on('authenticated', () => {
-  updateTargetedBlocksVisibility();
-}, { eager: true });
-
 events.on('cart/initialized', () => {
   updateTargetedBlocksVisibility();
 }, { eager: true });
 
 events.on('cart/updated', () => {
+  updateTargetedBlocksVisibility();
+}, { eager: true });
+
+events.on('authenticated', () => {
   updateTargetedBlocksVisibility();
 }, { eager: true });
