@@ -18,10 +18,10 @@ header nav {
   align-items: center;
   gap: 0 var(--spacing-small);
   margin: auto;
-  max-width: 1320px;
+  max-width: var(--screen-max-width);
   height: var(--nav-height);
   padding: 0 var(--spacing-medium);
-  font-family: var(--type-base-font-family);
+  font: var(--type-base-font-family);
 }
 
 header nav[aria-expanded='true'] {
@@ -38,8 +38,7 @@ header nav[aria-expanded='true'] {
     display: flex;
     justify-content: space-between;
     gap: 0 var(--spacing-big);
-    max-width: 1320px;
-    padding: 0 var(--spacing-big);
+    max-width: var(--screen-max-width);
   }
 
   header nav[aria-expanded='true'] {

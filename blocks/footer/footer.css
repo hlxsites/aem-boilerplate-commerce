@@ -1,5 +1,5 @@
 .footer-wrapper .default-content-wrapper {
-    max-width: 1200px;
+    max-width: var(--footer-max-width);
     width: 100%;
     padding: 0;
     margin: 0 auto;
@@ -22,8 +22,8 @@
 }
 
 .footer-wrapper .default-content-wrapper li a {
-    font: var(--type-body-1-strong-font);
-    letter-spacing: var(--type-body-1-strong-letter-spacing);
+    font: var(--type-body-2-strong-font);
+    letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
 .footer-wrapper .default-content-wrapper li:last-child a {
@@ -32,7 +32,7 @@
 
 .footer-wrapper .default-content-wrapper p {
     margin-bottom: var(--spacing-xxbig);
-    color: var(--color-footer-tagline);
+    color: var(--color-neutral-800);
     vertical-align: middle;
     text-align: center;
     display: flex;
