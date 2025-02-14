@@ -596,7 +596,7 @@ header nav .nav-sections .active-submenu {
   header nav .nav-sections .active-submenu button::after {
     content: '✕';
     position: absolute;
-    right: 3em;
+    right: 8vw;
   }
 
   header nav .nav-sections .active-submenu button {
@@ -608,7 +608,7 @@ header nav .nav-sections .active-submenu {
     padding: 0 2em 1em;
     position: relative;
     text-align: left;
-    width: 117%;
+    width: 102vw;
   }
 
   header nav .nav-sections .active-submenu ul > li.nav-drop::after {
