@@ -23,7 +23,7 @@ const updateTargetedBlocksVisibility = async () => {
   };
 
   if (Cart.getCartDataFromCache() !== null) {
-    const cartId = Cart.getCartDataFromCache() && Cart.getCartDataFromCache().id;
+    const cartId = Cart.getCartDataFromCache().id || null;
     if (cartId) {
       const response = await getCartRules(cartId);
       activeRules.cart = response.cart?.rules || [];
