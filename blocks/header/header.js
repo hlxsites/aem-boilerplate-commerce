@@ -125,21 +125,16 @@ activeSubmenu.innerHTML = `
     <h6>Title</h6><ul><li class="nav-drop"></li></ul>
 `;
 
+/**
+ * Sets up the menu for mobile
+ * @param {navSection} navSection The nav section element
+ */
 function setupMobileMenu(navSection) {
   if (!isDesktop.matches && navSection.querySelector('ul')) {
-    const checkboxId = `nav-checkbox-${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
     let label;
     if (navSection.childNodes.length) {
       [label] = navSection.childNodes;
-      navSection.childNodes[0].remove();
     }
-    const submenuToggle = document.createRange()
-      .createContextualFragment(
-        `<label for="${checkboxId}" class="nav-toggle">${label.textContent}</label>
-            <input type="checkbox"  id="${checkboxId}" />`,
-      );
 
     const subMenu = navSection.querySelector('ul');
     const clonedSubMenu = subMenu.cloneNode(true);
@@ -150,7 +145,6 @@ function setupMobileMenu(navSection) {
       activeSubmenu.querySelector('li')
         .append(clonedSubMenu);
     });
-    navSection.prepend(submenuToggle);
   }
 }
 
@@ -338,7 +332,3 @@ export default async function decorate(block) {
   );
   renderAuthDropdown(navTools);
 }
-
-window.addEventListener('resize', () => {
-  window.location.reload();
-});

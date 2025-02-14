@@ -567,14 +567,13 @@ header nav .nav-sections .active-submenu {
     padding: 0 2em 1em;
     position: relative;
     text-align: left;
-    width: 120%;
+    width: 115%;
   }
 
   header nav .nav-sections .active-submenu span.back {
     position: absolute;
     right: 3em;
   }
-
 
   header nav .nav-sections .active-submenu ul > li.nav-drop::after {
     content: none;
