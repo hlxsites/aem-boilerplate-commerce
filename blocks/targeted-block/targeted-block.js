@@ -13,9 +13,13 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
+let updated = false;
 
 const updateTargetedBlocksVisibility = async () => {
-
+  if (updated) {
+    return;
+  }
+  
   const activeRules = {
     customerSegments: [],
     customerGroup: await getCustomerGroups(),
@@ -62,6 +66,7 @@ const updateTargetedBlocksVisibility = async () => {
       block.style.display = '';
     }
   });
+  updated = true;
 };
 
 export default function decorate(block) {
