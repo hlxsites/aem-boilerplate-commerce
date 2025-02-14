@@ -41,20 +41,27 @@ export default async function decorate(block) {
         <div class="product-details__gallery"></div>
       </div>
       <div class="product-details__right-column">
+        <div class="product-details__gallery"></div>
         <div class="product-details__header"></div>
         <div class="product-details__price"></div>
-        <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
-          <div class="product-details__quantity"></div>
+          <div class="product-details__quantity__wrapper">
+            <div class="product-details__quantity__label">
+              Quantity
+            </div>  
+            <div class="product-details__quantity"></div>        
+          </div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
-            <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
+        <div class="product-details__sku">
+          Product Code: ${product.sku}
+        </div>
       </div>
     </div>
   `);
@@ -68,7 +75,6 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -87,7 +93,7 @@ export default async function decorate(block) {
     _options,
     _quantity,
     addToCart,
-    addToWishlist,
+    _addToWishlist,
     _description,
     _attributes,
   ] = await Promise.all([
@@ -116,7 +122,7 @@ export default async function decorate(block) {
     })($gallery),
 
     // Header
-    pdpRendered.render(ProductHeader, {})($header),
+    pdpRendered.render(ProductHeader, { hideSku: true })($header),
 
     // Price
     pdpRendered.render(ProductPrice, {})($price),
@@ -133,7 +139,6 @@ export default async function decorate(block) {
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
-      icon: Icon({ source: 'Cart' }),
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
@@ -181,37 +186,6 @@ export default async function decorate(block) {
         }
       },
     })($addToCart),
-
-    // Configuration - Add to Wishlist
-    UI.render(Button, {
-      icon: Icon({ source: 'Heart' }),
-      variant: 'secondary',
-      'aria-label': labels.Custom?.AddToWishlist?.label,
-      onClick: async () => {
-        try {
-          addToWishlist.setProps((prev) => ({
-            ...prev,
-            disabled: true,
-            'aria-label': labels.Custom?.AddingToWishlist?.label,
-          }));
-
-          const values = pdpApi.getProductConfigurationValues();
-
-          if (values?.sku) {
-            const wishlist = await import('../../scripts/wishlist/api.js');
-            await wishlist.addToWishlist(values.sku);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          addToWishlist.setProps((prev) => ({
-            ...prev,
-            disabled: false,
-            'aria-label': labels.Custom?.AddToWishlist?.label,
-          }));
-        }
-      },
-    })($addToWishlist),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
