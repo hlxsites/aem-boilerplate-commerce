@@ -568,7 +568,7 @@ header nav .nav-sections .active-submenu {
   header nav .nav-sections ul > li.nav-drop::after {
     content: '\276F';
     position: absolute;
-    right: 2rem;
+    right: 3vw;
   }
 
   header nav .nav-sections ul > li.nav-drop ul {
