@@ -38,3 +38,9 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+@media (width <= 600px) {
+.cards-card-body p:first-child {
+    min-height: 50px;
+}
+}
