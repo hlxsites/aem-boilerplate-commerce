@@ -580,7 +580,7 @@ header nav .nav-sections .active-submenu {
   }
 
   header nav .nav-sections .active-submenu {
-    background: white;
+    background: var(--background-color);
     display: none;
     height: 100%;
     position: absolute;
