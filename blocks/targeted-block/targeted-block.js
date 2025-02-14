@@ -15,6 +15,7 @@ const blocks = [];
 const displayedBlockTypes = [];
 
 const updateTargetedBlocksVisibility = async () => {
+
   const activeRules = {
     customerSegments: [],
     customerGroup: await getCustomerGroups(),
@@ -22,17 +23,17 @@ const updateTargetedBlocksVisibility = async () => {
     catalogPriceRules: [],
   };
 
-  if (getUserTokenCookie()) {
-    if (Cart.getCartDataFromCache() === null) {
-      activeRules.customerSegments = await getCustomerSegments();
-    } else {
-      const cartId = Cart.getCartDataFromCache().id;
-      if (cartId) {
-        const response = await getCartRules(cartId);
-        activeRules.cart = response.cart?.rules || [];
-        activeRules.customerSegments = response.customerSegments || [];
-      }
+  if (Cart.getCartDataFromCache() !== null) {
+    const cartId = Cart.getCartDataFromCache() && Cart.getCartDataFromCache().id;
+    if (cartId) {
+      const response = await getCartRules(cartId);
+      activeRules.cart = response.cart?.rules || [];
+      activeRules.customerSegments = response.customerSegments || [];
     }
+  }
+
+  if (Cart.getCartDataFromCache() === null && getUserTokenCookie()) {
+    activeRules.customerSegments = await getCustomerSegments();
   }
 
   // eslint-disable-next-line no-underscore-dangle

@@ -49,7 +49,7 @@ const getCartRules = async (cartId) => {
   try {
     // setFetchGraphQlHeaders(await getHeaders('cart'));
     const response = await fetchGraphQl(
-      `query CUSTOMER_SEGMENTS($cartId: String!){
+      `query TB_GET_CUSTOMER_SEGMENTS_CART_RULES($cartId: String!){
           customerSegments(cartId: $cartId) {
             name
           }
@@ -74,7 +74,7 @@ const getCartRules = async (cartId) => {
 
 const getCatalogPriceRules = async (sku) => {
   try {
-    const query = `query CATALOG_PRICE_RULES($sku: String!) {
+    const query = `query TB_GET_CATALOG_PRICE_RULES($sku: String!) {
           products(filter: {
             sku: {
               eq: $sku
