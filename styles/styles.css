@@ -15,9 +15,9 @@
 /* stylelint-disable no-empty-source */
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
-  --color-brand-300: #6d6d6d;
-  --color-brand-500: #454545;
-  --color-brand-600: #383838;
+  --color-brand-300: #eb1000;
+  --color-brand-500: #eb1000;
+  --color-brand-600: #eb1000;
   --color-brand-700: #eb1000;
   --color-neutral-50: #fff;
   --color-neutral-100: #fafafa;
