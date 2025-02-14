@@ -292,6 +292,8 @@ header nav .nav-tools {
   height: 100%;
   gap: var(--spacing-small);
   align-items: center;
+  background: var(--background-color);
+  z-index: 3;
 }
 
 header nav .nav-tools-wrapper > button {
@@ -519,6 +521,33 @@ header nav .nav-sections .active-submenu {
 }
 
 @media (width < 900px) {
+  header {
+    position: relative;
+  }
+
+  header nav {
+    position: relative;
+  }
+
+  header nav[aria-expanded='true'] {
+    overflow-x: hidden;
+  }
+
+  header nav[aria-expanded='true'] .nav-tools {
+    background: var(--background-color);
+    bottom: 0;
+    height: auto;
+    left: 0;
+    overflow: hidden;
+    padding: 0.7em 1.5em;
+    position: fixed;
+    width: 100%;
+  }
+
+  header nav[aria-expanded='true'] .nav-tools-panel--show {
+    position: fixed;
+  }
+
   header nav .nav-sections {
     position: relative;
   }
@@ -573,12 +602,12 @@ header nav .nav-sections .active-submenu {
     padding: 0 2em 1em;
     position: relative;
     text-align: left;
-    width: 115%;
+    width: 120%;
   }
 
   header nav .nav-sections .active-submenu span.back {
-    position: absolute;
-    right: 3em;
+    position: fixed;
+    right: 2em;
   }
 
   header nav .nav-sections .active-submenu ul > li.nav-drop::after {
