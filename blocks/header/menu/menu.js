@@ -105,12 +105,33 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Applies parsed hash tags based on conditions
+ *
+ * @param aElement
+ * @param hashTags
+ */
+function applyCondition(aElement, hashTags) {
+  hashTags.forEach((hashTag) => {
+    const { namespace, value } = { ...hashTag };
+
+    if (namespace === 'display_for_') {
+      if (value === 'desktop_only' && !isDesktop) {
+        aElement.parentNode.removeChild(aElement);
+      }
+      if (value === 'mobile_only' && isDesktop) {
+        aElement.parentNode.removeChild(aElement);
+      }
+    }
+  });
+}
+
+/**
  * Parses nav fragment; disable visible elements based on hash tags
  *
  * @param navSections
  * @returns {*}
  */
-function parseUrlHashTags() {
+function parseUrlHashTags(navSections) {
   const aElements = navSections.querySelectorAll('li > a');
 
   aElements.forEach((aElement) => {
@@ -118,7 +139,8 @@ function parseUrlHashTags() {
     if (link) {
       const hashTags = parseHashTag(link);
       console.table(`Hash tags for ${link}`, hashTags);
-      // liElement.parentNode.removeChild(liElement);
+
+      applyCondition(aElement, hashTags);
     }
   });
 }

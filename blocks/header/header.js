@@ -14,7 +14,7 @@ import { renderAuthDropdown } from './renderAuthDropdown.js';
 
 import {
   isDesktop,
-  parseNavSections,
+  parseUrlHashTags,
   toggleAllNavSections,
   toggleMenu,
 } from './menu/menu.js';
@@ -65,7 +65,7 @@ export default async function decorate(block) {
           }
         });
       });
-    parseUrlHashTags();
+    parseUrlHashTags(navSections);
   }
 
   const navTools = nav.querySelector('.nav-tools');
