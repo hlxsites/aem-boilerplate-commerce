@@ -1,5 +1,5 @@
 mountpoints:
-  /: https://adobe.sharepoint.com/:f:/r/sites/HelixProjects/Shared%20Documents/sites/starter-content-commerce
+  /: https://da.live/#/sirugh/rafals-storefront-repo
 
 folders:
   /products/: /products/default
