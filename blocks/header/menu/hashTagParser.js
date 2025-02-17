@@ -24,6 +24,7 @@ function parseHashTag(href) {
   const hashTags = href.split('#').slice(1);
 
   if (hashTags) {
+    // @TODO: optimize (now it is going ot be O(n^2) :/)
     namespaces.forEach((ns) => {
       hashTags.forEach((tag) => {
         const value = tag.split(ns);
