@@ -575,10 +575,6 @@ header nav .nav-sections .active-submenu {
     display: none;
   }
 
-  header nav .nav-sections ul > li.nav-drop input {
-    display: none;
-  }
-
   header nav .nav-sections .active-submenu {
     background: var(--background-color);
     display: none;
@@ -589,12 +585,12 @@ header nav .nav-sections .active-submenu {
   }
 
   header nav .nav-sections .active-submenu button::before {
-    content: '\276e';
+    content: '\276E';
     margin-right: .5em;
   }
 
   header nav .nav-sections .active-submenu button::after {
-    content: '✕';
+    content: '\2715';
     position: absolute;
     right: 8vw;
   }
