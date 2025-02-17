@@ -14,10 +14,11 @@ import { renderAuthDropdown } from './renderAuthDropdown.js';
 
 import {
   isDesktop,
-  parseUrlHashTags,
   toggleAllNavSections,
   toggleMenu,
 } from './menu/menu.js';
+
+import parseUrlHashTags from './menu/hashTagParser.js';
 
 /**
  * loads and decorates the header, mainly the nav

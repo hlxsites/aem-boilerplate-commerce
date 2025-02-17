@@ -1,5 +1,3 @@
-import { parseHashTag } from './hashTagParser.js';
-
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
@@ -104,50 +102,8 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-/**
- * Applies parsed hash tags based on conditions
- *
- * @param aElement
- * @param hashTags
- */
-function applyCondition(aElement, hashTags) {
-  hashTags.forEach((hashTag) => {
-    const { namespace, value } = { ...hashTag };
-
-    if (namespace === 'display_for_') {
-      if (value === 'desktop_only' && !isDesktop.matches) {
-        aElement.parentNode.removeChild(aElement);
-      }
-      if (value === 'mobile_only' && isDesktop.matches) {
-        aElement.parentNode.removeChild(aElement);
-      }
-    }
-  });
-}
-
-/**
- * Parses nav fragment; disable visible elements based on hash tags
- *
- * @param navSections
- * @returns {*}
- */
-function parseUrlHashTags(navSections) {
-  const aElements = navSections.querySelectorAll('li > a');
-
-  aElements.forEach((aElement) => {
-    const link = aElement.href;
-    if (link) {
-      const hashTags = parseHashTag(link);
-      console.table(`Hash tags for ${link}`, hashTags);
-
-      applyCondition(aElement, hashTags);
-    }
-  });
-}
-
 export {
   isDesktop,
-  parseUrlHashTags,
   toggleAllNavSections,
   toggleMenu,
 };
