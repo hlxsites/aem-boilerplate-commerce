@@ -115,10 +115,10 @@ function applyCondition(aElement, hashTags) {
     const { namespace, value } = { ...hashTag };
 
     if (namespace === 'display_for_') {
-      if (value === 'desktop_only' && !isDesktop) {
+      if (value === 'desktop_only' && !isDesktop.matches) {
         aElement.parentNode.removeChild(aElement);
       }
-      if (value === 'mobile_only' && isDesktop) {
+      if (value === 'mobile_only' && isDesktop.matches) {
         aElement.parentNode.removeChild(aElement);
       }
     }
