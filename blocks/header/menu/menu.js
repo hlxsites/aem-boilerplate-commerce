@@ -1,4 +1,4 @@
-import { parseUrlHashTag } from './hashTagParser.js';
+import { parseHashTag } from './hashTagParser.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -48,58 +48,6 @@ function openOnKeydown(e) {
 
 function focusNavSection() {
   document.activeElement.addEventListener('keydown', openOnKeydown);
-}
-
-/**
- * Recursively gets all LI elements from menu section
- *
- * @param menu
- * @param elements
- * @returns {*[]}
- */
-function getLiElements(menu, elements = []) {
-  const uls = menu.querySelectorAll('ul');
-
-  /*
-   @TODO: handle nested ul > li > ul;  makes sure it wont get into infinite loop; optimization (?);
-  */
-  uls.forEach((ul) => {
-    ul.childNodes.forEach((n) => {
-      if (n.nodeName === 'ul') {
-        getLiElements(n, elements);
-      }
-      // if (n.nodeName === 'li' && n.querySelectorAll('ul').length > 0) {
-      //   getLiElements(n.querySelectorAll('ul'), elements);
-      // }
-      if (n.nodeType !== 3) {
-        elements.push(n);
-      }
-    });
-  });
-  return elements;
-}
-
-/**
- * Parses nav fragment; disable visible elements based on hash tags
- *
- * @param navSections
- * @returns {*}
- */
-function parseNavSections(navSections) {
-  const visibleMenuItems = navSections.querySelectorAll(':scope .default-content-wrapper > ul > li');
-
-  visibleMenuItems.forEach((section) => {
-    const liElements = getLiElements(section);
-    liElements.forEach((liElement) => {
-      const link = liElement.querySelector('a') && liElement.querySelector('a').href;
-      if (link) {
-        const hashTags = parseUrlHashTag(link);
-        console.table(`Hash tags for ${link}`, hashTags);
-        // liElement.parentNode.removeChild(liElement);
-      }
-    });
-  });
-  return visibleMenuItems;
 }
 
 /**
@@ -156,9 +104,28 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
+/**
+ * Parses nav fragment; disable visible elements based on hash tags
+ *
+ * @param navSections
+ * @returns {*}
+ */
+function parseUrlHashTags() {
+  const aElements = navSections.querySelectorAll('li > a');
+
+  aElements.forEach((aElement) => {
+    const link = aElement.href;
+    if (link) {
+      const hashTags = parseHashTag(link);
+      console.table(`Hash tags for ${link}`, hashTags);
+      // liElement.parentNode.removeChild(liElement);
+    }
+  });
+}
+
 export {
   isDesktop,
-  parseNavSections,
+  parseUrlHashTags,
   toggleAllNavSections,
   toggleMenu,
 };

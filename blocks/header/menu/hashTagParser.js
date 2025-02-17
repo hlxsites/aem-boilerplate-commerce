@@ -9,9 +9,15 @@ const namespaces = [
   'apply_style_',
 ];
 
-function parseUrlHashTag(href) {
+/**
+ * Extracts hash tags namespaces and values
+ *
+ * @param href
+ * @returns {*[]}
+ */
+function parseHashTag(href) {
   if (!href.indexOf('#') > 0) {
-    return;
+    return [];
   }
 
   const parsed = [];
@@ -30,10 +36,9 @@ function parseUrlHashTag(href) {
       });
     });
   }
-
   return parsed;
 }
 
 export {
-  parseUrlHashTag,
+  parseHashTag,
 };

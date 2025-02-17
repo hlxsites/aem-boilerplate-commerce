@@ -50,9 +50,8 @@ export default async function decorate(block) {
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
-    const visibleSections = parseNavSections(navSections);
-
-    visibleSections
+    navSections
+      .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) {
           navSection.classList.add('nav-drop');
@@ -66,6 +65,7 @@ export default async function decorate(block) {
           }
         });
       });
+    parseUrlHashTags();
   }
 
   const navTools = nav.querySelector('.nav-tools');
