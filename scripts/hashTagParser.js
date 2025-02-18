@@ -1,25 +1,34 @@
-/**
- * Parses href hash
- *
- * @param urlHash
- * @returns {*[]}
- */
 const namespaces = [
   'display_for_',
 ];
 
+/**
+ * Change link's parent DOM element visibility to hidden
+ *
+ * @param el
+ */
 function hideLink(el) {
   if (el.nodeType === 1) {
     el.parentNode.hidden = true;
   }
 }
 
+/**
+ * Change link's parent DOM element visibility to visible
+ *
+ * @param el
+ */
 function showLink(el) {
   if (el.nodeType === 1) {
     el.parentNode.hidden = false;
   }
 }
 
+/**
+ * Removes link from DEM tree
+ *
+ * @param el
+ */
 function removeLink(el) {
   if (el.nodeType === 1 && el.parentNode !== null) {
     el.parentNode.removeChild(el);
@@ -41,7 +50,6 @@ function parseHashTag(href) {
   const hashTags = href.split('#').slice(1);
 
   if (hashTags) {
-    // @TODO: optimize ( now it is going to be O(n^2) :/ )
     namespaces.forEach((ns) => {
       hashTags.forEach((tag) => {
         const value = tag.split(ns);
@@ -60,8 +68,9 @@ function parseHashTag(href) {
 /**
  * Applies parsed hash tags based on conditions
  *
- * @param aElement
- * @param hashTags
+ * @param aElement DOM element
+ * @param {object} hashTags parsed hash tags
+ * @param {function} callbackFn function executing logic based on parsed hash tags
  */
 function applyConditions(aElement, hashTags, callbackFn) {
   hashTags.forEach((hashTag) => {
@@ -73,7 +82,8 @@ function applyConditions(aElement, hashTags, callbackFn) {
 /**
  * Parses nav fragment; disable visible elements based on hash tags
  *
- * @param navSections
+ * @param domEl DOM element
+ * @param {function} callbackFn function executing logic based on parsed hash tags
  * @returns {*}
  */
 function parseUrlHashTags(domEl = 'header', callbackFn = null) {
