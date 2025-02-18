@@ -3,7 +3,7 @@ main > .section .carousel-wrapper {
     padding: 0;
 }
 
-.carousel-container h2 {
+.carousel-container h2, .carousel-container p {
     padding: 0 var(--spacing-xxlarge);
     text-align: center;
 }

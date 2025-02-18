@@ -22,12 +22,13 @@
 }
 
 .footer-wrapper .default-content-wrapper li a {
+    color: var(--color-neutral-900);
     font: var(--type-body-2-strong-font);
     letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
 .footer-wrapper .default-content-wrapper li:last-child a {
-    color: var(--color-brand-700);
+    color: var(--adobe-brand-color);
 }
 
 .footer-wrapper .default-content-wrapper p {
@@ -44,5 +45,5 @@
     display: block;
     width: 100%;
     height: 8px;
-    background-color: var(--color-brand-700);
+    background-color: var(--adobe-brand-color);
 }

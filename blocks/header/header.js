@@ -144,7 +144,7 @@ export default async function decorate(block) {
     const section = brandImage.closest('.section');
     if (section) {
       const anchor = document.createElement('a');
-      anchor.href = '/'; // Set the desired href value
+      anchor.href = '/';
       section.parentNode.insertBefore(anchor, section);
       anchor.appendChild(section);
     }

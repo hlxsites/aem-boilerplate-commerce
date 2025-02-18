@@ -14,11 +14,11 @@
 
 /* stylelint-disable no-empty-source */
 :root, .dropin-design {
-  /* Adobe Commerce Dropin design tokens */
-  --color-brand-300: #eb1000;
-  --color-brand-500: #eb1000;
-  --color-brand-600: #eb1000;
-  --color-brand-700: #eb1000;
+/* Adobe Commerce Dropin design tokens */
+  --color-brand-300: #1473e6;
+  --color-brand-500: #1473e6;
+  --color-brand-600: #0054b6;
+  --color-brand-700: #1473e6;
   --color-neutral-50: #fff;
   --color-neutral-100: #fafafa;
   --color-neutral-200: #f5f5f5;
@@ -91,7 +91,6 @@
   --spacing-xhuge: 144px;
   --spacing-xxhuge: 192px;
   --type-base-font-family: 'Adobe Clean', adobe-clean, source sans pro, -apple-system,blinkmacsystemfont, segoe ui, roboto, sans-serif;
-  --base-font-family-h3: 'Adobe Clean';
   --type-condensed-font-family: 'Adobe Clean', adobe-clean, roboto-condensed, roboto-condensed-fallback, sans-serif;
   --type-display-1-font: normal normal 300 6.0rem/7.2rem var(--type-base-font-family);
   --type-display-1-letter-spacing: 0.04em;
@@ -144,9 +143,11 @@
     --footer-max-width: 1200px;
 
     /* Additional tokens */
-    --type-fixed-font-family: 'Adobe Clean', 'Roboto Mono', menlo, consolas, 'Liberation Mono',
+    --type-fixed-font-family: 'Adobe Clean', adobe-clean, 'Roboto Mono', menlo, consolas, 'Liberation Mono',
     monospace;
     --background-color: var(--color-neutral-50);
+    --adobe-brand-color: #eb1000;
+    --adobe-brand-color-hover: #0054b6;
     --nav-height: 80px;
     --nav-max-width: 100%;
     --nav-icon-height: 18px;
@@ -283,7 +284,6 @@ code,
 pre {
   font: var(--type-body-2-default-font);
   letter-spacing: var(--type-body-2-default-letter-spacing);
-  font-family: var(--type-fixed-font-family);
 }
 
 pre {
@@ -311,7 +311,6 @@ button {
 
 /* links */
 a:not(.dropin-design a) {
-  color: var(--color-neutral-900);
   font: var(--type-body-1-strong-font);
   letter-spacing: var(--type-body-1-strong-letter-spacing);
   text-decoration: none;
@@ -319,8 +318,12 @@ a:not(.dropin-design a) {
 }
 
 a:not(.dropin-design a):hover {
-  color: var(--color-brand-300);
   text-decoration: underline;
+  color: var(--adobe-brand-color-hover);
+}
+
+.dropin-design a {
+  font-weight: bold;
 }
 
 /* buttons */
@@ -340,7 +343,7 @@ button.button {
   line-height: 1.25;
   text-align: center;
   text-decoration: none;
-  background-color: var(--color-brand-500);
+  background-color: var(--color-brand-700);
   color: var(--color-neutral-50);
   cursor: pointer;
   overflow: hidden;
@@ -352,7 +355,7 @@ main a.button:hover,
 main a.button:focus,
 button.button:hover,
 button.button:focus {
-  background-color: var(--color-brand-600);
+  background-color: var(--adobe-brand-color-hover);
   cursor: pointer;
 }
 
@@ -367,12 +370,12 @@ main a.button.secondary,
 button.button.secondary {
   background-color: unset;
   border: var(--shape-border-width-3) solid currentcolor;
-  color: var(--color-brand-500);
+  color: var(--color-neutral-900);
 }
 
 main a.button.secondary:hover,
 button.button.secondary:hover {
-  color: var(--color-brand-600);
+  color: var(--color-neutral-700);
 }
 
 main input:hover {

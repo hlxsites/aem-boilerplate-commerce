@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable import/no-unresolved */
 
 import {
@@ -21,7 +22,6 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
 // Libs
-import { setJsonLd } from '../../scripts/commerce.js';
 import { fetchPlaceholders } from '../../scripts/aem.js';
 
 // Initializers
@@ -39,6 +39,7 @@ export default async function decorate(block) {
       <div class="product-details__alert"></div>
       <div class="product-details__left-column">
         <div class="product-details__gallery"></div>
+        <div class="product-details__maximize"></div>
       </div>
       <div class="product-details__right-column">
         <div class="product-details__gallery"></div>
@@ -55,6 +56,7 @@ export default async function decorate(block) {
           </div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
+            <div class="product-details__buttons__notify-me"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -70,11 +72,17 @@ export default async function decorate(block) {
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
-  const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $galleryMobile = fragment.querySelector(
+    '.product-details__right-column .product-details__gallery',
+  );
+  const $shortDescription = fragment.querySelector(
+    '.product-details__short-description',
+  );
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
-  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $addToCart = fragment.querySelector(
+    '.product-details__buttons__add-to-cart',
+  );
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -93,27 +101,30 @@ export default async function decorate(block) {
     _options,
     _quantity,
     addToCart,
-    _addToWishlist,
     _description,
     _attributes,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
-      controls: 'dots',
-      arrows: true,
+      controls: 'thumbnailsRow',
+      arrows: false,
       peak: false,
       gap: 'small',
       loop: false,
       imageParams: {
         ...IMAGES_SIZES,
       },
+      thumbnailParams: {
+        width: 100,
+        height: 100,
+      },
     })($galleryMobile),
 
     // Gallery (Desktop)
     pdpRendered.render(ProductGallery, {
       controls: 'thumbnailsColumn',
-      arrows: true,
-      peak: true,
+      arrows: false,
+      peak: false,
       gap: 'small',
       loop: false,
       imageParams: {
@@ -131,14 +142,17 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
+    pdpRendered.render(ProductOptions, {
+      hideSelectedValue: true,
+    })($options),
 
-    // Configuration  Quantity
+    // Configuration - Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
+      size: 'large',
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
@@ -153,7 +167,9 @@ export default async function decorate(block) {
 
           // add the product to the cart
           if (valid) {
-            const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+            const { addProductsToCart } = await import(
+              '@dropins/storefront-cart/api.js'
+            );
             await addProductsToCart([{ ...values }]);
           }
 
@@ -195,17 +211,20 @@ export default async function decorate(block) {
   ]);
 
   // Lifecycle Events
-  events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
-  }, { eager: true });
+  events.on(
+    'pdp/valid',
+    (valid) => {
+      // update add to cart button disabled state based on product selection validity
+      addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    },
+    { eager: true },
+  );
 
   // Set JSON-LD and Meta Tags
   events.on(
     'eds/lcp',
     () => {
       if (product) {
-        setJsonLdProduct(product);
         setMetaTags(product);
         document.title = product.name;
       }
@@ -213,89 +232,8 @@ export default async function decorate(block) {
     { eager: true },
   );
 
+  // eslint-disable-next-line consistent-return
   return Promise.resolve();
-}
-
-async function setJsonLdProduct(product) {
-  const {
-    name,
-    inStock,
-    description,
-    sku,
-    urlKey,
-    price,
-    priceRange,
-    images,
-    attributes,
-  } = product;
-  const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes.find((attr) => attr.name === 'brand');
-
-  // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
-
-  const ldJson = {
-    '@context': 'http://schema.org',
-    '@type': 'Product',
-    name,
-    description,
-    image: images[0]?.url,
-    offers: [],
-    productID: sku,
-    brand: {
-      '@type': 'Brand',
-      name: brand?.value,
-    },
-    url: new URL(`/products/${urlKey}/${sku}`, window.location),
-    sku,
-    '@id': new URL(`/products/${urlKey}/${sku}`, window.location),
-  };
-
-  if (variants.length > 1) {
-    ldJson.offers.push(...variants.map((variant) => ({
-      '@type': 'Offer',
-      name: variant.product.name,
-      image: variant.product.images[0]?.url,
-      price: variant.product.price.final.amount.value,
-      priceCurrency: variant.product.price.final.amount.currency,
-      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-      sku: variant.product.sku,
-    })));
-  } else {
-    ldJson.offers.push({
-      '@type': 'Offer',
-      price: amount?.value,
-      priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-    });
-  }
-
-  setJsonLd(ldJson, 'product');
 }
 
 function createMetaTag(property, content, type) {

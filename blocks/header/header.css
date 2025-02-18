@@ -20,7 +20,6 @@ header nav {
   margin: auto;
   max-width: var(--screen-max-width);
   height: var(--nav-height);
-  padding: 0 var(--spacing-medium);
   font: var(--type-base-font-family);
 }
 
@@ -50,6 +49,11 @@ header nav[aria-expanded='true'] {
 header nav p {
   margin: 0;
   line-height: 1;
+}
+
+#nav a.button {
+    color: var(--color-neutral-900);
+    text-decoration: none;
 }
 
 /* hamburger */
@@ -143,6 +147,7 @@ header nav .nav-brand a {
 
 header nav .nav-sections ul > li,
 header nav .nav-sections ul > li > a {
+    color: var(--color-neutral-900);
     font-weight: 500;
 }
 
@@ -372,7 +377,7 @@ header .nav-search-input .search_autocomplete .popover-container {
   }
 
   header nav .nav-tools-panel {
-    top: calc(-12px + var(--nav-height));
+    top: calc(-20px + var(--nav-height));
   }
 
   header nav .minicart-panel {
