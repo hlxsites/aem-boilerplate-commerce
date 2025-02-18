@@ -66,9 +66,10 @@ const updateTargetedBlocksVisibility = async () => {
   parseUrlHashTags(
     'main',
     (el, namespace, value) => {
+      const segments = activeRules.customerSegments.map((s) => s.name.toLowerCase());
       if (value.startsWith('segment')) {
-        const [prefix, segmentToMatch] = [...value.split('_')];
-        if (!activeRules.customerSegments.map((segment) => segment.name).includes(segmentToMatch)) {
+        const [_prefix, segment] = [...value.split('_')];
+        if (!segments.includes(segment.toLowerCase())) {
           hideLink(el);
         } else {
           showLink(el);
