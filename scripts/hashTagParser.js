@@ -1,5 +1,3 @@
-import { isDesktop } from './menu.js';
-
 /**
  * Parses href hash
  *
@@ -8,8 +6,25 @@ import { isDesktop } from './menu.js';
  */
 const namespaces = [
   'display_for_',
-  'apply_style_',
 ];
+
+function hideLink(el) {
+  if (el.nodeType === 1) {
+    el.parentNode.hidden = true;
+  }
+}
+
+function showLink(el) {
+  if (el.nodeType === 1) {
+    el.parentNode.hidden = false;
+  }
+}
+
+function removeLink(el) {
+  if (el.nodeType === 1 && el.parentNode !== null) {
+    el.parentNode.removeChild(el);
+  }
+}
 
 /**
  * Extracts hash tags namespaces and values
@@ -26,7 +41,7 @@ function parseHashTag(href) {
   const hashTags = href.split('#').slice(1);
 
   if (hashTags) {
-    // @TODO: optimize (now it is going to be O(n^2) :/)
+    // @TODO: optimize ( now it is going to be O(n^2) :/ )
     namespaces.forEach((ns) => {
       hashTags.forEach((tag) => {
         const value = tag.split(ns);
@@ -42,25 +57,16 @@ function parseHashTag(href) {
   return parsed;
 }
 
-
 /**
  * Applies parsed hash tags based on conditions
  *
  * @param aElement
  * @param hashTags
  */
-function applyConditions(aElement, hashTags) {
+function applyConditions(aElement, hashTags, callbackFn) {
   hashTags.forEach((hashTag) => {
     const { namespace, value } = { ...hashTag };
-
-    if (namespace === 'display_for_') {
-      if (value === 'desktop_only' && !isDesktop.matches) {
-        aElement.parentNode.removeChild(aElement);
-      }
-      if (value === 'mobile_only' && isDesktop.matches) {
-        aElement.parentNode.removeChild(aElement);
-      }
-    }
+    callbackFn(aElement, namespace, value);
   });
 }
 
@@ -70,18 +76,22 @@ function applyConditions(aElement, hashTags) {
  * @param navSections
  * @returns {*}
  */
-function parseUrlHashTags(navSections) {
-  const aElements = navSections.querySelectorAll('li > a');
+function parseUrlHashTags(domEl = 'header', callbackFn = null) {
+  const domElement = document.querySelector(domEl);
+  const aElements = domElement.querySelectorAll('a');
 
   aElements.forEach((aElement) => {
     const link = aElement.href;
     if (link) {
       const hashTags = parseHashTag(link);
-      console.table(`Hash tags for ${link}`, hashTags);
-
-      applyConditions(aElement, hashTags);
+      applyConditions(aElement, hashTags, callbackFn);
     }
   });
 }
 
-export default parseUrlHashTags;
+export {
+  parseUrlHashTags,
+  hideLink,
+  showLink,
+  removeLink,
+};

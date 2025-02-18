@@ -18,7 +18,7 @@ import {
   toggleMenu,
 } from './menu/menu.js';
 
-import parseUrlHashTags from './menu/hashTagParser.js';
+import { parseUrlHashTags, removeLink } from '../../scripts/hashTagParser.js';
 
 /**
  * loads and decorates the header, mainly the nav
@@ -66,7 +66,6 @@ export default async function decorate(block) {
           }
         });
       });
-    parseUrlHashTags(navSections);
   }
 
   const navTools = nav.querySelector('.nav-tools');
@@ -187,6 +186,20 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  parseUrlHashTags(
+    'nav',
+    (el, namespace, value) => {
+      if (namespace === 'display_for_') {
+        if (value === 'desktop_only' && !isDesktop.matches) {
+          removeLink(el);
+        }
+        if (value === 'mobile_only' && isDesktop.matches) {
+          removeLink(el);
+        }
+      }
+    },
+  );
 
   renderAuthCombine(
     navSections,

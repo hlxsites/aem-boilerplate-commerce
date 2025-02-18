@@ -10,6 +10,7 @@ import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+import { parseUrlHashTags, hideLink, showLink } from '../../scripts/hashTagParser.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
@@ -61,6 +62,20 @@ const updateTargetedBlocksVisibility = async () => {
       block.style.display = '';
     }
   });
+
+  parseUrlHashTags(
+    'main',
+    (el, namespace, value) => {
+      if (value.startsWith('segment')) {
+        const [prefix, segmentToMatch] = [...value.split('_')];
+        if (!activeRules.customerSegments.map((segment) => segment.name).includes(segmentToMatch)) {
+          hideLink(el);
+        } else {
+          showLink(el);
+        }
+      }
+    },
+  );
 };
 
 export default function decorate(block) {
