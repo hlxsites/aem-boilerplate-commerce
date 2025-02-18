@@ -64,12 +64,41 @@ const updateTargetedBlocksVisibility = async () => {
   });
 
   parseUrlHashTags(
-    'main',
+    'nav',
     (el, namespace, value) => {
-      const segments = activeRules.customerSegments.map((s) => s.name.toLowerCase());
       if (value.startsWith('segment')) {
+        const segments = activeRules.customerSegments.map((s) => s.name.toLowerCase());
         const [_prefix, segment] = [...value.split('_')];
         if (!segments.includes(segment.toLowerCase())) {
+          hideLink(el);
+        } else {
+          showLink(el);
+        }
+      }
+
+      if (value.startsWith('group')) {
+        const [_prefix, group] = [...value.split('_')];
+        if (group === activeRules.customerGroup) {
+          hideLink(el);
+        } else {
+          showLink(el);
+        }
+      }
+
+      if (value.startsWith('cartrule')) {
+        const rules = activeRules.cart.map((s) => s.name.toLowerCase());
+        const [_prefix, rule] = [...value.split('_')];
+        if (!rules.includes(rule.toLowerCase())) {
+          hideLink(el);
+        } else {
+          showLink(el);
+        }
+      }
+
+      if (value.startsWith('catalogrule')) {
+        const rules = activeRules.catalogPriceRules.map((s) => s.name.toLowerCase());
+        const [_prefix, rule] = [...value.split('_')];
+        if (!rules.includes(rule.toLowerCase())) {
           hideLink(el);
         } else {
           showLink(el);
