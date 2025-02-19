@@ -10,7 +10,7 @@ const blocks = [];
 const displayedBlockTypes = [];
 
 const updateTargetedBlocksVisibility = async () => {
-  const activeRules = getActiveRules();
+  const activeRules = await getActiveRules();
 
   displayedBlockTypes.length = 0;
   blocks.forEach(async (blockConfig) => {
