@@ -13,12 +13,12 @@
         },
         {
           "name": "Apparel",
-          "url": "adobe/shop/apparel",
+          "url": "apparel",
           "children":
           [
             {
               "name": "Shirts",
-              "url": "adobe/shop/apparel/shirts",
+              "url": "apparel/shirts",
               "properties":
               [
                 {
@@ -31,7 +31,7 @@
             },
             {
               "name": "Outerwear",
-              "url": "adobe/all-items/apparel/outerwear",
+              "url": "apparel/outerwear",
               "properties":
               [
                 {
@@ -44,7 +44,7 @@
             },
             {
               "name": "Bottoms",
-              "url": "adobe/all-items/apparel/bottoms",
+              "url": "apparel/bottoms",
               "properties":
               [
                 {
@@ -57,7 +57,7 @@
             },
             {
               "name": "Hats",
-              "url": "adobe/all-items/apparel/hats",
+              "url": "apparel/hats",
               "properties":
               [
                 {
@@ -70,7 +70,7 @@
             },
             {
               "name": "Accessories",
-              "url": "adobe/all-items/apparel/accessories",
+              "url": "apparel/accessories",
               "properties":
               [
                 {
@@ -83,7 +83,7 @@
             },
             {
               "name": "Youth",
-              "url": "adobe/all-items/apparel/youth",
+              "url": "apparel/youth",
               "properties":
               [
                 {
@@ -96,7 +96,7 @@
             },
             {
               "name": "Employee networks",
-              "url": "adobe/shop/apparel/employee-networks",
+              "url": "apparel/employee-networks",
               "properties":
               [
                 {
@@ -109,7 +109,7 @@
             },
             {
               "name": "Event Staff Apparel",
-              "url": "adobe/all-items/apparel/event-staff-apparel",
+              "url": "apparel/event-staff-apparel",
               "properties":
               [
                 {
@@ -124,13 +124,13 @@
         },
         {
           "name": "Office",
-          "url": "adobe/shop/office",
+          "url": "office",
 
           "children":
           [
             {
               "name": "Tech",
-              "url": "adobe/shop/office/tech",
+              "url": "office/tech",
               "properties":
               [
                 {
@@ -143,7 +143,7 @@
             },
             {
               "name": "Paper",
-              "url": "adobe/shop/office/paper",
+              "url": "office/paper",
               "properties":
               [
                 {
@@ -156,7 +156,7 @@
             },
             {
               "name": "Pens",
-              "url": "adobe/shop/office/pens",
+              "url": "office/pens",
               "properties":
               [
                 {
@@ -169,7 +169,7 @@
             },
             {
               "name": "Pins & stickers",
-              "url": "adobe/shop/office/pins-stickers",
+              "url": "office/pins-stickers",
               "properties":
               [
                 {
@@ -182,7 +182,7 @@
             },
             {
               "name": "Office accessories",
-              "url": "adobe/shop/office/office-accessories",
+              "url": "office/office-accessories",
               "properties":
               [
                 {
@@ -197,7 +197,7 @@
         },
         {
           "name": "Lifestyle",
-          "url": "adobe/shop/lifestyle",
+          "url": "lifestyle",
           "properties":
           [
             {
@@ -209,7 +209,7 @@
           [
             {
               "name": "Drinkware",
-              "url": "adobe/shop/drinkware",
+              "url": "drinkware",
               "properties":
               [
                 {
@@ -222,7 +222,7 @@
             },
             {
               "name": "At home",
-              "url": "adobe/shop/lifestyle/at-home",
+              "url": "lifestyle/at-home",
               "properties":
               [
                 {
@@ -235,7 +235,7 @@
             },
             {
               "name": "Fun & games",
-              "url": "adobe/shop/lifestyle/fun-games",
+              "url": "lifestyle/fun-games",
               "properties":
               [
                 {
@@ -248,7 +248,7 @@
             },
             {
               "name": "Pillows",
-              "url": "adobe/shop/lifestyle/pillows",
+              "url": "lifestyle/pillows",
               "properties":
               [
                 {
@@ -261,7 +261,7 @@
             },
             {
               "name": "Travel",
-              "url": "adobe/shop/lifestyle/travel",
+              "url": "lifestyle/travel",
               "properties":
               [
                 {
@@ -276,7 +276,7 @@
         },
         {
           "name": "Bags",
-          "url": "adobe/shop/bags",
+          "url": "bags",
           "properties":
           [
             {
@@ -288,7 +288,7 @@
           [
             {
               "name": "Backpacks",
-              "url": "adobe/shop/backpacks",
+              "url": "backpacks",
               "properties":
               [
                 {
@@ -301,7 +301,7 @@
             },
             {
               "name": "Specialty",
-              "url": "adobe/shop/bags/specialty",
+              "url": "bags/specialty",
               "properties":
               [
                 {
@@ -316,7 +316,7 @@
         },
         {
           "name": "Collections",
-          "url": "adobe/shop/collections",
+          "url": "collections",
           "properties":
           [
             {
@@ -328,7 +328,7 @@
           [
             {
               "name": "Artist collaborations",
-              "url": "adobe/shop/collections/artist-collaborations",
+              "url": "collections/artist-collaborations",
               "properties":
               [
                 {
@@ -341,7 +341,7 @@
             },
             {
               "name": "Product branded gear",
-              "url": "adobe/shop/collections/product-branded-gear",
+              "url": "collections/product-branded-gear",
               "properties":
               [
                 {
@@ -354,7 +354,7 @@
             },
             {
               "name": "Gifts",
-              "url": "adobe/shop/collections/gifts",
+              "url": "collections/gifts",
               "properties":
               [
                 {
@@ -367,7 +367,7 @@
             },
             {
               "name": "Entertaining",
-              "url": "adobe/shop/collections/entertaining",
+              "url": "collections/entertaining",
               "properties":
               [
                 {
@@ -380,7 +380,7 @@
             },
             {
               "name": "Employee networks collections",
-              "url": "adobe/shop/collections/employee-networks",
+              "url": "collections/employee-networks",
               "properties":
               [
                 {
@@ -393,7 +393,7 @@
             },
             {
               "name": "Event Staff Apparel",
-              "url": "adobe/all-items/apparel/event-staff-apparel",
+              "url": "apparel/event-staff-apparel",
               "properties":
               [
                 {
@@ -406,7 +406,7 @@
             },
             {
               "name": "Event supplies",
-              "url": "adobe/shop/collections/event-supplies",
+              "url": "collections/event-supplies",
               "properties":
               [
                 {
@@ -421,7 +421,7 @@
         },
         {
           "name": "All",
-          "url": "adobe/shop/all",
+          "url": "all",
           "properties":
           [
             {
@@ -434,7 +434,7 @@
         },
         {
           "name": "Sale",
-          "url": "adobe/shop/sale",
+          "url": "sale",
           "properties":
           [
             {
@@ -447,7 +447,7 @@
         },
         {
           "name": "Gift Card",
-          "url": "adobe/shop/gift-card",
+          "url": "gift-card",
           "properties":
           [
             {

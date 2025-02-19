@@ -224,7 +224,7 @@ export default async function decorate(block) {
           const subCategoryUlLi = document.createElement('li');
           const subCategoryLink = document.createElement('a');
 
-          subCategoryLink.href = `${window.location.origin}/${ele.url}#${e.name}`;
+          subCategoryLink.href = `${window.location.origin}/${e.url}`;
           subCategoryLink.textContent = e.name;
           subCategoryUlLi.append(subCategoryLink);
           subCategoryUl.append(subCategoryUlLi);
