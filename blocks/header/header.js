@@ -11,7 +11,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import { parseUrlHashTags, removeLink } from '../../scripts/hashTagParser.js';
+import applyHashTagsForNamespace from '../../scripts/hashTags.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -326,20 +326,7 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-
-  parseUrlHashTags(
-    'nav',
-    (el, namespace, value) => {
-      if (namespace === 'display_for_') {
-        if (value === 'desktop_only' && !isDesktop.matches) {
-          removeLink(el);
-        }
-        if (value === 'mobile_only' && isDesktop.matches) {
-          removeLink(el);
-        }
-      }
-    },
-  );
+  applyHashTagsForNamespace('nav');
 
   renderAuthCombine(
     navSections,

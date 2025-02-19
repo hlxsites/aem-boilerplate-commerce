@@ -1,5 +1,8 @@
+import { events } from '@dropins/tools/event-bus.js';
+import * as Cart from '@dropins/storefront-cart/api.js';
 import { fetchGraphQl, setFetchGraphQlHeader } from '@dropins/tools/fetch-graphql.js';
-import { getHeaders } from '../../scripts/configs.js';
+import { getHeaders } from '../../configs.js';
+import { getUserTokenCookie } from '../../initializers/index.js';
 
 const addCartHeaders = async () => {
   const cartHeaders = await getHeaders('cart');
@@ -113,7 +116,37 @@ const getCatalogPriceRules = async (sku) => {
   return [];
 };
 
+const getActiveRules = async function () {
+  const activeRules = {
+    customerSegments: [],
+    customerGroup: await getCustomerGroups(),
+    cart: [],
+    catalogPriceRules: [],
+  };
+
+  if (Cart.getCartDataFromCache() !== null) {
+    const cartId = Cart.getCartDataFromCache().id || null;
+    if (cartId) {
+      const response = await getCartRules(cartId);
+      activeRules.cart = response.cart?.rules || [];
+      activeRules.customerSegments = response.customerSegments || [];
+    }
+  }
+
+  if (Cart.getCartDataFromCache() === null && getUserTokenCookie()) {
+    activeRules.customerSegments = await getCustomerSegments();
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  const productData = events._lastEvent?.['pdp/data']?.payload ?? null;
+  if (productData?.sku) {
+    activeRules.catalogPriceRules = await getCatalogPriceRules(productData.sku);
+  }
+  return activeRules;
+};
+
 export {
+  getActiveRules,
   getCustomerGroups,
   getCustomerSegments,
   getCartRules,
