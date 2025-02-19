@@ -119,15 +119,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-const fetchMockData = await
-fetch(`${window.origin}/data/data.json`)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`Network response was not ok ${response.statusText}`);
-    }
-    return response.json();
-  });
-
 /**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
@@ -184,7 +175,8 @@ export default async function decorate(block) {
   }
 
   const navSections = nav.querySelector('.nav-sections');
-  const data = fetchMockData?.data?.categories?.items;
+  const dataPromise = await window.categoryData;
+  const data = dataPromise?.data?.categories?.items;
 
   if (navSections) {
     const navSectionsUlWrapper = document.createElement('div');

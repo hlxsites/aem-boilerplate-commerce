@@ -7,18 +7,15 @@
       "items":
       [
         {
-          "name": "Demo Item",
-          "url": "products/shirts/ADB150",
-          "children": []
-        },
-        {
           "name": "Apparel",
           "url": "apparel",
+          "id": "1",
           "children":
           [
             {
               "name": "Shirts",
               "url": "apparel/shirts",
+              "id": "2",
               "properties":
               [
                 {

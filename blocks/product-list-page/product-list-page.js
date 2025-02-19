@@ -7,10 +7,34 @@ import { getConfigValue, getHeaders } from '../../scripts/configs.js';
 // Initializer
 await import('../../scripts/initializers/search.js');
 
+function getIdFromUrl(data, url) {
+  const categories = data.data.categories.items;
+  const queue = [{ category: categories[0], id: null }];
+
+  while (queue.length > 0) {
+    const { category, id } = queue.shift();
+
+    if (category.url === url) {
+      return id || category.id;
+    }
+
+    category?.children.forEach((child) => {
+      queue.push({ category: child, id });
+    });
+  }
+
+  return null;
+}
+
 export default async function decorate(block) {
-  const { category, urlpath, type } = readBlockConfig(block);
+  const { type } = readBlockConfig(block);
   block.textContent = '';
 
+  const urlpath = window.location.pathname.slice(1);
+  const category = getIdFromUrl(await window.categoryData, urlpath);
+  if (!category) {
+    console.warn('missing category id in data/data.json for urlpath', urlpath);
+  }
   // PLP Config
   const plpConfig = {
     pageSize: 8,
