@@ -42,7 +42,7 @@ await initializeDropin(async () => {
     fetchPlaceholders(),
   ]);
 
-  if (!product?.sku) {
+  if (!product) {
     return loadErrorPage();
   }
 
