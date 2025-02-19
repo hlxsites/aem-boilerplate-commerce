@@ -11,7 +11,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import applyHashTagsForNamespace from '../../scripts/hashTags.js';
+import applyHashTags from '../../scripts/hashTags.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -326,7 +326,7 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-  applyHashTagsForNamespace('nav');
+  applyHashTags('nav');
 
   renderAuthCombine(
     navSections,
@@ -337,4 +337,16 @@ export default async function decorate(block) {
 
 window.addEventListener('resize', () => {
   window.location.reload();
+});
+
+events.on('cart/reset', () => {
+  applyHashTags('nav');
+});
+
+events.on('cart/initialized', () => {
+  applyHashTags('nav');
+});
+
+events.on('cart/updated', () => {
+  applyHashTags('nav');
 });

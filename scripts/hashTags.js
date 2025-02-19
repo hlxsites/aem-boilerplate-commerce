@@ -3,16 +3,16 @@ import {
   hideLink,
   showLink,
   removeLink,
-} from './hashTagParser.js';
+} from './api/hash-tags/hashTagParser.js';
 import { getActiveRules } from './api/targeted-block/api.js';
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
-const INTERVAL = 100;
+const INTERVAL = 10;
 
 const displayForCallback = async function (el, namespace, value) {
   const activeRules = await getActiveRules();
   if (namespace === 'display_for_') {
-    if (value === 'desktop_only' && isDesktop.matches) {
+    if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
     }
 
@@ -71,22 +71,21 @@ const displayForCallback = async function (el, namespace, value) {
  * @param domElement
  * @param namespace
  */
-function applyHashTagsForNamespace(domElement, namespace = 'display_for_') {
+function applyHashTags(domElement, namespace = 'display_for_') {
   let retry = 3000 / INTERVAL;
   const apply = () => {
     if (!document.querySelector(domElement)) {
       retry -= 1;
-      // if element is not found in DOM after 3 seconds, we cancel execution
       if (retry === 0) {
-        clearInterval(c);
+        window.clearInterval(c);
       }
       return;
     }
-    clearInterval(c);
+    window.clearInterval(c);
     parseUrlHashTags(domElement, displayForCallback);
   };
   // make sure domEl is present in DOM tree before hash tags can be applied
-  const c = setInterval(apply, INTERVAL);
+  const c = window.setInterval(apply, INTERVAL);
 }
 
-export default applyHashTagsForNamespace;
+export default applyHashTags;
