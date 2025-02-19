@@ -7,6 +7,7 @@ import {
   setFetchGraphQlHeader,
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
+import { initializers } from '@dropins/tools/initializer.js';
 
 // Libs
 import { getConfigValue, getCookie } from '../configs.js';
@@ -37,6 +38,18 @@ export default async function initializeDropins() {
   events.on('authenticated', setAuthHeaders);
   // Cache cart data in session storage
   events.on('cart/data', persistCartDataInSession, { eager: true });
+
+  initializers.setImageParamKeys({
+    rotate: 'rotate',
+    crop: 'crop',
+    flip: 'flip',
+    size: 'size',
+    preferwebp: 'preferwebp',
+    // height: 'height',
+    // width: 'width',
+    quality: 'quality',
+    smartcrop: 'smartcrop',
+  });
 
   // on page load, check if user is authenticated
   const token = getUserTokenCookie();

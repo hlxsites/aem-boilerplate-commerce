@@ -206,7 +206,7 @@
           [
             {
               "name": "Drinkware",
-              "url": "drinkware",
+              "url": "lifestyle/drinkware",
               "properties":
               [
                 {
@@ -285,7 +285,7 @@
           [
             {
               "name": "Backpacks",
-              "url": "backpacks",
+              "url": "bags/backpacks",
               "properties":
               [
                 {
