@@ -9,7 +9,15 @@ import { getActiveRules } from './api/targeted-block/api.js';
 const isDesktop = window.matchMedia('(min-width: 900px)');
 const INTERVAL = 10;
 
-const displayForCallback = async function (el, namespace, value) {
+/**
+ * This method contains logic for every namespace/tag combination
+ *
+ * @param el
+ * @param namespace
+ * @param value
+ * @returns {Promise<void>}
+ */
+const callbackFn = async function (el, namespace, value) {
   const activeRules = await getActiveRules();
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
@@ -63,7 +71,7 @@ const displayForCallback = async function (el, namespace, value) {
 
 /**
  * Executes links personalization for domElement and namespace
- * It can be called for any DOM element and namespace combination.
+ * It can be called for any DOM element
  *
  * If DOM element can not be found, to avoid an infinite call to apply() we cancel
  * execution after 3 seconds
@@ -71,7 +79,7 @@ const displayForCallback = async function (el, namespace, value) {
  * @param domElement
  * @param namespace
  */
-function applyHashTags(domElement, namespace = 'display_for_') {
+function applyHashTags(domElement) {
   let retry = 3000 / INTERVAL;
   const apply = () => {
     if (!document.querySelector(domElement)) {
@@ -82,7 +90,7 @@ function applyHashTags(domElement, namespace = 'display_for_') {
       return;
     }
     window.clearInterval(c);
-    parseUrlHashTags(domElement, displayForCallback);
+    parseUrlHashTags(domElement, callbackFn);
   };
   // make sure domEl is present in DOM tree before hash tags can be applied
   const c = window.setInterval(apply, INTERVAL);
