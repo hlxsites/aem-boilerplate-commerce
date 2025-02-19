@@ -337,7 +337,7 @@ export default async function decorate(block) {
     'cart/data',
     (cartData) => {
       if (cartData?.totalQuantity) {
-        cartButton.setAttribute('data-count', data.totalQuantity);
+        cartButton.setAttribute('data-count', cartData.totalQuantity);
       } else {
         cartButton.setAttribute('data-count', 0);
       }
