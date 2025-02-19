@@ -119,7 +119,7 @@ const getCatalogPriceRules = async (sku) => {
 const getActiveRules = async function () {
   const activeRules = {
     customerSegments: [],
-    customerGroup: await getCustomerGroups(),
+    customerGroup:  await getCustomerGroups(),
     cart: [],
     catalogPriceRules: [],
   };

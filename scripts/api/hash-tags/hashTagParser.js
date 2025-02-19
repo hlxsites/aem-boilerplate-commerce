@@ -80,13 +80,14 @@ function applyConditions(aElement, hashTags, callbackFn) {
 }
 
 /**
- * Parses nav fragment; disable visible elements based on hash tags
+ * Parses DOM fragment identified by domEl
+ * change visibility or remove elements based on hash tags conditions
  *
  * @param domEl DOM element
  * @param {function} callbackFn function executing logic based on parsed hash tags
  * @returns {*}
  */
-function parseUrlHashTags(domEl = 'header', callbackFn = null) {
+function parseUrlHashTags(domEl, callbackFn) {
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
 

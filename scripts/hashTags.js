@@ -19,6 +19,7 @@ const INTERVAL = 10;
  */
 const callbackFn = async function (el, namespace, value) {
   const activeRules = await getActiveRules();
+
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
