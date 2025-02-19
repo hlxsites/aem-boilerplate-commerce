@@ -38,110 +38,90 @@ header nav[aria-expanded='true'] {
   min-height: 100dvh;
 }
 
-@media (width >= 900px) {
-  header nav {
-    display: flex;
-    justify-content: space-between;
-    gap: 0 var(--spacing-big);
-    max-width: var(--screen-max-width);
-  }
-
-  header nav[aria-expanded='true'] {
-    min-height: 0;
-    overflow: visible;
-  }
-}
-
 header nav p {
-  margin: 0;
-  line-height: 1;
+    margin: 0;
+    line-height: 1;
 }
 
-#nav a.button {
+#nav a.button, nav a {
     color: var(--color-neutral-900);
     text-decoration: none;
+    text-underline-offset: 6px;
 }
 
 /* hamburger */
 header nav .nav-hamburger {
-  grid-area: hamburger;
-  height: 24px;
-  display: flex;
-  align-items: center;
+    grid-area: hamburger;
+    height: 24px;
+    display: flex;
+    align-items: center;
 }
 
 header nav .nav-hamburger button {
-  height: 24px;
-  cursor: pointer;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-  background-color: var(--color-neutral-50);
-  color: inherit;
-  overflow: initial;
-  text-overflow: initial;
-  white-space: initial;
+    height: 24px;
+    cursor: pointer;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background-color: var(--color-neutral-50);
+    color: inherit;
+    overflow: initial;
+    text-overflow: initial;
+    white-space: initial;
 }
 
 header nav .nav-hamburger-icon,
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
-  box-sizing: border-box;
-  display: block;
-  position: relative;
-  width: 20px;
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 20px;
 }
 
 header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
-  content: '';
-  position: absolute;
-  background: currentcolor;
+    content: '';
+    position: absolute;
+    background: currentcolor;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon,
 header nav[aria-expanded='false'] .nav-hamburger-icon::before,
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
-  height: 2px;
-  border-radius: var(--shape-border-width-3);
-  background: currentcolor;
+    height: 2px;
+    border-radius: var(--shape-border-width-3);
+    background: currentcolor;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::before {
-  top: -6px;
+    top: -6px;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
-  top: 6px;
+    top: 6px;
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon {
-  height: 22px;
+    height: 22px;
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon::before,
 header nav[aria-expanded='true'] .nav-hamburger-icon::after {
-  top: 3px;
-  left: 1px;
-  transform: rotate(45deg);
-  transform-origin: 2px 1px;
-  width: 24px;
-  height: 2px;
-  border-radius: var(--shape-border-width-3);
+    top: 3px;
+    left: 1px;
+    transform: rotate(45deg);
+    transform-origin: 2px 1px;
+    width: 24px;
+    height: 2px;
+    border-radius: var(--shape-border-width-3);
 }
 
 header nav[aria-expanded='true'] .nav-hamburger-icon::after {
-  top: unset;
-  bottom: 3px;
-  transform: rotate(-45deg);
-}
-
-@media (width >= 900px) {
-  header nav .nav-hamburger {
-    display: none;
-    visibility: hidden;
-  }
+    top: unset;
+    bottom: 3px;
+    transform: rotate(-45deg);
 }
 
 /* brand */
@@ -161,6 +141,13 @@ header nav .nav-sections ul > li > a {
 header nav .nav-brand a:hover {
   color: var(--color-brand-700);
   text-decoration: none;
+}
+
+header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a:focus,
+header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a:hover {
+    background-color: unset;
+    color: unset;
+    text-decoration: none;
 }
 
 li.nav-drop img {
@@ -191,9 +178,11 @@ header nav[aria-expanded='true'] .nav-sections {
 
 header nav .nav-sections ul {
   list-style: none;
-  padding-left: 0;
+  padding: 0;
   font: var(--type-body-1-default-font);
   letter-spacing: var(--type-body-1-default-letter-spacing);
+    position: relative;
+    margin: 0;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -202,9 +191,27 @@ header nav .nav-sections ul > li > ul {
 
 header nav .nav-sections ul > li > ul > li {
   font-weight: 400;
+    margin: 0;
 }
 
 @media (width >= 900px) {
+    header nav {
+        display: flex;
+        justify-content: space-between;
+        gap: 0 var(--spacing-big);
+        max-width: var(--screen-max-width);
+    }
+
+    header nav[aria-expanded='true'] {
+        min-height: 0;
+        overflow: visible;
+    }
+
+    header nav .nav-hamburger {
+        display: none;
+        visibility: hidden;
+    }
+
   header nav .nav-sections {
     display: block;
     visibility: visible;
@@ -217,7 +224,6 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections .nav-drop {
     position: relative;
-    padding: 0 16px;
     cursor: pointer;
     border-radius: 4px;
   }
@@ -225,9 +231,6 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .nav-drop::after {
     content: '';
     display: inline-block;
-    position: absolute;
-    top: 0.4rem;
-    right: 0.2rem;
     transform: rotate(135deg);
     width: 0.6rem;
     height: 0.6rem;
@@ -248,7 +251,6 @@ header nav .nav-sections ul > li > ul > li {
 
   header nav .nav-sections ul {
     display: flex;
-    gap: var(--spacing-medium);
     margin: 0;
   }
 
@@ -258,7 +260,7 @@ header nav .nav-sections ul > li > ul > li {
   }
 
   header nav .nav-sections .nav-drop[aria-expanded='true'] > ul {
-    height: var(--megamenu-panel-height);
+    height: auto;
     flex-flow: column wrap;
   }
 
@@ -272,25 +274,13 @@ header nav .nav-sections ul > li > ul > li {
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
     display: flex;
     position: absolute;
-    left: -24px;
-    width: var(--megamenu-panel-width);
+    left: -2px;
+    width: auto;
     top: 150%;
     padding: var(--spacing-small);
     background-color: var(--color-neutral-50);
     white-space: initial;
-    overflow-x: scroll;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 16px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--color-neutral-500);
+    text-wrap: nowrap;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
@@ -647,4 +637,100 @@ header nav .nav-sections .active-submenu {
   header nav .nav-sections .active-submenu.visible ul > li.nav-drop ul {
     display: block;
   }
+}
+
+header nav .nav-sections .nav-sections-ul-wrapper {
+    height: unset;
+    width: 100%;
+    position: absolute;
+    overflow-y: visible;
+    max-width: unset;
+    align-items: center;
+}
+
+header nav[aria-expanded="true"] .nav-sections, header nav[aria-expanded="true"] .nav-sections .nav-sections-ul-wrapper {
+    display: flex;
+    transform: none;
+    height: 100%;
+    width: unset;
+    transition: none;
+    background-color: transparent;
+    justify-content: center;
+    padding: 0;
+}
+
+header nav .nav-sections .nav-drop[aria-expanded='true'] {
+    background-color: var(--color-neutral-200);
+}
+
+header nav .nav-sections .nav-drop[aria-expanded='true']::after {
+    top: unset;
+    bottom: 0.5em;
+    transform: rotate(315deg);
+}
+
+header nav .nav-sections .nav-sections-ul-wrapper > ul > li ul {
+    display: none;
+}
+
+@media (width > 990px) {
+    header nav .nav-sections ul li {
+        display: flex;
+        align-items: center;
+        margin: 0 1.4rem;
+    }
+
+    header nav .nav-sections .nav-drop::after {
+        content: "";
+        border-color: var(--color-neutral-900);
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+        display: flex;
+        min-height: 6px;
+        margin-left: 5px;
+        margin-right: 2.25px;
+        transform: rotate(45deg);
+        transform-origin: 75% 75%;
+        transition: transform 0.1s ease;
+        min-width: 6px;
+    }
+
+    header nav .nav-sections .nav-drop ul {
+        position: absolute;
+        top: 37px;
+        left: 0;
+        background-color: var(--color-neutral-50);
+        width: auto;
+        padding: 16px 0;
+        margin: 0;
+        min-width: 150px;
+        box-shadow: 4px 6px 6px -6px #777;
+        flex-direction: column;
+    }
+
+    header nav .nav-sections .nav-sections-ul-wrapper > ul > li ul li a {
+        color: var(--color-neutral-900);
+        padding: var(--spacing-small) var(--spacing-small);
+        width: 100%;
+    }
+
+    header nav .nav-sections .nav-drop:hover ul, header nav .nav-sections .nav-drop ul:hover {
+        display: block;
+    }
+
+    header nav .nav-sections .nav-drop ul li a:hover {
+        color: var(--color-brand-700);
+        background-color: var(--color-neutral-300);
+        text-decoration: none;
+    }
+}
+
+header nav .nav-sections .nav-sections-ul-wrapper > ul > li:has(ul) > a > .accordian-icon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
 }

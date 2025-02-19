@@ -9,9 +9,6 @@ import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-import renderAuthCombine from './renderAuthCombine.js';
-import { renderAuthDropdown } from './renderAuthDropdown.js';
-
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
@@ -23,7 +20,6 @@ function closeOnEscape(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
-      document.getElementsByTagName('main')[0].classList.remove('overlay');
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
@@ -41,10 +37,9 @@ function closeOnFocusLost(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
-      document.getElementsByTagName('main')[0].classList.remove('overlay');
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections, true);
+      toggleMenu(nav, navSections, false);
     }
   }
 }
@@ -71,10 +66,16 @@ function focusNavSection() {
  */
 function toggleAllNavSections(sections, expanded = false) {
   sections
-    .querySelectorAll('.nav-sections .default-content-wrapper > ul > li')
+    .querySelectorAll('.nav-sections > ul > li')
     .forEach((section) => {
       section.setAttribute('aria-expanded', expanded);
     });
+
+  const expandedItems = sections
+    .querySelectorAll('.expanded');
+  if (expandedItems) {
+    [...expandedItems].map((e) => e.classList.remove('expanded'));
+  }
 }
 
 /**
@@ -118,35 +119,14 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-const activeSubmenu = document.createElement('div');
-activeSubmenu.classList.add('active-submenu');
-activeSubmenu.innerHTML = `
-    <button>All Categories</button>
-    <h6>Title</h6><ul><li class="nav-drop"></li></ul>
-`;
-
-/**
- * Sets up the menu for mobile
- * @param {navSection} navSection The nav section element
- */
-function setupMobileMenu(navSection) {
-  if (!isDesktop.matches && navSection.querySelector('ul')) {
-    let label;
-    if (navSection.childNodes.length) {
-      [label] = navSection.childNodes;
+const fetchMockData = await
+fetch(`${window.origin}/data/data.json`)
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`Network response was not ok ${response.statusText}`);
     }
-
-    const subMenu = navSection.querySelector('ul');
-    const clonedSubMenu = subMenu.cloneNode(true);
-
-    navSection.addEventListener('click', () => {
-      activeSubmenu.classList.add('visible');
-      activeSubmenu.querySelector('h6').textContent = label.textContent;
-      activeSubmenu.querySelector('li')
-        .append(clonedSubMenu);
-    });
-  }
-}
+    return response.json();
+  });
 
 /**
  * loads and decorates the header, mainly the nav
@@ -160,11 +140,14 @@ export default async function decorate(block) {
 
   // decorate nav DOM
   block.textContent = '';
+
   const nav = document.createElement('nav');
   nav.id = 'nav';
+
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
   const classes = ['brand', 'sections', 'tools'];
+
   classes.forEach((c, i) => {
     const section = nav.children[i];
     if (section) section.classList.add(`nav-${c}`);
@@ -172,6 +155,7 @@ export default async function decorate(block) {
 
   const navBrand = nav.querySelector('.nav-brand');
   const brandImage = navBrand.querySelector('picture');
+
   if (brandImage) {
     const section = brandImage.closest('.section');
     if (section) {
@@ -189,36 +173,114 @@ export default async function decorate(block) {
   }
 
   const navSections = nav.querySelector('.nav-sections');
+  const data = fetchMockData?.data?.categories?.items;
+
   if (navSections) {
+    const navSectionsUlWrapper = document.createElement('div');
+    navSectionsUlWrapper.className = 'nav-sections-ul-wrapper';
+
+    [...data].reverse().map((ele) => {
+      const categoryUl = document.createElement('ul');
+      const categoryUlLi = document.createElement('li');
+      const categoryLink = document.createElement('a');
+
+      categoryLink.href = `${window.location.origin}/${ele.url}`;
+
+      if (window.location.pathname === `/${ele.url}`) {
+        categoryLink.classList.add('selected');
+      }
+      categoryLink.textContent = ele.name;
+      const categoryAccordian = document.createElement('a');
+
+      categoryAccordian.className = 'accordian-icon';
+      categoryLink.append(categoryAccordian);
+
+      function toggleListItem(e) {
+        if (!isDesktop.matches) {
+          e.preventDefault();
+          categoryUlLi.classList.toggle('expanded');
+        }
+      }
+
+      categoryAccordian.addEventListener('click', (e) => toggleListItem(e));
+      categoryUlLi.append(categoryLink);
+
+      if (ele.children.length > 0) {
+        const subCategoryUl = document.createElement('ul');
+        const subCategories = ele.children;
+
+        [...subCategories].map((e) => {
+          const subCategoryUlLi = document.createElement('li');
+          const subCategoryLink = document.createElement('a');
+
+          subCategoryLink.href = `${window.location.origin}/${ele.url}#${e.name}`;
+          subCategoryLink.textContent = e.name;
+          subCategoryUlLi.append(subCategoryLink);
+          subCategoryUl.append(subCategoryUlLi);
+
+          return subCategoryUlLi;
+        });
+
+        categoryUlLi.append(subCategoryUl);
+      }
+
+      categoryUl.append(categoryUlLi);
+      navSectionsUlWrapper.prepend(categoryUl);
+      return categoryUl;
+    });
+
+    navSections.prepend(navSectionsUlWrapper);
     navSections
-      .querySelectorAll(':scope .default-content-wrapper > ul > li')
+      .querySelectorAll(':scope .nav-sections-ul-wrapper > ul > li')
       .forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-        setupMobileMenu(navSection);
+        if (navSection.querySelector('ul')) {
+          navSection.classList.add('nav-drop');
+        }
+
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-            if (!expanded) {
-              document.getElementsByTagName('main')[0].classList.add('overlay');
-            } else {
-              document.getElementsByTagName('main')[0].classList.remove('overlay');
-            }
           }
         });
       });
   }
 
-  if (!isDesktop.matches) {
-    activeSubmenu.querySelector('button').addEventListener('click', () => {
-      activeSubmenu.classList.remove('visible');
-      activeSubmenu.querySelector('.nav-drop').removeChild(activeSubmenu.querySelector('.nav-drop ul'));
-    });
-
-    navSections.append(activeSubmenu);
-  }
   const navTools = nav.querySelector('.nav-tools');
+
+  const search = document.createRange().createContextualFragment(`
+    <div class="search-wrapper nav-tools-wrapper">
+      <button type="button" class="nav-search-button">Search</button>
+      <div class="nav-search-input nav-search-panel nav-tools-panel">
+        <form action="/search" method="GET">
+          <input id="search" type="search" name="q" placeholder="Search" />
+          <div id="search_autocomplete" class="search-autocomplete"></div>
+        </form>
+      </div>
+    </div>
+    `);
+
+  navTools.append(search);
+
+  const searchPanel = navTools.querySelector('.nav-search-panel');
+
+  const searchButton = navTools.querySelector('.nav-search-button');
+
+  const searchInput = searchPanel.querySelector('input');
+
+  async function toggleSearch(state) {
+    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
+
+    searchPanel.classList.toggle('nav-tools-panel--show', show);
+
+    if (show) {
+      await import('./searchbar.js');
+      searchInput.focus();
+    }
+  }
+
+  navTools.querySelector('.nav-search-button').addEventListener('click', () => toggleSearch());
 
   /** Mini Cart */
   const excludeMiniCartFromPaths = ['/checkout'];
@@ -262,51 +324,15 @@ export default async function decorate(block) {
   // Cart Item Counter
   events.on(
     'cart/data',
-    (data) => {
-      if (data?.totalQuantity) {
+    (cartData) => {
+      if (cartData?.totalQuantity) {
         cartButton.setAttribute('data-count', data.totalQuantity);
       } else {
-        cartButton.removeAttribute('data-count');
+        cartButton.setAttribute('data-count', 0);
       }
     },
     { eager: true },
   );
-
-  /** Search */
-
-  // TODO
-  const search = document.createRange().createContextualFragment(`
-  <div class="search-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-search-button">Search</button>
-    <div class="nav-search-input nav-search-panel nav-tools-panel">
-      <form action="/search" method="GET">
-        <input id="search" type="search" name="q" placeholder="Search" />
-        <div id="search_autocomplete" class="search-autocomplete"></div>
-      </form>
-    </div>
-  </div>
-  `);
-
-  navTools.append(search);
-
-  const searchPanel = navTools.querySelector('.nav-search-panel');
-
-  const searchButton = navTools.querySelector('.nav-search-button');
-
-  const searchInput = searchPanel.querySelector('input');
-
-  async function toggleSearch(state) {
-    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
-
-    searchPanel.classList.toggle('nav-tools-panel--show', show);
-
-    if (show) {
-      await import('./searchbar.js');
-      searchInput.focus();
-    }
-  }
-
-  navTools.querySelector('.nav-search-button').addEventListener('click', () => toggleSearch());
 
   // Close panels when clicking outside
   document.addEventListener('click', (e) => {
@@ -318,6 +344,12 @@ export default async function decorate(block) {
       toggleSearch(false);
     }
   });
+
+  // Sign-in link
+  const loginLink = document.createElement('a');
+  loginLink.href = '/customer/login';
+  loginLink.textContent = 'Sign in';
+  navTools.append(loginLink);
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
@@ -331,19 +363,8 @@ export default async function decorate(block) {
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
-
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-
-  renderAuthCombine(
-    navSections,
-    () => !isDesktop.matches && toggleMenu(nav, navSections, false),
-  );
-  renderAuthDropdown(navTools);
 }
-
-window.addEventListener('resize', () => {
-  window.location.reload();
-});

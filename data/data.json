@@ -1,0 +1,468 @@
+{
+  "data":
+  {
+    "categories":
+    {
+      "total_count": 6,
+      "items":
+      [
+        {
+          "name": "Demo Item",
+          "url": "products/shirts/ADB150",
+          "children": []
+        },
+        {
+          "name": "Apparel",
+          "url": "adobe/shop/apparel",
+          "children":
+          [
+            {
+              "name": "Shirts",
+              "url": "adobe/shop/apparel/shirts",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Outerwear",
+              "url": "adobe/all-items/apparel/outerwear",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Bottoms",
+              "url": "adobe/all-items/apparel/bottoms",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Hats",
+              "url": "adobe/all-items/apparel/hats",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Accessories",
+              "url": "adobe/all-items/apparel/accessories",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Youth",
+              "url": "adobe/all-items/apparel/youth",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Employee networks",
+              "url": "adobe/shop/apparel/employee-networks",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Event Staff Apparel",
+              "url": "adobe/all-items/apparel/event-staff-apparel",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            }
+          ]
+        },
+        {
+          "name": "Office",
+          "url": "adobe/shop/office",
+
+          "children":
+          [
+            {
+              "name": "Tech",
+              "url": "adobe/shop/office/tech",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Paper",
+              "url": "adobe/shop/office/paper",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Pens",
+              "url": "adobe/shop/office/pens",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Pins & stickers",
+              "url": "adobe/shop/office/pins-stickers",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Office accessories",
+              "url": "adobe/shop/office/office-accessories",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            }
+          ]
+        },
+        {
+          "name": "Lifestyle",
+          "url": "adobe/shop/lifestyle",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            }
+          ],
+          "children":
+          [
+            {
+              "name": "Drinkware",
+              "url": "adobe/shop/drinkware",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "At home",
+              "url": "adobe/shop/lifestyle/at-home",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Fun & games",
+              "url": "adobe/shop/lifestyle/fun-games",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Pillows",
+              "url": "adobe/shop/lifestyle/pillows",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Travel",
+              "url": "adobe/shop/lifestyle/travel",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            }
+          ]
+        },
+        {
+          "name": "Bags",
+          "url": "adobe/shop/bags",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            }
+          ],
+          "children":
+          [
+            {
+              "name": "Backpacks",
+              "url": "adobe/shop/backpacks",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Specialty",
+              "url": "adobe/shop/bags/specialty",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            }
+          ]
+        },
+        {
+          "name": "Collections",
+          "url": "adobe/shop/collections",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            }
+          ],
+          "children":
+          [
+            {
+              "name": "Artist collaborations",
+              "url": "adobe/shop/collections/artist-collaborations",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Product branded gear",
+              "url": "adobe/shop/collections/product-branded-gear",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Gifts",
+              "url": "adobe/shop/collections/gifts",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Entertaining",
+              "url": "adobe/shop/collections/entertaining",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Employee networks collections",
+              "url": "adobe/shop/collections/employee-networks",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Event Staff Apparel",
+              "url": "adobe/all-items/apparel/event-staff-apparel",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
+              "name": "Event supplies",
+              "url": "adobe/shop/collections/event-supplies",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            }
+          ]
+        },
+        {
+          "name": "All",
+          "url": "adobe/shop/all",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            }
+          ],
+          "children":
+          []
+        },
+        {
+          "name": "Sale",
+          "url": "adobe/shop/sale",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            }
+          ],
+          "children":
+          []
+        },
+        {
+          "name": "Gift Card",
+          "url": "adobe/shop/gift-card",
+          "properties":
+          [
+            {
+              "propname": "Display",
+              "propvalue": "yes"
+            },
+            {
+              "propname": "hideforshoppergroup_id",
+              "propvalue": "2760"
+            }
+          ],
+          "children":
+          []
+        }
+      ]
+    }
+  }
+}
