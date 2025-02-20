@@ -3,19 +3,19 @@
   {
     "categories":
     {
-      "total_count": 6,
+      "total_count": 7,
       "items":
       [
         {
           "name": "Apparel",
           "url": "apparel",
-          "id": "1",
+          "id": "55",
           "children":
           [
             {
               "name": "Shirts",
               "url": "apparel/shirts",
-              "id": "2",
+              "id": "66",
               "properties":
               [
                 {
@@ -29,19 +29,7 @@
             {
               "name": "Outerwear",
               "url": "apparel/outerwear",
-              "properties":
-              [
-                {
-                  "propname": "Display",
-                  "propvalue": "yes"
-                }
-              ],
-              "children":
-              []
-            },
-            {
-              "name": "Bottoms",
-              "url": "apparel/bottoms",
+              "id": "67",
               "properties":
               [
                 {
@@ -55,6 +43,7 @@
             {
               "name": "Hats",
               "url": "apparel/hats",
+              "id": "68",
               "properties":
               [
                 {
@@ -68,6 +57,7 @@
             {
               "name": "Accessories",
               "url": "apparel/accessories",
+              "id": "69",
               "properties":
               [
                 {
@@ -81,6 +71,7 @@
             {
               "name": "Youth",
               "url": "apparel/youth",
+              "id": "70",
               "properties":
               [
                 {
@@ -94,6 +85,7 @@
             {
               "name": "Employee networks",
               "url": "apparel/employee-networks",
+              "id": "63",
               "properties":
               [
                 {
@@ -107,6 +99,7 @@
             {
               "name": "Event Staff Apparel",
               "url": "apparel/event-staff-apparel",
+              "id": "60",
               "properties":
               [
                 {
@@ -122,12 +115,13 @@
         {
           "name": "Office",
           "url": "office",
-
+          "id": "54",
           "children":
           [
             {
               "name": "Tech",
               "url": "office/tech",
+              "id": "73",
               "properties":
               [
                 {
@@ -141,6 +135,7 @@
             {
               "name": "Paper",
               "url": "office/paper",
+              "id": "74",
               "properties":
               [
                 {
@@ -154,6 +149,7 @@
             {
               "name": "Pens",
               "url": "office/pens",
+              "id": "75",
               "properties":
               [
                 {
@@ -167,6 +163,7 @@
             {
               "name": "Pins & stickers",
               "url": "office/pins-stickers",
+              "id": "58",
               "properties":
               [
                 {
@@ -180,6 +177,7 @@
             {
               "name": "Office accessories",
               "url": "office/office-accessories",
+              "id": "76",
               "properties":
               [
                 {
@@ -195,6 +193,7 @@
         {
           "name": "Lifestyle",
           "url": "lifestyle",
+          "id": "53",
           "properties":
           [
             {
@@ -207,6 +206,7 @@
             {
               "name": "Drinkware",
               "url": "lifestyle/drinkware",
+              "id": "77",
               "properties":
               [
                 {
@@ -220,6 +220,7 @@
             {
               "name": "At home",
               "url": "lifestyle/at-home",
+              "id": "78",
               "properties":
               [
                 {
@@ -233,6 +234,7 @@
             {
               "name": "Fun & games",
               "url": "lifestyle/fun-games",
+              "id": "79",
               "properties":
               [
                 {
@@ -246,6 +248,7 @@
             {
               "name": "Pillows",
               "url": "lifestyle/pillows",
+              "id": "80",
               "properties":
               [
                 {
@@ -259,6 +262,7 @@
             {
               "name": "Travel",
               "url": "lifestyle/travel",
+              "id": "81",
               "properties":
               [
                 {
@@ -274,6 +278,7 @@
         {
           "name": "Bags",
           "url": "bags",
+          "id": "57",
           "properties":
           [
             {
@@ -286,6 +291,7 @@
             {
               "name": "Backpacks",
               "url": "bags/backpacks",
+              "id": "61",
               "properties":
               [
                 {
@@ -299,6 +305,7 @@
             {
               "name": "Specialty",
               "url": "bags/specialty",
+              "id": "83",
               "properties":
               [
                 {
@@ -314,6 +321,7 @@
         {
           "name": "Collections",
           "url": "collections",
+          "id": "52",
           "properties":
           [
             {
@@ -324,8 +332,23 @@
           "children":
           [
             {
+              "name": "Adobe MAX",
+              "url": "collections/adobe-max",
+              "id": "84",
+              "properties":
+              [
+                {
+                  "propname": "Display",
+                  "propvalue": "yes"
+                }
+              ],
+              "children":
+              []
+            },
+            {
               "name": "Artist collaborations",
               "url": "collections/artist-collaborations",
+              "id": "85",
               "properties":
               [
                 {
@@ -339,6 +362,7 @@
             {
               "name": "Product branded gear",
               "url": "collections/product-branded-gear",
+              "id": "86",
               "properties":
               [
                 {
@@ -352,6 +376,7 @@
             {
               "name": "Gifts",
               "url": "collections/gifts",
+              "id": "59",
               "properties":
               [
                 {
@@ -365,6 +390,7 @@
             {
               "name": "Entertaining",
               "url": "collections/entertaining",
+              "id": "87",
               "properties":
               [
                 {
@@ -378,6 +404,7 @@
             {
               "name": "Employee networks collections",
               "url": "collections/employee-networks",
+              "id": "88",
               "properties":
               [
                 {
@@ -391,6 +418,7 @@
             {
               "name": "Event Staff Apparel",
               "url": "apparel/event-staff-apparel",
+              "id": "89",
               "properties":
               [
                 {
@@ -404,6 +432,7 @@
             {
               "name": "Event supplies",
               "url": "collections/event-supplies",
+              "id": "90",
               "properties":
               [
                 {
@@ -419,6 +448,7 @@
         {
           "name": "All",
           "url": "all",
+          "id": "62",
           "properties":
           [
             {
@@ -432,6 +462,7 @@
         {
           "name": "Sale",
           "url": "sale",
+          "id": "65",
           "properties":
           [
             {
