@@ -67,6 +67,7 @@ function bindEvents(block) {
     slideObserver.observe(slide);
   });
 }
+
 function startAutoplay(block, interval = 6000) {
   const slides = block.querySelectorAll('.carousel-slide');
 
@@ -100,11 +101,18 @@ function createSlide(row, slideIndex, carouselId) {
   return slide;
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 let carouselId = 0;
 export default async function decorate(block) {
   carouselId += 1;
   block.setAttribute('id', `carousel-${carouselId}`);
-  const rows = block.querySelectorAll(':scope > div');
+  const rows = Array.from(block.querySelectorAll(':scope > div'));
   const isSingleSlide = rows.length < 2;
 
   const placeholders = await fetchPlaceholders();
@@ -134,6 +142,8 @@ export default async function decorate(block) {
     slideIndicatorsNav.append(slideIndicators);
     block.append(slideIndicatorsNav);
   }
+
+  shuffleArray(rows);
 
   rows.forEach((row, idx) => {
     const slide = createSlide(row, idx, carouselId);
