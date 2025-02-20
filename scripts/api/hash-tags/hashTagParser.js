@@ -66,12 +66,12 @@ function parseHashTag(href) {
 }
 
 /**
- * Appies condition callback against each hash tag
+ * Parses hash tags and applies condition callback against each namespace/hash combination
  *
- * @param aElements
- * @param callbackFn
+ * @param aElements - a NodeList containing all DOM elements with hash tags
+ * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function applyForElements(aElements, callbackFn) {
+function applyForElements(aElements, callbackFn = null) {
   if (aElements.length === 0) {
     return;
   }
@@ -89,11 +89,11 @@ function applyForElements(aElements, callbackFn) {
  *
  * @param aElement DOM element
  * @param {object} hashTags parsed hash tags
- * @param {function} callbackFn function executing logic based on parsed hash tags
+ * @param {function} callbackFn function containing logic to execute on each namespace/hash
  */
 function applyConditions(aElement, hashTags, callbackFn) {
   hashTags.forEach((hashTag) => {
-    const {namespace, value} = {...hashTag};
+    const { namespace, value } = { ...hashTag };
     callbackFn(aElement, namespace, value);
   });
 }
@@ -102,9 +102,9 @@ function applyConditions(aElement, hashTags, callbackFn) {
  * Gets elements directly from passed DOM tree fragment.
  *
  * @param domTree
- * @param callbackFn
+ * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function parseDomTreeForUrlHashTags(domTree, callbackFn) {
+function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
   const aElements = domTree.querySelectorAll('a');
   applyForElements(aElements, callbackFn);
 }
@@ -114,10 +114,9 @@ function parseDomTreeForUrlHashTags(domTree, callbackFn) {
  * change visibility or remove elements based on hash tags conditions
  *
  * @param domEl DOM element
- * @param {function} callbackFn function executing logic based on parsed hash tags
- * @returns {*}
+ * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function parseUrlHashTags(domEl, callbackFn) {
+function parseUrlHashTags(domEl, callbackFn = null) {
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
   applyForElements(aElements, callbackFn);

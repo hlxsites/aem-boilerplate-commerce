@@ -11,14 +11,14 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
 const INTERVAL = 10;
 
 /**
- * This method contains logic for every namespace/tag combination
+ * This method contains default logic for built-in namespace/tag combination(s).
  *
  * @param el
  * @param namespace
  * @param value
  * @returns {Promise<void>}
  */
-const callbackFn = async function (el, namespace, value) {
+const defaultCallbackFn = async function (el, namespace, value) {
   const activeRules = await getActiveRules();
 
   if (namespace === 'display_for_') {
@@ -72,29 +72,34 @@ const callbackFn = async function (el, namespace, value) {
 };
 
 /**
- * Executes links personalization for domElement and namespace
+ * Executes links personalization for domElement
  * It can be called for any DOM element
  *
  * If DOM element can not be found, to avoid an infinite call to apply() we cancel
- * execution after 3 seconds
+ * an entire execution after 3 seconds
  *
- * @param domElement
- * @param namespace
+ * @param domElement - root DOM element for parser
+ * @param {function} callbackFn - an optional callback with conditions to execute
  */
-function applyHashTagsForDomElement(domElement) {
+function applyHashTagsForDomElement(domElement, callbackFn = null) {
   let retry = 3000 / INTERVAL;
   const apply = () => {
+    // make sure domEl is present in DOM tree before hash tags can be applied
     if (!document.querySelector(domElement)) {
       retry -= 1;
       if (retry === 0) {
+        // eslint-disable-next-line no-use-before-define
         window.clearInterval(c);
       }
       return;
     }
+    // eslint-disable-next-line no-use-before-define
     window.clearInterval(c);
-    parseUrlHashTags(domElement, callbackFn);
+    parseUrlHashTags(domElement, defaultCallbackFn);
+    if (callbackFn && typeof callbackFn === 'function') {
+      parseUrlHashTags(domElement, callbackFn);
+    }
   };
-  // make sure domEl is present in DOM tree before hash tags can be applied
   const c = window.setInterval(apply, INTERVAL);
 }
 
@@ -103,10 +108,14 @@ function applyHashTagsForDomElement(domElement) {
  * As is does not have to find DOM element with querySelector, we can pass
  * it directly to Hash Tag parser
  *
- * @param domTree
+ * @param domTree DOM node tree to parse
+ * @param {function} callbackFn - an optional callback with conditions to execute
  */
-function applyHashTagsForNodeTree(domTree) {
-  parseDomTreeForUrlHashTags(domTree, callbackFn);
+function applyHashTagsForNodeTree(domTree, callbackFn = null) {
+  parseDomTreeForUrlHashTags(domTree, defaultCallbackFn);
+  if (callbackFn && typeof callbackFn === 'function') {
+    parseDomTreeForUrlHashTags(domTree, callbackFn);
+  }
 }
 
 export {
