@@ -4,7 +4,7 @@ import { getActiveRules } from '../../scripts/api/targeted-block/api.js';
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import applyHashTags from '../../scripts/hashTags.js';
+import { applyHashTagsForDomElement } from '../../scripts/hashTags.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
@@ -32,7 +32,7 @@ const updateTargetedBlocksVisibility = async () => {
       block.style.display = '';
     }
   });
-  applyHashTags('main');
+  applyHashTagsForDomElement('main');
 };
 
 export default function decorate(block) {

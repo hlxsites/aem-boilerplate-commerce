@@ -11,7 +11,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import applyHashTags from '../../scripts/hashTags.js';
+import { applyHashTagsForDomElement, applyHashTagsForNodeTree } from '../../scripts/hashTags.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -140,11 +140,13 @@ function setupMobileMenu(navSection) {
     const subMenu = navSection.querySelector('ul');
     const clonedSubMenu = subMenu.cloneNode(true);
 
+    console.log(clonedSubMenu);
+    applyHashTagsForNodeTree(clonedSubMenu);
+
     navSection.addEventListener('click', () => {
       activeSubmenu.classList.add('visible');
       activeSubmenu.querySelector('h6').textContent = label.textContent;
-      activeSubmenu.querySelector('li')
-        .append(clonedSubMenu);
+      activeSubmenu.querySelector('li').append(clonedSubMenu);
     });
   }
 }
@@ -326,7 +328,6 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
-  applyHashTags('nav');
 
   renderAuthCombine(
     navSections,
@@ -340,13 +341,13 @@ window.addEventListener('resize', () => {
 });
 
 events.on('cart/reset', () => {
-  applyHashTags('nav');
+  applyHashTagsForDomElement('nav');
 });
 
 events.on('cart/initialized', () => {
-  applyHashTags('nav');
+  applyHashTagsForDomElement('nav');
 });
 
 events.on('cart/updated', () => {
-  applyHashTags('nav');
+  applyHashTagsForDomElement('nav');
 });

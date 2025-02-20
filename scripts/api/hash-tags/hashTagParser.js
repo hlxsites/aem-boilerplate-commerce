@@ -65,6 +65,17 @@ function parseHashTag(href) {
   return parsed;
 }
 
+
+function applyForElements(aElements, callbackFn) {
+  aElements.forEach((aElement) => {
+    const link = aElement.href;
+    if (link) {
+      const hashTags = parseHashTag(link);
+      applyConditions(aElement, hashTags, callbackFn);
+    }
+  });
+}
+
 /**
  * Applies parsed hash tags based on conditions
  *
@@ -79,6 +90,27 @@ function applyConditions(aElement, hashTags, callbackFn) {
   });
 }
 
+
+//
+// function getElementsFromNodeTree(root, domElement) {
+//   const nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
+//   while (nodeIterator.nextNode()) {
+//     const el = nodeIterator.nextNode();
+//     console.log(el);
+//   }
+// }
+
+/**
+ * Gets elements directly from passed DOM tree fragment.
+ *
+ * @param domTree
+ * @param callbackFn
+ */
+function parseDomTreeForUrlHashTags(domTree, callbackFn) {
+  const aElements = domTree.querySelectorAll('a');
+  applyForElements(aElements, callbackFn);
+}
+
 /**
  * Parses DOM fragment identified by domEl
  * change visibility or remove elements based on hash tags conditions
@@ -90,18 +122,12 @@ function applyConditions(aElement, hashTags, callbackFn) {
 function parseUrlHashTags(domEl, callbackFn) {
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
-
-  aElements.forEach((aElement) => {
-    const link = aElement.href;
-    if (link) {
-      const hashTags = parseHashTag(link);
-      applyConditions(aElement, hashTags, callbackFn);
-    }
-  });
+  applyForElements(aElements, callbackFn);
 }
 
 export {
   parseUrlHashTags,
+  parseDomTreeForUrlHashTags,
   hideLink,
   showLink,
   removeLink,

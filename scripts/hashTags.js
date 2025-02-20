@@ -1,5 +1,6 @@
 import {
   parseUrlHashTags,
+  parseDomTreeForUrlHashTags,
   hideLink,
   showLink,
   removeLink,
@@ -80,7 +81,7 @@ const callbackFn = async function (el, namespace, value) {
  * @param domElement
  * @param namespace
  */
-function applyHashTags(domElement) {
+function applyHashTagsForDomElement(domElement) {
   let retry = 3000 / INTERVAL;
   const apply = () => {
     if (!document.querySelector(domElement)) {
@@ -97,4 +98,18 @@ function applyHashTags(domElement) {
   const c = window.setInterval(apply, INTERVAL);
 }
 
-export default applyHashTags;
+/**
+ * Executes links personalisation against DOM tree fragment.
+ * As is does not have to find DOM element with querySelector, we can pass
+ * it directly to Hash Tag parser
+ *
+ * @param domTree
+ */
+function applyHashTagsForNodeTree(domTree) {
+  parseDomTreeForUrlHashTags(domTree, callbackFn);
+}
+
+export {
+  applyHashTagsForDomElement,
+  applyHashTagsForNodeTree,
+};
