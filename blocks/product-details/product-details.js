@@ -34,45 +34,45 @@ export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   // Layout
-  const fragment = document.createRange().createContextualFragment(`
-    <div class="product-details__wrapper">
-      <div class="product-details__alert"></div>
-      <div class="product-details__left-column">
-        <div class="product-details__gallery"></div>
-      </div>
-      <div class="product-details__right-column">
-        <div class="product-details__header"></div>
-        <div class="product-details__price"></div>
-        <div class="product-details__gallery"></div>
-        <div class="product-details__short-description"></div>
-        <div class="product-details__configuration">
-          <div class="product-details__options"></div>
-          <div class="product-details__quantity"></div>
-          <div class="product-details__buttons">
-            <div class="product-details__buttons__add-to-cart"></div>
-            <div class="product-details__buttons__add-to-wishlist"></div>
-          </div>
-        </div>
-        <div class="product-details__description"></div>
-        <div class="product-details__attributes"></div>
-      </div>
-    </div>
-  `);
+  // const fragment = document.createRange().createContextualFragment(`
+  //   <div class="product-details__wrapper">
+  //     <div class="product-details__alert"></div>
+  //     <div class="product-details__left-column">
+  //       <div class="product-details__gallery"></div>
+  //     </div>
+  //     <div class="product-details__right-column">
+  //       <div class="product-details__header"></div>
+  //       <div class="product-details__price"></div>
+  //       <div class="product-details__gallery"></div>
+  //       <div class="product-details__short-description"></div>
+  //       <div class="product-details__configuration">
+  //         <div class="product-details__options"></div>
+  //         <div class="product-details__quantity"></div>
+  //         <div class="product-details__buttons">
+  //           <div class="product-details__buttons__add-to-cart"></div>
+  //           <div class="product-details__buttons__add-to-wishlist"></div>
+  //         </div>
+  //       </div>
+  //       <div class="product-details__description"></div>
+  //       <div class="product-details__attributes"></div>
+  //     </div>
+  //   </div>
+  // `);
 
-  const $alert = fragment.querySelector('.product-details__alert');
-  const $gallery = fragment.querySelector('.product-details__gallery');
-  const $header = fragment.querySelector('.product-details__header');
-  const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
-  const $shortDescription = fragment.querySelector('.product-details__short-description');
-  const $options = fragment.querySelector('.product-details__options');
-  const $quantity = fragment.querySelector('.product-details__quantity');
-  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
-  const $description = fragment.querySelector('.product-details__description');
-  const $attributes = fragment.querySelector('.product-details__attributes');
+  const $alert = block.querySelector('.product-details__alert');
+  const $gallery = block.querySelector('.product-details__gallery');
+  const $header = block.querySelector('.product-details__header');
+  const $price = block.querySelector('.product-details__price');
+  const $galleryMobile = block.querySelector('.product-details__right-column .product-details__gallery');
+  const $shortDescription = block.querySelector('.product-details__short-description');
+  const $options = block.querySelector('.product-details__options');
+  const $quantity = block.querySelector('.product-details__quantity');
+  const $addToCart = block.querySelector('.product-details__buttons__add-to-cart');
+  const $addToWishlist = block.querySelector('.product-details__buttons__add-to-wishlist');
+  const $description = block.querySelector('.product-details__description');
+  const $attributes = block.querySelector('.product-details__attributes');
 
-  block.appendChild(fragment);
+  // block.appendChild(fragment);
 
   // Alert
   let inlineAlert = null;
