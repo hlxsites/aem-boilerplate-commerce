@@ -65,8 +65,16 @@ function parseHashTag(href) {
   return parsed;
 }
 
-
+/**
+ * Appies condition callback against each hash tag
+ *
+ * @param aElements
+ * @param callbackFn
+ */
 function applyForElements(aElements, callbackFn) {
+  if (aElements.length === 0) {
+    return;
+  }
   aElements.forEach((aElement) => {
     const link = aElement.href;
     if (link) {
@@ -85,20 +93,10 @@ function applyForElements(aElements, callbackFn) {
  */
 function applyConditions(aElement, hashTags, callbackFn) {
   hashTags.forEach((hashTag) => {
-    const { namespace, value } = { ...hashTag };
+    const {namespace, value} = {...hashTag};
     callbackFn(aElement, namespace, value);
   });
 }
-
-
-//
-// function getElementsFromNodeTree(root, domElement) {
-//   const nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
-//   while (nodeIterator.nextNode()) {
-//     const el = nodeIterator.nextNode();
-//     console.log(el);
-//   }
-// }
 
 /**
  * Gets elements directly from passed DOM tree fragment.
