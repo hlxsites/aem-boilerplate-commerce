@@ -42,21 +42,17 @@ function removeLink(el) {
  * @returns {*[]}
  */
 function parseHashTag(href) {
-  if (!href.indexOf('#') > 0) {
-    return [];
-  }
-
   const parsed = [];
   const hashTags = href.split('#').slice(1);
 
-  if (hashTags) {
+  if (hashTags.length > 0) {
     namespaces.forEach((ns) => {
       hashTags.forEach((tag) => {
         const value = tag.split(ns);
         if (value && value.length === 2) {
           parsed.push({
             namespace: ns,
-            value: value[1],
+            value: encodeURIComponent(value[1].trim().toLowerCase()),
           });
         }
       });
@@ -71,30 +67,18 @@ function parseHashTag(href) {
  * @param aElements - a NodeList containing all DOM elements with hash tags
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function applyForElements(aElements, callbackFn = null) {
-  if (aElements.length === 0) {
-    return;
-  }
+function apply(aElements, callbackFn = null) {
   aElements.forEach((aElement) => {
     const link = aElement.href;
-    if (link) {
+    if (link && link.indexOf('#') > 0) {
       const hashTags = parseHashTag(link);
-      applyConditions(aElement, hashTags, callbackFn);
+      if (hashTags.length > 0) {
+        hashTags.forEach((hashTag) => {
+          const { namespace, value } = { ...hashTag };
+          callbackFn(aElement, namespace, value);
+        });
+      }
     }
-  });
-}
-
-/**
- * Applies parsed hash tags based on conditions
- *
- * @param aElement DOM element
- * @param {object} hashTags parsed hash tags
- * @param {function} callbackFn function containing logic to execute on each namespace/hash
- */
-function applyConditions(aElement, hashTags, callbackFn) {
-  hashTags.forEach((hashTag) => {
-    const { namespace, value } = { ...hashTag };
-    callbackFn(aElement, namespace, value);
   });
 }
 
@@ -106,7 +90,10 @@ function applyConditions(aElement, hashTags, callbackFn) {
  */
 function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
   const aElements = domTree.querySelectorAll('a');
-  applyForElements(aElements, callbackFn);
+  if (aElements.length === 0) {
+    return;
+  }
+  apply(aElements, callbackFn);
 }
 
 /**
@@ -119,7 +106,10 @@ function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
 function parseUrlHashTags(domEl, callbackFn = null) {
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
-  applyForElements(aElements, callbackFn);
+  if (aElements.length === 0) {
+    return;
+  }
+  apply(aElements, callbackFn);
 }
 
 export {

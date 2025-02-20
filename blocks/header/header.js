@@ -139,8 +139,6 @@ function setupMobileMenu(navSection) {
 
     const subMenu = navSection.querySelector('ul');
     const clonedSubMenu = subMenu.cloneNode(true);
-
-    console.log(clonedSubMenu);
     applyHashTagsForNodeTree(clonedSubMenu);
 
     navSection.addEventListener('click', () => {
@@ -340,7 +338,7 @@ window.addEventListener('resize', () => {
   window.location.reload();
 });
 
-events.on('cart/reset', () => {
+events.on('authenticated', () => {
   applyHashTagsForDomElement('nav');
 });
 
