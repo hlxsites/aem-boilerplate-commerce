@@ -15,12 +15,32 @@ export default async function decorate(block) {
   const urlpath = window.location.pathname.slice(1);
 
   const categoryData = await window.categoryData;
-  const category = getProperty(
+  const categoryId = getProperty(
     categoryData.data.categories.items,
     'id',
     { url: window.location.pathname.slice(1) },
   );
-  if (!category) {
+
+  // a hack to determine if current page is a category page.
+  const isCategory = !!document.querySelectorAll('.product-list-page-container').length;
+
+  if (isCategory) {
+    const categoryName = getProperty(
+      categoryData.data.categories.items,
+      'name',
+      { url: window.location.pathname.slice(1) },
+    );
+
+    if (categoryName) {
+      const bannerCopy = block.closest('.product-list-page-container').querySelector('h2');
+      bannerCopy.textContent = categoryName;
+      window.document.title = categoryName;
+    } else {
+      console.warn('Category name not found for the current URL path.');
+    }
+  }
+
+  if (!categoryId) {
     console.warn('missing category id in data/data.json for urlpath', urlpath);
   }
   // PLP Config
@@ -69,10 +89,7 @@ export default async function decorate(block) {
   const storeConfig = {
     type: 'eds',
     environmentId,
-    environmentType: (async () => {
-      const endpoint = apiUrl;
-      return (endpoint.includes('sandbox')) ? 'testing' : '';
-    })(),
+    environmentType: (async () => ((apiUrl.includes('sandbox')) ? 'testing' : ''))(),
     apiKey,
     apiUrl,
     websiteCode,
@@ -90,7 +107,7 @@ export default async function decorate(block) {
   // for non search pages
   if (type !== 'search') {
     // Enable enrichment
-    block.dataset.category = category;
+    block.dataset.category = categoryId;
   }
 
   const widget = document.createElement('div');
