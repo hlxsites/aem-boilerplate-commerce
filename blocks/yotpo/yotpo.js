@@ -1,4 +1,13 @@
+import { getConfigValue } from '../../scripts/configs.js';
+
 export default async function decorate(block) {
+    const config = {
+        baseUrl: "https://cdn-widgetsrepository.yotpo.com/v1/loader/",
+        defaultStoreId: "2DscstHDudRbdPAOzC5foy1bLIBMZjhtyDjmsDJq",
+        secretKey: await getConfigValue('yotpo-secret-key'),
+        storeId: await getConfigValue('yotpo-store-id'),
+    }
+
     try {
         // Function to load external scripts
         const loadScript = (src) => {
@@ -11,10 +20,10 @@ export default async function decorate(block) {
                 document.head.appendChild(script);
             });
         };
-
+        let scriptUrl = !!config.storeId ? `${config.baseUrl}${config.storeId}` : `${config.baseUrl}${config.defaultStoreId}`;
         // Load Yotpo script if not already loaded
-        if (!document.querySelector('script[src="https://cdn-widgetsrepository.yotpo.com/v1/loader/2DscstHDudRbdPAOzC5foy1bLIBMZjhtyDjmsDJq"]')) {
-            await loadScript('https://cdn-widgetsrepository.yotpo.com/v1/loader/2DscstHDudRbdPAOzC5foy1bLIBMZjhtyDjmsDJq');
+        if (!document.querySelector(`script[src="${scriptUrl}"]`)) {
+            await loadScript(scriptUrl);
         }
 
         // Create and append the Yotpo widget instance
