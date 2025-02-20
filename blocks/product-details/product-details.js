@@ -20,7 +20,6 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
-import trackViewedProduct from '../../scripts/api/productTracking.js';
 
 // Libs
 import { fetchPlaceholders } from '../../scripts/aem.js';
@@ -210,10 +209,6 @@ export default async function decorate(block) {
     // Attributes
     pdpRendered.render(ProductAttributes, {})($attributes),
   ]);
-
-  if (product) {
-    trackViewedProduct(product.sku);
-  }
 
   // Lifecycle Events
   events.on(
