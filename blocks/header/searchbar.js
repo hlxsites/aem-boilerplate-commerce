@@ -1,18 +1,9 @@
-import { loadScript } from '../../scripts/aem.js';
-import { getConfigValue } from '../../scripts/configs.js';
+/* eslint-disable import/no-unresolved */
+import { render as provider } from '@dropins/storefront-search/render.js';
+import SearchPopover from '@dropins/storefront-search/containers/SearchPopover.js';
 
-(async () => {
-  const widgetProd = '/scripts/widgets/SearchAsYouType.js';
-  await loadScript(widgetProd);
-
-  const storeDetails = {
-    environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
-    environmentType: (await getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: await getConfigValue('commerce.headers.cs.x-api-key'),
-    apiUrl: await getConfigValue('commerce-endpoint'),
-    websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
-    storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
-    storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
+async function getStoreDetails() {
+  return {
     config: {
       pageSize: 8,
       perPageConfig: {
@@ -25,25 +16,31 @@ import { getConfigValue } from '../../scripts/configs.js';
       displayOutOfStock: true,
       allowAllProducts: false,
     },
-    context: {
-      customerGroup: await getConfigValue('commerce.headers.cs.Magento-Customer-Group'),
-    },
     route: ({ sku, urlKey }) => `/products/${urlKey}/${sku}`,
     searchRoute: {
       route: '/search',
       query: 'q',
     },
   };
+}
 
-  await new Promise((resolve) => {
-    const interval = setInterval(() => {
-      if (window.LiveSearchAutocomplete) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, 200);
-  });
+async function initSearchPopover() {
+  import('../../scripts/initializers/search.js');
 
-  // eslint-disable-next-line no-new
-  new window.LiveSearchAutocomplete(storeDetails);
-})();
+  try {
+    const storeDetails = await getStoreDetails();
+    const rootElement = document.getElementById('search_autocomplete');
+
+    if (rootElement) {
+      provider.render(SearchPopover, { storefrontDetails: storeDetails })(
+        rootElement,
+      );
+    } else {
+      console.error('Root element #search_autocomplete not found.');
+    }
+  } catch (error) {
+    console.error('Failed to initialize search popover:', error);
+  }
+}
+
+initSearchPopover();

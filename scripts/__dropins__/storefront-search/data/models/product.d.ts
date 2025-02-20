@@ -1,12 +1,12 @@
 export type ProductDataModel = {
     uid: string;
     sku: string;
-    image: string;
+    imageUrl: string;
     name: string;
     price: string;
     urlKey?: string;
+    description?: string;
     rank: number;
     url: string;
-    imageUrl: string;
 };
 //# sourceMappingURL=product.d.ts.map

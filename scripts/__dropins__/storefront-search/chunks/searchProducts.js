@@ -1,83 +1,38 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{a as p}from"./currency-symbol-map.js";import{FetchGraphQL as g}from"@dropins/tools/fetch-graphql.js";const{setEndpoint:v,setFetchGraphQlHeader:x,removeFetchGraphQlHeader:I,setFetchGraphQlHeaders:F,fetchGraphQl:_,getConfig:b}=new g().getMethods(),i=e=>({current:(e==null?void 0:e.current_page)??0,size:(e==null?void 0:e.page_size)??0,total:(e==null?void 0:e.total_pages)??0}),h=e=>{var r,c,t;let a=null;return e.thumbnail?a=(r=e.thumbnail)==null?void 0:r.url:e.small_image?a=(c=e.small_image)==null?void 0:c.url:e.image&&(a=(t=e.image)==null?void 0:t.url),a??""},d=e=>{const r=new DOMParser().parseFromString(e,"text/html").documentElement.textContent;return r||""},f=(e,a,r)=>{let c=e.price_range.minimum_price.regular_price.currency;a?c=a:c=p(c)??"";const t=e.price_range.minimum_price.final_price.value??0,n=r?t*parseFloat(r):t;return!t===null?"":`${c}${n.toFixed(2)}`},y=(e,a,r="",c="1")=>{var t;return{uid:e.uid,sku:e.sku??"",image:h(e),name:d(e.name??""),price:f(e,r,c),url:e.canonical_url??"",imageUrl:((t=e.image)==null?void 0:t.url)??"",rank:a}},$=`
-    query ProductSearch(
-        $phrase: String!
-        $size: Int = 20
-        $current: Int = 1
-        $filter: [SearchClauseInput!]
-        $sort: [ProductSearchSortInput!]
-    ) {
-        productSearch(phrase: $phrase, page_size: $size, current_page: $current, filter: $filter, sort: $sort) {
-            page_info {
-                current_page
-                page_size
-                total_pages
-            }
+import{a as F}from"./currency-symbol-map.js";import{FetchGraphQL as v}from"@dropins/tools/fetch-graphql.js";const y=e=>new DOMParser().parseFromString(e,"text/html").documentElement.textContent||"",z=(e,s,r)=>{const{currency:a,value:t}=e,c=t??0,n=s||F(a)||"",u=r?c*parseFloat(r):c;return`${n}${u.toFixed(2)}`},{setEndpoint:b,setFetchGraphQlHeader:x,removeFetchGraphQlHeader:A,setFetchGraphQlHeaders:H,fetchGraphQl:C,getConfig:k}=new v().getMethods(),P=e=>{const s=(e==null?void 0:e.current_page)??0,r=(e==null?void 0:e.page_size)??0,a=(e==null?void 0:e.total_pages)??0;return{current:s,size:r,total:a}};function _(e,s,r="",a="1"){var g,h,i,d;const t=(e==null?void 0:e.uid)||"",c=e.sku||"",n=y(e.name||""),u=y(e.description||""),o=((h=(g=e.price)==null?void 0:g.regular)==null?void 0:h.amount)||{value:0,currency:""},m=z(o,r,a),p=e.url||"",l=e.urlKey||"",S=((d=(i=e.images)==null?void 0:i[0])==null?void 0:d.url)||"";return{uid:t,sku:c,name:n,description:u,price:m,urlKey:l,url:p,imageUrl:S,rank:s}}const $=`
+    query productSearch($phrase: String!, $size: Int = 5) {
+        productSearch(phrase: $phrase, page_size: $size, filter: [], sort: []) {
             items {
-                product {
-                    uid
+                productView {
                     sku
                     name
-                    canonical_url
-                    small_image {
-                        url
-                    }
-                    image {
-                        url
-                    }
-                    thumbnail {
-                        url
-                    }
-                    price_range {
-                        minimum_price {
-                            fixed_product_taxes {
-                                amount {
-                                    value
-                                    currency
-                                }
-                                label
-                            }
-                            regular_price {
-                                value
-                                currency
-                            }
-                            final_price {
-                                value
-                                currency
-                            }
-                            discount {
-                                percent_off
-                                amount_off
-                            }
-                        }
-                        maximum_price {
-                            fixed_product_taxes {
-                                amount {
-                                    value
-                                    currency
-                                }
-                                label
-                            }
-                            regular_price {
-                                value
-                                currency
-                            }
-                            final_price {
-                                value
-                                currency
-                            }
-                            discount {
-                                percent_off
-                                amount_off
-                            }
-                        }
-                    }
-                }
-                productView {
+                    description
+                    url
                     urlKey
+                    images {
+                        label
+                        url
+                        roles
+                    }
+                    ... on SimpleProductView {
+                        price {
+                            final {
+                                amount {
+                                    value
+                                    currency
+                                }
+                            }
+                            regular {
+                                amount {
+                                    value
+                                    currency
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-`,w=async(e,a=4)=>{const r=[],c=i();try{const t=await _($,{variables:{phrase:e,size:a}});if(!t.data.productSearch.items)return{pageInfo:c,products:r};const{page_info:n,items:o}=t.data.productSearch;return o.forEach((u,m)=>{var l;if(!u)return;const s=y(u.product,m);s.urlKey=((l=u.productView)==null?void 0:l.urlKey)??"",r.push(s)}),{pageInfo:i(n),products:r}}catch(t){return console.error(t),{pageInfo:c,products:r}}};export{v as a,F as b,x as c,_ as f,b as g,I as r,w as s};
+`,D=async(e="",s=4)=>{let r=P(),a=[];try{const{data:t}=await C($,{variables:{phrase:e,size:s}}),{items:c=[],page_info:n}=(t==null?void 0:t.productSearch)||{};a=(c??[]).reduce((o,m,p)=>{const{productView:l}=m;return l&&o.push(_(l,p)),o},[]),n&&(r=P(n))}catch(t){console.error("searchProducts error:",t)}return{pageInfo:r,products:a}};export{b as a,x as b,H as c,C as f,k as g,A as r,D as s};
