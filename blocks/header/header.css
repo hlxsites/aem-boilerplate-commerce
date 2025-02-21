@@ -260,10 +260,6 @@ header nav .nav-sections ul > li ul > li {
     right: 8vw;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-header::after {
-    content: '\2715';
-  }
-
   header nav .nav-sections ul > li.nav-drop .submenu-header h6,
   header nav .nav-sections ul > li.nav-drop .submenu-header hr {
     display: none;
@@ -551,6 +547,16 @@ main.overlay {
     width: 320px;
   }
 
+  header .nav-wrapper.active nav .nav-brand {
+    display: none;
+  }
+
+  header .nav-wrapper.active nav .nav-hamburger button {
+    position: absolute;
+    right: 1.5em;
+    top: 1em;
+  }
+
   header nav {
     position: relative;
   }
@@ -577,6 +583,10 @@ main.overlay {
 
   header nav .nav-sections {
     position: relative;
+  }
+
+  header nav .nav-sections ul {
+    margin: 0;
   }
 
   header nav .nav-sections ul li {
@@ -646,12 +656,12 @@ main.overlay {
 
   header nav .nav-sections ul > li .submenu-header h6::before {
     content: '\276E';
-    margin-right: 1em;
+    margin-right: .7em;
   }
 
-  header nav .nav-sections ul > li .submenu-header h6::after {
-    content: '\2715';
+  header nav .nav-sections ul > li .submenu-header .nav-hamburger-icon {
     position: absolute;
-    right: 1em;
+    right: 1.5em;
+    top: 1em;
   }
 }

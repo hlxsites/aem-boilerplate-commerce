@@ -120,7 +120,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
 const subMenuHeader = document.createElement('div');
 subMenuHeader.classList.add('submenu-header');
-subMenuHeader.innerHTML = '<h6>Title</h6><hr />';
+subMenuHeader.innerHTML = '<h6>Title</h6><span class="nav-hamburger-icon"></span><hr />';
 
 const breaker = document.createElement('li');
 breaker.classList.add('break');
