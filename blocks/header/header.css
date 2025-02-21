@@ -634,17 +634,19 @@ main.overlay {
 
   header nav .nav-sections ul > li.nav-drop .submenu-header h6 {
     padding: 0 1em;
+    height: 1.5em;
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header hr {
+    margin: 0;
     position: absolute;
-    top: 2em;
+    top: 3.1em;
     width: 320px;
   }
 
   header nav .nav-sections ul > li .submenu-header h6::before {
     content: '\276E';
-    margin-right: .5em;
+    margin-right: 1em;
   }
 
   header nav .nav-sections ul > li .submenu-header h6::after {
