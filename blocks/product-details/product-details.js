@@ -93,17 +93,7 @@ export default async function decorate(block) {
     _attributes,
   ] = await Promise.all([
     // Gallery (Mobile)
-    // pdpRendered.render(ProductGallery, {
-    //   controls: 'dots',
-    //   arrows: true,
-    //   peak: false,
-    //   gap: 'small',
-    //   loop: false,
-    //   imageParams: {
-    //     ...IMAGES_SIZES,
-    //   },
-    // })($galleryMobile),
-    hydrate($galleryMobile, createElement(ProductHeader, {
+    pdpRendered.render(ProductGallery, {
       controls: 'dots',
       arrows: true,
       peak: false,
@@ -112,20 +102,20 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
-    })),
-
-    // Gallery (Desktop)
-    // pdpRendered.render(ProductGallery, {
-    //   controls: 'thumbnailsColumn',
+    })($galleryMobile),
+    // hydrate($galleryMobile, createElement(ProductHeader, {
+    //   controls: 'dots',
     //   arrows: true,
-    //   peak: true,
+    //   peak: false,
     //   gap: 'small',
     //   loop: false,
     //   imageParams: {
     //     ...IMAGES_SIZES,
     //   },
-    // })($gallery),
-    hydrate($gallery, createElement(ProductHeader, {
+    // })),
+
+    // Gallery (Desktop)
+    pdpRendered.render(ProductGallery, {
       controls: 'thumbnailsColumn',
       arrows: true,
       peak: true,
@@ -134,27 +124,37 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
-    })),
+    })($gallery),
+    // hydrate($gallery, createElement(ProductHeader, {
+    //   controls: 'thumbnailsColumn',
+    //   arrows: true,
+    //   peak: true,
+    //   gap: 'small',
+    //   loop: false,
+    //   imageParams: {
+    //     ...IMAGES_SIZES,
+    //   },
+    // })),
 
     // Header
-    // pdpRendered.render(ProductHeader, {})($header),
-    hydrate($header, createElement(ProductHeader, {})),
+    pdpRendered.render(ProductHeader, {})($header),
+    // hydrate($header, createElement(ProductHeader, {})),
 
     // Price
-    // pdpRendered.render(ProductPrice, {})($price),
-    hydrate($price, createElement(ProductPrice, {})),
+    pdpRendered.render(ProductPrice, {})($price),
+    // hydrate($price, createElement(ProductPrice, {})),
 
     // Short Description
-    // pdpRendered.render(ProductShortDescription, {})($shortDescription),
-    hydrate($shortDescription, createElement(ProductShortDescription, {})),
+    pdpRendered.render(ProductShortDescription, {})($shortDescription),
+    // hydrate($shortDescription, createElement(ProductShortDescription, {})),
 
     // Configuration - Swatches
-    // pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
-    hydrate(ProductOptions, { hideSelectedValue: false })($options),
+    pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
+    // hydrate(ProductOptions, { hideSelectedValue: false })($options),
 
     // Configuration  Quantity
-    // pdpRendered.render(ProductQuantity, {})($quantity),
-    hydrate(ProductQuantity, {})($quantity),
+    pdpRendered.render(ProductQuantity, {})($quantity),
+    // hydrate(ProductQuantity, {})($quantity),
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
