@@ -125,6 +125,22 @@ activeSubmenu.innerHTML = `
     <h6>Title</h6><ul><li class="nav-drop"></li></ul>
 `;
 
+const subMenuHeader = document.createElement('div');
+subMenuHeader.classList.add('submenu-header');
+subMenuHeader.innerHTML = '';
+
+function setupLargeScreenMenu(navSection) {
+  if (isDesktop.matches && navSection.querySelector('ul')) {
+    const submenu = navSection.querySelector('ul');
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('my-class');
+    wrapper.appendChild(subMenuHeader.cloneNode(true));
+    wrapper.appendChild(submenu.cloneNode(true));
+    navSection.appendChild(wrapper);
+    navSection.removeChild(submenu);
+  }
+}
+
 /**
  * Sets up the menu for mobile
  * @param {navSection} navSection The nav section element
@@ -184,6 +200,7 @@ export default async function decorate(block) {
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         setupMobileMenu(navSection);
+        setupLargeScreenMenu(navSection);
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
@@ -334,5 +351,5 @@ export default async function decorate(block) {
 }
 
 window.addEventListener('resize', () => {
-  window.location.reload();
+  // window.location.reload();
 });
