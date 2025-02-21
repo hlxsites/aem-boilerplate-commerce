@@ -1634,3 +1634,9 @@
       background-color: var(--color-gray-7);
     }
   }
+.ds-widgets .ds-sdk-product-item {
+  padding: 15px;
+}
+.ds-widgets .ds-sdk-product-item a+div{
+  height: 40px;
+}

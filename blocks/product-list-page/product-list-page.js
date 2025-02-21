@@ -58,7 +58,7 @@ export default async function decorate(block) {
     imageCarousel: false,
     optimizeImages: false,
     imageBaseWidth: 200,
-    listview: true,
+    listview: false,
     currentCategoryUrlPath: type !== 'search' ? urlpath : null,
     displayMode: '',
     addToCart: async (...args) => {
