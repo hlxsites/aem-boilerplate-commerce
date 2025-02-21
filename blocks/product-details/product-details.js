@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+import { hydrate, createElement } from '@dropins/tools/preact.js';
 
 import {
   InLineAlert,
@@ -104,7 +105,17 @@ export default async function decorate(block) {
     })($galleryMobile),
 
     // Gallery (Desktop)
-    pdpRendered.render(ProductGallery, {
+    // pdpRendered.render(ProductGallery, {
+    //   controls: 'thumbnailsColumn',
+    //   arrows: true,
+    //   peak: true,
+    //   gap: 'small',
+    //   loop: false,
+    //   imageParams: {
+    //     ...IMAGES_SIZES,
+    //   },
+    // })($gallery),
+    hydrate($gallery, createElement(ProductHeader, {
       controls: 'thumbnailsColumn',
       arrows: true,
       peak: true,
@@ -113,10 +124,11 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
-    })($gallery),
+    })),
 
     // Header
-    pdpRendered.render(ProductHeader, {})($header),
+    // pdpRendered.render(ProductHeader, {})($header),
+    hydrate($header, createElement(ProductHeader, {})),
 
     // Price
     pdpRendered.render(ProductPrice, {})($price),
