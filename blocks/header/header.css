@@ -237,7 +237,12 @@ header nav .nav-sections ul > li ul > li {
     flex: 0 1 auto;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .my-class {
+  header nav .nav-sections .default-content-wrapper > ul > li .break {
+    flex-basis: 3%;
+    height: 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-wrapper {
     background-color: var(--color-neutral-50);
     left: 0;
     position: absolute;
@@ -245,19 +250,25 @@ header nav .nav-sections ul > li ul > li {
     width: 100vw;
   }
 
-  .submenu-header {
+  header nav .nav-sections .default-content-wrapper > ul > li .submenu-header {
     display: none;
-    position: absolute;
-    right: 4vw;
-  }
-
-  .submenu-header::after {
-    content: '\2715';
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-header {
     display: block;
+    position: absolute;
+    right: 8vw;
   }
+
+  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-header::after {
+    content: '\2715';
+  }
+
+  header nav .nav-sections ul > li.nav-drop .submenu-header h6,
+  header nav .nav-sections ul > li.nav-drop .submenu-header hr {
+    display: none;
+  }
+
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
     display: flex;
@@ -531,13 +542,13 @@ main.overlay {
   z-index: 2;
 }
 
-header nav .nav-sections .active-submenu {
-  display: none;
-}
-
 @media (width < 900px) {
   header {
     position: relative;
+  }
+
+  header .nav-wrapper.active {
+    width: 320px;
   }
 
   header nav {
@@ -546,6 +557,7 @@ header nav .nav-sections .active-submenu {
 
   header nav[aria-expanded='true'] {
     overflow-x: hidden;
+    width: 320px;
   }
 
   header nav[aria-expanded='true'] .nav-tools {
@@ -580,14 +592,64 @@ header nav .nav-sections .active-submenu {
     cursor: pointer;
   }
 
-  header nav .nav-sections ul > li.nav-drop::after {
+  header nav .nav-sections ul > li.nav-drop::before {
     content: '\276F';
     position: absolute;
-    right: 3vw;
+    right: 2vw;
   }
 
   header nav .nav-sections ul > li.nav-drop ul {
     display: none;
     outline: none;
+  }
+
+  header nav .nav-sections ul > li.nav-drop .submenu-wrapper {
+    display: none;
+  }
+
+  header nav .nav-sections ul > li.nav-drop.active .submenu-wrapper {
+    background: var(--background-color);
+    display: block;
+    height: auto;
+    min-height: 100vw;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 3;
+  }
+
+  header nav .nav-sections ul > li.nav-drop.active ul {
+    display: block;
+    padding-bottom: 5vh;
+  }
+
+  header nav .nav-sections ul > li.nav-drop .submenu-header {
+    background: var(--background-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    z-index: 3;
+  }
+
+  header nav .nav-sections ul > li.nav-drop .submenu-header h6 {
+    padding: 0 1em;
+  }
+
+  header nav .nav-sections ul > li.nav-drop .submenu-header hr {
+    position: absolute;
+    top: 2em;
+    width: 320px;
+  }
+
+  header nav .nav-sections ul > li .submenu-header h6::before {
+    content: '\276E';
+    margin-right: .5em;
+  }
+
+  header nav .nav-sections ul > li .submenu-header h6::after {
+    content: '\2715';
+    position: absolute;
+    right: 1em;
   }
 }
