@@ -42,6 +42,7 @@ export interface OrderSummaryProps extends Omit<HTMLAttributes<HTMLDivElement>, 
     };
     primaryAction?: VNode<HTMLAttributes<HTMLButtonElement>>;
     coupons?: VNode<HTMLAttributes<HTMLDivElement>>;
+    giftCards?: VNode<HTMLAttributes<HTMLDivElement>>;
     totalSaved?: VNode<HTMLAttributes<HTMLSpanElement>>;
     updateLineItems?: (lineItems: Array<OrderSummaryLineItem>) => Array<OrderSummaryLineItem>;
 }

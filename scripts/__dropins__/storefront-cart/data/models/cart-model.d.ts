@@ -15,6 +15,12 @@
  * from Adobe.
  *******************************************************************/
 export interface CartModel {
+    appliedGiftCards: {
+        code: string;
+        appliedBalance: Price;
+        currentBalance: Price;
+        expirationDate: string;
+    }[];
     id: string;
     totalQuantity: number;
     totalUniqueItems: number;

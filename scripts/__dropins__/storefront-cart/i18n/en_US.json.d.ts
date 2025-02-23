@@ -21,6 +21,17 @@ declare const _default: {
       "taxToBeDetermined": "TBD",
       "checkout": "Checkout",
       "orderSummary": "Order Summary",
+      "giftCard": {
+        "label": "Gift Card",
+        "applyAction": "Apply",
+        "ariaLabel": "Enter gift card code",
+        "ariaLabelRemove": "Remove gift card",
+        "placeholder": "Enter code",
+        "title": "Gift Card",
+        "errors": {
+          "empty": "Please enter a gift card code."
+        }
+      },
       "subTotal": {
         "label": "Subtotal",
         "withTaxes": "Including taxes",
@@ -73,7 +84,8 @@ declare const _default: {
       "coupon": {
         "applyAction": "Apply",
         "placeholder": "Enter code",
-        "title": "Discount code"
+        "title": "Discount code",
+        "ariaLabelRemove": "Remove coupon"
       }
     },
     "CartItem": {
@@ -97,7 +109,7 @@ declare const _default: {
       "editZipAction": "Apply",
       "estimated": "Estimated Shipping",
       "estimatedDestination": "Estimated Shipping to",
-      "destinationLinkAriaLabel": "Change destination",
+      "destinationLinkAriaLabel": "{destination}, Change destination",
       "zipPlaceholder": "Zip Code",
       "withTaxes": "Including taxes",
       "withoutTaxes": "excluding taxes",
