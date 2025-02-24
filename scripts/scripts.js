@@ -23,6 +23,7 @@ import {
 } from './aem.js';
 import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
+import { removeHashTags } from './api/hash-tags/hashTagParser.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -305,6 +306,12 @@ async function loadLazy(doc) {
   }
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  document.addEventListener('click', (evt) => {
+    if (evt.target.hash) {
+      removeHashTags(evt.target);
+    }
+  });
 }
 
 /**

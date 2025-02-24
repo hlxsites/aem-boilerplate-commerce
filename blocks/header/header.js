@@ -11,7 +11,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import { applyHashTagsForDomElement, applyHashTagsForNodeTree } from '../../scripts/hashTags.js';
+import { applyHashTagsForDomElement } from '../../scripts/hashTags.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -102,6 +102,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     });
   } else {
     navDrops.forEach((drop) => {
+      drop.classList.remove('active');
       drop.removeAttribute('tabindex');
       drop.removeEventListener('focus', focusNavSection);
     });
@@ -119,33 +120,54 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-const activeSubmenu = document.createElement('div');
-activeSubmenu.classList.add('active-submenu');
-activeSubmenu.innerHTML = `
-    <button>All Categories</button>
-    <h6>Title</h6><ul><li class="nav-drop"></li></ul>
-`;
+const breaker = document.createElement('li');
+breaker.classList.add('break');
 
 /**
- * Sets up the menu for mobile
+ * Processes images in the submenu
+ * @param {Element} submenu The submenu element
+ */
+function processImages(submenu) {
+  const submenuImages = submenu.querySelectorAll('img');
+  if (submenuImages.length) {
+    submenuImages.forEach((image) => {
+      const imageLi = image.closest('li');
+      imageLi.parentNode.insertBefore(breaker.cloneNode(), imageLi);
+    });
+  }
+}
+
+const subMenuHeader = document.createElement('div');
+subMenuHeader.classList.add('submenu-header');
+subMenuHeader.innerHTML = '<h5 class="back-link">All Categories</h5><hr />';
+
+/**
+ * Sets up the submenu
  * @param {navSection} navSection The nav section element
  */
-function setupMobileMenu(navSection) {
-  if (!isDesktop.matches && navSection.querySelector('ul')) {
+function setupSubmenu(navSection) {
+  if (navSection.querySelector('ul')) {
     let label;
     if (navSection.childNodes.length) {
       [label] = navSection.childNodes;
     }
 
-    const subMenu = navSection.querySelector('ul');
-    const clonedSubMenu = subMenu.cloneNode(true);
-    applyHashTagsForNodeTree(clonedSubMenu);
+    const submenu = navSection.querySelector('ul');
+    processImages(submenu);
 
-    navSection.addEventListener('click', () => {
-      activeSubmenu.classList.add('visible');
-      activeSubmenu.querySelector('h6').textContent = label.textContent;
-      activeSubmenu.querySelector('li').append(clonedSubMenu);
-    });
+    const wrapper = document.createElement('div');
+    const header = subMenuHeader.cloneNode(true);
+    const title = document.createElement('h6');
+    title.classList.add('submenu-title');
+    title.textContent = label.textContent;
+
+    wrapper.classList.add('submenu-wrapper');
+    wrapper.appendChild(header);
+    wrapper.appendChild(title);
+    wrapper.appendChild(submenu.cloneNode(true));
+
+    navSection.appendChild(wrapper);
+    navSection.removeChild(submenu);
   }
 }
 
@@ -184,7 +206,7 @@ export default async function decorate(block) {
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-        setupMobileMenu(navSection);
+        setupSubmenu(navSection);
         navSection.addEventListener('click', () => {
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
@@ -195,19 +217,13 @@ export default async function decorate(block) {
             } else {
               document.getElementsByTagName('main')[0].classList.remove('overlay');
             }
+          } else {
+            navSection.classList.toggle('active');
           }
         });
       });
   }
 
-  if (!isDesktop.matches) {
-    activeSubmenu.querySelector('button').addEventListener('click', () => {
-      activeSubmenu.classList.remove('visible');
-      activeSubmenu.querySelector('.nav-drop').removeChild(activeSubmenu.querySelector('.nav-drop ul'));
-    });
-
-    navSections.append(activeSubmenu);
-  }
   const navTools = nav.querySelector('.nav-tools');
 
   /** Mini Cart */
@@ -309,23 +325,32 @@ export default async function decorate(block) {
     }
   });
 
+  const navWrapper = document.createElement('div');
+  navWrapper.className = 'nav-wrapper';
+  navWrapper.append(nav);
+  block.append(navWrapper);
+
+  window.addEventListener('resize', () => {
+    navWrapper.classList.remove('active');
+    document.querySelector('main').classList.remove('overlay');
+  });
+
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
       <span class="nav-hamburger-icon"></span>
     </button>`;
-  hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
+  hamburger.addEventListener('click', () => {
+    navWrapper.classList.toggle('active');
+    document.querySelector('main').classList.toggle('overlay');
+    toggleMenu(nav, navSections);
+  });
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
-
-  const navWrapper = document.createElement('div');
-  navWrapper.className = 'nav-wrapper';
-  navWrapper.append(nav);
-  block.append(navWrapper);
 
   renderAuthCombine(
     navSections,
@@ -334,18 +359,14 @@ export default async function decorate(block) {
   renderAuthDropdown(navTools);
 }
 
-window.addEventListener('resize', () => {
-  window.location.reload();
-});
-
-events.on('authenticated', () => {
-  applyHashTagsForDomElement('nav');
-});
-
 events.on('cart/initialized', () => {
   applyHashTagsForDomElement('nav');
-});
+}, { eager: true });
 
 events.on('cart/updated', () => {
   applyHashTagsForDomElement('nav');
-});
+}, { eager: true });
+
+events.on('cart/reset', () => {
+  applyHashTagsForDomElement('nav');
+}, { eager: true });

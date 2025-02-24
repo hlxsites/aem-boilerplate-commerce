@@ -8,7 +8,7 @@ import {
 import { getActiveRules } from './api/targeted-block/api.js';
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
-const INTERVAL = 10;
+const INTERVAL = 250;
 
 /**
  * This method contains default logic for built-in namespace/tag combination(s).
@@ -101,6 +101,8 @@ function applyHashTagsForDomElement(domElement, callbackFn = null) {
     }
   };
   const c = window.setInterval(apply, INTERVAL);
+
+  // parseUrlHashTags(domElement, callbackFn);
 }
 
 /**

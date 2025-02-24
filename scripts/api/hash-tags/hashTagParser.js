@@ -5,7 +5,7 @@ const namespaces = [
 /**
  * Change link's parent DOM element visibility to hidden
  *
- * @param el
+ * @param {HTMLAnchorElement} el
  */
 function hideLink(el) {
   if (el.nodeType === 1) {
@@ -16,7 +16,7 @@ function hideLink(el) {
 /**
  * Change link's parent DOM element visibility to visible
  *
- * @param el
+ * @param {HTMLAnchorElement} el
  */
 function showLink(el) {
   if (el.nodeType === 1) {
@@ -27,7 +27,7 @@ function showLink(el) {
 /**
  * Removes link from DEM tree
  *
- * @param el
+ * @param {HTMLAnchorElement} el
  */
 function removeLink(el) {
   if (el.nodeType === 1 && el.parentNode !== null) {
@@ -36,7 +36,27 @@ function removeLink(el) {
 }
 
 /**
- * Extracts hash tags namespaces and values
+ * Removes personalization hash tags from the link hash string.
+ * Preserves any hash tags not belonging to personalization.
+ *
+ * @param {HTMLAnchorElement} el
+ */
+function removeHashTags(el) {
+  const preserved = [];
+
+  el?.hash?.split('#').slice(1).forEach((ht) => {
+    namespaces.forEach((ns) => {
+      if (!ht.startsWith(ns)) {
+        preserved.push(ht);
+      }
+    });
+  });
+  el.hash = preserved.join('#');
+  return el;
+}
+
+/**
+ * Extracts hash tags namespaces and values from hash string
  *
  * @param href
  * @returns {*[]}
@@ -58,13 +78,14 @@ function parseHashTag(href) {
       });
     });
   }
+
   return parsed;
 }
 
 /**
  * Parses hash tags and applies condition callback against each namespace/hash combination
  *
- * @param aElements - a NodeList containing all DOM elements with hash tags
+ * @param aElements - a NodeList containing all DOM element(s) with hash tags
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
 function apply(aElements, callbackFn = null) {
@@ -104,6 +125,7 @@ function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
 function parseUrlHashTags(domEl, callbackFn = null) {
+  console.warn('CALLED!');
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
   if (aElements.length === 0) {
@@ -118,4 +140,5 @@ export {
   hideLink,
   showLink,
   removeLink,
+  removeHashTags,
 };
