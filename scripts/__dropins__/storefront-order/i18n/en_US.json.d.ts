@@ -30,6 +30,7 @@ declare const _default: {
     "OrderCostSummary": {
       "headerText": "Order summary",
       "headerReturnText": "Return summary",
+      "totalFree": "Free",
       "subtotal": {
         "title": "Subtotal"
       },
