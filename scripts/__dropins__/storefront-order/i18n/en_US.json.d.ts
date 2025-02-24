@@ -37,6 +37,26 @@ declare const _default: {
         "title": "Shipping",
         "freeShipping": "Free shipping"
       },
+      "appliedGiftCards": {
+        "label": { "singular": "Gift card", "plural": "Gift cards" }
+      },
+      "giftOptionsTax": {
+        "printedCard": {
+          "title": "Printer card",
+          "inclTax": "Including taxes",
+          "exclTax": "Excluding taxes"
+        },
+        "itemGiftWrapping": {
+          "title": "Item gift wrapping",
+          "inclTax": "Including taxes",
+          "exclTax": "Excluding taxes"
+        },
+        "orderGiftWrapping": {
+          "title": "Order gift wrapping",
+          "inclTax": "Including taxes",
+          "exclTax": "Excluding taxes"
+        }
+      },
       "tax": {
         "accordionTitle": "Taxes",
         "accordionTotalTax": "Tax Total",
