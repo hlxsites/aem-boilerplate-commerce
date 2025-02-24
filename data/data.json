@@ -444,51 +444,6 @@
               []
             }
           ]
-        },
-        {
-          "name": "All",
-          "url": "all",
-          "id": "62",
-          "properties":
-          [
-            {
-              "propname": "Display",
-              "propvalue": "yes"
-            }
-          ],
-          "children":
-          []
-        },
-        {
-          "name": "Sale",
-          "url": "sale",
-          "id": "65",
-          "properties":
-          [
-            {
-              "propname": "Display",
-              "propvalue": "yes"
-            }
-          ],
-          "children":
-          []
-        },
-        {
-          "name": "Gift Card",
-          "url": "gift-card",
-          "properties":
-          [
-            {
-              "propname": "Display",
-              "propvalue": "yes"
-            },
-            {
-              "propname": "hideforshoppergroup_id",
-              "propvalue": "2760"
-            }
-          ],
-          "children":
-          []
         }
       ]
     }
