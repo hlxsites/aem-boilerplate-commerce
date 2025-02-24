@@ -1,8 +1,8 @@
 /* stylelint-disable selector-class-pattern */
 
 :root {
-  --desktop-item-panel-width: 300px;
-  --desktop-medium-panel-width: 700px;
+  --desktop-item-panel-max-width: 300px;
+  --desktop-item-panel-min-width: 200px;
   --desktop-large-panel-width: 900px;
   --desktop-panel-height: 500px;
 }
@@ -151,7 +151,7 @@ header nav .nav-brand a {
 }
 
 li.nav-drop img {
-  max-width: var(--desktop-item-panel-width);
+  max-width: var(--desktop-item-panel-max-width);
   width: 100%;
   height: auto;
   object-fit: contain;
@@ -260,11 +260,9 @@ header nav .nav-sections ul > li ul > li {
     right: 8vw;
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-header h6,
-  header nav .nav-sections ul > li.nav-drop .submenu-header hr {
+  header nav .nav-sections ul > li.nav-drop .submenu-header * {
     display: none;
   }
-
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
     display: flex;
@@ -287,7 +285,8 @@ header nav .nav-sections ul > li ul > li {
 
   header nav .nav-sections .default-content-wrapper > ul > li ul > li {
     padding: 8px 0;
-    width: var(--desktop-item-panel-width);
+    min-width: var(--desktop-item-panel-min-width);
+    max-width: var(--desktop-item-panel-max-width);
   }
 }
 
@@ -547,14 +546,10 @@ main.overlay {
     width: 320px;
   }
 
-  header .nav-wrapper.active nav .nav-brand {
-    display: none;
-  }
-
   header .nav-wrapper.active nav .nav-hamburger button {
     position: absolute;
     right: 1.5em;
-    top: 1em;
+    top: 1.3em;
   }
 
   header nav {
@@ -562,6 +557,7 @@ main.overlay {
   }
 
   header nav[aria-expanded='true'] {
+    gap: 1em;
     overflow-x: hidden;
     width: 320px;
   }
@@ -605,7 +601,7 @@ main.overlay {
   header nav .nav-sections ul > li.nav-drop::before {
     content: '\276F';
     position: absolute;
-    right: 2vw;
+    right: .5vw;
   }
 
   header nav .nav-sections ul > li.nav-drop ul {
@@ -644,13 +640,14 @@ main.overlay {
 
   header nav .nav-sections ul > li.nav-drop .submenu-header h6 {
     padding: 0 1em;
-    height: 1.5em;
+    height: 2.2em;
+    line-height: 1.7em;
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header hr {
     margin: 0;
     position: absolute;
-    top: 3.1em;
+    top: 4em;
     width: 320px;
   }
 
@@ -662,6 +659,6 @@ main.overlay {
   header nav .nav-sections ul > li .submenu-header .nav-hamburger-icon {
     position: absolute;
     right: 1.5em;
-    top: 1em;
+    top: 1.3em;
   }
 }
