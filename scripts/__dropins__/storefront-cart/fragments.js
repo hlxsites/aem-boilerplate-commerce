@@ -31,7 +31,7 @@ const e=`
       }
     }
   }
-`,a=`
+`,_=`
   fragment CUSTOMIZABLE_OPTIONS_FRAGMENT on SelectedCustomizableOption {
     type
     customizable_option_uid
@@ -47,7 +47,7 @@ const e=`
       }
     }
   }
-`,t=`
+`,a=`
   fragment DOWNLOADABLE_CART_ITEMS_FRAGMENT on DownloadableCartItem {
     links {
       sort_order
@@ -57,7 +57,54 @@ const e=`
       ...CUSTOMIZABLE_OPTIONS_FRAGMENT
     }
   }
+`,t=`
+  fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
+    __typename
+    from
+    to
+    message
+  }
 `,r=`
+  fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+    __typename
+    uid
+    design
+    image {
+      url
+    }
+    price {
+      value
+      currency
+    }
+  }
+`,i=`
+  fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+   __typename
+   uid
+   design
+   image {
+     url
+     label
+   }
+   price {
+     currency
+     value
+   }
+}`,n=`
+  fragment APPLIED_GIFT_CARDS_FRAGMENT on AppliedGiftCard {
+    __typename
+    code
+    applied_balance {
+      value
+      currency
+    }
+    current_balance {
+      value
+      currency
+    }
+    expiration_date
+  }
+`,l=`
   fragment CART_ITEM_FRAGMENT on CartItemInterface {
     __typename
     uid
@@ -117,6 +164,12 @@ const e=`
     product {
       name
       sku
+      gift_message_available
+      gift_wrapping_available
+      gift_wrapping_price {
+        currency
+        value
+      }
       thumbnail {
         url
         label
@@ -149,11 +202,29 @@ const e=`
       }
     }
     ... on SimpleCartItem {
+      available_gift_wrapping {
+        ...AVAILABLE_GIFT_WRAPPING_FRAGMENT
+      }
+      gift_message {
+        ...GIFT_MESSAGE_FRAGMENT
+      }
+      gift_wrapping {
+        ...GIFT_WRAPPING_FRAGMENT
+      }
       customizable_options {
         ...CUSTOMIZABLE_OPTIONS_FRAGMENT
       }
     }
     ... on ConfigurableCartItem {
+      available_gift_wrapping {
+        ...AVAILABLE_GIFT_WRAPPING_FRAGMENT
+      }
+      gift_message {
+        ...GIFT_MESSAGE_FRAGMENT
+      }
+      gift_wrapping {
+        ...GIFT_WRAPPING_FRAGMENT
+      }
       configurable_options {
         configurable_product_option_uid
         option_label
@@ -178,6 +249,15 @@ const e=`
     }
     ...DOWNLOADABLE_CART_ITEMS_FRAGMENT
     ... on BundleCartItem {
+      available_gift_wrapping {
+        ...AVAILABLE_GIFT_WRAPPING_FRAGMENT
+      }
+      gift_message {
+        ...GIFT_MESSAGE_FRAGMENT
+      }
+      gift_wrapping {
+        ...GIFT_WRAPPING_FRAGMENT
+      }
       bundle_options {
         uid
         label
@@ -202,31 +282,58 @@ const e=`
   }
 
   ${e}
+  ${_}
   ${a}
+  ${r}
   ${t}
-`,_=`
-  fragment APPLIED_GIFT_CARDS_FRAGMENT on AppliedGiftCard {
-    __typename
-    code
-    applied_balance {
-      value
-      currency
-    }
-    current_balance {
-      value
-      currency
-    }
-    expiration_date
-  }
-`,n=`
+  ${i}
+  ${n}
+`,c=`
   fragment CART_FRAGMENT on Cart {
     id
     total_quantity
     is_virtual
+    gift_receipt_included
+    printed_card_included
+    gift_message {
+      ...GIFT_MESSAGE_FRAGMENT
+    }
+    gift_wrapping {
+      ...GIFT_WRAPPING_FRAGMENT
+    }
+    available_gift_wrappings {
+      ...AVAILABLE_GIFT_WRAPPING_FRAGMENT
+    }
     applied_gift_cards {
       ...APPLIED_GIFT_CARDS_FRAGMENT
     }
     prices {
+      gift_options {
+        gift_wrapping_for_items {
+          currency
+          value
+        }
+        gift_wrapping_for_items_incl_tax {
+          currency
+          value
+        }
+        gift_wrapping_for_order {
+          currency
+          value
+        }
+        gift_wrapping_for_order_incl_tax {
+          currency
+          value
+        }
+        printed_card {
+          currency
+          value
+        }
+        printed_card_incl_tax {
+          currency
+          value
+        }
+      }
       subtotal_with_discount_excluding_tax {
         currency
         value
@@ -289,6 +396,5 @@ const e=`
     }
   }
 
-  ${r}
-  ${_}
-`;export{_ as APPLIED_GIFT_CARDS_FRAGMENT,n as CART_FRAGMENT,r as CART_ITEM_FRAGMENT,t as DOWNLOADABLE_CART_ITEMS_FRAGMENT};
+  ${l}
+`;export{n as APPLIED_GIFT_CARDS_FRAGMENT,i as AVAILABLE_GIFT_WRAPPING_FRAGMENT,c as CART_FRAGMENT,l as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,t as GIFT_MESSAGE_FRAGMENT,r as GIFT_WRAPPING_FRAGMENT};
