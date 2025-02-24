@@ -329,6 +329,10 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
+  window.addEventListener('resize', () => {
+    navWrapper.classList.remove('active');
+  });
+
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
