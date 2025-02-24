@@ -331,6 +331,7 @@ export default async function decorate(block) {
 
   window.addEventListener('resize', () => {
     navWrapper.classList.remove('active');
+    document.querySelector('main').classList.remove('overlay');
   });
 
   // hamburger for mobile
@@ -341,6 +342,7 @@ export default async function decorate(block) {
     </button>`;
   hamburger.addEventListener('click', () => {
     navWrapper.classList.toggle('active');
+    document.querySelector('main').classList.toggle('overlay');
     toggleMenu(nav, navSections);
   });
   nav.prepend(hamburger);
