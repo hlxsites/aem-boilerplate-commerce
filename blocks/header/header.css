@@ -285,7 +285,6 @@ header nav .nav-sections ul > li ul > li {
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li ul > li {
-    padding: 8px 0;
     min-width: var(--desktop-item-panel-min-width);
     max-width: var(--desktop-item-panel-max-width);
   }
