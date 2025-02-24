@@ -101,6 +101,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     });
   } else {
     navDrops.forEach((drop) => {
+      drop.classList.remove('active');
       drop.removeAttribute('tabindex');
       drop.removeEventListener('focus', focusNavSection);
     });
@@ -117,10 +118,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
     nav.removeEventListener('focusout', closeOnFocusLost);
   }
 }
-
-const subMenuHeader = document.createElement('div');
-subMenuHeader.classList.add('submenu-header');
-subMenuHeader.innerHTML = '<h6>Title</h6><span class="nav-hamburger-icon"></span><hr />';
 
 const breaker = document.createElement('li');
 breaker.classList.add('break');
@@ -139,6 +136,10 @@ function processImages(submenu) {
   }
 }
 
+const subMenuHeader = document.createElement('div');
+subMenuHeader.classList.add('submenu-header');
+subMenuHeader.innerHTML = '<h5 class="back-link">All Categories</h5><hr />';
+
 /**
  * Sets up the submenu
  * @param {navSection} navSection The nav section element
@@ -155,10 +156,13 @@ function setupSubmenu(navSection) {
 
     const wrapper = document.createElement('div');
     const header = subMenuHeader.cloneNode(true);
+    const title = document.createElement('h6');
+    title.classList.add('submenu-title');
+    title.textContent = label.textContent;
 
-    header.querySelector('h6').textContent = label.textContent;
     wrapper.classList.add('submenu-wrapper');
     wrapper.appendChild(header);
+    wrapper.appendChild(title);
     wrapper.appendChild(submenu.cloneNode(true));
 
     navSection.appendChild(wrapper);

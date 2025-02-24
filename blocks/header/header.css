@@ -260,6 +260,7 @@ header nav .nav-sections ul > li ul > li {
     right: 8vw;
   }
 
+  header nav .nav-sections ul > li.nav-drop .submenu-title,
   header nav .nav-sections ul > li.nav-drop .submenu-header * {
     display: none;
   }
@@ -547,9 +548,10 @@ main.overlay {
   }
 
   header .nav-wrapper.active nav .nav-hamburger button {
-    position: absolute;
-    right: 1.5em;
-    top: 1.3em;
+    position: fixed;
+    left: 275px;
+    top: 20px;
+    z-index: 5;
   }
 
   header nav {
@@ -638,7 +640,7 @@ main.overlay {
     z-index: 3;
   }
 
-  header nav .nav-sections ul > li.nav-drop .submenu-header h6 {
+  header nav .nav-sections ul > li.nav-drop .submenu-header .back-link {
     padding: 0 1em;
     height: 2.2em;
     line-height: 1.7em;
@@ -651,14 +653,8 @@ main.overlay {
     width: 320px;
   }
 
-  header nav .nav-sections ul > li .submenu-header h6::before {
+  header nav .nav-sections ul > li .submenu-header .back-link::before {
     content: '\276E';
     margin-right: .7em;
-  }
-
-  header nav .nav-sections ul > li .submenu-header .nav-hamburger-icon {
-    position: absolute;
-    right: 1.5em;
-    top: 1.3em;
   }
 }
