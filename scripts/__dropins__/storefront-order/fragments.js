@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-const R=`
+const o=`
   fragment REQUEST_RETURN_ORDER_FRAGMENT on Return {
     __typename
     uid
@@ -78,9 +78,7 @@ const R=`
   fragment GIFT_CARD_DETAILS_FRAGMENT on GiftCardOrderItem {
     ...PRICE_DETAILS_FRAGMENT
     gift_message {
-      from
-      to
-      message
+      ...GIFT_MESSAGE_FRAGMENT
     }
     gift_card {
       recipient_name
@@ -93,17 +91,7 @@ const R=`
 `,n=`
   fragment ORDER_ITEM_DETAILS_FRAGMENT on OrderItemInterface {
     gift_wrapping {
-      __typename
-      uid
-      design
-      image {
-        url
-        label
-      }
-      price {
-        currency
-        value
-      }
+      ...GIFT_WRAPPING_FRAGMENT
     }
     __typename
     status
@@ -119,9 +107,7 @@ const R=`
     quantity_refunded
     quantity_return_requested
     gift_message {
-      from
-      to
-      message
+      ...GIFT_MESSAGE_FRAGMENT
     }
     product_sale_price {
       value
@@ -148,7 +134,7 @@ const R=`
       }
     }
   }
-`,i=`
+`,E=`
   fragment DOWNLOADABLE_ORDER_ITEMS_FRAGMENT on DownloadableOrderItem {
     product_name
     downloadable_links {
@@ -156,7 +142,7 @@ const R=`
       title
     }
   }
-`,c=`
+`,i=`
   fragment ORDER_ITEM_FRAGMENT on OrderItemInterface {
     ...ORDER_ITEM_DETAILS_FRAGMENT
     ... on BundleOrderItem {
@@ -171,8 +157,8 @@ const R=`
     ...DOWNLOADABLE_ORDER_ITEMS_FRAGMENT
   }
 
-  ${i}
-`,E=`
+  ${E}
+`,R=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     gift_options {
       gift_wrapping_for_items {
@@ -240,7 +226,7 @@ const R=`
       label
     }
   }
-`,u=`
+`,c=`
   fragment RETURNS_FRAGMENT on Returns {
     __typename
     items {
@@ -281,8 +267,65 @@ const R=`
       }
     }
   }
-`,o=`
+`,T=`
+  fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
+    __typename
+    code
+    applied_balance {
+      value
+      currency
+    }
+  }
+`,u=`
+  fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
+    __typename
+    from
+    to
+    message
+  }
+`,A=`
+  fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+    __typename
+    uid
+    design
+    image {
+      url
+    }
+    price {
+      value
+      currency
+    }
+  }
+`,d=`
+  fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
+   __typename
+   uid
+   design
+   image {
+     url
+     label
+   }
+   price {
+     currency
+     value
+   }
+  }
+`,s=`
   fragment GUEST_ORDER_FRAGMENT on CustomerOrder {
+    printed_card_included
+    gift_receipt_included
+    gift_wrapping {
+      ...GIFT_WRAPPING_FRAGMENT
+    }
+    gift_message {
+      ...GIFT_MESSAGE_FRAGMENT
+    }
+    applied_gift_cards {
+      ...APPLIED_GIFT_CARDS_FRAGMENT
+    }
+    items_eligible_for_return {
+      ...ORDER_ITEM_DETAILS_FRAGMENT
+    }
     email
     id
     number
@@ -292,36 +335,8 @@ const R=`
     token
     carrier
     shipping_method
-    printed_card_included
-    gift_receipt_included
     available_actions
     is_virtual
-    gift_wrapping {
-      uid
-      design
-      image {
-        url
-      }
-      price {
-        value
-        currency
-      }
-    }
-    gift_message {
-      from
-      to
-      message
-    }
-    applied_gift_cards {
-      code
-      applied_balance {
-        value
-        currency
-      }
-    }
-    items_eligible_for_return {
-      ...ORDER_ITEM_DETAILS_FRAGMENT
-    }
     returns {
       ...RETURNS_FRAGMENT
     }
@@ -381,51 +396,11 @@ const R=`
   ${t}
   ${n}
   ${a}
-  ${E}
+  ${R}
   ${e}
-  ${u}
   ${c}
-`,T=`
-  fragment APPLIED_GIFT_CARDS_FRAGMENT on ApplyGiftCardToOrder {
-    __typename
-    code
-    applied_balance {
-      value
-      currency
-    }
-  }
-`,d=`
-  fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
-    __typename
-    from
-    to
-    message
-  }
-`,s=`
-  fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
-    __typename
-    uid
-    design
-    image {
-      url
-    }
-    price {
-      value
-      currency
-    }
-  }
-`,A=`
-  fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
-   __typename
-   uid
-   design
-   image {
-     url
-     label
-   }
-   price {
-     currency
-     value
-   }
-  }
-`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,A as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,i as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,d as GIFT_MESSAGE_FRAGMENT,s as GIFT_WRAPPING_FRAGMENT,o as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,c as ORDER_ITEM_FRAGMENT,E as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,R as REQUEST_RETURN_ORDER_FRAGMENT,u as RETURNS_FRAGMENT};
+  ${i}
+  ${A}
+  ${u}
+  ${T}
+`;export{e as ADDRESS_FRAGMENT,T as APPLIED_GIFT_CARDS_FRAGMENT,d as AVAILABLE_GIFT_WRAPPING_FRAGMENT,a as BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT,E as DOWNLOADABLE_ORDER_ITEMS_FRAGMENT,t as GIFT_CARD_DETAILS_FRAGMENT,u as GIFT_MESSAGE_FRAGMENT,A as GIFT_WRAPPING_FRAGMENT,s as GUEST_ORDER_FRAGMENT,n as ORDER_ITEM_DETAILS_FRAGMENT,i as ORDER_ITEM_FRAGMENT,R as ORDER_SUMMARY_FRAGMENT,r as PRICE_DETAILS_FRAGMENT,_ as PRODUCT_DETAILS_FRAGMENT,o as REQUEST_RETURN_ORDER_FRAGMENT,c as RETURNS_FRAGMENT};

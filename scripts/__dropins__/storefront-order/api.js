@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{c as z,r as J}from"./chunks/requestGuestOrderCancel.js";import{f as g,h as R}from"./chunks/fetch-graphql.js";import{g as W,r as Z,s as ee,a as re,b as te}from"./chunks/fetch-graphql.js";import{g as oe}from"./chunks/getAttributesForm.js";import{g as se,a as ce,r as ue}from"./chunks/requestGuestReturn.js";import{g as le,a as pe}from"./chunks/getGuestOrder.js";import{g as me}from"./chunks/getCustomerOrdersReturn.js";import{a as h}from"./chunks/initialize.js";import{d as Te,g as _e,c as ge,i as Re}from"./chunks/initialize.js";import{g as Ae}from"./chunks/getStoreConfig.js";import{h as A}from"./chunks/network-error.js";import{events as d}from"@dropins/tools/event-bus.js";import{PRODUCT_DETAILS_FRAGMENT as O,PRICE_DETAILS_FRAGMENT as D,GIFT_CARD_DETAILS_FRAGMENT as f,ORDER_ITEM_DETAILS_FRAGMENT as x,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as C,ORDER_SUMMARY_FRAGMENT as b,ADDRESS_FRAGMENT as M,ORDER_ITEM_FRAGMENT as v}from"./fragments.js";import{a as De,c as fe,r as xe}from"./chunks/confirmCancelOrder.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";import"@dropins/tools/lib.js";const T=(r,t)=>r+t.amount.value,y=(r,t)=>({id:r,totalQuantity:t.totalQuantity,possibleOnepageCheckout:!0,items:t.items.map(e=>{var a,o,n,s,c,u,i,l;return{canApplyMsrp:!0,formattedPrice:"",id:e.id,quantity:e.totalQuantity,product:{canonicalUrl:(a=e.product)==null?void 0:a.canonicalUrl,mainImageUrl:((o=e.product)==null?void 0:o.image)??"",name:((n=e.product)==null?void 0:n.name)??"",productId:0,productType:(s=e.product)==null?void 0:s.productType,sku:((c=e.product)==null?void 0:c.sku)??"",topLevelSku:(u=e.product)==null?void 0:u.sku},prices:{price:{value:e.price.value,currency:e.price.currency,regularPrice:((i=e.regularPrice)==null?void 0:i.value)??e.price.value}},configurableOptions:((l=e.selectedOptions)==null?void 0:l.map(p=>({optionLabel:p.label,valueLabel:p.value})))||[]}}),prices:{subtotalExcludingTax:{value:t.subtotalExclTax.value,currency:t.subtotalExclTax.currency},subtotalIncludingTax:{value:t.subtotalInclTax.value,currency:t.subtotalInclTax.currency}},discountAmount:t.discounts.reduce(T,0)}),G=r=>{var a,o,n;const t=r.coupons[0],e=(a=r.payments)==null?void 0:a[0];return{appliedCouponCode:(t==null?void 0:t.code)??"",email:r.email,grandTotal:r.grandTotal.value,orderId:r.number,orderType:"checkout",otherTax:0,salesTax:r.totalTax.value,shipping:{shippingMethod:((o=r.shipping)==null?void 0:o.code)??"",shippingAmount:((n=r.shipping)==null?void 0:n.amount)??0},subtotalExcludingTax:r.subtotalExclTax.value,subtotalIncludingTax:r.subtotalInclTax.value,payments:e?[{paymentMethodCode:(e==null?void 0:e.code)||"",paymentMethodName:(e==null?void 0:e.name)||"",total:r.grandTotal.value,orderId:r.number}]:[],discountAmount:r.discounts.reduce(T,0),taxAmount:r.totalTax.value}},N=r=>{var e,a;const t=(a=(e=r==null?void 0:r.data)==null?void 0:e.placeOrder)==null?void 0:a.orderV2;return t?h(t):null},m={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},L={PLACE_ORDER:"place-order"};function _(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function E(r,t){const e=_();e.push({[r]:null}),e.push({[r]:t})}function S(r){_().push(e=>{const a=e.getState?e.getState():{};e.push({event:r,eventInfo:{...a}})})}function F(r,t){const e=G(t),a=y(r,t);E(m.ORDER_CONTEXT,{...e}),E(m.SHOPPING_CART_CONTEXT,{...a}),S(L.PLACE_ORDER)}class I extends Error{constructor(t){super(t),this.name="PlaceOrderError"}}const P=r=>{const t=r.map(e=>e.message).join(" ");throw new I(t)},w=`
+import{c as J,r as K}from"./chunks/requestGuestOrderCancel.js";import{f as R,h as g}from"./chunks/fetch-graphql.js";import{g as ee,r as re,s as te,a as ae,b as oe}from"./chunks/fetch-graphql.js";import{g as se}from"./chunks/getAttributesForm.js";import{g as ue,a as ie,r as le}from"./chunks/requestGuestReturn.js";import{g as de,a as Ee}from"./chunks/getGuestOrder.js";import{g as me}from"./chunks/getCustomerOrdersReturn.js";import{a as A}from"./chunks/initialize.js";import{d as Re,g as ge,c as Ae,i as he}from"./chunks/initialize.js";import{g as De}from"./chunks/getStoreConfig.js";import{h}from"./chunks/network-error.js";import{events as d}from"@dropins/tools/event-bus.js";import{PRODUCT_DETAILS_FRAGMENT as O,PRICE_DETAILS_FRAGMENT as D,GIFT_CARD_DETAILS_FRAGMENT as f,ORDER_ITEM_DETAILS_FRAGMENT as G,BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT as x,ORDER_SUMMARY_FRAGMENT as M,ADDRESS_FRAGMENT as C,ORDER_ITEM_FRAGMENT as b,GIFT_WRAPPING_FRAGMENT as N,GIFT_MESSAGE_FRAGMENT as F}from"./fragments.js";import{a as Ge,c as xe,r as Me}from"./chunks/confirmCancelOrder.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-attributes-form.js";import"@dropins/tools/lib.js";const m=(r,t)=>r+t.amount.value,v=(r,t)=>({id:r,totalQuantity:t.totalQuantity,possibleOnepageCheckout:!0,items:t.items.map(e=>{var a,o,n,s,c,u,i,l;return{canApplyMsrp:!0,formattedPrice:"",id:e.id,quantity:e.totalQuantity,product:{canonicalUrl:(a=e.product)==null?void 0:a.canonicalUrl,mainImageUrl:((o=e.product)==null?void 0:o.image)??"",name:((n=e.product)==null?void 0:n.name)??"",productId:0,productType:(s=e.product)==null?void 0:s.productType,sku:((c=e.product)==null?void 0:c.sku)??"",topLevelSku:(u=e.product)==null?void 0:u.sku},prices:{price:{value:e.price.value,currency:e.price.currency,regularPrice:((i=e.regularPrice)==null?void 0:i.value)??e.price.value}},configurableOptions:((l=e.selectedOptions)==null?void 0:l.map(p=>({optionLabel:p.label,valueLabel:p.value})))||[]}}),prices:{subtotalExcludingTax:{value:t.subtotalExclTax.value,currency:t.subtotalExclTax.currency},subtotalIncludingTax:{value:t.subtotalInclTax.value,currency:t.subtotalInclTax.currency}},discountAmount:t.discounts.reduce(m,0)}),y=r=>{var a,o,n;const t=r.coupons[0],e=(a=r.payments)==null?void 0:a[0];return{appliedCouponCode:(t==null?void 0:t.code)??"",email:r.email,grandTotal:r.grandTotal.value,orderId:r.number,orderType:"checkout",otherTax:0,salesTax:r.totalTax.value,shipping:{shippingMethod:((o=r.shipping)==null?void 0:o.code)??"",shippingAmount:((n=r.shipping)==null?void 0:n.amount)??0},subtotalExcludingTax:r.subtotalExclTax.value,subtotalIncludingTax:r.subtotalInclTax.value,payments:e?[{paymentMethodCode:(e==null?void 0:e.code)||"",paymentMethodName:(e==null?void 0:e.name)||"",total:r.grandTotal.value,orderId:r.number}]:[],discountAmount:r.discounts.reduce(m,0),taxAmount:r.totalTax.value}},I=r=>{var e,a;const t=(a=(e=r==null?void 0:r.data)==null?void 0:e.placeOrder)==null?void 0:a.orderV2;return t?A(t):null},E={SHOPPING_CART_CONTEXT:"shoppingCartContext",ORDER_CONTEXT:"orderContext"},S={PLACE_ORDER:"place-order"};function _(){return window.adobeDataLayer=window.adobeDataLayer||[],window.adobeDataLayer}function T(r,t){const e=_();e.push({[r]:null}),e.push({[r]:t})}function L(r){_().push(e=>{const a=e.getState?e.getState():{};e.push({event:r,eventInfo:{...a}})})}function P(r,t){const e=y(t),a=v(r,t);T(E.ORDER_CONTEXT,{...e}),T(E.SHOPPING_CART_CONTEXT,{...a}),L(S.PLACE_ORDER)}class $ extends Error{constructor(t){super(t),this.name="PlaceOrderError"}}const w=r=>{const t=r.map(e=>e.message).join(" ");throw new $(t)},k=`
   mutation PLACE_ORDER_MUTATION($cartId: String!) {
     placeOrder(input: { cart_id: $cartId }) {
       errors {
@@ -8,6 +8,14 @@ import{c as z,r as J}from"./chunks/requestGuestOrderCancel.js";import{f as g,h a
         message
       }
       orderV2 {
+        printed_card_included
+        gift_receipt_included
+        gift_wrapping {
+          ...GIFT_WRAPPING_FRAGMENT
+        }
+        gift_message {
+          ...GIFT_MESSAGE_FRAGMENT
+        }
         email
         available_actions
         status
@@ -18,24 +26,6 @@ import{c as z,r as J}from"./chunks/requestGuestOrderCancel.js";import{f as g,h a
         carrier
         shipping_method
         is_virtual
-        printed_card_included
-        gift_receipt_included
-        gift_wrapping {
-          uid
-          design
-          image {
-            url
-          }
-          price {
-            value
-            currency
-          }
-        }
-        gift_message {
-          from
-          to
-          message
-        }
         applied_coupons {
           code
         }
@@ -88,9 +78,11 @@ import{c as z,r as J}from"./chunks/requestGuestOrderCancel.js";import{f as g,h a
   ${O}
   ${D}
   ${f}
+  ${G}
   ${x}
+  ${M}
   ${C}
   ${b}
-  ${M}
-  ${v}
-`,V=async r=>{if(!r)throw new Error("No cart ID found");return g(w,{variables:{cartId:r}}).then(t=>{var a,o,n,s,c;(a=t.errors)!=null&&a.length&&R(t.errors),(s=(n=(o=t.data)==null?void 0:o.placeOrder)==null?void 0:n.errors)!=null&&s.length&&P((c=t.data.placeOrder)==null?void 0:c.errors);const e=N(t);return e&&(d.emit("order/placed",e),d.emit("cart/reset",void 0),F(r,e)),e}).catch(A)};export{z as cancelOrder,Te as config,De as confirmCancelOrder,fe as confirmGuestReturn,g as fetchGraphQl,oe as getAttributesForm,se as getAttributesList,W as getConfig,le as getCustomer,me as getCustomerOrdersReturn,pe as getGuestOrder,_e as getOrderDetailsById,Ae as getStoreConfig,ge as guestOrderByToken,Re as initialize,V as placeOrder,Z as removeFetchGraphQlHeader,xe as reorderItems,J as requestGuestOrderCancel,ce as requestGuestReturn,ue as requestReturn,ee as setEndpoint,re as setFetchGraphQlHeader,te as setFetchGraphQlHeaders};
+  ${N}
+  ${F}
+`,Y=async r=>{if(!r)throw new Error("No cart ID found");return R(k,{variables:{cartId:r}}).then(t=>{var a,o,n,s,c;(a=t.errors)!=null&&a.length&&g(t.errors),(s=(n=(o=t.data)==null?void 0:o.placeOrder)==null?void 0:n.errors)!=null&&s.length&&w((c=t.data.placeOrder)==null?void 0:c.errors);const e=I(t);return e&&(d.emit("order/placed",e),d.emit("cart/reset",void 0),P(r,e)),e}).catch(h)};export{J as cancelOrder,Re as config,Ge as confirmCancelOrder,xe as confirmGuestReturn,R as fetchGraphQl,se as getAttributesForm,ue as getAttributesList,ee as getConfig,de as getCustomer,me as getCustomerOrdersReturn,Ee as getGuestOrder,ge as getOrderDetailsById,De as getStoreConfig,Ae as guestOrderByToken,he as initialize,Y as placeOrder,re as removeFetchGraphQlHeader,Me as reorderItems,K as requestGuestOrderCancel,ie as requestGuestReturn,le as requestReturn,te as setEndpoint,ae as setFetchGraphQlHeader,oe as setFetchGraphQlHeaders};
