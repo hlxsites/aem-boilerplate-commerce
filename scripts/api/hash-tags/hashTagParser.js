@@ -25,7 +25,7 @@ function showLink(el) {
 }
 
 /**
- * Removes link from DEM tree
+ * Removes link from DOM tree
  *
  * @param {HTMLAnchorElement} el
  */
@@ -33,6 +33,16 @@ function removeLink(el) {
   if (el.nodeType === 1 && el.parentNode !== null) {
     el.parentNode.removeChild(el);
   }
+}
+
+/**
+ * Returns an array of extracted hash tags
+ *
+ * @param @param {HTMLAnchorElement} el
+ * @returns []
+ */
+function extractHashTags(el) {
+  return el?.hash?.split('#').slice(1) || [];
 }
 
 /**
@@ -44,7 +54,7 @@ function removeLink(el) {
 function removeHashTags(el) {
   const preserved = [];
 
-  el?.hash?.split('#').slice(1).forEach((ht) => {
+  extractHashTags(el).forEach((ht) => {
     namespaces.forEach((ns) => {
       if (!ht.startsWith(ns)) {
         preserved.push(ht);
@@ -58,12 +68,12 @@ function removeHashTags(el) {
 /**
  * Extracts hash tags namespaces and values from hash string
  *
- * @param href
+ * @param {HTMLAnchorElement} el
  * @returns {*[]}
  */
-function parseHashTag(href) {
+function parseHashTag(el) {
   const parsed = [];
-  const hashTags = href.split('#').slice(1);
+  const hashTags = extractHashTags(el);
 
   if (hashTags.length > 0) {
     namespaces.forEach((ns) => {
