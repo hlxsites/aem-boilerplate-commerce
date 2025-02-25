@@ -83,7 +83,7 @@ main > .section .carousel-wrapper {
     font-size: .25em;
     font-weight: bold;
     color: transparent;
-    z-index: 99999;
+    z-index: 2;
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;

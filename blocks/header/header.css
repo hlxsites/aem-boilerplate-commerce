@@ -27,7 +27,7 @@ header nav {
   max-width: var(--screen-max-width);
   height: var(--nav-height);
   font: var(--type-base-font-family);
-    position: relative;
+  position: relative;
 }
 
 header nav p {
@@ -133,8 +133,8 @@ header nav .nav-brand a {
 
 header nav .nav-sections ul > li,
 header nav .nav-sections ul > li > a {
-    color: var(--color-neutral-900);
-    font-weight: 500;
+  color: var(--color-neutral-900);
+  font-weight: 500;
 }
 
 header nav .nav-brand a:hover {
@@ -143,10 +143,10 @@ header nav .nav-brand a:hover {
 }
 
 li.nav-drop img {
-    max-width: var(--megamenu-item-width);
-    width: 100%;
-    height: auto;
-    object-fit: contain;
+  max-width: var(--megamenu-item-width);
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 header nav .nav-brand img {
@@ -158,17 +158,17 @@ header nav .nav-brand img {
 header nav .nav-sections {
   grid-area: sections;
   flex: 1 1 auto;
-    margin: 0;
-    position: relative;
-    height: 100dvh;
+  margin: 0;
+  position: relative;
+  height: 100dvh;
   display: block;
   visibility: visible;
   white-space: nowrap;
-    transform: translateX(calc(-100% - 20px - calc(calc(100vw - 720px) / 2)));
+  transform: translateX(calc(-100% - 20px - calc(calc(100vw - 720px) / 2)));
 }
 
-header nav[aria-expanded="true"] .nav-sections {
-    overflow-y: auto;
+header nav[aria-expanded='true'] .nav-sections {
+  overflow-y: auto;
 }
 
 /* header nav[aria-expanded='true'] .nav-sections {
@@ -448,15 +448,15 @@ header nav .nav-sections .active-submenu {
 }
 
 header nav .nav-sections .nav-sections-ul-wrapper {
-    background-color: var(--color-neutral-50);
-    position: absolute;
-    width: 100%;
-    max-width: 260px;
-    transform: translateX(-100%);
-    overflow-y: scroll;
-    height: 100%;
-    z-index: 4;
-    transition: transform 400ms ease;
+  background-color: var(--color-neutral-50);
+  position: absolute;
+  width: 100%;
+  max-width: 260px;
+  transform: translateX(-100%);
+  overflow-y: scroll;
+  height: 100%;
+  z-index: 4;
+  transition: transform 400ms ease;
 }
 
 header nav .nav-sections .nav-drop[aria-expanded='true'] {
@@ -490,6 +490,18 @@ header
   cursor: pointer;
 }
 
+header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  color: var(--color-neutral-900);
+  border-bottom: 1px solid var(--color-neutral-300);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 14px 28px;
+}
+
 @media (width >= 1024px) {
   header nav .nav-tools-wrapper {
     position: relative;
@@ -519,7 +531,29 @@ header
   }
 }
 
-@media (width > 900px) {
+@media (width > 901px) {
+  header nav[aria-expanded='true'] .nav-sections,
+  header nav[aria-expanded='true'] .nav-sections .nav-sections-ul-wrapper {
+    display: flex;
+    transform: none;
+    height: 100%;
+    width: unset;
+    transition: none;
+    background-color: transparent;
+    justify-content: center;
+    overflow-y: visible;
+  }
+
+  header nav .nav-sections .nav-sections-ul-wrapper {
+    overflow: visible;
+  }
+
+  header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a {
+    border-bottom: none;
+    padding: 0;
+    height: 100%;
+  }
+
   header nav {
     display: flex;
     justify-content: space-between;
@@ -587,11 +621,11 @@ header
 
   header nav .nav-sections .nav-drop ul {
     position: absolute;
-    top: 36px;
+    top: 80px;
     left: 0;
-    background-color: var(--color-neutral-50);
+    background-color: var(--color-neutral-300);
     width: auto;
-    padding: 16px 0;
+    padding: 0;
     margin: 0;
     min-width: 150px;
     box-shadow: 4px 6px 6px -6px #777;
@@ -660,130 +694,130 @@ header
 
 /* Mobile Nav */
 @media (width < 900px) {
-    header nav .nav-sections ul {
-        padding: 0;
-    }
+  header nav .nav-sections ul {
+    padding: 0;
+  }
 
-    header nav .nav-sections ul li {
-        line-height: 3em;
-    }
+  header nav .nav-sections ul li {
+    line-height: 3em;
+  }
 
-    header nav .nav-sections ul > li > ul,
-    header nav .nav-sections ul > li > ul > li {
-        width: 100%;
-    }
+  header nav .nav-sections ul > li > ul,
+  header nav .nav-sections ul > li > ul > li {
+    width: 100%;
+  }
 
-    header nav .nav-sections ul > li.nav-drop {
-        cursor: pointer;
-    }
+  header nav .nav-sections ul > li.nav-drop {
+    cursor: pointer;
+  }
 
-    header nav .nav-sections ul > li.nav-drop::after {
-        content: '\276F';
-        position: absolute;
-        right: 3vw;
-        transform: rotate(90deg);
-        top: 0;
-    }
+  header nav .nav-sections ul > li.nav-drop::after {
+    content: '\276F';
+    position: absolute;
+    right: 3vw;
+    transform: rotate(90deg);
+    top: 0;
+  }
 
-    header nav .nav-sections ul > li.nav-drop.expanded::after {
-        transform: rotate(-90deg);
-    }
+  header nav .nav-sections ul > li.nav-drop.expanded::after {
+    transform: rotate(-90deg);
+  }
 
-    header nav .nav-sections .nav-sections-ul-wrapper > ul {
-        margin: 0;
-        position: relative;
-    }
+  header nav .nav-sections .nav-sections-ul-wrapper > ul {
+    margin: 0;
+    position: relative;
+  }
 
-    header nav .nav-sections ul > li.nav-drop ul {
-        display: none;
-    }
+  header nav .nav-sections ul > li.nav-drop ul {
+    display: none;
+  }
 
-    header nav .nav-sections .nav-sections-ul-wrapper > ul > li.expanded > ul {
-        display: block;
-        background-color: grey;
-    }
+  header nav .nav-sections .nav-sections-ul-wrapper > ul > li.expanded > ul {
+    display: block;
+    background-color: grey;
+  }
 
-    header nav .nav-sections .active-submenu {
-        background: var(--background-color);
-        display: none;
-        height: 100%;
-        position: absolute;
-        top: 30px;
-        width: 100%;
-    }
+  header nav .nav-sections .active-submenu {
+    background: var(--background-color);
+    display: none;
+    height: 100%;
+    position: absolute;
+    top: 30px;
+    width: 100%;
+  }
 
-    header nav .nav-sections .active-submenu button::before {
-        content: '\276E';
-        margin-right: 0.5em;
-    }
+  header nav .nav-sections .active-submenu button::before {
+    content: '\276E';
+    margin-right: 0.5em;
+  }
 
-    header nav .nav-sections .active-submenu button::after {
-        content: '\2715';
-        position: absolute;
-        right: 8vw;
-    }
+  header nav .nav-sections .active-submenu button::after {
+    content: '\2715';
+    position: absolute;
+    right: 8vw;
+  }
 
-    header nav .nav-sections .active-submenu button {
-        background: none;
-        border: 0;
-        border-bottom: 1px solid var(--color-neutral-500);
-        cursor: pointer;
-        left: -2em;
-        padding: 0 2em 1em;
-        position: relative;
-        text-align: left;
-        width: 102vw;
-    }
+  header nav .nav-sections .active-submenu button {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--color-neutral-500);
+    cursor: pointer;
+    left: -2em;
+    padding: 0 2em 1em;
+    position: relative;
+    text-align: left;
+    width: 102vw;
+  }
 
-    header nav .nav-sections .active-submenu ul > li.nav-drop::after {
-        content: none;
-    }
+  header nav .nav-sections .active-submenu ul > li.nav-drop::after {
+    content: none;
+  }
 
-    header nav .nav-sections .active-submenu.visible,
-    header nav .nav-sections .active-submenu.visible ul > li.nav-drop ul {
-        display: block;
-    }
+  header nav .nav-sections .active-submenu.visible,
+  header nav .nav-sections .active-submenu.visible ul > li.nav-drop ul {
+    display: block;
+  }
 
-    header nav[aria-expanded='true'] .nav-sections {
-        width: calc(100vw + 40px);
-        position: absolute;
-        top: 0;
-        transform: translateX(calc(0vw - 20px - calc(calc(100vw - 100%) / 2)));
-        background-color: rgb(0 0 0 / 70%);
-        align-self: start;
-    }
+  header nav[aria-expanded='true'] .nav-sections {
+    width: calc(100vw + 40px);
+    position: absolute;
+    top: 0;
+    transform: translateX(calc(0vw - 20px - calc(calc(100vw - 100%) / 2)));
+    background-color: rgb(0 0 0 / 70%);
+    align-self: start;
+  }
 
-    header nav[aria-expanded='true'] .nav-sections .nav-sections-ul-wrapper {
-        transform: translateX(0);
-    }
+  header nav[aria-expanded='true'] .nav-sections .nav-sections-ul-wrapper {
+    transform: translateX(0);
+  }
 
-    header nav .nav-sections .nav-sections-ul-wrapper::before {
-        content: '';
-        display: block;
-        padding: 14px 0;
-        background-color: grey;
-        width: 100%;
-    }
+  header nav .nav-sections .nav-sections-ul-wrapper::before {
+    content: '';
+    display: block;
+    padding: 14px 0;
+    background-color: grey;
+    width: 100%;
+  }
 
-    header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        position: relative;
-        color: var(--color-neutral-900);
-        border-bottom: 1px solid var(--color-neutral-300);
-        text-decoration: none;
-        font-weight: 500;
-        padding: 14px 28px;
-    }
+  header nav .nav-sections .nav-sections-ul-wrapper > ul > li > a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    color: var(--color-neutral-900);
+    border-bottom: 1px solid var(--color-neutral-300);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 14px 28px;
+  }
 
-    header nav .nav-sections .nav-sections-ul-wrapper > ul > li ul li a {
-        display: inline-block;
-        box-sizing: border-box;
-        font-size: 1.4rem;
-        padding: 1.4rem 4.2rem;
-        border-bottom: solid 1px rgb(255 255 255 / 23%);
-        width: 100%;
-        color: var(--color-neutral-50);
-    }
+  header nav .nav-sections .nav-sections-ul-wrapper > ul > li ul li a {
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 1.4rem;
+    padding: 1.4rem 4.2rem;
+    border-bottom: solid 1px rgb(255 255 255 / 23%);
+    width: 100%;
+    color: var(--color-neutral-50);
+  }
 }
