@@ -38,7 +38,7 @@ function removeLink(aElement) {
 /**
  * Returns an array of extracted hash tags
  *
- * @param @param {HTMLAnchorElement} aElement
+ * @param {HTMLAnchorElement} aElement
  * @returns []
  */
 function extractHashTagsFromLink(aElement) {
@@ -49,10 +49,10 @@ function extractHashTagsFromLink(aElement) {
  * Removes personalization hash tags from the link hash string.
  * Preserves any hash tags not belonging to personalization.
  *
- * @param {HTMLAnchorElement} el
+ * @param {HTMLAnchorElement} aElement
  */
-function removeHashTags(el) {
-  const preserved = extractHashTagsFromLink(el).map((hashtag) => {
+function removeHashTags(aElement) {
+  const preserved = extractHashTagsFromLink(aElement).map((hashtag) => {
     let preserve = true;
     namespaces.forEach((ns) => {
       if (hashtag.startsWith(ns)) {
@@ -61,8 +61,8 @@ function removeHashTags(el) {
     });
     return (preserve) ? hashtag : null;
   }).filter((ht) => ht);
-  el.hash = preserved.join('#');
-  return el;
+  aElement.hash = preserved.join('#');
+  return aElement;
 }
 
 /**
@@ -88,7 +88,6 @@ function parseHashTag(aElement) {
       });
     });
   }
-
   return parsed;
 }
 

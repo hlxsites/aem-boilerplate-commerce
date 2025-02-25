@@ -36,7 +36,7 @@ const updateTargetedBlocksVisibility = async () => {
 export default function decorate(block) {
   block.style.display = 'none';
   blocks.push(readBlockConfig(block));
-  block.setAttribute('data-personalization-key', blocks.length - 1);
+  block.setAttribute('data-targeted-block-key', blocks.length - 1);
 }
 
 events.on('cart/reset', () => {
