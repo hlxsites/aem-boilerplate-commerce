@@ -543,11 +543,13 @@ main.overlay {
     position: relative;
   }
 
-  header .nav-wrapper.active {
+  header .nav-wrapper.active,
+  header .nav-wrapper:has( nav[aria-expanded='true']) {
     width: 320px;
   }
 
-  header .nav-wrapper.active nav .nav-hamburger button {
+  header .nav-wrapper.active nav .nav-hamburger button,
+  header .nav-wrapper:has( nav[aria-expanded='true']) nav .nav-hamburger button {
     position: fixed;
     left: 275px;
     top: 20px;
