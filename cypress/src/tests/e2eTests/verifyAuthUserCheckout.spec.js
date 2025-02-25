@@ -37,6 +37,7 @@ describe('Verify auth user can place order', () => {
     cy.get('[id="Y29uZmlndXJhYmxlLzI3Ny8yMDI="]').click({
       force: true,
     });
+    
     cy.get('[id="Y29uZmlndXJhYmxlLzU1Ni81MjM="]').click({
       force: true,
     });
