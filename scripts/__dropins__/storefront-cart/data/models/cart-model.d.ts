@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export interface CartModel {
+    appliedGiftCards: AppliedGiftCardProps[];
     id: string;
     totalQuantity: number;
     totalUniqueItems: number;
@@ -47,6 +48,12 @@ export interface CartModel {
     hasOutOfStockItems?: boolean;
     hasFullyOutOfStockItems?: boolean;
     appliedCoupons?: Coupon[];
+}
+export interface AppliedGiftCardProps {
+    code: string;
+    appliedBalance: Price;
+    currentBalance: Price;
+    expirationDate: string;
 }
 interface TotalPriceModifier {
     amount: Price;

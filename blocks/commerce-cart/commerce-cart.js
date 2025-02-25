@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { events } from '@dropins/tools/event-bus.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
@@ -8,6 +9,7 @@ import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
+import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
@@ -77,7 +79,9 @@ export default async function decorate(block) {
       routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
       routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
-      attributesToHide: hideAttributes.split(',').map((attr) => attr.trim().toLowerCase()),
+      attributesToHide: hideAttributes
+        .split(',')
+        .map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
     })($list),
@@ -101,6 +105,13 @@ export default async function decorate(block) {
 
           ctx.appendChild(coupons);
         },
+        GiftCards: (ctx) => {
+          const giftCards = document.createElement('div');
+
+          provider.render(GiftCards)(giftCards);
+
+          ctx.appendChild(giftCards);
+        },
       },
     })($summary),
 
@@ -112,14 +123,18 @@ export default async function decorate(block) {
 
   let cartViewEventPublished = false;
   // Events
-  events.on('cart/data', (payload) => {
-    toggleEmptyCart(isCartEmpty(payload));
+  events.on(
+    'cart/data',
+    (payload) => {
+      toggleEmptyCart(isCartEmpty(payload));
 
-    if (!cartViewEventPublished) {
-      cartViewEventPublished = true;
-      publishShoppingCartViewEvent();
-    }
-  }, { eager: true });
+      if (!cartViewEventPublished) {
+        cartViewEventPublished = true;
+        publishShoppingCartViewEvent();
+      }
+    },
+    { eager: true },
+  );
 
   return Promise.resolve();
 }

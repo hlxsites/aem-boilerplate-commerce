@@ -31,7 +31,7 @@ const e=`
       }
     }
   }
-`,t=`
+`,a=`
   fragment CUSTOMIZABLE_OPTIONS_FRAGMENT on SelectedCustomizableOption {
     type
     customizable_option_uid
@@ -47,7 +47,7 @@ const e=`
       }
     }
   }
-`,a=`
+`,t=`
   fragment DOWNLOADABLE_CART_ITEMS_FRAGMENT on DownloadableCartItem {
     links {
       sort_order
@@ -202,13 +202,30 @@ const e=`
   }
 
   ${e}
-  ${t}
   ${a}
+  ${t}
+`,_=`
+  fragment APPLIED_GIFT_CARDS_FRAGMENT on AppliedGiftCard {
+    __typename
+    code
+    applied_balance {
+      value
+      currency
+    }
+    current_balance {
+      value
+      currency
+    }
+    expiration_date
+  }
 `,n=`
   fragment CART_FRAGMENT on Cart {
     id
     total_quantity
     is_virtual
+    applied_gift_cards {
+      ...APPLIED_GIFT_CARDS_FRAGMENT
+    }
     prices {
       subtotal_with_discount_excluding_tax {
         currency
@@ -273,4 +290,5 @@ const e=`
   }
 
   ${r}
-`;export{n as CART_FRAGMENT,r as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT};
+  ${_}
+`;export{_ as APPLIED_GIFT_CARDS_FRAGMENT,n as CART_FRAGMENT,r as CART_ITEM_FRAGMENT,t as DOWNLOADABLE_CART_ITEMS_FRAGMENT};

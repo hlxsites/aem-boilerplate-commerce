@@ -33,6 +33,7 @@ import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Checkout Dropin
@@ -359,6 +360,13 @@ export default async function decorate(block) {
           CartProvider.render(Coupons)(coupons);
 
           ctx.appendChild(coupons);
+        },
+        GiftCards: (ctx) => {
+          const giftCards = document.createElement('div');
+
+          CartProvider.render(GiftCards)(giftCards);
+
+          ctx.appendChild(giftCards);
         },
       },
     })($orderSummary),
