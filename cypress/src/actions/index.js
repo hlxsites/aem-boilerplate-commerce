@@ -112,8 +112,8 @@ export const signUpUser = (sign_up, isValid = true) => {
 
 export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
-  if (paymentMethod.name === 'Credit Card') {
-    const {cc_number, cc_exp, cc_cid} = paymentMethod.params;
+  if (paymentMethod.name === "Credit Card") {
+    const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
     cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
@@ -126,4 +126,73 @@ export const setPaymentMethod = (paymentMethod) => {
       cc_cid
     );
   }
+};
+
+export const fillGiftOptiosForm = (className, type = "order") => {
+  if (type === "product") {
+    cy.wait(3000);
+    cy.get(className).contains("Gift options").click();
+  }
+
+  if (type === "order") {
+    cy.wait(3000);
+
+    cy.get(`${className} ${fields.giftOptionCardIncludedCheckBox}`)
+      .click({
+        force: true,
+      })
+      .should("be.checked");
+  }
+
+  cy.wait(3000);
+  cy.get(`${className} ${fields.giftOptionWrapCheckBox}`)
+    .click({
+      force: true,
+    })
+    .should("be.checked");
+
+  cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .type("giftOptionRecipientName")
+    .should("have.value", "giftOptionRecipientName")
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .type("giftOptionSenderName")
+    .should("have.value", "giftOptionSenderName")
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionMessage}`)
+    .type("giftOptionMessage")
+    .should("have.value", "giftOptionMessage")
+    .blur(); // Added .blur() here
+  cy.wait(4000);
+
+  cy.get(className).contains("Customize").click();
+  cy.get(`${className} .cart-gift-options-view__modal-grid-item img`)
+    .eq(1)
+    .click();
+  cy.contains(".dropin-button--primary", "Apply").click();
+};
+
+export const fillGiftOptiosFormEmpty = (className) => {
+  cy.get(`${className} ${fields.giftOptionRecipientName}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should("have.value", "")
+    .blur();
+
+  cy.get(`${className} ${fields.giftOptionSenderName}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should("have.value", "")
+    .blur();
+
+  cy.get(`${className} ${fields.giftOptionMessage}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should("have.value", "")
+    .blur();
 };
