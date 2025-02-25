@@ -82,7 +82,7 @@ function parseHashTag(aElement) {
         if (value && value.length === 2) {
           parsed.push({
             namespace: ns,
-            value: encodeURIComponent(value[1].trim().toLowerCase()),
+            value: value[1].trim().toLowerCase(),
           });
         }
       });

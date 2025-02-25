@@ -27,7 +27,7 @@ const getCustomerGroups = async () => {
         method: 'GET',
       },
     );
-    return response.data?.customerGroup;
+    return response.data?.customerGroup?.name;
   } catch (error) {
     console.error('Could not retrieve customer groups', error);
   }
@@ -136,7 +136,7 @@ const getActiveRules = async function () {
     if (cartId) {
       const response = await getCartRules(cartId);
       activeRules.cart = response.cart?.rules || [];
-      activeRules.customerGroup = response.customerGroup || '';
+      activeRules.customerGroup = response.customerGroup?.name || '';
       activeRules.customerSegments = response.customerSegments || [];
     }
   }
@@ -144,7 +144,7 @@ const getActiveRules = async function () {
   // Cart not initialised, but Authenticated user
   if (Cart.getCartDataFromCache() === null && getUserTokenCookie()) {
     const response = await getCustomerSegments();
-    activeRules.customerGroup = response.customerGroup || '';
+    activeRules.customerGroup = response.customerGroup?.name || '';
     activeRules.customerSegments = response.customerSegments || [];
   }
 
