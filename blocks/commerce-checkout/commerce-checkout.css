@@ -275,11 +275,15 @@
   }
 
   .checkout__block {
-    order: 3;
+    order: 4;
   }
 
   .checkout__heading {
-    order: 1;
+    order: 2;
+  }
+
+  .checkout__gift-options{
+    order: 3;
   }
 
   .checkout__cart-summary {
@@ -287,7 +291,7 @@
   }
 
   .checkout__place-order {
-    order: 4;
+    order: 5;
   }
 
   .order-confirmation {
