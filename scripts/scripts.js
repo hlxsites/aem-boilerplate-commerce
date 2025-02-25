@@ -23,7 +23,7 @@ import {
 } from './aem.js';
 import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
-import { removeHashTags } from './api/hash-tags/hashTagParser.js';
+import { removeHashTags } from './api/hashtags/parser.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,

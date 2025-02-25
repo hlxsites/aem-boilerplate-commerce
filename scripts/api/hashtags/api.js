@@ -4,8 +4,8 @@ import {
   hideLink,
   showLink,
   removeLink,
-} from './api/hash-tags/hashTagParser.js';
-import { getActiveRules } from './api/targeted-block/api.js';
+} from './parser.js';
+import { getActiveRules } from '../personalization/api.js';
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
 const INTERVAL = 250;

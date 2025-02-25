@@ -5,44 +5,44 @@ const namespaces = [
 /**
  * Change link's parent DOM element visibility to hidden
  *
- * @param {HTMLAnchorElement} el
+ * @param {HTMLAnchorElement} aElement
  */
-function hideLink(el) {
-  if (el.nodeType === 1) {
-    el.parentNode.hidden = true;
+function hideLink(aElement) {
+  if (aElement.nodeType === 1) {
+    aElement.parentNode.hidden = true;
   }
 }
 
 /**
  * Change link's parent DOM element visibility to visible
  *
- * @param {HTMLAnchorElement} el
+ * @param {HTMLAnchorElement} aElement
  */
-function showLink(el) {
-  if (el.nodeType === 1) {
-    el.parentNode.hidden = false;
+function showLink(aElement) {
+  if (aElement.nodeType === 1) {
+    aElement.parentNode.hidden = false;
   }
 }
 
 /**
  * Removes link from DOM tree
  *
- * @param {HTMLAnchorElement} el
+ * @param {HTMLAnchorElement} aElement
  */
-function removeLink(el) {
-  if (el.nodeType === 1 && el.parentNode !== null) {
-    el.parentNode.removeChild(el);
+function removeLink(aElement) {
+  if (aElement.nodeType === 1 && aElement.parentNode !== null) {
+    aElement.parentNode.removeChild(aElement);
   }
 }
 
 /**
  * Returns an array of extracted hash tags
  *
- * @param @param {HTMLAnchorElement} el
+ * @param @param {HTMLAnchorElement} aElement
  * @returns []
  */
-function extractHashTags(el) {
-  return el?.hash?.split('#').slice(1) || [];
+function extractHashTags(aElement) {
+  return aElement?.hash?.split('#').slice(1) || [];
 }
 
 /**
@@ -68,12 +68,12 @@ function removeHashTags(el) {
 /**
  * Extracts hash tags namespaces and values from hash string
  *
- * @param {HTMLAnchorElement} el
+ * @param {HTMLAnchorElement} aElement
  * @returns {*[]}
  */
-function parseHashTag(el) {
+function parseHashTag(aElement) {
   const parsed = [];
-  const hashTags = extractHashTags(el);
+  const hashTags = extractHashTags(aElement);
 
   if (hashTags.length > 0) {
     namespaces.forEach((ns) => {
@@ -100,9 +100,8 @@ function parseHashTag(el) {
  */
 function apply(aElements, callbackFn = null) {
   aElements.forEach((aElement) => {
-    const link = aElement.href;
-    if (link && link.indexOf('#') > 0) {
-      const hashTags = parseHashTag(link);
+    if (aElement && aElement.hash) {
+      const hashTags = parseHashTag(aElement);
       if (hashTags.length > 0) {
         hashTags.forEach((hashTag) => {
           const { namespace, value } = { ...hashTag };

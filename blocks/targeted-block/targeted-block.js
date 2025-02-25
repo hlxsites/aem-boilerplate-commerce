@@ -1,10 +1,9 @@
 import { events } from '@dropins/tools/event-bus.js';
-import { getActiveRules } from '../../scripts/api/targeted-block/api.js';
+import { getActiveRules } from '../../scripts/api/personalization/api.js';
 
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { applyHashTagsForDomElement } from '../../scripts/hashTags.js';
 
 const blocks = [];
 const displayedBlockTypes = [];
@@ -32,13 +31,12 @@ const updateTargetedBlocksVisibility = async () => {
       block.style.display = '';
     }
   });
-  applyHashTagsForDomElement('main');
 };
 
 export default function decorate(block) {
   block.style.display = 'none';
   blocks.push(readBlockConfig(block));
-  block.setAttribute('data-targeted-block-key', blocks.length - 1);
+  block.setAttribute('data-personalization-key', blocks.length - 1);
 }
 
 events.on('cart/reset', () => {
