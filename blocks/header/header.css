@@ -245,6 +245,7 @@ header nav .nav-sections ul > li ul > li {
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-wrapper {
     background-color: var(--color-neutral-50);
     left: 0;
+    padding-top: 64px;
     position: absolute;
     top: 64px;
     width: 100vw;
