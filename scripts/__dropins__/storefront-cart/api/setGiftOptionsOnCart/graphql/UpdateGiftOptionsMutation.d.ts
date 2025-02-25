@@ -14,7 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './useEstimatedTotals';
-export * from './useEstimatedShipping';
-export * from './useGiftOptions';
-//# sourceMappingURL=index.d.ts.map
+export declare const SET_GIFT_OPTIONS_ON_CART_MUTATION: string;
+//# sourceMappingURL=UpdateGiftOptionsMutation.d.ts.map
