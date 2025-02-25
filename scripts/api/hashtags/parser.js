@@ -41,7 +41,7 @@ function removeLink(aElement) {
  * @param @param {HTMLAnchorElement} aElement
  * @returns []
  */
-function extractHashTags(aElement) {
+function extractHashTagsFromLink(aElement) {
   return aElement?.hash?.split('#').slice(1) || [];
 }
 
@@ -52,15 +52,15 @@ function extractHashTags(aElement) {
  * @param {HTMLAnchorElement} el
  */
 function removeHashTags(el) {
-  const preserved = [];
-
-  extractHashTags(el).forEach((ht) => {
+  const preserved = extractHashTagsFromLink(el).map((hashtag) => {
+    let preserve = true;
     namespaces.forEach((ns) => {
-      if (!ht.startsWith(ns)) {
-        preserved.push(ht);
+      if (hashtag.startsWith(ns)) {
+        preserve = false;
       }
     });
-  });
+    return (preserve) ? hashtag : null;
+  }).filter((ht) => ht);
   el.hash = preserved.join('#');
   return el;
 }
@@ -73,7 +73,7 @@ function removeHashTags(el) {
  */
 function parseHashTag(aElement) {
   const parsed = [];
-  const hashTags = extractHashTags(aElement);
+  const hashTags = extractHashTagsFromLink(aElement);
 
   if (hashTags.length > 0) {
     namespaces.forEach((ns) => {
@@ -98,32 +98,18 @@ function parseHashTag(aElement) {
  * @param aElements - a NodeList containing all DOM element(s) with hash tags
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function apply(aElements, callbackFn = null) {
+function apply(aElements, callbackFn, activeRules) {
   aElements.forEach((aElement) => {
     if (aElement && aElement.hash) {
       const hashTags = parseHashTag(aElement);
       if (hashTags.length > 0) {
         hashTags.forEach((hashTag) => {
           const { namespace, value } = { ...hashTag };
-          callbackFn(aElement, namespace, value);
+          callbackFn(aElement, namespace, value, activeRules);
         });
       }
     }
   });
-}
-
-/**
- * Gets elements directly from passed DOM tree fragment.
- *
- * @param domTree
- * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
- */
-function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
-  const aElements = domTree.querySelectorAll('a');
-  if (aElements.length === 0) {
-    return;
-  }
-  apply(aElements, callbackFn);
 }
 
 /**
@@ -133,19 +119,17 @@ function parseDomTreeForUrlHashTags(domTree, callbackFn = null) {
  * @param domEl DOM element
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
-function parseUrlHashTags(domEl, callbackFn = null) {
-  console.warn('CALLED!');
+function parseUrlHashTags(domEl, callbackFn, activeRules) {
   const domElement = document.querySelector(domEl);
   const aElements = domElement.querySelectorAll('a');
   if (aElements.length === 0) {
     return;
   }
-  apply(aElements, callbackFn);
+  apply(aElements, callbackFn, activeRules);
 }
 
 export {
   parseUrlHashTags,
-  parseDomTreeForUrlHashTags,
   hideLink,
   showLink,
   removeLink,

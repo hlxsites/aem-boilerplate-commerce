@@ -1,6 +1,5 @@
 import {
   parseUrlHashTags,
-  parseDomTreeForUrlHashTags,
   hideLink,
   showLink,
   removeLink,
@@ -8,7 +7,6 @@ import {
 import { getActiveRules } from '../personalization/api.js';
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
-const INTERVAL = 250;
 
 /**
  * This method contains default logic for built-in namespace/tag combination(s).
@@ -18,9 +16,7 @@ const INTERVAL = 250;
  * @param value
  * @returns {Promise<void>}
  */
-const defaultCallbackFn = async function (el, namespace, value) {
-  const activeRules = await getActiveRules();
-
+const defaultCallbackFn = (el, namespace, value, activeRules) => {
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
@@ -75,52 +71,12 @@ const defaultCallbackFn = async function (el, namespace, value) {
  * Executes links personalization for domElement
  * It can be called for any DOM element
  *
- * If DOM element can not be found, to avoid an infinite call to apply() we cancel
- * an entire execution after 3 seconds
- *
  * @param domElement - root DOM element for parser
  * @param {function} callbackFn - an optional callback with conditions to execute
  */
-function applyHashTagsForDomElement(domElement, callbackFn = null) {
-  let retry = 3000 / INTERVAL;
-  const apply = () => {
-    // make sure domEl is present in DOM tree before hash tags can be applied
-    if (!document.querySelector(domElement)) {
-      retry -= 1;
-      if (retry === 0) {
-        // eslint-disable-next-line no-use-before-define
-        window.clearInterval(c);
-      }
-      return;
-    }
-    // eslint-disable-next-line no-use-before-define
-    window.clearInterval(c);
-    parseUrlHashTags(domElement, defaultCallbackFn);
-    if (callbackFn && typeof callbackFn === 'function') {
-      parseUrlHashTags(domElement, callbackFn);
-    }
-  };
-  const c = window.setInterval(apply, INTERVAL);
-
-  // parseUrlHashTags(domElement, callbackFn);
+async function applyHashTagsForDomElement(domElement, callbackFn = null) {
+  const activeRules = await getActiveRules();
+  parseUrlHashTags(domElement, callbackFn || defaultCallbackFn, activeRules);
 }
 
-/**
- * Executes links personalisation against DOM tree fragment.
- * As is does not have to find DOM element with querySelector, we can pass
- * it directly to Hash Tag parser
- *
- * @param domTree DOM node tree to parse
- * @param {function} callbackFn - an optional callback with conditions to execute
- */
-function applyHashTagsForNodeTree(domTree, callbackFn = null) {
-  parseDomTreeForUrlHashTags(domTree, defaultCallbackFn);
-  if (callbackFn && typeof callbackFn === 'function') {
-    parseDomTreeForUrlHashTags(domTree, callbackFn);
-  }
-}
-
-export {
-  applyHashTagsForDomElement,
-  applyHashTagsForNodeTree,
-};
+export default applyHashTagsForDomElement;
