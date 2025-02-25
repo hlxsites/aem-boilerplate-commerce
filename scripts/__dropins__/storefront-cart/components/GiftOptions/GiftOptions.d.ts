@@ -5,23 +5,25 @@ import { CartModel, Item } from '../../data/models';
 
 export interface GiftOptionsProps {
     readOnlyFormOrderView: 'primary' | 'secondary';
+    cartData: CartModel | null;
+    errorsField: Record<string, string>;
+    isGiftMessageVisible: boolean;
+    fieldsDisabled: boolean;
     loading: boolean;
-    isGiftOptionsApplied: boolean;
-    updateLoading: boolean;
     showModal: boolean;
     isEditable: boolean;
+    isGiftOptionsApplied: boolean;
+    updateLoading: boolean;
+    areGiftOptionsVisible: Record<string, boolean>;
     view: GiftOptionsViewProps;
     giftOptions: GiftFormDataType;
     item: Item;
+    giftWrappingConfig: GiftWrappingConfigProps[] | [];
     updateGiftOptions: (name: string, value?: string | boolean | number, extraGiftOptions?: Record<string, string | boolean | number>) => void;
     setShowModal: Dispatch<StateUpdater<boolean>>;
-    giftWrappingConfig: GiftWrappingConfigProps[] | [];
     handleFormMouseLeave: () => void;
-    fieldsDisabled: boolean;
     onInputChange: (event: Event) => void;
     onBlur: (event: Event) => void;
-    cartData: CartModel | null;
-    errorsField: Record<string, string>;
 }
 export declare const GiftOptions: FunctionComponent<GiftOptionsProps>;
 //# sourceMappingURL=GiftOptions.d.ts.map

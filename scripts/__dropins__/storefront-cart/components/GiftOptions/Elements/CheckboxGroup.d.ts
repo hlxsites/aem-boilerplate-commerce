@@ -9,11 +9,11 @@ interface CheckboxGroupProps {
     item: Item;
     giftOptions: GiftFormDataType;
     disabled: boolean;
-    onInputChange: (event: Event) => void;
     cartData: CartModel | null;
     giftWrappingConfig: GiftWrappingConfigProps[] | [];
+    areGiftOptionsVisible: Record<string, boolean>;
     setShowModal: Dispatch<StateUpdater<boolean>>;
-    setIsGiftOptionsVisible: Dispatch<StateUpdater<boolean>>;
+    onInputChange: (event: Event) => void;
 }
 export declare const CheckboxGroup: FunctionComponent<CheckboxGroupProps>;
 export {};

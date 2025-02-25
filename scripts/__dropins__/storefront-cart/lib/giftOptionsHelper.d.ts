@@ -1,5 +1,5 @@
-import { CartModel } from '../data/models';
-import { GiftWrappingConfigProps } from '../types';
+import { CartModel, Item } from '../data/models';
+import { GiftWrappingConfigProps, GiftOptionsViewProps } from '../types';
 
 export declare const DEFAULT_FORM_STATE: {
     recipientName: string;
@@ -14,4 +14,5 @@ export declare const DEFAULT_CHECKBOXES_STATE: {
 export declare const shouldShowGiftMessage: (item: CartModel['items'][0], isProductView: boolean) => boolean;
 export declare const getSelectedGiftWrapping: (giftWrappingOptions: GiftWrappingConfigProps[] | [
 ]) => GiftWrappingConfigProps;
+export declare const areGiftOptionsDisabled: (view: GiftOptionsViewProps, item: Item) => boolean;
 //# sourceMappingURL=giftOptionsHelper.d.ts.map

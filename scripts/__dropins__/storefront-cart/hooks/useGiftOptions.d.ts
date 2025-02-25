@@ -26,11 +26,19 @@ export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, 
     fieldsDisabled: boolean;
     isGiftOptionsApplied: boolean;
     giftWrappingConfig: [] | GiftWrappingConfigProps[];
+    setFieldsDisabled: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
     handleFormMouseLeave: () => Promise<void>;
     onInputChange: (event: Event) => void;
     updateGiftOptions: (name: string, value: string | boolean | number | undefined, extraGiftOptions?: Record<string, string | boolean | number>) => void;
     setShowModal: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
     handleBlur: (event: Event) => Promise<void>;
+    isGiftMessageVisible: boolean;
+    areGiftOptionsVisible: {
+        isGiftReceiptVisible: boolean;
+        isPrintedCartVisible: boolean;
+        isGiftWrappingVisible: boolean;
+        isGiftOptionsVisible: boolean;
+    };
 };
 export {};
 //# sourceMappingURL=useGiftOptions.d.ts.map
