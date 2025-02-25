@@ -166,7 +166,6 @@
         gap: var(--spacing-xbig);
     }
 
-    .checkout__error-banner,
     .checkout__merged-cart-banner {
         display: grid;
         grid-column: 1 / span 12;

@@ -2,6 +2,14 @@
 
 This guide will walk you through the steps to integrate the Braintree payment method into the Checkout.
 
+## Hands on
+
+We'll use the **commerce-checkout** block as our starting point and iteratively update it to meet the new product requirements.
+
+> [!NOTE]
+> Please note the _**commerce-checkout.js**_ block is the only one that is fully functional up-to-date with the latest Drop-ins versions.
+> Use the following guidelines just as a reference when creating a new checkout experience.
+
 ## Step-by-Step Process:
 
 ### 1. Import Braintree
@@ -27,48 +35,42 @@ let braintreeInstance;
 
 ```js
 CheckoutProvider.render(PaymentMethods, {
-  setOnChange: {
-    braintree: false,
-  },
   slots: {
-    Handlers: {
-      braintree: async (ctx) => {
-        const container = document.createElement('div');
+    Methods: {
+      braintree: {
+        setOnChange: false,
+        render: async (ctx) => {
+          const container = document.createElement('div');
 
-        window.braintree.dropin.create({
-          authorization: 'sandbox_g42y39zw_348pk9cgf3bgyw2b',
-          container,
-        }, (err, dropinInstance) => {
-          if (err) {
-            console.error(err);
-          }
+          window.braintree.dropin.create({
+            authorization: 'sandbox_cstz6tw9_sbj9bzvx2ngq77n4',
+            container,
+          }, (err, dropinInstance) => {
+            if (err) {
+              console.error(err);
+            }
 
-          braintreeInstance = dropinInstance;
-        });
+            braintreeInstance = dropinInstance;
+          });
 
-        ctx.replaceHTML(container);
+          ctx.replaceHTML(container);
+        },
       },
     },
   },
-})($paymentMethods)
+})($paymentMethods),
 ```
 
 ### 3. Handle Braintree Payment Method in `PlaceOrder` Container
 
-Implement the Braintree payment logic in the `PlaceOrder` container within the `onPlaceOrder` handler. This includes processing the payment with the Braintree nonce.
+Implement the Braintree payment logic in the `PlaceOrder` container within the `handlePlaceOrder` handler. This includes processing the payment with the Braintree nonce.
 
 ```js
 CheckoutProvider.render(PlaceOrder, {
-  handleValidation: () => {
-    // validation handlers skipped
-  },
-  onPlaceOrder: async (ctx) => {
+  handlePlaceOrder: async ({ cartId, code }) => {
     await displayOverlaySpinner();
-
-    const paymentMethodCode = ctx.code;
-
     try {
-      switch (paymentMethodCode) {
+      switch (code) {
         case 'braintree': {
           braintreeInstance.requestPaymentMethod(async (err, payload) => {
             if (err) {
@@ -85,23 +87,22 @@ CheckoutProvider.render(PlaceOrder, {
               },
             });
 
-            await checkoutApi.placeOrder();
-
-            removeOverlaySpinner();
+            await orderApi.placeOrder(cartId);
           });
 
           break;
         }
 
         default: {
-          await checkoutApi.placeOrder();
-          removeOverlaySpinner();
+          await orderApi.placeOrder(cartId);
         }
       }
     } catch (error) {
-      removeOverlaySpinner();
+      console.error(error);
       throw error;
+    } finally {
+      await removeOverlaySpinner();
     }
   },
-})($placeOrder)
+})($placeOrder),
 ```

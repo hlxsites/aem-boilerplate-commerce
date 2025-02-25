@@ -1,7 +1,24 @@
+/** ******************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ ****************************************************************** */
+
 import { loadCSS, buildBlock } from '../../scripts/aem.js';
 
 export default async function createModal(contentNodes) {
-  await loadCSS('/blocks/modal/modal.css');
+  await loadCSS('./blocks/modal/modal.css');
   const dialog = document.createElement('dialog');
   dialog.setAttribute('tabindex', 1);
   dialog.setAttribute('role', 'dialog');

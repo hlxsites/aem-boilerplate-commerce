@@ -2,6 +2,14 @@
 
 This guide will walk you through the steps to extend the Checkout to support the Buy Online, Pickup In-Store (BOPIS) functionality.
 
+## Hands on
+
+We'll use the **commerce-checkout** block as our starting point and iteratively update it to meet the new product requirements.
+
+> [!NOTE]
+> Please note the _**commerce-checkout.js**_ block is the only one that is fully functional up-to-date with the latest Drop-ins versions.
+> Use the following guidelines just as a reference when creating a new checkout experience.
+
 ## Step-by-Step Process:
 
 ### 1. Update Content Fragment
@@ -35,12 +43,12 @@ During the initialization, two buttons are rendered: one for Delivery and one fo
 UI.render(ToggleButton, {
   label: 'Delivery',
   onChange: () => onToggle('delivery'),
-})($deliveryButton)
+})($deliveryButton),
 
 UI.render(ToggleButton, {
   label: 'In-store Pickup',
   onChange: () => onToggle('in-store-pickup'),
-})($inStorePickupButton)
+})($inStorePickupButton),
 ```
 
 ### 3. Toggle Between Delivery and In-Store Pickup
@@ -82,7 +90,7 @@ async function fetchPickupLocations() {
           total_count
         }
       }`,
-      { method: 'GET', cache: 'no-cache' }
+      { method: 'GET', cache: 'no-cache' },
     )
     .then((res) => res.data.pickupLocations.items);
 }
@@ -101,10 +109,10 @@ pickupLocations.forEach((location) => {
 
   UI.render(RadioButton, {
     label: name,
+    name: 'pickup-location',
     value: name,
     onChange: () => {
       checkoutApi.setShippingAddress({
-        address: {},
         pickupLocationCode: pickup_location_code,
       });
     },

@@ -60,16 +60,22 @@ import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
+// Step 1: Import Braintree
 import 'https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
 
 import {
-  estimateShippingCost, getCartAddress,
+  estimateShippingCost,
+  getCartAddress,
+  isCartEmpty,
+  isCheckoutEmpty,
   scrollToElement,
   setAddressOnCart,
 } from '../../scripts/checkout.js';
+
+import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -187,50 +193,34 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  // Render main containers
-  let shippingFormRef = { current: null };
-  let billingFormRef = { current: null };
+  // Global state
+  let initialized = false;
 
+  // Container and component references
   let loader;
-  const displayOverlaySpinner = async () => {
-    if (loader) return;
-
-    loader = await UI.render(ProgressSpinner, {
-      className: '.checkout__overlay-spinner',
-    })($loader);
-  };
-
-  const removeOverlaySpinner = () => {
-    if (!loader) return;
-
-    loader.remove();
-    loader = null;
-    $loader.innerHTML = '';
-  };
-
   let modal;
-  const showModal = async (content) => {
-    modal = await createModal([content]);
-    modal.showModal();
-  };
+  let emptyCart;
+  let shippingForm;
+  let billingForm;
+  let shippingAddresses;
+  let billingAddresses;
 
-  const removeModal = () => {
-    if (!modal) return;
-    modal.removeModal();
-    modal = null;
-  };
+  const shippingFormRef = { current: null };
+  const billingFormRef = { current: null };
 
+  // Step 2: Create `braintreeInstance` Variable
   let braintreeInstance;
 
+  // Render the initial containers
   const [
     _mergedCartBanner,
-    _heading,
+    _header,
     _serverError,
     _outOfStock,
-    _login,
+    _loginForm,
     shippingFormSkeleton,
     _billToShipping,
-    _delivery,
+    _shippingMethods,
     _paymentMethods,
     billingFormSkeleton,
     _orderSummary,
@@ -246,6 +236,7 @@ export default async function decorate(block) {
     })($heading),
 
     CheckoutProvider.render(ServerError, {
+      autoScroll: true,
       onRetry: () => {
         $content.classList.remove('checkout__content--error');
       },
@@ -274,7 +265,11 @@ export default async function decorate(block) {
               displayOverlaySpinner();
             },
           },
-          signUpFormConfig: {},
+          signUpFormConfig: {
+            slots: {
+              ...authPrivacyPolicyConsentSlot,
+            },
+          },
           resetPasswordFormConfig: {},
         })(signInForm);
 
@@ -297,10 +292,11 @@ export default async function decorate(block) {
         if (!checked && billingFormRef?.current) {
           const { formData, isDataValid } = billingFormRef.current;
 
-          setAddressOnCart(
-            { data: formData, isDataValid },
-            checkoutApi.setBillingAddress,
-          );
+          setAddressOnCart({
+            api: checkoutApi.setBillingAddress,
+            debounceMs: DEBOUNCE_TIME,
+            placeOrderBtn: placeOrder,
+          })({ data: formData, isDataValid });
         }
       },
     })($billToShipping),
@@ -309,27 +305,28 @@ export default async function decorate(block) {
       hideOnVirtualCart: true,
     })($delivery),
 
+    // Step 2: Add Braintree Handler to Payment Methods Container
     CheckoutProvider.render(PaymentMethods, {
-      setOnChange: {
-        braintree: false,
-      },
       slots: {
-        Handlers: {
-          braintree: async (ctx) => {
-            const container = document.createElement('div');
+        Methods: {
+          braintree: {
+            setOnChange: false,
+            render: async (ctx) => {
+              const container = document.createElement('div');
 
-            window.braintree.dropin.create({
-              authorization: 'sandbox_cstz6tw9_sbj9bzvx2ngq77n4',
-              container,
-            }, (err, dropinInstance) => {
-              if (err) {
-                console.error(err);
-              }
+              window.braintree.dropin.create({
+                authorization: 'sandbox_cstz6tw9_sbj9bzvx2ngq77n4',
+                container,
+              }, (err, dropinInstance) => {
+                if (err) {
+                  console.error(err);
+                }
 
-              braintreeInstance = dropinInstance;
-            });
+                braintreeInstance = dropinInstance;
+              });
 
-            ctx.replaceHTML(container);
+              ctx.replaceHTML(container);
+            },
           },
         },
       },
@@ -395,6 +392,7 @@ export default async function decorate(block) {
       },
     })($cartSummary),
 
+    // Step 3: Handle Braintree Payment Method in `PlaceOrder` Container
     CheckoutProvider.render(PlaceOrder, {
       handleValidation: () => {
         let success = true;
@@ -431,14 +429,10 @@ export default async function decorate(block) {
 
         return success;
       },
-      handlePlaceOrder: async (ctx) => {
+      handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
-
-        const cart = ctx.cartId;
-        const paymentMethodCode = ctx.code;
-
         try {
-          switch (paymentMethodCode) {
+          switch (code) {
             case 'braintree': {
               braintreeInstance.requestPaymentMethod(async (err, payload) => {
                 if (err) {
@@ -455,28 +449,38 @@ export default async function decorate(block) {
                   },
                 });
 
-                await orderApi.placeOrder(cart);
-
-                removeOverlaySpinner();
+                await orderApi.placeOrder(cartId);
               });
 
               break;
             }
 
             default: {
-              await orderApi.placeOrder(cart);
-              removeOverlaySpinner();
+              await orderApi.placeOrder(cartId);
             }
           }
         } catch (error) {
-          removeOverlaySpinner();
+          console.error(error);
           throw error;
+        } finally {
+          await removeOverlaySpinner();
         }
       },
     })($placeOrder),
   ]);
 
-  let emptyCart;
+  // Dynamic containers and components
+  const showModal = async (content) => {
+    modal = await createModal([content]);
+    modal.showModal();
+  };
+
+  const removeModal = () => {
+    if (!modal) return;
+    modal.removeModal();
+    modal = null;
+  };
+
   const displayEmptyCart = async () => {
     if (emptyCart) return;
 
@@ -497,8 +501,32 @@ export default async function decorate(block) {
     $content.classList.remove('checkout__content--empty');
   };
 
-  let shippingForm;
-  let billingForm;
+  const displayOverlaySpinner = async () => {
+    if (loader) return;
+
+    loader = await UI.render(ProgressSpinner, {
+      className: '.checkout__overlay-spinner',
+    })($loader);
+  };
+
+  const removeOverlaySpinner = () => {
+    if (!loader) return;
+
+    loader.remove();
+    loader = null;
+    $loader.innerHTML = '';
+  };
+
+  const initializeCheckout = async (data) => {
+    if (initialized) return;
+    removeEmptyCart();
+    if (data.isGuest) await displayGuestAddressForms(data);
+    else {
+      removeOverlaySpinner();
+      await displayCustomerAddressForms(data);
+    }
+  };
+
   const displayGuestAddressForms = async (data) => {
     if (data.isVirtual) {
       shippingForm?.remove();
@@ -601,8 +629,6 @@ export default async function decorate(block) {
     }
   };
 
-  let shippingAddresses;
-  let billingAddresses;
   const displayCustomerAddressForms = async (data) => {
     if (data.isVirtual) {
       shippingAddresses?.remove();
@@ -611,7 +637,7 @@ export default async function decorate(block) {
     } else if (!shippingAddresses) {
       shippingForm?.remove();
       shippingForm = null;
-      shippingFormRef = { current: null };
+      shippingFormRef.current = null;
 
       const cartShippingAddress = getCartAddress(data, 'shipping');
 
@@ -626,15 +652,6 @@ export default async function decorate(block) {
       // clear persisted shipping address if cart has a shipping address
       if (cartShippingAddress && shippingAddressCache) {
         sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
-      }
-
-      // when shipping address form is empty
-      if (!cartShippingAddress) {
-        checkoutApi.estimateShippingMethods();
-        events.emit('checkout/estimate-shipping-address', {
-          address: {},
-          isValid: false,
-        });
       }
 
       const storeConfig = checkoutApi.getStoreConfigCache();
@@ -676,7 +693,7 @@ export default async function decorate(block) {
     if (!billingAddresses) {
       billingForm?.remove();
       billingForm = null;
-      billingFormRef = { current: null };
+      billingFormRef.current = null;
 
       const cartBillingAddress = getCartAddress(data, 'billing');
 
@@ -779,21 +796,28 @@ export default async function decorate(block) {
 
     block.replaceChildren(orderConfirmationFragment);
 
-    const onSignUpClick = async ({ inputsDefaultValueSet, addressesData }) => {
+    const handleSignUpClick = async ({
+      inputsDefaultValueSet,
+      addressesData,
+    }) => {
       const signUpForm = document.createElement('div');
       AuthProvider.render(SignUp, {
         routeSignIn: () => '/customer/login',
         routeRedirectOnEmailConfirmationClose: () => '/customer/account',
         inputsDefaultValueSet,
         addressesData,
+        slots: {
+          ...authPrivacyPolicyConsentSlot,
+        },
       })(signUpForm);
 
       await showModal(signUpForm);
     };
 
     OrderProvider.render(OrderHeader, {
+      handleEmailAvailability: checkoutApi.isEmailAvailable,
+      handleSignUpClick,
       orderData,
-      onSignUpClick,
     })($orderConfirmationHeader);
 
     OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(
@@ -836,33 +860,21 @@ export default async function decorate(block) {
     })($orderConfirmationFooterContinueBtn);
   };
 
-  // Event handlers
-  const handleCheckoutInitialized = async (data) => {
-    if (data === null || data.isEmpty) {
-      await displayEmptyCart();
-      return;
-    }
+  // Define the event handlers
+  const handleCartInitialized = async (data) => {
+    if (isCartEmpty(data)) await displayEmptyCart();
+  };
 
-    if (data.isGuest) {
-      await displayGuestAddressForms(data);
-    } else {
-      await displayCustomerAddressForms(data);
-    }
+  const handleCheckoutInitialized = async (data) => {
+    if (!data || isCheckoutEmpty(data)) return;
+    initializeCheckout(data);
   };
 
   const handleCheckoutUpdated = async (data) => {
-    if (data === null || data.isEmpty) {
+    if (isCheckoutEmpty(data)) {
       await displayEmptyCart();
-      return;
-    }
-
-    removeEmptyCart();
-
-    if (data.isGuest) {
-      await displayGuestAddressForms(data);
-    } else {
-      removeOverlaySpinner();
-      await displayCustomerAddressForms(data);
+    } else if (!initialized) {
+      await initializeCheckout(data);
     }
   };
 
@@ -871,7 +883,7 @@ export default async function decorate(block) {
     removeModal();
   };
 
-  const handleCheckoutOrder = async (orderData) => {
+  const handleOrderPlaced = async (orderData) => {
     // Clear address form data
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
@@ -893,7 +905,8 @@ export default async function decorate(block) {
   };
 
   events.on('authenticated', handleAuthenticated);
+  events.on('cart/initialized', handleCartInitialized, { eager: true });
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
-  events.on('checkout/order', handleCheckoutOrder);
   events.on('checkout/updated', handleCheckoutUpdated);
+  events.on('order/placed', handleOrderPlaced);
 }

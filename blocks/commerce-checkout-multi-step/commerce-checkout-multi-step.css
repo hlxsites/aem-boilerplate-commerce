@@ -1,3 +1,4 @@
+/* Step 5: Styles */
 /* stylelint-disable selector-class-pattern */
 
 .checkout__wrapper {
@@ -37,6 +38,11 @@
   row-gap: var(--spacing-xbig);
 }
 
+/* Block dividers */
+.checkout__block.checkout__heading .dropin-header-container {
+  gap: var(--spacing-xsmall);
+}
+
 .checkout__shipping {
   display: flex;
   flex-direction: column;
@@ -50,6 +56,23 @@
   padding-bottom: var(--spacing-small);
   border-top: var(--shape-border-width-3) solid var(--color-neutral-400);
   border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
+}
+
+/* Hide empty blocks */
+.checkout__block:empty {
+  display: none;
+}
+
+/* Hide blocks with empty divs */
+.checkout__server-error:has(> :empty),
+.checkout__out-of-stock:has(> :empty) {
+  display: none;
+}
+
+/* Hide main containers when the cart is empty or there is a server error */
+.checkout__content--error .checkout__out-of-stock,
+.checkout__content--empty .checkout__server-error {
+  display: none !important;
 }
 
 .checkout__delivery {
@@ -82,13 +105,138 @@
   border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
 }
 
+.checkout__merged-cart-banner {
+  grid-column: 1;
+}
+
+/* Cart Summary */
+.checkout__block .cart-cart-summary-list {
+  padding: var(--spacing-medium);
+}
+
+/* Order Summary Coupon */
+.dropin-accordion-section__heading {
+  margin: var(--spacing-medium) auto;
+}
+
+.cart-coupons__accordion {
+  margin-top: var(--spacing-xsmall);
+}
+
 /* temporary fix to hide the default cart heading */
 [data-testid='default-cart-heading'] {
   display: none;
 }
 
-/* Responsive adjustments */
+.cart-summary-list__heading {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-summary-list__heading-text {
+  font: var(--type-headline-2-strong-font);
+  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  color: var(--color-neutral-800);
+}
+
+.cart-cart-summary-list__heading {
+  row-gap: var(--spacing-small);
+  padding-top: 0;
+}
+
+.cart-cart-summary-list__heading-text {
+  font: var(--type-headline-2-strong-font);
+  letter-spacing: var(--type-headline-2-strong-letter-spacing);
+  color: var(--color-neutral-800);
+}
+
+.cart-summary-list__edit {
+  font: var(--type-body-2-strong-font);
+  letter-spacing: var(--type-body-2-strong-letter-spacing);
+}
+
+.checkout__block
+  .cart-cart-summary-list
+  .cart-cart-summary-list__footer-divider {
+  margin: var(--spacing-small) 0;
+}
+
+/* Order confirmation */
+.order-confirmation {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(var(--grid-4-columns), 1fr);
+  grid-template-areas: 'main aside';
+  grid-column-gap: var(--grid-4-gutters);
+  margin-bottom: var(--spacing-xbig);
+  padding-top: var(--spacing-xxlarge);
+}
+
+.order-confirmation__main {
+  display: grid;
+  grid-row-gap: var(--spacing-xbig);
+  grid-column: 1 / span 7;
+}
+
+.order-confirmation__aside {
+  display: grid;
+  grid-row-gap: var(--spacing-xbig);
+  grid-column: 9 / span 4;
+}
+
+.order-confirmation__footer {
+  display: grid;
+  gap: var(--spacing-small);
+  text-align: center;
+}
+
+.order-confirmation__footer p {
+  margin: 0;
+}
+
+.order-confirmation__footer .order-confirmation-footer__continue-button {
+  margin: 0 auto;
+  text-align: center;
+  display: inline-block;
+}
+
+.order-confirmation-footer__contact-support {
+  font: var(--type-body-2-default-font);
+  letter-spacing: var(--type-body-2-default-letter-spacing);
+  color: var(--color-neutral-700);
+}
+
+.order-confirmation-footer__contact-support a {
+  font: var(--type-body-2-strong-font);
+  letter-spacing: var(--type-body-2-strong-letter-spacing);
+  color: var(--color-brand-500);
+  cursor: pointer;
+}
+
+/* Hide empty blocks */
+.order-confirmation__block:empty {
+  display: none;
+}
+
 @media only screen and (width <= 768px) {
+  .order-confirmation {
+    grid-template-columns: repeat(var(--grid-1-columns), 1fr);
+    padding-top: 0;
+  }
+
+  .order-confirmation__main,
+  .order-confirmation__aside {
+    grid-row-gap: var(--spacing-medium);
+  }
+
+  .order-confirmation > div {
+    grid-column: 1 / span 4;
+  }
+
+  .order-confirmation__block .dropin-card {
+    border: 0;
+  }
+
   .checkout__wrapper {
     padding-left: 1.5rem;
     padding-right: 1.5rem;

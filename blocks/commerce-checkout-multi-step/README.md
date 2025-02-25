@@ -1,66 +1,54 @@
 # Commerce Checkout Multi-step
 
-As developers, we've been tasked with implementing a multi-step checkout using the available Storefront Dropin containers.
+This guide will walk you through the steps to extend the Checkout to implement a multi-step checkout using the available Storefront Dropin containers.
 
 ## Hands on
 
 We'll use the **commerce-checkout** block as our starting point and iteratively update it to meet the new product requirements.
 
-For simplicity, we are only going to cover the guest checkout experience. Check the table below for more details:
+> [!NOTE]
+> Please note the _**commerce-checkout.js**_ block is the only one that is fully functional up-to-date with the latest Drop-ins versions.
+> Use the following guidelines just as a reference when creating a new checkout experience.
 
-| Feature               | Covered |
-| --------------------- | ------- |
-| Custom Payment Method | ❌      |
-| Customer Checkout     | ❌      |
-| Empty Cart            | ✅      |
-| Guest Checkout        | ✅      |
-| Virtual Cart          | ❌      |
-| Order Confirmation    | ✅      |
+## Step-by-Step Process:
 
-### Step 1: Duplicate the commerce-checkout block
+### 1. Duplicate the commerce-checkout block
 
-First, we'll duplicate the **commerce-checkout** block. Next, make sure to remove all the content from the CSS file. Finally, open the JS file and remove everything from inside the **decorate** function so that it looks like this:
+First, we'll duplicate the **commerce-checkout** block.
 
-```js
-export default async function decorate(block) {};
-```
+### 2. Initialization
 
-### Step 2: Initialization
-
-We need to ensure we import the initializers of the all dropins that we are going to use. For this example, we'll use the auth and the checkout:
+We need to ensure we import the initializers of the all dropins that we are going to use. For this example, we'll use the account and the checkout:
 
 ```diff
 export default async function decorate(block) {
 +  // Initializers
-+  import('../../scripts/initializers/auth.js');
++  import('../../scripts/initializers/account.js');
 +  import('../../scripts/initializers/checkout.js');
-
+...
 +  const DEBOUNCE_TIME = 1000;
 +  const LOGIN_FORM_NAME = 'login-form';
 +  const SHIPPING_FORM_NAME = 'selectedShippingAddress';
 +  const BILLING_FORM_NAME = 'selectedBillingAddress';
 +  const SHIPPING_ADDRESS_DATA_KEY = `${SHIPPING_FORM_NAME}_addressData`;
 +  const BILLING_ADDRESS_DATA_KEY = `${BILLING_FORM_NAME}_addressData`;
-
-+  // Pre-fetch checkout store configuration
-+  const storeConfig = await checkoutApi.getStoreConfig();
-};
 ```
 
-**Note:** We've also defined some constants that we are going to use later on to render the containers and we've also pre-fetched the store configuration that the checkout dropin is going to use.
+**Note:** We've also defined some constants that we are going to use later on to render the containers.
 
-### Step 3: Layout
+### 3. Layout
 
 We'll define the layout for or checkout with a contextual fragment and we'll also reference the DOM elements were we are going to render our containers. Finally, we replace the block content with the fragment we've just created.
 
 ```diff
-export default async function decorate(block) {
-  ...
 +  // Define the Layout for the Checkout
-+  const fragment = document.createRange().createContextualFragment(`
++  const checkoutFragment = document.createRange().createContextualFragment(`
 +    <div class="checkout__wrapper">
++      <div class="checkout__merged-cart-banner"></div>
 +      <div class="checkout__heading"></div>
 +      <div class="checkout__empty-cart"></div>
++      <div class="checkout__server-error"></div>
++      <div class="checkout__out-of-stock"></div>
 +      <div class="checkout__content">
 +        <div class="checkout__main">
 +          <div class="checkout__shipping">
@@ -83,63 +71,72 @@ export default async function decorate(block) {
 +          </div>
 +        </div>
 +        <div class="checkout__aside">
-+          <div class="checkout__order-summary"></div>
-+          <div class="checkout__cart-summary"></div>
++          <div class="checkout__block checkout__order-summary"></div>
++          <div class="checkout__block checkout__cart-summary"></div>
 +        </div>
 +      </div>
 +    </div>
 +  `);
 +
-+  const $heading = fragment.querySelector('.checkout__heading');
-+  const $emptyCart = fragment.querySelector('.checkout__empty-cart');
-+  const $content = fragment.querySelector('.checkout__content');
++  const $mergedCartBanner = checkoutFragment.querySelector(
++    '.checkout__merged-cart-banner',
++  );
++  const $heading = checkoutFragment.querySelector('.checkout__heading');
++  const $emptyCart = checkoutFragment.querySelector('.checkout__empty-cart');
++  const $serverError = checkoutFragment.querySelector(
++    '.checkout__server-error',
++  );
++  const $outOfStock = checkoutFragment.querySelector('.checkout__out-of-stock');
++  const $content = checkoutFragment.querySelector('.checkout__content');
 +
-+  const $orderSummary = fragment.querySelector('.checkout__order-summary');
-+  const $cartSummary = fragment.querySelector('.checkout__cart-summary');
++  const $orderSummary = checkoutFragment.querySelector('.checkout__order-summary');
++  const $cartSummary = checkoutFragment.querySelector('.checkout__cart-summary');
 +
-+  const $shippingTitle = fragment.querySelector('.checkout__shipping-title');
-+  const $login = fragment.querySelector('.checkout__login');
-+  const $shippingForm = fragment.querySelector('.checkout__shipping-form');
-+  const $continueToDeliveryBtn = fragment.querySelector(
++  const $shippingTitle = checkoutFragment.querySelector('.checkout__shipping-title');
++  const $login = checkoutFragment.querySelector('.checkout__login');
++  const $shippingForm = checkoutFragment.querySelector('.checkout__shipping-form');
++  const $continueToDeliveryBtn = checkoutFragment.querySelector(
 +    '.checkout__continue-to-delivery',
 +  );
 +
-+  const $deliveryTitle = fragment.querySelector('.checkout__delivery-title');
-+  const $deliveryMethods = fragment.querySelector(
++  const $deliveryTitle = checkoutFragment.querySelector('.checkout__delivery-title');
++  const $deliveryMethods = checkoutFragment.querySelector(
 +    '.checkout__delivery-methods',
 +  );
-+  const $continueToPaymentBtn = fragment.querySelector(
++  const $continueToPaymentBtn = checkoutFragment.querySelector(
 +    '.checkout__continue-to-payment',
 +  );
 +
-+  const $paymentTitle = fragment.querySelector('.checkout__payment-title');
-+  const $billToShipping = fragment.querySelector('.checkout__bill-to-shipping');
-+  const $billingForm = fragment.querySelector('.checkout__billing-form');
-+  const $paymentMethods = fragment.querySelector('.checkout__payment-methods');
-+  const $placeOrder = fragment.querySelector('.checkout__place-order');
++  const $paymentTitle = checkoutFragment.querySelector('.checkout__payment-title');
++  const $billToShipping = checkoutFragment.querySelector('.checkout__bill-to-shipping');
++  const $billingForm = checkoutFragment.querySelector('.checkout__billing-form');
++  const $paymentMethods = checkoutFragment.querySelector('.checkout__payment-methods');
++  const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
 +
-+  block.replaceChildren(fragment);
-};
++  block.appendChild(checkoutFragment);
 ```
 
-### Step 4: Render the initial containers
-
+### 4. Render the initial containers
 We'll render the initial containers to the corresponding DOM elements that we've created in the previous step:
 
 ```js
 export default async function decorate(block) {
   ...
   const [
+    _mergedCartBanner,
     heading,
     _shippingInfoHeading,
     __shippingMethodHeading,
     _paymentHeading,
+    _serverError,
+    _outOfStock,
     _loginForm,
     shippingFormSkeleton,
     continueToDeliveryBtn,
     orderSummary,
     _cartSummary,
   ] = await Promise.all([
+  ...
     UI.render(Header, {
       title: 'Guest Checkout',
       size: 'large',
@@ -163,10 +160,32 @@ export default async function decorate(block) {
       size: 'medium',
       divider: false,
     })($paymentTitle),
-
+  ...
     // render the initial containers
     CheckoutProvider.render(LoginForm, {
       name: LOGIN_FORM_NAME,
+      onSignInClick: async (initialEmailValue) => {
+        const signInForm = document.createElement('div');
+
+        AuthProvider.render(AuthCombine, {
+          signInFormConfig: {
+            renderSignUpLink: true,
+            initialEmailValue,
+            onSuccessCallback: () => {},
+          },
+          signUpFormConfig: {
+            slots: {
+              ...authPrivacyPolicyConsentSlot,
+            },
+          },
+          resetPasswordFormConfig: {},
+        })(signInForm);
+
+        showModal(signInForm);
+      },
+      onSignOutClick: () => {
+        authApi.revokeCustomerToken();
+      },
     })($login),
 
     AccountProvider.render(AddressForm, {
@@ -182,7 +201,15 @@ export default async function decorate(block) {
       },
     })($continueToDeliveryBtn),
 
-    CartProvider.render(OrderSummary)($orderSummary),
+    CartProvider.render(OrderSummary, {
+      slots: {
+        Coupons: (ctx) => {
+          const coupons = document.createElement('div');
+          CartProvider.render(Coupons)(coupons);
+          ctx.appendChild(coupons);
+        },
+      },
+    })($orderSummary),
 
     CartProvider.render(CartSummaryList, {
       variant: 'secondary',
@@ -222,12 +249,13 @@ export default async function decorate(block) {
       },
     })($cartSummary),
   ]);
+  ...
 };
 ```
 
 At this point, if you access the page were you are using the block, you should see that all the containers are being rendered. The layout is probably not looking good, but don't worry, we are going to fix this in the next step. 
 
-### Step 5: Styles
+### 5. Styles
 
 As promised, we'll now add some styles to our layout and containers to make them look good. Just open the **commerce-checkout-multi-step.css** file and add the following styles:
 
@@ -344,12 +372,13 @@ As promised, we'll now add some styles to our layout and containers to make them
 }
 ```
 
-### Step 6: Empty cart
+### 6. Empty cart
 
 First we'll create two utility functions that will allow us to display or remove the **EmptyCart** container when needed:
 
 ```js
 let emptyCart;
+
 const displayEmptyCart = async () => {
   if (emptyCart) return;
 
@@ -383,6 +412,8 @@ const removeEmptyCart = () => {
 
 **Note:** See how we are also changing the heading title and adding a new class to the content wrapper so that we are able to hide it.
 
+### 7. Checkout event handlers
+
 Next, we have to start listening for the **checkout/initialized** and **checkout/updated** events so that we are able to identify when to display the empty cart. Add the following declarations at the end of the **decorate** function.
 
 ```js
@@ -393,25 +424,26 @@ events.on('checkout/updated', handleCheckoutUpdated);
 Finally, we'll add the missing handlers for the previous events:
 
 ```js
-async function handleCheckoutInitialized(data) {
+const handleCheckoutInitialized = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
   }
-}
+};
 
-async function handleCheckoutUpdated(data) {
+const handleCheckoutUpdated = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
   }
+
   removeEmptyCart();
-}
+};
 ```
 
 At this point, if you access the checkout page without a cart, you should see the **EmptyCart** container displayed.
 
-### Step 7: Shipping Address
+### 8. Shipping Address
 
 You've probably noticed that even after initializing the checkout the shipping form is still loading. To solve this issue, we are going to create a new utility method that we are going to call **continueToShipping**, that is going to remove the skeleton and render the shipping form when the checkout is initialized:
 
@@ -425,6 +457,8 @@ const continueToShipping = async (initialData = null) => {
   shippingFormSkeleton.remove();
   $shippingForm.innerHTML = '';
 
+  const storeConfig = checkoutApi.getStoreConfigCache();
+
   shippingForm = await AccountProvider.render(AddressForm, {
     addressesFormTitle: 'Shipping address',
     className: 'checkout-shipping-form__address-form',
@@ -434,19 +468,23 @@ const continueToShipping = async (initialData = null) => {
       countryCode: storeConfig.defaultCountry,
     },
     isOpen: true,
-    onChange: debounce((values) => {
-      setAddressOnCart(values, checkoutApi.setShippingAddress);
-    }, DEBOUNCE_TIME),
+    onChange: setAddressOnCart({
+      api: checkoutApi.setShippingAddress,
+      debounceMs: DEBOUNCE_TIME,
+      placeOrderBtn: placeOrder,
+    }),
     showBillingCheckBox: false,
     showShippingCheckBox: false,
   })($shippingForm);
 };
 ```
 
+### 9. Update event handlers
+
 Next, we need to update the handlers to use it:
 
 ```diff
-async function handleCheckoutInitialized(data) {
+const handleCheckoutInitialized = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -457,7 +495,7 @@ async function handleCheckoutInitialized(data) {
 +  await continueToShipping(cartShippingAddress);
 }
 
-async function handleCheckoutUpdated(data) {
+const handleCheckoutUpdated = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -473,14 +511,14 @@ async function handleCheckoutUpdated(data) {
 
 **Note:** We pass the data received in the event to ensure the form is properly initialized with the selected shipping address from the cart if necessary.
 
-### Step 8: Delivery
+### 10. Delivery
 
-If we go back to [step 4](#step-4-render-the-initial-containers), more precisely to the part where we rendered the **CONTINUE TO SHIPPING METHOD** button, we should see that we added a call to a non existing **continueToDelivery** method and that the button is disabled by default.
+If we go back to [step 4](#4-render-the-initial-containers), more precisely to the part where we rendered the **CONTINUE TO SHIPPING METHOD** button, we should see that we added a call to a non existing **continueToDelivery** method and that the button is disabled by default.
 
 First we are going to update the **handleCheckoutUpdated** handler to enable the button when the received data contains a selected shipping address:
 
 ```diff
-async function handleCheckoutUpdated(data) {
+const handleCheckoutUpdated = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -504,7 +542,7 @@ async function handleCheckoutUpdated(data) {
 Next, we are going to update the logic inside **handleCheckoutInitialized** handler to automatically call the **continueToDelivery** method if the cart already contains the necessary data:
 
 ```diff
-async function handleCheckoutInitialized(data) {
+ const handleCheckoutInitialized = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -536,6 +574,7 @@ const continueToDelivery = async () => {
   orderSummary.setProps((prev) => ({
     ...prev,
     slots: {
+      ...prev.slots,
       EstimateShipping: (esCtx) => {
         const estimateShippingForm = document.createElement('div');
         CheckoutProvider.render(EstimateShipping)(estimateShippingForm);
@@ -557,14 +596,14 @@ const continueToDelivery = async () => {
 };
 ```
 
-### Step 9: Payment
+### 11. Payment
 
-Similarly to what we did in the [step 8](#step-8-delivery), we now need to add the logic to enable the **CONTINUE TO PAYMENT INFORMATION** button and to implement the missing method **continueToPayment**.
+Similarly to what we did in the [step 10](#10-delivery), we now need to add the logic to enable the **CONTINUE TO PAYMENT INFORMATION** button and to implement the missing method **continueToPayment**.
 
 Same as we did before, we are going to start by updating the handlers:
 
 ```diff
-async function handleCheckoutInitialized(data) {
+const handleCheckoutInitialized = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -586,7 +625,7 @@ async function handleCheckoutInitialized(data) {
 ```
 
 ```diff
-async function handleCheckoutUpdated(data) {
+const handleCheckoutUpdated = async (data) => {
   if (isEmptyCart(data)) {
     await displayEmptyCart();
     return;
@@ -623,7 +662,7 @@ let billingForm;
 let paymentMethods;
 let placeOrder;
 
-const continueToPayment = async () => {
+const continueToPayment = async (initialData = null) => {
   if (!billToShipping) {
     billToShipping = await CheckoutProvider.render(BillToShippingAddress, {
       hideOnVirtualCart: true,
@@ -634,15 +673,22 @@ const continueToPayment = async () => {
   }
 
   if (!billingForm) {
+    const storeConfig = checkoutApi.getStoreConfigCache();
+
     billingForm = await AccountProvider.render(AddressForm, {
       addressesFormTitle: 'Billing address',
       className: 'checkout-billing-form__address-form',
       formName: BILLING_FORM_NAME,
       hideActionFormButtons: true,
+      inputsDefaultValueSet: initialData ?? {
+        countryCode: storeConfig.defaultCountry,
+      },
       isOpen: true,
-      onChange: debounce((values) => {
-        setAddressOnCart(values, checkoutApi.setBillingAddress);
-      }, DEBOUNCE_TIME),
+      onChange: setAddressOnCart({
+        api: checkoutApi.setBillingAddress,
+        debounceMs: DEBOUNCE_TIME,
+        placeOrderBtn: placeOrder,
+      }),
       showBillingCheckBox: false,
       showShippingCheckBox: false,
     })($billingForm);
@@ -653,7 +699,11 @@ const continueToPayment = async () => {
   }
 
   if (!placeOrder) {
-    placeOrder = await CheckoutProvider.render(PlaceOrder)($placeOrder);
+    placeOrder = await CheckoutProvider.render(PlaceOrder, {
+      handlePlaceOrder: async ({ cartId }) => {
+        orderApi.placeOrder(cartId).catch(console.error);
+      },
+    })($placeOrder);
   }
 
   continueToPaymentBtn.remove();
@@ -663,20 +713,20 @@ const continueToPayment = async () => {
 
 At this point, we should have a fully functional multi-step checkout, but we still have some work to do...
 
-### Step 10: Order confirmation
+### 12. Order confirmation
 
 The last step to complete our checkout is to create our order confirmation page. To make things easy, we are going to reuse the code from the **commerce-checkout** block.
 
 First we are going to copy the **displayOrderConfirmation** function.
 
-Then, we are going to copy the **handleCheckoutOrder** handler.
+Then, we are going to copy the **handleOrderPlaced** handler.
 
-And finally, we are going to register the **checkout/order** event listener:
+And finally, we are going to register the **order/placed** event listener:
 
 ```diff
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
-+ events.on('checkout/order', handleCheckoutOrder);
   events.on('checkout/updated', handleCheckoutUpdated);
++ events.on('order/placed', handleOrderPlaced);
 ```
 
 ## Conclusion

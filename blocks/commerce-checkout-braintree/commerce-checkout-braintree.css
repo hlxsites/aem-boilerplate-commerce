@@ -29,6 +29,8 @@
 .checkout__payment-methods {
   padding-top: var(--spacing-xbig);
   border-top: var(--shape-border-width-3) solid var(--color-neutral-400);
+  padding-bottom: var(--spacing-xbig);
+  border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
 }
 
 /* Hide empty blocks */
@@ -100,7 +102,6 @@
   display: none;
 }
 
-.checkout__error-banner,
 .checkout__merged-cart-banner {
   grid-column: 1;
 }
@@ -318,7 +319,6 @@
     gap: var(--spacing-xbig);
   }
 
-  .checkout__error-banner,
   .checkout__merged-cart-banner {
     display: grid;
     grid-column: 1 / span 12;
