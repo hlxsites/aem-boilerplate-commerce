@@ -15,6 +15,28 @@
  * from Adobe.
  *******************************************************************/
 export interface CartModel {
+    totalGiftOptions: {
+        giftWrappingForItems: Price;
+        giftWrappingForItemsInclTax: Price;
+        giftWrappingForOrder: Price;
+        giftWrappingForOrderInclTax: Price;
+        printedCard: Price;
+        printedCardInclTax: Price;
+    };
+    cartGiftWrapping: {
+        uid: string;
+        design: string;
+        selected: boolean;
+        image: WrappingImage;
+        price: Price;
+    }[];
+    giftReceiptIncluded: boolean;
+    printedCardIncluded: boolean;
+    giftMessage: {
+        recipientName: string;
+        senderName: string;
+        message: string;
+    };
     id: string;
     totalQuantity: number;
     totalUniqueItems: number;
@@ -58,6 +80,24 @@ interface FixedProductTax {
     label: string;
 }
 export interface Item {
+    giftWrappingAvailable: boolean;
+    giftWrappingPrice: {
+        currency: string;
+        value: number;
+    };
+    productGiftWrapping: {
+        uid: string;
+        design: string;
+        selected: boolean;
+        image: WrappingImage;
+        price: Price;
+    }[];
+    giftMessage: {
+        recipientName: string;
+        senderName: string;
+        message: string;
+    };
+    giftMessageAvailable: boolean | null;
     taxedPrice: Price;
     rowTotal: Price;
     rowTotalIncludingTax: Price;
@@ -134,6 +174,10 @@ interface Attribute {
 }
 interface Coupon {
     code: string;
+}
+export interface WrappingImage {
+    url: string;
+    design: string;
 }
 export {};
 //# sourceMappingURL=cart-model.d.ts.map

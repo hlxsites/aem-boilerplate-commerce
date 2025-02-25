@@ -1,0 +1,4 @@
+export declare const GIFT_MESSAGE_FRAGMENT = "\n  fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {\n    __typename\n    from\n    to\n    message\n  }\n";
+export declare const GIFT_WRAPPING_FRAGMENT = "\n  fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {\n    __typename\n    uid\n    design\n    image {\n      url\n    }\n    price {\n      value\n      currency\n    }\n  }\n";
+export declare const AVAILABLE_GIFT_WRAPPING_FRAGMENT = "\n  fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {\n   __typename\n   uid\n   design\n   image {\n     url\n     label\n   }\n   price {\n     currency\n     value\n   }\n  }\n";
+//# sourceMappingURL=GiftFragment.d.ts.map
