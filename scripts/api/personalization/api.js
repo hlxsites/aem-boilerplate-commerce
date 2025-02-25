@@ -44,13 +44,16 @@ const getCustomerSegments = async () => {
               name
             }
           }
+          customerGroup {
+            name
+          }
         }
       `,
       {
         method: 'GET',
       },
     );
-    return response.data?.customer?.segments || [];
+    return response.data || [];
   } catch (error) {
     console.error('Could not retrieve customer segments', error);
   }
@@ -69,6 +72,9 @@ const getCartRules = async (cartId) => {
             rules {
               name
             }
+          }
+          customerGroup {
+            name
           }
         }
       `,
@@ -119,22 +125,32 @@ const getCatalogPriceRules = async (sku) => {
 const getActiveRules = async function () {
   const activeRules = {
     customerSegments: [],
-    customerGroup: await getCustomerGroups(),
+    customerGroup: null,
     cart: [],
     catalogPriceRules: [],
   };
 
+  // Cart initialised
   if (Cart.getCartDataFromCache() !== null) {
     const cartId = Cart.getCartDataFromCache().id || null;
     if (cartId) {
       const response = await getCartRules(cartId);
       activeRules.cart = response.cart?.rules || [];
+      activeRules.customerGroup = response.customerGroup || '';
       activeRules.customerSegments = response.customerSegments || [];
     }
   }
 
+  // Cart not initialised, but Authenticated user
   if (Cart.getCartDataFromCache() === null && getUserTokenCookie()) {
-    activeRules.customerSegments = await getCustomerSegments();
+    const response = await getCustomerSegments();
+    activeRules.customerGroup = response.customerGroup || '';
+    activeRules.customerSegments = response.customerSegments || [];
+  }
+
+  // Cart not initialized AND user is not Authenticated
+  if (Cart.getCartDataFromCache() === null && !getUserTokenCookie()) {
+    activeRules.customerGroup = await getCustomerGroups();
   }
 
   // eslint-disable-next-line no-underscore-dangle
@@ -142,6 +158,7 @@ const getActiveRules = async function () {
   if (productData?.sku) {
     activeRules.catalogPriceRules = await getCatalogPriceRules(productData.sku);
   }
+
   return activeRules;
 };
 
