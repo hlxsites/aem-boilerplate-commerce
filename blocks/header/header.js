@@ -205,7 +205,10 @@ export default async function decorate(block) {
         }
       }
 
-      categoryAccordian.addEventListener('click', (e) => toggleListItem(e));
+      categoryAccordian.addEventListener('click', (e) => {
+        toggleListItem(e);
+      });
+
       categoryUlLi.append(categoryLink);
 
       if (ele.children.length > 0) {
