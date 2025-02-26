@@ -245,50 +245,52 @@ export default async function decorate(block) {
             const { addProductsToCart, updateProductsFromCart } = await import(
               "@dropins/storefront-cart/api.js"
             );
-            await addProductsToCart([{ ...values }]);
+            await addProductsToCart([{ ...values }]).then((response) => {
+              console.log("response :>> ", response);
+            });
             const updatedGiftOptions = JSON.parse(
               sessionStorage.getItem("updatedGiftOptions")
             );
 
-            events.on(
-              // @ts-ignore
-              "cart/data",
-              async (payload) => {
-                const { items } = payload;
-                const dropinCartData = items.find(
-                  (el) => el.sku === values.sku
-                );
+            // events.on(
+            //   // @ts-ignore
+            //   "cart/data",
+            //   async (payload) => {
+            //     const { items } = payload;
+            //     const dropinCartData = items.find(
+            //       (el) => el.sku === values.sku
+            //     );
 
-                if (updatedGiftOptions) {
-                  const {
-                    recipientName,
-                    senderName,
-                    message,
-                    giftWrappingId,
-                    isGiftWrappingSelected,
-                  } = updatedGiftOptions;
+            //     if (updatedGiftOptions) {
+            //       const {
+            //         recipientName,
+            //         senderName,
+            //         message,
+            //         giftWrappingId,
+            //         isGiftWrappingSelected,
+            //       } = updatedGiftOptions;
 
-                  const giftOptions = {
-                    gift_message: {
-                      to: recipientName,
-                      from: senderName,
-                      message,
-                    },
-                    gift_wrapping_id: isGiftWrappingSelected
-                      ? giftWrappingId
-                      : null,
-                  };
-                  await updateProductsFromCart([
-                    {
-                      uid: dropinCartData.uid,
-                      quantity: dropinCartData.quantity,
-                      giftOptions,
-                    },
-                  ]);
-                }
-              },
-              { eager: true }
-            );
+            //       const giftOptions = {
+            //         gift_message: {
+            //           to: recipientName,
+            //           from: senderName,
+            //           message,
+            //         },
+            //         gift_wrapping_id: isGiftWrappingSelected
+            //           ? giftWrappingId
+            //           : null,
+            //       };
+            //       await updateProductsFromCart([
+            //         {
+            //           uid: dropinCartData.uid,
+            //           quantity: dropinCartData.quantity,
+            //           giftOptions,
+            //         },
+            //       ]);
+            //     }
+            //   },
+            //   { eager: true }
+            // );
           }
 
           // reset any previous alerts if successful
