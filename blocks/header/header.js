@@ -29,6 +29,8 @@ function closeOnEscape(e) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
       nav.querySelector('button').focus();
+      const navWrapper = document.querySelector('.nav-wrapper');
+      navWrapper.classList.remove('active');
     }
   }
 }
