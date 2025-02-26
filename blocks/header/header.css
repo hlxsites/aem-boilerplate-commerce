@@ -600,16 +600,30 @@ main.overlay {
     padding: var(--spacing-medium);
   }
 
+  header nav .nav-sections ul li a {
+    font: var(--type-headline-2-default-font);
+    letter-spacing: var(--type-headline-2-default-letter-spacing);
+  }
+
+  header nav .nav-sections ul li:not(.break):empty {
+    display: none;
+  }
+
+
   header nav .nav-sections ul > li ul {
     width: 100%;
   }
 
-  header nav .nav-sections ul > li ul > li,
-  header nav .nav-sections ul > li ul > li a {
+  header nav .nav-sections ul > li ul > li {
     font: var(--type-headline-2-default-font);
     letter-spacing: var(--type-headline-2-default-letter-spacing);
     padding: var(--spacing-xsmall);
     width: auto;
+  }
+
+  header nav .nav-sections ul > li ul > li a {
+    font: var(--type-headline-2-default-font);
+    letter-spacing: var(--type-headline-2-default-letter-spacing);
   }
 
   header nav .nav-sections ul > li ul > li.break {
@@ -657,9 +671,10 @@ main.overlay {
 
   header nav .nav-sections ul > li.nav-drop .submenu-header {
     background: var(--background-color);
+    height: var(--spacing-large);
+    left: 0;
     position: fixed;
     top: 0;
-    left: 0;
     width: 320px;
     z-index: 3;
   }
