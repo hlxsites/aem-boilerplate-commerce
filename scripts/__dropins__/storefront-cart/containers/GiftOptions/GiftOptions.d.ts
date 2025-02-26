@@ -1,6 +1,6 @@
 import { Item } from '../../data/models';
 import { Container } from '@dropins/tools/types/elsie/src/lib';
-import { GiftOptionsViewProps, GiftOptionsDataSourcesProps } from '../../types';
+import { GiftOptionsViewProps, GiftOptionsDataSourcesProps, GiftFormDataType } from '../../types';
 
 export interface GiftOptionsProps {
     item: Item;
@@ -14,6 +14,7 @@ export interface GiftOptionsProps {
     onItemUpdate?: ({ item }: {
         item: Item;
     }) => void;
+    collectFormData?: (data: GiftFormDataType) => void;
 }
 export declare const GiftOptions: Container<GiftOptionsProps>;
 //# sourceMappingURL=GiftOptions.d.ts.map

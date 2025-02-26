@@ -11,8 +11,9 @@ interface UseGiftOptionsProps {
     onItemUpdate?: ({ item }: {
         item: Item;
     }) => void;
+    collectFormData?: (data: GiftFormDataType) => void;
 }
-export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, handleItemsLoading, handleItemsError, onItemUpdate, }: UseGiftOptionsProps) => {
+export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, handleItemsLoading, handleItemsError, onItemUpdate, collectFormData, }: UseGiftOptionsProps) => {
     loading: boolean;
     giftOptions: GiftFormDataType;
     showModal: boolean;
