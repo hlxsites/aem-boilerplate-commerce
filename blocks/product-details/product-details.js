@@ -5,36 +5,36 @@ import {
   Icon,
   Button,
   provider as UI,
-} from '@dropins/tools/components.js';
-import { events } from '@dropins/tools/event-bus.js';
-import * as pdpApi from '@dropins/storefront-pdp/api.js';
-import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
+} from "@dropins/tools/components.js";
+import { events } from "@dropins/tools/event-bus.js";
+import * as pdpApi from "@dropins/storefront-pdp/api.js";
+import { render as pdpRendered } from "@dropins/storefront-pdp/render.js";
 
 // Cart Dropin
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import { render as CartProvider } from '@dropins/storefront-cart/render.js';
+import GiftOptions from "@dropins/storefront-cart/containers/GiftOptions.js";
+import { render as CartProvider } from "@dropins/storefront-cart/render.js";
 
 // Containers
-import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
-import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
-import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
-import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
-import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.js';
-import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
-import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
-import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
+import ProductHeader from "@dropins/storefront-pdp/containers/ProductHeader.js";
+import ProductPrice from "@dropins/storefront-pdp/containers/ProductPrice.js";
+import ProductShortDescription from "@dropins/storefront-pdp/containers/ProductShortDescription.js";
+import ProductOptions from "@dropins/storefront-pdp/containers/ProductOptions.js";
+import ProductQuantity from "@dropins/storefront-pdp/containers/ProductQuantity.js";
+import ProductDescription from "@dropins/storefront-pdp/containers/ProductDescription.js";
+import ProductAttributes from "@dropins/storefront-pdp/containers/ProductAttributes.js";
+import ProductGallery from "@dropins/storefront-pdp/containers/ProductGallery.js";
 
 // Libs
-import { setJsonLd } from '../../scripts/commerce.js';
-import { fetchPlaceholders } from '../../scripts/aem.js';
+import { setJsonLd } from "../../scripts/commerce.js";
+import { fetchPlaceholders } from "../../scripts/aem.js";
 
 // Initializers
-import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
-import '../../scripts/initializers/cart.js';
+import { IMAGES_SIZES } from "../../scripts/initializers/pdp.js";
+import "../../scripts/initializers/cart.js";
 
 export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
-  const product = events._lastEvent?.['pdp/data']?.payload ?? null;
+  const product = events._lastEvent?.["pdp/data"]?.payload ?? null;
   const labels = await fetchPlaceholders();
 
   // Layout
@@ -53,7 +53,9 @@ export default async function decorate(block) {
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
           <div class="product-details__gift-options"></div>
+          <hr/>
           <div class="product-details__gift-options2"></div>
+          <hr/>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
@@ -65,29 +67,29 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $alert = fragment.querySelector('.product-details__alert');
-  const $gallery = fragment.querySelector('.product-details__gallery');
-  const $header = fragment.querySelector('.product-details__header');
-  const $price = fragment.querySelector('.product-details__price');
+  const $alert = fragment.querySelector(".product-details__alert");
+  const $gallery = fragment.querySelector(".product-details__gallery");
+  const $header = fragment.querySelector(".product-details__header");
+  const $price = fragment.querySelector(".product-details__price");
   const $galleryMobile = fragment.querySelector(
-    '.product-details__right-column .product-details__gallery',
+    ".product-details__right-column .product-details__gallery"
   );
   const $shortDescription = fragment.querySelector(
-    '.product-details__short-description',
+    ".product-details__short-description"
   );
-  const $options = fragment.querySelector('.product-details__options');
-  const $quantity = fragment.querySelector('.product-details__quantity');
+  const $options = fragment.querySelector(".product-details__options");
+  const $quantity = fragment.querySelector(".product-details__quantity");
   const $addToCart = fragment.querySelector(
-    '.product-details__buttons__add-to-cart',
+    ".product-details__buttons__add-to-cart"
   );
   const $addToWishlist = fragment.querySelector(
-    '.product-details__buttons__add-to-wishlist',
+    ".product-details__buttons__add-to-wishlist"
   );
-  const $description = fragment.querySelector('.product-details__description');
-  const $attributes = fragment.querySelector('.product-details__attributes');
-  const $giftOptions = fragment.querySelector('.product-details__gift-options');
+  const $description = fragment.querySelector(".product-details__description");
+  const $attributes = fragment.querySelector(".product-details__attributes");
+  const $giftOptions = fragment.querySelector(".product-details__gift-options");
   const $giftOptions2 = fragment.querySelector(
-    '.product-details__gift-options2',
+    ".product-details__gift-options2"
   );
 
   block.appendChild(fragment);
@@ -112,10 +114,10 @@ export default async function decorate(block) {
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
-      controls: 'dots',
+      controls: "dots",
       arrows: true,
       peak: false,
-      gap: 'small',
+      gap: "small",
       loop: false,
       imageParams: {
         ...IMAGES_SIZES,
@@ -124,10 +126,10 @@ export default async function decorate(block) {
 
     // Gallery (Desktop)
     pdpRendered.render(ProductGallery, {
-      controls: 'thumbnailsColumn',
+      controls: "thumbnailsColumn",
       arrows: true,
       peak: true,
-      gap: 'small',
+      gap: "small",
       loop: false,
       imageParams: {
         ...IMAGES_SIZES,
@@ -151,83 +153,83 @@ export default async function decorate(block) {
 
     CartProvider.render(GiftOptions, {
       item: JSON.parse(
-        sessionStorage.getItem('DROPIN__CART__CART__DATA'),
+        sessionStorage.getItem("DROPIN__CART__CART__DATA")
       )?.items?.find((el) => el.sku === product.sku) ?? {
         giftWrappingAvailable: true,
         giftMessageAvailable: true,
         giftWrappingPrice: {
-          currency: 'USD',
+          currency: "USD",
           value: 0,
         },
         giftMessage: {
-          senderName: '',
-          recipientName: '',
-          message: '',
+          senderName: "",
+          recipientName: "",
+          message: "",
         },
         productGiftWrapping: [
           {
-            design: 'Glossy Print Paper',
-            uid: 'Mg==',
+            design: "Glossy Print Paper",
+            uid: "Mg==",
             selected: false,
             image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
-              label: 'Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
+              url: "https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png",
+              label: "Screenshot-2020-11-22-at-18.51.52-1536x1143.png",
             },
             price: {
-              currency: 'USD',
+              currency: "USD",
               value: 100,
             },
           },
           {
-            design: 'Foil Finish Paper',
-            uid: 'NQ==',
+            design: "Foil Finish Paper",
+            uid: "NQ==",
             selected: false,
             image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg',
-              label: 'random-grid.jpg',
+              url: "https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg",
+              label: "random-grid.jpg",
             },
             price: {
-              currency: 'USD',
+              currency: "USD",
               value: 30,
             },
           },
           {
-            design: 'Kraft Brown Paper',
-            uid: 'OA==',
+            design: "Kraft Brown Paper",
+            uid: "OA==",
             selected: false,
             image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg',
-              label: '16359095_v904-nunny-012_1_1_.jpg',
+              url: "https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg",
+              label: "16359095_v904-nunny-012_1_1_.jpg",
             },
             price: {
-              currency: 'USD',
+              currency: "USD",
               value: 45,
             },
           },
         ],
       },
-      view: 'product',
-      dataSource: 'cart',
+      view: "product",
+      dataSource: "cart",
       handleItemsLoading: () => {},
       handleItemsError: () => {},
       onItemUpdate: () => {},
       onGiftOptionsChange: async (data) => {
-        console.log('onGiftOptionsChange :>> ', data);
+        console.log("onGiftOptionsChange :>> ", data);
         if (data) {
-          sessionStorage.setItem('updatedGiftOptions', JSON.stringify(data));
+          sessionStorage.setItem("updatedGiftOptions", JSON.stringify(data));
         }
       },
     })($giftOptions),
 
     CartProvider.render(GiftOptions, {
-      view: 'order',
-      dataSource: 'cart',
+      view: "order",
+      dataSource: "cart",
     })($giftOptions2),
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
-      icon: Icon({ source: 'Cart' }),
+      icon: Icon({ source: "Cart" }),
       onClick: async () => {
         try {
           addToCart.setProps((prev) => ({
@@ -243,11 +245,11 @@ export default async function decorate(block) {
           // add the product to the cart
           if (valid) {
             const { addProductsToCart, updateProductsFromCart } = await import(
-              '@dropins/storefront-cart/api.js'
+              "@dropins/storefront-cart/api.js"
             );
             await addProductsToCart([{ ...values }]).then(async (response) => {
               const updatedGiftOptions = JSON.parse(
-                sessionStorage.getItem('updatedGiftOptions'),
+                sessionStorage.getItem("updatedGiftOptions")
               );
 
               if (!updatedGiftOptions) return;
@@ -288,11 +290,11 @@ export default async function decorate(block) {
         } catch (error) {
           // add alert message
           inlineAlert = await UI.render(InLineAlert, {
-            heading: 'Error',
+            heading: "Error",
             description: error.message,
-            icon: Icon({ source: 'Warning' }),
-            'aria-live': 'assertive',
-            role: 'alert',
+            icon: Icon({ source: "Warning" }),
+            "aria-live": "assertive",
+            role: "alert",
             onDismiss: () => {
               inlineAlert.remove();
             },
@@ -300,8 +302,8 @@ export default async function decorate(block) {
 
           // Scroll the alertWrapper into view
           $alert.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
+            behavior: "smooth",
+            block: "center",
           });
         } finally {
           addToCart.setProps((prev) => ({
@@ -315,21 +317,21 @@ export default async function decorate(block) {
 
     // Configuration - Add to Wishlist
     UI.render(Button, {
-      icon: Icon({ source: 'Heart' }),
-      variant: 'secondary',
-      'aria-label': labels.Custom?.AddToWishlist?.label,
+      icon: Icon({ source: "Heart" }),
+      variant: "secondary",
+      "aria-label": labels.Custom?.AddToWishlist?.label,
       onClick: async () => {
         try {
           addToWishlist.setProps((prev) => ({
             ...prev,
             disabled: true,
-            'aria-label': labels.Custom?.AddingToWishlist?.label,
+            "aria-label": labels.Custom?.AddingToWishlist?.label,
           }));
 
           const values = pdpApi.getProductConfigurationValues();
 
           if (values?.sku) {
-            const wishlist = await import('../../scripts/wishlist/api.js');
+            const wishlist = await import("../../scripts/wishlist/api.js");
             await wishlist.addToWishlist(values.sku);
           }
         } catch (error) {
@@ -338,7 +340,7 @@ export default async function decorate(block) {
           addToWishlist.setProps((prev) => ({
             ...prev,
             disabled: false,
-            'aria-label': labels.Custom?.AddToWishlist?.label,
+            "aria-label": labels.Custom?.AddToWishlist?.label,
           }));
         }
       },
@@ -353,17 +355,17 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on(
-    'pdp/valid',
+    "pdp/valid",
     (valid) => {
       // update add to cart button disabled state based on product selection validity
       addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
     },
-    { eager: true },
+    { eager: true }
   );
 
   // Set JSON-LD and Meta Tags
   events.on(
-    'eds/lcp',
+    "eds/lcp",
     () => {
       if (product) {
         setJsonLdProduct(product);
@@ -371,7 +373,7 @@ export default async function decorate(block) {
         document.title = product.name;
       }
     },
-    { eager: true },
+    { eager: true }
   );
 
   return Promise.resolve();
@@ -390,7 +392,7 @@ async function setJsonLdProduct(product) {
     attributes,
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes.find((attr) => attr.name === 'brand');
+  const brand = attributes.find((attr) => attr.name === "brand");
 
   // get variants
   const { data } = await pdpApi.fetchGraphQl(
@@ -416,56 +418,56 @@ async function setJsonLdProduct(product) {
     }
   `,
     {
-      method: 'GET',
+      method: "GET",
       variables: { sku },
-    },
+    }
   );
 
   const variants = data?.variants?.variants || [];
 
   const ldJson = {
-    '@context': 'http://schema.org',
-    '@type': 'Product',
+    "@context": "http://schema.org",
+    "@type": "Product",
     name,
     description,
     image: images[0]?.url,
     offers: [],
     productID: sku,
     brand: {
-      '@type': 'Brand',
+      "@type": "Brand",
       name: brand?.value,
     },
     url: new URL(`/products/${urlKey}/${sku}`, window.location),
     sku,
-    '@id': new URL(`/products/${urlKey}/${sku}`, window.location),
+    "@id": new URL(`/products/${urlKey}/${sku}`, window.location),
   };
 
   if (variants.length > 1) {
     ldJson.offers.push(
       ...variants.map((variant) => ({
-        '@type': 'Offer',
+        "@type": "Offer",
         name: variant.product.name,
         image: variant.product.images[0]?.url,
         price: variant.product.price.final.amount.value,
         priceCurrency: variant.product.price.final.amount.currency,
         availability: variant.product.inStock
-          ? 'http://schema.org/InStock'
-          : 'http://schema.org/OutOfStock',
+          ? "http://schema.org/InStock"
+          : "http://schema.org/OutOfStock",
         sku: variant.product.sku,
-      })),
+      }))
     );
   } else {
     ldJson.offers.push({
-      '@type': 'Offer',
+      "@type": "Offer",
       price: amount?.value,
       priceCurrency: amount?.currency,
       availability: inStock
-        ? 'http://schema.org/InStock'
-        : 'http://schema.org/OutOfStock',
+        ? "http://schema.org/InStock"
+        : "http://schema.org/OutOfStock",
     });
   }
 
-  setJsonLd(ldJson, 'product');
+  setJsonLd(ldJson, "product");
 }
 
 function createMetaTag(property, content, type) {
@@ -479,15 +481,15 @@ function createMetaTag(property, content, type) {
       return;
     }
     meta.setAttribute(type, property);
-    meta.setAttribute('content', content);
+    meta.setAttribute("content", content);
     return;
   }
   if (!content) {
     return;
   }
-  meta = document.createElement('meta');
+  meta = document.createElement("meta");
   meta.setAttribute(type, property);
-  meta.setAttribute('content', content);
+  meta.setAttribute("content", content);
   document.head.appendChild(meta);
 }
 
@@ -496,20 +498,23 @@ function setMetaTags(product) {
     return;
   }
 
-  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
+  const price =
+    product.prices.final.minimumAmount ?? product.prices.final.amount;
 
-  createMetaTag('title', product.metaTitle || product.name, 'name');
-  createMetaTag('description', product.metaDescription, 'name');
-  createMetaTag('keywords', product.metaKeyword, 'name');
+  createMetaTag("title", product.metaTitle || product.name, "name");
+  createMetaTag("description", product.metaDescription, "name");
+  createMetaTag("keywords", product.metaKeyword, "name");
 
-  createMetaTag('og:type', 'product', 'property');
-  createMetaTag('og:description', product.shortDescription, 'property');
-  createMetaTag('og:title', product.metaTitle || product.name, 'property');
-  createMetaTag('og:url', window.location.href, 'property');
-  const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
+  createMetaTag("og:type", "product", "property");
+  createMetaTag("og:description", product.shortDescription, "property");
+  createMetaTag("og:title", product.metaTitle || product.name, "property");
+  createMetaTag("og:url", window.location.href, "property");
+  const mainImage = product?.images?.filter((image) =>
+    image.roles.includes("thumbnail")
+  )[0];
   const metaImage = mainImage?.url || product?.images[0]?.url;
-  createMetaTag('og:image', metaImage, 'property');
-  createMetaTag('og:image:secure_url', metaImage, 'property');
-  createMetaTag('product:price:amount', price.value, 'property');
-  createMetaTag('product:price:currency', price.currency, 'property');
+  createMetaTag("og:image", metaImage, "property");
+  createMetaTag("og:image:secure_url", metaImage, "property");
+  createMetaTag("product:price:amount", price.value, "property");
+  createMetaTag("product:price:currency", price.currency, "property");
 }
