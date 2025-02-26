@@ -54,6 +54,7 @@ export default async function decorate(block) {
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
           <div class="product-details__gift-options"></div>
+          <div class="product-details__gift-options2"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
@@ -86,6 +87,7 @@ export default async function decorate(block) {
   const $description = fragment.querySelector(".product-details__description");
   const $attributes = fragment.querySelector(".product-details__attributes");
   const $giftOptions = fragment.querySelector(".product-details__gift-options");
+  const $giftOptions2 = fragment.querySelector(".product-details__gift-options2");
 
   block.appendChild(fragment);
 
@@ -214,6 +216,11 @@ export default async function decorate(block) {
         }
       },
     })($giftOptions),
+
+    CartProvider.render(GiftOptions, {
+      view: "order",
+      dataSource: "cart",
+    })($giftOptions2),
 
     // Configuration – Button - Add to Cart
     UI.render(Button, {
