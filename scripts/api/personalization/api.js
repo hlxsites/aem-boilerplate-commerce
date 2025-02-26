@@ -15,7 +15,7 @@ const addCartHeaders = async () => {
 
 const getCustomerGroups = async () => {
   try {
-    addCartHeaders();
+    await addCartHeaders();
     const response = await fetchGraphQl(
       `query {
           customerGroup {
@@ -36,7 +36,7 @@ const getCustomerGroups = async () => {
 
 const getCustomerSegments = async () => {
   try {
-    addCartHeaders();
+    await addCartHeaders();
     const response = await fetchGraphQl(
       `query {
           customer {
@@ -62,7 +62,7 @@ const getCustomerSegments = async () => {
 
 const getCartRules = async (cartId) => {
   try {
-    addCartHeaders();
+    await addCartHeaders();
     const response = await fetchGraphQl(
       `query TB_GET_CUSTOMER_SEGMENTS_CART_RULES($cartId: String!){
           customerSegments(cartId: $cartId) {
@@ -107,7 +107,7 @@ const getCatalogPriceRules = async (sku) => {
           }
         }
       `;
-    addCartHeaders();
+    await addCartHeaders();
     const response = await fetchGraphQl(
       query,
       {
