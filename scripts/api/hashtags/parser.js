@@ -94,7 +94,7 @@ function parseHashTag(aElement) {
 /**
  * Parses hash tags and applies condition callback against each namespace/hash combination
  *
- * @param aElements - a NodeList containing all DOM element(s) with hash tags
+ * @param {NodeList} aElements - a NodeList containing all DOM element(s) with hash tags
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
 function apply(aElements, callbackFn, activeRules) {
@@ -115,7 +115,7 @@ function apply(aElements, callbackFn, activeRules) {
  * Parses DOM fragment identified by domEl
  * change visibility or remove elements based on hash tags conditions
  *
- * @param domEl DOM element
+ * @param {HTMLElement} domEl DOM element
  * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
  */
 function parseUrlHashTags(domEl, callbackFn, activeRules) {

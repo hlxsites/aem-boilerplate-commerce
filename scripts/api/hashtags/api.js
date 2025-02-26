@@ -12,9 +12,9 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
 /**
  * This method contains default logic for built-in namespace/tag combination(s).
  *
- * @param el
- * @param namespace
- * @param value
+ * @param {HTMLAnchorElement} el
+ * @param {string} namespace
+ * @param {string} value
  * @returns {Promise<void>}
  */
 const defaultCallbackFn = (el, namespace, value, activeRules) => {
@@ -74,9 +74,8 @@ const defaultCallbackFn = (el, namespace, value, activeRules) => {
 
 /**
  * Executes links personalization for domElement
- * It can be called for any DOM element
  *
- * @param domElement - root DOM element for parser
+ * @param {HTMLElement} domElement - root DOM element for parser
  * @param {function} callbackFn - an optional callback with conditions to execute
  */
 async function applyHashTagsForDomElement(domElement, callbackFn = null) {
