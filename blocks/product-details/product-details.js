@@ -253,7 +253,7 @@ export default async function decorate(block) {
             events.on(
               // @ts-ignore
               "cart/data",
-              (payload: any) => {
+              (payload) => {
                 const { items } = payload;
                 const dropinCartData = items.find(
                   (el) => el.sku === values.sku
