@@ -189,7 +189,8 @@ header nav .nav-sections ul {
 
 header nav .nav-sections ul > li,
 header nav .nav-sections ul > li > a {
-  font-weight: 500;
+  font: var(--type-body-2-strong-font);
+  letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
 header nav .nav-sections ul > li ul {
