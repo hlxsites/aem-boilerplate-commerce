@@ -87,7 +87,9 @@ export default async function decorate(block) {
   const $description = fragment.querySelector(".product-details__description");
   const $attributes = fragment.querySelector(".product-details__attributes");
   const $giftOptions = fragment.querySelector(".product-details__gift-options");
-  const $giftOptions2 = fragment.querySelector(".product-details__gift-options2");
+  const $giftOptions2 = fragment.querySelector(
+    ".product-details__gift-options2"
+  );
 
   block.appendChild(fragment);
 
@@ -248,29 +250,39 @@ export default async function decorate(block) {
               sessionStorage.getItem("updatedGiftOptions")
             );
 
-            const {
-              recipientName,
-              senderName,
-              message,
-              giftWrappingId,
-              isGiftWrappingSelected,
-            } = updatedGiftOptions;
+            if (updatedGiftOptions) {
+              const dropinCartData = JSON.parse(
+                sessionStorage.getItem("DROPIN__CART__CART__DATA")
+              )?.items.find((el) => el.sku === values.sku);
 
-            const giftOptions = {
-              gift_message: {
-                to: recipientName,
-                from: senderName,
+              console.log("dropinCartData :>> ", dropinCartData);
+
+              const {
+                recipientName,
+                senderName,
                 message,
-              },
-              gift_wrapping_id: isGiftWrappingSelected ? giftWrappingId : null,
-            };
-            await updateProductsFromCart([
-              {
-                uid: values.uid,
-                quantity: values.quantity,
-                giftOptions,
-              },
-            ]);
+                giftWrappingId,
+                isGiftWrappingSelected,
+              } = updatedGiftOptions;
+
+              const giftOptions = {
+                gift_message: {
+                  to: recipientName,
+                  from: senderName,
+                  message,
+                },
+                gift_wrapping_id: isGiftWrappingSelected
+                  ? giftWrappingId
+                  : null,
+              };
+              await updateProductsFromCart([
+                {
+                  uid: values.uid,
+                  quantity: values.quantity,
+                  giftOptions,
+                },
+              ]);
+            }
           }
 
           // reset any previous alerts if successful
