@@ -11,6 +11,7 @@ import * as pdpApi from "@dropins/storefront-pdp/api.js";
 import { render as pdpRendered } from "@dropins/storefront-pdp/render.js";
 
 // Cart Dropin
+import * as cartApi from "@dropins/storefront-cart/api.js";
 import GiftOptions from "@dropins/storefront-cart/containers/GiftOptions.js";
 import { render as CartProvider } from "@dropins/storefront-cart/render.js";
 
@@ -208,6 +209,9 @@ export default async function decorate(block) {
       onItemUpdate: () => {},
       collectFormData: async (data) => {
         console.log("data :>> ", data);
+        if (data) {
+          sessionStorage.setItem("updatedGiftOptions", JSON.stringify(data));
+        }
       },
     })($giftOptions),
 
@@ -229,10 +233,37 @@ export default async function decorate(block) {
 
           // add the product to the cart
           if (valid) {
-            const { addProductsToCart } = await import(
+            const { addProductsToCart, updateProductsFromCart } = await import(
               "@dropins/storefront-cart/api.js"
             );
             await addProductsToCart([{ ...values }]);
+            const updatedGiftOptions = JSON.parse(
+              sessionStorage.getItem("updatedGiftOptions")
+            );
+
+            const {
+              recipientName,
+              senderName,
+              message,
+              giftWrappingId,
+              isGiftWrappingSelected,
+            } = updatedGiftOptions;
+
+            const giftOptions = {
+              gift_message: {
+                to: recipientName,
+                from: senderName,
+                message,
+              },
+              gift_wrapping_id: isGiftWrappingSelected ? giftWrappingId : null,
+            };
+            await updateProductsFromCart([
+              {
+                uid: values.uid,
+                quantity: values.quantity,
+                giftOptions,
+              },
+            ]);
           }
 
           // reset any previous alerts if successful
