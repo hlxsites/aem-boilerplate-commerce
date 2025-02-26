@@ -307,10 +307,13 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  document.addEventListener('click', (evt) => {
-    if (evt.target.hash) {
-      removeHashTags(evt.target);
+  document.querySelectorAll('a').forEach((aElement) => {
+    if (!aElement.hash) {
+      return;
     }
+    aElement.addEventListener('click', (evt) => {
+      removeHashTags(evt.target);
+    });
   });
 }
 
