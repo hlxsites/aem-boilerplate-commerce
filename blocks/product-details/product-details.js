@@ -151,10 +151,62 @@ export default async function decorate(block) {
     pdpRendered.render(ProductQuantity, {})($quantity),
 
     CartProvider.render(GiftOptions, {
-      item:
-        JSON.parse(
-          sessionStorage.getItem("DROPIN__CART__CART__DATA")
-        )?.items?.find((el) => el.sku === product.sku) ?? {},
+      item: JSON.parse(
+        sessionStorage.getItem("DROPIN__CART__CART__DATA")
+      )?.items?.find((el) => el.sku === product.sku) ?? {
+        giftWrappingAvailable: true,
+        giftMessageAvailable: true,
+        giftWrappingPrice: {
+          currency: "USD",
+          value: 0,
+        },
+        giftMessage: {
+          senderName: "",
+          recipientName: "",
+          message: "",
+        },
+        productGiftWrapping: [
+          {
+            design: "Glossy Print Paper",
+            uid: "Mg==",
+            selected: false,
+            image: {
+              url: "https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png",
+              label: "Screenshot-2020-11-22-at-18.51.52-1536x1143.png",
+            },
+            price: {
+              currency: "USD",
+              value: 100,
+            },
+          },
+          {
+            design: "Foil Finish Paper",
+            uid: "NQ==",
+            selected: false,
+            image: {
+              url: "https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg",
+              label: "random-grid.jpg",
+            },
+            price: {
+              currency: "USD",
+              value: 30,
+            },
+          },
+          {
+            design: "Kraft Brown Paper",
+            uid: "OA==",
+            selected: false,
+            image: {
+              url: "https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg",
+              label: "16359095_v904-nunny-012_1_1_.jpg",
+            },
+            price: {
+              currency: "USD",
+              value: 45,
+            },
+          },
+        ],
+      },
       view: "product",
       dataSource: "cart",
       handleItemsLoading: () => {},
