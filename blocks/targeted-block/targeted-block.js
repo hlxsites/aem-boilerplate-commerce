@@ -1,5 +1,5 @@
 import { events } from '@dropins/tools/event-bus.js';
-import { getActiveRules } from '../../scripts/api/personalization/api.js';
+import {getActiveRules, resetCart} from '../../scripts/api/personalization/api.js';
 
 import conditionsMatched from './condition-matcher.js';
 import { readBlockConfig } from '../../scripts/aem.js';

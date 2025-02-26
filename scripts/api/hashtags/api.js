@@ -21,14 +21,10 @@ const defaultCallbackFn = (el, namespace, value, activeRules) => {
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
-    } else {
-      removeHashTags(el);
     }
 
     if (value === 'mobile_only' && isDesktop.matches) {
       removeLink(el);
-    } else {
-      removeHashTags(el);
     }
 
     if (value.startsWith('segment')) {
