@@ -250,6 +250,8 @@ export default async function decorate(block) {
                 sessionStorage.getItem("updatedGiftOptions")
               );
 
+              if (!updatedGiftOptions) return;
+
               const { items } = response;
               const dropinCartData = items.find((el) => el.sku === values.sku);
 
