@@ -10,6 +10,10 @@ import { events } from '@dropins/tools/event-bus.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 
+// Cart Dropin
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import { render as CartProvider } from '@dropins/storefront-cart/render.js';
+
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
@@ -48,6 +52,7 @@ export default async function decorate(block) {
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
+          <div class="product-details__gift-options"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
@@ -63,14 +68,23 @@ export default async function decorate(block) {
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
-  const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $galleryMobile = fragment.querySelector(
+    '.product-details__right-column .product-details__gallery'
+  );
+  const $shortDescription = fragment.querySelector(
+    '.product-details__short-description'
+  );
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
-  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $addToCart = fragment.querySelector(
+    '.product-details__buttons__add-to-cart'
+  );
+  const $addToWishlist = fragment.querySelector(
+    '.product-details__buttons__add-to-wishlist'
+  );
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $giftOptions = fragment.querySelector('.product-details__gift-options');
 
   block.appendChild(fragment);
 
@@ -130,6 +144,234 @@ export default async function decorate(block) {
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
 
+    CartProvider.render(GiftOptions, {
+      item: {
+        giftWrappingAvailable: true,
+        giftWrappingPrice: {
+          currency: 'USD',
+          value: 0,
+        },
+        giftMessage: {
+          senderName: '',
+          recipientName: '',
+          message: '',
+        },
+        productGiftWrapping: [
+          {
+            design: 'Glossy Print Paper',
+            uid: 'Mg==',
+            selected: false,
+            image: {
+              url: 'https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
+              label: 'Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
+            },
+            price: {
+              currency: 'USD',
+              value: 100,
+            },
+          },
+          {
+            design: 'Foil Finish Paper',
+            uid: 'NQ==',
+            selected: true,
+            image: {
+              url: 'https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg',
+              label: 'random-grid.jpg',
+            },
+            price: {
+              currency: 'USD',
+              value: 30,
+            },
+          },
+          {
+            design: 'Kraft Brown Paper',
+            uid: 'OA==',
+            selected: false,
+            image: {
+              url: 'https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg',
+              label: '16359095_v904-nunny-012_1_1_.jpg',
+            },
+            price: {
+              currency: 'USD',
+              value: 45,
+            },
+          },
+        ],
+        itemType: 'SimpleCartItem',
+        uid: 'OTk3NTU=',
+        giftMessageAvailable: true,
+        url: {
+          urlKey: 'crown-summit-backpack',
+          categories: ['gear', 'bags'],
+        },
+        canonicalUrl: null,
+        categories: ['Gear', 'Bags'],
+        quantity: 1,
+        sku: '24-MB03',
+        topLevelSku: '24-MB03',
+        name: 'Crown Summit Backpack',
+        image: {
+          src: 'https://mcstaging.aemshop.net/media/catalog/product/m/b/mb03-black-0.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=&width=',
+          alt: 'Crown Summit Backpack',
+        },
+        price: {
+          value: 38,
+          currency: 'USD',
+        },
+        taxedPrice: {
+          value: 38,
+          currency: 'USD',
+        },
+        fixedProductTaxes: [],
+        rowTotal: {
+          value: 38,
+          currency: 'USD',
+        },
+        rowTotalIncludingTax: {
+          value: 38,
+          currency: 'USD',
+        },
+        links: null,
+        total: {
+          value: 38,
+          currency: 'USD',
+        },
+        discount: {
+          value: 0,
+          currency: 'USD',
+        },
+        regularPrice: {
+          value: 38,
+          currency: 'USD',
+        },
+        discounted: false,
+        bundleOptions: null,
+        selectedOptions: null,
+        customizableOptions: {},
+        sender: null,
+        senderEmail: null,
+        recipient: null,
+        recipientEmail: null,
+        message: null,
+        discountedTotal: {
+          value: 38,
+          currency: 'USD',
+        },
+        onlyXLeftInStock: null,
+        lowInventory: false,
+        insufficientQuantity: false,
+        outOfStock: false,
+        stockLevel: null,
+        productAttributes: [
+          {
+            code: 'Activity',
+            selected_options: [
+              {
+                value: '58',
+                label: 'Gym',
+              },
+              {
+                value: '79',
+                label: 'Hiking',
+              },
+              {
+                value: '82',
+                label: 'Overnight',
+              },
+              {
+                value: '85',
+                label: 'School',
+              },
+              {
+                value: '88',
+                label: 'Trail',
+              },
+              {
+                value: '91',
+                label: 'Travel',
+              },
+              {
+                value: '94',
+                label: 'Urban',
+              },
+            ],
+          },
+          {
+            code: 'Style Bags',
+            selected_options: [
+              {
+                value: '97',
+                label: 'Backpack',
+              },
+            ],
+          },
+          {
+            code: 'Material',
+            selected_options: [
+              {
+                value: '136',
+                label: 'Nylon',
+              },
+              {
+                value: '139',
+                label: 'Polyester',
+              },
+            ],
+          },
+          {
+            code: 'Strap Bags',
+            selected_options: [
+              {
+                value: '208',
+                label: 'Adjustable',
+              },
+              {
+                value: '217',
+                label: 'Double',
+              },
+              {
+                value: '220',
+                label: 'Padded',
+              },
+            ],
+          },
+          {
+            code: 'Features Bags',
+            selected_options: [
+              {
+                value: '241',
+                label: 'Audio Pocket',
+              },
+              {
+                value: '247',
+                label: 'Waterproof',
+              },
+              {
+                value: '250',
+                label: 'Lightweight',
+              },
+              {
+                value: '256',
+                label: 'Reflective',
+              },
+              {
+                value: '259',
+                label: 'Laptop Sleeve',
+              },
+            ],
+          },
+        ],
+      },
+      view: 'product',
+      dataSource: 'cart',
+      handleItemsLoading: () => {},
+      handleItemsError: () => {},
+      onItemUpdate: () => {},
+      collectFormData: (data) => {
+        console.log('data :>> ', data);
+      },
+    })($giftOptions),
+
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
@@ -148,7 +390,9 @@ export default async function decorate(block) {
 
           // add the product to the cart
           if (valid) {
-            const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+            const { addProductsToCart } = await import(
+              '@dropins/storefront-cart/api.js'
+            );
             await addProductsToCart([{ ...values }]);
           }
 
@@ -221,10 +465,14 @@ export default async function decorate(block) {
   ]);
 
   // Lifecycle Events
-  events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
-  }, { eager: true });
+  events.on(
+    'pdp/valid',
+    (valid) => {
+      // update add to cart button disabled state based on product selection validity
+      addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    },
+    { eager: true }
+  );
 
   // Set JSON-LD and Meta Tags
   events.on(
@@ -236,7 +484,7 @@ export default async function decorate(block) {
         document.title = product.name;
       }
     },
-    { eager: true },
+    { eager: true }
   );
 
   return Promise.resolve();
@@ -258,7 +506,8 @@ async function setJsonLdProduct(product) {
   const brand = attributes.find((attr) => attr.name === 'brand');
 
   // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
+  const { data } = await pdpApi.fetchGraphQl(
+    `
     query GET_PRODUCT_VARIANTS($sku: String!) {
       variants(sku: $sku) {
         variants {
@@ -278,10 +527,12 @@ async function setJsonLdProduct(product) {
         }
       }
     }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
+  `,
+    {
+      method: 'GET',
+      variables: { sku },
+    }
+  );
 
   const variants = data?.variants?.variants || [];
 
@@ -303,21 +554,27 @@ async function setJsonLdProduct(product) {
   };
 
   if (variants.length > 1) {
-    ldJson.offers.push(...variants.map((variant) => ({
-      '@type': 'Offer',
-      name: variant.product.name,
-      image: variant.product.images[0]?.url,
-      price: variant.product.price.final.amount.value,
-      priceCurrency: variant.product.price.final.amount.currency,
-      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-      sku: variant.product.sku,
-    })));
+    ldJson.offers.push(
+      ...variants.map((variant) => ({
+        '@type': 'Offer',
+        name: variant.product.name,
+        image: variant.product.images[0]?.url,
+        price: variant.product.price.final.amount.value,
+        priceCurrency: variant.product.price.final.amount.currency,
+        availability: variant.product.inStock
+          ? 'http://schema.org/InStock'
+          : 'http://schema.org/OutOfStock',
+        sku: variant.product.sku,
+      }))
+    );
   } else {
     ldJson.offers.push({
       '@type': 'Offer',
       price: amount?.value,
       priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+      availability: inStock
+        ? 'http://schema.org/InStock'
+        : 'http://schema.org/OutOfStock',
     });
   }
 
@@ -352,7 +609,8 @@ function setMetaTags(product) {
     return;
   }
 
-  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
+  const price =
+    product.prices.final.minimumAmount ?? product.prices.final.amount;
 
   createMetaTag('title', product.metaTitle || product.name, 'name');
   createMetaTag('description', product.metaDescription, 'name');
@@ -362,7 +620,9 @@ function setMetaTags(product) {
   createMetaTag('og:description', product.shortDescription, 'property');
   createMetaTag('og:title', product.metaTitle || product.name, 'property');
   createMetaTag('og:url', window.location.href, 'property');
-  const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
+  const mainImage = product?.images?.filter((image) =>
+    image.roles.includes('thumbnail')
+  )[0];
   const metaImage = mainImage?.url || product?.images[0]?.url;
   createMetaTag('og:image', metaImage, 'property');
   createMetaTag('og:image:secure_url', metaImage, 'property');
