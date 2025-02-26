@@ -605,11 +605,6 @@ main.overlay {
     letter-spacing: var(--type-headline-2-default-letter-spacing);
   }
 
-  header nav .nav-sections ul li:not(.break):empty {
-    display: none;
-  }
-
-
   header nav .nav-sections ul > li ul {
     width: 100%;
   }
@@ -703,5 +698,9 @@ main.overlay {
     font: var(--type-body-1-default-font);
     letter-spacing: var(--type-body-1-default-letter-spacing);
     margin-bottom: var(--spacing-small);
+  }
+
+  header nav .nav-sections ul li:not(.break):empty {
+    display: none;
   }
 }
