@@ -80,6 +80,10 @@
     position: relative;
   }
 
+  .product-details__gift-options {
+    grid-column: 1 / span 3;
+  }
+
   .product-details__alert {
     grid-column: 1 / span 12;
     margin-bottom: var(--spacing-medium);
@@ -89,7 +93,7 @@
     display: block;
     grid-column: 1 / span 6;
   }
-  
+
   .product-details__right-column {
     grid-column: 7 / span 5;
     padding-top: var(--spacing-medium);

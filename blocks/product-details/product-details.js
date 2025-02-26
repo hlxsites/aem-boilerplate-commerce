@@ -104,6 +104,7 @@ export default async function decorate(block) {
     addToWishlist,
     _description,
     _attributes,
+    _giftOptions,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
