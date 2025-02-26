@@ -332,6 +332,7 @@ export default async function decorate(block) {
   window.addEventListener('resize', () => {
     navWrapper.classList.remove('active');
     document.querySelector('main').classList.remove('overlay');
+    toggleMenu(nav, navSections, false);
   });
 
   // hamburger for mobile
