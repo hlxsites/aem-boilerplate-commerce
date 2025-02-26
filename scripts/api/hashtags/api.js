@@ -3,6 +3,7 @@ import {
   hideLink,
   showLink,
   removeLink,
+  removeHashTags,
 } from './parser.js';
 import { getActiveRules } from '../personalization/api.js';
 
@@ -20,10 +21,14 @@ const defaultCallbackFn = (el, namespace, value, activeRules) => {
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
+    } else {
+      removeHashTags(el);
     }
 
     if (value === 'mobile_only' && isDesktop.matches) {
       removeLink(el);
+    } else {
+      removeHashTags(el);
     }
 
     if (value.startsWith('segment')) {
