@@ -144,7 +144,7 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
 
 /* brand */
 header nav .nav-brand {
-  min-width: 166px;
+  min-width: 128px;
 }
 
 header nav .nav-brand a {
