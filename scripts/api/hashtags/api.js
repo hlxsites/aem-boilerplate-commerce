@@ -3,7 +3,6 @@ import {
   hideLink,
   showLink,
   removeLink,
-  removeHashTags,
 } from './parser.js';
 import { getActiveRules } from '../personalization/api.js';
 
@@ -12,12 +11,11 @@ const isDesktop = window.matchMedia('(min-width: 900px)');
 /**
  * This method contains default logic for built-in namespace/tag combination(s).
  *
- * @param {HTMLAnchorElement} el
- * @param {string} namespace
- * @param {string} value
- * @returns {Promise<void>}
+ * @param {HTMLAnchorElement} el target DOM element to apply conditions
+ * @param {string} namespace hash tags namespace
+ * @param {string} value hash tag value
  */
-const defaultCallbackFn = (el, namespace, value, activeRules) => {
+const defaultConditionApply = (el, namespace, value, activeRules) => {
   if (namespace === 'display_for_') {
     if (value === 'desktop_only' && !isDesktop.matches) {
       removeLink(el);
@@ -72,11 +70,11 @@ const defaultCallbackFn = (el, namespace, value, activeRules) => {
  * Executes links personalization for domElement
  *
  * @param {HTMLElement} domElement - root DOM element for parser
- * @param {function} callbackFn - an optional callback with conditions to execute
+ * @param {function} conditionApply - an optional callback with conditions to execute
  */
-async function applyHashTagsForDomElement(domElement, callbackFn = null) {
+async function applyHashTagsForDomElement(domElement, conditionApply = null) {
   const activeRules = await getActiveRules();
-  parseUrlHashTags(domElement, callbackFn || defaultCallbackFn, activeRules);
+  parseUrlHashTags(domElement, conditionApply || defaultConditionApply, activeRules);
 }
 
 export default applyHashTagsForDomElement;

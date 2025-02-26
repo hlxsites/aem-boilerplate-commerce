@@ -8,7 +8,7 @@ const namespaces = [
  * @param {HTMLAnchorElement} aElement
  */
 function hideLink(aElement) {
-  if (aElement.nodeType === 1) {
+  if (aElement.nodeType === Node.ELEMENT_NODE) {
     aElement.parentNode.hidden = true;
   }
 }
@@ -19,7 +19,7 @@ function hideLink(aElement) {
  * @param {HTMLAnchorElement} aElement
  */
 function showLink(aElement) {
-  if (aElement.nodeType === 1) {
+  if (aElement.nodeType === Node.ELEMENT_NODE) {
     aElement.parentNode.hidden = false;
   }
 }
@@ -30,7 +30,7 @@ function showLink(aElement) {
  * @param {HTMLAnchorElement} aElement
  */
 function removeLink(aElement) {
-  if (aElement.nodeType === 1 && aElement.parentNode !== null) {
+  if (aElement.nodeType === Node.ELEMENT_NODE && aElement.parentNode !== null) {
     aElement.parentNode.removeChild(aElement);
   }
 }
@@ -75,19 +75,21 @@ function parseHashTag(aElement) {
   const parsed = [];
   const hashTags = extractHashTagsFromLink(aElement);
 
-  if (hashTags.length > 0) {
-    namespaces.forEach((ns) => {
-      hashTags.forEach((tag) => {
-        const value = tag.split(ns);
-        if (value && value.length === 2) {
-          parsed.push({
-            namespace: ns,
-            value: value[1].trim().toLowerCase(),
-          });
-        }
+  if (hashTags.length === 0) {
+    return parsed;
+  }
+  namespaces.forEach((ns) => {
+    hashTags.forEach((tag) => {
+      const value = tag.split(ns);
+      if (!value || value.length !== 2) {
+        return;
+      }
+      parsed.push({
+        namespace: ns,
+        value: value[1].trim().toLowerCase(),
       });
     });
-  }
+  });
   return parsed;
 }
 
@@ -99,15 +101,17 @@ function parseHashTag(aElement) {
  */
 function apply(aElements, callbackFn, activeRules) {
   aElements.forEach((aElement) => {
-    if (aElement && aElement.hash) {
-      const hashTags = parseHashTag(aElement);
-      if (hashTags.length > 0) {
-        hashTags.forEach((hashTag) => {
-          const { namespace, value } = { ...hashTag };
-          callbackFn(aElement, namespace, value, activeRules);
-        });
-      }
+    if (!aElement || !aElement.hash) {
+      return;
     }
+    const hashTags = parseHashTag(aElement);
+    if (hashTags.length === 0) {
+      return;
+    }
+    hashTags.forEach((hashTag) => {
+      const { namespace, value } = { ...hashTag };
+      callbackFn(aElement, namespace, value, activeRules);
+    });
   });
 }
 
