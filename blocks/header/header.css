@@ -4,7 +4,7 @@
   --desktop-item-panel-max-width: 300px;
   --desktop-item-panel-min-width: 200px;
   --desktop-large-panel-width: 900px;
-  --desktop-panel-height: 500px;
+  --desktop-panel-height: 400px;
 }
 
 /* header and nav layout */
@@ -268,12 +268,13 @@ header nav .nav-sections ul > li ul > li {
   header nav .nav-sections ul > li.nav-drop .submenu-title,
   header nav .nav-sections ul > li.nav-drop .submenu-header * {
     display: none;
+    font: var(--type-body-1-emphasized-font);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
     display: flex;
     margin: 0 auto;
-    overflow-x: scroll;
+    overflow-x: auto;
     width: var(--desktop-large-panel-width);
   }
 
@@ -594,7 +595,9 @@ main.overlay {
   }
 
   header nav .nav-sections ul li {
-    line-height: 3em;
+    font: var(--type-headline-2-default-font);
+    letter-spacing: var(--type-headline-2-default-letter-spacing);
+    padding: var(--spacing-medium);
   }
 
   header nav .nav-sections ul > li ul {
@@ -602,7 +605,9 @@ main.overlay {
   }
 
   header nav .nav-sections ul > li ul > li {
-    padding: 0 var(--spacing-xsmall);
+    font: var(--type-headline-2-default-font);
+    letter-spacing: var(--type-headline-2-default-letter-spacing);
+    padding: var(--spacing-xsmall);
     width: auto;
   }
 
@@ -637,6 +642,7 @@ main.overlay {
     background: var(--background-color);
     display: block;
     height: auto;
+    left: 0;
     min-height: 100vw;
     position: absolute;
     top: 0;
@@ -659,15 +665,17 @@ main.overlay {
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header .back-link {
-    padding: 0 1em;
+    font: var(--type-body-1-strong-font);
     height: 2.2em;
-    line-height: 1.7em;
+    letter-spacing: var(--type-body-1-strong-letter-spacing);
+    line-height: 2.2em;
+    padding: 0 1em;
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header hr {
     margin: 0;
     position: absolute;
-    top: 4em;
+    top: var(--spacing-large);
     width: 320px;
   }
 
@@ -677,6 +685,8 @@ main.overlay {
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-title {
+    font: var(--type-body-1-default-font);
+    letter-spacing: var(--type-body-1-default-letter-spacing);
     margin-bottom: var(--spacing-small);
   }
 }
