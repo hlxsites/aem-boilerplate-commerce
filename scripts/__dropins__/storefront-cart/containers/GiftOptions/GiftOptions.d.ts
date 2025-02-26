@@ -14,7 +14,7 @@ export interface GiftOptionsProps {
     onItemUpdate?: ({ item }: {
         item: Item;
     }) => void;
-    collectFormData?: (data: GiftFormDataType) => void;
+    onGiftOptionsChange?: (data: GiftFormDataType) => void;
 }
 export declare const GiftOptions: Container<GiftOptionsProps>;
 //# sourceMappingURL=GiftOptions.d.ts.map

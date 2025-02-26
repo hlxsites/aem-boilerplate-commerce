@@ -211,7 +211,7 @@ export default async function decorate(block) {
       handleItemsLoading: () => {},
       handleItemsError: () => {},
       onItemUpdate: () => {},
-      collectFormData: async (data) => {
+      onGiftOptionsChange: async (data) => {
         console.log("data :>> ", data);
         if (data) {
           sessionStorage.setItem("updatedGiftOptions", JSON.stringify(data));
@@ -252,8 +252,6 @@ export default async function decorate(block) {
 
               const { items } = response;
               const dropinCartData = items.find((el) => el.sku === values.sku);
-
-              console.log("dropinCartData :>> ", dropinCartData);
 
               const {
                 recipientName,
