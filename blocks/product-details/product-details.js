@@ -250,39 +250,44 @@ export default async function decorate(block) {
               sessionStorage.getItem("updatedGiftOptions")
             );
 
-            if (updatedGiftOptions) {
-              const dropinCartData = JSON.parse(
-                sessionStorage.getItem("DROPIN__CART__CART__DATA")
-              )?.items.find((el) => el.sku === values.sku);
+            events.on(
+              // @ts-ignore
+              "cart/data",
+              (payload: any) => {
+                const { items } = payload;
+                const dropinCartData = items.find(
+                  (el) => el.sku === values.sku
+                );
 
-              console.log("dropinCartData :>> ", dropinCartData);
+                if (updatedGiftOptions) {
+                  const {
+                    recipientName,
+                    senderName,
+                    message,
+                    giftWrappingId,
+                    isGiftWrappingSelected,
+                  } = updatedGiftOptions;
 
-              const {
-                recipientName,
-                senderName,
-                message,
-                giftWrappingId,
-                isGiftWrappingSelected,
-              } = updatedGiftOptions;
-
-              const giftOptions = {
-                gift_message: {
-                  to: recipientName,
-                  from: senderName,
-                  message,
-                },
-                gift_wrapping_id: isGiftWrappingSelected
-                  ? giftWrappingId
-                  : null,
-              };
-              await updateProductsFromCart([
-                {
-                  uid: dropinCartData.uid,
-                  quantity: dropinCartData.quantity,
-                  giftOptions,
-                },
-              ]);
-            }
+                  const giftOptions = {
+                    gift_message: {
+                      to: recipientName,
+                      from: senderName,
+                      message,
+                    },
+                    gift_wrapping_id: isGiftWrappingSelected
+                      ? giftWrappingId
+                      : null,
+                  };
+                  await updateProductsFromCart([
+                    {
+                      uid: dropinCartData.uid,
+                      quantity: dropinCartData.quantity,
+                      giftOptions,
+                    },
+                  ]);
+                }
+              }
+            );
           }
 
           // reset any previous alerts if successful
