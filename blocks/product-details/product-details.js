@@ -277,8 +277,8 @@ export default async function decorate(block) {
               };
               await updateProductsFromCart([
                 {
-                  uid: values.uid,
-                  quantity: values.quantity,
+                  uid: dropinCartData.uid,
+                  quantity: dropinCartData.quantity,
                   giftOptions,
                 },
               ]);
