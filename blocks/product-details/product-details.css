@@ -81,10 +81,14 @@
   }
 
   .product-details__gift-options {
+    border-radius: var(--shape-border-radius-2);
     --bgColor: var(--color-neutral-50);
     border-width: var(--shape-border-width-2);
     border-style: solid;
-    border-color: var(--color-neutral-400);
+    border-color: var(--color-neutral-400);padding-top: var(--spacing-medium);
+    padding-right: var(--spacing-medium);
+    padding-bottom: var(--spacing-medium);
+    padding-left: var(--spacing-medium);
     grid-column: 1 / span 3;
   }
 
