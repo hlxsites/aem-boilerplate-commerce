@@ -147,7 +147,9 @@ export default async function decorate(block) {
 
     CartProvider.render(GiftOptions, {
       item: {
+        ...product,
         giftWrappingAvailable: true,
+        giftMessageAvailable: true,
         giftWrappingPrice: {
           currency: "USD",
           value: 0,
@@ -174,7 +176,7 @@ export default async function decorate(block) {
           {
             design: "Foil Finish Paper",
             uid: "NQ==",
-            selected: true,
+            selected: false,
             image: {
               url: "https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg",
               label: "random-grid.jpg",
@@ -198,171 +200,6 @@ export default async function decorate(block) {
             },
           },
         ],
-        itemType: "SimpleCartItem",
-        uid: "OTk3NTU=",
-        giftMessageAvailable: true,
-        url: {
-          urlKey: "crown-summit-backpack",
-          categories: ["gear", "bags"],
-        },
-        canonicalUrl: null,
-        categories: ["Gear", "Bags"],
-        quantity: 1,
-        sku: "24-MB03",
-        topLevelSku: "24-MB03",
-        name: "Crown Summit Backpack",
-        image: {
-          src: "https://mcstaging.aemshop.net/media/catalog/product/m/b/mb03-black-0.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=&width=",
-          alt: "Crown Summit Backpack",
-        },
-        price: {
-          value: 38,
-          currency: "USD",
-        },
-        taxedPrice: {
-          value: 38,
-          currency: "USD",
-        },
-        fixedProductTaxes: [],
-        rowTotal: {
-          value: 38,
-          currency: "USD",
-        },
-        rowTotalIncludingTax: {
-          value: 38,
-          currency: "USD",
-        },
-        links: null,
-        total: {
-          value: 38,
-          currency: "USD",
-        },
-        discount: {
-          value: 0,
-          currency: "USD",
-        },
-        regularPrice: {
-          value: 38,
-          currency: "USD",
-        },
-        discounted: false,
-        bundleOptions: null,
-        selectedOptions: null,
-        customizableOptions: {},
-        sender: null,
-        senderEmail: null,
-        recipient: null,
-        recipientEmail: null,
-        message: null,
-        discountedTotal: {
-          value: 38,
-          currency: "USD",
-        },
-        onlyXLeftInStock: null,
-        lowInventory: false,
-        insufficientQuantity: false,
-        outOfStock: false,
-        stockLevel: null,
-        productAttributes: [
-          {
-            code: "Activity",
-            selected_options: [
-              {
-                value: "58",
-                label: "Gym",
-              },
-              {
-                value: "79",
-                label: "Hiking",
-              },
-              {
-                value: "82",
-                label: "Overnight",
-              },
-              {
-                value: "85",
-                label: "School",
-              },
-              {
-                value: "88",
-                label: "Trail",
-              },
-              {
-                value: "91",
-                label: "Travel",
-              },
-              {
-                value: "94",
-                label: "Urban",
-              },
-            ],
-          },
-          {
-            code: "Style Bags",
-            selected_options: [
-              {
-                value: "97",
-                label: "Backpack",
-              },
-            ],
-          },
-          {
-            code: "Material",
-            selected_options: [
-              {
-                value: "136",
-                label: "Nylon",
-              },
-              {
-                value: "139",
-                label: "Polyester",
-              },
-            ],
-          },
-          {
-            code: "Strap Bags",
-            selected_options: [
-              {
-                value: "208",
-                label: "Adjustable",
-              },
-              {
-                value: "217",
-                label: "Double",
-              },
-              {
-                value: "220",
-                label: "Padded",
-              },
-            ],
-          },
-          {
-            code: "Features Bags",
-            selected_options: [
-              {
-                value: "241",
-                label: "Audio Pocket",
-              },
-              {
-                value: "247",
-                label: "Waterproof",
-              },
-              {
-                value: "250",
-                label: "Lightweight",
-              },
-              {
-                value: "256",
-                label: "Reflective",
-              },
-              {
-                value: "259",
-                label: "Laptop Sleeve",
-              },
-            ],
-          },
-        ],
-        ...product,
       },
       view: "product",
       dataSource: "cart",
