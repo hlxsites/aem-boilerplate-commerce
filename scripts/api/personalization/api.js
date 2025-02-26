@@ -145,7 +145,7 @@ const getActiveRules = async function () {
   if (Cart.getCartDataFromCache() === null && getUserTokenCookie()) {
     const response = await getCustomerSegments();
     activeRules.customerGroup = response.customerGroup?.name || '';
-    activeRules.customerSegments = response.customerSegments || [];
+    activeRules.customerSegments = response.customer?.segments || [];
   }
 
   // Cart not initialized AND user is not Authenticated
