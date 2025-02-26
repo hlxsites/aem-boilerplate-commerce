@@ -81,6 +81,10 @@
   }
 
   .product-details__gift-options {
+    --bgColor: var(--color-neutral-50);
+    border-width: var(--shape-border-width-2);
+    border-style: solid;
+    border-color: var(--color-neutral-400);
     grid-column: 1 / span 3;
   }
 

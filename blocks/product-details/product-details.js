@@ -53,9 +53,7 @@ export default async function decorate(block) {
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
           <div class="product-details__gift-options"></div>
-          <hr/>
           <div class="product-details__gift-options2"></div>
-          <hr/>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
