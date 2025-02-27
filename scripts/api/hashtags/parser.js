@@ -3,7 +3,8 @@ const namespaces = [
 ];
 
 /**
- * The maximum length of hash in url is not specified in RFC; it depends on the browser how long hash string
+ * The maximum length of hash in url is not specified in RFC;
+ * it depends on the browser how long hash string
  * can become (eg. for Chrome maximum total lenght of URL is set to 2MB).
  * In order to avoid processing malicious hash strings (eg. to cause browser tab to crash)
  * we do not accept hashes longer than 2048 characters.
