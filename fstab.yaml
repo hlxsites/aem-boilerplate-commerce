@@ -1,0 +1,5 @@
+mountpoints:
+  /: https://adobe.sharepoint.com/:f:/r/sites/aem-boilerplate-commerce-fork-iporto/Shared%20Documents/local-storefront?csf=1&web=1&e=dy6uqt
+
+folders:
+  /products/: /products/default
