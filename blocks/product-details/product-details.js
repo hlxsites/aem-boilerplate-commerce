@@ -92,15 +92,6 @@ export default async function decorate(block) {
   const predefinedConfig = {
     giftWrappingAvailable: true,
     giftMessageAvailable: true,
-    giftWrappingPrice: {
-      currency: 'USD',
-      value: 1,
-    },
-    giftMessage: {
-      senderName: '123',
-      recipientName: '456',
-      message: '123',
-    },
     productGiftWrapping: [
       {
         design: 'Glossy Print Paper',
@@ -143,7 +134,6 @@ export default async function decorate(block) {
       },
     ],
   };
-
   // Render Containers
   const [
     _galleryMobile,
