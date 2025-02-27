@@ -212,12 +212,21 @@ header nav .nav-sections ul > li ul > li {
     align-self: unset;
   }
 
+  header nav .nav-sections .default-content-wrapper > ul > li,
   header nav .nav-sections .nav-drop {
     border-radius: 4px;
-    cursor: pointer;
-    padding: 0 var(--spacing-small);;
+    padding: 0 var(--spacing-small);
   }
 
+  header nav .nav-sections .nav-drop {
+    cursor: pointer;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li a {
+    text-decoration: none;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li:hover,
   header nav .nav-sections .nav-drop[aria-expanded='true'] {
     background-color: var(--color-neutral-200);
   }
