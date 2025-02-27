@@ -19,7 +19,6 @@ import * as fields from "../../fields/index";
 
 describe("Verify price summary on cart", () => {
   beforeEach(() => {
-    cy.visit("");
     cy.visit("/products/crown-summit-backpack/24-MB03");
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
@@ -33,7 +32,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
@@ -46,7 +45,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
@@ -62,7 +61,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
@@ -75,33 +74,33 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should("be.visible")
-      .type("0A6GF150P3IZ");
+      .type("02AERQ4PTAJG");
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
       .should("be.visible");
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
-      .contains(/0A6GF150P3IZ/i)
+      .contains(/02AERQ4PTAJG/i)
       .should("be.visible");
 
     cy.get(".coupon-code-form__applied").children().should("have.length", 2);
 
     cy.get(".cart-order-summary__coupon__code span")
-      .contains(/0A6GF150P3IZ/i)
+      .contains(/02AERQ4PTAJG/i)
       .should("be.visible");
 
     cy.get(".cart-order-summary__coupon__code span")
@@ -114,7 +113,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
@@ -127,7 +126,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
@@ -135,7 +134,7 @@ describe("Verify price summary on cart", () => {
 
     cy.get(`.dropin-tag-container.coupon-code-form__applied-item button`)
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(".coupon-code-form__applied").children().should("have.length", 0);
 
@@ -147,14 +146,14 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(`.coupon-code-form__error`).contains(
       "Please enter a gift card code."
@@ -166,7 +165,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.wait(2000);
 
@@ -179,7 +178,7 @@ describe("Verify price summary on cart", () => {
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
       .should("be.visible")
-      .click();
+      .click({ multiple: true });
 
     cy.get(`.coupon-code-form__error`).contains(
       "The gift card code couldn't be added. Verify your information and try again."
