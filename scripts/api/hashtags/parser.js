@@ -86,7 +86,7 @@ function parseHashTag(aElement) {
       }
       parsed.push({
         namespace: ns,
-        value: value[1].trim().toLowerCase(),
+        value: decodeURIComponent(value[1].trim()).toLowerCase(),
       });
     });
   });

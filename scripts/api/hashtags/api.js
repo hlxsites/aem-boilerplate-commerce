@@ -28,7 +28,7 @@ const defaultConditionApply = (el, namespace, value, activeRules) => {
     if (value.startsWith('segment')) {
       const segments = activeRules.customerSegments.map((s) => s.name.toLowerCase());
       const [_prefix, segment] = [...value.split('_')];
-      if (!segments.includes(decodeURIComponent(segment.toLowerCase()))) {
+      if (!segments.includes(segment.toLowerCase())) {
         hideLink(el);
       } else {
         showLink(el);
@@ -37,7 +37,7 @@ const defaultConditionApply = (el, namespace, value, activeRules) => {
 
     if (value.startsWith('group')) {
       const [_prefix, group] = [...value.split('_')];
-      if (decodeURIComponent(group.toLowerCase()) !== activeRules.customerGroup?.toLowerCase()) {
+      if (group.toLowerCase() !== activeRules.customerGroup?.toLowerCase()) {
         hideLink(el);
       } else {
         showLink(el);
@@ -47,7 +47,7 @@ const defaultConditionApply = (el, namespace, value, activeRules) => {
     if (value.startsWith('cartrule')) {
       const rules = activeRules.cart.map((s) => s.name.toLowerCase());
       const [_prefix, rule] = [...value.split('_')];
-      if (!rules.includes(decodeURIComponent(rule.toLowerCase()))) {
+      if (!rules.includes(rule.toLowerCase())) {
         hideLink(el);
       } else {
         showLink(el);
@@ -57,7 +57,7 @@ const defaultConditionApply = (el, namespace, value, activeRules) => {
     if (value.startsWith('catalogrule')) {
       const rules = activeRules.catalogPriceRules.map((s) => s.name.toLowerCase());
       const [_prefix, rule] = [...value.split('_')];
-      if (!rules.includes(decodeURIComponent(rule.toLowerCase()))) {
+      if (!rules.includes(rule.toLowerCase())) {
         hideLink(el);
       } else {
         showLink(el);
