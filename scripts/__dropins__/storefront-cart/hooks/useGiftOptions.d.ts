@@ -39,6 +39,7 @@ export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, 
         isGiftWrappingVisible: boolean;
         isGiftOptionsVisible: boolean;
     };
+    isGiftOptionsHidden: boolean;
 };
 export {};
 //# sourceMappingURL=useGiftOptions.d.ts.map

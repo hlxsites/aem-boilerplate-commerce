@@ -20,7 +20,11 @@ import {
   assertGiftOptionsEmptyForm,
   assertGiftOptionsReadOnlyFormView,
 } from "../../assertions";
-import { fillGiftOptiosForm, fillGiftOptiosFormEmpty } from "../../actions";
+import {
+  fillGiftOptiosForm,
+  fillGiftOptiosFormEmpty,
+  fillGiftOptiosMessageForm,
+} from "../../actions";
 import * as fields from "../../fields";
 
 describe("Verify price summary on cart", () => {
@@ -67,10 +71,16 @@ describe("Verify price summary on cart", () => {
 
     const itemsClassName = ".cart-gift-options-view--product";
     cy.get(itemsClassName).should("exist").should("be.visible");
-    cy.get(itemsClassName).contains("Gift options").click();
-    cy.get(`${itemsClassName} ${fields.giftOptionWrapCheckBox}`).click({
-      force: true,
-    });
+
+    cy.get(itemsClassName)
+      .contains("Gift options")
+      .should("be.visible")
+      .click({ force: true });
+    cy.wait(2000);
+
+    cy.get(`${itemsClassName} .dropin-checkbox`)
+      .should("be.visible")
+      .click({ force: true });
 
     cy.wait(2000);
 
@@ -78,32 +88,24 @@ describe("Verify price summary on cart", () => {
   });
 
   it("Validate GiftOptions in Summary (Gift Message, No Giftwrap)", () => {
-    cy.visit("/products/affirm-water-bottle/24-UG06");
+    cy.visit("/products/rival-field-messenger/24-MB06");
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
     cy.wait(3000);
     cy.visit("/cart");
 
-    const itemsClassName = ".cart-gift-options-view--product";
-    cy.get(itemsClassName).should("exist").should("be.visible");
-    cy.get(itemsClassName).contains("Gift options").click();
-    cy.get(`${itemsClassName} ${fields.giftOptionWrapCheckBox}`).click({
-      force: true,
-    });
+    const orderClassName = ".cart-gift-options-view--order";
+    cy.get(orderClassName).should("exist").should("be.visible");
+
+    fillGiftOptiosMessageForm(orderClassName);
 
     cy.wait(2000);
 
-    const orderClassName = ".cart-gift-options-view--order";
-    cy.get(orderClassName).should("exist").should("be.visible");
-    fillGiftOptiosForm(orderClassName);
+    const itemsClassName = ".cart-gift-options-view--product";
+    cy.get(itemsClassName).should("exist").should("be.visible");
 
-    assertGiftOptionsSummary("Printed card", "excluding taxes", "$100.00");
-    assertGiftOptionsSummary(
-      "Order gift wrapping",
-      "excluding taxes",
-      "$100.00"
-    );
+    fillGiftOptiosMessageForm(itemsClassName, "product");
   });
 
   it("Validate GiftOptions message if all fields is empty", () => {

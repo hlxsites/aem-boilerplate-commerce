@@ -174,6 +174,30 @@ export const fillGiftOptiosForm = (className, type = "order") => {
   cy.contains(".dropin-button--primary", "Apply").click();
 };
 
+export const fillGiftOptiosMessageForm = (className, type = "order") => {
+  cy.wait(2000);
+  if (type === "product") {
+    cy.get(className).contains("Gift options").click();
+  }
+
+  cy.wait(2000);
+
+  cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .type("giftOptionRecipientName")
+    .should("have.value", "giftOptionRecipientName")
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .type("giftOptionSenderName")
+    .should("have.value", "giftOptionSenderName")
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionMessage}`)
+    .type("giftOptionMessage")
+    .should("have.value", "giftOptionMessage")
+    .blur(); // Added .blur() here
+};
+
 export const fillGiftOptiosFormEmpty = (className) => {
   cy.get(`${className} ${fields.giftOptionRecipientName}`, {
     timeout: 2000,

@@ -129,7 +129,7 @@ export const cancellationReasonsModal =
 export const orderSummary = '.cart__order-summary';
 export const giftOptionCardIncludedCheckBox =
 'input[name="printedCardIncluded"]';
-export const giftOptionWrapCheckBox = 'input[name="isGiftWrappingSelected"]';
+export const giftOptionWrapCheckBox = 'input[name*="isGiftWrappingSelected"]';
 export const giftOptionRecipientName = 'input[name="recipientName"]';
 export const giftOptionSenderName = 'input[name="senderName"]';
 export const giftOptionMessage = 'textarea[name="message"]';
