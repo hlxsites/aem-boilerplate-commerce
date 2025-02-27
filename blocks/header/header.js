@@ -209,14 +209,25 @@ export default async function decorate(block) {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         setupSubmenu(navSection);
         navSection.addEventListener('click', (event) => {
+          if (event.target.tagName === 'A') return;
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
             document.querySelector('main').classList.toggle('overlay');
           } else {
-            if (event.target.tagName === 'A') return;
             navSection.classList.toggle('active');
+          }
+        });
+        navSection.addEventListener('mouseenter', () => {
+          toggleAllNavSections(navSections);
+          if (isDesktop.matches) {
+            if (!navSection.classList.contains('nav-drop')) {
+              document.querySelector('main').classList.remove('overlay');
+              return;
+            }
+            navSection.setAttribute('aria-expanded', 'true');
+            document.querySelector('main').classList.add('overlay');
           }
         });
       });
@@ -310,7 +321,13 @@ export default async function decorate(block) {
     }
   }
 
-  navTools.querySelector('.nav-search-button').addEventListener('click', () => toggleSearch());
+  navTools.querySelector('.nav-search-button').addEventListener('click', () => {
+    if (isDesktop.matches) {
+      toggleAllNavSections(navSections);
+      document.querySelector('main').classList.remove('overlay');
+    }
+    toggleSearch();
+  });
 
   // Close panels when clicking outside
   document.addEventListener('click', (e) => {
@@ -327,6 +344,13 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  navWrapper.addEventListener('mouseout', (e) => {
+    if (isDesktop.matches && !nav.contains(e.relatedTarget)) {
+      toggleAllNavSections(navSections);
+      document.querySelector('main').classList.remove('overlay');
+    }
+  });
 
   window.addEventListener('resize', () => {
     navWrapper.classList.remove('active');
