@@ -193,16 +193,16 @@ header nav .nav-sections ul > li > a {
   letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
-header nav .nav-sections ul > li:empty {
-  display: none;
-}
-
 header nav .nav-sections ul > li ul {
   margin-top: 0;
 }
 
 header nav .nav-sections ul > li ul > li {
   font-weight: 400;
+}
+
+header nav .nav-sections ul > li:empty {
+  display: none;
 }
 
 @media (width >= 900px) {
