@@ -122,7 +122,7 @@ const getCatalogPriceRules = async (sku) => {
   return [];
 };
 
-const getActiveRules = async function () {
+const getActiveRules = async () => {
   const activeRules = {
     customerSegments: [],
     customerGroup: null,
