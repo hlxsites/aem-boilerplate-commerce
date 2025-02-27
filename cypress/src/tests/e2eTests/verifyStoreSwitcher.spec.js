@@ -1,7 +1,7 @@
 describe('Store Switcher', () => {
     it('should allow the user to switch stores', () => {
         // Visit the homepage
-        cy.visit('/');
+        cy.visit('/drafts/multistore/en/');
 
         // Open storeview-switcher-button button and click
         cy.get('.storeview-switcher-button > button')
