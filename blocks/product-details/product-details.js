@@ -69,31 +69,80 @@ export default async function decorate(block) {
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector(
-    '.product-details__right-column .product-details__gallery',
-  );
-  const $shortDescription = fragment.querySelector(
-    '.product-details__short-description',
-  );
+  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
+  const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
-  const $addToCart = fragment.querySelector(
-    '.product-details__buttons__add-to-cart',
-  );
-  const $addToWishlist = fragment.querySelector(
-    '.product-details__buttons__add-to-wishlist',
-  );
+  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
   const $giftOptions = fragment.querySelector('.product-details__gift-options');
-  const $giftOptions2 = fragment.querySelector(
-    '.product-details__gift-options2',
-  );
+  const $giftOptions2 = fragment.querySelector('.product-details__gift-options2');
 
   block.appendChild(fragment);
 
   // Alert
   let inlineAlert = null;
+
+  const cartItem = JSON.parse(
+    sessionStorage.getItem('DROPIN__CART__CART__DATA'),
+  )?.items?.find((el) => el.sku === product.sku);
+
+  const predefinedConfig = {
+    giftWrappingAvailable: true,
+    giftMessageAvailable: true,
+    giftWrappingPrice: {
+      currency: 'USD',
+      value: 1,
+    },
+    giftMessage: {
+      senderName: '123',
+      recipientName: '456',
+      message: '123',
+    },
+    productGiftWrapping: [
+      {
+        design: 'Glossy Print Paper',
+        uid: 'Mg==',
+        selected: false,
+        image: {
+          url: 'https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
+          label: 'Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
+        },
+        price: {
+          currency: 'USD',
+          value: 100,
+        },
+      },
+      {
+        design: 'Foil Finish Paper',
+        uid: 'NQ==',
+        selected: false,
+        image: {
+          url: 'https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg',
+          label: 'random-grid.jpg',
+        },
+        price: {
+          currency: 'USD',
+          value: 30,
+        },
+      },
+      {
+        design: 'Kraft Brown Paper',
+        uid: 'OA==',
+        selected: false,
+        image: {
+          url: 'https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg',
+          label: '16359095_v904-nunny-012_1_1_.jpg',
+        },
+        price: {
+          currency: 'USD',
+          value: 45,
+        },
+      },
+    ],
+  };
 
   // Render Containers
   const [
@@ -150,67 +199,8 @@ export default async function decorate(block) {
     pdpRendered.render(ProductQuantity, {})($quantity),
 
     CartProvider.render(GiftOptions, {
-      item: JSON.parse(
-        sessionStorage.getItem('DROPIN__CART__CART__DATA'),
-      )?.items?.find((el) => el.sku === product.sku) ?? {
-        giftWrappingAvailable: true,
-        giftMessageAvailable: true,
-        giftWrappingPrice: {
-          currency: 'USD',
-          value: 0,
-        },
-        giftMessage: {
-          senderName: '',
-          recipientName: '',
-          message: '',
-        },
-        productGiftWrapping: [
-          {
-            design: 'Glossy Print Paper',
-            uid: 'Mg==',
-            selected: false,
-            image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
-              label: 'Screenshot-2020-11-22-at-18.51.52-1536x1143.png',
-            },
-            price: {
-              currency: 'USD',
-              value: 100,
-            },
-          },
-          {
-            design: 'Foil Finish Paper',
-            uid: 'NQ==',
-            selected: false,
-            image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/random-grid.jpg',
-              label: 'random-grid.jpg',
-            },
-            price: {
-              currency: 'USD',
-              value: 30,
-            },
-          },
-          {
-            design: 'Kraft Brown Paper',
-            uid: 'OA==',
-            selected: false,
-            image: {
-              url: 'https://mcstaging.aemshop.net/media/wrapping/16359095_v904-nunny-012_1_1_.jpg',
-              label: '16359095_v904-nunny-012_1_1_.jpg',
-            },
-            price: {
-              currency: 'USD',
-              value: 45,
-            },
-          },
-        ],
-      },
+      item: cartItem ?? predefinedConfig,
       view: 'product',
-      dataSource: 'cart',
-      handleItemsLoading: () => {},
-      handleItemsError: () => {},
-      onItemUpdate: () => {},
       onGiftOptionsChange: async (data) => {
         console.info('onGiftOptionsChange :>> ', data);
         if (data) {
