@@ -261,17 +261,11 @@ header nav .nav-sections ul > li:empty {
     padding-top: var(--spacing-large);
     position: absolute;
     top: var(--spacing-large);
-    width: 100vw;
+    width: 100%;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li .submenu-header {
     display: none;
-  }
-
-  header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-header {
-    display: block;
-    position: absolute;
-    right: 8vw;
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-title,
@@ -545,16 +539,12 @@ li
   z-index: 3;
 }
 
-ul li.nav-drop > ul > li ul {
-  margin: 1em 0 0 .5em;
-}
-
 .overlay {
-  inset: 0;
   background-color: rgb(0 0 0 / 50%) !important;
-  z-index: 2;
-  position: fixed;
   display: none;
+  inset: 0;
+  position: fixed;
+  z-index: 2;
 }
 
 .overlay.show {
@@ -584,7 +574,7 @@ ul li.nav-drop > ul > li ul {
   }
 
   header nav[aria-expanded='true'] {
-    gap: 1em;
+    gap: var(--spacing-small);
     overflow-x: hidden;
     width: 320px;
   }
@@ -654,7 +644,7 @@ ul li.nav-drop > ul > li ul {
   header nav .nav-sections ul > li.nav-drop::before {
     content: '\276F';
     position: absolute;
-    right: .5vw;
+    right: var(--spacing-xxsmall);
   }
 
   header nav .nav-sections ul > li.nav-drop ul {
@@ -679,7 +669,7 @@ ul li.nav-drop > ul > li ul {
 
   header nav .nav-sections ul > li.nav-drop.active ul {
     display: block;
-    padding-bottom: 5vh;
+    padding-bottom: var(--spacing-large);
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header {
@@ -697,7 +687,7 @@ ul li.nav-drop > ul > li ul {
     height: 2.2em;
     letter-spacing: var(--type-body-1-strong-letter-spacing);
     line-height: 2.2em;
-    padding: 0 1em;
+    padding: 0 var(--spacing-medium);
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-header hr {
@@ -709,7 +699,7 @@ ul li.nav-drop > ul > li ul {
 
   header nav .nav-sections ul > li .submenu-header .back-link::before {
     content: '\276E';
-    margin-right: .7em;
+    margin-right: var(--spacing-xsmall);
   }
 
   header nav .nav-sections ul > li.nav-drop .submenu-title {
