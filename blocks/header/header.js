@@ -369,7 +369,7 @@ export default async function decorate(block) {
     </button>`;
   hamburger.addEventListener('click', () => {
     navWrapper.classList.toggle('active');
-    overlay.classList.remove('show');
+    overlay.classList.toggle('show');
     toggleMenu(nav, navSections);
   });
   nav.prepend(hamburger);
