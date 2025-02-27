@@ -3,6 +3,16 @@ const namespaces = [
 ];
 
 /**
+ * The maximum length of hash in url is not specified in RFC; it depends on the browser how long hash string
+ * can become (eg. for Chrome maximum total lenght of URL is set to 2MB).
+ * In order to avoid processing malicious hash strings (eg. to cause browser tab to crash)
+ * we do not accept hashes longer than 2048 characters.
+ *
+ * @type {number} maximum length of hash string which parser will process
+ */
+const MAX_HASH_LENGTH = 2048;
+
+/**
  * Change link's parent DOM element visibility to hidden
  *
  * @param {HTMLAnchorElement} aElement
@@ -42,7 +52,11 @@ function removeLink(aElement) {
  * @returns []
  */
 function extractHashTagsFromLink(aElement) {
-  return aElement?.hash?.split('#').slice(1) || [];
+  const hash = aElement?.hash;
+  if (!hash || hash.length > MAX_HASH_LENGTH) {
+    return [];
+  }
+  return hash.split('#').slice(1) || [];
 }
 
 /**
