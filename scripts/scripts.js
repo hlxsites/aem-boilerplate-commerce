@@ -323,12 +323,8 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  // decorate links in main
-  decorateLinks(main);
-  // decorate links in header
-  decorateLinks(doc.querySelector('header'));
-  // decorate links in footer
-  decorateLinks(doc.querySelector('footer'));
+  // decorate links
+  decorateLinks(doc);
 }
 
 /**
