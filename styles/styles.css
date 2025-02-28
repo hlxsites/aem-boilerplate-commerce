@@ -366,12 +366,12 @@ main blockquote {
 }
 
 main blockquote p::before {
-  content: '”';
+  content: '“';
   line-height: 0;
 }
 
 main blockquote p::after {
-  content: "”";
+  content: '”';
   line-height: 0;
 }
 
