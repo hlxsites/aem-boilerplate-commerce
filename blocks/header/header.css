@@ -605,7 +605,7 @@ li
   header nav .nav-sections ul li {
     font: var(--type-headline-2-default-font);
     letter-spacing: var(--type-headline-2-default-letter-spacing);
-    padding: var(--spacing-medium);
+    padding: var(--spacing-small);
   }
 
   header nav .nav-sections ul li a {
@@ -634,6 +634,7 @@ li
   }
 
   header nav .nav-sections ul > li ul > li:has(img) {
+    margin: var(--spacing-small) 0;
     padding: 0;
   }
 
