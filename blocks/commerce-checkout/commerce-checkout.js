@@ -413,7 +413,7 @@ export default async function decorate(block) {
         Agreements: (ctx) => {
           ctx.appendAgreement(() => ({
             name: 'default',
-            mode: 'auto',
+            mode: 'manual',
             translationId: 'Checkout.TermsAndConditions.label',
           }));
         },
