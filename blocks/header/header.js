@@ -16,6 +16,10 @@ import applyHashTagsForDomElement from '../../scripts/api/hashtags/api.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+const overlay = document.createElement('div');
+overlay.classList.add('overlay');
+document.querySelector('header').insertAdjacentElement('afterbegin', overlay);
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
@@ -24,12 +28,14 @@ function closeOnEscape(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
-      document.getElementsByTagName('main')[0].classList.remove('overlay');
+      overlay.classList.remove('show');
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
       nav.querySelector('button').focus();
+      const navWrapper = document.querySelector('.nav-wrapper');
+      navWrapper.classList.remove('active');
     }
   }
 }
@@ -42,7 +48,7 @@ function closeOnFocusLost(e) {
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
-      document.getElementsByTagName('main')[0].classList.remove('overlay');
+      overlay.classList.remove('show');
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections, true);
@@ -207,18 +213,25 @@ export default async function decorate(block) {
       .forEach((navSection) => {
         if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
         setupSubmenu(navSection);
-        navSection.addEventListener('click', () => {
+        navSection.addEventListener('click', (event) => {
+          if (event.target.tagName === 'A') return;
           if (isDesktop.matches) {
             const expanded = navSection.getAttribute('aria-expanded') === 'true';
             toggleAllNavSections(navSections);
             navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-            if (!expanded) {
-              document.getElementsByTagName('main')[0].classList.add('overlay');
-            } else {
-              document.getElementsByTagName('main')[0].classList.remove('overlay');
-            }
           } else {
             navSection.classList.toggle('active');
+          }
+        });
+        navSection.addEventListener('mouseenter', () => {
+          toggleAllNavSections(navSections);
+          if (isDesktop.matches) {
+            if (!navSection.classList.contains('nav-drop')) {
+              overlay.classList.remove('show');
+              return;
+            }
+            navSection.setAttribute('aria-expanded', 'true');
+            overlay.classList.add('show');
           }
         });
       });
@@ -312,7 +325,13 @@ export default async function decorate(block) {
     }
   }
 
-  navTools.querySelector('.nav-search-button').addEventListener('click', () => toggleSearch());
+  navTools.querySelector('.nav-search-button').addEventListener('click', () => {
+    if (isDesktop.matches) {
+      toggleAllNavSections(navSections);
+      overlay.classList.remove('show');
+    }
+    toggleSearch();
+  });
 
   // Close panels when clicking outside
   document.addEventListener('click', (e) => {
@@ -330,9 +349,17 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 
+  navWrapper.addEventListener('mouseout', (e) => {
+    if (isDesktop.matches && !nav.contains(e.relatedTarget)) {
+      toggleAllNavSections(navSections);
+      overlay.classList.remove('show');
+    }
+  });
+
   window.addEventListener('resize', () => {
     navWrapper.classList.remove('active');
-    document.querySelector('main').classList.remove('overlay');
+    overlay.classList.remove('show');
+    toggleMenu(nav, navSections, false);
   });
 
   // hamburger for mobile
@@ -343,7 +370,7 @@ export default async function decorate(block) {
     </button>`;
   hamburger.addEventListener('click', () => {
     navWrapper.classList.toggle('active');
-    document.querySelector('main').classList.toggle('overlay');
+    overlay.classList.toggle('show');
     toggleMenu(nav, navSections);
   });
   nav.prepend(hamburger);
