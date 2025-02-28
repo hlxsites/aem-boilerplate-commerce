@@ -593,11 +593,6 @@ li
     position: fixed;
   }
 
-  header nav[aria-expanded='true'] .nav-brand a {
-    left: -16px;
-    position: relative;
-  }
-
   header nav .nav-sections {
     position: relative;
   }
@@ -640,6 +635,11 @@ li
   header nav .nav-sections ul > li ul > li:has(img) {
     margin: var(--spacing-small) 0;
     padding: 0;
+  }
+
+  header nav[aria-expanded='true'] .nav-brand a {
+    left: -16px;
+    position: relative;
   }
 
   header nav .nav-sections ul > li.nav-drop {
