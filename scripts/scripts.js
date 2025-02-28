@@ -153,6 +153,22 @@ export function decorateMain(main) {
   decorateBlocks(main);
 }
 
+/**
+ * Decorates all links in scope of element
+ *
+ * @param {HTMLElement} element
+ */
+function decorateLinks(element) {
+  element.querySelectorAll('a').forEach((a) => {
+    if (!a.hash) {
+      return;
+    }
+    a.addEventListener('click', (evt) => {
+      removeHashTags(evt.target);
+    });
+  });
+}
+
 function preloadFile(href, as) {
   const link = document.createElement('link');
   link.rel = 'preload';
@@ -307,14 +323,12 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  document.querySelectorAll('a').forEach((aElement) => {
-    if (!aElement.hash) {
-      return;
-    }
-    aElement.addEventListener('click', (evt) => {
-      removeHashTags(evt.target);
-    });
-  });
+  // decorate links in main
+  decorateLinks(main);
+  // decorate links in header
+  decorateLinks(doc.querySelector('header'));
+  // decorate links in footer
+  decorateLinks(doc.querySelector('footer'));
 }
 
 /**
