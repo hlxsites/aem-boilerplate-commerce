@@ -215,11 +215,7 @@ export default async function decorate(block) {
         setupSubmenu(navSection);
         navSection.addEventListener('click', (event) => {
           if (event.target.tagName === 'A') return;
-          if (isDesktop.matches) {
-            const expanded = navSection.getAttribute('aria-expanded') === 'true';
-            toggleAllNavSections(navSections);
-            navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-          } else {
+          if (!isDesktop.matches) {
             navSection.classList.toggle('active');
           }
         });
