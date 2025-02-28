@@ -92,8 +92,7 @@
   --spacing-xxhuge: 192px;
   --type-base-font-family: adobe-clean, roboto, roboto-fallback, system-ui, sans-serif;
   --type-condensed-font-family: adobe-clean-condensed, roboto-condensed, roboto-condensed-fallback, sans-serif;
-  --type-display-1-font: normal normal 300 6rem/7.2rem
-    var(--type-base-font-family);
+  --type-display-1-font: normal normal 300 6rem/7.2rem var(--type-base-font-family);
   --type-display-1-letter-spacing: 0.04em;
   --type-display-2-font: normal normal 300 4.8rem/5.6rem
     var(--type-base-font-family);
@@ -101,14 +100,11 @@
   --type-display-3-font: normal normal 300 3.4rem/4rem
     var(--type-base-font-family);
   --type-display-3-letter-spacing: 0.04em;
-  --type-headline-1-font: normal normal 400 2.4rem/3.2rem
-    var(--type-base-font-family);
+  --type-headline-1-font: normal normal 400 2.4rem/3.2rem var(--type-base-font-family);
   --type-headline-1-letter-spacing: 0.04em;
-  --type-headline-2-default-font: normal normal 300 2rem/2.4rem
-    var(--type-base-font-family);
+  --type-headline-2-default-font: normal normal 300 2rem/2.4rem var(--type-base-font-family);
   --type-headline-2-default-letter-spacing: 0.04em;
-  --type-headline-2-strong-font: normal normal 500 2rem/2.4rem
-    var(--type-base-font-family);
+  --type-headline-2-strong-font: normal normal 500 2rem/2.4rem var(--type-base-font-family);
   --type-headline-2-strong-letter-spacing: 0.04em;
   --type-body-1-default-font: normal normal 300 1.6rem/2.4rem
     var(--type-base-font-family);
@@ -145,8 +141,7 @@
   --type-details-overline-letter-spacing: 0.16em;
 
   /* Additional tokens */
-  --type-fixed-font-family:
-    adobe-clean, "Roboto Mono", menlo, consolas, "Liberation Mono", monospace, system-ui, sans-serif;
+  --type-fixed-font-family: adobe-clean, "Roboto Mono", menlo, consolas, "Liberation Mono", monospace, system-ui, sans-serif;
   --background-color: var(--color-neutral-50);
   --nav-height: 6.4rem;
 }
