@@ -143,7 +143,8 @@ function apply(aElements, callbackFn, activeRules) {
  * change visibility or remove elements based on hash tags conditions
  *
  * @param {HTMLElement} domEl DOM element
- * @param {function} callbackFn - optional; allows to pass a callback to apply custom conditions
+ * @param {function} callbackFn callback to apply condition(s)
+ * @param {object} activeRules segments, group and rules for current user
  */
 function parseUrlHashTags(domEl, callbackFn, activeRules) {
   const domElement = document.querySelector(domEl);
