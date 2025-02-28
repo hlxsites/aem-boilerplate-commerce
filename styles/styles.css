@@ -140,7 +140,7 @@
   --type-details-caption-2-font: normal normal 300 1.2rem/1.6rem
     var(--type-base-font-family);
   --type-details-caption-2-letter-spacing: 0.08em;
-  --type-details-overline-font: normal normal 700 1.2rem/2rem
+  --type-details-overline-font: normal normal 400 1.2rem/2rem
     var(--type-base-font-family);
   --type-details-overline-letter-spacing: 0.16em;
 
@@ -373,7 +373,7 @@ main blockquote {
 }
 
 main blockquote p::before {
-  content: "“";
+  content: '”';
   line-height: 0;
 }
 
