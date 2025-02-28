@@ -154,10 +154,6 @@ header nav .nav-brand a {
   letter-spacing: var(--type-headline-1-letter-spacing);
 }
 
-header nav .nav-brand a:hover {
-    text-decoration: none;
-}
-
 li.nav-drop img {
   max-width: var(--desktop-item-panel-max-width);
   width: 100%;
@@ -191,12 +187,6 @@ header nav .nav-sections ul {
   padding-left: 0;
 }
 
-header nav .nav-sections ul > li,
-header nav .nav-sections ul > li > a {
-  font: var(--type-body-2-strong-font);
-  letter-spacing: var(--type-body-2-strong-letter-spacing);
-}
-
 header nav .nav-sections ul > li ul {
   margin-top: 0;
 }
@@ -228,6 +218,10 @@ header nav .nav-sections ul > li:empty {
 
   header nav .nav-sections .nav-drop {
     cursor: pointer;
+  }
+
+  header nav .nav-brand a:hover {
+   text-decoration: none;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li a {
