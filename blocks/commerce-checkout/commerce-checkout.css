@@ -61,7 +61,8 @@
 .checkout__content--empty .checkout__bill-to-shipping,
 .checkout__content--empty .checkout__delivery,
 .checkout__content--empty .checkout__payment-methods,
-.checkout__content--empty .checkout__billing-form {
+.checkout__content--empty .checkout__billing-form,
+.checkout__content--empty .checkout__terms-and-conditions {
   display: none !important;
 }
 
@@ -102,7 +103,6 @@
   display: none;
 }
 
-.checkout__error-banner,
 .checkout__merged-cart-banner {
   grid-column: 1;
 }
@@ -127,7 +127,7 @@
 }
 
 /* temporary fix to hide the default cart heading */
-[data-testid='default-cart-heading'] {
+[data-testid="default-cart-heading"] {
   display: none;
 }
 
@@ -203,7 +203,7 @@
   display: grid;
   align-items: start;
   grid-template-columns: repeat(var(--grid-4-columns), 1fr);
-  grid-template-areas: 'main aside';
+  grid-template-areas: "main aside";
   grid-column-gap: var(--grid-4-gutters);
   margin-bottom: var(--spacing-xbig);
   padding-top: var(--spacing-xxlarge);
@@ -320,7 +320,6 @@
     gap: var(--spacing-xbig);
   }
 
-  .checkout__error-banner,
   .checkout__merged-cart-banner {
     display: grid;
     grid-column: 1 / span 12;
