@@ -42,7 +42,15 @@ function showLink(aElement) {
  */
 function removeLink(aElement) {
   if (aElement.nodeType === Node.ELEMENT_NODE && aElement.parentNode !== null) {
-    aElement.parentNode.removeChild(aElement);
+    let child = aElement;
+    let parent = aElement.parentNode;
+    if (parent.nodeName === 'LI') {
+      // remove entire <li> node from <ul>/<ol> element - this prevents
+      // from leaving empty <li></li> elements in DOM tree
+      child = aElement.parentNode;
+      parent = child.parentNode;
+    }
+    parent.removeChild(child);
   }
 }
 
