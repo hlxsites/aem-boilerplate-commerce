@@ -127,3 +127,8 @@ export const setPaymentMethod = (paymentMethod) => {
     );
   }
 };
+
+export function checkTermsAndConditions() {
+  cy.get(fields.termsAndConditionsCheckbox).check({ force: true });
+  cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
+}
