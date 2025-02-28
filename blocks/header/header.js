@@ -33,6 +33,7 @@ function closeOnEscape(e) {
     } else if (!isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
+      overlay.classList.remove('show');
       nav.querySelector('button').focus();
       const navWrapper = document.querySelector('.nav-wrapper');
       navWrapper.classList.remove('active');
