@@ -58,13 +58,27 @@ const e=`
     }
   }
 `,t=`
+  fragment APPLIED_GIFT_CARDS_FRAGMENT on AppliedGiftCard {
+    __typename
+    code
+    applied_balance {
+      value
+      currency
+    }
+    current_balance {
+      value
+      currency
+    }
+    expiration_date
+  }
+`,r=`
   fragment GIFT_MESSAGE_FRAGMENT on GiftMessage {
     __typename
     from
     to
     message
   }
-`,r=`
+`,i=`
   fragment GIFT_WRAPPING_FRAGMENT on GiftWrapping {
     __typename
     uid
@@ -77,7 +91,7 @@ const e=`
       currency
     }
   }
-`,i=`
+`,n=`
   fragment AVAILABLE_GIFT_WRAPPING_FRAGMENT on GiftWrapping {
    __typename
    uid
@@ -91,7 +105,7 @@ const e=`
      value
    }
   }
-`,n=`
+`,l=`
   fragment CART_ITEM_FRAGMENT on CartItemInterface {
     __typename
     uid
@@ -271,14 +285,17 @@ const e=`
   ${e}
   ${_}
   ${a}
-  ${r}
-  ${t}
   ${i}
-`,l=`
+  ${r}
+  ${n}
+`,c=`
   fragment CART_FRAGMENT on Cart {
     id
     total_quantity
     is_virtual
+    applied_gift_cards {
+      ...APPLIED_GIFT_CARDS_FRAGMENT
+    }
     gift_receipt_included
     printed_card_included
     gift_message {
@@ -379,5 +396,6 @@ const e=`
     }
   }
 
-  ${n}
-`;export{i as AVAILABLE_GIFT_WRAPPING_FRAGMENT,l as CART_FRAGMENT,n as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,t as GIFT_MESSAGE_FRAGMENT,r as GIFT_WRAPPING_FRAGMENT};
+  ${l}
+  ${t}
+`;export{t as APPLIED_GIFT_CARDS_FRAGMENT,n as AVAILABLE_GIFT_WRAPPING_FRAGMENT,c as CART_FRAGMENT,l as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,r as GIFT_MESSAGE_FRAGMENT,i as GIFT_WRAPPING_FRAGMENT};

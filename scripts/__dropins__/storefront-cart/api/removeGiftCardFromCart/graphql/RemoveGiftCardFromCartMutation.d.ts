@@ -14,7 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './transform-cart';
-export * from './transform-store-config';
-export * from './transform-gift-card-account';
-//# sourceMappingURL=index.d.ts.map
+export declare const REMOVE_GIFT_CARD_ON_CART_MUTATION: string;
+//# sourceMappingURL=RemoveGiftCardFromCartMutation.d.ts.map

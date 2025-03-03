@@ -1,11 +1,11 @@
 import { Item } from '../../data/models';
 import { Container } from '@dropins/tools/types/elsie/src/lib';
-import { GiftOptionsViewProps, GiftOptionsDataSourcesProps } from '../../types';
+import { GiftOptionsViewProps, GiftOptionsDataSourcesProps, GiftFormDataType, ProductGiftOptionsConfig, GiftOptionsReadOnlyViewProps } from '../../types';
 
 export interface GiftOptionsProps {
-    item: Item;
+    item: Item | ProductGiftOptionsConfig;
     view?: GiftOptionsViewProps;
-    readOnlyFormOrderView: 'primary' | 'secondary';
+    readOnlyFormOrderView: GiftOptionsReadOnlyViewProps;
     dataSource?: GiftOptionsDataSourcesProps;
     isEditable?: boolean;
     initialLoading?: boolean;
@@ -14,6 +14,7 @@ export interface GiftOptionsProps {
     onItemUpdate?: ({ item }: {
         item: Item;
     }) => void;
+    onGiftOptionsChange?: (data: GiftFormDataType) => void;
 }
 export declare const GiftOptions: Container<GiftOptionsProps>;
 //# sourceMappingURL=GiftOptions.d.ts.map

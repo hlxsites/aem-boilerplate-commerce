@@ -1,10 +1,10 @@
 import { FunctionComponent } from 'preact';
-import { GiftFormDataType, GiftWrappingConfigProps } from '../../../types';
+import { GiftFormDataType, GiftWrappingConfigProps, GiftOptionsReadOnlyViewProps, GiftOptionsViewProps } from '../../../types';
 
 export interface ReadOnlyFormViewProps {
-    view: 'product' | 'order';
+    view: GiftOptionsViewProps;
     giftOptions: GiftFormDataType;
-    readOnlyFormOrderView: 'primary' | 'secondary';
+    readOnlyFormOrderView: GiftOptionsReadOnlyViewProps;
     giftWrappingConfig: GiftWrappingConfigProps[] | [];
 }
 export declare const ReadOnlyFormView: FunctionComponent<ReadOnlyFormViewProps>;

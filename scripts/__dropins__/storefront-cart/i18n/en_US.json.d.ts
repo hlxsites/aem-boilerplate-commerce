@@ -21,6 +21,21 @@ declare const _default: {
       "taxToBeDetermined": "TBD",
       "checkout": "Checkout",
       "orderSummary": "Order Summary",
+      "giftCard": {
+        "label": "Gift Card",
+        "applyAction": "Apply",
+        "ariaLabel": "Enter gift card code",
+        "ariaLabelRemove": "Remove gift card",
+        "placeholder": "Enter code",
+        "title": "Gift Card",
+        "errors": {
+          "empty": "Please enter a gift card code."
+        },
+        "appliedGiftCards": {
+          "label": { "singular": "Gift card", "plural": "Gift cards" },
+          "remainingBalance": "Remaining balance"
+        }
+      },
       "giftOptionsTax": {
         "printedCard": {
           "title": "Printed card",
@@ -90,7 +105,8 @@ declare const _default: {
       "coupon": {
         "applyAction": "Apply",
         "placeholder": "Enter code",
-        "title": "Discount code"
+        "title": "Discount code",
+        "ariaLabelRemove": "Remove coupon"
       }
     },
     "CartItem": {

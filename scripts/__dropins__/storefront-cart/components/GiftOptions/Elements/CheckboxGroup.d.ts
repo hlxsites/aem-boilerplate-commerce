@@ -1,12 +1,12 @@
 import { FunctionComponent } from 'preact';
-import { GiftOptionsViewProps, GiftWrappingConfigProps, GiftFormDataType } from '../../../types';
+import { GiftOptionsViewProps, GiftWrappingConfigProps, GiftFormDataType, ProductGiftOptionsConfig } from '../../../types';
 import { CartModel, Item } from '../../../data/models';
 import { StateUpdater, Dispatch } from 'preact/hooks';
 
 interface CheckboxGroupProps {
     className: string;
     view: GiftOptionsViewProps;
-    item: Item;
+    item: Item | ProductGiftOptionsConfig;
     giftOptions: GiftFormDataType;
     disabled: boolean;
     cartData: CartModel | null;

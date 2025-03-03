@@ -1,8 +1,8 @@
 import { CartModel, Item } from '../data/models';
-import { GiftOptionsDataSourcesProps, GiftOptionsViewProps, GiftWrappingConfigProps, GiftFormDataType } from '../types';
+import { GiftOptionsDataSourcesProps, GiftOptionsViewProps, GiftWrappingConfigProps, GiftFormDataType, ProductGiftOptionsConfig } from '../types';
 
 interface UseGiftOptionsProps {
-    item: Item;
+    item: Item | ProductGiftOptionsConfig;
     view: GiftOptionsViewProps;
     dataSource: GiftOptionsDataSourcesProps;
     initialLoading: boolean;
@@ -11,8 +11,9 @@ interface UseGiftOptionsProps {
     onItemUpdate?: ({ item }: {
         item: Item;
     }) => void;
+    onGiftOptionsChange?: (data: GiftFormDataType) => void;
 }
-export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, handleItemsLoading, handleItemsError, onItemUpdate, }: UseGiftOptionsProps) => {
+export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, handleItemsLoading, handleItemsError, onItemUpdate, onGiftOptionsChange, }: UseGiftOptionsProps) => {
     loading: boolean;
     giftOptions: GiftFormDataType;
     showModal: boolean;
