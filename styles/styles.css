@@ -103,12 +103,12 @@
   --type-headline-1-letter-spacing: 0.04em;
   --type-headline-2-default-font: normal normal 300 2rem/2.4rem var(--type-base-font-family);
   --type-headline-2-default-letter-spacing: 0.04em;
-  --type-headline-2-strong-font: normal normal 500 2rem/2.4rem var(--type-base-font-family);
+  --type-headline-2-strong-font: normal normal 700 2rem/2.4rem var(--type-base-font-family);
   --type-headline-2-strong-letter-spacing: 0.04em;
   --type-body-1-default-font: normal normal 300 1.6rem/2.4rem
     var(--type-base-font-family);
   --type-body-1-default-letter-spacing: 0.04em;
-  --type-body-1-strong-font: normal normal 500 1.6rem/2.4rem
+  --type-body-1-strong-font: normal normal 700 1.6rem/2.4rem
     var(--type-base-font-family);
   --type-body-1-strong-letter-spacing: 0.04em;
   --type-body-1-emphasized-font: normal normal 700 1.6rem/2.4rem
@@ -117,7 +117,7 @@
   --type-body-2-default-font: normal normal 300 1.4rem/2rem
     var(--type-base-font-family);
   --type-body-2-default-letter-spacing: 0.04em;
-  --type-body-2-strong-font: normal normal 500 1.4rem/2rem
+  --type-body-2-strong-font: normal normal 700 1.4rem/2rem
     var(--type-base-font-family);
   --type-body-2-strong-letter-spacing: 0.04em;
   --type-body-2-emphasized-font: normal normal 700 1.4rem/2rem
