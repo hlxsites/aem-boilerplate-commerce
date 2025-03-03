@@ -124,3 +124,6 @@ export const submitCancelOrderButton =
   '[data-testid="order-cancel-submit-button"]';
 export const cancellationReasonsModal =
   '[data-testid="order-cancellation-reasons-modal"]';
+
+export const termsAndConditionsCheckbox =
+  'input[name="default"][type="checkbox"]';
