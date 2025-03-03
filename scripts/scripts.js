@@ -151,6 +151,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  // decorateLinks(main); // author can decide when to localize links
 }
 
 /**
@@ -373,6 +374,51 @@ export async function fetchIndex(indexFile, pageSize = 500) {
   window.index[indexFile] = newIndex;
 
   return newIndex;
+}
+
+/**
+ * Get root path
+ */
+export function getRootPath() {
+  window.ROOT_PATH = window.ROOT_PATH || getMetadata('root') || '/';
+  return window.ROOT_PATH;
+}
+
+/**
+ * Decorates links.
+ * @param {Element} main The main element
+ */
+export function decorateLinks(main) {
+  const root = getRootPath();
+  if (root === '/') return;
+  const links = main.querySelectorAll('a');
+
+  links.forEach((link) => {
+    const url = new URL(link.href, window.location.origin);
+    const { pathname } = url;
+
+    // If the link is already localized, do nothing
+    if (pathname.startsWith('//') || pathname.startsWith(root)) return;
+
+    if (
+      link.href.startsWith('/')
+      || link.href.startsWith(window.location.origin)
+    ) {
+      link.href = `${root}${url.pathname.substring(1)}${url.search}${url.hash}`;
+    }
+  });
+}
+
+/**
+ * Decorates links.
+ * @param {string} [link] url to be localized
+ */
+export function rootLink(link) {
+  const root = getRootPath().replace(/\/$/, '');
+
+  // If the link is already localized, do nothing
+  if (link.startsWith(root)) return link;
+  return `${root}${link}`;
 }
 
 /**
