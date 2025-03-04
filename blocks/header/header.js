@@ -333,6 +333,6 @@ export default async function decorate(block) {
   renderAuthDropdown(navTools);
 }
 
-window.addEventListener('resize', () => {
-  window.location.reload();
-});
+// window.addEventListener('resize', () => {
+//   window.location.reload();
+// });
