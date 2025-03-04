@@ -1,0 +1,2 @@
+export declare const APPLIED_GIFT_CARDS_FRAGMENT = "\n  fragment APPLIED_GIFT_CARDS_FRAGMENT on AppliedGiftCard {\n    __typename\n    code\n    applied_balance {\n      value\n      currency\n    }\n    current_balance {\n      value\n      currency\n    }\n    expiration_date\n  }\n";
+//# sourceMappingURL=GiftFragment.d.ts.map
