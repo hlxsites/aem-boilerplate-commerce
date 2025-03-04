@@ -10,6 +10,7 @@ import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShippi
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
@@ -44,6 +45,7 @@ export default async function decorate(block) {
       </div>
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
+        <div class="cart__gift-options"></div>
       </div>
     </div>
 
@@ -54,6 +56,7 @@ export default async function decorate(block) {
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
+  const $giftOptions = fragment.querySelector('.cart__gift-options');
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -84,6 +87,22 @@ export default async function decorate(block) {
         .map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      slots: {
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          provider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'cart',
+            handleItemsLoading: ctx.handleItemsLoading,
+            handleItemsError: ctx.handleItemsError,
+            onItemUpdate: ctx.onItemUpdate,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
+        },
+      },
     })($list),
 
     // Order Summary
@@ -119,6 +138,11 @@ export default async function decorate(block) {
     provider.render(EmptyCart, {
       routeCTA: startShoppingURL ? () => startShoppingURL : undefined,
     })($emptyCart),
+
+    provider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'cart',
+    })($giftOptions),
   ]);
 
   let cartViewEventPublished = false;

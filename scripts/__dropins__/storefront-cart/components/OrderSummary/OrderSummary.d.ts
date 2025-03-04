@@ -40,6 +40,27 @@ export interface OrderSummaryProps extends Omit<HTMLAttributes<HTMLDivElement>, 
         estimated?: boolean;
         priceWithoutTax?: VNode<HTMLAttributes<HTMLSpanElement>>;
     };
+    printedCard?: {
+        renderContent: boolean;
+        taxIncluded: boolean;
+        taxInclAndExcl: boolean;
+        priceExclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+        priceInclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+    };
+    itemsGiftWrapping?: {
+        renderContent: boolean;
+        taxIncluded: boolean;
+        taxInclAndExcl: boolean;
+        priceExclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+        priceInclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+    };
+    orderGiftWrapping?: {
+        renderContent: boolean;
+        taxIncluded: boolean;
+        taxInclAndExcl: boolean;
+        priceExclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+        priceInclTax: VNode<HTMLAttributes<HTMLSpanElement>>;
+    };
     primaryAction?: VNode<HTMLAttributes<HTMLButtonElement>>;
     coupons?: VNode<HTMLAttributes<HTMLDivElement>>;
     giftCards?: VNode<HTMLAttributes<HTMLDivElement>>;
