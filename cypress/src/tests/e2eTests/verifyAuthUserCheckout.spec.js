@@ -17,9 +17,9 @@ import {
   assertOrderConfirmationShippingDetails,
   assertOrderConfirmationBillingDetails,
   assertOrderConfirmationShippingMethod,
+  assertSelectedPaymentMethod,
   assertAuthUser,
 } from '../../assertions';
-import { assertSelectedPaymentMethod } from '../../assertions';
 import {
   customerShippingAddress,
   customerBillingAddress,
@@ -68,8 +68,8 @@ describe('Verify auth user can place order', () => {
       '/products/hollister-backyard-sweatshirt/MH05'
     )('.commerce-cart-wrapper');
     cy.visit("/customer/create");
-    cy.get('.minicart-wrapper').should('be.visible');
-    cy.fixture('userInfo').then(({ sign_up }) => {
+    cy.get('.minicart-wrapper').should('be.visible')
+    cy.fixture('userInfo').then(({sign_up}) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
       cy.wait(5000);
@@ -177,10 +177,7 @@ describe('Verify auth user can place order', () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 1);
     cy.wait(5000);
     placeOrder();
-    assertOrderConfirmationCommonDetails(
-      customerBillingAddress,
-      paymentServicesCreditCard
-    );
+    assertOrderConfirmationCommonDetails(customerBillingAddress, paymentServicesCreditCard);
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
@@ -204,8 +201,8 @@ describe('Verify auth user can place order', () => {
 
     cy.url().then((url) => {
       const orderRef = url.split('?')[1];
-      cy.visit('/order-details?' + orderRef);
-    });
+      cy.visit('/order-details?' + orderRef)
+    })
 
     // CANCEL ORDER
     cy.get(fields.cancelButton).should('exist');
@@ -216,7 +213,7 @@ describe('Verify auth user can place order', () => {
 
     cy.get(fields.submitCancelOrderButton).click();
 
-    cy.get('.dropin-header-container__title', { timeout: 3000 })
+    cy.get('.dropin-header-container__title', {timeout: 3000})
       .should('exist')
       .and('be.visible')
       .and('contain.text', 'Canceled');
