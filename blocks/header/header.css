@@ -256,11 +256,6 @@ header nav .nav-sections ul > li:empty {
     flex: 0 1 auto;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li .break {
-    display: inline-flex;
-    flex-basis: var(--spacing-xbig);
-  }
-
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] .submenu-wrapper {
     background-color: var(--color-neutral-50);
     box-sizing: border-box;
@@ -637,10 +632,6 @@ li
     letter-spacing: var(--type-headline-2-default-letter-spacing);
   }
 
-  header nav .nav-sections ul > li ul > li.break {
-    margin-top: var(--spacing-xsmall);
-  }
-
   header nav .nav-sections ul > li ul > li:has(img) {
     margin: var(--spacing-small) 0;
     padding: 0;
@@ -721,7 +712,7 @@ li
     margin-bottom: var(--spacing-small);
   }
 
-  header nav .nav-sections ul li:not(.break):empty {
+  header nav .nav-sections ul li:empty {
     display: none;
   }
 }
