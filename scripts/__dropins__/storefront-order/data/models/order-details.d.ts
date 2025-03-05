@@ -4,7 +4,7 @@ import { OrdersReturnPropsModel } from './customer-orders-return';
 export type OrderAddressModel = {
     city: string;
     company: string;
-    country: string;
+    countryCode: string;
     firstName: string;
     middleName: string;
     lastName: string;
