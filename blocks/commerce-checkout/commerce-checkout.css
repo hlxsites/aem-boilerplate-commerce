@@ -134,6 +134,7 @@
 .cart-summary-list__heading {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .cart-summary-list__heading-text {
