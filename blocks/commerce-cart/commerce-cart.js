@@ -19,6 +19,7 @@ import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 import '../../scripts/initializers/cart.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -79,8 +80,8 @@ export default async function decorate(block) {
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
-      routeEmptyCartCTA: startShoppingURL ? () => startShoppingURL : undefined,
+      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
         .split(',')
@@ -107,8 +108,8 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: (product) => `/products/${product.url.urlKey}/${product.topLevelSku}`,
-      routeCheckout: checkoutURL ? () => checkoutURL : undefined,
+      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
           if (enableEstimateShipping === 'true') {
@@ -136,7 +137,7 @@ export default async function decorate(block) {
 
     // Empty Cart
     provider.render(EmptyCart, {
-      routeCTA: startShoppingURL ? () => startShoppingURL : undefined,
+      routeCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     })($emptyCart),
 
     provider.render(GiftOptions, {
