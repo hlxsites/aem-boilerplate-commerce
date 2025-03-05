@@ -15,173 +15,173 @@
  * from Adobe.
  *******************************************************************/
 
-import * as fields from "../../fields/index";
+import * as fields from '../../fields/index';
 
-describe("Verify price summary on cart", () => {
+describe('Verify price summary on cart', () => {
   beforeEach(() => {
-    cy.visit("/products/crown-summit-backpack/24-MB03");
-    cy.get(".product-details__buttons__add-to-cart button")
-      .should("be.visible")
+    cy.visit('/products/crown-summit-backpack/24-MB03');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
       .click();
     cy.wait(3000);
-    cy.visit("/cart");
+    cy.visit('/cart');
   });
 
-  it("Verify applied gift code", () => {
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+  it('Verify applied gift code', () => {
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
-      .contains("Gift Card")
-      .should("be.visible")
+      .contains('Gift Card')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
-      .should("be.visible")
-      .type("0AGN6OHDPG42");
+      .should('be.visible')
+      .type('0AGN6OHDPG42');
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
-      .should("be.visible");
+      .should('be.visible');
 
-    cy.get(".cart-order-summary__coupon__code span")
+    cy.get('.cart-order-summary__coupon__code span')
       .contains(/0AGN6OHDPG42/i)
-      .should("be.visible");
+      .should('be.visible');
   });
 
-  it("Verify applied gift codes", () => {
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+  it('Verify applied gift codes', () => {
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
-      .contains("Gift Card")
-      .should("be.visible")
+      .contains('Gift Card')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
-      .should("be.visible")
-      .type("0AGN6OHDPG42");
+      .should('be.visible')
+      .type('0AGN6OHDPG42');
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
-      .should("be.visible")
-      .type("0A6GF150P3IZ");
+      .should('be.visible')
+      .type('0A6GF150P3IZ');
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
-      .should("be.visible");
+      .should('be.visible');
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0A6GF150P3IZ/i)
-      .should("be.visible");
+      .should('be.visible');
 
-    cy.get(".coupon-code-form__applied").children().should("have.length", 2);
+    cy.get('.coupon-code-form__applied').children().should('have.length', 2);
 
-    cy.get(".cart-order-summary__coupon__code span")
+    cy.get('.cart-order-summary__coupon__code span')
       .contains(/0AGN6OHDPG42/i)
-      .should("be.visible");
+      .should('be.visible');
 
-    cy.get(".cart-order-summary__coupon__code span")
+    cy.get('.cart-order-summary__coupon__code span')
       .contains(/0A6GF150P3IZ/i)
-      .should("be.visible");
+      .should('be.visible');
   });
 
-  it("Verify removed gif code", () => {
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+  it('Verify removed gif code', () => {
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
-      .contains("Gift Card")
-      .should("be.visible")
+      .contains('Gift Card')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
-      .should("be.visible")
-      .type("0AGN6OHDPG42");
+      .should('be.visible')
+      .type('0AGN6OHDPG42');
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
       .contains(/0AGN6OHDPG42/i)
-      .should("be.visible");
+      .should('be.visible');
 
     cy.get(`.dropin-tag-container.coupon-code-form__applied-item button`)
-      .should("be.visible")
+      .should('be.visible')
       .click({ multiple: true });
 
-    cy.get(".coupon-code-form__applied").children().should("have.length", 0);
+    cy.get('.coupon-code-form__applied').children().should('have.length', 0);
 
-    cy.get(".cart-order-summary__coupon__code span").should("not.exist");
+    cy.get('.cart-order-summary__coupon__code span').should('not.exist');
   });
 
-  it("Verify apply empty code", () => {
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+  it('Verify apply empty code', () => {
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
-      .contains("Gift Card")
-      .should("be.visible")
+      .contains('Gift Card')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.get(`.coupon-code-form__error`).contains(
-      "Please enter a gift card code."
+      'Please enter a gift card code.'
     );
   });
 
-  it("Verify apply broken gift code", () => {
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+  it('Verify apply broken gift code', () => {
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
-      .contains("Gift Card")
-      .should("be.visible")
+      .contains('Gift Card')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
-      .should("be.visible")
-      .type("101OLEF0QJQUN");
+      .should('be.visible')
+      .type('101OLEF0QJQUN');
 
     cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
-      .contains("Apply")
-      .should("be.visible")
+      .contains('Apply')
+      .should('be.visible')
       .click({ multiple: true });
 
     cy.get(`.coupon-code-form__error`).contains(
-      "The gift card code couldn't be added. Verify your information and try again."
+      'The gift card code couldn\'t be added. Verify your information and try again.'
     );
   });
 });
