@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { events } from '@dropins/tools/event-bus.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
