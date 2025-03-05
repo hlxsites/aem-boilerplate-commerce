@@ -79,7 +79,8 @@ import {
   setAddressOnCart,
 } from '../../scripts/checkout.js';
 
-import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
+import { authPrivacyPolicyConsentSlot, SUPPORT_PATH } from '../../scripts/constants.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -256,7 +257,7 @@ export default async function decorate(block) {
     })($serverError),
 
     CheckoutProvider.render(OutOfStock, {
-      routeCart: () => '/cart',
+      routeCart: () => rootLink('/cart'),
       onCartProductsUpdate: (items) => {
         cartApi.updateProductsFromCart(items).catch(console.error);
       },
@@ -390,7 +391,7 @@ export default async function decorate(block) {
           );
           const editCartLink = document.createElement('a');
           editCartLink.classList.add('cart-summary-list__edit');
-          editCartLink.href = '/cart';
+          editCartLink.href = rootLink('/cart');
           editCartLink.rel = 'noreferrer';
           editCartLink.innerText = 'Edit';
 
@@ -507,7 +508,7 @@ export default async function decorate(block) {
     if (emptyCart) return;
 
     emptyCart = await CartProvider.render(EmptyCart, {
-      routeCTA: () => '/',
+      routeCTA: () => rootLink('/'),
     })($emptyCart);
 
     $content.classList.add('checkout__content--empty');
@@ -824,8 +825,8 @@ export default async function decorate(block) {
     }) => {
       const signUpForm = document.createElement('div');
       AuthProvider.render(SignUp, {
-        routeSignIn: () => '/customer/login',
-        routeRedirectOnEmailConfirmationClose: () => '/customer/account',
+        routeSignIn: () => rootLink('/customer/login'),
+        routeRedirectOnEmailConfirmationClose: () => rootLink('/customer/account'),
         inputsDefaultValueSet,
         addressesData,
         slots: {
@@ -856,7 +857,7 @@ export default async function decorate(block) {
         <p>
           Need help?
           <a
-            href="/support"
+            href="${rootLink(SUPPORT_PATH)}"
             rel="noreferrer"
             class="order-confirmation-footer__contact-support-link"
             data-testid="order-confirmation-footer__contact-support-link"
@@ -878,7 +879,7 @@ export default async function decorate(block) {
       size: 'medium',
       variant: 'primary',
       type: 'submit',
-      href: '/',
+      href: rootLink('/'),
     })($orderConfirmationFooterContinueBtn);
   };
 
@@ -917,8 +918,8 @@ export default async function decorate(block) {
     const encodedOrderNumber = encodeURIComponent(orderNumber);
 
     const url = token
-      ? `/order-details?orderRef=${encodedOrderRef}`
-      : `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`;
+      ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
+      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 
