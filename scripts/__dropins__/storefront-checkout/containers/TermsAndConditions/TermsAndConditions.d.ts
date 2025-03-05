@@ -5,8 +5,8 @@ export interface TermsAndConditionsProps {
     slots?: {
         Agreements?: SlotProps<{
             appendAgreement: SlotMethod<{
-                mode: AgreementMode;
                 name: string;
+                mode: AgreementMode;
                 translationId?: string;
                 text?: string;
             }>;
