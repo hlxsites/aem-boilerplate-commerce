@@ -17,19 +17,18 @@ export const assertCartSummaryProduct =
         .eq(productPosition)
         .should('contain', productSku);
 
-    if (elem === '.commerce-cart-wrapper') {
-      cy.get(`${elem} .dropin-incrementer__input`)
-        .eq(productPosition)
-        .should('have.value', productQty);
-    }
+      if (elem === '.commerce-cart-wrapper') {
+        cy.get(`${elem} .dropin-incrementer__input`)
+          .eq(productPosition)
+          .should('have.value', productQty);
+      }
 
-    cy.get(`${elem} .dropin-cart-item__price`)
-      .eq(productPosition)
-      .should('contain', productPrice);
-    cy.get(`${elem} .dropin-cart-item__total`)
-      .eq(productPosition)
-      .should('contain', totalPrice);
-  };
+      cy.get(`${elem} .dropin-cart-item__price`)
+        .should('contain', productPrice);
+      cy.get(`${elem} .dropin-cart-item__total`)
+        .eq(productPosition)
+        .should('contain', totalPrice);
+    };
 
 export const assertCartSummaryProductsOnCheckout = (
   productName,
