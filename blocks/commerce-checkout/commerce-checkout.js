@@ -33,6 +33,8 @@ import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Checkout Dropin
@@ -159,6 +161,7 @@ export default async function decorate(block) {
         </div>
         <div class="checkout__aside">
           <div class="checkout__block checkout__order-summary"></div>
+          <div class="checkout__block checkout__gift-options"></div>
           <div class="checkout__block checkout__cart-summary"></div>
         </div>
       </div>
@@ -198,6 +201,9 @@ export default async function decorate(block) {
     '.checkout__cart-summary',
   );
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
+  const $giftOptions = checkoutFragment.querySelector(
+    '.checkout__gift-options',
+  );
   const $termsAndConditions = checkoutFragment.querySelector('.checkout__terms-and-conditions');
 
   block.appendChild(checkoutFragment);
@@ -368,6 +374,13 @@ export default async function decorate(block) {
 
           ctx.appendChild(coupons);
         },
+        GiftCards: (ctx) => {
+          const giftCards = document.createElement('div');
+
+          CartProvider.render(GiftCards)(giftCards);
+
+          ctx.appendChild(giftCards);
+        },
       },
     })($orderSummary),
 
@@ -405,6 +418,21 @@ export default async function decorate(block) {
               nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
             );
           });
+        },
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'cart',
+            isEditable: false,
+            handleItemsLoading: ctx.handleItemsLoading,
+            handleItemsError: ctx.handleItemsError,
+            onItemUpdate: ctx.onItemUpdate,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
         },
       },
     })($cartSummary),
@@ -490,6 +518,12 @@ export default async function decorate(block) {
         }
       },
     })($placeOrder),
+
+    CartProvider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'cart',
+      isEditable: false,
+    })($giftOptions),
   ]);
 
   // Dynamic containers and components
@@ -665,7 +699,7 @@ export default async function decorate(block) {
       const cartShippingAddress = getCartAddress(data, 'shipping');
 
       const shippingAddressId = cartShippingAddress
-        ? (cartShippingAddress?.id ?? 0)
+        ? cartShippingAddress?.id ?? 0
         : undefined;
 
       const shippingAddressCache = sessionStorage.getItem(
@@ -727,7 +761,7 @@ export default async function decorate(block) {
       const cartBillingAddress = getCartAddress(data, 'billing');
 
       const billingAddressId = cartBillingAddress
-        ? (cartBillingAddress?.id ?? 0)
+        ? cartBillingAddress?.id ?? 0
         : undefined;
 
       const billingAddressCache = sessionStorage.getItem(
@@ -792,6 +826,7 @@ export default async function decorate(block) {
         </div>
         <div class="order-confirmation__aside">
           <div class="order-confirmation__block order-confirmation__order-cost-summary"></div>
+          <div class="order-confirmation__block order-confirmation__gift-options"></div>
           <div class="order-confirmation__block order-confirmation__order-product-list"></div>
           <div class="order-confirmation__block order-confirmation__footer"></div>
         </div>
@@ -813,6 +848,9 @@ export default async function decorate(block) {
     );
     const $orderCostSummary = orderConfirmationFragment.querySelector(
       '.order-confirmation__order-cost-summary',
+    );
+    const $orderGiftOptions = orderConfirmationFragment.querySelector(
+      '.order-confirmation__gift-options',
     );
     const $orderProductList = orderConfirmationFragment.querySelector(
       '.order-confirmation__order-product-list',
@@ -855,7 +893,28 @@ export default async function decorate(block) {
     OrderProvider.render(ShippingStatus)($shippingStatus);
     OrderProvider.render(CustomerDetails)($customerDetails);
     OrderProvider.render(OrderCostSummary)($orderCostSummary);
-    OrderProvider.render(OrderProductList)($orderProductList);
+    CartProvider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'order',
+      isEditable: false,
+      readOnlyFormOrderView: 'secondary',
+    })($orderGiftOptions);
+    OrderProvider.render(OrderProductList, {
+      slots: {
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'order',
+            isEditable: false,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
+        },
+      },
+    })($orderProductList);
 
     $orderConfirmationFooter.innerHTML = `
       <div class="order-confirmation-footer__continue-button"></div>
