@@ -9,7 +9,7 @@ export default function decorate(block) {
       if (pic) {
         const picWrapper = pic.closest('div');
         if (picWrapper && picWrapper.children.length === 1) {
-          // picture is only content in column
+          // picture is only content in column1
           picWrapper.classList.add('columns-img-col');
         }
       }
