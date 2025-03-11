@@ -67,13 +67,17 @@ export default async function initializeDropins() {
   const token = getUserTokenCookie();
   // set auth headers
   setAuthHeaders(!!token);
+  // Set Fetch Endpoint (Global)
+  setEndpoint(await getConfigValue('commerce-core-endpoint'));
+  // check token
+  if (token) {
+    await checkToken(token);
+  }
   // emit authenticated event if token has changed
   events.emit('authenticated', !!token);
 
   // Event Bus Logger
   events.enableLogger(true);
-  // Set Fetch Endpoint (Global)
-  setEndpoint(await getConfigValue('commerce-core-endpoint'));
 
   events.on('eds/lcp', async () => {
     // Recaptcha
@@ -81,10 +85,6 @@ export default async function initializeDropins() {
       setConfig();
     });
   });
-
-  if (token) {
-    checkToken(token);
-  }
 
   // Initialize Global Drop-ins
   await import('./auth.js');
