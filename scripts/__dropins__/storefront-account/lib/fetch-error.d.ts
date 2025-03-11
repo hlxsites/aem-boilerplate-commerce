@@ -1,5 +1,6 @@
 /********************************************************************
  * ADOBE CONFIDENTIAL
+ * __________________
  *
  *  Copyright 2024 Adobe
  *  All Rights Reserved.
@@ -16,8 +17,5 @@
 /** Actions */
 export declare const handleFetchError: (errors: Array<{
     message: string;
-    extensions?: {
-        category: string;
-    };
 }>) => never;
 //# sourceMappingURL=fetch-error.d.ts.map

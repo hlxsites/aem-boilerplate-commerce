@@ -32,31 +32,6 @@ const persistCartDataInSession = (data) => {
   }
 };
 
-async function checkToken(token) {
-  setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
-
-  const clearCookies = () => {
-    ['auth_dropin_user_token', 'auth_dropin_firstname'].forEach((element) => {
-      document.cookie = `${element}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    });
-
-    events.emit('authenticated', false);
-    window.location.reload();
-  };
-
-  await authApi
-    .fetchGraphQl('query VALIDATE_TOKEN{ customerCart { id } }')
-    .then((res) => {
-      const unauthenticated = !!res.errors?.find(
-        (error) => error.extensions?.category === 'graphql-authentication',
-      );
-
-      if (!unauthenticated) return;
-
-      clearCookies();
-    });
-}
-
 export default async function initializeDropins() {
   // Set auth headers on authenticated event
   events.on('authenticated', setAuthHeaders);
@@ -70,9 +45,6 @@ export default async function initializeDropins() {
   // Set Fetch Endpoint (Global)
   setEndpoint(await getConfigValue('commerce-core-endpoint'));
   // check token
-  if (token) {
-    await checkToken(token);
-  }
   // emit authenticated event if token has changed
   events.emit('authenticated', !!token);
 
