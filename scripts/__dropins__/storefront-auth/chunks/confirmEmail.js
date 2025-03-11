@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as o,h as r}from"./network-error.js";const t=`
+import{h as o}from"./network-error.js";import{f as r}from"./fetch-graphql.js";const t=`
   mutation CONFIRM_EMAIL($email: String!, $confirmation_key: String!) {
     confirmEmail(
       input: { email: $email, confirmation_key: $confirmation_key }
@@ -10,4 +10,4 @@ import{f as o,h as r}from"./network-error.js";const t=`
       }
     }
   }
-`,m=async({customerEmail:i,customerConfirmationKey:a})=>await o(t,{method:"POST",variables:{email:i,confirmation_key:a}}).catch(r);export{m as c};
+`,e=async({customerEmail:i,customerConfirmationKey:a})=>await r(t,{method:"POST",variables:{email:i,confirmation_key:a}}).catch(o);export{e as c};

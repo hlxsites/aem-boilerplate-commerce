@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const checkToken: () => Promise<void>;
-//# sourceMappingURL=checkToken.d.ts.map
+export declare const verifyTokenAndCleanup: () => Promise<void>;
+//# sourceMappingURL=verifyTokenAndCleanup.d.ts.map

@@ -1,7 +1,7 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as r,h as e}from"./network-error.js";const i=`
+import{h as r}from"./network-error.js";import{f as i}from"./fetch-graphql.js";const t=`
   mutation RESEND_CONFIRMATION_EMAIL($email: String!) {
     resendConfirmationEmail(email: $email)
   }
-`,n=async a=>await r(i,{method:"POST",variables:{email:a}}).catch(e);export{n as r};
+`,m=async a=>await i(t,{method:"POST",variables:{email:a}}).catch(r);export{m as r};

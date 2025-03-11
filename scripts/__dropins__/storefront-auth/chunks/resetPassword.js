@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as o,h as w}from"./network-error.js";import{s as d}from"./setReCaptchaToken.js";const i=`
+import{h as e}from"./network-error.js";import{s as w}from"./setReCaptchaToken.js";import{f as i}from"./fetch-graphql.js";const m=`
   mutation RESET_PASSWORD(
     $email: String!
     $resetPasswordToken: String!
@@ -12,4 +12,4 @@ import{f as o,h as w}from"./network-error.js";import{s as d}from"./setReCaptchaT
       newPassword: $newPassword
     )
   }
-`,P=a=>{var r,s,e;let t="";return(r=a==null?void 0:a.errors)!=null&&r.length&&(t=(s=a==null?void 0:a.errors[0])==null?void 0:s.message),{message:t,success:!!((e=a==null?void 0:a.data)!=null&&e.resetPassword)}},S=async(a,t,r)=>(await d(),await o(i,{method:"POST",variables:{email:a,resetPasswordToken:t,newPassword:r}}).then(s=>P(s)).catch(w));export{S as r};
+`,d=a=>{var r,s,o;let t="";return(r=a==null?void 0:a.errors)!=null&&r.length&&(t=(s=a==null?void 0:a.errors[0])==null?void 0:s.message),{message:t,success:!!((o=a==null?void 0:a.data)!=null&&o.resetPassword)}},h=async(a,t,r)=>(await w(),await i(m,{method:"POST",variables:{email:a,resetPasswordToken:t,newPassword:r}}).then(s=>d(s)).catch(e));export{h as r};
