@@ -16,5 +16,8 @@
 /** Actions */
 export declare const handleFetchError: (errors: Array<{
     message: string;
+    extensions?: {
+        category: string;
+    };
 }>) => never;
 //# sourceMappingURL=fetch-error.d.ts.map
