@@ -46,6 +46,10 @@
   display: none;
 }
 
+.checkout__gift-options:has(.cart-gift-options-view--readonly:empty) {
+  display: none;
+}
+
 /* Hide main containers when the cart is empty or there is a server error */
 .checkout__content--error .checkout__out-of-stock,
 .checkout__content--error .checkout__login,
@@ -61,7 +65,8 @@
 .checkout__content--empty .checkout__bill-to-shipping,
 .checkout__content--empty .checkout__delivery,
 .checkout__content--empty .checkout__payment-methods,
-.checkout__content--empty .checkout__billing-form {
+.checkout__content--empty .checkout__billing-form,
+.checkout__content--empty .checkout__terms-and-conditions {
   display: none !important;
 }
 
@@ -102,7 +107,6 @@
   display: none;
 }
 
-.checkout__error-banner,
 .checkout__merged-cart-banner {
   grid-column: 1;
 }
@@ -126,14 +130,20 @@
   margin-top: var(--spacing-xsmall);
 }
 
+/* Gift Options */
+.cart-gift-options-view--product .dropin-accordion-section__heading {
+  margin-bottom: 0;
+}
+
 /* temporary fix to hide the default cart heading */
-[data-testid='default-cart-heading'] {
+[data-testid="default-cart-heading"] {
   display: none;
 }
 
 .cart-summary-list__heading {
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
 .cart-summary-list__heading-text {
@@ -203,7 +213,7 @@
   display: grid;
   align-items: start;
   grid-template-columns: repeat(var(--grid-4-columns), 1fr);
-  grid-template-areas: 'main aside';
+  grid-template-areas: "main aside";
   grid-column-gap: var(--grid-4-gutters);
   margin-bottom: var(--spacing-xbig);
   padding-top: var(--spacing-xxlarge);
@@ -255,6 +265,10 @@
   display: none;
 }
 
+.order-confirmation__gift-options:has(.cart-gift-options-view--readonly:empty) {
+  display: none;
+}
+
 @media only screen and (width >= 320px) and (width <= 768px) {
   .checkout__main,
   .checkout__aside {
@@ -262,11 +276,15 @@
   }
 
   .checkout__block {
-    order: 3;
+    order: 4;
   }
 
   .checkout__heading {
-    order: 1;
+    order: 2;
+  }
+
+  .checkout__gift-options{
+    order: 3;
   }
 
   .checkout__cart-summary {
@@ -274,7 +292,7 @@
   }
 
   .checkout__place-order {
-    order: 4;
+    order: 5;
   }
 
   .order-confirmation {
@@ -320,7 +338,6 @@
     gap: var(--spacing-xbig);
   }
 
-  .checkout__error-banner,
   .checkout__merged-cart-banner {
     display: grid;
     grid-column: 1 / span 12;

@@ -11,6 +11,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
+import { rootLink } from '../../scripts/scripts.js';
 import applyHashTagsForDomElement from '../../scripts/api/hashtags/api.js';
 
 // media query match that indicates mobile/tablet width
@@ -127,23 +128,6 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   }
 }
 
-const breaker = document.createElement('li');
-breaker.classList.add('break');
-
-/**
- * Processes images in the submenu
- * @param {Element} submenu The submenu element
- */
-function processImages(submenu) {
-  const submenuImages = submenu.querySelectorAll('img');
-  if (submenuImages.length) {
-    submenuImages.forEach((image) => {
-      const imageLi = image.closest('li');
-      imageLi.parentNode.insertBefore(breaker.cloneNode(), imageLi);
-    });
-  }
-}
-
 const subMenuHeader = document.createElement('div');
 subMenuHeader.classList.add('submenu-header');
 subMenuHeader.innerHTML = '<h5 class="back-link">All Categories</h5><hr />';
@@ -160,8 +144,6 @@ function setupSubmenu(navSection) {
     }
 
     const submenu = navSection.querySelector('ul');
-    processImages(submenu);
-
     const wrapper = document.createElement('div');
     const header = subMenuHeader.cloneNode(true);
     const title = document.createElement('h6');
@@ -310,6 +292,10 @@ export default async function decorate(block) {
   const searchButton = navTools.querySelector('.nav-search-button');
 
   const searchInput = searchPanel.querySelector('input');
+
+  const searchForm = searchPanel.querySelector('form');
+
+  searchForm.action = rootLink('/search');
 
   async function toggleSearch(state) {
     const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
