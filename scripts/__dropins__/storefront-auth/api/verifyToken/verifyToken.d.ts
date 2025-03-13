@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const VALIDATE_CUSTOMER_TOKEN = "\n  query VALIDATE_TOKEN {\n    customerCart {\n      id\n    }\n  }\n";
-//# sourceMappingURL=verifyTokenWithCart.graphql.d.ts.map
+export declare const verifyToken: (authType?: string, type?: string) => void;
+//# sourceMappingURL=verifyToken.d.ts.map

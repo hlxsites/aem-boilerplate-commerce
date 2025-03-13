@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const verifyTokenWithCart: () => Promise<boolean>;
-//# sourceMappingURL=verifyTokenWithCart.d.ts.map
+export * from './verifyToken';
+//# sourceMappingURL=index.d.ts.map
