@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const verifyToken: (authType?: string, type?: string) => void;
+export declare const verifyToken: (authType?: string, type?: string) => Promise<void>;
 //# sourceMappingURL=verifyToken.d.ts.map
