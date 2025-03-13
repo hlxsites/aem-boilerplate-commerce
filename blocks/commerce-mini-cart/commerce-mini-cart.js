@@ -8,6 +8,11 @@ import '../../scripts/initializers/cart.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
 
+const MESSAGES = {
+  ADDED: 'Product(s) added to your cart',
+  UPDATED: 'Your cart has been updated',
+};
+
 export default async function decorate(block) {
   const {
     'start-shopping-url': startShoppingURL = '',
@@ -22,7 +27,6 @@ export default async function decorate(block) {
   updateMessage.style.fontSize = '1.4rem';
   updateMessage.style.lineHeight = '2rem';
   updateMessage.style.letterSpacing = '0.04em';
-  updateMessage.textContent = 'Product(s) added to your cart';
 
   // Create shadow wrapper
   const shadowWrapper = document.createElement('div');
@@ -32,19 +36,23 @@ export default async function decorate(block) {
   shadowWrapper.style.display = 'none';
   shadowWrapper.appendChild(updateMessage);
 
-  // Add event listener for cart updates
-  events.on(
-    'cart/updated',
-    () => {
-      updateMessage.style.display = 'block';
-      shadowWrapper.style.display = 'block';
-      setTimeout(() => {
-        updateMessage.style.display = 'none';
-        shadowWrapper.style.display = 'none';
-      }, 3000);
-    },
-    { eager: true },
-  );
+  const showMessage = (message) => {
+    updateMessage.textContent = message;
+    updateMessage.style.display = 'block';
+    shadowWrapper.style.display = 'block';
+    setTimeout(() => {
+      updateMessage.style.display = 'none';
+      shadowWrapper.style.display = 'none';
+    }, 3000);
+  };
+
+  // Add event listeners for cart updates
+  events.on('cart/product/added', () => showMessage(MESSAGES.ADDED), {
+    eager: true,
+  });
+  events.on('cart/product/updated', () => showMessage(MESSAGES.UPDATED), {
+    eager: true,
+  });
 
   block.innerHTML = '';
 
