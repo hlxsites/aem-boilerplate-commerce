@@ -19,16 +19,28 @@ export default async function decorate(block) {
   const updateMessage = document.createElement('div');
   updateMessage.className = 'cart-update-message';
   updateMessage.style.display = 'none';
-  updateMessage.style.color = '#2ecc71';
-  updateMessage.textContent = 'Cart updated';
+  updateMessage.style.fontSize = '1.4rem';
+  updateMessage.style.lineHeight = '2rem';
+  updateMessage.style.letterSpacing = '0.04em';
+  updateMessage.textContent = 'Product(s) added to your cart';
+
+  // Create shadow wrapper
+  const shadowWrapper = document.createElement('div');
+  shadowWrapper.style.backgroundColor = '#EFF5EF';
+  shadowWrapper.style.borderRadius = '5px';
+  shadowWrapper.style.padding = '8px';
+  shadowWrapper.style.display = 'none';
+  shadowWrapper.appendChild(updateMessage);
 
   // Add event listener for cart updates
   events.on(
     'cart/updated',
     () => {
       updateMessage.style.display = 'block';
+      shadowWrapper.style.display = 'block';
       setTimeout(() => {
         updateMessage.style.display = 'none';
+        shadowWrapper.style.display = 'none';
       }, 3000);
     },
     { eager: true },
@@ -42,20 +54,15 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => rootLink(cartURL) : undefined,
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
-    // slots: {
-    //   PreCheckoutSection: (ctx) => {
-    //     ctx.appendChild(updateMessage);
-    //   },
-    // },
   })(block);
 
   // Find the header and add the message div after it
   const header = block.querySelector('.cart-cart-summary-list__heading-text');
   if (header) {
-    header.parentNode.insertBefore(updateMessage, header.nextSibling);
+    header.parentNode.insertBefore(shadowWrapper, header.nextSibling);
   } else {
     console.info('Header not found, appending message to block');
-    block.appendChild(updateMessage);
+    block.appendChild(shadowWrapper);
   }
 
   return block;
