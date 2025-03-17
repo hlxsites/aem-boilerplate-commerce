@@ -34,6 +34,7 @@ export default async function decorate(block) {
   shadowWrapper.style.borderRadius = '5px';
   shadowWrapper.style.padding = '8px';
   shadowWrapper.style.display = 'none';
+  shadowWrapper.style.marginBottom = '16px';
   shadowWrapper.appendChild(updateMessage);
 
   const showMessage = (message) => {
@@ -64,12 +65,12 @@ export default async function decorate(block) {
     routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
   })(block);
 
-  // Find the header and add the message div after it
-  const header = block.querySelector('.cart-cart-summary-list__heading-text');
-  if (header) {
-    header.parentNode.insertBefore(shadowWrapper, header.nextSibling);
+  // Find the products container and add the message div at the top
+  const productsContainer = block.querySelector('.cart-mini-cart__products');
+  if (productsContainer) {
+    productsContainer.insertBefore(shadowWrapper, productsContainer.firstChild);
   } else {
-    console.info('Header not found, appending message to block');
+    console.info('Products container not found, appending message to block');
     block.appendChild(shadowWrapper);
   }
 
