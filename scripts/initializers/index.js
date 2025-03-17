@@ -45,8 +45,6 @@ export default async function initializeDropins() {
     // set auth headers
     setAuthHeaders(!!token);
 
-    events.emit('authenticated', !!token);
-
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
