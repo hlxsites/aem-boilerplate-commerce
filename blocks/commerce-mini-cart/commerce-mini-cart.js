@@ -23,27 +23,19 @@ export default async function decorate(block) {
   // Create a container for the update message
   const updateMessage = document.createElement('div');
   updateMessage.className = 'cart-update-message';
-  updateMessage.style.display = 'none';
-  updateMessage.style.fontSize = '1.4rem';
-  updateMessage.style.lineHeight = '2rem';
-  updateMessage.style.letterSpacing = '0.04em';
 
   // Create shadow wrapper
   const shadowWrapper = document.createElement('div');
-  shadowWrapper.style.backgroundColor = '#EFF5EF';
-  shadowWrapper.style.borderRadius = '5px';
-  shadowWrapper.style.padding = '8px';
-  shadowWrapper.style.display = 'none';
-  shadowWrapper.style.marginBottom = '16px';
+  shadowWrapper.className = 'cart-message-wrapper';
   shadowWrapper.appendChild(updateMessage);
 
   const showMessage = (message) => {
     updateMessage.textContent = message;
-    updateMessage.style.display = 'block';
-    shadowWrapper.style.display = 'block';
+    updateMessage.classList.add('cart-update-message--visible');
+    shadowWrapper.classList.add('cart-message-wrapper--visible');
     setTimeout(() => {
-      updateMessage.style.display = 'none';
-      shadowWrapper.style.display = 'none';
+      updateMessage.classList.remove('cart-update-message--visible');
+      shadowWrapper.classList.remove('cart-message-wrapper--visible');
     }, 3000);
   };
 

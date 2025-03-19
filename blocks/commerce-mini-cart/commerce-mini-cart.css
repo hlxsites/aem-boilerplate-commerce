@@ -1,1 +1,20 @@
 /* stylelint-disable no-empty-source */
+
+.cart-update-message {
+    display: none;
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+}
+
+.cart-message-wrapper {
+    background-color: var(--color-positive-200);
+    border-radius: var(--shape-border-radius-1);
+    padding: var(--spacing-xsmall);
+    display: none;
+    margin-bottom: var(--spacing-small);
+}
+
+.cart-message-wrapper--visible,
+.cart-update-message--visible {
+    display: block;
+}
