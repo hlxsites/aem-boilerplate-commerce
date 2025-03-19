@@ -31,11 +31,11 @@ export default async function decorate(block) {
 
   const showMessage = (message) => {
     updateMessage.textContent = message;
-    updateMessage.classList.add('cart-update-message--visible');
-    shadowWrapper.classList.add('cart-message-wrapper--visible');
+    updateMessage.classList.add('cart-update-message-visible');
+    shadowWrapper.classList.add('cart-message-wrapper-visible');
     setTimeout(() => {
-      updateMessage.classList.remove('cart-update-message--visible');
-      shadowWrapper.classList.remove('cart-message-wrapper--visible');
+      updateMessage.classList.remove('cart-update-message-visible');
+      shadowWrapper.classList.remove('cart-message-wrapper-visible');
     }, 3000);
   };
 

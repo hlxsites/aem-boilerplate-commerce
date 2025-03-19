@@ -14,7 +14,7 @@
     margin-bottom: var(--spacing-small);
 }
 
-.cart-message-wrapper--visible,
-.cart-update-message--visible {
+.cart-message-wrapper-visible,
+.cart-update-message-visible {
     display: block;
 }
