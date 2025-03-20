@@ -32,20 +32,20 @@ export default async function decorate(block) {
 
   // Create overlay container
   const overlay = document.createElement('div');
-  overlay.className = 'cart-mini-cart__overlay';
+  overlay.className = 'commerce-mini-cart__overlay';
 
   // Create message container
   const messageContainer = document.createElement('div');
-  messageContainer.className = 'cart-mini-cart__message';
+  messageContainer.className = 'commerce-mini-cart__message';
 
   overlay.appendChild(messageContainer);
   block.appendChild(overlay);
 
   const showMessage = (message) => {
     messageContainer.textContent = message;
-    overlay.classList.add('cart-mini-cart__overlay--visible');
+    overlay.classList.add('commerce-mini-cart__overlay--visible');
     setTimeout(() => {
-      overlay.classList.remove('cart-mini-cart__overlay--visible');
+      overlay.classList.remove('commerce-mini-cart__overlay--visible');
     }, 3000);
   };
 

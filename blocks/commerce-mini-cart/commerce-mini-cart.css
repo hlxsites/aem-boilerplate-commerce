@@ -1,6 +1,6 @@
 /* stylelint-disable no-empty-source */
 
-.cart-mini-cart__overlay {
+.commerce-mini-cart__overlay {
     background-color: rgba(0, 0, 0, 0.5);
     display: none;
     position: absolute;
@@ -9,7 +9,7 @@
     border-radius: var(--shape-border-radius-1);
 }
 
-.cart-mini-cart__message {
+.commerce-mini-cart__message {
     background-color: var(--color-positive-200);
     border-radius: var(--shape-border-radius-1);
     padding: var(--spacing-small);
@@ -25,6 +25,6 @@
     text-align: center;
 }
 
-.cart-mini-cart__overlay--visible {
+.commerce-mini-cart__overlay--visible {
     display: block;
 }
