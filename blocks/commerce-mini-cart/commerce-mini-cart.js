@@ -5,13 +5,8 @@ import { events } from '@dropins/tools/event-bus.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 
-import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig, fetchPlaceholders } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
-
-const MESSAGES = {
-  ADDED: 'Product(s) added to your cart',
-  UPDATED: 'Your cart has been updated',
-};
 
 export default async function decorate(block) {
   const {
@@ -19,6 +14,14 @@ export default async function decorate(block) {
     'cart-url': cartURL = '',
     'checkout-url': checkoutURL = '',
   } = readBlockConfig(block);
+
+  // Get translations for custom messages
+  const placeholders = await fetchPlaceholders();
+
+  const MESSAGES = {
+    ADDED: placeholders?.Cart?.MiniCart?.Message?.added,
+    UPDATED: placeholders?.Cart?.MiniCart?.Message?.updated,
+  };
 
   block.innerHTML = '';
 
