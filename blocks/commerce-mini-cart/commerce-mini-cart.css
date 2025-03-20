@@ -1,1 +1,30 @@
 /* stylelint-disable no-empty-source */
+
+.cart-mini-cart__overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    border-radius: var(--shape-border-radius-1);
+}
+
+.cart-mini-cart__message {
+    background-color: var(--color-positive-200);
+    border-radius: var(--shape-border-radius-1);
+    padding: var(--spacing-small);
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.cart-mini-cart__overlay--visible {
+    display: block;
+}

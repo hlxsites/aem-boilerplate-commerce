@@ -32,44 +32,20 @@ export default async function decorate(block) {
 
   // Create overlay container
   const overlay = document.createElement('div');
-  overlay.className = 'cart-overlay';
-  overlay.style.cssText = `
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 1000;
-    border-radius: 5px;
-  `;
+  overlay.className = 'cart-mini-cart__overlay';
 
   // Create message container
   const messageContainer = document.createElement('div');
-  messageContainer.className = 'cart-message';
-  messageContainer.style.cssText = `
-    background-color: #EFF5EF;
-    border-radius: 5px;
-    padding: 16px;
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.4rem;
-    line-height: 2rem;
-    letter-spacing: 0.04em;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-  `;
+  messageContainer.className = 'cart-mini-cart__message';
 
   overlay.appendChild(messageContainer);
   block.appendChild(overlay);
 
   const showMessage = (message) => {
     messageContainer.textContent = message;
-    overlay.style.display = 'block';
+    overlay.classList.add('cart-mini-cart__overlay--visible');
     setTimeout(() => {
-      overlay.style.display = 'none';
+      overlay.classList.remove('cart-mini-cart__overlay--visible');
     }, 3000);
   };
 
