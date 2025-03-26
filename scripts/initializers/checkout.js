@@ -5,7 +5,10 @@ import { fetchPlaceholders } from '../aem.js';
 import { getHeaders } from '../configs.js';
 
 await initializeDropin(async () => {
-  setFetchGraphQlHeaders(await getHeaders('checkout'));
+  setFetchGraphQlHeaders(async (prev) => ({
+    ...prev,
+    ...await getHeaders('checkout'),
+  }));
 
   const labels = await fetchPlaceholders();
   const langDefinitions = {

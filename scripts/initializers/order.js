@@ -29,7 +29,10 @@ await initializeDropin(async () => {
   const orderNumber = searchParams.get('orderNumber');
   const isTokenProvided = orderRef && orderRef.length > 20;
 
-  setFetchGraphQlHeaders(await getHeaders('order'));
+  setFetchGraphQlHeaders(async (prev) => ({
+    ...prev,
+    ...await getHeaders('order'),
+  }));
 
   const labels = await fetchPlaceholders();
   const langDefinitions = {
