@@ -15,4 +15,5 @@
  */
 export { PRODUCT_FRAGMENT } from './graphql/ProductFragment.graphql';
 export { PRODUCT_OPTION_FRAGMENT } from './graphql/ProductOptionFragment.graphql';
+export { PRICE_RANGE_FRAGMENT } from './graphql/PriceRangeFragment.graphql';
 //# sourceMappingURL=fragments.d.ts.map
