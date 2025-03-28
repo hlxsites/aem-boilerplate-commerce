@@ -178,6 +178,17 @@ function preloadFile(href, as) {
   document.head.appendChild(link);
 }
 
+function listenForLCPEvent() {
+  const observer = new PerformanceObserver((list) => {
+    const entries = list.getEntries();
+    if (entries.length > 0) {
+      events.emit('eds/lcp', true);
+    }
+  });
+
+  observer.observe({ type: 'largest-contentful-paint', buffered: true });
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -271,8 +282,6 @@ async function loadEager(doc) {
     await loadSection(main.querySelector('.section'), waitForFirstImage);
     document.body.classList.add('appear');
   }
-
-  events.emit('eds/lcp', true);
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
@@ -408,6 +417,7 @@ export function getConsent(topic) {
 
 async function loadPage() {
   await loadEager(document);
+  listenForLCPEvent();
   await loadLazy(document);
   loadDelayed();
 }
