@@ -26,7 +26,7 @@ export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, 
     cartData: CartModel | null;
     fieldsDisabled: boolean;
     isGiftOptionsApplied: boolean;
-    giftWrappingConfig: [] | GiftWrappingConfigProps[];
+    giftWrappingConfig: GiftWrappingConfigProps[] | [];
     setFieldsDisabled: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
     handleFormMouseLeave: () => Promise<void>;
     onInputChange: (event: Event) => void;
