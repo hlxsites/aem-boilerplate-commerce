@@ -64,7 +64,7 @@ export default async function initializeDropins() {
   };
 
   // re-initialize on prerendering changes
-  document.addEventListener('prerenderingchange', initializeDropins);
+  document.addEventListener('prerenderingchange', initializeDropins, { once: true });
 
   return init();
 }
@@ -81,7 +81,7 @@ export function initializeDropin(cb) {
   };
 
   // re-initialize on prerendering changes
-  document.addEventListener('prerenderingchange', () => init(true));
+  document.addEventListener('prerenderingchange', () => init(true), { once: true });
 
   return init;
 }
