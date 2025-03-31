@@ -140,6 +140,21 @@ async function applyTemplates(doc) {
 }
 
 /**
+ * Notifies dropins about the current loading state.
+ * @param {string} state The loading state to notify
+ */
+function notifyDropins(event) {
+  // skip if the event was already sent
+  if (events.lastPayload(`aem/${event}`) === event) return;
+  // notify dropins about the current loading state
+  const handleEmit = () => events.emit(`aem/${event}`);
+  // listen for prerender event
+  document.addEventListener('prerenderingchange', handleEmit, { once: true });
+  // emit the event immediately
+  handleEmit();
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
@@ -176,17 +191,6 @@ function preloadFile(href, as) {
   link.crossOrigin = 'anonymous';
   link.href = href;
   document.head.appendChild(link);
-}
-
-function listenForLCPEvent() {
-  const observer = new PerformanceObserver((list) => {
-    const entries = list.getEntries();
-    if (entries.length > 0) {
-      events.emit('eds/lcp', true);
-    }
-  });
-
-  observer.observe({ type: 'largest-contentful-paint', buffered: true });
 }
 
 /**
@@ -283,6 +287,9 @@ async function loadEager(doc) {
     document.body.classList.add('appear');
   }
 
+  // notify that the page is ready for eager loading
+  notifyDropins('ready');
+
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
     if (window.innerWidth >= 900 || sessionStorage.getItem('fonts-loaded')) {
@@ -315,6 +322,9 @@ async function loadLazy(doc) {
     import('./acdl/adobe-client-data-layer.min.js'),
   ]);
 
+  // notify that the page is ready for lazy loading
+  notifyDropins('lazy');
+
   if (sessionStorage.getItem('acdl:debug')) {
     import('./acdl/validate.js');
   }
@@ -340,7 +350,12 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  window.setTimeout(() => {
+    // notify that the page is ready for delayed loading
+    notifyDropins('delayed');
+
+    return import('./delayed.js');
+  }, 3000);
   // load anything that can be postponed to the latest here
 }
 
@@ -417,7 +432,6 @@ export function getConsent(topic) {
 
 async function loadPage() {
   await loadEager(document);
-  listenForLCPEvent();
   await loadLazy(document);
   loadDelayed();
 }
