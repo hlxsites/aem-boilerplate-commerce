@@ -143,7 +143,7 @@ async function applyTemplates(doc) {
  * Notifies dropins about the current loading state.
  * @param {string} state The loading state to notify
  */
-function notifyDropins(event) {
+function notifyUI(event) {
   // skip if the event was already sent
   if (events.lastPayload(`aem/${event}`) === event) return;
   // notify dropins about the current loading state
@@ -288,7 +288,7 @@ async function loadEager(doc) {
   }
 
   // notify that the page is ready for eager loading
-  notifyDropins('ready');
+  notifyUI('ready');
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
@@ -323,7 +323,7 @@ async function loadLazy(doc) {
   ]);
 
   // notify that the page is ready for lazy loading
-  notifyDropins('lazy');
+  notifyUI('lazy');
 
   if (sessionStorage.getItem('acdl:debug')) {
     import('./acdl/validate.js');
@@ -352,7 +352,7 @@ async function loadLazy(doc) {
 function loadDelayed() {
   window.setTimeout(() => {
     // notify that the page is ready for delayed loading
-    notifyDropins('delayed');
+    notifyUI('delayed');
 
     return import('./delayed.js');
   }, 3000);
