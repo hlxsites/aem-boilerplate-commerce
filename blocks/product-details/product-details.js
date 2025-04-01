@@ -228,7 +228,7 @@ export default async function decorate(block) {
   }, { eager: true });
 
   // Set JSON-LD and Meta Tags
-  events.on('aem/ready', () => {
+  events.on('aem/lcp', () => {
     if (product) {
       setJsonLdProduct(product);
       setMetaTags(product);

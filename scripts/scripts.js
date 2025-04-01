@@ -288,7 +288,7 @@ async function loadEager(doc) {
   }
 
   // notify that the page is ready for eager loading
-  notifyUI('ready');
+  notifyUI('lcp');
 
   try {
     /* if desktop (proxy for fast connection) or fonts already loaded, load fonts.css */
@@ -322,9 +322,6 @@ async function loadLazy(doc) {
     import('./acdl/adobe-client-data-layer.min.js'),
   ]);
 
-  // notify that the page is ready for lazy loading
-  notifyUI('lazy');
-
   if (sessionStorage.getItem('acdl:debug')) {
     import('./acdl/validate.js');
   }
@@ -350,12 +347,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => {
-    // notify that the page is ready for delayed loading
-    notifyUI('delayed');
-
-    return import('./delayed.js');
-  }, 3000);
+  window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
 

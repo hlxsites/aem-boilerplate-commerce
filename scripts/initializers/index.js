@@ -55,7 +55,7 @@ export default async function initializeDropins() {
 
     import('./cart.js');
 
-    events.on('aem/ready', async () => {
+    events.on('aem/lcp', async () => {
       // Recaptcha
       await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
         setConfig();
