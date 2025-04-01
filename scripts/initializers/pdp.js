@@ -56,7 +56,7 @@ await initializeDropin(async () => {
     ProductDetails: {
       initialData: { ...product },
       transformer: (data) => ({
-        lowStock: data?.lowStock ? '🔻' : '👍',
+        // lowStock: data?.lowStock ? '🔻' : '👍',
       }),
     },
   };
