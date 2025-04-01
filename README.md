@@ -30,6 +30,10 @@ Before using the boilerplate, we recommend you to go through the documentation o
 
 ## Config Service Setup
 
+The reference site is now using [config service](https://www.aem.live/docs/config-service-setup). If you want to use Helix 4 approach to sites, you will need to essentially revert the changes done [here](https://github.com/hlxsites/aem-boilerplate-commerce/commit/9c0f71d1256be5cc86ff2a2dbf10b0e1433783ca) and [here](https://github.com/hlxsites/aem-boilerplate-commerce/commit/2818c11d2d3ee4100ab7accfb9ba803032b2b17d) as well as add back some files in the content `.helix/` directory. Please refer to the [config service documentation](https://www.aem.live/docs/config-service-setup) for more details.
+
+To set up your config you can use the commands that follow.
+
 ### Apply Config
 Before running the command, replace the following variables to match your project values:
 * `{ORG}` - Name of your organistation in GitHub.
