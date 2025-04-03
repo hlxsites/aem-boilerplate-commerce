@@ -30,12 +30,16 @@ Before using the boilerplate, we recommend you to go through the documentation o
 
 ## Initial Setup
 
-The boilerplate assumes you already have an AEM org and will onboard a new site via config service. If you do not have an org, you will need to contact Adobe to have one created, or you can do the following:
+The boilerplate assumes you already have an `aem.live` org and will onboard a new site via config service. If you do not have an `aem.live` org, you will need to [contact Adobe](https://discord.gg/aem-live) to have one created, or you can do the following:
 
 1. Upload the [starter content](https://github.com/hlxsites/aem-boilerplate-commerce/releases/tag/starter-content) somewhere (https://da.live, sharepoint, google drive, etc).
 1. Update the mountpoint in the `default-fstab.yaml` to point to your content.
 1. Rename the file to `fstab.yaml` and commit/push the change.
 1. Install the [AEM Code Sync Bot](https://github.com/apps/aem-code-sync)
+1. Verify the site is working at https://main--{site}--{org}.aem.page
+1. Add a `/.helix/config.xlsx` to your content, and add a `admin.role.admin` row with your email address.
+1. Preview/save this file. This should update the site config with the permissions.
+1. Delete the `/.helix/config.xlsx` and the `fstab.yaml` again and use the site config from here on.
 
 ### Config Service
 
