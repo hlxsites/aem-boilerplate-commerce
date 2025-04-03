@@ -1,1 +1,31 @@
 /* stylelint-disable no-empty-source */
+/* stylelint-disable selector-class-pattern */
+
+.commerce-mini-cart__overlay {
+    background-color: rgb(0 0 0 / 50%);
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    border-radius: var(--shape-border-radius-1);
+}
+
+.commerce-mini-cart__message {
+    background-color: var(--color-positive-200);
+    border-radius: var(--shape-border-radius-1);
+    padding: var(--spacing-small);
+    position: absolute;
+    top: var(--spacing-medium);
+    left: 50%;
+    transform: translateX(-50%);
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+    box-shadow: var(--shape-shadow-3);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.commerce-mini-cart__overlay--visible {
+    display: block;
+}
