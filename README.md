@@ -74,6 +74,8 @@ curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/content/sitemap.y
   --data-binary '@default-sitemap.yaml'
 ```
 
+After you onboard to config service you can delete fstab.yaml and [other files](https://www.aem.live/docs/config-service-setup#remove-unused-configuration-files) that are no longer necessary.
+
 ## Installation
 
 ```sh
