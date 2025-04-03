@@ -28,10 +28,19 @@ Before using the boilerplate, we recommend you to go through the documentation o
 3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
 4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
-## Config Service Setup
+## Initial Setup
 
-### Apply Config
+The boilerplate assumes you already have an AEM org and will onboard a new site via config service. If you do not have an org, you will need to contact Adobe to have one created, or you can do the following:
+
+1. Ensure you have uploaded content somewhere (https://da.live, sharepoint, google drive, etc)
+1. Update the mountpoint in the `default-fstab.yaml` to point to your content and
+1. Rename the file to `fstab.yaml` and commit/push the change.
+1. Install the [AEM Code Sync Bot](https://github.com/apps/aem-code-sync)
+
+### Config Service
+
 Before running the command, replace the following variables to match your project values:
+
 * `{ORG}` - Name of your organistation in GitHub.
 * `{SITE}` - Name of your site in the org. For the first site in your org, it must be equal to the GitHub repository name.
 * `{REPO}` - Name of your GitHub repository.
@@ -90,11 +99,11 @@ npm run lint
 
 ## Local development
 
-1. Create a new repository based on the `aem-boilerplate-commerce` template and add a mountpoint in the `fstab.yaml`
+1. Create a new repository based on the `aem-boilerplate-commerce` template, rename `default-fstab.yaml` to `fstab.yaml` and add a mountpoint for your site content.
 1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
-1. Add your Adobe Commerce SaaS configuration in the `configs.xlsx` sheet in your content repository.
+1. Add your Adobe Commerce configuration in the `configs-dev.xlsx` sheet in your content repository.
 1. Install all dependencies using `npm i`.
-1. Start AEM Proxy: `npm run up` (opens your browser at `http://localhost:3000`)
+1. Start AEM Proxy: `npm run start` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favourite IDE and start coding :)
 
 ## Changelog
