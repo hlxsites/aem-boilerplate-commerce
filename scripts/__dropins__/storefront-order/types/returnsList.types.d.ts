@@ -1,4 +1,4 @@
-import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
+import { SlotProps } from '../../@adobe-commerce/elsie/src/src/lib';
 import { OrderDataModel, OrderItemModel, OrdersReturnItemsPropsModel, OrdersReturnPropsModel, PageInfoProps } from '../data/models';
 
 export interface IconConfig {

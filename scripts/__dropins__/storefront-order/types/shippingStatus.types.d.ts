@@ -1,5 +1,5 @@
 import { HTMLAttributes } from 'preact/compat';
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
 import { OrderDataModel, OrdersReturnPropsModel } from '../data/models';
 
 type routeOrderDetailsTypes = {

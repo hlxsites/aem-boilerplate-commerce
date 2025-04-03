@@ -1,4 +1,4 @@
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
 import { OrderDataModel, OrderItemModel } from '../data/models';
 
 type options = Record<string, string | number | boolean>;

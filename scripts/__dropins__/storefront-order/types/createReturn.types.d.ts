@@ -1,6 +1,6 @@
 import { AttributesFormModel, OrderDataModel, OrderItemModel } from '../data/models';
 import { InLineAlertProps, TaxTypes } from '.';
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
 import { RefObject } from 'preact';
 import { MutableRefObject } from 'preact/compat';
 
