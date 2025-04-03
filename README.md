@@ -32,8 +32,8 @@ Before using the boilerplate, we recommend you to go through the documentation o
 
 The boilerplate assumes you already have an AEM org and will onboard a new site via config service. If you do not have an org, you will need to contact Adobe to have one created, or you can do the following:
 
-1. Ensure you have uploaded content somewhere (https://da.live, sharepoint, google drive, etc)
-1. Update the mountpoint in the `default-fstab.yaml` to point to your content and
+1. Upload the [starter content](https://github.com/hlxsites/aem-boilerplate-commerce/releases/tag/starter-content) somewhere (https://da.live, sharepoint, google drive, etc).
+1. Update the mountpoint in the `default-fstab.yaml` to point to your content.
 1. Rename the file to `fstab.yaml` and commit/push the change.
 1. Install the [AEM Code Sync Bot](https://github.com/apps/aem-code-sync)
 
