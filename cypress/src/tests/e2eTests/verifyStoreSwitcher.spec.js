@@ -3,6 +3,15 @@ describe('Store Switcher', () => {
         // Visit the homepage
         cy.visit('/drafts/multistore/en/');
 
+        // add root meta tag to the page
+        cy.document().then((doc) => {
+            const meta = doc.createElement('meta');
+            meta.name = 'root';
+            meta.content = '/drafts/multistore/en/';
+            doc.head.appendChild(meta);
+        });
+
+
         // Open storeview-switcher-button button and click
         cy.get('.storeview-switcher-button > button')
             .should('be.visible')
