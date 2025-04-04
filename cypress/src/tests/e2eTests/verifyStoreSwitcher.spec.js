@@ -21,7 +21,7 @@ describe('Store Switcher', () => {
                 <ul>
                   <li>United States ($)
                     <ul>
-                      <li><a href="/drafts/multistore/en/">United States ($)</a></li>
+                      <li><a href="/">United States ($)</a></li>
                     </ul>
                   </li>
                   <li>Canada (CA$)
