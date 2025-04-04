@@ -42,41 +42,34 @@ function buildConfigURL(environment) {
   return configURL;
 }
 
-function applyMetadataOverridesToConfig(config) {
+function applyConfigOverrides(config) {
+  // get overrides
   const website = getMetadata('commerce-website');
   const store = getMetadata('commerce-store');
   const storeview = getMetadata('commerce-storeview');
 
-  const updates = new Map();
-
-  if (website) {
-    // Catalog Services
-    updates.set('commerce.headers.cs.Magento-Website-Code', website);
-  }
-
-  if (store) {
-    // Catalog Services
-    updates.set('commerce.headers.cs.Magento-Store-Code', store);
-  }
-
-  if (storeview) {
-    // Catalog Services
-    updates.set('commerce.headers.cs.Magento-Store-View-Code', storeview);
-    // Commerce PaaS
-    updates.set('commerce.headers.all.Store', storeview);
-  }
+  // add overrides
+  const updates = new Map([
+    ['commerce.headers.cs.Magento-Website-Code', website],
+    ['commerce.headers.cs.Magento-Store-Code', store],
+    ['commerce.headers.cs.Magento-Store-View-Code', storeview],
+    ['commerce.headers.all.Store', storeview],
+  ]);
 
   // apply updates
   config.data.forEach((item) => {
-    if (updates.has(item.key)) {
-      item.value = updates.get(item.key);
+    const next = updates.get(item.key);
+    if (next) {
+      item.value = next;
       updates.delete(item.key);
     }
   });
 
   // add any updates that weren't applied
   updates.forEach((value, key) => {
-    config.data.push({ key, value });
+    if (value) {
+      config.data.push({ key, value });
+    }
   });
 
   return config;
@@ -96,7 +89,7 @@ const getConfigForEnvironment = async (environment) => {
       throw new Error('Config expired');
     }
 
-    return applyMetadataOverridesToConfig(parsedConfig);
+    return applyConfigOverrides(parsedConfig);
   } catch (e) {
     let configJSON = await fetch(buildConfigURL(env));
     if (!configJSON.ok) {
@@ -105,7 +98,7 @@ const getConfigForEnvironment = async (environment) => {
     configJSON = await configJSON.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem(`config:${env}`, JSON.stringify(configJSON));
-    return applyMetadataOverridesToConfig(configJSON);
+    return applyConfigOverrides(configJSON);
   }
 };
 
