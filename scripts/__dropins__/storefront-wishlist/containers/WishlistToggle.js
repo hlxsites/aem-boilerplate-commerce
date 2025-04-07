@@ -2,14 +2,13 @@
 All Rights Reserved. */
 import { t, u } from "../chunks/jsxRuntime.module.js";
 import { useState, useEffect } from "@dropins/tools/preact-compat.js";
-import { e as events } from "../chunks/index.js";
-import SvgHeart from "../chunks/Heart.js";
-import SvgHeartFilled from "../chunks/HeartFilled.js";
+import { Icon, Button } from "@dropins/tools/components.js";
+import { events } from "@dropins/tools/event-bus.js";
 import { s as state, g as getPersistedWishlistData, r as removeProductsFromWishlist } from "../chunks/removeProductsFromWishlist.js";
+import { S as SvgHeartFilled, a as SvgHeart } from "../chunks/HeartFilled.js";
 import { a as addProductsToWishlist } from "../chunks/getProductBySku.js";
-import { I as Icon, B as Button } from "../chunks/Button.js";
 import "@dropins/tools/preact.js";
-import "@dropins/tools/lib.js";
+import "@dropins/tools/fetch-graphql.js";
 var _jsxFileName = "/Users/rafaljanicki/www/storefront-wishlist/src/containers/WishlistToggle/WishlistToggle.tsx";
 const WishlistToggle = ({
   isGuestWishlistEnabled = false,

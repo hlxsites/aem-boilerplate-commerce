@@ -19,7 +19,7 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
-import WishlistToggle from '../../scripts/__dropins__/storefront-wishlist/containers/WishlistToggle.js';
+import WishlistToggle from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 
 // Libs
 import { setJsonLd } from '../../scripts/commerce.js';
@@ -28,6 +28,7 @@ import { fetchPlaceholders } from '../../scripts/aem.js';
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/wishlist.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {

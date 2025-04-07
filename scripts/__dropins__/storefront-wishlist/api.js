@@ -1,47 +1,12 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-import { Config, setImageParamsKeyMap } from "@dropins/tools/lib.js";
-import { e as events } from "./chunks/index.js";
+import { Initializer } from "@dropins/tools/lib.js";
+import { events } from "@dropins/tools/event-bus.js";
 import { s as state, b as setPersistedWishlistData, f as fetchGraphQl, h as handleFetchError, a as WISHLIST_FRAGMENT, g as getPersistedWishlistData, t as transformWishlist } from "./chunks/removeProductsFromWishlist.js";
 import { k, i, r, d, e, j } from "./chunks/removeProductsFromWishlist.js";
 import { a, g } from "./chunks/getProductBySku.js";
 import { g as g2 } from "./chunks/getWishlistById.js";
-class Initializer {
-  /**
-   * Creates an instance of Initializer.
-   * @param options - The initialization options.
-   * @param options.init - A function that initializes the module.
-   * @param options.listeners - A function that sets up event listeners.
-   */
-  constructor({
-    init,
-    listeners
-  }) {
-    __publicField(this, "_listeners", []);
-    __publicField(this, "listeners");
-    __publicField(this, "init");
-    __publicField(this, "config", new Config({}));
-    this.listeners = (config2) => {
-      this._listeners.forEach((listener) => listener.off());
-      return this._listeners = listeners(config2);
-    };
-    this.init = (options) => {
-      const {
-        imageParamsKeyMap,
-        ...rest
-      } = options;
-      this.config.setConfig({
-        ...this.config.getConfig(),
-        ...rest
-      });
-      setImageParamsKeyMap(imageParamsKeyMap);
-      return init(options);
-    };
-  }
-}
+import "@dropins/tools/fetch-graphql.js";
 const initialize = new Initializer({
   init: async (config2) => {
     const defaultConfig = {

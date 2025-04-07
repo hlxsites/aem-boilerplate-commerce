@@ -1,7 +1,7 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
 import { a as WISHLIST_FRAGMENT, s as state, g as getPersistedWishlistData, b as setPersistedWishlistData, f as fetchGraphQl, h as handleFetchError, t as transformWishlist, c as transformProduct } from "./removeProductsFromWishlist.js";
-import { e as events } from "./index.js";
+import { events } from "@dropins/tools/event-bus.js";
 const ADD_PRODUCTS_TO_WISHLIST_MUTATION = `
   mutation ADD_PRODUCTS_TO_WISHLIST_MUTATION(
       $wishlistId: ID!, 

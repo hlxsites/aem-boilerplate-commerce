@@ -5,13 +5,11 @@ import "../chunks/jsxRuntime.module.js";
 import "@dropins/tools/preact.js";
 import "@dropins/tools/preact-compat.js";
 import "@dropins/tools/lib.js";
+import "@dropins/tools/components.js";
 import "@dropins/tools/i18n.js";
-import "../chunks/Button.js";
-import "../chunks/Cart.js";
-import "../chunks/Trash.js";
-import "../chunks/devtools.module.js";
-import "../chunks/index.js";
+import "@dropins/tools/event-bus.js";
 import "../chunks/removeProductsFromWishlist.js";
+import "@dropins/tools/fetch-graphql.js";
 export {
   W as WishlistItem,
   W2 as default

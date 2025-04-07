@@ -1,87 +1,16 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import { a as u, u as u$1, t as t$1 } from "./jsxRuntime.module.js";
-import { useState, useMemo } from "@dropins/tools/preact-compat.js";
-import { generateSrcset, classes } from "@dropins/tools/lib.js";
-import { useText } from "@dropins/tools/i18n.js";
-import { c as classes$1, B as Button, I as Icon } from "./Button.js";
-import SvgCart from "./Cart.js";
-import SvgTrash from "./Trash.js";
-import { t } from "./devtools.module.js";
+import { u, t } from "./jsxRuntime.module.js";
+import * as React from "@dropins/tools/preact-compat.js";
+import { useState } from "@dropins/tools/preact-compat.js";
+import { classes } from "@dropins/tools/lib.js";
+import { Button, Icon, Price, Image } from "@dropins/tools/components.js";
 import { Fragment } from "@dropins/tools/preact.js";
-import { e as events } from "./index.js";
+import { useText } from "@dropins/tools/i18n.js";
+import { events } from "@dropins/tools/event-bus.js";
 import { r as removeProductsFromWishlist } from "./removeProductsFromWishlist.js";
-var _jsxFileName$4 = "/Users/rafaljanicki/www/StorefrontSDK/packages/elsie/src/components/Image/Image.tsx";
-const Image = ({
-  className,
-  src,
-  params,
-  loading = "lazy",
-  srcSet,
-  onLoad,
-  ...props
-}) => {
-  const [loaded, setLoaded] = t(useState(false), "loaded");
-  const _srcSet = t(useMemo(() => {
-    if (srcSet) return srcSet;
-    if (!src || !params) return;
-    return generateSrcset(src, {
-      ...params
-    });
-  }, [params, src, srcSet]), "_srcSet");
-  const onLoadHandler = (e) => {
-    setLoaded(true);
-    onLoad == null ? void 0 : onLoad(e);
-  };
-  return u("img", {
-    ...props,
-    className: classes(["dropin-image", ["dropin-image--loaded", loaded], className]),
-    loading,
-    onLoad: onLoadHandler,
-    src,
-    srcSet: _srcSet
-  }, void 0, false, {
-    fileName: _jsxFileName$4,
-    lineNumber: 53,
-    columnNumber: 5
-  }, void 0);
-};
-var define_process_env_default = {};
-var _jsxFileName$3 = "/Users/rafaljanicki/www/StorefrontSDK/packages/elsie/src/components/Price/Price.tsx";
-const Price = ({
-  amount = 0,
-  currency,
-  locale = define_process_env_default.LOCALE ?? void 0,
-  variant = "default",
-  weight = "bold",
-  className,
-  children,
-  sale = false,
-  formatOptions = {},
-  size = "small",
-  ...props
-}) => {
-  const formatter = t(useMemo(() => new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currency || "USD",
-    // These options are needed to round to whole numbers if that's what you want.
-    minimumFractionDigits: 2,
-    // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-    maximumFractionDigits: 2,
-    // (causes 2500.99 to be printed as $2,501)
-    ...formatOptions
-  }), [locale, currency, formatOptions]), "formatter");
-  const formattedAmount = t(useMemo(() => formatter.format(amount), [amount, formatter]), "formattedAmount");
-  return u("span", {
-    ...props,
-    className: classes(["dropin-price", `dropin-price--${variant}`, `dropin-price--${size}`, `dropin-price--${weight}`, ["dropin-price--sale", sale], className]),
-    children: formattedAmount
-  }, void 0, false, {
-    fileName: _jsxFileName$3,
-    lineNumber: 61,
-    columnNumber: 5
-  }, void 0);
-};
+const SvgCart = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("g", { clipPath: "url(#clip0_102_196)" }, /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M18.3601 18.16H6.5601L4.8801 3H2.3501M19.6701 19.59C19.6701 20.3687 19.0388 21 18.2601 21C17.4814 21 16.8501 20.3687 16.8501 19.59C16.8501 18.8113 17.4814 18.18 18.2601 18.18C19.0388 18.18 19.6701 18.8113 19.6701 19.59ZM7.42986 19.59C7.42986 20.3687 6.79858 21 6.01986 21C5.24114 21 4.60986 20.3687 4.60986 19.59C4.60986 18.8113 5.24114 18.18 6.01986 18.18C6.79858 18.18 7.42986 18.8113 7.42986 19.59Z", stroke: "currentColor", strokeLinejoin: "round" }), /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M5.25 6.37L20.89 8.06L20.14 14.8H6.19", stroke: "currentColor", strokeLinejoin: "round" })), /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("clipPath", { id: "clip0_102_196" }, /* @__PURE__ */ React.createElement("rect", { vectorEffect: "non-scaling-stroke", width: 19.29, height: 19.5, fill: "white", transform: "translate(2.3501 2.25)" }))));
+const SvgTrash = (props) => /* @__PURE__ */ React.createElement("svg", { xmlns: "http://www.w3.org/2000/svg", width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", ...props }, /* @__PURE__ */ React.createElement("path", { d: "M1 5H23", stroke: "currentColor", strokeWidth: 1.5, strokeMiterlimit: 10 }), /* @__PURE__ */ React.createElement("path", { d: "M17.3674 22H6.63446C5.67952 22 4.88992 21.2688 4.8379 20.3338L4 5H20L19.1621 20.3338C19.1119 21.2688 18.3223 22 17.3655 22H17.3674Z", stroke: "currentColor", strokeWidth: 1.5, strokeMiterlimit: 10 }), /* @__PURE__ */ React.createElement("path", { d: "M9.87189 2H14.1281C14.6085 2 15 2.39766 15 2.88889V5H9V2.88889C9 2.39912 9.39006 2 9.87189 2Z", stroke: "currentColor", strokeWidth: 1.5, strokeMiterlimit: 10 }), /* @__PURE__ */ React.createElement("path", { d: "M8.87402 8.58057L9.39348 17.682", stroke: "currentColor", strokeWidth: 1.5, strokeMiterlimit: 10 }), /* @__PURE__ */ React.createElement("path", { d: "M14.6673 8.58057L14.146 17.682", stroke: "currentColor", strokeWidth: 1.5, strokeMiterlimit: 10 }));
 var _jsxFileName$2 = "/Users/rafaljanicki/www/storefront-wishlist/src/components/ProductItem/ProductItem.tsx";
 const ProductItem = ({
   className,
@@ -97,19 +26,19 @@ const ProductItem = ({
     trashActionBtn: "ProductItem.TrashActionButton"
   });
   const discounted = ((_b = (_a = item == null ? void 0 : item.prices) == null ? void 0 : _a.discount) == null ? void 0 : _b.amountOff) != 0 || ((_d = (_c = item == null ? void 0 : item.prices) == null ? void 0 : _c.discount) == null ? void 0 : _d.percentOff) != 0;
-  return u$1("div", {
+  return u("div", {
     ...props,
-    className: classes$1(["wishlist-product-item", className]),
-    children: u$1("div", {
+    className: classes(["wishlist-product-item", className]),
+    children: u("div", {
       ...props,
-      className: classes$1(["wishlist-product-item__content", className]),
-      children: [u$1("div", {
-        className: classes$1(["wishlist-product-item-image"]),
+      className: classes(["wishlist-product-item__content", className]),
+      children: [u("div", {
+        className: classes(["wishlist-product-item-image"]),
         style: {
           backgroundColor: "var(--color-neutral-200)"
         },
         "data-testid": "wishlist-product-item-image",
-        children: u$1(ImageCarousel, {
+        children: u(ImageCarousel, {
           images: (item == null ? void 0 : item.image) ? [item.image] : []
         }, void 0, false, {
           fileName: _jsxFileName$2,
@@ -120,11 +49,11 @@ const ProductItem = ({
         fileName: _jsxFileName$2,
         lineNumber: 58,
         columnNumber: 9
-      }, void 0), u$1("div", {
-        className: classes$1(["wishlist-product-item__title"]),
+      }, void 0), u("div", {
+        className: classes(["wishlist-product-item__title"]),
         "data-testid": "wishlist-product-item-header",
         children: [
-          u$1("span", {
+          u("span", {
             className: "wishlist-product-item-name",
             "data-testid": "wishlist-product-item-name",
             children: item == null ? void 0 : item.name
@@ -133,12 +62,12 @@ const ProductItem = ({
             lineNumber: 70,
             columnNumber: 11
           }, void 0),
-          u$1(Button, {
+          u(Button, {
             "data-testid": "wishlist-product-item-remove-button",
-            className: classes$1(["wishlist-product-item-button__remove"]),
+            className: classes(["wishlist-product-item-button__remove"]),
             variant: "tertiary",
             onClick: () => onTrashButtonClick == null ? void 0 : onTrashButtonClick(),
-            icon: u$1(Icon, {
+            icon: u(Icon, {
               source: SvgTrash,
               size: "24",
               stroke: "2",
@@ -154,8 +83,8 @@ const ProductItem = ({
             lineNumber: 78,
             columnNumber: 11
           }, void 0),
-          u$1(Price, {
-            className: classes$1(["wishlist-product-item-price", discounted ? "strikeout" : ""]),
+          u(Price, {
+            className: classes(["wishlist-product-item-price", discounted ? "strikeout" : ""]),
             "data-testid": "wishlist-product-item-price",
             amount: (_e = item == null ? void 0 : item.prices) == null ? void 0 : _e.regularPrice.value,
             currency: (_f = item == null ? void 0 : item.prices) == null ? void 0 : _f.regularPrice.currency
@@ -165,8 +94,8 @@ const ProductItem = ({
             columnNumber: 11
           }, void 0),
           /* Discounted price */
-          discounted && u$1(Price, {
-            className: classes$1(["wishlist-product-item-discounted-price"]),
+          discounted && u(Price, {
+            className: classes(["wishlist-product-item-discounted-price"]),
             "data-testid": "wishlist-product-item-discounted-price",
             amount: (_g = item == null ? void 0 : item.prices) == null ? void 0 : _g.finalPrice.value,
             currency: (_h = item == null ? void 0 : item.prices) == null ? void 0 : _h.finalPrice.currency
@@ -180,11 +109,11 @@ const ProductItem = ({
         fileName: _jsxFileName$2,
         lineNumber: 66,
         columnNumber: 9
-      }, void 0), u$1(Button, {
+      }, void 0), u(Button, {
         "data-testid": "wishlist-product-item-move-to-cart-button",
         size: "medium",
         type: "submit",
-        icon: u$1(Icon, {
+        icon: u(Icon, {
           source: SvgCart
         }, void 0, false, {
           fileName: _jsxFileName$2,
@@ -218,15 +147,15 @@ const ImageCarousel = ({
   images,
   ...props
 }) => {
-  const [carouselIndex, setCarouselIndex] = t$1(useState(0), "carouselIndex");
-  return u$1(Fragment, {
-    children: [u$1("div", {
+  const [carouselIndex, setCarouselIndex] = t(useState(0), "carouselIndex");
+  return u(Fragment, {
+    children: [u("div", {
       ...props,
-      className: classes$1(["image-carousel", className]),
-      children: u$1("div", {
-        className: classes$1(["overflow-hidden relative max-w-[200px]", className]),
+      className: classes(["image-carousel", className]),
+      children: u("div", {
+        className: classes(["overflow-hidden relative max-w-[200px]", className]),
         children: images == null ? void 0 : images.map((image, index) => {
-          return index === carouselIndex && u$1(Image, {
+          return index === carouselIndex && u(Image, {
             className: "image-carousel-image",
             alt: image.alt,
             src: image.src
@@ -245,11 +174,11 @@ const ImageCarousel = ({
       fileName: _jsxFileName$1,
       lineNumber: 45,
       columnNumber: 7
-    }, void 0), (images == null ? void 0 : images.length) > 1 && u$1("div", {
-      className: classes$1(["absolute", "image-switcher-area"]),
+    }, void 0), (images == null ? void 0 : images.length) > 1 && u("div", {
+      className: classes(["absolute", "image-switcher-area"]),
       children: images == null ? void 0 : images.map((_image, index) => {
-        return u$1("span", {
-          className: classes$1(["image-switcher", carouselIndex === index ? "image-switcher-active" : "image-switcher-inactive"]),
+        return u("span", {
+          className: classes(["image-switcher", carouselIndex === index ? "image-switcher-active" : "image-switcher-inactive"]),
           onClick: (event) => {
             setCarouselIndex(index);
             event.stopPropagation();
@@ -272,7 +201,7 @@ const WishlistItem = ({
   initialData = null,
   moveProdToCart
 }) => {
-  const [item] = t$1(useState(initialData), "item");
+  const [item] = t(useState(initialData), "item");
   const removeProductFromWishlist = (showAlert = true) => {
     return removeProductsFromWishlist([item]).then(() => {
       var _a;
@@ -307,9 +236,9 @@ const WishlistItem = ({
     });
   };
   if (!(item == null ? void 0 : item.product)) return null;
-  return u$1("div", {
+  return u("div", {
     "data-testid": "wishlist-items",
-    children: u$1(ProductItem, {
+    children: u(ProductItem, {
       item: item.product,
       onCartActionButtonClick: () => moveProductToCart(),
       onTrashButtonClick: () => removeProductFromWishlist()
@@ -325,6 +254,8 @@ const WishlistItem = ({
   }, void 0);
 };
 export {
-  WishlistItem as W
+  SvgTrash as S,
+  WishlistItem as W,
+  SvgCart as a
 };
 //# sourceMappingURL=WishlistItem.js.map

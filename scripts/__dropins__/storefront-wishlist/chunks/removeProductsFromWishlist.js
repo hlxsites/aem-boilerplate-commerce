@@ -1,6 +1,7 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import { e as events } from "./index.js";
+import { events } from "@dropins/tools/event-bus.js";
+import { FetchGraphQL } from "@dropins/tools/fetch-graphql.js";
 function getCookie(cookieName) {
   const cookies = document.cookie.split(";");
   for (const cookie of cookies) {
@@ -72,130 +73,6 @@ function getPersistedWishlistData() {
     };
   }
 }
-const defaultHeaders = {
-  "Content-Type": "application/json",
-  Accept: "application/json"
-};
-class FetchGraphQLMesh {
-  get endpoint() {
-    return this._endpoint;
-  }
-  get fetchGraphQlHeaders() {
-    return this._fetchGraphQlHeaders;
-  }
-  /**
-   * Sets the GraphQL endpoint.
-   * @param endpoint - The GraphQL endpoint.
-   */
-  setEndpoint(endpoint) {
-    this._endpoint = endpoint;
-  }
-  /**
-   * Sets the GraphQL headers.
-   * @param key - The key of the header.
-   * @param value - The value of the header.
-   */
-  setFetchGraphQlHeader(key, value) {
-    this._fetchGraphQlHeaders = {
-      ...this.fetchGraphQlHeaders,
-      [key]: value
-    };
-  }
-  /**
-   * Removes a specific GraphQL header.
-   * @param key - The key of the header.
-   */
-  removeFetchGraphQlHeader(key) {
-    var _a;
-    (_a = this._fetchGraphQlHeaders) == null ? true : delete _a[key];
-  }
-  /**
-   * Sets the GraphQL headers.
-   * @param header - The header object.
-   */
-  setFetchGraphQlHeaders(header) {
-    this._fetchGraphQlHeaders = { ...header };
-  }
-  /**
-   * Fetches GraphQL data.
-   * @param query - The GraphQL query.
-   * @param options - Optional configuration for the fetch request.
-   * @returns
-   */
-  async fetchGraphQl(query, options) {
-    const endpoint = this.endpoint;
-    const fetchGraphQlHeaders = this.fetchGraphQlHeaders;
-    if (!endpoint) throw Error('Missing "url"');
-    const method = (options == null ? void 0 : options.method) ?? "POST";
-    const cache = options == null ? void 0 : options.cache;
-    const signal = options == null ? void 0 : options.signal;
-    let body;
-    const url = new URL(endpoint);
-    const headers = {
-      ...defaultHeaders,
-      ...fetchGraphQlHeaders
-    };
-    if (method === "POST") {
-      body = JSON.stringify({
-        query,
-        variables: options == null ? void 0 : options.variables
-      });
-    }
-    if (method === "GET") {
-      url.searchParams.append("query", minimizeGraphQlQuery(query));
-      if (options == null ? void 0 : options.variables)
-        url.searchParams.append("variables", JSON.stringify(options.variables));
-    }
-    return await fetch(url, {
-      method,
-      headers,
-      body,
-      cache,
-      signal
-    }).then((r) => r.json());
-  }
-  /**
-   * Gets the configuration.
-   */
-  getConfig() {
-    return {
-      endpoint: this.endpoint,
-      fetchGraphQlHeaders: this.fetchGraphQlHeaders
-    };
-  }
-  getMethods() {
-    return {
-      setEndpoint: this.setEndpoint.bind(this),
-      setFetchGraphQlHeader: this.setFetchGraphQlHeader.bind(this),
-      removeFetchGraphQlHeader: this.removeFetchGraphQlHeader.bind(this),
-      setFetchGraphQlHeaders: this.setFetchGraphQlHeaders.bind(this),
-      fetchGraphQl: this.fetchGraphQl.bind(this),
-      getConfig: this.getConfig.bind(this)
-    };
-  }
-}
-const mesh = new FetchGraphQLMesh();
-class FetchGraphQL extends FetchGraphQLMesh {
-  get endpoint() {
-    return this._endpoint ?? mesh.endpoint;
-  }
-  get fetchGraphQlHeaders() {
-    return (this._endpoint ? this._fetchGraphQlHeaders : { ...this._fetchGraphQlHeaders, ...mesh.fetchGraphQlHeaders }) || {};
-  }
-}
-function minimizeGraphQlQuery(query) {
-  query = query.replace(/#.*/g, "");
-  query = query.replace(/\s+/g, " ");
-  return query.trim();
-}
-const {
-  setEndpoint: setEndpoint$1,
-  setFetchGraphQlHeaders: setFetchGraphQlHeaders$1,
-  setFetchGraphQlHeader: setFetchGraphQlHeader$1,
-  removeFetchGraphQlHeader: removeFetchGraphQlHeader$1,
-  fetchGraphQl: fetchGraphQl$1,
-  getConfig: getConfig$1
-} = mesh.getMethods();
 const {
   setEndpoint,
   setFetchGraphQlHeader,

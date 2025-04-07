@@ -1,15 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import { options, Component, Fragment } from "@dropins/tools/preact.js";
-var f$1 = 0;
-function u$1(e, t2, n, o, i2, u2) {
-  t2 || (t2 = {});
-  var a, c, p = t2;
-  if ("ref" in p) for (c in p = {}, t2) "ref" == c ? a = t2[c] : p[c] = t2[c];
-  var l = { type: e, props: p, key: n, ref: a, __k: null, __: null, __b: 0, __e: null, __d: void 0, __c: null, constructor: void 0, __v: --f$1, __i: -1, __u: 0, __source: i2, __self: u2 };
-  if ("function" == typeof e && (a = e.defaultProps)) for (c in a) void 0 === p[c] && (p[c] = a[c]);
-  return options.vnode && options.vnode(l), l;
-}
+import { options, Fragment, Component } from "@dropins/tools/preact.js";
 var i;
 function t(o, e) {
   return options.__a && options.__a(e), o;
@@ -25,7 +16,6 @@ function u(e, t2, n, o, i2, u2) {
   return options.vnode && options.vnode(l), l;
 }
 export {
-  u$1 as a,
   t,
   u
 };
