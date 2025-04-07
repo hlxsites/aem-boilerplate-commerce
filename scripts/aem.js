@@ -504,9 +504,9 @@ function decorateSections(main) {
 // eslint-disable-next-line import/prefer-default-export
 async function fetchPlaceholders(prefix = 'default') {
   const overrides = getMetadata('placeholders') || getMetadata('root')?.replace(/\/$/, '/placeholders.json') || '';
-
   const [fallback, override] = overrides.split('\n');
   window.placeholders = window.placeholders || {};
+
   if (!window.placeholders[prefix]) {
     window.placeholders[prefix] = new Promise((resolve) => {
       const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
@@ -523,32 +523,26 @@ async function fetchPlaceholders(prefix = 'default') {
 
         .then(([json, oJson]) => {
           const placeholders = {};
-          // build placeholders object
-          json.data.forEach(({ Key, Value }) => {
-            // check for overrides
-            if (oJson?.data) {
-              const overrideItem = oJson.data.find((item) => item.Key === Key);
-              if (overrideItem) {
-                // eslint-disable-next-line no-param-reassign
-                Value = overrideItem.Value;
-              }
-            }
-            if (Key) {
-              const keys = Key.split('.');
-              const lastKey = keys.pop();
-              const target = keys.reduce((obj, key) => {
-                obj[key] = obj[key] || {};
-                return obj[key];
-              }, placeholders);
-              target[lastKey] = Value;
-            }
+          const overrideMap = new Map(
+            oJson?.data?.map(({ Key, Value }) => [Key, Value]) || [],
+          );
+
+          json.data.forEach(({ Key, Value: originalValue }) => {
+            if (!Key) return;
+            const finalValue = overrideMap.has(Key) ? overrideMap.get(Key) : originalValue;
+            const keys = Key.split('.');
+            const lastKey = keys.pop();
+            const target = keys.reduce((obj, key) => {
+              obj[key] = obj[key] || {};
+              return obj[key];
+            }, placeholders);
+            target[lastKey] = finalValue;
           });
-          // cache placeholders
           window.placeholders[prefix] = placeholders;
-          // return placeholders
-          resolve(window.placeholders[prefix]);
+          resolve(placeholders);
         })
         .catch((error) => {
+          // eslint-disable-next-line no-console
           console.error('error loading placeholders', error);
           // error loading placeholders
           window.placeholders[prefix] = {};
