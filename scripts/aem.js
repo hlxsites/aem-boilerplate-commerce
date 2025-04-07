@@ -511,6 +511,7 @@ async function fetchPlaceholders(prefix = 'default') {
     window.placeholders[prefix] = new Promise((resolve) => {
       const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
       Promise.all([fetch(url), override ? fetch(override) : Promise.resolve()])
+        // get json from sources
         .then(async ([resp, oResp]) => {
           if (resp.ok) {
             if (oResp?.ok) {
@@ -518,19 +519,23 @@ async function fetchPlaceholders(prefix = 'default') {
             }
             return Promise.all([resp.json(), {}]);
           }
-          return {};
+          return [{}];
         })
-
+        // process json from sources
         .then(([json, oJson]) => {
           const placeholders = {};
-          const overrideMap = new Map(
-            oJson?.data?.map(({ Key, Value }) => [Key, Value]) || [],
-          );
 
-          json.data.forEach(({ Key, Value: originalValue }) => {
+          const allKeys = new Set([
+            ...(json.data?.map(({ Key }) => Key) || []),
+            ...(oJson?.data?.map(({ Key }) => Key) || []),
+          ]);
+
+          allKeys.forEach((Key) => {
             if (!Key) return;
-            const finalValue = overrideMap.has(Key) ? overrideMap.get(Key) : originalValue;
             const keys = Key.split('.');
+            const originalValue = json.data?.find((item) => item.Key === Key)?.Value;
+            const overrideValue = oJson?.data?.find((item) => item.Key === Key)?.Value;
+            const finalValue = overrideValue ?? originalValue;
             const lastKey = keys.pop();
             const target = keys.reduce((obj, key) => {
               obj[key] = obj[key] || {};
@@ -538,6 +543,7 @@ async function fetchPlaceholders(prefix = 'default') {
             }, placeholders);
             target[lastKey] = finalValue;
           });
+
           window.placeholders[prefix] = placeholders;
           resolve(placeholders);
         })
