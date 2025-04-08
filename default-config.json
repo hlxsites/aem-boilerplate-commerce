@@ -31,18 +31,6 @@
 				"key": "access-control-allow-origin",
 				"value": "*"
 			}
-		],
-		"/configs-stage.json": [
-			{
-				"key": "access-control-allow-origin",
-				"value": "*"
-			}
-		],
-		"/configs-dev.json": [
-			{
-				"key": "access-control-allow-origin",
-				"value": "*"
-			}
 		]
 	},
 	"robots": {

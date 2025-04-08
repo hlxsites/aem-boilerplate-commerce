@@ -1,44 +1,7 @@
 import { getMetadata } from './aem.js';
 
-/* eslint-disable import/no-cycle */
-const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
-
-/**
- * This function calculates the environment in which the site is running based on the URL.
- * It defaults to 'prod'. In non 'prod' environments, the value can be overwritten using
- * the 'environment' key in sessionStorage.
- *
- * @returns {string} - environment identifier (dev, stage or prod'.
- */
-export const calcEnvironment = () => {
-  const { host, href } = window.location;
-  let environment = 'prod';
-  if (href.includes('.aem.page') || host.includes('staging')) {
-    environment = 'stage';
-  }
-  if (href.includes('localhost')) {
-    environment = 'dev';
-  }
-
-  const environmentFromConfig = window.sessionStorage.getItem('environment');
-  if (
-    environmentFromConfig
-    && ALLOWED_CONFIGS.includes(environmentFromConfig)
-    && environment !== 'prod'
-  ) {
-    return environmentFromConfig;
-  }
-
-  return environment;
-};
-
-function buildConfigURL(environment) {
-  const env = environment || calcEnvironment();
-  let fileName = 'configs.json';
-  if (env !== 'prod') {
-    fileName = `configs-${env}.json`;
-  }
-  const configURL = new URL(`${window.location.origin}/${fileName}`);
+function buildConfigURL() {
+  const configURL = new URL(`${window.location.origin}/'configs.json`);
   return configURL;
 }
 
@@ -75,11 +38,9 @@ function applyConfigOverrides(config) {
   return config;
 }
 
-const getConfigForEnvironment = async (environment) => {
-  const env = environment || calcEnvironment();
-
+const getConfig = async () => {
   try {
-    const configJSON = window.sessionStorage.getItem(`config:${env}`);
+    const configJSON = window.sessionStorage.getItem('config');
     if (!configJSON) {
       throw new Error('No config in session storage');
     }
@@ -91,27 +52,25 @@ const getConfigForEnvironment = async (environment) => {
 
     return applyConfigOverrides(parsedConfig);
   } catch (e) {
-    let configJSON = await fetch(buildConfigURL(env));
+    let configJSON = await fetch(buildConfigURL());
     if (!configJSON.ok) {
-      throw new Error(`Failed to fetch config for ${env}`);
+      throw new Error('Failed to fetch config');
     }
     configJSON = await configJSON.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
-    window.sessionStorage.setItem(`config:${env}`, JSON.stringify(configJSON));
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
     return applyConfigOverrides(configJSON);
   }
 };
 
 /**
- * This function retrieves a configuration value for a given environment.
+ * This function retrieves a configuration value.
  *
  * @param {string} configParam - The configuration parameter to retrieve.
- * @param {string} [environment] - Optional, overwrite the current environment.
  * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
  */
-export const getConfigValue = async (configParam, environment) => {
-  const env = environment || calcEnvironment();
-  const config = await getConfigForEnvironment(env);
+export const getConfigValue = async (configParam) => {
+  const config = await getConfig();
   const configElements = config.data;
   return configElements.find((c) => c.key === configParam)?.value;
 };
@@ -120,9 +79,8 @@ export const getConfigValue = async (configParam, environment) => {
  * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
  * returns as object of all headers like { my-header: value, ... }
  */
-export const getHeaders = async (scope, environment) => {
-  const env = environment || calcEnvironment();
-  const config = await getConfigForEnvironment(env);
+export const getHeaders = async (scope) => {
+  const config = await getConfig();
   const configElements = config.data.filter((el) => el?.key.includes('headers.all') || el?.key.includes(`headers.${scope}`));
 
   return configElements.reduce((obj, item) => {

@@ -29,5 +29,5 @@ beforeEach(() => {
   };
 
   // write to dev because cypress runs against localhost.
-  cy.setSessionStorage('config:dev', JSON.stringify(config));
+  cy.setSessionStorage('config', JSON.stringify(config));
 });
