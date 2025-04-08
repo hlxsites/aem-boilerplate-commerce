@@ -1,7 +1,7 @@
 import { getMetadata } from './aem.js';
 
 function buildConfigURL() {
-  const configURL = new URL(`${window.location.origin}/'configs.json`);
+  const configURL = new URL(`${window.location.origin}/configs.json`);
   return configURL;
 }
 
