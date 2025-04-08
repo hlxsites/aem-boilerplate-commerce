@@ -2,7 +2,7 @@
 All Rights Reserved. */
 import { Initializer } from "@dropins/tools/lib.js";
 import { events } from "@dropins/tools/event-bus.js";
-import { s as state, b as setPersistedWishlistData, f as fetchGraphQl, h as handleFetchError, a as WISHLIST_FRAGMENT, g as getPersistedWishlistData, t as transformWishlist } from "./chunks/removeProductsFromWishlist.js";
+import { s as state, b as setPersistedWishlistData, f as fetchGraphQl, h as handleFetchError, g as getPersistedWishlistData, t as transformWishlist, a as WISHLIST_FRAGMENT } from "./chunks/removeProductsFromWishlist.js";
 import { k, i, r, d, e, j } from "./chunks/removeProductsFromWishlist.js";
 import { a, g } from "./chunks/getProductBySku.js";
 import { g as g2 } from "./chunks/getWishlistById.js";
@@ -18,7 +18,7 @@ const initialize = new Initializer({
     initializeWishlist().catch(console.error);
   },
   listeners: () => [events.on("authenticated", (authenticated) => {
-    console.warn("WISHLIST events.on(authenticated): authenticated: ", authenticated);
+    console.warn("WISHLIST events.on(authenticated): authenticated, state: ", authenticated, state);
     if (state.authenticated && !authenticated) {
       events.emit("wishlist/reset", void 0);
     }
@@ -71,12 +71,10 @@ const GET_WISHLISTS_QUERY = (
   query getWishlists {
     customer {
       wishlists {
-        ...WISHLIST_FRAGMENT
+        id
       }
     }
   }
-
-  ${WISHLIST_FRAGMENT}
 `
 );
 const getWishlists = async () => {

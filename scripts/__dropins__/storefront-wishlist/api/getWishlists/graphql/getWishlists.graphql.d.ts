@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_WISHLISTS_QUERY: string;
+export declare const GET_WISHLISTS_QUERY = "\n  query getWishlists {\n    customer {\n      wishlists {\n        id\n      }\n    }\n  }\n";
 //# sourceMappingURL=getWishlists.graphql.d.ts.map

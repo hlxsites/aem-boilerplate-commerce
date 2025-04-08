@@ -18,15 +18,6 @@ const WishlistToggle = ({
   const [isWishlisted, setIsWishlisted] = t(useState(false), "isWishlisted");
   const [wishlistItem, setWishlistItem] = t(useState(null), "wishlistItem");
   useEffect(() => {
-    var _a;
-    const cachedWishlist = getPersistedWishlistData();
-    if (cachedWishlist) {
-      const item = (_a = cachedWishlist.items) == null ? void 0 : _a.find((item2) => item2.product.sku === product.sku);
-      if (item) {
-        setWishlistItem(item);
-        setIsWishlisted(true);
-      }
-    }
     const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
     const handleWishlistAdd = (update) => {
       if (update.action === "add" && update.item.product.sku === product.sku) {
@@ -34,8 +25,16 @@ const WishlistToggle = ({
         setIsWishlisted(true);
       }
     };
+    const handleWishlistData = () => {
+      var _a;
+      const updatedWishlist = getPersistedWishlistData();
+      const item = (_a = updatedWishlist == null ? void 0 : updatedWishlist.items) == null ? void 0 : _a.find((item2) => item2.product.sku === product.sku);
+      setWishlistItem(item || null);
+      setIsWishlisted(!!item);
+    };
     events.on("authenticated", handleAuthentication);
     events.on("wishlist/update", handleWishlistAdd);
+    events.on("wishlist/data", handleWishlistData);
   }, [product.sku]);
   const handleClick = async () => {
     if (isWishlisted) {
@@ -57,12 +56,12 @@ const WishlistToggle = ({
       source: SvgHeartFilled
     }, void 0, false, {
       fileName: _jsxFileName,
-      lineNumber: 86,
+      lineNumber: 84,
       columnNumber: 7
     }, void 0)
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 85,
+    lineNumber: 83,
     columnNumber: 5
   }, void 0) : u("span", {
     "data-testid": "icon-empty",
@@ -70,12 +69,12 @@ const WishlistToggle = ({
       source: SvgHeart
     }, void 0, false, {
       fileName: _jsxFileName,
-      lineNumber: 90,
+      lineNumber: 88,
       columnNumber: 7
     }, void 0)
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 89,
+    lineNumber: 87,
     columnNumber: 5
   }, void 0);
   return u(Button, {
@@ -86,7 +85,7 @@ const WishlistToggle = ({
     onClick: handleClick
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 95,
+    lineNumber: 93,
     columnNumber: 5
   }, void 0);
 };
