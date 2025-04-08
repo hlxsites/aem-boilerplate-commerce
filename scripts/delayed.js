@@ -1,46 +1,40 @@
 /* eslint-disable import/no-cycle */
-import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
-import { getHeaders } from './configs.js';
+import { getConfigValue } from './configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
-import { getConsent } from './scripts.js';
-import { commerceEndpointWithQueryParams } from './commerce.js';
+import { getConsent, getRootPath } from './scripts.js';
 
 async function initAnalytics() {
-  const gql = new FetchGraphQL(
-    await commerceEndpointWithQueryParams(),
-    await getHeaders('cs'),
-  );
-
   try {
-    // fetch data from storeconfig
-    const { data } = await gql.fetchGraphQl(`
-      query DSContextQuery {  
-        config: dataServicesStorefrontInstanceContext {
-          storeId: store_id
-          websiteId: website_id
-          environment
-          storeCode: store_code
-          storeViewId: store_view_id
-          baseCurrencyCode: base_currency_code
-          storeViewCurrencyCode: store_view_currency_code
-          storeViewName: store_view_name
-          storeName: store_name
-          websiteName: website_name
-          storeCode: store_code
-          websiteCode: website_code
-          storeUrl: store_url
-          environmentId: environment_id
-          storeViewCode: store_view_code
-        }
-      }
-    `, { method: 'GET', cache: 'force-cache' });
-
     // Load Commerce events SDK and collector
     if (getConsent('commerce-collection')) {
-      const config = {
-        ...data?.config ?? {},
-        storefrontTemplate: 'EDS',
-      };
+      const root = getRootPath();
+
+      const config = await fetch(`${root}analytics-config.json`, { cache: 'force-cache' })
+        .then((res) => res.json())
+        .then(async ({ data }) => {
+          const getValue = (key) => {
+            const value = data.find((item) => item.key === key)?.value;
+            return value;
+          };
+
+          return {
+            environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
+            environment: getValue('commerce-environment'),
+            storeUrl: getValue('commerce-store-url'),
+            websiteId: parseInt(getValue('commerce-website-id'), 10),
+            websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
+            storeId: parseInt(getValue('commerce-store-id'), 10),
+            storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
+            storeViewId: parseInt(getValue('commerce-store-view-id'), 10),
+            storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
+            websiteName: getValue('commerce-website-name'),
+            storeName: getValue('commerce-store-name'),
+            storeViewName: getValue('commerce-store-view-name'),
+            baseCurrencyCode: getValue('commerce-base-currency-code'),
+            storeViewCurrencyCode: getValue('commerce-base-currency-code'),
+            storefrontTemplate: 'EDS',
+          };
+        });
 
       window.adobeDataLayer.push(
         { storefrontInstanceContext: config },
