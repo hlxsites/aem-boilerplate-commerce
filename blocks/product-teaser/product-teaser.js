@@ -1,5 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery, renderPrice, mapProductAcdl } from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 const productTeaserQuery = `query productTeaser($sku: String!) {
   products(skus: [$sku]) {
@@ -111,7 +112,7 @@ function renderProduct(product, config, block) {
       <h1>${name}</h1>
       <div class="price">${renderPrice(product, priceFormatter.format)}</div>
       <div class="actions">
-        ${config['details-button'] ? `<a href="/products/${urlKey}/${sku}" class="button primary">Details</a>` : ''}
+        ${config['details-button'] ? `<a href="${rootLink(`/products/${urlKey}/${sku}`)}" class="button primary">Details</a>` : ''}
         ${config['cart-button'] && addToCartAllowed && __typename === 'SimpleProductView' ? '<button class="add-to-cart secondary">Add to Cart</button>' : ''}
       </div>
     </div>
@@ -122,10 +123,15 @@ function renderProduct(product, config, block) {
   const addToCartButton = fragment.querySelector('.add-to-cart');
   if (addToCartButton) {
     addToCartButton.addEventListener('click', async () => {
-      const { cartApi } = await import('../../scripts/minicart/api.js');
-      // TODO: productId not exposed by catalog service as number
+      const values = [{
+        optionsUIDs: [],
+        quantity: 1,
+        sku: product.sku,
+      }];
+      const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
       window.adobeDataLayer.push({ productContext: mapProductAcdl(product) });
-      cartApi.addToCart(product.sku, [], 1, 'product-teaser');
+      console.debug('onAddToCart', values);
+      addProductsToCart(values);
     });
   }
 

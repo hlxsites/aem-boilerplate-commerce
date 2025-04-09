@@ -1,40 +1,47 @@
 {
-  "name": "@adobe/aem-boilerplate",
+  "name": "@adobe/aem-boilerplate-commerce",
   "private": true,
-  "version": "1.3.0",
-  "description": "Starter project for Adobe Helix",
+  "version": "1.0.0",
+  "description": "Starter project for Adobe Commerce on Edge Delivery Services",
   "scripts": {
     "lint:js": "eslint .",
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
-    "start": "aem up --print-index",
-    "install:dropins": "node postinstall.js",
+    "start": "aem up --url https://main--aem-boilerplate-commerce--hlxsites.aem.page",
+    "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adobe/aem-boilerplate.git"
+    "url": "git+https://github.com/hlxsites/aem-boilerplate-commerce.git"
   },
   "author": "Adobe",
   "license": "Apache License 2.0",
   "bugs": {
-    "url": "https://github.com/adobe/aem-boilerplate/issues"
+    "url": "https://github.com/hlxsites/aem-boilerplate-commerce/issues"
   },
-  "homepage": "https://github.com/adobe/aem-boilerplate#readme",
+  "homepage": "https://github.com/hlxsites/aem-boilerplate-commerce#readme",
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.25.9",
+    "@dropins/build-tools": "0.2.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
-    "stylelint": "16.10.0",
+    "stylelint": "16.12.0",
     "stylelint-config-standard": "36.0.1"
   },
   "dependencies": {
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
-    "@dropins/storefront-pdp": "0.4.0",
-    "@dropins/tools": "^0.33.0"
+    "@dropins/storefront-account": "~1.0.4",
+    "@dropins/storefront-auth": "~1.0.6",
+    "@dropins/storefront-cart": "~1.2.2",
+    "@dropins/storefront-checkout": "~1.3.0",
+    "@dropins/storefront-order": "~1.0.5",
+    "@dropins/storefront-payment-services": "~1.0.1",
+    "@dropins/storefront-pdp": "~1.0.0",
+    "@dropins/tools": "^0.42.0"
   }
 }

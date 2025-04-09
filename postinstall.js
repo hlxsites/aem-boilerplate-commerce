@@ -1,5 +1,7 @@
+/* eslint-disable import/extensions */
 const fs = require('fs');
 const path = require('path');
+const { dependencies } = require('./package.json');
 
 // Define the dropins folder
 const dropinsDir = path.join('scripts', '__dropins__');
@@ -14,6 +16,11 @@ fs.mkdirSync(dropinsDir, { recursive: true });
 
 // Copy specified files from node_modules/@dropins to scripts/__dropins__
 fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
+  // Skip if package is not in package.json dependencies / skip devDependencies
+  if (!dependencies[`@dropins/${file.name}`]) {
+    return;
+  }
+
   // Skip if is not folder
   if (!file.isDirectory()) {
     return;
@@ -24,8 +31,13 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   });
 });
 
-fs.copyFileSync(path.resolve(__dirname, './node_modules/@adobe/magento-storefront-event-collector/dist/index.js'), path.resolve(__dirname, './scripts/commerce-events-collector.js'));
-fs.copyFileSync(path.resolve(__dirname, './node_modules/@adobe/magento-storefront-events-sdk/dist/index.js'), path.resolve(__dirname, './scripts/commerce-events-sdk.js'));
+// Other files to copy
+[
+  { from: '@adobe/magento-storefront-event-collector/dist/index.js', to: 'commerce-events-collector.js' },
+  { from: '@adobe/magento-storefront-events-sdk/dist/index.js', to: 'commerce-events-sdk.js' },
+].forEach((file) => {
+  fs.copyFileSync(path.resolve(__dirname, 'node_modules', file.from), path.resolve(__dirname, 'scripts', file.to));
+});
 
 function checkPackageLockForArtifactory() {
   return new Promise((resolve, reject) => {
@@ -55,7 +67,7 @@ function checkPackageLockForArtifactory() {
 checkPackageLockForArtifactory()
   .then((found) => {
     if (!found) {
-      console.log('🫡 Dropins installed successfully!');
+      console.info('✅ Drop-ins installed successfully!', '\n');
       process.exit(0);
     } else {
       console.error('🚨 Fix artifactory references before committing! 🚨');

@@ -100,10 +100,14 @@ function sampleRUM(checkpoint, data) {
         sampleRUM.enhance = () => {
           // only enhance once
           if (document.querySelector('script[src*="rum-enhancer"]')) return;
-
+          const { enhancerVersion, enhancerHash } = sampleRUM.enhancerContext || {};
           const script = document.createElement('script');
+          if (enhancerHash) {
+            script.integrity = enhancerHash;
+            script.setAttribute('crossorigin', 'anonymous');
+          }
           script.src = new URL(
-            '.rum/@adobe/helix-rum-enhancer@^2/src/index.js',
+            `.rum/@adobe/helix-rum-enhancer@${enhancerVersion || '^2'}/src/index.js`,
             sampleRUM.baseURL,
           ).href;
           document.head.appendChild(script);
@@ -493,49 +497,6 @@ function decorateSections(main) {
 }
 
 /**
- * Gets placeholders object.
- * @param {string} [prefix] Location of placeholders
- * @returns {object} Window placeholders object
- */
-// eslint-disable-next-line import/prefer-default-export
-async function fetchPlaceholders(prefix = 'default') {
-  window.placeholders = window.placeholders || {};
-  if (!window.placeholders[prefix]) {
-    window.placeholders[prefix] = new Promise((resolve) => {
-      fetch(`${prefix === 'default' ? '' : prefix}/placeholders.json`)
-        .then((resp) => {
-          if (resp.ok) {
-            return resp.json();
-          }
-          return {};
-        })
-        .then((json) => {
-          const placeholders = {};
-          json.data.forEach(({ Key, Value }) => {
-            if (Key) {
-              const keys = Key.split('.');
-              const lastKey = keys.pop();
-              const target = keys.reduce((obj, key) => {
-                obj[key] = obj[key] || {};
-                return obj[key];
-              }, placeholders);
-              target[lastKey] = Value;
-            }
-          });
-          window.placeholders[prefix] = placeholders;
-          resolve(window.placeholders[prefix]);
-        })
-        .catch(() => {
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
-        });
-    });
-  }
-  return window.placeholders[`${prefix}`];
-}
-
-/**
  * Builds a block DOM Element from a two dimensional array, string, or object
  * @param {string} blockName name of the block
  * @param {*} content two dimensional array or string or object of content
@@ -717,7 +678,6 @@ export {
   decorateIcons,
   decorateSections,
   decorateTemplateAndTheme,
-  fetchPlaceholders,
   getMetadata,
   loadBlock,
   loadCSS,

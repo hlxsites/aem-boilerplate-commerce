@@ -14,6 +14,7 @@ const MAX_SAMPLING_RATE = 10; // At a maximum we sample 1 in 10 requests
 export const DEFAULT_OPTIONS = {
   // Generic properties
   rumSamplingRate: MAX_SAMPLING_RATE, // 1 in 10 requests
+  overrideMetadataFields: [],
 
   // Audiences related properties
   audiences: {},
@@ -30,6 +31,21 @@ export const DEFAULT_OPTIONS = {
   experimentsMetaTag: 'experiment',
   experimentsQueryParameter: 'experiment',
 };
+
+/**
+ * Triggers the callback when the page is actually activated,
+ * This is to properly handle speculative page prerendering and marketing events.
+ * @param {Function} cb The callback to run
+ */
+async function onPageActivation(cb) {
+  // Speculative prerender-aware execution.
+  // See: https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API#unsafe_prerendering
+  if (document.prerendering) {
+    document.addEventListener('prerenderingchange', cb, { once: true });
+  } else {
+    cb();
+  }
+}
 
 /**
  * Checks if the current engine is detected as being a bot.
@@ -73,12 +89,13 @@ export async function getResolvedAudiences(applicableAudiences, options, context
 }
 
 /**
- * Replaces element with content from path
+ * Replaces main content from path
  * @param {string} path
- * @param {HTMLElement} main
+ * @param {Document} doc
+ * @param {string[]} overrideMetadataFields
  * @return Returns the path that was loaded or null if the loading failed
  */
-async function replaceInner(path, main) {
+async function replaceContent(path, doc, overrideMetadataFields) {
   try {
     const resp = await fetch(path);
     if (!resp.ok) {
@@ -91,7 +108,17 @@ async function replaceInner(path, main) {
     const dom = new DOMParser().parseFromString(html, 'text/html');
     // do not use replaceWith API here since this would replace the main reference
     // in scripts.js as well and prevent proper decoration of the sections/blocks
-    main.innerHTML = dom.querySelector('main').innerHTML;
+    doc.querySelector('main').innerHTML = dom.querySelector('main').innerHTML;
+
+    // replace metadata fields
+    overrideMetadataFields.forEach((metadataPropName) => {
+      const attr = metadataPropName && metadataPropName.includes(':') ? 'property' : 'name';
+      const newMetas = dom.head.querySelectorAll(`meta[${attr}="${metadataPropName}"]`);
+      const oldMetas = doc.head.querySelectorAll(`meta[${attr}="${metadataPropName}"]`);
+      oldMetas.forEach((m) => m.remove());
+      newMetas.forEach((m) => doc.head.append(m));
+    });
+
     return path;
   } catch (e) {
     // eslint-disable-next-line no-console
@@ -211,7 +238,7 @@ function inferEmptyPercentageSplits(variants) {
   if (variantsWithoutPercentage.length) {
     const missingPercentage = remainingPercentage / variantsWithoutPercentage.length;
     variantsWithoutPercentage.forEach((v) => {
-      v.percentageSplit = missingPercentage.toFixed(2);
+      v.percentageSplit = missingPercentage.toFixed(4);
     });
   }
 }
@@ -249,7 +276,7 @@ function getConfigForInstantExperiment(
   const splitString = context.getMetadata(`${pluginOptions.experimentsMetaTag}-split`);
   const splits = splitString
     // custom split
-    ? splitString.split(',').map((i) => parseInt(i, 10) / 100)
+    ? splitString.split(',').map((i) => parseFloat(i) / 100)
     // even split fallback
     : [...new Array(pages.length)].map(() => 1 / (pages.length + 1));
 
@@ -265,7 +292,7 @@ function getConfigForInstantExperiment(
     const vname = `challenger-${i + 1}`;
     config.variantNames.push(vname);
     config.variants[vname] = {
-      percentageSplit: `${splits[i].toFixed(2)}`,
+      percentageSplit: `${splits[i].toFixed(4)}`,
       pages: [page],
       blocks: [],
       label: `Challenger ${i + 1}`,
@@ -441,9 +468,11 @@ export async function runExperiment(document, options, context) {
   if (experimentConfig.selectedVariant === experimentConfig.variantNames[0]) {
     document.body.classList.add(`experiment-${context.toClassName(experimentConfig.id)}`);
     document.body.classList.add(`variant-${context.toClassName(experimentConfig.selectedVariant)}`);
-    context.sampleRUM('experiment', {
-      source: experimentConfig.id,
-      target: experimentConfig.selectedVariant,
+    onPageActivation(() => {
+      context.sampleRUM('experiment', {
+        source: experimentConfig.id,
+        target: experimentConfig.selectedVariant,
+      });
     });
     return false;
   }
@@ -464,7 +493,7 @@ export async function runExperiment(document, options, context) {
   document.body.classList.add(`experiment-${context.toClassName(experimentConfig.id)}`);
   let result;
   if (pages[index] !== currentPath) {
-    result = await replaceInner(pages[index], document.querySelector('main'));
+    result = await replaceContent(pages[index], document, pluginOptions.overrideMetadataFields);
   } else {
     result = currentPath;
   }
@@ -474,9 +503,11 @@ export async function runExperiment(document, options, context) {
     console.debug(`failed to serve variant ${window.hlx.experiment.selectedVariant}. Falling back to ${experimentConfig.variantNames[0]}.`);
   }
   document.body.classList.add(`variant-${context.toClassName(result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0])}`);
-  context.sampleRUM('experiment', {
-    source: experimentConfig.id,
-    target: result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0],
+  onPageActivation(() => {
+    context.sampleRUM('experiment', {
+      source: experimentConfig.id,
+      target: result ? experimentConfig.selectedVariant : experimentConfig.variantNames[0],
+    });
   });
   return result;
 }
@@ -523,16 +554,22 @@ export async function runCampaign(document, options, context) {
 
   try {
     const url = new URL(urlString);
-    const result = await replaceInner(url.pathname, document.querySelector('main'));
+    const result = await replaceContent(
+      url.pathname,
+      document,
+      pluginOptions.overrideMetadataFields,
+    );
     window.hlx.campaign.servedExperience = result || window.location.pathname;
     if (!result) {
       // eslint-disable-next-line no-console
       console.debug(`failed to serve campaign ${campaign}. Falling back to default content.`);
     }
     document.body.classList.add(`campaign-${campaign}`);
-    context.sampleRUM('campaign', {
-      source: window.location.href,
-      target: result ? campaign : 'default',
+    onPageActivation(() => {
+      context.sampleRUM('campaign', {
+        source: window.location.href,
+        target: result ? campaign : 'default',
+      });
     });
     return result;
   } catch (err) {
@@ -577,16 +614,22 @@ export async function serveAudience(document, options, context) {
 
   try {
     const url = new URL(urlString);
-    const result = await replaceInner(url.pathname, document.querySelector('main'));
+    const result = await replaceContent(
+      url.pathname,
+      document,
+      pluginOptions.overrideMetadataFields,
+    );
     window.hlx.audience.servedExperience = result || window.location.pathname;
     if (!result) {
       // eslint-disable-next-line no-console
       console.debug(`failed to serve audience ${selectedAudience}. Falling back to default content.`);
     }
     document.body.classList.add(audiences.map((audience) => `audience-${audience}`));
-    context.sampleRUM('audiences', {
-      source: window.location.href,
-      target: result ? forcedAudience || audiences.join(',') : 'default',
+    onPageActivation(() => {
+      context.sampleRUM('audiences', {
+        source: window.location.href,
+        target: result ? forcedAudience || audiences.join(',') : 'default',
+      });
     });
     return result;
   } catch (err) {
@@ -679,10 +722,27 @@ function adjustedRumSamplingRate(checkpoint, options, context) {
   };
 }
 
+function adjustRumSampligRate(document, options, context) {
+  const checkpoints = ['audiences', 'campaign', 'experiment'];
+  if (context.sampleRUM.always) { // RUM v1.x
+    checkpoints.forEach((ck) => {
+      context.sampleRUM.always.on(ck, adjustedRumSamplingRate(ck, options, context));
+    });
+  } else { // RUM 2.x
+    document.addEventListener('rum', (event) => {
+      if (event.detail
+        && event.detail.checkpoint
+        && checkpoints.includes(event.detail.checkpoint)) {
+        adjustedRumSamplingRate(event.detail.checkpoint, options, context);
+      }
+    });
+  }
+}
+
 export async function loadEager(document, options, context) {
-  context.sampleRUM.always.on('audiences', adjustedRumSamplingRate('audiences', options, context));
-  context.sampleRUM.always.on('campaign', adjustedRumSamplingRate('campaign', options, context));
-  context.sampleRUM.always.on('experiment', adjustedRumSamplingRate('experiment', options, context));
+  onPageActivation(() => {
+    adjustRumSampligRate(document, options, context);
+  });
   let res = await runCampaign(document, options, context);
   if (!res) {
     res = await runExperiment(document, options, context);
@@ -701,9 +761,9 @@ export async function loadLazy(document, options, context) {
   if (window.location.hostname.endsWith('.live')
     || (typeof options.isProd === 'function' && options.isProd())
     || (options.prodHost
-        && (options.prodHost === window.location.host
-          || options.prodHost === window.location.hostname
-          || options.prodHost === window.location.origin))) {
+      && (options.prodHost === window.location.host
+        || options.prodHost === window.location.hostname
+        || options.prodHost === window.location.origin))) {
     return;
   }
   // eslint-disable-next-line import/no-cycle

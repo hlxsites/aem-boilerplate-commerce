@@ -1,35 +1,64 @@
 /* eslint-disable import/no-cycle */
 import { getConfigValue } from './configs.js';
-import { getConsent } from './scripts.js';
+import { getUserTokenCookie } from './initializers/index.js';
+import { getConsent, getRootPath } from './scripts.js';
 
-// Load Commerce events SDK and collector
-if (getConsent('commerce-collection')) {
-  const config = {
-    environmentId: await getConfigValue('commerce-environment-id'),
-    environment: await getConfigValue('commerce-environment'),
-    storeUrl: await getConfigValue('commerce-store-url'),
-    websiteId: parseInt(await getConfigValue('commerce-website-id'), 10),
-    websiteCode: await getConfigValue('commerce-website-code'),
-    storeId: parseInt(await getConfigValue('commerce-store-id'), 10),
-    storeCode: await getConfigValue('commerce-store-code'),
-    storeViewId: parseInt(await getConfigValue('commerce-store-view-id'), 10),
-    storeViewCode: await getConfigValue('commerce-store-view-code'),
-    websiteName: await getConfigValue('commerce-website-name'),
-    storeName: await getConfigValue('commerce-store-name'),
-    storeViewName: await getConfigValue('commerce-store-view-name'),
-    baseCurrencyCode: await getConfigValue('commerce-base-currency-code'),
-    storeViewCurrencyCode: await getConfigValue('commerce-base-currency-code'),
-    storefrontTemplate: 'Franklin',
-  };
+async function initAnalytics() {
+  try {
+    // Load Commerce events SDK and collector
+    if (getConsent('commerce-collection')) {
+      const root = getRootPath();
 
-  window.adobeDataLayer.push(
-    { storefrontInstanceContext: config },
-    { eventForwardingContext: { commerce: true, aep: false } },
-  );
+      const config = await fetch(`${root}analytics-config.json`, { cache: 'force-cache' })
+        .then((res) => res.json())
+        .then(async ({ data }) => {
+          const getValue = (key) => {
+            const value = data.find((item) => item.key === key)?.value;
+            return value;
+          };
 
-  // Load events SDK and collector
-  import('./commerce-events-sdk.js');
-  import('./commerce-events-collector.js');
+          return {
+            environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
+            environment: getValue('commerce-environment'),
+            storeUrl: getValue('commerce-store-url'),
+            websiteId: parseInt(getValue('commerce-website-id'), 10),
+            websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
+            storeId: parseInt(getValue('commerce-store-id'), 10),
+            storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
+            storeViewId: parseInt(getValue('commerce-store-view-id'), 10),
+            storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
+            websiteName: getValue('commerce-website-name'),
+            storeName: getValue('commerce-store-name'),
+            storeViewName: getValue('commerce-store-view-name'),
+            baseCurrencyCode: getValue('commerce-base-currency-code'),
+            storeViewCurrencyCode: getValue('commerce-base-currency-code'),
+            storefrontTemplate: 'EDS',
+          };
+        });
+
+      window.adobeDataLayer.push(
+        { storefrontInstanceContext: config },
+        { eventForwardingContext: { commerce: true, aep: false } },
+        {
+          shopperContext: {
+            shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
+          },
+        },
+      );
+
+      // Load events SDK and collector
+      import('./commerce-events-sdk.js');
+      import('./commerce-events-collector.js');
+    }
+  } catch (error) {
+    console.warn('Error initializing analytics', error);
+  }
+}
+
+if (document.prerendering) {
+  document.addEventListener('prerenderingchange', initAnalytics, { once: true });
+} else {
+  initAnalytics();
 }
 
 // add delayed functionality here
