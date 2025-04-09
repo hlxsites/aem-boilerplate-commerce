@@ -43,7 +43,6 @@ export default async function decorate(block) {
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
         <div class="product-details__price"></div>
-        <div class="product-details__lowstock"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__configuration">
@@ -72,7 +71,6 @@ export default async function decorate(block) {
   const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-  // const $lowStock = fragment.querySelector('.product-details__lowstock');
 
   block.appendChild(fragment);
 
@@ -221,12 +219,6 @@ export default async function decorate(block) {
     // Attributes
     pdpRendered.render(ProductAttributes, {})($attributes),
   ]);
-
-  // Lifecycle Events
-  // Needed only for the GraphQL extensibility
-  // events.on('pdp/data', (data) => {
-  //   $lowStock.innerHTML = data?.lowStock;
-  // }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
