@@ -220,6 +220,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductAttributes, {})($attributes),
   ]);
 
+  // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
