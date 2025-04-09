@@ -1,40 +1,29 @@
 /* eslint-disable import/no-cycle */
 import { getConfigValue } from './configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
-import { getConsent, getRootPath } from './scripts.js';
+import { getConsent } from './scripts.js';
 
 async function initAnalytics() {
   try {
     // Load Commerce events SDK and collector
     if (getConsent('commerce-collection')) {
-      const root = getRootPath();
-
-      const config = await fetch(`${root}analytics-config.json`, { cache: 'force-cache' })
-        .then((res) => res.json())
-        .then(async ({ data }) => {
-          const getValue = (key) => {
-            const value = data.find((item) => item.key === key)?.value;
-            return value;
-          };
-
-          return {
-            environmentId: await getConfigValue('headers.cs.Magento-Environment-Id'),
-            environment: getValue('commerce-environment'),
-            storeUrl: getValue('commerce-store-url'),
-            websiteId: parseInt(getValue('commerce-website-id'), 10),
-            websiteCode: await getConfigValue('headers.cs.Magento-Website-Code'),
-            storeId: parseInt(getValue('commerce-store-id'), 10),
-            storeCode: await getConfigValue('headers.cs.Magento-Store-Code'),
-            storeViewId: parseInt(getValue('commerce-store-view-id'), 10),
-            storeViewCode: await getConfigValue('headers.cs.Magento-Store-View-Code'),
-            websiteName: getValue('commerce-website-name'),
-            storeName: getValue('commerce-store-name'),
-            storeViewName: getValue('commerce-store-view-name'),
-            baseCurrencyCode: getValue('commerce-base-currency-code'),
-            storeViewCurrencyCode: getValue('commerce-base-currency-code'),
-            storefrontTemplate: 'EDS',
-          };
-        });
+      const config = {
+        baseCurrencyCode: await getConfigValue('analytics.base-currency-code'),
+        environment: await getConfigValue('analytics.environment'),
+        environmentId: await getConfigValue('headers.cs.Magento-Environment-Id'),
+        storeCode: await getConfigValue('headers.cs.Magento-Store-Code'),
+        storefrontTemplate: 'EDS',
+        storeId: parseInt(await getConfigValue('analytics.store-id'), 10),
+        storeName: await getConfigValue('analytics.store-name'),
+        storeUrl: await getConfigValue('analytics.store-url'),
+        storeViewCode: await getConfigValue('headers.cs.Magento-Store-View-Code'),
+        storeViewCurrencyCode: await getConfigValue('analytics.base-currency-code'),
+        storeViewId: parseInt(await getConfigValue('analytics.store-view-id'), 10),
+        storeViewName: await getConfigValue('analytics.store-view-name'),
+        websiteCode: await getConfigValue('headers.cs.Magento-Website-Code'),
+        websiteId: parseInt(await getConfigValue('analytics.website-id'), 10),
+        websiteName: await getConfigValue('analytics.website-name'),
+      };
 
       window.adobeDataLayer.push(
         { storefrontInstanceContext: config },
