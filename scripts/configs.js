@@ -1,65 +1,74 @@
+/* eslint-disable import/no-cycle */
+import { deepmerge } from '@dropins/tools/lib.js';
 import { getMetadata } from './aem.js';
-
 import { getRootPath } from './scripts.js';
 
-const root = '/en-ca/';
-
+/**
+ * Builds the URL for the config file.
+ *
+ * @returns {URL} - The URL for the config file.
+ */
 function buildConfigURL() {
-  const configURL = new URL(`${window.location.origin}/config.json`);
-  return configURL;
+  return new URL(`${window.location.origin}/config.json`);
 }
 
+/**
+ * Retrieves a value from a config object using dot notation.
+ *
+ * @param {Object} obj - The config object.
+ * @param {string} key - The key to retrieve (supports dot notation).
+ * @returns {any} - The value of the key.
+ */
 function getValue(obj, key) {
-  const parts = key.split('.');
-  let currentObj = obj;
-
-  for (let i = 0; i < parts.length; i += 1) {
-    if (!Object.prototype.hasOwnProperty.call(currentObj, parts[i])) {
+  return key.split('.').reduce((current, part) => {
+    if (!Object.prototype.hasOwnProperty.call(current, part)) {
       console.warn(`Property ${key} does not exist in the object`);
+      return undefined;
     }
-
-    currentObj = currentObj[parts[i]];
-  }
-
-  return currentObj;
+    return current[part];
+  }, obj);
 }
 
+/**
+ * Applies config overrides from metadata.
+ *
+ * @param {Object} config - The base config.
+ * @returns {Object} - The config with overrides applied.
+ */
 function applyConfigOverrides(config) {
-  // get overrides
+  const root = getRootPath();
+  const current = deepmerge(
+    config.public.default,
+    root === '/' ? config.public.default : config.public[root] || config.public.default,
+  );
+
+  // add overrides
   const website = getMetadata('commerce-website');
   const store = getMetadata('commerce-store');
   const storeview = getMetadata('commerce-storeview');
 
-  // add overrides
-  const updates = new Map([
-    ['headers.cs.Magento-Website-Code', website],
-    ['headers.cs.Magento-Store-Code', store],
-    ['headers.cs.Magento-Store-View-Code', storeview],
-    ['headers.all.Store', storeview],
-  ]);
+  if (website) {
+    current.headers.cs['Magento-Website-Code'] = website;
+  }
 
-  // apply updates
-  config.data.forEach((item) => {
-    const next = updates.get(item.key);
-    if (next) {
-      item.value = next;
-      updates.delete(item.key);
-    }
-  });
+  if (store) {
+    current.headers.cs['Magento-Store-Code'] = store;
+  }
 
-  // add any updates that weren't applied
-  updates.forEach((value, key) => {
-    if (value) {
-      config.data.push({ key, value });
-    }
-  });
+  if (storeview) {
+    current.headers.all.Store = storeview;
+    current.headers.cs['Magento-Store-View-Code'] = storeview;
+  }
 
-  return config;
+  return current;
 }
 
+/**
+ * Retrieves the commerce config.
+ *
+ * @returns {Promise<Object>} - The commerce config.
+ */
 const getConfig = async () => {
-  let config;
-
   try {
     const configJSON = window.sessionStorage.getItem('config');
     if (!configJSON) {
@@ -70,7 +79,7 @@ const getConfig = async () => {
     if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
       throw new Error('Config expired');
     }
-    config = parsedConfig;
+    return applyConfigOverrides(parsedConfig);
   } catch (e) {
     let configJSON = await fetch(buildConfigURL());
     if (!configJSON.ok) {
@@ -79,20 +88,8 @@ const getConfig = async () => {
     configJSON = await configJSON.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem('config', JSON.stringify(configJSON));
-    config = configJSON;
+    return applyConfigOverrides(configJSON);
   }
-
-  if (root === '/') {
-    return config.public.default;
-  }
-  if (!config.public[root]) {
-    console.warn(`No config for ${root}, using default config.`);
-    return config.public.default;
-  }
-
-  // TODO: implement
-  // return mergeConfigs(config.public[root], configs.public.default);
-  return config.public[root];
 };
 
 /**
