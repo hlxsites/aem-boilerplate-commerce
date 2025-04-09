@@ -1,8 +1,27 @@
 import { getMetadata } from './aem.js';
 
+import { getRootPath } from './scripts.js';
+
+const root = '/en-ca/';
+
 function buildConfigURL() {
-  const configURL = new URL(`${window.location.origin}/configs.json`);
+  const configURL = new URL(`${window.location.origin}/config.json`);
   return configURL;
+}
+
+function getValue(obj, key) {
+  const parts = key.split('.');
+  let currentObj = obj;
+
+  for (let i = 0; i < parts.length; i += 1) {
+    if (!Object.prototype.hasOwnProperty.call(currentObj, parts[i])) {
+      console.warn(`Property ${key} does not exist in the object`);
+    }
+
+    currentObj = currentObj[parts[i]];
+  }
+
+  return currentObj;
 }
 
 function applyConfigOverrides(config) {
@@ -13,10 +32,10 @@ function applyConfigOverrides(config) {
 
   // add overrides
   const updates = new Map([
-    ['commerce.headers.cs.Magento-Website-Code', website],
-    ['commerce.headers.cs.Magento-Store-Code', store],
-    ['commerce.headers.cs.Magento-Store-View-Code', storeview],
-    ['commerce.headers.all.Store', storeview],
+    ['headers.cs.Magento-Website-Code', website],
+    ['headers.cs.Magento-Store-Code', store],
+    ['headers.cs.Magento-Store-View-Code', storeview],
+    ['headers.all.Store', storeview],
   ]);
 
   // apply updates
@@ -39,6 +58,8 @@ function applyConfigOverrides(config) {
 }
 
 const getConfig = async () => {
+  let config;
+
   try {
     const configJSON = window.sessionStorage.getItem('config');
     if (!configJSON) {
@@ -49,8 +70,7 @@ const getConfig = async () => {
     if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
       throw new Error('Config expired');
     }
-
-    return applyConfigOverrides(parsedConfig);
+    config = parsedConfig;
   } catch (e) {
     let configJSON = await fetch(buildConfigURL());
     if (!configJSON.ok) {
@@ -59,8 +79,20 @@ const getConfig = async () => {
     configJSON = await configJSON.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem('config', JSON.stringify(configJSON));
-    return applyConfigOverrides(configJSON);
+    config = configJSON;
   }
+
+  if (root === '/') {
+    return config.public.default;
+  }
+  if (!config.public[root]) {
+    console.warn(`No config for ${root}, using default config.`);
+    return config.public.default;
+  }
+
+  // TODO: implement
+  // return mergeConfigs(config.public[root], configs.public.default);
+  return config.public[root];
 };
 
 /**
@@ -71,8 +103,7 @@ const getConfig = async () => {
  */
 export const getConfigValue = async (configParam) => {
   const config = await getConfig();
-  const configElements = config.data;
-  return configElements.find((c) => c.key === configParam)?.value;
+  return getValue(config, configParam);
 };
 
 /**
@@ -81,23 +112,11 @@ export const getConfigValue = async (configParam) => {
  */
 export const getHeaders = async (scope) => {
   const config = await getConfig();
-  const configElements = config.data.filter((el) => el?.key.includes('headers.all') || el?.key.includes(`headers.${scope}`));
-
-  return configElements.reduce((obj, item) => {
-    let { key } = item;
-
-    // global values
-    if (key.includes('commerce.headers.all.')) {
-      key = key.replace('commerce.headers.all.', '');
-    }
-
-    // scoped values
-    if (key.includes(`commerce.headers.${scope}.`)) {
-      key = key.replace(`commerce.headers.${scope}.`, '');
-    }
-
-    return { ...obj, [key]: item.value };
-  }, {});
+  const { headers } = config;
+  return {
+    ...headers.all,
+    ...headers[scope],
+  };
 };
 
 export const getCookie = (cookieName) => {
@@ -115,3 +134,6 @@ export const getCookie = (cookieName) => {
 };
 
 export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
+
+window.getHeaders = getHeaders;
+window.getConfigValue = getConfigValue;

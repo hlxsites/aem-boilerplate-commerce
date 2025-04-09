@@ -18,15 +18,15 @@ async function initAnalytics() {
           };
 
           return {
-            environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
+            environmentId: await getConfigValue('headers.cs.Magento-Environment-Id'),
             environment: getValue('commerce-environment'),
             storeUrl: getValue('commerce-store-url'),
             websiteId: parseInt(getValue('commerce-website-id'), 10),
-            websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
+            websiteCode: await getConfigValue('headers.cs.Magento-Website-Code'),
             storeId: parseInt(getValue('commerce-store-id'), 10),
-            storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
+            storeCode: await getConfigValue('headers.cs.Magento-Store-Code'),
             storeViewId: parseInt(getValue('commerce-store-view-id'), 10),
-            storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
+            storeViewCode: await getConfigValue('headers.cs.Magento-Store-View-Code'),
             websiteName: getValue('commerce-website-name'),
             storeName: getValue('commerce-store-name'),
             storeViewName: getValue('commerce-store-view-name'),

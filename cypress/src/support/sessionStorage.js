@@ -3,7 +3,7 @@ Cypress.Commands.add('setSessionStorage', (key, value) => {
     window.sessionStorage.setItem(key, value);
   });
 });
-
+// TODO: Update with config change!
 // Set session storage before each tests
 beforeEach(() => {
   // TODO: Eventually, we should fix the tests to work against prod config/prod commerce backend, but for now we manually write the following to sessionStorage so that the tests will complete (against staging environment)

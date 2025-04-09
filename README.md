@@ -10,7 +10,7 @@ https://experienceleague.adobe.com/developer/commerce/storefront/
 
 ## Pre-requisites
 
-Out of the box, this project template uses a pre-configured Adobe Commerce environment. If you want to use your own Adobe Commerce environment, you'll need to update the `configs.xlsx` file in your content repository to have values that match your environment.
+Out of the box, this project template uses a pre-configured Adobe Commerce environment. If you want to use your own Adobe Commerce environment, you'll need to update the public `config` in your [site config](https://www.aem.live/docs/admin.html#tag/siteConfig) to have values that match your environment.
 
 Additionally, you need to have the following modules and customizations installed on your environment:
 
@@ -107,7 +107,7 @@ npm run lint
 
 1. Create a new repository based on the `aem-boilerplate-commerce` template, rename `default-fstab.yaml` to `fstab.yaml` and add a mountpoint for your site content.
 1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
-1. Add your Adobe Commerce configuration in the `configs.xlsx` sheet in your content repository.
+1. Add your Adobe Commerce configuration in the `public config` of your [site config](https://www.aem.live/docs/admin.html#tag/siteConfig).
 1. Install all dependencies using `npm i`.
 1. Start AEM Proxy: `npm run start` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favourite IDE and start coding :)

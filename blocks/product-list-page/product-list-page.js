@@ -10,13 +10,13 @@ export default async function decorate(block) {
   block.textContent = '';
 
   const storeDetails = {
-    environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
+    environmentId: await getConfigValue('headers.cs.Magento-Environment-Id'),
     environmentType: (await getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: await getConfigValue('commerce.headers.cs.x-api-key'),
+    apiKey: await getConfigValue('headers.cs.x-api-key'),
     apiUrl: await getConfigValue('commerce-endpoint'),
-    websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
-    storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
-    storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
+    websiteCode: await getConfigValue('headers.cs.Magento-Website-Code'),
+    storeCode: await getConfigValue('headers.cs.Magento-Store-Code'),
+    storeViewCode: await getConfigValue('headers.cs.Magento-Store-View-Code'),
     config: {
       pageSize: 8,
       perPageConfig: {
@@ -43,7 +43,7 @@ export default async function decorate(block) {
       },
     },
     context: {
-      customerGroup: await getConfigValue('commerce.headers.cs.Magento-Customer-Group'),
+      customerGroup: await getConfigValue('headers.cs.Magento-Customer-Group'),
     },
     route: ({ sku, urlKey }) => {
       const a = new URL(window.location.origin);

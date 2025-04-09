@@ -26,12 +26,6 @@
 		}
 	},
 	"headers": {
-		"/configs.json": [
-			{
-				"key": "access-control-allow-origin",
-				"value": "*"
-			}
-		]
 	},
 	"robots": {
 		"txt": "User-agent: *\nAllow: /\nDisallow: /drafts/\nDisallow: /enrichment/\nDisallow: /tools/\nDisallow: /plugins/experimentation/\n\nSitemap: https://www.aemshop.net/sitemap-index.xml"
@@ -71,4 +65,5 @@
 			"requireAuth": "auto"
 		}
 	}
+  // TODO: Update with public configs
 }

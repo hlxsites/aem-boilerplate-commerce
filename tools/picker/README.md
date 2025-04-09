@@ -40,3 +40,5 @@ To facilitate adding commerce references in content authoring, we have created t
 * If the block requires only a single reference, you can directly click the copy icon next to the item.
 * Use Ctrl/Cmd + V to paste the copied block into your document.
 * You can close the picker by clicking on the Commerce button again.
+
+TODO: Update with config change!
