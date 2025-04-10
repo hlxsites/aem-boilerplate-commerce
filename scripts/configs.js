@@ -62,7 +62,15 @@ const getConfigFromSession = async () => {
  *
  * @returns {Promise<Object>} - The commerce config.
  */
-const getConfig = async () => applyConfigOverrides(await getConfigFromSession());
+let configCache;
+const getConfig = async () => {
+  if (!configCache) {
+    // Only fetch if not already cached
+    const result = await applyConfigOverrides(await getConfigFromSession());
+    configCache = result;
+  }
+  return configCache;
+};
 
 /**
  * Get root path
