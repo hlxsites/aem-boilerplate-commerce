@@ -38,7 +38,7 @@ beforeEach(() => {
         }
       }
     },
-    ":expiry": 1744313136
+    ":expiry": Math.round(Date.now() / 1000) + 7200,
   }
 
   // write to dev because cypress runs against localhost.
