@@ -1,7 +1,10 @@
 /* eslint-disable import/no-cycle */
 import { deepmerge } from '@dropins/tools/lib.js';
 
-let AEM_ROOT_PATH = '/';
+// load config
+const CONFIG = await getConfig();
+const ROOT_PATH = getRootPath();
+const ROOT_CONFIG = await applyConfigOverrides(CONFIG, ROOT_PATH);
 
 /**
  * Builds the URL for the config file.
@@ -30,12 +33,97 @@ function getValue(obj, key) {
 }
 
 /**
+ * Get root path
+ * @param {Object} [config] - The config object.
+ * @returns {string} - The root path.
+ */
+export function getRootPath() {
+  const value = Object.keys(CONFIG?.public)
+    // Sort by number of non-empty segments to find the deepest path
+    .sort((a, b) => {
+      const aSegments = a.split('/').filter(Boolean).length;
+      const bSegments = b.split('/').filter(Boolean).length;
+      return bSegments - aSegments;
+    })
+    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
+
+  const rootPath = value ?? '/';
+
+  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
+    throw new Error('Invalid root path');
+  }
+
+  return rootPath;
+}
+
+/**
+ * Get list of root paths from public config
+ * @returns {Array} - The list of root paths.
+ */
+export function getListOfRootPaths() {
+  return Object.keys(CONFIG?.public).filter((root) => root !== 'default');
+}
+
+/**
+ * Checks if the public config contains more than "default"
+ * @returns true if public config contains more than "default"
+ */
+export function isMultistore() {
+  return getListOfRootPaths().length > 1;
+}
+
+/**
+ * Retrieves a configuration value.
+ *
+ * @param {string} configParam - The configuration parameter to retrieve.
+ * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
+ */
+export async function getConfigValue(configParam) {
+  return getValue(ROOT_CONFIG, configParam);
+}
+
+/**
+ * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
+ * returns as object of all headers like { my-header: value, ... }
+ */
+export async function getHeaders(scope) {
+  const headers = ROOT_CONFIG.headers ?? {};
+  return {
+    ...headers.all ?? {},
+    ...headers[scope] ?? {},
+  };
+}
+
+/**
+ * Get cookie
+ * @param {string} cookieName - The name of the cookie to get
+ * @returns {string} - The value of the cookie
+ */
+export function getCookie(cookieName) {
+  const cookies = document.cookie.split(';');
+  let foundValue;
+
+  cookies.forEach((cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    if (name === cookieName) {
+      foundValue = decodeURIComponent(value);
+    }
+  });
+
+  return foundValue;
+}
+
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
+}
+
+/**
  * Fetches config from remote and saves in session, then returns it, otherwise
  * returns if it already exists.
  *
- * @returns the config JSON from session storage
+ * @returns {Promise<Object>} - The config JSON from session storage
  */
-const getConfigFromSession = async () => {
+async function getConfigFromSession() {
   try {
     const configJSON = window.sessionStorage.getItem('config');
     if (!configJSON) {
@@ -57,37 +145,6 @@ const getConfigFromSession = async () => {
     window.sessionStorage.setItem('config', JSON.stringify(configJSON));
     return configJSON;
   }
-};
-
-/**
- * Retrieves the commerce config.
- *
- * @returns {Promise<Object>} - The commerce config.
- */
-let configCache;
-const getConfig = async () => {
-  if (!configCache) {
-    // Only fetch if not already cached
-    const result = await applyConfigOverrides(await getConfigFromSession());
-    configCache = result;
-  }
-  return configCache;
-};
-
-/**
- * Get root path
- */
-export function getRootPath() {
-  return AEM_ROOT_PATH ?? '/';
-}
-
-/**
- *
- * @returns true if public config contains more than "default"
- */
-export async function isMultistore() {
-  const config = await getConfigFromSession();
-  return Object.keys(config.public).filter((root) => root !== 'default').length > 0;
 }
 
 /**
@@ -96,24 +153,7 @@ export async function isMultistore() {
  * @param {Object} config - The base config.
  * @returns {Object} - The config with overrides applied.
  */
-async function applyConfigOverrides(config) {
-  const root = Object.keys(config.public)
-    // Sort by number of non-empty segments to find the deepest path
-    .sort((a, b) => {
-      const aSegments = a.split('/').filter(Boolean).length;
-      const bSegments = b.split('/').filter(Boolean).length;
-      return bSegments - aSegments;
-    })
-    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
-
-  const rootPath = root ?? '/';
-
-  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
-    throw new Error('Invalid root path');
-  }
-
-  AEM_ROOT_PATH = rootPath;
-
+async function applyConfigOverrides(config, root) {
   const defaultConfig = config.public?.default;
 
   if (!defaultConfig) {
@@ -129,41 +169,10 @@ async function applyConfigOverrides(config) {
 }
 
 /**
- * This function retrieves a configuration value.
+ * Retrieves the commerce config.
  *
- * @param {string} configParam - The configuration parameter to retrieve.
- * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
+ * @returns {Promise<Object>} - The commerce config.
  */
-export const getConfigValue = async (configParam) => {
-  const config = await getConfig();
-  return getValue(config, configParam);
-};
-
-/**
- * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
- * returns as object of all headers like { my-header: value, ... }
- */
-export const getHeaders = async (scope) => {
-  const config = await getConfig();
-  const headers = config.headers ?? {};
-  return {
-    ...headers.all ?? {},
-    ...headers[scope] ?? {},
-  };
-};
-
-export const getCookie = (cookieName) => {
-  const cookies = document.cookie.split(';');
-  let foundValue;
-
-  cookies.forEach((cookie) => {
-    const [name, value] = cookie.trim().split('=');
-    if (name === cookieName) {
-      foundValue = decodeURIComponent(value);
-    }
-  });
-
-  return foundValue;
-};
-
-export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
+async function getConfig() {
+  return getConfigFromSession();
+}
