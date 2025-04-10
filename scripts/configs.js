@@ -89,7 +89,7 @@ export async function isMultistore() {
 async function applyConfigOverrides(config) {
   const root = Object.keys(config.public)
     // Sort by length in descending order to find the longest match
-    .sort((a, b) => b.length - a.length)
+    .sort((a, b) => b.split('/').length - a.split('/').length)
     .find((key) => window.location.pathname === key || window.location.pathname.startsWith(`${key}/`));
 
   const rootPath = root ?? '/';
