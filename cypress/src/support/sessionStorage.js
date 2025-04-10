@@ -36,16 +36,6 @@ beforeEach(() => {
           "website-id": 1,
           "website-name": "Main Website"
         }
-      },
-      "/en-ca/": {
-        "headers": {
-          "all": {
-            "Store": "en_ca"
-          }
-        },
-        "analytics": {
-          "base-currency-code": "CAD"
-        }
       }
     },
     ":expiry": 1744313136
