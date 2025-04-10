@@ -56,6 +56,24 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
 }
 
 /**
+ * Tries to generate an optimized URL for AEM Assets (if enabled).
+ * @param {string} url - The base URL of the asset.
+ * @param {string} alias - The alias (i.e. seoName) of the asset.
+ * @param {AemAssetsImageOptimizationParams} params - The parameters to be applied to the asset.
+ */
+export async function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
+  const assetsEnabled = await isAemAssetsEnabled();
+
+  if (!(assetsEnabled)) {
+    // No-op, doesn't do anything.
+    return url;
+  }
+
+  const [base] = url.split('?');
+  return generateAemAssetsOptimizedUrl(base, alias, params);
+}
+
+/**
  * Returns a slot that renders an AEM Assets image
  * @param {AemAssetsImageSlotConfig} config - The config of the slot.
  */
