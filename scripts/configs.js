@@ -156,5 +156,3 @@ export const getCookie = (cookieName) => {
 
 export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
 
-window.getHeaders = getHeaders;
-window.getConfigValue = getConfigValue;
