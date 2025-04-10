@@ -1,3 +1,6 @@
+import { getMetadata } from './aem.js';
+
+/* eslint-disable import/no-cycle */
 const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
 
 /**
@@ -39,6 +42,39 @@ function buildConfigURL(environment) {
   return configURL;
 }
 
+function applyConfigOverrides(config) {
+  // get overrides
+  const website = getMetadata('commerce-website');
+  const store = getMetadata('commerce-store');
+  const storeview = getMetadata('commerce-storeview');
+
+  // add overrides
+  const updates = new Map([
+    ['commerce.headers.cs.Magento-Website-Code', website],
+    ['commerce.headers.cs.Magento-Store-Code', store],
+    ['commerce.headers.cs.Magento-Store-View-Code', storeview],
+    ['commerce.headers.all.Store', storeview],
+  ]);
+
+  // apply updates
+  config.data.forEach((item) => {
+    const next = updates.get(item.key);
+    if (next) {
+      item.value = next;
+      updates.delete(item.key);
+    }
+  });
+
+  // add any updates that weren't applied
+  updates.forEach((value, key) => {
+    if (value) {
+      config.data.push({ key, value });
+    }
+  });
+
+  return config;
+}
+
 const getConfigForEnvironment = async (environment) => {
   const env = environment || calcEnvironment();
 
@@ -53,7 +89,7 @@ const getConfigForEnvironment = async (environment) => {
       throw new Error('Config expired');
     }
 
-    return parsedConfig;
+    return applyConfigOverrides(parsedConfig);
   } catch (e) {
     let configJSON = await fetch(buildConfigURL(env));
     if (!configJSON.ok) {
@@ -62,7 +98,7 @@ const getConfigForEnvironment = async (environment) => {
     configJSON = await configJSON.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem(`config:${env}`, JSON.stringify(configJSON));
-    return configJSON;
+    return applyConfigOverrides(configJSON);
   }
 };
 
@@ -83,17 +119,25 @@ export const getConfigValue = async (configParam, environment) => {
 /**
  * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
  * returns as object of all headers like { my-header: value, ... }
-*/
+ */
 export const getHeaders = async (scope, environment) => {
   const env = environment || calcEnvironment();
   const config = await getConfigForEnvironment(env);
-  const configElements = config.data.filter((el) => el?.key.includes(`headers.${scope}`));
+  const configElements = config.data.filter((el) => el?.key.includes('headers.all') || el?.key.includes(`headers.${scope}`));
 
   return configElements.reduce((obj, item) => {
     let { key } = item;
+
+    // global values
+    if (key.includes('commerce.headers.all.')) {
+      key = key.replace('commerce.headers.all.', '');
+    }
+
+    // scoped values
     if (key.includes(`commerce.headers.${scope}.`)) {
       key = key.replace(`commerce.headers.${scope}.`, '');
     }
+
     return { ...obj, [key]: item.value };
   }, {});
 };

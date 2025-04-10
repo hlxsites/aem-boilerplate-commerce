@@ -33,33 +33,40 @@ const persistCartDataInSession = (data) => {
 };
 
 export default async function initializeDropins() {
-  // Set auth headers on authenticated event
-  events.on('authenticated', setAuthHeaders);
-  // Cache cart data in session storage
-  events.on('cart/data', persistCartDataInSession, { eager: true });
+  const init = async () => {
+    // Set auth headers on authenticated event
+    events.on('authenticated', setAuthHeaders);
 
-  // on page load, check if user is authenticated
-  const token = getUserTokenCookie();
-  // set auth headers
-  setAuthHeaders(!!token);
-  // emit authenticated event if token has changed
-  events.emit('authenticated', !!token);
+    // Cache cart data in session storage
+    events.on('cart/data', persistCartDataInSession, { eager: true });
 
-  // Event Bus Logger
-  events.enableLogger(true);
-  // Set Fetch Endpoint (Global)
-  setEndpoint(await getConfigValue('commerce-core-endpoint'));
+    // on page load, check if user is authenticated
+    const token = getUserTokenCookie();
+    // set auth headers
+    setAuthHeaders(!!token);
 
-  events.on('eds/lcp', async () => {
-    // Recaptcha
-    await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
-      setConfig();
+    // Event Bus Logger
+    events.enableLogger(true);
+    // Set Fetch Endpoint (Global)
+    setEndpoint(await getConfigValue('commerce-core-endpoint'));
+
+    // Initialize Global Drop-ins
+    await import('./auth.js');
+
+    import('./cart.js');
+
+    events.on('aem/lcp', async () => {
+      // Recaptcha
+      await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
+        setConfig();
+      });
     });
-  });
+  };
 
-  // Initialize Global Drop-ins
-  await import('./auth.js');
-  import('./cart.js');
+  // re-initialize on prerendering changes
+  document.addEventListener('prerenderingchange', initializeDropins, { once: true });
+
+  return init();
 }
 
 export function initializeDropin(cb) {
@@ -74,7 +81,7 @@ export function initializeDropin(cb) {
   };
 
   // re-initialize on prerendering changes
-  document.addEventListener('prerenderingchange', () => init(true));
+  document.addEventListener('prerenderingchange', () => init(true), { once: true });
 
   return init;
 }

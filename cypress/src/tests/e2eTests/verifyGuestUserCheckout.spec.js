@@ -3,6 +3,7 @@ import {
   setGuestShippingAddress,
   setPaymentMethod,
   placeOrder,
+  checkTermsAndConditions,
 } from '../../actions';
 import {
   assertCartSummaryProduct,
@@ -30,8 +31,8 @@ describe('Verify guest user can place order', () => {
   it('Verify guest user can place order', () => {
     cy.visit('');
     cy.get('.nav-drop')
-      .contains('Catalog')
-      .click();
+      .first()
+      .trigger('mouseenter')
     cy.wait(1000);
     cy.contains('Crown Summit Backpack').click();
     cy.get('.dropin-incrementer__increase-button').click();
@@ -98,6 +99,7 @@ describe('Verify guest user can place order', () => {
     assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
     setPaymentMethod(paymentServicesCreditCard);
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 1);
+    checkTermsAndConditions();
     cy.wait(5000);
     placeOrder();
     assertOrderConfirmationCommonDetails(customerShippingAddress, paymentServicesCreditCard);

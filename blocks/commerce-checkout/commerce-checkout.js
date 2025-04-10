@@ -33,6 +33,8 @@ import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Checkout Dropin
@@ -46,6 +48,7 @@ import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMetho
 import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
 import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
 import ShippingMethods from '@dropins/storefront-checkout/containers/ShippingMethods.js';
+import TermsAndConditions from '@dropins/storefront-checkout/containers/TermsAndConditions.js';
 
 import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
 
@@ -69,7 +72,6 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 // Block-level
 import createModal from '../modal/modal.js';
 
-// Scripts
 import {
   estimateShippingCost,
   getCartAddress,
@@ -78,7 +80,14 @@ import {
   scrollToElement,
   setAddressOnCart,
 } from '../../scripts/checkout.js';
-import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
+
+import { authPrivacyPolicyConsentSlot, SUPPORT_PATH } from '../../scripts/constants.js';
+import { rootLink } from '../../scripts/scripts.js';
+
+// Initializers
+import '../../scripts/initializers/account.js';
+import '../../scripts/initializers/checkout.js';
+import '../../scripts/initializers/order.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -114,10 +123,6 @@ function setMetaTags(dropin) {
 }
 
 export default async function decorate(block) {
-  // Initializers
-  import('../../scripts/initializers/account.js');
-  import('../../scripts/initializers/checkout.js');
-
   setMetaTags('Checkout');
   document.title = 'Checkout';
 
@@ -132,6 +137,7 @@ export default async function decorate(block) {
   const BILLING_FORM_NAME = 'selectedBillingAddress';
   const SHIPPING_ADDRESS_DATA_KEY = `${SHIPPING_FORM_NAME}_addressData`;
   const BILLING_ADDRESS_DATA_KEY = `${BILLING_FORM_NAME}_addressData`;
+  const TERMS_AND_CONDITIONS_FORM_NAME = 'checkout-terms-and-conditions__form';
 
   // Define the Layout for the Checkout
   const checkoutFragment = document.createRange().createContextualFragment(`
@@ -150,10 +156,12 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__delivery"></div>
           <div class="checkout__block checkout__payment-methods"></div>
           <div class="checkout__block checkout__billing-form"></div>
+          <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
         </div>
         <div class="checkout__aside">
           <div class="checkout__block checkout__order-summary"></div>
+          <div class="checkout__block checkout__gift-options"></div>
           <div class="checkout__block checkout__cart-summary"></div>
         </div>
       </div>
@@ -193,6 +201,10 @@ export default async function decorate(block) {
     '.checkout__cart-summary',
   );
   const $placeOrder = checkoutFragment.querySelector('.checkout__place-order');
+  const $giftOptions = checkoutFragment.querySelector(
+    '.checkout__gift-options',
+  );
+  const $termsAndConditions = checkoutFragment.querySelector('.checkout__terms-and-conditions');
 
   block.appendChild(checkoutFragment);
 
@@ -203,13 +215,14 @@ export default async function decorate(block) {
   let loader;
   let modal;
   let emptyCart;
-  const shippingFormRef = { current: null };
-  const billingFormRef = { current: null };
-  const creditCardFormRef = { current: null };
   let shippingForm;
   let billingForm;
   let shippingAddresses;
   let billingAddresses;
+
+  const shippingFormRef = { current: null };
+  const billingFormRef = { current: null };
+  const creditCardFormRef = { current: null };
 
   // Adobe Commerce GraphQL endpoint
   const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
@@ -228,6 +241,7 @@ export default async function decorate(block) {
     billingFormSkeleton,
     _orderSummary,
     _cartSummary,
+    _termsAndConditions,
     placeOrder,
   ] = await Promise.all([
     CheckoutProvider.render(MergedCartBanner)($mergedCartBanner),
@@ -249,7 +263,7 @@ export default async function decorate(block) {
     })($serverError),
 
     CheckoutProvider.render(OutOfStock, {
-      routeCart: () => '/cart',
+      routeCart: () => rootLink('/cart'),
       onCartProductsUpdate: (items) => {
         cartApi.updateProductsFromCart(items).catch(console.error);
       },
@@ -360,6 +374,13 @@ export default async function decorate(block) {
 
           ctx.appendChild(coupons);
         },
+        GiftCards: (ctx) => {
+          const giftCards = document.createElement('div');
+
+          CartProvider.render(GiftCards)(giftCards);
+
+          ctx.appendChild(giftCards);
+        },
       },
     })($orderSummary),
 
@@ -383,7 +404,7 @@ export default async function decorate(block) {
           );
           const editCartLink = document.createElement('a');
           editCartLink.classList.add('cart-summary-list__edit');
-          editCartLink.href = '/cart';
+          editCartLink.href = rootLink('/cart');
           editCartLink.rel = 'noreferrer';
           editCartLink.innerText = 'Edit';
 
@@ -398,8 +419,35 @@ export default async function decorate(block) {
             );
           });
         },
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'cart',
+            isEditable: false,
+            handleItemsLoading: ctx.handleItemsLoading,
+            handleItemsError: ctx.handleItemsError,
+            onItemUpdate: ctx.onItemUpdate,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
+        },
       },
     })($cartSummary),
+
+    CheckoutProvider.render(TermsAndConditions, {
+      slots: {
+        Agreements: (ctx) => {
+          ctx.appendAgreement(() => ({
+            name: 'default',
+            mode: 'manual',
+            translationId: 'Checkout.TermsAndConditions.label',
+          }));
+        },
+      },
+    })($termsAndConditions),
 
     CheckoutProvider.render(PlaceOrder, {
       handleValidation: () => {
@@ -435,6 +483,13 @@ export default async function decorate(block) {
           success = billingFormRef.current.handleValidationSubmit(false);
         }
 
+        const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
+
+        if (success && termsAndConditionsForm) {
+          success = termsAndConditionsForm.checkValidity();
+          if (!success) scrollToElement($termsAndConditions);
+        }
+
         return success;
       },
       handlePlaceOrder: async ({ cartId, code }) => {
@@ -463,6 +518,12 @@ export default async function decorate(block) {
         }
       },
     })($placeOrder),
+
+    CartProvider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'cart',
+      isEditable: false,
+    })($giftOptions),
   ]);
 
   // Dynamic containers and components
@@ -481,7 +542,7 @@ export default async function decorate(block) {
     if (emptyCart) return;
 
     emptyCart = await CartProvider.render(EmptyCart, {
-      routeCTA: () => '/',
+      routeCTA: () => rootLink('/'),
     })($emptyCart);
 
     $content.classList.add('checkout__content--empty');
@@ -568,8 +629,8 @@ export default async function decorate(block) {
         },
         isOpen: true,
         onChange: (values) => {
-          const syncAddress = !isFirstRenderShipping || !hasCartShippingAddress;
-          if (syncAddress) setShippingAddressOnCart(values);
+          const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
+          if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
           if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
           if (isFirstRenderShipping) isFirstRenderShipping = false;
         },
@@ -665,6 +726,11 @@ export default async function decorate(block) {
         placeOrderBtn: placeOrder,
       });
 
+      const estimateShippingCostOnCart = estimateShippingCost({
+        api: checkoutApi.estimateShippingMethods,
+        debounceMs: DEBOUNCE_TIME,
+      });
+
       shippingAddresses = await AccountProvider.render(Addresses, {
         addressFormTitle: 'Deliver to new address',
         defaultSelectAddressId: shippingAddressId,
@@ -675,6 +741,7 @@ export default async function decorate(block) {
         onAddressData: (values) => {
           const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
           if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
+          if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
           if (isFirstRenderShipping) isFirstRenderShipping = false;
         },
         selectable: true,
@@ -759,6 +826,7 @@ export default async function decorate(block) {
         </div>
         <div class="order-confirmation__aside">
           <div class="order-confirmation__block order-confirmation__order-cost-summary"></div>
+          <div class="order-confirmation__block order-confirmation__gift-options"></div>
           <div class="order-confirmation__block order-confirmation__order-product-list"></div>
           <div class="order-confirmation__block order-confirmation__footer"></div>
         </div>
@@ -781,6 +849,9 @@ export default async function decorate(block) {
     const $orderCostSummary = orderConfirmationFragment.querySelector(
       '.order-confirmation__order-cost-summary',
     );
+    const $orderGiftOptions = orderConfirmationFragment.querySelector(
+      '.order-confirmation__gift-options',
+    );
     const $orderProductList = orderConfirmationFragment.querySelector(
       '.order-confirmation__order-product-list',
     );
@@ -798,8 +869,8 @@ export default async function decorate(block) {
     }) => {
       const signUpForm = document.createElement('div');
       AuthProvider.render(SignUp, {
-        routeSignIn: () => '/customer/login',
-        routeRedirectOnEmailConfirmationClose: () => '/customer/account',
+        routeSignIn: () => rootLink('/customer/login'),
+        routeRedirectOnEmailConfirmationClose: () => rootLink('/customer/account'),
         inputsDefaultValueSet,
         addressesData,
         slots: {
@@ -822,7 +893,28 @@ export default async function decorate(block) {
     OrderProvider.render(ShippingStatus)($shippingStatus);
     OrderProvider.render(CustomerDetails)($customerDetails);
     OrderProvider.render(OrderCostSummary)($orderCostSummary);
-    OrderProvider.render(OrderProductList)($orderProductList);
+    CartProvider.render(GiftOptions, {
+      view: 'order',
+      dataSource: 'order',
+      isEditable: false,
+      readOnlyFormOrderView: 'secondary',
+    })($orderGiftOptions);
+    OrderProvider.render(OrderProductList, {
+      slots: {
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'order',
+            isEditable: false,
+          })(giftOptions);
+
+          ctx.appendChild(giftOptions);
+        },
+      },
+    })($orderProductList);
 
     $orderConfirmationFooter.innerHTML = `
       <div class="order-confirmation-footer__continue-button"></div>
@@ -830,7 +922,7 @@ export default async function decorate(block) {
         <p>
           Need help?
           <a
-            href="/support"
+            href="${rootLink(SUPPORT_PATH)}"
             rel="noreferrer"
             class="order-confirmation-footer__contact-support-link"
             data-testid="order-confirmation-footer__contact-support-link"
@@ -852,7 +944,7 @@ export default async function decorate(block) {
       size: 'medium',
       variant: 'primary',
       type: 'submit',
-      href: '/',
+      href: rootLink('/'),
     })($orderConfirmationFooterContinueBtn);
   };
 
@@ -891,8 +983,8 @@ export default async function decorate(block) {
     const encodedOrderNumber = encodeURIComponent(orderNumber);
 
     const url = token
-      ? `/order-details?orderRef=${encodedOrderRef}`
-      : `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`;
+      ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
+      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 

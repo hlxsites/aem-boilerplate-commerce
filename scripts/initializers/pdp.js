@@ -1,5 +1,5 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/prefer-default-export */
-/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 
 import { initializers } from '@dropins/tools/initializer.js';
 import { Image, provider as UI } from '@dropins/tools/components.js';
@@ -11,13 +11,13 @@ import {
 } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
 import {
+  fetchPlaceholders,
   commerceEndpointWithQueryParams,
   getOptionsUIDsFromUrl,
   getSkuFromUrl,
   loadErrorPage,
 } from '../commerce.js';
 import { getHeaders } from '../configs.js';
-import { fetchPlaceholders } from '../aem.js';
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -29,10 +29,7 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders({
-    ...(await getHeaders('cs')),
-    'Content-Type': 'application/json',
-  });
+  setFetchGraphQlHeaders(await getHeaders('cs'));
 
   const sku = getSkuFromUrl();
   const optionsUIDs = getOptionsUIDsFromUrl();
