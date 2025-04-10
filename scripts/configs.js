@@ -1,6 +1,8 @@
 /* eslint-disable import/no-cycle */
 import { deepmerge } from '@dropins/tools/lib.js';
 
+let AEM_ROOT_PATH = '/';
+
 /**
  * Builds the URL for the config file.
  *
@@ -68,7 +70,7 @@ const getConfig = async () => applyConfigOverrides(await getConfigFromSession())
  * Get root path
  */
 export function getRootPath() {
-  return window.AEM_ROOT_PATH ?? '/';
+  return AEM_ROOT_PATH ?? '/';
 }
 
 /**
@@ -102,7 +104,7 @@ async function applyConfigOverrides(config) {
     throw new Error('Invalid root path');
   }
 
-  window.AEM_ROOT_PATH = rootPath;
+  AEM_ROOT_PATH = rootPath;
 
   const defaultConfig = config.public?.default;
 
