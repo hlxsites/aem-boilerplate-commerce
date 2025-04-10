@@ -100,8 +100,8 @@ async function applyConfigOverrides(config) {
   const root = Object.keys(config.public)
     // Sort by number of non-empty segments to find the deepest path
     .sort((a, b) => {
-      const aSegments = a.split('/').filter(Boolean).length;
-      const bSegments = b.split('/').filter(Boolean).length;
+      const aSegments = a.split('/').filter(a => a !== '').length;
+      const bSegments = b.split('/').filter(b => b !== '').length;
       return bSegments - aSegments;
     })
     .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
