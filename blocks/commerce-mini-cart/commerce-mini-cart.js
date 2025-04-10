@@ -21,5 +21,10 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => rootLink(cartURL) : undefined,
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+    showDiscount: true,
+    showSavings: true,
+    enableItemRemoval: true,
+    enableQuantityUpdate: true,
+    hideHeading: true,
   })(block);
 }
