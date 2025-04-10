@@ -7,10 +7,7 @@ export async function isAemAssetsEnabled() {
   return config === 'true';
 }
 
-/**
- * The default optimization parameters used globally, unless overriden (per use case).
- * @returns {AemAssetsImageOptimizationParams}
- */
+/** The default optimization parameters used globally, unless overriden (per use case). */
 export function getDefaultAemAssetsOptimizationParams() {
   // See: https://adobe-aem-assets-delivery-experimental.redoc.ly/
   return {
@@ -23,7 +20,8 @@ export function getDefaultAemAssetsOptimizationParams() {
  * Generates an optimized URL for AEM Assets.
  * @param {string} url - The base URL of the asset.
  * @param {string} alias - The alias (i.e. seoName) of the asset.
- * @param {AemAssetsImageOptimizationParams} params - The parameters to be applied to the asset.
+ * @param {import('./assets.js').AemAssetsImageOptimizationParams} params -
+ *   The parameters to be applied to the asset.
  */
 export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const defaultParams = getDefaultAemAssetsOptimizationParams();
@@ -59,7 +57,8 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
  * Tries to generate an optimized URL for AEM Assets (if enabled).
  * @param {string} url - The base URL of the asset.
  * @param {string} alias - The alias (i.e. seoName) of the asset.
- * @param {AemAssetsImageOptimizationParams} params - The parameters to be applied to the asset.
+ * @param {import('./assets.d.ts').AemAssetsImageOptimizationParams} params -
+ *   The parameters to be applied to the asset.
  */
 export async function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const assetsEnabled = await isAemAssetsEnabled();
@@ -74,8 +73,8 @@ export async function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) 
 }
 
 /**
- * Returns a slot that renders an AEM Assets image
- * @param {AemAssetsImageSlotConfig} config - The config of the slot.
+ * Returns a slot that renders an AEM Assets image.
+ * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
  */
 export function makeAemAssetsImageSlot(
   config,
@@ -116,7 +115,7 @@ export function makeAemAssetsImageSlot(
  * Returns a function that renders an AEM Assets image with the given parameters.
  * @template T
  * @param {T} ctx - The context of the slot.
- * @param {AemAssetsImageSlotConfig} config - The config of the slot.
+ * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
  */
 export async function tryRenderAemAssetsImage(ctx, config) {
   const assetsEnabled = await isAemAssetsEnabled();
@@ -128,49 +127,3 @@ export async function tryRenderAemAssetsImage(ctx, config) {
 
   makeAemAssetsImageSlot(config)(ctx);
 }
-
-/**
- * @typedef {'gif' | 'jpg' | 'jpeg' | 'png' | 'webp'} AemAssetsImageFormat
- * @typedef {90 | 180 | 270} AemAssetsImageRotation
- * @typedef {'h' | 'v' | 'hv'} AemAssetsImageFlip
- * @typedef {'true' | 'false' | '1' | '0'} AemAssetsImageIsAttachment
- */
-
-/**
- * @typedef {Object} AemAssetsCropSettings
- * @property {number} [xOrigin] - The (relative) x origin of the crop (between 0 and 100)
- * @property {number} [yOrigin] - The (relative) y origin of the crop (between 0 and 100)
- * @property {number} [width] - The width of the crop (between 0 and 100)
- * @property {number} [height] - The height of the crop (between 0 and 100)
- */
-
-/**
- * @typedef {Object} AemAssetsSizeSettings
- * @property {number} width - The width of the image
- * @property {number} height - The height of the image
- */
-
-/**
- * @typedef {Object} AemAssetsImageOptimizationParams
- * @property {AemAssetsImageFormat} format - The format of the image
- * @property {AemAssetsImageRotation} [rotation] - The rotation of the image
- * @property {AemAssetsImageFlip} [flip] - The flip of the image
- * @property {AemAssetsCropSettings} [crop] - The crop settings of the image
- * @property {AemAssetsSizeSettings} [size] - The size settings of the image
- * @property {AemAssetsImageIsAttachment} [attachment] - Force a download prompt for the image
- * @property {number} [width] - The width of the image
- * @property {number} [height] - The height of the image
- * @property {number} [quality] - The quality of the image (between 0 and 100)
- * @property {string} [smartCrop] - The smart crop of the image (e.g. QHD)
- */
-
-/**
- * @typedef {Object} AemAssetsImageSlotConfig
- * @property {string} src - The source URL of the image
- * @property {string} alias - The alias (i.e. seoName) of the image
- * @property {HTMLElement} [wrapper] - The wrapper element
- * @property {Omit<AemAssetsImageOptimizationParams, 'size'> & {width: number}} params -
- *  The parameters to be applied to the asset (known width required when using a slot).
- * @property {Omit<import('@dropins/tools/components.js').ImageProps,
- *  'params' | 'src' | 'onLoad' | 'width' | 'height'>} [imageProps] - The image props
- */
