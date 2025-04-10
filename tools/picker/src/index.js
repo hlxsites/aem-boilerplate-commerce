@@ -11,7 +11,9 @@ import './styles.css';
  * Object containing all configuration files that should be exposed in the picker.
  */
 const configFiles = {
-    'prod': 'https://main--aem-boilerplate-commerce--hlxsites.aem.live/configs.json'
+    'prod': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs.json?sheet=prod',
+    'stage': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-stage.json',
+    'dev': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-dev.json',
 }
 /**
  * Default configuration to be loaded.
@@ -115,12 +117,12 @@ const blocks = {
 async function performCatalogServiceQuery(query, config, variables) {
     const headers = {
         'Content-Type': 'application/json',
-        'x-api-key': config['headers.cs.x-api-key'],
-        'Magento-Customer-Group': config['headers.cs.Magento-Customer-Group'],
-        'Magento-Environment-Id': config['headers.cs.Magento-Environment-Id'],
-        'Magento-Store-Code': config['headers.cs.Magento-Store-Code'],
-        'Magento-Store-View-Code': config['headers.cs.Magento-Store-View-Code'],
-        'Magento-Website-Code': config['headers.cs.Magento-Website-Code'],
+        'x-api-key': config['commerce.headers.cs.x-api-key'],
+        'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
+        'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
+        'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
+        'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
+        'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
     };
 
     const apiCall = new URL(config['commerce-endpoint']);
