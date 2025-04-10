@@ -28,14 +28,56 @@ function getValue(obj, key) {
 }
 
 /**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns the config JSON from session storage
+ */
+const getConfigFromSession = async () => {
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    let configJSON = await fetch(buildConfigURL());
+    if (!configJSON.ok) {
+      throw new Error('Failed to fetch config');
+    }
+    configJSON = await configJSON.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
+  }
+};
+
+/**
+ * Retrieves the commerce config.
+ *
+ * @returns {Promise<Object>} - The commerce config.
+ */
+const getConfig = async () => applyConfigOverrides(await getConfigFromSession());
+
+/**
  * Get root path
  */
 export function getRootPath() {
   return window.AEM_ROOT_PATH ?? '/';
 }
 
-export function isConfigRooted() {
-  return window.AEM_IS_ROOTED_PATH ?? false;
+/**
+ *
+ * @returns true if public config contains more than "default"
+ */
+export async function isMultistore() {
+  const config = await getConfigFromSession();
+  return Object.keys(config.public).filter((root) => root !== 'default').length > 0;
 }
 
 /**
@@ -57,7 +99,6 @@ async function applyConfigOverrides(config) {
   }
 
   window.AEM_ROOT_PATH = rootPath;
-  window.AEM_IS_ROOTED_PATH = !!root;
 
   const defaultConfig = config.public?.default;
 
@@ -70,51 +111,8 @@ async function applyConfigOverrides(config) {
     root === '/' ? defaultConfig : config.public[root] || defaultConfig,
   );
 
-  // add overrides
-  if (current.scope?.website) {
-    current.headers.cs['Magento-Website-Code'] = current.scope.website;
-  }
-
-  if (current.scope?.store) {
-    current.headers.cs['Magento-Store-Code'] = current.scope.store;
-  }
-
-  if (current.scope?.['store-view']) {
-    current.headers.all.Store = current.scope['store-view'];
-    current.headers.cs['Magento-Store-View-Code'] = current.scope['store-view'];
-  }
-
   return current;
 }
-
-/**
- * Retrieves the commerce config.
- *
- * @returns {Promise<Object>} - The commerce config.
- */
-const getConfig = async () => {
-  try {
-    const configJSON = window.sessionStorage.getItem('config');
-    if (!configJSON) {
-      throw new Error('No config in session storage');
-    }
-
-    const parsedConfig = JSON.parse(configJSON);
-    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
-      throw new Error('Config expired');
-    }
-    return applyConfigOverrides(parsedConfig);
-  } catch (e) {
-    let configJSON = await fetch(buildConfigURL());
-    if (!configJSON.ok) {
-      throw new Error('Failed to fetch config');
-    }
-    configJSON = await configJSON.json();
-    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
-    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
-    return applyConfigOverrides(configJSON);
-  }
-};
 
 /**
  * This function retrieves a configuration value.
@@ -155,4 +153,3 @@ export const getCookie = (cookieName) => {
 };
 
 export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
-
