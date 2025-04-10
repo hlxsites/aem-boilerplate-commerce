@@ -33,8 +33,11 @@ Before using the boilerplate, we recommend you to go through the documentation o
 The boilerplate assumes you already have an `aem.live` org and will onboard a new site via config service. If you do not have an `aem.live` org, you will need to [contact Adobe](https://discord.gg/aem-live) to have one created, or you can do the following:
 
 1. Upload the [starter content](https://github.com/hlxsites/aem-boilerplate-commerce/releases/tag/starter-content) somewhere (https://da.live, sharepoint, google drive, etc).
-1. Update the mountpoint in the `default-fstab.yaml` to point to your content.
-1. Rename the file to `fstab.yaml` and commit/push the change.
+1. Copy `default-fstab.yaml` to a file named `fstab.yaml`.
+1. Update `fstab.yaml` with your own mountpoint for your content.
+1. Copy `default-publicConfig.json` to a file named `config.json`
+1. Update `config.json` with your endpoints, headers, etc.
+1. Commit and push both files.
 1. Install the [AEM Code Sync Bot](https://github.com/apps/aem-code-sync)
 1. Verify the site is working at https://main--{site}--{org}.aem.page
 1. Add a `/.helix/config.xlsx` to your content, and add a `admin.role.admin` row with your email address.
@@ -60,6 +63,17 @@ curl -X PUT 'https://admin.hlx.page/config/{org}/sites/{site}.json' \
   -H 'content-type: application/json' \
   -H 'x-auth-token: {YOUR_TOKEN}' \
   --data-binary '@default-config.json'
+```
+
+### Apply Public configuration
+
+Note: Update `default-publicConfig.json` with your Commerce values first!
+
+```bash
+curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/public.json' \
+  -H 'content-type: text/yaml' \
+  -H 'x-auth-token: {YOUR_TOKEN}' \
+  --data-binary '@default-publicConfig.yaml'
 ```
 
 ### Apply Index Configuration
