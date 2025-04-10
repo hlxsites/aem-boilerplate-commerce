@@ -6,27 +6,32 @@ import { getConsent } from './scripts.js';
 async function initAnalytics() {
   try {
     // Load Commerce events SDK and collector
-    if (getConsent('commerce-collection')) {
-      const config = {
-        baseCurrencyCode: await getConfigValue('analytics.base-currency-code'),
-        environment: await getConfigValue('analytics.environment'),
-        environmentId: await getConfigValue('headers.cs.Magento-Environment-Id'),
-        storeCode: await getConfigValue('headers.cs.Magento-Store-Code'),
-        storefrontTemplate: 'EDS',
-        storeId: parseInt(await getConfigValue('analytics.store-id'), 10),
-        storeName: await getConfigValue('analytics.store-name'),
-        storeUrl: await getConfigValue('analytics.store-url'),
-        storeViewCode: await getConfigValue('headers.cs.Magento-Store-View-Code'),
-        storeViewCurrencyCode: await getConfigValue('analytics.base-currency-code'),
-        storeViewId: parseInt(await getConfigValue('analytics.store-view-id'), 10),
-        storeViewName: await getConfigValue('analytics.store-view-name'),
-        websiteCode: await getConfigValue('headers.cs.Magento-Website-Code'),
-        websiteId: parseInt(await getConfigValue('analytics.website-id'), 10),
-        websiteName: await getConfigValue('analytics.website-name'),
-      };
+    // only if "analytics" has been added to the config.
+    const config = await getConfigValue('analytics');
+
+    if (config && getConsent('commerce-collection')) {
+      const csHeaders = await getConfigValue('headers.cs');
 
       window.adobeDataLayer.push(
-        { storefrontInstanceContext: config },
+        {
+          storefrontInstanceContext: {
+            baseCurrencyCode: config['base-currency-code'],
+            environment: config.environment,
+            environmentId: csHeaders['Magento-Environment-Id'],
+            storeCode: csHeaders['Magento-Store-Code'],
+            storefrontTemplate: 'EDS',
+            storeId: parseInt(config['store-id'], 10),
+            storeName: config['store-name'],
+            storeUrl: config['store-url'],
+            storeViewCode: csHeaders['Magento-Store-View-Code'],
+            storeViewCurrencyCode: config['base-currency-code'],
+            storeViewId: parseInt(config['store-view-id'], 10),
+            storeViewName: config['store-view-name'],
+            websiteCode: csHeaders['Magento-Website-Code'],
+            websiteId: parseInt(config['website-id'], 10),
+            websiteName: config['website-name'],
+          },
+        },
         { eventForwardingContext: { commerce: true, aep: false } },
         {
           shopperContext: {

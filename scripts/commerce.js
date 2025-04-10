@@ -1,7 +1,10 @@
 /* eslint-disable import/prefer-default-export, import/no-cycle */
 import { getMetadata } from './aem.js';
 import {
-  getConfigValue, getCookie, getHeaders,
+  getConfigValue,
+  getCookie,
+  getHeaders,
+  getRootPath,
 } from './configs.js';
 import { getConsent } from './scripts.js';
 
@@ -12,7 +15,7 @@ import { getConsent } from './scripts.js';
  */
 // eslint-disable-next-line import/prefer-default-export
 export async function fetchPlaceholders(prefix = 'default') {
-  const overrides = getMetadata('placeholders') || getMetadata('root')?.replace(/\/$/, '/placeholders.json') || '';
+  const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
   const [fallback, override] = overrides.split('\n');
   window.placeholders = window.placeholders || {};
 

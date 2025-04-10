@@ -24,6 +24,7 @@ import {
 import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import { removeHashTags } from './api/hashtags/parser.js';
+import { getRootPath } from './configs.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -389,14 +390,6 @@ export async function fetchIndex(indexFile, pageSize = 500) {
   window.index[indexFile] = newIndex;
 
   return newIndex;
-}
-
-/**
- * Get root path
- */
-export function getRootPath() {
-  window.ROOT_PATH = window.ROOT_PATH || getMetadata('root') || '/';
-  return window.ROOT_PATH;
 }
 
 /**

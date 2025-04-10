@@ -1,7 +1,5 @@
 /* eslint-disable import/no-cycle */
 import { deepmerge } from '@dropins/tools/lib.js';
-import { getMetadata } from './aem.js';
-import { getRootPath } from './scripts.js';
 
 /**
  * Builds the URL for the config file.
@@ -30,34 +28,60 @@ function getValue(obj, key) {
 }
 
 /**
+ * Get root path
+ */
+export function getRootPath() {
+  return window.AEM_ROOT_PATH ?? '/';
+}
+
+export function isConfigRooted() {
+  return window.AEM_IS_ROOTED_PATH ?? false;
+}
+
+/**
  * Applies config overrides from metadata.
  *
  * @param {Object} config - The base config.
  * @returns {Object} - The config with overrides applied.
  */
-function applyConfigOverrides(config) {
-  const root = getRootPath();
+async function applyConfigOverrides(config) {
+  const root = Object.keys(config.public)
+    // Sort by length in descending order to find the longest match
+    .sort((a, b) => b.length - a.length)
+    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(`${key}/`));
+
+  const rootPath = root ?? '/';
+
+  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
+    throw new Error('Invalid root path');
+  }
+
+  window.AEM_ROOT_PATH = rootPath;
+  window.AEM_IS_ROOTED_PATH = !!root;
+
+  const defaultConfig = config.public?.default;
+
+  if (!defaultConfig) {
+    throw new Error('No "default" config found.');
+  }
+
   const current = deepmerge(
-    config.public.default,
-    root === '/' ? config.public.default : config.public[root] || config.public.default,
+    defaultConfig,
+    root === '/' ? defaultConfig : config.public[root] || defaultConfig,
   );
 
   // add overrides
-  const website = getMetadata('commerce-website');
-  const store = getMetadata('commerce-store');
-  const storeview = getMetadata('commerce-storeview');
-
-  if (website) {
-    current.headers.cs['Magento-Website-Code'] = website;
+  if (current.scope?.website) {
+    current.headers.cs['Magento-Website-Code'] = current.scope.website;
   }
 
-  if (store) {
-    current.headers.cs['Magento-Store-Code'] = store;
+  if (current.scope?.store) {
+    current.headers.cs['Magento-Store-Code'] = current.scope.store;
   }
 
-  if (storeview) {
-    current.headers.all.Store = storeview;
-    current.headers.cs['Magento-Store-View-Code'] = storeview;
+  if (current.scope?.['store-view']) {
+    current.headers.all.Store = current.scope['store-view'];
+    current.headers.cs['Magento-Store-View-Code'] = current.scope['store-view'];
   }
 
   return current;
@@ -109,10 +133,10 @@ export const getConfigValue = async (configParam) => {
  */
 export const getHeaders = async (scope) => {
   const config = await getConfig();
-  const { headers } = config;
+  const headers = config.headers ?? {};
   return {
-    ...headers.all,
-    ...headers[scope],
+    ...headers.all ?? {},
+    ...headers[scope] ?? {},
   };
 };
 
