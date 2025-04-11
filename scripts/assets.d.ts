@@ -21,10 +21,10 @@ export type AemAssetsImageIsAttachment = 'true' | 'false' | '1' | '0';
  * ```ts
  * // Crop the image to a 80% width and height, starting at 10% from the top and left.
  * const cropSettings: AemAssetsCropSettings = {
- *   xOrigin: 0.1,
- *   yOrigin: 0.1,
- *   width: 0.8,
- *   height: 0.8,
+ *   xOrigin: 10,
+ *   yOrigin: 10,
+ *   width: 80,
+ *   height: 80,
  * };
 */
 export interface AemAssetsCropSettings {
