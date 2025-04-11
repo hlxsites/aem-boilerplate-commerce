@@ -69,7 +69,7 @@ export function getListOfRootPaths() {
  * @returns true if public config contains more than "default"
  */
 export function isMultistore() {
-  return getListOfRootPaths().length > 1;
+  return getListOfRootPaths().length >= 1;
 }
 
 /**
