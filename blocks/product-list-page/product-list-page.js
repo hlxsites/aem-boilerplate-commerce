@@ -39,15 +39,17 @@ export default async function decorate(block) {
             flip: 'v',
           });
 
-          return { src: optimized, params: {
+          return {
+            src: optimized,
+            params: {
               flip: 'v',
               auto: null,
               fit: null,
               cover: null,
               crop: null,
               dpi: null,
-            }
-          }
+            },
+          };
         }
 
         return { src: original };
