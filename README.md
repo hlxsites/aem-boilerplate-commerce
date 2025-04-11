@@ -66,7 +66,7 @@ Please use HTTP [PUT](https://www.aem.live/docs/admin.html#tag/siteConfig/operat
 curl -X PUT 'https://admin.hlx.page/config/{org}/sites/{site}.json' \
   -H 'content-type: application/json' \
   -H 'x-auth-token: {YOUR_TOKEN}' \
-  --data-binary '@default-siteConfig.json'
+  --data-binary '@default-site.json'
 ```
 
 ### Apply Index Configuration
