@@ -2,7 +2,7 @@
 import { deepmerge } from '@dropins/tools/lib.js';
 
 // load config
-const CONFIG = await getConfig();
+const CONFIG = await getConfigFromSession();
 const ROOT_PATH = getRootPath();
 const ROOT_CONFIG = await applyConfigOverrides(CONFIG, ROOT_PATH);
 
@@ -76,9 +76,9 @@ export function isMultistore() {
  * Retrieves a configuration value.
  *
  * @param {string} configParam - The configuration parameter to retrieve.
- * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
+ * @returns {string|undefined} - The value of the configuration parameter, or undefined.
  */
-export async function getConfigValue(configParam) {
+export function getConfigValue(configParam) {
   return getValue(ROOT_CONFIG, configParam);
 }
 
@@ -86,7 +86,7 @@ export async function getConfigValue(configParam) {
  * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
  * returns as object of all headers like { my-header: value, ... }
  */
-export async function getHeaders(scope) {
+export function getHeaders(scope) {
   const headers = ROOT_CONFIG.headers ?? {};
   return {
     ...headers.all ?? {},
@@ -166,13 +166,4 @@ async function applyConfigOverrides(config, root) {
   );
 
   return current;
-}
-
-/**
- * Retrieves the commerce config.
- *
- * @returns {Promise<Object>} - The commerce config.
- */
-async function getConfig() {
-  return getConfigFromSession();
 }

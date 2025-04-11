@@ -7,10 +7,10 @@ async function initAnalytics() {
   try {
     // Load Commerce events SDK and collector
     // only if "analytics" has been added to the config.
-    const config = await getConfigValue('analytics');
+    const config = getConfigValue('analytics');
 
     if (config && getConsent('commerce-collection')) {
-      const csHeaders = await getConfigValue('headers.cs');
+      const csHeaders = getConfigValue('headers.cs');
 
       window.adobeDataLayer.push(
         {

@@ -89,9 +89,9 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 }`;
 
 export async function commerceEndpointWithQueryParams() {
-  const urlWithQueryParams = new URL(await getConfigValue('commerce-endpoint'));
+  const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   // Set some query parameters for use as a cache-buster. No other purpose.
-  urlWithQueryParams.searchParams.append('ac-storecode', await getConfigValue('headers.cs.Magento-Store-Code'));
+  urlWithQueryParams.searchParams.append('ac-storecode', getConfigValue('headers.cs.Magento-Store-Code'));
   return urlWithQueryParams;
 }
 
@@ -99,7 +99,7 @@ export async function commerceEndpointWithQueryParams() {
 
 export async function performCatalogServiceQuery(query, variables) {
   const headers = {
-    ...(await getHeaders('cs')),
+    ...(getHeaders('cs')),
     'Content-Type': 'application/json',
   };
 
@@ -127,11 +127,11 @@ export function getSignInToken() {
 }
 
 export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = await getConfigValue('commerce-core-endpoint');
+  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
 
   const headers = {
     'Content-Type': 'application/json',
-    Store: await getConfigValue('headers.cs.Magento-Store-View-Code'),
+    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
   };
 
   if (USE_TOKEN) {
@@ -226,7 +226,7 @@ export async function trackHistory() {
     return;
   }
   // Store product view history in session storage
-  const storeViewCode = await getConfigValue('headers.cs.Magento-Store-View-Code');
+  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', (event) => {
       if (!event.productContext) {
