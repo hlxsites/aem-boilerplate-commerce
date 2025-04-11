@@ -69,17 +69,6 @@ curl -X PUT 'https://admin.hlx.page/config/{org}/sites/{site}.json' \
   --data-binary '@default-siteConfig.json'
 ```
 
-### Apply Public configuration
-
-Note: Update `default-publicConfig.json` with your Commerce values first!
-
-```bash
-curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/public.json' \
-  -H 'content-type: text/yaml' \
-  -H 'x-auth-token: {YOUR_TOKEN}' \
-  --data-binary '@default-publicConfig.yaml'
-```
-
 ### Apply Index Configuration
 ```bash
 curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/content/query.yaml' \
