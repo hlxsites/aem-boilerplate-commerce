@@ -10,7 +10,7 @@ export default async function decorate(block) {
   const { category, urlpath, type } = readBlockConfig(block);
   block.textContent = '';
 
-  const aemAssetsEnabled = !(await isAemAssetsEnabled());
+  const aemAssetsEnabled = await isAemAssetsEnabled();
 
   const storeDetails = {
     environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
