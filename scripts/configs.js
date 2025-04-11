@@ -1,148 +1,105 @@
-import { getMetadata } from './aem.js';
-
 /* eslint-disable import/no-cycle */
-const ALLOWED_CONFIGS = ['prod', 'stage', 'dev'];
+import { deepmerge } from '@dropins/tools/lib.js';
+
+// load config
+const CONFIG = await getConfigFromSession();
+const ROOT_PATH = getRootPath();
+const ROOT_CONFIG = await applyConfigOverrides(CONFIG, ROOT_PATH);
 
 /**
- * This function calculates the environment in which the site is running based on the URL.
- * It defaults to 'prod'. In non 'prod' environments, the value can be overwritten using
- * the 'environment' key in sessionStorage.
+ * Builds the URL for the config file.
  *
- * @returns {string} - environment identifier (dev, stage or prod'.
+ * @returns {URL} - The URL for the config file.
  */
-export const calcEnvironment = () => {
-  const { host, href } = window.location;
-  let environment = 'prod';
-  if (href.includes('.aem.page') || host.includes('staging')) {
-    environment = 'stage';
-  }
-  if (href.includes('localhost')) {
-    environment = 'dev';
-  }
-
-  const environmentFromConfig = window.sessionStorage.getItem('environment');
-  if (
-    environmentFromConfig
-    && ALLOWED_CONFIGS.includes(environmentFromConfig)
-    && environment !== 'prod'
-  ) {
-    return environmentFromConfig;
-  }
-
-  return environment;
-};
-
-function buildConfigURL(environment) {
-  const env = environment || calcEnvironment();
-  let fileName = 'configs.json';
-  if (env !== 'prod') {
-    fileName = `configs-${env}.json`;
-  }
-  const configURL = new URL(`${window.location.origin}/${fileName}`);
-  return configURL;
+function buildConfigURL() {
+  return new URL(`${window.location.origin}/config.json`);
 }
-
-function applyConfigOverrides(config) {
-  // get overrides
-  const website = getMetadata('commerce-website');
-  const store = getMetadata('commerce-store');
-  const storeview = getMetadata('commerce-storeview');
-
-  // add overrides
-  const updates = new Map([
-    ['commerce.headers.cs.Magento-Website-Code', website],
-    ['commerce.headers.cs.Magento-Store-Code', store],
-    ['commerce.headers.cs.Magento-Store-View-Code', storeview],
-    ['commerce.headers.all.Store', storeview],
-  ]);
-
-  // apply updates
-  config.data.forEach((item) => {
-    const next = updates.get(item.key);
-    if (next) {
-      item.value = next;
-      updates.delete(item.key);
-    }
-  });
-
-  // add any updates that weren't applied
-  updates.forEach((value, key) => {
-    if (value) {
-      config.data.push({ key, value });
-    }
-  });
-
-  return config;
-}
-
-const getConfigForEnvironment = async (environment) => {
-  const env = environment || calcEnvironment();
-
-  try {
-    const configJSON = window.sessionStorage.getItem(`config:${env}`);
-    if (!configJSON) {
-      throw new Error('No config in session storage');
-    }
-
-    const parsedConfig = JSON.parse(configJSON);
-    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
-      throw new Error('Config expired');
-    }
-
-    return applyConfigOverrides(parsedConfig);
-  } catch (e) {
-    let configJSON = await fetch(buildConfigURL(env));
-    if (!configJSON.ok) {
-      throw new Error(`Failed to fetch config for ${env}`);
-    }
-    configJSON = await configJSON.json();
-    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
-    window.sessionStorage.setItem(`config:${env}`, JSON.stringify(configJSON));
-    return applyConfigOverrides(configJSON);
-  }
-};
 
 /**
- * This function retrieves a configuration value for a given environment.
+ * Retrieves a value from a config object using dot notation.
+ *
+ * @param {Object} obj - The config object.
+ * @param {string} key - The key to retrieve (supports dot notation).
+ * @returns {any} - The value of the key.
+ */
+function getValue(obj, key) {
+  return key.split('.').reduce((current, part) => {
+    if (!Object.prototype.hasOwnProperty.call(current, part)) {
+      console.warn(`Property ${key} does not exist in the object`);
+      return undefined;
+    }
+    return current[part];
+  }, obj);
+}
+
+/**
+ * Get root path
+ * @param {Object} [config] - The config object.
+ * @returns {string} - The root path.
+ */
+export function getRootPath() {
+  const value = Object.keys(CONFIG?.public)
+    // Sort by number of non-empty segments to find the deepest path
+    .sort((a, b) => {
+      const aSegments = a.split('/').filter(Boolean).length;
+      const bSegments = b.split('/').filter(Boolean).length;
+      return bSegments - aSegments;
+    })
+    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
+
+  const rootPath = value ?? '/';
+
+  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
+    throw new Error('Invalid root path');
+  }
+
+  return rootPath;
+}
+
+/**
+ * Get list of root paths from public config
+ * @returns {Array} - The list of root paths.
+ */
+export function getListOfRootPaths() {
+  return Object.keys(CONFIG?.public).filter((root) => root !== 'default');
+}
+
+/**
+ * Checks if the public config contains more than "default"
+ * @returns true if public config contains more than "default"
+ */
+export function isMultistore() {
+  return getListOfRootPaths().length >= 1;
+}
+
+/**
+ * Retrieves a configuration value.
  *
  * @param {string} configParam - The configuration parameter to retrieve.
- * @param {string} [environment] - Optional, overwrite the current environment.
- * @returns {Promise<string|undefined>} - The value of the configuration parameter, or undefined.
+ * @returns {string|undefined} - The value of the configuration parameter, or undefined.
  */
-export const getConfigValue = async (configParam, environment) => {
-  const env = environment || calcEnvironment();
-  const config = await getConfigForEnvironment(env);
-  const configElements = config.data;
-  return configElements.find((c) => c.key === configParam)?.value;
-};
+export function getConfigValue(configParam) {
+  return getValue(ROOT_CONFIG, configParam);
+}
 
 /**
  * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
  * returns as object of all headers like { my-header: value, ... }
  */
-export const getHeaders = async (scope, environment) => {
-  const env = environment || calcEnvironment();
-  const config = await getConfigForEnvironment(env);
-  const configElements = config.data.filter((el) => el?.key.includes('headers.all') || el?.key.includes(`headers.${scope}`));
+export function getHeaders(scope) {
+  const headers = ROOT_CONFIG.headers ?? {};
+  return {
+    ...headers.all ?? {},
+    ...headers[scope] ?? {},
+  };
+}
 
-  return configElements.reduce((obj, item) => {
-    let { key } = item;
-
-    // global values
-    if (key.includes('commerce.headers.all.')) {
-      key = key.replace('commerce.headers.all.', '');
-    }
-
-    // scoped values
-    if (key.includes(`commerce.headers.${scope}.`)) {
-      key = key.replace(`commerce.headers.${scope}.`, '');
-    }
-
-    return { ...obj, [key]: item.value };
-  }, {});
-};
-
-export const getCookie = (cookieName) => {
+/**
+ * Get cookie
+ * @param {string} cookieName - The name of the cookie to get
+ * @returns {string} - The value of the cookie
+ */
+export function getCookie(cookieName) {
   const cookies = document.cookie.split(';');
   let foundValue;
 
@@ -154,6 +111,59 @@ export const getCookie = (cookieName) => {
   });
 
   return foundValue;
-};
+}
 
-export const checkIsAuthenticated = () => !!getCookie('auth_dropin_user_token') ?? false;
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
+}
+
+/**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns {Promise<Object>} - The config JSON from session storage
+ */
+async function getConfigFromSession() {
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (!parsedConfig[':expiry'] || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    let configJSON = await fetch(buildConfigURL());
+    if (!configJSON.ok) {
+      throw new Error('Failed to fetch config');
+    }
+    configJSON = await configJSON.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
+  }
+}
+
+/**
+ * Applies config overrides from metadata.
+ *
+ * @param {Object} config - The base config.
+ * @returns {Object} - The config with overrides applied.
+ */
+async function applyConfigOverrides(config, root) {
+  const defaultConfig = config.public?.default;
+
+  if (!defaultConfig) {
+    throw new Error('No "default" config found.');
+  }
+
+  const current = deepmerge(
+    defaultConfig,
+    root === '/' ? defaultConfig : config.public[root] || defaultConfig,
+  );
+
+  return current;
+}
