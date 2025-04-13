@@ -35,14 +35,11 @@ export default async function decorate(block) {
       optimizeImages: true,
       overrideImageProps: (original, product) => {
         if (aemAssetsEnabled) {
-          const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {
-            flip: 'v',
-          });
+          const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {});
 
           return {
             src: optimized,
             params: {
-              flip: 'v',
               auto: null,
               fit: null,
               cover: null,
