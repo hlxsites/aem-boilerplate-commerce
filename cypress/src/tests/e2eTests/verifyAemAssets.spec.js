@@ -38,7 +38,6 @@ describe('AEM Assets enabled', () => {
     cy.wait(5000);
     cy.get('img').each(($img) => {
       const src = $img.attr('src');
-      cy.log($img);
       const urnMatch = src.match(/urn:aaid:aem:[^/]+/);
       const imageNameMatch = src.match(/\/as\/([^/]+)\.webp\?/);
       if (urnMatch && imageNameMatch) {
@@ -49,6 +48,7 @@ describe('AEM Assets enabled', () => {
         expect(src).to.equal(expectedSrc);
       }
       expect(src).to.include('/as/');
+      cy.log($img);
       expect(src).not.to.include('fit=');
     });
   });
@@ -59,7 +59,6 @@ describe('AEM Assets disabled', () => {
     cy.visit('/search?q=jacket');
     cy.wait(5000);
     cy.get('img').each(($img) => {
-      cy.log($img);
       const src = $img.attr('src');
       const imageNameMatch = src.match(/\/w\/j\/([^/]+)\.jpg/);
       if (imageNameMatch) {
@@ -68,6 +67,7 @@ describe('AEM Assets disabled', () => {
         expect(src).to.equal(expectedSrc);
       }
       expect(src).not.to.include('/as/');
+      cy.log($img);
       expect(src).to.include('fit=');
     });
   });
