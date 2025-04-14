@@ -114,7 +114,8 @@ npm run lint
 
 1. Create a new repository based on the `aem-boilerplate-commerce` template,
 1. Rename `default-fstab.yaml` to `fstab.yaml` and add a mountpoint for your site content.
-1. Rename `demo-config.json` to `config.json` and update with your site values
+1. Rename `demo-config.json` to `config.json` and update with your site values.
+1. Commit and push both files.
 1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
 1. Install all dependencies using `npm i`.
 1. Start AEM Proxy: `npm run start` (opens your browser at `http://localhost:3000`)
