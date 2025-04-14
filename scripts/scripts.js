@@ -24,7 +24,7 @@ import {
 import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 import { removeHashTags } from './api/hashtags/parser.js';
-import { getRootPath, getListOfRootPaths } from './configs.js';
+import { initializeConfig, getRootPath, getListOfRootPaths } from './configs.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -439,6 +439,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
+  await initializeConfig();
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

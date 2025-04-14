@@ -1,10 +1,10 @@
 /* eslint-disable import/no-cycle */
 import { deepmerge } from '@dropins/tools/lib.js';
 
-// load config
-const CONFIG = await getConfigFromSession();
-const ROOT_PATH = getRootPath();
-const ROOT_CONFIG = await applyConfigOverrides(CONFIG, ROOT_PATH);
+// Private state
+let config = null;
+let rootPath = null;
+let rootConfig = null;
 
 /**
  * Builds the URL for the config file.
@@ -33,73 +33,11 @@ function getValue(obj, key) {
 }
 
 /**
- * Get root path
- * @param {Object} [config] - The config object.
- * @returns {string} - The root path.
- */
-export function getRootPath() {
-  const value = Object.keys(CONFIG?.public)
-    // Sort by number of non-empty segments to find the deepest path
-    .sort((a, b) => {
-      const aSegments = a.split('/').filter(Boolean).length;
-      const bSegments = b.split('/').filter(Boolean).length;
-      return bSegments - aSegments;
-    })
-    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
-
-  const rootPath = value ?? '/';
-
-  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
-    throw new Error('Invalid root path');
-  }
-
-  return rootPath;
-}
-
-/**
- * Get list of root paths from public config
- * @returns {Array} - The list of root paths.
- */
-export function getListOfRootPaths() {
-  return Object.keys(CONFIG?.public).filter((root) => root !== 'default');
-}
-
-/**
- * Checks if the public config contains more than "default"
- * @returns true if public config contains more than "default"
- */
-export function isMultistore() {
-  return getListOfRootPaths().length >= 1;
-}
-
-/**
- * Retrieves a configuration value.
- *
- * @param {string} configParam - The configuration parameter to retrieve.
- * @returns {string|undefined} - The value of the configuration parameter, or undefined.
- */
-export function getConfigValue(configParam) {
-  return getValue(ROOT_CONFIG, configParam);
-}
-
-/**
- * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
- * returns as object of all headers like { my-header: value, ... }
- */
-export function getHeaders(scope) {
-  const headers = ROOT_CONFIG.headers ?? {};
-  return {
-    ...headers.all ?? {},
-    ...headers[scope] ?? {},
-  };
-}
-
-/**
  * Get cookie
  * @param {string} cookieName - The name of the cookie to get
  * @returns {string} - The value of the cookie
  */
-export function getCookie(cookieName) {
+function getCookie(cookieName) {
   const cookies = document.cookie.split(';');
   let foundValue;
 
@@ -113,8 +51,105 @@ export function getCookie(cookieName) {
   return foundValue;
 }
 
-export function checkIsAuthenticated() {
+/**
+ * Get root path
+ * @param {Object} [configObj=config] - The config object.
+ * @returns {string} - The root path.
+ */
+function getRootPath(configObj = config) {
+  if (!configObj) {
+    console.warn('No config found. Please call initializeConfig() first.');
+    return '/';
+  }
+
+  const value = Object.keys(configObj?.public)
+    // Sort by number of non-empty segments to find the deepest path
+    .sort((a, b) => {
+      const aSegments = a.split('/').filter(Boolean).length;
+      const bSegments = b.split('/').filter(Boolean).length;
+      return bSegments - aSegments;
+    })
+    .find((key) => window.location.pathname === key || window.location.pathname.startsWith(key));
+
+  rootPath = value ?? '/';
+
+  if (!rootPath.startsWith('/') || !rootPath.endsWith('/')) {
+    throw new Error('Invalid root path');
+  }
+
+  return rootPath;
+}
+
+/**
+ * Get list of root paths from public config
+ * @returns {Array} - The list of root paths.
+ */
+function getListOfRootPaths() {
+  if (!config) {
+    console.warn('No config found. Please call initializeConfig() first.');
+    return [];
+  }
+
+  return Object.keys(config?.public).filter((root) => root !== 'default');
+}
+
+/**
+ * Checks if the public config contains more than "default"
+ * @returns {boolean} - true if public config contains more than "default"
+ */
+function isMultistore() {
+  return getListOfRootPaths().length >= 1;
+}
+
+/**
+ * Retrieves headers from config entries like commerce.headers.pdp.my-header, etc and
+ * returns as object of all headers like { my-header: value, ... }
+ * @param {string} scope - The scope of the headers to retrieve.
+ * @returns {Object} - The headers.
+ */
+function getHeaders(scope) {
+  if (!rootConfig) {
+    throw new Error('Configuration not initialized. Call initializeConfig() first.');
+  }
+  const headers = rootConfig.headers ?? {};
+  return {
+    ...headers.all ?? {},
+    ...headers[scope] ?? {},
+  };
+}
+
+/**
+ * Checks if the user is authenticated
+ * @returns {boolean} - true if the user is authenticated
+ */
+function checkIsAuthenticated() {
   return !!getCookie('auth_dropin_user_token') ?? false;
+}
+
+/**
+ * Applies config overrides from metadata.
+ *
+ * @param {Object} [configObj=config] - The base config.
+ * @param {string} [root=rootPath] - The root path.
+ * @returns {Object} - The config with overrides applied.
+ */
+async function applyConfigOverrides(configObj = config, root = rootPath) {
+  if (!configObj) {
+    throw new Error('Configuration not initialized. Call initializeConfig() first.');
+  }
+
+  const defaultConfig = configObj.public?.default;
+
+  if (!defaultConfig) {
+    throw new Error('No "default" config found.');
+  }
+
+  const current = deepmerge(
+    defaultConfig,
+    root === '/' ? defaultConfig : configObj.public[root] || defaultConfig,
+  );
+
+  return current;
 }
 
 /**
@@ -148,22 +183,35 @@ async function getConfigFromSession() {
 }
 
 /**
- * Applies config overrides from metadata.
- *
- * @param {Object} config - The base config.
- * @returns {Object} - The config with overrides applied.
+ * Initializes the configuration system.
+ * @returns {Promise<void>}
  */
-async function applyConfigOverrides(config, root) {
-  const defaultConfig = config.public?.default;
-
-  if (!defaultConfig) {
-    throw new Error('No "default" config found.');
-  }
-
-  const current = deepmerge(
-    defaultConfig,
-    root === '/' ? defaultConfig : config.public[root] || defaultConfig,
-  );
-
-  return current;
+async function initializeConfig() {
+  config = await getConfigFromSession();
+  rootPath = getRootPath(config);
+  rootConfig = await applyConfigOverrides(config, rootPath);
 }
+
+/**
+ * Retrieves a configuration value.
+ *
+ * @param {string} configParam - The configuration parameter to retrieve.
+ * @returns {string|undefined} - The value of the configuration parameter, or undefined.
+ */
+function getConfigValue(configParam) {
+  if (!rootConfig) {
+    throw new Error('Configuration not initialized. Call initializeConfig() first.');
+  }
+  return getValue(rootConfig, configParam);
+}
+
+export {
+  initializeConfig,
+  getCookie,
+  getRootPath,
+  getListOfRootPaths,
+  isMultistore,
+  getConfigValue,
+  getHeaders,
+  checkIsAuthenticated,
+};
