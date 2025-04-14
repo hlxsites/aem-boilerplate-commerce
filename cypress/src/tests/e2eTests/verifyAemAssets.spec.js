@@ -42,19 +42,24 @@ describe('AEM Assets enabled', () => {
         expectsEventWithContext('search-results-view', ['pageContext', 'storefrontInstanceContext', 'searchResultsContext'], adobeDataLayer);
       });
     });
-    cy.get('img').each(($img) => {
-      const src = $img.attr('src');
-      const urnMatch = src.match(/urn:aaid:aem:[^/]+/);
-      const imageNameMatch = src.match(/\/as\/([^/]+)\.webp\?/);
-      if (urnMatch && imageNameMatch) {
-        const urn = urnMatch[0];
-        const imageName = imageNameMatch[1];
-        const aemAssetsEnvironment = Cypress.env('AEM_ASSETS_ENVIRONMENT');
-        const expectedSrc = `http:////delivery-${aemAssetsEnvironment}.adobeaemcloud.com/adobe/assets/${urn}/as/${imageName}.webp?quality=80&width=200`;
-        expect(src).to.equal(expectedSrc);
-      }
-      expect(src).to.include('/as/');
-      expect(src).not.to.include('fit=');
+    cy.get('img').should(($imgs) => {
+      expect($imgs.length).to.be.greaterThan(0)
+      $imgs.each((index, img) => {
+        expect(img.complete).to.be.true;
+        expect(img.naturalWidth).to.be.greaterThan(0);
+        const src = Cypress.$(img).attr('src');
+        const urnMatch = src.match(/urn:aaid:aem:[^/]+/);
+        const imageNameMatch = src.match(/\/as\/([^/]+)\.webp\?/);
+        if (urnMatch && imageNameMatch) {
+          const urn = urnMatch[0];
+          const imageName = imageNameMatch[1];
+          const aemAssetsEnvironment = Cypress.env('AEM_ASSETS_ENVIRONMENT');
+          const expectedSrc = `http:////delivery-${aemAssetsEnvironment}.adobeaemcloud.com/adobe/assets/${urn}/as/${imageName}.webp?quality=80&width=200`;
+          expect(src).to.equal(expectedSrc);
+        }
+        expect(src).to.include('/as/');
+        expect(src).not.to.include('fit=');
+      });
     });
   });
 });
@@ -67,16 +72,21 @@ describe('AEM Assets disabled', () => {
         expectsEventWithContext('search-results-view', ['pageContext', 'storefrontInstanceContext', 'searchResultsContext'], adobeDataLayer);
       });
     });
-    cy.get('img').each(($img) => {
-      const src = $img.attr('src');
-      const imageNameMatch = src.match(/\/w\/j\/([^/]+)\.jpg/);
-      if (imageNameMatch) {
-        const imageName = imageNameMatch[1];
-        const expectedSrc = `http:////mcstaging.aemshop.net/media/catalog/product/w/j/${imageName}.jpg?fit=cover&dpi=1&width=200`;
-        expect(src).to.equal(expectedSrc);
-      }
-      expect(src).not.to.include('/as/');
-      expect(src).to.include('fit=');
+    cy.get('img').should(($imgs) => {
+      expect($imgs.length).to.be.greaterThan(0)
+      $imgs.each((index, img) => {
+        expect(img.complete).to.be.true;
+        expect(img.naturalWidth).to.be.greaterThan(0);
+        const src = Cypress.$(img).attr('src');
+        const imageNameMatch = src.match(/\/w\/j\/([^/]+)\.jpg/);
+        if (imageNameMatch) {
+          const imageName = imageNameMatch[1];
+          const expectedSrc = `http:////mcstaging.aemshop.net/media/catalog/product/w/j/${imageName}.jpg?fit=cover&dpi=1&width=200`;
+          expect(src).to.equal(expectedSrc);
+        }
+        expect(src).not.to.include('/as/');
+        expect(src).to.include('fit=');
+      });
     });
   });
 });
