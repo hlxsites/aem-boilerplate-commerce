@@ -74,7 +74,7 @@ describe('AEM Assets disabled', () => {
     }).then(($imgs) => {
       const srcList = Cypress._.map($imgs, (img) => img.getAttribute('src'))
 
-      for ( const src of srcList) {
+      for (const src of srcList) {
         const imageNameMatch = src.match(/\/w\/j\/([^/]+)\.jpg/);
         if (imageNameMatch) {
           const imageName = imageNameMatch[1];
