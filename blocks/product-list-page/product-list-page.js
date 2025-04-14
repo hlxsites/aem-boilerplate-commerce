@@ -35,7 +35,9 @@ export default async function decorate(block) {
       optimizeImages: true,
       overrideImageProps: (original, product) => {
         if (aemAssetsEnabled) {
-          const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {});
+          const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {
+            width: 200,
+          });
 
           return {
             src: optimized,
