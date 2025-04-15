@@ -2,8 +2,8 @@ import { provider as UI, Image } from '@dropins/tools/components.js';
 import { getConfigValue } from './configs.js';
 
 /** Reports whether AEM Assets are being used as the asset source. */
-export async function isAemAssetsEnabled() {
-  const config = await getConfigValue('commerce-assets-enabled');
+export function isAemAssetsEnabled() {
+  const config = getConfigValue('commerce-assets-enabled');
   return config === 'true';
 }
 
@@ -60,8 +60,8 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
  * @param {import('./assets.d.ts').AemAssetsImageOptimizationParams} params -
  *   The parameters to be applied to the asset.
  */
-export async function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
-  const assetsEnabled = await isAemAssetsEnabled();
+export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
+  const assetsEnabled = isAemAssetsEnabled();
 
   if (!(assetsEnabled)) {
     // No-op, doesn't do anything.
@@ -117,8 +117,8 @@ export function makeAemAssetsImageSlot(
  * @param {T} ctx - The context of the slot.
  * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
  */
-export async function tryRenderAemAssetsImage(ctx, config) {
-  const assetsEnabled = await isAemAssetsEnabled();
+export function tryRenderAemAssetsImage(ctx, config) {
+  const assetsEnabled = isAemAssetsEnabled();
 
   if (!(assetsEnabled)) {
     // No-op, doesn't do anything.
