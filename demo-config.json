@@ -5,7 +5,7 @@
       "commerce-endpoint": "https://www.aemshop.net/cs-graphql",
       "headers": {
         "all": {
-          "Store": "default",
+          "Store": "default"
         },
         "cs": {
           "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
