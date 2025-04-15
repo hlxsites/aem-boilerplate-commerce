@@ -222,11 +222,11 @@ export default async function decorate(block) {
   const excludeMiniCartFromPaths = ['/checkout'];
 
   const minicart = document.createRange().createContextualFragment(`
-     <div class="minicart-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-cart-button" aria-label="Cart"></button>
-       <div class="minicart-panel nav-tools-panel"></div>
-     </div>
-   `);
+    <div class="minicart-wrapper nav-tools-wrapper">
+      <button type="button" class="nav-cart-button" aria-label="Cart"></button>
+      <div class="minicart-panel nav-tools-panel"></div>
+    </div>
+  `);
 
   navTools.append(minicart);
 
@@ -238,7 +238,6 @@ export default async function decorate(block) {
     cartButton.style.display = 'none';
   }
 
-  // load nav as fragment
   const miniCartMeta = getMetadata('mini-cart');
   const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
   loadFragment(miniCartPath).then((miniCartFragment) => {
@@ -252,23 +251,29 @@ export default async function decorate(block) {
 
     if (stateChanged && show) {
       publishShoppingCartViewEvent();
+      toggleAllNavSections(navSections);
+      overlay.classList.remove('show');
     }
   }
 
-  cartButton.addEventListener('click', () => toggleMiniCart());
+  cartButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMiniCart();
+  });
 
-  // Cart Item Counter
-  events.on(
-    'cart/data',
-    (data) => {
-      if (data?.totalQuantity) {
-        cartButton.setAttribute('data-count', data.totalQuantity);
-      } else {
-        cartButton.removeAttribute('data-count');
-      }
-    },
-    { eager: true },
-  );
+  function updateCartCounter(data) {
+    if (data?.totalQuantity) {
+      cartButton.setAttribute('data-count', data.totalQuantity);
+      cartButton.setAttribute('aria-label', `Cart with ${data.totalQuantity} items`);
+    } else {
+      cartButton.removeAttribute('data-count');
+      cartButton.setAttribute('aria-label', 'Cart');
+    }
+  }
+
+  events.on('cart/data', updateCartCounter, { eager: true });
+  events.on('cart/updated', updateCartCounter, { eager: true });
+  events.on('cart/initialized', updateCartCounter, { eager: true });
 
   /** Search */
 
