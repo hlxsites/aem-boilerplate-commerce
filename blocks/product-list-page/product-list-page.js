@@ -1,12 +1,15 @@
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { generateAemAssetsOptimizedUrl, isAemAssetsEnabled } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   await import('../../scripts/widgets/search.js');
 
   const { category, urlpath, type } = readBlockConfig(block);
   block.textContent = '';
+
+  const aemAssetsEnabled = await isAemAssetsEnabled();
 
   const storeDetails = {
     environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
@@ -29,6 +32,26 @@ export default async function decorate(block) {
       allowAllProducts: false,
       imageCarousel: false,
       optimizeImages: true,
+      overrideImageProps: (original, product) => {
+        if (aemAssetsEnabled) {
+          const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {
+            width: 200,
+          });
+
+          return {
+            src: optimized,
+            params: {
+              auto: null,
+              fit: null,
+              cover: null,
+              crop: null,
+              dpi: null,
+            },
+          };
+        }
+
+        return { src: original };
+      },
       imageBaseWidth: 200,
       listview: true,
       displayMode: '', // "" for plp || "PAGE" for category/catalog
