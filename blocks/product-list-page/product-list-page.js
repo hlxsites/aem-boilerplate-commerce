@@ -9,8 +9,6 @@ export default async function decorate(block) {
   const { category, urlpath, type } = readBlockConfig(block);
   block.textContent = '';
 
-  const aemAssetsEnabled = await isAemAssetsEnabled();
-
   const storeDetails = {
     environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
     environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
@@ -33,7 +31,7 @@ export default async function decorate(block) {
       imageCarousel: false,
       optimizeImages: true,
       overrideImageProps: (original, product) => {
-        if (aemAssetsEnabled) {
+        if (isAemAssetsEnabled()) {
           const optimized = generateAemAssetsOptimizedUrl(original, product.sku, {
             width: 200,
           });
