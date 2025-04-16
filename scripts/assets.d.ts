@@ -15,7 +15,7 @@ export type AemAssetsImageFlip = 'h' | 'v' | 'hv';
 /** Whether an image is an attachment or not. */
 export type AemAssetsImageIsAttachment = 'true' | 'false' | '1' | '0';
 
-/** 
+/**
  * Defines a crop region of an image.
  * @example
  * ```ts
@@ -74,7 +74,7 @@ export interface AemAssetsImageSlotConfig {
 
   /** The element that will contain the image in the slot */
   wrapper?: HTMLElement;
-  
+
   /** The parameters to be applied to the asset (known width required when using a slot) */
   params: Omit<AemAssetsImageOptimizationParams, 'size'> & { width: number };
 
