@@ -7,7 +7,7 @@
     "lint:js": "eslint .",
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
-    "start": "aem up --url https://main--aem-boilerplate-commerce--hlxsites.aem.page",
+    "start": "aem up --url https://fetchgraphql--aem-boilerplate-commerce--hlxsites.aem.page",
     "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins"
@@ -41,7 +41,7 @@
     "@dropins/storefront-checkout": "~1.3.0",
     "@dropins/storefront-order": "~1.0.5",
     "@dropins/storefront-payment-services": "~1.0.1",
-    "@dropins/storefront-pdp": "~1.0.0",
-    "@dropins/tools": "1.0.0-alpha5"
+    "@dropins/storefront-pdp": "^1.1.1",
+    "@dropins/tools": "~1.0.0"
   }
 }
