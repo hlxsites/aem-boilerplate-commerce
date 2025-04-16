@@ -8,6 +8,7 @@ import { getConfigValue } from '../../scripts/configs.js';
 // initialize dropins
 import '../../scripts/initializers/cart.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { tryGenerateAemAssetsOptimizedUrl } from '../../scripts/assets.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -99,11 +100,24 @@ function renderItem(unitId, product) {
   };
 
   const ctaText = product.__typename === 'SimpleProductView' ? 'Add to Cart' : 'Select Options';
+  const fallbackSrc = `${image}?width=300&format=jpg&optimize=medium`;
+  const fallbackImageSrc = tryGenerateAemAssetsOptimizedUrl(fallbackSrc, product.sku, {
+    width: 300,
+    height: 375,
+    format: 'jpg',
+  });
+
+  const webpOriginalSrc = `${image}?width=300&format=webply&optimize=medium`;
+  const webpImageSrc = tryGenerateAemAssetsOptimizedUrl(webpOriginalSrc, product.sku, {
+    width: 300,
+    format: 'webp',
+  });
+
   const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
     <a href="${rootLink(`/products/${product.urlKey}/${product.sku}`)}">
       <picture>
-        <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
-        <img loading="lazy" alt="Image of ${product.name}" width="300" height="375" src="${image}?width=300&format=jpg&optimize=medium" />
+        <source type="image/webp" srcset="${webpImageSrc}" />
+        <img loading="lazy" alt="Image of ${product.name}" width="300" height="375" src="${fallbackImageSrc}" />
       </picture>
       <span>${product.name}</span>
     </a>
