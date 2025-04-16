@@ -1,7 +1,7 @@
 import { Image, ImageProps } from '@dropins/tools/components.js';
 
 /** Reports whether AEM Assets are being used as the asset source. */
-export function isAemAssetsEnabled(): Promise<boolean>;
+export function isAemAssetsEnabled(): boolean;
 
 /** The formats that can be used for an image. */
 export type AemAssetsImageFormat = 'gif' | 'jpg' | 'jpeg' | 'png' | 'webp';
@@ -15,7 +15,7 @@ export type AemAssetsImageFlip = 'h' | 'v' | 'hv';
 /** Whether an image is an attachment or not. */
 export type AemAssetsImageIsAttachment = 'true' | 'false' | '1' | '0';
 
-/** 
+/**
  * Defines a crop region of an image.
  * @example
  * ```ts
@@ -74,7 +74,7 @@ export interface AemAssetsImageSlotConfig {
 
   /** The element that will contain the image in the slot */
   wrapper?: HTMLElement;
-  
+
   /** The parameters to be applied to the asset (known width required when using a slot) */
   params: Omit<AemAssetsImageOptimizationParams, 'size'> & { width: number };
 
@@ -97,7 +97,7 @@ export function tryGenerateAemAssetsOptimizedUrl(
   url: string,
   alias: string,
   params?: Partial<AemAssetsImageOptimizationParams>
-): Promise<string>;
+): string;
 
 /** Creates a slot for an image. */
 export function makeAemAssetsImageSlot(
@@ -108,4 +108,4 @@ export function makeAemAssetsImageSlot(
 export function tryRenderAemAssetsImage<T>(
   ctx: T,
   config: AemAssetsImageSlotConfig
-): Promise<void>;
+): void;
