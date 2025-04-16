@@ -1,10 +1,8 @@
 
 describe('Store Switcher', () => {
-  // let originalConfig;
   // beforeEach(() => {
   //   cy.on('window:before:load', (win) => {
   //     const config = JSON.parse(win.sessionStorage.getItem('config'));
-  //     originalConfig = config;
   //     win.sessionStorage.setItem('config', JSON.stringify({
   //       ...config,
   //       public: {
@@ -15,9 +13,6 @@ describe('Store Switcher', () => {
   //     }));
   //   });
   // });
-  // afterEach(() => {
-  //   window.sessionStorage.setItem('config', JSON.stringify(originalConfig));
-  // })
 
   it('should allow the user to switch stores', () => {
     // Visit the homepage
