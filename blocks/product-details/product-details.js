@@ -9,6 +9,11 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
+import {
+  addProductsToWishlist,
+  removeProductsFromWishlist,
+  getWishlistItemFromStorage,
+} from '@dropins/storefront-wishlist/api.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -26,6 +31,7 @@ import { fetchPlaceholders, setJsonLd } from '../../scripts/commerce.js';
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/wishlist.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
@@ -68,7 +74,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -87,7 +93,7 @@ export default async function decorate(block) {
     _options,
     _quantity,
     addToCart,
-    addToWishlist,
+    wishlistToggleBtn,
     _description,
     _attributes,
   ] = await Promise.all([
@@ -182,36 +188,80 @@ export default async function decorate(block) {
       },
     })($addToCart),
 
-    // Configuration - Add to Wishlist
+    // Add to Wishlist
     UI.render(Button, {
-      icon: Icon({ source: 'Heart' }),
       variant: 'secondary',
+      icon: Icon({ source: 'Heart' }),
       'aria-label': labels.Custom?.AddToWishlist?.label,
+      isGuestWishlistEnabled: false, // ??? how to hide button for Guest user?
       onClick: async () => {
+        let msgIcon = 'Heart';
         try {
-          addToWishlist.setProps((prev) => ({
-            ...prev,
-            disabled: true,
-            'aria-label': labels.Custom?.AddingToWishlist?.label,
-          }));
-
-          const values = pdpApi.getProductConfigurationValues();
-
-          if (values?.sku) {
-            const wishlist = await import('../../scripts/wishlist/api.js');
-            await wishlist.addToWishlist(values.sku);
+          const item = getWishlistItemFromStorage(product?.sku);
+          if (item) {
+            wishlistToggleBtn.setProps((prev) => ({
+              ...prev,
+              disabled: true,
+              'aria-label': labels.Custom?.AddingToWishlist?.label,
+            }));
+            await removeProductsFromWishlist(
+              [
+                {
+                  id: item.id ?? '',
+                  product: {
+                    sku: product.sku,
+                  },
+                },
+              ],
+            );
+            msgIcon = 'Heart';
+          } else {
+            wishlistToggleBtn.setProps((prev) => ({
+              ...prev,
+              disabled: true,
+              'aria-label': labels.Custom?.RemovingFromWishlist?.label,
+            }));
+            await addProductsToWishlist([{ sku: product.sku, quantity: 1 }]);
+            msgIcon = 'HeartFilled';
           }
+          // @todo: add translations
+          inlineAlert = await UI.render(InLineAlert, {
+            heading: `${product?.name} was ${msgIcon === 'Heart' ? 'removed from' : 'added to'} your wishlist`,
+            type: 'success',
+            icon: Icon({ source: msgIcon }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              inlineAlert.remove();
+            },
+          })($alert);
         } catch (error) {
-          console.error(error);
+          // add alert message
+          inlineAlert = await UI.render(InLineAlert, {
+            heading: 'Error',
+            description: error.message,
+            icon: Icon({ source: 'Warning' }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              inlineAlert.remove();
+            },
+          })($alert);
+
+          // Scroll the alertWrapper into view
+          $alert.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
         } finally {
-          addToWishlist.setProps((prev) => ({
+          wishlistToggleBtn.setProps((prev) => ({
             ...prev,
             disabled: false,
-            'aria-label': labels.Custom?.AddToWishlist?.label,
+            'aria-label': (msgIcon === 'Heart') ? labels.Custom?.AddToWishlist?.label : labels.Custom?.RemoveFromWishlist?.label,
           }));
         }
       },
-    })($addToWishlist),
+    })($wishlistToggleBtn),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
@@ -224,6 +274,49 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+  }, { eager: true });
+
+  events.on('wishlist/data', () => {
+    const item = getWishlistItemFromStorage(product.sku);
+    wishlistToggleBtn.setProps((prev) => ({
+      ...prev,
+      icon: Icon({ source: (item) ? 'HeartFilled' : 'Heart' }),
+    }));
+  }, { eager: true });
+
+  events.on('cart/updated', async (data) => {
+    const item = getWishlistItemFromStorage(product.sku);
+    if (!item) {
+      return;
+    }
+    const inCart = data?.items?.find((cartItem) => cartItem.sku === item.product.sku);
+    if (inCart) {
+      await removeProductsFromWishlist(
+        [
+          {
+            id: item.id ?? '',
+            product: {
+              sku: item.product.sku,
+            },
+          },
+        ],
+      );
+      wishlistToggleBtn.setProps((prev) => ({
+        ...prev,
+        icon: Icon({ source: 'Heart' }),
+      }));
+      // @todo: add translations
+      inlineAlert = await UI.render(InLineAlert, {
+        heading: `${product?.name} was successfully added to your cart and removed from your wishlist`,
+        type: 'success',
+        icon: Icon({ source: 'Heart' }),
+        'aria-live': 'assertive',
+        role: 'alert',
+        onDismiss: () => {
+          inlineAlert.remove();
+        },
+      })($alert);
+    }
   }, { eager: true });
 
   // Set JSON-LD and Meta Tags
