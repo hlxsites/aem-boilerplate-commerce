@@ -119,7 +119,7 @@ npm run lint
 1. Rename `demo-config.json` to `config.json` and update with your site values.
 1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
 1. Install all dependencies using `npm i`.
-1. Start AEM Proxy: `npm run start` (opens your browser at `http://localhost:3000`)
+1. Start AEM Proxy: `aem-up --url htps://main--{SITE}--{ORG}.aem.page` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favourite IDE and start coding :)
 
 ## Changelog
