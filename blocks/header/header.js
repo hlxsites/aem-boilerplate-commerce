@@ -13,6 +13,7 @@ import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 import { rootLink } from '../../scripts/scripts.js';
 import applyHashTagsForDomElement from '../../scripts/api/hashtags/api.js';
+import initSearchPopover from './searchbar.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -303,7 +304,7 @@ export default async function decorate(block) {
     searchPanel.classList.toggle('nav-tools-panel--show', show);
 
     if (show) {
-      await import('./searchbar.js');
+      initSearchPopover();
       searchInput.focus();
     }
   }
