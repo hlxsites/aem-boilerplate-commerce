@@ -54,6 +54,9 @@ async function copyContent(data) {
 
   const opts = { method: 'POST', body: formData, headers: getAuthHeaders() };
 
+  // TODO: Remove force delete. Copying tree doesn't seem to work
+  const del = await fetch(`${DA_ORIGIN}/source${destination}`, { method: 'DELETE', headers: getAuthHeaders() });
+
   const res = await fetch(`${DA_ORIGIN}/copy${BLUEPRINT}/`, opts);
 
   if (!res.ok) throw new Error(`Failed to copy content: ${res.statusText}`);
