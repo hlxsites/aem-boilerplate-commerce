@@ -59,7 +59,7 @@ async function copyContent(data) {
 
   const res = await fetch(`${DA_ORIGIN}/copy${BLUEPRINT}/`, opts);
 
-  if (!res.ok) throw new Error(`Failed to copy content: ${res.statusText}`);
+  if (!res.ok) throw new Error(`Failed to copy content: ${res.status}`);
 }
 
 function checkAuth() {

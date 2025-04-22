@@ -67,7 +67,7 @@ class SiteCreator extends LitElement {
     try {
       await createSite(this._data, setStatus);
     } catch (err) {
-      this._status = ({ type: 'error', message: e.message });
+      this._status = ({ type: 'error', message: err });
       throw err;
     } finally {
       clearTimeout(getTime);
