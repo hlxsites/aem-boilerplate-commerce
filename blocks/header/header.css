@@ -48,7 +48,6 @@ header nav[aria-expanded='true'] {
     gap: 0 32px;
     max-width: 1264px;
     padding: 0 32px;
-    align-items: center;
   }
 
   header nav[aria-expanded='true'] {
@@ -241,6 +240,7 @@ header nav .nav-sections ul > li:empty {
     display: flex;
     gap: 24px;
     margin: 0;
+    align-items: center;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li ul {
