@@ -12,7 +12,7 @@ import { expectsEventWithContext } from "../../../assertions";
  *
  */
 
-const RECS_URL = '/products/crown-summit-backpack/24-MB03';
+const RECS_URL = '/products/play-create-repeat-crewneck/ADB388';
 it('api-request-sent, api-response-received, unit-impression-render', () => {
   cy.visit(RECS_URL);
   cy.waitForResource('commerce-events-collector.js').then(() => {
