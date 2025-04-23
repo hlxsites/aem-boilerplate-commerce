@@ -39,20 +39,27 @@ async function previewOrPublishPages(data, action, setStatus) {
   crawl({
     path: `${parent}/.da`, callback, concurrent: 5, throttle: 250,
   });
-  const { results } = crawl({
+  const { results, getCallbackErrors } = crawl({
     path: parent, callback, concurrent: 5, throttle: 250,
   });
 
   await results;
+
+  const errors = getCallbackErrors();
+  if (errors.length > 0) {
+    throw new Error(`Failed while ${label.toLowerCase()} for ${errors.length} files.`);
+  }
 }
 
-async function copyContent(data) {
+async function copyContent(data, setStatus) {
   const destination = getDestinationPath(data.repo, data.org);
 
   const copyFile = async (item) => {
     const daSourcePath = `${DA_ORIGIN}/source${item.path}`;
     const itemPath = item.path.replace(BLUEPRINT, '');
     const daDestinationPath = `${DA_ORIGIN}/source${destination}${itemPath}`;
+
+    setStatus({ message: `Copying: ${itemPath}` });
 
     const sourceRes = await fetch(daSourcePath, { headers: getAuthHeaders() });
     if (!sourceRes.ok) throw new Error(`Failed to read ${item.path}: ${sourceRes.statusText}`);
@@ -64,10 +71,15 @@ async function copyContent(data) {
     if (!updateRes.ok) { throw new Error(`Failed to write ${item.path}: ${updateRes.statusText}`); }
   };
 
-  const { results } = crawl({
+  const { results, getCallbackErrors } = crawl({
     path: BLUEPRINT, callback: copyFile, concurrent: 5, throttle: 250,
   });
   await results;
+
+  const errors = getCallbackErrors();
+  if (errors.length > 0) {
+    throw new Error(`Failed to copy ${errors.length} files.`);
+  }
 }
 
 function checkAuth() {
@@ -80,7 +92,7 @@ function checkAuth() {
 export async function createSite(data, setStatus) {
   checkAuth();
   setStatus({ message: 'Copying content.' });
-  await copyContent(data);
+  await copyContent(data, setStatus);
   setStatus({ message: 'Previewing pages.' });
   await previewOrPublishPages(data, 'preview', setStatus);
   setStatus({ message: 'Publishing pages.' });
