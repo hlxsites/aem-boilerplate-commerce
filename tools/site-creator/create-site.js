@@ -47,19 +47,27 @@ async function previewOrPublishPages(data, action, setStatus) {
 }
 
 async function copyContent(data) {
-  const formData = new FormData();
   const destination = getDestinationPath(data.repo, data.org);
 
-  formData.set('destination', destination);
+  const copyFile = async (item) => {
+    const daSourcePath = `${DA_ORIGIN}/source${item.path}`;
+    const itemPath = item.path.replace(BLUEPRINT, '');
+    const daDestinationPath = `${DA_ORIGIN}/source${destination}${itemPath}`;
 
-  const opts = { method: 'POST', body: formData, headers: getAuthHeaders() };
+    const sourceRes = await fetch(daSourcePath, { headers: getAuthHeaders() });
+    if (!sourceRes.ok) throw new Error(`Failed to read ${item.path}: ${sourceRes.statusText}`);
+    const blob = await sourceRes.blob();
 
-  // TODO: Remove force delete. Copying tree doesn't seem to work
-  const del = await fetch(`${DA_ORIGIN}/source${destination}`, { method: 'DELETE', headers: getAuthHeaders() });
+    const formData = new FormData();
+    formData.set('data', blob);
+    const updateRes = await fetch(daDestinationPath, { method: 'POST', body: formData, headers: getAuthHeaders() });
+    if (!updateRes.ok) { throw new Error(`Failed to write ${item.path}: ${updateRes.statusText}`); }
+  };
 
-  const res = await fetch(`${DA_ORIGIN}/copy${BLUEPRINT}/`, opts);
-
-  if (!res.ok) throw new Error(`Failed to copy content: ${res.status}`);
+  const { results } = crawl({
+    path: BLUEPRINT, callback: copyFile, concurrent: 5, throttle: 250,
+  });
+  await results;
 }
 
 function checkAuth() {
