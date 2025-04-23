@@ -222,8 +222,7 @@ header nav .nav-sections ul > li:empty {
     align-self: unset;
   }
 
-  header .nav-drop > p,
-  header .nav-drop > *:not(.submenu-wrapper)::before {
+  header .nav-drop {
     align-self: center;
   }
 
