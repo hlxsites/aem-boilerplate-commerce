@@ -232,7 +232,7 @@ header nav .nav-sections ul > li:empty {
     cursor: pointer;
   }
 
-  header .nav-drop > li:nth-child(1) {
+  header .nav-drop > li:nth-child(1), header .nav-drop > li:nth-child(2) {
     align-self: center;
   }
 
