@@ -240,7 +240,10 @@ header nav .nav-sections ul > li:empty {
     display: flex;
     gap: 24px;
     margin: 0;
-    align-items: center;
+  }
+
+  header .nav-drop > li:nth-child(1) {
+    align-self: center;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li ul {
