@@ -24,6 +24,25 @@
         "website-id": 1,
         "website-name": "Main Website"
       }
+    },
+    "/drafts/multistore/en/": {},
+    "/drafts/multistore/en_ca/": {
+      "headers": {
+        "all": {
+          "Store": "en_ca"
+        },
+        "cs": {
+          "Magento-Store-Code": "ca_store",
+          "Magento-Store-View-Code": "en_ca",
+          "Magento-Website-Code": "ca_website"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "CAD",
+        "store-name": "Main Website Store (CA)",
+        "store-view-name": "Default Store View (CA)",
+        "website-name": "Main Website (CA)"
+      }
     }
   }
 }
