@@ -16,10 +16,13 @@
  *******************************************************************/
 
 import * as fields from '../../fields/index';
+import {
+  products
+} from '../../fixtures/index';
 
 describe('Verify price summary on cart', () => {
   beforeEach(() => {
-    cy.visit('/products/crown-summit-backpack/24-MB03');
+    cy.visit(products.configurable.urlPathWithOptions);
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -38,7 +41,7 @@ describe('Verify price summary on cart', () => {
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should('be.visible')
-      .type('01XI83CYG8HW');
+      .type('00GO12SK6WF3');
 
     cy.wait(2000);
 
@@ -48,11 +51,11 @@ describe('Verify price summary on cart', () => {
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
-      .contains(/01XI83CYG8HW/i)
+      .contains(/00GO12SK6WF3/i)
       .should('be.visible');
 
     cy.get('.cart-order-summary__coupon__code span')
-      .contains(/01XI83CYG8HW/i)
+      .contains(/00GO12SK6WF3/i)
       .should('be.visible');
   });
 
@@ -67,7 +70,7 @@ describe('Verify price summary on cart', () => {
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should('be.visible')
-      .type('02OXAVEIIHK5');
+      .type('02EGF4XYEREQ');
 
     cy.wait(2000);
 
@@ -80,7 +83,7 @@ describe('Verify price summary on cart', () => {
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should('be.visible')
-      .type('05KEO44BIA93');
+      .type('0448YUNWTEES');
 
     cy.wait(2000);
 
@@ -90,21 +93,21 @@ describe('Verify price summary on cart', () => {
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
-      .contains(/02OXAVEIIHK5/i)
+      .contains(/02EGF4XYEREQ/i)
       .should('be.visible');
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
-      .contains(/05KEO44BIA93/i)
+      .contains(/0448YUNWTEES/i)
       .should('be.visible');
 
     cy.get('.coupon-code-form__applied').children().should('have.length', 2);
 
     cy.get('.cart-order-summary__coupon__code span')
-      .contains(/02OXAVEIIHK5/i)
+      .contains(/02EGF4XYEREQ/i)
       .should('be.visible');
 
     cy.get('.cart-order-summary__coupon__code span')
-      .contains(/05KEO44BIA93/i)
+      .contains(/0448YUNWTEES/i)
       .should('be.visible');
   });
 
@@ -119,7 +122,7 @@ describe('Verify price summary on cart', () => {
 
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should('be.visible')
-      .type('01XI83CYG8HW');
+      .type('00GO12SK6WF3');
 
     cy.wait(2000);
 
@@ -129,7 +132,7 @@ describe('Verify price summary on cart', () => {
       .click({ multiple: true });
 
     cy.get(`.cart-coupons.cart-gift-cards .coupon-code-form__applied`)
-      .contains(/01XI83CYG8HW/i)
+      .contains(/00GO12SK6WF3/i)
       .should('be.visible');
 
     cy.get(`.dropin-tag-container.coupon-code-form__applied-item button`)

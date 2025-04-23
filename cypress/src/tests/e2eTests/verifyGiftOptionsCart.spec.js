@@ -29,7 +29,7 @@ import * as fields from '../../fields';
 
 describe('Verify price summary on cart', () => {
   it('Validate GiftOptions in Summary with All Configs Enabled', () => {
-    cy.visit('/products/crown-summit-backpack/24-MB03');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -62,7 +62,7 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions in Summary (No Gift Message, Fixed Giftwrap Price)', () => {
-    cy.visit('/products/affirm-water-bottle/24-UG06');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -88,11 +88,10 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions in Summary (Gift Message, No Giftwrap)', () => {
-    cy.visit('/products/rival-field-messenger/24-MB06');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
-    cy.wait(3000);
     cy.visit('/cart');
 
     const orderClassName = '.cart-gift-options-view--order';
@@ -109,7 +108,7 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions message if all fields is empty', () => {
-    cy.visit('/products/crown-summit-backpack/24-MB03');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -133,7 +132,7 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions giftReceiptIncluded is checked', () => {
-    cy.visit('/products/affirm-water-bottle/24-UG06');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -151,7 +150,7 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions giftReceiptIncluded is checked', () => {
-    cy.visit('/products/affirm-water-bottle/24-UG06');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -167,9 +166,9 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Validate GiftOptions changed printed card price is checked (New value and new currency)', () => {
-    const urlTest = 'https://www.aemshop.net/**';
+    const urlTest = Cypress.env('graphqlEndPoint');
 
-    cy.visit('/products/affirm-water-bottle/24-UG06');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
@@ -197,7 +196,7 @@ describe('Verify price summary on cart', () => {
   });
 
   it('Verify readonly GiftOptions', () => {
-    cy.visit('/products/crown-summit-backpack/24-MB03');
+    cy.visit("/products/youth-tee/ADB150");
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();

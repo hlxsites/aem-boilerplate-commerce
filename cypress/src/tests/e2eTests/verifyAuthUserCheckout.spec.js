@@ -84,7 +84,9 @@ describe('Verify auth user can place order', () => {
     )('.cart-mini-cart');
     assertProductImage('/thumbnail.jpg')('.cart-mini-cart');
     cy.visit("/products/youth-tee/ADB150");
-    cy.contains('Add to Cart').click();
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .click();
     cy.get('.minicart-wrapper').click();
     assertCartSummaryProduct(
       'Youth tee',
