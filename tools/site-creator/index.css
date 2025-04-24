@@ -34,4 +34,5 @@ da-site-creator {
   display: block;
   position: relative;
   z-index: 10;
+  max-width: 450px;
 }
