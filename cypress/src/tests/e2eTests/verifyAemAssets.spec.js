@@ -42,9 +42,9 @@ describe.skip('AEM Assets enabled', () => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
 
-        for (const { url, width, density } of image.srcsetEntries) {
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.a('number');
-          expect(width).to.be.undefined;
+          expect(screenWidth).to.be.undefined;
 
           expectAemAssetsImage(url, { 
             ...expectedOptions, 
@@ -92,9 +92,9 @@ describe('AEM Assets disabled', () => {
       for (const image of images) {
         expectDefaultImage(image.src, expectedOptions);
 
-        for (const { url, width, density } of image.srcsetEntries) {
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.a('number');
-          expect(width).to.be.undefined;
+          expect(screenWidth).to.be.undefined;
 
           expectDefaultImage(url, {
             ...expectedOptions,

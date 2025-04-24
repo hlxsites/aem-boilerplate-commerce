@@ -6,7 +6,7 @@ interface ImageData {
   /** The srcset attribute value of the image */
   srcsetEntries: {
     url: string;
-    width?: number;
+    screenWidth?: number;
     density?: number;
   }[]
 
