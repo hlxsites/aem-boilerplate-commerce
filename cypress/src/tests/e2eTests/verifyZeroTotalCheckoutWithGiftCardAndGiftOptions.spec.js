@@ -141,11 +141,4 @@ describe('Verify price summary on cart', () => {
     // );
     // cy.contains("No Payment Information Required");
   });
-
-
-
-
-
-
-
 });
