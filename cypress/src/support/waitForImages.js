@@ -34,7 +34,7 @@ const waitForImagesCommand = (selector, callback, customShouldCallback) => {
           if (fragment.endsWith('w')) {
             return {
               url: src.slice(0, lastSpace).trim(),
-              width: parseInt(fragment.slice(0, -1)),
+              screenWidth: parseInt(fragment.slice(0, -1)),
             };
           }
 
