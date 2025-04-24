@@ -42,14 +42,6 @@
     display: none;
 }
 
-/* Hide blocks with empty divs */
-.checkout__server-error:has(> :empty),
-.checkout__out-of-stock:has(> :empty),
-.checkout__delivery:has(> div:first-child:empty),
-.checkout__bill-to-shipping:has(> :empty) {
-    display: none;
-}
-
 /* Hide main containers when the cart is empty or there is a server error */
 .checkout__content--error .checkout__out-of-stock,
 .checkout__content--error .checkout__login,
@@ -69,6 +61,14 @@
 .checkout__content--empty .checkout__billing-form,
 .checkout__content--empty .checkout__terms-and-conditions {
     display: none !important;
+}
+
+/* Hide blocks with empty divs */
+.checkout__server-error:has(> :empty),
+.checkout__out-of-stock:has(> :empty),
+.checkout__delivery:has(> div:first-child:empty),
+.checkout__bill-to-shipping:has(> :empty) {
+    display: none;
 }
 
 /* Hide aside containers when the cart is empty or there is a server error */
