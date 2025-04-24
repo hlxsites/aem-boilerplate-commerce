@@ -81,15 +81,13 @@ describe('Verify price summary on cart', () => {
     cy.get(itemsClassName).should('exist').should('be.visible');
     fillGiftOptiosForm(itemsClassName, 'product');
 
-    assertGiftOptionsSummary('Printed card', 'excluding taxes', '$100.00');
+    assertGiftOptionsSummary('Printed card', '$100.00');
     assertGiftOptionsSummary(
       'Item gift wrapping',
-      'excluding taxes',
       '$100.00'
     );
     assertGiftOptionsSummary(
       'Order gift wrapping',
-      'excluding taxes',
       '$30.00'
     );
     cy.get('.dropin-button--primary')
@@ -104,15 +102,13 @@ describe('Verify price summary on cart', () => {
       '$60.00',
       '1'
     );
-    assertGiftOptionsSummary('Printed card', 'excluding taxes', '$100.00');
+    assertGiftOptionsSummary('Printed card', '$100.00');
     assertGiftOptionsSummary(
       'Item gift wrapping',
-      'excluding taxes',
       '$100.00'
     );
     assertGiftOptionsSummary(
       'Order gift wrapping',
-      'excluding taxes',
       '$30.00'
     );
     const apiMethod = 'setGuestEmailOnCart';
@@ -134,15 +130,13 @@ describe('Verify price summary on cart', () => {
     placeOrder();
     // Uncomment following once https://jira.corp.adobe.com/browse/USF-2241 is fixed
     // assertOrderConfirmationShippingDetails(customerShippingAddress);
-    // assertGiftOptionsSummary('Printed card', 'excluding taxes', '$100.00');
+    // assertGiftOptionsSummary('Printed card', '$100.00');
     // assertGiftOptionsSummary(
     //   'Item gift wrapping',
-    //   'excluding taxes',
     //   '$100.00'
     // );
     // assertGiftOptionsSummary(
     //   'Order gift wrapping',
-    //   'excluding taxes',
     //   '$30.00'
     // );
     // cy.contains("No Payment Information Required");
