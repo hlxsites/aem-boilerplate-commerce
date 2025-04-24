@@ -4,7 +4,8 @@ import {
   placeOrder,
   signUpUser,
   uncheckBillToShippingAddress,
-  setPaymentMethod, checkTermsAndConditions,
+  setPaymentMethod,
+  checkTermsAndConditions,
 } from '../../actions';
 import {
   assertCartSummaryProduct,
