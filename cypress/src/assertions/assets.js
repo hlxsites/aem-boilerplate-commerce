@@ -26,8 +26,8 @@ function formatComponentStatus(match, option, name) {
  */
 export const expectAemAssetsImage = (src, { protocol, environment, urn, format, alias, ...params }) => {
   const urnMatch = src.match(/urn:aaid:aem:[^/]+/);
-  const formatMatch = src.match(/\.([^.?]+)\?/);
-  const imageNameMatch = formatMatch ? src.match(new RegExp(`/as/([^/]+)\\.${formatMatch[1]}\\?`)) : null;
+  const formatMatch = src.match(/\.([^.?]+)(?:\?|$)/);
+  const imageNameMatch = formatMatch ? src.match(new RegExp(`/as/([^/]+)\\.${formatMatch[1]}(?:\\?|$)`)) : null;
   const environmentMatch = src.match(/delivery-([^.]+)\.adobeaemcloud\.com/);
   const protocolMatch = src.match(/^(https?:)?\/\//);
 
@@ -56,7 +56,14 @@ export const expectAemAssetsImage = (src, { protocol, environment, urn, format, 
   const resolvedUrn = valueOrMatch(urnMatch, urn, 0);
   const resolvedImageName = valueOrMatch(imageNameMatch, alias);
   const resolvedFormat = valueOrMatch(formatMatch, format);
-  const resolvedProtocol = valueOrMatch(protocolMatch, protocol);
+  let resolvedProtocol = valueOrMatch(protocolMatch, protocol);
+
+  if (resolvedProtocol === '//') {
+    // "//" means that the protocol is the same as the current page.
+    // That is not supported by the URL constructor, so we need to convert it to a proper protocol.
+    resolvedProtocol = window.location.protocol + '//';
+    src = src.replace(/^\/\//, resolvedProtocol);
+  }
 
   // This is the URL we expect.
   const baseUrl = `${resolvedProtocol}delivery-${resolvedEnvironment}.adobeaemcloud.com`;
@@ -78,11 +85,12 @@ export const expectAemAssetsImage = (src, { protocol, environment, urn, format, 
  * @type {import('./assets.d.ts').expectDefaultImage}
  */
 export const expectDefaultImage = (src, { protocol, format, imageName, path, ...params }) => {
-  const formatMatch = src.match(/\.([^.?]+)\?/);
   const protocolMatch = src.match(/^(https?:)?\/\//);
-  const imageNameMatch = formatMatch ? src.match(new RegExp(`/([^/]+)\\.${formatMatch[1]}\\?`)) : null;
-  const pathMatch = src.match(/aemshop\.net\/(.+?)\/[^/]+\.[^/]+\?/);
-
+  const pathMatch = src.match(/aemshop\.net\/(.+?)\/[^/]+\.[^/]+(?:\?|$)/);
+  const formatMatch = src.match(/\.([^.?]+)(?:\?|$)/);
+  const imageNameMatch = formatMatch ? 
+    src.match(new RegExp(`/([^/]+)\\.${formatMatch[1]}(?:\\?|$)`)) : null;
+    
   // We need these components to either be present in the URL or provided in the options.
   if ((!formatMatch && !format)
     || (!protocolMatch && !protocol)
@@ -103,9 +111,16 @@ export const expectDefaultImage = (src, { protocol, format, imageName, path, ...
   // The guard above ensures that at least one of the match or value is present.
   // We want to expect first the value that is given (if any), otherwise use the matched value.
   const resolvedFormat = valueOrMatch(formatMatch, format);
-  const resolvedProtocol = valueOrMatch(protocolMatch, protocol);
   const resolvedImageName = valueOrMatch(imageNameMatch, imageName);
   const resolvedPath = valueOrMatch(pathMatch, path);
+  let resolvedProtocol = valueOrMatch(protocolMatch, protocol);
+
+  if (resolvedProtocol === '//') {
+    // "//" means that the protocol is the same as the current page.
+    // That is not supported by the URL constructor, so we need to convert it to a proper protocol.
+    resolvedProtocol = window.location.protocol + '//';
+    src = src.replace(/^\/\//, resolvedProtocol);
+  }
 
   // This is the URL we expect.
   const url = new URL(`${resolvedProtocol}www.aemshop.net/${resolvedPath}/${resolvedImageName}.${resolvedFormat}`);
