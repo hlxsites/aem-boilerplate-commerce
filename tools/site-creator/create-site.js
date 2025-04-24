@@ -1,14 +1,17 @@
 /* eslint-disable no-underscore-dangle, import/no-unresolved */
 
-import { crawl } from 'https://da.live/nx/public/utils/tree.js';
+import { crawl, Queue } from 'https://da.live/nx/public/utils/tree.js';
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
+
+import { mdToDocDom, docDomToAemHtml } from 'https://da.live/nx/utils/converters.js';
 
 const { token } = await DA_SDK;
 
 const DA_ORIGIN = 'https://admin.da.live';
 const AEM_ORIGIN = 'https://admin.hlx.page';
 
-const BLUEPRINT = '/adobe-commerce/boilerplate';
+const IMPORT_BASE = 'https://main--aem-boilerplate-commerce--hlxsites.aem.live';
+const INDEX = `${IMPORT_BASE}/full-index.json`;
 
 function getDestinationPath(siteName, org) {
   return `/${org}/${siteName}`;
@@ -18,6 +21,12 @@ function getAuthHeaders() {
   return {
     Authorization: `Bearer ${token}`,
   };
+}
+
+async function fetchIndex() {
+  const res = await fetch(INDEX);
+  if (!res.ok) throw new Error(`Failed to fetch index: ${res.statusText}`);
+  return res.json();
 }
 
 async function previewOrPublishPages(data, action, setStatus) {
@@ -51,34 +60,62 @@ async function previewOrPublishPages(data, action, setStatus) {
   }
 }
 
+function replaceHtml(text) {
+  const inner = text
+    .replaceAll('./media', `${IMPORT_BASE}/media`)
+    .replaceAll('href="/', `href="${IMPORT_BASE}/`);
+
+  return `
+    <body>
+      <header></header>
+      <main>${inner}</main>
+      <footer></footer>
+    </body>
+  `;
+}
+
+async function getAemHtml(text) {
+  const dom = mdToDocDom(text);
+  const aemHtml = docDomToAemHtml(dom);
+  return aemHtml;
+}
+
+async function importUrl({ path, destination, setStatus }) {
+  const suffix = path.endsWith('/') ? 'index' : '';
+  const daDestinationPath = `${DA_ORIGIN}/source${destination}${path}${suffix}.html`;
+
+  setStatus({ message: `Importing ${path}` });
+
+  const resp = await fetch(`${IMPORT_BASE}${path}${suffix}.md`);
+
+  let content = await resp.text();
+  const aemHtml = await getAemHtml(content);
+  const html = replaceHtml(aemHtml);
+
+  content = new Blob([html], { type: 'text/html' });
+
+  const formData = new FormData();
+  formData.set('data', content);
+  const updateRes = await fetch(daDestinationPath, { method: 'POST', body: formData, headers: getAuthHeaders() });
+  if (!updateRes.ok) { throw new Error(`Failed to write ${path}: ${updateRes.statusText}`); }
+}
+
 async function copyContent(data, setStatus) {
   const destination = getDestinationPath(data.repo, data.org);
 
-  const copyFile = async (item) => {
-    const daSourcePath = `${DA_ORIGIN}/source${item.path}`;
-    const itemPath = item.path.replace(BLUEPRINT, '');
-    const daDestinationPath = `${DA_ORIGIN}/source${destination}${itemPath}`;
+  const index = await fetchIndex();
 
-    setStatus({ message: `Copying: ${itemPath}` });
+  const failedUrls = [];
+  const queue = new Queue(importUrl, 2, (item) => failedUrls.push(item.path));
 
-    const sourceRes = await fetch(daSourcePath, { headers: getAuthHeaders() });
-    if (!sourceRes.ok) throw new Error(`Failed to read ${item.path}: ${sourceRes.statusText}`);
-    const blob = await sourceRes.blob();
+  const promises = index.data.map(({ path, title }) => queue.push({
+    path, title, destination, setStatus,
+  }));
 
-    const formData = new FormData();
-    formData.set('data', blob);
-    const updateRes = await fetch(daDestinationPath, { method: 'POST', body: formData, headers: getAuthHeaders() });
-    if (!updateRes.ok) { throw new Error(`Failed to write ${item.path}: ${updateRes.statusText}`); }
-  };
+  await Promise.all(promises);
 
-  const { results, getCallbackErrors } = crawl({
-    path: BLUEPRINT, callback: copyFile, concurrent: 5, throttle: 250,
-  });
-  await results;
-
-  const errors = getCallbackErrors();
-  if (errors.length > 0) {
-    throw new Error(`Failed to copy ${errors.length} files.`);
+  if (failedUrls.length > 0) {
+    throw new Error(`Failed to copy ${failedUrls.length} files.`);
   }
 }
 

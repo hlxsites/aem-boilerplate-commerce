@@ -73,8 +73,6 @@ div.grid-list {
 
   input[type="radio"]:checked+label {
     background-color: rgba(0, 0, 0, 0.1);
-    border: 2px solid #0e5941;
-    color: #0e5941;
   }
 
   label {
@@ -134,7 +132,6 @@ div.grid-list {
 
   a {
     text-decoration: none;
-    color: #0e5941;
     font-weight: 700;
 
     &:hover {
