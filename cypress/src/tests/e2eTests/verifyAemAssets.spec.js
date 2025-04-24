@@ -54,6 +54,68 @@ describe.skip('AEM Assets enabled', () => {
       }
     });
   });
+
+  it('[PDP Dropin]: should load and show AEM Assets optimized images', () => {
+    visitWithEagerImages('/products/blue-jacket/blue-jacket');
+
+    const expectedOptions = {
+      protocol: 'http://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    }
+
+    // Normal gallery images.
+    waitForAemAssetImages('.pdp-carousel__wrapper img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 960,
+          height: 1191,
+        });
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectAemAssetsImage(url, {
+            ...srcSetExpectedOptions,
+            width: screenWidth / 2,
+            height: 1191,
+          });
+        }
+      }
+    });
+
+    waitForAemAssetImages('.pdp-carousel__wrapper ~ div img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 200,
+          height: 248,
+        });
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {  
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectAemAssetsImage(url, {
+            ...srcSetExpectedOptions,
+
+            width: (200 * screenWidth) / 1920,
+            height: 248,
+          });
+        }
+      }
+    });
+
+    // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
+  });
 });
 
 describe('AEM Assets disabled', () => {
@@ -107,6 +169,57 @@ describe('AEM Assets disabled', () => {
       }
     });
   });
+
+  it('[PDP Dropin]: should show original images when AEM Assets is disabled', () => {
+    visitWithEagerImages('/products/fusion-backpack/24-MB02');
+
+    const expectedOptions = {
+      protocol: '//',
+      format: 'jpg',
+    }
+
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      auto: 'webp',
+      quality: 80,
+      crop: false,
+      fit: 'cover',
+    }
+
+    // Normal gallery images.
+    waitForDefaultImages('.pdp-carousel__wrapper img', (images) => {
+      for (const image of images) {
+        expectDefaultImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectDefaultImage(url, {
+            ...srcSetExpectedOptions,
+            width: screenWidth / 2,
+            height: 1191,
+          });
+        }
+      }
+    });
+
+    waitForDefaultImages('.pdp-carousel__wrapper ~ div img', (images) => {
+      for (const image of images) {
+        expectDefaultImage(image.src, expectedOptions);
+        
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectDefaultImage(url, {
+            ...srcSetExpectedOptions,
+            width: (image.element.getAttribute('width') * screenWidth) / 1920,
+          });
+        }
+      }
+    });
+  });
 });
 
 /**
@@ -134,5 +247,24 @@ function waitForDefaultImages(selector, callback) {
     callback(images);
   }, (image) => {
     expect(image.src).to.include("aemshop.net");
+  });
+}
+
+/**
+ * Visit a page with eager loading for all images.
+ * @param {string} url - The URL to visit.
+ * @returns {Cypress.Chainable} - The chainable object.
+ */
+function visitWithEagerImages(url) {
+  // We do this because otherwise we need to go and interact with different elements to find images that are not loaded eagerly.
+  return cy.visit(url, {
+    onBeforeLoad(win) {
+      // Force eager loading for all images
+      Object.defineProperty(win.HTMLImageElement.prototype, 'loading', {
+        configurable: true,
+        get() { return 'eager'; },
+        set() {}
+      });
+    }
   });
 }
