@@ -10,7 +10,7 @@ const { token } = await DA_SDK;
 const DA_ORIGIN = 'https://admin.da.live';
 const AEM_ORIGIN = 'https://admin.hlx.page';
 
-const IMPORT_BASE = 'https://main--aem-boilerplate-commerce--hlxsites.aem.live';
+const IMPORT_BASE = window.location.origin;
 const INDEX = `${IMPORT_BASE}/full-index.json`;
 
 function getDestinationPath(siteName, org) {
@@ -106,7 +106,7 @@ async function copyContent(data, setStatus) {
   const index = await fetchIndex();
 
   const failedUrls = [];
-  const queue = new Queue(importUrl, 2, (item) => failedUrls.push(item.path));
+  const queue = new Queue(importUrl, 5, (item) => failedUrls.push(item.path));
 
   const promises = index.data.map(({ path, title }) => queue.push({
     path, title, destination, setStatus,
