@@ -28,6 +28,8 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import { rootLink } from '../../scripts/scripts.js';
 
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
+
 export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
@@ -73,6 +75,35 @@ export default async function decorate(block) {
   const $attributes = fragment.querySelector('.product-details__attributes');
 
   block.appendChild(fragment);
+  const gallerySlots = {
+    CarouselThumbnail: (ctx) => {
+      const { data, defaultImageProps } = ctx;
+      tryRenderAemAssetsImage(ctx, {
+        alias: data.sku,
+        src: defaultImageProps.src,
+        imageProps: defaultImageProps,
+        params: {
+          width: defaultImageProps.width,
+          height: defaultImageProps.height,
+        },
+
+        wrapper: document.createElement('span'),
+      });
+    },
+
+    CarouselMainImage: (ctx) => {
+      const { data, defaultImageProps } = ctx;
+      tryRenderAemAssetsImage(ctx, {
+        alias: data.sku,
+        src: defaultImageProps.src,
+        imageProps: defaultImageProps,
+        params: {
+          width: defaultImageProps.width,
+          height: defaultImageProps.height,
+        },
+      });
+    },
+  };
 
   // Alert
   let inlineAlert = null;
@@ -101,6 +132,8 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
+
+      slots: gallerySlots,
     })($galleryMobile),
 
     // Gallery (Desktop)
@@ -113,6 +146,8 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
+
+      slots: gallerySlots,
     })($gallery),
 
     // Header
@@ -125,7 +160,14 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
+    pdpRendered.render(ProductOptions, {
+      hideSelectedValue: false,
+      slots: {
+        // TODO: We need to make integration work with swatches.
+        // Right now, a non AEM Assets URL is arriving in the context.
+        // SwatchImage: (_ctx) => {},
+      },
+    })($options),
 
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
