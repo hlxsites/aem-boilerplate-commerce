@@ -102,6 +102,7 @@ export const signUpUser = (sign_up, isValid = true) => {
       .eq(1)
       .clear()
       .type(sign_up.shortPassword);
+  }
   createAccount();
 };
 
