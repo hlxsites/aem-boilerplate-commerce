@@ -37,6 +37,7 @@ it('api-request-sent, api-response-received, unit-impression-render', () => {
 });
 
 it('recs-unit-view', () => {
+  cy.viewport(1440, 600)
   cy.visit(RECS_URL);
   cy.waitForResource('commerce-events-collector.js').then(() => {
     cy.get('.product-recommendations-wrapper').scrollIntoView({ duration: 1000 });
