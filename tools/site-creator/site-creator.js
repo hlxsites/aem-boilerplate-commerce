@@ -43,7 +43,7 @@ class SiteCreator extends LitElement {
       const org = url.pathname.split('/')[1];
       const repo = url.pathname.split('/')[2];
 
-      if (!org || !repo) {
+      if (!org || !repo || url.hostname !== 'github.com') {
         this._status = { type: 'error', message: 'Invalid Github URL.' };
         return;
       }

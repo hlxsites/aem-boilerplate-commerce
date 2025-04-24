@@ -119,6 +119,23 @@ async function copyContent(data, setStatus) {
   }
 }
 
+export async function checkEmpty(data) {
+  const destination = getDestinationPath(data.repo, data.org);
+
+  const res = await fetch(`${DA_ORIGIN}/list${destination}`, {
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to check if site exists: ${res.statusText}`);
+  }
+  const json = await res.json();
+
+  if (json.length > 0) {
+    throw new Error(`Site already exists. Please delete the content at https://da.live/#${destination} before creating a new site.`);
+  }
+}
+
 function checkAuth() {
   if (!token || token === 'undefined') {
     throw new Error('Please sign in.');
@@ -128,6 +145,7 @@ function checkAuth() {
 // eslint-disable-next-line import/prefer-default-export
 export async function createSite(data, setStatus) {
   checkAuth();
+  await checkEmpty(data);
   setStatus({ message: 'Copying content.' });
   await copyContent(data, setStatus);
   setStatus({ message: 'Previewing pages.' });
