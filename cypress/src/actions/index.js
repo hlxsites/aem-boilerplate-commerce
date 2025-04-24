@@ -102,8 +102,6 @@ export const signUpUser = (sign_up, isValid = true) => {
       .eq(1)
       .clear()
       .type(sign_up.shortPassword);
-  }
-  // cy.get(".dropin-picker__select").eq(1).select("Male");
   createAccount();
 };
 
