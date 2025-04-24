@@ -1,0 +1,196 @@
+[
+  {
+    "id": "page-metadata",
+    "fields": [
+      {
+        "component": "container",
+        "label": "Fieldset",
+        "fields": [
+          {
+            "component": "text",
+            "name": "title",
+            "label": "Title"
+          },
+          {
+            "component": "text",
+            "name": "description",
+            "label": "Description"
+          },
+          {
+            "component": "reference",
+            "name": "image[src]",
+            "label": "Social Image"
+          },
+          {
+            "component": "date-time",
+            "valueType": "date-time",
+            "name": "published-date",
+            "label": "Published Time"
+          },
+          {
+            "component": "date-time",
+            "valueType": "date-time",
+            "name": "modified-date",
+            "label": "Modified Time"
+          },
+          {
+            "component": "select",
+            "label": "Template",
+            "name": "template",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Template 1",
+                "value": "template-1"
+              },
+              {
+                "name": "Template 2",
+                "value": "template-2"
+              },
+              {
+                "name": "Template 3",
+                "value": "template-3"
+              }
+            ]
+          },
+          {
+            "component": "text",
+            "valueType": "string",
+            "name": "robots",
+            "label": "Robots",
+            "description": "Index control via robots"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "image",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "image",
+        "hidden": true,
+        "multi": false
+      },
+      {
+        "component": "reference",
+        "name": "img:nth-child(3)[src]",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "img:nth-child(3)[alt]",
+        "label": "Alt Text"
+      }
+    ]
+  },
+  {
+    "id": "section",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Highlight",
+            "value": "highlight"
+          }
+        ]
+      },
+      {
+        "component": "reference",
+        "name": "background[src]",
+        "label": "Image"
+      },
+      {
+        "component": "richtext",
+        "name": "fancy",
+        "label": "Fancy"
+      }
+    ]
+  },
+  {
+    "id": "card",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
+        "label": "Image Alt",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "div:nth-child(2)",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "columns",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "columns",
+        "value": "",
+        "label": "Columns"
+      },
+      {
+        "component": "text",
+        "valueType": "number",
+        "name": "rows",
+        "value": "",
+        "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "fragment",
+    "fields": [
+      {
+        "component": "text",
+        "name": "div:nth-child(1)>div:nth-child(1)",
+        "label": "Fragment URL"
+      }
+    ]
+  },
+  {
+    "id": "hero",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
+        "label": "Alt",
+        "value": ""
+      },
+      {
+        "component": "text",
+        "name": "div:nth-child(1)>div:nth-child(1)>h1:nth-child(2)",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  }
+]
