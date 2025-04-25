@@ -90,6 +90,7 @@ export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
  * Returns a slot that renders an AEM Assets image.
  * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
  * @param {typeof import('./assets.d.ts').generateAemAssetsOptimizedUrl} [generateUrlFunc] -
+ *   The function to use to generate the URL.
  */
 export function makeAemAssetsImageSlot(
   config,
