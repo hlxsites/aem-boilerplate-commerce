@@ -2,7 +2,6 @@ body {
   display: block;
   position: relative;
   background-color: white;
-  overflow: hidden;
 }
 
 main > div.header {
