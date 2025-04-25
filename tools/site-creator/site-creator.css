@@ -114,11 +114,32 @@ div.grid-list {
   }
 }
 
+pre {
+    background: #dadada;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
+
+.fstab-head {
+  margin-top: 56px;
+}
+
+
 .success-panel {
   padding: 24px;
   background-color: rgb(255 255 255 / 20%);
   border-radius: 8px;
   margin-bottom: 24px;
+
+  pre {
+    background: #dadada;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-y: hidden;
+    overflow-x: scroll;
+  }
 
   h2 {
     color: #000;

@@ -13,6 +13,12 @@ const AEM_ORIGIN = 'https://admin.hlx.page';
 const IMPORT_BASE = window.location.origin;
 const INDEX = `${IMPORT_BASE}/full-index.json`;
 
+export const SITE_CREATION_STATUS = {
+  COMPLETE: 0,
+  NO_CODE_BUS: 1,
+  NO_FSTAB: 2,
+};
+
 function getDestinationPath(siteName, org) {
   return `/${org}/${siteName}`;
 }
@@ -27,6 +33,11 @@ async function fetchIndex() {
   const res = await fetch(INDEX);
   if (!res.ok) throw new Error(`Failed to fetch index: ${res.statusText}`);
   return res.json();
+}
+
+async function checkCodeBus(data) {
+  const res = await fetch(`${AEM_ORIGIN}/code/${data.org}/${data.repo}/main/scripts/aem.js`);
+  return res.ok;
 }
 
 async function previewOrPublishPages(data, action, setStatus) {
@@ -52,9 +63,14 @@ async function previewOrPublishPages(data, action, setStatus) {
     path: parent, callback, concurrent: 5, throttle: 250,
   });
 
-  await results;
+  const allPages = await results;
 
   const errors = getCallbackErrors();
+
+  if (allPages.length === errors.length) {
+    throw new Error('No FSTAB.');
+  }
+
   if (errors.length > 0) {
     throw new Error(`Failed while ${label.toLowerCase()} for ${errors.length} files.`);
   }
@@ -148,9 +164,22 @@ export async function createSite(data, setStatus) {
   await checkEmpty(data);
   setStatus({ message: 'Copying content.' });
   await copyContent(data, setStatus);
+  setStatus({ message: 'Checking code bus.' });
+  const codeBusSynced = await checkCodeBus(data);
+
+  if (!codeBusSynced) {
+    return SITE_CREATION_STATUS.NO_CODE_BUS;
+  }
+
   setStatus({ message: 'Previewing pages.' });
-  await previewOrPublishPages(data, 'preview', setStatus);
+  try {
+    await previewOrPublishPages(data, 'preview', setStatus);
+  } catch (e) {
+    if (e.message === 'No FSTAB.') { return SITE_CREATION_STATUS.NO_FSTAB; }
+    throw e;
+  }
   setStatus({ message: 'Publishing pages.' });
   await previewOrPublishPages(data, 'live', setStatus);
-  setStatus({ message: 'Done!' });
+
+  return SITE_CREATION_STATUS.COMPLETE;
 }
