@@ -75,32 +75,18 @@ export default async function decorate(block) {
   const $attributes = fragment.querySelector('.product-details__attributes');
 
   block.appendChild(fragment);
+
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
-      const { data, defaultImageProps } = ctx;
       tryRenderAemAssetsImage(ctx, {
-        alias: data.sku,
-        src: defaultImageProps.src,
-        imageProps: defaultImageProps,
-        params: {
-          width: defaultImageProps.width,
-          height: defaultImageProps.height,
-        },
-
+        ...imageSlotConfig(ctx),
         wrapper: document.createElement('span'),
       });
     },
 
     CarouselMainImage: (ctx) => {
-      const { data, defaultImageProps } = ctx;
       tryRenderAemAssetsImage(ctx, {
-        alias: data.sku,
-        src: defaultImageProps.src,
-        imageProps: defaultImageProps,
-        params: {
-          width: defaultImageProps.width,
-          height: defaultImageProps.height,
-        },
+        ...imageSlotConfig(ctx),
       });
     },
   };
@@ -164,16 +150,8 @@ export default async function decorate(block) {
       hideSelectedValue: false,
       slots: {
         SwatchImage: (ctx) => {
-          const { data, defaultImageProps } = ctx;
           tryRenderAemAssetsImage(ctx, {
-            alias: data.sku,
-            src: defaultImageProps.src,
-            imageProps: defaultImageProps,
-            params: {
-              width: defaultImageProps.width,
-              height: defaultImageProps.height,
-            },
-
+            ...imageSlotConfig(ctx),
             wrapper: document.createElement('span'),
           });
         },
@@ -417,4 +395,24 @@ function setMetaTags(product) {
   createMetaTag('og:image:secure_url', metaImage, 'property');
   createMetaTag('product:price:amount', price.value, 'property');
   createMetaTag('product:price:currency', price.currency, 'property');
+}
+
+/**
+ * Returns the configuration for an image slot.
+ * @param ctx - The context of the slot.
+ * @returns The configuration for the image slot.
+ */
+function imageSlotConfig(ctx, wrapper) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.sku,
+    src: defaultImageProps.src,
+    imageProps: defaultImageProps,
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+
+    wrapper,
+  };
 }
