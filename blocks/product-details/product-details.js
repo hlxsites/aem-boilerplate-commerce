@@ -402,7 +402,7 @@ function setMetaTags(product) {
  * @param ctx - The context of the slot.
  * @returns The configuration for the image slot.
  */
-function imageSlotConfig(ctx, wrapper) {
+function imageSlotConfig(ctx) {
   const { data, defaultImageProps } = ctx;
   return {
     alias: data.sku,
@@ -412,7 +412,5 @@ function imageSlotConfig(ctx, wrapper) {
       width: defaultImageProps.width,
       height: defaultImageProps.height,
     },
-
-    wrapper,
   };
 }
