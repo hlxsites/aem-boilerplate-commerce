@@ -35,6 +35,7 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -101,6 +102,21 @@ export default async function decorate(block) {
 
   block.appendChild(fragment);
 
+  const gallerySlots = {
+    CarouselThumbnail: (ctx) => {
+      tryRenderAemAssetsImage(ctx, {
+        ...imageSlotConfig(ctx),
+        wrapper: document.createElement('span'),
+      });
+    },
+
+    CarouselMainImage: (ctx) => {
+      tryRenderAemAssetsImage(ctx, {
+        ...imageSlotConfig(ctx),
+      });
+    },
+  };
+
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
@@ -127,6 +143,8 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
+
+      slots: gallerySlots,
     })($galleryMobile),
 
     // Gallery (Desktop)
@@ -139,6 +157,8 @@ export default async function decorate(block) {
       imageParams: {
         ...IMAGES_SIZES,
       },
+
+      slots: gallerySlots,
     })($gallery),
 
     // Header
@@ -151,7 +171,17 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
+    pdpRendered.render(ProductOptions, {
+      hideSelectedValue: false,
+      slots: {
+        SwatchImage: (ctx) => {
+          tryRenderAemAssetsImage(ctx, {
+            ...imageSlotConfig(ctx),
+            wrapper: document.createElement('span'),
+          });
+        },
+      },
+    })($options),
 
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
@@ -461,4 +491,22 @@ function setMetaTags(product) {
   createMetaTag('og:image:secure_url', metaImage, 'property');
   createMetaTag('product:price:amount', price.value, 'property');
   createMetaTag('product:price:currency', price.currency, 'property');
+}
+
+/**
+ * Returns the configuration for an image slot.
+ * @param ctx - The context of the slot.
+ * @returns The configuration for the image slot.
+ */
+function imageSlotConfig(ctx) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.sku,
+    src: defaultImageProps.src,
+    imageProps: defaultImageProps,
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+  };
 }
