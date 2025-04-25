@@ -163,9 +163,20 @@ export default async function decorate(block) {
     pdpRendered.render(ProductOptions, {
       hideSelectedValue: false,
       slots: {
-        // TODO: We need to make integration work with swatches.
-        // Right now, a non AEM Assets URL is arriving in the context.
-        // SwatchImage: (_ctx) => {},
+        SwatchImage: (ctx) => {
+          const { data, defaultImageProps } = ctx;
+          tryRenderAemAssetsImage(ctx, {
+            alias: data.sku,
+            src: defaultImageProps.src,
+            imageProps: defaultImageProps,
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
+
+            wrapper: document.createElement('span'),
+          });
+        },
       },
     })($options),
 

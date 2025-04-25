@@ -62,22 +62,38 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
  */
 export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const assetsEnabled = isAemAssetsEnabled();
+  let imageUrl = url;
 
   if (!(assetsEnabled)) {
     // No-op, doesn't do anything.
-    return url;
+    return imageUrl;
   }
 
-  const [base] = url.split('?');
+  if (imageUrl.startsWith('//')) {
+    // Use current window's protocol.
+    const { protocol } = window.location;
+    imageUrl = protocol + imageUrl;
+  }
+
+  const assetsUrl = new URL(imageUrl);
+
+  if (!assetsUrl.pathname.startsWith('/adobe/assets/urn:aaid:aem')) {
+    // Not an AEM Assets URL, so no-op.
+    return imageUrl;
+  }
+
+  const base = assetsUrl.origin + assetsUrl.pathname;
   return generateAemAssetsOptimizedUrl(base, alias, params);
 }
 
 /**
  * Returns a slot that renders an AEM Assets image.
  * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
+ * @param {typeof import('./assets.d.ts').generateAemAssetsOptimizedUrl} [generateUrlFunc] -
  */
 export function makeAemAssetsImageSlot(
   config,
+  generateUrlFunc = generateAemAssetsOptimizedUrl,
 ) {
   return (ctx) => {
     const {
@@ -89,7 +105,7 @@ export function makeAemAssetsImageSlot(
     } = config;
 
     const container = wrapper ?? document.createElement('div');
-    const imageSrc = generateAemAssetsOptimizedUrl(src, alias, params);
+    const imageSrc = generateUrlFunc(src, alias, params);
 
     UI.render(Image, {
       ...imageProps,
@@ -125,5 +141,5 @@ export function tryRenderAemAssetsImage(ctx, config) {
     return;
   }
 
-  makeAemAssetsImageSlot(config)(ctx);
+  makeAemAssetsImageSlot(config, tryGenerateAemAssetsOptimizedUrl)(ctx);
 }
