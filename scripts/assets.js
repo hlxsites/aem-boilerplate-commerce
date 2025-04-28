@@ -4,7 +4,7 @@ import { getConfigValue } from './configs.js';
 /** Reports whether AEM Assets are being used as the asset source. */
 export function isAemAssetsEnabled() {
   const config = getConfigValue('commerce-assets-enabled');
-  return config === 'true';
+  return config.toLowerCase() === 'true' || config === true;
 }
 
 /** The default optimization parameters used globally, unless overriden (per use case). */
