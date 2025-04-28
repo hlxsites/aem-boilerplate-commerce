@@ -132,7 +132,7 @@ describe('AEM Assets disabled', () => {
   });
 
   it('[PLP Widget]: should show original images when AEM Assets is disabled', () => {
-    cy.visit('/gear');
+    cy.visit('/apparel');
 
     // Scroll to the bottom of the page to ensure all lazy-loaded images are loaded
     // Wait a bit so that lazy loaded images start loading.
@@ -171,7 +171,7 @@ describe('AEM Assets disabled', () => {
   });
 
   it('[PDP Dropin]: should show original images when AEM Assets is disabled', () => {
-    visitWithEagerImages('/products/fusion-backpack/24-MB02');
+    visitWithEagerImages('/products/play-create-repeat-crewneck/ADB388');
 
     const expectedOptions = {
       protocol: '//',
