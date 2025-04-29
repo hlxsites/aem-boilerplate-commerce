@@ -202,6 +202,25 @@ export default async function decorate(block) {
     provider.render(GiftOptions, {
       view: 'order',
       dataSource: 'cart',
+
+      slots: {
+        SwatchImage: (ctx) => {
+          const { item, defaultImageProps } = ctx;
+          tryRenderAemAssetsImage(ctx, {
+            alias: item.sku,
+            src: defaultImageProps.src,
+            imageProps: defaultImageProps,
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
+            
+            wrapper: document.createElement('span'),
+          })
+        }
+      }
+
+
     })($giftOptions),
   ]);
 
