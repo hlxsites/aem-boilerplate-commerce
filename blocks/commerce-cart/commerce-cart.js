@@ -81,7 +81,7 @@ export default async function decorate(block) {
   }
 
   toggleEmptyCart(isEmptyCart);
-  
+
   // Render Containers
   const productLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
   await Promise.all([
@@ -110,7 +110,7 @@ export default async function decorate(block) {
               width: defaultImageProps.width,
               height: defaultImageProps.height,
             },
-            
+
             wrapper: anchorWrapper,
           });
         },
@@ -214,12 +214,11 @@ export default async function decorate(block) {
               width: defaultImageProps.width,
               height: defaultImageProps.height,
             },
-            
-            wrapper: document.createElement('span'),
-          })
-        }
-      }
 
+            wrapper: document.createElement('span'),
+          });
+        },
+      },
 
     })($giftOptions),
   ]);
