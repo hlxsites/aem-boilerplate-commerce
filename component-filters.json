@@ -1,37 +1,15 @@
 [
   {
     "id": "main",
-    "components": [
-      "section"
-    ]
+    "components": ["section"]
   },
   {
     "id": "section",
     "components": [
       "text",
-      "image",
       "hero",
-      "cards",
-      "columns",
-      "fragment"
+      "teaser",
+      "product-details"
     ]
-  },
-  {
-    "id": "cards",
-    "components": [
-      "card"
-    ]
-  },
-  {
-    "id": "columns",
-    "components": [
-      "column"
-    ]
-  },
-  {
-    "id": "column",
-    "components": [
-      "text",
-      "image"    ]
   }
 ]

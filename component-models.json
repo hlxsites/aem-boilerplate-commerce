@@ -3,62 +3,63 @@
     "id": "page-metadata",
     "fields": [
       {
-        "component": "container",
-        "label": "Fieldset",
-        "fields": [
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description"
+      },
+      {
+        "component": "text",
+        "name": "robots",
+        "label": "Robots"
+      },
+      {
+        "component": "text",
+        "name": "enrichment-categories",
+        "label": "Enrichment Categories"
+      },
+      {
+        "component": "text",
+        "name": "enrichment-positions",
+        "label": "Enrichment Positions"
+      }
+    ]
+  },
+  {
+    "id": "marketing-metadata",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      },
+      {
+        "component": "text",
+        "name": "description",
+        "label": "Description"
+      },
+      {
+        "component": "select",
+        "name": "design",
+        "value": "",
+        "label": "Design",
+        "valueType": "string",
+        "options": [
           {
-            "component": "text",
-            "name": "title",
-            "label": "Title"
+            "name": "Design 1",
+            "value": "design1"
           },
           {
-            "component": "text",
-            "name": "description",
-            "label": "Description"
+            "name": "Design 2",
+            "value": "design2"
           },
           {
-            "component": "reference",
-            "name": "image[src]",
-            "label": "Social Image"
-          },
-          {
-            "component": "date-time",
-            "valueType": "date-time",
-            "name": "published-date",
-            "label": "Published Time"
-          },
-          {
-            "component": "date-time",
-            "valueType": "date-time",
-            "name": "modified-date",
-            "label": "Modified Time"
-          },
-          {
-            "component": "select",
-            "label": "Template",
-            "name": "template",
-            "valueType": "string",
-            "options": [
-              {
-                "name": "Template 1",
-                "value": "template-1"
-              },
-              {
-                "name": "Template 2",
-                "value": "template-2"
-              },
-              {
-                "name": "Template 3",
-                "value": "template-3"
-              }
-            ]
-          },
-          {
-            "component": "text",
-            "valueType": "string",
-            "name": "robots",
-            "label": "Robots",
-            "description": "Index control via robots"
+            "name": "Design 3",
+            "value": "design3"
           }
         ]
       }
@@ -69,19 +70,13 @@
     "fields": [
       {
         "component": "reference",
-        "name": "image",
-        "hidden": true,
-        "multi": false
-      },
-      {
-        "component": "reference",
-        "name": "img:nth-child(3)[src]",
+        "name": "img:nth-child(4)[src]",
         "label": "Image",
         "multi": false
       },
       {
         "component": "text",
-        "name": "img:nth-child(3)[alt]",
+        "name": "img:nth-child(4)[alt]",
         "label": "Alt Text"
       }
     ]
@@ -90,80 +85,154 @@
     "id": "section",
     "fields": [
       {
-        "component": "multiselect",
-        "name": "style",
-        "label": "Style",
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)[data-grid-layout]",
+        "label": "Grid Layout",
+        "value": "",
         "options": [
           {
-            "name": "Highlight",
-            "value": "highlight"
+            "name": "Grid Row",
+            "value": "grid-row"
+          },
+          {
+            "name": "Grid Column",
+            "value": "grid-column"
           }
         ]
       },
       {
-        "component": "reference",
-        "name": "background[src]",
-        "label": "Image"
-      },
-      {
-        "component": "richtext",
-        "name": "fancy",
-        "label": "Fancy"
-      }
-    ]
-  },
-  {
-    "id": "card",
-    "fields": [
-      {
-        "component": "reference",
+        "component": "select",
         "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
-        "label": "Image",
-        "multi": false
+        "name": "div:nth-child(1)[data-background-size]",
+        "label": "Background Size",
+        "value": "",
+        "options": [
+          {
+            "name": "Cover",
+            "value": "cover"
+          },
+          {
+            "name": "Contain",
+            "value": "contain"
+          },
+          {
+            "name": "Fill",
+            "value": "fill"
+          },
+          {
+            "name": "Auto",
+            "value": "auto"
+          }
+        ]
       },
       {
         "component": "text",
-        "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
-        "label": "Image Alt",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "div:nth-child(2)",
+        "name": "div:nth-child(1)[data-background-color]",
         "value": "",
-        "label": "Text",
+        "label": "Background Color",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "columns",
-    "fields": [
-      {
-        "component": "text",
-        "valueType": "number",
-        "name": "columns",
-        "value": "",
-        "label": "Columns"
       },
       {
         "component": "text",
-        "valueType": "number",
-        "name": "rows",
+        "name": "div:nth-child(1)[data-min-height]",
         "value": "",
-        "label": "Rows"
-      }
-    ]
-  },
-  {
-    "id": "fragment",
-    "fields": [
+        "label": "Height",
+        "valueType": "string"
+      },
       {
         "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(1)",
-        "label": "Fragment URL"
+        "name": "div:nth-child(1)[data-text-color]",
+        "value": "",
+        "label": "Text Color",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)[data-overlay-display]",
+        "label": "Overlay (hero-banner) Display",
+        "value": "",
+        "options": [
+          {
+            "name": "Always",
+            "value": "always"
+          },
+          {
+            "name": "On Hover",
+            "value": "on-hover"
+          },
+          {
+            "name": "Never",
+            "value": "never"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "div:nth-child(1)[data-overlay-background-color]",
+        "value": "",
+        "label": "Overlay (hero-banner) Background Color",
+        "valueType": "string"
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)[data-overlay-alignment-vertical]",
+        "label": "Overlay (hero-banner) Alignment Vertical",
+        "value": "",
+        "options": [
+          {
+            "name": "Top",
+            "value": "top"
+          },
+          {
+            "name": "Middle",
+            "value": "middle"
+          },
+          {
+            "name": "Bottom",
+            "value": "bottom"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)[data-overlay-alignment-horizontal]",
+        "label": "Overlay (hero-banner) Alignment Horizontal",
+        "value": "",
+        "options": [
+          {
+            "name": "Left",
+            "value": "left"
+          },
+          {
+            "name": "Middle",
+            "value": "middle"
+          },
+          {
+            "name": "Right",
+            "value": "right"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)[data-teaser-link]",
+        "label": "Teaser Link",
+        "value": "",
+        "options": [
+          {
+            "name": "True",
+            "value": "true"
+          },
+          {
+            "name": "False",
+            "value": "false"
+          }
+        ]
       }
     ]
   },
@@ -178,18 +247,90 @@
         "multi": false
       },
       {
-        "component": "text",
-        "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
-        "label": "Alt",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(1)>h1:nth-child(2)",
+        "component": "richtext",
+        "name": "div:nth-child(2)>div:nth-child(1)",
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "teaser",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "div:nth-child(1)>div:nth-child(2)",
+        "value": "",
+        "label": "Text",
+        "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "product-details",
+    "fields": [
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(1)>div:nth-child(2)",
+        "label": "Carousel Layout",
+        "value": "",
+        "options": [
+          {
+            "name": "Single",
+            "value": "single"
+          },
+          {
+            "name": "Quad",
+            "value": "quad"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(2)>div:nth-child(2)",
+        "label": "Control",
+        "value": "",
+        "options": [
+          {
+            "name": "Dots",
+            "value": "dots"
+          },
+          {
+            "name": "Thumbnails Row",
+            "value": "thumbnails-row"
+          },
+          {
+            "name": "Thumbnails Column",
+            "value": "thumbnails-column"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "valueType": "string",
+        "name": "div:nth-child(3)>div:nth-child(2)",
+        "label": "Featured",
+        "value": "",
+        "options": [
+          {
+            "name": "True",
+            "value": "true"
+          },
+          {
+            "name": "False",
+            "value": "false"
+          }
+        ]
       }
     ]
   }
