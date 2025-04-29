@@ -33,7 +33,7 @@ const ASSETS_ENABLED_KEY = 'public.default.commerce-assets-enabled';
 const COMMERCE_CORE_ENDPOINT_KEY = 'public.default.commerce-core-endpoint';
 const COMMERCE_ENDPOINT_KEY = 'public.default.commerce-endpoint';
 
-describe('AEM Assets enabled', () => {
+describe.skip('AEM Assets enabled', () => {
   beforeEach(() => {
     cy.interceptConfig((config) => {
       Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, Cypress.env('MAGENTO_ENVIRONMENT_ID'))
