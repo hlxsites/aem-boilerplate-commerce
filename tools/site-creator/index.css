@@ -16,6 +16,10 @@ main > div.header > h1 {
     margin: 0;
 }
 
+.subheader {
+    margin-bottom: 50px;
+}
+
 .logo {
     max-width: 270px;
     display: block;
