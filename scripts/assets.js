@@ -1,13 +1,16 @@
 import { provider as UI, Image } from '@dropins/tools/components.js';
 import { getConfigValue } from './configs.js';
 
-/** Reports whether AEM Assets are being used as the asset source. */
+/** @type {import('./assets.d.ts').isAemAssetsEnabled} */
 export function isAemAssetsEnabled() {
   const config = getConfigValue('commerce-assets-enabled');
-  return config?.toLowerCase() === 'true' || config === true;
+  return config && (
+    (typeof config === 'string' && config.toLowerCase() === 'true')
+    || (typeof config === 'boolean' && config === true)
+  );
 }
 
-/** The default optimization parameters used globally, unless overriden (per use case). */
+/** @type {import('./assets.d.ts').getDefaultAemAssetsOptimizationParams} */
 export function getDefaultAemAssetsOptimizationParams() {
   // See: https://adobe-aem-assets-delivery-experimental.redoc.ly/
   return {
@@ -17,12 +20,34 @@ export function getDefaultAemAssetsOptimizationParams() {
 }
 
 /**
- * Generates an optimized URL for AEM Assets.
- * @param {string} url - The base URL of the asset.
- * @param {string} alias - The alias (i.e. seoName) of the asset.
- * @param {import('./assets.js').AemAssetsImageOptimizationParams} params -
- *   The parameters to be applied to the asset.
+ * Normalizes the given URL to ensure it is a valid URL.
+ * @param {string} url - The URL to normalize.
+ * @returns {string} The normalized URL.
  */
+function normalizeUrl(url) {
+  let imageUrl = url;
+
+  if (imageUrl.startsWith('//')) {
+    // Use current window's protocol.
+    const { protocol } = window.location;
+    imageUrl = protocol + imageUrl;
+  }
+
+  return imageUrl;
+}
+
+/** @type {import('./assets.d.ts').isAemAssetsUrl} */
+export function isAemAssetsUrl(url) {
+  const assetsUrl = typeof url === 'string' ? new URL(normalizeUrl(url)) : url;
+
+  if (!assetsUrl.pathname.startsWith('/adobe/assets/urn:aaid:aem')) {
+    return false;
+  }
+
+  return true;
+}
+
+/** @type {import('./assets.d.ts').generateAemAssetsOptimizedUrl} */
 export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const defaultParams = getDefaultAemAssetsOptimizationParams();
   const mergedParams = { ...defaultParams, ...params };
@@ -53,48 +78,29 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
   return `${url}/as/${alias}.${format}?${searchParams.toString()}`;
 }
 
-/**
- * Tries to generate an optimized URL for AEM Assets (if enabled).
- * @param {string} url - The base URL of the asset.
- * @param {string} alias - The alias (i.e. seoName) of the asset.
- * @param {import('./assets.d.ts').AemAssetsImageOptimizationParams} params -
- *   The parameters to be applied to the asset.
- */
+/** @type {import('./assets.d.ts').tryGenerateAemAssetsOptimizedUrl} */
 export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const assetsEnabled = isAemAssetsEnabled();
-  let imageUrl = url;
 
   if (!(assetsEnabled)) {
     // No-op, doesn't do anything.
-    return imageUrl;
+    return url;
   }
 
-  if (imageUrl.startsWith('//')) {
-    // Use current window's protocol.
-    const { protocol } = window.location;
-    imageUrl = protocol + imageUrl;
-  }
+  const assetsUrl = new URL(normalizeUrl(url));
 
-  const assetsUrl = new URL(imageUrl);
-
-  if (!assetsUrl.pathname.startsWith('/adobe/assets/urn:aaid:aem')) {
+  if (!isAemAssetsUrl(assetsUrl)) {
     // Not an AEM Assets URL, so no-op.
-    return imageUrl;
+    return url;
   }
 
   const base = assetsUrl.origin + assetsUrl.pathname;
   return generateAemAssetsOptimizedUrl(base, alias, params);
 }
 
-/**
- * Returns a slot that renders an AEM Assets image.
- * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
- * @param {typeof import('./assets.d.ts').generateAemAssetsOptimizedUrl} [generateUrlFunc] -
- *   The function to use to generate the URL.
- */
+/** @type {import('./assets.d.ts').makeAemAssetsImageSlot} */
 export function makeAemAssetsImageSlot(
   config,
-  generateUrlFunc = generateAemAssetsOptimizedUrl,
 ) {
   return (ctx) => {
     const {
@@ -106,7 +112,7 @@ export function makeAemAssetsImageSlot(
     } = config;
 
     const container = wrapper ?? document.createElement('div');
-    const imageSrc = generateUrlFunc(src, alias, params);
+    const imageSrc = generateAemAssetsOptimizedUrl(src, alias, params);
 
     UI.render(Image, {
       ...imageProps,
@@ -114,7 +120,6 @@ export function makeAemAssetsImageSlot(
       src: imageSrc,
       params: {
         width: params.width,
-        height: params.height,
 
         // If not null, they will be applied by default.
         // And they are not compatible with the AEM Assets API.
@@ -128,19 +133,44 @@ export function makeAemAssetsImageSlot(
   };
 }
 
-/**
- * Returns a function that renders an AEM Assets image with the given parameters.
- * @template T
- * @param {T} ctx - The context of the slot.
- * @param {import('./assets.d.ts').AemAssetsImageSlotConfig} config - The config of the slot.
- */
+/** @type {import('./assets.d.ts').tryRenderAemAssetsImage} */
 export function tryRenderAemAssetsImage(ctx, config) {
+  // Renders an equivalent of the default image.
+  function renderDefaultImage() {
+    const container = config.wrapper ?? document.createElement('div');
+    const { imageProps } = config;
+
+    UI.render(Image, imageProps)(container);
+    ctx.replaceWith(container);
+  }
+
   const assetsEnabled = isAemAssetsEnabled();
 
   if (!(assetsEnabled)) {
-    // No-op, doesn't do anything.
+    // No-op, render the default image.
+    renderDefaultImage(ctx);
     return;
   }
 
-  makeAemAssetsImageSlot(config, tryGenerateAemAssetsOptimizedUrl)(ctx);
+  const { imageProps, src, ...slotConfig } = config;
+  const assetsUrl = new URL(normalizeUrl(src ?? imageProps.src));
+
+  if (!isAemAssetsUrl(assetsUrl)) {
+    // Not an AEM Assets URL, so render the default image.
+    renderDefaultImage(ctx);
+    return;
+  }
+
+  makeAemAssetsImageSlot({
+    // Use the default image props for params and src.
+    // Unless overriden by the slot config.
+    src: assetsUrl.toString(),
+    params: {
+      width: imageProps.width,
+      height: imageProps.height,
+      ...slotConfig.params,
+    },
+
+    ...slotConfig,
+  })(ctx);
 }
