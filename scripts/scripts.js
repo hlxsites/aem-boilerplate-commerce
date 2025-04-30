@@ -178,7 +178,6 @@ function decorateLinks(main) {
   const roots = getListOfRootPaths();
 
   main.querySelectorAll('a').forEach((a) => {
-
     // If we are in the root, do nothing
     if (roots.length === 0) return;
 
