@@ -48,14 +48,14 @@ export default async function initializeDropins() {
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
-    setEndpoint(await getConfigValue('commerce-core-endpoint'));
+    setEndpoint(getConfigValue('commerce-core-endpoint'));
 
     // Initialize Global Drop-ins
     await import('./auth.js');
 
     import('./cart.js');
 
-    events.on('eds/lcp', async () => {
+    events.on('aem/lcp', async () => {
       // Recaptcha
       await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
         setConfig();
@@ -64,7 +64,7 @@ export default async function initializeDropins() {
   };
 
   // re-initialize on prerendering changes
-  document.addEventListener('prerenderingchange', initializeDropins);
+  document.addEventListener('prerenderingchange', initializeDropins, { once: true });
 
   return init();
 }
@@ -81,7 +81,7 @@ export function initializeDropin(cb) {
   };
 
   // re-initialize on prerendering changes
-  document.addEventListener('prerenderingchange', () => init(true));
+  document.addEventListener('prerenderingchange', () => init(true), { once: true });
 
   return init;
 }
