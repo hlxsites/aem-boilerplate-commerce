@@ -125,7 +125,8 @@ export function makeAemAssetsImageSlot(
     UI.render(Image, {
       ...imageProps,
 
-      src: imageSrc,
+      src: imageSrc,      
+      src: imageSrc,      
       params: {
         width: params.width,
 
