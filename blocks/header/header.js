@@ -12,7 +12,6 @@ import { loadFragment } from '../fragment/fragment.js';
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 import { rootLink } from '../../scripts/scripts.js';
-import applyHashTagsForDomElement from '../../scripts/api/hashtags/api.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -272,7 +271,7 @@ export default async function decorate(block) {
 
   /** Search */
 
-  // TODO
+    // TODO
   const search = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
     <button type="button" class="nav-search-button">Search</button>
@@ -368,15 +367,3 @@ export default async function decorate(block) {
   );
   renderAuthDropdown(navTools);
 }
-
-events.on('cart/initialized', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });
-
-events.on('cart/updated', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });
-
-events.on('cart/reset', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });
