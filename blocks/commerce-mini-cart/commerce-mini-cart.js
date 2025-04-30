@@ -5,7 +5,8 @@ import { events } from '@dropins/tools/event-bus.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 
-import { readBlockConfig, fetchPlaceholders } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { fetchPlaceholders } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
