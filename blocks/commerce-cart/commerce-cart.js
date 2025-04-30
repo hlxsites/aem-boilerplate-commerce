@@ -158,6 +158,22 @@ export default async function decorate(block) {
             handleItemsLoading: ctx.handleItemsLoading,
             handleItemsError: ctx.handleItemsError,
             onItemUpdate: ctx.onItemUpdate,
+            slots: {
+              SwatchImage: (swatchCtx) => {
+                const { defaultImageProps, imageSwatchContext } = swatchCtx;
+                tryRenderAemAssetsImage(swatchCtx, {
+                  alias: imageSwatchContext.label,
+                  src: defaultImageProps.src,
+                  imageProps: defaultImageProps,
+                  params: {
+                    width: defaultImageProps.width,
+                    height: defaultImageProps.height,
+                  },
+
+                  wrapper: document.createElement('span'),
+                });
+              },
+            }
           })(giftOptions);
 
           ctx.appendChild(giftOptions);
@@ -167,7 +183,7 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeProduct: productLink,
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
@@ -205,16 +221,10 @@ export default async function decorate(block) {
 
       slots: {
         SwatchImage: (ctx) => {
-          const { item, defaultImageProps } = ctx;
+          const { defaultImageProps } = ctx;
           tryRenderAemAssetsImage(ctx, {
-            alias: item.sku,
-            src: defaultImageProps.src,
+            alias: "gift-wrapping",
             imageProps: defaultImageProps,
-            params: {
-              width: defaultImageProps.width,
-              height: defaultImageProps.height,
-            },
-
             wrapper: document.createElement('span'),
           });
         },
