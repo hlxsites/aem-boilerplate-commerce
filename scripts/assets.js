@@ -81,17 +81,10 @@ export function generateAemAssetsOptimizedUrl(url, alias, params = {}) {
 /** @type {import('./assets.d.ts').tryGenerateAemAssetsOptimizedUrl} */
 export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
   const assetsEnabled = isAemAssetsEnabled();
-  let imageUrl = url;
 
   if (!(assetsEnabled)) {
     // No-op, doesn't do anything.
-    return imageUrl;
-  }
-
-  if (imageUrl.startsWith('//')) {
-    // Use current window's protocol.
-    const { protocol } = window.location;
-    imageUrl = protocol + imageUrl;
+    return url;
   }
 
   const assetsUrl = new URL(normalizeUrl(url));
@@ -108,7 +101,6 @@ export function tryGenerateAemAssetsOptimizedUrl(url, alias, params = {}) {
 /** @type {import('./assets.d.ts').makeAemAssetsImageSlot} */
 export function makeAemAssetsImageSlot(
   config,
-  generateUrlFunc = generateAemAssetsOptimizedUrl,
 ) {
   return (ctx) => {
     const {
@@ -120,13 +112,12 @@ export function makeAemAssetsImageSlot(
     } = config;
 
     const container = wrapper ?? document.createElement('div');
-    const imageSrc = generateUrlFunc(src, alias, params);
+    const imageSrc = generateAemAssetsOptimizedUrl(src, alias, params);
 
     UI.render(Image, {
       ...imageProps,
 
-      src: imageSrc,      
-      src: imageSrc,      
+      src: imageSrc,
       params: {
         width: params.width,
 

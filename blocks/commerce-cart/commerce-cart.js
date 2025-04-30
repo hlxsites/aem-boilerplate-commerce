@@ -173,7 +173,7 @@ export default async function decorate(block) {
                   wrapper: document.createElement('span'),
                 });
               },
-            }
+            },
           })(giftOptions);
 
           ctx.appendChild(giftOptions);
@@ -223,7 +223,7 @@ export default async function decorate(block) {
         SwatchImage: (ctx) => {
           const { defaultImageProps } = ctx;
           tryRenderAemAssetsImage(ctx, {
-            alias: "gift-wrapping",
+            alias: 'gift-wrapping',
             imageProps: defaultImageProps,
             wrapper: document.createElement('span'),
           });
