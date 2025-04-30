@@ -20,7 +20,7 @@
           "plugins": {
             "da": {
               "name": "image",
-              "type": "img"
+              "type": "image"
             }
           }
         }
@@ -35,9 +35,11 @@
           "id": "section",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"section placeholder\" data-background-size=\"placeholder\" data-grid-layout=\"\"></div>"
+              "unsafeHTML": "<div></div>"
             }
-          }
+          },
+          "filter": "section",
+          "model": "section"
         }
       ]
     },
@@ -46,53 +48,29 @@
       "id": "blocks",
       "components": [
         {
-          "title": "Hero",
-          "id": "hero",
+          "title": "Cards",
+          "id": "cards",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"hero\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div><div><div></div></div></div>"
+              "name": "cards",
+              "rows": 1,
+              "columns": 2
             }
-          }
+          },
+          "model": "cards",
+          "filter": "cards"
         },
         {
-          "title": "Teaser",
-          "id": "teaser",
+          "title": "Card",
+          "id": "card",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"teaser\" style=\"background: rgb(0, 0, 0); color: rgb(255, 255, 255);\"><div class=\"wrapper\"><div class=\"teaser-img-col\"><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/png\" srcset=\"\"><img loading=\"lazy\"></picture></div><div class=\"custom-ue-ttext\"></div></div></div>"
+              "name": "card",
+              "rows": 2,
+              "columns": 0
             }
-          }
-        },
-        {
-          "title": "Video",
-          "id": "video",
-          "plugins": {
-            "xwalk": {
-              "page": {
-                "resourceType": "core/franklin/components/block/v1/block",
-                "template": {
-                  "name": "Video",
-                  "model": "video",
-                  "filter": "video"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    {
-      "title": "Commerce",
-      "id": "commerce",
-      "components": [
-        {
-          "title": "Product Details",
-          "id": "product-details",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div class=\"product-details\" data-control=\"\"><div class=\"pdp-carousel-layout\"><div>carousel-layout</div><div></div></div><div class=\"pdp-control\"><div>control</div><div></div></div><div class=\"pdp-featured\"><div>featured</div><div></div></div><div class=\"pdp=sku\"><div>sku</div><div></div></div><div class=\"product-details__wrapper\"></div></div>"
-            }
-          }
+          },
+          "model": "card"
         }
       ]
     }

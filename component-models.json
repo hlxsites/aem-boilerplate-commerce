@@ -1,82 +1,16 @@
 [
   {
-    "id": "page-metadata",
-    "fields": [
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Title"
-      },
-      {
-        "component": "text",
-        "name": "description",
-        "label": "Description"
-      },
-      {
-        "component": "text",
-        "name": "robots",
-        "label": "Robots"
-      },
-      {
-        "component": "text",
-        "name": "enrichment-categories",
-        "label": "Enrichment Categories"
-      },
-      {
-        "component": "text",
-        "name": "enrichment-positions",
-        "label": "Enrichment Positions"
-      }
-    ]
-  },
-  {
-    "id": "marketing-metadata",
-    "fields": [
-      {
-        "component": "text",
-        "name": "title",
-        "label": "Title"
-      },
-      {
-        "component": "text",
-        "name": "description",
-        "label": "Description"
-      },
-      {
-        "component": "select",
-        "name": "design",
-        "value": "",
-        "label": "Design",
-        "valueType": "string",
-        "options": [
-          {
-            "name": "Design 1",
-            "value": "design1"
-          },
-          {
-            "name": "Design 2",
-            "value": "design2"
-          },
-          {
-            "name": "Design 3",
-            "value": "design3"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "id": "image",
     "fields": [
       {
         "component": "reference",
-        "name": "img:nth-child(4)[src]",
+        "name": "img:nth-child(3)[src]",
         "label": "Image",
         "multi": false
       },
       {
         "component": "text",
-        "name": "img:nth-child(4)[alt]",
+        "name": "img:nth-child(3)[alt]",
         "label": "Alt Text"
       }
     ]
@@ -85,252 +19,41 @@
     "id": "section",
     "fields": [
       {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-grid-layout]",
-        "label": "Grid Layout",
-        "value": "",
+        "component": "multiselect",
+        "name": "style",
+        "label": "Style",
         "options": [
           {
-            "name": "Grid Row",
-            "value": "grid-row"
-          },
-          {
-            "name": "Grid Column",
-            "value": "grid-column"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-background-size]",
-        "label": "Background Size",
-        "value": "",
-        "options": [
-          {
-            "name": "Cover",
-            "value": "cover"
-          },
-          {
-            "name": "Contain",
-            "value": "contain"
-          },
-          {
-            "name": "Fill",
-            "value": "fill"
-          },
-          {
-            "name": "Auto",
-            "value": "auto"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)[data-background-color]",
-        "value": "",
-        "label": "Background Color",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)[data-min-height]",
-        "value": "",
-        "label": "Height",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)[data-text-color]",
-        "value": "",
-        "label": "Text Color",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-overlay-display]",
-        "label": "Overlay (hero-banner) Display",
-        "value": "",
-        "options": [
-          {
-            "name": "Always",
-            "value": "always"
-          },
-          {
-            "name": "On Hover",
-            "value": "on-hover"
-          },
-          {
-            "name": "Never",
-            "value": "never"
-          }
-        ]
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)[data-overlay-background-color]",
-        "value": "",
-        "label": "Overlay (hero-banner) Background Color",
-        "valueType": "string"
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-overlay-alignment-vertical]",
-        "label": "Overlay (hero-banner) Alignment Vertical",
-        "value": "",
-        "options": [
-          {
-            "name": "Top",
-            "value": "top"
-          },
-          {
-            "name": "Middle",
-            "value": "middle"
-          },
-          {
-            "name": "Bottom",
-            "value": "bottom"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-overlay-alignment-horizontal]",
-        "label": "Overlay (hero-banner) Alignment Horizontal",
-        "value": "",
-        "options": [
-          {
-            "name": "Left",
-            "value": "left"
-          },
-          {
-            "name": "Middle",
-            "value": "middle"
-          },
-          {
-            "name": "Right",
-            "value": "right"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)[data-teaser-link]",
-        "label": "Teaser Link",
-        "value": "",
-        "options": [
-          {
-            "name": "True",
-            "value": "true"
-          },
-          {
-            "name": "False",
-            "value": "false"
+            "name": "Highlight",
+            "value": "highlight"
           }
         ]
       }
     ]
   },
   {
-    "id": "hero",
+    "id": "card",
     "fields": [
       {
         "component": "reference",
         "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
+        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
         "label": "Image",
         "multi": false
       },
       {
-        "component": "richtext",
-        "name": "div:nth-child(2)>div:nth-child(1)",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "teaser",
-    "fields": [
-      {
-        "component": "reference",
+        "component": "text",
         "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
-        "label": "Image",
+        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
+        "label": "Image Alt",
         "multi": false
       },
       {
         "component": "richtext",
-        "name": "div:nth-child(1)>div:nth-child(2)",
+        "name": "div:nth-child(2)",
         "value": "",
         "label": "Text",
         "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "product-details",
-    "fields": [
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(2)",
-        "label": "Carousel Layout",
-        "value": "",
-        "options": [
-          {
-            "name": "Single",
-            "value": "single"
-          },
-          {
-            "name": "Quad",
-            "value": "quad"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(2)>div:nth-child(2)",
-        "label": "Control",
-        "value": "",
-        "options": [
-          {
-            "name": "Dots",
-            "value": "dots"
-          },
-          {
-            "name": "Thumbnails Row",
-            "value": "thumbnails-row"
-          },
-          {
-            "name": "Thumbnails Column",
-            "value": "thumbnails-column"
-          }
-        ]
-      },
-      {
-        "component": "select",
-        "valueType": "string",
-        "name": "div:nth-child(3)>div:nth-child(2)",
-        "label": "Featured",
-        "value": "",
-        "options": [
-          {
-            "name": "True",
-            "value": "true"
-          },
-          {
-            "name": "False",
-            "value": "false"
-          }
-        ]
       }
     ]
   }

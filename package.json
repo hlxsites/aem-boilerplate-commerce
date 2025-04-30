@@ -4,6 +4,10 @@
   "version": "2.0.0",
   "description": "Starter project for Adobe Commerce on Edge Delivery Services",
   "scripts": {
+    "build:json": "npm-run-all -p build:json:models build:json:definitions build:json:filters",
+    "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
+    "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
+    "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
     "lint:js": "eslint .",
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
@@ -30,6 +34,8 @@
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
+    "merge-json-cli": "^1.0.4",
+    "npm-run-all": "^4.1.5",
     "stylelint": "16.20.0",
     "stylelint-config-standard": "38.0.0"
   },
