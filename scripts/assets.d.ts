@@ -64,6 +64,9 @@ export interface AemAssetsImageOptimizationParams {
   smartCrop?: string;
 }
 
+/** The parameters to be applied to the asset (known width required when using a slot) */
+export type AemAssetsImageSlotConfigParams = Omit<AemAssetsImageOptimizationParams, 'size' | 'width'> & { width: number };
+
 /** The configuration for an image slot. */
 export interface AemAssetsImageSlotConfig {
   /** The base URL of the AEM Assets image */
@@ -76,14 +79,17 @@ export interface AemAssetsImageSlotConfig {
   wrapper?: HTMLElement;
 
   /** The parameters to be applied to the asset (known width required when using a slot) */
-  params: Omit<AemAssetsImageOptimizationParams, 'size'> & { width: number };
+  params: AemAssetsImageSlotConfigParams;
 
   /** The props to be applied to the underlying {@link Image} component */
-  imageProps?: Omit<ImageProps, 'params' | 'src' | 'onLoad' | 'width' | 'height'>;
+  imageProps?: Omit<ImageProps, 'src' | 'params' | 'width' | 'height'>;
 }
 
 /** The default optimization parameters used globally, unless overriden (per use case). */
 export function getDefaultAemAssetsOptimizationParams(): AemAssetsImageOptimizationParams;
+
+/** Returns true if the given URL is an AEM Assets URL. */
+export function isAemAssetsUrl(url: string | URL): boolean;
 
 /** Generates an optimized URL for AEM Assets. */
 export function generateAemAssetsOptimizedUrl(
@@ -107,5 +113,12 @@ export function makeAemAssetsImageSlot(
 /** Tries to render an image (does nothing if AEM Assets are not enabled). */
 export function tryRenderAemAssetsImage<T>(
   ctx: T,
-  config: AemAssetsImageSlotConfig
+  config: Omit<AemAssetsImageSlotConfig, 'imageProps' | 'src' | 'params'> & {
+    imageProps: ImageProps 
+
+    // These two are optional because they will default to the values in `imageProps`.
+    // But can still be specified to override the defaults.
+    src?: string;
+    params?: AemAssetsImageSlotConfigParams;
+  }
 ): void;
