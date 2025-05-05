@@ -75,13 +75,7 @@ export default async function decorate(block) {
 
         tryRenderAemAssetsImage(ctx, {
           alias: item.sku,
-          src: defaultImageProps.src,
           imageProps: defaultImageProps,
-          params: {
-            width: defaultImageProps.width,
-            height: defaultImageProps.height,
-          },
-
           wrapper: anchorWrapper,
         });
 

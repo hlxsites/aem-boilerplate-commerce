@@ -104,13 +104,7 @@ export default async function decorate(block) {
 
           tryRenderAemAssetsImage(ctx, {
             alias: item.sku,
-            src: defaultImageProps.src,
             imageProps: defaultImageProps,
-            params: {
-              width: defaultImageProps.width,
-              height: defaultImageProps.height,
-            },
-
             wrapper: anchorWrapper,
           });
         },
@@ -163,13 +157,7 @@ export default async function decorate(block) {
                 const { defaultImageProps, imageSwatchContext } = swatchCtx;
                 tryRenderAemAssetsImage(swatchCtx, {
                   alias: imageSwatchContext.label,
-                  src: defaultImageProps.src,
                   imageProps: defaultImageProps,
-                  params: {
-                    width: defaultImageProps.width,
-                    height: defaultImageProps.height,
-                  },
-
                   wrapper: document.createElement('span'),
                 });
               },
@@ -221,9 +209,9 @@ export default async function decorate(block) {
 
       slots: {
         SwatchImage: (ctx) => {
-          const { defaultImageProps } = ctx;
+          const { imageSwatchContext, defaultImageProps } = ctx;
           tryRenderAemAssetsImage(ctx, {
-            alias: 'gift-wrapping',
+            alias: imageSwatchContext.label,
             imageProps: defaultImageProps,
             wrapper: document.createElement('span'),
           });
