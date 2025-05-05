@@ -64,11 +64,20 @@ function checkPackageLockForArtifactory() {
   });
 }
 
+function checkSourceMaps() {
+  const fs = require('fs');
+  const hlxIgnorePath = '.hlxignore';
+  if (!fs.existsSync(hlxIgnorePath) || !fs.readFileSync(hlxIgnorePath, 'utf-8').includes('*.map')) {
+    console.info('⚠️ Sourcemaps may be added to the repo. WARNING: Please remove the *.map files or add "*.map" to .hlxignore before going live!\n');
+  }
+}
+
+checkSourceMaps()
+
 checkPackageLockForArtifactory()
   .then((found) => {
     if (!found) {
       console.info('✅ Drop-ins installed successfully!', '\n');
-      console.info('⚠️ Sourcemaps may be added to the repo. WARNING: Please remove the *.map files or add "*.map" to .hlxignore before going live!');
       process.exit(0);
     } else {
       console.error('🚨 Fix artifactory references before committing! 🚨');
