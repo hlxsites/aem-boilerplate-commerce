@@ -153,14 +153,7 @@ export default async function decorate(block) {
             handleItemsError: ctx.handleItemsError,
             onItemUpdate: ctx.onItemUpdate,
             slots: {
-              SwatchImage: (swatchCtx) => {
-                const { defaultImageProps, imageSwatchContext } = swatchCtx;
-                tryRenderAemAssetsImage(swatchCtx, {
-                  alias: imageSwatchContext.label,
-                  imageProps: defaultImageProps,
-                  wrapper: document.createElement('span'),
-                });
-              },
+              SwatchImage: swatchImageSlot,
             },
           })(giftOptions);
 
@@ -208,16 +201,8 @@ export default async function decorate(block) {
       dataSource: 'cart',
 
       slots: {
-        SwatchImage: (ctx) => {
-          const { imageSwatchContext, defaultImageProps } = ctx;
-          tryRenderAemAssetsImage(ctx, {
-            alias: imageSwatchContext.label,
-            imageProps: defaultImageProps,
-            wrapper: document.createElement('span'),
-          });
-        },
+        SwatchImage: swatchImageSlot,
       },
-
     })($giftOptions),
   ]);
 
@@ -271,4 +256,13 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
+}
+
+function swatchImageSlot(ctx) {
+  const { imageSwatchContext, defaultImageProps } = ctx;
+  tryRenderAemAssetsImage(ctx, {
+    alias: imageSwatchContext.label,
+    imageProps: defaultImageProps,
+    wrapper: document.createElement('span'),
+  });
 }
