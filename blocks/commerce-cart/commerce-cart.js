@@ -19,6 +19,7 @@ import '../../scripts/initializers/cart.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -75,11 +76,12 @@ export default async function decorate(block) {
   toggleEmptyCart(isEmptyCart);
 
   // Render Containers
+  const productLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeProduct: productLink,
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
@@ -88,6 +90,18 @@ export default async function decorate(block) {
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
       slots: {
+        Thumbnail: (ctx) => {
+          const { item, defaultImageProps } = ctx;
+          const anchorWrapper = document.createElement('a');
+          anchorWrapper.href = productLink(item);
+
+          tryRenderAemAssetsImage(ctx, {
+            alias: item.sku,
+            imageProps: defaultImageProps,
+            wrapper: anchorWrapper,
+          });
+        },
+
         Footer: (ctx) => {
           const giftOptions = document.createElement('div');
 
@@ -98,6 +112,9 @@ export default async function decorate(block) {
             handleItemsLoading: ctx.handleItemsLoading,
             handleItemsError: ctx.handleItemsError,
             onItemUpdate: ctx.onItemUpdate,
+            slots: {
+              SwatchImage: swatchImageSlot,
+            },
           })(giftOptions);
 
           ctx.appendChild(giftOptions);
@@ -107,7 +124,7 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+      routeProduct: productLink,
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
@@ -142,6 +159,10 @@ export default async function decorate(block) {
     provider.render(GiftOptions, {
       view: 'order',
       dataSource: 'cart',
+
+      slots: {
+        SwatchImage: swatchImageSlot,
+      },
     })($giftOptions),
   ]);
 
@@ -165,4 +186,13 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
+}
+
+function swatchImageSlot(ctx) {
+  const { imageSwatchContext, defaultImageProps } = ctx;
+  tryRenderAemAssetsImage(ctx, {
+    alias: imageSwatchContext.label,
+    imageProps: defaultImageProps,
+    wrapper: document.createElement('span'),
+  });
 }

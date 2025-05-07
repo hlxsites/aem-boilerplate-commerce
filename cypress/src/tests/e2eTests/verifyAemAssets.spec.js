@@ -116,6 +116,60 @@ describe.skip('AEM Assets enabled', () => {
 
     // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
   });
+
+  it('[Cart Dropin]: should load and show AEM Assets optimized images', () => {
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+      width: 300,
+      height: 300,
+    }
+
+    visitWithEagerImages('/products/blue-jacket/blue-jacket');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .click();
+    
+    // Assert mini cart.
+    waitForAemAssetImages('.cart-mini-cart img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
+            width: (expectedOptions.width * screenWidth) / 1920,
+          })
+        }
+      }
+    })
+
+    visitWithEagerImages('/cart');
+
+    // Assert cart.
+    waitForAemAssetImages('.cart-mini-cart img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
+            width: (expectedOptions.width * screenWidth) / 1920,
+          })
+        }
+      }
+    })
+
+    // TODO: Add gift options test when up-to-date test instance is available.
+  })
 });
 
 describe('AEM Assets disabled', () => {
@@ -220,6 +274,61 @@ describe('AEM Assets disabled', () => {
       }
     });
   });
+
+  it('[Cart Dropin]: should show original images when AEM Assets is disabled', () => {
+    const expectedOptions = {
+      protocol: 'https://',
+      format: 'jpg',
+    }
+
+    visitWithEagerImages('/products/play-create-repeat-crewneck/ADB388');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .click();
+
+    waitForDefaultImages('.cart-mini-cart img', (images) => {
+      for (const image of images) {
+        expectDefaultImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+          
+          expectDefaultImage(url, {
+            ...expectedOptions,
+            width: (300 * screenWidth) / 1920,
+            quality: 80,
+            fit: 'cover',
+            auto: 'webp',
+            crop: false,
+          })
+        }
+      }
+    })
+
+    visitWithEagerImages('/cart');
+    waitForDefaultImages('.cart-mini-cart img', (images) => {
+      for (const image of images) {
+        expectDefaultImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+          
+          expectDefaultImage(url, {
+            ...expectedOptions,
+            width: (300 * screenWidth) / 1920,
+            quality: 80,
+            fit: 'cover',
+            auto: 'webp',
+            crop: false,
+          })
+        }
+      }
+    })
+
+    // TODO: Add gift options test when up-to-date test instance is available.
+  })
 });
 
 /**
