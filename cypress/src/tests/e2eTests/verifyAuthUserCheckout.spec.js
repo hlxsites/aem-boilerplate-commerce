@@ -29,7 +29,7 @@ import {
 } from '../../fixtures/index';
 import * as fields from "../../fields";
 
-describe('Verify auth user can place order', () => {
+describe('Verify auth user can place order', { tags: '@paas' }, () => {
   it('Verify auth user can place order', () => {
     // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
     cy.visit(products.configurable.urlPathWithOptions);

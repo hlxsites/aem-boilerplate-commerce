@@ -1,5 +1,5 @@
 
-describe('Store Switcher', () => {
+describe('Store Switcher',{ tags: ['@paas', '@saas'] }, () => {
   // beforeEach(() => {
   //   cy.on('window:before:load', (win) => {
   //     const config = JSON.parse(win.sessionStorage.getItem('config'));

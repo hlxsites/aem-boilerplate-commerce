@@ -27,8 +27,8 @@ import {
 } from '../../fixtures/index';
 import * as fields from "../../fields";
 
-describe('Verify guest user can place order', () => {
-  it('Verify guest user can place order', () => {
+describe('Verify guest user can place order', { tags: '@paas' }, () => {
+  it('Verify guest user can place order', () => {   
     cy.visit('');
     cy.get('.nav-drop')
       .first()
@@ -128,7 +128,7 @@ describe('Verify guest user can place order', () => {
 
     cy.get(fields.submitCancelOrderButton).click();
 
-    cy.get('.dropin-header-container__title', {timeout: 3000})
+    cy.get('.dropin-header-container__title', { timeout: 3000 })
       .should('exist')
       .and('be.visible')
       .and('contain.text', 'Cancellation requested');
@@ -142,8 +142,8 @@ describe('Verify guest user can place order', () => {
         'contain.text',
         'The cancellation has been requested'
       ).and(
-      'contain.text',
-      'Check your email for further instructions.'
-    );
+        'contain.text',
+        'Check your email for further instructions.'
+      );
   });
 });

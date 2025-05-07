@@ -34,7 +34,7 @@ import {
   customerShippingAddress
 } from '../../fixtures/index';
 
-describe('Verify price summary on cart', () => {
+describe('Verify price summary on cart',{ tags: '@paas' }, () => {
 
   it('Verify applied gift code', () => {
     cy.visit(products.configurable.urlPathWithOptions);

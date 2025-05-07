@@ -4,7 +4,7 @@ import { products } from '../../../fixtures';
  *
  * Required Contexts: page, storefront, shoppingCart
  */
-it("is sent on mini cart Checkout button click", () => {
+it("is sent on mini cart Checkout button click", { tags: ['@paas', '@saas'] }, () => {
   cy.visit(
     products.configurable.urlPathWithOptions
   );
@@ -50,7 +50,7 @@ it("is sent on mini cart Checkout button click", () => {
   });
 });
 
-it("is sent on cart page Checkout button click", () => {
+it("is sent on cart page Checkout button click", { tags: ['@paas', '@saas'] }, () => {
   // add item to cart
   cy.visit(
     products.configurable.urlPathWithOptions

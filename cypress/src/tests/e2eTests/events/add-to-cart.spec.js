@@ -6,7 +6,7 @@ import { expectsEventWithContext } from "../../../assertions";
  * Required Contexts: page, storefront, product, shoppingCart, changedProducts
  */
 
-it("is sent on add to cart button click", () => {
+it("is sent on add to cart button click", { tags: ['@paas', '@saas'] }, () => {
   cy.visit(products.configurable.urlPathWithOptions);
   // add to cart
   cy.get(".product-details__buttons__add-to-cart button")
