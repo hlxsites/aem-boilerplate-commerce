@@ -9,6 +9,13 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
+import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+import {
+  removeProductsFromWishlist,
+  getWishlistItemFromStorage,
+} from '@dropins/storefront-wishlist/api.js';
+
+import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -26,6 +33,7 @@ import { fetchPlaceholders, setJsonLd } from '../../scripts/commerce.js';
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/wishlist.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
@@ -68,7 +76,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -87,7 +95,7 @@ export default async function decorate(block) {
     _options,
     _quantity,
     addToCart,
-    addToWishlist,
+    wishlistToggleBtn,
     _description,
     _attributes,
   ] = await Promise.all([
@@ -182,36 +190,10 @@ export default async function decorate(block) {
       },
     })($addToCart),
 
-    // Configuration - Add to Wishlist
-    UI.render(Button, {
-      icon: Icon({ source: 'Heart' }),
-      variant: 'secondary',
-      'aria-label': labels.Custom?.AddToWishlist?.label,
-      onClick: async () => {
-        try {
-          addToWishlist.setProps((prev) => ({
-            ...prev,
-            disabled: true,
-            'aria-label': labels.Custom?.AddingToWishlist?.label,
-          }));
-
-          const values = pdpApi.getProductConfigurationValues();
-
-          if (values?.sku) {
-            const wishlist = await import('../../scripts/wishlist/api.js');
-            await wishlist.addToWishlist(values.sku);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          addToWishlist.setProps((prev) => ({
-            ...prev,
-            disabled: false,
-            'aria-label': labels.Custom?.AddToWishlist?.label,
-          }));
-        }
-      },
-    })($addToWishlist),
+    // Wishlist button - WishlistToggle Container
+    wishlistRender.render(WishlistToggle, {
+      product,
+    })($wishlistToggleBtn),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
@@ -224,6 +206,42 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+  }, { eager: true });
+
+  events.on('cart/updated', async (data) => {
+    const item = getWishlistItemFromStorage(product.sku);
+    if (!item) {
+      return;
+    }
+    const inCart = data?.items?.find((cartItem) => cartItem.sku === item.product.sku);
+    if (!inCart) {
+      return;
+    }
+    await removeProductsFromWishlist(
+      [
+        {
+          id: item.id ?? '',
+          product: {
+            sku: item.product.sku,
+          },
+        },
+      ],
+    );
+    wishlistToggleBtn.setProps((prev) => ({
+      ...prev,
+      icon: Icon({ source: 'Heart' }),
+    }));
+    // @todo: add translations
+    inlineAlert = await UI.render(InLineAlert, {
+      heading: `${product?.name} was successfully added to your cart and removed from your wishlist`,
+      type: 'success',
+      icon: Icon({ source: 'Heart' }),
+      'aria-live': 'assertive',
+      role: 'alert',
+      onDismiss: () => {
+        inlineAlert.remove();
+      },
+    })($alert);
   }, { eager: true });
 
   // Set JSON-LD and Meta Tags
