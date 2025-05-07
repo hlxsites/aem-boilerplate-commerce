@@ -31,6 +31,7 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
+    'enable-updating-product': enableUpdatingProduct = 'false',
   } = readBlockConfig(block);
 
   const cart = Cart.getCartDataFromCache();
@@ -101,6 +102,14 @@ export default async function decorate(block) {
           })(giftOptions);
 
           ctx.appendChild(giftOptions);
+
+          // Conditionally add the Edit button based on config
+          if (enableUpdatingProduct === 'true') {
+            // Temporary sample code for the Edit button, will remove before merge
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            ctx.appendChild(editButton);
+          }
         },
       },
     })($list),

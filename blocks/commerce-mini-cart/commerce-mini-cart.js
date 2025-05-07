@@ -14,6 +14,7 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
     'cart-url': cartURL = '',
     'checkout-url': checkoutURL = '',
+    'enable-updating-product': enableUpdatingProduct = 'false',
   } = readBlockConfig(block);
 
   // Get translations for custom messages
@@ -63,6 +64,17 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => rootLink(cartURL) : undefined,
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`),
+    slots: {
+      Thumbnail: (ctx) => {
+        // Conditionally add the Edit button based on config
+        if (enableUpdatingProduct === 'true') {
+          // Temporary sample code for the Edit button, will remove before merge
+          const editButton = document.createElement('button');
+          editButton.textContent = 'Edit';
+          ctx.appendChild(editButton);
+        }
+      },
+    },
   })(block);
 
   // Find the products container and add the message div at the top
