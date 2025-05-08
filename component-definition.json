@@ -71,6 +71,31 @@
             }
           },
           "model": "card"
+        },
+        {
+          "title": "Columns",
+          "id": "columns",
+          "plugins": {
+            "da": {
+              "name": "columns",
+              "rows": 1,
+              "columns": 2
+            }
+          },
+          "model": "columns",
+          "filter": "columns"
+        },
+        {
+          "title": "Column",
+          "id": "column",
+          "plugins": {
+            "da": {
+              "name": "column",
+              "rows": 2,
+              "columns": 0
+            }
+          },
+          "model": "column"
         }
       ]
     }
