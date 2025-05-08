@@ -7,7 +7,7 @@ const ASSETS_ENABLED_KEY = 'public.default.commerce-assets-enabled';
 const COMMERCE_CORE_ENDPOINT_KEY = 'public.default.commerce-core-endpoint';
 const COMMERCE_ENDPOINT_KEY = 'public.default.commerce-endpoint';
 
-describe.skip('AEM Assets enabled', () => {
+describe('AEM Assets enabled', () => {
   beforeEach(() => {
     cy.interceptConfig((config) => {
       Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, Cypress.env('MAGENTO_ENVIRONMENT_ID'))
@@ -116,6 +116,39 @@ describe.skip('AEM Assets enabled', () => {
 
     // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
   });
+
+  it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type('bobloblaw@example.com');
+    cy.get('input[name="password"]').eq(1).clear().type('b0bl0bl@w');
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click( {force: true } );
+    cy.wait(2000);
+
+    cy.visit("/customer/account");
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    }
+
+    waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 65,
+          height: 65,
+
+        });
+      }
+    });
+   });
 });
 
 describe('AEM Assets disabled', () => {

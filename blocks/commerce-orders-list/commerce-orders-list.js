@@ -11,6 +11,7 @@ import {
   CUSTOMER_RETURN_DETAILS_PATH,
   UPS_TRACKING_URL,
 } from '../../scripts/constants.js';
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 // Initialize
 import '../../scripts/initializers/account.js';
@@ -18,6 +19,7 @@ import { rootLink } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
   const { 'minified-view': minifiedViewConfig = 'false' } = readBlockConfig(block);
+  const productLink = (productData) => (productData?.product ? rootLink(`/products/${productData.product.urlKey}/${productData.product.sku}`) : rootLink('#'));
 
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
@@ -33,7 +35,18 @@ export default async function decorate(block) {
       routeOrdersList: () => rootLink(CUSTOMER_ORDERS_PATH),
       routeOrderDetails: (orderNumber) => rootLink(`${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderNumber}`),
       routeReturnDetails: ({ orderNumber, returnNumber }) => rootLink(`${CUSTOMER_RETURN_DETAILS_PATH}?orderRef=${orderNumber}&returnRef=${returnNumber}`),
-      routeOrderProduct: (productData) => (productData?.product ? rootLink(`/products/${productData.product.urlKey}/${productData.product.sku}`) : rootLink('#')),
+      routeOrderProduct: productLink,
+      slots: {
+        OrderItemImage: (ctx) => {
+          const anchor = document.createElement('a');
+          anchor.href = productLink(ctx.data);
+          tryRenderAemAssetsImage(ctx, {
+            alias: ctx.data.product.sku,
+            imageProps: ctx.defaultImageProps,
+            wrapper: anchor,
+          });
+        },
+      },
     })(block);
   }
 }
