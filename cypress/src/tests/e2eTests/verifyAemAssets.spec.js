@@ -159,11 +159,6 @@ describe.skip('AEM Assets enabled', () => {
       quality: 80,
     }
 
-    const srcSetExpectedOptions = {
-      ...expectedOptions,
-      protocol: '//',
-    }
-
     waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
