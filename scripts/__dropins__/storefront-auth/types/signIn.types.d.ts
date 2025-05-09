@@ -1,4 +1,4 @@
-import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
+import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { activeComponentType } from './authCombine.types';
 import { InLineAlertInterface } from './notification.types';
 

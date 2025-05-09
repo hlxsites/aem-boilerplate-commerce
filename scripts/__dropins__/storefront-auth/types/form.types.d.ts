@@ -1,4 +1,4 @@
-import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
+import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { AttributesFormItemsProps, FieldEnumList } from '../data/models';
 import { ComponentChildren } from 'preact';
 

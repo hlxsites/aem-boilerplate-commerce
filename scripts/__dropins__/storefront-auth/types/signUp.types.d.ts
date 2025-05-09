@@ -1,7 +1,7 @@
 import { activeComponentType } from './authCombine.types';
 import { InLineAlertInterface } from './notification.types';
 import { AddressFormProps } from './api/createCustomerAddress.types';
-import { SlotProps } from '../../@adobe-commerce/elsie/src/lib';
+import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 
 export interface inputsDefaultValueSetProps {
     code: string;
