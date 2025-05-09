@@ -145,8 +145,8 @@ describe.skip('AEM Assets enabled', () => {
 
   it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
     cy.visit("/customer/login");
-    cy.get('input[name="email"]').clear().type('bobloblaw@example.com');
-    cy.get('input[name="password"]').eq(1).clear().type('b0bl0bl@w');
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
     cy.wait(2000);
     cy.get('.auth-sign-in-form__button--submit').eq(1).click( {force: true } );
     cy.wait(2000);
