@@ -14,7 +14,7 @@ import {
   fetchPlaceholders,
   commerceEndpointWithQueryParams,
   getOptionsUIDsFromUrl,
-  getSkuFromUrl,
+  getProductSku,
   loadErrorPage,
 } from '../commerce.js';
 import { getHeaders } from '../configs.js';
@@ -31,13 +31,21 @@ await initializeDropin(async () => {
   // Set Fetch Headers (Service)
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
-  const sku = getSkuFromUrl();
+  const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  const [product, labels] = await Promise.all([
-    fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
-    fetchPlaceholders(),
-  ]);
+  // Use SSG data if available
+  let product;
+  if (window.product) {
+    product = window.product;
+  } else {
+    product = await fetchProductData(sku, {
+      optionsUIDs,
+      skipTransform: true,
+    }).then(preloadImageMiddleware);
+  }
+
+  const labels = await fetchPlaceholders();
 
   if (!product?.sku) {
     return loadErrorPage();
