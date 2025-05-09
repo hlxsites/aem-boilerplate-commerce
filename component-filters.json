@@ -1,0 +1,36 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "accordion",
+      "button",
+      "cards",
+      "carousel",
+      "columns",
+      "embed",
+      "fragment",
+      "form",
+      "hero",
+      "image",
+      "quote",
+      "search",
+      "tabs",
+      "table",
+      "text",
+      "title",
+      "video"
+    ]
+  },
+  {
+    "id": "cards",
+    "components": [
+      "card"
+    ]
+  }
+]
