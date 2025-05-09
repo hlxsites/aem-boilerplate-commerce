@@ -1,4 +1,30 @@
 import { expectAemAssetsImage, expectDefaultImage } from '../../assertions/assets';
+import {
+  checkMoneyOrder,
+  customerBillingAddress,
+  customerShippingAddress,
+  paymentServicesCreditCard,
+  products
+} from "../../fixtures";
+import {
+  assertAuthUser,
+  assertCartSummaryMisc,
+  assertCartSummaryProduct,
+  assertCartSummaryProductsOnCheckout, assertOrderConfirmationBillingDetails,
+  assertOrderConfirmationCommonDetails, assertOrderConfirmationShippingDetails, assertOrderConfirmationShippingMethod,
+  assertOrderSummaryMisc,
+  assertProductImage,
+  assertSelectedPaymentMethod,
+  assertTitleHasLink
+} from "../../assertions";
+import {
+  checkTermsAndConditions, placeOrder,
+  setGuestBillingAddress,
+  setGuestShippingAddress,
+  setPaymentMethod,
+  signUpUser,
+  uncheckBillToShippingAddress
+} from "../../actions";
 
 // The overridden config keys.
 const MAGENTO_ENVIRONMENT_ID_KEY = 'public.default.headers.cs.Magento-Environment-Id';
@@ -22,14 +48,14 @@ describe.skip('AEM Assets enabled', () => {
 
   it('[PLP Widget]: should load and show AEM Assets optimized images', () => {
     cy.visit('/gear');
-    
+
     // Scroll to the bottom of the page to ensure all lazy-loaded images are loaded
     // Wait a bit so that lazy loaded images start loading.
     // Then scroll back to the top.
     cy.scrollTo('bottom', { duration: 1000 });
     cy.wait(500);
     cy.scrollTo('top');
-    
+
     waitForAemAssetImages('.ds-sdk-product-list img', (images) => {
       const expectedOptions = {
         protocol: 'http://',
@@ -46,8 +72,8 @@ describe.skip('AEM Assets enabled', () => {
           expect(density).to.be.a('number');
           expect(screenWidth).to.be.undefined;
 
-          expectAemAssetsImage(url, { 
-            ...expectedOptions, 
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
             width: expectedOptions.width * density,
           });
         }
@@ -100,7 +126,7 @@ describe.skip('AEM Assets enabled', () => {
           height: 248,
         });
 
-        for (const { url, screenWidth, density } of image.srcsetEntries) {  
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
 
@@ -116,6 +142,38 @@ describe.skip('AEM Assets enabled', () => {
 
     // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
   });
+
+  it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click( {force: true } );
+    cy.wait(2000);
+
+    cy.visit("/customer/account");
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 65,
+          height: 65,
+
+        });
+      }
+    });
+    cy.get('.nav-dropdown-button').contains('Hi, Bob').click();
+    cy.get('#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(2) > button').click();
+    cy.get('.auth-sign-in-form__button--submit');
+    cy.wait(1000);
+   });
 });
 
 describe('AEM Assets disabled', () => {
@@ -207,7 +265,7 @@ describe('AEM Assets disabled', () => {
     waitForDefaultImages('.pdp-carousel__wrapper ~ div img', (images) => {
       for (const image of images) {
         expectDefaultImage(image.src, expectedOptions);
-        
+
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
@@ -217,6 +275,52 @@ describe('AEM Assets disabled', () => {
             width: (image.element.getAttribute('width') * screenWidth) / 1920,
           });
         }
+      }
+    });
+  });
+
+  it('[My Account Dropin]: should show original images when AEM Assets is disabled', () => {
+    cy.visit(products.configurable.urlPathWithOptions);
+    cy.wait(5000);
+    cy.contains('Add to Cart').click();
+    cy.get('.minicart-wrapper').click();
+    cy.contains('View Cart').click();
+    cy.visit("/customer/create");
+    cy.get('.minicart-wrapper').should('be.visible')
+    cy.fixture('userInfo').then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+      cy.wait(5000);
+    });
+    cy.get('.minicart-wrapper').click();
+    cy.visit("/products/youth-tee/ADB150");
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .click();
+    cy.get('.minicart-wrapper').click();
+    cy.contains('View Cart').click();
+
+    cy.contains('Estimated Shipping').should('be.visible');
+    cy.get('.dropin-button.dropin-button--medium.dropin-button--primary')
+      .contains('Checkout')
+      .click({ force: true });
+    setGuestShippingAddress(customerShippingAddress, true);
+    cy.wait(2000);
+    setPaymentMethod(paymentServicesCreditCard);
+    checkTermsAndConditions();
+    cy.wait(5000);
+    placeOrder();
+    assertOrderConfirmationCommonDetails(customerShippingAddress, paymentServicesCreditCard);
+
+    cy.visit("/customer/account");
+    const expectedOptions = {
+      protocol: 'https://',
+      format: 'jpg',
+    }
+
+    waitForDefaultImages('.account-orders-list-card__images img', (images) => {
+      for (const image of images) {
+        expectDefaultImage(image.src, {...expectedOptions,});
       }
     });
   });
