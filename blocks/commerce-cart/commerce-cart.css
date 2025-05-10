@@ -19,6 +19,22 @@
   margin-top: var(--spacing-medium);
 }
 
+.cart-item-edit-container {
+  margin-top: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.cart-item-edit-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cart-item-edit-link:hover {
+  text-decoration: underline;
+}
+
 @media (width >= 900px) {
   .cart__wrapper {
     flex-direction: row;

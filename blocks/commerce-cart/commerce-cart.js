@@ -91,6 +91,64 @@ export default async function decorate(block) {
         Footer: (ctx) => {
           const giftOptions = document.createElement('div');
 
+          if (ctx.item?.itemType === 'ConfigurableCartItem') {
+            const editLinkContainer = document.createElement('div');
+            editLinkContainer.className = 'cart-item-edit-container';
+
+            const editButton = document.createElement('button');
+            editButton.className = 'cart-item-edit-link';
+            editButton.textContent = 'Edit';
+
+            editButton.addEventListener('click', () => {
+              const { item } = ctx;
+              const productUrl = rootLink(`/products/${item.url.urlKey}/${item.topLevelSku}`);
+
+              let optionsUIDs = [];
+
+              if (item.configurable_options && Array.isArray(item.configurable_options)) {
+                item.configurable_options.forEach((option) => {
+                  if (option.configurable_product_option_uid) {
+                    if (option.configurable_product_option_value_uid) {
+                      optionsUIDs.push(
+                        btoa(`configurable/${option.configurable_product_option_uid}/${option.configurable_product_option_value_uid}`),
+                      );
+                    } else if (option.value_id) {
+                      optionsUIDs.push(
+                        btoa(`configurable/${option.configurable_product_option_uid}/${option.value_id}`),
+                      );
+                    }
+                  }
+                });
+              } else if (item.configurableOptions && Array.isArray(item.configurableOptions)) {
+                optionsUIDs = item.configurableOptions.map((option) => {
+                  if (option.id && option.valueId) {
+                    return btoa(`configurable/${option.id}/${option.valueId}`);
+                  }
+                  return null;
+                }).filter(Boolean);
+              } else if (item.selectedOptions) {
+                Object.entries(item.selectedOptions).forEach(([optionId, option]) => {
+                  if (option.uid) {
+                    optionsUIDs.push(btoa(`configurable/${optionId}/${option.uid}`));
+                  }
+                });
+              }
+
+              const params = new URLSearchParams();
+              if (optionsUIDs.length > 0) {
+                params.append('optionsUIDs', optionsUIDs.join(','));
+              }
+              params.append('quantity', item.quantity);
+              params.append('itemUid', item.uid);
+
+              const finalUrl = `${productUrl}?${params.toString()}`;
+              window.location.href = finalUrl;
+            });
+
+            editLinkContainer.appendChild(editButton);
+            ctx.appendChild(editLinkContainer);
+          }
+
           provider.render(GiftOptions, {
             item: ctx.item,
             view: 'product',

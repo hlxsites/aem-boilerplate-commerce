@@ -32,6 +32,10 @@ export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
   const labels = await fetchPlaceholders();
+  const urlParams = new URLSearchParams(window.location.search);
+  const isEditMode = urlParams.has('itemUid');
+  const itemUid = urlParams.get('itemUid');
+  const urlQuantity = urlParams.get('quantity') ? parseInt(urlParams.get('quantity'), 10) : 1;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -128,8 +132,9 @@ export default async function decorate(block) {
     pdpRendered.render(ProductOptions, { hideSelectedValue: false })($options),
 
     // Configuration  Quantity
-    pdpRendered.render(ProductQuantity, {})($quantity),
-
+    pdpRendered.render(ProductQuantity, {
+      defaultQuantity: isEditMode ? urlQuantity : 1,
+    })($quantity),
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
@@ -146,10 +151,16 @@ export default async function decorate(block) {
           const values = pdpApi.getProductConfigurationValues();
           const valid = pdpApi.isProductConfigurationValid();
 
-          // add the product to the cart
           if (valid) {
-            const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-            await addProductsToCart([{ ...values }]);
+            if (isEditMode) {
+              const { updateProductsFromCart, addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+              await updateProductsFromCart([{ uid: itemUid, quantity: 0 }]);
+              await addProductsToCart([{ ...values }]);
+              window.location.href = rootLink('/cart');
+            } else {
+              const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+              await addProductsToCart([{ ...values }]);
+            }
           }
 
           // reset any previous alerts if successful
