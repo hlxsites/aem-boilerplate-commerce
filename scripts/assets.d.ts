@@ -114,7 +114,7 @@ export function makeAemAssetsImageSlot(
 export function tryRenderAemAssetsImage<T>(
   ctx: T,
   config: Omit<AemAssetsImageSlotConfig, 'imageProps' | 'src' | 'params'> & {
-    imageProps: ImageProps 
+    imageProps: ImageProps
 
     // These two are optional because they will default to the values in `imageProps`.
     // But can still be specified to override the defaults.
