@@ -8,7 +8,6 @@
     "lint:css": "stylelint blocks/**/*.css styles/*.css",
     "lint": "npm run lint:js && npm run lint:css",
     "start": "aem up --url https://main--boilerplate-paas--adobe-commerce.aem.live",
-    "cypress:saas": "aem up --url https://main--boilerplate-accs--adobe-commerce.aem.live/",
     "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins"
