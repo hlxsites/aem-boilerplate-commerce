@@ -19,9 +19,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: cypress
-          browser: chrome
           wait-on: 'http://localhost:3000'
-          config: baseUrl=http://localhost:3000
           command: npm run cypress:run
       - uses: actions/upload-artifact@v4
         if: failure()

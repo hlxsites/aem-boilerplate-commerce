@@ -6,7 +6,7 @@
     "cypress:open": "cypress open --browser chrome --config-file cypress.paas.config.js",
     "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas",
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
-    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js  --env grepTags=-@skipSaas"
+    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
