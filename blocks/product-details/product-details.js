@@ -32,7 +32,7 @@ export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
   const labels = await fetchPlaceholders();
-  
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__wrapper">
