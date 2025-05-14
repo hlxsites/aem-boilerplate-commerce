@@ -169,11 +169,168 @@ describe.skip('AEM Assets enabled', () => {
         });
       }
     });
-    cy.get('.nav-dropdown-button').contains('Hi, Bob').click();
-    cy.get('#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(2) > button').click();
-    cy.get('.auth-sign-in-form__button--submit');
-    cy.wait(1000);
-   });
+    signOut();
+  });
+
+  it('[Order Product List Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.wait(2000);
+
+    cy.visit("/customer/orders");
+
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 65,
+          height: 65,
+
+        });
+      }
+    });
+    signOut();
+  });
+
+  it('[Order Product Details Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.wait(2000);
+
+    cy.visit("/customer/order-details?orderRef=000000036");
+
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    waitForAemAssetImages('.dropin-cart-item img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 90,
+          height: 120,
+
+        });
+      }
+    });
+
+    signOut();
+  });
+
+  it('[Returns List Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.wait(2000);
+
+    cy.visit("customer/returns");
+
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    waitForAemAssetImages('.order-returns-list-content__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 85,
+          height: 114,
+
+        });
+      }
+    });
+    signOut();
+  });
+
+  it('[Order Returns Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.wait(2000);
+
+    cy.visit("/customer/order-details?orderRef=000000035");
+
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+    }
+
+    waitForAemAssetImages('.order-returns-list-content__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 85,
+          height: 114,
+
+        });
+      }
+    });
+
+    signOut();
+  });
+
+  it('[Create Return Dropin]: should load and show AEM Assets optimized images', () => {
+    cy.visit("/customer/login");
+    cy.get('input[name="email"]').clear().type(Cypress.env('USER_EMAIL'));
+    cy.get('input[name="password"]').eq(1).clear().type(Cypress.env('USER_PASSWORD'));
+    cy.wait(2000);
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.wait(2000);
+
+    cy.visit("/customer/order-details?orderRef=000000036");
+
+    cy.get('body').then(($body) => {
+      if ($body.find('button:contains("Return")').length > 0) {
+        cy.contains('button', 'Return').click();
+
+        const expectedOptions = {
+          protocol: 'https://',
+          environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+          format: 'webp',
+          quality: 80,
+        }
+
+        waitForAemAssetImages('.dropin-cart-item__image img', (images) => {
+          for (const image of images) {
+            expectAemAssetsImage(image.src, {
+              ...expectedOptions,
+              width: 85,
+              height: 114,
+
+            });
+          }
+        });
+      } else {
+        cy.log('No eligible order found for returns');
+      }
+    });
+    signOut();
+  });
 });
 
 describe('AEM Assets disabled', () => {
@@ -371,4 +528,14 @@ function visitWithEagerImages(url) {
       });
     }
   });
+}
+
+/**
+ * Helper function to sign out test user.
+ */
+function signOut() {
+  cy.get('.nav-dropdown-button').contains('Hi, Bob').click();
+  cy.get('#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(2) > button').click();
+  cy.get('.auth-sign-in-form__button--submit');
+  cy.wait(1000);
 }
