@@ -33,6 +33,7 @@ export default async function decorate(block) {
     'enable-estimate-shipping': enableEstimateShipping = 'false',
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
+    'enable-updating-product': enableUpdatingProduct = 'false',
   } = readBlockConfig(block);
 
   const placeholders = await fetchPlaceholders();
@@ -96,6 +97,43 @@ export default async function decorate(block) {
       slots: {
         Footer: (ctx) => {
           const giftOptions = document.createElement('div');
+
+          if (ctx.item?.itemType === 'ConfigurableCartItem' && enableUpdatingProduct === 'true') {
+            const editLinkContainer = document.createElement('div');
+            editLinkContainer.className = 'cart-item-edit-container';
+
+            const editButton = document.createElement('button');
+            editButton.className = 'cart-item-edit-link';
+            editButton.textContent = 'Edit';
+
+            editButton.addEventListener('click', () => {
+              const { item } = ctx;
+              const productUrl = rootLink(`/products/${item.url.urlKey}/${item.topLevelSku}`);
+
+              const optionsUIDs = [];
+
+              if (item.selectedOptions) {
+                Object.entries(item.selectedOptions).forEach(([optionId, option]) => {
+                  if (option.uid) {
+                    optionsUIDs.push(btoa(`configurable/${optionId}/${option.uid}`));
+                  }
+                });
+              }
+
+              const params = new URLSearchParams();
+              if (optionsUIDs.length > 0) {
+                params.append('optionsUIDs', optionsUIDs.join(','));
+              }
+              params.append('quantity', item.quantity);
+              params.append('itemUid', item.uid);
+
+              const finalUrl = `${productUrl}?${params.toString()}`;
+              window.location.href = finalUrl;
+            });
+
+            editLinkContainer.appendChild(editButton);
+            ctx.appendChild(editLinkContainer);
+          }
 
           provider.render(GiftOptions, {
             item: ctx.item,
