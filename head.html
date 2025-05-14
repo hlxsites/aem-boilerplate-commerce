@@ -27,7 +27,8 @@
 <link rel="stylesheet" href="/styles/styles.css" />
 
 <script type="module">
-    if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
+    if (!(HTMLScriptElement.supports?.('importmap'))) {
+        console.log('🟢')
         import('/scripts/shimmers/importmaps.js');
     }
 </script>
