@@ -32,7 +32,6 @@ export default async function decorate(block) {
   // eslint-disable-next-line no-underscore-dangle
   const product = events._lastEvent?.['pdp/data']?.payload ?? null;
   const labels = await fetchPlaceholders();
-  
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__wrapper">
@@ -129,6 +128,7 @@ export default async function decorate(block) {
 
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
+
     // Configuration – Button - Add to Cart
     UI.render(Button, {
       children: labels.PDP?.Product?.AddToCart?.label,
@@ -145,6 +145,7 @@ export default async function decorate(block) {
           const values = pdpApi.getProductConfigurationValues();
           const valid = pdpApi.isProductConfigurationValid();
 
+          // add the product to the cart
           if (valid) {
             const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
             await addProductsToCart([{ ...values }]);
