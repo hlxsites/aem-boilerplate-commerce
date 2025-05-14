@@ -26,3 +26,14 @@ For various reasons, certain tests fail against certain environments. Eventually
 
 - `{ tags: '@skipSaas' }` skips the test when run with `cypress:saas:run`
 - `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`.
+
+
+| Skipped Tests | Backned Env | Notes |
+| ------------- | ------------- | -------- |
+|  `verifyAuthUserCheckout.spec`  Cancel Flow | Saas  | Bug https://jira.corp.adobe.com/browse/LYNX-856 |
+| `verifyStoreSwitcher.spec`  | SaaS, PaaS | Story to re-configire multi store https://jira.corp.adobe.com/browse/USF-2253 |
+| `verifyUserAccount.spec` | SaaS, PaaS | This Tests needs to be implemented |
+| `recs.spec` | SaaS | Epic https://jira.corp.adobe.com/browse/COMOPT-81 |
+| `search-product-click.spec` | ^^ | ^^ | 
+| `search-request-sent.spec` | ^^ | ^^ |
+| `search-results-view.spec` | ^^ | ^^ |
