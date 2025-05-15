@@ -192,6 +192,7 @@ function Facet({
     if (displayType === 'checkbox' || displayType === 'radio') {
       return html`<ul class="${displayStyle || 'list'}">
         ${buckets
+    // eslint-disable-next-line no-underscore-dangle
     .filter((bucket) => bucket.__typename === 'ScalarBucket')
     .map((bucket) => {
       // For categories, we store IDs in selection but display titles
