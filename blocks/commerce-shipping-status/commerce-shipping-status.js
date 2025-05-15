@@ -13,25 +13,13 @@ export default async function decorate(block) {
   await orderRenderer.render(ShippingStatus, {
     slots: {
       ShippingStatusCardImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-        });
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
       },
       NotYetShippedProductImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-        });
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
       },
       ShippingStatusReturnCardImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-        });
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
       },
     },
     routeTracking: ({ carrier, number }) => {
@@ -50,4 +38,17 @@ export default async function decorate(block) {
       return '#';
     },
   })(block);
+}
+
+function imageSlotConfig(ctx) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.product.sku,
+    src: defaultImageProps.src,
+    imageProps: defaultImageProps,
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+  };
 }

@@ -14,18 +14,10 @@ export default async function decorate(block) {
   await orderRenderer.render(CreateReturn, {
     slots: {
       ReturnReasonFormImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-        });
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
       },
       CartSummaryItemImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-        });
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
       },
     },
     routeReturnSuccess: (orderData) => {
@@ -36,4 +28,16 @@ export default async function decorate(block) {
       return rootLink(`${path}?orderRef=${encodedOrderRef}`);
     },
   })(block);
+}
+function imageSlotConfig(ctx) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.product.sku,
+    src: defaultImageProps.src,
+    imageProps: defaultImageProps,
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+  };
 }
