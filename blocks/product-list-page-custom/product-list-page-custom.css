@@ -105,13 +105,35 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
 .product-list-page-custom .facets .facet-list .facet .facet-content {
   transition: all .2s ease;
   overflow: hidden;
-  padding-top: 6px;
+  padding: 0;
 }
 
 .product-list-page-custom .facets .facet-list .facet .facet-content ol {
+  list-style: none;
   list-style-type: none;
+  padding: 0;
   margin: 0;
-  padding: 16px 0 0;
+}
+
+.product-list-page-custom .facets .facet-list .facet .facet-content ol li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  list-style-type: none;
+}
+
+.product-list-page-custom .facets .facet-list .facet .facet-content ol li label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  margin: 0;
+  width: 100%;
+}
+
+.product-list-page-custom .facets .facet-list .facet .facet-content input[type="checkbox"],
+.product-list-page-custom .facets .facet-list .facet .facet-content input[type="radio"] {
+  margin: 0;
 }
 
 .product-list-page-custom .facets .facet-list .facet > input {
@@ -713,4 +735,9 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
   border-radius: 8px;
   min-height: 1.5rem;
   margin-bottom: 4px;
+}
+
+.product-list-page-custom .facets .facet-list .facet .facet-content ol ul.list {
+  padding-left: 0;
+  margin: 0;
 }

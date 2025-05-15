@@ -11,7 +11,7 @@ import { rootLink } from '../../scripts/scripts.js';
 const html = htm.bind(h);
 
 // You can get this list dynamically via attributeMetadata query
-export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family', 'activity', 'color', 'gender'];
+export const ALLOWED_FILTER_PARAMETERS = ['page', 'pageSize', 'sort', 'sortDirection', 'q', 'price', 'size', 'color_family', 'activity', 'color', 'gender', 'categories'];
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
 const PAGE_SIZE_DESKTOP = 12;
@@ -125,6 +125,11 @@ async function loadCategory(state) {
           if (from && to) {
             variables.filter.push({ attribute: key, range: { from, to } });
           }
+        } else if (key === 'categories') {
+          // For categories, use the 'in' operator with category IDs
+          if (state.filters[key] && state.filters[key].length > 0) {
+            variables.filter.push({ attribute: 'categoryIds', in: state.filters[key] });
+          }
         } else if (state.filters[key].length > 1) {
           variables.filter.push({ attribute: key, in: state.filters[key] });
         } else if (state.filters[key].length === 1) {
@@ -177,7 +182,7 @@ async function loadCategory(state) {
         total: response.productSearch.total_count,
       },
       category: { ...state.category, ...response.categories?.[0] ?? {} },
-      facets: response.productSearch.facets.filter((facet) => facet.attribute !== 'categories'),
+      facets: response.productSearch.facets,
     };
   } catch (e) {
     console.error('Error loading products', e);
@@ -216,6 +221,9 @@ function parseQueryParams() {
       newState.searchTerm = value;
     } else if (key === 'price') {
       newState.filters[key] = value.split(',').map((v) => parseInt(v, 10) || 0);
+    } else if (key === 'categories') {
+      // For categories, store the IDs directly from the URL
+      newState.filters[key] = value.split(',');
     } else {
       newState.filters[key] = value.split(',');
     }
@@ -237,7 +245,7 @@ export async function preloadCategory(category) {
     sort: DEFAULT_PARAMS.sort,
     sortDirection: DEFAULT_PARAMS.sortDirection,
     ...queryParams,
-  });
+  }, []); // Pass empty facets array for initial load
 }
 
 function Pagination(props) {
@@ -448,10 +456,9 @@ class ProductListPage extends Component {
     this.setState({ productsLoading: true });
 
     const state = await loadCategory(this.state);
-    // Preserve existing facets when updating state
+    // Use the new facets from the query response
     await this.loadState({
       ...state,
-      facets: this.state.facets,
     });
   };
 
@@ -531,7 +538,7 @@ class ProductListPage extends Component {
     window.history.pushState({}, '', `${window.location.pathname}?${params.toString()}`);
 
     // Update state and reload products
-    this.setState(newState);
+    await this.setStatePromise(newState);
     await this.loadProducts();
   };
 
