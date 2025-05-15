@@ -18,7 +18,7 @@ const setupObservers = () => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.target.tagName === 'DIV') {
         const addedElements = mutation.addedNodes;
-        const removedElements = mutation.removedNodes;
+        // const removedElements = mutation.removedNodes;
 
         // detect the mutation type of the block or picture (for cards)
         const type = mutation.target.classList.contains('cards-card-image') ? 'cards-image' : mutation.target.attributes['data-aue-model']?.value;
