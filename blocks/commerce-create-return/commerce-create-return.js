@@ -5,12 +5,21 @@ import { CreateReturn } from '@dropins/storefront-order/containers/CreateReturn.
 import { checkIsAuthenticated } from '../../scripts/configs.js';
 import { ORDER_DETAILS_PATH, CUSTOMER_ORDER_DETAILS_PATH } from '../../scripts/constants.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
   await orderRenderer.render(CreateReturn, {
+    slots: {
+      ReturnReasonFormImage: (ctx) => {
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
+      },
+      CartSummaryItemImage: (ctx) => {
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
+      },
+    },
     routeReturnSuccess: (orderData) => {
       const orderRef = checkIsAuthenticated() ? orderData.number : orderData.token;
       const encodedOrderRef = encodeURIComponent(orderRef);
@@ -19,4 +28,11 @@ export default async function decorate(block) {
       return rootLink(`${path}?orderRef=${encodedOrderRef}`);
     },
   })(block);
+}
+function imageSlotConfig(ctx) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.product.sku,
+    imageProps: defaultImageProps,
+  };
 }
