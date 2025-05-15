@@ -2,7 +2,7 @@
 import {
   h, Component, createRef,
 } from '@dropins/tools/preact.js';
-import htm from '../../scripts/htm.js';
+import htm from './htm.js';
 
 const html = htm.bind(h);
 
