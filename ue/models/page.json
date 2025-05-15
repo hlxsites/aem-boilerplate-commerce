@@ -14,6 +14,11 @@
           "label": "Description"
         },
         {
+          "component": "reference",
+          "name": "image",
+          "label": "Image"
+        },
+        {
           "component": "text",
           "name": "robots",
           "label": "Robots",

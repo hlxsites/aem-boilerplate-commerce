@@ -13,5 +13,4 @@ cypress/
 tools/picker/src/*
 tools/pdp-metadata/*
 plugins/experimentation/documentation/images/*
-blocks/**/_*.json
-models/**/_*.json
+ue/models/*

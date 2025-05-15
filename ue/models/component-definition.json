@@ -5,10 +5,10 @@
       "id": "default",
       "components": [
         {
-          "...": "./_text.json#/definitions"
+          "...": "./text.json#/definitions"
         },
         {
-          "...": "./_image.json#/definitions"
+          "...": "./image.json#/definitions"
         }
       ]
     },
@@ -17,7 +17,7 @@
       "id": "sections",
       "components": [
         {
-          "...": "./_section.json#/definitions"
+          "...": "./section.json#/definitions"
         }
       ]
     },
@@ -26,7 +26,7 @@
       "id": "blocks",
       "components": [
         {
-          "...": "../blocks/*/_*.json#/definitions"
+          "...": "./blocks/*.json#/definitions"
         }
       ]
     }
