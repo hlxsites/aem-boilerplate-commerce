@@ -261,19 +261,19 @@ export default class FacetList extends Component {
   }) {
     // Don't render anything if loading or no facets data
     if (loading || !facets || facets.length === 0) {
-      return html`<div class="facets shimmer"></div>`;
+      return html`<div class="facets empty"></div>`;
     }
 
     // Filter out facets with empty buckets
     const nonEmptyFacets = facets.filter((facet) => facet.buckets && facet.buckets.length > 0);
 
-    // If no non-empty facets, still show the shimmer
+    // If no non-empty facets, show empty state
     if (nonEmptyFacets.length === 0) {
-      return html`<div class="facets shimmer"></div>`;
+      return html`<div class="facets empty"></div>`;
     }
 
     return html`
-      <div class="facets ${loading ? 'shimmer' : ''}" ref=${facetMenuRef}>
+      <div class="facets" ref=${facetMenuRef}>
           <h2>Filters</h2>
           <button class="close" onClick=${() => facetMenuRef.current.classList.toggle('active')}>Close</button>
           <div class="facet-list">

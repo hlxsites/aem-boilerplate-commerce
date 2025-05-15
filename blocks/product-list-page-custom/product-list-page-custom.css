@@ -18,6 +18,9 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
   overflow: auto;
   background: var(--background-color);
   box-sizing: content-box;
+  width: 300px;
+  padding: 20px;
+  transition: width 0.3s ease-in-out;
 }
 
 .product-list-page-custom .facets.active {
@@ -370,6 +373,8 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
   display: flex;
   gap: 25px;
   flex-direction: column;
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
 }
 
 /* Category Title */
@@ -620,7 +625,6 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
 
   .product-list-page-custom .facets {
     display: block;
-    flex: 25;
     max-width: 430px;
     background: var(--color-neutral-200);
     padding: 20px 30px;
@@ -740,4 +744,43 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
 .product-list-page-custom .facets .facet-list .facet .facet-content ol ul.list {
   padding-left: 0;
   margin: 0;
+}
+
+.facets.empty {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* When facets are empty, adjust products margin */
+.facets.empty + .products {
+  margin-left: 0;
+}
+
+/* Mobile styles */
+@media (max-width: 900px) {
+  .facets {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    background: var(--background-color);
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .facets.active {
+    transform: translateX(0);
+  }
+
+  .facets.empty {
+    width: 300px;
+    transform: translateX(-100%);
+  }
+
+  .products {
+    margin-left: 0;
+  }
 }
