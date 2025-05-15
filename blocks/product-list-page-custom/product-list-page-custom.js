@@ -67,10 +67,8 @@ export const productSearchQuery = (addCategory = false) => `query ProductSearch(
           }
       }
       items {
-          product {
-            id
-          }
           productView {
+              id
               name
               sku
               urlKey
