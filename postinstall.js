@@ -3,17 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const { dependencies } = require('./package.json');
 
-// Create a temporary storefront-search folder
-const tempDir = path.join('scripts', 'temp');
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir);
-}
-
-// Copy the entire directory, excluding no files this time
-fs.cpSync(path.join('scripts/__dropins__/storefront-search'), tempDir, {
-  recursive: true,
-});
-
 // Define the dropins folder
 const dropinsDir = path.join('scripts', '__dropins__');
 
@@ -41,12 +30,6 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
     filter: (src) => (!src.endsWith('package.json')),
   });
 });
-
-// Move storefront-search back to its original location and delete the temp dir
-fs.cpSync(tempDir, path.join('scripts/__dropins__/storefront-search'), {
-  recursive: true,
-});
-fs.rmdirSync(tempDir, { recursive: true });
 
 // Other files to copy
 [

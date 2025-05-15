@@ -1,8 +1,3 @@
 {
-  "extends": [
-    "stylelint-config-standard"
-  ],
-  "ignoreFiles": [
-    "styles/lazy-styles.css"
-  ]
+  "extends": ["stylelint-config-standard"]
 }

@@ -1,7 +1,6 @@
 /* stylelint-disable selector-class-pattern */
 .product-list-page {
     min-height: 700px;
-    padding: 5px 0 0;
 }
 
 .product-list-page .ds-sdk-product-item__image img {

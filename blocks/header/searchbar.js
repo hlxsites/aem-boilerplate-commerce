@@ -1,50 +1,50 @@
-/* eslint-disable import/no-unresolved */
-import { render as provider } from '@dropins/storefront-search/render.js';
-import SearchPopover from '@dropins/storefront-search/containers/SearchPopover.js';
-import {
-  setFetchGraphQlHeaders,
-} from '@dropins/storefront-search/api.js';
+import { loadScript } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
-import { getConfigValue, getHeaders } from '../../scripts/configs.js';
+(async () => {
+  const widgetProd = '/scripts/widgets/SearchAsYouType.js';
+  await loadScript(widgetProd);
 
-export default async function initSearchPopover() {
-  import('../../scripts/initializers/search.js');
-  try {
-    const storeDetails = {
-      apiUrl: getConfigValue('commerce-endpoint'),
-      config: {
-        pageSize: 8,
-        perPageConfig: {
-          pageSizeOptions: '12,24,36',
-          defaultPageSizeOption: '24',
-        },
-        minQueryLength: '2',
-        currencySymbol: '$',
-        currencyRate: '1',
-        displayOutOfStock: true,
-        allowAllProducts: false,
+  const storeDetails = {
+    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
+    environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
+    apiKey: getConfigValue('headers.cs.x-api-key'),
+    apiUrl: getConfigValue('commerce-endpoint'),
+    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
+    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
+    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
+    config: {
+      pageSize: 8,
+      perPageConfig: {
+        pageSizeOptions: '12,24,36',
+        defaultPageSizeOption: '24',
       },
-      context: {
-        customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
-      },
-      route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
-      searchRoute: {
-        route: rootLink('/search'),
-        query: 'q',
-      },
-    };
-    setFetchGraphQlHeaders(getHeaders('cs'));
-    const rootElement = document.getElementById('search_autocomplete');
+      minQueryLength: '2',
+      currencySymbol: '$',
+      currencyRate: '1',
+      displayOutOfStock: true,
+      allowAllProducts: false,
+    },
+    context: {
+      customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
+    },
+    route: ({ sku, urlKey }) => rootLink(`/products/${urlKey}/${sku}`),
+    searchRoute: {
+      route: rootLink('/search'),
+      query: 'q',
+    },
+  };
 
-    if (rootElement) {
-      provider.render(SearchPopover, { storefrontDetails: storeDetails })(
-        rootElement,
-      );
-    } else {
-      console.error('Root element #search_autocomplete not found.');
-    }
-  } catch (error) {
-    console.error('Failed to initialize search popover:', error);
-  }
-}
+  await new Promise((resolve) => {
+    const interval = setInterval(() => {
+      if (window.LiveSearchAutocomplete) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 200);
+  });
+
+  // eslint-disable-next-line no-new
+  new window.LiveSearchAutocomplete(storeDetails);
+})();
