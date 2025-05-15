@@ -51,29 +51,60 @@ class PriceFacet extends Component {
     }
 
     this.state = {
-      min, max, currentMin, currentMax,
+      min,
+      max,
+      currentMin,
+      currentMax,
+      isDragging: false,
     };
 
     this.minRef = createRef();
     this.maxRef = createRef();
+    this.debounceTimer = null;
   }
 
   onChange = (notify = true) => {
-    const left = this.minRef.current.value;
-    const right = this.maxRef.current.value;
+    const left = parseInt(this.minRef.current.value, 10);
+    const right = parseInt(this.maxRef.current.value, 10);
+
+    // Prevent sliders from crossing
     let currentMin = Math.min(left, right);
     let currentMax = Math.max(left, right);
-    if (currentMin === currentMax) {
+
+    // Ensure minimum gap between sliders
+    if (currentMax - currentMin < 1) {
       if (currentMin > this.state.min) {
-        currentMin -= 1;
+        currentMin = currentMax - 1;
       } else if (currentMax < this.state.max) {
-        currentMax += 1;
+        currentMax = currentMin + 1;
       }
     }
+
     this.setState({ currentMin, currentMax });
-    if (notify) {
-      this.props.onSelectionChange(this.props.attribute, [currentMin, currentMax]);
+
+    if (notify && !this.state.isDragging) {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.props.onSelectionChange(
+          this.props.attribute,
+          [currentMin, currentMax],
+        );
+      }, 500);
     }
+  };
+
+  handleMouseDown = () => {
+    this.setState({ isDragging: true });
+  };
+
+  handleMouseUp = () => {
+    this.setState({ isDragging: false });
+    this.props.onSelectionChange(
+      this.props.attribute,
+      [this.state.currentMin, this.state.currentMax],
+    );
   };
 
   render() {
@@ -90,8 +121,32 @@ class PriceFacet extends Component {
 
     return html`<div class="price-facet">
         <div class="price-slider">
-          <input type="range" ref=${this.minRef} id="price-slider-min" defaultValue=${selectionMin} min=${min} max=${max} step="1" onchange=${this.onChange} oninput=${() => this.onChange(false)} />
-          <input type="range" ref=${this.maxRef} id="price-slider-max" defaultValue=${selectionMax} min=${min} max=${max} step="1" onchange=${this.onChange} oninput=${() => this.onChange(false)} />
+          <input
+            type="range"
+            ref=${this.minRef}
+            id="price-slider-min"
+            defaultValue=${selectionMin}
+            min=${min}
+            max=${max}
+            step="1"
+            onchange=${this.onChange}
+            oninput=${() => this.onChange(false)}
+            onMouseDown=${this.handleMouseDown}
+            onMouseUp=${this.handleMouseUp}
+          />
+          <input
+            type="range"
+            ref=${this.maxRef}
+            id="price-slider-max"
+            defaultValue=${selectionMax}
+            min=${min}
+            max=${max}
+            step="1"
+            onchange=${this.onChange}
+            oninput=${() => this.onChange(false)}
+            onMouseDown=${this.handleMouseDown}
+            onMouseUp=${this.handleMouseUp}
+          />
         </div>
         <label for="price-slider-min">${this.formatter.format(currentMin)}</label>
         <label for="price-slider-max">${this.formatter.format(currentMax)}</label>
