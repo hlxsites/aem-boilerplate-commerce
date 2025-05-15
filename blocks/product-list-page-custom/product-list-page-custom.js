@@ -117,8 +117,10 @@ async function loadCategory(state) {
 
     variables.phrase = state.type === 'search' ? state.searchTerm : '';
 
+    // Always filter for in-stock products
+    variables.filter = [{ attribute: 'inStock', eq: 'true' }];
+
     if (Object.keys(state.filters).length > 0) {
-      variables.filter = [];
       Object.keys(state.filters).forEach((key) => {
         if (key === 'price') {
           const [from, to] = state.filters[key];
@@ -200,9 +202,7 @@ async function loadCategory(state) {
 function parseQueryParams() {
   const params = new URLSearchParams(window.location.search);
   const newState = {
-    filters: {
-      inStock: ['true'],
-    },
+    filters: {},
   };
   params.forEach((value, key) => {
     if (!ALLOWED_FILTER_PARAMETERS.includes(key)) {
