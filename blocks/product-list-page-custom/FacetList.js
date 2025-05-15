@@ -248,12 +248,7 @@ function Facet({
 export default class FacetList extends Component {
   onSelectionChange = (facet, selection) => {
     const newFilters = { ...this.props.filters };
-    if (facet === 'categories') {
-      // For categories, we want to use the 'in' operator with all selected category IDs
-      newFilters[facet] = selection;
-    } else {
-      newFilters[facet] = selection;
-    }
+    newFilters[facet] = selection;
     this.props.onFilterChange(newFilters);
   };
 
