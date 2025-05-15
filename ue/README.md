@@ -34,8 +34,8 @@ To enable Universal Editor for custom blocks, you need to create three essential
 1. Add your block to a test page using the document editor
 2. Open the page in Universal Editor
 3. Use the developer console to inspect the `/details` network call
-4. Create the three JSON configuration files based on the block's structure
-5. Add your block to the section filter list in `/models/_section.json`
+4. Create the three JSON configuration files based on the block's structure in `/ue/models/blocks`
+5. Add your block to the section filter list in `/ue/models/section.json`
 
 ### Block Options Support
 
