@@ -50,6 +50,7 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
   z-index: 2;
   overflow: auto;
   background: var(--background-color);
+  background-color: rgb(0 0 0 / 70%) !important;
 }
 
 .product-list-page-custom .products .title .sort > .overlay.active {
@@ -64,6 +65,16 @@ main .section.product-list-page-custom-container > .default-content-wrapper h1:f
 
 .product-list-page-custom .products .title .sort .overlay ul > li {
   padding: 5px 0;
+}
+
+.product-list-page-custom .products .title .sort .overlay ul > li a {
+  color: var(--color-neutral-50);
+  text-decoration: none;
+}
+
+.product-list-page-custom .products .title .sort .overlay ul > li a:hover {
+  color: var(--color-neutral-50);
+  text-decoration: underline;
 }
 
 .product-list-page-custom .facets .facet-list .facet {
