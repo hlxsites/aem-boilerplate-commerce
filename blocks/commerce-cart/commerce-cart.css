@@ -25,14 +25,29 @@
 }
 
 .cart-item-edit-link {
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
+  font: var(--type-body-2-default-font);
 }
 
 .cart-item-edit-link:hover {
   text-decoration: underline;
+}
+
+.cart-item-edit-link::before {
+  content: '';
+  display: inline-block;
+  width: var(--spacing-small);
+  height: var(--spacing-small);
+  margin-right: var(--spacing-xxsmall);
+  background-image: url('../../icons/edit.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 @media (width >= 900px) {
