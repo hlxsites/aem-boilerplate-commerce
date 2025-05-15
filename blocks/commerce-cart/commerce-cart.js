@@ -103,20 +103,14 @@ export default async function decorate(block) {
               const { item } = ctx;
               const productUrl = rootLink(`/products/${item.url.urlKey}/${item.topLevelSku}`);
 
-              const optionsUIDs = [];
-
-              if (item.selectedOptions) {
-                Object.entries(item.selectedOptions).forEach(([optionId, option]) => {
-                  if (option.uid) {
-                    optionsUIDs.push(btoa(`configurable/${optionId}/${option.uid}`));
-                  }
-                });
-              }
-
               const params = new URLSearchParams();
-              if (optionsUIDs.length > 0) {
-                params.append('optionsUIDs', optionsUIDs.join(','));
+
+              if (item.selectedOptionsUIDs
+                && Array.isArray(item.selectedOptionsUIDs)
+                && item.selectedOptionsUIDs.length > 0) {
+                params.append('optionsUIDs', item.selectedOptionsUIDs.join(','));
               }
+
               params.append('quantity', item.quantity);
               params.append('itemUid', item.uid);
 
