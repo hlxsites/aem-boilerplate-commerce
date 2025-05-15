@@ -1,24 +1,25 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://www.aemshop.net/graphql",
-      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/Fwus6kdpvYCmeEdcCX7PZg/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/J4Tyui5BEH6iCtXVvLJije/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/J4Tyui5BEH6iCtXVvLJije/graphql",
       "headers": {
         "cs": {
-          "ac-channel-id": "9ced53d7-35a6-40c5-830e-8288c00985ad",
-          "ac-environment-id": "Fwus6kdpvYCmeEdcCX7PZg",
-          "ac-price-book-id": "west_coast_inc",
-          "ac-scope-locale": "en-US"
+          "Magento-Customer-Group": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
+          "AC-Channel-ID": "94a55c64-2044-4a4c-b26f-818dd904aa7b",
+          "AC-Environment-ID": "J4Tyui5BEH6iCtXVvLJije",
+          "AC-Price-Book-ID": "da4b9237bacccdf19c0760cab7aec4a8359010b0",
+          "AC-Scope-Locale": "tx"
         }
       },
       "analytics": {
         "base-currency-code": "USD",
         "environment": "Production",
         "store-id": 1,
-        "store-name": "ACO Demo",
+        "store-name": "e2e cell test 2",
         "store-url": "https://www.aemshop.net",
         "store-view-id": 1,
-        "store-view-name": "Default Store View",
+        "store-view-name": "tx",
         "website-id": 1,
         "website-name": "Main Website"
       }
