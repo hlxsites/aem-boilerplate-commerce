@@ -105,10 +105,12 @@ export default async function decorate(block) {
 
               const params = new URLSearchParams();
 
-              if (item.selectedOptionsUIDs
-                && Array.isArray(item.selectedOptionsUIDs)
-                && item.selectedOptionsUIDs.length > 0) {
-                params.append('optionsUIDs', item.selectedOptionsUIDs.join(','));
+              if (item.selectedOptionsUIDs) {
+                const optionsValues = Object.values(item.selectedOptionsUIDs);
+                if (optionsValues.length > 0) {
+                  const joinedValues = optionsValues.join(',');
+                  params.append('optionsUIDs', joinedValues);
+                }
               }
 
               params.append('quantity', item.quantity);
