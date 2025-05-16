@@ -1,6 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchIndex } from '../../scripts/scripts.js';
-import { getSkuFromUrl } from '../../scripts/commerce.js';
+import { getProductSku } from '../../scripts/commerce.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
@@ -9,9 +9,9 @@ export default async function decorate(block) {
   try {
     const filters = {};
     if (type === 'product') {
-      const productSku = getSkuFromUrl();
+      const productSku = getProductSku();
       if (!productSku) {
-        throw new Error('No product SKU found in URL');
+        throw new Error('No product SKU found in metadata or URL');
       }
       filters.products = productSku;
     }
