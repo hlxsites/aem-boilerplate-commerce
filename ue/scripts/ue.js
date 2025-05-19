@@ -18,12 +18,18 @@ const setupObservers = () => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList' && mutation.target.tagName === 'DIV') {
         const addedElements = mutation.addedNodes;
-        // const removedElements = mutation.removedNodes;
+        const removedElements = mutation.removedNodes;
 
         // detect the mutation type of the block or picture (for cards)
         const type = mutation.target.classList.contains('cards-card-image') ? 'cards-image' : mutation.target.attributes['data-aue-model']?.value;
 
         switch (type) {
+          case 'accordion':
+            if (addedElements.length === 1 && addedElements[0].tagName === 'DETAILS') {
+              moveInstrumentation(removedElements[0], addedElements[0]);
+              moveInstrumentation(removedElements[0].querySelector('div'), addedElements[0].querySelector('summary'));
+            }
+            break;
           case 'cards':
             // handle card div > li replacements
             if (addedElements.length === 1 && addedElements[0].tagName === 'UL') {
