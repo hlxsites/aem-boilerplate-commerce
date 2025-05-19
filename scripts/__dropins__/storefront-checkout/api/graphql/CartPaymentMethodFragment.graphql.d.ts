@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export { BILLING_CART_ADDRESS_FRAGMENT, SHIPPING_CART_ADDRESS_FRAGMENT, } from './graphql/CartAddressFragment.graphql';
-export { AVAILABLE_PAYMENT_METHOD_FRAGMENT, SELECTED_PAYMENT_METHOD_FRAGMENT, } from './graphql/CartPaymentMethodFragment.graphql';
-export { CHECKOUT_DATA_FRAGMENT } from './graphql/CheckoutDataFragment.graphql';
-export { CUSTOMER_FRAGMENT } from './graphql/CustomerFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map
+export declare const AVAILABLE_PAYMENT_METHOD_FRAGMENT = "\n  fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {\n    code\n    title\n  }\n";
+export declare const SELECTED_PAYMENT_METHOD_FRAGMENT = "\n  fragment SELECTED_PAYMENT_METHOD_FRAGMENT on SelectedPaymentMethod {\n    code\n    title\n  }\n";
+//# sourceMappingURL=CartPaymentMethodFragment.graphql.d.ts.map

@@ -1,3 +1,3 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{events as t}from"@dropins/tools/event-bus.js";const s={billingAddress:null,email:"",isBillToShipping:!0,selectedPaymentMethod:null,selectedShippingMethod:null,shippingAddress:null};function u(e){const n={...t.lastPayload("checkout/values")??s,...e};t.emit("checkout/values",n)}function a(e){const l=t.lastPayload("checkout/values");return l&&e in l?l[e]:null}export{a as g,u as n};
+import{events as l}from"@dropins/tools/event-bus.js";const a={email:"",isBillToShipping:!0,selectedPaymentMethod:null,selectedShippingMethod:null};function s(e){const n={...l.lastPayload("checkout/values")??a,...e};l.emit("checkout/values",n)}function u(e){const t=l.lastPayload("checkout/values");return t&&e in t?t[e]:null}export{u as g,s as n};
