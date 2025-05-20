@@ -7,8 +7,9 @@
         "cs": {
           "AC-Channel-ID":"",
           "AC-Environment-ID":"LnjXjuam6uWmo5d2JLEgbA",
-          "AC-Price-Book-ID":"",
-          "AC-Scope-Locale":"tx"
+          "AC-Price-Book-ID":"NLI",
+          "AC-Scope-Locale":"tx",
+          "content-type":"application/json"
         }
       },
       "analytics": {
