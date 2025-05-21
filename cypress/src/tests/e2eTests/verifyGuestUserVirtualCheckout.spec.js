@@ -31,7 +31,6 @@ describe('Verify guest user can place order with virtual product', () => {
     cy.get('.nav-search-button').click();
     cy.get('input[type="search"]').type('VIRTUAL123{enter}');
     cy.contains('Virtual').click();
-    //cy.get('.dropin-incrementer__increase-button').click();
     cy.get('.dropin-incrementer__input').should('have.value', '1');
     // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
     cy.wait(1000);
@@ -49,7 +48,6 @@ describe('Verify guest user can place order with virtual product', () => {
       'Virtual Product',
       '/products/sample-virtual-product/VIRTUAL123'
     )('.cart-mini-cart');
-    //assertProductImage(Cypress.env('virtualProductImageName'))('.cart-mini-cart');
     cy.contains('View Cart').click();
     assertCartSummaryProduct(
       'Virtual Product',
@@ -63,7 +61,6 @@ describe('Verify guest user can place order with virtual product', () => {
       'Virtual Product',
       '/products/sample-virtual-product/VIRTUAL123'
     )('.commerce-cart-wrapper');
-    // Virtual products typically don't have shipping costs
     cy.get('.dropin-button--primary')
       .contains('Checkout')
       .click();
@@ -89,12 +86,7 @@ describe('Verify guest user can place order with virtual product', () => {
     });
     setGuestEmail(customerBillingAddress.email);
     cy.wait('@setEmailOnCart');
-
-    // For virtual products, shipping address might not be required
-    // However, we still need billing address which is typically the same field
-    //setGuestShippingAddress(customerShippingAddress, true);
     
-    // For virtual products, typically no shipping costs
     assertOrderSummaryMisc('$100.00', null, '$100.00');
 
     assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
@@ -109,7 +101,6 @@ describe('Verify guest user can place order with virtual product', () => {
 
     assertOrderConfirmationCommonDetails(customerBillingAddress, paymentServicesCreditCard);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
-    // Skip shipping assertion for virtual products
     
     // Obtain order reference from URL and visit order details page
     cy.url().then((url) => {
