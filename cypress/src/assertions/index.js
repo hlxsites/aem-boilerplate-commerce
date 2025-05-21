@@ -71,10 +71,12 @@ export const assertOrderSummaryMisc = (subtotal, shipping, total) => {
     .find('.cart-order-summary__subTotal')
     .should('contain', 'Subtotal')
     .and('contain', subtotal);
+  if (shipping) {
   cy.get('.cart-order-summary__primary')
     .find('div[data-testid="estimate-shipping"]')
     .should('contain', 'Shipping')
     .and('contain', shipping);
+  }
   // TODO:
   // cy.get('.cart-order-summary__primary')
   //   .find('div[data-testid="total-content"]')
