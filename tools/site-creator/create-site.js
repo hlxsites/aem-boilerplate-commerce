@@ -42,7 +42,6 @@ async function checkCodeBus(data) {
 
 async function previewOrPublishPages(data, action, setStatus) {
   const parent = getDestinationPath(data.repo, data.org);
-  const libraryPath = `${parent}/docs/library`;
   const daInternalPath = `${parent}/.da/`;
 
   const label = action === 'preview' ? 'Previewing' : 'Publishing';
@@ -52,7 +51,7 @@ async function previewOrPublishPages(data, action, setStatus) {
   const callback = async (item) => {
     if (item.path.endsWith('.svg') || item.path.endsWith('.png') || item.path.endsWith('.jpg')) return;
     // skip publishing library
-    if (item.path.startsWith(libraryPath) || item.path.startsWith(daInternalPath)) return;
+    if (item.path.startsWith(daInternalPath)) return;
     setStatus({ message: `${label}: ${item.path.replace(parent, '').replace('.html', '')}` });
     const aemPath = item.path.replace(parent, `${parent}/main`).replace('.html', '');
     const resp = await fetch(`${AEM_ORIGIN}/${action}${aemPath}`, opts);
