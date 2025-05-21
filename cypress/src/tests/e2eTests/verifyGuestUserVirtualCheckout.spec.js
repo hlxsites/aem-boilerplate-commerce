@@ -29,7 +29,7 @@ describe('Verify guest user can place order with virtual product', () => {
   it('Verify guest user can place order with virtual product', () => {
     cy.visit('');
     cy.get('.nav-search-button').click();
-    cy.get('input[type="search"]').type('VIRTUAL123{enter}');
+    cy.get('input[type="search"]').type('Virtual{enter}');
     cy.contains('Virtual').click();
     cy.get('.dropin-incrementer__input').should('have.value', '1');
     // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
