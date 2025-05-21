@@ -91,7 +91,7 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   // Set some query parameters for use as a cache-buster. No other purpose.
-  urlWithQueryParams.searchParams.append('ac-storecode', getConfigValue('headers.cs.Magento-Store-Code'));
+  urlWithQueryParams.searchParams.append('ac-storecode', `${getConfigValue('headers.cs.Magento-Store-Code')}-${getConfigValue('headers.cs.Magento-Store-View-Code')}`);
   return urlWithQueryParams;
 }
 

@@ -10,7 +10,7 @@ const configFile = `${basePath}/configs.json?sheet=prod`;
 export async function commerceEndpointWithQueryParams(config) {
   const urlWithQueryParams = new URL(config['commerce-endpoint']);
   // Set some query parameters for use as a cache-buster. No other purpose.
-  urlWithQueryParams.searchParams.append('ac-storecode', config['commerce.headers.cs.Magento-Store-Code']);
+  urlWithQueryParams.searchParams.append('ac-storecode', `${config['commerce.headers.cs.Magento-Store-Code']}-${config['commerce.headers.cs.Magento-Store-View-Code']}`);
   return urlWithQueryParams;
 }
 
