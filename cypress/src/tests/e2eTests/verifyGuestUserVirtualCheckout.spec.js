@@ -18,19 +18,20 @@ import {
   assertSelectedPaymentMethod,
 } from '../../assertions';
 import {
-  customerShippingAddress,
   paymentServicesCreditCard,
   checkMoneyOrder,
   customerBillingAddress,
+  products,
 } from '../../fixtures/index';
 import * as fields from "../../fields";
 
 describe('Verify guest user can place order with virtual product', () => {
   it('Verify guest user can place order with virtual product', () => {
     cy.visit('');
-    cy.get('.nav-search-button').click();
-    cy.get('input[type="search"]').type('Virtual{enter}');
-    cy.contains('Virtual').click();
+
+    cy.visit(products.virtual.urlPath);
+
+
     cy.get('.dropin-incrementer__input').should('have.value', '1');
     // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
     cy.wait(1000);
@@ -61,9 +62,11 @@ describe('Verify guest user can place order with virtual product', () => {
       'Virtual Product',
       '/products/sample-virtual-product/VIRTUAL123'
     )('.commerce-cart-wrapper');
+
     cy.get('.dropin-button--primary')
       .contains('Checkout')
       .click();
+
     assertCartSummaryMisc(1);
     assertCartSummaryProductsOnCheckout(
       'Virtual Product',
@@ -73,7 +76,7 @@ describe('Verify guest user can place order with virtual product', () => {
       '$100.00',
       '0'
     );
-    
+
     const apiMethod = 'setGuestEmailOnCart';
     const urlTest = Cypress.env('graphqlEndPoint');
     cy.intercept('POST', urlTest, (req) => {
@@ -86,7 +89,7 @@ describe('Verify guest user can place order with virtual product', () => {
     });
     setGuestEmail(customerBillingAddress.email);
     cy.wait('@setEmailOnCart');
-    
+
     assertOrderSummaryMisc('$100.00', null, '$100.00');
 
     assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
@@ -101,7 +104,7 @@ describe('Verify guest user can place order with virtual product', () => {
 
     assertOrderConfirmationCommonDetails(customerBillingAddress, paymentServicesCreditCard);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
-    
+
     // Obtain order reference from URL and visit order details page
     cy.url().then((url) => {
       const orderRef = url.split('?')[1];
@@ -135,4 +138,4 @@ describe('Verify guest user can place order with virtual product', () => {
         'Check your email for further instructions.'
       );
   });
-}); 
+});
