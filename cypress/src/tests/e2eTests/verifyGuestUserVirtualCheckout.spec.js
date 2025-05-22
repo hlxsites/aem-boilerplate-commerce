@@ -32,6 +32,8 @@ describe("Verify guest user can place order with virtual product", () => {
     cy.wait(1000);
     cy.contains("Add to Cart").click();
     cy.get(".minicart-wrapper").click();
+    cy.wait(2000);
+
     assertCartSummaryProduct(
       "Sample Virtual Product",
       "VIRTUAL123",
@@ -40,6 +42,7 @@ describe("Verify guest user can place order with virtual product", () => {
       "$100.00",
       "0",
     )(".cart-mini-cart");
+
     assertTitleHasLink(
       "Sample Virtual Product",
       "/products/sample-virtual-product/VIRTUAL123",
