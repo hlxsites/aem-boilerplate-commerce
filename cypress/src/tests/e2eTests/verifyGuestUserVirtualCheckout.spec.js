@@ -1,6 +1,5 @@
 import {
   setGuestEmail,
-  setGuestShippingAddress,
   setPaymentMethod,
   placeOrder,
   checkTermsAndConditions,
@@ -10,7 +9,6 @@ import {
   assertCartSummaryProduct,
   assertCartSummaryProductsOnCheckout,
   assertTitleHasLink,
-  assertProductImage,
   assertCartSummaryMisc,
   assertOrderSummaryMisc,
   assertOrderConfirmationCommonDetails,
@@ -35,7 +33,7 @@ describe("Verify guest user can place order with virtual product", () => {
     cy.contains("Add to Cart").click();
     cy.get(".minicart-wrapper").click();
     assertCartSummaryProduct(
-      "Virtual Product",
+      "Sample Virtual Product",
       "VIRTUAL123",
       "1",
       "$100.00",
@@ -43,12 +41,12 @@ describe("Verify guest user can place order with virtual product", () => {
       "0",
     )(".cart-mini-cart");
     assertTitleHasLink(
-      "Virtual Product",
+      "Sample Virtual Product",
       "/products/sample-virtual-product/VIRTUAL123",
     )(".cart-mini-cart");
     cy.contains("View Cart").click();
     assertCartSummaryProduct(
-      "Virtual Product",
+      "Sample Virtual Product",
       "VIRTUAL123",
       "1",
       "$100.00",
@@ -56,7 +54,7 @@ describe("Verify guest user can place order with virtual product", () => {
       "0",
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
-      "Virtual Product",
+      "Sample Virtual Product",
       "/products/sample-virtual-product/VIRTUAL123",
     )(".commerce-cart-wrapper");
 
@@ -64,7 +62,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertCartSummaryMisc(1);
     assertCartSummaryProductsOnCheckout(
-      "Virtual Product",
+      "Sample Virtual Product",
       "VIRTUAL123",
       "1",
       "$100.00",
@@ -85,7 +83,7 @@ describe("Verify guest user can place order with virtual product", () => {
     setGuestEmail(customerBillingAddress.email);
     cy.wait("@setEmailOnCart");
 
-    // Assert that shipping form is not present for virtual products
+    // Assert that shipping form is not present for Sample Virtual Products
     cy.get(".checkout__shipping-form").should("not.be.visible");
 
     assertOrderSummaryMisc("$100.00", null, "$100.00");
