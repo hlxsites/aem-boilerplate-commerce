@@ -264,3 +264,32 @@ export const assertGiftOptionsReadOnlyFormView = () => {
     .should('exist')
     .should('be.visible');
 };
+
+export function assertOrderConfirmationOrderSummary(
+  expectedShipping,
+  expectedTotal
+) {
+  cy.get('.order-cost-summary-content').should('be.visible');
+
+  if (expectedShipping) {
+    // Verify shipping cost
+    cy.get('.order-cost-summary-content__description--shipping').should(
+      'be.visible'
+    );
+
+    cy.get('.order-cost-summary-content__description--shipping').within(() => {
+      cy.get('span').first().should('contain', 'Shipping');
+      cy.get('span.dropin-price').should('contain', expectedShipping);
+    });
+  }
+
+  // Verify total cost
+  cy.get('.order-cost-summary-content__description--total').should(
+    'be.visible'
+  );
+
+  cy.get('.order-cost-summary-content__description--total').within(() => {
+    cy.get('span').first().should('contain', 'Total');
+    cy.get('span.dropin-price').should('contain', expectedTotal);
+  });
+}
