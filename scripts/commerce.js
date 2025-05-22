@@ -91,10 +91,10 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 /**
  * Creates a short hash from an object by sorting its entries and hashing them.
  * @param {Object} obj - The object to hash
- * @param {number} [length=8] - Length of the resulting hash
+ * @param {number} [length=5] - Length of the resulting hash
  * @returns {string} A short hash string
  */
-function createHashFromObject(obj, length = 8) {
+function createHashFromObject(obj, length = 5) {
   // Sort entries by key and create a string of key-value pairs
   const objString = Object.entries(obj)
     .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
@@ -113,7 +113,7 @@ export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   const headers = getHeaders('cs');
   const shortHash = createHashFromObject(headers);
-  urlWithQueryParams.searchParams.append('cache-buster', shortHash);
+  urlWithQueryParams.searchParams.append('cb', shortHash);
   return urlWithQueryParams;
 }
 
