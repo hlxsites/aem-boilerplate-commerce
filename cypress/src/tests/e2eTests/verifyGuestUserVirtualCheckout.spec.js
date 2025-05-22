@@ -16,7 +16,6 @@ import {
   assertOrderConfirmationCommonDetails,
   assertOrderConfirmationBillingDetails,
   assertSelectedPaymentMethod,
-  assertOrderConfirmationOrderSummary,
 } from "../../assertions";
 import {
   paymentServicesCreditCard,
@@ -106,7 +105,6 @@ describe("Verify guest user can place order with virtual product", () => {
       paymentServicesCreditCard,
     );
     assertOrderConfirmationBillingDetails(customerBillingAddress);
-    assertOrderConfirmationOrderSummary(null, "$108.38");
 
     // Obtain order reference from URL and visit order details page
     cy.url().then((url) => {

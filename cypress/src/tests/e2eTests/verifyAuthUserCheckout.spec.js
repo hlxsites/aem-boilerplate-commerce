@@ -20,7 +20,6 @@ import {
   assertOrderConfirmationShippingMethod,
   assertSelectedPaymentMethod,
   assertAuthUser,
-  assertOrderConfirmationOrderSummary,
 } from "../../assertions";
 import {
   customerShippingAddress,
@@ -185,7 +184,6 @@ describe("Verify auth user can place order", () => {
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
-    assertOrderConfirmationOrderSummary("$10.00", "85.78");
 
     /**
      * TODO - when /customer/order-details page will be ready

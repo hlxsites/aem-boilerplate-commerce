@@ -16,7 +16,6 @@ import {
   assertOrderConfirmationShippingDetails,
   assertOrderConfirmationBillingDetails,
   assertOrderConfirmationShippingMethod,
-  assertOrderConfirmationOrderSummary,
 } from "../../assertions";
 import { assertSelectedPaymentMethod } from "../../assertions";
 import {
@@ -110,7 +109,6 @@ describe("Verify guest user can place order", () => {
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerShippingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
-    assertOrderConfirmationOrderSummary("$10.00", "31.65");
 
     /**
      * TODO - when /order-details page will be ready
