@@ -213,7 +213,7 @@ export async function checkEmpty(data) {
   }
 }
 
-async function updateConfig(data) {
+async function updateDaConfig(data) {
   const url = `${DA_ORIGIN}/config/${data.org}/${data.repo}/`;
 
   const jsonString = getLibraryConfigJson(data.org, data.repo);
@@ -252,8 +252,8 @@ export async function createSite(data, setStatus) {
   }
   setStatus({ message: 'Publishing pages.' });
   await previewOrPublishPages(data, 'live', setStatus);
-  setStatus({ message: 'Updating config.' });
-  await updateConfig(data);
+  setStatus({ message: 'Updating DA config.' });
+  await updateDaConfig(data);
 
   return SITE_CREATION_STATUS.COMPLETE;
 }
