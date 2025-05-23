@@ -10,6 +10,7 @@ module.exports = defineConfig({
     productUrlWithOptions: '/products/cypress-configurable-product-latest/CYPRESS456?optionsUIDs=Y29uZmlndXJhYmxlLzI3OS8zOQ%3D%3D',
     stateShippingId: 'TX,171',
     stateBillingId: 'NY,129',
-    productImageName: '/ADB150.jpg'
+    productImageName: '/ADB150.jpg',
+    productImageNameConfigurable: '/ADB124_1.jpg'
   }
 });
