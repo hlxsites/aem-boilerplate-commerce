@@ -12,6 +12,7 @@ import {
 // Initialize
 import '../../scripts/initializers/order.js';
 import { rootLink } from '../../scripts/scripts.js';
+import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   const isAuthenticated = checkIsAuthenticated();
@@ -20,6 +21,15 @@ export default async function decorate(block) {
     : RETURN_DETAILS_PATH;
 
   await orderRenderer.render(OrderReturns, {
+    slots: {
+      ReturnListImage: (ctx) => {
+        const { data, defaultImageProps } = ctx;
+        tryRenderAemAssetsImage(ctx, {
+          alias: data.product.sku,
+          imageProps: defaultImageProps,
+        });
+      },
+    },
     routeTracking: ({ carrier, number }) => {
       if (carrier?.toLowerCase() === 'ups') {
         return `${UPS_TRACKING_URL}?tracknum=${number}`;
