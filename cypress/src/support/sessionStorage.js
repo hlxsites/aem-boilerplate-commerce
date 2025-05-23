@@ -59,20 +59,25 @@ beforeEach(() => {
                             "Magento-Store-Code": "main_website_store",
                             "Magento-Store-View-Code": "default",
                             "Magento-Website-Code": "base",
-                            "x-api-key": "9753cd30401a477e816ed850c4f77e18",
-                            "Magento-Environment-Id": "1f131648-b696-4bd1-af57-2021c7080b56"
+                            "x-api-key": "",
+                            "Magento-Environment-Id": ""
                         }
                     },
                     "analytics": {
                         "base-currency-code": "USD",
                         "environment": "Production",
                         "store-id": 1,
-                        "store-name": "Main Website Store",
+                        "store-name": "ACCS Store",
                         "store-url": "https://main--boilerplate-accs--adobe-commerce.aem.live",
                         "store-view-id": 1,
                         "store-view-name": "Default Store View",
                         "website-id": 1,
                         "website-name": "Main Website"
+                    },
+                    "plugins": {
+                        "picker": {
+                            "rootCategory": "2"
+                        }
                     }
                 }
             },
