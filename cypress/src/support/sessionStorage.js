@@ -7,8 +7,8 @@ Cypress.Commands.add('setSessionStorage', (key, value) => {
 // Set session storage before each tests
 beforeEach(() => {
     // TODO: Eventually, we should fix the tests to work against prod config/prod commerce backend, but for now we manually write the following to sessionStorage so that the tests will complete (against staging environment)
-    let paasGiftValue = Cypress.env('giftCardA');
-    if (paasGiftValue == '00GO12SK6WF3') {
+    let apiEndPoint = Cypress.env('graphqlEndPoint');
+    if (apiEndPoint == 'https://mcstaging.aemshop.net/graphql') {
         const config = {
             "public": {
                 "default": {
