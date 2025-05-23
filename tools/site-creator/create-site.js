@@ -31,8 +31,8 @@ function getLibraryConfigJson(org, site) {
       ':colWidths': [],
     },
     library: {
-      total: 2,
-      limit: 2,
+      total: 1,
+      limit: 1,
       offset: 0,
       data: [
         {
