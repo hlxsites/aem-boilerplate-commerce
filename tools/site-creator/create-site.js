@@ -222,10 +222,9 @@ async function updateConfig(data) {
   const url = `${DA_ORIGIN}/config/${data.org}/${data.repo}/`;
 
   const jsonString = getLibraryConfigJson(data.org, data.repo);
-  const blob = new Blob([jsonString], { type: 'application/json' });
 
   const formData = new FormData();
-  formData.set('data', blob);
+  formData.set('config', jsonString);
   const updateRes = await fetch(url, { method: 'PUT', body: formData, headers: getAuthHeaders() });
   if (!updateRes.ok) { throw new Error(`Failed to update config: ${updateRes.statusText}`); }
 }
