@@ -19,6 +19,42 @@ export const SITE_CREATION_STATUS = {
   NO_FSTAB: 2,
 };
 
+function getLibraryConfigJson(org, site) {
+  const basePath = `https://content.da.live/${org}/${site}/.da/library`;
+
+  const configJson = {
+    data: {
+      total: 1,
+      limit: 1,
+      offset: 0,
+      data: [{}],
+      ':colWidths': [],
+    },
+    library: {
+      total: 2,
+      limit: 2,
+      offset: 0,
+      data: [
+        {
+          title: 'Blocks',
+          path: `${basePath}/blocks.json`,
+          format: '',
+        },
+        {
+          title: 'Icons',
+          path: `${basePath}/icons.json`,
+          format: ':<content>:',
+        },
+      ],
+      ':colWidths': [75, 500, 100],
+    },
+    ':names': ['data', 'library'],
+    ':version': 3,
+    ':type': 'multi-sheet',
+  };
+  return JSON.stringify(configJson);
+}
+
 function getDestinationPath(siteName, org) {
   return `/${org}/${siteName}`;
 }
@@ -182,6 +218,18 @@ export async function checkEmpty(data) {
   }
 }
 
+async function updateConfig(data) {
+  const url = `${DA_ORIGIN}/config/${data.org}/${data.repo}/`;
+
+  const jsonString = getLibraryConfigJson(data.org, data.repo);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+
+  const formData = new FormData();
+  formData.set('data', blob);
+  const updateRes = await fetch(url, { method: 'PUT', body: formData, headers: getAuthHeaders() });
+  if (!updateRes.ok) { throw new Error(`Failed to update config: ${updateRes.statusText}`); }
+}
+
 function checkAuth() {
   if (!token || token === 'undefined') {
     throw new Error('Please sign in.');
@@ -210,6 +258,8 @@ export async function createSite(data, setStatus) {
   }
   setStatus({ message: 'Publishing pages.' });
   await previewOrPublishPages(data, 'live', setStatus);
+  setStatus({ message: 'Updating config.' });
+  await updateConfig(data);
 
   return SITE_CREATION_STATUS.COMPLETE;
 }
