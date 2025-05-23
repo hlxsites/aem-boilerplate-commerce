@@ -40,11 +40,6 @@ function getLibraryConfigJson(org, site) {
           path: `${basePath}/blocks.json`,
           format: '',
         },
-        {
-          title: 'Icons',
-          path: `${basePath}/icons.json`,
-          format: ':<content>:',
-        },
       ],
       ':colWidths': [75, 500, 100],
     },
