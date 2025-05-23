@@ -14,7 +14,7 @@ jobs:
       - name: Install adobe aem cli dependencies
         run: npm install -g @adobe/aem-cli
       - name: Start server in the background
-        run: aem up --url https://update-cycpress-endpoint--aem-boilerplate-commerce--hlxsites.aem.live &
+        run: aem up --url https://main--boilerplate-paas--adobe-commerce.aem.live &
       - name: Install Cypress and run tests
         uses: cypress-io/github-action@v6
         with:
