@@ -11,6 +11,6 @@ module.exports = defineConfig({
     stateShippingId: 'TX,171',
     stateBillingId: 'NY,129',
     productImageName: '/ADB150.jpg',
-    productImageNameConfigurable: '/ADB124_1.jpg'
+    productImageNameConfigurable: '/adb124.jpg'
   }
 });
