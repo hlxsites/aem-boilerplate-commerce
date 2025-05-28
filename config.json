@@ -1,12 +1,12 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
       "headers": {
         "cs": {
           "AC-Channel-Id":"",
-          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
+          "AC-Environment-Id":"VJCE1JomSyRkt8bFeR8mjT",
           "AC-Price-Book-Id":"NLI",
           "AC-Scope-Locale":"tx",
           "content-type":"application/json"
@@ -17,7 +17,7 @@
         "environment": "Production",
         "store-id": 1,
         "store-name": "e2e cell prex dropin accs",
-        "store-url": "https://www.aemshop.net",
+        "store-url": "https://e2e-prex-dropin-aco--aem-boilerplate-commerce--hlxsites.aem.live/",
         "store-view-id": 1,
         "store-view-name": "default",
         "website-id": 1,
