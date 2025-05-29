@@ -103,14 +103,13 @@ export const signUpUser = (sign_up, isValid = true) => {
       .clear()
       .type(sign_up.shortPassword);
   }
-  cy.get(".dropin-picker__select").eq(1).select("Male");
   createAccount();
 };
 
 export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
-    const {cc_number, cc_exp, cc_cid} = paymentMethod.params;
+    const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
     cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
