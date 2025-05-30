@@ -119,8 +119,9 @@
     grid-column: 13;
     grid-row: 5;
   }
+
+  .dropin-cart-item__total {
+    grid-column: 13/13;
+  }
 }
 
-.dropin-cart-item__total {
-    grid-column: 13/13;
-}
