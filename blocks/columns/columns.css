@@ -20,12 +20,6 @@
 }
 
 @media (min-width: 900px) {
-  .columns {
-    display: grid;
-    grid-template-columns: repeat(var(--columns, 2), 1fr);
-    gap: var(--spacing-medium);
-  }
-
   .columns > div {
     align-items: center;
     flex-direction: unset;

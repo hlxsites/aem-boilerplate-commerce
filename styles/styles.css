@@ -423,31 +423,31 @@ main .section.highlight {
 
 /* Layout: Columns */
 body.columns main {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1264px;
-    margin: 0 auto;
-    padding: var(--spacing-large) var(--spacing-small);
-    box-sizing: border-box;
-    gap: var(--grid-4-gutters);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1264px;
+  margin: 0 auto;
+  padding: var(--spacing-large) var(--spacing-small);
+  box-sizing: border-box;
+  gap: var(--grid-4-gutters);
 }
 
 body.columns main > .section {
-    flex: 1;
-    flex-basis: 100%;
-    max-width: unset;
-    margin: unset;
-    padding: unset;
+  flex: 1;
+  flex-basis: 100%;
+  max-width: unset;
+  margin: unset;
+  padding: unset;
 }
 
 body.columns main > .section > div {
-    max-width: unset;
-    padding: unset;
+  max-width: unset;
+  padding: unset;
 }
 
 body.columns main > .section > div:not(:last-child) {
-    margin-bottom: var(--gap, unset);
+  margin-bottom: var(--gap, unset);
 }
 
 body.columns main > .section:empty {
