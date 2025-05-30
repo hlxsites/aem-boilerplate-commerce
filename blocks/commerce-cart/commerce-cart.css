@@ -116,12 +116,12 @@
   }
 
   .commerce-cart .cart__action--wishlist-toggle {
-    grid-column: 13;
+    grid-column: 12;
     grid-row: 5;
   }
 
-  .dropin-cart-item__total {
-    grid-column: 13/13;
+.dropin-cart-item__quantity {
+    grid-row: 5;
   }
 }
 
