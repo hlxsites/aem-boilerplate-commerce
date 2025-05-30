@@ -5,7 +5,7 @@
       "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
       "headers": {
         "cs": {
-          "AC-Channel-Id":"",
+          "AC-Channel-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
           "AC-Price-Book-Id":"NLI",
           "AC-Scope-Locale":"tx",
