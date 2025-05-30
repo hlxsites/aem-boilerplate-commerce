@@ -93,7 +93,7 @@
   justify-content: center;
 }
 
-@media (width >= 900px) {
+@media (min-width: 900px) {
   .cart__wrapper {
     flex-direction: row;
     position: relative;
