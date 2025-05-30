@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './BillToShippingAddress';
+export * from './ConditionalWrapper/index';
 export * from './EstimateShipping';
 export * from './LoginForm';
 export * from './Markup';
