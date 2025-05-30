@@ -121,3 +121,6 @@
   }
 }
 
+.dropin-cart-item__total {
+    grid-column: 13/13;
+}
