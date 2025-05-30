@@ -1,12 +1,12 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/VJCE1JomSyRkt8bFeR8mjT/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
       "headers": {
         "cs": {
           "AC-Channel-Id":"",
-          "AC-Environment-Id":"VJCE1JomSyRkt8bFeR8mjT",
+          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
           "AC-Price-Book-Id":"NLI",
           "AC-Scope-Locale":"tx",
           "content-type":"application/json"
