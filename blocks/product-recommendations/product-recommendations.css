@@ -62,7 +62,7 @@
     scroll-snap-align: start;
 }
 
-@media (width >=900px) {
+@media (min-width: 900px) {
     .product-recommendations {
         min-height: 534px;
     }

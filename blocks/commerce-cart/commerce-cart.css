@@ -19,18 +19,18 @@
   margin-top: var(--spacing-medium);
 }
 
-@media (width >= 900px) {
-  .cart__wrapper {
-    flex-direction: row;
-  }
-
-  .cart__left-column {
-    flex: 1;
-    flex-basis: 70%;
-  }
-
-  .cart__right-column {
-    flex: 1;
-    flex-basis: auto;
-  }
+@media (min-width: 900px) {
+    .cart__wrapper {
+        flex-direction: row;
+      }
+    
+      .cart__left-column {
+        flex: 1;
+        flex-basis: 70%;
+      }
+    
+      .cart__right-column {
+        flex: 1;
+        flex-basis: auto;
+      }
 }
