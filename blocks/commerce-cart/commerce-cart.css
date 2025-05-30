@@ -23,7 +23,7 @@
   .cart__wrapper {
     flex-direction: row;
   }
-    
+
   .cart__left-column {
     flex: 1;
     flex-basis: 70%;
