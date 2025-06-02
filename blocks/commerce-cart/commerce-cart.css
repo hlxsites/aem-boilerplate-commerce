@@ -96,6 +96,7 @@
 .commerce-cart .cart__action--wishlist-toggle {
     grid-column: 5;
     grid-row: 5;
+    width: min-content;
 }
 
 @media (width >= 768px) {
@@ -116,7 +117,12 @@
   }
 
   .commerce-cart .cart__action--wishlist-toggle {
-    grid-column: 13;
+    grid-column: 12;
+    grid-row: 5;
+    width: max-content;
+  }
+
+  .dropin-cart-item__quantity {
     grid-row: 5;
   }
 }
