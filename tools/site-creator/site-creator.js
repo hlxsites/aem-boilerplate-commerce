@@ -41,7 +41,7 @@ class SiteCreator extends LitElement {
         this._data = { org, repo };
       }
     } catch (err) {
-      // Invalid URL, ignore
+      console.warn('Invalid url', err);
     }
   }
 
