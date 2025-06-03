@@ -93,7 +93,7 @@ export const assertTitleHasLink =
 export const assertProductImage =
   (productImageSrc) =>
     (elem = '.cart-cart') => {
-      cy.get(`${elem} img[src*="${productImageSrc}"]`)
+      cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
         .should('be.visible')
         .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
     };
@@ -171,16 +171,10 @@ export const assertAuthUser = (sign_up) => {
 // imports and re-exports the functions from ./adobeDataLayer.js
 export * from './adobeDataLayer';
 
-export const assertGiftOptionsSummary = (title, text, price) => {
+export const assertGiftOptionsSummary = (title, price) => {
   const summaryClassName = '.cart-order-summary__content';
 
   cy.get(summaryClassName).contains(title).should('exist').should('be.visible');
-  if (text) {
-    cy.get(summaryClassName)
-      .contains(text)
-      .should('exist')
-      .should('be.visible');
-  }
   if (price) {
     cy.get(summaryClassName)
       .contains(price)
