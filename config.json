@@ -9,7 +9,7 @@
           "AC-Channel-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
           "AC-Price-Book-Id":"NLI",
-          "AC-Scope-Locale":"tx"
+          "AC-Scope-Locale":"en-US"
         }
       },
       "analytics": {
@@ -17,7 +17,7 @@
         "environment": "Production",
         "store-id": 1,
         "store-name": "e2e cell prex dropin accs",
-        "store-url": "https://e2e-prex-dropin-aco--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-url": "https://e2e-prex-dropin-aco2--aem-boilerplate-commerce--hlxsites.aem.live/",
         "store-view-id": 1,
         "store-view-name": "default",
         "website-id": 1,
