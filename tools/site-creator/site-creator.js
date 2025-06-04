@@ -41,8 +41,7 @@ class SiteCreator extends LitElement {
         this._data = { org, repo };
       }
     } catch (error) {
-      // We don't care about form change errors so long as the value is a url
-      // upon form submission.
+      // Do not error when user is typing the url - validation happens on submit.
     }
   }
 
