@@ -26,6 +26,25 @@ class SiteCreator extends LitElement {
     return `${String(crawlTime / 1000).substring(0, 4)}s`;
   }
 
+  formChanged(e) {
+    const input = e.target;
+    const value = input.value.toLowerCase();
+    input.value = value; // Update the input field with lowercase value
+
+    try {
+      const url = new URL(value);
+      const org = url.pathname.split('/')[1];
+      const repo = url.pathname.split('/')[2];
+
+      if (org && repo && url.hostname === 'github.com') {
+        this._status = null;
+        this._data = { org, repo };
+      }
+    } catch (error) {
+      // Do not error when user is typing the url - validation happens on submit.
+    }
+  }
+
   async handleSubmit(e) {
     e.preventDefault();
     this._time = null;
@@ -40,7 +59,7 @@ class SiteCreator extends LitElement {
     }
 
     try {
-      const url = new URL(entries.github);
+      const url = new URL(entries.github.toLowerCase());
       const org = url.pathname.split('/')[1];
       const repo = url.pathname.split('/')[2];
 
@@ -153,23 +172,25 @@ mountpoints:
     return this.renderSiteComplete();
   }
 
-  formChanged(e) {
-    const url = new URL(e.target.value);
-    const org = url.pathname.split('/')[1];
-    const repo = url.pathname.split('/')[2];
-
-    if (org && repo && url.hostname === 'github.com') {
-      this._status = null;
-      this._data = { org, repo };
-    }
-  }
-
   renderForm() {
     return html`
-      <form>
+      <form @submit=${this.handleSubmit}>
         <div class="fieldgroup">
           <label>Project Github URL</label>
-          <sl-input @keyup=${this.formChanged} @changed=${this.formChanged} type="text" name="github" placeholder="Enter Github URL"></sl-input>
+          <sl-input
+            @keyup=${(e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      this.handleSubmit(e);
+    } else {
+      this.formChanged(e);
+    }
+  }}
+            @changed=${this.formChanged}
+            type="text"
+            name="github"
+            placeholder="Enter Github URL">
+          </sl-input>
           <p>Don't have a Github repo yet? <a target="_blank" href="https://github.com/hlxsites/aem-boilerplate-commerce">Start here.</a></p>
         </div>
         <div class="form-footer">
