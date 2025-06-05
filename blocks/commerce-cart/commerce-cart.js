@@ -125,7 +125,7 @@ export default async function decorate(block) {
             params.append('itemUid', ctx.item.uid);
 
             UI.render(Button, {
-              children: 'Edit',
+              children: placeholders?.Cart?.EditButton?.label,
               variant: 'tertiary',
               size: 'medium',
               icon: h(Icon, { source: 'Placeholder' }),
@@ -143,8 +143,8 @@ export default async function decorate(block) {
             wishlistRender.render(WishlistToggle, {
               product: ctx.item,
               size: 'medium',
-              labelToWishlist: 'Move to wishlist',
-              labelWishlisted: 'Remove from wishlist',
+              labelToWishlist: placeholders?.Cart?.MoveToWishlist?.label,
+              labelWishlisted: placeholders?.Cart?.RemoveFromWishlist?.label,
             })($wishlistToggle);
 
             ctx.appendChild($wishlistToggle);
