@@ -2,6 +2,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 import { InLineAlert, Icon, provider as UI } from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
 
 // Dropin Containers
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
@@ -223,7 +224,7 @@ export default async function decorate(block) {
             heading: message,
             type: 'success',
             variant: 'primary',
-            icon: Icon({ source: 'CheckWithCircle' }),
+            icon: h(Icon, { source: 'CheckWithCircle' }),
             'aria-live': 'assertive',
             role: 'alert',
             onDismiss: () => {
