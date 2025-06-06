@@ -374,6 +374,13 @@ export default async function decorate(block) {
     setTimeout(() => {
       $alert.innerHTML = '';
     }, 5000);
+
+    setTimeout(() => {
+      $alert.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 0);
   });
 
   // --- Add new event listener for cart/data ---
