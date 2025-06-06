@@ -14,7 +14,7 @@
       },
       "analytics": {
         "base-currency-code": "USD",
-        "environment": "Production",
+        "environment": "Testing",
         "store-id": 1,
         "store-name": "e2e cell prex dropin accs",
         "store-url": "https://e2e-prex-dropin-aco2--aem-boilerplate-commerce--hlxsites.aem.live/",
