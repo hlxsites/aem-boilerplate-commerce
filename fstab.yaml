@@ -1,0 +1,20 @@
+mountpoints:
+  /:
+    url: https://content.da.live/adobe-commerce/boilerplate/
+    type: markup
+
+folders:
+  /products/: /products/default
+  /apparel: /categories/default
+  /office: /categories/default
+  /lifestyle: /categories/default
+  /bags: /categories/default
+  /collections: /categories/default
+  # /all/: /categories/default
+  # /sale/: /categories/default
+  # /gift-card/: /categories/default
+
+
+
+
+

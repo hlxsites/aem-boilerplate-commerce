@@ -252,37 +252,16 @@ export default async function decorate(block) {
   }
   renderPlaceholder(block);
 
-  const context = {};
+//  const context = {};
+  const context = {
+    pageType: 'Product',
+    category: 'apparel/youth',
+    currentSku: 'ADB150',
+    cartSkus: [],
+    userViewHistory: [],
+    userPurchaseHistory: [],
+  };
   let visibility = !isMobile;
-
-  function handleProductChanges({ productContext }) {
-    context.currentSku = productContext?.sku;
-    loadRecommendation(block, context, visibility, filters);
-  }
-
-  function handleCategoryChanges({ categoryContext }) {
-    context.category = categoryContext?.name;
-    loadRecommendation(block, context, visibility, filters);
-  }
-
-  function handlePageTypeChanges({ pageContext }) {
-    context.pageType = pageContext?.pageType;
-    loadRecommendation(block, context, visibility, filters);
-  }
-
-  function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext?.totalQuantity === 0
-      ? []
-      : shoppingCartContext?.items?.map(({ product }) => product.sku);
-    loadRecommendation(block, context, visibility, filters);
-  }
-
-  window.adobeDataLayer.push((dl) => {
-    dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, { path: 'pageContext' });
-    dl.addEventListener('adobeDataLayer:change', handleProductChanges, { path: 'productContext' });
-    dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
-    dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
-  });
 
   if (isMobile) {
     const section = block.closest('.section');
@@ -296,5 +275,7 @@ export default async function decorate(block) {
       });
     });
     inViewObserver.observe(section);
+  } else {
+    loadRecommendation(block, context, visibility, filters);
   }
 }
