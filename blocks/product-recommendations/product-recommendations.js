@@ -1,16 +1,32 @@
 /* eslint-disable no-underscore-dangle */
-import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-import { addProductsToCart } from '@dropins/storefront-cart/api.js';
-import WishlistToggle from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+
+// Dropin Tools
+// import { events } from '@dropins/tools/event-bus.js';
+// import { initializers } from '@dropins/tools/initializer.js';
+
+// Dropin Components
 import { Button, provider as UI } from '@dropins/tools/components.js';
+
+// Cart Dropin
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
+
+// Recommendations Dropin
+// import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
+// import { render as provider } from '@dropins/storefront-recommendations/render.js';
+
+// Wishlist Dropin
+import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+
+// Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
 import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
+import { rootLink } from '../../scripts/scripts.js';
 
-// initialize dropins
+// Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-import { rootLink } from '../../scripts/scripts.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -128,6 +144,7 @@ function renderItem(unitId, product) {
   return item;
 }
 
+// Render the initial containers
 function renderItems(block, results) {
   // Render only first recommendation
   const [recommendation] = results;
@@ -255,10 +272,10 @@ async function loadRecommendation(block, context, visibility, filters) {
 }
 
 export default async function decorate(block) {
-  const config = readBlockConfig(block);
+  const { typeid: typeId } = readBlockConfig(block);
   const filters = {};
-  if (config.typeid) {
-    filters.typeId = config.typeid;
+  if (typeId) {
+    filters.typeId = typeId;
   }
   renderPlaceholder(block);
 
