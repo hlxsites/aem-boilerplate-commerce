@@ -11,8 +11,8 @@ import { Button, provider as UI } from '@dropins/tools/components.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Recommendations Dropin
-// import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
-// import { render as provider } from '@dropins/storefront-recommendations/render.js';
+import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
+import { render as provider } from '@dropins/storefront-recommendations/render.js';
 
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
@@ -20,68 +20,32 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { performCatalogServiceQuery } from '../../scripts/commerce.js';
+// import { performCatalogServiceQuery } from '../../scripts/commerce.js';
 import { getConfigValue } from '../../scripts/configs.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers
-import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
-const recommendationsQuery = `query GetRecommendations(
-  $pageType: PageType!
-  $category: String
-  $currentSku: String
-  $cartSkus: [String]
-  $userPurchaseHistory: [PurchaseHistory]
-  $userViewHistory: [ViewHistory]
-) {
-  recommendations(
-    cartSkus: $cartSkus
-    category: $category
-    currentSku: $currentSku
-    pageType: $pageType
-    userPurchaseHistory: $userPurchaseHistory
-    userViewHistory: $userViewHistory
-  ) {
-    results {
-      displayOrder
-      pageType
-      productsView {
-        name
-        sku
-        images {
-          url
-        }
-        urlKey
-        externalId
-        __typename
-      }
-      storefrontLabel
-      totalProducts
-      typeId
-      unitId
-      unitName
-    }
-    totalResults
+/**
+ * Gets product view history from localStorage
+ * @param {string} storeViewCode - The store view code
+ * @returns {Array} - Array of view history items
+ */
+function getProductViewHistory(storeViewCode) {
+  try {
+    const viewHistory =
+      window.localStorage.getItem(`${storeViewCode}:productViewHistory`) ||
+      '[]';
+    return JSON.parse(viewHistory);
+  } catch (e) {
+    window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
+    console.error('Error parsing product view history', e);
+    return [];
   }
-}`;
-
-let unitsPromise;
-
-function renderPlaceholder(block) {
-  block.innerHTML = `<h2></h2>
-  <div class="scrollable">
-    <div class="product-grid">
-      ${[...Array(5)].map(() => `
-        <div class="placeholder">
-          <picture><img width="300" height="375" src="" /></picture>
-        </div>
-      `).join('')}
-    </div>
-  </div>`;
 }
 
 function renderItem(unitId, product) {
@@ -96,29 +60,12 @@ function renderItem(unitId, product) {
     });
   };
 
-  const addToCartHandler = async () => {
-    // Always emit the add-to-cart event, regardless of product type.
-    window.adobeDataLayer.push((dl) => {
-      dl.push({ event: 'recs-item-add-to-cart', eventInfo: { ...dl.getState(), unitId, productId: parseInt(product.externalId, 10) || 0 } });
-    });
-    if (product.__typename === 'SimpleProductView') {
-      // Only add simple products directly to cart (no options selections needed)
-      try {
-        await addProductsToCart([{
-          sku: product.sku,
-          quantity: 1,
-        }]);
-      } catch (error) {
-        console.error('Error adding products to cart', error);
-      }
-    } else {
-      // Navigate to page for non-simple products
-      window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
-    }
-  };
-
-  const ctaText = product.__typename === 'SimpleProductView' ? 'Add to Cart' : 'Select Options';
-  const item = document.createRange().createContextualFragment(`<div class="product-grid-item">
+  const ctaText =
+    product.__typename === 'SimpleProductView'
+      ? 'Add to Cart'
+      : 'Select Options';
+  const item = document.createRange()
+    .createContextualFragment(`<div class="product-grid-item">
     <a href="${rootLink(`/products/${product.urlKey}/${product.sku}`)}">
       <picture>
         <source type="image/webp" srcset="${image}?width=300&format=webply&optimize=medium" />
@@ -169,15 +116,21 @@ function renderItems(block, results) {
     grid.appendChild(renderItem(recommendation.unitId, product));
   });
 
-  const inViewObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        window.adobeDataLayer.push((dl) => {
-          dl.push({ event: 'recs-unit-view', eventInfo: { ...dl.getState(), unitId: recommendation.unitId } });
-        });
-      }
-    });
-  }, { threshold: 0.5 });
+  const inViewObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          window.adobeDataLayer.push((dl) => {
+            dl.push({
+              event: 'recs-unit-view',
+              eventInfo: { ...dl.getState(), unitId: recommendation.unitId },
+            });
+          });
+        }
+      });
+    },
+    { threshold: 0.5 },
+  );
   inViewObserver.observe(block);
 }
 
@@ -192,53 +145,83 @@ const mapProduct = (product, index) => ({
   categories: [],
   weight: 0,
   image: product.images.length > 0 ? product.images[0].url : undefined,
-  url: new URL(rootLink(`/products/${product.urlKey}/${product.sku}`), window.location.origin).toString(),
+  url: new URL(
+    rootLink(`/products/${product.urlKey}/${product.sku}`),
+    window.location.origin
+  ).toString(),
   queryType: 'primary',
 });
 
-const mapUnit = (unit) => ({
-  unitId: unit.unitId,
-  unitName: unit.unitName,
-  unitType: 'primary',
-  searchTime: 0,
-  totalProducts: unit.totalProducts,
-  primaryProducts: unit.totalProducts,
-  backupProducts: 0,
-  products: unit.productsView.map(mapProduct),
-  pagePlacement: '',
-  typeId: unit.typeId,
-
-});
-
-async function loadRecommendation(block, context, visibility, filters) {
-  // Only load once the recommendation becomes visible
-  if (!visibility) {
-    return;
+export default async function decorate(block) {
+  // Configuration
+  const { typeid: typeId } = readBlockConfig(block);
+  const filters = {};
+  if (typeId) {
+    filters.typeId = typeId;
   }
 
-  // Only proceed if all required data is available
-  if (!context.pageType
-    || (context.pageType === 'Product' && !context.currentSku)
-    || (context.pageType === 'Category' && !context.category)
-    || (context.pageType === 'Cart' && !context.cartSkus)) {
-    return;
-  }
+  // Layout
+  const fragment = document.createRange().createContextualFragment(`
+    <div class="recommendations__wrapper">
+      <div class="recommendations__list"></div>
+    </div>
+  `);
 
-  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
+  const $list = fragment.querySelector(".recommendations__list");
 
-  if (unitsPromise) {
-    return;
-  }
+  block.appendChild(fragment);
 
-  unitsPromise = new Promise((resolve, reject) => {
-    // Get product view history
-    try {
-      const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
-      context.userViewHistory = JSON.parse(viewHistory);
-    } catch (e) {
-      window.localStorage.removeItem('productViewHistory');
-      console.error('Error parsing product view history', e);
+  const context = {};
+  let visibility = !isMobile;
+
+  const addToCartHandler = async (unitId, product) => {
+    // Always emit the add-to-cart event, regardless of product type.
+    window.adobeDataLayer.push((dl) => {
+      dl.push({
+        event: "recs-item-add-to-cart",
+        eventInfo: {
+          ...dl.getState(),
+          unitId,
+          productId: parseInt(product.externalId, 10) || 0,
+        },
+      });
+    });
+    if (product.__typename === "SimpleProductView") {
+      // Only add simple products directly to cart (no options selections needed)
+      try {
+        await addProductsToCart([
+          {
+            sku: product.sku,
+            quantity: 1,
+          },
+        ]);
+      } catch (error) {
+        console.error("Error adding products to cart", error);
+      }
+    } else {
+      // Navigate to page for non-simple products
+      window.location.href = rootLink(
+        `/products/${product.urlKey}/${product.sku}`
+      );
     }
+  };
+
+  async function loadRecommendation(
+    block,
+    context,
+    visibility,
+    filters,
+    container
+  ) {
+    // Only load once the recommendation becomes visible
+    if (!visibility) {
+      return;
+    }
+
+    const storeViewCode = getConfigValue("headers.cs.Magento-Store-View-Code");
+
+    // Get product view history
+    context.userViewHistory = getProductViewHistory(storeViewCode);
 
     // Get purchase history
     try {
@@ -253,55 +236,72 @@ async function loadRecommendation(block, context, visibility, filters) {
       dl.push({ event: 'recs-api-request-sent', eventInfo: { ...dl.getState() } });
     });
 
-    performCatalogServiceQuery(recommendationsQuery, context).then(({ recommendations }) => {
       window.adobeDataLayer.push((dl) => {
-        dl.push({ recommendationsContext: { units: recommendations.results.map(mapUnit) } });
-        dl.push({ event: 'recs-api-response-received', eventInfo: { ...dl.getState() } });
-      });
-      resolve(recommendations);
-    }).catch((error) => {
-      console.error('Error fetching recommendations', error);
-      reject(error);
+      dl.push({ event: "recs-api-request-sent", eventInfo: { ...dl.getState() } });
     });
-  });
 
-  let { results } = await unitsPromise;
-  results = results.filter((unit) => (filters.typeId ? unit.typeId === filters.typeId : true));
+    await Promise.all([
+      provider.render(ProductList, {
+        pageType: context.pageType,
+        currentSku: context.currentSku,
+        userViewHistory: context.userViewHistory,
+        userPurchaseHistory: context.userPurchaseHistory,
+        slots: {
+          Footer: (ctx) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "footer__wrapper";
+            const addToCart = document.createElement("div");
+            addToCart.className = "footer__button--add-to-cart";
+            wrapper.appendChild(addToCart);
 
-  renderItems(block, results);
-}
+            if (ctx.product.itemType === "SimpleProductView") {
+              // Add to Cart Button
+              UI.render(Button, {
+                children: ctx.dictionary.Recommendations.ProductList.addToCart,
+                onClick: () =>
+                  addToCartHandler(ctx.product.unitId, ctx.product.sku),
+                variant: "primary",
+              })(addToCart);
+            } else {
+              // View Product Button
+              UI.render(Button, {
+                children:
+                  ctx.dictionary.Recommendations.ProductList.selectOptions,
+                onClick: () =>
+                  (window.location.href = rootLink(
+                    `/products/${ctx.product.urlKey}/${ctx.product.sku}`
+                  )),
+                variant: "tertiary",
+              })(addToCart);
+            }
 
-export default async function decorate(block) {
-  const { typeid: typeId } = readBlockConfig(block);
-  const filters = {};
-  if (typeId) {
-    filters.typeId = typeId;
+            ctx.replaceWith(wrapper);
+          },
+        },
+      })(container),
+    ]);
   }
-  renderPlaceholder(block);
-
-  const context = {};
-  let visibility = !isMobile;
 
   function handleProductChanges({ productContext }) {
     context.currentSku = productContext?.sku;
-    loadRecommendation(block, context, visibility, filters);
+    loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCategoryChanges({ categoryContext }) {
     context.category = categoryContext?.name;
-    loadRecommendation(block, context, visibility, filters);
+    loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handlePageTypeChanges({ pageContext }) {
     context.pageType = pageContext?.pageType;
-    loadRecommendation(block, context, visibility, filters);
+    loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCartChanges({ shoppingCartContext }) {
     context.cartSkus = shoppingCartContext?.totalQuantity === 0
       ? []
       : shoppingCartContext?.items?.map(({ product }) => product.sku);
-    loadRecommendation(block, context, visibility, filters);
+    loadRecommendation(block, context, visibility, filters, $list);
   }
 
   window.adobeDataLayer.push((dl) => {
