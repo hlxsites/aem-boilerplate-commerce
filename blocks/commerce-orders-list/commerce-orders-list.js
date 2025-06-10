@@ -10,7 +10,7 @@ import {
   CUSTOMER_ORDERS_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
   UPS_TRACKING_URL,
-} from '../../scripts/constants.js';
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/account.js';

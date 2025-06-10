@@ -81,7 +81,7 @@ import {
   setAddressOnCart,
 } from '../../scripts/checkout.js';
 
-import { authPrivacyPolicyConsentSlot, SUPPORT_PATH } from '../../scripts/constants.js';
+import { authPrivacyPolicyConsentSlot, SUPPORT_PATH } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers

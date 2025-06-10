@@ -3,7 +3,7 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderStatus } from '@dropins/storefront-order/containers/OrderStatus.js';
 import { checkIsAuthenticated } from '../../scripts/configs.js';
-import { CREATE_RETURN_PATH, CUSTOMER_CREATE_RETURN_PATH } from '../../scripts/constants.js';
+import { CREATE_RETURN_PATH, CUSTOMER_CREATE_RETURN_PATH } from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';

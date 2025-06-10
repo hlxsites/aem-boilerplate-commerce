@@ -11,7 +11,7 @@ import {
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_RETURNS_PATH,
   UPS_TRACKING_URL,
-} from '../../scripts/constants.js';
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
