@@ -201,52 +201,6 @@ export function getSignInToken() {
   return getCookie('auth_dropin_user_token');
 }
 
-export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
-  };
-
-  if (USE_TOKEN) {
-    if (typeof USE_TOKEN === 'string') {
-      headers.Authorization = `Bearer ${USE_TOKEN}`;
-    } else {
-      const token = getSignInToken();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-    }
-  }
-
-  let response;
-  if (!GET) {
-    response = await fetch(GRAPHQL_ENDPOINT, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-        variables,
-      }),
-    });
-  } else {
-    const endpoint = new URL(GRAPHQL_ENDPOINT);
-    endpoint.searchParams.set('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '));
-    endpoint.searchParams.set('variables', JSON.stringify(variables));
-    response = await fetch(
-      endpoint.toString(),
-      { headers },
-    );
-  }
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.json();
-}
-
 export function renderPrice(product, format, html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] || ''), ''), Fragment = null) {
   // Simple product
   if (product.price) {
