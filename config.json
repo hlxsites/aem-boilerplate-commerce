@@ -1,25 +1,25 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/NhAanuPLamGZygKtezHUZY/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/NhAanuPLamGZygKtezHUZY/graphql",
       "headers": {
         "cs": {
-          "Magento-Environment-Id": "861iUXRfBWuoGqNcwajH4c",
+          "Magento-Environment-Id": "NhAanuPLamGZygKtezHUZY",
           "Magento-Website-Code": "base",
           "Magento-Store-Code": "main_website_store",
           "Magento-Store-View-Code": "default",
-          "Magento-Customer-Group": "NLI",
+          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "X-Api-Key": "storefront-catalog-apollo",
           "content-type": "application/json"
         }
       },
       "analytics": {
         "base-currency-code": "USD",
-        "environment": "Testing",
+        "environment": "Production",
         "store-id": 1,
-        "store-name": "e2e cell prex dropin accs",
-        "store-url": "https://www.aemshop.net",
+        "store-name": "e2e cell prex dropin accs prod type",
+        "store-url": "https://e2e-prex-dropin-accsprod--aem-boilerplate-commerce--hlxsites.aem.live/",
         "store-view-id": 1,
         "store-view-name": "default",
         "website-id": 1,
