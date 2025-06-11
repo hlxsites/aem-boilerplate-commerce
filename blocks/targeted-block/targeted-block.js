@@ -1,11 +1,11 @@
-import { TargetedBlock } from "@dropins/storefront-personalization/containers";
+/* eslint-disable import/no-unresolved */
+import { TargetedBlock } from '@dropins/storefront-personalization/containers';
 import { render } from '@dropins/storefront-personalization/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 // Initializers
 import '../../scripts/initializers/personalization.js';
-
 
 export default async function decorate(block) {
   const blockConfig = readBlockConfig(block);
@@ -32,7 +32,7 @@ export default async function decorate(block) {
     slots: {
       Content: (ctx) => {
         ctx.replaceWith(content);
-      }
-    }
+      },
+    },
   })(block);
 }
