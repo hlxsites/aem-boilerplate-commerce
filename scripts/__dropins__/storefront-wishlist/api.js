@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{W as _,t as h,b as c}from"./chunks/mergeWishlists.js";import{a as G,c as H,h as F,j as v,d as L,g as U,e as A,i as M,f as N,m as R,r as $}from"./chunks/mergeWishlists.js";import{s as l,g as u,f as n,h as I}from"./chunks/removeProductsFromWishlist.js";import{j as O,e as Q,k as b,c as B,r as C,a as Y,b as x,d as z,i as j}from"./chunks/removeProductsFromWishlist.js";import{events as m}from"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
+import{W as _,t as h,b as c}from"./chunks/mergeWishlists.js";import{a as G,c as H,h as F,j as v,d as L,g as U,e as A,i as M,f as N,m as R,r as $}from"./chunks/mergeWishlists.js";import{s as l,g as u,f as n,h as I}from"./chunks/removeProductsFromWishlist.js";import{k as O,e as Q,l as b,c as B,r as C,a as Y,b as x,d as z,j}from"./chunks/removeProductsFromWishlist.js";import{events as m}from"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
   query GET_WISHLIST_BY_ID_QUERY(
     $wishlistId: ID!,
   ) {
