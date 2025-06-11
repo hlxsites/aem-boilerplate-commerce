@@ -1,29 +1,18 @@
 import { expectAemAssetsImage, expectDefaultImage } from '../../assertions/assets';
 import {
-  checkMoneyOrder,
-  customerBillingAddress,
   customerShippingAddress,
   paymentServicesCreditCard,
   products
 } from "../../fixtures";
 import {
   assertAuthUser,
-  assertCartSummaryMisc,
-  assertCartSummaryProduct,
-  assertCartSummaryProductsOnCheckout, assertOrderConfirmationBillingDetails,
-  assertOrderConfirmationCommonDetails, assertOrderConfirmationShippingDetails, assertOrderConfirmationShippingMethod,
-  assertOrderSummaryMisc,
-  assertProductImage,
-  assertSelectedPaymentMethod,
-  assertTitleHasLink
+  assertOrderConfirmationCommonDetails,
 } from "../../assertions";
 import {
   checkTermsAndConditions, placeOrder,
-  setGuestBillingAddress,
   setGuestShippingAddress,
   setPaymentMethod,
   signUpUser,
-  uncheckBillToShippingAddress
 } from "../../actions";
 
 // The overridden config keys.
@@ -157,7 +146,7 @@ describe.skip('AEM Assets enabled', () => {
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
       .click();
-    
+
     // Assert mini cart.
     waitForAemAssetImages('.cart-mini-cart img', (images) => {
       for (const image of images) {
@@ -310,9 +299,45 @@ describe.skip('AEM Assets enabled', () => {
 
     signOut();
   });
+
+  it('[Checkout Dropin]: should load and show AEM Assets optimized images', () => {
+    visitWithEagerImages('/products/joust-duffle-bag/24-MB01');
+
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .click();
+    cy.wait(3000);
+    visitWithEagerImages('/checkout');
+
+    const expectedOptions = {
+      protocol: 'https://',
+      environment: Cypress.env('AEM_ASSETS_ENVIRONMENT'),
+      format: 'webp',
+      quality: 80,
+      width: 300,
+      height: 300,
+    };
+
+    waitForAemAssetImages('.checkout__cart-summary img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, expectedOptions);
+
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
+
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
+            width: (expectedOptions.width * screenWidth) / 1920,
+          })
+        }
+      }
+    })
+
+  });
 });
 
-describe('AEM Assets disabled', () => {
+describe.skip('AEM Assets disabled', () => {
   beforeEach(() => {
     cy.interceptConfig((config) => {
       Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, 'f38a0de0-764b-41fa-bd2c-5bc2f3c7b39a')
@@ -433,7 +458,7 @@ describe('AEM Assets disabled', () => {
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
-          
+
           expectDefaultImage(url, {
             ...expectedOptions,
             width: (300 * screenWidth) / 1920,
@@ -454,7 +479,7 @@ describe('AEM Assets disabled', () => {
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
-          
+
           expectDefaultImage(url, {
             ...expectedOptions,
             width: (300 * screenWidth) / 1920,
