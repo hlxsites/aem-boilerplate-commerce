@@ -1,11 +1,12 @@
 /* eslint-disable import/no-unresolved */
-import { TargetedBlock } from '@dropins/storefront-personalization/containers';
+import { TargetedBlock } from '@dropins/storefront-personalization/containers/TargetedBlock.js';
 import { render } from '@dropins/storefront-personalization/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-// Initializers
-import '../../scripts/initializers/personalization.js';
+function prepareIds(providedIds) {
+  return providedIds.split(',').map((num) => btoa(num.trim()));
+}
 
 export default async function decorate(block) {
   const blockConfig = readBlockConfig(block);
@@ -15,23 +16,29 @@ export default async function decorate(block) {
     type,
     'customer-segments': customerSegments,
     'customer-groups': customerGroups,
-    'cart-rules': cartRules,
+    'cart-rules': rules,
   } = blockConfig;
 
   const content = (blockConfig.fragment !== undefined)
     ? await loadFragment(fragment)
-    : block.innerHTML;
+    : block.children[block.children.length - 1];
+
+  const segments = customerSegments !== undefined ? prepareIds(customerSegments) : [];
+  const groups = customerGroups !== undefined ? prepareIds(customerGroups) : [];
+  const cartRules = rules !== undefined ? prepareIds(rules) : [];
 
   render.render(TargetedBlock, {
     type,
     personalizationData: {
-      segments: customerSegments.split(',').map((num) => btoa(num.trim())),
-      groups: customerGroups.split(',').map((num) => btoa(num.trim())),
-      cartRules: cartRules.split(',').map((num) => btoa(num.trim())),
+      segments,
+      groups,
+      cartRules,
     },
     slots: {
       Content: (ctx) => {
-        ctx.replaceWith(content);
+        const container = document.createElement('div');
+        container.append(content);
+        ctx.replaceWith(container);
       },
     },
   })(block);

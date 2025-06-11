@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const PERSONALIZATION_DATA_QUERY = "\nquery PERSONALIZATION_DATA(\n      $cartId: String!\n    ) {\n      customerGroup {\n        uid\n      }\n      customerSegments(cart_id: $cartId) {\n        uid\n      }\n      cart(cart_id: $cartId) {\n        rules {\n          uid\n        }\n      }\n    }\n";
+export declare const PERSONALIZATION_DATA_QUERY = "\nquery PERSONALIZATION_DATA(\n      $cartId: String!\n    ) {\n      customerGroup {\n        uid\n      }\n      customerSegments(cartId: $cartId) {\n        uid\n      }\n      cart(cart_id: $cartId) {\n        rules {\n          uid\n        }\n      }\n    }\n";
 //# sourceMappingURL=PersonalizationDataQuery.d.ts.map

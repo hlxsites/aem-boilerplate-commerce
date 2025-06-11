@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const COOKIE_LIFETIME = 3600;
+export declare const COOKIE_LIFETIME_HOURS = 1;
 export declare const COOKIE_NAME = "personalization_dropin_data";
 export declare const setCookie: (value: string) => Promise<void>;
 export declare const getCookie: () => undefined;
