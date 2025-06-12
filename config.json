@@ -16,7 +16,7 @@
       },
       "analytics": {
         "base-currency-code": "USD",
-        "environment": "Production",
+        "environment": "Testing",
         "store-id": 1,
         "store-name": "e2e cell prex dropin accs prod type",
         "store-url": "https://e2e-prex-dropin-accsprod--aem-boilerplate-commerce--hlxsites.aem.live/",
