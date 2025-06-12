@@ -131,13 +131,13 @@ export default async function decorate(block) {
             addToCart.className = 'footer__button--add-to-cart';
             wrapper.appendChild(addToCart);
 
-            if (ctx.product.itemType === 'SimpleProductView') {
+            if (ctx.item.itemType === 'SimpleProductView') {
 
               // Add to Cart Button
               UI.render(Button, {
                 children: ctx.dictionary.Recommendations.ProductList.addToCart,
                 icon: Icon({ source: 'Cart' }),
-                onClick: () => cartApi.addProductsToCart([{ sku: ctx.product.sku, quantity: 1 }]),
+                onClick: () => cartApi.addProductsToCart([{ sku: ctx.item.sku, quantity: 1 }]),
                 variant: 'primary',
               })(addToCart);
 
@@ -148,7 +148,7 @@ export default async function decorate(block) {
                 children: ctx.dictionary.Recommendations.ProductList.selectOptions,
                 onClick: () =>
                   (window.location.href = rootLink(
-                    `/products/${ctx.product.urlKey}/${ctx.product.sku}`
+                    `/products/${ctx.item.urlKey}/${ctx.item.sku}`
                   )),
                 variant: 'tertiary',
               })(addToCart);
@@ -160,7 +160,7 @@ export default async function decorate(block) {
 
             // Render Icon
             wishlistRender.render(WishlistToggle, {
-              product: ctx.product,
+              product: ctx.item,
             })($wishlistToggle);
 
             // Append to Cart Item
@@ -174,25 +174,21 @@ export default async function decorate(block) {
   }
 
   function handleProductChanges({ productContext }) {
-    console.log('🟢productContext', productContext);
     context.currentSku = productContext?.sku;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCategoryChanges({ categoryContext }) {
-    console.log('🟢categoryContext', categoryContext);
     context.category = categoryContext?.name;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handlePageTypeChanges({ pageContext }) {
-    console.log('🟢pageContext', pageContext);
     context.pageType = pageContext?.pageType;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCartChanges({ shoppingCartContext }) {
-    console.log('🟢shoppingCartContext', shoppingCartContext);
     context.cartSkus = shoppingCartContext?.totalQuantity === 0
       ? []
       : shoppingCartContext?.items?.map(({ product }) => product.sku);

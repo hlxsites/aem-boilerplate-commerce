@@ -1,9 +1,16 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-import { Item } from '../../data/models';
+import { Item, RecommendationUnitModel } from '../../data/models';
 
 export interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
+    footer?: any;
+    initialData?: {
+        recommendations?: {
+            results: RecommendationUnitModel[];
+            totalProducts: number;
+        };
+    };
     hideHeading?: boolean;
     routeProduct?: (item: Item) => string;
     currentSku?: string;
