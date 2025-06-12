@@ -97,6 +97,13 @@ export default async function decorate(block) {
     if (!visibility) {
       return;
     }
+    console.log('🟢block', block);
+
+    console.log('🟢container', container);
+    // Only proceed if container is empty
+    if (container.children.length > 0) {
+      return;
+    }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
 
@@ -108,6 +115,9 @@ export default async function decorate(block) {
 
     await Promise.all([
       provider.render(ProductList, {
+        routeProduct: (item) => {
+          return rootLink(`/products/${item.urlKey}/${item.sku}`);
+        },
         pageType: context.pageType,
         currentSku: context.currentSku,
         userViewHistory: context.userViewHistory,
@@ -130,6 +140,7 @@ export default async function decorate(block) {
                 onClick: () => cartApi.addProductsToCart([{ sku: ctx.product.sku, quantity: 1 }]),
                 variant: 'primary',
               })(addToCart);
+
             } else {
 
               // Select Options Button
@@ -158,26 +169,30 @@ export default async function decorate(block) {
             ctx.replaceWith(wrapper);
           },
         },
-      })(container),
+      })(block),
     ]);
   }
 
   function handleProductChanges({ productContext }) {
+    console.log('🟢productContext', productContext);
     context.currentSku = productContext?.sku;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCategoryChanges({ categoryContext }) {
+    console.log('🟢categoryContext', categoryContext);
     context.category = categoryContext?.name;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handlePageTypeChanges({ pageContext }) {
+    console.log('🟢pageContext', pageContext);
     context.pageType = pageContext?.pageType;
     loadRecommendation(block, context, visibility, filters, $list);
   }
 
   function handleCartChanges({ shoppingCartContext }) {
+    console.log('🟢shoppingCartContext', shoppingCartContext);
     context.cartSkus = shoppingCartContext?.totalQuantity === 0
       ? []
       : shoppingCartContext?.items?.map(({ product }) => product.sku);
@@ -197,7 +212,7 @@ export default async function decorate(block) {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           visibility = true;
-          loadRecommendation(block, context, visibility, filters);
+          loadRecommendation(block, context, visibility, filters, $list);
           inViewObserver.disconnect();
         }
       });
