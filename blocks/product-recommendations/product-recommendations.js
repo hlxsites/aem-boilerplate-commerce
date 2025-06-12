@@ -82,6 +82,8 @@ export default async function decorate(block) {
 
   const context = {};
   let visibility = !isMobile;
+  let isLoading = false;
+  let loadTimeout = null;
 
   async function loadRecommendation(
     block,
@@ -89,17 +91,28 @@ export default async function decorate(block) {
     visibility,
     filters,
     container,
+    forceReload = false,
   ) {
     // Only load once the recommendation becomes visible
     if (!visibility) {
       return;
     }
-    console.log('🟢block', block);
 
-    console.log('🟢container', container);
-    // Only proceed if container is empty
-    if (container.children.length > 0) {
+    // Prevent multiple simultaneous loads
+    if (isLoading) {
       return;
+    }
+
+    // Only proceed if container is empty or force reload is requested
+    if (container.children.length > 0 && !forceReload) {
+      return;
+    }
+
+    isLoading = true;
+
+    // Clear container if reloading
+    if (forceReload) {
+      container.innerHTML = '';
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
@@ -110,78 +123,132 @@ export default async function decorate(block) {
     // Get purchase history
     context.userPurchaseHistory = getPurchaseHistory(storeViewCode);
 
-    await Promise.all([
-      provider.render(ProductList, {
-        routeProduct: (item) => rootLink(`/products/${item.urlKey}/${item.sku}`),
-        pageType: context.pageType,
-        currentSku: context.currentSku,
-        userViewHistory: context.userViewHistory,
-        userPurchaseHistory: context.userPurchaseHistory,
-        slots: {
-          Footer: (ctx) => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'footer__wrapper';
+    try {
+      await Promise.all([
+        provider.render(ProductList, {
+          routeProduct: (item) => rootLink(`/products/${item.urlKey}/${item.sku}`),
+          pageType: context.pageType,
+          currentSku: context.currentSku,
+          userViewHistory: context.userViewHistory,
+          userPurchaseHistory: context.userPurchaseHistory,
+          slots: {
+            Footer: (ctx) => {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'footer__wrapper';
 
-            const addToCart = document.createElement('div');
-            addToCart.className = 'footer__button--add-to-cart';
-            wrapper.appendChild(addToCart);
+              const addToCart = document.createElement('div');
+              addToCart.className = 'footer__button--add-to-cart';
+              wrapper.appendChild(addToCart);
 
-            if (ctx.item.itemType === 'SimpleProductView') {
-              // Add to Cart Button
-              UI.render(Button, {
-                children: ctx.dictionary.Recommendations.ProductList.addToCart,
-                icon: Icon({ source: 'Cart' }),
-                onClick: () => cartApi.addProductsToCart([{ sku: ctx.item.sku, quantity: 1 }]),
-                variant: 'primary',
-              })(addToCart);
-            } else {
-              // Select Options Button
-              UI.render(Button, {
-                children: ctx.dictionary.Recommendations.ProductList.selectOptions,
-                onClick: () => { window.location.href = rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`); },
-                variant: 'tertiary',
-              })(addToCart);
-            }
+              if (ctx.item.itemType === 'SimpleProductView') {
+                // Add to Cart Button
+                UI.render(Button, {
+                  children:
+                    ctx.dictionary.Recommendations.ProductList.addToCart,
+                  icon: Icon({ source: 'Cart' }),
+                  onClick: () => cartApi.addProductsToCart([{ sku: ctx.item.sku, quantity: 1 }]),
+                  variant: 'primary',
+                })(addToCart);
+              } else {
+                // Select Options Button
+                UI.render(Button, {
+                  children: ctx.dictionary.Recommendations.ProductList.selectOptions,
+                  onClick: () => { window.location.href = rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`); },
+                  variant: 'tertiary',
+                })(addToCart);
+              }
 
-            // Wishlist Button
-            const $wishlistToggle = document.createElement('div');
-            $wishlistToggle.classList.add('footer__button--wishlist-toggle');
+              // Wishlist Button
+              const $wishlistToggle = document.createElement('div');
+              $wishlistToggle.classList.add('footer__button--wishlist-toggle');
 
-            // Render Icon
-            wishlistRender.render(WishlistToggle, {
-              product: ctx.item,
-            })($wishlistToggle);
+              // Render Icon
+              wishlistRender.render(WishlistToggle, {
+                product: ctx.item,
+              })($wishlistToggle);
 
-            // Append to Cart Item
-            wrapper.appendChild($wishlistToggle);
+              // Append to Cart Item
+              wrapper.appendChild($wishlistToggle);
 
-            ctx.replaceWith(wrapper);
+              ctx.replaceWith(wrapper);
+            },
           },
-        },
-      })(block),
-    ]);
+        })(block),
+      ]);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // Debounced loader to prevent excessive API calls
+  function debouncedLoadRecommendation(forceReload = false) {
+    if (loadTimeout) {
+      clearTimeout(loadTimeout);
+    }
+
+    loadTimeout = setTimeout(() => {
+      loadRecommendation(
+        block,
+        context,
+        visibility,
+        filters,
+        $list,
+        forceReload,
+      );
+    }, 300); // 300ms debounce
+  }
+
+  // Track previous context values to detect significant changes
+  let previousContext = {};
+
+  function shouldReloadRecommendations(newContext) {
+    // Check if significant context changes occurred that warrant reloading recommendations
+    const significantChanges = ['currentSku', 'pageType', 'category'];
+
+    return significantChanges.some(
+      (key) => newContext[key] !== previousContext[key] && newContext[key] !== undefined,
+    );
+  }
+
+  function updateContext(updates) {
+    const hasSignificantChanges = shouldReloadRecommendations({
+      ...context,
+      ...updates,
+    });
+
+    // Update context
+    Object.assign(context, updates);
+
+    // Update previous context for next comparison
+    previousContext = { ...context };
+
+    // Load or reload recommendations based on whether significant changes occurred
+    if (hasSignificantChanges && $list.children.length > 0) {
+      // Force reload if recommendations already exist and context changed significantly
+      debouncedLoadRecommendation(true);
+    } else {
+      // Initial load or minor context changes
+      debouncedLoadRecommendation(false);
+    }
   }
 
   function handleProductChanges({ productContext }) {
-    context.currentSku = productContext?.sku;
-    loadRecommendation(block, context, visibility, filters, $list);
+    updateContext({ currentSku: productContext?.sku });
   }
 
   function handleCategoryChanges({ categoryContext }) {
-    context.category = categoryContext?.name;
-    loadRecommendation(block, context, visibility, filters, $list);
+    updateContext({ category: categoryContext?.name });
   }
 
   function handlePageTypeChanges({ pageContext }) {
-    context.pageType = pageContext?.pageType;
-    loadRecommendation(block, context, visibility, filters, $list);
+    updateContext({ pageType: pageContext?.pageType });
   }
 
   function handleCartChanges({ shoppingCartContext }) {
-    context.cartSkus = shoppingCartContext?.totalQuantity === 0
+    const cartSkus = shoppingCartContext?.totalQuantity === 0
       ? []
       : shoppingCartContext?.items?.map(({ product }) => product.sku);
-    loadRecommendation(block, context, visibility, filters, $list);
+    updateContext({ cartSkus });
   }
 
   window.adobeDataLayer.push((dl) => {
@@ -197,7 +264,7 @@ export default async function decorate(block) {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           visibility = true;
-          loadRecommendation(block, context, visibility, filters, $list);
+          debouncedLoadRecommendation(false);
           inViewObserver.disconnect();
         }
       });
