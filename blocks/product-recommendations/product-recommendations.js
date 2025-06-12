@@ -1,9 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 
-// Dropin Tools
-// import { events } from '@dropins/tools/event-bus.js';
-// import { initializers } from '@dropins/tools/initializer.js';
-
 // Dropin Components
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
 
@@ -86,7 +82,6 @@ export default async function decorate(block) {
   let loadTimeout = null;
 
   async function loadRecommendation(
-    block,
     context,
     visibility,
     filters,
@@ -152,8 +147,9 @@ export default async function decorate(block) {
               } else {
                 // Select Options Button
                 UI.render(Button, {
-                  children: ctx.dictionary.Recommendations.ProductList.selectOptions,
-                  onClick: () => { window.location.href = rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`); },
+                  children:
+                    ctx.dictionary.Recommendations.ProductList.selectOptions,
+                  href: rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`),
                   variant: 'tertiary',
                 })(addToCart);
               }
@@ -187,14 +183,7 @@ export default async function decorate(block) {
     }
 
     loadTimeout = setTimeout(() => {
-      loadRecommendation(
-        block,
-        context,
-        visibility,
-        filters,
-        $list,
-        forceReload,
-      );
+      loadRecommendation(context, visibility, filters, $list, forceReload);
     }, 300); // 300ms debounce
   }
 
