@@ -36,9 +36,7 @@ const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches
  */
 function getProductViewHistory(storeViewCode) {
   try {
-    const viewHistory =
-      window.localStorage.getItem(`${storeViewCode}:productViewHistory`) ||
-      '[]';
+    const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
     return JSON.parse(viewHistory);
   } catch (e) {
     window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
@@ -54,8 +52,7 @@ function getProductViewHistory(storeViewCode) {
  */
 function getPurchaseHistory(storeViewCode) {
   try {
-    const purchaseHistory =
-      window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
+    const purchaseHistory = window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
     return JSON.parse(purchaseHistory);
   } catch (e) {
     window.localStorage.removeItem(`${storeViewCode}:purchaseHistory`);
@@ -91,7 +88,7 @@ export default async function decorate(block) {
     context,
     visibility,
     filters,
-    container
+    container,
   ) {
     // Only load once the recommendation becomes visible
     if (!visibility) {
@@ -115,9 +112,7 @@ export default async function decorate(block) {
 
     await Promise.all([
       provider.render(ProductList, {
-        routeProduct: (item) => {
-          return rootLink(`/products/${item.urlKey}/${item.sku}`);
-        },
+        routeProduct: (item) => rootLink(`/products/${item.urlKey}/${item.sku}`),
         pageType: context.pageType,
         currentSku: context.currentSku,
         userViewHistory: context.userViewHistory,
@@ -132,7 +127,6 @@ export default async function decorate(block) {
             wrapper.appendChild(addToCart);
 
             if (ctx.item.itemType === 'SimpleProductView') {
-
               // Add to Cart Button
               UI.render(Button, {
                 children: ctx.dictionary.Recommendations.ProductList.addToCart,
@@ -140,16 +134,11 @@ export default async function decorate(block) {
                 onClick: () => cartApi.addProductsToCart([{ sku: ctx.item.sku, quantity: 1 }]),
                 variant: 'primary',
               })(addToCart);
-
             } else {
-
               // Select Options Button
               UI.render(Button, {
                 children: ctx.dictionary.Recommendations.ProductList.selectOptions,
-                onClick: () =>
-                  (window.location.href = rootLink(
-                    `/products/${ctx.item.urlKey}/${ctx.item.sku}`
-                  )),
+                onClick: () => { window.location.href = rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`); },
                 variant: 'tertiary',
               })(addToCart);
             }
