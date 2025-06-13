@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 // Drop-in Tools
 import { getCookie } from '@dropins/tools/lib.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';

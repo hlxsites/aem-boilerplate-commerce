@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { addProductsToCart } from '@dropins/storefront-cart/api.js';

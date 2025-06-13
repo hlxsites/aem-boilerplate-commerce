@@ -45,6 +45,5 @@ import { rootLink } from '../../scripts/scripts.js';
     }, 200);
   });
 
-  // eslint-disable-next-line no-new
-  new window.LiveSearchAutocomplete(storeDetails);
+  return new window.LiveSearchAutocomplete(storeDetails);
 })();

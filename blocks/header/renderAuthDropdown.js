@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import { getCookie } from '@dropins/tools/lib.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';

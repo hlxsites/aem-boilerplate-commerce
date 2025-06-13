@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-auth/api.js';
