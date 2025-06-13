@@ -76,20 +76,18 @@ export default async function decorate(block) {
 
   block.appendChild(fragment);
 
-  const context = {};
   let visibility = !isMobile;
   let isLoading = false;
   let loadTimeout = null;
 
   async function loadRecommendation(
     context,
-    visibility,
-    filters,
+    isVisible,
     container,
     forceReload = false,
   ) {
     // Only load once the recommendation becomes visible
-    if (!visibility) {
+    if (!isVisible) {
       return;
     }
 
@@ -176,6 +174,7 @@ export default async function decorate(block) {
     }
   }
 
+  const context = {};
   // Debounced loader to prevent excessive API calls
   function debouncedLoadRecommendation(forceReload = false) {
     if (loadTimeout) {
@@ -183,7 +182,7 @@ export default async function decorate(block) {
     }
 
     loadTimeout = setTimeout(() => {
-      loadRecommendation(context, visibility, filters, $list, forceReload);
+      loadRecommendation(context, visibility, $list, forceReload);
     }, 300); // 300ms debounce
   }
 
