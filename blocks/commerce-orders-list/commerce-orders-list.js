@@ -1,5 +1,6 @@
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { OrdersList } from '@dropins/storefront-account/containers/OrdersList.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
   checkIsAuthenticated,
@@ -9,8 +10,6 @@ import {
   CUSTOMER_RETURN_DETAILS_PATH,
   UPS_TRACKING_URL,
 } from '../../scripts/commerce.js';
-
-import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 // Initialize
 import '../../scripts/initializers/account.js';

@@ -1,3 +1,4 @@
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderReturns } from '@dropins/storefront-order/containers/OrderReturns.js';
 import {
@@ -10,7 +11,6 @@ import {
 // Initialize
 import '../../scripts/initializers/order.js';
 import { rootLink } from '../../scripts/scripts.js';
-import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   const isAuthenticated = checkIsAuthenticated();

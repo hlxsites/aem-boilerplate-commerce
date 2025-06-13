@@ -19,6 +19,7 @@ import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
@@ -30,7 +31,6 @@ import '../../scripts/initializers/wishlist.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
 import { fetchPlaceholders } from '../../scripts/commerce.js';
-import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   // Configuration

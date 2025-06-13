@@ -1,7 +1,7 @@
+import { generateAemAssetsOptimizedUrl, isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
-import { generateAemAssetsOptimizedUrl, isAemAssetsEnabled } from '../../scripts/assets.js';
 
 export default async function decorate(block) {
   await import('../../scripts/widgets/search.js');
