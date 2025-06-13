@@ -1,57 +1,64 @@
-import { readBlockConfig } from '../../scripts/aem.js';
-import { getConfigValue } from '../../scripts/configs.js';
-import { rootLink } from '../../scripts/scripts.js';
+import { readBlockConfig } from "../../scripts/aem.js";
+import { getConfigValue } from "../../scripts/configs.js";
+import { rootLink } from "../../scripts/scripts.js";
 
-import ProductList from '@/plp/containers/ProductList.js';
-import Facets from '@/plp/containers/Facets.js';
-import ResultsInfo from '@/plp/containers/ResultsInfo.js';
-import SearchBarInput from '@/plp/containers/SearchBarInput.js';
-import SearchBarResults from '@/plp/containers/SearchBarResults.js';
-import { render as plpRender } from '@/plp/render.js';
-import * as plpApi from '@/plp/api.js';
+import ProductList from "@dropins/storefront-product-discovery/containers/ProductList.js";
+import Facets from "@dropins/storefront-product-discovery/containers/Facets.js";
+import ResultsInfo from "@dropins/storefront-product-discovery/containers/ResultsInfo.js";
+import SearchBarInput from "@dropins/storefront-product-discovery/containers/SearchBarInput.js";
+//import SearchBarResults from "@dropins/storefront-product-discovery/containers/SearchBarResults.js";
+
+import { render as plpRender } from "@dropins/storefront-product-discovery/render.js";
+import * as plpApi from "@dropins/storefront-product-discovery/api.js";
 
 export default async function decorate(block) {
   // eslint-disable-next-line import/no-absolute-path, import/no-unresolved
   // await import('/scripts/widgets/search.js');
 
   const { category, urlpath, type } = readBlockConfig(block);
-  block.textContent = '';
+  block.textContent = "";
 
   const storeDetails = {
-    environmentId: getConfigValue('headers.cs.Magento-Environment-Id'),
-    environmentType: (getConfigValue('commerce-endpoint')).includes('sandbox') ? 'testing' : '',
-    apiKey: getConfigValue('headers.cs.x-api-key'),
-    apiUrl: getConfigValue('commerce-endpoint'),
-    websiteCode: getConfigValue('headers.cs.Magento-Website-Code'),
-    storeCode: getConfigValue('headers.cs.Magento-Store-Code'),
-    storeViewCode: getConfigValue('headers.cs.Magento-Store-View-Code'),
+    environmentId: getConfigValue("headers.cs.Magento-Environment-Id"),
+    environmentType: getConfigValue("commerce-endpoint").includes("sandbox")
+      ? "testing"
+      : "",
+    apiKey: getConfigValue("headers.cs.x-api-key"),
+    apiUrl: getConfigValue("commerce-endpoint"),
+    websiteCode: getConfigValue("headers.cs.Magento-Website-Code"),
+    storeCode: getConfigValue("headers.cs.Magento-Store-Code"),
+    storeViewCode: getConfigValue("headers.cs.Magento-Store-View-Code"),
     config: {
       pageSize: 8,
       perPageConfig: {
-        pageSizeOptions: '12,24,36',
-        defaultPageSizeOption: '12',
+        pageSizeOptions: "12,24,36",
+        defaultPageSizeOption: "12",
       },
-      minQueryLength: '2',
-      currencySymbol: '$',
-      currencyRate: '1',
+      minQueryLength: "2",
+      currencySymbol: "$",
+      currencyRate: "1",
       displayOutOfStock: true,
       allowAllProducts: false,
       imageCarousel: false,
       optimizeImages: true,
       imageBaseWidth: 200,
       listview: true,
-      displayMode: '', // "" for plp || "PAGE" for category/catalog
+      displayMode: "", // "" for plp || "PAGE" for category/catalog
       addToCart: async (...args) => {
-        const { addProductsToCart } = await import('../../scripts/__dropins__/storefront-cart/api.js');
-        await addProductsToCart([{
-          sku: args[0],
-          options: args[1],
-          quantity: args[2],
-        }]);
+        const { addProductsToCart } = await import(
+          "../../scripts/__dropins__/storefront-cart/api.js"
+        );
+        await addProductsToCart([
+          {
+            sku: args[0],
+            options: args[1],
+            quantity: args[2],
+          },
+        ]);
       },
     },
     context: {
-      customerGroup: getConfigValue('headers.cs.Magento-Customer-Group'),
+      customerGroup: getConfigValue("headers.cs.Magento-Customer-Group"),
     },
     route: ({ sku, urlKey }) => {
       const a = new URL(window.location.origin);
@@ -73,14 +80,14 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $input = fragment.querySelector('.search__input');
-  const $resultInfo = fragment.querySelector('.search__result-info');
-  const $facets = fragment.querySelector('.search__facets');
-  const $productList = fragment.querySelector('.search__product-list');
+  const $input = fragment.querySelector(".search__input");
+  const $resultInfo = fragment.querySelector(".search__result-info");
+  const $facets = fragment.querySelector(".search__facets");
+  const $productList = fragment.querySelector(".search__product-list");
 
-  block.innerHTML = '';
+  block.innerHTML = "";
   block.appendChild(fragment);
-  console.log('PLP BLOCK INITILIZATION');
+  console.log("PLP BLOCK INITILIZATION");
   await Promise.all([
     plpApi.initialize(storeDetails),
     plpRender($input, SearchBarInput, { storeDetails }),
@@ -88,10 +95,11 @@ export default async function decorate(block) {
     plpRender($facets, Facets, { storeDetails }),
     plpRender($productList, ProductList, { storeDetails }),
   ]);
-  
 
-  if (type !== 'search') {
-    storeDetails.config.categoryName = document.querySelector('.default-content-wrapper > h1')?.innerText;
+  if (type !== "search") {
+    storeDetails.config.categoryName = document.querySelector(
+      ".default-content-wrapper > h1"
+    )?.innerText;
     storeDetails.config.currentCategoryId = category;
     storeDetails.config.currentCategoryUrlPath = urlpath;
 

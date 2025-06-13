@@ -1,37 +1,42 @@
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, maximum-scale=1"
+/>
 <script type="speculationrules">
-    {
-        "prerender": [{
-            "where": {
-                "href_matches": "/*"
-            },
-            "eagerness": "moderate"
-        }]
-    }
+  {
+    "prerender": [
+      {
+        "where": {
+          "href_matches": "/*"
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
 </script>
 <script type="importmap">
-    {
-        "imports": {
-            "@dropins/storefront-account/": "/scripts/__dropins__/storefront-account/",
-            "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/",
-            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
-            "@dropins/storefront-checkout/": "/scripts/__dropins__/storefront-checkout/",
-            "@dropins/storefront-order/": "/scripts/__dropins__/storefront-order/",
-            "@dropins/storefront-payment-services/": "/scripts/__dropins__/storefront-payment-services/",
-            "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/",
-            "@dropins/storefront-wishlist/": "/scripts/__dropins__/storefront-wishlist/",
-            "@dropins/tools/": "/scripts/__dropins__/tools/",
-            "@/plp/": "http://localhost:3002/"
-        }
+  {
+    "imports": {
+      "@dropins/storefront-account/": "/scripts/__dropins__/storefront-account/",
+      "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/",
+      "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
+      "@dropins/storefront-checkout/": "/scripts/__dropins__/storefront-checkout/",
+      "@dropins/storefront-order/": "/scripts/__dropins__/storefront-order/",
+      "@dropins/storefront-payment-services/": "/scripts/__dropins__/storefront-payment-services/",
+      "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/",
+      "@dropins/storefront-product-discovery/": "/scripts/__dropins__/storefront-product-discovery/",
+      "@dropins/storefront-wishlist/": "/scripts/__dropins__/storefront-wishlist/",
+      "@dropins/tools/": "/scripts/__dropins__/tools/"
     }
+  }
 </script>
 
 <link rel="stylesheet" href="/styles/styles.css" />
 
 <script type="module">
-    if (!(HTMLScriptElement.supports?.('importmap'))) {
-        import('/scripts/__dropins__/tools/shims/importmap.js');
-    }
+  if (!HTMLScriptElement.supports?.("importmap")) {
+    import("/scripts/__dropins__/tools/shims/importmap.js");
+  }
 </script>
 
 <script src="/scripts/aem.js" type="module"></script>

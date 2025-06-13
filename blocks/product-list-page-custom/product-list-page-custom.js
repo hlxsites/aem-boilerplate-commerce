@@ -1,21 +1,18 @@
-import { readBlockConfig } from '../../scripts/aem.js';
-import { rootLink } from '../../scripts/scripts.js';
+import { readBlockConfig } from "../../scripts/aem.js";
+import { rootLink } from "../../scripts/scripts.js";
 
-
-import ProductList from '@/plp/containers/ProductList.js';
-import Facets from '@/plp/containers/Facets.js';
-import ResultsInfo from '@/plp/containers/ResultsInfo.js';
-import SearchBarInput from '@/plp/containers/SearchBarInput.js';
-import SearchBarResults from '@/plp/containers/SearchBarResults.js';
-import { render as provider } from '@/plp/render.js';
+import ProductList from "@dropins/storefront-product-discovery/containers/ProductList.js";
+import Facets from "@dropins/storefront-product-discovery/containers/Facets.js";
+import ResultsInfo from "@dropins/storefront-product-discovery/containers/ResultsInfo.js";
+import { render as provider } from "@dropins/storefront-product-discovery/render.js";
 
 // Initializers
-import '../../scripts/initializers/search.js';
+import "../../scripts/initializers/search.js";
 
 export default async function decorate(block) {
   const config = readBlockConfig(block);
 
-  console.log('custom product list page');
+  console.log("custom product list page");
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__input"></div>
@@ -30,21 +27,18 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $input = fragment.querySelector('.search__input');
-  const $resultInfo = fragment.querySelector('.search__result-info');
-  const $facets = fragment.querySelector('.search__facets');
-  const $productList = fragment.querySelector('.search__product-list');
+  const $input = fragment.querySelector(".search__input");
+  const $resultInfo = fragment.querySelector(".search__result-info");
+  const $facets = fragment.querySelector(".search__facets");
+  const $productList = fragment.querySelector(".search__product-list");
 
-  block.innerHTML = '';
+  block.innerHTML = "";
   block.appendChild(fragment);
-  console.log('PLP BLOCK INITILIZATION');
+  console.log("PLP BLOCK INITILIZATION");
 
-  const storeDetails = {
+  const storeDetails = {};
 
-  };
-  
   return await Promise.all([
-
     provider.render(ResultsInfo, { storeDetails })($resultInfo),
     provider.render(Facets, { storeDetails })($facets),
     provider.render(ProductList, { storeDetails })($productList),
