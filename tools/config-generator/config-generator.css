@@ -1,0 +1,135 @@
+.subheader {
+  text-align: center;
+  margin-bottom: 48px;
+  color: #616161;
+}
+
+.inputgroup,
+.fieldgroup {
+  margin-bottom: 16px;
+}
+
+.inputgroup label,
+.fieldgroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input-group button {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.input-group button:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #0066cc;
+}
+
+.input-group button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-group button[type="submit"] {
+  background: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+.input-group button[type="submit"]:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.status {
+  margin: 24px 0px 0px;
+  font-weight: 700;
+  font-style: italic;
+  background: var(--s2-green);
+  padding: 6px 12px;
+  color: rgb(255, 255, 255);
+  border-radius: 8px;
+}
+
+.status.error {
+  background-color: var(--s2-red);
+}
+
+.status.success {
+  background-color: var(--s2-blue-800);
+}
+
+.success-panel {
+  padding: 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-top: 24px;
+}
+
+.config-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+pre {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0;
+  line-height: 1.2;
+  font-size: 13px;
+}
+
+:root {
+  --s2-green: #1473e6;
+  --s2-red-800: #e60000;
+  --s2-blue-800: #1473e6;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.radio-label input[type="radio"] {
+  margin: 0;
+}
+
+.radio-label:hover {
+  color: #0066cc;
+}

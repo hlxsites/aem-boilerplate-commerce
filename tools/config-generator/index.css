@@ -1,0 +1,29 @@
+body {
+  font-family: var(--s2-font-family, Arial, sans-serif);
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logo {
+  max-width: 200px;
+  height: auto;
+  margin: 24px 0;
+}
+
+.subheader {
+  text-align: center;
+  margin-bottom: 48px;
+  color: #616161;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Config Generator - Adobe Commerce</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://da.live/nx/styles/nexter.css">
+  <link rel="stylesheet" href="/tools/config-generator/index.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "da-lit": "https://da.live/deps/lit/dist/index.js"
+      }
+    }
+  </script>
+  <script src="https://da.live/nx/utils/sdk.js" type="module"></script>
+  <script src="/tools/config-generator/config-generator.js" type="module"></script>
+  <link rel="icon" href="data:,">
+</head>
+<body>
+<main>
+  <div class="header">
+    <h1>Generate Commerce Config</h1>
+  </div>
+  <p class="subheader">This tool will generate a configuration object based on your GraphQL API endpoint. You can copy the output and use it in either your code repo as config.json, or use it in your site <a href="https://www.aem.live/docs/admin.html#schema/PublicConfig" target="_blank">public config</a>. Enter your GraphQL API URL below to get started.</p>
+  <da-config-generator></da-config-generator>
+</main>
+</body>
+</html>
