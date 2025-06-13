@@ -37,7 +37,6 @@ module.exports = defineConfig({
       },
 
       user: {
-        ...AEM_ASSETS_PRIVATE_USER,
         order: "000000008",
         returnedOrder: "000000009",
       },
