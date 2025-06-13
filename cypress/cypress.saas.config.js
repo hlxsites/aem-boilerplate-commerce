@@ -2,9 +2,9 @@ const { defineConfig } = require("cypress");
 const baseConfig = require("./cypress.base.config");
 
 // A private user used with AEM Assets testing suite.
-const AEM_ASSETS_PRIVATE_USER = JSON.parse(
+/* const AEM_ASSETS_PRIVATE_USER = JSON.parse(
   process.env.AEM_ASSETS_PRIVATE_USER ?? "{}"
-);
+); */
 
 module.exports = defineConfig({
   ...baseConfig,
