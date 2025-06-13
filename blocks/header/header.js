@@ -295,6 +295,7 @@ export default async function decorate(block) {
     <button type="button" class="nav-search-button">Search</button>
     <div class="nav-search-input nav-search-panel nav-tools-panel">
       <div id="search-bar-input"></div>
+      <div class="search-bar-result"></div>
     </div>
   </div>
   `);
@@ -304,7 +305,7 @@ export default async function decorate(block) {
   const searchPanel = navTools.querySelector('.nav-search-panel');
   const searchButton = navTools.querySelector('.nav-search-button');
   const searchInput = searchPanel.querySelector('#search-bar-input');
-  const searchResult = searchPanel.querySelector('.search-bar__result');
+  const searchResult = searchPanel.querySelector('.search-barresult');
 
   // Render the SearchBarInput component
   provider.render(SearchBarInput, {
