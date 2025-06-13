@@ -1,12 +1,10 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { SignUp } from '@dropins/storefront-auth/containers/SignUp.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
 import {
-  authPrivacyPolicyConsentSlot,
   CUSTOMER_ACCOUNT_PATH,
   CUSTOMER_LOGIN_PATH,
+  checkIsAuthenticated,
+  authPrivacyPolicyConsentSlot,
 } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 

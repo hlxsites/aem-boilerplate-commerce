@@ -1,7 +1,5 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { events } from '@dropins/tools/event-bus.js';
-import { Header, provider as uiProvider } from '@dropins/tools/components.js';
+import { Header, provider as UI } from '@dropins/tools/components.js';
 import { CUSTOMER_RETURN_DETAILS_PATH, CUSTOMER_RETURNS_PATH, fetchPlaceholders } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 
@@ -9,7 +7,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   const headerContainer = document.createElement('div');
-  await uiProvider.render(Header, { title: 'Return' })(headerContainer);
+  await UI.render(Header, { title: 'Return' })(headerContainer);
 
   if (window.location.href.includes(CUSTOMER_RETURN_DETAILS_PATH)) {
     const placeholders = await fetchPlaceholders();
@@ -29,6 +27,6 @@ export default async function decorate(block) {
     const urlParams = new URLSearchParams(window.location.search);
     const returnNumber = urlParams.get('returnRef');
     const returnData = orderData.returns.find((item) => item.returnNumber === returnNumber);
-    uiProvider.render(Header, { title: `Return ${returnData.returnNumber}` })(headerContainer);
+    UI.render(Header, { title: `Return ${returnData.returnNumber}` })(headerContainer);
   }, { eager: true });
 }
