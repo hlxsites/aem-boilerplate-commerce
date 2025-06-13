@@ -22,7 +22,7 @@ jobs:
           wait-on: 'http://localhost:3000'
           command: npm run cypress:saas:run
         env:
-          SAAS_AEM_ASSETS_CONFIG: ${{ secrets.SAAS_AEM_ASSETS_CONFIG }}
+          AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
