@@ -1,7 +1,6 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import ReturnsList from '@dropins/storefront-order/containers/ReturnsList.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import { checkIsAuthenticated } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 import {
@@ -10,7 +9,8 @@ import {
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_RETURNS_PATH,
   UPS_TRACKING_URL,
-} from '../../scripts/constants.js';
+  checkIsAuthenticated,
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
