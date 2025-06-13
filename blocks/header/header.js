@@ -305,7 +305,7 @@ export default async function decorate(block) {
   const searchPanel = navTools.querySelector('.nav-search-panel');
   const searchButton = navTools.querySelector('.nav-search-button');
   const searchInput = searchPanel.querySelector('#search-bar-input');
-  const searchResult = searchPanel.querySelector('.search-barresult');
+  const searchResult = searchPanel.querySelector('.search-bar-result');
 
   // Render the SearchBarInput component
   provider.render(SearchBarInput, {
