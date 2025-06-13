@@ -21,6 +21,10 @@ module.exports = {
         allow: ['warn', 'error', 'info', 'debug'],
       },
     ],
-    'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    'no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+    quotes: ['error', 'single'], // enforce single quotes
   },
 };

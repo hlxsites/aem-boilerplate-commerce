@@ -14,7 +14,6 @@ import {
   loadScript,
   toCamelCase,
   toClassName,
-  readBlockConfig,
   waitForFirstImage,
   loadSection,
   loadSections,
@@ -23,7 +22,11 @@ import {
 } from './aem.js';
 import { trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
-import { initializeConfig, getRootPath, getListOfRootPaths } from './configs.js';
+import {
+  initializeConfig,
+  getRootPath,
+  getListOfRootPaths,
+} from './configs.js';
 
 const AUDIENCES = {
   mobile: () => window.innerWidth < 600,
@@ -37,14 +40,19 @@ const AUDIENCES = {
  * @returns an array of HTMLElement nodes that match the given scope
  */
 export function getAllMetadata(scope) {
-  return [...document.head.querySelectorAll(`meta[property^="${scope}:"],meta[name^="${scope}-"]`)]
-    .reduce((res, meta) => {
-      const id = toClassName(meta.name
+  return [
+    ...document.head.querySelectorAll(
+      `meta[property^="${scope}:"],meta[name^="${scope}-"]`,
+    ),
+  ].reduce((res, meta) => {
+    const id = toClassName(
+      meta.name
         ? meta.name.substring(scope.length + 1)
-        : meta.getAttribute('property').split(':')[1]);
-      res[id] = meta.getAttribute('content');
-      return res;
-    }, {});
+        : meta.getAttribute('property').split(':')[1],
+    );
+    res[id] = meta.getAttribute('content');
+    return res;
+  }, {});
 }
 
 // Define an execution context
@@ -66,7 +74,11 @@ function buildHeroBlock(main) {
   const h1 = main.querySelector('h1');
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+  if (
+    h1
+    && picture
+    && h1.compareDocumentPosition(picture) && Node.DOCUMENT_POSITION_PRECEDING
+  ) {
     const section = document.createElement('div');
     section.append(buildBlock('hero', { elems: [picture, h1] }));
     main.prepend(section);
@@ -91,7 +103,9 @@ function autolinkModals(element) {
 
     if (origin && origin.href && origin.href.includes('/modals/')) {
       e.preventDefault();
-      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      const { openModal } = await import(
+        `${window.hlx.codeBasePath}/blocks/modal/modal.js`
+      );
       openModal(origin.href);
     }
   });
@@ -127,7 +141,10 @@ function buildTemplateColumns(doc) {
     }
 
     if (gap) {
-      column.style.setProperty('--gap', `var(--spacing-${gap.toLocaleLowerCase()})`);
+      column.style.setProperty(
+        '--gap',
+        `var(--spacing-${gap.toLocaleLowerCase()})`,
+      );
       column.removeAttribute('data-gap');
     }
   });
@@ -184,10 +201,7 @@ function decorateLinks(main) {
     try {
       const url = new URL(a.href);
       const {
-        origin,
-        pathname,
-        search,
-        hash,
+        origin, pathname, search, hash,
       } = url;
 
       // if the links belongs to another store, do nothing
@@ -195,7 +209,9 @@ function decorateLinks(main) {
 
       // If the link is already localized, do nothing
       if (origin !== window.location.origin || pathname.startsWith(root)) return;
-      a.href = new URL(`${origin}${root}${pathname.replace(/^\//, '')}${search}${hash}`);
+      a.href = new URL(
+        `${origin}${root}${pathname.replace(/^\//, '')}${search}${hash}`,
+      );
     } catch {
       console.warn('Could not make localized link');
     }
@@ -220,12 +236,20 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
 
   // Instrument experimentation plugin
-  if (getMetadata('experiment')
+  if (
+    getMetadata('experiment')
     || Object.keys(getAllMetadata('campaign')).length
-    || Object.keys(getAllMetadata('audience')).length) {
+    || Object.keys(getAllMetadata('audience')).length
+  ) {
     // eslint-disable-next-line import/no-relative-packages
-    const { loadEager: runEager } = await import('../plugins/experimentation/src/index.js');
-    await runEager(document, { audiences: AUDIENCES, overrideMetadataFields: ['placeholders'] }, pluginContext);
+    const { loadEager: runEager } = await import(
+      '@adobe/aem-experimentation/src/index.js'
+    );
+    await runEager(
+      document,
+      { audiences: AUDIENCES, overrideMetadataFields: ['placeholders'] },
+      pluginContext,
+    );
   }
 
   await initializeDropins();
@@ -242,18 +266,42 @@ async function loadEager(doc) {
     // Preload PDP Dropins assets
     preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
     preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js',
+      'script',
+    );
+    preloadFile(
+      '/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js',
+      'script',
+    );
   } else if (document.body.querySelector('main .product-list-page')) {
     pageType = 'Category';
     preloadFile('/scripts/widgets/search.js', 'script');
-  } 
+  }
   // else if (document.body.querySelector('main .product-list-page-custom')) {
   //   // TODO Remove this bracket if not using custom PLP
   //   pageType = 'Category';
@@ -265,7 +313,7 @@ async function loadEager(doc) {
   //     const { preloadCategory } = await import('/blocks/product-list-page-custom/product-list-page-custom.js');
   //     preloadCategory({ id: category, urlPath: urlpath });
   //   }
-  // } 
+  // }
   else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
   } else if (document.body.querySelector('main .commerce-checkout')) {
@@ -349,11 +397,15 @@ async function loadLazy(doc) {
   trackHistory();
 
   // Implement experimentation preview pill
-  if ((getMetadata('experiment')
+  if (
+    getMetadata('experiment')
     || Object.keys(getAllMetadata('campaign')).length
-    || Object.keys(getAllMetadata('audience')).length)) {
+    || Object.keys(getAllMetadata('audience')).length
+  ) {
     // eslint-disable-next-line import/no-relative-packages
-    const { loadLazy: runLazy } = await import('../plugins/experimentation/src/index.js');
+    const { loadLazy: runLazy } = await import(
+      '@adobe/aem-experimentation/src/index.js'
+    );
     await runLazy(document, { audiences: AUDIENCES }, pluginContext);
   }
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
@@ -371,11 +423,13 @@ function loadDelayed() {
 
 export async function fetchIndex(indexFile, pageSize = 500) {
   const handleIndex = async (offset) => {
-    const resp = await fetch(`/${indexFile}.json?limit=${pageSize}&offset=${offset}`);
+    const resp = await fetch(
+      `/${indexFile}.json?limit=${pageSize}&offset=${offset}`,
+    );
     const json = await resp.json();
 
     const newIndex = {
-      complete: (json.limit + json.offset) === json.total,
+      complete: json.limit + json.offset === json.total,
       offset: json.offset + pageSize,
       promise: null,
       data: [...window.index[indexFile].data, ...json.data],
@@ -403,7 +457,7 @@ export async function fetchIndex(indexFile, pageSize = 500) {
   }
 
   window.index[indexFile].promise = handleIndex(window.index[indexFile].offset);
-  const newIndex = await (window.index[indexFile].promise);
+  const newIndex = await window.index[indexFile].promise;
   window.index[indexFile] = newIndex;
 
   return newIndex;
@@ -445,5 +499,7 @@ loadPage();
 (async function loadDa() {
   if (!new URL(window.location.href).searchParams.get('dapreview')) return;
   // eslint-disable-next-line import/no-unresolved
-  import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
+  import('https://da.live/scripts/dapreview.js').then(
+    ({ default: daPreview }) => daPreview(loadPage),
+  );
 }());
