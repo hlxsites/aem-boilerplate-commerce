@@ -15,9 +15,9 @@ describe('AEM Assets enabled', () => {
     Cypress.env("isAemAssetsSuite", true);
     envConfig = Cypress.env('aemAssetsConfig');
 
-    const envId = envConfig.aemAssetsConfig.environmentId;
-    const programId = envConfig.aemAssetsConfig.programId;
-    const isStage = envConfig.aemAssetsConfig.isStage;
+    const envId = envConfig.author.environmentId;
+    const programId = envConfig.author.programId;
+    const isStage = envConfig.author.isStage;
 
     aemAssetsEnvironment = isStage ? `${programId}-${envId}-cmstg` : `${programId}-${envId}`;
   })
@@ -25,7 +25,7 @@ describe('AEM Assets enabled', () => {
   beforeEach(() => {
     cy.interceptConfig((config) => {
       Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, envConfig.credentials.magentoEnvironmentId)
-      Cypress._.set(config, MAGENTO_API_KEY_KEY, envConfig.credentials.xApiKey)
+      Cypress._.set(config, MAGENTO_API_KEY_KEY, envConfig.credentials.xPublicApiKey)
       Cypress._.set(config, COMMERCE_CORE_ENDPOINT_KEY, envConfig.commerceConfig.coreEndpoint)
       Cypress._.set(config, COMMERCE_ENDPOINT_KEY, envConfig.commerceConfig.endpoint)
       Cypress._.set(config, ASSETS_ENABLED_KEY, 'true')
@@ -198,6 +198,11 @@ describe('AEM Assets enabled', () => {
   });
 
   it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
+    if (!envConfig.user.email || !envConfig.user.password) {
+      cy.log('No email or password provided, skipping test');
+      return;
+    }
+
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
     cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
@@ -227,6 +232,11 @@ describe('AEM Assets enabled', () => {
   });
 
   it('[Order Dropin]: should load and show AEM Assets optimized images', () => {
+    if (!envConfig.user.email || !envConfig.user.password) {
+      cy.log('No email or password provided, skipping test');
+      return;
+    }
+    
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
     cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
