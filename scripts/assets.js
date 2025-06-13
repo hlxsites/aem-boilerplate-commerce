@@ -1,5 +1,5 @@
 import { provider as UI, Image } from '@dropins/tools/components.js';
-import { getConfigValue } from './configs.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 
 /** @type {import('./assets.d.ts').isAemAssetsEnabled} */
 export function isAemAssetsEnabled() {
