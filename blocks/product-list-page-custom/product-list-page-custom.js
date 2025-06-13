@@ -6,7 +6,7 @@ import { rootLink } from '../../scripts/scripts.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 
 // Initializers
-// import '../../scripts/initializers/search.js';
+import '../../scripts/initializers/search.js';
 
 export default async function decorate(block) {
   const config = readBlockConfig(block);
