@@ -33,13 +33,12 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
   block.appendChild(fragment);
-  console.log('PLP BLOCK INITILIZATION');
-
-  const storeDetails = {};
 
   return await Promise.all([
-    provider.render(ResultsInfo, { storeDetails })($resultInfo),
-    provider.render(Facets, { storeDetails })($facets),
-    provider.render(ProductList, { storeDetails })($productList),
+    provider.render(ResultsInfo, { })($resultInfo),
+    provider.render(Facets, { })($facets),
+    provider.render(ProductList, { 
+      routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
+     })($productList),
   ]);
 }
