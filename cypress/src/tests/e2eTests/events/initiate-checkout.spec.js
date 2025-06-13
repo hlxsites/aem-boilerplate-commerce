@@ -6,7 +6,7 @@ import { products } from "../../../fixtures";
  */
 it("is sent on mini cart Checkout button click", () => {
   cy.visit(products.configurable.urlPathWithOptions);
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
@@ -21,7 +21,7 @@ it("is sent on mini cart Checkout button click", () => {
         expect(storefrontInstanceContextIndex).to.be.greaterThan(-1);
       });
   });
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       // add to cart
@@ -61,7 +61,7 @@ it("is sent on cart page Checkout button click", () => {
   cy.get('button[data-count="1"]').should("be.visible");
   cy.visit("/cart");
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
@@ -76,7 +76,7 @@ it("is sent on cart page Checkout button click", () => {
         expect(storefrontInstanceContextIndex).to.be.greaterThan(-1);
       });
   });
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       // click the checkout button

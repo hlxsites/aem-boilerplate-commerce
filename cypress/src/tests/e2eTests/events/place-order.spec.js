@@ -56,7 +56,7 @@ it("is sent on place order button click", () => {
   // wait until the URL includes '/order-details'
   cy.url().should("include", "/order-details");
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {

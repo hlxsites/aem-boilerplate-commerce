@@ -13,7 +13,7 @@ it("is sent on add to cart button click", () => {
     .should("be.visible")
     .click();
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {

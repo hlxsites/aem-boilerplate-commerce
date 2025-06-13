@@ -18,7 +18,7 @@ it(
   { tags: "@skipSaas" },
   () => {
     cy.visit(RECS_URL);
-    cy.waitForResource("commerce-events-collector.js").then(() => {
+    cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
         .then((adobeDataLayer) => {
@@ -53,7 +53,7 @@ it(
 it("recs-unit-view", { tags: "@skipSaas" }, () => {
   cy.viewport(1440, 600);
   cy.visit(RECS_URL);
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.get(".product-recommendations-wrapper").scrollIntoView({
       duration: 1000,
     });
@@ -92,7 +92,7 @@ it("recs-unit-view", { tags: "@skipSaas" }, () => {
 
 it("recs-item-click", { tags: "@skipSaas" }, () => {
   cy.visit(RECS_URL);
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       cy.get(".product-grid-item")
@@ -132,7 +132,7 @@ it("recs-item-click", { tags: "@skipSaas" }, () => {
 
 it("reqs-item-add-to-cart", { tags: "@skipSaas" }, () => {
   cy.visit(RECS_URL);
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       cy.get(".product-grid-item button")

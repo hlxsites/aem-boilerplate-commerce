@@ -189,16 +189,16 @@ async function loadEager(doc) {
     await import('./initializers/pdp.js');
 
     // Preload PDP Dropins assets
-    preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
-    preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/api.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/render.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductHeader.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductPrice.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductShortDescription.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductOptions.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductQuantity.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductDescription.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductAttributes.js', 'script');
+    preloadFile('/scripts/__/__dropins/storefront-pdp/containers/ProductGallery.js', 'script');
   } else if (document.body.querySelector('main .product-list-page')) {
     pageType = 'Category';
     preloadFile('/scripts/widgets/search.js', 'script');
@@ -285,7 +285,7 @@ async function loadLazy(doc) {
     loadFooter(doc.querySelector('footer')),
     loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`),
     loadFonts(),
-    import('./acdl/adobe-client-data-layer.min.js'),
+    import('./__/__adobe/adobe-client-data-layer/dist/adobe-client-data-layer.min.js'),
   ]);
 
   if (sessionStorage.getItem('acdl:debug')) {

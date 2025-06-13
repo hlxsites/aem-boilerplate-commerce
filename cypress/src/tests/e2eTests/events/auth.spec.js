@@ -4,7 +4,7 @@ import { assertAuthUser, expectsEventWithContext } from "../../../assertions";
 it("has shopperId as logged-in when authenticated, and guest when not", () => {
   // 1. checks that shopperContext is guest on first non-authenticated page load
   cy.visit("/");
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((dl) => {
@@ -21,7 +21,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
     signUpUser(sign_up);
     assertAuthUser(sign_up);
   });
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((dl) => {
@@ -34,7 +34,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
 
   // 3. Loads a new page and checks that shopperContext is still set to logged-in
   cy.visit("/");
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((dl) => {
@@ -53,7 +53,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
   ).click();
   cy.get(".auth-sign-in-form__button--submit");
   cy.wait(1000); // TODO: find better way to wait for auth acdl push to have occurred after logout click.
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((dl) => {
@@ -66,7 +66,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
 
   // 5. Loads a new page and checks that shopperContext is still set to guest
   cy.visit("/");
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((dl) => {

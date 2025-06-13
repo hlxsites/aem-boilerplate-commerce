@@ -22,6 +22,22 @@
     "url": "https://github.com/hlxsites/aem-boilerplate-commerce/issues"
   },
   "homepage": "https://github.com/hlxsites/aem-boilerplate-commerce#readme",
+  "libraries": [
+    { "name": "@dropins/storefront-account", "include": ["**/*"] },
+    { "name": "@dropins/storefront-auth", "include": ["**/*"] },
+    { "name": "@dropins/storefront-cart", "include": ["**/*"] },
+    { "name": "@dropins/storefront-checkout", "include": ["**/*"] },
+    { "name": "@dropins/storefront-order", "include": ["**/*"] },
+    { "name": "@dropins/storefront-payment-services", "include": ["**/*"] },
+    { "name": "@dropins/storefront-pdp", "include": ["**/*"] },
+    { "name": "@dropins/storefront-wishlist", "include": ["**/*"] },
+    { "name": "@dropins/tools", "include": ["**/*"] },
+    { "name": "@dropins/storefront-personalization", "include": ["**/*"] },
+    { "name": "@adobe/adobe-client-data-layer", "include": ["dist/adobe-client-data-layer.min.js"] },
+    { "name": "@adobe/magento-storefront-event-collector", "include": ["dist/index.js"] },
+    { "name": "@adobe/magento-storefront-events-sdk", "include": ["dist/index.js"] },
+    { "name": "ajv", "include": ["dist/2020.js"] }
+  ],
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.25.9",
@@ -29,10 +45,12 @@
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
+    "glob": "^11.0.2",
     "stylelint": "16.12.0",
     "stylelint-config-standard": "36.0.1"
   },
   "dependencies": {
+    "@adobe/adobe-client-data-layer": "^2.0.2",
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
     "@dropins/storefront-account": "~1.0.7-beta2",
@@ -44,6 +62,7 @@
     "@dropins/storefront-pdp": "1.2.0-beta3",
     "@dropins/storefront-wishlist": "^0.2.3-alpha",
     "@dropins/tools": "1.3.0-beta1",
-    "@dropins/storefront-personalization": "~1.0.0-beta1"
+    "@dropins/storefront-personalization": "~1.0.0-beta1",
+    "ajv": "^8.17.1"
   }
 }
