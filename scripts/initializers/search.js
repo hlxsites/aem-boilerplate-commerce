@@ -6,13 +6,12 @@ import {
   setEndpoint,
 } from '@dropins/storefront-product-discovery/api.js';
 import { initializeDropin } from './index.js';
-import { fetchPlaceholders } from '../commerce.js';
-import { getConfigValue, getHeaders } from '../configs.js';
+import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
+import {  getHeaders } from '../configs.js';
 
 await initializeDropin(async () => {
-  console.log('Search Initializer');
+  setEndpoint(await commerceEndpointWithQueryParams());
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  setEndpoint(await getConfigValue('commerce-endpoint'));
 
   // for local testing
   // setEndpoint("https://catalog-service.adobe.io/graphql");
