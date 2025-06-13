@@ -129,9 +129,9 @@ export default async function decorate(block) {
     _shortDescription,
     _options,
     _quantity,
-    wishlistToggleBtn,
     _description,
     _attributes,
+    wishlistToggleBtn,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -288,6 +288,27 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+  }, { eager: true });
+
+  // Handle option changes
+  events.on('pdp/values', () => {
+    if (wishlistToggleBtn) {
+      const configValues = pdpApi.getProductConfigurationValues();
+
+      // Check URL parameter for empty optionsUIDs
+      const urlOptionsUIDs = urlParams.get('optionsUIDs');
+
+      // If URL has empty optionsUIDs parameter, treat as base product (no options)
+      const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+
+      wishlistToggleBtn.setProps((prev) => ({
+        ...prev,
+        product: {
+          ...product,
+          optionUIDs,
+        },
+      }));
+    }
   }, { eager: true });
 
   if (sessionStorage.getItem('incompleteProduct')) {
