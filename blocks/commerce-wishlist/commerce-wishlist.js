@@ -1,6 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
-
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { render as wishlistRenderer } from '@dropins/storefront-wishlist/render.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
@@ -57,6 +54,7 @@ export default async function decorate(block) {
   await wishlistRenderer.render(Wishlist, {
     routeEmptyWishlistCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     moveProdToCart: cartApi.addProductsToCart,
+    routeProdDetailPage: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
     onLoginClick: showAuthModal,
   })(block);
 }

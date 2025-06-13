@@ -1,11 +1,10 @@
-/* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getMetadata } from './aem.js';
+import { getCookie } from '@dropins/tools/lib.js';
 import {
   getHeaders,
   getConfigValue,
-  getCookie,
   getRootPath,
-} from './configs.js';
+} from '@dropins/tools/lib/aem/configs.js';
+import { getMetadata } from './aem.js';
 import { getConsent } from './scripts.js';
 
 /**
@@ -13,7 +12,6 @@ import { getConsent } from './scripts.js';
  * @param {string} [prefix] Location of placeholders
  * @returns {object} Window placeholders object
  */
-// eslint-disable-next-line import/prefer-default-export
 export async function fetchPlaceholders(prefix = 'default') {
   const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
   const [fallback, override] = overrides.split('\n');
@@ -60,7 +58,6 @@ export async function fetchPlaceholders(prefix = 'default') {
           resolve(placeholders);
         })
         .catch((error) => {
-          // eslint-disable-next-line no-console
           console.error('error loading placeholders', error);
           // error loading placeholders
           window.placeholders[prefix] = {};
@@ -69,6 +66,39 @@ export async function fetchPlaceholders(prefix = 'default') {
     });
   }
   return window.placeholders[`${prefix}`];
+}
+
+/**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns {Promise<Object>} - The config JSON from session storage
+ */
+export async function getConfigFromSession() {
+  const configURL = `${window.location.origin}/config.json`;
+
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (
+      !parsedConfig[':expiry']
+      || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)
+    ) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    const config = await fetch(configURL);
+    if (!config.ok) throw new Error('Failed to fetch config');
+    const configJSON = await config.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
+  }
 }
 
 /* Common query fragments */
@@ -91,7 +121,7 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 /**
  * Creates a short hash from an object by sorting its entries and hashing them.
  * @param {Object} obj - The object to hash
- * @param {number} [length=5] - Length of the resulting hash
+  @param {number} [length=5] - Length of the resulting hash
  * @returns {string} A short hash string
  */
 function createHashFromObject(obj, length = 5) {
@@ -360,4 +390,12 @@ export function mapProductAcdl(product) {
     canonicalUrl: new URL(`/products/${product.urlKey}/${product.sku}`, window.location.origin).toString(),
     mainImageUrl: product?.images?.[0]?.url,
   };
+}
+
+/**
+ * Checks if the user is authenticated
+ * @returns {boolean} - true if the user is authenticated
+ */
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
 }
