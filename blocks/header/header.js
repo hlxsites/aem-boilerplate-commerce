@@ -309,7 +309,7 @@ export default async function decorate(block) {
   // Render the SearchBarInput component
   provider.render(SearchBarInput, {
     routeSearch: (searchQuery) => {
-      const url = `${rootLink('/drafts/temp-search')}?q=${encodeURIComponent(
+      const url = `${rootLink('/search')}?q=${encodeURIComponent(
         searchQuery,
       )}`;
       window.location.href = url;
