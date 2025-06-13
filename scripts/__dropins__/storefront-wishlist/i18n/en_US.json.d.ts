@@ -6,7 +6,8 @@ declare const _default: {
       "cta": "Start shopping"
     },
     "Wishlist": {
-      "heading": "Wishlist {count}"
+      "heading": "Wishlist {count}",
+      "loading": "Loading..."
     },
     "Alert": {
       "addProduct": {
@@ -30,7 +31,8 @@ declare const _default: {
   },
   "ProductItem": {
     "CartActionButton": "Move To Cart",
-    "TrashActionButton": "Remove this product from wishlist"
+    "TrashActionButton": "Remove this product from wishlist",
+    "CustomizeActionButton": "Customize"
   }
 }
 ;

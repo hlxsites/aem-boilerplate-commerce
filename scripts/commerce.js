@@ -1,19 +1,70 @@
-/* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getMetadata } from './aem.js';
+import { getCookie } from '@dropins/tools/lib.js';
 import {
   getHeaders,
   getConfigValue,
-  getCookie,
   getRootPath,
-} from './configs.js';
+} from '@dropins/tools/lib/aem/configs.js';
+import { getMetadata } from './aem.js';
 import { getConsent } from './scripts.js';
+
+// PATH CONSTANTS
+export const SUPPORT_PATH = '/support';
+export const PRIVACY_POLICY_PATH = '/privacy-policy';
+
+// GUEST
+export const ORDER_STATUS_PATH = '/order-status';
+export const ORDER_DETAILS_PATH = '/order-details';
+export const RETURN_DETAILS_PATH = '/return-details';
+export const CREATE_RETURN_PATH = '/create-return';
+export const SALES_GUEST_VIEW_PATH = '/sales/guest/view/';
+
+// CUSTOMER
+export const CUSTOMER_PATH = '/customer';
+export const CUSTOMER_ORDER_DETAILS_PATH = `${CUSTOMER_PATH}${ORDER_DETAILS_PATH}`;
+export const CUSTOMER_RETURN_DETAILS_PATH = `${CUSTOMER_PATH}${RETURN_DETAILS_PATH}`;
+export const CUSTOMER_CREATE_RETURN_PATH = `${CUSTOMER_PATH}${CREATE_RETURN_PATH}`;
+export const CUSTOMER_ORDERS_PATH = `${CUSTOMER_PATH}/orders`;
+export const CUSTOMER_RETURNS_PATH = `${CUSTOMER_PATH}/returns`;
+export const CUSTOMER_ADDRESS_PATH = `${CUSTOMER_PATH}/address`;
+export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
+export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
+export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
+export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
+
+// TRACKING
+export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+// REUSABLE SLOTS
+export const authPrivacyPolicyConsentSlot = {
+  PrivacyPolicyConsent: async (ctx) => {
+    const wrapper = document.createElement('span');
+    Object.assign(wrapper.style, {
+      color: 'var(--color-neutral-700)',
+      font: 'var(--type-details-caption-2-font)',
+      display: 'block',
+      marginBottom: 'var(--spacing-medium)',
+    });
+
+    const link = document.createElement('a');
+    link.href = PRIVACY_POLICY_PATH;
+    link.target = '_blank';
+    link.textContent = 'Privacy Policy';
+
+    wrapper.append(
+      'By creating an account, you acknowledge that you have read and agree to our ',
+      link,
+      ', which outlines how we collect, use, and protect your personal data.',
+    );
+
+    ctx.appendChild(wrapper);
+  },
+};
 
 /**
  * Gets placeholders object.
  * @param {string} [prefix] Location of placeholders
  * @returns {object} Window placeholders object
  */
-// eslint-disable-next-line import/prefer-default-export
 export async function fetchPlaceholders(prefix = 'default') {
   const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
   const [fallback, override] = overrides.split('\n');
@@ -60,7 +111,6 @@ export async function fetchPlaceholders(prefix = 'default') {
           resolve(placeholders);
         })
         .catch((error) => {
-          // eslint-disable-next-line no-console
           console.error('error loading placeholders', error);
           // error loading placeholders
           window.placeholders[prefix] = {};
@@ -69,6 +119,39 @@ export async function fetchPlaceholders(prefix = 'default') {
     });
   }
   return window.placeholders[`${prefix}`];
+}
+
+/**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns {Promise<Object>} - The config JSON from session storage
+ */
+export async function getConfigFromSession() {
+  const configURL = `${window.location.origin}/config.json`;
+
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (
+      !parsedConfig[':expiry']
+      || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)
+    ) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    const config = await fetch(configURL);
+    if (!config.ok) throw new Error('Failed to fetch config');
+    const configJSON = await config.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
+  }
 }
 
 /* Common query fragments */
@@ -91,7 +174,7 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 /**
  * Creates a short hash from an object by sorting its entries and hashing them.
  * @param {Object} obj - The object to hash
- * @param {number} [length=5] - Length of the resulting hash
+  @param {number} [length=5] - Length of the resulting hash
  * @returns {string} A short hash string
  */
 function createHashFromObject(obj, length = 5) {
@@ -146,52 +229,6 @@ export async function performCatalogServiceQuery(query, variables) {
 
 export function getSignInToken() {
   return getCookie('auth_dropin_user_token');
-}
-
-export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
-  };
-
-  if (USE_TOKEN) {
-    if (typeof USE_TOKEN === 'string') {
-      headers.Authorization = `Bearer ${USE_TOKEN}`;
-    } else {
-      const token = getSignInToken();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-    }
-  }
-
-  let response;
-  if (!GET) {
-    response = await fetch(GRAPHQL_ENDPOINT, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-        variables,
-      }),
-    });
-  } else {
-    const endpoint = new URL(GRAPHQL_ENDPOINT);
-    endpoint.searchParams.set('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '));
-    endpoint.searchParams.set('variables', JSON.stringify(variables));
-    response = await fetch(
-      endpoint.toString(),
-      { headers },
-    );
-  }
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.json();
 }
 
 export function renderPrice(product, format, html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] || ''), ''), Fragment = null) {
@@ -360,4 +397,12 @@ export function mapProductAcdl(product) {
     canonicalUrl: new URL(`/products/${product.urlKey}/${product.sku}`, window.location.origin).toString(),
     mainImageUrl: product?.images?.[0]?.url,
   };
+}
+
+/**
+ * Checks if the user is authenticated
+ * @returns {boolean} - true if the user is authenticated
+ */
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
 }

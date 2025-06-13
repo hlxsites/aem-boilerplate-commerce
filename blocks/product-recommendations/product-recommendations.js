@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 // Dropin Components
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
 
@@ -16,7 +14,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { getConfigValue } from '../../scripts/configs.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers

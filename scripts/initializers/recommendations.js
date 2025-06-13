@@ -1,9 +1,8 @@
-/* eslint-disable import/no-cycle */
 import { initializers } from '@dropins/tools/initializer.js';
 import { initialize, setEndpoint, setFetchGraphQlHeaders } from '@dropins/storefront-recommendations/api.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
-import { getHeaders } from '../configs.js';
+import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 
 await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());

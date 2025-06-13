@@ -1,16 +1,14 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { OrdersList } from '@dropins/storefront-account/containers/OrdersList.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
 import {
+  checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_ORDERS_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
   UPS_TRACKING_URL,
-} from '../../scripts/constants.js';
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/account.js';
