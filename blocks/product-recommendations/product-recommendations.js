@@ -13,8 +13,8 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
 // Block-level
-import { readBlockConfig } from '../../scripts/aem.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers
