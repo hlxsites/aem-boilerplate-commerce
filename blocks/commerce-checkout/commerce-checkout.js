@@ -2,6 +2,7 @@
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Dropin Components
 import {
@@ -82,8 +83,6 @@ import { rootLink } from '../../scripts/scripts.js';
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
-
-import { tryRenderAemAssetsImage } from '../../scripts/assets.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {

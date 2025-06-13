@@ -2,13 +2,13 @@
 import {
   h, Component, Fragment,
 } from '@dropins/tools/preact.js';
+import { tryGenerateAemAssetsOptimizedUrl } from '@dropins/tools/lib/aem/assets.js';
 import htm from './htm.js';
 import {
   renderPrice,
 } from '../../scripts/commerce.js';
 
 import { rootLink } from '../../scripts/scripts.js';
-import { tryGenerateAemAssetsOptimizedUrl } from '../../scripts/assets.js';
 
 const html = htm.bind(h);
 const searchUnitId = 'livesearch-plp';
