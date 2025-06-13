@@ -1,6 +1,8 @@
 const { defineConfig } = require('cypress')
 const baseConfig = require('./cypress.base.config')
 
+const SAAS_AEM_ASSETS_CONFIG = JSON.parse(process.env.SAAS_AEM_ASSETS_CONFIG);
+
 module.exports = defineConfig({
   ...baseConfig,
   env: {
@@ -11,6 +13,16 @@ module.exports = defineConfig({
     stateShippingId: 'TX,57',
     stateBillingId: 'NY,43',
     productImageName: '/adb150.jpg',
-    productImageNameConfigurable: '/adb124_1.jpg'
-  }
+    productImageNameConfigurable: '/adb124_1.jpg',
+
+    aemAssetsConfig: {
+      ...SAAS_AEM_ASSETS_CONFIG,
+      user: {
+        ...SAAS_AEM_ASSETS_CONFIG.user,
+
+        order: "000000006",
+        returnedOrder: "000000004",
+      }
+    }
+  },
 });
