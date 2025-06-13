@@ -1,8 +1,6 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderReturns } from '@dropins/storefront-order/containers/OrderReturns.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
+import { checkIsAuthenticated } from '../../scripts/commerce.js';
 import {
   CUSTOMER_RETURN_DETAILS_PATH,
   RETURN_DETAILS_PATH,

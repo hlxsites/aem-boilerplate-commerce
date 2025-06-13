@@ -1,11 +1,9 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { UpdatePassword } from '@dropins/storefront-auth/containers/UpdatePassword.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { SuccessNotification } from '@dropins/storefront-auth/containers/SuccessNotification.js';
 import { Button, provider as UI } from '@dropins/tools/components.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
+import { checkIsAuthenticated } from '../../scripts/commerce.js';
 import { CUSTOMER_LOGIN_PATH, CUSTOMER_ACCOUNT_PATH } from '../../scripts/constants.js';
 import { rootLink } from '../../scripts/scripts.js';
 

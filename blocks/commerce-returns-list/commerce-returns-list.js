@@ -1,9 +1,7 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import ReturnsList from '@dropins/storefront-order/containers/ReturnsList.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
+import { checkIsAuthenticated } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 import {
   CUSTOMER_LOGIN_PATH,
