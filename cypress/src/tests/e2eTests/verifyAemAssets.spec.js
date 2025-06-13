@@ -11,8 +11,18 @@ describe('AEM Assets enabled', () => {
   let aemAssetsEnvironment;
   let envConfig;
 
-  beforeEach(() => {
+  before(() => {
+    Cypress.env("isAemAssetsSuite", true);
     envConfig = Cypress.env('aemAssetsConfig');
+
+    const envId = envConfig.aemAssetsConfig.environmentId;
+    const programId = envConfig.aemAssetsConfig.programId;
+    const isStage = envConfig.aemAssetsConfig.isStage;
+
+    aemAssetsEnvironment = isStage ? `${programId}-${envId}-cmstg` : `${programId}-${envId}`;
+  })
+
+  beforeEach(() => {
     cy.interceptConfig((config) => {
       Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, envConfig.credentials.magentoEnvironmentId)
       Cypress._.set(config, MAGENTO_API_KEY_KEY, envConfig.credentials.xApiKey)
@@ -22,13 +32,11 @@ describe('AEM Assets enabled', () => {
 
       return config
     })
-
-    const envId = envConfig.aemAssetsConfig.environmentId;
-    const programId = envConfig.aemAssetsConfig.programId;
-    const isStage = envConfig.aemAssetsConfig.isStage;
-
-    aemAssetsEnvironment = isStage ? `${programId}-${envId}-cmstg` : `${programId}-${envId}`;
   });
+
+  after(() => {
+    Cypress.env("isAemAssetsSuite", false);
+  })
 
   it('[PLP Widget]: should load and show AEM Assets optimized images', () => {
     visitWithEagerImages('/apparel');
@@ -196,7 +204,7 @@ describe('AEM Assets enabled', () => {
 
     cy.wait(2000);
     cy.get('.auth-sign-in-form__button--submit').eq(1).click( { force: true } );
-    cy.wait(5000);
+    cy.wait(6000);
 
     visitWithEagerImages("/customer/account");
     const expectedOptions = {
@@ -225,7 +233,7 @@ describe('AEM Assets enabled', () => {
 
     cy.wait(2000);
     cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
-    cy.wait(5000);
+    cy.wait(6000);
 
     const expectedOptions = {
       protocol: 'https://',

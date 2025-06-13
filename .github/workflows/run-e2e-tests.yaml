@@ -21,6 +21,8 @@ jobs:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
           command: npm run cypress:run
+        env:
+          PAAS_AEM_ASSETS_CONFIG: ${{ secrets.PAAS_AEM_ASSETS_CONFIG }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

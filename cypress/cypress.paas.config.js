@@ -1,6 +1,10 @@
 const { defineConfig } = require('cypress')
 const baseConfig = require('./cypress.base.config')
 
+// Grab AEM Assets config from the environment and remove wrapping single quotes.
+const envPaasAemAssetsConfig = process.env.PAAS_AEM_ASSETS_CONFIG.replace(/^'|'$/g, '');
+const PAAS_AEM_ASSETS_CONFIG = JSON.parse(envPaasAemAssetsConfig);
+
 module.exports = defineConfig({
   ...baseConfig,
   env: {
@@ -11,6 +15,14 @@ module.exports = defineConfig({
     stateShippingId: 'TX,171',
     stateBillingId: 'NY,129',
     productImageName: '/ADB150.jpg',
-    productImageNameConfigurable: '/adb124.jpg'
-  }
+    productImageNameConfigurable: '/adb124.jpg',
+    aemAssetsConfig: {
+      ...PAAS_AEM_ASSETS_CONFIG,
+      user: {
+        ...PAAS_AEM_ASSETS_CONFIG.user,
+        order: "000000009",
+        returnedOrder: "000000008"
+      }
+    }
+  },
 });

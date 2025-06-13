@@ -1,7 +1,9 @@
 const { defineConfig } = require('cypress')
 const baseConfig = require('./cypress.base.config')
 
-const SAAS_AEM_ASSETS_CONFIG = JSON.parse(process.env.SAAS_AEM_ASSETS_CONFIG);
+// Grab AEM Assets config from the environment and remove wrapping single quotes.
+const envSaasAemAssetsConfig = process.env.SAAS_AEM_ASSETS_CONFIG.replace(/^'|'$/g, '');
+const SAAS_AEM_ASSETS_CONFIG = JSON.parse(envSaasAemAssetsConfig);
 
 module.exports = defineConfig({
   ...baseConfig,
