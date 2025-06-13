@@ -10,6 +10,7 @@ import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.
 import {  getHeaders } from '../configs.js';
 
 await initializeDropin(async () => {
+  console.log('Initializing Product Discovery');
   setEndpoint(await commerceEndpointWithQueryParams());
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
