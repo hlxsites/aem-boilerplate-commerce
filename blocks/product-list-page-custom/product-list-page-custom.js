@@ -11,8 +11,6 @@ import '../../scripts/initializers/search.js';
 export default async function decorate(block) {
   const config = readBlockConfig(block);
 
-  console.log('custom product list page');
-
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__input"></div>
     <div class="search__wrapper">
@@ -26,7 +24,6 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $input = fragment.querySelector('.search__input');
   const $resultInfo = fragment.querySelector('.search__result-info');
   const $facets = fragment.querySelector('.search__facets');
   const $productList = fragment.querySelector('.search__product-list');
