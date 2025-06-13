@@ -1,4 +1,5 @@
 // Dropin Tools
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 
@@ -60,7 +61,6 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { getConfigValue } from '../../scripts/configs.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level
@@ -73,7 +73,7 @@ import {
   isCheckoutEmpty,
   scrollToElement,
   setAddressOnCart,
-} from '../../scripts/checkout.js';
+} from './utils.js';
 
 import { authPrivacyPolicyConsentSlot, SUPPORT_PATH } from '../../scripts/constants.js';
 import { rootLink } from '../../scripts/scripts.js';
