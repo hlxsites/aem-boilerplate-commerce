@@ -1,32 +1,37 @@
 
 .search__wrapper{
   display: flex;
-  padding: 10px 0px;
+  padding: 10px 0;
   flex-direction: column;
 }
-.search__left-column{
+
+.search__left-column {
   display: flex;
   flex-direction: row;
   flex: 1;
 }
-.search__right-column{
+
+.search__right-column {
   display: flex;
   flex: 1;
 }
-.search__product-list{
+
+.search__product-list {
   width: 100%;
 }
 
 @media only screen and (min-width: 768px) {
-  .search__left-column{
+  .search__left-column {
     display: flex;
     flex-direction: column;
     flex: 1;
   }
-  .search__right-column{
+
+  .search__right-column {
     flex: 4;
   }
-  .search__wrapper{
+  
+  .search__wrapper {
     flex-direction: row;
   }
 }

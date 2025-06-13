@@ -8,7 +8,6 @@ import { render as provider } from '@dropins/storefront-product-discovery/render
 import { SearchBarInput } from '@dropins/storefront-product-discovery/containers/SearchBarInput.js';
 import { SearchBarResults } from '@dropins/storefront-product-discovery/containers/SearchBarResults.js';
 
-
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 

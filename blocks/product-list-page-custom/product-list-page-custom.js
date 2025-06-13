@@ -3,13 +3,13 @@ import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
 import ResultsInfo from '@dropins/storefront-product-discovery/containers/ResultsInfo.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
 import { rootLink } from '../../scripts/scripts.js';
-import { readBlockConfig } from '../../scripts/aem.js';
+// import { readBlockConfig } from '../../scripts/aem.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
 
 export default async function decorate(block) {
-  const config = readBlockConfig(block);
+  // const config = readBlockConfig(block);
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__input"></div>
@@ -31,11 +31,11 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
-  return await Promise.all([
+  return Promise.all([
     provider.render(ResultsInfo, { })($resultInfo),
     provider.render(Facets, { })($facets),
-    provider.render(ProductList, { 
+    provider.render(ProductList, {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
-     })($productList),
+    })($productList),
   ]);
 }
