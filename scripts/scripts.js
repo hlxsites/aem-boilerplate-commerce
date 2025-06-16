@@ -15,6 +15,7 @@ import {
 import {
   loadCommerceEager,
   loadCommerceLazy,
+	loadThemeConfig,
   initializeCommerce,
   applyTemplates,
   decorateLinks,
@@ -119,6 +120,7 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+  loadThemeConfig();
 }
 
 /**
