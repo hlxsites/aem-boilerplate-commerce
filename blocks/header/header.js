@@ -333,7 +333,7 @@ export default async function decorate(block) {
         searchQuery,
       )}`;
       window.location.href = url;
-    }
+    },
   })(searchResult);
 
   async function toggleSearch(state) {
