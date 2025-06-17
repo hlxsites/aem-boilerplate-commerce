@@ -333,7 +333,7 @@ export default async function decorate(block) {
   }
 
   events.on('cart/updated', async (data) => {
-    const item = getWishlistItemFromStorage(product.sku);
+    const item = getWishlistItemFromStorage(product.sku, product.optionUIDs);
     if (!item) {
       return;
     }
