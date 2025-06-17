@@ -61,64 +61,175 @@ export const authPrivacyPolicyConsentSlot = {
 };
 
 /**
- * Gets placeholders object.
- * @param {string} [prefix] Location of placeholders
- * @returns {object} Window placeholders object
+ * Fetches and merges placeholder data from multiple sources with intelligent caching.
+ * 
+ * This function retrieves placeholder data from a path-specific file and optional fallback file,
+ * then merges them together. It implements request deduplication 
+ * to prevent multiple simultaneous requests for the same resources and caches results for optimal performance.
+ * 
+ * @param {string} [path] - Optional path to a specific placeholders file to include in the merge.
+ *                         If provided, this file's data will be merged with fallback data.
+ *                         If not provided, returns all currently cached placeholders.
+ * @returns {Promise<Object>} A promise that resolves to the merged placeholders object with nested structure.
+ *                           The object contains placeholder key-value pairs organized by dot notation (e.g., "section.key").
+ *                           All placeholders are also stored globally in window.placeholders._merged.
+ * @example
+ * // Get all currently cached placeholders (no fetching)
+ * const allPlaceholders = await fetchPlaceholders();
+ * 
+ * // Fetch placeholders with specific path
+ * const placeholders = await fetchPlaceholders('placeholders/auth.json');
+ * 
+ * // Get all placeholders including newly fetched ones
+ * const updatedPlaceholders = await fetchPlaceholders();
  */
-export async function fetchPlaceholders(prefix = 'default') {
-  const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
-  const [fallback, override] = overrides.split('\n');
+export async function fetchPlaceholders(path) {
+  const rootPath = getRootPath();
+  const fallback = getMetadata('placeholders');
   window.placeholders = window.placeholders || {};
-
-  if (!window.placeholders[prefix]) {
-    window.placeholders[prefix] = new Promise((resolve) => {
-      const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
-      Promise.all([fetch(url), override ? fetch(override) : Promise.resolve()])
-        // get json from sources
-        .then(async ([resp, oResp]) => {
-          if (resp.ok) {
-            if (oResp?.ok) {
-              return Promise.all([resp.json(), await oResp.json()]);
-            }
-            return Promise.all([resp.json(), {}]);
-          }
-          return [{}];
-        })
-        // process json from sources
-        .then(([json, oJson]) => {
-          const placeholders = {};
-
-          const allKeys = new Set([
-            ...(json.data?.map(({ Key }) => Key) || []),
-            ...(oJson?.data?.map(({ Key }) => Key) || []),
-          ]);
-
-          allKeys.forEach((Key) => {
-            if (!Key) return;
-            const keys = Key.split('.');
-            const originalValue = json.data?.find((item) => item.Key === Key)?.Value;
-            const overrideValue = oJson?.data?.find((item) => item.Key === Key)?.Value;
-            const finalValue = overrideValue ?? originalValue;
-            const lastKey = keys.pop();
-            const target = keys.reduce((obj, key) => {
-              obj[key] = obj[key] || {};
-              return obj[key];
-            }, placeholders);
-            target[lastKey] = finalValue;
-          });
-
-          window.placeholders[prefix] = placeholders;
-          resolve(placeholders);
-        })
-        .catch((error) => {
-          console.error('error loading placeholders', error);
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
-        });
-    });
+  
+  // Track pending requests to prevent duplicate fetches
+  window.placeholders._pending = window.placeholders._pending || {};
+  
+  // Initialize merged results storage as a single merged object
+  window.placeholders._merged = window.placeholders._merged || {};
+  
+  // If no path is provided, return the merged placeholders
+  if (!path) {
+    return Promise.resolve(window.placeholders._merged);
   }
-  return window.placeholders[`${prefix}`];
+  
+  // Create cache key for this specific combination
+  const cacheKey = [path, fallback].filter(Boolean).join('|');
+  
+  // Prevent empty cache keys
+  if (!cacheKey) {
+    return Promise.resolve({});
+  }
+  
+  // Check if there's already a pending request for this combination
+  if (window.placeholders._pending[cacheKey]) {
+    return window.placeholders._pending[cacheKey];
+  }
+  
+  // fetch placeholders
+  const fetchPromise = new Promise((resolve) => {
+    const promises = [];
+
+    // Helper function to get or create fetch promise for a single resource
+    const getOrCreateFetch = (url, cacheKey) => {
+      // Check if already cached
+      if (window.placeholders[cacheKey]) {
+        return Promise.resolve(window.placeholders[cacheKey]);
+      }
+      
+      // Check if already pending
+      if (window.placeholders._pending[cacheKey]) {
+        return window.placeholders._pending[cacheKey];
+      }
+      
+      // Create new fetch promise
+      const fetchPromise = fetch(url).then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          // Cache the response
+          window.placeholders[cacheKey] = data;
+          return data;
+        }
+        return {};
+      }).catch((error) => {
+        console.error('Error fetching placeholders:', error);
+        return {};
+      }).finally(() => {
+        // Remove from pending
+        delete window.placeholders._pending[cacheKey];
+      });
+      
+      // Store pending promise
+      window.placeholders._pending[cacheKey] = fetchPromise;
+      return fetchPromise;
+    };
+
+    // path
+    if (path) {
+      const pathUrl = rootPath.replace(/\/$/, `/${path}`);
+      promises.push(getOrCreateFetch(pathUrl, path));
+    }
+
+    // fallback - only if it exists from overrides
+    if (fallback) {
+      promises.push(getOrCreateFetch(fallback, fallback));
+    }
+
+    Promise.all(promises)
+      // process json from sources and combine them
+      .then((jsons) => {
+        // Early return if no data
+        const hasData = jsons.some(json => json.data?.length > 0);
+        if (!hasData) {
+          resolve({});
+          return;
+        }
+
+        // Create data object where later values override earlier ones
+        const data = {};
+
+        // Process all JSONs in one pass
+        jsons.forEach((json) => {
+          if (json.data?.length) {
+            json.data.forEach(({ Key, Value }) => {
+              if (Key && Value !== undefined) {
+                data[Key] = Value;
+              }
+            });
+          }
+        });
+
+        // Early return if no valid data
+        if (Object.keys(data).length === 0) {
+          resolve({});
+          return;
+        }
+
+        // Convert data object to placeholders object with nested structure
+        const placeholders = {};
+        
+        Object.entries(data).forEach(([Key, Value]) => {
+          const keys = Key.split('.');
+          const lastKey = keys.pop();
+          let target = placeholders;
+          
+          // Navigate/create nested structure
+          for (const key of keys) {
+            target[key] = target[key] || {};
+            target = target[key];
+          }
+          
+          // Set the final value
+          target[lastKey] = Value;
+        });
+
+        // Merge the new placeholders into the global merged object
+        Object.assign(window.placeholders._merged, placeholders);
+        
+        resolve(placeholders);
+      })
+      .catch((error) => {
+        console.error('error loading placeholders', error);
+        // error loading placeholders
+        resolve({});
+      });
+  });
+  
+  // Store the pending promise for this combination
+  window.placeholders._pending[cacheKey] = fetchPromise;
+  
+  // Clean up pending promise when resolved
+  fetchPromise.finally(() => {
+    delete window.placeholders._pending[cacheKey];
+  });
+  
+  return fetchPromise;
 }
 
 /**
