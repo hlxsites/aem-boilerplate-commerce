@@ -67,7 +67,7 @@ main > .section .carousel-wrapper {
     margin: 68px;
     padding: var(--spacing-small);
     color: white;
-    background-color: rgba(19 19 19 / 75%);
+    background-color: rgb(19 19 19 / 75%);
     position: relative;
     width: var(--slide-content-width, auto);
 }
@@ -133,7 +133,7 @@ main > .section .carousel-wrapper {
 
 .carousel .carousel-navigation-buttons button:hover,
 .carousel .carousel-navigation-buttons button:focus-visible {
-    background-color: rgba(19 19 19 / 75%);
+    background-color: rgb(19 19 19 / 75%);
 }
 
 .carousel .carousel-navigation-buttons button::after {
