@@ -1,5 +1,6 @@
 // Dropin Components
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
@@ -20,7 +21,6 @@ import { rootLink } from '../../scripts/scripts.js';
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
-import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
