@@ -20,6 +20,7 @@ import { rootLink } from '../../scripts/scripts.js';
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -107,6 +108,7 @@ export default async function decorate(block) {
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
+    const getProductLink = (item) => rootLink(`/products/${item.urlKey}/${item.sku}`);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory(storeViewCode);
@@ -117,7 +119,7 @@ export default async function decorate(block) {
     try {
       await Promise.all([
         provider.render(ProductList, {
-          routeProduct: (item) => rootLink(`/products/${item.urlKey}/${item.sku}`),
+          routeProduct: getProductLink,
           pageType: context.pageType,
           currentSku: context.currentSku,
           userViewHistory: context.userViewHistory,
@@ -163,6 +165,19 @@ export default async function decorate(block) {
               wrapper.appendChild($wishlistToggle);
 
               ctx.replaceWith(wrapper);
+            },
+
+            Thumbnail: (ctx) => {
+              const { item, defaultImageProps } = ctx;
+              const wrapper = document.createElement('a');
+              wrapper.href = getProductLink(item);
+
+              tryRenderAemAssetsImage(ctx, {
+                alias: item.sku,
+                imageProps: defaultImageProps,
+
+                wrapper,
+              });
             },
           },
         })(block),
