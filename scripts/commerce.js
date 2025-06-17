@@ -94,7 +94,7 @@ export async function fetchPlaceholders(path) {
 
   // If no path is provided, return the merged placeholders
   if (!path) {
-    return Promise.resolve(window.placeholders._merged);
+    return Promise.resolve(window.placeholders._merged || {});
   }
 
   // Create cache key for this specific combination
@@ -134,9 +134,10 @@ export async function fetchPlaceholders(path) {
           window.placeholders[resourceCacheKey] = data;
           return data;
         }
+        console.warn(`Failed to fetch placeholders from ${url}: HTTP ${response.status} ${response.statusText}`);
         return {};
       }).catch((error) => {
-        console.error('Error fetching placeholders:', error);
+        console.error(`Error fetching placeholders from ${url}:`, error);
         return {};
       }).finally(() => {
         // Remove from pending
@@ -165,6 +166,7 @@ export async function fetchPlaceholders(path) {
         // Early return if no data
         const hasData = jsons.some((json) => json.data?.length > 0);
         if (!hasData) {
+          console.warn(`No placeholder data found for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
           resolve({});
           return;
         }
@@ -185,6 +187,7 @@ export async function fetchPlaceholders(path) {
 
         // Early return if no valid data
         if (Object.keys(data).length === 0) {
+          console.warn(`No valid placeholder data found after processing for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
           resolve({});
           return;
         }
@@ -213,7 +216,7 @@ export async function fetchPlaceholders(path) {
         resolve(placeholders);
       })
       .catch((error) => {
-        console.error('error loading placeholders', error);
+        console.error(`Error loading placeholders for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`, error);
         // error loading placeholders
         resolve({});
       });
