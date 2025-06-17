@@ -153,7 +153,7 @@ function decorateLinks(main) {
         url.hash = '';
         a.href = url.toString();
         return;
-      };
+      }
 
       // if the links belongs to another store, do nothing
       if (roots.some((r) => r !== root && pathname.startsWith(r))) return;
