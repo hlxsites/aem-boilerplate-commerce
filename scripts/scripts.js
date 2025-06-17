@@ -15,7 +15,7 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
-import { getConfigFromSession, trackHistory } from './commerce.js';
+import { getConfigFromSession, loadThemeConfig, trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
 
 /**
@@ -304,6 +304,7 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+  loadThemeConfig();
 }
 
 /**
