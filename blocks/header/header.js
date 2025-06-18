@@ -328,7 +328,7 @@ export default async function decorate(block) {
 
   // Render the SearchBarResult component
   provider.render(SearchBarResults, {
-    productRouteSearch: (product) => `products/${product.urlKey}/${product.sku}`,
+    productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
     routeSearch: (searchQuery) => {
       const url = `${rootLink('/search')}?q=${encodeURIComponent(
         searchQuery,
