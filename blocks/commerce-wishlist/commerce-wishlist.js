@@ -46,15 +46,13 @@ const showAuthModal = (event) => {
   });
 };
 
-const scrollAlertIntoView = () => {
-  const alert = document.querySelector('.dropin-in-line-alert');
-  if (alert) {
-    alert.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-};
-
-events.on('wishlist/alert', () => {
-  setTimeout(scrollAlertIntoView, 100);
+events.on('wishlist/alert', ({ action, item }) => {
+  setTimeout(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, 0);
 });
 
 export default async function decorate(block) {
