@@ -46,11 +46,11 @@ const showAuthModal = (event) => {
   });
 };
 
-events.on('wishlist/alert', ({ action, item }) => {
+events.on('wishlist/alert', () => {
   setTimeout(() => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   }, 0);
 });
