@@ -19,6 +19,7 @@ import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API
@@ -78,6 +79,9 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
+  // Wishlist variables
+  const routeToWishlist = '/wishlist';
+
   // Toggle Empty Cart
   function toggleEmptyCart(state) {
     if (state) {
@@ -92,12 +96,12 @@ export default async function decorate(block) {
   toggleEmptyCart(isEmptyCart);
 
   // Render Containers
-  const productLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
+  const getProductLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: productLink,
+      routeProduct: getProductLink,
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
@@ -109,12 +113,17 @@ export default async function decorate(block) {
         Thumbnail: (ctx) => {
           const { item, defaultImageProps } = ctx;
           const anchorWrapper = document.createElement('a');
-          anchorWrapper.href = productLink(item);
+          anchorWrapper.href = getProductLink(item);
 
           tryRenderAemAssetsImage(ctx, {
             alias: item.sku,
             imageProps: defaultImageProps,
             wrapper: anchorWrapper,
+
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
           });
         },
 
@@ -158,6 +167,7 @@ export default async function decorate(block) {
             size: 'medium',
             labelToWishlist: placeholders?.Cart?.MoveToWishlist?.label,
             labelWishlisted: placeholders?.Cart?.RemoveFromWishlist?.label,
+            removeProdFromCart: Cart.updateProductsFromCart,
           })($wishlistToggle);
 
           ctx.appendChild($wishlistToggle);
@@ -184,7 +194,7 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: productLink,
+      routeProduct: getProductLink,
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
@@ -271,6 +281,18 @@ export default async function decorate(block) {
     { eager: true },
   );
 
+  events.on('wishlist/alert', ({ action, item }) => {
+    wishlistRender.render(WishlistAlert, {
+      action,
+      item,
+      routeToWishlist,
+    })($notification);
+
+    setTimeout(() => {
+      $notification.innerHTML = '';
+    }, 5000);
+  });
+
   return Promise.resolve();
 }
 
@@ -284,5 +306,10 @@ function swatchImageSlot(ctx) {
     alias: imageSwatchContext.label,
     imageProps: defaultImageProps,
     wrapper: document.createElement('span'),
+
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
   });
 }
