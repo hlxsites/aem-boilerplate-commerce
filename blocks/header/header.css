@@ -736,13 +736,13 @@ li
   }
 }
 
+.product-discovery--search-bar-results__grid {
+    padding: var(--spacing-xsmall);
+}
+
 .product-discovery--search-bar-results__outer-container .product-discovery--search-bar-results__grid {
     box-shadow: 2px 2px 2px lightgray;
     border: 1px solid lightgray;
-}
-
-.product-discovery--search-bar-results__grid {
-    padding: var(--spacing-xsmall);
 }
 
 .product-discovery--product-item {
