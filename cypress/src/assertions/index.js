@@ -268,7 +268,7 @@ export const assertGiftOptionsReadOnlyFormView = () => {
 };
 
 export const assertWishlistEmpty = () => {
-  cy.get(".dropin-illustrated-message__heading", { timeout: 10000 })
+  cy.get(".dropin-illustrated-message__heading")
     .should("be.visible")
     .and("contain", "Your wishlist is empty");
   cy.get(".dropin-illustrated-message__message", { timeout: 10000 })
@@ -306,16 +306,16 @@ export const assertWishlistProductImage =
     };
 
 export const assertCartEmpty = () => {
-  cy.get(".dropin-illustrated-message__heading", { timeout: 10000 })
+  cy.get(".dropin-illustrated-message__heading")
     .should("be.visible")
     .and("contain", "Your cart is empty");
-  cy.get(".dropin-illustrated-message__action", { timeout: 10000 })
+  cy.get(".dropin-illustrated-message__action")
     .should("be.visible")
     .and("contain", "Start shopping");
 };
 
 export const assertWishlistCount = (count) => {
-  cy.get('[data-testid="wishlist-heading-wrapper"]', { timeout: 10000 })
+  cy.get('[data-testid="wishlist-heading-wrapper"]')
     .should('be.visible')
     .within(() => {
       cy.get('[data-testid="default-wishlist-heading"]')
