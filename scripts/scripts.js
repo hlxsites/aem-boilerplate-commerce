@@ -1,5 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable import/no-cycle */
+import { initializeConfig, getRootPath, getListOfRootPaths } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   buildBlock,
@@ -10,53 +9,14 @@ import {
   decorateTemplateAndTheme,
   loadFooter,
   loadHeader,
-  getMetadata,
-  loadScript,
-  toCamelCase,
-  toClassName,
   readBlockConfig,
   waitForFirstImage,
   loadSection,
   loadSections,
   loadCSS,
-  sampleRUM,
 } from './aem.js';
-import { trackHistory } from './commerce.js';
+import { getConfigFromSession, trackHistory } from './commerce.js';
 import initializeDropins from './initializers/index.js';
-import { initializeConfig, getRootPath, getListOfRootPaths } from './configs.js';
-
-const AUDIENCES = {
-  mobile: () => window.innerWidth < 600,
-  desktop: () => window.innerWidth >= 600,
-  // define your custom audiences here as needed
-};
-
-/**
- * Gets all the metadata elements that are in the given scope.
- * @param {String} scope The scope/prefix for the metadata
- * @returns an array of HTMLElement nodes that match the given scope
- */
-export function getAllMetadata(scope) {
-  return [...document.head.querySelectorAll(`meta[property^="${scope}:"],meta[name^="${scope}-"]`)]
-    .reduce((res, meta) => {
-      const id = toClassName(meta.name
-        ? meta.name.substring(scope.length + 1)
-        : meta.getAttribute('property').split(':')[1]);
-      res[id] = meta.getAttribute('content');
-      return res;
-    }, {});
-}
-
-// Define an execution context
-const pluginContext = {
-  getAllMetadata,
-  getMetadata,
-  loadCSS,
-  loadScript,
-  sampleRUM,
-  toCamelCase,
-  toClassName,
-};
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -105,7 +65,6 @@ function buildAutoBlocks(main) {
   try {
     buildHeroBlock(main);
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
   }
 }
@@ -158,7 +117,6 @@ function notifyUI(event) {
  * Decorates the main element.
  * @param {Element} main The main element
  */
-// eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
   decorateLinks(main);
   decorateButtons(main);
@@ -190,6 +148,13 @@ function decorateLinks(main) {
         hash,
       } = url;
 
+      // Skip localization if #nolocal flag is present
+      if (hash === '#nolocal') {
+        url.hash = '';
+        a.href = url.toString();
+        return;
+      }
+
       // if the links belongs to another store, do nothing
       if (roots.some((r) => r !== root && pathname.startsWith(r))) return;
 
@@ -218,15 +183,6 @@ function preloadFile(href, as) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
-
-  // Instrument experimentation plugin
-  if (getMetadata('experiment')
-    || Object.keys(getAllMetadata('campaign')).length
-    || Object.keys(getAllMetadata('audience')).length) {
-    // eslint-disable-next-line import/no-relative-packages
-    const { loadEager: runEager } = await import('../plugins/experimentation/src/index.js');
-    await runEager(document, { audiences: AUDIENCES, overrideMetadataFields: ['placeholders'] }, pluginContext);
-  }
 
   await initializeDropins();
 
@@ -260,9 +216,16 @@ async function loadEager(doc) {
     const { category, urlpath } = readBlockConfig(plpBlock);
 
     if (category && urlpath) {
-      // eslint-disable-next-line import/no-unresolved, import/no-absolute-path
-      const { preloadCategory } = await import('/blocks/product-list-page-custom/product-list-page-custom.js');
-      preloadCategory({ id: category, urlPath: urlpath });
+      try {
+        const module = await import('../blocks/product-list-page-custom/product-list-page-custom.js');
+        if (module.preloadCategory && typeof module.preloadCategory === 'function') {
+          module.preloadCategory({ id: category, urlPath: urlpath });
+        } else {
+          console.warn('preloadCategory function not found in product-list-page-custom module');
+        }
+      } catch (error) {
+        console.error('Failed to import or execute preloadCategory:', error);
+      }
     }
   } else if (document.body.querySelector('main .commerce-cart')) {
     pageType = 'Cart';
@@ -346,14 +309,6 @@ async function loadLazy(doc) {
 
   trackHistory();
 
-  // Implement experimentation preview pill
-  if ((getMetadata('experiment')
-    || Object.keys(getAllMetadata('campaign')).length
-    || Object.keys(getAllMetadata('audience')).length)) {
-    // eslint-disable-next-line import/no-relative-packages
-    const { loadLazy: runLazy } = await import('../plugins/experimentation/src/index.js');
-    await runLazy(document, { audiences: AUDIENCES }, pluginContext);
-  }
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 }
@@ -432,7 +387,7 @@ export function getConsent(topic) {
 }
 
 async function loadPage() {
-  await initializeConfig();
+  await initializeConfig(await getConfigFromSession());
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();

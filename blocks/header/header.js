@@ -1,10 +1,12 @@
-/* eslint-disable import/no-unresolved */
-
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 
 // Cart dropin
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
+
+import { render as provider } from '@dropins/storefront-product-discovery/render.js';
+import { SearchBarInput } from '@dropins/storefront-product-discovery/containers/SearchBarInput.js';
+import { SearchBarResults } from '@dropins/storefront-product-discovery/containers/SearchBarResults.js';
 
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
@@ -12,6 +14,10 @@ import { loadFragment } from '../fragment/fragment.js';
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
 import { rootLink } from '../../scripts/scripts.js';
+
+// Required on all pages to track state updates that may affect personalization
+import '../../scripts/initializers/personalization.js';
+import '../../scripts/initializers/search.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -26,12 +32,10 @@ function closeOnEscape(e) {
     const navSections = nav.querySelector('.nav-sections');
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
       overlay.classList.remove('show');
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
       overlay.classList.remove('show');
       nav.querySelector('button').focus();
@@ -47,11 +51,9 @@ function closeOnFocusLost(e) {
     const navSections = nav.querySelector('.nav-sections');
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
       overlay.classList.remove('show');
     } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections, true);
     }
   }
@@ -62,7 +64,6 @@ function openOnKeydown(e) {
   const isNavDrop = focused.className === 'nav-drop';
   if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
     toggleAllNavSections(focused.closest('.nav-sections'));
     focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
   }
@@ -217,6 +218,25 @@ export default async function decorate(block) {
 
   const navTools = nav.querySelector('.nav-tools');
 
+  /** Wishlist */
+  const wishlist = document.createRange().createContextualFragment(`
+     <div class="wishlist-wrapper nav-tools-wrapper">
+       <button type="button" class="nav-wishlist-button" aria-label="Wishlist"></button>
+       <div class="wishlist-panel nav-tools-panel"></div>
+     </div>
+   `);
+
+  navTools.append(wishlist);
+
+  const wishlistButton = navTools.querySelector('.nav-wishlist-button');
+
+  const wishlistMeta = getMetadata('wishlist');
+  const wishlistPath = wishlistMeta ? new URL(wishlistMeta, window.location).pathname : '/wishlist';
+
+  wishlistButton.addEventListener('click', () => {
+    window.location.href = rootLink(wishlistPath);
+  });
+
   /** Mini Cart */
   const excludeMiniCartFromPaths = ['/checkout'];
 
@@ -270,15 +290,12 @@ export default async function decorate(block) {
   );
 
   /** Search */
-  // TODO
   const search = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
     <button type="button" class="nav-search-button">Search</button>
     <div class="nav-search-input nav-search-panel nav-tools-panel">
-      <form action="/search" method="GET">
-        <input id="search" type="search" name="q" placeholder="Search" />
-        <div id="search_autocomplete" class="search-autocomplete"></div>
-      </form>
+      <div id="search-bar-input"></div>
+      <div class="search-bar-result"></div>
     </div>
   </div>
   `);
@@ -286,14 +303,39 @@ export default async function decorate(block) {
   navTools.append(search);
 
   const searchPanel = navTools.querySelector('.nav-search-panel');
-
   const searchButton = navTools.querySelector('.nav-search-button');
+  const searchInput = searchPanel.querySelector('#search-bar-input');
+  const searchResult = searchPanel.querySelector('.search-bar-result');
 
-  const searchInput = searchPanel.querySelector('input');
+  // Render the SearchBarInput component
+  provider.render(SearchBarInput, {
+    routeSearch: (searchQuery) => {
+      const url = `${rootLink('/search')}?q=${encodeURIComponent(
+        searchQuery,
+      )}`;
+      window.location.href = url;
+    },
+    slots: {
+      SearchIcon: (ctx) => {
+        // replace the search icon in the dropin input since theres already one in the header
+        const searchIcon = document.createElement('span');
+        searchIcon.className = 'search-icon';
+        searchIcon.innerHTML = '';
+        ctx.replaceWith(searchIcon);
+      },
+    },
+  })(searchInput);
 
-  const searchForm = searchPanel.querySelector('form');
-
-  searchForm.action = rootLink('/search');
+  // Render the SearchBarResult component
+  provider.render(SearchBarResults, {
+    productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
+    routeSearch: (searchQuery) => {
+      const url = `${rootLink('/search')}?q=${encodeURIComponent(
+        searchQuery,
+      )}`;
+      window.location.href = url;
+    },
+  })(searchResult);
 
   async function toggleSearch(state) {
     const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
@@ -301,8 +343,11 @@ export default async function decorate(block) {
     searchPanel.classList.toggle('nav-tools-panel--show', show);
 
     if (show) {
-      await import('./searchbar.js');
-      searchInput.focus();
+      // Focus on the SearchBarInput component if it has a focusable element
+      const inputElement = searchInput.querySelector('input');
+      if (inputElement) {
+        inputElement.focus();
+      }
     }
   }
 
