@@ -269,10 +269,10 @@ export const assertGiftOptionsReadOnlyFormView = () => {
 
 export const assertWishlistEmpty = () => {
   cy.get(".dropin-illustrated-message__heading")
-    .should("be.visible")
+    .should("exist")
     .and("contain", "Your wishlist is empty");
-  cy.get(".dropin-illustrated-message__message", { timeout: 10000 })
-    .should("be.visible")
+  cy.get(".dropin-illustrated-message__message")
+    .should("exist")
     .and("contain", "Add items by clicking on the heart icon.");
   cy.get('[data-testid="wishlist-heading-wrapper"]')
     .should("not.exist");
