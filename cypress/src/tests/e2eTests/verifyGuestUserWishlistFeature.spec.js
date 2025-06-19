@@ -64,7 +64,7 @@ describe("Verify user can manage products across cart and wishlist", () => {
         cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
         // Give extra time for page to fully render in CI
-        cy.wait(1000);
+        cy.wait(2000);
         // Wait for move operation to complete by checking wishlist becomes empty
         assertWishlistEmpty();
 
