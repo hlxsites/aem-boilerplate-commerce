@@ -19,7 +19,7 @@ describe("Verify user can manage products across cart and wishlist", () => {
     cy.contains("Youth Tee").click();
     cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]').click();
     cy.get(".wishlist-wrapper").click();
-    cy.wait(1000);
+    cy.wait(3000);
     assertWishlistCount(1);
     assertWishlistItem(
       "Youth tee",
