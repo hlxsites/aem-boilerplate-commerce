@@ -13,7 +13,7 @@ import { loadFragment } from '../fragment/fragment.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import { rootLink } from '../../scripts/scripts.js';
+import { rootLink } from '../../scripts/commerce.js';
 
 // Required on all pages to track state updates that may affect personalization
 import '../../scripts/initializers/personalization.js';
