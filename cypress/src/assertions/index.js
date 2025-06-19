@@ -266,3 +266,61 @@ export const assertGiftOptionsReadOnlyFormView = () => {
     .should("exist")
     .should("be.visible");
 };
+
+export const assertWishlistEmpty = () => {
+  cy.get(".dropin-illustrated-message__heading")
+    .should("be.visible")
+    .and("contain", "Your wishlist is empty");
+  cy.get(".dropin-illustrated-message__message")
+    .should("be.visible")
+    .and("contain", "Add items by clicking on the heart icon.");
+  cy.get('[data-testid="wishlist-heading-wrapper"]')
+    .should("not.exist");
+}
+
+export const assertWishlistItem = (productName, productPrice) => (elem = ".commerce-wishlist-wrapper") => {
+  cy.get(elem).within(() => {
+    cy.get(".wishlist-product-item-name")
+      .contains(productName)
+      .should("be.visible");
+    cy.get(".wishlist-product-item-price")
+      .contains(productPrice)
+      .should("be.visible");
+  });
+};
+
+export const assertWishlistTitleHasLink =
+  (productName, productHref) =>
+    (elem = ".commerce-wishlist-wrapper") => {
+      cy.get(`${elem} .wishlist-product-item-name`)
+        .contains(productName)
+        .should("have.attr", "href", productHref);
+    };
+
+export const assertWishlistProductImage =
+  (productImageSrc) =>
+    (elem = ".commerce-wishlist-wrapper") => {
+      cy.get(`${elem} img[src*="${productImageSrc}"]`, {matchCase: false})
+        .should("be.visible")
+        .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
+    };
+
+export const assertCartEmpty = () => {
+  cy.get(".dropin-illustrated-message__heading")
+    .should("be.visible")
+    .and("contain", "Your cart is empty");
+  cy.get(".dropin-illustrated-message__action")
+    .should("be.visible")
+    .and("contain", "Start shopping");
+};
+
+export const assertWishlistCount = (count) => {
+  cy.get('[data-testid="wishlist-heading-wrapper"]')
+    .should('be.visible')
+    .within(() => {
+      cy.get('[data-testid="default-wishlist-heading"]')
+        .should('contain', 'Wishlist');
+      cy.get('[data-testid="wishlist-heading-count"]')
+        .should('contain', `${count} products`);
+    });
+};
