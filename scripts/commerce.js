@@ -1,74 +1,269 @@
-/* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getMetadata } from './aem.js';
+import { getCookie } from '@dropins/tools/lib.js';
 import {
   getHeaders,
   getConfigValue,
-  getCookie,
   getRootPath,
-} from './configs.js';
+} from '@dropins/tools/lib/aem/configs.js';
+import { getMetadata } from './aem.js';
 import { getConsent } from './scripts.js';
 
+// PATH CONSTANTS
+export const SUPPORT_PATH = '/support';
+export const PRIVACY_POLICY_PATH = '/privacy-policy';
+
+// GUEST
+export const ORDER_STATUS_PATH = '/order-status';
+export const ORDER_DETAILS_PATH = '/order-details';
+export const RETURN_DETAILS_PATH = '/return-details';
+export const CREATE_RETURN_PATH = '/create-return';
+export const SALES_GUEST_VIEW_PATH = '/sales/guest/view/';
+
+// CUSTOMER
+export const CUSTOMER_PATH = '/customer';
+export const CUSTOMER_ORDER_DETAILS_PATH = `${CUSTOMER_PATH}${ORDER_DETAILS_PATH}`;
+export const CUSTOMER_RETURN_DETAILS_PATH = `${CUSTOMER_PATH}${RETURN_DETAILS_PATH}`;
+export const CUSTOMER_CREATE_RETURN_PATH = `${CUSTOMER_PATH}${CREATE_RETURN_PATH}`;
+export const CUSTOMER_ORDERS_PATH = `${CUSTOMER_PATH}/orders`;
+export const CUSTOMER_RETURNS_PATH = `${CUSTOMER_PATH}/returns`;
+export const CUSTOMER_ADDRESS_PATH = `${CUSTOMER_PATH}/address`;
+export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
+export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
+export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
+export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
+
+// TRACKING
+export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+// REUSABLE SLOTS
+export const authPrivacyPolicyConsentSlot = {
+  PrivacyPolicyConsent: async (ctx) => {
+    const wrapper = document.createElement('span');
+    Object.assign(wrapper.style, {
+      color: 'var(--color-neutral-700)',
+      font: 'var(--type-details-caption-2-font)',
+      display: 'block',
+      marginBottom: 'var(--spacing-medium)',
+    });
+
+    const link = document.createElement('a');
+    link.href = PRIVACY_POLICY_PATH;
+    link.target = '_blank';
+    link.textContent = 'Privacy Policy';
+
+    wrapper.append(
+      'By creating an account, you acknowledge that you have read and agree to our ',
+      link,
+      ', which outlines how we collect, use, and protect your personal data.',
+    );
+
+    ctx.appendChild(wrapper);
+  },
+};
+
 /**
- * Gets placeholders object.
- * @param {string} [prefix] Location of placeholders
- * @returns {object} Window placeholders object
+ * Fetches and merges placeholder data from multiple sources with intelligent caching.
+ *
+ * This function retrieves placeholder data from a path-specific file and optional fallback file,
+ * then merges them together. It implements request deduplication to prevent multiple simultaneous
+ * requests for the same resources and caches results for optimal performance.
+ *
+ * @param {string} [path] - Optional path to a specific placeholders file to include in the merge.
+ *                         If provided, this file's data will be merged with fallback data.
+ *                         If not provided, returns all currently cached placeholders.
+ * @returns {Promise<Object>} A promise that resolves the merged placeholders object.
+ * @example
+ * // Get all currently cached placeholders (no fetching)
+ * const allPlaceholders = await fetchPlaceholders();
+ *
+ * // Fetch placeholders with specific path
+ * const placeholders = await fetchPlaceholders('placeholders/auth.json');
+ *
+ * // Get all placeholders including newly fetched ones
+ * const updatedPlaceholders = await fetchPlaceholders();
  */
-// eslint-disable-next-line import/prefer-default-export
-export async function fetchPlaceholders(prefix = 'default') {
-  const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
-  const [fallback, override] = overrides.split('\n');
+export async function fetchPlaceholders(path) {
+  const rootPath = getRootPath();
+  const fallback = getMetadata('placeholders');
   window.placeholders = window.placeholders || {};
 
-  if (!window.placeholders[prefix]) {
-    window.placeholders[prefix] = new Promise((resolve) => {
-      const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
-      Promise.all([fetch(url), override ? fetch(override) : Promise.resolve()])
-        // get json from sources
-        .then(async ([resp, oResp]) => {
-          if (resp.ok) {
-            if (oResp?.ok) {
-              return Promise.all([resp.json(), await oResp.json()]);
-            }
-            return Promise.all([resp.json(), {}]);
+  // Track pending requests to prevent duplicate fetches
+  window.placeholders._pending = window.placeholders._pending || {};
+
+  // Initialize merged results storage as a single merged object
+  window.placeholders._merged = window.placeholders._merged || {};
+
+  // If no path is provided, return the merged placeholders
+  if (!path) {
+    return Promise.resolve(window.placeholders._merged || {});
+  }
+
+  // Create cache key for this specific combination
+  const cacheKey = [path, fallback].filter(Boolean).join('|');
+
+  // Prevent empty cache keys
+  if (!cacheKey) {
+    return Promise.resolve({});
+  }
+
+  // Check if there's already a pending request for this combination
+  if (window.placeholders._pending[cacheKey]) {
+    return window.placeholders._pending[cacheKey];
+  }
+
+  // fetch placeholders
+  const fetchPromise = new Promise((resolve) => {
+    const promises = [];
+
+    // Helper function to get or create fetch promise for a single resource
+    const getOrCreateFetch = (url, resourceCacheKey) => {
+      // Check if already cached
+      if (window.placeholders[resourceCacheKey]) {
+        return Promise.resolve(window.placeholders[resourceCacheKey]);
+      }
+
+      // Check if already pending
+      if (window.placeholders._pending[resourceCacheKey]) {
+        return window.placeholders._pending[resourceCacheKey];
+      }
+
+      // Create new fetch promise
+      const resourceFetchPromise = fetch(`${url}?sheet=data`).then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          // Cache the response
+          window.placeholders[resourceCacheKey] = data;
+          return data;
+        }
+        console.warn(`Failed to fetch placeholders from ${url}: HTTP ${response.status} ${response.statusText}`);
+        return {};
+      }).catch((error) => {
+        console.error(`Error fetching placeholders from ${url}:`, error);
+        return {};
+      }).finally(() => {
+        // Remove from pending
+        delete window.placeholders._pending[resourceCacheKey];
+      });
+
+      // Store pending promise
+      window.placeholders._pending[resourceCacheKey] = resourceFetchPromise;
+      return resourceFetchPromise;
+    };
+
+    // path
+    if (path) {
+      const pathUrl = rootPath.replace(/\/$/, `/${path}`);
+      promises.push(getOrCreateFetch(pathUrl, path));
+    }
+
+    // fallback - only if it exists from overrides
+    if (fallback) {
+      promises.push(getOrCreateFetch(fallback, fallback));
+    }
+
+    Promise.all(promises)
+      // process json from sources and combine them
+      .then((jsons) => {
+        // Early return if no data
+        const hasData = jsons.some((json) => json.data?.length > 0);
+        if (!hasData) {
+          console.warn(`No placeholder data found for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
+          resolve({});
+          return;
+        }
+
+        // Create data object where later values override earlier ones
+        const data = {};
+
+        // Process all JSONs in one pass
+        jsons.forEach((json) => {
+          if (json.data?.length) {
+            json.data.forEach(({ Key, Value }) => {
+              if (Key && Value !== undefined) {
+                data[Key] = Value;
+              }
+            });
           }
-          return [{}];
-        })
-        // process json from sources
-        .then(([json, oJson]) => {
-          const placeholders = {};
+        });
 
-          const allKeys = new Set([
-            ...(json.data?.map(({ Key }) => Key) || []),
-            ...(oJson?.data?.map(({ Key }) => Key) || []),
-          ]);
+        // Early return if no valid data
+        if (Object.keys(data).length === 0) {
+          console.warn(`No valid placeholder data found after processing for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
+          resolve({});
+          return;
+        }
 
-          allKeys.forEach((Key) => {
-            if (!Key) return;
-            const keys = Key.split('.');
-            const originalValue = json.data?.find((item) => item.Key === Key)?.Value;
-            const overrideValue = oJson?.data?.find((item) => item.Key === Key)?.Value;
-            const finalValue = overrideValue ?? originalValue;
-            const lastKey = keys.pop();
-            const target = keys.reduce((obj, key) => {
-              obj[key] = obj[key] || {};
-              return obj[key];
-            }, placeholders);
-            target[lastKey] = finalValue;
+        // Convert data object to placeholders object with nested structure
+        const placeholders = {};
+
+        Object.entries(data).forEach(([Key, Value]) => {
+          const keys = Key.split('.');
+          const lastKey = keys.pop();
+          let target = placeholders;
+
+          // Navigate/create nested structure
+          keys.forEach((key) => {
+            target[key] = target[key] || {};
+            target = target[key];
           });
 
-          window.placeholders[prefix] = placeholders;
-          resolve(placeholders);
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('error loading placeholders', error);
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
+          // Set the final value
+          target[lastKey] = Value;
         });
-    });
+
+        // Merge the new placeholders into the global merged object
+        Object.assign(window.placeholders._merged, placeholders);
+
+        resolve(placeholders);
+      })
+      .catch((error) => {
+        console.error(`Error loading placeholders for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`, error);
+        // error loading placeholders
+        resolve({});
+      });
+  });
+
+  // Store the pending promise for this combination
+  window.placeholders._pending[cacheKey] = fetchPromise;
+
+  // Clean up pending promise when resolved
+  fetchPromise.finally(() => {
+    delete window.placeholders._pending[cacheKey];
+  });
+
+  return fetchPromise;
+}
+
+/**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns {Promise<Object>} - The config JSON from session storage
+ */
+export async function getConfigFromSession() {
+  const configURL = `${window.location.origin}/config.json`;
+
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (
+      !parsedConfig[':expiry']
+      || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)
+    ) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    const config = await fetch(configURL);
+    if (!config.ok) throw new Error('Failed to fetch config');
+    const configJSON = await config.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
   }
-  return window.placeholders[`${prefix}`];
 }
 
 /* Common query fragments */
@@ -91,7 +286,7 @@ export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
 /**
  * Creates a short hash from an object by sorting its entries and hashing them.
  * @param {Object} obj - The object to hash
- * @param {number} [length=5] - Length of the resulting hash
+  @param {number} [length=5] - Length of the resulting hash
  * @returns {string} A short hash string
  */
 function createHashFromObject(obj, length = 5) {
@@ -146,52 +341,6 @@ export async function performCatalogServiceQuery(query, variables) {
 
 export function getSignInToken() {
   return getCookie('auth_dropin_user_token');
-}
-
-export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
-  };
-
-  if (USE_TOKEN) {
-    if (typeof USE_TOKEN === 'string') {
-      headers.Authorization = `Bearer ${USE_TOKEN}`;
-    } else {
-      const token = getSignInToken();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-    }
-  }
-
-  let response;
-  if (!GET) {
-    response = await fetch(GRAPHQL_ENDPOINT, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-        variables,
-      }),
-    });
-  } else {
-    const endpoint = new URL(GRAPHQL_ENDPOINT);
-    endpoint.searchParams.set('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '));
-    endpoint.searchParams.set('variables', JSON.stringify(variables));
-    response = await fetch(
-      endpoint.toString(),
-      { headers },
-    );
-  }
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.json();
 }
 
 export function renderPrice(product, format, html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] || ''), ''), Fragment = null) {
@@ -360,4 +509,12 @@ export function mapProductAcdl(product) {
     canonicalUrl: new URL(`/products/${product.urlKey}/${product.sku}`, window.location.origin).toString(),
     mainImageUrl: product?.images?.[0]?.url,
   };
+}
+
+/**
+ * Checks if the user is authenticated
+ * @returns {boolean} - true if the user is authenticated
+ */
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
 }

@@ -1,0 +1,40 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "content-type":"application/json",
+          "AC-Channel-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
+          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
+          "AC-Price-Book-Id":"b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "AC-Scope-Locale":"tx"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "environment-id": "LnjXjuam6uWmo5d2JLEgbA",
+        "store-code": "STORE_CODE",
+        "store-id": 1,
+        "store-name": "STORE",
+        "store-url": "https://comopt-418-qaaco--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-code": "tx",
+        "store-view-id": 1,
+        "store-view-name": "tx",
+        "website-code": "WEBSITE_CODE",
+        "website-id": 1,
+        "website-name": "WEBSITE"
+      },
+      "plugins": {
+        "picker": {
+           "rootCategory": "2"
+         }
+      }
+    }
+  }
+}
