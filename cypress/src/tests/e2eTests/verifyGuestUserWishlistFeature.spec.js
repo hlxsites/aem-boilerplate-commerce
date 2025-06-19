@@ -10,13 +10,15 @@ import {
 
 describe("Verify user can manage products across cart and wishlist", () => {
   it(
-      "Should successfully add product to wishlist, move to cart and return to wishlist",
+      "Should successfully add simple product to wishlist, move to cart and return to wishlist",
       { tags: "@skipSaas" },
       () => {
         cy.visit("");
         cy.get(".wishlist-wrapper").should('be.visible').click();
 
         // Wait for wishlist page to load and assert empty state
+        // Give extra time for page to fully render in CI
+        cy.wait(1000);
         assertWishlistEmpty();
 
         // Navigate to product with proper hover and wait
@@ -37,7 +39,7 @@ describe("Verify user can manage products across cart and wishlist", () => {
 
         // Wait for wishlist operation to complete by checking for success indicators
         // Give it a moment for the state to change, then proceed
-        cy.wait(2000);
+        cy.wait(1000);
 
         // Navigate back to wishlist and verify item was added
         cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -61,6 +63,8 @@ describe("Verify user can manage products across cart and wishlist", () => {
         // Move item to cart with proper waiting
         cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
+        // Give extra time for page to fully render in CI
+        cy.wait(1000);
         // Wait for move operation to complete by checking wishlist becomes empty
         assertWishlistEmpty();
 
@@ -104,4 +108,65 @@ describe("Verify user can manage products across cart and wishlist", () => {
           "$10.00",
         )(".wishlist-wishlist__content");
   });
+
+it(
+    "Should successfully remove simple product from wishlist",
+    { tags: "@skipSaas" },
+    () => {
+        cy.visit("");
+        cy.get(".wishlist-wrapper").should('be.visible').click();
+
+        // Wait for wishlist page to load and assert empty state
+        // Give extra time for page to fully render in CI
+        cy.wait(1000);
+        assertWishlistEmpty();
+
+        // Navigate to product with proper hover and wait
+        cy.get(".nav-drop").first().should('be.visible').trigger("mouseenter");
+        cy.contains("Youth Tee").should('be.visible').click();
+
+        // Wait for container to exist
+        cy.get('.product-details__buttons__add-to-wishlist').should('exist');
+
+        // Wait for button to be rendered
+        cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]', {timeout: 15000})
+            .should('be.visible')
+            .and('not.be.disabled');
+
+        // Click the wishlist button
+        cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
+            .click();
+
+        // Wait for wishlist operation to complete by checking for success indicators
+        // Give it a moment for the state to change, then proceed
+        cy.wait(2000);
+
+        // Navigate back to wishlist and verify item was added
+        cy.get(".wishlist-wrapper").should('be.visible').click();
+
+        // Wait for wishlist to load with items
+        assertWishlistCount(1);
+
+        // Verify wishlist item details
+        assertWishlistItem(
+            "Youth tee",
+            "$10.00",
+        )(".wishlist-wishlist__content");
+
+        assertWishlistTitleHasLink(
+            "Youth tee",
+            "/products/youth-tee/ADB150"
+        )(".commerce-wishlist-wrapper");
+
+        assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");
+
+        // Remove item from wishlist with proper waiting
+        cy.get('[data-testid="wishlist-product-item-remove-button"]', { timeout: 15000 })
+          .should('be.visible')
+          .and('not.be.disabled')
+          .click();
+
+        // Wait for move operation to complete by checking wishlist becomes empty
+        assertWishlistEmpty();
+    });
 });
