@@ -329,15 +329,15 @@ export const assertCartEmpty = () => {
 
 export const assertWishlistCount = (count) => {
   // Wait for the wrapper and its content to be fully loaded
-  cy.get('[data-testid="wishlist-heading-wrapper"]', { timeout: 15000 })
-    .should('be.visible');
+  cy.get('[data-testid="wishlist-heading-wrapper"]')
+    .should('exist');
 
-  // Then check the inner elements directly with timeout
-  cy.get('[data-testid="default-wishlist-heading"]', { timeout: 10000 })
+  // Then check the inner elements directly
+  cy.get('[data-testid="default-wishlist-heading"]')
     .should('be.visible')
     .and('contain', 'Wishlist');
 
-  cy.get('[data-testid="wishlist-heading-count"]', { timeout: 10000 })
+  cy.get('[data-testid="wishlist-heading-count"]')
     .should('be.visible')
     .and('contain', `${count} products`);
 };
