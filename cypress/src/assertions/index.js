@@ -289,6 +289,19 @@ export const assertWishlistItem = (productName, productPrice) => (elem = ".comme
   });
 };
 
+export const assertWishlistItemHasOptions = (attribute, label) => (elem = ".commerce-wishlist-wrapper") => {
+  cy.get(elem).within(() => {
+    cy.get(".wishlist-product-item-options").within(() => {
+      cy.get(".wishlist-product-item-option__attribute")
+        .contains(attribute)
+        .should("be.visible");
+      cy.get(".wishlist-product-item-option__label")
+        .contains(label)
+        .should("be.visible");
+    });
+  });
+};
+
 export const assertWishlistTitleHasLink =
   (productName, productHref) =>
     (elem = ".commerce-wishlist-wrapper") => {
@@ -323,4 +336,14 @@ export const assertWishlistCount = (count) => {
       cy.get('[data-testid="wishlist-heading-count"]')
         .should('contain', `${count} products`);
     });
+};
+
+export const assertProductDetailPage = (productName, productSku, urlPath) => {
+  // Verify redirect to product detail page
+  cy.url().should('include', urlPath);
+
+  // Verify product header is displayed correctly
+  cy.get('.product-details__header', { timeout: 10000 }).should('be.visible');
+  cy.get('.pdp-header__title').should('be.visible').and('contain', productName);
+  cy.get('.pdp-header__sku').should('be.visible').and('contain', productSku);
 };
