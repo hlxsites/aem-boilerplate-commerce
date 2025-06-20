@@ -8,7 +8,7 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
-import { rootLink } from '../../scripts/scripts.js';
+import { rootLink } from '../../scripts/commerce.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 
 // Initializers
