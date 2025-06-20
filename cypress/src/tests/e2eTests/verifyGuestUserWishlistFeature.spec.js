@@ -8,8 +8,10 @@ import {
   assertCartEmpty,
   assertWishlistItemHasOptions,
   assertProductDetailPage,
+  assertAuthUser,
 } from "../../assertions";
 import { products } from "../../fixtures";
+import { signUpUser } from "../../actions";
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
@@ -44,6 +46,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(1000);
     assertWishlistCount(1);
 
     // Verify wishlist item details
@@ -146,6 +149,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(1000);
     assertWishlistCount(1);
 
     // Verify wishlist item details
@@ -250,6 +254,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(1000);
     assertWishlistCount(1);
 
     // Verify wishlist item details
@@ -279,6 +284,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
+    cy.wait(1000);
     assertWishlistCount(1);
 
     assertWishlistItem(
@@ -295,5 +301,75 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     // Wait for move operation to complete by checking wishlist becomes empty
     cy.wait(1000);
     assertWishlistEmpty();
+  });
+
+  it("Successfully merge wishlist", () => {
+    cy.visit("");
+    cy.get(".wishlist-wrapper").should('be.visible').click();
+
+    // Wait for wishlist page to load and assert empty state
+    cy.wait(1000);
+    assertWishlistEmpty();
+
+    // Navigate to product with proper hover and wait
+    cy.get(".nav-drop").first().should('be.visible').trigger("mouseenter");
+    cy.contains("Youth Tee").should('be.visible').click();
+
+    // Wait for container to exist
+    cy.get('.product-details__buttons__add-to-wishlist').should('exist');
+
+    // Wait for button to be rendered
+    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
+      .should('be.visible')
+      .and('not.be.disabled');
+
+    // Click the wishlist button
+    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
+      .click();
+
+    // Wait for wishlist operation to complete by checking for success indicators
+    // Give it a moment for the state to change, then proceed
+    cy.wait(1000);
+
+    // Navigate back to wishlist and verify item was added
+    cy.get(".wishlist-wrapper").should('be.visible').click();
+
+    // Wait for wishlist to load with items
+    cy.wait(1000);
+    assertWishlistCount(1);
+
+    // Verify wishlist item details
+    assertWishlistItem(
+      "Youth tee",
+      "$10.00",
+    )(".wishlist-wishlist__content");
+
+    assertWishlistTitleHasLink(
+      "Youth tee",
+      "/products/youth-tee/ADB150"
+    )(".commerce-wishlist-wrapper");
+
+    assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");
+
+    // Create customer and login
+    cy.visit("/customer/create");
+    cy.fixture("userInfo").then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+      cy.wait(5000);
+    });
+
+    // Navigate back to wishlist and verify item was added
+    cy.get(".wishlist-wrapper").should('be.visible').click();
+
+    // Wait for wishlist to load with items
+    cy.wait(1000);
+    assertWishlistCount(1);
+
+    // Verify wishlist item details
+    assertWishlistItem(
+      "Youth tee",
+      "$10.00",
+    )(".wishlist-wishlist__content");
   });
 });

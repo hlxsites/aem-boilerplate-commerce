@@ -328,14 +328,18 @@ export const assertCartEmpty = () => {
 };
 
 export const assertWishlistCount = (count) => {
-  cy.get('[data-testid="wishlist-heading-wrapper"]')
+  // Wait for the wrapper and its content to be fully loaded
+  cy.get('[data-testid="wishlist-heading-wrapper"]', { timeout: 15000 })
+    .should('be.visible');
+
+  // Then check the inner elements directly with timeout
+  cy.get('[data-testid="default-wishlist-heading"]', { timeout: 10000 })
     .should('be.visible')
-    .within(() => {
-      cy.get('[data-testid="default-wishlist-heading"]')
-        .should('contain', 'Wishlist');
-      cy.get('[data-testid="wishlist-heading-count"]')
-        .should('contain', `${count} products`);
-    });
+    .and('contain', 'Wishlist');
+
+  cy.get('[data-testid="wishlist-heading-count"]', { timeout: 10000 })
+    .should('be.visible')
+    .and('contain', `${count} products`);
 };
 
 export const assertProductDetailPage = (productName, productSku, urlPath) => {
