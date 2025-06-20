@@ -360,7 +360,7 @@ describe('AEM Assets enabled', { tags: '@skipSaas' }, () => {
     })
   });
 
-  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', { tags: '@skipPaas' }, () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
     visitWithEagerImages('/products/gift-packaging/ADB102');
