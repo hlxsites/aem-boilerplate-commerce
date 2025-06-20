@@ -249,7 +249,7 @@ export default async function decorate(block) {
   // Lazy loading for mini cart fragment
   async function loadMiniCartFragment() {
     if (minicartPanel.dataset.loaded === 'true' || minicartPanel.dataset.loading === 'true') return;
-    
+
     minicartPanel.dataset.loading = 'true';
     try {
       const miniCartMeta = getMetadata('mini-cart');
