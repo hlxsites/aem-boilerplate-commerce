@@ -34,7 +34,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get('.product-details__buttons__add-to-wishlist').should('exist');
 
     // Wait for button to be rendered
-    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]', { timeout: 15000 })
+    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
       .should('be.visible')
       .and('not.be.disabled');
 
@@ -94,7 +94,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get('.cart__action--wishlist-toggle').should('exist');
 
     // Wait for wishlist button to be available
-    cy.get('.cart__action--wishlist-toggle [data-testid="wishlist-toggle"]', { timeout: 15000 })
+    cy.get('.cart__action--wishlist-toggle [data-testid="wishlist-toggle"]')
       .should('be.visible')
       .and('not.be.disabled')
       .click();

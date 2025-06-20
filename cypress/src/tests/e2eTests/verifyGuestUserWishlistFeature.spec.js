@@ -25,7 +25,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     cy.get('.product-details__buttons__add-to-wishlist').should('exist');
 
     // Wait for button to be rendered
-    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]', { timeout: 15000 })
+    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
       .should('be.visible')
       .and('not.be.disabled');
 
@@ -120,7 +120,7 @@ it("Should successfully remove simple product from wishlist", () => {
     cy.get('.product-details__buttons__add-to-wishlist').should('exist');
 
     // Wait for button to be rendered
-    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]', {timeout: 15000})
+    cy.get('.product-details__buttons__add-to-wishlist [data-testid="wishlist-toggle"]')
         .should('be.visible')
         .and('not.be.disabled');
 
