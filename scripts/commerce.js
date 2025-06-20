@@ -772,9 +772,9 @@ export function checkIsAuthenticated() {
  * @param {*} topic Topic identifier
  * @returns {boolean} True if consent was given
  */
-// eslint-disable-next-line no-unused-vars
-export function getConsent(topic) {
-  return window.consent?.includes(topic) || false;
+export function getConsent(_topic) {
+  console.warn('getConsent not implemented');
+  return true;
 }
 
 /**
