@@ -247,15 +247,19 @@ export default async function decorate(block) {
   }
 
   // Lazy loading for mini cart fragment
-  let miniCartFragmentLoaded = false;
-
   async function loadMiniCartFragment() {
-    if (miniCartFragmentLoaded) return;
-    const miniCartMeta = getMetadata('mini-cart');
-    const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
-    const miniCartFragment = await loadFragment(miniCartPath);
-    minicartPanel.append(miniCartFragment.firstElementChild);
-    miniCartFragmentLoaded = true;
+    if (minicartPanel.dataset.loaded === 'true' || minicartPanel.dataset.loading === 'true') return;
+    
+    minicartPanel.dataset.loading = 'true';
+    try {
+      const miniCartMeta = getMetadata('mini-cart');
+      const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
+      const miniCartFragment = await loadFragment(miniCartPath);
+      minicartPanel.append(miniCartFragment.firstElementChild);
+      minicartPanel.dataset.loaded = 'true';
+    } finally {
+      minicartPanel.dataset.loading = 'false';
+    }
   }
 
   async function toggleMiniCart(state) {
@@ -307,56 +311,59 @@ export default async function decorate(block) {
   const searchInput = searchPanel.querySelector('#search-bar-input');
   const searchResult = searchPanel.querySelector('.search-bar-result');
 
-  let searchLoaded = false;
-
   async function loadSearch() {
-    if (searchLoaded) return;
+    if (searchPanel.dataset.loaded === 'true' || searchPanel.dataset.loading === 'true') return;
 
-    await import('../../scripts/initializers/search.js');
+    searchPanel.dataset.loading = 'true';
+    try {
+      await import('../../scripts/initializers/search.js');
 
-    // Load search components in parallel
-    const [
-      { render },
-      { SearchBarInput },
-      { SearchBarResults },
-    ] = await Promise.all([
-      import('@dropins/storefront-product-discovery/render.js'),
-      import('@dropins/storefront-product-discovery/containers/SearchBarInput.js'),
-      import('@dropins/storefront-product-discovery/containers/SearchBarResults.js'),
-    ]);
+      // Load search components in parallel
+      const [
+        { render },
+        { SearchBarInput },
+        { SearchBarResults },
+      ] = await Promise.all([
+        import('@dropins/storefront-product-discovery/render.js'),
+        import('@dropins/storefront-product-discovery/containers/SearchBarInput.js'),
+        import('@dropins/storefront-product-discovery/containers/SearchBarResults.js'),
+      ]);
 
-    await Promise.all([
-    // Render the SearchBarInput component
-      render.render(SearchBarInput, {
-        routeSearch: (searchQuery) => {
-          const url = `${rootLink('/search')}?q=${encodeURIComponent(
-            searchQuery,
-          )}`;
-          window.location.href = url;
-        },
-        slots: {
-          SearchIcon: (ctx) => {
-          // replace the search icon in the dropin input since theres already one in the header
-            const searchIcon = document.createElement('span');
-            searchIcon.className = 'search-icon';
-            searchIcon.innerHTML = '';
-            ctx.replaceWith(searchIcon);
+      await Promise.all([
+      // Render the SearchBarInput component
+        render.render(SearchBarInput, {
+          routeSearch: (searchQuery) => {
+            const url = `${rootLink('/search')}?q=${encodeURIComponent(
+              searchQuery,
+            )}`;
+            window.location.href = url;
           },
-        },
-      })(searchInput),
-      // Render the SearchBarResult component
-      render.render(SearchBarResults, {
-        productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
-        routeSearch: (searchQuery) => {
-          const url = `${rootLink('/search')}?q=${encodeURIComponent(
-            searchQuery,
-          )}`;
-          window.location.href = url;
-        },
-      })(searchResult),
-    ]);
+          slots: {
+            SearchIcon: (ctx) => {
+            // replace the search icon in the dropin input since theres already one in the header
+              const searchIcon = document.createElement('span');
+              searchIcon.className = 'search-icon';
+              searchIcon.innerHTML = '';
+              ctx.replaceWith(searchIcon);
+            },
+          },
+        })(searchInput),
+        // Render the SearchBarResult component
+        render.render(SearchBarResults, {
+          productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
+          routeSearch: (searchQuery) => {
+            const url = `${rootLink('/search')}?q=${encodeURIComponent(
+              searchQuery,
+            )}`;
+            window.location.href = url;
+          },
+        })(searchResult),
+      ]);
 
-    searchLoaded = true;
+      searchPanel.dataset.loaded = 'true';
+    } finally {
+      searchPanel.dataset.loading = 'false';
+    }
   }
 
   async function toggleSearch(state) {
