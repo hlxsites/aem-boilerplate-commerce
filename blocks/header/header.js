@@ -1,9 +1,6 @@
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 
-// Cart dropin
-import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
-
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
@@ -249,19 +246,27 @@ export default async function decorate(block) {
     cartButton.style.display = 'none';
   }
 
-  // load nav as fragment
-  const miniCartMeta = getMetadata('mini-cart');
-  const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
-  loadFragment(miniCartPath).then((miniCartFragment) => {
+  // Lazy loading for mini cart fragment
+  let miniCartFragmentLoaded = false;
+
+  async function loadMiniCartFragment() {
+    if (miniCartFragmentLoaded) return;
+    const miniCartMeta = getMetadata('mini-cart');
+    const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
+    const miniCartFragment = await loadFragment(miniCartPath);
     minicartPanel.append(miniCartFragment.firstElementChild);
-  });
+    miniCartFragmentLoaded = true;
+  }
 
   async function toggleMiniCart(state) {
+    await loadMiniCartFragment();
     const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
     const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
     minicartPanel.classList.toggle('nav-tools-panel--show', show);
 
     if (stateChanged && show) {
+      // Load cart functionality only when needed
+      const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
       publishShoppingCartViewEvent();
     }
   }
@@ -272,6 +277,9 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (data) => {
+      // preload mini cart fragment if user has a cart
+      if (data) loadMiniCartFragment();
+
       if (data?.totalQuantity) {
         cartButton.setAttribute('data-count', data.totalQuantity);
       } else {
@@ -298,25 +306,28 @@ export default async function decorate(block) {
   const searchButton = navTools.querySelector('.nav-search-button');
   const searchInput = searchPanel.querySelector('#search-bar-input');
   const searchResult = searchPanel.querySelector('.search-bar-result');
-  let searchBarInput = null;
-  let searchBarResults = null;
 
-  async function toggleSearch(state) {
-    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
+  let searchLoaded = false;
 
-    searchPanel.classList.toggle('nav-tools-panel--show', show);
+  async function loadSearch() {
+    if (searchLoaded) return;
 
-    if (show) {
-      // Load search initializer
-      await import('../../scripts/initializers/search.js');
+    await import('../../scripts/initializers/search.js');
 
-      // Load search components
-      const { render: searchProvider } = await import('@dropins/storefront-product-discovery/render.js');
-      const { SearchBarInput } = await import('@dropins/storefront-product-discovery/containers/SearchBarInput.js');
-      const { SearchBarResults } = await import('@dropins/storefront-product-discovery/containers/SearchBarResults.js');
+    // Load search components in parallel
+    const [
+      { render },
+      { SearchBarInput },
+      { SearchBarResults },
+    ] = await Promise.all([
+      import('@dropins/storefront-product-discovery/render.js'),
+      import('@dropins/storefront-product-discovery/containers/SearchBarInput.js'),
+      import('@dropins/storefront-product-discovery/containers/SearchBarResults.js'),
+    ]);
 
-      // Render the SearchBarInput component
-      searchBarInput = await searchProvider.render(SearchBarInput, {
+    await Promise.all([
+    // Render the SearchBarInput component
+      render.render(SearchBarInput, {
         routeSearch: (searchQuery) => {
           const url = `${rootLink('/search')}?q=${encodeURIComponent(
             searchQuery,
@@ -325,17 +336,16 @@ export default async function decorate(block) {
         },
         slots: {
           SearchIcon: (ctx) => {
-            // replace the search icon in the dropin input since theres already one in the header
+          // replace the search icon in the dropin input since theres already one in the header
             const searchIcon = document.createElement('span');
             searchIcon.className = 'search-icon';
             searchIcon.innerHTML = '';
             ctx.replaceWith(searchIcon);
           },
         },
-      })(searchInput);
-
+      })(searchInput),
       // Render the SearchBarResult component
-      searchBarResults = await searchProvider.render(SearchBarResults, {
+      render.render(SearchBarResults, {
         productRouteSearch: ({ urlKey, sku }) => rootLink(`products/${urlKey}/${sku}`),
         routeSearch: (searchQuery) => {
           const url = `${rootLink('/search')}?q=${encodeURIComponent(
@@ -343,14 +353,18 @@ export default async function decorate(block) {
           )}`;
           window.location.href = url;
         },
-      })(searchResult);
+      })(searchResult),
+    ]);
 
-      // Focus on the SearchBarInput component if it has a focusable element
-      searchInput.querySelector('input')?.focus();
-    } else {
-      searchBarInput?.remove();
-      searchBarResults?.remove();
-    }
+    searchLoaded = true;
+  }
+
+  async function toggleSearch(state) {
+    await loadSearch();
+    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
+    searchPanel.classList.toggle('nav-tools-panel--show', show);
+    // Focus on the SearchBarInput component if it has a focusable element
+    if (show) searchInput?.querySelector('#search-bar-input-form')?.focus();
   }
 
   navTools.querySelector('.nav-search-button').addEventListener('click', () => {
