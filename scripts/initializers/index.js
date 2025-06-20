@@ -49,10 +49,8 @@ export default async function initializeDropins() {
     setEndpoint(getConfigValue('commerce-core-endpoint'));
 
     // Initialize Global Drop-ins
-    await Promise.all([
-      import('./auth.js'),
-      import('./personalization.js'),
-    ]);
+    await import('./auth.js');
+    await import('./personalization.js');
 
     import('./cart.js');
 
