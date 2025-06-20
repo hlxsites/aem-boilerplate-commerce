@@ -173,6 +173,52 @@ function initializeAdobeDataLayer(pageType) {
 }
 
 /**
+ * Fetches and merges index data from multiple sources with intelligent caching.
+ * @param {string} indexFile - The index file to fetch
+ * @param {number} pageSize - The page size for pagination
+ * @returns {Promise<Object>} A promise that resolves the index object
+ */
+export async function fetchIndex(indexFile, pageSize = 500) {
+  const handleIndex = async (offset) => {
+    const resp = await fetch(`/${indexFile}.json?limit=${pageSize}&offset=${offset}`);
+    const json = await resp.json();
+
+    const newIndex = {
+      complete: (json.limit + json.offset) === json.total,
+      offset: json.offset + pageSize,
+      promise: null,
+      data: [...window.index[indexFile].data, ...json.data],
+    };
+
+    return newIndex;
+  };
+
+  window.index = window.index || {};
+  window.index[indexFile] = window.index[indexFile] || {
+    data: [],
+    offset: 0,
+    complete: false,
+    promise: null,
+  };
+
+  // Return index if already loaded
+  if (window.index[indexFile].complete) {
+    return window.index[indexFile];
+  }
+
+  // Return promise if index is currently loading
+  if (window.index[indexFile].promise) {
+    return window.index[indexFile].promise;
+  }
+
+  window.index[indexFile].promise = handleIndex(window.index[indexFile].offset);
+  const newIndex = await (window.index[indexFile].promise);
+  window.index[indexFile] = newIndex;
+
+  return newIndex;
+}
+
+/**
  * Loads commerce-specific eager content
  * @param {Element} doc - The document element
  */
@@ -194,18 +240,19 @@ export async function loadCommerceEager(doc) {
  * Loads commerce-specific lazy content
  */
 export async function loadCommerceLazy() {
-  await Promise.all([
-    import('./acdl/adobe-client-data-layer.min.js'),
-  ]);
+  // Initialize modal functionality
+  autolinkModals(document);
 
+  // Initialize Adobe Client Data Layer
+  await import('./acdl/adobe-client-data-layer.min.js');
+
+  // Initialize Adobe Client Data Layer validation
   if (sessionStorage.getItem('acdl:debug')) {
     import('./acdl/validate.js');
   }
 
+  // Track history
   trackHistory();
-
-  // Initialize modal functionality
-  autolinkModals(document);
 }
 
 /**
