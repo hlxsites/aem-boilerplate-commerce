@@ -351,3 +351,14 @@ export const assertProductDetailPage = (productName, productSku, urlPath) => {
   cy.get('.pdp-header__title').should('be.visible').and('contain', productName);
   cy.get('.pdp-header__sku').should('be.visible').and('contain', productSku);
 };
+
+// Updated assertion functions to include the loading wait
+export const assertWishlistEmptyWithWait = () => {
+  cy.waitForWishlistPageLoaded();
+  assertWishlistEmpty();
+};
+
+export const assertWishlistCountWithWait = (count) => {
+  cy.waitForWishlistPageLoaded();
+  assertWishlistCount(count);
+};
