@@ -263,6 +263,9 @@ export default async function decorate(block) {
   }
 
   async function toggleMiniCart(state) {
+    // Disable toggle if currently loading
+    if (minicartPanel.dataset.loading === 'true') return;
+    
     await loadMiniCartFragment();
     const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
     const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
@@ -367,6 +370,9 @@ export default async function decorate(block) {
   }
 
   async function toggleSearch(state) {
+    // Disable toggle if currently loading
+    if (searchPanel.dataset.loading === 'true') return;
+    
     await loadSearch();
     const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
     searchPanel.classList.toggle('nav-tools-panel--show', show);
