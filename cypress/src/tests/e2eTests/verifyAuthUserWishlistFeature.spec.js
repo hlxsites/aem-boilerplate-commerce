@@ -1,14 +1,14 @@
 import {
   assertCartSummaryProduct,
-  assertWishlistEmpty,
   assertWishlistItem,
   assertWishlistTitleHasLink,
   assertWishlistProductImage,
-  assertWishlistCount,
   assertCartEmpty,
   assertAuthUser,
   assertWishlistItemHasOptions,
   assertProductDetailPage,
+  assertWishlistCountWithWait,
+  assertWishlistEmptyWithWait
 } from "../../assertions";
 import {
   signUpUser,
@@ -26,8 +26,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
 
     // Navigate to product with proper hover and wait
     cy.get(".nav-drop").first().should('be.visible').trigger("mouseenter");
@@ -53,8 +52,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
     assertWishlistItem(
@@ -73,8 +71,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
 
     // Check cart has the item
     cy.get(".minicart-wrapper").should('be.visible').click();
@@ -109,8 +106,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     assertWishlistItem(
       "Youth tee",
@@ -124,8 +120,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
       .click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
   });
 
   it("Successfully add configurable product with all required options to wishlist, move it to cart and return this to wishlist", () => {
@@ -138,8 +133,8 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
+
     cy.visit(products.configurable.urlPathWithOptions);
 
     // Wait for container to exist
@@ -162,8 +157,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
     assertWishlistItem(
@@ -184,8 +178,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
 
     // Check cart has the item
     cy.get(".minicart-wrapper").should('be.visible').click();
@@ -220,8 +213,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     assertWishlistItem(
       "Configurable product",
@@ -235,8 +227,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
       .click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
   });
 
   it("Successfully add configurable product with no required options to wishlist, redirects to PDP and remove it", () => {
@@ -249,8 +240,8 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
+
     cy.visit(products.configurable.urlPath);
 
     // Wait for container to exist
@@ -273,8 +264,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
     assertWishlistItem(
@@ -303,8 +293,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
-    cy.wait(1000);
-    assertWishlistCount(1);
+    assertWishlistCountWithWait(1);
 
     assertWishlistItem(
       "Configurable product",
@@ -318,7 +307,6 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
       .click();
 
     // Wait for move operation to complete by checking wishlist becomes empty
-    cy.wait(1000);
-    assertWishlistEmpty();
+    assertWishlistEmptyWithWait();
   });
 });
