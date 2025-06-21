@@ -251,6 +251,8 @@ export default async function decorate(block) {
     if (minicartPanel.dataset.loaded === 'true' || minicartPanel.dataset.loading === 'true') return;
 
     minicartPanel.dataset.loading = 'true';
+    cartButton.setAttribute('aria-busy', 'true');
+    cartButton.setAttribute('disabled', 'true');
     try {
       const miniCartMeta = getMetadata('mini-cart');
       const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
@@ -259,13 +261,12 @@ export default async function decorate(block) {
       minicartPanel.dataset.loaded = 'true';
     } finally {
       minicartPanel.dataset.loading = 'false';
+      cartButton.removeAttribute('aria-busy');
+      cartButton.removeAttribute('disabled');
     }
   }
 
   async function toggleMiniCart(state) {
-    // Disable toggle if currently loading
-    if (minicartPanel.dataset.loading === 'true') return;
-
     await loadMiniCartFragment();
     const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
     const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
@@ -318,6 +319,8 @@ export default async function decorate(block) {
     if (searchPanel.dataset.loaded === 'true' || searchPanel.dataset.loading === 'true') return;
 
     searchPanel.dataset.loading = 'true';
+    searchButton.setAttribute('aria-busy', 'true');
+    searchButton.setAttribute('disabled', 'true');
     try {
       await import('../../scripts/initializers/search.js');
 
@@ -366,6 +369,8 @@ export default async function decorate(block) {
       searchPanel.dataset.loaded = 'true';
     } finally {
       searchPanel.dataset.loading = 'false';
+      searchButton.removeAttribute('aria-busy');
+      searchButton.removeAttribute('disabled');
     }
   }
 
