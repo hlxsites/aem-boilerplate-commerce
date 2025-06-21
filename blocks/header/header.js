@@ -259,16 +259,10 @@ export default async function decorate(block) {
       panel.dataset.loading = 'false';
       button.removeAttribute('aria-busy');
 
-      // Check for pending toggle action and execute it
+      // Execute pending toggle if exists
       if (panel.dataset.pendingToggle === 'true') {
-        let pendingState;
-        if (panel.dataset.pendingState === 'true') {
-          pendingState = true;
-        } else if (panel.dataset.pendingState === 'false') {
-          pendingState = false;
-        } else {
-          pendingState = undefined;
-        }
+        // eslint-disable-next-line no-nested-ternary
+        const pendingState = panel.dataset.pendingState === 'true' ? true : (panel.dataset.pendingState === 'false' ? false : undefined);
 
         // Clear pending flags
         panel.removeAttribute('data-pending-toggle');
@@ -278,7 +272,7 @@ export default async function decorate(block) {
         const show = pendingState ?? !panel.classList.contains('nav-tools-panel--show');
         panel.classList.toggle('nav-tools-panel--show', show);
 
-        // Execute pending onShow callback if it exists and panel is shown
+        // Execute pending onShow callback if panel is shown
         if (show && pendingOnShow) {
           pendingOnShow();
         }
