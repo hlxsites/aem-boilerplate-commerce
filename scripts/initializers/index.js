@@ -1,5 +1,6 @@
-/* eslint-disable import/no-cycle */
 // Drop-in Tools
+import { getCookie } from '@dropins/tools/lib.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   removeFetchGraphQlHeader,
@@ -7,9 +8,6 @@ import {
   setFetchGraphQlHeader,
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
-
-// Libs
-import { getConfigValue, getCookie } from '../configs.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -52,6 +50,7 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+    await import('./personalization.js');
 
     import('./cart.js');
 

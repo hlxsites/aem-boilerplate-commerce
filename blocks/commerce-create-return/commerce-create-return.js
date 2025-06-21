@@ -1,9 +1,7 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { CreateReturn } from '@dropins/storefront-order/containers/CreateReturn.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
-import { ORDER_DETAILS_PATH, CUSTOMER_ORDER_DETAILS_PATH } from '../../scripts/constants.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { ORDER_DETAILS_PATH, CUSTOMER_ORDER_DETAILS_PATH, checkIsAuthenticated } from '../../scripts/commerce.js';
 import { rootLink } from '../../scripts/scripts.js';
 
 // Initialize
@@ -11,6 +9,14 @@ import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
   await orderRenderer.render(CreateReturn, {
+    slots: {
+      ReturnReasonFormImage: (ctx) => {
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
+      },
+      CartSummaryItemImage: (ctx) => {
+        tryRenderAemAssetsImage(ctx, imageSlotConfig(ctx));
+      },
+    },
     routeReturnSuccess: (orderData) => {
       const orderRef = checkIsAuthenticated() ? orderData.number : orderData.token;
       const encodedOrderRef = encodeURIComponent(orderRef);
@@ -19,4 +25,16 @@ export default async function decorate(block) {
       return rootLink(`${path}?orderRef=${encodedOrderRef}`);
     },
   })(block);
+}
+function imageSlotConfig(ctx) {
+  const { data, defaultImageProps } = ctx;
+  return {
+    alias: data.product.sku,
+    imageProps: defaultImageProps,
+
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+  };
 }
