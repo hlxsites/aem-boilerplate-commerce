@@ -318,20 +318,16 @@ export default async function decorate(block) {
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
   // Cart Item Counter
-  events.on(
-    'cart/data',
-    (data) => {
-      // preload mini cart fragment if user has a cart
-      if (data) loadMiniCartFragment();
+  events.on('cart/data', (data) => {
+    // preload mini cart fragment if user has a cart
+    if (data) loadMiniCartFragment();
 
-      if (data?.totalQuantity) {
-        cartButton.setAttribute('data-count', data.totalQuantity);
-      } else {
-        cartButton.removeAttribute('data-count');
-      }
-    },
-    { eager: true },
-  );
+    if (data?.totalQuantity) {
+      cartButton.setAttribute('data-count', data.totalQuantity);
+    } else {
+      cartButton.removeAttribute('data-count');
+    }
+  }, { eager: true });
 
   /** Search */
   const search = document.createRange().createContextualFragment(`
