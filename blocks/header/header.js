@@ -250,9 +250,9 @@ export default async function decorate(block) {
   async function loadMiniCartFragment() {
     if (minicartPanel.dataset.loaded === 'true' || minicartPanel.dataset.loading === 'true') return;
 
-    minicartPanel.dataset.loading = 'true';
     cartButton.setAttribute('aria-busy', 'true');
     cartButton.setAttribute('disabled', 'true');
+    minicartPanel.dataset.loading = 'true';
     try {
       const miniCartMeta = getMetadata('mini-cart');
       const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
@@ -318,9 +318,9 @@ export default async function decorate(block) {
   async function loadSearch() {
     if (searchPanel.dataset.loaded === 'true' || searchPanel.dataset.loading === 'true') return;
 
-    searchPanel.dataset.loading = 'true';
     searchButton.setAttribute('aria-busy', 'true');
     searchButton.setAttribute('disabled', 'true');
+    searchPanel.dataset.loading = 'true';
     try {
       await import('../../scripts/initializers/search.js');
 
