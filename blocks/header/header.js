@@ -252,7 +252,7 @@ export default async function decorate(block) {
     button.setAttribute('aria-busy', 'true');
     button.setAttribute('disabled', 'true');
     panel.dataset.loading = 'true';
-    
+
     try {
       await loader();
       panel.dataset.loaded = 'true';
@@ -266,7 +266,7 @@ export default async function decorate(block) {
   function togglePanel(panel, state, onShow) {
     const show = state ?? !panel.classList.contains('nav-tools-panel--show');
     panel.classList.toggle('nav-tools-panel--show', show);
-    
+
     if (show && onShow) {
       onShow();
     }
