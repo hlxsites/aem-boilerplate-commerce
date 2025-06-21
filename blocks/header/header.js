@@ -246,11 +246,10 @@ export default async function decorate(block) {
     cartButton.style.display = 'none';
   }
 
-  async function withLoadingState(panel, button, loader) {
+  async function withLoadingState(panel, button, loader, pendingOnShow) {
     if (panel.dataset.loaded === 'true' || panel.dataset.loading === 'true') return;
 
     button.setAttribute('aria-busy', 'true');
-    button.setAttribute('disabled', 'true');
     panel.dataset.loading = 'true';
 
     try {
@@ -259,17 +258,45 @@ export default async function decorate(block) {
     } finally {
       panel.dataset.loading = 'false';
       button.removeAttribute('aria-busy');
-      button.removeAttribute('disabled');
+
+      // Check for pending toggle action and execute it
+      if (panel.dataset.pendingToggle === 'true') {
+        let pendingState;
+        if (panel.dataset.pendingState === 'true') {
+          pendingState = true;
+        } else if (panel.dataset.pendingState === 'false') {
+          pendingState = false;
+        } else {
+          pendingState = undefined;
+        }
+
+        // Clear pending flags
+        panel.removeAttribute('data-pending-toggle');
+        panel.removeAttribute('data-pending-state');
+
+        // Execute the pending toggle
+        const show = pendingState ?? !panel.classList.contains('nav-tools-panel--show');
+        panel.classList.toggle('nav-tools-panel--show', show);
+
+        // Execute pending onShow callback if it exists and panel is shown
+        if (show && pendingOnShow) {
+          pendingOnShow();
+        }
+      }
     }
   }
 
-  function togglePanel(panel, state, onShow) {
+  function togglePanel(panel, state) {
+    // If loading is in progress, queue the toggle action
+    if (panel.dataset.loading === 'true') {
+      // Store the pending toggle action
+      panel.dataset.pendingToggle = 'true';
+      panel.dataset.pendingState = state !== undefined ? state.toString() : '';
+      return;
+    }
+
     const show = state ?? !panel.classList.contains('nav-tools-panel--show');
     panel.classList.toggle('nav-tools-panel--show', show);
-
-    if (show && onShow) {
-      onShow();
-    }
   }
 
   // Lazy loading for mini cart fragment
@@ -279,16 +306,16 @@ export default async function decorate(block) {
       const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
       const miniCartFragment = await loadFragment(miniCartPath);
       minicartPanel.append(miniCartFragment.firstElementChild);
+    }, async () => {
+      // Load cart functionality only when needed
+      const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
+      publishShoppingCartViewEvent();
     });
   }
 
   async function toggleMiniCart(state) {
     await loadMiniCartFragment();
-    togglePanel(minicartPanel, state, async () => {
-      // Load cart functionality only when needed
-      const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
-      publishShoppingCartViewEvent();
-    });
+    togglePanel(minicartPanel, state);
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart());
