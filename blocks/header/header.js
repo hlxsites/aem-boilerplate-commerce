@@ -246,37 +246,49 @@ export default async function decorate(block) {
     cartButton.style.display = 'none';
   }
 
+  async function withLoadingState(panel, button, loader) {
+    if (panel.dataset.loaded === 'true' || panel.dataset.loading === 'true') return;
+
+    button.setAttribute('aria-busy', 'true');
+    button.setAttribute('disabled', 'true');
+    panel.dataset.loading = 'true';
+    
+    try {
+      await loader();
+      panel.dataset.loaded = 'true';
+    } finally {
+      panel.dataset.loading = 'false';
+      button.removeAttribute('aria-busy');
+      button.removeAttribute('disabled');
+    }
+  }
+
+  function togglePanel(panel, state, onShow) {
+    const show = state ?? !panel.classList.contains('nav-tools-panel--show');
+    panel.classList.toggle('nav-tools-panel--show', show);
+    
+    if (show && onShow) {
+      onShow();
+    }
+  }
+
   // Lazy loading for mini cart fragment
   async function loadMiniCartFragment() {
-    if (minicartPanel.dataset.loaded === 'true' || minicartPanel.dataset.loading === 'true') return;
-
-    cartButton.setAttribute('aria-busy', 'true');
-    cartButton.setAttribute('disabled', 'true');
-    minicartPanel.dataset.loading = 'true';
-    try {
+    await withLoadingState(minicartPanel, cartButton, async () => {
       const miniCartMeta = getMetadata('mini-cart');
       const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
       const miniCartFragment = await loadFragment(miniCartPath);
       minicartPanel.append(miniCartFragment.firstElementChild);
-      minicartPanel.dataset.loaded = 'true';
-    } finally {
-      minicartPanel.dataset.loading = 'false';
-      cartButton.removeAttribute('aria-busy');
-      cartButton.removeAttribute('disabled');
-    }
+    });
   }
 
   async function toggleMiniCart(state) {
     await loadMiniCartFragment();
-    const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
-    const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
-    minicartPanel.classList.toggle('nav-tools-panel--show', show);
-
-    if (stateChanged && show) {
+    togglePanel(minicartPanel, state, async () => {
       // Load cart functionality only when needed
       const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
       publishShoppingCartViewEvent();
-    }
+    });
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart());
@@ -316,12 +328,7 @@ export default async function decorate(block) {
   const searchResult = searchPanel.querySelector('.search-bar-result');
 
   async function loadSearch() {
-    if (searchPanel.dataset.loaded === 'true' || searchPanel.dataset.loading === 'true') return;
-
-    searchButton.setAttribute('aria-busy', 'true');
-    searchButton.setAttribute('disabled', 'true');
-    searchPanel.dataset.loading = 'true';
-    try {
+    await withLoadingState(searchPanel, searchButton, async () => {
       await import('../../scripts/initializers/search.js');
 
       // Load search components in parallel
@@ -365,24 +372,15 @@ export default async function decorate(block) {
           },
         })(searchResult),
       ]);
-
-      searchPanel.dataset.loaded = 'true';
-    } finally {
-      searchPanel.dataset.loading = 'false';
-      searchButton.removeAttribute('aria-busy');
-      searchButton.removeAttribute('disabled');
-    }
+    });
   }
 
   async function toggleSearch(state) {
-    // Disable toggle if currently loading
-    if (searchPanel.dataset.loading === 'true') return;
-
     await loadSearch();
-    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
-    searchPanel.classList.toggle('nav-tools-panel--show', show);
-    // Focus on the SearchBarInput component if it has a focusable element
-    if (show) searchInput?.querySelector('#search-bar-input-form')?.focus();
+    togglePanel(searchPanel, state, () => {
+      // Focus on the SearchBarInput component if it has a focusable element
+      searchInput?.querySelector('#search-bar-input-form')?.focus();
+    });
   }
 
   navTools.querySelector('.nav-search-button').addEventListener('click', () => {
