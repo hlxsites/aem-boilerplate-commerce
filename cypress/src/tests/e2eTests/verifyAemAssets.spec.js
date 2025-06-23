@@ -38,7 +38,7 @@ describe('AEM Assets enabled', () => {
     Cypress.env("isAemAssetsSuite", false);
   })
 
-  it.skip('[PLP Widget]: should load and show AEM Assets optimized images', () => {
+  it('[PLP Widget]: should load and show AEM Assets optimized images', () => {
     visitWithEagerImages('/apparel');
     const expectedOptions = {
       protocol: 'https://',
@@ -360,7 +360,7 @@ describe('AEM Assets enabled', () => {
     })
   });
 
-  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', { tags: '@skipPaas' }, () => {
+  it.skip('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
     visitWithEagerImages('/products/gift-packaging/ADB102');
