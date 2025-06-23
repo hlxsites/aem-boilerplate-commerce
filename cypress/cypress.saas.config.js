@@ -21,8 +21,8 @@ module.exports = defineConfig({
 
     aemAssetsConfig: {
       commerceConfig: {
-        coreEndpoint: "https://edge-stage-graph.adobe.io/api/9217126e-02b0-433c-9f38-4a6fda04ec3d/graphql",
-        endpoint: "https://edge-stage-graph.adobe.io/api/9217126e-02b0-433c-9f38-4a6fda04ec3d/graphql",
+        coreEndpoint: "https://edge-sandbox-graph.adobe.io/api/a6ff161c-9ccf-4c31-a220-be236213ed0f/graphql",
+        endpoint: "https://edge-sandbox-graph.adobe.io/api/a6ff161c-9ccf-4c31-a220-be236213ed0f/graphql",
       },
 
       author: {
