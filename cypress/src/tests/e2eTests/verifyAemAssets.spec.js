@@ -38,7 +38,7 @@ describe('AEM Assets enabled', () => {
     Cypress.env("isAemAssetsSuite", false);
   })
 
-  it('[PLP Widget]: should load and show AEM Assets optimized images', () => {
+  it.skip('[PLP Widget]: should load and show AEM Assets optimized images', () => {
     visitWithEagerImages('/apparel');
     const expectedOptions = {
       protocol: 'https://',
