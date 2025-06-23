@@ -50,7 +50,7 @@ export default async function initializeDropins() {
     setEndpoint(getConfigValue('commerce-core-endpoint'));
 
     // Fetch global placeholders
-    fetchPlaceholders('placeholders/global.json');
+    await fetchPlaceholders('placeholders/global.json');
 
     // Initialize Global Drop-ins
     await import('./auth.js');
