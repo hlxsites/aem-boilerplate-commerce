@@ -303,7 +303,6 @@ export default async function decorate(block) {
 
     CheckoutProvider.render(BillToShippingAddress, {
       onChange: (checked) => {
-        $billingForm.style.display = checked ? 'none' : 'block';
         if (!checked && billingFormRef?.current) {
           const { formData, isDataValid } = billingFormRef.current;
 
@@ -675,9 +674,6 @@ export default async function decorate(block) {
 
       const storeConfig = checkoutApi.getStoreConfigCache();
 
-      if (!data.isVirtual) {
-        $billingForm.style.display = 'none';
-      }
       billingForm = await AccountProvider.render(AddressForm, {
         addressesFormTitle: 'Billing address',
         className: 'checkout-billing-form__address-form',
@@ -1012,6 +1008,11 @@ export default async function decorate(block) {
     removeModal();
   }
 
+  function handleCheckoutValues(payload) {
+    const { isBillToShipping } = payload;
+    $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+  }
+
   async function handleOrderPlaced(orderData) {
     // Clear address form data
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
@@ -1037,6 +1038,7 @@ export default async function decorate(block) {
   events.on('cart/initialized', handleCartInitialized, { eager: true });
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
+  events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
 }
 
