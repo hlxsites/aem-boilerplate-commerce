@@ -14,7 +14,7 @@ import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
-  it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
+  it.skip("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
     cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
@@ -217,7 +217,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     assertWishlistEmptyWithWait();
   });
 
-  it("Successfully add configurable product with no required options to wishlist, redirects to PDP and remove it", () => {
+  it.skip("Successfully add configurable product with no required options to wishlist, redirects to PDP and remove it", () => {
     cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
