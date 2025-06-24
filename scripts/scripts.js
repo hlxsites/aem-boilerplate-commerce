@@ -17,6 +17,7 @@ import {
   loadCommerceLazy,
   initializeCommerce,
   applyTemplates,
+  decorateLinks,
 } from './commerce.js';
 
 /**
@@ -63,6 +64,7 @@ function buildAutoBlocks(main) {
  * @param {Element} main The main element
  */
 export function decorateMain(main) {
+  decorateLinks(main);
   decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);

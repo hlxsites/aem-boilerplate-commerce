@@ -4,6 +4,7 @@ import {
   getConfigValue,
   getRootPath,
   initializeConfig,
+  getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { getMetadata, readBlockConfig } from './aem.js';
@@ -228,6 +229,46 @@ export async function loadCommerceEager() {
 
   // notify that the page is ready for eager loading
   notifyUI('lcp');
+}
+
+/**
+ * Decorates links in the main element.
+ * @param {Element} main - The main element
+ */
+export function decorateLinks(main) {
+  const root = getRootPath();
+  const roots = getListOfRootPaths();
+
+  main.querySelectorAll('a').forEach((a) => {
+    // If we are in the root, do nothing
+    if (roots.length === 0) return;
+
+    try {
+      const url = new URL(a.href);
+      const {
+        origin,
+        pathname,
+        search,
+        hash,
+      } = url;
+
+      // Skip localization if #nolocal flag is present
+      if (hash === '#nolocal') {
+        url.hash = '';
+        a.href = url.toString();
+        return;
+      }
+
+      // if the links belongs to another store, do nothing
+      if (roots.some((r) => r !== root && pathname.startsWith(r))) return;
+
+      // If the link is already localized, do nothing
+      if (origin !== window.location.origin || pathname.startsWith(root)) return;
+      a.href = new URL(`${origin}${root}${pathname.replace(/^\//, '')}${search}${hash}`);
+    } catch {
+      console.warn('Could not make localized link');
+    }
+  });
 }
 
 /**
