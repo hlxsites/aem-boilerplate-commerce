@@ -220,17 +220,11 @@ export async function fetchIndex(indexFile, pageSize = 500) {
 
 /**
  * Loads commerce-specific eager content
- * @param {Element} doc - The document element
  */
-export async function loadCommerceEager(doc) {
-  await initializeDropins();
-
+export async function loadCommerceEager() {
   const pageType = detectPageType();
   initializeAdobeDataLayer(pageType);
   await handleCommercePageType(pageType);
-
-  // Apply templates
-  await applyTemplates(doc);
 
   // notify that the page is ready for eager loading
   notifyUI('lcp');
@@ -259,7 +253,8 @@ export async function loadCommerceLazy() {
  * Initializes commerce configuration
  */
 export async function initializeCommerce() {
-  await initializeConfig(await getConfigFromSession());
+  initializeConfig(await getConfigFromSession());
+  return initializeDropins();
 }
 
 /**
@@ -302,7 +297,7 @@ function buildTemplateColumns(doc) {
  * Applies templates to the document.
  * @param {Element} doc The document element
  */
-async function applyTemplates(doc) {
+export function applyTemplates(doc) {
   if (doc.body.classList.contains('columns')) {
     buildTemplateColumns(doc);
   }

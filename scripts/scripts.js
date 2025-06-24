@@ -12,7 +12,12 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
-import { loadCommerceEager, loadCommerceLazy, initializeCommerce } from './commerce.js';
+import {
+  loadCommerceEager,
+  loadCommerceLazy,
+  initializeCommerce,
+  applyTemplates,
+} from './commerce.js';
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -73,13 +78,12 @@ async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
 
-  // Initialize commerce functionality
-  await initializeCommerce();
-  await loadCommerceEager(doc);
-
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    applyTemplates(doc);
+    await initializeCommerce();
+    await loadCommerceEager();
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
