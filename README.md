@@ -2,7 +2,16 @@
 This project boilerplate is for Edge Delivery Services projects that integrate with Adobe Commerce.
 
 ## Documentation
-https://experienceleague.adobe.com/developer/commerce/storefront/
+
+Before using the boilerplate, we recommend you to go through the documentation on https://experienceleague.adobe.com/developer/commerce/storefront/ and more specifically:
+
+1. [Storefront Developer Tutorial](https://experienceleague.adobe.com/developer/commerce/storefront/get-started/)
+1. [AEM Docs](https://www.aem.live/docs/)
+1. [AEM Developer Tutorial](https://www.aem.live/developer/tutorial)
+1. [The Anatomy of an AEM Project](https://www.aem.live/developer/anatomy-of-a-project)
+1. [Web Performance](https://www.aem.live/developer/keeping-it-100)
+1. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
+
 
 ## Environments
 - Preview: https://main--{repo}--{owner}.aem.page/
@@ -22,11 +31,6 @@ Additionally, you need to have the following modules and customizations installe
 
 ## Documentation
 
-Before using the boilerplate, we recommend you to go through the documentation on https://www.aem.live/docs/ and more specifically:
-1. [Developer Tutorial](https://www.aem.live/developer/tutorial)
-2. [The Anatomy of a Project](https://www.aem.live/developer/anatomy-of-a-project)
-3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
-4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
 ## Initial Setup
 
@@ -121,6 +125,15 @@ npm run lint
 1. Install all dependencies using `npm i`.
 1. Start AEM Proxy: `aem-up --url htps://main--{SITE}--{ORG}.aem.page` (opens your browser at `http://localhost:3000`)
 1. Open the `{repo}` directory in your favourite IDE and start coding :)
+
+## Site Creator Tool
+
+The [Site Creator Tool](https://da.live/app/hlxsites/aem-boilerplate-commerce/tools/site-creator/site-creator) clones content from the boilerplate content source to a destination content source in DA.
+
+The tool source is found in `tools/site-creator` in this repository.
+
+If you want to develop on the tool, you can use DA's `ref` capability in conjunction with your org and site name: `https://da.live/app/${ORG}$/${SITE}/tools/site-creator/site-creator?ref=${BRANCH_NAME}`
+
 
 ## Changelog
 
