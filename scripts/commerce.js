@@ -559,7 +559,7 @@ function createHashFromObject(obj, length = 5) {
 
 /**
  * Creates a commerce endpoint URL with query parameters including a cache-busting hash.
- * @returns {Promise<URL>} A promise that resolves to the commerce endpoint URL with query parameters
+ * @returns {Promise<URL>} A promise that resolves to the endpoint URL with query parameters
  */
 export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
