@@ -27,7 +27,12 @@
         "store-view-id": 1,
         "store-view-name": "tx",
         "website-id": 1,
-        "website-name": "Main Website"
+        "website-name": "Main Website",
+        "Magento-Environment-Id": "LnjXjuam6uWmo5d2JLEgbA",
+        "Magento-Website-Code": "WEBSITE_CODE",
+        "Magento-Store-Code": "STORE_CODE",
+        "Magento-Store-View-Code": "tx",
+        "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
       }
     }
   }
