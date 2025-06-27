@@ -292,12 +292,7 @@ export default async function decorate(block) {
     children: 'Test Add To Cart Event',
     icon: h(Icon, { source: 'Delivery' }),
     onClick: async () => {
-      // eslint-disable-next-line no-console
-      console.log(`Test Add To Cart Event clicked: ${JSON.stringify(product)}`);
       if (window.adobeDataLayer?.push) {
-        // window.adobeDataLayer.push(['changedProductsContext'], null);
-        // window.adobeDataLayer.push(['changedProductsContext'], {
-        // });
         window.adobeDataLayer.push((acdl) => {
           const state = acdl.getState ? acdl.getState() : {};
 
@@ -326,8 +321,6 @@ export default async function decorate(block) {
     children: 'Test Checkout Event',
     icon: h(Icon, { source: 'OrderSuccess' }),
     onClick: async () => {
-      // eslint-disable-next-line no-console
-      console.log(`Test Checkout Event clicked: ${JSON.stringify(product)}`);
       if (window.adobeDataLayer?.push) {
         window.adobeDataLayer.push((acdl) => {
           const state = acdl.getState ? acdl.getState() : {};
@@ -354,6 +347,7 @@ export default async function decorate(block) {
                       name: product.name,
                     },
                   }],
+
                 },
               },
             },
