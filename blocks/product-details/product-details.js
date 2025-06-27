@@ -349,7 +349,10 @@ export default async function decorate(block) {
                     },
                     id: '0',
                     qty: 1,
-                    ...product,
+                    product: {
+                      sku: product.sku,
+                      name: product.name,
+                    },
                   }],
                 },
               },
