@@ -18,6 +18,10 @@
         }
       },
       "analytics": {
+        "environment-id": "861iUXRfBWuoGqNcwajH4c",
+        "website-code": "base",
+        "store-code": "main_website_store",
+        "store-view-name": "default",
         "base-currency-code": "USD",
         "environment": "Testing",
         "store-id": 1,
@@ -25,11 +29,7 @@
         "store-url": "https://e2e-prex-dropin-accs--aem-boilerplate-commerce--hlxsites.aem.live/",
         "store-view-id": 1,
         "website-id": 1,
-        "website-name": "Main Website",
-        "environment-id": "861iUXRfBWuoGqNcwajH4c",
-        "website-code": "base",
-        "store-code": "main_website_store",
-        "store-view-name": "default"
+        "website-name": "Main Website"
       },
       "plugins": {
         "picker": {
