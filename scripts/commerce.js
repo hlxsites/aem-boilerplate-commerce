@@ -1,92 +1,540 @@
-/* eslint-disable import/prefer-default-export, import/no-cycle */
-import { getMetadata } from './aem.js';
+import { getCookie } from '@dropins/tools/lib.js';
 import {
   getHeaders,
   getConfigValue,
-  getCookie,
   getRootPath,
-} from './configs.js';
-import { getConsent } from './scripts.js';
+  initializeConfig,
+  getListOfRootPaths,
+} from '@dropins/tools/lib/aem/configs.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { getMetadata } from './aem.js';
+import initializeDropins from './initializers/index.js';
 
 /**
- * Gets placeholders object.
- * @param {string} [prefix] Location of placeholders
- * @returns {object} Window placeholders object
+ * Constants
  */
-// eslint-disable-next-line import/prefer-default-export
-export async function fetchPlaceholders(prefix = 'default') {
-  const overrides = getMetadata('placeholders') || getRootPath().replace(/\/$/, '/placeholders.json') || '';
-  const [fallback, override] = overrides.split('\n');
-  window.placeholders = window.placeholders || {};
 
-  if (!window.placeholders[prefix]) {
-    window.placeholders[prefix] = new Promise((resolve) => {
-      const url = fallback || `${prefix === 'default' ? '' : prefix}/placeholders.json`;
-      Promise.all([fetch(url), override ? fetch(override) : Promise.resolve()])
-        // get json from sources
-        .then(async ([resp, oResp]) => {
-          if (resp.ok) {
-            if (oResp?.ok) {
-              return Promise.all([resp.json(), await oResp.json()]);
-            }
-            return Promise.all([resp.json(), {}]);
-          }
-          return [{}];
-        })
-        // process json from sources
-        .then(([json, oJson]) => {
-          const placeholders = {};
+// PATHS
+export const SUPPORT_PATH = '/support';
+export const PRIVACY_POLICY_PATH = '/privacy-policy';
 
-          const allKeys = new Set([
-            ...(json.data?.map(({ Key }) => Key) || []),
-            ...(oJson?.data?.map(({ Key }) => Key) || []),
-          ]);
+// GUEST PATHS
+export const ORDER_STATUS_PATH = '/order-status';
+export const ORDER_DETAILS_PATH = '/order-details';
+export const RETURN_DETAILS_PATH = '/return-details';
+export const CREATE_RETURN_PATH = '/create-return';
+export const SALES_GUEST_VIEW_PATH = '/sales/guest/view/';
 
-          allKeys.forEach((Key) => {
-            if (!Key) return;
-            const keys = Key.split('.');
-            const originalValue = json.data?.find((item) => item.Key === Key)?.Value;
-            const overrideValue = oJson?.data?.find((item) => item.Key === Key)?.Value;
-            const finalValue = overrideValue ?? originalValue;
-            const lastKey = keys.pop();
-            const target = keys.reduce((obj, key) => {
-              obj[key] = obj[key] || {};
-              return obj[key];
-            }, placeholders);
-            target[lastKey] = finalValue;
-          });
+// CUSTOMER PATHS
+export const CUSTOMER_PATH = '/customer';
+export const CUSTOMER_ORDER_DETAILS_PATH = `${CUSTOMER_PATH}${ORDER_DETAILS_PATH}`;
+export const CUSTOMER_RETURN_DETAILS_PATH = `${CUSTOMER_PATH}${RETURN_DETAILS_PATH}`;
+export const CUSTOMER_CREATE_RETURN_PATH = `${CUSTOMER_PATH}${CREATE_RETURN_PATH}`;
+export const CUSTOMER_ORDERS_PATH = `${CUSTOMER_PATH}/orders`;
+export const CUSTOMER_RETURNS_PATH = `${CUSTOMER_PATH}/returns`;
+export const CUSTOMER_ADDRESS_PATH = `${CUSTOMER_PATH}/address`;
+export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
+export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
+export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
+export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
 
-          window.placeholders[prefix] = placeholders;
-          resolve(placeholders);
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.error('error loading placeholders', error);
-          // error loading placeholders
-          window.placeholders[prefix] = {};
-          resolve(window.placeholders[prefix]);
-        });
+// TRACKING URL
+export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+/**
+ * Auth Privacy Policy Consent Slot
+ * @param {Object} ctx - The context object
+ * @param {Object} ctx.appendChild - The appendChild function
+ * @returns {void}
+ */
+export const authPrivacyPolicyConsentSlot = {
+  PrivacyPolicyConsent: async (ctx) => {
+    const wrapper = document.createElement('span');
+    Object.assign(wrapper.style, {
+      color: 'var(--color-neutral-700)',
+      font: 'var(--type-details-caption-2-font)',
+      display: 'block',
+      marginBottom: 'var(--spacing-medium)',
     });
-  }
-  return window.placeholders[`${prefix}`];
+
+    const link = document.createElement('a');
+    link.href = PRIVACY_POLICY_PATH;
+    link.target = '_blank';
+    link.textContent = 'Privacy Policy';
+
+    wrapper.append(
+      'By creating an account, you acknowledge that you have read and agree to our ',
+      link,
+      ', which outlines how we collect, use, and protect your personal data.',
+    );
+
+    ctx.appendChild(wrapper);
+  },
+};
+
+/**
+ * Preloads a file with specified attributes
+ * @param {string} href - The URL to preload
+ * @param {string} as - The type of resource being preloaded
+ */
+export function preloadFile(href, as) {
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = as;
+  link.crossOrigin = 'anonymous';
+  link.href = href;
+  document.head.appendChild(link);
 }
 
-/* Common query fragments */
-export const priceFieldsFragment = `fragment priceFields on ProductViewPrice {
-  roles
-  regular {
-      amount {
-          currency
-          value
-      }
+/**
+ * Notifies dropins about the current loading state.
+ * @param {string} event The loading state to notify
+ */
+function notifyUI(event) {
+  // skip if the event was already sent
+  if (events.lastPayload(`aem/${event}`) === event) return;
+  // notify dropins about the current loading state
+  const handleEmit = () => events.emit(`aem/${event}`);
+  // listen for prerender event
+  document.addEventListener('prerenderingchange', handleEmit, { once: true });
+  // emit the event immediately
+  handleEmit();
+}
+
+/**
+ * Detects the page type based on DOM elements
+ * @returns {string} The detected page type
+ */
+function detectPageType() {
+  if (document.body.querySelector('main .product-details')) {
+    return 'Product';
+  } if (document.body.querySelector('main .product-list-page')) {
+    return 'Category';
+  } if (document.body.querySelector('main .commerce-cart')) {
+    return 'Cart';
+  } if (document.body.querySelector('main .commerce-checkout')) {
+    return 'Checkout';
   }
-  final {
-      amount {
-          currency
-          value
-      }
+  return 'CMS';
+}
+
+/**
+ * Handles commerce-specific page type initialization
+ * @param {string} pageType - The detected page type
+ */
+async function handleCommercePageType(pageType) {
+  if (pageType === 'Product') {
+    // initialize pdp
+    await import('./initializers/pdp.js');
   }
-}`;
+}
+
+/**
+ * Initializes Adobe Data Layer for commerce
+ * @param {string} pageType - The detected page type
+ */
+function initializeAdobeDataLayer(pageType) {
+  window.adobeDataLayer = window.adobeDataLayer || [];
+
+  window.adobeDataLayer.push(
+    {
+      pageContext: {
+        pageType,
+        pageName: document.title,
+        eventType: 'visibilityHidden',
+        maxXOffset: 0,
+        maxYOffset: 0,
+        minXOffset: 0,
+        minYOffset: 0,
+      },
+    },
+    {
+      shoppingCartContext: {
+        totalQuantity: 0,
+      },
+    },
+  );
+  window.adobeDataLayer.push((dl) => {
+    dl.push({ event: 'page-view', eventInfo: { ...dl.getState() } });
+  });
+}
+
+/**
+ * Fetches and merges index data from multiple sources with intelligent caching.
+ * @param {string} indexFile - The index file to fetch
+ * @param {number} pageSize - The page size for pagination
+ * @returns {Promise<Object>} A promise that resolves the index object
+ */
+export async function fetchIndex(indexFile, pageSize = 500) {
+  const handleIndex = async (offset) => {
+    const resp = await fetch(`/${indexFile}.json?limit=${pageSize}&offset=${offset}`);
+    const json = await resp.json();
+
+    const newIndex = {
+      complete: (json.limit + json.offset) === json.total,
+      offset: json.offset + pageSize,
+      promise: null,
+      data: [...window.index[indexFile].data, ...json.data],
+    };
+
+    return newIndex;
+  };
+
+  window.index = window.index || {};
+  window.index[indexFile] = window.index[indexFile] || {
+    data: [],
+    offset: 0,
+    complete: false,
+    promise: null,
+  };
+
+  // Return index if already loaded
+  if (window.index[indexFile].complete) {
+    return window.index[indexFile];
+  }
+
+  // Return promise if index is currently loading
+  if (window.index[indexFile].promise) {
+    return window.index[indexFile].promise;
+  }
+
+  window.index[indexFile].promise = handleIndex(window.index[indexFile].offset);
+  const newIndex = await (window.index[indexFile].promise);
+  window.index[indexFile] = newIndex;
+
+  return newIndex;
+}
+
+/**
+ * Loads commerce-specific eager content
+ */
+export async function loadCommerceEager() {
+  const pageType = detectPageType();
+  initializeAdobeDataLayer(pageType);
+  await handleCommercePageType(pageType);
+
+  // notify that the page is ready for eager loading
+  notifyUI('lcp');
+}
+
+/**
+ * Decorates links in the main element.
+ * @param {Element} main - The main element
+ */
+export function decorateLinks(main) {
+  const root = getRootPath();
+  const roots = getListOfRootPaths();
+
+  main.querySelectorAll('a').forEach((a) => {
+    // If we are in the root, do nothing
+    if (roots.length === 0) return;
+
+    try {
+      const url = new URL(a.href);
+      const {
+        origin,
+        pathname,
+        search,
+        hash,
+      } = url;
+
+      // Skip localization if #nolocal flag is present
+      if (hash === '#nolocal') {
+        url.hash = '';
+        a.href = url.toString();
+        return;
+      }
+
+      // if the links belongs to another store, do nothing
+      if (roots.some((r) => r !== root && pathname.startsWith(r))) return;
+
+      // If the link is already localized, do nothing
+      if (origin !== window.location.origin || pathname.startsWith(root)) return;
+      a.href = new URL(`${origin}${root}${pathname.replace(/^\//, '')}${search}${hash}`);
+    } catch {
+      console.warn('Could not make localized link');
+    }
+  });
+}
+
+/**
+ * Loads commerce-specific lazy content
+ */
+export async function loadCommerceLazy() {
+  // Initialize modal functionality
+  autolinkModals(document);
+
+  // Initialize Adobe Client Data Layer
+  await import('./acdl/adobe-client-data-layer.min.js');
+
+  // Initialize Adobe Client Data Layer validation
+  if (sessionStorage.getItem('acdl:debug')) {
+    import('./acdl/validate.js');
+  }
+
+  // Track history
+  trackHistory();
+}
+
+/**
+ * Initializes commerce configuration
+ */
+export async function initializeCommerce() {
+  initializeConfig(await getConfigFromSession());
+  return initializeDropins();
+}
+
+/**
+ * Decorates links.
+ * @param {string} [link] url to be localized
+ * @returns {string} - The localized link
+ */
+export function rootLink(link) {
+  const root = getRootPath().replace(/\/$/, '');
+
+  // If the link is already localized, do nothing
+  if (link.startsWith(root)) return link;
+  return `${root}${link}`;
+}
+
+/**
+ * Decorates Columns Template to the main element.
+ * @param {Element} doc The document element
+ */
+function buildTemplateColumns(doc) {
+  const columns = doc.querySelectorAll('main > div.section[data-column-width]');
+
+  columns.forEach((column) => {
+    const columnWidth = column.getAttribute('data-column-width');
+    const gap = column.getAttribute('data-gap');
+
+    if (columnWidth) {
+      column.style.setProperty('--column-width', columnWidth);
+      column.removeAttribute('data-column-width');
+    }
+
+    if (gap) {
+      column.style.setProperty('--gap', `var(--spacing-${gap.toLocaleLowerCase()})`);
+      column.removeAttribute('data-gap');
+    }
+  });
+}
+
+/**
+ * Applies templates to the document.
+ * @param {Element} doc The document element
+ */
+export function applyTemplates(doc) {
+  if (doc.body.classList.contains('columns')) {
+    buildTemplateColumns(doc);
+  }
+}
+
+/**
+ * Fetches and merges placeholder data from multiple sources with intelligent caching.
+ *
+ * This function retrieves placeholder data from a path-specific file and optional fallback file,
+ * then merges them together. It implements request deduplication to prevent multiple simultaneous
+ * requests for the same resources and caches results for optimal performance.
+ *
+ * @param {string} [path] - Optional path to a specific placeholders file to include in the merge.
+ *                         If provided, this file's data will be merged with fallback data.
+ *                         If not provided, returns all currently cached placeholders.
+ * @returns {Promise<Object>} A promise that resolves the merged placeholders object.
+ * @example
+ * // Get all currently cached placeholders (no fetching)
+ * const allPlaceholders = await fetchPlaceholders();
+ *
+ * // Fetch placeholders with specific path
+ * const placeholders = await fetchPlaceholders('placeholders/auth.json');
+ *
+ * // Get all placeholders including newly fetched ones
+ * const updatedPlaceholders = await fetchPlaceholders();
+ */
+export async function fetchPlaceholders(path) {
+  const rootPath = getRootPath();
+  const fallback = getMetadata('placeholders');
+  window.placeholders = window.placeholders || {};
+
+  // Track pending requests to prevent duplicate fetches
+  window.placeholders._pending = window.placeholders._pending || {};
+
+  // Initialize merged results storage as a single merged object
+  window.placeholders._merged = window.placeholders._merged || {};
+
+  // If no path is provided, return the merged placeholders
+  if (!path) {
+    return Promise.resolve(window.placeholders._merged || {});
+  }
+
+  // Create cache key for this specific combination
+  const cacheKey = [path, fallback].filter(Boolean).join('|');
+
+  // Prevent empty cache keys
+  if (!cacheKey) {
+    return Promise.resolve({});
+  }
+
+  // Check if there's already a pending request for this combination
+  if (window.placeholders._pending[cacheKey]) {
+    return window.placeholders._pending[cacheKey];
+  }
+
+  // fetch placeholders
+  const fetchPromise = new Promise((resolve) => {
+    const promises = [];
+
+    // Helper function to get or create fetch promise for a single resource
+    const getOrCreateFetch = (url, resourceCacheKey) => {
+      // Check if already cached
+      if (window.placeholders[resourceCacheKey]) {
+        return Promise.resolve(window.placeholders[resourceCacheKey]);
+      }
+
+      // Check if already pending
+      if (window.placeholders._pending[resourceCacheKey]) {
+        return window.placeholders._pending[resourceCacheKey];
+      }
+
+      // Create new fetch promise
+      const resourceFetchPromise = fetch(`${url}?sheet=data`).then(async (response) => {
+        if (response.ok) {
+          const data = await response.json();
+          // Cache the response
+          window.placeholders[resourceCacheKey] = data;
+          return data;
+        }
+        console.warn(`Failed to fetch placeholders from ${url}: HTTP ${response.status} ${response.statusText}`);
+        return {};
+      }).catch((error) => {
+        console.error(`Error fetching placeholders from ${url}:`, error);
+        return {};
+      }).finally(() => {
+        // Remove from pending
+        delete window.placeholders._pending[resourceCacheKey];
+      });
+
+      // Store pending promise
+      window.placeholders._pending[resourceCacheKey] = resourceFetchPromise;
+      return resourceFetchPromise;
+    };
+
+    // path
+    if (path) {
+      const pathUrl = rootPath.replace(/\/$/, `/${path}`);
+      promises.push(getOrCreateFetch(pathUrl, path));
+    }
+
+    // fallback - only if it exists from overrides
+    if (fallback) {
+      promises.push(getOrCreateFetch(fallback, fallback));
+    }
+
+    Promise.all(promises)
+      // process json from sources and combine them
+      .then((jsons) => {
+        // Early return if no data
+        const hasData = jsons.some((json) => json.data?.length > 0);
+        if (!hasData) {
+          console.warn(`No placeholder data found for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
+          resolve({});
+          return;
+        }
+
+        // Create data object where later values override earlier ones
+        const data = {};
+
+        // Process all JSONs in one pass
+        jsons.forEach((json) => {
+          if (json.data?.length) {
+            json.data.forEach(({ Key, Value }) => {
+              if (Key && Value !== undefined) {
+                data[Key] = Value;
+              }
+            });
+          }
+        });
+
+        // Early return if no valid data
+        if (Object.keys(data).length === 0) {
+          console.warn(`No valid placeholder data found after processing for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`);
+          resolve({});
+          return;
+        }
+
+        // Convert data object to placeholders object with nested structure
+        const placeholders = {};
+
+        Object.entries(data).forEach(([Key, Value]) => {
+          const keys = Key.split('.');
+          const lastKey = keys.pop();
+          let target = placeholders;
+
+          // Navigate/create nested structure
+          keys.forEach((key) => {
+            target[key] = target[key] || {};
+            target = target[key];
+          });
+
+          // Set the final value
+          target[lastKey] = Value;
+        });
+
+        // Merge the new placeholders into the global merged object
+        Object.assign(window.placeholders._merged, placeholders);
+
+        resolve(placeholders);
+      })
+      .catch((error) => {
+        console.error(`Error loading placeholders for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`, error);
+        // error loading placeholders
+        resolve({});
+      });
+  });
+
+  // Store the pending promise for this combination
+  window.placeholders._pending[cacheKey] = fetchPromise;
+
+  // Clean up pending promise when resolved
+  fetchPromise.finally(() => {
+    delete window.placeholders._pending[cacheKey];
+  });
+
+  return fetchPromise;
+}
+
+/**
+ * Fetches config from remote and saves in session, then returns it, otherwise
+ * returns if it already exists.
+ *
+ * @returns {Promise<Object>} - The config JSON from session storage
+ */
+export async function getConfigFromSession() {
+  const configURL = `${window.location.origin}/config.json`;
+
+  try {
+    const configJSON = window.sessionStorage.getItem('config');
+    if (!configJSON) {
+      throw new Error('No config in session storage');
+    }
+
+    const parsedConfig = JSON.parse(configJSON);
+    if (
+      !parsedConfig[':expiry']
+      || parsedConfig[':expiry'] < Math.round(Date.now() / 1000)
+    ) {
+      throw new Error('Config expired');
+    }
+    return parsedConfig;
+  } catch (e) {
+    const config = await fetch(configURL);
+    if (!config.ok) throw new Error('Failed to fetch config');
+    const configJSON = await config.json();
+    configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
+    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    return configJSON;
+  }
+}
 
 /**
  * Creates a short hash from an object by sorting its entries and hashing them.
@@ -109,6 +557,10 @@ function createHashFromObject(obj, length = 5) {
     .slice(0, length);
 }
 
+/**
+ * Creates a commerce endpoint URL with query parameters including a cache-busting hash.
+ * @returns {Promise<URL>} A promise that resolves to the endpoint URL with query parameters
+ */
 export async function commerceEndpointWithQueryParams() {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   const headers = getHeaders('cs');
@@ -117,133 +569,29 @@ export async function commerceEndpointWithQueryParams() {
   return urlWithQueryParams;
 }
 
-/* Common functionality */
-
-export async function performCatalogServiceQuery(query, variables) {
-  const headers = {
-    ...(getHeaders('cs')),
-    'Content-Type': 'application/json',
-  };
-
-  const apiCall = await commerceEndpointWithQueryParams();
-  apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
-    .replace(/\s\s+/g, ' '));
-  apiCall.searchParams.append('variables', variables ? JSON.stringify(variables) : null);
-
-  const response = await fetch(apiCall, {
-    method: 'GET',
-    headers,
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const queryResponse = await response.json();
-
-  return queryResponse.data;
-}
-
-export function getSignInToken() {
-  return getCookie('auth_dropin_user_token');
-}
-
-export async function performMonolithGraphQLQuery(query, variables, GET = true, USE_TOKEN = false) {
-  const GRAPHQL_ENDPOINT = getConfigValue('commerce-core-endpoint');
-
-  const headers = {
-    'Content-Type': 'application/json',
-    Store: getConfigValue('headers.cs.Magento-Store-View-Code'),
-  };
-
-  if (USE_TOKEN) {
-    if (typeof USE_TOKEN === 'string') {
-      headers.Authorization = `Bearer ${USE_TOKEN}`;
-    } else {
-      const token = getSignInToken();
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-    }
-  }
-
-  let response;
-  if (!GET) {
-    response = await fetch(GRAPHQL_ENDPOINT, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        query: query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '),
-        variables,
-      }),
-    });
-  } else {
-    const endpoint = new URL(GRAPHQL_ENDPOINT);
-    endpoint.searchParams.set('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ').replace(/\s\s+/g, ' '));
-    endpoint.searchParams.set('variables', JSON.stringify(variables));
-    response = await fetch(
-      endpoint.toString(),
-      { headers },
-    );
-  }
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.json();
-}
-
-export function renderPrice(product, format, html = (strings, ...values) => strings.reduce((result, string, i) => result + string + (values[i] || ''), ''), Fragment = null) {
-  // Simple product
-  if (product.price) {
-    const { regular, final } = product.price;
-    if (regular.amount.value === final.amount.value) {
-      return html`<span class="price-final">${format(final.amount.value)}</span>`;
-    }
-    return html`<${Fragment}>
-      <span class="price-regular">${format(regular.amount.value)}</span> <span class="price-final">${format(final.amount.value)}</span>
-    </${Fragment}>`;
-  }
-
-  // Complex product
-  if (product.priceRange) {
-    const { regular: regularMin, final: finalMin } = product.priceRange.minimum;
-    const { final: finalMax } = product.priceRange.maximum;
-
-    if (finalMin.amount.value !== finalMax.amount.value) {
-      return html`
-      <div class="price-range">
-        ${finalMin.amount.value !== regularMin.amount.value ? html`<span class="price-regular">${format(regularMin.amount.value)}</span>` : ''}
-        <span class="price-from">${format(finalMin.amount.value)} - ${format(finalMax.amount.value)}</span>
-      </div>`;
-    }
-
-    if (finalMin.amount.value !== regularMin.amount.value) {
-      return html`<${Fragment}>
-      <span class="price-final">${format(finalMin.amount.value)} - ${format(regularMin.amount.value)}</span>
-    </${Fragment}>`;
-    }
-
-    return html`<span class="price-final">${format(finalMin.amount.value)}</span>`;
-  }
-
-  return null;
-}
-
-/* PDP specific functionality */
-
+/**
+ * Extracts the SKU from the current URL path.
+ * @returns {string|null} The SKU extracted from the URL, or null if not found
+ */
 export function getSkuFromUrl() {
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
 }
 
+/**
+ * Extracts option UIDs from the URL search parameters.
+ * @returns {string[]|undefined} Array of option UIDs, or undefined if not found
+ */
 export function getOptionsUIDsFromUrl() {
   return new URLSearchParams(window.location.search).get('optionsUIDs')?.split(',');
 }
 
-export async function trackHistory() {
+/**
+ * Tracks user browsing and purchase history for recommendations.
+ * Stores product view history and purchase history in localStorage.
+ */
+function trackHistory() {
   if (!getConsent('commerce-recommendations')) {
     return;
   }
@@ -274,6 +622,11 @@ export async function trackHistory() {
   });
 }
 
+/**
+ * Sets JSON-LD structured data in the document head.
+ * @param {Object} data - The JSON-LD data object
+ * @param {string} name - The name identifier for the script element
+ */
 export function setJsonLd(data, name) {
   const existingScript = document.head.querySelector(`script[data-name="${name}"]`);
   if (existingScript) {
@@ -289,6 +642,10 @@ export function setJsonLd(data, name) {
   document.head.appendChild(script);
 }
 
+/**
+ * Loads and displays an error page (e.g., 404) by replacing the current page content.
+ * @param {number} [code=404] - The HTTP error code for the error page
+ */
 export async function loadErrorPage(code = 404) {
   const htmlText = await fetch(`/${code}.html`).then((response) => {
     if (response.ok) {
@@ -332,32 +689,36 @@ export async function loadErrorPage(code = 404) {
     });
 }
 
-export function mapProductAcdl(product) {
-  const regularPrice = product?.priceRange?.minimum?.regular?.amount.value
-    || product?.price?.regular?.amount.value || 0;
-  const specialPrice = product?.priceRange?.minimum?.final?.amount.value
-    || product?.price?.final?.amount.value;
-  // storefront-events-collector will use storefrontInstanceContext.storeViewCurrencyCode
-  // if undefined, no default value is necessary.
-  const currencyCode = product?.priceRange?.minimum?.final?.amount.currency
-    || product?.price?.final?.amount.currency || undefined;
-  const minimalPrice = product?.priceRange ? regularPrice : undefined;
-  const maximalPrice = product?.priceRange
-    ? product?.priceRange?.maximum?.regular?.amount.value : undefined;
+/**
+ * Checks if the user is authenticated
+ * @returns {boolean} - true if the user is authenticated
+ */
+export function checkIsAuthenticated() {
+  return !!getCookie('auth_dropin_user_token') ?? false;
+}
 
-  return {
-    productId: parseInt(product.externalId, 10) || 0,
-    name: product?.name,
-    sku: product?.variantSku || product?.sku,
-    topLevelSku: product?.sku,
-    pricing: {
-      regularPrice,
-      minimalPrice,
-      maximalPrice,
-      specialPrice,
-      currencyCode,
-    },
-    canonicalUrl: new URL(`/products/${product.urlKey}/${product.sku}`, window.location.origin).toString(),
-    mainImageUrl: product?.images?.[0]?.url,
-  };
+/**
+ * Check if consent was given for a specific topic.
+ * @param {*} topic Topic identifier
+ * @returns {boolean} True if consent was given
+ */
+export function getConsent(_topic) {
+  console.warn('getConsent not implemented');
+  return true;
+}
+
+/**
+ * Automatically links modal functionality to elements
+ * @param {Element} element - The element to attach modal functionality to
+ */
+function autolinkModals(element) {
+  element.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      openModal(origin.href);
+    }
+  });
 }
