@@ -608,17 +608,17 @@ function trackHistory() {
       viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
       window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-10)));
     }, { path: 'productContext' });
-    dl.addEventListener('place-order', () => {
-      const shoppingCartContext = dl.getState('shoppingCartContext');
-      if (!shoppingCartContext) {
-        return;
-      }
-      const key = `${storeViewCode}:purchaseHistory`;
-      const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-      const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-      purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
-      window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
-    });
+    // dl.addEventListener('place-order', () => {
+    //   const shoppingCartContext = dl.getState('shoppingCartContext');
+    //   if (!shoppingCartContext) {
+    //     return;
+    //   }
+    //   const key = `${storeViewCode}:purchaseHistory`;
+    //   const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+    //   const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+    //   purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+    //   window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
+    // });
   });
 }
 
