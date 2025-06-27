@@ -342,13 +342,14 @@ export default async function decorate(block) {
                 },
                 shoppingCartContext: {
                   items: [{
-                    basePrice: product.prices.regular.amount,
-                    cartItemId: '0',
-                    mainImageUrl: undefined,
-                    offerPrice: product.prices.final.amount,
-                    productName: product.name,
-                    productSku: product.sku,
+                    prices: {
+                      price: {
+                        value: product.prices.regular.amount,
+                      },
+                    },
+                    id: '0',
                     qty: 1,
+                    ...product,
                   }],
                 },
               },
