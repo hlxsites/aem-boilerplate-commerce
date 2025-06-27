@@ -82,6 +82,7 @@ export default async function decorate(block) {
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
+        <div class="product-details__test_events"></div>
       </div>
     </div>
   `);
@@ -98,6 +99,7 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $testEvents = fragment.querySelector('.product-details__test_events');
 
   block.replaceChildren(fragment);
 
@@ -282,6 +284,30 @@ export default async function decorate(block) {
       }
     },
   })($addToCart);
+
+const testEventsBtn = await UI.render(Button, {
+  children: 'Test Add To Cart Event',
+  icon: h(Icon, { source: 'Delivery' }),
+  onClick: async () => {
+    console.log('Test Add To Cart Event clicked: ' + product);
+    if(window.adobeClientDataLayer?.push){
+      window.adobeClientDataLayer.push('changedProductsContext', null);
+      window.adobeClientDataLayer.push('changedProductsContext', {
+        items: [product]
+      });
+      window.adobeClientDataLayer.push((acdl) => {
+        const state = acdl.getState ? acdl.getState() : {};
+    
+        acdl.push({
+          event: 'addToCart',
+          eventInfo: {
+            ...state,
+            ...additionalContext,
+          },
+        });
+      });
+    }
+  }})($testEvents);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
