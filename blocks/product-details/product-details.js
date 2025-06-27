@@ -290,13 +290,13 @@ export default async function decorate(block) {
     icon: h(Icon, { source: 'Delivery' }),
     onClick: async () => {
       // eslint-disable-next-line no-console
-      console.log(`Test Add To Cart Event clicked: ${product}`);
-      if (window.adobeClientDataLayer?.push) {
-        window.adobeClientDataLayer.push('changedProductsContext', null);
-        window.adobeClientDataLayer.push('changedProductsContext', {
+      console.log(`Test Add To Cart Event clicked: ${JSON.stringify(product)}`);
+      if (window.adobeDataLayer?.push) {
+        window.adobeDataLayer.push('changedProductsContext', null);
+        window.adobeDataLayer.push('changedProductsContext', {
           items: [product],
         });
-        window.adobeClientDataLayer.push((acdl) => {
+        window.adobeDataLayer.push((acdl) => {
           const state = acdl.getState ? acdl.getState() : {};
 
           acdl.push({
