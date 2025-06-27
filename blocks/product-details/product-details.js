@@ -285,29 +285,30 @@ export default async function decorate(block) {
     },
   })($addToCart);
 
-const testEventsBtn = await UI.render(Button, {
-  children: 'Test Add To Cart Event',
-  icon: h(Icon, { source: 'Delivery' }),
-  onClick: async () => {
-    console.log('Test Add To Cart Event clicked: ' + product);
-    if(window.adobeClientDataLayer?.push){
-      window.adobeClientDataLayer.push('changedProductsContext', null);
-      window.adobeClientDataLayer.push('changedProductsContext', {
-        items: [product]
-      });
-      window.adobeClientDataLayer.push((acdl) => {
-        const state = acdl.getState ? acdl.getState() : {};
-    
-        acdl.push({
-          event: 'addToCart',
-          eventInfo: {
-            ...state,
-            ...additionalContext,
-          },
+  await UI.render(Button, {
+    children: 'Test Add To Cart Event',
+    icon: h(Icon, { source: 'Delivery' }),
+    onClick: async () => {
+      // eslint-disable-next-line no-console
+      console.log(`Test Add To Cart Event clicked: ${product}`);
+      if (window.adobeClientDataLayer?.push) {
+        window.adobeClientDataLayer.push('changedProductsContext', null);
+        window.adobeClientDataLayer.push('changedProductsContext', {
+          items: [product],
         });
-      });
-    }
-  }})($testEvents);
+        window.adobeClientDataLayer.push((acdl) => {
+          const state = acdl.getState ? acdl.getState() : {};
+
+          acdl.push({
+            event: 'addToCart',
+            eventInfo: {
+              ...state,
+            },
+          });
+        });
+      }
+    },
+  })($testEvents);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
