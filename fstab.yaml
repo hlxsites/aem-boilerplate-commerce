@@ -1,0 +1,7 @@
+mountpoints:
+  /:
+    url: https://content.da.live/adobe-commerce/boilerplate/
+    type: markup
+
+folders:
+  /products/: /products/default
