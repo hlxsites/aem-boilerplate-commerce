@@ -299,7 +299,7 @@ export default async function decorate(block) {
           const state = acdl.getState ? acdl.getState() : {};
 
           acdl.push({
-            event: 'addToCart',
+            event: 'add-to-cart',
             eventInfo: {
               ...state,
               ...{
