@@ -149,6 +149,7 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');
+    cy.percyTakeSnapshot('Cart page', 1280);
     cy.get('.dropin-button.dropin-button--medium.dropin-button--primary')
       .contains('Checkout')
       .click({ force: true });
@@ -179,6 +180,7 @@ describe("Verify auth user can place order", () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
     checkTermsAndConditions();
     cy.wait(5000);
+    cy.percyTakeSnapshot('Checkout Page', 1280);
     placeOrder();
     assertOrderConfirmationCommonDetails(
       customerBillingAddress,
@@ -187,6 +189,7 @@ describe("Verify auth user can place order", () => {
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
+    cy.percyTakeSnapshot('Order Confirmation', 1280);
 
     /**
      * TODO - when /customer/order-details page will be ready
