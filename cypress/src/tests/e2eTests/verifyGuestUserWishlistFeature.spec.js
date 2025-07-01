@@ -265,6 +265,8 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
       '/products/cypress-configurable-product-latest/CYPRESS456'
     );
 
+    cy.wait(4000);
+
     // Verify item is back in wishlist
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
