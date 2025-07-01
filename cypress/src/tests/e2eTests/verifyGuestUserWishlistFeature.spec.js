@@ -40,7 +40,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(3000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -136,7 +136,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(3000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -234,7 +234,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(3000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -308,7 +308,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(3000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
