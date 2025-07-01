@@ -41,10 +41,10 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(1000);
+    cy.wait(2000);
 
     // Navigate back to wishlist and verify item was added
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -100,7 +100,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     assertCartEmpty();
 
     // Verify item is back in wishlist
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -141,10 +141,10 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(1000);
+    cy.wait(2000);
 
     // Navigate back to wishlist and verify item was added
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -202,7 +202,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     assertCartEmpty();
 
     // Verify item is back in wishlist
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -243,10 +243,10 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(1000);
+    cy.wait(2000);
 
     // Navigate back to wishlist and verify item was added
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -276,7 +276,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     );
 
     // Verify item is back in wishlist
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -320,10 +320,10 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(1000);
+    cy.wait(2000);
 
     // Navigate back to wishlist and verify item was added
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
@@ -351,7 +351,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     });
 
     // Navigate back to wishlist and verify item was added
-    cy.get(".wishlist-wrapper").should("exist").should('be.visible').click();
+    cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist to load with items
     cy.wait(4000);
