@@ -16,6 +16,7 @@ import { signUpUser } from "../../actions";
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
     cy.visit('/wishlist');
+    cy.wait(2000); // Wait for wishlist page to load
   });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
@@ -40,7 +41,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(5000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -136,7 +137,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(5000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -234,7 +235,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(5000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -265,7 +266,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
       '/products/cypress-configurable-product-latest/CYPRESS456'
     );
 
-    cy.wait(5000);
+    cy.wait(4000);
 
     // Verify item is back in wishlist
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -310,7 +311,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     // Wait for wishlist operation to complete by checking for success indicators
     // Give it a moment for the state to change, then proceed
-    cy.wait(5000);
+    cy.wait(4000);
 
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
