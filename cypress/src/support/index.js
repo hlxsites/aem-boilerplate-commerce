@@ -10,21 +10,6 @@ import './waitForWishlistPage';
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();
 
-// Simple debug command for race condition analysis
-Cypress.Commands.add('debugWishlistState', () => {
-  cy.window().then((win) => {
-    const debugData = {
-      hasHeading: !!win.document.querySelector('[data-testid="default-wishlist-heading"]'),
-      hasEmpty: !!win.document.querySelector('[data-testid="empty-wishlist"]'),
-      hasLoader: !!win.document.querySelector('[data-testid="wishlist-loader"]'),
-      hasEvents: !!win.events,
-      lastEvents: win.events?._lastEvent ? Object.keys(win.events._lastEvent) : []
-    };
-    console.log('🔍 WISHLIST STATE:', debugData);
-    cy.log('Wishlist Debug', debugData);
-  });
-});
-
 // Global error handling for unhandled promise rejections
 Cypress.on('uncaught:exception', (err, runnable) => {
 // Handle the specific "unknown error has occurred: null" issue
