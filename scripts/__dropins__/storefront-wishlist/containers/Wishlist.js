@@ -148,36 +148,26 @@ const Wishlist$1 = ({
     }, void 0));
   }, [routeToWishlist]);
   useEffect(() => {
-    let cleanup;
-    const setupWishlistListeners = () => {
-      const authEvent = events.on("authenticated", handleAuthentication);
-      const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
-      const dataEvent = events.on("wishlist/data", (payload) => {
-        setWishlistData(payload);
-        setIsLoading(false);
-      }, {
-        eager: true
-      });
-      cleanup = () => {
-        authEvent == null ? void 0 : authEvent.off();
-        dataEvent == null ? void 0 : dataEvent.off();
-        updateEvent == null ? void 0 : updateEvent.off();
-      };
-      return cleanup;
+    const authEvent = events.on("authenticated", handleAuthentication);
+    const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
+    const dataEvent = events.on("wishlist/data", (payload) => {
+      setWishlistData(payload);
+      setIsLoading(false);
+    }, {
+      eager: true
+    });
+    const initEvent = events.on("wishlist/initialized", (payload) => {
+      setWishlistData(payload);
+      setIsLoading(false);
+    }, {
+      eager: true
+    });
+    return () => {
+      authEvent == null ? void 0 : authEvent.off();
+      dataEvent == null ? void 0 : dataEvent.off();
+      updateEvent == null ? void 0 : updateEvent.off();
+      initEvent == null ? void 0 : initEvent.off();
     };
-    if (state.initializing === true) {
-      const waitForInit = events.on("wishlist/initialized", () => {
-        waitForInit == null ? void 0 : waitForInit.off();
-        setupWishlistListeners();
-      }, {
-        eager: true
-      });
-      return () => {
-        waitForInit == null ? void 0 : waitForInit.off();
-        cleanup == null ? void 0 : cleanup();
-      };
-    }
-    return setupWishlistListeners();
   }, [handleWishlistAlert]);
   return u(Wishlist, {
     ...props,
@@ -190,7 +180,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 118,
+    lineNumber: 98,
     columnNumber: 5
   }, void 0);
 };

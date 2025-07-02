@@ -10,7 +10,7 @@ const initialize = new Initializer({
       ...config2
     };
     initialize.config.setConfig(defaultConfig);
-    initializeWishlist().catch(console.error);
+    await initializeWishlist();
   },
   listeners: () => [events.on("authenticated", async (authenticated) => {
     if (state.authenticated && !authenticated) {
@@ -18,7 +18,7 @@ const initialize = new Initializer({
     }
     if (authenticated && !state.authenticated) {
       state.authenticated = authenticated;
-      const wishlist = await initializeWishlist().catch(console.error);
+      const wishlist = await initializeWishlist();
       if (wishlist) {
         mergeWishlists(wishlist);
       }
@@ -672,16 +672,27 @@ const resetWishlist = () => {
   return Promise.resolve(null);
 };
 const initializeWishlist = async () => {
-  if (state.initializing) return null;
-  state.initializing = true;
-  if (!state.config) {
-    state.config = await getStoreConfig();
+  try {
+    if (!state.config) {
+      state.config = await getStoreConfig();
+    }
+    const payload = state.authenticated ? await getDefaultWishlist() : await getGuestWishlist();
+    events.emit("wishlist/initialized", payload);
+    events.emit("wishlist/data", payload);
+    state.initializing = false;
+    return payload;
+  } catch (error) {
+    console.error("Wishlist initialization failed:", error);
+    const emptyWishlist = {
+      id: "",
+      items: [],
+      items_count: 0
+    };
+    events.emit("wishlist/initialized", emptyWishlist);
+    events.emit("wishlist/data", emptyWishlist);
+    state.initializing = false;
+    return emptyWishlist;
   }
-  const payload = state.authenticated ? await getDefaultWishlist() : await getGuestWishlist();
-  events.emit("wishlist/initialized", payload);
-  events.emit("wishlist/data", payload);
-  state.initializing = false;
-  return payload;
 };
 async function getDefaultWishlist() {
   const wishlists = await getWishlists();
