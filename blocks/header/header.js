@@ -3,6 +3,7 @@ import { events } from '@dropins/tools/event-bus.js';
 
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
@@ -390,6 +391,23 @@ export default async function decorate(block) {
                 searchQuery,
               )}`;
               window.location.href = url;
+            },
+            slots: {
+              ProductImage: (ctx) => {
+                const { product, defaultImageProps } = ctx;
+                const anchorWrapper = document.createElement('a');
+                anchorWrapper.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
+
+                tryRenderAemAssetsImage(ctx, {
+                  alias: product.sku,
+                  imageProps: defaultImageProps,
+                  wrapper: anchorWrapper,
+                  params: {
+                    width: defaultImageProps.width,
+                    height: defaultImageProps.height,
+                  },
+                });
+              },
             },
           })(searchResult),
         ]);

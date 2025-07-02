@@ -10,6 +10,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -77,6 +78,21 @@ export default async function decorate(block) {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
       ...categoryPathConfig,
       slots: {
+        ProductImage: (ctx) => {
+          const { product, defaultImageProps } = ctx;
+          const anchorWrapper = document.createElement('a');
+          anchorWrapper.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
+
+          tryRenderAemAssetsImage(ctx, {
+            alias: product.sku,
+            imageProps: defaultImageProps,
+            wrapper: anchorWrapper,
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
+          });
+        },
         ProductActions: (ctx) => {
           const actionsWrapper = document.createElement('div');
           actionsWrapper.className = 'product-discovery-product-actions';
