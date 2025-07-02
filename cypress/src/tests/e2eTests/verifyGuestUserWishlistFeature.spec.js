@@ -18,7 +18,6 @@ import { signUpUser } from "../../actions";
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
     cy.visit('/wishlist');
-    cy.wait(2000);
   });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {

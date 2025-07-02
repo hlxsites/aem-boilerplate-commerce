@@ -148,19 +148,31 @@ const Wishlist$1 = ({
     }, void 0));
   }, [routeToWishlist]);
   useEffect(() => {
-    const authEvent = events.on("authenticated", handleAuthentication);
-    const updateEvent = events.on("wishlist/alert", (payload) => handleWishlistAlert(payload));
-    const dataEvent = events.on("wishlist/data", (payload) => {
-      setWishlistData(payload);
-      setIsLoading(false);
-    }, {
-      eager: true
-    });
-    return () => {
-      authEvent == null ? void 0 : authEvent.off();
-      dataEvent == null ? void 0 : dataEvent.off();
-      updateEvent == null ? void 0 : updateEvent.off();
-    };
+    if (state.initializing === true) {
+      const waitForInit = events.on("wishlist/initialized", () => {
+        waitForInit == null ? void 0 : waitForInit.off();
+        setupWishlistListeners();
+      }, {
+        eager: true
+      });
+      return () => waitForInit == null ? void 0 : waitForInit.off();
+    }
+    return setupWishlistListeners();
+    function setupWishlistListeners() {
+      const authEvent = events.on("authenticated", handleAuthentication);
+      const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
+      const dataEvent = events.on("wishlist/data", (payload) => {
+        setWishlistData(payload);
+        setIsLoading(false);
+      }, {
+        eager: true
+      });
+      return () => {
+        authEvent == null ? void 0 : authEvent.off();
+        dataEvent == null ? void 0 : dataEvent.off();
+        updateEvent == null ? void 0 : updateEvent.off();
+      };
+    }
   }, [handleWishlistAlert]);
   return u(Wishlist, {
     ...props,
@@ -173,7 +185,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 90,
+    lineNumber: 109,
     columnNumber: 5
   }, void 0);
 };
