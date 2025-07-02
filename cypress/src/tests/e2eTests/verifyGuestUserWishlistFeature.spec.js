@@ -15,13 +15,10 @@ import { signUpUser } from "../../actions";
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
-    cy.clearAllLocalStorage();
-    cy.clearAllSessionStorage();
     cy.visit('/wishlist');
   });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
-    cy.wait(5000); 
     assertWishlistEmptyWithWait();
 
     // Navigate to product with proper hover and wait
