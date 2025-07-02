@@ -13,12 +13,13 @@ import {
 import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
-beforeEach(() => {
-  cy.visit("");
-  cy.get(".wishlist-wrapper").should('be.visible').click();
-});
+
 
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
+  beforeEach(() => {
+    cy.visit('/wishlist');
+  });
+
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
     assertWishlistEmptyWithWait();
 
