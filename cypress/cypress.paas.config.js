@@ -41,6 +41,8 @@ module.exports = defineConfig({
         order: "000000010",
         returnedOrder: "000000011",
       },
+
+      prexDraft: "/drafts/decepticons/prex-discovery-paas",
     },
   },
 });
