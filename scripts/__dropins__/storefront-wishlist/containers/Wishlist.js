@@ -157,10 +157,8 @@ const Wishlist$1 = ({
       eager: true
     });
     const initEvent = events.on("wishlist/initialized", (payload) => {
-      if (payload) {
-        setWishlistData(payload);
-        setIsLoading(false);
-      }
+      setWishlistData(payload);
+      setIsLoading(false);
     }, {
       eager: true
     });
@@ -182,7 +180,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 101,
+    lineNumber: 99,
     columnNumber: 5
   }, void 0);
 };
