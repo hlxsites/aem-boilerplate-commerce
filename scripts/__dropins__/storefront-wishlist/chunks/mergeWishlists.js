@@ -10,7 +10,7 @@ const initialize = new Initializer({
       ...config2
     };
     initialize.config.setConfig(defaultConfig);
-    await initializeWishlist();
+    initializeWishlist().catch(console.error);
   },
   listeners: () => [events.on("authenticated", async (authenticated) => {
     if (state.authenticated && !authenticated) {
@@ -691,7 +691,12 @@ async function getDefaultWishlist() {
   return wishlist;
 }
 async function getGuestWishlist() {
-  return await getPersistedWishlistData();
+  try {
+    return await getPersistedWishlistData();
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 const mergeWishlists = async (wishlist) => {
   var _a;
