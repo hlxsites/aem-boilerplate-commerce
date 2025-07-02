@@ -156,17 +156,10 @@ const Wishlist$1 = ({
     }, {
       eager: true
     });
-    const initEvent = events.on("wishlist/initialized", (payload) => {
-      setWishlistData(payload);
-      setIsLoading(false);
-    }, {
-      eager: true
-    });
     return () => {
       authEvent == null ? void 0 : authEvent.off();
       dataEvent == null ? void 0 : dataEvent.off();
       updateEvent == null ? void 0 : updateEvent.off();
-      initEvent == null ? void 0 : initEvent.off();
     };
   }, [handleWishlistAlert]);
   return u(Wishlist, {
@@ -180,7 +173,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 99,
+    lineNumber: 90,
     columnNumber: 5
   }, void 0);
 };
