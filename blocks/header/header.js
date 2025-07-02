@@ -1,9 +1,9 @@
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';

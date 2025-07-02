@@ -8,9 +8,9 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
-import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
