@@ -13,14 +13,25 @@ import {
 import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
+
+
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
     cy.visit('/wishlist');
     cy.wait(2000); // Wait for wishlist page to load
   });
 
+  // Simple failure hook for debugging
+  afterEach(function() {
+    if (this.currentTest.state === 'failed') {
+      cy.debugWishlistState();
+      cy.screenshot(`failed-${this.currentTest.title}`, { capture: 'viewport' });
+    }
+  });
+
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
-    // Wait for wishlist page to load and assert empty state
+    // Debug before critical assertion that sometimes fails
+    cy.debugWishlistState();
     assertWishlistEmptyWithWait();
 
     // Navigate to product with proper hover and wait
@@ -46,7 +57,8 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     // Navigate back to wishlist and verify item was added
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
-    // Wait for wishlist to load with items
+    // Wait for wishlist to load with items - this is where race condition often occurs
+    cy.debugWishlistState();
     assertWishlistCountWithWait(1);
 
     // Verify wishlist item details
@@ -119,7 +131,8 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
   });
 
   it("Successfully add configurable product with all required options to wishlist, move it to cart and return this to wishlist", () => {
-    // Wait for wishlist page to load and assert empty state
+    // Debug before critical assertion that sometimes fails
+    cy.debugWishlistState();
     assertWishlistEmptyWithWait();
     cy.visit(products.configurable.urlPathWithOptions);
 
@@ -217,6 +230,8 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
   });
 
   it("Successfully add configurable product with no required options to wishlist, redirects to PDP and remove it", () => {
+    // Debug before critical assertion that sometimes fails
+    cy.debugWishlistState();
     // Wait for wishlist page to load and assert empty state
     assertWishlistEmptyWithWait();
     cy.visit(products.configurable.urlPath);
@@ -290,6 +305,8 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
   });
 
   it("Successfully merge wishlist", () => {
+    // Debug before critical assertion that sometimes fails
+    cy.debugWishlistState();
     // Wait for wishlist page to load and assert empty state
     assertWishlistEmptyWithWait();
 
