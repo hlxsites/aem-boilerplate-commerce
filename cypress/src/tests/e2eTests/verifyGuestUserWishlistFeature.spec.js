@@ -18,13 +18,7 @@ import { signUpUser } from "../../actions";
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   beforeEach(() => {
     cy.visit('/wishlist');
-    cy.window().then((win) => {
-      // Force initialization if it hasn't started
-      if (win.state && win.state.initializing === undefined) {
-        // System not initialized yet, give it more time
-        cy.wait(5000);
-      }
-    });
+    cy.wait(2000);
   });
 
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
