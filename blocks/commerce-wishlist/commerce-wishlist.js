@@ -6,7 +6,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import Wishlist from '@dropins/storefront-wishlist/containers/Wishlist.js';
 import { rootLink } from '../../scripts/commerce.js';
 
-// Initialize
+// Initialize wishlist
 import '../../scripts/initializers/wishlist.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
