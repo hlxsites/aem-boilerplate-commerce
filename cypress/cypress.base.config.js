@@ -3,7 +3,7 @@ module.exports = {
   screenshotsFolder: 'screenshots',
   downloadsFolder: 'downloads',
   fixturesFolder: 'src/fixtures',
-  video: true,
+  video: false,
   pageLoadTimeout: 60000,
   requestTimeout: 60000,
   viewportHeight: 900,
