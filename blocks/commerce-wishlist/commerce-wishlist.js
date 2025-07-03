@@ -6,9 +6,6 @@ import { events } from '@dropins/tools/event-bus.js';
 import Wishlist from '@dropins/storefront-wishlist/containers/Wishlist.js';
 import { rootLink } from '../../scripts/commerce.js';
 
-// Initialize
-import '../../scripts/initializers/wishlist.js';
-
 import { readBlockConfig } from '../../scripts/aem.js';
 
 const showAuthModal = (event) => {
@@ -60,10 +57,14 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
   } = readBlockConfig(block);
 
+  // First render the component so it's mounted and listening
   await wishlistRenderer.render(Wishlist, {
     routeEmptyWishlistCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     moveProdToCart: cartApi.addProductsToCart,
     routeProdDetailPage: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
     onLoginClick: showAuthModal,
   })(block);
+
+  // THEN initialize wishlist after component is mounted and listening
+  await import('../../scripts/initializers/wishlist.js');
 }
