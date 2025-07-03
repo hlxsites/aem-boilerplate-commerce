@@ -53,61 +53,45 @@ describe('AEM Assets enabled', () => {
 
     waitForAemAssetImages('.search-bar-result img', (images) => {
       for (const image of images) {
-        expect(image.src).to.include('adobeaemcloud.com');
-        expect(image.src).to.include('urn:aaid:aem:');
-
-        if (image.src.includes('/as/')) {
-          expectAemAssetsImage(image.src, {
-            ...expectedOptions,
-            width: 200,
-            height: 200,
-          });
-        }
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 165,
+          height: 165,
+        });
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
-          expect(url).to.include('adobeaemcloud.com');
 
-          if (url.includes('/as/')) {
-            expectAemAssetsImage(url, {
-              ...expectedOptions,
-              width: (200 * screenWidth) / 1920,
-              height: 200,
-            });
-          }
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
+            width: (165 * screenWidth) / 1920,
+            height: 165,
+          });
         }
       }
     });
 
-    cy.get('#search-bar-input input[type="text"]').type('{enter}');
+    visitWithEagerImages('/apparel');
     cy.wait(2000);
 
     waitForAemAssetImages('.search__product-list img', (images) => {
       for (const image of images) {
-        expect(image.src).to.include('adobeaemcloud.com');
-        expect(image.src).to.include('urn:aaid:aem:');
-
-        if (image.src.includes('/as/')) {
-          expectAemAssetsImage(image.src, {
-            ...expectedOptions,
-            width: 200,
-            height: 250,
-          });
-        }
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 200,
+          height: 250,
+        });
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
           expect(screenWidth).to.be.a('number');
-          expect(url).to.include('adobeaemcloud.com');
 
-          if (url.includes('/as/')) {
-            expectAemAssetsImage(url, {
-              ...expectedOptions,
-              width: (200 * screenWidth) / 1920,
-              height: 250,
-            });
-          }
+          expectAemAssetsImage(url, {
+            ...expectedOptions,
+            width: (200 * screenWidth) / 1920,
+            height: 250,
+          });
         }
       }
     });
