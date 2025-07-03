@@ -129,7 +129,11 @@ const Wishlist$1 = ({
 }) => {
   const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
   const [isLoggedIn, setIsLoggedIn] = t(useState(state.authenticated), "isLoggedIn");
-  const [isLoading, setIsLoading] = t(useState(state.isLoading), "isLoading");
+  const [isLoading, setIsLoading] = t(useState(() => {
+    // Check current state, not initial snapshot
+    const existingData = getPersistedWishlistData();
+    return existingData && existingData.items !== undefined ? false : state.isLoading;
+  }), "isLoading");
   const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
   const [wishlistAlert, setWishlistAlert] = t(useState(null), "wishlistAlert");
   const handleWishlistAlert = useCallback((payload) => {
@@ -148,48 +152,14 @@ const Wishlist$1 = ({
     }, void 0));
   }, [routeToWishlist]);
     useEffect(() => {
-    // ROBUST RACE CONDITION HANDLING
+    // Initialize with existing data if available
     const existingData = getPersistedWishlistData();
-    
-    // IMMEDIATE resolution if we have data
-    if (existingData && existingData.items !== undefined) {
+    if (existingData && existingData.items !== undefined && !wishlistData) {
       setWishlistData(existingData);
       setIsLoading(false);
     }
     
-    // IMMEDIATE resolution if state says not loading but component is loading  
-    if (!state.isLoading && isLoading) {
-      setIsLoading(false);
-      if (existingData && !wishlistData) {
-        setWishlistData(existingData);
-      }
-    }
-    
-    // IMMEDIATE resolution if initialization is complete but component still loading
-    if (!state.initializing && isLoading) {
-      setIsLoading(false);
-      if (existingData && !wishlistData) {
-        setWishlistData(existingData);
-      }
-    }
-    
-    // AGGRESSIVE timeout - check every 100ms for race condition resolution
-    const checkInterval = setInterval(() => {
-      if (isLoading) {
-        if (!state.initializing || !state.isLoading) {
-          setIsLoading(false);
-          clearInterval(checkInterval);
-          
-          const currentData = getPersistedWishlistData();
-          if (currentData && !wishlistData) {
-            setWishlistData(currentData);
-          }
-        }
-      } else {
-        clearInterval(checkInterval);
-      }
-    }, 100);
-    
+    // Set up event listeners
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
     const dataEvent = events.on("wishlist/data", (payload) => {
@@ -205,31 +175,13 @@ const Wishlist$1 = ({
       eager: true
     });
     
-    // Final fallback timeout - force resolution after 2 seconds if still loading
-    setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-        const existingData = getPersistedWishlistData();
-        if (existingData) {
-          setWishlistData(existingData);
-        } else {
-          setWishlistData({
-            id: "",
-            items: [],
-            items_count: 0
-          });
-        }
-      }
-    }, 2000);
-    
     return () => {
-      clearInterval(checkInterval);
-      authEvent == null ? void 0 : authEvent.off();
-      dataEvent == null ? void 0 : dataEvent.off();
-      updateEvent == null ? void 0 : updateEvent.off();
-      initEvent == null ? void 0 : initEvent.off();
+      authEvent?.off();
+      dataEvent?.off();
+      updateEvent?.off();
+      initEvent?.off();
     };
-  }, [handleWishlistAlert, isLoading]);
+  }, [handleWishlistAlert, wishlistData]);
   return u(Wishlist, {
     ...props,
     wishlistData,
