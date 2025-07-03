@@ -147,45 +147,152 @@ const Wishlist$1 = ({
       columnNumber: 9
     }, void 0));
   }, [routeToWishlist]);
-  useEffect(() => {
+    useEffect(() => {
+    const timestamp = Date.now();
+    
+    // Add visible marker for component mounting
+    if (typeof document !== 'undefined') {
+      const marker = document.createElement('div');
+      marker.style.cssText = `position:fixed;top:40px;left:0;z-index:9999;background:purple;color:white;padding:5px;font-size:12px;max-width:300px;`;
+      marker.textContent = `COMP[${timestamp % 10000}]: mounted, loading=${isLoading}`;
+      document.body.appendChild(marker);
+    }
+    
+    console.log(`🔍 WISHLIST DEBUG [${timestamp}]: Component mounted, isLoading:`, isLoading);
+    console.log(`🔍 WISHLIST DEBUG [${timestamp}]: state.initializing:`, state.initializing);
+    console.log(`🔍 WISHLIST DEBUG [${timestamp}]: state.isLoading:`, state.isLoading);
+    
     // Check if there's already wishlist data available
     const existingData = getPersistedWishlistData();
+    console.log('🔍 WISHLIST DEBUG: existingData:', existingData);
+    
     if (existingData && existingData.items) {
+      console.log('🔍 WISHLIST DEBUG: Found existing data, setting wishlist data');
       setWishlistData(existingData);
       setIsLoading(false);
     }
-
+    
     // Fix race condition: if initialization is done but component is still loading
     if (!state.initializing && isLoading) {
+      console.log('🔍 WISHLIST DEBUG: Race condition fix - init done but component loading');
       setIsLoading(false);
       if (existingData) {
         setWishlistData(existingData);
       }
     }
-
+    
     // Additional fix: if component is loading but state.isLoading is false
     if (isLoading && !state.isLoading) {
+      console.log('🔍 WISHLIST DEBUG: Race condition fix - state.isLoading false but component loading');
       setIsLoading(false);
       if (existingData) {
         setWishlistData(existingData);
       }
     }
-
+    
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
     const dataEvent = events.on("wishlist/data", (payload) => {
+      const eventTimestamp = Date.now();
+      
+      // Add visible marker for event received
+      if (typeof document !== 'undefined') {
+        const marker = document.createElement('div');
+        marker.style.cssText = `position:fixed;top:60px;left:0;z-index:9999;background:green;color:white;padding:5px;font-size:12px;max-width:300px;`;
+        marker.textContent = `EVENT[${eventTimestamp % 10000}]: data received`;
+        document.body.appendChild(marker);
+      }
+      
+      console.log(`🔍 WISHLIST DEBUG [${eventTimestamp}]: wishlist/data event received:`, payload);
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
     const initEvent = events.on("wishlist/initialized", (payload) => {
+      const eventTimestamp = Date.now();
+      
+      // Add visible marker for event received
+      if (typeof document !== 'undefined') {
+        const marker = document.createElement('div');
+        marker.style.cssText = `position:fixed;top:80px;left:0;z-index:9999;background:lime;color:black;padding:5px;font-size:12px;max-width:300px;`;
+        marker.textContent = `EVENT[${eventTimestamp % 10000}]: init received`;
+        document.body.appendChild(marker);
+      }
+      
+      console.log(`🔍 WISHLIST DEBUG [${eventTimestamp}]: wishlist/initialized event received:`, payload);
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
+    
+    // Add diagnostic timeout for failure analysis
+    setTimeout(() => {
+      if (isLoading) {
+        const currentTime = Date.now();
+        
+        // Add comprehensive diagnostic marker for Cypress screenshots
+        if (typeof document !== 'undefined') {
+          const diagnosticMarker = document.createElement('div');
+          diagnosticMarker.style.cssText = `
+            position: fixed !important;
+            top: 100px !important;
+            left: 0 !important;
+            z-index: 999999 !important;
+            background: darkred !important;
+            color: white !important;
+            padding: 15px !important;
+            font-size: 16px !important;
+            max-width: 500px !important;
+            white-space: pre-line !important;
+            font-family: monospace !important;
+          `;
+          
+          const existingData = getPersistedWishlistData();
+          
+          diagnosticMarker.textContent = `🚨 FAILURE DIAGNOSIS [${currentTime % 10000}]:
+          
+Component still loading after 2 seconds!
 
+CURRENT STATE:
+• state.initializing: ${state.initializing}
+• state.isLoading: ${state.isLoading}
+• state.authenticated: ${state.authenticated}
+• component isLoading: ${isLoading}
+
+WISHLIST DATA:
+• existingData present: ${existingData ? 'YES' : 'NO'}
+• existingData.items count: ${existingData?.items?.length || 0}
+• wishlistData present: ${wishlistData ? 'YES' : 'NO'}
+
+LIKELY CAUSE:
+${state.initializing ? 'Initialization is stuck/hanging' : 
+  !state.isLoading && isLoading ? 'Race condition - events not received' :
+  'Unknown - check debug markers above'}
+
+EXPECTED: Should see INIT/CORE/EVENT markers above`;
+          
+          document.body.appendChild(diagnosticMarker);
+        }
+        
+        // Force resolution after 3 more seconds
+        setTimeout(() => {
+          setIsLoading(false);
+          const existingData = getPersistedWishlistData();
+          if (existingData) {
+            setWishlistData(existingData);
+          } else {
+            setWishlistData({
+              id: "",
+              items: [],
+              items_count: 0
+            });
+          }
+        }, 3000);
+      }
+    }, 2000);
+    
     return () => {
       authEvent == null ? void 0 : authEvent.off();
       dataEvent == null ? void 0 : dataEvent.off();

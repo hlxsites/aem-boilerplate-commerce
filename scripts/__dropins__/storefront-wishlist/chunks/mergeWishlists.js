@@ -3,14 +3,33 @@ All Rights Reserved. */
 import { Initializer } from "@dropins/tools/lib.js";
 import { events } from "@dropins/tools/event-bus.js";
 import { s as state, j as setPersistedWishlistData, f as fetchGraphQl, h as handleFetchError, g as getPersistedWishlistData, i as isMatchingWishlistItem, k as clearPersistedLocalStorage } from "./removeProductsFromWishlist.js";
+// Add debug marker to page with timestamp
+const addDebugMarker = (message, color = 'blue') => {
+  if (typeof document !== 'undefined') {
+    const timestamp = Date.now();
+    const marker = document.createElement('div');
+    marker.style.cssText = `position:fixed;top:20px;left:0;z-index:9999;background:${color};color:white;padding:5px;font-size:12px;max-width:300px;`;
+    marker.textContent = `CORE[${timestamp % 10000}]: ${message}`;
+    document.body.appendChild(marker);
+    
+    // Also log to console for local debugging
+    console.log(`🔍 WISHLIST DEBUG [${timestamp}]: ${message}`);
+  }
+};
+
 const initialize = new Initializer({
   init: async (config2) => {
+    addDebugMarker('initialize.init called', 'darkblue');
+    
     const defaultConfig = {
       isGuestWishlistEnabled: false,
       ...config2
     };
     initialize.config.setConfig(defaultConfig);
+    addDebugMarker('Config set, calling initializeWishlist', 'blue');
+    
     await initializeWishlist();
+    addDebugMarker('initializeWishlist completed', 'green');
   },
   listeners: () => [events.on("authenticated", async (authenticated) => {
     if (state.authenticated && !authenticated) {
@@ -672,31 +691,54 @@ const resetWishlist = () => {
   return Promise.resolve(null);
 };
 const initializeWishlist = async () => {
+  addDebugMarker('initializeWishlist called', 'purple');
+  
   if (state.initializing) {
+    addDebugMarker('Already initializing, returning null', 'orange');
     return null;
   }
+  
   state.initializing = true;
+  addDebugMarker('Set initializing = true', 'yellow');
+  
   try {
     if (!state.config) {
+      addDebugMarker('Getting store config', 'cyan');
       state.config = await getStoreConfig();
+      addDebugMarker('Store config received', 'lightgreen');
     }
+    
+    addDebugMarker(`Getting wishlist, auth: ${state.authenticated}`, 'magenta');
     const payload = state.authenticated ? await getDefaultWishlist() : await getGuestWishlist();
+    addDebugMarker(`Payload received: ${payload ? 'success' : 'null'}`, 'lime');
+    
+    addDebugMarker('Emitting events', 'gold');
     events.emit("wishlist/initialized", payload);
     events.emit("wishlist/data", payload);
+    
     state.initializing = false;
     state.isLoading = false;
+    addDebugMarker('Initialization completed successfully', 'green');
+    
     return payload;
   } catch (error) {
-    console.error("Wishlist initialization failed:", error);
+    addDebugMarker(`Init failed: ${error.message}`, 'red');
+    console.error("🔍 WISHLIST DEBUG: Wishlist initialization failed:", error);
+    
     const emptyWishlist = {
       id: "",
       items: [],
       items_count: 0
     };
+    
+    addDebugMarker('Emitting empty wishlist events', 'orange');
     events.emit("wishlist/initialized", emptyWishlist);
     events.emit("wishlist/data", emptyWishlist);
+    
     state.initializing = false;
     state.isLoading = false;
+    addDebugMarker('Error case completed', 'darkred');
+    
     return emptyWishlist;
   }
 };
