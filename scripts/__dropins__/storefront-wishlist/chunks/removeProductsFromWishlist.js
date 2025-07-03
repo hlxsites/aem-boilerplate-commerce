@@ -15,7 +15,8 @@ const _state = /* @__PURE__ */ (() => {
   return {
     wishlistId: null,
     authenticated: false,
-    isLoading: true
+    isLoading: true,
+    initializing: false
   };
 })();
 const state = new Proxy(_state, {
