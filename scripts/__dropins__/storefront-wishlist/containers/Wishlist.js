@@ -130,9 +130,21 @@ const Wishlist$1 = ({
   const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
   const [isLoggedIn, setIsLoggedIn] = t(useState(state.authenticated), "isLoggedIn");
   const [isLoading, setIsLoading] = t(useState(() => {
-    // Check current state, not initial snapshot
+    // Smart initial state - check if initialization already completed
     const existingData = getPersistedWishlistData();
-    return existingData && existingData.items !== undefined ? false : state.isLoading;
+    
+    // If we have data, we're not loading
+    if (existingData && existingData.items !== undefined) {
+      return false;
+    }
+    
+    // If initialization already finished but no data, we're not loading
+    if (!state.initializing && state.isLoading === false) {
+      return false;
+    }
+    
+    // Otherwise, we are loading
+    return true;
   }), "isLoading");
   const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
   const [wishlistAlert, setWishlistAlert] = t(useState(null), "wishlistAlert");
@@ -159,6 +171,14 @@ const Wishlist$1 = ({
       setIsLoading(false);
     }
     
+    // Check if initialization already completed while we were mounting
+    if (isLoading && !state.initializing && state.isLoading === false) {
+      setIsLoading(false);
+      if (!wishlistData && existingData) {
+        setWishlistData(existingData);
+      }
+    }
+    
     // Set up event listeners
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
@@ -181,7 +201,7 @@ const Wishlist$1 = ({
       updateEvent?.off();
       initEvent?.off();
     };
-  }, [handleWishlistAlert, wishlistData]);
+  }, [handleWishlistAlert, wishlistData, isLoading]);
   return u(Wishlist, {
     ...props,
     wishlistData,
