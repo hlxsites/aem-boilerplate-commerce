@@ -7,7 +7,7 @@ import { IllustratedMessage, Button, Icon, SkeletonRow, Skeleton } from "@dropin
 import { W as WishlistItem } from "../chunks/WishlistItem.js";
 import { u } from "../chunks/jsxRuntime.module.js";
 import { events } from "@dropins/tools/event-bus.js";
-import { s as state } from "../chunks/removeProductsFromWishlist.js";
+import { s as state, g as getPersistedWishlistData } from "../chunks/removeProductsFromWishlist.js";
 import { useText, Text } from "@dropins/tools/i18n.js";
 import { Fragment as Fragment$1 } from "@dropins/tools/preact.js";
 import { W as WishlistAlert } from "../chunks/WishlistAlert.js";
@@ -148,35 +148,44 @@ const Wishlist$1 = ({
     }, void 0));
   }, [routeToWishlist]);
   useEffect(() => {
-    const addMarker = (message, color) => {
-      const marker = document.createElement("div");
-      marker.style.cssText = `position:fixed;top:0;right:0;z-index:9999;background:${color};color:white;padding:5px;font-size:12px;`;
-      marker.textContent = `COMPONENT: ${message}`;
-      document.body.appendChild(marker);
-    };
-    addMarker("Component mounted", "blue");
-    addMarker(`state.initializing: ${state.initializing}`, "purple");
+    // Check if there's already wishlist data available
+    const existingData = getPersistedWishlistData();
+    if (existingData && existingData.items) {
+      setWishlistData(existingData);
+      setIsLoading(false);
+    }
+
+    // Fix race condition: if initialization is done but component is still loading
+    if (!state.initializing && isLoading) {
+      setIsLoading(false);
+      if (existingData) {
+        setWishlistData(existingData);
+      }
+    }
+
+    // Additional fix: if component is loading but state.isLoading is false
+    if (isLoading && !state.isLoading) {
+      setIsLoading(false);
+      if (existingData) {
+        setWishlistData(existingData);
+      }
+    }
+
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
     const dataEvent = events.on("wishlist/data", (payload) => {
-      addMarker("DATA event received!", "green");
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
     const initEvent = events.on("wishlist/initialized", (payload) => {
-      addMarker("INIT event received!", "green");
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
-    setTimeout(() => {
-      if (isLoading) {
-        addMarker("Still loading after 2s", "red");
-      }
-    }, 2e3);
+
     return () => {
       authEvent == null ? void 0 : authEvent.off();
       dataEvent == null ? void 0 : dataEvent.off();

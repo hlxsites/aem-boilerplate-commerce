@@ -672,49 +672,31 @@ const resetWishlist = () => {
   return Promise.resolve(null);
 };
 const initializeWishlist = async () => {
-  const addDebugMarker = (message, color) => {
-    if (typeof document !== "undefined") {
-      const marker = document.createElement("div");
-      marker.style.cssText = `position:fixed;top:0;left:0;z-index:9999;background:${color};color:white;padding:5px;font-size:12px;`;
-      marker.textContent = `INIT: ${message}`;
-      document.body.appendChild(marker);
-    }
-  };
-  addDebugMarker("Starting initialization", "red");
   if (state.initializing) {
-    addDebugMarker("Already initializing, returning null", "orange");
     return null;
   }
   state.initializing = true;
-  addDebugMarker("Set initializing = true", "yellow");
   try {
     if (!state.config) {
-      addDebugMarker("Getting store config...", "blue");
       state.config = await getStoreConfig();
-      addDebugMarker("Store config received", "green");
     }
-    addDebugMarker(`Getting wishlist, authenticated: ${state.authenticated}`, "purple");
     const payload = state.authenticated ? await getDefaultWishlist() : await getGuestWishlist();
-    addDebugMarker(`Payload received: ${JSON.stringify(payload)}`, "cyan");
-    addDebugMarker("Emitting events...", "lime");
     events.emit("wishlist/initialized", payload);
     events.emit("wishlist/data", payload);
-    addDebugMarker("Events emitted successfully", "green");
     state.initializing = false;
+    state.isLoading = false;
     return payload;
   } catch (error) {
-    addDebugMarker(`ERROR: ${error.message}`, "red");
     console.error("Wishlist initialization failed:", error);
     const emptyWishlist = {
       id: "",
       items: [],
       items_count: 0
     };
-    addDebugMarker("Emitting empty wishlist events...", "orange");
     events.emit("wishlist/initialized", emptyWishlist);
     events.emit("wishlist/data", emptyWishlist);
-    addDebugMarker("Empty events emitted", "yellow");
     state.initializing = false;
+    state.isLoading = false;
     return emptyWishlist;
   }
 };
