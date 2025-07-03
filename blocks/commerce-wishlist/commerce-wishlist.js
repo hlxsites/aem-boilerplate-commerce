@@ -55,42 +55,6 @@ events.on('wishlist/alert', () => {
   }, 0);
 });
 
-// Race condition fix: ensure loading state resolves
-const fixWishlistLoadingRaceCondition = (block) => {
-  // Check every 100ms for stuck loading state
-  const checkInterval = setInterval(() => {
-    const hasLoading = block.textContent.includes('Loading...');
-    const hasEmpty = block.textContent.includes('Your wishlist is empty');
-    const hasWishlistContent = block.querySelector('[data-testid="wishlist-heading-wrapper"]') || 
-                             block.querySelector('[data-testid="empty-wishlist"]') ||
-                             block.querySelector('.wishlist-product-item');
-
-    // If we have content but still showing loading, fix it
-    if (hasLoading && (hasEmpty || hasWishlistContent)) {
-      // Try to trigger wishlist data event to resolve loading state
-      events.emit('wishlist/data', null);
-      clearInterval(checkInterval);
-    }
-
-    // Stop checking after 10 seconds
-    if (Date.now() - startTime > 10000) {
-      clearInterval(checkInterval);
-    }
-  }, 100);
-
-  const startTime = Date.now();
-  
-  // Also stop the interval when loading is resolved
-  const observer = new MutationObserver(() => {
-    if (!block.textContent.includes('Loading...')) {
-      clearInterval(checkInterval);
-      observer.disconnect();
-    }
-  });
-  
-  observer.observe(block, { childList: true, subtree: true });
-};
-
 export default async function decorate(block) {
   const {
     'start-shopping-url': startShoppingURL = '',
@@ -102,7 +66,4 @@ export default async function decorate(block) {
     routeProdDetailPage: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
     onLoginClick: showAuthModal,
   })(block);
-
-  // Apply race condition fix
-  fixWishlistLoadingRaceCondition(block);
 }
