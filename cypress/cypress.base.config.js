@@ -12,7 +12,7 @@ module.exports = {
   trashAssetsBeforeRuns: false,
   chromeWebSecurity: false,
   retries: {
-    runMode: 2,
+    runMode: 0,
   },
   e2e: {
     setupNodeEvents(on, config) {
