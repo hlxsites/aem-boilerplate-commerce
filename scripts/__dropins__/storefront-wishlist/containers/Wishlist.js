@@ -148,27 +148,42 @@ const Wishlist$1 = ({
     }, void 0));
   }, [routeToWishlist]);
   useEffect(() => {
+    const addMarker = (message, color) => {
+      const marker = document.createElement("div");
+      marker.style.cssText = `position:fixed;top:0;right:0;z-index:9999;background:${color};color:white;padding:5px;font-size:12px;`;
+      marker.textContent = `COMPONENT: ${message}`;
+      document.body.appendChild(marker);
+    };
+    addMarker("Component mounted", "blue");
+    addMarker(`state.initializing: ${state.initializing}`, "purple");
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", handleWishlistAlert);
     const dataEvent = events.on("wishlist/data", (payload) => {
+      addMarker("DATA event received!", "green");
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
     const initEvent = events.on("wishlist/initialized", (payload) => {
+      addMarker("INIT event received!", "green");
       setWishlistData(payload);
       setIsLoading(false);
     }, {
       eager: true
     });
+    setTimeout(() => {
+      if (isLoading) {
+        addMarker("Still loading after 2s", "red");
+      }
+    }, 2e3);
     return () => {
       authEvent == null ? void 0 : authEvent.off();
       dataEvent == null ? void 0 : dataEvent.off();
       updateEvent == null ? void 0 : updateEvent.off();
       initEvent == null ? void 0 : initEvent.off();
     };
-  }, [handleWishlistAlert]);
+  }, [handleWishlistAlert, isLoading]);
   return u(Wishlist, {
     ...props,
     wishlistData,
@@ -180,7 +195,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 98,
+    lineNumber: 118,
     columnNumber: 5
   }, void 0);
 };
