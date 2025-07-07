@@ -7,7 +7,7 @@ import { IllustratedMessage, Button, Icon, SkeletonRow, Skeleton } from "@dropin
 import { W as WishlistItem } from "../chunks/WishlistItem.js";
 import { u } from "../chunks/jsxRuntime.module.js";
 import { events } from "@dropins/tools/event-bus.js";
-import { g as getPersistedWishlistData, s as state } from "../chunks/removeProductsFromWishlist.js";
+import { s as state, g as getPersistedWishlistData } from "../chunks/removeProductsFromWishlist.js";
 import { useText, Text } from "@dropins/tools/i18n.js";
 import { Fragment as Fragment$1 } from "@dropins/tools/preact.js";
 import { W as WishlistAlert } from "../chunks/WishlistAlert.js";
@@ -127,16 +127,15 @@ const useWishlistData = () => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    try {
-      const persistedData = getPersistedWishlistData();
-      if (persistedData && persistedData.id) {
-        handleWishlistData(persistedData);
-      } else if (!state.initializing && !state.isLoading) {
-        setIsLoading(false);
-      }
-    } catch (error) {
-      if (!state.initializing && !state.isLoading) {
-        setIsLoading(false);
+    if (!state.initializing && !state.isLoading) {
+      try {
+        const persistedData = getPersistedWishlistData();
+        if (persistedData && (persistedData.id || persistedData.items !== void 0)) {
+          handleWishlistData(persistedData);
+          return;
+        }
+      } catch (error) {
+        console.debug("No persisted data available");
       }
     }
     const dataEvent = events.on("wishlist/data", handleWishlistData, {
