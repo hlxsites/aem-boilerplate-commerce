@@ -25,6 +25,10 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 
+// Modal and Mini PDP
+import createModal from '../modal/modal.js';
+import createMiniPDP from '../commerce-mini-pdp/commerce-mini-pdp.js';
+
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
@@ -51,6 +55,9 @@ export default async function decorate(block) {
   const cart = Cart.getCartDataFromCache();
 
   const isEmptyCart = isCartEmpty(cart);
+
+  // Modal state
+  let currentModal = null;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -94,6 +101,47 @@ export default async function decorate(block) {
 
   toggleEmptyCart(isEmptyCart);
 
+  // Handle Edit Button Click
+  async function handleEditButtonClick(cartItem) {
+    try {
+      // Create mini PDP content
+      const miniPDPContent = await createMiniPDP(
+        cartItem,
+        (_updateData) => {
+          // Empty callback - cart refresh handled internally by mini PDP
+        },
+        () => {
+          // Handle modal close
+          if (currentModal) {
+            currentModal.removeModal();
+            currentModal = null;
+          }
+        },
+      );
+
+      // Create and show modal
+      currentModal = await createModal([miniPDPContent]);
+      currentModal.showModal();
+    } catch (error) {
+      console.error('Error opening mini PDP modal:', error);
+
+      // Show error notification
+      UI.render(InLineAlert, {
+        heading:
+          placeholders?.Global?.ProductLoadError
+          || 'Failed to load product details',
+        type: 'error',
+        variant: 'primary',
+        icon: h(Icon, { source: 'AlertWithCircle' }),
+        'aria-live': 'assertive',
+        role: 'alert',
+        onDismiss: () => {
+          $notification.innerHTML = '';
+        },
+      })($notification);
+    }
+  }
+
   // Render Containers
   const getProductLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
   await Promise.all([
@@ -132,26 +180,12 @@ export default async function decorate(block) {
             const editLink = document.createElement('div');
             editLink.className = 'cart-item-edit-link';
 
-            const productUrl = rootLink(`/products/${ctx.item.url.urlKey}/${ctx.item.topLevelSku}`);
-            const params = new URLSearchParams();
-
-            if (ctx.item.selectedOptionsUIDs) {
-              const optionsValues = Object.values(ctx.item.selectedOptionsUIDs);
-              if (optionsValues.length > 0) {
-                const joinedValues = optionsValues.join(',');
-                params.append('optionsUIDs', joinedValues);
-              }
-            }
-
-            params.append('quantity', ctx.item.quantity);
-            params.append('itemUid', ctx.item.uid);
-
             UI.render(Button, {
               children: placeholders?.Global?.CartEditButton,
               variant: 'tertiary',
               size: 'medium',
               icon: h(Icon, { source: 'Edit' }),
-              href: `${productUrl}?${params.toString()}`,
+              onClick: () => handleEditButtonClick(ctx.item),
             })(editLink);
 
             ctx.appendChild(editLink);
