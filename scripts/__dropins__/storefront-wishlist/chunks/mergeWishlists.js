@@ -27,9 +27,9 @@ const initialize = new Initializer({
     eager: true
   }), events.on("wishlist/data", (payload) => {
     setPersistedWishlistData(payload);
-  }), {
+  }, {
     eager: true
-  }, events.on("wishlist/reset", () => {
+  }), events.on("wishlist/reset", () => {
     resetWishlist().catch(console.error);
     events.emit("wishlist/data", null);
   })]
