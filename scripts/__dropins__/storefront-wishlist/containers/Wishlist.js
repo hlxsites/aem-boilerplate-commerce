@@ -130,8 +130,12 @@ const Wishlist$1 = ({
   const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
   const [isLoggedIn, setIsLoggedIn] = t(useState(state.authenticated), "isLoggedIn");
   const [isLoading, setIsLoading] = t(useState(state.isLoading), "isLoading");
-  const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
   const [wishlistAlert, setWishlistAlert] = t(useState(null), "wishlistAlert");
+  const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
+  const handleWishlistData = useCallback((payload) => {
+    setWishlistData(payload);
+    setIsLoading(false);
+  }, []);
   const handleWishlistAlert = useCallback((payload) => {
     const {
       action,
@@ -143,7 +147,7 @@ const Wishlist$1 = ({
       routeToWishlist
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 59,
+      lineNumber: 64,
       columnNumber: 9
     }, void 0));
   }, [routeToWishlist]);
@@ -153,10 +157,7 @@ const Wishlist$1 = ({
     }
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", (payload) => handleWishlistAlert(payload));
-    const dataEvent = events.on("wishlist/data", (payload) => {
-      setWishlistData(payload);
-      setIsLoading(false);
-    }, {
+    const dataEvent = events.on("wishlist/data", handleWishlistData, {
       eager: true
     });
     return () => {
@@ -164,7 +165,7 @@ const Wishlist$1 = ({
       dataEvent == null ? void 0 : dataEvent.off();
       updateEvent == null ? void 0 : updateEvent.off();
     };
-  }, [handleWishlistAlert]);
+  }, [handleWishlistAlert, handleWishlistData]);
   return u(Wishlist, {
     ...props,
     wishlistData,
@@ -176,7 +177,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 95,
+    lineNumber: 94,
     columnNumber: 5
   }, void 0);
 };
