@@ -7,7 +7,7 @@ import { IllustratedMessage, Button, Icon, SkeletonRow, Skeleton } from "@dropin
 import { W as WishlistItem } from "../chunks/WishlistItem.js";
 import { u } from "../chunks/jsxRuntime.module.js";
 import { events } from "@dropins/tools/event-bus.js";
-import { s as state } from "../chunks/removeProductsFromWishlist.js";
+import { g as getPersistedWishlistData, s as state } from "../chunks/removeProductsFromWishlist.js";
 import { useText, Text } from "@dropins/tools/i18n.js";
 import { Fragment as Fragment$1 } from "@dropins/tools/preact.js";
 import { W as WishlistAlert } from "../chunks/WishlistAlert.js";
@@ -119,6 +119,38 @@ const WishlistSkeleton = () => {
     columnNumber: 5
   }, void 0);
 };
+const useWishlistData = () => {
+  const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
+  const [isLoading, setIsLoading] = t(useState(true), "isLoading");
+  const handleWishlistData = useCallback((payload) => {
+    setWishlistData(payload);
+    setIsLoading(false);
+  }, []);
+  useEffect(() => {
+    try {
+      const persistedData = getPersistedWishlistData();
+      if (persistedData && persistedData.id) {
+        handleWishlistData(persistedData);
+      } else if (!state.initializing && !state.isLoading) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      if (!state.initializing && !state.isLoading) {
+        setIsLoading(false);
+      }
+    }
+    const dataEvent = events.on("wishlist/data", handleWishlistData, {
+      eager: true
+    });
+    return () => {
+      dataEvent == null ? void 0 : dataEvent.off();
+    };
+  }, [handleWishlistData]);
+  return {
+    wishlistData,
+    isLoading
+  };
+};
 var _jsxFileName$2 = "/Users/ecornejo/Sites/storefront-wishlist/src/containers/Wishlist/Wishlist.tsx";
 const Wishlist$1 = ({
   routeEmptyWishlistCTA,
@@ -127,15 +159,13 @@ const Wishlist$1 = ({
   routeProdDetailPage,
   ...props
 }) => {
-  const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
+  const {
+    wishlistData,
+    isLoading
+  } = useWishlistData();
   const [isLoggedIn, setIsLoggedIn] = t(useState(state.authenticated), "isLoggedIn");
-  const [isLoading, setIsLoading] = t(useState(state.isLoading), "isLoading");
   const [wishlistAlert, setWishlistAlert] = t(useState(null), "wishlistAlert");
   const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
-  const handleWishlistData = useCallback((payload) => {
-    setWishlistData(payload);
-    setIsLoading(false);
-  }, []);
   const handleWishlistAlert = useCallback((payload) => {
     const {
       action,
@@ -147,25 +177,18 @@ const Wishlist$1 = ({
       routeToWishlist
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 64,
+      lineNumber: 60,
       columnNumber: 9
     }, void 0));
   }, [routeToWishlist]);
   useEffect(() => {
-    if (!state.isLoading && isLoading) {
-      setIsLoading(false);
-    }
     const authEvent = events.on("authenticated", handleAuthentication);
     const updateEvent = events.on("wishlist/alert", (payload) => handleWishlistAlert(payload));
-    const dataEvent = events.on("wishlist/data", handleWishlistData, {
-      eager: true
-    });
     return () => {
       authEvent == null ? void 0 : authEvent.off();
-      dataEvent == null ? void 0 : dataEvent.off();
       updateEvent == null ? void 0 : updateEvent.off();
     };
-  }, [handleWishlistAlert, handleWishlistData]);
+  }, [handleWishlistAlert]);
   return u(Wishlist, {
     ...props,
     wishlistData,
@@ -177,7 +200,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 94,
+    lineNumber: 82,
     columnNumber: 5
   }, void 0);
 };
