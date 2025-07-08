@@ -127,15 +127,11 @@ const useWishlistData = () => {
     setIsLoading(false);
   }, []);
   useEffect(() => {
-    let mounted = true;
-    const waitForInitialization = () => {
-      if (!mounted) return;
-      const checkAndWait = () => {
-        if (!mounted) return;
-        if (state.initializing) {
-          setTimeout(checkAndWait, 10);
-          return;
-        }
+    const dataEvent = events.on("wishlist/data", handleWishlistData, {
+      eager: true
+    });
+    const getCurrentWishlistState = () => {
+      if (!state.initializing && !state.isLoading) {
         try {
           const persistedData = getPersistedWishlistData();
           if (persistedData && (persistedData.id || persistedData.items !== void 0)) {
@@ -148,24 +144,16 @@ const useWishlistData = () => {
             });
           }
         } catch (error) {
-          console.debug("Error getting persisted data");
           handleWishlistData({
             id: "",
             items: [],
             items_count: 0
           });
         }
-      };
-      checkAndWait();
-    };
-    waitForInitialization();
-    const dataEvent = events.on("wishlist/data", (payload) => {
-      if (mounted) {
-        handleWishlistData(payload);
       }
-    });
+    };
+    getCurrentWishlistState();
     return () => {
-      mounted = false;
       dataEvent == null ? void 0 : dataEvent.off();
     };
   }, [handleWishlistData]);
