@@ -1,6 +1,13 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{W as _,t as h,b as c}from"./chunks/mergeWishlists.js";import{a as G,c as H,h as F,j as v,d as L,g as U,e as A,i as M,f as N,m as R,r as $}from"./chunks/mergeWishlists.js";import{s as l,g as u,f as n,h as I}from"./chunks/removeProductsFromWishlist.js";import{k as O,e as Q,l as b,c as B,r as C,a as Y,b as x,d as z,j}from"./chunks/removeProductsFromWishlist.js";import{events as m}from"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
+import { W as WISHLIST_ITEM_FRAGMENT, t as transformWishlist, b as WISHLIST_FRAGMENT } from "./chunks/mergeWishlists.js";
+import { a, c, h, j, d, g, e, i, f, m, r } from "./chunks/mergeWishlists.js";
+import { s as state, g as getPersistedWishlistData, f as fetchGraphQl, h as handleFetchError } from "./chunks/removeProductsFromWishlist.js";
+import { k, e as e2, l, c as c2, r as r2, a as a2, b, d as d2, j as j2 } from "./chunks/removeProductsFromWishlist.js";
+import { events } from "@dropins/tools/event-bus.js";
+import "@dropins/tools/lib.js";
+import "@dropins/tools/fetch-graphql.js";
+const GET_WISHLIST_BY_ID_QUERY = `
   query GET_WISHLIST_BY_ID_QUERY(
     $wishlistId: ID!,
   ) {
@@ -24,8 +31,36 @@ import{W as _,t as h,b as c}from"./chunks/mergeWishlists.js";import{a as G,c as 
     }
   }
 
-${_}
-`,w=async(r,o,e)=>{if(!l.authenticated)return u();if(!r)throw Error("Wishlist ID is not set");return n(d,{variables:{wishlistId:r,currentPage:o,pageSize:e}}).then(({errors:s,data:t})=>{var a;if(s)return I(s);if(!((a=t==null?void 0:t.customer)!=null&&a.wishlist_v2))return null;const i=h(t.customer.wishlist_v2);return m.emit("wishlist/data",i),i})},W=`
+${WISHLIST_ITEM_FRAGMENT}
+`;
+const getWishlistById = async (wishlistId, currentPage, pageSize) => {
+  if (!state.authenticated) {
+    return getPersistedWishlistData();
+  }
+  if (!wishlistId) {
+    throw Error("Wishlist ID is not set");
+  }
+  return fetchGraphQl(GET_WISHLIST_BY_ID_QUERY, {
+    variables: {
+      wishlistId,
+      currentPage,
+      pageSize
+    }
+  }).then(({
+    errors,
+    data
+  }) => {
+    var _a;
+    if (errors) return handleFetchError(errors);
+    if (!((_a = data == null ? void 0 : data.customer) == null ? void 0 : _a.wishlist_v2)) {
+      return null;
+    }
+    const payload = transformWishlist(data.customer.wishlist_v2);
+    events.emit("wishlist/data", payload);
+    return payload;
+  });
+};
+const UPDATE_PRODUCTS_IN_WISHLIST_MUTATION = `
   mutation UPDATE_PRODUCTS_IN_WISHLIST_MUTATION(
       $wishlistId: ID!, 
       $wishlistItems: [WishlistItemUpdateInput!]!,
@@ -44,5 +79,64 @@ ${_}
     }
   }
   
-   ${c} 
-`,E=async r=>{const o=l.wishlistId;if(!o)throw Error("Wishlist ID is not set");return n(W,{variables:{wishlistId:o,wishlistItems:r.map(({wishlistItemId:e,quantity:s,description:t,selectedOptions:i,enteredOptions:a})=>({wishlistItemId:e,quantity:s,description:t,selected_options:i,entered_options:a}))}}).then(({errors:e,data:s})=>{var i;const t=[...((i=s==null?void 0:s.updateProductsInWishlist)==null?void 0:i.user_errors)??[],...e??[]];return t.length>0?I(t):h(s.updateProductsInWishlist.wishlist)})};export{G as addProductsToWishlist,O as clearPersistedLocalStorage,H as config,n as fetchGraphQl,Q as getConfig,F as getDefaultWishlist,v as getGuestWishlist,u as getPersistedWishlistData,L as getProductBySku,U as getStoreConfig,w as getWishlistById,b as getWishlistItemFromStorage,A as getWishlists,M as initialize,N as initializeWishlist,R as mergeWishlists,B as removeFetchGraphQlHeader,C as removeProductsFromWishlist,$ as resetWishlist,Y as setEndpoint,x as setFetchGraphQlHeader,z as setFetchGraphQlHeaders,j as setPersistedWishlistData,E as updateProductsInWishlist};
+   ${WISHLIST_FRAGMENT} 
+`;
+const updateProductsInWishlist = async (items) => {
+  const wishlistId = state.wishlistId;
+  if (!wishlistId) {
+    throw Error("Wishlist ID is not set");
+  }
+  return fetchGraphQl(UPDATE_PRODUCTS_IN_WISHLIST_MUTATION, {
+    variables: {
+      wishlistId,
+      wishlistItems: items.map(({
+        wishlistItemId,
+        quantity,
+        description,
+        selectedOptions: selected_options,
+        enteredOptions: entered_options
+      }) => ({
+        wishlistItemId,
+        quantity,
+        description,
+        selected_options,
+        entered_options
+      }))
+    }
+  }).then(({
+    errors,
+    data
+  }) => {
+    var _a;
+    const _errors = [...((_a = data == null ? void 0 : data.updateProductsInWishlist) == null ? void 0 : _a.user_errors) ?? [], ...errors ?? []];
+    if (_errors.length > 0) return handleFetchError(_errors);
+    return transformWishlist(data.updateProductsInWishlist.wishlist);
+  });
+};
+export {
+  a as addProductsToWishlist,
+  k as clearPersistedLocalStorage,
+  c as config,
+  fetchGraphQl,
+  e2 as getConfig,
+  h as getDefaultWishlist,
+  j as getGuestWishlist,
+  getPersistedWishlistData,
+  d as getProductBySku,
+  g as getStoreConfig,
+  getWishlistById,
+  l as getWishlistItemFromStorage,
+  e as getWishlists,
+  i as initialize,
+  f as initializeWishlist,
+  m as mergeWishlists,
+  c2 as removeFetchGraphQlHeader,
+  r2 as removeProductsFromWishlist,
+  r as resetWishlist,
+  a2 as setEndpoint,
+  b as setFetchGraphQlHeader,
+  d2 as setFetchGraphQlHeaders,
+  j2 as setPersistedWishlistData,
+  updateProductsInWishlist
+};
+//# sourceMappingURL=api.js.map

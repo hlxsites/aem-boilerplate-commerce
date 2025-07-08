@@ -1,6 +1,81 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{jsx as i,jsxs as d,Fragment as H}from"@dropins/tools/preact-jsx-runtime.js";import{useState as u,useCallback as j,useEffect as F,useMemo as k,Fragment as B}from"@dropins/tools/preact-compat.js";import{classes as v,VComponent as R}from"@dropins/tools/lib.js";import{IllustratedMessage as z,Button as A,Icon as V,SkeletonRow as Y,Skeleton as q}from"@dropins/tools/components.js";import{W as G}from"../chunks/WishlistItem.js";import{events as I}from"@dropins/tools/event-bus.js";import{s as b}from"../chunks/removeProductsFromWishlist.js";import{useText as $,Text as M}from"@dropins/tools/i18n.js";import{W as J}from"../chunks/WishlistAlert.js";import{S as K}from"../chunks/Heart.js";import"../chunks/Trash.js";import"@dropins/tools/fetch-graphql.js";import"../chunks/HeartFilled.js";const O=({className:l,children:s,ctaLinkURL:e,...c})=>{const r=$({emptyWishlist:"Wishlist.EmptyWishlist.heading",message:"Wishlist.EmptyWishlist.message",cta:"Wishlist.EmptyWishlist.cta"});return i("div",{...c,className:v(["wishlist-empty-wishlist",l]),children:i(z,{className:v(["wishlist-empty-wishlist__wrapper",l]),"data-testid":"wishlist-empty-wishlist",heading:r.emptyWishlist,icon:i(V,{className:"wishlist-empty-wishlist__icon",source:K}),message:i("p",{children:r.message}),action:e?i(A,{"data-testid":"wishlist-empty-wishlist-button",size:"medium",variant:"primary",type:"submit",href:e,children:r.cta},"routeHome"):void 0})})},S=()=>i(Y,{children:`
+import { t } from "../chunks/devtools.module.js";
+import { useState, useCallback, useEffect, useMemo, Fragment } from "@dropins/tools/preact-compat.js";
+import { classes, VComponent } from "@dropins/tools/lib.js";
+import { IllustratedMessage, Button, Icon, SkeletonRow, Skeleton } from "@dropins/tools/components.js";
+import { W as WishlistItem } from "../chunks/WishlistItem.js";
+import { u } from "../chunks/jsxRuntime.module.js";
+import { events } from "@dropins/tools/event-bus.js";
+import { s as state } from "../chunks/removeProductsFromWishlist.js";
+import { useText, Text } from "@dropins/tools/i18n.js";
+import { Fragment as Fragment$1 } from "@dropins/tools/preact.js";
+import { W as WishlistAlert } from "../chunks/WishlistAlert.js";
+import { S as SvgHeart } from "../chunks/Heart.js";
+import "../chunks/Trash.js";
+import "@dropins/tools/fetch-graphql.js";
+import "../chunks/HeartFilled.js";
+var _jsxFileName$5 = "/Users/ecornejo/Sites/storefront-wishlist/src/components/EmptyWishlist/EmptyWishlist.tsx";
+const EmptyWishlist = ({
+  className,
+  children,
+  ctaLinkURL,
+  ...props
+}) => {
+  const labels = useText({
+    emptyWishlist: "Wishlist.EmptyWishlist.heading",
+    message: "Wishlist.EmptyWishlist.message",
+    cta: "Wishlist.EmptyWishlist.cta"
+  });
+  return u("div", {
+    ...props,
+    className: classes(["wishlist-empty-wishlist", className]),
+    children: u(IllustratedMessage, {
+      className: classes(["wishlist-empty-wishlist__wrapper", className]),
+      "data-testid": "wishlist-empty-wishlist",
+      heading: labels.emptyWishlist,
+      icon: u(Icon, {
+        className: "wishlist-empty-wishlist__icon",
+        source: SvgHeart
+      }, void 0, false, {
+        fileName: _jsxFileName$5,
+        lineNumber: 49,
+        columnNumber: 15
+      }, void 0),
+      message: u("p", {
+        children: labels.message
+      }, void 0, false, {
+        fileName: _jsxFileName$5,
+        lineNumber: 50,
+        columnNumber: 18
+      }, void 0),
+      action: ctaLinkURL ? u(Button, {
+        "data-testid": "wishlist-empty-wishlist-button",
+        size: "medium",
+        variant: "primary",
+        type: "submit",
+        href: ctaLinkURL,
+        children: labels.cta
+      }, "routeHome", false, {
+        fileName: _jsxFileName$5,
+        lineNumber: 53,
+        columnNumber: 13
+      }, void 0) : void 0
+    }, void 0, false, {
+      fileName: _jsxFileName$5,
+      lineNumber: 45,
+      columnNumber: 7
+    }, void 0)
+  }, void 0, false, {
+    fileName: _jsxFileName$5,
+    lineNumber: 44,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName$4 = "/Users/ecornejo/Sites/storefront-wishlist/src/components/Wishlist/WishlistItemSkeleton.tsx";
+const WishlistItemSkeleton = () => {
+  return u(SkeletonRow, {
+    children: `
       <svg
           width="100%"
           height="100%"
@@ -14,4 +89,292 @@ import{jsx as i,jsxs as d,Fragment as H}from"@dropins/tools/preact-jsx-runtime.j
         <rect x="6" y="556" width="132" height="22" rx="4" fill="#E8E8E8" />
         <rect x="6" y="592" width="280" height="48" rx="24" fill="#D9D9D9" />
       </svg>
-    `}),Q=()=>d(q,{"data-testid":"wishlist-loader",children:[i(S,{}),i(S,{}),i(S,{})]}),hi=({routeEmptyWishlistCTA:l,routeToWishlist:s,moveProdToCart:e,routeProdDetailPage:c,...r})=>{const[f,m]=u(null),[N,_]=u(b.authenticated),[L,g]=u(b.isLoading),W=n=>_(n),[p,a]=u(null),x=j(n=>{const{action:o,item:h}=n;a(i(J,{action:o,item:h,routeToWishlist:s}))},[s]);return F(()=>{const n=I.on("authenticated",W),o=I.on("wishlist/alert",t=>x(t)),h=I.on("wishlist/data",t=>{m(t),g(!1)});return()=>{n==null||n.off(),h==null||h.off(),o==null||o.off()}},[x]),i(U,{...r,wishlistData:f,wishlistAlert:p,routeEmptyWishlistCTA:l,moveProdToCart:e,isLoggedIn:N,isLoading:L,routeProdDetailPage:c})},U=({className:l,wishlistData:s,wishlistAlert:e,isLoggedIn:c,isLoading:r,moveProdToCart:f,routeEmptyWishlistCTA:m,onLoginClick:N,routeProdDetailPage:_,...L})=>{const[g,W]=u(e),p=$({wishlistHeading:"Wishlist.Wishlist.heading",wishlistLoadingHeading:"Wishlist.Wishlist.loading"}),a=k(()=>{var t;return((t=s==null?void 0:s.items)==null?void 0:t.length)>0?s.items.map(y=>{var w;return i(G,{initialData:y,moveProdToCart:f,routeProdDetailPage:_},(w=y.product)==null?void 0:w.sku)}):null},[s,f,_]);F(()=>{if(e){W(e);const t=setTimeout(()=>{W(null)},5e3);return()=>clearTimeout(t)}},[e]);const x=k(()=>g?i(R,{node:g,className:"wishlist-wishlist__alert"}):null,[g]),n=()=>d(H,{children:[i("div",{className:"wishlist-wishlist__heading","data-testid":"wishlist-heading-wrapper",children:i("div",{className:"wishlist-wishlist__heading-text","data-testid":"loader-wishlist-heading",children:p.wishlistLoadingHeading})}),i(Q,{})]}),o=()=>a?d(H,{children:[h,i("div",{className:"wishlist-wishlist__content",children:a})]}):i("div",{className:v(["wishlist-wishlist__content","wishlist-wishlist__content--empty"]),children:d("div",{children:[i(O,{"data-testid":"empty-wishlist",ctaLinkURL:m==null?void 0:m()}),!c&&i(X,{onLoginClick:N})]})}),h=k(()=>{var t;return a?i("div",{className:"wishlist-wishlist__heading","data-testid":"wishlist-heading-wrapper",children:i("div",{className:"wishlist-wishlist__heading-text","data-testid":"default-wishlist-heading",children:(t=p.wishlistHeading)==null?void 0:t.split(" {count}").map((y,w)=>{var E;return d(B,{children:[y,w===0&&i("span",{className:"wishlist-wishlist__heading-count","data-testid":"wishlist-heading-count",children:`${s==null?void 0:s.items_count} products`})]},((E=s==null?void 0:s.id)==null?void 0:E.toString())+w)})})}):null},[p,a,s]);return d("div",{...L,className:v(["wishlist-wishlist",l]),children:[x,r?n():o()]})},X=({onLoginClick:l})=>d("div",{className:"wishlist-login__sign-in",children:[i("a",{"data-testid":"log-in-link",className:"wishlist-login__link",href:"",rel:"noreferrer",onClick:l,role:"button",children:i(M,{id:"Wishlist.Login.logIn"})}),i(M,{id:"Wishlist.Login.sync"})]});export{hi as Wishlist,hi as default};
+    `
+  }, void 0, false, {
+    fileName: _jsxFileName$4,
+    lineNumber: 23,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName$3 = "/Users/ecornejo/Sites/storefront-wishlist/src/components/Wishlist/WishlistSkeleton.tsx";
+const WishlistSkeleton = () => {
+  return u(Skeleton, {
+    "data-testid": "wishlist-loader",
+    children: [u(WishlistItemSkeleton, {}, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 25,
+      columnNumber: 7
+    }, void 0), u(WishlistItemSkeleton, {}, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 26,
+      columnNumber: 7
+    }, void 0), u(WishlistItemSkeleton, {}, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 27,
+      columnNumber: 7
+    }, void 0)]
+  }, void 0, true, {
+    fileName: _jsxFileName$3,
+    lineNumber: 24,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName$2 = "/Users/ecornejo/Sites/storefront-wishlist/src/containers/Wishlist/Wishlist.tsx";
+const Wishlist$1 = ({
+  routeEmptyWishlistCTA,
+  routeToWishlist,
+  moveProdToCart,
+  routeProdDetailPage,
+  ...props
+}) => {
+  const [wishlistData, setWishlistData] = t(useState(null), "wishlistData");
+  const [isLoggedIn, setIsLoggedIn] = t(useState(state.authenticated), "isLoggedIn");
+  const [isLoading, setIsLoading] = t(useState(state.isLoading), "isLoading");
+  const handleAuthentication = (authenticated) => setIsLoggedIn(authenticated);
+  const [wishlistAlert, setWishlistAlert] = t(useState(null), "wishlistAlert");
+  const handleWishlistAlert = useCallback((payload) => {
+    const {
+      action,
+      item
+    } = payload;
+    setWishlistAlert(u(WishlistAlert, {
+      action,
+      item,
+      routeToWishlist
+    }, void 0, false, {
+      fileName: _jsxFileName$2,
+      lineNumber: 59,
+      columnNumber: 9
+    }, void 0));
+  }, [routeToWishlist]);
+  useEffect(() => {
+    const authEvent = events.on("authenticated", handleAuthentication);
+    const updateEvent = events.on("wishlist/alert", (payload) => handleWishlistAlert(payload));
+    const dataEvent = events.on("wishlist/data", (payload) => {
+      setWishlistData(payload);
+      setIsLoading(false);
+    });
+    return () => {
+      authEvent == null ? void 0 : authEvent.off();
+      dataEvent == null ? void 0 : dataEvent.off();
+      updateEvent == null ? void 0 : updateEvent.off();
+    };
+  }, [handleWishlistAlert]);
+  return u(Wishlist, {
+    ...props,
+    wishlistData,
+    wishlistAlert,
+    routeEmptyWishlistCTA,
+    moveProdToCart,
+    isLoggedIn,
+    isLoading,
+    routeProdDetailPage
+  }, void 0, false, {
+    fileName: _jsxFileName$2,
+    lineNumber: 86,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName$1 = "/Users/ecornejo/Sites/storefront-wishlist/src/components/Wishlist/Wishlist.tsx";
+const Wishlist = ({
+  className,
+  wishlistData,
+  wishlistAlert,
+  isLoggedIn,
+  isLoading,
+  moveProdToCart,
+  routeEmptyWishlistCTA,
+  onLoginClick,
+  routeProdDetailPage,
+  ...props
+}) => {
+  const [alert, setAlert] = t(useState(wishlistAlert), "alert");
+  const dictionary = useText({
+    wishlistHeading: "Wishlist.Wishlist.heading",
+    wishlistLoadingHeading: "Wishlist.Wishlist.loading"
+  });
+  const products = t(useMemo(() => {
+    var _a;
+    return ((_a = wishlistData == null ? void 0 : wishlistData.items) == null ? void 0 : _a.length) > 0 ? wishlistData.items.map((item) => {
+      var _a2;
+      return u(WishlistItem, {
+        initialData: item,
+        moveProdToCart,
+        routeProdDetailPage
+      }, (_a2 = item.product) == null ? void 0 : _a2.sku, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 70,
+        columnNumber: 11
+      }, void 0);
+    }) : null;
+  }, [wishlistData, moveProdToCart, routeProdDetailPage]), "products");
+  useEffect(() => {
+    if (wishlistAlert) {
+      setAlert(wishlistAlert);
+      const timer = setTimeout(() => {
+        setAlert(null);
+      }, 5e3);
+      return () => clearTimeout(timer);
+    }
+  }, [wishlistAlert]);
+  const renderAlert = t(useMemo(() => alert ? u(VComponent, {
+    node: alert,
+    className: "wishlist-wishlist__alert"
+  }, void 0, false, {
+    fileName: _jsxFileName$1,
+    lineNumber: 95,
+    columnNumber: 9
+  }, void 0) : null, [alert]), "renderAlert");
+  const renderLoader = () => {
+    return u(Fragment$1, {
+      children: [u("div", {
+        className: "wishlist-wishlist__heading",
+        "data-testid": "wishlist-heading-wrapper",
+        children: u("div", {
+          className: "wishlist-wishlist__heading-text",
+          "data-testid": "loader-wishlist-heading",
+          children: dictionary.wishlistLoadingHeading
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 107,
+          columnNumber: 11
+        }, void 0)
+      }, void 0, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 103,
+        columnNumber: 9
+      }, void 0), u(WishlistSkeleton, {}, void 0, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 114,
+        columnNumber: 9
+      }, void 0)]
+    }, void 0);
+  };
+  const renderWishlist = () => {
+    return products ? u(Fragment$1, {
+      children: [renderHeading, u("div", {
+        className: "wishlist-wishlist__content",
+        children: products
+      }, void 0, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 123,
+        columnNumber: 9
+      }, void 0)]
+    }, void 0) : u("div", {
+      className: classes(["wishlist-wishlist__content", "wishlist-wishlist__content--empty"]),
+      children: u("div", {
+        children: [u(EmptyWishlist, {
+          "data-testid": "empty-wishlist",
+          ctaLinkURL: routeEmptyWishlistCTA == null ? void 0 : routeEmptyWishlistCTA()
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 133,
+          columnNumber: 11
+        }, void 0), !isLoggedIn && u(Login, {
+          onLoginClick
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 137,
+          columnNumber: 27
+        }, void 0)]
+      }, void 0, true, {
+        fileName: _jsxFileName$1,
+        lineNumber: 132,
+        columnNumber: 9
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName$1,
+      lineNumber: 126,
+      columnNumber: 7
+    }, void 0);
+  };
+  const renderHeading = t(useMemo(() => {
+    var _a;
+    if (!products) return null;
+    return u("div", {
+      className: "wishlist-wishlist__heading",
+      "data-testid": "wishlist-heading-wrapper",
+      children: u("div", {
+        className: "wishlist-wishlist__heading-text",
+        "data-testid": "default-wishlist-heading",
+        children: (_a = dictionary.wishlistHeading) == null ? void 0 : _a.split(" {count}").map((title, index) => {
+          var _a2;
+          return u(Fragment, {
+            children: [title, index === 0 && u("span", {
+              className: "wishlist-wishlist__heading-count",
+              "data-testid": "wishlist-heading-count",
+              children: `${wishlistData == null ? void 0 : wishlistData.items_count} products`
+            }, void 0, false, {
+              fileName: _jsxFileName$1,
+              lineNumber: 161,
+              columnNumber: 19
+            }, void 0)]
+          }, ((_a2 = wishlistData == null ? void 0 : wishlistData.id) == null ? void 0 : _a2.toString()) + index, true, {
+            fileName: _jsxFileName$1,
+            lineNumber: 158,
+            columnNumber: 15
+          }, void 0);
+        })
+      }, void 0, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 151,
+        columnNumber: 9
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName$1,
+      lineNumber: 147,
+      columnNumber: 7
+    }, void 0);
+  }, [dictionary, products, wishlistData]), "renderHeading");
+  return u("div", {
+    ...props,
+    className: classes(["wishlist-wishlist", className]),
+    children: [renderAlert, isLoading ? renderLoader() : renderWishlist()]
+  }, void 0, true, {
+    fileName: _jsxFileName$1,
+    lineNumber: 176,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName = "/Users/ecornejo/Sites/storefront-wishlist/src/components/Login/Login.tsx";
+const Login = ({
+  onLoginClick
+}) => {
+  return u("div", {
+    className: "wishlist-login__sign-in",
+    children: [u("a", {
+      "data-testid": "log-in-link",
+      className: "wishlist-login__link",
+      href: "",
+      rel: "noreferrer",
+      onClick: onLoginClick,
+      role: "button",
+      children: u(Text, {
+        id: "Wishlist.Login.logIn"
+      }, void 0, false, {
+        fileName: _jsxFileName,
+        lineNumber: 38,
+        columnNumber: 9
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 30,
+      columnNumber: 7
+    }, void 0), u(Text, {
+      id: "Wishlist.Login.sync"
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 40,
+      columnNumber: 7
+    }, void 0)]
+  }, void 0, true, {
+    fileName: _jsxFileName,
+    lineNumber: 29,
+    columnNumber: 5
+  }, void 0);
+};
+export {
+  Wishlist$1 as Wishlist,
+  Wishlist$1 as default
+};
+//# sourceMappingURL=Wishlist.js.map
