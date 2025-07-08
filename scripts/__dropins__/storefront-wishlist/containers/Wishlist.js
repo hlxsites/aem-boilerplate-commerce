@@ -7,7 +7,7 @@ import { IllustratedMessage, Button, Icon, SkeletonRow, Skeleton } from "@dropin
 import { W as WishlistItem } from "../chunks/WishlistItem.js";
 import { u } from "../chunks/jsxRuntime.module.js";
 import { events } from "@dropins/tools/event-bus.js";
-import { g as getPersistedWishlistData, s as state } from "../chunks/removeProductsFromWishlist.js";
+import { s as state, g as getPersistedWishlistData } from "../chunks/removeProductsFromWishlist.js";
 import { useText, Text } from "@dropins/tools/i18n.js";
 import { Fragment as Fragment$1 } from "@dropins/tools/preact.js";
 import { W as WishlistAlert } from "../chunks/WishlistAlert.js";
@@ -128,26 +128,37 @@ const useWishlistData = () => {
   }, []);
   useEffect(() => {
     let mounted = true;
-    const checkCurrentState = () => {
+    const waitForInitialization = () => {
       if (!mounted) return;
-      try {
-        const persistedData = getPersistedWishlistData();
-        if (persistedData && (persistedData.id || persistedData.items !== void 0)) {
-          handleWishlistData(persistedData);
+      const checkAndWait = () => {
+        if (!mounted) return;
+        if (state.initializing) {
+          setTimeout(checkAndWait, 10);
           return;
         }
-      } catch (error) {
-        console.debug("No persisted data available");
-      }
-      if (!state.initializing) {
-        handleWishlistData({
-          id: "",
-          items: [],
-          items_count: 0
-        });
-      }
+        try {
+          const persistedData = getPersistedWishlistData();
+          if (persistedData && (persistedData.id || persistedData.items !== void 0)) {
+            handleWishlistData(persistedData);
+          } else {
+            handleWishlistData({
+              id: "",
+              items: [],
+              items_count: 0
+            });
+          }
+        } catch (error) {
+          console.debug("Error getting persisted data");
+          handleWishlistData({
+            id: "",
+            items: [],
+            items_count: 0
+          });
+        }
+      };
+      checkAndWait();
     };
-    checkCurrentState();
+    waitForInitialization();
     const dataEvent = events.on("wishlist/data", (payload) => {
       if (mounted) {
         handleWishlistData(payload);
