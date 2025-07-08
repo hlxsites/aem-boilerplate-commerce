@@ -153,6 +153,8 @@ const Wishlist$1 = ({
     const dataEvent = events.on("wishlist/data", (payload) => {
       setWishlistData(payload);
       setIsLoading(false);
+    }, {
+      eager: true
     });
     return () => {
       authEvent == null ? void 0 : authEvent.off();
@@ -171,7 +173,7 @@ const Wishlist$1 = ({
     routeProdDetailPage
   }, void 0, false, {
     fileName: _jsxFileName$2,
-    lineNumber: 86,
+    lineNumber: 90,
     columnNumber: 5
   }, void 0);
 };
