@@ -163,6 +163,11 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
     miniPDPContainer.appendChild(fragment);
 
+    // Get the redirect button after fragment is appended otherwise it will be null
+    const $redirectButton = miniPDPContainer.querySelector(
+      '.mini-pdp__buttons__redirect-to-pdp',
+    );
+
     // State management
     let isLoading = false;
     let inlineAlert = null;
@@ -175,6 +180,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       _quantityInstance,
       updateButton,
       _cancelButton,
+      _viewDetailsButton,
     ] = await Promise.all([
       // Gallery - Simple image for now
       UI.render(Image, {
@@ -289,6 +295,19 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
         size: 'large',
         onClick: onClose,
       })($cancelButton),
+
+      // View all details button
+      UI.render(Button, {
+        children: placeholders?.Global?.ViewAllDetails || 'View all details',
+        variant: 'tertiary',
+        size: 'large',
+        onClick: () => {
+          // Close modal first
+          onClose();
+          // Navigate to full PDP page
+          window.location.href = `/products/${product.urlKey}/${product.sku}`;
+        },
+      })($redirectButton),
     ]);
 
     // Handle PDP validation events
