@@ -16,7 +16,6 @@ import { signUpUser } from "../../actions";
 describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
     cy.visit("");
-    cy.wait(2000);
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
@@ -119,7 +118,6 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
   it("Successfully add configurable product with all required options to wishlist, move it to cart and return this to wishlist", () => {
     cy.visit("");
-    cy.wait(2000);
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
@@ -221,7 +219,6 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
   it("Successfully add configurable product with no required options to wishlist, redirects to PDP and remove it", () => {
     cy.visit("");
-    cy.wait(2000);
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
@@ -296,7 +293,6 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
   it("Successfully merge wishlist", () => {
     cy.visit("");
-    cy.wait(2000);
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
     // Wait for wishlist page to load and assert empty state
