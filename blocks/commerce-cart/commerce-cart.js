@@ -121,6 +121,12 @@ export default async function decorate(block) {
 
       // Create and show modal
       currentModal = await createModal([miniPDPContent]);
+
+      // Set ID on the modal block for styling
+      if (currentModal.block) {
+        currentModal.block.setAttribute('id', 'mini-pdp-modal');
+      }
+
       currentModal.showModal();
     } catch (error) {
       console.error('Error opening mini PDP modal:', error);
