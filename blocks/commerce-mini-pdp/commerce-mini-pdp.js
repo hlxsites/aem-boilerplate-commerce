@@ -127,17 +127,27 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
         </div>
         <div class="mini-pdp__right-column">
           <div class="mini-pdp__header">
-            <h3>${product.name}</h3>
+            <a href="/products/${product.urlKey}/${product.sku}" class="quick-view__close">
+            ${product.name}
+            </a>
           </div>
           <div class="mini-pdp__price"></div>
-          <div class="mini-pdp__options"></div>
-          <div class="mini-pdp__quantity-wrapper">
-            <div class="mini-pdp__quantity-label">Quantity</div>
-            <div class="mini-pdp__quantity"></div>
-          </div>
-          <div class="mini-pdp__actions">
-            <div class="mini-pdp__update-button"></div>
-            <div class="mini-pdp__cancel-button"></div>
+          <div class="mini-pdp__configuration">
+            <div class="mini-pdp__options"></div>
+            <div class="mini-pdp__quantity-wrapper">
+              <div class="mini-pdp__quantity-label">
+                Quantity
+              </div>
+              <div class="mini-pdp__quantity"></div>
+            </div>
+            <div class="mini-pdp__buttons">
+              <div class="mini-pdp__update-button"></div>
+              <div class="mini-pdp__cancel-button"></div>
+              <div class="mini-pdp__buttons__redirect-to-pdp">
+                <a href="/products/${product.urlKey}/${product.sku}">
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -234,14 +244,14 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
             // Show success message
             inlineAlert?.remove();
-            inlineAlert = showAlert(
-              'success',
-              placeholders?.Global?.CartUpdatedProductMessage?.replace(
-                '{product}',
-                product.name,
-              ) || 'Product updated successfully',
-              $alert,
-            );
+            // inlineAlert = showAlert(
+            //   'success',
+            //   placeholders?.Global?.CartUpdatedProductMessage?.replace(
+            //     '{product}',
+            //     product.name,
+            //   ) || 'Product updated successfully',
+            //   $alert,
+            // );
 
             // Notify parent component
             if (onUpdate) {
