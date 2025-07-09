@@ -3,14 +3,13 @@
  * This command ensures the page is ready before running assertions
  */
 Cypress.Commands.add('waitForWishlistPageLoaded', () => {
-  // Wait for the wishlist wrapper to exist (but don't check visibility since it can have height: 0)
+  // Wait for the wishlist wrapper to exist
   cy.get('.commerce-wishlist-wrapper').should("exist");
 
   // Wait for generic loading to disappear
   cy.get('body').should('not.contain', 'Loading...');
 
   // Wait for actual content to appear (either wishlist items or empty state)
-  // This will use the full 60-second timeout to wait for loading to complete
   cy.get('body').should($body => {
     const hasWishlistHeading = $body.find('[data-testid="default-wishlist-heading"]').length > 0;
     const hasEmptyWishlist = $body.find('[data-testid="empty-wishlist"]').length > 0;
