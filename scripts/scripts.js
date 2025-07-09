@@ -81,6 +81,7 @@ async function loadEager(doc) {
   decorateTemplateAndTheme();
 
   const main = doc.querySelector('main');
+
   if (main) {
     await initializeCommerce();
     decorateMain(main);
