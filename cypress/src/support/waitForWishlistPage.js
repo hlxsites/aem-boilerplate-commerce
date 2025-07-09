@@ -3,6 +3,7 @@
  * This command ensures the page is ready before running assertions
  */
 Cypress.Commands.add('waitForWishlistPageLoaded', () => {
+  cy.url().should('include', '/wishlist')
   // Wait for the wishlist wrapper to exist
   cy.get('.commerce-wishlist-wrapper').should("exist");
 
