@@ -10,6 +10,7 @@ import {
   Image,
   provider as UI,
 } from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
 // PDP Containers for Mini PDP
@@ -32,29 +33,6 @@ import {
  * @param {Function} onClose - Callback when modal should close
  * @returns {Promise<HTMLElement>} The mini PDP element
  */
-
-// Helper functions for alerts
-function showAlert(type, message, $alert) {
-  const existingAlert = $alert.querySelector('.dropin-alert');
-  if (existingAlert) {
-    existingAlert.remove();
-  }
-
-  const iconSource = type === 'success' ? 'CheckWithCircle' : 'AlertWithCircle';
-
-  return UI.render(InLineAlert, {
-    heading: message,
-    type,
-    variant: 'primary',
-    icon: Icon({ source: iconSource }),
-    'aria-live': 'assertive',
-    role: 'alert',
-    onDismiss: () => {
-      const alert = $alert.querySelector('.dropin-alert');
-      if (alert) alert.remove();
-    },
-  })($alert);
-}
 
 export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   const placeholders = await fetchPlaceholders();
@@ -120,8 +98,8 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
     // Layout structure
     const fragment = document.createRange().createContextualFragment(`
+      <div class="mini-pdp__alert"></div>
       <div class="mini-pdp__wrapper">
-        <div class="mini-pdp__alert"></div>
         <div class="mini-pdp__header">
           <a href="/products/${product.urlKey}/${product.sku}" class="quick-view__close">
           ${product.name}
@@ -253,33 +231,37 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             // Trigger cart refresh to ensure UI updates
             events.emit('cart/updated', updateResponse);
 
-            // Show success message
+            // Reset any previous alerts if successful
             inlineAlert?.remove();
-            // inlineAlert = showAlert(
-            //   'success',
-            //   placeholders?.Global?.CartUpdatedProductMessage?.replace(
-            //     '{product}',
-            //     product.name,
-            //   ) || 'Product updated successfully',
-            //   $alert,
-            // );
 
             // Notify parent component
             if (onUpdate) {
               onUpdate(updateData);
             }
 
-            // Close modal after short delay
-            setTimeout(() => {
-              onClose();
-            }, 1000);
+            // Close modal immediately after successful update
+            onClose();
           } catch (error) {
+            // Reset any previous alerts
             inlineAlert?.remove();
-            inlineAlert = showAlert(
-              'error',
-              error.message || 'Failed to update product',
-              $alert,
-            );
+
+            // Show error message using InLineAlert component
+            inlineAlert = await UI.render(InLineAlert, {
+              heading: 'Error',
+              description: error.message,
+              icon: h(Icon, { source: 'Warning' }),
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => {
+                inlineAlert.remove();
+              },
+            })($alert);
+
+            // Scroll the alert into view
+            $alert.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
           } finally {
             isLoading = false;
             updateButton.setProps((prev) => ({

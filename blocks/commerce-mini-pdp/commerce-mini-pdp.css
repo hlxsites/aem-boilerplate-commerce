@@ -1,189 +1,32 @@
-.commerce-mini-pdp {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0;
+/* stylelint-disable no-empty-source */
+
+/* Mini PDP Alert positioning - base styles for non-modal usage */
+.commerce-mini-pdp .mini-pdp__alert {
+    margin-bottom: var(--spacing-small);
+    margin-top: var(--spacing-small);
 }
 
-.mini-pdp__alert {
-    margin-bottom: 1rem;
+.commerce-mini-pdp .mini-pdp__alert:empty {
+    display: none;
 }
 
-.mini-pdp__wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    align-items: start;
+/* Error state - used for fallback error display */
+.commerce-mini-pdp--error {
+    padding: var(--spacing-medium);
+    text-align: center;
 }
 
-.mini-pdp__left-column {
-    display: flex;
-    flex-direction: column;
+.mini-pdp__error h3 {
+    color: var(--color-alert-content);
+    margin-bottom: var(--spacing-small);
 }
 
-.mini-pdp__right-column {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.mini-pdp__gallery {
-    width: 100%;
-    max-width: 400px;
-}
-
-.mini-pdp__header h1 {
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.3;
-}
-
-.mini-pdp__price {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.mini-pdp__options {
-    margin-bottom: 1rem;
-}
-
-.mini-pdp__quantity {
-    margin-bottom: 1.5rem;
-}
-
-.mini-pdp__actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: auto;
-    padding-top: 1rem;
-}
-
-.mini-pdp__actions button {
-    flex: 1;
-    min-height: 48px;
-    border-radius: 4px;
-    font-weight: 600;
+.mini-pdp__close-button {
+    background: var(--color-button-active);
+    color: var(--color-button-content);
+    border: none;
+    padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: var(--shape-border-radius-1);
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.mini-pdp__update-button button {
-    background-color: var(--color-brand-primary, #007bff);
-    color: white;
-    border: 2px solid var(--color-brand-primary, #007bff);
-}
-
-.mini-pdp__update-button button:hover:not(:disabled) {
-    background-color: var(--color-brand-primary-hover, #0056b3);
-    border-color: var(--color-brand-primary-hover, #0056b3);
-}
-
-.mini-pdp__update-button button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.mini-pdp__cancel-button button {
-    background-color: transparent;
-    color: var(--color-text-primary, #333);
-    border: 2px solid var(--color-border-primary, #ccc);
-}
-
-.mini-pdp__cancel-button button:hover {
-    background-color: var(--color-background-secondary, #f8f9fa);
-    border-color: var(--color-border-hover, #999);
-}
-
-/* Mobile responsive design */
-@media (max-width: 768px) {
-    .mini-pdp__wrapper {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .mini-pdp__gallery {
-        max-width: 100%;
-    }
-
-    .mini-pdp__actions {
-        flex-direction: column;
-    }
-
-    .mini-pdp__actions button {
-        width: 100%;
-    }
-}
-
-/* Small mobile */
-@media (max-width: 480px) {
-    .commerce-mini-pdp {
-        padding: 0 1rem;
-    }
-
-    .mini-pdp__wrapper {
-        gap: 1rem;
-    }
-
-    .mini-pdp__right-column {
-        gap: 0.75rem;
-    }
-
-    .mini-pdp__header h1 {
-        font-size: 1.25rem;
-    }
-
-    .mini-pdp__price {
-        font-size: 1.125rem;
-    }
-}
-
-/* Integration with existing modal styles */
-.modal-content .commerce-mini-pdp {
-    width: 100%;
-    max-width: none;
-}
-
-/* Ensure proper spacing in modal */
-.modal-content {
-    padding: 2rem;
-}
-
-@media (max-width: 768px) {
-    .modal-content {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .modal-content {
-        padding: 1rem;
-    }
-}
-
-/* PDP component specific adjustments for modal */
-.commerce-mini-pdp .dropin-product-gallery {
-    max-height: 400px;
-    overflow: hidden;
-}
-
-.commerce-mini-pdp .dropin-product-options {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-/* Alert styling */
-.mini-pdp__alert .dropin-inline-alert {
-    margin-bottom: 1rem;
-}
-
-.mini-pdp__alert .dropin-inline-alert--success {
-    background-color: var(--color-success-background, #d4edda);
-    border-color: var(--color-success-border, #c3e6cb);
-    color: var(--color-success-text, #155724);
-}
-
-.mini-pdp__alert .dropin-inline-alert--error {
-    background-color: var(--color-error-background, #f8d7da);
-    border-color: var(--color-error-border, #f5c6cb);
-    color: var(--color-error-text, #721c24);
+    margin-top: var(--spacing-small);
 }

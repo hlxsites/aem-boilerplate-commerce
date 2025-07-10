@@ -71,6 +71,16 @@
   margin-top: var(--spacing-medium);
 }
 
+#mini-pdp-modal .mini-pdp__alert {
+  margin-top: var(--spacing-medium);
+  margin-right: var(--spacing-xxlarge);
+  margin-bottom: var(--spacing-small);
+}
+
+#mini-pdp-modal .mini-pdp__alert:empty {
+  display: none;
+}
+
 #mini-pdp-modal .mini-pdp__left-column {
   grid-column: 1 / span 4;
 }
