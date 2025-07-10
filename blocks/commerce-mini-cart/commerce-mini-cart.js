@@ -2,6 +2,15 @@ import { render as provider } from '@dropins/storefront-cart/render.js';
 import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import {
+  InLineAlert,
+  Icon,
+  provider as UI,
+} from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
+
+import createModal from '../modal/modal.js';
+import createMiniPDP from '../commerce-mini-pdp/commerce-mini-pdp.js';
 
 // Initializers
 import '../../scripts/initializers/cart.js';
@@ -25,6 +34,9 @@ export default async function decorate(block) {
     UPDATED: placeholders?.Global?.MiniCartUpdatedMessage,
   };
 
+  // Modal state
+  let currentModal = null;
+
   // Create a container for the update message
   const updateMessage = document.createElement('div');
   updateMessage.className = 'commerce-mini-cart__update-message';
@@ -47,6 +59,75 @@ export default async function decorate(block) {
       );
     }, 3000);
   };
+
+  // Handle Edit Button Click
+  async function handleEditButtonClick(cartItem) {
+    try {
+      // Create mini PDP content
+      const miniPDPContent = await createMiniPDP(
+        cartItem,
+        (_updateData) => {
+          const productName = cartItem.name
+            || cartItem.product?.name
+            || placeholders?.Global?.CartUpdatedProductName;
+          const message = placeholders?.Global?.CartUpdatedProductMessage?.replace(
+            '{product}',
+            productName,
+          );
+
+          // Show message in the main cart page
+          const cartNotification = document.querySelector(
+            '.cart__notification',
+          );
+          if (cartNotification) {
+            UI.render(InLineAlert, {
+              heading: message,
+              type: 'success',
+              variant: 'primary',
+              icon: h(Icon, { source: 'CheckWithCircle' }),
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => {
+                cartNotification.innerHTML = '';
+              },
+            })(cartNotification);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+              cartNotification.innerHTML = '';
+            }, 5000);
+          }
+
+          // Also trigger message in the mini-cart
+          showMessage(message);
+        },
+        () => {
+          // Handle modal close
+          if (currentModal) {
+            currentModal.removeModal();
+            currentModal = null;
+          }
+        },
+      );
+
+      currentModal = await createModal([miniPDPContent]);
+
+      // Set ID on the modal block for styling
+      if (currentModal.block) {
+        currentModal.block.setAttribute('id', 'mini-pdp-modal');
+      }
+
+      currentModal.showModal();
+    } catch (error) {
+      console.error('Error opening mini PDP modal:', error);
+
+      // Show error message using mini-cart's message system
+      showMessage(
+        placeholders?.Global?.ProductLoadError
+          || 'Failed to load product details',
+      );
+    }
+  }
 
   // Add event listeners for cart updates
   events.on('cart/product/added', () => showMessage(MESSAGES.ADDED), {
@@ -92,22 +173,7 @@ export default async function decorate(block) {
           editButton.textContent = 'Edit';
 
           editButton.addEventListener('click', () => {
-            const productUrl = getProductLink(item);
-            const params = new URLSearchParams();
-
-            if (item.selectedOptionsUIDs) {
-              const optionsValues = Object.values(item.selectedOptionsUIDs);
-              if (optionsValues.length > 0) {
-                const joinedValues = optionsValues.join(',');
-                params.append('optionsUIDs', joinedValues);
-              }
-            }
-
-            params.append('quantity', item.quantity);
-            params.append('itemUid', item.uid);
-
-            const finalUrl = `${productUrl}?${params.toString()}`;
-            window.location.href = finalUrl;
+            handleEditButtonClick(item);
           });
 
           editLinkContainer.appendChild(editButton);
