@@ -122,16 +122,16 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     const fragment = document.createRange().createContextualFragment(`
       <div class="mini-pdp__wrapper">
         <div class="mini-pdp__alert"></div>
+        <div class="mini-pdp__header">
+          <a href="/products/${product.urlKey}/${product.sku}" class="quick-view__close">
+          ${product.name}
+          </a>
+        </div>
+        <div class="mini-pdp__price"></div>
         <div class="mini-pdp__left-column">
           <div class="mini-pdp__gallery"></div>
         </div>
         <div class="mini-pdp__right-column">
-          <div class="mini-pdp__header">
-            <a href="/products/${product.urlKey}/${product.sku}" class="quick-view__close">
-            ${product.name}
-            </a>
-          </div>
-          <div class="mini-pdp__price"></div>
           <div class="mini-pdp__configuration">
             <div class="mini-pdp__options"></div>
             <div class="mini-pdp__quantity-wrapper">
@@ -140,22 +140,23 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
               </div>
               <div class="mini-pdp__quantity"></div>
             </div>
-            <div class="mini-pdp__buttons">
-              <div class="mini-pdp__update-button"></div>
-              <div class="mini-pdp__cancel-button"></div>
-              <div class="mini-pdp__buttons__redirect-to-pdp">
-                <a href="/products/${product.urlKey}/${product.sku}">
-                </a>
-              </div>
-            </div>
+          </div>
+        </div>
+        <div class="mini-pdp__buttons">
+          <div class="mini-pdp__update-button"></div>
+          <div class="mini-pdp__cancel-button"></div>
+          <div class="mini-pdp__buttons__redirect-to-pdp">
+            <a href="/products/${product.urlKey}/${product.sku}">
+            </a>
           </div>
         </div>
       </div>
     `);
 
     const $alert = fragment.querySelector('.mini-pdp__alert');
-    const $gallery = fragment.querySelector('.mini-pdp__gallery');
+    const $header = fragment.querySelector('.mini-pdp__header');
     const $price = fragment.querySelector('.mini-pdp__price');
+    const $gallery = fragment.querySelector('.mini-pdp__gallery');
     const $options = fragment.querySelector('.mini-pdp__options');
     const $quantity = fragment.querySelector('.mini-pdp__quantity');
     const $updateButton = fragment.querySelector('.mini-pdp__update-button');
@@ -175,6 +176,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     // Render components
     const [
       _galleryInstance,
+      _headerInstance,
       _priceInstance,
       _optionsInstance,
       _quantityInstance,
@@ -194,6 +196,9 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
         },
       })($gallery),
 
+      // Header - just set the content, no special rendering needed
+      Promise.resolve($header),
+
       // Price
       pdpRender.render(ProductPrice, {})($price),
 
@@ -211,7 +216,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       UI.render(Button, {
         children: placeholders?.Global?.UpdateProductInCart || 'Update Cart',
         variant: 'primary',
-        size: 'large',
+        size: 'medium',
         onClick: async () => {
           if (isLoading) return;
 
@@ -292,7 +297,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       UI.render(Button, {
         children: placeholders?.Global?.Cancel || 'Cancel',
         variant: 'secondary',
-        size: 'large',
+        size: 'medium',
         onClick: onClose,
       })($cancelButton),
 
@@ -300,7 +305,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       UI.render(Button, {
         children: placeholders?.Global?.ViewAllDetails || 'View all details',
         variant: 'tertiary',
-        size: 'large',
+        size: 'medium',
         onClick: () => {
           // Close modal first
           onClose();
