@@ -108,7 +108,30 @@ export default async function decorate(block) {
       const miniPDPContent = await createMiniPDP(
         cartItem,
         (_updateData) => {
-          // Empty callback - cart refresh handled internally by mini PDP
+          // Show success message when mini-PDP updates item
+          const productName = cartItem.name
+            || cartItem.product?.name
+            || placeholders?.Global?.CartUpdatedProductName;
+          const message = placeholders?.Global?.CartUpdatedProductMessage?.replace(
+            '{product}',
+            productName,
+          );
+
+          UI.render(InLineAlert, {
+            heading: message,
+            type: 'success',
+            variant: 'primary',
+            icon: h(Icon, { source: 'CheckWithCircle' }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              $notification.innerHTML = '';
+            },
+          })($notification);
+
+          setTimeout(() => {
+            $notification.innerHTML = '';
+          }, 5000);
         },
         () => {
           // Handle modal close
@@ -280,36 +303,6 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const itemUid = urlParams.get('itemUid');
-
-      if (itemUid && cartData?.items) {
-        const itemExists = cartData.items.some((item) => item.uid === itemUid);
-        if (itemExists) {
-          const updatedItem = cartData.items.find((item) => item.uid === itemUid);
-          const productName = updatedItem.name
-            || updatedItem.product?.name
-            || placeholders?.Global?.CartUpdatedProductName;
-          const message = placeholders?.Global?.CartUpdatedProductMessage?.replace('{product}', productName);
-
-          UI.render(InLineAlert, {
-            heading: message,
-            type: 'success',
-            variant: 'primary',
-            icon: h(Icon, { source: 'CheckWithCircle' }),
-            'aria-live': 'assertive',
-            role: 'alert',
-            onDismiss: () => {
-              $notification.innerHTML = '';
-            },
-          })($notification);
-        }
-
-        if (window.location.search) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      }
-
       toggleEmptyCart(isCartEmpty(cartData));
 
       if (!cartViewEventPublished) {
