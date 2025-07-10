@@ -6,6 +6,7 @@ import {
   InLineAlert,
   Icon,
   provider as UI,
+  Button,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 
@@ -168,15 +169,18 @@ export default async function decorate(block) {
           const editLinkContainer = document.createElement('div');
           editLinkContainer.className = 'cart-item-edit-container';
 
-          const editButton = document.createElement('button');
-          editButton.className = 'cart-item-edit-link';
-          editButton.textContent = 'Edit';
+          const editLink = document.createElement('div');
+          editLink.className = 'cart-item-edit-link';
 
-          editButton.addEventListener('click', () => {
-            handleEditButtonClick(item);
-          });
+          UI.render(Button, {
+            children: placeholders?.Global?.CartEditButton,
+            variant: 'tertiary',
+            size: 'medium',
+            icon: h(Icon, { source: 'Edit' }),
+            onClick: () => handleEditButtonClick(item),
+          })(editLink);
 
-          editLinkContainer.appendChild(editButton);
+          editLinkContainer.appendChild(editLink);
           ctx.appendChild(editLinkContainer);
         }
       },
