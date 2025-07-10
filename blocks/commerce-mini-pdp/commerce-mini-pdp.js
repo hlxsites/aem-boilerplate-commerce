@@ -40,6 +40,11 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   // Initialize PDP API with the product SKU
   const sku = cartItem.topLevelSku || cartItem.sku;
 
+  // Extract options UIDs from cart item for pre-selection
+  const optionsUIDs = cartItem.selectedOptionsUIDs
+    ? Object.values(cartItem.selectedOptionsUIDs).filter(Boolean)
+    : undefined;
+
   const langDefinitions = {
     default: placeholders,
   };
@@ -66,6 +71,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
     // Fetch product data first
     const productData = await pdpApi.fetchProductData(sku, {
+      optionsUIDs,
       skipTransform: true,
     });
 
@@ -76,9 +82,10 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     // Update models with the fetched product data
     models.ProductDetails.initialData = { ...productData };
 
-    // Initialize PDP API
+    // Initialize PDP API with pre-selected options
     await initializers.mountImmediately(pdpApi.initialize, {
       sku,
+      optionsUIDs,
       langDefinitions,
       models,
       acdl: false,
@@ -91,6 +98,12 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     if (!product) {
       throw new Error('Product data not available');
     }
+
+    // Set initial quantity using PDP API BEFORE rendering components
+    pdpApi.setProductConfigurationValues((prev) => ({
+      ...prev,
+      quantity: cartItem.quantity || 1,
+    }));
 
     // Create the mini PDP container
     const miniPDPContainer = document.createElement('div');
@@ -186,9 +199,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       })($options),
 
       // Quantity
-      pdpRender.render(ProductQuantity, {
-        initialValue: cartItem.quantity || 1,
-      })($quantity),
+      pdpRender.render(ProductQuantity, {})($quantity),
 
       // Update button
       UI.render(Button, {
