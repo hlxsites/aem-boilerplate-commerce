@@ -37,6 +37,7 @@ export default async function decorate(block) {
 
   // Modal state
   let currentModal = null;
+  let currentCartNotification = null;
 
   // Create a container for the update message
   const updateMessage = document.createElement('div');
@@ -67,7 +68,7 @@ export default async function decorate(block) {
       // Create mini PDP content
       const miniPDPContent = await createMiniPDP(
         cartItem,
-        (_updateData) => {
+        async (_updateData) => {
           const productName = cartItem.name
             || cartItem.product?.name
             || placeholders?.Global?.CartUpdatedProductName;
@@ -81,7 +82,10 @@ export default async function decorate(block) {
             '.cart__notification',
           );
           if (cartNotification) {
-            UI.render(InLineAlert, {
+            // Clear any existing cart notifications
+            currentCartNotification?.remove();
+
+            currentCartNotification = await UI.render(InLineAlert, {
               heading: message,
               type: 'success',
               variant: 'primary',
@@ -89,13 +93,13 @@ export default async function decorate(block) {
               'aria-live': 'assertive',
               role: 'alert',
               onDismiss: () => {
-                cartNotification.innerHTML = '';
+                currentCartNotification?.remove();
               },
             })(cartNotification);
 
             // Auto-dismiss after 5 seconds
             setTimeout(() => {
-              cartNotification.innerHTML = '';
+              currentCartNotification?.remove();
             }, 5000);
           }
 

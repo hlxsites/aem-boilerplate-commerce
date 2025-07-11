@@ -58,6 +58,7 @@ export default async function decorate(block) {
 
   // Modal state
   let currentModal = null;
+  let currentNotification = null;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -107,7 +108,7 @@ export default async function decorate(block) {
       // Create mini PDP content
       const miniPDPContent = await createMiniPDP(
         cartItem,
-        (_updateData) => {
+        async (_updateData) => {
           // Show success message when mini-PDP updates item
           const productName = cartItem.name
             || cartItem.product?.name
@@ -117,7 +118,10 @@ export default async function decorate(block) {
             productName,
           );
 
-          UI.render(InLineAlert, {
+          // Clear any existing notifications
+          currentNotification?.remove();
+
+          currentNotification = await UI.render(InLineAlert, {
             heading: message,
             type: 'success',
             variant: 'primary',
@@ -125,12 +129,13 @@ export default async function decorate(block) {
             'aria-live': 'assertive',
             role: 'alert',
             onDismiss: () => {
-              $notification.innerHTML = '';
+              currentNotification?.remove();
             },
           })($notification);
 
+          // Auto-dismiss after 5 seconds
           setTimeout(() => {
-            $notification.innerHTML = '';
+            currentNotification?.remove();
           }, 5000);
         },
         () => {
@@ -152,17 +157,19 @@ export default async function decorate(block) {
     } catch (error) {
       console.error('Error opening mini PDP modal:', error);
 
+      // Clear any existing notifications
+      currentNotification?.remove();
+
       // Show error notification
-      UI.render(InLineAlert, {
-        heading:
-          placeholders?.Global?.ProductLoadError,
+      currentNotification = await UI.render(InLineAlert, {
+        heading: placeholders?.Global?.ProductLoadError,
         type: 'error',
         variant: 'primary',
         icon: h(Icon, { source: 'AlertWithCircle' }),
         'aria-live': 'assertive',
         role: 'alert',
         onDismiss: () => {
-          $notification.innerHTML = '';
+          currentNotification?.remove();
         },
       })($notification);
     }
