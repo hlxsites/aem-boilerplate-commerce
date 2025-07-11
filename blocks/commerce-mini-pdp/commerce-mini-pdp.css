@@ -1,0 +1,30 @@
+/* Mini PDP Alert positioning - base styles for non-modal usage */
+.commerce-mini-pdp .mini-pdp__alert {
+    margin-bottom: var(--spacing-small);
+    margin-top: var(--spacing-small);
+}
+
+.commerce-mini-pdp .mini-pdp__alert:empty {
+    display: none;
+}
+
+/* Error state - used for fallback error display */
+.commerce-mini-pdp--error {
+    padding: var(--spacing-medium);
+    text-align: center;
+}
+
+.mini-pdp__error h3 {
+    color: var(--color-alert-content);
+    margin-bottom: var(--spacing-small);
+}
+
+.mini-pdp__close-button {
+    background: var(--color-button-active);
+    color: var(--color-button-content);
+    border: none;
+    padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: var(--shape-border-radius-1);
+    cursor: pointer;
+    margin-top: var(--spacing-small);
+}
