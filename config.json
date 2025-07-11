@@ -1,0 +1,37 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/KZrr4s3gAAbumMGicqrvVo/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/KZrr4s3gAAbumMGicqrvVo/graphql",
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "ac-channel-id": "c0780d24-00b0-4236-bc31-ba586d3e7f0b",
+          "ac-environment-id": "KZrr4s3gAAbumMGicqrvVo",
+          "ac-price-book-id": "west_coast_inc",
+          "ac-scope-locale": "en-US",
+          "Magento-Environment-Id": "KZrr4s3gAAbumMGicqrvVo"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Production",
+        "store-id": 1,
+        "store-name": "Main Website Store",
+        "store-url": "https://commerce-demo--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "Default Store View",
+        "website-id": 1,
+        "website-name": "Main Website",
+        "environment-id": "KZrr4s3gAAbumMGicqrvVo"
+      },
+      "plugins": {
+        "picker": {
+           "rootCategory": "2"
+         }
+      }
+    }
+  }
+}
