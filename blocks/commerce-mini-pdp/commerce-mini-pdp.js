@@ -114,7 +114,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             <div class="mini-pdp__options"></div>
             <div class="mini-pdp__quantity-wrapper">
               <div class="mini-pdp__quantity-label">
-                Quantity
+                ${placeholders?.Global?.quantityLabel}
               </div>
               <div class="mini-pdp__quantity"></div>
             </div>
