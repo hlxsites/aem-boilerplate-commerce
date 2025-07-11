@@ -1,5 +1,3 @@
-/* stylelint-disable no-empty-source */
-
 /* Mini PDP Alert positioning - base styles for non-modal usage */
 .commerce-mini-pdp .mini-pdp__alert {
     margin-bottom: var(--spacing-small);

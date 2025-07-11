@@ -134,7 +134,6 @@ export default async function decorate(block) {
           }, 5000);
         },
         () => {
-          // Handle modal close
           if (currentModal) {
             currentModal.removeModal();
             currentModal = null;
@@ -145,7 +144,6 @@ export default async function decorate(block) {
       // Create and show modal
       currentModal = await createModal([miniPDPContent]);
 
-      // Set ID on the modal block for styling
       if (currentModal.block) {
         currentModal.block.setAttribute('id', 'mini-pdp-modal');
       }
@@ -157,8 +155,7 @@ export default async function decorate(block) {
       // Show error notification
       UI.render(InLineAlert, {
         heading:
-          placeholders?.Global?.ProductLoadError
-          || 'Failed to load product details',
+          placeholders?.Global?.ProductLoadError,
         type: 'error',
         variant: 'primary',
         icon: h(Icon, { source: 'AlertWithCircle' }),

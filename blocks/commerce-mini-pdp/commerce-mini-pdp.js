@@ -26,21 +26,11 @@ import {
   commerceEndpointWithQueryParams,
 } from '../../scripts/commerce.js';
 
-/**
- * Creates a mini PDP component for modal display
- * @param {Object} cartItem - The cart item to edit
- * @param {Function} onUpdate - Callback when item is updated
- * @param {Function} onClose - Callback when modal should close
- * @returns {Promise<HTMLElement>} The mini PDP element
- */
-
 export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   const placeholders = await fetchPlaceholders();
 
-  // Initialize PDP API with the product SKU
   const sku = cartItem.topLevelSku || cartItem.sku;
 
-  // Extract options UIDs from cart item for pre-selection
   const optionsUIDs = cartItem.selectedOptionsUIDs
     ? Object.values(cartItem.selectedOptionsUIDs).filter(Boolean)
     : undefined;
@@ -69,7 +59,6 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     pdpApi.setEndpoint(await commerceEndpointWithQueryParams());
     pdpApi.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
-    // Fetch product data first
     const productData = await pdpApi.fetchProductData(sku, {
       optionsUIDs,
       skipTransform: true,
@@ -79,7 +68,6 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       throw new Error('Product data not available');
     }
 
-    // Update models with the fetched product data
     models.ProductDetails.initialData = { ...productData };
 
     // Initialize PDP API with pre-selected options
@@ -92,7 +80,6 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       persistURLParams: false,
     });
 
-    // Get product data from PDP API
     const product = events.lastPayload('pdp/data');
 
     if (!product) {
@@ -190,20 +177,17 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       // Header - just set the content, no special rendering needed
       Promise.resolve($header),
 
-      // Price
       pdpRender.render(ProductPrice, {})($price),
 
-      // Options
       pdpRender.render(ProductOptions, {
         hideSelectedValue: false,
       })($options),
 
-      // Quantity
       pdpRender.render(ProductQuantity, {})($quantity),
 
       // Update button
       UI.render(Button, {
-        children: placeholders?.Global?.UpdateProductInCart || 'Update Cart',
+        children: placeholders?.Global?.UpdateProductInCart,
         variant: 'primary',
         size: 'medium',
         onClick: async () => {
@@ -213,7 +197,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             isLoading = true;
             updateButton.setProps((prev) => ({
               ...prev,
-              children: placeholders?.Global?.Updating || 'Updating...',
+              children: placeholders?.Global?.UpdatingInCart,
               disabled: true,
             }));
 
@@ -242,21 +226,16 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             // Trigger cart refresh to ensure UI updates
             events.emit('cart/updated', updateResponse);
 
-            // Reset any previous alerts if successful
             inlineAlert?.remove();
 
-            // Notify parent component
             if (onUpdate) {
               onUpdate(updateData);
             }
 
-            // Close modal immediately after successful update
             onClose();
           } catch (error) {
-            // Reset any previous alerts
             inlineAlert?.remove();
 
-            // Show error message using InLineAlert component
             inlineAlert = await UI.render(InLineAlert, {
               heading: 'Error',
               description: error.message,
@@ -268,7 +247,6 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
               },
             })($alert);
 
-            // Scroll the alert into view
             $alert.scrollIntoView({
               behavior: 'smooth',
               block: 'center',
@@ -278,7 +256,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             updateButton.setProps((prev) => ({
               ...prev,
               children:
-                placeholders?.Global?.UpdateProductInCart || 'Update Cart',
+                placeholders?.Global?.UpdateProductInCart,
               disabled: false,
             }));
           }
@@ -288,7 +266,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
       // Cancel button
       UI.render(Button, {
-        children: placeholders?.Global?.Cancel || 'Cancel',
+        children: placeholders?.Global?.Cancel,
         variant: 'secondary',
         size: 'medium',
         onClick: onClose,
@@ -296,11 +274,10 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
       // View all details button
       UI.render(Button, {
-        children: placeholders?.Global?.ViewAllDetails || 'View all details',
+        children: placeholders?.Global?.ViewAllDetails,
         variant: 'tertiary',
         size: 'medium',
         onClick: () => {
-          // Close modal first
           onClose();
           // Navigate to full PDP page
           window.location.href = `/products/${product.urlKey}/${product.sku}`;
@@ -328,7 +305,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     errorContainer.innerHTML = `
       <div class="mini-pdp__error">
         <h3>Error</h3>
-        <p>${error.message || 'Failed to load product details'}</p>
+        <p>${error.message || placeholders?.Global?.ProductLoadError}</p>
         <button onclick="arguments[0]()" class="mini-pdp__close-button">Close</button>
       </div>
     `;

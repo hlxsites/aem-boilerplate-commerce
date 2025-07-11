@@ -103,7 +103,6 @@ export default async function decorate(block) {
           showMessage(message);
         },
         () => {
-          // Handle modal close
           if (currentModal) {
             currentModal.removeModal();
             currentModal = null;
@@ -113,7 +112,6 @@ export default async function decorate(block) {
 
       currentModal = await createModal([miniPDPContent]);
 
-      // Set ID on the modal block for styling
       if (currentModal.block) {
         currentModal.block.setAttribute('id', 'mini-pdp-modal');
       }
@@ -124,8 +122,7 @@ export default async function decorate(block) {
 
       // Show error message using mini-cart's message system
       showMessage(
-        placeholders?.Global?.ProductLoadError
-          || 'Failed to load product details',
+        placeholders?.Global?.ProductLoadError,
       );
     }
   }
