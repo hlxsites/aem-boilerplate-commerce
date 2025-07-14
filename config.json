@@ -25,7 +25,8 @@
         "store-view-name": "Default Store View",
         "website-id": 1,
         "website-name": "Main Website",
-        "environment-id": "KZrr4s3gAAbumMGicqrvVo"
+        "environment-id": "KZrr4s3gAAbumMGicqrvVo",
+        "store-view-code": "en-US"
       },
       "plugins": {
         "picker": {
