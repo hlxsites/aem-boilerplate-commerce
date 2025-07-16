@@ -26,7 +26,13 @@ import {
   commerceEndpointWithQueryParams,
 } from '../../scripts/commerce.js';
 
+import { loadCSS } from '../../scripts/aem.js';
+
 export default async function createMiniPDP(cartItem, onUpdate, onClose) {
+  await loadCSS(
+    `${window.hlx.codeBasePath}/blocks/commerce-mini-pdp/commerce-mini-pdp.css`,
+  );
+
   const placeholders = await fetchPlaceholders();
 
   const sku = cartItem.topLevelSku || cartItem.sku;
