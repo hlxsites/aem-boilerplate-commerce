@@ -2,6 +2,7 @@ import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { CartModel } from '../../data/models/cart-model';
 import { ImageProps } from '@dropins/tools/types/elsie/src/components';
+import { VNode } from 'preact';
 
 export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivElement> {
     /** Initial data for the cart */
@@ -66,6 +67,13 @@ export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivEl
             setItemUpdating: (uid: string, state: boolean) => void;
             setItemUpdateError: (uid: string, error: string) => void;
         }>;
+        UndoBanner?: SlotProps<{
+            item: CartModel['items'][number];
+            loading: boolean;
+            error?: string;
+            onUndo: () => void;
+            onDismiss: () => void;
+        }>;
     };
     /** Function for getting the product page route */
     routeProduct?: (item: CartModel['items'][number]) => string;
@@ -77,10 +85,44 @@ export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivEl
     onQuantityUpdate?: (item: CartModel['items'][number], quantity: number) => void;
     /** On item remove */
     onItemRemove?: (item: CartModel['items'][number]) => void;
+    /** Whether to enable undo functionality for removed items */
+    undo?: boolean;
 }
 /**
  * Container component for CartSummaryTable that provides slots for customizing the table cells
  * and handles data management
  */
 export declare const CartSummaryTable: Container<CartSummaryTableContainerProps, CartModel | null>;
+export declare const createUndoHandler: (recentlyRemovedItems: {
+    item: CartModel['items'][number];
+    index: number;
+    loading: boolean;
+    error?: string;
+}[], setRecentlyRemovedItems: (updater: (prev: {
+    item: CartModel['items'][number];
+    index: number;
+    loading: boolean;
+    error?: string;
+}[]) => {
+    item: CartModel['items'][number];
+    index: number;
+    loading: boolean;
+    error?: string;
+}[]) => void) => (uid: string) => Promise<void>;
+export declare const createDismissHandler: (setRecentlyRemovedItems: (updater: (prev: {
+    item: CartModel['items'][number];
+    index: number;
+    loading: boolean;
+    error?: string;
+}[]) => {
+    item: CartModel['items'][number];
+    index: number;
+    loading: boolean;
+    error?: string;
+}[]) => void) => (uid: string) => void;
+export declare const createUndoBanner: (removed: {
+    item: CartModel['items'][number];
+    index: number;
+    error?: string | undefined;
+}, item: CartModel['items'][number], isUndoBeingRemoved: boolean, dictionary: any, handleUndo: (uid: string) => void, handleDismiss: (uid: string) => void, slots?: CartSummaryTableContainerProps['slots']) => VNode;
 //# sourceMappingURL=CartSummaryTable.d.ts.map
