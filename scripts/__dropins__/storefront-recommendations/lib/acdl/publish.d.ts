@@ -15,6 +15,7 @@ export interface PublishParams {
     yOffsetBottom: number;
     backupProducts?: number;
     searchTime?: number;
+    productId?: number;
 }
 /**
  * Publish a recs-unit-render event to the Adobe Client Data Layer (ACDL)
