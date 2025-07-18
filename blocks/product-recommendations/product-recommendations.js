@@ -151,7 +151,6 @@ export default async function decorate(block) {
 
               if (ctx.item.itemType === 'SimpleProductView') {
                 // Add to Cart Button
-                console.log('recommendationsData', recommendationsData);
                 UI.render(Button, {
                   children: labels.Global?.AddProductToCart,
                   icon: Icon({ source: 'Cart' }),
