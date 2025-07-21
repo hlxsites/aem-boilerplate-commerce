@@ -319,12 +319,7 @@ export const assertWishlistProductImage =
     };
 
 export const assertCartEmpty = () => {
-  cy.get(".dropin-illustrated-message__heading")
-    .should("be.visible")
-    .and("contain", "Your cart is empty");
-  cy.get(".dropin-illustrated-message__action")
-    .should("be.visible")
-    .and("contain", "Start shopping");
+  cy.contains("Your cart is empty").should("be.visible");
 };
 
 export const assertWishlistCount = (count) => {

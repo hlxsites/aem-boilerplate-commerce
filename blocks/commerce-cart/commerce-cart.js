@@ -13,7 +13,6 @@ import {
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
-import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
@@ -53,9 +52,7 @@ export default async function decorate(block) {
 
   const placeholders = await fetchPlaceholders();
 
-  const cart = Cart.getCartDataFromCache();
-
-  const isEmptyCart = isCartEmpty(cart);
+  const _cart = Cart.getCartDataFromCache();
 
   // Modal state
   let currentModal = null;
@@ -91,17 +88,10 @@ export default async function decorate(block) {
   const routeToWishlist = '/wishlist';
 
   // Toggle Empty Cart
-  function toggleEmptyCart(state) {
-    if (state) {
-      $wrapper.setAttribute('hidden', '');
-      $emptyCart.removeAttribute('hidden');
-    } else {
-      $wrapper.removeAttribute('hidden');
-      $emptyCart.setAttribute('hidden', '');
-    }
+  function toggleEmptyCart(_state) {
+    $wrapper.removeAttribute('hidden');
+    $emptyCart.setAttribute('hidden', '');
   }
-
-  toggleEmptyCart(isEmptyCart);
 
   // Handle Edit Button Click
   async function handleEditButtonClick(cartItem) {
@@ -289,11 +279,6 @@ export default async function decorate(block) {
       },
     })($summary),
 
-    // Empty Cart
-    provider.render(EmptyCart, {
-      routeCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
-    })($emptyCart),
-
     provider.render(GiftOptions, {
       view: 'order',
       dataSource: 'cart',
@@ -310,6 +295,10 @@ export default async function decorate(block) {
     'cart/data',
     (cartData) => {
       toggleEmptyCart(isCartEmpty(cartData));
+
+      // Hide gift options when cart is empty
+      const isEmpty = !cartData || cartData.totalQuantity < 1;
+      $giftOptions.style.display = isEmpty ? 'none' : '';
 
       if (!cartViewEventPublished) {
         cartViewEventPublished = true;
