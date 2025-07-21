@@ -21,7 +21,7 @@ Before using the boilerplate, we recommend you to go through the documentation o
 
 Out of the box, this project template uses a pre-configured Adobe Commerce environment. If you want to use your own Adobe Commerce environment, you'll need to update the public `config` in your [site config](https://www.aem.live/docs/admin.html#tag/siteConfig) to have values that match your environment.
 
-Additionally, you need to have the following modules and customizations installed on your environment:
+Additionally, you need to have the following modules and customizations installed on your environment: 
 
 1. adobe-commerce/storefront-compatibility: Contains changes to the Adobe Commerce GraphQL API that enable drop-ins functionality.
 1. magento/module-data-services-graphql: Commerce module with the functionality necessary for adding context to events.
