@@ -27,6 +27,8 @@ jobs:
 
       - name: Comment on PR if file differs
         if: steps.check_diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
           
@@ -44,10 +46,12 @@ jobs:
           # Try GitHub CLI first, fallback to API if it fails
           if ! gh pr comment $PR_NUMBER --body "$COMMENT_BODY"; then
             echo "GitHub CLI failed, trying API directly..."
+            # Properly escape the JSON for the API call
+            ESCAPED_BODY=$(echo "$COMMENT_BODY" | jq -Rs .)
             curl -s -H "Authorization: token ${{ github.token }}" \
               -H "Content-Type: application/json" \
               -X POST \
-              -d "{\"body\": \"$COMMENT_BODY\"}" \
+              -d "{\"body\": $ESCAPED_BODY}" \
               "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
           fi
 
