@@ -74,9 +74,13 @@ export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivEl
             onUndo: () => void;
             onDismiss: () => void;
         }>;
+        /** Slot for customizing the empty cart */
+        EmptyCart?: SlotProps;
     };
     /** Function for getting the product page route */
     routeProduct?: (item: CartModel['items'][number]) => string;
+    /** Function for getting the empty cart CTA route */
+    routeEmptyCartCTA?: () => string;
     /** Whether to allow quantity updates */
     allowQuantityUpdates?: boolean;
     /** Whether to allow remove items */
@@ -120,6 +124,31 @@ export declare const createDismissHandler: (setRecentlyRemovedItems: (updater: (
     loading: boolean;
     error?: string;
 }[]) => void) => (uid: string) => void;
+/**
+ * Helper function to determine if an undo is currently being removed
+ * This makes the logic more explicit and testable
+ */
+export declare const getIsUndoBeingRemoved: (itemUid: string, itemsUpdating: Map<string, {
+    isUpdating: boolean;
+    updatedValue: number;
+}>) => boolean;
+/**
+ * Helper function to create additional actions for undo banner
+ * This makes the ternary operator logic more explicit and testable
+ */
+export declare const createUndoBannerActions: (isUndoBeingRemoved: boolean, dictionary: any, handleUndo: (uid: string) => void, handleDismiss: (uid: string) => void, itemUid: string, itemName: string) => {
+    label: any;
+    onClick: () => void;
+    'aria-label': string;
+}[];
+/**
+ * Helper function to create undo callback
+ */
+export declare const createUndoCallback: (handleUndo: (uid: string) => void, itemUid: string) => () => void;
+/**
+ * Helper function to create dismiss callback
+ */
+export declare const createDismissCallback: (handleDismiss: (uid: string) => void, itemUid: string) => () => void;
 export declare const createUndoBanner: (removed: {
     item: CartModel['items'][number];
     index: number;
