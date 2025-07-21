@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+// DOH!
+
 /* eslint-env browser */
 function sampleRUM(checkpoint, data) {
   // eslint-disable-next-line max-len
