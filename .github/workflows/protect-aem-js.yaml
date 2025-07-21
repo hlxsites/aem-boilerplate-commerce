@@ -1,12 +1,15 @@
 name: Block Unauthorized AEM Edits
 
-on: [pull_request]
+on:
+  pull_request:
+    paths:
+      - 'scripts/aem.js'
 
 jobs:
   check-aem-js:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout PR code
+      - name: Checkout PR
         uses: actions/checkout@v4
 
       - name: Download upstream scripts/aem.js
@@ -14,14 +17,37 @@ jobs:
           curl -sSL https://raw.githubusercontent.com/adobe/aem-boilerplate/main/scripts/aem.js -o upstream_aem.js
 
       - name: Compare with upstream version
+        id: check_diff
         run: |
-          if [ -f scripts/aem.js ]; then
-            if ! diff -q scripts/aem.js upstream_aem.js; then
-              echo "❌ scripts/aem.js differs from upstream version. Changes not allowed. Please make sure to use the latest version of the AEM script. https://raw.githubusercontent.com/adobe/aem-boilerplate/main/scripts/aem.js"
-              exit 1
-            else
-              echo "✅ scripts/aem.js matches upstream. Allowing."
-            fi
+          if ! diff -q scripts/aem.js upstream_aem.js; then
+            echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "✅ scripts/aem.js not changed in this PR."
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Comment on PR if file differs
+        if: steps.check_diff.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          
+          COMMENT_BODY="❌ **\`scripts/aem.js\` must match the upstream version exactly.**
+
+          This file is protected and cannot be modified unless its content is identical to the upstream reference:
+          🔗 https://github.com/adobe/aem-boilerplate/blob/main/scripts/aem.js
+
+          If you believe the change is necessary, please coordinate with the maintainers.
+
+          🛠️ To fix:
+          - Revert local changes to \`scripts/aem.js\`, or
+          - Copy the exact contents from the upstream link above."
+
+          curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"body\": \"$COMMENT_BODY\"}" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
+
+          echo "❌ Failing due to unauthorized modification to scripts/aem.js"
+          exit 1
