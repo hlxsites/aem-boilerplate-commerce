@@ -8,13 +8,13 @@
           "content-type":"application/json",
           "AC-Channel-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
-          "AC-Price-Book-Id":"b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "AC-Price-Book-Id":"NLI",
           "AC-Scope-Locale":"tx",
           "Magento-Environment-Id": "LnjXjuam6uWmo5d2JLEgbA",
           "Magento-Website-Code": "WEBSITE_CODE",
           "Magento-Store-Code": "STORE_CODE",
           "Magento-Store-View-Code": "tx",
-          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "Magento-Customer-Group": "NLI",
           "X-Api-Key": "storefront-catalog-apollo"
         }
       },
@@ -32,7 +32,7 @@
         "Magento-Website-Code": "WEBSITE_CODE",
         "Magento-Store-Code": "STORE_CODE",
         "Magento-Store-View-Code": "tx",
-        "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
+        "Magento-Customer-Group": "NLI"
       }
     }
   }
