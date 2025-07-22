@@ -80,6 +80,7 @@ export default async function decorate(block) {
   const $summary = fragment.querySelector('.cart__order-summary');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
+  const $rightColumn = fragment.querySelector('.cart__right-column');
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -296,9 +297,9 @@ export default async function decorate(block) {
     (cartData) => {
       toggleEmptyCart(isCartEmpty(cartData));
 
-      // Hide gift options when cart is empty
       const isEmpty = !cartData || cartData.totalQuantity < 1;
       $giftOptions.style.display = isEmpty ? 'none' : '';
+      $rightColumn.style.display = isEmpty ? 'none' : '';
 
       if (!cartViewEventPublished) {
         cartViewEventPublished = true;
