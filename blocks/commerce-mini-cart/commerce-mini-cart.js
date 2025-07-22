@@ -25,6 +25,7 @@ export default async function decorate(block) {
     'cart-url': cartURL = '',
     'checkout-url': checkoutURL = '',
     'enable-updating-product': enableUpdatingProduct = 'false',
+    'undo-remove-item': undo = 'false',
   } = readBlockConfig(block);
 
   // Get translations for custom messages
@@ -148,6 +149,7 @@ export default async function decorate(block) {
     routeCart: cartURL ? () => rootLink(cartURL) : undefined,
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: getProductLink,
+    undo: undo === 'true',
 
     slots: {
       Thumbnail: (ctx) => {
