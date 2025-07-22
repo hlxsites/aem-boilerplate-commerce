@@ -82,6 +82,8 @@ export default async function decorate(block) {
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
+        <div class="product-details__test_events-add-to-cart"></div>
+        <div class="product-details__test_events-checkout"></div>
       </div>
     </div>
   `);
@@ -98,6 +100,8 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $testEventsAddToCart = fragment.querySelector('.product-details__test_events-add-to-cart');
+  const $testEventsCheckout = fragment.querySelector('.product-details__test_events-checkout');
 
   block.appendChild(fragment);
 
@@ -282,6 +286,76 @@ export default async function decorate(block) {
       }
     },
   })($addToCart);
+
+  // Test Events - Add to Cart
+  await UI.render(Button, {
+    children: 'Test Add To Cart Event',
+    icon: h(Icon, { source: 'Delivery' }),
+    onClick: async () => {
+      if (window.adobeDataLayer?.push) {
+        window.adobeDataLayer.push((acdl) => {
+          const state = acdl.getState ? acdl.getState() : {};
+
+          acdl.push({
+            event: 'add-to-cart',
+            eventInfo: {
+              ...state,
+              ...{
+                changedProductsContext: {
+                  items: [{
+                    product: {
+                      sku: product.sku,
+                    },
+                  }],
+                },
+              },
+            },
+          });
+        });
+      }
+    },
+  })($testEventsAddToCart);
+
+  // Test Events - Checkout
+  await UI.render(Button, {
+    children: 'Test Checkout Event',
+    icon: h(Icon, { source: 'OrderSuccess' }),
+    onClick: async () => {
+      if (window.adobeDataLayer?.push) {
+        window.adobeDataLayer.push((acdl) => {
+          const state = acdl.getState ? acdl.getState() : {};
+
+          acdl.push({
+            event: 'place-order',
+            eventInfo: {
+              ...state,
+              ...{
+                orderContext: {
+                  orderId: 'test-order-id',
+                },
+                shoppingCartContext: {
+                  items: [{
+                    prices: {
+                      price: {
+                        value: product.prices.regular.amount,
+                      },
+                    },
+                    id: '0',
+                    quantity: 1,
+                    product: {
+                      sku: product.sku,
+                      name: product.name,
+                    },
+                  }],
+
+                },
+              },
+            },
+          });
+        });
+      }
+    },
+  })($testEventsCheckout);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
