@@ -3,3 +3,47 @@ main .commerce-create-account-container {
     margin: 40px auto;
     width: 100%;
 }
+
+/* Newsletter checkbox styles */
+.newsletter-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-small);
+}
+
+.newsletter-label {
+  cursor: pointer;
+  font-size: var(--type-body-2-font-size);
+  line-height: var(--type-body-2-line-height);
+  color: var(--color-neutral-700);
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Privacy policy wrapper styles */
+.privacy-policy-wrapper {
+  color: var(--color-neutral-700);
+  font: var(--type-details-caption-2-font);
+  display: block;
+  margin-bottom: var(--spacing-medium);
+}
+
+.privacy-policy-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.privacy-policy-link:hover {
+  text-decoration: none;
+}
