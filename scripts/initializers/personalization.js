@@ -5,5 +5,5 @@ import { initializeDropin } from './index.js';
 
 await initializeDropin(async () => {
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cart') }));
-  initializers.mountImmediately(initialize, {});
+  return initializers.mountImmediately(initialize, {});
 })();
