@@ -64,7 +64,7 @@ async function subscribeToNewsletter(email) {
 
     const result = await fetchGraphQl(query, {
       method: 'POST',
-      variables: { email }
+      variables: { email },
     });
 
     if (result.errors) {
