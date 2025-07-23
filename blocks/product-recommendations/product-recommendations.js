@@ -162,11 +162,13 @@ export default async function decorate(block) {
                     // to avoid triggering the recs-item-click event
                     event.stopPropagation();
                     // Publish ACDL event for add to cart click
-                    const recommendationUnit = recommendationsData?.find((unit) =>
-                      unit.items?.some((unitItem) => unitItem.sku === ctx.item.sku)
+                    const recommendationUnit = recommendationsData?.find(
+                      (unit) => unit.items?.some(
+                        (unitItem) => unitItem.sku === ctx.item.sku,
+                      ),
                     );
                     publishRecsItemAddToCartClick({
-                      recommendationUnit: recommendationUnit,
+                      recommendationUnit,
                       pagePlacement: 'product-list',
                       yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
                       yOffsetBottom:
