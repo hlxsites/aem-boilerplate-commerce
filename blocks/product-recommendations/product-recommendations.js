@@ -173,7 +173,7 @@ export default async function decorate(block) {
                       yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
                       yOffsetBottom:
                         addToCart.getBoundingClientRect().bottom ?? 0,
-                      productId: ctx.item.index,
+                      productId: ctx.index,
                     });
                   },
                   variant: 'primary',
