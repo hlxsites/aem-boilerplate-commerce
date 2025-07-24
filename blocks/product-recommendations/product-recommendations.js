@@ -64,7 +64,8 @@ export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   // Configuration
-  const { currentsku, recid } = readBlockConfig(block);
+  // const { currentsku, recid } = readBlockConfig(block);
+  const { currentsku, recid } = { currentsku: 'crz-eco-tr-std-2017', recid: '2ed7ea09-d9bd-4691-91c3-2c0a6d4fd869' };
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
