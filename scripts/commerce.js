@@ -575,8 +575,12 @@ export async function commerceEndpointWithQueryParams() {
  */
 export function getSkuFromUrl() {
   const path = window.location.pathname;
-  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
+  const result = path.match(/\/(?:products|products-ssg)\/[\w|-]+\/([\w|-]+)(?:\.html)?$/);
   return result?.[1];
+}
+
+export function getProductSku() {
+  return getMetadata('sku') || getSkuFromUrl();
 }
 
 /**
