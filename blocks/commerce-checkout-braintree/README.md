@@ -12,7 +12,7 @@ We'll use the **commerce-checkout** block as our starting point and iteratively 
 
 ## Step-by-Step Process:
 
-### 1. Import Braintree
+### 1. Import Braintree Payment Gateway
 
 Include the Braintree Drop-in library in your project:
 
@@ -25,20 +25,24 @@ Or directly in the `commerce-checkout.js` block file:
 import 'https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js';
 ```
 
-### 2. Create `braintreeInstance` Variable and Add Braintree Handler to Payment Methods Container
+### 2. Create variable to store the Braintree dropin instance
 
-Define a `braintreeInstance` variable to manage the Braintree Drop-in instance. Update the `PaymentMethods` container to include a custom handler for the Braintree payment method and set `setOnChange` to `false` to prevent automatic calls to `setPaymentMethod` mutation on change.
+Define a `braintreeInstance` variable to manage the Braintree Drop-in instance. 
 
 ```js
 let braintreeInstance;
 ```
+
+### 3. Add Braintree Handler to Payment Methods Container
+
+Update the `PaymentMethods` container to include a custom handler for the Braintree payment method and set `autoSync` to `false` to prevent automatic calls to `setPaymentMethod` mutation on change.
 
 ```js
 CheckoutProvider.render(PaymentMethods, {
   slots: {
     Methods: {
       braintree: {
-        setOnChange: false,
+        autoSync: false,
         render: async (ctx) => {
           const container = document.createElement('div');
 
@@ -61,7 +65,7 @@ CheckoutProvider.render(PaymentMethods, {
 })($paymentMethods),
 ```
 
-### 3. Handle Braintree Payment Method in `PlaceOrder` Container
+### 4. Handle Braintree Payment Method in `PlaceOrder` Container
 
 Implement the Braintree payment logic in the `PlaceOrder` container within the `handlePlaceOrder` handler. This includes processing the payment with the Braintree nonce.
 
@@ -94,6 +98,7 @@ CheckoutProvider.render(PlaceOrder, {
         }
 
         default: {
+          // Place order
           await orderApi.placeOrder(cartId);
         }
       }
