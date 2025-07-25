@@ -190,6 +190,10 @@ const o=`
       value
       currency
     }
+    grand_total_excl_tax {
+      value
+      currency
+    }
     total_giftcard {
       currency
       value
