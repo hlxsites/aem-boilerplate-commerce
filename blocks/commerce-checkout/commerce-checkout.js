@@ -76,12 +76,8 @@ import {
   setAddressOnCart,
 } from './utils.js';
 
-import {
-  authPrivacyPolicyConsentSlot,
-  SUPPORT_PATH,
-  fetchPlaceholders,
-  rootLink,
-} from '../../scripts/commerce.js';
+import { authPrivacyPolicyConsentSlot, SUPPORT_PATH, fetchPlaceholders } from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/scripts.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
