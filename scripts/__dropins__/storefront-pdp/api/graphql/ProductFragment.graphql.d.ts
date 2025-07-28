@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export declare const ProductFragment: string;
+export declare const PRODUCT_FRAGMENT: string;
 //# sourceMappingURL=ProductFragment.graphql.d.ts.map

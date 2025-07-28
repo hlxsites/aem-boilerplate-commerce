@@ -1,9 +1,11 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { OrderStatus } from '@dropins/storefront-order/containers/OrderStatus.js';
-import { checkIsAuthenticated } from '../../scripts/configs.js';
-import { CREATE_RETURN_PATH, CUSTOMER_CREATE_RETURN_PATH } from '../../scripts/constants.js';
+import {
+  CREATE_RETURN_PATH,
+  CUSTOMER_CREATE_RETURN_PATH,
+  checkIsAuthenticated,
+  rootLink,
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
@@ -19,8 +21,8 @@ export default async function decorate(block) {
 
       const encodedOrderRef = encodeURIComponent(orderRefFromUrl || newOrderRef);
 
-      return checkIsAuthenticated() ? `${CUSTOMER_CREATE_RETURN_PATH}?orderRef=${encodedOrderRef}` : `${CREATE_RETURN_PATH}?orderRef=${encodedOrderRef}`;
+      return checkIsAuthenticated() ? rootLink(`${CUSTOMER_CREATE_RETURN_PATH}?orderRef=${encodedOrderRef}`) : rootLink(`${CREATE_RETURN_PATH}?orderRef=${encodedOrderRef}`);
     },
-    routeOnSuccess: () => '/cart',
+    routeOnSuccess: () => rootLink('/cart'),
   })(block);
 }

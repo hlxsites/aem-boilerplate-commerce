@@ -1,7 +1,7 @@
-/* eslint-disable import/extensions */
 const fs = require('fs');
 const path = require('path');
-const { dependencies } = require('./package.json');
+
+const { dependencies } = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 // Define the dropins folder
 const dropinsDir = path.join('scripts', '__dropins__');
@@ -63,6 +63,15 @@ function checkPackageLockForArtifactory() {
     });
   });
 }
+
+function checkSourceMaps() {
+  const hlxIgnorePath = '.hlxignore';
+  if (!fs.existsSync(hlxIgnorePath) || !fs.readFileSync(hlxIgnorePath, 'utf-8').includes('*.map')) {
+    console.info('⚠️ Sourcemaps may be added to the repo. WARNING: Please remove the *.map files or add "*.map" to .hlxignore before going live!\n');
+  }
+}
+
+checkSourceMaps();
 
 checkPackageLockForArtifactory()
   .then((found) => {

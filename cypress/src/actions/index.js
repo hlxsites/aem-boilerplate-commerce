@@ -85,9 +85,6 @@ export const signUpUser = (sign_up, isValid = true) => {
   const random = Cypress._.random(0, 10000000);
   const username = `${random}${sign_up.email}`;
   cy.contains("Create account").should("be.visible");
-  if (sign_up.company) {
-    cy.get(fields.authFormUserCompany).clear().type(sign_up.company);
-  }
   if (sign_up.email) {
     cy.get(fields.authFormUserEmail)
       .eq(1)
@@ -106,14 +103,13 @@ export const signUpUser = (sign_up, isValid = true) => {
       .clear()
       .type(sign_up.shortPassword);
   }
-  cy.get(".dropin-picker__select").select("Male");
   createAccount();
 };
 
 export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
-    const {cc_number, cc_exp, cc_cid} = paymentMethod.params;
+    const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
     cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
@@ -126,4 +122,103 @@ export const setPaymentMethod = (paymentMethod) => {
       cc_cid
     );
   }
+};
+
+export function checkTermsAndConditions() {
+  cy.get(fields.termsAndConditionsCheckbox).check({ force: true });
+  cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
+}
+
+export const fillGiftOptiosForm = (className, type = 'order') => {
+  if (type === 'product') {
+    cy.wait(3000);
+    cy.get(className).contains('Gift options').click();
+  }
+
+  if (type === 'order') {
+    cy.wait(3000);
+
+    cy.get(`${className} ${fields.giftOptionCardIncludedCheckBox}`)
+      .click({
+        force: true,
+      })
+      .should('be.checked');
+  }
+
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionWrapCheckBox}`)
+    .click({
+      force: true,
+    })
+    .should('be.checked');
+
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .type('giftOptionRecipientName')
+    .should('have.value', 'giftOptionRecipientName')
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .type('giftOptionSenderName')
+    .should('have.value', 'giftOptionSenderName')
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionMessage}`)
+    .type('giftOptionMessage')
+    .should('have.value', 'giftOptionMessage')
+    .blur(); // Added .blur() here
+  cy.wait(4000);
+
+  cy.get(className).contains('Customize').click();
+  cy.get(`.cart-gift-options-view__modal-grid-item img`)
+    .eq(1)
+    .click();
+  cy.contains('.dropin-button--primary', 'Apply').click();
+};
+
+export const fillGiftOptiosMessageForm = (className, type = 'order') => {
+  cy.wait(2000);
+  if (type === 'product') {
+    cy.get(className).contains('Gift options').click();
+  }
+
+  cy.wait(2000);
+
+  cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .type('giftOptionRecipientName')
+    .should('have.value', 'giftOptionRecipientName')
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .type('giftOptionSenderName')
+    .should('have.value', 'giftOptionSenderName')
+    .blur();
+  cy.wait(2000);
+  cy.get(`${className} ${fields.giftOptionMessage}`)
+    .type('giftOptionMessage')
+    .should('have.value', 'giftOptionMessage')
+    .blur(); // Added .blur() here
+};
+
+export const fillGiftOptiosFormEmpty = (className) => {
+  cy.get(`${className} ${fields.giftOptionRecipientName}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should('have.value', '')
+    .blur();
+
+  cy.get(`${className} ${fields.giftOptionSenderName}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should('have.value', '')
+    .blur();
+
+  cy.get(`${className} ${fields.giftOptionMessage}`, {
+    timeout: 2000,
+  })
+    .clear()
+    .should('have.value', '')
+    .blur();
 };

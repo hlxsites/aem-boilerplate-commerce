@@ -1,54 +1,53 @@
-/* eslint-disable import/no-cycle */
-import { getConfigValue } from './configs.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
-import { getConsent } from './scripts.js';
-import trackViewedProduct from './api/productTracking.js';
+import { getConsent } from './commerce.js';
 
 async function initAnalytics() {
-  // Load Commerce events SDK and collector
-  if (getConsent('commerce-collection')) {
-    const config = {
-      environmentId: await getConfigValue('commerce.headers.cs.Magento-Environment-Id'),
-      environment: await getConfigValue('commerce-environment'),
-      storeUrl: await getConfigValue('commerce-store-url'),
-      websiteId: parseInt(await getConfigValue('commerce-website-id'), 10),
-      websiteCode: await getConfigValue('commerce.headers.cs.Magento-Website-Code'),
-      storeId: parseInt(await getConfigValue('commerce-store-id'), 10),
-      storeCode: await getConfigValue('commerce.headers.cs.Magento-Store-Code'),
-      storeViewId: parseInt(await getConfigValue('commerce-store-view-id'), 10),
-      storeViewCode: await getConfigValue('commerce.headers.cs.Magento-Store-View-Code'),
-      websiteName: await getConfigValue('commerce-website-name'),
-      storeName: await getConfigValue('commerce-store-name'),
-      storeViewName: await getConfigValue('commerce-store-view-name'),
-      baseCurrencyCode: await getConfigValue('commerce-base-currency-code'),
-      storeViewCurrencyCode: await getConfigValue('commerce-base-currency-code'),
-      storefrontTemplate: 'EDS',
-    };
+  try {
+    // Load Commerce events SDK and collector
+    // only if "analytics" has been added to the config.
+    const analyticsConfig = getConfigValue('analytics');
 
-    window.adobeDataLayer.push(
-      { storefrontInstanceContext: config },
-      { eventForwardingContext: { commerce: true, aep: false } },
-      {
-        shopperContext: {
-          shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
+    if (analyticsConfig && getConsent('commerce-collection')) {
+      window.adobeDataLayer.push(
+        {
+          storefrontInstanceContext: {
+            baseCurrencyCode: analyticsConfig['base-currency-code'],
+            environment: analyticsConfig.environment,
+            environmentId: analyticsConfig['environment-id'],
+            storeCode: analyticsConfig['store-code'],
+            storefrontTemplate: 'EDS',
+            storeId: parseInt(analyticsConfig['store-id'], 10),
+            storeName: analyticsConfig['store-name'],
+            storeUrl: analyticsConfig['store-url'],
+            storeViewCode: analyticsConfig['store-view-code'],
+            storeViewCurrencyCode: analyticsConfig['base-currency-code'],
+            storeViewId: parseInt(analyticsConfig['store-view-id'], 10),
+            storeViewName: analyticsConfig['store-view-name'],
+            websiteCode: analyticsConfig['website-code'],
+            websiteId: parseInt(analyticsConfig['website-id'], 10),
+            websiteName: analyticsConfig['website-name'],
+          },
         },
-      },
-    );
+        { eventForwardingContext: { commerce: true, aep: false } },
+        {
+          shopperContext: {
+            shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
+          },
+        },
+      );
 
-    window.adobeDataLayer.push((dl) => {
-      dl.addEventListener('product-page-view', ({ eventInfo }) => trackViewedProduct(eventInfo.productContext.sku));
-    });
-
-    // Load events SDK and collector
-    import('./commerce-events-sdk.js');
-    import('./commerce-events-collector.js');
+      // Load events SDK and collector
+      import('./commerce-events-sdk.js');
+      import('./commerce-events-collector.js');
+    }
+  } catch (error) {
+    console.warn('Error initializing analytics', error);
   }
 }
 
 if (document.prerendering) {
-  document.addEventListener('prerenderingchange', initAnalytics, {
-    once: true,
-  });
+  document.addEventListener('prerenderingchange', initAnalytics, { once: true });
 } else {
   initAnalytics();
 }

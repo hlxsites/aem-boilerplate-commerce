@@ -1,23 +1,27 @@
-import { Icon, provider as uiProvider } from '@dropins/tools/components.js';
+import { Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { CUSTOMER_ORDERS_PATH } from '../../scripts/constants.js';
+import { CUSTOMER_ORDERS_PATH, rootLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   const fragment = await loadFragment('/customer/sidebar-fragment');
   const sidebarItemsConfig = fragment.querySelectorAll('.default-content-wrapper > ol > li');
   const sidebarItems = Array.from(sidebarItemsConfig).map((item) => {
     const itemParams = Array.from(item.querySelectorAll('ol > li'));
+    const itemTitle = item.childNodes[0]?.textContent?.trim() || item.querySelector(':scope > p')?.textContent?.trim() || 'Default Title';
+    const itemSubtitle = itemParams[0]?.innerText || '';
+    const itemLink = itemParams[1]?.innerText || rootLink('#');
+    const itemIcon = itemParams[2]?.innerText || 'Placeholder';
     const itemConfig = {
-      itemTitle: item.childNodes[0]?.textContent.trim() || 'Default Title',
-      itemSubtitle: itemParams[0]?.innerText || '',
-      itemLink: itemParams[1]?.innerText || '#',
-      itemIcon: itemParams[2]?.innerText || 'Placeholder',
+      itemTitle,
+      itemSubtitle,
+      itemLink,
+      itemIcon,
     };
 
     const menuItemEl = document.createElement('a');
     menuItemEl.classList.add('commerce-account-sidebar-item');
-    menuItemEl.href = itemConfig.itemLink;
+    menuItemEl.href = rootLink(itemConfig.itemLink);
 
     const isItemActive = (
       itemConfig.itemLink === CUSTOMER_ORDERS_PATH
@@ -72,7 +76,7 @@ function createMenuItemContent(title, subtitle) {
 function createMenuItemArrow() {
   const arrowEl = document.createElement('div');
   arrowEl.classList.add('commerce-account-sidebar-item-arrow');
-  uiProvider.render(Icon, {
+  UI.render(Icon, {
     source: 'ChevronRight',
     size: 32,
   })(arrowEl);
