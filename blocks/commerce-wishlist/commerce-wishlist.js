@@ -66,8 +66,6 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
   } = readBlockConfig(block);
 
-  const getProductLink = (product) => (product ? rootLink(`/products/${product.urlKey}/${product.sku}`) : rootLink('#'));
-
   await wishlistRenderer.render(Wishlist, {
     routeEmptyWishlistCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     moveProdToCart: cartApi.addProductsToCart,
@@ -76,13 +74,9 @@ export default async function decorate(block) {
     slots: {
       image: (ctx) => {
         const { item, defaultImageProps } = ctx;
-        const anchor = document.createElement('a');
-        anchor.href = getProductLink(item.product);
-
         tryRenderAemAssetsImage(ctx, {
           alias: item.product.sku,
           imageProps: defaultImageProps,
-          wrapper: anchor,
           params: {
             width: defaultImageProps.width || WISHLIST_IMAGE_DIMENSIONS.width,
             height: defaultImageProps.height || WISHLIST_IMAGE_DIMENSIONS.height,
