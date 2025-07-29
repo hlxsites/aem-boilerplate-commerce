@@ -319,12 +319,9 @@ export const assertWishlistProductImage =
     };
 
 export const assertCartEmpty = () => {
-  cy.get(".dropin-illustrated-message__heading")
-    .should("be.visible")
-    .and("contain", "Your cart is empty");
-  cy.get(".dropin-illustrated-message__action")
-    .should("be.visible")
-    .and("contain", "Start shopping");
+  cy.get('.commerce-cart', { timeout: 10000 }).should('exist');
+  cy.get('.cart__list .dropin-cart-item', { timeout: 10000 }).should('not.exist');
+  cy.get('.cart__wrapper .dropin-cart-item').should('not.exist');
 };
 
 export const assertWishlistCount = (count) => {
@@ -347,7 +344,7 @@ export const assertProductDetailPage = (productName, productSku, urlPath) => {
   cy.url().should('include', urlPath);
 
   // Verify product header is displayed correctly
-  cy.get('.product-details__header', { timeout: 10000 }).should('be.visible');
+  cy.get('.product-details__header').should('be.visible');
   cy.get('.pdp-header__title').should('be.visible').and('contain', productName);
   cy.get('.pdp-header__sku').should('be.visible').and('contain', productSku);
 };
