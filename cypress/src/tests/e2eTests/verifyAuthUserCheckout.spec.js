@@ -215,11 +215,12 @@ describe("Verify auth user can place order", () => {
     });
     // CANCEL ORDER
     cy.get(fields.cancelButton).should("exist");
+    cy.percyTakeSnapshot('Order Details', 1280);
     cy.get(fields.cancelButton).click();
 
     cy.get(fields.cancellationReasonsSelector).select("1");
     cy.get(fields.cancellationReasonsSelector).should("have.value", "1");
-
+    cy.percyTakeSnapshot('Cancel Order', 1280);
     cy.get(fields.submitCancelOrderButton).click();
 
     cy.get(".dropin-header-container__title", { timeout: 3000 })

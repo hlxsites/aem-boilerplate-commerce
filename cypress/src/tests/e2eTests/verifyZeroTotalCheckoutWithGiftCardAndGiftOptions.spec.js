@@ -115,6 +115,7 @@ describe("Verify price summary on cart", () => {
     cy.contains(Cypress.env("giftCardA"));
     checkTermsAndConditions();
     cy.wait(5000);
+    cy.percyTakeSnapshot('Checkout page no payment', 1280);
     placeOrder();
     // Uncomment following once https://jira.corp.adobe.com/browse/USF-2241 is fixed
     // assertOrderConfirmationShippingDetails(customerShippingAddress);

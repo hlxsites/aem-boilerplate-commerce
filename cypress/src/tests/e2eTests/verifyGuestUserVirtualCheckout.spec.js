@@ -102,6 +102,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     checkTermsAndConditions();
     cy.wait(5000);
+    cy.percyTakeSnapshot('Checkout with virtual product', 1280);
     placeOrder();
 
     assertOrderConfirmationCommonDetails(

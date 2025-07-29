@@ -27,7 +27,7 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
 
     // Wait for wishlist page to load and assert empty state
     assertWishlistEmptyWithWait();
-
+    cy.percyTakeSnapshot('Empty wishlist page', 1280);
     // Navigate to product with proper hover and wait
     cy.get(".nav-drop").first().should('be.visible').trigger("mouseenter");
     cy.contains("Youth Tee").should('be.visible').click();
@@ -173,6 +173,8 @@ describe("Verify auth user can manage products across wishlist and cart", { tags
     assertWishlistProductImage("/adb192.jpg")(".commerce-wishlist-wrapper");
 
     assertWishlistItemHasOptions('color', 'red')(".wishlist-wishlist__content");
+    
+    cy.percyTakeSnapshot('Wishlist page with products', 1280);
 
     // Move item to cart with proper waiting
     cy.contains("Move To Cart").should('be.visible').and('not.be.disabled').click();
