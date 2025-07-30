@@ -64,6 +64,7 @@ export default async function decorate(block) {
 
           // Add to Cart Button
           const $addToCartButton = document.createElement('div');
+          $addToCartButton.className = 'product-discovery-product-actions__add-to-cart';
 
           // The UI.render function allows you to render a component from the Drop-in library
           // such as the Button component. You may also use any other standard HTML element.
