@@ -32,6 +32,16 @@
 
 }
 
+.product-discovery-product-actions__options {
+    display: flex;
+    flex-direction: column  ;
+    gap: var(--spacing-xxsmall);
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    margin-block: var(--spacing-small);
+}
+
 .product-discovery-product-actions__wishlist-toggle button {
     width: 50px;
 }

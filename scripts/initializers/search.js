@@ -19,5 +19,18 @@ await initializeDropin(async () => {
     },
   };
 
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  const models = {
+    Product: {
+      // We must extend the Product model with the new data fetched from the API in the build.mjs file.
+      // The `data` object is the raw API response. The returned object will be merged into the Product model,
+      // which will then be available via the `ctx` object in the `ProductActions` slot.
+      transformer: (data) => {
+        return {
+          options: data?.options,
+        }
+      },
+    }
+  };
+
+  return initializers.mountImmediately(initialize, { langDefinitions, models });
 })();

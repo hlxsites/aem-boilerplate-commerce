@@ -47,29 +47,6 @@ export default async function decorate(block) {
 
   const categoryPathConfig = config.urlpath ? { categoryPath: config.urlpath } : {};
 
-  const getAddToCartButton = (product) => {
-    if (product.typename === 'ComplexProductView') {
-      const button = document.createElement('div');
-      UI.render(Button, {
-        children: labels.Global?.AddProductToCart,
-        icon: Icon({ source: 'Cart' }),
-        onClick: () => {
-          window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
-        },
-        variant: 'primary',
-      })(button);
-      return button;
-    }
-    const button = document.createElement('div');
-    UI.render(Button, {
-      children: labels.Global?.AddProductToCart,
-      icon: Icon({ source: 'Cart' }),
-      onClick: () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }]),
-      variant: 'primary',
-    })(button);
-    return button;
-  };
-
   return Promise.all([
     provider.render(ResultsInfo, { })($resultInfo),
     provider.render(Facets, { })($facets),
@@ -77,21 +54,88 @@ export default async function decorate(block) {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
       ...categoryPathConfig,
       slots: {
-        ProductActions: (ctx) => {
+        ProductActions: async (ctx) => {
+          // Track selected options
+          const options = new Map();
+
+          // Add to Cart Button Validation
+          // If there are options, the button is disabled until all options are selected
+          const isAddToCartValid = () => ctx.product.options ? options.size === ctx.product.options.length : true;
+
+          // Add to Cart Button
+          const $addToCartButton = document.createElement('div');
+
+          // The UI.render function allows you to render a component from the Drop-in library
+          // such as the Button component. You may also use any other standard HTML element.
+          const addToCartButton = await UI.render(Button, {
+            children: labels.Global?.AddProductToCart,
+            icon: Icon({ source: 'Cart' }),
+            disabled: !isAddToCartValid(), // Disable button if not all options are selected
+            onClick: () => {
+              // Call the Cart Drop-in API to add the product to the cart with the selected options
+              cartApi.addProductsToCart([{ 
+                sku: ctx.product.sku, 
+                quantity: 1, 
+                // Pass the selected options to the API
+                optionsUIDs: [...options.values()] 
+              }]);
+            },
+            variant: 'primary',
+          })($addToCartButton);
+          
+
+          // Render Options (if any)
+          // ctx.product.options is the options data fetched from the API in the build.mjs file and transformed in the Product model.
+          if (ctx.product.options?.length > 0) {
+            const $optionsWrapper = document.createElement('div');  
+            $optionsWrapper.className = 'product-discovery-product-actions__options';
+
+            ctx.product.options.forEach((option) => {
+              const $options = document.createElement('select');
+              $options.name = option.id;
+              const placeholder = document.createElement('option');
+              placeholder.value = 'select';
+              placeholder.textContent = option.title;
+              placeholder.selected = true;
+              placeholder.disabled = true;
+              $options.appendChild(placeholder);
+              // options
+              option.values.forEach((value) => {
+                const $option = document.createElement('option');
+                $option.value = value.id;
+                $option.textContent = value.title;
+                $options.appendChild($option);
+              });
+
+              // Update the options map when the user selects an option
+              $options.addEventListener('change', (e) => {
+                // update options map
+                options.set(option.id, e.target.value);
+                // validation: toggle disabled state based on the number of options selected
+                addToCartButton.setProps((prev) => ({...prev, disabled: !isAddToCartValid()}));
+              });
+
+              $optionsWrapper.appendChild($options);
+            });
+            
+            ctx.appendChild($optionsWrapper);
+          }
+
+          // Actions
           const actionsWrapper = document.createElement('div');
           actionsWrapper.className = 'product-discovery-product-actions';
+
           // Add to Cart Button
-          const addToCartBtn = getAddToCartButton(ctx.product);
-          addToCartBtn.className = 'product-discovery-product-actions__add-to-cart';
+          actionsWrapper.appendChild($addToCartButton);
+
           // Wishlist Button
           const $wishlistToggle = document.createElement('div');
           $wishlistToggle.classList.add('product-discovery-product-actions__wishlist-toggle');
           wishlistRender.render(WishlistToggle, {
             product: ctx.product,
           })($wishlistToggle);
-          actionsWrapper.appendChild(addToCartBtn);
           actionsWrapper.appendChild($wishlistToggle);
-          ctx.replaceWith(actionsWrapper);
+          ctx.appendChild(actionsWrapper);
         },
       },
     })($productList),
