@@ -71,11 +71,11 @@ await initializeDropin(async () => {
     ProductDetails: {
       initialData: { ...product },
       transform: (data) => {
-        console.log('🥩 raw data', data);
+        console.info('🥩 raw data', data);
         // return the new values to merge with the ProductDetails model
         return {
-          // value extended to the PRODUCT_FRAGMENT 
-          lowStock: data.lowStock, 
+          // value extended to the PRODUCT_FRAGMENT
+          lowStock: data.lowStock,
           // some random static value
           foo: 'bar',
         };
