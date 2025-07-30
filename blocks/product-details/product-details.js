@@ -70,6 +70,7 @@ export default async function decorate(block) {
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
         <div class="product-details__price"></div>
+        <div class="product-details__low-stock"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__configuration">
@@ -98,6 +99,7 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $lowStock = fragment.querySelector('.product-details__low-stock');
 
   block.replaceChildren(fragment);
 
@@ -328,6 +330,16 @@ export default async function decorate(block) {
       });
     }, 0);
   });
+
+  // Listen to PDP data
+  // this will ensure the low stock indicator is updated when the PDP data is updated
+  events.on('pdp/data', (data) => {
+    if (data.lowStock) {
+      $lowStock.innerHTML = '🔴 Low Stock';
+    } else {
+      $lowStock.innerHTML = '🟢 Plenty in stock';
+    }
+  }, { eager: true });
 
   // --- Add new event listener for cart/data ---
   events.on(
