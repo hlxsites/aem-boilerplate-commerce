@@ -412,7 +412,7 @@ describe('AEM Assets enabled', () => {
     });
   });
 
-  it('[Wishlist Dropin]: should load and show AEM Assets optimized images', { tags: "@skipSaas" }, () => {
+  it('[Wishlist Dropin]: should load and show AEM Assets optimized images', () => {
     visitWithEagerImages('/products/denim-apron/ADB119');
     cy.get('.product-details__buttons__add-to-wishlist button')
       .should('be.visible')
