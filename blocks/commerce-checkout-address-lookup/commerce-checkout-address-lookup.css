@@ -253,7 +253,7 @@
   display: none;
 }
 
-@media only screen and (width >= 320px) and (width <= 768px) {
+@media only screen and (width: 320px) and (width: 768px) {
   .checkout__main,
   .checkout__aside {
     display: contents;
@@ -294,7 +294,7 @@
   }
 }
 
-@media only screen and (width >= 768px) {
+@media only screen and (width: 768px) {
   .checkout__content {
     display: grid;
     align-items: start;
