@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '.';
-export { TaxDetails } from './TaxDetails';
-//# sourceMappingURL=index.d.ts.map
+export { PRODUCTS_VIEW_FRAGMENT } from './getRecommendations/graphql/ProductsViewFragment';
+export { UNIT_FRAGMENT } from './getRecommendations/graphql/UnitFragment';
+//# sourceMappingURL=fragments.d.ts.map
