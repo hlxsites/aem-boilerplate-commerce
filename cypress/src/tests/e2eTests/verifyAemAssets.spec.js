@@ -431,6 +431,11 @@ describe('AEM Assets enabled', () => {
       height: 288,
     };
 
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    };
+
     waitForAemAssetImages('.wishlist-wishlist img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
@@ -440,7 +445,7 @@ describe('AEM Assets enabled', () => {
           expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
-            ...expectedOptions,
+            ...srcSetExpectedOptions,
             width: (expectedOptions.width * screenWidth) / 1920,
           })
         }
