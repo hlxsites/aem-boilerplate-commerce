@@ -70,6 +70,10 @@ await initializeDropin(async () => {
   const models = {
     ProductDetails: {
       initialData: { ...product },
+      // We must extend the ProductDetails model with the new data fetched from the API in the
+      // build.mjs file. The `data` object is the raw API response. The returned object will be
+      // merged into the ProductDetails model, which will then be available via the `ctx` object
+      // in the PDP slots.
       transform: (data) => {
         console.info('🥩 raw data', data);
         // return the new values to merge with the ProductDetails model

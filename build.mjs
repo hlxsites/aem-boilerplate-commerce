@@ -27,10 +27,19 @@ overrideGQLOperations([
   // The following fragments are available:
   // - fragment Facet on Aggregation
   // - fragment ProductView on ProductSearchItem
- 
+
   {
     npm: '@dropins/storefront-product-discovery',
     operations: [
+      // Here we are adding extra data to the Facet fragment
+      // that we can use in the PLP to render an icon for each facet.
+      // `
+      //   fragment Facet on Aggregation {
+      //     buckets {
+      //       icon # note: this is not part of Catalog Service API, but could be extended with Mesh
+      //     }
+      //   }
+      // `,
       // Here we are adding the options to the ProductView fragment
       // that we can use in the PLP to render the options in the product actions
       `
@@ -48,7 +57,7 @@ overrideGQLOperations([
             }
           }
         }
-      `
+      `,
     ],
   },
 ]);

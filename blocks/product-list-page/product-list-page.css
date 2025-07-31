@@ -46,6 +46,13 @@
     width: 50px;
 }
 
+.facet-bucket-label__icon {
+  width: 20px;
+  height: 20px;
+  margin-right: var(--spacing-xsmall);
+  vertical-align: middle;
+}
+
 @media only screen and (min-width: 768px) {
     .search__left-column {
         display: flex;

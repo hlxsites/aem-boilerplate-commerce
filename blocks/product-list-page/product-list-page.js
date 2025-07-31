@@ -49,7 +49,25 @@ export default async function decorate(block) {
 
   return Promise.all([
     provider.render(ResultsInfo, { })($resultInfo),
-    provider.render(Facets, { })($facets),
+    provider.render(Facets, {
+      slots: {
+        FacetBucketLabel: (ctx) => {
+          // Here we are overriding the default Facet labels.
+          const $label = document.createElement('span');
+          $label.innerText = `${ctx.data.name ?? ctx.data.title} (${ctx.data.count})`;
+
+          // If the facet has an icon, add it to the label
+          if (ctx.data.icon) {
+            const $icon = document.createElement('img');
+            $icon.className = 'facet-bucket-label__icon';
+            $icon.src = ctx.data.icon;
+            $label.prepend($icon);
+          }
+
+          ctx.replaceWith($label);
+        },
+      },
+    })($facets),
     provider.render(ProductList, {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
       ...categoryPathConfig,
@@ -60,7 +78,13 @@ export default async function decorate(block) {
 
           // Add to Cart Button Validation
           // If there are options, the button is disabled until all options are selected
-          const isAddToCartValid = () => ctx.product.options ? options.size === ctx.product.options.length : true;
+          const isAddToCartValid = () => {
+            if (ctx.product.options) {
+              return options.size === ctx.product.options.length;
+            }
+            // If there are no options, the button is enabled
+            return true;
+          };
 
           // Add to Cart Button
           const $addToCartButton = document.createElement('div');
@@ -74,21 +98,21 @@ export default async function decorate(block) {
             disabled: !isAddToCartValid(), // Disable button if not all options are selected
             onClick: () => {
               // Call the Cart Drop-in API to add the product to the cart with the selected options
-              cartApi.addProductsToCart([{ 
-                sku: ctx.product.sku, 
-                quantity: 1, 
+              cartApi.addProductsToCart([{
+                sku: ctx.product.sku,
+                quantity: 1,
                 // Pass the selected options to the API
-                optionsUIDs: [...options.values()] 
+                optionsUIDs: [...options.values()],
               }]);
             },
             variant: 'primary',
           })($addToCartButton);
-          
 
           // Render Options (if any)
-          // ctx.product.options is the options data fetched from the API in the build.mjs file and transformed in the Product model.
+          // ctx.product.options is the options data fetched from the API in the build.mjs file
+          // and transformed in the Product model.
           if (ctx.product.options?.length > 0) {
-            const $optionsWrapper = document.createElement('div');  
+            const $optionsWrapper = document.createElement('div');
             $optionsWrapper.className = 'product-discovery-product-actions__options';
 
             ctx.product.options.forEach((option) => {
@@ -113,12 +137,12 @@ export default async function decorate(block) {
                 // update options map
                 options.set(option.id, e.target.value);
                 // validation: toggle disabled state based on the number of options selected
-                addToCartButton.setProps((prev) => ({...prev, disabled: !isAddToCartValid()}));
+                addToCartButton.setProps((prev) => ({ ...prev, disabled: !isAddToCartValid() }));
               });
 
               $optionsWrapper.appendChild($options);
             });
-            
+
             ctx.appendChild($optionsWrapper);
           }
 
