@@ -60,6 +60,7 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // 1. Import Braintree Payment Gateway
+// eslint-disable-next-line import/no-unresolved
 import 'https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js';
 
 // Block-level
