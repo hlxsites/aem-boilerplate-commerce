@@ -56,7 +56,7 @@
   display: none;
 }
 
-@media only screen and (width >= 320px) and (width <= 768px) {
+@media only screen and (width: 320px) and (width: 768px) {
   .order-confirmation {
     grid-template-columns: repeat(var(--grid-1-columns), 1fr);
     padding-top: 0;
