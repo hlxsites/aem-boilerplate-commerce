@@ -423,7 +423,7 @@ describe('AEM Assets enabled', () => {
     cy.wait(3000);
 
     const expectedOptions = {
-      protocol: 'https://',
+      protocol: 'http://',
       environment: aemAssetsEnvironment,
       format: 'webp',
       quality: 80,
