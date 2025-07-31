@@ -124,8 +124,7 @@ function setMetaTags(dropin) {
 
 export default async function decorate(block) {
   const GOOGLE_API_KEY = 'API_KEY';
-  // const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&loading=async&libraries=places`;
-  const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=&loading=async&libraries=places`;
+  const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&loading=async&libraries=places`;
 
   if (!document.querySelector(`script[src="${scriptUrl}"]`)) {
     const script = document.createElement('script');
