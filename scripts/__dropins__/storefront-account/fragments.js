@@ -77,3 +77,4 @@ const e=`
     }
   }
 `;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as ORDER_SUMMARY_FRAGMENT};
+//# sourceMappingURL=fragments.js.map

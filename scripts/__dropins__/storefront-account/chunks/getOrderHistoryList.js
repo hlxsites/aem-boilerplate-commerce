@@ -83,3 +83,4 @@ import{t as Y,f as j,a as J}from"./removeCustomerAddress.js";import{c as K}from"
   ${B}
   ${V}
 `,e={sort_direction:"DESC",sort_field:"CREATED_AT"},sa=async(a,o,c)=>{const _=o.includes("viewAll")?{}:{order_date:JSON.parse(o)};return await j(m,{method:"GET",cache:"no-cache",variables:{pageSize:a,currentPage:c,filter:_,sort:e}}).then(d=>Z(d)).catch(J)};export{sa as g};
+//# sourceMappingURL=getOrderHistoryList.js.map
