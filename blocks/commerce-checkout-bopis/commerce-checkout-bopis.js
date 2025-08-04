@@ -615,6 +615,7 @@ export default async function decorate(block) {
       value: name,
       onChange: () => {
         checkoutApi.setShippingAddress({
+          address: {},
           pickupLocationCode: pickup_location_code,
         });
       },

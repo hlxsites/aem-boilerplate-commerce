@@ -113,6 +113,7 @@ pickupLocations.forEach((location) => {
     value: name,
     onChange: () => {
       checkoutApi.setShippingAddress({
+        address: {},
         pickupLocationCode: pickup_location_code,
       });
     },
