@@ -169,7 +169,7 @@ export default async function decorate(block) {
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: getProductLink,
     undo: undo === 'true',
-    enableQuantityUpdate: 'true',
+    enableQuantityUpdate: enableQuantityUpdate === 'true',
 
     slots: {
       Thumbnail: (ctx) => {
@@ -288,10 +288,9 @@ export default async function decorate(block) {
 
         // Render SDK Input component
         UI.render(Input, {
-          type: 'number',
           value: item.quantity.toString(),
           min: 1,
-          size: 'medium',
+          size: 'small',
           variant: 'primary',
           onValue: (value) => {
             const newQuantity = parseInt(value, 10);
@@ -304,6 +303,25 @@ export default async function decorate(block) {
             }
           },
         })(inputWrapper);
+
+        // // Add custom styling to further reduce height and center text
+        // inputWrapper.style.height = '28px'; // Set a specific height
+
+        // // Use setTimeout to ensure the Input component is fully rendered before applying styles
+        // setTimeout(() => {
+        //   const inputElement = inputWrapper.querySelector('input');
+        //   if (inputElement) {
+        //     inputElement.style.setProperty('height', '28px', 'important');
+        //     inputElement.style.setProperty('padding', '2px 8px', 'important');
+        //     inputElement.style.setProperty('text-align', 'center', 'important');
+        //     // Additional CSS to ensure centering works
+        //     inputElement.style.setProperty(
+        //       'box-sizing',
+        //       'border-box',
+        //       'important',
+        //     );
+        //   }
+        // }, 100);
 
         // Style the container for inline layout
         quantityContainer.style.display = 'flex';
