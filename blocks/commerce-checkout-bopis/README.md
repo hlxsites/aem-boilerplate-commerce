@@ -17,22 +17,22 @@ We'll use the **commerce-checkout** block as our starting point and iteratively 
 For the new section, we need to add additional DOM elements, which can be done by modifying the contextual fragment.
 
 ```html
-<div class="checkout__delivery-method">
-  <h2 class="checkout-delivery-method__title">Delivery Method</h2>
-  <div class="checkout-delivery-method__toggle-buttons">
-    <div class="checkout-delivery-method__delivery-button"></div>
-    <div class="checkout-delivery-method__in-store-pickup-button"></div>
+<div class="checkout__block checkout__delivery-method">
+  <h2 class="checkout__block checkout-delivery-method__title">Delivery Method</h2>
+  <div class="checkout__block checkout-delivery-method__toggle-buttons">
+    <div class="checkout__block checkout-delivery-method__delivery-button"></div>
+    <div class="checkout__block checkout-delivery-method__in-store-pickup-button"></div>
   </div>
 </div>
-<div class="checkout__in-store-pickup"></div>
+<div class="checkout__block checkout__in-store-pickup"></div>
 ```
 
 We will also need to add new selectors, allowing us to use them later to render the required components and content.
 
 ```javascript
-export const $deliveryButton = fragment.querySelector('.checkout-delivery-method__delivery-button');
-export const $inStorePickupButton = fragment.querySelector('.checkout-delivery-method__in-store-pickup-button');
-export const $inStorePickup = fragment.querySelector('.checkout__in-store-pickup');
+const $deliveryButton = checkoutFragment.querySelector('.checkout-delivery-method__delivery-button');
+const $inStorePickupButton = checkoutFragment.querySelector('.checkout-delivery-method__in-store-pickup-button');
+const $inStorePickup = checkoutFragment.querySelector('.checkout__in-store-pickup');
 ```
 
 ### 2. UI Components for Delivery and In-Store Pickup
@@ -61,13 +61,13 @@ async function onToggle(type) {
     deliveryButton.setProps((prev) => ({ ...prev, selected: true }));
     inStorePickupButton.setProps((prev) => ({ ...prev, selected: false }));
     $shippingForm.removeAttribute('hidden');
-    $shippingMethods.removeAttribute('hidden');
+    $delivery.removeAttribute('hidden');
     $inStorePickup.setAttribute('hidden', '');
   } else {
     inStorePickupButton.setProps((prev) => ({ ...prev, selected: true }));
     deliveryButton.setProps((prev) => ({ ...prev, selected: false }));
     $shippingForm.setAttribute('hidden', '');
-    $shippingMethods.setAttribute('hidden', '');
+    $delivery.setAttribute('hidden', '');
     $inStorePickup.removeAttribute('hidden');
   }
 }
@@ -113,6 +113,7 @@ pickupLocations.forEach((location) => {
     value: name,
     onChange: () => {
       checkoutApi.setShippingAddress({
+        address: {},
         pickupLocationCode: pickup_location_code,
       });
     },
