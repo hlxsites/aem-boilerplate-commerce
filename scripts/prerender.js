@@ -43,14 +43,18 @@ export async function getProductPrice(sku) {
   if (productsCache[sku]) {
     return productsCache[sku];
   }
-  // TODO replace with fetchGraphql
-  const rawProductPromise = await pdpApi.fetchGraphQl(productDetailPriceQuery, { sku });
+
+  const rawProductPromise = pdpApi.fetchGraphQl(
+    productDetailPriceQuery,
+    { variables: { sku } },
+  );
+
   const productPromise = rawProductPromise.then((productData) => {
-    if (!productData?.products?.[0]) {
+    if (!productData?.data?.products?.[0]) {
       return null;
     }
 
-    return productData?.products?.[0];
+    return productData?.data?.products?.[0];
   });
 
   productsCache[sku] = productPromise;
