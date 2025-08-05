@@ -118,11 +118,12 @@ function parseProductPrice(productDetails) {
   const priceContainer = priceHeading?.closest('div');
   const priceDiv = priceContainer?.nextElementSibling;
   const priceText = priceDiv?.textContent?.trim();
-  const currencyCode = getCurrencyCode(priceText);
 
   if (!priceText) {
     return null;
   }
+
+  const currencyCode = getCurrencyCode(priceText);
 
   if (priceText.includes('-')) {
     const [minPrice, maxPrice] = priceText.split('-').map((p) => parseFloat(p.replace(/[^0-9.]/g, '')));
