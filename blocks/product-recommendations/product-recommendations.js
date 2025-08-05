@@ -19,7 +19,7 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
 // Block-level
-// import { readBlockConfig } from '../../scripts/aem.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
 
 // Initializers
@@ -64,8 +64,11 @@ export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   // Configuration
-  // const { currentsku, recid } = readBlockConfig(block);
-  const { currentsku, recid } = { currentsku: 'crz-eco-tr-std-2017', recid: '2ed7ea09-d9bd-4691-91c3-2c0a6d4fd869' };
+  const { currentsku, recid } = readBlockConfig(block);
+  // const { currentsku, recid } = {
+  //   currentsku: 'crz-eco-tr-std-2017',
+  //   recid: '2ed7ea09-d9bd-4691-91c3-2c0a6d4fd869'
+  // };
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
