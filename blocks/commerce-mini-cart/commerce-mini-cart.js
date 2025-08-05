@@ -333,6 +333,21 @@ export default async function decorate(block) {
 
         ctx.replaceWith(quantityContainer);
       },
+      ItemTitle: (ctx) => {
+        // Create custom title element
+        const customTitle = document.createElement('div');
+        customTitle.className = 'cart-item-custom-title';
+        customTitle.textContent = 'Custom Title';
+
+        // Style the custom title using design tokens
+        customTitle.style.fontWeight = 'var(--type-body-2-font-weight, bold)';
+        customTitle.style.color = 'var(--color-informational-800)';
+        customTitle.style.fontSize = 'var(--type-body-2-font-size, 14px)';
+        customTitle.style.lineHeight = 'var(--type-body-2-line-height, 1.4)';
+        customTitle.style.marginBottom = 'var(--spacing-xsmall, 4px)';
+
+        ctx.replaceWith(customTitle);
+      },
       Footer: (ctx) => {
         const footerContent = document.createElement('div');
         footerContent.className = 'mini-cart-custom-footer';
