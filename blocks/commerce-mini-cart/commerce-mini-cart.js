@@ -348,6 +348,70 @@ export default async function decorate(block) {
 
         ctx.replaceWith(customTitle);
       },
+      EmptyCart: (ctx) => {
+        // Create custom empty cart container
+        const emptyCartContainer = document.createElement('div');
+        emptyCartContainer.className = 'custom-empty-cart';
+
+        // Create empty cart message
+        const emptyMessage = document.createElement('div');
+        emptyMessage.className = 'empty-cart-message';
+        emptyMessage.textContent = 'Your cart is empty';
+        emptyMessage.style.textAlign = 'center';
+        emptyMessage.style.marginBottom = 'var(--spacing-medium, 16px)';
+        emptyMessage.style.color = 'var(--color-neutral-600, #666)';
+        emptyMessage.style.fontSize = 'var(--type-body-2-font-size, 14px)';
+
+        // Create buttons container
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'empty-cart-buttons';
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.flexDirection = 'column';
+        buttonsContainer.style.gap = 'var(--spacing-small, 12px)';
+        buttonsContainer.style.alignItems = 'center';
+
+        // Create start shopping button wrapper
+        const startShoppingWrapper = document.createElement('div');
+        startShoppingWrapper.className = 'start-shopping-button';
+
+        // Render Start Shopping button using SDK
+        UI.render(Button, {
+          children: 'Start Shopping',
+          variant: 'primary',
+          size: 'medium',
+          onClick: () => {
+            if (startShoppingURL) {
+              window.location.href = rootLink(startShoppingURL);
+            }
+          },
+        })(startShoppingWrapper);
+
+        // Create test button wrapper
+        const testButtonWrapper = document.createElement('div');
+        testButtonWrapper.className = 'test-button';
+
+        // Render Test Button using SDK
+        UI.render(Button, {
+          children: 'Test Button',
+          variant: 'secondary',
+          size: 'medium',
+          onClick: () => {
+            alert('Test Button clicked!');
+          },
+        })(testButtonWrapper);
+
+        // Assemble the empty cart
+        buttonsContainer.appendChild(startShoppingWrapper);
+        buttonsContainer.appendChild(testButtonWrapper);
+        emptyCartContainer.appendChild(emptyMessage);
+        emptyCartContainer.appendChild(buttonsContainer);
+
+        // Style the container
+        emptyCartContainer.style.padding = 'var(--spacing-large, 24px)';
+        emptyCartContainer.style.textAlign = 'center';
+
+        ctx.replaceWith(emptyCartContainer);
+      },
       Footer: (ctx) => {
         const footerContent = document.createElement('div');
         footerContent.className = 'mini-cart-custom-footer';
