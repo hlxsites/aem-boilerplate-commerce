@@ -36,6 +36,12 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
             onUndo: () => void;
             onDismiss: () => void;
         }>;
+        ItemTitle?: SlotProps;
+        ItemPrice?: SlotProps;
+        ItemQuantity?: SlotProps;
+        ItemTotal?: SlotProps;
+        ItemSku?: SlotProps;
+        ItemRemoveAction?: SlotProps;
     };
     enableRemoveItem?: boolean;
     enableUpdateItemQuantity?: boolean;
