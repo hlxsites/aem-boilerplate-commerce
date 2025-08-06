@@ -61,6 +61,7 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
@@ -220,6 +221,46 @@ export default async function decorate(block) {
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
 
+  // Shared validation function for both Place Order and Apple Pay
+  function validateCheckoutForms() {
+    let success = true;
+    const { forms } = document;
+
+    const loginForm = forms[LOGIN_FORM_NAME];
+
+    if (loginForm) {
+      success = loginForm.checkValidity();
+      if (!success) scrollToElement($login);
+    }
+
+    const isFormVisible = (form) => form && form.offsetParent !== null;
+
+    if (
+      success
+      && shippingFormRef.current
+      && isFormVisible(forms[SHIPPING_FORM_NAME])
+    ) {
+      success = shippingFormRef.current.handleValidationSubmit(false);
+    }
+
+    if (
+      success
+      && billingFormRef.current
+      && isFormVisible(forms[BILLING_FORM_NAME])
+    ) {
+      success = billingFormRef.current.handleValidationSubmit(false);
+    }
+
+    const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
+
+    if (success && termsAndConditionsForm) {
+      success = termsAndConditionsForm.checkValidity();
+      if (!success) scrollToElement($termsAndConditions);
+    }
+
+    return success;
+  }
+
   // Adobe Commerce GraphQL endpoint
   const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
 
@@ -338,7 +379,65 @@ export default async function decorate(block) {
             enabled: false,
           },
           [PaymentMethodCode.APPLE_PAY]: {
-            enabled: false,
+            render: (ctx) => {
+              const $applePay = document.createElement('div');
+
+              // Get the checkout data to see if the cart is virtual
+              const checkoutData = events.lastPayload('checkout/updated') ?? events.lastPayload('checkout/initialized') ?? null;
+
+              function renderApplePayContent() {
+                // Clear previous content
+                $applePay.innerHTML = '';
+
+                // Validate the checkout forms before rendering the Apple Pay button
+                const isValid = validateCheckoutForms({ scrollToError: false, logValidation: false });
+                if (!isValid) {
+                  // Show a message instead of the Apple Pay button
+                  $applePay.innerHTML = '<div class="payment-method-disabled"><p>Please complete all required fields to use Apple Pay</p></div>';
+                  return;
+                }
+
+                // Render the actual Apple Pay button
+                PaymentServices.render(ApplePay, {
+                  apiUrl: commerceCoreEndpoint,
+                  getCustomerToken: getUserTokenCookie,
+                  location: "CHECKOUT",
+                  isVirtualCart: async () => {
+                    return checkoutData.isVirtual;
+                  },
+                  getCartId: () => ctx.cartId,
+                  onSuccess: async (result) => {
+                    try {
+                      await displayOverlaySpinner();
+                      await orderApi.placeOrder(ctx.cartId);
+                    } catch (error) {
+                      console.error('Apple Pay order placement failed:', error);
+                      throw error;
+                    } finally {
+                      await removeOverlaySpinner();
+                    }
+                  },
+                  onError: (error) => {
+                    console.error('Apple Pay payment failed:', error);
+                  },
+                })($applePay);
+              }
+
+              // Initial render
+              renderApplePayContent();
+
+              // Listen for form changes and re-render Apple Pay content
+              const handleFormChange = () => {
+                // Use a small debounce to avoid too many re-renders
+                setTimeout(renderApplePayContent, 100);
+              };
+
+              // Listen to checkout events that indicate form changes
+              events.on('checkout/updated', handleFormChange);
+              events.on('checkout/values', handleFormChange);
+
+              ctx.replaceHTML($applePay);
+            },
           },
           [PaymentMethodCode.GOOGLE_PAY]: {
             enabled: false,
@@ -461,44 +560,7 @@ export default async function decorate(block) {
     })($termsAndConditions),
 
     CheckoutProvider.render(PlaceOrder, {
-      handleValidation: () => {
-        let success = true;
-        const { forms } = document;
-
-        const loginForm = forms[LOGIN_FORM_NAME];
-
-        if (loginForm) {
-          success = loginForm.checkValidity();
-          if (!success) scrollToElement($login);
-        }
-
-        const isFormVisible = (form) => form && form.offsetParent !== null;
-
-        if (
-          success
-        && shippingFormRef.current
-        && isFormVisible(forms[SHIPPING_FORM_NAME])
-        ) {
-          success = shippingFormRef.current.handleValidationSubmit(false);
-        }
-
-        if (
-          success
-        && billingFormRef.current
-        && isFormVisible(forms[BILLING_FORM_NAME])
-        ) {
-          success = billingFormRef.current.handleValidationSubmit(false);
-        }
-
-        const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
-
-        if (success && termsAndConditionsForm) {
-          success = termsAndConditionsForm.checkValidity();
-          if (!success) scrollToElement($termsAndConditions);
-        }
-
-        return success;
-      },
+      handleValidation: validateCheckoutForms,
       handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
         try {

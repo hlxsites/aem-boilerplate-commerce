@@ -25,6 +25,15 @@ declare const _default: {
         "methodNotAvailable": "Payment method not available. Please contact support.",
         "methodNotLoaded": "Failed to load payment method. Please try again later."
       }
+    },
+    "ApplePay": {
+      "messages": {
+        "methodNotAvailable": "Apple Pay not available on this device. Please use another payment method.",
+        "methodNotLoaded": "Failed to load Apple Pay. Please try again later.",
+        "loading": "Loading Apple Pay...",
+        "cartRequired": "Please add items to your cart to use Apple Pay",
+        "unavailable": "Apple Pay is currently unavailable"
+      }
     }
   }
 }
