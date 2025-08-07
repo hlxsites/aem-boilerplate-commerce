@@ -59,8 +59,7 @@ export default async function decorate(block) {
   // get all params
   const { q, page, sort, filter } = Object.fromEntries(urlParams.entries());
 
-  // On page load search...
-
+  // Request search based on the page type on block load
   if (config.urlpath) {
     // If it's a category page...
     await search({
