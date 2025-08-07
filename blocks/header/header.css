@@ -418,6 +418,7 @@ header .nav-search-panel .search-bar-result .dropin-product-item-card-skeleton >
   display: grid;
   grid-template-columns: 60px 1fr;
 }
+
 /* Product Item Skeleton */
 header .nav-search-panel .search-bar-result .dropin-product-item-card-skeleton > div > div {
   grid-column: unset;
