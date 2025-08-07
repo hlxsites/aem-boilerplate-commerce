@@ -63,11 +63,31 @@
 }
 
 /* Hide blocks with empty divs */
-.checkout__server-error:has(> :empty),
 .checkout__out-of-stock:has(> :empty),
 .checkout__delivery:has(> div:first-child:empty),
 .checkout__bill-to-shipping:has(> :empty) {
     display: none;
+}
+
+/* Server error visibility */
+.checkout__server-error {
+    display: none;
+}
+
+/* Show when it contains actual error content */
+.checkout__server-error:has(.dropin-illustrated-message) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Safari fallback: show when not empty, but this may show empty divs briefly */
+@supports not selector(:has(*)) {
+    .checkout__server-error:not(:empty) {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
 }
 
 /* Hide aside containers when the cart is empty or there is a server error */
@@ -324,4 +344,50 @@
     .checkout__place-order {
         margin-top: 0;
     }
+}
+
+/* Apple Pay Error Styling */
+.apple-pay-error-message {
+    margin: var(--spacing-medium) 0;
+    padding: var(--spacing-medium);
+    background-color: var(--color-alert-200);
+    border: 1px solid var(--color-alert-400);
+    border-radius: var(--shape-border-radius-2);
+    color: var(--color-alert-800);
+}
+
+.apple-pay-error-message .error-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+.apple-pay-error-message h3 {
+    margin: 0;
+    font: var(--type-headline-4-strong-font);
+    letter-spacing: var(--type-headline-4-strong-letter-spacing);
+    color: var(--color-alert-800);
+}
+
+.apple-pay-error-message p {
+    margin: 0;
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+}
+
+.apple-pay-error-message .error-dismiss {
+    align-self: flex-start;
+    background-color: var(--color-alert-600);
+    border: none;
+    border-radius: var(--shape-border-radius-1);
+    color: white;
+    cursor: pointer;
+    font: var(--type-button-2-font);
+    letter-spacing: var(--type-button-2-letter-spacing);
+    padding: var(--spacing-xsmall) var(--spacing-small);
+    transition: background-color 0.2s ease;
+}
+
+.apple-pay-error-message .error-dismiss:hover {
+    background-color: var(--color-alert-700);
 }

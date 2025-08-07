@@ -155,6 +155,7 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__bill-to-shipping"></div>
           <div class="checkout__block checkout__delivery"></div>
           <div class="checkout__block checkout__payment-methods"></div>
+          <div class="checkout__block checkout__payment-error"></div>
           <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
@@ -220,6 +221,7 @@ export default async function decorate(block) {
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
+  const applePayButtonRef = { current: null };
 
   // Shared validation function for both Place Order and Apple Pay
   function validateCheckoutForms() {
@@ -263,6 +265,29 @@ export default async function decorate(block) {
 
   // Adobe Commerce GraphQL endpoint
   const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
+
+  // Custom error display function
+  function displayErrorMessage(message) {
+    // Find or create error container
+    const errorContainer = document.querySelector('.checkout__payment-error');
+    if (errorContainer) {
+      // Create error content
+      errorContainer.innerHTML = `
+        <div class="apple-pay-error-message">
+          <div class="error-content">
+            <h3>Payment Error</h3>
+            <p>${message}</p>
+          </div>
+        </div>
+      `;
+      errorContainer.style.display = 'block';
+      
+      // Scroll to error
+      setTimeout(() => {
+        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }
 
   // Render the initial containers
   const [
@@ -384,7 +409,7 @@ export default async function decorate(block) {
 
               // Get the checkout data to see if the cart is virtual
               const checkoutData = events.lastPayload('checkout/updated') ?? events.lastPayload('checkout/initialized') ?? null;
-
+              
               function renderApplePayContent() {
                 // Clear previous content
                 $applePay.innerHTML = '';
@@ -412,13 +437,34 @@ export default async function decorate(block) {
                       await orderApi.placeOrder(ctx.cartId);
                     } catch (error) {
                       console.error('Apple Pay order placement failed:', error);
-                      throw error;
+                      
+                      // TODO: Use ServerError component to display the error message as in the PlaceOrder container
+                      // Because Apple Pay is its own place order button, we have to call directly the orderApi.placeOrder(ctx.cartId);
+                      // The best solution would be to import the signals.js and use 
+                      // import { serverErrorSignal } from '@dropins/storefront-checkout/signals';
+                      // serverErrorSignal.value = error instanceof TypeError || error instanceof UnexpectedError
+                      // ? 'An unexpected error occurred. Please try again.'
+                      // : error.message;
+                      // Check with Thunderbolts is they can export the signals.js
+                      const errorMessage = error.message || 'An unexpected error occurred while processing your Apple Pay order. Please try again.';
+                      displayErrorMessage(errorMessage);
                     } finally {
                       await removeOverlaySpinner();
                     }
                   },
                   onError: (error) => {
                     console.error('Apple Pay payment failed:', error);
+
+                    // TODO: Use ServerError component to display the error message as in the PlaceOrder container
+                      // Because Apple Pay is its own place order button, we have to call directly the orderApi.placeOrder(ctx.cartId);
+                      // The best solution would be to import the signals.js and use 
+                      // import { serverErrorSignal } from '@dropins/storefront-checkout/signals';
+                      // serverErrorSignal.value = error instanceof TypeError || error instanceof UnexpectedError
+                      // ? 'An unexpected error occurred. Please try again.'
+                      // : error.message;
+                      // Check with Thunderbolts is they can export the signals.js
+                    const errorMessage = error.message || 'Apple Pay payment was unsuccessful. Please try a different payment method or try again.';
+                    displayErrorMessage(errorMessage);
                   },
                 })($applePay);
               }

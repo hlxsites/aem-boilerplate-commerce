@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,9 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './initialize';
-export * from './fetch-graphql';
-export { PaymentMethodCode } from './method';
-export * from './setCartIsInactive';
-export * from './addProductsToNewCart';
-//# sourceMappingURL=index.d.ts.map
+export declare const setCartIsInactiveMutation = "\n  mutation setCartIsInactive(\n    $cartId: String!\n  ) {\n    setCartIsInactive(input: { cart_id: $cartId}) {\n      success\n      error\n    }\n  }\n";
+//# sourceMappingURL=setCartIsInactive.graphql.d.ts.map
