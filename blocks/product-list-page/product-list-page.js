@@ -169,16 +169,27 @@ export default async function decorate(block) {
     })($productList),
   ]);
 
-  // Listen for search results
+  // Listen for search results (event is fired before the block is rendered; eager: true)
   events.on('search/result', (payload) => {
     const totalCount = payload.result?.totalCount || 0;
-
+    
     block.classList.toggle('product-list-page--empty', totalCount === 0);
 
     // Results Info
     $resultInfo.innerHTML = payload.request?.phrase
       ? `${totalCount} results found for <strong>"${payload.request.phrase}"</strong>.`
       : `${totalCount} results found.`;
+
+    // Update the view facets button with the number of filters
+    if (payload.request.filter.length > 0) {
+      $viewFacets.querySelector('button').setAttribute('data-count', payload.request.filter.length);
+    } else {
+      $viewFacets.querySelector('button').removeAttribute('data-count');
+    }
+  }, { eager: true });
+
+  // Listen for search results (event is fired after the block is rendered; eager: false)
+  events.on('search/result', (payload) => {
     // update URL with new search params
     const url = new URL(window.location.href);
 
@@ -200,13 +211,6 @@ export default async function decorate(block) {
 
     // Update the URL
     window.history.pushState({}, '', url.toString());
-
-    // Update the view facets button with the number of filters
-    if (payload.request.filter.length > 0) {
-      $viewFacets.querySelector('button').setAttribute('data-count', payload.request.filter.length);
-    } else {
-      $viewFacets.querySelector('button').removeAttribute('data-count');
-    }
   }, { eager: false });
 }
 
