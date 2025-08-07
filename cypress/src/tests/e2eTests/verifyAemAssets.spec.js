@@ -38,23 +38,28 @@ describe('AEM Assets enabled', () => {
     Cypress.env("isAemAssetsSuite", false);
   })
 
-  it('[Product Discovery Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[Product Discovery Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     visitWithEagerImages('/');
     cy.get('.nav-search-button').click();
     cy.get('.nav-search-panel').should('be.visible');
     cy.get('#search-bar-input input[type="text"]').type('gift');
     cy.wait(2000);
     const expectedOptions = {
-      protocol: 'https://',
+      protocol: 'http://',
       environment: aemAssetsEnvironment,
       format: 'webp',
       quality: 80,
     }
 
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    };
+
     waitForAemAssetImages('.search-bar-result img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
-          ...expectedOptions,
+          ...srcSetExpectedOptions,
           width: 165,
           height: 165,
         });
@@ -64,7 +69,7 @@ describe('AEM Assets enabled', () => {
           expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
-            ...expectedOptions,
+            ...srcSetExpectedOptions,
             width: (165 * screenWidth) / 1920,
             height: 165,
           });
@@ -78,7 +83,7 @@ describe('AEM Assets enabled', () => {
     waitForAemAssetImages('.search__product-list img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
-          ...expectedOptions,
+          ...srcSetExpectedOptions,
           width: 200,
           height: 250,
         });
@@ -88,7 +93,7 @@ describe('AEM Assets enabled', () => {
           expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
-            ...expectedOptions,
+            ...srcSetExpectedOptions,
             width: (200 * screenWidth) / 1920,
             height: 250,
           });
@@ -97,7 +102,7 @@ describe('AEM Assets enabled', () => {
     });
   });
 
-  it('[PDP Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[PDP Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     visitWithEagerImages('/products/gift-packaging/ADB102');
     const expectedOptions = {
       protocol: 'http://',
@@ -160,7 +165,7 @@ describe('AEM Assets enabled', () => {
     // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
   });
 
-  it('[Cart Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[Cart Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     const expectedOptions = {
       protocol: 'https://',
       environment: aemAssetsEnvironment,
@@ -213,7 +218,7 @@ describe('AEM Assets enabled', () => {
     // TODO: Once gift options are supported by AEM Assets, add tests for them.
   });
 
-  it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[My Account Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     if (!envConfig.user.email || !envConfig.user.password) {
       cy.log('No email or password provided, skipping test');
       return;
@@ -247,7 +252,7 @@ describe('AEM Assets enabled', () => {
     });
   });
 
-  it('[Order Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[Order Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     if (!envConfig.user.email || !envConfig.user.password) {
       cy.log('No email or password provided, skipping test');
       return;
@@ -340,7 +345,7 @@ describe('AEM Assets enabled', () => {
     });
   });
 
-  it('[Checkout Dropin]: should load and show AEM Assets optimized images', () => {
+  it('[Checkout Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     visitWithEagerImages('/products/gift-packaging/ADB102');
 
     cy.get('.product-details__buttons__add-to-cart button')
@@ -376,7 +381,7 @@ describe('AEM Assets enabled', () => {
     })
   });
 
-  it('[Recommendations Dropin]: should load and show AEM Assets optimized images',  () => {
+  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', { tags: "@skipPaas" }, () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
     visitWithEagerImages('/products/gift-packaging/ADB102');
@@ -412,7 +417,7 @@ describe('AEM Assets enabled', () => {
     });
   });
 
-  it('[Wishlist Dropin]: should load and show AEM Assets optimized images', { tags: "@skipSaas" }, () => {
+  it('[Wishlist Dropin]: should load and show AEM Assets optimized images', { tags: ["@skipSaas", "@skipPaas"] }, () => {
     visitWithEagerImages('/products/denim-apron/ADB119');
     cy.get('.product-details__buttons__add-to-wishlist button')
       .should('be.visible')
