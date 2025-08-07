@@ -54,21 +54,36 @@ export default async function decorate(block) {
     block.dataset.category = config.urlpath;
   }
 
-  const categoryPathConfig = config.urlpath ? { categoryPath: config.urlpath } : {};
-
   // Get variables from the URL
   const urlParams = new URLSearchParams(window.location.search);
   // get all params
   const { q, page, sort, filter } = Object.fromEntries(urlParams.entries());
 
-  // Page load search
-  await search({
-    phrase: q || '',
-    currentPage: page ? Number(page) : 1,
-    pageSize: 8,
-    sort: getSortFromParams(sort),
-    filter: getFilterFromParams(filter),
-  });
+  // On page load search...
+
+  if (config.urlpath) {
+    // If it's a category page...
+    await search({
+      phrase: '', // search all products in the category
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: getSortFromParams(sort),
+      filter: [
+        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        ...getFilterFromParams(filter),
+      ],
+    });
+  } else {
+    // If it's a search page...
+    await search({
+      phrase: q || '',
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: getSortFromParams(sort),
+      filter: getFilterFromParams(filter),
+    });
+  }
+
 
 
   const getAddToCartButton = (product) => {
@@ -95,8 +110,10 @@ export default async function decorate(block) {
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
+   
     // Pagination
     provider.render(Pagination, {})($pagination),
+   
     // View Facets Button
     UI.render(Button, {
       children: 'Filters', // TODO: Add label from AEM
@@ -106,23 +123,14 @@ export default async function decorate(block) {
         $facets.classList.toggle('search__facets--visible');
       },
     })($viewFacets),
+
     // Facets
     provider.render(Facets, {
-      slots: {
-        Facet: (ctx) => {
-          // On Category pages (not search), remove categories facet as you
-          // cannot filter with category and categoryPath. MSRCH-5143 for more.
-          const isSearch = !categoryPathConfig.categoryPath;
-          if (!isSearch && ctx.data.attribute === 'categories') {
-            ctx.replaceWith(document.createElement('div'));
-          }
-        },
-      },
+      rootCategory: config.urlpath, // anchor facets to the root category
     })($facets),
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
-      ...categoryPathConfig,
       slots: {
         ProductImage: (ctx) => {
           const { product, defaultImageProps } = ctx;
@@ -199,7 +207,7 @@ export default async function decorate(block) {
     } else {
       $viewFacets.querySelector('button').removeAttribute('data-count');
     }
-  }, { eager: true })
+  }, { eager: false })
 }
 
 function getSortFromParams(sortParam) {
@@ -216,16 +224,16 @@ function getParamsFromSort(sort) {
 
 function getFilterFromParams(filterParam) {
   if (!filterParam) return [];
-  
+
   // Decode the URL-encoded parameter
   const decodedParam = decodeURIComponent(filterParam);
   const results = [];
   const filters = decodedParam.split('|');
-  
+
   for (const filter of filters) {
     if (filter.includes(':')) {
       const [attribute, value] = filter.split(':');
-      
+
       if (value.includes(',')) {
         // Handle array values (like categories)
         results.push({
@@ -251,7 +259,7 @@ function getFilterFromParams(filterParam) {
       }
     }
   }
-  
+
   return results;
 }
 
