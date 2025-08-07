@@ -1,6 +1,8 @@
 import { Product } from './product';
 
+export type Scope = 'search' | 'popover' | string;
 export interface SearchVariables {
+    scope?: Scope;
     phrase?: string;
     filter?: SearchFilter[];
     sort?: SortOrder[];
