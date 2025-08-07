@@ -216,14 +216,16 @@ function getParamsFromSort(sort) {
 
 function getFilterFromParams(filterParam) {
   if (!filterParam) return [];
-
+  
+  // Decode the URL-encoded parameter
+  const decodedParam = decodeURIComponent(filterParam);
   const results = [];
-  const filters = filterParam.split('|');
-
+  const filters = decodedParam.split('|');
+  
   for (const filter of filters) {
     if (filter.includes(':')) {
       const [attribute, value] = filter.split(':');
-
+      
       if (value.includes(',')) {
         // Handle array values (like categories)
         results.push({
@@ -240,10 +242,16 @@ function getFilterFromParams(filterParam) {
             to: Number(to)
           }
         });
+      } else {
+        // Handle single values (like categories with one value)
+        results.push({
+          attribute,
+          in: [value]
+        });
       }
     }
   }
-
+  
   return results;
 }
 
