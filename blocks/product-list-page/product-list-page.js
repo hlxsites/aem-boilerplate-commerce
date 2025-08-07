@@ -1,14 +1,20 @@
-import ProductList from '@dropins/storefront-product-discovery/containers/ProductList.js';
+// Product Discovery Dropins
+import SearchResults from '@dropins/storefront-product-discovery/containers/SearchResults.js';
 import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
-import ResultsInfo from '@dropins/storefront-product-discovery/containers/ResultsInfo.js';
+import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
+import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
+import { search } from '@dropins/storefront-product-discovery/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+// Event Bus
+import { events } from '@dropins/tools/event-bus.js';
+// AEM
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
 
@@ -16,27 +22,29 @@ import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
 
+
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   const config = readBlockConfig(block);
 
   const fragment = document.createRange().createContextualFragment(`
-    <div class="search__input"></div>
     <div class="search__wrapper">
-      <div class="search__left-column">
-        <div class="search__result-info"></div>
-        <div class="search__facets"></div>
-      </div>
-      <div class="search__right-column">
-        <div class="search__product-list"></div>
-      </div>
+      <div class="search__result-info"></div>
+      <div class="search__view-facets"></div>
+      <div class="search__facets"></div>
+      <div class="search__product-sort"></div>
+      <div class="search__product-list"></div>
+      <div class="search__pagination"></div>
     </div>
   `);
 
   const $resultInfo = fragment.querySelector('.search__result-info');
+  const $viewFacets = fragment.querySelector('.search__view-facets');
   const $facets = fragment.querySelector('.search__facets');
+  const $productSort = fragment.querySelector('.search__product-sort');
   const $productList = fragment.querySelector('.search__product-list');
+  const $pagination = fragment.querySelector('.search__pagination');
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -48,15 +56,28 @@ export default async function decorate(block) {
 
   const categoryPathConfig = config.urlpath ? { categoryPath: config.urlpath } : {};
 
+  // Get variables from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  // get all params
+  const { q, page, sort, filter } = Object.fromEntries(urlParams.entries());
+
+  // Page load search
+  await search({
+    phrase: q || '',
+    currentPage: page ? Number(page) : 1,
+    pageSize: 8,
+    sort: getSortFromParams(sort),
+    filter: getFilterFromParams(filter),
+  });
+
+
   const getAddToCartButton = (product) => {
     if (product.typename === 'ComplexProductView') {
       const button = document.createElement('div');
       UI.render(Button, {
         children: labels.Global?.AddProductToCart,
         icon: Icon({ source: 'Cart' }),
-        onClick: () => {
-          window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
-        },
+        href: rootLink(`/products/${product.urlKey}/${product.sku}`),
         variant: 'primary',
       })(button);
       return button;
@@ -71,8 +92,21 @@ export default async function decorate(block) {
     return button;
   };
 
-  return Promise.all([
-    provider.render(ResultsInfo, { })($resultInfo),
+  await Promise.all([
+    // Sort By
+    provider.render(SortBy, {})($productSort),
+    // Pagination
+    provider.render(Pagination, {})($pagination),
+    // View Facets Button
+    UI.render(Button, {
+      children: 'Filters', // TODO: Add label from AEM
+      icon: Icon({ source: 'Burger' }),
+      variant: 'secondary',
+      onClick: () => {
+        $facets.classList.toggle('search__facets--visible');
+      },
+    })($viewFacets),
+    // Facets
     provider.render(Facets, {
       slots: {
         Facet: (ctx) => {
@@ -85,7 +119,8 @@ export default async function decorate(block) {
         },
       },
     })($facets),
-    provider.render(ProductList, {
+    // Product List
+    provider.render(SearchResults, {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
       ...categoryPathConfig,
       slots: {
@@ -115,6 +150,7 @@ export default async function decorate(block) {
           $wishlistToggle.classList.add('product-discovery-product-actions__wishlist-toggle');
           wishlistRender.render(WishlistToggle, {
             product: ctx.product,
+            variant: 'tertiary',
           })($wishlistToggle);
           actionsWrapper.appendChild(addToCartBtn);
           actionsWrapper.appendChild($wishlistToggle);
@@ -123,4 +159,103 @@ export default async function decorate(block) {
       },
     })($productList),
   ]);
+
+  // Listen for search results
+  events.on('search/result', (payload) => {
+    const totalCount = payload.result?.totalCount || 0;
+
+    block.classList.toggle('product-list-page--empty', totalCount === 0);
+
+    // Results Info
+    $resultInfo.innerHTML = payload.request?.phrase
+      ? `${totalCount} results found for <strong>"${payload.request.phrase}"</strong>.`
+      : `${totalCount} results found.`;
+    // update URL with new search params
+    const url = new URL(window.location.href);
+
+    if (payload.request?.phrase) {
+      url.searchParams.set('q', payload.request.phrase);
+    }
+
+    if (payload.request?.currentPage) {
+      url.searchParams.set('page', payload.request.currentPage);
+    }
+
+    if (payload.request?.sort) {
+      url.searchParams.set('sort', getParamsFromSort(payload.request.sort));
+    }
+
+    if (payload.request?.filter) {
+      url.searchParams.set('filter', getParamsFromFilter(payload.request.filter));
+    }
+
+    // Update the URL
+    window.history.pushState({}, '', url.toString());
+
+
+    // Update the view facets button with the number of filters
+    if (payload.request.filter.length > 0) {
+      $viewFacets.querySelector('button').setAttribute('data-count', payload.request.filter.length);
+    } else {
+      $viewFacets.querySelector('button').removeAttribute('data-count');
+    }
+  }, { eager: true })
+}
+
+function getSortFromParams(sortParam) {
+  if (!sortParam) return [];
+  return sortParam.split(',').map((item) => {
+    const [attribute, direction] = item.split('_');
+    return { attribute, direction };
+  });
+}
+
+function getParamsFromSort(sort) {
+  return sort.map((item) => `${item.attribute}_${item.direction}`).join(',');
+}
+
+function getFilterFromParams(filterParam) {
+  if (!filterParam) return [];
+
+  const results = [];
+  const filters = filterParam.split('|');
+
+  for (const filter of filters) {
+    if (filter.includes(':')) {
+      const [attribute, value] = filter.split(':');
+
+      if (value.includes(',')) {
+        // Handle array values (like categories)
+        results.push({
+          attribute,
+          in: value.split(',')
+        });
+      } else if (value.includes('-')) {
+        // Handle range values (like price)
+        const [from, to] = value.split('-');
+        results.push({
+          attribute,
+          range: {
+            from: Number(from),
+            to: Number(to)
+          }
+        });
+      }
+    }
+  }
+
+  return results;
+}
+
+function getParamsFromFilter(filter) {
+  if (!filter || filter.length === 0) return '';
+
+  return filter.map(({ attribute, in: inValues, range }) => {
+    if (inValues) {
+      return `${attribute}:${inValues.join(',')}`;
+    } else if (range) {
+      return `${attribute}:${range.from}-${range.to}`;
+    }
+    return null;
+  }).filter(Boolean).join('|');
 }

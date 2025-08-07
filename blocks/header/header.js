@@ -351,6 +351,8 @@ export default async function decorate(block) {
   const searchResult = searchPanel.querySelector('.search-bar-result');
 
   async function toggleSearch(state) {
+    const pageSize = 4;
+
     if (state) {
       await withLoadingState(searchPanel, searchButton, async () => {
         await import('../../scripts/initializers/search.js');
@@ -370,7 +372,7 @@ export default async function decorate(block) {
         ]);
 
         render.render(SearchResults, {
-          skeletonCount: 6,
+          skeletonCount: pageSize,
           scope: 'popover',
           routeProduct: ({ urlKey, sku }) => rootLink(`/products/${urlKey}/${sku}`),
           onSearchResult: (results) => {
@@ -437,7 +439,7 @@ export default async function decorate(block) {
 
             search({
               phrase,
-              pageSize: 6,
+              pageSize,
             }, { scope: 'popover' });
           },
         })(searchForm);
