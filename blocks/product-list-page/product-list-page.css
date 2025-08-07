@@ -88,7 +88,6 @@
             "result-info product-sort"
             "facets product-list"
             "pagination pagination";
-
         grid-template-columns: 270px 1fr;
     }
 

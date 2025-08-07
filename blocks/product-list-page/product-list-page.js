@@ -22,7 +22,6 @@ import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
 
-
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
@@ -57,7 +56,12 @@ export default async function decorate(block) {
   // Get variables from the URL
   const urlParams = new URLSearchParams(window.location.search);
   // get all params
-  const { q, page, sort, filter } = Object.fromEntries(urlParams.entries());
+  const {
+    q,
+    page,
+    sort,
+    filter,
+  } = Object.fromEntries(urlParams.entries());
 
   // Request search based on the page type on block load
   if (config.urlpath) {
@@ -83,8 +87,6 @@ export default async function decorate(block) {
     });
   }
 
-
-
   const getAddToCartButton = (product) => {
     if (product.typename === 'ComplexProductView') {
       const button = document.createElement('div');
@@ -109,10 +111,10 @@ export default async function decorate(block) {
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
-   
+
     // Pagination
     provider.render(Pagination, {})($pagination),
-   
+
     // View Facets Button
     UI.render(Button, {
       children: 'Filters', // TODO: Add label from AEM
@@ -199,14 +201,13 @@ export default async function decorate(block) {
     // Update the URL
     window.history.pushState({}, '', url.toString());
 
-
     // Update the view facets button with the number of filters
     if (payload.request.filter.length > 0) {
       $viewFacets.querySelector('button').setAttribute('data-count', payload.request.filter.length);
     } else {
       $viewFacets.querySelector('button').removeAttribute('data-count');
     }
-  }, { eager: false })
+  }, { eager: false });
 }
 
 function getSortFromParams(sortParam) {
@@ -229,7 +230,7 @@ function getFilterFromParams(filterParam) {
   const results = [];
   const filters = decodedParam.split('|');
 
-  for (const filter of filters) {
+  filters.forEach((filter) => {
     if (filter.includes(':')) {
       const [attribute, value] = filter.split(':');
 
@@ -237,7 +238,7 @@ function getFilterFromParams(filterParam) {
         // Handle array values (like categories)
         results.push({
           attribute,
-          in: value.split(',')
+          in: value.split(','),
         });
       } else if (value.includes('-')) {
         // Handle range values (like price)
@@ -246,18 +247,18 @@ function getFilterFromParams(filterParam) {
           attribute,
           range: {
             from: Number(from),
-            to: Number(to)
-          }
+            to: Number(to),
+          },
         });
       } else {
         // Handle single values (like categories with one value)
         results.push({
           attribute,
-          in: [value]
+          in: [value],
         });
       }
     }
-  }
+  });
 
   return results;
 }
@@ -268,9 +269,12 @@ function getParamsFromFilter(filter) {
   return filter.map(({ attribute, in: inValues, range }) => {
     if (inValues) {
       return `${attribute}:${inValues.join(',')}`;
-    } else if (range) {
+    }
+
+    if (range) {
       return `${attribute}:${range.from}-${range.to}`;
     }
+
     return null;
   }).filter(Boolean).join('|');
 }
