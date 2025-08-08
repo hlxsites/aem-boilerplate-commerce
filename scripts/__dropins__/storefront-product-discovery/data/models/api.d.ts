@@ -50,6 +50,10 @@ export interface ProductSearchResult {
     };
     suggestions?: string[];
     totalCount: number;
+    metadata?: {
+        filterableAttributes: RefineOption[];
+        sortableAttributes: RefineOption[];
+    };
 }
 export interface SearchFacet {
     title: string;
