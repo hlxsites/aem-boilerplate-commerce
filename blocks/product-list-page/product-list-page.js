@@ -64,7 +64,7 @@ export default async function decorate(block) {
   } = Object.fromEntries(urlParams.entries());
 
   // Request search based on the page type on block load
-  if (config.urlpath) {    
+  if (config.urlpath) {
     // If it's a category page...
     await search({
       phrase: '', // search all products in the category
