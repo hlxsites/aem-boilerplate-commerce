@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const addProductsToNewCartMutation = "\nmutation ADD_PRODUCTS_TO_NEW_CART_MUTATION(\n    $cartItems:  [CartItemInput!]!,\n) {\n    addProductsToNewCart(\n    cartItems: $cartItems\n) {\n        cart {\n          id\n        }\n    }\n}\n";
+export declare const addProductsToNewCartMutation = "\nmutation ADD_PRODUCTS_TO_NEW_CART_MUTATION(\n    $cartItems:  [CartItemInput!]!,\n) {\n    addProductsToNewCart(\n        cartItems: $cartItems\n    ) {\n        cart {\n          id\n        }\n    }\n}\n";
 //# sourceMappingURL=addProductsToNewCart.graphql.d.ts.map

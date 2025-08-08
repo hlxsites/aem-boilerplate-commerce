@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const setCartIsInactiveMutation = "\n  mutation setCartIsInactive(\n    $cartId: String!\n  ) {\n    setCartIsInactive(input: { cart_id: $cartId}) {\n      success\n      error\n    }\n  }\n";
-//# sourceMappingURL=setCartIsInactive.graphql.d.ts.map
+export declare const setCartAsInactive: (cartId: string) => Promise<any>;
+//# sourceMappingURL=setCartAsInactive.d.ts.map

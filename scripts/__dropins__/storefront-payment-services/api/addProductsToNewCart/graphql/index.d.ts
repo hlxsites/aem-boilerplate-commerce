@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '../../setCartIsInactive/graphql/setCartIsInactive.graphql';
+export * from './addProductsToNewCart.graphql';
 //# sourceMappingURL=index.d.ts.map

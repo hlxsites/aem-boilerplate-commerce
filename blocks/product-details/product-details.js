@@ -100,6 +100,19 @@ export default async function decorate(block) {
     return cartId;
   };
 
+    // setCartAsInactive is needed for Apple Pay
+    const setCartAsInactive =  async () => {
+      if (ctx.shadowCartId === null) {
+        return;
+      }
+
+      const cartId = ctx.shadowCartId;
+      await paymentServicesApi.setCartAsInactive( cartId);
+      ctx.setShadowCartId(null);
+  
+      return cartId;
+    };
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__alert"></div>
@@ -246,6 +259,7 @@ export default async function decorate(block) {
       location: "PRODUCT_DETAIL",
       isVirtualCart: async () => getIsVirtual(),
       getCartId: createCartId,
+      onCancel: () => setCartAsInactive(),
       onSuccess: async () => {
         try {
           await orderApi.placeOrder(ctx.shadowCartId);

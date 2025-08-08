@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const setCartIsInactive: (cartId: string) => Promise<any>;
-//# sourceMappingURL=setCartIsInactive.d.ts.map
+export * from './setCartAsInactive.graphql';
+//# sourceMappingURL=index.d.ts.map
