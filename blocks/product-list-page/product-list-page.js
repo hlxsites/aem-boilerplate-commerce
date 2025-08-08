@@ -114,7 +114,7 @@ export default async function decorate(block) {
 
     // Pagination
     provider.render(Pagination, {
-      onPageChange: (page) => {
+      onPageChange: () => {
         // scroll to the top of the page
         window.scrollTo({ top: 0, behavior: 'smooth' });
       },
