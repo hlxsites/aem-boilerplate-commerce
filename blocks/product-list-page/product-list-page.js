@@ -113,7 +113,12 @@ export default async function decorate(block) {
     provider.render(SortBy, {})($productSort),
 
     // Pagination
-    provider.render(Pagination, {})($pagination),
+    provider.render(Pagination, {
+      onPageChange: (page) => {
+        // scroll to the top of the page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+    })($pagination),
 
     // View Facets Button
     UI.render(Button, {
