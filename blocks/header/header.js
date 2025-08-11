@@ -17,7 +17,6 @@ const labels = await fetchPlaceholders();
 const overlay = document.createElement('div');
 overlay.classList.add('overlay');
 document.querySelector('header').insertAdjacentElement('afterbegin', overlay);
-window.events = events;
 
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
