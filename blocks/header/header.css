@@ -413,18 +413,13 @@ header .nav-search-panel .search-bar-result .product-discovery-product-list__gri
 }
 
 /* Popover List */
-header .nav-search-panel .search-bar-result .dropin-product-item-card:not(.dropin-product-item-card-skeleton),
-header .nav-search-panel .search-bar-result .dropin-product-item-card-skeleton > div {
+header .nav-search-panel .search-bar-result .dropin-product-item-card {
   display: grid;
   grid-template-columns: 60px 1fr;
 }
 
 /* Product Item Skeleton */
-header .nav-search-panel .search-bar-result .dropin-product-item-card-skeleton > div > div {
-  grid-column: unset;
-}
-
-header .nav-search-panel .search-bar-result .dropin-product-item-card-skeleton > div > div .dropin-skeleton-row {
+header .nav-search-panel .search-bar-result .dropin-product-item-card__content .dropin-skeleton-row {
   height: 1em;
 }
 
