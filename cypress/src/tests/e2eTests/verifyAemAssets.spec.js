@@ -42,10 +42,10 @@ describe('AEM Assets enabled', () => {
     visitWithEagerImages('/');
     cy.get('.nav-search-button').click();
     cy.get('.nav-search-panel').should('be.visible');
-    cy.get('#search-bar-input input[type="text"]').type('gift');
+    cy.get('#search').type('gift');
     cy.wait(2000);
     const expectedOptions = {
-      protocol: 'https://',
+      protocol: '//',
       environment: aemAssetsEnvironment,
       format: 'webp',
       quality: 80,
@@ -55,8 +55,8 @@ describe('AEM Assets enabled', () => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
-          width: 165,
-          height: 165,
+          width: 400,
+          height: 450,
         });
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
@@ -65,8 +65,8 @@ describe('AEM Assets enabled', () => {
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
-            width: (165 * screenWidth) / 1920,
-            height: 165,
+            width: (400 * screenWidth) / 1920,
+            height: 450,
           });
         }
       }
@@ -79,8 +79,8 @@ describe('AEM Assets enabled', () => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
-          width: 200,
-          height: 250,
+          width: 400,
+          height: 450,
         });
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
@@ -89,8 +89,8 @@ describe('AEM Assets enabled', () => {
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
-            width: (200 * screenWidth) / 1920,
-            height: 250,
+            width: (400 * screenWidth) / 1920,
+            height: 450,
           });
         }
       }
