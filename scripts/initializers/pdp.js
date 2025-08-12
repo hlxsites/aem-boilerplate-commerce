@@ -104,7 +104,7 @@ await initializeDropin(async () => {
     langDefinitions,
     models,
     acdl: true,
-    persistURLParams: false,
+    persistURLParams: true,
   });
 })();
 
