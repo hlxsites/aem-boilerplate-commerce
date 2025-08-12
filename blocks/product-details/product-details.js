@@ -7,6 +7,9 @@ import {
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
+import * as orderApi from '@dropins/storefront-order/api.js';
+
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
@@ -24,6 +27,11 @@ import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescri
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
+// Payment Services
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+import * as paymentServicesApi from '@dropins/storefront-payment-services/api.js';
+
 // Libs
 import {
   rootLink,
@@ -35,6 +43,8 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/payment-services.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -60,6 +70,49 @@ export default async function decorate(block) {
   // State to track if we are in update mode
   let isUpdateMode = false;
 
+  // Adobe Commerce GraphQL endpoint
+  const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
+
+  // Create our own context object for Apple Pay
+  const ctx = {
+    shadowCartId: null,
+    setShadowCartId: (id) => { ctx.shadowCartId = id; }
+  };
+
+  // getIsVirtual is needed for Apple Pay
+  const getIsVirtual = () => {
+      let pdpData = events.lastPayload('pdp/data') ?? null;
+
+      //TODO: ask the storefront team to add the isVirtual property to the pdpData
+      return (pdpData.productType === 'virtual' || pdpData.productType === 'downloadable');
+  };
+
+  // createCartId is needed for Apple Pay
+  const createCartId =  async () => {
+    let pdpValues = events.lastPayload('pdp/values') ?? null;
+
+    const cartItems = [{ sku: pdpValues.sku, quantity: pdpValues.quantity }];
+
+    // TODO: move this to the Dropin API
+    const cartId = await paymentServicesApi.addProductsToNewCart(cartItems);
+    ctx.setShadowCartId(cartId);
+
+    return cartId;
+  };
+
+    // setCartAsInactive is needed for Apple Pay
+    const setCartAsInactive =  async () => {
+      if (ctx.shadowCartId === null) {
+        return;
+      }
+
+      const cartId = ctx.shadowCartId;
+      await paymentServicesApi.setCartAsInactive( cartId);
+      ctx.setShadowCartId(null);
+  
+      return cartId;
+    };
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__alert"></div>
@@ -80,6 +133,7 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
         </div>
+        <div class="product-details__payment-methods"></div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
@@ -98,7 +152,8 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-
+  const $paymentMethods = fragment.querySelector('.product-details__payment-methods');
+  
   block.replaceChildren(fragment);
 
   const gallerySlots = {
@@ -131,6 +186,7 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
+    _paymentMethods,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -195,6 +251,30 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    // Payment Methods
+    PaymentServices.render(ApplePay, {
+      apiUrl: commerceCoreEndpoint,
+      getCustomerToken: getUserTokenCookie,
+      location: "PRODUCT_DETAIL",
+      isVirtualCart: async () => getIsVirtual(),
+      getCartId: createCartId,
+      onCancel: () => setCartAsInactive(),
+      onSuccess: async () => {
+        try {
+          await orderApi.placeOrder(ctx.shadowCartId);
+          //TODO: show the order confirmation page :) 
+        } catch (error) {
+          console.error('Apple Pay order placement failed:', error);
+          throw error;  //TODO: check how we can print this error somwhere
+        }
+      },
+      onError: (error) => {
+        console.error('Apple Pay payment failed:', error);
+        throw error;  //TODO: check how we can print this error somwhere
+      },
+    })($paymentMethods),
+
   ]);
 
   // Configuration – Button - Add to Cart

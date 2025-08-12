@@ -15,5 +15,8 @@
  * from Adobe.
  *******************************************************************/
 export * from './initialize';
+export * from './fetch-graphql';
 export { PaymentMethodCode } from './method';
+export * from './setCartAsInactive';
+export * from './addProductsToNewCart';
 //# sourceMappingURL=index.d.ts.map

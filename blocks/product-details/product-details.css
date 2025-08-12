@@ -115,3 +115,22 @@
     grid-column: 1 / span 2;
   }
 }
+
+/* Overlay Spinner for Apple Pay */
+.pdp__loader {
+  align-items: center;
+  background: var(--color-neutral-50);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  opacity: 0.8;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+}
+
+.pdp__loader:empty {
+  display: none;
+}
