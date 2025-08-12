@@ -16,7 +16,7 @@ import {
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
-import { checkSSGPage, parseSsgData, transformToPdpFormat } from '../prerender.js';
+import { isSsgPage, parseSsgData, transformToPdpFormat } from '../prerender.js';
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -51,7 +51,7 @@ await initializeDropin(async () => {
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
   // For SSG pages, prepare the data before pdp.js initialization
-  if (checkSSGPage()) {
+  if (isSsgPage()) {
     const parsedData = await parseSsgData();
     const transformedData = transformToPdpFormat(parsedData);
     window.product = transformedData;
@@ -88,7 +88,7 @@ await initializeDropin(async () => {
   };
 
   // Clean up existing product details after pdp.js has parsed them
-  if (checkSSGPage()) {
+  if (isSsgPage()) {
     const productDetails = document.querySelector('.product-details');
     if (productDetails) {
       while (productDetails.firstChild) {

@@ -61,7 +61,7 @@ export async function getProductPrice(sku) {
   return productPromise;
 }
 
-export function checkSSGPage() {
+export function isSsgPage() {
   const metaSku = document.querySelector('meta[name="sku"]');
   return metaSku?.content?.trim()?.length > 0;
 }
