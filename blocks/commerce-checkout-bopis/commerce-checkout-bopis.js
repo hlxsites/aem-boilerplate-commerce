@@ -606,7 +606,7 @@ export default async function decorate(block) {
   // 5. Rendering the Pickup Location Options
   const pickupLocations = await fetchPickupLocations();
   pickupLocations.forEach((location) => {
-    const { name, pickup_location_code } = location;
+    const { name, pickupLocationCode } = location;
     const locationRadiobutton = document.createElement('div');
 
     UI.render(RadioButton, {
@@ -616,7 +616,7 @@ export default async function decorate(block) {
       onChange: () => {
         checkoutApi.setShippingAddress({
           address: {},
-          pickupLocationCode: pickup_location_code,
+          pickupLocationCode,
         });
       },
     })(locationRadiobutton);

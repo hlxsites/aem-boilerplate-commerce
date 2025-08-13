@@ -700,6 +700,7 @@ export default async function decorate(block) {
                 handleOnBlur,
               } = next;
 
+              // eslint-disable-next-line no-unused-vars
               const getNextProps = ({ value, ...prev }, error) => ({
                 ...prev,
                 error,
