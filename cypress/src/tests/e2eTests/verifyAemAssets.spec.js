@@ -51,6 +51,11 @@ describe('AEM Assets enabled', () => {
       quality: 80,
     }
 
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    };
+
     waitForAemAssetImages('.search-bar-result img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
@@ -133,7 +138,6 @@ describe('AEM Assets enabled', () => {
       }
     });
 
-    // TODO: Visit a product with more than one image, otherwise gallery won't be used.
     visitWithEagerImages('products/denim-apron/ADB119');
     waitForAemAssetImages('.pdp-carousel__wrapper ~ div img', (images) => {
       for (const image of images) {
@@ -321,7 +325,7 @@ describe('AEM Assets enabled', () => {
     visitWithEagerImages(`/customer/order-details?orderRef=${envConfig.user.order}`);
     cy.get('.order-order-actions__wrapper button').contains('Return').click();
 
-    waitForAemAssetImages('.order-return-order-product-list img', (images) => {
+    waitForAemAssetImages('.order-return-order-product-list img', () => {
       cy.get(".dropin-checkbox__checkbox").each(($checkbox) => {
         cy.wrap($checkbox).click({ force: true });
       });
@@ -376,7 +380,7 @@ describe('AEM Assets enabled', () => {
     })
   });
 
-  it('[Recommendations Dropin]: should load and show AEM Assets optimized images',  () => {
+  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
     visitWithEagerImages('/products/gift-packaging/ADB102');
