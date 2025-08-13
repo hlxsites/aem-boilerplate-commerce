@@ -35,6 +35,7 @@ export interface RefineOption {
     label: string;
     attribute: string;
     numeric: boolean;
+    bidirectional: boolean;
 }
 export interface ProductSearchResponse {
     productSearch: ProductSearchResult;
