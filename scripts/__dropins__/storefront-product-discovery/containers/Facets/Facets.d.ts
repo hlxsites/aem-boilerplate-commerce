@@ -3,6 +3,7 @@ import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { SearchFacet, FacetBucket, Scope } from '../../data/models/api';
 
 export interface FacetsProps extends HTMLAttributes<HTMLDivElement> {
+    rootCategory?: string;
     scope?: Scope;
     slots?: {
         Facet?: SlotProps<{

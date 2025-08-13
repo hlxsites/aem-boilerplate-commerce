@@ -135,7 +135,9 @@ export default async function decorate(block) {
     })($viewFacets),
 
     // Facets
-    provider.render(Facets, {})($facets),
+    provider.render(Facets, {
+      rootCategory: config.urlpath, // anchor facets to the root category
+    })($facets),
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
