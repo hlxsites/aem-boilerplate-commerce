@@ -37,6 +37,25 @@ function preloadPDPAssets() {
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
+
+  // If an overlay is present:
+  // - the JSON-LD contains the actual product image from Commerce
+  // - the meta:image contains the mediabus url (converted in helix pipeline)
+  // Try to infer main image from JSON-LD, and fall back to meta:image
+  let imageUrl;
+  try {
+    const jsonLdImage = JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent)?.image;
+    imageUrl = jsonLdImage;
+  } catch (e) {
+    // probably no JSON-LD, use meta:image
+    console.debug(e);
+    imageUrl = document.querySelector('meta[property="og:image"]')?.content;
+  }
+  if (imageUrl) {
+    preloadFile(imageUrl, 'image');
+  } else {
+    console.warn('Unable to infer main image from JSON-LD');
+  }
 }
 
 await initializeDropin(async () => {
