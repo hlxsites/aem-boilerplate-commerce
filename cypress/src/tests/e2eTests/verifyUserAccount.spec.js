@@ -1,10 +1,11 @@
 describe("Verify user account functionality", () => {
-  it.skip("Verify auth user can create addresses", () => {
-    /**
-     * TODO - when /account and /addresses pages will be ready
-     * Create account, redirect to /addresses page, create two address, set one as default shipping and another as default billing
-     * Confirm that addresses visible on /addresses page, default labels present
-     * Confirm that addresses visible on /account page, default labels present
-     */
+  it("Verify auth user can create addresses", () => {
+    cy.visit("/customer/create");
+    cy.fixture("userInfo").then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+      cy.wait(5000);
+    });
+    cy.percyTakeSnapshot('My Account', 1280);
   });
 });

@@ -9,25 +9,25 @@ export const assertCartSummaryProduct =
     totalPrice,
     productPosition,
   ) =>
-  (elem = ".commerce-cart-wrapper") => {
-    cy.get(`${elem} .dropin-cart-item__title`)
-      .eq(productPosition)
-      .should("contain", productName);
-    cy.get(`${elem} .dropin-cart-item__sku`)
-      .eq(productPosition)
-      .should("contain", productSku);
-
-    if (elem === ".commerce-cart-wrapper") {
-      cy.get(`${elem} .dropin-incrementer__input`)
+    (elem = ".commerce-cart-wrapper") => {
+      cy.get(`${elem} .dropin-cart-item__title`)
         .eq(productPosition)
-        .should("have.value", productQty);
-    }
+        .should("contain", productName);
+      cy.get(`${elem} .dropin-cart-item__sku`)
+        .eq(productPosition)
+        .should("contain", productSku);
 
-    cy.get(`${elem} .dropin-cart-item__price`).should("contain", productPrice);
-    cy.get(`${elem} .dropin-cart-item__total`)
-      .eq(productPosition)
-      .should("contain", totalPrice);
-  };
+      if (elem === ".commerce-cart-wrapper") {
+        cy.get(`${elem} .dropin-incrementer__input`)
+          .eq(productPosition)
+          .should("have.value", productQty);
+      }
+
+      cy.get(`${elem} .dropin-cart-item__price`).should("contain", productPrice);
+      cy.get(`${elem} .dropin-cart-item__total`)
+        .eq(productPosition)
+        .should("contain", totalPrice);
+    };
 
 export const assertCartSummaryProductsOnCheckout = (
   productName,
@@ -85,19 +85,19 @@ export const assertOrderSummaryMisc = (subtotal, shipping, total) => {
 
 export const assertTitleHasLink =
   (productName, productHref) =>
-  (elem = ".cart-cart") => {
-    cy.get(`${elem} .dropin-cart-item`)
-      .contains(productName)
-      .should("have.attr", "href", productHref);
-  };
+    (elem = ".cart-cart") => {
+      cy.get(`${elem} .dropin-cart-item`)
+        .contains(productName)
+        .should("have.attr", "href", productHref);
+    };
 
 export const assertProductImage =
   (productImageSrc) =>
-  (elem = ".cart-cart") => {
-    cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
-      .should("be.visible")
-      .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
-  };
+    (elem = ".cart-cart") => {
+      cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
+        .should("be.visible")
+        .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
+    };
 
 export const assertSelectedPaymentMethod = (
   selected_payment_method,
@@ -167,9 +167,8 @@ export const assertOrderConfirmationShippingMethod = (
 export const assertAuthUser = (sign_up) => {
   cy.url().should("include", "/customer/account");
   cy.contains(sign_up.firstName).should("be.visible");
-  // TODO - Uncomment when https://jira.corp.adobe.com/browse/USF-1254 will be delivered to boilerplate
-  // cy.contains(sign_up.lastName).should("be.visible");
-  // cy.contains(sign_up.email).should("be.visible");
+  cy.contains(sign_up.lastName).should("be.visible");
+  cy.contains(sign_up.email).should("be.visible");
 };
 
 // imports and re-exports the functions from ./adobeDataLayer.js
@@ -313,7 +312,7 @@ export const assertWishlistTitleHasLink =
 export const assertWishlistProductImage =
   (productImageSrc) =>
     (elem = ".commerce-wishlist-wrapper") => {
-      cy.get(`${elem} img[src*="${productImageSrc}"]`, {matchCase: false})
+      cy.get(`${elem} img[src*="${productImageSrc}"]`, { matchCase: false })
         .should("be.visible")
         .and(($img) => expect($img[0].naturalWidth).to.be.gt(0));
     };
@@ -359,3 +358,8 @@ export const assertWishlistCountWithWait = (count) => {
   cy.waitForWishlistPageLoaded();
   assertWishlistCount(count);
 };
+
+export const assertOrderImageDisplay = () => {
+  cy.get(".ordersListCardImages")
+    .should('be.visible')
+}

@@ -20,6 +20,7 @@ import {
   assertOrderConfirmationShippingMethod,
   assertSelectedPaymentMethod,
   assertAuthUser,
+  assertOrderImageDisplay
 } from "../../assertions";
 import {
   customerShippingAddress,
@@ -239,5 +240,11 @@ describe("Verify auth user can place order", () => {
       );
 
     cy.get(fields.cancelButton).should("not.exist");
+
+    cy.visit("/customer/orders");
+    assertOrderImageDisplay();
+    cy.percyTakeSnapshot('My Account Order', 1280);
+
+    
   });
 });
