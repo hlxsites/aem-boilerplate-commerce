@@ -84,14 +84,15 @@
 /* Empty State */
 
 .block.product-list-page.product-list-page--empty .search__wrapper {
-    grid-template-areas: "result-info";
+    grid-template-areas:
+        "product-list";
     grid-template-columns: 1fr;
 }
 
+.block.product-list-page.product-list-page--empty .search__result-info,
 .block.product-list-page.product-list-page--empty .search__view-facets,
 .block.product-list-page.product-list-page--empty .search__facets,
 .block.product-list-page.product-list-page--empty .search__product-sort,
-.block.product-list-page.product-list-page--empty .search__product-list,
 .block.product-list-page.product-list-page--empty .search__pagination {
     display: none;
 }

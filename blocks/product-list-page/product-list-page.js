@@ -75,6 +75,8 @@ export default async function decorate(block) {
         { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
         ...getFilterFromParams(filter),
       ],
+    }).catch(() => {
+      console.error('Error searching for products');
     });
   } else {
     // If it's a search page...
@@ -84,6 +86,8 @@ export default async function decorate(block) {
       pageSize: 8,
       sort: getSortFromParams(sort),
       filter: getFilterFromParams(filter),
+    }).catch(() => {
+      console.error('Error searching for products');
     });
   }
 
