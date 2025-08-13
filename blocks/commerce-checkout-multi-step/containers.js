@@ -65,7 +65,7 @@ import {
 } from './utils.js';
 
 // Slots
-import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
+import { authPrivacyPolicyConsentSlot } from '../../scripts/commerce.js';
 
 // Fragments
 import { selectors } from './fragments.js';
