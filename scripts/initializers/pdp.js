@@ -16,6 +16,7 @@ import {
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
+import { getMetadata } from '../aem.js';
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -49,7 +50,7 @@ function preloadPDPAssets() {
   } catch (e) {
     // probably no JSON-LD, use meta:image
     console.debug(e);
-    imageUrl = document.querySelector('meta[property="og:image"]')?.content;
+    imageUrl = getMetadata('og:image');
   }
   if (imageUrl) {
     preloadFile(imageUrl, 'image');
