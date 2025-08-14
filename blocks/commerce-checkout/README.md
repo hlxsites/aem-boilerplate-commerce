@@ -322,4 +322,66 @@ CheckoutProvider.render(PlaceOrder, {
 - **Spinner Management**: The overlay spinner is displayed only when the flow is ready to perform network operations and is removed regardless of success/failure.
 - **Validation UX**: `adyenCard.showValidation()` highlights any missing or invalid fields for the shopper.
 
+## Step 11: Fix Adyen Payment Provider Issue (Order Fragment Update)
+
+### Problem
+
+Adyen payment provider was using the deprecated `order` fragment instead of the newer `orderV2` in their Place Order mutation. This caused compatibility issues with the latest Commerce API.
+
+### Solution
+
+We need to extend the Place Order functionality using Order dropin v1.4.0-alpha3 or later.
+
+#### Update Your Build Configuration
+
+In your `build.mjs` file, add this code to extend the Place Order fragment:
+
+```javascript
+overrideGQLOperations([
+  {
+    npm: '@dropins/storefront-order',
+    operations: [
+      `
+      fragment PLACE_ORDER_FRAGMENT on PlaceOrderOutput {
+        order {
+          adyen_payment_status {
+            isFinal
+            resultCode
+            additionalData
+            action
+          }
+        }
+      }
+      `,
+    ],
+  },
+]);
+```
+
+#### Install and Test
+
+1. Run `npm install` to apply the changes
+2. Test your Adyen checkout flow
+3. Verify that the payment status is properly returned
+
+#### Handle Order Placed Event for Adyen
+
+**Important**: You may need to handle the `order/placed` event specifically for Adyen payments, as it triggers immediately when the order is placed:
+
+```javascript
+// Listen for order placed events
+events.on('order/placed', (orderData) => {
+  if (orderData.payment_method === 'adyen_cc') {
+    // Handle Adyen-specific order processing
+    console.log('Adyen order placed:', orderData);
+    
+    // Check if additional action is required
+    if (orderData.adyen_payment_status?.action) {
+      // Handle 3DS or other payment actions
+      handleAdyenAction(orderData.adyen_payment_status.action);
+    }
+  }
+});
+```
+
 That completes the Adyen Drop-in integration steps.
