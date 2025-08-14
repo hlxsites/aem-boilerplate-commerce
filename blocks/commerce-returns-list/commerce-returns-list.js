@@ -4,7 +4,6 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_ORDERS_PATH,
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
   CUSTOMER_RETURNS_PATH,
