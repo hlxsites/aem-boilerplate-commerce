@@ -12,10 +12,23 @@ overrideGQLOperations([
     skipFragments: ['DOWNLOADABLE_ORDER_ITEMS_FRAGMENT'],
     operations: [],
   },
-  // {
-  //   npm: '@dropins/storefront-checkout',
-  //   operations: [],
-  // },
+  {
+    npm: '@dropins/storefront-order',
+    operations: [
+      `
+      fragment PLACE_ORDER_FRAGMENT on PlaceOrderOutput {
+        order {
+          adyen_payment_status {
+            isFinal
+            resultCode
+            additionalData
+            action
+          }
+        }
+      }
+      `,
+    ],
+  },
   // {
   //   npm: '@dropins/storefront-pdp',
   //   operations: [

@@ -244,7 +244,7 @@ export default async function decorate(block) {
 
     UI.render(Header, {
       className: 'checkout-header',
-      title: 'Checkout',
+      title: 'Adyen Checkout',
       size: 'large',
       divider: true,
       level: 1,
@@ -327,17 +327,17 @@ export default async function decorate(block) {
               // Create container in the slot render
               const $adyenCardContainer = document.createElement('div');
               $adyenCardContainer.className = 'adyen-card-container';
-              
+
               // Append the container to the slot
               ctx.appendChild($adyenCardContainer);
-              
+
               // Initialize Adyen each time the slot renders
               ctx.onRender(async () => {
                 // Check if Adyen is already mounted to this specific container
                 if ($adyenCardContainer.hasChildNodes()) {
                   return;
                 }
-                
+
                 // Clear any previous adyenCard reference since we're mounting to a new container
                 adyenCard = null;
 
@@ -388,7 +388,7 @@ export default async function decorate(block) {
                           adyen_additional_data_cc: additionalData,
                         };
 
-                        const currentCartId = checkoutApi.getCartIdFromCache();
+                        const currentCartId = ctx.cartId;
                         await orderApi.setPaymentMethodAndPlaceOrder(currentCartId, paymentMethod);
 
                         // Resolve the promise in handlePlaceOrder
