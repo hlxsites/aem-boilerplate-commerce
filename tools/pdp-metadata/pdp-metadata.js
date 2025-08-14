@@ -82,7 +82,7 @@ function getJsonLd(product, { variants }) {
   if (brand?.value) {
     product.brand = {
       '@type': 'Brand',
-        name: brand?.value,
+      name: brand?.value,
     };
   }
 
@@ -226,6 +226,7 @@ async function addVariantsToProducts(products, config) {
       'title',
       'description',
       'keywords',
+      'sku',
       'og:type',
       'og:title',
       'og:description',
@@ -239,14 +240,15 @@ async function addVariantsToProducts(products, config) {
   products.forEach(({ productView: metaData, variants }) => {
     data.push(
       [
-        metaData.path, // URL
+        metaData.path.toLowerCase(), // URL
         metaData.meta_title, // title
         metaData.meta_description, // description
         metaData.meta_keyword, // keywords
+        metaData.sku, //sku
         'product', // og:type
         metaData.meta_title, // og:title
         metaData.meta_description, // og:description
-        `${basePath}${metaData.path}`, // og:url
+        `${basePath}${metaData.path.toLowerCase()}`, // og:url
         metaData['og:image'], // og:image
         metaData['og:image:secure_url'], // og:image:secure_url
         metaData['last-modified'], // last-modified header
