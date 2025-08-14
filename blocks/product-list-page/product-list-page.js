@@ -55,7 +55,7 @@ export default async function decorate(block) {
         children: labels.Global?.AddProductToCart,
         icon: Icon({ source: 'Cart' }),
         onClick: () => {
-          window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
+          window.location.href = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
         },
         variant: 'primary',
       })(button);
@@ -86,13 +86,13 @@ export default async function decorate(block) {
       },
     })($facets),
     provider.render(ProductList, {
-      routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`),
+      routeProduct: (product) => rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase()),
       ...categoryPathConfig,
       slots: {
         ProductImage: (ctx) => {
           const { product, defaultImageProps } = ctx;
           const anchorWrapper = document.createElement('a');
-          anchorWrapper.href = rootLink(`/products/${product.urlKey}/${product.sku}`);
+          anchorWrapper.href = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
 
           tryRenderAemAssetsImage(ctx, {
             alias: product.sku,
