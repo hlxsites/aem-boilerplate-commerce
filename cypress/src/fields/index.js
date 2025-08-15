@@ -148,3 +148,22 @@ export const productCard = '.dropin-product-item-card';
 export const productName = '.dropin-product-item-card__title';
 export const productPrice = '.dropin-product-item-card__price';
 export const productImage = 'dropin-product-item-card__image-container';
+
+// Customer Address
+
+export const fieldUserFirstName = 'input[name="firstName"]';
+export const fieldUserLastName = 'input[name="lastName"]';
+export const fieldUserStreet = 'input[name="street"]';
+export const fieldUserStreet2 = 'input[name="streetMultiline_2"]';
+export const fieldUserSelectCountry = 'select[name="countryCode"]';
+export const fieldUserTextRegion = 'input[name="region"]';
+export const fieldUserCity = 'input[name="city"]';
+export const fieldUserPhone = 'input[name="telephone"]';
+export const fieldUserPostCode = 'input[name="postcode"]';
+export const fieldUserVatId = 'input[name="vatId"]';
+export const authFormUserCheckBoxShipping = 'input[name="defaultShipping"]';
+export const authFormUserCheckBoxBilling = 'input[name="defaultBilling"]';
+
+export const fieldUserEmail = 'input[name="email"]';
+export const fieldUserNumber = 'input[name="number"]';
+export const submitButton = 'button[type="submit"]';

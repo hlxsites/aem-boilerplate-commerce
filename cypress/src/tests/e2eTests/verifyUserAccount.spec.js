@@ -1,5 +1,6 @@
 import {
-  signUpUser
+  signUpUser,
+  createAddress
 } from "../../actions";
 import {
   assertAuthUser
@@ -13,6 +14,21 @@ describe("Verify user account functionality", () => {
       assertAuthUser(sign_up);
       cy.wait(5000);
     });
-    cy.percyTakeSnapshot('My Account', 1280);
+    cy.contains('Edit').should('not.be.disabled').click({ force: true });
+    cy.percyTakeSnapshot('My Account Customer', 1280);
+    cy.contains('Addresses').should('not.be.disabled').click({ force: true });
+    cy.contains('No saved addresses').should('be.visible');
+    cy.contains('Create new').should('not.be.disabled').click({ force: true });
+    cy.get('[data-testid="addressesFormTitle"]')
+      .should('exist')
+      .and('be.visible')
+      .and('contain.text', 'Add address');
+
+    cy.fixture('addressInfo').then(({ add_new_address }) => {
+      createAddress(add_new_address);
+    });
+    cy.contains('Save').should('be.visible').click();
+    cy.get('.account-address-card__description').should('be.visible');
+    cy.percyTakeSnapshot('My Account Address', 1280);
   });
 });
