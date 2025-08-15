@@ -139,3 +139,12 @@ export const giftOptionSenderName = 'input[name="senderName"]';
 export const giftOptionMessage = 'textarea[name="message"]';
 export const giftOptionGiftReceiptIncluded =
   'input[name="giftReceiptIncluded"]';
+  
+// Search
+export const searchIcon = '.nav-search-button';
+export const searchField = '#search';
+export const productListGrid = '.product-discovery-product-list__grid';
+export const productCard = '.dropin-product-item-card';
+export const productName = '.dropin-product-item-card__title';
+export const productPrice = '.dropin-product-item-card__price';
+export const productImage = 'dropin-product-item-card__image-container';
