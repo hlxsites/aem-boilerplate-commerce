@@ -79,7 +79,7 @@ A JSON file with the same product data structured in the expected format:
 
 ## Uploading to DA.live
 
-After generating the metadata files, you can manually upload the `metadata.json` file to <https://da.live> using the API:
+After generating the metadata files, you can manually upload the `metadata.json` file to <https://da.live> using the API, or you can drag and drop the file into your site's DA content folder.
 
 ### CURL Example
 
