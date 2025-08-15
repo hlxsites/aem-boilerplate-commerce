@@ -51,7 +51,7 @@ export const products = {
     urlPathWithOptions:  Cypress.env('productUrlWithOptions'),
   },
   virtual: {
-    urlPath: "/products/sample-virtual-product/virtual123",
+    urlPath: "/products/virtual-product/virtual123",
     sku: 'VIRTUAL123',
   },
 };

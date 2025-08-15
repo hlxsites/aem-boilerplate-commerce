@@ -313,7 +313,7 @@ describe("Verify guest user can manage products across wishlist and cart", () =>
 
     assertWishlistTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150"
+      "/products/youth-tee/adb150"
     )(".commerce-wishlist-wrapper");
 
     assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");
