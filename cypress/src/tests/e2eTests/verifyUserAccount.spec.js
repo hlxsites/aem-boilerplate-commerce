@@ -1,3 +1,10 @@
+import {
+  signUpUser
+} from "../../actions";
+import {
+  assertAuthUser
+} from "../../assertions";
+
 describe("Verify user account functionality", () => {
   it("Verify auth user can create addresses", () => {
     cy.visit("/customer/create");
