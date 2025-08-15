@@ -37,6 +37,26 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
+/**
+ * Checks if the page has prerendered product JSON-LD data
+ * @returns {boolean} True if product JSON-LD exists and contains @type=Product
+ */
+function isProductPrerendered() {
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+
+  if (!jsonLdScript?.textContent) {
+    return false;
+  }
+
+  try {
+    const jsonLd = JSON.parse(jsonLdScript.textContent);
+    return jsonLd?.['@type'] === 'Product';
+  } catch (error) {
+    console.debug('Failed to parse JSON-LD:', error);
+    return false;
+  }
+}
+
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   const buttonText = inCart
@@ -351,7 +371,7 @@ export default async function decorate(block) {
 
   // Set JSON-LD and Meta Tags
   events.on('aem/lcp', () => {
-    const isPrerendered = !!document.querySelector('script[type="application/ld+json"]');
+    const isPrerendered = isProductPrerendered();
     if (product && !isPrerendered) {
       setJsonLdProduct(product);
       setMetaTags(product);
