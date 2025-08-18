@@ -7,7 +7,7 @@ const ASSETS_ENABLED_KEY = 'public.default.commerce-assets-enabled';
 const COMMERCE_CORE_ENDPOINT_KEY = 'public.default.commerce-core-endpoint';
 const COMMERCE_ENDPOINT_KEY = 'public.default.commerce-endpoint';
 
-describe('AEM Assets enabled', () => {
+describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas"] }, () => {
   let aemAssetsEnvironment;
   let envConfig;
 
@@ -103,7 +103,7 @@ describe('AEM Assets enabled', () => {
   });
 
   it('[PDP Dropin]: should load and show AEM Assets optimized images', () => {
-    visitWithEagerImages('/products/gift-packaging/ADB102');
+    visitWithEagerImages('/products/gift-packaging/adb102');
     const expectedOptions = {
       protocol: 'http://',
       environment: aemAssetsEnvironment,
@@ -138,7 +138,7 @@ describe('AEM Assets enabled', () => {
       }
     });
 
-    visitWithEagerImages('products/denim-apron/ADB119');
+    visitWithEagerImages('products/denim-apron/adb119');
     waitForAemAssetImages('.pdp-carousel__wrapper ~ div img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
@@ -174,7 +174,7 @@ describe('AEM Assets enabled', () => {
       height: 300,
     }
 
-    visitWithEagerImages('/products/gift-packaging/ADB102');
+    visitWithEagerImages('/products/gift-packaging/adb102');
     cy.wait(3000);
     cy.get('.product-details__buttons__add-to-cart button').click();
 
@@ -345,7 +345,7 @@ describe('AEM Assets enabled', () => {
   });
 
   it('[Checkout Dropin]: should load and show AEM Assets optimized images', () => {
-    visitWithEagerImages('/products/gift-packaging/ADB102');
+    visitWithEagerImages('/products/gift-packaging/adb102');
 
     cy.get('.product-details__buttons__add-to-cart button')
       .should('be.visible')
@@ -383,10 +383,10 @@ describe('AEM Assets enabled', () => {
   it('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
-    visitWithEagerImages('/products/gift-packaging/ADB102');
+    visitWithEagerImages('/products/gift-packaging/adb102');
     cy.wait(3000);
 
-    visitWithEagerImages('/products/denim-apron/ADB119');
+    visitWithEagerImages('/products/denim-apron/adb119');
     cy.wait(3000);
 
     visitWithEagerImages(envConfig.prexDraft);
@@ -417,7 +417,7 @@ describe('AEM Assets enabled', () => {
   });
 
   it('[Wishlist Dropin]: should load and show AEM Assets optimized images', { tags: "@skipSaas" }, () => {
-    visitWithEagerImages('/products/denim-apron/ADB119');
+    visitWithEagerImages('/products/denim-apron/adb119');
     cy.get('.product-details__buttons__add-to-wishlist button')
       .should('be.visible')
       .click();
