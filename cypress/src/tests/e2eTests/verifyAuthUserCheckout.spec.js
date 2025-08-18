@@ -51,7 +51,7 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
     cy.contains('View Cart').click();
@@ -65,7 +65,7 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.commerce-cart-wrapper');
     cy.visit("/customer/create");
     cy.get(".minicart-wrapper").should("be.visible");
@@ -85,10 +85,10 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.visit("/products/youth-tee/ADB150");
+    cy.visit("/products/youth-tee/adb150");
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
@@ -103,7 +103,7 @@ describe("Verify auth user can place order", () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     assertCartSummaryProduct(
@@ -116,7 +116,7 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageName'))('.cart-mini-cart');
     cy.contains('View Cart').click();
@@ -130,7 +130,7 @@ describe("Verify auth user can place order", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",
@@ -146,7 +146,7 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');
