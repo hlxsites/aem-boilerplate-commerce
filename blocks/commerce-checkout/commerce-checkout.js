@@ -160,7 +160,6 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__delivery"></div>
           <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__payment-methods"></div>
-          <div class="checkout__block checkout__payment-error"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
         </div>
@@ -226,7 +225,6 @@ export default async function decorate(block) {
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
 
-  // Shared validation function for both Place Order and Apple Pay
   function validateCheckoutForms() {
     let success = true;
     const { forms } = document;
@@ -264,32 +262,6 @@ export default async function decorate(block) {
     }
 
     return success;
-  }
-
-  // Adobe Commerce GraphQL endpoint
-  const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
-
-  // Custom error display function
-  function displayErrorMessage(message) {
-    // Find or create error container
-    const errorContainer = document.querySelector('.checkout__payment-error');
-    if (errorContainer) {
-      // Create error content
-      errorContainer.innerHTML = `
-        <div class="apple-pay-error-message">
-          <div class="error-content">
-            <h3>Payment Error</h3>
-            <p>${message}</p>
-          </div>
-        </div>
-      `;
-      errorContainer.style.display = 'block';
-
-      // Scroll to error
-      setTimeout(() => {
-        errorContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
   }
 
   // Render the initial containers
@@ -393,8 +365,6 @@ export default async function decorate(block) {
               const $creditCard = document.createElement('div');
 
               PaymentServices.render(CreditCard, {
-                apiUrl: commerceCoreEndpoint,
-                getCustomerToken: getUserTokenCookie,
                 getCartId: () => ctx.cartId,
                 creditCardFormRef,
               })($creditCard);
@@ -432,22 +402,22 @@ export default async function decorate(block) {
                   try {
                     await displayOverlaySpinner();
                     await orderApi.placeOrder(cartId);
-                  } catch (error) {
-                    console.error('Error occurred while placing apple pay order.', error);
-                    displayErrorMessage(
-                      'An unexpected error occurred while processing '
+                  } catch (_error) {
+                    events.emit('checkout/error', {
+                      code: 'UNKNOWN_ERROR',
+                      message: 'An unexpected error occurred while processing '
                         + 'your Apple Pay order. Please try another payment method or try again.',
-                    );
+                    });
                   } finally {
                     await removeOverlaySpinner();
                   }
                 },
-                onError: (error) => {
-                  console.error('Error occurred during apple pay payment.', error);
-                  displayErrorMessage(
-                    'An unexpected error occurred while processing your Apple Pay payment. Please '
-                      + 'try another payment method or try again.',
-                  );
+                onError: (_error) => {
+                  events.emit('checkout/error', {
+                    code: 'UNKNOWN_ERROR',
+                    message: 'An unexpected error occurred while processing your Apple Pay '
+                      + 'payment. Please try another payment method or try again.',
+                  });
                 },
               })($applePay);
 
