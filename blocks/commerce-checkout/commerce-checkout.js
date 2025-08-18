@@ -1107,9 +1107,20 @@ export default async function decorate(block) {
     removeModal();
   }
 
+  const EXPRESS_PAYMENT_METHODS = [
+    PaymentMethodCode.SMART_BUTTONS,
+    PaymentMethodCode.APPLE_PAY,
+    PaymentMethodCode.GOOGLE_PAY,
+  ];
+
   function handleCheckoutValues(payload) {
-    const { isBillToShipping } = payload;
+    const { isBillToShipping, selectedPaymentMethod } = payload;
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    if (EXPRESS_PAYMENT_METHODS.includes(selectedPaymentMethod.code)) {
+      placeOrder.setProps((prev) => ({ ...prev, active: false }));
+    } else {
+      placeOrder.setProps((prev) => ({ ...prev, active: true }));
+    }
   }
 
   async function handleOrderPlaced(orderData) {
