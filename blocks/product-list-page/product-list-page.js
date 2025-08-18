@@ -126,7 +126,7 @@ export default async function decorate(block) {
 
     // View Facets Button
     UI.render(Button, {
-      children: 'Filters', // TODO: Add label from AEM
+      children: labels.Global?.Filters,
       icon: Icon({ source: 'Burger' }),
       variant: 'secondary',
       onClick: () => {
