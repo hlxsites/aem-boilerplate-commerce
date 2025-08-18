@@ -245,6 +245,10 @@ describe("Verify auth user can place order", () => {
     assertOrderImageDisplay();
     cy.percyTakeSnapshot('My Account Order', 1280);
 
+    cy.visit("/customer/account");
+    assertOrderImageDisplay();
+    cy.percyTakeSnapshot('My Account', 1280);
+
     
   });
 });
