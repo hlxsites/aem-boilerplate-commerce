@@ -426,7 +426,7 @@ export default async function decorate(block) {
 
         UI.render(Input, {
           name: 'search',
-          placeholder: labels.Global.Search,
+          placeholder: labels.Global?.Search,
           onValue: (phrase) => {
             if (!phrase) {
               search(null, { scope: 'popover' });
