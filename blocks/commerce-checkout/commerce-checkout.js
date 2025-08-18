@@ -158,9 +158,9 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__shipping-form"></div>
           <div class="checkout__block checkout__bill-to-shipping"></div>
           <div class="checkout__block checkout__delivery"></div>
+          <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__payment-methods"></div>
           <div class="checkout__block checkout__payment-error"></div>
-          <div class="checkout__block checkout__billing-form"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
         </div>
