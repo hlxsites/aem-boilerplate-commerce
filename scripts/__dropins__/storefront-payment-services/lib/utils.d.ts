@@ -14,5 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const setCartAsInactive: (cartId: string) => Promise<any>;
-//# sourceMappingURL=setCartAsInactive.d.ts.map
+/**
+ * Awaitable 'sleep'.
+ */
+export declare function timeout(ms: number): Promise<void>;
+//# sourceMappingURL=utils.d.ts.map
