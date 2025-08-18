@@ -90,6 +90,7 @@ import {
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/payment-services.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -224,7 +225,6 @@ export default async function decorate(block) {
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
-  const applePayButtonRef = { current: null };
 
   // Shared validation function for both Place Order and Apple Pay
   function validateCheckoutForms() {
@@ -302,7 +302,7 @@ export default async function decorate(block) {
     shippingFormSkeleton,
     _billToShipping,
     _shippingMethods,
-    _paymentMethods,
+    paymentMethods,
     billingFormSkeleton,
     _orderSummary,
     _cartSummary,
@@ -401,6 +401,7 @@ export default async function decorate(block) {
 
               ctx.replaceHTML($creditCard);
             },
+            enabled: false,
           },
           [PaymentMethodCode.SMART_BUTTONS]: {
             enabled: false,
@@ -409,83 +410,50 @@ export default async function decorate(block) {
             render: (ctx) => {
               const $applePay = document.createElement('div');
 
-              // Get the checkout data to see if the cart is virtual
-              const checkoutData = events.lastPayload('checkout/updated') ?? events.lastPayload('checkout/initialized') ?? null;
+              const checkoutData = events.lastPayload('checkout/updated')
+                || events.lastPayload('checkout/initialized')
+                || null;
 
-              function renderApplePayContent() {
-                // Clear previous content
-                $applePay.innerHTML = '';
-
-                // Validate the checkout forms before rendering the Apple Pay button
-                const isValid = validateCheckoutForms({ scrollToError: false, logValidation: false });
-                if (!isValid) {
-                  // Show a message instead of the Apple Pay button
-                  $applePay.innerHTML = '<div class="payment-method-disabled"><p>Please complete all required fields to use Apple Pay</p></div>';
-                  return;
-                }
-
-                // Render the actual Apple Pay button
-                PaymentServices.render(ApplePay, {
-                  apiUrl: commerceCoreEndpoint,
-                  getCustomerToken: getUserTokenCookie,
-                  location: "CHECKOUT",
-                  isVirtualCart: async () => {
-                    return checkoutData.isVirtual;
-                  },
-                  getCartId: () => ctx.cartId,
-                  onSuccess: async (result) => {
-                    try {
-                      await displayOverlaySpinner();
-                      await orderApi.placeOrder(ctx.cartId);
-                    } catch (error) {
-                      console.error('Apple Pay order placement failed:', error);
-
-                      // TODO: Use ServerError component to display the error message as in the PlaceOrder container
-                      // Because Apple Pay is its own place order button, we have to call directly the orderApi.placeOrder(ctx.cartId);
-                      // The best solution would be to import the signals.js and use
-                      // import { serverErrorSignal } from '@dropins/storefront-checkout/signals';
-                      // serverErrorSignal.value = error instanceof TypeError || error instanceof UnexpectedError
-                      // ? 'An unexpected error occurred. Please try again.'
-                      // : error.message;
-                      // Check with Thunderbolts is they can export the signals.js
-                      const errorMessage = error.message || 'An unexpected error occurred while processing your Apple Pay order. Please try again.';
-                      displayErrorMessage(errorMessage);
-                    } finally {
-                      await removeOverlaySpinner();
-                    }
-                  },
-                  onError: (error) => {
-                    console.error('Apple Pay payment failed:', error);
-
-                    // TODO: Use ServerError component to display the error message as in the PlaceOrder container
-                      // Because Apple Pay is its own place order button, we have to call directly the orderApi.placeOrder(ctx.cartId);
-                      // The best solution would be to import the signals.js and use
-                      // import { serverErrorSignal } from '@dropins/storefront-checkout/signals';
-                      // serverErrorSignal.value = error instanceof TypeError || error instanceof UnexpectedError
-                      // ? 'An unexpected error occurred. Please try again.'
-                      // : error.message;
-                      // Check with Thunderbolts is they can export the signals.js
-                    const errorMessage = error.message || 'Apple Pay payment was unsuccessful. Please try a different payment method or try again.';
-                    displayErrorMessage(errorMessage);
-                  },
-                })($applePay);
+              if (checkoutData === null) {
+                console.error('Cannot render apple pay button without checkout data.');
+                ctx.replaceHTML($applePay);
+                return;
               }
 
-              // Initial render
-              renderApplePayContent();
-
-              // Listen for form changes and re-render Apple Pay content
-              const handleFormChange = () => {
-                // Use a small debounce to avoid too many re-renders
-                setTimeout(renderApplePayContent, 100);
-              };
-
-              // Listen to checkout events that indicate form changes
-              events.on('checkout/updated', handleFormChange);
-              events.on('checkout/values', handleFormChange);
+              PaymentServices.render(ApplePay, {
+                getCartId: () => ctx.cartId,
+                isVirtualCart: checkoutData.isVirtual,
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: async ({ cartId }) => {
+                  try {
+                    await displayOverlaySpinner();
+                    await orderApi.placeOrder(cartId);
+                  } catch (error) {
+                    console.error('Error occurred while placing apple pay order.', error);
+                    displayErrorMessage(
+                      'An unexpected error occurred while processing '
+                        + 'your Apple Pay order. Please try another payment method or try again.',
+                    );
+                  } finally {
+                    await removeOverlaySpinner();
+                  }
+                },
+                onError: (error) => {
+                  console.error('Error occurred during apple pay payment.', error);
+                  displayErrorMessage(
+                    'An unexpected error occurred while processing your Apple Pay payment. Please '
+                      + 'try another payment method or try again.',
+                  );
+                },
+              })($applePay);
 
               ctx.replaceHTML($applePay);
             },
+            enabled: false,
           },
           [PaymentMethodCode.GOOGLE_PAY]: {
             enabled: false,
@@ -1165,11 +1133,26 @@ export default async function decorate(block) {
     await displayOrderConfirmation(orderData);
   }
 
+  function handlePaymentServicesMethodAvailable(code) {
+    paymentMethods.setProps((prev) => ({
+      slots: {
+        Methods: {
+          ...prev.slots.Methods,
+          [code]: {
+            ...prev.slots.Methods[code],
+            enabled: true,
+          },
+        },
+      },
+    }));
+  }
+
   events.on('authenticated', handleAuthenticated);
   events.on('cart/initialized', handleCartInitialized, { eager: true });
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
+  events.on('payment-services/method-available', handlePaymentServicesMethodAvailable, { eager: true });
   events.on('order/placed', handleOrderPlaced);
 }
 

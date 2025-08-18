@@ -1,9 +1,13 @@
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializers } from '@dropins/tools/initializer.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { initialize } from '@dropins/storefront-payment-services/api.js';
-import { initializeDropin } from './index.js';
+import { initializeDropin, getUserTokenCookie } from './index.js';
 
 await initializeDropin(async () => {
-  // Initialize payment services with minimal configuration
-  return initializers.mountImmediately(initialize, {});
+  const coreEndpoint = await getConfigValue('commerce-core-endpoint');
+
+  return initializers.mountImmediately(initialize, {
+    apiUrl: coreEndpoint,
+    getCustomerToken: getUserTokenCookie,
+  });
 })();
