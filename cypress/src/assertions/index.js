@@ -360,6 +360,6 @@ export const assertWishlistCountWithWait = (count) => {
 };
 
 export const assertOrderImageDisplay = () => {
-  cy.get(".ordersListCardImages")
+  cy.get(".dropin-image--loaded")
     .should('be.visible')
 }

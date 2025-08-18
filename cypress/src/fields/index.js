@@ -147,7 +147,7 @@ export const productListGrid = '.product-discovery-product-list__grid';
 export const productCard = '.dropin-product-item-card';
 export const productName = '.dropin-product-item-card__title';
 export const productPrice = '.dropin-product-item-card__price';
-export const productImage = 'dropin-product-item-card__image-container';
+export const productImage = '.dropin-product-item-card__image';
 
 // Customer Address
 
