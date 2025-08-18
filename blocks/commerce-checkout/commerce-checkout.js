@@ -402,12 +402,6 @@ export default async function decorate(block) {
                   try {
                     await displayOverlaySpinner();
                     await orderApi.placeOrder(cartId);
-                  } catch (_error) {
-                    events.emit('checkout/error', {
-                      code: 'UNKNOWN_ERROR',
-                      message: 'An unexpected error occurred while processing '
-                        + 'your Apple Pay order. Please try another payment method or try again.',
-                    });
                   } finally {
                     await removeOverlaySpinner();
                   }
