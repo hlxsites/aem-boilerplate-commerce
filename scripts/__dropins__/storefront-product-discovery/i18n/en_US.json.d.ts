@@ -1,13 +1,8 @@
 declare const _default: {
     "Search": {
         "PLP": {
-            "Warning": {
-                "noResults": "Your search returned no results.",
-                "searchError": "An error occurred while searching."
-            },
-            "SortDropdown": {
-                "title": "Sort by"
-            }
+            "noResults": "Your search returned no results.",
+            "searchError": "An error occurred while searching."
         },
         "Facet": {
             "showMore": "Show more",
@@ -15,6 +10,7 @@ declare const _default: {
             "clearAll": "Clear all"
         },
         "SortBy": {
+            "title": "Sort by",
             "lowToHigh": "Low to High",
             "highToLow": "High to Low"
         }
