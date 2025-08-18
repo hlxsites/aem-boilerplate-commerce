@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export type Price = {
-    value: number;
-    currency: string;
-};
-//# sourceMappingURL=price.d.ts.map
+export declare const setNegotiableQuotePaymentMethodMutation: string;
+//# sourceMappingURL=setNegotiableQuotePaymentMethod.graphql.d.ts.map

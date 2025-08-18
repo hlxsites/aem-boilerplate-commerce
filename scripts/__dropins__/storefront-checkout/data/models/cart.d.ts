@@ -1,19 +1,26 @@
-import { Address, PaymentMethod, ShippingMethod } from '.';
+import { Address, CustomAttribute, PaymentMethod, ShippingAddress } from '.';
 
-export interface ShippingAddress extends Address {
-    availableShippingMethods?: ShippingMethod[];
-    selectedShippingMethod?: ShippingMethod;
-    sameAsBilling?: boolean;
+export interface CartAddress extends Address {
+    customAttributes: CustomAttribute[];
+    fax?: string;
+    id?: number;
+    middleName?: string;
+    prefix?: string;
+    suffix?: string;
+    vatId?: string;
 }
+export type CartShippingAddress = CartAddress & ShippingAddress & {
+    sameAsBilling?: boolean;
+};
 export interface Cart {
     availablePaymentMethods?: PaymentMethod[];
-    billingAddress?: Address;
+    billingAddress?: CartAddress;
     email?: string;
     id: string;
     isEmpty: boolean;
     isGuest: boolean;
     isVirtual: boolean;
     selectedPaymentMethod?: PaymentMethod;
-    shippingAddresses?: ShippingAddress[];
+    shippingAddresses: CartShippingAddress[];
 }
 //# sourceMappingURL=cart.d.ts.map

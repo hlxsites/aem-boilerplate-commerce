@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const AVAILABLE_PAYMENT_METHOD_FRAGMENT = "\n  fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {\n    code\n    title\n  }\n";
-export declare const SELECTED_PAYMENT_METHOD_FRAGMENT = "\n  fragment SELECTED_PAYMENT_METHOD_FRAGMENT on SelectedPaymentMethod {\n    code\n    title\n  }\n";
-//# sourceMappingURL=CartPaymentMethodFragment.graphql.d.ts.map
+export { setNegotiableQuotePaymentMethod } from './setNegotiableQuotePaymentMethod';
+//# sourceMappingURL=index.d.ts.map

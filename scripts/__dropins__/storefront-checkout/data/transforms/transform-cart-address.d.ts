@@ -1,15 +1,15 @@
+import { CartAddress as CartAddressModel, CartAddressInput as CartAddressInputModel, CartShippingAddress as CartShippingAddressModel, CustomAttribute as CustomAttributeModel } from '../models';
 import { CartAddressInput, GetCartQuery } from '../../__generated__/types';
-import { Address as AddressModel, CustomAttribute as CustomAttributeModel, ShippingAddress as ShippingAddressModel, CartAddress as CartAddressModel } from '../models';
 
 type ShippingAddresses = NonNullable<GetCartQuery['cart']>['shipping_addresses'];
-type ShippingAddress = ShippingAddresses[0];
-type NonNullableShippingAddress = NonNullable<ShippingAddress>;
-type BillingAddress = NonNullable<GetCartQuery['cart']>['billing_address'];
-type NonNullableBillingAddress = NonNullable<BillingAddress>;
+type CartShippingAddress = ShippingAddresses[0];
+type NonNullableShippingAddress = NonNullable<CartShippingAddress>;
+type CartBillingAddress = NonNullable<GetCartQuery['cart']>['billing_address'];
+type NonNullableBillingAddress = NonNullable<CartBillingAddress>;
 type CustomAttributes = NonNullableShippingAddress['custom_attributes'] | NonNullableBillingAddress['custom_attributes'];
 export declare const transformCustomAttributes: (data: CustomAttributes) => CustomAttributeModel[];
-declare const transformBillingAddress: (data: BillingAddress) => AddressModel | undefined;
-declare const transformShippingAddresses: (data: ({
+declare const transformCartBillingAddress: (data: CartBillingAddress) => CartAddressModel | undefined;
+declare const transformCartShippingAddress: (data: ({
     __typename?: "ShippingCartAddress" | undefined;
     id?: number | null | undefined;
     firstname: string;
@@ -45,7 +45,6 @@ declare const transformShippingAddresses: (data: ({
     } | null)[];
     available_shipping_methods?: ({
         __typename?: "AvailableShippingMethod" | undefined;
-        available: boolean;
         carrier_code: string;
         carrier_title: string;
         error_message?: string | null | undefined;
@@ -75,8 +74,8 @@ declare const transformShippingAddresses: (data: ({
         method_title: string;
         amount: {
             __typename?: "Money" | undefined;
-            value?: number | null | undefined;
             currency?: import('../../__generated__/types').CurrencyEnum | null | undefined;
+            value?: number | null | undefined;
         };
         price_excl_tax: {
             __typename?: "Money" | undefined;
@@ -89,7 +88,7 @@ declare const transformShippingAddresses: (data: ({
             currency?: import('../../__generated__/types').CurrencyEnum | null | undefined;
         };
     } | null | undefined;
-} | null)[]) => ShippingAddressModel[] | undefined;
-declare const transformCartAddressModelToInput: (address: CartAddressModel) => CartAddressInput;
-export { BillingAddress, ShippingAddress, transformCartAddressModelToInput, transformBillingAddress, transformShippingAddresses, };
-//# sourceMappingURL=transform-address.d.ts.map
+} | null)[]) => CartShippingAddressModel[];
+declare const transformCartAddressInput: (address: CartAddressInputModel) => CartAddressInput;
+export { CartBillingAddress, CartShippingAddress, transformCartAddressInput, transformCartBillingAddress, transformCartShippingAddress, };
+//# sourceMappingURL=transform-cart-address.d.ts.map
