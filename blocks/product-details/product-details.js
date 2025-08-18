@@ -37,6 +37,7 @@ import {
   rootLink,
   setJsonLd,
   fetchPlaceholders,
+  getProductLink,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -45,6 +46,26 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+
+/**
+ * Checks if the page has prerendered product JSON-LD data
+ * @returns {boolean} True if product JSON-LD exists and contains @type=Product
+ */
+function isProductPrerendered() {
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+
+  if (!jsonLdScript?.textContent) {
+    return false;
+  }
+
+  try {
+    const jsonLd = JSON.parse(jsonLdScript.textContent);
+    return jsonLd?.['@type'] === 'Product';
+  } catch (error) {
+    console.debug('Failed to parse JSON-LD:', error);
+    return false;
+  }
+}
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -430,7 +451,8 @@ export default async function decorate(block) {
 
   // Set JSON-LD and Meta Tags
   events.on('aem/lcp', () => {
-    if (product) {
+    const isPrerendered = isProductPrerendered();
+    if (product && !isPrerendered) {
       setJsonLdProduct(product);
       setMetaTags(product);
       document.title = product.name;
@@ -453,7 +475,7 @@ async function setJsonLdProduct(product) {
     attributes,
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes.find((attr) => attr.name === 'brand');
+  const brand = attributes?.find((attr) => attr.name === 'brand');
 
   // get variants
   const { data } = await pdpApi.fetchGraphQl(`
@@ -495,9 +517,9 @@ async function setJsonLdProduct(product) {
       '@type': 'Brand',
       name: brand?.value,
     },
-    url: new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    url: new URL(getProductLink(urlKey, sku), window.location),
     sku,
-    '@id': new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
   if (variants.length > 1) {

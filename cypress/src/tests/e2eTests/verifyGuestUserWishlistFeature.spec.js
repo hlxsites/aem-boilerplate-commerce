@@ -13,7 +13,7 @@ import {
 import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
-describe("Verify guest user can manage products across wishlist and cart", { tags: "@skipSaas" }, () => {
+describe("Verify guest user can manage products across wishlist and cart", () => {
   beforeEach(() => {
     cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
@@ -55,7 +55,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     assertWishlistTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150"
+      "/products/youth-tee/adb150"
     )(".commerce-wishlist-wrapper");
 
     assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");
@@ -148,10 +148,10 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     assertWishlistTitleHasLink(
       "Configurable product",
-      "/products/cypress-configurable-product-latest-red/CYPRESS456"
+      "/products/cypress-configurable-product-latest-red/cypress456"
     )(".commerce-wishlist-wrapper");
 
-    assertWishlistProductImage("/adb192.jpg")(".commerce-wishlist-wrapper");
+    assertWishlistProductImage(Cypress.env('productWithOptionImageNameConfigurable'))(".commerce-wishlist-wrapper");
 
     assertWishlistItemHasOptions('color', 'red')(".wishlist-wishlist__content");
 
@@ -243,7 +243,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     assertWishlistTitleHasLink(
       "Configurable product",
-      "/products/cypress-configurable-product-latest/CYPRESS456"
+      "/products/cypress-configurable-product-latest/cypress456"
     )(".commerce-wishlist-wrapper");
 
     assertWishlistProductImage(Cypress.env('productImageNameConfigurable'))(".commerce-wishlist-wrapper");
@@ -255,7 +255,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
     assertProductDetailPage(
       'Configurable product',
       'CYPRESS456',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     );
 
     // Verify item is back in wishlist
@@ -313,7 +313,7 @@ describe("Verify guest user can manage products across wishlist and cart", { tag
 
     assertWishlistTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150"
+      "/products/youth-tee/adb150"
     )(".commerce-wishlist-wrapper");
 
     assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");
