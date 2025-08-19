@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,9 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-/**
- * A function which can be attached to fetchGraphQL to handle thrown errors in
- * a generic way.
- */
-export declare const handleNetworkError: (error: Error) => never;
-//# sourceMappingURL=network-error.d.ts.map
+export * from './setNegotiableQuoteShippingAddress';
+//# sourceMappingURL=index.d.ts.map

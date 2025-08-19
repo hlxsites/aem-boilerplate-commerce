@@ -1,0 +1,15 @@
+import { Address, PaymentMethod, ShippingAddress } from '.';
+import { NegotiableQuoteStatus } from '../../__generated__/types';
+
+export interface NegotiableQuote {
+    availablePaymentMethods?: PaymentMethod[];
+    billingAddress?: Address;
+    email?: string;
+    isVirtual: boolean;
+    name: string;
+    selectedPaymentMethod?: PaymentMethod;
+    shippingAddresses: ShippingAddress[];
+    status: NegotiableQuoteStatus;
+    uid: string;
+}
+//# sourceMappingURL=quote.d.ts.map
