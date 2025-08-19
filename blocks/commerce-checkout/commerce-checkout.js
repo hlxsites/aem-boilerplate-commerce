@@ -1,6 +1,5 @@
 // Dropin Tools
 import { debounce } from '@dropins/tools/lib.js';
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
