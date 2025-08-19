@@ -1077,10 +1077,15 @@ export default async function decorate(block) {
     PaymentMethodCode.GOOGLE_PAY,
   ];
 
+  const isExpressPaymentMethod = (method) => (
+    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  );
+
   function handleCheckoutValues(payload) {
     const { isBillToShipping, selectedPaymentMethod } = payload;
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
-    if (EXPRESS_PAYMENT_METHODS.includes(selectedPaymentMethod.code)) {
+    if (isExpressPaymentMethod(selectedPaymentMethod)) {
+      // Express payment methods take over the responsibility of placing the order
       placeOrder.setProps((prev) => ({ ...prev, active: false }));
     } else {
       placeOrder.setProps((prev) => ({ ...prev, active: true }));
