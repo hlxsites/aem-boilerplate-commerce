@@ -1,6 +1,6 @@
 
 import {
-assertImagesDisplayOnPageLoad,
+assertImageListDisplay,
 assertSearchResultClick,
 aseertSearchResults
 } from "../../assertions";
@@ -21,7 +21,7 @@ describe("Search Feature", () => {
 
     aseertSearchResults();
 
-    assertImagesDisplayOnPageLoad();
+    assertImageListDisplay('.product-discovery-product-list__grid');
 
     assertSearchResultClick();
 
@@ -39,7 +39,7 @@ describe("Search Feature", () => {
 
     aseertSearchResults();
 
-    assertImagesDisplayOnPageLoad();
+    assertImageListDisplay('.product-discovery-product-list__grid');
 
     assertSearchResultClick();
 
@@ -57,7 +57,7 @@ describe("Search Feature", () => {
     cy.get(fields.productCard)
       .should("have.length.at.least", 1);
 
-    assertImagesDisplayOnPageLoad();
+      assertImageListDisplay('.product-discovery-product-list__grid');
 
     cy.percyTakeSnapshot('Search results page', 1280);
   });

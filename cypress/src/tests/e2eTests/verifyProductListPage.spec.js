@@ -1,3 +1,7 @@
+import {
+    assertImageListDisplay
+} from "../../assertions";
+
 describe("Verify Product List Page", () => {
     it("Verify PLP page loads", () => {
         cy.visit("");
@@ -8,7 +12,7 @@ describe("Verify Product List Page", () => {
         // Navaigate to Apperal category page
         cy.contains("Apparel").should('be.visible').click();
 
-        assertImagesDisplayOnPageLoad();
+        assertImageListDisplay('.product-discovery-product-list__grid');
 
         cy.percyTakeSnapshot('Category Product List page', 1280);
 

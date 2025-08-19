@@ -364,8 +364,8 @@ export const assertOrderImageDisplay = () => {
     .should('be.visible')
 }
 
-export const assertImagesDisplayOnPageLoad = () => {
-  cy.get('img').each(($img) => {
+export const assertImageListDisplay = (selector) => {
+  cy.get(selector).find('img').each(($img) => {
     cy.wrap($img)
       .should('be.visible')
       .and(($el) => {
