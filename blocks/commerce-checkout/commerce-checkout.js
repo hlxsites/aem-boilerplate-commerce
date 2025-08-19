@@ -405,7 +405,8 @@ export default async function decorate(block) {
                     await removeOverlaySpinner();
                   }
                 },
-                onError: (_error) => {
+                onError: (error) => {
+                  console.error(error);
                   events.emit('checkout/error', {
                     code: 'UNKNOWN_ERROR',
                     message: 'An unexpected error occurred while processing your Apple Pay '
