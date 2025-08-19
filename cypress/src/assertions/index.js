@@ -363,3 +363,52 @@ export const assertOrderImageDisplay = () => {
   cy.get(".dropin-image--loaded")
     .should('be.visible')
 }
+
+export const assertImagesDisplayOnPageLoad = () => {
+  cy.get('img').each(($img) => {
+    cy.wrap($img)
+      .should('be.visible')
+      .and(($el) => {
+        // Check that the image has a naturalWidth greater than 0
+        expect($el[0].naturalWidth).to.be.greaterThan(0);
+      });
+  });
+}
+
+export const aseertSearchResults = () => {
+  // Check if search results are displayed
+  cy.get(fields.productListGrid)
+    .should("be.visible");
+
+  // Verify that product items are shown
+  cy.get(fields.productCard)
+    .should("have.length.at.least", 1);
+
+  // Check that each result has product name
+  cy.get(fields.productName)
+    .should("have.length.at.least", 1)
+    .each(($name) => {
+      cy.wrap($name).should("not.be.empty");
+    });
+
+  // Check that each result has price information
+  cy.get(fields.productPrice)
+    .should("have.length.at.least", 1)
+    .each(($price) => {
+      cy.wrap($price).should("not.be.empty");
+    });
+};
+
+export const assertSearchResultClick = () => {
+  // Click on first search result
+  cy.get(fields.productImage)
+    .first()
+    .click();
+
+  // Verify navigation to product page
+  cy.url().should("include", "/products/");
+
+  // Verify product page elements are loaded
+  cy.get(".product-details", { timeout: 10000 })
+    .should("be.visible");
+};

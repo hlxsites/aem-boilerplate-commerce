@@ -239,3 +239,10 @@ export const createAddress = (address, isValid = true) => {
     $checkbox.prop('checked', address.defaultShipping);
   });
 };
+
+export const inputSearchString = (searchString) => {
+  cy.get(fields.searchIcon).click();
+  cy.get(fields.searchField)
+    .should("be.visible")
+    .type(searchString);
+};
