@@ -15,23 +15,9 @@ export declare enum FormFields {
 }
 export interface CreditCardProps {
     /**
-     * The URL to the Adobe Commerce GraphQL endpoint, such as "https://example.com/graphql".
-     */
-    apiUrl: string;
-    /**
      * Should return a promise that resolves to the shopper`s cart ID.
      */
     getCartId: () => Promise<string>;
-    /**
-     * The credit card container may send GraphQL requests on behalf of the shopper. This requires GraphQL authorization,
-     * which can be performed using authorization tokens or session cookies.
-     *
-     * For token-based authorization, the "getCustomerToken" function should return a customer token as a string, or null
-     * for guest checkouts. The "getCustomerToken" function should not be provided for session-based authorization.
-     *
-     * For more information, see: https://developer.adobe.com/commerce/webapi/graphql/usage/authorization-tokens/.
-     */
-    getCustomerToken?: (() => string | null) | null;
     /**
      * Credit card form reference. Initially, { current: null } should be passed. Once rendered, the credit card
      * container will set the 'current' property to a { validate: () => boolean; submit: () => Promise<void> } object,
@@ -58,5 +44,5 @@ export interface CreditCardFormRef {
      */
     submit: () => Promise<void>;
 }
-export declare const CreditCard: ({ apiUrl, getCartId, getCustomerToken, creditCardFormRef, onSuccess, onError, ...props }: CreditCardProps) => import("preact/compat").JSX.Element;
+export declare const CreditCard: ({ getCartId, creditCardFormRef, onSuccess, onError, ...props }: CreditCardProps) => import("preact/compat").JSX.Element;
 //# sourceMappingURL=CreditCard.d.ts.map

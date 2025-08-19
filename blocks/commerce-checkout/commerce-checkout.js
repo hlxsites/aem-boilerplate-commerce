@@ -1,6 +1,5 @@
 // Dropin Tools
 import { debounce } from '@dropins/tools/lib.js';
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -89,6 +88,7 @@ import {
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/payment-services.js';
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -223,9 +223,6 @@ export default async function decorate(block) {
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
 
-  // Adobe Commerce GraphQL endpoint
-  const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
-
   // Render the initial containers
   const [
     _mergedCartBanner,
@@ -327,8 +324,6 @@ export default async function decorate(block) {
               const $creditCard = document.createElement('div');
 
               PaymentServices.render(CreditCard, {
-                apiUrl: commerceCoreEndpoint,
-                getCustomerToken: getUserTokenCookie,
                 getCartId: () => ctx.cartId,
                 creditCardFormRef,
               })($creditCard);
