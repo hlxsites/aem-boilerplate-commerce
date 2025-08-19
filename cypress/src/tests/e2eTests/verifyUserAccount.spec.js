@@ -75,5 +75,9 @@ describe("Verify user account functionality", () => {
     cy.get('.dropin-input__field-icon--error').should('not.exist');
     cy.get('button').contains('Save').click({ force: true });
     cy.contains('Your password has been updated').should('be.visible');
+    
+    // Order Return tab check
+    cy.contains('Manage your returns').should('not.be.disabled').click({ force: true });
+    cy.contains('No returns').should('be.visible');
   });
 });
