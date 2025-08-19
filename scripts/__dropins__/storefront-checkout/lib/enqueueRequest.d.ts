@@ -2,6 +2,7 @@ import { ReadonlySignal } from '@dropins/tools/types/elsie/src/lib/signals';
 
 export declare enum QueueName {
     CartUpdate = "cartUpdate",
+    QuoteUpdates = "quoteUpdates",
     Default = "default",
     ShippingEstimate = "shippingEstimate"
 }

@@ -1,6 +1,6 @@
 import { CustomAttribute } from './custom-attribute';
 
-export interface CartAddress {
+export interface CartAddressInput {
     city: string;
     company?: string;
     countryCode: string;
@@ -20,12 +20,12 @@ export interface CartAddress {
     fax?: string;
 }
 export interface ShippingAddressInput {
-    address?: CartAddress;
+    address?: CartAddressInput;
     customerAddressId?: number;
     pickupLocationCode?: string;
 }
 export interface BillingAddressInput {
-    address?: CartAddress;
+    address?: CartAddressInput;
     customerAddressId?: number;
     sameAsShipping?: boolean;
     useForShipping?: boolean;

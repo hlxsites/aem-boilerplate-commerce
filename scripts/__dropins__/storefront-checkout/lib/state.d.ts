@@ -3,6 +3,7 @@ import { StoreConfig } from '../data/models';
 type State = {
     authenticated: boolean;
     cartId: string | null;
+    quoteId?: string | null;
     initialized: boolean;
     config: StoreConfig | null;
 };

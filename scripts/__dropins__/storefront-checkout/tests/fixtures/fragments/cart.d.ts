@@ -90,7 +90,6 @@ export declare const cartFixture: {
         } | null)[];
         available_shipping_methods?: ({
             __typename?: "AvailableShippingMethod" | undefined;
-            available: boolean;
             carrier_code: string;
             carrier_title: string;
             error_message?: string | null | undefined;
@@ -120,8 +119,8 @@ export declare const cartFixture: {
             method_title: string;
             amount: {
                 __typename?: "Money" | undefined;
-                value?: number | null | undefined;
                 currency?: import('../../../__generated__/types').CurrencyEnum | null | undefined;
+                value?: number | null | undefined;
             };
             price_excl_tax: {
                 __typename?: "Money" | undefined;
