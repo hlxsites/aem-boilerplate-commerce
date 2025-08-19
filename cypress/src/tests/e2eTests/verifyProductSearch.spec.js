@@ -1,13 +1,13 @@
 
 import {
-assertImageListDisplay,
-assertSearchResultClick,
-aseertSearchResults
+  assertImageListDisplay,
+  assertSearchResultClick,
+  aseertSearchResults
 } from "../../assertions";
 
 import {
   inputSearchString
-  } from "../../actions";
+} from "../../actions";
 
 import * as fields from "../../fields";
 
@@ -30,7 +30,7 @@ describe("Search Feature", () => {
   it("Verify Search results page", () => {
     // Visit the homepage
     cy.visit("/");
-    
+
     // Input search string and hit enter
     inputSearchString("sleeve{enter}");
 
@@ -47,7 +47,7 @@ describe("Search Feature", () => {
 
   it("Verify Filter on search results page", () => {
     // Visit the homepage
-    cy.visit("/search?q=tee&page=1&sort=&filter=categories%3Acollections%7Cprice%3A10-25");
+    cy.visit("/search?q=tee&page=1&sort=&filter=categories%3Acollections");
 
     // Check if search results are displayed
     cy.get(fields.productListGrid)
@@ -57,9 +57,26 @@ describe("Search Feature", () => {
     cy.get(fields.productCard)
       .should("have.length.at.least", 1);
 
-      assertImageListDisplay('.product-discovery-product-list__grid');
+    assertImageListDisplay('.product-discovery-product-list__grid');
+
+    // Assert filter checkbox is checked
+    cy.get('input[type="checkbox"][value="collections"]')
+      .should('be.checked');
+    cy.contains('18 results found for "tee".');
 
     cy.percyTakeSnapshot('Search results page', 1280);
+
+    // Uncheck Filter checkbox
+    cy.get('input[type="checkbox"][value="collections"]').uncheck({ force: true });
+    cy.contains('35 results found for "tee".');
+
+    // Check Filter checkbox
+    cy.get('input[type="checkbox"][value="apparel/shirts "]').check({ force: true });
+    cy.contains('9 results found for "tee".');
+
+    // Clear all filters
+    cy.contains('Clear All').click();
+    cy.contains('35 results found for "tee".');
   });
 
 });
