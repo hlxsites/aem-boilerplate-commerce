@@ -16,8 +16,8 @@
  *******************************************************************/
 export type ErrorCode = string;
 export declare enum ErrorCodes {
-    FETCH_ERROR = "FETCH_ERROR",
     INVALID_INPUT = "INVALID_INPUT",
+    SERVER_ERROR = "SERVER_ERROR",
     UNAUTHENTICATED = "UNAUTHENTICATED",
     UNKNOWN_ERROR = "UNKNOWN_ERROR"
 }
