@@ -62,6 +62,7 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
@@ -156,8 +157,8 @@ export default async function decorate(block) {
           <div class="checkout__block checkout__shipping-form"></div>
           <div class="checkout__block checkout__bill-to-shipping"></div>
           <div class="checkout__block checkout__delivery"></div>
-          <div class="checkout__block checkout__payment-methods"></div>
           <div class="checkout__block checkout__billing-form"></div>
+          <div class="checkout__block checkout__payment-methods"></div>
           <div class="checkout__block checkout__terms-and-conditions"></div>
           <div class="checkout__block checkout__place-order"></div>
         </div>
@@ -223,6 +224,45 @@ export default async function decorate(block) {
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
 
+  function validateCheckoutForms() {
+    let success = true;
+    const { forms } = document;
+
+    const loginForm = forms[LOGIN_FORM_NAME];
+
+    if (loginForm) {
+      success = loginForm.checkValidity();
+      if (!success) scrollToElement($login);
+    }
+
+    const isFormVisible = (form) => form && form.offsetParent !== null;
+
+    if (
+      success
+      && shippingFormRef.current
+      && isFormVisible(forms[SHIPPING_FORM_NAME])
+    ) {
+      success = shippingFormRef.current.handleValidationSubmit(false);
+    }
+
+    if (
+      success
+      && billingFormRef.current
+      && isFormVisible(forms[BILLING_FORM_NAME])
+    ) {
+      success = billingFormRef.current.handleValidationSubmit(false);
+    }
+
+    const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
+
+    if (success && termsAndConditionsForm) {
+      success = termsAndConditionsForm.checkValidity();
+      if (!success) scrollToElement($termsAndConditions);
+    }
+
+    return success;
+  }
+
   // Render the initial containers
   const [
     _mergedCartBanner,
@@ -233,7 +273,7 @@ export default async function decorate(block) {
     shippingFormSkeleton,
     _billToShipping,
     _shippingMethods,
-    _paymentMethods,
+    paymentMethods,
     billingFormSkeleton,
     _orderSummary,
     _cartSummary,
@@ -330,11 +370,46 @@ export default async function decorate(block) {
 
               ctx.replaceHTML($creditCard);
             },
+            enabled: false,
           },
           [PaymentMethodCode.SMART_BUTTONS]: {
             enabled: false,
           },
           [PaymentMethodCode.APPLE_PAY]: {
+            render: (ctx) => {
+              const $applePay = document.createElement('div');
+
+              const checkoutData = events.lastPayload('checkout/updated')
+                || events.lastPayload('checkout/initialized')
+                || null;
+
+              if (checkoutData === null) {
+                console.error('Cannot render apple pay button without checkout data.');
+                ctx.replaceHTML($applePay);
+                return;
+              }
+
+              PaymentServices.render(ApplePay, {
+                getCartId: () => ctx.cartId,
+                isVirtualCart: checkoutData.isVirtual,
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+                onError: (error) => {
+                  console.error(error);
+                  events.emit('checkout/error', {
+                    code: 'UNKNOWN_ERROR',
+                    message: 'An unexpected error occurred while processing your Apple Pay '
+                      + 'payment. Please try another payment method or try again.',
+                  });
+                },
+              })($applePay);
+
+              ctx.replaceHTML($applePay);
+            },
             enabled: false,
           },
           [PaymentMethodCode.GOOGLE_PAY]: {
@@ -458,44 +533,7 @@ export default async function decorate(block) {
     })($termsAndConditions),
 
     CheckoutProvider.render(PlaceOrder, {
-      handleValidation: () => {
-        let success = true;
-        const { forms } = document;
-
-        const loginForm = forms[LOGIN_FORM_NAME];
-
-        if (loginForm) {
-          success = loginForm.checkValidity();
-          if (!success) scrollToElement($login);
-        }
-
-        const isFormVisible = (form) => form && form.offsetParent !== null;
-
-        if (
-          success
-          && shippingFormRef.current
-          && isFormVisible(forms[SHIPPING_FORM_NAME])
-        ) {
-          success = shippingFormRef.current.handleValidationSubmit(false);
-        }
-
-        if (
-          success
-          && billingFormRef.current
-          && isFormVisible(forms[BILLING_FORM_NAME])
-        ) {
-          success = billingFormRef.current.handleValidationSubmit(false);
-        }
-
-        const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
-
-        if (success && termsAndConditionsForm) {
-          success = termsAndConditionsForm.checkValidity();
-          if (!success) scrollToElement($termsAndConditions);
-        }
-
-        return success;
-      },
+      handleValidation: validateCheckoutForms,
       handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
         try {
@@ -1026,9 +1064,25 @@ export default async function decorate(block) {
     removeModal();
   }
 
+  const EXPRESS_PAYMENT_METHODS = [
+    PaymentMethodCode.SMART_BUTTONS,
+    PaymentMethodCode.APPLE_PAY,
+    PaymentMethodCode.GOOGLE_PAY,
+  ];
+
+  const isExpressPaymentMethod = (method) => (
+    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  );
+
   function handleCheckoutValues(payload) {
-    const { isBillToShipping } = payload;
+    const { isBillToShipping, selectedPaymentMethod } = payload;
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    if (isExpressPaymentMethod(selectedPaymentMethod)) {
+      // Express payment methods take over the responsibility of placing the order
+      placeOrder.setProps((prev) => ({ ...prev, active: false }));
+    } else {
+      placeOrder.setProps((prev) => ({ ...prev, active: true }));
+    }
   }
 
   async function handleOrderPlaced(orderData) {
@@ -1052,11 +1106,26 @@ export default async function decorate(block) {
     await displayOrderConfirmation(orderData);
   }
 
+  function handlePaymentServicesMethodAvailable(code) {
+    paymentMethods.setProps((prev) => ({
+      slots: {
+        Methods: {
+          ...prev.slots.Methods,
+          [code]: {
+            ...prev.slots.Methods[code],
+            enabled: true,
+          },
+        },
+      },
+    }));
+  }
+
   events.on('authenticated', handleAuthenticated);
   events.on('cart/initialized', handleCartInitialized, { eager: true });
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
+  events.on('payment-services/method-available', handlePaymentServicesMethodAvailable, { eager: true });
   events.on('order/placed', handleOrderPlaced);
 }
 
