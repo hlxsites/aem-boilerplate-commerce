@@ -397,14 +397,7 @@ export default async function decorate(block) {
                     showPaymentSheet();
                   }
                 },
-                onSuccess: async ({ cartId }) => {
-                  try {
-                    await displayOverlaySpinner();
-                    await orderApi.placeOrder(cartId);
-                  } finally {
-                    await removeOverlaySpinner();
-                  }
-                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
                 onError: (error) => {
                   console.error(error);
                   events.emit('checkout/error', {
