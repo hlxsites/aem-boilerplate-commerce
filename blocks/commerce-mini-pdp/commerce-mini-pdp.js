@@ -78,6 +78,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
     // Initialize PDP API with pre-selected options
     await initializers.mountImmediately(pdpApi.initialize, {
+      scope: 'modal',
       sku,
       optionsUIDs,
       langDefinitions,
@@ -86,7 +87,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       persistURLParams: false,
     });
 
-    const product = events.lastPayload('pdp/data');
+    const product = events.lastPayload('pdp/data', { scope: 'modal' });
 
     if (!product) {
       throw new Error('Product data not available');
@@ -96,7 +97,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     pdpApi.setProductConfigurationValues((prev) => ({
       ...prev,
       quantity: cartItem.quantity || 1,
-    }));
+    }), { scope: 'modal' });
 
     // Create the mini PDP container
     const miniPDPContainer = document.createElement('div');
@@ -183,13 +184,14 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       // Header - just set the content, no special rendering needed
       Promise.resolve($header),
 
-      pdpRender.render(ProductPrice, {})($price),
+      pdpRender.render(ProductPrice, { scope: 'modal' })($price),
 
       pdpRender.render(ProductOptions, {
         hideSelectedValue: false,
+        scope: 'modal',
       })($options),
 
-      pdpRender.render(ProductQuantity, {})($quantity),
+      pdpRender.render(ProductQuantity, { scope: 'modal' })($quantity),
 
       // Update button
       UI.render(Button, {
@@ -208,8 +210,8 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             }));
 
             // Get current product configuration
-            const values = pdpApi.getProductConfigurationValues();
-            const valid = pdpApi.isProductConfigurationValid();
+            const values = pdpApi.getProductConfigurationValues({ scope: 'modal' });
+            const valid = pdpApi.isProductConfigurationValid({ scope: 'modal' });
 
             if (!valid) {
               throw new Error('Please select all required options');
@@ -300,7 +302,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
           disabled: !valid || isLoading,
         }));
       },
-      { eager: true },
+      { eager: true, scope: 'modal' },
     );
 
     return miniPDPContainer;
