@@ -364,16 +364,23 @@ export const assertOrderImageDisplay = () => {
     .should('be.visible')
 }
 
-export const assertImageListDisplay = (selector) => {
-  cy.get(selector).find('img').each(($img) => {
+
+export const assertImageListDisplay = (selector, limit = null) => {
+  let imageQuery = cy.get(selector).find('img');
+
+  if (limit !== null) {
+    imageQuery = imageQuery.filter(`:lt(${limit})`);
+  }
+
+  imageQuery.each(($img) => {
     cy.wrap($img)
       .should('be.visible')
       .and(($el) => {
-        // Check that the image has a naturalWidth greater than 0
         expect($el[0].naturalWidth).to.be.greaterThan(0);
       });
   });
-}
+};
+
 
 export const aseertSearchResults = () => {
   // Check if search results are displayed
