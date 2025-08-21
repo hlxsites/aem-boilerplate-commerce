@@ -186,10 +186,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
       pdpRender.render(ProductPrice, { scope: 'modal' })($price),
 
-      pdpRender.render(ProductOptions, {
-        hideSelectedValue: false,
-        scope: 'modal',
-      })($options),
+      pdpRender.render(ProductOptions, { hideSelectedValue: false, scope: 'modal' })($options),
 
       pdpRender.render(ProductQuantity, { scope: 'modal' })($quantity),
 
