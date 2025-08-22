@@ -45,36 +45,19 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     default: placeholders,
   };
 
-  const models = {
-    ProductDetails: {
-      fallbackData: (parent, refinedData) => ({
-        ...parent,
-        ...refinedData,
-        images:
-          refinedData.images?.length > 0 ? refinedData.images : parent.images,
-        description:
-          refinedData.description && refinedData.description !== ''
-            ? refinedData.description
-            : parent.description,
-      }),
-    },
-  };
-
   try {
     // Configure PDP API endpoint and headers (same as main PDP initializer)
     pdpApi.setEndpoint(await commerceEndpointWithQueryParams());
     pdpApi.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
-    const productData = await pdpApi.fetchProductData(sku, {
+    const product = await pdpApi.fetchProductData(sku, {
       optionsUIDs,
       skipTransform: true,
     });
 
-    if (!productData?.sku) {
+    if (!product?.sku) {
       throw new Error('Product data not available');
     }
-
-    models.ProductDetails.initialData = { ...productData };
 
     // Initialize PDP API with pre-selected options
     await initializers.mountImmediately(pdpApi.initialize, {
@@ -82,12 +65,24 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       sku,
       optionsUIDs,
       langDefinitions,
-      models,
+      models: {
+        ProductDetails: {
+          initialData: { ...product },
+        },
+        fallbackData: (parent, refinedData) => ({
+          ...parent,
+          ...refinedData,
+          images:
+            refinedData.images?.length > 0 ? refinedData.images : parent.images,
+          description:
+            refinedData.description && refinedData.description !== ''
+              ? refinedData.description
+              : parent.description,
+        }),
+      },
       acdl: false,
       persistURLParams: false,
     });
-
-    const product = events.lastPayload('pdp/data', { scope: 'modal' });
 
     if (!product) {
       throw new Error('Product data not available');
