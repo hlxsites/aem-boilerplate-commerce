@@ -1,5 +1,4 @@
 import {
-    assertImageListDisplay,
     assertCartSummaryProduct,
     assertTitleHasLink,
     assertProductImage
@@ -11,14 +10,38 @@ describe("Verify Cart undo feature", () => {
         // Navigate to PDP
         cy.visit(products.simple.urlPath);
 
+        // Alias ADD_PRODUCTS_TO_CART_MUTATION network request 
+        const apiMethod = "ADD_PRODUCTS_TO_CART_MUTATION";
+        const urlTest = Cypress.env("graphqlEndPoint");
+
+        cy.intercept("POST", urlTest, (req) => {
+            let data = req.body.query;
+            if (data && typeof data == "string") {
+                if (data.includes(apiMethod)) {
+                    req.alias = "addProductToCart";
+                }
+            }
+        });
+
         cy.contains("Add to Cart")
             .should('be.visible')
             .and('not.be.disabled')
             .click();
+
+        // Wait for Add to cart call to complete    
+        cy.wait("@addProductToCart");
+        
         cy.get(".minicart-wrapper").click();
         cy.get(".minicart-panel[data-loaded='true']").should('exist');
         cy.get(".minicart-panel").should("not.be.empty");
-
+        assertCartSummaryProduct(
+            "Youth tee",
+            "ADB150",
+            "1",
+            "$10.00",
+            "$10.00",
+            "0",
+        )(".cart-mini-cart");
         //Navaigate to draft page 
         cy.visit("/drafts/tests/cart");
 

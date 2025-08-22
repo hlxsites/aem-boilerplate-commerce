@@ -71,7 +71,7 @@ describe("Search Feature", () => {
     cy.contains('35 results found for "tee".');
 
     // Check Filter checkbox
-    cy.get('input[type="checkbox"][value="apparel/shirts "]').check({ force: true });
+    cy.get('input[type="checkbox"][value="apparel/shirts"]').check({ force: true });
     cy.contains('9 results found for "tee".');
 
     // Clear all filters
