@@ -71,13 +71,28 @@ describe("Verify user account functionality", () => {
     cy.get('input[name="confirmPassword"]', { timeout: 10000 })
       .should('be.visible')
       .type('Testtttt3!');
-    cy.wait(1000);  
+    cy.wait(1000);
     cy.get('.dropin-input__field-icon--error').should('not.exist');
     cy.get('button').contains('Save').click({ force: true });
     cy.contains('Your password has been updated').should('be.visible');
-    
+
     // Order Return tab check
     cy.contains('Manage your returns').should('not.be.disabled').click({ force: true });
     cy.contains('No returns').should('be.visible');
   });
+
+
+  it("Check UI of Create account", () => {
+    cy.visit('/customer/create');
+    cy.contains("Create account").should('be.visible');
+    cy.percyTakeSnapshot('Create Account Page', 1280);
+  });
+
+  it("Check UI of Sign In", () => {
+    cy.visit('/customer/login');
+    cy.contains("Sign in").should('be.visible');
+    cy.contains("Forgot password?").should('be.visible');
+    cy.percyTakeSnapshot('Login Page', 1280);
+  });
+
 });
