@@ -68,17 +68,17 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       models: {
         ProductDetails: {
           initialData: { ...product },
+          fallbackData: (parent, refinedData) => ({
+            ...parent,
+            ...refinedData,
+            images:
+              refinedData.images?.length > 0 ? refinedData.images : parent.images,
+            description:
+              refinedData.description && refinedData.description !== ''
+                ? refinedData.description
+                : parent.description,
+          }),
         },
-        fallbackData: (parent, refinedData) => ({
-          ...parent,
-          ...refinedData,
-          images:
-            refinedData.images?.length > 0 ? refinedData.images : parent.images,
-          description:
-            refinedData.description && refinedData.description !== ''
-              ? refinedData.description
-              : parent.description,
-        }),
       },
       acdl: false,
       persistURLParams: false,
