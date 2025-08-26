@@ -1,4 +1,4 @@
-name: Cypress E2E B2B Paas Tests
+name: Cypress E2E B2B PaaS Tests
 on:
   push:
     branches:

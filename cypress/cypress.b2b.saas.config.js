@@ -8,6 +8,10 @@ const AEM_ASSETS_PRIVATE_USER = JSON.parse(
 
 module.exports = defineConfig({
   ...baseConfig,
+  e2e: {
+    ...baseConfig.e2e,
+    specPattern: 'src/tests/b2b/**/*.spec.js',
+  },
   env: {
     ...baseConfig.env,
     graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
