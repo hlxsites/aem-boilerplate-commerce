@@ -13,7 +13,7 @@ import {
 import { products } from "../../fixtures";
 import { signUpUser } from "../../actions";
 
-describe("Verify guest user can manage products across wishlist and cart", { tags: "@B2BPaas" }, () => {
+describe("Verify guest user can manage products across wishlist and cart", () => {
   beforeEach(() => {
     cy.visit("");
     cy.get(".wishlist-wrapper").should('be.visible').click();
