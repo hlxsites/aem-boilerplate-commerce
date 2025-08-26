@@ -4,10 +4,8 @@ import { initialize } from '@dropins/storefront-payment-services/api.js';
 import { initializeDropin, getUserTokenCookie } from './index.js';
 
 await initializeDropin(async () => {
-  const coreEndpoint = await getConfigValue('commerce-core-endpoint');
-
   return initializers.mountImmediately(initialize, {
-    apiUrl: coreEndpoint,
+    apiUrl: getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'),
     getCustomerToken: getUserTokenCookie,
   });
 })();
