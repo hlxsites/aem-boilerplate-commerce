@@ -33,7 +33,7 @@ ${ie}
 `;async function te(e,i){const r=pe(i),n=ve(r,e),t=be.replace("# %extendedPlaceholder%",n),{data:s}=await oe(t,{method:"GET",variables:{optionIds:i,sku:e}});return s}const ke=async(e,i,r,n)=>{var d,h,w;const t=await te(e,i);if(!t)return null;let{products:s,refineProduct:a,...l}=t;const o=s==null?void 0:s[0],m=Ue(Object.values(l),o.options,r);if(r!=null&&r.length&&a===null){i=Ae(m,i,r);const P=await te(e,i);a=P==null?void 0:P.refineProduct}const u={...a||o,sku:o.sku,name:o.name,externalParentId:o==null?void 0:o.externalId,options:m,optionUIDs:i,variantSku:(a==null?void 0:a.__typename)==="SimpleProductView"?a==null?void 0:a.sku:void 0},c=n?u:K(u),f=(w=(h=(d=b==null?void 0:b.getConfig())==null?void 0:d.models)==null?void 0:h.ProductDetails)==null?void 0:w.fallbackData;return f?f(o,c):c};function pe(e){if(e.length<2)return[e];const i=[];return e.forEach(r=>{const n=[];e.forEach(t=>{r!==t&&n.push(t)}),i.push(n)}),i}function ve(e,i){return e.map((r,n)=>`
           ProductOption${n}: refineProduct(
             optionIds: [
-              ${i.map(t=>`"${t}"`).join(", ")}
+              ${r.map(t=>`"${t}"`).join(", ")}
             ]
             sku: "${i}"
           ) {

@@ -18,6 +18,7 @@ export * from './initialize';
 export * from './fetch-graphql';
 export * from './getStoreConfig';
 export * from './localStorage';
+export * from './getProductBySku';
 export * from './getWishlistById';
 export * from './getWishlists';
 export * from './addProductsToWishlist';

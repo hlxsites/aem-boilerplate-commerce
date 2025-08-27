@@ -13,7 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export declare const setProductConfigurationValid: (callback: (prev: boolean) => boolean, options?: {
-    scope?: string;
-}) => void;
+export declare const setProductConfigurationValid: (callback: (prev: boolean) => boolean) => void;
 //# sourceMappingURL=setProductConfigurationValid.d.ts.map

@@ -19,4 +19,5 @@ export * from './Wishlist';
 export * from './ProductItem';
 export * from './ImageCarousel';
 export * from './Login';
+export * from './TaxDetails';
 //# sourceMappingURL=index.d.ts.map

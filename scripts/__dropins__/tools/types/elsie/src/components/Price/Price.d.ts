@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'preact/compat';
 
 export interface PriceProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'size'> {
     amount?: number;
-    currency?: string | null;
+    currency?: string;
     locale?: string;
     formatOptions?: {
         [key: string]: any;
