@@ -220,7 +220,7 @@ describe("Verify auth user can place order", () => {
     cy.get(fields.cancelButton).click();
 
     cy.get(fields.cancellationReasonsSelector).select("1");
-    cy.contains('The item(s) are no longer needed').should('be.visible');
+    cy.contains('Submit Cancellation').should('be.visible');
     cy.get(fields.cancellationReasonsSelector).should("have.value", "1");
     cy.percyTakeSnapshot('Cancel Order', 1280);
     cy.get(fields.submitCancelOrderButton).click();
