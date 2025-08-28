@@ -23,6 +23,73 @@
     "url": "https://github.com/hlxsites/aem-boilerplate-commerce/issues"
   },
   "homepage": "https://github.com/hlxsites/aem-boilerplate-commerce#readme",
+  "libraries": [
+    { 
+      "name": "@dropins/tools",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/tools"
+    },
+    {
+      "name": "@dropins/storefront-account",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-account"
+    },
+    {
+      "name": "@dropins/storefront-auth",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-auth"
+    },
+    { 
+      "name": "@dropins/storefront-cart",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-cart"
+    },
+    { 
+      "name": "@dropins/storefront-checkout",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-checkout"
+    },
+    { 
+      "name": "@dropins/storefront-order",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-order"
+    },
+    { 
+      "name": "@dropins/storefront-payment-services",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-payment-services"
+    },
+    { 
+      "name": "@dropins/storefront-pdp",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-pdp"
+    },
+    { 
+      "name": "@dropins/storefront-wishlist",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-wishlist"
+    },
+    { 
+      "name": "@dropins/storefront-personalization",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-personalization"
+    },
+    { 
+      "name": "@dropins/storefront-product-discovery",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-product-discovery"
+    },
+    { 
+      "name": "@dropins/storefront-recommendations",
+      "include": ["**/*"],
+      "path": "scripts/libraries/dropins/storefront-recommendations"
+    },
+    { 
+      "name": "@adobe/adobe-client-data-layer",
+      "include": ["dist/adobe-client-data-layer.min.js", "dist/adobe-client-data-layer.min.js.map"],
+      "path": "scripts/libraries/acdl"
+    }
+  ],
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.25.9",
@@ -30,10 +97,12 @@
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.31.0",
+    "glob": "^11.0.2",
     "stylelint": "16.20.0",
     "stylelint-config-standard": "38.0.0"
   },
   "dependencies": {
+    "@adobe/adobe-client-data-layer": "^3.0.0",
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
     "@dropins/storefront-account": "~1.0.9",
@@ -47,6 +116,7 @@
     "@dropins/storefront-wishlist": "~2.0.0",
     "@dropins/tools": "1.5.0-beta2",
     "@dropins/storefront-personalization": "~1.0.1",
-    "@dropins/storefront-product-discovery": "~2.0.0"
+    "@dropins/storefront-product-discovery": "~2.0.0",
+    "ajv": "^8.12.0"
   }
 }
