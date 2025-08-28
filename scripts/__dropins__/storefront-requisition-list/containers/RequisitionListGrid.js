@@ -17,30 +17,41 @@ const RequisitionList = ({
 }) => {
   return u("div", {
     ...props,
-    className: classes(["requisition-list-item", className]),
+    className: classes(["requisition-list__row", className]),
     children: [u("div", {
+      className: classes(["requisition-list__cell", className]),
       children: requisitionList.name
     }, void 0, false, {
       fileName: _jsxFileName$2,
       lineNumber: 37,
       columnNumber: 7
     }, void 0), u("div", {
+      className: classes(["requisition-list__cell", className]),
       children: requisitionList.description
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 38,
+      lineNumber: 40,
       columnNumber: 7
     }, void 0), u("div", {
+      className: classes(["requisition-list__cell", className]),
       children: requisitionList.items_count
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 39,
+      lineNumber: 43,
       columnNumber: 7
     }, void 0), u("div", {
+      className: classes(["requisition-list__cell", className]),
       children: requisitionList.updated_at
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 40,
+      lineNumber: 46,
+      columnNumber: 7
+    }, void 0), u("div", {
+      className: classes(["requisition-list__cell", className]),
+      children: "[ edit ] [ delete ]"
+    }, void 0, false, {
+      fileName: _jsxFileName$2,
+      lineNumber: 49,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
@@ -73,15 +84,60 @@ const RequisitionListGridWrapper = ({
       fileName: _jsxFileName$1,
       lineNumber: 43,
       columnNumber: 9
-    }, void 0), requisitionLists.map((rl) => {
-      return u(RequisitionList, {
-        requisitionList: rl
-      }, void 0, false, {
+    }, void 0), u("div", {
+      className: classes(["requisition-list-grid-wrapper__content", className]),
+      children: [u("div", {
+        ...props,
+        className: classes(["requisition-list-grid-wrapper__list-header", className]),
+        children: [u("h5", {
+          children: "Name"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 67,
+          columnNumber: 11
+        }, void 0), u("h5", {
+          children: "Description"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 68,
+          columnNumber: 11
+        }, void 0), u("h5", {
+          children: "Items count"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 69,
+          columnNumber: 11
+        }, void 0), u("h5", {
+          children: "Updated"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 70,
+          columnNumber: 11
+        }, void 0), u("h5", {
+          children: "Actions"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 71,
+          columnNumber: 11
+        }, void 0)]
+      }, void 0, true, {
         fileName: _jsxFileName$1,
-        lineNumber: 55,
-        columnNumber: 16
-      }, void 0);
-    })]
+        lineNumber: 60,
+        columnNumber: 9
+      }, void 0), requisitionLists.map((rl) => {
+        return u(RequisitionList, {
+          requisitionList: rl
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 74,
+          columnNumber: 18
+        }, void 0);
+      })]
+    }, void 0, true, {
+      fileName: _jsxFileName$1,
+      lineNumber: 54,
+      columnNumber: 7
+    }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$1,
     lineNumber: 37,
