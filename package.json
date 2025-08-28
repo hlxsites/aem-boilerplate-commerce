@@ -93,6 +93,11 @@
       "name": "ajv-dist",
       "include": ["dist/ajv2020.min.js", "dist/ajv2020.min.js.map"],
       "path": "scripts/libraries/ajv"
+    },
+    { 
+      "name": "@adobe/magento-storefront-events-sdk",
+      "include": ["dist/index.js"],
+      "path": "scripts/libraries/magento-storefront-events-sdk"
     }
   ],
   "devDependencies": {
