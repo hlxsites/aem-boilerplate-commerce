@@ -4,29 +4,25 @@ const path = require('path');
 const { glob } = require('glob');
 const { dependencies, libraries } = require('./package.json');
 
-// Define the libraries folder
-const librariesDir = path.join('scripts', '__');
-
-// Remove existing libraries folder
-if (fs.existsSync(librariesDir)) {
-  fs.rmSync(librariesDir, { recursive: true });
-}
-
-// Create scripts/__ directory if not exists
-fs.mkdirSync(librariesDir, { recursive: true });
-
 /**
- * Copies a library package to the libraries directory
+ * Copies a library package to the specified destination directory
  * @param {Object} library - The library configuration object
  * @param {string} library.name - The package name (e.g., '@dropins/storefront-cart')
  * @param {string[]} library.include - Array of glob patterns for files to include
+ * @param {string} library.destination - The destination path where the library will be copied
  */
 async function copyLibrary(library) {
-  const { name: libraryName, include = ['**/*'] } = library;
+  const { name: libraryName, include = ['**/*'], destination } = library;
 
   // Skip if package is not in package.json dependencies
   if (!dependencies[libraryName]) {
     console.warn(`⚠️  Library ${libraryName} not found in dependencies, skipping...`);
+    return;
+  }
+
+  // Skip if destination is not specified
+  if (!destination) {
+    console.warn(`⚠️  No destination specified for ${libraryName}, skipping...`);
     return;
   }
 
@@ -38,12 +34,14 @@ async function copyLibrary(library) {
     return;
   }
 
-  // Replace @ symbol with __ for CDN compatibility
-  const sanitizedLibraryName = libraryName.replace('@', '__');
-  const targetPath = path.join(librariesDir, sanitizedLibraryName);
+  // Clean up existing destination directory if it exists
+  if (fs.existsSync(destination)) {
+    console.log(`🧹 Cleaning up existing destination: ${destination}`);
+    fs.rmSync(destination, { recursive: true });
+  }
 
-  // Ensure target directory exists
-  fs.mkdirSync(targetPath, { recursive: true });
+  // Ensure destination directory exists
+  fs.mkdirSync(destination, { recursive: true });
 
   // Process all include patterns in parallel
   const patternPromises = include.map(async (pattern) => {
@@ -60,7 +58,7 @@ async function copyLibrary(library) {
         .filter((file) => !file.endsWith('package.json'))
         .map((file) => {
           const srcPath = path.join(packagePath, file);
-          const destPath = path.join(targetPath, file);
+          const destPath = path.join(destination, file);
 
           // Ensure destination directory exists
           fs.mkdirSync(path.dirname(destPath), { recursive: true });
@@ -81,7 +79,7 @@ async function copyLibrary(library) {
   });
 
   await Promise.all(patternPromises);
-  console.log(`✅ Copied ${libraryName} to ${targetPath}`);
+  console.log(`✅ Copied ${libraryName} to ${destination}`);
 }
 
 // Process all libraries from configuration
@@ -101,7 +99,7 @@ processLibraries().then(() => {
   checkPackageLockForArtifactory()
     .then((found) => {
       if (!found) {
-        console.info('🎉 Drop-ins installed successfully!', '\n');
+        console.info('🎉 Packages installed successfully!', '\n');
         process.exit(0);
       } else {
         console.error('🚨 Fix artifactory references before committing! 🚨');

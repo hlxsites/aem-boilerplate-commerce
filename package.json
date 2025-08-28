@@ -24,22 +24,86 @@
   },
   "homepage": "https://github.com/hlxsites/aem-boilerplate-commerce#readme",
   "libraries": [
-    { "name": "@dropins/storefront-account", "include": ["**/*"] },
-    { "name": "@dropins/storefront-auth", "include": ["**/*"] },
-    { "name": "@dropins/storefront-cart", "include": ["**/*"] },
-    { "name": "@dropins/storefront-checkout", "include": ["**/*"] },
-    { "name": "@dropins/storefront-order", "include": ["**/*"] },
-    { "name": "@dropins/storefront-payment-services", "include": ["**/*"] },
-    { "name": "@dropins/storefront-pdp", "include": ["**/*"] },
-    { "name": "@dropins/storefront-wishlist", "include": ["**/*"] },
-    { "name": "@dropins/storefront-personalization", "include": ["**/*"] },
-    { "name": "@dropins/storefront-product-discovery", "include": ["**/*"] },
-    { "name": "@dropins/storefront-recommendations", "include": ["**/*"] },
-    { "name": "@adobe/adobe-client-data-layer", "include": ["dist/adobe-client-data-layer.min.js"] },
-    { "name": "@adobe/magento-storefront-event-collector", "include": ["dist/index.js"] },
-    { "name": "@adobe/magento-storefront-events-sdk", "include": ["dist/index.js"] },
-    { "name": "@dropins/tools", "include": ["**/*"] },
-    { "name": "ajv", "include": ["dist/2020.js"] }
+    { 
+      "name": "@dropins/tools",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/tools"
+    },
+    {
+      "name": "@dropins/storefront-account",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-account"
+    },
+    {
+      "name": "@dropins/storefront-auth",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-auth"
+    },
+    { 
+      "name": "@dropins/storefront-cart",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-cart"
+    },
+    { 
+      "name": "@dropins/storefront-checkout",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-checkout"
+    },
+    { 
+      "name": "@dropins/storefront-order",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-order"
+    },
+    { 
+      "name": "@dropins/storefront-payment-services",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-payment-services"
+    },
+    { 
+      "name": "@dropins/storefront-pdp",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-pdp"
+    },
+    { 
+      "name": "@dropins/storefront-wishlist",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-wishlist"
+    },
+    { 
+      "name": "@dropins/storefront-personalization",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-personalization"
+    },
+    { 
+      "name": "@dropins/storefront-product-discovery",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-product-discovery"
+    },
+    { 
+      "name": "@dropins/storefront-recommendations",
+      "include": ["**/*"],
+      "destination": "scripts/__dropins__/storefront-recommendations"
+    },
+    { 
+      "name": "@adobe/adobe-client-data-layer",
+      "include": ["dist/adobe-client-data-layer.min.js"],
+      "destination": "scripts/__/adobe-client-data-layer"
+    },
+    { 
+      "name": "@adobe/magento-storefront-event-collector",
+      "include": ["dist/index.js"],
+      "destination": "scripts/__/magento-storefront-event-collector"
+    },
+    { 
+      "name": "@adobe/magento-storefront-events-sdk",
+      "include": ["dist/index.js"],
+      "destination": "scripts/__/magento-storefront-events-sdk"
+    },
+    { 
+      "name": "ajv",
+      "include": ["dist/2020.js"],
+      "destination": "scripts/__/ajv"
+    }
   ],
   "devDependencies": {
     "@adobe/aem-cli": "^16.5.8",
@@ -53,7 +117,7 @@
     "stylelint-config-standard": "38.0.0"
   },
   "dependencies": {
-    "@adobe/adobe-client-data-layer": "^2.0.2",
+    "@adobe/adobe-client-data-layer": "^3.0.0",
     "@adobe/magento-storefront-event-collector": "^1.8.0",
     "@adobe/magento-storefront-events-sdk": "^1.8.0",
     "@dropins/storefront-account": "~1.0.7-beta2",
