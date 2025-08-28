@@ -88,6 +88,11 @@
       "name": "@adobe/adobe-client-data-layer",
       "include": ["dist/adobe-client-data-layer.min.js", "dist/adobe-client-data-layer.min.js.map"],
       "path": "scripts/libraries/acdl"
+    },
+    { 
+      "name": "ajv-dist",
+      "include": ["dist/ajv2020.min.js", "dist/ajv2020.min.js.map"],
+      "path": "scripts/libraries/ajv"
     }
   ],
   "devDependencies": {
@@ -117,6 +122,6 @@
     "@dropins/tools": "1.5.0-beta2",
     "@dropins/storefront-personalization": "~1.0.1",
     "@dropins/storefront-product-discovery": "~2.0.0",
-    "ajv": "^8.12.0"
+    "ajv-dist": "8.12.0"
   }
 }
