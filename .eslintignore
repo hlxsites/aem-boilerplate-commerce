@@ -4,7 +4,6 @@ tools/picker
 tools/segments
 tools/pdp-metadata
 scripts/libraries
-scripts/commerce-events-collector.js
 scripts/commerce-events-sdk.js
 plugins/
 cypress/

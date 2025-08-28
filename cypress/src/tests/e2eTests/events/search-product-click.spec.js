@@ -5,7 +5,7 @@
  */
 it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
   cy.visit("/");
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
@@ -20,7 +20,7 @@ it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
         expect(storefrontInstanceContextIndex).to.be.greaterThan(-1);
       });
   });
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       cy.get(".nav-search-button").should("be.visible").click();
