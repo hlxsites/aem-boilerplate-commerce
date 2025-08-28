@@ -244,10 +244,13 @@ describe("Verify auth user can place order", () => {
 
     cy.visit("/customer/orders");
     assertOrderImageDisplay();
+    cy.waitForLoadingSkeletonToDisappear();
     cy.percyTakeSnapshot('My Account Order', 1280);
 
     cy.visit("/customer/account");
     assertOrderImageDisplay();
+    cy.waitForLoadingSkeletonToDisappear();
+    cy.contains('No returns').should('be.visible');
     cy.percyTakeSnapshot('My Account', 1280);
 
     
