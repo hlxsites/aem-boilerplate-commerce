@@ -30,8 +30,11 @@ describe("Verify guest user can place order with virtual product", () => {
     cy.get(".dropin-incrementer__input").should("have.value", "1");
     // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
     cy.wait(1000);
+    cy.get(".minicart-panel").should("be.empty");
     cy.contains("Add to Cart").click();
     cy.get(".minicart-wrapper").click();
+    cy.get(".minicart-panel[data-loaded='true']").should('exist');
+    cy.get(".minicart-panel").should("not.be.empty");
     cy.wait(2000);
 
     assertCartSummaryProduct(
@@ -45,7 +48,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Virtual Product",
-      "/products/virtual-product/VIRTUAL123",
+      "/products/virtual-product/virtual123",
     )(".cart-mini-cart");
     cy.contains("View Cart").click();
     assertCartSummaryProduct(
@@ -58,7 +61,7 @@ describe("Verify guest user can place order with virtual product", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Virtual Product",
-      "/products/virtual-product/VIRTUAL123",
+      "/products/virtual-product/virtual123",
     )(".commerce-cart-wrapper");
 
     cy.get(".dropin-button--primary").contains("Checkout").click();

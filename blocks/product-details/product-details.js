@@ -10,10 +10,6 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-import {
-  removeProductsFromWishlist,
-  getWishlistItemFromStorage,
-} from '@dropins/storefront-wishlist/api.js';
 
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
@@ -29,19 +25,43 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
 // Libs
-import { fetchPlaceholders, setJsonLd } from '../../scripts/commerce.js';
+import {
+  rootLink,
+  setJsonLd,
+  fetchPlaceholders,
+  getProductLink,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-import { rootLink } from '../../scripts/scripts.js';
+
+/**
+ * Checks if the page has prerendered product JSON-LD data
+ * @returns {boolean} True if product JSON-LD exists and contains @type=Product
+ */
+function isProductPrerendered() {
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+
+  if (!jsonLdScript?.textContent) {
+    return false;
+  }
+
+  try {
+    const jsonLd = JSON.parse(jsonLdScript.textContent);
+    return jsonLd?.['@type'] === 'Product';
+  } catch (error) {
+    console.debug('Failed to parse JSON-LD:', error);
+    return false;
+  }
+}
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   const buttonText = inCart
-    ? labels.PDP?.Product?.UpdateInCart?.label
-    : labels.PDP?.Product?.AddToCart?.label;
+    ? labels.Global?.UpdateProductInCart
+    : labels.Global?.AddProductToCart;
   if (addToCartInstance) {
     addToCartInstance.setProps((prev) => ({
       ...prev,
@@ -63,8 +83,8 @@ export default async function decorate(block) {
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
+    <div class="product-details__alert"></div>
     <div class="product-details__wrapper">
-      <div class="product-details__alert"></div>
       <div class="product-details__left-column">
         <div class="product-details__gallery"></div>
       </div>
@@ -100,7 +120,7 @@ export default async function decorate(block) {
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
-  block.appendChild(fragment);
+  block.replaceChildren(fragment);
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
@@ -200,12 +220,12 @@ export default async function decorate(block) {
 
   // Configuration – Button - Add to Cart
   const addToCart = await UI.render(Button, {
-    children: labels.PDP?.Product?.AddToCart?.label,
+    children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
       const buttonActionText = isUpdateMode
-        ? labels.Custom?.UpdatingInCart?.label
-        : labels.Custom?.AddingToCart?.label;
+        ? labels.Global?.UpdatingInCart
+        : labels.Global?.AddingToCart;
       try {
         addToCart.setProps((prev) => ({
           ...prev,
@@ -311,59 +331,6 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  if (sessionStorage.getItem('incompleteProduct')) {
-    inlineAlert = await UI.render(InLineAlert, {
-      heading: 'Warning',
-      description: 'Please complete the product configuration before adding to cart.',
-      icon: Icon({ source: 'Warning' }),
-      'aria-live': 'assertive',
-      role: 'alert',
-      onDismiss: () => {
-        inlineAlert.remove();
-      },
-    })($alert);
-
-    // Scroll the alertWrapper into view
-    $alert.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-
-    sessionStorage.removeItem('incompleteProduct');
-  }
-
-  events.on('cart/updated', async (data) => {
-    const item = getWishlistItemFromStorage(product.sku);
-    if (!item) {
-      return;
-    }
-    const inCart = data?.items?.find((cartItem) => cartItem.sku === item.product.sku);
-    if (!inCart) {
-      return;
-    }
-    await removeProductsFromWishlist(
-      [
-        {
-          id: item.id ?? '',
-          product: {
-            sku: item.product.sku,
-          },
-        },
-      ],
-    );
-    wishlistToggleBtn.setProps(
-      (prev) => ({
-        ...prev,
-        icon: h(Icon, { source: 'Heart' }),
-      }),
-      events.emit('wishlist/alert', {
-        action: 'move',
-        item,
-        routeToWishlist,
-      }),
-    );
-  }, { eager: true });
-
   events.on('wishlist/alert', ({ action, item }) => {
     wishlistRender.render(WishlistAlert, {
       action,
@@ -374,6 +341,13 @@ export default async function decorate(block) {
     setTimeout(() => {
       $alert.innerHTML = '';
     }, 5000);
+
+    setTimeout(() => {
+      $alert.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 0);
   });
 
   // --- Add new event listener for cart/data ---
@@ -397,7 +371,8 @@ export default async function decorate(block) {
 
   // Set JSON-LD and Meta Tags
   events.on('aem/lcp', () => {
-    if (product) {
+    const isPrerendered = isProductPrerendered();
+    if (product && !isPrerendered) {
       setJsonLdProduct(product);
       setMetaTags(product);
       document.title = product.name;
@@ -420,7 +395,7 @@ async function setJsonLdProduct(product) {
     attributes,
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes.find((attr) => attr.name === 'brand');
+  const brand = attributes?.find((attr) => attr.name === 'brand');
 
   // get variants
   const { data } = await pdpApi.fetchGraphQl(`
@@ -462,9 +437,9 @@ async function setJsonLdProduct(product) {
       '@type': 'Brand',
       name: brand?.value,
     },
-    url: new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    url: new URL(getProductLink(urlKey, sku), window.location),
     sku,
-    '@id': new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
   if (variants.length > 1) {
@@ -545,5 +520,10 @@ function imageSlotConfig(ctx) {
   return {
     alias: data.sku,
     imageProps: defaultImageProps,
+
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
   };
 }

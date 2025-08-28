@@ -1,5 +1,10 @@
+// Dropin Tools
+import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
+
 // Dropin Components
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
@@ -7,15 +12,15 @@ import * as cartApi from '@dropins/storefront-cart/api.js';
 // Recommendations Dropin
 import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
 import { render as provider } from '@dropins/storefront-recommendations/render.js';
+import { publishRecsItemAddToCartClick } from '@dropins/storefront-recommendations/api.js';
 
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
 // Block-level
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { readBlockConfig } from '../../scripts/aem.js';
-import { rootLink } from '../../scripts/scripts.js';
+import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/recommendations.js';
@@ -56,12 +61,10 @@ function getPurchaseHistory(storeViewCode) {
 }
 
 export default async function decorate(block) {
+  const labels = await fetchPlaceholders();
+
   // Configuration
-  const { typeid: typeId } = readBlockConfig(block);
-  const filters = {};
-  if (typeId) {
-    filters.typeId = typeId;
-  }
+  const { currentsku, recid } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -107,6 +110,7 @@ export default async function decorate(block) {
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
+    const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory(storeViewCode);
@@ -114,12 +118,26 @@ export default async function decorate(block) {
     // Get purchase history
     context.userPurchaseHistory = getPurchaseHistory(storeViewCode);
 
+    let recommendationsData = null;
+
+    // Get data from the event bus to set publish events
+    events.on(
+      'recommendations/data',
+      (data) => {
+        recommendationsData = data;
+        if (data?.items?.length) {
+          recommendationsData = data;
+        }
+      },
+      { eager: true },
+    );
+
     try {
       await Promise.all([
         provider.render(ProductList, {
-          routeProduct: (item) => rootLink(`/products/${item.urlKey}/${item.sku}`),
-          pageType: context.pageType,
-          currentSku: context.currentSku,
+          routeProduct: createProductLink,
+          recId: recid,
+          currentSku: currentsku || context.currentSku,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
           slots: {
@@ -134,18 +152,38 @@ export default async function decorate(block) {
               if (ctx.item.itemType === 'SimpleProductView') {
                 // Add to Cart Button
                 UI.render(Button, {
-                  children:
-                    ctx.dictionary.Recommendations.ProductList.addToCart,
+                  children: labels.Global?.AddProductToCart,
                   icon: Icon({ source: 'Cart' }),
-                  onClick: () => cartApi.addProductsToCart([{ sku: ctx.item.sku, quantity: 1 }]),
+                  onClick: (event) => {
+                    cartApi.addProductsToCart([
+                      { sku: ctx.item.sku, quantity: 1 },
+                    ]);
+                    // Prevent the click event from bubbling up to the parent span
+                    // to avoid triggering the recs-item-click event
+                    event.stopPropagation();
+                    // Publish ACDL event for add to cart click
+                    const recommendationUnit = recommendationsData?.find(
+                      (unit) => unit.items?.some(
+                        (unitItem) => unitItem.sku === ctx.item.sku,
+                      ),
+                    );
+                    publishRecsItemAddToCartClick({
+                      recommendationUnit,
+                      pagePlacement: 'product-list',
+                      yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
+                      yOffsetBottom:
+                        addToCart.getBoundingClientRect().bottom ?? 0,
+                      productId: ctx.index,
+                    });
+                  },
                   variant: 'primary',
                 })(addToCart);
               } else {
                 // Select Options Button
                 UI.render(Button, {
                   children:
-                    ctx.dictionary.Recommendations.ProductList.selectOptions,
-                  href: rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`),
+                    labels.Global?.SelectProductOptions,
+                  href: createProductLink(ctx.item),
                   variant: 'tertiary',
                 })(addToCart);
               }
@@ -163,6 +201,23 @@ export default async function decorate(block) {
               wrapper.appendChild($wishlistToggle);
 
               ctx.replaceWith(wrapper);
+            },
+
+            Thumbnail: (ctx) => {
+              const { item, defaultImageProps } = ctx;
+              const wrapper = document.createElement('a');
+              wrapper.href = createProductLink(item);
+
+              tryRenderAemAssetsImage(ctx, {
+                alias: item.sku,
+                imageProps: defaultImageProps,
+                wrapper,
+
+                params: {
+                  width: defaultImageProps.width,
+                  height: defaultImageProps.height,
+                },
+              });
             },
           },
         })(block),

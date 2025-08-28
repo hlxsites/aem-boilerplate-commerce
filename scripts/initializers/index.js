@@ -8,6 +8,7 @@ import {
   setFetchGraphQlHeader,
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
+import { fetchPlaceholders } from '../commerce.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -46,17 +47,23 @@ export default async function initializeDropins() {
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
-    setEndpoint(getConfigValue('commerce-core-endpoint'));
+    setEndpoint(getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'));
+
+    // Fetch global placeholders
+    await fetchPlaceholders('placeholders/global.json');
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+    await import('./personalization.js');
 
     import('./cart.js');
 
     events.on('aem/lcp', async () => {
       // Recaptcha
-      await import('@dropins/tools/recaptcha.js').then(({ setConfig }) => {
-        setConfig();
+      await import('@dropins/tools/recaptcha.js').then((recaptcha) => {
+        recaptcha.enableLogger(true);
+        recaptcha.setEndpoint(getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'));
+        return recaptcha.setConfig();
       });
     });
   };

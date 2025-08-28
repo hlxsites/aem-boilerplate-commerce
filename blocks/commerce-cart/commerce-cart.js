@@ -13,24 +13,27 @@ import {
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
-import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
+
+// Modal and Mini PDP
+import createModal from '../modal/modal.js';
+import createMiniPDP from '../commerce-mini-pdp/commerce-mini-pdp.js';
 
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { rootLink } from '../../scripts/scripts.js';
-import { fetchPlaceholders } from '../../scripts/commerce.js';
+import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -44,13 +47,16 @@ export default async function decorate(block) {
     'start-shopping-url': startShoppingURL = '',
     'checkout-url': checkoutURL = '',
     'enable-updating-product': enableUpdatingProduct = 'false',
+    'undo-remove-item': undo = 'false',
   } = readBlockConfig(block);
 
   const placeholders = await fetchPlaceholders();
 
-  const cart = Cart.getCartDataFromCache();
+  const _cart = Cart.getCartDataFromCache();
 
-  const isEmptyCart = isCartEmpty(cart);
+  // Modal state
+  let currentModal = null;
+  let currentNotification = null;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -74,30 +80,100 @@ export default async function decorate(block) {
   const $summary = fragment.querySelector('.cart__order-summary');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
+  const $rightColumn = fragment.querySelector('.cart__right-column');
 
   block.innerHTML = '';
   block.appendChild(fragment);
 
+  // Wishlist variables
+  const routeToWishlist = '/wishlist';
+
   // Toggle Empty Cart
-  function toggleEmptyCart(state) {
-    if (state) {
-      $wrapper.setAttribute('hidden', '');
-      $emptyCart.removeAttribute('hidden');
-    } else {
-      $wrapper.removeAttribute('hidden');
-      $emptyCart.setAttribute('hidden', '');
+  function toggleEmptyCart(_state) {
+    $wrapper.removeAttribute('hidden');
+    $emptyCart.setAttribute('hidden', '');
+  }
+
+  // Handle Edit Button Click
+  async function handleEditButtonClick(cartItem) {
+    try {
+      // Create mini PDP content
+      const miniPDPContent = await createMiniPDP(
+        cartItem,
+        async (_updateData) => {
+          // Show success message when mini-PDP updates item
+          const productName = cartItem.name
+            || cartItem.product?.name
+            || placeholders?.Global?.CartUpdatedProductName;
+          const message = placeholders?.Global?.CartUpdatedProductMessage?.replace(
+            '{product}',
+            productName,
+          );
+
+          // Clear any existing notifications
+          currentNotification?.remove();
+
+          currentNotification = await UI.render(InLineAlert, {
+            heading: message,
+            type: 'success',
+            variant: 'primary',
+            icon: h(Icon, { source: 'CheckWithCircle' }),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              currentNotification?.remove();
+            },
+          })($notification);
+
+          // Auto-dismiss after 5 seconds
+          setTimeout(() => {
+            currentNotification?.remove();
+          }, 5000);
+        },
+        () => {
+          if (currentModal) {
+            currentModal.removeModal();
+            currentModal = null;
+          }
+        },
+      );
+
+      // Create and show modal
+      currentModal = await createModal([miniPDPContent]);
+
+      if (currentModal.block) {
+        currentModal.block.setAttribute('id', 'mini-pdp-modal');
+      }
+
+      currentModal.showModal();
+    } catch (error) {
+      console.error('Error opening mini PDP modal:', error);
+
+      // Clear any existing notifications
+      currentNotification?.remove();
+
+      // Show error notification
+      currentNotification = await UI.render(InLineAlert, {
+        heading: placeholders?.Global?.ProductLoadError,
+        type: 'error',
+        variant: 'primary',
+        icon: h(Icon, { source: 'AlertWithCircle' }),
+        'aria-live': 'assertive',
+        role: 'alert',
+        onDismiss: () => {
+          currentNotification?.remove();
+        },
+      })($notification);
     }
   }
 
-  toggleEmptyCart(isEmptyCart);
-
   // Render Containers
-  const productLink = (product) => rootLink(`/products/${product.url.urlKey}/${product.topLevelSku}`);
+  const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
       hideHeading: hideHeading === 'true',
-      routeProduct: productLink,
+      routeProduct: createProductLink,
       routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
       maxItems: parseInt(maxItems, 10) || undefined,
       attributesToHide: hideAttributes
@@ -105,16 +181,22 @@ export default async function decorate(block) {
         .map((attr) => attr.trim().toLowerCase()),
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
+      undo: undo === 'true',
       slots: {
         Thumbnail: (ctx) => {
           const { item, defaultImageProps } = ctx;
           const anchorWrapper = document.createElement('a');
-          anchorWrapper.href = productLink(item);
+          anchorWrapper.href = createProductLink(item);
 
           tryRenderAemAssetsImage(ctx, {
             alias: item.sku,
             imageProps: defaultImageProps,
             wrapper: anchorWrapper,
+
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
           });
         },
 
@@ -124,45 +206,30 @@ export default async function decorate(block) {
             const editLink = document.createElement('div');
             editLink.className = 'cart-item-edit-link';
 
-            const productUrl = rootLink(`/products/${ctx.item.url.urlKey}/${ctx.item.topLevelSku}`);
-            const params = new URLSearchParams();
-
-            if (ctx.item.selectedOptionsUIDs) {
-              const optionsValues = Object.values(ctx.item.selectedOptionsUIDs);
-              if (optionsValues.length > 0) {
-                const joinedValues = optionsValues.join(',');
-                params.append('optionsUIDs', joinedValues);
-              }
-            }
-
-            params.append('quantity', ctx.item.quantity);
-            params.append('itemUid', ctx.item.uid);
-
             UI.render(Button, {
-              children: placeholders?.Cart?.EditButton?.label,
+              children: placeholders?.Global?.CartEditButton,
               variant: 'tertiary',
               size: 'medium',
               icon: h(Icon, { source: 'Edit' }),
-              href: `${productUrl}?${params.toString()}`,
+              onClick: () => handleEditButtonClick(ctx.item),
             })(editLink);
 
             ctx.appendChild(editLink);
           }
 
           // Wishlist Button (if product is not configurable)
-          if (ctx.item.itemType === 'SimpleCartItem') {
-            const $wishlistToggle = document.createElement('div');
-            $wishlistToggle.classList.add('cart__action--wishlist-toggle');
+          const $wishlistToggle = document.createElement('div');
+          $wishlistToggle.classList.add('cart__action--wishlist-toggle');
 
-            wishlistRender.render(WishlistToggle, {
-              product: ctx.item,
-              size: 'medium',
-              labelToWishlist: placeholders?.Cart?.MoveToWishlist?.label,
-              labelWishlisted: placeholders?.Cart?.RemoveFromWishlist?.label,
-            })($wishlistToggle);
+          wishlistRender.render(WishlistToggle, {
+            product: ctx.item,
+            size: 'medium',
+            labelToWishlist: placeholders?.Global?.CartMoveToWishlist,
+            labelWishlisted: placeholders?.Global?.CartRemoveFromWishlist,
+            removeProdFromCart: Cart.updateProductsFromCart,
+          })($wishlistToggle);
 
-            ctx.appendChild($wishlistToggle);
-          }
+          ctx.appendChild($wishlistToggle);
 
           // Gift Options
           const giftOptions = document.createElement('div');
@@ -186,7 +253,7 @@ export default async function decorate(block) {
 
     // Order Summary
     provider.render(OrderSummary, {
-      routeProduct: productLink,
+      routeProduct: createProductLink,
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
@@ -213,11 +280,6 @@ export default async function decorate(block) {
       },
     })($summary),
 
-    // Empty Cart
-    provider.render(EmptyCart, {
-      routeCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
-    })($emptyCart),
-
     provider.render(GiftOptions, {
       view: 'order',
       dataSource: 'cart',
@@ -233,37 +295,11 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const itemUid = urlParams.get('itemUid');
-
-      if (itemUid && cartData?.items) {
-        const itemExists = cartData.items.some((item) => item.uid === itemUid);
-        if (itemExists) {
-          const updatedItem = cartData.items.find((item) => item.uid === itemUid);
-          const productName = updatedItem.name
-            || updatedItem.product?.name
-            || placeholders?.Cart?.UpdatedProductName;
-          const message = placeholders?.Cart?.UpdatedProductMessage?.replace('{product}', productName);
-
-          UI.render(InLineAlert, {
-            heading: message,
-            type: 'success',
-            variant: 'primary',
-            icon: h(Icon, { source: 'CheckWithCircle' }),
-            'aria-live': 'assertive',
-            role: 'alert',
-            onDismiss: () => {
-              $notification.innerHTML = '';
-            },
-          })($notification);
-        }
-
-        if (window.location.search) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      }
-
       toggleEmptyCart(isCartEmpty(cartData));
+
+      const isEmpty = !cartData || cartData.totalQuantity < 1;
+      $giftOptions.style.display = isEmpty ? 'none' : '';
+      $rightColumn.style.display = isEmpty ? 'none' : '';
 
       if (!cartViewEventPublished) {
         cartViewEventPublished = true;
@@ -272,6 +308,18 @@ export default async function decorate(block) {
     },
     { eager: true },
   );
+
+  events.on('wishlist/alert', ({ action, item }) => {
+    wishlistRender.render(WishlistAlert, {
+      action,
+      item,
+      routeToWishlist,
+    })($notification);
+
+    setTimeout(() => {
+      $notification.innerHTML = '';
+    }, 5000);
+  });
 
   return Promise.resolve();
 }
@@ -286,5 +334,10 @@ function swatchImageSlot(ctx) {
     alias: imageSwatchContext.label,
     imageProps: defaultImageProps,
     wrapper: document.createElement('span'),
+
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
   });
 }

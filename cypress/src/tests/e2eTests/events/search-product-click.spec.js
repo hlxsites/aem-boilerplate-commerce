@@ -3,7 +3,7 @@
  *
  * Required contexts: page, storefront, searchResult
  */
-it.skip("is sent on search bar product click", { tags: "@skipSaas" }, () => {
+it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
   cy.visit("/");
   cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
@@ -26,7 +26,7 @@ it.skip("is sent on search bar product click", { tags: "@skipSaas" }, () => {
       cy.get(".nav-search-button").should("be.visible").click();
       cy.wait(2000);
       cy.get("#search").type("shirt");
-      cy.get(".livesearch .products-container a", { timeout: 10000 })
+      cy.get(".search-bar-result .dropin-product-item-card a", { timeout: 10000 })
         .first()
         .click()
         .then(() => {

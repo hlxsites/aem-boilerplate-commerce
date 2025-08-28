@@ -4,7 +4,7 @@ import { expectsEventWithContext } from "../../../assertions";
  *
  * Required Contexts: page, storefront, searcResults
  */
-it.skip("is sent on search bar view/render", { tags: "@skipSaas" }, () => {
+it("is sent on search bar view/render", { tags: "@skipSaas" }, () => {
   cy.visit("/");
   cy.get(".nav-search-button").should("be.visible").click();
   cy.wait(2000);
@@ -14,7 +14,7 @@ it.skip("is sent on search bar view/render", { tags: "@skipSaas" }, () => {
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
         expectsEventWithContext(
-          "search-results-view",
+          "search-response-received",
           ["pageContext", "storefrontInstanceContext", "searchResultsContext"],
           adobeDataLayer,
         );

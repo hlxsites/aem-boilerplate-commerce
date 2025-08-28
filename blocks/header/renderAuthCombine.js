@@ -6,11 +6,12 @@ import * as authApi from '@dropins/storefront-auth/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { Button, provider as UI } from '@dropins/tools/components.js';
 import {
+  CUSTOMER_LOGIN_PATH,
   CUSTOMER_ACCOUNT_PATH,
   CUSTOMER_FORGOTPASSWORD_PATH,
-  CUSTOMER_LOGIN_PATH,
+  rootLink,
+  getProductLink,
 } from '../../scripts/commerce.js';
-import { rootLink } from '../../scripts/scripts.js';
 
 const signInFormConfig = {
   renderSignUpLink: true,
@@ -130,7 +131,7 @@ const onHeaderLinkClick = (element) => {
   document.body.style.overflow = 'hidden';
   viewportMeta.setAttribute(
     'content',
-    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
+    'width=device-width, initial-scale=1.0',
   );
 
   signInModal.setAttribute('id', 'auth-combine-modal');
@@ -269,7 +270,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
             'afterend',
             `<ul class="popupMenuUrlList">
               <li><a href="${rootLink(CUSTOMER_ACCOUNT_PATH)}">My Account</a></li>
-              <li><a href="${rootLink('/products/hollister-backyard-sweatshirt/MH05')}">Product page</a></li>
+              <li><a href="${getProductLink('hollister-backyard-sweatshirt', 'MH05')}">Product page</a></li>
               <li><button class="logoutButton">Logout</button></li>
             </ul>`,
           );

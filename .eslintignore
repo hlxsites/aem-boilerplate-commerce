@@ -3,7 +3,8 @@ scripts/acdl
 tools/picker
 tools/segments
 tools/pdp-metadata
-scripts/__
-scripts/widgets
+scripts/__*
+scripts/commerce-events-collector.js
+scripts/commerce-events-sdk.js
 plugins/
 cypress/
