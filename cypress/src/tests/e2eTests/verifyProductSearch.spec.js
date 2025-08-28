@@ -63,7 +63,7 @@ describe("Search Feature", () => {
     cy.get('input[type="checkbox"][value="collections"]')
       .should('be.checked');
     cy.contains('18 results found for "tee".');
-
+    assertImageListDisplay('.product-discovery-product-list__grid');
     cy.percyTakeSnapshot('Search results page', 1280);
 
     // Uncheck Filter checkbox

@@ -216,6 +216,7 @@ describe("Verify auth user can place order", () => {
     });
     // CANCEL ORDER
     cy.get(fields.cancelButton).should("exist");
+    cy.contains('The item(s) are no longer needed').should('be.visible');
     cy.percyTakeSnapshot('Order Details', 1280);
     cy.get(fields.cancelButton).click();
 
