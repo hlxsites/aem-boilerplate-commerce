@@ -17,18 +17,18 @@
 <script nonce="aem" type="importmap">
     {
         "imports": {
-            "@dropins/storefront-account/": "/scripts/__dropins/storefront-account/",
-            "@dropins/storefront-auth/": "/scripts/__dropins/storefront-auth/",
-            "@dropins/storefront-cart/": "/scripts/__dropins/storefront-cart/",
-            "@dropins/storefront-checkout/": "/scripts/__dropins/storefront-checkout/",
-            "@dropins/storefront-order/": "/scripts/__dropins/storefront-order/",
-            "@dropins/storefront-payment-services/": "/scripts/__dropins/storefront-payment-services/",
-            "@dropins/storefront-pdp/": "/scripts/__dropins/storefront-pdp/",
-            "@dropins/storefront-recommendations/": "/scripts/__dropins/storefront-recommendations/",
-            "@dropins/storefront-wishlist/": "/scripts/__dropins/storefront-wishlist/",
-            "@dropins/storefront-personalization/": "/scripts/__dropins/storefront-personalization/",
-            "@dropins/storefront-product-discovery/": "/scripts/__dropins/storefront-product-discovery/",
-            "@dropins/tools/": "/scripts/__dropins/tools/"
+            "@dropins/storefront-account/": "/scripts/__dropins__/storefront-account/",
+            "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/",
+            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
+            "@dropins/storefront-checkout/": "/scripts/__dropins__/storefront-checkout/",
+            "@dropins/storefront-order/": "/scripts/__dropins__/storefront-order/",
+            "@dropins/storefront-payment-services/": "/scripts/__dropins__/storefront-payment-services/",
+            "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/",
+            "@dropins/storefront-recommendations/": "/scripts/__dropins__/storefront-recommendations/",
+            "@dropins/storefront-wishlist/": "/scripts/__dropins__/storefront-wishlist/",
+            "@dropins/storefront-personalization/": "/scripts/__dropins__/storefront-personalization/",
+            "@dropins/storefront-product-discovery/": "/scripts/__dropins__/storefront-product-discovery/",
+            "@dropins/tools/": "/scripts/__dropins__/tools/"
         }
     }
 </script>
@@ -37,7 +37,7 @@
 
 <script nonce="aem" type="module">
     if (!(HTMLScriptElement.supports?.('importmap'))) {
-        import('/scripts/__dropins/tools/shims/importmap.js');
+        import('/scripts/__dropins__/tools/shims/importmap.js');
     }
 </script>
 
@@ -45,7 +45,7 @@
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <script nonce="aem" src="/scripts/commerce.js" type="module"></script>
 
-<link rel="modulepreload" href="/scripts/__dropins/tools/lib/aem/configs.js" />
+<link rel="modulepreload" href="/scripts/__dropins__/tools/lib/aem/configs.js" />
 <link rel="modulepreload" href="/scripts/initializers/index.js" />
 <link rel="modulepreload" href="/scripts/initializers/auth.js" />
 <link rel="modulepreload" href="/scripts/initializers/personalization.js" />
