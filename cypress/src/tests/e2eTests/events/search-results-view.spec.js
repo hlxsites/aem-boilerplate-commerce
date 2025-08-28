@@ -9,7 +9,7 @@ it("is sent on search bar view/render", { tags: "@skipSaas" }, () => {
   cy.get(".nav-search-button").should("be.visible").click();
   cy.wait(2000);
   cy.get("#search").type("cypress");
-  cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
+  cy.waitForResource("/scripts/__/magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
@@ -27,7 +27,7 @@ it(
   { tags: "@skipSaas" },
   () => {
     cy.visit("/search?q=cypress");
-    cy.waitForResource("/scripts/__/__adobe/magento-storefront-event-collector/dist/index.js").then(() => {
+    cy.waitForResource("/scripts/__/magento-storefront-event-collector/dist/index.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
         .then((adobeDataLayer) => {
