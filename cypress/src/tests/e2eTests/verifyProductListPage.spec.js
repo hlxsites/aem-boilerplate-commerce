@@ -3,7 +3,7 @@ import {
 } from "../../assertions";
 
 describe("Verify Product List Page", () => {
-    it("Verify PLP page loads", () => {
+    it("Verify PLP page loads", { tags: "@snapPercy" }, () => {
         cy.visit("");
 
         // Open Catalog Menu
@@ -11,7 +11,7 @@ describe("Verify Product List Page", () => {
 
         // Navaigate to Apperal category page
         cy.contains("Apparel").should('be.visible').click();
-        
+
         assertImageListDisplay('.product-discovery-product-list__grid');
 
         // Assert Position Sort is selected
@@ -25,7 +25,11 @@ describe("Verify Product List Page", () => {
         cy.contains('Youth tee: Colors outside the lines').should('be.visible');
         assertImageListDisplay('.product-discovery-product-list__grid');
 
+        cy.viewport(1280, 1024);
         cy.percyTakeSnapshot('Category Product List page', 1280);
+        // Capture Mobile
+        cy.viewport(375, 1024);
+        cy.percyTakeSnapshot('Category Product List page', 375);
 
     });
 });
