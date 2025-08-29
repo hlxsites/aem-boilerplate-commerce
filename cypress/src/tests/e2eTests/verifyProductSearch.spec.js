@@ -77,13 +77,11 @@ describe("Search Feature", () => {
     cy.contains('Beverage floatie - Confetti').should("be.visible");
     assertImageListDisplay('.product-discovery-product-list__grid');
 
-    cy.viewport(1280, 1024);
+   
     cy.percyTakeSnapshot('Search Result page', 1280);
     // Capture Mobile
-    cy.viewport(375, 1024);
     cy.percyTakeSnapshot('Search Result page', 375, true);
 
-    cy.viewport(1280, 1024);
     // Uncheck Filter checkbox
     cy.get('input[type="checkbox"][value="collections"]').uncheck({ force: true });
     cy.contains('35 results found for "tee".');
