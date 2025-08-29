@@ -81,7 +81,7 @@ describe("Search Feature", () => {
     cy.percyTakeSnapshot('Search results page', 1280);
     // Capture Mobile
     cy.viewport(375, 1024);
-    cy.percyTakeMobileSnapshot('Search results page', 375);
+    cy.percyTakeMobileSnapshot('Search results page', 375, true);
 
     // Uncheck Filter checkbox
     cy.get('input[type="checkbox"][value="collections"]').uncheck({ force: true });

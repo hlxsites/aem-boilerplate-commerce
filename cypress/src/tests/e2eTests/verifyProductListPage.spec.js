@@ -29,7 +29,7 @@ describe("Verify Product List Page", () => {
         cy.percyTakeSnapshot('Category Product List page', 1280);
         // Capture Mobile
         cy.viewport(375, 1024);
-        cy.percyTakeMobileSnapshot('Category Product List page', 375);
+        cy.percyTakeSnapshot('Category Product List page', 375, true);
 
     });
 });
