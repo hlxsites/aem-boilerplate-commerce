@@ -1,11 +1,8 @@
 name: Cypress Percy Visual Tests
 
-# on:
-#   schedule:
-#     - cron: '0 23 * * *'  # Runs at 6PM CST
-
-# For Testing 
-on: push
+on:
+  schedule:
+    - cron: '0 23 * * *'  # Runs at 6PM CST
 
 jobs:
   cypress-percy-visual-tests-run:
