@@ -5,8 +5,8 @@ const percyTakeSnapshot = (nameOfSnapshot, screenWidth) => {
 };
 
 const percyTakeMobileSnapshot = (nameOfSnapshot, screenWidth) => {
-    // Remove "active" class from nav-wrapper elements
-    cy.get('.nav-wrapper.active').removeClass('active');
+    // Remove "active" class using invoke to call jQuery method
+    cy.get('.nav-wrapper.active').invoke('removeClass', 'active');
     // Set aria-expanded="false" on nav element
     cy.get('#nav').invoke('attr', 'aria-expanded', 'false');
     
@@ -19,6 +19,8 @@ const percyTakeMobileSnapshot = (nameOfSnapshot, screenWidth) => {
                     display: none !important;
                 }
                 .mobile-override {
+                    font-size: 14px !important;
+                    padding: 8px !important;
                     overflow-y: hidden !important;
                 }
                 /* Style nav element when collapsed */
