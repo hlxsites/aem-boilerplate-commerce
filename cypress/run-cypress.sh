@@ -14,7 +14,7 @@ show_menu() {
     echo ""
     echo "Please select which configuration to launch:"
     echo ""
-    echo -e "${GREEN}1)${NC} PaaS Configuration (localhost + cypress:percy)"
+    echo -e "${GREEN}1)${NC} PaaS Configuration (localhost + cypress:open)"
     echo -e "${GREEN}2)${NC} SaaS Configuration (localhost + cypress:saas:open)"
     echo -e "${RED}3)${NC} Exit"
     echo ""
