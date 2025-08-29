@@ -1,7 +1,6 @@
-const percyTakeSnapshot = (nameOfSnapshot, screenWidth, isMobile = false) => {
-    if (isMobile) {
+const percyTakeSnapshot = (nameOfSnapshot) => {
         cy.percySnapshot(nameOfSnapshot, {
-            widths: [screenWidth],
+            widths: [1280, 375],
             percyCSS: `
                     /* Override styles for Percy snapshots */
                     @media (max-width: 768px) {
@@ -20,10 +19,6 @@ const percyTakeSnapshot = (nameOfSnapshot, screenWidth, isMobile = false) => {
                     }
                 `
         });
-    } else {
-        // Desktop setup
-        cy.percySnapshot(nameOfSnapshot, { widths: [screenWidth] });
-    }
 };
 
 // Register the unified command

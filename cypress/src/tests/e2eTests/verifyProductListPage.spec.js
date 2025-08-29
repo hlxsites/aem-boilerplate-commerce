@@ -25,11 +25,7 @@ describe("Verify Product List Page", () => {
         cy.contains('Youth tee: Colors outside the lines').should('be.visible');
         assertImageListDisplay('.product-discovery-product-list__grid');
 
-        cy.viewport(1280, 1024);
-        cy.percyTakeSnapshot('Product List page Category', 1280);
-        // Capture Mobile
-        cy.viewport(375, 1024);
-        cy.percyTakeSnapshot('Product List page Category', 375, true);
+        cy.percyTakeSnapshot('Product List page Category new');
 
     });
 });

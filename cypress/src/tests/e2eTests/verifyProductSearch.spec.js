@@ -77,10 +77,7 @@ describe("Search Feature", () => {
     cy.contains('Beverage floatie - Confetti').should("be.visible");
     assertImageListDisplay('.product-discovery-product-list__grid');
 
-    //  Capture desktop
-    cy.percyTakeSnapshot('Search Result page', 1280);
-    // Capture Mobile
-    cy.percyTakeSnapshot('Search Result page', 375, true);
+    cy.percyTakeSnapshot('Search Result page new');
 
     // Uncheck Filter checkbox
     cy.get('input[type="checkbox"][value="collections"]').uncheck({ force: true });
