@@ -1,32 +1,32 @@
-import { events } from "@dropins/tools/event-bus.js";
-import { render as pdpRender } from "@dropins/storefront-pdp/render.js";
-import * as pdpApi from "@dropins/storefront-pdp/api.js";
-import { initializers } from "@dropins/tools/initializer.js";
-import { getHeaders } from "@dropins/tools/lib/aem/configs.js";
+import { events } from '@dropins/tools/event-bus.js';
+import { render as pdpRender } from '@dropins/storefront-pdp/render.js';
+import * as pdpApi from '@dropins/storefront-pdp/api.js';
+import { initializers } from '@dropins/tools/initializer.js';
+import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import {
   InLineAlert,
   Icon,
   Button,
   Image,
   provider as UI,
-} from "@dropins/tools/components.js";
-import { h } from "@dropins/tools/preact.js";
-import * as Cart from "@dropins/storefront-cart/api.js";
+} from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
+import * as Cart from '@dropins/storefront-cart/api.js';
 
 // PDP Containers for Mini PDP
-import ProductPrice from "@dropins/storefront-pdp/containers/ProductPrice.js";
-import ProductOptions from "@dropins/storefront-pdp/containers/ProductOptions.js";
-import ProductQuantity from "@dropins/storefront-pdp/containers/ProductQuantity.js";
+import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
+import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
+import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.js';
 
 // Initializers
-import "../../scripts/initializers/cart.js";
+import '../../scripts/initializers/cart.js';
 
 import {
   fetchPlaceholders,
   commerceEndpointWithQueryParams,
-} from "../../scripts/commerce.js";
+} from '../../scripts/commerce.js';
 
-import { loadCSS } from "../../scripts/aem.js";
+import { loadCSS } from '../../scripts/aem.js';
 
 // Function to get fresh cart item data by UID
 async function getFreshCartItem(cartItemUid) {
@@ -37,20 +37,20 @@ async function getFreshCartItem(cartItemUid) {
     }
     return cartData.items.find((item) => item.uid === cartItemUid) || null;
   } catch (error) {
-    console.warn("Could not fetch fresh cart data:", error);
+    console.warn('Could not fetch fresh cart data:', error);
     return null;
   }
 }
 
 export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   await loadCSS(
-    `${window.hlx.codeBasePath}/blocks/commerce-mini-pdp/commerce-mini-pdp.css`
+    `${window.hlx.codeBasePath}/blocks/commerce-mini-pdp/commerce-mini-pdp.css`,
   );
 
   const placeholders = await fetchPlaceholders();
 
   // Try to get fresh cart item data, fallback to the provided cartItem if unavailable
-  const freshCartItem = (await getFreshCartItem(cartItem.uid)) || cartItem;
+  const freshCartItem = await getFreshCartItem(cartItem.uid) || cartItem;
 
   const sku = freshCartItem.topLevelSku || freshCartItem.sku;
 
@@ -65,7 +65,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   try {
     // Configure PDP API endpoint and headers (same as main PDP initializer)
     pdpApi.setEndpoint(await commerceEndpointWithQueryParams());
-    pdpApi.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders("cs") }));
+    pdpApi.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
     const product = await pdpApi.fetchProductData(sku, {
       optionsUIDs,
@@ -73,12 +73,12 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     });
 
     if (!product?.sku) {
-      throw new Error("Product data not available");
+      throw new Error('Product data not available');
     }
 
     // Initialize PDP API with pre-selected options
     await initializers.mountImmediately(pdpApi.initialize, {
-      scope: "modal",
+      scope: 'modal',
       sku,
       optionsUIDs,
       langDefinitions,
@@ -89,11 +89,9 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             ...parent,
             ...refinedData,
             images:
-              refinedData.images?.length > 0
-                ? refinedData.images
-                : parent.images,
+              refinedData.images?.length > 0 ? refinedData.images : parent.images,
             description:
-              refinedData.description && refinedData.description !== ""
+              refinedData.description && refinedData.description !== ''
                 ? refinedData.description
                 : parent.description,
           }),
@@ -104,21 +102,18 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     });
 
     if (!product) {
-      throw new Error("Product data not available");
+      throw new Error('Product data not available');
     }
 
     // Set initial quantity using PDP API BEFORE rendering components
-    pdpApi.setProductConfigurationValues(
-      (prev) => ({
-        ...prev,
-        quantity: freshCartItem.quantity || 1,
-      }),
-      { scope: "modal" }
-    );
+    pdpApi.setProductConfigurationValues((prev) => ({
+      ...prev,
+      quantity: freshCartItem.quantity || 1,
+    }), { scope: 'modal' });
 
     // Create the mini PDP container
-    const miniPDPContainer = document.createElement("div");
-    miniPDPContainer.className = "commerce-mini-pdp";
+    const miniPDPContainer = document.createElement('div');
+    miniPDPContainer.className = 'commerce-mini-pdp';
 
     // Layout structure
     const fragment = document.createRange().createContextualFragment(`
@@ -155,20 +150,20 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       </div>
     `);
 
-    const $alert = fragment.querySelector(".mini-pdp__alert");
-    const $header = fragment.querySelector(".mini-pdp__header");
-    const $price = fragment.querySelector(".mini-pdp__price");
-    const $gallery = fragment.querySelector(".mini-pdp__gallery");
-    const $options = fragment.querySelector(".mini-pdp__options");
-    const $quantity = fragment.querySelector(".mini-pdp__quantity");
-    const $updateButton = fragment.querySelector(".mini-pdp__update-button");
-    const $cancelButton = fragment.querySelector(".mini-pdp__cancel-button");
+    const $alert = fragment.querySelector('.mini-pdp__alert');
+    const $header = fragment.querySelector('.mini-pdp__header');
+    const $price = fragment.querySelector('.mini-pdp__price');
+    const $gallery = fragment.querySelector('.mini-pdp__gallery');
+    const $options = fragment.querySelector('.mini-pdp__options');
+    const $quantity = fragment.querySelector('.mini-pdp__quantity');
+    const $updateButton = fragment.querySelector('.mini-pdp__update-button');
+    const $cancelButton = fragment.querySelector('.mini-pdp__cancel-button');
 
     miniPDPContainer.appendChild(fragment);
 
     // Get the redirect button after fragment is appended otherwise it will be null
     const $redirectButton = miniPDPContainer.querySelector(
-      ".mini-pdp__buttons__redirect-to-pdp"
+      '.mini-pdp__buttons__redirect-to-pdp',
     );
 
     // State management
@@ -201,20 +196,17 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       // Header - just set the content, no special rendering needed
       Promise.resolve($header),
 
-      pdpRender.render(ProductPrice, { scope: "modal" })($price),
+      pdpRender.render(ProductPrice, { scope: 'modal' })($price),
 
-      pdpRender.render(ProductOptions, {
-        hideSelectedValue: false,
-        scope: "modal",
-      })($options),
+      pdpRender.render(ProductOptions, { hideSelectedValue: false, scope: 'modal' })($options),
 
-      pdpRender.render(ProductQuantity, { scope: "modal" })($quantity),
+      pdpRender.render(ProductQuantity, { scope: 'modal' })($quantity),
 
       // Update button
       UI.render(Button, {
         children: placeholders?.Global?.UpdateProductInCart,
-        variant: "primary",
-        size: "medium",
+        variant: 'primary',
+        size: 'medium',
         onClick: async () => {
           if (isLoading) return;
 
@@ -227,25 +219,21 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             }));
 
             // Get current product configuration
-            const values = pdpApi.getProductConfigurationValues({
-              scope: "modal",
-            });
-            const valid = pdpApi.isProductConfigurationValid({
-              scope: "modal",
-            });
+            const values = pdpApi.getProductConfigurationValues({ scope: 'modal' });
+            const valid = pdpApi.isProductConfigurationValid({ scope: 'modal' });
 
             if (!valid) {
-              throw new Error("Please select all required options");
+              throw new Error('Please select all required options');
             }
 
             // Update cart item with new configuration
             const updateData = {
               uid: freshCartItem.uid,
               quantity: values.quantity || freshCartItem.quantity,
-              ...(values.optionsUIDs &&
-                values.optionsUIDs.length > 0 && {
-                  optionsUIDs: values.optionsUIDs,
-                }),
+              ...(values.optionsUIDs
+                && values.optionsUIDs.length > 0 && {
+                optionsUIDs: values.optionsUIDs,
+              }),
             };
 
             const updateResponse = await Cart.updateProductsFromCart([
@@ -253,7 +241,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             ]);
 
             // Trigger cart refresh to ensure UI updates
-            events.emit("cart/updated", updateResponse);
+            events.emit('cart/updated', updateResponse);
 
             inlineAlert?.remove();
 
@@ -266,25 +254,26 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             inlineAlert?.remove();
 
             inlineAlert = await UI.render(InLineAlert, {
-              heading: "Error",
+              heading: 'Error',
               description: error.message,
-              icon: h(Icon, { source: "Warning" }),
-              "aria-live": "assertive",
-              role: "alert",
+              icon: h(Icon, { source: 'Warning' }),
+              'aria-live': 'assertive',
+              role: 'alert',
               onDismiss: () => {
                 inlineAlert.remove();
               },
             })($alert);
 
             $alert.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
+              behavior: 'smooth',
+              block: 'center',
             });
           } finally {
             isLoading = false;
             updateButton.setProps((prev) => ({
               ...prev,
-              children: placeholders?.Global?.UpdateProductInCart,
+              children:
+                placeholders?.Global?.UpdateProductInCart,
               disabled: false,
             }));
           }
@@ -295,16 +284,16 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       // Cancel button
       UI.render(Button, {
         children: placeholders?.Global?.Cancel,
-        variant: "secondary",
-        size: "medium",
+        variant: 'secondary',
+        size: 'medium',
         onClick: onClose,
       })($cancelButton),
 
       // View all details button
       UI.render(Button, {
         children: placeholders?.Global?.ViewAllDetails,
-        variant: "tertiary",
-        size: "medium",
+        variant: 'tertiary',
+        size: 'medium',
         onClick: () => {
           onClose();
           // Navigate to full PDP page
@@ -315,21 +304,21 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
     // Handle PDP validation events
     events.on(
-      "pdp/valid",
+      'pdp/valid',
       (valid) => {
         updateButton.setProps((prev) => ({
           ...prev,
           disabled: !valid || isLoading,
         }));
       },
-      { eager: true, scope: "modal" }
+      { eager: true, scope: 'modal' },
     );
 
     return miniPDPContainer;
   } catch (error) {
     // Create error container
-    const errorContainer = document.createElement("div");
-    errorContainer.className = "commerce-mini-pdp commerce-mini-pdp--error";
+    const errorContainer = document.createElement('div');
+    errorContainer.className = 'commerce-mini-pdp commerce-mini-pdp--error';
     errorContainer.innerHTML = `
       <div class="mini-pdp__error">
         <h3>Error</h3>
@@ -338,7 +327,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       </div>
     `;
 
-    const closeButton = errorContainer.querySelector(".mini-pdp__close-button");
+    const closeButton = errorContainer.querySelector('.mini-pdp__close-button');
     closeButton.onclick = onClose;
 
     return errorContainer;
