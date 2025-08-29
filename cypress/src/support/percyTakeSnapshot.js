@@ -42,7 +42,7 @@ const percyTakeSnapshot = (nameOfSnapshot, screenWidth, isMobile = false) => {
                 percyCSS: `
                     /* Override styles for Percy snapshots */
                     @media {
-                        .mobile-override {
+                        .mobile-override (max-width: 768px) {
                             overflow-y: hidden !important;
                         }
                         #nav[aria-expanded="false"] {
