@@ -45,7 +45,7 @@ describe("Search Feature", () => {
 
   });
 
-  it("Verify Filter on search results page", { tags: "@snapPercy" },  () => {
+  it("Verify Filter on search results page", { tags: "@snapPercy" }, () => {
     // Visit the homepage
     cy.visit("/search?q=tee&page=1&sort=&filter=categories%3Acollections");
 
@@ -77,7 +77,7 @@ describe("Search Feature", () => {
     cy.contains('Beverage floatie - Confetti').should("be.visible");
     assertImageListDisplay('.product-discovery-product-list__grid');
 
-   
+    //  Capture desktop
     cy.percyTakeSnapshot('Search Result page', 1280);
     // Capture Mobile
     cy.percyTakeSnapshot('Search Result page', 375, true);
