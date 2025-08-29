@@ -59,11 +59,24 @@ describe("Search Feature", () => {
 
     assertImageListDisplay('.product-discovery-product-list__grid');
 
+    // Assert Position Sort is selected
+    cy.get('select')
+      .find('option:selected')
+      .should('have.text', 'Relevance');
+
     // Assert filter checkbox is checked
     cy.get('input[type="checkbox"][value="collections"]')
       .should('be.checked');
     cy.contains('18 results found for "tee".');
     assertImageListDisplay('.product-discovery-product-list__grid');
+
+
+    // Select new Sort
+    cy.get('select').select('Price: Low to High').should('have.value', 'price_ASC');
+    cy.waitForLoadingSkeletonToDisappear();
+    cy.contains('Beverage floatie - Confetti').should("be.visible");
+    assertImageListDisplay('.product-discovery-product-list__grid');
+
     cy.percyTakeSnapshot('Search results page', 1280);
 
     // Uncheck Filter checkbox
