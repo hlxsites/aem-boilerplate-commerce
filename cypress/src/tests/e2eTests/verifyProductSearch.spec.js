@@ -83,6 +83,7 @@ describe("Search Feature", () => {
     cy.viewport(375, 1024);
     cy.percyTakeSnapshot('Search results page', 375, true);
 
+    cy.viewport(1280, 1024);
     // Uncheck Filter checkbox
     cy.get('input[type="checkbox"][value="collections"]').uncheck({ force: true });
     cy.contains('35 results found for "tee".');
