@@ -26,10 +26,10 @@ describe("Verify Product List Page", () => {
         assertImageListDisplay('.product-discovery-product-list__grid');
 
         cy.viewport(1280, 1024);
-        cy.percyTakeSnapshot('Category Product List page', 1280);
+        cy.percyTakeSnapshot('Product List page Category', 1280);
         // Capture Mobile
         cy.viewport(375, 1024);
-        cy.percyTakeSnapshot('Category Product List page', 375, true);
+        cy.percyTakeSnapshot('Product List page Category', 375, true);
 
     });
 });

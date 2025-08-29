@@ -78,10 +78,10 @@ describe("Search Feature", () => {
     assertImageListDisplay('.product-discovery-product-list__grid');
 
     cy.viewport(1280, 1024);
-    cy.percyTakeSnapshot('Search results page', 1280);
+    cy.percyTakeSnapshot('Search Result page', 1280);
     // Capture Mobile
     cy.viewport(375, 1024);
-    cy.percyTakeSnapshot('Search results page', 375, true);
+    cy.percyTakeSnapshot('Search Result page', 375, true);
 
     cy.viewport(1280, 1024);
     // Uncheck Filter checkbox
