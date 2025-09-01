@@ -9,15 +9,16 @@ import {
 } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  const isEnabled = await rlApi.isRequisitionListEnabled();
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
   } else {
+    const isEnabled = await rlApi.isRequisitionListEnabled();
     if (!isEnabled) {
       return;
     }
     await rlRenderer.render(RequisitionListGrid, {
       requisitionLists: await rlApi.getRequisitionLists(),
+      isAuthenticated: checkIsAuthenticated(),
       slots: {},
     })(block);
   }
