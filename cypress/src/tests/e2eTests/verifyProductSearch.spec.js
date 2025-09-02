@@ -2,7 +2,7 @@
 import {
   assertImageListDisplay,
   assertSearchResultClick,
-  aseertSearchResults
+  assertSearchResults
 } from "../../assertions";
 
 import {
@@ -19,7 +19,7 @@ describe("Search Feature", () => {
     //Input search string
     inputSearchString("tops");
 
-    aseertSearchResults();
+    assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
 
@@ -37,7 +37,7 @@ describe("Search Feature", () => {
     // Wait for random quick search dropdown to disappear
     cy.wait(1000);
 
-    aseertSearchResults();
+    assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
 

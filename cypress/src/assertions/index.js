@@ -382,7 +382,7 @@ export const assertImageListDisplay = (selector, limit = null) => {
 };
 
 
-export const aseertSearchResults = () => {
+export const assertSearchResults = () => {
   // Check if search results are displayed
   cy.get(fields.productListGrid)
     .should("be.visible");
