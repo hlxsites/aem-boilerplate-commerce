@@ -4,10 +4,9 @@ on:
   # Manual trigger with branch selection
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to run tests on'
+      feature_branch:
+        description: 'Feature branch to test'
         required: true
-        default: 'integration'
         type: string
 
   # Automatic trigger every evening at 6 PM CST (midnight UTC)
