@@ -17,18 +17,18 @@
 <script nonce="aem" type="importmap">
     {
         "imports": {
-            "@dropins/storefront-account/": "/scripts/__dropins__/storefront-account/",
-            "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/",
-            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
-            "@dropins/storefront-checkout/": "/scripts/__dropins__/storefront-checkout/",
-            "@dropins/storefront-order/": "/scripts/__dropins__/storefront-order/",
-            "@dropins/storefront-payment-services/": "/scripts/__dropins__/storefront-payment-services/",
-            "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/",
-            "@dropins/storefront-recommendations/": "/scripts/__dropins__/storefront-recommendations/",
-            "@dropins/storefront-wishlist/": "/scripts/__dropins__/storefront-wishlist/",
-            "@dropins/storefront-personalization/": "/scripts/__dropins__/storefront-personalization/",
-            "@dropins/storefront-product-discovery/": "/scripts/__dropins__/storefront-product-discovery/",
-            "@dropins/tools/": "/scripts/__dropins__/tools/"
+            "@dropins/storefront-account/": "/scripts/libraries/dropins/storefront-account/",
+            "@dropins/storefront-auth/": "/scripts/libraries/dropins/storefront-auth/",
+            "@dropins/storefront-cart/": "/scripts/libraries/dropins/storefront-cart/",
+            "@dropins/storefront-checkout/": "/scripts/libraries/dropins/storefront-checkout/",
+            "@dropins/storefront-order/": "/scripts/libraries/dropins/storefront-order/",
+            "@dropins/storefront-payment-services/": "/scripts/libraries/dropins/storefront-payment-services/",
+            "@dropins/storefront-pdp/": "/scripts/libraries/dropins/storefront-pdp/",
+            "@dropins/storefront-recommendations/": "/scripts/libraries/dropins/storefront-recommendations/",
+            "@dropins/storefront-wishlist/": "/scripts/libraries/dropins/storefront-wishlist/",
+            "@dropins/storefront-personalization/": "/scripts/libraries/dropins/storefront-personalization/",
+            "@dropins/storefront-product-discovery/": "/scripts/libraries/dropins/storefront-product-discovery/",
+            "@dropins/tools/": "/scripts/libraries/dropins/tools/"
         }
     }
 </script>
@@ -37,7 +37,7 @@
 
 <script nonce="aem" type="module">
     if (!(HTMLScriptElement.supports?.('importmap'))) {
-        import('/scripts/__dropins__/tools/shims/importmap.js');
+        import('/scripts/libraries/dropins/tools/shims/importmap.js');
     }
 </script>
 
@@ -45,15 +45,15 @@
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <script nonce="aem" src="/scripts/commerce.js" type="module"></script>
 
-<link rel="modulepreload" href="/scripts/__dropins__/tools/lib/aem/configs.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/lib/aem/configs.js" />
 <link rel="modulepreload" href="/scripts/initializers/index.js" />
 <link rel="modulepreload" href="/scripts/initializers/auth.js" />
 <link rel="modulepreload" href="/scripts/initializers/personalization.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/storefront-auth/api.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/event-bus.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/fetch-graphql.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/initializer.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact-compat.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact-hooks.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/components.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/storefront-auth/api.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/event-bus.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/fetch-graphql.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/initializer.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/preact.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/preact-compat.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/preact-hooks.js" />
+<link rel="modulepreload" href="/scripts/libraries/dropins/tools/components.js" />

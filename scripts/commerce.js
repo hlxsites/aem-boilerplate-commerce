@@ -265,7 +265,7 @@ export async function loadCommerceLazy() {
   autolinkModals(document);
 
   // Initialize Adobe Client Data Layer
-  await import('./acdl/adobe-client-data-layer.min.js');
+  await import('./libraries/acdl/dist/adobe-client-data-layer.min.js');
 
   // Initialize Adobe Client Data Layer validation
   if (sessionStorage.getItem('acdl:debug')) {

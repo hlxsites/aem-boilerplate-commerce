@@ -16,7 +16,7 @@ it("is sent on add to cart button click", () => {
   cy.get(".minicart-panel[data-loaded='true']").should('exist');
   cy.get(".minicart-panel").should("not.be.empty");
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  cy.waitForResource("magento-storefront-event-collector/dist/index.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
