@@ -7,7 +7,7 @@ import {
 } from "../../assertions";
 
 describe("Verify user account functionality", () => {
-  it("Verify auth user can create addresses", () => {
+  it("Verify auth user can create addresses", { tags: "@snapPercy" }, () => {
     cy.visit("/customer/create");
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
@@ -42,7 +42,7 @@ describe("Verify user account functionality", () => {
     cy.get('.account-address-card__description').should('be.visible');
     cy.contains("firstname").should('be.visible');
     cy.waitForLoadingSkeletonToDisappear();
-    cy.percyTakeSnapshot('My Account Address', 1280);
+    cy.percyTakeSnapshot('My Account Address');
 
     // Edit Address
     cy.contains('Edit').should('not.be.disabled').click({ force: true });
@@ -87,22 +87,22 @@ describe("Verify user account functionality", () => {
   });
 
 
-  it("Check UI of Create account", () => {
+  it("Check UI of Create account", { tags: "@snapPercy" }, () => {
     cy.visit('/customer/create');
     cy.waitForLoadingSkeletonToDisappear();
     cy.contains("Create account").should('be.visible');
     cy.get('[name="firstName"]').should('be.visible');
     cy.get('[name="lastName"]').should('be.visible');
     cy.get('[name="email"]').should('be.visible');
-    cy.percyTakeSnapshot('Create Account Page', 1280);
+    cy.percyTakeSnapshot('Create Account Page');
   });
 
-  it("Check UI of Sign In", () => {
+  it("Check UI of Sign In", { tags: "@snapPercy" }, () => {
     cy.visit('/customer/login');
     cy.contains("Sign in").should('be.visible');
     cy.contains("Forgot password?").should('be.visible');
     cy.get('[name="email"]').should('be.visible');
-    cy.percyTakeSnapshot('Login Page', 1280);
+    cy.percyTakeSnapshot('Login Page');
   });
 
 });

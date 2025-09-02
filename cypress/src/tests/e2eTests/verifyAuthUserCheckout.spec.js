@@ -32,7 +32,7 @@ import {
 import * as fields from "../../fields";
 
 describe("Verify auth user can place order", () => {
-  it("Verify auth user can place order", () => {
+  it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
     // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
     cy.visit(products.configurable.urlPathWithOptions);
     cy.wait(5000);
@@ -150,7 +150,7 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');
-    cy.percyTakeSnapshot('Cart page', 1280);
+    cy.percyTakeSnapshot('Cart page');
     cy.get('.dropin-button.dropin-button--medium.dropin-button--primary')
       .contains('Checkout')
       .click({ force: true });
@@ -181,7 +181,7 @@ describe("Verify auth user can place order", () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
     checkTermsAndConditions();
     cy.wait(5000);
-    cy.percyTakeSnapshot('Checkout Page', 1280);
+    cy.percyTakeSnapshot('Checkout Page');
     placeOrder();
     assertOrderConfirmationCommonDetails(
       customerBillingAddress,
@@ -190,7 +190,7 @@ describe("Verify auth user can place order", () => {
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
-    cy.percyTakeSnapshot('Order Confirmation', 1280);
+    cy.percyTakeSnapshot('Order Confirmation');
 
     /**
      * TODO - when /customer/order-details page will be ready
@@ -216,13 +216,13 @@ describe("Verify auth user can place order", () => {
     });
     // CANCEL ORDER
     cy.get(fields.cancelButton).should("exist");
-    cy.percyTakeSnapshot('Order Details', 1280);
+    cy.percyTakeSnapshot('Order Details');
     cy.get(fields.cancelButton).click();
 
     cy.get(fields.cancellationReasonsSelector).select("1");
     cy.contains('Submit Cancellation').should('be.visible');
     cy.get(fields.cancellationReasonsSelector).should("have.value", "1");
-    cy.percyTakeSnapshot('Cancel Order', 1280);
+    cy.percyTakeSnapshot('Cancel Order');
     cy.get(fields.submitCancelOrderButton).click();
 
     cy.get(".dropin-header-container__title", { timeout: 3000 })
@@ -245,13 +245,13 @@ describe("Verify auth user can place order", () => {
     cy.visit("/customer/orders");
     assertOrderImageDisplay();
     cy.waitForLoadingSkeletonToDisappear();
-    cy.percyTakeSnapshot('My Account Order', 1280);
+    cy.percyTakeSnapshot('My Account Order');
 
     cy.visit("/customer/account");
     assertOrderImageDisplay();
     cy.waitForLoadingSkeletonToDisappear();
     cy.contains('No returns').should('be.visible');
-    cy.percyTakeSnapshot('My Account', 1280);
+    cy.percyTakeSnapshot('My Account');
 
     
   });
