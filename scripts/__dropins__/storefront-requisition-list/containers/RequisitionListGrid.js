@@ -16,7 +16,7 @@ const RequisitionListItem = ({
 }) => {
   return u("div", {
     ...props,
-    "data-testid": "requisition-list-row",
+    "data-testid": "requisition-list-item",
     className: classes(["requisition-list-item__row", className]),
     children: [u("div", {
       className: classes(["requisition-list-item__cell", className]),

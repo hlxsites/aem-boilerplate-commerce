@@ -1,5 +1,5 @@
-import { RequisitionList as RequisitionListModel } from '../../models/requisitionList';
+import { RequisitionLists as RequisitionListsModel } from '../../models/requisitionLists';
 
-declare const requisitionListGridData: RequisitionListModel[];
+declare const requisitionListGridData: RequisitionListsModel;
 export { requisitionListGridData };
 //# sourceMappingURL=requisitionListGridData.d.ts.map
