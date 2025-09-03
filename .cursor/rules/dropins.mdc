@@ -1,0 +1,196 @@
+---
+description: Comprehensive Dropins, Containers, and Slots Rules
+globs:
+alwaysApply: true
+---
+
+# Dropins, Containers, and Slots - Comprehensive Rules
+
+## Dropins Overview
+
+### What Are Dropins
+- **Dropins** are domain-specific microfrontends for Adobe Commerce storefronts
+- They are **NOT blocks** - they are functions that render into DOM elements
+- Dropins provide pre-built e-commerce functionality (cart, checkout, product display, etc.)
+- Dropins are imported from `@dropins/` namespace
+- A single block can contain multiple dropin containers, each rendered into a different DOM element
+
+## Essential Requirements for Working with Dropins
+
+- **MANDATORY: ALWAYS use the search_storefront_docs MCP** to search documentation before implementing any dropin customization
+- **MANDATORY: Verify all slots and props** using the MCP before using them in code
+- **MANDATORY: Never assume slot names** - always check documentation first
+- **MANDATORY: Use container props and interface if possible before using CSS** by using the documented interface, like Slots or container arguments, before using CSS
+
+## Containers
+
+### What Are Containers
+- **Containers** are specific implementations within dropins
+- They manage and display data for specific use cases
+- Each container has a specific purpose and API
+- Containers are rendered into DOM elements using `render()` functions
+
+### Container Usage Pattern
+```javascript
+import ContainerName from '@dropins/dropin-name/containers/ContainerName.js';
+import { render as provider } from '@dropins/dropin-name/render.js';
+
+// Render container into DOM element
+provider(ContainerName, {
+  // Container props
+  prop1: value1,
+  prop2: value2,
+  slots: {
+    SlotName: (ctx) => {
+      // Custom slot content
+    }
+  }
+})(domElement);
+```
+
+### Container Props
+- Each container has specific props defined in its documentation
+- Props are passed as an object to the container
+- Common props include data, configuration, and event handlers
+- **NEVER hallucinate props** - always check documentation
+
+### Container Rendering
+- Containers are rendered using dropin provider functions
+- Provider functions return a render function that takes a DOM element
+- Multiple containers can be rendered in the same block
+- Each container needs its own DOM element
+
+## Slots
+
+### What Are Slots
+- Slots are interfaces to customize content within containers
+- They allow injection of custom content into specific areas.
+- **NEVER hallucinate slots** - always check types and documentation.
+- If an appropriate slot does not exist, then using the block layout (ie `createContextualFragment`) is the next best option.
+
+### Slot Usage Pattern
+```javascript
+provider(ContainerName, {
+  // Container props
+  slots: {
+    SlotName: (ctx) => {
+      // Create custom content
+      const customElement = document.createElement('div');
+      customElement.textContent = 'Custom content';
+      ctx.replaceWith(customElement);
+    }
+  }
+})(domElement);
+```
+
+### Container Customization Workflow (MANDATORY)
+
+**MANDATORY: Before implementing any dropin container customization:**
+
+1. **Identify Target Location**: Find the specific DOM element in the block fragment where you want to add the feature
+2. **Find the Container**: Determine which dropin container renders into that location
+3. **Check TypeScript Definitions**: Always examine the container's `.d.ts` file to see available slots and props
+4. **Verify with MCP**: Use `search_storefront_docs` MCP to confirm slot availability and get usage examples
+5. **Choose Implementation Method**:
+   - **If slots exist**: Use the documented slot interface
+   - **If no slots exist**: Create an element and append it to the container element after render
+   - **NEVER assume slots exist** without verification
+
+**Example Workflow:**
+```javascript
+// 1. Target: .product-details__header div
+// 2. Container: ProductHeader
+// 3. Check: ProductHeader.d.ts shows no slots
+// 4. MCP: Confirms no ProductRating slot
+// 5. Implementation: DOM manipulation after render
+
+pdpRendered.render(ProductHeader, {})($header).then(() => {
+  // Add custom content after container renders
+  const customElement = createCustomElement();
+  $header.appendChild(customElement);
+});
+```
+
+**Common Mistakes to Avoid:**
+- ❌ Assuming slot names without checking TypeScript definitions
+- ❌ Using non-existent slots (like ProductRating)
+- ❌ Not verifying with MCP when TypeScript is incomplete
+- ❌ Not checking container interface before implementation
+
+## Dropin Integration Rules
+
+### Import Patterns
+```javascript
+// Dropin Tools
+import { debounce } from '@dropins/tools/lib.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { Button, Icon } from '@dropins/tools/components.js';
+
+// Dropin APIs
+import * as cartApi from '@dropins/storefront-cart/api.js';
+import * as pdpApi from '@dropins/storefront-pdp/api.js';
+
+// Dropin Containers
+import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
+import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
+
+// Dropin Providers
+import { render as cartProvider } from '@dropins/storefront-cart/render.js';
+import { render as pdpProvider } from '@dropins/storefront-pdp/render.js';
+```
+
+### Provider Setup
+- Each dropin has a provider that must be set up
+- Providers handle state management and context
+- Providers are typically set up once per block
+- Multiple containers can use the same provider
+
+### Event Handling
+- Use dropin APIs for data operations
+- Use event bus for inter-dropin communication
+- Listen for dropin-specific events
+- Emit events when user actions occur
+
+## Customization Guidelines
+
+### Before Customizing
+1. **Check Documentation**: Use `search_storefront_docs` MCP to find dropin documentation
+2. **Use Slots First**: Try to customize using slots before CSS
+3. **Check Container Props**: Look for configuration options
+4. **Avoid Hallucination**: Never guess at props or slots
+
+### CSS Customization
+- Target dropin classes specifically
+- Use CSS custom properties when available
+- Test across different screen sizes
+
+### Container Customization
+- Use documented props and slots
+- Check for configuration options
+- Use event handlers for interactions
+- Maintain dropin functionality
+
+## Error Handling
+
+### Common Issues
+- **Missing Provider**: Ensure dropin provider is set up
+- **Invalid Props**: Check container documentation for valid props
+- **Missing Slots**: Verify slot names in documentation
+
+### Debugging
+- Verify container props match types and documentation
+- Use dropin documentation for troubleshooting
+
+## Documentation Access
+
+### Using MCP
+- Always use `search_storefront_docs` MCP for dropin documentation if more context is needed
+- Search for specific containers, props, or slots
+- Check version compatibility
+- Look for examples and usage patterns
+
+### Documentation Structure
+- Each dropin has its own documentation section
+- Containers are documented with props and slots
+- Examples show common usage patterns
+- Version information is included
