@@ -1,6 +1,13 @@
 declare const _default: {
     "RequisitionList": {
-      "containerTitle" : "Requisition Lists"
+      "containerTitle" : "Requisition Lists",
+      "RequisitionListWrapper" : {
+        "name": "Name",
+        "itemsCount": "Items count",
+        "lastUpdated": "Last updated",
+        "actions": "Actions",
+        "loginMsg": "Please login"
+      }
     }
 }
 ;

@@ -1,11 +1,12 @@
 import { HTMLAttributes } from 'preact/compat';
 import { FunctionComponent, VNode } from 'preact';
-import { RequisitionList as RequisitionListModel } from '../../data/models/requisitionList';
+import { RequisitionLists as RequisitionListsModel } from '../../data/models/requisitionLists';
 
 export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
-    requisitionLists?: RequisitionListModel[];
+    requisitionLists?: RequisitionListsModel;
     isAuthenticated: boolean;
+    isLoading?: boolean;
     header?: VNode;
 }
 export declare const RequisitionListGridWrapper: FunctionComponent<RequisitionListGridWrapperProps>;

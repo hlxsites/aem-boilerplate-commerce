@@ -14,6 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '.';
-export { RequisitionList } from './RequisitionList';
-//# sourceMappingURL=index.d.ts.map
+export interface Item {
+    uid: string;
+    quantity: number;
+}
+//# sourceMappingURL=item.d.ts.map

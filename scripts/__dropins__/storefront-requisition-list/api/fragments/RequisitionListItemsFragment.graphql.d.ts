@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const REQUISITION_LIST_ITEMS_FRAGMENT = "\nfragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {\n    items {\n      uid\n      quantity\n    }\n    total_pages\n    page_info {\n      page_size\n      current_page\n      total_pages\n    }\n  }\n";
+export declare const REQUISITION_LIST_ITEMS_FRAGMENT = "\nfragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {\n    items {\n      uid\n      quantity\n    }\n    page_info {\n      page_size\n      current_page\n      total_pages\n    }\n  }\n";
 //# sourceMappingURL=RequisitionListItemsFragment.graphql.d.ts.map

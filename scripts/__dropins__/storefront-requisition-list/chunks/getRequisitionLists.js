@@ -25,7 +25,7 @@ fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
 const GET_REQUISITION_LISTS_QUERY = `
   query GET_REQUISITION_LISTS_QUERY(
     $currentPage: Int = 1
-    $pageSize: Int = 20,
+    $pageSize: Int = 3,
   ) {
     customer {
       requisition_lists(pageSize: $pageSize, currentPage: $currentPage) {
@@ -44,13 +44,24 @@ const GET_REQUISITION_LISTS_QUERY = `
 ${REQUISITION_LIST_FRAGMENT}
 `;
 function transformRequisitionList(data) {
+  var _a;
   return {
-    id: data.id,
+    uid: data.uid,
     name: data.name,
     description: data.description,
     updated_at: data.updated_at,
-    items_count: data.items_count
+    items_count: data.items_count,
+    items: transformItems((_a = data.items) == null ? void 0 : _a.items)
   };
+}
+function transformItems(items) {
+  if (!(items == null ? void 0 : items.length)) return [];
+  return items.map((item) => {
+    return {
+      uid: item.uid,
+      quantity: item.quantity
+    };
+  });
 }
 const getRequisitionLists = async (currentPage, pageSize) => {
   return fetchGraphQl(GET_REQUISITION_LISTS_QUERY, {
@@ -62,12 +73,15 @@ const getRequisitionLists = async (currentPage, pageSize) => {
     errors,
     data
   }) => {
-    var _a;
+    var _a, _b, _c;
     if (errors) return handleFetchError(errors);
     if (!((_a = data == null ? void 0 : data.customer) == null ? void 0 : _a.requisition_lists)) {
       return null;
     }
-    return data.customer.requisition_lists.items.map((requisitionList) => transformRequisitionList(requisitionList));
+    return {
+      items: data.customer.requisition_lists.items.map((requisitionList) => transformRequisitionList(requisitionList)),
+      page_info: (_c = (_b = data.customer) == null ? void 0 : _b.requisition_lists) == null ? void 0 : _c.page_info
+    };
   });
 };
 export {
