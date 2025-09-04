@@ -25,7 +25,7 @@ fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
 const GET_REQUISITION_LISTS_QUERY = `
   query GET_REQUISITION_LISTS_QUERY(
     $currentPage: Int = 1
-    $pageSize: Int = 3,
+    $pageSize: Int = 20,
   ) {
     customer {
       requisition_lists(pageSize: $pageSize, currentPage: $currentPage) {
@@ -59,7 +59,33 @@ function transformItems(items) {
   return items.map((item) => {
     return {
       uid: item.uid,
-      quantity: item.quantity
+      quantity: item.quantity,
+      customizable_options: item.customizable_options ? item.customizable_options.map((option) => ({
+        uid: option.customizable_option_uid,
+        is_required: option.is_required,
+        label: option.label,
+        sort_order: option.sort_order,
+        type: option.type,
+        values: option.values.map((value) => ({
+          uid: value.customizable_option_value_uid,
+          label: value.label,
+          price: value.price,
+          value: value.value
+        }))
+      })) : [],
+      bundle_options: item.bundle_options || [],
+      configurable_options: item.configurable_options ? item.configurable_options.map((option) => ({
+        option_uid: option.configurable_product_option_uid,
+        option_label: option.option_label,
+        value_uid: option.configurable_product_option_value_uid,
+        value_label: option.value_label
+      })) : [],
+      samples: item.samples ? item.samples.map((sample) => ({
+        url: sample.sample_url,
+        sort_order: sample.sort_order,
+        title: sample.title
+      })) : [],
+      gift_card_options: item.gift_card_options || {}
     };
   });
 }
