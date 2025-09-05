@@ -7,6 +7,7 @@ export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivE
     requisitionLists?: RequisitionListsModel;
     isAuthenticated: boolean;
     isLoading?: boolean;
+    addReqList?: boolean;
     header?: VNode;
 }
 export declare const RequisitionListGridWrapper: FunctionComponent<RequisitionListGridWrapperProps>;

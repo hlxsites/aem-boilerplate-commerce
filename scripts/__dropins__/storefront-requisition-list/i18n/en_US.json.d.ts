@@ -7,6 +7,9 @@ declare const _default: {
         "lastUpdated": "Last updated",
         "actions": "Actions",
         "loginMsg": "Please login"
+      },
+      "AddNewReqList": {
+        "addNewReqListBtn": "Add new Requisition List"
       }
     }
 }
