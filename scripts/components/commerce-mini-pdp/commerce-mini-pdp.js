@@ -44,7 +44,7 @@ async function getFreshCartItem(cartItemUid) {
 
 export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   await loadCSS(
-    `${window.hlx.codeBasePath}/blocks/commerce-mini-pdp/commerce-mini-pdp.css`,
+    `${window.hlx.codeBasePath}/scripts/components/commerce-mini-pdp/commerce-mini-pdp.css`,
   );
 
   const placeholders = await fetchPlaceholders();
