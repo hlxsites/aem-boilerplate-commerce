@@ -24,8 +24,9 @@ export interface CompanyOption {
  * Contains customer's current company and available companies
  */
 export interface CustomerCompanyInfo {
-    currentCompany: Company | null;
+    currentCompany: Company;
     customerCompanies: CompanyOption[];
+    customerGroupId: string;
 }
 /**
  * Return type for the useCompanyData hook
@@ -36,20 +37,17 @@ export interface UseCompanyDataReturn {
     handleCompanyChange: (event: Event) => void;
 }
 /**
- * GraphQL response data structure
+ * GraphQL response wrapper
  */
-export interface GraphQLResponseData {
-    company: Company | null;
+export interface GraphQLResponse {
+    company: Company;
     customer: {
         companies: {
             items: Company[];
         };
     };
-}
-/**
- * GraphQL response wrapper
- */
-export interface GraphQLResponse {
-    data: GraphQLResponseData;
+    customerGroup: {
+        uid: string;
+    };
 }
 //# sourceMappingURL=company.d.ts.map
