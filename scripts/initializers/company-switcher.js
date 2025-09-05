@@ -8,66 +8,41 @@ import * as searchFetchGraphQl from '@dropins/storefront-product-discovery/api.j
 import * as orderFetchGraphQl from '@dropins/storefront-order/api.js';
 import * as accountFetchGraphQl from '@dropins/storefront-account/api.js';
 import * as companyFetchGraphQl from '@dropins/storefront-company-switcher/api.js';
-
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders } from '../commerce.js';
 
-const headerKey = 'X-Adobe-Company';
-const companySessionKey = 'DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT';
-
-const setCompanyHeaderFns = [];
-const removeCompanyHeaderFns = [];
-[
+const companyHeader = 'X-Adobe-Company';
+const customerGroupHeader = 'Magento-Customer-Group';
+const companySessionStorageKey = 'DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT';
+const groupSessionStorageKey = 'DROPIN__COMPANYSWITCHER__CUSTOMER_GROUP__CONTEXT';
+const fetchGraphQlModules = [
   pdpFetchGraphQl,
   cartFetchGraphQl,
   searchFetchGraphQl,
   orderFetchGraphQl,
   accountFetchGraphQl,
   companyFetchGraphQl,
-].forEach(({ setFetchGraphQlHeader, removeFetchGraphQlHeader }) => {
-  setCompanyHeaderFns.push(setFetchGraphQlHeader);
-  removeCompanyHeaderFns.push(removeFetchGraphQlHeader);
-});
+];
+const groupGraphQlModules = [
+  pdpFetchGraphQl,
+  searchFetchGraphQl,
+];
 
-function removeCompanyHeaders() {
-  removeCompanyHeaderFns.forEach((removeFn) => {
-    removeFn(headerKey);
-  });
-}
-
-function setCompanyHeaders(companyId) {
-  if (companyId == null) {
-    removeCompanyHeaders();
-    return;
-  }
-
-  setCompanyHeaderFns.forEach((setFn) => {
-    setFn(headerKey, companyId);
-  });
-}
-
-function handleAuthenticated(authenticated) {
+// Let PDP and PLP know when the company context changes to reload the page or just data.
+events.on('companyContext/changed', () => {
+  events.emit('pdp/reload');
+  events.emit('plp/reload');
+}, { eager: true });
+events.on('companyContext/restored', () => {
+  events.emit('pdp/reload');
+  events.emit('plp/reload');
+}, { eager: true });
+events.on('authenticated', (authenticated) => {
   if (!authenticated) {
-    sessionStorage.removeItem(companySessionKey);
-    removeCompanyHeaders();
+    events.emit('pdp/reload');
+    events.emit('plp/reload');
   }
-}
-
-function handleCompanyContextChanged(companyId) {
-  setCompanyHeaders(companyId);
-  sessionStorage.setItem(companySessionKey, companyId);
-}
-
-export function restoreCompanyContext() {
-  const companyId = sessionStorage.getItem(companySessionKey);
-  if (companyId) {
-    setCompanyHeaders(companyId);
-  }
-  events.emit('companyContext/restored', companyId);
-}
-
-events.on('companyContext/changed', handleCompanyContextChanged, { eager: true });
-events.on('authenticated', handleAuthenticated, { eager: true });
+}, { eager: true });
 
 await initializeDropin(async () => {
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('company-switcher') }));
@@ -79,5 +54,13 @@ await initializeDropin(async () => {
     },
   };
 
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, {
+    langDefinitions,
+    fetchGraphQlModules,
+    groupGraphQlModules,
+    companyHeader,
+    customerGroupHeader,
+    companySessionStorageKey,
+    groupSessionStorageKey,
+  });
 })();

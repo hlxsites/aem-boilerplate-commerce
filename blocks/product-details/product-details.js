@@ -379,6 +379,11 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
+  events.on('pdp/reload', () => {
+    // Would be better to reload just the product data.
+    window.location.reload();
+  });
+
   return Promise.resolve();
 }
 

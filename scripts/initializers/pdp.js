@@ -84,7 +84,14 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+  setFetchGraphQlHeaders((prev) => {
+    return { 
+      ...prev, 
+      ...getHeaders('cs'),
+      // Preserve existing Magento-Customer-Group if it exists in prev
+      ...(prev?.['Magento-Customer-Group'] && { 'Magento-Customer-Group': prev['Magento-Customer-Group'] })
+    };
+  });
 
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();

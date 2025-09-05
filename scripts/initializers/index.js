@@ -59,7 +59,7 @@ export default async function initializeDropins() {
       authenticated,
     ) => {
       if (authenticated && getConfigValue('commerce-companies-enabled') === true) {
-        import('./company-switcher.js').then((m) => m.restoreCompanyContext());
+        import('./company-switcher.js');
       }
     }, { eager: true });
 
