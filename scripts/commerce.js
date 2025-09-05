@@ -559,11 +559,15 @@ function createHashFromObject(obj, length = 5) {
 
 /**
  * Creates a commerce endpoint URL with query parameters including a cache-busting hash.
+ * @param {string} [customerGroupId] - Optional customer group ID to include in the CB Hash
  * @returns {Promise<URL>} A promise that resolves to the endpoint URL with query parameters
  */
-export async function commerceEndpointWithQueryParams() {
+export async function commerceEndpointWithQueryParams(customerGroupId) {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
   const headers = getHeaders('cs');
+  if (customerGroupId && headers['Magento-Customer-Group']) {
+    headers['Magento-Customer-Group'] = customerGroupId;
+  }
   const shortHash = createHashFromObject(headers);
   urlWithQueryParams.searchParams.append('cb', shortHash);
   return urlWithQueryParams;

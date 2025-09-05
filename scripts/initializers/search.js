@@ -9,13 +9,19 @@ import { initializeDropin } from './index.js';
 import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
 
 await initializeDropin(async () => {
-  setEndpoint(await commerceEndpointWithQueryParams());
-  setFetchGraphQlHeaders((prev) => ({
-    ...prev,
-    ...getHeaders('cs'),
-    // Preserve existing Magento-Customer-Group if it exists in prev
-    ...(prev?.['Magento-Customer-Group'] && { 'Magento-Customer-Group': prev['Magento-Customer-Group'] }),
-  }));
+  let groupIdHeader = null;
+  setFetchGraphQlHeaders((prev) => {
+    const headers = {
+      ...prev,
+      ...getHeaders('cs'),
+    };
+    if (prev['Magento-Customer-Group']) {
+      headers['Magento-Customer-Group'] = prev['Magento-Customer-Group'];
+      groupIdHeader = prev['Magento-Customer-Group'];
+    }
+    return headers;
+  });
+  setEndpoint(await commerceEndpointWithQueryParams(groupIdHeader));
 
   const labels = await fetchPlaceholders('placeholders/search.json');
   const langDefinitions = {

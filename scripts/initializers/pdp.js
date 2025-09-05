@@ -80,16 +80,20 @@ await initializeDropin(async () => {
   // Preload PDP assets immediately when this module is imported
   preloadPDPAssets();
 
-  // Set Fetch Endpoint (Service)
-  setEndpoint(await commerceEndpointWithQueryParams());
-
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders((prev) => ({
-    ...prev,
-    ...getHeaders('cs'),
-    // Preserve existing Magento-Customer-Group if it exists in prev
-    ...(prev?.['Magento-Customer-Group'] && { 'Magento-Customer-Group': prev['Magento-Customer-Group'] }),
-  }));
+  let groupIdHeader = null;
+  setFetchGraphQlHeaders((prev) => {
+    const headers = {
+      ...prev,
+      ...getHeaders('cs'),
+    };
+    if (prev['Magento-Customer-Group']) {
+      headers['Magento-Customer-Group'] = prev['Magento-Customer-Group'];
+      groupIdHeader = prev['Magento-Customer-Group'];
+    }
+    return headers;
+  });
+  setEndpoint(await commerceEndpointWithQueryParams(groupIdHeader));
 
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
