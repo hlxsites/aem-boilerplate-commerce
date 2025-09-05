@@ -28,20 +28,8 @@ const groupGraphQlModules = [
   searchFetchGraphQl,
 ];
 
-// Let PDP and PLP know when the company context changes to reload the page or just data.
 events.on('companyContext/changed', () => {
-  events.emit('pdp/reload');
-  events.emit('plp/reload');
-}, { eager: true });
-events.on('companyContext/restored', () => {
-  events.emit('pdp/reload');
-  events.emit('plp/reload');
-}, { eager: true });
-events.on('authenticated', (authenticated) => {
-  if (!authenticated) {
-    events.emit('pdp/reload');
-    events.emit('plp/reload');
-  }
+  window.location.reload(); // sorry
 }, { eager: true });
 
 await initializeDropin(async () => {
