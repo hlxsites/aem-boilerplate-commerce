@@ -63,9 +63,13 @@ export default async function decorate(block) {
     filter,
   } = Object.fromEntries(urlParams.entries());
 
-  await performInitialSearch(config, { q, page, sort, filter });
+  await performInitialSearch(config, {
+    q, page, sort, filter,
+  });
   events.on('plp/reload', async () => {
-    await performInitialSearch(config, { q, page, sort, filter });
+    await performInitialSearch(config, {
+      q, page, sort, filter,
+    });
   });
 
   const getAddToCartButton = (product) => {
@@ -199,7 +203,9 @@ export default async function decorate(block) {
 }
 
 async function performInitialSearch(config, urlParams) {
-  const { q, page, sort, filter } = urlParams;
+  const {
+    q, page, sort, filter,
+  } = urlParams;
   // Request search based on the page type on block load
   if (config.urlpath) {
     // If it's a category page...

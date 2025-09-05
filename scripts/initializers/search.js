@@ -10,14 +10,12 @@ import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.
 
 await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
-  setFetchGraphQlHeaders((prev) => {
-    return { 
-      ...prev, 
-      ...getHeaders('cs'),
-      // Preserve existing Magento-Customer-Group if it exists in prev
-      ...(prev?.['Magento-Customer-Group'] && { 'Magento-Customer-Group': prev['Magento-Customer-Group'] })
-    };
-  });
+  setFetchGraphQlHeaders((prev) => ({
+    ...prev,
+    ...getHeaders('cs'),
+    // Preserve existing Magento-Customer-Group if it exists in prev
+    ...(prev?.['Magento-Customer-Group'] && { 'Magento-Customer-Group': prev['Magento-Customer-Group'] }),
+  }));
 
   const labels = await fetchPlaceholders('placeholders/search.json');
   const langDefinitions = {
