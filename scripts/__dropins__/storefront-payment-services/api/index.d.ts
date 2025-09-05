@@ -16,4 +16,5 @@
  *******************************************************************/
 export * from './initialize';
 export { PaymentMethodCode } from './method';
+export { PaymentLocation } from './location';
 //# sourceMappingURL=index.d.ts.map

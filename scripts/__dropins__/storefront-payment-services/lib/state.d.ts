@@ -7,10 +7,13 @@ export type State = {
     status: 'initializing' | 'error' | 'ready';
     /**
      * Invariants
-     *  - (status === "ready") === (sdk !== null)
-     *  - (sdk !== null) -> sdk.Payment.init() called and awaited
+     *  - (status === "ready") === (paymentsSDK !== null)
+     *  - (paymentsSDK !== null) -> sdk.Payment.init() called and awaited for all locations
      */
-    paymentsSDK: PaymentServicesSDK | null;
+    paymentsSDK: {
+        checkout: PaymentServicesSDK;
+        productDetail: PaymentServicesSDK;
+    } | null;
 };
 /**
  * Reactive atomic drop-in state.

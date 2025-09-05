@@ -2,9 +2,12 @@ import { PaymentServicesSDK } from '@adobe-commerce/payment-services-sdk';
 
 /**
  * Payment Services SDK signal. Invariants:
- *  - (sdk !== null) -> sdk.Payment.init() called and awaited
+ *  - (paymentsSDK !== null) -> sdk.Payment.init() called and awaited for all locations
  */
-export declare const paymentsSDK: import('@preact/signals-core').ReadonlySignal<PaymentServicesSDK | null>;
+export declare const paymentsSDK: import('@preact/signals-core').ReadonlySignal<{
+    checkout?: PaymentServicesSDK | undefined;
+    productDetail?: PaymentServicesSDK | undefined;
+}>;
 /**
  * Payment Services drop-in status signal.
  */
