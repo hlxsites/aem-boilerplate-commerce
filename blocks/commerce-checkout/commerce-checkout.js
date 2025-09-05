@@ -1125,7 +1125,7 @@ export default async function decorate(block) {
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
-  events.on('payment-services/method-available', handlePaymentServicesMethodAvailable, { eager: true });
+  events.on('payment-services/method-available/checkout', handlePaymentServicesMethodAvailable, { eager: true });
   events.on('order/placed', handleOrderPlaced);
 }
 

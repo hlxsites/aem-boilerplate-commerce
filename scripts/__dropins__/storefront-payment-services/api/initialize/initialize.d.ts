@@ -17,7 +17,7 @@ export type ConfigProps = {
      * For more information, see: https://developer.adobe.com/commerce/webapi/graphql/usage/authorization-tokens/.
      */
     getCustomerToken?: (() => string | null) | null;
-    langDefinitions?: Lang;
+    langDefinitions?: Record<"default" | Lang, object>;
 };
 export declare const initialize: Initializer<ConfigProps>;
 export declare const config: import('@dropins/tools/types/elsie/src/lib').Config<ConfigProps>;
