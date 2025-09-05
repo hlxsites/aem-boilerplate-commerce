@@ -372,6 +372,9 @@ export default async function decorate(block) {
             },
             enabled: false,
           },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
           [PaymentMethodCode.SMART_BUTTONS]: {
             enabled: false,
           },
