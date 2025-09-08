@@ -10,6 +10,7 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+import { initializers } from '@dropins/tools/initializer.js';
 
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
@@ -24,6 +25,29 @@ import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescri
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 
+// Order Dropin Components
+import * as orderApi from '@dropins/storefront-order/api.js';
+import * as checkoutApi from '@dropins/storefront-checkout/api.js';
+import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
+import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
+import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
+import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
+import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
+import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
+import { render as OrderProvider } from '@dropins/storefront-order/render.js';
+
+// Auth Dropin
+import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
+import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
+
+// Cart Dropin
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import { render as CartProvider } from '@dropins/storefront-cart/render.js';
+
+// Block-level
+import createModal from '../modal/modal.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+
 // Libs
 import {
   rootLink,
@@ -36,6 +60,25 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+
+// For order confirmation block
+// Link to support page
+const SUPPORT_PATH = '/support';
+
+// Slots
+const authPrivacyPolicyConsentSlot = {};
+
+const swatchImageSlot = (ctx) => {
+  const { data, defaultImageProps } = ctx;
+  tryRenderAemAssetsImage(ctx, {
+    alias: data.sku,
+    imageProps: defaultImageProps,
+    params: {
+      width: defaultImageProps.width,
+      height: defaultImageProps.height,
+    },
+  });
+};
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -379,7 +422,197 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
+  // Handle order placed event
+  events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
+
   return Promise.resolve();
+}
+
+/**
+ * Handle order placed event
+ * @param {Object} orderData - The order data
+ * @param {Object} block - The block
+ */
+async function handleOrderPlaced(orderData, block) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  const url = token
+    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
+    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+
+  window.history.pushState({}, '', url);
+
+  await displayOrderConfirmation(orderData, block);
+}
+
+/**
+ * Display the order confirmation
+ * @param {Object} orderData - The order data
+ * @param {Object} block - The block
+ */
+async function displayOrderConfirmation(orderData, block) {
+  // Scroll to the top of the page
+  window.scrollTo(0, 0);
+
+  const orderConfirmationFragment = document.createRange()
+    .createContextualFragment(`
+    <div class="order-confirmation">
+      <div class="order-confirmation__main">
+        <div class="order-confirmation__block order-confirmation__header"></div>
+        <div class="order-confirmation__block order-confirmation__order-status"></div>
+        <div class="order-confirmation__block order-confirmation__shipping-status"></div>
+        <div class="order-confirmation__block order-confirmation__customer-details"></div>
+      </div>
+      <div class="order-confirmation__aside">
+        <div class="order-confirmation__block order-confirmation__order-cost-summary"></div>
+        <div class="order-confirmation__block order-confirmation__gift-options"></div>
+        <div class="order-confirmation__block order-confirmation__order-product-list"></div>
+        <div class="order-confirmation__block order-confirmation__footer"></div>
+      </div>
+    </div>
+`);
+
+  // Order confirmation elements
+  const $orderConfirmationHeader = orderConfirmationFragment.querySelector(
+    '.order-confirmation__header',
+  );
+  const $orderStatus = orderConfirmationFragment.querySelector(
+    '.order-confirmation__order-status',
+  );
+  const $shippingStatus = orderConfirmationFragment.querySelector(
+    '.order-confirmation__shipping-status',
+  );
+  const $customerDetails = orderConfirmationFragment.querySelector(
+    '.order-confirmation__customer-details',
+  );
+  const $orderCostSummary = orderConfirmationFragment.querySelector(
+    '.order-confirmation__order-cost-summary',
+  );
+  const $orderGiftOptions = orderConfirmationFragment.querySelector(
+    '.order-confirmation__gift-options',
+  );
+  const $orderProductList = orderConfirmationFragment.querySelector(
+    '.order-confirmation__order-product-list',
+  );
+  const $orderConfirmationFooter = orderConfirmationFragment.querySelector(
+    '.order-confirmation__footer',
+  );
+
+  const labels = await fetchPlaceholders();
+  const langDefinitions = {
+    default: {
+      ...labels,
+    },
+  };
+  await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
+
+  block.replaceChildren(orderConfirmationFragment);
+
+  const handleSignUpClick = async ({
+    inputsDefaultValueSet,
+    addressesData,
+  }) => {
+    const signUpForm = document.createElement('div');
+    AuthProvider.render(SignUp, {
+      routeSignIn: () => rootLink('/customer/login'),
+      routeRedirectOnEmailConfirmationClose: () => rootLink('/customer/account'),
+      inputsDefaultValueSet,
+      addressesData,
+      slots: {
+        ...authPrivacyPolicyConsentSlot,
+      },
+    })(signUpForm);
+
+    await createModal(signUpForm);
+  };
+
+  OrderProvider.render(OrderHeader, {
+    handleEmailAvailability: checkoutApi.isEmailAvailable,
+    handleSignUpClick,
+    orderData,
+  })($orderConfirmationHeader);
+
+  OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(
+    $orderStatus,
+  );
+  OrderProvider.render(ShippingStatus)($shippingStatus);
+  OrderProvider.render(CustomerDetails)($customerDetails);
+  OrderProvider.render(OrderCostSummary)($orderCostSummary);
+  CartProvider.render(GiftOptions, {
+    view: 'order',
+    dataSource: 'order',
+    isEditable: false,
+    readOnlyFormOrderView: 'secondary',
+    slots: {
+      SwatchImage: swatchImageSlot,
+    },
+  })($orderGiftOptions);
+  OrderProvider.render(OrderProductList, {
+    slots: {
+      Footer: (ctx) => {
+        const giftOptions = document.createElement('div');
+
+        CartProvider.render(GiftOptions, {
+          item: ctx.item,
+          view: 'product',
+          dataSource: 'order',
+          isEditable: false,
+          slots: {
+            SwatchImage: swatchImageSlot,
+          },
+        })(giftOptions);
+
+        ctx.appendChild(giftOptions);
+      },
+      CartSummaryItemImage: (ctx) => {
+        const { data, defaultImageProps } = ctx;
+        tryRenderAemAssetsImage(ctx, {
+          alias: data.product.sku,
+          imageProps: defaultImageProps,
+
+          params: {
+            width: defaultImageProps.width,
+            height: defaultImageProps.height,
+          },
+        });
+      },
+    },
+  })($orderProductList);
+
+  $orderConfirmationFooter.innerHTML = `
+    <div class="order-confirmation-footer__continue-button"></div>
+    <div class="order-confirmation-footer__contact-support">
+      <p>
+        Need help?
+        <a
+          href="${rootLink(SUPPORT_PATH)}"
+          rel="noreferrer"
+          class="order-confirmation-footer__contact-support-link"
+          data-testid="order-confirmation-footer__contact-support-link"
+        >
+          Contact us
+        </a>
+      </p>
+    </div>
+  `;
+
+  const $orderConfirmationFooterContinueBtn = $orderConfirmationFooter.querySelector(
+    '.order-confirmation-footer__continue-button',
+  );
+
+  UI.render(Button, {
+    children: 'Continue shopping',
+    'data-testid': 'order-confirmation-footer__continue-button',
+    className: 'order-confirmation-footer__continue-button',
+    size: 'medium',
+    variant: 'primary',
+    type: 'submit',
+    href: rootLink('/'),
+  })($orderConfirmationFooterContinueBtn);
 }
 
 async function setJsonLdProduct(product) {
