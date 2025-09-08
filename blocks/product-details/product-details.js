@@ -455,8 +455,6 @@ async function handleOrderPlaced(orderData, block) {
  * @param {Object} block - The block
  */
 async function displayOrderConfirmation(orderData, block) {
-  console.log('displayOrderConfirmation', orderData);
-
   // Scroll to the top of the page
   window.scrollTo(0, 0);
 
