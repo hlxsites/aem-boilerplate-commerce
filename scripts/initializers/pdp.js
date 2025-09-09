@@ -5,6 +5,7 @@ import {
   initialize,
   setEndpoint,
   setFetchGraphQlHeaders,
+  getFetchGraphQlHeader,
   fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
@@ -17,6 +18,7 @@ import {
   preloadFile,
 } from '../commerce.js';
 import { getMetadata } from '../aem.js';
+import { events } from '@dropins/tools/event-bus.js';
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -81,19 +83,15 @@ await initializeDropin(async () => {
   preloadPDPAssets();
 
   // Set Fetch Headers (Service)
-  let groupIdHeader = null;
-  setFetchGraphQlHeaders((prev) => {
-    const headers = {
-      ...prev,
-      ...getHeaders('cs'),
-    };
-    if (prev['Magento-Customer-Group']) {
-      headers['Magento-Customer-Group'] = prev['Magento-Customer-Group'];
-      groupIdHeader = prev['Magento-Customer-Group'];
-    }
-    return headers;
-  });
-  setEndpoint(await commerceEndpointWithQueryParams(groupIdHeader));
+  const customerGroupHeader = {
+    'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group')
+  };
+  setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
+  setFetchGraphQlHeaders((prev) => ({
+    ...prev,
+    ...getHeaders('cs'),
+    ...customerGroupHeader
+  }));
 
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
@@ -118,6 +116,11 @@ await initializeDropin(async () => {
       initialData: { ...product },
     },
   };
+
+  // Reload PDP when authenticated
+  events.on('authenticated', () => {
+    window.location.reload();
+  });
 
   // Initialize Dropins
   return initializers.mountImmediately(initialize, {

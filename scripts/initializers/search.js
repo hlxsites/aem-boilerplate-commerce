@@ -2,26 +2,25 @@ import { initializers } from '@dropins/tools/initializer.js';
 import {
   initialize,
   setFetchGraphQlHeaders,
+  getFetchGraphQlHeader,
   setEndpoint,
 } from '@dropins/storefront-product-discovery/api.js';
 import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
+import { events } from '@dropins/tools/event-bus.js';
 
 await initializeDropin(async () => {
-  let groupIdHeader = null;
-  setFetchGraphQlHeaders((prev) => {
-    const headers = {
+    // Set Fetch Headers (Service)
+    const customerGroupHeader = {
+      'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group')
+    };
+    setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
+    setFetchGraphQlHeaders((prev) => ({
       ...prev,
       ...getHeaders('cs'),
-    };
-    if (prev['Magento-Customer-Group']) {
-      headers['Magento-Customer-Group'] = prev['Magento-Customer-Group'];
-      groupIdHeader = prev['Magento-Customer-Group'];
-    }
-    return headers;
-  });
-  setEndpoint(await commerceEndpointWithQueryParams(groupIdHeader));
+      ...customerGroupHeader
+    }));
 
   const labels = await fetchPlaceholders('placeholders/search.json');
   const langDefinitions = {
@@ -29,6 +28,10 @@ await initializeDropin(async () => {
       ...labels,
     },
   };
+
+  events.on('authenticated', () => {
+    window.location.reload();
+  });
 
   return initializers.mountImmediately(initialize, { langDefinitions });
 })();
