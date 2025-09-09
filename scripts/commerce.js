@@ -567,7 +567,7 @@ export async function commerceEndpointWithQueryParams(customHeaders = {}) {
   const headers = {
     ...getHeaders('cs'),
     ...customHeaders,
-  }
+  };
   const shortHash = createHashFromObject(headers);
   urlWithQueryParams.searchParams.append('cb', shortHash);
   return urlWithQueryParams;

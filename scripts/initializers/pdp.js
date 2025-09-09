@@ -8,6 +8,7 @@ import {
   getFetchGraphQlHeader,
   fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
+import { events } from '@dropins/tools/event-bus.js';
 import { initializeDropin } from './index.js';
 import {
   fetchPlaceholders,
@@ -18,7 +19,6 @@ import {
   preloadFile,
 } from '../commerce.js';
 import { getMetadata } from '../aem.js';
-import { events } from '@dropins/tools/event-bus.js';
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -84,13 +84,13 @@ await initializeDropin(async () => {
 
   // Set Fetch Headers (Service)
   const customerGroupHeader = {
-    'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group')
+    'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group'),
   };
   setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
   setFetchGraphQlHeaders((prev) => ({
     ...prev,
     ...getHeaders('cs'),
-    ...customerGroupHeader
+    ...customerGroupHeader,
   }));
 
   const sku = getProductSku();

@@ -6,21 +6,21 @@ import {
   setEndpoint,
 } from '@dropins/storefront-product-discovery/api.js';
 import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
+import { events } from '@dropins/tools/event-bus.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
-import { events } from '@dropins/tools/event-bus.js';
 
 await initializeDropin(async () => {
-    // Set Fetch Headers (Service)
-    const customerGroupHeader = {
-      'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group')
-    };
-    setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
-    setFetchGraphQlHeaders((prev) => ({
-      ...prev,
-      ...getHeaders('cs'),
-      ...customerGroupHeader
-    }));
+  // Set Fetch Headers (Service)
+  const customerGroupHeader = {
+    'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group'),
+  };
+  setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
+  setFetchGraphQlHeaders((prev) => ({
+    ...prev,
+    ...getHeaders('cs'),
+    ...customerGroupHeader,
+  }));
 
   const labels = await fetchPlaceholders('placeholders/search.json');
   const langDefinitions = {
