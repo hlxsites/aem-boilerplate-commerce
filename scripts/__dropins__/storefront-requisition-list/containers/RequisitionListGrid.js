@@ -212,37 +212,35 @@ const RequisitionListActions = ({
   return u("button", {
     type: "button",
     "aria-label": translations.addNewReqListBtn,
-    "aria-role": "button",
+    role: "button",
     className: classes(["requisition-list-actions", ["requisition-list-actions--selectable", selectable], className]),
     "data-testid": "requisition-list-actions-button",
-    onClick: () => {
-    },
     children: [u("span", {
       className: "requisition-list-actions__title",
       "data-testid": "requisition-list-actions-button-text",
       children: translations.addNewReqListBtn
     }, void 0, false, {
       fileName: _jsxFileName$1,
-      lineNumber: 51,
+      lineNumber: 50,
       columnNumber: 7
     }, void 0), u(Icon, {
       source: SvgAdd,
       size: "32"
     }, void 0, false, {
       fileName: _jsxFileName$1,
-      lineNumber: 57,
+      lineNumber: 56,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$1,
-    lineNumber: 39,
+    lineNumber: 38,
     columnNumber: 5
   }, void 0);
 };
 var _jsxFileName = "/Users/rafaljanicki/www/storefront-requisition-list/src/containers/RequisitionListGrid/RequisitionListGrid.tsx";
 const RequisitionListGrid = ({
   requisitionLists,
-  isAuthenticated = false,
+  isAuthenticated,
   slots
 }) => {
   const [reqLists, setReqLists] = t(useState(requisitionLists), "reqLists");

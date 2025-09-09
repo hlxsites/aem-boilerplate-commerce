@@ -14,6 +14,16 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export interface Product {
+    sku: string;
+    quantity: number;
+    parent_sku: string;
+    selected_options: string[];
+    entered_options: {
+        uid: string;
+        value: string;
+    }[];
+}
 export interface Item {
     uid: string;
     quantity: number;
