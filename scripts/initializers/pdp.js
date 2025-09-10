@@ -83,9 +83,8 @@ await initializeDropin(async () => {
   preloadPDPAssets();
 
   // Set Fetch Headers (Service)
-  const customerGroupHeader = {
-    'Magento-Customer-Group': getFetchGraphQlHeader('Magento-Customer-Group'),
-  };
+  let customerGroupHeader = getFetchGraphQlHeader('Magento-Customer-Group');
+  customerGroupHeader = customerGroupHeader ? { 'Magento-Customer-Group': customerGroupHeader } : {};
   setEndpoint(await commerceEndpointWithQueryParams(customerGroupHeader));
   setFetchGraphQlHeaders((prev) => ({
     ...prev,
