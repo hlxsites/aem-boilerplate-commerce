@@ -12,10 +12,14 @@ import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { initializers } from '@dropins/tools/initializer.js';
 
+import * as paymentServicesApi from '@dropins/storefront-payment-services/api.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
 // Containers
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
@@ -141,6 +145,7 @@ export default async function decorate(block) {
           <div class="product-details__quantity"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
+            <div class="product-details__buttons__apple-pay"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
         </div>
@@ -159,6 +164,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $applePay = fragment.querySelector('.product-details__buttons__apple-pay');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -347,10 +353,54 @@ export default async function decorate(block) {
     },
   })($addToCart);
 
+  // Configuration – Button - Apple Pay
+  // events.on('payment-services/method-available/product-detail', async () => {
+  const applePay = await UI.render(Button, {
+    children: 'Apple Pay',
+    slots: {
+      [paymentServicesApi.PaymentMethodCode.APPLE_PAY]: {
+        render: (ctx) => {
+          PaymentServices.render(ApplePay, {
+            /* TODO: PAY-6150: When PAY-6260 is merged and released, update getCartId to call
+                paymentServicesApi.createShadowCart
+             */
+            getCartId: () => ctx.cartId,
+            isVirtualCart: product.isVirtual,
+            onButtonClick: (showPaymentSheet) => {
+              showPaymentSheet();
+            },
+            // TODO: When success go to order confirmation page
+            onSuccess: () => {
+              events.emit('order/placed', ctx.orderData);
+            },
+            onError: (error) => {
+              console.error(error);
+              events.emit('product-detail/error', {
+                code: 'UNKNOWN_ERROR',
+                message: 'An unexpected error occurred while processing your Apple Pay '
+                  + 'payment. Please try another payment method or try again.',
+              });
+            },
+            /* TODO: PAY-6150: When PAY-6260 is merged and released, update onCancel to call
+                paymentServicesApi.setCartAsInactive
+             */
+            onCancel: () => {
+              events.emit('order/placed', ctx.orderData);
+            },
+          })($applePay);
+          ctx.replaceHTML($applePay);
+        },
+        enabled: true,
+      },
+    },
+  })($applePay);
+  // });
+
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    applePay.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes
