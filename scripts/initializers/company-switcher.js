@@ -1,4 +1,3 @@
-import { events } from '@dropins/tools/event-bus.js';
 import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-company-switcher/api.js';
@@ -27,10 +26,6 @@ const groupGraphQlModules = [
   pdpFetchGraphQl,
   searchFetchGraphQl,
 ];
-
-events.on('companyContext/changed', () => {
-  window.location.reload(); // sorry
-}, { eager: true });
 
 await initializeDropin(async () => {
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('company-switcher') }));

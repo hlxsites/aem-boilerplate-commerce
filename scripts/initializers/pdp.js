@@ -117,10 +117,11 @@ await initializeDropin(async () => {
     },
   };
 
-  // Reload PDP when authenticated
-  events.on('authenticated', () => {
-    window.location.reload();
-  });
+  async function reloadPDP() {
+    const loadedProduct = await fetchProductData(sku, { optionsUIDs }).then(preloadImageMiddleware);
+    events.emit('pdp/data', loadedProduct);
+  }
+  events.on('companyContext/changed', reloadPDP);
 
   // Initialize Dropins
   return initializers.mountImmediately(initialize, {
