@@ -4,7 +4,6 @@ import { RequisitionList as RequisitionListModel } from '../../data/models/requi
 
 export interface RequisitionListGridProps extends HTMLAttributes<HTMLDivElement> {
     requisitionLists?: RequisitionListModel[];
-    isAuthenticated?: boolean;
     slots?: {
         Header?: SlotProps;
     };

@@ -72,7 +72,6 @@ var _jsxFileName$2 = "/Users/rafaljanicki/www/storefront-requisition-list/src/co
 const RequisitionListGridWrapper = ({
   className,
   requisitionLists,
-  isAuthenticated,
   header,
   addReqList = false,
   ...props
@@ -100,12 +99,12 @@ const RequisitionListGridWrapper = ({
         node: header
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 84,
+        lineNumber: 76,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 77,
+      lineNumber: 69,
       columnNumber: 9
     }, void 0), u("div", {
       className: classes(["requisition-list-grid-wrapper__add-new", className]),
@@ -114,18 +113,18 @@ const RequisitionListGridWrapper = ({
         children: "Add New Requisition List Form goes here..."
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 95,
+        lineNumber: 87,
         columnNumber: 11
       }, void 0) : u(RequisitionListActions, {
         addReqList
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 99,
+        lineNumber: 91,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 88,
+      lineNumber: 80,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["dropin-card dropin-card--secondary requisition-list-grid-wrapper__content", className]),
@@ -135,45 +134,38 @@ const RequisitionListGridWrapper = ({
           children: translations.name
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 115,
+          lineNumber: 107,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.itemsCount
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 116,
+          lineNumber: 108,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.lastUpdated
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 117,
+          lineNumber: 109,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.actions
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 118,
+          lineNumber: 110,
           columnNumber: 11
         }, void 0)]
       }, void 0, true, {
         fileName: _jsxFileName$2,
-        lineNumber: 109,
+        lineNumber: 101,
         columnNumber: 9
-      }, void 0), isAuthenticated ? (_a = reqLists == null ? void 0 : reqLists.items) == null ? void 0 : _a.map((rl) => u(RequisitionListItem, {
+      }, void 0), (_a = reqLists == null ? void 0 : reqLists.items) == null ? void 0 : _a.map((rl) => u(RequisitionListItem, {
         requisitionList: rl
       }, rl.uid, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 122,
-        columnNumber: 13
-      }, void 0)) : u("div", {
-        className: "requisition-list-grid-wrapper__login-msg",
-        children: translations.loginMsg
-      }, void 0, false, {
-        fileName: _jsxFileName$2,
-        lineNumber: 125,
+        lineNumber: 113,
         columnNumber: 11
-      }, void 0), u("div", {
+      }, void 0)), u("div", {
         className: classes(["requisition-list-grid-wrapper__pagination", className]),
         children: u(Pagination, {
           totalPages: (_b = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _b.total_pages,
@@ -181,22 +173,22 @@ const RequisitionListGridWrapper = ({
           onChange: handlePageChange
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 135,
+          lineNumber: 121,
           columnNumber: 11
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 129,
+        lineNumber: 115,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$2,
-      lineNumber: 103,
+      lineNumber: 95,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$2,
-    lineNumber: 70,
+    lineNumber: 62,
     columnNumber: 5
   }, void 0);
 };
@@ -240,7 +232,6 @@ const RequisitionListActions = ({
 var _jsxFileName = "/Users/rafaljanicki/www/storefront-requisition-list/src/containers/RequisitionListGrid/RequisitionListGrid.tsx";
 const RequisitionListGrid = ({
   requisitionLists,
-  isAuthenticated,
   slots
 }) => {
   const [reqLists, setReqLists] = t(useState(requisitionLists), "reqLists");
@@ -267,7 +258,7 @@ const RequisitionListGrid = ({
         slot: slots.Header
       }, void 0, false, {
         fileName: _jsxFileName,
-        lineNumber: 51,
+        lineNumber: 49,
         columnNumber: 9
       }, void 0);
     }
@@ -277,18 +268,17 @@ const RequisitionListGrid = ({
       title: translations.containerTitle
     }, void 0, false, {
       fileName: _jsxFileName,
-      lineNumber: 60,
+      lineNumber: 58,
       columnNumber: 7
     }, void 0);
   }, [slots, translations.containerTitle]);
   return u(RequisitionListGridWrapper, {
     header: getHeader(),
-    isAuthenticated,
     requisitionLists: reqLists,
     isLoading
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 69,
+    lineNumber: 67,
     columnNumber: 5
   }, void 0);
 };

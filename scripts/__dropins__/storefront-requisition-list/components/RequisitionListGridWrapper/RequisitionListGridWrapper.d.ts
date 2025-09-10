@@ -5,7 +5,6 @@ import { RequisitionLists as RequisitionListsModel } from '../../data/models/req
 export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
     requisitionLists?: RequisitionListsModel;
-    isAuthenticated: boolean;
     isLoading?: boolean;
     addReqList?: boolean;
     header?: VNode;
