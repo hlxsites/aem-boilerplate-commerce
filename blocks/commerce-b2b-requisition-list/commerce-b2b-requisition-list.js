@@ -18,7 +18,6 @@ export default async function decorate(block) {
     }
     await rlRenderer.render(RequisitionListGrid, {
       requisitionLists: await rlApi.getRequisitionLists(),
-      isAuthenticated: checkIsAuthenticated(),
       slots: {},
     })(block);
   }
