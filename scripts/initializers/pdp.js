@@ -97,12 +97,12 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  const getProductData = async () => {
-    return await fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware);
+  const getProductData = async (skipTransform) => {
+    return await fetchProductData(sku, { optionsUIDs, skipTransform }).then(preloadImageMiddleware);
   };
 
   const [product, labels] = await Promise.all([
-    getProductData(),
+    getProductData(true),
     fetchPlaceholders('placeholders/pdp.json'),
   ]);
 
@@ -123,10 +123,12 @@ await initializeDropin(async () => {
   };
 
   // Reload PDP when company context changes
-  events.on('companyContext/changed', async () => {
-    const loadedProduct = await getProductData();
+  async function reloadPDP() {
+    const loadedProduct = await getProductData(false);
     events.emit('pdp/data', loadedProduct);
-  });
+  }
+  
+  events.on('companyContext/changed', reloadPDP);
 
   // Initialize Dropins
   return initializers.mountImmediately(initialize, {
