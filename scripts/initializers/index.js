@@ -33,7 +33,6 @@ const persistCartDataInSession = (data) => {
 
 export default async function initializeDropins() {
   const init = async () => {
-
     // Set auth headers on authenticated event
     events.on('authenticated', setAuthHeaders);
 
@@ -56,10 +55,9 @@ export default async function initializeDropins() {
     // Initialize Global Drop-ins
     await import('./auth.js');
 
-    
     // Initialize Company Switcher
     const authenticated = events.lastPayload('authenticated');
-    
+
     if (authenticated && getConfigValue('commerce-companies-enabled') === true) {
       await import('./company-switcher.js');
     }
