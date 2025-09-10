@@ -1,0 +1,27 @@
+{
+    "public": {
+      "default": {
+        "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/PY4SJoq2mtveArfaEhj4v3/graphql",
+        "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/PY4SJoq2mtveArfaEhj4v3/graphql",
+        "commerce-companies-enabled": true,
+        "headers": {
+          "all": {
+            "Store": "default"
+          },
+          "cs": {
+            "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+            "Magento-Store-Code": "main_website_store",
+            "Magento-Store-View-Code": "default",
+            "Magento-Website-Code": "base",
+            "x-api-key": "search_gql",
+            "Magento-Environment-Id": "your_environment_id_here"
+          }
+        },
+        "plugins": {
+          "picker": {
+             "rootCategory": "2"
+           }
+        }
+      }
+    }
+  }
