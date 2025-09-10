@@ -366,8 +366,9 @@ export default async function decorate(block) {
              */
             getCartId: () => ctx.cartId,
             isVirtualCart: product.isVirtual,
-            onButtonClick: (showPaymentSheet) => {
-              showPaymentSheet();
+            onButtonClick: () => {
+              events.emit('order/placed', ctx.orderData);
+              // showPaymentSheet();
             },
             // TODO: When success go to order confirmation page
             onSuccess: () => {
