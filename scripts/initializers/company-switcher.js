@@ -11,10 +11,6 @@ import * as checkoutFetchGraphQl from '@dropins/storefront-checkout/api.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders } from '../commerce.js';
 
-const companyHeader = 'X-Adobe-Company';
-const customerGroupHeader = 'Magento-Customer-Group';
-const companySessionStorageKey = 'DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT';
-const groupSessionStorageKey = 'DROPIN__COMPANYSWITCHER__CUSTOMER_GROUP__CONTEXT';
 const fetchGraphQlModules = [
   pdpFetchGraphQl,
   cartFetchGraphQl,
@@ -43,9 +39,5 @@ await initializeDropin(async () => {
     langDefinitions,
     fetchGraphQlModules,
     groupGraphQlModules,
-    companyHeader,
-    customerGroupHeader,
-    companySessionStorageKey,
-    groupSessionStorageKey,
   });
 })();
