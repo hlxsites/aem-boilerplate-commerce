@@ -66,11 +66,6 @@ export default async function decorate(block) {
   await performInitialSearch(config, {
     q, page, sort, filter,
   });
-  events.on('companyContext/changed', async () => {
-    await performInitialSearch(config, {
-      q, page, sort, filter,
-    });
-  });
 
   const getAddToCartButton = (product) => {
     if (product.typename === 'ComplexProductView') {
@@ -200,6 +195,13 @@ export default async function decorate(block) {
     // Update the URL
     window.history.pushState({}, '', url.toString());
   }, { eager: false });
+
+  // Listen for company context changed and reload data if needed.
+  events.on('companyContext/changed', async () => {
+    await performInitialSearch(config, {
+      q, page, sort, filter,
+    });
+  });
 }
 
 async function performInitialSearch(config, urlParams) {
