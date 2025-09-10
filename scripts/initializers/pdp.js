@@ -97,9 +97,9 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  const getProductData = async () => {
-    return await fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware);
-  };
+  const getProductData = async () => fetchProductData(sku, {
+    optionsUIDs, skipTransform: true,
+  }).then(preloadImageMiddleware);
 
   const [product, labels] = await Promise.all([
     getProductData(),
