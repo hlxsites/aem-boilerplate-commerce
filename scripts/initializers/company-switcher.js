@@ -7,6 +7,7 @@ import * as searchFetchGraphQl from '@dropins/storefront-product-discovery/api.j
 import * as orderFetchGraphQl from '@dropins/storefront-order/api.js';
 import * as accountFetchGraphQl from '@dropins/storefront-account/api.js';
 import * as companyFetchGraphQl from '@dropins/storefront-company-switcher/api.js';
+import * as checkoutFetchGraphQl from '@dropins/storefront-checkout/api.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders } from '../commerce.js';
 
@@ -21,6 +22,7 @@ const fetchGraphQlModules = [
   orderFetchGraphQl,
   accountFetchGraphQl,
   companyFetchGraphQl,
+  checkoutFetchGraphQl,
 ];
 const groupGraphQlModules = [
   pdpFetchGraphQl,
