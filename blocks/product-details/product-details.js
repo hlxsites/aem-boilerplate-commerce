@@ -360,14 +360,24 @@ export default async function decorate(block) {
     slots: {
       [paymentServicesApi.PaymentMethodCode.APPLE_PAY]: {
         render: (ctx) => {
+          let cartId = null;
+          let onCancel = false;
           PaymentServices.render(ApplePay, {
             /* TODO: PAY-6150: When PAY-6260 is merged and released, update getCartId to call
                 paymentServicesApi.createShadowCart
              */
-            getCartId: () => ctx.cartId,
+            getCartId: async () => {
+              // return ctx.cartId;
+              cartId = (await paymentServicesApi
+                .createShadowCart({ sku: ctx.sku, quantity: ctx.quantity })).cartId;
+              if (onCancel && cartId !== null) {
+                await paymentServicesApi.setCartAsInactive(cartId);
+              }
+              return cartId;
+            },
             isVirtualCart: product.isVirtual,
             onButtonClick: () => {
-              events.emit('order/placed', ctx.orderData);
+              handleOrderPlaced(ctx.orderData, block);
               // showPaymentSheet();
             },
             // TODO: When success go to order confirmation page
@@ -386,7 +396,12 @@ export default async function decorate(block) {
                 paymentServicesApi.setCartAsInactive
              */
             onCancel: () => {
-              events.emit('order/placed', ctx.orderData);
+              let value = null;
+              if (cartId !== null) {
+                value = paymentServicesApi.setCartAsInactive(cartId);
+              }
+              onCancel = true;
+              return value;
             },
           })($applePay);
           ctx.replaceHTML($applePay);
