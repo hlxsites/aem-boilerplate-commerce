@@ -34,7 +34,7 @@ export interface CustomerCompanyInfo {
 export interface UseCompanyDataReturn {
     companies: CompanyOption[];
     currentCompany: CompanyOption;
-    handleCompanyChange: (event: Event) => void;
+    handleCompanyChange: (event: Event) => Promise<void>;
 }
 /**
  * GraphQL response wrapper
