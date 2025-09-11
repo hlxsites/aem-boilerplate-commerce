@@ -67,7 +67,7 @@
   width: 100%;
 }
 
-#cart__request-quote-modal-dialog > .close-button {
+#cart-request-quote-modal-dialog > .close-button {
   top: 0 !important;
   right: 0 !important;
 }

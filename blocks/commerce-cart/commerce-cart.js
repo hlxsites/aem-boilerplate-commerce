@@ -20,7 +20,9 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+// eslint-disable-next-line import/no-unresolved
 import { render as quoteManagementRender } from '@dropins/storefront-quote-management/render.js';
+// eslint-disable-next-line import/no-unresolved
 import { RequestNegotiableQuoteForm } from '@dropins/storefront-quote-management/containers/RequestNegotiableQuoteForm.js';
 
 // API
@@ -186,14 +188,13 @@ export default async function decorate(block) {
     currentModal = await createModal([content]);
     const modalDialog = currentModal.block.querySelector('dialog');
     modalDialog.classList.add('cart__request-quote-modal-dialog');
-    modalDialog.id = 'cart__request-quote-modal-dialog';
+    modalDialog.id = 'cart-request-quote-modal-dialog';
     currentModal.showModal();
   }
 
   // Render (or re-render) request quote button into an element
   const renderRequestQuoteButton = (element) => {
-    const cartId = element.dataset.cartId;
-    const canRequestQuote = !!element.dataset.canRequestQuote;
+    const { dataset: { cartId, canRequestQuote } } = element;
 
     if (!canRequestQuote) {
       element.setAttribute('hidden', '');
@@ -212,8 +213,7 @@ export default async function decorate(block) {
       disabled: !cartId,
       className: 'cart__request-quote-button',
     })(element);
-
-  }
+  };
 
   // Request Quote Button container
   const requestQuoteButtonContainer = document.createElement('div');
@@ -371,7 +371,6 @@ export default async function decorate(block) {
 
   // Listen for quote management permissions event to show/hide request quote button
   events.on('quote-management/permissions', (permissions) => {
-    console.log('quote-management/permissions', permissions);
     if (permissions?.requestQuote) {
       requestQuoteButtonContainer.dataset.canRequestQuote = true;
     } else {

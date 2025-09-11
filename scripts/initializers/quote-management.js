@@ -1,4 +1,5 @@
 import { initializers } from '@dropins/tools/initializer.js';
+// eslint-disable-next-line import/no-unresolved
 import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-quote-management/api.js';
 import { initializeDropin } from './index.js';
 import { fetchPlaceholders } from '../commerce.js';
