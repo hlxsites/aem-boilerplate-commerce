@@ -258,3 +258,10 @@ export const editProductOptions = (selectedOption, updateProductOptionTo) => {
     .should('have.text', updateProductOptionTo);
   cy.contains('Update in Cart').should('be.visible').click();
 }
+
+export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
+  cy.contains(textToSearch)
+    .parent()
+    .find('input')
+    .type(enterInput);
+}
