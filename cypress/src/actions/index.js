@@ -245,3 +245,16 @@ export const inputSearchString = (searchString) => {
     .should("be.visible")
     .type(searchString);
 };
+
+export const editProductOptions = (selectedOption, updateProductOptionTo) => {
+  cy.contains('Edit').click();
+  cy.get('.modal-content').should('be.visible');
+  cy.get('select').eq(1)
+    .find('option:selected')
+    .should('have.text', selectedOption);
+  cy.get('select').eq(1).select(updateProductOptionTo);
+  cy.get('select').eq(1)
+    .find('option:selected')
+    .should('have.text', updateProductOptionTo);
+  cy.contains('Update in Cart').should('be.visible').click();
+}

@@ -6,6 +6,7 @@ import {
   uncheckBillToShippingAddress,
   setPaymentMethod,
   checkTermsAndConditions,
+  editProductOptions
 } from "../../actions";
 import {
   assertCartSummaryProduct,
@@ -54,35 +55,15 @@ describe("Verify auth user can place order", () => {
       '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.contains('Edit').click();
-    cy.get('.modal-content').should('be.visible');
-    // Assert Position Sort is selected
-    cy.get('select')
-      .find('option:selected')
-      .should('have.text', 'red');
-    cy.get('select').select('green');
-    cy.get('select')
-      .find('option:selected')
-      .should('have.text', 'green');
-    cy.contains('Update in Cart').click();
+    editProductOptions("red", "green");
     cy.get(".minicart-wrapper").click();
     cy.get('.minicart-panel[data-loaded="true"]').should('exist');
     cy.get(".minicart-panel").should("not.be.empty");
-    cy.conatins('CYPRESS456-green').should('be.visible')
+    cy.contains('CYPRESS456-green').should('be.visible')
     cy.contains('View Cart').click();
-    cy.conatins('Shopping Cart (1)').should('be.visible')
-    cy.conatins('CYPRESS456-green').should('be.visible')
-    cy.contains('Edit').click();
-    cy.get('.modal-content').should('be.visible');
-    // Assert Position Sort is selected
-    cy.get('select')
-      .find('option:selected')
-      .should('have.text', 'green');
-    cy.get('select').select('red');
-    cy.get('select')
-      .find('option:selected')
-      .should('have.text', 'red');
-    cy.contains('Update in Cart').click();
+    cy.contains('Shopping Cart (1)').should('be.visible')
+    cy.contains('CYPRESS456-green').should('be.visible')
+    editProductOptions("green", "red");
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
