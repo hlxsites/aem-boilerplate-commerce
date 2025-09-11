@@ -3,7 +3,7 @@ import { readBlockConfig } from '../../scripts/aem.js';
 
 export default function decorate(block) {
   const {
-    title = 'My account',
+    title = 'Account',
   } = readBlockConfig(block);
 
   block.innerHTML = '';
