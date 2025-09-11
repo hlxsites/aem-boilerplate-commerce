@@ -12,23 +12,23 @@ The Commerce Addresses block renders a customer address management interface usi
 |-------------------|------|---------|-------------|----------|--------------|
 | `minified-view` | string | `'false'` | Controls whether addresses are displayed in minified or full view mode | No | Changes the visual layout and available actions |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying Addresses container may use localStorage for address data persistence.
+No localStorage keys are used by this block.
 
 ### Events
 
 #### Event Listeners
 
-No direct event listeners are implemented in this block, but the Addresses container may listen for address-related events.
+No direct event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block, but the Addresses container may emit address management events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

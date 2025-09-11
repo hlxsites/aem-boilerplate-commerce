@@ -6,17 +6,17 @@ The Commerce Order Header block renders a dynamic header for order-related pages
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values and dynamic order data.
+No block configuration is read via `readBlockConfig()`.-->
 
 ### URL Parameters
 
-No URL parameters directly affect this block's behavior, but the block uses `window.location.href` to determine if back navigation should be shown.
+No URL parameters are directly read, but the block uses `window.location.href` to detect if the current page is an order details page (`CUSTOMER_ORDER_DETAILS_PATH`) to determine whether to show back navigation.
 
-### Local Storage
+<!--### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying order containers may use localStorage for order data.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -24,9 +24,9 @@ No localStorage keys are directly used by this block, but the underlying order c
 
 - `events.on('order/data', callback)` - Listens for order data updates to update header title with order number
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

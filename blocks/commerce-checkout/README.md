@@ -6,17 +6,17 @@ The Commerce Checkout block provides a comprehensive checkout experience with mu
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses system configuration values and dynamic state management.
+No block configuration is read via `readBlockConfig()`. -->
 
 ### URL Parameters
 
-No URL parameters directly affect this block's behavior, but the block uses `window.location.href` for meta tag management.
+No URL parameters are directly read, but the block uses `window.location.href` for meta tag management and page title updates.
 
-### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying containers may use localStorage for data persistence.
+No localStorage keys are used by this block. -->
 
 ### Events
 

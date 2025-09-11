@@ -12,13 +12,13 @@ The Commerce Wishlist block provides wishlist management functionality using the
 |-------------------|------|---------|-------------|----------|--------------|
 | `start-shopping-url` | string | `''` | URL for "Start Shopping" button when wishlist is empty | No | Sets destination for empty wishlist CTA |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying wishlist containers may use localStorage for wishlist data.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -26,9 +26,9 @@ No localStorage keys are directly used by this block, but the underlying wishlis
 
 - `events.on('wishlist/alert', callback)` - Listens for wishlist action alerts to scroll to top of page
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block, but the underlying wishlist containers may emit wishlist-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

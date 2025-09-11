@@ -6,15 +6,15 @@ The Commerce Account Sidebar block creates a dynamic navigation sidebar for cust
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. Configuration is loaded from the `/customer/sidebar-fragment` fragment.
+No block configuration is read via `readBlockConfig()` -->
 
 ### URL Parameters
 
-No URL parameters directly affect this block's behavior, but the block uses `window.location.href` to determine active menu items.
+No URL parameters are directly read, but the block uses `window.location.href` to determine which menu item should be highlighted as active by comparing the current URL with menu item links.
 
-### Local Storage
+<!-- ### Local Storage
 
 No localStorage keys are used by this block.
 
@@ -26,7 +26,7 @@ No event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

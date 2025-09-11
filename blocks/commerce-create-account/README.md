@@ -6,9 +6,9 @@ The Commerce Create Account block provides user registration functionality with 
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values.
+No block configuration is read via `readBlockConfig()`.
 
 ### URL Parameters
 
@@ -16,17 +16,17 @@ No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying auth containers may use localStorage for authentication state.
+No localStorage keys are used by this block.
 
 ### Events
 
 #### Event Listeners
 
-No direct event listeners are implemented in this block, but the underlying SignUp container may listen for authentication events.
+No direct event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block, but the underlying auth containers may emit authentication events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

@@ -12,23 +12,23 @@ The Commerce Orders List block renders a list of customer orders using the @drop
 |-------------------|------|---------|-------------|----------|--------------|
 | `minified-view` | string | `'false'` | Controls whether orders are displayed in minified or full view mode | No | Changes the visual layout and available actions |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying account containers may use localStorage for order data.
+No localStorage keys are used by this block
 
 ### Events
 
 #### Event Listeners
 
-No direct event listeners are implemented in this block, but the underlying OrdersList container may listen for order-related events.
+No direct event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block, but the underlying account containers may emit order-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

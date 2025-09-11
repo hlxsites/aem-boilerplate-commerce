@@ -1,3 +1,5 @@
+<!-- This file is used to generate the README.md file for a block -->
+<!-- If a section is not applicable, add a comment block around the section to hide it. This way future developers can see the section and know if they need to uncomment and fill in the section. -->
 # <Block Name> Block
 
 ## Overview

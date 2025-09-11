@@ -1,0 +1,1 @@
+When performing a code review, if the change set includes block code or css, also review the `README.md` file in the block folder and ensure it adheres to the `/block-readme-template.md` file. Validate that the README.md file is updated with any changes being made in the block.

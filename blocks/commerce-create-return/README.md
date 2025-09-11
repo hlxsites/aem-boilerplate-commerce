@@ -6,9 +6,9 @@ The Commerce Create Return block provides return request functionality for order
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values.
+No block configuration is read via `readBlockConfig()`.
 
 ### URL Parameters
 
@@ -16,17 +16,17 @@ No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying order containers may use localStorage for order data.
+No localStorage keys are used by this block.
 
 ### Events
 
 #### Event Listeners
 
-No direct event listeners are implemented in this block, but the underlying CreateReturn container may listen for order-related events.
+No direct event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block, but the underlying order containers may emit return-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

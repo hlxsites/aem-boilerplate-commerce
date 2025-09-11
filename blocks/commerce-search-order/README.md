@@ -6,7 +6,7 @@ The Commerce Search Order block provides order search functionality using the @d
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
 No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values and authentication status.
 
@@ -16,7 +16,7 @@ No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying auth and order containers may use localStorage for authentication and order data.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -24,9 +24,9 @@ No localStorage keys are directly used by this block, but the underlying auth an
 
 - `events.on('order/data', callback)` - Listens for order data updates to re-render the search interface
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block, but the underlying containers may emit order-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

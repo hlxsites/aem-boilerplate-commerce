@@ -13,9 +13,9 @@ The Product Recommendations block provides personalized product recommendations 
 | `currentsku` | string | undefined | Current product SKU for recommendation context | No | Sets the current product context for recommendations |
 | `recid` | string | undefined | Recommendation ID for targeting specific recommendation types | No | Identifies which recommendation algorithm to use |
 
-### URL Parameters
+<!-- ### URL Parameters
 
-No URL parameters directly affect this block's behavior.
+No URL parameters directly affect this block's behavior. -->
 
 ### Local Storage
 

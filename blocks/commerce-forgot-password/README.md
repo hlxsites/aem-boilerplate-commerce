@@ -6,9 +6,9 @@ The Commerce Forgot Password block provides password reset functionality using t
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values.
+No block configuration is read via `readBlockConfig()`.
 
 ### URL Parameters
 
@@ -16,7 +16,7 @@ No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying auth containers may use localStorage for authentication state.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -24,9 +24,9 @@ No localStorage keys are directly used by this block, but the underlying auth co
 
 - `events.on('authenticated', callback)` - Listens for authentication state changes and redirects to account page if user becomes authenticated
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block, but the underlying auth containers may emit authentication events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

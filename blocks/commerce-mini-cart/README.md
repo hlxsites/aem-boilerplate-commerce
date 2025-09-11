@@ -16,13 +16,13 @@ The Commerce Mini Cart block provides a compact cart interface with product mana
 | `enable-updating-product` | string | `'false'` | Enables product editing via mini-PDP modal | No | Shows/hides edit buttons for configurable products |
 | `undo-remove-item` | string | `'false'` | Enables undo functionality when removing items | No | Shows/hides undo option after item removal |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying cart containers may use localStorage for cart data persistence.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -31,9 +31,9 @@ No localStorage keys are directly used by this block, but the underlying cart co
 - `events.on('cart/product/added', callback)` - Listens for product addition events to show success message
 - `events.on('cart/product/updated', callback)` - Listens for product update events to show update message
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block, but the underlying cart containers may emit cart-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

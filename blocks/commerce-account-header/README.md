@@ -12,7 +12,7 @@ The Commerce Account Header block renders a standardized header component for ac
 |-------------------|------|---------|-------------|----------|--------------|
 | `title` | string | `'My account'` | The header title text displayed to users | No | Changes the displayed header text |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters affect this block's behavior.
 
@@ -28,7 +28,7 @@ No event listeners are implemented in this block.
 
 #### Event Emitters
 
-No events are emitted by this block.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 

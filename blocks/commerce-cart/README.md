@@ -21,13 +21,13 @@ The Commerce Cart block renders a comprehensive shopping cart interface with pro
 | `enable-updating-product` | string | `'false'` | Enables product editing via mini-PDP modal | No | Shows/hides edit buttons for configurable products |
 | `undo-remove-item` | string | `'false'` | Enables undo functionality when removing items | No | Shows/hides undo option after item removal |
 
-### URL Parameters
+<!-- ### URL Parameters
 
 No URL parameters directly affect this block's behavior.
 
 ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying cart containers may use localStorage for cart data persistence.
+No localStorage keys are used by this block. -->
 
 ### Events
 

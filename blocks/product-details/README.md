@@ -6,18 +6,18 @@ The Product Details block provides comprehensive product detail page functionali
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses dynamic product data and URL parameters.
+No block configuration is read via `readBlockConfig()`. The block uses dynamic product data and URL parameters. -->
 
 ### URL Parameters
 
 - `itemUid` - Item UID for cart update mode (when present, enables update mode instead of add mode)
-- `optionsUIDs` - Product option UIDs for wishlist context
+- `optionsUIDs` - Product option UIDs for wishlist context (empty string treated as base product with no options)
 
-### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are directly used by this block, but the underlying containers may use localStorage for product and cart data.
+No localStorage keys are used by this block. -->
 
 ### Events
 
@@ -29,9 +29,9 @@ No localStorage keys are directly used by this block, but the underlying contain
 - `events.on('cart/data', callback)` - Listens for cart data changes to determine update mode
 - `events.on('aem/lcp', callback)` - Listens for AEM LCP event to set JSON-LD and meta tags
 
-#### Event Emitters
+<!-- #### Event Emitters
 
-No events are emitted by this block, but the underlying containers may emit product-related events.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 
