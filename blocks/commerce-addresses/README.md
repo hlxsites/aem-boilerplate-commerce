@@ -14,13 +14,13 @@ The Commerce Addresses block renders a customer address management interface usi
 
 <!-- ### URL Parameters
 
-No URL parameters affect this block's behavior.
+No URL parameters affect this block's behavior. -->
 
-### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are used by this block.
+No localStorage keys are used by this block. -->
 
-### Events
+<!-- ### Events
 
 #### Event Listeners
 

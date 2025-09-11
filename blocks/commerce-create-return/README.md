@@ -8,17 +8,17 @@ The Commerce Create Return block provides return request functionality for order
 
 <!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`.
+No block configuration is read via `readBlockConfig()`. -->
 
-### URL Parameters
+<!-- ### URL Parameters
 
-No URL parameters directly affect this block's behavior.
+No URL parameters directly affect this block's behavior. -->
 
-### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are used by this block.
+No localStorage keys are used by this block. -->
 
-### Events
+<!-- ### Events
 
 #### Event Listeners
 

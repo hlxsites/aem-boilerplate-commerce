@@ -8,17 +8,17 @@ The Commerce Order Status block renders order status information using the @drop
 
 <!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values and authentication status. -->
+No block configuration is read via `readBlockConfig()`. -->
 
 ### URL Parameters
 
 - `orderRef` - Order reference identifier used for routing to return creation pages
 
-<!--### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are used by this block.
+No localStorage keys are used by this block. -->
 
-### Events
+<!-- ### Events
 
 #### Event Listeners
 

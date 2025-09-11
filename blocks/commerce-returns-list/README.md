@@ -14,13 +14,13 @@ The Commerce Returns List block renders a list of customer returns using the @dr
 
 <!-- ### URL Parameters
 
-No URL parameters directly affect this block's behavior.
+No URL parameters directly affect this block's behavior. -->
 
-### Local Storage
+<!-- ### Local Storage
 
-No localStorage keys are used by this block.
+No localStorage keys are used by this block. -->
 
-### Events
+<!-- ### Events
 
 #### Event Listeners
 

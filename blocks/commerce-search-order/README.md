@@ -8,13 +8,13 @@ The Commerce Search Order block provides order search functionality using the @d
 
 <!-- ### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values and authentication status.
+No block configuration is read via `readBlockConfig()`. The block uses hardcoded configuration values and authentication status. -->
 
-### URL Parameters
+<!-- ### URL Parameters
 
-No URL parameters directly affect this block's behavior.
+No URL parameters directly affect this block's behavior. -->
 
-### Local Storage
+<!-- ### Local Storage
 
 No localStorage keys are used by this block. -->
 
