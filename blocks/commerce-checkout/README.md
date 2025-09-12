@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Commerce Checkout block provides a comprehensive checkout experience with multi-step form handling, payment processing, address management, and order placement. It integrates multiple dropin containers for authentication, cart management, payment services, and order processing with dynamic UI state management and validation.
+The Commerce Checkout block provides a comprehensive **one-page checkout** experience with dynamic form handling, payment processing, address management, and order placement. It integrates multiple dropin containers for authentication, cart management, payment services, and order processing with dynamic UI state management and validation.
 
 ## Integration
 
@@ -22,7 +22,6 @@ No localStorage keys are used by this block. -->
 
 #### Event Listeners
 
-- `events.on('order/placed', callback)` - Updates page title and meta tags when order is successfully placed
 - `events.on('authenticated', callback)` - Handles user authentication state changes
 - `events.on('cart/initialized', callback)` - Handles cart initialization with eager loading
 - `events.on('checkout/initialized', callback)` - Handles checkout initialization with eager loading
