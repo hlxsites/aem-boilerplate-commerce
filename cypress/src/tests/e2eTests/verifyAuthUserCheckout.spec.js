@@ -63,7 +63,21 @@ describe("Verify auth user can place order", () => {
     cy.contains('View Cart').click();
     cy.contains('Shopping Cart (1)').should('be.visible')
     cy.contains('CYPRESS456-green').should('be.visible')
+
+    // Edit product in Overlay
     editProductOptions("green", "red");
+    cy.contains('Edit').click();
+    cy.get('.modal-content').should('be.visible');
+    cy.get('select').eq(1)
+      .find('option:selected')
+      .should('have.text', 'green');
+    cy.get('select').eq(1).select('red');
+    cy.get('select').eq(1)
+      .find('option:selected')
+      .should('have.text', 'red');
+    cy.percyTakeSnapshot('Cart Edit Overlay');
+    cy.contains('Update in Cart').should('be.visible').click();
+    
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
