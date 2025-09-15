@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '.';
+export * from './deleteRequisitionList';
 //# sourceMappingURL=index.d.ts.map

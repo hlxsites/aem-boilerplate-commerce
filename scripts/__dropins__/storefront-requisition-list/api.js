@@ -1,7 +1,7 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
 import { f as fetchGraphQl, h as handleFetchError } from "./chunks/getRequisitionLists.js";
-import { c, g, r, s, a, b } from "./chunks/getRequisitionLists.js";
+import { d, c, g, r, s, a, b } from "./chunks/getRequisitionLists.js";
 import { Initializer } from "@dropins/tools/lib.js";
 import "@dropins/tools/fetch-graphql.js";
 const initialize = new Initializer({
@@ -40,6 +40,7 @@ const isRequisitionListEnabled = async () => {
 };
 export {
   config,
+  d as deleteRequisitionList,
   fetchGraphQl,
   c as getConfig,
   g as getRequisitionLists,

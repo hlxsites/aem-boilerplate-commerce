@@ -3,7 +3,7 @@ import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { RequisitionList as RequisitionListModel } from '../../data/models/requisitionList';
 
 export interface RequisitionListGridProps extends HTMLAttributes<HTMLDivElement> {
-    requisitionLists?: RequisitionListModel[];
+    requisitionLists?: RequisitionListModel[] | null;
     slots?: {
         Header?: SlotProps;
     };

@@ -9,5 +9,9 @@ export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivE
     addReqList?: boolean;
     header?: VNode;
 }
+export type ModalProps = {
+    isOpen: boolean;
+    isLoading: boolean;
+};
 export declare const RequisitionListGridWrapper: FunctionComponent<RequisitionListGridWrapperProps>;
 //# sourceMappingURL=RequisitionListGridWrapper.d.ts.map
