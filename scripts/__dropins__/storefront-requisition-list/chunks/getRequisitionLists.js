@@ -13,7 +13,7 @@ fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
 const GET_REQUISITION_LISTS_QUERY = `
   query GET_REQUISITION_LISTS_QUERY(
     $currentPage: Int = 1
-    $pageSize: Int = 20,
+    $pageSize: Int = 10,
   ) {
     customer {
       requisition_lists(pageSize: $pageSize, currentPage: $currentPage) {
