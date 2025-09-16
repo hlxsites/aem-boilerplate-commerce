@@ -368,7 +368,7 @@ export default async function decorate(block) {
       getCartItems: (() => {
         const values = events.lastPayload('pdp/values') ?? null;
         if (!values) return null;
-        return { sku: values.sku, quantity: values.quantity };
+        return [{ sku: values.sku, quantity: values.quantity }];
       }),
     },
     onButtonClick: (showPaymentSheet) => {
