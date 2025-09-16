@@ -12,7 +12,6 @@ import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { initializers } from '@dropins/tools/initializer.js';
 
-import * as paymentServicesApi from '@dropins/storefront-payment-services/api.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
@@ -64,6 +63,7 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/payment-services.js';
 
 // For order confirmation block
 // Link to support page
@@ -117,6 +117,13 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   }
 }
 
+// getIsVirtual is needed for Apple Pay - should return Promise<boolean>
+const getIsVirtual = async () => {
+  const pdpData = events.lastPayload('pdp/data') ?? null;
+  // TODO: ask the storefront team to add the isVirtual property to the pdpData
+  return (pdpData.productType === 'virtual' || pdpData.productType === 'downloadable');
+};
+
 export default async function decorate(block) {
   const product = events.lastPayload('pdp/data') ?? null;
   const labels = await fetchPlaceholders();
@@ -145,10 +152,11 @@ export default async function decorate(block) {
           <div class="product-details__quantity"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
-            <div class="product-details__buttons__apple-pay"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
         </div>
+        <div class="product-details__payment-error"></div>
+        <div class="product-details__payment-methods"></div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
@@ -164,7 +172,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $applePay = fragment.querySelector('.product-details__buttons__apple-pay');
+  const $paymentMethods = fragment.querySelector('.product-details__payment-methods');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -353,70 +361,37 @@ export default async function decorate(block) {
     },
   })($addToCart);
 
-  // Configuration – Button - Apple Pay
-  // events.on('payment-services/method-available/product-detail', async () => {
-  const applePay = await UI.render(Button, {
-    children: 'Apple Pay',
-    slots: {
-      [paymentServicesApi.PaymentMethodCode.APPLE_PAY]: {
-        render: (ctx) => {
-          let cartId = null;
-          let onCancel = false;
-          PaymentServices.render(ApplePay, {
-            /* TODO: PAY-6150: When PAY-6260 is merged and released, update getCartId to call
-                paymentServicesApi.createShadowCart
-             */
-            getCartId: async () => {
-              // return ctx.cartId;
-              cartId = (await paymentServicesApi
-                .createShadowCart({ sku: ctx.sku, quantity: ctx.quantity })).cartId;
-              if (onCancel && cartId !== null) {
-                await paymentServicesApi.setCartAsInactive(cartId);
-              }
-              return cartId;
-            },
-            isVirtualCart: product.isVirtual,
-            onButtonClick: () => {
-              handleOrderPlaced(ctx.orderData, block);
-              // showPaymentSheet();
-            },
-            // TODO: When success go to order confirmation page
-            onSuccess: () => {
-              events.emit('order/placed', ctx.orderData);
-            },
-            onError: (error) => {
-              console.error(error);
-              events.emit('product-detail/error', {
-                code: 'UNKNOWN_ERROR',
-                message: 'An unexpected error occurred while processing your Apple Pay '
-                  + 'payment. Please try another payment method or try again.',
-              });
-            },
-            /* TODO: PAY-6150: When PAY-6260 is merged and released, update onCancel to call
-                paymentServicesApi.setCartAsInactive
-             */
-            onCancel: () => {
-              let value = null;
-              if (cartId !== null) {
-                value = paymentServicesApi.setCartAsInactive(cartId);
-              }
-              onCancel = true;
-              return value;
-            },
-          })($applePay);
-          ctx.replaceHTML($applePay);
-        },
-        enabled: true,
-      },
+  PaymentServices.render(ApplePay, {
+    location: 'PRODUCT_DETAIL',
+    isVirtualCart: await getIsVirtual(),
+    createCart: {
+      getCartItems: (() => {
+        const values = events.lastPayload('pdp/values') ?? null;
+        if (!values) return null;
+        return { sku: values.sku, quantity: values.quantity };
+      }),
     },
-  })($applePay);
-  // });
+    onButtonClick: (showPaymentSheet) => {
+      const valid = pdpApi.isProductConfigurationValid();
+      if (valid) {
+        showPaymentSheet();
+      }
+    },
+    onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+    onError: (error) => {
+      console.error('Apple Pay payment failed:', error);
+      events.emit('product-detail/apple-pay/error', {
+        code: 'UNKNOWN_ERROR',
+        message: 'An unexpected error occurred while processing your Apple Pay '
+          + 'payment. Please try another payment method or try again.',
+      });
+    },
+  })($paymentMethods);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
-    applePay.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes

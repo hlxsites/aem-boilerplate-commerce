@@ -1,3 +1,5 @@
+import {PaymentLocation} from "../../api";
+
 /********************************************************************
  * ADOBE CONFIDENTIAL
  * __________________
@@ -16,9 +18,23 @@
  *******************************************************************/
 export interface ApplePayProps {
     /**
+     * Location where the Apple Pay button is to be rendered.
+     */
+    location: PaymentLocation;
+    /**
+     * Either getCartId should be given or createCart.
      * Should return a promise that resolves to the shopper's cart ID.
      */
-    getCartId: () => Promise<string>;
+    getCartId?: () => Promise<string>;
+    /**
+     * Either getCartId should be given or createCart.
+     */
+    createCart?: {
+        /**
+         * Should return a promise that resolves to the cart items to purchase.
+         */
+        getCartItems: () => CartItemInput[];
+    };
     /**
      * Whether the cart contains only virtual/downloadable products.
      */
@@ -40,5 +56,19 @@ export interface ApplePayProps {
      */
     onError?: (error: Error) => void;
 }
-export declare const ApplePay: ({ getCartId, isVirtualCart, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
+export declare const ApplePay: ({ location, getCartId, createCart, isVirtualCart, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
+/**
+ * See https://developer.adobe.com/commerce/webapi/graphql-api/index.html#definition-CartItemInput.
+ */
+interface CartItemInput {
+    sku: string;
+    quantity: number;
+    parent_sku?: string;
+    selected_options?: (string | number)[];
+    entered_options?: {
+        uid: string | number;
+        value: string;
+    }[];
+}
+export {};
 //# sourceMappingURL=ApplePay.d.ts.map
