@@ -16,10 +16,11 @@ const colors = {
   green: '\x1b[32m',
   blue: '\x1b[34m',
   reset: '\x1b[0m',
-  bold: '\x1b[1m'
+  bold: '\x1b[1m',
 };
 
 function log(message, color = 'reset') {
+  // eslint-disable-next-line no-console
   console.log(`${colors[color]}${message}${colors.reset}`);
 }
 
@@ -29,22 +30,21 @@ function getChangedFiles() {
     const stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' })
       .trim()
       .split('\n')
-      .filter(file => file.length > 0);
+      .filter((file) => file.length > 0);
 
     return stagedFiles;
   } catch (error) {
     log('Error getting staged files:', 'red');
+    // eslint-disable-next-line no-console
     console.error(error.message);
     return [];
   }
 }
 
 function checkBlockChanges(changedFiles) {
-  const blockChanges = changedFiles.filter(file =>
-    file.startsWith('blocks/') &&
-    !file.endsWith('README.md') &&
-    (file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.html'))
-  );
+  const blockChanges = changedFiles.filter((file) => file.startsWith('blocks/')
+    && !file.endsWith('README.md')
+    && (file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.html')));
 
   if (blockChanges.length === 0) {
     return { hasChanges: false, changedBlocks: [] };
@@ -52,7 +52,7 @@ function checkBlockChanges(changedFiles) {
 
   // Group changes by block directory
   const changedBlocks = new Set();
-  blockChanges.forEach(file => {
+  blockChanges.forEach((file) => {
     const blockDir = file.split('/')[1]; // Get the block name (e.g., 'commerce-cart' from 'blocks/commerce-cart/...')
     if (blockDir) {
       changedBlocks.add(blockDir);
@@ -62,7 +62,7 @@ function checkBlockChanges(changedFiles) {
   return {
     hasChanges: true,
     changedBlocks: Array.from(changedBlocks),
-    changedFiles: blockChanges
+    changedFiles: blockChanges,
   };
 }
 
@@ -92,16 +92,14 @@ function main() {
   log(`Changed blocks: ${blockCheck.changedBlocks.join(', ')}`, 'yellow');
 
   // Check which blocks have READMEs
-  const blocksWithoutReadme = blockCheck.changedBlocks.filter(block =>
-    !checkReadmeExists(block)
-  );
+  const blocksWithoutReadme = blockCheck.changedBlocks.filter((block) => !checkReadmeExists(block));
 
   if (blocksWithoutReadme.length > 0) {
     log(`\n❌ Blocks without README.md: ${blocksWithoutReadme.join(', ')}`, 'red');
   }
 
   log('\n📝 Please ensure you have updated the README.md for the following blocks:', 'yellow');
-  blockCheck.changedBlocks.forEach(block => {
+  blockCheck.changedBlocks.forEach((block) => {
     const readmeStatus = checkReadmeExists(block) ? '✅' : '❌';
     log(`  ${readmeStatus} blocks/${block}/README.md`, checkReadmeExists(block) ? 'green' : 'red');
   });
