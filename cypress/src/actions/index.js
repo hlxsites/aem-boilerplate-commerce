@@ -252,6 +252,8 @@ export const editProductOptions = (selectedOption, updateProductOptionTo) => {
   cy.get('select').eq(1)
     .find('option:selected')
     .should('have.text', selectedOption);
+  cy.get(".dropin-incrementer__increase-button").eq(1).click();
+  cy.get(".dropin-incrementer__input").eq(1).should("have.value", "2");
   cy.get('select').eq(1).select(updateProductOptionTo);
   cy.get('select').eq(1)
     .find('option:selected')

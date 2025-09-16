@@ -61,23 +61,24 @@ describe("Verify auth user can place order", () => {
     cy.get(".minicart-panel").should("not.be.empty");
     cy.contains('CYPRESS456-green').should('be.visible')
     cy.contains('View Cart').click();
-    cy.contains('Shopping Cart (1)').should('be.visible')
+    cy.contains('Shopping Cart (2)').should('be.visible')
     cy.contains('CYPRESS456-green').should('be.visible')
 
     // Edit product in Overlay
-    editProductOptions("green", "red");
     cy.contains('Edit').click();
     cy.get('.modal-content').should('be.visible');
     cy.get('select').eq(1)
       .find('option:selected')
       .should('have.text', 'green');
+    cy.get(".dropin-incrementer__decrease-button").eq(1).click();
+    cy.get(".dropin-incrementer__input").eq(1).should("have.value", "1");
     cy.get('select').eq(1).select('red');
     cy.get('select').eq(1)
       .find('option:selected')
       .should('have.text', 'red');
     cy.percyTakeSnapshot('Cart Edit Overlay');
     cy.contains('Update in Cart').should('be.visible').click();
-    
+
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
