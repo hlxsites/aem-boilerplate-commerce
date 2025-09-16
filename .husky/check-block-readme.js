@@ -94,26 +94,37 @@ function main() {
   // Check which blocks have READMEs
   const blocksWithoutReadme = blockCheck.changedBlocks.filter((block) => !checkReadmeExists(block));
 
-  if (blocksWithoutReadme.length > 0) {
-    log(`\n❌ Blocks without README.md: ${blocksWithoutReadme.join(', ')}`, 'red');
-  }
-
-  log('\n📝 Please ensure you have updated the README.md for the following blocks:', 'yellow');
+  log('\n📝 README status for changed blocks:', 'yellow');
   blockCheck.changedBlocks.forEach((block) => {
     const readmeStatus = checkReadmeExists(block) ? '✅' : '❌';
     log(`  ${readmeStatus} blocks/${block}/README.md`, checkReadmeExists(block) ? 'green' : 'red');
   });
 
-  log('\n💡 README should include:', 'blue');
-  log('  - Overview of the block\'s purpose', 'blue');
-  log('  - Configuration options and their effects', 'blue');
-  log('  - Integration details (URL parameters, localStorage, events)', 'blue');
-  log('  - Behavior patterns and user interaction flows', 'blue');
-  log('  - Error handling strategies', 'blue');
+  // If there are blocks without READMEs, prevent the commit
+  if (blocksWithoutReadme.length > 0) {
+    log(`\n❌ ${colors.bold}COMMIT BLOCKED: Missing README.md files${colors.reset}`, 'red');
+    log(`Missing READMEs for: ${blocksWithoutReadme.join(', ')}`, 'red');
 
-  log('\n⚠️  This is a warning - you can still commit, but please update READMEs before merging!', 'yellow');
+    log('\n💡 README should include:', 'blue');
+    log('  - Overview of the block\'s purpose', 'blue');
+    log('  - Configuration options and their effects', 'blue');
+    log('  - Integration details (URL parameters, localStorage, events)', 'blue');
+    log('  - Behavior patterns and user interaction flows', 'blue');
+    log('  - Error handling strategies', 'blue');
 
-  return 0; // Don't fail the commit, just warn
+    log('\n🔧 To fix this:', 'yellow');
+    log('  1. Create missing README.md files in the block directories', 'yellow');
+    log('  2. Add the files to git: git add blocks/*/README.md', 'yellow');
+    log('  3. Commit again', 'yellow');
+
+    log('\n⚡ If you really need to skip this check, you can force with:', 'red');
+    log('  git commit --no-verify', 'red');
+
+    return 1; // Fail the commit
+  }
+
+  log('\n✅ All changed blocks have README.md files!', 'green');
+  return 0; // Allow the commit
 }
 
 if (require.main === module) {
