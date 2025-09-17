@@ -3,7 +3,7 @@
     "commerce-documentation-rag": {
       "command": "bash",
       "args": ["mcp-server/start-mcp.sh"],
-      "cwd": "/Users/stephen/work/code/_sites/aem-boilerplate-commerce"
+      "cwd": "."
     }
   }
 }
