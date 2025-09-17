@@ -54,6 +54,8 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+    // TODO - Temporally added here, to be moved into proper block after getting access to DA
+    await import('./purchase-order.js');
 
     // Initialize Company Switcher
     const authenticated = events.lastPayload('authenticated');
