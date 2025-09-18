@@ -1,44 +1,26 @@
-import {PaymentLocation} from "../../api";
+import { PaymentLocation } from '../../api';
 
-/********************************************************************
- * ADOBE CONFIDENTIAL
- * __________________
- *
- *  Copyright 2025 Adobe
- *  All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of Adobe and its suppliers, if any. The intellectual
- * and technical concepts contained herein are proprietary to Adobe
- * and its suppliers and are protected by all applicable intellectual
- * property laws, including trade secret and copyright laws.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Adobe.
- *******************************************************************/
 export interface ApplePayProps {
     /**
      * Location where the Apple Pay button is to be rendered.
      */
-    location: PaymentLocation;
+    location?: PaymentLocation;
     /**
-     * Either getCartId should be given or createCart.
+     * Required if createCart not provided.
      * Should return a promise that resolves to the shopper's cart ID.
      */
     getCartId?: () => Promise<string>;
     /**
-     * Either getCartId should be given or createCart.
+     * Required if getCartId not provided.
      */
     createCart?: {
         /**
-         * Should return a promise that resolves to the cart items to purchase.
+         * Should return a list with the cart items to purchase.
+         *
+         * The list must contain at least one cart item.
          */
-        getCartItems: () => CartItemInput[];
+        getCartItems: () => CartItem[];
     };
-    /**
-     * Whether the cart contains only virtual/downloadable products.
-     */
-    isVirtualCart: boolean;
     /**
      * Called when the user clicks the Apple Pay button. This callback receives a 'showPaymentSheet' function as its only
      * argument that must be called to begin the Apple Pay session and show the payment sheet.
@@ -56,16 +38,16 @@ export interface ApplePayProps {
      */
     onError?: (error: Error) => void;
 }
-export declare const ApplePay: ({ location, getCartId, createCart, isVirtualCart, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
+export declare const ApplePay: ({ location, getCartId, createCart, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
 /**
  * See https://developer.adobe.com/commerce/webapi/graphql-api/index.html#definition-CartItemInput.
  */
-interface CartItemInput {
+interface CartItem {
     sku: string;
     quantity: number;
-    parent_sku?: string;
-    selected_options?: (string | number)[];
-    entered_options?: {
+    parentSku?: string;
+    selectedOptions?: (string | number)[];
+    enteredOptions?: {
         uid: string | number;
         value: string;
     }[];

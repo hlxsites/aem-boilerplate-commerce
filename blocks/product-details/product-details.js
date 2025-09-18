@@ -64,6 +64,7 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
+import { PaymentLocation } from '../../scripts/__dropins__/storefront-payment-services/api.js';
 
 // For order confirmation block
 // Link to support page
@@ -209,6 +210,7 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
+    _applePayButton,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -273,6 +275,37 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    PaymentServices.render(ApplePay, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      createCart: {
+        getCartItems: (() => {
+          const values = events.lastPayload('pdp/values') ?? null;
+          if (!values) return null;
+          return [{
+            sku: values.sku,
+            quantity: values.quantity,
+            selectedOptions: values.optionsUIDs,
+            enteredOptions: values.enteredOptions,
+          }];
+        }),
+      },
+      onButtonClick: (showPaymentSheet) => {
+        const valid = pdpApi.isProductConfigurationValid();
+        if (valid) {
+          showPaymentSheet();
+        }
+      },
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: (error) => {
+        console.error('Apple Pay payment failed:', error);
+        events.emit('product-detail/apple-pay/error', {
+          code: 'UNKNOWN_ERROR',
+          message: 'An unexpected error occurred while processing your Apple Pay '
+            + 'payment. Please try another payment method or try again.',
+        });
+      },
+    })($paymentMethods),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -360,33 +393,6 @@ export default async function decorate(block) {
       }
     },
   })($addToCart);
-
-  PaymentServices.render(ApplePay, {
-    location: 'PRODUCT_DETAIL',
-    isVirtualCart: await getIsVirtual(),
-    createCart: {
-      getCartItems: (() => {
-        const values = events.lastPayload('pdp/values') ?? null;
-        if (!values) return null;
-        return [{ sku: values.sku, quantity: values.quantity }];
-      }),
-    },
-    onButtonClick: (showPaymentSheet) => {
-      const valid = pdpApi.isProductConfigurationValid();
-      if (valid) {
-        showPaymentSheet();
-      }
-    },
-    onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-    onError: (error) => {
-      console.error('Apple Pay payment failed:', error);
-      events.emit('product-detail/apple-pay/error', {
-        code: 'UNKNOWN_ERROR',
-        message: 'An unexpected error occurred while processing your Apple Pay '
-          + 'payment. Please try another payment method or try again.',
-      });
-    },
-  })($paymentMethods);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
