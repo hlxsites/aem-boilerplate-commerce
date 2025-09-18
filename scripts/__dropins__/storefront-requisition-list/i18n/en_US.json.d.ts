@@ -11,12 +11,22 @@ declare const _default: {
         "confirmAction" : "Confirm",
         "cancelAction" : "Cancel"
       },
-      "RequisitionListItem" : {
-        "removeAction" : "Remove",
-        "renameAction" : "Rename"
-      },
       "AddNewReqList": {
         "addNewReqListBtn": "Add new Requisition List"
+      },
+      "RequisitionListItem" : {
+        "actionRename": "Rename",
+        "actionRemove": "Remove"
+      },
+      "RequisitionListForm" : {
+        "actionCancel": "Cancel",
+        "actionSave": "Save",
+        "requiredField": "This is a required field.",
+        "floatingLabel": "Requisition List Name *",
+        "placeholder": "Requisition List Name",
+        "label": "Description",
+        "editTitle": "Rename Requisition List",
+        "createTitle": "Create Requisition List"
       }
     }
 }

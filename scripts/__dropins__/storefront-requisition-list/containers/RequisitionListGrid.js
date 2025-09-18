@@ -6,20 +6,32 @@ import { useState, useCallback, useEffect } from "@dropins/tools/preact-compat.j
 import { Button, Modal, Card, Pagination, Icon, Header } from "@dropins/tools/components.js";
 import { classes, VComponent, Slot } from "@dropins/tools/lib.js";
 import { d as deleteRequisitionList, g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
+import "@dropins/tools/preact-hooks.js";
+import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
 import { useText } from "@dropins/tools/i18n.js";
 import "@dropins/tools/preact.js";
+import "../chunks/fetch-error.js";
 import "@dropins/tools/fetch-graphql.js";
 var _jsxFileName$3 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListItem/RequisitionListItem.tsx";
 const RequisitionListItem = ({
   className,
   requisitionList,
+  onEdit,
   onRemoveBtnClick,
   ...props
 }) => {
   const translations = useText({
-    renameAction: `RequisitionList.RequisitionListItem.renameAction`,
-    removeAction: `RequisitionList.RequisitionListItem.removeAction`
+    actionRemove: `RequisitionList.RequisitionListItem.actionRemove`,
+    actionRename: `RequisitionList.RequisitionListItem.actionRename`
   });
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(requisitionList.uid, {
+        name: requisitionList.name,
+        description: requisitionList.description || ""
+      });
+    }
+  };
   return u("div", {
     ...props,
     "data-testid": "requisition-list-item",
@@ -31,43 +43,45 @@ const RequisitionListItem = ({
         children: requisitionList.name
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 37,
+        lineNumber: 50,
         columnNumber: 9
       }, void 0), u("div", {
         className: "requisition-list-item__description",
         children: requisitionList.description
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 40,
+        lineNumber: 53,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$3,
-      lineNumber: 36,
+      lineNumber: 49,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["requisition-list-item__cell", "requisition-list-item__items_count", className]),
       children: requisitionList.items_count
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 44,
+      lineNumber: 57,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["requisition-list-item__cell", "requisition-list-item__updated_at", className]),
       children: requisitionList.updated_at
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 53,
+      lineNumber: 66,
       columnNumber: 7
     }, void 0), u("div", {
-      className: classes(["requisition-list-item__cell", className]),
+      className: classes(["requisition-list-item__cell", "requisition-list-item__actions", className]),
       children: [u(Button, {
-        variant: "tertiary",
         type: "button",
-        children: translations.renameAction
+        variant: "tertiary",
+        onClick: handleEdit,
+        "data-testid": "rename-button",
+        children: translations.actionRename
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 63,
+        lineNumber: 82,
         columnNumber: 9
       }, void 0), u(Button, {
         variant: "tertiary",
@@ -75,20 +89,20 @@ const RequisitionListItem = ({
         onClick: () => onRemoveBtnClick(requisitionList, {
           isOpen: true
         }),
-        children: translations.removeAction
+        children: translations.actionRemove
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 66,
+        lineNumber: 90,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$3,
-      lineNumber: 62,
+      lineNumber: 75,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$3,
-    lineNumber: 31,
+    lineNumber: 44,
     columnNumber: 5
   }, void 0);
 };
@@ -100,7 +114,7 @@ const RequisitionListGridWrapper = ({
   addReqList = false,
   ...props
 }) => {
-  var _a, _b, _c;
+  var _b, _c, _d;
   const translations = useText({
     name: `RequisitionList.RequisitionListWrapper.name`,
     itemsCount: `RequisitionList.RequisitionListWrapper.itemsCount`,
@@ -148,7 +162,9 @@ const RequisitionListGridWrapper = ({
       handleModalOnClose();
     }
   }, [reqList, setReqLists, modalProps, handleModalOnClose]);
-  const handlePageChange = async (page) => {
+  const [editingId, setEditingId] = t(useState(null), "editingId");
+  const [isAdding, setIsAdding] = t(useState(addReqList), "isAdding");
+  const handlePageChange = async (page = ((_a) => (_a = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _a.current_page)() ?? 1) => {
     setReqLists(await getRequisitionLists(page));
   };
   return u("div", {
@@ -162,12 +178,12 @@ const RequisitionListGridWrapper = ({
         node: header
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 121,
+        lineNumber: 128,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 114,
+      lineNumber: 121,
       columnNumber: 9
     }, void 0), modalProps.isOpen && u(Modal, {
       size: "medium",
@@ -176,7 +192,7 @@ const RequisitionListGridWrapper = ({
         children: translations.confirmRemove
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 130,
+        lineNumber: 137,
         columnNumber: 18
       }, void 0),
       onClose: handleModalOnClose,
@@ -189,17 +205,17 @@ const RequisitionListGridWrapper = ({
             children: reqList.name
           }, void 0, false, {
             fileName: _jsxFileName$2,
-            lineNumber: 138,
+            lineNumber: 145,
             columnNumber: 30
           }, void 0), " removing. This action will permanently remove selected list."]
         }, void 0, true, {
           fileName: _jsxFileName$2,
-          lineNumber: 137,
+          lineNumber: 144,
           columnNumber: 13
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 136,
+        lineNumber: 143,
         columnNumber: 11
       }, void 0), u("div", {
         children: [u(Button, {
@@ -210,7 +226,7 @@ const RequisitionListGridWrapper = ({
           children: translations.cancelAction
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 143,
+          lineNumber: 150,
           columnNumber: 13
         }, void 0), u(Button, {
           type: "button",
@@ -219,37 +235,48 @@ const RequisitionListGridWrapper = ({
           children: translations.confirmAction
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 151,
+          lineNumber: 158,
           columnNumber: 13
         }, void 0)]
       }, void 0, true, {
         fileName: _jsxFileName$2,
-        lineNumber: 142,
+        lineNumber: 149,
         columnNumber: 11
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$2,
-      lineNumber: 127,
+      lineNumber: 134,
       columnNumber: 9
     }, void 0), u("div", {
       className: classes(["requisition-list-grid-wrapper__add-new", className]),
-      children: addReqList ? u(Card, {
+      children: isAdding ? u(Card, {
         variant: "secondary",
-        children: "Add New Requisition List Form goes here..."
+        children: u(RequisitionListForm, {
+          mode: "create",
+          onSuccess: async () => {
+            await handlePageChange();
+            setIsAdding(false);
+          },
+          onCancel: () => setIsAdding(false)
+        }, void 0, false, {
+          fileName: _jsxFileName$2,
+          lineNumber: 178,
+          columnNumber: 13
+        }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 170,
+        lineNumber: 177,
         columnNumber: 11
       }, void 0) : u(RequisitionListActions, {
-        addReqList
+        onAddNew: () => setIsAdding(true)
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 174,
+        lineNumber: 188,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$2,
-      lineNumber: 163,
+      lineNumber: 170,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["dropin-card dropin-card--secondary requisition-list-grid-wrapper__content", className]),
@@ -259,62 +286,87 @@ const RequisitionListGridWrapper = ({
           children: translations.name
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 191,
+          lineNumber: 205,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.itemsCount
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 192,
+          lineNumber: 206,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.lastUpdated
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 193,
+          lineNumber: 207,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.actions
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 194,
+          lineNumber: 208,
           columnNumber: 11
         }, void 0)]
       }, void 0, true, {
         fileName: _jsxFileName$2,
-        lineNumber: 185,
+        lineNumber: 199,
         columnNumber: 9
-      }, void 0), (_a = reqLists == null ? void 0 : reqLists.items) == null ? void 0 : _a.map((rl) => u(RequisitionListItem, {
+      }, void 0), (_b = reqLists == null ? void 0 : reqLists.items) == null ? void 0 : _b.map((rl) => editingId === rl.uid ? u(Card, {
+        variant: "secondary",
+        className: "requisition-list-grid-wrapper__form-row",
+        children: u(RequisitionListForm, {
+          mode: "edit",
+          requisitionListUid: rl.uid,
+          defaultValues: {
+            name: rl.name,
+            description: rl.description
+          },
+          onSuccess: async () => {
+            await handlePageChange();
+            setEditingId(null);
+          },
+          onCancel: () => setEditingId(null)
+        }, void 0, false, {
+          fileName: _jsxFileName$2,
+          lineNumber: 217,
+          columnNumber: 15
+        }, void 0)
+      }, rl.uid, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 212,
+        columnNumber: 13
+      }, void 0) : u(RequisitionListItem, {
         requisitionList: rl,
+        onEdit: (uid) => setEditingId(uid),
         onRemoveBtnClick
       }, rl.uid, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 197,
-        columnNumber: 11
+        lineNumber: 229,
+        columnNumber: 13
       }, void 0)), u("div", {
         className: classes(["requisition-list-grid-wrapper__pagination", className]),
         children: u(Pagination, {
-          totalPages: (_b = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _b.total_pages,
-          currentPage: (_c = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _c.current_page,
+          totalPages: (_c = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _c.total_pages,
+          currentPage: (_d = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _d.current_page,
           onChange: handlePageChange
         }, void 0, false, {
           fileName: _jsxFileName$2,
-          lineNumber: 209,
+          lineNumber: 243,
           columnNumber: 11
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$2,
-        lineNumber: 203,
+        lineNumber: 237,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$2,
-      lineNumber: 179,
+      lineNumber: 193,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$2,
-    lineNumber: 107,
+    lineNumber: 114,
     columnNumber: 5
   }, void 0);
 };
@@ -322,7 +374,8 @@ const SvgAdd = (props) => /* @__PURE__ */ React.createElement("svg", { id: "Icon
 var _jsxFileName$1 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListActions/RequisitionListActions.tsx";
 const RequisitionListActions = ({
   selectable,
-  className
+  className,
+  onAddNew
 }) => {
   const translations = useText({
     addNewReqListBtn: `RequisitionList.AddNewReqList.addNewReqListBtn`
@@ -333,25 +386,26 @@ const RequisitionListActions = ({
     role: "button",
     className: classes(["requisition-list-actions", ["requisition-list-actions--selectable", selectable], className]),
     "data-testid": "requisition-list-actions-button",
+    onClick: onAddNew,
     children: [u("span", {
       className: "requisition-list-actions__title",
       "data-testid": "requisition-list-actions-button-text",
       children: translations.addNewReqListBtn
     }, void 0, false, {
       fileName: _jsxFileName$1,
-      lineNumber: 50,
+      lineNumber: 51,
       columnNumber: 7
     }, void 0), u(Icon, {
       source: SvgAdd,
       size: "32"
     }, void 0, false, {
       fileName: _jsxFileName$1,
-      lineNumber: 56,
+      lineNumber: 57,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$1,
-    lineNumber: 38,
+    lineNumber: 39,
     columnNumber: 5
   }, void 0);
 };

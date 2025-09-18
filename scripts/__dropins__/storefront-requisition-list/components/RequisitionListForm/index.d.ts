@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './RequisitionListForm';
-export * from './RequisitionListGrid';
+export * from '.';
+export { RequisitionListForm } from './RequisitionListForm';
 //# sourceMappingURL=index.d.ts.map

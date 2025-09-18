@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 export * from './RequisitionListForm';
-export * from './RequisitionListGrid';
+export { RequisitionListForm as default } from './RequisitionListForm';
 //# sourceMappingURL=index.d.ts.map
