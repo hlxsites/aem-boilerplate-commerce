@@ -18,12 +18,12 @@ export type ConfigProps = {
      */
     getCustomerToken?: (() => string | null) | null;
     /**
-     * Adobe Commerce store view code on which the Payment Services SDK should perform GraphQL requests.
+     * Adobe Commerce store view code on which the Payment Services drop-in should perform GraphQL requests.
      * When not set, no 'Store' header will be sent.
      */
     storeViewCode?: string;
     /**
-     * List of language definitions for the Payment Services drop-in.
+     * Dictionary of language definitions for the Payment Services drop-in.
      */
     langDefinitions?: Record<"default" | Lang, object>;
 };

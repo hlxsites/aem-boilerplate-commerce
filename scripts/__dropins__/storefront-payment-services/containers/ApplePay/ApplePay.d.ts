@@ -24,10 +24,6 @@ export interface ApplePayProps {
      */
     isVirtualCart: boolean;
     /**
-     * The location context where the payment is being rendered.
-     */
-    location: "CHECKOUT" | "PRODUCT_DETAIL" | "CART" | "MINICART";
-    /**
      * Called when the user clicks the Apple Pay button. This callback receives a 'showPaymentSheet' function as its only
      * argument that must be called to begin the Apple Pay session and show the payment sheet.
      *
@@ -44,5 +40,5 @@ export interface ApplePayProps {
      */
     onError?: (error: Error) => void;
 }
-export declare const ApplePay: ({ getCartId, isVirtualCart, location, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
+export declare const ApplePay: ({ getCartId, isVirtualCart, onButtonClick, onSuccess, onError, ...props }: ApplePayProps) => import("preact/compat").JSX.Element;
 //# sourceMappingURL=ApplePay.d.ts.map
