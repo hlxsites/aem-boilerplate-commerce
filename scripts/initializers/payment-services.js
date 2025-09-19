@@ -16,7 +16,7 @@ await initializeDropin(async () => {
   return initializers.mountImmediately(paymentServicesApi.initialize, {
     apiUrl: getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'),
     getCustomerToken: getUserTokenCookie,
-    storeViewCode: headers,
+    storeViewCode: headers.Store,
     langDefinitions,
   });
 })();
