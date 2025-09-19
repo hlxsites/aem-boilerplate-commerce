@@ -20,9 +20,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
-// eslint-disable-next-line import/no-unresolved
 import { render as quoteManagementRender } from '@dropins/storefront-quote-management/render.js';
-// eslint-disable-next-line import/no-unresolved
 import { RequestNegotiableQuoteForm } from '@dropins/storefront-quote-management/containers/RequestNegotiableQuoteForm.js';
 
 // API
@@ -374,7 +372,7 @@ export default async function decorate(block) {
     if (permissions?.requestQuote) {
       requestQuoteButtonContainer.dataset.canRequestQuote = true;
     } else {
-      requestQuoteButtonContainer.dataset.canRequestQuote = false;
+      requestQuoteButtonContainer.removeAttribute('data-can-request-quote');
     }
     renderRequestQuoteButton(requestQuoteButtonContainer);
   });
