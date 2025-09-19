@@ -61,7 +61,8 @@ const RequisitionList = {
     placeholder: "Requisition List Name",
     label: "Description",
     editTitle: "Rename Requisition List",
-    createTitle: "Create Requisition List"
+    createTitle: "Create Requisition List",
+    addProductToRequisitionList: "Add Product to Requisition List:"
   }
 };
 const en_US = {

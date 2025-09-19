@@ -16,4 +16,5 @@
  *******************************************************************/
 export * from './RequisitionListForm';
 export * from './RequisitionListGrid';
+export * from './RequisitionListNames';
 //# sourceMappingURL=index.d.ts.map

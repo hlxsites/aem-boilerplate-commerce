@@ -5,12 +5,14 @@ import * as React from "@dropins/tools/preact-compat.js";
 import { useState, useCallback, useEffect } from "@dropins/tools/preact-compat.js";
 import { Button, Modal, Card, Pagination, Icon, Header } from "@dropins/tools/components.js";
 import { classes, VComponent, Slot } from "@dropins/tools/lib.js";
-import { d as deleteRequisitionList, g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
+import { g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
 import "@dropins/tools/preact-hooks.js";
 import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
+/* empty css                               */
 import { useText } from "@dropins/tools/i18n.js";
+import { d as deleteRequisitionList } from "../chunks/deleteRequisitionList.js";
 import "@dropins/tools/preact.js";
-import "../chunks/fetch-error.js";
+import "../chunks/transform-requisition-list.js";
 import "@dropins/tools/fetch-graphql.js";
 var _jsxFileName$3 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListItem/RequisitionListItem.tsx";
 const RequisitionListItem = ({
@@ -43,33 +45,33 @@ const RequisitionListItem = ({
         children: requisitionList.name
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 50,
+        lineNumber: 67,
         columnNumber: 9
       }, void 0), u("div", {
         className: "requisition-list-item__description",
         children: requisitionList.description
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 53,
+        lineNumber: 70,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$3,
-      lineNumber: 49,
+      lineNumber: 66,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["requisition-list-item__cell", "requisition-list-item__items_count", className]),
       children: requisitionList.items_count
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 57,
+      lineNumber: 74,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["requisition-list-item__cell", "requisition-list-item__updated_at", className]),
       children: requisitionList.updated_at
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 66,
+      lineNumber: 83,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["requisition-list-item__cell", "requisition-list-item__actions", className]),
@@ -81,7 +83,7 @@ const RequisitionListItem = ({
         children: translations.actionRename
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 82,
+        lineNumber: 99,
         columnNumber: 9
       }, void 0), u(Button, {
         variant: "tertiary",
@@ -92,17 +94,17 @@ const RequisitionListItem = ({
         children: translations.actionRemove
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 90,
+        lineNumber: 107,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$3,
-      lineNumber: 75,
+      lineNumber: 92,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$3,
-    lineNumber: 44,
+    lineNumber: 61,
     columnNumber: 5
   }, void 0);
 };
@@ -438,7 +440,7 @@ const RequisitionListGrid = ({
         slot: slots.Header
       }, void 0, false, {
         fileName: _jsxFileName,
-        lineNumber: 49,
+        lineNumber: 66,
         columnNumber: 9
       }, void 0);
     }
@@ -448,7 +450,7 @@ const RequisitionListGrid = ({
       title: translations.containerTitle
     }, void 0, false, {
       fileName: _jsxFileName,
-      lineNumber: 58,
+      lineNumber: 75,
       columnNumber: 7
     }, void 0);
   }, [slots, translations.containerTitle]);
@@ -458,7 +460,7 @@ const RequisitionListGrid = ({
     isLoading
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 67,
+    lineNumber: 84,
     columnNumber: 5
   }, void 0);
 };

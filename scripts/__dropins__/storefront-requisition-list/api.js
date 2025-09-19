@@ -1,8 +1,9 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import { f as fetchGraphQl, h as handleFetchError } from "./chunks/fetch-error.js";
-import { g, r, s, a, b } from "./chunks/fetch-error.js";
-import { d, g as g2 } from "./chunks/getRequisitionLists.js";
+import { f as fetchGraphQl, h as handleFetchError } from "./chunks/transform-requisition-list.js";
+import { g, r, s, a, b } from "./chunks/transform-requisition-list.js";
+import { g as g2 } from "./chunks/getRequisitionLists.js";
+import { d } from "./chunks/deleteRequisitionList.js";
 import { Initializer } from "@dropins/tools/lib.js";
 import "@dropins/tools/fetch-graphql.js";
 const initialize = new Initializer({

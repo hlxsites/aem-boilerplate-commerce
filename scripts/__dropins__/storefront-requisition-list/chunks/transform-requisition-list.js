@@ -1,6 +1,18 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
 import { FetchGraphQL } from "@dropins/tools/fetch-graphql.js";
+const {
+  setEndpoint,
+  setFetchGraphQlHeader,
+  removeFetchGraphQlHeader,
+  setFetchGraphQlHeaders,
+  fetchGraphQl,
+  getConfig
+} = new FetchGraphQL().getMethods();
+const handleFetchError = (errors) => {
+  const errorMessage = errors.map((e) => e.message).join(" ");
+  throw Error(errorMessage);
+};
 const REQUISITION_LIST_FRAGMENT = `
 fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
     uid
@@ -56,18 +68,6 @@ function transformItems(items) {
     };
   });
 }
-const {
-  setEndpoint,
-  setFetchGraphQlHeader,
-  removeFetchGraphQlHeader,
-  setFetchGraphQlHeaders,
-  fetchGraphQl,
-  getConfig
-} = new FetchGraphQL().getMethods();
-const handleFetchError = (errors) => {
-  const errorMessage = errors.map((e) => e.message).join(" ");
-  throw Error(errorMessage);
-};
 export {
   REQUISITION_LIST_FRAGMENT as R,
   setFetchGraphQlHeader as a,
@@ -79,4 +79,4 @@ export {
   setEndpoint as s,
   transformRequisitionList as t
 };
-//# sourceMappingURL=fetch-error.js.map
+//# sourceMappingURL=transform-requisition-list.js.map

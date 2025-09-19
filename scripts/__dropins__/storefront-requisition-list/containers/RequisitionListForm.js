@@ -7,7 +7,7 @@ import "@dropins/tools/preact-hooks.js";
 import "@dropins/tools/components.js";
 import "@dropins/tools/lib.js";
 import "@dropins/tools/i18n.js";
-import "../chunks/fetch-error.js";
+import "../chunks/transform-requisition-list.js";
 import "@dropins/tools/fetch-graphql.js";
 export {
   R as RequisitionListForm,

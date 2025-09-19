@@ -5,7 +5,7 @@ import { useState } from "@dropins/tools/preact-hooks.js";
 import { InLineAlert, Field, Input, TextArea, Button } from "@dropins/tools/components.js";
 import { classes } from "@dropins/tools/lib.js";
 import { useText } from "@dropins/tools/i18n.js";
-import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "./fetch-error.js";
+import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "./transform-requisition-list.js";
 var _jsxFileName$1 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListForm/RequisitionListForm.tsx";
 const RequisitionListForm$1 = ({
   className,
@@ -260,7 +260,7 @@ const RequisitionListForm = ({
   const {
     error,
     submit
-  } = useRequisitionListForm(mode, requisitionListUid, () => onSuccess == null ? void 0 : onSuccess(), onError);
+  } = useRequisitionListForm(mode, requisitionListUid, onSuccess, onError);
   const handleSubmit = async (values) => {
     await submit(values);
   };
@@ -272,7 +272,7 @@ const RequisitionListForm = ({
     onCancel
   }, void 0, false, {
     fileName: _jsxFileName,
-    lineNumber: 55,
+    lineNumber: 56,
     columnNumber: 5
   }, void 0);
 };
