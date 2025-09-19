@@ -27,6 +27,7 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
+import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Order Dropin Components
 import * as orderApi from '@dropins/storefront-order/api.js';
@@ -141,6 +142,7 @@ export default async function decorate(block) {
         <div class="product-details__price"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
+        <div class="product-details__gift-card-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
@@ -165,6 +167,7 @@ export default async function decorate(block) {
   const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
+  const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $paymentMethods = fragment.querySelector('.product-details__payment-methods');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
@@ -200,6 +203,7 @@ export default async function decorate(block) {
     _shortDescription,
     _options,
     _quantity,
+    _giftCardOptions,
     _description,
     _attributes,
     wishlistToggleBtn,
@@ -257,6 +261,9 @@ export default async function decorate(block) {
 
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
+
+    // Configuration  Gift Card Options
+    pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
