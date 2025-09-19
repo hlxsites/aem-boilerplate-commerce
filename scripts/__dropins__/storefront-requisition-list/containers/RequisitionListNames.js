@@ -8,7 +8,7 @@ import { g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
 import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
 import "@dropins/tools/lib.js";
 import "@dropins/tools/preact-hooks.js";
-/* empty css                               */
+/* empty css                             */
 import { useText } from "@dropins/tools/i18n.js";
 import { Fragment } from "@dropins/tools/preact.js";
 import "@dropins/tools/fetch-graphql.js";

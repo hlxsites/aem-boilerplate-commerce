@@ -8,6 +8,7 @@ declare const _default: {
         "actions": "Actions",
         "loginMsg": "Please login",
         "confirmRemove" : "Confirm Requisition List removing",
+        "confirmRemoveContent" : "Requisition List will be permanently deleted. This action can not be undone.",
         "confirmAction" : "Confirm",
         "cancelAction" : "Cancel"
       },

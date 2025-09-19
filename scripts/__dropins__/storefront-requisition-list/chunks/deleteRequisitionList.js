@@ -33,7 +33,8 @@ const deleteRequisitionList = async (requisitionListUid) => {
     errors,
     data
   }) => {
-    var _a, _b, _c, _d, _e, _f, _g;
+    var _a, _b, _c, _d, _e, _f;
+    if (!requisitionListUid) return null;
     if (errors) return handleFetchError(errors);
     if (!((_a = data == null ? void 0 : data.deleteRequisitionList) == null ? void 0 : _a.requisition_lists)) {
       return null;
@@ -41,7 +42,7 @@ const deleteRequisitionList = async (requisitionListUid) => {
     return {
       items: ((_c = (_b = data.deleteRequisitionList.requisition_lists) == null ? void 0 : _b.items) == null ? void 0 : _c.map((requisitionList) => transformRequisitionList(requisitionList))) || [],
       page_info: (_e = (_d = data.deleteRequisitionList) == null ? void 0 : _d.requisition_lists) == null ? void 0 : _e.page_info,
-      status: (_g = (_f = data.deleteRequisitionList) == null ? void 0 : _f.requisition_lists) == null ? void 0 : _g.page_info
+      status: (_f = data.deleteRequisitionList) == null ? void 0 : _f.status
     };
   });
 };
