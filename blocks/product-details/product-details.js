@@ -274,7 +274,9 @@ export default async function decorate(block) {
       createCart: {
         getCartItems: (() => {
           const values = events.lastPayload('pdp/values') ?? null;
-          if (!values) return null;
+          if (!values) {
+            return [];
+          }
           return [{
             sku: values.sku,
             quantity: values.quantity,
