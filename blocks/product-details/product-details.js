@@ -118,13 +118,6 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   }
 }
 
-// getIsVirtual is needed for Apple Pay - should return Promise<boolean>
-const getIsVirtual = async () => {
-  const pdpData = events.lastPayload('pdp/data') ?? null;
-  // TODO: ask the storefront team to add the isVirtual property to the pdpData
-  return (pdpData.productType === 'virtual' || pdpData.productType === 'downloadable');
-};
-
 export default async function decorate(block) {
   const product = events.lastPayload('pdp/data') ?? null;
   const labels = await fetchPlaceholders();
