@@ -17,14 +17,6 @@ export type ConfigProps = {
      * For more information, see: https://developer.adobe.com/commerce/webapi/graphql/usage/authorization-tokens/.
      */
     getCustomerToken?: (() => string | null) | null;
-    /**
-     * Adobe Commerce store view code on which the Payment Services drop-in should perform GraphQL requests.
-     * When not set, no 'Store' header will be sent.
-     */
-    storeViewCode?: string;
-    /**
-     * Dictionary of language definitions for the Payment Services drop-in.
-     */
     langDefinitions?: Record<"default" | Lang, object>;
 };
 export declare const initialize: Initializer<ConfigProps>;
