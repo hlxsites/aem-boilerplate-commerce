@@ -9,6 +9,8 @@ import { search } from '@dropins/storefront-product-discovery/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
+import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -168,8 +170,17 @@ export default async function decorate(block) {
             product: ctx.product,
             variant: 'tertiary',
           })($wishlistToggle);
+          // Requisition List Button
+          const $reqListNames = document.createElement('div');
+          $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
+          rlRenderer.render(RequisitionListNames, {
+            items: [],
+            sku: ctx.product.sku,
+            quantity: 1,
+          })($reqListNames);
           actionsWrapper.appendChild(addToCartBtn);
           actionsWrapper.appendChild($wishlistToggle);
+          actionsWrapper.appendChild($reqListNames);
           ctx.replaceWith(actionsWrapper);
         },
       },

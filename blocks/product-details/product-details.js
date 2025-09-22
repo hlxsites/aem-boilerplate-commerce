@@ -14,6 +14,9 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
+import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
+import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
+
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
@@ -101,6 +104,7 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__buttons__add-to-req-list"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -120,6 +124,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $requisitionListNames = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -223,6 +228,14 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    // Requisition List Names (if enabled)
+    rlRenderer.render(RequisitionListNames, {
+      items: [],
+      canCreate: true,
+      sku: product.sku,
+      quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+    })($requisitionListNames),
   ]);
 
   // Configuration – Button - Add to Cart
