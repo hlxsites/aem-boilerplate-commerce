@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { CompanyCreditContainer } from '@dropins/storefront-company-management/containers/CompanyCreditContainer.js';
+import { CompanyCredit } from '@dropins/storefront-company-management/containers/CompanyCredit.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
 import { checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
 import {
@@ -39,5 +39,5 @@ export default async function decorate(block) {
   }
 
   // All checks passed, render company credit container
-  await companyRenderer.render(CompanyCreditContainer, {})(block);
+  await companyRenderer.render(CompanyCredit, {})(block);
 }
