@@ -286,8 +286,6 @@ export default async function decorate(block) {
             throw new Error('No products selected.');
           }
           return [{
-            sku: values.sku,
-            quantity: values.quantity,
             selectedOptions: values.optionsUIDs,
             enteredOptions: values.enteredOptions,
           }];
@@ -299,7 +297,20 @@ export default async function decorate(block) {
         }
       },
       onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: (error) => console.error('Apple Pay payment failed:', error),
+      onError: async (error) => {
+        console.error('Apple Pay payment failed:', error);
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Error',
+          description: 'An unexpected error occurred while processing your Apple Pay payment. '
+            + 'Please try again or contact support.',
+          icon: h(Icon, { source: 'Warning' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          onDismiss: () => {
+            inlineAlert.remove();
+          },
+        })($alert);
+      },
     })($paymentMethods),
   ]);
 
