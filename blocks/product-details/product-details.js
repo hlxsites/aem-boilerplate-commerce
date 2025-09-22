@@ -310,9 +310,7 @@ export default async function decorate(block) {
               'aria-live': 'assertive',
               role: 'alert',
               type: 'error',
-              onDismiss: () => {
-                inlineAlert.remove();
-              },
+              onDismiss: () => inlineAlert.remove(),
             })($alert);
           },
         })($paymentMethods);
