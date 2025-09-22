@@ -48,7 +48,7 @@ import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { PaymentLocation } from '../../scripts/__dropins__/storefront-payment-services/api.js';
+import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -152,7 +152,6 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
         </div>
-        <div class="product-details__payment-error"></div>
         <div class="product-details__payment-methods"></div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
@@ -277,41 +276,48 @@ export default async function decorate(block) {
       product,
     })($wishlistToggleBtn),
 
-    PaymentServices.render(ApplePay, {
-      location: PaymentLocation.PRODUCT_DETAIL,
-      createCart: {
-        getCartItems: () => {
-          const values = events.lastPayload('pdp/values');
-          if (!values) {
-            throw new Error('No products selected.');
-          }
-          return [{
-            selectedOptions: values.optionsUIDs,
-            enteredOptions: values.enteredOptions,
-          }];
-        },
-      },
-      onButtonClick: (showPaymentSheet) => {
-        if (pdpApi.isProductConfigurationValid()) {
-          showPaymentSheet();
-        }
-      },
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: async (error) => {
-        console.error('Apple Pay payment failed:', error);
-        inlineAlert = await UI.render(InLineAlert, {
-          heading: 'Error',
-          description: 'An unexpected error occurred while processing your Apple Pay payment. '
-            + 'Please try again or contact support.',
-          icon: h(Icon, { source: 'Warning' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          onDismiss: () => {
-            inlineAlert.remove();
+    events.on('payment-services/method-available/product-detail', (paymentMethod) => {
+      if (paymentMethod === 'payment_services_paypal_apple_pay') {
+        PaymentServices.render(ApplePay, {
+          location: PaymentLocation.PRODUCT_DETAIL,
+          createCart: {
+            getCartItems: () => {
+              const values = events.lastPayload('pdp/values');
+              if (!values) {
+                throw new Error('No products selected.');
+              }
+              return [{
+                sku: values.sku,
+                quantity: values.quantity,
+                selectedOptions: values.optionsUIDs,
+                enteredOptions: values.enteredOptions,
+              }];
+            },
           },
-        })($alert);
-      },
-    })($paymentMethods),
+          onButtonClick: (showPaymentSheet) => {
+            if (pdpApi.isProductConfigurationValid()) {
+              showPaymentSheet();
+            }
+          },
+          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+          onError: async (error) => {
+            console.error('Apple Pay payment failed:', error);
+            inlineAlert = await UI.render(InLineAlert, {
+              heading: 'Apple Pay error',
+              description: 'An unexpected error occurred while processing your Apple Pay payment. '
+                + 'Please try again or contact support.',
+              icon: h(Icon, { source: 'OrderError' }),
+              'aria-live': 'assertive',
+              role: 'alert',
+              type: 'error',
+              onDismiss: () => {
+                inlineAlert.remove();
+              },
+            })($alert);
+          },
+        })($paymentMethods);
+      }
+    }),
   ]);
 
   // Configuration – Button - Add to Cart
