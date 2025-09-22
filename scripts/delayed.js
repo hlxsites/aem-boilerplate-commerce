@@ -29,7 +29,8 @@ async function initAnalytics() {
             websiteName: analyticsConfig['website-name'],
           },
         },
-        { eventForwardingContext: { commerce: true, aep: false } },
+        {aepContext: { imsOrgId: 'DEDB2A52641B1D460A495F8E@AdobeOrg', datastreamId: '09c1f645-0efd-4bd5-bd6f-13ebe5f39192'}},
+        { eventForwardingContext: { commerce: true, aep: true } },
         {
           shopperContext: {
             shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
