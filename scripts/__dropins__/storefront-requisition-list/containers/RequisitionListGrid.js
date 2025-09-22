@@ -137,12 +137,10 @@ const RequisitionListGridWrapper = ({
   const [reqList, setReqList] = t(useState(), "reqList");
   const onRemoveBtnClick = (requisitionList, modalProps2) => {
     setReqList(requisitionList);
-    if (requisitionList == null ? void 0 : requisitionList.uid) {
-      setModalProps({
-        ...modalProps2,
-        isOpen: true
-      });
-    }
+    setModalProps({
+      ...modalProps2,
+      isOpen: true
+    });
   };
   const handleModalOnClose = useCallback(() => {
     setModalProps({
@@ -153,18 +151,16 @@ const RequisitionListGridWrapper = ({
     setReqList(null);
   }, [modalProps, setReqList, setModalProps]);
   const performRemoveAction = useCallback(async () => {
-    if (reqList == null ? void 0 : reqList.uid) {
-      setModalProps({
-        ...modalProps,
-        isLoading: true
-      });
-      const result = await deleteRequisitionList(reqList == null ? void 0 : reqList.uid);
-      setReqLists({
-        items: result.items,
-        page_info: result.page_info
-      });
-      handleModalOnClose();
-    }
+    setModalProps({
+      ...modalProps,
+      isLoading: true
+    });
+    const result = await deleteRequisitionList(reqList == null ? void 0 : reqList.uid);
+    setReqLists({
+      items: result.items,
+      page_info: result.page_info
+    });
+    handleModalOnClose();
   }, [reqList, setReqLists, modalProps, handleModalOnClose]);
   const [editingId, setEditingId] = t(useState(null), "editingId");
   const [isAdding, setIsAdding] = t(useState(addReqList), "isAdding");
@@ -182,12 +178,12 @@ const RequisitionListGridWrapper = ({
         node: header
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 121,
+        lineNumber: 117,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 114,
+      lineNumber: 110,
       columnNumber: 9
     }, void 0), modalProps.isOpen && u(RequisitionListModal, {
       isOpen: modalProps.isOpen,
@@ -200,7 +196,7 @@ const RequisitionListGridWrapper = ({
       handleModalOnConfirm: performRemoveAction
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 127,
+      lineNumber: 123,
       columnNumber: 9
     }, void 0), u("div", {
       className: classes(["requisition-list-grid-wrapper__add-new", className]),
@@ -215,23 +211,23 @@ const RequisitionListGridWrapper = ({
           onCancel: () => setIsAdding(false)
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 148,
+          lineNumber: 144,
           columnNumber: 13
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 147,
+        lineNumber: 143,
         columnNumber: 11
       }, void 0) : u(RequisitionListActions, {
         onAddNew: () => setIsAdding(true)
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 158,
+        lineNumber: 154,
         columnNumber: 11
       }, void 0)
     }, void 0, false, {
       fileName: _jsxFileName$3,
-      lineNumber: 140,
+      lineNumber: 136,
       columnNumber: 7
     }, void 0), u("div", {
       className: classes(["dropin-card dropin-card--secondary requisition-list-grid-wrapper__content", className]),
@@ -241,30 +237,30 @@ const RequisitionListGridWrapper = ({
           children: translations.name
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 175,
+          lineNumber: 171,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.itemsCount
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 176,
+          lineNumber: 172,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.lastUpdated
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 177,
+          lineNumber: 173,
           columnNumber: 11
         }, void 0), u("h5", {
           children: translations.actions
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 178,
+          lineNumber: 174,
           columnNumber: 11
         }, void 0)]
       }, void 0, true, {
         fileName: _jsxFileName$3,
-        lineNumber: 169,
+        lineNumber: 165,
         columnNumber: 9
       }, void 0), (_b = reqLists == null ? void 0 : reqLists.items) == null ? void 0 : _b.map((rl) => editingId === rl.uid ? u(Card, {
         variant: "secondary",
@@ -283,12 +279,12 @@ const RequisitionListGridWrapper = ({
           onCancel: () => setEditingId(null)
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 187,
+          lineNumber: 183,
           columnNumber: 15
         }, void 0)
       }, rl.uid, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 182,
+        lineNumber: 178,
         columnNumber: 13
       }, void 0) : u(RequisitionListItem, {
         requisitionList: rl,
@@ -296,7 +292,7 @@ const RequisitionListGridWrapper = ({
         onRemoveBtnClick
       }, rl.uid, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 199,
+        lineNumber: 195,
         columnNumber: 13
       }, void 0)), u("div", {
         className: classes(["requisition-list-grid-wrapper__pagination", className]),
@@ -306,22 +302,22 @@ const RequisitionListGridWrapper = ({
           onChange: handlePageChange
         }, void 0, false, {
           fileName: _jsxFileName$3,
-          lineNumber: 213,
+          lineNumber: 209,
           columnNumber: 11
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$3,
-        lineNumber: 207,
+        lineNumber: 203,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$3,
-      lineNumber: 163,
+      lineNumber: 159,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$3,
-    lineNumber: 107,
+    lineNumber: 103,
     columnNumber: 5
   }, void 0);
 };
