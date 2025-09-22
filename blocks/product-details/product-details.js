@@ -48,7 +48,7 @@ import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
+import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Block-level
 import createModal from '../modal/modal.js';
@@ -276,8 +276,8 @@ export default async function decorate(block) {
       product,
     })($wishlistToggleBtn),
 
-    events.on('payment-services/method-available/product-detail', (paymentMethod) => {
-      if (paymentMethod === 'payment_services_paypal_apple_pay') {
+    events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
+      if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
         PaymentServices.render(ApplePay, {
           location: PaymentLocation.PRODUCT_DETAIL,
           createCart: {
