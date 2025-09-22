@@ -12,13 +12,10 @@ import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { initializers } from '@dropins/tools/initializer.js';
 
-import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
 // Containers
-import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
@@ -48,6 +45,11 @@ import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
+// Payment Services Dropin
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+import { PaymentLocation } from '../../scripts/__dropins__/storefront-payment-services/api.js';
+
 // Block-level
 import createModal from '../modal/modal.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
@@ -65,7 +67,6 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
-import { PaymentLocation } from '../../scripts/__dropins__/storefront-payment-services/api.js';
 
 // For order confirmation block
 // Link to support page
@@ -279,10 +280,10 @@ export default async function decorate(block) {
     PaymentServices.render(ApplePay, {
       location: PaymentLocation.PRODUCT_DETAIL,
       createCart: {
-        getCartItems: (() => {
-          const values = events.lastPayload('pdp/values') ?? null;
+        getCartItems: () => {
+          const values = events.lastPayload('pdp/values');
           if (!values) {
-            return [];
+            throw new Error('No products selected.');
           }
           return [{
             sku: values.sku,
@@ -290,23 +291,15 @@ export default async function decorate(block) {
             selectedOptions: values.optionsUIDs,
             enteredOptions: values.enteredOptions,
           }];
-        }),
+        },
       },
       onButtonClick: (showPaymentSheet) => {
-        const valid = pdpApi.isProductConfigurationValid();
-        if (valid) {
+        if (pdpApi.isProductConfigurationValid()) {
           showPaymentSheet();
         }
       },
       onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: (error) => {
-        console.error('Apple Pay payment failed:', error);
-        events.emit('product-detail/apple-pay/error', {
-          code: 'UNKNOWN_ERROR',
-          message: 'An unexpected error occurred while processing your Apple Pay '
-            + 'payment. Please try another payment method or try again.',
-        });
-      },
+      onError: (error) => console.error('Apple Pay payment failed:', error),
     })($paymentMethods),
   ]);
 
