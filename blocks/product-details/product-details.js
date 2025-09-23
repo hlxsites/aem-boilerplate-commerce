@@ -10,10 +10,11 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-
+// Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
-
+// Requisition List Dropin
+import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 
@@ -34,6 +35,7 @@ import {
   setJsonLd,
   fetchPlaceholders,
   getProductLink,
+  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -229,13 +231,26 @@ export default async function decorate(block) {
       product,
     })($wishlistToggleBtn),
 
-    // Requisition List Names (if enabled)
-    rlRenderer.render(RequisitionListNames, {
-      items: [],
-      canCreate: true,
-      sku: product.sku,
-      quantity: pdpApi.getProductConfigurationValues().quantity || 1,
-    })($requisitionListNames),
+    // Requisition List Names (if enabled and user is authenticated)
+    rlApi.isRequisitionListEnabled()
+      .then((isEnabled) => {
+        if (!isEnabled) {
+          $requisitionListNames.remove();
+          return null;
+        }
+        return checkIsAuthenticated();
+      })
+      .then((isAuthenticated) => {
+        if (isAuthenticated) {
+          return rlRenderer.render(RequisitionListNames, {
+            items: [],
+            canCreate: true,
+            sku: product.sku,
+            quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+          })($requisitionListNames);
+        }
+        return null;
+      }),
   ]);
 
   // Configuration – Button - Add to Cart
