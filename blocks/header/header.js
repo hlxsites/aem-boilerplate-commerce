@@ -374,7 +374,7 @@ export default async function decorate(block) {
         render.render(SearchResults, {
           skeletonCount: pageSize,
           scope: 'popover',
-          routeProduct: ({ urlKey, sku }) => getProductLink(urlKey, sku),
+          routeProduct: ({ sku }) => getProductLink(sku),
           onSearchResult: (results) => {
             searchResult.style.display = results.length > 0 ? 'block' : 'none';
           },
@@ -382,7 +382,7 @@ export default async function decorate(block) {
             ProductImage: (ctx) => {
               const { product, defaultImageProps } = ctx;
               const anchorWrapper = document.createElement('a');
-              anchorWrapper.href = getProductLink(product.urlKey, product.sku);
+              anchorWrapper.href = getProductLink(product.sku);
 
               tryRenderAemAssetsImage(ctx, {
                 alias: product.sku,

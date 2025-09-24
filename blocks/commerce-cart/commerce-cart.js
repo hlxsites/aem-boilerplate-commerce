@@ -168,7 +168,7 @@ export default async function decorate(block) {
   }
 
   // Render Containers
-  const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
+  const createProductLink = (product) => getProductLink(product.topLevelSku);
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {

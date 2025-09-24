@@ -24,6 +24,7 @@ import '../../initializers/cart.js';
 import {
   fetchPlaceholders,
   commerceEndpointWithQueryParams,
+  getProductLink,
 } from '../../commerce.js';
 
 import { loadCSS } from '../../aem.js';
@@ -115,12 +116,14 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     const miniPDPContainer = document.createElement('div');
     miniPDPContainer.className = 'commerce-mini-pdp';
 
+    const productLink = getProductLink(product.sku);
+
     // Layout structure
     const fragment = document.createRange().createContextualFragment(`
       <div class="mini-pdp__alert"></div>
       <div class="mini-pdp__wrapper">
         <div class="mini-pdp__header">
-          <a href="/products/${product.urlKey}/${product.sku}" class="quick-view__close">
+          <a href="${productLink}" class="quick-view__close">
           ${product.name}
           </a>
         </div>
@@ -143,7 +146,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
           <div class="mini-pdp__update-button"></div>
           <div class="mini-pdp__cancel-button"></div>
           <div class="mini-pdp__buttons__redirect-to-pdp">
-            <a href="/products/${product.urlKey}/${product.sku}">
+            <a href="${productLink}">
             </a>
           </div>
         </div>
@@ -297,7 +300,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
         onClick: () => {
           onClose();
           // Navigate to full PDP page
-          window.location.href = `/products/${product.urlKey}/${product.sku}`;
+          window.location.href = productLink;
         },
       })($redirectButton),
     ]);

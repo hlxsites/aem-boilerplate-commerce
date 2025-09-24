@@ -76,7 +76,7 @@ export default async function decorate(block) {
   await wishlistRenderer.render(Wishlist, {
     routeEmptyWishlistCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     moveProdToCart: cartApi.addProductsToCart,
-    routeProdDetailPage: (product) => getProductLink(product.urlKey, product.sku),
+    routeProdDetailPage: (product) => getProductLink(product.sku),
     onLoginClick: showAuthModal,
     getProductData: pdpApi.getProductData,
     getRefinedProduct: pdpApi.getRefinedProduct,

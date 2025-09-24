@@ -570,7 +570,7 @@ export async function commerceEndpointWithQueryParams() {
  */
 export function getSkuFromUrl() {
   const path = window.location.pathname;
-  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
+  const result = path.match(/\/products\/([\w|-]+)$/);
   return result?.[1];
 }
 
@@ -578,8 +578,8 @@ export function getProductSku() {
   return getMetadata('sku') || getSkuFromUrl();
 }
 
-export function getProductLink(urlKey, sku) {
-  return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
+export function getProductLink(sku) {
+  return rootLink(`/products/${sku}`.toLowerCase());
 }
 
 /**

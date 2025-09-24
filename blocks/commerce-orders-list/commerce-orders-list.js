@@ -18,7 +18,7 @@ import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
   const { 'minified-view': minifiedViewConfig = 'false' } = readBlockConfig(block);
-  const createProductLink = (productData) => (productData?.product ? getProductLink(productData.product.urlKey, productData.product.sku) : rootLink('#'));
+  const createProductLink = (productData) => (productData?.product ? getProductLink(productData.product.sku) : rootLink('#'));
 
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);

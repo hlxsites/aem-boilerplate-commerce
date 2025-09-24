@@ -30,10 +30,10 @@ export default async function decorate(block) {
     },
     routeProductDetails: (data) => {
       if (data?.orderItem) {
-        return getProductLink(data?.orderItem?.productUrlKey, data?.orderItem?.product?.sku);
+        return getProductLink(data?.orderItem?.product?.sku);
       }
       if (data?.product) {
-        return getProductLink(data?.product?.urlKey, data?.product?.sku);
+        return getProductLink(data?.product?.sku);
       }
       return '#';
     },

@@ -110,7 +110,7 @@ export default async function decorate(block) {
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-    const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
+    const createProductLink = (item) => getProductLink(item.sku);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory(storeViewCode);

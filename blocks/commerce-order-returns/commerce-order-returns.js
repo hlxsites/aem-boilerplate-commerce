@@ -49,6 +49,6 @@ export default async function decorate(block) {
 
       return rootLink(`${returnDetailsPath}?orderRef=${encodedOrderRef}&returnRef=${returnNumber}`);
     },
-    routeProductDetails: (productData) => (productData?.product ? getProductLink(productData.product.urlKey, productData.product.sku) : rootLink('#')),
+    routeProductDetails: (productData) => (productData?.product ? getProductLink(productData.product.sku) : rootLink('#')),
   })(block);
 }

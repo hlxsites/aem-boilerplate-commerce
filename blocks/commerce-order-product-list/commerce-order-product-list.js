@@ -9,7 +9,7 @@ import '../../scripts/initializers/order.js';
 import { getProductLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  const createProductLink = (product) => getProductLink(product.productUrlKey, product.productSku);
+  const createProductLink = (product) => getProductLink(product.productSku);
   await orderRenderer.render(OrderProductList, {
     slots: {
       CartSummaryItemImage: (ctx) => {
