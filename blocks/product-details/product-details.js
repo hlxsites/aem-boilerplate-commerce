@@ -395,7 +395,6 @@ async function setJsonLdProduct(product) {
     inStock,
     description,
     sku,
-    urlKey,
     price,
     priceRange,
     images,
