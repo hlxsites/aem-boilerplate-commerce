@@ -1,37 +1,36 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://ds-troll-stage.dummycachetest.com/graphql",
-      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/LDZgWYRJdmSULm3ZvatAiH/graphql",
+      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
       "headers": {
         "all": {
-          "Store": "us"
+          "Store": "default"
         },
         "cs": {
-          "AC-ENVIRONMENT-ID": "LDZgWYRJdmSULm3ZvatAiH",
-          "AC-Price-Book-ID": "us",
-          "AC-Source-Locale": "us"
-        },
-        "analytics": {
-          "base-currency-code": "USD",
-          "environment": "Testing",
-          "environment-id": "LDZgWYRJdmSULm3ZvatAiH",
-          "store-code": "main_website_store",
-          "store-id": 1,
-          "store-name": "Main Website Store",
-          "store-url": "https://www.aemshop.net",
-          "store-view-code": "default",
-          "store-view-id": 1,
-          "store-view-name": "Default Store View",
-          "website-code": "base",
-          "website-id": 1,
-          "website-name": "Main Website"
-        },
-        "plugins": {
-          "picker": {
-            "rootCategory": "2"
-          }
+          "ac-channel-id": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
+          "ac-environment-id": "XbaJpUaBye75vvzRQUd2Xm",
+          "ac-price-book-id": "east_coast_inc",
+          "ac-scope-locale": "en-US"
         }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "store-id": 1,
+        "store-name": "Main Website Store",
+        "store-url": "https://aco-storefront--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "Default Store View",
+        "website-id": 1,
+        "website-name": "Main Website",
+        "environment-id": "XbaJpUaBye75vvzRQUd2Xm",
+        "store-view-code": "en-US"
+      },
+      "plugins": {
+        "picker": {
+           "rootCategory": "2"
+         }
       }
     }
   }
