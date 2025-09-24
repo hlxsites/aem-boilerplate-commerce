@@ -1,0 +1,38 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://ds-troll-stage.dummycachetest.com/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/LDZgWYRJdmSULm3ZvatAiH/graphql",
+      "headers": {
+        "all": {
+          "Store": "us"
+        },
+        "cs": {
+          "AC-ENVIRONMENT-ID": "LDZgWYRJdmSULm3ZvatAiH",
+          "AC-Price-Book-ID": "us",
+          "AC-Source-Locale": "us"
+        },
+        "analytics": {
+          "base-currency-code": "USD",
+          "environment": "Testing",
+          "environment-id": "LDZgWYRJdmSULm3ZvatAiH",
+          "store-code": "main_website_store",
+          "store-id": 1,
+          "store-name": "Main Website Store",
+          "store-url": "https://www.aemshop.net",
+          "store-view-code": "default",
+          "store-view-id": 1,
+          "store-view-name": "Default Store View",
+          "website-code": "base",
+          "website-id": 1,
+          "website-name": "Main Website"
+        },
+        "plugins": {
+          "picker": {
+            "rootCategory": "2"
+          }
+        }
+      }
+    }
+  }
+}
