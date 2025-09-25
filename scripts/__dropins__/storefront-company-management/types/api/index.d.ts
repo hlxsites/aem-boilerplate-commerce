@@ -19,6 +19,7 @@ export * from './companyUsers.types';
 export * from './deleteCompanyUser.types';
 export * from './getCompany.types';
 export * from './getCountries.types';
+export * from './getCustomerCompanyInfo.types';
 export * from './updateCompany.types';
 export * from './updateCompanyUserStatus.types';
 export * from './validateCompanyEmail.types';

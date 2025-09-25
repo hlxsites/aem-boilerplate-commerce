@@ -15,5 +15,6 @@
  * from Adobe.
  *******************************************************************/
 export * from './companyProfile.types.d';
+export * from './customerCompanyInfo.types';
 export * from './api';
 //# sourceMappingURL=index.d.ts.map
