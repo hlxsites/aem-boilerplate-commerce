@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CompanyProfile';
-export * from './CompanyUsers';
+export * from './CompanyUsersManagementModal';
+export { CompanyUsersManagementModal as default } from './CompanyUsersManagementModal';
 //# sourceMappingURL=index.d.ts.map

@@ -17,4 +17,5 @@
 export * from './CompanyLoaders';
 export * from './CompanyProfileCard';
 export * from './EditCompanyProfile';
+export * from './CompanyUsersManagementModal';
 //# sourceMappingURL=index.d.ts.map

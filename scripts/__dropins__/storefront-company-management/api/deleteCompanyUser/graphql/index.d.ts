@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CompanyProfile';
-export * from './CompanyUsers';
+export { DELETE_COMPANY_USER_MUTATION } from './deleteCompanyUser.graphql';
 //# sourceMappingURL=index.d.ts.map

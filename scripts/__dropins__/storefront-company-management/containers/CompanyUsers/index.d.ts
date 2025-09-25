@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CompanyProfile';
 export * from './CompanyUsers';
+export { CompanyUsers as default } from './CompanyUsers';
 //# sourceMappingURL=index.d.ts.map

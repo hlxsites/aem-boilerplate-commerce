@@ -82,6 +82,78 @@ declare const _default: {
         "savingProfile": "Saving company profile..."
       }
     },
+    "CompanyUsers": {
+      "filters": {
+        "showAll": "Show All Users",
+        "showActive": "Show Active Users",
+        "showInactive": "Show Inactive Users"
+      },
+      "columns": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "team": "Team",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "emptyTeam": "-",
+      "pagination": {
+        "itemsCount": "{count} Item(s)",
+        "itemsPerPage": "Items per page:",
+        "show": "Show",
+        "perPage": "per page",
+        "previous": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {current} of {total}"
+      },
+      "emptyActions": "",
+      "actions": {
+        "manage": "Manage"
+      },
+      "ariaLabels": {
+        "loadingUsers": "Loading company users",
+        "usersTable": "Company users table",
+        "filterOptions": "User filter options",
+        "paginationNav": "Pagination navigation",
+        "pageNavigation": "Page navigation",
+        "pageSizeSelector": "Items per page selector",
+        "previousPageFull": "Go to previous page, current page {current}",
+        "nextPageFull": "Go to next page, current page {current}",
+        "currentPage": "Current page {current} of {total}",
+        "showingUsers": "Showing {count} users",
+        "dataLoaded": "Loaded {count} users",
+        "dataError": "Failed to load users.",
+        "manageUser": "Manage user {name}"
+      },
+      "managementModal": {
+        "title": "Manage user",
+        "setActiveText": "Reactivate the user's account by selecting \"Set as Active\".",
+        "setInactiveText": "Temporarily lock the user's account by selecting \"Set as Inactive\".",
+        "deleteText": "Permanently delete the user's account and all associated content by selecting \"Delete\". This action cannot be reverted.",
+        "setActiveButton": "Set as Active",
+        "setInactiveButton": "Set as Inactive",
+        "settingActiveButton": "Setting Active...",
+        "settingInactiveButton": "Setting Inactive...",
+        "deleteButton": "Delete",
+        "deletingButton": "Deleting...",
+        "cancelButton": "Cancel",
+        "setActiveErrorGeneric": "An unexpected error occurred while setting user as active.",
+        "setActiveErrorSpecific": "Failed to set user as active.",
+        "setInactiveErrorGeneric": "An unexpected error occurred while setting user as inactive.",
+        "setInactiveErrorSpecific": "Failed to set user as inactive.",
+        "deleteErrorGeneric": "An unexpected error occurred.",
+        "deleteErrorSpecific": "Failed to delete user.",
+        "ariaLabels": {
+          "closeModal": "Close modal",
+          "modalDescription": "User management options including setting as inactive or deleting the user account"
+        }
+      }
+    },
     "FormText": {
       "requiredFieldError": "This is a required field.",
       "numericError": "Only numeric values are allowed.",

@@ -14,6 +14,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CompanyProfile';
-export * from './CompanyUsers';
+export * from './checkIsCompanyEnabled.types';
+export * from './companyUsers.types';
+export * from './deleteCompanyUser.types';
+export * from './getCompany.types';
+export * from './getCountries.types';
+export * from './updateCompany.types';
+export * from './updateCompanyUserStatus.types';
+export * from './validateCompanyEmail.types';
 //# sourceMappingURL=index.d.ts.map

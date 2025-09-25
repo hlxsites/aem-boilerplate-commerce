@@ -18,8 +18,11 @@ export * from './initialize';
 export * from './fetch-graphql';
 export * from './fetchUserPermissions';
 export * from './checkIsCompanyEnabled';
+export * from './deleteCompanyUser';
 export * from './getCompany';
 export * from './updateCompany';
+export * from './updateCompanyUserStatus';
 export * from './getCountries';
 export * from './validateCompanyEmail';
+export * from './getCompanyUsers';
 //# sourceMappingURL=index.d.ts.map

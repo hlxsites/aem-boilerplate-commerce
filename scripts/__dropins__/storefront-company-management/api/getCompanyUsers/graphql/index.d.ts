@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CompanyProfile';
-export * from './CompanyUsers';
+export { COMPANY_USERS_QUERY } from './companyUsers.graphql';
 //# sourceMappingURL=index.d.ts.map
