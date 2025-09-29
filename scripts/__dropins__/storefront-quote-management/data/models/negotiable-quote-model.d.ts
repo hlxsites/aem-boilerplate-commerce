@@ -1,12 +1,14 @@
 export interface NegotiableQuoteModel {
     uid: string;
-    createdAt: string;
-    status: string;
+    name: string;
+    createdAt?: string;
+    updatedAt?: string;
+    status: NegotiableQuoteStatus;
     buyer: {
         firstname: string;
         lastname: string;
     };
-    comments: {
+    comments?: {
         uid: string;
         createdAt: string;
         author: {
@@ -14,11 +16,13 @@ export interface NegotiableQuoteModel {
             lastname: string;
         };
     }[];
-    items: {
+    items?: {
         product: {
             uid: string;
             sku: string;
             name: string;
+            templateId?: string;
+            templateName?: string;
             priceRange: {
                 maximumPrice: {
                     regularPrice: {
@@ -40,8 +44,46 @@ export interface NegotiableQuoteModel {
             };
             grandTotal: {
                 value: number;
+                currency: string;
             };
         };
     }[];
+}
+export interface NegotiableQuotesListModel {
+    items: NegotiableQuoteModel[];
+    pageInfo: {
+        currentPage: number;
+        pageSize: number;
+        totalPages: number;
+    };
+    totalCount: number;
+    paginationInfo?: PaginationInfo;
+    sortFields?: {
+        default: string;
+        options: Array<{
+            label: string;
+            value: string;
+        }>;
+    };
+}
+export declare enum NegotiableQuoteStatus {
+    SUBMITTED = "SUBMITTED",
+    PENDING = "PENDING",
+    UPDATED = "UPDATED",
+    OPEN = "OPEN",
+    ORDERED = "ORDERED",
+    CLOSED = "CLOSED",
+    DECLINED = "DECLINED",
+    EXPIRED = "EXPIRED",
+    DRAFT = "DRAFT"
+}
+export interface PaginationInfo {
+    currentPage: number;
+    totalCount: number;
+    pageSize: number;
+    startItem: number;
+    endItem: number;
+    totalPages: number;
+    pageSizeOptions?: number[];
 }
 //# sourceMappingURL=negotiable-quote-model.d.ts.map

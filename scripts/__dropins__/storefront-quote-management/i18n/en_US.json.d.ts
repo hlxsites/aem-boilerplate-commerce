@@ -21,7 +21,20 @@ declare const _default: {
         "draftSaved": "Quote saved as draft successfully!"
       }
     }
+  },
+  "QuoteManagement": {
+    "QuotesListTable": {
+      "quoteName": "Quote Name",
+      "created": "Created",
+      "createdBy": "Created By",
+      "status": "Status",
+      "lastUpdated": "Last Updated",
+      "quoteTemplate": "Quote Template",
+      "quoteTotal": "Quote Total",
+      "actions": "Action"
+    }
   }
-};
+}
+;
 
 export default _default;
