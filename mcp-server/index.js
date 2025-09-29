@@ -69,14 +69,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   }
 
   try {
-    const result = await makeRequest(args.query);
+    const result = await makeRequest(`Provide the most relevant information from the documentation for the following query. DO NOT make up information or use hypotheticals. Query: ${args.query}`);
     const response = result.response || result.answer || result.text
       || result.result?.response || JSON.stringify(result);
 
     return {
       content: [{
         type: 'text',
-        text: `Storefront Documentation Search Results for "${args.query}":\n\n${response}`,
+        text: `Storefront Documentation Search Results for "${args.query}" using ${config.mode}:\n\n${response}`,
       }],
     };
   } catch (error) {
