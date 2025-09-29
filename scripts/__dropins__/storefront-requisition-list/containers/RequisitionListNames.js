@@ -1,8 +1,9 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
 import { t, u } from "../chunks/jsxRuntime.module.js";
+import * as React from "@dropins/tools/preact-compat.js";
 import { useState, useEffect } from "@dropins/tools/preact-compat.js";
-import { Button, Card } from "@dropins/tools/components.js";
+import { Picker, Icon, Card } from "@dropins/tools/components.js";
 import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "../chunks/transform-requisition-list.js";
 import { g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
 import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
@@ -10,7 +11,7 @@ import "@dropins/tools/lib.js";
 import "@dropins/tools/preact-hooks.js";
 /* empty css                             */
 import { useText } from "@dropins/tools/i18n.js";
-import { Fragment } from "@dropins/tools/preact.js";
+import "@dropins/tools/preact.js";
 import "@dropins/tools/fetch-graphql.js";
 const REQUISITION_LIST_ITEMS_FRAGMENT = `
 fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
@@ -134,6 +135,7 @@ const addProductsToRequisitionList = async (requisitionListUid, requisitionListI
   if (errors) return handleFetchError(errors);
   return transformRequisitionList(data.addProductsToRequisitionList.requisition_list);
 };
+const SvgBurger = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 12H21", stroke: "currentColor" }), /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 6H21", stroke: "currentColor" }), /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 18H21", stroke: "currentColor" }));
 var _jsxFileName = "/Users/rafaljanicki/www/storefront-requisition-list/src/containers/RequisitionListNames/RequisitionListNames.tsx";
 const RequisitionListNames = ({
   items = [],
@@ -146,7 +148,7 @@ const RequisitionListNames = ({
   const [isAdding, setIsAdding] = t(useState(false), "isAdding");
   const translations = useText({
     createTitle: `RequisitionList.RequisitionListForm.createTitle`,
-    addProdToReqList: `RequisitionList.RequisitionListForm.addProductToRequisitionList`
+    addToReqList: `RequisitionList.RequisitionListForm.addToRequisitionList`
   });
   useEffect(() => {
     if (!reqLists || reqLists.length === 0) {
@@ -154,9 +156,18 @@ const RequisitionListNames = ({
         if (res && res.items) {
           setReqLists(res.items);
         }
+      }).catch((error) => {
+        console.error("Error fetching requisition lists:", error);
       });
     }
   }, [reqLists]);
+  const reqListOptions = [...(reqLists == null ? void 0 : reqLists.map((reqList) => ({
+    value: reqList.uid,
+    text: reqList.name
+  }))) ?? [], ...canCreate ? [{
+    value: "__create__",
+    text: translations.createTitle
+  }] : []];
   const handleAddProdToReqList = async (requisitionListUid) => {
     try {
       await addProductsToRequisitionList(requisitionListUid, [{
@@ -170,61 +181,62 @@ const RequisitionListNames = ({
   return u("div", {
     ...props,
     className: "requisition-list-names",
-    children: [translations.addProdToReqList, u("div", {
-      className: "requisition-list-names__list",
-      children: reqLists == null ? void 0 : reqLists.map((reqList) => u(Button, {
-        onClick: (event) => {
-          event.preventDefault();
-          handleAddProdToReqList(reqList.uid).then(() => {
-          });
-        },
-        variant: "text",
-        className: "requisition-list-names__item",
-        children: reqList.name
-      }, reqList.uid, false, {
+    children: [u(Picker, {
+      id: `requisition-list-names__picker__${sku}`,
+      className: "requisition-list-names__picker",
+      name: `requisition-list-names__picker__${sku}`,
+      icon: u(Icon, {
+        source: SvgBurger
+      }, void 0, false, {
         fileName: _jsxFileName,
-        lineNumber: 76,
-        columnNumber: 11
-      }, void 0))
+        lineNumber: 93,
+        columnNumber: 15
+      }, void 0),
+      variant: "secondary",
+      placeholder: translations.addToReqList,
+      disabled: isAdding,
+      size: "medium",
+      options: reqListOptions,
+      handleSelect: (event) => {
+        const selectedUid = event.currentTarget.value;
+        if (selectedUid === "__create__") {
+          setIsAdding(true);
+          return;
+        }
+        if (selectedUid) {
+          handleAddProdToReqList(selectedUid).then(() => {
+            event.target.value = "";
+          });
+        }
+      }
     }, void 0, false, {
       fileName: _jsxFileName,
-      lineNumber: 74,
+      lineNumber: 89,
       columnNumber: 7
-    }, void 0), canCreate && u(Fragment, {
-      children: [!isAdding && u(Button, {
-        onClick: () => {
-          setIsAdding(true);
+    }, void 0), canCreate && isAdding && u(Card, {
+      variant: "secondary",
+      children: u(RequisitionListForm, {
+        mode: "create",
+        onSuccess: async (newList) => {
+          handleAddProdToReqList(newList.uid).then(() => {
+            setIsAdding(false);
+            setReqLists((prevLists) => prevLists ? [...prevLists, newList] : [newList]);
+          });
         },
-        children: translations.createTitle
+        onCancel: () => setIsAdding(false)
       }, void 0, false, {
         fileName: _jsxFileName,
-        lineNumber: 94,
-        columnNumber: 13
-      }, void 0), isAdding && u(Card, {
-        variant: "secondary",
-        children: u(RequisitionListForm, {
-          mode: "create",
-          onSuccess: async (newList) => {
-            handleAddProdToReqList(newList.uid).then(() => {
-              setIsAdding(false);
-              setReqLists((prevLists) => prevLists ? [...prevLists, newList] : [newList]);
-            });
-          },
-          onCancel: () => setIsAdding(false)
-        }, void 0, false, {
-          fileName: _jsxFileName,
-          lineNumber: 104,
-          columnNumber: 15
-        }, void 0)
-      }, void 0, false, {
-        fileName: _jsxFileName,
-        lineNumber: 103,
-        columnNumber: 13
-      }, void 0)]
-    }, void 0, true)]
+        lineNumber: 115,
+        columnNumber: 11
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 114,
+      columnNumber: 9
+    }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName,
-    lineNumber: 72,
+    lineNumber: 88,
     columnNumber: 5
   }, void 0);
 };

@@ -2,7 +2,7 @@
 All Rights Reserved. */
 import { t, u } from "./jsxRuntime.module.js";
 import { useState } from "@dropins/tools/preact-hooks.js";
-import { InLineAlert, Field, Input, TextArea, Button } from "@dropins/tools/components.js";
+import { ProgressSpinner, InLineAlert, Field, Input, TextArea, Button } from "@dropins/tools/components.js";
 import { classes } from "@dropins/tools/lib.js";
 import { useText } from "@dropins/tools/i18n.js";
 import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "./transform-requisition-list.js";
@@ -61,10 +61,25 @@ const RequisitionListForm$1 = ({
     className: classes(["requisition-list-form", className]),
     children: [u("div", {
       className: "requisition-list-form__title",
-      children: title
-    }, void 0, false, {
+      children: [title, isSubmitting ? u("div", {
+        className: classes(["requisition-list-form_progress-spinner", className]),
+        "data-testid": "requisition-list-form-progress-spinner",
+        children: u(ProgressSpinner, {
+          stroke: "4",
+          size: "small"
+        }, void 0, false, {
+          fileName: _jsxFileName$1,
+          lineNumber: 118,
+          columnNumber: 13
+        }, void 0)
+      }, void 0, false, {
+        fileName: _jsxFileName$1,
+        lineNumber: 111,
+        columnNumber: 11
+      }, void 0) : null]
+    }, void 0, true, {
       fileName: _jsxFileName$1,
-      lineNumber: 107,
+      lineNumber: 108,
       columnNumber: 7
     }, void 0), error ? u(InLineAlert, {
       type: "error",
@@ -74,7 +89,7 @@ const RequisitionListForm$1 = ({
       "data-testid": "requisition-list-alert"
     }, void 0, false, {
       fileName: _jsxFileName$1,
-      lineNumber: 110,
+      lineNumber: 124,
       columnNumber: 9
     }, void 0) : null, u("form", {
       className: classes(["requisition-list-form__form", className]),
@@ -94,12 +109,12 @@ const RequisitionListForm$1 = ({
           onBlur: handleNameBlur
         }, void 0, false, {
           fileName: _jsxFileName$1,
-          lineNumber: 124,
+          lineNumber: 138,
           columnNumber: 11
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$1,
-        lineNumber: 123,
+        lineNumber: 137,
         columnNumber: 9
       }, void 0), u(Field, {
         disabled: isSubmitting,
@@ -112,12 +127,12 @@ const RequisitionListForm$1 = ({
           onChange: handleChange("description")
         }, void 0, false, {
           fileName: _jsxFileName$1,
-          lineNumber: 138,
+          lineNumber: 152,
           columnNumber: 11
         }, void 0)
       }, void 0, false, {
         fileName: _jsxFileName$1,
-        lineNumber: 137,
+        lineNumber: 151,
         columnNumber: 9
       }, void 0), u("div", {
         className: "requisition-list-form__actions",
@@ -130,7 +145,7 @@ const RequisitionListForm$1 = ({
           children: translations.actionCancel
         }, void 0, false, {
           fileName: _jsxFileName$1,
-          lineNumber: 149,
+          lineNumber: 163,
           columnNumber: 11
         }, void 0), u(Button, {
           type: "submit",
@@ -139,22 +154,22 @@ const RequisitionListForm$1 = ({
           children: translations.actionSave
         }, void 0, false, {
           fileName: _jsxFileName$1,
-          lineNumber: 158,
+          lineNumber: 172,
           columnNumber: 11
         }, void 0)]
       }, void 0, true, {
         fileName: _jsxFileName$1,
-        lineNumber: 148,
+        lineNumber: 162,
         columnNumber: 9
       }, void 0)]
     }, void 0, true, {
       fileName: _jsxFileName$1,
-      lineNumber: 119,
+      lineNumber: 133,
       columnNumber: 7
     }, void 0)]
   }, void 0, true, {
     fileName: _jsxFileName$1,
-    lineNumber: 106,
+    lineNumber: 107,
     columnNumber: 5
   }, void 0);
 };
