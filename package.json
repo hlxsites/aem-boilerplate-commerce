@@ -8,7 +8,7 @@
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
-    "start": "aem up",
+    "start": "npx -y @adobe/aem-cli up",
     "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins",
@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/hlxsites/aem-boilerplate-commerce#readme",
   "devDependencies": {
-    "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.25.9",
     "@dropins/build-tools": "1.0.1",
     "eslint": "8.57.1",
