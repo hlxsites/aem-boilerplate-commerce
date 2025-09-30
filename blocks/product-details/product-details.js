@@ -10,9 +10,13 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-
+// Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+// Requisition List Dropin
+import * as rlApi from '@dropins/storefront-requisition-list/api.js';
+import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
+import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -31,6 +35,7 @@ import {
   setJsonLd,
   fetchPlaceholders,
   getProductLink,
+  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -101,6 +106,7 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__buttons__add-to-req-list"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -120,6 +126,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $requisitionListNames = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -223,6 +230,27 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    // Requisition List Names (if enabled and user is authenticated)
+    rlApi.isRequisitionListEnabled()
+      .then((isEnabled) => {
+        if (!isEnabled) {
+          $requisitionListNames.innerHTML = '';
+          return null;
+        }
+        return checkIsAuthenticated();
+      })
+      .then((isAuthenticated) => {
+        if (isAuthenticated) {
+          return rlRenderer.render(RequisitionListNames, {
+            items: [],
+            canCreate: true,
+            sku: product.sku,
+            quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+          })($requisitionListNames);
+        }
+        return null;
+      }),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -250,7 +278,7 @@ export default async function decorate(block) {
             // --- Update existing item ---
             const { updateProductsFromCart } = await import(
               '@dropins/storefront-cart/api.js'
-            );
+              );
 
             await updateProductsFromCart([{ ...values, uid: itemUidFromUrl }]);
 
@@ -275,7 +303,7 @@ export default async function decorate(block) {
           // --- Add new item ---
           const { addProductsToCart } = await import(
             '@dropins/storefront-cart/api.js'
-          );
+            );
           await addProductsToCart([{ ...values }]);
         }
 
@@ -355,6 +383,19 @@ export default async function decorate(block) {
         block: 'center',
       });
     }, 0);
+  });
+
+  events.on('authenticated', (authenticated) => {
+    if (authenticated && rlApi.isRequisitionListEnabled()) {
+      rlRenderer.render(RequisitionListNames, {
+        items: [],
+        canCreate: true,
+        sku: product.sku,
+        quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+      })($requisitionListNames);
+    } else {
+      $requisitionListNames.innerHTML = '';
+    }
   });
 
   // --- Add new event listener for cart/data ---
