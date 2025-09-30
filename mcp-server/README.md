@@ -16,9 +16,18 @@ A minimal Model Context Protocol (MCP) server that's essentially a curl wrapper 
    npm install
    ```
 
-2. Set up your configuration as per the instructions below
+2. Enable MCP in Cursor:
 
-3. Run in worker mode (default, no config needed):
+   - Open Cursor Settings
+   - Go to **Tools & Integrations** (or search for "MCP Tools")
+   - Go to **MCP Tools**
+   - Find **commerce-documentation-rag** in the list and toggle it **ON**
+   - Restart Cursor if prompted
+
+3. Set up your configuration as per the instructions below
+
+4. Run in worker mode (default, no config needed):
+
    ```bash
    npm start
    ```
