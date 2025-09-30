@@ -10,7 +10,8 @@ declare const _default: {
       "confirmRemove": "Confirm Requisition List removing",
       "confirmRemoveContent": "Requisition List will be permanently deleted. This action can not be undone.",
       "confirmAction": "Confirm",
-      "cancelAction": "Cancel"
+      "cancelAction": "Cancel",
+      "emptyList": "No Requisition Lists found"
     },
     "AddNewReqList": {
       "addNewReqListBtn": "Add new Requisition List"
