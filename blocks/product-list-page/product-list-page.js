@@ -148,6 +148,8 @@ export default async function decorate(block) {
             product: ctx.product,
             variant: 'tertiary',
           })($wishlistToggle);
+          actionsWrapper.appendChild(addToCartBtn);
+          actionsWrapper.appendChild($wishlistToggle);
           // Requisition List Button
           const $reqListNames = document.createElement('div');
           $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
@@ -159,8 +161,6 @@ export default async function decorate(block) {
             })($reqListNames);
             actionsWrapper.appendChild($reqListNames);
           }
-          actionsWrapper.appendChild(addToCartBtn);
-          actionsWrapper.appendChild($wishlistToggle);
           actionsWrapper.appendChild($reqListNames);
           ctx.replaceWith(actionsWrapper);
         },

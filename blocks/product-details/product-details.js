@@ -235,7 +235,7 @@ export default async function decorate(block) {
     rlApi.isRequisitionListEnabled()
       .then((isEnabled) => {
         if (!isEnabled) {
-          $requisitionListNames.remove();
+          $requisitionListNames.innerHTML = '';
           return null;
         }
         return checkIsAuthenticated();
@@ -383,6 +383,19 @@ export default async function decorate(block) {
         block: 'center',
       });
     }, 0);
+  });
+
+  events.on('authenticated', (authenticated) => {
+    if (authenticated && rlApi.isRequisitionListEnabled()) {
+      rlRenderer.render(RequisitionListNames, {
+        items: [],
+        canCreate: true,
+        sku: product.sku,
+        quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+      })($requisitionListNames);
+    } else {
+      $requisitionListNames.innerHTML = '';
+    }
   });
 
   // --- Add new event listener for cart/data ---

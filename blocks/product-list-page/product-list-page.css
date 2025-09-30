@@ -103,14 +103,14 @@
 }
 
 .product-discovery-product-actions .requisition-list-names .requisition-list-names__picker {
-    width: 80px;
+    width: var(--spacing-xlarge);
 }
 
 .product-discovery-product-actions .requisition-list-names .dropin-card {
     left: 0;
     position: absolute;
     width: 100%;
-    z-index: 1;
+    z-index: 2;
 }
 
 /* Media Queries */
