@@ -1,6 +1,21 @@
 import { CompanyLegalAddressModel } from './company-address';
-import { CompanyRole } from './company-role';
 
+export interface CompanyRole {
+    id: string;
+    name: string;
+    permissions?: {
+        id: string;
+        text: string;
+        children?: {
+            id: string;
+            text: string;
+            children?: {
+                id: string;
+                text: string;
+            }[];
+        }[];
+    }[];
+}
 export interface CompanyContact {
     id: string;
     firstname: string;
@@ -45,8 +60,6 @@ export interface CompanyModel extends Company {
         canViewContacts: boolean;
         canViewPaymentInformation: boolean;
         canViewShippingInformation: boolean;
-        canViewUsers: boolean;
-        canEditUsers: boolean;
     };
 }
 //# sourceMappingURL=company.d.ts.map

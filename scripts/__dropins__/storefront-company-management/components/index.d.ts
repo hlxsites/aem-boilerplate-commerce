@@ -16,9 +16,6 @@
  *******************************************************************/
 export * from './CompanyLoaders';
 export * from './CompanyProfileCard';
-export * from './CompanyStructureCard';
 export * from './EditCompanyProfile';
-export * from './Tree';
-export * from './CompanyUserForm';
-export * from './CompanyTeamForm';
+export * from './CustomerCompanyInfoCard';
 //# sourceMappingURL=index.d.ts.map
