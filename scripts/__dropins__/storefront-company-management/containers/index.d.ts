@@ -16,4 +16,5 @@
  *******************************************************************/
 export * from './CompanyProfile';
 export * from './CustomerCompanyInfo';
+export * from './CompanyStructure';
 //# sourceMappingURL=index.d.ts.map
