@@ -89,7 +89,6 @@ export default async function decorate(block) {
   };
 
   await Promise.all([
-    // Sort By
     provider.render(SortBy, {})($productSort),
 
     // Pagination
