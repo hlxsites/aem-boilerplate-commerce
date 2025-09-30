@@ -27,9 +27,9 @@ export default async function decorate(block) {
     all: true,
   };
 
-  const useRolePermissions = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET', cache: 'force-cache' }).then((res) => res.data?.customer?.role?.permissions);
+  const userPermissions = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET', cache: 'force-cache' }).then((res) => res.data?.customer?.role?.permissions);
 
-  if (useRolePermissions) {
+  if (userPermissions) {
     const flattenPermissions = (perms) => {
       perms.forEach((perm) => {
         permissions[perm.text] = true;
@@ -38,7 +38,7 @@ export default async function decorate(block) {
         }
       });
     };
-    flattenPermissions(useRolePermissions);
+    flattenPermissions(userPermissions);
   }
 
   /** Create items */
