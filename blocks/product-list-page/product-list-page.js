@@ -9,6 +9,10 @@ import { search } from '@dropins/storefront-product-discovery/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+// Requisition List Dropin
+import * as rlApi from '@dropins/storefront-requisition-list/api.js';
+import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
+import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -16,7 +20,7 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink, checkIsAuthenticated } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -63,33 +67,9 @@ export default async function decorate(block) {
     filter,
   } = Object.fromEntries(urlParams.entries());
 
-  // Request search based on the page type on block load
-  if (config.urlpath) {
-    // If it's a category page...
-    await search({
-      phrase: '', // search all products in the category
-      currentPage: page ? Number(page) : 1,
-      pageSize: 8,
-      sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
-      filter: [
-        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
-        ...getFilterFromParams(filter),
-      ],
-    }).catch(() => {
-      console.error('Error searching for products');
-    });
-  } else {
-    // If it's a search page...
-    await search({
-      phrase: q || '',
-      currentPage: page ? Number(page) : 1,
-      pageSize: 8,
-      sort: getSortFromParams(sort),
-      filter: getFilterFromParams(filter),
-    }).catch(() => {
-      console.error('Error searching for products');
-    });
-  }
+  await performInitialSearch(config, {
+    q, page, sort, filter,
+  });
 
   const getAddToCartButton = (product) => {
     if (product.typename === 'ComplexProductView') {
@@ -155,7 +135,7 @@ export default async function decorate(block) {
             },
           });
         },
-        ProductActions: (ctx) => {
+        ProductActions: async (ctx) => {
           const actionsWrapper = document.createElement('div');
           actionsWrapper.className = 'product-discovery-product-actions';
           // Add to Cart Button
@@ -168,8 +148,20 @@ export default async function decorate(block) {
             product: ctx.product,
             variant: 'tertiary',
           })($wishlistToggle);
+          // Requisition List Button
+          const $reqListNames = document.createElement('div');
+          $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
+          if (checkIsAuthenticated() && await rlApi.isRequisitionListEnabled()) {
+            rlRenderer.render(RequisitionListNames, {
+              items: [],
+              sku: ctx.product.sku,
+              quantity: 1,
+            })($reqListNames);
+            actionsWrapper.appendChild($reqListNames);
+          }
           actionsWrapper.appendChild(addToCartBtn);
           actionsWrapper.appendChild($wishlistToggle);
+          actionsWrapper.appendChild($reqListNames);
           ctx.replaceWith(actionsWrapper);
         },
       },
@@ -219,6 +211,46 @@ export default async function decorate(block) {
     // Update the URL
     window.history.pushState({}, '', url.toString());
   }, { eager: false });
+
+  // Listen for company context changed and reload data if needed.
+  events.on('companyContext/changed', async () => {
+    await performInitialSearch(config, {
+      q, page, sort, filter,
+    });
+  });
+}
+
+async function performInitialSearch(config, urlParams) {
+  const {
+    q, page, sort, filter,
+  } = urlParams;
+  // Request search based on the page type on block load
+  if (config.urlpath) {
+    // If it's a category page...
+    await search({
+      phrase: '', // search all products in the category
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
+      filter: [
+        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        ...getFilterFromParams(filter),
+      ],
+    }).catch(() => {
+      console.error('Error searching for products');
+    });
+  } else {
+    // If it's a search page...
+    await search({
+      phrase: q || '',
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: getSortFromParams(sort),
+      filter: getFilterFromParams(filter),
+    }).catch(() => {
+      console.error('Error searching for products');
+    });
+  }
 }
 
 function getSortFromParams(sortParam) {
