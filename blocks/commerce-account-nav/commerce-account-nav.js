@@ -31,7 +31,7 @@ export default async function decorate(block) {
 
   if (useRolePermissions) {
     const flattenPermissions = (perms) => {
-      perms.forEach(perm => {
+      perms.forEach((perm) => {
         permissions[perm.text] = true;
         if (perm.children) {
           flattenPermissions(perm.children);
