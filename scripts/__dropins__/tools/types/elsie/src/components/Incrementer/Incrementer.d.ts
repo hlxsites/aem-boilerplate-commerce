@@ -12,7 +12,6 @@ export interface IncrementerProps extends Omit<HTMLAttributes<HTMLInputElement>,
     max?: number;
     disabled?: boolean;
     maxLength?: number;
-    showButtons?: boolean;
 }
 export declare const Incrementer: FunctionComponent<IncrementerProps>;
 //# sourceMappingURL=Incrementer.d.ts.map

@@ -19,6 +19,4 @@ export * from './RequisitionListItem/RequisitionListItem';
 export * from './RequisitionListGridWrapper/RequisitionListGridWrapper';
 export * from './RequisitionListActions/RequisitionListActions';
 export * from './RequisitionListModal/RequisitionListModal';
-export * from './EmptyList/EmptyList';
-export * from './ListLoader/ListLoader';
 //# sourceMappingURL=index.d.ts.map
