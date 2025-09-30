@@ -1,6 +1,10 @@
 import { provider as UI, Icon } from '@dropins/tools/components.js';
+import { fetchGraphQl } from '@dropins/storefront-auth/api.js';
+import { GET_CUSTOMER_ROLE_PERMISSIONS } from './graphql.js';
 
-export default function decorate(block) {
+import '../../scripts/initializers/auth.js';
+
+export default async function decorate(block) {
   /** Get rows data */
   const [keys, ...$items] = [...block.children].map((child, index) => {
     if (index === 0) return [...child.children].map((c) => c.textContent.trim());
@@ -18,9 +22,24 @@ export default function decorate(block) {
     permission: Math.max(0, keys.indexOf('permission') + 1),
   };
 
+  /** Get permissions */
   const permissions = {
     all: true,
   };
+
+  const useRolePermissions = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET', cache: 'force-cache' }).then((res) => res.data?.customer?.role?.permissions);
+
+  if (useRolePermissions) {
+    const flattenPermissions = (perms) => {
+      perms.forEach(perm => {
+        permissions[perm.text] = true;
+        if (perm.children) {
+          flattenPermissions(perm.children);
+        }
+      });
+    };
+    flattenPermissions(useRolePermissions);
+  }
 
   /** Create items */
   $items.forEach(($item) => {

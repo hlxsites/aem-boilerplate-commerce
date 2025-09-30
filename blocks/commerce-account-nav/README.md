@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Commerce Account Navigation block renders a navigation menu for customer account pages. It processes tabular data to create multiple navigation items with icons, titles, descriptions, and permission-based visibility. Each item includes active state detection and chevron indicators.
+The Commerce Account Navigation block renders a navigation menu for customer account pages. It processes tabular data to create multiple navigation items with icons, titles, descriptions, and permission-based visibility. Each item includes active state detection and chevron indicators. The block integrates with GraphQL to fetch user role permissions for dynamic access control.
 
 ## Integration
 
@@ -38,6 +38,19 @@ The block processes:
 - **Icon**: From the icon column
 - **Permission**: From the permission column (controls visibility)
 
+### GraphQL Integration
+
+The block fetches user role permissions using the `GET_CUSTOMER_ROLE_PERMISSIONS` query to determine which navigation items should be visible. The permissions are flattened into a simple object structure:
+
+```javascript
+const permissions = {
+  all: true, // Default permission
+  "permission1": true,
+  "permission2": true,
+  // ... additional permissions from GraphQL
+};
+```
+
 <!-- ### URL Parameters
 
 No URL parameters affect this block's behavior. -->
@@ -66,21 +79,25 @@ No events are emitted by this block. -->
 
 ### User Interaction Flows
 
-1. **Page Load**: Block initializes, parses header row to determine column structure, processes each data row to create navigation items
-2. **Permission Filtering**: Each item checks permission column against available permissions (default: 'all' permission granted)
-3. **Navigation Item Creation**: For each permitted item, creates a clickable link with:
+1. **Page Load**: Block initializes, parses header row to determine column structure
+2. **Permission Fetching**: Fetches user role permissions via GraphQL API with caching enabled
+3. **Permission Processing**: Flattens nested GraphQL permissions into a simple object with `all: true` as default
+4. **Permission Filtering**: Each item checks permission column against available permissions (default: 'all' permission granted)
+5. **Navigation Item Creation**: For each permitted item, creates a clickable link with:
    - Icon (32px size, with fallback to 'Placeholder' if not found)
    - Title text from link element
    - Description text from second paragraph
    - Chevron right icon
    - Active state detection based on URL matching
-4. **Active State Detection**: Compares item URL pathname with current page pathname to highlight active item
-5. **Navigation**: Clicking any navigation item navigates to the extracted link URL
+6. **Active State Detection**: Compares item URL pathname with current page pathname to highlight active item
+7. **Navigation**: Clicking any navigation item navigates to the extracted link URL
 
 ### Error Handling
 
 - **Missing Column Headers**: Uses `Math.max(0, indexOf() + 1)` to prevent invalid column indexes
 - **Missing Content Elements**: Provides empty string fallbacks for title and description
+- **GraphQL API Failures**: If permission fetching fails, falls back to default `all: true` permission
 - **Missing HTML Elements**: If required HTML elements are not found, the navigation item will render with empty text or broken link
 - **Icon Rendering Errors**: If icon rendering fails, the icon container is still created but may display the placeholder
 - **Fallback Behavior**: Uses 'Placeholder' as default icon if no icon is found in the HTML structure
+- **Permission Processing**: If GraphQL permissions are unavailable, all items are shown (default `all: true` behavior)
