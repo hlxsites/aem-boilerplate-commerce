@@ -23,26 +23,10 @@ export default async function decorate(block) {
   };
 
   /** Get permissions */
-  const permissions = {
-    all: true,
-  };
-
-  const userPermissions = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET', cache: 'force-cache' }).then((res) => res.data?.customer?.role?.permissions);
-
-  if (userPermissions) {
-    const flattenPermissions = (perms) => {
-      perms.forEach((perm) => {
-        permissions[perm.text] = true;
-        if (perm.children) {
-          flattenPermissions(perm.children);
-        }
-      });
-    };
-    flattenPermissions(userPermissions);
-  }
+  const permissions = await getUserPermissions();
 
   /** Create items */
-  $items.forEach(($item) => {
+  $items.forEach(($item, index) => {
     /** Permission
      * Do not render if the user does not have the permission for this item
      * Default permission is 'all'
@@ -73,13 +57,14 @@ export default async function decorate(block) {
 
     /** Link */
     const link = $content[0]?.querySelector('a')?.href;
-    const isActive = link && new URL(link).pathname === window.location.pathname;
+    // const isActive = link && new URL(link).pathname === window.location.pathname;
+    const isActive = index === 1;
     $link.classList.toggle('commerce-account-nav__item--active', isActive);
     $link.href = link;
 
     /** Icon */
     const icon = $item.querySelector(`:scope > div:nth-child(${rows.icon})`)?.textContent?.trim();
-    UI.render(Icon, { source: icon || 'Placeholder', size: 32 })($icon);
+    UI.render(Icon, { source: icon || 'Placeholder', size: 24 })($icon);
 
     /** Title */
     $title.textContent = $content[0]?.textContent || '';
@@ -88,11 +73,83 @@ export default async function decorate(block) {
     $description.textContent = $content[1]?.textContent || '';
 
     /** Chevron Icon */
-    UI.render(Icon, { source: 'ChevronRight', size: 32 })($chevron);
+    // UI.render(Icon, { source: 'ChevronRight', size: 24 })($chevron);
 
     /** Add link to nav */
     $nav.appendChild($link);
   });
 
   block.replaceWith($nav);
+}
+
+async function getUserPermissions() {
+  const PERMISSIONS_CACHE_KEY = 'commerce-account-nav-permissions';
+
+  // Helper function to flatten permissions
+  const flattenPermissions = (userPermissions) => {
+    const flattenedPermissions = {
+      all: true,
+    };
+
+    if (userPermissions) {
+      const flatten = (perms) => {
+        perms.forEach((perm) => {
+          flattenedPermissions[perm.text] = true;
+          if (perm.children) {
+            flatten(perm.children);
+          }
+        });
+      };
+      flatten(userPermissions);
+    }
+    
+    return flattenedPermissions;
+  };
+
+  // Helper function to fetch and cache permissions
+  const fetchAndCachePermissions = async () => {
+    const res = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET' });
+    const userPermissions = res.data?.customer?.role?.permissions;
+    const flattenedPermissions = flattenPermissions(userPermissions);
+    
+    // Cache flattened permissions in session storage
+    try {
+      sessionStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify(flattenedPermissions));
+    } catch (error) {
+      // Ignore session storage errors (e.g., quota exceeded)
+      console.warn('Failed to cache permissions in session storage:', error);
+    }
+    
+    return flattenedPermissions;
+  };
+
+  // Check session storage for cached flattened permissions
+  try {
+    const cached = sessionStorage.getItem(PERMISSIONS_CACHE_KEY);
+
+    if (cached) {
+      const cachedPermissions = JSON.parse(cached);
+      
+      // Return cached data immediately, but also start background revalidation if not already started
+      if (!window.__fetchingUserPermissions) {
+        window.__fetchingUserPermissions = fetchAndCachePermissions()
+          .catch((error) => {
+            // Silently fail background refetch - we already have cached data
+            console.warn('Background permissions fetch failed:', error);
+          });
+      }
+      
+      return cachedPermissions;
+    }
+  } catch (error) {
+    // Ignore session storage errors (e.g., in private browsing)
+    console.warn('Failed to read from session storage:', error);
+  }
+
+  // No cached data available, fetch immediately
+  if (!window.__fetchingUserPermissions) {
+    window.__fetchingUserPermissions = fetchAndCachePermissions();
+  }
+
+  return window.__fetchingUserPermissions;
 }

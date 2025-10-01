@@ -1,29 +1,35 @@
+.commerce-account-nav-wrapper:not(:last-of-type) {
+    margin-bottom: var(--spacing-xsmall);
+}
+
 .commerce-account-nav {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-small);
+    border: var(--shape-border-width-2) solid var(--color-neutral-400);
+    border-radius: var(--shape-border-radius-2);
+    overflow: hidden;
 }
+
 
 .commerce-account-nav__item {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         'icon title chevron'
         'icon description chevron';
     grid-template-columns: auto 1fr;
-    gap: var(--spacing-xxsmall) var(--spacing-small);
-    align-items: center; 
-    border: var(--shape-border-width-2) solid var(--color-neutral-400);
-    border-radius: var(--shape-border-radius-2);
-    padding: var(--spacing-medium);
+    gap: 0 var(--spacing-small);
+    align-items: center;
+    padding: var(--spacing-xsmall) var(--spacing-small);
+
 }
 
 .commerce-account-nav__item:hover {
-    text-decoration: none! important;
+    text-decoration: none ! important;
 }
 
 .commerce-account-nav__item__title {
     grid-area: title;
-    font: var(--type-button-1-font);
+    font: var(--type-button-3-font);
 }
 
 .commerce-account-nav__item__icon {
@@ -34,19 +40,30 @@
     grid-area: chevron;
 }
 
+.commerce-account-nav__item__chevron svg {
+    vertical-align: middle;
+}
+
 .commerce-account-nav__item__description {
     grid-area: description;
-    font: var(--type-button-2-font);
+    font: var(--type-body-2-default-font);
     text-decoration: none;
 }
 
+.commerce-account-nav__item:hover:not(.commerce-account-nav__item--active) {
+    background-color: var(--color-neutral-100);
+}
+
 .commerce-account-nav__item--active {
-    border-color: var(--color-neutral-800);
     background-color: var(--color-neutral-200);
 }
 
+.commerce-account-nav-container--collapsed {
+    width: 64px;
+}
+
 @media (min-width: 900px) {
-    body.columns main > .commerce-account-nav-container {
+    body.columns main>.commerce-account-nav-container {
         max-width: var(--column-width);
     }
 }
