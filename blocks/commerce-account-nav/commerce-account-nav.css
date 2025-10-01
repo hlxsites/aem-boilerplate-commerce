@@ -14,13 +14,19 @@
 .commerce-account-nav__item {
     display: grid;
     grid-template-areas:
-        'icon title chevron'
-        'icon description chevron';
-    grid-template-columns: auto 1fr;
+        'title'
+        'description';
+    grid-template-columns: 1fr;
     gap: 0 var(--spacing-small);
     align-items: center;
     padding: var(--spacing-xsmall) var(--spacing-small);
+}
 
+.commerce-account-nav__item--has-icon {
+    grid-template-areas:
+        'icon title'
+        'icon description';
+    grid-template-columns: auto 1fr;
 }
 
 .commerce-account-nav__item:hover {
@@ -34,14 +40,6 @@
 
 .commerce-account-nav__item__icon {
     grid-area: icon;
-}
-
-.commerce-account-nav__item__chevron {
-    grid-area: chevron;
-}
-
-.commerce-account-nav__item__chevron svg {
-    vertical-align: middle;
 }
 
 .commerce-account-nav__item__description {

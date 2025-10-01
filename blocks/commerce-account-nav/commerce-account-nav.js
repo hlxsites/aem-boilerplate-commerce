@@ -26,7 +26,7 @@ export default async function decorate(block) {
   const permissions = await getUserPermissions();
 
   /** Create items */
-  $items.forEach(($item, index) => {
+  $items.forEach(($item) => {
     /** Permission
      * Do not render if the user does not have the permission for this item
      * Default permission is 'all'
@@ -64,6 +64,7 @@ export default async function decorate(block) {
     const icon = $item.querySelector(`:scope > div:nth-child(${rows.icon})`)?.textContent?.trim();
 
     if (icon) {
+      $link.classList.add('commerce-account-nav__item--has-icon');
       UI.render(Icon, { source: icon, size: 24 })($icon);
     }
 
