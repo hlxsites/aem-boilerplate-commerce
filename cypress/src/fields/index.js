@@ -139,7 +139,7 @@ export const giftOptionSenderName = 'input[name="senderName"]';
 export const giftOptionMessage = 'textarea[name="message"]';
 export const giftOptionGiftReceiptIncluded =
   'input[name="giftReceiptIncluded"]';
-  
+
 // Search
 export const searchIcon = '.nav-search-button';
 export const searchField = '#search';
@@ -167,3 +167,16 @@ export const authFormUserCheckBoxBilling = 'input[name="defaultBilling"]';
 export const fieldUserEmail = 'input[name="email"]';
 export const fieldUserNumber = 'input[name="number"]';
 export const submitButton = 'button[type="submit"]';
+
+// Requisition Lists
+export const addToRequisitionListButton = '.product-details__buttons__add-to-req-list';
+export const reqListGridWrapperContent = '.requisition-list-grid-wrapper__content';
+export const requisitionListFormName = '#requisition-list-form-name';
+export const requisitionListFormDescription = '#requisition-list-form-description';
+export const navDrop = '.nav-drop';
+export const requisitionListItemRow = '.requisition-list-item__row';
+export const requisitionListNamesOnPDP = '.requisition-list-names__picker select';
+export const requisitionListNamesOnPLP = '.product-discovery-product-actions__requisition-list-names';
+export const requisitionListItemActionsRenameButton = '.requisition-list-item__actions button[data-testid="rename-button"]';
+export const requisitionListItemActionsRemoveButton = '.requisition-list-item__actions button[data-testid="remove-button"]';
+export const requisitionListModalConfirmButton = '.requisition-list-modal__buttons button[data-testid="rl-modal-confirm-button"]';
