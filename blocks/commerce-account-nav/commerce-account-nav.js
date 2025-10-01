@@ -56,8 +56,7 @@ export default async function decorate(block) {
 
     /** Link */
     const link = $content[0]?.querySelector('a')?.href;
-    // const isActive = link && new URL(link).pathname === window.location.pathname;
-    const isActive = index === 1;
+    const isActive = link && new URL(link).pathname === window.location.pathname;
     $link.classList.toggle('commerce-account-nav__item--active', isActive);
     $link.href = link;
 
