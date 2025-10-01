@@ -50,7 +50,6 @@ export default async function decorate(block) {
     const $icon = template.querySelector('.commerce-account-nav__item__icon');
     const $title = template.querySelector('.commerce-account-nav__item__title');
     const $description = template.querySelector('.commerce-account-nav__item__description');
-    const $chevron = template.querySelector('.commerce-account-nav__item__chevron');
 
     /** Content */
     const $content = $item.querySelector(`:scope > div:nth-child(${rows.label})`)?.children;
@@ -64,7 +63,10 @@ export default async function decorate(block) {
 
     /** Icon */
     const icon = $item.querySelector(`:scope > div:nth-child(${rows.icon})`)?.textContent?.trim();
-    UI.render(Icon, { source: icon || 'Placeholder', size: 24 })($icon);
+
+    if (icon) {
+      UI.render(Icon, { source: icon, size: 24 })($icon);
+    }
 
     /** Title */
     $title.textContent = $content[0]?.textContent || '';
@@ -102,7 +104,7 @@ async function getUserPermissions() {
       };
       flatten(userPermissions);
     }
-    
+
     return flattenedPermissions;
   };
 
@@ -111,7 +113,7 @@ async function getUserPermissions() {
     const res = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET' });
     const userPermissions = res.data?.customer?.role?.permissions;
     const flattenedPermissions = flattenPermissions(userPermissions);
-    
+
     // Cache flattened permissions in session storage
     try {
       sessionStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify(flattenedPermissions));
@@ -119,7 +121,7 @@ async function getUserPermissions() {
       // Ignore session storage errors (e.g., quota exceeded)
       console.warn('Failed to cache permissions in session storage:', error);
     }
-    
+
     return flattenedPermissions;
   };
 
@@ -129,8 +131,9 @@ async function getUserPermissions() {
 
     if (cached) {
       const cachedPermissions = JSON.parse(cached);
-      
-      // Return cached data immediately, but also start background revalidation if not already started
+
+      // Return cached data immediately,
+      // but also start background revalidation if not already started
       if (!window.__fetchingUserPermissions) {
         window.__fetchingUserPermissions = fetchAndCachePermissions()
           .catch((error) => {
@@ -138,7 +141,7 @@ async function getUserPermissions() {
             console.warn('Background permissions fetch failed:', error);
           });
       }
-      
+
       return cachedPermissions;
     }
   } catch (error) {

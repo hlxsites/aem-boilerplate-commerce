@@ -97,7 +97,7 @@ No events are emitted by this block. -->
 3. **Permission Processing**: Flattens nested GraphQL permissions into a simple object with `all: true` as default
 4. **Permission Filtering**: Each item checks permission column against available permissions (default: 'all' permission granted)
 5. **Navigation Item Creation**: For each permitted item, creates a clickable link with:
-   - Icon (24px size, with fallback to 'Placeholder' if not found)
+   - Icon (24px size, only rendered if icon is provided)
    - Title text from link element
    - Description text from second paragraph
    - Chevron right icon (currently commented out)
@@ -115,5 +115,4 @@ No events are emitted by this block. -->
 - **Session Storage Errors**: Gracefully handles private browsing mode and quota exceeded scenarios
 - **Missing HTML Elements**: If required HTML elements are not found, the navigation item will render with empty text or broken link
 - **Icon Rendering Errors**: If icon rendering fails, the icon container is still created but may display the placeholder
-- **Fallback Behavior**: Uses 'Placeholder' as default icon if no icon is found in the HTML structure
 - **Permission Processing**: If GraphQL permissions are unavailable, all items are shown (default `all: true` behavior)
