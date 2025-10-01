@@ -149,8 +149,8 @@ export default async function decorate(block) {
           <div class="product-details__quantity"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
-            <div class="product-details__payment-methods"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__buttons__payment-services-apple-pay"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -169,7 +169,7 @@ export default async function decorate(block) {
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $paymentMethods = fragment.querySelector('.product-details__payment-methods');
+  const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -194,44 +194,6 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-
-  function renderApplePayButton() {
-    return PaymentServices.render(ApplePay, {
-      location: PaymentLocation.PRODUCT_DETAIL,
-      createCart: {
-        getCartItems: () => {
-          const values = events.lastPayload('pdp/values');
-          if (!values) {
-            throw new Error('No products selected.');
-          }
-          return [{
-            sku: values.sku,
-            quantity: values.quantity,
-            selectedOptions: values.optionsUIDs,
-            enteredOptions: values.enteredOptions,
-          }];
-        },
-      },
-      onButtonClick: (showPaymentSheet) => {
-        showPaymentSheet();
-      },
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: async (error) => {
-        console.error('Apple Pay payment failed:', error);
-        inlineAlert = await UI.render(InLineAlert, {
-          heading: 'Apple Pay error',
-          description: 'An unexpected error occurred while processing your Apple Pay payment. '
-            + 'Please try again or contact support.',
-          icon: h(Icon, { source: 'OrderError' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          type: 'error',
-          onDismiss: () => inlineAlert.remove(),
-        })($alert);
-      },
-      active: false, // True when payment-services/method-available/product-detail event is received
-    })($paymentMethods);
-  }
 
   const [
     _galleryMobile,
@@ -314,7 +276,38 @@ export default async function decorate(block) {
       product,
     })($wishlistToggleBtn),
 
-    renderApplePayButton(),
+    PaymentServices.render(ApplePay, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      createCart: {
+        getCartItems: () => {
+          const values = events.lastPayload('pdp/values');
+          if (!values) {
+            throw new Error('No products selected.');
+          }
+          return [{
+            sku: values.sku,
+            quantity: values.quantity,
+            selectedOptions: values.optionsUIDs,
+            enteredOptions: values.enteredOptions,
+          }];
+        },
+      },
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: async (error) => {
+        console.error('Apple Pay payment failed:', error);
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Apple Pay error',
+          description: 'An unexpected error occurred while processing your Apple Pay payment. '
+            + 'Please try again or contact support.',
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          type: 'error',
+          onDismiss: () => inlineAlert.remove(),
+        })($alert);
+      },
+      active: false,
+    })($applePay),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -483,7 +476,7 @@ export default async function decorate(block) {
     if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
       applePayButton.setProps((prev) => ({ ...prev, active: true }));
     }
-  });
+  }, { eager: true });
 
   // Handle order placed event
   events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
