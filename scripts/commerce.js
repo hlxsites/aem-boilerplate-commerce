@@ -580,6 +580,14 @@ export function getSkuFromUrl() {
 }
 
 /**
+ * Gets the product SKU from metadata or URL fallback.
+ * @returns {string|null} The SKU from metadata or URL, or null if not found
+ */
+export function getProductSku() {
+  return getMetadata('sku') || getSkuFromUrl();
+}
+
+/**
  * Extracts option UIDs from the URL search parameters.
  * @returns {string[]|undefined} Array of option UIDs, or undefined if not found
  */
