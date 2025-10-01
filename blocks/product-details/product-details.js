@@ -306,7 +306,7 @@ export default async function decorate(block) {
           onDismiss: () => inlineAlert.remove(),
         })($alert);
       },
-      active: false,
+      hidden: true,
     })($applePay),
   ]);
 
@@ -474,7 +474,7 @@ export default async function decorate(block) {
 
   events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
     if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
-      applePayButton.setProps((prev) => ({ ...prev, active: true }));
+      applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
 
