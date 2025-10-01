@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as p,c as d,h as m}from"./fetch-error.js";const f=e=>{try{return btoa(e)}catch(t){throw new Error(`Failed to encode base64: ${t}`)}},y=e=>{try{return atob(e)}catch{return e}},l=e=>{if(!e||typeof e!="string")throw new Error("User ID must be a non-empty string");return f(e)},g=e=>!e||typeof e!="string"?e:y(e),h=`
+import{f as p,c as d,h as m}from"./fetch-error.js";const f=e=>{try{return btoa(e)}catch(t){throw new Error(`Failed to encode base64: ${t}`)}},g=e=>{try{return atob(e)}catch{return e}},l=e=>{if(!e||typeof e!="string")throw new Error("User ID must be a non-empty string");return f(e)},y=e=>!e||typeof e!="string"?e:g(e),h=`
   mutation DELETE_COMPANY_USER($id: ID!) {
     deleteCompanyUserV2(id: $id) {
       success
@@ -41,5 +41,5 @@ import{f as p,c as d,h as m}from"./fetch-error.js";const f=e=>{try{return btoa(e
       }
     }
   }
-`,I=async(e={})=>{var n,a,i,o;const{pageSize:t=20,currentPage:r=1,filter:u}=e;try{const s=await p(E,{method:"GET",cache:"no-cache",variables:{pageSize:t,currentPage:r,filter:u}}).catch(d);return(n=s.errors)!=null&&n.length&&m(s.errors),(o=(i=(a=s.data)==null?void 0:a.company)==null?void 0:i.users)!=null&&o.items?{users:s.data.company.users.items.map(c=>({id:g(c.id),firstName:c.firstname,lastName:c.lastname,email:c.email,role:c.role.name,status:c.status,...c.team&&{team:c.team.name}})),pageInfo:{pageSize:s.data.company.users.page_info.page_size,currentPage:s.data.company.users.page_info.current_page,totalPages:s.data.company.users.page_info.total_pages},totalCount:s.data.company.users.total_count}:{users:[],pageInfo:{pageSize:t,currentPage:r}}}catch{return{users:[],pageInfo:{pageSize:t,currentPage:r}}}};export{S as d,I as g,T as u};
+`,I=async(e={})=>{var n,a,i,o;const{pageSize:t=20,currentPage:r=1,filter:u}=e;try{const s=await p(E,{method:"GET",cache:"no-cache",variables:{pageSize:t,currentPage:r,filter:u}}).catch(d);return(n=s.errors)!=null&&n.length&&m(s.errors),(o=(i=(a=s.data)==null?void 0:a.company)==null?void 0:i.users)!=null&&o.items?{users:s.data.company.users.items.map(c=>({id:y(c.id),firstName:c.firstname,lastName:c.lastname,email:c.email,role:c.role.name,status:c.status,...c.team&&{team:c.team.name}})),pageInfo:{pageSize:s.data.company.users.page_info.page_size,currentPage:s.data.company.users.page_info.current_page,totalPages:s.data.company.users.page_info.total_pages},totalCount:s.data.company.users.total_count}:{users:[],pageInfo:{pageSize:t,currentPage:r,totalPages:1}}}catch{return{users:[],pageInfo:{pageSize:t,currentPage:r,totalPages:1}}}};export{S as d,I as g,T as u};
 //# sourceMappingURL=getCompanyUsers.js.map

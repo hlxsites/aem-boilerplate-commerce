@@ -60,7 +60,7 @@ export interface CompanyUsersParams {
 export interface CompanyUsersPageInfo {
     pageSize: number;
     currentPage: number;
-    totalPages?: number;
+    totalPages: number;
 }
 export interface CompanyUsersResponse {
     users: CompanyUser[];

@@ -1,4 +1,4 @@
-import { CompanyUserStatus } from './companyUsers.types';
+import { CompanyUserStatus } from './companyUsers';
 
 export interface UpdateCompanyUserStatusMutation {
     updateCompanyUser: {
