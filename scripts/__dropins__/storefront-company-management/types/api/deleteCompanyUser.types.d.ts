@@ -14,7 +14,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './useCompanyProfile';
-export * from './useCustomerCompanyInfo';
-export * from './useCompanyUsers';
-//# sourceMappingURL=index.d.ts.map
+export interface DeleteCompanyUserMutation {
+    deleteCompanyUserV2: {
+        success: boolean;
+    };
+}
+export interface DeleteCompanyUserParams {
+    id: string;
+}
+export interface DeleteCompanyUserResponse {
+    success: boolean;
+}
+//# sourceMappingURL=deleteCompanyUser.types.d.ts.map
