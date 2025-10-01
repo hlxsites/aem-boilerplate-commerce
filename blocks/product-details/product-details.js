@@ -195,6 +195,44 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
+  function renderApplePayButton() {
+    return PaymentServices.render(ApplePay, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      createCart: {
+        getCartItems: () => {
+          const values = events.lastPayload('pdp/values');
+          if (!values) {
+            throw new Error('No products selected.');
+          }
+          return [{
+            sku: values.sku,
+            quantity: values.quantity,
+            selectedOptions: values.optionsUIDs,
+            enteredOptions: values.enteredOptions,
+          }];
+        },
+      },
+      onButtonClick: (showPaymentSheet) => {
+        showPaymentSheet();
+      },
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: async (error) => {
+        console.error('Apple Pay payment failed:', error);
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Apple Pay error',
+          description: 'An unexpected error occurred while processing your Apple Pay payment. '
+            + 'Please try again or contact support.',
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          type: 'error',
+          onDismiss: () => inlineAlert.remove(),
+        })($alert);
+      },
+      active: false, // True when payment-services/method-available/product-detail event is received
+    })($paymentMethods);
+  }
+
   const [
     _galleryMobile,
     _gallery,
@@ -207,7 +245,7 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
-    _applePayButton,
+    applePayButton,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -276,46 +314,7 @@ export default async function decorate(block) {
       product,
     })($wishlistToggleBtn),
 
-    events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
-      if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
-        PaymentServices.render(ApplePay, {
-          location: PaymentLocation.PRODUCT_DETAIL,
-          createCart: {
-            getCartItems: () => {
-              const values = events.lastPayload('pdp/values');
-              if (!values) {
-                throw new Error('No products selected.');
-              }
-              return [{
-                sku: values.sku,
-                quantity: values.quantity,
-                selectedOptions: values.optionsUIDs,
-                enteredOptions: values.enteredOptions,
-              }];
-            },
-          },
-          onButtonClick: (showPaymentSheet) => {
-            if (pdpApi.isProductConfigurationValid()) {
-              showPaymentSheet();
-            }
-          },
-          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-          onError: async (error) => {
-            console.error('Apple Pay payment failed:', error);
-            inlineAlert = await UI.render(InLineAlert, {
-              heading: 'Apple Pay error',
-              description: 'An unexpected error occurred while processing your Apple Pay payment. '
-                + 'Please try again or contact support.',
-              icon: h(Icon, { source: 'OrderError' }),
-              'aria-live': 'assertive',
-              role: 'alert',
-              type: 'error',
-              onDismiss: () => inlineAlert.remove(),
-            })($alert);
-          },
-        })($paymentMethods);
-      }
-    }),
+    renderApplePayButton(),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -408,6 +407,7 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    applePayButton.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes
@@ -478,6 +478,12 @@ export default async function decorate(block) {
       document.title = product.name;
     }
   }, { eager: true });
+
+  events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
+    if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
+      applePayButton.setProps((prev) => ({ ...prev, active: true }));
+    }
+  });
 
   // Handle order placed event
   events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
