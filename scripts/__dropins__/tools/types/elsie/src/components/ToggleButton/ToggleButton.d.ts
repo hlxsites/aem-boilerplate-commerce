@@ -6,7 +6,6 @@ export interface ToggleButtonProps extends Omit<HTMLAttributes<HTMLDivElement>, 
     name: string;
     value: string;
     busy?: boolean;
-    disabled?: boolean;
     icon?: VNode<HTMLAttributes<SVGSVGElement>> | VNode<HTMLAttributes<HTMLImageElement>>;
     onChange?: (value: string) => void;
     selected?: boolean;

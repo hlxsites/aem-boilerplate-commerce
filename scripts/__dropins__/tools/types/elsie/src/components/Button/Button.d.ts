@@ -10,8 +10,6 @@ export interface ButtonProps extends Omit<HTMLAttributes<HTMLButtonElement | HTM
     active?: boolean;
     activeChildren?: ComponentChildren;
     activeIcon?: VNode<HTMLAttributes<SVGSVGElement>>;
-    href?: string;
-    type?: 'button' | 'submit' | 'reset';
 }
 export declare const Button: FunctionComponent<ButtonProps>;
 //# sourceMappingURL=Button.d.ts.map
