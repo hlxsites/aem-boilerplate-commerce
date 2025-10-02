@@ -16,7 +16,7 @@
  ****************************************************************** */
 import { CompanyCredit } from '@dropins/storefront-company-management/containers/CompanyCredit.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
-import { checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
+import { checkIsCompanyEnabled, checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
 import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_ACCOUNT_PATH,
@@ -28,6 +28,13 @@ export default async function decorate(block) {
   // Check authentication
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
+  }
+
+  // Check if company functionality is enabled
+  const companyCheck = await checkIsCompanyEnabled();
+  if (!companyCheck.companyEnabled) {
+    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return;
   }
 
