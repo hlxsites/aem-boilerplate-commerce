@@ -45,6 +45,11 @@ import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
+// Payment Services Dropin
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+
 // Block-level
 import createModal from '../modal/modal.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
@@ -61,6 +66,7 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/payment-services.js';
 
 // For order confirmation block
 // Link to support page
@@ -144,6 +150,7 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__buttons__payment-services-apple-pay"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -162,6 +169,7 @@ export default async function decorate(block) {
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -199,6 +207,7 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
+    applePayButton,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -266,6 +275,39 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    PaymentServices.render(ApplePay, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      createCart: {
+        getCartItems: () => {
+          const values = events.lastPayload('pdp/values');
+          if (!values) {
+            throw new Error('No products selected.');
+          }
+          return [{
+            sku: values.sku,
+            quantity: values.quantity,
+            selectedOptions: values.optionsUIDs,
+            enteredOptions: values.enteredOptions,
+          }];
+        },
+      },
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: async (error) => {
+        console.error('Apple Pay payment failed:', error);
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Apple Pay error',
+          description: 'An unexpected error occurred while processing your Apple Pay payment. '
+            + 'Please try again or contact support.',
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          type: 'error',
+          onDismiss: () => inlineAlert.remove(),
+        })($alert);
+      },
+      hidden: true,
+    })($applePay),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -358,6 +400,7 @@ export default async function decorate(block) {
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    applePayButton.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes
@@ -426,6 +469,12 @@ export default async function decorate(block) {
       setJsonLdProduct(product);
       setMetaTags(product);
       document.title = product.name;
+    }
+  }, { eager: true });
+
+  events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
+    if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
+      applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
 
