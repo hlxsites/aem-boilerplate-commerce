@@ -1,6 +1,6 @@
-import { provider as UI, Icon } from '@dropins/tools/components.js';
-import { fetchGraphQl } from '@dropins/storefront-auth/api.js';
-import { GET_CUSTOMER_ROLE_PERMISSIONS } from './graphql.js';
+import { h } from '@dropins/tools/preact.js';
+import { provider as UI, Icon, ActionButton } from '@dropins/tools/components.js';
+import { getCustomerRolePermissions } from '@dropins/storefront-auth/api.js';
 
 import '../../scripts/initializers/auth.js';
 
@@ -23,7 +23,7 @@ export default async function decorate(block) {
   };
 
   /** Get permissions */
-  const permissions = await getUserPermissions();
+  const permissions = await getCustomerRolePermissions();
 
   /** Create items */
   $items.forEach(($item) => {
@@ -32,7 +32,7 @@ export default async function decorate(block) {
      * Default permission is 'all'
     */
     const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
-    if (!permissions[permission]) {
+    if (!permissions.admin && !permissions[permission]) {
       return;
     }
 
@@ -74,85 +74,37 @@ export default async function decorate(block) {
     /** Description */
     $description.textContent = $content[1]?.textContent || '';
 
-    /** Chevron Icon */
-    // UI.render(Icon, { source: 'ChevronRight', size: 24 })($chevron);
-
     /** Add link to nav */
     $nav.appendChild($link);
   });
 
+  /** Toggle nav button */
+  const $container = block.closest('.commerce-account-nav-container');
+
+  if ($container && !$container.querySelector('.commerce-account-nav__collapse-button')) {
+    const $collapseWrapper = document.createElement('div');
+
+    const collapseButton = await UI.render(ActionButton, {
+      className: 'commerce-account-nav__collapse-button',
+      variant: 'secondary',
+      size: 'small',
+      icon: h(Icon, { source: 'Minus' }),
+      children: 'Hide Menu',
+      onClick: () => {
+        $container.classList.toggle('commerce-account-nav-container--collapsed');
+        collapseButton.setProps((prev) => ({ 
+          ...prev, 
+          children: prev.children === 'Show Menu' ? 'Hide Menu' : 'Show Menu',
+          icon: h(Icon, { 
+            source: prev.icon.props.source === 'Add' ? 'Minus' : 'Add',
+          }),
+        }));
+      },
+    })($collapseWrapper);
+
+    $container.prepend($collapseWrapper);
+  }
+
   block.replaceWith($nav);
 }
 
-async function getUserPermissions() {
-  const PERMISSIONS_CACHE_KEY = 'commerce-account-nav-permissions';
-
-  // Helper function to flatten permissions
-  const flattenPermissions = (userPermissions) => {
-    const flattenedPermissions = {
-      all: true,
-    };
-
-    if (userPermissions) {
-      const flatten = (perms) => {
-        perms.forEach((perm) => {
-          flattenedPermissions[perm.text] = true;
-          if (perm.children) {
-            flatten(perm.children);
-          }
-        });
-      };
-      flatten(userPermissions);
-    }
-
-    return flattenedPermissions;
-  };
-
-  // Helper function to fetch and cache permissions
-  const fetchAndCachePermissions = async () => {
-    const res = await fetchGraphQl(GET_CUSTOMER_ROLE_PERMISSIONS, { method: 'GET' });
-    const userPermissions = res.data?.customer?.role?.permissions;
-    const flattenedPermissions = flattenPermissions(userPermissions);
-
-    // Cache flattened permissions in session storage
-    try {
-      sessionStorage.setItem(PERMISSIONS_CACHE_KEY, JSON.stringify(flattenedPermissions));
-    } catch (error) {
-      // Ignore session storage errors (e.g., quota exceeded)
-      console.warn('Failed to cache permissions in session storage:', error);
-    }
-
-    return flattenedPermissions;
-  };
-
-  // Check session storage for cached flattened permissions
-  try {
-    const cached = sessionStorage.getItem(PERMISSIONS_CACHE_KEY);
-
-    if (cached) {
-      const cachedPermissions = JSON.parse(cached);
-
-      // Return cached data immediately,
-      // but also start background revalidation if not already started
-      if (!window.__fetchingUserPermissions) {
-        window.__fetchingUserPermissions = fetchAndCachePermissions()
-          .catch((error) => {
-            // Silently fail background refetch - we already have cached data
-            console.warn('Background permissions fetch failed:', error);
-          });
-      }
-
-      return cachedPermissions;
-    }
-  } catch (error) {
-    // Ignore session storage errors (e.g., in private browsing)
-    console.warn('Failed to read from session storage:', error);
-  }
-
-  // No cached data available, fetch immediately
-  if (!window.__fetchingUserPermissions) {
-    window.__fetchingUserPermissions = fetchAndCachePermissions();
-  }
-
-  return window.__fetchingUserPermissions;
-}
