@@ -6,20 +6,60 @@ import {
   removeFetchGraphQlHeader,
   setEndpoint,
   setFetchGraphQlHeader,
+  fetchGraphQl,
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 import { fetchPlaceholders } from '../commerce.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
+// Default customer group ID for unauthenticated users
+const DEFAULT_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
+
+// GraphQL query to get customer group
+const GET_CUSTOMER_GROUP_QUERY = `
+  query GetCustomerGroup {
+    customer {
+      group {
+        uid
+      }
+    }
+  }
+`;
+
+// Fetch customer group from GraphQL
+const fetchCustomerGroup = async () => {
+  try {
+    const response = await fetchGraphQl(GET_CUSTOMER_GROUP_QUERY);
+    if (response?.data?.customer?.group?.uid) {
+      return response.data.customer.group.uid;
+    }
+  } catch (error) {
+    console.warn('Failed to fetch customer group:', error);
+  }
+  return null;
+};
+
 // Update auth headers
-const setAuthHeaders = (state) => {
+const setAuthHeaders = async (state) => {
   if (state) {
     const token = getUserTokenCookie();
     setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
+
+    // Fetch and set customer group for authenticated users
+    const customerGroupId = await fetchCustomerGroup();
+    if (customerGroupId) {
+      setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+    } else {
+      // Fallback to default if query fails
+      setFetchGraphQlHeader('Magento-Customer-Group', DEFAULT_CUSTOMER_GROUP_ID);
+    }
   } else {
     removeFetchGraphQlHeader('Authorization');
     authApi.removeFetchGraphQlHeader('Authorization');
+
+    // Set default customer group for unauthenticated users
+    setFetchGraphQlHeader('Magento-Customer-Group', DEFAULT_CUSTOMER_GROUP_ID);
   }
 };
 
@@ -42,7 +82,7 @@ export default async function initializeDropins() {
     // on page load, check if user is authenticated
     const token = getUserTokenCookie();
     // set auth headers
-    setAuthHeaders(!!token);
+    await setAuthHeaders(!!token);
 
     // Event Bus Logger
     events.enableLogger(true);
