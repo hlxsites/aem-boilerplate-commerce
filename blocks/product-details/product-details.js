@@ -152,7 +152,7 @@ export default async function decorate(block) {
   const routeToWishlist = '/wishlist';
 
   async function renderRequisitionListNamesIfEnabled($container) {
-    const isAuthenticated = await checkIsAuthenticated();
+    const isAuthenticated = checkIsAuthenticated();
     if (!isAuthenticated) {
       $container.innerHTML = '';
       return null;

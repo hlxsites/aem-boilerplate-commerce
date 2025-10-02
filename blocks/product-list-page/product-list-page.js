@@ -92,6 +92,24 @@ export default async function decorate(block) {
     return button;
   };
 
+  async function renderRequisitionListNamesIfEnabled($container, product) {
+    const isAuthenticated = checkIsAuthenticated();
+    if (!isAuthenticated) {
+      $container.innerHTML = '';
+      return;
+    }
+    const isEnabled = await rlApi.isRequisitionListEnabled();
+    if (isEnabled) {
+      rlRenderer.render(RequisitionListNames, {
+        items: [],
+        sku: product.sku,
+        quantity: 1,
+      })($container);
+    } else {
+      $container.innerHTML = '';
+    }
+  }
+
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
@@ -153,16 +171,13 @@ export default async function decorate(block) {
           // Requisition List Button
           const $reqListNames = document.createElement('div');
           $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
-          if (checkIsAuthenticated() && await rlApi.isRequisitionListEnabled()) {
-            rlRenderer.render(RequisitionListNames, {
-              items: [],
-              sku: ctx.product.sku,
-              quantity: 1,
-            })($reqListNames);
-            actionsWrapper.appendChild($reqListNames);
-          }
+          await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
           actionsWrapper.appendChild($reqListNames);
           ctx.replaceWith(actionsWrapper);
+
+          events.on('authenticated', async () => {
+            await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
+          });
         },
       },
     })($productList),
