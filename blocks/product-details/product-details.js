@@ -151,6 +151,25 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
+  async function renderRequisitionListNamesIfEnabled($container) {
+    const isAuthenticated = await checkIsAuthenticated();
+    if (!isAuthenticated) {
+      $container.innerHTML = '';
+      return null;
+    }
+    const isEnabled = await rlApi.isRequisitionListEnabled();
+    if (isEnabled) {
+      return rlRenderer.render(RequisitionListNames, {
+        items: [],
+        canCreate: true,
+        sku: product.sku,
+        quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+      })($container);
+    }
+    $container.innerHTML = '';
+    return null;
+  }
+
   const [
     _galleryMobile,
     _gallery,
@@ -232,25 +251,7 @@ export default async function decorate(block) {
     })($wishlistToggleBtn),
 
     // Requisition List Names (if enabled and user is authenticated)
-    rlApi.isRequisitionListEnabled()
-      .then((isEnabled) => {
-        if (!isEnabled) {
-          $requisitionListNames.innerHTML = '';
-          return null;
-        }
-        return checkIsAuthenticated();
-      })
-      .then((isAuthenticated) => {
-        if (isAuthenticated) {
-          return rlRenderer.render(RequisitionListNames, {
-            items: [],
-            canCreate: true,
-            sku: product.sku,
-            quantity: pdpApi.getProductConfigurationValues().quantity || 1,
-          })($requisitionListNames);
-        }
-        return null;
-      }),
+    renderRequisitionListNamesIfEnabled($requisitionListNames),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -381,17 +382,8 @@ export default async function decorate(block) {
     }, 0);
   });
 
-  events.on('authenticated', (authenticated) => {
-    if (authenticated && rlApi.isRequisitionListEnabled()) {
-      rlRenderer.render(RequisitionListNames, {
-        items: [],
-        canCreate: true,
-        sku: product.sku,
-        quantity: pdpApi.getProductConfigurationValues().quantity || 1,
-      })($requisitionListNames);
-    } else {
-      $requisitionListNames.innerHTML = '';
-    }
+  events.on('authenticated', () => {
+    renderRequisitionListNamesIfEnabled($requisitionListNames);
   });
 
   // --- Add new event listener for cart/data ---
