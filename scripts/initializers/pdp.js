@@ -7,7 +7,7 @@ import {
   setFetchGraphQlHeaders,
   fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
-import { initializeDropin } from './index.js';
+import { getCustomerGroupIdCookie, initializeDropin } from './index.js';
 import {
   fetchPlaceholders,
   commerceEndpointWithQueryParams,
@@ -47,7 +47,11 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+  setFetchGraphQlHeaders((prev) => ({
+    ...prev,
+    ...getHeaders('cs'),
+    'Magento-Customer-Group': getCustomerGroupIdCookie(),
+  }));
 
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();

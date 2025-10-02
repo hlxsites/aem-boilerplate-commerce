@@ -5,12 +5,18 @@ import {
   setEndpoint,
 } from '@dropins/storefront-product-discovery/api.js';
 import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
-import { initializeDropin } from './index.js';
+import { getCustomerGroupIdCookie, initializeDropin } from './index.js';
 import { fetchPlaceholders, commerceEndpointWithQueryParams } from '../commerce.js';
 
 await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
+  // Set auth headers on authenticated event
+  setFetchGraphQlHeaders((prev) => ({
+    ...prev,
+    ...getHeaders('cs'),
+    'Magento-Customer-Group': getCustomerGroupIdCookie(),
+  }));
 
   const labels = await fetchPlaceholders('placeholders/search.json');
   const langDefinitions = {

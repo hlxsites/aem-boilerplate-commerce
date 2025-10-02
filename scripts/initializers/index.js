@@ -3,18 +3,26 @@ import { getCookie } from '@dropins/tools/lib.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
+  fetchGraphQl,
   removeFetchGraphQlHeader,
   setEndpoint,
   setFetchGraphQlHeader,
-  fetchGraphQl,
 } from '@dropins/tools/fetch-graphql.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
-import { fetchPlaceholders } from '../commerce.js';
 
-export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
+// Import dropin-specific header functionsstorefront-recommendations/api.js';
+import { fetchPlaceholders } from '../commerce.js';
 
 // Default customer group ID for unauthenticated users
 const DEFAULT_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
+
+export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
+export const getCustomerGroupIdCookie = () => getCookie('auth_dropin_customer_group') || DEFAULT_CUSTOMER_GROUP_ID;
+
+// TODO: replace with auth-dropin internal setter, avoiding the extra fetch as well
+export const setCustomerGroupIdCookie = (groupId) => {
+  document.cookie = `auth_dropin_customer_group=${encodeURIComponent(groupId)}; path=/`;
+};
 
 // GraphQL query to get customer group
 const GET_CUSTOMER_GROUP_QUERY = `
@@ -28,7 +36,10 @@ const GET_CUSTOMER_GROUP_QUERY = `
 `;
 
 // Fetch customer group from GraphQL
-const fetchCustomerGroup = async () => {
+const fetchCustomerGroup = async (authenticated) => {
+  if (!authenticated) {
+    return DEFAULT_CUSTOMER_GROUP_ID;
+  }
   try {
     const response = await fetchGraphQl(GET_CUSTOMER_GROUP_QUERY);
     if (response?.data?.customer?.group?.uid) {
@@ -37,29 +48,17 @@ const fetchCustomerGroup = async () => {
   } catch (error) {
     console.warn('Failed to fetch customer group:', error);
   }
-  return null;
+  return DEFAULT_CUSTOMER_GROUP_ID;
 };
 
 // Update auth headers
-const setAuthHeaders = async (state) => {
+const setAuthHeaders = (state) => {
   if (state) {
     const token = getUserTokenCookie();
     setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
-
-    // Fetch and set customer group for authenticated users
-    const customerGroupId = await fetchCustomerGroup();
-    if (customerGroupId) {
-      setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
-    } else {
-      // Fallback to default if query fails
-      setFetchGraphQlHeader('Magento-Customer-Group', DEFAULT_CUSTOMER_GROUP_ID);
-    }
   } else {
     removeFetchGraphQlHeader('Authorization');
     authApi.removeFetchGraphQlHeader('Authorization');
-
-    // Set default customer group for unauthenticated users
-    setFetchGraphQlHeader('Magento-Customer-Group', DEFAULT_CUSTOMER_GROUP_ID);
   }
 };
 
@@ -80,14 +79,16 @@ export default async function initializeDropins() {
     events.on('cart/data', persistCartDataInSession, { eager: true });
 
     // on page load, check if user is authenticated
-    const token = getUserTokenCookie();
+    const authenticated = getUserTokenCookie();
     // set auth headers
-    await setAuthHeaders(!!token);
+    setAuthHeaders(!!authenticated);
 
     // Event Bus Logger
     events.enableLogger(true);
     // Set Fetch Endpoint (Global)
     setEndpoint(getConfigValue('commerce-core-endpoint'));
+
+    setCustomerGroupIdCookie(await fetchCustomerGroup(authenticated));
 
     // Fetch global placeholders
     await fetchPlaceholders('placeholders/global.json');
