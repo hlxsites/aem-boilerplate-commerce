@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Commerce Account Navigation block renders a navigation menu for customer account pages. It processes tabular data to create multiple navigation items with icons, titles, descriptions, and permission-based visibility. Each item includes active state detection and chevron indicators. The block integrates with GraphQL to fetch user role permissions for dynamic access control.
+The Commerce Account Navigation block renders a navigation menu for customer account pages. It processes tabular data to create multiple navigation items with icons, titles, descriptions, and permission-based visibility. Each item includes active state detection and a collapsible menu toggle. The block integrates with the storefront-auth API to fetch user role permissions for dynamic access control, including special handling for company administrators.
 
 ## Integration
 
@@ -38,28 +38,25 @@ The block processes:
 - **Icon**: From the icon column
 - **Permission**: From the permission column (controls visibility)
 
-### GraphQL Integration
+### API Integration
 
-The block fetches user role permissions using the `GET_CUSTOMER_ROLE_PERMISSIONS` query to determine which navigation items should be visible. The permissions are flattened into a simple object structure:
+The block uses the `getCustomerRolePermissions()` function from `@dropins/storefront-auth/api.js` to fetch user role permissions. This API handles all caching, error handling, and permission processing internally.
 
+#### Permission Logic
+
+The block implements a two-tier permission system:
+
+1. **Admin Access**: If user has `admin: true` permission, they can access all navigation items regardless of specific permissions
+2. **Standard Access**: If user is not an admin, they can only access items where they have the specific required permission
+3. **Default Permission**: If no specific permission is defined for an item, it defaults to "all" (accessible to everyone)
+
+**Permission Check Flow:**
 ```javascript
-const permissions = {
-  all: true, // Default permission
-  "permission1": true,
-  "permission2": true,
-  // ... additional permissions from GraphQL
-};
+// Show item if user is admin OR has specific permission
+if (!permissions.admin && !permissions[permission]) {
+  return; // Hide item
+}
 ```
-
-### Caching Strategy
-
-The block implements a **stale-while-revalidate** caching strategy to optimize performance:
-
-- **Session Storage**: Cached permissions are stored in `sessionStorage` under the key `commerce-account-nav-permissions`
-- **Single Request**: Only one GraphQL request is made per page load, even if the block is used multiple times
-- **Background Revalidation**: When cached data exists, it's returned immediately while a background request updates the cache for the next page load
-- **Promise Deduplication**: Uses `window.__fetchingUserPermissions` to ensure all block instances share the same request promise
-- **Error Resilience**: Background revalidation failures don't affect the UI since cached data is available
 
 <!-- ### URL Parameters
 
@@ -90,29 +87,25 @@ No events are emitted by this block. -->
 ### User Interaction Flows
 
 1. **Page Load**: Block initializes, parses header row to determine column structure
-2. **Permission Fetching**: 
-   - **First Load (No Cache)**: Fetches user role permissions via GraphQL API and caches flattened result
-   - **Subsequent Loads (With Cache)**: Returns cached permissions immediately, starts background revalidation
-   - **Multiple Blocks**: All instances share the same request promise to prevent duplicate API calls
-3. **Permission Processing**: Flattens nested GraphQL permissions into a simple object with `all: true` as default
-4. **Permission Filtering**: Each item checks permission column against available permissions (default: 'all' permission granted)
-5. **Navigation Item Creation**: For each permitted item, creates a clickable link with:
+2. **Permission Fetching**: Calls `getCustomerRolePermissions()` API which handles all caching and processing internally
+3. **Permission Filtering**: Each item checks permission column against available permissions using enhanced logic:
+   - Shows item if user has `admin` permission (overrides all other checks)
+   - Shows item if user has the specific required permission
+   - Default permission is 'all' (granted to all users)
+4. **Navigation Item Creation**: For each permitted item, creates a clickable link with:
    - Icon (24px size, only rendered if icon is provided)
    - Title text from link element
    - Description text from second paragraph
-   - Chevron right icon (currently commented out)
-   - Active state detection based on URL matching
-6. **Active State Detection**: Currently uses index-based detection (index === 1), with URL-based detection commented out
-7. **Navigation**: Clicking any navigation item navigates to the extracted link URL
+   - Active state detection based on URL pathname matching
+5. **Collapsible Menu**: If container has `.commerce-account-nav-container` class, adds toggle button:
+   - Initial state: "Hide Menu" with Minus icon
+   - Toggles container's `--collapsed` modifier class
+   - Button text and icon update dynamically ("Show Menu"/"Hide Menu", "Add"/"Minus")
+6. **Navigation**: Clicking any navigation item navigates to the extracted link URL
 
 ### Error Handling
 
 - **Missing Column Headers**: Uses `Math.max(0, indexOf() + 1)` to prevent invalid column indexes
 - **Missing Content Elements**: Provides empty string fallbacks for title and description
-- **GraphQL API Failures**: 
-  - **No Cache Available**: Throws error and blocks rendering
-  - **Background Revalidation**: Silently fails, cached data remains available
-- **Session Storage Errors**: Gracefully handles private browsing mode and quota exceeded scenarios
-- **Missing HTML Elements**: If required HTML elements are not found, the navigation item will render with empty text or broken link
-- **Icon Rendering Errors**: If icon rendering fails, the icon container is still created but may display the placeholder
-- **Permission Processing**: If GraphQL permissions are unavailable, all items are shown (default `all: true` behavior)
+- **API Failures**: Handled internally by `getCustomerRolePermissions()` API - may throw errors or return fallback permissions
+- **Permission Processing**: If permissions are unavailable, falls back to default `all: true` behavior
