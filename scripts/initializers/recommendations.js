@@ -8,7 +8,7 @@ await initializeDropin(async () => {
   setEndpoint(await commerceEndpointWithQueryParams());
 
   // Set Fetch Headers (Service)
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('recommendations') }));
 
   const labels = await fetchPlaceholders('placeholders/recommendations.json');
   const langDefinitions = {
