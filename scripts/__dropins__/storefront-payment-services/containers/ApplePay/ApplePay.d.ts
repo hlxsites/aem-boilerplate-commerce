@@ -38,15 +38,15 @@ export interface ApplePayProps {
      */
     onError?: (error: Error) => void;
     /**
-     * Whether the button is active. Set this to false to hide the Apple Pay button (default: true).
+     * Whether the button is hidden. Set this to true to hide the Apple Pay button (default: false).
      */
-    active?: boolean;
+    hidden?: boolean;
     /**
      * Whether the button is disabled. Set this to true to disable the Apple Pay button (default: false).
      */
     disabled?: boolean;
 }
-export declare const ApplePay: ({ location, getCartId, createCart, onButtonClick, onSuccess, onError, active, disabled, }: ApplePayProps) => import("preact/compat").JSX.Element;
+export declare const ApplePay: ({ location, getCartId, createCart, onButtonClick, onSuccess, onError, hidden, disabled, }: ApplePayProps) => import("preact/compat").JSX.Element;
 /**
  * See https://developer.adobe.com/commerce/webapi/graphql-api/index.html#definition-CartItemInput.
  */
