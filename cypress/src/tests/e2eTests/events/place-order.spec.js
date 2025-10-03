@@ -8,7 +8,7 @@ import { expectsEventWithContext } from "../../../assertions";
 import { customerShippingAddress, products } from "../../../fixtures";
 
 /**
- * https://github.com/adobe/commerce-events/blob/main/examples/events/place-order.md
+ *  https://github.com/adobe/commerce-events/blob/main/examples/events/place-order.md
  *
  * Required Contexts:
  * - page -> https://github.com/adobe/commerce-events/blob/main/packages/storefront-events-sdk/src/types/schemas/page.ts,
@@ -68,7 +68,7 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
             "shoppingCartContext",
             "orderContext",
           ],
-          adobeDataLayer,
+          adobeDataLayer
         );
       });
   });
