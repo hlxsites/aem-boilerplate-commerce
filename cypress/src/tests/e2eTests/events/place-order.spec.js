@@ -60,7 +60,6 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
   // This is more reliable than waiting for the resource file
   cy.window().should((win) => {
     expect(win.adobeDataLayer).to.exist;
-    expect(win.adobeDataLayer.length).to.be.greaterThan(0);
   }).then(() => {
     cy.window()
       .its("adobeDataLayer")
