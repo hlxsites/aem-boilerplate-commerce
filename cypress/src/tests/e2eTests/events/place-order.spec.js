@@ -50,7 +50,7 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
 
   // check terms and conditions
   checkTermsAndConditions();
-  cy.wait(5000);
+  cy.wait(10000);
   // click the place order button
   placeOrder();
   // wait until the URL includes '/order-details'
@@ -68,7 +68,7 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
             "shoppingCartContext",
             "orderContext",
           ],
-          adobeDataLayer,
+          adobeDataLayer
         );
       });
   });
