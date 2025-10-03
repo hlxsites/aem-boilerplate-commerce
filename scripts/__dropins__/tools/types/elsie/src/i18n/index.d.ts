@@ -152,11 +152,6 @@ export declare const definition: {
             InputDate: {
                 picker: string;
             };
-            Table: {
-                sortedAscending: string;
-                sortedDescending: string;
-                sortBy: string;
-            };
         };
     };
     en_US: {
@@ -302,11 +297,6 @@ export declare const definition: {
             };
             InputDate: {
                 picker: string;
-            };
-            Table: {
-                sortedAscending: string;
-                sortedDescending: string;
-                sortBy: string;
             };
         };
     };
@@ -455,11 +445,6 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
         };
         InputDate: {
             picker: string;
-        };
-        Table: {
-            sortedAscending: string;
-            sortedDescending: string;
-            sortBy: string;
         };
     };
 };

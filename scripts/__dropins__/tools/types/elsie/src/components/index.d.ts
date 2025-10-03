@@ -48,5 +48,4 @@ export * from './ContentGrid';
 export * from './Pagination';
 export * from './ProductItemCard';
 export * from './InputFile';
-export * from './Table';
 //# sourceMappingURL=index.d.ts.map

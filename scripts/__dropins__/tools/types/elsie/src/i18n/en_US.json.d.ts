@@ -141,11 +141,6 @@ declare const _default: {
     },
     "InputDate": {
       "picker": "Select a date"
-    },
-    "Table": {
-      "sortedAscending": "Sort {label} ascending",
-      "sortedDescending": "Sort {label} descending",
-      "sortBy": "Sort by {label}"
     }
   }
 }

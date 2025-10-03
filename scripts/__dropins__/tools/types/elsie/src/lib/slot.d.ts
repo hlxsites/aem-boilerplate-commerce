@@ -33,7 +33,7 @@ interface DefaultSlotContext<T> extends PrivateContext<T> {
 type Context<T> = T & ThisType<DefaultSlotContext<T>>;
 export type SlotProps<T = any> = (ctx: T & DefaultSlotContext<T>, element: HTMLDivElement | null) => Promise<void> | void;
 export type SlotMethod<P = any> = (callback: (next: unknown, state: State) => P) => void;
-export declare function useSlot<K, V extends HTMLElement>(name: string, context?: Context<K>, callback?: SlotProps<K>, children?: ComponentChildren, render?: Function, contentTag?: keyof HTMLElementTagNameMap): [RefObject<V>, Record<string, any>];
+export declare function useSlot<K, V extends HTMLElement>(name: string, context?: Context<K>, callback?: SlotProps<K>, children?: ComponentChildren, render?: Function, contentTag?: keyof HTMLElementTagNameMap): [RefObject<V>, Record<string, any>, 'loading' | 'pending' | 'ready'];
 interface SlotPropsComponent<T> extends Omit<HTMLAttributes<HTMLElement>, 'slot'> {
     name: string;
     lazy?: boolean;
