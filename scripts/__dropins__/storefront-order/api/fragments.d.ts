@@ -20,4 +20,5 @@ export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql';
 export { RETURNS_FRAGMENT } from './graphql/ReturnsFragment.graphql';
 export { APPLIED_GIFT_CARDS_FRAGMENT, GIFT_WRAPPING_FRAGMENT, GIFT_MESSAGE_FRAGMENT, } from './graphql/GiftFragment.graphql';
 export { GUEST_ORDER_FRAGMENT } from './graphql/GuestOrderFragment.graphql';
+export { PLACE_ORDER_FRAGMENT } from './graphql/PlaceOrderFragment.graphql';
 //# sourceMappingURL=fragments.d.ts.map
