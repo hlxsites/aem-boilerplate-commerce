@@ -56,7 +56,12 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
   // wait until the URL includes '/order-details'
   cy.url().should("include", "/order-details");
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  // Wait for Adobe Data Layer to be initialized with required contexts
+  // This is more reliable than waiting for the resource file
+  cy.window().should((win) => {
+    expect(win.adobeDataLayer).to.exist;
+    expect(win.adobeDataLayer.length).to.be.greaterThan(0);
+  }).then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
