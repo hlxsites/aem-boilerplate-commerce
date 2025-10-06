@@ -13,10 +13,6 @@
     border-bottom: var(--shape-border-width-2) solid var(--color-neutral-300);
 }
 
-.commerce-account-nav-container--collapsed .commerce-account-nav-wrapper {
-    display: none;
-}
-
 .commerce-account-nav__item {
     display: grid;
     grid-template-areas:
@@ -63,13 +59,7 @@
 }
 
 @media (min-width: 900px) {
-    .commerce-account-nav__collapse-button {
-        display: none;
-    }
-}
-
-/* @media (min-width: 900px) {
-    body.columns main>.commerce-account-nav-container {
+    .commerce-account-nav-container {
         max-width: var(--column-width);
     }
-} */
+}

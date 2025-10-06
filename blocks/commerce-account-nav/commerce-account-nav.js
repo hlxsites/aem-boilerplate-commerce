@@ -1,5 +1,4 @@
-import { h } from '@dropins/tools/preact.js';
-import { provider as UI, Icon, ActionButton } from '@dropins/tools/components.js';
+import { provider as UI, Icon } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
 
 import '../../scripts/initializers/auth.js';
@@ -77,33 +76,6 @@ export default async function decorate(block) {
     /** Add link to nav */
     $nav.appendChild($link);
   });
-
-  /** Toggle nav button */
-  const $container = block.closest('.commerce-account-nav-container');
-
-  if ($container && !$container.querySelector('.commerce-account-nav__collapse-button')) {
-    const $collapseWrapper = document.createElement('div');
-
-    const collapseButton = await UI.render(ActionButton, {
-      className: 'commerce-account-nav__collapse-button',
-      variant: 'secondary',
-      size: 'small',
-      icon: h(Icon, { source: 'Minus' }),
-      children: 'Hide Menu',
-      onClick: () => {
-        $container.classList.toggle('commerce-account-nav-container--collapsed');
-        collapseButton.setProps((prev) => ({
-          ...prev,
-          children: prev.children === 'Show Menu' ? 'Hide Menu' : 'Show Menu',
-          icon: h(Icon, {
-            source: prev.icon.props.source === 'Add' ? 'Minus' : 'Add',
-          }),
-        }));
-      },
-    })($collapseWrapper);
-
-    $container.prepend($collapseWrapper);
-  }
 
   block.replaceWith($nav);
 }
