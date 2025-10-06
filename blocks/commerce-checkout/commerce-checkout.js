@@ -60,7 +60,7 @@ import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
@@ -393,6 +393,7 @@ export default async function decorate(block) {
               }
 
               PaymentServices.render(ApplePay, {
+                location: PaymentLocation.CHECKOUT,
                 getCartId: () => ctx.cartId,
                 isVirtualCart: checkoutData.isVirtual,
                 onButtonClick: (showPaymentSheet) => {
