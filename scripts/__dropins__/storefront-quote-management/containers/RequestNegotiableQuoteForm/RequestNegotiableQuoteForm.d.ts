@@ -15,6 +15,7 @@ export type RequestNegotiableQuoteHandlers = {
 };
 export interface RequestNegotiableQuoteFormProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onError'>, RequestNegotiableQuoteHandlers {
     cartId: string;
+    enableFileUpload?: boolean;
     slots?: {
         ErrorBanner?: SlotProps<{
             message: string;

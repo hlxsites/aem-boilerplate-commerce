@@ -13,6 +13,10 @@ export interface NegotiableQuoteModel {
             firstname: string;
             lastname: string;
         };
+        attachments?: {
+            name: string;
+            url: string;
+        }[];
     }[];
     items: {
         product: {
