@@ -1,6 +1,6 @@
 import { h } from '@dropins/tools/preact.js';
 import { provider as UI, Icon, ActionButton } from '@dropins/tools/components.js';
-import { getCustomerRolePermissions } from '@dropins/storefront-auth/api.js';
+import { events } from '@dropins/tools/event-bus.js';
 
 import '../../scripts/initializers/auth.js';
 
@@ -23,7 +23,7 @@ export default async function decorate(block) {
   };
 
   /** Get permissions */
-  const permissions = await getCustomerRolePermissions();
+  const permissions = events.lastPayload('auth/permissions');
 
   /** Create items */
   $items.forEach(($item) => {
@@ -92,10 +92,10 @@ export default async function decorate(block) {
       children: 'Hide Menu',
       onClick: () => {
         $container.classList.toggle('commerce-account-nav-container--collapsed');
-        collapseButton.setProps((prev) => ({ 
-          ...prev, 
+        collapseButton.setProps((prev) => ({
+          ...prev,
           children: prev.children === 'Show Menu' ? 'Hide Menu' : 'Show Menu',
-          icon: h(Icon, { 
+          icon: h(Icon, {
             source: prev.icon.props.source === 'Add' ? 'Minus' : 'Add',
           }),
         }));
@@ -107,4 +107,3 @@ export default async function decorate(block) {
 
   block.replaceWith($nav);
 }
-

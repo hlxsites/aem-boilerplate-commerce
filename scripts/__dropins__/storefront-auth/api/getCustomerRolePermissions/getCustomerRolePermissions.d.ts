@@ -1,24 +1,12 @@
-/********************************************************************
- *  Copyright 2025 Adobe
- *  All Rights Reserved.
- *
- * NOTICE:  Adobe permits you to use, modify, and distribute this
- * file in accordance with the terms of the Adobe license agreement
- * accompanying it.
- *******************************************************************/
-interface FlattenedPermissions {
-    all?: boolean;
-    admin?: boolean;
-    [key: string]: boolean | undefined;
-}
+import { PermissionsModel } from '../../data/models';
+
 /**
  * Gets user role permissions with caching
  */
-export declare const getCustomerRolePermissions: () => Promise<FlattenedPermissions>;
+export declare const getCustomerRolePermissions: () => Promise<PermissionsModel>;
 /**
- * Clears the permissions cache - for testing purposes
+ * Resets the permissions cache
  * @internal
  */
-export declare const __clearCacheForTesting: () => void;
-export {};
+export declare const _resetCache: () => void;
 //# sourceMappingURL=getCustomerRolePermissions.d.ts.map
