@@ -1,0 +1,39 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "AC-View-ID": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
+          "AC-Price-Book-ID": "global_visibility",
+          "AC-Source-Locale": "en-US"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Stage",
+        "store-id": 1,
+        "store-name": "ACO Test Website Store",
+        "store-url": "https://aco-storefront-v2--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "ACO Test Store View",
+        "website-id": 1,
+        "website-name": "ACO Test Website",
+        "environment-id": "XbaJpUaBye75vvzRQUd2Xm",
+        "store-view-code": "en-US",
+        "store-code": "STORE_CODE",
+        "website-code": "WEBSITE_CODE",
+        "view-id": "ca8cae3a-e53b-47a4-afce-f776221cc3e6"
+      },
+      "plugins": {
+        "picker": {
+           "rootCategory": "2"
+         }
+      }
+    }
+  }
+}
