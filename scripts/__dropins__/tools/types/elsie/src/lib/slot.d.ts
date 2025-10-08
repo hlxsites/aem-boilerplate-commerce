@@ -13,6 +13,7 @@ interface SlotElement {
     prependChild: MutateElement;
     appendSibling: MutateElement;
     prependSibling: MutateElement;
+    remove: () => void;
 }
 interface PrivateContext<T> {
     _setProps: (s: StateUpdater<{}>) => void;
@@ -27,6 +28,7 @@ interface DefaultSlotContext<T> extends PrivateContext<T> {
     prependChild: MutateElement;
     appendSibling: MutateElement;
     prependSibling: MutateElement;
+    remove: () => void;
     onRender: (cb: (next: T & DefaultSlotContext<T>) => void) => void;
     onChange: (cb: (next: T & DefaultSlotContext<T>) => void) => void;
 }
