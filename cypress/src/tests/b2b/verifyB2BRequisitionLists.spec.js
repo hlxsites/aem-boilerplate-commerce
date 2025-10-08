@@ -27,7 +27,10 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Navigate to Requisition Lists from Account menu
     cy.contains('Requisition Lists').should('be.visible').click();
-    cy.get(fields.reqListGridWrapperContent).should('exist');
+    cy.get(fields.reqListGridEmptyList).should('exist')
+      .within(() => {
+        cy.contains('No Requisition Lists found').should('be.visible');
+      });
 
     // Create new Requisition List
     cy.contains('Add new Requisition List').should('be.visible').click();
@@ -77,7 +80,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
     cy.visit("/customer/account");
 
     cy.contains('Requisition Lists').should('be.visible').click();
-    cy.get(fields.reqListGridWrapperContent).should('exist');
+    cy.get(fields.reqListGridWrapper).should('exist');
     cy.get(fields.requisitionListItemRow).should('have.length', 3);
 
     // Rename Requisition List
