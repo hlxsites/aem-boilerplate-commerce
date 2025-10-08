@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 export * from '.';
-export { RequisitionListItem } from './RequisitionListItem';
+export { EmptyList } from './EmptyList';
 //# sourceMappingURL=index.d.ts.map

@@ -1,9 +1,10 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { RequisitionList as RequisitionListModel } from '../../data/models/requisitionList';
+import { RequisitionLists as RequisitionListsModel } from '../../data/models/requisitionLists';
 
 export interface RequisitionListGridProps extends HTMLAttributes<HTMLDivElement> {
-    requisitionLists?: RequisitionListModel[] | null;
+    requisitionLists?: RequisitionListsModel | null;
+    routeRequisitionListDetails?: (uid: string) => string | void;
     slots?: {
         Header?: SlotProps;
     };

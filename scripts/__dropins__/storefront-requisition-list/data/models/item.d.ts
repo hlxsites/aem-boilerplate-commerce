@@ -16,16 +16,27 @@
  *******************************************************************/
 export interface Product {
     sku: string;
-    quantity: number;
     parent_sku: string;
-    selected_options: string[];
-    entered_options: {
-        uid: string;
-        value: string;
+    name: string;
+    shortDescription: string;
+    metaDescription: string;
+    metaKeyword: string;
+    metaTitle: string;
+    description: string;
+    addToCartAllowed: boolean;
+    url: string;
+    urlKey: string;
+    externalId: string;
+    images: {
+        url: string;
+        label: string;
+        roles: string[];
     }[];
 }
 export interface Item {
     uid: string;
+    sku: string;
+    product: Product;
     quantity: number;
     customizable_options?: {
         uid: string;

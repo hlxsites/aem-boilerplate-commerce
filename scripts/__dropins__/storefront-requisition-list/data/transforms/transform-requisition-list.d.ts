@@ -18,6 +18,9 @@ export interface RawRequisitionListData {
 export declare function transformRequisitionList(data: RawRequisitionListData): RequisitionList | null;
 interface RawItemData {
     uid: string;
+    product: {
+        sku: string;
+    };
     quantity: number;
     customizable_options?: {
         customizable_option_uid: string;

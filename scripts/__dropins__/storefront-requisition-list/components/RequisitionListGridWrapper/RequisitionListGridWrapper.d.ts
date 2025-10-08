@@ -1,13 +1,19 @@
 import { HTMLAttributes } from 'preact/compat';
 import { FunctionComponent, VNode } from 'preact';
-import { RequisitionLists as RequisitionListsModel } from '../../data/models/requisitionLists';
 
 export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
-    requisitionLists?: RequisitionListsModel;
     isLoading?: boolean;
     addReqList?: boolean;
     header?: VNode;
+    rows: Array<Record<string, VNode | string | number | undefined>>;
+    expandedRows: Set<number>;
+    skeletonRowCount: number;
+    pageInfo?: {
+        total_pages: number;
+        current_page: number;
+    };
+    handlePageChange: (page?: number) => Promise<void>;
 }
 export declare const RequisitionListGridWrapper: FunctionComponent<RequisitionListGridWrapperProps>;
 //# sourceMappingURL=RequisitionListGridWrapper.d.ts.map
