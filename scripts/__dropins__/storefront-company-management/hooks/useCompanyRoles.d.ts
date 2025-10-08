@@ -1,5 +1,6 @@
 import { CompanyRoleModel, CompanyAclResourceModel, CompanyRoleCreateInputModel, CompanyRoleUpdateInputModel, GetCompanyRolesVariables } from '../api/companyRoles';
 
+export declare const DEFAULT_PAGINATION_SIZE = 20;
 export interface UseCompanyRolesReturn {
     roles: CompanyRoleModel[];
     aclResources: CompanyAclResourceModel[];

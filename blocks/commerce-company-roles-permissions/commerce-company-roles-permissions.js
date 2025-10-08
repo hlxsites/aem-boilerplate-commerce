@@ -11,6 +11,12 @@ import '../../scripts/initializers/company.js';
 export default async function decorate(block) {
   block.classList.add('commerce-company-roles-permissions-container');
 
+  // Check authentication and redirect if not authenticated
+  if (!checkIsAuthenticated()) {
+    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
+  }
+
   const isAuthenticated = checkIsAuthenticated();
 
   await provider.render(RolesAndPermissions, {
