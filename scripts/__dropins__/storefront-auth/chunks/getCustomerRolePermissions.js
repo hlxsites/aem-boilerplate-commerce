@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{Initializer as u,Config as h,getCookie as l}from"@dropins/tools/lib.js";import{events as c}from"@dropins/tools/event-bus.js";import"@dropins/tools/recaptcha.js";import{C as g,v as C}from"./verifyToken.js";import{f as p}from"./network-error.js";const a=new h(void 0),m=new u({init:async e=>{const t={...{authHeaderConfig:{header:"Authorization",tokenPrefix:"Bearer"}},...e};m.config.setConfig(t);const n=l(g.auth_dropin_user_token),[r]=await Promise.all([C(t.authHeaderConfig.header,t.authHeaderConfig.tokenPrefix),n?d():Promise.resolve()]);a.setConfig(r)},listeners:()=>[c.on("authenticated",e=>{const i=a.getConfig();i!==void 0&&e!==i&&(a.setConfig(e),d())})]}),k=m.config,P=`
+import{Initializer as u,Config as h}from"@dropins/tools/lib.js";import{a as l,v as g,C}from"./verifyToken.js";import{events as c}from"@dropins/tools/event-bus.js";import"@dropins/tools/recaptcha.js";import{f as p}from"./network-error.js";const a=new h(void 0),m=new u({init:async e=>{const t={...{authHeaderConfig:{header:"Authorization",tokenPrefix:"Bearer"}},...e};m.config.setConfig(t);const n=l(C.auth_dropin_user_token),[r]=await Promise.all([g(t.authHeaderConfig.header,t.authHeaderConfig.tokenPrefix),n?d():Promise.resolve()]);a.setConfig(r)},listeners:()=>[c.on("authenticated",e=>{const i=a.getConfig();i!==void 0&&e!==i&&(a.setConfig(e),d())})]}),k=m.config,P=`
   query GET_CUSTOMER_ROLE_PERMISSIONS {
     customer {
       role {
