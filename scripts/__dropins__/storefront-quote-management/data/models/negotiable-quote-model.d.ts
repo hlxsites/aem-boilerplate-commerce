@@ -1,13 +1,16 @@
 export interface NegotiableQuoteModel {
     uid: string;
     name: string;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt: string;
+    salesRepName: string;
+    expirationDate: string;
+    updatedAt: string;
     status: NegotiableQuoteStatus;
     buyer: {
         firstname: string;
         lastname: string;
     };
+    templateName?: string;
     comments?: {
         uid: string;
         createdAt: string;
@@ -16,41 +19,85 @@ export interface NegotiableQuoteModel {
             lastname: string;
         };
     }[];
-    items?: {
-        product: {
-            uid: string;
-            sku: string;
-            name: string;
-            templateId?: string;
-            templateName?: string;
-            priceRange: {
-                maximumPrice: {
-                    regularPrice: {
-                        value: number;
-                    };
+    prices: {
+        subtotalExcludingTax?: Currency;
+        subtotalIncludingTax?: Currency;
+        subtotalWithDiscountExcludingTax?: Currency;
+        grandTotal?: Currency;
+        appliedTaxes?: {
+            amount: Currency;
+            label: string;
+        }[];
+    };
+    items: NegotiableQuoteCartItem[];
+    canCheckout: boolean;
+    canSendForReview: boolean;
+}
+export interface NegotiableQuoteCartItem {
+    product: {
+        uid: string;
+        sku: string;
+        name: string;
+        templateId?: string;
+        templateName?: string;
+        priceRange: {
+            maximumPrice: {
+                regularPrice: {
+                    value: number;
                 };
             };
         };
-        quantity: number;
-        prices: {
-            subtotalExcludingTax: {
-                value: number;
-            };
-            subtotalIncludingTax: {
-                value: number;
-            };
-            subtotalWithDiscountExcludingTax: {
-                value: number;
-            };
-            grandTotal: {
-                value: number;
-                currency: string;
-            };
-        };
+    };
+    catalogDiscount: {
+        amountOff: number;
+        percentOff: number;
+    };
+    discounts: {
+        label: string;
+        value: string;
+        amount: Currency;
+    }[];
+    stockStatus: string;
+    quantity: number;
+    prices: {
+        originalItemPrice: Currency;
+        rowTotal: Currency;
+    };
+    configurableOptions?: {
+        optionLabel: string;
+        valueLabel: string;
+    }[];
+    bundleOptions?: {
+        label: string;
+        values: {
+            label: string;
+            quantity: number;
+            originalPrice: Currency;
+            price: Currency;
+        }[];
     }[];
 }
+export interface Currency {
+    value: number;
+    currency: string;
+}
+export interface NegotiableQuoteListEntry {
+    uid: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+    status: NegotiableQuoteStatus;
+    buyer: {
+        firstname: string;
+        lastname: string;
+    };
+    templateName: string;
+    prices: {
+        grandTotal: Currency;
+    };
+}
 export interface NegotiableQuotesListModel {
-    items: NegotiableQuoteModel[];
+    items: NegotiableQuoteListEntry[];
     pageInfo: {
         currentPage: number;
         pageSize: number;

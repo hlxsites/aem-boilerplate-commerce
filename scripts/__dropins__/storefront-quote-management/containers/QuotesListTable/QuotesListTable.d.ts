@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { NegotiableQuoteModel } from '../../data/models';
+import { NegotiableQuoteListEntry } from '../../data/models';
 
 export interface QuotesListTableProps extends HTMLAttributes<HTMLDivElement> {
     pageSize?: number;
@@ -13,35 +13,35 @@ export interface QuotesListTableProps extends HTMLAttributes<HTMLDivElement> {
     slots?: {
         /** Slot for customizing the quote name cell content */
         QuoteName?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the created date cell content */
         Created?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the created by cell content */
         CreatedBy?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the status cell content */
         Status?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the last updated cell content */
         LastUpdated?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the quote template cell content */
         QuoteTemplate?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the quote total cell content */
         QuoteTotal?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
         }>;
         /** Slot for customizing the actions cell content */
         Actions?: SlotProps<{
-            quote: NegotiableQuoteModel;
+            quote: NegotiableQuoteListEntry;
             onViewQuote?: (id: string, name: string, status: string) => void;
         }>;
         /** Slot for customizing the empty quotes message */

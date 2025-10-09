@@ -6,13 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export interface CustomerModel {
-    permissions: CustomerPermissions;
-}
-export interface CustomerPermissions {
-    canRequestQuote: boolean;
-    canEditQuote: boolean;
-    canDeleteQuote: boolean;
-    canCheckoutQuote: boolean;
-}
-//# sourceMappingURL=customer-model.d.ts.map
+export declare const getQuoteData: (quoteId: string) => Promise<import('../../data/models/negotiable-quote-model').NegotiableQuoteModel>;
+//# sourceMappingURL=getQuoteData.d.ts.map

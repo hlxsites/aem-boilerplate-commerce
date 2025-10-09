@@ -1,6 +1,25 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{N as s,s as i,a as g}from"./NegotiableQuoteFragment.js";const u=`
+import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{s,a as i}from"./transform-quote.js";const u=`
+  fragment NegotiableQuoteListFragment on NegotiableQuote {
+    uid
+    name
+    created_at
+    updated_at
+    status
+    buyer {
+      firstname
+      lastname
+    }
+    template_name
+    prices {
+      grand_total {
+        value
+        currency
+      }
+    }
+  }
+`,g=`
   fragment SearchResultPageInfoFragment on SearchResultPageInfo {
     current_page
     page_size
@@ -14,7 +33,7 @@ import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{N as s,s a
       value
     }
   }
-`,E=`
+`,c=`
   query negotiableQuotes(
     $filter: NegotiableQuoteFilterInput
     $pageSize: Int
@@ -28,7 +47,7 @@ import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{N as s,s a
       sort: $sort
     ) {
       items {
-        ...NegotiableQuoteFragment
+        ...NegotiableQuoteListFragment
       }
       page_info {
         ...SearchResultPageInfoFragment
@@ -40,8 +59,8 @@ import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{N as s,s a
     }
   }
 
-  ${s}
   ${u}
+  ${g}
   ${l}
-`;var c=(e=>(e.FULL="FULL",e.PARTIAL="PARTIAL",e))(c||{}),A=(e=>(e.ASC="ASC",e.DESC="DESC",e))(A||{}),f=(e=>(e.QUOTE_NAME="QUOTE_NAME",e.CREATED_AT="CREATED_AT",e.UPDATED_AT="UPDATED_AT",e))(f||{});const S=async(e={})=>{var r;if(!i.authenticated)return Promise.reject(new Error("Unauthorized"));const o={filter:e.filter||null,pageSize:e.pageSize||20,currentPage:e.currentPage||1,sort:e.sort||null};try{const t=await n(E,{variables:o});if(!((r=t==null?void 0:t.data)!=null&&r.negotiableQuotes))throw new Error("No quotes data received");const a=g(t.data.negotiableQuotes);if(!a)throw new Error("Failed to transform quotes data");return a}catch(t){return Promise.reject(t)}};export{c as F,f as N,A as S,S as n};
+`;var E=(e=>(e.FULL="FULL",e.PARTIAL="PARTIAL",e))(E||{}),_=(e=>(e.ASC="ASC",e.DESC="DESC",e))(_||{}),f=(e=>(e.QUOTE_NAME="QUOTE_NAME",e.CREATED_AT="CREATED_AT",e.UPDATED_AT="UPDATED_AT",e))(f||{});const S=async(e={})=>{var r;if(!s.authenticated)return Promise.reject(new Error("Unauthorized"));const o={filter:e.filter||null,pageSize:e.pageSize||20,currentPage:e.currentPage||1,sort:e.sort||null};try{const t=await n(c,{variables:o});if(!((r=t==null?void 0:t.data)!=null&&r.negotiableQuotes))throw new Error("No quotes data received");const a=i(t.data.negotiableQuotes);if(!a)throw new Error("Failed to transform quotes data");return a}catch(t){return Promise.reject(t)}};export{E as F,f as N,_ as S,S as n};
 //# sourceMappingURL=negotiableQuotes.js.map
