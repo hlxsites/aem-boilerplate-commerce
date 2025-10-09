@@ -1,110 +1,131 @@
-export declare const mockQuoteData: {
-    uid: string;
-    name: string;
-    created_at: string;
-    status: string;
-    sales_rep_name: string;
-    expiration_date: string;
-    buyer: {
-        firstname: string;
-        lastname: string;
-    };
-    comments: {
-        uid: string;
-        created_at: string;
-        author: {
-            firstname: string;
-            lastname: string;
-        };
-        text: string;
-    }[];
-    items: {
-        product: {
-            name: string;
-            sku: string;
-            uid: string;
-            stock_status: string;
-            quantity: null;
-            price_range: {
-                maximum_price: {
-                    regular_price: {
+import { NegotiableQuoteModel, NegotiableQuoteStatus } from '../../models/negotiable-quote-model';
+
+export declare const mockGraphQLResponse: {
+    data: {
+        requestNegotiableQuote: {
+            quote: {
+                uid: string;
+                name: string;
+                created_at: string;
+                updated_at: string;
+                status: string;
+                buyer: {
+                    firstname: string;
+                    lastname: string;
+                };
+                comments: {
+                    uid: string;
+                    created_at: string;
+                    author: {
+                        firstname: string;
+                        lastname: string;
+                    };
+                }[];
+                items: {
+                    product: {
+                        uid: string;
+                        sku: string;
+                        name: string;
+                        price_range: {
+                            maximum_price: {
+                                regular_price: {
+                                    value: number;
+                                };
+                            };
+                        };
+                    };
+                    quantity: number;
+                }[];
+                prices: {
+                    subtotal_excluding_tax: {
                         value: number;
+                    };
+                    subtotal_including_tax: {
+                        value: number;
+                    };
+                    subtotal_with_discount_excluding_tax: {
+                        value: number;
+                    };
+                    grand_total: {
+                        value: number;
+                        currency: string;
                     };
                 };
             };
         };
-        prices: {
-            price: {
-                currency: string;
-                value: number;
-            };
-            original_item_price: {
-                currency: string;
-                value: number;
-            };
-            original_row_total: {
-                currency: string;
-                value: number;
-            };
-            row_total: {
-                currency: string;
-                value: number;
-            };
-            catalog_discount: {
-                amount_off: number;
-                percent_off: number;
-            };
-            discounts: {
-                label: string;
-                value: number;
-                amount: {
-                    value: number;
-                    currency: string;
+    };
+};
+export declare const expectedTransformedQuote: NegotiableQuoteModel;
+export declare const mockNegotiableQuotesResponse: {
+    data: {
+        negotiableQuotes: {
+            items: {
+                uid: string;
+                name: string;
+                created_at: string;
+                updated_at: string;
+                status: NegotiableQuoteStatus;
+                buyer: {
+                    firstname: string;
+                    lastname: string;
+                };
+                items: {
+                    product: {
+                        uid: string;
+                        sku: string;
+                        name: string;
+                        template_id: string;
+                        template_name: string;
+                        price_range: {
+                            maximum_price: {
+                                regular_price: {
+                                    value: number;
+                                };
+                            };
+                        };
+                    };
+                    quantity: number;
+                }[];
+                prices: {
+                    subtotal_excluding_tax: {
+                        value: number;
+                    };
+                    subtotal_including_tax: {
+                        value: number;
+                    };
+                    subtotal_with_discount_excluding_tax: {
+                        value: number;
+                    };
+                    grand_total: {
+                        value: number;
+                    };
                 };
             }[];
-        };
-        quantity: number;
-    }[];
-    history: {
-        uid: string;
-        created_at: string;
-        author: {
-            firstname: string;
-            lastname: string;
-        };
-        change_type: string;
-        changes: {
-            comment_added: {
-                comment: string;
+            page_info: {
+                current_page: number;
+                page_size: number;
+                total_pages: number;
             };
-            statuses: {
-                changes: {
-                    new_status: string;
-                    old_status: null;
-                }[];
-            };
-            expiration: {
-                new_expiration: null;
-                old_expiration: null;
-            };
+            total_count: number;
         };
-    }[];
-    prices: {
-        subtotal_excluding_tax: {
-            currency: string;
-            value: number;
-        };
-        applied_taxes: {
-            amount: {
-                value: number;
-                currency: string;
+    };
+};
+export declare const mockEmptyNegotiableQuotesResponse: {
+    data: {
+        negotiableQuotes: {
+            items: never[];
+            page_info: {
+                current_page: number;
+                page_size: number;
+                total_pages: number;
             };
-            label: string;
-        }[];
-        grand_total: {
-            currency: string;
-            value: number;
+            total_count: number;
         };
+    };
+};
+export declare const mockNullNegotiableQuotesResponse: {
+    data: {
+        negotiableQuotes: null;
     };
 };
 //# sourceMappingURL=negotiableQuoteData.d.ts.map

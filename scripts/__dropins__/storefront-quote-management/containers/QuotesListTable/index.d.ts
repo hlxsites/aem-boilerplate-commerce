@@ -6,6 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './TabbedContent';
-export { TabbedContent as default } from './TabbedContent';
+export * from './QuotesListTable';
+export { QuotesListTable as default } from './QuotesListTable';
 //# sourceMappingURL=index.d.ts.map

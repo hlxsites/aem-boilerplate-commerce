@@ -1,15 +1,15 @@
 export interface NegotiableQuoteModel {
     uid: string;
     name: string;
-    createdAt: string;
-    status: "SUBMITTED" | "PENDING" | "UPDATED" | "OPEN" | "ORDERED" | "CLOSED" | "DECLINED" | "EXPIRED" | "DRAFT";
-    salesRepName: string;
-    expirationDate: string;
+    createdAt?: string;
+    updatedAt?: string;
+    status: NegotiableQuoteStatus;
     buyer: {
         firstname: string;
         lastname: string;
     };
-    comments: {
+    templateName?: string;
+    comments?: {
         uid: string;
         createdAt: string;
         author: {
@@ -21,41 +21,74 @@ export interface NegotiableQuoteModel {
             url: string;
         }[];
     }[];
-    items: {
+    prices?: {
+        subtotalExcludingTax?: {
+            value: number;
+        };
+        subtotalIncludingTax?: {
+            value: number;
+        };
+        subtotalWithDiscountExcludingTax?: {
+            value: number;
+        };
+        grandTotal?: {
+            value: number;
+            currency: string;
+        };
+    };
+    items?: {
         product: {
             uid: string;
             sku: string;
             name: string;
+            templateId?: string;
+            templateName?: string;
+            priceRange: {
+                maximumPrice: {
+                    regularPrice: {
+                        value: number;
+                    };
+                };
+            };
         };
-        catalogDiscount: {
-            amountOff: number;
-            percentOff: number;
-        };
-        discounts: {
+        quantity: number;
+    }[];
+}
+export interface NegotiableQuotesListModel {
+    items: NegotiableQuoteModel[];
+    pageInfo: {
+        currentPage: number;
+        pageSize: number;
+        totalPages: number;
+    };
+    totalCount: number;
+    paginationInfo?: PaginationInfo;
+    sortFields?: {
+        default: string;
+        options: Array<{
             label: string;
             value: string;
-            amount: Currency;
-        }[];
-        stockStatus: string;
-        quantity: number;
-        prices: {
-            originalItemPrice: Currency;
-            rowTotal: Currency;
-        };
-    }[];
-    prices: {
-        grandTotal: Currency;
-        subtotalExcludingTax: Currency;
-        appliedTaxes: {
-            amount: Currency;
-            label: string;
-        }[];
+        }>;
     };
-    canCheckout: boolean;
-    canSendForReview: boolean;
 }
-export interface Currency {
-    value: number;
-    currency: string;
+export declare enum NegotiableQuoteStatus {
+    SUBMITTED = "SUBMITTED",
+    PENDING = "PENDING",
+    UPDATED = "UPDATED",
+    OPEN = "OPEN",
+    ORDERED = "ORDERED",
+    CLOSED = "CLOSED",
+    DECLINED = "DECLINED",
+    EXPIRED = "EXPIRED",
+    DRAFT = "DRAFT"
+}
+export interface PaginationInfo {
+    currentPage: number;
+    totalCount: number;
+    pageSize: number;
+    startItem: number;
+    endItem: number;
+    totalPages: number;
+    pageSizeOptions?: number[];
 }
 //# sourceMappingURL=negotiable-quote-model.d.ts.map

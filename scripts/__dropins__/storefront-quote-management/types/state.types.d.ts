@@ -4,7 +4,6 @@ export type State = {
         requestQuote: boolean;
         editQuote: boolean;
         deleteQuote: boolean;
-        checkoutQuote: boolean;
     };
 };
 //# sourceMappingURL=state.types.d.ts.map

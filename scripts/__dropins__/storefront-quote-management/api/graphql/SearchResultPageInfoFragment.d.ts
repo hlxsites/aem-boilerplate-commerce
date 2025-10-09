@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ManageNegotiableQuote';
-export { ManageNegotiableQuote as default } from './ManageNegotiableQuote';
-//# sourceMappingURL=index.d.ts.map
+export declare const SEARCH_RESULT_PAGE_INFO_FRAGMENT = "\n  fragment SearchResultPageInfoFragment on SearchResultPageInfo {\n    current_page\n    page_size\n    total_pages\n  }\n";
+//# sourceMappingURL=SearchResultPageInfoFragment.d.ts.map
