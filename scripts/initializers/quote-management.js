@@ -14,5 +14,12 @@ await initializeDropin(async () => {
     },
   };
 
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  // Get the quote id from the url
+  const quoteId = new URLSearchParams(window.location.search).get('quoteid');
+
+  const config = {
+      quoteId,
+  };
+
+  return initializers.mountImmediately(initialize, { langDefinitions, ...config });
 })();
