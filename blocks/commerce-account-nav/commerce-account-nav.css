@@ -57,9 +57,3 @@
 .commerce-account-nav__item--active {
     background-color: var(--color-neutral-200);
 }
-
-@media (min-width: 900px) {
-    .commerce-account-nav-container {
-        max-width: var(--column-width);
-    }
-}
