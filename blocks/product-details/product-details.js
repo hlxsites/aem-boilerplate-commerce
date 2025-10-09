@@ -277,7 +277,9 @@ export default async function decorate(block) {
         if (valid) {
           if (isUpdateMode) {
             // --- Update existing item ---
-            const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
+            const { updateProductsFromCart } = await import(
+              '@dropins/storefront-cart/api.js'
+            );
 
             await updateProductsFromCart([{ ...values, uid: itemUidFromUrl }]);
 
@@ -300,7 +302,9 @@ export default async function decorate(block) {
             return;
           }
           // --- Add new item ---
-          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+          const { addProductsToCart } = await import(
+            '@dropins/storefront-cart/api.js'
+          );
           await addProductsToCart([{ ...values }]);
         }
 
