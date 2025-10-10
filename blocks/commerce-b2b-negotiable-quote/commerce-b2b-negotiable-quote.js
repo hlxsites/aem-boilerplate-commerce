@@ -18,8 +18,11 @@ import { checkIsCompanyEnabled, getCompany } from '@dropins/storefront-company-m
 import { events } from '@dropins/tools/event-bus.js';
 import { InLineAlert, Button } from '@dropins/tools/components.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
+import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 
 // Containers
+import { AddressForm } from '@dropins/storefront-account/containers/AddressForm.js';
+import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
 import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuote.js';
 import { ItemsQuoted } from '@dropins/storefront-quote-management/containers/ItemsQuoted.js';
 import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
@@ -106,6 +109,24 @@ export default async function decorate(block) {
           })(checkoutButtonContainer);
 
           ctx.appendChild(checkoutButtonContainer);
+        },
+        ShippingInformation: (ctx) => {
+          const shippingInformation = document.createElement('div');
+          shippingInformation.classList.add('negotiable-quote__shipping-information');
+
+          accountRenderer.render(Addresses, {
+            minifiedView: false,
+            selectable: true,
+            withHeader: false,
+            className: 'negotiable-quote__shipping-information-addresses',
+            onAddressData: (address) => {
+              // TODO: Implement shipping address selection using API from dropin
+              console.log(address);
+            },
+            routeAddressesPage: () => rootLink(CUSTOMER_ADDRESS_PATH),
+          })(shippingInformation);
+
+          ctx.replaceWith(shippingInformation);
         },
       },
     })(block);
