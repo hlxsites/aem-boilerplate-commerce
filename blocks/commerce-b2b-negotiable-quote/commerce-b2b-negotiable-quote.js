@@ -24,13 +24,17 @@ import {
 } from '../../scripts/commerce.js';
 import '../../scripts/initializers/quote-management.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
-import { ItemsQuoted } from '@dropins/storefront-quote-management/containers/ItemsQuoted.js';
 
+// Containers
 import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuote.js';
+import { ItemsQuoted } from '@dropins/storefront-quote-management/containers/ItemsQuoted.js';
 import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
+
+import { InLineAlert, Button } from '@dropins/tools/components.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
+import { events } from '@dropins/tools/event-bus.js';
 
 export default async function decorate(block) {
   if (!checkIsAuthenticated()) {
@@ -57,6 +61,23 @@ export default async function decorate(block) {
           negotiableQuoteRenderer.render(ItemsQuoted, {})(itemsQuoted);
 
           ctx.replaceWith(itemsQuoted);
+        },
+        Footer: ctx => {
+          const checkoutButtonContainer = document.createElement('div');
+          checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
+
+          const enabled = ctx.quoteData?.canCheckout;
+
+          negotiableQuoteRenderer.render(Button, {
+            children: placeholders?.Cart?.PriceSummary?.checkout,
+            disabled: !enabled,
+            onClick: () => {
+              // TODO: This path should be dynamic
+              window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
+            },
+          })(checkoutButtonContainer);
+
+          ctx.appendChild(checkoutButtonContainer);
         }
       }
     })(block);
@@ -67,10 +88,7 @@ export default async function decorate(block) {
     block.setAttribute('data-quote-view', 'list');
     await negotiableQuoteRenderer.render(QuotesListTable, {
       onViewQuote: (quoteId, quoteName, status) => {
-        // temporary console log, remove this later
-        // eslint-disable-next-line no-console
-        console.log('View Quote clicked:', { quoteId, quoteName, status });
-        // Append quote id to the url without reloading the page
+        // Append quote id to the url to navigate to render the manage quote view
         window.location.href = `${window.location.pathname}?quoteId=${quoteId}`;
       },
       showItemRange: true,
@@ -78,6 +96,14 @@ export default async function decorate(block) {
       showPagination: true,
     })(block);
   }
+
+  // Render error when quote data fails to load
+  events.on('quote-management/quote-data/error', ({ error }) => {
+    negotiableQuoteRenderer.render(InLineAlert, {
+      type: 'error',
+      description: `${error}`
+    })(block);
+  });
 }
 
 const checkPermissions = async () => {
