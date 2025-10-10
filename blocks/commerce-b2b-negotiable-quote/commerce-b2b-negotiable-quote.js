@@ -43,7 +43,7 @@ export default async function decorate(block) {
   checkPermissions();
 
   // Get the quote id from the url
-  const quoteId = new URLSearchParams(window.location.search).get('quoteid');
+  const quoteId = new URLSearchParams(window.location.search).get('quoteId');
 
   if (quoteId) {
     block.classList.add('negotiable-quote__manage');
@@ -71,7 +71,7 @@ export default async function decorate(block) {
         // eslint-disable-next-line no-console
         console.log('View Quote clicked:', { quoteId, quoteName, status });
         // Append quote id to the url without reloading the page
-        window.location.href = `${window.location.pathname}?quoteid=${quoteId}`;
+        window.location.href = `${window.location.pathname}?quoteId=${quoteId}`;
       },
       showItemRange: true,
       showPageSizePicker: true,
