@@ -15,14 +15,8 @@
  * from Adobe.
  ****************************************************************** */
 import { checkIsCompanyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
-import {
-  CUSTOMER_LOGIN_PATH,
-  CUSTOMER_ACCOUNT_PATH,
-  checkIsAuthenticated,
-  rootLink,
-  fetchPlaceholders,
-} from '../../scripts/commerce.js';
-import '../../scripts/initializers/quote-management.js';
+import { events } from '@dropins/tools/event-bus.js';
+import { InLineAlert, Button } from '@dropins/tools/components.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
 
 // Containers
@@ -30,12 +24,46 @@ import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/cont
 import { ItemsQuoted } from '@dropins/storefront-quote-management/containers/ItemsQuoted.js';
 import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
 
-import { InLineAlert, Button } from '@dropins/tools/components.js';
-
 // Initialize
 import '../../scripts/initializers/quote-management.js';
-import { events } from '@dropins/tools/event-bus.js';
 
+// Commerce
+import {
+  CUSTOMER_LOGIN_PATH,
+  CUSTOMER_ACCOUNT_PATH,
+  checkIsAuthenticated,
+  rootLink,
+  fetchPlaceholders,
+} from '../../scripts/commerce.js';
+
+/**
+ * Check if the user has the necessary permissions to access the block
+ */
+const checkPermissions = async () => {
+  // Check authentication
+  if (!checkIsAuthenticated()) {
+    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+  }
+
+  // Check if company functionality is enabled
+  const companyCheck = await checkIsCompanyEnabled();
+  if (!companyCheck.companyEnabled) {
+    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+  }
+
+  // Check if customer has a company
+  try {
+    await getCompany();
+  } catch (error) {
+    // Customer doesn't have a company or error occurred
+    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+  }
+};
+
+/**
+ * Decorate the block
+ * @param {HTMLElement} block - The block to decorate
+ */
 export default async function decorate(block) {
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
@@ -54,7 +82,7 @@ export default async function decorate(block) {
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
       slots: {
-        QuoteContent: ctx => {
+        QuoteContent: (ctx) => {
           const itemsQuoted = document.createElement('div');
           itemsQuoted.classList.add('negotiable-quote__items-quoted');
 
@@ -62,7 +90,7 @@ export default async function decorate(block) {
 
           ctx.replaceWith(itemsQuoted);
         },
-        Footer: ctx => {
+        Footer: (ctx) => {
           const checkoutButtonContainer = document.createElement('div');
           checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
 
@@ -78,18 +106,16 @@ export default async function decorate(block) {
           })(checkoutButtonContainer);
 
           ctx.appendChild(checkoutButtonContainer);
-        }
-      }
+        },
+      },
     })(block);
-
-  }
-  else {
+  } else {
     block.classList.add('negotiable-quote__list');
     block.setAttribute('data-quote-view', 'list');
     await negotiableQuoteRenderer.render(QuotesListTable, {
-      onViewQuote: (quoteId, quoteName, status) => {
+      onViewQuote: (id, _quoteName, _status) => {
         // Append quote id to the url to navigate to render the manage quote view
-        window.location.href = `${window.location.pathname}?quoteId=${quoteId}`;
+        window.location.href = `${window.location.pathname}?quoteId=${id}`;
       },
       showItemRange: true,
       showPageSizePicker: true,
@@ -101,31 +127,7 @@ export default async function decorate(block) {
   events.on('quote-management/quote-data/error', ({ error }) => {
     negotiableQuoteRenderer.render(InLineAlert, {
       type: 'error',
-      description: `${error}`
+      description: `${error}`,
     })(block);
   });
 }
-
-const checkPermissions = async () => {
-  // Check authentication
-  if (!checkIsAuthenticated()) {
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-    return;
-  }
-
-  // Check if company functionality is enabled
-  const companyCheck = await checkIsCompanyEnabled();
-  if (!companyCheck.companyEnabled) {
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return;
-  }
-
-  // Check if customer has a company
-  try {
-    await getCompany();
-  } catch (error) {
-    // Customer doesn't have a company or error occurred
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return;
-  }
-};
