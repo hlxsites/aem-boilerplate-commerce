@@ -10,9 +10,13 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-
+// Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+// Requisition List Dropin
+import * as rlApi from '@dropins/storefront-requisition-list/api.js';
+import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
+import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -23,6 +27,7 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
+import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
 import {
@@ -30,6 +35,7 @@ import {
   setJsonLd,
   fetchPlaceholders,
   getProductLink,
+  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -93,12 +99,14 @@ export default async function decorate(block) {
         <div class="product-details__price"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
+        <div class="product-details__gift-card-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__buttons__add-to-req-list"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -115,8 +123,10 @@ export default async function decorate(block) {
   const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
+  const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $requisitionListNames = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -141,6 +151,25 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
+  async function renderRequisitionListNamesIfEnabled($container) {
+    const isAuthenticated = checkIsAuthenticated();
+    if (!isAuthenticated) {
+      $container.innerHTML = '';
+      return null;
+    }
+    const isEnabled = await rlApi.isRequisitionListEnabled();
+    if (isEnabled) {
+      return rlRenderer.render(RequisitionListNames, {
+        items: [],
+        canCreate: true,
+        sku: product.sku,
+        quantity: pdpApi.getProductConfigurationValues().quantity || 1,
+      })($container);
+    }
+    $container.innerHTML = '';
+    return null;
+  }
+
   const [
     _galleryMobile,
     _gallery,
@@ -149,6 +178,7 @@ export default async function decorate(block) {
     _shortDescription,
     _options,
     _quantity,
+    _giftCardOptions,
     _description,
     _attributes,
     wishlistToggleBtn,
@@ -206,6 +236,9 @@ export default async function decorate(block) {
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
 
+    // Configuration  Gift Card Options
+    pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
+
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
@@ -216,6 +249,9 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
+
+    // Requisition List Names (if enabled and user is authenticated)
+    renderRequisitionListNamesIfEnabled($requisitionListNames),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -348,6 +384,10 @@ export default async function decorate(block) {
         block: 'center',
       });
     }, 0);
+  });
+
+  events.on('authenticated', () => {
+    renderRequisitionListNamesIfEnabled($requisitionListNames);
   });
 
   // --- Add new event listener for cart/data ---
