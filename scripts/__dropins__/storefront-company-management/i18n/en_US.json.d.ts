@@ -18,6 +18,9 @@ declare const _default: {
         "status": "Status",
         "region": "Region",
         "postalCode": "Postal Code",
+        "jobTitle": "Job Title",
+        "workPhoneNumber": "Work Phone Number",
+        "userRole": "User Role",
         "title": "New Company",
         "companyInformation": "Company Information",
         "street": "Street Address",
@@ -123,11 +126,13 @@ declare const _default: {
       "postalCodeError": "Please enter a valid postal code.",
       "lengthTextError": "Text length must be between {min} and {max} characters.",
       "urlError": "Please enter a valid URL",
+      "nameError": "Please enter a valid name",
       "selectCountry": "Please select a country",
       "selectRegion": "Please select a region, state or province",
       "selectCountryFirst": "Please select a country first"
     }
   }
-};
+}
+;
 
 export default _default;
