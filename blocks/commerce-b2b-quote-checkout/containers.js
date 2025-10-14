@@ -19,9 +19,6 @@ import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.
 
 // Auth Dropin
 import * as authApi from '@dropins/storefront-auth/api.js';
-import AuthCombine from '@dropins/storefront-auth/containers/AuthCombine.js';
-import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
-import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Account Dropin
 import Addresses from '@dropins/storefront-account/containers/Addresses.js';
@@ -72,10 +69,7 @@ import {
 import { swatchImageSlot } from './utils.js';
 
 // External dependencies
-import {
-  authPrivacyPolicyConsentSlot,
-  rootLink,
-} from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/commerce.js';
 
 // Constants
 import {
@@ -364,6 +358,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
           [PaymentMethodCode.VAULT]: {
             enabled: false,
           },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
         },
       },
     })(container);
@@ -543,8 +540,8 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
   async () => {
     const cartBillingAddress = getCartAddress(data, 'billing');
 
-    const billingAddressId = cartBillingAddress
-      ? cartBillingAddress?.uid ?? 0
+    const customerBillingAddressUid = cartBillingAddress
+      ? cartBillingAddress?.customerAddressUid ?? 0
       : undefined;
 
     const billingAddressCache = sessionStorage.getItem(BILLING_ADDRESS_DATA_KEY);
@@ -556,7 +553,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
 
     const storeConfig = checkoutApi.getStoreConfigCache();
 
-    const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.uid === undefined
+    const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.customerAddressUid === undefined
       ? transformCartAddressToFormValues(cartBillingAddress)
       : { countryCode: storeConfig.defaultCountry };
 
@@ -576,7 +573,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
 
     return AccountProvider.render(Addresses, {
       addressFormTitle: 'Bill to new address',
-      defaultSelectAddressId: billingAddressId,
+      defaultSelectAddressId: customerBillingAddressUid,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,
       inputsDefaultValueSet,
