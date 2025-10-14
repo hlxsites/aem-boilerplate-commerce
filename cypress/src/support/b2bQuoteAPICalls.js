@@ -260,7 +260,7 @@ async function createCustomerAndAssignCompany(firstname, lastname, email, passwo
     safeLog('Request body:', JSON.stringify(requestBody, null, 2));
 
     // Direct HTTP request to GraphQL endpoint (no auth needed)
-    const graphqlUrl = 'https://na1-qa.api.commerce.adobe.com/EHmNAqPgM7oUoCg2wEfEod/graphql';
+    const graphqlUrl = 'https://na1-qa.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql';
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
