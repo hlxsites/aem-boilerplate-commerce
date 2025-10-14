@@ -1,3 +1,19 @@
+# Pre Setup
+1. Created server to server auth project 
+   Note, these credetials are needed only for Admin Rest API interactions and not for Storefront graphql
+ 
+   Reference https://developer.adobe.com/commerce/webapi/rest/authentication/ 
+ 
+   These values can also be found in vault.
+
+2. Set cypress local env variable  
+ `export CYPRESS_API_ENDPOINT=#######`  
+ `export CYPRESS_IMS_CLIENT_ID=#######`  
+ `export CYPRESS_IMS_ORG_ID=#######`  
+ `export CYPRESS_IMS_CLIENT_SECRET=#######`  
+  Same variables are set in Github Secret management for CI. 
+
+
 # Running E2E tests
 
 Note - Following commands expects local server is running at <http://127.0.0.1:3000/>.
