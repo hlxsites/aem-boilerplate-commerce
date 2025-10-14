@@ -22,6 +22,7 @@ export * from './updateCompany';
 export * from './getCountries';
 export * from './getStoreConfig';
 export * from './validateCompanyEmail';
+export * from './getCustomerCompany';
 export * from './companyEnabled';
 export * from './allowCompanyRegistration';
 export * from './createCompany';

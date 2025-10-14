@@ -32,6 +32,7 @@ export type TranslationList = {
     phoneError: string;
     postalCodeError: string;
     urlError: string;
+    nameError: string;
 };
 export declare enum InputValidation {
     Numeric = "numeric",
@@ -42,7 +43,8 @@ export declare enum InputValidation {
     Phone = "phone",
     PostalCode = "postal-code",
     Length = "length",
-    Url = "url"
+    Url = "url",
+    Name = "name"
 }
 export declare const validateNumeric: (value: string) => boolean;
 export declare const validateAlphanumeric: (value: string) => boolean;
@@ -52,6 +54,7 @@ export declare const validateEmail: (value: string) => boolean;
 export declare const validatePhone: (value: string) => boolean;
 export declare const validateUrl: (value: string) => boolean;
 export declare const validatePostalCode: (value: string) => boolean;
+export declare const validateName: (value: string) => boolean;
 export declare const validateLength: (value: string, minLength: number, maxLength: number) => boolean;
 export declare const validationFields: (value: string, configs: ValidationFieldsConfig, translations: TranslationList, errorsList: ErrorsList) => {
     [x: string]: string;

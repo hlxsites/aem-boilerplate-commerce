@@ -17,4 +17,5 @@
 export * from './company';
 export * from './company-address';
 export * from './country';
+export * from './customer-company-info';
 //# sourceMappingURL=index.d.ts.map
