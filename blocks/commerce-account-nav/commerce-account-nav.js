@@ -30,9 +30,20 @@ export default async function decorate(block) {
      * Permissions
      * Skip rendering if the user lacks permission for this item.
      * Default permission is 'all'.
+     * Note: permissions can be explicitly set to false (disabled feature),
+     * which should hide the item even for admins.
      */
-    const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
-    if (!permissions[permission]) {
+    const permission = $item
+      .querySelector(`:scope > div:nth-child(${rows.permission})`)
+      ?.textContent?.trim() || 'all';
+
+    // Skip if permission is explicitly disabled (false)
+    if (permissions[permission] === false) {
+      return;
+    }
+
+    // Skip if the user is not an admin and permission is not granted
+    if (!permissions.admin && !permissions[permission]) {
       return;
     }
 
@@ -49,10 +60,14 @@ export default async function decorate(block) {
     const $link = template.querySelector('.commerce-account-nav__item');
     const $icon = template.querySelector('.commerce-account-nav__item__icon');
     const $title = template.querySelector('.commerce-account-nav__item__title');
-    const $description = template.querySelector('.commerce-account-nav__item__description');
+    const $description = template.querySelector(
+      '.commerce-account-nav__item__description',
+    );
 
     /** Content */
-    const $content = $item.querySelector(`:scope > div:nth-child(${rows.label})`)?.children;
+    const $content = $item.querySelector(
+      `:scope > div:nth-child(${rows.label})`,
+    )?.children;
 
     /** Link */
     const link = $content[0]?.querySelector('a')?.href;
@@ -61,7 +76,9 @@ export default async function decorate(block) {
     $link.href = link;
 
     /** Icon */
-    const icon = $item.querySelector(`:scope > div:nth-child(${rows.icon})`)?.textContent?.trim();
+    const icon = $item
+      .querySelector(`:scope > div:nth-child(${rows.icon})`)
+      ?.textContent?.trim();
 
     if (icon) {
       $link.classList.add('commerce-account-nav__item--has-icon');
