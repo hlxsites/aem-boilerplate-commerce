@@ -455,36 +455,3 @@ module.exports = {
   createCustomerAndAssignCompany,
   assignCustomerToCompany
 };
-
-// Example usage when run directly
-async function main() {
-  const client = new ACCSApiClient();
-
-  try {
-    // Get companies (requires searchCriteria)
-    const companies = await retrieveCompanies();
-
-    // Test cart search by email
-    const carts = await fetchCartsByEmail('devpatil7@gmail.com');
-
-    // Test customer creation (automatically assigns to company 2)
-    const newCustomer = await createCustomerAndAssignCompany('John', 'Doe', 'john.doe@example.com', 'b1b2b3l@w+');
-
-    // Test quote submission using email (will get latest quote automatically)
-    const quoteSubmissionByEmail = await submitQuoteToCustomer('devpatil7@gmail.com', 'Please review this updated quote');
-
-    // Test quote submission using direct quote ID
-    // const quoteSubmissionById = await submitQuoteToCustomer(123, 'Direct quote submission');
-
-    // Test manual customer to company assignment (if needed)
-    // const assignment = await assignCustomerToCompany(16, 2);
-
-  } catch (error) {
-    safeError('Main execution failed:', error.message);
-  }
-}
-
-// Run if executed directly
-if (require.main === module) {
-  main();
-}
