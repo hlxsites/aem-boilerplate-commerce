@@ -29,7 +29,7 @@ alwaysApply: true
 
 ### Available Documentation
 - Block README.md
-- Dropin Documentation at https://experienceleague.adobe.com/developer/commerce/storefront/dropins/{dropin-name}/ where {dropin-name} is the name of the dropin such as `cart`, `checkout`, `product-details`, `product-discovery`, etc.
+- Dropin Documentation (published at https://experienceleague.adobe.com/developer/commerce/storefront/ – search with `site:www.experienceleague.adobe.com` to restrict web search results)
 - Dropin TypeScript Definitions in `node_modules/@dropins/`
 - `search_storefront_docs`MCP
 
@@ -39,6 +39,7 @@ alwaysApply: true
 
 ### Documentation Structure
 
+- Each dropin has its own documentation area at https://experienceleague.adobe.com/developer/commerce/storefront/dropins/{dropin-name}/ where {dropin-name} is the name of the dropin such as `cart`, `checkout`, `product-details`, `product-discovery`, etc.
 - Each section of the experienceleague documentation contains information about the dropin such as installation, styling, "api functions", containers, slots, and a "dictionary" for internationalization.
 
 ### Storefront MCP
