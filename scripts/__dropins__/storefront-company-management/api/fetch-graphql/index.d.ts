@@ -14,5 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+<<<<<<<< HEAD:scripts/__dropins__/storefront-company-management/api/fetch-graphql/index.d.ts
 export * from './fetch-graphql';
+========
+export * from './getNegotiableQuote.graphql';
+>>>>>>>> integration:scripts/__dropins__/storefront-checkout/api/getNegotiableQuote/graphql/index.d.ts
 //# sourceMappingURL=index.d.ts.map

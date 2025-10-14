@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,6 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+<<<<<<<< HEAD:scripts/__dropins__/storefront-quote-management/data/transforms/index.d.ts
 export * from './transform-customer';
 export * from './transform-quote';
 //# sourceMappingURL=index.d.ts.map
+========
+export declare const ensureHasCartOrQuoteId: () => void;
+//# sourceMappingURL=guards.d.ts.map
+>>>>>>>> integration:scripts/__dropins__/storefront-checkout/lib/guards.d.ts
