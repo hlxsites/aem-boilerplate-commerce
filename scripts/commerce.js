@@ -580,10 +580,6 @@ function getSkuFromUrl() {
   return result?.[1];
 }
 
-export function getProductSku() {
-  return getMetadata('sku') || getSkuFromUrl();
-}
-
 export function getProductLink(urlKey, sku) {
   return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
 }
