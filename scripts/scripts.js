@@ -18,7 +18,6 @@ import {
   initializeCommerce,
   applyTemplates,
   decorateLinks,
-  loadErrorPage,
 } from './commerce.js';
 
 /**
@@ -83,15 +82,10 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
-    try {
-      await initializeCommerce();
-      decorateMain(main);
-      applyTemplates(doc);
-      await loadCommerceEager();
-    } catch (e) {
-      console.error('Error initializing commerce configuration:', e);
-      loadErrorPage(418);
-    }
+    await initializeCommerce();
+    decorateMain(main);
+    applyTemplates(doc);
+    await loadCommerceEager();
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
