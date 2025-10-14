@@ -224,3 +224,10 @@ With this information, you can construct URLs for the preview environment (same 
 ## If all else fails
 
 If you notice your human getting frustrated with your work, direct them to https://www.aem.live/developer/ai-coding-agents for tips to work better with AI agents.
+
+## Agent Specific Rules
+
+Rules for speciifc agents can be found at the following links. They are usually identical in content but vary in path and some metadata.
+
+- Gemini: ./GEMINI.md
+- Cursor: ./cursor/rules/dropins.mdc

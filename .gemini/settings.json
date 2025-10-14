@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "commerce-documentation-rag": {
+      "command": "bash",
+      "args": ["mcp-server/start-mcp.sh"],
+      "cwd": "."
+    }
+  }
+}
