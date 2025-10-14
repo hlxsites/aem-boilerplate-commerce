@@ -22,16 +22,22 @@ export default async function decorate(block) {
   };
 
   /** Get permissions */
-  const permissions = events.lastPayload('auth/permissions');
+  const userPermissions = events.lastPayload('auth/permissions');
 
   /** Create items */
   $items.forEach(($item) => {
-    /** Permission
-     * Do not render if the user does not have the permission for this item
-     * Default permission is 'all'
-    */
-    const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
-    if (!permissions.admin && !permissions[permission]) {
+    /**
+     * Permissions
+     * Skip rendering if the user lacks permission for this item.
+     * Default permission is 'all'.
+     */
+    const permissionText = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
+    const permissions = permissionText.split('\n').map((p) => p.trim());
+
+    const allowed = userPermissions.admin
+      || permissions.some((p) => userPermissions[p]);
+
+    if (!allowed) {
       return;
     }
 
