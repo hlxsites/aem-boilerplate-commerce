@@ -30,6 +30,7 @@ import{f as c,h as g,c as A}from"./fetch-error.js";import{b as C,f as y}from"./f
   }
 `,M=`
   fragment COMPANY_ADMIN_FRAGMENT on Customer {
+    id
     firstname
     lastname
     email
