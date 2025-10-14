@@ -16,11 +16,15 @@
  *******************************************************************/
 export * from './checkIsCompanyEnabled.types';
 export * from './companyUsers.types';
+export * from './createCompanyUser.types';
 export * from './deleteCompanyUser.types';
 export * from './getCompany.types';
+export * from './getCompanyUser.types';
 export * from './getCountries.types';
 export * from './getCustomerCompanyInfo.types';
+export * from './isCompanyUserEmailAvailable.types';
 export * from './updateCompany.types';
+export * from './updateCompanyUser.types';
 export * from './updateCompanyUserStatus.types';
 export * from './validateCompanyEmail.types';
 //# sourceMappingURL=index.d.ts.map

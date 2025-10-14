@@ -1,6 +1,12 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as l,h as m,c as y}from"./fetch-error.js";import{v as i}from"./validateCompanyEmail.js";const h=async()=>{try{return await i("test@test.com"),{companyEnabled:!0}}catch{return{companyEnabled:!1,error:"Company functionality not available"}}},u=t=>{var o,e,c;const a=(o=t==null?void 0:t.data)==null?void 0:o.customer,n=(e=t==null?void 0:t.data)==null?void 0:e.company;if(!a||!n)return null;const r={companyName:(n==null?void 0:n.name)??"",jobTitle:(a==null?void 0:a.job_title)??"",workPhoneNumber:(a==null?void 0:a.telephone)??"",userRole:((c=a==null?void 0:a.role)==null?void 0:c.name)??""};return r.companyName?r:null},d=`
+import{f as l,h as i,a as m}from"./network-error.js";const d=`
+  query GET_COMPANY_ENABLED {
+    storeConfig {
+      company_enabled
+    }
+  }
+`,h=async()=>{var a,r,t;const n=await l(d,{method:"POST"});if((a=n==null?void 0:n.errors)!=null&&a.length)throw new Error(((r=n.errors[0])==null?void 0:r.message)||"Failed to load store configuration");const o=(t=n==null?void 0:n.data)==null?void 0:t.storeConfig;if(!o)throw new Error("Invalid response: missing storeConfig");return!!o.company_enabled},E=n=>{var t,e,c;const o=(t=n==null?void 0:n.data)==null?void 0:t.customer,a=(e=n==null?void 0:n.data)==null?void 0:e.company;if(!o||!a)return null;const r={companyName:(a==null?void 0:a.name)??"",jobTitle:(o==null?void 0:o.job_title)??"",workPhoneNumber:(o==null?void 0:o.telephone)??"",userRole:((c=o==null?void 0:o.role)==null?void 0:c.name)??""};return r.companyName?r:null},f=`
   query GET_CUSTOMER_COMPANY_INFO {
     customer {
       id
@@ -16,5 +22,5 @@ import{f as l,h as m,c as y}from"./fetch-error.js";import{v as i}from"./validate
       name
     }
   }
-`,p=async()=>{var t;try{if(!(await h()).companyEnabled)return null;const n=await l(d,{method:"GET",cache:"no-cache"});return(t=n.errors)!=null&&t.length?m(n.errors):u(n)}catch(a){return y(a)}};export{h as c,p as g};
+`;async function u(){var n;try{if(!await h())return null;const a=await l(f,{method:"GET",cache:"no-cache"});return(n=a.errors)!=null&&n.length?i(a.errors):E(a)}catch(o){return m(o)}}export{h as c,u as g};
 //# sourceMappingURL=getCustomerCompany.js.map

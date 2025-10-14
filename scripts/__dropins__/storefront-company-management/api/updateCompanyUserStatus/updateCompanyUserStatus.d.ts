@@ -1,4 +1,4 @@
-import { UpdateCompanyUserStatusParams, UpdateCompanyUserStatusResponse } from '../../types';
+import { UpdateCompanyUserStatusResponse } from '../../types';
 
 /**
  * Updates a company user's status (Active/Inactive)

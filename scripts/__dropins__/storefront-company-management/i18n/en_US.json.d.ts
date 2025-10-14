@@ -3,6 +3,7 @@ declare const _default: {
     "shared": {
       "fields": {
         "companyName": "Company Name",
+        "companyEmail": "Company Email",
         "email": "Email",
         "legalName": "Legal Name",
         "vatTaxId": "VAT/Tax ID",
@@ -19,7 +20,26 @@ declare const _default: {
         "postalCode": "Postal Code",
         "jobTitle": "Job Title",
         "workPhoneNumber": "Work Phone Number",
-        "userRole": "User Role"
+        "userRole": "User Role",
+        "title": "New Company",
+        "companyInformation": "Company Information",
+        "street": "Street Address",
+        "streetLine2": "Street Address Line 2",
+        "postcode": "ZIP/Postal Code",
+        "telephone": "Phone Number",
+        "companyAdmin": "Company Administrator",
+        "adminJobTitle": "Job Title",
+        "adminWorkTelephone": "Work Phone Number",
+        "adminEmail": "Email",
+        "adminFirstname": "First Name",
+        "adminLastname": "Last Name",
+        "adminGender": "Gender",
+        "address": "Address",
+        "submit": "Register Company",
+        "submitting": "Registering...",
+        "required": "Required",
+        "createCompanyError": "Failed to create company. Please try again.",
+        "unexpectedError": "An unexpected error occurred. Please try again."
       },
       "buttons": {
         "edit": "Edit",
@@ -82,7 +102,101 @@ declare const _default: {
         "loadError": "Failed to load company profile",
         "updateError": "Failed to update company profile",
         "loadingProfile": "Loading company profile...",
-        "savingProfile": "Saving company profile..."
+        "savingProfile": "Saving company profile...",
+        "noDataToUpdate": "No data to update"
+      }
+    },
+    "CompanyStructure": {
+      "containerTitle": "Company Structure",
+      "shared": {
+        "buttons": {
+          "addUser": "Add User",
+          "addTeam": "Add Team",
+          "editSelected": "Edit",
+          "remove": "Remove",
+          "ok": "OK",
+          "cancel": "Cancel",
+          "close": "Close",
+          "save": "Save",
+          "deleting": "Deleting…",
+          "removing": "Removing…",
+          "expandAll": "Expand All",
+          "collapseAll": "Collapse All"
+        },
+        "titles": {
+          "addUser": "Add User",
+          "editUser": "Edit User",
+          "addTeam": "Add Team",
+          "editTeam": "Edit Team"
+        },
+        "fields": {
+          "jobTitle": "Job Title",
+          "userRole": "User Role",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "email": "Email",
+          "workPhoneNumber": "Work Phone Number",
+          "status": "Status",
+          "teamTitle": "Team Title",
+          "description": "Description"
+        },
+        "options": {
+          "selectRole": "Select role…",
+          "active": "Active",
+          "inactive": "Inactive",
+          "companyAdministrator": "Company Administrator",
+          "delete": "Delete",
+          "expand": "Expand",
+          "collapse": "Collapse"
+        },
+        "ariaLabels": {
+          "addUser": "Add user",
+          "addTeam": "Add team",
+          "editSelected": "Edit selected",
+          "removeSelected": "Remove selected",
+          "showDescription": "Show description",
+          "companyStructureActions": "Company structure actions",
+          "expandAllNodes": "Expand all nodes",
+          "collapseAllNodes": "Collapse all nodes"
+        },
+        "messages": {
+          "processing": "Processing…",
+          "teamDescription": "Team description"
+        },
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Enter a valid email",
+          "jobTitleRequired": "Job title is required",
+          "workPhoneRequired": "Work phone number is required",
+          "selectRole": "Select a role",
+          "teamTitleRequired": "Team title is required"
+        }
+      },
+      "messages": {
+        "structureSuccess": "Company structure updated successfully",
+        "structureError": "Failed to update company structure",
+        "loadError": "Failed to load company structure",
+        "updateError": "Failed to update company structure",
+        "noStructureData": "No structure data.",
+        "cannotDeleteUser": "Cannot Delete User",
+        "cannotDeleteTeam": "Cannot Delete This Team",
+        "removeUserConfirm": "Remove this user from Company structure?",
+        "deleteTeamConfirm": "Delete this team?",
+        "removeItemsConfirm": "Remove {count} item(s)?",
+        "removeUserMessage": "Removing a user changes the account status to Inactive. The user's content is still available to the Company administrator, but the user cannot log in.",
+        "cannotDeleteUserMessage": "This user has active users or teams assigned to it and cannot be deleted. Please unassign the users or teams first.",
+        "cannotDeleteTeamMessage": "This team has active users or teams assigned to it and cannot be deleted. Please unassign the users or teams first.",
+        "removeItemsMessage": "This action will remove the selected items from the company structure.",
+        "deleteTeamMessage": "This action cannot be undone. Are you sure you want to delete this team?",
+        "failedToMoveItem": "Failed to move item",
+        "createUserError": "Failed to create user. You may not have permission to perform this action.",
+        "createTeamError": "Failed to create team. You may not have permission to perform this action.",
+        "saveUserError": "An error occurred while saving the user.",
+        "saveTeamError": "An error occurred while saving the team.",
+        "loadRolesError": "Failed to load roles",
+        "fetchPermissionsError": "Failed to fetch permissions"
       }
     },
     "CompanyUsers": {
@@ -116,7 +230,9 @@ declare const _default: {
       },
       "emptyActions": "",
       "actions": {
-        "manage": "Manage"
+        "manage": "Manage",
+        "edit": "Edit",
+        "addNewUser": "Add New User"
       },
       "ariaLabels": {
         "loadingUsers": "Loading company users",
@@ -131,7 +247,8 @@ declare const _default: {
         "showingUsers": "Showing {count} users",
         "dataLoaded": "Loaded {count} users",
         "dataError": "Failed to load users.",
-        "manageUser": "Manage user {name}"
+        "manageUser": "Manage user {name}",
+        "editUser": "Edit user {name}"
       },
       "managementModal": {
         "title": "Manage user",
@@ -157,6 +274,16 @@ declare const _default: {
         }
       }
     },
+    "CompanyRegistration": {
+      "success": {
+        "pendingApproval": "Thank you! We're reviewing your request and will contact you soon.",
+        "companyDetails": "Company Information"
+      }
+    },
+    "CustomerCompanyInfo": {
+      "individualUserMessage": "You don't have a company account yet.",
+      "createAccountCta": "Create a Company Account"
+    },
     "FormText": {
       "requiredFieldError": "This is a required field.",
       "numericError": "Only numeric values are allowed.",
@@ -167,9 +294,14 @@ declare const _default: {
       "phoneError": "Please enter a valid phone number.",
       "postalCodeError": "Please enter a valid postal code.",
       "lengthTextError": "Text length must be between {min} and {max} characters.",
-      "companyNameLengthError": "Company name must be between {min} and {max} characters."
+      "urlError": "Please enter a valid URL",
+      "nameError": "Please enter a valid name",
+      "selectCountry": "Please select a country",
+      "selectRegion": "Please select a region, state or province",
+      "selectCountryFirst": "Please select a country first"
     }
   }
-};
+}
+;
 
 export default _default;

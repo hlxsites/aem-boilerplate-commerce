@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './acdl';
+export * from './company-permissions';
 export * from './convertCase';
 export * from './convertToBoolean';
 export * from './convertToInputDateFormat';
