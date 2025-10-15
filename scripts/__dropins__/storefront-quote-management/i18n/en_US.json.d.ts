@@ -75,7 +75,20 @@ declare const _default: {
         }
       }
     }
+  },
+  "QuoteManagement": {
+    "QuotesListTable": {
+      "quoteName": "Quote Name",
+      "created": "Created",
+      "createdBy": "Created By",
+      "status": "Status",
+      "lastUpdated": "Last Updated",
+      "quoteTemplate": "Quote Template",
+      "quoteTotal": "Quote Total",
+      "actions": "Action"
+    }
   }
-};
+}
+;
 
 export default _default;

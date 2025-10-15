@@ -1,18 +1,19 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as p}from"@dropins/tools/event-bus.js";const g={requestQuote:!1,editQuote:!1,deleteQuote:!1,checkoutQuote:!1},f={authenticated:!1,permissions:g},l=new Proxy(f,{get:(t,e)=>t[e],set:(t,e,r)=>(t[e]=r,!0)});function y(t){return t?{uid:t.uid,name:t.name,createdAt:t.created_at,status:t.status,salesRepName:t.sales_rep_name,expirationDate:t.expiration_date,buyer:t.buyer,comments:t.comments.map(e=>({uid:e.uid,createdAt:e.created_at,author:e.author})),items:t.items.map(e=>{var r,u;return{product:{uid:e.product.uid,sku:e.product.sku,name:e.product.name},catalogDiscount:{amountOff:e.prices.catalog_discount.amount_off,percentOff:e.prices.catalog_discount.percent_off},discounts:((u=(r=e.prices)==null?void 0:r.discounts)==null?void 0:u.map(a=>({label:a.label,value:a.value,amount:{value:a.amount.value,currency:a.amount.currency}})))??[],stockStatus:e.product.stock_status,quantity:e.quantity,prices:{originalItemPrice:{value:e.prices.original_item_price.value,currency:e.prices.original_item_price.currency},rowTotal:{value:e.prices.row_total.value,currency:e.prices.row_total.currency}}}}),prices:{grandTotal:{value:t.prices.grand_total.value,currency:t.prices.grand_total.currency},subtotalExcludingTax:{value:t.prices.subtotal_excluding_tax.value,currency:t.prices.subtotal_excluding_tax.currency},appliedTaxes:t.prices.applied_taxes.map(e=>({amount:{value:e.amount.value,currency:e.amount.currency},label:e.label}))},canCheckout:["UPDATED","DECLINED"].includes(t.status)&&l.permissions.checkoutQuote,canSendForReview:["SUBMITTED","DRAFT","UPDATED","DECLINED","EXPIRED"].includes(t.status)&&l.permissions.editQuote}:null}const E=`
+import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as d}from"@dropins/tools/event-bus.js";import{t as p}from"./transform-quote.js";const g=`
   fragment NegotiableQuoteFragment on NegotiableQuote {
     uid
-		name
-		created_at
+    name
+    created_at
     status
     sales_rep_name
     expiration_date
-		buyer {
-			firstname
-			lastname
-		}
-		comments {
+    updated_at
+    buyer {
+      firstname
+      lastname
+    }
+    comments {
       uid
       created_at
       author {
@@ -21,13 +22,15 @@ import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as 
       }
       text
     }
-		items {
+    template_id
+    template_name
+    items {
       product {
         name
         sku
         uid
-				stock_status
-				quantity
+        stock_status
+        quantity
         price_range {
           maximum_price {
             regular_price {
@@ -36,37 +39,60 @@ import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as 
           }
         }
       }
-			prices {
-				price {
-					currency
-					value
-				}
-				original_item_price {
-					currency
-					value
-				}
-				original_row_total {
-					currency
-					value
-				}
-				row_total {
-					currency
-					value
-				}
+      prices {
+        price {
+          currency
+          value
+        }
+        original_item_price {
+          currency
+          value
+        }
+        original_row_total {
+          currency
+          value
+        }
+        row_total {
+          currency
+          value
+        }
         catalog_discount {
-					amount_off
-					percent_off
+          amount_off
+          percent_off
+        }
+        discounts {
+          label
+          value
+          amount {
+            currency
+            value
+          }
+        }
+      }
+      quantity
+      ... on ConfigurableCartItem {
+				configurable_options {
+					option_label
+					value_label
 				}
-				discounts {
+			}
+			... on BundleCartItem {
+				bundle_options {
 					label
-					value
-					amount {
-						currency
-						value
+					values {
+						label
+						quantity
+            original_price {
+							currency
+							value
+						}
+						priceV2 {
+							currency
+							value
+						}
 					}
 				}
 			}
-      quantity
     }
     history {
       uid
@@ -91,26 +117,34 @@ import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as 
           old_expiration
         }
       }
-	  }
+    }
     prices {
       subtotal_excluding_tax {
-				currency
-				value
-			}
-			applied_taxes {
-				amount {
-					currency
-					value
-				}
-				label
-			}
-			grand_total {
-				currency
-				value
-			}
+        currency
+        value
+      }
+      subtotal_including_tax {
+        currency
+        value
+      }
+      subtotal_with_discount_excluding_tax {
+        currency
+        value
+      }
+      applied_taxes {
+        amount {
+          currency
+          value
+        }
+        label
+      }
+      grand_total {
+        currency
+        value
+      }
     }
   }
-`,v=`
+`,f=`
   mutation REQUEST_NEGOTIABLE_QUOTE_MUTATION(
     $cartId: ID!
     $quoteName: String!
@@ -130,6 +164,6 @@ import{fetchGraphQl as _}from"@dropins/tools/fetch-graphql.js";import{events as 
       }
     }
   }
-  ${E}
-`,N=async t=>{const{cartId:e,quoteName:r,comment:u,isDraft:a}=t;if(!e)throw new Error("Cart ID is required");if(!r)throw new Error("Quote name is required");if(!u)throw new Error("Comment is required");return _(v,{variables:{cartId:e,quoteName:r,comment:{comment:u},isDraft:a}}).then(o=>{var c,i;const{errors:s}=o;if(s){const m=s.map(d=>d.message).join("; ");throw new Error(`Failed to request negotiable quote: ${m}`)}const n=y((i=(c=o.data)==null?void 0:c.requestNegotiableQuote)==null?void 0:i.quote);if(!n)throw new Error("Failed to transform quote data: Invalid response structure");return p.emit("quote-management/negotiable-quote-requested",{quote:n,input:{cartId:e,quoteName:r,comment:u,isDraft:a}}),n})};export{g as D,E as N,N as r,l as s,y as t};
+  ${g}
+`,y=async c=>{const{cartId:e,quoteName:t,comment:a,isDraft:o}=c;if(!e)throw new Error("Cart ID is required");if(!t)throw new Error("Quote name is required");if(!a)throw new Error("Comment is required");return _(f,{variables:{cartId:e,quoteName:t,comment:{comment:a},isDraft:o}}).then(n=>{var i,s;const{errors:u}=n;if(u){const l=u.map(m=>m.message).join("; ");throw new Error(`Failed to request negotiable quote: ${l}`)}const r=p((s=(i=n.data)==null?void 0:i.requestNegotiableQuote)==null?void 0:s.quote);if(!r)throw new Error("Failed to transform quote data: Invalid response structure");return d.emit("quote-management/negotiable-quote-requested",{quote:r,input:{cartId:e,quoteName:t,comment:a,isDraft:o}}),r})};export{g as N,y as r};
 //# sourceMappingURL=requestNegotiableQuote.js.map
