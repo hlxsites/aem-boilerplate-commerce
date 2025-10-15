@@ -37,6 +37,7 @@
     "mochawesome": "~7.1.0",
     "mochawesome-merge": "~4.3.0",
     "moment": "^2.23.0",
-    "yargs": "~17.7.0"
+    "yargs": "~17.7.0",
+    "axios": "^1.6.1"
   }
 }
