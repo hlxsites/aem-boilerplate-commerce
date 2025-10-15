@@ -4,7 +4,13 @@ import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
 import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
 import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
-import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
+import {
+  AlertBanner,
+  InLineAlert,
+  Icon,
+  Button,
+  provider as UI,
+} from '@dropins/tools/components.js';
 import { search } from '@dropins/storefront-product-discovery/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
@@ -37,11 +43,15 @@ export default async function decorate(block) {
       <div class="search__view-facets"></div>
       <div class="search__facets"></div>
       <div class="search__product-sort"></div>
+      <div class="search__alert-wrapper">
+        <div class="search__alert"></div>
+      </div>
       <div class="search__product-list"></div>
       <div class="search__pagination"></div>
     </div>
   `);
 
+  const $alert = fragment.querySelector('.search__alert');
   const $resultInfo = fragment.querySelector('.search__result-info');
   const $viewFacets = fragment.querySelector('.search__view-facets');
   const $facets = fragment.querySelector('.search__facets');
@@ -110,6 +120,8 @@ export default async function decorate(block) {
     }
   }
 
+  let inlineAlert = null;
+
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
@@ -177,6 +189,16 @@ export default async function decorate(block) {
 
           events.on('authenticated', async () => {
             await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
+          });
+          events.on('requisitionList/alert', async (payload) => {
+            inlineAlert = await UI.render(InLineAlert, {
+              heading: payload.message,
+              type: payload.type,
+              variant: 'primary',
+              onDismiss: () => {
+                inlineAlert.remove();
+              },
+            })($alert);
           });
         },
       },
