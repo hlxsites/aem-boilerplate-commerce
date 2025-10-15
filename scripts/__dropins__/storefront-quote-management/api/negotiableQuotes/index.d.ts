@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ProductListTable';
-export { ProductListTable as default } from './ProductListTable';
+export * from './negotiableQuotes';
 //# sourceMappingURL=index.d.ts.map

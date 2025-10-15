@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './QuotePricesSummary';
-export { QuotePricesSummary as default } from './QuotePricesSummary';
-//# sourceMappingURL=index.d.ts.map
+export declare const NEGOTIABLE_QUOTES_QUERY: string;
+//# sourceMappingURL=NegotiableQuotesQuery.d.ts.map

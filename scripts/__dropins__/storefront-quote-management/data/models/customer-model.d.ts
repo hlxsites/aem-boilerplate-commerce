@@ -13,6 +13,5 @@ export interface CustomerPermissions {
     canRequestQuote: boolean;
     canEditQuote: boolean;
     canDeleteQuote: boolean;
-    canCheckoutQuote: boolean;
 }
 //# sourceMappingURL=customer-model.d.ts.map

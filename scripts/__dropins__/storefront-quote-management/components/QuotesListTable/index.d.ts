@@ -6,6 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ActionsBar';
-export { ActionsBar as default } from './ActionsBar';
+export * from './QuotesListTable';
+export { QuotesListTable as default } from './QuotesListTable';
 //# sourceMappingURL=index.d.ts.map
