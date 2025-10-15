@@ -71,5 +71,6 @@ describe("Verify B2B Quote feature", () => {
             "0",
         )(".commerce-cart-wrapper");
         cy.contains("Request a Quote").click();
+        // Needs to be continued 
     });
 });
