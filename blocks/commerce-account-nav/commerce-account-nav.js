@@ -1,5 +1,4 @@
 import { provider as UI, Icon } from '@dropins/tools/components.js';
-import { getCustomerRolePermissions } from '@dropins/storefront-auth/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 
 import '../../scripts/initializers/auth.js';
@@ -96,5 +95,7 @@ export default async function decorate(block) {
 
 // Force a refresh of the permissions
 events.on('companyContext/changed', () => {
-  getCustomerRolePermissions();
+  import('@dropins/storefront-auth/api.js').then((module) => {
+    module.getCustomerRolePermissions();
+  });
 });
