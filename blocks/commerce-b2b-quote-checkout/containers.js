@@ -9,7 +9,6 @@
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
 import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
-import OutOfStock from '@dropins/storefront-checkout/containers/OutOfStock.js';
 import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
 import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
 import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
@@ -26,7 +25,6 @@ import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
 // Cart Dropin
-import * as cartApi from '@dropins/storefront-cart/api.js';
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
@@ -91,7 +89,6 @@ export const CONTAINERS = Object.freeze({
   // Static containers (rendered in Promise.all)
   CHECKOUT_HEADER: 'checkoutHeader',
   SERVER_ERROR: 'serverError',
-  OUT_OF_STOCK: 'outOfStock',
   LOGIN_FORM: 'loginForm',
   SHIPPING_ADDRESS_FORM_SKELETON: 'shippingAddressFormSkeleton',
   BILL_TO_SHIPPING_ADDRESS: 'billToShippingAddress',
@@ -215,21 +212,6 @@ export const renderServerError = async (container, contentElement) => renderCont
     },
     onServerError: () => {
       contentElement.classList.add(CHECKOUT_ERROR_CLASS);
-    },
-  })(container),
-);
-
-/**
- * Renders out of stock handling with cart navigation and product update options
- * @param {HTMLElement} container - DOM element to render the component in
- * @returns {Promise<Object>} - The rendered out-of-stock component
- */
-export const renderOutOfStock = async (container) => renderContainer(
-  CONTAINERS.OUT_OF_STOCK,
-  async () => CheckoutProvider.render(OutOfStock, {
-    routeCart: () => rootLink('/cart'),
-    onCartProductsUpdate: (items) => {
-      cartApi.updateProductsFromCart(items).catch(console.error);
     },
   })(container),
 );
