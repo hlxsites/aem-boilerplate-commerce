@@ -5,7 +5,6 @@ import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
 import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
 import {
-  AlertBanner,
   InLineAlert,
   Icon,
   Button,
