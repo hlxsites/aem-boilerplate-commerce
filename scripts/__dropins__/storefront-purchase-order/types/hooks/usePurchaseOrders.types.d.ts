@@ -36,6 +36,5 @@ export interface UsePurchaseOrdersReturn {
     handleRejectSelected: () => void;
     handleApproveSelected: () => void;
     alertMessageConfig: AlertMessageConfigType;
-    pendingApprovalCount: number;
 }
 //# sourceMappingURL=usePurchaseOrders.types.d.ts.map
