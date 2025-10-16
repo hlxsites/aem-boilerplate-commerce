@@ -11,19 +11,11 @@ Follow these steps to get your development environment ready for the lab.
 Open your terminal and clone the repository:
 
 ```bash
-git clone https://github.com/hlxsites/aem-boilerplate-commerce.git
+git clone https://github.com/hlxsites/aem-boilerplate-commerce.git --branch agentic-dev
 cd aem-boilerplate-commerce
 ```
 
-### 2. Checkout the Agentic Dev Branch
-
-Switch to the branch prepared for this lab:
-
-```bash
-git checkout agentic-dev
-```
-
-### 3. Install Root Dependencies
+### 2. Install Root Dependencies
 
 Install the main project dependencies:
 
@@ -33,7 +25,7 @@ npm install
 
 This will install all the necessary packages for the storefront application.
 
-### 4. Install MCP Server Dependencies
+### 3. Install MCP Server Dependencies
 
 Navigate to the MCP server directory and install its dependencies:
 
@@ -43,7 +35,7 @@ npm install
 cd ..
 ```
 
-### 5. Configure Environment Variables
+### 4. Configure Environment Variables
 
 The MCP server requires certain environment variables to connect to the RAG service.
 
@@ -63,18 +55,18 @@ WORKER_RAG_URL=<provided-during-lab>
 
 **Note:** The actual value for `WORKER_RAG_URL` will be provided by the lab facilitator at the start of the session.
 
-### 6. Enable MCP in Cursor
+### 5. Enable MCP in Cursor
 
 The Model Context Protocol (MCP) server provides AI agents with access to Adobe Commerce Storefront documentation.
 
-#### 6.1. Open Cursor Settings
+#### 5.1. Open Cursor Settings
 
 **IMAGE PLACEHOLDER: Cursor menu showing how to access settings**
 
 1. Open Cursor
 2. Go to **Cursor** → **Settings** (or press `Cmd+,` on Mac / `Ctrl+,` on Windows/Linux)
 
-#### 6.2. Enable MCP Features
+#### 5.2. Enable MCP Features
 
 **IMAGE PLACEHOLDER: Cursor settings panel with MCP toggle highlighted**
 
@@ -82,7 +74,7 @@ The Model Context Protocol (MCP) server provides AI agents with access to Adobe 
 2. Enable the **Model Context Protocol** toggle
 3. Enable **Use MCP Features** if it's a separate option
 
-#### 6.3. Configure MCP Server
+#### 5.3. Configure MCP Server
 
 The project includes an MCP configuration file at `.cursor/mcp.json`. This file should already be configured to use the local MCP server.
 
@@ -115,7 +107,7 @@ The configuration should look similar to this:
 
 **Note:** The `start-mcp.sh` script will automatically load the environment variables from your `.env` file in the `mcp-server` directory.
 
-#### 6.4. Restart Cursor
+#### 5.4. Restart Cursor
 
 After enabling MCP and configuring the server:
 
@@ -123,7 +115,7 @@ After enabling MCP and configuring the server:
 2. Reopen Cursor
 3. Open the `aem-boilerplate-commerce` project
 
-#### 6.5. Verify MCP Connection
+#### 5.5. Verify MCP Connection
 
 **IMAGE PLACEHOLDER: Cursor showing MCP server status indicator**
 
@@ -135,7 +127,7 @@ Check that the MCP server is running correctly:
 
 If the MCP server is working, you should see relevant documentation results.
 
-### 7. Start the Development Server
+### 6. Start the Development Server
 
 With everything configured, start the local development server:
 
@@ -143,32 +135,7 @@ With everything configured, start the local development server:
 npx -y @adobe/aem-cli up --no-open --forward-browser-logs
 ```
 
-Or install the AEM CLI globally for easier access:
-
-```bash
-npm install -g @adobe/aem-cli
-aem up
-```
-
 The development server will start at `http://localhost:3000`.
-
-### Troubleshooting
-
-#### MCP Server Not Starting
-
-If the MCP server fails to start:
-
-1. Check that all environment variables are set correctly
-2. Verify that Node.js dependencies are installed in `mcp-server/`
-3. Look at Cursor's logs for error messages (Help → Show Logs)
-
-#### Development Server Issues
-
-If the AEM development server has issues:
-
-1. Ensure port 3000 is not already in use
-2. Try stopping and restarting the server
-3. Check the console output for specific error messages
 
 ## Vibing
 
