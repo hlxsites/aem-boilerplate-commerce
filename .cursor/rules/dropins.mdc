@@ -28,10 +28,12 @@ alwaysApply: true
 ## Documentation Access
 
 ### Available Documentation
-- Block README.md
+
 - Dropin Documentation (published at https://experienceleague.adobe.com/developer/commerce/storefront/ – search with `site:www.experienceleague.adobe.com` to restrict web search results)
-- Dropin TypeScript Definitions in `node_modules/@dropins/`
-- `search_storefront_docs`MCP
+- Dropin TypeScript Definitions are in `node_modules/@dropins/`
+- A Storefront RAG MCP is available at `search_storefront_docs`
+- A local copy of the entire documentation site is avaialble at the root of the project in `docs-full.txt`.
+- A README.md in each block folder describes the block, how it is configured, and other side effects.
 
 ### Using Block README.md
 
