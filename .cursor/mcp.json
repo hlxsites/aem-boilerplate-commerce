@@ -4,6 +4,11 @@
       "command": "bash",
       "args": ["mcp-server/start-mcp.sh"],
       "cwd": "."
+    },
+    "chrome-devtools": {
+      "command": "npx chrome-devtools-mcp@latest",
+      "env": {},
+      "args": []
     }
   }
 }
