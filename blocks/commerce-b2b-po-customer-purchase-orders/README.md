@@ -8,9 +8,9 @@ The Commerce B2B Customer Purchase Orders block renders a list of customer's own
 
 ### Block Configuration
 
-| Configuration Key | Type | Default | Description | Required | Side Effects |
-|-------------------|------|---------|-------------|----------|--------------|
-| – | – | – | This block has no authorable configuration. | – | – |
+| Configuration Key | Type | Default | Description                                 | Required | Side Effects |
+| ----------------- | ---- | ------- | ------------------------------------------- | -------- | ------------ |
+| –                 | –    | –       | This block has no authorable configuration. | –        | –            |
 
 <!-- ### URL Parameters
 
@@ -24,10 +24,10 @@ No localStorage keys are used by this block. -->
 
 #### Event Listeners
 
-| Event Name | Payload | Description | Side Effects |
-|------------|---------|-------------|--------------|
-| `auth/permissions` | `permissions` object | Listens for permission changes to update block visibility and access | Re-renders the block with updated permissions, shows/hides based on access rights |
-| `authenticated` | `isAuthenticated` boolean | Listens for authentication status changes | Redirects to login page when user becomes unauthenticated |
+| Event Name         | Payload                   | Description                                                          | Side Effects                                                                      |
+| ------------------ | ------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `auth/permissions` | `permissions` object      | Listens for permission changes to update block visibility and access | Re-renders the block with updated permissions, shows/hides based on access rights |
+| `authenticated`    | `isAuthenticated` boolean | Listens for authentication status changes                            | Redirects to login page when user becomes unauthenticated                         |
 
 <!-- #### Event Emitters
 
