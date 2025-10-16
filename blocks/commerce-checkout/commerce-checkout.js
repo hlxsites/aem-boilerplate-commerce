@@ -64,6 +64,7 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level
@@ -90,6 +91,43 @@ import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
+
+const getCheckoutPOConfig = () => {
+  const permissions = events.lastPayload('auth/permissions') ?? {};
+
+  const baseConfig = {
+    renderSlot: false,
+    usePOapi: false,
+    hideButton: false,
+  };
+
+  const isAdmin = Boolean(permissions.admin);
+  const isPOEnabled = Object.prototype.hasOwnProperty.call(
+    permissions,
+    'Magento_PurchaseOrder::all',
+  )
+    ? Boolean(permissions['Magento_PurchaseOrder::all'])
+    : true;
+  const canPlaceSalesOrder = Boolean(permissions['Magento_Sales::place_order']);
+
+  // If not admin, can place sales order, but PO is not enabled, hide the button
+  if (!isAdmin && canPlaceSalesOrder && !isPOEnabled) {
+    return { ...baseConfig, hideButton: true };
+  }
+
+  // If PO is not enabled at all, return base config
+  if (!isPOEnabled) {
+    return baseConfig;
+  }
+
+  // If admin or can place sales order, show the button with PO api
+  if (isAdmin || canPlaceSalesOrder) {
+    return { ...baseConfig, renderSlot: true, usePOapi: true };
+  }
+
+  // For all other cases (not admin, cannot place sales order, PO enabled), hide the button
+  return { ...baseConfig, hideButton: true };
+};
 
 function createMetaTag(property, content, type) {
   if (!property || !type) {
@@ -207,7 +245,9 @@ export default async function decorate(block) {
   const $giftOptions = checkoutFragment.querySelector(
     '.checkout__gift-options',
   );
-  const $termsAndConditions = checkoutFragment.querySelector('.checkout__terms-and-conditions');
+  const $termsAndConditions = checkoutFragment.querySelector(
+    '.checkout__terms-and-conditions',
+  );
 
   block.appendChild(checkoutFragment);
 
@@ -225,7 +265,8 @@ export default async function decorate(block) {
   const creditCardFormRef = { current: null };
 
   // Adobe Commerce GraphQL endpoint
-  const commerceCoreEndpoint = getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint');
+  const commerceCoreEndpoint = getConfigValue('commerce-core-endpoint')
+    || getConfigValue('commerce-endpoint');
 
   // Render the initial containers
   const [
@@ -307,7 +348,9 @@ export default async function decorate(block) {
 
     CheckoutProvider.render(BillToShippingAddress, {
       onChange: (checked) => {
-        const billingFormValues = events.lastPayload('checkout/addresses/billing');
+        const billingFormValues = events.lastPayload(
+          'checkout/addresses/billing',
+        );
         if (!checked && billingFormValues) {
           setAddressOnCart({
             api: checkoutApi.setBillingAddress,
@@ -466,71 +509,90 @@ export default async function decorate(block) {
       },
     })($termsAndConditions),
 
-    CheckoutProvider.render(PlaceOrder, {
-      handleValidation: () => {
-        let success = true;
-        const { forms } = document;
+    !getCheckoutPOConfig().hideButton
+      ? CheckoutProvider.render(PlaceOrder, {
+        handleValidation: () => {
+          let success = true;
+          const { forms } = document;
 
-        const loginForm = forms[LOGIN_FORM_NAME];
+          const loginForm = forms[LOGIN_FORM_NAME];
 
-        if (loginForm) {
-          success = loginForm.checkValidity();
-          if (!success) scrollToElement($login);
-        }
-
-        const isFormVisible = (form) => form && form.offsetParent !== null;
-
-        if (
-          success
-          && shippingFormRef.current
-          && isFormVisible(forms[SHIPPING_FORM_NAME])
-        ) {
-          success = shippingFormRef.current.handleValidationSubmit(false);
-        }
-
-        if (
-          success
-          && billingFormRef.current
-          && isFormVisible(forms[BILLING_FORM_NAME])
-        ) {
-          success = billingFormRef.current.handleValidationSubmit(false);
-        }
-
-        const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
-
-        if (success && termsAndConditionsForm) {
-          success = termsAndConditionsForm.checkValidity();
-          if (!success) scrollToElement($termsAndConditions);
-        }
-
-        return success;
-      },
-      handlePlaceOrder: async ({ cartId, code }) => {
-        await displayOverlaySpinner();
-        try {
-          // Payment Services credit card
-          if (code === PaymentMethodCode.CREDIT_CARD) {
-            if (!creditCardFormRef.current) {
-              console.error('Credit card form not rendered.');
-              return;
-            }
-            if (!creditCardFormRef.current.validate()) {
-              // Credit card form invalid; abort order placement
-              return;
-            }
-            // Submit Payment Services credit card form
-            await creditCardFormRef.current.submit();
+          if (loginForm) {
+            success = loginForm.checkValidity();
+            if (!success) scrollToElement($login);
           }
-          // Place order
-          await orderApi.placeOrder(cartId);
-        } catch (error) {
-          console.error(error);
-          throw error;
-        } finally {
-          await removeOverlaySpinner();
-        }
-      },
-    })($placeOrder),
+
+          const isFormVisible = (form) => form && form.offsetParent !== null;
+
+          if (
+            success
+              && shippingFormRef.current
+              && isFormVisible(forms[SHIPPING_FORM_NAME])
+          ) {
+            success = shippingFormRef.current.handleValidationSubmit(false);
+          }
+
+          if (
+            success
+              && billingFormRef.current
+              && isFormVisible(forms[BILLING_FORM_NAME])
+          ) {
+            success = billingFormRef.current.handleValidationSubmit(false);
+          }
+
+          const termsAndConditionsForm = forms[TERMS_AND_CONDITIONS_FORM_NAME];
+
+          if (success && termsAndConditionsForm) {
+            success = termsAndConditionsForm.checkValidity();
+            if (!success) scrollToElement($termsAndConditions);
+          }
+
+          return success;
+        },
+        handlePlaceOrder: async ({ cartId, code }) => {
+          await displayOverlaySpinner();
+          try {
+            // Payment Services credit card
+            if (code === PaymentMethodCode.CREDIT_CARD) {
+              if (!creditCardFormRef.current) {
+                console.error('Credit card form not rendered.');
+                return;
+              }
+              if (!creditCardFormRef.current.validate()) {
+                // Credit card form invalid; abort order placement
+                return;
+              }
+              // Submit Payment Services credit card form
+              await creditCardFormRef.current.submit();
+            }
+
+            if (getCheckoutPOConfig().usePOapi) {
+              await placePurchaseOrder(cartId);
+            } else {
+              // Place order
+              await orderApi.placeOrder(cartId);
+            }
+          } catch (error) {
+            console.error(error);
+            throw error;
+          } finally {
+            await removeOverlaySpinner();
+          }
+        },
+        slots: (() => {
+          const poConfig = getCheckoutPOConfig();
+          return poConfig.renderSlot
+            ? {
+              Content: (placeOrderCtx) => {
+                const spanElement = document.createElement('span');
+                spanElement.innerText = 'Place Purchase Order';
+                placeOrderCtx.replaceWith(spanElement);
+              },
+            }
+            : {};
+        })(),
+      })($placeOrder)
+      : null,
 
     CartProvider.render(GiftOptions, {
       view: 'order',
@@ -904,7 +966,10 @@ export default async function decorate(block) {
         ...labels,
       },
     };
-    await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
+    await initializers.mountImmediately(orderApi.initialize, {
+      orderData,
+      langDefinitions,
+    });
 
     block.replaceChildren(orderConfirmationFragment);
 
@@ -1053,7 +1118,9 @@ export default async function decorate(block) {
 
     const url = token
       ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+      : rootLink(
+        `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`,
+      );
 
     window.history.pushState({}, '', url);
 
