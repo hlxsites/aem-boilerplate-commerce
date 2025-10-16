@@ -2,18 +2,93 @@
 
 Welcome to the Adobe Developers Live Lab! In this session, you'll learn how to work with AI agents to develop Adobe Commerce storefronts using Edge Delivery Services.
 
+## Prerequisites
+
+Before starting the lab, ensure you have the following installed on your machine:
+
+### Required Software
+
+1. **Cursor IDE**
+   - Download from [cursor.com](https://cursor.com)
+   - Version: Latest stable release
+
+2. **Node.js and npm**
+   - Node.js version: **22.14.0 or higher**
+   - npm version: **11.6.0 or higher**
+   - Download from [nodejs.org](https://nodejs.org)
+   - Verify your installation:
+     ```bash
+     node --version
+     npm --version
+     ```
+
+3. **Git** (Optional)
+   - Required only if cloning the repository directly
+   - Download from [git-scm.com](https://git-scm.com)
+   - If you receive a zip file of the project, Git is not required
+   - Verify your installation:
+     ```bash
+     git --version
+     ```
+
+4. **Bash Shell**
+   - macOS/Linux: Already available
+   - Windows: Use Git Bash (included with Git) or WSL
+
+5. **Google Chrome**
+   - Required for testing the storefront
+   - Download from [google.com/chrome](https://www.google.com/chrome/)
+
+### System Requirements
+
+- **Terminal/Command Line Access**: Familiarity with basic terminal commands
+- **Internet Connection**: Required for downloading dependencies and accessing the RAG service
+
+### Verify Your Setup
+
+Before proceeding, verify all prerequisites are installed:
+
+```bash
+# Check Node.js version (should be 22.14.0 or higher)
+node --version
+
+# Check npm version (should be 11.6.0 or higher)
+npm --version
+
+# Check Git (optional, skip if using zip file)
+git --version
+
+# Check Bash
+bash --version
+```
+
 ## Setup
 
 Follow these steps to get your development environment ready for the lab.
 
-### 1. Clone the Repository
+### 1. Get the Project Files
 
-Open your terminal and clone the repository:
+You can obtain the project files in one of two ways:
+
+#### Option A: Clone the Repository (Recommended)
+
+If you have Git installed, open your terminal and clone the repository:
 
 ```bash
 git clone https://github.com/hlxsites/aem-boilerplate-commerce.git --branch agentic-dev
 cd aem-boilerplate-commerce
 ```
+
+#### Option B: Download the Zip File
+
+If you don't have Git installed:
+
+1. Download the project zip file from: [https://github.com/hlxsites/aem-boilerplate-commerce/archive/refs/heads/agentic-dev.zip](https://github.com/hlxsites/aem-boilerplate-commerce/archive/refs/heads/agentic-dev.zip)
+2. Extract the zip file to a location on your machine
+3. Open your terminal and navigate to the extracted folder:
+   ```bash
+   cd path/to/aem-boilerplate-commerce-agentic-dev
+   ```
 
 ### 2. Install Root Dependencies
 
