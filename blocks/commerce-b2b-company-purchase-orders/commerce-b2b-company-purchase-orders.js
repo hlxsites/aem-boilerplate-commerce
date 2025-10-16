@@ -52,10 +52,6 @@ export default async function decorate(block) {
     {
       initialPageSize: pageSizeConfig,
       skeletonRowCount,
-      withHeader: false,
-      setRowsData: (dd) => {
-        console.log('ROWS', dd);
-      },
     },
   )(block);
 }
