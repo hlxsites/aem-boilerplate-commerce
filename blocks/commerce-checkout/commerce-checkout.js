@@ -110,22 +110,22 @@ const getCheckoutPOConfig = () => {
     : true;
   const canPlaceSalesOrder = Boolean(permissions['Magento_Sales::place_order']);
 
-  // If not admin, can place sales order, but PO is not enabled, hide the button
+  // If not admin, can place sales order, but PO is not enabled, hide the button.
   if (!isAdmin && canPlaceSalesOrder && !isPOEnabled) {
     return { ...baseConfig, hideButton: true };
   }
 
-  // If PO is not enabled at all, return base config
+  // If PO is not enabled at all, return base config.
   if (!isPOEnabled) {
     return baseConfig;
   }
 
-  // If admin or can place sales order, show the button with PO api
+  // If admin or can place sales order, show the button with PO api.
   if (isAdmin || canPlaceSalesOrder) {
     return { ...baseConfig, renderSlot: true, usePOapi: true };
   }
 
-  // For all other cases (not admin, cannot place sales order, PO enabled), hide the button
+  // For all other cases (not admin, cannot place sales order, PO enabled), hide the button.
   return { ...baseConfig, hideButton: true };
 };
 
