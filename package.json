@@ -37,8 +37,8 @@
   },
   "dependencies": {
     "@adobe/adobe-client-data-layer": "^3.0.1",
-    "@adobe/magento-storefront-event-collector": "^1.15.0",
-    "@adobe/magento-storefront-events-sdk": "^1.15.0",
+    "@adobe/magento-storefront-event-collector": "^0.0.0-65c43b8e5dc5cd9d8999a127b5971742c5f34932",
+    "@adobe/magento-storefront-events-sdk": "^0.0.0-65c43b8e5dc5cd9d8999a127b5971742c5f34932",
     "@dropins/storefront-account": "~1.2.0",
     "@dropins/storefront-auth": "~2.1.1-beta1",
     "@dropins/storefront-cart": "1.5.1-beta4",
