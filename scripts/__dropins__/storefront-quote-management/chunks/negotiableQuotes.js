@@ -18,6 +18,17 @@ import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{s,a as i}f
         currency
       }
     }
+    history {
+      change_type
+      changes {
+        statuses {
+          changes {
+            new_status
+            old_status
+          }
+        }
+      }
+    }
   }
 `,g=`
   fragment SearchResultPageInfoFragment on SearchResultPageInfo {
@@ -62,5 +73,5 @@ import{fetchGraphQl as n}from"@dropins/tools/fetch-graphql.js";import{s,a as i}f
   ${u}
   ${g}
   ${l}
-`;var E=(e=>(e.FULL="FULL",e.PARTIAL="PARTIAL",e))(E||{}),_=(e=>(e.ASC="ASC",e.DESC="DESC",e))(_||{}),f=(e=>(e.QUOTE_NAME="QUOTE_NAME",e.CREATED_AT="CREATED_AT",e.UPDATED_AT="UPDATED_AT",e))(f||{});const S=async(e={})=>{var r;if(!s.authenticated)return Promise.reject(new Error("Unauthorized"));const o={filter:e.filter||null,pageSize:e.pageSize||20,currentPage:e.currentPage||1,sort:e.sort||null};try{const t=await n(c,{variables:o});if(!((r=t==null?void 0:t.data)!=null&&r.negotiableQuotes))throw new Error("No quotes data received");const a=i(t.data.negotiableQuotes);if(!a)throw new Error("Failed to transform quotes data");return a}catch(t){return Promise.reject(t)}};export{E as F,f as N,_ as S,S as n};
+`;var _=(e=>(e.FULL="FULL",e.PARTIAL="PARTIAL",e))(_||{}),E=(e=>(e.ASC="ASC",e.DESC="DESC",e))(E||{}),f=(e=>(e.QUOTE_NAME="QUOTE_NAME",e.CREATED_AT="CREATED_AT",e.UPDATED_AT="UPDATED_AT",e))(f||{});const S=async(e={})=>{var r;if(!s.authenticated)return Promise.reject(new Error("Unauthorized"));const o={filter:e.filter||null,pageSize:e.pageSize||20,currentPage:e.currentPage||1,sort:e.sort||null};try{const t=await n(c,{variables:o});if(!((r=t==null?void 0:t.data)!=null&&r.negotiableQuotes))throw new Error("No quotes data received");const a=i(t.data.negotiableQuotes);if(!a)throw new Error("Failed to transform quotes data");return a}catch(t){return Promise.reject(t)}};export{_ as F,f as N,E as S,S as n};
 //# sourceMappingURL=negotiableQuotes.js.map

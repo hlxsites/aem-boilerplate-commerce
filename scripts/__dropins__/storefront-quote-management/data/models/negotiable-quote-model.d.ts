@@ -1,3 +1,21 @@
+export interface ShippingAddress {
+    firstname: string;
+    lastname: string;
+    company?: string;
+    street: string[];
+    city: string;
+    region?: {
+        code: string;
+        label: string;
+        regionId: number;
+    };
+    postcode: string;
+    country: {
+        code: string;
+        label: string;
+    };
+    telephone: string;
+}
 export interface NegotiableQuoteModel {
     uid: string;
     name: string;
@@ -30,6 +48,7 @@ export interface NegotiableQuoteModel {
         }[];
     };
     items: NegotiableQuoteCartItem[];
+    shippingAddresses?: ShippingAddress[];
     canCheckout: boolean;
     canSendForReview: boolean;
 }
@@ -114,6 +133,7 @@ export interface NegotiableQuotesListModel {
     };
 }
 export declare enum NegotiableQuoteStatus {
+    NEW = "NEW",
     SUBMITTED = "SUBMITTED",
     PENDING = "PENDING",
     UPDATED = "UPDATED",

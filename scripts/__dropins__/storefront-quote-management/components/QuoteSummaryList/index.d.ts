@@ -6,16 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ActionsBar';
-export * from './ItemsQuoted';
-export * from './ManageNegotiableQuote';
-export * from './OrderSummary';
-export * from './OrderSummaryLine';
-export * from './ProductListTable';
-export * from './QuotePricesSummary';
 export * from './QuoteSummaryList';
-export * from './QuotesListTable';
-export * from './ShippingAddressDisplay';
-export * from './RequestNegotiableQuoteForm';
-export * from './TabbedContent';
+export { QuoteSummaryList as default } from './QuoteSummaryList';
 //# sourceMappingURL=index.d.ts.map
