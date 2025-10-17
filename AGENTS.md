@@ -61,6 +61,7 @@ The repository provides the basic structure, blocks, and configuration needed to
   - Bad: `.item-list`
   - Good: `.{blockName} .item-list`
 - Avoid classes `{blockName}-container` and `{blockName}-wrapper}` as those are used on sections and could be confusing.
+- Block CSS files are automatically imported by the framework, do not add an import statement to the block JS file.
 
 ### HTML
 - Use semantic HTML5 elements
