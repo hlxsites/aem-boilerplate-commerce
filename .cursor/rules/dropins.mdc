@@ -24,6 +24,7 @@ alwaysApply: true
 - **MANDATORY: Never assume slot names** - always check documentation first
 - **MANDATORY: Use container props and interface if possible before using CSS** by using the documented interface, like Slots or container arguments, before using CSS
 - A dropin must be first initialized before use. This is done in the `scripts/initializers` folder, usually once per dropin.
+- Use the Chrome MCP to validate changes to frontend code such as that in `blocks/`.
 
 ## Documentation Access
 
@@ -94,6 +95,7 @@ provider(ContainerName, {
 - They allow injection of custom content into specific areas.
 - **NEVER hallucinate slots** - always check types and documentation.
 - If an appropriate slot does not exist, then using the block layout (ie `createContextualFragment`) is the next best option.
+- The Slot callback gets a `ctx` object with explicit properties in the type definitions. Do not hallucinate ctx properties.
 
 ### Slot Usage Pattern
 ```javascript
