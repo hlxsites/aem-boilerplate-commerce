@@ -101,7 +101,7 @@ export default async function decorate(block) {
           checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
           ctx.appendChild(checkoutButtonContainer);
 
-          ctx.onChange(next => {
+          ctx.onChange((next) => {
             const enabled = next.quoteData?.canCheckout;
 
             negotiableQuoteRenderer.render(Button, {
@@ -128,8 +128,7 @@ export default async function decorate(block) {
             size: 'large',
           })(progressSpinner);
 
-          ctx.onChange(next => {
-            console.log('onChange', next);
+          ctx.onChange((next) => {
             // Remove existing content from the shipping information container
             shippingInformation.innerHTML = '';
 
@@ -201,7 +200,7 @@ export default async function decorate(block) {
                     quoteUid: quoteId,
                     addressData: {
                       ...addressInput,
-                    additionalInput: additionalAddressInput,
+                      additionalInput: additionalAddressInput,
                     },
                   }).finally(() => {
                     progressSpinner.setAttribute('hidden', true);
@@ -210,7 +209,7 @@ export default async function decorate(block) {
                 },
               })(shippingInformation);
             }
-          })
+          });
         },
       },
     })(block);
