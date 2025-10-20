@@ -86,7 +86,10 @@ export default async function decorate(block) {
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: getSortFromParams(sort),
-      filter: getFilterFromParams(filter),
+      filter: [
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        ...getFilterFromParams(filter),
+      ],
     }).catch(() => {
       console.error('Error searching for products');
     });
