@@ -1,9 +1,25 @@
  /* stylelint-disable no-empty-source */
 
+ /* Select shipping information */
+.negotiable-quote__select-shipping-information {
+    margin-top: var(--spacing-medium);
+}
+
+/* Progress spinner container */
+.negotiable-quote__progress-spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.negotiable-quote__progress-spinner-container[hidden] {
+    display: none;
+}
+
  /* Shipping address list */
 .negotiable-quote__shipping-information-addresses .dropin-header-container__title {
-    font: var(--type-details-caption-1-font);
-    letter-spacing: var(--type-details-caption-1-letter-spacing);
+    font: var(--type-body-2-emphasized-font);
+    letter-spacing: var(--type-body-2-emphasized-letter-spacing);
 }
 
 /* Addresses wrapper */
