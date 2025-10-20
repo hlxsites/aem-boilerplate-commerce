@@ -1,6 +1,6 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { NegotiableQuoteModel } from '../../data/models/negotiable-quote-model';
+import { NegotiableQuoteModel, ShippingAddress } from '../../data/models/negotiable-quote-model';
 
 export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElement> {
     onActionsDropdownChange?: (event: Event) => void;
@@ -35,6 +35,9 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         }>;
         ShippingInformation?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
+            primaryShippingAddress?: ShippingAddress | undefined;
+            loading?: boolean;
+            setLoading?: (loading: boolean) => void;
         }>;
         QuoteCommentsTitle?: SlotProps<{
             quoteData?: NegotiableQuoteModel;

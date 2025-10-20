@@ -1,4 +1,8 @@
 export interface ShippingAddress {
+    /**
+     * The unique string identifier of the address
+     */
+    uid?: string;
     firstname: string;
     lastname: string;
     company?: string;

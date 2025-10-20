@@ -282,6 +282,25 @@ export declare const mockQuoteData: {
             value: number;
         };
     };
+    shipping_addresses: {
+        uid: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    }[];
 };
 export declare const mockNegotiableQuotesResponse: {
     data: {

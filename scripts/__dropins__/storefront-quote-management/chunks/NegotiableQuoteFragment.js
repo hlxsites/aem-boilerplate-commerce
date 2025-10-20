@@ -144,6 +144,7 @@ const e=`
       }
     }
     shipping_addresses {
+      uid
       firstname
       lastname
       company
