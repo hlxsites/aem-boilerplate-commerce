@@ -6,7 +6,7 @@ import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 
 import {
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_REQUISITION_LISTS_PATH,
+  CUSTOMER_REQUISITION_LIST_DETAILS_PATH,
   checkIsAuthenticated,
   rootLink,
 } from '../../scripts/commerce.js';
@@ -26,7 +26,7 @@ export default async function decorate(block) {
     const renderGrid = async () => {
       gridRenderFunction = rlRenderer.render(RequisitionListGrid, {
         requisitionLists: await rlApi.getRequisitionLists(),
-        routeRequisitionListDetails: (uid) => rootLink(`${CUSTOMER_REQUISITION_LISTS_PATH}?requisitionListUid=${uid}`),
+        routeRequisitionListDetails: (uid) => rootLink(`${CUSTOMER_REQUISITION_LIST_DETAILS_PATH}?requisitionListUid=${uid}`),
         slots: {},
       });
 
