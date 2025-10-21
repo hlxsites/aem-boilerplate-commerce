@@ -82,6 +82,12 @@ declare const _default: {
         "approver": "Approver",
         "selectAllAriaLabel": "Select all not approved purchase orders"
       }
+    },
+    "confirmationForm": {
+      "title":"Your Purchase Order has been submitted for approval.",
+      "description":"Your Purchase Order request number is ",
+      "helpText":"A copy of this Purchase Order will be emailed to you shortly.", 
+      "button":"Continue Shopping"
     }
   }
 }

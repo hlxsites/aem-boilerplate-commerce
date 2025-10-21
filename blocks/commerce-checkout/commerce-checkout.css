@@ -240,6 +240,10 @@
     padding-top: var(--spacing-xxlarge);
 }
 
+.order-confirmation--po {
+    display: block;
+}
+
 .order-confirmation__main {
     display: grid;
     grid-row-gap: var(--spacing-xbig);

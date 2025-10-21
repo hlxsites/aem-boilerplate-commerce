@@ -60,6 +60,9 @@ import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 
+import ConfirmationPurchaseOrders from '@dropins/storefront-purchase-order/containers/ConfirmationPurchaseOrders.js';
+import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
+
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
@@ -561,7 +564,9 @@ export default async function decorate(block) {
           }
 
           if (getCheckoutPOConfig().usePOapi) {
-            await placePurchaseOrder(cartId);
+            await placePurchaseOrder(cartId).then((data) => {
+              events.emit('po/placed', data.purchaseOrder);
+            });
           } else {
             // Place order
             await orderApi.placeOrder(cartId);
@@ -1066,6 +1071,40 @@ export default async function decorate(block) {
     })($orderConfirmationFooterContinueBtn);
   }
 
+  // Define the Layout for the Purchase Order Confirmation
+  async function displayPOConfirmation(poData) {
+    if (!poData?.number) return;
+    // Clear address form data
+    sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+
+    setMetaTags('Purchase Order Confirmation');
+    document.title = 'Purchase Order Confirmation';
+
+    const poConfirmationFragment = document.createRange()
+      .createContextualFragment(`
+      <div class="order-confirmation order-confirmation--po">
+        <div class="order-confirmation__main">
+          <div class="order-confirmation__block order-confirmation__po-confirmation"></div>
+        </div>
+      </div>
+    `);
+
+    const $poConfirmation = poConfirmationFragment.querySelector(
+      '.order-confirmation__po-confirmation',
+    );
+
+    block.replaceChildren(poConfirmationFragment);
+
+    POProvider.render(ConfirmationPurchaseOrders, {
+      orderNumber: poData.number,
+      routePurchaseOrderDetails: () => rootLink(`/customer/purchase-orders/${poData.number}`),
+      routeContinueShopping: () => rootLink('/'),
+    })($poConfirmation);
+  }
+
   // Define the event handlers
   async function handleCartInitialized(data) {
     if (isCartEmpty(data)) await displayEmptyCart();
@@ -1095,6 +1134,21 @@ export default async function decorate(block) {
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
   }
 
+  async function handlePurchaseOrderPlaced(poData) {
+    // Clear address form data
+    sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+
+    window.history.pushState(
+      {},
+      '',
+      rootLink(`/customer/purchase-orders/${poData.number}`),
+    );
+
+    // TODO cleanup checkout containers
+    await displayPOConfirmation(poData);
+  }
+
   async function handleOrderPlaced(orderData) {
     // Clear address form data
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
@@ -1122,6 +1176,7 @@ export default async function decorate(block) {
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
+  events.on('po/placed', handlePurchaseOrderPlaced);
 }
 
 function swatchImageSlot(ctx) {

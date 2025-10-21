@@ -14,8 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './PurchaseOrdersTable';
-export * from './PurchaseOrdersHeader';
-export * from './PurchaseOrdersTableActions';
-export * from './ConfirmationForm';
+export * from './ConfirmationPurchaseOrders';
+export { ConfirmationPurchaseOrders as default } from './ConfirmationPurchaseOrders';
 //# sourceMappingURL=index.d.ts.map
