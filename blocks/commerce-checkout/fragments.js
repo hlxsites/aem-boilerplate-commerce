@@ -1,10 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { createFragment } from '@dropins/storefront-checkout/lib/utils.js';
 
-import {
-  CHECKOUT_BLOCK,
-  ORDER_CONFIRMATION_BLOCK,
-} from './constants.js';
+import { CHECKOUT_BLOCK, ORDER_CONFIRMATION_BLOCK } from './constants.js';
 
 /**
  * A frozen, nested object of CSS selectors
@@ -134,4 +131,18 @@ export function createOrderConfirmationFooter(supportPath) {
       </p>
     </div>
   `;
+}
+
+/**
+ * Creates the PO confirmation fragment.
+ * @returns {DocumentFragment} The PO confirmation fragment.
+ */
+export function createPOConfirmationFragment() {
+  return createFragment(`
+    <div class="order-confirmation order-confirmation--po">
+      <div class="order-confirmation__main">
+        <div class="order-confirmation__block order-confirmation__po-confirmation"></div>
+      </div>
+    </div>
+  `);
 }

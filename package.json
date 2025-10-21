@@ -51,10 +51,10 @@
     "@dropins/storefront-personalization": "~1.0.1",
     "@dropins/storefront-product-discovery": "~2.1.0",
     "@dropins/storefront-quote-management": "0.0.1-alpha6",
-    "@dropins/storefront-purchase-order": "0.0.2-alpha2",
     "@dropins/storefront-recommendations": "~1.1.1",
     "@dropins/storefront-wishlist": "~2.0.1",
     "@dropins/tools": "1.6.0-alpha2",
-    "@dropins/storefront-requisition-list": "0.4.0-beta"
+    "@dropins/storefront-requisition-list": "0.4.0-beta",
+    "@dropins/storefront-purchase-order": "0.0.2-alpha4"
   }
 }

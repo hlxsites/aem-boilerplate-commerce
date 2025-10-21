@@ -18,11 +18,12 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-// Purchase Order Dropin
-import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+import ConfirmationPurchaseOrders from '@dropins/storefront-purchase-order/containers/ConfirmationPurchaseOrders.js';
+import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
@@ -37,6 +38,7 @@ import {
   createCheckoutFragment,
   createOrderConfirmationFooter,
   createOrderConfirmationFragment,
+  createPOConfirmationFragment,
   selectors,
 } from './fragments.js';
 
@@ -227,17 +229,18 @@ export default async function decorate(block) {
           // Credit card form invalid; abort order placement
           return;
         }
-        // Submit Payment Services credit card form
-        await creditCardFormRef.current.submit();
-      }
 
-      if (getCheckoutPOConfig().usePOapi) {
-        // Place purchase order
-        await placePurchaseOrder(cartId);
-      } else {
-        // Place order
-        await orderApi.placeOrder(cartId);
+        if (getCheckoutPOConfig().usePOapi) {
+          await placePurchaseOrder(cartId).then((data) => {
+            events.emit('po/placed', data.purchaseOrder);
+          });
+        } else {
+          // Place order
+          await orderApi.placeOrder(cartId);
+        }
       }
+      // Place order
+      await orderApi.placeOrder(cartId);
     } catch (error) {
       console.error(error);
       throw error;
@@ -246,28 +249,11 @@ export default async function decorate(block) {
     }
   };
 
-  const placeOrderSlots = () => {
-    const poConfig = getCheckoutPOConfig();
-    return poConfig.renderSlot
-      ? {
-        Content: (placeOrderCtx) => {
-          const spanElement = document.createElement('span');
-          spanElement.innerText = 'Place Purchase Order';
-          placeOrderCtx.replaceWith(spanElement);
-        },
-      }
-      : {};
-  };
-
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder(
-    $placeOrder,
-    {
-      handleValidation,
-      handlePlaceOrder,
-      slots: placeOrderSlots,
-    },
-  );
+  const placeOrder = await renderPlaceOrder($placeOrder, {
+    handleValidation,
+    handlePlaceOrder,
+  });
 
   // Render the remaining containers
   const [
@@ -350,13 +336,25 @@ export default async function decorate(block) {
     } else if (!shippingForm) {
       shippingFormSkeleton.remove();
 
-      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, placeOrder, 'shipping');
+      shippingForm = await renderAddressForm(
+        $shippingForm,
+        shippingFormRef,
+        data,
+        placeOrder,
+        'shipping',
+      );
     }
 
     if (!billingForm) {
       billingFormSkeleton.remove();
 
-      billingForm = await renderAddressForm($billingForm, billingFormRef, data, placeOrder, 'billing');
+      billingForm = await renderAddressForm(
+        $billingForm,
+        billingFormRef,
+        data,
+        placeOrder,
+        'billing',
+      );
     }
   }
 
@@ -404,14 +402,30 @@ export default async function decorate(block) {
     const getOrderElement = createScopedSelector(orderConfirmationFragment);
 
     // Get all order confirmation elements using centralized selectors
-    const $orderConfirmationHeader = getOrderElement(selectors.orderConfirmation.header);
-    const $orderStatus = getOrderElement(selectors.orderConfirmation.orderStatus);
-    const $shippingStatus = getOrderElement(selectors.orderConfirmation.shippingStatus);
-    const $customerDetails = getOrderElement(selectors.orderConfirmation.customerDetails);
-    const $orderCostSummary = getOrderElement(selectors.orderConfirmation.orderCostSummary);
-    const $orderGiftOptions = getOrderElement(selectors.orderConfirmation.giftOptions);
-    const $orderProductList = getOrderElement(selectors.orderConfirmation.orderProductList);
-    const $orderConfirmationFooter = getOrderElement(selectors.orderConfirmation.footer);
+    const $orderConfirmationHeader = getOrderElement(
+      selectors.orderConfirmation.header,
+    );
+    const $orderStatus = getOrderElement(
+      selectors.orderConfirmation.orderStatus,
+    );
+    const $shippingStatus = getOrderElement(
+      selectors.orderConfirmation.shippingStatus,
+    );
+    const $customerDetails = getOrderElement(
+      selectors.orderConfirmation.customerDetails,
+    );
+    const $orderCostSummary = getOrderElement(
+      selectors.orderConfirmation.orderCostSummary,
+    );
+    const $orderGiftOptions = getOrderElement(
+      selectors.orderConfirmation.giftOptions,
+    );
+    const $orderProductList = getOrderElement(
+      selectors.orderConfirmation.orderProductList,
+    );
+    const $orderConfirmationFooter = getOrderElement(
+      selectors.orderConfirmation.footer,
+    );
 
     const labels = await fetchPlaceholders();
     const langDefinitions = {
@@ -419,7 +433,10 @@ export default async function decorate(block) {
         ...labels,
       },
     };
-    await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
+    await initializers.mountImmediately(orderApi.initialize, {
+      orderData,
+      langDefinitions,
+    });
 
     block.replaceChildren(orderConfirmationFragment);
 
@@ -434,12 +451,41 @@ export default async function decorate(block) {
     ]);
 
     // Create footer content using fragments
-    $orderConfirmationFooter.innerHTML = createOrderConfirmationFooter(rootLink(SUPPORT_PATH));
+    $orderConfirmationFooter.innerHTML = createOrderConfirmationFooter(
+      rootLink(SUPPORT_PATH),
+    );
 
     const $continueButton = selectors.orderConfirmation.continueButton;
-    const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
+    const $orderConfirmationFooterBtn =
+      $orderConfirmationFooter.querySelector($continueButton);
 
     await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
+  }
+
+  async function displayPOConfirmation(poData) {
+    if (!poData?.number) return;
+    // Clear address form data
+    sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+
+    setMetaTags('Purchase Order Confirmation');
+    document.title = 'Purchase Order Confirmation';
+
+    const poConfirmationFragment = createPOConfirmationFragment();
+
+    const $poConfirmation = poConfirmationFragment.querySelector(
+      '.order-confirmation__po-confirmation',
+    );
+
+    block.replaceChildren(poConfirmationFragment);
+
+    POProvider.render(ConfirmationPurchaseOrders, {
+      orderNumber: poData.number,
+      routePurchaseOrderDetails: () => rootLink(`/customer/purchase-orders/${poData.number}`),
+      routeContinueShopping: () => rootLink('/'),
+    })($poConfirmation);
   }
 
   async function handleCheckoutInitialized(data) {
@@ -470,6 +516,21 @@ export default async function decorate(block) {
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
   }
 
+  async function handlePurchaseOrderPlaced(poData) {
+    // Clear address form data
+    sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+
+    window.history.pushState(
+      {},
+      '',
+      rootLink(`/customer/purchase-orders/${poData.number}`),
+    );
+
+    // TODO cleanup checkout containers
+    await displayPOConfirmation(poData);
+  }
+
   async function handleOrderPlaced(orderData) {
     // Clear address form data
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
@@ -483,7 +544,9 @@ export default async function decorate(block) {
 
     const url = token
       ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+      : rootLink(
+        `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`,
+      );
 
     window.history.pushState({}, '', url);
 
@@ -495,4 +558,5 @@ export default async function decorate(block) {
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
+  events.on('po/placed', handlePurchaseOrderPlaced);
 }
