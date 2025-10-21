@@ -248,6 +248,8 @@ export default async function decorate(block) {
           // Credit card form invalid; abort order placement
           return;
         }
+        // Submit Payment Services credit card form
+        await creditCardFormRef.current.submit();
       }
 
       if (usePOapi) {
