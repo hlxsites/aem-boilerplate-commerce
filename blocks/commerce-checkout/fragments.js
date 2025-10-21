@@ -143,6 +143,9 @@ export function createPOConfirmationFragment() {
       <div class="order-confirmation__main">
         <div class="order-confirmation__block order-confirmation__po-confirmation"></div>
       </div>
+      <div class="order-confirmation__aside">
+        <div class="order-confirmation__footer ${ORDER_CONFIRMATION_BLOCK}"></div>
+      </div>
     </div>
   `);
 }

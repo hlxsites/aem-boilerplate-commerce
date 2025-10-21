@@ -593,6 +593,13 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
   async () => CheckoutProvider.render(PlaceOrder, {
     handleValidation: options.handleValidation,
     handlePlaceOrder: options.handlePlaceOrder,
+    slots: options.renderSlot ? {
+      Content: (placeOrderCtx) => {
+        const spanElement = document.createElement('span');
+        spanElement.innerText = 'Place Purchase Order';
+        placeOrderCtx.replaceWith(spanElement);
+      },
+    } : {},
   })(container),
 );
 
@@ -979,6 +986,24 @@ export const renderOrderGiftOptions = async (container) => renderContainer(
  * @returns {Promise<Object>} - The rendered continue shopping button component
  */
 export const renderOrderConfirmationFooterButton = async (container) => renderContainer(
+  CONTAINERS.ORDER_CONFIRMATION_FOOTER_BUTTON,
+  async () => UI.render(Button, {
+    children: 'Continue shopping',
+    'data-testid': 'order-confirmation-footer__continue-button',
+    className: 'order-confirmation-footer__continue-button',
+    size: 'medium',
+    variant: 'primary',
+    type: 'submit',
+    href: rootLink('/'),
+  })(container),
+);
+
+/**
+ * Renders the continue shopping button for order confirmation footer
+ * @param {HTMLElement} container - DOM element to render the button in
+ * @returns {Promise<Object>} - The rendered continue shopping button component
+ */
+export const renderPurchaseOrderConfirmationFooterButton = async (container) => renderContainer(
   CONTAINERS.ORDER_CONFIRMATION_FOOTER_BUTTON,
   async () => UI.render(Button, {
     children: 'Continue shopping',

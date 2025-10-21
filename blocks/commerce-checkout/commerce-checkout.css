@@ -244,6 +244,10 @@
     display: block;
 }
 
+.order-confirmation--po .order-confirmation__footer {
+    place-content: start;
+}
+
 .order-confirmation__main {
     display: grid;
     grid-row-gap: var(--spacing-xbig);

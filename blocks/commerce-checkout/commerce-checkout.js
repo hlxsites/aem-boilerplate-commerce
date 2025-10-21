@@ -18,7 +18,7 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-import ConfirmationPurchaseOrders from '@dropins/storefront-purchase-order/containers/ConfirmationPurchaseOrders.js';
+import PurchaseOrderConfirmation from '@dropins/storefront-purchase-order/containers/PurchaseOrderConfirmation.js';
 import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
 
 // Payment Services Dropin
@@ -58,6 +58,7 @@ import {
   renderMergedCartBanner,
   renderOrderConfirmationFooterButton,
   renderOrderCostSummary,
+  renderPurchaseOrderConfirmationFooterButton,
   renderOrderGiftOptions,
   renderOrderHeader,
   renderOrderProductList,
@@ -180,6 +181,8 @@ export default async function decorate(block) {
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
 
+  const { hideButton, renderSlot, usePOapi } = getCheckoutPOConfig();
+
   block.appendChild(checkoutFragment);
 
   // Create validation and place order handlers
@@ -229,18 +232,16 @@ export default async function decorate(block) {
           // Credit card form invalid; abort order placement
           return;
         }
-
-        if (getCheckoutPOConfig().usePOapi) {
-          await placePurchaseOrder(cartId).then((data) => {
-            events.emit('po/placed', data.purchaseOrder);
-          });
-        } else {
-          // Place order
-          await orderApi.placeOrder(cartId);
-        }
       }
-      // Place order
-      await orderApi.placeOrder(cartId);
+
+      if (usePOapi) {
+        await placePurchaseOrder(cartId).then((data) => {
+          events.emit('po/placed', data.purchaseOrder);
+        });
+      } else {
+        // Default Place order
+        await orderApi.placeOrder(cartId);
+      }
     } catch (error) {
       console.error(error);
       throw error;
@@ -253,6 +254,7 @@ export default async function decorate(block) {
   const placeOrder = await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
+    renderSlot,
   });
 
   // Render the remaining containers
@@ -458,7 +460,12 @@ export default async function decorate(block) {
     const $continueButton = selectors.orderConfirmation.continueButton;
     const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
 
-    await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
+    if (hideButton) return;
+
+    await renderOrderConfirmationFooterButton(
+      $orderConfirmationFooterBtn,
+      getCheckoutPOConfig,
+    );
   }
 
   async function displayPOConfirmation(poData) {
@@ -477,14 +484,18 @@ export default async function decorate(block) {
     const $poConfirmation = poConfirmationFragment.querySelector(
       '.order-confirmation__po-confirmation',
     );
+    const $poConfirmationFooterBtn = poConfirmationFragment.querySelector(
+      '.order-confirmation__footer',
+    );
 
     block.replaceChildren(poConfirmationFragment);
 
-    POProvider.render(ConfirmationPurchaseOrders, {
-      orderNumber: poData.number,
+    POProvider.render(PurchaseOrderConfirmation, {
+      purchaseOrderNumber: poData.number,
       routePurchaseOrderDetails: () => rootLink(`/customer/purchase-orders/${poData.number}`),
-      routeContinueShopping: () => rootLink('/'),
     })($poConfirmation);
+
+    await renderPurchaseOrderConfirmationFooterButton($poConfirmationFooterBtn);
   }
 
   async function handleCheckoutInitialized(data) {
