@@ -225,7 +225,8 @@ async function fetchCartsByEmail(email) {
   }
 }
 
-async function createCustomerAndAssignCompany(firstname, lastname, email, password, isSubscribed = true) {
+// 13 is the default company created for cypress
+async function createCustomerAndAssignCompany(firstname, lastname, email, password, isSubscribed = true, restCompanyId=13) {
   try {
     safeLog(`Creating customer: ${firstname} ${lastname} (${email})...`);
 
@@ -335,7 +336,7 @@ async function createCustomerAndAssignCompany(firstname, lastname, email, passwo
           // Now assign customer to company using the proper ID
           safeLog(`Automatically assigning customer ${restCustomerId} to company 2...`);
 
-          const assignmentResult = await assignCustomerToCompany(restCustomerId, 2);
+          const assignmentResult = await assignCustomerToCompany(restCustomerId, restCompanyId);
 
           if (assignmentResult.success) {
             safeLog('Customer successfully assigned to company 2');
