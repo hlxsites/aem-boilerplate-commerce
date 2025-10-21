@@ -29,8 +29,7 @@
         "store-view-name": "Default Store View",
         "website-code": "base",
         "website-id": 1,
-        "website-name": "Main Website",
-        "view-id": "ca8cae3a-e53b-47a4-afce-f776221cc3e6"
+        "website-name": "Main Website"
       },
       "plugins": {
         "picker": {
