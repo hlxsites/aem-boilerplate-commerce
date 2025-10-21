@@ -456,8 +456,7 @@ export default async function decorate(block) {
     );
 
     const $continueButton = selectors.orderConfirmation.continueButton;
-    const $orderConfirmationFooterBtn =
-      $orderConfirmationFooter.querySelector($continueButton);
+    const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
 
     await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
   }
