@@ -15,7 +15,6 @@
  * from Adobe.
  *******************************************************************/
 export * from './fragments/index';
-export * from './helpers/session-storage';
 export * from './models/index';
 export * from './mutations/index';
 export * from './queries/index';

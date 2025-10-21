@@ -42,8 +42,6 @@ export declare const cartFixture: {
             label: string;
         };
         custom_attributes: ({
-            __typename?: "AttributeFile" | undefined;
-        } | {
             __typename?: "AttributeSelectedOptions" | undefined;
         } | {
             __typename?: "AttributeValue" | undefined;
@@ -103,8 +101,6 @@ export declare const cartFixture: {
             label: string;
         };
         custom_attributes: ({
-            __typename?: "AttributeFile" | undefined;
-        } | {
             __typename?: "AttributeSelectedOptions" | undefined;
         } | {
             __typename?: "AttributeValue" | undefined;

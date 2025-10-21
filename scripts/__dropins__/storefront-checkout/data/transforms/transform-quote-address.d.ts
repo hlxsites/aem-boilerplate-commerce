@@ -49,8 +49,6 @@ declare const transformQuoteShippingAddress: (data: ({
         label: string;
     };
     custom_attributes?: ({
-        __typename?: "AttributeFile" | undefined;
-    } | {
         __typename?: "AttributeSelectedOptions" | undefined;
     } | {
         __typename?: "AttributeValue" | undefined;

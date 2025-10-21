@@ -1,22 +1,20 @@
-import { AdditionalData, PaymentMethod } from '../../data/models/payment-method';
+import { PaymentMethod } from '../../data/models/payment-method';
 import { TitleProps, UIComponentType } from '../../types';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { HTMLAttributes } from 'preact/compat';
 
-interface RenderContext {
-    additionalData?: AdditionalData;
+export interface PaymentMethodRenderCtx {
     cartId: string;
     replaceHTML: (domElement: HTMLElement) => void;
-    setAdditionalData: (data: AdditionalData) => void;
 }
 export interface PaymentMethodConfig {
-    autoSync?: boolean;
     displayLabel?: boolean;
     enabled?: boolean;
     icon?: string;
-    render?: SlotProps<RenderContext>;
+    autoSync?: boolean;
+    render?: SlotProps<PaymentMethodRenderCtx>;
 }
-export interface PaymentMethodHandlers {
+export interface PaymentMethodsSlot {
     [code: string]: PaymentMethodConfig;
 }
 interface CartSyncError {
@@ -25,7 +23,7 @@ interface CartSyncError {
 }
 export interface PaymentMethodsProps extends HTMLAttributes<HTMLDivElement>, TitleProps {
     slots?: {
-        Methods?: PaymentMethodHandlers;
+        Methods?: PaymentMethodsSlot;
     } & TitleProps['slots'];
     UIComponentType?: UIComponentType;
     active?: boolean;

@@ -1,6 +1,6 @@
 import { Cart as CartModel, Customer as CustomerModel, ShippingMethod } from '../../data/models';
 import { Filter, Selector } from '../../types/utils';
-import { definition } from '@dropins/tools/types/elsie/src/i18n';
+import { Lang } from '@dropins/tools/types/elsie/src/i18n';
 import { Initializer, Model } from '@dropins/tools/types/elsie/src/lib';
 
 export type ConfigProps = {
@@ -17,11 +17,7 @@ export type ConfigProps = {
             routeLogin?: () => string | void;
         };
     };
-    langDefinitions?: typeof definition & {
-        default: {
-            Checkout: any;
-        };
-    };
+    langDefinitions?: Lang;
     models?: {
         CartModel?: Model<CartModel>;
         CustomerModel?: Model<CustomerModel>;

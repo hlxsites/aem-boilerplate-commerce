@@ -14,10 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export type AdditionalData = Record<string, unknown>;
 export type PaymentMethod = {
     code: string;
     title: string;
-    additionalData?: AdditionalData;
 };
 //# sourceMappingURL=payment-method.d.ts.map

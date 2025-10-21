@@ -15,7 +15,6 @@
  * from Adobe.
  *******************************************************************/
 export * from './get-cart';
-export * from './get-company-credit';
 export * from './get-customer';
 export * from './get-store-config';
 export * from './is-email-available';

@@ -8,7 +8,11 @@ import {
   getFetchGraphQlHeader,
   fetchProductData,
 } from '@dropins/storefront-pdp/api.js';
+<<<<<<< HEAD
 import { events } from '@dropins/tools/event-bus.js';
+=======
+import { isAemAssetsEnabled, tryGenerateAemAssetsOptimizedUrl } from '@dropins/tools/lib/aem/assets.js';
+>>>>>>> origin
 import { initializeDropin } from './index.js';
 import {
   fetchPlaceholders,
@@ -145,12 +149,23 @@ async function preloadImageMiddleware(data) {
   const image = data?.images?.[0]?.url?.replace(/^https?:/, '');
 
   if (image) {
+    let url = image;
+    let imageParams = {
+      ...IMAGES_SIZES,
+    };
+    if (isAemAssetsEnabled) {
+      url = tryGenerateAemAssetsOptimizedUrl(image, data.sku, {});
+      imageParams = {
+        ...imageParams,
+        crop: undefined,
+        fit: undefined,
+        auto: undefined,
+      };
+    }
     await UI.render(Image, {
-      src: image,
+      src: url,
       ...IMAGES_SIZES.mobile,
-      params: {
-        ...IMAGES_SIZES,
-      },
+      params: imageParams,
       loading: 'eager',
     })(document.createElement('div'));
   }

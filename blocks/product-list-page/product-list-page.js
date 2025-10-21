@@ -67,9 +67,37 @@ export default async function decorate(block) {
     filter,
   } = Object.fromEntries(urlParams.entries());
 
-  await performInitialSearch(config, {
-    q, page, sort, filter,
-  });
+  // Request search based on the page type on block load
+  if (config.urlpath) {
+    // If it's a category page...
+    await search({
+      phrase: '', // search all products in the category
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
+      filter: [
+        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        ...getFilterFromParams(filter),
+      ],
+    }).catch(() => {
+      console.error('Error searching for products');
+    });
+  } else {
+    // If it's a search page...
+    await search({
+      phrase: q || '',
+      currentPage: page ? Number(page) : 1,
+      pageSize: 8,
+      sort: getSortFromParams(sort),
+      filter: [
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        ...getFilterFromParams(filter),
+      ],
+    }).catch(() => {
+      console.error('Error searching for products');
+    });
+  }
 
   const getAddToCartButton = (product) => {
     if (product.typename === 'ComplexProductView') {

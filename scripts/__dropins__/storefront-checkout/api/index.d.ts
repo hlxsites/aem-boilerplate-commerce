@@ -19,7 +19,6 @@ export * from './estimateShippingMethods';
 export * from './fetch-graphql';
 export * from './getCart';
 export * from './getCheckoutAgreements';
-export * from './getCompanyCredit';
 export * from './getCustomer';
 export * from './getNegotiableQuote';
 export * from './getStoreConfig';
