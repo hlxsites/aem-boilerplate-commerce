@@ -1,0 +1,33 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "AC-View-ID": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
+          "AC-Price-Book-ID": "global_visibility",
+          "AC-Source-Locale": "en-US"
+        }
+      },
+      "analytics": {
+        "environment-id": "XbaJpUaBye75vvzRQUd2Xm",
+        "environment": "Stage",
+        "store-url": "https://aco-storefront-v2--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "base-currency-code": "USD",
+        "store-view-currency-code": "USD",
+        "storefront-template": "Other",
+        "view-id": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
+        "locale": "en-US"
+      },
+      "plugins": {
+        "picker": {
+           "rootCategory": "2"
+         }
+      }
+    }
+  }
+}
