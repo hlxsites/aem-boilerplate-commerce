@@ -1,26 +1,23 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
-      "commerce-endpoint": "https://na1-stage.api.commerce.adobe.com/XbaJpUaBye75vvzRQUd2Xm/graphql",
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/8idEEDDiVwjCEJAyB5kjfi/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/8idEEDDiVwjCEJAyB5kjfi/graphql",
       "headers": {
-        "all": {
-          "Store": "default"
-        },
         "cs": {
-          "AC-View-ID": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
-          "AC-Price-Book-ID": "global_visibility",
-          "AC-Source-Locale": "en-US"
+          "ac-view-id": "0d3eebf7-b5fb-4904-9ccf-f35fcc61862b",
+          "ac-price-book-id": "west_coast_inc",
+          "ac-scope-locale": "en-US"
         }
       },
       "analytics": {
-        "environment-id": "XbaJpUaBye75vvzRQUd2Xm",
-        "environment": "Stage",
-        "store-url": "https://aco-storefront-v2--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "8idEEDDiVwjCEJAyB5kjfi",
+        "environment": "Testing",
+        "store-url": "https://main--boilerplate-aco--adobe-commerce.aem.live/",
         "base-currency-code": "USD",
         "store-view-currency-code": "USD",
         "storefront-template": "Other",
-        "view-id": "ca8cae3a-e53b-47a4-afce-f776221cc3e6",
+        "view-id": "0d3eebf7-b5fb-4904-9ccf-f35fcc61862b",
         "locale": "en-US"
       },
       "plugins": {
