@@ -236,5 +236,5 @@ Rules for speciifc agents can be found at the following links. They are usually 
 
 - Gemini: ./GEMINI.md
 - Cursor: ./cursor/rules/dropins.mdc
-- GitHub Copilot: ./github/copilot-instructions.md (see ./github/COPILOT-MCP-SETUP.md for MCP configuration)
+- GitHub Copilot: ./github/copilot-instructions.md
 - Claude Code: ./claude/CLAUDE.md
