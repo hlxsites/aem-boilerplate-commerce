@@ -401,11 +401,11 @@ export default async function decorate(block) {
                   }
                 },
                 onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-                onError: (error) => {
-                  console.error(error);
+                onError: (localizedError) => {
+                  console.error(localizedError);
                   events.emit('checkout/error', {
-                    code: error.name,
-                    message: error.message,
+                    code: localizedError.name,
+                    message: localizedError.message,
                   });
                 },
               })($applePay);
@@ -555,11 +555,11 @@ export default async function decorate(block) {
             try {
               // Submit Payment Services credit card form
               await creditCardFormRef.current.submit();
-            } catch (error) {
-              console.error(error);
+            } catch (localizedError) {
+              console.error(localizedError);
               events.emit('checkout/error', {
-                code: error.name,
-                message: error.message,
+                code: localizedError.name,
+                message: localizedError.message,
               });
               return;
             }
