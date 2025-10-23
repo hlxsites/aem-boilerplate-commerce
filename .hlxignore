@@ -16,3 +16,4 @@ plugins/experimentation/documentation/images/*
 mcp-server/*
 .cursor/*
 .gemini/*
+.claude/*
