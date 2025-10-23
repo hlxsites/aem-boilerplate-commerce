@@ -17,5 +17,4 @@
 export * from './transform-company';
 export * from './transform-countries';
 export * from './transform-customer-company-info';
-export * from './transform-store-config';
 //# sourceMappingURL=index.d.ts.map

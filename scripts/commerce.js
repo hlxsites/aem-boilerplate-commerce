@@ -37,6 +37,8 @@ export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
 export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
 export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
 export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
+export const CUSTOMER_REQUISITION_LISTS_PATH = `${CUSTOMER_PATH}/requisition-lists`;
+export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisition-list-view`;
 
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
@@ -105,7 +107,7 @@ function notifyUI(event) {
  * Detects the page type based on DOM elements
  * @returns {string} The detected page type
  */
-function detectPageType() {
+export function detectPageType() {
   if (document.body.querySelector('main .product-details')) {
     return 'Product';
   } if (document.body.querySelector('main .product-list-page')) {
@@ -114,6 +116,8 @@ function detectPageType() {
     return 'Cart';
   } if (document.body.querySelector('main .commerce-checkout')) {
     return 'Checkout';
+  } if (document.body.querySelector('main .commerce-b2b-quote-checkout')) {
+    return 'B2B Checkout';
   }
   return 'CMS';
 }
@@ -572,18 +576,22 @@ export async function commerceEndpointWithQueryParams(customHeaders = {}) {
  * Extracts the SKU from the current URL path.
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
-export function getSkuFromUrl() {
+function getSkuFromUrl() {
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
 }
 
-export function getProductSku() {
-  return getMetadata('sku') || getSkuFromUrl();
-}
-
 export function getProductLink(urlKey, sku) {
   return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
+}
+
+/**
+ * Gets the product SKU from metadata or URL fallback.
+ * @returns {string|null} The SKU from metadata or URL, or null if not found
+ */
+export function getProductSku() {
+  return getMetadata('sku') || getSkuFromUrl();
 }
 
 /**
