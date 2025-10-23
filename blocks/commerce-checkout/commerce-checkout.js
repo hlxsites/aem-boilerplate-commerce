@@ -403,7 +403,6 @@ export default async function decorate(block) {
                 onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
                 onError: (localizedError) => {
                   events.emit('checkout/error', {
-                    code: localizedError.name,
                     message: localizedError.message,
                   });
                 },
@@ -555,9 +554,7 @@ export default async function decorate(block) {
               // Submit Payment Services credit card form
               await creditCardFormRef.current.submit();
             } catch (localizedError) {
-              console.error(localizedError);
               events.emit('checkout/error', {
-                code: localizedError.name,
                 message: localizedError.message,
               });
               return;
