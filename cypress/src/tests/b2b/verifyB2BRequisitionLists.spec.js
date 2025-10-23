@@ -65,16 +65,16 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
     cy.get(fields.requisitionListNamesOnPLP).should('exist');
 
     // Add product to Existing Requisition List from PLP
-    cy.get(fields.requisitionListNamesOnPLP).first().find('select').select('Newly Created Requisition List');
+    cy.get(fields.requisitionListNamesSelectOnPLP).first().should('be.visible').select('Newly Created Requisition List');
 
     // Create a new list and add product to it from PLP
-    cy.get(fields.requisitionListNamesOnPLP).eq(1).find('select').select('Create Requisition List');
+    cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Create Requisition List');
     cy.get(fields.requisitionListFormName).type('Now a Req list from PLP');
     cy.get(fields.requisitionListFormDescription).type('Yet another dummy description');
     cy.contains('Save').should('be.visible').click();
 
     // Assert new Requisition List is created and can be selected
-    cy.get(fields.requisitionListNamesOnPLP).eq(1).find('select').select('Now a Req list from PLP');
+    cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Now a Req list from PLP');
 
     // Go to customer account page
     cy.visit("/customer/account");
