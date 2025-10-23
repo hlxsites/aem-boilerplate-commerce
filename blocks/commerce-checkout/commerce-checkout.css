@@ -240,10 +240,6 @@
     padding-top: var(--spacing-xxlarge);
 }
 
-.order-confirmation--po {
-    display: block;
-}
-
 .order-confirmation__main {
     display: grid;
     grid-row-gap: var(--spacing-xbig);
@@ -260,10 +256,6 @@
     display: grid;
     gap: var(--spacing-small);
     text-align: center;
-}
-
-.order-confirmation--po .order-confirmation__footer {
-    place-content: start;
 }
 
 .order-confirmation__footer p {
@@ -292,6 +284,16 @@
 /* Hide empty blocks */
 .order-confirmation__block:empty {
     display: none;
+}
+
+/* Purchase order confirmation */
+.po-confirmation {
+    padding-bottom: var(--spacing-large);
+    padding-top: var(--spacing-large);
+}
+
+.po-confirmation__footer {
+  max-width: max-content;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {

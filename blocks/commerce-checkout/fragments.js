@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
 import { createFragment } from '@dropins/storefront-checkout/lib/utils.js';
 
-import { CHECKOUT_BLOCK, ORDER_CONFIRMATION_BLOCK } from './constants.js';
+import { CHECKOUT_BLOCK, ORDER_CONFIRMATION_BLOCK, PO_CONFIRMATION_BLOCK } from './constants.js';
 
 /**
  * A frozen, nested object of CSS selectors
@@ -41,6 +41,11 @@ export const selectors = Object.freeze({
     footer: '.order-confirmation__footer',
     continueButton: '.order-confirmation-footer__continue-button',
     contactSupportLink: '.order-confirmation-footer__contact-support-link',
+  },
+  poConfirmation: {
+    content: '.po-confirmation__content',
+    footer: '.po-confirmation__footer',
+    continueButton: '.po-confirmation-footer__continue-button',
   },
 });
 
@@ -139,13 +144,9 @@ export function createOrderConfirmationFooter(supportPath) {
  */
 export function createPOConfirmationFragment() {
   return createFragment(`
-    <div class="order-confirmation order-confirmation--po">
-      <div class="order-confirmation__main">
-        <div class="order-confirmation__block order-confirmation__po-confirmation"></div>
-      </div>
-      <div class="order-confirmation__aside">
-        <div class="order-confirmation__footer ${ORDER_CONFIRMATION_BLOCK}"></div>
-      </div>
+    <div class="po-confirmation">
+      <div class="po-confirmation__content" ${PO_CONFIRMATION_BLOCK}"></div>
+      <div class="po-confirmation__footer ${PO_CONFIRMATION_BLOCK}"></div>
     </div>
   `);
 }
