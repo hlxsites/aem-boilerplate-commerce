@@ -1,6 +1,20 @@
 declare const _default: {
   "PaymentServices": {
+    "ApplePay": {
+      "error": {
+        "default": {
+          "name": "Apple Pay error",
+          "message": "An unexpected error occurred. Please try again or contact support."
+        }
+      }
+    },
     "CreditCard": {
+      "error": {
+        "default": {
+          "name": "Credit Card error",
+          "message": "An unexpected error occurred. Please try again or contact support."
+        }
+      },
       "formFields": {
         "cvv": {
           "invalidError": "Enter valid cvv.",

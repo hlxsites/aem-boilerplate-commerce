@@ -364,6 +364,12 @@ export default async function decorate(block) {
               const $creditCard = document.createElement('div');
 
               PaymentServices.render(CreditCard, {
+                onError: (error) => {
+                  events.emit('checkout/error', {
+                    code: error.name,
+                    message: error.message,
+                  });
+                },
                 getCartId: () => ctx.cartId,
                 creditCardFormRef,
               })($creditCard);
@@ -404,9 +410,8 @@ export default async function decorate(block) {
                 onError: (error) => {
                   console.error(error);
                   events.emit('checkout/error', {
-                    code: 'UNKNOWN_ERROR',
-                    message: 'An unexpected error occurred while processing your Apple Pay '
-                      + 'payment. Please try another payment method or try again.',
+                    code: error.name,
+                    message: error.message,
                   });
                 },
               })($applePay);
@@ -543,18 +548,22 @@ export default async function decorate(block) {
       handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
         try {
-          // Payment Services credit card
-          if (code === PaymentMethodCode.CREDIT_CARD) {
-            if (!creditCardFormRef.current) {
-              console.error('Credit card form not rendered.');
-              return;
+          try {
+            // Payment Services credit card
+            if (code === PaymentMethodCode.CREDIT_CARD) {
+              if (!creditCardFormRef.current) {
+                console.error('Credit card form not rendered.');
+                return;
+              }
+              if (!creditCardFormRef.current.validate()) {
+                // Credit card form invalid; abort order placement
+                return;
+              }
+              // Submit Payment Services credit card form
+              await creditCardFormRef.current.submit();
             }
-            if (!creditCardFormRef.current.validate()) {
-              // Credit card form invalid; abort order placement
-              return;
-            }
-            // Submit Payment Services credit card form
-            await creditCardFormRef.current.submit();
+          } catch ({ message }) {
+            console.error(message);
           }
           // Place order
           await orderApi.placeOrder(cartId);

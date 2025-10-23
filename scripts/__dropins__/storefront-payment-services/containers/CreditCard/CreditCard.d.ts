@@ -1,4 +1,5 @@
 import { RefObject } from 'preact/compat';
+import { default as LocalizedError } from '../../lib/localizedError';
 
 export declare enum CardTypes {
     Visa = "visa",
@@ -27,11 +28,13 @@ export interface CreditCardProps {
     /**
      * Called when payment flow is successful.
      */
-    onSuccess: () => void;
+    onSuccess: (result: {
+        cartId: string;
+    }) => void;
     /**
      * Called when payment flow was aborted due to an error.
      */
-    onError: (error: Error) => void;
+    onError: (error: LocalizedError) => void;
 }
 export interface CreditCardFormRef {
     /**

@@ -1,4 +1,4 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{P as e,c as p,i as n}from"./chunks/method.js";import{P}from"./chunks/location.js";import"@dropins/tools/lib.js";import"@dropins/tools/event-bus.js";import"./chunks/state.js";import"@dropins/tools/signals.js";export{P as PaymentLocation,e as PaymentMethodCode,p as config,n as initialize};
+import{a as m,P as n,c as r,i as p}from"./chunks/location.js";import"@dropins/tools/lib.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/signals.js";export{m as PaymentLocation,n as PaymentMethodCode,r as config,p as initialize};
 //# sourceMappingURL=api.js.map
