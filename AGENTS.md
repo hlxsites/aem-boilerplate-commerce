@@ -9,7 +9,6 @@ This project is based on the https://github.com/hlxsites/aem-commerce-boilerplat
 The repository provides the basic structure, blocks, and configuration needed to run a complete site with `*.aem.live` as the backend.
 
 ### Key Technologies
-
 - Edge Delivery Services for AEM Sites (documentation at https://www.aem.live/ – search with `site:www.aem.live` to restrict web search results)
 - Vanilla JavaScript (ES6+), no transpiling, no build steps
 - CSS3 with modern features, no Tailwind or other CSS frameworks
@@ -47,14 +46,12 @@ The repository provides the basic structure, blocks, and configuration needed to
 ## Code Style Guidelines
 
 ### JavaScript
-
 - Use ES6+ features (arrow functions, destructuring, etc.)
 - Follow Airbnb ESLint rules (already configured)
 - Always include `.js` file extensions in imports
 - Use Unix line endings (LF)
 
 ### CSS
-
 - Follow Stylelint standard configuration
 - Use modern CSS features (CSS Grid, Flexbox, CSS Custom Properties)
 - Maintain responsive design principles
@@ -67,7 +64,6 @@ The repository provides the basic structure, blocks, and configuration needed to
 - Block CSS files are automatically imported by the framework, do not add an import statement to the block JS file.
 
 ### HTML
-
 - Use semantic HTML5 elements
 - Ensure accessibility standards (ARIA labels, proper heading hierarchy)
 - Follow AEM markup conventions for blocks and sections
@@ -116,28 +112,25 @@ Auto-blocking is the process of creating blocks that aren't explicitly authored 
 
 Pages are progressively loaded in three phases to maximize performance. This process begins when `loadPage` from scripts.js is called.
 
-- Eager - load only what is required to get to LCP. This generally includes decorating the overall page content to create sections, blocks, buttons, etc. and loading the first section of the page.
-- Lazy - load all other page content, including the header and footer.
-- Delayed - load things that can be safely loaded later here and incur a performance penalty when loaded earlier
+* Eager - load only what is required to get to LCP. This generally includes decorating the overall page content to create sections, blocks, buttons, etc. and loading the first section of the page.
+* Lazy - load all other page content, including the header and footer.
+* Delayed - load things that can be safely loaded later here and incur a performance penalty when loaded earlier
 
 ## Development Workflow
 
 ### Local Development
-
 1. Run `npx -y @adobe/aem-cli up --no-open` to start the AEM Proxy server
 2. Open `http://localhost:3000` in your browser, puppeteer, playwright, or other tools. If none of those are available, instruct the human to open the URL in the browser and give feedback
 3. Make changes to files - they will auto-reload
 4. Use browser dev tools to test responsive design
 
 ### Block Development
-
 - Each block in the `blocks/` directory should be self-contained and re-useable
 - Include CSS and JS files for each block
 - Follow the naming convention: `blockname.css`, `blockname.js`
 - Blocks should be responsive and accessible by default
 
 ### Styling
-
 - Global styles go in `styles/styles.css`
 - Font definitions in `styles/fonts.css`
 - Lazy-loaded styles in `styles/lazy-styles.css`
@@ -146,21 +139,18 @@ Pages are progressively loaded in three phases to maximize performance. This pro
 ## Testing & Quality Assurance
 
 ### Linting
-
 - JavaScript: ESLint with Airbnb base configuration
 - CSS: Stylelint with standard configuration
 - Run `npm run lint` before committing
 - Use `npm run lint:fix` to automatically fix issues
 
 ### Performance
-
 - Follow AEM Edge Delivery performance best practices https://www.aem.live/developer/keeping-it-100
 - Images uploaded by authors are automatically optimized, all images and assets committed to git must be optimized and checked for size
 - Use lazy loading for non-critical resources (`lazy-styles.css` and `delayed.js`)
 - Minimize JavaScript bundle size by avoiding dependencies, using automatic code splitting provided by `/blocks/`
 
 ### Accessibility
-
 - Ensure proper heading hierarchy
 - Include alt text for images
 - Test with screen readers
@@ -181,7 +171,6 @@ With this information, you can construct URLs for the preview environment (same 
 - **Feature Preview**: `https://{branch}--{repo}--{owner}.aem.page/`
 
 ### Publishing Process
-
 1. Push changes to a feature branch
 2. AEM Code Sync automatically processes changes making them available on feature preview environment for that branch
 3. Open a pull request to merge changes to `main`
@@ -194,21 +183,18 @@ With this information, you can construct URLs for the preview environment (same 
 ## Common Tasks
 
 ### Adding New Blocks
-
 1. Create a new directory in `blocks/`
 2. Add `blockname.css` and `blockname.js` files
 3. Update documentation if needed
 4. Test in local development environment
 
 ### Modifying Existing Blocks
-
 1. Make changes to the specific block files
 2. Test locally with `aem up`
 3. Ensure responsive behavior across devices
 4. Run linting before committing
 
 ### Global Style Changes
-
 1. Modify files in the `styles/` directory
 2. Test across different blocks and pages
 3. Ensure changes don't break existing layouts
@@ -217,7 +203,6 @@ With this information, you can construct URLs for the preview environment (same 
 ## Troubleshooting
 
 ### Getting Help
-
 - Check [AEM Edge Delivery documentation](https://www.aem.live/docs/)
 - Review [Developer Tutorial](https://www.aem.live/developer/tutorial)
 - Consult [The Anatomy of a Project](https://www.aem.live/developer/anatomy-of-a-project)
