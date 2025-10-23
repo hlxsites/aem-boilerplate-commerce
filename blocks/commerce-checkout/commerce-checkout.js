@@ -18,9 +18,6 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-import PurchaseOrderConfirmation from '@dropins/storefront-purchase-order/containers/PurchaseOrderConfirmation.js';
-import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
-
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
