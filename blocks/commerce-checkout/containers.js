@@ -1012,7 +1012,7 @@ export const renderOrderConfirmationFooterButton = async (container) => renderCo
  * @param {number} poNumber - Purchase order number to generate PO details route
  * @returns {Promise<Object>} - The rendered purchase order confirmation component
  */
-export const renderPurchaseOrderConfirmation = async (container, poNumber) => renderContainer(
+export const renderPOConfirmation = async (container, poNumber) => renderContainer(
   CONTAINERS.PO_CONFIRMATION,
   async () => POProvider.render(PurchaseOrderConfirmation, {
     purchaseOrderNumber: poNumber,

@@ -18,7 +18,7 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-// Purchase Order B2B Dropin
+// Purchase Order Dropin
 import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
 
 // Payment Services Dropin
@@ -65,7 +65,7 @@ import {
   renderOutOfStock,
   renderPaymentMethods,
   renderPlaceOrder,
-  renderPurchaseOrderConfirmation,
+  renderPOConfirmation,
   renderPOConfirmationFooterButton,
   renderServerError,
   renderShippingAddressFormSkeleton,
@@ -471,7 +471,7 @@ export default async function decorate(block) {
     block.replaceChildren(poConfirmationFragment);
 
     await Promise.all([
-      await renderPurchaseOrderConfirmation($poConfirmationContent, poData.number),
+      await renderPOConfirmation($poConfirmationContent, poData.number),
       await renderPOConfirmationFooterButton($poConfirmationFooter),
     ]);
   }
@@ -517,9 +517,7 @@ export default async function decorate(block) {
 
     const url = token
       ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(
-        `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`,
-      );
+      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 
