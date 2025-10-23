@@ -402,7 +402,6 @@ export default async function decorate(block) {
                 },
                 onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
                 onError: (localizedError) => {
-                  console.error(localizedError);
                   events.emit('checkout/error', {
                     code: localizedError.name,
                     message: localizedError.message,
