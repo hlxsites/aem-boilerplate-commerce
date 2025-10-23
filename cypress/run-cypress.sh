@@ -98,7 +98,7 @@ run_configuration() {
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid option. Please select 1, 2, 3, 4, or 5.${NC}"
+            echo -e "${RED}Invalid option. Please select 1, 2, 3, or 4.${NC}"
             return 1
             ;;
     esac
@@ -136,7 +136,7 @@ main() {
 
     while true; do
         show_menu
-        read -p "Enter your choice (1-5): " choice
+        read -p "Enter your choice (1-4): " choice
         
         if run_configuration "$choice"; then
             break
