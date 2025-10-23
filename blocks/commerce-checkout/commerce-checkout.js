@@ -364,12 +364,6 @@ export default async function decorate(block) {
               const $creditCard = document.createElement('div');
 
               PaymentServices.render(CreditCard, {
-                onError: (error) => {
-                  events.emit('checkout/error', {
-                    code: error.name,
-                    message: error.message,
-                  });
-                },
                 getCartId: () => ctx.cartId,
                 creditCardFormRef,
               })($creditCard);
@@ -548,22 +542,27 @@ export default async function decorate(block) {
       handlePlaceOrder: async ({ cartId, code }) => {
         await displayOverlaySpinner();
         try {
-          try {
-            // Payment Services credit card
-            if (code === PaymentMethodCode.CREDIT_CARD) {
-              if (!creditCardFormRef.current) {
-                console.error('Credit card form not rendered.');
-                return;
-              }
-              if (!creditCardFormRef.current.validate()) {
-                // Credit card form invalid; abort order placement
-                return;
-              }
+          // Payment Services credit card
+          if (code === PaymentMethodCode.CREDIT_CARD) {
+            if (!creditCardFormRef.current) {
+              console.error('Credit card form not rendered.');
+              return;
+            }
+            if (!creditCardFormRef.current.validate()) {
+              // Credit card form invalid; abort order placement
+              return;
+            }
+            try {
               // Submit Payment Services credit card form
               await creditCardFormRef.current.submit();
+            } catch (error) {
+              console.error(error);
+              events.emit('checkout/error', {
+                code: error.name,
+                message: error.message,
+              });
+              return;
             }
-          } catch ({ message }) {
-            console.error(message);
           }
           // Place order
           await orderApi.placeOrder(cartId);
