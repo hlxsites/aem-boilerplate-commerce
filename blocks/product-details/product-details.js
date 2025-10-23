@@ -42,6 +42,7 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/requisition-list.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -388,6 +389,79 @@ export default async function decorate(block) {
 
   events.on('authenticated', () => {
     renderRequisitionListNamesIfEnabled($requisitionListNames);
+  });
+
+  // Show notification if redirected from requisition list
+  let redirectNotification = null;
+  
+  // Check if user was redirected from requisition list (sessionStorage)
+  const redirectData = sessionStorage.getItem('requisitionListRedirect');
+  if (redirectData) {
+    try {
+      const { timestamp, message } = JSON.parse(redirectData);
+      
+      // Only show notification if redirect happened within last 5 seconds
+      // This prevents showing stale notifications
+      const isRecent = Date.now() - timestamp < 5000;
+      
+      if (isRecent && message) {
+        const showRedirectNotification = async () => {
+          redirectNotification = await UI.render(InLineAlert, {
+            heading: message,
+            type: 'warning',
+            variant: 'secondary',
+            icon: h(Icon, { source: 'Warning' }),
+            'aria-live': 'polite',
+            role: 'alert',
+            onDismiss: () => {
+              redirectNotification?.remove();
+            },
+          })($alert);
+          
+          // Auto-dismiss after 5 seconds
+          setTimeout(() => {
+            redirectNotification?.remove();
+          }, 5000);
+        };
+        
+        // Show notification after a brief delay to ensure DOM is ready
+        setTimeout(showRedirectNotification, 100);
+      }
+    } catch (e) {
+      console.error('Failed to parse requisition list redirect data:', e);
+    } finally {
+      // Always clean up sessionStorage
+      sessionStorage.removeItem('requisitionListRedirect');
+    }
+  }
+  
+  // Listen for requisition list redirect events (for same-page redirects)
+  events.on('requisitionList/redirect', async (eventData) => {
+    const { urlKey, sku, productName } = eventData || {};
+    const message = productName 
+      ? `Redirecting to ${productName}...`
+      : 'Redirecting to product details...';
+    
+    // Clear any existing notification
+    redirectNotification?.remove();
+    
+    // Show notification
+    redirectNotification = await UI.render(InLineAlert, {
+      heading: message,
+      type: 'information',
+      variant: 'secondary',
+      icon: h(Icon, { source: 'Info' }),
+      'aria-live': 'polite',
+      role: 'status',
+      onDismiss: () => {
+        redirectNotification?.remove();
+      },
+    })($alert);
+    
+    // Auto-dismiss after 3 seconds
+    setTimeout(() => {
+      redirectNotification?.remove();
+    }, 3000);
   });
 
   // --- Add new event listener for cart/data ---
