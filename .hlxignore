@@ -17,3 +17,6 @@ mcp-server/*
 .cursor/*
 .gemini/*
 .claude/*
+.vscode/*
+AGENTS.md
+GEMINI.md
