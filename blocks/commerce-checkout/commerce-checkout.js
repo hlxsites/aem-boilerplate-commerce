@@ -18,12 +18,14 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
+// Purchase Order B2B Dropin
+import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   displayOverlaySpinner,
   removeModal,
