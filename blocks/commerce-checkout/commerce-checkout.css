@@ -286,6 +286,16 @@
     display: none;
 }
 
+/* Purchase order confirmation */
+.po-confirmation {
+    padding-bottom: var(--spacing-large);
+    padding-top: var(--spacing-large);
+}
+
+.po-confirmation__footer {
+    max-width: max-content;
+}
+
 @media only screen and (min-width: 320px) and (max-width: 768px) {
     .checkout__main,
     .checkout__aside {
