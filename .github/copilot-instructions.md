@@ -1,3 +1,9 @@
+---
+description: Comprehensive Dropins, Containers, and Slots Rules
+globs:
+alwaysApply: true
+---
+
 # Dropins, Containers, and Slots - Comprehensive Rules
 
 ## Dropins Overview
