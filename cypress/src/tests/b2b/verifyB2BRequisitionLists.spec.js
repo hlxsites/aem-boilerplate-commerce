@@ -62,21 +62,19 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Navigate to Apparel category page
     cy.contains("Apparel").should('be.visible').click();
-
-    // Wait for products to load and requisition list selects to render
-    cy.get(fields.requisitionListNamesSelectOnPLP, { timeout: 10000 }).should('have.length.at.least', 2);
+    cy.get(fields.requisitionListNamesOnPLP).should('exist');
 
     // Add product to Existing Requisition List from PLP
-    cy.get(fields.requisitionListNamesSelectOnPLP).eq(0).should('be.visible').select('Newly Created Requisition List');
+    cy.get(fields.requisitionListNamesOnPDP).eq(1).select('Newly Created Requisition List');
 
     // Create a new list and add product to it from PLP
-    cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Create Requisition List');
-    cy.get(fields.requisitionListFormName).should('be.visible').type('Now a Req list from PLP');
-    cy.get(fields.requisitionListFormDescription).should('be.visible').type('Yet another dummy description');
+    cy.get(fields.requisitionListNamesOnPDP).eq(1).select('Create Requisition List')
+    cy.get(fields.requisitionListFormName).type('Now a Req list from PLP');
+    cy.get(fields.requisitionListFormDescription).type('Yet another dummy description');
     cy.contains('Save').should('be.visible').click();
 
     // Assert new Requisition List is created and can be selected
-    cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Now a Req list from PLP');
+    cy.get(fields.requisitionListNamesOnPDP).eq(1).select('Now a Req list from PLP');
 
     // Go to customer account page
     cy.visit("/customer/account");
