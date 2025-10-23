@@ -2,7 +2,6 @@ import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import RequisitionListGrid
   from '@dropins/storefront-requisition-list/containers/RequisitionListGrid.js';
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 
 import {
   CUSTOMER_LOGIN_PATH,

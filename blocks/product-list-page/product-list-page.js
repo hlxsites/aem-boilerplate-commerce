@@ -24,13 +24,12 @@ import {
   fetchPlaceholders,
   getProductLink,
   checkIsAuthenticated,
-  rootLink, CUSTOMER_LOGIN_PATH
+  rootLink,
 } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
-import '../../scripts/initializers/requisition-list.js';
 
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
