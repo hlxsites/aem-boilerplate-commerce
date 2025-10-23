@@ -18,7 +18,6 @@ export * from './initialize';
 export * from './fetch-graphql';
 export * from './fetchUserPermissions';
 export * from './allowCompanyRegistration';
-export * from './checkIsCompanyEnabled';
 export * from './companyEnabled';
 export * from './createCompany';
 export * from './createCompanyTeam';

@@ -1,4 +1,4 @@
-import { CompanyUsersResponse } from '../../types';
+import { CompanyUsersParams, CompanyUsersResponse } from '../../types';
 
 /**
  * Fetches the list of company users with pagination and optional filtering

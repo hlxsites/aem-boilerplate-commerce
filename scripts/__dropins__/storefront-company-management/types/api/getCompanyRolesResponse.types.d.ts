@@ -14,5 +14,20 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './checkIsCompanyEnabled';
-//# sourceMappingURL=index.d.ts.map
+export interface CompanyRolesGraphQLResponse {
+    company?: {
+        roles?: {
+            items?: {
+                id: string;
+                name: string;
+            }[];
+            total_count?: number;
+            page_info?: {
+                current_page: number;
+                page_size: number;
+                total_pages: number;
+            };
+        };
+    };
+}
+//# sourceMappingURL=getCompanyRolesResponse.types.d.ts.map

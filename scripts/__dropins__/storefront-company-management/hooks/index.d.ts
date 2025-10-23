@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './containers';
+export * from './useCompanyContextListener';
 export * from './useCompanyRoles';
 export * from './useCompanyStructureCard';
 export * from './useCompanyTeamForm';

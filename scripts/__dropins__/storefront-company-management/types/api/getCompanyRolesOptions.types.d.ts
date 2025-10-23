@@ -14,6 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export { useCompanyContextListener } from './useCompanyContextListener';
-export type { CompanyContextListenerOptions } from './useCompanyContextListener';
-//# sourceMappingURL=index.d.ts.map
+export interface GetCompanyRolesOptions {
+    pageSize?: number;
+    currentPage?: number;
+}
+//# sourceMappingURL=getCompanyRolesOptions.types.d.ts.map

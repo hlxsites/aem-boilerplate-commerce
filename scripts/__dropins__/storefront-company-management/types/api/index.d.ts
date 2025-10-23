@@ -14,11 +14,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './checkIsCompanyEnabled.types';
 export * from './companyUsers.types';
 export * from './createCompanyUser.types';
 export * from './deleteCompanyUser.types';
 export * from './getCompany.types';
+export * from './getCompanyRolesOptions.types';
+export * from './getCompanyRolesResponse.types';
 export * from './getCompanyUser.types';
 export * from './getCountries.types';
 export * from './getCustomerCompanyInfo.types';

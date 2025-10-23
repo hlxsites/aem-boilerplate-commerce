@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as i,h as o,a as u}from"./network-error.js";import{b as p}from"./updateCompanyUser.js";const c=`
+import{f as i,h as o,c as u}from"./network-error.js";import{b as p}from"./updateCompanyUser.js";const c=`
   mutation createCompanyTeam($input: CompanyTeamCreateInput!) {
     createCompanyTeam(input: $input) { __typename team { id structure_id name } }
   }
@@ -38,5 +38,5 @@ import{f as i,h as o,a as u}from"./network-error.js";import{b as p}from"./update
   mutation updateCompanyTeam($input: CompanyTeamUpdateInput!) {
     updateCompanyTeam(input: $input) { __typename team { id name } }
   }
-`;async function S(a){const n={id:a.id,name:a.name,description:a.description};return await i(h,{variables:{input:n}}).then(e=>{var t,r,m,d;return(t=e.errors)!=null&&t.length?o(e.errors):!!((d=(m=(r=e==null?void 0:e.data)==null?void 0:r.updateCompanyTeam)==null?void 0:m.team)!=null&&d.id)}).catch(u)}export{$ as a,S as b,E as c,g as d,A as g,M as u};
+`;async function S(a){const n={id:a.id,name:a.name,description:a.description};return await i(h,{variables:{input:n}}).then(e=>{var t,r,m,d;return(t=e.errors)!=null&&t.length?o(e.errors):!!((d=(m=(r=e==null?void 0:e.data)==null?void 0:r.updateCompanyTeam)==null?void 0:m.team)!=null&&d.id)}).catch(u)}export{A as a,M as b,E as c,g as d,$ as g,S as u};
 //# sourceMappingURL=updateCompanyTeam.js.map

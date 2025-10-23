@@ -26,5 +26,6 @@ export declare const usePermissions: () => {
     permissions: CompanyPermissionFlags | null;
     loading: boolean;
     error: Error | null;
+    refreshPermissions: () => Promise<void>;
 };
 //# sourceMappingURL=usePermissions.d.ts.map

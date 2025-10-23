@@ -19,9 +19,8 @@ export declare function useCompanyUserForm(opts: {
     errors: Record<string, string>;
     touched: Record<string, boolean>;
     loading: boolean;
-    setValue: (field: keyof CompanyUserModel | 'roleId' | 'status', value: string) => void;
-    onBlur: (field: keyof CompanyUserModel | 'roleId' | 'status') => Promise<void>;
-    canSubmit: boolean;
+    setValue: (field: keyof CompanyUserModel | 'roleId', value: any) => void;
+    onBlur: (field: keyof CompanyUserModel | 'roleId', value?: any) => Promise<void>;
     submit: () => Promise<void>;
     isCompanyAdmin: boolean;
     generalError: string | null;

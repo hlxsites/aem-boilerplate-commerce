@@ -1,12 +1,12 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as s,h as c,a as d}from"./network-error.js";import{a as l}from"./getCountries.js";const g=`
+import{f as s,h as d,c as l}from"./network-error.js";import{t as g}from"./validateCompanyEmail.js";const m=`
   query GET_ALLOW_COMPANY_REGISTRATION {
     storeConfig {
       allow_company_registration
     }
   }
-`,E=async()=>{var t,r,o;const e=await s(g,{method:"POST"});if((t=e==null?void 0:e.errors)!=null&&t.length)throw new Error(((r=e.errors[0])==null?void 0:r.message)||"Failed to load store configuration");const n=(o=e==null?void 0:e.data)==null?void 0:o.storeConfig;if(!n)throw new Error("Invalid response: missing storeConfig");return!!n.allow_company_registration},u=`
+`,I=async()=>{var o,t,i;const e=await s(m,{method:"POST"});if((o=e==null?void 0:e.errors)!=null&&o.length)throw new Error(((t=e.errors[0])==null?void 0:t.message)||"Failed to load store configuration");const r=(i=e==null?void 0:e.data)==null?void 0:i.storeConfig;if(!r)throw new Error("Invalid response: missing storeConfig");return!!r.allow_company_registration},u=`
   mutation CreateCompany($input: CompanyCreateInput!) {
     createCompany(input: $input) {
       company {
@@ -39,14 +39,14 @@ import{f as s,h as c,a as d}from"./network-error.js";import{a as l}from"./getCou
       }
     }
   }
-`,m=e=>{var t;const n={};if(e.regionCode&&e.regionCode.trim())n.region_code=e.regionCode.trim(),e.regionId&&(n.region_id=typeof e.regionId=="string"?parseInt(e.regionId,10):e.regionId);else if(e.region&&typeof e.region=="string"&&e.region.includes(",")){const[r,o]=e.region.split(",");n.region_code=r.trim(),n.region_id=parseInt(o.trim(),10)}else if(e.region&&e.region.trim()){const r=e.region.trim();if(/^\d+$/.test(r))throw new Error("Region selection error: Missing region code. Please ensure regions are properly loaded.");n.region=r,n.region_code=r}if(!n.region_code)throw new Error("Region code is required. Please select a state/province or enter a region name.");return{company_name:e.companyName,company_email:e.companyEmail,legal_name:e.legalName,vat_tax_id:e.vatTaxId,reseller_id:e.resellerId,legal_address:{street:Array.isArray(e.street)?e.street.filter(r=>r&&r.trim()!==""):[e.street].filter(r=>r&&r.trim()!==""),city:e.city,region:n,postcode:e.postcode,country_id:e.countryCode,telephone:e.addressTelephone},company_admin:{email:e.adminEmail,firstname:e.adminFirstname,lastname:e.adminLastname,job_title:e.adminJobTitle,telephone:e.adminWorkTelephone,gender:e.adminGender?typeof e.adminGender=="string"?parseInt(e.adminGender,10):e.adminGender:void 0,custom_attributes:((t=e.adminCustomAttributes)==null?void 0:t.map(r=>({attribute_code:r.attribute_code,value:r.value})))||[]}}},I=async e=>{var n;try{const t=m(e),r=await s(u,{method:"POST",variables:{input:t}});return(n=r.errors)!=null&&n.length?{success:!1,errors:r.errors.map(i=>i.message)}:{success:!0,company:l(r)}}catch(t){return console.error("Failed to create company:",t),{success:!1,errors:["Failed to create company. Please try again."]}}},_=`
+`,_=e=>{var o,t,i;const r={};if(e.regionCode&&e.regionCode.trim())r.region_code=e.regionCode.trim(),e.regionId&&(r.region_id=typeof e.regionId=="string"?parseInt(e.regionId,10):e.regionId);else if(e.region&&typeof e.region=="string"&&e.region.includes(",")){const[n,c]=e.region.split(",");r.region_code=n.trim(),r.region_id=parseInt(c.trim(),10)}else if(e.region&&e.region.trim()){const n=e.region.trim();if(/^\d+$/.test(n))throw new Error("Region selection error: Missing region code. Please ensure regions are properly loaded.");r.region=n,r.region_code=n}if(!r.region_code)throw new Error("Region code is required. Please select a state/province or enter a region name.");return{company_name:e.companyName,company_email:e.companyEmail,legal_name:e.legalName,vat_tax_id:e.vatTaxId,reseller_id:e.resellerId,legal_address:{street:Array.isArray(e.street)?e.street.filter(n=>n&&n.trim()!==""):[e.street].filter(n=>n&&n.trim()!==""),city:e.city,region:r,postcode:e.postcode,country_id:e.countryCode,telephone:e.addressTelephone},company_admin:{email:e.adminEmail,firstname:((o=e.adminFirstname)==null?void 0:o.trim())||"",lastname:((t=e.adminLastname)==null?void 0:t.trim())||"",job_title:e.adminJobTitle,telephone:e.adminWorkTelephone,gender:e.adminGender?typeof e.adminGender=="string"?parseInt(e.adminGender,10):e.adminGender:void 0,custom_attributes:((i=e.adminCustomAttributes)==null?void 0:i.map(n=>({attribute_code:n.attribute_code,value:n.value})))||[]}}},O=async e=>{var r;try{const o=_(e),t=await s(u,{method:"POST",variables:{input:o}});return(r=t.errors)!=null&&r.length?{success:!1,errors:t.errors.map(n=>n.message)}:{success:!0,company:g(t)}}catch(o){return console.error("Failed to create company:",o),{success:!1,errors:["Failed to create company. Please try again."]}}},y=`
     query getStoreConfig {
         storeConfig {
             default_country
             store_code
         }
     }
-`,y="US",a={defaultCountry:y,storeCode:""},O=async()=>await s(_,{method:"GET"}).then(e=>{var n;return(n=e.errors)!=null&&n.length?c(e.errors):p(e)}).catch(d),p=e=>{var r;if(!((r=e==null?void 0:e.data)!=null&&r.storeConfig))return a;const{default_country:n,store_code:t}=e.data.storeConfig;return{defaultCountry:n||a.defaultCountry,storeCode:t||a.storeCode}},C=`
+`,p="US",a={defaultCountry:p,storeCode:""},A=async()=>await s(y,{method:"GET"}).then(e=>{var r;return(r=e.errors)!=null&&r.length?d(e.errors):C(e)}).catch(l),C=e=>{var t;if(!((t=e==null?void 0:e.data)!=null&&t.storeConfig))return a;const{default_country:r,store_code:o}=e.data.storeConfig;return{defaultCountry:r||a.defaultCountry,storeCode:o||a.storeCode}},h=`
   query GET_CUSTOMER_COMPANIES {
     customer {
       companies(input: {}) {
@@ -57,5 +57,5 @@ import{f as s,h as c,a as d}from"./network-error.js";import{a as l}from"./getCou
       }
     }
   }
-`,A=async()=>{var e,n,t,r;try{const o=await s(C,{method:"POST"});if((e=o.errors)!=null&&e.length)return!1;const i=((r=(t=(n=o==null?void 0:o.data)==null?void 0:n.customer)==null?void 0:t.companies)==null?void 0:r.items)??[];return Array.isArray(i)&&i.length>0}catch{return!1}};export{y as D,a as S,E as a,I as c,O as g,A as i};
+`,S=async()=>{var e,r,o,t;try{const i=await s(h,{method:"POST"});if((e=i.errors)!=null&&e.length)return!1;const n=((t=(o=(r=i==null?void 0:i.data)==null?void 0:r.customer)==null?void 0:o.companies)==null?void 0:t.items)??[];return Array.isArray(n)&&n.length>0}catch{return!1}};export{p as D,a as S,I as a,O as c,A as g,S as i};
 //# sourceMappingURL=isCompanyUser.js.map

@@ -18,7 +18,6 @@ export declare function useCompanyTeamForm(opts: {
     loading: boolean;
     setValue: (field: keyof CompanyTeamModel, value: string) => void;
     onBlur: (field: keyof CompanyTeamModel, value?: string) => void;
-    canSubmit: boolean;
     submit: () => Promise<void>;
     generalError: string | null;
 };
