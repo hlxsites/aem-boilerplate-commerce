@@ -16,35 +16,47 @@
  ****************************************************************** */
 import { CompanyCredit } from '@dropins/storefront-company-management/containers/CompanyCredit.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
-import { checkIsCompanyEnabled, checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
+import { companyEnabled, checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
 import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_ACCOUNT_PATH,
   checkIsAuthenticated,
   rootLink,
 } from '../../scripts/commerce.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+
+// Initialize
+import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
-  // Check authentication
+  const { 'show-history': showHistory = 'true' } = readBlockConfig(block);
+
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
   }
-
   // Check if company functionality is enabled
-  const companyCheck = await checkIsCompanyEnabled();
-  if (!companyCheck.companyEnabled) {
+  const companyCheck = await companyEnabled();
+  if (!companyCheck) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return;
   }
 
   // Check if company credit is enabled
   const companyCreditCheck = await checkCompanyCreditEnabled();
-  if (!companyCreditCheck.creditEnabled) {
+  if (!companyCreditCheck) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return;
   }
 
   // All checks passed, render company credit container
-  await companyRenderer.render(CompanyCredit, {})(block);
+  const shouldShowHistory = showHistory === 'true';
+  
+  await companyRenderer.render(CompanyCredit, {
+    showCreditHistory: shouldShowHistory,
+    creditHistoryParams: shouldShowHistory ? {
+      pageSize: 20,
+      currentPage: 1
+    } : undefined
+  })(block);
 }

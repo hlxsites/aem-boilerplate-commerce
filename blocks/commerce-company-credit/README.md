@@ -24,7 +24,17 @@ The Commerce Company Credit block renders a company credit display using the @dr
 
 ### Block Configuration
 
-No block configuration options are currently supported. The block renders the CompanyCreditContainer with default settings.
+The block can be configured with the following options via `readBlockConfig()`:
+
+- **show-history** (string, optional, default: 'true'): Controls whether to show company credit transaction history ('true') or only credit summary information ('false')
+
+Example configuration:
+```javascript
+const config = readBlockConfig(block);
+// config = {
+//   'show-history': 'false'  // Shows only credit info, no history
+// }
+```
 
 <!-- ### URL Parameters
 
@@ -51,6 +61,8 @@ No events are emitted by this block. -->
 - **Authenticated Users**: When user is authenticated and company credit is enabled, renders the company credit management interface
 - **Unauthenticated Users**: When user is not authenticated, redirects to the login page
 - **Company Credit Disabled**: When company credit functionality is disabled, redirects to the customer account page
+- **History Hidden**: When `show-history` is set to 'false', shows only credit information without transaction history
+- **Full View**: When `show-history` is 'true' or not set, shows complete credit information with transaction history
 
 ### User Interaction Flows
 
