@@ -1,7 +1,7 @@
 declare const _default: {
   "PaymentServices": {
     "ApplePay": {
-      "error": {
+      "errors": {
         "default": {
           "name": "Apple Pay error",
           "message": "An unexpected error occurred. Please try again or contact support."
@@ -9,7 +9,7 @@ declare const _default: {
       }
     },
     "CreditCard": {
-      "error": {
+      "errors": {
         "default": {
           "name": "Credit Card error",
           "message": "An unexpected error occurred. Please try again or contact support."

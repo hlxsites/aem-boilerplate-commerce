@@ -20,6 +20,6 @@ declare class LocalizedError extends Error {
     constructor(localizedName: string, localizedMessage: string);
 }
 export declare function fromPaymentsSDKError(category: ErrorCategory, error: Error): LocalizedError;
-type ErrorCategory = 'CreditCard' | 'ApplePay';
+export type ErrorCategory = 'CreditCard' | 'ApplePay';
 export default LocalizedError;
 //# sourceMappingURL=localizedError.d.ts.map

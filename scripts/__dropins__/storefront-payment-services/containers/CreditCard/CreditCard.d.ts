@@ -32,9 +32,13 @@ export interface CreditCardProps {
         cartId: string;
     }) => void;
     /**
-     * Called when payment flow was aborted due to an error.
+     * Called when the payment flow was aborted due to an error.
+     *
+     * The function receives an object with two properties, { name: string, message: string }, containing the localized
+     * error name and message. Both properties are user-facing and can be translated using the
+     * "PaymentServices.CreditCard.errors" language definitions.
      */
-    onError: (error: LocalizedError) => void;
+    onError: (localizedError: LocalizedError) => void;
 }
 export interface CreditCardFormRef {
     /**
