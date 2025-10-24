@@ -13,7 +13,13 @@ declare const _default: {
       "noPurchaseOrders": "No purchase orders requiring my approval found."
     },
     "approvalRulesList": {
-      "containerTitle": "Approval Rules",
+      "containerTitle": "Approval rules",
+      "emptyTitle": "No approval rules found",
+      "ariaLabel": {
+        "editRule": "Edit approval rule {{ruleName}}",
+        "deleteRule": "Delete approval rule {{ruleName}}",
+        "viewRule": "View approval rule {{ruleName}}"
+      },
       "buttons": {
         "newRule": "Add New Rule"
       }
