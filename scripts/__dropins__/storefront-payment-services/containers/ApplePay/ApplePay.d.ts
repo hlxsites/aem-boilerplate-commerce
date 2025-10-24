@@ -1,3 +1,4 @@
+import { default as LocalizedError } from '../../lib/localizedError';
 import { PaymentLocation } from '../../api';
 
 export interface ApplePayProps {
@@ -32,11 +33,17 @@ export interface ApplePayProps {
     /**
      * Called when payment flow is successful.
      */
-    onSuccess?: (result: any) => void;
+    onSuccess?: (result: {
+        cartId: string;
+    }) => void;
     /**
-     * Called when payment flow was aborted due to an error.
+     * Called when the payment flow was aborted due to an error.
+     *
+     * The function receives an object with two properties, { name: string, message: string }, containing the localized
+     * error name and message. Both properties are user-facing and can be translated using the
+     * "PaymentServices.ApplePay.errors" language definitions.
      */
-    onError?: (error: Error) => void;
+    onError?: (localizedError: LocalizedError) => void;
     /**
      * Whether the button is hidden. Set this to true to hide the Apple Pay button (default: false).
      */

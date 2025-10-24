@@ -293,12 +293,10 @@ export default async function decorate(block) {
         },
       },
       onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: async (error) => {
-        console.error('Apple Pay payment failed:', error);
+      onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
-          heading: 'Apple Pay error',
-          description: 'An unexpected error occurred while processing your Apple Pay payment. '
-            + 'Please try again or contact support.',
+          heading: localizedError.name,
+          description: localizedError.message,
           icon: h(Icon, { source: 'OrderError' }),
           'aria-live': 'assertive',
           role: 'alert',

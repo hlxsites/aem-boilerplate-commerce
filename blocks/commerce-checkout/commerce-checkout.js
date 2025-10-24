@@ -402,12 +402,9 @@ export default async function decorate(block) {
                   }
                 },
                 onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-                onError: (error) => {
-                  console.error(error);
+                onError: (localizedError) => {
                   events.emit('checkout/error', {
-                    code: 'UNKNOWN_ERROR',
-                    message: 'An unexpected error occurred while processing your Apple Pay '
-                      + 'payment. Please try another payment method or try again.',
+                    message: localizedError.message,
                   });
                 },
               })($applePay);
@@ -554,8 +551,15 @@ export default async function decorate(block) {
               // Credit card form invalid; abort order placement
               return;
             }
-            // Submit Payment Services credit card form
-            await creditCardFormRef.current.submit();
+            try {
+              // Submit Payment Services credit card form
+              await creditCardFormRef.current.submit();
+            } catch (localizedError) {
+              events.emit('checkout/error', {
+                message: localizedError.message,
+              });
+              return;
+            }
           }
           // Place order
           await orderApi.placeOrder(cartId);
