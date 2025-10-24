@@ -13,3 +13,10 @@ cypress/
 tools/picker/src/*
 tools/pdp-metadata/*
 plugins/experimentation/documentation/images/*
+mcp-server/*
+.cursor/*
+.gemini/*
+.claude/*
+.vscode/*
+AGENTS.md
+GEMINI.md

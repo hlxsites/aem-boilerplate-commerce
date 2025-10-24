@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "commerceDocumentationRag": {
+      "type": "stdio",
+      "command": "bash",
+      "args": ["mcp-server/start-mcp.sh"]
+    },
+    "chromeDevtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  }
+}
