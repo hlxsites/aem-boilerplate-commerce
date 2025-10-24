@@ -16,3 +16,7 @@ plugins/experimentation/documentation/images/*
 mcp-server/*
 .cursor/*
 .gemini/*
+.claude/*
+.vscode/*
+AGENTS.md
+GEMINI.md
