@@ -30,4 +30,5 @@ export * from './getPurchaseOrders';
 export * from './placeOrderForPurchaseOrder';
 export * from './placePurchaseOrder';
 export * from './getPurchaseOrderApprovalRuleMetadata';
+export * from './getPurchaseOrderApprovalRules';
 //# sourceMappingURL=index.d.ts.map

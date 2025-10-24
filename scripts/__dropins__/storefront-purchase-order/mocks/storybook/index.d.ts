@@ -26,4 +26,5 @@
  * realistic mock responses for different scenarios.
  */
 export * from './purchase-orders';
+export * from './approval-rules';
 //# sourceMappingURL=index.d.ts.map

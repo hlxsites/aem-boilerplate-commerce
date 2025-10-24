@@ -14,7 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './usePurchaseOrders';
-export * from './useCustomerRolePermissions';
-export * from './useApprovalRulesList';
+export * from './getPurchaseOrderApprovalRules';
 //# sourceMappingURL=index.d.ts.map

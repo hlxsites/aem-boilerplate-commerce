@@ -17,4 +17,5 @@
 export * from './PurchaseOrdersTable';
 export * from './PurchaseOrdersHeader';
 export * from './PurchaseOrdersTableActions';
+export * from './PurchaseOrderConfirmationContent';
 //# sourceMappingURL=index.d.ts.map
