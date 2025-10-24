@@ -4,6 +4,11 @@ import { PageSizeListProps, PaginationState } from '.';
 import { AlertMessageConfigType } from '../hooks';
 
 export type Column = {
+    label: string | VNode<HTMLAttributes<HTMLElement>>;
+    key: string;
+    ariaLabel?: string;
+};
+export type TableColumn = {
     label: string;
     key: string;
     ariaLabel?: string;
@@ -32,7 +37,7 @@ export interface PurchaseOrdersTableProps {
     skeletonRowCount?: number | string;
     footer?: VNode | string | null;
     header?: VNode | string | null;
-    alertMessageConfig: AlertMessageConfigType;
+    alertMessageConfig?: AlertMessageConfigType;
     withWrapper?: boolean;
 }
 //# sourceMappingURL=purchaseOrdersTable.types.d.ts.map
