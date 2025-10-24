@@ -1,14 +1,14 @@
 import { PaymentMethodConfig } from '../../containers';
 import { PaymentMethod } from '../../data/models/payment-method';
-import { UIComponentType } from '../../types/ComponentTypes';
+import { UIComponentType } from '../../types';
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 
 interface ExtendedPaymentMethod extends PaymentMethodConfig, PaymentMethod {
 }
-export interface PaymentMethodsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'loading' | 'title'> {
+export interface PaymentMethodsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
     error?: string | null;
-    loading?: boolean;
+    busy?: boolean;
     onDismissError?: () => void;
     onSelectionChange?: (value: PaymentMethod) => void;
     options?: ExtendedPaymentMethod[];

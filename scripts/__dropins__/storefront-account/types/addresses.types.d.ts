@@ -1,6 +1,6 @@
 import { CustomerAddressesModel } from '../data/models';
 import { FieldsProps } from './form.types';
-import { SlotProps } from '../../@adobe-commerce/elsie/src/src/lib';
+import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
 
 export interface DefaultCheckBox extends Omit<FieldsProps, 'options'> {
 }
@@ -42,7 +42,7 @@ export interface AddressesProps {
     routeAddressesPage?: () => string;
     onSuccess?: () => void;
     onError?: (error: string) => void;
-    onSubmit?: () => Promise<void>;
+    onSubmit?: (event: Event, formValid: boolean) => Promise<void>;
     onAddressData?: (values: {} | CustomerAddressesModel | undefined) => void;
 }
 export interface AddressesWrapperProps extends Omit<AddressesProps, 'formName'> {
