@@ -182,6 +182,7 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
+    requisitionListNames,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -348,21 +349,28 @@ export default async function decorate(block) {
 
   // Handle option changes
   events.on('pdp/values', () => {
+    const configValues = pdpApi.getProductConfigurationValues();
+
+    // Check URL parameter for empty optionsUIDs
+    const urlOptionsUIDs = urlParams.get('optionsUIDs');
+
+    // If URL has empty optionsUIDs parameter, treat as base product (no options)
+    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
     if (wishlistToggleBtn) {
-      const configValues = pdpApi.getProductConfigurationValues();
-
-      // Check URL parameter for empty optionsUIDs
-      const urlOptionsUIDs = urlParams.get('optionsUIDs');
-
-      // If URL has empty optionsUIDs parameter, treat as base product (no options)
-      const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
-
       wishlistToggleBtn.setProps((prev) => ({
         ...prev,
         product: {
           ...product,
           optionUIDs,
         },
+      }));
+    }
+
+    if (requisitionListNames) {
+      requisitionListNames.setProps((prev) => ({
+        ...prev,
+        selectedOptions: optionUIDs,
+        quantity: configValues?.quantity || 1,
       }));
     }
   }, { eager: true });
