@@ -32,7 +32,7 @@ export type AfterHook<T = any> = (requestInit: RequestInit, response: {
     data: T;
 };
 declare class FetchGraphQLMesh {
-    _endpoint?: string;
+    protected _endpoint?: string;
     get endpoint(): string | undefined;
     get fetchGraphQlHeaders(): Header;
     _fetchGraphQlHeaders: Header;
@@ -40,7 +40,12 @@ declare class FetchGraphQLMesh {
     _afterHooks: AfterHook[];
     /**
      * Sets the GraphQL endpoint.
-     * @param endpoint - The GraphQL endpoint.
+     * @param endpoint - The GraphQL endpoint URL string.
+     * @example
+     * ```js
+     * // Set endpoint as string
+     * instance.setEndpoint('https://api.example.com/graphql');
+     * ```
      */
     setEndpoint(endpoint: string): void;
     /**
@@ -107,6 +112,16 @@ declare class FetchGraphQLMesh {
      */
     addAfterHook(hook: AfterHook): void;
     /**
+     * Collects all before hooks. Can be overridden by subclasses for inheritance.
+     * @protected
+     */
+    protected _collectBeforeHooks(): BeforeHook[];
+    /**
+     * Collects all after hooks. Can be overridden by subclasses for inheritance.
+     * @protected
+     */
+    protected _collectAfterHooks(): AfterHook[];
+    /**
      * Fetches GraphQL data.
      * @param query - The GraphQL query.
      * @param options - Optional configuration for the fetch request.
@@ -143,14 +158,45 @@ declare class FetchGraphQLMesh {
 }
 /**
  * `FetchGraphQL` is a class that extends `FetchGraphQLMesh`.
- * It provides methods to get the GraphQL endpoint and headers.
+ * It provides methods to get the GraphQL endpoint and headers with support for inheritance.
  *
  * @class
  *
  */
 export declare class FetchGraphQL extends FetchGraphQLMesh {
+    private _mode;
+    private _source?;
     get endpoint(): string | undefined;
     get fetchGraphQlHeaders(): Header;
+    /**
+     * Sets the GraphQL endpoint or inherits from a parent instance.
+     * @param endpoint - The GraphQL endpoint URL string, or a FetchGraphQL instance to inherit from.
+     * @example
+     * ```js
+     * // Set endpoint as string
+     * instance.setEndpoint('https://api.example.com/graphql');
+     *
+     * // Inherit from parent instance
+     * const parent = new FetchGraphQL();
+     * parent.setEndpoint('https://api.example.com/graphql');
+     *
+     * const child = new FetchGraphQL();
+     * child.setEndpoint(parent); // Inherits endpoint, headers, and hooks
+     * ```
+     */
+    setEndpoint(endpoint: string | FetchGraphQL): void;
+    /**
+     * Collects all before hooks from the parent chain.
+     * Parent hooks execute first, then child hooks.
+     * @protected
+     */
+    protected _collectBeforeHooks(): BeforeHook[];
+    /**
+     * Collects all after hooks from the parent chain.
+     * Child hooks execute first, then parent hooks.
+     * @protected
+     */
+    protected _collectAfterHooks(): AfterHook[];
 }
 /**
  * Exports several methods from the `mesh` object.
@@ -162,6 +208,8 @@ export declare class FetchGraphQL extends FetchGraphQLMesh {
  * @property {Function} removeFetchGraphQlHeader - Removes a specific GraphQL header.
  * @property {Function} fetchGraphQl - Fetches GraphQL data.
  * @property {Function} getConfig - Gets the configuration.
+ * @property {Function} addBeforeHook - Adds a hook executed before the GraphQL call.
+ * @property {Function} addAfterHook - Adds a hook executed after the GraphQL call.
  */
 export declare const setEndpoint: (endpoint: string) => void, setFetchGraphQlHeaders: (header: Header | ((prev: Header) => Header)) => void, setFetchGraphQlHeader: (key: string, value: string | null) => void, getFetchGraphQlHeader: (key: string) => string | null | undefined, removeFetchGraphQlHeader: (key: string) => void, fetchGraphQl: <T = any>(query: string, options?: FetchOptions) => Promise<{
     errors?: FetchQueryError | undefined;
