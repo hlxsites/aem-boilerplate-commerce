@@ -1,7 +1,12 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
 import { CompanyPurchaseOrders } from '@dropins/storefront-purchase-order/containers/CompanyPurchaseOrders.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { checkIsAuthenticated, CUSTOMER_LOGIN_PATH, rootLink } from '../../scripts/commerce.js';
+import {
+  checkIsAuthenticated,
+  CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH,
+  CUSTOMER_LOGIN_PATH,
+  rootLink,
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/purchase-order.js';
@@ -11,7 +16,7 @@ const PAGE_SIZE_OPTIONS = [
   { text: '20', value: '20', selected: false },
   { text: '30', value: '30', selected: false },
 ];
-
+// TODO PORef
 const redirectToLogin = () => {
   window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
 };
@@ -38,6 +43,7 @@ const renderCompanyPurchaseOrders = async (blockElement, permissions = {}) => {
   await purchaseOrderRenderer.render(CompanyPurchaseOrders, {
     initialPageSize: PAGE_SIZE_OPTIONS,
     skeletonRowCount: 5,
+    routePurchaseOrderDetails: (poRef) => `${CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH}?poRef=${poRef}`,
   })(blockElement);
 };
 
