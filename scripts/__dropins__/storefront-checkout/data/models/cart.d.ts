@@ -1,13 +1,6 @@
-import { Address, CustomAttribute, PaymentMethod, ShippingAddress } from '.';
+import { Address, PaymentMethod, ShippingAddress } from '.';
 
 export interface CartAddress extends Address {
-    customAttributes: CustomAttribute[];
-    fax?: string;
-    id?: number;
-    middleName?: string;
-    prefix?: string;
-    suffix?: string;
-    vatId?: string;
 }
 export type CartShippingAddress = CartAddress & ShippingAddress & {
     sameAsBilling?: boolean;

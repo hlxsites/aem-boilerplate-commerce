@@ -12,6 +12,9 @@ export declare class MissingArgument extends InvalidInput {
 export declare class MissingCart extends MissingArgument {
     constructor();
 }
+export declare class MissingCartAndQuote extends InvalidInput {
+    constructor();
+}
 export declare class Unauthenticated extends Error {
     constructor();
 }

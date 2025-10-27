@@ -20,7 +20,7 @@ const e=`
       currency
     }
   }
-`,_=`
+`,t=`
   fragment SELECTED_SHIPPING_METHOD_FRAGMENT on SelectedShippingMethod {
     amount {
       currency
@@ -41,77 +41,79 @@ const e=`
   }
 `,a=`
   fragment BILLING_CART_ADDRESS_FRAGMENT on BillingCartAddress {
-    id
     city
+    company
     country {
       code
       label
     }
-    firstname
-    lastname
-    company
-    postcode
-    vat_id
-    region {
-      region_id
-      code
-      label
-    }
-    street
-    telephone
     custom_attributes {
       ... on AttributeValue {
         code
         value
       }
     }
-    prefix
-    suffix
-    middlename
     fax
-  }
-`,A=`
-  fragment SHIPPING_CART_ADDRESS_FRAGMENT on ShippingCartAddress {
-    id
     firstname
+    id
     lastname
-    company
-    street
-    city
+    middlename
     postcode
-    vat_id
+    prefix
     region {
       region_id
       code
       label
     }
-    country {
-      code
-      label
-    }
+    street
+    suffix
     telephone
-    custom_attributes {
-      ... on AttributeValue {
-        code
-        value
-      }
-    }
+    uid
+    vat_id
+  }
+`,i=`
+  fragment SHIPPING_CART_ADDRESS_FRAGMENT on ShippingCartAddress {
     available_shipping_methods {
       ...AVAILABLE_SHIPPING_METHOD_FRAGMENT
     }
+    city
+    company
+    country {
+      code
+      label
+    }
+    custom_attributes {
+      ... on AttributeValue {
+        code
+        value
+      }
+    }
+    fax
+    firstname
+    id
+    lastname
+    middlename
+    postcode
+    prefix
+    region {
+      region_id
+      code
+      label
+    }
+    same_as_billing
     selected_shipping_method {
       ...SELECTED_SHIPPING_METHOD_FRAGMENT
     }
-    same_as_billing
-    prefix
+    street
     suffix
-    middlename
-    fax
+    telephone
+    uid
+    vat_id
   }
 
   ${e}
-  ${_}
-`,t=`
+  ${t}
+`,_=`
   fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {
     code
     title
@@ -142,8 +144,8 @@ const e=`
   }
 
   ${a}
-  ${A}
-  ${t}
+  ${i}
+  ${_}
   ${E}
 `,T=`
   fragment CUSTOMER_FRAGMENT on Customer {
@@ -151,53 +153,77 @@ const e=`
     lastname
     email
   }
-`,i=`
+`,A=`
   fragment NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT on NegotiableQuoteBillingAddress {
     city
+    company
     country {
       code
       label
     }
+    custom_attributes {
+      ... on AttributeValue {
+        code
+        value
+      }
+    }
+    fax
     firstname
     lastname
-    company
+    middlename
     postcode
+    prefix
     region {
       region_id
       code
       label
     }
     street
+    suffix
     telephone
+    uid
+    vat_id
   }
 `,n=`
   fragment NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT on NegotiableQuoteShippingAddress {
-    firstname
-    lastname
-    company
-    street
-    city
-    postcode
-    region {
-      region_id
-      code
-      label
+    available_shipping_methods {
+      ...AVAILABLE_SHIPPING_METHOD_FRAGMENT
     }
+    city
+    company
     country {
       code
       label
     }
-    telephone
-    available_shipping_methods {
-      ...AVAILABLE_SHIPPING_METHOD_FRAGMENT
+    custom_attributes {
+      ... on AttributeValue {
+        code
+        value
+      }
+    }
+    fax
+    firstname
+    lastname
+    middlename
+    postcode
+    prefix
+    region {
+      region_id
+      code
+      label
     }
     selected_shipping_method {
       ...SELECTED_SHIPPING_METHOD_FRAGMENT
     }
+    street
+    suffix
+    telephone
+    uid
+    vat_id
   }
 
   ${e}
-  ${_}
+  ${t}
 `,l=`
   fragment NEGOTIABLE_QUOTE_FRAGMENT on NegotiableQuote {
     available_payment_methods {
@@ -220,9 +246,9 @@ const e=`
     uid
   }
 
-  ${i}
+  ${A}
   ${n}
-  ${t}
+  ${_}
   ${E}
-`;export{t as AVAILABLE_PAYMENT_METHOD_FRAGMENT,e as AVAILABLE_SHIPPING_METHOD_FRAGMENT,a as BILLING_CART_ADDRESS_FRAGMENT,o as CHECKOUT_DATA_FRAGMENT,T as CUSTOMER_FRAGMENT,i as NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT,l as NEGOTIABLE_QUOTE_FRAGMENT,n as NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT,E as SELECTED_PAYMENT_METHOD_FRAGMENT,_ as SELECTED_SHIPPING_METHOD_FRAGMENT,A as SHIPPING_CART_ADDRESS_FRAGMENT};
+`;export{_ as AVAILABLE_PAYMENT_METHOD_FRAGMENT,e as AVAILABLE_SHIPPING_METHOD_FRAGMENT,a as BILLING_CART_ADDRESS_FRAGMENT,o as CHECKOUT_DATA_FRAGMENT,T as CUSTOMER_FRAGMENT,A as NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT,l as NEGOTIABLE_QUOTE_FRAGMENT,n as NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT,E as SELECTED_PAYMENT_METHOD_FRAGMENT,t as SELECTED_SHIPPING_METHOD_FRAGMENT,i as SHIPPING_CART_ADDRESS_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

@@ -5,6 +5,7 @@ export interface NegotiableQuote {
     availablePaymentMethods?: PaymentMethod[];
     billingAddress?: Address;
     email?: string;
+    isEmpty: boolean;
     isVirtual: boolean;
     name: string;
     selectedPaymentMethod?: PaymentMethod;

@@ -28,13 +28,8 @@ export * from './isEmailAvailable';
 export * from './resetCheckout';
 export * from './setBillingAddress';
 export * from './setGuestEmailOnCart';
-export * from './setNegotiableQuoteBillingAddress';
-export * from './setNegotiableQuotePaymentMethod';
-export * from './setNegotiableQuoteShippingAddress';
-export * from './setNegotiableQuoteShippingMethods';
 export * from './setPaymentMethod';
 export * from './setShippingAddress';
 export * from './setShippingMethods';
 export * from './synchronizeCheckout';
-export { getStoreConfigCache } from '../lib/state';
 //# sourceMappingURL=index.d.ts.map

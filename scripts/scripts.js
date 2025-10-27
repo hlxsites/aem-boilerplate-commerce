@@ -18,6 +18,7 @@ import {
   initializeCommerce,
   applyTemplates,
   decorateLinks,
+  loadErrorPage,
 } from './commerce.js';
 
 /**
@@ -53,6 +54,24 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
+    // auto block `*/fragments/*` references
+    const fragments = main.querySelectorAll('a[href*="/fragments/"]');
+    if (fragments.length > 0) {
+      // eslint-disable-next-line import/no-cycle
+      import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
+        fragments.forEach(async (fragment) => {
+          try {
+            const { pathname } = new URL(fragment.href);
+            const frag = await loadFragment(pathname);
+            fragment.parentElement.replaceWith(frag.firstElementChild);
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Fragment loading failed', error);
+          }
+        });
+      });
+    }
+
     buildHeroBlock(main);
   } catch (error) {
     console.error('Auto Blocking failed', error);
@@ -82,10 +101,15 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
-    await initializeCommerce();
-    decorateMain(main);
-    applyTemplates(doc);
-    await loadCommerceEager();
+    try {
+      await initializeCommerce();
+      decorateMain(main);
+      applyTemplates(doc);
+      await loadCommerceEager();
+    } catch (e) {
+      console.error('Error initializing commerce configuration:', e);
+      loadErrorPage(418);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }

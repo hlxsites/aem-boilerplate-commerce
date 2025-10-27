@@ -14,6 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export * from './transform-api';
+export * from './transform-custom-attributes';
 export * from './transform-cart';
 export * from './transform-cart-address';
 export * from './transform-quote-address';

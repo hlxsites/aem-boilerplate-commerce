@@ -7,24 +7,19 @@ type QuoteBillingAddress = NonNullable<GetNegotiableQuoteQuery['negotiableQuote'
 declare const transformQuoteBillingAddress: (data: QuoteBillingAddress) => AddressModel | undefined;
 declare const transformQuoteShippingAddress: (data: ({
     __typename?: "NegotiableQuoteShippingAddress" | undefined;
+    city: string;
+    company?: string | null | undefined;
+    fax?: string | null | undefined;
     firstname: string;
     lastname: string;
-    company?: string | null | undefined;
-    street: (string | null)[];
-    city: string;
+    middlename?: string | null | undefined;
     postcode?: string | null | undefined;
+    prefix?: string | null | undefined;
+    street: (string | null)[];
+    suffix?: string | null | undefined;
     telephone?: string | null | undefined;
-    region?: {
-        __typename?: "NegotiableQuoteAddressRegion" | undefined;
-        region_id?: number | null | undefined;
-        code?: string | null | undefined;
-        label?: string | null | undefined;
-    } | null | undefined;
-    country: {
-        __typename?: "NegotiableQuoteAddressCountry" | undefined;
-        code: string;
-        label: string;
-    };
+    uid: string;
+    vat_id?: string | null | undefined;
     available_shipping_methods?: ({
         __typename?: "AvailableShippingMethod" | undefined;
         carrier_code: string;
@@ -48,6 +43,24 @@ declare const transformQuoteShippingAddress: (data: ({
             currency?: import('../../__generated__/types').CurrencyEnum | null | undefined;
         };
     } | null)[] | null | undefined;
+    country: {
+        __typename?: "NegotiableQuoteAddressCountry" | undefined;
+        code: string;
+        label: string;
+    };
+    custom_attributes?: ({
+        __typename?: "AttributeSelectedOptions" | undefined;
+    } | {
+        __typename?: "AttributeValue" | undefined;
+        code: string;
+        value: string;
+    } | null)[] | null | undefined;
+    region?: {
+        __typename?: "NegotiableQuoteAddressRegion" | undefined;
+        region_id?: number | null | undefined;
+        code?: string | null | undefined;
+        label?: string | null | undefined;
+    } | null | undefined;
     selected_shipping_method?: {
         __typename?: "SelectedShippingMethod" | undefined;
         carrier_code: string;
