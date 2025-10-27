@@ -43,6 +43,22 @@ export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisit
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
 
+// B2B - PURCHASE ORDER
+export const PO_PERMISSIONS = {
+  PO_ALL: 'Magento_PurchaseOrder::all',
+  VIEW_CUSTOMER: 'Magento_PurchaseOrder::view_purchase_orders',
+  VIEW_SUBORDINATES: 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+  VIEW_COMPANY: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
+  VIEW_RULES: 'Magento_PurchaseOrderRule::view_approval_rules',
+};
+export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
+export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
+export const PO_LIST_PAGE_SIZE_OPTIONS = [
+  { text: '10', value: '10', selected: true },
+  { text: '20', value: '20', selected: false },
+  { text: '30', value: '30', selected: false },
+];
+
 /**
  * Auth Privacy Policy Consent Slot
  * @param {Object} ctx - The context object

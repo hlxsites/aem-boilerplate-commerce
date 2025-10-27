@@ -1,19 +1,24 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
 import { CustomerPurchaseOrders } from '@dropins/storefront-purchase-order/containers/CustomerPurchaseOrders.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { checkIsAuthenticated, CUSTOMER_LOGIN_PATH, rootLink } from '../../scripts/commerce.js';
+import {
+  checkIsAuthenticated,
+  CUSTOMER_LOGIN_PATH,
+  CUSTOMER_PATH,
+  PO_PERMISSIONS,
+  PO_LIST_PAGE_SIZE_OPTIONS,
+  rootLink,
+} from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/purchase-order.js';
 
-const PAGE_SIZE_OPTIONS = [
-  { text: '10', value: '10', selected: true },
-  { text: '20', value: '20', selected: false },
-  { text: '30', value: '30', selected: false },
-];
-
 const redirectToLogin = () => {
   window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+};
+
+const redirectToAccountDashboard = () => {
+  window.location.href = rootLink(CUSTOMER_PATH);
 };
 
 /**
@@ -21,18 +26,32 @@ const redirectToLogin = () => {
  * Redirects unauthenticated users and handles permission updates
  */
 const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
-  const CUSTOMER_PO_PERMISSION = 'Magento_PurchaseOrder::view_purchase_orders';
-  const hasAccess = permissions.admin || permissions[CUSTOMER_PO_PERMISSION];
+  /**
+   * Redirect only if the customer lacks access to all PO containers
+   * Some pages may have multiple PO blocks - hidden ones should not trigger a redirect
+   */
+  const hasAccessToPurchaseOrders = permissions.admin
+    || permissions[PO_PERMISSIONS.PO_ALL]
+    || permissions[PO_PERMISSIONS.VIEW_CUSTOMER]
+    || permissions[PO_PERMISSIONS.VIEW_SUBORDINATES]
+    || permissions[PO_PERMISSIONS.VIEW_COMPANY];
 
-  // Hide the entire block container when the user doesn't have access
-  blockElement.parentElement.style.display = hasAccess ? 'block' : 'none';
-  if (!hasAccess) {
+  if (!hasAccessToPurchaseOrders) {
+    redirectToAccountDashboard();
+  }
+
+  // Check access to this specific block
+  const hasAccessToBlock = permissions.admin || permissions[PO_PERMISSIONS.VIEW_CUSTOMER];
+
+  // Hide the entire block container when the user doesn't have access (prevent layout issues)
+  blockElement.parentElement.style.display = hasAccessToBlock ? 'block' : 'none';
+  if (!hasAccessToBlock) {
     blockElement.innerHTML = '';
     return;
   }
 
   await purchaseOrderRenderer.render(CustomerPurchaseOrders, {
-    initialPageSize: PAGE_SIZE_OPTIONS,
+    initialPageSize: PO_LIST_PAGE_SIZE_OPTIONS,
     skeletonRowCount: 5,
   })(blockElement);
 };
@@ -41,7 +60,6 @@ export default async function decorate(block) {
   // Redirect guest users
   if (!checkIsAuthenticated()) {
     redirectToLogin();
-    return;
   }
 
   // Initial permissions check
