@@ -63,7 +63,6 @@
 }
 
 /* Hide main containers when there is a server error */
-.checkout__content--error .checkout__out-of-stock,
 .checkout__content--error .checkout__login,
 .checkout__content--error .checkout__shipping-form,
 .checkout__content--error .checkout__bill-to-shipping,
@@ -75,7 +74,6 @@
 }
 
 /* Hide blocks with empty divs */
-.checkout__out-of-stock:has(> :empty),
 .checkout__delivery:has(> div:first-child:empty),
 .checkout__bill-to-shipping:has(> :empty) {
     display: none;
@@ -196,20 +194,20 @@
     align-items: start;
     grid-template-columns: repeat(var(--grid-4-columns), 1fr);
     grid-template-areas: "main aside";
-    grid-column-gap: var(--grid-4-gutters);
+    column-gap: var(--grid-4-gutters);
     margin-bottom: var(--spacing-xbig);
     padding-top: var(--spacing-xxlarge);
 }
 
 .order-confirmation__main {
     display: grid;
-    grid-row-gap: var(--spacing-xbig);
+    row-gap: var(--spacing-xbig);
     grid-column: 1 / span 7;
 }
 
 .order-confirmation__aside {
     display: grid;
-    grid-row-gap: var(--spacing-xbig);
+    row-gap: var(--spacing-xbig);
     grid-column: 9 / span 4;
 }
 
@@ -310,7 +308,7 @@
 
     .order-confirmation__main,
     .order-confirmation__aside {
-        grid-row-gap: var(--spacing-medium);
+        row-gap: var(--spacing-medium);
     }
 
     .order-confirmation > div {
