@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <title>HTML Example</title>
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- 
+    JavaScript import maps are now supported cross-browser
+    See: https://caniuse.com/?search=importmap
+
+    This example uses the es-module-shims polyfill to enable support in browsers that do not yet support import maps.
+    -->
+  <script async src="https://ga.jspm.io/npm:es-module-shims@1.7.2/dist/es-module-shims.js"></script>
+
+  <script type="importmap">
+      {
+        "imports": {
+          "@dropins/tools/": "https://cdn.jsdelivr.net/npm/@dropins/tools@1.6.0-beta1/",
+          "@dropins/storefront-auth/": "https://cdn.jsdelivr.net/npm/@dropins/storefront-auth/",
+          "@dropins/storefront-cart/": "https://cdn.jsdelivr.net/npm/@dropins/storefront-cart/",
+          "@dropins/quote-management/": "../"
+        }
+      }
+    </script>
+</head>
+
+<body>
+  <script type="module">
+    // Event Bus
+    import { events } from '@dropins/tools/event-bus.js';
+
+    // GraphQL Client
+    import * as mesh from '@dropins/tools/fetch-graphql.js';
+
+    // Auth Button
+    import decorateAuthButton from './blocks/commerce-auth/commerce-auth.js';
+
+    // Cart Table
+    import decorateCartTable from './blocks/commerce-cart-table/commerce-cart.js';
+
+    // Cart Setup
+    import decorateCartSetup from './blocks/commerce-cart-setup/commerce-cart-setup.js';
+
+    // Request Quote
+    import decorateRequestQuoteButton from './blocks/commerce-b2b-request-quote-button/commerce-b2b-request-quote-button.js';
+
+    // Manage Quote
+    import decorateManageQuote from './blocks/commerce-b2b-manage-quote/commerce-b2b-manage-quote.js';
+
+    // Initializer
+    import { initialize } from './scripts/initialize.js';
+
+    // Enable events logger
+    events.enableLogger(true);
+
+    // Initialize dropins
+    initialize();
+
+    // Get DOM elements
+    const $data = document.getElementById('data');
+    const $title = document.getElementById('title');
+    const $auth = document.getElementById('auth');
+    const $cart = document.getElementById('cart');
+    const $cartAddItems = document.getElementById('cart-add-items');
+    const $cartTable = document.getElementById('cart-table');
+    const $cartFooter = document.getElementById('cart-footer');
+    const $quoteManagement = document.getElementById('quote-management');
+
+    // Decorate UI
+    decorateAuthButton($auth);
+    decorateCartTable($cartTable);
+    decorateCartSetup($cartAddItems);
+    decorateRequestQuoteButton($cartFooter);
+    decorateManageQuote($quoteManagement);
+
+    // Check if quote id url param is present
+    const urlParams = new URLSearchParams(window.location.search);
+    const quoteId = urlParams.get('quoteId');
+    if (quoteId) {
+      $cart.setAttribute('hidden', true);
+      $quoteManagement.removeAttribute('hidden');
+    }
+    else {
+      $cart.removeAttribute('hidden');
+      $quoteManagement.setAttribute('hidden', true);
+    }
+
+    // Listen for user athentication
+    events.on(
+      'authenticated',
+      (authenticated) => {
+        $title.innerText = authenticated ? '🔓' : '🔒';
+
+        // Fetch store data when user logs in/out
+        mesh
+          .fetchGraphQl(
+            `
+                query STORE {
+                  storeConfig {
+                    store_name
+                    store_code
+                  }
+                  ${authenticated
+              ? `
+                    customer {
+                      firstname
+                      lastname
+                      email
+                    }
+                  `
+              : ''
+            }
+                }
+              `
+          )
+          .then(({ data }) => {
+            $data.innerText = JSON.stringify(data, null, 2);
+          });
+
+        if (authenticated) {
+          $quoteManagement.removeAttribute('hidden');
+        }
+        else {
+          $quoteManagement.setAttribute('hidden', true);
+        }
+      },
+      { eager: true } // fetch it on runtime using last state
+    );
+
+  </script>
+
+  <div id="app">
+    <h1 id="title">💻</h1>
+
+    <div class="cards">
+      <div class="card card--black">
+        <h2 class="heading">App Shell</h2>
+
+        <fieldset class="actions">
+          <legend>API Functions</legend>
+
+          <button id="auth" disabled>⏳ Loading...</button>
+          <button id="cart-add-items" data-cart-items='[{
+            "sku": "ADB150",
+            "quantity": 10
+          }, {
+            "sku": "ADB413",
+            "quantity": 20
+          }]' disabled>
+            ⏳ Loading...
+          </button>
+        </fieldset>
+
+        <code data-label="fetchGraphQl">
+            <pre id="data">⏳ Loading...</pre>
+          </code>
+      </div>
+
+      <div class="containers">
+        <h2 class="heading">Frontend Containers</h2>
+        <div id="cart" class="container">
+          <div id="cart-table"></div>
+          <div id="cart-footer"></div>
+        </div>
+        <div id="quote-management" class="container"></div>
+      </div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="example.css" />
+</body>
+
+</html>
