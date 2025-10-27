@@ -405,7 +405,10 @@ export default async function decorate(block) {
       const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
 
       // Render and update the reference to the new instance
-      requisitionListNames = await renderRequisitionListNamesIfEnabled($requisitionListNames, optionUIDs);
+      requisitionListNames = await renderRequisitionListNamesIfEnabled(
+        $requisitionListNames,
+        optionUIDs,
+      );
     } else {
       // User logged out - clear the component
       requisitionListNames = await renderRequisitionListNamesIfEnabled($requisitionListNames);
