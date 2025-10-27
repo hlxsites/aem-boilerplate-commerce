@@ -2829,6 +2829,56 @@ export declare const mockGetPurchaseOrdersFullDataSnakeCase: {
         };
     };
 };
+export declare const mockCurrencyInfoSuccessResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: string[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoEmptyCodesResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: never[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoNullBaseResponse: {
+    data: {
+        currency: {
+            base_currency_code: null;
+            available_currency_codes: string[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoMissingDataResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: undefined;
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoErrorResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: never[];
+        };
+    };
+    errors: {
+        message: string;
+        extensions: {
+            category: string;
+        };
+    }[];
+};
 export declare const mockGetPurchaseOrderApprovalRulesSuccessSnakeCase: {
     data: {
         customer: {
@@ -2886,6 +2936,23 @@ export declare const mockGetPurchaseOrderApprovalRulesErrorSnakeCase: {
             category: string;
         };
     }[];
+};
+export declare const mockCurrencyInfoNoDataResponse: {
+    data: null;
+    errors: undefined;
+};
+export declare const mockCurrencyInfoNoCurrencyResponse: {
+    data: {};
+    errors: undefined;
+};
+export declare const mockCurrencyInfoPartialResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: undefined;
+        };
+    };
+    errors: undefined;
 };
 export declare const mockGetPurchaseOrderApprovalRulesEmptyDataSnakeCase: {
     data: {

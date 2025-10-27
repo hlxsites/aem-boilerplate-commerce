@@ -17,6 +17,8 @@
 export * from './CustomerPurchaseOrders';
 export * from './CompanyPurchaseOrders';
 export * from './RequireApprovalPurchaseOrders';
-export * from './PurchaseOrderApprovalRulesList';
+export * from './ApprovalRuleForm';
+export * from './ApprovalRulesList';
 export * from './PurchaseOrderConfirmation';
+export * from './ApprovalRuleDetails';
 //# sourceMappingURL=index.d.ts.map

@@ -51,6 +51,7 @@ export const PO_PERMISSIONS = {
   VIEW_COMPANY: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
   VIEW_RULES: 'Magento_PurchaseOrderRule::view_approval_rules',
 };
+export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
 export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
 export const PO_LIST_PAGE_SIZE_OPTIONS = [
