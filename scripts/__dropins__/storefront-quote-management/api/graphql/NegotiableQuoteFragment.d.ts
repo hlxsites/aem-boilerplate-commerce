@@ -1,0 +1,18 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+export declare const NEGOTIABLE_QUOTE_FRAGMENT = "\n  fragment NegotiableQuoteFragment on NegotiableQuote {\n    uid\n    name\n    created_at\n    status\n    sales_rep_name\n    expiration_date\n    updated_at\n    buyer {\n      firstname\n      lastname\n    }\n    comments {\n      uid\n      created_at\n      author {\n        firstname\n        lastname\n      }\n      text\n    }\n    template_id\n    template_name\n    items {\n      product {\n        name\n        sku\n        uid\n        stock_status\n        quantity\n        price_range {\n          maximum_price {\n            regular_price {\n              value\n            }\n          }\n        }\n      }\n      prices {\n        price {\n          currency\n          value\n        }\n        original_item_price {\n          currency\n          value\n        }\n        original_row_total {\n          currency\n          value\n        }\n        row_total {\n          currency\n          value\n        }\n        catalog_discount {\n          amount_off\n          percent_off\n        }\n        discounts {\n          label\n          value\n          amount {\n            currency\n            value\n          }\n        }\n      }\n      quantity\n      ... on ConfigurableCartItem {\n\t\t\t\tconfigurable_options {\n\t\t\t\t\toption_label\n\t\t\t\t\tvalue_label\n\t\t\t\t}\n\t\t\t}\n\t\t\t... on BundleCartItem {\n\t\t\t\tbundle_options {\n\t\t\t\t\tlabel\n\t\t\t\t\tvalues {\n\t\t\t\t\t\tlabel\n\t\t\t\t\t\tquantity\n            original_price {\n\t\t\t\t\t\t\tcurrency\n\t\t\t\t\t\t\tvalue\n\t\t\t\t\t\t}\n\t\t\t\t\t\tpriceV2 {\n\t\t\t\t\t\t\tcurrency\n\t\t\t\t\t\t\tvalue\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n    }\n    history {\n      uid\n      created_at\n      author {\n        firstname\n        lastname\n      }\n      change_type\n      changes {\n        comment_added {\n          comment\n        }\n        statuses {\n          changes {\n            new_status\n            old_status\n          }\n        }\n        expiration {\n          new_expiration\n          old_expiration\n        }\n      }\n    }\n    prices {\n      subtotal_excluding_tax {\n        currency\n        value\n      }\n      subtotal_including_tax {\n        currency\n        value\n      }\n      subtotal_with_discount_excluding_tax {\n        currency\n        value\n      }\n      applied_taxes {\n        amount {\n          currency\n          value\n        }\n        label\n      }\n      grand_total {\n        currency\n        value\n      }\n    }\n    shipping_addresses {\n      uid\n      firstname\n      lastname\n      company\n      street\n      city\n      region {\n        code\n        label\n        region_id\n      }\n      postcode\n      country {\n        code\n        label\n      }\n      telephone\n    }\n  }\n";
+//# sourceMappingURL=NegotiableQuoteFragment.d.ts.map
