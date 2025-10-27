@@ -34,10 +34,12 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Create new Requisition List
     cy.contains('Add new Requisition List').should('be.visible').click();
-    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').type('Newly Created Requisition List');
+    cy.wait(1000); // Wait for form modal to appear
+    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').type('Newly Created Requisition List');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').type('Here goes a dummy description');
     cy.contains('Cancel').should('be.visible');
     cy.contains('Save').should('be.visible').click();
+    cy.wait(1000); // Wait for form to close and list to be created
     cy.contains('Newly Created Requisition List').should('be.visible');
     cy.get(fields.requisitionListItemRow).should('have.length', 1);
 
@@ -50,9 +52,11 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Create a new list and add product to it from PDP
     cy.get(fields.requisitionListNamesOnPDP).select('Create Requisition List');
-    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').type('Req list created from PDP');
+    cy.wait(1000); // Wait for form modal to appear
+    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').type('Req list created from PDP');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').type('Another dummy description');
     cy.contains('Save').should('be.visible').click();
+    cy.wait(1000); // Wait for form to close and list to be created
 
     // Assert new Requisition List is created and can be selected
     cy.get(fields.requisitionListNamesOnPDP).select('Req list created from PDP');
@@ -71,9 +75,11 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Create a new list and add product to it from PLP
     cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Create Requisition List');
-    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').type('Now a Req list from PLP');
+    cy.wait(1000); // Wait for form modal to appear
+    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').type('Now a Req list from PLP');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').type('Yet another dummy description');
     cy.contains('Save').should('be.visible').click();
+    cy.wait(1000); // Wait for form to close and list to be created
 
     // Assert new Requisition List is created and can be selected
     cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Now a Req list from PLP');
@@ -88,9 +94,11 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
     // Rename Requisition List
     cy.get(fields.requisitionListItemActionsRenameButton).eq(1).click();
     cy.contains('Rename Requisition List').should('be.visible');
-    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').clear().type('Updated Requisition List');
+    cy.wait(500); // Wait for form modal to appear
+    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').clear().type('Updated Requisition List');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').clear().type('Dummy description');
     cy.contains('Save').should('be.visible').click();
+    cy.wait(1000); // Wait for form to close and list to be updated
     cy.contains('Updated Requisition List').should('be.visible');
 
     // Remove Requisition List
