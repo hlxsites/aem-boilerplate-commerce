@@ -21,4 +21,6 @@ export * from './CustomerCompanyInfoCard';
 export * from './CompanyStructureEmpty';
 export * from './CompanyRegistrationForm';
 export * from './CompanyRegistrationSuccess';
+export * from './CompanyCreditDisplay';
+export * from './CompanyCreditHistoryDisplay';
 //# sourceMappingURL=index.d.ts.map

@@ -28,4 +28,7 @@ export * from './allowCompanyRegistration';
 export * from './createCompany';
 export * from './isCompanyUser';
 export * from './isCompanyAdmin';
+export * from './getCompanyCredit';
+export * from './getCompanyCreditHistory';
+export * from './checkCompanyCreditEnabled';
 //# sourceMappingURL=index.d.ts.map
