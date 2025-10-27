@@ -40,6 +40,7 @@ import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
+import { loadCSS } from '../../scripts/aem.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -215,7 +216,7 @@ async function renderOrderConfirmationFooterButton(container) {
   })(container);
 }
 
-export async function renderOrderSuccess(container, { orderData } = {}) {
+async function renderOrderSuccessContent(container, { orderData } = {}) {
   // Scroll to top on success view
   window.scrollTo(0, 0);
 
@@ -262,6 +263,11 @@ export async function renderOrderSuccess(container, { orderData } = {}) {
   await renderOrderConfirmationFooterButton($continueBtn);
 }
 
+export async function renderOrderSuccess(container, { orderData } = {}) {
+  await loadCSS('./blocks/commerce-checkout-success/commerce-checkout-success.css');
+  return renderOrderSuccessContent(container, { orderData });
+}
+
 export default async function decorate(block) {
-  await renderOrderSuccess(block);
+  await renderOrderSuccessContent(block);
 }
