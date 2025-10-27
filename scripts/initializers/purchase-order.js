@@ -30,9 +30,10 @@ await initializeDropin(async () => {
     },
   };
 
-  if (!checkIsAuthenticated() && !pathname.includes(CUSTOMER_LOGIN_PATH)) {
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-  }
+  // TODO POref
+  // if (!checkIsAuthenticated() && !pathname.includes(CUSTOMER_LOGIN_PATH)) {
+  //   window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+  // }
 
   events.on(
     'purchase-order/error',
