@@ -20,13 +20,16 @@
 
 The Commerce Company Credit block renders a company credit display using the @dropins/storefront-company-management CompanyCreditContainer. It provides functionality for viewing company credit information with authentication protection and company configuration.
 
-## Integration
+## Configuration
 
-### Block Configuration
+### Block Configuration Options
 
 The block can be configured with the following options via `readBlockConfig()`:
 
 - **show-history** (string, optional, default: 'true'): Controls whether to show company credit transaction history ('true') or only credit summary information ('false')
+  - **Type**: String ('true' | 'false')
+  - **Default**: 'true'
+  - **Side Effects**: When 'true', enables pagination with default settings (pageSize: 20, currentPage: 1)
 
 Example configuration:
 ```javascript
@@ -35,6 +38,8 @@ const config = readBlockConfig(block);
 //   'show-history': 'false'  // Shows only credit info, no history
 // }
 ```
+
+## Integration
 
 <!-- ### URL Parameters
 
@@ -58,22 +63,25 @@ No events are emitted by this block. -->
 
 ### Page Context Detection
 
-- **Authenticated Users**: When user is authenticated and company credit is enabled, renders the company credit management interface
+- **Authenticated Users**: When user is authenticated, company functionality is enabled, and company credit is enabled, renders the company credit management interface
 - **Unauthenticated Users**: When user is not authenticated, redirects to the login page
-- **Company Credit Disabled**: When company credit functionality is disabled, redirects to the customer account page
+- **Company Functionality Disabled**: When general company functionality is disabled, redirects to the customer account page
+- **Company Credit Disabled**: When company credit functionality is specifically disabled, redirects to the customer account page  
 - **History Hidden**: When `show-history` is set to 'false', shows only credit information without transaction history
 - **Full View**: When `show-history` is 'true' or not set, shows complete credit information with transaction history
 
 ### User Interaction Flows
 
-1. **Authentication Check**: Block first verifies user authentication status
-2. **Company Credit Check**: Verifies that company credit functionality is enabled using `checkCompanyCreditEnabled()`
-3. **Redirect Flow**: If checks fail, redirects to appropriate page (login or customer account)
-4. **Credit Management**: If all checks pass, renders company credit interface with full functionality
+1. **Authentication Check**: Block first verifies user authentication status using `checkIsAuthenticated()`
+2. **Company Functionality Check**: Verifies that company functionality is enabled using `companyEnabled()`  
+3. **Company Credit Check**: Verifies that company credit functionality is enabled using `checkCompanyCreditEnabled()`
+4. **Redirect Flow**: If any checks fail, redirects to appropriate page (login or customer account)
+5. **Credit Management**: If all checks pass, renders company credit interface with history pagination (when enabled)
 
 ### Error Handling
 
-- **Authentication Errors**: If user is not authenticated, automatically redirects to login page
-- **Company Credit Errors**: If company credit functionality is disabled, redirects to customer account page
+- **Authentication Errors**: If user is not authenticated, automatically redirects to login page (`CUSTOMER_LOGIN_PATH`)
+- **Company Functionality Errors**: If company functionality is disabled, redirects to customer account page (`CUSTOMER_ACCOUNT_PATH`)
+- **Company Credit Errors**: If company credit functionality is disabled, redirects to customer account page (`CUSTOMER_ACCOUNT_PATH`)
 - **Render Errors**: If the CompanyCreditContainer fails to render, the block content remains empty
 - **Fallback Behavior**: Always falls back to appropriate redirect pages for authentication/authorization failures
