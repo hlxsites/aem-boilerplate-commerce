@@ -12,8 +12,9 @@ import {
   createScopedSelector,
   isEmptyCart,
   isVirtualCart,
+  scrollToElement,
   setMetaTags,
-  validateForms,
+  validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Payment Services Dropin
@@ -63,7 +64,6 @@ import {
   BILLING_FORM_NAME,
   CHECKOUT_EMPTY_CLASS,
   LOGIN_FORM_NAME,
-  PURCHASE_ORDER_FORM_NAME,
   SHIPPING_ADDRESS_DATA_KEY,
   SHIPPING_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
@@ -128,13 +128,39 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  const handleValidation = () => validateForms([
-    { name: LOGIN_FORM_NAME },
-    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
-    { name: BILLING_FORM_NAME, ref: billingFormRef },
-    { name: PURCHASE_ORDER_FORM_NAME },
-    { name: TERMS_AND_CONDITIONS_FORM_NAME },
-  ]);
+  // Create validation and place order handlers
+  const handleValidation = () => {
+    let success = true;
+
+    // Login form validation - skip for authenticated users
+    const loginForm = document.forms[LOGIN_FORM_NAME];
+    const isLoginFormVisible = loginForm && loginForm.offsetParent !== null;
+
+    if (loginForm && isLoginFormVisible) {
+      success = validateForm(LOGIN_FORM_NAME);
+      if (!success) scrollToElement($login);
+    }
+
+    // Shipping form validation
+    if (success && shippingFormRef.current) {
+      success = validateForm(SHIPPING_FORM_NAME, shippingFormRef);
+      if (!success) scrollToElement($shippingForm);
+    }
+
+    // Billing form validation
+    if (success && billingFormRef.current) {
+      success = validateForm(BILLING_FORM_NAME, billingFormRef);
+      if (!success) scrollToElement($billingForm);
+    }
+
+    // Terms and conditions validation
+    if (success) {
+      success = validateForm(TERMS_AND_CONDITIONS_FORM_NAME);
+      if (!success) scrollToElement($termsAndConditions);
+    }
+
+    return success;
+  };
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
