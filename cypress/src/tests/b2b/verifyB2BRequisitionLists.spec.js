@@ -51,7 +51,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
     // Create a new list and add product to it from PDP
     cy.get(fields.requisitionListNamesOnPDP).select('Create Requisition List');
     cy.get(fields.requisitionListFormName).type('Req list created from PDP');
-    cy.get(fields.requisitionListFormDescription).type('Another dummy description');
+    //cy.get(fields.requisitionListFormDescription).type('Another dummy description');
     cy.contains('Save').should('be.visible').click();
 
     // Assert new Requisition List is created and can be selected
