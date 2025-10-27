@@ -265,6 +265,7 @@ async function performInitialSearch(config, urlParams) {
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
         { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
         ...getFilterFromParams(filter),
       ],
     }).catch(() => {
@@ -277,7 +278,10 @@ async function performInitialSearch(config, urlParams) {
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: getSortFromParams(sort),
-      filter: getFilterFromParams(filter),
+      filter: [
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        ...getFilterFromParams(filter),
+      ],
     }).catch(() => {
       console.error('Error searching for products');
     });
