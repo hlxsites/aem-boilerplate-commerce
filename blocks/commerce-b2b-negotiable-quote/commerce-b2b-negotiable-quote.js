@@ -15,7 +15,7 @@
  * from Adobe.
  ****************************************************************** */
 import { getFormValues } from '@dropins/tools/lib.js';
-import { checkIsCompanyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
+import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { InLineAlert, Button, ProgressSpinner } from '@dropins/tools/components.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
@@ -52,8 +52,8 @@ const checkPermissions = async () => {
   }
 
   // Check if company functionality is enabled
-  const companyCheck = await checkIsCompanyEnabled();
-  if (!companyCheck.companyEnabled) {
+  const isEnabled = await companyEnabled();
+  if (!isEnabled) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
   }
 
