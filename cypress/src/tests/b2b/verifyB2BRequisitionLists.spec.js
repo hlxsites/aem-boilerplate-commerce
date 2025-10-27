@@ -52,11 +52,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Create a new list and add product to it from PDP
     cy.get(fields.requisitionListNamesOnPDP).select('Create Requisition List');
-    cy.wait(1000); // Wait for form modal to appear
-    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').type('Req list created from PDP');
+    // Wait for the form card to appear
+    cy.get('.dropin-card', { timeout: 10000 }).should('be.visible');
+    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').type('Req list created from PDP');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').type('Another dummy description');
     cy.contains('Save').should('be.visible').click();
-    cy.wait(1000); // Wait for form to close and list to be created
+    // Wait for the form card to disappear
+    cy.get('.dropin-card').should('not.exist');
 
     // Assert new Requisition List is created and can be selected
     cy.get(fields.requisitionListNamesOnPDP).select('Req list created from PDP');
@@ -75,11 +77,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
 
     // Create a new list and add product to it from PLP
     cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Create Requisition List');
-    cy.wait(1000); // Wait for form modal to appear
-    cy.get(fields.requisitionListFormName, { timeout: 10000 }).should('be.visible').and('not.be.disabled').type('Now a Req list from PLP');
+    // Wait for the form card to appear
+    cy.get('.dropin-card', { timeout: 10000 }).should('be.visible');
+    cy.get(fields.requisitionListFormName).should('be.visible').and('not.be.disabled').type('Now a Req list from PLP');
     cy.get(fields.requisitionListFormDescription).should('be.visible').and('not.be.disabled').type('Yet another dummy description');
     cy.contains('Save').should('be.visible').click();
-    cy.wait(1000); // Wait for form to close and list to be created
+    // Wait for the form card to disappear
+    cy.get('.dropin-card').should('not.exist');
 
     // Assert new Requisition List is created and can be selected
     cy.get(fields.requisitionListNamesSelectOnPLP).eq(1).should('be.visible').select('Now a Req list from PLP');
