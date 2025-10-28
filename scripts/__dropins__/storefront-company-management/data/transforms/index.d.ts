@@ -16,9 +16,12 @@
  *******************************************************************/
 export * from './transform-company';
 export * from './transform-company-roles';
+<<<<<<< HEAD
 export * from './transform-company-structure';
 export * from './transform-company-team';
 export * from './transform-company-user';
+=======
+>>>>>>> mainline/b2b
 export * from './transform-countries';
 export * from './transform-customer-company-info';
 export * from './transform-store-config';

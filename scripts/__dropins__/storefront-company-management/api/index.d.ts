@@ -34,6 +34,7 @@ export * from './getCountries';
 export * from './getCustomerCompany';
 export * from './getStoreConfig';
 export * from './isCompanyAdmin';
+<<<<<<< HEAD
 export * from './isCompanyUser';
 export * from './isCompanyUserEmailAvailable';
 export * from './updateCompany';
@@ -42,4 +43,7 @@ export * from './updateCompanyTeam';
 export * from './updateCompanyUser';
 export * from './updateCompanyUserStatus';
 export * from './validateCompanyEmail';
+=======
+export * from './companyRoles';
+>>>>>>> mainline/b2b
 //# sourceMappingURL=index.d.ts.map

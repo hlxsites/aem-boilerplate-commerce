@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+<<<<<<< HEAD
 export interface CompanyRole {
     id: string;
     name: string;
@@ -31,5 +32,37 @@ export interface CompanyRole {
     }[];
 }
 export interface CompanyRoleModel extends CompanyRole {
+=======
+export interface CompanyAclResourceModel {
+    id: string;
+    text: string;
+    sortOrder: number;
+    children?: CompanyAclResourceModel[];
+}
+export interface CompanyRoleModel {
+    id: string;
+    name: string;
+    usersCount: number;
+    permissions: CompanyAclResourceModel[];
+}
+export interface PageInfoModel {
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+}
+export interface CompanyRolesResponseModel {
+    items: CompanyRoleModel[];
+    totalCount: number;
+    pageInfo: PageInfoModel;
+}
+export interface CompanyRoleCreateInputModel {
+    name: string;
+    permissions: string[];
+}
+export interface CompanyRoleUpdateInputModel {
+    id: string;
+    name?: string;
+    permissions?: string[];
+>>>>>>> mainline/b2b
 }
 //# sourceMappingURL=company-role.d.ts.map
