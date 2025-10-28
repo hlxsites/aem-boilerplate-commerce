@@ -15,5 +15,18 @@ await initializeDropin(async () => {
     },
   };
 
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, {
+    langDefinitions,
+    models: {
+      CartModel: {
+        transformer: (data) => {
+          const { shipping_addresses } = data || {};
+          const selectedShippingMethod = shipping_addresses?.[0]?.selected_shipping_method;
+          return {
+            selectedShippingMethod
+          }
+        }
+      }
+    }
+  });
 })();

@@ -62,6 +62,15 @@
     width: fit-content;
 }
 
+.cart-order-summary__shipping-value {
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.cart__shipping-cost-wrapper--hidden {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .cart__wrapper {
     flex-direction: row;

@@ -6,6 +6,7 @@ import {
   InLineAlert,
   Icon,
   Button,
+  Price,
   provider as UI,
 } from '@dropins/tools/components.js';
 
@@ -84,6 +85,33 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
   block.appendChild(fragment);
+
+  // Shipping costs information
+  const $shippingCostWrapper = document.createElement('div');
+  $shippingCostWrapper.className = 'cart__shipping-cost-wrapper cart-order-summary__entry';
+  $shippingCostWrapper.classList.add('cart__shipping-cost-wrapper--hidden');
+  const $shippingCostLabel = document.createElement('div');
+  $shippingCostLabel.textContent = placeholders?.Global?.CartShippingCost || 'Shipping';
+  $shippingCostLabel.className = 'cart-order-summary__label';
+  const $shippingCostValue = document.createElement('div');
+  $shippingCostValue.className = 'cart-order-summary__value cart-order-summary__shipping-value';
+  $shippingCostWrapper.appendChild($shippingCostLabel);
+  $shippingCostWrapper.appendChild($shippingCostValue);
+
+  // Add cart data event listener
+  events.on('cart/data', (cartData) => {
+    const selectedShippingMethod = cartData.selectedShippingMethod;
+    if (selectedShippingMethod) {
+      $shippingCostWrapper.classList.remove('cart__shipping-cost-wrapper--hidden');
+      UI.render(Price, {
+        amount: selectedShippingMethod.amount.value,
+        currency: selectedShippingMethod.amount.currency,
+        className: 'cart-order-summary__price',
+      })($shippingCostValue);
+    } else {
+      $shippingCostWrapper.classList.add('cart__shipping-cost-wrapper--hidden');
+    }
+  }, { eager: true });
 
   // Wishlist variables
   const routeToWishlist = '/wishlist';
@@ -257,11 +285,7 @@ export default async function decorate(block) {
       routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
       slots: {
         EstimateShipping: async (ctx) => {
-          if (enableEstimateShipping === 'true') {
-            const wrapper = document.createElement('div');
-            await provider.render(EstimateShipping, {})(wrapper);
-            ctx.replaceWith(wrapper);
-          }
+          ctx.replaceWith($shippingCostWrapper);
         },
         Coupons: (ctx) => {
           const coupons = document.createElement('div');
