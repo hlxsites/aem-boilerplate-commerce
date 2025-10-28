@@ -390,7 +390,6 @@ export default async function decorate(block) {
     renderRequisitionListNamesIfEnabled($requisitionListNames);
   });
 
-  /*
   // Show notification if redirected from requisition list
   let redirectNotification = null;
 
@@ -434,7 +433,7 @@ export default async function decorate(block) {
       sessionStorage.removeItem('requisitionListRedirect');
     }
   }
-*/
+
   // --- Add new event listener for cart/data ---
   events.on(
     'cart/data',
