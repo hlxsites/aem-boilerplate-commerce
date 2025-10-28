@@ -151,7 +151,7 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
-  async function renderRequisitionListNamesIfEnabled($container, currentOptions = undefined) {
+  async function renderRequisitionListNamesIfEnabled($container, currentOptions = null) {
     const isAuthenticated = checkIsAuthenticated();
     if (!isAuthenticated) {
       $container.innerHTML = '';
@@ -397,22 +397,16 @@ export default async function decorate(block) {
 
   // Handle authentication state changes (login/logout)
   // Using { eager: true } to also catch the initial state on page load
-  events.on('authenticated', async (isAuthenticated) => {
-    if (isAuthenticated) {
-      // Get current selected options when rendering for authenticated user
-      const configValues = pdpApi.getProductConfigurationValues();
-      const urlOptionsUIDs = urlParams.get('optionsUIDs');
-      const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
-
-      // Render and update the reference to the new instance
-      requisitionListNames = await renderRequisitionListNamesIfEnabled(
-        $requisitionListNames,
-        optionUIDs,
-      );
-    } else {
-      // User logged out - clear the component
-      requisitionListNames = await renderRequisitionListNamesIfEnabled($requisitionListNames);
-    }
+  events.on('authenticated', async () => {
+    // Get current selected options when rendering for authenticated user
+    const configValues = pdpApi.getProductConfigurationValues();
+    const urlOptionsUIDs = urlParams.get('optionsUIDs');
+    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+    // Render and update the reference to the new instance
+    requisitionListNames = await renderRequisitionListNamesIfEnabled(
+      $requisitionListNames,
+      optionUIDs,
+    );
   }, { eager: true });
 
   // --- Add new event listener for cart/data ---
