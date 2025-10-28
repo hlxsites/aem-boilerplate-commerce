@@ -1,8 +1,4 @@
 import { RequisitionList } from '../../data/models/requisitionList';
 
-export declare const deleteRequisitionList: (requisitionListUid: string) => Promise<{
-    items: RequisitionList[];
-    page_info: any;
-    status: any;
-} | null>;
+export declare const deleteRequisitionList: (requisitionListUid: string) => Promise<RequisitionList[] | null>;
 //# sourceMappingURL=deleteRequisitionList.d.ts.map

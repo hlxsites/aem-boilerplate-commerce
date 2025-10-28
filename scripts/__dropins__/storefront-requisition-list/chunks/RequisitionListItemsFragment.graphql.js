@@ -25,6 +25,26 @@ fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
         }
       }
     }
+    ... on BundleRequisitionListItem {
+      bundle_options {
+        uid
+        label
+        type
+        values {
+          uid
+          label
+          original_price {
+            value
+            currency
+          }
+          priceV2 {
+            value
+            currency
+          }
+          quantity
+        }
+      }
+    }
     ... on ConfigurableRequisitionListItem {
       configurable_options {
         configurable_product_option_uid
