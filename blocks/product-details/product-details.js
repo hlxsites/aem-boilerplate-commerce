@@ -163,6 +163,7 @@ export default async function decorate(block) {
         items: [],
         canCreate: true,
         sku: product.sku,
+        variant: 'neutral',
         quantity: pdpApi.getProductConfigurationValues().quantity || 1,
       })($container);
     }
@@ -388,17 +389,6 @@ export default async function decorate(block) {
 
   events.on('authenticated', () => {
     renderRequisitionListNamesIfEnabled($requisitionListNames);
-  });
-
-  events.on('requisitionList/alert', async (payload) => {
-    inlineAlert = await UI.render(InLineAlert, {
-      heading: payload.message,
-      type: payload.type,
-      variant: 'primary',
-      onDismiss: () => {
-        inlineAlert.remove();
-      },
-    })($alert);
   });
 
   // --- Add new event listener for cart/data ---
