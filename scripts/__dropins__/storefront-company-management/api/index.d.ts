@@ -16,34 +16,9 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
-export * from './fetchUserPermissions';
-export * from './allowCompanyRegistration';
-export * from './companyEnabled';
-export * from './createCompany';
-export * from './createCompanyTeam';
-export * from './createCompanyUser';
-export * from './deleteCompanyTeam';
-export * from './deleteCompanyUser';
+export * from './checkIsCompanyEnabled';
 export * from './getCompany';
-export * from './getCompanyRoles';
-export * from './getCompanyStructure';
-export * from './getCompanyTeam';
-export * from './getCompanyUser';
-export * from './getCompanyUsers';
-export * from './getCountries';
-export * from './getCustomerCompany';
-export * from './getStoreConfig';
-export * from './isCompanyAdmin';
-<<<<<<< HEAD
-export * from './isCompanyUser';
-export * from './isCompanyUserEmailAvailable';
 export * from './updateCompany';
-export * from './updateCompanyStructure';
-export * from './updateCompanyTeam';
-export * from './updateCompanyUser';
-export * from './updateCompanyUserStatus';
+export * from './getCountries';
 export * from './validateCompanyEmail';
-=======
-export * from './companyRoles';
->>>>>>> mainline/b2b
 //# sourceMappingURL=index.d.ts.map

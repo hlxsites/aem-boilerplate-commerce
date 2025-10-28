@@ -16,13 +16,5 @@
  *******************************************************************/
 export * from './company';
 export * from './company-address';
-export * from './company-role';
-<<<<<<< HEAD
-export * from './company-structure';
-export * from './company-team';
-export * from './company-user';
-=======
->>>>>>> mainline/b2b
 export * from './country';
-export * from './customer-company-info';
 //# sourceMappingURL=index.d.ts.map

@@ -14,12 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface CompanyDropinConfig {
-    langDefinitions?: Record<string, Record<string, string>>;
-    models?: Record<string, any>;
-}
-export declare const initialize: (config?: CompanyDropinConfig) => Promise<{
-    success: boolean;
-    config: CompanyDropinConfig;
-}>;
-//# sourceMappingURL=initialize.d.ts.map
+export declare const GET_CUSTOMER_ROLE_PERMISSIONS = "\n  query GET_CUSTOMER_ROLE_PERMISSIONS {\n    customer {\n      role {\n        id\n        name\n        permissions {\n          id\n          children {\n            id\n            children {\n              id\n              children {\n                id\n                children { id }\n              }\n            }\n          }\n        }\n      }\n      status\n    }\n  }\n";
+//# sourceMappingURL=getCustomerRole.graphql.d.ts.map
