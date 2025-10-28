@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{h as i,a as m}from"./fetch-error.js";import{f as l}from"./fetch-graphql.js";const d=o=>{var t,e,c;const n=(t=o==null?void 0:o.data)==null?void 0:t.customer,r=(e=o==null?void 0:o.data)==null?void 0:e.company;if(!n||!r)return null;const a={companyName:(r==null?void 0:r.name)??"",jobTitle:(n==null?void 0:n.job_title)??"",workPhoneNumber:(n==null?void 0:n.telephone)??"",userRole:((c=n==null?void 0:n.role)==null?void 0:c.name)??""};return a.companyName?a:null},h=`
+import{a as i,h as m}from"./fetch-error.js";import{f as l}from"./fetch-graphql.js";const d=o=>{var t,e,c;const n=(t=o==null?void 0:o.data)==null?void 0:t.customer,r=(e=o==null?void 0:o.data)==null?void 0:e.company;if(!n||!r)return null;const a={companyName:(r==null?void 0:r.name)??"",jobTitle:(n==null?void 0:n.job_title)??"",workPhoneNumber:(n==null?void 0:n.telephone)??"",userRole:((c=n==null?void 0:n.role)==null?void 0:c.name)??""};return a.companyName?a:null},h=`
   query GET_COMPANY_ENABLED {
     storeConfig {
       company_enabled

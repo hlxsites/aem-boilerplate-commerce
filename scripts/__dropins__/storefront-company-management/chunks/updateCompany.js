@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{h as _,a as m}from"./fetch-error.js";import{f as A}from"./fetchUserPermissions.js";import{t as c}from"./validateCompanyEmail.js";import{f as y}from"./fetch-graphql.js";const f=`
+import{a as _,h as m}from"./fetch-error.js";import{f as A}from"./fetchUserPermissions.js";import{a as c}from"./validateCompanyEmail.js";import{f as y}from"./fetch-graphql.js";const f=`
   fragment COMPANY_LEGAL_ADDRESS_FRAGMENT on CompanyLegalAddress {
     street
     city

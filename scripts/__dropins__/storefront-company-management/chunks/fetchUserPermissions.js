@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{h as d,a as m}from"./fetch-error.js";import{f as c,i as s}from"./company-permissions.js";import{f as _}from"./fetch-graphql.js";const h=`
+import{a as d,h as m}from"./fetch-error.js";import{a as c,i as s}from"./company-permissions.js";import{f as _}from"./fetch-graphql.js";const h=`
   query GET_CUSTOMER_ROLE_PERMISSIONS {
     customer {
       role {
