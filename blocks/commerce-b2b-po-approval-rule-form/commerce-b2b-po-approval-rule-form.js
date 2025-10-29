@@ -21,10 +21,6 @@ const redirectToAccountDashboard = () => {
   window.location.href = rootLink(CUSTOMER_PATH);
 };
 
-const redirectToApprovalRulesList = () => {
-  window.location.href = rootLink(CUSTOMER_PO_RULES_PATH);
-};
-
 /**
  * Initializes and decorates the Approval Rule Form block
  * Redirects unauthenticated users and handles permission updates
@@ -39,10 +35,6 @@ const renderApprovalRuleForm = async (
   }
 
   const approvalRuleID = new URLSearchParams(window.location.search).get('ruleRef') || '';
-  if (!approvalRuleID) {
-    redirectToApprovalRulesList();
-  }
-
   await purchaseOrderRenderer.render(ApprovalRuleForm, {
     approvalRuleID,
     routeApprovalRulesList: () => rootLink(CUSTOMER_PO_RULES_PATH),

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Commerce B2B PO Approval Rule Form block renders a form for editing purchase order approval rules using the @dropins/storefront-purchase-order ApprovalRuleForm container. It provides rule editing capabilities with authentication protection, permission-based access control, and navigation for saving or canceling changes.
+The Commerce B2B PO Approval Rule Form block renders a form for creating new or editing existing purchase order approval rules using the @dropins/storefront-purchase-order ApprovalRuleForm container. It provides rule creation and editing capabilities with authentication protection, permission-based access control, and navigation for saving or canceling changes.
 
 ## Integration
 
@@ -16,7 +16,7 @@ The Commerce B2B PO Approval Rule Form block renders a form for editing purchase
 
 | Parameter | Type   | Description                                     | Required | Side Effects                                           |
 | --------- | ------ | ----------------------------------------------- | -------- | ------------------------------------------------------ |
-| `ruleRef` | string | The unique identifier for the approval rule to edit | Yes      | Missing parameter redirects to approval rules list page |
+| `ruleRef` | string | The unique identifier for the approval rule to edit | No       | When provided, form loads with pre-populated rule details for editing. When omitted, form renders empty for creating a new rule |
 
 <!-- ### Local Storage
 
@@ -42,9 +42,10 @@ No events are emitted by this block. -->
 - **Authenticated Users**: When user is authenticated, checks permissions before rendering
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
 - **Admin Users**: When user has admin permissions, displays approval rule form
-- **Manage Permission**: When user has `Magento_PurchaseOrderRule::manage_approval_rules` permission (via `PO_PERMISSIONS.MANAGE_RULES` constant), displays rule editing form
+- **Manage Permission**: When user has `Magento_PurchaseOrderRule::manage_approval_rules` permission (via `PO_PERMISSIONS.MANAGE_RULES` constant), displays rule creation/editing form
 - **No Access**: When user lacks required permissions, redirects to account dashboard page
-- **Missing Rule ID**: When `ruleRef` URL parameter is missing or empty, redirects to approval rules list page
+- **Edit Mode**: When `ruleRef` URL parameter is provided, form loads with pre-populated rule details for editing
+- **Create Mode**: When `ruleRef` URL parameter is omitted or empty, form renders empty for creating a new rule
 
 ### User Interaction Flows
 
@@ -52,19 +53,19 @@ No events are emitted by this block. -->
 2. **Redirect Flow**: If not authenticated, redirects to login page
 3. **Permission Check**: If authenticated, checks for admin or manage approval rules permission
 4. **Access Redirect**: If lacking permissions, redirects to account dashboard page
-5. **Rule ID Validation**: Checks for presence of `ruleRef` URL parameter
-6. **Missing ID Redirect**: If `ruleRef` is missing, redirects to approval rules list page at configured `CUSTOMER_PO_RULES_PATH` (`/customer/approval-rules`)
-7. **Form Display**: If authorized and valid rule ID exists, renders approval rule editing form
-8. **Form Submission**: User can edit and save changes to the approval rule
-9. **List Navigation**: Provides route to return to approval rules list at configured `CUSTOMER_PO_RULES_PATH` (triggered on save or cancel)
-10. **Permission Updates**: Listens for permission changes and re-renders accordingly
-11. **Logout Handling**: Redirects to login page if user logs out during interaction
+5. **Rule ID Detection**: Checks for presence of `ruleRef` URL parameter to determine form mode
+6. **Edit Mode Flow**: If `ruleRef` is provided, form loads with pre-populated rule details for editing existing rule
+7. **Create Mode Flow**: If `ruleRef` is omitted or empty, form renders empty for creating a new approval rule
+8. **Form Interaction**: User can fill out or modify approval rule details (name, conditions, approvers, etc.)
+9. **Form Submission**: User can save changes (creating new rule or updating existing rule)
+10. **List Navigation**: Provides route to return to approval rules list at configured `CUSTOMER_PO_RULES_PATH` (`/customer/approval-rules`) (triggered on save or cancel)
+11. **Permission Updates**: Listens for permission changes and re-renders accordingly
+12. **Logout Handling**: Redirects to login page if user logs out during interaction
 
 ### Error Handling
 
 - **Authentication Errors**: If user is not authenticated, automatically redirects to login page
 - **Permission Errors**: If user lacks required permissions, redirects to account dashboard page
-- **Missing Rule ID**: If `ruleRef` parameter is missing or empty, redirects to approval rules list page
 - **Container Errors**: If the ApprovalRuleForm container fails to render, the block content remains empty
 - **Permission Update Errors**: If permission events provide invalid data, uses empty permissions object as fallback
-- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, account dashboard redirect if no access, or approval rules list redirect if no rule ID
+- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, or account dashboard redirect if no access
