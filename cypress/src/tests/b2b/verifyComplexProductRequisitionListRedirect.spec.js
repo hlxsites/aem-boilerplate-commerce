@@ -114,10 +114,27 @@ describe("Verify Complex Product Requisition List Redirect", { tags: "@B2BSaas" 
         .find('select')
         .select('Create Requisition List');
 
+      // Wait for the form to appear
+      cy.wait(1000);
+
+      // Fill out the requisition list form
+      cy.get(fields.requisitionListFormName, { timeout: 10000 })
+        .should('be.visible')
+        .should('not.be.disabled')
+        .type('New List from Complex Product');
+
+      cy.get(fields.requisitionListFormDescription)
+        .should('be.visible')
+        .should('not.be.disabled')
+        .type('Test description');
+
+      // Submit the form - this should trigger the redirect
+      cy.contains('Save').should('be.visible').and('not.be.disabled').click();
+
       // Wait a bit for potential redirect
       cy.wait(2000);
 
-      // Check if we've been redirected to a product detail page instead of showing the form
+      // Check if we've been redirected to a product detail page instead of creating the list
       cy.url().should('not.equal', currentUrl);
       cy.url().should('include', '/products/');
 
