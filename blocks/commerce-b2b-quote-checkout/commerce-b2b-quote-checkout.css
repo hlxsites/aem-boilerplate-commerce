@@ -63,7 +63,6 @@
 }
 
 /* Hide main containers when there is a server error */
-.checkout__content--error .checkout__out-of-stock,
 .checkout__content--error .checkout__login,
 .checkout__content--error .checkout__shipping-form,
 .checkout__content--error .checkout__bill-to-shipping,
@@ -75,7 +74,6 @@
 }
 
 /* Hide blocks with empty divs */
-.checkout__out-of-stock:has(> :empty),
 .checkout__delivery:has(> div:first-child:empty),
 .checkout__bill-to-shipping:has(> :empty) {
     display: none;
@@ -86,7 +84,7 @@
     display: none;
 }
 
-/* Integrate place order button into Order Summary - mobile */
+/* Place order button styling */
 .checkout__place-order {
     grid-column: unset;
     justify-items: unset;
@@ -121,59 +119,6 @@
     margin: 0;
 }
 
-/* Cart Summary */
-.checkout__block .cart-cart-summary-list {
-    padding: var(--spacing-medium);
-}
-
-/* Order Summary Coupon */
-.dropin-accordion-section__heading {
-    margin: var(--spacing-medium) auto;
-}
-
-.cart-coupons__accordion {
-    margin-top: var(--spacing-xsmall);
-}
-
-/* temporary fix to hide the default cart heading */
-[data-testid="default-cart-heading"] {
-    display: none;
-}
-
-.cart-summary-list__heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.cart-summary-list__heading-text {
-    font: var(--type-headline-2-strong-font);
-    letter-spacing: var(--type-headline-2-strong-letter-spacing);
-    color: var(--color-neutral-800);
-}
-
-.cart-cart-summary-list__heading {
-    row-gap: var(--spacing-small);
-    padding-top: 0;
-}
-
-.cart-cart-summary-list__heading-text {
-    font: var(--type-headline-2-strong-font);
-    letter-spacing: var(--type-headline-2-strong-letter-spacing);
-    color: var(--color-neutral-800);
-}
-
-.cart-summary-list__edit {
-    font: var(--type-body-2-strong-font);
-    letter-spacing: var(--type-body-2-strong-letter-spacing);
-}
-
-.checkout__block
-.cart-cart-summary-list
-.cart-cart-summary-list__footer-divider {
-    margin: var(--spacing-small) 0;
-}
-
 /* Address form */
 .checkout__shipping-form .account-address-form-wrapper__title,
 .checkout__shipping-form .dropin-header-container__title,
@@ -196,20 +141,20 @@
     align-items: start;
     grid-template-columns: repeat(var(--grid-4-columns), 1fr);
     grid-template-areas: "main aside";
-    grid-column-gap: var(--grid-4-gutters);
+    column-gap: var(--grid-4-gutters);
     margin-bottom: var(--spacing-xbig);
     padding-top: var(--spacing-xxlarge);
 }
 
 .order-confirmation__main {
     display: grid;
-    grid-row-gap: var(--spacing-xbig);
+    row-gap: var(--spacing-xbig);
     grid-column: 1 / span 7;
 }
 
 .order-confirmation__aside {
     display: grid;
-    grid-row-gap: var(--spacing-xbig);
+    row-gap: var(--spacing-xbig);
     grid-column: 9 / span 4;
 }
 
@@ -295,10 +240,6 @@
         order: 1;
     }
 
-    .checkout__cart-summary {
-        order: 2;
-    }
-
     .checkout__place-order {
         order: 4;
     }
@@ -310,7 +251,7 @@
 
     .order-confirmation__main,
     .order-confirmation__aside {
-        grid-row-gap: var(--spacing-medium);
+        row-gap: var(--spacing-medium);
     }
 
     .order-confirmation > div {
