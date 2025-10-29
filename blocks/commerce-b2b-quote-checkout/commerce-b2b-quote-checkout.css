@@ -240,10 +240,6 @@
         order: 1;
     }
 
-    .checkout__cart-summary {
-        order: 2;
-    }
-
     .checkout__place-order {
         order: 4;
     }
