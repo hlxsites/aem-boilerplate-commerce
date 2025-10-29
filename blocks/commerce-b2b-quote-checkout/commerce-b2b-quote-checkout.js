@@ -2,7 +2,6 @@
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
 // Order Dropin Modules
@@ -30,8 +29,6 @@ import {
 import {
   createCheckoutFragment,
   createAddressSummary,
-  createOrderConfirmationFooter,
-  createOrderConfirmationFragment,
   selectors,
 } from './fragments.js';
 
@@ -39,25 +36,15 @@ import {
 import {
   renderBillingAddressFormSkeleton,
   renderBillToShippingAddress,
-  renderCartSummaryList,
   renderCheckoutHeader,
   renderCustomerBillingAddresses,
-  renderCustomerDetails,
   renderGiftOptions,
   renderLoginForm,
-  renderOrderConfirmationFooterButton,
-  renderOrderCostSummary,
-  renderOrderGiftOptions,
-  renderOrderHeader,
-  renderOrderProductList,
-  renderOrderStatus,
-  renderOrderSummary,
   renderPaymentMethods,
   renderPlaceOrder,
   renderServerError,
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
-  renderShippingStatus,
   renderTermsAndConditions,
 } from './containers.js';
 
@@ -70,11 +57,10 @@ import {
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
 
-import {
-  fetchPlaceholders,
-  rootLink,
-  SUPPORT_PATH,
-} from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/commerce.js';
+
+// Success block entry point
+import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -117,8 +103,6 @@ export default async function decorate(block) {
   const $delivery = getElement(selectors.checkout.delivery);
   const $paymentMethods = getElement(selectors.checkout.paymentMethods);
   const $billingForm = getElement(selectors.checkout.billingForm);
-  const $orderSummary = getElement(selectors.checkout.orderSummary);
-  const $cartSummary = getElement(selectors.checkout.cartSummary);
   const $placeOrder = getElement(selectors.checkout.placeOrder);
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
@@ -172,8 +156,6 @@ export default async function decorate(block) {
     _shippingMethods,
     _paymentMethods,
     _billingFormSkeleton,
-    _orderSummary,
-    _cartSummary,
     _termsAndConditions,
     _giftOptions,
   ] = await Promise.all([
@@ -192,10 +174,6 @@ export default async function decorate(block) {
     renderPaymentMethods($paymentMethods, creditCardFormRef),
 
     renderBillingAddressFormSkeleton($billingForm),
-
-    renderOrderSummary($orderSummary),
-
-    renderCartSummaryList($cartSummary),
 
     renderTermsAndConditions($termsAndConditions),
 
@@ -237,55 +215,6 @@ export default async function decorate(block) {
     }
   }
 
-  // Define the Layout for the Order Confirmation
-  async function displayOrderConfirmation(orderData) {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-
-    // Create order confirmation layout using fragments
-    const orderConfirmationFragment = createOrderConfirmationFragment();
-
-    // Create scoped selector for order confirmation fragment (following multi-step pattern)
-    const getOrderElement = createScopedSelector(orderConfirmationFragment);
-
-    // Get all order confirmation elements using centralized selectors
-    const $orderConfirmationHeader = getOrderElement(selectors.orderConfirmation.header);
-    const $orderStatus = getOrderElement(selectors.orderConfirmation.orderStatus);
-    const $shippingStatus = getOrderElement(selectors.orderConfirmation.shippingStatus);
-    const $customerDetails = getOrderElement(selectors.orderConfirmation.customerDetails);
-    const $orderCostSummary = getOrderElement(selectors.orderConfirmation.orderCostSummary);
-    const $orderGiftOptions = getOrderElement(selectors.orderConfirmation.giftOptions);
-    const $orderProductList = getOrderElement(selectors.orderConfirmation.orderProductList);
-    const $orderConfirmationFooter = getOrderElement(selectors.orderConfirmation.footer);
-
-    const labels = await fetchPlaceholders();
-    const langDefinitions = {
-      default: {
-        ...labels,
-      },
-    };
-    await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
-
-    block.replaceChildren(orderConfirmationFragment);
-
-    await Promise.all([
-      renderOrderHeader($orderConfirmationHeader, { orderData }),
-      renderOrderStatus($orderStatus),
-      renderShippingStatus($shippingStatus),
-      renderCustomerDetails($customerDetails),
-      renderOrderCostSummary($orderCostSummary),
-      renderOrderProductList($orderProductList),
-      renderOrderGiftOptions($orderGiftOptions),
-    ]);
-
-    // Create footer content using fragments
-    $orderConfirmationFooter.innerHTML = createOrderConfirmationFooter(rootLink(SUPPORT_PATH));
-
-    const $continueButton = selectors.orderConfirmation.continueButton;
-    const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
-
-    await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
-  }
 
   async function handleCheckoutInitialized(data) {
     await initializeCheckout(data);
@@ -316,7 +245,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await displayOrderConfirmation(orderData);
+    await renderOrderSuccess(block, { orderData });
   }
 
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
