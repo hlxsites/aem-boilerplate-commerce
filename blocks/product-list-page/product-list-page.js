@@ -24,7 +24,12 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink, checkIsAuthenticated } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  getProductLink,
+  checkIsAuthenticated,
+  rootLink,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -109,6 +114,17 @@ export default async function decorate(block) {
         sku: product.sku,
         quantity: 1,
         variant: 'hover',
+        beforeAddProdToReqList: () => {
+          const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
+          if (product.typename !== 'SimpleProductView') {
+            sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
+              timestamp: Date.now(),
+              message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
+            }));
+            window.location.href = url;
+            throw new Error('Redirecting to product page');
+          }
+        },
       })($container);
     } else {
       $container.innerHTML = '';
