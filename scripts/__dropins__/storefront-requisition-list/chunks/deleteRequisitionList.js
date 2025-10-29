@@ -1,6 +1,8 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{R as I,f as T,h as L,t as R}from"./transform-requisition-list.js";const q=`
+import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "./transform-requisition-list.js";
+import { events } from "@dropins/tools/event-bus.js";
+const DELETE_REQUISITION_LIST_MUTATION = `
   mutation DELETE_REQUISITION_LIST_MUTATION(
       $requisitionListUid: ID!,
     ) {
@@ -21,6 +23,33 @@ import{R as I,f as T,h as L,t as R}from"./transform-requisition-list.js";const q
       }
     }
   }
-${I}
-`,a=async t=>T(q,{variables:{requisitionListUid:t}}).then(({errors:e,data:i})=>{var s,n,o,u,r,_;return t?e?L(e):(s=i==null?void 0:i.deleteRequisitionList)!=null&&s.requisition_lists?{items:((o=(n=i.deleteRequisitionList.requisition_lists)==null?void 0:n.items)==null?void 0:o.map(l=>R(l)))||[],page_info:(r=(u=i.deleteRequisitionList)==null?void 0:u.requisition_lists)==null?void 0:r.page_info,status:(_=i.deleteRequisitionList)==null?void 0:_.status}:null:null});export{a as d};
+${REQUISITION_LIST_FRAGMENT}
+`;
+const deleteRequisitionList = async (requisitionListUid) => {
+  return fetchGraphQl(DELETE_REQUISITION_LIST_MUTATION, {
+    variables: {
+      requisitionListUid
+    }
+  }).then(({
+    errors,
+    data
+  }) => {
+    var _a, _b, _c, _d, _e, _f;
+    if (!requisitionListUid) return null;
+    if (errors) return handleFetchError(errors);
+    if (!((_a = data == null ? void 0 : data.deleteRequisitionList) == null ? void 0 : _a.requisition_lists)) {
+      return null;
+    }
+    const reqLists = ((_c = (_b = data.deleteRequisitionList.requisition_lists) == null ? void 0 : _b.items) == null ? void 0 : _c.map((requisitionList) => transformRequisitionList(requisitionList))) || [];
+    events.emit("requisitionLists/data", reqLists);
+    return {
+      items: reqLists,
+      page_info: (_e = (_d = data.deleteRequisitionList) == null ? void 0 : _d.requisition_lists) == null ? void 0 : _e.page_info,
+      status: (_f = data.deleteRequisitionList) == null ? void 0 : _f.status
+    };
+  });
+};
+export {
+  deleteRequisitionList as d
+};
 //# sourceMappingURL=deleteRequisitionList.js.map

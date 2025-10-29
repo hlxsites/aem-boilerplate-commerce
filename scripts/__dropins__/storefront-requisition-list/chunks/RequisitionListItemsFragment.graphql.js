@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-const e=`
+const REQUISITION_LIST_ITEMS_FRAGMENT = `
 fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
   items {
     uid
@@ -22,26 +22,6 @@ fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
           type
           units
           value
-        }
-      }
-    }
-    ... on BundleRequisitionListItem {
-      bundle_options {
-        uid
-        label
-        type
-        values {
-          uid
-          label
-          original_price {
-            value
-            currency
-          }
-          priceV2 {
-            value
-            currency
-          }
-          quantity
         }
       }
     }
@@ -91,5 +71,8 @@ fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
     total_pages
   }
 }
-`;export{e as R};
+`;
+export {
+  REQUISITION_LIST_ITEMS_FRAGMENT as R
+};
 //# sourceMappingURL=RequisitionListItemsFragment.graphql.js.map

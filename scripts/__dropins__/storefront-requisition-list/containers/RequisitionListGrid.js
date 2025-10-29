@@ -1,4 +1,613 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{jsxs as u,jsx as i,Fragment as x}from"@dropins/tools/preact-jsx-runtime.js";import*as g from"@dropins/tools/preact-compat.js";import{useState as Z,useCallback as v,useEffect as D,useMemo as E}from"@dropins/tools/preact-compat.js";import{Card as B,Table as z,Pagination as F,Icon as V,Modal as O,ProgressSpinner as U,Button as b,Header as G}from"@dropins/tools/components.js";import{classes as w,VComponent as j,Slot as J}from"@dropins/tools/lib.js";import"@dropins/tools/preact-hooks.js";import{R as T}from"../chunks/RequisitionListForm.js";/* empty css                           *//* empty css                            */import{useText as H}from"@dropins/tools/i18n.js";import{g as k}from"../chunks/getRequisitionLists.js";import{d as K}from"../chunks/deleteRequisitionList.js";import"../chunks/transform-requisition-list.js";import"@dropins/tools/fetch-graphql.js";const Q=({className:n,isLoading:s=!1,addReqList:a=!1,header:r,rows:e=[],expandedRows:p,skeletonRowCount:l=10,pageInfo:o,handlePageChange:f,...C})=>{const L=H({name:"RequisitionList.RequisitionListWrapper.name",itemsCount:"RequisitionList.RequisitionListWrapper.itemsCount",lastUpdated:"RequisitionList.RequisitionListWrapper.lastUpdated",actions:"RequisitionList.RequisitionListWrapper.actions",emptyList:"RequisitionList.RequisitionListWrapper.emptyList"}),[h,d]=Z(a),c=((o==null?void 0:o.total_pages)??0)>0,R=!s&&e.length===0&&!c;return u("div",{...C,className:w(["requisition-list-grid-wrapper",n]),"data-testid":"requisition-list-grid-wrapper",children:[r&&i("div",{className:w(["requisition-list-grid-wrapper__header",n]),"data-testid":"requisition-list-grid-wrapper-header",children:i(j,{node:r})}),i("div",{className:w(["requisition-list-grid-wrapper__add-new",n]),children:h?i(B,{variant:"secondary",children:i(T,{mode:"create",onSuccess:async()=>{await f(),d(!1)},onCancel:()=>d(!1)})}):i($,{onAddNew:()=>d(!0)})}),R?i(i1,{textContent:L.emptyList}):u(x,{children:[i(z,{columns:[{key:"name",label:L.name},{key:"items_count",label:L.itemsCount},{key:"last_updated",label:L.lastUpdated},{key:"actions",label:L.actions}],rowData:e,expandedRows:p,loading:s,skeletonRowCount:l}),i("div",{className:w(["requisition-list-grid-wrapper__pagination",n]),children:i(F,{totalPages:o==null?void 0:o.total_pages,currentPage:o==null?void 0:o.current_page,onChange:f})})]})]})},X=n=>g.createElement("svg",{id:"Icon_Add_Base","data-name":"Icon \\u2013 Add \\u2013 Base",xmlns:"http://www.w3.org/2000/svg",width:24,height:24,viewBox:"0 0 24 24",...n},g.createElement("g",{id:"Large"},g.createElement("rect",{id:"Placement_area","data-name":"Placement area",width:24,height:24,fill:"#fff",opacity:0}),g.createElement("g",{id:"Add_icon","data-name":"Add icon",transform:"translate(9.734 9.737)"},g.createElement("line",{vectorEffect:"non-scaling-stroke",id:"Line_579","data-name":"Line 579",y2:12.7,transform:"translate(2.216 -4.087)",fill:"none",stroke:"currentColor"}),g.createElement("line",{vectorEffect:"non-scaling-stroke",id:"Line_580","data-name":"Line 580",x2:12.7,transform:"translate(-4.079 2.263)",fill:"none",stroke:"currentColor"})))),Y=n=>g.createElement("svg",{width:24,height:24,viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg",...n},g.createElement("path",{d:"M12.002 21L11.8275 21.4686C11.981 21.5257 12.1528 21.5041 12.2873 21.4106C12.4218 21.3172 12.502 21.1638 12.502 21H12.002ZM3.89502 17.9823H3.39502C3.39502 18.1912 3.52485 18.378 3.72059 18.4509L3.89502 17.9823ZM3.89502 8.06421L4.07193 7.59655C3.91831 7.53844 3.74595 7.55948 3.61082 7.65284C3.47568 7.74619 3.39502 7.89997 3.39502 8.06421H3.89502ZM12.0007 21H11.5007C11.5007 21.1638 11.5809 21.3172 11.7154 21.4106C11.8499 21.5041 12.0216 21.5257 12.1751 21.4686L12.0007 21ZM20.1076 17.9823L20.282 18.4509C20.4778 18.378 20.6076 18.1912 20.6076 17.9823H20.1076ZM20.1076 8.06421H20.6076C20.6076 7.89997 20.527 7.74619 20.3918 7.65284C20.2567 7.55948 20.0843 7.53844 19.9307 7.59655L20.1076 8.06421ZM12.0007 11.1311L11.8238 10.6634C11.6293 10.737 11.5007 10.9232 11.5007 11.1311H12.0007ZM20.2858 8.53191C20.5441 8.43421 20.6743 8.14562 20.5766 7.88734C20.4789 7.62906 20.1903 7.49889 19.932 7.5966L20.2858 8.53191ZM12.002 4.94826L12.1775 4.48008C12.0605 4.43623 11.9314 4.43775 11.8154 4.48436L12.002 4.94826ZM5.87955 6.87106C5.62334 6.97407 5.49915 7.26528 5.60217 7.52149C5.70518 7.77769 5.99639 7.90188 6.2526 7.79887L5.87955 6.87106ZM18.1932 7.80315C18.4518 7.90008 18.74 7.76904 18.8369 7.51047C18.9338 7.2519 18.8028 6.96371 18.5442 6.86678L18.1932 7.80315ZM12 4.94827L11.5879 5.23148C11.6812 5.36719 11.8353 5.44827 12 5.44827C12.1647 5.44827 12.3188 5.36719 12.4121 5.23148L12 4.94827ZM14.0263 2L14.2028 1.53218C13.9875 1.45097 13.7446 1.52717 13.6143 1.71679L14.0263 2ZM21.8421 4.94827L22.2673 5.2113C22.3459 5.08422 22.3636 4.92863 22.3154 4.78717C22.2673 4.64571 22.1584 4.53319 22.0186 4.48045L21.8421 4.94827ZM9.97368 2L10.3857 1.71679C10.2554 1.52717 10.0125 1.45097 9.79721 1.53218L9.97368 2ZM2.15789 4.94827L1.98142 4.48045C1.84161 4.53319 1.73271 4.64571 1.68456 4.78717C1.63641 4.92863 1.65406 5.08422 1.73267 5.2113L2.15789 4.94827ZM12 11.1256L11.6702 11.5014C11.8589 11.667 12.1411 11.667 12.3298 11.5014L12 11.1256ZM15.0395 8.45812L14.8732 7.98659C14.8131 8.00779 14.7576 8.04028 14.7097 8.08232L15.0395 8.45812ZM23 5.65024L23.3288 6.0269C23.5095 5.86916 23.5527 5.60532 23.4318 5.39817C23.3109 5.19102 23.0599 5.09893 22.8337 5.17871L23 5.65024ZM8.96053 8.45812L9.29034 8.08232C9.24244 8.04028 9.18695 8.00779 9.12685 7.98659L8.96053 8.45812ZM1 5.65024L1.16632 5.17871C0.940115 5.09893 0.689119 5.19102 0.568192 5.39817C0.447264 5.60532 0.49048 5.86916 0.671176 6.0269L1 5.65024ZM12.1764 20.5314L4.06945 17.5137L3.72059 18.4509L11.8275 21.4686L12.1764 20.5314ZM4.39502 17.9823V8.06421H3.39502V17.9823H4.39502ZM3.71811 8.53187L11.8251 11.5987L12.1789 10.6634L4.07193 7.59655L3.71811 8.53187ZM11.502 11.1311V21H12.502V11.1311H11.502ZM12.1751 21.4686L20.282 18.4509L19.9332 17.5137L11.8262 20.5314L12.1751 21.4686ZM20.6076 17.9823V8.06421H19.6076V17.9823H20.6076ZM19.9307 7.59655L11.8238 10.6634L12.1776 11.5987L20.2845 8.53187L19.9307 7.59655ZM11.5007 11.1311V21H12.5007V11.1311H11.5007ZM19.932 7.5966L11.8251 10.6634L12.1789 11.5987L20.2858 8.53191L19.932 7.5966ZM11.8154 4.48436L5.87955 6.87106L6.2526 7.79887L12.1885 5.41217L11.8154 4.48436ZM11.8265 5.41645L18.1932 7.80315L18.5442 6.86678L12.1775 4.48008L11.8265 5.41645ZM11.502 4.94826V11.1311H12.502V4.94826H11.502ZM12.4121 5.23148L14.4384 2.28321L13.6143 1.71679L11.5879 4.66507L12.4121 5.23148ZM13.8498 2.46782L21.6656 5.4161L22.0186 4.48045L14.2028 1.53218L13.8498 2.46782ZM21.4169 4.68525L20.5485 6.08919L21.3989 6.61524L22.2673 5.2113L21.4169 4.68525ZM12.4121 4.66507L10.3857 1.71679L9.56162 2.28321L11.5879 5.23148L12.4121 4.66507ZM9.79721 1.53218L1.98142 4.48045L2.33437 5.4161L10.1502 2.46782L9.79721 1.53218ZM1.73267 5.2113L2.60109 6.61524L3.45154 6.08919L2.58312 4.68525L1.73267 5.2113ZM12.3298 11.5014L15.3693 8.83392L14.7097 8.08232L11.6702 10.7498L12.3298 11.5014ZM15.2058 8.92965L23.1663 6.12177L22.8337 5.17871L14.8732 7.98659L15.2058 8.92965ZM22.6712 5.27358L19.7764 7.80067L20.4341 8.554L23.3288 6.0269L22.6712 5.27358ZM12.3298 10.7498L9.29034 8.08232L8.63072 8.83392L11.6702 11.5014L12.3298 10.7498ZM9.12685 7.98659L1.16632 5.17871L0.83368 6.12177L8.79421 8.92965L9.12685 7.98659ZM0.671176 6.0269L3.56591 8.554L4.22356 7.80067L1.32882 5.27358L0.671176 6.0269Z",fill:"currentColor"})),$=({selectable:n,className:s,onAddNew:a})=>{const r=H({addNewReqListBtn:"RequisitionList.AddNewReqList.addNewReqListBtn"});return u("button",{type:"button","aria-label":r.addNewReqListBtn,role:"button",className:w(["requisition-list-actions",["requisition-list-actions--selectable",n],s]),"data-testid":"requisition-list-actions-button",onClick:a,children:[i("span",{className:"requisition-list-actions__title","data-testid":"requisition-list-actions-button-text",children:r.addNewReqListBtn}),i(V,{source:X,size:"32"})]})},I=({isOpen:n,isLoading:s,title:a,modalContent:r,closeBtnCaption:e,confirmBtnCaption:p,handleModalOnClose:l,handleModalOnConfirm:o})=>n?i(O,{className:"requisition-list-modal--overlay","data-testid":"requisition-list-modal",size:"medium",centered:!1,title:a,onClose:l,backgroundDim:!0,clickToDismiss:!0,escapeToDismiss:!0,children:u("div",{className:"requisition-list-modal",children:[s?i("div",{className:"requisition-list-modal__spinner","data-testid":"progress-spinner",children:i(U,{stroke:"4",size:"large"})}):null,i("p",{children:r}),u("div",{className:"requisition-list-modal__buttons",children:[l&&i(b,{"data-testid":"rl-modal-close-button",type:"button",onClick:l,variant:"secondary",disabled:s,children:e}),o&&i(b,{"data-testid":"rl-modal-confirm-button",type:"button",onClick:o,disabled:s,children:p})]})]})}):null,i1=({className:n,textContent:s,...a})=>u("div",{className:w(["empty-list",n]),"data-testid":"empty-list",...a,children:[i(V,{source:Y,size:"64",stroke:"2"}),s&&i("h4",{children:s})]});function e1(n,s,a){const r=H({actionRemove:"RequisitionList.RequisitionListItem.actionRemove",actionRename:"RequisitionList.RequisitionListItem.actionRename"}),[e,p]=Z(n),[l,o]=Z(null),[f,C]=Z(!1),L=v(t=>o(t),[]),h=v(()=>o(null),[]),d=v(async(t=(_=>(_=e==null?void 0:e.page_info)==null?void 0:_.current_page)()??1)=>{var y,M,A;C(!0);try{const m=await k(t),N=((y=m==null?void 0:m.page_info)==null?void 0:y.current_page)??1,P=((M=m==null?void 0:m.page_info)==null?void 0:M.total_pages)??0;if(!((((A=m==null?void 0:m.items)==null?void 0:A.length)??0)>0)&&N>1&&P>=N-1){const W=N-1,S=await k(W);p(S)}else p(m)}finally{C(!1)}},[e]);D(()=>{e||d(1)},[e,d]);const c=v(t=>d(t),[d]),R=E(()=>((e==null?void 0:e.items)??[]).map(t=>{const _=l===t.uid;return{name:u("div",{className:"requisition-list-grid-wrapper__name",children:[i("div",{className:"requisition-list-grid-wrapper__name__title",children:i("a",{href:"#",onClick:y=>{if(y.preventDefault(),a){const M=a(t.uid);typeof M=="string"&&(window.location.href=M)}},children:t.name})}),t.description&&i("div",{className:"requisition-list-grid-wrapper__name__description",children:t.description})]}),items_count:t.items_count,last_updated:new Date(t.updated_at).toLocaleString(),actions:u("div",{className:"requisition-list-grid-wrapper__actions",children:[i(b,{variant:"tertiary",type:"button","data-testid":"rename-button",onClick:()=>L(t.uid),children:r.actionRename}),i(b,{variant:"tertiary",type:"button","data-testid":"remove-button",onClick:()=>s==null?void 0:s.openRemove(t),children:r.actionRemove})]}),_rowDetails:_?i(B,{variant:"secondary",className:"requisition-list-grid-wrapper__form-row",children:i(T,{mode:"edit",requisitionListUid:t.uid,defaultValues:{name:t.name,description:t.description},onSuccess:async()=>{await c(),o(null)},onCancel:h})}):void 0}}),[e==null?void 0:e.items,l,L,h,r.actionRename,r.actionRemove,s,c,a]),q=E(()=>new Set(R.map((t,_)=>t._rowDetails?_:-1).filter(t=>t>=0)),[R]);return{rows:R,expandedRows:q,isLoading:f||!e,pageInfo:e==null?void 0:e.page_info,handlePageChange:c}}const R1=({requisitionLists:n,routeRequisitionListDetails:s,slots:a})=>{const[r,e]=Z({isOpen:!1,isLoading:!1,rl:null}),p=q=>e({isOpen:!0,isLoading:!1,rl:q}),l=()=>e({isOpen:!1,isLoading:!1,rl:null}),o=async()=>{r.rl&&(e(q=>({...q,isLoading:!0})),await K(r.rl.uid),await d(),l())},{rows:f,expandedRows:C,isLoading:L,pageInfo:h,handlePageChange:d}=e1(n,{openRemove:p},s),c=H({containerTitle:"RequisitionList.containerTitle",confirmRemove:"RequisitionList.RequisitionListWrapper.confirmRemove",confirmRemoveContent:"RequisitionList.RequisitionListWrapper.confirmRemoveContent",cancelAction:"RequisitionList.RequisitionListWrapper.cancelAction",confirmAction:"RequisitionList.RequisitionListWrapper.confirmAction"}),R=v(()=>a!=null&&a.Header?i(J,{name:"Header","aria-label":c.containerTitle,title:c.containerTitle,slot:a.Header}):i(G,{"aria-label":c.containerTitle,role:"region",title:c.containerTitle}),[a,c.containerTitle]);return u(x,{children:[i(Q,{header:R(),rows:f,expandedRows:C,skeletonRowCount:10,isLoading:L,pageInfo:h,handlePageChange:d}),r.isOpen&&i(I,{isOpen:!0,isLoading:r.isLoading,title:c.confirmRemove,modalContent:c.confirmRemoveContent,confirmBtnCaption:c.confirmAction,closeBtnCaption:c.cancelAction,handleModalOnClose:l,handleModalOnConfirm:o})]})};export{R1 as RequisitionListGrid,R1 as default};
+import { t, u } from "../chunks/jsxRuntime.module.js";
+import * as React from "@dropins/tools/preact-compat.js";
+import { useState, useCallback, useEffect, useMemo } from "@dropins/tools/preact-compat.js";
+import { Card, Button, Header, InLineAlert, Table, Pagination, Icon, ProgressSpinner, Modal } from "@dropins/tools/components.js";
+import { Slot, classes, VComponent } from "@dropins/tools/lib.js";
+import "@dropins/tools/preact-hooks.js";
+/* empty css                             */
+import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
+import { u as useRequisitionListAlert } from "../chunks/PageSizePicker2.js";
+import { events } from "@dropins/tools/event-bus.js";
+import { Fragment } from "@dropins/tools/preact.js";
+import { E as EmptyList, P as PageSizePicker } from "../chunks/PageSizePicker.js";
+import { useText } from "@dropins/tools/i18n.js";
+import { d as deleteRequisitionList } from "../chunks/deleteRequisitionList.js";
+import { g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
+import "../chunks/transform-requisition-list.js";
+import "@dropins/tools/fetch-graphql.js";
+var _jsxFileName$4 = "/Users/rafaljanicki/www/storefront-requisition-list/src/hooks/useRequisitionListGrid.tsx";
+function useRequisitionListGrid(initial, callbacks, routeRequisitionListDetails) {
+  const translations = useText({
+    actionDelete: "RequisitionList.RequisitionListItem.actionDelete",
+    actionUpdate: "RequisitionList.RequisitionListItem.actionUpdate"
+  });
+  const [reqLists, setReqLists] = t(useState(initial), "reqLists");
+  const [reqListUid, setReqListUid] = t(useState(null), "reqListUid");
+  const [isAdding, setIsAdding] = t(useState(false), "isAdding");
+  const [isFetching, setIsFetching] = t(useState(false), "isFetching");
+  const handleClick = useCallback((uid) => {
+    setReqListUid(uid);
+    setIsAdding(false);
+  }, []);
+  const handleCancel = useCallback(() => setReqListUid(null), []);
+  const handleAddNew = useCallback(() => {
+    setIsAdding(true);
+    setReqListUid(null);
+  }, []);
+  const handleCancelCreate = useCallback(() => setIsAdding(false), []);
+  const fetchPage = useCallback(async (page = ((_a) => (_a = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _a.current_page)() ?? 1, pageSize = ((_b) => (_b = reqLists == null ? void 0 : reqLists.page_info) == null ? void 0 : _b.page_size)() ?? 10) => {
+    var _a2, _b2, _c;
+    setIsFetching(true);
+    try {
+      const data = await getRequisitionLists(page, pageSize);
+      const currentPage = ((_a2 = data == null ? void 0 : data.page_info) == null ? void 0 : _a2.current_page) ?? 1;
+      const totalPages = ((_b2 = data == null ? void 0 : data.page_info) == null ? void 0 : _b2.total_pages) ?? 0;
+      const hasRows = (((_c = data == null ? void 0 : data.items) == null ? void 0 : _c.length) ?? 0) > 0;
+      if (!hasRows && currentPage > 1 && totalPages >= currentPage - 1) {
+        const prev = currentPage - 1;
+        const prevData = await getRequisitionLists(prev, pageSize);
+        setReqLists(prevData);
+      } else {
+        setReqLists(data);
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  }, [reqLists]);
+  useEffect(() => {
+    if (!reqLists) void fetchPage(1);
+  }, [reqLists, fetchPage]);
+  const handlePageChange = useCallback((page) => fetchPage(page), [fetchPage]);
+  const handlePageSizeChange = useCallback(async (pageSize) => {
+    await fetchPage(1, pageSize);
+  }, [fetchPage]);
+  const rows = t(useMemo(() => ((reqLists == null ? void 0 : reqLists.items) ?? []).map((rl) => {
+    const isUpdating = reqListUid === rl.uid;
+    return {
+      name: u("div", {
+        className: "requisition-list-grid-wrapper__name",
+        children: [u("div", {
+          className: "requisition-list-grid-wrapper__name__title",
+          children: u("a", {
+            href: "#",
+            onClick: (e) => {
+              e.preventDefault();
+              if (routeRequisitionListDetails) {
+                const result = routeRequisitionListDetails(rl.uid);
+                if (typeof result === "string") {
+                  window.location.href = result;
+                }
+              }
+            },
+            children: rl.name
+          }, void 0, false, {
+            fileName: _jsxFileName$4,
+            lineNumber: 109,
+            columnNumber: 17
+          }, this)
+        }, void 0, false, {
+          fileName: _jsxFileName$4,
+          lineNumber: 108,
+          columnNumber: 15
+        }, this), rl.description && u("div", {
+          className: "requisition-list-grid-wrapper__name__description",
+          children: rl.description
+        }, void 0, false, {
+          fileName: _jsxFileName$4,
+          lineNumber: 125,
+          columnNumber: 17
+        }, this)]
+      }, void 0, true, {
+        fileName: _jsxFileName$4,
+        lineNumber: 107,
+        columnNumber: 13
+      }, this),
+      items_count: rl.items_count,
+      last_updated: new Date(rl.updated_at).toLocaleString(),
+      actions: u("div", {
+        className: "requisition-list-grid-wrapper__actions",
+        children: [u(Button, {
+          variant: "tertiary",
+          type: "button",
+          "data-testid": "update-button",
+          onClick: () => handleClick(rl.uid),
+          children: translations.actionUpdate
+        }, void 0, false, {
+          fileName: _jsxFileName$4,
+          lineNumber: 135,
+          columnNumber: 15
+        }, this), u(Button, {
+          variant: "tertiary",
+          type: "button",
+          "data-testid": "delete-button",
+          onClick: () => callbacks == null ? void 0 : callbacks.handleOpenModal(rl),
+          children: translations.actionDelete
+        }, void 0, false, {
+          fileName: _jsxFileName$4,
+          lineNumber: 143,
+          columnNumber: 15
+        }, this)]
+      }, void 0, true, {
+        fileName: _jsxFileName$4,
+        lineNumber: 134,
+        columnNumber: 13
+      }, this),
+      _rowDetails: isUpdating ? u(Card, {
+        variant: "secondary",
+        className: "requisition-list-grid-wrapper__form-row",
+        children: u(RequisitionListForm, {
+          mode: "update",
+          requisitionListUid: rl.uid,
+          defaultValues: {
+            name: rl.name,
+            description: rl.description
+          },
+          onSuccess: async () => {
+            await handlePageChange();
+            events.emit("requisitionList/alert", {
+              action: "update",
+              type: "success",
+              context: "requisitionList"
+            });
+            setReqListUid(null);
+          },
+          onError: () => {
+            events.emit("requisitionList/alert", {
+              action: "update",
+              type: "error",
+              context: "requisitionList"
+            });
+          },
+          onCancel: handleCancel
+        }, void 0, false, {
+          fileName: _jsxFileName$4,
+          lineNumber: 158,
+          columnNumber: 15
+        }, this)
+      }, void 0, false, {
+        fileName: _jsxFileName$4,
+        lineNumber: 154,
+        columnNumber: 13
+      }, this) : void 0
+    };
+  }), [reqLists == null ? void 0 : reqLists.items, reqListUid, handleClick, handleCancel, translations.actionUpdate, translations.actionDelete, callbacks, handlePageChange, routeRequisitionListDetails]), "rows: Row[]");
+  const expandedRows = t(useMemo(() => new Set(rows.map((row, index) => row._rowDetails ? index : -1).filter((index) => index >= 0)), [rows]), "expandedRows");
+  return {
+    rows,
+    expandedRows,
+    isLoading: isFetching || !reqLists,
+    pageInfo: reqLists == null ? void 0 : reqLists.page_info,
+    handlePageChange,
+    handlePageSizeChange,
+    isAdding,
+    handleAddNew,
+    handleCancelCreate
+  };
+}
+var _jsxFileName$3 = "/Users/rafaljanicki/www/storefront-requisition-list/src/containers/RequisitionListGrid/RequisitionListGrid.tsx";
+const RequisitionListGrid = ({
+  requisitionLists,
+  routeRequisitionListDetails,
+  slots
+}) => {
+  const [modal, setModal] = t(useState({
+    isOpen: false,
+    isLoading: false,
+    rl: null
+  }), "modal");
+  const handleOpenModal = (rl) => setModal({
+    isOpen: true,
+    isLoading: false,
+    rl
+  });
+  const handleCloseModal = () => setModal({
+    isOpen: false,
+    isLoading: false,
+    rl: null
+  });
+  const handleConfirmModal = async () => {
+    if (!modal.rl) return;
+    setModal((m) => ({
+      ...m,
+      isLoading: true
+    }));
+    await deleteRequisitionList(modal.rl.uid).then(async () => {
+      events.emit("requisitionList/alert", {
+        type: "success",
+        action: "delete",
+        context: "requisitionList"
+      });
+    }).catch(() => {
+      events.emit("requisitionList/alert", {
+        type: "error",
+        action: "delete",
+        context: "requisitionList"
+      });
+    }).finally(async () => {
+      await handlePageChange();
+      handleCloseModal();
+    });
+  };
+  const {
+    rows,
+    expandedRows,
+    isLoading,
+    pageInfo,
+    handlePageChange,
+    handlePageSizeChange,
+    isAdding,
+    handleAddNew,
+    handleCancelCreate
+  } = useRequisitionListGrid(requisitionLists, {
+    handleOpenModal
+  }, routeRequisitionListDetails);
+  const translations = useText({
+    containerTitle: `RequisitionList.containerTitle`,
+    deleteRequisitionListTitle: "RequisitionList.RequisitionListWrapper.deleteRequisitionListTitle",
+    deleteRequisitionListMessage: "RequisitionList.RequisitionListWrapper.deleteRequisitionListMessage",
+    cancelAction: "RequisitionList.RequisitionListWrapper.cancelAction",
+    confirmAction: "RequisitionList.RequisitionListWrapper.confirmAction"
+  });
+  const getHeader = useCallback(() => {
+    if (slots == null ? void 0 : slots.Header) {
+      return u(Slot, {
+        name: "Header",
+        "aria-label": translations.containerTitle,
+        title: translations.containerTitle,
+        slot: slots.Header
+      }, void 0, false, {
+        fileName: _jsxFileName$3,
+        lineNumber: 113,
+        columnNumber: 9
+      }, void 0);
+    }
+    return u(Header, {
+      "aria-label": translations.containerTitle,
+      role: "region",
+      title: translations.containerTitle
+    }, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 122,
+      columnNumber: 7
+    }, void 0);
+  }, [slots, translations.containerTitle]);
+  return u(Fragment, {
+    children: [u(RequisitionListGridWrapper, {
+      header: getHeader(),
+      rows,
+      expandedRows,
+      skeletonRowCount: 10,
+      isLoading,
+      pageInfo,
+      handlePageChange,
+      handlePageSizeChange,
+      defaultPageSize: 10,
+      isAdding,
+      handleAddNew,
+      handleCancelCreate
+    }, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 132,
+      columnNumber: 7
+    }, void 0), modal.isOpen && u(RequisitionListModal, {
+      isOpen: true,
+      isLoading: modal.isLoading,
+      title: translations.deleteRequisitionListTitle,
+      modalContent: translations.deleteRequisitionListMessage,
+      confirmBtnCaption: translations.confirmAction,
+      closeBtnCaption: translations.cancelAction,
+      handleModalOnClose: handleCloseModal,
+      handleModalOnConfirm: handleConfirmModal
+    }, void 0, false, {
+      fileName: _jsxFileName$3,
+      lineNumber: 147,
+      columnNumber: 9
+    }, void 0)]
+  }, void 0);
+};
+const SvgAdd = (props) => /* @__PURE__ */ React.createElement("svg", { id: "Icon_Add_Base", "data-name": "Icon \\u2013 Add \\u2013 Base", xmlns: "http://www.w3.org/2000/svg", width: 24, height: 24, viewBox: "0 0 24 24", ...props }, /* @__PURE__ */ React.createElement("g", { id: "Large" }, /* @__PURE__ */ React.createElement("rect", { id: "Placement_area", "data-name": "Placement area", width: 24, height: 24, fill: "#fff", opacity: 0 }), /* @__PURE__ */ React.createElement("g", { id: "Add_icon", "data-name": "Add icon", transform: "translate(9.734 9.737)" }, /* @__PURE__ */ React.createElement("line", { vectorEffect: "non-scaling-stroke", id: "Line_579", "data-name": "Line 579", y2: 12.7, transform: "translate(2.216 -4.087)", fill: "none", stroke: "currentColor" }), /* @__PURE__ */ React.createElement("line", { vectorEffect: "non-scaling-stroke", id: "Line_580", "data-name": "Line 580", x2: 12.7, transform: "translate(-4.079 2.263)", fill: "none", stroke: "currentColor" }))));
+var _jsxFileName$2 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListGridWrapper/RequisitionListGridWrapper.tsx";
+const RequisitionListGridWrapper = ({
+  className,
+  isLoading = false,
+  header,
+  rows = [],
+  expandedRows,
+  skeletonRowCount = 10,
+  pageInfo,
+  handlePageChange,
+  handlePageSizeChange,
+  defaultPageSize = 10,
+  isAdding,
+  handleAddNew,
+  handleCancelCreate,
+  ...props
+}) => {
+  const translations = useText({
+    name: `RequisitionList.RequisitionListWrapper.name`,
+    itemsCount: `RequisitionList.RequisitionListWrapper.itemsCount`,
+    lastUpdated: `RequisitionList.RequisitionListWrapper.lastUpdated`,
+    actions: `RequisitionList.RequisitionListWrapper.actions`,
+    emptyList: `RequisitionList.RequisitionListWrapper.emptyList`
+  });
+  const hasAnyItems = ((pageInfo == null ? void 0 : pageInfo.total_pages) ?? 0) > 0;
+  const showEmptyList = !isLoading && rows.length === 0 && !hasAnyItems;
+  const {
+    alert,
+    setAlert,
+    handleRequisitionListAlert
+  } = useRequisitionListAlert();
+  useEffect(() => {
+    events.on("requisitionList/alert", handleRequisitionListAlert);
+  }, [handleRequisitionListAlert]);
+  return u("div", {
+    ...props,
+    className: classes(["requisition-list-grid-wrapper", className]),
+    "data-testid": "requisition-list-grid-wrapper",
+    children: [header && u("div", {
+      className: classes(["requisition-list-grid-wrapper__header", className]),
+      "data-testid": "requisition-list-grid-wrapper-header",
+      children: u(VComponent, {
+        node: header
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 110,
+        columnNumber: 11
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName$2,
+      lineNumber: 103,
+      columnNumber: 9
+    }, void 0), alert && u(Fragment, {
+      children: u(InLineAlert, {
+        heading: alert.description,
+        type: alert.type,
+        variant: "primary",
+        onDismiss: () => setAlert(null)
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 116,
+        columnNumber: 11
+      }, void 0)
+    }, void 0, false), showEmptyList ? u(EmptyList, {
+      textContent: translations.emptyList
+    }, void 0, false, {
+      fileName: _jsxFileName$2,
+      lineNumber: 126,
+      columnNumber: 9
+    }, void 0) : u(Fragment, {
+      children: [u(Table, {
+        columns: [{
+          key: "name",
+          label: translations.name
+        }, {
+          key: "items_count",
+          label: translations.itemsCount
+        }, {
+          key: "last_updated",
+          label: translations.lastUpdated
+        }, {
+          key: "actions",
+          label: translations.actions
+        }],
+        rowData: rows,
+        expandedRows,
+        loading: isLoading,
+        skeletonRowCount
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 130,
+        columnNumber: 11
+      }, void 0), u("div", {
+        className: classes(["requisition-list-grid-wrapper__pagination", className]),
+        children: u("div", {
+          className: "requisition-list-grid-wrapper__pagination-controls",
+          children: [u(PageSizePicker, {
+            currentPageSize: (pageInfo == null ? void 0 : pageInfo.page_size) || defaultPageSize,
+            onPageSizeChange: handlePageSizeChange || (() => Promise.resolve()),
+            disabled: isLoading
+          }, void 0, false, {
+            fileName: _jsxFileName$2,
+            lineNumber: 149,
+            columnNumber: 15
+          }, void 0), pageInfo && pageInfo.total_pages > 1 && u(Pagination, {
+            totalPages: pageInfo.total_pages,
+            currentPage: pageInfo.current_page,
+            onChange: handlePageChange
+          }, void 0, false, {
+            fileName: _jsxFileName$2,
+            lineNumber: 157,
+            columnNumber: 17
+          }, void 0)]
+        }, void 0, true, {
+          fileName: _jsxFileName$2,
+          lineNumber: 148,
+          columnNumber: 13
+        }, void 0)
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 142,
+        columnNumber: 11
+      }, void 0)]
+    }, void 0, true), u("div", {
+      className: classes(["requisition-list-grid-wrapper__add-new", className]),
+      children: isAdding ? u(Card, {
+        variant: "secondary",
+        children: u(RequisitionListForm, {
+          mode: "create",
+          onSuccess: async () => {
+            await handlePageChange();
+            handleCancelCreate();
+            events.emit("requisitionList/alert", {
+              type: "success",
+              action: "create",
+              context: "requisitionList"
+            });
+          },
+          onError: () => {
+            events.emit("requisitionList/alert", {
+              type: "error",
+              action: "create",
+              context: "requisitionList"
+            });
+          },
+          onCancel: handleCancelCreate
+        }, void 0, false, {
+          fileName: _jsxFileName$2,
+          lineNumber: 177,
+          columnNumber: 13
+        }, void 0)
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 176,
+        columnNumber: 11
+      }, void 0) : u(RequisitionListActions, {
+        onAddNew: handleAddNew
+      }, void 0, false, {
+        fileName: _jsxFileName$2,
+        lineNumber: 199,
+        columnNumber: 11
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName$2,
+      lineNumber: 169,
+      columnNumber: 7
+    }, void 0)]
+  }, void 0, true, {
+    fileName: _jsxFileName$2,
+    lineNumber: 96,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName$1 = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListActions/RequisitionListActions.tsx";
+const RequisitionListActions = ({
+  selectable,
+  className,
+  onAddNew
+}) => {
+  const translations = useText({
+    addNewReqListBtn: `RequisitionList.AddNewReqList.addNewReqListBtn`
+  });
+  return u("button", {
+    type: "button",
+    "aria-label": translations.addNewReqListBtn,
+    role: "button",
+    className: classes(["requisition-list-actions", ["requisition-list-actions--selectable", selectable], className]),
+    "data-testid": "requisition-list-actions-button",
+    onClick: onAddNew,
+    children: [u("span", {
+      className: "requisition-list-actions__title",
+      "data-testid": "requisition-list-actions-button-text",
+      children: translations.addNewReqListBtn
+    }, void 0, false, {
+      fileName: _jsxFileName$1,
+      lineNumber: 51,
+      columnNumber: 7
+    }, void 0), u(Icon, {
+      source: SvgAdd,
+      size: "32"
+    }, void 0, false, {
+      fileName: _jsxFileName$1,
+      lineNumber: 57,
+      columnNumber: 7
+    }, void 0)]
+  }, void 0, true, {
+    fileName: _jsxFileName$1,
+    lineNumber: 39,
+    columnNumber: 5
+  }, void 0);
+};
+var _jsxFileName = "/Users/rafaljanicki/www/storefront-requisition-list/src/components/RequisitionListModal/RequisitionListModal.tsx";
+const RequisitionListModal = ({
+  isOpen,
+  isLoading,
+  title,
+  modalContent,
+  closeBtnCaption,
+  confirmBtnCaption,
+  handleModalOnClose,
+  handleModalOnConfirm
+}) => {
+  if (!isOpen) return null;
+  return u(Modal, {
+    className: "requisition-list-modal--overlay",
+    "data-testid": "requisition-list-modal",
+    size: "medium",
+    centered: false,
+    title,
+    onClose: handleModalOnClose,
+    backgroundDim: true,
+    clickToDismiss: true,
+    escapeToDismiss: true,
+    role: "dialog",
+    "aria-label": title,
+    children: u("div", {
+      className: "requisition-list-modal",
+      children: [isLoading ? u("div", {
+        className: "requisition-list-modal__spinner",
+        "data-testid": "progress-spinner",
+        children: u(ProgressSpinner, {
+          stroke: "4",
+          size: "large"
+        }, void 0, false, {
+          fileName: _jsxFileName,
+          lineNumber: 70,
+          columnNumber: 13
+        }, void 0)
+      }, void 0, false, {
+        fileName: _jsxFileName,
+        lineNumber: 66,
+        columnNumber: 11
+      }, void 0) : null, u("p", {
+        children: modalContent
+      }, void 0, false, {
+        fileName: _jsxFileName,
+        lineNumber: 73,
+        columnNumber: 9
+      }, void 0), u("div", {
+        className: "requisition-list-modal__buttons",
+        children: [handleModalOnClose && u(Button, {
+          "data-testid": "rl-modal-close-button",
+          type: "button",
+          onClick: handleModalOnClose,
+          variant: "secondary",
+          disabled: isLoading,
+          children: closeBtnCaption
+        }, void 0, false, {
+          fileName: _jsxFileName,
+          lineNumber: 76,
+          columnNumber: 13
+        }, void 0), handleModalOnConfirm && u(Button, {
+          "data-testid": "rl-modal-confirm-button",
+          type: "button",
+          onClick: handleModalOnConfirm,
+          disabled: isLoading,
+          children: confirmBtnCaption
+        }, void 0, false, {
+          fileName: _jsxFileName,
+          lineNumber: 87,
+          columnNumber: 13
+        }, void 0)]
+      }, void 0, true, {
+        fileName: _jsxFileName,
+        lineNumber: 74,
+        columnNumber: 9
+      }, void 0)]
+    }, void 0, true, {
+      fileName: _jsxFileName,
+      lineNumber: 64,
+      columnNumber: 7
+    }, void 0)
+  }, void 0, false, {
+    fileName: _jsxFileName,
+    lineNumber: 51,
+    columnNumber: 5
+  }, void 0);
+};
+export {
+  RequisitionListGrid,
+  RequisitionListGrid as default
+};
 //# sourceMappingURL=RequisitionListGrid.js.map

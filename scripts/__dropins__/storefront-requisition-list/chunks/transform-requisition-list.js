@@ -1,6 +1,19 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{FetchGraphQL as s}from"@dropins/tools/fetch-graphql.js";const{setEndpoint:u,setFetchGraphQlHeader:n,removeFetchGraphQlHeader:_,setFetchGraphQlHeaders:l,fetchGraphQl:p,getConfig:c}=new s().getMethods(),d=r=>{const o=r.map(e=>e.message).join(" ");throw Error(o)},b=`
+import { FetchGraphQL } from "@dropins/tools/fetch-graphql.js";
+const {
+  setEndpoint,
+  setFetchGraphQlHeader,
+  removeFetchGraphQlHeader,
+  setFetchGraphQlHeaders,
+  fetchGraphQl,
+  getConfig
+} = new FetchGraphQL().getMethods();
+const handleFetchError = (errors) => {
+  const errorMessage = errors.map((e) => e.message).join(" ");
+  throw Error(errorMessage);
+};
+const REQUISITION_LIST_FRAGMENT = `
 fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
     uid
     name
@@ -8,5 +21,64 @@ fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
     items_count
     updated_at
   }
-`;function f(r){var o,e;return{uid:r.uid,name:r.name,description:r.description,updated_at:r.updated_at,items_count:r.items_count,items:a((o=r.items)==null?void 0:o.items),page_info:(e=r.items)==null?void 0:e.page_info}}function a(r){return r!=null&&r.length?r.map(o=>({uid:o.uid,sku:o.product.sku,quantity:o.quantity,customizable_options:o.customizable_options?o.customizable_options.map(e=>({uid:e.customizable_option_uid,is_required:e.is_required,label:e.label,sort_order:e.sort_order,type:e.type,values:e.values.map(t=>({uid:t.customizable_option_value_uid,label:t.label,price:t.price,value:t.value}))})):[],bundle_options:o.bundle_options||[],configurable_options:o.configurable_options?o.configurable_options.map(e=>({option_uid:e.configurable_product_option_uid,option_label:e.option_label,value_uid:e.configurable_product_option_value_uid,value_label:e.value_label})):[],samples:o.samples?o.samples.map(e=>({url:e.sample_url,sort_order:e.sort_order,title:e.title})):[],gift_card_options:o.gift_card_options||{}})):[]}export{b as R,n as a,l as b,p as f,c as g,d as h,_ as r,u as s,f as t};
+`;
+function transformRequisitionList(data) {
+  var _a, _b;
+  return {
+    uid: data.uid,
+    name: data.name,
+    description: data.description,
+    updated_at: data.updated_at,
+    items_count: data.items_count,
+    items: transformItems((_a = data.items) == null ? void 0 : _a.items),
+    page_info: (_b = data.items) == null ? void 0 : _b.page_info
+  };
+}
+function transformItems(items) {
+  if (!(items == null ? void 0 : items.length)) return [];
+  return items.map((item) => {
+    return {
+      uid: item.uid,
+      sku: item.product.sku,
+      quantity: item.quantity,
+      customizable_options: item.customizable_options ? item.customizable_options.map((option) => ({
+        uid: option.customizable_option_uid,
+        is_required: option.is_required,
+        label: option.label,
+        sort_order: option.sort_order,
+        type: option.type,
+        values: option.values.map((value) => ({
+          uid: value.customizable_option_value_uid,
+          label: value.label,
+          price: value.price,
+          value: value.value
+        }))
+      })) : [],
+      bundle_options: item.bundle_options || [],
+      configurable_options: item.configurable_options ? item.configurable_options.map((option) => ({
+        option_uid: option.configurable_product_option_uid,
+        option_label: option.option_label,
+        value_uid: option.configurable_product_option_value_uid,
+        value_label: option.value_label
+      })) : [],
+      samples: item.samples ? item.samples.map((sample) => ({
+        url: sample.sample_url,
+        sort_order: sample.sort_order,
+        title: sample.title
+      })) : [],
+      gift_card_options: item.gift_card_options || {}
+    };
+  });
+}
+export {
+  REQUISITION_LIST_FRAGMENT as R,
+  setFetchGraphQlHeader as a,
+  setFetchGraphQlHeaders as b,
+  fetchGraphQl as f,
+  getConfig as g,
+  handleFetchError as h,
+  removeFetchGraphQlHeader as r,
+  setEndpoint as s,
+  transformRequisitionList as t
+};
 //# sourceMappingURL=transform-requisition-list.js.map

@@ -1,6 +1,8 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{R as _,f as I,h as a,t as c}from"./transform-requisition-list.js";const g=`
+import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "./transform-requisition-list.js";
+import { events } from "@dropins/tools/event-bus.js";
+const GET_REQUISITION_LISTS_QUERY = `
   query GET_REQUISITION_LISTS_QUERY(
     $currentPage: Int = 1
     $pageSize: Int = 10,
@@ -19,6 +21,32 @@ import{R as _,f as I,h as a,t as c}from"./transform-requisition-list.js";const g
       }
     }
   }
-${_}
-`,S=async(n,o)=>I(g,{variables:{currentPage:n,pageSize:o}}).then(({errors:i,data:e})=>{var t,s,r;return i?a(i):(t=e==null?void 0:e.customer)!=null&&t.requisition_lists?{items:e.customer.requisition_lists.items.map(u=>c(u)),page_info:(r=(s=e.customer)==null?void 0:s.requisition_lists)==null?void 0:r.page_info}:null});export{S as g};
+${REQUISITION_LIST_FRAGMENT}
+`;
+const getRequisitionLists = async (currentPage, pageSize) => {
+  return fetchGraphQl(GET_REQUISITION_LISTS_QUERY, {
+    variables: {
+      currentPage,
+      pageSize
+    }
+  }).then(({
+    errors,
+    data
+  }) => {
+    var _a, _b, _c;
+    if (errors) return handleFetchError(errors);
+    if (!((_a = data == null ? void 0 : data.customer) == null ? void 0 : _a.requisition_lists)) {
+      return null;
+    }
+    const reqLists = data.customer.requisition_lists.items.map((requisitionList) => transformRequisitionList(requisitionList));
+    events.emit("requisitionLists/data", reqLists);
+    return {
+      items: reqLists,
+      page_info: (_c = (_b = data.customer) == null ? void 0 : _b.requisition_lists) == null ? void 0 : _c.page_info
+    };
+  });
+};
+export {
+  getRequisitionLists as g
+};
 //# sourceMappingURL=getRequisitionLists.js.map

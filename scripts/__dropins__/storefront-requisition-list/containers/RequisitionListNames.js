@@ -1,6 +1,22 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{jsxs as f,jsx as n}from"@dropins/tools/preact-jsx-runtime.js";import*as a from"@dropins/tools/preact-compat.js";import{useState as T,useEffect as q}from"@dropins/tools/preact-compat.js";import{Picker as p,Icon as L,Card as h}from"@dropins/tools/components.js";import{R as E,f as S,h as g,t as N}from"../chunks/transform-requisition-list.js";import{R as U}from"../chunks/RequisitionListItemsFragment.graphql.js";import{g as v}from"../chunks/getRequisitionLists.js";import{R as O}from"../chunks/RequisitionListForm.js";import"@dropins/tools/lib.js";import"@dropins/tools/preact-hooks.js";/* empty css                            *//* empty css                           */import{useText as A}from"@dropins/tools/i18n.js";import"@dropins/tools/fetch-graphql.js";const M=`
+import { t, u } from "../chunks/jsxRuntime.module.js";
+import * as React from "@dropins/tools/preact-compat.js";
+import { useState, useEffect } from "@dropins/tools/preact-compat.js";
+import { InLineAlert, Picker, Icon, Card } from "@dropins/tools/components.js";
+import { R as REQUISITION_LIST_FRAGMENT, f as fetchGraphQl, h as handleFetchError, t as transformRequisitionList } from "../chunks/transform-requisition-list.js";
+import { events } from "@dropins/tools/event-bus.js";
+import { R as REQUISITION_LIST_ITEMS_FRAGMENT } from "../chunks/RequisitionListItemsFragment.graphql.js";
+import { g as getRequisitionLists } from "../chunks/getRequisitionLists.js";
+import { R as RequisitionListForm } from "../chunks/RequisitionListForm.js";
+import "@dropins/tools/lib.js";
+import "@dropins/tools/preact-hooks.js";
+/* empty css                             */
+import { u as useRequisitionListAlert } from "../chunks/PageSizePicker2.js";
+import "@dropins/tools/preact.js";
+import { useText } from "@dropins/tools/i18n.js";
+import "@dropins/tools/fetch-graphql.js";
+const ADD_PRODUCTS_TO_REQUISITION_LIST_MUTATION = `
   mutation ADD_PRODUCTS_TO_REQUISITION_LIST_MUTATION(
       $requisitionListUid: ID!, 
       $requisitionListItems: [RequisitionListItemsInput!]!
@@ -17,7 +33,184 @@ import{jsxs as f,jsx as n}from"@dropins/tools/preact-jsx-runtime.js";import*as a
       }
     }
   }
-${U}
-${E}
-`,k=async(r,o)=>{const{errors:e,data:c}=await S(M,{variables:{requisitionListUid:r,requisitionListItems:o}});return e?g(e):N(c.addProductsToRequisitionList.requisition_list)},x=r=>a.createElement("svg",{width:24,height:24,viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg",...r},a.createElement("path",{vectorEffect:"non-scaling-stroke",d:"M3 12H21",stroke:"currentColor"}),a.createElement("path",{vectorEffect:"non-scaling-stroke",d:"M3 6H21",stroke:"currentColor"}),a.createElement("path",{vectorEffect:"non-scaling-stroke",d:"M3 18H21",stroke:"currentColor"})),z=({items:r=[],canCreate:o=!0,sku:e,quantity:c=1,...I})=>{const[s,d]=T(r),[m,u]=T(!1),l=A({createTitle:"RequisitionList.RequisitionListForm.createTitle",addToReqList:"RequisitionList.RequisitionListForm.addToRequisitionList"});q(()=>{(!s||s.length===0)&&v().then(t=>{t&&t.items&&d(t.items)}).catch(t=>{console.error("Error fetching requisition lists:",t)})},[s]);const R=[...(s==null?void 0:s.map(t=>({value:t.uid,text:t.name})))??[],...o?[{value:"__create__",text:l.createTitle}]:[]],_=async t=>{try{await k(t,[{sku:e,quantity:c}])}catch(i){console.error("Error adding product to list:",i)}};return f("div",{...I,className:"requisition-list-names",children:[n(p,{id:`requisition-list-names__picker__${e}`,className:"requisition-list-names__picker",name:`requisition-list-names__picker__${e}`,icon:n(L,{source:x}),variant:"secondary",placeholder:l.addToReqList,disabled:m,size:"medium",options:R,handleSelect:t=>{const i=t.currentTarget.value;if(i==="__create__"){u(!0);return}i&&_(i).then(()=>{t.target.value=""})}}),o&&m&&n(h,{variant:"secondary",children:n(O,{mode:"create",onSuccess:async t=>{_(t.uid).then(()=>{u(!1),d(i=>i?[...i,t]:[t])})},onCancel:()=>u(!1)})})]})};export{z as RequisitionListNames,z as default};
+${REQUISITION_LIST_ITEMS_FRAGMENT}
+${REQUISITION_LIST_FRAGMENT}
+`;
+const addProductsToRequisitionList = async (requisitionListUid, requisitionListItems) => {
+  const {
+    errors,
+    data
+  } = await fetchGraphQl(ADD_PRODUCTS_TO_REQUISITION_LIST_MUTATION, {
+    variables: {
+      requisitionListUid,
+      requisitionListItems
+    }
+  });
+  if (errors) return handleFetchError(errors);
+  const payload = transformRequisitionList(data.addProductsToRequisitionList.requisition_list);
+  events.emit("requisitionList/data", payload);
+  return payload;
+};
+const SvgBurger = (props) => /* @__PURE__ */ React.createElement("svg", { width: 24, height: 24, viewBox: "0 0 24 24", fill: "none", xmlns: "http://www.w3.org/2000/svg", ...props }, /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 12H21", stroke: "currentColor" }), /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 6H21", stroke: "currentColor" }), /* @__PURE__ */ React.createElement("path", { vectorEffect: "non-scaling-stroke", d: "M3 18H21", stroke: "currentColor" }));
+var _jsxFileName = "/Users/rafaljanicki/www/storefront-requisition-list/src/containers/RequisitionListNames/RequisitionListNames.tsx";
+const RequisitionListNames = ({
+  items = [],
+  canCreate = true,
+  sku,
+  selectedOptions,
+  quantity = 1,
+  variant = "neutral",
+  beforeAddProdToReqList,
+  ...props
+}) => {
+  const [reqLists, setReqLists] = t(useState(items), "reqLists");
+  const [isAdding, setIsAdding] = t(useState(false), "isAdding");
+  const translations = useText({
+    createTitle: `RequisitionList.RequisitionListForm.createTitle`,
+    addToReqList: `RequisitionList.RequisitionListForm.addToRequisitionList`
+  });
+  useEffect(() => {
+    if (!items || items.length === 0) {
+      getRequisitionLists().then((res) => {
+        setReqLists((res == null ? void 0 : res.items) || []);
+      }).catch((error) => {
+        console.error("Error fetching requisition lists:", error);
+        setReqLists([]);
+      });
+    }
+  }, [items]);
+  const reqListOptions = [...(reqLists == null ? void 0 : reqLists.map((reqList) => ({
+    value: reqList.uid,
+    text: reqList.name
+  }))) ?? [], ...canCreate ? [{
+    value: "__create__",
+    text: translations.createTitle
+  }] : []];
+  const handleAddProdToReqList = async (requisitionListUid) => {
+    if (beforeAddProdToReqList) {
+      try {
+        await beforeAddProdToReqList();
+      } catch (error) {
+        return;
+      }
+    }
+    try {
+      await addProductsToRequisitionList(requisitionListUid, [{
+        sku,
+        quantity,
+        selected_options: selectedOptions
+      }]);
+    } catch (error) {
+      console.error("Error adding product to list:", error);
+    }
+  };
+  const {
+    alert,
+    setAlert,
+    handleRequisitionListAlert
+  } = useRequisitionListAlert();
+  useEffect(() => {
+    const updateEvent = events.on("requisitionList/alert", handleRequisitionListAlert);
+    return () => {
+      updateEvent == null ? void 0 : updateEvent.off();
+    };
+  }, [handleRequisitionListAlert]);
+  return u("div", {
+    ...props,
+    className: `requisition-list-names ${variant === "hover" ? "requisition-list-names--modal-hover" : ""}`,
+    children: [alert && sku === alert.sku && u(InLineAlert, {
+      id: `requisition-list-names__alert__${sku}`,
+      className: "requisition-list-names__alert",
+      heading: alert.description,
+      type: alert.type,
+      variant: "primary",
+      onDismiss: () => setAlert(null)
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 130,
+      columnNumber: 9
+    }, void 0), u(Picker, {
+      id: `requisition-list-names__picker__${sku}`,
+      className: "requisition-list-names__picker",
+      name: `requisition-list-names__picker__${sku}`,
+      icon: u(Icon, {
+        source: SvgBurger
+      }, void 0, false, {
+        fileName: _jsxFileName,
+        lineNumber: 143,
+        columnNumber: 15
+      }, void 0),
+      variant: "secondary",
+      placeholder: translations.addToReqList,
+      disabled: isAdding,
+      size: "medium",
+      options: reqListOptions,
+      handleSelect: (event) => {
+        const selectedUid = event.currentTarget.value;
+        if (selectedUid === "__create__") {
+          setIsAdding(true);
+          return;
+        }
+        if (selectedUid) {
+          handleAddProdToReqList(selectedUid).then(() => {
+            events.emit("requisitionList/alert", {
+              action: "add",
+              type: "success",
+              context: "product",
+              skus: [sku]
+            });
+            setIsAdding(false);
+            event.target.value = "";
+          });
+        }
+      }
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 139,
+      columnNumber: 7
+    }, void 0), canCreate && isAdding && u(Card, {
+      variant: "secondary",
+      children: u(RequisitionListForm, {
+        mode: "create",
+        onSuccess: async (newList) => {
+          handleAddProdToReqList(newList.uid).then(() => {
+            events.emit("requisitionList/alert", {
+              action: "add",
+              type: "success",
+              context: "product",
+              skus: [sku]
+            });
+            setIsAdding(false);
+            setReqLists((prevLists) => [...prevLists, newList]);
+          });
+        },
+        onError: () => {
+          events.emit("requisitionList/alert", {
+            action: "add",
+            type: "error",
+            context: "product",
+            skus: [sku]
+          });
+        },
+        onCancel: () => setIsAdding(false)
+      }, void 0, false, {
+        fileName: _jsxFileName,
+        lineNumber: 171,
+        columnNumber: 11
+      }, void 0)
+    }, void 0, false, {
+      fileName: _jsxFileName,
+      lineNumber: 170,
+      columnNumber: 9
+    }, void 0)]
+  }, void 0, true, {
+    fileName: _jsxFileName,
+    lineNumber: 123,
+    columnNumber: 5
+  }, void 0);
+};
+export {
+  RequisitionListNames,
+  RequisitionListNames as default
+};
 //# sourceMappingURL=RequisitionListNames.js.map
