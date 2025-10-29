@@ -21,7 +21,10 @@ import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
-import { displayOverlaySpinner, removeOverlaySpinner } from './utils.js';
+import {
+  displayOverlaySpinner,
+  removeOverlaySpinner,
+} from './utils.js';
 
 // Fragment functions
 import {
@@ -47,6 +50,7 @@ import {
   renderOrderHeader,
   renderOrderProductList,
   renderOrderStatus,
+  renderOrderSummary,
   renderPaymentMethods,
   renderPlaceOrder,
   renderServerError,

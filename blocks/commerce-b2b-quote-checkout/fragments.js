@@ -1,7 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
 import { createFragment } from '@dropins/storefront-checkout/lib/utils.js';
 
-import { CHECKOUT_BLOCK, ORDER_CONFIRMATION_BLOCK } from './constants.js';
+import {
+  CHECKOUT_BLOCK,
+  ORDER_CONFIRMATION_BLOCK,
+} from './constants.js';
 
 /**
  * A frozen, nested object of CSS selectors
