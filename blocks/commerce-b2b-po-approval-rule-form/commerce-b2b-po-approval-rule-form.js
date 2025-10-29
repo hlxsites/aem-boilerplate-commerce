@@ -21,29 +21,31 @@ const redirectToAccountDashboard = () => {
   window.location.href = rootLink(CUSTOMER_PATH);
 };
 
+const redirectToApprovalRulesList = () => {
+  window.location.href = rootLink(CUSTOMER_PO_RULES_PATH);
+};
+
 /**
- * Initializes and decorates the Purchase Order Approval Rules List block
+ * Initializes and decorates the Approval Rule Form block
  * Redirects unauthenticated users and handles permission updates
  */
-const renderPurchaseOrderApprovalRulesList = async (
+const renderApprovalRuleForm = async (
   blockElement,
   permissions = {},
 ) => {
-  const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.VIEW_RULES];
-
+  const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.MANAGE_RULES];
   if (!hasAccess) {
     redirectToAccountDashboard();
   }
 
   const approvalRuleID = new URLSearchParams(window.location.search).get('ruleRef') || '';
+  if (!approvalRuleID) {
+    redirectToApprovalRulesList();
+  }
 
   await purchaseOrderRenderer.render(ApprovalRuleForm, {
     approvalRuleID,
-    routeApprovalRulesList: () => {
-      const redirectURL = rootLink(CUSTOMER_PO_RULES_PATH);
-
-      return redirectURL;
-    },
+    routeApprovalRulesList: () => rootLink(CUSTOMER_PO_RULES_PATH),
   })(blockElement);
 };
 
@@ -55,11 +57,11 @@ export default async function decorate(block) {
 
   // Initial permissions check
   const initialPermissions = events.lastPayload('auth/permissions');
-  await renderPurchaseOrderApprovalRulesList(block, initialPermissions);
+  await renderApprovalRuleForm(block, initialPermissions);
 
   // React to permission updates
   events.on('auth/permissions', async (updatedPermissions) => {
-    await renderPurchaseOrderApprovalRulesList(block, updatedPermissions);
+    await renderApprovalRuleForm(block, updatedPermissions);
   });
 
   // Handle logout during interaction

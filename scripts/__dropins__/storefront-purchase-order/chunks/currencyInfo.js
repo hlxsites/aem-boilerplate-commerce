@@ -120,5 +120,5 @@ import{f as n,h as l}from"./fetch-graphql.js";import{h as i}from"./fetch-error.j
       available_currency_codes
     }
   }
-`,f=async()=>n(v,{}).then(a=>{var e,c,_,d,o;if(!a)return{baseCurrencyCode:"$",availableCurrencyCodes:[]};(e=a.errors)!=null&&e.length&&i(a.errors);const t=((_=(c=a==null?void 0:a.data)==null?void 0:c.currency)==null?void 0:_.available_currency_codes)??[];return{baseCurrencyCode:((o=(d=a==null?void 0:a.data)==null?void 0:d.currency)==null?void 0:o.base_currency_code)||"$",availableCurrencyCodes:t.length?t.map(r=>({text:String(r),value:String(r)})):[]}}).catch(l);export{C as a,f as c,b as g,y as u};
+`,f=async()=>n(v,{}).then(a=>{var e,c,_,d,o;if(!a)return{baseCurrencyCode:"USD",availableCurrencyCodes:[]};(e=a.errors)!=null&&e.length&&i(a.errors);const t=((_=(c=a==null?void 0:a.data)==null?void 0:c.currency)==null?void 0:_.available_currency_codes)??[];return{baseCurrencyCode:((o=(d=a==null?void 0:a.data)==null?void 0:d.currency)==null?void 0:o.base_currency_code)||"USD",availableCurrencyCodes:t.length?t.map(r=>({text:String(r),value:String(r)})):[]}}).catch(l);export{C as a,f as c,b as g,y as u};
 //# sourceMappingURL=currencyInfo.js.map

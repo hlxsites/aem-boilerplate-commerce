@@ -96,18 +96,18 @@ declare const _default: {
     },
     "approvalRuleForm": {
       "headerText": "Purchase Order Approval Rule",
-      "titleAppliesTo": "Applies to",
+      "titleAppliesTo": "Applies To",
       "titleRuleType": "Rule Type",
       "titleRequiresApprovalRole": "Requires Approval From",
       "fields": {
-        "enabled": "Enabled",
-        "disabled": "Disabled",
+        "enabled": "Rule Enabled",
+        "disabled": "Rule Disabled",
         "inputRuleName": {
           "floatingLabel": "Rule Name",
           "placeholder": "Rule Name"
         },
         "textAreaDescription": {
-          "label": "Description"
+          "label": "Rule Description"
         },
         "appliesTo": {
           "allUsers": "All Users",
