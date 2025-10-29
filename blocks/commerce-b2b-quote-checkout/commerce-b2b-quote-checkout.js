@@ -50,7 +50,6 @@ import {
   renderOrderHeader,
   renderOrderProductList,
   renderOrderStatus,
-  renderOrderSummary,
   renderPaymentMethods,
   renderPlaceOrder,
   renderServerError,
