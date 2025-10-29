@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './PurchaseOrderApprovalRulesList';
-export { PurchaseOrderApprovalRulesList as default } from './PurchaseOrderApprovalRulesList';
+export * from './ApprovalRulesList';
+export { ApprovalRulesList as default } from './ApprovalRulesList';
 //# sourceMappingURL=index.d.ts.map

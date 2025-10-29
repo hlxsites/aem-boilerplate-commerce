@@ -1,6 +1,6 @@
 import { Column, PageSizeListProps, Row } from '../components';
 
-export interface PurchaseOrderApprovalRulesListProps {
+export interface ApprovalRulesListProps {
     initialPageSize?: PageSizeListProps[];
     routeCreateApprovalRule?: (id: string) => string;
     routeEditApprovalRule?: (id: string) => string;
@@ -12,4 +12,4 @@ export interface PurchaseOrderApprovalRulesListProps {
     withWrapper?: boolean;
     skeletonRowCount?: number;
 }
-//# sourceMappingURL=purchaseOrderApprovalRulesList.types.d.ts.map
+//# sourceMappingURL=approvalRulesList.types.d.ts.map

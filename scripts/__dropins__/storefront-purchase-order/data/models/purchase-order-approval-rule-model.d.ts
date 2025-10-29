@@ -35,6 +35,11 @@ export interface PurchaseOrderApprovalRuleModel {
     condition: {
         attribute: string;
         operator: string;
+        quantity: number;
+        amount: {
+            currency: string;
+            value: number;
+        };
     };
     approverRoles: {
         id: string;

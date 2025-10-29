@@ -16,5 +16,7 @@
  *******************************************************************/
 export * from './usePurchaseOrders';
 export * from './useCustomerRolePermissions';
+export * from './useApprovalRuleForm';
+export * from './useApprovalRuleDetails';
 export * from './useApprovalRulesList';
 //# sourceMappingURL=index.d.ts.map

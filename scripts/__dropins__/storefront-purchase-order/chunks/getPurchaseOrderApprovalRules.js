@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as E,h as a,a as m}from"./fetch-graphql.js";const O=e=>{const _=t=>({id:(t==null?void 0:t.id)||"",name:(t==null?void 0:t.name)||"",usersCount:(t==null?void 0:t.users_count)||0,permissions:((t==null?void 0:t.permissions)||[]).map(r=>({id:(r==null?void 0:r.id)||"",sortOrder:(r==null?void 0:r.sort_order)||0,text:(r==null?void 0:r.text)||""}))}),d=t=>({attribute:t==null?void 0:t.attribute,operator:t==null?void 0:t.operator});return{uid:(e==null?void 0:e.uid)||"",name:(e==null?void 0:e.name)||"",description:(e==null?void 0:e.description)||"",status:e==null?void 0:e.status,createdAt:(e==null?void 0:e.created_at)||"",updatedAt:(e==null?void 0:e.updated_at)||"",createdBy:e==null?void 0:e.created_by,appliesToRoles:((e==null?void 0:e.applies_to_roles)||[]).map(_),approverRoles:((e==null?void 0:e.approver_roles)||[]).map(_),condition:d((e==null?void 0:e.condition)||{})}},u=`
+import{f as d,h as g}from"./fetch-graphql.js";import{h as P}from"./fetch-error.js";import{t as h}from"./transform-purchase-order-approval-rule.js";const R=`
   mutation DELETE_PURCHASE_ORDER_APPROVAL_RULE(
     $input: DeletePurchaseOrderApprovalRuleInput!
   ) {
@@ -11,7 +11,7 @@ import{f as E,h as a,a as m}from"./fetch-graphql.js";const O=e=>{const _=t=>({id
       }
     }
   }
-`,S=async e=>{const _=Array.isArray(e)?e:[e];if(!_||_.length===0)throw new Error("Approval Rule UID(s) are required");if(_.some(t=>!t||t.trim()===""))throw new Error("All Approval Rule UIDs must be valid");return E(u,{variables:{input:{approval_rule_uids:_}}}).then(t=>{var n,g,i;if((n=t.errors)!=null&&n.length&&a(t.errors),!((g=t.data)==null?void 0:g.deletePurchaseOrderApprovalRule))throw new Error("Failed to delete purchase order approval rule");const s=(i=t==null?void 0:t.data)==null?void 0:i.deletePurchaseOrderApprovalRule;return{deletePurchaseOrderApprovalRule:{errors:((s==null?void 0:s.errors)??[]).map(c=>({message:c==null?void 0:c.message,type:c==null?void 0:c.type}))}}}).catch(m)},f=`
+`,O=async o=>{const t=Array.isArray(o)?o:[o];if(!t||t.length===0)throw new Error("Approval Rule UID(s) are required");if(t.some(e=>!e||e.trim()===""))throw new Error("All Approval Rule UIDs must be valid");return d(R,{variables:{input:{approval_rule_uids:t}}}).then(e=>{var i,l,n;if((i=e.errors)!=null&&i.length&&P(e.errors),!((l=e.data)==null?void 0:l.deletePurchaseOrderApprovalRule))throw new Error("Failed to delete purchase order approval rule");const p=(n=e==null?void 0:e.data)==null?void 0:n.deletePurchaseOrderApprovalRule;return{deletePurchaseOrderApprovalRule:{errors:((p==null?void 0:p.errors)??[]).map(r=>({message:r==null?void 0:r.message,type:r==null?void 0:r.type}))}}}).catch(g)},A=`
   query GET_PURCHASE_ORDER_APPROVAL_RULES($currentPage: Int!, $pageSize: Int!) {
     customer {
       email
@@ -71,5 +71,5 @@ import{f as E,h as a,a as m}from"./fetch-graphql.js";const O=e=>{const _=t=>({id
       }
     }
   }
-`,P={currentPage:1,pageSize:20,totalPages:1},L=async(e=P.currentPage,_=P.pageSize)=>E(f,{variables:{currentPage:e,pageSize:_}}).then(d=>{var n,g,i,c,A,h;(n=d.errors)!=null&&n.length&&a(d.errors);const t=(i=(g=d==null?void 0:d.data)==null?void 0:g.customer)==null?void 0:i.purchase_order_approval_rules,r=(t==null?void 0:t.total_count)??0,s={currentPage:((c=t==null?void 0:t.page_info)==null?void 0:c.current_page)??P.currentPage,pageSize:((A=t==null?void 0:t.page_info)==null?void 0:A.page_size)??P.pageSize,totalPages:((h=t==null?void 0:t.page_info)==null?void 0:h.total_pages)??P.totalPages};return{totalCount:r,pageInfo:s,items:((t==null?void 0:t.items)||[]).map(O)}}).catch(m);export{S as d,L as g,O as t};
+`,s={currentPage:1,pageSize:20,totalPages:1},f=async(o=s.currentPage,t=s.pageSize)=>d(A,{variables:{currentPage:o,pageSize:t}}).then(a=>{var i,l,n,r,c,_;(i=a.errors)!=null&&i.length&&P(a.errors);const e=(n=(l=a==null?void 0:a.data)==null?void 0:l.customer)==null?void 0:n.purchase_order_approval_rules,u=(e==null?void 0:e.total_count)??0,p={currentPage:((r=e==null?void 0:e.page_info)==null?void 0:r.current_page)??s.currentPage,pageSize:((c=e==null?void 0:e.page_info)==null?void 0:c.page_size)??s.pageSize,totalPages:((_=e==null?void 0:e.page_info)==null?void 0:_.total_pages)??s.totalPages};return{totalCount:u,pageInfo:p,items:((e==null?void 0:e.items)||[]).map(h)}}).catch(g);export{O as d,f as g};
 //# sourceMappingURL=getPurchaseOrderApprovalRules.js.map

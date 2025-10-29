@@ -1,5 +1,5 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
-import { PurchaseOrderApprovalRulesList } from '@dropins/storefront-purchase-order/containers/PurchaseOrderApprovalRulesList.js';
+import { ApprovalRulesList } from '@dropins/storefront-purchase-order/containers/ApprovalRulesList.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   checkIsAuthenticated,
@@ -36,7 +36,7 @@ const renderPurchaseOrderApprovalRulesList = async (
     redirectToAccountDashboard();
   }
 
-  await purchaseOrderRenderer.render(PurchaseOrderApprovalRulesList, {
+  await purchaseOrderRenderer.render(ApprovalRulesList, {
     routeCreateApprovalRule: () => rootLink(CUSTOMER_PO_RULE_FORM_PATH),
     routeEditApprovalRule: (ruleRef) => rootLink(`${CUSTOMER_PO_RULE_FORM_PATH}?ruleRef=${ruleRef}`),
     routeApprovalRuleDetails: (ruleRef) => rootLink(`${CUSTOMER_PO_RULE_DETAILS_PATH}?ruleRef=${ruleRef}`),
