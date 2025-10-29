@@ -96,6 +96,7 @@ export default async function decorate(block) {
 // Force a refresh of the permissions
 events.on('companyContext/changed', () => {
   import('@dropins/storefront-auth/api.js').then((module) => {
+    module._resetCache();
     module.getCustomerRolePermissions();
   });
 });
