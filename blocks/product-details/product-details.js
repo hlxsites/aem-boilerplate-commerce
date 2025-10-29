@@ -10,7 +10,6 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-import { initializers } from '@dropins/tools/initializer.js';
 
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
@@ -28,22 +27,6 @@ import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGi
 
 // Order Dropin Components
 import * as orderApi from '@dropins/storefront-order/api.js';
-import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
-import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
-import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
-import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
-import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
-import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
-import { render as OrderProvider } from '@dropins/storefront-order/render.js';
-
-// Auth Dropin
-import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
-import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
-
-// Cart Dropin
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
@@ -51,7 +34,6 @@ import { render as PaymentServices } from '@dropins/storefront-payment-services/
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Block-level
-import createModal from '../modal/modal.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Libs
