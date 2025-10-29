@@ -9,7 +9,6 @@
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
 import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
-import OutOfStock from '@dropins/storefront-checkout/containers/OutOfStock.js';
 import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
 import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
 import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
@@ -19,9 +18,6 @@ import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.
 
 // Auth Dropin
 import * as authApi from '@dropins/storefront-auth/api.js';
-import AuthCombine from '@dropins/storefront-auth/containers/AuthCombine.js';
-import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
-import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Account Dropin
 import Addresses from '@dropins/storefront-account/containers/Addresses.js';
@@ -29,12 +25,7 @@ import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
 // Cart Dropin
-import * as cartApi from '@dropins/storefront-cart/api.js';
-import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
-import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
-import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
@@ -71,12 +62,6 @@ import {
 
 import { swatchImageSlot } from './utils.js';
 
-// External dependencies
-import {
-  authPrivacyPolicyConsentSlot,
-  rootLink,
-} from '../../scripts/commerce.js';
-
 // Constants
 import {
   ADDRESS_INPUT_DEBOUNCE_TIME,
@@ -89,6 +74,9 @@ import {
   USER_TOKEN_COOKIE_NAME,
 } from './constants.js';
 
+// External dependencies
+import { rootLink } from '../../scripts/commerce.js';
+
 /**
  * Container IDs for registry management
  * @enum {string}
@@ -97,15 +85,12 @@ export const CONTAINERS = Object.freeze({
   // Static containers (rendered in Promise.all)
   CHECKOUT_HEADER: 'checkoutHeader',
   SERVER_ERROR: 'serverError',
-  OUT_OF_STOCK: 'outOfStock',
   LOGIN_FORM: 'loginForm',
   SHIPPING_ADDRESS_FORM_SKELETON: 'shippingAddressFormSkeleton',
   BILL_TO_SHIPPING_ADDRESS: 'billToShippingAddress',
   SHIPPING_METHODS: 'shippingMethods',
   PAYMENT_METHODS: 'paymentMethods',
   BILLING_ADDRESS_FORM_SKELETON: 'billingAddressFormSkeleton',
-  ORDER_SUMMARY: 'orderSummary',
-  CART_SUMMARY_LIST: 'cartSummaryList',
   TERMS_AND_CONDITIONS: 'termsAndConditions',
   PLACE_ORDER_BUTTON: 'placeOrderButton',
   GIFT_OPTIONS: 'giftOptions',
@@ -123,11 +108,6 @@ export const CONTAINERS = Object.freeze({
   ORDER_GIFT_OPTIONS: 'orderGiftOptions',
   ORDER_PRODUCT_LIST: 'orderProductList',
   ORDER_CONFIRMATION_FOOTER_BUTTON: 'orderConfirmationFooterButton',
-
-  // Slot/Sub-containers (nested within other containers)
-  CART_COUPONS: 'cartCoupons',
-  GIFT_CARDS: 'giftCards',
-  CART_GIFT_OPTIONS: 'cartGiftOptions',
 });
 
 /**
@@ -221,21 +201,6 @@ export const renderServerError = async (container, contentElement) => renderCont
     },
     onServerError: () => {
       contentElement.classList.add(CHECKOUT_ERROR_CLASS);
-    },
-  })(container),
-);
-
-/**
- * Renders out of stock handling with cart navigation and product update options
- * @param {HTMLElement} container - DOM element to render the component in
- * @returns {Promise<Object>} - The rendered out-of-stock component
- */
-export const renderOutOfStock = async (container) => renderContainer(
-  CONTAINERS.OUT_OF_STOCK,
-  async () => CheckoutProvider.render(OutOfStock, {
-    routeCart: () => rootLink('/cart'),
-    onCartProductsUpdate: (items) => {
-      cartApi.updateProductsFromCart(items).catch(console.error);
     },
   })(container),
 );
@@ -364,6 +329,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
           [PaymentMethodCode.VAULT]: {
             enabled: false,
           },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
         },
       },
     })(container);
@@ -386,130 +354,6 @@ export const renderTermsAndConditions = async (container) => renderContainer(
           translationId: 'Checkout.TermsAndConditions.label',
         }));
       },
-    },
-  })(container),
-);
-
-/**
- * Renders cart coupons for order summary slot
- * @param {HTMLElement} ctx - The slot context element
- * @returns {void}
- */
-export const renderCartCoupons = (ctx) => {
-  const coupons = document.createElement('div');
-  CartProvider.render(Coupons)(coupons);
-  ctx.appendChild(coupons);
-};
-
-/**
- * Renders gift cards for order summary slot
- * @param {HTMLElement} ctx - The slot context element
- * @returns {void}
- */
-export const renderGiftCards = (ctx) => {
-  const giftCards = document.createElement('div');
-  CartProvider.render(GiftCards)(giftCards);
-  ctx.appendChild(giftCards);
-};
-
-/**
- * Renders gift options for cart summary list footer slot
- * @param {HTMLElement} ctx - The slot context element
- * @returns {void}
- */
-export const renderCartGiftOptions = (ctx) => {
-  const giftOptions = document.createElement('div');
-
-  CartProvider.render(GiftOptions, {
-    item: ctx.item,
-    view: 'product',
-    dataSource: 'cart',
-    isEditable: false,
-    handleItemsLoading: ctx.handleItemsLoading,
-    handleItemsError: ctx.handleItemsError,
-    onItemUpdate: ctx.onItemUpdate,
-    slots: {
-      SwatchImage: swatchImageSlot,
-    },
-  })(giftOptions);
-
-  ctx.appendChild(giftOptions);
-};
-
-// ============================================================================
-// SUMMARY CONTAINERS
-// ============================================================================
-
-/**
- * Renders order summary with coupons and gift cards slots
- * @param {HTMLElement} container - DOM element to render order summary in
- * @returns {Promise<Object>} - The rendered order summary component
- */
-export const renderOrderSummary = async (container) => renderContainer(
-  CONTAINERS.ORDER_SUMMARY,
-  async () => CartProvider.render(OrderSummary, {
-    slots: {
-      Coupons: renderCartCoupons,
-      GiftCards: renderGiftCards,
-    },
-  })(container),
-);
-
-/**
- * Renders cart summary list with custom heading, thumbnail and gift options slots
- * @param {HTMLElement} container - DOM element to render cart summary list in
- * @returns {Promise<Object>} - The rendered cart summary list component
- */
-export const renderCartSummaryList = async (container) => renderContainer(
-  CONTAINERS.CART_SUMMARY_LIST,
-  async () => CartProvider.render(CartSummaryList, {
-    variant: 'secondary',
-    slots: {
-      Heading: (headingCtx) => {
-        const title = 'Your Cart ({count})';
-
-        const cartSummaryListHeading = document.createElement('div');
-        cartSummaryListHeading.classList.add('cart-summary-list__heading');
-
-        const cartSummaryListHeadingText = document.createElement('div');
-        cartSummaryListHeadingText.classList.add(
-          'cart-summary-list__heading-text',
-        );
-
-        cartSummaryListHeadingText.innerText = title.replace(
-          '({count})',
-          headingCtx.count ? `(${headingCtx.count})` : '',
-        );
-        const editCartLink = document.createElement('a');
-        editCartLink.classList.add('cart-summary-list__edit');
-        editCartLink.href = rootLink('/cart');
-        editCartLink.rel = 'noreferrer';
-        editCartLink.innerText = 'Edit';
-
-        cartSummaryListHeading.appendChild(cartSummaryListHeadingText);
-        cartSummaryListHeading.appendChild(editCartLink);
-        headingCtx.appendChild(cartSummaryListHeading);
-
-        headingCtx.onChange((nextHeadingCtx) => {
-          cartSummaryListHeadingText.innerText = title.replace(
-            '({count})',
-            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
-          );
-        });
-      },
-      Thumbnail: (ctx) => {
-        const { item, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: item.sku,
-          imageProps: defaultImageProps,
-
-          params: {
-            width: defaultImageProps.width,
-            height: defaultImageProps.height,
-          },
-        });
-      },
-      Footer: renderCartGiftOptions,
     },
   })(container),
 );
@@ -543,8 +387,8 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
   async () => {
     const cartBillingAddress = getCartAddress(data, 'billing');
 
-    const billingAddressId = cartBillingAddress
-      ? cartBillingAddress?.uid ?? 0
+    const customerBillingAddressUid = cartBillingAddress
+      ? cartBillingAddress?.customerAddressUid ?? 0
       : undefined;
 
     const billingAddressCache = sessionStorage.getItem(BILLING_ADDRESS_DATA_KEY);
@@ -556,7 +400,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
 
     const storeConfig = checkoutApi.getStoreConfigCache();
 
-    const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.uid === undefined
+    const inputsDefaultValueSet = cartBillingAddress && cartBillingAddress.customerAddressUid === undefined
       ? transformCartAddressToFormValues(cartBillingAddress)
       : { countryCode: storeConfig.defaultCountry };
 
@@ -576,7 +420,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
 
     return AccountProvider.render(Addresses, {
       addressFormTitle: 'Bill to new address',
-      defaultSelectAddressId: billingAddressId,
+      defaultSelectAddressId: customerBillingAddressUid,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,
       inputsDefaultValueSet,
