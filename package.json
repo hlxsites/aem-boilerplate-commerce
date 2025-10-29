@@ -8,7 +8,7 @@
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
-    "start": "aem up",
+    "start": "aem up --url https://b2b--boilerplate-b2b-accs--adobe-commerce.aem.live/",
     "install:dropins": "node build.mjs && node postinstall.js",
     "postinstall": "npm run install:dropins",
     "postupdate": "npm run install:dropins",
@@ -54,7 +54,7 @@
     "@dropins/storefront-recommendations": "~1.1.1",
     "@dropins/storefront-requisition-list": "0.5.0-beta",
     "@dropins/storefront-wishlist": "~2.0.1",
-    "@dropins/tools": "1.6.0-beta1",
-    "@dropins/storefront-purchase-order": "0.0.2-alpha2"
+    "@dropins/storefront-purchase-order": "0.0.5-alpha1",
+    "@dropins/tools": "1.6.0-beta1"
   }
 }

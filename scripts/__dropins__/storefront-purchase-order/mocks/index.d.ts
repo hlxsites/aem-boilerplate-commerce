@@ -2829,4 +2829,195 @@ export declare const mockGetPurchaseOrdersFullDataSnakeCase: {
         };
     };
 };
+export declare const mockCurrencyInfoSuccessResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: string[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoEmptyCodesResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: never[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoNullBaseResponse: {
+    data: {
+        currency: {
+            base_currency_code: null;
+            available_currency_codes: string[];
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoMissingDataResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: undefined;
+        };
+    };
+    errors: undefined;
+};
+export declare const mockCurrencyInfoErrorResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: never[];
+        };
+    };
+    errors: {
+        message: string;
+        extensions: {
+            category: string;
+        };
+    }[];
+};
+export declare const mockGetPurchaseOrderApprovalRulesSuccessSnakeCase: {
+    data: {
+        customer: {
+            email: string;
+            purchase_order_approval_rules: {
+                total_count: number;
+                page_info: {
+                    page_size: number;
+                    current_page: number;
+                    total_pages: number;
+                };
+                items: {
+                    uid: string;
+                    name: string;
+                    description: string;
+                    status: string;
+                    created_at: string;
+                    updated_at: string;
+                    created_by: string;
+                    applies_to_roles: {
+                        id: string;
+                        name: string;
+                        users_count: number;
+                        permissions: {
+                            id: string;
+                            sort_order: number;
+                            text: string;
+                            children: never[];
+                        }[];
+                    }[];
+                    approver_roles: {
+                        id: string;
+                        name: string;
+                        users_count: number;
+                        permissions: {
+                            id: string;
+                            sort_order: number;
+                            text: string;
+                            children: never[];
+                        }[];
+                    }[];
+                    condition: {
+                        attribute: string;
+                        operator: string;
+                    };
+                }[];
+            };
+        };
+    };
+};
+export declare const mockGetPurchaseOrderApprovalRulesErrorSnakeCase: {
+    errors: {
+        message: string;
+        extensions: {
+            category: string;
+        };
+    }[];
+};
+export declare const mockCurrencyInfoNoDataResponse: {
+    data: null;
+    errors: undefined;
+};
+export declare const mockCurrencyInfoNoCurrencyResponse: {
+    data: {};
+    errors: undefined;
+};
+export declare const mockCurrencyInfoPartialResponse: {
+    data: {
+        currency: {
+            base_currency_code: string;
+            available_currency_codes: undefined;
+        };
+    };
+    errors: undefined;
+};
+export declare const mockGetPurchaseOrderApprovalRulesEmptyDataSnakeCase: {
+    data: {
+        customer: {
+            email: string;
+            purchase_order_approval_rules: {
+                total_count: number;
+                page_info: {
+                    page_size: number;
+                    current_page: number;
+                    total_pages: number;
+                };
+                items: never[];
+            };
+        };
+    };
+};
+export declare const mockGetPurchaseOrderApprovalRulesIncompleteDataSnakeCase: {
+    data: {
+        customer: {
+            email: string;
+            purchase_order_approval_rules: {
+                total_count: number;
+                page_info: {
+                    page_size: number;
+                    current_page: number;
+                    total_pages: number;
+                };
+                items: {
+                    uid: string;
+                    name: string;
+                    description: null;
+                    status: string;
+                    created_at: string;
+                    updated_at: string;
+                    created_by: null;
+                    applies_to_roles: never[];
+                    approver_roles: never[];
+                    condition: null;
+                }[];
+            };
+        };
+    };
+};
+export declare const mockGetPurchaseOrderApprovalRulesNullDataSnakeCase: {
+    data: {
+        customer: {
+            email: string;
+            purchase_order_approval_rules: null;
+        };
+    };
+};
+export declare const mockGetPurchaseOrderApprovalRulesMissingRulesSnakeCase: {
+    data: {
+        customer: {
+            email: string;
+            purchase_order_approval_rules: {
+                total_count: number;
+                page_info: {
+                    page_size: number;
+                    current_page: number;
+                    total_pages: number;
+                };
+            };
+        };
+    };
+};
 //# sourceMappingURL=index.d.ts.map

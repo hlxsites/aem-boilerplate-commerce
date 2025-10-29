@@ -18,11 +18,14 @@ import {
   validateForm,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
+// Purchase Order Dropin
+import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   displayOverlaySpinner,
   removeModal,
@@ -34,6 +37,7 @@ import {
   createCheckoutFragment,
   createOrderConfirmationFooter,
   createOrderConfirmationFragment,
+  createPOConfirmationFragment,
   selectors,
 } from './fragments.js';
 
@@ -61,6 +65,8 @@ import {
   renderOutOfStock,
   renderPaymentMethods,
   renderPlaceOrder,
+  renderPOConfirmation,
+  renderPOConfirmationFooterButton,
   renderServerError,
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
@@ -90,6 +96,59 @@ import {
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+
+const getCheckoutPOConfig = () => {
+  const permissions = events.lastPayload('auth/permissions') ?? {};
+
+  const baseConfig = {
+    renderSlot: false,
+    usePOapi: false,
+    hideButton: false,
+  };
+
+  const isAdmin = Boolean(permissions.admin);
+  const isPOEnabled = Boolean(permissions['Magento_PurchaseOrder::all']);
+  const canPlaceSalesOrder = Boolean(permissions['Magento_Sales::place_order']);
+
+  // Admin is always a B2B company admin and should use PO API
+  if (isAdmin) {
+    return { ...baseConfig, renderSlot: true, usePOapi: true };
+  }
+
+  // Check if user belongs to a B2B company by looking for any B2B-related permission keys
+  // This is reliable even if all permissions are set to false
+  const permissionKeys = Object.keys(permissions);
+  const isCompanyUser = permissionKeys.some(
+    (key) => key.startsWith('Magento_Company::')
+      || key.startsWith('Magento_PurchaseOrder::')
+      || key.startsWith('Magento_PurchaseOrderRule::'),
+  );
+
+  // If not a company user, use standard B2C flow
+  if (!isCompanyUser) {
+    return baseConfig;
+  }
+
+  // From here, we know this is a B2B company user (not admin)
+
+  // If can place sales order, but PO is not enabled, hide the button.
+  if (canPlaceSalesOrder && !isPOEnabled) {
+    return { ...baseConfig, hideButton: true };
+  }
+
+  // If PO is not enabled at all, return base config.
+  if (!isPOEnabled) {
+    return baseConfig;
+  }
+
+  // If can place sales order with PO enabled, use PO api.
+  if (canPlaceSalesOrder) {
+    return { ...baseConfig, renderSlot: true, usePOapi: true };
+  }
+
+  // For all other cases (cannot place sales order, PO enabled), hide the button.
+  return { ...baseConfig, hideButton: true };
+};
 
 export default async function decorate(block) {
   // Container and component references
@@ -137,6 +196,8 @@ export default async function decorate(block) {
   const $placeOrder = getElement(selectors.checkout.placeOrder);
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
+
+  const { hideButton, renderSlot, usePOapi } = getCheckoutPOConfig();
 
   block.appendChild(checkoutFragment);
 
@@ -190,8 +251,15 @@ export default async function decorate(block) {
         // Submit Payment Services credit card form
         await creditCardFormRef.current.submit();
       }
-      // Place order
-      await orderApi.placeOrder(cartId);
+
+      if (usePOapi) {
+        await placePurchaseOrder(cartId).then((data) => {
+          events.emit('po/placed', data.purchaseOrder);
+        });
+      } else {
+        // Default Place order
+        await orderApi.placeOrder(cartId);
+      }
     } catch (error) {
       console.error(error);
       throw error;
@@ -201,7 +269,11 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
+  const placeOrder = await renderPlaceOrder($placeOrder, {
+    handleValidation,
+    handlePlaceOrder,
+    renderSlot,
+  });
 
   // Render the remaining containers
   const [
@@ -373,7 +445,35 @@ export default async function decorate(block) {
     const $continueButton = selectors.orderConfirmation.continueButton;
     const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
 
-    await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
+    if (hideButton) return;
+
+    await renderOrderConfirmationFooterButton(
+      $orderConfirmationFooterBtn,
+      getCheckoutPOConfig,
+    );
+  }
+
+  // Define the Layout for the Purchase Order Confirmation
+  async function displayPOConfirmation(poData) {
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+
+    // Create purchase order confirmation layout using fragments
+    const poConfirmationFragment = createPOConfirmationFragment();
+
+    // Create scoped selector for PO confirmation fragment (following multi-step pattern)
+    const getPOElement = createScopedSelector(poConfirmationFragment);
+
+    // Get all PO confirmation elements using centralized selectors
+    const $poConfirmationContent = getPOElement(selectors.poConfirmation.content);
+    const $poConfirmationFooter = getPOElement(selectors.poConfirmation.footer);
+
+    block.replaceChildren(poConfirmationFragment);
+
+    await Promise.all([
+      await renderPOConfirmation($poConfirmationContent, poData.number),
+      await renderPOConfirmationFooterButton($poConfirmationFooter),
+    ]);
   }
 
   async function handleCheckoutInitialized(data) {
@@ -424,9 +524,22 @@ export default async function decorate(block) {
     await displayOrderConfirmation(orderData);
   }
 
+  async function handlePurchaseOrderPlaced(poData) {
+    // Clear address form data
+    sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+
+    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+
+    window.history.pushState({}, '', url);
+
+    await displayPOConfirmation(poData);
+  }
+
   events.on('authenticated', handleAuthenticated);
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
+  events.on('po/placed', handlePurchaseOrderPlaced);
 }
