@@ -129,7 +129,10 @@ describe("Verify Complex Product Requisition List Redirect", { tags: "@B2BSaas" 
         .type('Test description');
 
       // Submit the form - this should trigger the redirect
-      cy.contains('Save').should('be.visible').and('not.be.disabled').click();
+      cy.get('[data-testid="requisition-list-form-save"]')
+        .should('be.visible')
+        .scrollIntoView()
+        .click();
 
       // Wait a bit for potential redirect
       cy.wait(2000);
