@@ -16,15 +16,12 @@ export const selectors = Object.freeze({
     loader: '.checkout__loader',
     heading: '.checkout__heading',
     serverError: '.checkout__server-error',
-    outOfStock: '.checkout__out-of-stock',
     login: '.checkout__login',
     shippingForm: '.checkout__shipping-form',
     billToShipping: '.checkout__bill-to-shipping',
     delivery: '.checkout__delivery',
     paymentMethods: '.checkout__payment-methods',
     billingForm: '.checkout__billing-form',
-    orderSummary: '.checkout__order-summary',
-    cartSummary: '.checkout__cart-summary',
     placeOrder: '.checkout__place-order',
     giftOptions: '.checkout__gift-options',
     termsAndConditions: '.checkout__terms-and-conditions',
@@ -61,7 +58,6 @@ export function createCheckoutFragment() {
         <div class="checkout__main">
           <div class="checkout__heading ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__server-error ${CHECKOUT_BLOCK}"></div>
-          <div class="checkout__out-of-stock ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__login ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__shipping-form ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__bill-to-shipping ${CHECKOUT_BLOCK}"></div>
@@ -72,9 +68,7 @@ export function createCheckoutFragment() {
           <div class="checkout__place-order ${CHECKOUT_BLOCK}"></div>
         </div>
         <div class="checkout__aside">
-          <div class="checkout__order-summary ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__gift-options ${CHECKOUT_BLOCK}"></div>
-          <div class="checkout__cart-summary ${CHECKOUT_BLOCK}"></div>
         </div>
       </div>
     </div>
