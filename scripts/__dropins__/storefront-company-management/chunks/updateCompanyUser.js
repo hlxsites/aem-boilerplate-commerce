@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as s,h as l,a as m}from"./fetch-error.js";import{i as u}from"./company-permissions.js";const d=e=>{try{return btoa(e)}catch(r){throw new Error(`Failed to encode base64: ${r}`)}},y=e=>{try{return atob(e)}catch{return e}},c=e=>{if(!e||typeof e!="string")throw new Error("User ID must be a non-empty string");return d(e)},A=e=>!e||typeof e!="string"?e:y(e),p=`
+import{f as s,c as l,h as m}from"./fetch-error.js";import{i as u}from"./company-permissions.js";const d=e=>{try{return btoa(e)}catch(r){throw new Error(`Failed to encode base64: ${r}`)}},y=e=>{try{return atob(e)}catch{return e}},c=e=>{if(!e||typeof e!="string")throw new Error("User ID must be a non-empty string");return d(e)},A=e=>!e||typeof e!="string"?e:y(e),p=`
   mutation createCompanyUser($input: CompanyUserCreateInput!) {
     createCompanyUser(input: $input) { __typename user { id structure_id email firstname lastname } }
   }
@@ -33,5 +33,5 @@ import{f as s,h as l,a as m}from"./fetch-error.js";import{i as u}from"./company-
   mutation updateCompanyUser($input: CompanyUserUpdateInput!) {
     updateCompanyUser(input: $input) { __typename user { id } }
   }
-`;async function v(e){const r={id:c(e.id),email:e.email,firstname:e.firstName,lastname:e.lastName,job_title:e.jobTitle,telephone:e.telephone,role_id:e.roleId,status:e.status};return await s(U,{variables:{input:r}}).then(t=>{var a,n,i,o;return(a=t.errors)!=null&&a.length?l(t.errors):!!((o=(i=(n=t==null?void 0:t.data)==null?void 0:n.updateCompanyUser)==null?void 0:i.user)!=null&&o.id)}).catch(m)}export{g as a,I as c,A as d,c as e,w as g,N as i,v as u};
+`;async function v(e){const r={id:c(e.id),email:e.email,firstname:e.firstName,lastname:e.lastName,job_title:e.jobTitle,telephone:e.telephone,role_id:e.roleId,status:e.status};return await s(U,{variables:{input:r}}).then(t=>{var a,n,i,o;return(a=t.errors)!=null&&a.length?l(t.errors):!!((o=(i=(n=t==null?void 0:t.data)==null?void 0:n.updateCompanyUser)==null?void 0:i.user)!=null&&o.id)}).catch(m)}export{A as a,I as c,g as d,c as e,w as g,N as i,v as u};
 //# sourceMappingURL=updateCompanyUser.js.map

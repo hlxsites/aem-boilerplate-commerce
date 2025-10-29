@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as a,a as n,h as i}from"./fetch-error.js";const s=`
+import{f as a,h as n,c as i}from"./fetch-error.js";const s=`
   fragment CompanyRoleFragment on CompanyRole {
     id
     name

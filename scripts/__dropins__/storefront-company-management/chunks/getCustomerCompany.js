@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as l,h as i,a as m}from"./fetch-error.js";const d=`
+import{f as l,c as i,h as m}from"./fetch-error.js";const d=`
   query GET_COMPANY_ENABLED {
     storeConfig {
       company_enabled

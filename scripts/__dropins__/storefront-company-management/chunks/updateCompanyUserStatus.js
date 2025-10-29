@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{d as l,e as g}from"./updateCompanyUser.js";import{f as i,a as d,h as m}from"./fetch-error.js";const f=`
+import{a as l,e as g}from"./updateCompanyUser.js";import{f as i,h as d,c as m}from"./fetch-error.js";const f=`
   query COMPANY_USERS($pageSize: Int!, $currentPage: Int!, $filter: CompanyUsersFilterInput) {
     company {
       users(pageSize: $pageSize, currentPage: $currentPage, filter: $filter) {
