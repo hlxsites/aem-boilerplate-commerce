@@ -81,8 +81,8 @@ describe("Verify Complex Product Requisition List Redirect", { tags: "@B2BSaas" 
 
       // Verify the alert contains the expected message
       cy.get('.product-details__alert')
-        .should('contain.text', 'select product options')
-        .or('contain.text', 'Please select product options before adding it to a requisition list');
+        .invoke('text')
+        .should('match', /select product options/i);
 
       // Verify the product options are visible (confirming it's a complex product)
       cy.get('.product-details__options').should('exist');
@@ -131,8 +131,8 @@ describe("Verify Complex Product Requisition List Redirect", { tags: "@B2BSaas" 
 
       // Verify the alert contains the expected message
       cy.get('.product-details__alert')
-        .should('contain.text', 'select product options')
-        .or('contain.text', 'Please select product options before adding it to a requisition list');
+        .invoke('text')
+        .should('match', /select product options/i);
     });
   });
 
