@@ -70,25 +70,6 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
 
-// For order confirmation block
-// Link to support page
-const SUPPORT_PATH = '/support';
-
-// Slots
-const authPrivacyPolicyConsentSlot = {};
-
-const swatchImageSlot = (ctx) => {
-  const { data, defaultImageProps } = ctx;
-  tryRenderAemAssetsImage(ctx, {
-    alias: data.sku,
-    imageProps: defaultImageProps,
-    params: {
-      width: defaultImageProps.width,
-      height: defaultImageProps.height,
-    },
-  });
-};
-
 /**
  * Checks if the page has prerendered product JSON-LD data
  * @returns {boolean} True if product JSON-LD exists and contains @type=Product
