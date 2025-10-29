@@ -20,10 +20,7 @@ import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
-import {
-  displayOverlaySpinner,
-  removeOverlaySpinner,
-} from './utils.js';
+import { displayOverlaySpinner, removeOverlaySpinner } from './utils.js';
 
 // Fragment functions
 import {
@@ -144,7 +141,10 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
+  const placeOrder = await renderPlaceOrder($placeOrder, {
+    handleValidation,
+    handlePlaceOrder,
+  });
 
   // Render the remaining containers
   const [
@@ -185,7 +185,11 @@ export default async function decorate(block) {
 
     if (data?.uid && data.shippingAddresses?.[0]) {
       const quoteAddress = data.shippingAddresses[0];
-      const quoteAddressSummary = createAddressSummary(quoteAddress, null, 'Shipping address');
+      const quoteAddressSummary = createAddressSummary(
+        quoteAddress,
+        null,
+        'Shipping address',
+      );
       $shippingForm.innerHTML = '';
       $shippingForm.appendChild(quoteAddressSummary);
     }
@@ -215,7 +219,6 @@ export default async function decorate(block) {
     }
   }
 
-
   async function handleCheckoutInitialized(data) {
     await initializeCheckout(data);
   }
@@ -241,7 +244,9 @@ export default async function decorate(block) {
 
     const url = token
       ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+      : rootLink(
+        `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`,
+      );
 
     window.history.pushState({}, '', url);
 
