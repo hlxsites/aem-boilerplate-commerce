@@ -51,12 +51,12 @@ export default async function decorate(block) {
 
   // All checks passed, render company credit container
   const shouldShowHistory = showHistory === 'true';
-  
+
   await companyRenderer.render(CompanyCredit, {
     showCreditHistory: shouldShowHistory,
     creditHistoryParams: shouldShowHistory ? {
       pageSize: 20,
-      currentPage: 1
-    } : undefined
+      currentPage: 1,
+    } : undefined,
   })(block);
 }
