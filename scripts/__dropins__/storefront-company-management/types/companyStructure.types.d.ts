@@ -13,6 +13,9 @@ export interface CompanyStructureProps {
             Default?: any;
         }>;
     };
+    isAuthenticated?: boolean;
+    onRedirectLogin?: () => void;
+    onRedirectAccount?: () => void;
 }
 export interface CompanyStructureCardProps {
     permissions: CompanyPermissionFlags | null;

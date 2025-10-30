@@ -24,4 +24,5 @@ export * from './useCountries';
 export * from './useInLineAlert';
 export * from './useModal';
 export * from './usePermissions';
+export * from './useUserPermissions';
 //# sourceMappingURL=index.d.ts.map

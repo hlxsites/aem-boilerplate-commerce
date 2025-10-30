@@ -8,7 +8,8 @@ interface CompanyStructureItemResponse {
     parent_id: string | null;
     entity: {
         __typename: 'CompanyTeam' | 'Customer';
-        id: string;
+        companyTeamId?: string;
+        customerId?: string;
         structure_id: string;
         firstname?: string;
         lastname?: string;

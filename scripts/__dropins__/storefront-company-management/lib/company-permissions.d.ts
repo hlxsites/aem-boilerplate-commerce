@@ -6,6 +6,11 @@ import { CompanyPermissionFlags } from '../types/companyPermission.types';
  */
 export declare const flattenIds: (nodes?: any[]) => Set<string>;
 /**
+ * Flattens a nested permissions tree into an Array of permission IDs
+ * Convenience function that returns an array instead of a Set
+ */
+export declare const flattenIdsToArray: (nodes?: any[]) => string[];
+/**
  * Determines if a role is a Company Administrator
  */
 export declare const isCompanyAdministrator: (role: any) => boolean;

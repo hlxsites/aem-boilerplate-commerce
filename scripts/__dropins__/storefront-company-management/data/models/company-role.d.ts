@@ -14,22 +14,35 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface CompanyRole {
+export interface CompanyAclResourceModel {
+    id: string;
+    text: string;
+    sortOrder: number;
+    children?: CompanyAclResourceModel[];
+}
+export interface CompanyRoleModel {
     id: string;
     name: string;
-    permissions?: {
-        id: string;
-        text: string;
-        children?: {
-            id: string;
-            text: string;
-            children?: {
-                id: string;
-                text: string;
-            }[];
-        }[];
-    }[];
+    usersCount: number;
+    permissions: CompanyAclResourceModel[];
 }
-export interface CompanyRoleModel extends CompanyRole {
+export interface PageInfoModel {
+    currentPage: number;
+    pageSize: number;
+    totalPages: number;
+}
+export interface CompanyRolesResponseModel {
+    items: CompanyRoleModel[];
+    totalCount: number;
+    pageInfo: PageInfoModel;
+}
+export interface CompanyRoleCreateInputModel {
+    name: string;
+    permissions: string[];
+}
+export interface CompanyRoleUpdateInputModel {
+    id: string;
+    name?: string;
+    permissions?: string[];
 }
 //# sourceMappingURL=company-role.d.ts.map

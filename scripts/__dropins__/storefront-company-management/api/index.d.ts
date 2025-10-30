@@ -25,7 +25,6 @@ export * from './createCompanyUser';
 export * from './deleteCompanyTeam';
 export * from './deleteCompanyUser';
 export * from './getCompany';
-export * from './getCompanyRoles';
 export * from './getCompanyStructure';
 export * from './getCompanyTeam';
 export * from './getCompanyUser';
@@ -42,4 +41,5 @@ export * from './updateCompanyTeam';
 export * from './updateCompanyUser';
 export * from './updateCompanyUserStatus';
 export * from './validateCompanyEmail';
+export * from './companyRoles';
 //# sourceMappingURL=index.d.ts.map

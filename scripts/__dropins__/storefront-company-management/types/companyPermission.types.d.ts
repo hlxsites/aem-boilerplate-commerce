@@ -27,5 +27,7 @@ export interface CompanyPermissionFlags {
     canViewShippingInformation: boolean;
     canViewUsers: boolean;
     canEditUsers: boolean;
+    canViewRoles: boolean;
+    canManageRoles: boolean;
 }
 //# sourceMappingURL=companyPermission.types.d.ts.map

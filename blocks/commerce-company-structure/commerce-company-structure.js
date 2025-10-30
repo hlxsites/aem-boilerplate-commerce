@@ -15,40 +15,28 @@
  * from Adobe.
  ****************************************************************** */
 
+import { render as provider } from '@dropins/storefront-company-management/render.js';
 import { CompanyStructure } from '@dropins/storefront-company-management/containers/CompanyStructure.js';
-import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
-import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import {
-  CUSTOMER_LOGIN_PATH,
-  CUSTOMER_ACCOUNT_PATH,
   checkIsAuthenticated,
   rootLink,
+  CUSTOMER_LOGIN_PATH,
+  CUSTOMER_ACCOUNT_PATH,
 } from '../../scripts/commerce.js';
-
-// Initialize
 import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
-  if (!checkIsAuthenticated()) {
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-    return;
-  }
+  block.classList.add('commerce-company-structure-container');
 
-  // Check if company functionality is enabled
-  const isCompanyEnabled = await companyEnabled();
-  if (!isCompanyEnabled) {
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return;
-  }
+  const isAuthenticated = checkIsAuthenticated();
 
-  // Check if customer has a company
-  try {
-    await getCompany();
-  } catch (error) {
-    // Customer doesn't have a company or error occurred
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return;
-  }
-
-  await companyRenderer.render(CompanyStructure, {})(block);
+  await provider.render(CompanyStructure, {
+    isAuthenticated,
+    onRedirectLogin: () => {
+      window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    },
+    onRedirectAccount: () => {
+      window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+    },
+  })(block);
 }
