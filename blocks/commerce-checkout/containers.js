@@ -54,6 +54,10 @@ import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
 import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 
+// Purchase Order Dropin
+import PurchaseOrderConfirmation from '@dropins/storefront-purchase-order/containers/PurchaseOrderConfirmation.js';
+import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
+
 // Tools
 import {
   Button,
@@ -133,6 +137,10 @@ export const CONTAINERS = Object.freeze({
   ORDER_GIFT_OPTIONS: 'orderGiftOptions',
   ORDER_PRODUCT_LIST: 'orderProductList',
   ORDER_CONFIRMATION_FOOTER_BUTTON: 'orderConfirmationFooterButton',
+
+  // Purchase Order confirmation containers
+  PO_CONFIRMATION: 'purchaseOrderConfirmation',
+  PO_FOOTER_BUTTON: 'purchaseOrderFooterButton',
 
   // Slot/Sub-containers (nested within other containers)
   ESTIMATE_SHIPPING: 'estimateShipping',
@@ -593,6 +601,13 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
   async () => CheckoutProvider.render(PlaceOrder, {
     handleValidation: options.handleValidation,
     handlePlaceOrder: options.handlePlaceOrder,
+    slots: options.renderSlot ? {
+      Content: (placeOrderCtx) => {
+        const spanElement = document.createElement('span');
+        spanElement.innerText = 'Place Purchase Order';
+        placeOrderCtx.replaceWith(spanElement);
+      },
+    } : {},
   })(container),
 );
 
@@ -984,6 +999,38 @@ export const renderOrderConfirmationFooterButton = async (container) => renderCo
     children: 'Continue shopping',
     'data-testid': 'order-confirmation-footer__continue-button',
     className: 'order-confirmation-footer__continue-button',
+    size: 'medium',
+    variant: 'primary',
+    type: 'submit',
+    href: rootLink('/'),
+  })(container),
+);
+
+/**
+ * Renders purchase order confirmation component
+ * @param {HTMLElement} container - DOM element to render purchase order confirmation in
+ * @param {number} poNumber - Purchase order number to generate PO details route
+ * @returns {Promise<Object>} - The rendered purchase order confirmation component
+ */
+export const renderPOConfirmation = async (container, poNumber) => renderContainer(
+  CONTAINERS.PO_CONFIRMATION,
+  async () => POProvider.render(PurchaseOrderConfirmation, {
+    purchaseOrderNumber: poNumber,
+    routePurchaseOrderDetails: () => rootLink(`/customer/purchase-order-details?poRef=${poNumber}`),
+  })(container),
+);
+
+/**
+ * Renders the continue shopping button for purchase order confirmation footer
+ * @param {HTMLElement} container - DOM element to render the button in
+ * @returns {Promise<Object>} - The rendered continue shopping button component
+ */
+export const renderPOConfirmationFooterButton = async (container) => renderContainer(
+  CONTAINERS.PO_FOOTER_BUTTON,
+  async () => UI.render(Button, {
+    children: 'Continue shopping',
+    'data-testid': 'po-confirmation-footer__continue-button',
+    className: 'po-confirmation-footer__continue-button',
     size: 'medium',
     variant: 'primary',
     type: 'submit',
