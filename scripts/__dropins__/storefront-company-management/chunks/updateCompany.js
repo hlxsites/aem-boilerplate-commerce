@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as _}from"./fetchUserPermissions.js";import{f as m,h as A,a as c}from"./fetch-error.js";import{t as C}from"./validateCompanyEmail.js";const f=`
+import{f as _}from"./fetchUserPermissions.js";import{f as m,c as A,h as c}from"./fetch-error.js";import{a as C}from"./validateCompanyEmail.js";const f=`
   fragment COMPANY_LEGAL_ADDRESS_FRAGMENT on CompanyLegalAddress {
     street
     city

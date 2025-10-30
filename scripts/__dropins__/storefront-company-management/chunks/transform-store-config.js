@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{a}from"./validateCompanyEmail.js";import{f as d,h as l,a as g}from"./fetch-error.js";const u=`
+import{t as a}from"./validateCompanyEmail.js";import{f as d,c as l,h as g}from"./fetch-error.js";const u=`
   mutation CreateCompany($input: CompanyCreateInput!) {
     createCompany(input: $input) {
       company {
