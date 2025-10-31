@@ -1,3 +1,19 @@
+<!-- ******************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ ****************************************************************** -->
 # Commerce Company Structure Block
 
 ## Overview
@@ -9,24 +25,6 @@ The Commerce Company Structure block displays company organizational structure a
 ### Block Configuration
 
 No block configuration is read via `readBlockConfig()`. The block functionality is controlled entirely by the dropin container.
-
-<!-- ### URL Parameters
-
-No URL parameters affect this block's behavior. -->
-
-<!-- ### Local Storage
-
-No localStorage keys are used by this block. -->
-
-<!-- ### Events -->
-
-<!-- #### Event Listeners
-
-No direct event listeners are implemented in this block. -->
-
-<!-- #### Event Emitters
-
-No events are emitted by this block. -->
 
 ## Behavior Patterns
 
