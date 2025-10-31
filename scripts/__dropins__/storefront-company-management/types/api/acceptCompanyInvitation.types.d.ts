@@ -14,8 +14,19 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface GetCompanyRolesOptions {
-    pageSize?: number;
-    currentPage?: number;
+export interface AcceptCompanyInvitationUserInput {
+    customerId: string;
+    companyId: string;
+    jobTitle?: string | null;
+    telephone?: string | null;
+    status?: 'ACTIVE' | 'INACTIVE' | null;
 }
-//# sourceMappingURL=getCompanyRolesOptions.types.d.ts.map
+export interface AcceptCompanyInvitationInput {
+    code: string;
+    user: AcceptCompanyInvitationUserInput;
+    roleId?: string | null;
+}
+export interface AcceptCompanyInvitationResult {
+    success: boolean;
+}
+//# sourceMappingURL=acceptCompanyInvitation.types.d.ts.map

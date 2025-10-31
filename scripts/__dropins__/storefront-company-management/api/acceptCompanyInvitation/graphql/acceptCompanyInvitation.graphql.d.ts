@@ -14,20 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface CompanyRolesGraphQLResponse {
-    company?: {
-        roles?: {
-            items?: {
-                id: string;
-                name: string;
-            }[];
-            total_count?: number;
-            page_info?: {
-                current_page: number;
-                page_size: number;
-                total_pages: number;
-            };
-        };
-    };
-}
-//# sourceMappingURL=getCompanyRolesResponse.types.d.ts.map
+export declare const ACCEPT_COMPANY_INVITATION = "\n  mutation acceptCompanyInvitation($input: CompanyInvitationInput!) {\n    acceptCompanyInvitation(input: $input) {\n      success\n    }\n  }\n";
+//# sourceMappingURL=acceptCompanyInvitation.graphql.d.ts.map
