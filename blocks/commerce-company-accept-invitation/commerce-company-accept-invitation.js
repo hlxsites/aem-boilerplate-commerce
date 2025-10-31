@@ -15,16 +15,22 @@
  * from Adobe.
  ****************************************************************** */
 
+/* eslint-disable import/no-unresolved */
 import { AcceptInvitation } from '@dropins/storefront-company-management/containers/AcceptInvitation.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
-import { CUSTOMER_LOGIN_PATH, CUSTOMER_ACCOUNT_PATH, rootLink } from '../../scripts/commerce.js';
+import {
+  CUSTOMER_LOGIN_PATH, CUSTOMER_ACCOUNT_PATH, rootLink, checkIsAuthenticated,
+} from '../../scripts/commerce.js';
 
 // Initialize company dropin
 import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
+  const isAuthenticated = checkIsAuthenticated();
+
   await companyRenderer.render(AcceptInvitation, {
     routeMyAccount: () => rootLink(CUSTOMER_ACCOUNT_PATH),
     routeLogin: () => rootLink(CUSTOMER_LOGIN_PATH),
+    isAuthenticated,
   })(block);
 }
