@@ -13,6 +13,9 @@ helix-importer-ui
 scripts/__dropins__/**/*.map
 .env
 
+# Ignore Claude local settings file
+.claude/settings.local.json
+
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md

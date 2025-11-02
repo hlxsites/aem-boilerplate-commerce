@@ -3,7 +3,7 @@
 # Adobe Commerce Storefront Documentation
 
 > Complete documentation for Adobe Commerce Storefront
-> Generated: 2025-10-16T18:36:18.247Z
+> Generated: 2025-11-02T15:02:21.251Z
 > Source: https://experienceleague.adobe.com/developer/commerce/storefront
 
 This file contains the complete documentation from https://experienceleague.adobe.com/developer/commerce/storefront/ in a single markdown file, optimized for consumption by AI language models and tools.
@@ -24,6 +24,8 @@ This file contains the complete documentation from https://experienceleague.adob
 - setup/configuration/aem-assets-configuration
 - setup/configuration/commerce-configuration
 - setup/configuration/content-delivery-network
+- setup/configuration/cors-setup
+- setup/configuration/cors-troubleshooting
 - setup/configuration/gated-content
 - setup/configuration/index
 - setup/configuration/multistore-setup
@@ -42,6 +44,7 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/all/_eventbus
 - dropins/all/branding
 - dropins/all/creating
+- dropins/all/events
 - dropins/all/extend-or-create
 - dropins/all/extending
 - dropins/all/installing
@@ -59,10 +62,12 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/cart/containers/estimate-shipping
 - dropins/cart/containers/gift-cards
 - dropins/cart/containers/gift-options
+- dropins/cart/containers/index
 - dropins/cart/containers/minicart
 - dropins/cart/containers/order-summary
 - dropins/cart/containers/order-summary-line
 - dropins/cart/dictionary
+- dropins/cart/events
 - dropins/cart/functions
 - dropins/cart/index
 - dropins/cart/initialization
@@ -78,10 +83,10 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/checkout/containers/address-validation
 - dropins/checkout/containers/bill-to-shipping-address
 - dropins/checkout/containers/estimate-shipping
+- dropins/checkout/containers/index
 - dropins/checkout/containers/login-form
 - dropins/checkout/containers/merged-cart-banner
 - dropins/checkout/containers/out-of-stock
-- dropins/checkout/containers/overview
 - dropins/checkout/containers/payment-methods
 - dropins/checkout/containers/place-order
 - dropins/checkout/containers/server-error
@@ -90,6 +95,7 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/checkout/dictionary
 - dropins/checkout/error-handling
 - dropins/checkout/event-handling
+- dropins/checkout/events
 - dropins/checkout/extending
 - dropins/checkout/functions
 - dropins/checkout/index
@@ -106,6 +112,7 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/order/containers/_order-status
 - dropins/order/containers/create-return
 - dropins/order/containers/customer-details
+- dropins/order/containers/index
 - dropins/order/containers/order-cancel-form
 - dropins/order/containers/order-cost-summary
 - dropins/order/containers/order-product-list
@@ -114,6 +121,7 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/order/containers/returns-list
 - dropins/order/containers/shipping-status
 - dropins/order/dictionary
+- dropins/order/events
 - dropins/order/functions
 - dropins/order/index
 - dropins/order/initialization
@@ -121,13 +129,17 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/order/styles
 - dropins/order/tutorials/order-cancellation
 - dropins/payment-services/containers/credit-card
+- dropins/payment-services/containers/index
 - dropins/payment-services/dictionary
+- dropins/payment-services/events
 - dropins/payment-services/index
 - dropins/payment-services/installation
+- dropins/personalization/containers/index
 - dropins/personalization/containers/targeted-block
 - dropins/personalization/functions
 - dropins/personalization/index
 - dropins/personalization/initialization
+- dropins/product-details/containers/index
 - dropins/product-details/containers/product-attributes
 - dropins/product-details/containers/product-description
 - dropins/product-details/containers/product-gallery
@@ -138,23 +150,28 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/product-details/containers/product-quantity
 - dropins/product-details/containers/product-short-description
 - dropins/product-details/dictionary
+- dropins/product-details/events
 - dropins/product-details/functions
 - dropins/product-details/index
 - dropins/product-details/initialization
 - dropins/product-details/installation
 - dropins/product-details/styles
 - dropins/product-discovery/containers/facets
+- dropins/product-discovery/containers/index
 - dropins/product-discovery/containers/pagination
 - dropins/product-discovery/containers/search-results
 - dropins/product-discovery/containers/sort-by
 - dropins/product-discovery/dictionary
+- dropins/product-discovery/events
 - dropins/product-discovery/functions
 - dropins/product-discovery/index
 - dropins/product-discovery/installation
 - dropins/product-discovery/slots
 - dropins/product-discovery/styles
+- dropins/recommendations/containers/index
 - dropins/recommendations/containers/product-list
 - dropins/recommendations/dictionary
+- dropins/recommendations/events
 - dropins/recommendations/functions
 - dropins/recommendations/index
 - dropins/recommendations/installation
@@ -164,8 +181,10 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/user-account/containers/address-validation
 - dropins/user-account/containers/addresses
 - dropins/user-account/containers/customer-information
+- dropins/user-account/containers/index
 - dropins/user-account/containers/orders-list
 - dropins/user-account/dictionary
+- dropins/user-account/events
 - dropins/user-account/functions
 - dropins/user-account/index
 - dropins/user-account/initialization
@@ -175,26 +194,31 @@ This file contains the complete documentation from https://experienceleague.adob
 - dropins/user-account/tutorials/validate-address
 - dropins/user-auth/auth-functions
 - dropins/user-auth/containers/auth-combine
+- dropins/user-auth/containers/index
 - dropins/user-auth/containers/reset-password
 - dropins/user-auth/containers/sign-in
 - dropins/user-auth/containers/sign-up
 - dropins/user-auth/containers/success-notification
 - dropins/user-auth/containers/update-password
 - dropins/user-auth/dictionary
+- dropins/user-auth/events
 - dropins/user-auth/index
 - dropins/user-auth/recaptcha
 - dropins/user-auth/slots
+- dropins/wishlist/containers/index
 - dropins/wishlist/containers/wishlist
 - dropins/wishlist/containers/wishlist-alert
 - dropins/wishlist/containers/wishlist-item
 - dropins/wishlist/containers/wishlist-toggle
 - dropins/wishlist/dictionary
+- dropins/wishlist/events
 - dropins/wishlist/functions
 - dropins/wishlist/index
 - dropins/wishlist/installation
 - dropins/wishlist/styles
 
 ### Dropins b2b
+- dropins-b2b/company-management/events
 - dropins-b2b/index
 - dropins-b2b/overview
 
@@ -539,7 +563,7 @@ This page provides information about browser and device compatibility for Adobe 
 
 Browser support is tied to specific boilerplate suite versions. To determine which suite you're using, check your `package.json` file for the `@dropins/tools` version:
 
-   - **Suite 4 (October 14, 2025)**: `@dropins/tools@~1.4.0`
+   - **Suite 4 (October 14, 2025)**: `@dropins/tools@~1.5.0`
    - **Suite 3 (August 12, 2025)**: `@dropins/tools@1.3.0`
    - **Suite 2 (June 25, 2025)**: `@dropins/tools@0.42.0`
 
@@ -1670,37 +1694,64 @@ The ACDL enables your storefront to:
 
 ### Store Configuration
 
-To enable proper event collection, you need to configure your store's analytics settings. This configuration tells the instrumentation system about your store's identity and structure. Refer to the  for more information.
+To enable proper event collection, you need to configure your store's analytics settings. This configuration tells the instrumentation system about your store's identity and structure. The specific values depend on your Commerce environment type.
+
+Refer to the  for complete details on how to configure your store.
 
 ### Required Configuration Parameters
 
-```json
-"analytics": {
-  "base-currency-code": "USD",
-  "environment": "Testing",
-  "store-id": 1,
-  "store-name": "Main Website Store",
-  "store-url": "https://adobe-commerce.example.com",
-  "store-view-id": 1,
-  "store-view-name": "Default Store View",
-  "website-id": 1,
-  "website-name": "Main Website"
-}
-```
+The analytics configuration structure varies based on your Commerce backend type:
 
-### Configuration Parameters Explained
+
+
+<TabItem label="Adobe Commerce (PaaS) / ACCS">
+
+For Adobe Commerce PaaS and Adobe Commerce as a Cloud Service environments, use standard Commerce store and website identifiers from your Commerce Environment. You can obtain these values using a `storeConfig` query.
+
+
+
+**Configuration Properties:**
 
 | Parameter | Description | Example | Required |
 |-----------|-------------|---------|----------|
-| `base-currency-code` | Default currency for your store | `"USD"`, `"EUR"` | Yes |
-| `environment` | Current environment type | `"Testing"`, `"Production"` | Yes |
-| `store-id` | Unique identifier for your store | `1`, `2` | Yes |
-| `store-name` | Human-readable store name | `"Main Website Store"` | Yes |
-| `store-url` | Your store's primary URL | `"https://example.com"` | Yes |
-| `store-view-id` | Unique identifier for store view | `1`, `2` | Yes |
-| `store-view-name` | Human-readable store view name | `"Default Store View"` | Yes |
-| `website-id` | Unique identifier for website | `1`, `2` | Yes |
-| `website-name` | Human-readable website name | `"Main Website"` | Yes |
+| `base-currency-code` | The base currency code for the store | `"USD"`, `"EUR"` | Yes |
+| `environment` | Environment type | `"Testing"`, `"Production"` | Yes |
+| `environment-id` | Unique identifier for the Commerce environment | `"f38a0de0-764b-41fa-bd2c-5bc2f3c7b39a"` | Yes |
+| `store-code` | Code identifier for the store from your Commerce environment | `"main_website_store"` | Yes |
+| `store-id` | Numeric ID for the store | `1`, `2` | Yes |
+| `store-name` | Display name for the store | `"Main Website Store"` | Yes |
+| `store-url` | Base URL for the store | `"https://example.com"` | Yes |
+| `store-view-code` | Code identifier for the store view | `"default"` | Yes |
+| `store-view-id` | Numeric ID for the store view | `1`, `2` | Yes |
+| `store-view-name` | Display name for the store view | `"Default Store View"` | Yes |
+| `website-code` | Code identifier for the website from your Commerce environment | `"base"` | Yes |
+| `website-id` | Numeric ID for the website | `1`, `2` | Yes |
+| `website-name` | Display name for the website | `"Main Website"` | Yes |
+
+</TabItem>
+
+<TabItem label="Adobe Commerce Optimizer (ACO)">
+
+For Adobe Commerce Optimizer environments, use a simplified analytics configuration structure:
+
+
+
+**Configuration Properties:**
+
+| Parameter | Description | Example | Required |
+|-----------|-------------|---------|----------|
+| `base-currency-code` | The base currency code for the store | `"USD"`, `"EUR"` | Yes |
+| `environment` | Environment type | `"Testing"`, `"Production"` | Yes |
+| `environment-id` | The tenant ID for the Adobe Commerce Optimizer instance | `"8idEEDDiVwjCEJAyB5kjfi"` | Yes |
+| `locale` | Catalog source locale (language or geography) | `"en-US"` | Yes |
+| `store-url` | Base URL for the store | `"https://example.com"` | Yes |
+| `store-view-currency-code` | Currency code for the store view | `"USD"`, `"EUR"` | Yes |
+| `storefront-template` | Storefront template type | `"Other"` | No |
+| `view-id` | The unique ID assigned to the catalog view | `"0d3eebf7-b5fb-4904-9ccf-f35fcc61862b"` | Yes |
+
+</TabItem>
+
+
 
 > **Note:** The `environment` parameter is used to determine the type of environment your store is running in. This is important because it affects how data is collected and processed. Be sure to set this to `"Testing"` when you are developing your storefront, and `"Production"` when you are ready to deploy your storefront.
 
@@ -2262,7 +2313,7 @@ For Adobe Commerce PaaS and Adobe Commerce as a Cloud Service environments, use 
 
 <TabItem label="Adobe Commerce Optimizer (ACO)">
 
-For Adobe Commerce Optimizer environments, note the use of hardcoded values for `store-code` and `website-code`.
+For Adobe Commerce Optimizer environments, use a simplified analytics configuration structure:
 
 ```json
 {
@@ -2270,16 +2321,11 @@ For Adobe Commerce Optimizer environments, note the use of hardcoded values for 
     "base-currency-code": "{{CURRENCY_CODE}}",
     "environment": "{{ENVIRONMENT_TYPE}}",
     "environment-id": "{{YOUR_TENANT_ID}}",
-    "store-code": "STORE_CODE",
-    "store-id": {{STORE_ID}},
-    "store-name": "{{STORE_NAME}}",
+    "locale": "{{LOCALE}}",
     "store-url": "{{STORE_URL}}",
-    "store-view-code": "{{YOUR_AC-SOURCE-LOCALE_HEADER}}",
-    "store-view-id": {{STORE_VIEW_ID}},
-    "store-view-name": "{{STORE_VIEW_NAME}}",
-    "website-code": "WEBSITE_CODE",
-    "website-id": {{WEBSITE_ID}},
-    "website-name": "{{WEBSITE_NAME}}"
+    "store-view-currency-code": "{{CURRENCY_CODE}}",
+    "storefront-template": "{{TEMPLATE_TYPE}}",
+    "view-id": "{{CATALOG_VIEW_ID}}"
   }
 }
 ```
@@ -2289,16 +2335,11 @@ For Adobe Commerce Optimizer environments, note the use of hardcoded values for 
 - **`base-currency-code`** - The base currency code for the store (e.g., "USD", "EUR")
 - **`environment`** - Environment type ("Production", "Testing")
 - **`environment-id`** - The tenant ID for the Adobe Commerce Optimizer instance
+- **`locale`** - Catalog source locale (language or geography) for the store view, for example `en-US`
 - **`store-url`** - Base URL for the store
-- **`store-code`** - Hardcoded value **STORE_CODE** for ACO environments
-- **`store-id`** - Numeric ID for the store
-- **`store-name`** - Display name for the store
-- **`store-view-code`** - Matches the **AC-Source-Locale** header value
-- **`store-view-id`** - Numeric ID for the store view
-- **`store-view-name`** - Display name for the store view
-- **`website-code`** - Hardcoded value **WEBSITE_CODE** for ACO environments
-- **`website-id`** - Numeric ID for the website
-- **`website-name`** - Display name for the website
+- **`store-view-currency-code`** - Currency code for the store view (e.g., "USD", "EUR")
+- **`storefront-template`** - (Optional) Storefront template type (e.g., "Other")
+- **`view-id`** - The unique ID assigned to the catalog view from the Adobe Commerce Optimizer UI
 
 </TabItem>
 
@@ -2499,16 +2540,11 @@ This example shows the configuration for Adobe Commerce Optimizer, which uses di
         "base-currency-code": "USD",
         "environment": "Testing",
         "environment-id": "8idEEDDiVwjCEJAyB5kjfi",
-        "store-code": "STORE_CODE",
-        "store-id": 1,
-        "store-name": "ACO Store",
-        "store-url": "https://main--boilerplate-aco--adobe-commerce.aem.live",
-        "store-view-code": "en-US",
-        "store-view-id": 1,
-        "store-view-name": "Default Store View",
-        "website-code": "WEBSITE_CODE",
-        "website-id": 1,
-        "website-name": "Main Website"
+        "locale": "en-US",
+        "store-url": "https://main--boilerplate-aco--adobe-commerce.aem.live/",
+        "store-view-currency-code": "USD",
+        "storefront-template": "Other",
+        "view-id": "0d3eebf7-b5fb-4904-9ccf-f35fcc61862b"
       },
       "plugins": {
         "picker": {
@@ -2590,13 +2626,14 @@ Use `getConfigValue` to access any configuration value using dot notation, inclu
 ```javascript
 export default async function decorate(block) {
   // Get analytics configuration
-  const storeName = await getConfigValue('analytics.store-name');
+  const storeUrl = await getConfigValue('analytics.store-url');
   const currency = await getConfigValue('analytics.base-currency-code');
+  const environment = await getConfigValue('analytics.environment');
 
   // Get plugin configuration
   const rootCategory = await getConfigValue('plugins.picker.rootCategory');
 
-  console.log('Store:', storeName, 'Currency:', currency);
+  console.log('Store URL:', storeUrl, 'Currency:', currency, 'Environment:', environment);
   console.log('Root category:', rootCategory);
 }
 ```
@@ -3348,6 +3385,395 @@ To resolve this, you should use the Fastly API to "pull" all snippets and then p
 | `var` directory filename | Admin Panel Field | Fastly Fields |
 |--------------------------------|----------------------------------------------|--------------------------------------------------------|
 | _recv_100_snippetrecv.vcl_ | Type: _recv_  Priority: _100_  Name: _snippetrecv_ | Type: _recv_  Priority: _100_  Name: _magentomodule_snippetrecv_ |
+
+---
+
+# CORS Setup
+
+Cross-Origin Resource Sharing (CORS) is a browser security feature that restricts web pages from making requests to a different domain than the one serving the page. CORS is required when your storefront runs on a different domain or port than your Adobe Commerce backend.
+
+ 
+
+> **Note:** CORS should be a last resort for production. Prefer same-origin delivery of the storefront and API (for example, via Fastly VCL) to avoid CORS entirely.
+
+But during development, it's a common scenario for storefronts to run on a different domain or port than the Adobe Commerce backend, so CORS is required. Without CORS, browsers will block cross-origin requests and you'll see errors like the following in the browser console:
+
+```txt
+Access to fetch at 'https://commerce.example.com/graphql' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present
+```
+
+## Quick test: Is CORS working?
+
+Adobe Commerce uses `/graphql` as the GraphQL endpoint, and this is the primary endpoint that requires CORS configuration. If you already have CORS configured, test it by replacing `YOUR_STOREFRONT_URL` with your actual frontend URL:
+
+```bash
+curl -I -X OPTIONS https://your-commerce-backend.com/graphql \
+  -H "Origin: YOUR_STOREFRONT_URL" \
+  -H "Access-Control-Request-Method: POST"
+```
+
+Look for these headers in the response:
+- `Access-Control-Allow-Origin: YOUR_STOREFRONT_URL` (or `*` if using a wildcard)
+- `Access-Control-Allow-Methods: GET, POST, OPTIONS`
+
+If you see these headers with your storefront URL, CORS is configured correctly. If not, follow the setup steps below.
+
+## Quick steps
+
+
+
+<Task>
+
+### Add CORS support
+
+To add CORS headers to your Adobe Commerce GraphQL endpoints, you have several options:
+
+- **Server configuration**: Configure CORS headers at the web server level ([Nginx](https://enable-cors.org/server_nginx.html), [Apache](https://enable-cors.org/server_apache.html))
+- **Third-party module**: Use a community module such as [graycore/magento2-cors](https://github.com/graycoreio/magento2-cors)
+- **Custom module**: Implement a custom Adobe Commerce module to add CORS headers
+
+Refer to your chosen implementation's documentation for specific configuration steps.
+
+</Task>
+
+<Task>
+
+### Configure CORS settings
+
+Configure your CORS implementation to allow requests from your storefront domain(s) to your Adobe Commerce GraphQL endpoint.
+
+At minimum, you'll need to configure:
+- **Allowed origins**: Your storefront domain(s) (for example, `http://localhost:3000`, `https://your-storefront.com`)
+- **Allowed methods**: `GET`, `POST`, `OPTIONS`
+- **Allowed headers**: `Content-Type`, `Authorization`, `X-Requested-With`
+
+Refer to your chosen implementation's documentation for specific configuration steps.
+
+</Task>
+
+<Task>
+
+### Test your CORS configuration
+
+Open your storefront in a browser and check the Network tab in DevTools:
+- Look for preflight `OPTIONS` requests to your GraphQL endpoint
+- Verify the response includes headers like:
+  - `Access-Control-Allow-Origin: <your-storefront-url>` (or `*` if using a wildcard)
+  - `Access-Control-Allow-Methods: GET, POST, OPTIONS`
+  - `Access-Control-Allow-Headers: Content-Type, Authorization`
+
+If configured correctly, your GraphQL requests should succeed without CORS errors.
+
+</Task>
+
+
+
+## Common pitfalls
+
+> **Note:** **Forgetting to clear cache:** After changing CORS settings, always run `bin/magento cache:flush`. A stale cache is the primary cause of "it's not working" reports.
+
+**Using `*` with credentials:** You cannot use a wildcard `*` origin when `Allow Credentials` is enabled. Browsers will block the request.
+
+**Missing the `OPTIONS` method:** All CORS requests start with an OPTIONS preflight request. If you forget to include `OPTIONS` in **Allowed Methods**, all CORS requests will fail.
+
+## Next steps
+
+If you encounter issues or need detailed configuration guidance, see [CORS Troubleshooting](https://experienceleague.adobe.com/developer/commerce/storefront/setup/configuration/cors-troubleshooting/)
+
+## References
+
+-  - MDN Web Docs on Cross-Origin Resource Sharing
+-  - MDN documentation on common CORS error messages
+
+---
+
+# CORS Troubleshooting
+
+This guide helps you diagnose and resolve CORS issues with Adobe Commerce GraphQL endpoints.
+
+
+
+> **Note:** If you need to set up CORS for the first time, see [CORS Setup](https://experienceleague.adobe.com/developer/commerce/storefront/setup/configuration/cors-setup/).
+
+## Common CORS errors
+
+The following are standard CORS errors enforced by browser security policies. These error messages appear in the browser console (DevTools).
+
+
+
+<Option>
+
+### No 'Access-Control-Allow-Origin' header
+
+```txt
+Access to fetch at 'https://commerce.example.com/graphql' from origin 'http://localhost:3000' 
+has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the 
+requested resource.
+```
+
+#### Cause
+
+CORS headers are not being sent by your Commerce backend. This could mean:
+- CORS support is not configured
+- The origin is not in the allowed list
+- The configuration cache needs to be cleared
+
+#### Solution
+
+- Verify CORS is configured. See [CORS Setup](https://experienceleague.adobe.com/developer/commerce/storefront/setup/configuration/cors-setup/) if not configured yet.
+- Add your storefront origin to the allowed origins list
+- Clear the cache: `bin/magento cache:flush`
+
+</Option>
+
+<Option>
+
+### Origin not allowed
+
+```txt
+Access to fetch at 'https://commerce.example.com/graphql' from origin 'http://localhost:3000' 
+has been blocked by CORS policy: The 'Access-Control-Allow-Origin' header has a value 
+'https://storefront.example.com' that is not equal to the supplied origin.
+```
+
+#### Cause
+
+The requesting origin is not in the allowed origins list.
+
+#### Solution
+
+Add the exact origin (including protocol and port) to the Allowed Origins configuration.
+
+</Option>
+
+<Option>
+
+### Credentials flag issue
+
+```txt
+Access to fetch at 'https://commerce.example.com/graphql' from origin 'http://localhost:3000' 
+has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the 
+response must not be the wildcard '*' when the request's credentials mode is 'include'.
+```
+
+#### Cause
+
+You have `Allow Credentials` enabled but are using `*` for allowed origins.
+
+#### Solution
+
+Replace `*` with specific origins when credentials are required.
+
+</Option>
+
+
+
+### Common issues
+
+If you encounter CORS errors after installing `adobe-commerce/storefront-compatibility`, verify that your CORS implementation is compatible with Adobe Commerce Storefronts. If using the graycore module, ensure v2.x or later is installed.
+
+## Debug checklist
+
+
+
+<Option>
+
+### Verify CORS is configured
+
+If using a CORS module, check that it's installed and enabled:
+
+```bash
+# List all enabled modules
+bin/magento module:status | grep -i cors
+```
+
+If using a custom CORS implementation, verify your code is deployed and active.
+
+</Option>
+
+<Option>
+
+### Verify CORS configuration
+
+Check your CORS configuration and confirm:
+- Your storefront origin is in the Allowed Origins list
+- Origins match exactly (including protocol and port)
+- No trailing slashes in origins
+- Allowed Methods includes `OPTIONS`
+- Allowed Headers includes all headers your storefront sends
+
+See [CORS Setup](https://experienceleague.adobe.com/developer/commerce/storefront/setup/configuration/cors-setup/) for configuration details.
+
+</Option>
+
+<Option>
+
+### Inspect browser network traffic
+
+Open DevTools > Network tab and look for:
+
+#### Preflight OPTIONS request
+
+```txt
+Request URL: https://commerce.example.com/graphql
+Request Method: OPTIONS
+```
+
+Expected response headers:
+```txt
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Max-Age: 86400
+```
+
+#### Actual GraphQL POST request
+
+```txt
+Request URL: https://commerce.example.com/graphql
+Request Method: POST
+```
+
+Expected response headers:
+```txt
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+```
+
+</Option>
+
+<Option>
+
+### Check server logs
+
+If CORS headers are present but requests still fail:
+
+```bash
+tail -f var/log/system.log
+tail -f var/log/exception.log
+```
+
+Look for PHP errors, GraphQL exceptions, or module conflicts.
+
+</Option>
+
+<Option>
+
+### Clear all caches
+
+After any configuration changes:
+
+```bash
+bin/magento cache:flush
+bin/magento cache:clean
+```
+
+Some CORS configurations may also be cached in Varnish/Fastly if applicable.
+
+</Option>
+
+
+
+## Distinguishing CORS errors from server-side errors
+
+When debugging, it's important to distinguish CORS policy failures from server-side GraphQL exceptions. Here's an example of a server-side error that might be mistaken for a CORS issue: 
+
+```txt
+{
+  "message": "Internal server error",
+  "extensions": {
+    "debugMessage": "Magento\\InventoryConfiguration\\Model\\IsSourceItemManagementAllowedForProductType\\Interceptor::execute(): Argument #1 ($productType) must be of type string, null given"
+  }
+}
+```
+
+This indicates a PHP/GraphQL issue (inventory configuration or compatibility) and not a missing Access-Control-Allow-Origin header.
+
+## Edge cases and special scenarios
+
+### Docker and containerized environments
+
+When running Commerce in Docker, you may need to add multiple origin variations:
+
+```txt
+http://localhost:3000
+http://127.0.0.1:3000
+http://host.docker.internal:3000
+```
+
+> **Note:** Docker networking can cause your browser to use different hostnames for the same service, so you need to add all variations.
+
+### Multiple storefronts
+
+For multiple storefronts accessing the same Commerce backend, add each origin separately:
+
+```txt
+https://storefront-us.example.com
+https://storefront-eu.example.com
+https://storefront-asia.example.com
+```
+
+Each storefront is treated as a separate origin and must be explicitly allowed.
+
+## Production best practices
+
+The recommended production approach is to avoid CORS entirely by serving both the storefront and the backend from the same domain using a CDN proxy.
+
+### Same-origin architecture (recommended)
+
+Serve both your storefront and Commerce backend from the same domain:
+
+- Storefront: `https://example.com` → CDN serves static assets
+- GraphQL API: `https://example.com/graphql` → CDN proxies to Commerce backend
+
+This requires configuring your CDN to proxy `/graphql` requests to your Commerce backend.
+
+**Benefits:**
+- No CORS complexity
+- Better performance (fewer preflight requests)
+- Simpler security model
+- Better caching control
+
+**Implementation approaches:**
+
+
+
+1. **Fastly VCL routing:**
+   Configure Fastly to route GraphQL requests to your Commerce backend using VCL (Varnish Configuration Language). The VCL detects requests to `/graphql` and proxies them to your backend origin while serving other requests from your storefront origin.
+
+2. **Cloudflare Workers / CDN Edge Functions:**
+   Use edge functions to route API requests to your backend dynamically.
+
+3. **Reverse proxy (Nginx/Apache):**
+   Configure your web server to proxy `/graphql` requests to the backend.
+
+
+
+**Note:** This approach requires CDN/infrastructure expertise. If you don't have these resources, use CORS configuration instead.
+
+### CORS configuration
+
+If you must use different domains (for example, `storefront.example.com` → `commerce.example.com`), use CORS configuration. Use specific allowed origins for single production domains, or a wildcard `*` when you have multiple dynamic preview URLs (such as Edge Delivery Services branch previews).
+
+## References
+
+### CORS standards and specifications
+
+-  - MDN Web Docs on Cross-Origin Resource Sharing
+-  - MDN documentation on common CORS error messages
+-  - Complete list of CORS-related HTTP headers
+-  - How browsers use OPTIONS requests for CORS
+
+### Adobe Commerce
+
+-  - Official documentation for Magento CLI commands used in this guide
+-  - GraphQL API documentation
+
+### Additional tools and platforms
+
+-  - PHP dependency manager used for module installation
+-  - Understanding Docker hostname resolution for CORS origins
+-  - For implementing same-origin architecture with Fastly CDN routing
 
 ---
 
@@ -4110,9 +4536,9 @@ This section provides guidance on how to implement the Luma Bridge for your Adob
 
 
 
-:::caution
-**Supported Configuration**: Luma Bridge is intended for Adobe Commerce Platform as a Service (PaaS) instances with complex cart, checkout, and account page implementations that need to be migrated progressively to Edge Delivery Services. It is only supported for the following configuration: **Edge Delivery Services (EDS) + Adobe Commerce Optimizer (ACO) + PaaS**.
-:::
+> **Note:** Luma Bridge is intended for Adobe Commerce Platform as a Service (PaaS) instances with complex cart, checkout, and account page implementations that need to be migrated progressively to Edge Delivery Services. It is only supported for the following configuration: **Edge Delivery Services (EDS) + Adobe Commerce Optimizer (ACO) + PaaS**.
+
+If you need access to the Luma Bridge package, please reach out to us at `commerce-storefront-luma-bridge@adobe.com`.
 
 ## What is Luma Bridge?
 
@@ -4635,7 +5061,7 @@ Metadata should contain a `SKU` field for each product.
 When importing pages, ensure that when a metadata block is present on a page, it does not contain any empty fields. This might lead to pages with missing titles, which Google penalizes.
 :::
 
-### Schema.org data (JSON-LD)
+## Schema.org data (JSON-LD)
 
 JavaScript Object Notation for Linked Data (JSON-LD) is a structured data format that helps search engines understand the content of your web pages more explicitly. It is typically added as a script tag in the `<head>` of your HTML document.
 
@@ -4647,7 +5073,7 @@ You should compare the data available on the site before migrating to Edge Deliv
 If you are using Google Shopping features (for example, products available on `shopping.google.com`), consider schema.org annotations with critical priority. If a single JSON-LD annotation on the page is invalid, Google considers all annotations invalid.
 :::
 
-### Generate metadata
+## Generate metadata
 
 You can use the [PDP Metadata Generator](https://github.com/hlxsites/aem-boilerplate-commerce/tree/main/tools/pdp-metadata) tool to automate the process of generating all recommended metadata. The tool fetches product data from the Catalog Service, processes it, and generates a metadata spreadsheet in `.xslx` format. The spreadsheet can be used for the [bulk metadata](https://www.aem.live/docs/bulk-metadata) feature in Edge Delivery Services.
 
@@ -4682,7 +5108,7 @@ The resulting `metadata.xlsx` and `metadata.json` files contain all recommended 
 
 See the [bulk metadata](https://www.aem.live/docs/bulk-metadata) documentation for instructions on how to upload the generated metadata file to Edge Delivery Services.
 
-#### SKU Casing
+## SKU Casing
 
 Due to a requirement in Edge Delivery Services, all product URLs must use lowercase SKUs. The boilerplate will enforce this by default.
 
@@ -4690,7 +5116,7 @@ Due to a requirement in Edge Delivery Services, all product URLs must use lowerc
 
 **Metadata Generation**: Metadata applied through [bulk metadata](https://www.aem.live/docs/bulk-metadata) only applies metadata for lowercase urls. The PDP Metadata Generation tool has been updated to produce output in the correct format.
 
-#### Implementation Requirements
+### Implementation Requirements
 
 For sites with SKUs containing uppercase letters, you have two options:
 
@@ -4709,7 +5135,7 @@ export function getProductLink(urlKey, sku) {
 
 > **Note:** Removing lowercase enforcement may impact SEO performance. Adobe recommends using Option A for optimal results.
 
-#### Migration Guide
+### Migration Guide
 
 If you're upgrading from a previous version of the boilerplate:
 
@@ -5370,6 +5796,457 @@ You've learned how to:
 - Explore advanced component patterns
 - Integrate with real backend APIs
 - Contribute to the drop-in template repo
+
+---
+
+# Events
+
+Drop-in components implement an event-driven architecture that uses the `@adobe/event-bus` package to facilitate communication between components. This event system enables drop-ins to respond to application state changes, maintain loose coupling between components, and keep their state synchronized across your storefront.
+
+> **Note:** **Looking for the API reference?** For detailed API documentation including methods like `events.on()`, `events.emit()`, and advanced features like scoping, see the [Event Bus API Reference](https://experienceleague.adobe.com/developer/commerce/storefront/sdk/reference/events/).
+
+## Event system architecture
+
+The system uses a publish-subscribe pattern where components can:
+
+1. **Subscribe** to specific events using `events.on()`
+2. **Emit** events using `events.emit()`
+3. **Unsubscribe** using `subscription.off()`
+
+This pattern allows drop-ins to communicate without having direct dependencies on each other, making your storefront more modular and maintainable.
+
+## Event declaration
+
+Events are strongly typed using TypeScript declaration merging to provide type safety and autocomplete support. Each drop-in declares its events by extending the `Events` interface from the event bus.
+
+Here's an example of how events are declared:
+
+```typescript title="event-bus.d.ts"
+declare module '@adobe/event-bus' {
+  interface Events {
+    'dropin/initialized': DataModel | null;
+    'dropin/updated': DataModel | null;
+    'dropin/data': DataModel;
+    authenticated: boolean;
+    locale: string;
+    error: { source: string; type: string; error: Error };
+  }
+}
+```
+
+> **Note:** Each drop-in's event documentation includes the specific event contracts and payload types. See the individual [drop-in documentation](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/) for details.
+
+## Event subscription
+
+Components subscribe to events when they need to respond to changes happening elsewhere in the application.
+
+### Subscription syntax
+
+To subscribe to an event, provide:
+
+1. The **event name** (as a string)
+2. An **event handler** callback function that receives the payload
+3. Optional **configuration** parameters
+
+```javascript
+const subscription = events.on('event-name', handler, options);
+```
+
+### Subscription options
+
+Event subscriptions support the following configuration:
+
+- **`eager: true`**: The handler executes immediately if the event has been emitted previously. This is useful when you want to get the current state right away.
+- **`eager: false`** (default): The handler only responds to future emissions of the event.
+
+```javascript
+// Execute immediately if event was already emitted
+events.on('cart/initialized', (data) => {
+  console.log('Cart data:', data);
+}, { eager: true });
+
+// Only respond to future events
+events.on('cart/updated', (data) => {
+  console.log('Cart updated:', data);
+}, { eager: false });
+```
+
+### Example: Subscribing to an event
+
+Listen to an initialization event:
+
+```javascript
+
+// Subscribe to the event
+const subscription = events.on('cart/initialized', (data) => {
+  console.log('Cart initialized with data:', data);
+  // Handle the cart data
+  updateUI(data);
+});
+
+// Later, unsubscribe when no longer needed
+subscription.off();
+```
+
+> **Note:** Always unsubscribe from events when your component unmounts or when the subscription is no longer needed. This prevents memory leaks.
+
+## Event emission
+
+Components emit events when they want to share information with other parts of the application.
+
+### Emission syntax
+
+To emit an event, provide:
+
+1. The **event name** (as a string)
+2. The **payload** containing the data to share
+
+```javascript
+events.emit('event-name', payload);
+```
+
+### Example: Emitting an event
+
+Emit an event when state changes:
+
+```javascript
+
+function updateCartQuantity(itemId, quantity) {
+  // Update the cart
+  const updatedCart = performCartUpdate(itemId, quantity);
+  
+  // Notify other components about the change
+  events.emit('cart/updated', updatedCart);
+}
+```
+
+## Common event patterns
+
+Drop-ins use consistent naming conventions for their events:
+
+- **`dropin/initialized`**: Fired when a drop-in completes initialization
+- **`dropin/updated`**: Fired when a drop-in's state changes
+- **`dropin/data`**: Provides current data state
+- **`dropin/reset`**: Fired when a drop-in's state is reset
+- **`dropin/error`**: Fired when an error occurs
+
+### Event directions
+
+Events can flow in different directions:
+
+- **Emits**: The drop-in publishes this event for others to consume
+- **Listens**: The drop-in subscribes to this event from external sources
+- **Emits and listens**: The drop-in both publishes and subscribes to this event (bidirectional)
+
+> **Note:** Each drop-in's event documentation clearly indicates which events it emits and which it listens to. This helps you understand the data flow in your storefront.
+
+## Best practices
+
+### 1. Use type-safe event names
+
+Import event types when available to ensure you're using the correct event names:
+
+```typescript
+
+// TypeScript will validate the event name
+events.on('cart/initialized', (data) => {
+  // ...
+});
+```
+
+### 2. Clean up subscriptions
+
+Always unsubscribe when your component unmounts:
+
+```javascript
+// In a component lifecycle
+const subscription = events.on('cart/updated', handleUpdate);
+
+// On unmount or cleanup
+subscription.off();
+```
+
+### 3. Use eager mode wisely
+
+Set `eager: true` when you need the current state immediately:
+
+```javascript
+// Good: Getting initial state on component mount
+events.on('cart/data', (data) => {
+  initializeComponent(data);
+}, { eager: true });
+
+// Good: Only responding to future changes
+events.on('cart/updated', (data) => {
+  updateComponent(data);
+}, { eager: false });
+```
+
+### 4. Keep handlers focused
+
+Event handlers should be small and focused on a single responsibility:
+
+```javascript
+// Good: Focused handler
+events.on('cart/updated', (cart) => {
+  updateCartBadge(cart.itemCount);
+});
+
+// Avoid: Handler doing too much
+events.on('cart/updated', (cart) => {
+  updateCartBadge(cart.itemCount);
+  updateMiniCart(cart);
+  recalculateTotals(cart);
+  logAnalytics(cart);
+  // Too many responsibilities
+});
+```
+
+### 5. Handle errors gracefully
+
+Always include error listeners in production applications to gracefully handle failures and provide helpful feedback to users.
+
+### 6. Use state management helpers
+
+Use `events.lastPayload('<event>')` to retrieve the most recent state without waiting for the next event:
+
+```javascript
+// Get current authentication state
+const currentAuth = events.lastPayload('authenticated');
+if (currentAuth?.authenticated) {
+  console.log('User is authenticated');
+}
+
+// Get current locale
+const currentLocale = events.lastPayload('locale');
+console.log('Current locale:', currentLocale);
+```
+
+---
+
+## Common events reference
+
+Many drop-ins listen for or emit common events that enable cross-component communication, authentication state management, localization, and error handling. These events provide a standardized way for your storefront to communicate with drop-ins and coordinate behavior across the application.
+
+> **Note:** For drop-in-specific events, refer to each drop-in's individual Events page. This section only documents events that are shared across multiple drop-ins.
+
+### Common event categories
+
+
+
+| Event | Category | Used By | Description |
+|-------|----------|---------|-------------|
+| [authenticated](#authenticated) | Authentication | Most B2C & B2B drop-ins | Authentication state changes |
+| [error](#error) | Error Handling | Most drop-ins | Error notifications |
+| [locale](#locale) | Localization | All drop-ins | Language/locale changes |
+
+
+
+---
+
+### authenticated
+
+**Category**: Authentication  
+**Direction**: Emitted by external source, Listened to by drop-ins  
+**Used By**: Cart, Checkout, Order, User Account, User Auth, Wishlist, and most B2B drop-ins
+
+Fired when the user's authentication state changes (login, logout, token refresh, session expiration). Drop-ins listen to this event to update their internal state and UI based on the current authentication status.
+
+#### When to emit
+
+Emit this event from your storefront when:
+- An authentication token is refreshed
+- Authentication state is restored (e.g., page refresh with active session)
+- A session expires
+- A user logs out
+- A user successfully logs in
+
+#### Data payload
+
+```typescript
+{
+  authenticated: boolean;
+  userId?: string;
+  email?: string;
+  token?: string;
+}
+```
+
+> **Note:** The exact payload structure may vary by implementation. At minimum, include an `authenticated` boolean. Consult your authentication service documentation for additional fields.
+
+#### Usage
+
+**Emit when authentication changes:**
+
+```javascript
+
+// User logged in
+events.emit('authenticated', {
+  authenticated: true,
+  userId: 'user-123',
+  email: 'user@example.com'
+});
+
+// User logged out
+events.emit('authenticated', {
+  authenticated: false
+});
+```
+
+**Listen for authentication changes:**
+
+```javascript
+
+const authListener = events.on('authenticated', (data) => {
+  if (data.authenticated) {
+    console.log('User authenticated:', data.userId);
+    // Update UI, load user-specific data, etc.
+  } else {
+    console.log('User logged out');
+    // Clear user data, redirect to login, etc.
+  }
+});
+
+// Later, when you want to stop listening
+authListener.off();
+```
+
+---
+
+### error
+
+**Category**: Error Handling  
+**Direction**: Emitted by drop-ins, Listened to by external code  
+**Used By**: Most drop-ins for error reporting
+
+Emitted when a drop-in encounters an error (API failure, validation error, network timeout, etc.). Your storefront should listen to this event to display error messages, log errors, or trigger error recovery logic.
+
+#### When emitted
+
+Drop-ins emit this event when:
+- API requests fail
+- Critical operations fail
+- Network errors occur
+- Unexpected errors occur
+- Validation fails
+
+#### Data payload
+
+```typescript
+{
+  message: string;
+  code?: string;
+  details?: any;
+  source?: string;
+}
+```
+
+> **Note:** The exact payload structure varies by drop-in. The `message` field is typically always present. Check individual drop-in documentation for specific error structures.
+
+#### Usage
+
+**Listen for errors from drop-ins:**
+
+```javascript
+
+const errorListener = events.on('error', (error) => {
+  console.error('Drop-in error:', error.message);
+  
+  // Display error to user
+  showErrorNotification(error.message);
+  
+  // Log to error tracking service
+  if (window.Sentry) {
+    Sentry.captureException(error);
+  }
+  
+  // Handle specific error codes
+  if (error.code === 'AUTH_EXPIRED') {
+    redirectToLogin();
+  }
+});
+
+// Later, when you want to stop listening
+errorListener.off();
+```
+
+**Emit errors from custom code:**
+
+```javascript
+
+try {
+  // Your custom logic
+  await customOperation();
+} catch (err) {
+  events.emit('error', {
+    message: 'Custom operation failed',
+    code: 'CUSTOM_ERROR',
+    details: err,
+    source: 'MyCustomComponent'
+  });
+}
+```
+
+---
+
+### locale
+
+**Category**: Localization  
+**Direction**: Emitted by external source, Listened to by drop-ins  
+**Used By**: All drop-ins with internationalization support
+
+Fired when the application's language or locale changes. Drop-ins listen to this event to update their text content, date formatting, currency display, and other locale-specific elements.
+
+#### When to emit
+
+Emit this event from your storefront when:
+- A user selects a different language
+- The application detects and applies a locale based on user preferences
+- The locale is programmatically changed
+
+#### Data payload
+
+```typescript
+string
+```
+
+The locale string should follow standard locale format (e.g., `en-US`, `fr-FR`, `de-DE`).
+
+#### Usage
+
+**Emit when locale changes:**
+
+```javascript
+
+// User selects a new language
+events.emit('locale', 'fr-FR');
+
+// Or based on browser detection
+const userLocale = navigator.language || 'en-US';
+events.emit('locale', userLocale);
+```
+
+**Listen for locale changes:**
+
+```javascript
+
+const localeListener = events.on('locale', (newLocale) => {
+  console.log('Locale changed to:', newLocale);
+  // Update UI text, reload translations, etc.
+  updateTranslations(newLocale);
+});
+
+// Later, when you want to stop listening
+localeListener.off();
+```
+
+---
+
+## Next steps
+
+- Review the [Event Bus API Reference](https://experienceleague.adobe.com/developer/commerce/storefront/sdk/reference/events/) for detailed API methods and code examples
+- Check individual drop-in event pages for component-specific events
+- Try drop-in tutorials for practical event usage examples
 
 ---
 
@@ -7103,6 +7980,28 @@ As an example, we can integrate the GiftOptions container on the Product Detail 
 
 ---
 
+# Cart containers
+
+Cart containers display shopping cart information, pricing, and management features. The following containers provide the building blocks for complete cart experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [CartSummaryGrid](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/cart-summary-grid/) | Cart items in responsive grid layout with images and details. |
+| [CartSummaryList](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/cart-summary-list/) | Cart items in vertical list with detailed product information. |
+| [CartSummaryTable](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/cart-summary-table/) | Cart items in table with columns for details, quantity, and pricing. |
+| [Coupons](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/coupons/) | Apply promotional codes and discount coupons. |
+| [EmptyCart](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/empty-cart/) | Messaging and call-to-action when cart is empty. |
+| [EstimateShipping](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/estimate-shipping/) | Estimate shipping costs by destination. |
+| [GiftCards](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/gift-cards/) | Apply gift cards as payment method. |
+| [GiftOptions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/gift-options/) | Add gift messages, wrapping, and gift options. |
+| [MiniCart](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/minicart/) | Compact cart preview with product count and cart access. |
+| [OrderSummary](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/order-summary/) | Order totals including subtotal, taxes, shipping, and discounts. |
+| [OrderSummaryLine](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/order-summary-line/) | Individual line items for order summary like shipping and tax. |
+
+---
+
 # MiniCart container
 
 The `MiniCart` container displays a summary of the shopper's shopping cart. It shows a list of products currently in the cart and subtotal amounts. It also provides call-to-action buttons for proceeding to checkout or updating the cart.
@@ -7272,6 +8171,398 @@ updateLineItems: (lineItems) => {
 The default cart dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the cart drop-in component.
 
 ## Default keys and values
+
+---
+
+# Cart Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Cart, Cart, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Cart** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 1.5.1</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [cart/initialized](#cartinitialized-emits) | Emits | Emitted when the component completes initialization |
+| [cart/product/added](#cartproductadded-emits) | Emits | Emitted when an item is added |
+| [cart/product/removed](#cartproductremoved-emits) | Emits | Emitted when an item is removed |
+| [cart/product/updated](#cartproductupdated-emits) | Emits | Emitted when the component state is updated |
+| [checkout/initialized](#checkoutinitialized-listens) | Listens | Fired by Checkout (`checkout`) when the component completes initialization |
+| [checkout/updated](#checkoutupdated-listens) | Listens | Fired by Checkout (`checkout`) when the component state is updated |
+| [companyContext/changed](#companycontextchanged-listens) | Listens | Fired by Company Context (`companyContext`) when a change occurs |
+| [cart/data](#cartdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+| [cart/merged](#cartmerged-emits-and-listens) | Emits and listens | Triggered when data is merged |
+| [cart/reset](#cartreset-emits-and-listens) | Emits and listens | Triggered when the component state is reset |
+| [cart/updated](#cartupdated-emits-and-listens) | Emits and listens | Triggered when the component state is updated |
+| [shipping/estimate](#shippingestimate-emits-and-listens) | Emits and listens | Triggered when an estimate is calculated |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `cart/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartDataListener = events.on('cart/data', (data) => {
+  console.log('cart/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartDataListener.off();
+```
+
+### `cart/initialized` (emits)
+
+Emitted when the component completes initialization
+
+#### Data payload
+
+```typescript
+CartModel | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartInitializedListener = events.on('cart/initialized', (data) => {
+  console.log('cart/initialized event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartInitializedListener.off();
+```
+
+### `cart/merged` (emits and listens)
+
+Triggered when data is merged
+
+#### Data payload
+
+```typescript
+{
+oldCartItems: Item[] | null;
+newCart: CartModel | null;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `oldCartItems` | `Item[] \| null` | See type definition in source code |
+| `newCart` | `CartModel \| null` | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartMergedListener = events.on('cart/merged', (data) => {
+  console.log('cart/merged event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartMergedListener.off();
+```
+
+### `cart/product/added` (emits)
+
+Emitted when an item is added
+
+#### Data payload
+
+```typescript
+Item[] | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartProductAddedListener = events.on('cart/product/added', (data) => {
+  console.log('cart/product/added event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartProductAddedListener.off();
+```
+
+### `cart/product/removed` (emits)
+
+Emitted when an item is removed
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartProductRemovedListener = events.on('cart/product/removed', (data) => {
+  console.log('cart/product/removed event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartProductRemovedListener.off();
+```
+
+### `cart/product/updated` (emits)
+
+Emitted when the component state is updated
+
+#### Data payload
+
+```typescript
+Item[] | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartProductUpdatedListener = events.on('cart/product/updated', (data) => {
+  console.log('cart/product/updated event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartProductUpdatedListener.off();
+```
+
+### `cart/reset` (emits and listens)
+
+Triggered when the component state is reset
+
+#### Data payload
+
+```typescript
+void
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartResetListener = events.on('cart/reset', (data) => {
+  console.log('cart/reset event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartResetListener.off();
+```
+
+### `cart/updated` (emits and listens)
+
+Triggered when the component state is updated
+
+#### Data payload
+
+```typescript
+CartModel | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartUpdatedListener = events.on('cart/updated', (data) => {
+  console.log('cart/updated event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartUpdatedListener.off();
+```
+
+### `checkout/initialized` (listens)
+
+Fired by Checkout (`checkout`) when the component completes initialization
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutInitializedListener = events.on('checkout/initialized', (data) => {
+  console.log('checkout/initialized event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutInitializedListener.off();
+```
+
+### `checkout/updated` (listens)
+
+Fired by Checkout (`checkout`) when the component state is updated
+
+#### Data payload
+
+```typescript
+any
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutUpdatedListener = events.on('checkout/updated', (data) => {
+  console.log('checkout/updated event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutUpdatedListener.off();
+```
+
+### `companyContext/changed` (listens)
+
+Fired by Company Context (`companyContext`) when a change occurs
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const companyContextChangedListener = events.on('companyContext/changed', (data) => {
+  console.log('companyContext/changed event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+companyContextChangedListener.off();
+```
+
+### `shipping/estimate` (emits and listens)
+
+Triggered when an estimate is calculated
+
+#### Data payload
+
+```typescript
+{
+address: PartialAddress;
+shippingMethod: ShippingMethod | null;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `address` | `PartialAddress` | See type definition in source code |
+| `shippingMethod` | `ShippingMethod \| null` | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const shippingEstimateListener = events.on('shipping/estimate', (data) => {
+  console.log('shipping/estimate event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+shippingEstimateListener.off();
+```
 
 ---
 
@@ -10645,6 +11936,139 @@ CartProvider.render(OrderSummary, {
 
 ---
 
+# Checkout containers
+
+Checkout containers handle address collection, payment, and order placement. The following containers provide the building blocks for complete checkout experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [AddressValidation](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/address-validation/) | Validate addresses for accurate delivery. |
+| [BillToShippingAddress](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/bill-to-shipping-address/) | Use shipping address as billing address. |
+| [EstimateShipping](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/estimate-shipping/) | Estimate shipping costs before entering full address. |
+| [LoginForm](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/login-form/) | Customer login for returning customers. |
+| [MergedCartBanner](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/merged-cart-banner/) | Notify when guest cart merges with logged-in cart. |
+| [OutOfStock](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/out-of-stock/) | Handle cart items unavailable during checkout. |
+| [PaymentMethods](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/payment-methods/) | Payment options and secure payment collection. |
+| [PlaceOrder](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/place-order/) | Submit order and complete checkout. |
+| [ServerError](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/server-error/) | Display errors when checkout operations fail. |
+| [ShippingMethods](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/shipping-methods/) | Shipping options with costs and delivery times. |
+| [TermsAndConditions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/terms-and-conditions/) | Terms, conditions, and agreements for acceptance. |
+
+
+
+## Common container configuration
+
+The following sections describe common properties that can be applied to Checkout containers.
+
+### Title and heading customization
+
+Each container provides a title and a heading by default. If you want to hide the title or provide a customized title, you can use the `TitleProps` interface.
+
+#### TitleProps interface
+
+The `TitleProps` interface provides the following configuration options:
+
+
+
+The container receives an object that implements the `TitleProps` interface with the following properties:
+
+```ts
+export interface TitleProps {
+  displayTitle?: boolean;
+  slots?: {
+    Title?: SlotProps;
+  };
+}
+```
+
+- The `displayTitle` property set to _true_ displays the title of the container; otherwise, the title will be hidden.
+- The `slots` property is an object containing the following properties:
+  - The `Title` property is a handler used to render a customized title content.
+
+:::note
+In the pages that follow, you will learn how to customize the `Title` and how to use it.
+:::
+
+### Active property
+
+The `active` property indicates whether the container is active. When set to _false_, the container becomes non-reactive, meaning it will not respond to system events, will not subscribe to them, and will not be displayed in the user interface.
+
+#### `active` prop declaration
+
+
+
+```ts
+active?: boolean;
+```
+
+#### Behavior:
+
+- When `active` is _true_:
+  - The container subscribes to system events
+  - It renders in the user interface and it is visible (shows a skeleton or renders the component in the UI)
+  - It executes its normal operations
+- When `active` is _false_:
+  - The container does not subscribe to system events
+  - It does not render in the user interface and its visibility is set to false
+  - Side effects and state updates are not executed
+
+#### Example of `active` prop definition
+
+In the following example, the `ShippingMethods` container will be deactivated; this means it will not be rendered to the UI and will not listen to system events.
+
+```ts
+CheckoutProvider.render(ShippingMethods, {
+  UIComponentType: 'ToggleButton',
+  displayTitle: false,
+  active: false,
+})($deliveryMethods),
+```
+
+### AutoSync property
+
+The `autoSync` property determines whether the container automatically synchronizes its state changes with the backend via API calls. When set to _false_, the container does not automatically synchronize its state, but still maintains local updates.
+
+#### `autoSync` prop declaration
+
+
+
+```ts
+autoSync?: boolean;
+```
+
+#### Behavior:
+
+- When `autoSync` is _true_:
+  - Local changes are synchronized with the backend
+  - GraphQL mutations are executed when selection or local state changes
+  - The remote cart is automatically updated
+- When `autoSync` is _false_:
+  - Changes are only maintained locally
+  - No automatic GraphQL mutations are performed on the backend
+  - Control of mutations is passed to parent or external components
+
+#### Use cases:
+
+- In multi-step checkout flows where you want to control when data is sent to the backend
+- For nested containers where a parent container handles synchronization
+- In implementations that need additional validation before sending data
+
+#### Example of `autoSync` prop definition
+
+In the following example, the `ShippingMethods` container will not automatically synchronize its state changes with the backend; this means it will not automatically set the shipping method selected on the cart.
+
+```ts
+CheckoutProvider.render(ShippingMethods, {
+  UIComponentType: 'ToggleButton',
+  displayTitle: false,
+  autoSync: false,
+})($deliveryMethods),
+```
+
+---
+
 # LoginForm container
 
 The `LoginForm` container handles user email input and validation within the checkout process.
@@ -10926,117 +12350,6 @@ CheckoutProvider.render(OutOfStock, {
     cartApi.updateProductsFromCart(items).catch(console.error);
   },
 })($outOfStock),
-```
-
----
-
-# Checkout containers overview
-
-In this section, we describe the common properties of Checkout components that can be applied and used in the same way.
-
-## Title and heading customization
-
-Each container provides a title and a heading by default. If you want to hide the title or provide customized title, you can use the following interface.
-
-### TitleProps interface
-
-The `TitleProps` interface provides the following configuration options:
-
-
-
-The container receives an object that implements the `TitleProps` interface with the following properties:
-
-```ts
-export interface TitleProps {
-  displayTitle?: boolean;
-  slots?: {
-    Title?: SlotProps;
-  };
-}
-```
-
-- The `displayTitle` property set to _true_ displays the title of the container; otherwise, the title will be hidden.
-- The `slots` property is an object containing the following properties:
-  - The `Title` property is a handler used to render a customized title content.
-
-:::note[Checkout containers]
-In the pages that follow, you will learn how to customize the `Title` and how to use it.
-:::
-
-## Active property
-
-The `active` property indicates whether the container is active. When set to _false_, the container becomes non-reactive, meaning it will not respond to system events, will not subscribe to them, and will not be displayed in the user interface.
-
-### `active` prop declaration
-
-
-
-```ts
-active?: boolean;
-```
-
-#### Behavior:
-
-- When `active` is _true_:
-  - The container subscribes to system events
-  - It renders in the user interface and it is visible (shows a skeleton or renders the component in the UI)
-  - It executes its normal operations
-- When `active` is _false_:
-  - The container does not subscribe to system events
-  - It does not render in the user interface and its visibility is set to false
-  - Side effects and state updates are not executed
-
-### Example of `active` prop definition
-
-In the following example, the `ShippingMethods` container will be deactivated; this means it will not be rendered to the UI and will not listen to system events.
-
-```ts
-CheckoutProvider.render(ShippingMethods, {
-  UIComponentType: 'ToggleButton',
-  displayTitle: false,
-  active: false,
-})($deliveryMethods),
-```
-
-## AutoSync property
-
-The `autoSync` property determines whether the container automatically synchronizes its state changes with the backend via API calls. When set to _false_, the container does not automatically synchronize its state, but still maintains local updates.
-
-### `autoSync` prop declaration
-
-
-
-```ts
-autoSync?: boolean;
-```
-
-#### Behavior:
-
-- When `autoSync` is _true_:
-  - Local changes are synchronized with the backend
-  - GraphQL mutations are executed when selection or local state changes
-  - The remote cart is automatically updated
-- When `autoSync` is _false_:
-  - Changes are only maintained locally
-  - No automatic GraphQL mutations are performed on the backend
-  - Control of mutations is passed to parent or external components
-
-#### Use cases:
-
-- In multi-step checkout flows where you want to control when data is sent to the backend
-- For nested containers where a parent container handles synchronization
-- In implementations that need additional validation before sending data
-
-### Example of `autoSync` prop definition
-
-In the following example, the `ShippingMethods` container will not automatically synchronize its state changes with the backend; this means it will not automatically set the shipping method selected on the cart.
-
-```ts
-CheckoutProvider.render(ShippingMethods, {
-  UIComponentType: 'ToggleButton',
-  displayTitle: false,
-  autoSync: false,
-})($deliveryMethods),
 ```
 
 ---
@@ -11961,6 +13274,290 @@ events.emit('checkout/values', data);
 
 ---
 
+# Checkout Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Checkout, Checkout, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Checkout** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 2.1.0</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [checkout/values](#checkoutvalues-emits) | Emits | Emitted when form or configuration values change |
+| [cart/initialized](#cartinitialized-listens) | Listens | Fired by Cart (`cart`) when the component completes initialization |
+| [cart/merged](#cartmerged-listens) | Listens | Fired by Cart (`cart`) when data is merged |
+| [cart/reset](#cartreset-listens) | Listens | Fired by Cart (`cart`) when the component state is reset |
+| [cart/data](#cartdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+| [checkout/error](#checkouterror-emits-and-listens) | Emits and listens | Triggered when an error occurs |
+| [checkout/initialized](#checkoutinitialized-emits-and-listens) | Emits and listens | Triggered when the component completes initialization |
+| [checkout/updated](#checkoutupdated-emits-and-listens) | Emits and listens | Triggered when the component state is updated |
+| [shipping/estimate](#shippingestimate-emits-and-listens) | Emits and listens | Triggered when an estimate is calculated |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `cart/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartDataListener = events.on('cart/data', (data) => {
+  console.log('cart/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartDataListener.off();
+```
+
+### `cart/initialized` (listens)
+
+Fired by Cart (`cart`) when the component completes initialization
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartInitializedListener = events.on('cart/initialized', (data) => {
+  console.log('cart/initialized event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartInitializedListener.off();
+```
+
+### `cart/merged` (listens)
+
+Fired by Cart (`cart`) when data is merged
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartMergedListener = events.on('cart/merged', (data) => {
+  console.log('cart/merged event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartMergedListener.off();
+```
+
+### `cart/reset` (listens)
+
+Fired by Cart (`cart`) when the component state is reset
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartResetListener = events.on('cart/reset', (data) => {
+  console.log('cart/reset event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartResetListener.off();
+```
+
+### `checkout/error` (emits and listens)
+
+Triggered when an error occurs
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutErrorListener = events.on('checkout/error', (data) => {
+  console.log('checkout/error event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutErrorListener.off();
+```
+
+### `checkout/initialized` (emits and listens)
+
+Triggered when the component completes initialization
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutInitializedListener = events.on('checkout/initialized', (data) => {
+  console.log('checkout/initialized event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutInitializedListener.off();
+```
+
+### `checkout/updated` (emits and listens)
+
+Triggered when the component state is updated
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutUpdatedListener = events.on('checkout/updated', (data) => {
+  console.log('checkout/updated event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutUpdatedListener.off();
+```
+
+### `checkout/values` (emits)
+
+Emitted when form or configuration values change
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const checkoutValuesListener = events.on('checkout/values', (data) => {
+  console.log('checkout/values event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+checkoutValuesListener.off();
+```
+
+### `shipping/estimate` (emits and listens)
+
+Triggered when an estimate is calculated
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const shippingEstimateListener = events.on('shipping/estimate', (data) => {
+  console.log('shipping/estimate event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+shippingEstimateListener.off();
+```
+
+---
+
 # Extending the checkout drop-in component
 
 The checkout drop-in component follows the Adobe Commerce out-of-process extensibility (OOPE) pattern, which requires components to be flexible and extensible. When the checkout drop-in component lacks a specific feature, it provides mechanisms that allow developers to easily expand and customize its functionality.
@@ -12815,8 +14412,8 @@ The checkout drop-in component includes the following resources:
 
 - **[API Functions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/functions/)** - Core functions for managing checkout operations like authentication, shipping methods, and order placement
 - **[Utility Functions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/utilities/)** - Helper functions for DOM manipulation, form handling, data transforms, and more
-- **[Containers](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/overview/)** - Pre-built UI components for checkout steps
-- **[Event Handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/event-handling/)** - Event-driven architecture for component communication
+- **[Containers](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/)** - Pre-built UI components for checkout steps
+- **[Event Handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/)** - Event-driven architecture for component communication
 
 ## Supported Commerce features
 
@@ -12997,7 +14594,7 @@ Learn about the slots provided in the checkout drop-in component.
 
 ## Title slots
 
-The `TitleProps` interface defines slots for the [`Title`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/overview/#title-and-heading-customization) component. These slots enable you to customize the title content displayed in specific containers.
+The `TitleProps` interface defines slots for the [`Title`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/#title-and-heading-customization) component. These slots enable you to customize the title content displayed in specific containers.
 
 ```ts
 export interface TitleProps {
@@ -15251,6 +16848,26 @@ export default async function decorate(block) {
 
 ---
 
+# Order containers
+
+Order containers display order history, shipment tracking, and returns. The following containers provide the building blocks for complete order management experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [CreateReturn](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/create-return/) | Initiate return requests for eligible items. |
+| [CustomerDetails](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/customer-details/) | Customer information for the order. |
+| [OrderCancelForm](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/order-cancel-form/) | Request order cancellation. |
+| [OrderCostSummary](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/order-cost-summary/) | Pricing breakdown: subtotal, shipping, taxes, and total. |
+| [OrderProductList](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/order-product-list/) | Products in order with quantities and pricing. |
+| [OrderReturns](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/order-returns/) | Order returns and refund status. |
+| [OrderSearch](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/order-search/) | Search and find order history. |
+| [ReturnsList](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/returns-list/) | Return requests with status and details. |
+| [ShippingStatus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/order/containers/shipping-status/) | Shipping and delivery information with tracking. |
+
+---
+
 # OrderCancelForm container
 
 The `OrderCancelForm` container provides a cancellation form that allows users to select reasons for canceling an order and perform the cancellation operation.
@@ -15575,6 +17192,173 @@ export default async function decorate(block) {
 The default order dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the order drop-in component.
 
 ## Default keys and values
+
+---
+
+# Order Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Order, Order, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Order** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 1.4.0</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [cart/reset](#cartreset-emits) | Emits | Emitted when the component state is reset |
+| [order/error](#ordererror-emits) | Emits | Emitted when an error occurs |
+| [order/placed](#orderplaced-emits) | Emits | Emitted when an order is placed |
+| [order/data](#orderdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `cart/reset` (emits)
+
+Emitted when the component state is reset
+
+#### Data payload
+
+```typescript
+void
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const cartResetListener = events.on('cart/reset', (data) => {
+  console.log('cart/reset event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+cartResetListener.off();
+```
+
+### `order/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+```typescript
+OrderDataModel
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const orderDataListener = events.on('order/data', (data) => {
+  console.log('order/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+orderDataListener.off();
+```
+
+### `order/error` (emits)
+
+Emitted when an error occurs
+
+#### Data payload
+
+```typescript
+{ source: string; type: string; error: Error | string }
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `source` | `string` | See type definition in source code |
+| `type` | `string` | See type definition in source code |
+| `error` | `Error \| string` | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const orderErrorListener = events.on('order/error', (data) => {
+  console.log('order/error event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+orderErrorListener.off();
+```
+
+### `order/placed` (emits)
+
+Emitted when an order is placed
+
+#### Data payload
+
+```typescript
+OrderDataModel
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const orderPlacedListener = events.on('order/placed', (data) => {
+  console.log('order/placed event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+orderPlacedListener.off();
+```
 
 ---
 
@@ -16770,11 +18554,39 @@ placeOrderButton.onclick = () => {
 
 ---
 
+# Payment Services containers
+
+Payment Services containers handle secure payment processing with Adobe Commerce Payment Services. The following container provides PCI-compliant payment collection with tokenization support.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [CreditCard](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/payment-services/containers/credit-card/) | Secure payment form with PCI-compliant card collection. |
+
+---
+
 # Payment Services dictionary
 
 The default Payment Services dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the Payment Services drop-in component.
 
 ## Default keys and values
+
+---
+
+# Payment Services Data & Events
+
+The **Payment Services** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/sdk/reference/events/) for communication between drop-ins and external integrations.
+
+
+<strong>Version: 1.0.2</strong>
+
+
+## Events
+
+This drop-in does not emit or listen to any drop-in-specific events. This drop-in focuses on UI presentation and data display, relying on function calls rather than event-driven communication for its core functionality. It uses only common events for standard cross-component functionality like localization and error handling.
+
+For information about common events like `locale`, `error`, and `authenticated`, see the [common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
 
 ---
 
@@ -16788,9 +18600,9 @@ The following table provides an overview of the Payment Services payment methods
 
 | Payment method    | Payment method code          | Status                                     |
 |-------------------|------------------------------|--------------------------------------------|
-| Apple Pay         | `APPLE_PAY`                  |  |
+| ApplevPay         | `APPLE_PAY`                  |  |
 | Credit/debit card | `CREDIT_CARD`                |    |
-| Google Pay        | `GOOGLE_PAY`                 |  |
+| Google Pay        | `GOOGLE_PAY`                 |  |
 | PayPal Fastlane   | `FASTLANE`                   |  |
 | PayPal buttons    | `SMART_BUTTONS`              |  |
 
@@ -16828,6 +18640,18 @@ The Payment Services drop-in component requires the [Payment Services extension]
 The Payment Services component relies on containers from several other drop-in components, you must install and configure those components before you can use the Payment Services component to place an order.
 
 The [Commerce boilerplate template](https://github.com/hlxsites/aem-boilerplate-commerce) includes all of the necessary drop-in components and configurations to help you get started quickly, so Adobe recommends relying on the boilerplate instead of installing, configuring, and integrating the drop-in components individually.
+
+---
+
+# Personalization containers
+
+Personalization containers deliver targeted content using Adobe Target. The following container provides personalized experiences based on customer segments and targeting rules.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [TargetedBlock](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/personalization/containers/targeted-block/) | Personalized content blocks based on customer segments. |
 
 ---
 
@@ -17057,6 +18881,26 @@ Add the following line to the `blocks/header/header.js` file in the boilerplate 
 
 ```js
 ```
+
+---
+
+# Product Details containers
+
+Product Details containers display product information, images, pricing, and purchase options. The following containers provide the building blocks for complete product detail pages.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [ProductAttributes](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-attributes/) | Specifications, technical details, and attributes. |
+| [ProductDescription](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-description/) | Full product descriptions with rich content. |
+| [ProductGallery](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-gallery/) | Product images and media with zoom, thumbnails, and navigation. |
+| [ProductGiftCardOptions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-giftcard-options/) | Customize gift cards with amounts and messages. |
+| [ProductHeader](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-header/) | Product name, SKU, and key identifiers. |
+| [ProductOptions](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-options/) | Select variants like size, color, and configurable options. |
+| [ProductPrice](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-price/) | Pricing including special prices, tier pricing, and discounts. |
+| [ProductQuantity](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-quantity/) | Quantity selector for adding to cart. |
+| [ProductShortDescription](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/containers/product-short-description/) | Concise product summary for quick overview. |
 
 ---
 
@@ -17326,6 +19170,166 @@ return productRenderer.render(ProductShortDescription, {
 The product details page (PDP) dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the PDP drop-in component.
 
 ## Default keys and values
+
+---
+
+# Product Details Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Product Details, Product Details, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Product Details** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 1.3.5</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [pdp/valid](#pdpvalid-emits) | Emits | Emitted when validation state changes |
+| [pdp/setValues](#pdpsetvalues-listens) | Listens | Fired by Pdp (`pdp`) when values are set programmatically |
+| [pdp/data](#pdpdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+| [pdp/values](#pdpvalues-emits-and-listens) | Emits and listens | Triggered when form or configuration values change |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `pdp/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+```typescript
+ProductModel | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const pdpDataListener = events.on('pdp/data', (data) => {
+  console.log('pdp/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+pdpDataListener.off();
+```
+
+### `pdp/setValues` (listens)
+
+Fired by Pdp (`pdp`) when values are set programmatically
+
+#### Data payload
+
+This event's data payload structure is not documented in the source code.
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const pdpSetValuesListener = events.on('pdp/setValues', (data) => {
+  console.log('pdp/setValues event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+pdpSetValuesListener.off();
+```
+
+### `pdp/valid` (emits)
+
+Emitted when validation state changes
+
+#### Data payload
+
+```typescript
+boolean
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const pdpValidListener = events.on('pdp/valid', (data) => {
+  console.log('pdp/valid event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+pdpValidListener.off();
+```
+
+### `pdp/values` (emits and listens)
+
+Triggered when form or configuration values change
+
+#### Data payload
+
+```typescript
+ValuesModel
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const pdpValuesListener = events.on('pdp/values', (data) => {
+  console.log('pdp/values event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+pdpValuesListener.off();
+```
 
 ---
 
@@ -17951,6 +19955,21 @@ await provider.render(Facets, {
 
 ---
 
+# Product Discovery containers
+
+Product Discovery containers display search results, category listings, and product listing pages. The following containers provide the building blocks for complete search and discovery experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [SearchResults](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/containers/search-results/) | Product search results with configurable layouts and product information. |
+| [Facets](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/containers/facets/) | Filtering options to refine search results by attributes and categories. |
+| [SortBy](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/containers/sort-by/) | Sort product results by price, name, relevance, and other criteria. |
+| [Pagination](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-discovery/containers/pagination/) | Navigate multiple pages of product results with pagination controls. |
+
+---
+
 # Pagination container
 
 The `Pagination` container handles paging for search results. It shows next, previous, and page number controls and keeps the page in sync with the results.
@@ -18345,6 +20364,147 @@ await provider.render(SortBy, {
 The default Product Discovery dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the Product Discovery drop-in component.
 
 ## Default keys and values
+
+---
+
+# Product Discovery Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Product Discovery, Product Discovery, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Product Discovery** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 2.1.0</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [search/error](#searcherror-emits-and-listens) | Emits and listens | Triggered when an error occurs |
+| [search/loading](#searchloading-emits-and-listens) | Emits and listens | Triggered when loading state changes |
+| [search/result](#searchresult-emits-and-listens) | Emits and listens | Triggered when results are available |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `search/error` (emits and listens)
+
+Triggered when an error occurs
+
+#### Data payload
+
+```typescript
+string
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const searchErrorListener = events.on('search/error', (data) => {
+  console.log('search/error event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+searchErrorListener.off();
+```
+
+### `search/loading` (emits and listens)
+
+Triggered when loading state changes
+
+#### Data payload
+
+```typescript
+boolean
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const searchLoadingListener = events.on('search/loading', (data) => {
+  console.log('search/loading event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+searchLoadingListener.off();
+```
+
+### `search/result` (emits and listens)
+
+Triggered when results are available
+
+#### Data payload
+
+```typescript
+{
+result: ProductSearchResult;
+request: SearchVariables;
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `result` | `ProductSearchResult` | See type definition in source code |
+| `request` | `SearchVariables` | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const searchResultListener = events.on('search/result', (data) => {
+  console.log('search/result event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+searchResultListener.off();
+```
 
 ---
 
@@ -19094,6 +21254,18 @@ The CSS classes for each Product Discovery Component are provided here.
 
 ---
 
+# Recommendations containers
+
+Recommendations containers display AI-powered product suggestions using Adobe Sensei. The following container provides personalized product recommendations based on customer behavior and context.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [ProductList](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/recommendations/containers/product-list/) | Personalized recommendations powered by Adobe Sensei. |
+
+---
+
 # ProductList container
 
 The `ProductList` container manages and displays a list of recommended products based on the current product. Its behavior is driven by configuration options such as `currentSku`, `recId`, and `routing` through `routeProduct` callbacks.
@@ -19317,6 +21489,84 @@ provider.render(ProductList, {
 The default recommendations dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the recommendations drop-in component.
 
 ## Default keys and values
+
+---
+
+# Recommendations Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Recommendations, Recommendations, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Recommendations** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 1.1.1</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [recommendations/data](#recommendationsdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `recommendations/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+```typescript
+RecommendationUnitModel[] | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const recommendationsDataListener = events.on('recommendations/data', (data) => {
+  console.log('recommendations/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+recommendationsDataListener.off();
+```
 
 ---
 
@@ -20157,6 +22407,22 @@ export default async function decorate(block) {
 
 ---
 
+# User Account containers
+
+User Account containers manage account information, addresses, and order history. The following containers provide the building blocks for complete account management experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [AddressForm](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-account/containers/address-form/) | Add or edit customer addresses. |
+| [Addresses](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-account/containers/addresses/) | Manage shipping and billing addresses. |
+| [AddressValidation](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-account/containers/address-validation/) | Validate addresses for accurate delivery. |
+| [CustomerInformation](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-account/containers/customer-information/) | Profile information: name, email, and contact details. |
+| [OrdersList](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-account/containers/orders-list/) | Order history with details and status. |
+
+---
+
 # OrdersList container
 
 The `OrdersList` container is a standalone component designed to provide access to a customer's order history and detailed order information. It can be rendered in a full-size or minified view.
@@ -20216,6 +22482,22 @@ export default async function decorate(block) {
 The default user account dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the user account drop-in component.
 
 ## Default keys and values
+
+---
+
+# User Account Data & Events
+
+The **User Account** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/sdk/reference/events/) for communication between drop-ins and external integrations.
+
+
+<strong>Version: 1.2.0</strong>
+
+
+## Events
+
+This drop-in does not emit or listen to any drop-in-specific events. This drop-in focuses on UI presentation and data display, relying on function calls rather than event-driven communication for its core functionality. It uses only common events for standard cross-component functionality like localization and error handling.
+
+For information about common events like `locale`, `error`, and `authenticated`, see the [common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
 
 ---
 
@@ -21507,6 +23789,23 @@ The following example renders the AuthCombine container with the provided form c
 
 ---
 
+# User Auth containers
+
+User Auth containers handle authentication, registration, and password management. The following containers provide the building blocks for complete authentication experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [AuthCombine](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/auth-combine/) | Unified sign-in and sign-up interface. |
+| [ResetPassword](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/reset-password/) | Request password reset via email. |
+| [SignIn](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/sign-in/) | Login with email and password. |
+| [SignUp](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/sign-up/) | New customer registration and account creation. |
+| [SuccessNotification](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/success-notification/) | Confirmation for successful authentication. |
+| [UpdatePassword](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/user-auth/containers/update-password/) | Change account password securely. |
+
+---
+
 # ResetPassword container
 
 The ResetPassword container renders a dialog that initiates the process of resetting the user's password. The user must provide their email address to receive a password reset link.
@@ -21997,6 +24296,89 @@ The default user authentication dictionary file (`i18n/en_US.json`) contains the
 
 ---
 
+# User Auth Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: User Auth, User Auth, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **User Auth** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 2.1.1</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [auth/error](#autherror-emits) | Emits | Emitted when an error occurs |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `auth/error` (emits)
+
+Emitted when an error occurs
+
+#### Data payload
+
+```typescript
+{ source: string; type: string; error: Error | string }
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `source` | `string` | See type definition in source code |
+| `type` | `string` | See type definition in source code |
+| `error` | `Error \| string` | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const authErrorListener = events.on('auth/error', (data) => {
+  console.log('auth/error event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+authErrorListener.off();
+```
+
+---
+
 # User auth overview
 
 The user auth drop-in component will provide user authentication to allow customers to sign up, log in, and log out of your storefront.
@@ -22232,6 +24614,21 @@ The `SignIn`, `SignUp`, and `UpdatePassword` containers can use the `SuccessNoti
 
 ---
 
+# Wishlist containers
+
+Wishlist containers save and manage favorite products. The following containers provide the building blocks for complete wishlist experiences.
+
+
+
+| Container | Description |
+|-----------|-------------|
+| [Wishlist](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/wishlist/containers/wishlist/) | Complete wishlist with saved products and management. |
+| [WishlistAlert](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/wishlist/containers/wishlist-alert/) | Notifications when products are added or removed. |
+| [WishlistItem](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/wishlist/containers/wishlist-item/) | Individual product entries with details and actions. |
+| [WishlistToggle](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/wishlist/containers/wishlist-toggle/) | Add or remove products from wishlist. |
+
+---
+
 # Wishlist container
 
 This container manages and displays the list of products on a user's wishlist.
@@ -22361,6 +24758,168 @@ provider.render(WishlistToggle, {
 The default wishlist dictionary file (`i18n/en_US.json`) contains the default values for all labels and text common to the wishlist drop-in component.
 
 ## Default keys and values
+
+---
+
+# Wishlist Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Wishlist, Wishlist, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Wishlist** drop-in uses the [event bus](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common events reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+
+<strong>Version: 2.0.1</strong>
+
+
+> **Note:** **New to drop-in events?** Learn about the [event system architecture](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/), including the publish-subscribe pattern, subscription configuration, and best practices for event handling.
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [wishlist/initialized](#wishlistinitialized-emits) | Emits | Emitted when the component completes initialization |
+| [wishlist/alert](#wishlistalert-emits-and-listens) | Emits and listens | Triggered when an alert or notification is triggered |
+| [wishlist/data](#wishlistdata-emits-and-listens) | Emits and listens | Triggered when data is available or changes |
+| [wishlist/reset](#wishlistreset-emits-and-listens) | Emits and listens | Triggered when the component state is reset |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `wishlist/alert` (emits and listens)
+
+Triggered when an alert or notification is triggered
+
+#### Data payload
+
+```typescript
+WishlistActionPayload | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const wishlistAlertListener = events.on('wishlist/alert', (data) => {
+  console.log('wishlist/alert event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+wishlistAlertListener.off();
+```
+
+### `wishlist/data` (emits and listens)
+
+Triggered when data is available or changes
+
+#### Data payload
+
+```typescript
+Wishlist | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const wishlistDataListener = events.on('wishlist/data', (data) => {
+  console.log('wishlist/data event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+wishlistDataListener.off();
+```
+
+### `wishlist/initialized` (emits)
+
+Emitted when the component completes initialization
+
+#### Data payload
+
+```typescript
+Wishlist | null
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const wishlistInitializedListener = events.on('wishlist/initialized', (data) => {
+  console.log('wishlist/initialized event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+wishlistInitializedListener.off();
+```
+
+### `wishlist/reset` (emits and listens)
+
+Triggered when the component state is reset
+
+#### Data payload
+
+```typescript
+void
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const wishlistResetListener = events.on('wishlist/reset', (data) => {
+  console.log('wishlist/reset event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+wishlistResetListener.off();
+```
 
 ---
 
@@ -22758,6 +25317,111 @@ The CSS classes for each PDP Component are provided here.
 ## Summary
 
 You can customize the wishlist component by overriding the CSS classes provided for each component. Create a CSS file for each component to make it easier to maintain and update your Wishlist CSS. Use the BEM naming convention and your browser's dev tools to identify and copy the class to your corresponding component CSS file and override it as needed. Happy styling! 🎨
+
+---
+
+# Company Management Data & Events
+
+{/*
+  ⚠️ TEMPLATE USAGE GUIDE ⚠️
+  
+  This template is used by scripts/generate-events-docs.js to generate event documentation.
+  
+  WHAT THE SCRIPT USES FROM THIS TEMPLATE:
+  - Section headings and descriptive text (used as-is)
+  - Import statements
+  - The REPEAT_FOR_EACH_EVENT block (replicated for each event)
+  - Placeholders: Company Management, Company Management, EVENT_NAME, etc.
+  
+  WHAT THE SCRIPT GENERATES INDEPENDENTLY:
+  - Table contents between START/END markers (example rows are for reference only)
+  - Event-specific data (names, descriptions, payloads from source repos)
+  
+  TO CHANGE:
+  - Section text/descriptions → Edit this template
+  - Table structure (columns, links, formatting) → Edit scripts/generate-events-docs.js
+  - Both template and script must be kept in sync for table structure changes
+*/}
+
+
+The **Company Management** drop-in uses the [Event Bus](https://experienceleague.adobe.com/developer/commerce/storefront/sdk/reference/events/) to emit and listen to events for communication between drop-ins and external integrations. For common events shared across multiple drop-ins (such as `locale`, `error`, `authenticated`, etc.), see the [Common Events Reference](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/#common-events-reference).
+
+## Events reference
+
+{/* EVENTS_TABLE_START */}
+
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| [company/updated](#companyupdated-emits) | Emits | Emitted when the component state is updated |
+| [companyContext/changed](#companycontextchanged-listens) | Listens | Fired by Company Context (`companyContext`) when a change occurs |
+
+
+{/* EVENTS_TABLE_END */}
+
+## Event details
+
+The following sections provide detailed information about each event, including its direction, data payload structure, and usage examples.
+
+
+### `company/updated` (emits)
+
+Emitted when the component state is updated
+
+#### Data payload
+
+```typescript
+{ company?: any; message?: string; error?: any }
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `company` | `any` (optional) | See type definition in source code |
+| `message` | `string` (optional) | See type definition in source code |
+| `error` | `any` (optional) | See type definition in source code |
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const companyUpdatedListener = events.on('company/updated', (data) => {
+  console.log('company/updated event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+companyUpdatedListener.off();
+```
+
+### `companyContext/changed` (listens)
+
+Fired by Company Context (`companyContext`) when a change occurs
+
+#### Data payload
+
+```typescript
+string | null | undefined
+```
+
+
+
+#### Usage
+
+Listen to this event in your storefront:
+
+```javascript
+
+const companyContextChangedListener = events.on('companyContext/changed', (data) => {
+  console.log('companyContext/changed event received:', data);
+  // Add your custom logic here
+});
+
+// Later, when you want to stop listening
+companyContextChangedListener.off();
+```
 
 ---
 
@@ -23387,6 +26051,8 @@ The Drop-in SDK aims to streamline your development process while maintaining fl
 # Event Bus
 
 The Event Bus enables different parts of your application to communicate and stay synchronized through message passing. It supports event-driven architecture for drop-ins, allowing containers to react to changes from other containers and communicate data changes to the storefront.
+
+> **Note:** **New to event-driven architecture?** Learn about the [event system architecture and patterns](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) including the publish-subscribe pattern, event declarations, and best practices before diving into the API.
 
 ## Import
 
@@ -26841,13 +29507,13 @@ Welcome to the Commerce Playgrounds, where you can get hands-on experience with 
       - **`PaymentMethods`**
       - **`ShippingMethods`**
 
-      The **[`Event Handling`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/event-handling/) has been documented** within the list of events emitted and subscribed by the checkout drop-in component containers.
+      The **[`Event Handling`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) has been documented** within the list of events emitted and subscribed by the checkout drop-in component containers.
 
-      A new **[`Active`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/overview/#active-property) property has been added** for all containers: This property activates/deactivates the container.
+      A new **[`Active`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/#active-property) property has been added** for all containers: This property activates/deactivates the container.
 
-      A new **[`AutoSync`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/overview/#autosync-property) property has been added** for some containers: This property allows the container automatically synchronizing its state changes with the backend.
+      A new **[`AutoSync`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/#autosync-property) property has been added** for some containers: This property allows the container automatically synchronizing its state changes with the backend.
 
-      A new **[`TitleProps`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/overview/#title-and-heading-customization) interface has been created** to customize the title and header of some containers.
+      A new **[`TitleProps`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/#title-and-heading-customization) interface has been created** to customize the title and header of some containers.
 
       The **[`BillToShippingAddress`](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/containers/bill-to-shipping-address/) container configuration structure has been modified.** A new property has been added to the `BillToShippingAddressProps` interface:
 
@@ -26983,6 +29649,16 @@ Welcome to the Commerce Playgrounds, where you can get hands-on experience with 
 ************************************/}
 
       <ChangelogEntry
+          date="2025-10-20"
+          title="Storefront Compatibility Package v4.8.9"
+          components={['Storefront Compatibility Package']}
+      >
+          The Storefront Compatibility Package has been updated to include the following changes:
+
+          - **Add to Cart**: Resolved an issue where adding the same configurable product with identical options created separate entries instead of updating the existing item’s quantity.
+      </ChangelogEntry>
+
+      <ChangelogEntry
           date="2025-10-08"
           title="Storefront Compatibility Package v4.8.8"
           components={['Storefront Compatibility Package']}
@@ -26992,6 +29668,7 @@ Welcome to the Commerce Playgrounds, where you can get hands-on experience with 
           - **Customer ID**: Removed the deprecation notice for the GraphQL `Customer.id` field. This field returns the correct value that can be reused for B2B company management mutations/queries.
           - **Negotiable Quote Address**: Aligned multiple address input types to support customer address UIDs, deprecating customer address IDs. Introduced the `deleteCustomerAddressV2` and `updateCustomerAddressV2` mutations and deprecated the previous versions.
       </ChangelogEntry>
+
      <ChangelogEntry
           date="2025-09-08"
           title="Storefront Compatibility Package v4.8.7, v4.7.10"
@@ -27605,7 +30282,7 @@ This section provides details about the compatibility between Commerce Storefron
 | Adobe Commerce | Storefront Compatibility Package |
 |----------------|----------------------------------|
 | `2.4.7`        | `4.7.11`                         |
-| `2.4.8`        | `4.8.8`                          |
+| `2.4.8`        | `4.8.9`                          |
 
 **Drop-in SDK package updates:**
 
@@ -27756,7 +30433,7 @@ This suite release delivers significant enhancements to existing drop-in compone
 |-----------|--------------|
 | AEM Assets | Integrated across the suite of drop-in components |
 | Cart | • Improved extensibility for mini cart including additional [layout options](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/containers/cart-summary-table/)• Introduced the ability to [edit product options](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/tutorials/enable-product-variation-updates-in-cart/) directly from the cart• Mini cart [shows a message](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/tutorials/add-messages-to-mini-cart/) upon adding products to the cart |
-| Checkout | • [Configure terms and conditions](https://experienceleague.adobe.com/developer/commerce/storefront/merchants/get-started/terms-and-conditions/)• [Improved error handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/error-handling/)• [Improved event handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/event-handling/) |
+| Checkout | • [Configure terms and conditions](https://experienceleague.adobe.com/developer/commerce/storefront/merchants/get-started/terms-and-conditions/)• [Improved error handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/error-handling/)• [Improved event handling](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/events/) |
 | PDP | • Supports updating cart items by URL (`itemUid`) |
 | Storefront Compatibility Package (SCP) | • Secure [personalization](https://experienceleague.adobe.com/developer/commerce/storefront/merchants/get-started/personalization/) features• Social login integration APIs |
 | Boilerplate | • Upgraded boilerplate to Helix 5• Improvements to scaffolding tool• Centralized configuration through NPM• Updated the [localization approach](https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/labeling/) across the boilerplate• Eliminated the need to manage or modify configuration logic manually. Updates can now be delivered through standard package upgrades. |
