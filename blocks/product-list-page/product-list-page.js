@@ -55,6 +55,8 @@ export default async function decorate(block) {
   const $productList = fragment.querySelector('.search__product-list');
   const $pagination = fragment.querySelector('.search__pagination');
 
+  const reqLists = (await rlApi.getRequisitionLists()).items;
+
   block.innerHTML = '';
   block.appendChild(fragment);
 
@@ -107,7 +109,7 @@ export default async function decorate(block) {
     const isEnabled = await rlApi.isRequisitionListEnabled();
     if (isEnabled) {
       rlRenderer.render(RequisitionListNames, {
-        items: [],
+        items: reqLists,
         sku: product.sku,
         quantity: 1,
         variant: 'hover',
