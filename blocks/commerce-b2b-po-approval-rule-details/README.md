@@ -14,9 +14,9 @@ The Commerce B2B PO Approval Rule Details block renders detailed information abo
 
 ### URL Parameters
 
-| Parameter | Type   | Description                                     | Required | Side Effects                                           |
-| --------- | ------ | ----------------------------------------------- | -------- | ------------------------------------------------------ |
-| `ruleRef` | string | The unique identifier for the approval rule     | Yes      | Missing parameter redirects to approval rules list page |
+| Parameter | Type   | Description                                 | Required | Side Effects                                            |
+| --------- | ------ | ------------------------------------------- | -------- | ------------------------------------------------------- |
+| `ruleRef` | string | The unique identifier for the approval rule | Yes      | Missing parameter redirects to approval rules list page |
 
 <!-- ### Local Storage
 
@@ -66,4 +66,4 @@ No events are emitted by this block. -->
 - **Missing Rule ID**: If `ruleRef` parameter is missing or empty, redirects to approval rules list page
 - **Container Errors**: If the ApprovalRuleDetails container fails to render, the block content remains empty
 - **Permission Update Errors**: If permission events provide invalid data, uses empty permissions object as fallback
-- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, account dashboard redirect if no access, or approval rules list redirect if no rule ID 
+- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, account dashboard redirect if no access, or approval rules list redirect if no rule ID

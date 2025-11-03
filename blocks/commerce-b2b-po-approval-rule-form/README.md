@@ -14,8 +14,8 @@ The Commerce B2B PO Approval Rule Form block renders a form for creating new or 
 
 ### URL Parameters
 
-| Parameter | Type   | Description                                     | Required | Side Effects                                           |
-| --------- | ------ | ----------------------------------------------- | -------- | ------------------------------------------------------ |
+| Parameter | Type   | Description                                         | Required | Side Effects                                                                                                                    |
+| --------- | ------ | --------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `ruleRef` | string | The unique identifier for the approval rule to edit | No       | When provided, form loads with pre-populated rule details for editing. When omitted, form renders empty for creating a new rule |
 
 <!-- ### Local Storage
