@@ -387,24 +387,26 @@ export default async function decorate(block) {
     await renderOrderSuccess(block, { orderData });
   }
 
-  function handlePaymentServicesMethodAvailable(code) {
-    paymentMethods.setProps((prev) => ({
-      slots: {
-        Methods: {
-          ...prev.slots.Methods,
-          [code]: {
-            ...prev.slots.Methods[code],
-            enabled: true,
+  function handlePaymentServicesInitialized({ availablePaymentMethods }) {
+    availablePaymentMethods.forEach((code) => {
+      paymentMethods.setProps((prev) => ({
+        slots: {
+          Methods: {
+            ...prev.slots.Methods,
+            [code]: {
+              ...prev.slots.Methods[code],
+              enabled: true,
+            },
           },
         },
-      },
-    }));
+      }));
+    });
   }
 
   events.on('authenticated', handleAuthenticated);
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
-  events.on('payment-services/method-available/checkout', handlePaymentServicesMethodAvailable, { eager: true });
+  events.on('payment-services/initialized/checkout', handlePaymentServicesInitialized, { eager: true });
   events.on('order/placed', handleOrderPlaced);
 }

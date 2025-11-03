@@ -5,7 +5,7 @@ export interface ApplePayProps {
     /**
      * Location where the Apple Pay button is to be rendered.
      */
-    location?: PaymentLocation;
+    location: PaymentLocation;
     /**
      * Required if createCart not provided.
      * Should return a promise that resolves to the shopper's cart ID.

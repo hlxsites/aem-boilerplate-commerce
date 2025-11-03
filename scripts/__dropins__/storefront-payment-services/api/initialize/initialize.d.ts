@@ -25,7 +25,7 @@ export type ConfigProps = {
     /**
      * Dictionary of language definitions for the Payment Services drop-in.
      */
-    langDefinitions?: Record<"default" | Lang, object>;
+    langDefinitions?: Record<'default' | Lang, object>;
 };
 export declare const initialize: Initializer<ConfigProps>;
 export declare const config: import('@dropins/tools/types/elsie/src/lib').Config<ConfigProps>;
