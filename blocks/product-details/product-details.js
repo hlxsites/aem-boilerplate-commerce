@@ -435,8 +435,9 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  events.on('payment-services/method-available/product-detail', (paymentMethodCode) => {
-    if (paymentMethodCode === PaymentMethodCode.APPLE_PAY) {
+  // Show Apple Pay button if available
+  events.on('payment-services/initialized/product-detail', ({ availablePaymentMethods }) => {
+    if (availablePaymentMethods.includes(PaymentMethodCode.APPLE_PAY)) {
       applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
