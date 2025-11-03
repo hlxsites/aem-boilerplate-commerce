@@ -1,19 +1,409 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{Initializer as y}from"@dropins/tools/lib.js";import{f as P,h as A}from"./chunks/fetch-graphql.js";import{g as sr,r as ur,s as ir,a as nr,b as lr}from"./chunks/fetch-graphql.js";import{P as C,t as D}from"./chunks/getPurchaseOrders.js";import{a as pr,g as _r,r as cr}from"./chunks/getPurchaseOrders.js";import{h as a}from"./chunks/fetch-error.js";import{a as tr,c as Or,g as fr,u as Er}from"./chunks/currencyInfo.js";import{d as Rr,g as Pr}from"./chunks/getPurchaseOrderApprovalRules.js";import{g as ar}from"./chunks/getPurchaseOrderApprovalRule.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/case-converter.js";import"./chunks/transform-purchase-order-approval-rule.js";const v=new y({init:async e=>{const n={};v.config.setConfig({...n,...e})},listeners:()=>[]}),k=v.config,T=`
-  mutation CANCEL_PURCHASE_ORDERS($input: PurchaseOrdersActionInput!) {
-    cancelPurchaseOrders(input: $input) {
-      purchase_orders {
-        ...PURCHASE_ORDERS_FRAGMENT
+import{Initializer as w}from"@dropins/tools/lib.js";import{f as y,h as O}from"./chunks/fetch-graphql.js";import{g as m,r as rr,s as er,a as ar,b as tr}from"./chunks/fetch-graphql.js";import{h as v}from"./chunks/fetch-error.js";import{t as R,P as C}from"./chunks/rejectPurchaseOrders.js";import{a as ur,r as sr}from"./chunks/rejectPurchaseOrders.js";import{events as D}from"@dropins/tools/event-bus.js";import{c as _r,p as cr}from"./chunks/placeOrderForPurchaseOrder.js";import{a as or,c as dr,g as pr,u as hr}from"./chunks/currencyInfo.js";import{d as fr,g as yr}from"./chunks/getPurchaseOrderApprovalRules.js";import{g as vr}from"./chunks/getPurchaseOrders.js";import{g as Er}from"./chunks/getPurchaseOrderApprovalRule.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-purchase-order-approval-rule.js";import"./chunks/case-converter.js";const S=`
+  fragment PURCHASE_ORDER_QUOTE_FRAGMENT on Cart {
+    __typename
+    id
+    email
+    is_virtual
+    total_quantity
+    applied_coupons {
+      code
+    }
+    applied_gift_cards {
+      code
+      applied_balance {
+        value
+        currency
       }
-      errors {
-        message
-        type
+      current_balance {
+        value
+        currency
+      }
+      expiration_date
+    }
+    applied_reward_points {
+      money {
+        value
+        currency
+      }
+      points
+    }
+    applied_store_credit {
+      applied_balance {
+        value
+        currency
+      }
+      current_balance {
+        value
+        currency
+      }
+    }
+    available_gift_wrappings {
+      uid
+      design
+      price {
+        value
+        currency
+      }
+      image {
+        url
+        label
+      }
+    }
+    gift_message {
+      from
+      to
+      message
+    }
+    gift_receipt_included
+    gift_wrapping {
+      uid
+      design
+      price {
+        value
+        currency
+      }
+      image {
+        url
+        label
+      }
+    }
+    printed_card_included
+    available_payment_methods {
+      code
+      title
+      is_deferred
+    }
+    selected_payment_method {
+      code
+      title
+    }
+    billing_address {
+      city
+      company
+      country {
+        code
+        label
+      }
+      firstname
+      lastname
+      postcode
+      region {
+        code
+        label
+      }
+      street
+      telephone
+      custom_attributes {
+        code
+      }
+      fax
+      id
+      middlename
+      prefix
+      suffix
+      uid
+      vat_id
+    }
+    shipping_addresses {
+      city
+      company
+      country {
+        code
+        label
+      }
+      firstname
+      lastname
+      postcode
+      region {
+        code
+        label
+      }
+      street
+      telephone
+      custom_attributes {
+        code
+      }
+      fax
+      id
+      middlename
+      prefix
+      suffix
+      uid
+      vat_id
+      available_shipping_methods {
+        amount {
+          value
+          currency
+        }
+        carrier_code
+        carrier_title
+        method_code
+        method_title
+      }
+      selected_shipping_method {
+        amount {
+          value
+          currency
+        }
+        carrier_code
+        carrier_title
+        method_code
+        method_title
+      }
+    }
+    rules {
+      uid
+    }
+    itemsV2(pageSize: 100, currentPage: 1) {
+      items {
+        uid
+        quantity
+        product {
+          __typename
+          uid
+          name
+          sku
+          url_key
+          canonical_url
+          stock_status
+          only_x_left_in_stock
+          image {
+            url
+            label
+          }
+          small_image {
+            url
+            label
+          }
+          thumbnail {
+            url
+            label
+          }
+          price_range {
+            maximum_price {
+              regular_price {
+                value
+                currency
+              }
+              final_price {
+                value
+                currency
+              }
+            }
+          }
+        }
+        prices {
+          price {
+            value
+            currency
+          }
+          price_including_tax {
+            value
+            currency
+          }
+          original_item_price {
+            value
+            currency
+          }
+          original_row_total {
+            value
+            currency
+          }
+          row_total {
+            value
+            currency
+          }
+          row_total_including_tax {
+            value
+            currency
+          }
+          total_item_discount {
+            value
+            currency
+          }
+          discounts {
+            label
+            amount {
+              value
+              currency
+            }
+          }
+          fixed_product_taxes {
+            label
+            amount {
+              value
+              currency
+            }
+          }
+        }
+        ... on SimpleCartItem {
+          customizable_options {
+            label
+            values {
+              label
+              value
+            }
+          }
+        }
+        ... on ConfigurableCartItem {
+          configurable_options {
+            option_label
+            value_label
+          }
+        }
+        ... on BundleCartItem {
+          bundle_options {
+            uid
+            label
+            type
+            values {
+              uid
+              label
+              quantity
+            }
+          }
+        }
+        ... on DownloadableCartItem {
+          links {
+            uid
+            title
+          }
+        }
+        ... on GiftCardCartItem {
+          sender_name
+          sender_email
+          recipient_name
+          recipient_email
+          message
+          amount {
+            value
+            currency
+          }
+        }
+        errors {
+          code
+          message
+        }
+        is_available
+        max_qty
+        min_qty
+        not_available_message
+        note_from_buyer {
+          note_uid
+          note
+          created_at
+        }
+        note_from_seller {
+          note_uid
+          note
+          created_at
+        }
+      }
+      page_info {
+        current_page
+        page_size
+        total_pages
+      }
+      total_count
+    }
+    prices {
+      grand_total {
+        value
+        currency
+      }
+      grand_total_excluding_tax {
+        value
+        currency
+      }
+      subtotal_excluding_tax {
+        value
+        currency
+      }
+      subtotal_including_tax {
+        value
+        currency
+      }
+      subtotal_with_discount_excluding_tax {
+        value
+        currency
+      }
+      applied_taxes {
+        label
+        amount {
+          value
+          currency
+        }
+      }
+      discounts {
+        label
+        amount {
+          value
+          currency
+        }
+      }
+      gift_options {
+        gift_wrapping_for_items {
+          value
+          currency
+        }
+        gift_wrapping_for_items_incl_tax {
+          value
+          currency
+        }
+        gift_wrapping_for_order {
+          value
+          currency
+        }
+        gift_wrapping_for_order_incl_tax {
+          value
+          currency
+        }
+        printed_card {
+          value
+          currency
+        }
+        printed_card_incl_tax {
+          value
+          currency
+        }
       }
     }
   }
-  ${C}
-`,J=async e=>{const n=Array.isArray(e)?e:[e];if(!n||n.length===0)throw new Error("Purchase Order UID(s) are required");if(n.some(s=>!s||s.trim()===""))throw new Error("All Purchase Order UIDs must be valid");return P(T,{variables:{input:{purchase_order_uids:n}}}).then(s=>{var l,o,_;(l=s.errors)!=null&&l.length&&a(s.errors);const i=(o=s.data)==null?void 0:o.cancelPurchaseOrders;if(!i)throw new Error("Failed to cancel purchase orders");return{errors:((i==null?void 0:i.errors)??[]).map(c=>({message:(c==null?void 0:c.message)??"",type:(c==null?void 0:c.type)??""})),purchaseOrders:((_=i==null?void 0:i.purchase_orders)==null?void 0:_.map(c=>D(c)))??[]}}).catch(A)},U=`
+`,I=`
+  query GET_PURCHASE_ORDER($uid: ID!) {
+    customer {
+      purchase_order(uid: $uid) {
+        uid
+        number
+        created_at
+        updated_at
+        status
+        available_actions
+        created_by {
+          firstname
+          lastname
+          email
+        }
+        order {
+          id
+          number
+          total {
+            grand_total {
+              value
+              currency
+            }
+          }
+        }
+        quote {
+          ...PURCHASE_ORDER_QUOTE_FRAGMENT
+        }
+      }
+    }
+  }
+  ${S}
+`,U=async r=>{if(!r||r.trim()==="")throw new Error("Purchase Order UID is required");return y(I,{variables:{uid:r}}).then(i=>{var t,a,e;(t=i.errors)!=null&&t.length&&v(i.errors);const s=(e=(a=i.data)==null?void 0:a.customer)==null?void 0:e.purchase_order;if(!s)throw new Error("Failed to get purchase order");return{purchaseOrder:R(s)}}).catch(O)},x=new w({init:async r=>{var t,a;const i={};if(x.config.setConfig({...i,...r}),typeof(r==null?void 0:r.poRef)=="string"&&r.poRef.trim()!==""){const e=await U(r.poRef);(t=e==null?void 0:e.purchaseOrder)!=null&&t.quote&&D.emit("order/data",{...e.purchaseOrder.quote,poNumber:(a=e==null?void 0:e.purchaseOrder)==null?void 0:a.number})}},listeners:()=>[]}),B=x.config,T=`
   mutation VALIDATE_PURCHASE_ORDERS($input: ValidatePurchaseOrdersInput!) {
     validatePurchaseOrders(input: $input) {
       errors {
@@ -26,7 +416,7 @@ import{Initializer as y}from"@dropins/tools/lib.js";import{f as P,h as A}from"./
     }
   }
   ${C}
-`,K=async e=>{const n=Array.isArray(e)?e:[e];if(!n||n.length===0)throw new Error("Purchase Order UID(s) are required");if(n.some(s=>!s||s.trim()===""))throw new Error("All Purchase Order UIDs must be valid");return P(U,{variables:{input:{purchase_order_uids:n}}}).then(s=>{var l,o;(l=s.errors)!=null&&l.length&&a(s.errors);const i=(o=s.data)==null?void 0:o.validatePurchaseOrders;return{errors:((i==null?void 0:i.errors)??[]).map(_=>({message:(_==null?void 0:_.message)??"",type:(_==null?void 0:_.type)??""})),purchaseOrders:((i==null?void 0:i.purchase_orders)||[]).map(D)}}).catch(A)},q=`
+`,J=async r=>{const i=Array.isArray(r)?r:[r];if(!i||i.length===0)throw new Error("Purchase Order UID(s) are required");if(i.some(t=>!t||t.trim()===""))throw new Error("All Purchase Order UIDs must be valid");return y(T,{variables:{input:{purchase_order_uids:i}}}).then(t=>{var e,l;(e=t.errors)!=null&&e.length&&v(t.errors);const a=(l=t.data)==null?void 0:l.validatePurchaseOrders;return{errors:((a==null?void 0:a.errors)??[]).map(_=>({message:(_==null?void 0:_.message)??"",type:(_==null?void 0:_.type)??""})),purchaseOrders:((a==null?void 0:a.purchase_orders)||[]).map(R)}}).catch(O)},q=`
   mutation ADD_PURCHASE_ORDER_COMMENT(
     $purchaseOrderUid: ID!
     $comment: String!
@@ -58,7 +448,7 @@ import{Initializer as y}from"@dropins/tools/lib.js";import{f as P,h as A}from"./
       }
     }
   }
-`,$=e=>{var u,s,i,l,o,_,c,t,O,f,E,g,R,h,b;const n=((s=(u=e==null?void 0:e.cart)==null?void 0:u.itemsV2)==null?void 0:s.items)??[];return{cart:{id:((i=e==null?void 0:e.cart)==null?void 0:i.id)??"",items:n.map(p=>{var r,S,w;return{uid:(p==null?void 0:p.uid)??"",quantity:(p==null?void 0:p.quantity)??0,product:{uid:((r=p==null?void 0:p.product)==null?void 0:r.uid)??"",name:((S=p==null?void 0:p.product)==null?void 0:S.name)??"",sku:((w=p==null?void 0:p.product)==null?void 0:w.sku)??""}}}),pagination:{currentPage:((_=(o=(l=e==null?void 0:e.cart)==null?void 0:l.itemsV2)==null?void 0:o.page_info)==null?void 0:_.current_page)??1,pageSize:((O=(t=(c=e==null?void 0:e.cart)==null?void 0:c.itemsV2)==null?void 0:t.page_info)==null?void 0:O.page_size)??20,totalPages:((g=(E=(f=e==null?void 0:e.cart)==null?void 0:f.itemsV2)==null?void 0:E.page_info)==null?void 0:g.total_pages)??0,totalCount:((h=(R=e==null?void 0:e.cart)==null?void 0:R.itemsV2)==null?void 0:h.total_count)??0}},userErrors:((b=e==null?void 0:e.user_errors)==null?void 0:b.map(p=>({message:(p==null?void 0:p.message)??""})))??[]}},x=e=>{var b,p;const n=(p=(b=e.data)==null?void 0:b.placeOrderForPurchaseOrder)==null?void 0:p.order,u=r=>({value:(r==null?void 0:r.value)||0,currency:(r==null?void 0:r.currency)||""}),s=r=>({code:(r==null?void 0:r.code)||"",label:(r==null?void 0:r.label)||""}),i=r=>({code:(r==null?void 0:r.code)||"",appliedBalance:u(r==null?void 0:r.applied_balance),currentBalance:u(r==null?void 0:r.current_balance)}),l=r=>({firstname:(r==null?void 0:r.firstname)||"",lastname:(r==null?void 0:r.lastname)||"",street:(r==null?void 0:r.street)||[],city:(r==null?void 0:r.city)||"",region:(r==null?void 0:r.region)||"",postcode:(r==null?void 0:r.postcode)||"",countryCode:(r==null?void 0:r.country_code)||"",telephone:(r==null?void 0:r.telephone)||"",company:(r==null?void 0:r.company)||""}),o=r=>({name:(r==null?void 0:r.name)||"",type:(r==null?void 0:r.type)||"",additionalData:(r==null?void 0:r.additional_data)||{}}),_=r=>({id:(r==null?void 0:r.id)||"",productName:(r==null?void 0:r.product_name)||"",productSku:(r==null?void 0:r.product_sku)||"",quantityOrdered:(r==null?void 0:r.quantity_ordered)||0,quantityShipped:(r==null?void 0:r.quantity_shipped)||0,quantityInvoiced:(r==null?void 0:r.quantity_invoiced)||0,quantityRefunded:(r==null?void 0:r.quantity_refunded)||0,price:u(r==null?void 0:r.price),total:u(r==null?void 0:r.total)}),c=r=>({number:(r==null?void 0:r.number)||"",carrier:(r==null?void 0:r.carrier)||"",title:(r==null?void 0:r.title)||""}),t=r=>({message:(r==null?void 0:r.message)||"",timestamp:(r==null?void 0:r.timestamp)||""}),O=r=>({id:(r==null?void 0:r.id)||"",productName:(r==null?void 0:r.product_name)||"",productSku:(r==null?void 0:r.product_sku)||"",quantityShipped:(r==null?void 0:r.quantity_shipped)||0}),f=r=>({id:(r==null?void 0:r.id)||"",number:(r==null?void 0:r.number)||"",tracking:((r==null?void 0:r.tracking)||[]).map(c),comments:((r==null?void 0:r.comments)||[]).map(t),items:((r==null?void 0:r.items)||[]).map(O)}),E=r=>({firstname:(r==null?void 0:r.firstname)||"",lastname:(r==null?void 0:r.lastname)||"",email:(r==null?void 0:r.email)||""}),g=r=>({label:(r==null?void 0:r.label)||"",amount:u(r==null?void 0:r.amount)}),R=r=>({baseGrandTotal:u(r==null?void 0:r.base_grand_total),grandTotal:u(r==null?void 0:r.grand_total),subtotal:u(r==null?void 0:r.subtotal),totalTax:u(r==null?void 0:r.total_tax),totalShipping:u(r==null?void 0:r.total_shipping),discounts:((r==null?void 0:r.discounts)||[]).map(g)}),h=r=>({appliedCoupons:((r==null?void 0:r.applied_coupons)||[]).map(s),appliedGiftCards:((r==null?void 0:r.applied_gift_cards)||[]).map(i),availableActions:(r==null?void 0:r.available_actions)||[],billingAddress:r!=null&&r.billing_address?l(r.billing_address):{firstname:"",lastname:"",street:[],city:"",region:"",postcode:"",countryCode:"",telephone:"",company:""},carrier:(r==null?void 0:r.carrier)||"",comments:(r==null?void 0:r.comments)||[],creditMemos:(r==null?void 0:r.credit_memos)||[],customAttributes:(r==null?void 0:r.custom_attributes)||[],customerInfo:r!=null&&r.customer_info?E(r.customer_info):{firstname:"",lastname:"",email:""},email:(r==null?void 0:r.email)||"",giftMessage:(r==null?void 0:r.gift_message)||"",giftReceiptIncluded:(r==null?void 0:r.gift_receipt_included)||!1,giftWrapping:(r==null?void 0:r.gift_wrapping)||null,id:(r==null?void 0:r.id)||"",invoices:(r==null?void 0:r.invoices)||[],isVirtual:(r==null?void 0:r.is_virtual)||!1,items:((r==null?void 0:r.items)||[]).map(_),itemsEligibleForReturn:(r==null?void 0:r.items_eligible_for_return)||[],number:(r==null?void 0:r.number)||"",orderDate:(r==null?void 0:r.order_date)||"",orderStatusChangeDate:(r==null?void 0:r.order_status_change_date)||"",paymentMethods:((r==null?void 0:r.payment_methods)||[]).map(o),printedCardIncluded:(r==null?void 0:r.printed_card_included)||!1,returns:(r==null?void 0:r.returns)||null,shipments:((r==null?void 0:r.shipments)||[]).map(f),shippingAddress:r!=null&&r.shipping_address?l(r.shipping_address):{firstname:"",lastname:"",street:[],city:"",region:"",postcode:"",countryCode:"",telephone:"",company:""},shippingMethod:(r==null?void 0:r.shipping_method)||"",status:(r==null?void 0:r.status)||"",token:(r==null?void 0:r.token)||"",total:r!=null&&r.total?R(r.total):{baseGrandTotal:u(null),grandTotal:u(null),subtotal:u(null),totalTax:u(null),totalShipping:u(null),discounts:[]}});return h(n||null)},I=e=>{var n,u,s,i,l,o,_,c,t,O,f,E,g,R,h;return{createdAt:(e==null?void 0:e.created_at)??"",text:(e==null?void 0:e.text)??"",uid:(e==null?void 0:e.uid)??"",author:{allowRemoteShoppingAssistance:((n=e==null?void 0:e.author)==null?void 0:n.allow_remote_shopping_assistance)??!1,confirmationStatus:((u=e==null?void 0:e.author)==null?void 0:u.confirmation_status)??"",createdAt:((s=e==null?void 0:e.author)==null?void 0:s.created_at)??"",dateOfBirth:((i=e==null?void 0:e.author)==null?void 0:i.date_of_birth)??"",email:((l=e==null?void 0:e.author)==null?void 0:l.email)??"",firstname:((o=e==null?void 0:e.author)==null?void 0:o.firstname)??"",gender:((_=e==null?void 0:e.author)==null?void 0:_.gender)??0,jobTitle:((c=e==null?void 0:e.author)==null?void 0:c.job_title)??"",lastname:((t=e==null?void 0:e.author)==null?void 0:t.lastname)??"",middlename:((O=e==null?void 0:e.author)==null?void 0:O.middlename)??"",prefix:((f=e==null?void 0:e.author)==null?void 0:f.prefix)??"",status:((E=e==null?void 0:e.author)==null?void 0:E.status)??"",structureId:((g=e==null?void 0:e.author)==null?void 0:g.structure_id)??"",suffix:((R=e==null?void 0:e.author)==null?void 0:R.suffix)??"",telephone:((h=e==null?void 0:e.author)==null?void 0:h.telephone)??""}}},X=async(e,n)=>{if(!e)throw new Error("Purchase Order ID is required");if(!n)throw new Error("Comment text is required");return P(q,{variables:{purchaseOrderUid:e,comment:n}}).then(s=>{var i,l,o;return(i=s.errors)!=null&&i.length&&a(s.errors),I((o=(l=s.data)==null?void 0:l.addPurchaseOrderComment)==null?void 0:o.comment)}).catch(A)},H=`
+`,H=r=>{var s,t,a,e,l,_,c,n,o,d,p,h,g,f,E;const i=((t=(s=r==null?void 0:r.cart)==null?void 0:s.itemsV2)==null?void 0:t.items)??[];return{cart:{id:((a=r==null?void 0:r.cart)==null?void 0:a.id)??"",items:i.map(u=>{var b,P,A;return{uid:(u==null?void 0:u.uid)??"",quantity:(u==null?void 0:u.quantity)??0,product:{uid:((b=u==null?void 0:u.product)==null?void 0:b.uid)??"",name:((P=u==null?void 0:u.product)==null?void 0:P.name)??"",sku:((A=u==null?void 0:u.product)==null?void 0:A.sku)??""}}}),pagination:{currentPage:((_=(l=(e=r==null?void 0:r.cart)==null?void 0:e.itemsV2)==null?void 0:l.page_info)==null?void 0:_.current_page)??1,pageSize:((o=(n=(c=r==null?void 0:r.cart)==null?void 0:c.itemsV2)==null?void 0:n.page_info)==null?void 0:o.page_size)??20,totalPages:((h=(p=(d=r==null?void 0:r.cart)==null?void 0:d.itemsV2)==null?void 0:p.page_info)==null?void 0:h.total_pages)??0,totalCount:((f=(g=r==null?void 0:r.cart)==null?void 0:g.itemsV2)==null?void 0:f.total_count)??0}},userErrors:((E=r==null?void 0:r.user_errors)==null?void 0:E.map(u=>({message:(u==null?void 0:u.message)??""})))??[]}},$=r=>{var i,s,t,a,e,l,_,c,n,o,d,p,h,g,f;return{createdAt:(r==null?void 0:r.created_at)??"",text:(r==null?void 0:r.text)??"",uid:(r==null?void 0:r.uid)??"",author:{allowRemoteShoppingAssistance:((i=r==null?void 0:r.author)==null?void 0:i.allow_remote_shopping_assistance)??!1,confirmationStatus:((s=r==null?void 0:r.author)==null?void 0:s.confirmation_status)??"",createdAt:((t=r==null?void 0:r.author)==null?void 0:t.created_at)??"",dateOfBirth:((a=r==null?void 0:r.author)==null?void 0:a.date_of_birth)??"",email:((e=r==null?void 0:r.author)==null?void 0:e.email)??"",firstname:((l=r==null?void 0:r.author)==null?void 0:l.firstname)??"",gender:((_=r==null?void 0:r.author)==null?void 0:_.gender)??0,jobTitle:((c=r==null?void 0:r.author)==null?void 0:c.job_title)??"",lastname:((n=r==null?void 0:r.author)==null?void 0:n.lastname)??"",middlename:((o=r==null?void 0:r.author)==null?void 0:o.middlename)??"",prefix:((d=r==null?void 0:r.author)==null?void 0:d.prefix)??"",status:((p=r==null?void 0:r.author)==null?void 0:p.status)??"",structureId:((h=r==null?void 0:r.author)==null?void 0:h.structure_id)??"",suffix:((g=r==null?void 0:r.author)==null?void 0:g.suffix)??"",telephone:((f=r==null?void 0:r.author)==null?void 0:f.telephone)??""}}},K=async(r,i)=>{if(!r)throw new Error("Purchase Order ID is required");if(!i)throw new Error("Comment text is required");return y(q,{variables:{purchaseOrderUid:r,comment:i}}).then(t=>{var a,e,l;return(a=t.errors)!=null&&a.length&&v(t.errors),$((l=(e=t.data)==null?void 0:e.addPurchaseOrderComment)==null?void 0:l.comment)}).catch(O)},F=`
   mutation ADD_PURCHASE_ORDER_ITEMS_TO_CART(
     $purchaseOrderUid: ID!
     $cartId: String!
@@ -93,65 +483,7 @@ import{Initializer as y}from"@dropins/tools/lib.js";import{f as P,h as A}from"./
       }
     }
   }
-`,Y=async(e,n,u=!1)=>{if(!e)throw new Error("Purchase Order UID is required");if(!n)throw new Error("Cart ID is required");return P(H,{variables:{purchaseOrderUid:e,cartId:n,replaceExistingCartItems:u}}).then(i=>{var o,_;(o=i.errors)!=null&&o.length&&a(i.errors);const l=(_=i.data)==null?void 0:_.addPurchaseOrderItemsToCart;if(!(l!=null&&l.cart))throw new Error("Failed to add purchase order items to cart");return $(l)}).catch(A)},F=`
-  query GET_PURCHASE_ORDER($uid: ID!) {
-    customer {
-      purchase_order(uid: $uid) {
-        uid
-        number
-        created_at
-        updated_at
-        status
-        available_actions
-        created_by {
-          firstname
-          lastname
-          email
-        }
-        order {
-          id
-          number
-          total {
-            grand_total {
-              value
-              currency
-            }
-          }
-        }
-        quote {
-          prices {
-            grand_total {
-              value
-              currency
-            }
-          }
-        }
-      }
-    }
-  }
-`,Z=async e=>{if(!e||e.trim()==="")throw new Error("Purchase Order UID is required");return P(F,{variables:{uid:e}}).then(n=>{var s,i,l;(s=n.errors)!=null&&s.length&&a(n.errors);const u=(l=(i=n.data)==null?void 0:i.customer)==null?void 0:l.purchase_order;if(!u)throw new Error("Failed to get purchase order");return{purchaseOrder:D(u)}}).catch(A)},M=`
-  mutation PLACE_ORDER_FOR_PURCHASE_ORDER(
-    $input: PlaceOrderForPurchaseOrderInput!
-  ) {
-    placeOrderForPurchaseOrder(input: $input) {
-      order {
-        available_actions
-        carrier
-        email
-        gift_receipt_included
-        id
-        is_virtual
-        number
-        order_date
-        order_status_change_date
-        printed_card_included
-        shipping_method
-        status
-        token
-      }
-    }
-  }
-`,d=async e=>{var u;if(!e||e.trim()==="")throw new Error("Purchase Order UID is required");const n={purchase_order_uid:e};try{const s=await P(M,{variables:{input:n}});return(u=s.errors)!=null&&u.length&&a(s.errors),x(s)}catch(s){throw A(s)}},G=`
+`,W=async(r,i,s=!1)=>{if(!r)throw new Error("Purchase Order UID is required");if(!i)throw new Error("Cart ID is required");return y(F,{variables:{purchaseOrderUid:r,cartId:i,replaceExistingCartItems:s}}).then(a=>{var l,_;(l=a.errors)!=null&&l.length&&v(a.errors);const e=(_=a.data)==null?void 0:_.addPurchaseOrderItemsToCart;if(!(e!=null&&e.cart))throw new Error("Failed to add purchase order items to cart");return H(e)}).catch(O)},G=`
   mutation PLACE_PURCHASE_ORDER($input: PlacePurchaseOrderInput!) {
     placePurchaseOrder(input: $input) {
       purchase_order {
@@ -160,5 +492,5 @@ import{Initializer as y}from"@dropins/tools/lib.js";import{f as P,h as A}from"./
     }
   }
   ${C}
-`,m=async e=>{if(!e||e.trim()==="")throw new Error("Cart ID is required");return P(G,{variables:{input:{cart_id:e}}}).then(u=>{var i,l,o;(i=u.errors)!=null&&i.length&&a(u.errors);const s=(o=(l=u.data)==null?void 0:l.placePurchaseOrder)==null?void 0:o.purchase_order;return{purchaseOrder:D(s)}}).catch(A)};export{X as addPurchaseOrderComment,Y as addPurchaseOrderItemsToCart,pr as approvePurchaseOrders,J as cancelPurchaseOrders,k as config,tr as createPurchaseOrderApprovalRule,Or as currencyInfo,Rr as deletePurchaseOrderApprovalRule,P as fetchGraphQl,sr as getConfig,Z as getPurchaseOrder,ar as getPurchaseOrderApprovalRule,fr as getPurchaseOrderApprovalRuleMetadata,Pr as getPurchaseOrderApprovalRules,_r as getPurchaseOrders,v as initialize,d as placeOrderForPurchaseOrder,m as placePurchaseOrder,cr as rejectPurchaseOrders,ur as removeFetchGraphQlHeader,ir as setEndpoint,nr as setFetchGraphQlHeader,lr as setFetchGraphQlHeaders,Er as updatePurchaseOrderApprovalRule,K as validatePurchaseOrders};
+`,X=async r=>{if(!r||r.trim()==="")throw new Error("Cart ID is required");return y(G,{variables:{input:{cart_id:r}}}).then(s=>{var a,e,l;(a=s.errors)!=null&&a.length&&v(s.errors);const t=(l=(e=s.data)==null?void 0:e.placePurchaseOrder)==null?void 0:l.purchase_order;return{purchaseOrder:R(t)}}).catch(O)};export{K as addPurchaseOrderComment,W as addPurchaseOrderItemsToCart,ur as approvePurchaseOrders,_r as cancelPurchaseOrders,B as config,or as createPurchaseOrderApprovalRule,dr as currencyInfo,fr as deletePurchaseOrderApprovalRule,y as fetchGraphQl,m as getConfig,U as getPurchaseOrder,Er as getPurchaseOrderApprovalRule,pr as getPurchaseOrderApprovalRuleMetadata,yr as getPurchaseOrderApprovalRules,vr as getPurchaseOrders,x as initialize,cr as placeOrderForPurchaseOrder,X as placePurchaseOrder,sr as rejectPurchaseOrders,rr as removeFetchGraphQlHeader,er as setEndpoint,ar as setFetchGraphQlHeader,tr as setFetchGraphQlHeaders,hr as updatePurchaseOrderApprovalRule,J as validatePurchaseOrders};
 //# sourceMappingURL=api.js.map
