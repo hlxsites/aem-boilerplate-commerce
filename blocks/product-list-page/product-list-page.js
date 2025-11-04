@@ -56,6 +56,7 @@ export default async function decorate(block) {
   const $pagination = fragment.querySelector('.search__pagination');
 
   const reqLists = (await rlApi.getRequisitionLists()).items;
+  const isRequisitionListEnabled = await rlApi.isRequisitionListEnabled();
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -106,8 +107,7 @@ export default async function decorate(block) {
       $container.innerHTML = '';
       return;
     }
-    const isEnabled = await rlApi.isRequisitionListEnabled();
-    if (isEnabled) {
+    if (isRequisitionListEnabled) {
       rlRenderer.render(RequisitionListNames, {
         items: reqLists,
         sku: product.sku,
