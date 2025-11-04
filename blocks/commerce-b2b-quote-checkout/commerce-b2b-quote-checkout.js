@@ -16,11 +16,14 @@ import {
   validateForms,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
+// Purchase Order Dropin
+import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
   displayOverlaySpinner,
   removeOverlaySpinner,
@@ -71,8 +74,12 @@ import {
 import {
   fetchPlaceholders,
   rootLink,
+  resolveCheckoutConfig,
   SUPPORT_PATH,
 } from '../../scripts/commerce.js';
+
+// PO success block entry point
+import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -81,6 +88,8 @@ import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/quote-management.js';
 
 export default async function decorate(block) {
+  const { checkoutAllowed, poEnabled } = resolveCheckoutConfig();
+
   // Container and component references
   let billingForm;
   let shippingAddresses;
@@ -145,8 +154,14 @@ export default async function decorate(block) {
         // Submit Payment Services credit card form
         await creditCardFormRef.current.submit();
       }
-      // Place order
-      await orderApi.placeNegotiableQuoteOrder(quoteId);
+
+      if (poEnabled) {
+        await placePurchaseOrder(quoteId).then((data) => {
+          events.emit('purchase-order/placed', data.purchaseOrder);
+        });
+      } else {
+        await orderApi.placeNegotiableQuoteOrder(quoteId);
+      }
     } catch (error) {
       console.error(error);
       throw error;
@@ -156,10 +171,11 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, {
+  const placeOrder = checkoutAllowed ? await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-  });
+    poEnabled,
+  }) : null;
 
   // Render the remaining containers
   const [
@@ -318,8 +334,20 @@ export default async function decorate(block) {
     await displayOrderConfirmation(orderData);
   }
 
+  async function handlePurchaseOrderPlaced(poData) {
+    // Clear address form data
+    sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
+
+    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+
+    window.history.pushState({}, '', url);
+
+    await renderPOSuccess(block, { poData });
+  }
+
   events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
+  events.on('purchase-order/placed', handlePurchaseOrderPlaced);
 }
