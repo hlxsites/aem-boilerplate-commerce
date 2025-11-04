@@ -1,14 +1,14 @@
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializers } from '@dropins/tools/initializer.js';
-import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-purchase-order/api.js';
+import { initialize, setEndpoint } from '@dropins/storefront-purchase-order/api.js';
 import { initializeDropin } from './index.js';
-import { fetchPlaceholders } from '../commerce.js';
+import { CORE_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 await initializeDropin(async () => {
-  // TODO - After getting access to DA - create proper headers config - purchase-order
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('checkout') }));
+  // Set Fetch GraphQL (Core)
+  setEndpoint(CORE_FETCH_GRAPHQL);
 
   // TODO - After getting access to DA - create proper placeholder config - purchase-order.json
+  // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/checkout.json');
   const langDefinitions = {
     default: {
@@ -16,5 +16,6 @@ await initializeDropin(async () => {
     },
   };
 
+  // Initialize purchase order
   return initializers.mountImmediately(initialize, { langDefinitions });
 })();

@@ -72,70 +72,20 @@ import {
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
 
-import { rootLink } from '../../scripts/commerce.js';
+import { rootLink, resolveCheckoutConfig } from '../../scripts/commerce.js';
 
-// Success block entry point
+// Success block entry points
 import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
-const getCheckoutPOConfig = () => {
-  const permissions = events.lastPayload('auth/permissions') ?? {};
-
-  const baseConfig = {
-    renderSlot: false,
-    usePOapi: false,
-    hideButton: false,
-  };
-
-  const isAdmin = Boolean(permissions.admin);
-  const isPOEnabled = Boolean(permissions['Magento_PurchaseOrder::all']);
-  const canPlaceSalesOrder = Boolean(permissions['Magento_Sales::place_order']);
-
-  // Admin is always a B2B company admin and should use PO API
-  if (isAdmin) {
-    return { ...baseConfig, renderSlot: true, usePOapi: true };
-  }
-
-  // Check if user belongs to a B2B company by looking for any B2B-related permission keys
-  // This is reliable even if all permissions are set to false
-  const permissionKeys = Object.keys(permissions);
-  const isCompanyUser = permissionKeys.some(
-    (key) => key.startsWith('Magento_Company::')
-      || key.startsWith('Magento_PurchaseOrder::')
-      || key.startsWith('Magento_PurchaseOrderRule::'),
-  );
-
-  // If not a company user, use standard B2C flow
-  if (!isCompanyUser) {
-    return baseConfig;
-  }
-
-  // From here, we know this is a B2B company user (not admin)
-
-  // If can place sales order, but PO is not enabled, hide the button.
-  if (canPlaceSalesOrder && !isPOEnabled) {
-    return { ...baseConfig, hideButton: true };
-  }
-
-  // If PO is not enabled at all, return base config.
-  if (!isPOEnabled) {
-    return baseConfig;
-  }
-
-  // If can place sales order with PO enabled, use PO api.
-  if (canPlaceSalesOrder) {
-    return { ...baseConfig, renderSlot: true, usePOapi: true };
-  }
-
-  // For all other cases (cannot place sales order, PO enabled), hide the button.
-  return { ...baseConfig, hideButton: true };
-};
-
 export default async function decorate(block) {
+  const { checkoutAllowed, poEnabled } = resolveCheckoutConfig();
+
   // Container and component references
   let emptyCart;
   let shippingForm;
@@ -181,8 +131,6 @@ export default async function decorate(block) {
   const $placeOrder = getElement(selectors.checkout.placeOrder);
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
-
-  const { hideButton, renderSlot, usePOapi } = getCheckoutPOConfig();
 
   block.appendChild(checkoutFragment);
 
@@ -237,12 +185,11 @@ export default async function decorate(block) {
         await creditCardFormRef.current.submit();
       }
 
-      if (usePOapi) {
+      if (poEnabled) {
         await placePurchaseOrder(cartId).then((data) => {
-          events.emit('po/placed', data.purchaseOrder);
+          events.emit('purchase-order/placed', data.purchaseOrder);
         });
       } else {
-        // Default Place order
         await orderApi.placeOrder(cartId);
       }
     } catch (error) {
@@ -254,11 +201,11 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, {
+  const placeOrder = checkoutAllowed ? await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-    renderSlot,
-  });
+    poEnabled,
+  }) : null;
 
   // Render the remaining containers
   const [
@@ -441,7 +388,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await displayPOConfirmation(poData);
+    await renderPOSuccess(block, { poData });
   }
 
   events.on('authenticated', handleAuthenticated);
@@ -449,5 +396,5 @@ export default async function decorate(block) {
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
-  events.on('po/placed', handlePurchaseOrderPlaced);
+  events.on('purchase-order/placed', handlePurchaseOrderPlaced);
 }

@@ -60,9 +60,13 @@ export const PO_PERMISSIONS = {
   VIEW_CUSTOMER: 'Magento_PurchaseOrder::view_purchase_orders',
   VIEW_SUBORDINATES: 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
   VIEW_COMPANY: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
+  AUTO_APPROVE: 'Magento_PurchaseOrder::autoapprove_purchase_order',
+  SUPER_APPROVE: 'Magento_PurchaseOrderRule::super_approve_purchase_order',
   VIEW_RULES: 'Magento_PurchaseOrderRule::view_approval_rules',
   MANAGE_RULES: 'Magento_PurchaseOrderRule::manage_approval_rules',
 };
+
+export const CHECKOUT_ALLOWED_PERMISSION = 'Magento_Sales::place_order';
 export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
 export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
@@ -775,4 +779,44 @@ function autolinkModals(element) {
       openModal(origin.href);
     }
   });
+}
+
+/**
+ * Resolves checkout configuration based on current user permissions.
+ *
+ * Logic:
+ * - Non-company users (only `{ all: true }`) → checkout allowed, PO disabled.
+ * - Checkout allowed if `permissions.admin` or `CHECKOUT_ALLOWED` is true.
+ * - PO is disabled only if explicitly set to false. Otherwise it may be considered enabled
+ *   (even if the user lacks specific PO permissions).
+ */
+export function resolveCheckoutConfig() {
+  const isGuestUser = checkIsAuthenticated() === false;
+  if (isGuestUser) {
+    return {
+      checkoutAllowed: true,
+      poEnabled: false,
+    };
+  }
+
+  const permissions = events.lastPayload('auth/permissions') ?? {};
+
+  const isNonCompanyUser = permissions.all === true
+    && Object.values(PO_PERMISSIONS).every((key) => permissions[key] === false);
+  if (isNonCompanyUser) {
+    return {
+      checkoutAllowed: true,
+      poEnabled: false,
+    };
+  }
+
+  const isCheckoutAllowed = !!permissions.admin || !!permissions[CHECKOUT_ALLOWED_PERMISSION];
+
+  // PO is considered disabled only if explicitly false
+  const isPODisabled = permissions[PO_PERMISSIONS.PO_ALL] === false;
+
+  return {
+    checkoutAllowed: isCheckoutAllowed,
+    poEnabled: !isPODisabled,
+  };
 }
