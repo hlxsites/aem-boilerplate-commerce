@@ -101,6 +101,7 @@ export interface CustomerOrderModel {
     carrier: string;
     comments: string[];
     creditMemos: any[];
+    customAttributes: Record<string, any>[];
     customerInfo: CustomerInfo;
     email: string;
     giftMessage: string;

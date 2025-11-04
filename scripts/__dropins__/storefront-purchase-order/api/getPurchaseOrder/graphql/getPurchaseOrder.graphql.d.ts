@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_PURCHASE_ORDER: string;
+export declare const GET_PURCHASE_ORDER = "\n  query GET_PURCHASE_ORDER($uid: ID!) {\n    customer {\n      purchase_order(uid: $uid) {\n        uid\n        number\n        created_at\n        updated_at\n        status\n        available_actions\n        created_by {\n          firstname\n          lastname\n          email\n        }\n        order {\n          id\n          number\n          total {\n            grand_total {\n              value\n              currency\n            }\n          }\n        }\n        quote {\n          prices {\n            grand_total {\n              value\n              currency\n            }\n          }\n        }\n      }\n    }\n  }\n";
 //# sourceMappingURL=getPurchaseOrder.graphql.d.ts.map
