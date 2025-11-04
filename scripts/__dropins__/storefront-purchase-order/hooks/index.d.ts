@@ -19,5 +19,4 @@ export * from './useCustomerRolePermissions';
 export * from './useApprovalRuleForm';
 export * from './useApprovalRuleDetails';
 export * from './useApprovalRulesList';
-export * from './usePurchaseOrderStatus';
 //# sourceMappingURL=index.d.ts.map

@@ -94,66 +94,6 @@ declare const _default: {
       "messagePrefix": "Your Purchase Order request number is",
       "messageSuffix": "A copy of this Purchase Order will be emailed to you shortly."
     },
-    "purchaseOrderStatus": {
-      "status": {
-        "pending": {
-          "title": "Pending Approval",
-          "message": "Purchase order is awaiting approval."
-        },
-        "approval_required": {
-          "title": "Approval Required",
-          "message": "Purchase order requires approval before it can be processed."
-        },
-        "approved": {
-          "title": "Approved",
-          "message": "Purchase order has been approved."
-        },
-        "order_in_progress": {
-          "title": "Processing in Progress",
-          "message": "Purchase order is currently being processed."
-        },
-        "order_placed": {
-          "title": "Placed",
-          "message": "Purchase order has been placed successfully."
-        },
-        "order_failed": {
-          "title": "Failed",
-          "message": "Purchase order processing has failed."
-        },
-        "rejected": {
-          "title": "Rejected",
-          "message": "Purchase order has been rejected."
-        },
-        "canceled": {
-          "title": "Canceled",
-          "message": "Purchase order has been canceled."
-        },
-        "approved_pending_payment": {
-          "title": "Approved - Pending Payment",
-          "message": "Purchase order has been approved and is awaiting payment."
-        }
-      },
-      "alertMessages": {
-        "success": {
-          "approval": "The purchase order was approved successfully.",
-          "reject": "The purchase order was rejected successfully.",
-          "cancel": "The purchase order was canceled successfully.",
-          "placeOrder": "The sales order was placed successfully."
-        },
-        "errors": {
-          "approval": "An error occurred while approving the purchase order. Please try again.",
-          "reject": "An error occurred while rejecting the purchase order. Please try again.",
-          "cancel": "An error occurred while canceling the purchase order. Please try again.",
-          "placeOrder": "An error occurred while placing the sales order. Please try again."
-        }
-      },
-      "buttons": {
-        "approve": "Approve",
-        "reject": "Reject",
-        "cancel": "Cancel",
-        "placeOrder": "Place Order"
-      }
-    },
     "approvalRuleForm": {
       "headerText": "Purchase Order Approval Rule",
       "titleAppliesTo": "Applies To",
