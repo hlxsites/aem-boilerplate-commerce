@@ -7,9 +7,8 @@ await initializeDropin(async () => {
   // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
-  // TODO - After getting access to DA - create proper placeholder config - purchase-order.json
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/checkout.json');
+  const labels = await fetchPlaceholders('placeholders/purchase-order.json');
   const langDefinitions = {
     default: {
       ...labels,
