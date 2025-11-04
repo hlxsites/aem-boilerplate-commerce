@@ -20,5 +20,6 @@ export * from './RequireApprovalPurchaseOrders';
 export * from './ApprovalRuleForm';
 export * from './ApprovalRulesList';
 export * from './PurchaseOrderConfirmation';
+export * from './PurchaseOrderStatus';
 export * from './ApprovalRuleDetails';
 //# sourceMappingURL=index.d.ts.map

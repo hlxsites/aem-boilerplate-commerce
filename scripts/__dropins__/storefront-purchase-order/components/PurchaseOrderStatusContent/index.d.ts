@@ -14,5 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_PURCHASE_ORDER: string;
-//# sourceMappingURL=getPurchaseOrder.graphql.d.ts.map
+export * from './PurchaseOrderStatusContent';
+export { PurchaseOrderStatusContent as default } from './PurchaseOrderStatusContent';
+//# sourceMappingURL=index.d.ts.map
