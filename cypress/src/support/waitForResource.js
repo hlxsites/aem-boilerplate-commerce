@@ -26,6 +26,8 @@ Cypress.Commands.add('waitForResource', (name, options = {}) => {
       return new Cypress.Promise((resolve, reject) => {
         let foundResource
         let isResolved = false
+        let interval
+        let timeoutId
 
         // Increase performance buffer size to handle slow-loading resources
         // This prevents entries from being evicted before we can detect them
@@ -74,7 +76,7 @@ Cypress.Commands.add('waitForResource', (name, options = {}) => {
         // control how long we should try finding the resource
         // and if it is still not found. An explicit "reject"
         // allows us to show nice informative message
-        const timeoutId = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           if (isResolved) {
             return
           }
@@ -83,7 +85,7 @@ Cypress.Commands.add('waitForResource', (name, options = {}) => {
           reject(new Error(`Timed out waiting for resource ${name}`))
         }, timeout)
 
-        const interval = setInterval(() => {
+        interval = setInterval(() => {
           foundResource = checkForResource()
 
           if (!foundResource) {
