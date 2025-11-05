@@ -46,6 +46,7 @@ export default async function decorate(block) {
   // Redirect guest users
   if (!checkIsAuthenticated()) {
     redirectToLogin();
+    return;
   }
 
   // Initial permissions check

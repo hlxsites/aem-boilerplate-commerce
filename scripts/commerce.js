@@ -55,7 +55,7 @@ export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisit
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
 
-// B2B - PURCHASE ORDER
+// CUSTOMER B2B PATHS
 export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
 export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
@@ -771,7 +771,7 @@ function autolinkModals(element) {
  * Logic:
  * - Non-company users (only `{ all: true }`) → checkout allowed, PO disabled.
  * - Checkout allowed if `permissions.admin` or `CHECKOUT_ALLOWED` is true.
- * - PO is disabled only if explicitly set to false. Otherwise it may be considered enabled
+ * - PO is disabled only if explicitly set to false. Otherwise, it may be considered enabled
  *   (even if the user lacks specific PO permissions).
  */
 export function resolveCheckoutConfig() {
