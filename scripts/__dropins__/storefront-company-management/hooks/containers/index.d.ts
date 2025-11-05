@@ -16,4 +16,6 @@
  *******************************************************************/
 export * from './useCompanyProfile';
 export * from './useCustomerCompanyInfo';
+export * from './useCompanyCreditHistory';
+export * from './useCompanyUsers';
 //# sourceMappingURL=index.d.ts.map

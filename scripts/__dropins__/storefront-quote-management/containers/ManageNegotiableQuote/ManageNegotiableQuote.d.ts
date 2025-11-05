@@ -5,7 +5,10 @@ import { NegotiableQuoteModel } from '../../data/models/negotiable-quote-model';
 export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElement> {
     onActionsDropdownChange?: (event: Event) => void;
     onActionsButtonClick?: (action: string) => void;
-    onSendForReview?: (quoteData: NegotiableQuoteModel) => void;
+    onSendForReview?: (params: {
+        quoteData: NegotiableQuoteModel;
+        comment?: string;
+    }) => void;
     slots?: {
         QuoteName?: SlotProps<{
             quoteName?: string;
@@ -27,11 +30,22 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         QuoteContent?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
         }>;
+        ItemsQuotedTab?: SlotProps<{
+            quoteData?: NegotiableQuoteModel;
+        }>;
+        CommentsTab?: SlotProps<{
+            quoteData?: NegotiableQuoteModel;
+        }>;
+        HistoryLogTab?: SlotProps<{
+            quoteData?: NegotiableQuoteModel;
+        }>;
         ShippingInformationTitle?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
         }>;
         ShippingInformation?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
+            loading?: boolean;
+            setLoading?: (loading: boolean) => void;
         }>;
         QuoteCommentsTitle?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
@@ -41,6 +55,8 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         }>;
         Footer?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
+            comment?: string;
+            isSubmitting?: boolean;
         }>;
     };
 }

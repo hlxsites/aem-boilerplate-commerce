@@ -15,6 +15,13 @@
  * from Adobe.
  *******************************************************************/
 export * from './transform-company';
+export * from './transform-company-roles';
+export * from './transform-company-structure';
+export * from './transform-company-team';
+export * from './transform-company-user';
 export * from './transform-countries';
 export * from './transform-customer-company-info';
+export * from './transform-store-config';
+export * from './transform-company-credit';
+export * from './transform-company-credit-history';
 //# sourceMappingURL=index.d.ts.map
