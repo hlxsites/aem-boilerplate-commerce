@@ -5,7 +5,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_PATH,
+  CUSTOMER_ACCOUNT_PATH,
   CUSTOMER_PO_RULES_PATH,
   rootLink,
 } from '../../scripts/commerce.js';
@@ -18,17 +18,14 @@ const redirectToLogin = () => {
 };
 
 const redirectToAccountDashboard = () => {
-  window.location.href = rootLink(CUSTOMER_PATH);
+  window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
 };
 
 /**
  * Initializes and decorates the Approval Rule Form block
  * Redirects unauthenticated users and handles permission updates
  */
-const renderApprovalRuleForm = async (
-  blockElement,
-  permissions = {},
-) => {
+const renderApprovalRuleForm = async (blockElement, permissions = {}) => {
   const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.MANAGE_RULES];
   if (!hasAccess) {
     redirectToAccountDashboard();

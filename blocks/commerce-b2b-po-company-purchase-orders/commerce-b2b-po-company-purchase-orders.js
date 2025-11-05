@@ -5,7 +5,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_PATH,
+  CUSTOMER_ACCOUNT_PATH,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -17,7 +17,7 @@ const redirectToLogin = () => {
 };
 
 const redirectToAccountDashboard = () => {
-  window.location.href = rootLink(CUSTOMER_PATH);
+  window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
 };
 
 /**

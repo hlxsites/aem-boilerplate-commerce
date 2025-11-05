@@ -5,7 +5,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_PATH,
+  CUSTOMER_ACCOUNT_PATH,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -17,7 +17,7 @@ const redirectToLogin = () => {
 };
 
 const redirectToAccountDashboard = () => {
-  window.location.href = rootLink(CUSTOMER_PATH);
+  window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
 };
 
 /**
@@ -44,7 +44,9 @@ const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
   const hasAccessToBlock = permissions.admin || permissions[PO_PERMISSIONS.VIEW_CUSTOMER];
 
   // Hide the entire block container when the user doesn't have access (prevent layout issues)
-  blockElement.parentElement.style.display = hasAccessToBlock ? 'block' : 'none';
+  blockElement.parentElement.style.display = hasAccessToBlock
+    ? 'block'
+    : 'none';
   if (!hasAccessToBlock) {
     blockElement.innerHTML = '';
     return;
