@@ -32,6 +32,7 @@ const renderApprovalRuleForm = async (
   const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.MANAGE_RULES];
   if (!hasAccess) {
     redirectToAccountDashboard();
+    return;
   }
 
   const approvalRuleID = new URLSearchParams(window.location.search).get('ruleRef') || '';

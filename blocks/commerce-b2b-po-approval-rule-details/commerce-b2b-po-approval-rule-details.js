@@ -36,11 +36,13 @@ const renderApprovalRuleDetails = async (
   const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.VIEW_RULES];
   if (!hasAccess) {
     redirectToAccountDashboard();
+    return;
   }
 
   const approvalRuleID = new URLSearchParams(window.location.search).get('ruleRef') || '';
   if (!approvalRuleID) {
     redirectToApprovalRulesList();
+    return;
   }
 
   await purchaseOrderRenderer.render(ApprovalRuleDetails, {
@@ -53,6 +55,7 @@ export default async function decorate(block) {
   // Redirect guest users
   if (!checkIsAuthenticated()) {
     redirectToLogin();
+    return;
   }
 
   // Initial permissions check

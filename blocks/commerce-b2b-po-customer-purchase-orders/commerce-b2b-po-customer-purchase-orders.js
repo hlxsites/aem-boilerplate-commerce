@@ -37,6 +37,7 @@ const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
 
   if (!hasAccessToPurchaseOrders) {
     redirectToAccountDashboard();
+    return;
   }
 
   // Check access to this specific block
@@ -58,6 +59,7 @@ export default async function decorate(block) {
   // Redirect guest users
   if (!checkIsAuthenticated()) {
     redirectToLogin();
+    return;
   }
 
   // Initial permissions check
