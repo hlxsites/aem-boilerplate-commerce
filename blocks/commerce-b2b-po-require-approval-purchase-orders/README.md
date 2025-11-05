@@ -53,7 +53,7 @@ No events are emitted by this block. -->
 4. **Account Dashboard Redirect**: If lacking all PO access, redirects to account dashboard page
 5. **Block-Specific Permission Check**: Checks for admin or general purchase order permissions for this specific block
 6. **Block Visibility**: Shows or hides the entire block container based on block-specific permission check (prevents layout issues)
-7. **Orders Display**: If authorized, renders purchase orders requiring approval with pagination using centralized `PO_LIST_PAGE_SIZE_OPTIONS`
+7. **Orders Display**: If authorized, renders purchase orders requiring approval with pagination using default dropin configuration
 8. **Permission Updates**: Listens for permission changes and re-renders accordingly
 9. **Logout Handling**: Redirects to login page if user logs out during interaction
 

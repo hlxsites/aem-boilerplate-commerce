@@ -6,7 +6,6 @@ import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_PATH,
   PO_PERMISSIONS,
-  PO_LIST_PAGE_SIZE_OPTIONS,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -54,7 +53,6 @@ const renderRequireApprovalPurchaseOrders = async (
   }
 
   await purchaseOrderRenderer.render(RequireApprovalPurchaseOrders, {
-    initialPageSize: PO_LIST_PAGE_SIZE_OPTIONS,
     skeletonRowCount: 5,
   })(blockElement);
 };

@@ -58,7 +58,8 @@ export const UPS_TRACKING_URL = 'https://www.ups.com/track';
 export const PO_PERMISSIONS = {
   PO_ALL: 'Magento_PurchaseOrder::all',
   VIEW_CUSTOMER: 'Magento_PurchaseOrder::view_purchase_orders',
-  VIEW_SUBORDINATES: 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+  VIEW_SUBORDINATES:
+    'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
   VIEW_COMPANY: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
   AUTO_APPROVE: 'Magento_PurchaseOrder::autoapprove_purchase_order',
   SUPER_APPROVE: 'Magento_PurchaseOrderRule::super_approve_purchase_order',
@@ -66,15 +67,9 @@ export const PO_PERMISSIONS = {
   MANAGE_RULES: 'Magento_PurchaseOrderRule::manage_approval_rules',
 };
 
-export const CHECKOUT_ALLOWED_PERMISSION = 'Magento_Sales::place_order';
 export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
 export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
-export const PO_LIST_PAGE_SIZE_OPTIONS = [
-  { text: '10', value: '10', selected: true },
-  { text: '20', value: '20', selected: false },
-  { text: '30', value: '30', selected: false },
-];
 
 /**
  * Auth Privacy Policy Consent Slot
@@ -791,6 +786,8 @@ function autolinkModals(element) {
  *   (even if the user lacks specific PO permissions).
  */
 export function resolveCheckoutConfig() {
+  const CHECKOUT_ALLOWED_PERMISSION = 'Magento_Sales::place_order';
+
   const isGuestUser = checkIsAuthenticated() === false;
   if (isGuestUser) {
     return {

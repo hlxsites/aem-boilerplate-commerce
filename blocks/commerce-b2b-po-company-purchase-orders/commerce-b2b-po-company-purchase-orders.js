@@ -6,7 +6,6 @@ import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_PATH,
   PO_PERMISSIONS,
-  PO_LIST_PAGE_SIZE_OPTIONS,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -46,14 +45,15 @@ const renderCompanyPurchaseOrders = async (blockElement, permissions = {}) => {
     || permissions[PO_PERMISSIONS.VIEW_COMPANY];
 
   // Hide the entire block container when the user doesn't have access (prevent layout issues)
-  blockElement.parentElement.style.display = hasAccessToBlock ? 'block' : 'none';
+  blockElement.parentElement.style.display = hasAccessToBlock
+    ? 'block'
+    : 'none';
   if (!hasAccessToBlock) {
     blockElement.innerHTML = '';
     return;
   }
 
   await purchaseOrderRenderer.render(CompanyPurchaseOrders, {
-    initialPageSize: PO_LIST_PAGE_SIZE_OPTIONS,
     skeletonRowCount: 5,
   })(blockElement);
 };
