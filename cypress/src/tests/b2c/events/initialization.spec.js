@@ -36,11 +36,7 @@ it("has baseline contexts on cart", () => {
 
 it("has baseline contexts on checkout", () => {
   cy.visit("/checkout");
-  cy.window().should((win) => {
-    expect(win.adobeDataLayer).to.exist;
-  }).then(() => {
-    cy.waitForResource("commerce-events-collector.js").then(() => {
-      cy.window().its("adobeDataLayer").then(baselineContexts);
-    });
+  cy.waitForResource("commerce-events-collector.js").then(() => {
+    cy.window().its("adobeDataLayer").then(baselineContexts);
   });
 });
