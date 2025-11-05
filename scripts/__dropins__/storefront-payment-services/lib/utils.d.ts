@@ -18,4 +18,8 @@
  * Awaitable 'sleep'.
  */
 export declare function timeout(ms: number): Promise<void>;
+/**
+ * Converts SCREAMING_SNAKE_CASE to kebab-case.
+ */
+export declare function screamingSnakeToKebabCase(screamCaseText: string): string;
 //# sourceMappingURL=utils.d.ts.map
