@@ -1,11 +1,11 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
 import { CompanyPurchaseOrders } from '@dropins/storefront-purchase-order/containers/CompanyPurchaseOrders.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_PATH,
-  PO_PERMISSIONS,
   rootLink,
 } from '../../scripts/commerce.js';
 

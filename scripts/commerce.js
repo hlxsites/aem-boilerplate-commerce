@@ -8,6 +8,7 @@ import {
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { getMetadata } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
@@ -55,18 +56,6 @@ export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisit
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
 
 // B2B - PURCHASE ORDER
-export const PO_PERMISSIONS = {
-  PO_ALL: 'Magento_PurchaseOrder::all',
-  VIEW_CUSTOMER: 'Magento_PurchaseOrder::view_purchase_orders',
-  VIEW_SUBORDINATES:
-    'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
-  VIEW_COMPANY: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
-  AUTO_APPROVE: 'Magento_PurchaseOrder::autoapprove_purchase_order',
-  SUPER_APPROVE: 'Magento_PurchaseOrderRule::super_approve_purchase_order',
-  VIEW_RULES: 'Magento_PurchaseOrderRule::view_approval_rules',
-  MANAGE_RULES: 'Magento_PurchaseOrderRule::manage_approval_rules',
-};
-
 export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
 export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
