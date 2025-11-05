@@ -186,9 +186,7 @@ export default async function decorate(block) {
       }
 
       if (poEnabled) {
-        await placePurchaseOrder(cartId).then((data) => {
-          events.emit('purchase-order/placed', data.purchaseOrder);
-        });
+        await placePurchaseOrder(cartId);
       } else {
         await orderApi.placeOrder(cartId);
       }
