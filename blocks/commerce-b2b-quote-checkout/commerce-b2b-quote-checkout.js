@@ -156,9 +156,7 @@ export default async function decorate(block) {
       }
 
       if (poEnabled) {
-        await placePurchaseOrder(quoteId).then((data) => {
-          events.emit('purchase-order/placed', data.purchaseOrder);
-        });
+        await placePurchaseOrder(quoteId);
       } else {
         await orderApi.placeNegotiableQuoteOrder(quoteId);
       }
