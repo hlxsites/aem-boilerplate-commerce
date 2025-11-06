@@ -14,12 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface CompanyDropinConfig {
-    langDefinitions?: Record<string, Record<string, string>>;
-    models?: Record<string, any>;
+export interface CheckIsCompanyEnabledResponse {
+    companyEnabled: boolean;
+    error?: string;
 }
-export declare const initialize: (config?: CompanyDropinConfig) => Promise<{
-    success: boolean;
-    config: CompanyDropinConfig;
-}>;
-//# sourceMappingURL=initialize.d.ts.map
+//# sourceMappingURL=checkIsCompanyEnabled.types.d.ts.map

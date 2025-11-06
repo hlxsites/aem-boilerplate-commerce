@@ -1,10 +1,16 @@
 import { CompanyModel } from '../../data/models';
 import { Country } from '../../data/models/country';
-import { UseCompanyProfileProps } from '../../types/hook.types';
 
-export declare const useCompanyProfile: ({ handleSetInLineAlert, editFormRef }: UseCompanyProfileProps) => {
+export interface UseCompanyProfileProps {
+    handleSetInLineAlert?: (alert?: {
+        type: 'success' | 'error';
+        text: string;
+    }) => void;
+}
+export declare const useCompanyProfile: ({ handleSetInLineAlert }: UseCompanyProfileProps) => {
     company: CompanyModel | null;
     countries: Country[];
+    createdAt: string;
     loading: boolean;
     submitLoading: boolean;
     showEditForm: boolean;
