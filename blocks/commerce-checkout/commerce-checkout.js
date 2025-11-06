@@ -18,7 +18,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Purchase Order Dropin
-import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+import * as poApi from '@dropins/storefront-purchase-order/api.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
@@ -186,7 +186,7 @@ export default async function decorate(block) {
       }
 
       if (poEnabled) {
-        await placePurchaseOrder(cartId);
+        await poApi.placePurchaseOrder(cartId);
       } else {
         await orderApi.placeOrder(cartId);
       }

@@ -16,7 +16,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Purchase Order Dropin
-import * as poApi from '@dropins/storefront-order/api.js';
+import * as poApi from '@dropins/storefront-purchase-order/api.js';
 
 // Block Utilities
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
