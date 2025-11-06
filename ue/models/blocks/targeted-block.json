@@ -1,0 +1,27 @@
+{
+  "definitions": [
+    {
+      "title": "Targeted Block",
+      "id": "targeted-block",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"targeted-block\"><div><div><p>Customer Groups</p></div><div><p>1</p></div></div><div><div><p>This content will be visible to logged in customer only</p></div></div></div>"
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "targeted-block",
+      "fields": [
+        {
+          "component": "text",
+          "name": "div:nth-child(1)>div:nth-child(2)>p:nth-child(1)",
+          "label": "Customer Groups",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

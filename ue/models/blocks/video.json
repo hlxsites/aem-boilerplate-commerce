@@ -1,0 +1,46 @@
+{
+  "definitions": [
+    {
+      "title": "Video",
+      "id": "video",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"video\"><div><div><p><a href=\"\">video</a></p><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div></div>"
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "video",
+      "fields": [
+        {
+          "component": "boolean",
+          "name": "classes_autoplay",
+          "label": "Autoplay Video",
+          "valueType": "boolean"
+        },
+        {
+          "component": "text",
+          "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)[href]",
+          "label": "Video URL",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)",
+          "label": "Video URL Text",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(2)>img:nth-child(3)[src]",
+          "label": "Poster Image",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
