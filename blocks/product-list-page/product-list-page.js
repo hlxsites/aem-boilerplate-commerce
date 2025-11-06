@@ -28,6 +28,7 @@ import {
 } from '../../scripts/commerce.js';
 
 // Initializers
+import '../../scripts/initializers/requisition-list.js';
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
 
@@ -109,6 +110,7 @@ export default async function decorate(block) {
         items: [],
         sku: product.sku,
         quantity: 1,
+        variant: 'hover',
         beforeAddProdToReqList: () => {
           const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
           if (product.typename !== 'SimpleProductView') {
