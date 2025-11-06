@@ -42,7 +42,7 @@ function createPOConfirmationFragment() {
 // Local renderers (order confirmation only)
 // ----------------------------------------------------------------------------
 
-async function renderPOConfirmationContent(container, poNumber) {
+async function renderPOConfirmationContainer(container, poNumber) {
   return POProvider.render(PurchaseOrderConfirmation, {
     purchaseOrderNumber: poNumber,
     routePurchaseOrderDetails: () => rootLink(`/customer/purchase-order-details?poRef=${poNumber}`),
@@ -61,7 +61,7 @@ async function renderPOConfirmationFooterButton(container) {
   })(container);
 }
 
-async function renderPOConfirmation(container, { poData }) {
+async function renderPOConfirmationContent(container, poData = {}) {
   // Scroll to the top of the page
   window.scrollTo(0, 0);
 
@@ -78,16 +78,16 @@ async function renderPOConfirmation(container, { poData }) {
   container.replaceChildren(poConfirmationFragment);
 
   await Promise.all([
-    await renderPOConfirmationContent($poConfirmationContent, poData.number),
-    await renderPOConfirmationFooterButton($poConfirmationFooter),
+    renderPOConfirmationContainer($poConfirmationContent, poData?.number),
+    renderPOConfirmationFooterButton($poConfirmationFooter),
   ]);
 }
 
-export async function renderPOSuccess(container, { poData } = {}) {
+export async function renderPOSuccess(container, poData) {
   await loadCSS('/blocks/commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.css');
-  return renderPOConfirmation(container, { poData });
+  return renderPOConfirmationContent(container, poData);
 }
 
 export default async function decorate(block) {
-  await renderPOConfirmation(block, {});
+  await renderPOConfirmationContent(block);
 }
