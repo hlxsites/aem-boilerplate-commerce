@@ -2,7 +2,6 @@
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
 // Order Dropin Modules
@@ -17,10 +16,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Purchase Order Dropin
-import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
-
-// Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import * as poApi from '@dropins/storefront-order/api.js';
 
 // Block Utilities
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
@@ -33,8 +29,6 @@ import {
 import {
   createCheckoutFragment,
   createAddressSummary,
-  createOrderConfirmationFooter,
-  createOrderConfirmationFragment,
   selectors,
 } from './fragments.js';
 
@@ -44,21 +38,13 @@ import {
   renderBillToShippingAddress,
   renderCheckoutHeader,
   renderCustomerBillingAddresses,
-  renderCustomerDetails,
   renderGiftOptions,
   renderLoginForm,
-  renderOrderConfirmationFooterButton,
-  renderOrderCostSummary,
-  renderOrderGiftOptions,
-  renderOrderHeader,
-  renderOrderProductList,
-  renderOrderStatus,
   renderPaymentMethods,
   renderPlaceOrder,
   renderServerError,
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
-  renderShippingStatus,
   renderTermsAndConditions,
 } from './containers.js';
 
@@ -71,14 +57,10 @@ import {
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
 
-import {
-  fetchPlaceholders,
-  rootLink,
-  resolveCheckoutConfig,
-  SUPPORT_PATH,
-} from '../../scripts/commerce.js';
+import { rootLink, resolveCheckoutConfig } from '../../scripts/commerce.js';
 
-// PO success block entry point
+// Success block entry points
+import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
@@ -96,7 +78,6 @@ export default async function decorate(block) {
   let billingAddresses;
 
   const billingFormRef = { current: null };
-  const creditCardFormRef = { current: null };
   const loaderRef = { current: null };
 
   setMetaTags('B2B Checkout');
@@ -138,25 +119,11 @@ export default async function decorate(block) {
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
 
-  const handlePlaceOrder = async ({ quoteId, code }) => {
+  const handlePlaceOrder = async ({ quoteId }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
-      // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
-        if (!creditCardFormRef.current) {
-          console.error('Credit card form not rendered.');
-          return;
-        }
-        if (!creditCardFormRef.current.validate()) {
-          // Credit card form invalid; abort order placement
-          return;
-        }
-        // Submit Payment Services credit card form
-        await creditCardFormRef.current.submit();
-      }
-
       if (poEnabled) {
-        await placePurchaseOrder(quoteId);
+        await poApi.placePurchaseOrder(quoteId);
       } else {
         await orderApi.placeNegotiableQuoteOrder(quoteId);
       }
@@ -200,7 +167,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods, creditCardFormRef),
+    renderPaymentMethods($paymentMethods),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -214,11 +181,7 @@ export default async function decorate(block) {
 
     if (data?.uid && data.shippingAddresses?.[0]) {
       const quoteAddress = data.shippingAddresses[0];
-      const quoteAddressSummary = createAddressSummary(
-        quoteAddress,
-        null,
-        'Shipping address',
-      );
+      const quoteAddressSummary = createAddressSummary(quoteAddress, null, 'Shipping address');
       $shippingForm.innerHTML = '';
       $shippingForm.appendChild(quoteAddressSummary);
     }
@@ -248,56 +211,6 @@ export default async function decorate(block) {
     }
   }
 
-  // Define the Layout for the Order Confirmation
-  async function displayOrderConfirmation(orderData) {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-
-    // Create order confirmation layout using fragments
-    const orderConfirmationFragment = createOrderConfirmationFragment();
-
-    // Create scoped selector for order confirmation fragment (following multi-step pattern)
-    const getOrderElement = createScopedSelector(orderConfirmationFragment);
-
-    // Get all order confirmation elements using centralized selectors
-    const $orderConfirmationHeader = getOrderElement(selectors.orderConfirmation.header);
-    const $orderStatus = getOrderElement(selectors.orderConfirmation.orderStatus);
-    const $shippingStatus = getOrderElement(selectors.orderConfirmation.shippingStatus);
-    const $customerDetails = getOrderElement(selectors.orderConfirmation.customerDetails);
-    const $orderCostSummary = getOrderElement(selectors.orderConfirmation.orderCostSummary);
-    const $orderGiftOptions = getOrderElement(selectors.orderConfirmation.giftOptions);
-    const $orderProductList = getOrderElement(selectors.orderConfirmation.orderProductList);
-    const $orderConfirmationFooter = getOrderElement(selectors.orderConfirmation.footer);
-
-    const labels = await fetchPlaceholders();
-    const langDefinitions = {
-      default: {
-        ...labels,
-      },
-    };
-    await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
-
-    block.replaceChildren(orderConfirmationFragment);
-
-    await Promise.all([
-      renderOrderHeader($orderConfirmationHeader, { orderData }),
-      renderOrderStatus($orderStatus),
-      renderShippingStatus($shippingStatus),
-      renderCustomerDetails($customerDetails),
-      renderOrderCostSummary($orderCostSummary),
-      renderOrderProductList($orderProductList),
-      renderOrderGiftOptions($orderGiftOptions),
-    ]);
-
-    // Create footer content using fragments
-    $orderConfirmationFooter.innerHTML = createOrderConfirmationFooter(rootLink(SUPPORT_PATH));
-
-    const $continueButton = selectors.orderConfirmation.continueButton;
-    const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
-
-    await renderOrderConfirmationFooterButton($orderConfirmationFooterBtn);
-  }
-
   async function handleCheckoutInitialized(data) {
     await initializeCheckout(data);
   }
@@ -323,13 +236,11 @@ export default async function decorate(block) {
 
     const url = token
       ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(
-        `/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`,
-      );
+      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 
-    await displayOrderConfirmation(orderData);
+    await renderOrderSuccess(block, { orderData });
   }
 
   async function handlePurchaseOrderPlaced(poData) {
