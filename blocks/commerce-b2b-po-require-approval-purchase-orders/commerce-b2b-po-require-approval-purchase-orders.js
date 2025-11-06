@@ -2,6 +2,7 @@ import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-or
 import { RequireApprovalPurchaseOrders } from '@dropins/storefront-purchase-order/containers/RequireApprovalPurchaseOrders.js';
 import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
@@ -28,6 +29,8 @@ const renderRequireApprovalPurchaseOrders = async (
   blockElement,
   permissions = {},
 ) => {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
   /**
    * Redirect only if the customer lacks access to all PO containers
    * Some pages may have multiple PO blocks - hidden ones should not trigger a redirect
@@ -35,7 +38,7 @@ const renderRequireApprovalPurchaseOrders = async (
   const hasAccessToPurchaseOrders = permissions.admin
     || permissions[PO_PERMISSIONS.PO_ALL];
 
-  if (!hasAccessToPurchaseOrders) {
+  if (!isB2BEnabled || !hasAccessToPurchaseOrders) {
     redirectToAccountDashboard();
     return;
   }

@@ -2,6 +2,7 @@ import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-or
 import { ApprovalRuleForm } from '@dropins/storefront-purchase-order/containers/ApprovalRuleForm.js';
 import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import {
   checkIsAuthenticated,
   CUSTOMER_LOGIN_PATH,
@@ -26,8 +27,10 @@ const redirectToAccountDashboard = () => {
  * Redirects unauthenticated users and handles permission updates
  */
 const renderApprovalRuleForm = async (blockElement, permissions = {}) => {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
   const hasAccess = permissions.admin || permissions[PO_PERMISSIONS.MANAGE_RULES];
-  if (!hasAccess) {
+
+  if (!isB2BEnabled || !hasAccess) {
     redirectToAccountDashboard();
     return;
   }
