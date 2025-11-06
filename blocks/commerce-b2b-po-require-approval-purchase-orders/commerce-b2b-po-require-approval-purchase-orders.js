@@ -33,10 +33,7 @@ const renderRequireApprovalPurchaseOrders = async (
    * Some pages may have multiple PO blocks - hidden ones should not trigger a redirect
    */
   const hasAccessToPurchaseOrders = permissions.admin
-    || permissions[PO_PERMISSIONS.PO_ALL]
-    || permissions[PO_PERMISSIONS.VIEW_CUSTOMER]
-    || permissions[PO_PERMISSIONS.VIEW_SUBORDINATES]
-    || permissions[PO_PERMISSIONS.VIEW_COMPANY];
+    || permissions[PO_PERMISSIONS.PO_ALL];
 
   if (!hasAccessToPurchaseOrders) {
     redirectToAccountDashboard();
@@ -44,7 +41,8 @@ const renderRequireApprovalPurchaseOrders = async (
   }
 
   // Check access to this specific block
-  const hasAccessToBlock = permissions.admin || permissions[PO_PERMISSIONS.PO_ALL];
+  // This block is available if the PO feature is accessible (no dedicated ACL permission)
+  const hasAccessToBlock = hasAccessToPurchaseOrders;
 
   // Hide the entire block container when the user doesn't have access (prevent layout issues)
   blockElement.parentElement.style.display = hasAccessToBlock
@@ -57,6 +55,11 @@ const renderRequireApprovalPurchaseOrders = async (
 
   await purchaseOrderRenderer.render(RequireApprovalPurchaseOrders, {
     skeletonRowCount: 5,
+    initialPageSize: [
+      { text: '10', value: '10', selected: true },
+      { text: '20', value: '20', selected: false },
+      { text: '30', value: '30', selected: false },
+    ],
   })(blockElement);
 };
 

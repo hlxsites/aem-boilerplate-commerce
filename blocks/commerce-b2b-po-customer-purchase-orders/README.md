@@ -39,19 +39,18 @@ No events are emitted by this block. -->
 
 - **Authenticated Users**: When user is authenticated, checks permissions before rendering
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
-- **Multi-Level Access Check**: First checks if user has access to any PO containers to prevent premature redirects on multi-block pages
-- **Admin Users**: When user has admin permissions, displays customer purchase orders
-- **Customer Permission**: When user has `Magento_PurchaseOrder::view_purchase_orders` permission (via `PO_PERMISSIONS.VIEW_CUSTOMER` constant), displays their own purchase orders
-- **No Access to PO**: When user lacks access to all PO containers, redirects to account dashboard page
+- **Global PO Access Check**: First checks if user has admin or `Magento_PurchaseOrder::all` permission (via `PO_PERMISSIONS.PO_ALL` constant) to determine access to any PO containers and prevent premature redirects on multi-block pages
+- **No Access to PO**: When user lacks both admin and `PO_ALL` permissions, redirects to account dashboard page
+- **Block-Specific Permission Check**: For this block, checks if user has admin or `Magento_PurchaseOrder::view_purchase_orders` permission (via `PO_PERMISSIONS.VIEW_CUSTOMER` constant)
 - **No Access to Block**: When user lacks access to this specific block but has access to other PO blocks, hides the entire block container
 
 ### User Interaction Flows
 
 1. **Authentication Check**: Block first verifies user authentication status
 2. **Redirect Flow**: If not authenticated, redirects to login page
-3. **Global PO Access Check**: Checks if user has access to any PO containers (prevents redirect when other blocks are accessible)
-4. **Account Dashboard Redirect**: If lacking all PO access, redirects to account dashboard page
-5. **Block-Specific Permission Check**: Checks for admin or customer purchase order permissions for this specific block
+3. **Global PO Access Check**: Checks if user has admin or `PO_ALL` permission (prevents redirect when other PO blocks are accessible on the same page)
+4. **Account Dashboard Redirect**: If lacking global PO access, redirects to account dashboard page
+5. **Block-Specific Permission Check**: Checks for admin or customer purchase order permission (`VIEW_CUSTOMER`) for this specific block
 6. **Block Visibility**: Shows or hides the entire block container based on block-specific permission check (prevents layout issues)
 7. **Orders Display**: If authorized, renders customer purchase orders with pagination using default dropin configuration
 8. **Permission Updates**: Listens for permission changes and re-renders accordingly

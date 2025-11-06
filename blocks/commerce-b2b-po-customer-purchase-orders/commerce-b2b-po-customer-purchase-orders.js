@@ -30,10 +30,7 @@ const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
    * Some pages may have multiple PO blocks - hidden ones should not trigger a redirect
    */
   const hasAccessToPurchaseOrders = permissions.admin
-    || permissions[PO_PERMISSIONS.PO_ALL]
-    || permissions[PO_PERMISSIONS.VIEW_CUSTOMER]
-    || permissions[PO_PERMISSIONS.VIEW_SUBORDINATES]
-    || permissions[PO_PERMISSIONS.VIEW_COMPANY];
+    || permissions[PO_PERMISSIONS.PO_ALL];
 
   if (!hasAccessToPurchaseOrders) {
     redirectToAccountDashboard();
@@ -54,6 +51,11 @@ const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
 
   await purchaseOrderRenderer.render(CustomerPurchaseOrders, {
     skeletonRowCount: 5,
+    initialPageSize: [
+      { text: '10', value: '10', selected: true },
+      { text: '20', value: '20', selected: false },
+      { text: '30', value: '30', selected: false },
+    ],
   })(blockElement);
 };
 

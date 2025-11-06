@@ -766,17 +766,21 @@ function autolinkModals(element) {
 }
 
 /**
- * Resolves checkout configuration based on current user permissions.
+ * Resolves checkout configuration based on user type and permissions.
  *
  * Logic:
- * - Non-company users (only `{ all: true }`) → checkout allowed, PO disabled.
- * - Checkout allowed if `permissions.admin` or `CHECKOUT_ALLOWED` is true.
- * - PO is disabled only if explicitly set to false. Otherwise, it may be considered enabled
- *   (even if the user lacks specific PO permissions).
+ * 1. **Guest users** → Checkout always allowed, PO disabled.
+ * 2. **B2B disabled** → Checkout always allowed for all customers, PO disabled.
+ * 3. **Non-company users** (`permissions.all === true` and all PO permissions = false)
+ *    → Checkout allowed, PO disabled.
+ * 4. **Company users (B2B enabled)**:
+ *    - Checkout allowed if `permissions.admin` OR `Magento_Sales::place_order` is true.
+ *    - PO considered disabled **only** if explicitly set to `false`; otherwise, treated as enabled.
  */
 export function resolveCheckoutConfig() {
   const CHECKOUT_ALLOWED_PERMISSION = 'Magento_Sales::place_order';
 
+  // Checkout always enabled for guest users
   const isGuestUser = checkIsAuthenticated() === false;
   if (isGuestUser) {
     return {
@@ -785,8 +789,18 @@ export function resolveCheckoutConfig() {
     };
   }
 
+  // If B2B module DISABLED - checkout always enabled for customers
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  if (!isB2BEnabled) {
+    return {
+      checkoutAllowed: true,
+      poEnabled: false,
+    };
+  }
+
   const permissions = events.lastPayload('auth/permissions') ?? {};
 
+  // If B2B module ENABLED - checkout always enabled for non-company users
   const isNonCompanyUser = permissions.all === true
     && Object.values(PO_PERMISSIONS).every((key) => permissions[key] === false);
   if (isNonCompanyUser) {
@@ -796,11 +810,10 @@ export function resolveCheckoutConfig() {
     };
   }
 
+  // If B2B module ENABLED - checkout enabled/disabled for company users based on ACL permissions
   const isCheckoutAllowed = !!permissions.admin || !!permissions[CHECKOUT_ALLOWED_PERMISSION];
-
   // PO is considered disabled only if explicitly false
   const isPODisabled = permissions[PO_PERMISSIONS.PO_ALL] === false;
-
   return {
     checkoutAllowed: isCheckoutAllowed,
     poEnabled: !isPODisabled,
