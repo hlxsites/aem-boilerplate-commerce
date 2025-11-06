@@ -407,6 +407,7 @@ main .section.light,
 main .section.highlight {
   background-color: var(--color-neutral-100);
   margin: 0;
+  padding: var(--spacing-xbig) 0;
 }
 
 main .section[data-padding="default"] {
