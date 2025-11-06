@@ -386,7 +386,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await renderPOSuccess(block, { poData });
+    await renderPOSuccess(block, poData);
   }
 
   events.on('authenticated', handleAuthenticated);
