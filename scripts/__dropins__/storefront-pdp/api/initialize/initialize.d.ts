@@ -3,8 +3,10 @@ import { Lang } from '@dropins/tools/types/elsie/src/i18n';
 import { ProductModel } from '../../data/models';
 
 type ConfigProps = {
+    scope?: string;
     langDefinitions?: Lang;
     defaultLocale?: string;
+    globalLocale?: string;
     sku?: string;
     acdl?: boolean;
     anchors?: string[];
