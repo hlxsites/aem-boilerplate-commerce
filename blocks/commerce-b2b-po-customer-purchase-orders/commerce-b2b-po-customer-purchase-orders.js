@@ -54,6 +54,7 @@ const renderCustomerPurchaseOrders = async (blockElement, permissions = {}) => {
 
   await purchaseOrderRenderer.render(CustomerPurchaseOrders, {
     skeletonRowCount: 5,
+    withWrapper: false,
     initialPageSize: [
       { text: '10', value: '10', selected: true },
       { text: '20', value: '20', selected: false },

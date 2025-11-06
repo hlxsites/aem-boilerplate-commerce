@@ -38,6 +38,7 @@ const renderApprovalRuleForm = async (blockElement, permissions = {}) => {
   const approvalRuleID = new URLSearchParams(window.location.search).get('ruleRef') || '';
   await purchaseOrderRenderer.render(ApprovalRuleForm, {
     approvalRuleID,
+    withWrapper: false,
     routeApprovalRulesList: () => rootLink(CUSTOMER_PO_RULES_PATH),
   })(blockElement);
 };

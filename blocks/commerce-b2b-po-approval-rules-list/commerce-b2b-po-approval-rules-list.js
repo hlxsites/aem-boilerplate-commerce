@@ -40,6 +40,8 @@ const renderPurchaseOrderApprovalRulesList = async (
   }
 
   await purchaseOrderRenderer.render(ApprovalRulesList, {
+    skeletonRowCount: 5,
+    withWrapper: false,
     routeCreateApprovalRule: () => rootLink(CUSTOMER_PO_RULE_FORM_PATH),
     routeEditApprovalRule: (ruleRef) => rootLink(`${CUSTOMER_PO_RULE_FORM_PATH}?ruleRef=${ruleRef}`),
     routeApprovalRuleDetails: (ruleRef) => rootLink(`${CUSTOMER_PO_RULE_DETAILS_PATH}?ruleRef=${ruleRef}`),

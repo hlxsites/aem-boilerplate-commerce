@@ -47,6 +47,7 @@ const renderApprovalRuleDetails = async (blockElement, permissions = {}) => {
 
   await purchaseOrderRenderer.render(ApprovalRuleDetails, {
     approvalRuleID,
+    withWrapper: false,
     routeApprovalRulesList: () => rootLink(CUSTOMER_PO_RULES_PATH),
   })(blockElement);
 };
