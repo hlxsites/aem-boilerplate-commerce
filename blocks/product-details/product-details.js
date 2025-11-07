@@ -413,7 +413,6 @@ export default async function decorate(block) {
       // Second priority: URL has explicit empty optionsUIDs parameter
       optionUIDs = null;
     }
-    // Fallback is already null from initialization
 
     if (wishlistToggleBtn) {
       wishlistToggleBtn.setProps((prev) => ({
