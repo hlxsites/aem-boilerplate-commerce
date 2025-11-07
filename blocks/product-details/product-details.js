@@ -4,6 +4,7 @@ import {
   Button,
   provider as UI,
 } from '@dropins/tools/components.js';
+import List from '@dropins/tools/chunks/icons/List.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -65,6 +66,7 @@ function isProductPrerendered() {
     return false;
   }
 }
+
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -162,9 +164,76 @@ export default async function decorate(block) {
     }
     const isEnabled = await rlApi.isRequisitionListEnabled();
     if (isEnabled) {
+      const reqLists = (await rlApi.getRequisitionLists()).items;
       const configValues = pdpApi.getProductConfigurationValues();
+
+      // Check if product has options and if they are selected
+      // Block adding to requisition list if:
+      // 1. Product has options (configurable product)
+      // 2. No options are currently selected
+
+      const productHasOptions = product?.options && product.options.length > 0;
+      const isArray = Array.isArray(currentOptions);
+      const arrayLength = isArray ? currentOptions.length : 0;
+      const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
+      const needsOptionSelection = productHasOptions && !hasSelectedOptions;
+
+      // If product has options that aren't selected, render a Button (matching RequisitionListNames)
+      if (needsOptionSelection) {
+        // Create wrapper div to match RequisitionListNames structure
+        const wrapper = document.createElement('div');
+        wrapper.className = 'requisition-list-names';
+
+        // Render Button to match RequisitionListNames exactly (variant="tertiary", size="medium")
+        const button = UI.render(Button, {
+          'aria-label': labels.Global?.AddToRequisitionList || 'Add to Requisition List',
+          size: 'medium',
+          variant: 'tertiary',
+          icon: h(Icon, { source: List }),
+          onClick: async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Show inline alert
+            if (inlineAlert) {
+              inlineAlert.remove();
+            }
+
+            inlineAlert = await UI.render(InLineAlert, {
+              heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
+              description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
+              icon: h(Icon, { source: 'Warning' }),
+              type: 'warning',
+              variant: 'secondary',
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => {
+                if (inlineAlert) {
+                  inlineAlert.remove();
+                }
+              },
+            })($alert);
+
+            // Scroll the alert into view
+            setTimeout(() => {
+              $alert.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              });
+            }, 100);
+          },
+        })(wrapper);
+
+        // Append wrapper to container
+        $container.innerHTML = '';
+        $container.appendChild(wrapper);
+
+        return button;
+      }
+
+      // Otherwise, render the normal RequisitionListNames component
       return rlRenderer.render(RequisitionListNames, {
-        items: [],
+        items: reqLists,
         canCreate: true,
         sku: product.sku,
         quantity: configValues?.quantity || 1,
@@ -353,14 +422,27 @@ export default async function decorate(block) {
   }, { eager: true });
 
   // Handle option changes
-  events.on('pdp/values', () => {
+  events.on('pdp/values', async () => {
     const configValues = pdpApi.getProductConfigurationValues();
 
     // Check URL parameter for empty optionsUIDs
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
-    // If URL has empty optionsUIDs parameter, treat as base product (no options)
-    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+    // Get optionsUIDs - prioritize actual selected values from configValues
+    let optionUIDs;
+    // First priority: actual selected options from configValues
+    if (configValues?.optionsUIDs && Array.isArray(configValues.optionsUIDs) && configValues.optionsUIDs.length > 0) {
+      optionUIDs = configValues.optionsUIDs;
+    }
+    // Second priority: if URL has explicit empty optionsUIDs parameter, treat as no options
+    else if (urlOptionsUIDs === '') {
+      optionUIDs = undefined;
+    }
+    // Fallback: undefined
+    else {
+      optionUIDs = undefined;
+    }
+
     if (wishlistToggleBtn) {
       wishlistToggleBtn.setProps((prev) => ({
         ...prev,
@@ -371,13 +453,12 @@ export default async function decorate(block) {
       }));
     }
 
-    if (requisitionListNames) {
-      requisitionListNames.setProps((prev) => ({
-        ...prev,
-        selectedOptions: optionUIDs,
-        quantity: configValues?.quantity || 1,
-      }));
-    }
+    // Re-render requisition list component to switch between custom button and dropdown
+    // based on whether options are selected
+    requisitionListNames = await renderRequisitionListNamesIfEnabled(
+      $requisitionListNames,
+      optionUIDs,
+    );
   }, { eager: true });
 
   events.on('wishlist/alert', ({ action, item }) => {
