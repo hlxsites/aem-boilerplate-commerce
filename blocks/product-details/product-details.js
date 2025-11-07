@@ -1,7 +1,6 @@
 import {
   InLineAlert,
   Icon,
-  Button,
   provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
@@ -220,9 +219,6 @@ export default async function decorate(block) {
     return null;
   }
 
-  // Declare _requisitionListNames as let so we can reassign it after login
-  // Prefixed with _ because we store the reference but don't read from it
-  let _requisitionListNames;
 
   const [
     _galleryMobile,
@@ -429,12 +425,11 @@ export default async function decorate(block) {
       }));
     }
 
-    // Re-render requisition list component to switch between custom button and dropdown
-    // based on whether options are selected
-    _requisitionListNames = await renderRequisitionListNamesIfEnabled(
-      $requisitionListNames,
-      optionUIDs,
-    );
+      // Re-render requisition list component with updated options
+      await renderRequisitionListNamesIfEnabled(
+        $requisitionListNames,
+        optionUIDs,
+      );
   }, { eager: true });
 
   events.on('wishlist/alert', ({ action, item }) => {
@@ -461,13 +456,13 @@ export default async function decorate(block) {
   events.on('authenticated', async () => {
     // Get current selected options when rendering for authenticated user
     const configValues = pdpApi.getProductConfigurationValues();
-    const urlOptionsUIDs = urlParams.get('optionsUIDs');
-    const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-    // Render and update the reference to the new instance
-    _requisitionListNames = await renderRequisitionListNamesIfEnabled(
-      $requisitionListNames,
-      optionUIDs,
-    );
+      const urlOptionsUIDs = urlParams.get('optionsUIDs');
+      const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
+      // Render requisition list for authenticated user
+      await renderRequisitionListNamesIfEnabled(
+        $requisitionListNames,
+        optionUIDs,
+      );
   }, { eager: true });
 
   // Show notification if redirected from requisition list
