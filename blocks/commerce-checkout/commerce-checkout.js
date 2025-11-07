@@ -84,8 +84,8 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
-  const permissions = events.lastPayload('auth/permissions') ?? {};
-  const isPoEnabled = !(permissions[PO_PERMISSIONS.PO_ALL] === false);
+  const permissions = events.lastPayload('auth/permissions');
+  const isPoEnabled = permissions ? !(permissions[PO_PERMISSIONS.PO_ALL] === false) : false;
 
   // Container and component references
   let emptyCart;
