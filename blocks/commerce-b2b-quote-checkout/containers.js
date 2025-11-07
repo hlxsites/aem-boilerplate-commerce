@@ -46,7 +46,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // External dependencies
-import { rootLink } from '../../scripts/commerce.js';
+import { rootLink, CUSTOMER_NEGOTIABLE_QUOTE_PATH } from '../../scripts/commerce.js';
 
 // Constants
 import {
@@ -331,7 +331,7 @@ export const renderQuoteSummaryList = async (container) => renderContainer(
         );
         const editQuoteLink = document.createElement('a');
         editQuoteLink.classList.add('quote-summary-list__edit');
-        editQuoteLink.href = rootLink(`${window.location.pathname}?quoteid=${headingCtx.quoteId}`);
+        editQuoteLink.href = rootLink(`${CUSTOMER_NEGOTIABLE_QUOTE_PATH}?quoteid=${headingCtx.quoteId}`);
         editQuoteLink.rel = 'noreferrer';
         editQuoteLink.innerText = 'Edit';
 
