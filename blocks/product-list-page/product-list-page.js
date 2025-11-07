@@ -55,7 +55,7 @@ export default async function decorate(block) {
   const $productList = fragment.querySelector('.search__product-list');
   const $pagination = fragment.querySelector('.search__pagination');
 
-  const reqLists = (await rlApi.getRequisitionLists()).items;
+  const reqLists = (await rlApi.getRequisitionLists(1, 100)).items;
   const isRequisitionListEnabled = await rlApi.isRequisitionListEnabled();
 
   block.innerHTML = '';
