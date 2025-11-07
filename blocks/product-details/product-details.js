@@ -4,7 +4,6 @@ import {
   Button,
   provider as UI,
 } from '@dropins/tools/components.js';
-import List from '@dropins/tools/chunks/icons/List.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -166,33 +165,23 @@ export default async function decorate(block) {
       const reqLists = (await rlApi.getRequisitionLists()).items;
       const configValues = pdpApi.getProductConfigurationValues();
 
-      // Check if product has options and if they are selected
-      // Block adding to requisition list if:
-      // 1. Product has options (configurable product)
-      // 2. No options are currently selected
+      // Render RequisitionListNames with beforeAddProdToReqList validation
+      return rlRenderer.render(RequisitionListNames, {
+        items: reqLists,
+        canCreate: true,
+        sku: product.sku,
+        quantity: configValues?.quantity || 1,
+        variant: 'neutral',
+        selectedOptions: currentOptions,
+        beforeAddProdToReqList: async () => {
+          // Check if product has options and if they are selected
+          const productHasOptions = product?.options && product.options.length > 0;
+          const isArray = Array.isArray(currentOptions);
+          const arrayLength = isArray ? currentOptions.length : 0;
+          const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
+          const needsOptionSelection = productHasOptions && !hasSelectedOptions;
 
-      const productHasOptions = product?.options && product.options.length > 0;
-      const isArray = Array.isArray(currentOptions);
-      const arrayLength = isArray ? currentOptions.length : 0;
-      const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
-      const needsOptionSelection = productHasOptions && !hasSelectedOptions;
-
-      // If product has options not selected, render Button matching RequisitionListNames
-      if (needsOptionSelection) {
-        // Create wrapper div to match RequisitionListNames structure
-        const wrapper = document.createElement('div');
-        wrapper.className = 'requisition-list-names';
-
-        // Render Button to match RequisitionListNames exactly (variant="tertiary", size="medium")
-        const button = UI.render(Button, {
-          'aria-label': labels.Global?.AddToRequisitionList || 'Add to Requisition List',
-          size: 'medium',
-          variant: 'tertiary',
-          icon: h(Icon, { source: List }),
-          onClick: async (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-
+          if (needsOptionSelection) {
             // Show inline alert
             if (inlineAlert) {
               inlineAlert.remove();
@@ -220,24 +209,11 @@ export default async function decorate(block) {
                 block: 'center',
               });
             }, 100);
-          },
-        })(wrapper);
 
-        // Append wrapper to container
-        $container.innerHTML = '';
-        $container.appendChild(wrapper);
-
-        return button;
-      }
-
-      // Otherwise, render the normal RequisitionListNames component
-      return rlRenderer.render(RequisitionListNames, {
-        items: reqLists,
-        canCreate: true,
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        variant: 'neutral',
-        selectedOptions: currentOptions,
+            // Throw error to prevent modal from opening
+            throw new Error('Product options must be selected');
+          }
+        },
       })($container);
     }
     $container.innerHTML = '';
