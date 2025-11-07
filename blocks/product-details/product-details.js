@@ -429,7 +429,7 @@ export default async function decorate(block) {
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
     // Get optionsUIDs - prioritize actual selected values from configValues
-    let optionUIDs;
+    let optionUIDs = null;
     // First priority: actual selected options from configValues
     const hasConfigOptions = configValues?.optionsUIDs
       && Array.isArray(configValues.optionsUIDs)
@@ -439,11 +439,9 @@ export default async function decorate(block) {
       optionUIDs = configValues.optionsUIDs;
     } else if (urlOptionsUIDs === '') {
       // Second priority: URL has explicit empty optionsUIDs parameter
-      optionUIDs = undefined;
-    } else {
-      // Fallback: undefined
-      optionUIDs = undefined;
+      optionUIDs = null;
     }
+    // Fallback is already null from initialization
 
     if (wishlistToggleBtn) {
       wishlistToggleBtn.setProps((prev) => ({
@@ -488,7 +486,7 @@ export default async function decorate(block) {
     // Get current selected options when rendering for authenticated user
     const configValues = pdpApi.getProductConfigurationValues();
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
-    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+    const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
     // Render and update the reference to the new instance
     _requisitionListNames = await renderRequisitionListNamesIfEnabled(
       $requisitionListNames,
