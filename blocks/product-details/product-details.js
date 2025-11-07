@@ -67,7 +67,6 @@ function isProductPrerendered() {
   }
 }
 
-
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   const buttonText = inCart
@@ -178,7 +177,7 @@ export default async function decorate(block) {
       const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
       const needsOptionSelection = productHasOptions && !hasSelectedOptions;
 
-      // If product has options that aren't selected, render a Button (matching RequisitionListNames)
+      // If product has options not selected, render Button matching RequisitionListNames
       if (needsOptionSelection) {
         // Create wrapper div to match RequisitionListNames structure
         const wrapper = document.createElement('div');
@@ -245,8 +244,9 @@ export default async function decorate(block) {
     return null;
   }
 
-  // Declare requisitionListNames as let so we can reassign it after login
-  let requisitionListNames;
+  // Declare _requisitionListNames as let so we can reassign it after login
+  // Prefixed with _ because we store the reference but don't read from it
+  let _requisitionListNames;
 
   const [
     _galleryMobile,
@@ -431,15 +431,17 @@ export default async function decorate(block) {
     // Get optionsUIDs - prioritize actual selected values from configValues
     let optionUIDs;
     // First priority: actual selected options from configValues
-    if (configValues?.optionsUIDs && Array.isArray(configValues.optionsUIDs) && configValues.optionsUIDs.length > 0) {
+    const hasConfigOptions = configValues?.optionsUIDs
+      && Array.isArray(configValues.optionsUIDs)
+      && configValues.optionsUIDs.length > 0;
+
+    if (hasConfigOptions) {
       optionUIDs = configValues.optionsUIDs;
-    }
-    // Second priority: if URL has explicit empty optionsUIDs parameter, treat as no options
-    else if (urlOptionsUIDs === '') {
+    } else if (urlOptionsUIDs === '') {
+      // Second priority: URL has explicit empty optionsUIDs parameter
       optionUIDs = undefined;
-    }
-    // Fallback: undefined
-    else {
+    } else {
+      // Fallback: undefined
       optionUIDs = undefined;
     }
 
@@ -455,7 +457,7 @@ export default async function decorate(block) {
 
     // Re-render requisition list component to switch between custom button and dropdown
     // based on whether options are selected
-    requisitionListNames = await renderRequisitionListNamesIfEnabled(
+    _requisitionListNames = await renderRequisitionListNamesIfEnabled(
       $requisitionListNames,
       optionUIDs,
     );
@@ -488,7 +490,7 @@ export default async function decorate(block) {
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
     const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
     // Render and update the reference to the new instance
-    requisitionListNames = await renderRequisitionListNamesIfEnabled(
+    _requisitionListNames = await renderRequisitionListNamesIfEnabled(
       $requisitionListNames,
       optionUIDs,
     );
