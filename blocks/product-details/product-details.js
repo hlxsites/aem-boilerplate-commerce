@@ -1,6 +1,7 @@
 import {
   InLineAlert,
   Icon,
+  Button,
   provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
@@ -219,7 +220,6 @@ export default async function decorate(block) {
     return null;
   }
 
-
   const [
     _galleryMobile,
     _gallery,
@@ -424,11 +424,11 @@ export default async function decorate(block) {
       }));
     }
 
-      // Re-render requisition list component with updated options
-      await renderRequisitionListNamesIfEnabled(
-        $requisitionListNames,
-        optionUIDs,
-      );
+    // Re-render requisition list component with updated options
+    await renderRequisitionListNamesIfEnabled(
+      $requisitionListNames,
+      optionUIDs,
+    );
   }, { eager: true });
 
   events.on('wishlist/alert', ({ action, item }) => {
@@ -455,13 +455,13 @@ export default async function decorate(block) {
   events.on('authenticated', async () => {
     // Get current selected options when rendering for authenticated user
     const configValues = pdpApi.getProductConfigurationValues();
-      const urlOptionsUIDs = urlParams.get('optionsUIDs');
-      const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-      // Render requisition list for authenticated user
-      await renderRequisitionListNamesIfEnabled(
-        $requisitionListNames,
-        optionUIDs,
-      );
+    const urlOptionsUIDs = urlParams.get('optionsUIDs');
+    const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
+    // Render requisition list for authenticated user
+    await renderRequisitionListNamesIfEnabled(
+      $requisitionListNames,
+      optionUIDs,
+    );
   }, { eager: true });
 
   // Show notification if redirected from requisition list
