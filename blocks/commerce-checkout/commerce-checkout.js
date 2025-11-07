@@ -19,6 +19,7 @@ import {
 
 // Purchase Order Dropin
 import * as poApi from '@dropins/storefront-purchase-order/api.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
@@ -71,8 +72,7 @@ import {
   SHIPPING_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
-
-import { rootLink, resolveCheckoutConfig } from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/commerce.js';
 
 // Success block entry points
 import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
@@ -84,7 +84,8 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
-  const { checkoutAllowed, poEnabled } = resolveCheckoutConfig();
+  const permissions = events.lastPayload('auth/permissions') ?? {};
+  const isPoEnabled = !(permissions[PO_PERMISSIONS.PO_ALL] === false);
 
   // Container and component references
   let emptyCart;
@@ -185,7 +186,7 @@ export default async function decorate(block) {
         await creditCardFormRef.current.submit();
       }
 
-      if (poEnabled) {
+      if (isPoEnabled) {
         await poApi.placePurchaseOrder(cartId);
       } else {
         await orderApi.placeOrder(cartId);
@@ -199,11 +200,11 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = checkoutAllowed ? await renderPlaceOrder($placeOrder, {
+  const placeOrder = await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-    poEnabled,
-  }) : null;
+    isPoEnabled,
+  });
 
   // Render the remaining containers
   const [

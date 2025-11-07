@@ -17,6 +17,7 @@ import {
 
 // Purchase Order Dropin
 import * as poApi from '@dropins/storefront-purchase-order/api.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 
 // Block Utilities
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
@@ -56,8 +57,7 @@ import {
   PURCHASE_ORDER_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
-
-import { rootLink, resolveCheckoutConfig } from '../../scripts/commerce.js';
+import { rootLink } from '../../scripts/commerce.js';
 
 // Success block entry points
 import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
@@ -70,7 +70,8 @@ import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/quote-management.js';
 
 export default async function decorate(block) {
-  const { checkoutAllowed, poEnabled } = resolveCheckoutConfig();
+  const permissions = events.lastPayload('auth/permissions') ?? {};
+  const isPoEnabled = permissions[PO_PERMISSIONS.PO_ALL] === false;
 
   // Container and component references
   let billingForm;
@@ -122,7 +123,7 @@ export default async function decorate(block) {
   const handlePlaceOrder = async ({ quoteId }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
-      if (poEnabled) {
+      if (isPoEnabled) {
         await poApi.placePurchaseOrder(quoteId);
       } else {
         await orderApi.placeNegotiableQuoteOrder(quoteId);
@@ -136,11 +137,11 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = checkoutAllowed ? await renderPlaceOrder($placeOrder, {
+  const placeOrder = await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-    poEnabled,
-  }) : null;
+    isPoEnabled,
+  });
 
   // Render the remaining containers
   const [
