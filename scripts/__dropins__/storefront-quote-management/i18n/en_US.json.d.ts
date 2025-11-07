@@ -1,4 +1,8 @@
 declare const _default: {
+  "ConfirmationModal": {
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
   "NegotiableQuote": {
     "Request": {
       "title": "Request a Quote",
@@ -43,6 +47,22 @@ declare const _default: {
         "createCopy": "Create copy",
         "sendForReview": "Send for review"
       },
+      "confirmationModal": {
+        "cancel": "Cancel",
+        "delete": {
+          "title": "Delete Quote",
+          "message": "Are you sure you want to delete this quote?",
+          "confirm": "Delete",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to delete quote",
+          "successHeading": "Success",
+          "successDescription": "Quote has been successfully deleted"
+        },
+        "close": {
+          "message": "Are you sure you want to close this quote?",
+          "confirm": "Close"
+        }
+      },
       "shippingInformation": {
         "title": "Shipping Information"
       },
@@ -71,6 +91,18 @@ declare const _default: {
           "remove": "Remove"
         }
       },
+      "rename": {
+        "title": "Rename Quote",
+        "quoteNameLabel": "Quote name",
+        "reasonLabel": "Reason for change",
+        "renameButton": "Rename",
+        "cancelButton": "Cancel",
+        "errorHeading": "Error",
+        "quoteNameRequired": "Quote name is required",
+        "errorDefault": "Failed to rename quote. Please try again.",
+        "successHeading": "Success",
+        "successMessage": "Quote renamed successfully!"
+      },
       "tabbedContent": {
         "itemsQuoted": "Items quoted",
         "comments": "Comments",
@@ -87,6 +119,8 @@ declare const _default: {
       }
     },
     "PriceSummary": {
+      "taxToBeDetermined": "TBD",
+      "orderSummary": "Order Summary",
       "giftOptionsTax": {
         "printedCard": {
           "title": "Printed card",
@@ -109,6 +143,11 @@ declare const _default: {
         "withTaxes": "Including taxes",
         "withoutTaxes": "excluding taxes"
       },
+      "shipping": {
+        "label": "Shipping",
+        "withTaxes": "Including taxes",
+        "withoutTaxes": "excluding taxes"
+      },
       "taxes": {
         "total": "Tax Total",
         "totalOnly": "Tax",
@@ -117,10 +156,22 @@ declare const _default: {
         "hideBreakdown": "Hide Tax Breakdown"
       },
       "total": {
+        "free": "Free",
         "label": "Total",
         "withoutTax": "Total excluding taxes",
         "saved": "Total saved"
       }
+    },
+    "QuoteSummaryList": {
+      "discountedPrice": "Discounted Price",
+      "discountPercentage": "{discount}% off",
+      "editQuote": "Edit",
+      "file": "{count} file",
+      "files": "{count} files",
+      "heading": "Negotiable Quote ({count})",
+      "regularPrice": "Regular Price",
+      "savingsAmount": "Savings",
+      "viewMore": "View more"
     }
   },
   "historyLog": {

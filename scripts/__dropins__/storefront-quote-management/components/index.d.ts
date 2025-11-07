@@ -15,9 +15,11 @@ export * from './ProductListTable';
 export * from './QuotePricesSummary';
 export * from './QuoteSummaryList';
 export * from './QuotesListTable';
+export * from './ConfirmationModal';
 export * from './QuoteHistoryLog';
 export * from './ShippingAddressDisplay';
 export * from './RequestNegotiableQuoteForm';
 export * from './TabbedContent';
 export * from './QuoteCommentsList';
+export * from './RenameQuoteModal';
 //# sourceMappingURL=index.d.ts.map

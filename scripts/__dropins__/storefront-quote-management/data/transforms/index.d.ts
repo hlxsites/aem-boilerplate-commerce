@@ -16,4 +16,5 @@
  *******************************************************************/
 export * from './transform-customer';
 export * from './transform-quote';
+export * from './transform-store-config';
 //# sourceMappingURL=index.d.ts.map
