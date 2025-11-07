@@ -12,7 +12,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 // Requisition List Dropin
 import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
+import { RequisitionListSelector } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -101,14 +101,14 @@ export default async function decorate(block) {
     return button;
   };
 
-  async function renderRequisitionListNamesIfEnabled($container, product) {
+  async function renderRequisitionListSelectorIfEnabled($container, product) {
     const isAuthenticated = checkIsAuthenticated();
     if (!isAuthenticated) {
       $container.innerHTML = '';
       return;
     }
     if (isRequisitionListEnabled) {
-      rlRenderer.render(RequisitionListNames, {
+      rlRenderer.render(RequisitionListSelector, {
         items: reqLists,
         sku: product.sku,
         quantity: 1,
@@ -191,12 +191,12 @@ export default async function decorate(block) {
           // Requisition List Button
           const $reqListNames = document.createElement('div');
           $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
-          await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
+          await renderRequisitionListSelectorIfEnabled($reqListNames, ctx.product);
           actionsWrapper.appendChild($reqListNames);
           ctx.replaceWith(actionsWrapper);
 
           events.on('authenticated', async () => {
-            await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
+            await renderRequisitionListSelectorIfEnabled($reqListNames, ctx.product);
           });
         },
       },

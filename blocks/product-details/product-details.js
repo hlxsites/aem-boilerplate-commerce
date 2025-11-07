@@ -18,7 +18,7 @@ import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistA
 // Requisition List Dropin
 import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
+import { RequisitionListSelector } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -154,7 +154,7 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
-  async function renderRequisitionListNamesIfEnabled($container, currentOptions = null) {
+  async function renderRequisitionListSelectorIfEnabled($container, currentOptions = null) {
     const isAuthenticated = checkIsAuthenticated();
     if (!isAuthenticated) {
       $container.innerHTML = '';
@@ -164,7 +164,7 @@ export default async function decorate(block) {
     if (isEnabled) {
       const reqLists = (await rlApi.getRequisitionLists(1, 100)).items;
       const configValues = pdpApi.getProductConfigurationValues();
-      return rlRenderer.render(RequisitionListNames, {
+      return rlRenderer.render(RequisitionListSelector, {
         items: reqLists,
         canCreate: true,
         sku: product.sku,
@@ -408,7 +408,7 @@ export default async function decorate(block) {
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
     const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
     // Render and update the reference to the new instance
-    requisitionListNames = await renderRequisitionListNamesIfEnabled(
+    requisitionListNames = await renderRequisitionListSelectorIfEnabled(
       $requisitionListNames,
       optionUIDs,
     );
