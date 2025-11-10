@@ -1,12 +1,24 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 export declare const mockPermissions: {
+    [x: string]: boolean;
     all: boolean;
     'Magento_Company::index': boolean;
     'Magento_Sales::all': boolean;
-    'Magento_PurchaseOrder::all': boolean;
-    'Magento_PurchaseOrder::view_purchase_orders': boolean;
-    'Magento_PurchaseOrderRule::super_approve_purchase_order': boolean;
     'Magento_Company::user_management': boolean;
-    'Magento_PurchaseOrderRule::view_approval_rules': boolean;
-    'Magento_PurchaseOrderRule::manage_approval_rules': boolean;
 };
 //# sourceMappingURL=events-data.d.ts.map

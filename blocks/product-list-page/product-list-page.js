@@ -20,9 +20,15 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink, checkIsAuthenticated } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  getProductLink,
+  checkIsAuthenticated,
+  rootLink,
+} from '../../scripts/commerce.js';
 
 // Initializers
+import '../../scripts/initializers/requisition-list.js';
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
 
@@ -104,6 +110,18 @@ export default async function decorate(block) {
         items: [],
         sku: product.sku,
         quantity: 1,
+        variant: 'hover',
+        beforeAddProdToReqList: () => {
+          const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
+          if (product.typename !== 'SimpleProductView') {
+            sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
+              timestamp: Date.now(),
+              message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
+            }));
+            window.location.href = url;
+            throw new Error('Redirecting to product page');
+          }
+        },
       })($container);
     } else {
       $container.innerHTML = '';
@@ -249,6 +267,7 @@ async function performInitialSearch(config, urlParams) {
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
         { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
         ...getFilterFromParams(filter),
       ],
     }).catch(() => {
@@ -261,7 +280,10 @@ async function performInitialSearch(config, urlParams) {
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: getSortFromParams(sort),
-      filter: getFilterFromParams(filter),
+      filter: [
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        ...getFilterFromParams(filter),
+      ],
     }).catch(() => {
       console.error('Error searching for products');
     });

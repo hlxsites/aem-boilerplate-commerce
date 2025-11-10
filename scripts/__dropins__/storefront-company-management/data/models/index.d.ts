@@ -16,6 +16,12 @@
  *******************************************************************/
 export * from './company';
 export * from './company-address';
+export * from './company-role';
+export * from './company-structure';
+export * from './company-team';
+export * from './company-user';
 export * from './country';
 export * from './customer-company-info';
+export * from './company-credit-info';
+export * from './company-credit-history';
 //# sourceMappingURL=index.d.ts.map

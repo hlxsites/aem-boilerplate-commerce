@@ -7,8 +7,19 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import { getMetadata } from './aem.js';
 import initializeDropins from './initializers/index.js';
+
+/**
+ * Fetch GraphQL Instances
+ */
+
+// Core Fetch GraphQL Instance
+export const CORE_FETCH_GRAPHQL = new FetchGraphQL();
+
+// Catalog Service Fetch GraphQL Instance
+export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 /**
  * Constants
@@ -44,6 +55,11 @@ export const CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH = `${CUSTOMER_PATH}/purcha
 
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+// CUSTOMER B2B PATHS
+export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
+export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
+export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
 
 /**
  * Auth Privacy Policy Consent Slot
@@ -281,7 +297,17 @@ export async function loadCommerceLazy() {
  * Initializes commerce configuration
  */
 export async function initializeCommerce() {
+  // Initialize Config
   initializeConfig(await getConfigFromSession());
+
+  // Set Fetch GraphQL (Core)
+  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint'));
+  CORE_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('all') }));
+
+  // Set Fetch GraphQL (Catalog Service)
+  CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
+  CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
   return initializeDropins();
 }
 

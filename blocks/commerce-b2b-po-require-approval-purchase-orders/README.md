@@ -39,24 +39,33 @@ No events are emitted by this block. -->
 
 - **Authenticated Users**: When user is authenticated, checks permissions before rendering
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
-- **Admin Users**: When user has admin permissions, displays purchase orders requiring approval
-- **Approval Permission**: When user has `Magento_PurchaseOrder::all` permission, displays purchase orders that require their approval
-- **No Access**: When user lacks required permissions, hides the entire block
+- **B2B Module Check**: Checks if B2B module is enabled via `commerce-b2b-enabled` configuration flag
+- **B2B Module Disabled**: When B2B module is disabled, redirects to account dashboard page
+- **Global PO Access Check**: First checks if user has admin or `Magento_PurchaseOrder::all` permission (via `PO_PERMISSIONS.PO_ALL` constant) to determine access to any PO containers and prevent premature redirects on multi-block pages
+- **No Access to PO**: When user lacks both admin and `PO_ALL` permissions, redirects to account dashboard page
+- **Block-Specific Permission Check**: This block is accessible if the user has global PO access (admin or `PO_ALL`), as there is no dedicated ACL permission for this specific functionality
+- **No Access to Block**: When user lacks access to this specific block but has access to other PO blocks, hides the entire block container
 
 ### User Interaction Flows
 
 1. **Authentication Check**: Block first verifies user authentication status
 2. **Redirect Flow**: If not authenticated, redirects to login page
-3. **Permission Check**: If authenticated, checks for admin or general purchase order permissions
-4. **Block Visibility**: Shows or hides the entire block container based on permission check
-5. **Orders Display**: If authorized, renders purchase orders requiring approval with pagination
-6. **Permission Updates**: Listens for permission changes and re-renders accordingly
-7. **Logout Handling**: Redirects to login page if user logs out during interaction
+3. **B2B Module Check**: Checks if B2B module is enabled via `commerce-b2b-enabled` configuration flag
+4. **B2B Module Disabled Redirect**: If B2B module is disabled, redirects to account dashboard page
+5. **Global PO Access Check**: Checks if user has admin or `PO_ALL` permission (prevents redirect when other PO blocks are accessible on the same page)
+6. **Account Dashboard Redirect**: If lacking global PO access, redirects to account dashboard page
+7. **Block-Specific Permission Check**: For this block, access is granted if global PO access is available (no dedicated ACL permission exists)
+8. **Block Visibility**: Shows or hides the entire block container based on block-specific permission check (prevents layout issues)
+9. **Orders Display**: If authorized, renders purchase orders requiring approval with pagination using default dropin configuration
+10. **Permission Updates**: Listens for permission changes and re-renders accordingly
+11. **Logout Handling**: Redirects to login page if user logs out during interaction
 
 ### Error Handling
 
 - **Authentication Errors**: If user is not authenticated, automatically redirects to login page
-- **Permission Errors**: If user lacks required permissions, hides block and clears content
+- **B2B Module Disabled**: If B2B module is disabled via configuration, redirects to account dashboard page
+- **Global Permission Errors**: If user lacks access to all PO containers, redirects to account dashboard page
+- **Block Permission Errors**: If user lacks access to this specific block, hides block and clears content to prevent layout issues
 - **Container Errors**: If the RequireApprovalPurchaseOrders container fails to render, the block content remains empty
 - **Permission Update Errors**: If permission events provide invalid data, uses empty permissions object as fallback
-- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, or hides block if no access
+- **Fallback Behavior**: Always falls back to login page redirect if not authenticated, or account dashboard redirect if B2B module disabled or no PO access, or hides block if no block-specific access

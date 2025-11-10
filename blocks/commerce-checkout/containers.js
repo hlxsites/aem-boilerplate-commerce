@@ -45,22 +45,8 @@ import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
-// Order Dropin
-import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
-import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
-import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
-import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
-import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
-import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
-import { render as OrderProvider } from '@dropins/storefront-order/render.js';
-
-// Purchase Order Dropin
-import PurchaseOrderConfirmation from '@dropins/storefront-purchase-order/containers/PurchaseOrderConfirmation.js';
-import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
-
 // Tools
 import {
-  Button,
   Header,
   provider as UI,
 } from '@dropins/tools/components.js';
@@ -127,20 +113,6 @@ export const CONTAINERS = Object.freeze({
   EMPTY_CART: 'emptyCart',
   SHIPPING_ADDRESS_FORM: 'shippingAddressForm',
   BILLING_ADDRESS_FORM: 'billingAddressForm',
-
-  // Order confirmation containers
-  ORDER_HEADER: 'orderHeader',
-  ORDER_STATUS: 'orderStatus',
-  SHIPPING_STATUS: 'shippingStatus',
-  CUSTOMER_DETAILS: 'customerDetails',
-  ORDER_COST_SUMMARY: 'orderCostSummary',
-  ORDER_GIFT_OPTIONS: 'orderGiftOptions',
-  ORDER_PRODUCT_LIST: 'orderProductList',
-  ORDER_CONFIRMATION_FOOTER_BUTTON: 'orderConfirmationFooterButton',
-
-  // Purchase Order confirmation containers
-  PO_CONFIRMATION: 'purchaseOrderConfirmation',
-  PO_FOOTER_BUTTON: 'purchaseOrderFooterButton',
 
   // Slot/Sub-containers (nested within other containers)
   ESTIMATE_SHIPPING: 'estimateShipping',
@@ -256,7 +228,12 @@ export const renderServerError = async (container, contentElement) => renderCont
   CONTAINERS.SERVER_ERROR,
   async () => CheckoutProvider.render(ServerError, {
     autoScroll: true,
-    onRetry: () => {
+    onRetry: (error) => {
+      if (error.code === 'PERMISSION_DENIED') {
+        document.location.reload();
+        return;
+      }
+
       contentElement.classList.remove(CHECKOUT_ERROR_CLASS);
     },
     onServerError: () => {
@@ -594,6 +571,7 @@ export const renderCartSummaryList = async (container) => renderContainer(
  * @param {Object} options - Configuration object with handler functions
  * @param {Function} options.handleValidation - Validation handler function
  * @param {Function} options.handlePlaceOrder - Place order handler function
+ * @param {Boolean} options.isPoEnabled - Indicate if PO enabled or not (B2B)
  * @returns {Promise<Object>} - The rendered place order component
  */
 export const renderPlaceOrder = async (container, options = {}) => renderContainer(
@@ -601,13 +579,13 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
   async () => CheckoutProvider.render(PlaceOrder, {
     handleValidation: options.handleValidation,
     handlePlaceOrder: options.handlePlaceOrder,
-    slots: options.renderSlot ? {
+    slots: {
       Content: (placeOrderCtx) => {
         const spanElement = document.createElement('span');
-        spanElement.innerText = 'Place Purchase Order';
+        spanElement.innerText = options.isPoEnabled ? 'Place Purchase Order' : 'Place Order';
         placeOrderCtx.replaceWith(spanElement);
       },
-    } : {},
+    },
   })(container),
 );
 
@@ -854,186 +832,5 @@ export const renderGiftOptions = async (container) => renderContainer(
     slots: {
       SwatchImage: swatchImageSlot,
     },
-  })(container),
-);
-
-/**
- * Renders order confirmation header with email check and sign up integration
- * @param {HTMLElement} container - DOM element to render the order header in
- * @param {Object} options - Configuration object with handlers and order data
- * @returns {Promise<Object>} - The rendered order header component
- */
-export const renderOrderHeader = async (container, options = {}) => renderContainer(
-  CONTAINERS.ORDER_HEADER,
-  async () => {
-    const handleSignUpClick = async ({
-      inputsDefaultValueSet,
-      addressesData,
-    }) => {
-      const signUpForm = document.createElement('div');
-
-      AuthProvider.render(SignUp, {
-        inputsDefaultValueSet,
-        addressesData,
-        routeSignIn: () => rootLink('/customer/login'),
-        routeRedirectOnEmailConfirmationClose: () => rootLink('/customer/account'),
-        slots: {
-          ...authPrivacyPolicyConsentSlot,
-        },
-      })(signUpForm);
-
-      await showModal(signUpForm);
-    };
-
-    return OrderProvider.render(OrderHeader, {
-      handleEmailAvailability: checkoutApi.isEmailAvailable,
-      handleSignUpClick,
-      ...options,
-    })(container);
-  },
-);
-
-/**
- * Renders the order status component
- * @param {HTMLElement} container - The DOM element to render the order status in
- * @returns {Promise<Object>} - The rendered order status component
- */
-export const renderOrderStatus = async (container) => renderContainer(
-  CONTAINERS.ORDER_STATUS,
-  async () => OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(container),
-);
-
-/**
- * Renders the shipping status component
- * @param {HTMLElement} container - The DOM element to render the shipping status in
- * @returns {Promise<Object>} - The rendered shipping status component
- */
-export const renderShippingStatus = async (container) => renderContainer(
-  CONTAINERS.SHIPPING_STATUS,
-  async () => OrderProvider.render(ShippingStatus)(container),
-);
-
-/**
- * Renders the customer details component
- * @param {HTMLElement} container - The DOM element to render the customer details in
- * @returns {Promise<Object>} - The rendered customer details component
- */
-export const renderCustomerDetails = async (container) => renderContainer(
-  CONTAINERS.CUSTOMER_DETAILS,
-  async () => OrderProvider.render(CustomerDetails)(container),
-);
-
-/**
- * Renders the order cost summary component
- * @param {HTMLElement} container - The DOM element to render the order cost summary in
- * @returns {Promise<Object>} - The rendered order cost summary component
- */
-export const renderOrderCostSummary = async (container) => renderContainer(
-  CONTAINERS.ORDER_COST_SUMMARY,
-  async () => OrderProvider.render(OrderCostSummary)(container),
-);
-
-/**
- * Renders the order product list component with image slots and gift options
- * @param {HTMLElement} container - The DOM element to render the order product list in
- * @returns {Promise<Object>} - The rendered order product list component
- */
-export const renderOrderProductList = async (container) => renderContainer(
-  CONTAINERS.ORDER_PRODUCT_LIST,
-  async () => OrderProvider.render(OrderProductList, {
-    slots: {
-      Footer: (ctx) => {
-        const giftOptions = document.createElement('div');
-        CartProvider.render(GiftOptions, {
-          item: ctx.item,
-          view: 'product',
-          dataSource: 'order',
-          isEditable: false,
-          slots: {
-            SwatchImage: swatchImageSlot,
-          },
-        })(giftOptions);
-        ctx.appendChild(giftOptions);
-      },
-      CartSummaryItemImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-          params: {
-            width: defaultImageProps.width,
-            height: defaultImageProps.height,
-          },
-        });
-      },
-    },
-  })(container),
-);
-
-/**
- * Renders order-level gift options for order confirmation
- * @param {HTMLElement} container - DOM element to render order gift options in
- * @returns {Promise<Object>} - The rendered order gift options component
- */
-export const renderOrderGiftOptions = async (container) => renderContainer(
-  CONTAINERS.ORDER_GIFT_OPTIONS,
-  async () => CartProvider.render(GiftOptions, {
-    view: 'order',
-    dataSource: 'order',
-    isEditable: false,
-    readOnlyFormOrderView: 'secondary',
-    slots: {
-      SwatchImage: swatchImageSlot,
-    },
-  })(container),
-);
-
-/**
- * Renders the continue shopping button for order confirmation footer
- * @param {HTMLElement} container - DOM element to render the button in
- * @returns {Promise<Object>} - The rendered continue shopping button component
- */
-export const renderOrderConfirmationFooterButton = async (container) => renderContainer(
-  CONTAINERS.ORDER_CONFIRMATION_FOOTER_BUTTON,
-  async () => UI.render(Button, {
-    children: 'Continue shopping',
-    'data-testid': 'order-confirmation-footer__continue-button',
-    className: 'order-confirmation-footer__continue-button',
-    size: 'medium',
-    variant: 'primary',
-    type: 'submit',
-    href: rootLink('/'),
-  })(container),
-);
-
-/**
- * Renders purchase order confirmation component
- * @param {HTMLElement} container - DOM element to render purchase order confirmation in
- * @param {number} poNumber - Purchase order number to generate PO details route
- * @returns {Promise<Object>} - The rendered purchase order confirmation component
- */
-export const renderPOConfirmation = async (container, poNumber) => renderContainer(
-  CONTAINERS.PO_CONFIRMATION,
-  async () => POProvider.render(PurchaseOrderConfirmation, {
-    purchaseOrderNumber: poNumber,
-    routePurchaseOrderDetails: () => rootLink(`/customer/purchase-order-details?poRef=${poNumber}`),
-  })(container),
-);
-
-/**
- * Renders the continue shopping button for purchase order confirmation footer
- * @param {HTMLElement} container - DOM element to render the button in
- * @returns {Promise<Object>} - The rendered continue shopping button component
- */
-export const renderPOConfirmationFooterButton = async (container) => renderContainer(
-  CONTAINERS.PO_FOOTER_BUTTON,
-  async () => UI.render(Button, {
-    children: 'Continue shopping',
-    'data-testid': 'po-confirmation-footer__continue-button',
-    className: 'po-confirmation-footer__continue-button',
-    size: 'medium',
-    variant: 'primary',
-    type: 'submit',
-    href: rootLink('/'),
   })(container),
 );

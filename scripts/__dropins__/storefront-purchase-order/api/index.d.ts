@@ -33,4 +33,5 @@ export * from './getPurchaseOrderApprovalRuleMetadata';
 export * from './currencyInfo';
 export * from './getPurchaseOrderApprovalRule';
 export * from './getPurchaseOrderApprovalRules';
+export * from './permissions';
 //# sourceMappingURL=index.d.ts.map

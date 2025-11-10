@@ -2,7 +2,6 @@
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
-import { initializers } from '@dropins/tools/initializer.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
 // Order Dropin Modules
@@ -19,7 +18,8 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Purchase Order Dropin
-import { placePurchaseOrder } from '@dropins/storefront-purchase-order/api.js';
+import * as poApi from '@dropins/storefront-purchase-order/api.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
@@ -35,9 +35,6 @@ import {
 // Fragment functions
 import {
   createCheckoutFragment,
-  createOrderConfirmationFooter,
-  createOrderConfirmationFragment,
-  createPOConfirmationFragment,
   selectors,
 } from './fragments.js';
 
@@ -49,28 +46,18 @@ import {
   renderCartSummaryList,
   renderCheckoutHeader,
   renderCustomerBillingAddresses,
-  renderCustomerDetails,
   renderCustomerShippingAddresses,
   renderEmptyCart,
   renderGiftOptions,
   renderLoginForm,
   renderMergedCartBanner,
-  renderOrderConfirmationFooterButton,
-  renderOrderCostSummary,
-  renderOrderGiftOptions,
-  renderOrderHeader,
-  renderOrderProductList,
-  renderOrderStatus,
   renderOrderSummary,
   renderOutOfStock,
   renderPaymentMethods,
   renderPlaceOrder,
-  renderPOConfirmation,
-  renderPOConfirmationFooterButton,
   renderServerError,
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
-  renderShippingStatus,
   renderTermsAndConditions,
   unmountEmptyCart,
 } from './containers.js';
@@ -85,72 +72,21 @@ import {
   SHIPPING_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
+import { rootLink } from '../../scripts/commerce.js';
 
-import {
-  fetchPlaceholders,
-  rootLink,
-  SUPPORT_PATH,
-} from '../../scripts/commerce.js';
+// Success block entry points
+import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
-const getCheckoutPOConfig = () => {
-  const permissions = events.lastPayload('auth/permissions') ?? {};
-
-  const baseConfig = {
-    renderSlot: false,
-    usePOapi: false,
-    hideButton: false,
-  };
-
-  const isAdmin = Boolean(permissions.admin);
-  const isPOEnabled = Boolean(permissions['Magento_PurchaseOrder::all']);
-  const canPlaceSalesOrder = Boolean(permissions['Magento_Sales::place_order']);
-
-  // Admin is always a B2B company admin and should use PO API
-  if (isAdmin) {
-    return { ...baseConfig, renderSlot: true, usePOapi: true };
-  }
-
-  // Check if user belongs to a B2B company by looking for any B2B-related permission keys
-  // This is reliable even if all permissions are set to false
-  const permissionKeys = Object.keys(permissions);
-  const isCompanyUser = permissionKeys.some(
-    (key) => key.startsWith('Magento_Company::')
-      || key.startsWith('Magento_PurchaseOrder::')
-      || key.startsWith('Magento_PurchaseOrderRule::'),
-  );
-
-  // If not a company user, use standard B2C flow
-  if (!isCompanyUser) {
-    return baseConfig;
-  }
-
-  // From here, we know this is a B2B company user (not admin)
-
-  // If can place sales order, but PO is not enabled, hide the button.
-  if (canPlaceSalesOrder && !isPOEnabled) {
-    return { ...baseConfig, hideButton: true };
-  }
-
-  // If PO is not enabled at all, return base config.
-  if (!isPOEnabled) {
-    return baseConfig;
-  }
-
-  // If can place sales order with PO enabled, use PO api.
-  if (canPlaceSalesOrder) {
-    return { ...baseConfig, renderSlot: true, usePOapi: true };
-  }
-
-  // For all other cases (cannot place sales order, PO enabled), hide the button.
-  return { ...baseConfig, hideButton: true };
-};
-
 export default async function decorate(block) {
+  const permissions = events.lastPayload('auth/permissions');
+  const isPoEnabled = permissions ? !(permissions[PO_PERMISSIONS.PO_ALL] === false) : false;
+
   // Container and component references
   let emptyCart;
   let shippingForm;
@@ -196,8 +132,6 @@ export default async function decorate(block) {
   const $placeOrder = getElement(selectors.checkout.placeOrder);
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
-
-  const { hideButton, renderSlot, usePOapi } = getCheckoutPOConfig();
 
   block.appendChild(checkoutFragment);
 
@@ -252,12 +186,9 @@ export default async function decorate(block) {
         await creditCardFormRef.current.submit();
       }
 
-      if (usePOapi) {
-        await placePurchaseOrder(cartId).then((data) => {
-          events.emit('po/placed', data.purchaseOrder);
-        });
+      if (isPoEnabled) {
+        await poApi.placePurchaseOrder(cartId);
       } else {
-        // Default Place order
         await orderApi.placeOrder(cartId);
       }
     } catch (error) {
@@ -272,7 +203,7 @@ export default async function decorate(block) {
   const placeOrder = await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-    renderSlot,
+    isPoEnabled,
   });
 
   // Render the remaining containers
@@ -322,11 +253,12 @@ export default async function decorate(block) {
   ]);
 
   async function displayEmptyCart() {
-    if (emptyCart) return;
+    if (!emptyCart) {
+      emptyCart = await renderEmptyCart($emptyCart);
+      $content.classList.add(CHECKOUT_EMPTY_CLASS);
+    }
 
-    emptyCart = await renderEmptyCart($emptyCart);
-
-    $content.classList.add(CHECKOUT_EMPTY_CLASS);
+    removeOverlaySpinner(loaderRef, $loader);
   }
 
   function removeEmptyCart() {
@@ -398,84 +330,6 @@ export default async function decorate(block) {
     }
   }
 
-  // Define the Layout for the Order Confirmation
-  async function displayOrderConfirmation(orderData) {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-
-    // Create order confirmation layout using fragments
-    const orderConfirmationFragment = createOrderConfirmationFragment();
-
-    // Create scoped selector for order confirmation fragment (following multi-step pattern)
-    const getOrderElement = createScopedSelector(orderConfirmationFragment);
-
-    // Get all order confirmation elements using centralized selectors
-    const $orderConfirmationHeader = getOrderElement(selectors.orderConfirmation.header);
-    const $orderStatus = getOrderElement(selectors.orderConfirmation.orderStatus);
-    const $shippingStatus = getOrderElement(selectors.orderConfirmation.shippingStatus);
-    const $customerDetails = getOrderElement(selectors.orderConfirmation.customerDetails);
-    const $orderCostSummary = getOrderElement(selectors.orderConfirmation.orderCostSummary);
-    const $orderGiftOptions = getOrderElement(selectors.orderConfirmation.giftOptions);
-    const $orderProductList = getOrderElement(selectors.orderConfirmation.orderProductList);
-    const $orderConfirmationFooter = getOrderElement(selectors.orderConfirmation.footer);
-
-    const labels = await fetchPlaceholders();
-    const langDefinitions = {
-      default: {
-        ...labels,
-      },
-    };
-    await initializers.mountImmediately(orderApi.initialize, { orderData, langDefinitions });
-
-    block.replaceChildren(orderConfirmationFragment);
-
-    await Promise.all([
-      renderOrderHeader($orderConfirmationHeader, { orderData }),
-      renderOrderStatus($orderStatus),
-      renderShippingStatus($shippingStatus),
-      renderCustomerDetails($customerDetails),
-      renderOrderCostSummary($orderCostSummary),
-      renderOrderProductList($orderProductList),
-      renderOrderGiftOptions($orderGiftOptions),
-    ]);
-
-    // Create footer content using fragments
-    $orderConfirmationFooter.innerHTML = createOrderConfirmationFooter(rootLink(SUPPORT_PATH));
-
-    const $continueButton = selectors.orderConfirmation.continueButton;
-    const $orderConfirmationFooterBtn = $orderConfirmationFooter.querySelector($continueButton);
-
-    if (hideButton) return;
-
-    await renderOrderConfirmationFooterButton(
-      $orderConfirmationFooterBtn,
-      getCheckoutPOConfig,
-    );
-  }
-
-  // Define the Layout for the Purchase Order Confirmation
-  async function displayPOConfirmation(poData) {
-    // Scroll to the top of the page
-    window.scrollTo(0, 0);
-
-    // Create purchase order confirmation layout using fragments
-    const poConfirmationFragment = createPOConfirmationFragment();
-
-    // Create scoped selector for PO confirmation fragment (following multi-step pattern)
-    const getPOElement = createScopedSelector(poConfirmationFragment);
-
-    // Get all PO confirmation elements using centralized selectors
-    const $poConfirmationContent = getPOElement(selectors.poConfirmation.content);
-    const $poConfirmationFooter = getPOElement(selectors.poConfirmation.footer);
-
-    block.replaceChildren(poConfirmationFragment);
-
-    await Promise.all([
-      await renderPOConfirmation($poConfirmationContent, poData.number),
-      await renderPOConfirmationFooterButton($poConfirmationFooter),
-    ]);
-  }
-
   async function handleCheckoutInitialized(data) {
     if (isEmptyCart(data)) {
       await displayEmptyCart();
@@ -521,7 +375,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await displayOrderConfirmation(orderData);
+    await renderOrderSuccess(block, { orderData });
   }
 
   async function handlePurchaseOrderPlaced(poData) {
@@ -533,7 +387,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await displayPOConfirmation(poData);
+    await renderPOSuccess(block, poData);
   }
 
   events.on('authenticated', handleAuthenticated);
@@ -541,5 +395,5 @@ export default async function decorate(block) {
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
-  events.on('po/placed', handlePurchaseOrderPlaced);
+  events.on('purchase-order/placed', handlePurchaseOrderPlaced);
 }

@@ -5,6 +5,7 @@ import { Column, Row } from '../components/purchaseOrdersTable.types';
 export interface UseApprovalRulesList {
     initialPageSize: PageSizeListProps[];
     permissions: CustomerRolePermissionsModel;
+    loadingPermissions: boolean;
     routeCreateApprovalRule?: (id: string) => string;
     routeEditApprovalRule?: (id: string) => string;
     routeApprovalRuleDetails?: (id: string) => string;
@@ -18,6 +19,7 @@ export interface UseApprovalRulesListReturn {
     tableConfig: {
         columns: Column[];
         rows: Row[];
+        expandedRows?: Set<number>;
     };
     paginationConfig: PaginationState;
     pageSizeConfig: {

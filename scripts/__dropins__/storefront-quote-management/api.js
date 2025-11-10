@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{D as i,s as r,N as l,t as Q}from"./chunks/requestNegotiableQuote.js";import{r as z}from"./chunks/requestNegotiableQuote.js";import{FetchGraphQL as E}from"@dropins/tools/fetch-graphql.js";import{events as s}from"@dropins/tools/event-bus.js";import{Initializer as h}from"@dropins/tools/lib.js";const f=`
+import{D as i,s as n,f as l,t as Q}from"./chunks/fetch-graphql.js";import{e as j,r as z,b as H,c as L,d as B}from"./chunks/fetch-graphql.js";import{events as r}from"@dropins/tools/event-bus.js";import{r as Y,u as K}from"./chunks/uploadFile.js";import{N as h}from"./chunks/NegotiableQuoteFragment.js";import{F as W,N as X,S as Z,n as ee}from"./chunks/negotiableQuotes.js";import{s as oe}from"./chunks/sendForReview.js";import{Initializer as _}from"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const q=`
     fragment CUSTOMER_FRAGMENT on Customer {
         role {
             permissions {
@@ -17,15 +17,15 @@ import{D as i,s as r,N as l,t as Q}from"./chunks/requestNegotiableQuote.js";impo
             }
         }
     }
-`,p=`
+`,I=`
     query CUSTOMER_QUERY {
         customer {
             ...CUSTOMER_FRAGMENT
         }
     }
 
-    ${f}
-`,g="All/Quotes/View/Request, Edit, Delete",q="All/Quotes/View/Request, Edit, Delete",R="All/Quotes/View/Request, Edit, Delete",T="All/Quotes/View/Checkout with quote",_=t=>{const e=[],o=(n,d=[])=>{for(const a of n){const c=[...d,a.text];a.children&&a.children.length>0?o(a.children,c):e.push(c.join("/"))}};return o(t),e};function U(t){const{role:e}=t;if(!e)return{permissions:{canRequestQuote:i.requestQuote,canEditQuote:i.editQuote,canDeleteQuote:i.deleteQuote}};const{permissions:o}=e,n=_(o);return{permissions:{canRequestQuote:n.includes(g),canEditQuote:n.includes(q),canDeleteQuote:n.includes(R),canCheckoutQuote:n.includes(T)}}}const C=async()=>{var t;if(!r.authenticated)return Promise.reject(new Error("Unauthorized"));try{const e=await m(p);if(!((t=e==null?void 0:e.data)!=null&&t.customer))throw new Error("No customer data received");return U(e.data.customer)}catch(e){return Promise.reject(e)}},O=`
+    ${q}
+`,T="All/Quotes/View/Request, Edit, Delete",S="All/Quotes/View/Request, Edit, Delete",A="All/Quotes/View/Request, Edit, Delete",N="All/Quotes/View/Checkout with quote",U=o=>{const e=[],t=(s,u=[])=>{for(const a of s){const d=[...u,a.text];a.children&&a.children.length>0?t(a.children,d):e.push(d.join("/"))}};return t(o),e};function R(o){const{role:e}=o;if(!e)return{permissions:{canRequestQuote:i.requestQuote,canEditQuote:i.editQuote,canDeleteQuote:i.deleteQuote,canCheckoutQuote:i.checkoutQuote}};const{permissions:t}=e,s=U(t);return{permissions:{canRequestQuote:s.includes(T),canEditQuote:s.includes(S),canDeleteQuote:s.includes(A),canCheckoutQuote:s.includes(N)}}}const D=async()=>{var o;if(!n.authenticated)return Promise.reject(new Error("Unauthorized"));try{const e=await l(I);if(!((o=e==null?void 0:e.data)!=null&&o.customer))throw new Error("No customer data received");return R(e.data.customer)}catch(e){return Promise.reject(e)}},w=`
     query QUOTE_DATA_QUERY(
         $quoteId: ID!
     ) {
@@ -36,6 +36,27 @@ import{D as i,s as r,N as l,t as Q}from"./chunks/requestNegotiableQuote.js";impo
         }
     }
 
-    ${l}
-`,A=async t=>{var e;if(!r.authenticated)return Promise.reject(new Error("Unauthorized"));if(!r.permissions.editQuote)return Promise.reject(new Error("Unauthorized"));try{const o=await m(O,{variables:{quoteId:t}}),n=Q((e=o==null?void 0:o.data)==null?void 0:e.negotiableQuote);if(!n)throw new Error("Failed to transform quote data");return s.emit("quote-management/quote-data",{quote:n,permissions:r.permissions}),n}catch(o){return Promise.reject(o)}},u=new h({init:async t=>{const e={};u.config.setConfig({...e,...t})},listeners:()=>[s.on("authenticated",async t=>{r.authenticated=!!t,t?C().then(e=>{r.permissions={requestQuote:e.permissions.canRequestQuote,editQuote:e.permissions.canEditQuote,deleteQuote:e.permissions.canDeleteQuote,checkoutQuote:e.permissions.canCheckoutQuote},s.emit("quote-management/permissions",r.permissions)}).catch(e=>{console.error(e),r.permissions=i,s.emit("quote-management/permissions",i)}):(r.permissions=i,s.emit("quote-management/permissions",i))},{eager:!0}),s.on("quote-management/permissions",async t=>{const e=u.config.getConfig().quoteId;e&&t.editQuote&&A(e).then(o=>{s.emit("quote-management/quote-data/initialized",{quote:o,permissions:t},{})}).catch(o=>{s.emit("quote-management/quote-data/error",{error:o})})},{eager:!0})]}),M=u.config,{setEndpoint:P,setFetchGraphQlHeader:D,removeFetchGraphQlHeader:F,setFetchGraphQlHeaders:G,fetchGraphQl:m,getConfig:y}=new E().getMethods();export{M as config,m as fetchGraphQl,y as getConfig,C as getCustomerData,A as getQuoteData,u as initialize,F as removeFetchGraphQlHeader,z as requestNegotiableQuote,P as setEndpoint,D as setFetchGraphQlHeader,G as setFetchGraphQlHeaders};
+    ${h}
+`,C=async o=>{var e;if(!n.authenticated)return Promise.reject(new Error("Unauthorized"));if(!n.permissions.editQuote)return Promise.reject(new Error("Unauthorized"));try{const t=await l(w,{variables:{quoteId:o}}),s=Q((e=t==null?void 0:t.data)==null?void 0:e.negotiableQuote);if(!s)throw new Error("Failed to transform quote data");return r.emit("quote-management/quote-data",{quote:s,permissions:n.permissions}),s}catch(t){return Promise.reject(t)}},m=new _({init:async o=>{const e={};m.config.setConfig({...e,...o})},listeners:()=>[r.on("authenticated",async o=>{n.authenticated=!!o,o?D().then(e=>{n.permissions={requestQuote:e.permissions.canRequestQuote,editQuote:e.permissions.canEditQuote,deleteQuote:e.permissions.canDeleteQuote,checkoutQuote:e.permissions.canCheckoutQuote},r.emit("quote-management/permissions",n.permissions)}).catch(e=>{console.error(e),n.permissions=i,r.emit("quote-management/permissions",i)}):(n.permissions=i,r.emit("quote-management/permissions",i))},{eager:!0}),r.on("quote-management/permissions",async o=>{const e=m.config.getConfig().quoteId;e&&o.editQuote&&C(e).then(t=>{r.emit("quote-management/quote-data/initialized",{quote:t,permissions:o},{})}).catch(t=>{r.emit("quote-management/quote-data/error",{error:t})})},{eager:!0})]}),G=m.config,O=`
+  mutation SET_NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_MUTATION(
+    $quoteUid: ID!
+    $addressId: ID
+    $addressData: NegotiableQuoteAddressInput
+  ) {
+    setNegotiableQuoteShippingAddress(
+      input: {
+        quote_uid: $quoteUid
+        shipping_addresses: {
+          customer_address_uid: $addressId
+          address: $addressData
+        }
+      }
+    ) {
+      quote {
+        ...NegotiableQuoteFragment
+      }
+    }
+  }
+  ${h}
+`;function F(o){const{additionalInput:e,...t}=o,s={city:t.city,company:t.company,country_code:t.countryCode,firstname:t.firstname,lastname:t.lastname,postcode:t.postcode,region:t.region,region_id:t.regionId,save_in_address_book:t.saveInAddressBook,street:t.street,telephone:t.telephone};return{...e||{},...s}}const $=async o=>{const{quoteUid:e,addressId:t,addressData:s}=o;if(!e)throw new Error("Quote UID is required");if(t===void 0&&!s)throw new Error("Either addressId or addressData must be provided");if(t!==void 0&&s)throw new Error("Cannot provide both addressId and addressData");const u=s?F(s):null;return l(O,{variables:{quoteUid:e,addressId:t||null,addressData:u}}).then(a=>{var E,p;const{errors:d}=a;if(d){const f=d.map(g=>g.message).join("; ");throw new Error(`Failed to set shipping address: ${f}`)}const c=Q((p=(E=a.data)==null?void 0:E.setNegotiableQuoteShippingAddress)==null?void 0:p.quote);if(!c)throw new Error("Failed to transform quote data: Invalid response structure");return r.emit("quote-management/shipping-address-set",{quote:c,input:{quoteUid:e,addressId:t,addressData:s}}),c})};export{W as FilterMatchTypeEnum,X as NegotiableQuoteSortableField,Z as SortEnum,G as config,l as fetchGraphQl,j as getConfig,D as getCustomerData,C as getQuoteData,m as initialize,ee as negotiableQuotes,z as removeFetchGraphQlHeader,Y as requestNegotiableQuote,oe as sendForReview,H as setEndpoint,L as setFetchGraphQlHeader,B as setFetchGraphQlHeaders,$ as setShippingAddress,K as uploadFile};
 //# sourceMappingURL=api.js.map

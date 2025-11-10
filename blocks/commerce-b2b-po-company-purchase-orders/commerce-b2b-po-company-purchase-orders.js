@@ -1,24 +1,25 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
 import { CompanyPurchaseOrders } from '@dropins/storefront-purchase-order/containers/CompanyPurchaseOrders.js';
+import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import {
   checkIsAuthenticated,
-  CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH,
   CUSTOMER_LOGIN_PATH,
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH,
   rootLink,
 } from '../../scripts/commerce.js';
 
 // Initialize
 import '../../scripts/initializers/purchase-order.js';
 
-const PAGE_SIZE_OPTIONS = [
-  { text: '10', value: '10', selected: true },
-  { text: '20', value: '20', selected: false },
-  { text: '30', value: '30', selected: false },
-];
-// TODO PORef
 const redirectToLogin = () => {
   window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+};
+
+const redirectToAccountDashboard = () => {
+  window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
 };
 
 /**
@@ -26,23 +27,41 @@ const redirectToLogin = () => {
  * Redirects unauthenticated users and handles permission updates
  */
 const renderCompanyPurchaseOrders = async (blockElement, permissions = {}) => {
-  const SUBORDINATES_PO_PERMISSION = 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates';
-  const COMPANY_PO_PERMISSION = 'Magento_PurchaseOrder::view_purchase_orders_for_company';
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
 
-  const hasAccess = permissions.admin
-    || permissions[SUBORDINATES_PO_PERMISSION]
-    || permissions[COMPANY_PO_PERMISSION];
+  /**
+   * Redirect only if the customer lacks access to all PO containers
+   * Some pages may have multiple PO blocks - hidden ones should not trigger a redirect
+   */
+  const hasAccessToPurchaseOrders = permissions.admin
+    || permissions[PO_PERMISSIONS.PO_ALL];
 
-  // Hide the entire block container when the user doesn't have access
-  blockElement.parentElement.style.display = hasAccess ? 'block' : 'none';
-  if (!hasAccess) {
+  if (!isB2BEnabled || !hasAccessToPurchaseOrders) {
+    redirectToAccountDashboard();
+    return;
+  }
+
+  // Check access to this specific block
+  const hasAccessToBlock = permissions.admin
+    || permissions[PO_PERMISSIONS.VIEW_COMPANY];
+
+  // Hide the entire block container when the user doesn't have access (prevent layout issues)
+  blockElement.parentElement.style.display = hasAccessToBlock
+    ? 'block'
+    : 'none';
+  if (!hasAccessToBlock) {
     blockElement.innerHTML = '';
     return;
   }
 
   await purchaseOrderRenderer.render(CompanyPurchaseOrders, {
-    initialPageSize: PAGE_SIZE_OPTIONS,
     skeletonRowCount: 5,
+    withWrapper: false,
+    initialPageSize: [
+      { text: '10', value: '10', selected: true },
+      { text: '20', value: '20', selected: false },
+      { text: '30', value: '30', selected: false },
+    ],
     routePurchaseOrderDetails: (poRef) => `${CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH}?poRef=${poRef}`,
   })(blockElement);
 };

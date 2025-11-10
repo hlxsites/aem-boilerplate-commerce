@@ -41,10 +41,9 @@ declare const _default: {
         "default": "No purchase orders found."
       },
       "pagination": {
-        "status": "Items {{from}} to {{to}} of {{total}} total",
+        "status": "Items {{from}}-{{to}} of {{total}}",
         "pageSizeLabel": {
-          "start": "Show",
-          "end": "per page"
+          "start": "Show"
         }
       },
       "loading": "Loading purchase orders...",
@@ -61,6 +60,10 @@ declare const _default: {
         "any_item": "Any Item",
         "all_items": "All Items"
       },
+      "buttons":{
+        "expandedHidden": "Hide",
+        "expandedShow": "Show"
+      },
       "appliesToAll": "All",
       "statusOrder": {
         "order_placed": "Order placed",
@@ -73,6 +76,15 @@ declare const _default: {
         "approval_required": "Approval required",
         "approved_pending_payment": "Approved pending Payment"
       },
+      "expandedRowLabels": {
+        "orderNumber": "Order Number:",
+        "createdDate": "Created Date:",
+        "updatedDate": "Updated Date:",
+        "total": "Total:",
+        "ruleType": "Rule Type:",
+        "appliesTo": "Applies To:",
+        "approver": "Approver:"
+      },
       "tableColumns": {
         "poNumber": "PO #",
         "orderNumber": "Order #",
@@ -83,9 +95,6 @@ declare const _default: {
         "total": "Total",
         "action": "Action",
         "ruleName": "Rule Name",
-        "ruleType": "Rule Type",
-        "appliesTo": "Applies To",
-        "approver": "Approver",
         "selectAllAriaLabel": "Select all not approved purchase orders"
       }
     },
@@ -205,7 +214,7 @@ declare const _default: {
       }
     },
     "approvalRuleDetails": {
-      "containerTitle": "View Approval Rule",
+      "containerTitle": "Approval rule details",
       "buttons": {
         "back": "Back to Rules List"
       },
@@ -235,6 +244,55 @@ declare const _default: {
             "more_than_or_equal_to": "Is more than or equal to",
             "less_than_or_equal_to": "Is less than or equal to"
           }
+        }
+      }
+    },
+    "historyLog": {
+      "headerText": "Purchase order history log",
+      "statusTitle": "Status Changes",
+      "emptyText": "No history log available.",
+      "status": {
+        "place_order": "Order placed on {{date}}",
+        "auto_approve": "Auto approved on {{date}}",
+        "submit": "Submitted for approval on {{date}}"
+      },
+      "buttons": {
+        "viewMore": "View More",
+        "viewLess": "View Less"
+      },
+      "ariaLabel": {
+        "showMore": "Show more history items",
+        "showLess": "Show fewer history items"
+      }
+    },
+    "comments": {
+      "view": {
+        "headerText": "Purchase order comments",
+        "emptyText": "No comments available.",
+        "buttons": {
+          "viewMore": "View More",
+          "viewLess": "View Less"
+        },
+        "ariaLabel": {
+          "showMore": "Show more comments",
+          "showLess": "Show fewer comments"
+        }
+      },
+      "add": {
+        "headerText": "Add purchase order comment",
+        "placeholder": "Add your comment",
+        "submit": "Add Comment",
+        "errorMessage": "Something went wrong while adding your comment. Please try again."
+      }
+    },
+    "approvalFlow": {
+      "headerText": "Purchase order approval flow",
+      "emptyText": "No approval flow is available for this purchase order.",
+      "ariaLabels": {
+        "icons": {
+          "approved": "Status approved",
+          "rejected": "Status rejected",
+          "pending": "Status pending approval"
         }
       }
     }
