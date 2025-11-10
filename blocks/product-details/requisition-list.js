@@ -279,4 +279,3 @@ export async function initializeRequisitionList({
   // Show redirect notification if applicable
   showRequisitionListRedirectNotification($alert);
 }
-
