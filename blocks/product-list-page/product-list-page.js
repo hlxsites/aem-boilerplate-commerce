@@ -55,7 +55,6 @@ export default async function decorate(block) {
   const $productList = fragment.querySelector('.search__product-list');
   const $pagination = fragment.querySelector('.search__pagination');
 
-  const reqLists = (await rlApi.getRequisitionLists(1, 100)).items;
   const isRequisitionListEnabled = await rlApi.isRequisitionListEnabled();
 
   block.innerHTML = '';
@@ -109,10 +108,8 @@ export default async function decorate(block) {
     }
     if (isRequisitionListEnabled) {
       rlRenderer.render(RequisitionListSelector, {
-        items: reqLists,
         sku: product.sku,
         quantity: 1,
-        variant: 'hover',
         beforeAddProdToReqList: () => {
           const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
           if (product.typename !== 'SimpleProductView') {

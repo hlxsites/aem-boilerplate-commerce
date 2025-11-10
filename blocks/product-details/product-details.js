@@ -162,14 +162,10 @@ export default async function decorate(block) {
     }
     const isEnabled = await rlApi.isRequisitionListEnabled();
     if (isEnabled) {
-      const reqLists = (await rlApi.getRequisitionLists(1, 100)).items;
       const configValues = pdpApi.getProductConfigurationValues();
       return rlRenderer.render(RequisitionListSelector, {
-        items: reqLists,
-        canCreate: true,
         sku: product.sku,
         quantity: configValues?.quantity || 1,
-        variant: 'neutral',
         selectedOptions: currentOptions,
       })($container);
     }
