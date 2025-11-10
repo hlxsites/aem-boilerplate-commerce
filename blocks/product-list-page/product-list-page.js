@@ -10,7 +10,6 @@ import { search } from '@dropins/storefront-product-discovery/api.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 // Requisition List Dropin
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import { RequisitionListSelector } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 // Cart Dropin
@@ -54,8 +53,6 @@ export default async function decorate(block) {
   const $productSort = fragment.querySelector('.search__product-sort');
   const $productList = fragment.querySelector('.search__product-list');
   const $pagination = fragment.querySelector('.search__pagination');
-
-  const isRequisitionListEnabled = await rlApi.isRequisitionListEnabled();
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -106,25 +103,21 @@ export default async function decorate(block) {
       $container.innerHTML = '';
       return;
     }
-    if (isRequisitionListEnabled) {
-      rlRenderer.render(RequisitionListSelector, {
-        sku: product.sku,
-        quantity: 1,
-        beforeAddProdToReqList: () => {
-          const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
-          if (product.typename !== 'SimpleProductView') {
-            sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
-              timestamp: Date.now(),
-              message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
-            }));
-            window.location.href = url;
-            throw new Error('Redirecting to product page');
-          }
-        },
-      })($container);
-    } else {
-      $container.innerHTML = '';
-    }
+    rlRenderer.render(RequisitionListSelector, {
+      sku: product.sku,
+      quantity: 1,
+      beforeAddProdToReqList: () => {
+        const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
+        if (product.typename !== 'SimpleProductView') {
+          sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
+            timestamp: Date.now(),
+            message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
+          }));
+          window.location.href = url;
+          throw new Error('Redirecting to product page');
+        }
+      },
+    })($container);
   }
 
   await Promise.all([

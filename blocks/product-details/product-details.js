@@ -16,7 +16,6 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
 // Requisition List Dropin
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import { RequisitionListSelector } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 
@@ -160,17 +159,12 @@ export default async function decorate(block) {
       $container.innerHTML = '';
       return null;
     }
-    const isEnabled = await rlApi.isRequisitionListEnabled();
-    if (isEnabled) {
-      const configValues = pdpApi.getProductConfigurationValues();
-      return rlRenderer.render(RequisitionListSelector, {
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        selectedOptions: currentOptions,
-      })($container);
-    }
-    $container.innerHTML = '';
-    return null;
+    const configValues = pdpApi.getProductConfigurationValues();
+    return rlRenderer.render(RequisitionListSelector, {
+      sku: product.sku,
+      quantity: configValues?.quantity || 1,
+      selectedOptions: currentOptions,
+    })($container);
   }
 
   // Declare requisitionListNames as let so we can reassign it after login
