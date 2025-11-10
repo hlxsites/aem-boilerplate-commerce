@@ -176,9 +176,7 @@ export default async function decorate(block) {
         beforeAddProdToReqList: async () => {
           // Check if product has options and if they are selected
           const productHasOptions = product?.options && product.options.length > 0;
-          const isArray = Array.isArray(currentOptions);
-          const arrayLength = isArray ? currentOptions.length : 0;
-          const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
+          const hasSelectedOptions = Array.isArray(currentOptions) && currentOptions.length > 0;
           const needsOptionSelection = productHasOptions && !hasSelectedOptions;
 
           if (needsOptionSelection) {
