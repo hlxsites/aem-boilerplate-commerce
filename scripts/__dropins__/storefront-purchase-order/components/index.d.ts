@@ -22,4 +22,8 @@ export * from './PurchaseOrderConfirmationContent';
 export * from './PurchaseOrderStatusContent';
 export * from './ApprovalRuleDetailsContent';
 export * from './FormLoader';
+export * from './PurchaseOrderCommentsListContent';
+export * from './PurchaseOrderCommentFormContent';
+export * from './PurchaseOrderApprovalFlowContent';
+export * from './PurchaseOrderHistoryLogContent';
 //# sourceMappingURL=index.d.ts.map

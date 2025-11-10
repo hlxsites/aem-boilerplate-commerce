@@ -15,6 +15,11 @@
  * from Adobe.
  *******************************************************************/
 /**
+ * Determines the effective locale to use for price formatting
+ * Priority: prop locale > global locale > browser locale > default 'en-US'
+ */
+export declare function getEffectiveLocale(locale?: string): string;
+/**
  * Format a date string to a localized format like "Sep 8, 2025 6:32:13 AM"
  * @param dateString - ISO date string or date string
  * @param locale - Locale for formatting (defaults to 'en-US')

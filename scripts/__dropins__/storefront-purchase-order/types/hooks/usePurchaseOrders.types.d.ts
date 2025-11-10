@@ -26,6 +26,7 @@ export interface UsePurchaseOrdersReturn {
     tableConfig: {
         columns: Column[];
         rows: Row[];
+        expandedRows?: Set<number>;
     };
     paginationConfig: PaginationState;
     pageSizeConfig: {

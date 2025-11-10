@@ -29,6 +29,7 @@ export interface PurchaseOrdersTableProps {
     totalCount?: number;
     columns: Column[];
     rows: Row[];
+    expandedRows?: Set<number>;
     paginationConfig: PaginationState;
     loading?: boolean;
     className?: string;

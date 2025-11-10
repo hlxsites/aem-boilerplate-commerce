@@ -29,8 +29,9 @@ export interface PurchaseOrderModel {
             status: string;
             updatedAt: string;
         }>;
-    } | null;
+    }[] | [];
     comments?: Array<{
+        uid: string;
         createdAt: string;
         author: {
             firstname: string;
