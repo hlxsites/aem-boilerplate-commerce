@@ -15,11 +15,6 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
-// Requisition List Dropin
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
-import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
-
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
@@ -44,7 +39,6 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-import '../../scripts/initializers/requisition-list.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -153,72 +147,6 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-
-  async function renderRequisitionListNamesIfEnabled($container, currentOptions = null) {
-    const isAuthenticated = checkIsAuthenticated();
-    if (!isAuthenticated) {
-      $container.innerHTML = '';
-      return null;
-    }
-    const isEnabled = await rlApi.isRequisitionListEnabled();
-    if (isEnabled) {
-      const reqLists = (await rlApi.getRequisitionLists()).items;
-      const configValues = pdpApi.getProductConfigurationValues();
-
-      // Render RequisitionListNames with beforeAddProdToReqList validation
-      return rlRenderer.render(RequisitionListNames, {
-        items: reqLists,
-        canCreate: true,
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        variant: 'neutral',
-        selectedOptions: currentOptions,
-        beforeAddProdToReqList: async () => {
-          // Check if product has options and if they are selected
-          const productHasOptions = product?.options && product.options.length > 0;
-          const isArray = Array.isArray(currentOptions);
-          const arrayLength = isArray ? currentOptions.length : 0;
-          const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
-          const needsOptionSelection = productHasOptions && !hasSelectedOptions;
-
-          if (needsOptionSelection) {
-            // Show inline alert
-            if (inlineAlert) {
-              inlineAlert.remove();
-            }
-
-            inlineAlert = await UI.render(InLineAlert, {
-              heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
-              description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
-              icon: h(Icon, { source: 'Warning' }),
-              type: 'warning',
-              variant: 'secondary',
-              'aria-live': 'assertive',
-              role: 'alert',
-              onDismiss: () => {
-                if (inlineAlert) {
-                  inlineAlert.remove();
-                }
-              },
-            })($alert);
-
-            // Scroll the alert into view
-            setTimeout(() => {
-              $alert.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
-            }, 100);
-
-            // Throw error to prevent modal from opening
-            throw new Error('Product options must be selected');
-          }
-        },
-      })($container);
-    }
-    $container.innerHTML = '';
-    return null;
-  }
 
   const [
     _galleryMobile,
@@ -423,12 +351,6 @@ export default async function decorate(block) {
         },
       }));
     }
-
-    // Re-render requisition list component with updated options
-    await renderRequisitionListNamesIfEnabled(
-      $requisitionListNames,
-      optionUIDs,
-    );
   }, { eager: true });
 
   events.on('wishlist/alert', ({ action, item }) => {
@@ -450,62 +372,20 @@ export default async function decorate(block) {
     }, 0);
   });
 
-  // Handle authentication state changes (login/logout)
-  // Using { eager: true } to also catch the initial state on page load
-  events.on('authenticated', async () => {
-    // Get current selected options when rendering for authenticated user
-    const configValues = pdpApi.getProductConfigurationValues();
-    const urlOptionsUIDs = urlParams.get('optionsUIDs');
-    const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-    // Render requisition list for authenticated user
-    await renderRequisitionListNamesIfEnabled(
+  // Conditionally load requisition list functionality
+  // The module sets up event handlers that check feature status on each render
+  try {
+    const { initializeRequisitionList } = await import('./requisition-list.js');
+    await initializeRequisitionList({
+      $alert,
       $requisitionListNames,
-      optionUIDs,
-    );
-  }, { eager: true });
-
-  // Show notification if redirected from requisition list
-  let redirectNotification = null;
-
-  // Check if user was redirected from requisition list (sessionStorage)
-  const redirectData = sessionStorage.getItem('requisitionListRedirect');
-  if (redirectData) {
-    try {
-      const { timestamp, message } = JSON.parse(redirectData);
-
-      // Only show notification if redirect happened within last 5 seconds
-      // This prevents showing stale notifications
-      const isRecent = Date.now() - timestamp < 5000;
-
-      if (isRecent && message) {
-        const showRedirectNotification = async () => {
-          redirectNotification = await UI.render(InLineAlert, {
-            heading: message,
-            type: 'warning',
-            variant: 'secondary',
-            icon: h(Icon, { source: 'Warning' }),
-            'aria-live': 'polite',
-            role: 'alert',
-            onDismiss: () => {
-              redirectNotification?.remove();
-            },
-          })($alert);
-
-          // Auto-dismiss after 5 seconds
-          setTimeout(() => {
-            redirectNotification?.remove();
-          }, 5000);
-        };
-
-        // Show notification after a brief delay to ensure DOM is ready
-        setTimeout(showRedirectNotification, 100);
-      }
-    } catch (e) {
-      console.error('Failed to parse requisition list redirect data:', e);
-    } finally {
-      // Always clean up sessionStorage
-      sessionStorage.removeItem('requisitionListRedirect');
-    }
+      product,
+      labels,
+      urlParams,
+    });
+  } catch (error) {
+    // If module fails to load, requisition list features won't be available
+    console.warn('Requisition list module not available:', error);
   }
 
   // --- Add new event listener for cart/data ---
