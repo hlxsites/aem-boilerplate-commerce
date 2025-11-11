@@ -201,7 +201,7 @@
           "id": "targeted-block",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"targeted-block\"><div><div><p>Customer Groups</p></div><div><p>1</p></div></div><div><div><p>This content will be visible to logged in customer only</p></div></div></div>"
+              "unsafeHTML": "<div class=\"targeted-block\"><div><div><p>Customer Groups</p></div><div><p>1</p></div></div><div><div><p>Customer Segments</p></div><div><p></p></div></div><div><div><p>Type</p></div><div><p></p></div></div><div><div><p>Fragment</p></div><div><p></p></div></div><div><div><p>This content will be visible to logged in customer only</p></div></div></div>"
             }
           }
         },
