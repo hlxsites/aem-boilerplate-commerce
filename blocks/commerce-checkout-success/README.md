@@ -30,7 +30,7 @@ No localStorage keys are used by this block.
 
 - `default export decorate(block)` — Renders the success view into the provided block element.
 - `export async function renderOrderSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account).
-- `export function preloadOrderSuccess()` — Preloads the success page CSS. Call this ahead of navigation to the success page.
+- `export function preloadOrderSuccess()` — Preloads the order success CSS. Call this before `renderOrderSuccess`.
 
 Example (programmatic):
 
