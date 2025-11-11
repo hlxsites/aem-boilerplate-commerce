@@ -60,7 +60,7 @@ declare const _default: {
         "any_item": "Any Item",
         "all_items": "All Items"
       },
-      "buttons":{
+      "buttons": {
         "expandedHidden": "Hide",
         "expandedShow": "Show"
       },
@@ -164,7 +164,7 @@ declare const _default: {
       }
     },
     "approvalRuleForm": {
-      "headerText": "Purchase Order Approval Rule",
+      "headerText": "Purchase order approval rule",
       "titleAppliesTo": "Applies To",
       "titleRuleType": "Rule Type",
       "titleRequiresApprovalRole": "Requires Approval From",

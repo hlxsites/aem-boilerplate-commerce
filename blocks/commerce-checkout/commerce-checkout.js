@@ -12,31 +12,20 @@ import {
   createScopedSelector,
   isEmptyCart,
   isVirtualCart,
-  scrollToElement,
   setMetaTags,
-  validateForm,
+  validateForms,
 } from '@dropins/storefront-checkout/lib/utils.js';
-
-// Purchase Order Dropin
-import * as poApi from '@dropins/storefront-purchase-order/api.js';
-import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-import {
-  displayOverlaySpinner,
-  removeModal,
-  removeOverlaySpinner,
-} from './utils.js';
+import { displayOverlaySpinner, removeModal, removeOverlaySpinner } from './utils.js';
 
 // Fragment functions
-import {
-  createCheckoutFragment,
-  selectors,
-} from './fragments.js';
+import { createCheckoutFragment, selectors } from './fragments.js';
 
 // Container functions
 import {
@@ -68,6 +57,7 @@ import {
   BILLING_FORM_NAME,
   CHECKOUT_EMPTY_CLASS,
   LOGIN_FORM_NAME,
+  PURCHASE_ORDER_FORM_NAME,
   SHIPPING_ADDRESS_DATA_KEY,
   SHIPPING_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
@@ -76,7 +66,9 @@ import { rootLink } from '../../scripts/commerce.js';
 
 // Success block entry points
 import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
-import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
+import {
+  renderPOSuccess,
+} from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -84,8 +76,28 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
 export default async function decorate(block) {
-  const permissions = events.lastPayload('auth/permissions');
-  const isPoEnabled = permissions ? !(permissions[PO_PERMISSIONS.PO_ALL] === false) : false;
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
+  let b2bPoApi = null;
+  let b2bIsPoEnabled = false;
+
+  if (isB2BEnabled) {
+    const permissions = events.lastPayload('auth/permissions');
+
+    try {
+      const module = await import('@dropins/storefront-purchase-order/api.js');
+      const { PO_PERMISSIONS } = module;
+
+      b2bPoApi = module;
+      b2bIsPoEnabled = permissions && permissions[PO_PERMISSIONS.PO_ALL] !== false;
+    } catch (err) {
+      if (err.message.includes('Failed to fetch dynamically imported module')) {
+        console.warn('⚠️ B2B module @dropins/storefront-purchase-order/api.js not found - skipping B2B Purchase Order setup');
+      } else {
+        throw err;
+      }
+    }
+  }
 
   // Container and component references
   let emptyCart;
@@ -135,39 +147,13 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  // Create validation and place order handlers
-  const handleValidation = () => {
-    let success = true;
-
-    // Login form validation - skip for authenticated users
-    const loginForm = document.forms[LOGIN_FORM_NAME];
-    const isLoginFormVisible = loginForm && loginForm.offsetParent !== null;
-
-    if (loginForm && isLoginFormVisible) {
-      success = validateForm(LOGIN_FORM_NAME);
-      if (!success) scrollToElement($login);
-    }
-
-    // Shipping form validation
-    if (success && shippingFormRef.current) {
-      success = validateForm(SHIPPING_FORM_NAME, shippingFormRef);
-      if (!success) scrollToElement($shippingForm);
-    }
-
-    // Billing form validation
-    if (success && billingFormRef.current) {
-      success = validateForm(BILLING_FORM_NAME, billingFormRef);
-      if (!success) scrollToElement($billingForm);
-    }
-
-    // Terms and conditions validation
-    if (success) {
-      success = validateForm(TERMS_AND_CONDITIONS_FORM_NAME);
-      if (!success) scrollToElement($termsAndConditions);
-    }
-
-    return success;
-  };
+  const handleValidation = () => validateForms([
+    { name: LOGIN_FORM_NAME },
+    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
+    { name: BILLING_FORM_NAME, ref: billingFormRef },
+    { name: PURCHASE_ORDER_FORM_NAME },
+    { name: TERMS_AND_CONDITIONS_FORM_NAME },
+  ]);
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
@@ -186,8 +172,10 @@ export default async function decorate(block) {
         await creditCardFormRef.current.submit();
       }
 
-      if (isPoEnabled) {
-        await poApi.placePurchaseOrder(cartId);
+      const shouldPlacePurchaseOrder = isB2BEnabled && b2bIsPoEnabled && b2bPoApi;
+
+      if (shouldPlacePurchaseOrder) {
+        await b2bPoApi.placePurchaseOrder(cartId);
       } else {
         await orderApi.placeOrder(cartId);
       }
@@ -203,7 +191,7 @@ export default async function decorate(block) {
   const placeOrder = await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
-    isPoEnabled,
+    b2bIsPoEnabled,
   });
 
   // Render the remaining containers
