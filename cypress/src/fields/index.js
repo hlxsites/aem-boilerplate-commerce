@@ -176,7 +176,7 @@ export const requisitionListFormName = '#requisition-list-form-name';
 export const requisitionListFormDescription = '#requisition-list-form-description';
 export const navDrop = '.nav-drop';
 export const requisitionListItemRow = '.dropin-table__body__row';
-export const requisitionListNamesOnPDP = '.requisition-list-names__picker select';
+export const requisitionListNamesOnPDP = '.requisition-list-selector__picker select';
 export const requisitionListNamesOnPLP = '.product-discovery-product-actions__requisition-list-names';
 export const requisitionListItemActionsUpdateButton = '.requisition-list-grid-wrapper__actions button[data-testid="update-button"]';
 export const requisitionListItemActionsRemoveButton = '.requisition-list-grid-wrapper__actions button[data-testid="delete-button"]';
