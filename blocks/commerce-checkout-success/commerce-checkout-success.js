@@ -266,8 +266,11 @@ async function renderOrderSuccessContent(container, { orderData } = {}) {
   await renderOrderConfirmationFooterButton($continueBtn);
 }
 
+export function preloadOrderSuccess() {
+  return loadCSS('./blocks/commerce-checkout-success/commerce-checkout-success.css');
+}
+
 export async function renderOrderSuccess(container, { orderData } = {}) {
-  await loadCSS('./blocks/commerce-checkout-success/commerce-checkout-success.css');
   return renderOrderSuccessContent(container, { orderData });
 }
 
