@@ -1,6 +1,6 @@
-import { signUpUser } from '../../actions';
-import { assertAuthUser } from '../../assertions';
-import { products } from '../../fixtures';
+import { signUpUser } from "../../actions";
+import { assertAuthUser } from "../../assertions";
+import { products } from "../../fixtures";
 import * as fields from "../../fields";
 
 /**
@@ -11,11 +11,12 @@ import * as fields from "../../fields";
  * @param {number|null} index - Index if needed .eq() (for PLP use 0, for PDP use null or skip this parameter)
  */
 function createRequisitionList(selector, listName, description, index = null) {
-  const element = index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+  const element =
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
   element.click();
 
-  cy.get(".requisition-list-actions").should("exist").click();
-  cy.get(".requisition-list-form").should("be.visible");
+  cy.get(fields.requisitionListActions).should("exist").click();
+  cy.get(fields.requisitionListForm).should("be.visible");
 
   // Wait for the form to be interactable
   cy.wait(1000);
@@ -27,7 +28,7 @@ function createRequisitionList(selector, listName, description, index = null) {
 
   // Wait for the action to complete
   cy.wait(1000);
-  cy.get(".requisition-list-selector__alert")
+  cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
 
@@ -41,44 +42,46 @@ function createRequisitionList(selector, listName, description, index = null) {
  * @param {number|null} index - Index if needed .eq() (for PLP use 0, for PDP use null)
  */
 function assertRequisitionListExists(selector, listName, index = null) {
-  const element = index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+  const element =
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
   element.click();
 
-  cy.get(".requisition-list-selector__form").should("exist");
-  cy.get(".requisition-list-selector__available-lists").should("exist");
-  cy.get(".requisition-list-form__actions button")
+  cy.get(fields.requisitionListSelectorForm).should("exist");
+  cy.get(fields.requisitionListSelectorAvailableLists).should("exist");
+  cy.get(fields.requisitionListFormActionsButton)
     .should("exist")
     .should("be.disabled");
-  cy.get(".requisition-list-selector__available-lists").should(
+  cy.get(fields.requisitionListSelectorAvailableLists).should(
     "contain",
     listName
   );
   cy.wait(1000);
-  cy.get('.requisition-list-selector__available-lists .dropin-card:first-child').click();
-  cy.get('.requisition-list-form__actions button').should('not.be.disabled').click();
+  cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
+  cy.get(fields.requisitionListFormActionsButton)
+    .should("not.be.disabled")
+    .click();
 
   // Wait for the action to complete
   cy.wait(1000);
-  cy.get(".requisition-list-selector__alert")
+  cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
 
   cy.wait(2000);
-
 }
 
-describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
+describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
   it("Verify B2B Requisition is not available for guest users", () => {
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
-    cy.get(fields.addToRequisitionListButton).should('not.exist');
+    cy.get(fields.addToRequisitionListButton).should("not.exist");
 
     // Open Catalog Menu
-    cy.get(fields.navDrop).first().should('be.visible').trigger("mouseenter");
+    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
     // Navigate to Apparel category page
-    cy.contains("Apparel").should('be.visible').click();
-    cy.get(fields.addToRequisitionListButton).should('not.exist');
+    cy.contains("Apparel").should("be.visible").click();
+    cy.get(fields.addToRequisitionListButton).should("not.exist");
   });
 
   it("Verify B2B Requisition is available for authenticated users", () => {
@@ -90,71 +93,102 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" },  () => {
     });
 
     // Navigate to Requisition Lists from Account menu
-    cy.contains('Requisition Lists').should('be.visible').click();
-    cy.get(fields.reqListGridEmptyList).should('exist')
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.get(fields.reqListGridEmptyList)
+      .should("exist")
       .within(() => {
-        cy.contains('No Requisition Lists found').should('be.visible');
+        cy.contains("No Requisition Lists found").should("be.visible");
       });
 
     // Create new Requisition List
-    cy.contains('Add new Requisition List').should('be.visible').click();
-    cy.get(fields.requisitionListFormName).type('Newly Created Requisition List');
-    cy.get(fields.requisitionListFormDescription).type('Here goes a dummy description');
-    cy.contains('Cancel').should('be.visible');
-    cy.contains('Save').should('be.visible').click();
-    cy.contains('Newly Created Requisition List').should('be.visible');
-    cy.get(fields.requisitionListItemRow).should('have.length', 1);
+    cy.contains("Add new Requisition List").should("be.visible").click();
+    cy.get(fields.requisitionListFormName).type(
+      "Newly Created Requisition List"
+    );
+    cy.get(fields.requisitionListFormDescription).type(
+      "Here goes a dummy description"
+    );
+    cy.contains("Cancel").should("be.visible");
+    cy.contains("Save").should("be.visible").click();
+    cy.contains("Newly Created Requisition List").should("be.visible");
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
 
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
-    cy.get(fields.addToRequisitionListButton).should('exist');
+    cy.get(fields.addToRequisitionListButton).should("exist");
 
     // PDP Workflow
 
-    assertRequisitionListExists(fields.requisitionListSelector, 'Newly Created Requisition List');
-    createRequisitionList(fields.requisitionListSelector, 'Req list created from PDP', 'Another dummy description');
-    assertRequisitionListExists(fields.requisitionListSelector, 'Req list created from PDP');
+    assertRequisitionListExists(
+      fields.requisitionListSelector,
+      "Newly Created Requisition List"
+    );
+    createRequisitionList(
+      fields.requisitionListSelector,
+      "Req list created from PDP",
+      "Another dummy description"
+    );
+    assertRequisitionListExists(
+      fields.requisitionListSelector,
+      "Req list created from PDP"
+    );
 
     // Open Catalog Menu
-    cy.get(fields.navDrop).first().should('be.visible').trigger("mouseenter");
+    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
     // Navigate to Apparel category page
-    cy.contains("Apparel").should('be.visible').click();
+    cy.contains("Apparel").should("be.visible").click();
 
     // PLP Workflow
 
-    assertRequisitionListExists(fields.requisitionListSelector, 'Newly Created Requisition List', 0);
-    createRequisitionList(fields.requisitionListSelector, 'Now Req list created from PLP','Yet another dummy description', 0);
-    assertRequisitionListExists(fields.requisitionListSelector, 'Now Req list created from PLP', 0);
+    assertRequisitionListExists(
+      fields.requisitionListSelector,
+      "Newly Created Requisition List",
+      0
+    );
+    createRequisitionList(
+      fields.requisitionListSelector,
+      "Now Req list created from PLP",
+      "Yet another dummy description",
+      0
+    );
+    assertRequisitionListExists(
+      fields.requisitionListSelector,
+      "Now Req list created from PLP",
+      0
+    );
 
     // Open Catalog Menu
-    cy.get(fields.navDrop).first().should('be.visible').trigger("mouseenter");
+    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
     // Navigate to Apparel category page
-    cy.contains("Apparel").should('be.visible').click();
-
+    cy.contains("Apparel").should("be.visible").click();
 
     // Go to customer account page
     cy.visit("/customer/account");
 
-    cy.contains('Requisition Lists').should('be.visible').click();
-    cy.get(fields.reqListGridWrapper).should('exist');
-    cy.get(fields.requisitionListItemRow).should('have.length', 3);
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.get(fields.reqListGridWrapper).should("exist");
+    cy.get(fields.requisitionListItemRow).should("have.length", 3);
 
     // Rename Requisition List
     cy.get(fields.requisitionListItemActionsUpdateButton).eq(1).click();
-    cy.contains('Update Requisition List').should('be.visible');
+    cy.contains("Update Requisition List").should("be.visible");
     cy.wait(1000);
-    cy.get(fields.requisitionListFormName).clear().type('Updated Requisition List');
+    cy.get(fields.requisitionListFormName)
+      .clear()
+      .type("Updated Requisition List");
     cy.wait(1000);
-    cy.get(fields.requisitionListFormDescription).clear().type('Dummy description');
+    cy.get(fields.requisitionListFormDescription)
+      .clear()
+      .type("Dummy description");
     cy.wait(1000);
-    cy.contains('Save').should('be.visible').click();
-    cy.contains('Updated Requisition List').should('be.visible');
+    cy.contains("Save").should("be.visible").click();
+    cy.contains("Updated Requisition List").should("be.visible");
 
     // Remove Requisition List
     cy.get(fields.requisitionListItemActionsRemoveButton).eq(2).click();
     cy.get(fields.requisitionListModalConfirmButton).click();
-    cy.get(fields.requisitionListItemRow).should('have.length', 2);
+    cy.get(fields.requisitionListItemRow).should("have.length", 2);
   });
 });
