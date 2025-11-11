@@ -64,11 +64,8 @@ import {
 } from './constants.js';
 import { rootLink } from '../../scripts/commerce.js';
 
-// Success block entry points
+// Success block entry point
 import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
-import {
-  renderPOSuccess,
-} from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -80,23 +77,18 @@ export default async function decorate(block) {
 
   let b2bPoApi = null;
   let b2bIsPoEnabled = false;
+  let b2bRenderPoSuccess = null;
 
   if (isB2BEnabled) {
     const permissions = events.lastPayload('auth/permissions');
 
-    try {
-      const module = await import('@dropins/storefront-purchase-order/api.js');
-      const { PO_PERMISSIONS } = module;
+    const b2bPoConfirmationModule = await import('../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js');
+    const b2bPoOrderModule = await import('@dropins/storefront-purchase-order/api.js');
+    const { PO_PERMISSIONS } = b2bPoOrderModule;
 
-      b2bPoApi = module;
-      b2bIsPoEnabled = permissions && permissions[PO_PERMISSIONS.PO_ALL] !== false;
-    } catch (err) {
-      if (err.message.includes('Failed to fetch dynamically imported module')) {
-        console.warn('⚠️ B2B module @dropins/storefront-purchase-order/api.js not found - skipping B2B Purchase Order setup');
-      } else {
-        throw err;
-      }
-    }
+    b2bPoApi = b2bPoOrderModule;
+    b2bIsPoEnabled = permissions && permissions[PO_PERMISSIONS.PO_ALL] !== false;
+    b2bRenderPoSuccess = b2bPoConfirmationModule.renderPOSuccess;
   }
 
   // Container and component references
@@ -375,7 +367,9 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await renderPOSuccess(block, poData);
+    if (b2bRenderPoSuccess) {
+      await b2bRenderPoSuccess(block, poData);
+    }
   }
 
   events.on('authenticated', handleAuthenticated);
