@@ -32,7 +32,6 @@ import {
   setJsonLd,
   fetchPlaceholders,
   getProductLink,
-  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 // Initializers
