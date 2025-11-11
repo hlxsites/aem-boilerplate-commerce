@@ -75,6 +75,7 @@ import { rootLink } from '../../scripts/commerce.js';
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/payment-services.js';
 
 // Order success block import and CSS preload
 import { renderOrderSuccess, preloadOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
