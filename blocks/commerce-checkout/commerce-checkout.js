@@ -82,13 +82,17 @@ export default async function decorate(block) {
   if (isB2BEnabled) {
     const permissions = events.lastPayload('auth/permissions');
 
-    const b2bPurchaseOrderConfirmationModule = await import('../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js');
-    const b2bPurchaseOrderModule = await import('@dropins/storefront-purchase-order/api.js');
-    const { PO_PERMISSIONS } = b2bPurchaseOrderModule;
+    const [
+      { renderPOSuccess },
+      { PO_PERMISSIONS, ...b2bPurchaseOrderModule },
+    ] = await Promise.all([
+      import('../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js'),
+      import('@dropins/storefront-purchase-order/api.js'),
+    ]);
 
     b2bPoApi = b2bPurchaseOrderModule;
-    b2bIsPoEnabled = permissions && permissions[PO_PERMISSIONS.PO_ALL] !== false;
-    b2bRenderPoSuccess = b2bPurchaseOrderConfirmationModule.renderPOSuccess;
+    b2bIsPoEnabled = permissions[PO_PERMISSIONS.PO_ALL] !== false;
+    b2bRenderPoSuccess = renderPOSuccess;
   }
 
   // Container and component references
