@@ -77,10 +77,10 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
 
-// Order success block import and CSS preload
-import { renderOrderSuccess, preloadOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+// Checkout success block import and CSS preload
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
-preloadOrderSuccess();
+preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   // Container and component references
@@ -363,7 +363,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await renderOrderSuccess(block, { orderData });
+    await renderCheckoutSuccess(block, { orderData });
   }
 
   events.on('authenticated', handleAuthenticated);
