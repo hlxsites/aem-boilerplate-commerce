@@ -76,14 +76,13 @@ preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  const permissions = events.lastPayload('auth/permissions');
 
   let b2bPoApi = null;
   let b2bIsPoEnabled = false;
   let b2bRenderPoSuccess = null;
 
-  if (isB2BEnabled) {
-    const permissions = events.lastPayload('auth/permissions');
-
+  if (isB2BEnabled && permissions) {
     const [
       { renderPOSuccess },
       { PO_PERMISSIONS, ...b2bPurchaseOrderModule },
