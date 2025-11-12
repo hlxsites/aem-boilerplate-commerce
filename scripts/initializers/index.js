@@ -76,7 +76,9 @@ export default async function initializeDropins() {
      * the correct payload.
      */
     const companyContext = sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
-    CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', companyContext);
+    if (companyContext) {
+      CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', companyContext);
+    }
 
     // Initialize Global Drop-ins
     await import('./auth.js');
