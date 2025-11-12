@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
-import { showSlide } from '../../blocks/carousel/carousel.js';
+import { showSlide } from '../blocks/carousel/carousel.js';
 import { moveInstrumentation } from './ue-utils.js';
 
 const setupObservers = () => {

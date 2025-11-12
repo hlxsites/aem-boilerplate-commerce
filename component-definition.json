@@ -46,6 +46,11 @@
     {
       "title": "Blocks",
       "id": "blocks",
+      "components": []
+    },
+    {
+      "title": "Blocks",
+      "id": "blocks",
       "components": [
         {
           "title": "Accordion",
@@ -68,27 +73,6 @@
               "columns": 0
             }
           }
-        },
-        {
-          "title": "Cards",
-          "id": "cards",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div class=\"cards\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div></div>"
-            }
-          },
-          "model": "cards",
-          "filter": "cards"
-        },
-        {
-          "title": "Card",
-          "id": "card",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div>"
-            }
-          },
-          "model": "card"
         },
         {
           "title": "Carousel",
@@ -159,44 +143,6 @@
           }
         },
         {
-          "title": "Product Recommendations",
-          "id": "product-recommendations",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div class=\"product-recommendations\"><div><div>recid</div><div><p>PLACEHOLDER</p></div></div><div><div>currentSku</div><div><p>PLACEHOLDER</p></div></div></div>"
-            }
-          }
-        },
-        {
-          "title": "Search",
-          "id": "search",
-          "plugins": {
-            "da": {
-              "name": "search",
-              "rows": 1,
-              "columns": 1
-            }
-          }
-        },
-        {
-          "title": "Tabs",
-          "id": "tabs",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div class=\"tabs\"><div><div><p></p></div><div></div></div></div>"
-            }
-          }
-        },
-        {
-          "title": "Tabs Item",
-          "id": "tabs-item",
-          "plugins": {
-            "da": {
-              "unsafeHTML": "<div><div><p></p></div><div></div></div>"
-            }
-          }
-        },
-        {
           "title": "Targeted Block",
           "id": "targeted-block",
           "plugins": {
@@ -204,13 +150,19 @@
               "unsafeHTML": "<div class=\"targeted-block\"><div><div><p>Customer Groups</p></div><div><p>Specify id's of customer groups the block is visible to</p></div></div><div><div><p>Customer Segments</p></div><div><p>Specify id's of customer segments the block is visible to</p></div></div><div><div><p>Type</p></div><div><p>Provide a custom name. If there are multiple targeted block of the same type on a page, only the first block of the type will be displayed</p></div></div><div><div><p>Fragment</p></div><div><p>Relative path to a fragment. If specified the block content will be replaced with fragment content</p></div></div><div><div><p>Targeted Block Content</p></div></div></div>"
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "title": "Product",
+      "id": "product",
+      "components": [
         {
-          "title": "Video",
-          "id": "video",
+          "title": "Product Recommendations",
+          "id": "product-recommendations",
           "plugins": {
             "da": {
-              "unsafeHTML": "<div class=\"video\"><div><div><p><a href=\"\">video</a></p><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div></div></div>"
+              "unsafeHTML": "<div class=\"product-recommendations\"><div><div>recid</div><div><p>PLACEHOLDER</p></div></div><div><div>currentSku</div><div><p>PLACEHOLDER</p></div></div></div>"
             }
           }
         }
