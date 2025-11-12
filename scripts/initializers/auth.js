@@ -1,12 +1,18 @@
 import { initializers } from '@dropins/tools/initializer.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
-import { initialize, setEndpoint } from '@dropins/storefront-auth/api.js';
+import { initialize, setEndpoint, setFetchGraphQlHeader } from '@dropins/storefront-auth/api.js';
 import { initializeDropin } from './index.js';
 import { CORE_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 await initializeDropin(async () => {
   // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
+
+  // Option 1
+  setFetchGraphQlHeader('X-Adobe-Company', sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT'));
+
+  // Option 2
+  // CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT'));
 
   // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/auth.json');
