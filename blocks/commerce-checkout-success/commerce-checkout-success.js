@@ -267,7 +267,7 @@ async function renderOrderSuccessContent(container, { orderData } = {}) {
 }
 
 export function preloadOrderSuccess() {
-  return loadCSS('./blocks/commerce-checkout-success/commerce-checkout-success.css');
+  return loadCSS(`${window.hlx.codeBasePath}/blocks/commerce-checkout-success/commerce-checkout-success.css`);
 }
 
 export async function renderOrderSuccess(container, { orderData } = {}) {
