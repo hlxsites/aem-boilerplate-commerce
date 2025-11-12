@@ -1,9 +1,4 @@
-import {
-  InLineAlert,
-  Icon,
-  Button,
-  provider as UI,
-} from '@dropins/tools/components.js';
+import { Button, Icon, InLineAlert, provider as UI } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -27,12 +22,7 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import {
-  rootLink,
-  setJsonLd,
-  fetchPlaceholders,
-  getProductLink,
-} from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink, rootLink, setJsonLd } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -84,7 +74,8 @@ export default async function decorate(block) {
   let isUpdateMode = false;
 
   // Layout
-  const fragment = document.createRange().createContextualFragment(`
+  const fragment = document.createRange()
+    .createContextualFragment(`
     <div class="product-details__alert"></div>
     <div class="product-details__wrapper">
       <div class="product-details__left-column">
@@ -122,7 +113,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
-  const $requisitionListNames = fragment.querySelector('.product-details__buttons__add-to-req-list');
+  const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -251,11 +242,12 @@ export default async function decorate(block) {
         if (valid) {
           if (isUpdateMode) {
             // --- Update existing item ---
-            const { updateProductsFromCart } = await import(
-              '@dropins/storefront-cart/api.js'
-            );
+            const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
 
-            await updateProductsFromCart([{ ...values, uid: itemUidFromUrl }]);
+            await updateProductsFromCart([{
+              ...values,
+              uid: itemUidFromUrl,
+            }]);
 
             // --- START REDIRECT ON UPDATE ---
             const updatedSku = values?.sku;
@@ -276,9 +268,7 @@ export default async function decorate(block) {
             return;
           }
           // --- Add new item ---
-          const { addProductsToCart } = await import(
-            '@dropins/storefront-cart/api.js'
-          );
+          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
           await addProductsToCart([{ ...values }]);
         }
 
@@ -317,7 +307,10 @@ export default async function decorate(block) {
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    addToCart.setProps((prev) => ({
+      ...prev,
+      disabled: !valid,
+    }));
   }, { eager: true });
 
   // Handle option changes
@@ -352,7 +345,10 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  events.on('wishlist/alert', ({ action, item }) => {
+  events.on('wishlist/alert', ({
+    action,
+    item,
+  }) => {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
@@ -377,7 +373,7 @@ export default async function decorate(block) {
     const { initializeRequisitionList } = await import('./requisition-list.js');
     await initializeRequisitionList({
       $alert,
-      $requisitionListNames,
+      $requisitionListSelector,
       product,
       labels,
       urlParams,
@@ -553,7 +549,10 @@ function setMetaTags(product) {
  * @returns The configuration for the image slot.
  */
 function imageSlotConfig(ctx) {
-  const { data, defaultImageProps } = ctx;
+  const {
+    data,
+    defaultImageProps,
+  } = ctx;
   return {
     alias: data.sku,
     imageProps: defaultImageProps,
