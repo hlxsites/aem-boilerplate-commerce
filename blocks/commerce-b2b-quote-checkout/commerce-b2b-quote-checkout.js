@@ -60,7 +60,7 @@ import {
 import { rootLink } from '../../scripts/commerce.js';
 
 // Success block entry points
-import { renderOrderSuccess, preloadOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
@@ -69,8 +69,8 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/quote-management.js';
 
-// Order success block CSS preload
-preloadOrderSuccess();
+// Checkout success block CSS preload
+preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   const permissions = events.lastPayload('auth/permissions');
@@ -244,7 +244,7 @@ export default async function decorate(block) {
 
     window.history.pushState({}, '', url);
 
-    await renderOrderSuccess(block, { orderData });
+    await renderCheckoutSuccess(block, { orderData });
   }
 
   async function handlePurchaseOrderPlaced(poData) {
