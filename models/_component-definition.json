@@ -26,15 +26,6 @@
       "id": "blocks",
       "components": [
         {
-          "...": "./blocks/*.json#/definitions"
-        }
-      ]
-    },
-    {
-      "title": "Blocks",
-      "id": "blocks",
-      "components": [
-        {
           "...": "../blocks/accordion/_*.json#/definitions"
         },
         {

@@ -46,11 +46,6 @@
     {
       "title": "Blocks",
       "id": "blocks",
-      "components": []
-    },
-    {
-      "title": "Blocks",
-      "id": "blocks",
       "components": [
         {
           "title": "Accordion",
