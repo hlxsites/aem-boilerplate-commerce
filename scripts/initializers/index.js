@@ -85,7 +85,6 @@ export default async function initializeDropins() {
     const authenticated = events.lastPayload('authenticated');
 
     if (authenticated && getConfigValue('commerce-companies-enabled') === true) {
-      // Here we set X-Adobe-Company header (too late, incorrect permissions propagated and cached)
       await import('./company-switcher.js');
     }
 
