@@ -25,182 +25,38 @@
     ]
   },
   {
-    "id": "accordion-item",
-    "fields": [
-      {
-        "component": "richtext",
-        "valueType": "string",
-        "name": "div:nth-child(1)",
-        "value": "",
-        "label": "Summary",
-        "required": true
-      },
-      {
-        "component": "richtext",
-        "name": "div:nth-child(2)",
-        "value": "",
-        "label": "Text",
-        "valueType": "string",
-        "required": true
-      }
+    "id": "accordion",
+    "components": [
+      "accordion-item"
     ]
   },
   {
-    "id": "card",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
-        "label": "Image Alt",
-        "multi": false
-      },
-      {
-        "component": "richtext",
-        "name": "div:nth-child(2)",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
+    "id": "cards",
+    "components": [
+      "card"
     ]
   },
   {
-    "id": "carousel-item",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
-        "label": "Background Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
-        "label": "Background Image Alt"
-      },
-      {
-        "component": "richtext",
-        "name": "div:nth-child(2)",
-        "label": "Text",
-        "valueType": "string"
-      }
+    "id": "carousel",
+    "components": [
+      "carousel-item"
     ]
   },
   {
     "id": "columns",
-    "fields": [
-      {
-        "component": "number",
-        "valueType": "number",
-        "name": "columns",
-        "label": "Number of Columns",
-        "value": 2,
-        "validation": {
-          "numberMin": 1,
-          "numberMax": 6
-        }
-      }
+    "components": [
+      "columns-row"
     ]
   },
   {
-    "id": "fragment",
-    "fields": [
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)[href]",
-        "label": "Fragment URL",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)",
-        "label": "Fragment URL Text"
-      }
-    ]
+    "id": "columns-row",
+    "components": []
   },
   {
-    "id": "hero",
-    "fields": [
-      {
-        "component": "reference",
-        "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
-        "label": "Image",
-        "multi": false
-      },
-      {
-        "component": "text",
-        "valueType": "string",
-        "name": "div:nth-child(1)>div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
-        "label": "Alt",
-        "value": ""
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(1)>h1:nth-child(2)",
-        "value": "",
-        "label": "Text",
-        "valueType": "string"
-      }
-    ]
-  },
-  {
-    "id": "product-recommendations",
-    "fields": [
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Rec ID",
-        "required": true
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(2)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Current SKU"
-      }
-    ]
-  },
-  {
-    "id": "targeted-block",
-    "fields": [
-      {
-        "component": "richtext",
-        "name": "div:nth-child(5)>div:nth-child(1)",
-        "label": "Content"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(1)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Customer Groups",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(2)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Customer Segments",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(3)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Type",
-        "valueType": "string"
-      },
-      {
-        "component": "text",
-        "name": "div:nth-child(4)>div:nth-child(2)>p:nth-child(1)",
-        "label": "Fragment",
-        "valueType": "string"
-      }
+    "id": "columns-cell",
+    "components": [
+      "text",
+      "image"
     ]
   }
 ]

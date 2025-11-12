@@ -7,6 +7,6 @@
     "...": "./_section.json#/filters"
   },
   {
-    "...": "../blocks/*/_*.json#/models"
+    "...": "../blocks/*/_*.json#/filters"
   }
 ]
