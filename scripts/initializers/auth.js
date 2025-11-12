@@ -8,12 +8,6 @@ await initializeDropin(async () => {
   // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
-  // Option 1
-  setFetchGraphQlHeader('X-Adobe-Company', sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT'));
-
-  // Option 2
-  // CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT'));
-
   // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/auth.json');
   const langDefinitions = {

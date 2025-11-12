@@ -70,7 +70,14 @@ export default async function initializeDropins() {
     // Fetch global placeholders
     await fetchPlaceholders('placeholders/global.json');
 
-    // Issue here. We get permissions without proper X-Adobe-Company header
+    /*
+     * Set the company context before initializing the auth drop-in
+     * This ensures proper permissions are retrieved, and the auth/permissions event includes
+     * the correct payload.
+     */
+    const companyContext = sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
+    CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', companyContext);
+
     // Initialize Global Drop-ins
     await import('./auth.js');
 
