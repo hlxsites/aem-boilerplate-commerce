@@ -11,8 +11,8 @@ export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
   const headerContainer = document.createElement('div');
-  const headerTitle = placeholders?.Global?.CommercePOHeader?.poHeaderTitle || 'Purchase order';
-  await UI.render(Header, { title: headerTitle })(headerContainer);
+  const headerTitleText = placeholders?.Global?.CommercePOHeader?.poHeaderTitle || 'Purchase order';
+  await UI.render(Header, { title: headerTitleText })(headerContainer);
 
   if (window.location.href.includes(CUSTOMER_PO_DETAILS_PATH)) {
     const link = document.createElement('a');
@@ -29,7 +29,7 @@ export default async function decorate(block) {
   events.on(
     'purchase-order/data',
     (poData) => {
-      UI.render(Header, { title: `Purchase order ${poData.number}` })(
+      UI.render(Header, { title: `${headerTitleText} ${poData.number}` })(
         headerContainer,
       );
     },
