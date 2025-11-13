@@ -9,7 +9,6 @@ export interface ConfirmationModalProps extends Omit<HTMLAttributes<HTMLDivEleme
     confirmLabel?: VNode | string;
     onCancel?: () => void;
     onConfirm?: () => void;
-    onClose?: () => void;
     showCloseButton?: boolean;
     confirmationBanner?: VNode | null;
 }

@@ -7,6 +7,7 @@
  * accompanying it.
  *******************************************************************/
 export * from './transform-store-config';
+export * from './transform-customer';
 export * from './transform-quote';
 export * from './transform-quote-template';
 //# sourceMappingURL=index.d.ts.map

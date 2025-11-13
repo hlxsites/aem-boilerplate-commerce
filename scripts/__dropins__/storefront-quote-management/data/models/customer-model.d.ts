@@ -6,6 +6,13 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ItemsQuotedTemplate';
-export { ItemsQuotedTemplate as default } from './ItemsQuotedTemplate';
-//# sourceMappingURL=index.d.ts.map
+export interface CustomerModel {
+    permissions: CustomerPermissions;
+}
+export interface CustomerPermissions {
+    canRequestQuote: boolean;
+    canEditQuote: boolean;
+    canDeleteQuote: boolean;
+    canCheckoutQuote: boolean;
+}
+//# sourceMappingURL=customer-model.d.ts.map

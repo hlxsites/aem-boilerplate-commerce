@@ -8,6 +8,7 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
+export * from './getCustomerData';
 export * from './requestNegotiableQuote';
 export * from './getQuoteData';
 export * from './negotiableQuotes';
@@ -32,5 +33,4 @@ export * from './addQuoteTemplateLineItemNote';
 export * from './generateQuoteFromTemplate';
 export * from './renameNegotiableQuote';
 export * from './updateQuantities';
-export * from './removeNegotiableQuoteItems';
 //# sourceMappingURL=index.d.ts.map
