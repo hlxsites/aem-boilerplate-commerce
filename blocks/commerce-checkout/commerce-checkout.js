@@ -366,7 +366,7 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+    const url = rootLink(`/customer/purchase-order-details?poRef=${poData?.uid}`);
 
     window.history.pushState({}, '', url);
 

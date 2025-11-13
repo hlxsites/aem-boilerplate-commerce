@@ -248,7 +248,7 @@ export default async function decorate(block) {
     // Clear address form data
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+    const url = rootLink(`/customer/purchase-order-details?poRef=${poData?.uid}`);
 
     window.history.pushState({}, '', url);
 
