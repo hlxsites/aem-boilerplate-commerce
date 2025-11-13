@@ -29,6 +29,7 @@ import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 import { companyEnabled } from '@dropins/storefront-company-management/api.js';
+import { getIsB2BEnabled, setIsB2BEnabled } from '@dropins/storefront-requisition-list/api.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { checkIsAuthenticated } from '../../scripts/commerce.js';
 
@@ -59,11 +60,8 @@ function createRequisitionListRenderer(configValues, {
       return null;
     }
 
-    // Check if B2B is enabled
-    const isB2BEnabled = await companyEnabled();
-
     // Render RequisitionListSelector with beforeAddProdToReqList validation
-    if (isB2BEnabled) {
+    if (getIsB2BEnabled) {
       return rlRenderer.render(RequisitionListSelector, {
         sku: product.sku,
         quantity: configValues?.quantity || 1,
@@ -237,6 +235,9 @@ export async function initializeRequisitionList({
   labels,
   urlParams,
 }) {
+  // Check if B2B is enabled
+  setIsB2BEnabled(await companyEnabled());
+
   // Create the render function
   const configValues = pdpApi.getProductConfigurationValues();
   const renderFunction = createRequisitionListRenderer(configValues, {

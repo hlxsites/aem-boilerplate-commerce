@@ -162,21 +162,12 @@ export default async function decorate(block) {
 
           // Conditionally load and render Requisition List Button
           try {
-            const {
-              createRequisitionListRenderer,
-              createRequisitionListAction,
-            } = await import('./requisition-list.js');
+            const { initializeRequisitionList } = await import('./requisition-list.js');
 
-            const renderFunction = createRequisitionListRenderer(labels);
-
-            const $reqListContainer = await createRequisitionListAction({
-              renderFunction,
+            const $reqListContainer = await initializeRequisitionList({
+              $requisitionListSelector: null,
               product: ctx.product,
-              onAuthenticated: ($container, product) => {
-                events.on('authenticated', async () => {
-                  await renderFunction($container, product);
-                });
-              },
+              labels,
             });
 
             actionsWrapper.appendChild($reqListContainer);

@@ -26,6 +26,8 @@ import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 import { companyEnabled } from '@dropins/storefront-company-management/api.js';
+import { getIsB2BEnabled, setIsB2BEnabled } from '@dropins/storefront-requisition-list/api.js';
+import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 
 // Initialize dropins
@@ -37,7 +39,7 @@ import '../../scripts/initializers/requisition-list.js';
  * @param {Object} labels - Placeholder labels for i18n
  * @returns {Function} Render function for requisition list selector
  */
-export function createRequisitionListRenderer(labels) {
+function createRequisitionListRenderer(labels) {
   return async function renderRequisitionListSelectorIfEnabled($container, product) {
     const isAuthenticated = checkIsAuthenticated();
     if (!isAuthenticated) {
@@ -46,7 +48,7 @@ export function createRequisitionListRenderer(labels) {
     }
 
     // Check if B2B is enabled
-    if (await companyEnabled()) {
+    if (getIsB2BEnabled) {
       rlRenderer.render(RequisitionListSelector, {
         sku: product.sku,
         quantity: 1,
@@ -76,7 +78,7 @@ export function createRequisitionListRenderer(labels) {
  * @param {Function} params.onAuthenticated - Callback to setup authentication event handler
  * @returns {HTMLElement} The requisition list container element
  */
-export async function createRequisitionListAction({
+async function createRequisitionListAction({
   renderFunction,
   product,
   onAuthenticated,
@@ -93,4 +95,36 @@ export async function createRequisitionListAction({
   }
 
   return $reqListContainer;
+}
+
+/**
+ * Initialize requisition list functionality on the product details page
+ * @param {Object} params - Configuration parameters
+ * @param {HTMLElement} params.$requisitionListSelector - Container element for requisition list
+ * @param {Object} params.product - Product data
+ * @param {Object} params.labels - Placeholder labels
+ */
+export async function initializeRequisitionList({
+  $requisitionListSelector = null,
+  product,
+  labels,
+}) {
+  // Check if B2B is enabled
+  const isB2BEnabled = getIsB2BEnabled();
+  if (isB2BEnabled === null) {
+    setIsB2BEnabled(await companyEnabled());
+  }
+
+  // Create the render function
+  const renderFunction = createRequisitionListRenderer(labels);
+
+  return createRequisitionListAction({
+    renderFunction,
+    product,
+    onAuthenticated: ($container, product) => {
+      events.on('authenticated', async () => {
+        await renderFunction($container, product);
+      });
+    },
+  });
 }
