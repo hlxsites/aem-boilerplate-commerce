@@ -46,6 +46,12 @@ await initializeDropin(async () => {
     { eager: true },
   );
 
+  events.on('companyContext/changed', () => {
+    if (pathname.includes(CUSTOMER_PO_DETAILS_PATH)) {
+      events.emit('purchase-order/refresh', true);
+    }
+  }, { eager: true });
+
   // Initialize purchase order
   return initializers.mountImmediately(initialize, { langDefinitions, poRef });
 })();
