@@ -6,7 +6,7 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './customer-model';
 export * from './negotiable-quote-model';
+export * from './negotiable-quote-template-model';
 export * from './store-config-model';
 //# sourceMappingURL=index.d.ts.map

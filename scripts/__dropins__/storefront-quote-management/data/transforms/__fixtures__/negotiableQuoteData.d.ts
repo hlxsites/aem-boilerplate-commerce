@@ -22,6 +22,7 @@ export declare const mockGraphQLResponse: {
                     };
                 }[];
                 items: {
+                    uid: string;
                     product: {
                         uid: string;
                         sku: string;
@@ -643,6 +644,7 @@ export declare const mockNegotiableQuotesResponse: {
                     lastname: string;
                 };
                 items: {
+                    uid: string;
                     product: {
                         uid: string;
                         sku: string;

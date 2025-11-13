@@ -6,14 +6,19 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ItemsQuoted';
+export * from './RequestNegotiableQuoteForm';
 export * from './ManageNegotiableQuote';
+export * from './ItemsQuoted';
 export * from './OrderSummary';
 export * from './OrderSummaryLine';
 export * from './QuoteCommentsList';
 export * from './QuoteHistoryLog';
 export * from './QuoteSummaryList';
 export * from './QuotesListTable';
-export * from './RequestNegotiableQuoteForm';
 export * from './ShippingAddressDisplay';
+export * from './ManageNegotiableQuoteTemplate';
+export * from './ItemsQuotedTemplate';
+export * from './QuoteTemplateCommentsList';
+export * from './QuoteTemplateHistoryLog';
+export * from './QuoteTemplatesListTable';
 //# sourceMappingURL=index.d.ts.map

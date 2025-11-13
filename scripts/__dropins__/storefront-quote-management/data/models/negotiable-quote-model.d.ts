@@ -76,6 +76,30 @@ export interface NegotiableQuoteModel {
     canSendForReview: boolean;
     lockedForEditing?: boolean;
     canDelete: boolean;
+    canClose: boolean;
+    canUpdateQuote: boolean;
+    readOnly: boolean;
+}
+export interface ConfigurableOption {
+    optionLabel: string;
+    valueLabel: string;
+}
+export interface BundleOption {
+    label: string;
+    values: {
+        label: string;
+        quantity: number;
+        originalPrice: Currency;
+        price: Currency;
+    }[];
+}
+export interface CustomizableOption {
+    type: string;
+    label: string;
+    values: {
+        label: string;
+        value: string;
+    }[];
 }
 export interface NegotiableQuoteCartItem {
     itemType: string;
@@ -119,29 +143,11 @@ export interface NegotiableQuoteCartItem {
         rowTotalIncludingTax: Currency;
     };
     savingsAmount?: Currency;
+    configurableOptions?: ConfigurableOption[];
+    bundleOptions?: BundleOption[];
+    customizableOptions?: CustomizableOption[];
     noteFromBuyer?: ItemNote[];
     noteFromSeller?: ItemNote[];
-    configurableOptions?: {
-        optionLabel: string;
-        valueLabel: string;
-    }[];
-    bundleOptions?: {
-        label: string;
-        values: {
-            label: string;
-            quantity: number;
-            originalPrice: Currency;
-            price: Currency;
-        }[];
-    }[];
-    customizableOptions?: {
-        type: string;
-        label: string;
-        values: {
-            label: string;
-            value: string;
-        }[];
-    }[];
 }
 interface ItemImage {
     src: string;
