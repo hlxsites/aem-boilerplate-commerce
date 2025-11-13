@@ -85,7 +85,6 @@ import {
   LOGIN_FORM_NAME,
   SHIPPING_ADDRESS_DATA_KEY,
   SHIPPING_FORM_NAME,
-  USER_TOKEN_COOKIE_NAME,
 } from './constants.js';
 
 /**
@@ -435,6 +434,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
     },
   })(container),
 );
+
 /**
  * Renders terms and conditions with agreement slots and manual consent mode
  * @param {HTMLElement} container - DOM element to render the terms in

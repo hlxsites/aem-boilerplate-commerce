@@ -44,13 +44,16 @@ import {
   getProductLink,
 } from '../../scripts/commerce.js';
 
-import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
-
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
+
+// Checkout success block import and CSS preload
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -466,7 +469,7 @@ async function handleOrderPlaced(orderData, block) {
 
   window.history.pushState({}, '', url);
 
-  await renderOrderSuccess(block, { orderData });
+  await renderCheckoutSuccess(block, { orderData });
 }
 
 async function setJsonLdProduct(product) {
