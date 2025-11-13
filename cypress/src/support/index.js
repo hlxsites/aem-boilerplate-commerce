@@ -9,7 +9,7 @@ import './waitForWishlistPage';
 import '@percy/cypress';
 import './percyTakeSnapshot';
 import './waitForLoadingSkeletonToDisappear';
-import './deleteNegotiableQuotes'
+import './deleteNegotiableQuotes';
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();
