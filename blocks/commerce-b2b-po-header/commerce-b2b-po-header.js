@@ -1,28 +1,24 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { Header, provider as UI } from '@dropins/tools/components.js';
 import {
-  CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH,
-  CUSTOMER_B2B_PURCHASE_ORDERS_PATH,
+  CUSTOMER_PO_DETAILS_PATH,
+  CUSTOMER_PO_LIST_PATH,
   fetchPlaceholders,
   rootLink,
 } from '../../scripts/commerce.js';
 
-// Initialize
-import '../../scripts/initializers/purchase-order.js';
-
 export default async function decorate(block) {
-  block.innerHTML = '';
+  const placeholders = await fetchPlaceholders();
 
   const headerContainer = document.createElement('div');
-  await UI.render(Header, { title: 'Purchase Order' })(headerContainer);
+  const headerTitle = placeholders?.Global?.CommercePOHeader?.poHeaderTitle || 'Purchase order';
+  await UI.render(Header, { title: headerTitle })(headerContainer);
 
-  if (window.location.href.includes(CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH)) {
-    const placeholders = await fetchPlaceholders();
-
+  if (window.location.href.includes(CUSTOMER_PO_DETAILS_PATH)) {
     const link = document.createElement('a');
 
-    link.innerText = placeholders?.Global?.CommerceOrderHeader?.backToAllOrders;
-    link.href = rootLink(CUSTOMER_B2B_PURCHASE_ORDERS_PATH);
+    link.innerText = placeholders?.Global?.CommercePOHeader?.backToAllPOs || '< Back to all purchase orders';
+    link.href = rootLink(CUSTOMER_PO_LIST_PATH);
     link.classList.add('po-list-link');
 
     block.appendChild(link);
@@ -31,9 +27,9 @@ export default async function decorate(block) {
   block.appendChild(headerContainer);
 
   events.on(
-    'order/data',
-    (orderData) => {
-      UI.render(Header, { title: `Purchase Order ${orderData.poNumber}` })(
+    'purchase-order/data',
+    (poData) => {
+      UI.render(Header, { title: `Purchase order ${poData.number}` })(
         headerContainer,
       );
     },

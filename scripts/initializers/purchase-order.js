@@ -3,8 +3,8 @@ import { initialize, setEndpoint } from '@dropins/storefront-purchase-order/api.
 import { events } from '@dropins/tools/event-bus.js';
 import { initializeDropin } from './index.js';
 import {
-  CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH,
-  CUSTOMER_B2B_PURCHASE_ORDERS_PATH,
+  CUSTOMER_PO_LIST_PATH,
+  CUSTOMER_PO_DETAILS_PATH,
   CORE_FETCH_GRAPHQL,
   fetchPlaceholders,
   rootLink,
@@ -25,22 +25,22 @@ await initializeDropin(async () => {
   let poRef = '';
   const { pathname, searchParams } = new URL(window.location.href);
 
-  // TODO POref
-  // if (!checkIsAuthenticated() && !pathname.includes(CUSTOMER_LOGIN_PATH)) {
-  //   window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-  // }
-
-  // TODO PORef
-  if (pathname.includes(CUSTOMER_B2B_PURCHASE_ORDER_DETAILS_PATH)) {
-    searchParams.get('poRef');
+  // The poRef is required URL param to initialize PO details page
+  if (pathname.includes(CUSTOMER_PO_DETAILS_PATH)) {
     poRef = searchParams.get('poRef') || '';
   }
 
   events.on(
     'purchase-order/error',
-    () => {
-      if (!pathname.includes(CUSTOMER_B2B_PURCHASE_ORDERS_PATH)) {
-        window.location.href = rootLink(CUSTOMER_B2B_PURCHASE_ORDERS_PATH);
+    (error) => {
+      const { error: errorMessage } = error;
+
+      // Place order error is part of normal flow, not exception
+      if (errorMessage.includes('Unable to place order')) return;
+
+      // Handle unexpected errors
+      if (!pathname.includes(CUSTOMER_PO_LIST_PATH)) {
+        window.location.href = rootLink(CUSTOMER_PO_LIST_PATH);
       }
     },
     { eager: true },

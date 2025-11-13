@@ -8,14 +8,13 @@ import {
 } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
-  block.innerHTML = '';
+  const placeholders = await fetchPlaceholders();
 
   const headerContainer = document.createElement('div');
-  await UI.render(Header, { title: 'Order' })(headerContainer);
+  const headerTitle = placeholders?.Global?.CommerceOrderHeader?.orderHeaderTitle || 'Order';
+  await UI.render(Header, { title: headerTitle })(headerContainer);
 
   if (window.location.href.includes(CUSTOMER_ORDER_DETAILS_PATH)) {
-    const placeholders = await fetchPlaceholders();
-
     const link = document.createElement('a');
 
     link.innerText = placeholders?.Global?.CommerceOrderHeader?.backToAllOrders;
