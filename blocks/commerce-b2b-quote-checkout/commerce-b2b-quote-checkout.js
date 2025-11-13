@@ -39,10 +39,11 @@ import {
   renderBillToShippingAddress,
   renderCheckoutHeader,
   renderCustomerBillingAddresses,
-  renderGiftOptions,
   renderLoginForm,
+  renderOrderSummary,
   renderPaymentMethods,
   renderPlaceOrder,
+  renderQuoteSummaryList,
   renderServerError,
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
@@ -57,10 +58,10 @@ import {
   PURCHASE_ORDER_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
-import { rootLink } from '../../scripts/commerce.js';
+import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/commerce.js';
 
 // Success block entry points
-import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 import { renderPOSuccess } from '../commerce-b2b-po-checkout-success/commerce-b2b-po-checkout-success.js';
 
 // Initializers
@@ -68,6 +69,9 @@ import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/quote-management.js';
+
+// Checkout success block CSS preload
+preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   const permissions = events.lastPayload('auth/permissions');
@@ -106,8 +110,9 @@ export default async function decorate(block) {
   const $delivery = getElement(selectors.checkout.delivery);
   const $paymentMethods = getElement(selectors.checkout.paymentMethods);
   const $billingForm = getElement(selectors.checkout.billingForm);
+  const $orderSummary = getElement(selectors.checkout.orderSummary);
+  const $quoteSummary = getElement(selectors.checkout.quoteSummary);
   const $placeOrder = getElement(selectors.checkout.placeOrder);
-  const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
 
   block.appendChild(checkoutFragment);
@@ -153,8 +158,9 @@ export default async function decorate(block) {
     _shippingMethods,
     _paymentMethods,
     _billingFormSkeleton,
+    _orderSummary,
+    _quoteSummary,
     _termsAndConditions,
-    _giftOptions,
   ] = await Promise.all([
     renderCheckoutHeader($heading, 'B2B Checkout'),
 
@@ -172,9 +178,11 @@ export default async function decorate(block) {
 
     renderBillingAddressFormSkeleton($billingForm),
 
-    renderTermsAndConditions($termsAndConditions),
+    renderOrderSummary($orderSummary),
 
-    renderGiftOptions($giftOptions),
+    renderQuoteSummaryList($quoteSummary),
+
+    renderTermsAndConditions($termsAndConditions),
   ]);
 
   async function initializeCheckout(data) {
@@ -236,19 +244,19 @@ export default async function decorate(block) {
     const encodedOrderNumber = encodeURIComponent(orderNumber);
 
     const url = token
-      ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+      ? rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}`)
+      : rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 
-    await renderOrderSuccess(block, { orderData });
+    await renderCheckoutSuccess(block, { orderData });
   }
 
   async function handlePurchaseOrderPlaced(poData) {
     // Clear address form data
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+    const url = rootLink(`${CUSTOMER_PO_DETAILS_PATH}?poRef=${poData?.uid}`);
 
     window.history.pushState({}, '', url);
 

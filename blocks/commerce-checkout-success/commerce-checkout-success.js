@@ -33,6 +33,8 @@ import {
   rootLink,
   SUPPORT_PATH,
   authPrivacyPolicyConsentSlot,
+  CUSTOMER_LOGIN_PATH,
+  CUSTOMER_ACCOUNT_PATH,
 } from '../../scripts/commerce.js';
 
 // Initialize dropins
@@ -134,8 +136,8 @@ async function renderOrderHeader(container, options = {}) {
     AuthProvider.render(SignUp, {
       inputsDefaultValueSet,
       addressesData,
-      routeSignIn: () => rootLink('/customer/login'),
-      routeRedirectOnEmailConfirmationClose: () => rootLink('/customer/account'),
+      routeSignIn: () => rootLink(CUSTOMER_LOGIN_PATH),
+      routeRedirectOnEmailConfirmationClose: () => rootLink(CUSTOMER_ACCOUNT_PATH),
       slots: { ...authPrivacyPolicyConsentSlot },
     })(signUpForm);
     await showModal(signUpForm);
@@ -219,7 +221,7 @@ async function renderOrderConfirmationFooterButton(container) {
   })(container);
 }
 
-async function renderOrderSuccessContent(container, { orderData } = {}) {
+async function renderCheckoutSuccessContent(container, { orderData } = {}) {
   // Scroll to top on success view
   window.scrollTo(0, 0);
 
@@ -266,11 +268,14 @@ async function renderOrderSuccessContent(container, { orderData } = {}) {
   await renderOrderConfirmationFooterButton($continueBtn);
 }
 
-export async function renderOrderSuccess(container, { orderData } = {}) {
-  await loadCSS('./blocks/commerce-checkout-success/commerce-checkout-success.css');
-  return renderOrderSuccessContent(container, { orderData });
+export function preloadCheckoutSuccess() {
+  return loadCSS(`${window.hlx.codeBasePath}/blocks/commerce-checkout-success/commerce-checkout-success.css`);
+}
+
+export async function renderCheckoutSuccess(container, { orderData } = {}) {
+  return renderCheckoutSuccessContent(container, { orderData });
 }
 
 export default async function decorate(block) {
-  await renderOrderSuccessContent(block);
+  await renderCheckoutSuccessContent(block);
 }
