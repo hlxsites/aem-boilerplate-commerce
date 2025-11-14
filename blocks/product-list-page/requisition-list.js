@@ -25,7 +25,6 @@ import { render as rlRenderer } from '@dropins/storefront-requisition-list/rende
 import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
-import { companyEnabled } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 

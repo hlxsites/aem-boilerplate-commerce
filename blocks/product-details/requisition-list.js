@@ -28,7 +28,6 @@ import { render as rlRenderer } from '@dropins/storefront-requisition-list/rende
 import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
-import { companyEnabled } from '@dropins/storefront-company-management/api.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { checkIsAuthenticated } from '../../scripts/commerce.js';
 
