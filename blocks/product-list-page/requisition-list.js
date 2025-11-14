@@ -26,7 +26,6 @@ import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 import { companyEnabled } from '@dropins/storefront-company-management/api.js';
-import { getIsB2BEnabled, setIsB2BEnabled } from '@dropins/storefront-requisition-list/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 
@@ -46,9 +45,8 @@ function createRequisitionListRenderer(labels) {
       $container.innerHTML = '';
       return;
     }
-
-    // Check if B2B is enabled
-    if (getIsB2BEnabled) {
+    // Render RequisitionListSelector with beforeAddProdToReqList validation if B2B is enabled
+    if (await companyEnabled) {
       rlRenderer.render(RequisitionListSelector, {
         sku: product.sku,
         quantity: 1,
@@ -109,12 +107,6 @@ export async function initializeRequisitionList({
   product,
   labels,
 }) {
-  // Check if B2B is enabled
-  const isB2BEnabled = getIsB2BEnabled();
-  if (isB2BEnabled === null) {
-    setIsB2BEnabled(await companyEnabled());
-  }
-
   // Create the render function
   const renderFunction = createRequisitionListRenderer(labels);
 
