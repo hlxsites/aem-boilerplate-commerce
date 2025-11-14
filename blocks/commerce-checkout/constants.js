@@ -18,9 +18,6 @@ const CHECKOUT_ERROR_CLASS = 'checkout__content--error';
 const CHECKOUT_HEADER_CLASS = 'checkout-header';
 const ORDER_CONFIRMATION_BLOCK = 'order-confirmation__block';
 
-// Default values
-const USER_TOKEN_COOKIE_NAME = 'auth_dropin_user_token';
-
 export {
   ADDRESS_INPUT_DEBOUNCE_TIME,
   BILLING_ADDRESS_DATA_KEY,
@@ -40,7 +37,4 @@ export {
   CHECKOUT_ERROR_CLASS,
   CHECKOUT_HEADER_CLASS,
   ORDER_CONFIRMATION_BLOCK,
-
-  // Default values
-  USER_TOKEN_COOKIE_NAME,
 };
