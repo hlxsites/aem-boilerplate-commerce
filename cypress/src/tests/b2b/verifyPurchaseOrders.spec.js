@@ -6,11 +6,6 @@
  */
 
 import { createUserAssignCompanyAndRole } from "../../support/b2bPOAPICalls";
-import {
-  PO_RULES_MANAGER,
-  PO_APPROVER_MANAGER,
-  PO_SALES_MANAGER,
-} from "../../fixtures/poRulesConfigs";
 
 describe("B2B Purchase Orders", () => {
   const urls = {
@@ -319,17 +314,14 @@ describe("B2B Purchase Orders", () => {
         {
           user: users.po_rules_manager,
           roleId: 55,
-          config: PO_RULES_MANAGER,
         },
         {
           user: users.sales_manager,
           roleId: 53,
-          config: PO_SALES_MANAGER,
         },
         {
           user: users.approver_manager,
           roleId: 54,
-          config: PO_APPROVER_MANAGER,
         },
       ];
 
