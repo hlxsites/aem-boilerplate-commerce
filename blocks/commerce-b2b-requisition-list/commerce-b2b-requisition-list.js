@@ -27,6 +27,6 @@ export default async function decorate(block) {
       return gridRenderFunction(block);
     };
 
-    renderGrid();
+    await renderGrid();
   }
 }

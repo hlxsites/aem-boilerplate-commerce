@@ -30,6 +30,6 @@ export default async function decorate(block) {
       return viewRenderFunction(block);
     };
 
-    renderView();
+    await renderView();
   }
 }
