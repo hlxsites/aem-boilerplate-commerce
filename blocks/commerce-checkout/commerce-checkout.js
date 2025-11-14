@@ -62,26 +62,27 @@ import {
   SHIPPING_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
-import { rootLink } from '../../scripts/commerce.js';
-
-// Success block entry point
-import { renderOrderSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
+// Checkout success block import and CSS preload
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
+
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  const permissions = events.lastPayload('auth/permissions');
 
   let b2bPoApi = null;
   let b2bIsPoEnabled = false;
   let b2bRenderPoSuccess = null;
 
-  if (isB2BEnabled) {
-    const permissions = events.lastPayload('auth/permissions');
-
+  if (isB2BEnabled && permissions) {
     const [
       { renderPOSuccess },
       { PO_PERMISSIONS, ...b2bPurchaseOrderModule },
@@ -354,12 +355,12 @@ export default async function decorate(block) {
     const encodedOrderNumber = encodeURIComponent(orderNumber);
 
     const url = token
-      ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+      ? rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}`)
+      : rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 
     window.history.pushState({}, '', url);
 
-    await renderOrderSuccess(block, { orderData });
+    await renderCheckoutSuccess(block, { orderData });
   }
 
   async function handlePurchaseOrderPlaced(poData) {
@@ -367,7 +368,7 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const url = rootLink(`/customer/purchase-order-details?poRef=${poData.number}`);
+    const url = rootLink(`${CUSTOMER_PO_DETAILS_PATH}?poRef=${poData?.uid}`);
 
     window.history.pushState({}, '', url);
 
