@@ -98,12 +98,10 @@ async function createRequisitionListAction({
 /**
  * Initialize requisition list functionality on the product details page
  * @param {Object} params - Configuration parameters
- * @param {HTMLElement} params.$requisitionListSelector - Container element for requisition list
  * @param {Object} params.product - Product data
  * @param {Object} params.labels - Placeholder labels
  */
 export async function initializeRequisitionList({
-  $requisitionListSelector = null,
   product,
   labels,
 }) {
@@ -113,7 +111,7 @@ export async function initializeRequisitionList({
   return createRequisitionListAction({
     renderFunction,
     product,
-    onAuthenticated: ($container, product) => {
+    onAuthenticated: ($container) => {
       events.on('authenticated', async () => {
         await renderFunction($container, product);
       });

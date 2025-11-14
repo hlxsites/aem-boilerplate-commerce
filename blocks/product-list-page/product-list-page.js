@@ -165,7 +165,6 @@ export default async function decorate(block) {
             const { initializeRequisitionList } = await import('./requisition-list.js');
 
             const $reqListContainer = await initializeRequisitionList({
-              $requisitionListSelector: null,
               product: ctx.product,
               labels,
             });
