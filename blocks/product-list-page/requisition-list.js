@@ -46,25 +46,21 @@ function createRequisitionListRenderer(labels) {
       return;
     }
     // Render RequisitionListSelector with beforeAddProdToReqList validation if B2B is enabled
-    if (await companyEnabled) {
-      rlRenderer.render(RequisitionListSelector, {
-        sku: product.sku,
-        quantity: 1,
-        beforeAddProdToReqList: () => {
-          const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
-          if (product.typename !== 'SimpleProductView') {
-            sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
-              timestamp: Date.now(),
-              message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
-            }));
-            window.location.href = url;
-            throw new Error('Redirecting to product page');
-          }
-        },
-      })($container);
-    } else {
-      $container.innerHTML = '';
-    }
+    rlRenderer.render(RequisitionListSelector, {
+      sku: product.sku,
+      quantity: 1,
+      beforeAddProdToReqList: () => {
+        const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
+        if (product.typename !== 'SimpleProductView') {
+          sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
+            timestamp: Date.now(),
+            message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
+          }));
+          window.location.href = url;
+          throw new Error('Redirecting to product page');
+        }
+      },
+    })($container);
   };
 }
 

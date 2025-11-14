@@ -60,56 +60,52 @@ function createRequisitionListRenderer(configValues, {
     }
 
     // Render RequisitionListSelector with beforeAddProdToReqList validation if B2B is enabled
-    if (await companyEnabled()) {
-      return rlRenderer.render(RequisitionListSelector, {
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        selectedOptions: currentOptions,
-        beforeAddProdToReqList: async () => {
-          // Check if product has options and if they are selected
-          const productHasOptions = product?.options && product.options.length > 0;
-          const isArray = Array.isArray(currentOptions);
-          const arrayLength = isArray ? currentOptions.length : 0;
-          const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
-          const needsOptionSelection = productHasOptions && !hasSelectedOptions;
+    return rlRenderer.render(RequisitionListSelector, {
+      sku: product.sku,
+      quantity: configValues?.quantity || 1,
+      selectedOptions: currentOptions,
+      beforeAddProdToReqList: async () => {
+        // Check if product has options and if they are selected
+        const productHasOptions = product?.options && product.options.length > 0;
+        const isArray = Array.isArray(currentOptions);
+        const arrayLength = isArray ? currentOptions.length : 0;
+        const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
+        const needsOptionSelection = productHasOptions && !hasSelectedOptions;
 
-          if (needsOptionSelection) {
-            // Show inline alert
-            if (inlineAlert) {
-              inlineAlert.remove();
-            }
-
-            inlineAlert = await UI.render(InLineAlert, {
-              heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
-              description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
-              icon: h(Icon, { source: 'Warning' }),
-              type: 'warning',
-              variant: 'secondary',
-              'aria-live': 'assertive',
-              role: 'alert',
-              onDismiss: () => {
-                if (inlineAlert) {
-                  inlineAlert.remove();
-                }
-              },
-            })($alert);
-
-            // Scroll the alert into view
-            setTimeout(() => {
-              $alert.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
-            }, 100);
-
-            // Throw error to prevent modal from opening
-            throw new Error('Product options must be selected');
+        if (needsOptionSelection) {
+          // Show inline alert
+          if (inlineAlert) {
+            inlineAlert.remove();
           }
-        },
-      })($container);
-    }
-    $container.innerHTML = '';
-    return null;
+
+          inlineAlert = await UI.render(InLineAlert, {
+            heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
+            description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
+            icon: h(Icon, { source: 'Warning' }),
+            type: 'warning',
+            variant: 'secondary',
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              if (inlineAlert) {
+                inlineAlert.remove();
+              }
+            },
+          })($alert);
+
+          // Scroll the alert into view
+          setTimeout(() => {
+            $alert.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }, 100);
+
+          // Throw error to prevent modal from opening
+          throw new Error('Product options must be selected');
+        }
+      },
+    })($container);
   };
 }
 
