@@ -1,4 +1,6 @@
-import { Button, Icon, InLineAlert, provider as UI } from '@dropins/tools/components.js';
+import {
+  Button, Icon, InLineAlert, provider as UI,
+} from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -22,7 +24,9 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import { fetchPlaceholders, getProductLink, rootLink, setJsonLd } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders, getProductLink, rootLink, setJsonLd,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
