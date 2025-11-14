@@ -228,9 +228,9 @@ export default async function decorate(block) {
   // Listen for changes to the company context (e.g. when user switches companies).
   events.on('companyContext/changed', () => {
     const url = new URL(window.location.href); // Parse the current page URL
-    url.searchParams.delete('quoteid');        // Remove the 'quoteid' search parameter if present
+    url.searchParams.delete('quoteid'); // Remove the 'quoteid' search parameter if present
     window.history.replaceState({}, '', url.toString()); // Replace browser URL bar without reloading
-    window.location.href = url.toString();     // Reload the page to show the list view
+    window.location.href = url.toString(); // Reload the page to show the list view
   });
 
   // Render error when quote data fails to load
