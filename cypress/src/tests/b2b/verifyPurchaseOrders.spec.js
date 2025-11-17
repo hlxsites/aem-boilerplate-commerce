@@ -20,7 +20,7 @@ describe("B2B Purchase Orders", () => {
   });
 
   it(
-    "Create and edit Approval Rules with different conditions",
+    "Should verify Purchase Orders end-to-end workflow with approval rules management and order processing",
     { tags: ["@B2BPaas", "@B2BSaas"] },
     () => {
       const config = [
