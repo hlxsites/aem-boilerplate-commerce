@@ -86,18 +86,3 @@ export const users = {
     password: PASSWORD,
   },
 };
-
-export const config = [
-  {
-    user: users.po_rules_manager,
-    roleId: 55,
-  },
-  {
-    user: users.sales_manager,
-    roleId: 53,
-  },
-  {
-    user: users.approver_manager,
-    roleId: 54,
-  },
-];
