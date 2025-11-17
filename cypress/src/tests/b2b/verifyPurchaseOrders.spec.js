@@ -6,6 +6,8 @@
  */
 
 import { createUserAssignCompanyAndRole } from "../../support/b2bPOAPICalls";
+import { texts, approvalRules, users, config } from "../../fixtures";
+import * as selectors from "../../fields";
 
 describe("B2B Purchase Orders", () => {
   const urls = {
@@ -18,148 +20,44 @@ describe("B2B Purchase Orders", () => {
     approvalRules: "/customer/approval-rules",
   };
 
-  const selectors = {
-    loginForm: "main .auth-sign-in-form",
-    emailInput: 'input[name="email"]',
-    passwordInput: 'input[name="password"]',
-    submitButton: 'button[type="submit"]',
-    addToCartButton: "button",
-    navCartButton: ".nav-cart-button",
-    checkoutLink: 'a[href="/checkout"]',
-    checkMoneyOrderLabel: "label",
-    termsCheckbox: 'input[type="checkbox"]',
-    placePOButton: 'button[type="button"]',
-    navDropdownButton: ".nav-dropdown-button",
-    logoutButton: "button",
-    checkbox: 'input[type="checkbox"]',
-    companyPOContainer: '[data-testid="company-purchase-orders-container"]',
-    approvalPOWrapper:
-      ".commerce-b2b-po-require-approval-purchase-orders-wrapper",
-    myApprovalPOWrapper: ".commerce-b2b-po-require-approval-purchase-orders",
-    poTable: ".b2b-purchase-order-purchase-orders-table",
-    showButton: "button",
-    editButton: "button.dropin-action-button",
-    nameInput: 'input[name="name"]',
-    statusCheckbox: 'input[type="checkbox"][name="status"]',
-    textarea: "textarea",
-    ruleTypeSelect: 'select[name="ruleType"]',
-    ruleConditionSelect: 'select[name="ruleCondition"]',
-    ruleValueInput: 'input[name="ruleValue"]',
-    multiSelect: ".dropin-multi-select",
-  };
-
-  const texts = {
-    addToCart: "Add to Cart",
-    checkout: "Checkout",
-    checkMoneyOrder: "Check / Money order",
-    placePO: "Place Purchase Order",
-    logout: "Logout",
-    approveSelected: "Approve selected",
-    rejectSelected: "Reject selected",
-    show: "Show",
-    hide: "Hide",
-    edit: "Edit",
-    save: "Save",
-    addNewRule: "Add New Rule",
-    approver: "PO Approver",
-    salesManager: "PO Sales",
-    specificRoles: "Specific Roles",
-    allUsers: "All Users",
-    grandTotal: "Grand Total",
-    numberOfSKUs: "Number of SKUs",
-  };
-
-  const waitTimes = {
-    short: 500,
-    medium: 1500,
-    long: 2000,
-    extraLong: 3000,
-    reloadWait: 5000,
-  };
-
-  const approvalRules = {
-    rule1: {
-      name: "Approval Rule for Orders Over 50 Dollars",
-      description:
-        "This rule requires approval for purchase orders with grand total over 50 dollars",
-      appliesTo: "Specific Roles",
-      role: "PO Sales",
-      ruleType: "Grand Total",
-      ruleCondition: "is more than or equal to",
-      ruleValue: "50",
-      approverRole: "PO Approver",
-    },
-    rule2: {
-      name: "Approval Rule for Multiple Product Orders",
-      description:
-        "This rule requires approval for purchase orders with more than one unique product SKU",
-      appliesTo: "All Users",
-      ruleType: "Number of SKUs",
-      ruleCondition: "is more than",
-      ruleValue: "1",
-      approverRole: "PO Rules Manager",
-    },
-    rule3: {
-      name: "New Approval Rule for Multiple Product Orders",
-      description:
-        "This rule requires approval for purchase orders with more than one unique product SKU",
-      appliesTo: "All Users",
-      ruleType: "Number of SKUs",
-      ruleCondition: "is more than",
-      ruleValue: "1",
-      approverRole: "PO Approver",
-    },
-    rule4: {
-      name: "Approval Rule for Orders Over 50 Dollars",
-      description:
-        "This rule requires approval for purchase orders with grand total over 50 dollars",
-      appliesTo: "Specific Roles",
-      role: "PO Sales",
-      ruleType: "Grand Total",
-      ruleCondition: "is more than or equal to",
-      ruleValue: "50",
-      approverRole: "PO Rules Manager",
-    },
-  };
-
   const login = (user) => {
     cy.visit(urls.login);
-    cy.get(selectors.loginForm).within(() => {
-      cy.get(selectors.emailInput).type(user.email);
-      cy.wait(waitTimes.medium);
-      cy.get(selectors.passwordInput).type(user.password);
-      cy.wait(waitTimes.medium);
-      cy.get(selectors.submitButton).click();
+    cy.get(selectors.poLoginForm).within(() => {
+      cy.get(selectors.poEmailInput).type(user.email);
+      cy.wait(1500);
+      cy.get(selectors.poPasswordInput).type(user.password);
+      cy.wait(1500);
+      cy.get(selectors.poSubmitButton).click();
     });
     cy.url().should("include", urls.account);
   };
 
   const logout = () => {
-    cy.get(selectors.navDropdownButton).click();
-    cy.contains(selectors.logoutButton, texts.logout).click();
+    cy.get(selectors.poNavDropdownButton).click();
+    cy.contains(selectors.poLogoutButton, texts.logout).click();
   };
 
   const addProductToCart = (times = 1, isCheep = false) => {
     cy.visit(!isCheep ? urls.product : urls.cheepProduct);
-    cy.wait(waitTimes.long);
+    cy.wait(2000);
     for (let i = 0; i < times; i++) {
-      cy.contains(selectors.addToCartButton, texts.addToCart).click();
-      cy.wait(waitTimes.long);
+      cy.contains(selectors.poAddToCartButton, texts.addToCart).click();
+      cy.wait(2000);
     }
   };
 
   const proceedToCheckout = () => {
-    cy.get(selectors.navCartButton).click();
-    cy.wait(waitTimes.long);
+    cy.get(selectors.poNavCartButton).click();
+    cy.wait(2000);
 
-    cy.get(selectors.checkoutLink).contains(texts.checkout).click();
-    cy.wait(waitTimes.long);
+    cy.get(selectors.poCheckoutLink).contains(texts.checkout).click();
+    cy.wait(2000);
   };
 
   const completeCheckout = () => {
     // Wait for checkout page to fully load
     cy.url().should("include", urls.checkout);
-    cy.wait(waitTimes.extraLong);
+    cy.wait(3000);
 
     // Check if shipping address form exists and fill it
     cy.get('input[name="firstName"]', { timeout: 10000 }).then(($firstName) => {
@@ -172,53 +70,53 @@ describe("B2B Purchase Orders", () => {
           .first()
           .clear({ force: true })
           .type("Test", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('input[name="lastName"]')
           .first()
           .clear({ force: true })
           .type("Test", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('input[name="street"]')
           .first()
           .clear({ force: true })
           .type("Test", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('select[name="region"]')
           .first()
           .select("Alabama", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('input[name="city"]')
           .first()
           .clear({ force: true })
           .type("Test", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('input[name="postcode"]')
           .first()
           .clear({ force: true })
           .type("1235", { force: true });
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
         cy.get('input[name="telephone"]')
           .first()
           .clear({ force: true })
           .type("123456789", { force: true });
-        cy.wait(waitTimes.extraLong);
+        cy.wait(3000);
       }
     });
 
-    cy.wait(waitTimes.medium);
-    cy.contains(selectors.checkMoneyOrderLabel, texts.checkMoneyOrder)
+    cy.wait(1500);
+    cy.contains(selectors.poCheckMoneyOrderLabel, texts.checkMoneyOrder)
       .should("be.visible")
       .click();
-    cy.wait(waitTimes.medium);
+    cy.wait(1500);
     cy.get(".checkout-terms-and-conditions__form")
-      .find(selectors.termsCheckbox)
+      .find(selectors.poTermsCheckbox)
       .check({ force: true });
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.placePOButton)
+    cy.wait(1500);
+    cy.get(selectors.poPlacePOButton)
       .contains(texts.placePO)
       .should("be.visible")
       .click();
-    cy.wait(waitTimes.extraLong);
+    cy.wait(3000);
   };
 
   const verifyPOConfirmation = () => {
@@ -238,63 +136,41 @@ describe("B2B Purchase Orders", () => {
   };
 
   const fillApprovalRuleForm = (rule) => {
-    cy.get(selectors.statusCheckbox).click({ force: true });
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.nameInput).clear().type(rule.name);
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.textarea).clear().type(rule.description);
-    cy.wait(waitTimes.medium);
+    cy.get(selectors.poStatusCheckbox).click({ force: true });
+    cy.wait(1500);
+    cy.get(selectors.poNameInput).clear().type(rule.name);
+    cy.wait(1500);
+    cy.get(selectors.poTextarea).clear().type(rule.description);
+    cy.wait(1500);
     cy.contains(rule.appliesTo).click();
-    cy.wait(waitTimes.medium);
+    cy.wait(1500);
 
     if (rule.appliesTo === texts.specificRoles && rule.role) {
-      cy.get(selectors.multiSelect).first().click();
-      cy.wait(waitTimes.medium);
-      cy.get(selectors.multiSelect).first().contains(rule.role).click();
-      cy.wait(waitTimes.medium);
+      cy.get(selectors.poMultiSelect).first().click();
+      cy.wait(1500);
+      cy.get(selectors.poMultiSelect).first().contains(rule.role).click();
+      cy.wait(1500);
       cy.get("body").type("{esc}");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
     }
 
-    cy.get(selectors.ruleTypeSelect).select(rule.ruleType);
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.ruleConditionSelect).select(rule.ruleCondition);
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.ruleValueInput).clear().type(rule.ruleValue);
-    cy.wait(waitTimes.medium);
+    cy.get(selectors.poRuleTypeSelect).select(rule.ruleType);
+    cy.wait(1500);
+    cy.get(selectors.poRuleConditionSelect).select(rule.ruleCondition);
+    cy.wait(1500);
+    cy.get(selectors.poRuleValueInput).clear().type(rule.ruleValue);
+    cy.wait(1500);
 
     const multiSelectIndex = rule.appliesTo === texts.specificRoles ? 1 : 0;
-    cy.get(selectors.multiSelect).eq(multiSelectIndex).click();
-    cy.wait(waitTimes.medium);
-    cy.get(selectors.multiSelect)
+    cy.get(selectors.poMultiSelect).eq(multiSelectIndex).click();
+    cy.wait(1500);
+    cy.get(selectors.poMultiSelect)
       .eq(multiSelectIndex)
       .contains(rule.approverRole)
       .click();
-    cy.wait(waitTimes.medium);
+    cy.wait(1500);
     cy.get("body").type("{esc}");
-    cy.wait(waitTimes.medium);
-  };
-
-  const PASSWORD = "Qwe123456";
-  const users = {
-    sales_manager: {
-      firstname: "Sales",
-      lastname: "Manager",
-      email: `po_user_sales_manager@example.com`,
-      password: PASSWORD,
-    },
-    po_rules_manager: {
-      firstname: "PO Rules",
-      lastname: "Manager",
-      email: `po_user_po_rules_manager@example.com`,
-      password: PASSWORD,
-    },
-    approver_manager: {
-      firstname: "Approver",
-      lastname: "Manager",
-      email: `po_user_approver_manager@example.com`,
-      password: PASSWORD,
-    },
+    cy.wait(1500);
   };
 
   beforeEach(() => {
@@ -303,33 +179,17 @@ describe("B2B Purchase Orders", () => {
     cy.intercept("**/graphql").as("defaultGraphQL");
   });
 
-  afterEach(() => {});
-
   it(
     "Create and edit Approval Rules with different conditions",
     { tags: ["@B2BPaas", "@B2BSaas"] },
     () => {
       // Init Users
-      const config = [
-        {
-          user: users.po_rules_manager,
-          roleId: 55,
-        },
-        {
-          user: users.sales_manager,
-          roleId: 53,
-        },
-        {
-          user: users.approver_manager,
-          roleId: 54,
-        },
-      ];
 
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
       config.reduce((chain, element) => {
         return chain.then(() => {
-          cy.wait(waitTimes.extraLong);
+          cy.wait(3000);
           return cy.wrap(null).then(() => {
             cy.log(`Creating user: ${element.user.email}`);
             return createUserAssignCompanyAndRole(element.user, element.roleId);
@@ -350,16 +210,16 @@ describe("B2B Purchase Orders", () => {
       cy.visit(urls.approvalRules);
       cy.contains("Approval rules").should("be.visible");
 
-      cy.get(selectors.showButton).contains(texts.addNewRule).click();
-      cy.wait(waitTimes.medium);
+      cy.get(selectors.poShowButton).contains(texts.addNewRule).click();
+      cy.wait(1500);
 
       cy.contains("Purchase order approval rule").should("be.visible");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       fillApprovalRuleForm(approvalRules.rule1);
 
-      cy.get(selectors.showButton).contains(texts.save).click();
-      cy.wait(waitTimes.long);
+      cy.get(selectors.poShowButton).contains(texts.save).click();
+      cy.wait(2000);
 
       cy.contains("Approval rules").should("be.visible");
       cy.contains(approvalRules.rule1.name).should("be.visible");
@@ -368,39 +228,39 @@ describe("B2B Purchase Orders", () => {
       cy.contains(approvalRules.rule1.name)
         .should("be.visible")
         .closest("tr")
-        .find(selectors.showButton)
+        .find(selectors.poShowButton)
         .contains(texts.show)
         .click();
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
-      cy.get(selectors.editButton)
+      cy.get(selectors.poEditButton)
         .filter(`:contains("${texts.edit}")`)
         .first()
         .click();
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       cy.contains("Purchase order approval rule").should("be.visible");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       fillApprovalRuleForm(approvalRules.rule2);
 
-      cy.get(selectors.showButton).contains(texts.save).click();
-      cy.wait(waitTimes.long);
+      cy.get(selectors.poShowButton).contains(texts.save).click();
+      cy.wait(2000);
 
       cy.contains("Approval rules").should("be.visible");
       cy.contains(approvalRules.rule2.name).should("be.visible");
 
       // === Step 3: Create Approval Rule with Number of SKUs condition ===
-      cy.get(selectors.showButton).contains(texts.addNewRule).click();
-      cy.wait(waitTimes.medium);
+      cy.get(selectors.poShowButton).contains(texts.addNewRule).click();
+      cy.wait(1500);
 
       cy.contains("Purchase order approval rule").should("be.visible");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       fillApprovalRuleForm(approvalRules.rule3);
 
-      cy.get(selectors.showButton).contains(texts.save).click();
-      cy.wait(waitTimes.long);
+      cy.get(selectors.poShowButton).contains(texts.save).click();
+      cy.wait(2000);
 
       cy.contains("Approval rules").should("be.visible");
       cy.contains(approvalRules.rule3.name).should("be.visible");
@@ -408,24 +268,24 @@ describe("B2B Purchase Orders", () => {
       // === Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total condition ===
       cy.get(`tr:contains("${approvalRules.rule3.name}")`)
         .last()
-        .find(selectors.showButton)
+        .find(selectors.poShowButton)
         .contains(texts.show)
         .click();
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
-      cy.get(selectors.editButton)
+      cy.get(selectors.poEditButton)
         .filter(`:contains("${texts.edit}")`)
         .first()
         .click();
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       cy.contains("Purchase order approval rule").should("be.visible");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
       fillApprovalRuleForm(approvalRules.rule4);
 
-      cy.get(selectors.showButton).contains(texts.save).click();
-      cy.wait(waitTimes.long);
+      cy.get(selectors.poShowButton).contains(texts.save).click();
+      cy.wait(2000);
 
       cy.contains("Approval rules").should("be.visible");
       cy.contains(approvalRules.rule4.name).should("be.visible");
@@ -443,7 +303,7 @@ describe("B2B Purchase Orders", () => {
       for (let i = 0; i < 3; i++) {
         createPurchaseOrder(3);
         if (i < 2) {
-          cy.wait(waitTimes.extraLong);
+          cy.wait(3000);
         }
       }
 
@@ -460,76 +320,79 @@ describe("B2B Purchase Orders", () => {
       cy.visit(urls.purchaseOrders);
 
       // Find wrapper with Purchase Orders requiring approval
-      cy.get(selectors.approvalPOWrapper).within(() => {
+      cy.get(selectors.poApprovalPOWrapper).within(() => {
         // Find table with "Requires my approval" header
         cy.contains("Requires my approval").should("be.visible");
 
         // Find 3 enabled checkboxes (not disabled, excluding selectAll)
         cy.get(
-          `${selectors.checkbox}:not([disabled]):not([name="selectAll"])`
+          `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`
         ).should("have.length.at.least", 3);
 
         // Verify action buttons exist
-        cy.contains(selectors.showButton, texts.rejectSelected).should(
+        cy.contains(selectors.poShowButton, texts.rejectSelected).should(
           "be.visible"
         );
-        cy.contains(selectors.showButton, texts.approveSelected).should(
+        cy.contains(selectors.poShowButton, texts.approveSelected).should(
           "be.visible"
         );
       });
 
       // Select first two checkboxes and approve
-      const checkboxSelector = `${selectors.checkbox}:not([disabled]):not([name="selectAll"])`;
+      const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
       [0, 1].forEach((index) => {
-        cy.get(selectors.approvalPOWrapper)
+        cy.get(selectors.poApprovalPOWrapper)
           .find(checkboxSelector)
           .eq(index)
           .click();
-        cy.wait(waitTimes.medium);
+        cy.wait(1500);
       });
 
       // Click Approve selected button
-      cy.get(selectors.approvalPOWrapper)
-        .contains(selectors.showButton, texts.approveSelected)
+      cy.get(selectors.poApprovalPOWrapper)
+        .contains(selectors.poShowButton, texts.approveSelected)
         .click();
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
 
       // Verify approval success message appears
       cy.get(".dropin-in-line-alert--success").should("be.visible");
 
       // Wait for the alert to disappear and server to update data
-      cy.wait(waitTimes.reloadWait);
+      cy.wait(5000);
 
       // Verify that only 1 "Approval required" item remains (was 3, approved 2)
-      cy.get(selectors.approvalPOWrapper)
+      cy.get(selectors.poApprovalPOWrapper)
         .find(".b2b-purchase-order-purchase-orders-table__status")
         .contains("Approval required")
         .should("have.length", 1);
 
       // Select third checkbox and reject
-      cy.get(selectors.approvalPOWrapper).find(checkboxSelector).eq(0).click();
-      cy.wait(waitTimes.medium);
+      cy.get(selectors.poApprovalPOWrapper)
+        .find(checkboxSelector)
+        .eq(0)
+        .click();
+      cy.wait(1500);
 
       // Click Reject selected button
-      cy.get(selectors.approvalPOWrapper)
-        .contains(selectors.showButton, texts.rejectSelected)
+      cy.get(selectors.poApprovalPOWrapper)
+        .contains(selectors.poShowButton, texts.rejectSelected)
         .click();
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
 
       // Verify rejection success message appears
       cy.get(".dropin-in-line-alert--success").should("be.visible");
 
       // Wait for the alert to disappear and server to update data
-      cy.wait(waitTimes.reloadWait);
+      cy.wait(5000);
 
       // Verify that no "Approval required" items remain (all processed)
-      cy.get(selectors.approvalPOWrapper)
+      cy.get(selectors.poApprovalPOWrapper)
         .find(".b2b-purchase-order-purchase-orders-table__status")
         .contains("Approval required")
         .should("have.length", 0);
 
       // Find and select 30 in the dropdown
-      cy.get(selectors.approvalPOWrapper)
+      cy.get(selectors.poApprovalPOWrapper)
         .find(
           "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium"
         )
@@ -542,20 +405,20 @@ describe("B2B Purchase Orders", () => {
 
       cy.contains("Requires my approval").should("be.visible");
 
-      cy.get(selectors.myApprovalPOWrapper)
+      cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
         .should("be.visible")
         .within(() => {
-          cy.contains(selectors.showButton, texts.show).first().click();
+          cy.contains(selectors.poShowButton, texts.show).first().click();
         });
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
-      cy.get(selectors.myApprovalPOWrapper)
+      cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
-        .contains(selectors.showButton, "View")
+        .contains(selectors.poShowButton, "View")
         .first()
         .click();
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
 
       cy.url().should("not.include", urls.purchaseOrders);
 
@@ -571,9 +434,9 @@ describe("B2B Purchase Orders", () => {
 
       // Add a comment
       cy.get("textarea").type("Test comment message");
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
       cy.contains("button", "Add Comment").click();
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
       logout();
 
       // === Step 8: Test scenario: Sales creates Purchase Order with 1 item (auto-approved), Admin verifies ===
@@ -589,19 +452,19 @@ describe("B2B Purchase Orders", () => {
       login(users.po_rules_manager);
 
       cy.visit(urls.purchaseOrders);
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
 
-      cy.get(selectors.companyPOContainer).should("exist");
+      cy.get(selectors.poCompanyPOContainer).should("exist");
 
       cy.contains("Company purchase orders").should("be.visible");
 
-      cy.get(selectors.companyPOContainer)
-        .contains(selectors.showButton, texts.show)
+      cy.get(selectors.poCompanyPOContainer)
+        .contains(selectors.poShowButton, texts.show)
         .first()
         .click();
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
 
-      cy.get(selectors.companyPOContainer)
+      cy.get(selectors.poCompanyPOContainer)
         .find(".b2b-purchase-order-purchase-orders-table__row-details-content")
         .should("be.visible")
         .within(() => {
@@ -622,22 +485,22 @@ describe("B2B Purchase Orders", () => {
       // Navigate to Approval Rules page
 
       login(users.po_rules_manager);
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
       cy.visit(urls.approvalRules);
-      cy.wait(waitTimes.long);
+      cy.wait(2000);
 
       cy.contains("Approval rules").should("be.visible");
 
-      cy.contains(selectors.showButton, texts.show).first().click();
-      cy.wait(waitTimes.medium);
+      cy.contains(selectors.poShowButton, texts.show).first().click();
+      cy.wait(1500);
 
-      cy.contains(selectors.showButton, "Delete").first().click();
-      cy.wait(waitTimes.long);
+      cy.contains(selectors.poShowButton, "Delete").first().click();
+      cy.wait(2000);
 
-      cy.contains(selectors.showButton, "Delete").first().click();
-      cy.wait(waitTimes.long);
+      cy.contains(selectors.poShowButton, "Delete").first().click();
+      cy.wait(2000);
 
-      cy.contains(selectors.showButton, texts.show).should("not.exist");
+      cy.contains(selectors.poShowButton, texts.show).should("not.exist");
     }
   );
 
@@ -647,7 +510,7 @@ describe("B2B Purchase Orders", () => {
     () => {
       login(users.sales_manager);
       cy.url().should("include", urls.account);
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
     }
   );
 
@@ -657,7 +520,7 @@ describe("B2B Purchase Orders", () => {
     () => {
       login(users.approver_manager);
       cy.url().should("include", urls.account);
-      cy.wait(waitTimes.medium);
+      cy.wait(1500);
     }
   );
 });

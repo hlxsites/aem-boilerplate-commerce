@@ -234,3 +234,34 @@ export const companyFormJobTitle = 'input[name="adminJobTitle"]';
 export const companyFormWorkTelephone = 'input[name="adminWorkTelephone"]';
 export const companyFormAdminGender = 'select[name="adminGender"]';
 export const companyFormSubmitButton = "button";
+
+// Purchase Orders selectors
+export const poLoginForm = "main .auth-sign-in-form";
+export const poEmailInput = 'input[name="email"]';
+export const poPasswordInput = 'input[name="password"]';
+export const poSubmitButton = 'button[type="submit"]';
+export const poAddToCartButton = "button";
+export const poNavCartButton = ".nav-cart-button";
+export const poCheckoutLink = 'a[href="/checkout"]';
+export const poCheckMoneyOrderLabel = "label";
+export const poTermsCheckbox = 'input[type="checkbox"]';
+export const poPlacePOButton = 'button[type="button"]';
+export const poNavDropdownButton = ".nav-dropdown-button";
+export const poLogoutButton = "button";
+export const poCheckbox = 'input[type="checkbox"]';
+export const poCompanyPOContainer =
+  '[data-testid="company-purchase-orders-container"]';
+export const poApprovalPOWrapper =
+  ".commerce-b2b-po-require-approval-purchase-orders-wrapper";
+export const poMyApprovalPOWrapper =
+  ".commerce-b2b-po-require-approval-purchase-orders";
+export const poTable = ".b2b-purchase-order-purchase-orders-table";
+export const poShowButton = "button";
+export const poEditButton = "button.dropin-action-button";
+export const poNameInput = 'input[name="name"]';
+export const poStatusCheckbox = 'input[type="checkbox"][name="status"]';
+export const poTextarea = "textarea";
+export const poRuleTypeSelect = 'select[name="ruleType"]';
+export const poRuleConditionSelect = 'select[name="ruleCondition"]';
+export const poRuleValueInput = 'input[name="ruleValue"]';
+export const poMultiSelect = ".dropin-multi-select";
