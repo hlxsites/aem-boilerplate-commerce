@@ -9,6 +9,10 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         quoteData: NegotiableQuoteModel;
         comment?: string;
     }) => void;
+    onDuplicateQuote?: (params: {
+        quoteData: NegotiableQuoteModel;
+        newQuote: NegotiableQuoteModel;
+    }) => void;
     slots?: {
         QuoteName?: SlotProps<{
             quoteName?: string;

@@ -58,6 +58,15 @@ declare const _default: {
           "successHeading": "Success",
           "successDescription": "Quote has been successfully deleted"
         },
+        "duplicate": {
+          "title": "Duplicate Quote",
+          "message": "Are you sure you want to create a copy of this quote?",
+          "confirm": "Create Copy",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to duplicate quote",
+          "successHeading": "Success",
+          "successDescription": "Quote has been successfully duplicated. You will be redirected to the new quote shortly."
+        },
         "close": {
           "message": "Are you sure you want to close this quote?",
           "confirm": "Close",
@@ -106,6 +115,11 @@ declare const _default: {
         "actions": {
           "editNoteToSeller": "Edit note to seller",
           "remove": "Remove"
+        },
+        "notes": {
+          "header": "NOTES",
+          "leftANote": "left a note:",
+          "buyer": "Buyer"
         }
       },
       "rename": {
@@ -119,6 +133,23 @@ declare const _default: {
         "errorDefault": "Failed to rename quote. Please try again.",
         "successHeading": "Success",
         "successMessage": "Quote renamed successfully!"
+      },
+      "lineItemNote": {
+        "title": "Leave a note to seller",
+        "productLabel": "Name & SKU",
+        "skuLabel": "SKU",
+        "priceLabel": "Price",
+        "stockLabel": "Stock",
+        "quantityLabel": "Qty",
+        "discountLabel": "Discount",
+        "subtotalLabel": "Subtotal",
+        "noteLabel": "Note to seller",
+        "notePlaceholder": "Can I get a discount on this?",
+        "noteHelper": "The seller will see the note when you send the quote back.",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel",
+        "noteError": "Please enter a note",
+        "quantityError": "Quantity must be greater than 0"
       },
       "tabbedContent": {
         "itemsQuoted": "Items quoted",
@@ -236,8 +267,33 @@ declare const _default: {
         "title": "Template Comments",
         "placeholder": "Add your comment"
       },
+      "actionsLabel": "Actions",
       "actionButtons": {
-        "sendForReview": "Send for review"
+        "sendForReview": "Send for review",
+        "accept": "Accept",
+        "generateQuote": "Generate quote"
+      },
+      "confirmationModal": {
+        "cancel": "Cancel",
+        "accept": {
+          "title": "Accept Quote Template",
+          "message": "Are you sure you want to accept this quote template?",
+          "confirm": "Accept",
+          "confirmLoading": "Accepting...",
+          "successHeading": "Quote Template Accepted",
+          "successDescription": "Quote template has been successfully accepted.",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to accept quote template. Please try again."
+        },
+        "generateQuote": {
+          "message": "Are you sure you want to generate a quote from this template?",
+          "confirm": "Generate Quote",
+          "confirmLoading": "Generating...",
+          "successHeading": "Quote Generated",
+          "successDescription": "Quote has been successfully generated from the template.",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to generate quote from template. Please try again."
+        }
       },
       "quotePricesSummary": {
         "subtotal": {

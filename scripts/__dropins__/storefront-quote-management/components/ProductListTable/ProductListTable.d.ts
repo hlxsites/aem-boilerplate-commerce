@@ -37,6 +37,14 @@ export interface ProductListTableItem {
             };
         }>;
     }>;
+    noteFromBuyer?: Array<{
+        createdAt: string;
+        creatorId: number;
+        creatorType: number;
+        negotiableQuoteItemUid: string;
+        note: string;
+        noteUid: string;
+    }>;
 }
 export interface ProductListTableProps extends HTMLAttributes<HTMLDivElement | HTMLFormElement> {
     items: ProductListTableItem[];
