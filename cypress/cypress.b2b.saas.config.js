@@ -10,11 +10,12 @@ module.exports = defineConfig({
   ...baseConfig,
   e2e: {
     ...baseConfig.e2e,
-    specPattern: 'src/tests/b2b/**/*.spec.js',
+    specPattern: "src/tests/b2b/**/*.spec.js",
   },
   env: {
     ...baseConfig.env,
-    graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
+    graphqlEndPoint:
+      "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
     giftCardA: "00419VQ5C341",
     productUrlWithOptions:
       "/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
@@ -23,5 +24,15 @@ module.exports = defineConfig({
     productImageName: "/adb150.jpg",
     productImageNameConfigurable: "/adb124_1.jpg",
     productWithOptionImageNameConfigurable: "/adb192_1.jpg",
+    // Purchase Orders URLs
+    poUrls: {
+      login: "/customer/login",
+      account: "/customer/account",
+      product: "/products/adobe-pattern-hoodie/adb127",
+      cheepProduct: "/products/badge-reel/adb153",
+      checkout: "/checkout",
+      purchaseOrders: "/customer/purchase-orders",
+      approvalRules: "/customer/approval-rules",
+    },
   },
 });
