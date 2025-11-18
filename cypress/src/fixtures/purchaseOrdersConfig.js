@@ -1,3 +1,5 @@
+const random = Cypress._.random(0, 10000000);
+
 export const texts = {
   addToCart: "Add to Cart",
   checkout: "Checkout",
@@ -21,7 +23,7 @@ export const texts = {
 
 export const approvalRules = {
   rule1: {
-    name: "Approval Rule for Orders Over 50 Dollars",
+    name: `Approval Rule for Orders Over 50 Dollars ${random}`,
     description:
       "This rule requires approval for purchase orders with grand total over 50 dollars",
     appliesTo: "Specific Roles",
@@ -32,7 +34,7 @@ export const approvalRules = {
     approverRole: "PO Approver",
   },
   rule2: {
-    name: "Approval Rule for Multiple Product Orders",
+    name: `Approval Rule for Multiple Product Orders ${random}`,
     description:
       "This rule requires approval for purchase orders with more than one unique product SKU",
     appliesTo: "All Users",
@@ -42,7 +44,7 @@ export const approvalRules = {
     approverRole: "PO Rules Manager",
   },
   rule3: {
-    name: "New Approval Rule for Multiple Product Orders",
+    name: `New Approval Rule for Multiple Product Orders ${random}`,
     description:
       "This rule requires approval for purchase orders with more than one unique product SKU",
     appliesTo: "All Users",
@@ -52,7 +54,7 @@ export const approvalRules = {
     approverRole: "PO Approver",
   },
   rule4: {
-    name: "Approval Rule for Orders Over 50 Dollars",
+    name: `Approval Rule for Orders Over 50 Dollars ${random}`,
     description:
       "This rule requires approval for purchase orders with grand total over 50 dollars",
     appliesTo: "Specific Roles",
@@ -65,8 +67,6 @@ export const approvalRules = {
 };
 
 export const PASSWORD = "Qwe123456";
-
- const random = Cypress._.random(0, 10000000);
 
 export const users = {
   sales_manager: {

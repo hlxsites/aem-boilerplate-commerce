@@ -456,7 +456,7 @@ export const proceedToCheckout = (texts) => {
 export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
   cy.url().should("include", urls.checkout);
-  cy.wait(3000);
+  cy.wait(5000);
 
   // Check if shipping address form exists and fill it
   cy.get('input[name="firstName"]', { timeout: 10000 }).then(($firstName) => {
