@@ -66,23 +66,25 @@ export const approvalRules = {
 
 export const PASSWORD = "Qwe123456";
 
+ const random = Cypress._.random(0, 10000000);
+
 export const users = {
   sales_manager: {
     firstname: "Sales",
     lastname: "Manager",
-    email: `po_user_sales_manager@example.com`,
+    email: `${random}po_user_sales_manager@example.com`,
     password: PASSWORD,
   },
   po_rules_manager: {
     firstname: "PO Rules",
     lastname: "Manager",
-    email: `po_user_po_rules_manager@example.com`,
+    email: `${random}po_user_po_rules_manager@example.com`,
     password: PASSWORD,
   },
   approver_manager: {
     firstname: "Approver",
     lastname: "Manager",
-    email: `po_user_approver_manager@example.com`,
+    email: `${random}po_user_approver_manager@example.com`,
     password: PASSWORD,
   },
 };
