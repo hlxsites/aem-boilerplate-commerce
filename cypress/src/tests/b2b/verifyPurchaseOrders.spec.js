@@ -5,23 +5,23 @@
  * Tests include creating, approving, and managing purchase orders.
  */
 
-import { createUserAssignCompanyAndRole } from "../../support/b2bPOAPICalls";
-import { texts, approvalRules, users } from "../../fixtures";
-import * as selectors from "../../fields";
-import * as actions from "../../actions";
+import { createUserAssignCompanyAndRole } from '../../support/b2bPOAPICalls';
+import { texts, approvalRules, users } from '../../fixtures';
+import * as selectors from '../../fields';
+import * as actions from '../../actions';
 
-describe("B2B Purchase Orders", () => {
-  const urls = Cypress.env("poUrls");
+describe('B2B Purchase Orders', () => {
+  const urls = Cypress.env('poUrls');
 
   beforeEach(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
-    cy.intercept("**/graphql").as("defaultGraphQL");
+    cy.intercept('**/graphql').as('defaultGraphQL');
   });
 
   it(
-    "Should verify Purchase Orders end-to-end workflow with approval rules management and order processing",
-    { tags: ["@B2BPaas", "@B2BSaas"] },
+    'Should verify Purchase Orders end-to-end workflow with approval rules management and order processing',
+    { tags: ['@B2BPaas', '@B2BSaas'] },
     () => {
       const config = [
         {
@@ -60,23 +60,23 @@ describe("B2B Purchase Orders", () => {
 
       // === Step 1: Create Approval Rule with Grand Total condition ===
       cy.visit(urls.approvalRules);
-      cy.contains("Approval rules").should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
 
       cy.get(selectors.poShowButton).contains(texts.addNewRule).click();
 
-      cy.contains("Purchase order approval rule").should("be.visible");
+      cy.contains('Purchase order approval rule').should('be.visible');
 
       actions.fillApprovalRuleForm(approvalRules.rule1, texts);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
-      cy.contains("Approval rules").should("be.visible");
-      cy.contains(approvalRules.rule1.name).should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
+      cy.contains(approvalRules.rule1.name).should('be.visible');
 
       // === Step 2: Edit first Approval Rule (Grand Total) to Number of SKUs condition ===
       cy.contains(approvalRules.rule1.name)
-        .should("be.visible")
-        .closest("tr")
+        .should('be.visible')
+        .closest('tr')
         .find(selectors.poShowButton)
         .contains(texts.show)
         .click();
@@ -86,26 +86,26 @@ describe("B2B Purchase Orders", () => {
         .first()
         .click();
 
-      cy.contains("Purchase order approval rule").should("be.visible");
+      cy.contains('Purchase order approval rule').should('be.visible');
 
       actions.fillApprovalRuleForm(approvalRules.rule2, texts);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
-      cy.contains("Approval rules").should("be.visible");
-      cy.contains(approvalRules.rule2.name).should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
+      cy.contains(approvalRules.rule2.name).should('be.visible');
 
       // === Step 3: Create Approval Rule with Number of SKUs condition ===
       cy.get(selectors.poShowButton).contains(texts.addNewRule).click();
 
-      cy.contains("Purchase order approval rule").should("be.visible");
+      cy.contains('Purchase order approval rule').should('be.visible');
 
       actions.fillApprovalRuleForm(approvalRules.rule3, texts);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
-      cy.contains("Approval rules").should("be.visible");
-      cy.contains(approvalRules.rule3.name).should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
+      cy.contains(approvalRules.rule3.name).should('be.visible');
 
       // === Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total condition ===
       cy.get(`tr:contains("${approvalRules.rule3.name}")`)
@@ -119,14 +119,14 @@ describe("B2B Purchase Orders", () => {
         .first()
         .click();
 
-      cy.contains("Purchase order approval rule").should("be.visible");
+      cy.contains('Purchase order approval rule').should('be.visible');
 
       actions.fillApprovalRuleForm(approvalRules.rule4, texts);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
-      cy.contains("Approval rules").should("be.visible");
-      cy.contains(approvalRules.rule4.name).should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
+      cy.contains(approvalRules.rule4.name).should('be.visible');
 
       actions.logout(texts);
 
@@ -160,19 +160,19 @@ describe("B2B Purchase Orders", () => {
       // Find wrapper with Purchase Orders requiring approval
       cy.get(selectors.poApprovalPOWrapper).within(() => {
         // Find table with "Requires my approval" header
-        cy.contains("Requires my approval").should("be.visible");
+        cy.contains('Requires my approval').should('be.visible');
 
         // Find 3 enabled checkboxes (not disabled, excluding selectAll)
         cy.get(
           `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`
-        ).should("have.length.at.least", 3);
+        ).should('have.length.at.least', 3);
 
         // Verify action buttons exist
         cy.contains(selectors.poShowButton, texts.rejectSelected).should(
-          "be.visible"
+          'be.visible'
         );
         cy.contains(selectors.poShowButton, texts.approveSelected).should(
-          "be.visible"
+          'be.visible'
         );
       });
 
@@ -192,13 +192,13 @@ describe("B2B Purchase Orders", () => {
         .click();
 
       // Verify approval success message appears
-      cy.get(".dropin-in-line-alert--success").should("be.visible");
+      cy.get('.dropin-in-line-alert--success').should('be.visible');
 
       // Verify that only 1 "Approval required" item remains (was 3, approved 2)
       cy.get(selectors.poApprovalPOWrapper)
-        .find(".b2b-purchase-order-purchase-orders-table__status")
-        .contains("Approval required")
-        .should("have.length", 1);
+        .find('.b2b-purchase-order-purchase-orders-table__status')
+        .contains('Approval required')
+        .should('have.length', 1);
 
       // Select third checkbox and reject
       cy.get(selectors.poApprovalPOWrapper)
@@ -213,56 +213,56 @@ describe("B2B Purchase Orders", () => {
         .click();
 
       // Verify rejection success message appears
-      cy.get(".dropin-in-line-alert--success").should("be.visible");
+      cy.get('.dropin-in-line-alert--success').should('be.visible');
 
       // Verify that no "Approval required" items remain (all processed)
       cy.get(selectors.poApprovalPOWrapper)
-        .find(".b2b-purchase-order-purchase-orders-table__status")
-        .contains("Approval required")
-        .should("have.length", 0);
+        .find('.b2b-purchase-order-purchase-orders-table__status')
+        .contains('Approval required')
+        .should('have.length', 0);
 
       // Find and select 30 in the dropdown
       cy.get(selectors.poApprovalPOWrapper)
         .find(
-          "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium"
+          'select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium'
         )
-        .select("30")
-        .should("have.value", "30");
+        .select('30')
+        .should('have.value', '30');
 
       // === Step 7: Test scenario: Approver logs in, navigates to "My purchase orders ===
       //      finds first order, expands it, views details page
       //      Verifies: Login, navigation, order expansion, detail page headers
 
-      cy.contains("Requires my approval").should("be.visible");
+      cy.contains('Requires my approval').should('be.visible');
 
       cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
-        .should("be.visible")
+        .should('be.visible')
         .within(() => {
           cy.contains(selectors.poShowButton, texts.show).first().click();
         });
 
       cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
-        .contains(selectors.poShowButton, "View")
+        .contains(selectors.poShowButton, 'View')
         .first()
         .click();
 
-      cy.url().should("not.include", urls.purchaseOrders);
+      cy.url().should('not.include', urls.purchaseOrders);
 
-      cy.get(".dropin-header-container__title").should("have.length.gt", 7);
-      cy.contains(/Purchase order \d+/).should("be.visible");
-      cy.contains("Order placed").should("be.visible");
-      cy.contains("Purchase order history log").should("be.visible");
-      cy.contains("Purchase order comments").should("be.visible");
-      cy.contains("Customer information").should("be.visible");
-      cy.contains("Order summary").should("be.visible");
-      cy.contains(/Your order \(\d+\)/).should("be.visible");
-      cy.contains("Add purchase order comment").should("be.visible");
+      cy.get('.dropin-header-container__title').should('have.length.gt', 7);
+      cy.contains(/Purchase order \d+/).should('be.visible');
+      cy.contains('Order placed').should('be.visible');
+      cy.contains('Purchase order history log').should('be.visible');
+      cy.contains('Purchase order comments').should('be.visible');
+      cy.contains('Customer information').should('be.visible');
+      cy.contains('Order summary').should('be.visible');
+      cy.contains(/Your order \(\d+\)/).should('be.visible');
+      cy.contains('Add purchase order comment').should('be.visible');
 
       // Add a comment
-      cy.get("textarea").type("Test comment message");
-      cy.contains("button", "Add Comment").click();
+      cy.get('textarea').type('Test comment message');
+      cy.contains('button', 'Add Comment').click();
       actions.logout(texts);
 
       // === Step 8: Test scenario: Sales creates Purchase Order with 1 item (auto-approved), Admin verifies ===
@@ -280,9 +280,9 @@ describe("B2B Purchase Orders", () => {
       cy.visit(urls.purchaseOrders);
       cy.wait(1000);
 
-      cy.get(selectors.poCompanyPOContainer).should("exist");
+      cy.get(selectors.poCompanyPOContainer).should('exist');
 
-      cy.contains("Company purchase orders").should("be.visible");
+      cy.contains('Company purchase orders').should('be.visible');
 
       cy.get(selectors.poCompanyPOContainer)
         .contains(selectors.poShowButton, texts.show)
@@ -290,11 +290,11 @@ describe("B2B Purchase Orders", () => {
         .click();
 
       cy.get(selectors.poCompanyPOContainer)
-        .find(".b2b-purchase-order-purchase-orders-table__row-details-content")
-        .should("be.visible")
+        .find('.b2b-purchase-order-purchase-orders-table__row-details-content')
+        .should('be.visible')
         .within(() => {
           cy.contains(/Total: \$\d+\.\d{2}/)
-            .invoke("text")
+            .invoke('text')
             .then((text) => {
               const match = text.match(/Total: \$(\d+\.\d{2})/);
               if (match) {
@@ -313,34 +313,34 @@ describe("B2B Purchase Orders", () => {
       cy.wait(1000);
       cy.visit(urls.approvalRules);
 
-      cy.contains("Approval rules").should("be.visible");
+      cy.contains('Approval rules').should('be.visible');
 
       cy.contains(selectors.poShowButton, texts.show).first().click();
 
-      cy.contains(selectors.poShowButton, "Delete").first().click();
+      cy.contains(selectors.poShowButton, 'Delete').first().click();
       cy.wait(1000);
 
-      cy.contains(selectors.poShowButton, "Delete").first().click();
+      cy.contains(selectors.poShowButton, 'Delete').first().click();
 
-      cy.contains(selectors.poShowButton, texts.show).should("not.exist");
+      cy.contains(selectors.poShowButton, texts.show).should('not.exist');
     }
   );
 
   it(
-    "Logout Sale and Delete Customer",
-    { tags: ["@B2BPaas", "@B2BSaas"] },
+    'Logout Sale and Delete Customer',
+    { tags: ['@B2BPaas', '@B2BSaas'] },
     () => {
       actions.login(users.sales_manager, urls);
-      cy.url().should("include", urls.account);
+      cy.url().should('include', urls.account);
     }
   );
 
   it(
-    "Logout Approver and Delete Customer",
-    { tags: ["@B2BPaas", "@B2BSaas"] },
+    'Logout Approver and Delete Customer',
+    { tags: ['@B2BPaas', '@B2BSaas'] },
     () => {
       actions.login(users.approver_manager, urls);
-      cy.url().should("include", urls.account);
+      cy.url().should('include', urls.account);
     }
   );
 });
