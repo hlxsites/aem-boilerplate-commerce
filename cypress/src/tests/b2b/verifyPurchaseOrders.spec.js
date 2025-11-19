@@ -43,7 +43,7 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
-      cy.logToTerminal("CONFIG:\n" + JSON.stringify(config, null, 2));
+      // cy.logToTerminal("CONFIG:\n" + JSON.stringify(config, null, 2));
 
       config.reduce((chain, element, index) => {
         return chain.then(() => {
@@ -51,6 +51,8 @@ describe('B2B Purchase Orders', () => {
           cy.wait(1000);
 
           return manageCompanyRole(element.role).then((result) => {
+            cy.logToTerminal("RESULT!!!!:\n" + JSON.stringify(result, null, 2));
+
             const roleId = result.id ?? result.roleId ?? result.data?.id;
             config[index].roleId = roleId;
 
@@ -62,7 +64,7 @@ describe('B2B Purchase Orders', () => {
       }, cy.wrap(null))
         .then(() => config) // RETURN CONFIG HERE
         .then((updatedConfig) => {
-          cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
+          // cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
         });
 
 
