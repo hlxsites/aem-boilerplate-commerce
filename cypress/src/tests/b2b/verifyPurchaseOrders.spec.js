@@ -5,8 +5,8 @@
  * Tests include creating, approving, and managing purchase orders.
  */
 
-import { createUserAssignCompanyAndRole } from '../../support/b2bPOAPICalls';
-import { texts, approvalRules, users } from '../../fixtures';
+import { createUserAssignCompanyAndRole, manageCompanyRole } from '../../support/b2bPOAPICalls';
+import { texts, approvalRules, users, poRolesConfig } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
@@ -26,17 +26,36 @@ describe('B2B Purchase Orders', () => {
       const config = [
         {
           user: users.po_rules_manager,
-          roleId: 55,
+          role: poRolesConfig.rulesManager,
+          roleId: null,
         },
         {
           user: users.sales_manager,
-          roleId: 53,
+          role: poRolesConfig.salesManager,
+          roleId: null,
         },
         {
           user: users.approver_manager,
-          roleId: 54,
+          role: poRolesConfig.approver,
+          roleId: null,
         },
       ];
+
+      cy.wrap(config).each((element, index) => {
+        cy.wait(3000);
+        cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
+
+        manageCompanyRole(element.role).then((roleId) => {
+          config[index].roleId = roleId;
+          cy.logToTerminal(`Role ${element.role.role_name} successfully created. Role ID: `, roleId);
+        }).catch((error) => {
+          cy.logToTerminal(`Error creating role: ${element.role.role_name}`, error);
+        });
+      });
+
+      cy.logToTerminal("CONFIG!", config);
+
+
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
       config.reduce((chain, element) => {

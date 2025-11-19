@@ -88,3 +88,21 @@ export const users = {
     password: PASSWORD,
   },
 };
+
+export const poRolesConfig = {
+  salesManager: {
+    role_name: `PO Sales Manager ${random}`,
+    company_id: 13,
+    permissions: [{ resource_id: "Magento_Company::index", permission: "allow" }]
+  },
+  rulesManager: {
+    role_name: `PO Rules Manager ${random}`,
+    company_id: 13,
+    permissions: [{ resource_id: "Magento_Company::index", permission: "allow" }]
+  },
+  approver: {
+    role_name: `PO Approver ${random}`,
+    company_id: 13,
+    permissions: [{ resource_id: "Magento_Company::index", permission: "allow" }]
+  },
+};
