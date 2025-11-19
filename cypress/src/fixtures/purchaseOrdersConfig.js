@@ -100,6 +100,8 @@ export const poRolesConfig = {
       { resource_id: "Magento_Sales::all", permission: "allow" },
       { resource_id: "Magento_Sales::place_order", permission: "allow" },
       { resource_id: "Magento_Sales::view_orders", permission: "allow" },
+      { resource_id: "Magento_PurchaseOrder::all", permission: "allow" },
+      { resource_id: "Magento_PurchaseOrderRule::view_approval_rules", permission: "allow" },
     ]
   },
   rulesManager: {
