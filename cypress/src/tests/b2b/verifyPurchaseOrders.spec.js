@@ -53,10 +53,10 @@ describe('B2B Purchase Orders', () => {
           return manageCompanyRole(element.role).then((result) => {
             cy.logToTerminal("RESULT!!!!:\n" + JSON.stringify(result, null, 2));
 
-            config[index].roleId = result.role.id;
+            config[index].roleId = result?.role?.id;
 
             cy.logToTerminal(
-              `Role created: ${element.role.role_name} | ID: ${roleId}`
+              `Role created: ${element.role.role_name} | ID: ${result?.role?.id}`
             );
           });
         });
