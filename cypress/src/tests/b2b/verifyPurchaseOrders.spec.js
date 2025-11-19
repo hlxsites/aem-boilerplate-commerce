@@ -58,7 +58,6 @@ describe('B2B Purchase Orders', () => {
       // Verifies: Single login session, rule creation, rule editing, condition changes
 
       actions.login(users.po_rules_manager, urls);
-      // Here
 
       cy.visit(urls.companyStructure);
       cy.contains('Roles and Permissions').should('be.visible').click();
@@ -70,7 +69,6 @@ describe('B2B Purchase Orders', () => {
         .clear()
         .type(approverRoleName);
 
-      // Click on the first "Order Approvals" checkbox
       cy.contains('.edit-role-and-permission__tree-label', 'Order Approvals')
         .first()
         .parent('.edit-role-and-permission__tree-node')
@@ -80,26 +78,22 @@ describe('B2B Purchase Orders', () => {
 
       cy.contains('button', 'Save Role').should('be.visible').click();
 
-      // Navigate to company users page
       cy.visit('/customer/company/users');
+
       cy.contains('Company Users').should('be.visible').click();
 
-      // Change items per page to 200
       cy.get('select.dropin-picker__select')
         .select('200')
         .should('have.value', '200');
 
-      // Find the approver_manager user and click Edit button
       cy.contains(users.approver_manager.email)
         .should('be.visible')
         .closest('tr')
         .find('button.edit-user-button')
         .click();
 
-      // Find role select and change to the new created role
       cy.get('select[name="role"]').select(approverRoleName);
 
-      // Click Save button
       cy.contains('button', 'Save').should('be.visible').click();
 
       // === Step 1: Create Approval Rule with Grand Total condition ===
@@ -361,16 +355,31 @@ describe('B2B Purchase Orders', () => {
       cy.contains(selectors.poShowButton, 'Delete').first().click();
 
       cy.contains(selectors.poShowButton, texts.show).should('not.exist');
+
+      actions.logout(texts);
+
+      actions.login(users.approver_manager, urls);
+      cy.url().should('include', urls.account);
     }
   );
 
-  it.skip('Logout Sale and Delete Customer', { tags: ['@B2BSaas'] }, () => {
+  it('Logout Sale and Delete Customer', { tags: ['@B2BSaas'] }, () => {
     actions.login(users.sales_manager, urls);
     cy.url().should('include', urls.account);
   });
 
-  it.skip('Logout Approver and Delete Customer', { tags: ['@B2BSaas'] }, () => {
-    actions.login(users.approver_manager, urls);
+  it('Removed Approval Rule', { tags: ['@B2BSaas'] }, () => {
+    actions.login(users.po_rules_manager, urls);
     cy.url().should('include', urls.account);
+    cy.visit(urls.companyStructure);
+    cy.contains('Roles and Permissions').should('be.visible').click();
+
+    // Find and delete the created role
+    cy.contains(approverRoleName)
+      .should('be.visible')
+      .closest('tr')
+      .find('button')
+      .contains('Delete')
+      .click();
   });
 });
