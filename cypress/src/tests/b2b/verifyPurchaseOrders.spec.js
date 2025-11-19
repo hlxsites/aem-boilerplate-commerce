@@ -43,21 +43,24 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
-      cy.logToTerminal("CONFIG!", config);
+      cy.logToTerminal("INITIAL CONFIG:", JSON.stringify(config));
 
-      cy.wrap(config).each((element, index) => {
-        cy.wait(3000);
-        cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
+      config.reduce((chain, element, index) => {
+        return chain.then(() => {
+          cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
+          cy.wait(1000);
 
-        manageCompanyRole(element.role).then((roleId) => {
-          config[index].roleId = roleId;
-          cy.logToTerminal(`Role ${element.role.role_name} successfully created. Role ID: `, roleId);
-        }).catch((error) => {
-          cy.logToTerminal(`Error creating role: ${element.role.role_name}`, error);
+          return manageCompanyRole(element.role).then((roleId) => {
+            config[index].roleId = roleId;
+            cy.logToTerminal(
+              `Role created: ${element.role.role_name} | ID: ${roleId}`
+            );
+          });
         });
-      });
-
-      cy.logToTerminal("CONFIG!", config);
+      }, cy.wrap(null))
+        .then(() => {
+          cy.logToTerminal("FINAL CONFIG (WITH ROLE IDs):", JSON.stringify(config));
+        });
 
 
       // Create users sequentially using Cypress commands
