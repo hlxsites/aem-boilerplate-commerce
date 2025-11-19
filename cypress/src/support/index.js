@@ -13,3 +13,9 @@ import "./deleteNegotiableQuotes";
 
 import registerCypressGrep from "@cypress/grep";
 registerCypressGrep();
+
+// Custom command to log to terminal in CI
+Cypress.Commands.add("logToTerminal", (message) => {
+  cy.log(message);
+  cy.task("log", message);
+});
