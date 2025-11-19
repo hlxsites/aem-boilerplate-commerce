@@ -17,15 +17,6 @@ module.exports = {
   e2e: {
     setupNodeEvents(on, config) {
       require("@cypress/grep/src/plugin")(config);
-
-      // Enable detailed logging for CI debugging
-      if (config.isTextTerminal) {
-        require("cypress-log-to-output").install(on, (type, event) => {
-          // Print all console logs from browser to terminal
-          return true;
-        });
-      }
-
       return config;
     },
     baseUrl: "http://localhost:3000/",
