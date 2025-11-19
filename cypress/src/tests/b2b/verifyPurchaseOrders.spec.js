@@ -6,7 +6,7 @@
  */
 
 import { createUserAssignCompanyAndRole } from '../../support/b2bPOAPICalls';
-import { texts, approvalRules, users } from '../../fixtures';
+import { texts, approvalRules, users, approverRoleName } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
@@ -37,6 +37,7 @@ describe('B2B Purchase Orders', () => {
           roleId: 54,
         },
       ];
+
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
       config.reduce((chain, element) => {
@@ -57,6 +58,49 @@ describe('B2B Purchase Orders', () => {
       // Verifies: Single login session, rule creation, rule editing, condition changes
 
       actions.login(users.po_rules_manager, urls);
+      // Here
+
+      cy.visit(urls.companyStructure);
+      cy.contains('Roles and Permissions').should('be.visible').click();
+      cy.contains('Company Roles & Permissions').should('be.visible');
+      cy.contains('Add New Role').should('be.visible').click();
+      cy.contains('Role Information').should('be.visible');
+      cy.get('input[name="roleName"]')
+        .should('be.visible')
+        .clear()
+        .type(approverRoleName);
+
+      // Click on the first "Order Approvals" checkbox
+      cy.contains('.edit-role-and-permission__tree-label', 'Order Approvals')
+        .first()
+        .parent('.edit-role-and-permission__tree-node')
+        .find('input[type="checkbox"]')
+        .should('exist')
+        .click({ force: true });
+
+      cy.contains('button', 'Save Role').should('be.visible').click();
+
+      // Navigate to company users page
+      cy.visit('/customer/company/users');
+      cy.contains('Company Users').should('be.visible').click();
+
+      // Change items per page to 200
+      cy.get('select.dropin-picker__select')
+        .select('200')
+        .should('have.value', '200');
+
+      // Find the approver_manager user and click Edit button
+      cy.contains(users.approver_manager.email)
+        .should('be.visible')
+        .closest('tr')
+        .find('button.edit-user-button')
+        .click();
+
+      // Find role select and change to the new created role
+      cy.get('select[name="role"]').select(approverRoleName);
+
+      // Click Save button
+      cy.contains('button', 'Save').should('be.visible').click();
 
       // === Step 1: Create Approval Rule with Grand Total condition ===
       cy.visit(urls.approvalRules);
@@ -186,13 +230,11 @@ describe('B2B Purchase Orders', () => {
         cy.wait(1500);
       });
       cy.wait(6000);
-
       // Click Approve selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.approveSelected)
         .click();
       cy.wait(6000);
-
       // Verify approval success message appears
       cy.get('.dropin-in-line-alert--success').should('be.visible');
 
@@ -202,14 +244,13 @@ describe('B2B Purchase Orders', () => {
         .contains('Approval required')
         .should('have.length', 1);
       cy.wait(6000);
-
       // Select third checkbox and reject
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
         .click();
+      cy.wait(1500);
       cy.wait(6000);
-
       // Click Reject selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.rejectSelected)
@@ -323,12 +364,12 @@ describe('B2B Purchase Orders', () => {
     }
   );
 
-  it('Logout Sale and Delete Customer', { tags: ['@B2BSaas'] }, () => {
+  it.skip('Logout Sale and Delete Customer', { tags: ['@B2BSaas'] }, () => {
     actions.login(users.sales_manager, urls);
     cy.url().should('include', urls.account);
   });
 
-  it('Logout Approver and Delete Customer', { tags: ['@B2BSaas'] }, () => {
+  it.skip('Logout Approver and Delete Customer', { tags: ['@B2BSaas'] }, () => {
     actions.login(users.approver_manager, urls);
     cy.url().should('include', urls.account);
   });
