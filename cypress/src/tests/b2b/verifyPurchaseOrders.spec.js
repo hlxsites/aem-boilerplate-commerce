@@ -65,7 +65,9 @@ describe("B2B Purchase Orders", () => {
       actions.login(users.po_rules_manager, urls);
 
       // === Step 1: Create Approval Rule with Grand Total condition ===
-      cy.logToTerminal("📝 STEP 1: Creating Approval Rule with Grand Total condition");
+      cy.logToTerminal(
+        "📝 STEP 1: Creating Approval Rule with Grand Total condition"
+      );
       cy.visit(urls.approvalRules);
       cy.contains("Approval rules").should("be.visible");
 
@@ -152,7 +154,9 @@ describe("B2B Purchase Orders", () => {
       // These orders will require approval due to quantity/total amount
       // Verifies: Login, product selection, cart, checkout flow, PO creation confirmation
 
-      cy.logToTerminal("🔐 STEP 5: Login as Sales Manager and create Purchase Orders");
+      cy.logToTerminal(
+        "🔐 STEP 5: Login as Sales Manager and create Purchase Orders"
+      );
       actions.login(users.sales_manager, urls);
 
       // Create 3 Purchase Orders
@@ -172,7 +176,9 @@ describe("B2B Purchase Orders", () => {
       // - Rejects 1 Purchase Order (status changes to "Rejected")
       // Verifies: Login, PO list display, bulk approve/reject actions, success messages, status updates
 
-      cy.logToTerminal("🔐 STEP 6: Login as Approver Manager to manage Purchase Orders");
+      cy.logToTerminal(
+        "🔐 STEP 6: Login as Approver Manager to manage Purchase Orders"
+      );
       actions.login(users.approver_manager, urls);
 
       // Navigate to Purchase Orders page
@@ -226,18 +232,22 @@ describe("B2B Purchase Orders", () => {
       // Select third checkbox and reject
       cy.logToTerminal("❌ Rejecting third Purchase Order");
       cy.logToTerminal("🔍 Step 1: Finding poApprovalPOWrapper");
-      cy.get(selectors.poApprovalPOWrapper).should('exist').then(() => {
-        cy.logToTerminal("✅ Found poApprovalPOWrapper");
-      });
-      
-      cy.logToTerminal(`🔍 Step 2: Finding checkbox with selector: ${checkboxSelector}`);
+      cy.get(selectors.poApprovalPOWrapper)
+        .should("exist")
+        .then(() => {
+          cy.logToTerminal("✅ Found poApprovalPOWrapper");
+        });
+
+      cy.logToTerminal(
+        `🔍 Step 2: Finding checkbox with selector: ${checkboxSelector}`
+      );
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
-        .should('have.length.at.least', 1)
+        .should("have.length.at.least", 1)
         .then(($checkboxes) => {
           cy.logToTerminal(`✅ Found ${$checkboxes.length} checkboxes`);
         });
-      
+
       cy.logToTerminal("🔍 Step 3: Clicking first checkbox (eq(0))");
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
@@ -246,22 +256,34 @@ describe("B2B Purchase Orders", () => {
         .then(() => {
           cy.logToTerminal("✅ Checkbox clicked successfully");
         });
-      
+
       cy.logToTerminal("⏳ Waiting 1500ms");
       cy.wait(1500);
 
       // Click Reject selected button
       cy.logToTerminal("🔍 Step 4: Finding Reject selected button");
+      cy.logToTerminal(`Button selector: "${selectors.poShowButton}"`);
       cy.logToTerminal(`Button text to find: "${texts.rejectSelected}"`);
+      
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.rejectSelected)
-        .should('be.visible')
-        .then(() => {
-          cy.logToTerminal("✅ Found Reject button, clicking it");
+        .should("exist")
+        .then(($btn) => {
+          cy.logToTerminal(`✅ Button found - tagName: ${$btn.prop('tagName')}, classes: ${$btn.attr('class')}`);
+          cy.logToTerminal(`Button text content: "${$btn.text().trim()}"`);
+          cy.logToTerminal(`Button is visible: ${$btn.is(':visible')}`);
+          cy.logToTerminal(`Button is disabled: ${$btn.is(':disabled')}`);
+          cy.logToTerminal(`Button position - top: ${$btn.offset()?.top}, left: ${$btn.offset()?.left}`);
+          cy.logToTerminal(`Button dimensions - width: ${$btn.width()}, height: ${$btn.height()}`);
         })
-        .click()
+        .should("be.visible")
+        .should("not.be.disabled")
         .then(() => {
-          cy.logToTerminal("✅ Reject button clicked");
+          cy.logToTerminal("✅ Button is visible and enabled, attempting click");
+        })
+        .click({ force: false })
+        .then(() => {
+          cy.logToTerminal("✅ Reject button clicked successfully");
         });
 
       // Verify rejection success message appears
@@ -273,13 +295,15 @@ describe("B2B Purchase Orders", () => {
         });
 
       // Verify that no "Approval required" items remain (all processed)
-      cy.logToTerminal("🔍 Step 6: Checking for remaining 'Approval required' items");
+      cy.logToTerminal(
+        "🔍 Step 6: Checking for remaining 'Approval required' items"
+      );
       cy.get(selectors.poApprovalPOWrapper)
         .find(".b2b-purchase-order-purchase-orders-table__status")
         .then(($statuses) => {
           cy.logToTerminal(`Found ${$statuses.length} total status elements`);
         });
-      
+
       cy.get(selectors.poApprovalPOWrapper)
         .find(".b2b-purchase-order-purchase-orders-table__status")
         .contains("Approval required")
@@ -290,18 +314,24 @@ describe("B2B Purchase Orders", () => {
 
       // Find and select 30 in the dropdown
       cy.logToTerminal("🔍 Step 7: Finding dropdown selector");
-      const dropdownSelector = "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium";
+      const dropdownSelector =
+        "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium";
       cy.logToTerminal(`Dropdown selector: ${dropdownSelector}`);
-      
+
       cy.get(selectors.poApprovalPOWrapper)
         .find(dropdownSelector)
-        .should('exist')
+        .should("exist")
         .then(($select) => {
-          cy.logToTerminal(`✅ Found dropdown, current value: ${$select.val()}`);
-          const options = $select.find('option').map((i, opt) => opt.value).get();
-          cy.logToTerminal(`Available options: ${options.join(', ')}`);
+          cy.logToTerminal(
+            `✅ Found dropdown, current value: ${$select.val()}`
+          );
+          const options = $select
+            .find("option")
+            .map((i, opt) => opt.value)
+            .get();
+          cy.logToTerminal(`Available options: ${options.join(", ")}`);
         });
-      
+
       cy.logToTerminal("🔽 Selecting value '30' from dropdown");
       cy.get(selectors.poApprovalPOWrapper)
         .find(dropdownSelector)
@@ -315,7 +345,9 @@ describe("B2B Purchase Orders", () => {
       //      finds first order, expands it, views details page
       //      Verifies: Login, navigation, order expansion, detail page headers
 
-      cy.logToTerminal("📋 STEP 7: Viewing Purchase Order details and adding comment");
+      cy.logToTerminal(
+        "📋 STEP 7: Viewing Purchase Order details and adding comment"
+      );
       cy.logToTerminal("🔍 Looking for 'Requires my approval' section");
       cy.contains("Requires my approval").should("be.visible");
 
@@ -360,14 +392,18 @@ describe("B2B Purchase Orders", () => {
       // - Sales logs out, Admin logs in
       // - Admin views company Purchase Orders and verifies auto-approved order details
 
-      cy.logToTerminal("🔐 STEP 8: Login as Sales Manager to create auto-approved PO");
+      cy.logToTerminal(
+        "🔐 STEP 8: Login as Sales Manager to create auto-approved PO"
+      );
       actions.login(users.sales_manager, urls);
       cy.logToTerminal("🛒 Creating auto-approved Purchase Order with 1 item");
       actions.createPurchaseOrder(1, true, urls, texts);
       cy.logToTerminal("🚪 Logging out Sales Manager");
       actions.logout(texts);
 
-      cy.logToTerminal("🔐 Login as PO Rules Manager to verify auto-approved order");
+      cy.logToTerminal(
+        "🔐 Login as PO Rules Manager to verify auto-approved order"
+      );
       actions.login(users.po_rules_manager, urls);
 
       cy.logToTerminal("📄 Navigating to Company Purchase Orders");
