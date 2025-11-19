@@ -228,8 +228,7 @@ async function manageCompanyRole(roleData, roleId = null) {
       body: JSON.stringify({ role: roleData }),
     });
 
-    // const createResult = await createResponse.json();
-    return await createResponse.json();
+    const createResult = await createResponse.json();
 
     if (!createResponse.ok) {
       throw new Error(

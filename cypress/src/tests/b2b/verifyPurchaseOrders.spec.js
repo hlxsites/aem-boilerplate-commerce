@@ -51,10 +51,7 @@ describe('B2B Purchase Orders', () => {
           cy.wait(1000);
 
           return manageCompanyRole(element.role).then((result) => {
-            cy.logToTerminal("RESULT!!!!:\n" + JSON.stringify(result, null, 2));
-
-            const roleId = result.id ?? result.roleId ?? result.data?.id;
-            config[index].roleId = roleId;
+            config[index].roleId = result.role.id;
 
             cy.logToTerminal(
               `Role created: ${element.role.role_name} | ID: ${roleId}`
@@ -62,9 +59,9 @@ describe('B2B Purchase Orders', () => {
           });
         });
       }, cy.wrap(null))
-        .then(() => config) // RETURN CONFIG HERE
+        .then(() => config)
         .then((updatedConfig) => {
-          // cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
+          cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
         });
 
 
