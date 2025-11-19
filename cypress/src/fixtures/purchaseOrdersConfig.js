@@ -27,7 +27,7 @@ export const approvalRules = {
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: 'PO Sales',
+    role: 'salesManager',
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',
@@ -58,7 +58,7 @@ export const approvalRules = {
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: 'PO Sales',
+    role: 'salesManager',
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',

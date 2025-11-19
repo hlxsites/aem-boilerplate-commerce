@@ -6,7 +6,7 @@
  */
 
 import { createUserAssignCompanyAndRole, manageCompanyRole } from '../../support/b2bPOAPICalls';
-import { texts, approvalRules, users, poRolesConfig } from '../../fixtures';
+import { texts, approvalRules as defaultApprovalRules, users, poRolesConfig } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
@@ -14,6 +14,7 @@ describe('B2B Purchase Orders', () => {
   const urls = Cypress.env('poUrls');
 
   beforeEach(() => {
+    cy.logToTerminal("🧹 Clearing cookies and local storage");
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.intercept('**/graphql').as('defaultGraphQL');
@@ -23,8 +24,7 @@ describe('B2B Purchase Orders', () => {
     'Should verify Purchase Orders end-to-end workflow with approval rules management and order processing',
     { tags: ['@B2BSaas'] },
     () => {
-      cy.logToTerminal("START!");
-
+      cy.logToTerminal("📋 Purchase Orders E2E Workflow");
       const config = [
         {
           user: users.po_rules_manager,
@@ -57,11 +57,13 @@ describe('B2B Purchase Orders', () => {
           });
         });
       }, cy.wrap(null))
-        .then(() => config)
-        .then((updatedConfig) => {
-          cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
-        });
 
+      const approvalRules = { ...defaultApprovalRules };
+      Object.keys(approvalRules).forEach((key) => {
+        if (approvalRules[key].value === 'salesManager') {
+          approvalRules[key].value = config[1].role.role_name
+        }
+      });
 
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
