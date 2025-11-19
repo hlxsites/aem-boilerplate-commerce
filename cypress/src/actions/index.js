@@ -539,8 +539,22 @@ export const createPurchaseOrder = (
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
+  cy.logToTerminal(`🔍 Looking for status checkbox (to enable rule)`);
+  cy.get(fields.poStatusCheckbox).then(($checkbox) => {
+    const isChecked = $checkbox.is(':checked');
+    cy.logToTerminal(`Status checkbox current state: ${isChecked ? 'CHECKED (enabled)' : 'UNCHECKED (disabled)'}`);
+    cy.logToTerminal(`Clicking status checkbox to toggle...`);
+  });
+  
   cy.get(fields.poStatusCheckbox).click({ force: true });
+  
+  cy.get(fields.poStatusCheckbox).then(($checkbox) => {
+    const isChecked = $checkbox.is(':checked');
+    cy.logToTerminal(`✅ Status checkbox after click: ${isChecked ? 'CHECKED (enabled)' : 'UNCHECKED (disabled)'}`);
+  });
+  
   cy.wait(1500);
+  cy.logToTerminal(`📝 Setting rule name to: "${rule.name}"`);
   cy.get(fields.poNameInput).clear().type(rule.name);
   cy.wait(1500);
   cy.get(fields.poTextarea).clear().type(rule.description);

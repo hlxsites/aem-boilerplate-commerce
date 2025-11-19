@@ -126,25 +126,68 @@ describe("B2B Purchase Orders", () => {
       cy.logToTerminal(
         "✏️ STEP 4: Editing second Approval Rule to Grand Total condition"
       );
+      cy.logToTerminal(`🔍 Looking for rule: "${approvalRules.rule3.name}"`);
       cy.get(`tr:contains("${approvalRules.rule3.name}")`)
         .last()
+        .then(($row) => {
+          cy.logToTerminal(`✅ Found rule row, clicking Show button`);
+        })
         .find(selectors.poShowButton)
         .contains(texts.show)
         .click();
 
+      cy.logToTerminal(`🔍 Looking for Edit button with text: "${texts.edit}"`);
       cy.get(selectors.poEditButton)
         .filter(`:contains("${texts.edit}")`)
         .first()
+        .then(($btn) => {
+          cy.logToTerminal(`✅ Found Edit button, clicking it`);
+        })
         .click();
 
       cy.contains("Purchase order approval rule").should("be.visible");
 
+      cy.logToTerminal(`📝 Filling approval rule form with data:`);
+      cy.logToTerminal(`  - Name: "${approvalRules.rule4.name}"`);
+      cy.logToTerminal(`  - Description: "${approvalRules.rule4.description}"`);
+      cy.logToTerminal(`  - Applies to: "${approvalRules.rule4.appliesTo}"`);
+      cy.logToTerminal(`  - Rule type: "${approvalRules.rule4.ruleType}"`);
+      cy.logToTerminal(`  - Rule condition: "${approvalRules.rule4.ruleCondition}"`);
+      cy.logToTerminal(`  - Rule value: "${approvalRules.rule4.ruleValue}"`);
+      cy.logToTerminal(`  - Approver role: "${approvalRules.rule4.approverRole}"`);
+      
       actions.fillApprovalRuleForm(approvalRules.rule4, texts);
+      
+      cy.logToTerminal(`✅ Approval rule form filled successfully`);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
+      cy.logToTerminal(`🔍 Verifying return to Approval Rules page`);
       cy.contains("Approval rules").should("be.visible");
-      cy.contains(approvalRules.rule4.name).should("be.visible");
+      
+      cy.logToTerminal(`🔍 Verifying rule "${approvalRules.rule4.name}" appears in list`);
+      cy.contains(approvalRules.rule4.name)
+        .should("be.visible")
+        .then(() => {
+          cy.logToTerminal(`✅ Rule "${approvalRules.rule4.name}" found in list`);
+        });
+      
+      cy.logToTerminal(`🔍 Checking rule status (enabled/disabled)`);
+      cy.get(`tr:contains("${approvalRules.rule4.name}")`)
+        .last()
+        .within(() => {
+          cy.get('td').then(($cells) => {
+            const statusText = $cells.filter(':contains("Enabled"), :contains("Disabled")').text();
+            cy.logToTerminal(`Rule status found: "${statusText}"`);
+            if (statusText.includes('Disabled')) {
+              cy.logToTerminal(`⚠️ WARNING: Rule is DISABLED - this may cause test failures!`);
+            } else if (statusText.includes('Enabled')) {
+              cy.logToTerminal(`✅ Rule is ENABLED`);
+            } else {
+              cy.logToTerminal(`⚠️ Could not determine rule status from text: "${statusText}"`);
+            }
+          });
+        });
 
       cy.logToTerminal("🚪 Logging out PO Rules Manager");
       actions.logout(texts);
@@ -264,22 +307,34 @@ describe("B2B Purchase Orders", () => {
       cy.logToTerminal("🔍 Step 4: Finding Reject selected button");
       cy.logToTerminal(`Button selector: "${selectors.poShowButton}"`);
       cy.logToTerminal(`Button text to find: "${texts.rejectSelected}"`);
-      
+
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.rejectSelected)
         .should("exist")
         .then(($btn) => {
-          cy.logToTerminal(`✅ Button found - tagName: ${$btn.prop('tagName')}, classes: ${$btn.attr('class')}`);
+          cy.logToTerminal(
+            `✅ Button found - tagName: ${$btn.prop(
+              "tagName"
+            )}, classes: ${$btn.attr("class")}`
+          );
           cy.logToTerminal(`Button text content: "${$btn.text().trim()}"`);
-          cy.logToTerminal(`Button is visible: ${$btn.is(':visible')}`);
-          cy.logToTerminal(`Button is disabled: ${$btn.is(':disabled')}`);
-          cy.logToTerminal(`Button position - top: ${$btn.offset()?.top}, left: ${$btn.offset()?.left}`);
-          cy.logToTerminal(`Button dimensions - width: ${$btn.width()}, height: ${$btn.height()}`);
+          cy.logToTerminal(`Button is visible: ${$btn.is(":visible")}`);
+          cy.logToTerminal(`Button is disabled: ${$btn.is(":disabled")}`);
+          cy.logToTerminal(
+            `Button position - top: ${$btn.offset()?.top}, left: ${
+              $btn.offset()?.left
+            }`
+          );
+          cy.logToTerminal(
+            `Button dimensions - width: ${$btn.width()}, height: ${$btn.height()}`
+          );
         })
         .should("be.visible")
         .should("not.be.disabled")
         .then(() => {
-          cy.logToTerminal("✅ Button is visible and enabled, attempting click");
+          cy.logToTerminal(
+            "✅ Button is visible and enabled, attempting click"
+          );
         })
         .click({ force: false })
         .then(() => {
