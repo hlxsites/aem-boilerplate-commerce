@@ -50,16 +50,21 @@ describe('B2B Purchase Orders', () => {
           cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
           cy.wait(1000);
 
-          return manageCompanyRole(element.role).then((roleId) => {
+          return manageCompanyRole(element.role).then((result) => {
+            const roleId = result.id ?? result.roleId ?? result.data?.id;
             config[index].roleId = roleId;
+
             cy.logToTerminal(
               `Role created: ${element.role.role_name} | ID: ${roleId}`
             );
           });
         });
-      }, cy.wrap(null)).then((updatedConfig) => {
-        cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
-      });
+      }, cy.wrap(null))
+        .then(() => config) // RETURN CONFIG HERE
+        .then((updatedConfig) => {
+          cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
+        });
+
 
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
