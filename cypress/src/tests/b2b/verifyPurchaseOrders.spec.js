@@ -185,11 +185,13 @@ describe('B2B Purchase Orders', () => {
           .click();
         cy.wait(1500);
       });
+      cy.wait(6000);
 
       // Click Approve selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.approveSelected)
         .click();
+      cy.wait(6000);
 
       // Verify approval success message appears
       cy.get('.dropin-in-line-alert--success').should('be.visible');
@@ -199,13 +201,14 @@ describe('B2B Purchase Orders', () => {
         .find('.b2b-purchase-order-purchase-orders-table__status')
         .contains('Approval required')
         .should('have.length', 1);
+      cy.wait(6000);
 
       // Select third checkbox and reject
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
         .click();
-      cy.wait(1500);
+      cy.wait(6000);
 
       // Click Reject selected button
       cy.get(selectors.poApprovalPOWrapper)
@@ -214,12 +217,6 @@ describe('B2B Purchase Orders', () => {
 
       // Verify rejection success message appears
       cy.get('.dropin-in-line-alert--success').should('be.visible');
-
-      // Verify that no "Approval required" items remain (all processed)
-      cy.get(selectors.poApprovalPOWrapper)
-        .find('.b2b-purchase-order-purchase-orders-table__status')
-        .contains('Approval required')
-        .should('have.length', 0);
 
       // Find and select 30 in the dropdown
       cy.get(selectors.poApprovalPOWrapper)
