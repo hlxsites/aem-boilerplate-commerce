@@ -225,48 +225,110 @@ describe("B2B Purchase Orders", () => {
 
       // Select third checkbox and reject
       cy.logToTerminal("❌ Rejecting third Purchase Order");
+      cy.logToTerminal("🔍 Step 1: Finding poApprovalPOWrapper");
+      cy.get(selectors.poApprovalPOWrapper).should('exist').then(() => {
+        cy.logToTerminal("✅ Found poApprovalPOWrapper");
+      });
+      
+      cy.logToTerminal(`🔍 Step 2: Finding checkbox with selector: ${checkboxSelector}`);
+      cy.get(selectors.poApprovalPOWrapper)
+        .find(checkboxSelector)
+        .should('have.length.at.least', 1)
+        .then(($checkboxes) => {
+          cy.logToTerminal(`✅ Found ${$checkboxes.length} checkboxes`);
+        });
+      
+      cy.logToTerminal("🔍 Step 3: Clicking first checkbox (eq(0))");
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
-        .click();
+        .click()
+        .then(() => {
+          cy.logToTerminal("✅ Checkbox clicked successfully");
+        });
+      
+      cy.logToTerminal("⏳ Waiting 1500ms");
       cy.wait(1500);
 
       // Click Reject selected button
+      cy.logToTerminal("🔍 Step 4: Finding Reject selected button");
+      cy.logToTerminal(`Button text to find: "${texts.rejectSelected}"`);
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, texts.rejectSelected)
-        .click();
+        .should('be.visible')
+        .then(() => {
+          cy.logToTerminal("✅ Found Reject button, clicking it");
+        })
+        .click()
+        .then(() => {
+          cy.logToTerminal("✅ Reject button clicked");
+        });
 
       // Verify rejection success message appears
-      cy.get(".dropin-in-line-alert--success").should("be.visible");
+      cy.logToTerminal("🔍 Step 5: Looking for success alert message");
+      cy.get(".dropin-in-line-alert--success")
+        .should("be.visible")
+        .then(() => {
+          cy.logToTerminal("✅ Success alert is visible");
+        });
 
       // Verify that no "Approval required" items remain (all processed)
+      cy.logToTerminal("🔍 Step 6: Checking for remaining 'Approval required' items");
+      cy.get(selectors.poApprovalPOWrapper)
+        .find(".b2b-purchase-order-purchase-orders-table__status")
+        .then(($statuses) => {
+          cy.logToTerminal(`Found ${$statuses.length} total status elements`);
+        });
+      
       cy.get(selectors.poApprovalPOWrapper)
         .find(".b2b-purchase-order-purchase-orders-table__status")
         .contains("Approval required")
-        .should("have.length", 0);
+        .should("have.length", 0)
+        .then(() => {
+          cy.logToTerminal("✅ Confirmed: No 'Approval required' items remain");
+        });
 
       // Find and select 30 in the dropdown
+      cy.logToTerminal("🔍 Step 7: Finding dropdown selector");
+      const dropdownSelector = "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium";
+      cy.logToTerminal(`Dropdown selector: ${dropdownSelector}`);
+      
       cy.get(selectors.poApprovalPOWrapper)
-        .find(
-          "select.dropin-picker__select.dropin-picker__select--primary.dropin-picker__select--medium"
-        )
+        .find(dropdownSelector)
+        .should('exist')
+        .then(($select) => {
+          cy.logToTerminal(`✅ Found dropdown, current value: ${$select.val()}`);
+          const options = $select.find('option').map((i, opt) => opt.value).get();
+          cy.logToTerminal(`Available options: ${options.join(', ')}`);
+        });
+      
+      cy.logToTerminal("🔽 Selecting value '30' from dropdown");
+      cy.get(selectors.poApprovalPOWrapper)
+        .find(dropdownSelector)
         .select("30")
-        .should("have.value", "30");
+        .should("have.value", "30")
+        .then(() => {
+          cy.logToTerminal("✅ Dropdown value set to 30");
+        });
 
       // === Step 7: Test scenario: Approver logs in, navigates to "My purchase orders ===
       //      finds first order, expands it, views details page
       //      Verifies: Login, navigation, order expansion, detail page headers
 
       cy.logToTerminal("📋 STEP 7: Viewing Purchase Order details and adding comment");
+      cy.logToTerminal("🔍 Looking for 'Requires my approval' section");
       cy.contains("Requires my approval").should("be.visible");
 
+      cy.logToTerminal("🔍 Finding My Purchase Orders table");
       cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
         .should("be.visible")
         .within(() => {
+          cy.logToTerminal("👆 Clicking Show button to expand order");
           cy.contains(selectors.poShowButton, texts.show).first().click();
         });
 
+      cy.logToTerminal("👆 Clicking View button to open order details");
       cy.get(selectors.poMyApprovalPOWrapper)
         .find(selectors.poTable)
         .contains(selectors.poShowButton, "View")
