@@ -43,6 +43,8 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
+      cy.logToTerminal("CONFIG:\n" + JSON.stringify(config, null, 2));
+
       config.reduce((chain, element, index) => {
         return chain.then(() => {
           cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
@@ -55,7 +57,9 @@ describe('B2B Purchase Orders', () => {
             );
           });
         });
-      }, cy.wrap(null));
+      }, cy.wrap(null)).then((updatedConfig) => {
+        cy.logToTerminal("updatedConfig:\n" + JSON.stringify(updatedConfig, null, 2));
+      });
 
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
