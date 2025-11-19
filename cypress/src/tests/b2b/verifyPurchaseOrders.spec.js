@@ -51,6 +51,8 @@ describe('B2B Purchase Orders', () => {
           cy.wait(1000);
 
           return manageCompanyRole(element.role).then((result) => {
+            cy.logToTerminal("RESULT!!!!:\n" + JSON.stringify(result, null, 2));
+
             config[index].roleId = result.role.id;
 
             cy.logToTerminal(
