@@ -23,6 +23,8 @@ describe('B2B Purchase Orders', () => {
     'Should verify Purchase Orders end-to-end workflow with approval rules management and order processing',
     { tags: ['@B2BSaas'] },
     () => {
+      cy.logToTerminal("START!");
+
       const config = [
         {
           user: users.po_rules_manager,
@@ -40,6 +42,8 @@ describe('B2B Purchase Orders', () => {
           roleId: null,
         },
       ];
+
+      cy.logToTerminal("CONFIG!", config);
 
       cy.wrap(config).each((element, index) => {
         cy.wait(3000);
