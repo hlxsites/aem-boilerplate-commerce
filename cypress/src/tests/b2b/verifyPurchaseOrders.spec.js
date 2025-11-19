@@ -43,8 +43,6 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
-      cy.logToTerminal("INITIAL CONFIG:", config);
-
       config.reduce((chain, element, index) => {
         return chain.then(() => {
           cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
@@ -57,11 +55,7 @@ describe('B2B Purchase Orders', () => {
             );
           });
         });
-      }, cy.wrap(null))
-        .then(() => {
-          cy.logToTerminal("FINAL CONFIG (WITH ROLE IDs):", config);
-        });
-
+      }, cy.wrap(null));
 
       // Create users sequentially using Cypress commands
       // Use reduce to ensure sequential execution
@@ -69,7 +63,9 @@ describe('B2B Purchase Orders', () => {
         return chain.then(() => {
           cy.wait(3000);
           return cy.wrap(null).then(() => {
-            cy.log(`Creating user: ${element.user.email}`);
+            cy.logToTerminal(
+              `✅ Creating user: ${element.user.email} with role ID: ${element.roleId}`
+            );
             return createUserAssignCompanyAndRole(element.user, element.roleId);
           });
         });
