@@ -21,7 +21,7 @@ describe('B2B Purchase Orders', () => {
 
   it(
     'Should verify Purchase Orders end-to-end workflow with approval rules management and order processing',
-    { tags: ['@B2BPaas', '@B2BSaas'] },
+    { tags: ['@B2BSaas'] },
     () => {
       const config = [
         {
@@ -326,21 +326,13 @@ describe('B2B Purchase Orders', () => {
     }
   );
 
-  it(
-    'Logout Sale and Delete Customer',
-    { tags: ['@B2BPaas', '@B2BSaas'] },
-    () => {
-      actions.login(users.sales_manager, urls);
-      cy.url().should('include', urls.account);
-    }
-  );
+  it('Logout Sale and Delete Customer', { tags: ['@B2BSaas'] }, () => {
+    actions.login(users.sales_manager, urls);
+    cy.url().should('include', urls.account);
+  });
 
-  it(
-    'Logout Approver and Delete Customer',
-    { tags: ['@B2BPaas', '@B2BSaas'] },
-    () => {
-      actions.login(users.approver_manager, urls);
-      cy.url().should('include', urls.account);
-    }
-  );
+  it('Logout Approver and Delete Customer', { tags: ['@B2BSaas'] }, () => {
+    actions.login(users.approver_manager, urls);
+    cy.url().should('include', urls.account);
+  });
 });
