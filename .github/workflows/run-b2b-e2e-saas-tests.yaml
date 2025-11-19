@@ -12,8 +12,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
       - name: Install root dependencies
         run: npm ci
       - name: Install adobe aem cli dependencies
@@ -24,7 +24,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: cypress
-          wait-on: 'http://localhost:3000'
+          wait-on: "http://localhost:3000"
           command: npm run cypress:b2b:saas:run
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
@@ -32,6 +32,8 @@ jobs:
           CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
           CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
           CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
+          DEBUG: "cypress:*"
+          CYPRESS_DEBUG: "true"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

@@ -1,14 +1,14 @@
 module.exports = {
   defaultCommandTimeout: 60000,
-  screenshotsFolder: 'screenshots',
-  downloadsFolder: 'downloads',
-  fixturesFolder: 'src/fixtures',
+  screenshotsFolder: "screenshots",
+  downloadsFolder: "downloads",
+  fixturesFolder: "src/fixtures",
   video: false,
   pageLoadTimeout: 60000,
   requestTimeout: 60000,
   viewportHeight: 900,
   viewportWidth: 1440,
-  scrollBehavior: 'nearest',
+  scrollBehavior: "nearest",
   trashAssetsBeforeRuns: false,
   chromeWebSecurity: false,
   retries: {
@@ -16,15 +16,24 @@ module.exports = {
   },
   e2e: {
     setupNodeEvents(on, config) {
-      require('@cypress/grep/src/plugin')(config);
+      require("@cypress/grep/src/plugin")(config);
+
+      // Enable detailed logging for CI debugging
+      if (config.isTextTerminal) {
+        require("cypress-log-to-output").install(on, (type, event) => {
+          // Print all console logs from browser to terminal
+          return true;
+        });
+      }
+
       return config;
     },
-    baseUrl: 'http://localhost:3000/',
-    supportFile: 'src/support/index.js',
-    specPattern: 'src/tests/b2c/**/*.spec.js',
+    baseUrl: "http://localhost:3000/",
+    supportFile: "src/support/index.js",
+    specPattern: "src/tests/b2c/**/*.spec.js",
   },
-  reporter: 'cypress-multi-reporters',
+  reporter: "cypress-multi-reporters",
   reporterOptions: {
-    configFile: 'reporter-config.json',
+    configFile: "reporter-config.json",
   },
 };
