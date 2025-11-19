@@ -131,10 +131,36 @@ describe("B2B Purchase Orders", () => {
         .last()
         .then(($row) => {
           cy.logToTerminal(`✅ Found rule row, clicking Show button`);
+          cy.logToTerminal(`Row HTML: ${$row.html().substring(0, 200)}...`);
         })
         .find(selectors.poShowButton)
+        .then(($buttons) => {
+          cy.logToTerminal(
+            `🔍 Found ${$buttons.length} button(s) with selector: ${selectors.poShowButton}`
+          );
+          $buttons.each((i, btn) => {
+            cy.logToTerminal(
+              `  Button ${i}: text="${$(btn).text().trim()}", visible=${$(
+                btn
+              ).is(":visible")}`
+            );
+          });
+        })
         .contains(texts.show)
-        .click();
+        .then(($showBtn) => {
+          cy.logToTerminal(
+            `✅ Found Show button with text: "${$showBtn.text().trim()}"`
+          );
+          cy.logToTerminal(
+            `Show button - visible: ${$showBtn.is(
+              ":visible"
+            )}, disabled: ${$showBtn.is(":disabled")}`
+          );
+        })
+        .click()
+        .then(() => {
+          cy.logToTerminal(`✅ Show button clicked successfully`);
+        });
 
       cy.logToTerminal(`🔍 Looking for Edit button with text: "${texts.edit}"`);
       cy.get(selectors.poEditButton)
@@ -152,39 +178,53 @@ describe("B2B Purchase Orders", () => {
       cy.logToTerminal(`  - Description: "${approvalRules.rule4.description}"`);
       cy.logToTerminal(`  - Applies to: "${approvalRules.rule4.appliesTo}"`);
       cy.logToTerminal(`  - Rule type: "${approvalRules.rule4.ruleType}"`);
-      cy.logToTerminal(`  - Rule condition: "${approvalRules.rule4.ruleCondition}"`);
+      cy.logToTerminal(
+        `  - Rule condition: "${approvalRules.rule4.ruleCondition}"`
+      );
       cy.logToTerminal(`  - Rule value: "${approvalRules.rule4.ruleValue}"`);
-      cy.logToTerminal(`  - Approver role: "${approvalRules.rule4.approverRole}"`);
-      
+      cy.logToTerminal(
+        `  - Approver role: "${approvalRules.rule4.approverRole}"`
+      );
+
       actions.fillApprovalRuleForm(approvalRules.rule4, texts);
-      
+
       cy.logToTerminal(`✅ Approval rule form filled successfully`);
 
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
       cy.logToTerminal(`🔍 Verifying return to Approval Rules page`);
       cy.contains("Approval rules").should("be.visible");
-      
-      cy.logToTerminal(`🔍 Verifying rule "${approvalRules.rule4.name}" appears in list`);
+
+      cy.logToTerminal(
+        `🔍 Verifying rule "${approvalRules.rule4.name}" appears in list`
+      );
       cy.contains(approvalRules.rule4.name)
         .should("be.visible")
         .then(() => {
-          cy.logToTerminal(`✅ Rule "${approvalRules.rule4.name}" found in list`);
+          cy.logToTerminal(
+            `✅ Rule "${approvalRules.rule4.name}" found in list`
+          );
         });
-      
+
       cy.logToTerminal(`🔍 Checking rule status (enabled/disabled)`);
       cy.get(`tr:contains("${approvalRules.rule4.name}")`)
         .last()
         .within(() => {
-          cy.get('td').then(($cells) => {
-            const statusText = $cells.filter(':contains("Enabled"), :contains("Disabled")').text();
+          cy.get("td").then(($cells) => {
+            const statusText = $cells
+              .filter(':contains("Enabled"), :contains("Disabled")')
+              .text();
             cy.logToTerminal(`Rule status found: "${statusText}"`);
-            if (statusText.includes('Disabled')) {
-              cy.logToTerminal(`⚠️ WARNING: Rule is DISABLED - this may cause test failures!`);
-            } else if (statusText.includes('Enabled')) {
+            if (statusText.includes("Disabled")) {
+              cy.logToTerminal(
+                `⚠️ WARNING: Rule is DISABLED - this may cause test failures!`
+              );
+            } else if (statusText.includes("Enabled")) {
               cy.logToTerminal(`✅ Rule is ENABLED`);
             } else {
-              cy.logToTerminal(`⚠️ Could not determine rule status from text: "${statusText}"`);
+              cy.logToTerminal(
+                `⚠️ Could not determine rule status from text: "${statusText}"`
+              );
             }
           });
         });
