@@ -17,6 +17,14 @@ module.exports = {
   e2e: {
     setupNodeEvents(on, config) {
       require('@cypress/grep/src/plugin')(config);
+      
+      on('task', {
+        log(message) {
+          console.log(message);
+          return null;
+        },
+      });
+      
       return config;
     },
     baseUrl: 'http://localhost:3000/',
