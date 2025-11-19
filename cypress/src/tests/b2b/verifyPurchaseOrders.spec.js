@@ -43,7 +43,7 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
-      cy.logToTerminal("INITIAL CONFIG:", JSON.stringify(config));
+      cy.logToTerminal("INITIAL CONFIG:", config);
 
       config.reduce((chain, element, index) => {
         return chain.then(() => {
@@ -59,7 +59,7 @@ describe('B2B Purchase Orders', () => {
         });
       }, cy.wrap(null))
         .then(() => {
-          cy.logToTerminal("FINAL CONFIG (WITH ROLE IDs):", JSON.stringify(config));
+          cy.logToTerminal("FINAL CONFIG (WITH ROLE IDs):", config);
         });
 
 
