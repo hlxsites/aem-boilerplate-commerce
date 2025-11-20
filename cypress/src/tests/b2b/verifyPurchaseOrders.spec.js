@@ -59,6 +59,8 @@ describe("B2B Purchase Orders", () => {
 
       actions.login(users.po_rules_manager, urls);
 
+      cy.wait(50000);
+
       cy.visit(urls.companyStructure);
       cy.wait(3000);
       cy.contains("Roles and Permissions").should("be.visible").click();
