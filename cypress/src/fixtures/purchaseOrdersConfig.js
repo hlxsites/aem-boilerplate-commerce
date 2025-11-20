@@ -27,11 +27,11 @@ export const approvalRules = {
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: 'salesManager',
+    role: '[SALES_MANAGER_ROLE_NAME]',
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',
-    approverRole: 'PO Approver',
+    approverRole: '[APPROVER_ROLE_NAME]',
   },
   rule2: {
     name: `Approval Rule for Multiple Product Orders ${random}`,
@@ -41,7 +41,7 @@ export const approvalRules = {
     ruleType: 'Number of SKUs',
     ruleCondition: 'is more than',
     ruleValue: '1',
-    approverRole: 'PO Rules Manager',
+    approverRole: '[RULES_MANAGER_ROLE_NAME]',
   },
   rule3: {
     name: `New Approval Rule for Multiple Product Orders ${random}`,
@@ -51,18 +51,18 @@ export const approvalRules = {
     ruleType: 'Number of SKUs',
     ruleCondition: 'is more than',
     ruleValue: '1',
-    approverRole: 'PO Approver',
+    approverRole: '[APPROVER_ROLE_NAME]',
   },
   rule4: {
     name: `Approval Rule for Orders Over 50 Dollars ${random}`,
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: 'salesManager',
+    role: '[SALES_MANAGER_ROLE_NAME]',
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',
-    approverRole: 'PO Rules Manager',
+    approverRole: '[RULES_MANAGER_ROLE_NAME]',
   },
 };
 

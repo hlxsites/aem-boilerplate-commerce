@@ -60,8 +60,19 @@ describe('B2B Purchase Orders', () => {
 
       const approvalRules = { ...defaultApprovalRules };
       Object.keys(approvalRules).forEach((key) => {
-        if (approvalRules[key].role === 'salesManager') {
-          approvalRules[key].role = config[1].role.role_name;
+        const rulesManagerRoleName = config[0].role.role_name;
+        if (approvalRules[key].role === '[RULES_MANAGER_ROLE_NAME]') {
+          approvalRules[key].role = rulesManagerRoleName;
+        }
+
+        const salesManagerRoleName = config[1].role.role_name;
+        if (approvalRules[key].role === '[SALES_MANAGER_ROLE_NAME]') {
+          approvalRules[key].role = salesManagerRoleName;
+        }
+
+        const approverRoleName = config[2].role.role_name;
+        if (approvalRules[key].role === '[APPROVER_ROLE_NAME]') {
+          approvalRules[key].role = approverRoleName;
         }
       });
 
