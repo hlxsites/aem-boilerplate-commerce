@@ -197,6 +197,25 @@ export const requisitionListItemActionsDeleteButton =
 export const requisitionListModalConfirmButton =
   '.requisition-list-modal__buttons button[data-testid="rl-modal-confirm-button"]';
 
+// Requisition List View
+export const requisitionListGridNameLink =
+  ".dropin-table__body__row .requisition-list-grid-wrapper__name a";
+export const requisitionListViewRenameButton =
+  '[data-testid="rename-list-btn"]';
+export const requisitionListViewQuantityInput =
+  ".requisition-list-view-product-list-table__quantity input";
+export const requisitionListViewBatchActionsToggle =
+  ".requisition-list-view__batch-actions-select-toggle";
+export const requisitionListViewBatchActionsCountBadge =
+  ".requisition-list-view__batch-actions-count-badge";
+export const requisitionListViewBulkActionsAddToCartButton =
+  '[data-testid="bulk-actions-add-to-cart-btn"]';
+export const requisitionListViewBulkActionsDeleteButton =
+  '[data-testid="bulk-actions-delete-btn"]';
+export const requisitionListViewDeleteButton =
+  '[data-testid="delete-list-btn"]';
+export const miniCartButton = ".minicart-wrapper .nav-cart-button";
+
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 
 // Navigation Fields

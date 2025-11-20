@@ -117,7 +117,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.visit(products.simple.urlPath);
     cy.get(fields.addToRequisitionListButton).should("exist");
 
-    // PDP Workflow
     describe("PDP Workflow", () => {
       assertRequisitionListExists(
         fields.requisitionListSelector,
@@ -140,7 +139,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.contains("Apparel").should("be.visible").click();
     });
 
-    // PLP Workflow
     describe("PLP Workflow", () => {
       assertRequisitionListExists(
         fields.requisitionListSelector,
@@ -197,13 +195,11 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
     describe("Requisition List View Workflow", () => {
       // Click first link on the list
-      cy.get(".dropin-table__body__row .requisition-list-grid-wrapper__name a")
-        .eq(0)
-        .click();
+      cy.get(fields.requisitionListGridNameLink).eq(0).click();
       cy.contains("Newly Created Requisition List").should("be.visible");
 
       // 1. Rename Requisition List from the Requisition List view page
-      cy.get('[data-testid="rename-list-btn"]').click();
+      cy.get(fields.requisitionListViewRenameButton).click();
       cy.contains("Update Requisition List").should("be.visible");
       cy.wait(1000);
       cy.get(fields.requisitionListFormName)
@@ -219,53 +215,47 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // TODO: assert alert is displayed
 
       // 2. Update quantity of the first item in the Requisition List
-      cy.get(".requisition-list-view-product-list-table__quantity input")
-        .eq(0)
-        .click();
+      cy.get(fields.requisitionListViewQuantityInput).eq(0).click();
       cy.wait(1000);
-      cy.get(".requisition-list-view-product-list-table__quantity input")
+      cy.get(fields.requisitionListViewQuantityInput)
         .eq(0)
         .clear()
         .type("10")
         .blur();
       cy.wait(1000);
       // TODO: assert alert is displayed
-      cy.get(".requisition-list-view-product-list-table__quantity input")
+      cy.get(fields.requisitionListViewQuantityInput)
         .eq(0)
         .should("have.value", "10");
 
       // 3. Move all items to cart
-      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
         "2"
       );
-      cy.get('[data-testid="bulk-actions-add-to-cart-btn"]').click();
+      cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
       // TODO: assert alert is displayed
-      cy.get(".minicart-wrapper .nav-cart-button").should(
-        "have.attr",
-        "data-count",
-        "12"
-      );
+      cy.get(fields.miniCartButton).should("have.attr", "data-count", "12");
 
       // 4. Delete all items from the Requisition List
-      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "not.exist"
       );
       cy.wait(1000);
-      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
         "2"
       );
-      cy.get('[data-testid="bulk-actions-delete-btn"]').click();
+      cy.get(fields.requisitionListViewBulkActionsDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
       // TODO: assert alert is displayed
       cy.get(fields.requisitionListItemRow).should("have.length", 0);
 
-      // 5. Delete the Requisition List
-      cy.get('[data-testid="delete-list-btn"]').click();
+      // 5. Delete the whole Requisition List
+      cy.get(fields.requisitionListViewDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
       // TODO: assert alert is displayed
 
