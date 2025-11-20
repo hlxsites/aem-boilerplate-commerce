@@ -1,6 +1,6 @@
 const random = Cypress._.random(0, 10000000);
 
-export const texts = {
+export const poLabels = {
   addToCart: 'Add to Cart',
   checkout: 'Checkout',
   checkMoneyOrder: 'Check / Money order',
@@ -19,79 +19,83 @@ export const texts = {
   allUsers: 'All Users',
   grandTotal: 'Grand Total',
   numberOfSKUs: 'Number of SKUs',
+  approvalRulesHeader: 'Approval rules',
+  approvalRuleFormHeader: 'Purchase order approval rule'
 };
 
-export const approvalRules = {
+export const poApprovalRules = {
   rule1: {
     name: `Approval Rule for Orders Over 50 Dollars ${random}`,
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: '[SALES_MANAGER_ROLE_NAME]',
+    role: '[SALES_MANAGER_ROLE_NAME]', // Will be overridden with dynamic value
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',
-    approverRole: '[APPROVER_ROLE_NAME]',
+    approverRole: '[APPROVER_ROLE_NAME]', // Will be overridden with dynamic value
   },
-  rule2: {
+  rule1Edited: {
     name: `Approval Rule for Multiple Product Orders ${random}`,
     description:
       'This rule requires approval for purchase orders with more than one unique product SKU',
     appliesTo: 'All Users',
+    role: null,
     ruleType: 'Number of SKUs',
     ruleCondition: 'is more than',
     ruleValue: '1',
-    approverRole: '[RULES_MANAGER_ROLE_NAME]',
+    approverRole: '[RULES_MANAGER_ROLE_NAME]', // Will be overridden with dynamic value
   },
-  rule3: {
+  rule2: {
     name: `New Approval Rule for Multiple Product Orders ${random}`,
     description:
       'This rule requires approval for purchase orders with more than one unique product SKU',
     appliesTo: 'All Users',
+    role: null,
     ruleType: 'Number of SKUs',
     ruleCondition: 'is more than',
     ruleValue: '1',
-    approverRole: '[APPROVER_ROLE_NAME]',
+    approverRole: '[APPROVER_ROLE_NAME]', // Will be overridden with dynamic value
   },
-  rule4: {
+  rule2Edited: {
     name: `Approval Rule for Orders Over 50 Dollars ${random}`,
     description:
       'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
-    role: '[SALES_MANAGER_ROLE_NAME]',
+    role: '[SALES_MANAGER_ROLE_NAME]', // Will be overridden with dynamic value
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
     ruleValue: '50',
-    approverRole: '[RULES_MANAGER_ROLE_NAME]',
+    approverRole: '[RULES_MANAGER_ROLE_NAME]', // Will be overridden with dynamic value
   },
 };
 
-export const PASSWORD = 'Qwe123456';
+export const poUserPassword = 'Qwe123456';
 
-export const users = {
+export const poUsers = {
   sales_manager: {
     firstname: 'Sales',
     lastname: 'Manager',
-    email: `${random}po_user_sales_manager@example.com`,
-    password: PASSWORD,
+    email: `${random}_po_user_sales_manager@example.com`,
+    password: poUserPassword,
   },
   po_rules_manager: {
     firstname: 'PO Rules',
     lastname: 'Manager',
-    email: `${random}po_user_po_rules_manager@example.com`,
-    password: PASSWORD,
+    email: `${random}_po_user_po_rules_manager@example.com`,
+    password: poUserPassword,
   },
   approver_manager: {
     firstname: 'Approver',
     lastname: 'Manager',
-    email: `${random}po_user_approver_manager@example.com`,
-    password: PASSWORD,
+    email: `${random}_po_user_approver_manager@example.com`,
+    password: poUserPassword,
   },
 };
 
 export const poRolesConfig = {
   salesManager: {
-    role_name: `PO Sales Manager ${random}`,
+    role_name: `${random} PO Sales Manager`,
     company_id: 13,
     permissions: [
       { resource_id: "Magento_Company::index", permission: "allow" },
@@ -105,7 +109,7 @@ export const poRolesConfig = {
     ]
   },
   rulesManager: {
-    role_name: `PO Rules Manager ${random}`,
+    role_name: `${random} PO Rules Manager`,
     company_id: 13,
     permissions: [
       { resource_id: "Magento_Company::index", permission: "allow" },
@@ -120,7 +124,7 @@ export const poRolesConfig = {
     ]
   },
   approver: {
-    role_name: `PO Approver ${random}`,
+    role_name: `${random} PO Approver`,
     company_id: 13,
     permissions: [
       { resource_id: "Magento_Company::index", permission: "allow" },
