@@ -306,7 +306,7 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('📄 Navigating to Company Purchase Orders');
       cy.visit(urls.purchaseOrders);
-      cy.wait(1000);
+      cy.wait(3000);
 
       cy.get(selectors.poCompanyPOContainer).should('exist');
 

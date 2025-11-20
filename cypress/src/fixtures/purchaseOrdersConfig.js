@@ -78,21 +78,21 @@ export const poApprovalRules = {
 
 export const poUsers = {
   sales_manager: {
-    firstname: 'Sales',
-    lastname: 'Manager',
-    email: `po_user_sales_manager_${random}@example.com`,
+    firstname: `PO Sales Manager ${random}`,
+    lastname: 'Test',
+    email: `po_sales_manager_${random}@example.com`,
     password: USER_PASSWORD,
   },
   po_rules_manager: {
-    firstname: 'PO Rules',
-    lastname: 'Manager',
-    email: `po_user_po_rules_manager_${random}@example.com`,
+    firstname: `PO Rules Manager ${random}`,
+    lastname: 'Test',
+    email: `po_rules_manager_${random}@example.com`,
     password: USER_PASSWORD,
   },
   approver_manager: {
-    firstname: 'Approver',
-    lastname: 'Manager',
-    email: `po_user_approver_manager_${random}@example.com`,
+    firstname: 'PO Approver',
+    lastname: 'Test',
+    email: `po_approver_${random}@example.com`,
     password: USER_PASSWORD,
   },
 };
