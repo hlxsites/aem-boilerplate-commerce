@@ -358,12 +358,13 @@ describe('B2B Purchase Orders', () => {
       cy.contains(selectors.poShowButton, 'Delete').first().click();
       cy.contains(selectors.poShowButton, poLabels.show).should('not.exist');
 
+      cy.logToTerminal('✅ B2B Purchase Orders E2E workflow execution completed');
+
       /**
        * User removal is handled by "cypress/src/support/deleteCustomer.js"
        * The currently logged-in user will be automatically deleted at the end of each test block
        */
       cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
-      cy.logToTerminal('✅ B2B Purchase Orders E2E workflow execution completed');
     }
   );
 
@@ -377,7 +378,7 @@ describe('B2B Purchase Orders', () => {
      * User removal is handled by "cypress/src/support/deleteCustomer.js"
      * The currently logged-in user will be automatically deleted at the end of each test block
      */
-    cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
+    cy.logToTerminal('🗑️ Deleting Sales Manager user');
     cy.logToTerminal('✅ Cleanup 1 completed');
   });
 
