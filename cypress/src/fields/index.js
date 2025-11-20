@@ -192,7 +192,7 @@ export const requisitionListFormActionsButton =
 
 export const requisitionListItemActionsRenameButton =
   '.requisition-list-grid-wrapper__actions button[data-testid="rename-button"]';
-export const requisitionListItemActionsRemoveButton =
+export const requisitionListItemActionsDeleteButton =
   '.requisition-list-grid-wrapper__actions button[data-testid="delete-button"]';
 export const requisitionListModalConfirmButton =
   '.requisition-list-modal__buttons button[data-testid="rl-modal-confirm-button"]';

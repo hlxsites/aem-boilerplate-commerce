@@ -186,8 +186,8 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.contains("Save").should("be.visible").click();
     cy.contains("Updated Requisition List").should("be.visible");
 
-    // Remove Requisition List
-    cy.get(fields.requisitionListItemActionsRemoveButton).eq(2).click();
+    // Delete Requisition List
+    cy.get(fields.requisitionListItemActionsDeleteButton).eq(2).click();
     cy.get(fields.requisitionListModalConfirmButton).click();
     cy.get(fields.requisitionListItemRow).should("have.length", 2);
 
@@ -226,6 +226,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.get(".requisition-list-view-product-list-table__quantity input")
       .eq(0)
       .click();
+    cy.wait(1000);
     cy.get(".requisition-list-view-product-list-table__quantity input")
       .eq(0)
       .clear()
@@ -268,6 +269,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.get(".requisition-list-view__batch-actions-count-badge").should(
       "not.exist"
     );
+    cy.wait(1000);
     cy.get(".requisition-list-view__batch-actions-select-toggle").click();
     cy.get(".requisition-list-view__batch-actions-count-badge").should(
       "have.text",
@@ -284,13 +286,22 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
     // assert the items are deleted from the Requisition List
     cy.get(fields.requisitionListItemRow).should("have.length", 0);
+
     // Delete the Requisition List
 
-    // click delete button at the top
-    // modal is opened
-    // click confirm button
-    // wait for the action to complete
+    cy.get('[data-testid="delete-list-btn"]').click();
+    cy.get(fields.requisitionListModalConfirmButton).click();
     // assert alert is displayed
+    /*
+    cy.get(fields.requisitionListAlert)
+      .should("be.visible")
+      .contains("Requisition list deleted successfully");
+    */
     // assert the Requisition List is deleted
+    cy.url().should("include", "customer/requisition-lists");
+    cy.get(fields.requisitionListItemRow).should(
+      "not.have",
+      "Now updating from RL view page"
+    );
   });
 });
