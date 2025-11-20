@@ -381,5 +381,8 @@ describe('B2B Purchase Orders', () => {
       .find('button')
       .contains('Delete')
       .click();
+
+    // Confirm deletion in modal
+    cy.contains('button', 'Delete').click();
   });
 });
