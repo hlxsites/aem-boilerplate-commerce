@@ -9,6 +9,8 @@ import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
 describe('B2B Purchase Orders', () => {
+  cy.logToTerminal("🚀 TEST");
+
   const urls = Cypress.env('poUrls');
 
   beforeEach(() => {

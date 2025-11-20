@@ -70,7 +70,7 @@ export const poApprovalRules = {
   },
 };
 
-export const poUserPassword = 'Qwe123456';
+const poUserPassword = 'Qwe123456';
 
 export const poUsers = {
   sales_manager: {
