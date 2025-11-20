@@ -101,27 +101,27 @@ export default async function decorate(block) {
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
           ctx.prependSibling(shippingInformation);
-        
+
           const progressSpinner = document.createElement('div');
           progressSpinner.classList.add('negotiable-quote-template__progress-spinner-container');
           progressSpinner.setAttribute('hidden', true);
           ctx.prependSibling(progressSpinner);
-        
+
           UI.render(ProgressSpinner, {
             className: 'negotiable-quote-template__progress-spinner',
             size: 'large',
           })(progressSpinner);
-        
+
           ctx.onChange((next) => {
             // Remove existing content from the shipping information container
             shippingInformation.innerHTML = '';
-        
+
             const { templateData } = next;
-        
+
             if (!templateData) return;
-        
+
             if (!templateData.canSendForReview) return;
-        
+
             if (templateData.canSendForReview) {
               accountRenderer.render(Addresses, {
                 minifiedView: false,
@@ -135,10 +135,10 @@ export default async function decorate(block) {
                   const addressUid = data?.uid;
                   if (!isValid) return;
                   if (!addressUid) return;
-        
+
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
-        
+
                   addQuoteTemplateShippingAddress({
                     templateId: quoteTemplateId,
                     shippingAddress: {
@@ -151,17 +151,17 @@ export default async function decorate(block) {
                 },
                 onSubmit: (event, formValid) => {
                   if (!formValid) return;
-        
+
                   const formValues = getFormValues(event.target);
-        
+
                   const [regionCode, _regionId] = formValues.region?.split(',') || [];
-        
+
                   // iterate through the object entries and combine the values of keys that have
                   // a prefix of 'street' into an array
                   const streetInputValues = Object.entries(formValues)
                     .filter(([key]) => key.startsWith('street'))
                     .map(([_, value]) => value);
-        
+
                   const addressInput = {
                     firstname: formValues.firstName,
                     lastname: formValues.lastName,
@@ -174,12 +174,12 @@ export default async function decorate(block) {
                     telephone: formValues.telephone,
                     saveInAddressBook: formValues.saveInAddressBook,
                   };
-        
+
                   // These values are not part of the standard address input
                   const additionalAddressInput = {
                     vat_id: formValues.vatId,
                   };
-        
+
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
                   addQuoteTemplateShippingAddress({

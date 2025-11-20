@@ -205,10 +205,11 @@ export default async function decorate(block) {
 
     element.removeAttribute('hidden');
 
-    // Button is disabled is there is no cartId or the cart subtotal is less than the minimum total for quote request
+    // Button is disabled is there is no cartId or the cart subtotal
+    // is less than the minimum total for quote request
     const isDisabled = !cartId || cartSubtotal < minimumTotalNumberForQuoteRequest;
 
-    if(isDisabled) {
+    if (isDisabled) {
       element.setAttribute('title', (placeholders?.NegotiableQuote?.Request?.Button?.insufficientTotalMessage || '').replace('{count}', minimumTotalNumberForQuoteRequest));
     } else {
       element.removeAttribute('title');
