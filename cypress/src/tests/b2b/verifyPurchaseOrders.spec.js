@@ -118,11 +118,9 @@ describe('B2B Purchase Orders', () => {
       cy.contains('Approval rules').should('be.visible');
 
       cy.get(selectors.poShowButton).contains(texts.addNewRule).click();
-
       cy.contains('Purchase order approval rule').should('be.visible');
 
       actions.fillApprovalRuleForm(approvalRules.rule1, texts);
-
       cy.get(selectors.poShowButton).contains(texts.save).click();
 
       cy.contains('Approval rules').should('be.visible');
