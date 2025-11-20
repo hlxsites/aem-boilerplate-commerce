@@ -382,7 +382,8 @@ describe('B2B Purchase Orders', () => {
       .contains('Delete')
       .click();
 
-    // Confirm deletion in modal
-    cy.contains('button', 'Delete').click();
+    cy.get('.delete-role-modal').within(() => {
+      cy.contains('button', 'Delete').click();
+    });
   });
 });
