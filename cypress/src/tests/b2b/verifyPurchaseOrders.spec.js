@@ -145,12 +145,12 @@ describe('B2B Purchase Orders', () => {
 
       cy.contains('Purchase order approval rule').should('be.visible');
 
-      actions.fillApprovalRuleForm(approvalRules.rule2, poLabels);
+      actions.fillApprovalRuleForm(approvalRules.rule2Edited, poLabels);
 
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains('Approval rules').should('be.visible');
-      cy.contains(approvalRules.rule2.name).should('be.visible');
+      cy.contains(approvalRules.rule2Edited.name).should('be.visible');
 
       // === Step 3: Create Approval Rule with Number of SKUs condition ===
       cy.logToTerminal("📝 STEP 3: Creating second Approval Rule with Number of SKUs condition");
@@ -163,11 +163,11 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains('Approval rules').should('be.visible');
-      cy.contains(approvalRules.rule3.name).should('be.visible');
+      cy.contains(approvalRules.rule2.name).should('be.visible');
 
       // === Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total condition ===
       cy.logToTerminal("✏️ STEP 4: Editing second Approval Rule to Grand Total condition");
-      cy.get(`tr:contains("${approvalRules.rule3.name}")`)
+      cy.get(`tr:contains("${approvalRules.rule2.name}")`)
         .last()
         .find(selectors.poShowButton)
         .contains(poLabels.show)
@@ -180,12 +180,12 @@ describe('B2B Purchase Orders', () => {
 
       cy.contains('Purchase order approval rule').should('be.visible');
 
-      actions.fillApprovalRuleForm(approvalRules.rule4, poLabels);
+      actions.fillApprovalRuleForm(approvalRules.rule2Edited, poLabels);
 
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains('Approval rules').should('be.visible');
-      cy.contains(approvalRules.rule4.name).should('be.visible');
+      cy.contains(approvalRules.rule2Edited.name).should('be.visible');
 
       cy.logToTerminal("🚪 Logging out PO Rules Manager");
       actions.logout(poLabels);
