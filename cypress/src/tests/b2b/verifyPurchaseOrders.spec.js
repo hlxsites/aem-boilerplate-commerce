@@ -1,10 +1,5 @@
 import { createUserAssignCompanyAndRole, manageCompanyRole } from '../../support/b2bPOAPICalls';
-import {
-  poLabels,
-  poApprovalRules,
-  poUsers,
-  poRolesConfig,
-} from '../../fixtures';
+import { poLabels, poApprovalRules, poUsers, poRolesConfig } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
@@ -105,15 +100,15 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
       cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-      actions.fillApprovalRuleForm(poApprovalRule.rule1, poLabels);
+      actions.fillApprovalRuleForm(poApprovalRules.rule1, poLabels);
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-      cy.contains(poApprovalRule.rule1.name).should('be.visible');
+      cy.contains(poApprovalRules.rule1.name).should('be.visible');
 
       // === Step 2: Edit first Approval Rule (Grand Total) to Number of SKUs condition ===
       cy.logToTerminal('✏️ STEP 2: Editing first Approval Rule to Number of SKUs condition');
-      cy.contains(poApprovalRule.rule1.name)
+      cy.contains(poApprovalRules.rule1.name)
         .should('be.visible')
         .closest('tr')
         .find(selectors.poShowButton)
@@ -122,27 +117,27 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poEditButton).filter(`:contains("${poLabels.edit}")`).first().click();
       cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-      actions.fillApprovalRuleForm(poApprovalRule.rule1Edited, poLabels);
+      actions.fillApprovalRuleForm(poApprovalRules.rule1Edited, poLabels);
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-      cy.contains(poApprovalRule.rule1Edited.name).should('be.visible');
+      cy.contains(poApprovalRules.rule1Edited.name).should('be.visible');
 
       // === Step 3: Create Approval Rule with Number of SKUs condition ===
       cy.logToTerminal('📝 STEP 3: Creating second Approval Rule with Number of SKUs condition');
       cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
       cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-      actions.fillApprovalRuleForm(poApprovalRule.rule2, poLabels);
+      actions.fillApprovalRuleForm(poApprovalRules.rule2, poLabels);
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-      cy.contains(poApprovalRule.rule2.name).should('be.visible');
+      cy.contains(poApprovalRules.rule2.name).should('be.visible');
 
       // === Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total condition ===
       cy.logToTerminal('✏️ STEP 4: Editing second Approval Rule to Grand Total condition');
 
-      cy.get(`tr:contains("${poApprovalRule.rule2.name}")`)
+      cy.get(`tr:contains("${poApprovalRules.rule2.name}")`)
         .last()
         .find(selectors.poShowButton)
         .contains(poLabels.show)
@@ -150,11 +145,11 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poEditButton).filter(`:contains("${poLabels.edit}")`).first().click();
       cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-      actions.fillApprovalRuleForm(poApprovalRule.rule2Edited, poLabels);
+      actions.fillApprovalRuleForm(poApprovalRules.rule2Edited, poLabels);
       cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-      cy.contains(poApprovalRule.rule2Edited.name).should('be.visible');
+      cy.contains(poApprovalRules.rule2Edited.name).should('be.visible');
 
       cy.logToTerminal('🚪 Logging out PO Rules Manager');
       actions.logout(poLabels);
