@@ -114,6 +114,9 @@ export const poRolesConfig = {
       { resource_id: "Magento_PurchaseOrder::all", permission: "allow" },
       { resource_id: "Magento_PurchaseOrderRule::view_approval_rules", permission: "allow" },
       { resource_id: "Magento_PurchaseOrderRule::manage_approval_rules", permission: "allow" },
+      { resource_id: "Magento_PurchaseOrder::view_purchase_orders", permission: "allow" },
+      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_company", permission: "allow" },
+      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_subordinates", permission: "allow" },
     ]
   },
   approver: {
