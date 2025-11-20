@@ -118,51 +118,53 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.get(fields.addToRequisitionListButton).should("exist");
 
     // PDP Workflow
+    describe("PDP Workflow", () => {
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Newly Created Requisition List"
+      );
+      createRequisitionList(
+        fields.requisitionListSelector,
+        "Req list created from PDP",
+        "Another dummy description"
+      );
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Req list created from PDP"
+      );
 
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Newly Created Requisition List"
-    );
-    createRequisitionList(
-      fields.requisitionListSelector,
-      "Req list created from PDP",
-      "Another dummy description"
-    );
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Req list created from PDP"
-    );
+      // Open Catalog Menu
+      cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
-    // Open Catalog Menu
-    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
-
-    // Navigate to Apparel category page
-    cy.contains("Apparel").should("be.visible").click();
+      // Navigate to Apparel category page
+      cy.contains("Apparel").should("be.visible").click();
+    });
 
     // PLP Workflow
+    describe("PLP Workflow", () => {
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Newly Created Requisition List",
+        0
+      );
+      createRequisitionList(
+        fields.requisitionListSelector,
+        "Now Req list created from PLP",
+        "Yet another dummy description",
+        0
+      );
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Now Req list created from PLP",
+        0
+      );
 
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Newly Created Requisition List",
-      0
-    );
-    createRequisitionList(
-      fields.requisitionListSelector,
-      "Now Req list created from PLP",
-      "Yet another dummy description",
-      0
-    );
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Now Req list created from PLP",
-      0
-    );
+      // Open Catalog Menu
+      cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
-    // Open Catalog Menu
-    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
-
-    // Navigate to Apparel category page
-    cy.contains("Apparel").should("be.visible").click();
+      // Navigate to Apparel category page
+      cy.contains("Apparel").should("be.visible").click();
+    });
 
     // Go to customer account page
     cy.visit("/customer/account");
@@ -171,137 +173,107 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.get(fields.reqListGridWrapper).should("exist");
     cy.get(fields.requisitionListItemRow).should("have.length", 3);
 
-    // Rename Requisition List
-    cy.get(fields.requisitionListItemActionsRenameButton).eq(1).click();
-    cy.contains("Update Requisition List").should("be.visible");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormName)
-      .clear()
-      .type("Updated Requisition List");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormDescription)
-      .clear()
-      .type("Dummy description");
-    cy.wait(1000);
-    cy.contains("Save").should("be.visible").click();
-    cy.contains("Updated Requisition List").should("be.visible");
+    describe("Requisition List Grid Workflow", () => {
+      // Rename Requisition List
+      cy.get(fields.requisitionListItemActionsRenameButton).eq(1).click();
+      cy.contains("Update Requisition List").should("be.visible");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormName)
+        .clear()
+        .type("Updated Requisition List");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormDescription)
+        .clear()
+        .type("Dummy description");
+      cy.wait(1000);
+      cy.contains("Save").should("be.visible").click();
+      cy.contains("Updated Requisition List").should("be.visible");
 
-    // Delete Requisition List
-    cy.get(fields.requisitionListItemActionsDeleteButton).eq(2).click();
-    cy.get(fields.requisitionListModalConfirmButton).click();
-    cy.get(fields.requisitionListItemRow).should("have.length", 2);
+      // Delete Requisition List
+      cy.get(fields.requisitionListItemActionsDeleteButton).eq(2).click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      cy.get(fields.requisitionListItemRow).should("have.length", 2);
+    });
 
-    // Navigate to first Requisition List
+    describe("Requisition List View Workflow", () => {
+      // Click first link on the list
+      cy.get(".dropin-table__body__row .requisition-list-grid-wrapper__name a")
+        .eq(0)
+        .click();
+      cy.contains("Newly Created Requisition List").should("be.visible");
 
-    // Click first link on the list
-    cy.get(".dropin-table__body__row .requisition-list-grid-wrapper__name a")
-      .eq(0)
-      .click();
-    cy.contains("Newly Created Requisition List").should("be.visible");
+      // 1. Rename Requisition List from the Requisition List view page
+      cy.get('[data-testid="rename-list-btn"]').click();
+      cy.contains("Update Requisition List").should("be.visible");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormName)
+        .clear()
+        .type("Now updating from RL view page");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormDescription)
+        .clear()
+        .type("Dummy description one more time");
+      cy.wait(1000);
+      cy.contains("Save").should("be.visible").click();
+      cy.contains("Now updating from RL view page").should("be.visible");
+      // TODO: assert alert is displayed
 
-    // Rename Requisition List from the Requisition List view page
-    cy.get('[data-testid="rename-list-btn"]').click();
-    cy.contains("Update Requisition List").should("be.visible");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormName)
-      .clear()
-      .type("Now updating from RL view page");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormDescription)
-      .clear()
-      .type("Dummy description one more time");
-    cy.wait(1000);
-    cy.contains("Save").should("be.visible").click();
-    cy.contains("Now updating from RL view page").should("be.visible");
+      // 2. Update quantity of the first item in the Requisition List
+      cy.get(".requisition-list-view-product-list-table__quantity input")
+        .eq(0)
+        .click();
+      cy.wait(1000);
+      cy.get(".requisition-list-view-product-list-table__quantity input")
+        .eq(0)
+        .clear()
+        .type("10")
+        .blur();
+      cy.wait(1000);
+      // TODO: assert alert is displayed
+      cy.get(".requisition-list-view-product-list-table__quantity input")
+        .eq(0)
+        .should("have.value", "10");
 
-    // assert alert is displayed
-    /*
-    cy.get(fields.requisitionListAlert)
-      .should("be.visible")
-      .contains("Requisition list updated successfully");
-    */
+      // 3. Move all items to cart
+      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
+      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+        "have.text",
+        "2"
+      );
+      cy.get('[data-testid="bulk-actions-add-to-cart-btn"]').click();
+      // TODO: assert alert is displayed
+      cy.get(".minicart-wrapper .nav-cart-button").should(
+        "have.attr",
+        "data-count",
+        "12"
+      );
 
-    // Update quantity of the first item in the Requisition List
+      // 4. Delete all items from the Requisition List
+      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
+      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+        "not.exist"
+      );
+      cy.wait(1000);
+      cy.get(".requisition-list-view__batch-actions-select-toggle").click();
+      cy.get(".requisition-list-view__batch-actions-count-badge").should(
+        "have.text",
+        "2"
+      );
+      cy.get('[data-testid="bulk-actions-delete-btn"]').click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      // TODO: assert alert is displayed
+      cy.get(fields.requisitionListItemRow).should("have.length", 0);
 
-    cy.get(".requisition-list-view-product-list-table__quantity input")
-      .eq(0)
-      .click();
-    cy.wait(1000);
-    cy.get(".requisition-list-view-product-list-table__quantity input")
-      .eq(0)
-      .clear()
-      .type("10")
-      .blur();
-    cy.wait(1000);
-    // assert alert is displayed
-    /*
-    cy.get(fields.requisitionListAlert)
-      .should("be.visible")
-      .contains("Requisition list updated successfully");
-    */
-    cy.get(".requisition-list-view-product-list-table__quantity input")
-      .eq(0)
-      .should("have.value", "10");
+      // 5. Delete the Requisition List
+      cy.get('[data-testid="delete-list-btn"]').click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      // TODO: assert alert is displayed
 
-    // Move all items to cart
-
-    cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-    cy.get(".requisition-list-view__batch-actions-count-badge").should(
-      "have.text",
-      "2"
-    );
-    cy.get('[data-testid="bulk-actions-add-to-cart-btn"]').click();
-    // assert alert is displayed
-    /*
-    cy.get(fields.requisitionListAlert)
-      .should("be.visible")
-      .contains("Item(s) successfully moved to cart");
-    */
-    cy.get(".minicart-wrapper .nav-cart-button").should(
-      "have.attr",
-      "data-count",
-      "12"
-    );
-
-    // Delete all items from the Requisition List
-
-    cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-    cy.get(".requisition-list-view__batch-actions-count-badge").should(
-      "not.exist"
-    );
-    cy.wait(1000);
-    cy.get(".requisition-list-view__batch-actions-select-toggle").click();
-    cy.get(".requisition-list-view__batch-actions-count-badge").should(
-      "have.text",
-      "2"
-    );
-    cy.get('[data-testid="bulk-actions-delete-btn"]').click();
-    cy.get(fields.requisitionListModalConfirmButton).click();
-    // assert alert is displayed
-    /*
-    cy.get(fields.requisitionListAlert)
-      .should("be.visible")
-      .contains("Requisition list deleted successfully");
-    */
-
-    // assert the items are deleted from the Requisition List
-    cy.get(fields.requisitionListItemRow).should("have.length", 0);
-
-    // Delete the Requisition List
-
-    cy.get('[data-testid="delete-list-btn"]').click();
-    cy.get(fields.requisitionListModalConfirmButton).click();
-    // assert alert is displayed
-    /*
-    cy.get(fields.requisitionListAlert)
-      .should("be.visible")
-      .contains("Requisition list deleted successfully");
-    */
-    // assert the Requisition List is deleted
-    cy.url().should("include", "customer/requisition-lists");
-    cy.get(fields.requisitionListItemRow).should(
-      "not.have",
-      "Now updating from RL view page"
-    );
+      cy.url().should("include", "customer/requisition-lists");
+      cy.get(fields.requisitionListItemRow).should(
+        "not.have",
+        "Now updating from RL view page"
+      );
+    });
   });
 });
