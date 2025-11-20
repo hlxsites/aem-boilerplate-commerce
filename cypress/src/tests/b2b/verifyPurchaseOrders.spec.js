@@ -59,20 +59,32 @@ describe('B2B Purchase Orders', () => {
       }, cy.wrap(null))
 
       const approvalRules = { ...defaultApprovalRules };
+
+      const rulesManagerRoleName = config[0].role.role_name;
+      const salesManagerRoleName = config[1].role.role_name;
+      const approverRoleName = config[2].role.role_name;
+
       Object.keys(approvalRules).forEach((key) => {
-        const rulesManagerRoleName = config[0].role.role_name;
-        if (approvalRules[key].role === '[RULES_MANAGER_ROLE_NAME]') {
-          approvalRules[key].role = rulesManagerRoleName;
+        const rule = approvalRules[key];
+
+        if (rule.role === '[RULES_MANAGER_ROLE_NAME]') {
+          rule.role = rulesManagerRoleName;
+        }
+        if (rule.role === '[SALES_MANAGER_ROLE_NAME]') {
+          rule.role = salesManagerRoleName;
+        }
+        if (rule.role === '[APPROVER_ROLE_NAME]') {
+          rule.role = approverRoleName;
         }
 
-        const salesManagerRoleName = config[1].role.role_name;
-        if (approvalRules[key].role === '[SALES_MANAGER_ROLE_NAME]') {
-          approvalRules[key].role = salesManagerRoleName;
+        if (rule.approverRole === '[RULES_MANAGER_ROLE_NAME]') {
+          rule.approverRole = rulesManagerRoleName;
         }
-
-        const approverRoleName = config[2].role.role_name;
-        if (approvalRules[key].role === '[APPROVER_ROLE_NAME]') {
-          approvalRules[key].role = approverRoleName;
+        if (rule.approverRole === '[SALES_MANAGER_ROLE_NAME]') {
+          rule.approverRole = salesManagerRoleName;
+        }
+        if (rule.approverRole === '[APPROVER_ROLE_NAME]') {
+          rule.approverRole = approverRoleName;
         }
       });
 
