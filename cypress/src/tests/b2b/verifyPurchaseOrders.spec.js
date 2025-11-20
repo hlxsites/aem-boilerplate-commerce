@@ -9,8 +9,6 @@ import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
 describe('B2B Purchase Orders', () => {
-  cy.logToTerminal("🚀 TEST");
-
   const urls = Cypress.env('poUrls');
 
   beforeEach(() => {
@@ -55,7 +53,7 @@ describe('B2B Purchase Orders', () => {
           cy.wait(1000);
 
           return manageCompanyRole(element.role).then((result) => {
-            config[index].roleId = result?.role?.id;
+            poUsersConfig[index].roleId = result?.role?.id;
 
             cy.logToTerminal(
               `✅ Role created: ${element.role.role_name} | ID: ${result?.role?.id}`
