@@ -6,5 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './sendForReview';
+export * from './ReferenceDocumentFormModal';
+export { ReferenceDocumentFormModal as default } from './ReferenceDocumentFormModal';
 //# sourceMappingURL=index.d.ts.map
