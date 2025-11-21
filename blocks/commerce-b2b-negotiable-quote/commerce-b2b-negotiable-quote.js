@@ -238,15 +238,7 @@ export default async function decorate(block) {
       if (quoteTemplate && quoteTemplate.id) {
         // Delay redirect by 2 seconds
         setTimeout(() => {
-          // TODO: Update to use CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH once the page is created
-          // window.location.href = `${rootLink(CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH)}?quoteTemplateId=${quoteTemplate.id}`;
-          
-          // Temporary: Stay on current page but show the template ID in console
-          console.log(`✅ Quote template created successfully! ID: ${quoteTemplate.id}`);
-          console.log(`Navigation would go to: ${rootLink(CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH)}?quoteTemplateId=${quoteTemplate.id}`);
-          
-          // Optionally reload the current page to refresh the quote list
-          window.location.reload();
+          window.location.href = `${rootLink(CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH)}?quoteTemplateId=${quoteTemplate.id}`;
         }, 2000);
       }
     });
