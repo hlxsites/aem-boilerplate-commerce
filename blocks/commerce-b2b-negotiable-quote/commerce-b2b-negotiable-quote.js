@@ -232,11 +232,22 @@ export default async function decorate(block) {
       }
     });
 
+    // On create template success: navigate to new template after delay to show success banner
+    const createTemplateListener = events.on('quote-management/quote-template-created', ({ quoteTemplate }) => {
+      if (quoteTemplate && quoteTemplate.id) {
+        // Delay redirect by 2 seconds
+        setTimeout(() => {
+          window.location.href = `/b2b/quote-templates?quoteTemplateId=${quoteTemplate.id}`;
+        }, 2000);
+      }
+    });
+
     // Clean up listeners if block is removed
     const observer = new MutationObserver(() => {
       if (!document.body.contains(block)) {
         deleteListener?.off();
         duplicateListener?.off();
+        createTemplateListener?.off();
         observer.disconnect();
       }
     });
