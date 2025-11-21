@@ -378,8 +378,8 @@ describe("B2B Purchase Orders", () => {
 
       cy.logToTerminal("🚪 Logging out PO Rules Manager");
       cy.visit("/");
-      cy.wait(1000);
-      actions.logout(poLabels.logout);
+      cy.wait(5000);
+      actions.logout(poLabels);
 
       // === Step 9: Delete approval rules ===
       // Navigate to Approval Rules page
