@@ -18,6 +18,10 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         quoteData: NegotiableQuoteModel;
         newQuote: NegotiableQuoteModel;
     }) => void;
+    onCreateTemplate?: (params: {
+        quoteData: NegotiableQuoteModel;
+        templateId: string;
+    }) => void;
     slots?: {
         QuoteName?: SlotProps<{
             quoteName?: string;
