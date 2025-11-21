@@ -43,6 +43,7 @@ import '../../scripts/initializers/account.js';
 import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH,
   checkIsAuthenticated,
   rootLink,
   fetchPlaceholders,
@@ -237,7 +238,15 @@ export default async function decorate(block) {
       if (quoteTemplate && quoteTemplate.id) {
         // Delay redirect by 2 seconds
         setTimeout(() => {
-          window.location.href = `/b2b/quote-templates?quoteTemplateId=${quoteTemplate.id}`;
+          // TODO: Update to use CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH once the page is created
+          // window.location.href = `${rootLink(CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH)}?quoteTemplateId=${quoteTemplate.id}`;
+          
+          // Temporary: Stay on current page but show the template ID in console
+          console.log(`✅ Quote template created successfully! ID: ${quoteTemplate.id}`);
+          console.log(`Navigation would go to: ${rootLink(CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATES_PATH)}?quoteTemplateId=${quoteTemplate.id}`);
+          
+          // Optionally reload the current page to refresh the quote list
+          window.location.reload();
         }, 2000);
       }
     });
