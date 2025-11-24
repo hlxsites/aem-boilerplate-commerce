@@ -437,8 +437,8 @@ export const logout = (texts) => {
   cy.contains(fields.poLogoutButton, texts.logout).click();
 };
 
-export const addProductToCart = (times = 1, isCheep = false, urls, texts) => {
-  cy.visit(!isCheep ? urls.product : urls.cheepProduct);
+export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
+  cy.visit(!isCheap ? urls.product : urls.cheapProduct);
   cy.wait(2000);
   for (let i = 0; i < times; i++) {
     cy.contains(fields.poAddToCartButton, texts.addToCart).click();
@@ -529,11 +529,11 @@ export const verifyPOConfirmation = () => {
 
 export const createPurchaseOrder = (
   itemCount = 2,
-  isCheep = false,
+  isCheap = false,
   urls,
   texts
 ) => {
-  addProductToCart(itemCount, isCheep, urls, texts);
+  addProductToCart(itemCount, isCheap, urls, texts);
   proceedToCheckout(texts);
   completeCheckout(urls, texts);
   verifyPOConfirmation();
