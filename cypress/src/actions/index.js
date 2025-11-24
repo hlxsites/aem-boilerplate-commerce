@@ -579,18 +579,23 @@ export const fillApprovalRuleForm = (rule, texts) => {
 };
 
 export const deleteApprovalRule = (ruleName) => {
-  const getRowByName = (name) =>
-    cy.get(selectors.poTableRow)
-      .filter(`:has(:contains("${ruleName}"))`);
+  const getRowByName = (name) => {
+    return cy.get(selectors.poTableRow).filter(`:has(:contains("${name}"))`);
+  };
 
-  getRowByName(name).then($row => {
+  getRowByName(ruleName).then(($row) => {
     cy.wrap($row).within(() => {
-      cy.contains('button', 'Delete').click();
+      cy.contains("button", "Show").click();
     });
   });
 
-  // Verify row is gone
-  getRowByName(name).should('not.exist');
+  cy.wait(2000);
+
+  cy.contains("button", "Delete").click();
+
+  cy.wait(2000);
+  
+  getRowByName(ruleName).should("not.exist");
 
   cy.wait(1500);
 };
