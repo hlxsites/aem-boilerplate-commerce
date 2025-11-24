@@ -1,4 +1,5 @@
 import * as fields from '../fields/index';
+import * as selectors from "../fields";
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -574,5 +575,22 @@ export const fillApprovalRuleForm = (rule, texts) => {
     .click();
   cy.wait(1500);
   cy.get('body').type('{esc}');
+  cy.wait(1500);
+};
+
+export const deleteApprovalRule = (ruleName) => {
+  const getRowByName = (name) =>
+    cy.get(selectors.poTableRow)
+      .filter(`:has(:contains("${ruleName}"))`);
+
+  getRowByName(name).then($row => {
+    cy.wrap($row).within(() => {
+      cy.contains('button', 'Delete').click();
+    });
+  });
+
+  // Verify row is gone
+  getRowByName(name).should('not.exist');
+
   cy.wait(1500);
 };
