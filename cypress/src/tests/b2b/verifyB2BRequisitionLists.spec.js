@@ -237,15 +237,12 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
 
-      // Wait for success message
-      cy.contains("Item(s) successfully moved to cart.", { timeout: 10000 }).should("be.visible");
+      // Verify success message appears (check immediately before it auto-dismisses)
+      cy.contains("Item(s) successfully moved to cart.", { timeout: 5000 }).should("be.visible");
 
-      // Give the cart some time to refresh after the mutation
-      // The cart refresh should happen automatically via requisitionList/alert event
-      cy.wait(3000);
-
-      // Verify the cart count is updated
-      // Use a longer timeout and check that the button exists first
+      // Wait for the cart to be refreshed and the data-count attribute to be updated
+      // The cart refresh happens automatically via requisitionList/alert event
+      // Cypress will retry the assertion until it passes or times out
       cy.get(fields.miniCartButton, { timeout: 30000 })
         .should("exist")
         .and("have.attr", "data-count", "12");
