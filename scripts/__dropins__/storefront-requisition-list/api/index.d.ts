@@ -16,6 +16,7 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
+export * from './refineProduct';
 export * from './getStoreConfig';
 export * from './getRequisitionLists';
 export * from './getRequisitionList';

@@ -230,7 +230,7 @@ declare const _default: {
       },
       "emptyTeam": "-",
       "pagination": {
-        "itemsCount": "{count} Item(s)",
+        "itemsRange": "Items {start}-{end} of {total}",
         "itemsPerPage": "Items per page:",
         "show": "Show",
         "perPage": "per page",
@@ -239,6 +239,7 @@ declare const _default: {
         "pageInfo": "Page {current} of {total}"
       },
       "emptyActions": "",
+      "noUsersFound": "No users found.",
       "actions": {
         "manage": "Manage",
         "edit": "Edit",
@@ -299,7 +300,7 @@ declare const _default: {
     },
     "CompanyCredit": {
       "title": "Company Credit",
-      "creditAvailable": "Credit Available",
+      "creditAvailable": "Available Credit",
       "creditLimit": "Credit Limit",
       "outstandingBalance": "Outstanding Balance",
       "messages": {
@@ -315,17 +316,14 @@ declare const _default: {
         "outstandingBalance": "Outstanding Balance",
         "availableCredit": "Available Credit",
         "creditLimit": "Credit Limit",
-        "customReference": "Custom Reference",
+        "customReference": "Custom Reference Number",
         "updatedBy": "Updated By"
       },
       "pagination": {
-        "itemsCount": "{count} Item(s)",
+        "itemsRange": "Items {start} to {end} of {total}",
         "itemsPerPage": "Items per page:",
         "show": "Show",
-        "perPage": "per page",
-        "previous": "Previous",
-        "next": "Next",
-        "pageInfo": "Page {current} of {total}"
+        "perPage": "per page"
       },
       "ariaLabels": {
         "dataLoaded": "Loaded {count} credit history entries",
@@ -335,8 +333,10 @@ declare const _default: {
         "paginationNav": "Pagination navigation",
         "pageNavigation": "Page navigation",
         "pageSizeSelector": "Items per page selector",
-        "previousPageFull": "Go to previous page, current page {current}",
-        "nextPageFull": "Go to next page, current page {current}",
+        "previousPage": "Previous page",
+        "nextPage": "Next page",
+        "goToPage": "Go to page {page}",
+        "currentPage": "Current page {page}",
         "showingHistory": "Showing {count} credit history entries"
       }
     },
@@ -411,6 +411,7 @@ declare const _default: {
       "viewOnlyLabel": "View Only",
       "systemRoleLabel": "System Role",
       "itemCount": "Item(s)",
+      "itemsRange": "Items {start}-{end} of {total}",
       "show": "Show",
       "perPage": "per page",
       "deleteRole": {
