@@ -229,6 +229,19 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         .should("have.value", "10");
 
       // 3. Move all items to cart
+      // Setup intercept to wait for cart API calls
+      const urlTest = Cypress.env("graphqlEndPoint");
+      cy.intercept("POST", urlTest, (req) => {
+        const data = req.body.query;
+        if (data && typeof data === "string") {
+          if (data.includes("ADD_REQUISITION_LIST_ITEMS_TO_CART_MUTATION")) {
+            req.alias = "addReqListItemsToCart";
+          } else if (data.includes("CUSTOMER_CART_QUERY")) {
+            req.alias = "getCart";
+          }
+        }
+      });
+
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
@@ -236,7 +249,16 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       );
       cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
       cy.contains("Item(s) successfully moved to cart.").should("be.visible");
-      //cy.get(fields.miniCartButton).should("have.attr", "data-count", "12");
+
+      // Wait for the add to cart mutation to complete
+      cy.wait("@addReqListItemsToCart", { timeout: 15000 }).then(() => {
+        // After the mutation, wait for cart to refresh
+        // The cart refresh happens via requisitionList/alert event
+        cy.wait(1000); // Small delay for event propagation
+      });
+
+      // Now verify the cart count is updated with retry logic
+      cy.get(fields.miniCartButton, { timeout: 15000 }).should("have.attr", "data-count", "12");
 
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
