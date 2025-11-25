@@ -6,5 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './sendForReview';
+export * from './ReferenceDocumentsList';
+export { ReferenceDocumentsList as default } from './ReferenceDocumentsList';
 //# sourceMappingURL=index.d.ts.map
