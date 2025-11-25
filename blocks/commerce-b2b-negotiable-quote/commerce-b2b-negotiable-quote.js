@@ -104,7 +104,7 @@ export default async function decorate(block) {
         window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
       },
     })(checkoutButtonContainer);
-  }
+  };
 
   if (quoteId) {
     block.classList.add('negotiable-quote__manage');
@@ -261,18 +261,18 @@ export default async function decorate(block) {
   }
 
   // On quote item removed disable checkout button
-  events.on('quote-management/quote-items-removed', ({quote}) => {
-      renderCheckoutButton(quote, false);
+  events.on('quote-management/quote-items-removed', ({ quote }) => {
+    renderCheckoutButton(quote, false);
   });
 
   // On quote item quantity updated disable checkout button
-  events.on('quote-management/quantities-updated', ({quote}) => {
-      renderCheckoutButton(quote, false);
+  events.on('quote-management/quantities-updated', ({ quote }) => {
+    renderCheckoutButton(quote, false);
   });
 
   // On shipping address selected disable checkout button
-  events.on('quote-management/shipping-address-set', ({quote}) => {
-      renderCheckoutButton(quote, false);
+  events.on('quote-management/shipping-address-set', ({ quote }) => {
+    renderCheckoutButton(quote, false);
   });
 
   // Listen for changes to the company context (e.g. when user switches companies).
