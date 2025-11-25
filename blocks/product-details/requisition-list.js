@@ -160,7 +160,10 @@ function setupRequisitionListEventHandlers({
     }
 
     // Re-render requisition list component with updated options
-    await renderFunction($requisitionListSelector, optionUIDs);
+    await renderFunction(
+      $requisitionListSelector,
+      optionUIDs,
+    );
   }, { eager: true });
 
   // Handle authentication state changes (login/logout)
@@ -257,7 +260,10 @@ export async function initializeRequisitionList({
   const configValues = pdpApi.getProductConfigurationValues();
   const urlOptionsUIDs = urlParams.get('optionsUIDs');
   const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-  await renderFunction($requisitionListSelector, optionUIDs);
+  await renderFunction(
+    $requisitionListSelector,
+    optionUIDs,
+  );
 
   // Show redirect notification if applicable
   showRequisitionListRedirectNotification($alert);
