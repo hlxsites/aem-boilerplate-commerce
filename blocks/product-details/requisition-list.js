@@ -172,8 +172,11 @@ function setupRequisitionListEventHandlers({
     const configValues = pdpApi.getProductConfigurationValues();
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
     const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-
-    await renderFunction($requisitionListSelector, optionUIDs);
+    // Render requisition list for authenticated user
+    await renderFunction(
+      $requisitionListSelector,
+      optionUIDs,
+    );
   }, { eager: true });
 }
 
