@@ -215,6 +215,7 @@ export const requisitionListViewBulkActionsDeleteButton =
 export const requisitionListViewDeleteButton =
   '[data-testid="delete-list-btn"]';
 export const miniCartButton = ".minicart-wrapper .nav-cart-button";
+export const productDetailsAlert = ".product-details__alert";
 
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 
@@ -285,3 +286,4 @@ export const poRuleTypeSelect = 'select[name="ruleType"]';
 export const poRuleConditionSelect = 'select[name="ruleCondition"]';
 export const poRuleValueInput = 'input[name="ruleValue"]';
 export const poMultiSelect = '.dropin-multi-select';
+export const poTableRow = '.b2b-purchase-order-purchase-orders-table tr.dropin-table__body__row';
