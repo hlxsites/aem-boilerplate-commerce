@@ -9,10 +9,6 @@ import { search } from '@dropins/storefront-product-discovery/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-// Requisition List Dropin
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
-import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
@@ -20,12 +16,7 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
-import {
-  fetchPlaceholders,
-  getProductLink,
-  checkIsAuthenticated,
-  rootLink,
-} from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -36,7 +27,8 @@ export default async function decorate(block) {
 
   const config = readBlockConfig(block);
 
-  const fragment = document.createRange().createContextualFragment(`
+  const fragment = document.createRange()
+    .createContextualFragment(`
     <div class="search__wrapper">
       <div class="search__result-info"></div>
       <div class="search__view-facets"></div>
@@ -73,7 +65,10 @@ export default async function decorate(block) {
   } = Object.fromEntries(urlParams.entries());
 
   await performInitialSearch(config, {
-    q, page, sort, filter,
+    q,
+    page,
+    sort,
+    filter,
   });
 
   const getAddToCartButton = (product) => {
@@ -91,41 +86,14 @@ export default async function decorate(block) {
     UI.render(Button, {
       children: labels.Global?.AddProductToCart,
       icon: Icon({ source: 'Cart' }),
-      onClick: () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }]),
+      onClick: () => cartApi.addProductsToCart([{
+        sku: product.sku,
+        quantity: 1,
+      }]),
       variant: 'primary',
     })(button);
     return button;
   };
-
-  async function renderRequisitionListNamesIfEnabled($container, product) {
-    const isAuthenticated = checkIsAuthenticated();
-    if (!isAuthenticated) {
-      $container.innerHTML = '';
-      return;
-    }
-    const isEnabled = await rlApi.isRequisitionListEnabled();
-    if (isEnabled) {
-      rlRenderer.render(RequisitionListNames, {
-        items: [],
-        sku: product.sku,
-        quantity: 1,
-        variant: 'hover',
-        beforeAddProdToReqList: () => {
-          const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
-          if (product.typename !== 'SimpleProductView') {
-            sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
-              timestamp: Date.now(),
-              message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
-            }));
-            window.location.href = url;
-            throw new Error('Redirecting to product page');
-          }
-        },
-      })($container);
-    } else {
-      $container.innerHTML = '';
-    }
-  }
 
   await Promise.all([
     // Sort By
@@ -135,7 +103,10 @@ export default async function decorate(block) {
     provider.render(Pagination, {
       onPageChange: () => {
         // scroll to the top of the page
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
       },
     })($pagination),
 
@@ -156,7 +127,10 @@ export default async function decorate(block) {
       routeProduct: (product) => getProductLink(product.urlKey, product.sku),
       slots: {
         ProductImage: (ctx) => {
-          const { product, defaultImageProps } = ctx;
+          const {
+            product,
+            defaultImageProps,
+          } = ctx;
           const anchorWrapper = document.createElement('a');
           anchorWrapper.href = getProductLink(product.urlKey, product.sku);
 
@@ -185,16 +159,22 @@ export default async function decorate(block) {
           })($wishlistToggle);
           actionsWrapper.appendChild(addToCartBtn);
           actionsWrapper.appendChild($wishlistToggle);
-          // Requisition List Button
-          const $reqListNames = document.createElement('div');
-          $reqListNames.classList.add('product-discovery-product-actions__requisition-list-names');
-          await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
-          actionsWrapper.appendChild($reqListNames);
-          ctx.replaceWith(actionsWrapper);
 
-          events.on('authenticated', async () => {
-            await renderRequisitionListNamesIfEnabled($reqListNames, ctx.product);
-          });
+          // Conditionally load and render Requisition List Button
+          try {
+            const { initializeRequisitionList } = await import('./requisition-list.js');
+
+            const $reqListContainer = await initializeRequisitionList({
+              product: ctx.product,
+              labels,
+            });
+
+            actionsWrapper.appendChild($reqListContainer);
+          } catch (error) {
+            console.warn('Requisition list module not available:', error);
+          }
+
+          ctx.replaceWith(actionsWrapper);
         },
       },
     })($productList),
@@ -213,9 +193,11 @@ export default async function decorate(block) {
 
     // Update the view facets button with the number of filters
     if (payload.request.filter.length > 0) {
-      $viewFacets.querySelector('button').setAttribute('data-count', payload.request.filter.length);
+      $viewFacets.querySelector('button')
+        .setAttribute('data-count', payload.request.filter.length);
     } else {
-      $viewFacets.querySelector('button').removeAttribute('data-count');
+      $viewFacets.querySelector('button')
+        .removeAttribute('data-count');
     }
   }, { eager: true });
 
@@ -247,14 +229,20 @@ export default async function decorate(block) {
   // Listen for company context changed and reload data if needed.
   events.on('companyContext/changed', async () => {
     await performInitialSearch(config, {
-      q, page, sort, filter,
+      q,
+      page,
+      sort,
+      filter,
     });
   });
 }
 
 async function performInitialSearch(config, urlParams) {
   const {
-    q, page, sort, filter,
+    q,
+    page,
+    sort,
+    filter,
   } = urlParams;
   // Request search based on the page type on block load
   if (config.urlpath) {
@@ -263,15 +251,25 @@ async function performInitialSearch(config, urlParams) {
       phrase: '', // search all products in the category
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
-      sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
+      sort: sort ? getSortFromParams(sort) : [{
+        attribute: 'position',
+        direction: 'DESC',
+      }],
       filter: [
-        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
-        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        {
+          attribute: 'categoryPath',
+          eq: config.urlpath,
+        }, // Add category filter
+        {
+          attribute: 'visibility',
+          in: ['Search', 'Catalog, Search'],
+        },
         ...getFilterFromParams(filter),
       ],
-    }).catch(() => {
-      console.error('Error searching for products');
-    });
+    })
+      .catch(() => {
+        console.error('Error searching for products');
+      });
   } else {
     // If it's a search page...
     await search({
@@ -280,25 +278,34 @@ async function performInitialSearch(config, urlParams) {
       pageSize: 8,
       sort: getSortFromParams(sort),
       filter: [
-        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        {
+          attribute: 'visibility',
+          in: ['Search', 'Catalog, Search'],
+        },
         ...getFilterFromParams(filter),
       ],
-    }).catch(() => {
-      console.error('Error searching for products');
-    });
+    })
+      .catch(() => {
+        console.error('Error searching for products');
+      });
   }
 }
 
 function getSortFromParams(sortParam) {
   if (!sortParam) return [];
-  return sortParam.split(',').map((item) => {
-    const [attribute, direction] = item.split('_');
-    return { attribute, direction };
-  });
+  return sortParam.split(',')
+    .map((item) => {
+      const [attribute, direction] = item.split('_');
+      return {
+        attribute,
+        direction,
+      };
+    });
 }
 
 function getParamsFromSort(sort) {
-  return sort.map((item) => `${item.attribute}_${item.direction}`).join(',');
+  return sort.map((item) => `${item.attribute}_${item.direction}`)
+    .join(',');
 }
 
 function getFilterFromParams(filterParam) {
@@ -345,7 +352,11 @@ function getFilterFromParams(filterParam) {
 function getParamsFromFilter(filter) {
   if (!filter || filter.length === 0) return '';
 
-  return filter.map(({ attribute, in: inValues, range }) => {
+  return filter.map(({
+    attribute,
+    in: inValues,
+    range,
+  }) => {
     if (inValues) {
       return `${attribute}:${inValues.join(',')}`;
     }
@@ -355,5 +366,7 @@ function getParamsFromFilter(filter) {
     }
 
     return null;
-  }).filter(Boolean).join('|');
+  })
+    .filter(Boolean)
+    .join('|');
 }

@@ -6,13 +6,15 @@ export interface ManageNegotiableQuoteProps extends Omit<HTMLAttributes<HTMLDivE
     quoteName: VNode;
     quoteStatus: VNode;
     banner?: VNode;
-    details: VNode;
+    details?: VNode;
     actionBar?: VNode;
     quoteContent: VNode;
     shippingInformationTitle: VNode;
     shippingInformation: VNode;
     quoteCommentsTitle: VNode;
     quoteComments: VNode;
+    attachFilesField?: VNode;
+    attachedFilesList?: VNode;
     footer: VNode;
 }
 export declare const ManageNegotiableQuote: FunctionComponent<ManageNegotiableQuoteProps>;

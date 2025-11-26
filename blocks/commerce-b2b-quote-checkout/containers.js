@@ -24,34 +24,19 @@ import Addresses from '@dropins/storefront-account/containers/Addresses.js';
 import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
-// Cart Dropin
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import { render as CartProvider } from '@dropins/storefront-cart/render.js';
-
-// Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
-import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-
-// Order Dropin
-import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
-import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
-import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
-import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
-import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
-import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
-import { render as OrderProvider } from '@dropins/storefront-order/render.js';
+// Quote Management Dropin
+import OrderSummary from '@dropins/storefront-quote-management/containers/OrderSummary.js';
+import QuoteSummaryList from '@dropins/storefront-quote-management/containers/QuoteSummaryList.js';
+import { render as QuoteManagementProvider } from '@dropins/storefront-quote-management/render.js';
 
 // Tools
 import {
-  Button,
   Header,
   provider as UI,
 } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { debounce, getCookie } from '@dropins/tools/lib.js';
+import { debounce } from '@dropins/tools/lib.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 
 // Checkout Dropin Libs
 import {
@@ -60,7 +45,8 @@ import {
   transformCartAddressToFormValues,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-import { swatchImageSlot } from './utils.js';
+// External dependencies
+import { rootLink, CUSTOMER_NEGOTIABLE_QUOTE_PATH } from '../../scripts/commerce.js';
 
 // Constants
 import {
@@ -71,11 +57,7 @@ import {
   CHECKOUT_HEADER_CLASS,
   DEBOUNCE_TIME,
   LOGIN_FORM_NAME,
-  USER_TOKEN_COOKIE_NAME,
 } from './constants.js';
-
-// External dependencies
-import { rootLink } from '../../scripts/commerce.js';
 
 /**
  * Container IDs for registry management
@@ -91,23 +73,14 @@ export const CONTAINERS = Object.freeze({
   SHIPPING_METHODS: 'shippingMethods',
   PAYMENT_METHODS: 'paymentMethods',
   BILLING_ADDRESS_FORM_SKELETON: 'billingAddressFormSkeleton',
+  ORDER_SUMMARY: 'orderSummary',
+  QUOTE_SUMMARY_LIST: 'quoteSummaryList',
   TERMS_AND_CONDITIONS: 'termsAndConditions',
   PLACE_ORDER_BUTTON: 'placeOrderButton',
-  GIFT_OPTIONS: 'giftOptions',
   CUSTOMER_BILLING_ADDRESSES: 'customerBillingAddresses',
 
   // Dynamic containers (conditional rendering)
   BILLING_ADDRESS_FORM: 'billingAddressForm',
-
-  // Order confirmation containers
-  ORDER_HEADER: 'orderHeader',
-  ORDER_STATUS: 'orderStatus',
-  SHIPPING_STATUS: 'shippingStatus',
-  CUSTOMER_DETAILS: 'customerDetails',
-  ORDER_COST_SUMMARY: 'orderCostSummary',
-  ORDER_GIFT_OPTIONS: 'orderGiftOptions',
-  ORDER_PRODUCT_LIST: 'orderProductList',
-  ORDER_CONFIRMATION_FOOTER_BUTTON: 'orderConfirmationFooterButton',
 });
 
 /**
@@ -288,54 +261,13 @@ export const renderShippingMethods = async (container) => renderContainer(
 );
 
 /**
- * Renders payment methods with credit card integration - original regular checkout functionality
+ * Renders payment methods for B2B quote checkout
  * @param {HTMLElement} container - DOM element to render payment methods in
- * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @returns {Promise<Object>} - The rendered payment methods component
  */
-export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
+export const renderPaymentMethods = async (container) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
-  async () => {
-    // Retrieve constants internally to minimize parameters
-    const commerceCoreEndpoint = getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint');
-    const getUserTokenCookie = () => getCookie(USER_TOKEN_COOKIE_NAME);
-
-    return CheckoutProvider.render(PaymentMethods, {
-      slots: {
-        Methods: {
-          [PaymentMethodCode.CREDIT_CARD]: {
-            render: (ctx) => {
-              const $creditCard = document.createElement('div');
-
-              PaymentServices.render(CreditCard, {
-                apiUrl: commerceCoreEndpoint,
-                getCustomerToken: getUserTokenCookie,
-                getCartId: () => ctx.cartId,
-                creditCardFormRef,
-              })($creditCard);
-
-              ctx.replaceHTML($creditCard);
-            },
-          },
-          [PaymentMethodCode.SMART_BUTTONS]: {
-            enabled: false,
-          },
-          [PaymentMethodCode.APPLE_PAY]: {
-            enabled: false,
-          },
-          [PaymentMethodCode.GOOGLE_PAY]: {
-            enabled: false,
-          },
-          [PaymentMethodCode.VAULT]: {
-            enabled: false,
-          },
-          [PaymentMethodCode.FASTLANE]: {
-            enabled: false,
-          },
-        },
-      },
-    })(container);
-  },
+  async () => CheckoutProvider.render(PaymentMethods)(container),
 );
 
 /**
@@ -358,12 +290,85 @@ export const renderTermsAndConditions = async (container) => renderContainer(
   })(container),
 );
 
+// ============================================================================
+// SUMMARY CONTAINERS
+// ============================================================================
+
+/**
+ * Renders order summary
+ * @param {HTMLElement} container - DOM element to render order summary in
+ * @returns {Promise<Object>} - The rendered order summary component
+ */
+export const renderOrderSummary = async (container) => renderContainer(
+  CONTAINERS.ORDER_SUMMARY,
+  async () => QuoteManagementProvider.render(OrderSummary)(container),
+);
+
+/**
+ * Renders quote summary list with custom heading and thumbnail slots
+ * @param {HTMLElement} container - DOM element to render quote summary list in
+ * @returns {Promise<Object>} - The rendered quote summary list component
+ */
+export const renderQuoteSummaryList = async (container) => renderContainer(
+  CONTAINERS.QUOTE_SUMMARY_LIST,
+  async () => QuoteManagementProvider.render(QuoteSummaryList, {
+    variant: 'secondary',
+    slots: {
+      Heading: (headingCtx) => {
+        const title = 'Your Quote ({count})';
+
+        const quoteSummaryListHeading = document.createElement('div');
+        quoteSummaryListHeading.classList.add('quote-summary-list__heading');
+
+        const quoteSummaryListHeadingText = document.createElement('div');
+        quoteSummaryListHeadingText.classList.add(
+          'quote-summary-list__heading-text',
+        );
+
+        quoteSummaryListHeadingText.innerText = title.replace(
+          '({count})',
+          headingCtx.count ? `(${headingCtx.count})` : '',
+        );
+        const editQuoteLink = document.createElement('a');
+        editQuoteLink.classList.add('quote-summary-list__edit');
+        editQuoteLink.href = rootLink(`${CUSTOMER_NEGOTIABLE_QUOTE_PATH}?quoteid=${headingCtx.quoteId}`);
+        editQuoteLink.rel = 'noreferrer';
+        editQuoteLink.innerText = 'Edit';
+
+        quoteSummaryListHeading.appendChild(quoteSummaryListHeadingText);
+        quoteSummaryListHeading.appendChild(editQuoteLink);
+        headingCtx.appendChild(quoteSummaryListHeading);
+
+        headingCtx.onChange((nextHeadingCtx) => {
+          quoteSummaryListHeadingText.innerText = title.replace(
+            '({count})',
+            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
+          );
+        });
+      },
+      Thumbnail: (ctx) => {
+        const { item, defaultImageProps } = ctx;
+        tryRenderAemAssetsImage(ctx, {
+          alias: item.sku,
+          imageProps: defaultImageProps,
+
+          params: {
+            width: defaultImageProps.width,
+            height: defaultImageProps.height,
+          },
+        });
+      },
+    },
+  })(container),
+);
+
 /**
  * Renders place order button with handler functions - follows multi-step pattern
  * @param {HTMLElement} container - DOM element to render the place order button in
  * @param {Object} options - Configuration object with handler functions
  * @param {Function} options.handleValidation - Validation handler function
  * @param {Function} options.handlePlaceOrder - Place order handler function
+ * @param {Boolean} options.isPoEnabled - Indicate if PO enabled or not (B2B)
  * @returns {Promise<Object>} - The rendered place order component
  */
 export const renderPlaceOrder = async (container, options = {}) => renderContainer(
@@ -371,6 +376,13 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
   async () => CheckoutProvider.render(PlaceOrder, {
     handleValidation: options.handleValidation,
     handlePlaceOrder: options.handlePlaceOrder,
+    slots: {
+      Content: (placeOrderCtx) => {
+        const spanElement = document.createElement('span');
+        spanElement.innerText = options.isPoEnabled ? 'Place Purchase Order' : 'Place Order';
+        placeOrderCtx.replaceWith(spanElement);
+      },
+    },
   })(container),
 );
 
@@ -439,146 +451,4 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
       title: 'Billing address',
     })(container);
   },
-);
-
-/**
- * Renders order-level gift options with swatch image integration
- * @param {HTMLElement} container - DOM element to render gift options in
- * @returns {Promise<Object>} - The rendered gift options component
- */
-export const renderGiftOptions = async (container) => renderContainer(
-  CONTAINERS.GIFT_OPTIONS,
-  async () => CartProvider.render(GiftOptions, {
-    view: 'order',
-    dataSource: 'cart',
-    isEditable: false,
-    slots: {
-      SwatchImage: swatchImageSlot,
-    },
-  })(container),
-);
-
-/**
- * Renders order confirmation header with email check and sign up integration
- * @param {HTMLElement} container - DOM element to render the order header in
- * @param {Object} options - Configuration object with handlers and order data
- * @returns {Promise<Object>} - The rendered order header component
- */
-export const renderOrderHeader = async (container, options = {}) => renderContainer(
-  CONTAINERS.ORDER_HEADER,
-  async () => OrderProvider.render(OrderHeader, { ...options })(container)
-  ,
-);
-
-/**
- * Renders the order status component
- * @param {HTMLElement} container - The DOM element to render the order status in
- * @returns {Promise<Object>} - The rendered order status component
- */
-export const renderOrderStatus = async (container) => renderContainer(
-  CONTAINERS.ORDER_STATUS,
-  async () => OrderProvider.render(OrderStatus, { slots: { OrderActions: () => null } })(container),
-);
-
-/**
- * Renders the shipping status component
- * @param {HTMLElement} container - The DOM element to render the shipping status in
- * @returns {Promise<Object>} - The rendered shipping status component
- */
-export const renderShippingStatus = async (container) => renderContainer(
-  CONTAINERS.SHIPPING_STATUS,
-  async () => OrderProvider.render(ShippingStatus)(container),
-);
-
-/**
- * Renders the customer details component
- * @param {HTMLElement} container - The DOM element to render the customer details in
- * @returns {Promise<Object>} - The rendered customer details component
- */
-export const renderCustomerDetails = async (container) => renderContainer(
-  CONTAINERS.CUSTOMER_DETAILS,
-  async () => OrderProvider.render(CustomerDetails)(container),
-);
-
-/**
- * Renders the order cost summary component
- * @param {HTMLElement} container - The DOM element to render the order cost summary in
- * @returns {Promise<Object>} - The rendered order cost summary component
- */
-export const renderOrderCostSummary = async (container) => renderContainer(
-  CONTAINERS.ORDER_COST_SUMMARY,
-  async () => OrderProvider.render(OrderCostSummary)(container),
-);
-
-/**
- * Renders the order product list component with image slots and gift options
- * @param {HTMLElement} container - The DOM element to render the order product list in
- * @returns {Promise<Object>} - The rendered order product list component
- */
-export const renderOrderProductList = async (container) => renderContainer(
-  CONTAINERS.ORDER_PRODUCT_LIST,
-  async () => OrderProvider.render(OrderProductList, {
-    slots: {
-      Footer: (ctx) => {
-        const giftOptions = document.createElement('div');
-        CartProvider.render(GiftOptions, {
-          item: ctx.item,
-          view: 'product',
-          dataSource: 'order',
-          isEditable: false,
-          slots: {
-            SwatchImage: swatchImageSlot,
-          },
-        })(giftOptions);
-        ctx.appendChild(giftOptions);
-      },
-      CartSummaryItemImage: (ctx) => {
-        const { data, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: data.product.sku,
-          imageProps: defaultImageProps,
-          params: {
-            width: defaultImageProps.width,
-            height: defaultImageProps.height,
-          },
-        });
-      },
-    },
-  })(container),
-);
-
-/**
- * Renders order-level gift options for order confirmation
- * @param {HTMLElement} container - DOM element to render order gift options in
- * @returns {Promise<Object>} - The rendered order gift options component
- */
-export const renderOrderGiftOptions = async (container) => renderContainer(
-  CONTAINERS.ORDER_GIFT_OPTIONS,
-  async () => CartProvider.render(GiftOptions, {
-    view: 'order',
-    dataSource: 'order',
-    isEditable: false,
-    readOnlyFormOrderView: 'secondary',
-    slots: {
-      SwatchImage: swatchImageSlot,
-    },
-  })(container),
-);
-
-/**
- * Renders the continue shopping button for order confirmation footer
- * @param {HTMLElement} container - DOM element to render the button in
- * @returns {Promise<Object>} - The rendered continue shopping button component
- */
-export const renderOrderConfirmationFooterButton = async (container) => renderContainer(
-  CONTAINERS.ORDER_CONFIRMATION_FOOTER_BUTTON,
-  async () => UI.render(Button, {
-    children: 'Continue shopping',
-    'data-testid': 'order-confirmation-footer__continue-button',
-    className: 'order-confirmation-footer__continue-button',
-    size: 'medium',
-    variant: 'primary',
-    type: 'submit',
-    href: rootLink('/'),
-  })(container),
 );

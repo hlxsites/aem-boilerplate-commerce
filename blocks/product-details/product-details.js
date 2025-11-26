@@ -1,8 +1,5 @@
 import {
-  InLineAlert,
-  Icon,
-  Button,
-  provider as UI,
+  Button, Icon, InLineAlert, provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
@@ -10,13 +7,10 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
-// Requisition List Dropin
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
-import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListNames } from '@dropins/storefront-requisition-list/containers/RequisitionListNames.js';
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
@@ -31,11 +25,7 @@ import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGi
 
 // Libs
 import {
-  rootLink,
-  setJsonLd,
-  fetchPlaceholders,
-  getProductLink,
-  checkIsAuthenticated,
+  fetchPlaceholders, getProductLink, rootLink, setJsonLd,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -88,7 +78,8 @@ export default async function decorate(block) {
   let isUpdateMode = false;
 
   // Layout
-  const fragment = document.createRange().createContextualFragment(`
+  const fragment = document.createRange()
+    .createContextualFragment(`
     <div class="product-details__alert"></div>
     <div class="product-details__wrapper">
       <div class="product-details__left-column">
@@ -126,7 +117,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
-  const $requisitionListNames = fragment.querySelector('.product-details__buttons__add-to-req-list');
+  const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -150,31 +141,6 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-
-  async function renderRequisitionListNamesIfEnabled($container, currentOptions = null) {
-    const isAuthenticated = checkIsAuthenticated();
-    if (!isAuthenticated) {
-      $container.innerHTML = '';
-      return null;
-    }
-    const isEnabled = await rlApi.isRequisitionListEnabled();
-    if (isEnabled) {
-      const configValues = pdpApi.getProductConfigurationValues();
-      return rlRenderer.render(RequisitionListNames, {
-        items: [],
-        canCreate: true,
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        variant: 'neutral',
-        selectedOptions: currentOptions,
-      })($container);
-    }
-    $container.innerHTML = '';
-    return null;
-  }
-
-  // Declare requisitionListNames as let so we can reassign it after login
-  let requisitionListNames;
 
   const [
     _galleryMobile,
@@ -280,11 +246,12 @@ export default async function decorate(block) {
         if (valid) {
           if (isUpdateMode) {
             // --- Update existing item ---
-            const { updateProductsFromCart } = await import(
-              '@dropins/storefront-cart/api.js'
-            );
+            const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
 
-            await updateProductsFromCart([{ ...values, uid: itemUidFromUrl }]);
+            await updateProductsFromCart([{
+              ...values,
+              uid: itemUidFromUrl,
+            }]);
 
             // --- START REDIRECT ON UPDATE ---
             const updatedSku = values?.sku;
@@ -305,9 +272,7 @@ export default async function decorate(block) {
             return;
           }
           // --- Add new item ---
-          const { addProductsToCart } = await import(
-            '@dropins/storefront-cart/api.js'
-          );
+          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
           await addProductsToCart([{ ...values }]);
         }
 
@@ -346,18 +311,33 @@ export default async function decorate(block) {
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    addToCart.setProps((prev) => ({
+      ...prev,
+      disabled: !valid,
+    }));
   }, { eager: true });
 
   // Handle option changes
-  events.on('pdp/values', () => {
+  events.on('pdp/values', async () => {
     const configValues = pdpApi.getProductConfigurationValues();
 
     // Check URL parameter for empty optionsUIDs
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
-    // If URL has empty optionsUIDs parameter, treat as base product (no options)
-    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
+    // Get optionsUIDs - prioritize actual selected values from configValues
+    let optionUIDs = null;
+    // First priority: actual selected options from configValues
+    const hasConfigOptions = configValues?.optionsUIDs
+      && Array.isArray(configValues.optionsUIDs)
+      && configValues.optionsUIDs.length > 0;
+
+    if (hasConfigOptions) {
+      optionUIDs = configValues.optionsUIDs;
+    } else if (urlOptionsUIDs === '') {
+      // Second priority: URL has explicit empty optionsUIDs parameter
+      optionUIDs = null;
+    }
+
     if (wishlistToggleBtn) {
       wishlistToggleBtn.setProps((prev) => ({
         ...prev,
@@ -367,17 +347,12 @@ export default async function decorate(block) {
         },
       }));
     }
-
-    if (requisitionListNames) {
-      requisitionListNames.setProps((prev) => ({
-        ...prev,
-        selectedOptions: optionUIDs,
-        quantity: configValues?.quantity || 1,
-      }));
-    }
   }, { eager: true });
 
-  events.on('wishlist/alert', ({ action, item }) => {
+  events.on('wishlist/alert', ({
+    action,
+    item,
+  }) => {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
@@ -396,62 +371,20 @@ export default async function decorate(block) {
     }, 0);
   });
 
-  // Handle authentication state changes (login/logout)
-  // Using { eager: true } to also catch the initial state on page load
-  events.on('authenticated', async () => {
-    // Get current selected options when rendering for authenticated user
-    const configValues = pdpApi.getProductConfigurationValues();
-    const urlOptionsUIDs = urlParams.get('optionsUIDs');
-    const optionUIDs = urlOptionsUIDs === '' ? undefined : (configValues?.optionsUIDs || undefined);
-    // Render and update the reference to the new instance
-    requisitionListNames = await renderRequisitionListNamesIfEnabled(
-      $requisitionListNames,
-      optionUIDs,
-    );
-  }, { eager: true });
-
-  // Show notification if redirected from requisition list
-  let redirectNotification = null;
-
-  // Check if user was redirected from requisition list (sessionStorage)
-  const redirectData = sessionStorage.getItem('requisitionListRedirect');
-  if (redirectData) {
-    try {
-      const { timestamp, message } = JSON.parse(redirectData);
-
-      // Only show notification if redirect happened within last 5 seconds
-      // This prevents showing stale notifications
-      const isRecent = Date.now() - timestamp < 5000;
-
-      if (isRecent && message) {
-        const showRedirectNotification = async () => {
-          redirectNotification = await UI.render(InLineAlert, {
-            heading: message,
-            type: 'warning',
-            variant: 'secondary',
-            icon: h(Icon, { source: 'Warning' }),
-            'aria-live': 'polite',
-            role: 'alert',
-            onDismiss: () => {
-              redirectNotification?.remove();
-            },
-          })($alert);
-
-          // Auto-dismiss after 5 seconds
-          setTimeout(() => {
-            redirectNotification?.remove();
-          }, 5000);
-        };
-
-        // Show notification after a brief delay to ensure DOM is ready
-        setTimeout(showRedirectNotification, 100);
-      }
-    } catch (e) {
-      console.error('Failed to parse requisition list redirect data:', e);
-    } finally {
-      // Always clean up sessionStorage
-      sessionStorage.removeItem('requisitionListRedirect');
-    }
+  // Conditionally load requisition list functionality
+  // The module sets up event handlers that check feature status on each render
+  try {
+    const { initializeRequisitionList } = await import('./requisition-list.js');
+    await initializeRequisitionList({
+      $alert,
+      $requisitionListSelector,
+      product,
+      labels,
+      urlParams,
+    });
+  } catch (error) {
+    // If module fails to load, requisition list features won't be available
+    console.warn('Requisition list module not available:', error);
   }
 
   // --- Add new event listener for cart/data ---
@@ -620,7 +553,10 @@ function setMetaTags(product) {
  * @returns The configuration for the image slot.
  */
 function imageSlotConfig(ctx) {
-  const { data, defaultImageProps } = ctx;
+  const {
+    data,
+    defaultImageProps,
+  } = ctx;
   return {
     alias: data.sku,
     imageProps: defaultImageProps,

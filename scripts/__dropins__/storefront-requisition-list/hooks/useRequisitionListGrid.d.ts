@@ -1,14 +1,13 @@
 import { VNode } from 'preact';
 import { RequisitionList as RequisitionListModel } from '../data/models/requisitionList';
-import { RequisitionLists } from '../data/models/requisitionLists';
 
 type Row = Record<string, VNode | string | number | undefined>;
 type Callbacks = {
-    handleOpenModal: (rl: RequisitionListModel) => void;
+    handleOpenRenameModal: (rl: RequisitionListModel) => void;
+    handleOpenDeleteModal: (rl: RequisitionListModel) => void;
 };
-export declare function useRequisitionListGrid(initial?: RequisitionLists | null, callbacks?: Callbacks, routeRequisitionListDetails?: (uid: string) => string | void): {
+export declare function useRequisitionListGrid(callbacks?: Callbacks, routeRequisitionListDetails?: (uid: string) => string | void, closeModal?: () => void): {
     rows: Row[];
-    expandedRows: Set<number>;
     isLoading: boolean;
     pageInfo: {
         page_size: number;

@@ -7,8 +7,24 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { getMetadata } from './aem.js';
+import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
+import {
+  getMetadata,
+  readBlockConfig,
+  toCamelCase,
+  toClassName,
+} from './aem.js';
 import initializeDropins from './initializers/index.js';
+
+/**
+ * Fetch GraphQL Instances
+ */
+
+// Core Fetch GraphQL Instance
+export const CORE_FETCH_GRAPHQL = new FetchGraphQL();
+
+// Catalog Service Fetch GraphQL Instance
+export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 /**
  * Constants
@@ -39,9 +55,17 @@ export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
 export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
 export const CUSTOMER_REQUISITION_LISTS_PATH = `${CUSTOMER_PATH}/requisition-lists`;
 export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisition-list-view`;
+export const CUSTOMER_NEGOTIABLE_QUOTE_PATH = `${CUSTOMER_PATH}/negotiable-quote`;
 
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+// CUSTOMER B2B PATHS
+export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
+export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
+export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
+export const CUSTOMER_PO_LIST_PATH = `${CUSTOMER_PATH}/purchase-orders`;
+export const CUSTOMER_PO_DETAILS_PATH = `${CUSTOMER_PATH}/purchase-order-details`;
 
 /**
  * Auth Privacy Policy Consent Slot
@@ -279,7 +303,17 @@ export async function loadCommerceLazy() {
  * Initializes commerce configuration
  */
 export async function initializeCommerce() {
+  // Initialize Config
   initializeConfig(await getConfigFromSession());
+
+  // Set Fetch GraphQL (Core)
+  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint'));
+  CORE_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('all') }));
+
+  // Set Fetch GraphQL (Catalog Service)
+  CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
+  CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
   return initializeDropins();
 }
 
@@ -734,6 +768,56 @@ function autolinkModals(element) {
       e.preventDefault();
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
       openModal(origin.href);
+    }
+  });
+}
+
+/**
+ * Decorates all sections in a container element.
+ * @param {Element} main The container element
+ */
+export function decorateSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const wrappers = [];
+    let defaultContent = false;
+    [...section.children].forEach((e) => {
+      if (e.classList.contains('richtext')) {
+        e.removeAttribute('class');
+        if (!defaultContent) {
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('default-content-wrapper');
+          wrappers.push(wrapper);
+          defaultContent = true;
+        }
+      } else if (e.tagName === 'DIV' || !defaultContent) {
+        const wrapper = document.createElement('div');
+        wrappers.push(wrapper);
+        defaultContent = e.tagName !== 'DIV';
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
+      }
+      wrappers[wrappers.length - 1].append(e);
+    });
+    wrappers.forEach((wrapper) => section.append(wrapper));
+    section.classList.add('section');
+    section.dataset.sectionStatus = 'initialized';
+    section.style.display = 'none';
+
+    // Process section metadata
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      Object.keys(meta).forEach((key) => {
+        if (key === 'style') {
+          const styles = meta.style
+            .split(',')
+            .filter((style) => style)
+            .map((style) => toClassName(style.trim()));
+          styles.forEach((style) => section.classList.add(style));
+        } else {
+          section.dataset[toCamelCase(key)] = meta[key];
+        }
+      });
+      sectionMeta.parentNode.remove();
     }
   });
 }

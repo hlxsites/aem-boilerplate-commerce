@@ -1,0 +1,4 @@
+/*! Copyright 2025 Adobe
+All Rights Reserved. */
+import{I as k,I as n}from"../chunks/ItemsQuotedTemplate.js";import"@dropins/tools/preact-jsx-runtime.js";import"@dropins/tools/preact-compat.js";import"@dropins/tools/lib.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/components.js";/* empty css                         */import"../chunks/LineItemNoteModal2.js";import"@dropins/tools/preact.js";import"@dropins/tools/preact-hooks.js";import"../chunks/dateUtils.js";import"@dropins/tools/i18n.js";/* empty css                        *//* empty css                          */import"../chunks/state.js";import"../chunks/addQuoteTemplateLineItemNote.js";import"../chunks/transform-quote-template.js";import"../chunks/transform-quote.js";import"@dropins/tools/fetch-graphql.js";import"../chunks/NegotiableQuoteTemplateFragment.js";import"../chunks/WarningFilled.js";export{k as ItemsQuotedTemplate,n as default};
+//# sourceMappingURL=ItemsQuotedTemplate.js.map
