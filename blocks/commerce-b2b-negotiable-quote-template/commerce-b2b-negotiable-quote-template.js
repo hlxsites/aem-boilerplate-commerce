@@ -96,16 +96,15 @@ export default async function decorate(block) {
     // Render the quote template details view
     await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
       slots: {
-        // TODO: Move this into a shipping information slot when it becomes available in the API
-        CommentsTitle: (ctx) => {
+        ShippingInformation: (ctx) => {
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
-          ctx.prependSibling(shippingInformation);
+          ctx.appendChild(shippingInformation);
 
           const progressSpinner = document.createElement('div');
           progressSpinner.classList.add('negotiable-quote-template__progress-spinner-container');
           progressSpinner.setAttribute('hidden', true);
-          ctx.prependSibling(progressSpinner);
+          ctx.appendChild(progressSpinner);
 
           UI.render(ProgressSpinner, {
             className: 'negotiable-quote-template__progress-spinner',
