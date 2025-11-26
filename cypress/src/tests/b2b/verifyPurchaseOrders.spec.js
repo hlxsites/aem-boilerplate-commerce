@@ -414,7 +414,6 @@ describe('B2B Purchase Orders', () => {
     cy.logToTerminal('🚀 Cleanup 1 started');
 
     actions.login(poUsers.sales_manager, urls);
-    cy.url().should('include', urls.account);
 
     /**
      * User removal is handled by "cypress/src/support/deleteCustomer.js"
@@ -428,7 +427,6 @@ describe('B2B Purchase Orders', () => {
     cy.logToTerminal('🚀 Cleanup 2 started');
 
     actions.login(poUsers.approver_manager, urls);
-    cy.url().should('include', urls.account);
 
     /**
      * User removal is handled by "cypress/src/support/deleteCustomer.js"

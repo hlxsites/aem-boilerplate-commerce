@@ -429,7 +429,9 @@ export const login = (user, urls) => {
     cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
   });
+  cy.wait(1500);
   cy.url().should('include', urls.account);
+  cy.wait(1500);
 };
 
 export const logout = (texts) => {
