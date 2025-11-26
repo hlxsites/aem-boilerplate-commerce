@@ -302,12 +302,10 @@ describe('B2B Purchase Orders', () => {
         .click();
       cy.wait(1500);
 
-      // Click Reject selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, poLabels.rejectSelected)
         .click();
 
-      // Verify rejection success message appears
       cy.get('.dropin-in-line-alert--success').should('be.visible');
 
       // Verify that no "Approval required" items remain (all processed)
