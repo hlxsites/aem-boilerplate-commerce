@@ -12,6 +12,8 @@ export interface CompanyTeamFormProps {
         type: 'team';
     }) => void;
     onCancel: () => void;
+    onError?: (error: string) => void;
+    onSuccess?: (message: string) => void;
 }
 export interface CompanyUserFormProps {
     mode: 'add' | 'edit';
@@ -25,5 +27,7 @@ export interface CompanyUserFormProps {
         type: 'user';
     }) => void;
     onCancel: () => void;
+    onError?: (error: string) => void;
+    onSuccess?: (message: string) => void;
 }
 //# sourceMappingURL=companyForm.types.d.ts.map

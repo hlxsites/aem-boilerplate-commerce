@@ -1,6 +1,6 @@
 /*! Copyright 2025 Adobe
 All Rights Reserved. */
-import{f as d,h as a}from"./network-error.js";import{h as l}from"./fetch-error.js";import{a as g}from"./validateCompanyEmail.js";const u=`
+import{f as d,h as a}from"./network-error.js";import{h as l}from"./fetch-error.js";import{t as g}from"./validateCompanyEmail.js";const u=`
     query getStoreConfig {
         storeConfig {
             default_country
