@@ -1,6 +1,8 @@
 import {
   createUserAssignCompanyAndRole,
   manageCompanyRole,
+  deleteCustomerRoles,
+  unassignRoles,
 } from '../../support/b2bPOAPICalls';
 import {
   poLabels,
@@ -12,6 +14,38 @@ import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
 describe('B2B Purchase Orders', () => {
+  afterEach(function () {
+    if (this.currentTest.state === 'failed') {
+      cy.logToTerminal('🧹 Test failed, running cleanup...');
+      const poUsersConfig = [
+        {
+          user: poUsers.po_rules_manager,
+          role: poRolesConfig.rulesManager,
+          roleId: null,
+        },
+        {
+          user: poUsers.sales_manager,
+          role: poRolesConfig.salesManager,
+          roleId: null,
+        },
+        {
+          user: poUsers.approver_manager,
+          role: poRolesConfig.approver,
+          roleId: null,
+        },
+      ];
+      const currentRoleNames = poUsersConfig.map(
+        (config) => config.role.role_name
+      );
+      const currentUserEmails = poUsersConfig.map(
+        (config) => config.user.email
+      );
+      cy.wrap(null)
+        .then(() => unassignRoles(currentUserEmails))
+        .then(() => deleteCustomerRoles(currentRoleNames));
+    }
+  });
+
   const urls = Cypress.env('poUrls');
 
   beforeEach(() => {
@@ -176,6 +210,8 @@ describe('B2B Purchase Orders', () => {
       cy.contains(poApprovalRules.rule2Edited.name).should('be.visible');
 
       cy.logToTerminal('🚪 Logging out PO Rules Manager');
+      cy.visit('/');
+      cy.wait(3000);
       actions.logout(poLabels);
 
       // === Step 5: Create Purchase Orders as Sales user ===
@@ -197,6 +233,8 @@ describe('B2B Purchase Orders', () => {
       }
 
       cy.logToTerminal('🚪 Logging out Sales Manager');
+      cy.visit('/');
+      cy.wait(3000);
       actions.logout(poLabels);
 
       // === Step 6: Test scenario: Approver logs in and manages pending Purchase Orders ===
@@ -324,6 +362,8 @@ describe('B2B Purchase Orders', () => {
       cy.contains('button', 'Add Comment').click();
 
       cy.logToTerminal('🚪 Logging out Approver Manager');
+      cy.visit('/');
+      cy.wait(3000);
       actions.logout(poLabels);
 
       // === Step 8: Test scenario: Sales creates Purchase Order with 1 item (auto-approved), Admin verifies ===
@@ -340,6 +380,8 @@ describe('B2B Purchase Orders', () => {
       actions.createPurchaseOrder(1, true, urls, poLabels);
 
       cy.logToTerminal('🚪 Logging out Sales Manager');
+      cy.visit('/');
+      cy.wait(3000);
       actions.logout(poLabels);
 
       cy.logToTerminal(
@@ -378,7 +420,7 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('🚪 Logging out PO Rules Manager');
       cy.visit('/');
-      cy.wait(5000);
+      cy.wait(3000);
       actions.logout(poLabels);
 
       // === Step 9: Delete approval rules ===

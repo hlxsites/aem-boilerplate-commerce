@@ -1,8 +1,8 @@
 const random = Cypress._.random(0, 10000000);
 
-const SALES_MANAGER_ROLE_NAME = `PO Sales Manager ${random}`
-const RULES_MANAGER_ROLE_NAME = `PO Rules Manager ${random}`
-const APPROVER_ROLE_NAME = `PO Approver ${random}`
+const SALES_MANAGER_ROLE_NAME = `PO Sales Manager ${random}`;
+const RULES_MANAGER_ROLE_NAME = `PO Rules Manager ${random}`;
+const APPROVER_ROLE_NAME = `PO Approver ${random}`;
 const USER_PASSWORD = 'Qwe123456';
 const COMPANY_ID = 13;
 
@@ -26,7 +26,7 @@ export const poLabels = {
   grandTotal: 'Grand Total',
   numberOfSKUs: 'Number of SKUs',
   approvalRulesHeader: 'Approval rules',
-  approvalRuleFormHeader: 'Purchase order approval rule'
+  approvalRuleFormHeader: 'Purchase order approval rule',
 };
 
 export const poApprovalRules = {
@@ -102,44 +102,84 @@ export const poRolesConfig = {
     role_name: SALES_MANAGER_ROLE_NAME,
     company_id: COMPANY_ID,
     permissions: [
-      { resource_id: "Magento_Company::index", permission: "allow" },
-      { resource_id: "Magento_Company::view", permission: "allow" },
-      { resource_id: "Magento_Company::view_account", permission: "allow" },
-      { resource_id: "Magento_Sales::all", permission: "allow" },
-      { resource_id: "Magento_Sales::place_order", permission: "allow" },
-      { resource_id: "Magento_Sales::view_orders", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::all", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrderRule::view_approval_rules", permission: "allow" },
-    ]
+      { resource_id: 'Magento_Company::index', permission: 'allow' },
+      { resource_id: 'Magento_Company::view', permission: 'allow' },
+      { resource_id: 'Magento_Company::view_account', permission: 'allow' },
+      { resource_id: 'Magento_Sales::all', permission: 'allow' },
+      { resource_id: 'Magento_Sales::place_order', permission: 'allow' },
+      { resource_id: 'Magento_Sales::view_orders', permission: 'allow' },
+      { resource_id: 'Magento_PurchaseOrder::all', permission: 'allow' },
+      {
+        resource_id: 'Magento_PurchaseOrderRule::view_approval_rules',
+        permission: 'allow',
+      },
+    ],
   },
   rulesManager: {
     role_name: RULES_MANAGER_ROLE_NAME,
     company_id: COMPANY_ID,
     permissions: [
-      { resource_id: "Magento_Company::index", permission: "allow" },
-      { resource_id: "Magento_Company::view", permission: "allow" },
-      { resource_id: "Magento_Company::view_account", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::all", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrderRule::view_approval_rules", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrderRule::manage_approval_rules", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_company", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_subordinates", permission: "allow" },
-    ]
+      { resource_id: 'Magento_Company::index', permission: 'allow' },
+      { resource_id: 'Magento_Company::view', permission: 'allow' },
+      { resource_id: 'Magento_Company::view_account', permission: 'allow' },
+      { resource_id: 'Magento_PurchaseOrder::all', permission: 'allow' },
+      {
+        resource_id: 'Magento_PurchaseOrderRule::view_approval_rules',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrderRule::manage_approval_rules',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
+        permission: 'allow',
+      },
+      {
+        resource_id:
+          'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+        permission: 'allow',
+      },
+      { resource_id: 'Magento_Company::user_management', permission: 'allow' },
+      { resource_id: 'Magento_Company::users_view', permission: 'allow' },
+      { resource_id: 'Magento_Company::users_edit', permission: 'allow' },
+      { resource_id: 'Magento_Company::roles_view', permission: 'allow' },
+      { resource_id: 'Magento_Company::roles_edit', permission: 'allow' },
+    ],
   },
   approver: {
     role_name: APPROVER_ROLE_NAME,
     company_id: COMPANY_ID,
     permissions: [
-      { resource_id: "Magento_Company::index", permission: "allow" },
-      { resource_id: "Magento_Company::view", permission: "allow" },
-      { resource_id: "Magento_Company::view_account", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::all", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrderRule::view_approval_rules", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrderRule::manage_approval_rules", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_company", permission: "allow" },
-      { resource_id: "Magento_PurchaseOrder::view_purchase_orders_for_subordinates", permission: "allow" },
-    ]
+      { resource_id: 'Magento_Company::index', permission: 'allow' },
+      { resource_id: 'Magento_Company::view', permission: 'allow' },
+      { resource_id: 'Magento_Company::view_account', permission: 'allow' },
+      { resource_id: 'Magento_PurchaseOrder::all', permission: 'allow' },
+      {
+        resource_id: 'Magento_PurchaseOrderRule::view_approval_rules',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrderRule::manage_approval_rules',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders',
+        permission: 'allow',
+      },
+      {
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders_for_company',
+        permission: 'allow',
+      },
+      {
+        resource_id:
+          'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+        permission: 'allow',
+      },
+    ],
   },
 };
