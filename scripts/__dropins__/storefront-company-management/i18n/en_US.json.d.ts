@@ -178,6 +178,8 @@ declare const _default: {
         }
       },
       "messages": {
+        "structureSuccess": "Company structure updated successfully",
+        "structureError": "Failed to update company structure",
         "loadError": "Failed to load company structure",
         "updateError": "Failed to update company structure",
         "noStructureData": "No structure data.",
@@ -196,15 +198,6 @@ declare const _default: {
         "createTeamError": "Failed to create team. You may not have permission to perform this action.",
         "saveUserError": "An error occurred while saving the user.",
         "saveTeamError": "An error occurred while saving the team.",
-        "createUserSuccess": "The customer was successfully created.",
-        "updateUserSuccess": "The customer was successfully updated.",
-        "createTeamSuccess": "The team was successfully created.",
-        "updateTeamSuccess": "The team was successfully updated.",
-        "removeUserSuccess": "User was successfully removed from company structure.",
-        "deleteTeamSuccess": "Team was successfully deleted.",
-        "removeMultipleSuccess": "{count} item(s) were successfully removed.",
-        "moveUserSuccess": "User was successfully moved.",
-        "moveTeamSuccess": "Team was successfully moved.",
         "loadRolesError": "Failed to load roles",
         "fetchPermissionsError": "Failed to fetch permissions"
       }
@@ -230,7 +223,7 @@ declare const _default: {
       },
       "emptyTeam": "-",
       "pagination": {
-        "itemsRange": "Items {start}-{end} of {total}",
+        "itemsCount": "{count} Item(s)",
         "itemsPerPage": "Items per page:",
         "show": "Show",
         "perPage": "per page",
@@ -239,7 +232,6 @@ declare const _default: {
         "pageInfo": "Page {current} of {total}"
       },
       "emptyActions": "",
-      "noUsersFound": "No users found.",
       "actions": {
         "manage": "Manage",
         "edit": "Edit",
@@ -279,9 +271,6 @@ declare const _default: {
         "setInactiveErrorSpecific": "Failed to set user as inactive.",
         "deleteErrorGeneric": "An unexpected error occurred.",
         "deleteErrorSpecific": "Failed to delete user.",
-        "setActiveSuccess": "User was successfully activated.",
-        "setInactiveSuccess": "User was successfully deactivated.",
-        "deleteSuccess": "User was successfully deleted.",
         "ariaLabels": {
           "closeModal": "Close modal",
           "modalDescription": "User management options including setting as inactive or deleting the user account"
@@ -300,7 +289,7 @@ declare const _default: {
     },
     "CompanyCredit": {
       "title": "Company Credit",
-      "creditAvailable": "Available Credit",
+      "creditAvailable": "Credit Available",
       "creditLimit": "Credit Limit",
       "outstandingBalance": "Outstanding Balance",
       "messages": {
@@ -316,14 +305,17 @@ declare const _default: {
         "outstandingBalance": "Outstanding Balance",
         "availableCredit": "Available Credit",
         "creditLimit": "Credit Limit",
-        "customReference": "Custom Reference Number",
+        "customReference": "Custom Reference",
         "updatedBy": "Updated By"
       },
       "pagination": {
-        "itemsRange": "Items {start} to {end} of {total}",
+        "itemsCount": "{count} Item(s)",
         "itemsPerPage": "Items per page:",
         "show": "Show",
-        "perPage": "per page"
+        "perPage": "per page",
+        "previous": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {current} of {total}"
       },
       "ariaLabels": {
         "dataLoaded": "Loaded {count} credit history entries",
@@ -333,10 +325,8 @@ declare const _default: {
         "paginationNav": "Pagination navigation",
         "pageNavigation": "Page navigation",
         "pageSizeSelector": "Items per page selector",
-        "previousPage": "Previous page",
-        "nextPage": "Next page",
-        "goToPage": "Go to page {page}",
-        "currentPage": "Current page {page}",
+        "previousPageFull": "Go to previous page, current page {current}",
+        "nextPageFull": "Go to next page, current page {current}",
         "showingHistory": "Showing {count} credit history entries"
       }
     },
@@ -422,7 +412,6 @@ declare const _default: {
       "viewOnlyLabel": "View Only",
       "systemRoleLabel": "System Role",
       "itemCount": "Item(s)",
-      "itemsRange": "Items {start}-{end} of {total}",
       "show": "Show",
       "perPage": "per page",
       "deleteRole": {

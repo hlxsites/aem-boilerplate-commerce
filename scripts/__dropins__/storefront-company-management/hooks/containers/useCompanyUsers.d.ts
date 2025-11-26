@@ -27,7 +27,6 @@ export interface UseCompanyUsersReturn {
     } | string) => void;
     handlePreviousPage: () => void;
     handleNextPage: () => void;
-    handlePageChange: (newPage: number) => void;
     refreshUsers: () => Promise<void>;
 }
 export declare const useCompanyUsers: ({ translations }: UseCompanyUsersProps) => UseCompanyUsersReturn;

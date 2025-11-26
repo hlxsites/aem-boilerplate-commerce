@@ -11,8 +11,6 @@ export declare function useCompanyUserForm(opts: {
         entityId?: string;
         type: 'user';
     }) => void;
-    onError?: (error: string) => void;
-    onSuccess?: (message: string) => void;
 }): {
     values: Partial<CompanyUserModel> & {
         roleId: string;

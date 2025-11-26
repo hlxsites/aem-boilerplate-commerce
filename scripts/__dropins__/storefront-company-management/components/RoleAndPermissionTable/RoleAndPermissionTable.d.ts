@@ -15,9 +15,6 @@ export interface RoleAndPermissionTableProps extends HTMLAttributes<HTMLDivEleme
     pageSize?: number;
     onPageChange?: (page: number) => void;
     onPageSizeChange?: (pageSize: number) => void;
-    onSortChange?: (columnKey: string, direction: 'asc' | 'desc') => void;
-    sortColumn?: string;
-    sortDirection?: 'asc' | 'desc';
 }
 export declare const RoleAndPermissionTable: FunctionComponent<RoleAndPermissionTableProps>;
 //# sourceMappingURL=RoleAndPermissionTable.d.ts.map
