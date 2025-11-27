@@ -196,7 +196,7 @@ describe('B2B Purchase Orders', () => {
   // Test 3: Sales Manager - Create Purchase Orders requiring approval
   it(
     'Sales Manager - Create Purchase Orders requiring approval',
-    { tags: ['@B2BSaas'] },
+    { tags: ['@B2BSaas'], retries: 0 },
     () => {
       cy.logToTerminal(
         '⚙️ Test 3: Sales Manager - Creating Purchase Orders requiring approval'
