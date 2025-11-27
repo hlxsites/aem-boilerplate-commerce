@@ -40,6 +40,7 @@ describe('B2B Purchase Orders', () => {
       (config) => config.user.email
     );
 
+    //  Worker roles were created during the test, need to clean them up
     cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(() =>
       cy.wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
     );
