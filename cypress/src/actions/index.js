@@ -1,5 +1,5 @@
 import * as fields from '../fields/index';
-import * as selectors from "../fields";
+import * as selectors from '../fields';
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -556,7 +556,7 @@ export const fillApprovalRuleForm = (rule, texts) => {
     cy.get(fields.poMultiSelect).first().contains(rule.role).click();
     cy.wait(1500);
     cy.get('body').type('{esc}');
-    cy.wait(1500);
+    cy.wait(2500);
   }
 
   cy.get(fields.poRuleTypeSelect).select(rule.ruleType);
@@ -568,14 +568,14 @@ export const fillApprovalRuleForm = (rule, texts) => {
 
   const multiSelectIndex = rule.appliesTo === texts.specificRoles ? 1 : 0;
   cy.get(fields.poMultiSelect).eq(multiSelectIndex).click();
-  cy.wait(1500);
+  cy.wait(2500);
   cy.get(fields.poMultiSelect)
     .eq(multiSelectIndex)
     .contains(rule.approverRole)
     .click();
-  cy.wait(1500);
+  cy.wait(2500);
   cy.get('body').type('{esc}');
-  cy.wait(1500);
+  cy.wait(2500);
 };
 
 export const deleteApprovalRule = (ruleName) => {
@@ -585,17 +585,17 @@ export const deleteApprovalRule = (ruleName) => {
 
   getRowByName(ruleName).then(($row) => {
     cy.wrap($row).within(() => {
-      cy.contains("button", "Show").click();
+      cy.contains('button', 'Show').click();
     });
   });
 
   cy.wait(2000);
 
-  cy.contains("button", "Delete").click();
+  cy.contains('button', 'Delete').click();
 
   cy.wait(2000);
-  
-  getRowByName(ruleName).should("not.exist");
 
-  cy.wait(1500);
+  getRowByName(ruleName).should('not.exist');
+
+  cy.wait(2500);
 };
