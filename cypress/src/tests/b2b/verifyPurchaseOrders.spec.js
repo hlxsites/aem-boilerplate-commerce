@@ -145,6 +145,9 @@ describe('B2B Purchase Orders', () => {
         '📝 STEP 1: Creating Approval Rule with Grand Total condition'
       );
       cy.visit(urls.approvalRules);
+      cy.wait(2000);
+      cy.reload();
+      cy.wait(3000);
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
 
       cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
@@ -253,6 +256,9 @@ describe('B2B Purchase Orders', () => {
       // Navigate to Purchase Orders page
       cy.logToTerminal('📄 Navigating to Purchase Orders page');
       cy.visit(urls.purchaseOrders);
+      cy.wait(2000);
+      cy.reload();
+      cy.wait(3000);
 
       // Find wrapper with Purchase Orders requiring approval
       cy.get(selectors.poApprovalPOWrapper).within(() => {
@@ -394,6 +400,8 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('📄 Navigating to Company Purchase Orders');
       cy.visit(urls.purchaseOrders);
+      cy.wait(2000);
+      cy.reload();
       cy.wait(3000);
 
       cy.get(selectors.poCompanyPOContainer).should('exist');
@@ -435,6 +443,9 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('📄 Navigating to Approval Rules page');
       cy.visit(urls.approvalRules);
+      cy.wait(2000);
+      cy.reload();
+      cy.wait(3000);
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
 
       cy.logToTerminal('🗑️ Deleting first approval rule');
