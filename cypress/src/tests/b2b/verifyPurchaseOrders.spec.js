@@ -301,11 +301,12 @@ describe('B2B Purchase Orders', () => {
         .contains('Approval required')
         .should('have.length', 1);
 
-      cy.logToTerminal('⏳ Waiting for DOM to update after approval...');
-      cy.wait(3000);
+      cy.logToTerminal('⏳ Reloading page to refresh DOM after approval...');
+      cy.reload();
+      cy.wait(5000); // Wait for page reload and data to settle
 
       // Reject second Purchase Order
-      cy.logToTerminal('🗑️ Rejecting second Purchase Order');
+      cy.logToTerminal('🗑️ Rejecting second (now first) Purchase Order');
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
