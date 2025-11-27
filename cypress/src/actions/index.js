@@ -458,47 +458,87 @@ export const proceedToCheckout = (texts, urls) => {
 export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
   cy.url().should('include', urls.checkout);
-  cy.wait(5000);
+  cy.logToTerminal('Waiting for checkout data to load');
 
-  // Wait for shipping address form to load (new users always need to fill it)
-  cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible');
+  const shippingFirstNameSelectors = [
+    'input[name="firstName"]',
+    'input[name="firstname"]',
+    'input[name="shippingAddress.firstName"]',
+  ];
+
+  const resolveSelector = (candidates) =>
+    cy.get('body', { timeout: 60000 }).then(($body) => {
+      const match = candidates.find((selector) => $body.find(selector).length);
+
+      if (!match) {
+        throw new Error(
+          `Unable to locate element. Tried selectors: ${candidates.join(', ')}`
+        );
+      }
+
+      return match;
+    });
+
+  cy.get('body', { timeout: 60000 }).should(($body) => {
+    const hasShippingInput = shippingFirstNameSelectors.some(
+      (selector) => $body.find(selector).length
+    );
+
+    expect(hasShippingInput, 'shipping first name field presence').to.be.true;
+  });
+
+  resolveSelector(shippingFirstNameSelectors).then((firstNameSelector) => {
+    cy.get(firstNameSelector, { timeout: 60000 })
+      .first()
+      .should('be.visible')
+      .clear({ force: true })
+      .type('Test', { force: true });
+  });
 
   cy.logToTerminal('Filling shipping address form');
-  cy.get('input[name="firstName"]')
+  cy.get('input[name="lastName"]', { timeout: 60000 })
     .first()
     .clear({ force: true })
     .type('Test', { force: true });
   cy.wait(1500);
-  cy.get('input[name="lastName"]')
+  cy.get('input[name="street"]', { timeout: 60000 })
     .first()
     .clear({ force: true })
     .type('Test', { force: true });
   cy.wait(1500);
-  cy.get('input[name="street"]')
+  cy.get('body').then(($body) => {
+    if ($body.find('select[name="region"]').length) {
+      cy.get('select[name="region"]', { timeout: 60000 })
+        .first()
+        .select('Alabama', { force: true });
+    } else {
+      cy.get('input[name="region"]', { timeout: 60000 })
+        .first()
+        .clear({ force: true })
+        .type('Alabama', { force: true });
+    }
+  });
+  cy.wait(1500);
+  cy.get('input[name="city"]', { timeout: 60000 })
     .first()
     .clear({ force: true })
     .type('Test', { force: true });
   cy.wait(1500);
-  cy.get('select[name="region"]').first().select('Alabama', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="city"]')
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="postcode"]')
+  cy.get('input[name="postcode"]', { timeout: 60000 })
     .first()
     .clear({ force: true })
     .type('1235', { force: true });
   cy.wait(1500);
-  cy.get('input[name="telephone"]')
+  cy.get('input[name="telephone"]', { timeout: 60000 })
     .first()
     .clear({ force: true })
     .type('123456789', { force: true });
   cy.wait(3000);
 
   cy.wait(1500);
-  cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder)
+  cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder, {
+    timeout: 60000,
+  })
     .should('be.visible')
     .click();
   cy.wait(1500);
@@ -506,7 +546,7 @@ export const completeCheckout = (urls, texts) => {
     .find(fields.poTermsCheckbox)
     .check({ force: true });
   cy.wait(1500);
-  cy.get(fields.poPlacePOButton)
+  cy.get(fields.poPlacePOButton, { timeout: 60000 })
     .contains(texts.placePO)
     .should('be.visible')
     .click();

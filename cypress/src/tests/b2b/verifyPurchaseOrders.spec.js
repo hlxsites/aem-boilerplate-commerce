@@ -294,16 +294,23 @@ describe('B2B Purchase Orders', () => {
         .click();
 
       cy.get('.dropin-in-line-alert--success').should('be.visible');
+      cy.wait(2000);
+
       cy.get(selectors.poApprovalPOWrapper)
         .find('.b2b-purchase-order-purchase-orders-table__status')
         .contains('Approval required')
         .should('have.length', 1);
 
+      cy.logToTerminal('⏳ Reloading page to refresh DOM after approval...');
+      cy.reload();
+      cy.wait(5000); // Wait for page reload and data to settle
+
       // Reject second Purchase Order
-      cy.logToTerminal('🗑️ Rejecting second Purchase Order');
+      cy.logToTerminal('🗑️ Rejecting second (now first) Purchase Order');
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
+        .should('not.be.disabled')
         .click();
       cy.wait(1500);
 
