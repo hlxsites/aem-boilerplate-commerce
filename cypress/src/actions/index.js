@@ -446,12 +446,9 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   }
 };
 
-export const proceedToCheckout = (texts) => {
-  cy.get(fields.poNavCartButton).click();
-  cy.wait(2000);
-
-  cy.get(fields.poCheckoutLink).contains(texts.checkout).click();
-  cy.wait(2000);
+export const proceedToCheckout = (texts, urls) => {
+  cy.visit(urls.checkout);
+  cy.wait(3000);
 };
 
 export const completeCheckout = (urls, texts) => {
@@ -527,7 +524,7 @@ export const createPurchaseOrder = (
   texts
 ) => {
   addProductToCart(itemCount, isCheap, urls, texts);
-  proceedToCheckout(texts);
+  proceedToCheckout(texts, urls);
   completeCheckout(urls, texts);
   verifyPOConfirmation();
 };
