@@ -1,6 +1,6 @@
 # Edge Delivery Services + Adobe Commerce Boilerplate 3
 
-This project boilerplate is for Edge Delivery Services projects that integrate with Adobe Commerce.
+This project boilerplate is for Edge Delivery Services projects that integrate with Adobe Commerce .
 
 ## Documentation
 
