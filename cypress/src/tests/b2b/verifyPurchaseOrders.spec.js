@@ -295,12 +295,12 @@ describe('B2B Purchase Orders', () => {
 
       cy.get('.dropin-in-line-alert--success').should('be.visible');
       cy.wait(2000);
-      
+
       cy.get(selectors.poApprovalPOWrapper)
         .find('.b2b-purchase-order-purchase-orders-table__status')
         .contains('Approval required')
         .should('have.length', 1);
-      
+
       cy.logToTerminal('⏳ Waiting for DOM to update after approval...');
       cy.wait(3000);
 
