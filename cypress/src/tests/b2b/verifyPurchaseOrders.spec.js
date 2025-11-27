@@ -27,176 +27,189 @@ describe('B2B Purchase Orders', () => {
   });
 
   // Test 1: Setup roles and users
-  it('Setup - Create roles and users', { tags: ['@B2BSaas'] }, () => {
-    cy.logToTerminal('⚙️ Test 1: Setup - Creating roles and users');
+  it(
+    'Setup - Create roles and users',
+    { tags: ['@B2BSaas'], retries: 0 },
+    () => {
+      cy.logToTerminal('⚙️ Test 1: Setup - Creating roles and users');
 
-    const poUsersConfig = [
-      {
-        user: poUsers.po_rules_manager,
-        role: poRolesConfig.rulesManager,
-        roleId: null,
-      },
-      {
-        user: poUsers.sales_manager,
-        role: poRolesConfig.salesManager,
-        roleId: null,
-      },
-      {
-        user: poUsers.approver_manager,
-        role: poRolesConfig.approver,
-        roleId: null,
-      },
-    ];
+      const poUsersConfig = [
+        {
+          user: poUsers.po_rules_manager,
+          role: poRolesConfig.rulesManager,
+          roleId: null,
+        },
+        {
+          user: poUsers.sales_manager,
+          role: poRolesConfig.salesManager,
+          roleId: null,
+        },
+        {
+          user: poUsers.approver_manager,
+          role: poRolesConfig.approver,
+          roleId: null,
+        },
+      ];
 
-    // Create roles
-    cy.logToTerminal('⚙️ Creating user roles');
-    const createdRoleIds = [];
-    poUsersConfig
-      .reduce((chain, element, index) => {
-        return chain.then(() => {
-          cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
-          cy.wait(3000);
+      // Create roles
+      cy.logToTerminal('⚙️ Creating user roles');
+      const createdRoleIds = [];
+      poUsersConfig
+        .reduce((chain, element, index) => {
+          return chain.then(() => {
+            cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
+            cy.wait(3000);
 
-          return manageCompanyRole(element.role).then((result) => {
-            poUsersConfig[index].roleId = result?.role?.id;
-            createdRoleIds.push(result?.role?.id);
+            return manageCompanyRole(element.role).then((result) => {
+              poUsersConfig[index].roleId = result?.role?.id;
+              createdRoleIds.push(result?.role?.id);
 
-            cy.logToTerminal(
-              `✅ Role created: ${element.role.role_name} | ID: ${result?.role?.id}`
-            );
+              cy.logToTerminal(
+                `✅ Role created: ${element.role.role_name} | ID: ${result?.role?.id}`
+              );
+            });
           });
+        }, cy.wrap(null))
+        .then(() => {
+          Cypress.env('poTestRoleIds', createdRoleIds);
+          Cypress.env('poUsersConfig', poUsersConfig);
+          cy.logToTerminal(
+            `📝 Stored ${createdRoleIds.length} role IDs for cleanup`
+          );
+          cy.logToTerminal(
+            '⏳ Waiting 10 seconds for roles to be indexed in the system...'
+          );
+          cy.wait(10000);
         });
-      }, cy.wrap(null))
-      .then(() => {
-        Cypress.env('poTestRoleIds', createdRoleIds);
-        Cypress.env('poUsersConfig', poUsersConfig);
-        cy.logToTerminal(
-          `📝 Stored ${createdRoleIds.length} role IDs for cleanup`
-        );
-        cy.logToTerminal(
-          '⏳ Waiting 10 seconds for roles to be indexed in the system...'
-        );
-        cy.wait(10000);
-      });
 
-    // Create users
-    cy.logToTerminal('⚙️ Creating test users');
-    poUsersConfig
-      .reduce((chain, element) => {
-        return chain.then(() => {
+      // Create users
+      cy.logToTerminal('⚙️ Creating test users');
+      poUsersConfig
+        .reduce((chain, element) => {
+          return chain.then(() => {
+            cy.wait(5000);
+            return cy.wrap(null).then(() => {
+              cy.logToTerminal(
+                `✅ Creating user: ${element.user.email} with role ID: ${element.roleId}`
+              );
+              return createUserAssignCompanyAndRole(
+                element.user,
+                element.roleId
+              );
+            });
+          });
+        }, cy.wrap(null))
+        .then(() => {
+          cy.logToTerminal(
+            '⏳ Waiting 5 seconds for users and permissions to be fully applied...'
+          );
           cy.wait(5000);
-          return cy.wrap(null).then(() => {
-            cy.logToTerminal(
-              `✅ Creating user: ${element.user.email} with role ID: ${element.roleId}`
-            );
-            return createUserAssignCompanyAndRole(element.user, element.roleId);
-          });
+          cy.logToTerminal('✅ Test 1: Setup completed successfully');
         });
-      }, cy.wrap(null))
-      .then(() => {
-        cy.logToTerminal(
-          '⏳ Waiting 5 seconds for users and permissions to be fully applied...'
-        );
-        cy.wait(5000);
-        cy.logToTerminal('✅ Test 1: Setup completed successfully');
-      });
-  });
+    }
+  );
 
   // Test 2: Manage approval rules
-  it('Manage approval rules - Create and edit', { tags: ['@B2BSaas'] }, () => {
-    cy.logToTerminal('⚙️ Test 2: Managing approval rules');
+  it(
+    'Manage approval rules - Create and edit',
+    { tags: ['@B2BSaas'], retries: 0 },
+    () => {
+      cy.logToTerminal('⚙️ Test 2: Managing approval rules');
 
-    cy.logToTerminal(`🔐 Login as PO Rules Manager`);
-    actions.login(poUsers.po_rules_manager, urls);
-    cy.logToTerminal('⏳ Waiting for session and permissions to initialize...');
-    cy.wait(3000);
+      cy.logToTerminal(`🔐 Login as PO Rules Manager`);
+      actions.login(poUsers.po_rules_manager, urls);
+      cy.logToTerminal(
+        '⏳ Waiting for session and permissions to initialize...'
+      );
+      cy.wait(3000);
 
-    // Step 1: Create Approval Rule with Grand Total condition
-    cy.logToTerminal(
-      '📝 STEP 1: Creating Approval Rule with Grand Total condition'
-    );
-    cy.visit(urls.approvalRules);
-    cy.wait(2000);
-    cy.reload();
-    cy.wait(3000);
-    cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      // Step 1: Create Approval Rule with Grand Total condition
+      cy.logToTerminal(
+        '📝 STEP 1: Creating Approval Rule with Grand Total condition'
+      );
+      cy.visit(urls.approvalRules);
+      cy.wait(2000);
+      cy.reload();
+      cy.wait(3000);
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
 
-    cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
-    cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
+      cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
+      cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-    actions.fillApprovalRuleForm(poApprovalRules.rule1, poLabels);
-    cy.get(selectors.poShowButton).contains(poLabels.save).click();
+      actions.fillApprovalRuleForm(poApprovalRules.rule1, poLabels);
+      cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
-    cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-    cy.contains(poApprovalRules.rule1.name).should('be.visible');
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      cy.contains(poApprovalRules.rule1.name).should('be.visible');
 
-    // Step 2: Edit first Approval Rule (Grand Total) to Number of SKUs
-    cy.logToTerminal(
-      '✏️ STEP 2: Editing first Approval Rule to Number of SKUs condition'
-    );
-    cy.contains(poApprovalRules.rule1.name)
-      .should('be.visible')
-      .closest('tr')
-      .find(selectors.poShowButton)
-      .contains(poLabels.show)
-      .click();
-    cy.get(selectors.poEditButton)
-      .filter(`:contains("${poLabels.edit}")`)
-      .first()
-      .click();
-    cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
+      // Step 2: Edit first Approval Rule (Grand Total) to Number of SKUs
+      cy.logToTerminal(
+        '✏️ STEP 2: Editing first Approval Rule to Number of SKUs condition'
+      );
+      cy.contains(poApprovalRules.rule1.name)
+        .should('be.visible')
+        .closest('tr')
+        .find(selectors.poShowButton)
+        .contains(poLabels.show)
+        .click();
+      cy.get(selectors.poEditButton)
+        .filter(`:contains("${poLabels.edit}")`)
+        .first()
+        .click();
+      cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-    actions.fillApprovalRuleForm(poApprovalRules.rule1Edited, poLabels);
-    cy.get(selectors.poShowButton).contains(poLabels.save).click();
+      actions.fillApprovalRuleForm(poApprovalRules.rule1Edited, poLabels);
+      cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
-    cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-    cy.contains(poApprovalRules.rule1Edited.name).should('be.visible');
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      cy.contains(poApprovalRules.rule1Edited.name).should('be.visible');
 
-    // Step 3: Create second Approval Rule with Number of SKUs
-    cy.logToTerminal(
-      '📝 STEP 3: Creating second Approval Rule with Number of SKUs condition'
-    );
-    cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
-    cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
+      // Step 3: Create second Approval Rule with Number of SKUs
+      cy.logToTerminal(
+        '📝 STEP 3: Creating second Approval Rule with Number of SKUs condition'
+      );
+      cy.get(selectors.poShowButton).contains(poLabels.addNewRule).click();
+      cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-    actions.fillApprovalRuleForm(poApprovalRules.rule2, poLabels);
-    cy.get(selectors.poShowButton).contains(poLabels.save).click();
+      actions.fillApprovalRuleForm(poApprovalRules.rule2, poLabels);
+      cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
-    cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-    cy.contains(poApprovalRules.rule2.name).should('be.visible');
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      cy.contains(poApprovalRules.rule2.name).should('be.visible');
 
-    // Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total
-    cy.logToTerminal(
-      '✏️ STEP 4: Editing second Approval Rule to Grand Total condition'
-    );
-    cy.get(`tr:contains("${poApprovalRules.rule2.name}")`)
-      .last()
-      .find(selectors.poShowButton)
-      .contains(poLabels.show)
-      .click();
-    cy.get(selectors.poEditButton)
-      .filter(`:contains("${poLabels.edit}")`)
-      .first()
-      .click();
-    cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
+      // Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total
+      cy.logToTerminal(
+        '✏️ STEP 4: Editing second Approval Rule to Grand Total condition'
+      );
+      cy.get(`tr:contains("${poApprovalRules.rule2.name}")`)
+        .last()
+        .find(selectors.poShowButton)
+        .contains(poLabels.show)
+        .click();
+      cy.get(selectors.poEditButton)
+        .filter(`:contains("${poLabels.edit}")`)
+        .first()
+        .click();
+      cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
 
-    actions.fillApprovalRuleForm(poApprovalRules.rule2Edited, poLabels);
-    cy.get(selectors.poShowButton).contains(poLabels.save).click();
+      actions.fillApprovalRuleForm(poApprovalRules.rule2Edited, poLabels);
+      cy.get(selectors.poShowButton).contains(poLabels.save).click();
 
-    cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-    cy.contains(poApprovalRules.rule2Edited.name).should('be.visible');
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      cy.contains(poApprovalRules.rule2Edited.name).should('be.visible');
 
-    cy.logToTerminal('🚪 Logging out PO Rules Manager');
-    cy.visit('/');
-    cy.wait(3000);
-    actions.logout(poLabels);
-    cy.logToTerminal('✅ Test 2: Approval rules management completed');
-  });
+      cy.logToTerminal('🚪 Logging out PO Rules Manager');
+      cy.visit('/');
+      cy.wait(3000);
+      actions.logout(poLabels);
+      cy.logToTerminal('✅ Test 2: Approval rules management completed');
+    }
+  );
 
   // Test 3: Sales Manager - Create Purchase Orders requiring approval
   it(
     'Sales Manager - Create Purchase Orders requiring approval',
-    { tags: ['@B2BSaas'] },
+    { tags: ['@B2BSaas'], retries: 0 },
     () => {
       cy.logToTerminal(
         '⚙️ Test 3: Sales Manager - Creating Purchase Orders requiring approval'
@@ -377,7 +390,7 @@ describe('B2B Purchase Orders', () => {
   // Test 6: Sales Manager - Create auto-approved Purchase Order
   it(
     'Sales Manager - Create auto-approved Purchase Order',
-    { tags: ['@B2BSaas'] },
+    { tags: ['@B2BSaas'], retries: 0 },
     () => {
       cy.logToTerminal(
         '⚙️ Test 6: Sales Manager - Creating auto-approved Purchase Order'
@@ -519,6 +532,8 @@ describe('B2B Purchase Orders', () => {
         const userEmailsToUnassign = poUsersConfig.map(
           (config) => config.user.email
         );
+
+        cy.logToTerminal(`🗑️ Roles to delete: ${roleNamesToDelete.join(', ')}`);
 
         cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
           () =>
