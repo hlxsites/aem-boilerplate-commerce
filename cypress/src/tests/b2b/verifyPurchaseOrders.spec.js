@@ -218,6 +218,8 @@ describe('B2B Purchase Orders', () => {
       cy.wait(3000);
       actions.logout(poLabels);
       cy.logToTerminal('✅ Test 3: Purchase Orders created successfully');
+      cy.logToTerminal('⏳ Waiting for Purchase Orders to be indexed...');
+      cy.wait(10000);
     }
   );
 
@@ -232,19 +234,24 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('🔐 Login as Approver Manager');
       actions.login(poUsers.approver_manager, urls);
+      cy.logToTerminal('⏳ Waiting for session to initialize...');
+      cy.wait(3000);
 
       cy.logToTerminal('📄 Navigating to Purchase Orders page');
       cy.visit(urls.purchaseOrders);
-      cy.wait(2000);
+      cy.wait(5000);
       cy.reload();
-      cy.wait(3000);
+      cy.wait(5000);
 
       // Find and verify Purchase Orders requiring approval
+      cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
       cy.get(selectors.poApprovalPOWrapper).within(() => {
         cy.contains('Requires my approval').should('be.visible');
+        // Wait up to 30 seconds for all 3 checkboxes to appear
         cy.get(
-          `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`
-        ).should('have.length.at.least', 3);
+          `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`,
+          { timeout: 30000 }
+        ).should('have.length', 3);
         cy.contains(selectors.poShowButton, poLabels.rejectSelected).should(
           'be.visible'
         );
@@ -252,6 +259,7 @@ describe('B2B Purchase Orders', () => {
           'be.visible'
         );
       });
+      cy.logToTerminal('✅ Found 3 Purchase Orders requiring approval');
 
       // Approve first two Purchase Orders
       cy.logToTerminal('✅ Approving first 2 Purchase Orders');
@@ -429,99 +437,100 @@ describe('B2B Purchase Orders', () => {
   );
 
   // Test 7: Cleanup - Delete approval rules, users and roles
-  // it(
-  //   'Cleanup - Delete approval rules, users and roles',
-  //   { tags: ['@B2BSaas'] },
-  //   () => {
-  //     cy.logToTerminal(
-  //       '⚙️ Test 7: Cleanup - Deleting approval rules, users and roles'
-  //     );
+  it(
+    'Cleanup - Delete approval rules, users and roles',
+    { tags: ['@B2BSaas'] },
+    () => {
+      cy.logToTerminal(
+        '⚙️ Test 7: Cleanup - Deleting approval rules, users and roles'
+      );
 
-  //     // Delete approval rules
-  //     cy.logToTerminal('🔐 Login as PO Rules Manager');
-  //     actions.login(poUsers.po_rules_manager, urls);
-  //     cy.logToTerminal(
-  //       '⏳ Waiting for session and permissions to initialize...'
-  //     );
-  //     cy.wait(3000);
+      // Delete Sales Manager user
+      cy.logToTerminal('🗑️ Deleting Sales Manager user');
+      actions.login(poUsers.sales_manager, urls);
+      cy.url().should('include', urls.account);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
-  //     cy.logToTerminal('📄 Navigating to Approval Rules page');
-  //     cy.visit(urls.approvalRules);
-  //     cy.wait(2000);
-  //     cy.reload();
-  //     cy.wait(3000);
-  //     cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+      // Delete Approver Manager user
+      cy.logToTerminal('🗑️ Deleting Approver Manager user');
+      actions.login(poUsers.approver_manager, urls);
+      cy.url().should('include', urls.account);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
-  //     cy.logToTerminal('🗑️ Deleting first approval rule');
-  //     actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
-  //     cy.wait(3000);
-  //     cy.logToTerminal('🗑️ Deleting second approval rule');
-  //     actions.deleteApprovalRule(poApprovalRules.rule2Edited.name);
+      // Delete approval rules as PO Rules Manager
+      cy.logToTerminal('🔐 Login as PO Rules Manager');
+      actions.login(poUsers.po_rules_manager, urls);
+      cy.logToTerminal(
+        '⏳ Waiting for session and permissions to initialize...'
+      );
+      cy.wait(3000);
 
-  //     cy.logToTerminal('🚪 Logging out PO Rules Manager');
-  //     cy.visit('/');
-  //     cy.wait(3000);
-  //     actions.logout(poLabels);
+      cy.logToTerminal('📄 Navigating to Approval Rules page');
+      cy.visit(urls.approvalRules);
+      cy.wait(2000);
+      cy.reload();
+      cy.wait(3000);
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
 
-  //     // Delete users
-  //     cy.logToTerminal('🗑️ Deleting test users');
+      cy.logToTerminal('🗑️ Deleting first approval rule');
+      actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
+      cy.wait(3000);
 
-  //     actions.login(poUsers.sales_manager, urls);
-  //     cy.url().should('include', urls.account);
-  //     cy.visit('/');
-  //     cy.wait(3000);
-  //     cy.deleteCustomer();
+      cy.logToTerminal('🗑️ Deleting second approval rule');
+      actions.deleteApprovalRule(poApprovalRules.rule2Edited.name);
+      cy.wait(3000);
 
-  //     actions.login(poUsers.approver_manager, urls);
-  //     cy.url().should('include', urls.account);
-  //     cy.visit('/');
-  //     cy.wait(3000);
-  //     cy.deleteCustomer();
+      cy.logToTerminal('✅ All approval rules deleted successfully');
 
-  //     actions.login(poUsers.po_rules_manager, urls);
-  //     cy.url().should('include', urls.account);
-  //     cy.visit('/');
-  //     cy.wait(3000);
-  //     cy.deleteCustomer();
-  //     cy.logToTerminal('✅ All test users deleted successfully');
+      // Delete PO Rules Manager user (last one)
+      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
-  //     // Delete roles
-  //     cy.logToTerminal('🗑️ Deleting test roles');
-  //     const poUsersConfig = [
-  //       {
-  //         user: poUsers.po_rules_manager,
-  //         role: poRolesConfig.rulesManager,
-  //         roleId: null,
-  //       },
-  //       {
-  //         user: poUsers.sales_manager,
-  //         role: poRolesConfig.salesManager,
-  //         roleId: null,
-  //       },
-  //       {
-  //         user: poUsers.approver_manager,
-  //         role: poRolesConfig.approver,
-  //         roleId: null,
-  //       },
-  //     ];
+      // Delete roles AFTER all users are deleted
+      cy.then(() => {
+        cy.logToTerminal('🗑️ Deleting test roles');
+        const poUsersConfig = [
+          {
+            user: poUsers.po_rules_manager,
+            role: poRolesConfig.rulesManager,
+            roleId: null,
+          },
+          {
+            user: poUsers.sales_manager,
+            role: poRolesConfig.salesManager,
+            roleId: null,
+          },
+          {
+            user: poUsers.approver_manager,
+            role: poRolesConfig.approver,
+            roleId: null,
+          },
+        ];
 
-  //     const roleNamesToDelete = poUsersConfig.map(
-  //       (config) => config.role.role_name
-  //     );
-  //     const userEmailsToUnassign = poUsersConfig.map(
-  //       (config) => config.user.email
-  //     );
+        const roleNamesToDelete = poUsersConfig.map(
+          (config) => config.role.role_name
+        );
+        const userEmailsToUnassign = poUsersConfig.map(
+          (config) => config.user.email
+        );
 
-  //     cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
-  //       () =>
-  //         cy
-  //           .wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
-  //           .then(() =>
-  //             cy.logToTerminal('✅ All test roles deleted successfully')
-  //           )
-  //     );
+        cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
+          () =>
+            cy
+              .wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
+              .then(() =>
+                cy.logToTerminal('✅ All test roles deleted successfully')
+              )
+        );
+      });
 
-  //     cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
-  //   }
-  // );
+      cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
+    }
+  );
 });
