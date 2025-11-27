@@ -47,7 +47,6 @@ async function createCustomer({
   });
 
   const responseData = await response.json();
-  console.log('GraphQL response:', responseData);
 
   if (!response.ok || responseData.errors) {
     throw new Error(
@@ -292,7 +291,135 @@ async function getCompanyRoles(companyId = 13) {
 
     return { success: true, roles: result };
   } catch (error) {
-    console.error('❌ Error fetching company roles:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
+async function deleteCustomerRoles(saveRoles = []) {
+  try {
+    const rolesList = await getCompanyRoles();
+    const items = rolesList?.roles?.items ?? [];
+
+    // Role name patterns to keep
+    const keepPatterns = ['Default User', 'Full Access'];
+
+    // Filter roles to delete: delete all except keepPatterns and saveRoles
+    const rolesToDelete = items.filter((role) => {
+      // Keep if it's in the basic patterns
+      if (keepPatterns.includes(role.name)) {
+        return false;
+      }
+
+      // Keep if it's in saveRoles list (exact match)
+      if (saveRoles.includes(role.name)) {
+        return false;
+      }
+
+      // Delete all other roles
+      return true;
+    });
+
+    // Delete each role
+    if (rolesToDelete.length > 0) {
+      for (const role of rolesToDelete) {
+        await manageCompanyRole(null, role.id);
+      }
+      return { success: true, deletedCount: rolesToDelete.length };
+    } else {
+      return { success: true, deletedCount: 0 };
+    }
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+
+async function unassignRoles(
+  saveUsers = [],
+  companyId = 13,
+  defaultRoleId = 16
+) {
+  const client = new ACCSApiClient();
+  const accessToken = await client.tokenManager.getValidToken();
+
+  try {
+    // Get all customers and filter by company
+    const response = await fetch(
+      `${BASE_URL}/V1/customers/search?searchCriteria[pageSize]=200`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'x-api-key': IMS_CLIENT_ID,
+          'x-gw-ims-org-id': IMS_ORG_ID,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || `Get users error: ${response.status}`);
+    }
+
+    let allUsers = [];
+    let pageSize = 200;
+    let pageNumber = 1;
+    let totalCount = 0;
+    while (true) {
+      const response = await fetch(
+        `${BASE_URL}/V1/customers/search?searchCriteria[pageSize]=${pageSize}&searchCriteria[currentPage]=${pageNumber}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'x-api-key': IMS_CLIENT_ID,
+            'x-gw-ims-org-id': IMS_ORG_ID,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          result.message || `Get users error: ${response.status}`
+        );
+      }
+      const items = result.items || [];
+      allUsers = allUsers.concat(items);
+      totalCount += items.length;
+      if (items.length < pageSize) break;
+      pageNumber++;
+    }
+
+    // Reassign role ONLY to users NOT in saveUsers
+    const usersToReassign = allUsers.filter((user) => {
+      const isNotProtected = !saveUsers.includes(user.email);
+
+      const isOurPattern = saveUsers.some((savedEmail) => {
+        const pattern = savedEmail.split(/\d+/)[0];
+        return (
+          user.email.startsWith(pattern) && user.email.endsWith('@example.com')
+        );
+      });
+
+      const companyIdAttr =
+        user.extension_attributes?.company_attributes?.company_id;
+      const isCompanyUser = companyIdAttr === 13;
+
+      return isOurPattern && isNotProtected && isCompanyUser;
+    });
+
+    // Reassign each user to Default User role (ID: 16)
+    if (usersToReassign.length > 0) {
+      for (const user of usersToReassign) {
+        await assignRole(user.id, defaultRoleId, accessToken);
+      }
+      return { success: true, reassignedCount: usersToReassign.length };
+    } else {
+      return { success: true, reassignedCount: 0 };
+    }
+  } catch (error) {
     return { success: false, error: error.message };
   }
 }
@@ -301,4 +428,6 @@ module.exports = {
   createUserAssignCompanyAndRole,
   manageCompanyRole,
   getCompanyRoles,
+  deleteCustomerRoles,
+  unassignRoles,
 };
