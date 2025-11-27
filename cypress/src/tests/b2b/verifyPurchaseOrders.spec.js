@@ -374,19 +374,22 @@ describe('B2B Purchase Orders', () => {
     cy.logToTerminal('✅ Test 3: Purchase Orders workflow completed');
   });
 
-  // Test 4: Cleanup - Delete approval rules and users
+  // Test 4: Cleanup - Delete approval rules, users and roles
   it(
-    'Cleanup - Delete approval rules and users',
+    'Cleanup - Delete approval rules, users and roles',
     { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
-        '⚙️ Test 4: Cleanup - Deleting approval rules and users'
+        '⚙️ Test 4: Cleanup - Deleting approval rules, users and roles'
       );
 
       // Delete approval rules
       cy.logToTerminal('🔐 Login as PO Rules Manager');
       actions.login(poUsers.po_rules_manager, urls);
-      cy.wait(1000);
+      cy.logToTerminal(
+        '⏳ Waiting for session and permissions to initialize...'
+      );
+      cy.wait(3000);
 
       cy.logToTerminal('📄 Navigating to Approval Rules page');
       cy.visit(urls.approvalRules);
