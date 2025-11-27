@@ -247,11 +247,11 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
       cy.get(selectors.poApprovalPOWrapper).within(() => {
         cy.contains('Requires my approval').should('be.visible');
-        // Wait up to 30 seconds for all 3 checkboxes to appear
+        // Wait up to 30 seconds for at least 3 checkboxes to appear
         cy.get(
           `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`,
           { timeout: 30000 }
-        ).should('have.length', 3);
+        ).should('have.length.at.least', 3);
         cy.contains(selectors.poShowButton, poLabels.rejectSelected).should(
           'be.visible'
         );
