@@ -378,7 +378,7 @@ export const openAccountDropdown = () => {
         'nav-tools-panel--show'
       );
     } else {
-      cy.log(
+      cy.logToTerminal(
         'Account dropdown button not found, skipping dropdown interaction'
       );
     }
@@ -438,12 +438,16 @@ export const logout = (texts) => {
 };
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
-  cy.visit(!isCheap ? urls.product : urls.cheapProduct);
+  const productUrl = !isCheap ? urls.product : urls.cheapProduct;
+  cy.logToTerminal(`🔗 Visiting product page: ${productUrl}`);
+  cy.visit(productUrl);
   cy.wait(2000);
   for (let i = 0; i < times; i++) {
+    cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
     cy.contains(fields.poAddToCartButton, texts.addToCart).click();
     cy.wait(2000);
   }
+  cy.logToTerminal(`✅ Added ${times} items to cart`);
 };
 
 export const proceedToCheckout = (texts, urls) => {
@@ -459,7 +463,7 @@ export const completeCheckout = (urls, texts) => {
   // Wait for shipping address form to load (new users always need to fill it)
   cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible');
 
-  cy.log('Filling shipping address form');
+  cy.logToTerminal('Filling shipping address form');
   cy.get('input[name="firstName"]')
     .first()
     .clear({ force: true })
@@ -523,21 +527,21 @@ export const createPurchaseOrder = (
   urls,
   texts
 ) => {
-  cy.log('📦 Adding products to cart...');
+  cy.logToTerminal('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
-  cy.log('✅ Products added to cart');
+  cy.logToTerminal('✅ Products added to cart');
 
-  cy.log('🛒 Proceeding to checkout...');
+  cy.logToTerminal('🛒 Proceeding to checkout...');
   proceedToCheckout(texts, urls);
-  cy.log('✅ On checkout page');
+  cy.logToTerminal('✅ On checkout page');
 
-  cy.log('📝 Completing checkout form...');
+  cy.logToTerminal('📝 Completing checkout form...');
   completeCheckout(urls, texts);
-  cy.log('✅ Checkout completed');
+  cy.logToTerminal('✅ Checkout completed');
 
-  cy.log('🔍 Verifying PO confirmation...');
+  cy.logToTerminal('🔍 Verifying PO confirmation...');
   verifyPOConfirmation();
-  cy.log('✅ PO confirmed');
+  cy.logToTerminal('✅ PO confirmed');
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
