@@ -459,49 +459,42 @@ export const completeCheckout = (urls, texts) => {
   cy.url().should('include', urls.checkout);
   cy.wait(5000);
 
-  // Check if shipping address form exists and fill it
-  cy.get('input[name="firstName"]', { timeout: 10000 }).then(($firstName) => {
-    if (
-      $firstName.length > 0 &&
-      (!$firstName.val() || $firstName.val().trim() === '')
-    ) {
-      cy.log('Filling shipping address form');
-      cy.get('input[name="firstName"]')
-        .first()
-        .clear({ force: true })
-        .type('Test', { force: true });
-      cy.wait(1500);
-      cy.get('input[name="lastName"]')
-        .first()
-        .clear({ force: true })
-        .type('Test', { force: true });
-      cy.wait(1500);
-      cy.get('input[name="street"]')
-        .first()
-        .clear({ force: true })
-        .type('Test', { force: true });
-      cy.wait(1500);
-      cy.get('select[name="region"]')
-        .first()
-        .select('Alabama', { force: true });
-      cy.wait(1500);
-      cy.get('input[name="city"]')
-        .first()
-        .clear({ force: true })
-        .type('Test', { force: true });
-      cy.wait(1500);
-      cy.get('input[name="postcode"]')
-        .first()
-        .clear({ force: true })
-        .type('1235', { force: true });
-      cy.wait(1500);
-      cy.get('input[name="telephone"]')
-        .first()
-        .clear({ force: true })
-        .type('123456789', { force: true });
-      cy.wait(3000);
-    }
-  });
+  // Wait for shipping address form to load (new users always need to fill it)
+  cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible');
+
+  cy.log('Filling shipping address form');
+  cy.get('input[name="firstName"]')
+    .first()
+    .clear({ force: true })
+    .type('Test', { force: true });
+  cy.wait(1500);
+  cy.get('input[name="lastName"]')
+    .first()
+    .clear({ force: true })
+    .type('Test', { force: true });
+  cy.wait(1500);
+  cy.get('input[name="street"]')
+    .first()
+    .clear({ force: true })
+    .type('Test', { force: true });
+  cy.wait(1500);
+  cy.get('select[name="region"]').first().select('Alabama', { force: true });
+  cy.wait(1500);
+  cy.get('input[name="city"]')
+    .first()
+    .clear({ force: true })
+    .type('Test', { force: true });
+  cy.wait(1500);
+  cy.get('input[name="postcode"]')
+    .first()
+    .clear({ force: true })
+    .type('1235', { force: true });
+  cy.wait(1500);
+  cy.get('input[name="telephone"]')
+    .first()
+    .clear({ force: true })
+    .type('123456789', { force: true });
+  cy.wait(3000);
 
   cy.wait(1500);
   cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder)

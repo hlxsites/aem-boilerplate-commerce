@@ -88,7 +88,7 @@ describe('B2B Purchase Orders', () => {
         .reduce((chain, element, index) => {
           return chain.then(() => {
             cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
-            cy.wait(1000);
+            cy.wait(2000);
 
             return manageCompanyRole(element.role).then((result) => {
               poUsersConfig[index].roleId = result?.role?.id;
@@ -106,6 +106,10 @@ describe('B2B Purchase Orders', () => {
           cy.logToTerminal(
             `📝 Stored ${createdRoleIds.length} role IDs for cleanup`
           );
+          cy.logToTerminal(
+            '⏳ Waiting 5 seconds for roles to be indexed in the system...'
+          );
+          cy.wait(5000);
         });
 
       /**
