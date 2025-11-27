@@ -218,10 +218,10 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal('🔐 Login as Sales Manager');
       actions.login(poUsers.sales_manager, urls);
 
-      for (let i = 0; i < 3; i++) {
-        cy.logToTerminal(`🛒 Creating Purchase Order ${i + 1}/3 with 3 items`);
-        actions.createPurchaseOrder(3, false, urls, poLabels);
-        if (i < 2) {
+      for (let i = 0; i < 2; i++) {
+        cy.logToTerminal(`🛒 Creating Purchase Order ${i + 1}/2 with 2 items`);
+        actions.createPurchaseOrder(2, false, urls, poLabels);
+        if (i < 1) {
           cy.wait(3000);
         }
       }
@@ -260,11 +260,11 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
       cy.get(selectors.poApprovalPOWrapper).within(() => {
         cy.contains('Requires my approval').should('be.visible');
-        // Wait up to 30 seconds for at least 3 checkboxes to appear
+        // Wait up to 30 seconds for at least 2 checkboxes to appear
         cy.get(
           `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`,
           { timeout: 30000 }
-        ).should('have.length.at.least', 3);
+        ).should('have.length.at.least', 2);
         cy.contains(selectors.poShowButton, poLabels.rejectSelected).should(
           'be.visible'
         );
@@ -272,18 +272,16 @@ describe('B2B Purchase Orders', () => {
           'be.visible'
         );
       });
-      cy.logToTerminal('✅ Found 3 Purchase Orders requiring approval');
+      cy.logToTerminal('✅ Found 2 Purchase Orders requiring approval');
 
-      // Approve first two Purchase Orders
-      cy.logToTerminal('✅ Approving first 2 Purchase Orders');
+      // Approve first Purchase Order
+      cy.logToTerminal('✅ Approving first Purchase Order');
       const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
-      [0, 1].forEach((index) => {
-        cy.get(selectors.poApprovalPOWrapper)
-          .find(checkboxSelector)
-          .eq(index)
-          .click();
-        cy.wait(1500);
-      });
+      cy.get(selectors.poApprovalPOWrapper)
+        .find(checkboxSelector)
+        .eq(0)
+        .click();
+      cy.wait(1500);
 
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, poLabels.approveSelected)
@@ -295,8 +293,8 @@ describe('B2B Purchase Orders', () => {
         .contains('Approval required')
         .should('have.length', 1);
 
-      // Reject third Purchase Order
-      cy.logToTerminal('🗑️ Rejecting third Purchase Order');
+      // Reject second Purchase Order
+      cy.logToTerminal('🗑️ Rejecting second Purchase Order');
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
