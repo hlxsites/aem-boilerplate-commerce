@@ -455,13 +455,13 @@ describe("B2B Purchase Orders", () => {
       cy.url().should("include", urls.account);
       cy.visit("/");
       cy.wait(3000);
-      cy.deleteCurrentCustomer();
+      cy.deleteCustomer();
 
       actions.login(poUsers.approver_manager, urls);
       cy.url().should("include", urls.account);
       cy.visit("/");
       cy.wait(3000);
-      cy.deleteCurrentCustomer();
+      cy.deleteCustomer();
 
       actions.login(poUsers.po_rules_manager, urls);
       cy.url().should("include", urls.account);
