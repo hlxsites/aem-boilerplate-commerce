@@ -482,35 +482,9 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('🗑️ Deleting second approval rule');
       actions.deleteApprovalRule(poApprovalRules.rule2Edited.name);
+      cy.wait(3000);
 
       cy.logToTerminal('✅ All approval rules deleted successfully');
-
-      // Delete roles
-      cy.logToTerminal('🗑️ Deleting test roles');
-      const poUsersConfig = [
-        {
-          user: poUsers.po_rules_manager,
-          role: poRolesConfig.rulesManager,
-          roleId: null,
-        },
-        {
-          user: poUsers.sales_manager,
-          role: poRolesConfig.salesManager,
-          roleId: null,
-        },
-        {
-          user: poUsers.approver_manager,
-          role: poRolesConfig.approver,
-          roleId: null,
-        },
-      ];
-
-      const roleNamesToDelete = poUsersConfig.map(
-        (config) => config.role.role_name
-      );
-      const userEmailsToUnassign = poUsersConfig.map(
-        (config) => config.user.email
-      );
 
       // Delete PO Rules Manager user (last one)
       cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
@@ -518,14 +492,43 @@ describe('B2B Purchase Orders', () => {
       cy.wait(3000);
       cy.deleteCustomer();
 
-      cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
-        () =>
-          cy
-            .wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
-            .then(() =>
-              cy.logToTerminal('✅ All test roles deleted successfully')
-            )
-      );
+      // Delete roles AFTER all users are deleted
+      cy.then(() => {
+        cy.logToTerminal('🗑️ Deleting test roles');
+        const poUsersConfig = [
+          {
+            user: poUsers.po_rules_manager,
+            role: poRolesConfig.rulesManager,
+            roleId: null,
+          },
+          {
+            user: poUsers.sales_manager,
+            role: poRolesConfig.salesManager,
+            roleId: null,
+          },
+          {
+            user: poUsers.approver_manager,
+            role: poRolesConfig.approver,
+            roleId: null,
+          },
+        ];
+
+        const roleNamesToDelete = poUsersConfig.map(
+          (config) => config.role.role_name
+        );
+        const userEmailsToUnassign = poUsersConfig.map(
+          (config) => config.user.email
+        );
+
+        cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
+          () =>
+            cy
+              .wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
+              .then(() =>
+                cy.logToTerminal('✅ All test roles deleted successfully')
+              )
+        );
+      });
 
       cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
     }
