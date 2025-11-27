@@ -480,8 +480,8 @@ export const completeCheckout = (urls, texts) => {
     });
 
   cy.get('body', { timeout: 60000 }).should(($body) => {
-    const hasShippingInput = shippingFirstNameSelectors.some((selector) =>
-      $body.find(selector).length
+    const hasShippingInput = shippingFirstNameSelectors.some(
+      (selector) => $body.find(selector).length
     );
 
     expect(hasShippingInput, 'shipping first name field presence').to.be.true;
