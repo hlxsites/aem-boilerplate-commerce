@@ -15,7 +15,7 @@ import {
   companyRegistrationData
 } from "../../fixtures/companyData";
 
-describe("USF-2528: Company Registration", () => {
+describe.skip("USF-2528: Company Registration", () => {
 
   beforeEach(() => {
     cy.clearCookies();

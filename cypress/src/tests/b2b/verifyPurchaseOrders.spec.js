@@ -226,13 +226,15 @@ describe('B2B Purchase Orders', () => {
         }
       }
 
-      cy.logToTerminal('🚪 Logging out Sales Manager');
+      cy.logToTerminal('🚡 Logging out Sales Manager');
       cy.visit('/');
       cy.wait(3000);
       actions.logout(poLabels);
       cy.logToTerminal('✅ Test 3: Purchase Orders created successfully');
-      cy.logToTerminal('⏳ Waiting for Purchase Orders to be indexed...');
-      cy.wait(10000);
+      cy.logToTerminal(
+        '⏳ Waiting 20 seconds for Purchase Orders to be indexed...'
+      );
+      cy.wait(20000);
     }
   );
 
@@ -261,10 +263,14 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poApprovalPOWrapper).within(() => {
         cy.contains('Requires my approval').should('be.visible');
         // Wait up to 30 seconds for at least 2 checkboxes to appear
-        cy.get(
-          `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`,
-          { timeout: 30000 }
-        ).should('have.length.at.least', 2);
+        const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
+        cy.get(checkboxSelector, { timeout: 30000 })
+          .should('have.length.at.least', 2)
+          .then(($checkboxes) => {
+            cy.logToTerminal(
+              `📋 Found ${$checkboxes.length} Purchase Orders requiring approval`
+            );
+          });
         cy.contains(selectors.poShowButton, poLabels.rejectSelected).should(
           'be.visible'
         );
