@@ -512,6 +512,12 @@ describe('B2B Purchase Orders', () => {
         (config) => config.user.email
       );
 
+      // Delete PO Rules Manager user (last one)
+      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
+
       cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
         () =>
           cy
@@ -522,12 +528,6 @@ describe('B2B Purchase Orders', () => {
       );
 
       cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
-
-      // Delete PO Rules Manager user (last one)
-      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
-      cy.visit('/');
-      cy.wait(3000);
-      cy.deleteCustomer();
     }
   );
 });
