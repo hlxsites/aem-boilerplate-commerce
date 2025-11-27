@@ -523,10 +523,21 @@ export const createPurchaseOrder = (
   urls,
   texts
 ) => {
+  cy.log('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
+  cy.log('✅ Products added to cart');
+
+  cy.log('🛒 Proceeding to checkout...');
   proceedToCheckout(texts, urls);
+  cy.log('✅ On checkout page');
+
+  cy.log('📝 Completing checkout form...');
   completeCheckout(urls, texts);
+  cy.log('✅ Checkout completed');
+
+  cy.log('🔍 Verifying PO confirmation...');
   verifyPOConfirmation();
+  cy.log('✅ PO confirmed');
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
