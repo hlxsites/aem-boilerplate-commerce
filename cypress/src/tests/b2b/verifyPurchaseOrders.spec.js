@@ -15,35 +15,34 @@ import * as actions from '../../actions';
 
 describe('B2B Purchase Orders', () => {
   afterEach(function () {
-    if (this.currentTest.state === 'failed') {
-      cy.logToTerminal('🧹 Test failed, running cleanup...');
-      const poUsersConfig = [
-        {
-          user: poUsers.po_rules_manager,
-          role: poRolesConfig.rulesManager,
-          roleId: null,
-        },
-        {
-          user: poUsers.sales_manager,
-          role: poRolesConfig.salesManager,
-          roleId: null,
-        },
-        {
-          user: poUsers.approver_manager,
-          role: poRolesConfig.approver,
-          roleId: null,
-        },
-      ];
-      const currentRoleNames = poUsersConfig.map(
-        (config) => config.role.role_name
-      );
-      const currentUserEmails = poUsersConfig.map(
-        (config) => config.user.email
-      );
-      cy.wrap(null)
-        .then(() => unassignRoles(currentUserEmails))
-        .then(() => deleteCustomerRoles(currentRoleNames));
-    }
+    cy.logToTerminal('🧹 Test failed, running cleanup...');
+    const poUsersConfig = [
+      {
+        user: poUsers.po_rules_manager,
+        role: poRolesConfig.rulesManager,
+        roleId: null,
+      },
+      {
+        user: poUsers.sales_manager,
+        role: poRolesConfig.salesManager,
+        roleId: null,
+      },
+      {
+        user: poUsers.approver_manager,
+        role: poRolesConfig.approver,
+        roleId: null,
+      },
+    ];
+    const roleNamesToDelete = poUsersConfig.map(
+      (config) => config.role.role_name
+    );
+    const userEmailsToUnassign = poUsersConfig.map(
+      (config) => config.user.email
+    );
+
+    cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(() =>
+      cy.wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
+    );
   });
 
   const urls = Cypress.env('poUrls');
@@ -89,7 +88,7 @@ describe('B2B Purchase Orders', () => {
         .reduce((chain, element, index) => {
           return chain.then(() => {
             cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
-            cy.wait(1000);
+            cy.wait(2000);
 
             return manageCompanyRole(element.role).then((result) => {
               poUsersConfig[index].roleId = result?.role?.id;
@@ -107,6 +106,10 @@ describe('B2B Purchase Orders', () => {
           cy.logToTerminal(
             `📝 Stored ${createdRoleIds.length} role IDs for cleanup`
           );
+          cy.logToTerminal(
+            '⏳ Waiting 5 seconds for roles to be indexed in the system...'
+          );
+          cy.wait(5000);
         });
 
       /**
@@ -280,7 +283,6 @@ describe('B2B Purchase Orders', () => {
         cy.wait(1500);
       });
 
-      // Click Approve selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, poLabels.approveSelected)
         .click();
@@ -302,10 +304,12 @@ describe('B2B Purchase Orders', () => {
         .click();
       cy.wait(1500);
 
+      // Click Reject selected button
       cy.get(selectors.poApprovalPOWrapper)
         .contains(selectors.poShowButton, poLabels.rejectSelected)
         .click();
 
+      // Verify rejection success message appears
       cy.get('.dropin-in-line-alert--success').should('be.visible');
 
       // Verify that no "Approval required" items remain (all processed)
@@ -447,64 +451,27 @@ describe('B2B Purchase Orders', () => {
        * The currently logged-in user will be automatically deleted at the end of each test block
        */
       cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
+
+      cy.visit('/');
+      cy.wait(3000);
+      actions.logout(poLabels);
+
+      actions.login(poUsers.sales_manager, urls);
+      cy.url().should('include', urls.account);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
+
+      actions.login(poUsers.approver_manager, urls);
+      cy.url().should('include', urls.account);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
+
+      actions.login(poUsers.po_rules_manager, urls);
+      cy.url().should('include', urls.account);
+      cy.visit('/');
+      cy.wait(3000);
     }
   );
-
-  it('Cleanup 1 - Remove PO Rules Manager user', { tags: ['@B2BSaas'] }, () => {
-    cy.logToTerminal('🚀 Cleanup 1 started');
-
-    actions.login(poUsers.sales_manager, urls);
-    cy.url().should('include', urls.account);
-
-    /**
-     * User removal is handled by "cypress/src/support/deleteCustomer.js"
-     * The currently logged-in user will be automatically deleted at the end of each test block
-     */
-    cy.logToTerminal('🗑️ Deleting Sales Manager user');
-    cy.logToTerminal('✅ Cleanup 1 completed');
-  });
-
-  it('Cleanup 2 - Remove Approver user', { tags: ['@B2BSaas'] }, () => {
-    cy.logToTerminal('🚀 Cleanup 2 started');
-
-    actions.login(poUsers.approver_manager, urls);
-    cy.url().should('include', urls.account);
-
-    /**
-     * User removal is handled by "cypress/src/support/deleteCustomer.js"
-     * The currently logged-in user will be automatically deleted at the end of each test block
-     */
-    cy.logToTerminal('🗑️ Deleting Approver user');
-    cy.logToTerminal('✅ Cleanup 2 completed');
-  });
-
-  it('Cleanup 3 - Remove company roles', { tags: ['@B2BSaas'] }, () => {
-    cy.logToTerminal('🚀 Cleanup 3 started');
-
-    const roleIds = Cypress.env('poTestRoleIds') || [];
-    cy.logToTerminal(`🗑️ Deleting ${roleIds.length} company roles`);
-
-    if (roleIds.length === 0) {
-      cy.logToTerminal('⚠️ No role IDs found to delete');
-      cy.logToTerminal('✅ Cleanup 3 completed');
-      return;
-    }
-
-    roleIds
-      .reduce((chain, roleId) => {
-        return chain.then(() => {
-          cy.logToTerminal(`Deleting role ID: ${roleId}...`);
-          cy.wait(1000);
-
-          return manageCompanyRole(null, roleId).then((result) => {
-            cy.logToTerminal(`✅ Role deleted: ID ${roleId}`);
-          });
-        });
-      }, cy.wrap(null))
-      .then(() => {
-        // Clear the stored role IDs
-        Cypress.env('poTestRoleIds', []);
-        cy.logToTerminal('✅ Cleanup 3 completed');
-      });
-  });
 });
