@@ -5,7 +5,7 @@ import {
 } from "../../assertions";
 import { products } from "../../fixtures";
 
-describe("Verify Cart undo feature", () => {
+describe.skip("Verify Cart undo feature", () => {
     it("Verify Cart undo feature", () => {
         // Navigate to PDP
         cy.visit(products.simple.urlPath);

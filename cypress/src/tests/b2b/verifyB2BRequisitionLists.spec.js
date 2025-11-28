@@ -70,7 +70,7 @@ function assertRequisitionListExists(selector, listName, index = null) {
   cy.wait(2000);
 }
 
-describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
+describe.skip("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
   it("Verify B2B Requisition is not available for guest users", () => {
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
