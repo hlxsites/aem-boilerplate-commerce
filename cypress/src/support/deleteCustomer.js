@@ -37,12 +37,7 @@ afterEach(() => {
   const skipDeleteTests = [
     'Purchase Orders end-to-end workflow',
     'B2B Purchase Orders',
-    'Setup - Create roles and users',
-    'Manage approval rules',
-    'Sales Manager - Create Purchase Orders requiring approval',
-    'Approver - Approve and reject Purchase Orders',
-    'Approver - View Purchase Order details and add comment',
-    'Sales Manager - Create auto-approved Purchase Order',
+    'Cleanup - Delete approval rules, users and roles',
   ];
 
   const shouldSkip = skipDeleteTests.some(
