@@ -252,37 +252,71 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal('⏳ Waiting for session to initialize...');
       cy.wait(3000);
 
+      cy.intercept('POST', '**/graphql', (req) => {
+        const operationName = req.body?.operationName || '';
+        const query = req.body?.query || '';
+        if (
+          operationName.includes('PurchaseOrder') ||
+          query.includes('purchaseOrders') ||
+          query.includes('customerPurchaseOrders')
+        ) {
+          req.alias = 'poApprovalList';
+        }
+      });
+
       cy.logToTerminal('📄 Navigating to Purchase Orders page');
       cy.visit(urls.purchaseOrders);
-      cy.wait(5000);
+      cy.wait('@poApprovalList', { timeout: 60000 });
       cy.reload();
-      cy.wait(5000);
+      cy.wait('@poApprovalList', { timeout: 60000 });
 
       // Find and verify Purchase Orders requiring approval
       cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
-      cy.get(selectors.poApprovalPOWrapper).within(() => {
-        cy.contains('Requires my approval').should('be.visible');
-        // Wait up to 30 seconds for at least 2 checkboxes to appear
-        const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
-        cy.get(checkboxSelector, { timeout: 30000 })
-          .should('have.length.at.least', 2)
+      const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
+      const waitForPurchaseOrders = (attempt = 1) => {
+        cy.get(selectors.poApprovalPOWrapper).within(() => {
+          cy.contains('Requires my approval').should('be.visible');
+        });
+
+        return cy
+          .get(selectors.poApprovalPOWrapper)
+          .find(checkboxSelector)
           .then(($checkboxes) => {
+            if ($checkboxes.length >= 2) {
+              cy.logToTerminal(
+                `📋 Found ${$checkboxes.length} Purchase Orders requiring approval`
+              );
+              return;
+            }
+
+            if (attempt >= 6) {
+              throw new Error(
+                `Expected at least 2 Purchase Orders, found ${$checkboxes.length} after ${attempt} attempts`
+              );
+            }
+
             cy.logToTerminal(
-              `📋 Found ${$checkboxes.length} Purchase Orders requiring approval`
+              `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying...`
             );
+            cy.wait(5000);
+            cy.reload();
+            cy.wait('@poApprovalList', { timeout: 60000 });
+            return waitForPurchaseOrders(attempt + 1);
           });
-        cy.contains(selectors.poShowButton, poLabels.rejectSelected).should(
-          'be.visible'
-        );
-        cy.contains(selectors.poShowButton, poLabels.approveSelected).should(
-          'be.visible'
-        );
-      });
+      };
+
+      waitForPurchaseOrders();
+
+      cy.get(selectors.poApprovalPOWrapper)
+        .contains(selectors.poShowButton, poLabels.rejectSelected)
+        .should('be.visible');
+      cy.get(selectors.poApprovalPOWrapper)
+        .contains(selectors.poShowButton, poLabels.approveSelected)
+        .should('be.visible');
       cy.logToTerminal('✅ Found 2 Purchase Orders requiring approval');
 
       // Approve first Purchase Order
       cy.logToTerminal('✅ Approving first Purchase Order');
-      const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
       cy.get(selectors.poApprovalPOWrapper)
         .find(checkboxSelector)
         .eq(0)
