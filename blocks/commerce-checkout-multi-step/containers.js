@@ -35,6 +35,7 @@ import * as cartApi from '@dropins/storefront-cart/api.js';
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
 import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
 import EmptyCart from '@dropins/storefront-cart/containers/EmptyCart.js';
+import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
@@ -55,17 +56,23 @@ import { render as OrderProvider } from '@dropins/storefront-order/render.js';
 // Tools
 import { events } from '@dropins/tools/event-bus.js';
 import { getCookie, debounce } from '@dropins/tools/lib.js';
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
+
+// Dropin Lib Functions
+import { estimateShippingCost, getCartAddress } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Utils
 import {
-  estimateShippingCost,
-  getCartAddress,
   showModal,
+  swatchImageSlot,
 } from './utils.js';
 
 // Slots
-import { authPrivacyPolicyConsentSlot } from '../../scripts/commerce.js';
+import { authPrivacyPolicyConsentSlot } from '../../scripts/constants.js';
+
+// External dependencies
+import { fetchPlaceholders } from '../../scripts/commerce.js';
 
 // Fragments
 import { selectors } from './fragments.js';
@@ -73,8 +80,8 @@ import { selectors } from './fragments.js';
 // Constants
 import {
   BILLING_FORM_NAME,
+  CHECKOUT_ERROR_CLASS,
   DEBOUNCE_TIME,
-  DEFAULT_COUNTRY_CODE,
   LOGIN_FORM_NAME,
   SHIPPING_FORM_NAME,
   USER_TOKEN_COOKIE_NAME,
@@ -232,11 +239,12 @@ export const renderLoginForm = async (container, { onSuccessCallback } = {}) => 
 export const renderShippingAddressForm = async (container, formRef, cartData = null) => renderContainer(
   CONTAINERS.SHIPPING_ADDRESS_FORM,
   async () => {
+    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+
     const storeConfig = checkoutApi.getStoreConfigCache();
-    const countryCode = storeConfig?.defaultCountry || DEFAULT_COUNTRY_CODE;
+    const countryCode = storeConfig.defaultCountry;
 
     const estimateShippingCostOnCart = estimateShippingCost({
-      api: checkoutApi.estimateShippingMethods,
       debounceMs: DEBOUNCE_TIME,
     });
 
@@ -254,7 +262,7 @@ export const renderShippingAddressForm = async (container, formRef, cartData = n
     };
 
     return AccountProvider.render(AddressForm, {
-      addressesFormTitle: 'Shipping address',
+      addressesFormTitle: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
       className: 'checkout-shipping-form__address-form',
       fieldIdPrefix: 'shipping',
       formName: SHIPPING_FORM_NAME,
@@ -283,8 +291,10 @@ export const renderShippingAddressForm = async (container, formRef, cartData = n
  * @returns {Promise<Object>} A promise that resolves to the API of the rendered shipping addresses component.
  */
 export const renderCustomerShippingAddresses = async (container, formRef, data = null) => renderContainer(
-  CONTAINERS,
+  CONTAINERS.CUSTOMER_SHIPPING_ADDRESSES,
   async () => {
+    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+
     const cartShippingAddress = getCartAddress(data, 'shipping');
 
     const shippingAddressId = cartShippingAddress
@@ -300,7 +310,6 @@ export const renderCustomerShippingAddresses = async (container, formRef, data =
     const hasCartShippingAddress = Boolean(data.shippingAddresses?.[0]);
 
     const estimateShippingCostOnCart = estimateShippingCost({
-      api: checkoutApi.estimateShippingMethods,
       debounceMs: DEBOUNCE_TIME,
     });
 
@@ -309,7 +318,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data =
     }, DEBOUNCE_TIME);
 
     return AccountProvider.render(Addresses, {
-      addressFormTitle: 'Deliver to new address',
+      addressFormTitle: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
       defaultSelectAddressId: shippingAddressId,
       fieldIdPrefix: 'shipping',
       formName: SHIPPING_FORM_NAME,
@@ -325,7 +334,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data =
       showBillingCheckBox: false,
       showSaveCheckBox: true,
       showShippingCheckBox: false,
-      title: 'Shipping address',
+      title: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
     })(container);
   },
 );
@@ -359,7 +368,7 @@ export const renderBillingAddressForm = async (container, formRef) => renderCont
       forwardFormRef: formRef,
       hideActionFormButtons: true,
       inputsDefaultValueSet: {
-        countryCode: storeConfig?.defaultCountry || DEFAULT_COUNTRY_CODE,
+        countryCode: storeConfig.defaultCountry,
       },
       onChange: handleChange,
       isOpen: true,
@@ -385,6 +394,8 @@ export const renderBillingAddressForm = async (container, formRef) => renderCont
 export const renderCustomerBillingAddresses = async (container, formRef, data = null) => renderContainer(
   CONTAINERS.CUSTOMER_BILLING_ADDRESSES,
   async () => {
+    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+
     const cartBillingAddress = getCartAddress(data, 'billing');
 
     const billingAddressId = cartBillingAddress
@@ -402,7 +413,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data = 
     }, DEBOUNCE_TIME);
 
     return AccountProvider.render(Addresses, {
-      addressFormTitle: 'Bill to new address',
+      addressFormTitle: placeholders?.Checkout?.Addresses?.billToNewAddress,
       defaultSelectAddressId: billingAddressId,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,
@@ -413,7 +424,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data = 
       showBillingCheckBox: false,
       showSaveCheckBox: true,
       showShippingCheckBox: false,
-      title: 'Billing address',
+      title: placeholders?.Checkout?.Addresses?.billingAddressTitle,
       onAddressData: (values) => {
         notifyValues(values);
       },
@@ -444,7 +455,7 @@ export const renderShippingMethods = async (container) => renderContainer(
 export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
   async () => {
-    const commerceCoreEndpoint = await getConfigValue('commerce-core-endpoint');
+    const commerceCoreEndpoint = getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint');
     const getCustomerToken = () => getCookie(USER_TOKEN_COOKIE_NAME);
 
     return CheckoutProvider.render(PaymentMethods, {
@@ -479,6 +490,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
           [PaymentMethodCode.VAULT]: {
             enabled: false,
           },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
         },
       },
     })(container);
@@ -509,11 +523,11 @@ export const renderServerError = async (container, block) => renderContainer(
     autoScroll: true,
     onRetry: () => {
       const $content = block.querySelector(selectors.checkout.content);
-      $content.classList.remove('checkout__content--error');
+      $content.classList.remove(CHECKOUT_ERROR_CLASS);
     },
     onServerError: () => {
       const $content = block.querySelector(selectors.checkout.content);
-      $content.classList.add('checkout__content--error');
+      $content.classList.add(CHECKOUT_ERROR_CLASS);
     },
   })(container),
 );
@@ -540,43 +554,71 @@ export const renderOutOfStock = async (container) => renderContainer(
  */
 export const renderCartSummaryList = async (container) => renderContainer(
   CONTAINERS.CART_SUMMARY_LIST,
-  async () => CartProvider.render(CartSummaryList, {
-    variant: 'secondary',
-    slots: {
-      Heading: (headingCtx) => {
-        const title = 'Your Cart ({count})';
+  async () => {
+    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
-        const cartSummaryListHeading = document.createElement('div');
-        cartSummaryListHeading.classList.add('cart-summary-list__heading');
+    return CartProvider.render(CartSummaryList, {
+      variant: 'secondary',
+      slots: {
+        Heading: (headingCtx) => {
+          const title = placeholders?.Checkout?.Summary?.heading;
 
-        const cartSummaryListHeadingText = document.createElement('div');
-        cartSummaryListHeadingText.classList.add(
-          'cart-summary-list__heading-text',
-        );
+          const cartSummaryListHeading = document.createElement('div');
+          cartSummaryListHeading.classList.add('cart-summary-list__heading');
 
-        cartSummaryListHeadingText.innerText = title.replace(
-          '({count})',
-          headingCtx.count ? `(${headingCtx.count})` : '',
-        );
-        const editCartLink = document.createElement('a');
-        editCartLink.classList.add('cart-summary-list__edit');
-        editCartLink.href = '/cart';
-        editCartLink.rel = 'noreferrer';
-        editCartLink.innerText = 'Edit';
-
-        cartSummaryListHeading.appendChild(cartSummaryListHeadingText);
-        cartSummaryListHeading.appendChild(editCartLink);
-        headingCtx.appendChild(cartSummaryListHeading);
-
-        headingCtx.onChange((nextHeadingCtx) => {
-          cartSummaryListHeadingText.innerText = title.replace(
-            '({count})',
-            nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
+          const cartSummaryListHeadingText = document.createElement('div');
+          cartSummaryListHeadingText.classList.add(
+            'cart-summary-list__heading-text',
           );
+
+          cartSummaryListHeadingText.innerText = title?.replace(
+            '({count})',
+            headingCtx.count ? `(${headingCtx.count})` : '',
+          );
+          const editCartLink = document.createElement('a');
+          editCartLink.classList.add('cart-summary-list__edit');
+          editCartLink.href = '/cart';
+          editCartLink.rel = 'noreferrer';
+          editCartLink.innerText = placeholders?.Checkout?.Summary?.Edit;
+
+          cartSummaryListHeading.appendChild(cartSummaryListHeadingText);
+          cartSummaryListHeading.appendChild(editCartLink);
+          headingCtx.appendChild(cartSummaryListHeading);
+
+          headingCtx.onChange((nextHeadingCtx) => {
+            cartSummaryListHeadingText.innerText = title?.replace(
+              '({count})',
+              nextHeadingCtx.count ? `(${nextHeadingCtx.count})` : '',
+            );
+          });
+        },
+      Thumbnail: (ctx) => {
+        const { item, defaultImageProps } = ctx;
+        tryRenderAemAssetsImage(ctx, {
+          alias: item.sku,
+          imageProps: defaultImageProps,
+          params: {
+            width: defaultImageProps.width,
+            height: defaultImageProps.height,
+          },
         });
       },
+      Footer: (ctx) => {
+        const giftOptions = document.createElement('div');
+        CartProvider.render(GiftOptions, {
+          item: ctx.item,
+          view: 'product',
+          dataSource: 'cart',
+          isEditable: false,
+          slots: {
+            SwatchImage: swatchImageSlot,
+          },
+        })(giftOptions);
+        ctx.appendChild(giftOptions);
+      },
     },
-  })(container),
+  })(container);
+  },
 );
 
 /**
@@ -637,6 +679,18 @@ export const renderOrderSummary = async (container) => renderContainer(
         const coupons = document.createElement('div');
         renderCartCoupons(coupons);
         ctx.appendChild(coupons);
+      },
+      GiftOptions: (ctx) => {
+        const giftOptions = document.createElement('div');
+        CartProvider.render(GiftOptions, {
+          view: 'order',
+          dataSource: 'cart',
+          isEditable: false,
+          slots: {
+            SwatchImage: swatchImageSlot,
+          },
+        })(giftOptions);
+        ctx.appendChild(giftOptions);
       },
     },
   })(container),
@@ -764,5 +818,32 @@ export const renderOrderCostSummary = (container) => renderContainer(
  */
 export const renderOrderProductList = (container) => renderContainer(
   CONTAINERS.ORDER_PRODUCT_LIST,
-  async () => OrderProvider.render(OrderProductList)(container),
+  async () => OrderProvider.render(OrderProductList, {
+    slots: {
+      Footer: (ctx) => {
+        const giftOptions = document.createElement('div');
+        CartProvider.render(GiftOptions, {
+          item: ctx.item,
+          view: 'product',
+          dataSource: 'order',
+          isEditable: false,
+          slots: {
+            SwatchImage: swatchImageSlot,
+          },
+        })(giftOptions);
+        ctx.appendChild(giftOptions);
+      },
+      CartSummaryItemImage: (ctx) => {
+        const { data, defaultImageProps } = ctx;
+        tryRenderAemAssetsImage(ctx, {
+          alias: data.product.sku,
+          imageProps: defaultImageProps,
+          params: {
+            width: defaultImageProps.width,
+            height: defaultImageProps.height,
+          },
+        });
+      },
+    },
+  })(container),
 );

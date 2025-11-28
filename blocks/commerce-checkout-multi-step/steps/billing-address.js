@@ -8,17 +8,16 @@ import { events } from '@dropins/tools/event-bus.js';
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 
-// Block-level utils
+// Dropin Lib Functions
 import {
   getCartAddress,
-  transformAddressFormValues,
+  transformAddressFormValuesToAddressInput,
   validateForm,
-} from '../utils.js';
+} from '@dropins/storefront-checkout/lib/utils.js';
 
 // Container functions
 import {
-  renderCustomerBillingAddresses,
-  renderBillingAddressForm,
+  renderBillingAddressForm, renderCustomerBillingAddresses,
 } from '../containers.js';
 
 // Components
@@ -35,8 +34,7 @@ import {
 
 // Constants
 import {
-  CHECKOUT_STEP_ACTIVE,
-  BILLING_FORM_NAME,
+  BILLING_FORM_NAME, CHECKOUT_STEP_ACTIVE, DEFAULT_IS_BILL_TO_SHIPPING,
 } from '../constants.js';
 
 /**
@@ -61,16 +59,17 @@ export const createBillingAddressStep = ({
 
   const continueFromBillingStep = withOverlaySpinner(async () => {
     const checkoutValues = events.lastPayload('checkout/values');
+    const isBillToShipping = checkoutValues?.isBillToShipping ?? DEFAULT_IS_BILL_TO_SHIPPING;
 
-    if (!checkoutValues?.isBillToShipping) {
-      if (!validateForm(BILLING_FORM_NAME, formRefs.billingForm)) return;
+    if (!isBillToShipping) {
+      if (!validateForm({ name: BILLING_FORM_NAME, ref: formRefs.billingForm })) return;
 
       // Get billing address from form ref first, fall back to events if form is unmounted
       const billingAddress = formRefs.billingForm.current?.formData
                                  || events.lastPayload('checkout/addresses/billing')?.data;
 
       try {
-        await checkoutApi.setBillingAddress(transformAddressFormValues(billingAddress));
+        await checkoutApi.setBillingAddress(transformAddressFormValuesToAddressInput(billingAddress));
 
         await displayBillingStep(false);
       } catch (error) {
@@ -79,7 +78,7 @@ export const createBillingAddressStep = ({
       }
 
       if (billingAddress) {
-        await displayBillingStepSummary(billingAddress, !checkoutValues?.isBillToShipping);
+        await displayBillingStepSummary(billingAddress, !isBillToShipping);
       }
     } else {
       await displayBillingStep(false);

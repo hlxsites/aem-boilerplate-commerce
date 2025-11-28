@@ -7,12 +7,10 @@ import { events } from '@dropins/tools/event-bus.js';
 
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-
-// Block-level utils
 import {
   getCartShippingMethod,
   isVirtualCart,
-} from '../utils.js';
+} from '@dropins/storefront-checkout/lib/utils.js';
 
 // Container functions
 import {

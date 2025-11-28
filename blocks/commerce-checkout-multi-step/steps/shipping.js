@@ -8,13 +8,13 @@ import { events } from '@dropins/tools/event-bus.js';
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 
-// Block-level utils
+// Dropin Lib Functions
 import {
   getCartAddress,
   isVirtualCart,
-  transformAddressFormValues,
+  transformAddressFormValuesToAddressInput,
   validateForm,
-} from '../utils.js';
+} from '@dropins/storefront-checkout/lib/utils.js';
 
 // Container functions
 import {
@@ -82,7 +82,7 @@ export const createShippingStep = ({
     const email = checkoutValues?.email;
 
     if (!authenticated) {
-      if (!validateForm(LOGIN_FORM_NAME)) return;
+      if (!validateForm({ name: LOGIN_FORM_NAME })) return;
 
       try {
         await checkoutApi.setGuestEmailOnCart(email);
@@ -101,14 +101,14 @@ export const createShippingStep = ({
     }
 
     // Physical products: handle shipping address validation
-    if (!validateForm(SHIPPING_FORM_NAME, formRefs.shippingForm)) return;
+    if (!validateForm({ name: SHIPPING_FORM_NAME, ref: formRefs.shippingForm })) return;
 
     // Get shipping address from form ref first, fall back to events if form is unmounted
     const shippingAddress = formRefs.shippingForm.current?.formData
                            || events.lastPayload('checkout/addresses/shipping')?.data;
 
     try {
-      await checkoutApi.setShippingAddress(transformAddressFormValues(shippingAddress));
+      await checkoutApi.setShippingAddress(transformAddressFormValuesToAddressInput(shippingAddress));
     } catch (error) {
       console.error('Failed to set email and shipping address:', error);
       return;

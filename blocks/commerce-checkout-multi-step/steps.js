@@ -8,6 +8,7 @@
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
+import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
 // Order Dropin
 import * as orderApi from '@dropins/storefront-order/api.js';
@@ -19,21 +20,28 @@ import '../../scripts/initializers/order.js';
 
 // Scripts
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+
+// Dropin Lib Functions
+import {
+  createScopedSelector,
+  getCartAddress,
+  getCartPaymentMethod,
+  getCartShippingMethod,
+  isEmptyCart,
+  isVirtualCart,
+  scrollToElement,
+  setMetaTags,
+  validateForm,
+} from '@dropins/storefront-checkout/lib/utils.js';
 import { fetchPlaceholders } from '../../scripts/commerce.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block-level utils
 import {
-  getCartAddress,
-  getCartPaymentMethod,
-  getCartShippingMethod,
-  isDataEmpty,
-  isVirtualCart,
   removeModal,
-  scrollToElement,
-  setMetaTags,
-  validateForm,
 } from './utils.js';
+
+// Library utils
 
 // Container functions
 import {
@@ -86,7 +94,6 @@ import {
 // Fragments
 import {
   createOrderConfirmationFragment,
-  createScopedSelector,
   selectors,
 } from './fragments.js';
 
@@ -234,11 +241,11 @@ const createStepsManager = (block) => {
   const handleValidation = () => {
     let success = true;
     if (success) {
-      success = validateForm(BILLING_FORM_NAME, formRefs.billingForm);
+      success = validateForm({ name: BILLING_FORM_NAME, ref: formRefs.billingForm });
     }
 
     if (success) {
-      success = validateForm(TERMS_AND_CONDITIONS_FORM_NAME);
+      success = validateForm({ name: TERMS_AND_CONDITIONS_FORM_NAME });
       if (!success) scrollToElement(elements.$termsAndConditions);
     }
 
@@ -326,13 +333,14 @@ const createStepsManager = (block) => {
   };
 
   const handleCheckoutUpdate = async (data) => {
-    if (isDataEmpty(data)) {
+    if (isEmptyCart(data)) {
       isInProgress = false;
       await displayEmptyCart();
       return;
     }
 
     await hideEmptyCart();
+    await initReCaptcha(0);
 
     // Manage shipping method title based on cart type
     if (isVirtualCart(data)) {
@@ -415,7 +423,7 @@ const createStepsManager = (block) => {
       renderMergedCartBanner(elements.$mergedCartBanner),
       renderOutOfStock(elements.$outOfStock),
       renderServerError(elements.$serverError, block),
-      renderCheckoutHeader(elements.$header),
+      renderCheckoutHeader(elements.$header, 'Checkout'),
       renderShippingMethodStepTitle(elements.$shippingMethodStepTitle),
       renderPaymentStepTitle(elements.$paymentStepTitle),
       renderBillingStepTitle(elements.$billingStepTitle),

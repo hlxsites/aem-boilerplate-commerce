@@ -1,3 +1,6 @@
+// Dropin Lib Functions
+import { createFragment, createScopedSelector } from '@dropins/storefront-checkout/lib/utils.js';
+
 import {
   CHECKOUT_BLOCK,
   CHECKOUT_STEP,
@@ -67,29 +70,6 @@ export const selectors = Object.freeze({
 // UTILITIES
 // Helper functions for creating and querying DOM elements.
 // =============================================================================
-
-/**
- * Creates a DocumentFragment from an HTML string.
- * @param {string} html - The HTML string to convert into a fragment.
- * @returns {DocumentFragment} The created DocumentFragment.
- */
-export const createFragment = (html) => document.createRange().createContextualFragment(html);
-
-/**
- * Finds the first element within a container that matches the given selector.
- * @param {Element | DocumentFragment} container - The parent element or fragment to search within.
- * @param {string} selector - A CSS selector string to match the desired element.
- * @returns {HTMLElement | null} The first matching element, or null if none found.
- */
-export const getElement = (container, selector) => container.querySelector(selector);
-
-/**
- * Returns a function that queries for elements within a specific container.
- * Useful for scoping queries to a particular fragment or element.
- * @param {Element | DocumentFragment} container
- * @returns {(selector: string) => HTMLElement | null}
- */
-export const createScopedSelector = (container) => (selector) => getElement(container, selector);
 
 // =============================================================================
 // CHECKOUT
@@ -213,8 +193,8 @@ export function createCheckoutFragment() {
 
   const { checkout } = selectors;
 
-  const mainFragment = getElement(checkoutFragment, checkout.main);
-  const asideFragment = getElement(checkoutFragment, checkout.aside);
+  const mainFragment = checkoutFragment.querySelector(checkout.main);
+  const asideFragment = checkoutFragment.querySelector(checkout.aside);
 
   mainFragment.appendChild(createMainFragment());
   asideFragment.appendChild(createAsideFragment());
@@ -260,20 +240,17 @@ export function createAddressSummary(data = {}, onEditClick = null) {
   const {
     firstName = '',
     lastName = '',
-    street = '',
+    street = [],
     city = '',
-    region, // Can be object, string, or undefined
-    postcode = '',
-    countryCode = '',
+    region, // Region object: { code, name } | undefined
+    postCode = '',
+    country, // Country object: { code, label } | undefined
     telephone = '',
   } = data;
 
   const streetAddress = Array.isArray(street) ? street.join(', ') : street;
-
-  // eslint-disable-next-line no-nested-ternary
-  const regionCode = typeof region === 'object' && region !== null
-    ? (region.regionCode || region.code || '')
-    : (typeof region === 'string' ? region : '');
+  const regionCode = region?.code || region?.name || '';
+  const countryCode = country?.code || '';
 
   const detailsDiv = document.createElement('div');
   detailsDiv.className = 'checkout__address-summary-details';
@@ -287,7 +264,7 @@ export function createAddressSummary(data = {}, onEditClick = null) {
   detailsDiv.appendChild(streetDiv);
 
   const cityDiv = document.createElement('div');
-  cityDiv.textContent = [city, regionCode].filter(Boolean).join(', ') + (postcode ? ` ${postcode}` : '');
+  cityDiv.textContent = [city, regionCode].filter(Boolean).join(', ') + (postCode ? ` ${postCode}` : '');
   detailsDiv.appendChild(cityDiv);
 
   const countryDiv = document.createElement('div');

@@ -7,6 +7,8 @@ import {
   provider as UI,
 } from '@dropins/tools/components.js';
 
+import { CHECKOUT_HEADER_CLASS } from './constants.js';
+
 /**
  * Component IDs for registry management
  * @enum {string}
@@ -127,16 +129,17 @@ export const renderSpinner = async (container, id, options = {}) => renderCompon
 /**
  * Renders the main checkout header (H1).
  * @param {HTMLElement} container - The DOM element to render the header into.
+ * @param {string} title - The title to display in the header
  * @returns {Promise<Object>} - The rendered header component API
  */
-export const renderCheckoutHeader = (container) => renderComponent(
+export const renderCheckoutHeader = (container, title) => renderComponent(
   COMPONENT_IDS.CHECKOUT_HEADER,
   async () => UI.render(Header, {
-    className: 'checkout-header',
+    className: CHECKOUT_HEADER_CLASS,
     divider: true,
     level: 1,
     size: 'large',
-    title: 'Checkout',
+    title,
   })(container),
 );
 

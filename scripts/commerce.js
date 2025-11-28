@@ -7,8 +7,19 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import { getMetadata } from './aem.js';
 import initializeDropins from './initializers/index.js';
+
+/**
+ * Fetch GraphQL Instances
+ */
+
+// Core Fetch GraphQL Instance
+export const CORE_FETCH_GRAPHQL = new FetchGraphQL();
+
+// Catalog Service Fetch GraphQL Instance
+export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 /**
  * Constants
@@ -37,9 +48,19 @@ export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
 export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
 export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
 export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
+export const CUSTOMER_REQUISITION_LISTS_PATH = `${CUSTOMER_PATH}/requisition-lists`;
+export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisition-list-view`;
+export const CUSTOMER_NEGOTIABLE_QUOTE_PATH = `${CUSTOMER_PATH}/negotiable-quote`;
 
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
+
+// CUSTOMER B2B PATHS
+export const CUSTOMER_PO_RULES_PATH = `${CUSTOMER_PATH}/approval-rules`;
+export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
+export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
+export const CUSTOMER_PO_LIST_PATH = `${CUSTOMER_PATH}/purchase-orders`;
+export const CUSTOMER_PO_DETAILS_PATH = `${CUSTOMER_PATH}/purchase-order-details`;
 
 /**
  * Auth Privacy Policy Consent Slot
@@ -105,7 +126,7 @@ function notifyUI(event) {
  * Detects the page type based on DOM elements
  * @returns {string} The detected page type
  */
-function detectPageType() {
+export function detectPageType() {
   if (document.body.querySelector('main .product-details')) {
     return 'Product';
   } if (document.body.querySelector('main .product-list-page')) {
@@ -114,6 +135,8 @@ function detectPageType() {
     return 'Cart';
   } if (document.body.querySelector('main .commerce-checkout')) {
     return 'Checkout';
+  } if (document.body.querySelector('main .commerce-b2b-quote-checkout')) {
+    return 'B2B Checkout';
   }
   return 'CMS';
 }
@@ -267,11 +290,6 @@ export async function loadCommerceLazy() {
   // Initialize Adobe Client Data Layer
   await import('./acdl/adobe-client-data-layer.min.js');
 
-  // Initialize Adobe Client Data Layer validation
-  if (sessionStorage.getItem('acdl:debug')) {
-    import('./acdl/validate.js');
-  }
-
   // Track history
   trackHistory();
 }
@@ -280,7 +298,17 @@ export async function loadCommerceLazy() {
  * Initializes commerce configuration
  */
 export async function initializeCommerce() {
+  // Initialize Config
   initializeConfig(await getConfigFromSession());
+
+  // Set Fetch GraphQL (Core)
+  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint'));
+  CORE_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('all') }));
+
+  // Set Fetch GraphQL (Catalog Service)
+  CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
+  CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
   return initializeDropins();
 }
 
@@ -481,9 +509,9 @@ export async function fetchPlaceholders(path) {
         });
 
         // Merge the new placeholders into the global merged object
-        Object.assign(window.placeholders._merged, placeholders);
+        const merged = Object.assign(window.placeholders._merged, placeholders);
 
-        resolve(placeholders);
+        resolve(merged);
       })
       .catch((error) => {
         console.error(`Error loading placeholders for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`, error);
@@ -510,10 +538,14 @@ export async function fetchPlaceholders(path) {
  * @returns {Promise<Object>} - The config JSON from session storage
  */
 export async function getConfigFromSession() {
-  const configURL = `${window.location.origin}/config.json`;
+  // Determine which config file to use based on the current page
+  const isB2BPage = window.location.pathname.includes('index-b2b.html') || window.location.pathname.includes('index-b2b-quote.html');
+  const configFile = isB2BPage ? 'config-b2b.json' : 'config.json';
+  const configURL = `${window.location.origin}/${configFile}`;
+  const cacheKey = isB2BPage ? 'config-b2b' : 'config';
 
   try {
-    const configJSON = window.sessionStorage.getItem('config');
+    const configJSON = window.sessionStorage.getItem(cacheKey);
     if (!configJSON) {
       throw new Error('No config in session storage');
     }
@@ -531,7 +563,7 @@ export async function getConfigFromSession() {
     if (!config.ok) throw new Error('Failed to fetch config');
     const configJSON = await config.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
-    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
+    window.sessionStorage.setItem(cacheKey, JSON.stringify(configJSON));
     return configJSON;
   }
 }
@@ -559,11 +591,15 @@ function createHashFromObject(obj, length = 5) {
 
 /**
  * Creates a commerce endpoint URL with query parameters including a cache-busting hash.
+ * @param {Object} [customHeaders] - Optional custom headers to merge into the CB Hash
  * @returns {Promise<URL>} A promise that resolves to the endpoint URL with query parameters
  */
-export async function commerceEndpointWithQueryParams() {
+export async function commerceEndpointWithQueryParams(customHeaders = {}) {
   const urlWithQueryParams = new URL(getConfigValue('commerce-endpoint'));
-  const headers = getHeaders('cs');
+  const headers = {
+    ...getHeaders('cs'),
+    ...customHeaders,
+  };
   const shortHash = createHashFromObject(headers);
   urlWithQueryParams.searchParams.append('cb', shortHash);
   return urlWithQueryParams;
@@ -577,6 +613,18 @@ export function getSkuFromUrl() {
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
+}
+
+export function getProductLink(urlKey, sku) {
+  return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
+}
+
+/**
+ * Gets the product SKU from metadata or URL fallback.
+ * @returns {string|null} The SKU from metadata or URL, or null if not found
+ */
+export function getProductSku() {
+  return getMetadata('sku') || getSkuFromUrl();
 }
 
 /**

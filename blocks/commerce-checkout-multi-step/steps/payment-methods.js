@@ -8,11 +8,11 @@ import { events } from '@dropins/tools/event-bus.js';
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 
-// Block-level utils
-import {
-  getCartPaymentMethod,
-  isValidPaymentMethod,
-} from '../utils.js';
+// Payment Services Dropin
+import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+
+// Library utils
+import { getCartPaymentMethod } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Container functions
 import {
@@ -67,7 +67,21 @@ export const createPaymentMethodsStep = ({
     const checkoutValues = events.lastPayload('checkout/values');
 
     // Validate payment method, if failed, abort continuation
-    if (!isValidPaymentMethod(checkoutValues, formRefs.creditCardForm)) return;
+    if (checkoutValues?.selectedPaymentMethod?.code === PaymentMethodCode.CREDIT_CARD) {
+      if (!formRefs.creditCardForm?.current) {
+        console.error('DEBUG: Credit card form not rendered.');
+        return;
+      }
+
+      try {
+        if (!formRefs.creditCardForm.current.validate()) {
+          return;
+        }
+      } catch (error) {
+        console.error('DEBUG: Error during credit card validation:', error);
+        return;
+      }
+    }
 
     const selectedPaymentMethod = checkoutValues?.selectedPaymentMethod;
 

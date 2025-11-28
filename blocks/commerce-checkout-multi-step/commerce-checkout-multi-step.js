@@ -3,8 +3,7 @@ import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
-// Block-level utils
-import { setMetaTags } from './utils.js';
+import { setMetaTags } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Fragments
 import {
