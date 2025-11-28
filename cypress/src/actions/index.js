@@ -457,6 +457,7 @@ export const proceedToCheckout = (texts, urls) => {
 
 export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
+  cy.reload();
   cy.url().should('include', urls.checkout);
   cy.logToTerminal('Waiting for checkout data to load');
 
