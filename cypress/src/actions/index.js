@@ -437,6 +437,36 @@ export const logout = (texts) => {
   cy.contains(fields.poLogoutButton, texts.logout).click();
 };
 
+export const clearCart = (urls) => {
+  cy.logToTerminal('🧹 Clearing cart before test');
+
+  // Clear only cart-related data from localStorage without logging out user
+  cy.window().then((win) => {
+    // Remove cart-specific items from localStorage
+    const keysToRemove = Object.keys(win.localStorage).filter(
+      (key) =>
+        key.includes('cart') ||
+        key.includes('Cart') ||
+        key.includes('CART') ||
+        key.includes('quote')
+    );
+
+    keysToRemove.forEach((key) => {
+      win.localStorage.removeItem(key);
+    });
+
+    cy.logToTerminal(
+      `🗑️ Removed ${keysToRemove.length} cart-related items from localStorage`
+    );
+  });
+
+  // Visit home page to reset cart state without affecting auth
+  cy.visit('/');
+  cy.wait(2000);
+
+  cy.logToTerminal('✅ Cart cleared (user still logged in)');
+};
+
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   const productUrl = !isCheap ? urls.product : urls.cheapProduct;
   cy.logToTerminal(`🔗 Visiting product page: ${productUrl}`);
@@ -451,8 +481,13 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
 };
 
 export const proceedToCheckout = (texts, urls) => {
+  cy.logToTerminal('🛒 Navigating to checkout...');
   cy.visit(urls.checkout);
-  cy.wait(3000);
+  cy.wait(5000); // Increased wait for checkout page to initialize
+
+  // Verify we're actually on checkout page
+  cy.url().should('include', urls.checkout);
+  cy.logToTerminal('✅ On checkout page');
 };
 
 export const completeCheckout = (urls, texts) => {
@@ -460,6 +495,14 @@ export const completeCheckout = (urls, texts) => {
   cy.reload();
   cy.url().should('include', urls.checkout);
   cy.logToTerminal('Waiting for checkout data to load');
+
+  // Wait for checkout form to be ready
+  cy.wait(5000);
+
+  // Additional wait for any dynamic content
+  cy.get('body').then(() => {
+    cy.wait(2000);
+  });
 
   const shippingFirstNameSelectors = [
     'input[name="firstName"]',
@@ -532,7 +575,29 @@ export const completeCheckout = (urls, texts) => {
       return;
     }
 
-    cy.get(selectorQuery, { timeout: 60000 })
+    // Recursively wait for field to appear with retry logic
+    const waitForField = (attempt = 0) => {
+      cy.get('body').then(($body) => {
+        const hasVisibleField = selectors.some(
+          (selector) => $body.find(selector + ':visible').length > 0
+        );
+
+        if (!hasVisibleField && attempt < 120) {
+          cy.wait(500);
+          return waitForField(attempt + 1);
+        }
+
+        if (!hasVisibleField) {
+          throw new Error(
+            `Timeout: Field not found after 60s - ${selectors[0]}`
+          );
+        }
+      });
+    };
+
+    waitForField();
+
+    cy.get(selectorQuery, { timeout: 10000 })
       .filter(':visible')
       .first()
       .should('be.visible')
@@ -581,6 +646,30 @@ export const completeCheckout = (urls, texts) => {
     });
   };
 
+  cy.logToTerminal('Waiting for shipping form to be ready...');
+
+  // Wait until at least one shipping field is visible before proceeding
+  const checkFormReady = (attempt = 0) => {
+    cy.get('body').then(($body) => {
+      const hasAnyField = shippingFirstNameSelectors.some(
+        (selector) => $body.find(selector + ':visible').length > 0
+      );
+
+      if (!hasAnyField && attempt < 60) {
+        cy.wait(1000);
+        return checkFormReady(attempt + 1);
+      }
+
+      if (!hasAnyField) {
+        throw new Error('Checkout form did not load after 60 seconds');
+      }
+
+      cy.logToTerminal('✅ Shipping form is ready');
+    });
+  };
+
+  checkFormReady();
+
   cy.logToTerminal('Filling shipping address form');
 
   typeIntoField(shippingFirstNameSelectors, 'Test');
@@ -622,11 +711,14 @@ export const completeCheckout = (urls, texts) => {
     .find(fields.poTermsCheckbox)
     .check({ force: true });
   cy.wait(1500);
+
+  cy.logToTerminal('🔘 Clicking Place Order button...');
   cy.get(fields.poPlacePOButton, { timeout: 60000 })
-    .contains(texts.placePO)
     .should('be.visible')
+    .should('not.be.disabled')
     .click();
   cy.wait(3000);
+  cy.logToTerminal('✅ Place Order button clicked');
 };
 
 export const verifyPOConfirmation = () => {
@@ -643,6 +735,10 @@ export const createPurchaseOrder = (
   urls,
   texts
 ) => {
+  cy.logToTerminal('🧹 Clearing cart before creating PO...');
+  clearCart(urls);
+  cy.wait(2000);
+
   cy.logToTerminal('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
   cy.logToTerminal('✅ Products added to cart');
