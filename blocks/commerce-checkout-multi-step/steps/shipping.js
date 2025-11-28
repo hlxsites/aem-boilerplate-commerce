@@ -108,6 +108,7 @@ export const createShippingStep = ({
                            || events.lastPayload('checkout/addresses/shipping')?.data;
 
     try {
+      // eslint-disable-next-line max-len
       await checkoutApi.setShippingAddress(transformAddressFormValuesToAddressInput(shippingAddress));
     } catch (error) {
       console.error('Failed to set email and shipping address:', error);

@@ -772,7 +772,7 @@ export const renderAddressForm = async (container, formRef, data, placeOrderButt
 
       // Address type specific configurations
       const formName = isShipping ? SHIPPING_FORM_NAME : BILLING_FORM_NAME;
-      const addressTitle = isShipping 
+      const addressTitle = isShipping
         ? placeholders?.Checkout?.Addresses?.shippingAddressTitle
         : placeholders?.Checkout?.Addresses?.billingAddressTitle;
       const className = isShipping

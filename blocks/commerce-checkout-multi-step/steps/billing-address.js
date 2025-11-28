@@ -69,6 +69,7 @@ export const createBillingAddressStep = ({
                                  || events.lastPayload('checkout/addresses/billing')?.data;
 
       try {
+        // eslint-disable-next-line max-len
         await checkoutApi.setBillingAddress(transformAddressFormValuesToAddressInput(billingAddress));
 
         await displayBillingStep(false);

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 

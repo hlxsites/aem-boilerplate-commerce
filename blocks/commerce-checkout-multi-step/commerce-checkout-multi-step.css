@@ -163,6 +163,7 @@
 }
 
 /* Step visibility control using shared CSS classes */
+
 /* By default, show summaries and hide content */
 .checkout__step .checkout__step-content {
   display: none;

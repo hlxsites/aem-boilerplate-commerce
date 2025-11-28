@@ -162,6 +162,7 @@ export default async function decorate(block) {
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
 
+  // eslint-disable-next-line consistent-return
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
@@ -183,6 +184,7 @@ export default async function decorate(block) {
       // Adyen-specific payment handling
       if (isAdyen) {
         return new Promise((resolve, reject) => {
+          // eslint-disable-next-line no-underscore-dangle
           adyenCard._orderPromise = { resolve, reject };
           adyenCard.submit();
         });
@@ -274,10 +276,12 @@ export default async function decorate(block) {
                         await orderApi.setPaymentMethodAndPlaceOrder(currentCartId, paymentMethod);
 
                         // Resolve the promise in handlePlaceOrder
+                        // eslint-disable-next-line no-underscore-dangle
                         adyenCard._orderPromise.resolve();
                       } catch (error) {
                         // Reject the promise in handlePlaceOrder
                         component.setStatus('ready');
+                        // eslint-disable-next-line no-underscore-dangle
                         adyenCard._orderPromise.reject(error);
                       }
                     },

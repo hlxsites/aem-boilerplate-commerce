@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import ProductList from '@dropins/storefront-product-discovery/containers/ProductList.js';
 import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
 import ResultsInfo from '@dropins/storefront-product-discovery/containers/ResultsInfo.js';
