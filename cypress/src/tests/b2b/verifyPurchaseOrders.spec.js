@@ -1,7 +1,7 @@
 import {
   createUserAssignCompanyAndRole,
   manageCompanyRole,
-  deleteCustomerRoles,
+  deleteCompanyRoles,
   unassignRoles,
 } from '../../support/b2bPOAPICalls';
 import {
@@ -328,6 +328,9 @@ describe('B2B Purchase Orders', () => {
       // Find and verify Purchase Orders requiring approval
       cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
       const checkboxSelector = `${selectors.poCheckbox}:not([disabled]):not([name="selectAll"])`;
+      const MAX_APPROVAL_FETCH_ATTEMPTS = 12;
+      const APPROVAL_RETRY_DELAY = 10000;
+
       const waitForPurchaseOrders = (attempt = 1) => {
         cy.get(selectors.poApprovalPOWrapper).within(() => {
           cy.contains('Requires my approval').should('be.visible');
@@ -344,16 +347,16 @@ describe('B2B Purchase Orders', () => {
               return;
             }
 
-            if (attempt >= 6) {
+            if (attempt >= MAX_APPROVAL_FETCH_ATTEMPTS) {
               throw new Error(
                 `Expected at least 2 Purchase Orders, found ${$checkboxes.length} after ${attempt} attempts`
               );
             }
 
             cy.logToTerminal(
-              `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying...`
+              `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying... [attempt ${attempt}/${MAX_APPROVAL_FETCH_ATTEMPTS}]`
             );
-            cy.wait(5000);
+            cy.wait(APPROVAL_RETRY_DELAY);
             cy.reload();
             waitForPurchaseOrdersRequest(3);
             return waitForPurchaseOrders(attempt + 1);
@@ -607,40 +610,59 @@ describe('B2B Purchase Orders', () => {
       // Delete roles AFTER all users are deleted
       cy.then(() => {
         cy.logToTerminal('🗑️ Deleting test roles');
-        const poUsersConfig = [
-          {
-            user: poUsers.po_rules_manager,
-            role: poRolesConfig.rulesManager,
-            roleId: null,
-          },
-          {
-            user: poUsers.sales_manager,
-            role: poRolesConfig.salesManager,
-            roleId: null,
-          },
-          {
-            user: poUsers.approver_manager,
-            role: poRolesConfig.approver,
-            roleId: null,
-          },
-        ];
 
-        const roleNamesToDelete = poUsersConfig.map(
-          (config) => config.role.role_name
-        );
+        const envUsersConfig = Cypress.env('poUsersConfig') || [];
+        const roleIdsFromEnv = Cypress.env('poTestRoleIds') || [];
+
+        const poUsersConfig = envUsersConfig.length
+          ? envUsersConfig
+          : [
+              {
+                user: poUsers.po_rules_manager,
+                role: poRolesConfig.rulesManager,
+                roleId: null,
+              },
+              {
+                user: poUsers.sales_manager,
+                role: poRolesConfig.salesManager,
+                roleId: null,
+              },
+              {
+                user: poUsers.approver_manager,
+                role: poRolesConfig.approver,
+                roleId: null,
+              },
+            ];
+
+        const roleIdsFromConfig = poUsersConfig
+          .map((config) => config.roleId)
+          .filter(Boolean);
+        const resolvedRoleIds = roleIdsFromEnv.filter(Boolean).length
+          ? [...new Set(roleIdsFromEnv.filter(Boolean))]
+          : [...new Set(roleIdsFromConfig)];
         const userEmailsToUnassign = poUsersConfig.map(
           (config) => config.user.email
         );
 
-        cy.logToTerminal(`🗑️ Roles to delete: ${roleNamesToDelete.join(', ')}`);
+        cy.logToTerminal(
+          `🗑️ Role IDs to delete: ${resolvedRoleIds.join(', ') || 'none'}`
+        );
 
         cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
-          () =>
-            cy
-              .wrap(deleteCustomerRoles(roleNamesToDelete), { timeout: 60000 })
-              .then(() =>
-                cy.logToTerminal('✅ All test roles deleted successfully')
-              )
+          () => {
+            if (!resolvedRoleIds.length) {
+              cy.logToTerminal(
+                '⚠️ No role IDs found. Skipping deleteCompanyRoles mutation.'
+              );
+              return;
+            }
+
+            cy.wrap(deleteCompanyRoles(resolvedRoleIds), {
+              timeout: 60000,
+            }).then(() =>
+              cy.logToTerminal('✅ All test roles deleted successfully')
+            );
+          }
         );
       });
 
