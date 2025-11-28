@@ -356,6 +356,17 @@ describe('B2B Purchase Orders', () => {
             cy.logToTerminal(
               `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying... [attempt ${attempt}/${MAX_APPROVAL_FETCH_ATTEMPTS}]`
             );
+
+            // Extra reload at attempt 7
+            if (attempt === 7) {
+              cy.logToTerminal(
+                '🔄 Attempt 7 reached - performing extra page reload...'
+              );
+              cy.wait(APPROVAL_RETRY_DELAY);
+              cy.reload();
+              waitForPurchaseOrdersRequest(3);
+            }
+
             cy.wait(APPROVAL_RETRY_DELAY);
             cy.reload();
             waitForPurchaseOrdersRequest(3);
@@ -628,30 +639,29 @@ describe('B2B Purchase Orders', () => {
               },
             ];
 
-        const roleIdsFromConfig = poUsersConfig
-          .map((config) => config.roleId)
+        // Extract role names for deletion
+        const roleNamesToDelete = poUsersConfig
+          .map((config) => config.role?.role_name)
           .filter(Boolean);
-        const resolvedRoleIds = roleIdsFromEnv.filter(Boolean).length
-          ? [...new Set(roleIdsFromEnv.filter(Boolean))]
-          : [...new Set(roleIdsFromConfig)];
+
         const userEmailsToUnassign = poUsersConfig.map(
           (config) => config.user.email
         );
 
         cy.logToTerminal(
-          `🗑️ Role IDs to delete: ${resolvedRoleIds.join(', ') || 'none'}`
+          `🗑️ Role names to delete: ${roleNamesToDelete.join(', ') || 'none'}`
         );
 
         cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
           () => {
-            if (!resolvedRoleIds.length) {
+            if (!roleNamesToDelete.length) {
               cy.logToTerminal(
-                '⚠️ No role IDs found. Skipping deleteCompanyRoles mutation.'
+                '⚠️ No role names found. Skipping deleteCompanyRoles.'
               );
               return;
             }
 
-            cy.wrap(deleteCompanyRoles(resolvedRoleIds), {
+            cy.wrap(deleteCompanyRoles(roleNamesToDelete), {
               timeout: 60000,
             }).then(() =>
               cy.logToTerminal('✅ All test roles deleted successfully')
