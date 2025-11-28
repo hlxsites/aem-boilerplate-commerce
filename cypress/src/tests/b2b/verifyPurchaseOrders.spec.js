@@ -601,12 +601,6 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('✅ All approval rules deleted successfully');
 
-      // Delete PO Rules Manager user (last one)
-      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
-      cy.visit('/');
-      cy.wait(3000);
-      cy.deleteCustomer();
-
       // Delete roles AFTER all users are deleted
       cy.then(() => {
         cy.logToTerminal('🗑️ Deleting test roles');
@@ -666,7 +660,11 @@ describe('B2B Purchase Orders', () => {
         );
       });
 
-      cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
+      cy.logToTerminal('✅ B2B Purchase Orders test suite completed'); // Delete PO Rules Manager user (last one)
+      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
     }
   );
 });

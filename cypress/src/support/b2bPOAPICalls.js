@@ -324,8 +324,6 @@ async function deleteCompanyRoles(roleIds = []) {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'x-api-key': IMS_CLIENT_ID,
-          'x-gw-ims-org-id': IMS_ORG_ID,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -364,7 +362,7 @@ async function deleteCompanyRoles(roleIds = []) {
 async function unassignRoles(
   saveUsers = [],
   companyId = 13,
-  defaultRoleId = 16
+  defaultRoleId = 50
 ) {
   const client = new ACCSApiClient();
   const accessToken = await client.tokenManager.getValidToken();
