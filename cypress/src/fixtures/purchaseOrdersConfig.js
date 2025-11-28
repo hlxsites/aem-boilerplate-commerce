@@ -12,7 +12,7 @@ export const poLabels = {
   addToCart: 'Add to Cart',
   checkout: 'Checkout',
   checkMoneyOrder: 'Check / Money order',
-  placePO: 'Place Purchase Order',
+  placePO: 'Place Order',
   logout: 'Logout',
   approveSelected: 'Approve selected',
   rejectSelected: 'Reject selected',
