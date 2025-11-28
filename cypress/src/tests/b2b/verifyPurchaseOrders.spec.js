@@ -356,6 +356,15 @@ describe('B2B Purchase Orders', () => {
             cy.logToTerminal(
               `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying... [attempt ${attempt}/${MAX_APPROVAL_FETCH_ATTEMPTS}]`
             );
+            
+            // Extra reload at attempt 7
+            if (attempt === 7) {
+              cy.logToTerminal('🔄 Attempt 7 reached - performing extra page reload...');
+              cy.wait(APPROVAL_RETRY_DELAY);
+              cy.reload();
+              waitForPurchaseOrdersRequest(3);
+            }
+            
             cy.wait(APPROVAL_RETRY_DELAY);
             cy.reload();
             waitForPurchaseOrdersRequest(3);
