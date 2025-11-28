@@ -592,32 +592,32 @@ export const renderCartSummaryList = async (container) => renderContainer(
             );
           });
         },
-      Thumbnail: (ctx) => {
-        const { item, defaultImageProps } = ctx;
-        tryRenderAemAssetsImage(ctx, {
-          alias: item.sku,
-          imageProps: defaultImageProps,
-          params: {
-            width: defaultImageProps.width,
-            height: defaultImageProps.height,
-          },
-        });
+        Thumbnail: (ctx) => {
+          const { item, defaultImageProps } = ctx;
+          tryRenderAemAssetsImage(ctx, {
+            alias: item.sku,
+            imageProps: defaultImageProps,
+            params: {
+              width: defaultImageProps.width,
+              height: defaultImageProps.height,
+            },
+          });
+        },
+        Footer: (ctx) => {
+          const giftOptions = document.createElement('div');
+          CartProvider.render(GiftOptions, {
+            item: ctx.item,
+            view: 'product',
+            dataSource: 'cart',
+            isEditable: false,
+            slots: {
+              SwatchImage: swatchImageSlot,
+            },
+          })(giftOptions);
+          ctx.appendChild(giftOptions);
+        },
       },
-      Footer: (ctx) => {
-        const giftOptions = document.createElement('div');
-        CartProvider.render(GiftOptions, {
-          item: ctx.item,
-          view: 'product',
-          dataSource: 'cart',
-          isEditable: false,
-          slots: {
-            SwatchImage: swatchImageSlot,
-          },
-        })(giftOptions);
-        ctx.appendChild(giftOptions);
-      },
-    },
-  })(container);
+    })(container);
   },
 );
 

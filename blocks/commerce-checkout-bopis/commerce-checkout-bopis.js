@@ -1,3 +1,6 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
+
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
@@ -307,7 +310,7 @@ export default async function decorate(block) {
   const pickupLocations = await fetchPickupLocations();
 
   pickupLocations.forEach((location) => {
-    const { name, pickup_location_code } = location;
+    const { name, pickup_location_code: pickupLocationCode } = location;
     const locationRadiobutton = document.createElement('div');
 
     UI.render(RadioButton, {
@@ -317,7 +320,7 @@ export default async function decorate(block) {
       onChange: () => {
         checkoutApi.setShippingAddress({
           address: {},
-          pickupLocationCode: pickup_location_code,
+          pickupLocationCode,
         });
       },
     })(locationRadiobutton);

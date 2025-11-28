@@ -1,3 +1,6 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
+
 // Initializers
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';

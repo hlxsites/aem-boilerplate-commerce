@@ -2,18 +2,10 @@
 /* eslint-disable no-unused-vars */
 
 // Dropin Tools
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
-
-// Checkout Dropin
-import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
-
-import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
-
-// Order Dropin Modules
-import * as orderApi from '@dropins/storefront-order/api.js';
 
 // Checkout Dropin Libraries
 import {
@@ -24,29 +16,25 @@ import {
   validateForms,
 } from '@dropins/storefront-checkout/lib/utils.js';
 
-// 1. Import Braintree Payment Gateway
-import 'https://js.braintreegateway.com/web/dropin/1.43.0/js/dropin.min.js';
+import * as orderApi from '@dropins/storefront-order/api.js';
 
+// Dropin components for Adyen-specific payment methods
+import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
+import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
+
+// Payment Services Dropin
+import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+import { loadCSS, loadScript } from '../../scripts/aem.js';
 
-// Local utils
+// Block-level imports from local utils (functions not available in dropin lib)
 import {
   displayOverlaySpinner,
   removeModal,
   removeOverlaySpinner,
 } from './utils.js';
-
-// Constants
-import {
-  BILLING_ADDRESS_DATA_KEY,
-  BILLING_FORM_NAME,
-  CHECKOUT_EMPTY_CLASS,
-  LOGIN_FORM_NAME,
-  PURCHASE_ORDER_FORM_NAME,
-  SHIPPING_ADDRESS_DATA_KEY,
-  SHIPPING_FORM_NAME,
-  TERMS_AND_CONDITIONS_FORM_NAME,
-} from './constants.js';
 
 // Fragment functions
 import {
@@ -87,6 +75,18 @@ import {
   unmountEmptyCart,
 } from './containers.js';
 
+// Constants
+import {
+  BILLING_ADDRESS_DATA_KEY,
+  BILLING_FORM_NAME,
+  CHECKOUT_EMPTY_CLASS,
+  LOGIN_FORM_NAME,
+  PURCHASE_ORDER_FORM_NAME,
+  SHIPPING_ADDRESS_DATA_KEY,
+  SHIPPING_FORM_NAME,
+  TERMS_AND_CONDITIONS_FORM_NAME,
+} from './constants.js';
+
 import {
   SUPPORT_PATH,
   fetchPlaceholders,
@@ -98,39 +98,13 @@ import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 
-// Braintree-specific constants
-const BRAINTREE_AUTHORIZATION_TOKEN = 'sandbox_cstz6tw9_sbj9bzvx2ngq77n4';
-
-// Braintree-specific container renderer
-async function renderBraintreePaymentMethods(container, braintreeInstanceRef) {
-  return CheckoutProvider.render(PaymentMethods, {
-    slots: {
-      Methods: {
-        braintree: {
-          autoSync: false,
-          render: async (ctx) => {
-            const braintreeContainer = document.createElement('div');
-
-            window.braintree.dropin.create({
-              authorization: BRAINTREE_AUTHORIZATION_TOKEN,
-              container: braintreeContainer,
-            }, (err, dropinInstance) => {
-              if (err) {
-                console.error(err);
-              }
-
-              braintreeInstanceRef.current = dropinInstance;
-            });
-
-            ctx.replaceHTML(braintreeContainer);
-          },
-        },
-      },
-    },
-  })(container);
-}
-
 export default async function decorate(block) {
+  // Adobe Commerce GraphQL endpoint
+  const commerceCoreEndpoint = getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint');
+
+  // Adyen-specific variable
+  let adyenCard;
+
   // Container and component references
   let emptyCart;
   let shippingForm;
@@ -138,22 +112,20 @@ export default async function decorate(block) {
   let shippingAddresses;
   let billingAddresses;
 
-  // Braintree-specific variable reference
-  const braintreeInstanceRef = { current: null };
-
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
+  const creditCardFormRef = { current: null };
   const loaderRef = { current: null };
 
   setMetaTags('Checkout');
-  document.title = 'Braintree Checkout';
+  document.title = 'Checkout';
 
   events.on('order/placed', () => {
     setMetaTags('Order Confirmation');
-    document.title = 'Braintree Order Confirmation';
+    document.title = 'Order Confirmation';
   });
 
-  // Create the checkout layout using fragments
+  // Create the checkout layout using shared fragments
   const checkoutFragment = createCheckoutFragment();
 
   // Create scoped selector for the checkout fragment
@@ -193,34 +165,31 @@ export default async function decorate(block) {
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
-      switch (code) {
-        case 'braintree': {
-          braintreeInstanceRef.current.requestPaymentMethod(async (err, payload) => {
-            if (err) {
-              removeOverlaySpinner(loaderRef, $loader);
-              console.error(err);
-              return;
-            }
+      const isAdyen = code === 'adyen_cc';
 
-            await checkoutApi.setPaymentMethod({
-              code: 'braintree',
-              braintree: {
-                is_active_payment_token_enabler: false,
-                payment_method_nonce: payload.nonce,
-              },
-            });
-
-            await orderApi.placeOrder(cartId);
-          });
-
-          break;
+      // Validate Adyen component before any network activity
+      if (isAdyen) {
+        if (!adyenCard) {
+          console.error('Adyen card not rendered.');
+          return false;
         }
 
-        default: {
-          // Place order
-          await orderApi.placeOrder(cartId);
+        if (!adyenCard.state?.isValid) {
+          adyenCard.showValidation?.();
+          return false;
         }
       }
+
+      // Adyen-specific payment handling
+      if (isAdyen) {
+        return new Promise((resolve, reject) => {
+          adyenCard._orderPromise = { resolve, reject };
+          adyenCard.submit();
+        });
+      }
+
+      // Default payment handling
+      await orderApi.placeOrder(cartId);
     } catch (error) {
       console.error(error);
       throw error;
@@ -228,6 +197,136 @@ export default async function decorate(block) {
       removeOverlaySpinner(loaderRef, $loader);
     }
   };
+
+  // Adyen-specific payment methods renderer
+  async function renderAdyenPaymentMethods(container) {
+    return CheckoutProvider.render(PaymentMethods, {
+      slots: {
+        Methods: {
+          adyen_cc: {
+            autoSync: false,
+            render: async (ctx) => {
+              // Create container in the slot render
+              const $adyenCardContainer = document.createElement('div');
+              $adyenCardContainer.className = 'adyen-card-container';
+
+              // Append the container to the slot
+              ctx.appendChild($adyenCardContainer);
+
+              // Initialize Adyen each time the slot renders
+              ctx.onRender(async () => {
+                // Check if Adyen is already mounted to this specific container
+                if ($adyenCardContainer.hasChildNodes()) {
+                  return;
+                }
+
+                // Clear any previous adyenCard reference since we're mounting to a new container
+                adyenCard = null;
+
+                try {
+                  // Dynamically import Adyen Web v6.x as an ES module
+                  await loadScript('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.js', {});
+                  // Load Adyen CSS from CDN if not already loaded
+                  await loadCSS('https://checkoutshopper-live.adyen.com/checkoutshopper/sdk/6.16.0/adyen.css');
+
+                  // Access AdyenWeb safely without optional-chaining to satisfy ESLint
+                  const { AdyenCheckout, Card } = (window.AdyenWeb) || {};
+
+                  if (!AdyenCheckout) {
+                    console.error('AdyenCheckout not available after import.');
+                    return;
+                  }
+
+                  const checkout = await AdyenCheckout({
+                    clientKey: 'test_UJLHEXDC5JDOZBLAHE7EB4XCAEANSI6H',
+                    locale: 'en_US',
+                    environment: 'test',
+                    countryCode: 'US',
+                    paymentMethodsResponse: {
+                      paymentMethods: [
+                        {
+                          name: 'Cards',
+                          type: 'scheme',
+                          brand: null,
+                          brands: [
+                            'visa',
+                            'mc',
+                            'amex',
+                            'discover',
+                            'cup',
+                            'diners',
+                          ],
+                          configuration: null,
+                        },
+                      ],
+                    },
+                    onSubmit: async (state, component) => {
+                      const additionalData = {
+                        stateData: JSON.stringify(state.data),
+                      };
+                      try {
+                        const paymentMethod = {
+                          code: 'adyen_cc',
+                          adyen_additional_data_cc: additionalData,
+                        };
+
+                        const currentCartId = ctx.cartId;
+                        await orderApi.setPaymentMethodAndPlaceOrder(currentCartId, paymentMethod);
+
+                        // Resolve the promise in handlePlaceOrder
+                        adyenCard._orderPromise.resolve();
+                      } catch (error) {
+                        // Reject the promise in handlePlaceOrder
+                        component.setStatus('ready');
+                        adyenCard._orderPromise.reject(error);
+                      }
+                    },
+                  });
+
+                  // Create and mount Adyen card
+                  adyenCard = new Card(checkout, {
+                    showPayButton: false,
+                  });
+                  adyenCard.mount($adyenCardContainer);
+                } catch (error) {
+                  console.error('Failed to initialize Adyen:', error);
+                }
+              });
+            },
+          },
+          [PaymentMethodCode.CREDIT_CARD]: {
+            render: (ctx) => {
+              const $creditCard = document.createElement('div');
+
+              PaymentServices.render(CreditCard, {
+                apiUrl: commerceCoreEndpoint,
+                getCustomerToken: getUserTokenCookie,
+                getCartId: () => ctx.cartId,
+                creditCardFormRef,
+              })($creditCard);
+
+              ctx.replaceHTML($creditCard);
+            },
+          },
+          [PaymentMethodCode.SMART_BUTTONS]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.APPLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.GOOGLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.VAULT]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
+        },
+      },
+    })(container);
+  }
 
   // First, render the place order component
   const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
@@ -251,7 +350,7 @@ export default async function decorate(block) {
   ] = await Promise.all([
     renderMergedCartBanner($mergedCartBanner),
 
-    renderCheckoutHeader($heading, 'Braintree Checkout'),
+    renderCheckoutHeader($heading, 'Adyen Checkout'),
 
     renderServerError($serverError, $content),
 
@@ -265,7 +364,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderBraintreePaymentMethods($paymentMethods, braintreeInstanceRef),
+    renderAdyenPaymentMethods($paymentMethods),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -279,7 +378,6 @@ export default async function decorate(block) {
   ]);
 
   // Dynamic containers and components
-
   async function displayEmptyCart() {
     if (!emptyCart) {
       emptyCart = await renderEmptyCart($emptyCart);

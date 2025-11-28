@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { ProgressSpinner, provider as UI } from '@dropins/tools/components.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import createModal from '../modal/modal.js';
