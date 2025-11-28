@@ -252,23 +252,60 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal('⏳ Waiting for session to initialize...');
       cy.wait(3000);
 
-      cy.intercept('POST', '**/graphql', (req) => {
-        const operationName = req.body?.operationName || '';
-        const query = req.body?.query || '';
+      const resolveGraphQLPayload = (rawBody) => {
+        if (!rawBody) {
+          return { operationName: '', query: '' };
+        }
+
+        if (typeof rawBody === 'string') {
+          try {
+            return JSON.parse(rawBody);
+          } catch (error) {
+            return { operationName: '', query: rawBody };
+          }
+        }
+
+        return rawBody;
+      };
+
+      const aliasIfPurchaseOrders = (req) => {
+        const { operationName = '', query = '' } = resolveGraphQLPayload(
+          req.body
+        );
+        const queryText = typeof query === 'string' ? query : '';
+
         if (
-          operationName.includes('PurchaseOrder') ||
-          query.includes('purchaseOrders') ||
-          query.includes('customerPurchaseOrders')
+          operationName === 'GET_PURCHASE_ORDERS' ||
+          queryText.includes('GET_PURCHASE_ORDERS') ||
+          queryText.includes('purchaseOrders') ||
+          queryText.includes('customerPurchaseOrders')
         ) {
           req.alias = 'poApprovalList';
         }
-      });
+      };
+
+      cy.intercept('POST', '**/graphql', aliasIfPurchaseOrders);
+      cy.intercept('GET', '**/graphql*', aliasIfPurchaseOrders);
+
+      const waitForPurchaseOrdersRequest = (expectedCount = 1) => {
+        const waitNext = (remaining) => {
+          if (remaining <= 0) {
+            return;
+          }
+
+          cy.wait('@poApprovalList', { timeout: 60000 }).then(() => {
+            waitNext(remaining - 1);
+          });
+        };
+
+        waitNext(expectedCount);
+      };
 
       cy.logToTerminal('📄 Navigating to Purchase Orders page');
       cy.visit(urls.purchaseOrders);
-      cy.wait('@poApprovalList', { timeout: 60000 });
+      waitForPurchaseOrdersRequest(3);
       cy.reload();
-      cy.wait('@poApprovalList', { timeout: 60000 });
+      waitForPurchaseOrdersRequest(3);
 
       // Find and verify Purchase Orders requiring approval
       cy.logToTerminal('🔍 Verifying Purchase Orders requiring approval');
@@ -300,7 +337,7 @@ describe('B2B Purchase Orders', () => {
             );
             cy.wait(5000);
             cy.reload();
-            cy.wait('@poApprovalList', { timeout: 60000 });
+            waitForPurchaseOrdersRequest(3);
             return waitForPurchaseOrders(attempt + 1);
           });
       };
