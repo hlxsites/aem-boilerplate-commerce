@@ -29,7 +29,7 @@ module.exports = defineConfig({
       login: '/customer/login',
       account: '/customer/account',
       product: '/products/women-s-script-crewneck/adb374',
-      cheapProduct: '/products/badge-reel/adb153',
+      cheapProduct: '/products/ben-at-adobe-pin/adb346',
       checkout: '/checkout',
       purchaseOrders: '/customer/purchase-orders',
       approvalRules: '/customer/approval-rules',

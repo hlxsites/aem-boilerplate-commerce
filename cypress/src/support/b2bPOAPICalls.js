@@ -295,33 +295,64 @@ async function getCompanyRoles(companyId = 13) {
   }
 }
 
-async function deleteCustomerRoles(rolesToDelete = []) {
+async function deleteCompanyRoles(roleIds = []) {
   try {
-    console.log(`🗑️ Deleting roles: ${rolesToDelete.join(', ')}`);
-    const rolesList = await getCompanyRoles();
-    const items = rolesList?.roles?.items ?? [];
-
-    // Find roles that match the names in rolesToDelete array
-    const matchedRoles = items.filter((role) => {
-      return rolesToDelete.includes(role.name);
-    });
-
-    console.log(
-      `📋 Found ${matchedRoles.length} roles to delete from ${rolesToDelete.length} requested`
-    );
-
-    // Delete each matched role
-    if (matchedRoles.length > 0) {
-      for (const role of matchedRoles) {
-        console.log(`  ✅ Deleting role: ${role.name} (ID: ${role.id})`);
-        await manageCompanyRole(null, role.id);
-      }
-      console.log(`✅ Successfully deleted ${matchedRoles.length} roles`);
-      return { success: true, deletedCount: matchedRoles.length };
-    } else {
-      console.log('⚠️ No matching roles found to delete');
+    if (!Array.isArray(roleIds) || roleIds.length === 0) {
+      console.log('⚠️ No role IDs provided for deletion');
       return { success: true, deletedCount: 0 };
     }
+
+    const client = new ACCSApiClient();
+    const accessToken = await client.tokenManager.getValidToken();
+
+    let deletedCount = 0;
+
+    const mutation = `
+      mutation DeleteCompanyRole($id: ID!) {
+        deleteCompanyRole(id: $id) {
+          success
+        }
+      }
+    `;
+
+    for (const roleId of roleIds) {
+      if (!roleId) {
+        continue;
+      }
+
+      const response = await fetch(GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: mutation,
+          variables: { id: roleId.toString() },
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const message =
+          result?.errors?.[0]?.message ||
+          `deleteCompanyRole HTTP error: ${response.status}`;
+        throw new Error(message);
+      }
+
+      const success = result?.data?.deleteCompanyRole?.success;
+      if (!success) {
+        const message =
+          result?.errors?.[0]?.message || 'Mutation returned false';
+        throw new Error(`Failed to delete role ID ${roleId}: ${message}`);
+      }
+
+      console.log(`✅ Deleted company role with ID: ${roleId}`);
+      deletedCount += 1;
+    }
+
+    return { success: true, deletedCount };
   } catch (error) {
     console.log(`❌ Error deleting roles: ${error.message}`);
     return { success: false, error: error.message };
@@ -331,7 +362,7 @@ async function deleteCustomerRoles(rolesToDelete = []) {
 async function unassignRoles(
   saveUsers = [],
   companyId = 13,
-  defaultRoleId = 16
+  defaultRoleId = 50
 ) {
   const client = new ACCSApiClient();
   const accessToken = await client.tokenManager.getValidToken();
@@ -417,6 +448,6 @@ module.exports = {
   createUserAssignCompanyAndRole,
   manageCompanyRole,
   getCompanyRoles,
-  deleteCustomerRoles,
+  deleteCompanyRoles,
   unassignRoles,
 };

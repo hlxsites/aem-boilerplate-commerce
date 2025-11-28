@@ -466,76 +466,151 @@ export const completeCheckout = (urls, texts) => {
     'input[name="shippingAddress.firstName"]',
   ];
 
-  const resolveSelector = (candidates) =>
-    cy.get('body', { timeout: 60000 }).then(($body) => {
-      const match = candidates.find((selector) => $body.find(selector).length);
+  const shippingLastNameSelectors = [
+    'input[name="lastName"]',
+    'input[name="lastname"]',
+    'input[name="shippingAddress.lastName"]',
+  ];
 
-      if (!match) {
-        throw new Error(
-          `Unable to locate element. Tried selectors: ${candidates.join(', ')}`
-        );
-      }
+  const shippingStreetSelectors = [
+    'input[name="street"]',
+    'input[name="street[0]"]',
+    'input[name="shippingAddress.street"]',
+    'input[name="shippingAddress.street[0]"]',
+  ];
 
-      return match;
-    });
+  const shippingCitySelectors = [
+    'input[name="city"]',
+    'input[name="shippingAddress.city"]',
+  ];
 
-  cy.get('body', { timeout: 60000 }).should(($body) => {
-    const hasShippingInput = shippingFirstNameSelectors.some(
-      (selector) => $body.find(selector).length
-    );
+  const shippingPostcodeSelectors = [
+    'input[name="postcode"]',
+    'input[name="postalCode"]',
+    'input[name="shippingAddress.postcode"]',
+    'input[name="shippingAddress.postalCode"]',
+  ];
 
-    expect(hasShippingInput, 'shipping first name field presence').to.be.true;
-  });
+  const shippingTelephoneSelectors = [
+    'input[name="telephone"]',
+    'input[name="phone"]',
+    'input[name="shippingAddress.telephone"]',
+    'input[name="shippingAddress.phone"]',
+  ];
 
-  resolveSelector(shippingFirstNameSelectors).then((firstNameSelector) => {
-    cy.get(firstNameSelector, { timeout: 60000 })
+  const shippingRegionSelectSelectors = [
+    'select[name="region"]',
+    'select[name="regionId"]',
+    'select[name="region_id"]',
+    'select[name="shippingAddress.regionId"]',
+  ];
+
+  const shippingRegionInputSelectors = [
+    'input[name="region"]',
+    'input[name="regionId"]',
+    'input[name="shippingAddress.region"]',
+    'input[name="shippingAddress.regionId"]',
+  ];
+
+  const paymentSectionSelectors = [
+    '#checkout-payment-method-load',
+    '.checkout-payment-method',
+    '.payment-methods',
+    '.checkout-payment-methods__method',
+    '.dropin-toggle-button__actionButton',
+    '.dropin-toggle-button__content',
+    '.dropin-radio-button__input',
+  ];
+
+  const findFirstAvailableSelector = ($root, selectors) =>
+    selectors.find((selector) => $root.find(selector).length);
+
+  const typeIntoField = (selectors, value) => {
+    const selectorQuery = selectors.join(', ');
+    if (!selectorQuery) {
+      return;
+    }
+
+    cy.get(selectorQuery, { timeout: 60000 })
+      .filter(':visible')
       .first()
       .should('be.visible')
+      .should('not.be.disabled')
       .clear({ force: true })
-      .type('Test', { force: true });
-  });
+      .type(value, { force: true });
+  };
+
+  const ensurePaymentSectionVisible = () => {
+    cy.get('body', { timeout: 60000 }).then(($body) => {
+      const availableSelector = findFirstAvailableSelector(
+        $body,
+        paymentSectionSelectors
+      );
+
+      if (availableSelector) {
+        cy.get(availableSelector, { timeout: 60000 }).should(($elements) => {
+          const visibleCount = $elements.filter(':visible').length;
+          expect(
+            visibleCount,
+            `visible payment section for selector ${availableSelector}`
+          ).to.be.greaterThan(0);
+        });
+        return;
+      }
+
+      cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder, {
+        timeout: 60000,
+      }).should('be.visible');
+    });
+  };
+
+  const ensureShippingMethodSelected = () => {
+    cy.document().then((doc) => {
+      const $doc = Cypress.$(doc);
+      const $shippingMethods = $doc
+        .find('input[name="shipping_method"]')
+        .filter(':visible');
+
+      if ($shippingMethods.length) {
+        const hasChecked = $shippingMethods.is(':checked');
+        if (!hasChecked) {
+          cy.wrap($shippingMethods.first()).check({ force: true });
+        }
+      }
+    });
+  };
 
   cy.logToTerminal('Filling shipping address form');
-  cy.get('input[name="lastName"]', { timeout: 60000 })
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="street"]', { timeout: 60000 })
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('body').then(($body) => {
-    if ($body.find('select[name="region"]').length) {
-      cy.get('select[name="region"]', { timeout: 60000 })
+
+  typeIntoField(shippingFirstNameSelectors, 'Test');
+  typeIntoField(shippingLastNameSelectors, 'Test');
+  typeIntoField(shippingStreetSelectors, 'Test');
+
+  cy.get('body', { timeout: 60000 }).then(($body) => {
+    const regionSelect = findFirstAvailableSelector(
+      $body,
+      shippingRegionSelectSelectors
+    );
+
+    if (regionSelect) {
+      cy.get(regionSelect, { timeout: 60000 })
+        .filter(':visible')
         .first()
+        .should('not.be.disabled')
         .select('Alabama', { force: true });
     } else {
-      cy.get('input[name="region"]', { timeout: 60000 })
-        .first()
-        .clear({ force: true })
-        .type('Alabama', { force: true });
+      typeIntoField(shippingRegionInputSelectors, 'Alabama');
     }
   });
-  cy.wait(1500);
-  cy.get('input[name="city"]', { timeout: 60000 })
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="postcode"]', { timeout: 60000 })
-    .first()
-    .clear({ force: true })
-    .type('1235', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="telephone"]', { timeout: 60000 })
-    .first()
-    .clear({ force: true })
-    .type('123456789', { force: true });
-  cy.wait(3000);
 
-  cy.wait(1500);
+  typeIntoField(shippingCitySelectors, 'Test');
+  typeIntoField(shippingPostcodeSelectors, '1235');
+  typeIntoField(shippingTelephoneSelectors, '123456789');
+
+  cy.wait(2000);
+  ensureShippingMethodSelected();
+  ensurePaymentSectionVisible();
+
   cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder, {
     timeout: 60000,
   })
