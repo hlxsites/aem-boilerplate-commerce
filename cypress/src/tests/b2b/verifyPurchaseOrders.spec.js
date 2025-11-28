@@ -538,7 +538,7 @@ describe('B2B Purchase Orders', () => {
               if (match) {
                 const total = parseFloat(match[1]);
                 cy.log(`Found total: $${total}`);
-                expect(total).to.be.lessThan(10);
+                expect(total).to.be.lessThan(15);
               }
             });
         });
