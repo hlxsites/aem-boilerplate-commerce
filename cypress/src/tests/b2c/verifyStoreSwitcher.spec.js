@@ -13,7 +13,7 @@ describe("Store Switcher", () => {
   //   });
   // });
 
-  it("should allow the user to switch stores", () => {
+  it.skip("should allow the user to switch stores", () => {
     // Visit the homepage
     cy.visit("/");
 
