@@ -34,7 +34,9 @@ afterEach(() => {
   const currentSuiteName = Cypress.currentTest?.titlePath?.[0] || '';
 
   const skipDeleteTests = [
-    'B2B Purchase Orders'
+    'Purchase Orders end-to-end workflow',
+    'B2B Purchase Orders',
+    'Cleanup - Delete approval rules, users and roles',
   ];
 
   const shouldSkip = skipDeleteTests.some(
