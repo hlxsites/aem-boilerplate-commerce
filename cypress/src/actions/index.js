@@ -428,7 +428,7 @@ export const login = (user, urls) => {
     cy.get(fields.poPasswordInput).type(user.password);
     cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
-    cy.wait(5000);
+    cy.wait(8000);
   });
   cy.url().should('include', urls.account);
   // Waiting for session and permissions to initialize
