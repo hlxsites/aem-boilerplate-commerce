@@ -18,7 +18,7 @@ import { customerShippingAddress, products } from "../../../fixtures";
  */
 
 // Test is failing randomly on most of pr, created bug to fix and unskip https://jira.corp.adobe.com/browse/USF-3518
-it("is sent on place order button click", { tags: "@skipSaas" }, () => {
+it.skip("is sent on place order button click", { tags: "@skipSaas" }, () => {
   // add item to cart
   cy.visit(products.configurable.urlPathWithOptions);
   // add to cart
