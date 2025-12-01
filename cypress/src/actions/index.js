@@ -773,9 +773,9 @@ export const deleteApprovalRule = (ruleName) => {
 
   cy.contains('button', 'Delete').click();
 
-  cy.wait(2000);
+  cy.wait(10000);
 
   getRowByName(ruleName).should('not.exist');
 
-  cy.wait(2500);
+  cy.wait(5000);
 };

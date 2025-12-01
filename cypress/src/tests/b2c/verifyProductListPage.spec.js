@@ -2,7 +2,7 @@ import {
     assertImageListDisplay
 } from "../../assertions";
 
-describe.skip("Verify Product List Page", () => {
+describe("Verify Product List Page", () => {
     it("Verify PLP page loads", { tags: "@snapPercy" }, () => {
         cy.visit("");
 
