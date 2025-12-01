@@ -529,10 +529,24 @@ describe('B2B Purchase Orders', () => {
         .within(() => {
           cy.get(selectors.poTableRow)
             .filter(`:has(:contains("${poUsers.sales_manager.firstname}"))`)
-            .should('have.length.greaterThan', 0)
-            .each(($row) => {
-              // For each row → assert it contains the status text
-              cy.wrap($row).should('contain.text', 'Order placed');
+            .then(($rows) => {
+              let placedCount = 0;
+              let rejectedCount = 0;
+
+              cy.wrap($rows).each(($row) => {
+                const text = $row.text();
+
+                if (text.includes('Order placed')) {
+                  placedCount++;
+                }
+
+                if (text.includes('Rejected')) {
+                  rejectedCount++;
+                }
+              }).then(() => {
+                expect(placedCount, 'Order placed count').to.eq(2);
+                expect(rejectedCount, 'Rejected count').to.eq(1);
+              });
             });
         });
 
