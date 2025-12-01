@@ -17,6 +17,7 @@ export declare function useCompanyUserForm(opts: {
         structureId?: string;
         entityId?: string;
         type: 'user';
+        status?: UserStatus;
     }) => void;
     onError?: (error: string) => void;
     onSuccess?: (message: string) => void;
