@@ -428,43 +428,16 @@ export const login = (user, urls) => {
     cy.get(fields.poPasswordInput).type(user.password);
     cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
+    cy.wait(1500);
   });
   cy.url().should('include', urls.account);
+  // Waiting for session and permissions to initialize
+  cy.wait(3000);
 };
 
 export const logout = (texts) => {
   cy.get(fields.poNavDropdownButton).click();
   cy.contains(fields.poLogoutButton, texts.logout).click();
-};
-
-export const clearCart = (urls) => {
-  cy.logToTerminal('🧹 Clearing cart before test');
-
-  // Clear only cart-related data from localStorage without logging out user
-  cy.window().then((win) => {
-    // Remove cart-specific items from localStorage
-    const keysToRemove = Object.keys(win.localStorage).filter(
-      (key) =>
-        key.includes('cart') ||
-        key.includes('Cart') ||
-        key.includes('CART') ||
-        key.includes('quote')
-    );
-
-    keysToRemove.forEach((key) => {
-      win.localStorage.removeItem(key);
-    });
-
-    cy.logToTerminal(
-      `🗑️ Removed ${keysToRemove.length} cart-related items from localStorage`
-    );
-  });
-
-  // Visit home page to reset cart state without affecting auth
-  cy.visit('/');
-  cy.wait(2000);
-
-  cy.logToTerminal('✅ Cart cleared (user still logged in)');
 };
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
@@ -735,10 +708,6 @@ export const createPurchaseOrder = (
   urls,
   texts
 ) => {
-  cy.logToTerminal('🧹 Clearing cart before creating PO...');
-  clearCart(urls);
-  cy.wait(2000);
-
   cy.logToTerminal('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
   cy.logToTerminal('✅ Products added to cart');
