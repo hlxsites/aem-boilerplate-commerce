@@ -1,4 +1,4 @@
-describe.skip("Store Switcher", () => {
+describe("Store Switcher", () => {
   // beforeEach(() => {
   //   cy.on('window:before:load', (win) => {
   //     const config = JSON.parse(win.sessionStorage.getItem('config'));
@@ -13,7 +13,7 @@ describe.skip("Store Switcher", () => {
   //   });
   // });
 
-  it.skip("should allow the user to switch stores", () => {
+  it("should allow the user to switch stores", () => {
     // Visit the homepage
     cy.visit("/");
 
