@@ -88,7 +88,7 @@ export const poUsers = {
     password: USER_PASSWORD,
   },
   approver_manager: {
-    firstname: 'PO Approver',
+    firstname: `PO Approver ${random}`,
     lastname: 'Test',
     email: `po_approver_${random}@example.com`,
     password: USER_PASSWORD,
