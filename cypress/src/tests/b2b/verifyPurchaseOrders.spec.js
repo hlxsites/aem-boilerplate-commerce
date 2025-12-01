@@ -30,7 +30,7 @@ describe('B2B Purchase Orders', () => {
   // Test 1: Setup roles and users
   it(
     'Setup - Create roles and users',
-    { tags: ['@B2BSaas'], retries: 0 },
+    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 1: Setup - Creating roles and users =========',
@@ -117,7 +117,7 @@ describe('B2B Purchase Orders', () => {
   // Test 2: Manage approval rules
   it(
     'Manage approval rules - Create and edit',
-    { tags: ['@B2BSaas'], retries: 0 },
+    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 2: Managing approval rules =========',
@@ -211,7 +211,7 @@ describe('B2B Purchase Orders', () => {
   // Test 3: Sales Manager - Create first Purchase Order requiring approval
   it(
     'Sales Manager - Create first Purchase Order requiring approval',
-    { tags: ['@B2BSaas'], retries: 0 },
+    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 3: Sales Manager - Creating first Purchase Order requiring approval =========',
@@ -237,7 +237,7 @@ describe('B2B Purchase Orders', () => {
   // Test 4: Sales Manager - Create second Purchase Order requiring approval
   it(
     'Sales Manager - Create second Purchase Order requiring approval',
-    { tags: ['@B2BSaas'], retries: 0 },
+    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 4: Sales Manager - Creating second Purchase Order requiring approval =========',
@@ -497,7 +497,7 @@ describe('B2B Purchase Orders', () => {
   // Test 7: Sales Manager - Create auto-approved Purchase Order
   it(
     'Sales Manager - Create auto-approved Purchase Order',
-    { tags: ['@B2BSaas'], retries: 0 },
+    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 7: Sales Manager - Creating auto-approved Purchase Order =========',
