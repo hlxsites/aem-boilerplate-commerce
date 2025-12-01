@@ -6,7 +6,7 @@ import {
   assertAuthUser
 } from "../../assertions";
 
-describe.skip("Verify user account functionality", () => {
+describe("Verify user account functionality", () => {
   it("Verify auth user can create addresses", { tags: "@snapPercy" }, () => {
     cy.visit("/customer/create");
     cy.fixture("userInfo").then(({ sign_up }) => {
