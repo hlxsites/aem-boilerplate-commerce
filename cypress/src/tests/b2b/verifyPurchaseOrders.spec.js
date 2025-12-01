@@ -528,7 +528,7 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poCompanyPOContainer)
         .within(() => {
           cy.get(selectors.poTableRow)
-            .filter(`:has(:contains("${poUsers.sales_manager.email}"))`)
+            .filter(`:has(:contains("${poUsers.sales_manager.firstname}"))`)
             .then(($row) => {
               cy.wrap($row).within(() => {
                 cy.contains(selectors.poShowButton, poLabels.show).click();
