@@ -29,15 +29,12 @@ afterEach(() => {
     return;
   }
 
-  // Skip automatic deletion for B2B Purchase Orders test suite
-  // Users are manually deleted within the last cleanup test
+  // Skip automatic customer deletion for B2B Purchase Orders test suite
   const currentTestTitle = Cypress.currentTest?.title || '';
   const currentSuiteName = Cypress.currentTest?.titlePath?.[0] || '';
 
   const skipDeleteTests = [
-    'Purchase Orders end-to-end workflow',
-    'B2B Purchase Orders',
-    'Cleanup - Delete approval rules, users and roles',
+    'B2B Purchase Orders'
   ];
 
   const shouldSkip = skipDeleteTests.some(
