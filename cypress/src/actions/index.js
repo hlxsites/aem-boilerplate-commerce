@@ -126,13 +126,13 @@ export const setPaymentMethod = (paymentMethod) => {
     cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
-      fields.creditCardNumber
+      fields.creditCardNumber,
     ).type(cc_number);
     cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      cc_exp
+      cc_exp,
     );
     cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      cc_cid
+      cc_cid,
     );
   }
 };
@@ -321,7 +321,7 @@ export const fillCompanyRegistrationForm = (companyData) => {
 
   // Country and Region
   cy.get(fields.companyFormCountryCode).select(
-    companyData.legalAddress.countryCode
+    companyData.legalAddress.countryCode,
   );
   cy.wait(1000);
   cy.get(fields.companyFormRegion).select(companyData.legalAddress.region);
@@ -359,7 +359,7 @@ export const fillCompanyRegistrationForm = (companyData) => {
   }
   if (companyData.companyAdmin.gender) {
     cy.get(fields.companyFormAdminGender).select(
-      companyData.companyAdmin.gender
+      companyData.companyAdmin.gender,
     );
   }
 };
@@ -375,11 +375,11 @@ export const openAccountDropdown = () => {
       cy.get(fields.navAccountDropdown).click();
       cy.get(fields.navAccountMenu).should(
         'have.class',
-        'nav-tools-panel--show'
+        'nav-tools-panel--show',
       );
     } else {
       cy.logToTerminal(
-        'Account dropdown button not found, skipping dropdown interaction'
+        'Account dropdown button not found, skipping dropdown interaction',
       );
     }
   });
@@ -442,7 +442,7 @@ export const logout = (texts) => {
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   const productUrl = !isCheap ? urls.product : urls.cheapProduct;
-  cy.logToTerminal(`🔗 Visiting product page: ${productUrl}`);
+  cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
   cy.visit(productUrl);
   cy.wait(2000);
   for (let i = 0; i < times; i++) {
@@ -450,32 +450,25 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
     cy.contains(fields.poAddToCartButton, texts.addToCart).click();
     cy.wait(2000);
   }
-  cy.logToTerminal(`✅ Added ${times} items to cart`);
 };
 
 export const proceedToCheckout = (texts, urls) => {
-  cy.logToTerminal('🛒 Navigating to checkout...');
+  cy.logToTerminal('🔗 Navigating to checkout page');
   cy.visit(urls.checkout);
   cy.wait(5000); // Increased wait for checkout page to initialize
 
   // Verify we're actually on checkout page
   cy.url().should('include', urls.checkout);
-  cy.logToTerminal('✅ On checkout page');
 };
 
 export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
   cy.reload();
   cy.url().should('include', urls.checkout);
-  cy.logToTerminal('Waiting for checkout data to load');
+  cy.logToTerminal('Waiting for checkout data to load...');
 
-  // Wait for checkout form to be ready
-  cy.wait(5000);
-
-  // Additional wait for any dynamic content
-  cy.get('body').then(() => {
-    cy.wait(2000);
-  });
+  // Wait for checkout forms to be ready
+  cy.wait(15000);
 
   const shippingFirstNameSelectors = [
     'input[name="firstName"]',
@@ -552,7 +545,7 @@ export const completeCheckout = (urls, texts) => {
     const waitForField = (attempt = 0) => {
       cy.get('body').then(($body) => {
         const hasVisibleField = selectors.some(
-          (selector) => $body.find(selector + ':visible').length > 0
+          (selector) => $body.find(selector + ':visible').length > 0,
         );
 
         if (!hasVisibleField && attempt < 120) {
@@ -562,7 +555,7 @@ export const completeCheckout = (urls, texts) => {
 
         if (!hasVisibleField) {
           throw new Error(
-            `Timeout: Field not found after 60s - ${selectors[0]}`
+            `Timeout: Field not found after 60s - ${selectors[0]}`,
           );
         }
       });
@@ -583,7 +576,7 @@ export const completeCheckout = (urls, texts) => {
     cy.get('body', { timeout: 60000 }).then(($body) => {
       const availableSelector = findFirstAvailableSelector(
         $body,
-        paymentSectionSelectors
+        paymentSectionSelectors,
       );
 
       if (availableSelector) {
@@ -591,7 +584,7 @@ export const completeCheckout = (urls, texts) => {
           const visibleCount = $elements.filter(':visible').length;
           expect(
             visibleCount,
-            `visible payment section for selector ${availableSelector}`
+            `visible payment section for selector ${availableSelector}`,
           ).to.be.greaterThan(0);
         });
         return;
@@ -625,7 +618,7 @@ export const completeCheckout = (urls, texts) => {
   const checkFormReady = (attempt = 0) => {
     cy.get('body').then(($body) => {
       const hasAnyField = shippingFirstNameSelectors.some(
-        (selector) => $body.find(selector + ':visible').length > 0
+        (selector) => $body.find(selector + ':visible').length > 0,
       );
 
       if (!hasAnyField && attempt < 60) {
@@ -652,7 +645,7 @@ export const completeCheckout = (urls, texts) => {
   cy.get('body', { timeout: 60000 }).then(($body) => {
     const regionSelect = findFirstAvailableSelector(
       $body,
-      shippingRegionSelectSelectors
+      shippingRegionSelectSelectors,
     );
 
     if (regionSelect) {
@@ -706,7 +699,7 @@ export const createPurchaseOrder = (
   itemCount = 2,
   isCheap = false,
   urls,
-  texts
+  texts,
 ) => {
   cy.logToTerminal('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
@@ -716,7 +709,7 @@ export const createPurchaseOrder = (
   proceedToCheckout(texts, urls);
   cy.logToTerminal('✅ On checkout page');
 
-  cy.logToTerminal('📝 Completing checkout form...');
+  cy.logToTerminal('📝 Completing checkout...');
   completeCheckout(urls, texts);
   cy.logToTerminal('✅ Checkout completed');
 

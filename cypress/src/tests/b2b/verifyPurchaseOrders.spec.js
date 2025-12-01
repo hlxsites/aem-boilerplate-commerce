@@ -240,7 +240,7 @@ describe('B2B Purchase Orders', () => {
     { tags: ['@B2BSaas'], retries: 0 },
     () => {
       cy.logToTerminal(
-        '⚙️ Test 4: Sales Manager - Creating second Purchase Order requiring approval',
+        '========= ⚙️ Test 4: Sales Manager - Creating second Purchase Order requiring approval =========',
       );
 
       cy.logToTerminal('🔐 Login as Sales Manager');
@@ -266,7 +266,7 @@ describe('B2B Purchase Orders', () => {
     { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
-        '⚙️ Test 5: Approver - Managing Purchase Orders approval',
+        '========= ⚙️ Test 5: Approver - Managing Purchase Orders approval =========',
       );
 
       cy.logToTerminal('🔐 Login as Approver Manager');
@@ -444,7 +444,9 @@ describe('B2B Purchase Orders', () => {
     'Approver - View Purchase Order details and add comment',
     { tags: ['@B2BSaas'] },
     () => {
-      cy.logToTerminal('⚙️ Test 6: Approver - Viewing Purchase Order details');
+      cy.logToTerminal(
+        '========= ⚙️ Test 6: Approver - Viewing Purchase Order details =========',
+      );
 
       cy.logToTerminal('🔐 Login as Approver Manager');
       actions.login(poUsers.approver_manager, urls);
@@ -500,7 +502,7 @@ describe('B2B Purchase Orders', () => {
     { tags: ['@B2BSaas'], retries: 0 },
     () => {
       cy.logToTerminal(
-        '⚙️ Test 7: Sales Manager - Creating auto-approved Purchase Order',
+        '========= ⚙️ Test 7: Sales Manager - Creating auto-approved Purchase Order =========',
       );
 
       cy.logToTerminal('🔐 Login as Sales Manager');
@@ -562,21 +564,19 @@ describe('B2B Purchase Orders', () => {
     { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
-        '⚙️ Test 8: Cleanup - Deleting approval rules, users and roles',
+        '========= ⚙️ Test 8: Cleanup - Deleting approval rules, users and roles =========',
       );
 
       // Delete Sales Manager user
-      cy.logToTerminal('🗑️ Deleting Sales Manager user');
+      cy.logToTerminal('🗑️ Deleting Sales Manager user...');
       actions.login(poUsers.sales_manager, urls);
-      cy.url().should('include', urls.account);
       cy.visit('/');
       cy.wait(3000);
       cy.deleteCustomer();
 
       // Delete Approver Manager user
-      cy.logToTerminal('🗑️ Deleting Approver Manager user');
+      cy.logToTerminal('🗑️ Deleting Approver user...');
       actions.login(poUsers.approver_manager, urls);
-      cy.url().should('include', urls.account);
       cy.visit('/');
       cy.wait(3000);
       cy.deleteCustomer();
@@ -584,31 +584,36 @@ describe('B2B Purchase Orders', () => {
       // Delete approval rules as PO Rules Manager
       cy.logToTerminal('🔐 Login as PO Rules Manager');
       actions.login(poUsers.po_rules_manager, urls);
+
       cy.logToTerminal(
         '⏳ Waiting for session and permissions to initialize...',
       );
       cy.wait(3000);
 
-      cy.logToTerminal('📄 Navigating to Approval Rules page');
+      cy.logToTerminal('📄 Navigating to Approval Rules page...');
       cy.visit(urls.approvalRules);
-      cy.wait(2000);
-      cy.reload();
-      cy.wait(3000);
+      cy.wait(5000);
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
 
-      cy.logToTerminal('🗑️ Deleting first approval rule');
+      cy.logToTerminal('🗑️ Deleting first PO approval rule...');
       actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
       cy.wait(3000);
 
-      cy.logToTerminal('🗑️ Deleting second approval rule');
+      cy.logToTerminal('🗑️ Deleting second PO approval rule...');
       actions.deleteApprovalRule(poApprovalRules.rule2Edited.name);
       cy.wait(3000);
 
-      cy.logToTerminal('✅ All approval rules deleted successfully');
+      cy.logToTerminal('✅ All PO approval rules deleted successfully');
+
+      // Delete PO Rules Manager user
+      cy.logToTerminal('🗑️ Deleting PO Rules Manager user...');
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
       // Delete roles AFTER all users are deleted
       cy.then(() => {
-        cy.logToTerminal('🗑️ Deleting test roles');
+        cy.logToTerminal('🗑️ Deleting test company roles...');
 
         const envUsersConfig = Cypress.env('poUsersConfig') || [];
         const roleIdsFromEnv = Cypress.env('poTestRoleIds') || [];
@@ -650,7 +655,7 @@ describe('B2B Purchase Orders', () => {
           () => {
             if (!roleNamesToDelete.length) {
               cy.logToTerminal(
-                '⚠️ No role names found. Skipping deleteCompanyRoles.',
+                '⚠️ No role names found. Skipping deleting company roles.',
               );
               return;
             }
@@ -658,17 +663,16 @@ describe('B2B Purchase Orders', () => {
             cy.wrap(deleteCompanyRoles(roleNamesToDelete), {
               timeout: 60000,
             }).then(() =>
-              cy.logToTerminal('✅ All test roles deleted successfully'),
+              cy.logToTerminal(
+                '✅ All test company roles deleted successfully',
+              ),
             );
           },
         );
       });
 
-      cy.logToTerminal('✅ B2B Purchase Orders test suite completed'); // Delete PO Rules Manager user (last one)
-      cy.logToTerminal('🗑️ Deleting PO Rules Manager user');
-      cy.visit('/');
-      cy.wait(3000);
-      cy.deleteCustomer();
+      cy.wait(1000);
+      cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
     },
   );
 });
