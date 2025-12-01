@@ -441,14 +441,15 @@ export const logout = (texts) => {
 };
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
-  const productUrl = !isCheap ? urls.product : urls.cheapProduct;
+  const productUrl = isCheap ? urls.cheapProduct : urls.product;
   cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
   cy.visit(productUrl);
-  cy.wait(2000);
+  cy.wait(4000);
   for (let i = 0; i < times; i++) {
     cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
+    cy.wait(4000);
     cy.contains(fields.poAddToCartButton, texts.addToCart).click();
-    cy.wait(2000);
+    cy.wait(4000);
   }
 };
 
@@ -465,7 +466,7 @@ export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
   cy.reload();
   cy.url().should('include', urls.checkout);
-  cy.logToTerminal('Waiting for checkout data to load...');
+  cy.logToTerminal('⏳ Waiting for checkout data to load...');
 
   // Wait for checkout forms to be ready
   cy.wait(15000);
@@ -612,7 +613,7 @@ export const completeCheckout = (urls, texts) => {
     });
   };
 
-  cy.logToTerminal('Waiting for shipping form to be ready...');
+  cy.logToTerminal('⏳ Waiting for shipping form to be ready...');
 
   // Wait until at least one shipping field is visible before proceeding
   const checkFormReady = (attempt = 0) => {
@@ -636,7 +637,7 @@ export const completeCheckout = (urls, texts) => {
 
   checkFormReady();
 
-  cy.logToTerminal('Filling shipping address form');
+  cy.logToTerminal('📝 Filling shipping address form');
 
   typeIntoField(shippingFirstNameSelectors, 'Test');
   typeIntoField(shippingLastNameSelectors, 'Test');
