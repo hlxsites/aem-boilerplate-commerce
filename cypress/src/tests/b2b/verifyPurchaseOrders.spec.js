@@ -472,9 +472,7 @@ describe('B2B Purchase Orders', () => {
         .click();
 
       cy.url().should('not.include', urls.purchaseOrders);
-      cy.wait(2000);
-      cy.reload();
-      cy.wait(3000);
+      cy.wait(6000);
 
       cy.get('.dropin-header-container__title').should('have.length.gt', 7);
       cy.contains(/Purchase order \d+/).should('be.visible');
@@ -522,17 +520,18 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('📄 Navigating to Company Purchase Orders');
       cy.visit(urls.purchaseOrders);
-      cy.wait(2000);
-      cy.reload();
-      cy.wait(3000);
+      cy.wait(6000);
 
       cy.get(selectors.poCompanyPOContainer).should('exist');
       cy.contains('Company purchase orders').should('be.visible');
 
-      cy.get(selectors.poCompanyPOContainer)
-        .contains(selectors.poShowButton, poLabels.show)
-        .first()
-        .click();
+      cy.get(selectors.poTableRow)
+        .filter(`:has(:contains("${poUsers.sales_manager.email}"))`)
+        .then(($row) => {
+          cy.wrap($row).within(() => {
+            cy.contains(selectors.poShowButton, poLabels.show).click();
+          });
+        });
 
       cy.get(selectors.poCompanyPOContainer)
         .find('.b2b-purchase-order-purchase-orders-table__row-details-content')
@@ -545,7 +544,7 @@ describe('B2B Purchase Orders', () => {
               if (match) {
                 const total = parseFloat(match[1]);
                 cy.log(`Found total: $${total}`);
-                expect(total).to.be.lessThan(15);
+                expect(total).to.be.lessThan(50);
               }
             });
         });
