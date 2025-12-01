@@ -29,8 +29,7 @@ afterEach(() => {
     return;
   }
 
-  // Skip automatic deletion for B2B Purchase Orders test suite
-  // Users are manually deleted within the last cleanup test
+  // Skip automatic customer deletion for B2B Purchase Orders test suite
   const currentTestTitle = Cypress.currentTest?.title || '';
   const currentSuiteName = Cypress.currentTest?.titlePath?.[0] || '';
 
