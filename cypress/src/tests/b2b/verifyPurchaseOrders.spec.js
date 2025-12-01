@@ -525,27 +525,28 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poCompanyPOContainer).should('exist');
       cy.contains('Company purchase orders').should('be.visible');
 
-      cy.get(selectors.poTableRow)
-        .filter(`:has(:contains("${poUsers.sales_manager.email}"))`)
-        .then(($row) => {
-          cy.wrap($row).within(() => {
-            cy.contains(selectors.poShowButton, poLabels.show).click();
-          });
-        });
-
       cy.get(selectors.poCompanyPOContainer)
-        .find('.b2b-purchase-order-purchase-orders-table__row-details-content')
-        .should('be.visible')
         .within(() => {
-          cy.contains(/Total: \$\d+\.\d{2}/)
-            .invoke('text')
-            .then((text) => {
-              const match = text.match(/Total: \$(\d+\.\d{2})/);
-              if (match) {
-                const total = parseFloat(match[1]);
-                cy.log(`Found total: $${total}`);
-                expect(total).to.be.lessThan(50);
-              }
+          cy.get(selectors.poTableRow)
+            .filter(`:has(:contains("${poUsers.sales_manager.firstname}"))`)
+            .then(($rows) => {
+              let placedCount = 0;
+              let rejectedCount = 0;
+
+              cy.wrap($rows).each(($row) => {
+                const text = $row.text();
+
+                if (text.includes('Order placed')) {
+                  placedCount++;
+                }
+
+                if (text.includes('Rejected')) {
+                  rejectedCount++;
+                }
+              }).then(() => {
+                expect(placedCount, 'Order placed count').to.eq(2);
+                expect(rejectedCount, 'Rejected count').to.eq(1);
+              });
             });
         });
 
@@ -620,22 +621,22 @@ describe('B2B Purchase Orders', () => {
         const poUsersConfig = envUsersConfig.length
           ? envUsersConfig
           : [
-              {
-                user: poUsers.po_rules_manager,
-                role: poRolesConfig.rulesManager,
-                roleId: null,
-              },
-              {
-                user: poUsers.sales_manager,
-                role: poRolesConfig.salesManager,
-                roleId: null,
-              },
-              {
-                user: poUsers.approver_manager,
-                role: poRolesConfig.approver,
-                roleId: null,
-              },
-            ];
+            {
+              user: poUsers.po_rules_manager,
+              role: poRolesConfig.rulesManager,
+              roleId: null,
+            },
+            {
+              user: poUsers.sales_manager,
+              role: poRolesConfig.salesManager,
+              roleId: null,
+            },
+            {
+              user: poUsers.approver_manager,
+              role: poRolesConfig.approver,
+              roleId: null,
+            },
+          ];
 
         // Extract role names for deletion
         const roleNamesToDelete = poUsersConfig
