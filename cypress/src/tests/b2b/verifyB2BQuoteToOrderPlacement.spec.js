@@ -10,7 +10,7 @@ import {
     signInUser,
 } from "../../actions";
 
-describe.skip("Verify B2B Quote feature", () => {
+describe("Verify B2B Quote feature", () => {
     let customerData;
     before(() => {
         // Load customer fixture data

@@ -15,7 +15,7 @@ import {
 } from "../../actions";
 import { products } from "../../fixtures";
 
-describe.skip("Verify auth user can manage products across wishlist and cart", () => {
+describe("Verify auth user can manage products across wishlist and cart", () => {
   it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
     cy.visit("/customer/create");
     cy.fixture("userInfo").then(({ sign_up }) => {
