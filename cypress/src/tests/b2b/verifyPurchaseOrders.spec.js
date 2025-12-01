@@ -529,27 +529,10 @@ describe('B2B Purchase Orders', () => {
         .within(() => {
           cy.get(selectors.poTableRow)
             .filter(`:has(:contains("${poUsers.sales_manager.firstname}"))`)
-            .then(($row) => {
-              cy.wrap($row).within(() => {
-                cy.contains(selectors.poShowButton, poLabels.show).click();
-              });
-            });
-        });
-
-
-      cy.get(selectors.poCompanyPOContainer)
-        .find('.b2b-purchase-order-purchase-orders-table__row-details-content')
-        .should('be.visible')
-        .within(() => {
-          cy.contains(/Total: \$\d+\.\d{2}/)
-            .invoke('text')
-            .then((text) => {
-              const match = text.match(/Total: \$(\d+\.\d{2})/);
-              if (match) {
-                const total = parseFloat(match[1]);
-                cy.log(`Found total: $${total}`);
-                expect(total).to.be.lessThan(50);
-              }
+            .should('have.length.greaterThan', 0)
+            .each(($row) => {
+              // For each row → assert it contains the status text
+              cy.wrap($row).should('contain.text', 'Order placed');
             });
         });
 
