@@ -621,22 +621,22 @@ describe('B2B Purchase Orders', () => {
         const poUsersConfig = envUsersConfig.length
           ? envUsersConfig
           : [
-              {
-                user: poUsers.po_rules_manager,
-                role: poRolesConfig.rulesManager,
-                roleId: null,
-              },
-              {
-                user: poUsers.sales_manager,
-                role: poRolesConfig.salesManager,
-                roleId: null,
-              },
-              {
-                user: poUsers.approver_manager,
-                role: poRolesConfig.approver,
-                roleId: null,
-              },
-            ];
+            {
+              user: poUsers.po_rules_manager,
+              role: poRolesConfig.rulesManager,
+              roleId: null,
+            },
+            {
+              user: poUsers.sales_manager,
+              role: poRolesConfig.salesManager,
+              roleId: null,
+            },
+            {
+              user: poUsers.approver_manager,
+              role: poRolesConfig.approver,
+              roleId: null,
+            },
+          ];
 
         // Extract role names for deletion
         const roleNamesToDelete = poUsersConfig
