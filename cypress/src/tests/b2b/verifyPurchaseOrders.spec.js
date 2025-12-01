@@ -525,13 +525,17 @@ describe('B2B Purchase Orders', () => {
       cy.get(selectors.poCompanyPOContainer).should('exist');
       cy.contains('Company purchase orders').should('be.visible');
 
-      cy.get(selectors.poTableRow)
-        .filter(`:has(:contains("${poUsers.sales_manager.email}"))`)
-        .then(($row) => {
-          cy.wrap($row).within(() => {
-            cy.contains(selectors.poShowButton, poLabels.show).click();
-          });
+      cy.get(selectors.poCompanyPOContainer)
+        .within(() => {
+          cy.get(selectors.poTableRow)
+            .filter(`:has(:contains("${poUsers.sales_manager.email}"))`)
+            .then(($row) => {
+              cy.wrap($row).within(() => {
+                cy.contains(selectors.poShowButton, poLabels.show).click();
+              });
+            });
         });
+
 
       cy.get(selectors.poCompanyPOContainer)
         .find('.b2b-purchase-order-purchase-orders-table__row-details-content')
