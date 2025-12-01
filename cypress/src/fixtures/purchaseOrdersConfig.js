@@ -1,10 +1,8 @@
-const timestamp = Date.now();
 const random = Cypress._.random(0, 999999);
-const uniqueId = `${timestamp}_${random}`;
 
-const SALES_MANAGER_ROLE_NAME = `PO Sales Manager ${uniqueId}`;
-const RULES_MANAGER_ROLE_NAME = `PO Rules Manager ${uniqueId}`;
-const APPROVER_ROLE_NAME = `PO Approver ${uniqueId}`;
+const SALES_MANAGER_ROLE_NAME = `PO Sales Manager ${random}`;
+const RULES_MANAGER_ROLE_NAME = `PO Rules Manager ${random}`;
+const APPROVER_ROLE_NAME = `PO Approver ${random}`;
 const USER_PASSWORD = 'Qwe123456';
 const COMPANY_ID = 13;
 
@@ -12,7 +10,7 @@ export const poLabels = {
   addToCart: 'Add to Cart',
   checkout: 'Checkout',
   checkMoneyOrder: 'Check / Money order',
-  placePO: 'Place Purchase Order',
+  placePO: 'Place Order',
   logout: 'Logout',
   approveSelected: 'Approve selected',
   rejectSelected: 'Reject selected',
@@ -33,9 +31,8 @@ export const poLabels = {
 
 export const poApprovalRules = {
   rule1: {
-    name: `Approval Rule for Orders Over 50 Dollars ${uniqueId}`,
-    description:
-      'This rule requires approval for purchase orders with grand total over 50 dollars',
+    name: `Approval Rule for Orders Over 50 Dollars ${random}`,
+    description: 'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
     role: SALES_MANAGER_ROLE_NAME,
     ruleType: 'Grand Total',
@@ -44,7 +41,7 @@ export const poApprovalRules = {
     approverRole: APPROVER_ROLE_NAME,
   },
   rule1Edited: {
-    name: `Approval Rule for Multiple Product Orders ${uniqueId}`,
+    name: `Approval Rule for Multiple Product Orders ${random}`,
     description:
       'This rule requires approval for purchase orders with more than one unique product SKU',
     appliesTo: 'All Users',
@@ -55,7 +52,7 @@ export const poApprovalRules = {
     approverRole: RULES_MANAGER_ROLE_NAME,
   },
   rule2: {
-    name: `New Approval Rule for Multiple Product Orders ${uniqueId}`,
+    name: `New Approval Rule for Multiple Product Orders ${random}`,
     description:
       'This rule requires approval for purchase orders with more than one unique product SKU',
     appliesTo: 'All Users',
@@ -66,9 +63,8 @@ export const poApprovalRules = {
     approverRole: APPROVER_ROLE_NAME,
   },
   rule2Edited: {
-    name: `Approval Rule for Orders Over 50 Dollars ${uniqueId}`,
-    description:
-      'This rule requires approval for purchase orders with grand total over 50 dollars',
+    name: `Approval Rule for Orders Over 50 Dollars ${random}`,
+    description: 'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
     role: SALES_MANAGER_ROLE_NAME,
     ruleType: 'Grand Total',
@@ -80,21 +76,21 @@ export const poApprovalRules = {
 
 export const poUsers = {
   sales_manager: {
-    firstname: `PO Sales Manager ${uniqueId}`,
+    firstname: `PO Sales Manager ${random}`,
     lastname: 'Test',
-    email: `po_sales_manager_${uniqueId}@example.com`,
+    email: `po_sales_manager_${random}@example.com`,
     password: USER_PASSWORD,
   },
   po_rules_manager: {
-    firstname: `PO Rules Manager ${uniqueId}`,
+    firstname: `PO Rules Manager ${random}`,
     lastname: 'Test',
-    email: `po_rules_manager_${uniqueId}@example.com`,
+    email: `po_rules_manager_${random}@example.com`,
     password: USER_PASSWORD,
   },
   approver_manager: {
     firstname: 'PO Approver',
     lastname: 'Test',
-    email: `po_approver_${uniqueId}@example.com`,
+    email: `po_approver_${random}@example.com`,
     password: USER_PASSWORD,
   },
 };
@@ -142,8 +138,7 @@ export const poRolesConfig = {
         permission: 'allow',
       },
       {
-        resource_id:
-          'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
         permission: 'allow',
       },
       { resource_id: 'Magento_Company::user_management', permission: 'allow' },
@@ -178,8 +173,7 @@ export const poRolesConfig = {
         permission: 'allow',
       },
       {
-        resource_id:
-          'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
+        resource_id: 'Magento_PurchaseOrder::view_purchase_orders_for_subordinates',
         permission: 'allow',
       },
     ],

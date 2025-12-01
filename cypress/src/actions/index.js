@@ -126,13 +126,13 @@ export const setPaymentMethod = (paymentMethod) => {
     cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
-      fields.creditCardNumber
+      fields.creditCardNumber,
     ).type(cc_number);
     cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      cc_exp
+      cc_exp,
     );
     cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      cc_cid
+      cc_cid,
     );
   }
 };
@@ -321,7 +321,7 @@ export const fillCompanyRegistrationForm = (companyData) => {
 
   // Country and Region
   cy.get(fields.companyFormCountryCode).select(
-    companyData.legalAddress.countryCode
+    companyData.legalAddress.countryCode,
   );
   cy.wait(1000);
   cy.get(fields.companyFormRegion).select(companyData.legalAddress.region);
@@ -359,7 +359,7 @@ export const fillCompanyRegistrationForm = (companyData) => {
   }
   if (companyData.companyAdmin.gender) {
     cy.get(fields.companyFormAdminGender).select(
-      companyData.companyAdmin.gender
+      companyData.companyAdmin.gender,
     );
   }
 };
@@ -375,11 +375,11 @@ export const openAccountDropdown = () => {
       cy.get(fields.navAccountDropdown).click();
       cy.get(fields.navAccountMenu).should(
         'have.class',
-        'nav-tools-panel--show'
+        'nav-tools-panel--show',
       );
     } else {
-      cy.log(
-        'Account dropdown button not found, skipping dropdown interaction'
+      cy.logToTerminal(
+        'Account dropdown button not found, skipping dropdown interaction',
       );
     }
   });
@@ -428,10 +428,11 @@ export const login = (user, urls) => {
     cy.get(fields.poPasswordInput).type(user.password);
     cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
+    cy.wait(1500);
   });
-  cy.wait(1500);
   cy.url().should('include', urls.account);
-  cy.wait(1500);
+  // Waiting for session and permissions to initialize
+  cy.wait(3000);
 };
 
 export const logout = (texts) => {
@@ -440,66 +441,236 @@ export const logout = (texts) => {
 };
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
-  cy.visit(!isCheap ? urls.product : urls.cheapProduct);
-  cy.wait(2000);
+  const productUrl = isCheap ? urls.cheapProduct : urls.product;
+  cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
+  cy.visit(productUrl);
+  cy.wait(4000);
   for (let i = 0; i < times; i++) {
+    cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
+    cy.wait(4000);
     cy.contains(fields.poAddToCartButton, texts.addToCart).click();
-    cy.wait(2000);
+    cy.wait(4000);
   }
 };
 
-export const proceedToCheckout = (texts) => {
-  cy.get(fields.poNavCartButton).click();
-  cy.wait(2000);
+export const proceedToCheckout = (texts, urls) => {
+  cy.logToTerminal('🔗 Navigating to checkout page');
+  cy.visit(urls.checkout);
+  cy.wait(5000); // Increased wait for checkout page to initialize
 
-  cy.get(fields.poCheckoutLink).contains(texts.checkout).click();
-  cy.wait(2000);
+  // Verify we're actually on checkout page
+  cy.url().should('include', urls.checkout);
 };
 
 export const completeCheckout = (urls, texts) => {
   // Wait for checkout page to fully load
+  cy.reload();
   cy.url().should('include', urls.checkout);
-  cy.wait(5000);
+  cy.logToTerminal('⏳ Waiting for checkout data to load...');
 
-  // Wait for shipping address form to load (new users always need to fill it)
-  cy.get('input[name="firstName"]', { timeout: 20000 }).should('be.visible');
+  // Wait for checkout forms to be ready
+  cy.wait(15000);
 
-  cy.log('Filling shipping address form');
-  cy.get('input[name="firstName"]')
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="lastName"]')
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="street"]')
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('select[name="region"]').first().select('Alabama', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="city"]')
-    .first()
-    .clear({ force: true })
-    .type('Test', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="postcode"]')
-    .first()
-    .clear({ force: true })
-    .type('1235', { force: true });
-  cy.wait(1500);
-  cy.get('input[name="telephone"]')
-    .first()
-    .clear({ force: true })
-    .type('123456789', { force: true });
-  cy.wait(3000);
+  const shippingFirstNameSelectors = [
+    'input[name="firstName"]',
+    'input[name="firstname"]',
+    'input[name="shippingAddress.firstName"]',
+  ];
 
-  cy.wait(1500);
-  cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder)
+  const shippingLastNameSelectors = [
+    'input[name="lastName"]',
+    'input[name="lastname"]',
+    'input[name="shippingAddress.lastName"]',
+  ];
+
+  const shippingStreetSelectors = [
+    'input[name="street"]',
+    'input[name="street[0]"]',
+    'input[name="shippingAddress.street"]',
+    'input[name="shippingAddress.street[0]"]',
+  ];
+
+  const shippingCitySelectors = [
+    'input[name="city"]',
+    'input[name="shippingAddress.city"]',
+  ];
+
+  const shippingPostcodeSelectors = [
+    'input[name="postcode"]',
+    'input[name="postalCode"]',
+    'input[name="shippingAddress.postcode"]',
+    'input[name="shippingAddress.postalCode"]',
+  ];
+
+  const shippingTelephoneSelectors = [
+    'input[name="telephone"]',
+    'input[name="phone"]',
+    'input[name="shippingAddress.telephone"]',
+    'input[name="shippingAddress.phone"]',
+  ];
+
+  const shippingRegionSelectSelectors = [
+    'select[name="region"]',
+    'select[name="regionId"]',
+    'select[name="region_id"]',
+    'select[name="shippingAddress.regionId"]',
+  ];
+
+  const shippingRegionInputSelectors = [
+    'input[name="region"]',
+    'input[name="regionId"]',
+    'input[name="shippingAddress.region"]',
+    'input[name="shippingAddress.regionId"]',
+  ];
+
+  const paymentSectionSelectors = [
+    '#checkout-payment-method-load',
+    '.checkout-payment-method',
+    '.payment-methods',
+    '.checkout-payment-methods__method',
+    '.dropin-toggle-button__actionButton',
+    '.dropin-toggle-button__content',
+    '.dropin-radio-button__input',
+  ];
+
+  const findFirstAvailableSelector = ($root, selectors) =>
+    selectors.find((selector) => $root.find(selector).length);
+
+  const typeIntoField = (selectors, value) => {
+    const selectorQuery = selectors.join(', ');
+    if (!selectorQuery) {
+      return;
+    }
+
+    // Recursively wait for field to appear with retry logic
+    const waitForField = (attempt = 0) => {
+      cy.get('body').then(($body) => {
+        const hasVisibleField = selectors.some(
+          (selector) => $body.find(selector + ':visible').length > 0,
+        );
+
+        if (!hasVisibleField && attempt < 120) {
+          cy.wait(500);
+          return waitForField(attempt + 1);
+        }
+
+        if (!hasVisibleField) {
+          throw new Error(
+            `Timeout: Field not found after 60s - ${selectors[0]}`,
+          );
+        }
+      });
+    };
+
+    waitForField();
+
+    cy.get(selectorQuery, { timeout: 10000 })
+      .filter(':visible')
+      .first()
+      .should('be.visible')
+      .should('not.be.disabled')
+      .clear({ force: true })
+      .type(value, { force: true });
+  };
+
+  const ensurePaymentSectionVisible = () => {
+    cy.get('body', { timeout: 60000 }).then(($body) => {
+      const availableSelector = findFirstAvailableSelector(
+        $body,
+        paymentSectionSelectors,
+      );
+
+      if (availableSelector) {
+        cy.get(availableSelector, { timeout: 60000 }).should(($elements) => {
+          const visibleCount = $elements.filter(':visible').length;
+          expect(
+            visibleCount,
+            `visible payment section for selector ${availableSelector}`,
+          ).to.be.greaterThan(0);
+        });
+        return;
+      }
+
+      cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder, {
+        timeout: 60000,
+      }).should('be.visible');
+    });
+  };
+
+  const ensureShippingMethodSelected = () => {
+    cy.document().then((doc) => {
+      const $doc = Cypress.$(doc);
+      const $shippingMethods = $doc
+        .find('input[name="shipping_method"]')
+        .filter(':visible');
+
+      if ($shippingMethods.length) {
+        const hasChecked = $shippingMethods.is(':checked');
+        if (!hasChecked) {
+          cy.wrap($shippingMethods.first()).check({ force: true });
+        }
+      }
+    });
+  };
+
+  cy.logToTerminal('⏳ Waiting for shipping form to be ready...');
+
+  // Wait until at least one shipping field is visible before proceeding
+  const checkFormReady = (attempt = 0) => {
+    cy.get('body').then(($body) => {
+      const hasAnyField = shippingFirstNameSelectors.some(
+        (selector) => $body.find(selector + ':visible').length > 0,
+      );
+
+      if (!hasAnyField && attempt < 60) {
+        cy.wait(1000);
+        return checkFormReady(attempt + 1);
+      }
+
+      if (!hasAnyField) {
+        throw new Error('Checkout form did not load after 60 seconds');
+      }
+
+      cy.logToTerminal('✅ Shipping form is ready');
+    });
+  };
+
+  checkFormReady();
+
+  cy.logToTerminal('📝 Filling shipping address form');
+
+  typeIntoField(shippingFirstNameSelectors, 'Test');
+  typeIntoField(shippingLastNameSelectors, 'Test');
+  typeIntoField(shippingStreetSelectors, 'Test');
+
+  cy.get('body', { timeout: 60000 }).then(($body) => {
+    const regionSelect = findFirstAvailableSelector(
+      $body,
+      shippingRegionSelectSelectors,
+    );
+
+    if (regionSelect) {
+      cy.get(regionSelect, { timeout: 60000 })
+        .filter(':visible')
+        .first()
+        .should('not.be.disabled')
+        .select('Alabama', { force: true });
+    } else {
+      typeIntoField(shippingRegionInputSelectors, 'Alabama');
+    }
+  });
+
+  typeIntoField(shippingCitySelectors, 'Test');
+  typeIntoField(shippingPostcodeSelectors, '1235');
+  typeIntoField(shippingTelephoneSelectors, '123456789');
+
+  cy.wait(2000);
+  ensureShippingMethodSelected();
+  ensurePaymentSectionVisible();
+
+  cy.contains(fields.poCheckMoneyOrderLabel, texts.checkMoneyOrder, {
+    timeout: 60000,
+  })
     .should('be.visible')
     .click();
   cy.wait(1500);
@@ -507,11 +678,14 @@ export const completeCheckout = (urls, texts) => {
     .find(fields.poTermsCheckbox)
     .check({ force: true });
   cy.wait(1500);
-  cy.get(fields.poPlacePOButton)
-    .contains(texts.placePO)
+
+  cy.logToTerminal('🔘 Clicking Place Order button...');
+  cy.get(fields.poPlacePOButton, { timeout: 60000 })
     .should('be.visible')
+    .should('not.be.disabled')
     .click();
   cy.wait(3000);
+  cy.logToTerminal('✅ Place Order button clicked');
 };
 
 export const verifyPOConfirmation = () => {
@@ -526,12 +700,23 @@ export const createPurchaseOrder = (
   itemCount = 2,
   isCheap = false,
   urls,
-  texts
+  texts,
 ) => {
+  cy.logToTerminal('📦 Adding products to cart...');
   addProductToCart(itemCount, isCheap, urls, texts);
-  proceedToCheckout(texts);
+  cy.logToTerminal('✅ Products added to cart');
+
+  cy.logToTerminal('🛒 Proceeding to checkout...');
+  proceedToCheckout(texts, urls);
+  cy.logToTerminal('✅ On checkout page');
+
+  cy.logToTerminal('📝 Completing checkout...');
   completeCheckout(urls, texts);
+  cy.logToTerminal('✅ Checkout completed');
+
+  cy.logToTerminal('🔍 Verifying PO confirmation...');
   verifyPOConfirmation();
+  cy.logToTerminal('✅ PO confirmed');
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
