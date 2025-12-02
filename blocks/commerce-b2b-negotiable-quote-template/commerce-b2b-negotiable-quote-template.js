@@ -128,7 +128,8 @@ export default async function decorate(block) {
     // For list view, check if user can view quote templates
     // For details view, check if user can manage quote templates
     if (!quoteTemplateId) {
-      hasQuoteTemplatePermissions = permissions?.viewQuoteTemplates || permissions?.manageQuoteTemplates;
+      hasQuoteTemplatePermissions = permissions?.viewQuoteTemplates
+        || permissions?.manageQuoteTemplates;
     } else {
       hasQuoteTemplatePermissions = permissions?.manageQuoteTemplates;
     }
@@ -140,7 +141,7 @@ export default async function decorate(block) {
       const message = !quoteTemplateId
         ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
         : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
-      
+
       showPermissionWarning(block, title, message);
       showEmptyState(block, '');
     }

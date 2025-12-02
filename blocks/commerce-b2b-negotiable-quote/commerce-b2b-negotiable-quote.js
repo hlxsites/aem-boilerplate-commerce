@@ -140,11 +140,19 @@ export default async function decorate(block) {
       const message = !quoteId
         ? 'You do not have permission to view quotes. Please contact your administrator for access.'
         : 'You do not have permission to edit this quote. Please contact your administrator for access.';
-      
+
       showPermissionWarning(block, title, message);
       showEmptyState(block, '');
     }
   }, { eager: true });
+
+  // Render error when quote data fails to load
+  const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
+    UI.render(InLineAlert, {
+      type: 'error',
+      description: `${error}`,
+    })(block);
+  });
 
   // Checkout button
   const checkoutButtonContainer = document.createElement('div');
@@ -341,14 +349,6 @@ export default async function decorate(block) {
     url.searchParams.delete('quoteid'); // Remove the 'quoteid' search parameter if present
     window.history.replaceState({}, '', url.toString()); // Replace browser URL bar without reloading
     window.location.href = url.toString(); // Reload the page to show the list view
-  });
-
-  // Render error when quote data fails to load
-  const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
-    UI.render(InLineAlert, {
-      type: 'error',
-      description: `${error}`,
-    })(block);
   });
 
   // Clean up all listeners if block is removed
