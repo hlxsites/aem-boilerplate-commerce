@@ -76,6 +76,37 @@ const checkPermissions = async () => {
 };
 
 /**
+ * Show permission warning banner
+ * @param {HTMLElement} container - Container to render warning into
+ * @param {string} title - Warning title
+ * @param {string} message - Warning message
+ */
+const showPermissionWarning = (container, title, message) => {
+  const warningContainer = document.createElement('div');
+  warningContainer.classList.add('negotiable-quote-template__permission-warning');
+  container.prepend(warningContainer);
+
+  UI.render(InLineAlert, {
+    type: 'warning',
+    variant: 'primary',
+    heading: title,
+    children: message,
+  })(warningContainer);
+};
+
+/**
+ * Show empty state with message
+ * @param {HTMLElement} container - Container to render empty state into
+ * @param {string} message - Empty state message
+ */
+const showEmptyState = (container, message) => {
+  const emptyState = document.createElement('div');
+  emptyState.classList.add('negotiable-quote-template__empty-state');
+  emptyState.textContent = message;
+  container.appendChild(emptyState);
+};
+
+/**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
  */
@@ -89,7 +120,34 @@ export default async function decorate(block) {
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
-  if (quoteTemplateId) {
+  // Track if we have necessary permissions
+  let hasQuoteTemplatePermissions = true;
+
+  // Listen for permission updates
+  const permissionsListener = events.on('quote-management/permissions', (permissions) => {
+    // For list view, check if user can view quote templates
+    // For details view, check if user can manage quote templates
+    if (!quoteTemplateId) {
+      hasQuoteTemplatePermissions = permissions?.viewQuoteTemplates || permissions?.manageQuoteTemplates;
+    } else {
+      hasQuoteTemplatePermissions = permissions?.manageQuoteTemplates;
+    }
+
+    // If permissions change and user no longer has access, show warning
+    if (!hasQuoteTemplatePermissions) {
+      block.innerHTML = '';
+      const title = 'Access Restricted';
+      const message = !quoteTemplateId
+        ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
+        : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
+      
+      showPermissionWarning(block, title, message);
+      showEmptyState(block, '');
+    }
+  }, { eager: true });
+
+  // Only render containers if we have permissions
+  if (quoteTemplateId && hasQuoteTemplatePermissions) {
     block.classList.add('negotiable-quote-template__details');
     block.setAttribute('data-quote-view', 'details');
 
@@ -201,7 +259,7 @@ export default async function decorate(block) {
         },
       },
     })(block);
-  } else {
+  } else if (!quoteTemplateId && hasQuoteTemplatePermissions) {
     // Render the quote templates list view
     block.classList.add('negotiable-quote-template__list');
     block.setAttribute('data-quote-view', 'list');
@@ -219,7 +277,7 @@ export default async function decorate(block) {
   }
 
   // Render error when quote data fails to load
-  events.on('quote-management/quote-data/error', ({ error }) => {
+  const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
     UI.render(InLineAlert, {
       type: 'error',
       description: `${error}`,
@@ -227,10 +285,21 @@ export default async function decorate(block) {
   });
 
   // Listen for changes to the company context (e.g. when user switches companies).
-  events.on('companyContext/changed', () => {
+  const companyContextListener = events.on('companyContext/changed', () => {
     const url = new URL(window.location.href); // Parse the current page URL
     url.searchParams.delete('quoteTemplateId'); // Remove the 'quoteTemplateId' search parameter if present
     window.history.replaceState({}, '', url.toString()); // Replace browser URL bar without reloading
     window.location.href = url.toString(); // Reload the page to show the list view
   });
+
+  // Clean up listeners if block is removed
+  const observer = new MutationObserver(() => {
+    if (!document.body.contains(block)) {
+      permissionsListener?.off();
+      errorListener?.off();
+      companyContextListener?.off();
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }

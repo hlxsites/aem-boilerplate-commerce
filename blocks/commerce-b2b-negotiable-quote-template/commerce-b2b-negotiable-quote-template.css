@@ -59,3 +59,17 @@
 .negotiable-quote-template__shipping-information-addresses .account-addresses-wrapper__footer-section {
     grid-column: span 2;
 }
+
+/* Permission warning banner */
+.negotiable-quote-template__permission-warning {
+    margin-bottom: var(--spacing-medium);
+}
+
+/* Empty state */
+.negotiable-quote-template__empty-state {
+    padding: var(--spacing-large);
+    text-align: center;
+    color: var(--color-neutral-600);
+    font: var(--type-body-1-default-font);
+    letter-spacing: var(--type-body-1-default-letter-spacing);
+}

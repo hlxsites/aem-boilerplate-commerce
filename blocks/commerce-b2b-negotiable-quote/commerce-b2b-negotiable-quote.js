@@ -73,6 +73,37 @@ const checkPermissions = async () => {
 };
 
 /**
+ * Show permission warning banner
+ * @param {HTMLElement} container - Container to render warning into
+ * @param {string} title - Warning title
+ * @param {string} message - Warning message
+ */
+const showPermissionWarning = (container, title, message) => {
+  const warningContainer = document.createElement('div');
+  warningContainer.classList.add('negotiable-quote__permission-warning');
+  container.prepend(warningContainer);
+
+  UI.render(InLineAlert, {
+    type: 'warning',
+    variant: 'primary',
+    heading: title,
+    children: message,
+  })(warningContainer);
+};
+
+/**
+ * Show empty state with message
+ * @param {HTMLElement} container - Container to render empty state into
+ * @param {string} message - Empty state message
+ */
+const showEmptyState = (container, message) => {
+  const emptyState = document.createElement('div');
+  emptyState.classList.add('negotiable-quote__empty-state');
+  emptyState.textContent = message;
+  container.appendChild(emptyState);
+};
+
+/**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
  */
@@ -88,6 +119,32 @@ export default async function decorate(block) {
 
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
+
+  // Track if we have necessary permissions
+  let hasQuotePermissions = true;
+
+  // Listen for permission updates
+  const permissionsListener = events.on('quote-management/permissions', (permissions) => {
+    // For list view, check if user can view quotes (editQuote or requestQuote)
+    // For manage view, check if user can edit quote
+    if (!quoteId) {
+      hasQuotePermissions = permissions?.editQuote || permissions?.requestQuote;
+    } else {
+      hasQuotePermissions = permissions?.editQuote;
+    }
+
+    // If permissions change and user no longer has access, show warning
+    if (!hasQuotePermissions) {
+      block.innerHTML = '';
+      const title = 'Access Restricted';
+      const message = !quoteId
+        ? 'You do not have permission to view quotes. Please contact your administrator for access.'
+        : 'You do not have permission to edit this quote. Please contact your administrator for access.';
+      
+      showPermissionWarning(block, title, message);
+      showEmptyState(block, '');
+    }
+  }, { eager: true });
 
   // Checkout button
   const checkoutButtonContainer = document.createElement('div');
@@ -106,7 +163,8 @@ export default async function decorate(block) {
     })(checkoutButtonContainer);
   };
 
-  if (quoteId) {
+  // Only render containers if we have permissions
+  if (quoteId && hasQuotePermissions) {
     block.classList.add('negotiable-quote__manage');
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
@@ -242,11 +300,13 @@ export default async function decorate(block) {
       if (!document.body.contains(block)) {
         deleteListener?.off();
         duplicateListener?.off();
+        permissionsListener?.off();
+        errorListener?.off();
         observer.disconnect();
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
-  } else {
+  } else if (!quoteId && hasQuotePermissions) {
     block.classList.add('negotiable-quote__list');
     block.setAttribute('data-quote-view', 'list');
     await negotiableQuoteRenderer.render(QuotesListTable, {
@@ -284,10 +344,22 @@ export default async function decorate(block) {
   });
 
   // Render error when quote data fails to load
-  events.on('quote-management/quote-data/error', ({ error }) => {
+  const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
     UI.render(InLineAlert, {
       type: 'error',
       description: `${error}`,
     })(block);
   });
+
+  // Clean up all listeners if block is removed
+  if (!quoteId) {
+    const observer = new MutationObserver(() => {
+      if (!document.body.contains(block)) {
+        permissionsListener?.off();
+        errorListener?.off();
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 }
