@@ -53,7 +53,8 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
-    events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
+    // Not used in ACO – causes conflict.
+    // events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
 
     // Set Commerce Optimizer header
     events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
