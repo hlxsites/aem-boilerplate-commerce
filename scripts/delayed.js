@@ -33,8 +33,8 @@ async function initAnalytics() {
         {
           eventForwardingContext: {
             commerce: true,
-            aep: analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id']
-          }
+            aep: analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id'],
+          },
         },
         {
           shopperContext: {
@@ -46,7 +46,7 @@ async function initAnalytics() {
             imsOrgId: analyticsConfig['aep-ims-org-id'],
             datastreamId: analyticsConfig['aep-datastream-id'],
           },
-        }
+        },
       );
 
       // Load events SDK and collector
