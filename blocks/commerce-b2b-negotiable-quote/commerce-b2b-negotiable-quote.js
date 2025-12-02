@@ -160,20 +160,31 @@ export default async function decorate(block) {
     hasQuotePermissions = mappedInitialPermissions.editQuote;
   }
 
+  // Show warning banner immediately if no permissions on initial load
+  if (!hasQuotePermissions) {
+    const title = 'Access Restricted';
+    const message = !quoteId
+      ? 'You do not have permission to view quotes. Please contact your administrator for access.'
+      : 'You do not have permission to edit this quote. Please contact your administrator for access.';
+
+    showPermissionWarning(block, title, message);
+    showEmptyState(block, '');
+    return; // Exit early - don't render containers or set up listeners
+  }
+
   // Listen for permission updates
   const permissionsListener = events.on('auth/permissions', (authPermissions) => {
     const permissions = mapQuotePermissions(authPermissions);
 
     // For list view, check if user can view quotes (editQuote or requestQuote)
     // For manage view, check if user can edit quote
-    if (!quoteId) {
-      hasQuotePermissions = permissions.editQuote || permissions.requestQuote;
-    } else {
-      hasQuotePermissions = permissions.editQuote;
-    }
+    const currentHasPermissions = !quoteId
+      ? (permissions.editQuote || permissions.requestQuote)
+      : permissions.editQuote;
 
     // If permissions change and user no longer has access, show warning
-    if (!hasQuotePermissions) {
+    if (!currentHasPermissions && hasQuotePermissions) {
+      hasQuotePermissions = false;
       block.innerHTML = '';
       const title = 'Access Restricted';
       const message = !quoteId

@@ -159,21 +159,31 @@ export default async function decorate(block) {
     hasQuoteTemplatePermissions = mappedInitialPermissions.manageQuoteTemplates;
   }
 
+  // Show warning banner immediately if no permissions on initial load
+  if (!hasQuoteTemplatePermissions) {
+    const title = 'Access Restricted';
+    const message = !quoteTemplateId
+      ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
+      : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
+
+    showPermissionWarning(block, title, message);
+    showEmptyState(block, '');
+    return; // Exit early - don't render containers or set up listeners
+  }
+
   // Listen for permission updates
   const permissionsListener = events.on('auth/permissions', (authPermissions) => {
     const permissions = mapQuoteTemplatePermissions(authPermissions);
 
     // For list view, check if user can view quote templates
     // For details view, check if user can manage quote templates
-    if (!quoteTemplateId) {
-      hasQuoteTemplatePermissions = permissions.viewQuoteTemplates
-        || permissions.manageQuoteTemplates;
-    } else {
-      hasQuoteTemplatePermissions = permissions.manageQuoteTemplates;
-    }
+    const currentHasPermissions = !quoteTemplateId
+      ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
+      : permissions.manageQuoteTemplates;
 
     // If permissions change and user no longer has access, show warning
-    if (!hasQuoteTemplatePermissions) {
+    if (!currentHasPermissions && hasQuoteTemplatePermissions) {
+      hasQuoteTemplatePermissions = false;
       block.innerHTML = '';
       const title = 'Access Restricted';
       const message = !quoteTemplateId
