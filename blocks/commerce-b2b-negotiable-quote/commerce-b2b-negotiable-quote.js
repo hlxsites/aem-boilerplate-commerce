@@ -147,45 +147,27 @@ export default async function decorate(block) {
     };
   };
 
-  // Track if we have necessary permissions
-  let hasQuotePermissions = true;
+  // Track if we have necessary permissions and if we've checked them
+  let hasQuotePermissions = null; // null = not checked yet, true/false = checked
+  let hasRendered = false;
+  let shouldRenderContainers = false;
 
-  // Check initial permissions
-  const initialPermissions = events.lastPayload('auth/permissions');
-  const mappedInitialPermissions = mapQuotePermissions(initialPermissions);
-  if (!quoteId) {
-    hasQuotePermissions = mappedInitialPermissions.editQuote
-      || mappedInitialPermissions.requestQuote;
-  } else {
-    hasQuotePermissions = mappedInitialPermissions.editQuote;
-  }
+  /**
+   * Check permissions and render appropriate UI
+   * @param {Object} permissions - Auth permissions object
+   */
+  const checkAndRenderPermissions = (permissions) => {
+    if (hasRendered) return; // Prevent multiple renders
 
-  // Show warning banner immediately if no permissions on initial load
-  if (!hasQuotePermissions) {
-    const title = 'Access Restricted';
-    const message = !quoteId
-      ? 'You do not have permission to view quotes. Please contact your administrator for access.'
-      : 'You do not have permission to edit this quote. Please contact your administrator for access.';
+    const mappedPermissions = mapQuotePermissions(permissions);
+    const hasPermissions = !quoteId
+      ? (mappedPermissions.editQuote || mappedPermissions.requestQuote)
+      : mappedPermissions.editQuote;
 
-    showPermissionWarning(block, title, message);
-    showEmptyState(block, '');
-    return; // Exit early - don't render containers or set up listeners
-  }
+    hasQuotePermissions = hasPermissions;
 
-  // Listen for permission updates
-  const permissionsListener = events.on('auth/permissions', (authPermissions) => {
-    const permissions = mapQuotePermissions(authPermissions);
-
-    // For list view, check if user can view quotes (editQuote or requestQuote)
-    // For manage view, check if user can edit quote
-    const currentHasPermissions = !quoteId
-      ? (permissions.editQuote || permissions.requestQuote)
-      : permissions.editQuote;
-
-    // If permissions change and user no longer has access, show warning
-    if (!currentHasPermissions && hasQuotePermissions) {
-      hasQuotePermissions = false;
-      block.innerHTML = '';
+    if (!hasPermissions) {
+      // No permissions - show warning banner
       const title = 'Access Restricted';
       const message = !quoteId
         ? 'You do not have permission to view quotes. Please contact your administrator for access.'
@@ -193,8 +175,52 @@ export default async function decorate(block) {
 
       showPermissionWarning(block, title, message);
       showEmptyState(block, '');
+      hasRendered = true;
+      shouldRenderContainers = false;
+    } else {
+      hasRendered = true;
+      shouldRenderContainers = true;
+    }
+  };
+
+  // Check initial permissions
+  const initialPermissions = events.lastPayload('auth/permissions');
+
+  // If auth/permissions has already been emitted, check immediately
+  if (initialPermissions !== undefined) {
+    checkAndRenderPermissions(initialPermissions);
+    if (!shouldRenderContainers) return; // Exit early if no permissions
+  }
+
+  // Listen for permission updates (especially for first-time load)
+  const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+    // If we haven't rendered yet (permissions came after block load), render now
+    if (hasQuotePermissions === null) {
+      checkAndRenderPermissions(authPermissions);
+      // If no permissions, the function already showed the warning and we're done
+      // If has permissions, continue below to render containers
+    } else {
+      // Permissions changed after initial render
+      const permissions = mapQuotePermissions(authPermissions);
+      const currentHasPermissions = !quoteId
+        ? (permissions.editQuote || permissions.requestQuote)
+        : permissions.editQuote;
+
+      // If permissions were revoked
+      if (!currentHasPermissions && hasQuotePermissions) {
+        hasQuotePermissions = false;
+        hasRendered = false;
+        block.innerHTML = '';
+        checkAndRenderPermissions(authPermissions);
+      }
     }
   }, { eager: true });
+
+  // If permissions haven't loaded yet, wait for them before rendering
+  if (hasQuotePermissions === null) {
+    // Exit and wait for auth/permissions event
+    return;
+  }
 
   // Render error when quote data fails to load
   const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
