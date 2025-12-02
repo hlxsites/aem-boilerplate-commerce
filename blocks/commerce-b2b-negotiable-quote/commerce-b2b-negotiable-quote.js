@@ -120,17 +120,56 @@ export default async function decorate(block) {
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
 
+  /**
+   * Map auth permissions to quote permissions
+   * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
+   * @returns {Object} Mapped quote permissions
+   */
+  const mapQuotePermissions = (authPermissions) => {
+    if (!authPermissions || typeof authPermissions !== 'object') {
+      return { editQuote: false, requestQuote: false };
+    }
+
+    // Check for global permission
+    if (authPermissions.all === true) {
+      return { editQuote: true, requestQuote: true };
+    }
+
+    // Check for Magento_NegotiableQuote::all permission
+    const hasAllQuotePermissions = authPermissions['Magento_NegotiableQuote::all'] === true;
+
+    // Check for Magento_NegotiableQuote::manage permission
+    const hasManagePermission = authPermissions['Magento_NegotiableQuote::manage'] === true;
+
+    return {
+      editQuote: hasAllQuotePermissions || hasManagePermission,
+      requestQuote: hasAllQuotePermissions || hasManagePermission,
+    };
+  };
+
   // Track if we have necessary permissions
   let hasQuotePermissions = true;
 
+  // Check initial permissions
+  const initialPermissions = events.lastPayload('auth/permissions');
+  const mappedInitialPermissions = mapQuotePermissions(initialPermissions);
+  if (!quoteId) {
+    hasQuotePermissions = mappedInitialPermissions.editQuote
+      || mappedInitialPermissions.requestQuote;
+  } else {
+    hasQuotePermissions = mappedInitialPermissions.editQuote;
+  }
+
   // Listen for permission updates
-  const permissionsListener = events.on('quote-management/permissions', (permissions) => {
+  const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+    const permissions = mapQuotePermissions(authPermissions);
+
     // For list view, check if user can view quotes (editQuote or requestQuote)
     // For manage view, check if user can edit quote
     if (!quoteId) {
-      hasQuotePermissions = permissions?.editQuote || permissions?.requestQuote;
+      hasQuotePermissions = permissions.editQuote || permissions.requestQuote;
     } else {
-      hasQuotePermissions = permissions?.editQuote;
+      hasQuotePermissions = permissions.editQuote;
     }
 
     // If permissions change and user no longer has access, show warning

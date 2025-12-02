@@ -120,18 +120,56 @@ export default async function decorate(block) {
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
+  /**
+   * Map auth permissions to quote template permissions
+   * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
+   * @returns {Object} Mapped quote template permissions
+   */
+  const mapQuoteTemplatePermissions = (authPermissions) => {
+    if (!authPermissions || typeof authPermissions !== 'object') {
+      return { viewQuoteTemplates: false, manageQuoteTemplates: false };
+    }
+
+    // Check for global permission
+    if (authPermissions.all === true) {
+      return { viewQuoteTemplates: true, manageQuoteTemplates: true };
+    }
+
+    // Check for Magento_NegotiableQuoteTemplate::all permission
+    const hasAllTemplatePermissions = authPermissions['Magento_NegotiableQuoteTemplate::all'] === true;
+
+    return {
+      viewQuoteTemplates: hasAllTemplatePermissions
+        || authPermissions['Magento_NegotiableQuoteTemplate::view_template'] === true,
+      manageQuoteTemplates: hasAllTemplatePermissions
+        || authPermissions['Magento_NegotiableQuoteTemplate::manage'] === true,
+    };
+  };
+
   // Track if we have necessary permissions
   let hasQuoteTemplatePermissions = true;
 
+  // Check initial permissions
+  const initialPermissions = events.lastPayload('auth/permissions');
+  const mappedInitialPermissions = mapQuoteTemplatePermissions(initialPermissions);
+  if (!quoteTemplateId) {
+    hasQuoteTemplatePermissions = mappedInitialPermissions.viewQuoteTemplates
+      || mappedInitialPermissions.manageQuoteTemplates;
+  } else {
+    hasQuoteTemplatePermissions = mappedInitialPermissions.manageQuoteTemplates;
+  }
+
   // Listen for permission updates
-  const permissionsListener = events.on('quote-management/permissions', (permissions) => {
+  const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+    const permissions = mapQuoteTemplatePermissions(authPermissions);
+
     // For list view, check if user can view quote templates
     // For details view, check if user can manage quote templates
     if (!quoteTemplateId) {
-      hasQuoteTemplatePermissions = permissions?.viewQuoteTemplates
-        || permissions?.manageQuoteTemplates;
+      hasQuoteTemplatePermissions = permissions.viewQuoteTemplates
+        || permissions.manageQuoteTemplates;
     } else {
-      hasQuoteTemplatePermissions = permissions?.manageQuoteTemplates;
+      hasQuoteTemplatePermissions = permissions.manageQuoteTemplates;
     }
 
     // If permissions change and user no longer has access, show warning
