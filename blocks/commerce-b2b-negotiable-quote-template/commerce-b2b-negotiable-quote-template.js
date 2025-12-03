@@ -15,7 +15,7 @@
  * from Adobe.
  ****************************************************************** */
 import { getFormValues } from '@dropins/tools/lib.js';
-import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { events } from '@dropins/tools/event-bus.js';
@@ -34,7 +34,6 @@ import { ManageNegotiableQuoteTemplate } from '@dropins/storefront-quote-managem
 import { addQuoteTemplateShippingAddress } from '@dropins/storefront-quote-management/api.js';
 
 // Initialize
-import '../../scripts/initializers/company.js';
 import '../../scripts/initializers/quote-management.js';
 import '../../scripts/initializers/account.js';
 
@@ -47,32 +46,62 @@ import {
 } from '../../scripts/commerce.js';
 
 /**
- * Check if the user has the necessary permissions to access the block
+ * Show permission warning banner
+ * @param {HTMLElement} container - Container to render warning into
+ * @param {string} title - Warning title
+ * @param {string} message - Warning message
  */
-const checkPermissions = async () => {
-  // Check authentication
-  if (!checkIsAuthenticated()) {
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-    return false;
+const showPermissionWarning = (container, title, message) => {
+  const warningContainer = document.createElement('div');
+  warningContainer.classList.add('negotiable-quote-template__permission-warning');
+  container.prepend(warningContainer);
+
+  UI.render(InLineAlert, {
+    type: 'warning',
+    variant: 'primary',
+    heading: title,
+    children: message,
+  })(warningContainer);
+};
+
+/**
+ * Show empty state with message
+ * @param {HTMLElement} container - Container to render empty state into
+ * @param {string} message - Empty state message
+ */
+const showEmptyState = (container, message) => {
+  const emptyState = document.createElement('div');
+  emptyState.classList.add('negotiable-quote-template__empty-state');
+  emptyState.textContent = message;
+  container.appendChild(emptyState);
+};
+
+/**
+ * Map auth permissions to quote template permissions
+ * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
+ * @returns {Object} Mapped quote template permissions
+ */
+const mapQuoteTemplatePermissions = (authPermissions) => {
+  if (!authPermissions || typeof authPermissions !== 'object') {
+    return { viewQuoteTemplates: false, manageQuoteTemplates: false };
   }
 
-  // Check if company functionality is enabled
-  const isEnabled = await companyEnabled();
-  if (!isEnabled) {
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return false;
+  // Check for global permission
+  if (authPermissions.all === true) {
+    return { viewQuoteTemplates: true, manageQuoteTemplates: true };
   }
 
-  // Check if customer has a company
-  try {
-    await getCompany();
-  } catch (error) {
-    // Customer doesn't have a company or error occurred
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return false;
-  }
+  // Check for Magento_NegotiableQuoteTemplate::all permission
+  const hasAllTemplatePermissions = authPermissions['Magento_NegotiableQuoteTemplate::all'] === true;
 
-  return true;
+  // Check for specific permissions
+  const hasManagePermission = authPermissions['Magento_NegotiableQuoteTemplate::manage'] === true;
+  const hasViewPermission = authPermissions['Magento_NegotiableQuoteTemplate::view_template'] === true;
+
+  return {
+    viewQuoteTemplates: hasAllTemplatePermissions || hasViewPermission || hasManagePermission,
+    manageQuoteTemplates: hasAllTemplatePermissions || hasManagePermission,
+  };
 };
 
 /**
@@ -80,14 +109,40 @@ const checkPermissions = async () => {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
-  // Check if user has permissions to access the block
-  const hasPermissions = await checkPermissions();
+  // Check authentication
+  if (!checkIsAuthenticated()) {
+    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
+  }
 
-  // Return early if user doesn't have permissions
-  if (!hasPermissions) return;
+  // Check if B2B is enabled
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  if (!isB2BEnabled) {
+    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+    return;
+  }
 
-  // Get the quote id from the url
+  // Get the quote template id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
+
+  // Check permissions from auth/permissions event
+  const authPermissions = events.lastPayload('auth/permissions');
+  const permissions = mapQuoteTemplatePermissions(authPermissions);
+  const hasAccess = !quoteTemplateId
+    ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
+    : permissions.manageQuoteTemplates;
+
+  // If no permissions, show warning banner and empty state
+  if (authPermissions && !hasAccess) {
+    const title = 'Access Restricted';
+    const message = !quoteTemplateId
+      ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
+      : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
+
+    showPermissionWarning(block, title, message);
+    showEmptyState(block, '');
+    return;
+  }
 
   if (quoteTemplateId) {
     block.classList.add('negotiable-quote-template__details');
