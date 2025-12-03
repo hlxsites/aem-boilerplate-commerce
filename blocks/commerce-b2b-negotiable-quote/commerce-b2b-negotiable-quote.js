@@ -50,6 +50,7 @@ import {
 
 /**
  * Check if the user has the necessary permissions to access the block
+ * @returns {Promise<boolean>} True if has permissions, false otherwise
  */
 const checkPermissions = async () => {
   // Check authentication
@@ -57,7 +58,7 @@ const checkPermissions = async () => {
     // eslint-disable-next-line no-console
     console.log('[Quote Block] Not authenticated in checkPermissions, redirecting');
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-    return;
+    return false;
   }
 
   // Check if company functionality is enabled
@@ -68,7 +69,7 @@ const checkPermissions = async () => {
     // eslint-disable-next-line no-console
     console.log('[Quote Block] Company NOT enabled, redirecting to account');
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return;
+    return false;
   }
 
   // Check if customer has a company
@@ -76,11 +77,13 @@ const checkPermissions = async () => {
     const company = await getCompany();
     // eslint-disable-next-line no-console
     console.log('[Quote Block] User has company:', company);
+    return true;
   } catch (error) {
     // Customer doesn't have a company or error occurred
     // eslint-disable-next-line no-console
     console.log('[Quote Block] User does NOT have company, redirecting to account. Error:', error);
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+    return false;
   }
 };
 
@@ -135,9 +138,18 @@ export default async function decorate(block) {
   // IMPORTANT: Must await this to prevent race condition
   // eslint-disable-next-line no-console
   console.log('[Quote Block] Checking basic permissions (company, etc.)');
-  await checkPermissions();
+  const hasBasicPermissions = await checkPermissions();
   // eslint-disable-next-line no-console
-  console.log('[Quote Block] Basic permissions check passed');
+  console.log('[Quote Block] Basic permissions check result:', hasBasicPermissions);
+
+  if (!hasBasicPermissions) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] Basic permissions check failed, should have redirected');
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('[Quote Block] Basic permissions check passed, continuing');
 
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
@@ -289,6 +301,8 @@ export default async function decorate(block) {
 
   // Render error when quote data fails to load
   const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] quote-data/error event received:', error);
     UI.render(InLineAlert, {
       type: 'error',
       description: `${error}`,
