@@ -26,6 +26,24 @@ The Commerce Company Structure block displays company organizational structure a
 
 No block configuration is read via `readBlockConfig()`. The block functionality is controlled entirely by the dropin container.
 
+<!-- ### URL Parameters
+
+No URL parameters affect this block's behavior. -->
+
+<!-- ### Local Storage
+
+No localStorage keys are used by this block. -->
+
+<!-- ### Events -->
+
+<!-- #### Event Listeners
+
+No direct event listeners are implemented in this block. -->
+
+<!-- #### Event Emitters
+
+No events are emitted by this block. -->
+
 ## Behavior Patterns
 
 ### Authentication and Authorization Flow
