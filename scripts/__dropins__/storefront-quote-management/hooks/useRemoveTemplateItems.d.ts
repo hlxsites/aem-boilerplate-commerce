@@ -1,11 +1,11 @@
-import { CartItemModel } from '../data/models/negotiable-quote-model';
+import { QuoteTemplateCartItem } from '../data/models/negotiable-quote-template-model';
 
 export interface UseRemoveTemplateItemsReturn {
-    handleRemoveItems: (items: CartItemModel[]) => void;
+    handleRemoveItems: (items: QuoteTemplateCartItem[]) => void;
     handleConfirmRemove: () => Promise<void>;
     handleCancelRemove: () => void;
     isRemoveModalOpen: boolean;
-    itemsToRemove: CartItemModel[];
+    itemsToRemove: QuoteTemplateCartItem[];
     isRemoving: boolean;
     removeNotificationState: {
         type: 'success' | 'error' | null;

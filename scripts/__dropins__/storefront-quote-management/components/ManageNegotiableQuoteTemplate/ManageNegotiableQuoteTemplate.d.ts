@@ -4,14 +4,12 @@ import { HTMLAttributes } from 'preact/compat';
 export interface ManageNegotiableQuoteTemplateProps extends Omit<HTMLAttributes<HTMLDivElement>, 'loading'> {
     loading?: boolean;
     templateName: VNode;
-    templateStatus: VNode;
+    templateId: VNode;
     banner?: VNode;
     details?: VNode;
     actionBar?: VNode;
     referenceDocuments?: VNode;
     itemsTable: VNode;
-    shippingInformationTitle?: VNode;
-    shippingInformation?: VNode;
     commentsTitle: VNode;
     comments: VNode;
     footer?: VNode;

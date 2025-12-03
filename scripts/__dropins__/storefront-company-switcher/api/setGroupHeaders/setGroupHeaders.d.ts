@@ -9,7 +9,6 @@ declare class GroupHeaderManager {
     private groupHeaderAppliers;
     private groupHeaderRemovers;
     private headerKey;
-    private defaultNLICustomerGroupId;
     constructor();
     /**
      * Sets the header key used for customer group identification

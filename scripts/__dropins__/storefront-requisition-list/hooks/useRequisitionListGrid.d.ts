@@ -14,7 +14,6 @@ export declare function useRequisitionListGrid(callbacks?: Callbacks, routeRequi
         current_page: number;
         total_pages: number;
     } | undefined;
-    totalCount: number | undefined;
     handlePageChange: (page?: number) => Promise<void>;
     handlePageSizeChange: (pageSize: number) => Promise<void>;
     isAdding: boolean;

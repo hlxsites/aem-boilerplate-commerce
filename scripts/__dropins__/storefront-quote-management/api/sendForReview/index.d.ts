@@ -6,5 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './sendForReview';
+export { sendForReview, type SendForReviewInput } from './sendForReview';
 //# sourceMappingURL=index.d.ts.map
