@@ -14,8 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { getFormValues } from '@dropins/tools/lib.js';
-import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
+import { getFormValues, getConfigValue } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {
   InLineAlert,
@@ -36,7 +35,6 @@ import { setShippingAddress } from '@dropins/storefront-quote-management/api.js'
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
-import '../../scripts/initializers/company.js';
 import '../../scripts/initializers/account.js';
 
 // Commerce
@@ -47,45 +45,6 @@ import {
   rootLink,
   fetchPlaceholders,
 } from '../../scripts/commerce.js';
-
-/**
- * Check if the user has the necessary permissions to access the block
- * @returns {Promise<boolean>} True if has permissions, false otherwise
- */
-const checkPermissions = async () => {
-  // Check authentication
-  if (!checkIsAuthenticated()) {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Not authenticated in checkPermissions, redirecting');
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-    return false;
-  }
-
-  // Check if company functionality is enabled
-  const isEnabled = await companyEnabled();
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Company enabled:', isEnabled);
-  if (!isEnabled) {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Company NOT enabled, redirecting to account');
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return false;
-  }
-
-  // Check if customer has a company
-  try {
-    const company = await getCompany();
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] User has company:', company);
-    return true;
-  } catch (error) {
-    // Customer doesn't have a company or error occurred
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] User does NOT have company, redirecting to account. Error:', error);
-    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
-    return false;
-  }
-};
 
 /**
  * Show permission warning banner
@@ -119,195 +78,73 @@ const showEmptyState = (container, message) => {
 };
 
 /**
+ * Map auth permissions to quote permissions
+ * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
+ * @returns {Object} Mapped quote permissions
+ */
+const mapQuotePermissions = (authPermissions) => {
+  if (!authPermissions || typeof authPermissions !== 'object') {
+    return { editQuote: false, requestQuote: false };
+  }
+
+  // Check for global permission
+  if (authPermissions.all === true) {
+    return { editQuote: true, requestQuote: true };
+  }
+
+  // Check for Magento_NegotiableQuote::all permission
+  const hasAllQuotePermissions = authPermissions['Magento_NegotiableQuote::all'] === true;
+
+  // Check for Magento_NegotiableQuote::manage permission
+  const hasManagePermission = authPermissions['Magento_NegotiableQuote::manage'] === true;
+
+  return {
+    editQuote: hasAllQuotePermissions || hasManagePermission,
+    requestQuote: hasAllQuotePermissions || hasManagePermission,
+  };
+};
+
+/**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Starting decoration');
-
+  // Check authentication
   if (!checkIsAuthenticated()) {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Not authenticated, redirecting to login');
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
+  }
+
+  // Check if B2B is enabled
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  if (!isB2BEnabled) {
+    window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return;
   }
 
   const placeholders = await fetchPlaceholders();
 
-  // IMPORTANT: Must await this to prevent race condition
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Checking basic permissions (company, etc.)');
-  const hasBasicPermissions = await checkPermissions();
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Basic permissions check result:', hasBasicPermissions);
-
-  if (!hasBasicPermissions) {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Basic permissions check failed, should have redirected');
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Basic permissions check passed, continuing');
-
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Quote ID:', quoteId || 'none (list view)');
 
-  /**
-   * Map auth permissions to quote permissions
-   * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
-   * @returns {Object} Mapped quote permissions
-   */
-  const mapQuotePermissions = (authPermissions) => {
-    if (!authPermissions || typeof authPermissions !== 'object') {
-      return { editQuote: false, requestQuote: false };
-    }
+  // Check permissions from auth/permissions event
+  const authPermissions = events.lastPayload('auth/permissions');
+  const permissions = mapQuotePermissions(authPermissions);
+  const hasAccess = !quoteId
+    ? (permissions.editQuote || permissions.requestQuote)
+    : permissions.editQuote;
 
-    // Check for global permission
-    if (authPermissions.all === true) {
-      return { editQuote: true, requestQuote: true };
-    }
+  // If no permissions, show warning banner and empty state
+  if (authPermissions && !hasAccess) {
+    const title = 'Access Restricted';
+    const message = !quoteId
+      ? 'You do not have permission to view quotes. Please contact your administrator for access.'
+      : 'You do not have permission to edit this quote. Please contact your administrator for access.';
 
-    // Check for Magento_NegotiableQuote::all permission
-    const hasAllQuotePermissions = authPermissions['Magento_NegotiableQuote::all'] === true;
-
-    // Check for Magento_NegotiableQuote::manage permission
-    const hasManagePermission = authPermissions['Magento_NegotiableQuote::manage'] === true;
-
-    return {
-      editQuote: hasAllQuotePermissions || hasManagePermission,
-      requestQuote: hasAllQuotePermissions || hasManagePermission,
-    };
-  };
-
-  // Track if we have necessary permissions and if we've checked them
-  let hasQuotePermissions = null; // null = not checked yet, true/false = checked
-  let hasRendered = false;
-  let shouldRenderContainers = false;
-
-  /**
-   * Check permissions and render appropriate UI
-   * @param {Object} permissions - Auth permissions object
-   */
-  const checkAndRenderPermissions = (permissions) => {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] checkAndRenderPermissions called with:', permissions);
-
-    if (hasRendered) {
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] Already rendered, skipping');
-      return;
-    }
-
-    const mappedPermissions = mapQuotePermissions(permissions);
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Mapped permissions:', mappedPermissions);
-
-    const hasPermissions = !quoteId
-      ? (mappedPermissions.editQuote || mappedPermissions.requestQuote)
-      : mappedPermissions.editQuote;
-
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Has access:', hasPermissions);
-    hasQuotePermissions = hasPermissions;
-
-    if (!hasPermissions) {
-      // No permissions - show warning banner
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] NO PERMISSIONS - Showing warning banner');
-      const title = 'Access Restricted';
-      const message = !quoteId
-        ? 'You do not have permission to view quotes. Please contact your administrator for access.'
-        : 'You do not have permission to edit this quote. Please contact your administrator for access.';
-
-      showPermissionWarning(block, title, message);
-      showEmptyState(block, '');
-      hasRendered = true;
-      shouldRenderContainers = false;
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] HAS PERMISSIONS - Will render containers');
-      hasRendered = true;
-      shouldRenderContainers = true;
-    }
-  };
-
-  // Check initial permissions
-  const initialPermissions = events.lastPayload('auth/permissions');
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Initial permissions from lastPayload:', initialPermissions);
-
-  // If auth/permissions has already been emitted, check immediately
-  if (initialPermissions !== undefined) {
-    checkAndRenderPermissions(initialPermissions);
-    if (!shouldRenderContainers) {
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] No permissions, exiting early');
-      return; // Exit early if no permissions
-    }
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Has permissions, continuing to render containers');
-  } else {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Permissions not loaded yet, will wait for auth/permissions event');
-  }
-
-  // Listen for permission updates (especially for first-time load)
-  const permissionsListener = events.on('auth/permissions', (authPermissions) => {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] auth/permissions event received:', authPermissions);
-
-    // If we haven't rendered yet (permissions came after block load), render now
-    if (hasQuotePermissions === null) {
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] First time receiving permissions, rendering now');
-      checkAndRenderPermissions(authPermissions);
-      // If no permissions, the function already showed the warning and we're done
-      // If has permissions, continue below to render containers
-    } else {
-      // Permissions changed after initial render
-      // eslint-disable-next-line no-console
-      console.log('[Quote Block] Permissions changed after initial render');
-      const permissions = mapQuotePermissions(authPermissions);
-      const currentHasPermissions = !quoteId
-        ? (permissions.editQuote || permissions.requestQuote)
-        : permissions.editQuote;
-
-      // If permissions were revoked
-      if (!currentHasPermissions && hasQuotePermissions) {
-        // eslint-disable-next-line no-console
-        console.log('[Quote Block] Permissions revoked, clearing and showing warning');
-        hasQuotePermissions = false;
-        hasRendered = false;
-        block.innerHTML = '';
-        checkAndRenderPermissions(authPermissions);
-      }
-    }
-  }, { eager: true });
-
-  // If permissions haven't loaded yet, wait for them before rendering
-  if (hasQuotePermissions === null) {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] Waiting for permissions, exiting early');
-    // Exit and wait for auth/permissions event
+    showPermissionWarning(block, title, message);
+    showEmptyState(block, '');
     return;
   }
-
-  // eslint-disable-next-line no-console
-  console.log('[Quote Block] Proceeding to render containers');
-
-  // Render error when quote data fails to load
-  const errorListener = events.on('quote-management/quote-data/error', ({ error }) => {
-    // eslint-disable-next-line no-console
-    console.log('[Quote Block] quote-data/error event received:', error);
-    UI.render(InLineAlert, {
-      type: 'error',
-      description: `${error}`,
-    })(block);
-  });
 
   // Checkout button
   const checkoutButtonContainer = document.createElement('div');
@@ -326,8 +163,7 @@ export default async function decorate(block) {
     })(checkoutButtonContainer);
   };
 
-  // Only render containers if we have permissions
-  if (quoteId && hasQuotePermissions) {
+  if (quoteId) {
     block.classList.add('negotiable-quote__manage');
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
@@ -463,13 +299,11 @@ export default async function decorate(block) {
       if (!document.body.contains(block)) {
         deleteListener?.off();
         duplicateListener?.off();
-        permissionsListener?.off();
-        errorListener?.off();
         observer.disconnect();
       }
     });
     observer.observe(document.body, { childList: true, subtree: true });
-  } else if (!quoteId && hasQuotePermissions) {
+  } else {
     block.classList.add('negotiable-quote__list');
     block.setAttribute('data-quote-view', 'list');
     await negotiableQuoteRenderer.render(QuotesListTable, {
@@ -506,15 +340,11 @@ export default async function decorate(block) {
     window.location.href = url.toString(); // Reload the page to show the list view
   });
 
-  // Clean up all listeners if block is removed
-  if (!quoteId) {
-    const observer = new MutationObserver(() => {
-      if (!document.body.contains(block)) {
-        permissionsListener?.off();
-        errorListener?.off();
-        observer.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
+  // Render error when quote data fails to load
+  events.on('quote-management/quote-data/error', ({ error }) => {
+    UI.render(InLineAlert, {
+      type: 'error',
+      description: `${error}`,
+    })(block);
+  });
 }
