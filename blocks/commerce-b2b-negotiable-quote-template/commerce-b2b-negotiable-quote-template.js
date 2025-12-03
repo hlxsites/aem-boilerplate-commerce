@@ -52,22 +52,32 @@ import {
 const checkPermissions = async () => {
   // Check authentication
   if (!checkIsAuthenticated()) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Not authenticated, redirecting');
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return false;
   }
 
   // Check if company functionality is enabled
   const isEnabled = await companyEnabled();
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Company enabled:', isEnabled);
   if (!isEnabled) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Company NOT enabled, redirecting');
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return false;
   }
 
   // Check if customer has a company
   try {
-    await getCompany();
+    const company = await getCompany();
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] User has company:', company);
   } catch (error) {
     // Customer doesn't have a company or error occurred
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] User does NOT have company, redirecting. Error:', error);
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return false;
   }
@@ -111,14 +121,25 @@ const showEmptyState = (container, message) => {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Starting decoration');
+
   // Check if user has permissions to access the block
   const hasPermissions = await checkPermissions();
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Basic permissions check result:', hasPermissions);
 
   // Return early if user doesn't have permissions
-  if (!hasPermissions) return;
+  if (!hasPermissions) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] No basic permissions, exiting');
+    return;
+  }
 
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Template ID:', quoteTemplateId || 'none (list view)');
 
   /**
    * Map auth permissions to quote template permissions
@@ -156,17 +177,31 @@ export default async function decorate(block) {
    * @param {Object} permissions - Auth permissions object
    */
   const checkAndRenderPermissions = (permissions) => {
-    if (hasRendered) return; // Prevent multiple renders
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] checkAndRenderPermissions called with:', permissions);
+
+    if (hasRendered) {
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] Already rendered, skipping');
+      return;
+    }
 
     const mappedPermissions = mapQuoteTemplatePermissions(permissions);
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Mapped permissions:', mappedPermissions);
+
     const hasAccess = !quoteTemplateId
       ? (mappedPermissions.viewQuoteTemplates || mappedPermissions.manageQuoteTemplates)
       : mappedPermissions.manageQuoteTemplates;
 
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Has access:', hasAccess);
     hasQuoteTemplatePermissions = hasAccess;
 
     if (!hasAccess) {
       // No permissions - show warning banner
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] NO PERMISSIONS - Showing warning banner');
       const title = 'Access Restricted';
       const message = !quoteTemplateId
         ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
@@ -177,6 +212,8 @@ export default async function decorate(block) {
       hasRendered = true;
       shouldRenderContainers = false;
     } else {
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] HAS PERMISSIONS - Will render containers');
       hasRendered = true;
       shouldRenderContainers = true;
     }
@@ -184,22 +221,40 @@ export default async function decorate(block) {
 
   // Check initial permissions
   const initialPermissions = events.lastPayload('auth/permissions');
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Initial permissions from lastPayload:', initialPermissions);
 
   // If auth/permissions has already been emitted, check immediately
   if (initialPermissions !== undefined) {
     checkAndRenderPermissions(initialPermissions);
-    if (!shouldRenderContainers) return; // Exit early if no permissions
+    if (!shouldRenderContainers) {
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] No permissions, exiting early');
+      return; // Exit early if no permissions
+    }
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Has permissions, continuing');
+  } else {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Permissions not loaded yet, waiting');
   }
 
   // Listen for permission updates (especially for first-time load)
   const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] auth/permissions event received:', authPermissions);
+
     // If we haven't rendered yet (permissions came after block load), render now
     if (hasQuoteTemplatePermissions === null) {
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] First time receiving permissions, rendering now');
       checkAndRenderPermissions(authPermissions);
       // If no permissions, the function already showed the warning and we're done
       // If has permissions, continue below to render containers
     } else {
       // Permissions changed after initial render
+      // eslint-disable-next-line no-console
+      console.log('[Quote Template Block] Permissions changed after initial render');
       const permissions = mapQuoteTemplatePermissions(authPermissions);
       const currentHasPermissions = !quoteTemplateId
         ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
@@ -207,6 +262,8 @@ export default async function decorate(block) {
 
       // If permissions were revoked
       if (!currentHasPermissions && hasQuoteTemplatePermissions) {
+        // eslint-disable-next-line no-console
+        console.log('[Quote Template Block] Permissions revoked, showing warning');
         hasQuoteTemplatePermissions = false;
         hasRendered = false;
         block.innerHTML = '';
@@ -217,9 +274,14 @@ export default async function decorate(block) {
 
   // If permissions haven't loaded yet, wait for them before rendering
   if (hasQuoteTemplatePermissions === null) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Template Block] Waiting for permissions, exiting early');
     // Exit and wait for auth/permissions event
     return;
   }
+
+  // eslint-disable-next-line no-console
+  console.log('[Quote Template Block] Proceeding to render containers');
 
   // Only render containers if we have permissions
   if (quoteTemplateId && hasQuoteTemplatePermissions) {
