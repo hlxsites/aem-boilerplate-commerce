@@ -1,15 +1,47 @@
 # Pre Setup for B2B specific
+
+## For ACCS SaaS Backend (Remote)
+
 1. Created server to server auth project 
-   Note, these credetials are needed only for Admin Rest API interactions and not for Storefront graphql
+   Note, these credentials are needed only for Admin Rest API interactions and not for Storefront graphql
  
    Reference https://developer.adobe.com/commerce/webapi/rest/authentication/ 
 
 2. Set cypress local env variable, these can be found in vault pre-fixed with LOCAL
- `export CYPRESS_API_ENDPOINT=#######`  
- `export CYPRESS_IMS_CLIENT_ID=#######`  
- `export CYPRESS_IMS_ORG_ID=#######`  
- `export CYPRESS_IMS_CLIENT_SECRET=#######`  
-  Same variables are set in Github Secret management for CI, these pre-fixed with CI in vault
+   ```bash
+   export CYPRESS_API_ENDPOINT=#######
+   export CYPRESS_IMS_CLIENT_ID=#######
+   export CYPRESS_IMS_ORG_ID=#######
+   export CYPRESS_IMS_CLIENT_SECRET=#######
+   ```
+   Same variables are set in Github Secret management for CI, these pre-fixed with CI in vault
+
+## For Local Backend (PaaS/Self-Hosted)
+
+1. Ensure your local Magento 2 instance has B2B modules installed and enabled:
+   ```bash
+   bin/magento module:status | grep Magento_Company
+   ```
+
+2. Configure your local backend URL in `cypress.b2b.paas.config.js` (default: `https://mcstaging.aemshop.net/graphql`)
+   
+   Or override with environment variable:
+   ```bash
+   export CYPRESS_graphqlEndPoint=https://your-local-magento.local/graphql
+   ```
+
+3. For API calls to work with local backend, you need to set up API credentials:
+   ```bash
+   export CYPRESS_API_ENDPOINT=https://your-local-magento.local
+   export CYPRESS_IMS_CLIENT_ID=your_integration_access_token
+   # For local Magento, IMS_ORG_ID and IMS_CLIENT_SECRET are optional
+   ```
+
+4. Ensure B2B features are enabled in your local Magento:
+   - Stores > Configuration > General > B2B Features > Enable Company: **Yes**
+   - Stores > Configuration > General > B2B Features > Enable B2B Quote: **Yes**
+   - Stores > Configuration > General > B2B Features > Enable Purchase Orders: **Yes**
+   - Stores > Configuration > General > B2B Features > Enable Requisition Lists: **Yes**
 
 # Running E2E tests
 
@@ -21,7 +53,30 @@
 
 ## SaaS vs PaaS Configs
 
-All commands use a base config, defined in `cypress.base.config.js` and extend in the corresponding config,  `cypress.paas.config.js`, `cypress.saas.config.js`, `cypress.b2b.saas.config`, `cypress.b2b.paas.config` This allows us to use variables for things which differ in the environments, such as gift card codes, product option uids, etc.
+All commands use a base config, defined in `cypress.base.config.js` and extend in the corresponding config:
+- `cypress.paas.config.js` - B2C tests on PaaS/local backend
+- `cypress.saas.config.js` - B2C tests on ACCS SaaS backend  
+- `cypress.b2b.saas.config.js` - B2B tests on ACCS SaaS backend
+- `cypress.b2b.paas.config.js` - B2B tests on PaaS/local backend
+
+This allows us to use variables for things which differ in the environments, such as gift card codes, product option uids, etc.
+
+### Running Company Management Tests
+
+**On ACCS SaaS Backend (Remote):**
+```bash
+npm run cypress:b2b:saas:run -- --spec "src/tests/b2b/verifyCompany*.spec.js"
+```
+
+**On Local Backend:**
+```bash
+npm run cypress:b2b:paas:run -- --spec "src/tests/b2b/verifyCompany*.spec.js"
+```
+
+**Open Cypress UI (Local Backend):**
+```bash
+npm run cypress:b2b:paas:open
+```
 
 ### Skipping Tests
 

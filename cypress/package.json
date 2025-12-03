@@ -9,7 +9,10 @@
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
     "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas",
     "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js",
-    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas"
+    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
+    "cypress:b2b:local:open": "cypress open --browser chrome --config-file cypress.b2b.local.config.js",
+    "cypress:b2b:local:run": "cypress run --config-file cypress.b2b.local.config.js",
+    "cypress:b2b:local:headed": "cypress run --headed --browser chrome --config-file cypress.b2b.local.config.js"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
@@ -19,8 +22,9 @@
     "@cypress/grep": "^4.1.0",
     "@percy/cli": "^1.31.0",
     "@percy/cypress": "^3.1.6",
+    "axios": "^1.6.1",
     "cross-env": "^7.0.0",
-    "cypress": "^13.0.0",
+    "cypress": "^13.17.0",
     "cypress-dotenv": "2.0.0",
     "cypress-grep": "~2.14.0",
     "cypress-log-to-output": "^1.1.2",
@@ -35,7 +39,6 @@
     "mochawesome": "~7.1.0",
     "mochawesome-merge": "~4.3.0",
     "moment": "^2.23.0",
-    "yargs": "~17.7.0",
-    "axios": "^1.6.1"
+    "yargs": "~17.7.0"
   }
 }
