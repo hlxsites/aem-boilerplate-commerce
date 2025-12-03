@@ -45,64 +45,7 @@ import {
   rootLink,
 } from '../../scripts/commerce.js';
 
-/**
- * Show permission warning banner
- * @param {HTMLElement} container - Container to render warning into
- * @param {string} title - Warning title
- * @param {string} message - Warning message
- */
-const showPermissionWarning = (container, title, message) => {
-  const warningContainer = document.createElement('div');
-  warningContainer.classList.add('negotiable-quote-template__permission-warning');
-  container.prepend(warningContainer);
-
-  UI.render(InLineAlert, {
-    type: 'warning',
-    variant: 'primary',
-    heading: title,
-    children: message,
-  })(warningContainer);
-};
-
-/**
- * Show empty state with message
- * @param {HTMLElement} container - Container to render empty state into
- * @param {string} message - Empty state message
- */
-const showEmptyState = (container, message) => {
-  const emptyState = document.createElement('div');
-  emptyState.classList.add('negotiable-quote-template__empty-state');
-  emptyState.textContent = message;
-  container.appendChild(emptyState);
-};
-
-/**
- * Map auth permissions to quote template permissions
- * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
- * @returns {Object} Mapped quote template permissions
- */
-const mapQuoteTemplatePermissions = (authPermissions) => {
-  if (!authPermissions || typeof authPermissions !== 'object') {
-    return { viewQuoteTemplates: false, manageQuoteTemplates: false };
-  }
-
-  // Check for global permission
-  if (authPermissions.all === true) {
-    return { viewQuoteTemplates: true, manageQuoteTemplates: true };
-  }
-
-  // Check for Magento_NegotiableQuoteTemplate::all permission
-  const hasAllTemplatePermissions = authPermissions['Magento_NegotiableQuoteTemplate::all'] === true;
-
-  // Check for specific permissions
-  const hasManagePermission = authPermissions['Magento_NegotiableQuoteTemplate::manage'] === true;
-  const hasViewPermission = authPermissions['Magento_NegotiableQuoteTemplate::view_template'] === true;
-
-  return {
-    viewQuoteTemplates: hasAllTemplatePermissions || hasViewPermission || hasManagePermission,
-    manageQuoteTemplates: hasAllTemplatePermissions || hasManagePermission,
-  };
-};
+// Permission handling is now done in the dropin containers
 
 /**
  * Decorate the block
@@ -125,58 +68,8 @@ export default async function decorate(block) {
   // Get the quote template id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
-  // Track rendering state
-  let hasRendered = false;
-  let hasPermissions = false;
-
-  /**
-   * Check permissions and render appropriate UI
-   * @param {Object} authPermissions - Auth permissions object
-   */
-  const checkAndRender = (authPermissions) => {
-    if (hasRendered) return; // Prevent multiple renders
-
-    const permissions = mapQuoteTemplatePermissions(authPermissions);
-    const hasAccess = !quoteTemplateId
-      ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
-      : permissions.manageQuoteTemplates;
-
-    if (!hasAccess) {
-      // No permissions - show warning banner and empty state
-      const title = 'Access Restricted';
-      const message = !quoteTemplateId
-        ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
-        : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
-
-      showPermissionWarning(block, title, message);
-      showEmptyState(block, '');
-      hasRendered = true;
-      hasPermissions = false;
-    } else {
-      hasRendered = true;
-      hasPermissions = true;
-    }
-  };
-
-  // Check if permissions are already available
-  const initialPermissions = events.lastPayload('auth/permissions');
-
-  if (initialPermissions !== undefined) {
-    checkAndRender(initialPermissions);
-    if (!hasPermissions) return; // Exit early if no permissions
-  } else {
-    // Wait for permissions to load
-    const permissionsListener = events.on('auth/permissions', (authPermissions) => {
-      checkAndRender(authPermissions);
-      if (hasPermissions) {
-        // Permissions loaded and user has access - trigger a re-render
-        permissionsListener.off();
-        // Reload the page to render containers properly
-        window.location.reload();
-      }
-    }, { eager: true });
-    return; // Exit and wait for permissions
-  }
+  // Permission checking is now handled by the dropin containers
+  // They will show warning banners and empty states as needed
 
   if (quoteTemplateId) {
     block.classList.add('negotiable-quote-template__details');

@@ -47,63 +47,7 @@ import {
   fetchPlaceholders,
 } from '../../scripts/commerce.js';
 
-/**
- * Show permission warning banner
- * @param {HTMLElement} container - Container to render warning into
- * @param {string} title - Warning title
- * @param {string} message - Warning message
- */
-const showPermissionWarning = (container, title, message) => {
-  const warningContainer = document.createElement('div');
-  warningContainer.classList.add('negotiable-quote__permission-warning');
-  container.prepend(warningContainer);
-
-  UI.render(InLineAlert, {
-    type: 'warning',
-    variant: 'primary',
-    heading: title,
-    children: message,
-  })(warningContainer);
-};
-
-/**
- * Show empty state with message
- * @param {HTMLElement} container - Container to render empty state into
- * @param {string} message - Empty state message
- */
-const showEmptyState = (container, message) => {
-  const emptyState = document.createElement('div');
-  emptyState.classList.add('negotiable-quote__empty-state');
-  emptyState.textContent = message;
-  container.appendChild(emptyState);
-};
-
-/**
- * Map auth permissions to quote permissions
- * @param {Object} authPermissions - Raw auth permissions from auth/permissions event
- * @returns {Object} Mapped quote permissions
- */
-const mapQuotePermissions = (authPermissions) => {
-  if (!authPermissions || typeof authPermissions !== 'object') {
-    return { editQuote: false, requestQuote: false };
-  }
-
-  // Check for global permission
-  if (authPermissions.all === true) {
-    return { editQuote: true, requestQuote: true };
-  }
-
-  // Check for Magento_NegotiableQuote::all permission
-  const hasAllQuotePermissions = authPermissions['Magento_NegotiableQuote::all'] === true;
-
-  // Check for Magento_NegotiableQuote::manage permission
-  const hasManagePermission = authPermissions['Magento_NegotiableQuote::manage'] === true;
-
-  return {
-    editQuote: hasAllQuotePermissions || hasManagePermission,
-    requestQuote: hasAllQuotePermissions || hasManagePermission,
-  };
-};
+// Permission handling is now done in the dropin containers
 
 /**
  * Decorate the block
@@ -128,58 +72,8 @@ export default async function decorate(block) {
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
 
-  // Track rendering state
-  let hasRendered = false;
-  let hasPermissions = false;
-
-  /**
-   * Check permissions and render appropriate UI
-   * @param {Object} authPermissions - Auth permissions object
-   */
-  const checkAndRender = (authPermissions) => {
-    if (hasRendered) return; // Prevent multiple renders
-
-    const permissions = mapQuotePermissions(authPermissions);
-    const hasAccess = !quoteId
-      ? (permissions.editQuote || permissions.requestQuote)
-      : permissions.editQuote;
-
-    if (!hasAccess) {
-      // No permissions - show warning banner and empty state
-      const title = 'Access Restricted';
-      const message = !quoteId
-        ? 'You do not have permission to view quotes. Please contact your administrator for access.'
-        : 'You do not have permission to edit this quote. Please contact your administrator for access.';
-
-      showPermissionWarning(block, title, message);
-      showEmptyState(block, '');
-      hasRendered = true;
-      hasPermissions = false;
-    } else {
-      hasRendered = true;
-      hasPermissions = true;
-    }
-  };
-
-  // Check if permissions are already available
-  const initialPermissions = events.lastPayload('auth/permissions');
-
-  if (initialPermissions !== undefined) {
-    checkAndRender(initialPermissions);
-    if (!hasPermissions) return; // Exit early if no permissions
-  } else {
-    // Wait for permissions to load
-    const permissionsListener = events.on('auth/permissions', (authPermissions) => {
-      checkAndRender(authPermissions);
-      if (hasPermissions) {
-        // Permissions loaded and user has access - trigger a re-render
-        permissionsListener.off();
-        // Reload the page to render containers properly
-        window.location.reload();
-      }
-    }, { eager: true });
-    return; // Exit and wait for permissions
-  }
+  // Permission checking is now handled by the dropin containers
+  // They will show warning banners and empty states as needed
 
   // Checkout button
   const checkoutButtonContainer = document.createElement('div');
