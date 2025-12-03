@@ -125,23 +125,57 @@ export default async function decorate(block) {
   // Get the quote template id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
-  // Check permissions from auth/permissions event
-  const authPermissions = events.lastPayload('auth/permissions');
-  const permissions = mapQuoteTemplatePermissions(authPermissions);
-  const hasAccess = !quoteTemplateId
-    ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
-    : permissions.manageQuoteTemplates;
+  // Track rendering state
+  let hasRendered = false;
+  let hasPermissions = false;
 
-  // If no permissions, show warning banner and empty state
-  if (authPermissions && !hasAccess) {
-    const title = 'Access Restricted';
-    const message = !quoteTemplateId
-      ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
-      : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
+  /**
+   * Check permissions and render appropriate UI
+   * @param {Object} authPermissions - Auth permissions object
+   */
+  const checkAndRender = (authPermissions) => {
+    if (hasRendered) return; // Prevent multiple renders
 
-    showPermissionWarning(block, title, message);
-    showEmptyState(block, '');
-    return;
+    const permissions = mapQuoteTemplatePermissions(authPermissions);
+    const hasAccess = !quoteTemplateId
+      ? (permissions.viewQuoteTemplates || permissions.manageQuoteTemplates)
+      : permissions.manageQuoteTemplates;
+
+    if (!hasAccess) {
+      // No permissions - show warning banner and empty state
+      const title = 'Access Restricted';
+      const message = !quoteTemplateId
+        ? 'You do not have permission to view quote templates. Please contact your administrator for access.'
+        : 'You do not have permission to edit this quote template. Please contact your administrator for access.';
+
+      showPermissionWarning(block, title, message);
+      showEmptyState(block, '');
+      hasRendered = true;
+      hasPermissions = false;
+    } else {
+      hasRendered = true;
+      hasPermissions = true;
+    }
+  };
+
+  // Check if permissions are already available
+  const initialPermissions = events.lastPayload('auth/permissions');
+
+  if (initialPermissions !== undefined) {
+    checkAndRender(initialPermissions);
+    if (!hasPermissions) return; // Exit early if no permissions
+  } else {
+    // Wait for permissions to load
+    const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+      checkAndRender(authPermissions);
+      if (hasPermissions) {
+        // Permissions loaded and user has access - trigger a re-render
+        permissionsListener.off();
+        // Reload the page to render containers properly
+        window.location.reload();
+      }
+    }, { eager: true });
+    return; // Exit and wait for permissions
   }
 
   if (quoteTemplateId) {
