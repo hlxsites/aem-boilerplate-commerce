@@ -112,7 +112,9 @@ declare const _default: {
         "title": "Shipping Information"
       },
       "shippingAddress": {
-        "noAddress": "No shipping address has been set for this quote."
+        "noAddress": "No shipping address has been set for this quote.",
+        "noAddressHeading": "No Shipping Address",
+        "noAddressDescription": "Please select or enter a shipping address."
       },
       "quoteComments": {
         "title": "Quote Comments",
@@ -139,8 +141,11 @@ declare const _default: {
         "notes": {
           "header": "NOTES",
           "leftANote": "left a note:",
-          "buyer": "Buyer"
-        }
+          "buyer": "Buyer",
+          "seller": "Seller"
+        },
+        "outOfStock": "Out of Stock",
+        "outOfStockMessage": "This item is currently out of stock."
       },
       "rename": {
         "title": "Rename Quote",
@@ -460,6 +465,16 @@ declare const _default: {
       "lastOrdered": "Last Ordered",
       "actions": "Action",
       "view": "View"
+    },
+    "permissions": {
+      "noQuotesAccessTitle": "Access Restricted",
+      "noQuotesAccessMessage": "You do not have permission to view quotes. Please contact your administrator for access.",
+      "noQuoteTemplatesAccessTitle": "Access Restricted",
+      "noQuoteTemplatesAccessMessage": "You do not have permission to view quote templates. Please contact your administrator for access.",
+      "noEditQuoteAccessTitle": "Access Restricted",
+      "noEditQuoteAccessMessage": "You do not have permission to edit this quote. Please contact your administrator for access.",
+      "noEditQuoteTemplateAccessTitle": "Access Restricted",
+      "noEditQuoteTemplateAccessMessage": "You do not have permission to edit this quote template. Please contact your administrator for access."
     }
   }
 }

@@ -47,8 +47,6 @@ import {
   fetchPlaceholders,
 } from '../../scripts/commerce.js';
 
-// Permission handling is now done in the dropin containers
-
 /**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
@@ -71,9 +69,6 @@ export default async function decorate(block) {
 
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
-
-  // Permission checking is now handled by the dropin containers
-  // They will show warning banners and empty states as needed
 
   // Checkout button
   const checkoutButtonContainer = document.createElement('div');

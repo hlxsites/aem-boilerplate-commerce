@@ -45,8 +45,6 @@ import {
   rootLink,
 } from '../../scripts/commerce.js';
 
-// Permission handling is now done in the dropin containers
-
 /**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
@@ -67,9 +65,6 @@ export default async function decorate(block) {
 
   // Get the quote template id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
-
-  // Permission checking is now handled by the dropin containers
-  // They will show warning banners and empty states as needed
 
   if (quoteTemplateId) {
     block.classList.add('negotiable-quote-template__details');
