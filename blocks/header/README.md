@@ -85,11 +85,12 @@ The header creates three main sections from the nav fragment:
 1. **Sign In Flow**: 
    - Unauthenticated users see sign-in form in dropdown
    - Modal option available via `renderAuthCombine` for mobile
-   - On successful login, page reloads to reflect authenticated state
+   - On successful login, page automatically reloads to ensure all components reflect the authenticated state
 2. **Sign Out Flow**:
    - Authenticated users see account menu with logout button
-   - Logout revokes token and either redirects or reloads page
-   - Special redirects: checkout → cart, customer pages → login, order details → home
+   - Logout revokes token asynchronously, then either redirects to a specific page or reloads the current page
+   - Special redirects on logout: checkout → cart, customer pages → login, order details → home
+   - All other pages simply reload to reflect the logged-out state
 3. **User Display**: Dropdown shows "Hi, {firstname}" for authenticated users
 
 ### State Management
