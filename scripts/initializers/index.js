@@ -8,7 +8,6 @@ import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../comm
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
-const adobeCommerceOptimizerEnabled = getConfigValue('adobe-commerce-optimizer') || false;
 
 const setAuthHeaders = (state) => {
   if (state) {
@@ -55,6 +54,8 @@ const setupAemAssetsImageParams = () => {
 
 export default async function initializeDropins() {
   const init = async () => {
+    const adobeCommerceOptimizerEnabled = getConfigValue('adobe-commerce-optimizer') || false;
+
     // Not used in ACO – causes conflict.
     if (adobeCommerceOptimizerEnabled) {
       // Set Commerce Optimizer header
