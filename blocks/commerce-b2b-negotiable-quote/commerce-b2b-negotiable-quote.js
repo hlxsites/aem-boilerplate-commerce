@@ -54,20 +54,32 @@ import {
 const checkPermissions = async () => {
   // Check authentication
   if (!checkIsAuthenticated()) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] Not authenticated in checkPermissions, redirecting');
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
   }
 
   // Check if company functionality is enabled
   const isEnabled = await companyEnabled();
+  // eslint-disable-next-line no-console
+  console.log('[Quote Block] Company enabled:', isEnabled);
   if (!isEnabled) {
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] Company NOT enabled, redirecting to account');
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+    return;
   }
 
   // Check if customer has a company
   try {
-    await getCompany();
+    const company = await getCompany();
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] User has company:', company);
   } catch (error) {
     // Customer doesn't have a company or error occurred
+    // eslint-disable-next-line no-console
+    console.log('[Quote Block] User does NOT have company, redirecting to account. Error:', error);
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
   }
 };
@@ -108,9 +120,11 @@ const showEmptyState = (container, message) => {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Starting decoration');
-  
+
   if (!checkIsAuthenticated()) {
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Not authenticated, redirecting to login');
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
@@ -119,12 +133,15 @@ export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
   // IMPORTANT: Must await this to prevent race condition
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Checking basic permissions (company, etc.)');
   await checkPermissions();
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Basic permissions check passed');
 
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Quote ID:', quoteId || 'none (list view)');
 
   /**
@@ -164,25 +181,30 @@ export default async function decorate(block) {
    * @param {Object} permissions - Auth permissions object
    */
   const checkAndRenderPermissions = (permissions) => {
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] checkAndRenderPermissions called with:', permissions);
 
     if (hasRendered) {
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] Already rendered, skipping');
       return;
     }
 
     const mappedPermissions = mapQuotePermissions(permissions);
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Mapped permissions:', mappedPermissions);
 
     const hasPermissions = !quoteId
       ? (mappedPermissions.editQuote || mappedPermissions.requestQuote)
       : mappedPermissions.editQuote;
 
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Has access:', hasPermissions);
     hasQuotePermissions = hasPermissions;
 
     if (!hasPermissions) {
       // No permissions - show warning banner
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] NO PERMISSIONS - Showing warning banner');
       const title = 'Access Restricted';
       const message = !quoteId
@@ -194,6 +216,7 @@ export default async function decorate(block) {
       hasRendered = true;
       shouldRenderContainers = false;
     } else {
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] HAS PERMISSIONS - Will render containers');
       hasRendered = true;
       shouldRenderContainers = true;
@@ -202,32 +225,39 @@ export default async function decorate(block) {
 
   // Check initial permissions
   const initialPermissions = events.lastPayload('auth/permissions');
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Initial permissions from lastPayload:', initialPermissions);
 
   // If auth/permissions has already been emitted, check immediately
   if (initialPermissions !== undefined) {
     checkAndRenderPermissions(initialPermissions);
     if (!shouldRenderContainers) {
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] No permissions, exiting early');
       return; // Exit early if no permissions
     }
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Has permissions, continuing to render containers');
   } else {
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Permissions not loaded yet, will wait for auth/permissions event');
   }
 
   // Listen for permission updates (especially for first-time load)
   const permissionsListener = events.on('auth/permissions', (authPermissions) => {
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] auth/permissions event received:', authPermissions);
-    
+
     // If we haven't rendered yet (permissions came after block load), render now
     if (hasQuotePermissions === null) {
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] First time receiving permissions, rendering now');
       checkAndRenderPermissions(authPermissions);
       // If no permissions, the function already showed the warning and we're done
       // If has permissions, continue below to render containers
     } else {
       // Permissions changed after initial render
+      // eslint-disable-next-line no-console
       console.log('[Quote Block] Permissions changed after initial render');
       const permissions = mapQuotePermissions(authPermissions);
       const currentHasPermissions = !quoteId
@@ -236,6 +266,7 @@ export default async function decorate(block) {
 
       // If permissions were revoked
       if (!currentHasPermissions && hasQuotePermissions) {
+        // eslint-disable-next-line no-console
         console.log('[Quote Block] Permissions revoked, clearing and showing warning');
         hasQuotePermissions = false;
         hasRendered = false;
@@ -247,11 +278,13 @@ export default async function decorate(block) {
 
   // If permissions haven't loaded yet, wait for them before rendering
   if (hasQuotePermissions === null) {
+    // eslint-disable-next-line no-console
     console.log('[Quote Block] Waiting for permissions, exiting early');
     // Exit and wait for auth/permissions event
     return;
   }
-  
+
+  // eslint-disable-next-line no-console
   console.log('[Quote Block] Proceeding to render containers');
 
   // Render error when quote data fails to load
