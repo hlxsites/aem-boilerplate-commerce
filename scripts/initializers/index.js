@@ -8,7 +8,6 @@ import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../comm
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
-
 const setAuthHeaders = (state) => {
   if (state) {
     const token = getUserTokenCookie();
