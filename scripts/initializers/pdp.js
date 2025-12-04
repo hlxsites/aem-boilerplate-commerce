@@ -114,7 +114,8 @@ await initializeDropin(async () => {
     // Reload PDP when company context changes
     const loadedProduct = await getProductData(false);
     if (!loadedProduct?.sku) {
-      return loadErrorPage();
+      loadErrorPage();
+      return;
     }
     events.emit('pdp/data', loadedProduct);
   });
