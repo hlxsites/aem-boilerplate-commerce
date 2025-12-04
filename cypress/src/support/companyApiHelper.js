@@ -69,11 +69,14 @@ async function findCompanyByEmail(companyEmail) {
   try {
     safeLog(`🔍 Searching for company with email: ${companyEmail}`);
 
-    const response = await client.getWithSearch('/V1/company', {
-      filters: [
-        { field: 'company_email', value: companyEmail, conditionType: 'eq' },
-      ],
-    });
+    // Use flat query params like b2bPOAPICalls.js does
+    const queryParams = {
+      'searchCriteria[filterGroups][0][filters][0][field]': 'company_email',
+      'searchCriteria[filterGroups][0][filters][0][value]': companyEmail,
+      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
+    };
+
+    const response = await client.get('/V1/company', queryParams);
 
     if (response.items && response.items.length > 0) {
       safeLog(`✅ Found company: ${response.items[0].company_name} (ID: ${response.items[0].id})`);
@@ -103,11 +106,14 @@ async function findCompanyByName(companyName) {
   try {
     safeLog(`🔍 Searching for company with name: ${companyName}`);
 
-    const response = await client.getWithSearch('/V1/company', {
-      filters: [
-        { field: 'company_name', value: `%${companyName}%`, conditionType: 'like' },
-      ],
-    });
+    // Use flat query params like b2bPOAPICalls.js does
+    const queryParams = {
+      'searchCriteria[filterGroups][0][filters][0][field]': 'company_name',
+      'searchCriteria[filterGroups][0][filters][0][value]': `%${companyName}%`,
+      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'like',
+    };
+
+    const response = await client.get('/V1/company', queryParams);
 
     if (response.items && response.items.length > 0) {
       safeLog(`✅ Found ${response.items.length} company(ies)`);
@@ -247,11 +253,14 @@ async function findCustomerByEmail(customerEmail) {
   try {
     safeLog(`🔍 Searching for customer with email: ${customerEmail}`);
 
-    const response = await client.getWithSearch('/V1/customers/search', {
-      filters: [
-        { field: 'email', value: customerEmail, conditionType: 'eq' },
-      ],
-    });
+    // Use flat query params like b2bPOAPICalls.js does
+    const queryParams = {
+      'searchCriteria[filterGroups][0][filters][0][field]': 'email',
+      'searchCriteria[filterGroups][0][filters][0][value]': customerEmail,
+      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
+    };
+
+    const response = await client.get('/V1/customers/search', queryParams);
 
     if (response.items && response.items.length > 0) {
       safeLog(`✅ Found customer: ${response.items[0].firstname} ${response.items[0].lastname} (ID: ${response.items[0].id})`);
