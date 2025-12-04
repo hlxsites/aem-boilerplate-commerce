@@ -42,7 +42,7 @@ import {
   cleanupTestCompany,
 } from '../../support/companyApiHelper';
 
-describe('USF-2528: Company Registration', () => {
+describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   before(() => {
     cy.logToTerminal('🚀 Company Registration test suite started');
   });
