@@ -55,6 +55,38 @@ export const companyRegistrationSuccessMessage =
   "Thank you! We're reviewing your request and will contact you soon.";
 
 /**
+ * TC-02: Test data with ALL fields filled (required + optional).
+ * Used for authenticated user company creation test.
+ * @type {Object}
+ */
+export const companyRegistrationDataAllFields = {
+  company: {
+    companyName: 'Full Test Company',
+    legalName: 'Full Test Company Legal Inc.',
+    companyEmail: 'fulltest@example.com', // Will be overridden with dynamic email
+    vatTaxId: 'VAT-FULL-123456',
+    resellerId: 'RES-FULL-789012',
+  },
+  legalAddress: {
+    street: '789 Complete Avenue',
+    streetLine2: 'Building B, Floor 5',
+    city: 'Full City',
+    postcode: '54321',
+    telephone: '9876543210',
+    countryCode: 'US',
+    region: 'California',
+  },
+  companyAdmin: {
+    firstName: 'Sarah',
+    lastName: 'Johnson',
+    email: 'sarah.johnson@example.com', // Will be overridden with dynamic email
+    jobTitle: 'Chief Executive Officer',
+    workTelephone: '5551234567',
+    gender: 'Female',
+  },
+};
+
+/**
  * USF-3439: Test data for UK company with empty region.
  * UK does not require region/state field.
  * @type {Object}
