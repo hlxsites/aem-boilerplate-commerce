@@ -44,97 +44,109 @@ import {
 
 describe('USF-2528: Company Registration', () => {
   before(() => {
-    cy.log('🚀 Company Registration test suite started');
-    // Debug: Log environment variables
-    cy.log(`📋 API_ENDPOINT: ${Cypress.env('API_ENDPOINT') || 'NOT SET'}`);
-    cy.log(`📋 IMS_CLIENT_ID: ${Cypress.env('IMS_CLIENT_ID') ? 'SET' : 'NOT SET'}`);
-    cy.log(`📋 IMS_CLIENT_SECRET: ${Cypress.env('IMS_CLIENT_SECRET') ? 'SET' : 'NOT SET'}`);
-    cy.log(`📋 IMS_ORG_ID: ${Cypress.env('IMS_ORG_ID') ? 'SET' : 'NOT SET'}`);
+    cy.logToTerminal('🚀 Company Registration test suite started');
   });
 
   beforeEach(() => {
-    cy.log('🧹 Clearing cookies and local storage');
+    cy.logToTerminal('🧹 Company Registration test cleanup');
     cy.clearCookies();
     cy.clearLocalStorage();
-
     cy.intercept('**/graphql').as('defaultGraphQL');
   });
 
   afterEach(() => {
-    cy.log('🗑️ Cleaning up test data');
+    cy.logToTerminal('🗑️ Cleaning up test data');
     cy.then(async () => {
       try {
         await cleanupTestCompany();
+        cy.logToTerminal('✅ Test data cleanup completed');
       } catch (error) {
-        cy.log(`⚠️ Cleanup failed: ${error.message}`);
+        cy.logToTerminal(`⚠️ Cleanup failed: ${error.message}`);
       }
     });
   });
 
   it('USF-2789: Verify company registration via navigation menu', () => {
-    cy.log('📍 Navigate to homepage');
+    cy.logToTerminal('========= 📝 Test 1: Company registration via navigation menu =========');
+
+    cy.logToTerminal('📍 Navigate to homepage');
     cy.visit('/');
 
-    cy.log('✅ Assert homepage loaded');
+    cy.logToTerminal('✅ Assert homepage loaded');
     assertHomePageLoaded();
     assertAccountSectionAccessible();
 
-    cy.log('🔗 Navigate to company registration via menu');
+    cy.logToTerminal('🔗 Navigate to company registration via menu');
     navigateToCompanyRegistration();
 
     testCompanyRegistrationFlow(companyRegistrationData);
+    cy.logToTerminal('✅ Test 1: Company registration via navigation menu completed');
   });
 
   it('USF-2789: Verify company registration via direct URL', () => {
-    cy.log('📍 Navigate directly to company registration page');
+    cy.logToTerminal('========= 📝 Test 2: Company registration via direct URL =========');
+
+    cy.logToTerminal('📍 Navigate directly to company registration page');
     cy.visit(COMPANY_CREATE_PATH);
 
     testCompanyRegistrationFlow(companyRegistrationData);
+    cy.logToTerminal('✅ Test 2: Company registration via direct URL completed');
   });
 
   it('USF-2789: Verify company registration for authenticated non-company user', () => {
-    cy.log('👤 Create and authenticate user');
+    cy.logToTerminal('========= 📝 Test 3: Registration for authenticated non-company user =========');
+
+    cy.logToTerminal('👤 Create and authenticate user');
     createAuthenticatedUser();
 
-    cy.log('📍 Navigate to homepage');
+    cy.logToTerminal('📍 Navigate to homepage');
     cy.visit('/');
 
-    cy.log('🔗 Navigate to company registration');
+    cy.logToTerminal('🔗 Navigate to company registration');
     navigateToCompanyRegistration();
 
-    cy.log('✅ Verify page loaded without errors');
+    cy.logToTerminal('✅ Verify page loaded without errors');
     cy.get('body').should('not.contain', 'Page Not Found');
     cy.get('body').should('not.contain', '404');
 
-    cy.log('✅ Verify registration form is accessible');
+    cy.logToTerminal('✅ Verify registration form is accessible');
     cy.url().should('include', COMPANY_CREATE_PATH);
     assertCompanyRegistrationForm();
+    cy.logToTerminal('✅ Test 3: Authenticated non-company user can access registration');
   });
 
   it('USF-2790: Verify redirect to login from navigation menu for unauthenticated users when configuration disabled', () => {
-    cy.log('🔧 Mock disabled configuration');
+    cy.logToTerminal('========= 🔒 Test 4: Redirect to login (nav menu, config disabled) =========');
+
+    cy.logToTerminal('🔧 Mock disabled configuration');
     mockDisabledConfiguration();
 
-    cy.log('📍 Navigate to homepage');
+    cy.logToTerminal('📍 Navigate to homepage');
     cy.visit('/');
 
-    cy.log('✅ Verify redirect to login');
+    cy.logToTerminal('✅ Verify redirect to login');
     testCompanyRegistrationRedirect('login');
+    cy.logToTerminal('✅ Test 4: Redirect to login verified');
   });
 
   it('USF-2790: Verify redirect to login from direct url for unauthenticated users when configuration disabled', () => {
-    cy.log('🔧 Mock disabled configuration');
+    cy.logToTerminal('========= 🔒 Test 5: Redirect to login (direct URL, config disabled) =========');
+
+    cy.logToTerminal('🔧 Mock disabled configuration');
     mockDisabledConfiguration();
 
-    cy.log('📍 Navigate directly to company registration');
+    cy.logToTerminal('📍 Navigate directly to company registration');
     cy.visit(COMPANY_CREATE_PATH);
 
-    cy.log('✅ Verify redirect to login');
+    cy.logToTerminal('✅ Verify redirect to login');
     cy.url().should('include', '/customer/login');
+    cy.logToTerminal('✅ Test 5: Redirect to login verified');
   });
 
   it('USF-2790: Verify redirect to account for authenticated users when configuration disabled', () => {
-    cy.log('🔧 Mock disabled configuration (allow real auth)');
+    cy.logToTerminal('========= 🔒 Test 6: Redirect to account (authenticated, config disabled) =========');
+
+    cy.logToTerminal('🔧 Mock disabled configuration (allow real auth)');
     cy.intercept('POST', '**/graphql', (req) => {
       if (req.body.query && req.body.query.includes('allow_company_registration')) {
         req.reply({
@@ -152,34 +164,41 @@ describe('USF-2528: Company Registration', () => {
       }
     }).as('configDisabledWithRealAuth');
 
-    cy.log('👤 Create and authenticate user');
+    cy.logToTerminal('👤 Create and authenticate user');
     createAuthenticatedUser();
 
-    cy.log('📍 Navigate to homepage');
+    cy.logToTerminal('📍 Navigate to homepage');
     cy.visit('/');
 
-    cy.log('🔗 Navigate to company registration');
+    cy.logToTerminal('🔗 Navigate to company registration');
     navigateToCompanyRegistration();
 
-    cy.log('✅ Verify redirect to account');
+    cy.logToTerminal('✅ Verify redirect to account');
     cy.url().should('include', '/customer/account');
+    cy.logToTerminal('✅ Test 6: Redirect to account verified');
   });
 
   // USF-3439: Tests for countries without required regions
   it('USF-3439: Verify company registration for UK with empty region', () => {
-    cy.log('📍 Navigate to company registration page');
+    cy.logToTerminal('========= 🇬🇧 Test 7: UK company registration with empty region =========');
+
+    cy.logToTerminal('📍 Navigate to company registration page');
     cy.visit(COMPANY_CREATE_PATH);
 
-    cy.log('🇬🇧 Test UK company with empty region');
+    cy.logToTerminal('🇬🇧 Test UK company with empty region');
     testCompanyRegistrationFlow(companyRegistrationDataUKNoRegion);
+    cy.logToTerminal('✅ Test 7: UK company with empty region registered successfully');
   });
 
   it('USF-3439: Verify company registration for UK with optional region name', () => {
-    cy.log('📍 Navigate to company registration page');
+    cy.logToTerminal('========= 🇬🇧 Test 8: UK company registration with optional region =========');
+
+    cy.logToTerminal('📍 Navigate to company registration page');
     cy.visit(COMPANY_CREATE_PATH);
 
-    cy.log('🇬🇧 Test UK company with optional region');
+    cy.logToTerminal('🇬🇧 Test UK company with optional region');
     testCompanyRegistrationFlow(companyRegistrationDataUKWithRegion);
+    cy.logToTerminal('✅ Test 8: UK company with optional region registered successfully');
   });
 });
 
@@ -192,32 +211,32 @@ describe('USF-2528: Company Registration', () => {
  * @param {Object} testData.companyAdmin - Admin information
  */
 const testCompanyRegistrationFlow = (testData) => {
-  cy.log('✅ Verify page URL and title');
+  cy.logToTerminal('✅ Verify page URL and title');
   cy.url().should('include', COMPANY_CREATE_PATH);
   cy.title().should('not.be.empty');
 
-  cy.log('✅ Verify page loaded without errors');
+  cy.logToTerminal('✅ Verify page loaded without errors');
   cy.get('body').should('not.contain', 'Page Not Found');
   cy.get('body').should('not.contain', '404');
 
-  cy.log('✅ Verify form containers exist');
+  cy.logToTerminal('✅ Verify form containers exist');
   cy.get('.commerce-company-create-container', { timeout: 8000 }).should('exist');
   cy.get('.company-registration-container', { timeout: 8000 }).should('exist');
   cy.get('.company-form', { timeout: 8000 }).should('exist');
 
-  cy.log('📝 Verify form fields are present');
+  cy.logToTerminal('📝 Verify form fields are present');
   assertCompanyRegistrationForm();
 
-  cy.log(`📝 Fill company registration form: ${testData.company.companyName}`);
+  cy.logToTerminal(`📝 Fill company registration form: ${testData.company.companyName}`);
   fillCompanyRegistrationForm(testData);
 
-  cy.log('🚀 Submit registration form');
+  cy.logToTerminal('🚀 Submit registration form');
   submitCompanyRegistrationForm();
 
-  cy.log('✅ Verify successful registration on UI');
+  cy.logToTerminal('✅ Verify successful registration on UI');
   assertCompanyRegistrationSuccess(testData);
 
-  cy.log('🔍 Verify company in backend via REST API');
+  cy.logToTerminal('🔍 Verify company in backend via REST API');
   verifyCompanyInBackend(testData);
 };
 
@@ -237,14 +256,14 @@ const verifyCompanyInBackend = (testData) => {
   }
 
   cy.then(async () => {
-    cy.log(`🔍 Verifying company in backend: ${companyEmail}`);
+    cy.logToTerminal(`🔍 Verifying company in backend: ${companyEmail}`);
     
     const result = await verifyCompanyCreated(companyEmail, {
       companyName: testData.company.companyName,
     });
 
     if (result.success) {
-      cy.log(`✅ Backend verified: ID=${result.company.id}, Status=${result.company.status}`);
+      cy.logToTerminal(`✅ Backend verified: ID=${result.company.id}, Status=${result.company.status}`);
     } else {
       // Fail the test - backend verification is required
       throw new Error(`Backend verification failed: ${result.error}`);
@@ -258,27 +277,27 @@ const verifyCompanyInBackend = (testData) => {
  * @throws {Error} If unknown destination is provided
  */
 const testCompanyRegistrationRedirect = (expectedDestination) => {
-  cy.log('📍 Navigate to company registration page');
+  cy.logToTerminal('📍 Navigate to company registration page');
   cy.visit(COMPANY_CREATE_PATH);
 
   cy.url({ timeout: 3000 });
 
-  cy.log(`✅ Verify redirect to: ${expectedDestination}`);
+  cy.logToTerminal(`✅ Verify redirect to: ${expectedDestination}`);
   switch (expectedDestination) {
     case 'form':
-      cy.log('📝 Expecting registration form');
+      cy.logToTerminal('📝 Expecting registration form');
       cy.url().should('include', COMPANY_CREATE_PATH);
       cy.get('.company-registration-container', { timeout: 5000 }).should('exist');
       cy.get('.company-form', { timeout: 5000 }).should('exist');
       break;
 
     case 'login':
-      cy.log('🔐 Expecting login page');
+      cy.logToTerminal('🔐 Expecting login page');
       cy.url().should('include', '/customer/login');
       break;
 
     case 'account':
-      cy.log('👤 Expecting account page');
+      cy.logToTerminal('👤 Expecting account page');
       cy.url().should('include', '/customer/account');
       break;
 
@@ -292,12 +311,12 @@ const testCompanyRegistrationRedirect = (expectedDestination) => {
  * Navigates to customer create page, fills form, and verifies authentication.
  */
 const createAuthenticatedUser = () => {
-  cy.log('📍 Navigate to customer create page');
+  cy.logToTerminal('📍 Navigate to customer create page');
   cy.visit('/customer/create');
   cy.fixture('userInfo').then(({ sign_up }) => {
-    cy.log('📝 Fill sign up form');
+    cy.logToTerminal('📝 Fill sign up form');
     signUpUser(sign_up);
-    cy.log('✅ Verify successful authentication');
+    cy.logToTerminal('✅ Verify successful authentication');
     cy.url().should('include', '/customer/account');
   });
 };
@@ -307,9 +326,9 @@ const createAuthenticatedUser = () => {
  * Sets up intercepts to return allow_company_registration: false.
  */
 const mockDisabledConfiguration = () => {
-  cy.log('🔧 Setting up mocks for disabled company registration');
+  cy.logToTerminal('🔧 Setting up mocks for disabled company registration');
 
-  cy.log('📡 Mock POST GraphQL requests');
+  cy.logToTerminal('📡 Mock POST GraphQL requests');
   cy.intercept('POST', '**/graphql', (req) => {
     if (req.body.query && req.body.query.includes('allow_company_registration')) {
       req.reply({
@@ -343,7 +362,7 @@ const mockDisabledConfiguration = () => {
     }
   }).as('disabledConfigMock');
 
-  cy.log('📡 Mock GET GraphQL requests');
+  cy.logToTerminal('📡 Mock GET GraphQL requests');
   cy.intercept('GET', '**/graphql*', {
     statusCode: 200,
     body: {
