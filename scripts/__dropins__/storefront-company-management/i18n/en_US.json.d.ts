@@ -8,6 +8,7 @@ declare const _default: {
         "legalName": "Legal Name",
         "vatTaxId": "VAT/Tax ID",
         "resellerId": "Reseller ID",
+        "accountInformation": "Account Information",
         "legalAddress": "Legal Address",
         "streetAddress": "Street Address",
         "city": "City",
@@ -374,6 +375,17 @@ declare const _default: {
       "selectRegion": "Please select a region, state or province",
       "selectCountryFirst": "Please select a country first",
       "companyNameLengthError": "Company name must be between {min} and {max} characters."
+    },
+    "AcceptInvitation": {
+      "title": "Accept Company Invitation",
+      "loadingText": "Processing your invitation...",
+      "successMessage": "You have successfully accepted the invitation to the company.",
+      "myAccountButton": "My Account",
+      "loginButton": "Go to Login",
+      "invalidLinkError": "Invalid invitation link. Please check the URL and try again.",
+      "companyDisabledError": "Company functionality is not enabled. Please contact the store administrator.",
+      "expiredLinkError": "This invitation link has expired or is no longer valid.",
+      "genericError": "An error occurred while processing your invitation. Please try again."
     },
     "RolesAndPermissions": {
       "containerTitle": "Company Roles & Permissions",
