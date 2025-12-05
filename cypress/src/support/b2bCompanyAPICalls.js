@@ -285,6 +285,7 @@ async function verifyCompanyCreated(companyEmail, expectedData = {}) {
 /**
  * Update company profile via REST API.
  * Uses PUT /V1/company/:companyId as documented in Adobe REST API reference.
+ * The company ID must be included in the payload as well.
  *
  * @param {number} companyId - Company ID
  * @param {Object} updates - Fields to update (company_name, legal_name, etc.)
@@ -295,8 +296,16 @@ async function updateCompanyProfile(companyId, updates) {
 
   safeLog('📝 Updating company:', companyId, updates);
 
+  // Include id in the company payload as required by the API
+  const payload = {
+    company: {
+      id: companyId,
+      ...updates,
+    },
+  };
+
   // PUT /V1/company/:companyId per Adobe REST API documentation
-  const result = await client.put(`/V1/company/${companyId}`, { company: updates });
+  const result = await client.put(`/V1/company/${companyId}`, payload);
 
   if (result.error) {
     safeError('❌ Company update failed:', result);
@@ -356,10 +365,6 @@ async function deleteCompanyByEmail(companyEmail) {
  * Create a customer via REST API and assign to company.
  * Uses PUT /V1/customers/:customerId with extension_attributes.company_attributes
  * to assign the customer to a company.
- *
- * NOTE: According to Adobe documentation, this REST endpoint is NOT supported
- * in Adobe Commerce as a Cloud Service (ACCS). For ACCS, GraphQL mutations
- * (createCustomerV2, updateCustomerV2) should be used instead.
  *
  * @param {Object} userData - User data
  * @param {number} companyId - Company ID to assign to
