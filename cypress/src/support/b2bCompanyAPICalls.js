@@ -65,6 +65,32 @@ function safeError(...args) {
   }
 }
 
+/**
+ * Validate API response and throw if it indicates an error.
+ * ACCSApiClient returns error:true for 5xx errors, but 4xx errors
+ * may return with message field or without expected data.
+ * @param {Object} response - API response object
+ * @param {string} operation - Description of the operation for error message
+ * @param {string} [expectedField] - Optional field that should exist in success response
+ * @throws {Error} If response indicates an error
+ */
+function validateApiResponse(response, operation, expectedField = null) {
+  // Check for explicit error flag
+  if (response.error) {
+    throw new Error(`${operation} failed: ${response.message || JSON.stringify(response)}`);
+  }
+
+  // Check for error message without error flag (4xx responses)
+  if (response.message && !response.id && !response.items) {
+    throw new Error(`${operation} failed: ${response.message}`);
+  }
+
+  // Check for expected field if specified
+  if (expectedField && !response[expectedField]) {
+    throw new Error(`${operation} failed: Invalid response - missing ${expectedField}`);
+  }
+}
+
 // ==========================================================================
 // Company Creation
 // ==========================================================================
@@ -113,10 +139,7 @@ async function createCompany(companyData) {
   };
 
   const customerData = await client.post('/V1/customers', customerPayload);
-  if (customerData.error) {
-    safeError('❌ Customer creation failed:', customerData.message);
-    throw new Error(`Customer creation failed: ${customerData.message}`);
-  }
+  validateApiResponse(customerData, 'Customer creation', 'id');
 
   const customerId = customerData.id;
   safeLog('✅ Customer created with ID:', customerId);
@@ -144,10 +167,7 @@ async function createCompany(companyData) {
   };
 
   const company = await client.post('/V1/company/', companyPayload);
-  if (company.error) {
-    safeError('❌ Company creation failed:', company.message);
-    throw new Error(`Company creation failed: ${company.message}`);
-  }
+  validateApiResponse(company, 'Company creation', 'id');
 
   safeLog('✅ Company created with ID:', company.id);
 
@@ -179,28 +199,29 @@ async function createCompany(companyData) {
 async function findCompanyByEmail(companyEmail) {
   const client = new ACCSApiClient();
 
-  try {
-    safeLog(`🔍 Searching for company with email: ${companyEmail}`);
+  safeLog(`🔍 Searching for company with email: ${companyEmail}`);
 
-    const queryParams = {
-      'searchCriteria[filterGroups][0][filters][0][field]': 'company_email',
-      'searchCriteria[filterGroups][0][filters][0][value]': companyEmail,
-      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
-    };
+  const queryParams = {
+    'searchCriteria[filterGroups][0][filters][0][field]': 'company_email',
+    'searchCriteria[filterGroups][0][filters][0][value]': companyEmail,
+    'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
+  };
 
-    const response = await client.get('/V1/company', queryParams);
+  const response = await client.get('/V1/company', queryParams);
 
-    if (response.items && response.items.length > 0) {
-      safeLog(`✅ Found company: ${response.items[0].company_name} (ID: ${response.items[0].id})`);
-      return response.items[0];
-    }
-
-    safeLog('❌ Company not found');
-    return null;
-  } catch (error) {
-    safeError('❌ Company search failed:', error.message);
-    return null;
+  // Check for API error response
+  if (response.error || response.message) {
+    safeError('❌ Company search API failed:', response.message || response);
+    throw new Error(`Company search failed: ${response.message || JSON.stringify(response)}`);
   }
+
+  if (response.items && response.items.length > 0) {
+    safeLog(`✅ Found company: ${response.items[0].company_name} (ID: ${response.items[0].id})`);
+    return response.items[0];
+  }
+
+  safeLog('ℹ️ Company not found');
+  return null;
 }
 
 /**
@@ -211,28 +232,29 @@ async function findCompanyByEmail(companyEmail) {
 async function findCompanyByName(companyName) {
   const client = new ACCSApiClient();
 
-  try {
-    safeLog(`🔍 Searching for company with name: ${companyName}`);
+  safeLog(`🔍 Searching for company with name: ${companyName}`);
 
-    const queryParams = {
-      'searchCriteria[filterGroups][0][filters][0][field]': 'company_name',
-      'searchCriteria[filterGroups][0][filters][0][value]': `%${companyName}%`,
-      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'like',
-    };
+  const queryParams = {
+    'searchCriteria[filterGroups][0][filters][0][field]': 'company_name',
+    'searchCriteria[filterGroups][0][filters][0][value]': `%${companyName}%`,
+    'searchCriteria[filterGroups][0][filters][0][conditionType]': 'like',
+  };
 
-    const response = await client.get('/V1/company', queryParams);
+  const response = await client.get('/V1/company', queryParams);
 
-    if (response.items && response.items.length > 0) {
-      safeLog(`✅ Found ${response.items.length} company(ies)`);
-      return response.items;
-    }
-
-    safeLog('❌ No companies found');
-    return [];
-  } catch (error) {
-    safeError('❌ Company search failed:', error.message);
-    return [];
+  // Check for API error response
+  if (response.error || response.message) {
+    safeError('❌ Company search API failed:', response.message || response);
+    throw new Error(`Company search failed: ${response.message || JSON.stringify(response)}`);
   }
+
+  if (response.items && response.items.length > 0) {
+    safeLog(`✅ Found ${response.items.length} company(ies)`);
+    return response.items;
+  }
+
+  safeLog('ℹ️ No companies found');
+  return [];
 }
 
 /**
@@ -306,11 +328,7 @@ async function updateCompanyProfile(companyId, updates) {
 
   // PUT /V1/company/:companyId per Adobe REST API documentation
   const result = await client.put(`/V1/company/${companyId}`, payload);
-
-  if (result.error) {
-    safeError('❌ Company update failed:', result);
-    throw new Error(result.message || 'Update error');
-  }
+  validateApiResponse(result, 'Company profile update', 'id');
 
   safeLog('✅ Company updated');
   return result;
@@ -347,14 +365,19 @@ async function deleteCompanyById(companyId) {
 async function deleteCompanyByEmail(companyEmail) {
   safeLog(`🗑️ Deleting company by email: ${companyEmail}`);
 
-  const company = await findCompanyByEmail(companyEmail);
+  try {
+    const company = await findCompanyByEmail(companyEmail);
 
-  if (!company) {
-    safeLog(`⚠️ Company with email ${companyEmail} not found, nothing to delete`);
-    return { success: true, message: 'Company not found' };
+    if (!company) {
+      safeLog(`⚠️ Company with email ${companyEmail} not found, nothing to delete`);
+      return { success: true, message: 'Company not found' };
+    }
+
+    return deleteCompanyById(company.id);
+  } catch (error) {
+    safeError('❌ Company deletion failed:', error.message);
+    return { success: false, error: error.message };
   }
-
-  return deleteCompanyById(company.id);
 }
 
 // ==========================================================================
@@ -398,11 +421,7 @@ async function createCompanyUser(userData, companyId) {
   };
 
   const customerData = await client.post('/V1/customers', customerPayload);
-
-  if (customerData.error) {
-    safeError('❌ Customer creation failed:', customerData.message);
-    throw new Error(`Customer creation failed: ${customerData.message}`);
-  }
+  validateApiResponse(customerData, 'Customer creation', 'id');
 
   const customerId = customerData.id;
   safeLog('✅ Customer created with ID:', customerId);
@@ -430,11 +449,7 @@ async function createCompanyUser(userData, companyId) {
   };
 
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
-
-  if (assignResult.error) {
-    safeError('❌ Company assignment failed:', assignResult.message);
-    throw new Error(`Company assignment failed: ${assignResult.message}`);
-  }
+  validateApiResponse(assignResult, 'Company assignment', 'id');
 
   safeLog('✅ User assigned to company');
 
@@ -456,28 +471,29 @@ async function createCompanyUser(userData, companyId) {
 async function findCustomerByEmail(customerEmail) {
   const client = new ACCSApiClient();
 
-  try {
-    safeLog(`🔍 Searching for customer with email: ${customerEmail}`);
+  safeLog(`🔍 Searching for customer with email: ${customerEmail}`);
 
-    const queryParams = {
-      'searchCriteria[filterGroups][0][filters][0][field]': 'email',
-      'searchCriteria[filterGroups][0][filters][0][value]': customerEmail,
-      'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
-    };
+  const queryParams = {
+    'searchCriteria[filterGroups][0][filters][0][field]': 'email',
+    'searchCriteria[filterGroups][0][filters][0][value]': customerEmail,
+    'searchCriteria[filterGroups][0][filters][0][conditionType]': 'eq',
+  };
 
-    const response = await client.get('/V1/customers/search', queryParams);
+  const response = await client.get('/V1/customers/search', queryParams);
 
-    if (response.items && response.items.length > 0) {
-      safeLog(`✅ Found customer: ${response.items[0].firstname} ${response.items[0].lastname} (ID: ${response.items[0].id})`);
-      return response.items[0];
-    }
-
-    safeLog('❌ Customer not found');
-    return null;
-  } catch (error) {
-    safeError('❌ Customer search failed:', error.message);
-    return null;
+  // Check for API error response
+  if (response.error || response.message) {
+    safeError('❌ Customer search API failed:', response.message || response);
+    throw new Error(`Customer search failed: ${response.message || JSON.stringify(response)}`);
   }
+
+  if (response.items && response.items.length > 0) {
+    safeLog(`✅ Found customer: ${response.items[0].firstname} ${response.items[0].lastname} (ID: ${response.items[0].id})`);
+    return response.items[0];
+  }
+
+  safeLog('ℹ️ Customer not found');
+  return null;
 }
 
 /**
@@ -507,14 +523,19 @@ async function deleteCustomerById(customerId) {
 async function deleteCustomerByEmail(customerEmail) {
   safeLog(`🗑️ Deleting customer by email: ${customerEmail}`);
 
-  const customer = await findCustomerByEmail(customerEmail);
+  try {
+    const customer = await findCustomerByEmail(customerEmail);
 
-  if (!customer) {
-    safeLog(`⚠️ Customer with email ${customerEmail} not found, nothing to delete`);
-    return { success: true, message: 'Customer not found' };
+    if (!customer) {
+      safeLog(`⚠️ Customer with email ${customerEmail} not found, nothing to delete`);
+      return { success: true, message: 'Customer not found' };
+    }
+
+    return deleteCustomerById(customer.id);
+  } catch (error) {
+    safeError('❌ Customer deletion failed:', error.message);
+    return { success: false, error: error.message };
   }
-
-  return deleteCustomerById(customer.id);
 }
 
 /**
@@ -539,12 +560,50 @@ async function updateCompanyUserStatus(customerId, status) {
     },
   });
 
-  if (result.error) {
-    safeError('❌ User status update failed:', result);
-    throw new Error(result.message || 'Status update error');
-  }
+  validateApiResponse(result, 'User status update', 'id');
 
   safeLog('✅ User status updated');
+  return result;
+}
+
+/**
+ * Assign a role to a company user.
+ * Uses PUT /V1/company/assignRoles per Adobe SaaS REST API documentation.
+ * @see https://developer.adobe.com/commerce/webapi/reference/rest/saas/
+ * @param {number} userId - Customer/User ID
+ * @param {Object} role - Role object with at least id and permissions
+ * @returns {Promise<boolean>} true on success
+ */
+async function assignRoleToUser(userId, role) {
+  const client = new ACCSApiClient();
+
+  // Build minimal role object with required fields
+  const rolePayload = {
+    id: role.id,
+    permissions: role.permissions || [],
+  };
+
+  safeLog(`🎭 Assigning role ${role.id} to user ${userId}`);
+  safeLog('📦 Role payload:', JSON.stringify(rolePayload));
+
+  const result = await client.put('/V1/company/assignRoles', {
+    userId,
+    roles: [rolePayload],
+  });
+
+  // This endpoint returns boolean true on success
+  // Check for error conditions
+  if (result.error || result.message) {
+    safeError('❌ Role assignment failed:', result);
+    throw new Error(`Role assignment failed: ${result.message || JSON.stringify(result)}`);
+  }
+
+  if (result !== true) {
+    safeError('❌ Role assignment returned unexpected result:', result);
+    throw new Error(`Role assignment failed: unexpected response ${JSON.stringify(result)}`);
+  }
+
+  safeLog('✅ Role assigned to user');
   return result;
 }
 
@@ -563,11 +622,7 @@ async function createCompanyRole(roleData) {
   safeLog('🎭 Creating role:', roleData.role_name);
 
   const result = await client.post('/V1/company/role', { role: roleData });
-
-  if (result.error) {
-    safeError('❌ Role creation failed:', result);
-    throw new Error(result.message || 'Role creation error');
-  }
+  validateApiResponse(result, 'Role creation', 'id');
 
   safeLog('✅ Role created:', result);
   return result;
@@ -584,10 +639,10 @@ async function deleteCompanyRole(roleId) {
   safeLog('🗑️ Deleting role:', roleId);
 
   const result = await client.delete(`/V1/company/role/${roleId}`);
-
-  if (result.error) {
+  // DELETE returns true on success
+  if (result.error || (result.message && result !== true)) {
     safeError('❌ Role deletion failed:', result);
-    throw new Error(result.message || 'Deletion error');
+    throw new Error(`Role deletion failed: ${result.message || JSON.stringify(result)}`);
   }
 
   safeLog('✅ Role deleted');
@@ -609,11 +664,7 @@ async function createCompanyTeam(teamData) {
   safeLog('👥 Creating team:', teamData.name);
 
   const result = await client.post('/V1/team', { team: teamData });
-
-  if (result.error) {
-    safeError('❌ Team creation failed:', result);
-    throw new Error(result.message || 'Team creation error');
-  }
+  validateApiResponse(result, 'Team creation', 'id');
 
   safeLog('✅ Team created:', result);
   return result;
@@ -631,11 +682,7 @@ async function updateCompanyTeam(teamId, updates) {
   safeLog('📝 Updating team:', teamId, updates);
 
   const result = await client.put(`/V1/team/${teamId}`, { team: updates });
-
-  if (result.error) {
-    safeError('❌ Team update failed:', result);
-    throw new Error(result.message || 'Team update error');
-  }
+  validateApiResponse(result, 'Team update', 'id');
 
   safeLog('✅ Team updated');
   return result;
@@ -652,10 +699,10 @@ async function deleteCompanyTeam(teamId) {
   safeLog('🗑️ Deleting team:', teamId);
 
   const result = await client.delete(`/V1/team/${teamId}`);
-
-  if (result.error) {
+  // DELETE returns true on success
+  if (result.error || (result.message && result !== true)) {
     safeError('❌ Team deletion failed:', result);
-    throw new Error(result.message || 'Team deletion error');
+    throw new Error(`Team deletion failed: ${result.message || JSON.stringify(result)}`);
   }
 
   safeLog('✅ Team deleted');
@@ -667,45 +714,156 @@ async function deleteCompanyTeam(teamId) {
 // ==========================================================================
 
 /**
- * Get company credit information.
+ * Get company credit information by company ID.
+ * Uses /V1/companyCredits/company/{companyId} endpoint.
  * @param {number} companyId - Company ID
  * @returns {Promise<Object>} Company credit data
  */
 async function getCompanyCredit(companyId) {
   const client = new ACCSApiClient();
 
-  safeLog('💳 Getting company credit for:', companyId);
+  safeLog('💳 Getting company credit for company:', companyId);
 
-  const result = await client.get(`/V1/companyCredits/${companyId}`);
-
-  if (result.error) {
-    safeError('❌ Failed to get company credit:', result);
-    throw new Error(result.message || 'Get credit error');
-  }
+  const result = await client.get(`/V1/companyCredits/company/${companyId}`);
+  validateApiResponse(result, 'Get company credit', 'id');
 
   safeLog('✅ Company credit retrieved:', result);
   return result;
 }
 
 /**
- * Update company credit limit.
- * @param {number} companyId - Company ID
- * @param {Object} creditData - Credit data (credit_limit, balance, etc.)
- * @returns {Promise<Object>} Updated credit data
+ * Get company credit history.
+ * @param {Object} searchCriteria - Optional search criteria
+ * @returns {Promise<Object>} Credit history data
  */
-async function updateCompanyCredit(companyId, creditData) {
+async function getCompanyCreditHistory(searchCriteria = {}) {
   const client = new ACCSApiClient();
 
-  safeLog('💰 Updating company credit for:', companyId, creditData);
+  safeLog('📜 Getting company credit history');
 
-  const result = await client.put(`/V1/companyCredits/${companyId}`, { companyCredit: creditData });
-
-  if (result.error) {
-    safeError('❌ Company credit update failed:', result);
-    throw new Error(result.message || 'Credit update error');
+  const params = new URLSearchParams();
+  // Add search criteria if provided
+  if (searchCriteria.companyId) {
+    params.append('searchCriteria[filterGroups][0][filters][0][field]', 'company_credit_id');
+    params.append('searchCriteria[filterGroups][0][filters][0][value]', searchCriteria.companyId);
+    params.append('searchCriteria[filterGroups][0][filters][0][conditionType]', 'eq');
   }
 
+  const url = `/V1/companyCredits/history${params.toString() ? `?${params.toString()}` : ''}`;
+  const result = await client.get(url);
+  validateApiResponse(result, 'Get credit history');
+
+  safeLog('✅ Credit history retrieved');
+  return result;
+}
+
+/**
+ * Update company credit limit.
+ * Uses PUT /V1/companyCredits/{id} endpoint.
+ * @param {number} creditId - Credit ID (from getCompanyCredit)
+ * @param {Object} creditData - Credit data (credit_limit, currency_code, etc.)
+ * @returns {Promise<Object>} Updated credit data
+ */
+async function updateCompanyCredit(creditId, creditData) {
+  const client = new ACCSApiClient();
+
+  safeLog('💰 Updating company credit for credit ID:', creditId, creditData);
+
+  // Per Adobe REST API docs, payload should be { creditLimit: { id, company_id, credit_limit, currency_code } }
+  const payload = {
+    creditLimit: {
+      id: creditId,
+      ...creditData,
+    },
+  };
+
+  const result = await client.put(`/V1/companyCredits/${creditId}`, payload);
+  validateApiResponse(result, 'Company credit update', 'id');
+
   safeLog('✅ Company credit updated');
+  return result;
+}
+
+/**
+ * Operation types for company credit transactions.
+ * Used in increaseBalance and decreaseBalance endpoints.
+ */
+const CREDIT_OPERATION_TYPES = {
+  ALLOCATED: 1,    // Credit limit allocation
+  UPDATED: 2,      // General update
+  PURCHASED: 3,    // Purchase using company credit
+  REIMBURSED: 4,   // Reimbursement (add funds)
+  REFUNDED: 5,     // Refund from credit memo
+  REVERTED: 6,     // Reverted (order cancellation)
+};
+
+/**
+ * Increase company credit balance (reimburse).
+ * Creates a "Reimbursed" record in the credit history.
+ * @param {number} creditId - Credit ID (get from getCompanyCredit)
+ * @param {number} amount - Amount to add to balance
+ * @param {string} currency - Currency code (default: 'USD')
+ * @param {string} comment - Optional comment for the operation
+ * @param {number} operationType - Operation type (default: 4 = REIMBURSED)
+ * @returns {Promise<Object>} Result of the operation
+ */
+async function increaseCompanyCreditBalance(
+  creditId,
+  amount,
+  currency = 'USD',
+  comment = '',
+  operationType = CREDIT_OPERATION_TYPES.REIMBURSED
+) {
+  const client = new ACCSApiClient();
+
+  safeLog('💵 Increasing company credit balance:', creditId, amount, currency);
+
+  const payload = {
+    value: amount,
+    currency,
+    operationType,
+    comment,
+  };
+
+  const result = await client.post(`/V1/companyCredits/${creditId}/increaseBalance`, payload);
+  // increaseBalance returns true on success, not an object with id
+  if (result.error || (result.message && result !== true)) {
+    safeError('❌ Increase credit balance failed:', result);
+    throw new Error(`Increase credit balance failed: ${result.message || JSON.stringify(result)}`);
+  }
+
+  safeLog('✅ Company credit balance increased by:', amount);
+  return result;
+}
+
+/**
+ * Decrease company credit balance.
+ * @param {number} creditId - Credit ID (usually same as company ID)
+ * @param {number} amount - Amount to subtract from balance
+ * @param {string} currency - Currency code (default: 'USD')
+ * @param {string} comment - Optional comment for the operation
+ * @returns {Promise<Object>} Result of the operation
+ */
+async function decreaseCompanyCreditBalance(creditId, amount, currency = 'USD', comment = '') {
+  const client = new ACCSApiClient();
+
+  safeLog('💸 Decreasing company credit balance:', creditId, amount, currency);
+
+  const payload = {
+    value: amount,
+    currency,
+    operationType: 2,
+    comment,
+  };
+
+  const result = await client.post(`/V1/companyCredits/${creditId}/decreaseBalance`, payload);
+  // decreaseBalance returns true on success, not an object with id
+  if (result.error || (result.message && result !== true)) {
+    safeError('❌ Decrease credit balance failed:', result);
+    throw new Error(`Decrease credit balance failed: ${result.message || JSON.stringify(result)}`);
+  }
+
+  safeLog('✅ Company credit balance decreased by:', amount);
   return result;
 }
 
@@ -723,10 +881,14 @@ async function cleanupTestCompany() {
 
   const companyEmail = Cypress.env('currentTestCompanyEmail');
   const adminEmail = Cypress.env('currentTestAdminEmail');
+  const regularUserEmail = Cypress.env('regularUserEmail');
+  const noCreditRoleId = Cypress.env('noCreditRoleId');
 
   const results = {
     company: { success: true, message: 'No company to clean up' },
     admin: { success: true, message: 'No admin to clean up' },
+    regularUser: { success: true, message: 'No regular user to clean up' },
+    role: { success: true, message: 'No custom role to clean up' },
   };
 
   if (companyEmail) {
@@ -743,6 +905,24 @@ async function cleanupTestCompany() {
     Cypress.env('currentTestAdminEmail', null);
   } else {
     safeLog('⚠️ No admin email found, skipping admin cleanup');
+  }
+
+  if (regularUserEmail) {
+    safeLog(`🧹 Cleaning up regular user: ${regularUserEmail}`);
+    results.regularUser = await deleteCustomerByEmail(regularUserEmail);
+    Cypress.env('regularUserEmail', null);
+  }
+
+  if (noCreditRoleId) {
+    safeLog(`🧹 Cleaning up custom role: ${noCreditRoleId}`);
+    try {
+      await deleteCompanyRole(noCreditRoleId);
+      results.role = { success: true, message: 'Custom role deleted' };
+    } catch (error) {
+      safeLog(`⚠️ Role cleanup failed: ${error.message}`);
+      results.role = { success: false, error: error.message };
+    }
+    Cypress.env('noCreditRoleId', null);
   }
 
   safeLog('✅ Test cleanup completed');
@@ -775,6 +955,7 @@ module.exports = {
   deleteCustomerById,
   deleteCustomerByEmail,
   updateCompanyUserStatus,
+  assignRoleToUser,
 
   // Role Management
   createCompanyRole,
@@ -787,7 +968,11 @@ module.exports = {
 
   // Company Credit
   getCompanyCredit,
+  getCompanyCreditHistory,
   updateCompanyCredit,
+  increaseCompanyCreditBalance,
+  decreaseCompanyCreditBalance,
+  CREDIT_OPERATION_TYPES,
 
   // Test Cleanup
   cleanupTestCompany,

@@ -24,7 +24,6 @@
  * - TC-11: Company info block on Account page
  * - TC-12: Admin can edit company profile (includes form validation)
  * - TC-13: Regular user cannot edit profile
- * - TC-14: Backend changes sync to storefront
  *
  * Test Plan Reference: USF-2669 QA Test Plan - Section 2: Company Profile
  *
@@ -36,20 +35,26 @@
  * TC-11 (P1): Company info block displays on Account Information page
  * TC-12 (P0): Company Admin can edit Account Information and Legal Address
  * TC-13 (P0): Company User with Default User role can view but not edit
- * TC-14 (P1): Changes made via REST API reflect on Storefront
  *
  * ==========================================================================
  * NOT COVERED TEST CASES (with reasons):
  * ==========================================================================
  *
  * TC-09 (P0): Company Profile displays correct data when created from Storefront
- *   - Reason: Blocked by bug USF-3439
- *   - Recommendation: Add after bug is fixed
- *   - Note: Created company needs to be activated after creating the company, probably using REST API
+ *   - Reason: Companies created via storefront have status 0 (Pending)
+ *   - Activation requires PUT /V1/company/{id} which returns 404 on ACCS
+ *   - This is the same platform limitation as TC-14
+ *   - Recommendation: Manual testing or test on non-ACCS environment
  *
  * TC-10 (P2): Applicable Payment/Shipping Methods display on My Company page
  *   - Reason: Requires specific admin configuration
  *   - Recommendation: Manual testing or separate configuration test
+ *
+ * TC-14 (P1): Changes made via REST API reflect on Storefront
+ *   - Reason: PUT /V1/company/{companyId} returns 404 on ACCS platform
+ *   - The endpoint is documented but not implemented in ACCS environment
+ *   - See: https://adobe-commerce-saas.redoc.ly/tag/companycompanyId#operation/PutV1CompanyCompanyId
+ *   - Recommendation: Manual testing or test on non-ACCS environment
  *
  * ==========================================================================
  */
@@ -59,13 +64,24 @@ import {
   createCompanyUser,
   updateCompanyProfile,
   cleanupTestCompany,
+  findCompanyByEmail,
 } from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
   companyUsers,
   invalidData,
 } from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
+import { companyRegistrationData } from '../../fixtures/companyData';
+import { COMPANY_CREATE_PATH } from '../../fields';
+import {
+  login,
+  fillCompanyRegistrationForm,
+  submitCompanyRegistrationForm,
+} from '../../actions';
+import {
+  assertCompanyRegistrationForm,
+  assertCompanyRegistrationSuccess,
+} from '../../assertions';
 
 describe('USF-2525: Company Profile', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -141,6 +157,115 @@ describe('USF-2525: Company Profile', { tags: ['@B2BSaas'] }, () => {
 
       cy.logToTerminal('✅ TC-07/TC-08: Company profile displays correctly with all fields');
     });
+  });
+
+  // ==========================================================================
+  // TC-09 (P0): Company Profile displays correct data when created from Storefront
+  // Note: Company needs to be activated via REST API after storefront registration
+  // ==========================================================================
+
+  it.skip('TC-09: Company created from Storefront displays correctly after activation', () => {
+    // SKIPPED: Companies created via storefront have status 0 (Pending)
+    // Activation requires PUT /V1/company/{id} which returns 404 on ACCS
+    // This is the same platform limitation as TC-14
+    
+    cy.logToTerminal('========= 📋 TC-09: Verify company profile for storefront-created company =========');
+
+    cy.logToTerminal('📍 Navigate to company registration page');
+    cy.visit(COMPANY_CREATE_PATH);
+
+    cy.logToTerminal('✅ Verify registration form is accessible');
+    cy.url().should('include', COMPANY_CREATE_PATH);
+    assertCompanyRegistrationForm();
+
+    cy.logToTerminal('📝 Fill company registration form');
+    fillCompanyRegistrationForm(companyRegistrationData);
+
+    cy.logToTerminal('🚀 Submit registration form');
+    submitCompanyRegistrationForm();
+
+    cy.logToTerminal('✅ Verify successful registration on UI');
+    assertCompanyRegistrationSuccess(companyRegistrationData);
+
+    cy.logToTerminal('🔍 Check company status via REST API');
+    cy.then(async () => {
+      // Get the emails that were generated during form fill
+      const companyEmail = Cypress.env('currentTestCompanyEmail');
+      const adminEmail = Cypress.env('currentTestAdminEmail');
+
+      cy.logToTerminal(`📧 Company email: ${companyEmail}`);
+      cy.logToTerminal(`📧 Admin email: ${adminEmail}`);
+
+      // Find the company by email
+      const company = await findCompanyByEmail(companyEmail);
+      if (!company) {
+        throw new Error(`Company not found with email: ${companyEmail}`);
+      }
+
+      cy.logToTerminal(`✅ Found company: ${company.company_name} (ID: ${company.id})`);
+      cy.logToTerminal(`📊 Company status: ${company.status} (0=Pending, 1=Active, 2=Rejected)`);
+
+      // Store for cleanup and later use
+      Cypress.env('testCompanyId', company.id);
+      Cypress.env('testCompanyName', company.company_name);
+      Cypress.env('adminEmail', adminEmail);
+      Cypress.env('adminPassword', 'Test123!'); // Default password from registration
+
+      // Check if company needs activation
+      if (company.status !== 1) {
+        cy.logToTerminal(`⚠️ Company is not active (status: ${company.status})`);
+        cy.logToTerminal('⚠️ PUT /V1/company/{id} endpoint returns 404 on ACCS - cannot activate via REST API');
+        cy.logToTerminal('⚠️ TC-09: Company activation cannot be automated on ACCS platform');
+      } else {
+        cy.logToTerminal('✅ Company is already active, proceeding to login');
+      }
+    });
+
+    cy.logToTerminal('⏳ Wait for activation to propagate');
+    cy.wait(3000);
+
+    cy.logToTerminal('🔐 Login as company admin');
+    loginAsCompanyAdmin();
+
+    cy.logToTerminal('📍 Navigate to My Company page');
+    cy.visit('/customer/company');
+    cy.wait(2000);
+
+    cy.logToTerminal('✅ Verify company information sections exist');
+    cy.get('.account-company-profile', { timeout: 10000 })
+      .should('exist');
+
+    cy.logToTerminal('✅ Verify company name from registration');
+    cy.contains(companyRegistrationData.company.companyName, { timeout: 10000 })
+      .should('be.visible');
+
+    cy.logToTerminal('✅ Verify legal address from registration');
+    cy.contains('Legal Address').should('be.visible');
+    cy.contains(companyRegistrationData.legalAddress.street).should('be.visible');
+    cy.contains(companyRegistrationData.legalAddress.city).should('be.visible');
+    cy.contains(companyRegistrationData.legalAddress.postcode).should('be.visible');
+
+    cy.logToTerminal('✅ Verify contacts section');
+    cy.contains('Contacts').should('be.visible');
+    cy.contains('Company Administrator').should('be.visible');
+
+    // Verify optional fields if provided
+    if (companyRegistrationData.company.legalName) {
+      cy.logToTerminal('✅ Verify legal name from registration');
+      cy.contains(companyRegistrationData.company.legalName).should('be.visible');
+    }
+
+    if (companyRegistrationData.company.vatTaxId) {
+      cy.logToTerminal('✅ Verify VAT/Tax ID from registration');
+      cy.contains(companyRegistrationData.company.vatTaxId).should('be.visible');
+    }
+
+    if (companyRegistrationData.company.resellerId) {
+      cy.logToTerminal('✅ Verify Reseller ID from registration');
+      cy.contains(companyRegistrationData.company.resellerId).should('be.visible');
+    }
+
+    cy.logToTerminal('✅ TC-09: Storefront-created company profile displays correctly after activation');
   });
 
   // ==========================================================================

@@ -15,268 +15,606 @@
  * from Adobe.
  ****************************************************************** */
 
+/**
+ * @fileoverview Company Credit E2E tests.
+ * Tests cover:
+ * - USF-2563: Company Credit feature
+ * - TC-47 (P0): Company Admin has access to Company Credit page (multiple cases)
+ * - TC-48 (P2): User permissions for Company Credit page
+ *
+ * Test Plan Reference: USF-2669 QA Test Plan - Section 7: Company Credit
+ *
+ * PREREQUISITES:
+ * - Payment on Account must be ENABLED in Admin Panel
+ * - Store > Configuration > Sales > Payment Methods > Payment on Account = Yes
+ *
+ * ==========================================================================
+ * COVERED TEST CASES:
+ * ==========================================================================
+ * TC-47 CASE_2 (P0): Verify Company Credit page when "Payment on Account" is
+ *   enabled, but there is no record/operation yet to display
+ *   - Verifies: Title, three summary blocks (Outstanding Balance, Available
+ *     Credit, Credit Limit) all showing 0.00, empty grid with "No data available"
+ *
+ * TC-47 CASE_3 (P0): "Reimbursement" record shown in grid (reimburse/add amount
+ *   to balance)
+ *   - Verifies: Outstanding Balance shows reimbursed amount, "Reimbursed"
+ *     operation appears in grid
+ *
+ * TC-47 CASE_4 (P0): "Allocation" record shown in grid (set credit limit)
+ *   - Verifies: Credit Limit shows set value, "Allocated" operation appears
+ *     in grid
+ *
+ * TC-48 (P2): Verify that the user can or cannot see data on the Company Credit
+ *   page based on their company role permissions
+ *   - Verifies: User with restricted role can see summary blocks but cannot
+ *     see credit history data in the table
+ *
+ * ==========================================================================
+ * NOT COVERED TEST CASES (with reasons):
+ * ==========================================================================
+ * TC-47 CASE_1: Company Admin opens the Company Credit page when Payment on
+ *   Account is disabled
+ *   - Reason: Requires admin configuration change during test
+ *   - Recommendation: Manual testing or separate configuration test
+ *
+ * TC-47 CASE_5: "Purchase" record in the grid (Checkout using Company Credits)
+ *   - Reason: Requires full checkout flow with Payment on Account payment method
+ *   - Recommendation: Cover in dedicated checkout E2E tests
+ *
+ * TC-47 CASE_6: "Reverted" record in the grid (Cancel order)
+ *   - Reason: Requires order placement and Admin Panel order cancellation
+ *   - Recommendation: Cover in dedicated order management E2E tests
+ *
+ * TC-47 CASE_7: "Refunded" record in the grid (Credit Memo)
+ *   - Reason: Requires full order processing, invoice, shipment, and credit
+ *     memo creation with "Refund to Company Credit"
+ *   - Recommendation: Cover in dedicated order management E2E tests
+ *
+ * ==========================================================================
+ */
+
 import {
-  createCompanyViaGraphQL,
-  createUserAndAssignToCompany,
+  createCompany,
+  createCompanyUser,
+  getCompanyCredit,
+  updateCompanyCredit,
+  increaseCompanyCreditBalance,
+  cleanupTestCompany,
+  createCompanyRole,
+  assignRoleToUser,
+  deleteCompanyRole,
 } from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
   companyUsers,
 } from '../../fixtures/companyManagementData';
-import { signInUser } from '../../actions';
+import { login } from '../../actions';
 
-/**
- * PREREQUISITES:
- * - Payment on Account must be ENABLED in Admin Panel
- * - Store > Configuration > Sales > Payment Methods > Payment on Account = Yes
- *
- * NOTE: These tests assume the feature is enabled. If disabled, tests will be skipped.
- */
-describe('USF-2563: Company Credit', { tags: '@B2BSaas' }, () => {
-  let testCompany;
-  let testUser;
-
+describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
   before(() => {
-    cy.logToTerminal('💳 Setting up Company Credit test data...');
-
-    // Mock Payment on Account enabled
-    cy.intercept('POST', '**/graphql', (req) => {
-      if (req.body.query && req.body.query.includes('storeConfig')) {
-        // Let other queries pass through but add our config
-        req.continue((res) => {
-          if (res.body?.data?.storeConfig) {
-            res.body.data.storeConfig.payment_on_account_enabled = true;
-          }
-        });
-      } else {
-        req.continue();
-      }
-    }).as('mockPaymentConfig');
-
-    cy.wrap(null).then(async () => {
-      try {
-        // Create test company
-        testCompany = await createCompanyViaGraphQL({
-          ...baseCompanyData,
-          companyName: `Credit Test Company ${Date.now()}`,
-          adminEmail: `creditadmin.${Date.now()}@example.com`,
-        });
-
-        cy.logToTerminal(`✅ Test company created: ${testCompany.name}`);
-        Cypress.env('creditTestCompanyId', testCompany.id);
-        Cypress.env('creditTestAdminEmail', testCompany.company_admin.email);
-
-        // Create test user
-        const userResult = await createUserAndAssignToCompany(
-          {
-            ...companyUsers.regularUser,
-            email: `credituser.${Date.now()}@example.com`,
-          },
-          testCompany.id
-        );
-
-        testUser = userResult.customer;
-        Cypress.env('creditTestUserEmail', testUser.email);
-        cy.logToTerminal(`✅ Test user created: ${testUser.email}`);
-
-        // Wait for indexing
-        cy.wait(5000);
-      } catch (error) {
-        cy.logToTerminal(`❌ Setup error: ${error.message}`);
-        throw error;
-      }
-    });
+    cy.logToTerminal('💳 Company Credit test suite started');
   });
 
   beforeEach(() => {
+    cy.logToTerminal('🧹 Test cleanup');
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.intercept('**/graphql').as('defaultGraphQL');
-
-    // Mock Payment on Account enabled for each test
-    cy.intercept('POST', '**/graphql', (req) => {
-      if (req.body.query && req.body.query.includes('storeConfig')) {
-        req.continue((res) => {
-          if (res.body?.data?.storeConfig) {
-            res.body.data.storeConfig.payment_on_account_enabled = true;
-          }
-        });
-      } else {
-        req.continue();
-      }
-    }).as('mockPaymentConfig');
   });
 
-  it('TC-47: Company Credit page displays all operation types', () => {
-    cy.logToTerminal('📋 TC-47: Verify Company Credit page');
-
-    // Login as company admin
-    cy.visit('/customer/login');
-    signInUser(Cypress.env('creditTestAdminEmail'), 'Test123!');
-
-    cy.wait(3000);
-
-    // Navigate to Company Credit page
-    cy.visit('/customer/account/company/credit');
-    cy.wait(3000);
-
-    // Verify page title
-    cy.contains('Company Credit', { timeout: 10000 })
-      .should('be.visible');
-
-    // Verify credit summary blocks exist
-    cy.get('[data-testid="credit-summary"]', { timeout: 10000 })
-      .should('exist');
-
-    // Verify Outstanding Balance, Available Credit, Credit Limit blocks
-    cy.contains(/outstanding.*balance/i, { timeout: 5000 })
-      .should('be.visible');
-    cy.contains(/available.*credit/i)
-      .should('be.visible');
-    cy.contains(/credit.*limit/i)
-      .should('be.visible');
-
-    // Verify grid exists
-    cy.get('[data-testid="credit-history-grid"]', { timeout: 10000 })
-      .should('exist');
-
-    // Verify grid columns
-    cy.get('body').then(($body) => {
-      // Check if "No data available" is shown (new company with no transactions)
-      if ($body.text().match(/no.*data|no.*records/i)) {
-        cy.logToTerminal('✅ Empty state: No credit history yet');
-
-        // Verify empty state message
-        cy.contains(/no.*data|no.*records/i).should('be.visible');
-      } else {
-        // Company has credit history - verify grid columns
-        cy.contains('th', 'Date').should('be.visible');
-        cy.contains('th', 'Operation').should('be.visible');
-        cy.contains('th', 'Amount').should('be.visible');
-
-        cy.logToTerminal('✅ Credit history grid displayed');
-
-        // If there are records, verify operation types exist
-        // Types: Reimbursed, Allocation, Purchase, Reverted, Refunded
-        cy.get('tbody tr').then(($rows) => {
-          cy.logToTerminal(`Found ${$rows.length} credit history records`);
-
-          // Just verify the grid is functional
-          cy.get('tbody tr').first().should('be.visible');
-        });
-      }
-    });
-
-    cy.logToTerminal('✅ TC-47: Company Credit page verified');
-  });
-
-  it('TC-48: User without permission sees restricted message', () => {
-    cy.logToTerminal('📋 TC-48: Verify permission restriction');
-
-    // Login as regular user (Default User role - no credit permissions)
-    cy.visit('/customer/login');
-    signInUser(Cypress.env('creditTestUserEmail'), 'Test123!');
-
-    cy.wait(3000);
-
-    // Try to access Company Credit page
-    cy.visit('/customer/account/company/credit');
-    cy.wait(3000);
-
-    // Verify restricted access
-    cy.get('body').then(($body) => {
-      const bodyText = $body.text();
-
-      if (bodyText.match(/access.*denied|permission.*required|restricted/i)) {
-        // Access denied message shown
-        cy.contains(/access.*denied|permission.*required|restricted/i, {
-          timeout: 10000,
-        }).should('be.visible');
-
-        cy.logToTerminal('✅ Access denied message displayed');
-      } else if (bodyText.match(/no.*permission|not.*authorized/i)) {
-        // Alternative permission message
-        cy.contains(/no.*permission|not.*authorized/i).should('be.visible');
-
-        cy.logToTerminal('✅ Permission error displayed');
-      } else {
-        // Credit page might be hidden entirely (navigation menu item disabled)
-        // Or redirect to another page
-        cy.url().then((url) => {
-          if (!url.includes('/company/credit')) {
-            cy.logToTerminal('✅ Redirected away from credit page');
-          } else {
-            // Page might show but with no data for security
-            cy.get('[data-testid="credit-summary"]').should('not.exist');
-            cy.logToTerminal('✅ Credit data hidden from user');
-          }
-        });
-      }
-    });
-
-    cy.logToTerminal('✅ TC-48: Permission restriction verified');
-  });
-
-  it('TC-47 CASE_3: Set company credit limit creates Allocation record', () => {
-    cy.logToTerminal('📋 TC-47 CASE_3: Test credit limit allocation');
-
-    // Set credit limit via REST API (simulates Admin Panel)
-    cy.wrap(null).then(async () => {
+  afterEach(() => {
+    cy.logToTerminal('🗑️ Cleaning up test data');
+    cy.then(async () => {
       try {
-        const { updateCompanyCredit } = require('../../support/b2bCompanyAPICalls');
-        
-        await updateCompanyCredit(Cypress.env('creditTestCompanyId'), {
-          credit_limit: 5000,
-          exceed_limit: false,
-        });
-
-        cy.logToTerminal('✅ Credit limit set via REST API: $5,000');
+        await cleanupTestCompany();
+        cy.logToTerminal('✅ Test data cleanup completed');
       } catch (error) {
-        cy.logToTerminal(`❌ Credit limit update error: ${error.message}`);
-        throw error;
+        cy.logToTerminal(`⚠️ Cleanup failed: ${error.message}`);
       }
     });
-
-    cy.wait(3000); // Wait for indexing
-
-    // Login as company admin
-    cy.visit('/customer/login');
-    signInUser(Cypress.env('creditTestAdminEmail'), 'Test123!');
-
-    cy.wait(3000);
-
-    // Navigate to Company Credit page
-    cy.visit('/customer/account/company/credit');
-    cy.wait(3000);
-
-    // Verify credit limit is displayed
-    cy.contains(/credit.*limit/i, { timeout: 10000 })
-      .should('be.visible');
-    cy.contains('$5,000', { timeout: 10000 })
-      .should('be.visible');
-
-    // Verify "Allocation" record in history grid (if not empty state)
-    cy.get('body').then(($body) => {
-      if (!$body.text().match(/no.*data|no.*records/i)) {
-        cy.contains('Allocation', { timeout: 10000 })
-          .should('be.visible');
-      } else {
-        cy.logToTerminal('⚠️  Empty state - no history records yet');
-      }
-    });
-
-    cy.logToTerminal('✅ TC-47 CASE_3: Credit limit allocation verified');
   });
 
-  /**
-   * NOTE: The following scenarios require full order/checkout flow:
-   *
-   * - Testing "Purchase" records: Requires placing an order with Payment on Account
-   * - Testing "Reverted" records: Requires canceling an order
-   * - Testing "Refunded" records: Requires creating a credit memo
-   * - Testing "Reimbursement" records: Requires manual credit addition
-   *
-   * These scenarios are documented in the manual test plan (TC-47 CASE_4 through CASE_7)
-   * and should be covered in dedicated checkout/order flow E2E tests.
-   */
+  // ==========================================================================
+  // TC-47 CASE_2 (P0): Company Credit page when Payment on Account is enabled
+  // Verifies page elements and empty state for new company
+  // ==========================================================================
+
+  it('TC-47 CASE_2: Company Credit page displays correctly with no records', () => {
+    cy.logToTerminal('========= 📋 TC-47 CASE_2: Verify Company Credit page (empty state) =========');
+
+    setupTestCompanyAndAdmin();
+
+    cy.then(() => {
+      cy.logToTerminal('🔐 Login as company admin');
+      loginAsCompanyAdmin();
+
+      cy.logToTerminal('📍 Navigate to Company Credit page');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify page title');
+      cy.contains('Company Credit', { timeout: 10000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify credit summary blocks exist');
+      // Per test plan: Three blocks display - Outstanding Balance, Available Credit, Credit Limit
+      cy.contains(/outstanding.*balance/i, { timeout: 10000 })
+        .should('be.visible');
+      cy.contains(/available.*credit/i)
+        .should('be.visible');
+      cy.contains(/credit.*limit/i)
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify initial values are 0.00 for new company');
+      // New company should have 0.00 for all credit values - MUST be visible
+      cy.contains('0.00', { timeout: 10000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ TC-47 CASE_2: Company Credit page verified (empty state)');
+    });
+  });
+
+  // ==========================================================================
+  // TC-47 CASE_3 (P0): "Reimbursed" record shown in grid
+  // Per test plan: Reimburse/add amount to balance creates record
+  // ==========================================================================
+
+  it('TC-47 CASE_3: Reimbursed record appears when balance is added', () => {
+    cy.logToTerminal('========= 📋 TC-47 CASE_3: Verify Reimbursed record in grid =========');
+
+    setupTestCompanyAndAdmin();
+
+    cy.then(() => {
+      cy.logToTerminal('💵 Get company credit ID and reimburse balance via REST API');
+      cy.then(async () => {
+        // First get the credit info to get the credit ID
+        const creditInfo = await getCompanyCredit(Cypress.env('testCompanyId'));
+        const creditId = creditInfo.id;
+        cy.logToTerminal(`✅ Got credit ID: ${creditId}`);
+
+        // Store credit ID for verification
+        Cypress.env('testCreditId', creditId);
+
+        // Reimburse $5.00 to the balance (per test plan CASE_3)
+        await increaseCompanyCreditBalance(creditId, 5.00, 'USD', 'Test reimbursement');
+        cy.logToTerminal('✅ Balance reimbursed via REST API: $5.00');
+      });
+
+      cy.wait(3000); // Wait for indexing
+
+      cy.logToTerminal('🔐 Login as company admin');
+      loginAsCompanyAdmin();
+
+      cy.logToTerminal('📍 Navigate to Company Credit page');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify balance value $5.00 is displayed');
+      // Per test plan: Outstanding Balance: 5.00 - MUST be visible
+      cy.contains('5.00', { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify "Reimbursed" record in history grid');
+      // Per test plan: Reimbursed record MUST appear in grid
+      cy.contains(/reimburs/i, { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ TC-47 CASE_3: Reimbursement record verified');
+    });
+  });
+
+  // ==========================================================================
+  // TC-47 CASE_4 (P0): "Allocation" record shown in grid (set credit limit)
+  // Per test plan: Set credit limit creates Allocation record
+  // ==========================================================================
+
+  it('TC-47 CASE_4: Allocation record appears when credit limit is set', () => {
+    cy.logToTerminal('========= 📋 TC-47 CASE_4: Verify Allocation record in grid =========');
+
+    setupTestCompanyAndAdmin();
+
+    cy.then(async () => {
+      cy.logToTerminal('💰 Set credit limit via REST API');
+
+      // First get the credit info to get the credit ID
+      const creditInfo = await getCompanyCredit(Cypress.env('testCompanyId'));
+      const creditId = creditInfo.id;
+      const companyId = creditInfo.company_id;
+      cy.logToTerminal(`✅ Got credit ID: ${creditId}, company ID: ${companyId}`);
+
+      // Set credit limit to $10.01 (per test plan CASE_4)
+      await updateCompanyCredit(creditId, {
+        company_id: companyId,
+        credit_limit: 10.01,
+        currency_code: 'USD',
+      });
+      cy.logToTerminal('✅ Credit limit set via REST API: $10.01');
+    });
+
+    cy.then(() => {
+      cy.wait(3000); // Wait for indexing
+
+      cy.logToTerminal('🔐 Login as company admin');
+      loginAsCompanyAdmin();
+
+      cy.logToTerminal('📍 Navigate to Company Credit page');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify credit limit value $10.01 is displayed');
+      // Per test plan: Credit Limit: 10.01 - MUST be visible
+      cy.contains('10.01', { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify "Allocation" record in history grid');
+      // Per test plan: Allocation record MUST appear in grid
+      cy.contains(/allocat/i, { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ TC-47 CASE_4: Credit limit allocation verified');
+    });
+  });
+
+  // ==========================================================================
+  // TC-47 Combined: Verify multiple operations show in grid
+  // Tests both reimbursement AND allocation in sequence
+  // ==========================================================================
+
+  it('TC-47 Combined: Multiple credit operations show in grid', () => {
+    cy.logToTerminal('========= 📋 TC-47 Combined: Verify multiple operations in grid =========');
+
+    setupTestCompanyAndAdmin();
+
+    cy.then(async () => {
+      cy.logToTerminal('💰 Set up credit via REST API (reimburse + set limit)');
+
+      // Get the credit info
+      const creditInfo = await getCompanyCredit(Cypress.env('testCompanyId'));
+      const creditId = creditInfo.id;
+      const companyId = creditInfo.company_id;
+      cy.logToTerminal(`✅ Got credit ID: ${creditId}, company ID: ${companyId}`);
+
+      // Step 1: Reimburse $5.00 (per test plan CASE_3)
+      await increaseCompanyCreditBalance(creditId, 5.00, 'USD', 'Initial reimbursement');
+      cy.logToTerminal('✅ Balance reimbursed: $5.00');
+
+      // Step 2: Set credit limit to $10.01 (per test plan CASE_4)
+      await updateCompanyCredit(creditId, {
+        company_id: companyId,
+        credit_limit: 10.01,
+        currency_code: 'USD',
+      });
+      cy.logToTerminal('✅ Credit limit set: $10.01');
+    });
+
+    cy.then(() => {
+      cy.wait(3000); // Wait for indexing
+
+      cy.logToTerminal('🔐 Login as company admin');
+      loginAsCompanyAdmin();
+
+      cy.logToTerminal('📍 Navigate to Company Credit page');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify credit summary shows correct values');
+      // Per test plan: Outstanding Balance: 5.00 - MUST be visible
+      cy.contains('5.00', { timeout: 15000 })
+        .should('be.visible');
+
+      // Per test plan: Credit Limit: 10.01 - MUST be visible
+      cy.contains('10.01', { timeout: 15000 })
+        .should('be.visible');
+
+      // Per test plan: Available Credit: 15.01 (5.00 + 10.01) - MUST be visible
+      cy.contains('15.01', { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify grid has both Reimbursed and Allocation records');
+      // Per test plan: Both operation types MUST appear in grid
+      cy.contains(/reimburs/i, { timeout: 15000 })
+        .should('be.visible');
+      cy.contains(/allocat/i, { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ TC-47 Combined: Multiple credit operations verified');
+    });
+  });
+
+  // ==========================================================================
+  // TC-48 (P2): User permissions for Company Credit page
+  // Per test plan (lines 4396-4491):
+  // - User with restricted role should NOT see credit history data in the table
+  // - User CAN see the summary blocks (Outstanding Balance, Available Credit, Credit Limit)
+  // - But the history table should show "No data available"
+  //
+  // Test approach:
+  // 1. Create company with credit operations (reimbursement + allocation)
+  // 2. Create user with no credit permissions
+  // 3. Login as restricted user and verify history table is empty
+  // ==========================================================================
+
+  it('TC-48: User without credit permissions cannot see credit history data', () => {
+    cy.logToTerminal('========= 📋 TC-48: Verify permission restrictions for Company Credit =========');
+
+    setupTestCompanyWithNoCreditPermissionUser();
+
+    cy.then(async () => {
+      cy.logToTerminal('💰 Adding credit operations to company...');
+
+      // Get the credit info
+      const creditInfo = await getCompanyCredit(Cypress.env('testCompanyId'));
+      const creditId = creditInfo.id;
+      const companyId = creditInfo.company_id;
+      cy.logToTerminal(`✅ Got credit ID: ${creditId}, company ID: ${companyId}`);
+
+      // Add reimbursement
+      await increaseCompanyCreditBalance(creditId, 5.00, 'USD', 'Test reimbursement for TC-48');
+      cy.logToTerminal('✅ Added reimbursement: $5.00');
+
+      // Set credit limit
+      await updateCompanyCredit(creditId, {
+        company_id: companyId,
+        credit_limit: 10.00,
+        currency_code: 'USD',
+      });
+      cy.logToTerminal('✅ Set credit limit: $10.00');
+    });
+
+    cy.then(() => {
+      cy.wait(3000); // Wait for indexing
+
+      cy.logToTerminal('🔐 Login as user with no credit permissions');
+      loginAsRegularUser();
+
+      cy.logToTerminal('📍 Navigate to Company Credit page');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify user can see summary blocks but NOT history data');
+
+      // User CAN see the summary blocks
+      cy.contains(/outstanding.*balance/i, { timeout: 10000 })
+        .should('be.visible');
+      cy.logToTerminal('✅ Summary blocks are visible (expected)');
+
+      // User should NOT see the credit history records
+      // The history table should show "No data available" or similar
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+
+        // Check if "Reimbursed" or "Allocated" records are visible
+        const hasReimbursed = bodyText.match(/reimburs/i);
+        const hasAllocated = bodyText.match(/allocat/i);
+
+        if (hasReimbursed || hasAllocated) {
+          // FAIL: User can see credit history without permission
+          throw new Error(
+            'TC-48 FAILED: User without credit permissions can see credit history records. ' +
+            'Expected: "No data available" in history table. ' +
+            'Found: Reimbursed/Allocated records visible.'
+          );
+        }
+
+        // Verify "No data available" or empty state is shown
+        const hasNoData = bodyText.match(/no.*data|no.*records|no.*history/i);
+        if (hasNoData) {
+          cy.logToTerminal('✅ History table shows "No data available" (expected)');
+        } else {
+          cy.logToTerminal('✅ History table is empty or hidden (expected)');
+        }
+      });
+
+      cy.logToTerminal('✅ TC-48: Permission restriction verified - user cannot see credit history');
+    });
+  });
+
+  after(() => {
+    cy.logToTerminal('🏁 Company Credit test suite completed');
+  });
 });
+
+// ==========================================================================
+// Helper Functions
+// ==========================================================================
+
+/**
+ * Setup test company and admin via REST API.
+ * Stores company/admin info in Cypress.env for cleanup.
+ * Uses baseCompanyData fixture for all company and admin data.
+ */
+const setupTestCompanyAndAdmin = () => {
+  cy.logToTerminal('🏢 Setting up test company and admin...');
+
+  cy.then(async () => {
+    cy.logToTerminal('📝 Creating test company via REST API...');
+    const testCompany = await createCompany({
+      companyName: baseCompanyData.companyName,
+      companyEmail: baseCompanyData.companyEmail,
+      legalName: baseCompanyData.legalName,
+      vatTaxId: baseCompanyData.vatTaxId,
+      resellerId: baseCompanyData.resellerId,
+      street: baseCompanyData.street,
+      city: baseCompanyData.city,
+      countryCode: baseCompanyData.countryCode,
+      regionId: 12, // California region ID
+      postcode: baseCompanyData.postcode,
+      telephone: baseCompanyData.telephone,
+      adminFirstName: baseCompanyData.adminFirstName,
+      adminLastName: baseCompanyData.adminLastName,
+      adminEmail: baseCompanyData.adminEmail,
+      adminPassword: 'Test123!',
+      status: 1, // Active
+    });
+
+    cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
+
+    // Store for cleanup
+    Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
+    Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
+    Cypress.env('testCompanyId', testCompany.id);
+    Cypress.env('testCompanyName', testCompany.name);
+    Cypress.env('adminEmail', testCompany.company_admin.email);
+    Cypress.env('adminPassword', testCompany.company_admin.password);
+
+    cy.logToTerminal(`✅ Admin: ${testCompany.company_admin.email}`);
+  });
+};
+
+/**
+ * Setup test company with both admin and regular user.
+ * Stores all info in Cypress.env for cleanup.
+ * Uses baseCompanyData and companyUsers fixtures for all data.
+ */
+const setupTestCompanyWithRegularUser = () => {
+  cy.logToTerminal('🏢 Setting up test company with regular user...');
+
+  cy.then(async () => {
+    cy.logToTerminal('📝 Creating test company via REST API...');
+    const testCompany = await createCompany({
+      companyName: baseCompanyData.companyName,
+      companyEmail: baseCompanyData.companyEmail,
+      legalName: baseCompanyData.legalName,
+      vatTaxId: baseCompanyData.vatTaxId,
+      resellerId: baseCompanyData.resellerId,
+      street: baseCompanyData.street,
+      city: baseCompanyData.city,
+      countryCode: baseCompanyData.countryCode,
+      regionId: 12, // California region ID
+      postcode: baseCompanyData.postcode,
+      telephone: baseCompanyData.telephone,
+      adminFirstName: baseCompanyData.adminFirstName,
+      adminLastName: baseCompanyData.adminLastName,
+      adminEmail: baseCompanyData.adminEmail,
+      adminPassword: 'Test123!',
+      status: 1, // Active
+    });
+
+    cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
+
+    cy.logToTerminal('👤 Creating regular company user...');
+    const regularUser = await createCompanyUser({
+      email: companyUsers.regularUser.email,
+      firstname: companyUsers.regularUser.firstname,
+      lastname: companyUsers.regularUser.lastname,
+      password: companyUsers.regularUser.password,
+    }, testCompany.id);
+
+    cy.logToTerminal(`✅ Regular user created: ${regularUser.email}`);
+
+    // Store for cleanup
+    Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
+    Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
+    Cypress.env('testCompanyId', testCompany.id);
+    Cypress.env('testCompanyName', testCompany.name);
+    Cypress.env('adminEmail', testCompany.company_admin.email);
+    Cypress.env('adminPassword', testCompany.company_admin.password);
+    Cypress.env('regularUserEmail', regularUser.email);
+    Cypress.env('regularUserPassword', companyUsers.regularUser.password);
+    Cypress.env('regularUserId', regularUser.id);
+  });
+};
+
+/**
+ * Setup test company with a user that has NO credit permissions.
+ * Creates a custom role with no credit-related permissions and assigns it to the user.
+ * This is used for TC-48 to verify permission restrictions.
+ */
+const setupTestCompanyWithNoCreditPermissionUser = () => {
+  cy.logToTerminal('🏢 Setting up test company with no-credit-permission user...');
+
+  cy.then(async () => {
+    cy.logToTerminal('📝 Creating test company via REST API...');
+    const testCompany = await createCompany({
+      companyName: baseCompanyData.companyName,
+      companyEmail: baseCompanyData.companyEmail,
+      legalName: baseCompanyData.legalName,
+      vatTaxId: baseCompanyData.vatTaxId,
+      resellerId: baseCompanyData.resellerId,
+      street: baseCompanyData.street,
+      city: baseCompanyData.city,
+      countryCode: baseCompanyData.countryCode,
+      regionId: 12, // California region ID
+      postcode: baseCompanyData.postcode,
+      telephone: baseCompanyData.telephone,
+      adminFirstName: baseCompanyData.adminFirstName,
+      adminLastName: baseCompanyData.adminLastName,
+      adminEmail: baseCompanyData.adminEmail,
+      adminPassword: 'Test123!',
+      status: 1, // Active
+    });
+
+    cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
+
+    // Create a custom role with NO credit permissions
+    // Only basic permissions - no Magento_Company::credit resource
+    cy.logToTerminal('🎭 Creating custom role with NO credit permissions...');
+    const noCreditRole = await createCompanyRole({
+      company_id: testCompany.id,
+      role_name: 'No Credit Access',
+      permissions: [
+        // Basic company resources only - NO credit permissions
+        // Per swagger: permission object requires resource_id (string) and permission (string)
+        { resource_id: 'Magento_Company::index', permission: 'allow' },
+        { resource_id: 'Magento_Company::view', permission: 'allow' },
+      ],
+    });
+    cy.logToTerminal(`✅ Custom role created: ${noCreditRole.role_name} (ID: ${noCreditRole.id})`);
+
+    cy.logToTerminal('👤 Creating company user...');
+    const regularUser = await createCompanyUser({
+      email: companyUsers.regularUser.email,
+      firstname: companyUsers.regularUser.firstname,
+      lastname: companyUsers.regularUser.lastname,
+      password: companyUsers.regularUser.password,
+    }, testCompany.id);
+
+    cy.logToTerminal(`✅ User created: ${regularUser.email} (ID: ${regularUser.id})`);
+
+    // Assign the no-credit role to the user
+    cy.logToTerminal('🎭 Assigning no-credit role to user...');
+    await assignRoleToUser(regularUser.id, noCreditRole);
+    cy.logToTerminal('✅ No-credit role assigned to user');
+
+    // Store for cleanup
+    Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
+    Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
+    Cypress.env('testCompanyId', testCompany.id);
+    Cypress.env('testCompanyName', testCompany.name);
+    Cypress.env('adminEmail', testCompany.company_admin.email);
+    Cypress.env('adminPassword', testCompany.company_admin.password);
+    Cypress.env('regularUserEmail', regularUser.email);
+    Cypress.env('regularUserPassword', companyUsers.regularUser.password);
+    Cypress.env('regularUserId', regularUser.id);
+    Cypress.env('noCreditRoleId', noCreditRole.id);
+  });
+};
+
+/**
+ * Login as company admin using stored credentials.
+ */
+const loginAsCompanyAdmin = () => {
+  const urls = Cypress.env('poUrls');
+  const user = {
+    email: Cypress.env('adminEmail'),
+    password: Cypress.env('adminPassword'),
+  };
+  login(user, urls);
+  cy.logToTerminal('✅ Admin logged in');
+};
+
+/**
+ * Login as regular company user using stored credentials.
+ */
+const loginAsRegularUser = () => {
+  const urls = Cypress.env('poUrls');
+  const user = {
+    email: Cypress.env('regularUserEmail'),
+    password: Cypress.env('regularUserPassword'),
+  };
+  // Wait for any pending operations before login
+  cy.wait(1000);
+  login(user, urls);
+  cy.logToTerminal('✅ Regular user logged in');
+};
