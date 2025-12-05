@@ -19,7 +19,7 @@ import {
   createCompanyViaGraphQL,
   createUserAndAssignToCompany,
   createCompanyTeam,
-} from '../../support/b2bCompanyManagementAPICalls';
+} from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
   companyUsers,
@@ -539,7 +539,7 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     if (Cypress.env('testTeamId')) {
       cy.wrap(null).then(async () => {
         try {
-          const { updateCompanyTeam } = require('../../support/b2bCompanyManagementAPICalls');
+          const { updateCompanyTeam } = require('../../support/b2bCompanyAPICalls');
           
           await updateCompanyTeam(Cypress.env('testTeamId'), {
             name: updatedName,

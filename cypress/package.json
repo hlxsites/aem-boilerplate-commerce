@@ -9,10 +9,7 @@
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
     "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas",
     "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js",
-    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
-    "cypress:b2b:local:open": "cypress open --browser chrome --config-file cypress.b2b.local.config.js",
-    "cypress:b2b:local:run": "cypress run --config-file cypress.b2b.local.config.js",
-    "cypress:b2b:local:headed": "cypress run --headed --browser chrome --config-file cypress.b2b.local.config.js"
+    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",

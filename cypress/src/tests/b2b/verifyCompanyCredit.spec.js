@@ -18,7 +18,7 @@
 import {
   createCompanyViaGraphQL,
   createUserAndAssignToCompany,
-} from '../../support/b2bCompanyManagementAPICalls';
+} from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
   companyUsers,
@@ -223,7 +223,7 @@ describe('USF-2563: Company Credit', { tags: '@B2BSaas' }, () => {
     // Set credit limit via REST API (simulates Admin Panel)
     cy.wrap(null).then(async () => {
       try {
-        const { updateCompanyCredit } = require('../../support/b2bCompanyManagementAPICalls');
+        const { updateCompanyCredit } = require('../../support/b2bCompanyAPICalls');
         
         await updateCompanyCredit(Cypress.env('creditTestCompanyId'), {
           credit_limit: 5000,

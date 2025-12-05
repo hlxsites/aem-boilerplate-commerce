@@ -19,7 +19,7 @@ import {
   createCompanyViaGraphQL,
   createUserAndAssignToCompany,
   createCompanyRole,
-} from '../../support/b2bCompanyManagementAPICalls';
+} from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
   companyUsers,

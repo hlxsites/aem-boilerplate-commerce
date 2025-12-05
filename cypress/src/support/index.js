@@ -11,7 +11,6 @@ import './percyTakeSnapshot';
 import './waitForLoadingSkeletonToDisappear';
 import './deleteNegotiableQuotes';
 import './logToTerminal';
-import './mockTokenManager';
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();
