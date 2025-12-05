@@ -30,9 +30,6 @@ export interface ManageNegotiableQuoteProps extends HTMLAttributes<HTMLDivElemen
         Banner?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
         }>;
-        DuplicateQuoteWarningBanner?: SlotProps<{
-            outOfStockWarning?: boolean;
-        }>;
         Details?: SlotProps<{
             quoteData?: NegotiableQuoteModel;
         }>;

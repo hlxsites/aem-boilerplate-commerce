@@ -82,9 +82,7 @@ declare const _default: {
           "errorHeading": "Error",
           "errorFallback": "Failed to duplicate quote",
           "successHeading": "Success",
-          "successDescription": "Quote has been successfully duplicated. You will be redirected to the new quote shortly.",
-          "outOfStockWarningHeading": "Alert",
-          "outOfStockWarningMessage": "Some items were skipped during duplication due to errors."
+          "successDescription": "Quote has been successfully duplicated. You will be redirected to the new quote shortly."
         },
         "close": {
           "message": "Are you sure you want to close this quote?",
@@ -112,9 +110,7 @@ declare const _default: {
         "title": "Shipping Information"
       },
       "shippingAddress": {
-        "noAddress": "No shipping address has been set for this quote.",
-        "noAddressHeading": "No Shipping Address",
-        "noAddressDescription": "Please select or enter a shipping address."
+        "noAddress": "No shipping address has been set for this quote."
       },
       "quoteComments": {
         "title": "Quote Comments",
@@ -141,11 +137,8 @@ declare const _default: {
         "notes": {
           "header": "NOTES",
           "leftANote": "left a note:",
-          "buyer": "Buyer",
-          "seller": "Seller"
-        },
-        "outOfStock": "Out of Stock",
-        "outOfStockMessage": "This item is currently out of stock."
+          "buyer": "Buyer"
+        }
       },
       "rename": {
         "title": "Rename Quote",
@@ -274,7 +267,6 @@ declare const _default: {
       "createdLabel": "Created:",
       "salesRepLabel": "Sales Rep:",
       "expiresLabel": "Expires:",
-      "templateIdLabel": "Template ID:",
       "referenceDocuments": {
         "title": "Reference Documents",
         "add": "Add",
@@ -290,15 +282,11 @@ declare const _default: {
           "updateButton": "Update Document",
           "cancelButton": "Cancel",
           "documentNameRequired": "Document name is required",
-          "documentIdentifierRequired": "Document identifier is required",
           "referenceUrlRequired": "Reference URL is required",
           "invalidUrl": "Please enter a valid URL",
           "errorHeading": "Error",
           "duplicateUidError": "A document with this identifier already exists in the template. Please use a different identifier."
         }
-      },
-      "shippingInformation": {
-        "title": "Shipping Information"
       },
       "comments": {
         "title": "Comments"
@@ -395,23 +383,7 @@ declare const _default: {
       },
       "lineItemNoteModal": {
         "errorHeading": "Error"
-      },
-      "rename": {
-        "title": "Rename Quote Template",
-        "templateNameLabel": "Template name",
-        "reasonLabel": "Reason for change",
-        "renameButton": "Rename",
-        "cancelButton": "Cancel",
-        "errorHeading": "Error",
-        "templateNameRequired": "Template name is required",
-        "errorDefault": "Failed to rename quote template. Please try again.",
-        "successHeading": "Success",
-        "successMessage": "Quote template renamed successfully!"
-      },
-      "unsavedChangesWarningHeading": "Unsaved Changes",
-      "unsavedChangesWarningMessage": "The quote template must be submitted for review to save the changes.",
-      "shippingAddressWarningHeading": "No Shipping Address",
-      "shippingAddressWarningMessage": "No shipping address has been set for this quote template."
+      }
     }
   },
   "historyLog": {
@@ -465,16 +437,6 @@ declare const _default: {
       "lastOrdered": "Last Ordered",
       "actions": "Action",
       "view": "View"
-    },
-    "permissions": {
-      "noQuotesAccessTitle": "Access Restricted",
-      "noQuotesAccessMessage": "You do not have permission to view quotes. Please contact your administrator for access.",
-      "noQuoteTemplatesAccessTitle": "Access Restricted",
-      "noQuoteTemplatesAccessMessage": "You do not have permission to view quote templates. Please contact your administrator for access.",
-      "noEditQuoteAccessTitle": "Access Restricted",
-      "noEditQuoteAccessMessage": "You do not have permission to edit this quote. Please contact your administrator for access.",
-      "noEditQuoteTemplateAccessTitle": "Access Restricted",
-      "noEditQuoteTemplateAccessMessage": "You do not have permission to edit this quote template. Please contact your administrator for access."
     }
   }
 }
