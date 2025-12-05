@@ -427,7 +427,7 @@ async function createCompanyUser(userData, companyId) {
   safeLog('✅ Customer created with ID:', customerId);
 
   // Step 2: Assign customer to company using PUT /V1/customers/:customerId
-  // with extension_attributes.company_attributes (per Adobe REST API docs)
+  // with extension_attributes.company_attributes
   safeLog('🔗 Assigning user to company:', companyId);
 
   const updatePayload = {
