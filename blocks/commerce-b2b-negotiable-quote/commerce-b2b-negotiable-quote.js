@@ -91,8 +91,6 @@ export default async function decorate(block) {
     return;
   }
 
-  const placeholders = await fetchPlaceholders();
-
   const permissionCheck = await checkPermissions();
   if (!permissionCheck.hasPermission) {
     // Show warning banner instead of redirecting
@@ -104,6 +102,8 @@ export default async function decorate(block) {
     })(block);
     return;
   }
+
+  const placeholders = await fetchPlaceholders();
 
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
