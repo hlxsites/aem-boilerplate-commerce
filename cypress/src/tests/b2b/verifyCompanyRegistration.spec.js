@@ -282,8 +282,28 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
     submitCompanyRegistrationForm();
 
     cy.logToTerminal('✅ Verify error message for duplicate email');
-    // Should show error - company email already in use
+    // Duplicate email is validated via validateCompanyEmail API before createCompany
+    // The error is shown as a field-level error on the companyEmail input
+    cy.get('input[name="companyEmail"]')
+      .closest('.dropin-field')
+      .should('satisfy', ($el) => {
+        // Check for error hint or error class on the field
+        const hasErrorHint = $el.find('.dropin-field__hint--error').length > 0;
+        const hasErrorClass = $el.hasClass('dropin-field--error') ||
+          $el.find('.dropin-input--error').length > 0 ||
+          $el.find('[class*="error"]').length > 0;
+        return hasErrorHint || hasErrorClass;
+      });
+
+    // Verify error text contains indication of duplicate/already used email
     cy.get('body').should('contain.text', 'already');
+
+    // Verify form is still visible (not hidden after error)
+    cy.get('.company-form', { timeout: 2000 }).should('exist').and('be.visible');
+
+    // Verify we're still on the registration page (not redirected)
+    cy.url().should('include', COMPANY_CREATE_PATH);
+
     cy.logToTerminal('✅ TC-05: Duplicate company email validation completed');
   });
 
