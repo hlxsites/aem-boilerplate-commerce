@@ -70,191 +70,222 @@ export default async function decorate(block) {
   // Get the quote id from the url
   const quoteId = new URLSearchParams(window.location.search).get('quoteid');
 
-  // Checkout button
-  const checkoutButtonContainer = document.createElement('div');
-  checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
+  // Listen for permission events
+  events.on('auth/permissions', async (permissions) => {
+    const hasQuotePermission = permissions?.['Magento_NegotiableQuote::all']
+      || permissions?.['Magento_NegotiableQuote::manage']
+      || permissions?.all;
 
-  // Function for rendering or re-rendering the checkout button
-  const renderCheckoutButton = (_context, checkoutEnabled = false) => {
-    if (!quoteId) return;
+    // Clear block before rendering
+    block.innerHTML = '';
 
-    UI.render(Button, {
-      children: placeholders?.Cart?.PriceSummary?.checkout,
-      disabled: !checkoutEnabled,
-      onClick: () => {
-        window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
-      },
-    })(checkoutButtonContainer);
-  };
+    if (!hasQuotePermission) {
+      // Show warning banner and empty state instead of redirecting
+      block.innerHTML = '';
 
-  if (quoteId) {
-    block.classList.add('negotiable-quote__manage');
-    block.setAttribute('data-quote-view', 'manage');
-    await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
-      slots: {
-        Footer: (ctx) => {
-          ctx.appendChild(checkoutButtonContainer);
-          const enabled = ctx.quoteData?.canCheckout;
-          renderCheckoutButton(ctx, enabled);
+      const warningDiv = document.createElement('div');
+      warningDiv.className = 'negotiable-quote__permission-warning';
+
+      UI.render(InLineAlert, {
+        variant: 'warning',
+        heading: 'Access Restricted',
+        children: 'You do not have permission to access quotes. Please contact your administrator for access.',
+      })(warningDiv);
+
+      block.appendChild(warningDiv);
+
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'negotiable-quote__empty-state';
+      block.appendChild(emptyDiv);
+
+      return;
+    }
+
+    // User has permission - render the appropriate view
+    if (quoteId) {
+      // Checkout button
+      const checkoutButtonContainer = document.createElement('div');
+      checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
+
+      // Function for rendering or re-rendering the checkout button
+      const renderCheckoutButton = (_context, checkoutEnabled = false) => {
+        UI.render(Button, {
+          children: placeholders?.Cart?.PriceSummary?.checkout,
+          disabled: !checkoutEnabled,
+          onClick: () => {
+            window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
+          },
+        })(checkoutButtonContainer);
+      };
+
+      block.classList.add('negotiable-quote__manage');
+      block.setAttribute('data-quote-view', 'manage');
+      await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
+        slots: {
+          Footer: (ctx) => {
+            ctx.appendChild(checkoutButtonContainer);
+            const enabled = ctx.quoteData?.canCheckout;
+            renderCheckoutButton(ctx, enabled);
+          },
+          ShippingInformation: (ctx) => {
+            const shippingInformation = document.createElement('div');
+            shippingInformation.classList.add('negotiable-quote__select-shipping-information');
+            ctx.appendChild(shippingInformation);
+
+            const progressSpinner = document.createElement('div');
+            progressSpinner.classList.add('negotiable-quote__progress-spinner-container');
+            progressSpinner.setAttribute('hidden', true);
+            ctx.appendChild(progressSpinner);
+
+            UI.render(ProgressSpinner, {
+              className: 'negotiable-quote__progress-spinner',
+              size: 'large',
+            })(progressSpinner);
+
+            ctx.onChange((next) => {
+              // Remove existing content from the shipping information container
+              shippingInformation.innerHTML = '';
+
+              const { quoteData } = next;
+
+              if (!quoteData) return;
+
+              if (!quoteData.canSendForReview) return;
+
+              if (quoteData.canSendForReview) {
+                accountRenderer.render(Addresses, {
+                  minifiedView: false,
+                  withActionsInMinifiedView: false,
+                  selectable: true,
+                  className: 'negotiable-quote__shipping-information-addresses',
+                  selectShipping: true,
+                  defaultSelectAddressId: 0,
+                  onAddressData: (params) => {
+                    const { data, isDataValid: isValid } = params;
+                    const addressUid = data?.uid;
+                    if (!isValid) return;
+                    if (!addressUid) return;
+
+                    progressSpinner.removeAttribute('hidden');
+                    shippingInformation.setAttribute('hidden', true);
+
+                    setShippingAddress({
+                      quoteUid: quoteId,
+                      addressId: addressUid,
+                    }).finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
+                  },
+                  onSubmit: (event, formValid) => {
+                    if (!formValid) return;
+
+                    const formValues = getFormValues(event.target);
+
+                    const [regionCode, _regionId] = formValues.region?.split(',') || [];
+
+                    // iterate through the object entries and combine the values of keys that have
+                    // a prefix of 'street' into an array
+                    const streetInputValues = Object.entries(formValues)
+                      .filter(([key]) => key.startsWith('street'))
+                      .map(([_, value]) => value);
+
+                    const addressInput = {
+                      firstname: formValues.firstName,
+                      lastname: formValues.lastName,
+                      company: formValues.company,
+                      street: streetInputValues,
+                      city: formValues.city,
+                      region: regionCode,
+                      postcode: formValues.postcode,
+                      countryCode: formValues.countryCode,
+                      telephone: formValues.telephone,
+                      saveInAddressBook: formValues.saveInAddressBook,
+                    };
+
+                    // These values are not part of the standard address input
+                    const additionalAddressInput = {
+                      vat_id: formValues.vatId,
+                    };
+
+                    progressSpinner.removeAttribute('hidden');
+                    shippingInformation.setAttribute('hidden', true);
+                    setShippingAddress({
+                      quoteUid: quoteId,
+                      addressData: {
+                        ...addressInput,
+                        additionalInput: additionalAddressInput,
+                      },
+                    }).finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
+                  },
+                })(shippingInformation);
+              }
+            });
+          },
         },
-        ShippingInformation: (ctx) => {
-          const shippingInformation = document.createElement('div');
-          shippingInformation.classList.add('negotiable-quote__select-shipping-information');
-          ctx.appendChild(shippingInformation);
+      })(block);
 
-          const progressSpinner = document.createElement('div');
-          progressSpinner.classList.add('negotiable-quote__progress-spinner-container');
-          progressSpinner.setAttribute('hidden', true);
-          ctx.appendChild(progressSpinner);
+      // On delete success: navigate back to quotes list after delay to show success banner
+      const deleteListener = events.on('quote-management/negotiable-quote-deleted', ({ deletedQuoteUids }) => {
+        if (deletedQuoteUids && deletedQuoteUids.length > 0) {
+          // Delay redirect by 2 seconds
+          setTimeout(() => {
+            window.location.href = window.location.pathname;
+          }, 2000);
+        }
+      });
 
-          UI.render(ProgressSpinner, {
-            className: 'negotiable-quote__progress-spinner',
-            size: 'large',
-          })(progressSpinner);
+      // On duplicate success: navigate to new quote after delay to show success banner
+      const duplicateListener = events.on('quote-management/quote-duplicated', ({ quote }) => {
+        if (quote && quote.uid) {
+          // Delay redirect by 2 seconds
+          setTimeout(() => {
+            window.location.href = `${window.location.pathname}?quoteid=${quote.uid}`;
+          }, 2000);
+        }
+      });
 
-          ctx.onChange((next) => {
-            // Remove existing content from the shipping information container
-            shippingInformation.innerHTML = '';
+      // Clean up listeners if block is removed
+      const observer = new MutationObserver(() => {
+        if (!document.body.contains(block)) {
+          deleteListener?.off();
+          duplicateListener?.off();
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
 
-            const { quoteData } = next;
+      // On quote item removed disable checkout button
+      events.on('quote-management/quote-items-removed', ({ quote }) => {
+        renderCheckoutButton(quote, false);
+      });
 
-            if (!quoteData) return;
+      // On quote item quantity updated disable checkout button
+      events.on('quote-management/quantities-updated', ({ quote }) => {
+        renderCheckoutButton(quote, false);
+      });
 
-            if (!quoteData.canSendForReview) return;
-
-            if (quoteData.canSendForReview) {
-              accountRenderer.render(Addresses, {
-                minifiedView: false,
-                withActionsInMinifiedView: false,
-                selectable: true,
-                className: 'negotiable-quote__shipping-information-addresses',
-                selectShipping: true,
-                defaultSelectAddressId: 0,
-                onAddressData: (params) => {
-                  const { data, isDataValid: isValid } = params;
-                  const addressUid = data?.uid;
-                  if (!isValid) return;
-                  if (!addressUid) return;
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-
-                  setShippingAddress({
-                    quoteUid: quoteId,
-                    addressId: addressUid,
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
-                },
-                onSubmit: (event, formValid) => {
-                  if (!formValid) return;
-
-                  const formValues = getFormValues(event.target);
-
-                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
-
-                  // iterate through the object entries and combine the values of keys that have
-                  // a prefix of 'street' into an array
-                  const streetInputValues = Object.entries(formValues)
-                    .filter(([key]) => key.startsWith('street'))
-                    .map(([_, value]) => value);
-
-                  const addressInput = {
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    company: formValues.company,
-                    street: streetInputValues,
-                    city: formValues.city,
-                    region: regionCode,
-                    postcode: formValues.postcode,
-                    countryCode: formValues.countryCode,
-                    telephone: formValues.telephone,
-                    saveInAddressBook: formValues.saveInAddressBook,
-                  };
-
-                  // These values are not part of the standard address input
-                  const additionalAddressInput = {
-                    vat_id: formValues.vatId,
-                  };
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-                  setShippingAddress({
-                    quoteUid: quoteId,
-                    addressData: {
-                      ...addressInput,
-                      additionalInput: additionalAddressInput,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
-                },
-              })(shippingInformation);
-            }
-          });
+      // On shipping address selected disable checkout button
+      events.on('quote-management/shipping-address-set', ({ quote }) => {
+        renderCheckoutButton(quote, false);
+      });
+    } else {
+      block.classList.add('negotiable-quote__list');
+      block.setAttribute('data-quote-view', 'list');
+      await negotiableQuoteRenderer.render(QuotesListTable, {
+        onViewQuote: (id, _quoteName, _status) => {
+          // Append quote id to the url to navigate to render the manage quote view
+          window.location.href = `${window.location.pathname}?quoteid=${id}`;
         },
-      },
-    })(block);
-
-    // On delete success: navigate back to quotes list after delay to show success banner
-    const deleteListener = events.on('quote-management/negotiable-quote-deleted', ({ deletedQuoteUids }) => {
-      if (deletedQuoteUids && deletedQuoteUids.length > 0) {
-        // Delay redirect by 2 seconds
-        setTimeout(() => {
-          window.location.href = window.location.pathname;
-        }, 2000);
-      }
-    });
-
-    // On duplicate success: navigate to new quote after delay to show success banner
-    const duplicateListener = events.on('quote-management/quote-duplicated', ({ quote }) => {
-      if (quote && quote.uid) {
-        // Delay redirect by 2 seconds
-        setTimeout(() => {
-          window.location.href = `${window.location.pathname}?quoteid=${quote.uid}`;
-        }, 2000);
-      }
-    });
-
-    // Clean up listeners if block is removed
-    const observer = new MutationObserver(() => {
-      if (!document.body.contains(block)) {
-        deleteListener?.off();
-        duplicateListener?.off();
-        observer.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  } else {
-    block.classList.add('negotiable-quote__list');
-    block.setAttribute('data-quote-view', 'list');
-    await negotiableQuoteRenderer.render(QuotesListTable, {
-      onViewQuote: (id, _quoteName, _status) => {
-        // Append quote id to the url to navigate to render the manage quote view
-        window.location.href = `${window.location.pathname}?quoteid=${id}`;
-      },
-      showItemRange: true,
-      showPageSizePicker: true,
-      showPagination: true,
-    })(block);
-  }
-
-  // On quote item removed disable checkout button
-  events.on('quote-management/quote-items-removed', ({ quote }) => {
-    renderCheckoutButton(quote, false);
-  });
-
-  // On quote item quantity updated disable checkout button
-  events.on('quote-management/quantities-updated', ({ quote }) => {
-    renderCheckoutButton(quote, false);
-  });
-
-  // On shipping address selected disable checkout button
-  events.on('quote-management/shipping-address-set', ({ quote }) => {
-    renderCheckoutButton(quote, false);
-  });
+        showItemRange: true,
+        showPageSizePicker: true,
+        showPagination: true,
+      })(block);
+    }
+  }, { eager: true });
 
   // Listen for changes to the company context (e.g. when user switches companies).
   events.on('companyContext/changed', () => {
