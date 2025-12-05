@@ -1,6 +1,12 @@
  /* stylelint-disable no-empty-source */
 
- /* Select shipping information */
+/* Access restricted warning banner */
+.commerce-b2b-negotiable-quote .dropin-inline-alert__heading,
+.commerce-b2b-negotiable-quote .dropin-inline-alert__description {
+    margin-left: var(--spacing-medium);
+}
+
+/* Select shipping information */
 .negotiable-quote__select-shipping-information {
     margin-top: var(--spacing-medium);
 }
