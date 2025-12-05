@@ -17,8 +17,10 @@
 import { getFormValues } from '@dropins/tools/lib.js';
 import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
+  Icon,
   Button,
   ProgressSpinner,
   provider as UI,
@@ -96,9 +98,10 @@ export default async function decorate(block) {
     // Show warning banner instead of redirecting
     UI.render(InLineAlert, {
       type: 'warning',
-      variant: 'secondary',
+      variant: 'primary',
       heading: 'Access Restricted',
       description: permissionCheck.message,
+      icon: h(Icon, { source: 'Warning' }),
     })(block);
     return;
   }

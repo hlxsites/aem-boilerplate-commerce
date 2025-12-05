@@ -19,8 +19,10 @@ import { companyEnabled, getCompany } from '@dropins/storefront-company-manageme
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
+  Icon,
   ProgressSpinner,
   provider as UI,
 } from '@dropins/tools/components.js';
@@ -91,9 +93,10 @@ export default async function decorate(block) {
   if (!permissionCheck.hasPermission) {
     UI.render(InLineAlert, {
       type: 'warning',
-      variant: 'secondary',
+      variant: 'primary',
       heading: 'Access Restricted',
       description: permissionCheck.message,
+      icon: h(Icon, { source: 'Warning' }),
     })(block);
     return;
   }
