@@ -1,8 +1,8 @@
  /* stylelint-disable no-empty-source */
 
 /* Access restricted warning banner */
-.commerce-b2b-negotiable-quote .dropin-inline-alert__heading,
-.commerce-b2b-negotiable-quote .dropin-inline-alert__description {
+.commerce-b2b-negotiable-quote .dropin-in-line-alert__heading,
+.commerce-b2b-negotiable-quote .dropin-in-line-alert__description {
     margin-left: var(--spacing-medium);
 }
 
