@@ -3,7 +3,7 @@
 /* Access restricted warning banner */
 .commerce-b2b-negotiable-quote .dropin-in-line-alert__heading,
 .commerce-b2b-negotiable-quote .dropin-in-line-alert__description {
-    margin-left: var(--spacing-medium);
+    margin-left: var(--spacing-small);
 }
 
 /* Select shipping information */

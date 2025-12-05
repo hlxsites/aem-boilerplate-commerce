@@ -1,7 +1,7 @@
 /* Access restricted warning banner */
 .commerce-b2b-negotiable-quote-template .dropin-in-line-alert__heading,
 .commerce-b2b-negotiable-quote-template .dropin-in-line-alert__description {
-    margin-left: var(--spacing-medium);
+    margin-left: var(--spacing-small);
 }
 
 /* Template Name column */
