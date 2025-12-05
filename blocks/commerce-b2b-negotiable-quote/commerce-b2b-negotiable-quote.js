@@ -42,7 +42,6 @@ import '../../scripts/initializers/account.js';
 // Commerce
 import {
   CUSTOMER_LOGIN_PATH,
-  CUSTOMER_ACCOUNT_PATH,
   checkIsAuthenticated,
   rootLink,
   fetchPlaceholders,
