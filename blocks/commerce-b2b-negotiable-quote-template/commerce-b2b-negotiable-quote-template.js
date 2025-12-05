@@ -43,7 +43,38 @@ import {
   CUSTOMER_ACCOUNT_PATH,
   checkIsAuthenticated,
   rootLink,
+  fetchPlaceholders,
 } from '../../scripts/commerce.js';
+
+/**
+ * Shows permission warning banner
+ */
+async function showPermissionWarning(container, messageKey) {
+  const placeholders = await fetchPlaceholders();
+  const title = placeholders[`${messageKey}Title`] || 'Access Restricted';
+  const message = placeholders[`${messageKey}Message`] || 'You do not have permission to access this content.';
+
+  const warningDiv = document.createElement('div');
+  warningDiv.className = 'negotiable-quote-template__permission-warning';
+
+  UI.render(InLineAlert, {
+    variant: 'warning',
+    heading: title,
+    children: message,
+  })(warningDiv);
+
+  container.appendChild(warningDiv);
+}
+
+/**
+ * Shows empty state
+ */
+function showEmptyState(container, message = 'No content available.') {
+  const emptyDiv = document.createElement('div');
+  emptyDiv.className = 'negotiable-quote-template__empty-state';
+  emptyDiv.textContent = message;
+  container.appendChild(emptyDiv);
+}
 
 /**
  * Decorate the block
@@ -66,134 +97,157 @@ export default async function decorate(block) {
   // Get the quote template id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
-  if (quoteTemplateId) {
-    block.classList.add('negotiable-quote-template__details');
-    block.setAttribute('data-quote-view', 'details');
+  // Listen for permission events from auth initializer
+  events.on('auth/permissions', async (permissions) => {
+    const hasTemplatePermission = permissions?.['Magento_NegotiableQuoteTemplate::all']
+      || permissions?.['Magento_NegotiableQuoteTemplate::view_template']
+      || permissions?.['Magento_NegotiableQuoteTemplate::manage']
+      || permissions?.all;
 
-    // Render the quote template details view
-    await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
-      slots: {
-        ShippingInformation: (ctx) => {
-          const shippingInformation = document.createElement('div');
-          shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
-          ctx.appendChild(shippingInformation);
+    // Clear block before rendering
+    block.innerHTML = '';
 
-          const progressSpinner = document.createElement('div');
-          progressSpinner.classList.add('negotiable-quote-template__progress-spinner-container');
-          progressSpinner.setAttribute('hidden', true);
-          ctx.appendChild(progressSpinner);
+    if (!hasTemplatePermission) {
+      // Show warning banner and empty state
+      const messageKey = quoteTemplateId
+        ? 'QuoteManagement.permissions.noEditQuoteTemplateAccess'
+        : 'QuoteManagement.permissions.noQuoteTemplatesAccess';
 
-          UI.render(ProgressSpinner, {
-            className: 'negotiable-quote-template__progress-spinner',
-            size: 'large',
-          })(progressSpinner);
+      await showPermissionWarning(block, messageKey);
+      showEmptyState(block);
+      return;
+    }
 
-          ctx.onChange((next) => {
-            // Remove existing content from the shipping information container
-            shippingInformation.innerHTML = '';
+    // User has permission - render the appropriate view
+    if (quoteTemplateId) {
+      block.classList.add('negotiable-quote-template__details');
+      block.setAttribute('data-quote-view', 'details');
 
-            const { templateData } = next;
+      // Render the quote template details view
+      await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
+        slots: {
+          ShippingInformation: (ctx) => {
+            const shippingInformation = document.createElement('div');
+            shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
+            ctx.appendChild(shippingInformation);
 
-            if (!templateData) return;
+            const progressSpinner = document.createElement('div');
+            progressSpinner.classList.add('negotiable-quote-template__progress-spinner-container');
+            progressSpinner.setAttribute('hidden', true);
+            ctx.appendChild(progressSpinner);
 
-            if (!templateData.canSendForReview) return;
+            UI.render(ProgressSpinner, {
+              className: 'negotiable-quote-template__progress-spinner',
+              size: 'large',
+            })(progressSpinner);
 
-            if (templateData.canSendForReview) {
-              accountRenderer.render(Addresses, {
-                minifiedView: false,
-                withActionsInMinifiedView: false,
-                selectable: true,
-                className: 'negotiable-quote-template__shipping-information-addresses',
-                selectShipping: true,
-                defaultSelectAddressId: 0,
-                onAddressData: (params) => {
-                  const { data, isDataValid: isValid } = params;
-                  const addressUid = data?.uid;
-                  if (!isValid) return;
-                  if (!addressUid) return;
+            ctx.onChange((next) => {
+              // Remove existing content from the shipping information container
+              shippingInformation.innerHTML = '';
 
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
+              const { templateData } = next;
 
-                  addQuoteTemplateShippingAddress({
-                    templateId: quoteTemplateId,
-                    shippingAddress: {
-                      customerAddressUid: addressUid,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
-                },
-                onSubmit: (event, formValid) => {
-                  if (!formValid) return;
+              if (!templateData) return;
 
-                  const formValues = getFormValues(event.target);
+              if (!templateData.canSendForReview) return;
 
-                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
+              if (templateData.canSendForReview) {
+                accountRenderer.render(Addresses, {
+                  minifiedView: false,
+                  withActionsInMinifiedView: false,
+                  selectable: true,
+                  className: 'negotiable-quote-template__shipping-information-addresses',
+                  selectShipping: true,
+                  defaultSelectAddressId: 0,
+                  onAddressData: (params) => {
+                    const { data, isDataValid: isValid } = params;
+                    const addressUid = data?.uid;
+                    if (!isValid) return;
+                    if (!addressUid) return;
 
-                  // iterate through the object entries and combine the values of keys that have
-                  // a prefix of 'street' into an array
-                  const streetInputValues = Object.entries(formValues)
-                    .filter(([key]) => key.startsWith('street'))
-                    .map(([_, value]) => value);
+                    progressSpinner.removeAttribute('hidden');
+                    shippingInformation.setAttribute('hidden', true);
 
-                  const addressInput = {
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    company: formValues.company,
-                    street: streetInputValues,
-                    city: formValues.city,
-                    region: regionCode,
-                    postcode: formValues.postcode,
-                    countryCode: formValues.countryCode,
-                    telephone: formValues.telephone,
-                    saveInAddressBook: formValues.saveInAddressBook,
-                  };
-
-                  // These values are not part of the standard address input
-                  const additionalAddressInput = {
-                    vat_id: formValues.vatId,
-                  };
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-                  addQuoteTemplateShippingAddress({
-                    templateId: quoteTemplateId,
-                    shippingAddress: {
-                      address: {
-                        ...addressInput,
-                        additionalInput: additionalAddressInput,
+                    addQuoteTemplateShippingAddress({
+                      templateId: quoteTemplateId,
+                      shippingAddress: {
+                        customerAddressUid: addressUid,
                       },
-                      customerNotes: formValues.customerNotes,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
-                },
-              })(shippingInformation);
-            }
-          });
-        },
-      },
-    })(block);
-  } else {
-    // Render the quote templates list view
-    block.classList.add('negotiable-quote-template__list');
-    block.setAttribute('data-quote-view', 'list');
+                    }).finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
+                  },
+                  onSubmit: (event, formValid) => {
+                    if (!formValid) return;
 
-    await negotiableQuoteRenderer.render(QuoteTemplatesListTable, {
-      // Append quote template id to the url to navigate to render the details view
-      onViewQuoteTemplate: (id) => {
-        window.location.href = `${window.location.pathname}?quoteTemplateId=${id}`;
-      },
-      pageSize: 10,
-      showItemRange: true,
-      showPageSizePicker: true,
-      showPagination: true,
-    })(block);
-  }
+                    const formValues = getFormValues(event.target);
+
+                    const [regionCode, _regionId] = formValues.region?.split(',') || [];
+
+                    // iterate through the object entries and combine the values of keys that have
+                    // a prefix of 'street' into an array
+                    const streetInputValues = Object.entries(formValues)
+                      .filter(([key]) => key.startsWith('street'))
+                      .map(([_, value]) => value);
+
+                    const addressInput = {
+                      firstname: formValues.firstName,
+                      lastname: formValues.lastName,
+                      company: formValues.company,
+                      street: streetInputValues,
+                      city: formValues.city,
+                      region: regionCode,
+                      postcode: formValues.postcode,
+                      countryCode: formValues.countryCode,
+                      telephone: formValues.telephone,
+                      saveInAddressBook: formValues.saveInAddressBook,
+                    };
+
+                    // These values are not part of the standard address input
+                    const additionalAddressInput = {
+                      vat_id: formValues.vatId,
+                    };
+
+                    progressSpinner.removeAttribute('hidden');
+                    shippingInformation.setAttribute('hidden', true);
+                    addQuoteTemplateShippingAddress({
+                      templateId: quoteTemplateId,
+                      shippingAddress: {
+                        address: {
+                          ...addressInput,
+                          additionalInput: additionalAddressInput,
+                        },
+                        customerNotes: formValues.customerNotes,
+                      },
+                    }).finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
+                  },
+                })(shippingInformation);
+              }
+            });
+          },
+        },
+      })(block);
+    } else {
+      // Render the quote templates list view
+      block.classList.add('negotiable-quote-template__list');
+      block.setAttribute('data-quote-view', 'list');
+
+      await negotiableQuoteRenderer.render(QuoteTemplatesListTable, {
+        // Append quote template id to the url to navigate to render the details view
+        onViewQuoteTemplate: (id) => {
+          window.location.href = `${window.location.pathname}?quoteTemplateId=${id}`;
+        },
+        pageSize: 10,
+        showItemRange: true,
+        showPageSizePicker: true,
+        showPagination: true,
+      })(block);
+    }
+  }, { eager: true });
 
   // Render error when quote data fails to load
   events.on('quote-management/quote-data/error', ({ error }) => {
