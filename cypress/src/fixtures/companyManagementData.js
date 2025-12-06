@@ -83,9 +83,46 @@ export const companyUsers = {
 };
 
 /**
+ * Full admin permissions - all company permissions enabled
+ * Based on Magento B2B company_acl.xml files:
+ * - Magento/Company/etc/company_acl.xml
+ * - Magento/CompanyPayment/etc/company_acl.xml
+ * - Magento/CompanyShipping/etc/company_acl.xml
+ */
+export const fullAdminPermissions = [
+  // Root permission
+  { resource_id: 'Magento_Company::index', permission: 'allow' },
+  // Company Profile permissions
+  { resource_id: 'Magento_Company::view', permission: 'allow' },
+  { resource_id: 'Magento_Company::view_account', permission: 'allow' },
+  { resource_id: 'Magento_Company::edit_account', permission: 'allow' },
+  { resource_id: 'Magento_Company::view_address', permission: 'allow' },
+  { resource_id: 'Magento_Company::edit_address', permission: 'allow' },
+  { resource_id: 'Magento_Company::contacts', permission: 'allow' },
+  { resource_id: 'Magento_Company::payment_information', permission: 'allow' },
+  { resource_id: 'Magento_Company::shipping_information', permission: 'allow' },
+  // User Management permissions
+  { resource_id: 'Magento_Company::user_management', permission: 'allow' },
+  { resource_id: 'Magento_Company::users_view', permission: 'allow' },
+  { resource_id: 'Magento_Company::users_edit', permission: 'allow' },
+  { resource_id: 'Magento_Company::roles_view', permission: 'allow' },
+  { resource_id: 'Magento_Company::roles_edit', permission: 'allow' },
+  // Sales permissions
+  { resource_id: 'Magento_Sales::all', permission: 'allow' },
+  { resource_id: 'Magento_Sales::place_order', permission: 'allow' },
+  { resource_id: 'Magento_Sales::payment_account', permission: 'allow' },
+  { resource_id: 'Magento_Sales::view_orders', permission: 'allow' },
+  { resource_id: 'Magento_Sales::view_orders_sub', permission: 'allow' },
+];
+
+/**
  * Role data templates
  */
 export const roleData = {
+  adminRole: {
+    role_name: 'Company Administrator',
+    permissions: fullAdminPermissions,
+  },
   customRole: {
     role_name: `Custom Role ${random}`,
     permissions: [

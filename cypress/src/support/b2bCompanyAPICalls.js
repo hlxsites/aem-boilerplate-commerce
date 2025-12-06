@@ -931,6 +931,32 @@ async function cleanupTestCompany() {
 }
 
 // ==========================================================================
+// Company Assignment
+// ==========================================================================
+
+/**
+ * Assign an existing customer to a company using REST API.
+ * Uses PUT /V1/customers/:customerId/companies/:companyId endpoint.
+ * @param {number} customerId - Customer ID
+ * @param {number} companyId - Company ID
+ * @returns {Promise<Object>} Assignment result
+ */
+async function assignCustomerToCompany(customerId, companyId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`🔗 Assigning customer ${customerId} to company ${companyId}`);
+
+  const result = await client.put(`/V1/customers/${customerId}/companies/${companyId}`);
+
+  if (result.error || result.message) {
+    throw new Error(`Failed to assign customer ${customerId} to company ${companyId}: ${result.message || JSON.stringify(result)}`);
+  }
+
+  safeLog('✅ Customer assigned to company');
+  return result;
+}
+
+// ==========================================================================
 // Invitation Flow (for TC-34)
 // ==========================================================================
 
@@ -1072,6 +1098,9 @@ module.exports = {
   increaseCompanyCreditBalance,
   decreaseCompanyCreditBalance,
   CREDIT_OPERATION_TYPES,
+
+  // Company Assignment
+  assignCustomerToCompany,
 
   // Invitation Flow
   createStandaloneCustomer,
