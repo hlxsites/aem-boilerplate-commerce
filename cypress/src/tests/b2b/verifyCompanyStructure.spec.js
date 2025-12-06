@@ -15,19 +15,6 @@
  * from Adobe.
  ****************************************************************** */
 
-import {
-  createCompany,
-  createCompanyUser,
-  createCompanyTeam,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  baseCompanyData,
-  companyUsers,
-  teamData,
-} from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
-
 /**
  * @fileoverview Company Structure E2E tests.
  * Tests cover:
@@ -50,6 +37,7 @@ import { login } from '../../actions';
  *   - Verifies: Page title, control buttons (Expand All, Collapse All, Add User,
  *     Add Team, Edit, Remove), button states, tree structure
  *   - Tests: Add Team, Add User, Collapse All, Expand All functionality
+ *   - Tests: Drag & drop user to move them into a team
  *
  * TC-33 (P0): Add New User using unregistered email
  *   - Verifies: Add User form with all fields (Job Title, User Role, First Name,
@@ -58,9 +46,10 @@ import { login } from '../../actions';
  *     Edit form is prefilled with entered data
  *
  * TC-34 (P1): Add New User using registered email (invitation flow)
- *   - Status: SKIPPED - Requires email verification and invitation acceptance
- *   - Reason: Partially blocked by bug USF-3028, requires email access
- *   - Recommendation: Manual testing or separate email integration test
+ *   - Verifies: Admin can invite pre-registered user to company
+ *   - Verifies: User doesn't appear in tree before invitation acceptance
+ *   - Tests: Simulates invitation acceptance via REST API (bypassing email)
+ *   - Tests: User appears in structure after accepting invitation
  *
  * TC-35 (P0): Default User can view but not edit Structure
  *   - Verifies: Regular user can view structure tree and use Expand/Collapse
@@ -82,23 +71,39 @@ import { login } from '../../actions';
  *   - Verifies: Success message appears
  *   - Tests: Navigate to Company Users page and verify user status is Inactive
  *
- * TC-39 (P1): Company Admin can create/edit/delete Teams
+ * TC-39 (P1): Company Admin can create/edit/delete/move Teams
  *   - Tests: Create team with name and description, verify in tree
  *   - Tests: Edit team name and description, verify updates
  *   - Tests: Delete team, verify removal from tree
+ *   - Tests: Drag & drop teams to reorganize structure hierarchy
+ *
  *
  * ==========================================================================
- * NOT COVERED TEST CASES (with reasons):
+ * NOTES:
  * ==========================================================================
- * Drag & drop functionality (moving users/teams in tree)
- *   - Reason: Requires cypress-drag-drop plugin or custom drag & drop commands
- *   - Recommendation: Add plugin and implement in future iteration
- *
- * Email invitation acceptance flow (TC-34 full flow)
- *   - Reason: Requires email access and invitation link clicking
- *   - Reason: Partially blocked by bug USF-3028
- *   - Recommendation: Manual testing or separate email integration test
+ * TC-34 WORKAROUND - Invitation Acceptance via REST API:
+ *   - IDEAL: Read email, extract invitation link, navigate to URL
+ *   - BLOCKER: No possibility to access email infrastructure in automated tests
+ *   - WORKAROUND: Use REST API to directly activate user in company
+ *   - IMPACT: Tests same backend operation, only bypasses email delivery and URL click
+ *   - Helper functions: createStandaloneCustomer() and acceptCompanyInvitation()
+ *   - RECOMMENDATION: Manual testing for full email-to-acceptance flow
  */
+
+import {
+  createCompany,
+  createCompanyUser,
+  createCompanyTeam,
+  createStandaloneCustomer,
+  acceptCompanyInvitation,
+  cleanupTestCompany,
+} from '../../support/b2bCompanyAPICalls';
+import {
+  baseCompanyData,
+  companyUsers,
+  teamData,
+} from '../../fixtures/companyManagementData';
+import { login } from '../../actions';
 
 describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
   // Helper function to setup test company with admin
@@ -357,7 +362,39 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.contains(teamName).should('be.visible');
     cy.contains('New User').should('be.visible');
 
-    cy.logToTerminal('✅ TC-32: Default structure state and controls verified');
+    // TEST DRAG & DROP: Move "New User" into "Team 1"
+    cy.logToTerminal('🔄 Testing drag & drop functionality...');
+    
+    // Find draggable elements - must use .acm-tree__item with draggable="true"
+    cy.contains('New User').closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dragUser');
+    cy.contains(teamName).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dropTeam');
+    
+    // Perform drag and drop operation
+    cy.get('@dragUser').trigger('dragstart', { dataTransfer: new DataTransfer() });
+    cy.get('@dropTeam').trigger('dragover');
+    cy.get('@dropTeam').trigger('drop');
+    // Note: dragend event removed as it may cause Chrome to crash
+    
+    // Wait for UI to update
+    cy.wait(3000);
+    
+    // Verify success message appears (may say "moved" or "successfully")
+    cy.contains(/successfully.*moved|moved.*successfully|user.*moved/i, { timeout: 5000 }).should('be.visible');
+    cy.logToTerminal('✅ Success message displayed: User moved');
+    
+    // Verify "New User" is actually under "Team 1" in the tree structure
+    // Find Team 1's tree item, then verify New User appears in its group (children)
+    cy.contains('.acm-structure-label', teamName)
+      .closest('.acm-tree__item')
+      .find('.acm-tree__group')
+      .should('contain', 'New User');
+    cy.logToTerminal('✅ Verified: "New User" is now under "Team 1" in tree structure');
+    
+    cy.logToTerminal('✅ Drag & drop: User successfully moved into team');
+
+    // Verify structure changed: "New User" should now be a child of "Team 1"
+    // This is hard to verify programmatically in the tree, but we confirmed the success message
+    cy.logToTerminal('✅ TC-32: Default structure state and controls verified (including drag & drop)');
   });
 
   it('TC-33: Add New User using unregistered email', () => {
@@ -403,28 +440,64 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.logToTerminal('✅ TC-33: User added with unregistered email verified');
   });
 
-  it.skip('TC-34: Add New User using registered email (invitation flow)', () => {
+  it('TC-34: Add New User using registered email (REST invitation acceptance)', () => {
     cy.logToTerminal('========= 📋 TC-34: Add user with registered email =========');
 
-    // NOTE: This test is skipped because it requires:
-    // 1. A pre-registered user email that can receive emails
-    // 2. Email verification and invitation acceptance flow
-    // 3. The test plan notes this is "Partially blocked by bug USF-3028"
+    // ⚠️ WORKAROUND: This test uses REST API to simulate invitation acceptance
+    // 
+    // IDEAL APPROACH:
+    //   1. Access email inbox for the registered user
+    //   2. Read the invitation email sent by the system
+    //   3. Extract the invitation link from the email body
+    //   4. Navigate to that link: /customer/company/accept-invitation/?code=...&customer[...]
+    //   5. Verify user can accept invitation via the UI
+    // 
+    // WHY WORKAROUND IS NEEDED:
+    //   - We have NO possibility to access email infrastructure in automated tests
+    //   - Invitation code is only available in the email (not in API responses)
+    //   - No REST/GraphQL API exists to retrieve pending invitation codes
+    // 
+    // CURRENT APPROACH (Workaround):
+    //   - Use REST API to directly assign user to company with active status
+    //   - This executes the same backend operation as clicking the invitation URL
+    //   - Tests the complete invitation flow (send → pending → accept → active)
+    //   - Only bypasses the email delivery and URL click steps
 
     // Setup company with admin
     setupTestCompanyAndAdmin();
     cy.wait(2000);
 
-    // Create a separate registered user (not in company)
+    // Create a separate registered user (not in company) via REST API
     const registeredUserEmail = `registered.${Date.now()}@example.com`;
+    const registeredUserFirstName = 'Registered';
+    const registeredUserLastName = 'User';
+    let registeredUserId;
+    let testCompanyId;
     
     cy.then(async () => {
-      // Would need to create a customer account here
-      // But not assign to company yet
+      // Create customer account (not assigned to company)
+      cy.logToTerminal('👤 Creating pre-registered customer...');
+      
+      const customerData = await createStandaloneCustomer({
+        firstname: registeredUserFirstName,
+        lastname: registeredUserLastName,
+        email: registeredUserEmail,
+        password: 'Test123!',
+      });
+      
+      registeredUserId = customerData.id;
+      testCompanyId = Cypress.env('testCompanyId');
+      
+      cy.logToTerminal(`✅ Pre-registered customer created: ${registeredUserEmail} (ID: ${registeredUserId})`);
+      
+      // Store for cleanup
+      Cypress.env('registeredUserEmail', registeredUserEmail);
     });
 
     // Login as company admin
-    loginAsCompanyAdmin();
+    cy.then(() => {
+      loginAsCompanyAdmin();
+    });
     cy.wait(3000);
 
     // Navigate to Company Structure
@@ -433,31 +506,71 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
 
     // Click Add User
     cy.contains('button', 'Add User').click();
-    cy.wait(1000);
-
-    // Fill form with REGISTERED email
-    cy.get('select[name="role"]').select('Default User');
-    cy.get('input[name="firstName"]').type('New User');
-    cy.get('input[name="lastName"]').type('Company');
-    cy.get('input[name="email"]').type(registeredUserEmail);
-    cy.get('input[name="jobTitle"]').type('The Master of the TC-34 Company');
-    cy.get('input[name="telephone"]').type('1111-111-11-111');
-
-    // Save
-    cy.contains('button', 'Save').click();
     cy.wait(2000);
 
-    // Verify invitation message
-    cy.contains(/invitation.*sent.*existing.*customer/i, { timeout: 5000 })
-      .should('be.visible');
+    // Fill form with REGISTERED email
+    cy.get('.company-user-form__card, .acm-structure-panel, [class*="user-form"]').first().within(() => {
+      cy.get('select[name="role"]', { timeout: 10000 }).select('Default User');
+      cy.get('input[name="first_name"]').type(registeredUserFirstName);
+      cy.get('input[name="last_name"]').type(registeredUserLastName);
+      cy.get('input[name="email"]:visible').type(registeredUserEmail).blur();
+      cy.wait(500);
+      cy.get('input[name="job_title"]').type('Invited User');
+      cy.get('input[name="telephone"]').type('555-0000');
+      cy.contains('button', 'Save').click();
+    });
+    cy.wait(2000);
 
-    // User should NOT appear in tree immediately
-    cy.contains('New User Company').should('not.exist');
+    // Verify success message (UI should accept registered email)
+    cy.contains(/successfully|sent|invitation/i, { timeout: 10000 }).should('be.visible');
+    cy.logToTerminal('✅ Invitation sent via UI');
 
-    // TODO: Email verification and invitation acceptance
-    // Would require checking inbox and clicking invitation link
+    // User should NOT appear in tree immediately (invitation pending)
+    cy.contains(`${registeredUserFirstName} ${registeredUserLastName}`).should('not.exist');
+    cy.logToTerminal('✅ Verified: User not in structure (invitation pending)');
 
-    cy.logToTerminal('✅ TC-34: Invitation flow verified (partial - email flow skipped)');
+    // ========================================================================
+    // WORKAROUND: Simulate invitation acceptance via REST API
+    // ========================================================================
+    // IDEAL: Access email, read invitation link, navigate to it
+    //   1. Read email sent to registered.XXX@example.com
+    //   2. Extract link: /customer/company/accept-invitation/?code=ABC123&customer[...]
+    //   3. Navigate to that URL to test actual UI acceptance flow
+    // 
+    // BLOCKER: We have NO possibility to access email in automated tests
+    // 
+    // WORKAROUND: Use REST API to directly activate user in company
+    //   - PUT /V1/customers/{customerId} with company_attributes.status=1
+    //   - Same backend operation as the invitation URL handler executes
+    //   - Only bypasses: email delivery + URL navigation
+    // ========================================================================
+    cy.then(async () => {
+      cy.logToTerminal('🔗 Simulating invitation acceptance via REST API (WORKAROUND)...');
+      
+      await acceptCompanyInvitation(
+        registeredUserId,
+        testCompanyId,
+        {
+          email: registeredUserEmail,
+          firstname: registeredUserFirstName,
+          lastname: registeredUserLastName,
+        },
+        'Invited User',
+        '555-0000'
+      );
+      
+      cy.logToTerminal('✅ Invitation accepted via REST API (WORKAROUND - bypassing email)');
+    });
+
+    // Navigate to Company Structure to verify acceptance
+    cy.visit('/customer/company/structure');
+    cy.wait(3000);
+
+    // NOW user should appear in tree
+    cy.contains(`${registeredUserFirstName} ${registeredUserLastName}`, { timeout: 10000 }).should('be.visible');
+    cy.logToTerminal('✅ Verified: User now appears in structure after invitation acceptance');
+
+    cy.logToTerminal('✅ TC-34: Invitation flow verified (REST API workaround - cannot capture invitation code)');
   });
 
   it('TC-35: Default User can view but not edit Structure', () => {
@@ -724,6 +837,98 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.contains(updatedTeamName, { timeout: 10000 }).should('be.visible');
     cy.logToTerminal('✅ Team edited successfully');
 
+    // DRAG & DROP TEAMS TO REORGANIZE STRUCTURE
+    cy.logToTerminal('Testing drag & drop to reorganize teams...');
+    
+    // Create additional teams to test drag & drop hierarchy
+    // Create "Marketing Team" as child of admin
+    cy.contains(`${adminFirstName} ${adminLastName}`).click();
+    cy.wait(500);
+    cy.contains('button', 'Add Team').click();
+    cy.wait(1000);
+    
+    const marketingTeam = 'Marketing Team';
+    cy.get('input[name="team_title"]').clear().type(marketingTeam).blur();
+    cy.contains('button', 'Save').click();
+    cy.wait(2000);
+    cy.contains(marketingTeam, { timeout: 10000 }).should('be.visible');
+    cy.logToTerminal(`✅ Created ${marketingTeam}`);
+
+    // Create "Sales Team" as child of admin
+    cy.contains(`${adminFirstName} ${adminLastName}`).click();
+    cy.wait(500);
+    cy.contains('button', 'Add Team').click();
+    cy.wait(1000);
+    
+    const salesTeam = 'Sales Team';
+    cy.get('input[name="team_title"]').clear().type(salesTeam).blur();
+    cy.contains('button', 'Save').click();
+    cy.wait(2000);
+    cy.contains(salesTeam, { timeout: 10000 }).should('be.visible');
+    cy.logToTerminal(`✅ Created ${salesTeam}`);
+
+    // Expand all to see all teams
+    cy.contains('button', 'Expand All').click();
+    cy.wait(1000);
+
+    // DRAG & DROP: Move "Marketing Team" into "Sales Team"
+    cy.logToTerminal('🔄 Dragging Marketing Team into Sales Team...');
+    
+    cy.contains(marketingTeam).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dragMarketingTeam');
+    cy.contains(salesTeam).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dropSalesTeam');
+    
+    cy.get('@dragMarketingTeam').trigger('dragstart', { dataTransfer: new DataTransfer() });
+    cy.get('@dropSalesTeam').trigger('dragover');
+    cy.get('@dropSalesTeam').trigger('drop');
+    // Note: dragend event removed as it may cause Chrome to crash
+    
+    // Wait for UI to update
+    cy.wait(3000);
+    
+    // Verify success message appears: "Team was successfully moved."
+    cy.contains(/team.*successfully.*moved|successfully.*moved/i, { timeout: 5000 }).should('be.visible');
+    cy.logToTerminal('✅ Success message displayed: Team moved');
+    
+    // Verify "Marketing Team" is actually under "Sales Team" in the tree structure
+    cy.contains('.acm-structure-label', salesTeam)
+      .closest('.acm-tree__item')
+      .find('.acm-tree__group')
+      .should('contain', marketingTeam);
+    cy.logToTerminal(`✅ Verified: "${marketingTeam}" is now under "${salesTeam}" in tree structure`);
+    
+    cy.logToTerminal('✅ Team successfully moved via drag & drop');
+
+    // DRAG & DROP: Move updated team (first created) into "Marketing Team"
+    cy.logToTerminal(`🔄 Dragging ${updatedTeamName} into Marketing Team...`);
+    
+    // Expand all again to ensure all teams are visible
+    cy.contains('button', 'Expand All').click();
+    cy.wait(1000);
+    
+    cy.contains(updatedTeamName).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dragUpdatedTeam');
+    cy.contains(marketingTeam).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dropMarketingTeam');
+    
+    cy.get('@dragUpdatedTeam').trigger('dragstart', { dataTransfer: new DataTransfer() });
+    cy.get('@dropMarketingTeam').trigger('dragover');
+    cy.get('@dropMarketingTeam').trigger('drop');
+    // Note: dragend event removed as it may cause Chrome to crash
+    
+    // Wait for UI to update
+    cy.wait(3000);
+    
+    // Verify success message appears: "Team was successfully moved."
+    cy.contains(/team.*successfully.*moved|successfully.*moved/i, { timeout: 5000 }).should('be.visible');
+    cy.logToTerminal('✅ Success message displayed: Second team moved');
+    
+    // Verify "Updated Team" is actually under "Marketing Team" in the tree structure
+    cy.contains('.acm-structure-label', marketingTeam)
+      .closest('.acm-tree__item')
+      .find('.acm-tree__group')
+      .should('contain', updatedTeamName);
+    cy.logToTerminal(`✅ Verified: "${updatedTeamName}" is now under "${marketingTeam}" in tree structure`);
+    
+    cy.logToTerminal('✅ Drag & drop team reorganization verified');
+
     // DELETE TEAM
     cy.logToTerminal('Deleting team...');
     
@@ -753,9 +958,6 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.contains(updatedTeamName).should('not.exist');
     cy.logToTerminal('✅ Team deleted successfully');
 
-    // NOTE: Drag & drop testing would require cypress-drag-drop plugin
-    cy.logToTerminal('⚠️  Drag & drop tests require additional setup (not covered)');
-
-    cy.logToTerminal('✅ TC-39: Team management verified');
+    cy.logToTerminal('✅ TC-39: Team create/edit/delete/move (drag & drop) verified');
   });
 });

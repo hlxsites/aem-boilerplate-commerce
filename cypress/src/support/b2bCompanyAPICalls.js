@@ -931,6 +931,104 @@ async function cleanupTestCompany() {
 }
 
 // ==========================================================================
+// Invitation Flow (for TC-34)
+// ==========================================================================
+
+/**
+ * Create a standalone customer account (not assigned to any company).
+ * This is used to simulate a pre-registered user who will receive an invitation.
+ * 
+ * @param {Object} userData - User data
+ * @returns {Promise<Object>} Created customer data with ID
+ */
+async function createStandaloneCustomer(userData) {
+  const {
+    firstname,
+    lastname,
+    email,
+    password = 'Test123!',
+  } = userData;
+
+  const client = new ACCSApiClient();
+
+  safeLog('👤 Creating standalone customer:', email);
+
+  const customerPayload = {
+    customer: {
+      email,
+      firstname,
+      lastname,
+      website_id: 1,
+      store_id: 1,
+      group_id: 1,
+    },
+    password,
+  };
+
+  const customerData = await client.post('/V1/customers', customerPayload);
+  validateApiResponse(customerData, 'Standalone customer creation', 'id');
+
+  safeLog('✅ Standalone customer created with ID:', customerData.id);
+
+  return {
+    id: customerData.id,
+    email,
+    firstname,
+    lastname,
+    password,
+  };
+}
+
+/**
+ * Accept a company invitation by assigning a customer to a company with active status.
+ * This simulates the invitation acceptance flow without requiring email verification.
+ * 
+ * @param {number} customerId - Customer ID
+ * @param {number} companyId - Company ID to assign to
+ * @param {Object} userData - User data (email, firstname, lastname)
+ * @param {string} jobTitle - Job title (optional)
+ * @param {string} telephone - Phone number (optional)
+ * @returns {Promise<Object>} Assignment result
+ */
+async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle = 'Team Member', telephone = '555-0000') {
+  const { email, firstname, lastname } = userData;
+
+  const client = new ACCSApiClient();
+
+  safeLog(`🔗 Accepting invitation for customer ${customerId} to company ${companyId}`);
+
+  const updatePayload = {
+    customer: {
+      id: customerId,
+      email,
+      firstname,
+      lastname,
+      website_id: 1,
+      extension_attributes: {
+        company_attributes: {
+          company_id: companyId,
+          status: 1, // Active - this simulates accepting the invitation!
+          job_title: jobTitle,
+          telephone,
+        },
+      },
+    },
+  };
+
+  const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
+  validateApiResponse(assignResult, 'Invitation acceptance', 'id');
+
+  safeLog('✅ Invitation accepted - user assigned to company');
+
+  return {
+    id: customerId,
+    email,
+    companyId,
+    status: 'active',
+  };
+}
+
+// ==========================================================================
 // Exports
 // ==========================================================================
 
@@ -974,6 +1072,10 @@ module.exports = {
   increaseCompanyCreditBalance,
   decreaseCompanyCreditBalance,
   CREDIT_OPERATION_TYPES,
+
+  // Invitation Flow
+  createStandaloneCustomer,
+  acceptCompanyInvitation,
 
   // Test Cleanup
   cleanupTestCompany,
