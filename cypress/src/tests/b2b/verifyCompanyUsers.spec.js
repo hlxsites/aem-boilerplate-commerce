@@ -186,6 +186,46 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     });
   };
 
+  /**
+   * Helper function to check for user in grid with retry logic
+   * Handles backend GraphQL caching issue (USF-3516)
+   * @param {string} userEmail - Email of user to find
+   * @param {string} expectedStatus - Expected status ('Active' or 'Inactive')
+   */
+  const checkForUser = (userEmail, expectedStatus = 'Active') => {
+    const maxRetries = 5;
+    let retries = 0;
+
+    function attemptFind() {
+      // Wait for table to be fully loaded
+      cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
+      cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
+      cy.wait(1000);
+
+      // Check specifically within the table
+      cy.get('.companyUsersTable').then(($table) => {
+        if ($table.text().includes(userEmail)) {
+          cy.logToTerminal(`✅ User found in grid: ${userEmail}`);
+          // Verify user is actually visible in the table
+          cy.get('.companyUsersTable').contains(userEmail).should('be.visible');
+        } else if (retries < maxRetries) {
+          retries++;
+          cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
+          cy.wait(8000); // Wait for backend cache to expire
+          cy.reload();
+          cy.wait(2000);
+          
+          attemptFind(); // Recursive retry
+        } else {
+          throw new Error(`User ${userEmail} not found in table after ${maxRetries} retries (USF-3516 cache issue)`);
+        }
+      });
+    }
+
+    cy.logToTerminal(`⏳ Checking for user in grid: ${userEmail}...`);
+    attemptFind();
+  };
+
   before(() => {
     cy.logToTerminal('👥 Company Users test suite started');
   });
@@ -235,10 +275,12 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
     // Verify page title
+    cy.logToTerminal('✅ Verifying page title...');
     cy.contains('Company Users', { timeout: 10000 }).should('be.visible');
 
     // Wait for table to be visible and fully loaded
@@ -260,6 +302,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(2000);
 
     // Verify grid columns (headers) within the table
+    cy.logToTerminal('🔍 Verifying grid column headers...');
     cy.get('.companyUsersTable').within(() => {
       cy.contains(/name/i).should('be.visible');
       cy.contains(/email/i).should('be.visible');
@@ -267,21 +310,26 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       cy.contains(/status/i).should('be.visible');
     });
 
-    // Verify admin user appears in grid
+    // Verify admin user appears in grid (with retry for cache - USF-3516)
+    cy.logToTerminal('✅ Verifying users appear in grid...');
     cy.then(() => {
       const adminEmail = Cypress.env('adminEmail');
-      if (adminEmail) {
-        cy.get('.companyUsersTable').contains(adminEmail, { timeout: 5000 }).should('be.visible');
-      }
-
-      // Verify test users appear
       const user1Email = Cypress.env('user1Email');
       const user2Email = Cypress.env('user2Email');
-      if (user1Email) {
-        cy.get('.companyUsersTable').contains(user1Email, { timeout: 5000 }).should('be.visible');
+      
+      // Check for admin
+      if (adminEmail) {
+        checkForUser(adminEmail, 'Active');
       }
+      
+      // Check for user1
+      if (user1Email) {
+        checkForUser(user1Email, 'Active');
+      }
+      
+      // Check for user2
       if (user2Email) {
-        cy.get('.companyUsersTable').contains(user2Email, { timeout: 5000 }).should('be.visible');
+        checkForUser(user2Email, 'Active');
       }
     });
 
@@ -299,10 +347,12 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
     // Click Add New User button
+    cy.logToTerminal('➕ Opening Add New User form...');
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
@@ -310,32 +360,38 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(1000);
 
     // Verify form fields are visible
+    cy.logToTerminal('🔍 Verifying form fields are visible...');
     cy.get('input[name="first_name"]', { timeout: 5000 })
       .should('be.visible');
 
     // Try to save without filling required fields
+    cy.logToTerminal('🧪 Testing form validation - submitting empty form...');
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
 
     cy.wait(1000);
 
-    // Verify validation errors for required fields
-    cy.get('body').should('contain', 'required');
+    // Verify validation errors for required fields (role is required)
+    cy.logToTerminal('✅ Verifying required field validation errors...');
+    cy.get('body').should('contain', 'Select a role');
 
     // Test invalid email format
+    cy.logToTerminal('🧪 Testing invalid email format validation...');
     cy.get('input[name="email"]:visible')
       .should('be.visible')
-      .type(invalidData.invalidEmail);
+      .type(invalidData.invalidEmail)
+      .blur();
 
-    cy.get('input[name="first_name"]:visible').type('Test');
-    cy.get('input[name="last_name"]:visible').type('User');
+    cy.get('input[name="first_name"]:visible').type('Test').blur();
+    cy.get('input[name="last_name"]:visible').type('User').blur();
 
     cy.contains('button', 'Save').click();
     cy.wait(1000);
 
     // Verify validation error appears (email format)
-    cy.get('body').should('contain', 'required');
+    cy.logToTerminal('✅ Verifying email format validation errors...');
+    cy.get('body').should('contain', 'Enter a valid email');
 
     cy.logToTerminal('✅ TC-16: Form validation works correctly');
   });
@@ -351,10 +407,12 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
     // Click Add New User button
+    cy.logToTerminal('➕ Opening Add New User form...');
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
@@ -362,15 +420,20 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(1000);
 
     // Fill the form
+    cy.logToTerminal('📝 Filling in new user details...');
     const newUserEmail = `newuser.${Date.now()}@example.com`;
-    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail);
-    cy.get('input[name="first_name"]:visible').clear().type('New');
-    cy.get('input[name="last_name"]:visible').clear().type('TestUser');
+    Cypress.env('newUserEmail', newUserEmail); // Store for later use
+    
+    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail).blur();
+    cy.get('input[name="first_name"]:visible').clear().type('New').blur();
+    cy.get('input[name="last_name"]:visible').clear().type('TestUser').blur();
 
     // Select role - wait for it to be available
+    cy.logToTerminal('👤 Selecting user role...');
     cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
 
     // Save
+    cy.logToTerminal('💾 Saving new user...');
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
@@ -382,7 +445,6 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       const bodyText = $body.text();
       if (bodyText.includes('error') || bodyText.includes('Error') || bodyText.includes('required') || bodyText.includes('Required')) {
         cy.logToTerminal('⚠️ Form validation error detected');
-        // Log what's visible
         cy.log('Body contains error or required field message');
       } else if (bodyText.includes('success') || bodyText.includes('Success') || bodyText.includes('created') || bodyText.includes('Created')) {
         cy.logToTerminal('✅ Success message detected');
@@ -394,60 +456,11 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify form closed successfully (which indicates save completed)
     cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
 
-    cy.logToTerminal('✅ User creation form submitted');
-
-    // Wait for backend caching to update (this is a known caching issue)
-    cy.logToTerminal('⏳ Waiting for backend cache to update...');
-    cy.wait(10000); // Wait 10 seconds initially
-
-    // Reload the page to fetch fresh data
-    cy.visit('/customer/company/users');
-    cy.wait(2000);
-
-    // Wait for table to load
-    cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-    cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-
-    // Set page size to show all users
-    cy.get('body').then(($body) => {
-      if ($body.find('select[name="pageSize"]').length > 0) {
-        cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
-      }
+    // Verify new user appears in grid (with retries for cache propagation - USF-3516)
+    cy.then(() => {
+      const newUserEmail = Cypress.env('newUserEmail');
+      checkForUser(newUserEmail, 'Active');
     });
-
-    // Verify new user appears in grid (with retries for cache propagation)
-    let retries = 0;
-    const maxRetries = 5; // Increased retries
-    
-    function checkForUser() {
-      cy.get('body').then(($body) => {
-        if ($body.text().includes(newUserEmail)) {
-          cy.logToTerminal('✅ New user found in grid');
-          cy.get('.companyUsersTable').contains(newUserEmail).should('be.visible');
-        } else if (retries < maxRetries) {
-          retries++;
-          cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
-          cy.wait(8000); // Increased wait time between retries
-          cy.visit('/customer/company/users');
-          cy.wait(2000);
-          cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-          cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-          cy.get('body').then(($body2) => {
-            if ($body2.find('select[name="pageSize"]').length > 0) {
-              cy.get('select[name="pageSize"]').select('20');
-              cy.wait(2000);
-            }
-          });
-          checkForUser();
-        } else {
-          cy.logToTerminal('❌ User still not visible after retries - backend caching issue');
-          cy.get('.companyUsersTable').contains(newUserEmail).should('be.visible');
-        }
-      });
-    }
-    
-    checkForUser();
 
     cy.logToTerminal('✅ TC-17: New user added successfully');
   });
@@ -494,6 +507,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(2000);
 
@@ -502,6 +516,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
     // Click Add New User
+    cy.logToTerminal('➕ Opening Add New User form...');
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
@@ -509,15 +524,17 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(1000);
 
     // Fill the form with standalone user email
+    cy.logToTerminal('📝 Filling in invitation form with registered email...');
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail);
-      cy.get('input[name="first_name"]:visible').clear().type('Invited');
-      cy.get('input[name="last_name"]:visible').clear().type('Member');
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail).blur();
+      cy.get('input[name="first_name"]:visible').clear().type('Invited').blur();
+      cy.get('input[name="last_name"]:visible').clear().type('Member').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
     });
 
     // Save (this sends invitation)
+    cy.logToTerminal('💾 Sending invitation...');
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
@@ -569,39 +586,10 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       }
     });
 
+    // Verify invited user appears in grid (with retries for cache propagation - USF-3516)
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      let retries = 0;
-      const maxRetries = 5;
-      
-      function checkForUser() {
-        cy.get('body').then(($body) => {
-          if ($body.text().includes(standaloneEmail)) {
-            cy.logToTerminal('✅ Invited user found in grid');
-            cy.get('.companyUsersTable').contains(standaloneEmail).should('be.visible');
-          } else if (retries < maxRetries) {
-            retries++;
-            cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
-            cy.wait(8000);
-            cy.visit('/customer/company/users');
-            cy.wait(2000);
-            cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-            cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-            cy.get('body').then(($body2) => {
-              if ($body2.find('select[name="pageSize"]').length > 0) {
-                cy.get('select[name="pageSize"]').select('20');
-                cy.wait(2000);
-              }
-            });
-            checkForUser();
-          } else {
-            cy.logToTerminal('❌ User still not visible after retries - backend caching issue');
-            cy.get('.companyUsersTable').contains(standaloneEmail).should('be.visible');
-          }
-        });
-      }
-      
-      checkForUser();
+      checkForUser(standaloneEmail, 'Active');
     });
 
     cy.logToTerminal('✅ TC-18: Invitation flow completed successfully');
@@ -643,6 +631,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(5000);
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(2000);
 
@@ -658,42 +647,14 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       }
     });
 
-    // Verify user appears as Inactive (with retry for caching)
+    // Verify user appears as Inactive (with retry for caching - USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      let retries = 0;
-      const maxRetries = 3;
+      checkForUser(user1Email, 'Inactive');
       
-      function checkInactiveStatus() {
-        cy.get('body').then(($body) => {
-          const bodyText = $body.text();
-          if (bodyText.includes(user1Email) && bodyText.includes('Inactive')) {
-            cy.logToTerminal('✅ User found with Inactive status');
-            cy.get('.companyUsersTable').contains(user1Email).should('be.visible');
-            cy.get('body').should('contain', 'Inactive');
-          } else if (retries < maxRetries) {
-            retries++;
-            cy.logToTerminal(`⏳ Status not yet updated, retrying (${retries}/${maxRetries})...`);
-            cy.wait(5000);
-            cy.visit('/customer/company/users');
-            cy.wait(2000);
-            cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-            cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-            cy.get('body').then(($body2) => {
-              if ($body2.find('select[name="pageSize"]').length > 0) {
-                cy.get('select[name="pageSize"]').select('20');
-                cy.wait(2000);
-              }
-            });
-            checkInactiveStatus();
-          } else {
-            cy.logToTerminal('⚠️ Inactive status not visible after retries');
-            cy.get('body').should('contain', user1Email);
-          }
-        });
-      }
-      
-      checkInactiveStatus();
+      // Verify Inactive status is displayed in the table
+      cy.logToTerminal('✅ Verifying Inactive status...');
+      cy.get('.companyUsersTable').should('contain', 'Inactive');
     });
 
     // Now activate the user via REST API
@@ -709,55 +670,14 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.logToTerminal('⏳ Waiting for backend cache to update...');
     cy.wait(5000);
 
-    // Reload and verify user appears as Active
-    cy.visit('/customer/company/users');
-    cy.wait(2000);
-    cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-    cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-
-    cy.get('body').then(($body) => {
-      if ($body.find('select[name="pageSize"]').length > 0) {
-        cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
-      }
-    });
-
-    // Verify user appears as Active (with retry for caching)
+    // Verify user appears as Active (with retry for caching - USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      let retries = 0;
-      const maxRetries = 3;
+      checkForUser(user1Email, 'Active');
       
-      function checkActiveStatus() {
-        cy.get('body').then(($body) => {
-          const bodyText = $body.text();
-          if (bodyText.includes(user1Email) && bodyText.includes('Active')) {
-            cy.logToTerminal('✅ User found with Active status');
-            cy.get('.companyUsersTable').contains(user1Email).should('be.visible');
-            cy.get('body').should('contain', 'Active');
-          } else if (retries < maxRetries) {
-            retries++;
-            cy.logToTerminal(`⏳ Status not yet updated, retrying (${retries}/${maxRetries})...`);
-            cy.wait(5000);
-            cy.visit('/customer/company/users');
-            cy.wait(2000);
-            cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-            cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-            cy.get('body').then(($body2) => {
-              if ($body2.find('select[name="pageSize"]').length > 0) {
-                cy.get('select[name="pageSize"]').select('20');
-                cy.wait(2000);
-              }
-            });
-            checkActiveStatus();
-          } else {
-            cy.logToTerminal('⚠️ Active status not visible after retries');
-            cy.get('body').should('contain', user1Email);
-          }
-        });
-      }
-      
-      checkActiveStatus();
+      // Verify Active status is displayed in the table
+      cy.logToTerminal('✅ Verifying Active status...');
+      cy.get('.companyUsersTable').should('contain', 'Active');
     });
 
     cy.logToTerminal('✅ TC-19: Inactive user activation flow completed successfully');
@@ -774,62 +694,20 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    
-    // Wait for backend cache (admin user might not appear immediately)
-    cy.logToTerminal('⏳ Waiting for backend cache...');
-    cy.wait(5000);
+    cy.wait(3000);
 
-    // Wait for table to load
-    cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-    cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-
-    // Set page size
-    cy.get('body').then(($body) => {
-      if ($body.find('select[name="pageSize"]').length > 0) {
-        cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
-      }
-    });
-
-    // Find admin's row in the grid and click manage button (with retry for caching)
+    // Find admin in the grid (with retry for caching - USF-3516)
     cy.then(() => {
       const adminEmail = Cypress.env('adminEmail');
-      let retries = 0;
-      const maxRetries = 5;
+      checkForUser(adminEmail, 'Active');
       
-      function findAdmin() {
-        cy.get('body').then(($body) => {
-          if ($body.text().includes(adminEmail)) {
-            cy.logToTerminal('✅ Admin found in grid');
-            // Since Elsie Table might not use traditional rows, just find the first manage button
-            // The admin is typically the only or first user in the grid
-            cy.get('.companyUsersTable').find('button.manage-user-button').first()
-              .should('be.visible')
-              .click();
-          } else if (retries < maxRetries) {
-            retries++;
-            cy.logToTerminal(`⏳ Admin not yet visible, retrying (${retries}/${maxRetries})...`);
-            cy.wait(8000);
-            cy.visit('/customer/company/users');
-            cy.wait(2000);
-            cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-            cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-            cy.get('body').then(($body2) => {
-              if ($body2.find('select[name="pageSize"]').length > 0) {
-                cy.get('select[name="pageSize"]').select('20');
-                cy.wait(2000);
-              }
-            });
-            findAdmin();
-          } else {
-            cy.logToTerminal('❌ Admin still not visible after retries - backend caching issue');
-            cy.get('.companyUsersTable').contains(adminEmail).should('be.visible');
-          }
-        });
-      }
-      
-      findAdmin();
+      // Click Manage button for admin
+      cy.logToTerminal('⚙️ Clicking Manage button for admin...');
+      cy.get('.companyUsersTable').find('button.manage-user-button').first()
+        .should('be.visible')
+        .click();
     });
 
     cy.wait(1000);
@@ -865,6 +743,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(2000);
 
@@ -873,11 +752,13 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
     // Try to add a user with duplicate email
+    cy.logToTerminal('🧪 Testing duplicate email validation...');
     cy.then(() => {
       // Get the email of user1 (already exists in company)
       const existingEmail = Cypress.env('user1Email');
 
       // Click Add New User
+      cy.logToTerminal('➕ Opening Add New User form...');
       cy.contains('button', 'Add New User', { timeout: 10000 })
         .should('be.visible')
         .click();
@@ -885,12 +766,14 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       cy.wait(1000);
 
       // Try to add a user with the same email
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail);
-      cy.get('input[name="first_name"]:visible').clear().type('Duplicate');
-      cy.get('input[name="last_name"]:visible').clear().type('User');
+      cy.logToTerminal(`📝 Attempting to add duplicate email: ${existingEmail}...`);
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail).blur();
+      cy.get('input[name="first_name"]:visible').clear().type('Duplicate').blur();
+      cy.get('input[name="last_name"]:visible').clear().type('User').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
 
       // Save
+      cy.logToTerminal('💾 Attempting to save (expecting validation error)...');
       cy.contains('button', 'Save', { timeout: 5000 })
         .should('be.visible')
         .click();
@@ -928,15 +811,22 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
-    // Find admin's row and click Edit
-    const adminEmail = Cypress.env('adminEmail');
-    cy.contains('tr', adminEmail, { timeout: 10000 })
-      .find('button.edit-user-button', { timeout: 5000 })
-      .should('be.visible')
-      .click();
+    // Use checkForUser to handle potential backend caching (USF-3516)
+    cy.then(() => {
+      const adminEmail = Cypress.env('adminEmail');
+      checkForUser(adminEmail, 'Active');
+      
+      // Find admin's row and click Edit
+      cy.logToTerminal('✏️ Clicking Edit button for admin...');
+      cy.contains('tr', adminEmail, { timeout: 10000 })
+        .find('button.edit-user-button', { timeout: 5000 })
+        .should('be.visible')
+        .click();
+    });
 
     cy.wait(1000);
 
@@ -945,20 +835,26 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       .should('be.visible');
 
     // Verify role is disabled (cannot change own role)
+    cy.logToTerminal('✅ Verifying role is disabled (admin cannot change own role)...');
     cy.get('select[name="role"]').should('be.disabled');
 
     // Update job title
+    cy.logToTerminal('📝 Updating job title...');
     cy.get('input[name="job_title"]')
       .should('be.visible')
       .clear()
-      .type('Updated Job Title');
+      .type('Updated Job Title')
+      .blur();
 
     // Update work phone
+    cy.logToTerminal('📞 Updating work phone...');
     cy.get('input[name="telephone"]')
       .clear()
-      .type('555-9999');
+      .type('555-9999')
+      .blur();
 
     // Save
+    cy.logToTerminal('💾 Saving changes...');
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
@@ -966,6 +862,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(2000);
 
     // Verify success message
+    cy.logToTerminal('✅ Verifying success message...');
     cy.contains(/successfully.*updated/i, { timeout: 5000 })
       .should('be.visible');
 
@@ -983,38 +880,51 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
-    // Find test user's row and click Edit
-    const user1Email = Cypress.env('user1Email');
-    cy.contains(user1Email, { timeout: 10000 })
-      .parents('tr')
-      .within(() => {
-        cy.contains('button', 'Edit', { timeout: 5000 })
-          .should('be.visible')
-          .click();
-      });
+    // Use checkForUser to handle potential backend caching (USF-3516)
+    cy.then(() => {
+      const user1Email = Cypress.env('user1Email');
+      checkForUser(user1Email, 'Active');
+      
+      // Find test user's row and click Edit
+      cy.logToTerminal('✏️ Clicking Edit button for user...');
+      cy.contains(user1Email, { timeout: 10000 })
+        .parents('tr')
+        .within(() => {
+          cy.contains('button', 'Edit', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+        });
+    });
 
     cy.wait(1000);
 
-    // Edit form appears
-    cy.get('[data-testid="edit-user-form"]', { timeout: 5000 })
+    // Verify Edit User title is visible (form loaded)
+    cy.contains('h3', 'Edit User', { timeout: 5000 })
       .should('be.visible');
 
     // Role should be editable for other users
+    cy.logToTerminal('✅ Verifying role is editable (admin can change other user roles)...');
     cy.get('select[name="role"]').should('not.be.disabled');
 
     // Update first name
-    cy.get('input[name="firstName"]')
+    cy.logToTerminal('📝 Updating first name...');
+    cy.get('input[name="first_name"]:visible')
       .should('be.visible')
       .clear()
-      .type('Updated');
+      .type('Updated')
+      .blur(); // Ensure field is properly updated
 
     // Update last name
-    cy.get('input[name="lastName"]')
+    cy.logToTerminal('📝 Updating last name...');
+    cy.get('input[name="last_name"]:visible')
+      .should('be.visible')
       .clear()
-      .type('UserName');
+      .type('UserName')
+      .blur(); // Ensure field is properly updated
 
     // Save
     cy.contains('button', 'Save', { timeout: 5000 })
@@ -1027,7 +937,10 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.contains(/successfully.*updated/i, { timeout: 5000 })
       .should('be.visible');
 
-    // Verify updated name appears in grid
+    // Reload to bypass cache and verify updated name appears in grid
+    cy.reload();
+    cy.wait(2000);
+    cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.contains('Updated UserName', { timeout: 10000 }).should('be.visible');
 
     cy.logToTerminal('✅ TC-23: Admin edited other user successfully');
@@ -1044,38 +957,56 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
-    // Find test user 2 and click Manage
-    const user2Email = Cypress.env('user2Email');
-    cy.contains(user2Email, { timeout: 10000 })
-      .parents('tr')
-      .within(() => {
-        cy.contains('button', 'Manage', { timeout: 5000 })
-          .should('be.visible')
-          .click();
-      });
+    // Use checkForUser to handle potential backend caching (USF-3516)
+    cy.then(() => {
+      const user2Email = Cypress.env('user2Email');
+      checkForUser(user2Email, 'Active');
+      
+      // Find test user 2 and click Manage
+      cy.logToTerminal('⚙️ Clicking Manage button for user...');
+      cy.contains(user2Email, { timeout: 10000 })
+        .parents('tr')
+        .within(() => {
+          cy.contains('button', 'Manage', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+        });
+    });
 
     cy.wait(1000);
 
-    // Click Set Inactive
-    cy.contains('button', 'Set Inactive', { timeout: 5000 })
-      .should('be.visible')
-      .click();
+    // Verify Manage dialog appears
+    cy.get('.company-management-company-users-management-modal', { timeout: 5000 })
+      .should('be.visible');
+
+    // Click Set as Inactive
+    cy.logToTerminal('🔄 Setting user to Inactive...');
+    cy.get('.company-management-company-users-management-modal').within(() => {
+      cy.get('button').contains('Set as Inactive', { timeout: 5000 })
+        .should('be.visible')
+        .click();
+    });
 
     cy.wait(2000);
 
     // Verify success message
+    cy.logToTerminal('✅ Verifying success message...');
     cy.contains(/deactivated|inactive/i, { timeout: 5000 })
       .should('be.visible');
 
-      // Verify user status updated to Inactive in grid
-    cy.contains(user2Email)
-      .parents('tr')
-      .within(() => {
-        cy.contains('Inactive', { timeout: 5000 }).should('be.visible');
-      });
+    // Verify user status updated to Inactive in grid
+    cy.then(() => {
+      const user2Email = Cypress.env('user2Email');
+      cy.contains(user2Email)
+        .parents('tr')
+        .within(() => {
+          cy.contains('Inactive', { timeout: 5000 }).should('be.visible');
+        });
+    });
 
     cy.logToTerminal('✅ TC-24: User set to inactive successfully');
   });
@@ -1091,22 +1022,30 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     loginAsCompanyAdmin();
 
     // Navigate to Company Users page
+    cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
-    // Find test user 1 and click Manage
-    const user1Email = Cypress.env('user1Email');
-    cy.contains(user1Email, { timeout: 10000 })
-      .parents('tr')
-      .within(() => {
-        cy.contains('button', 'Manage', { timeout: 5000 })
-          .should('be.visible')
-          .click();
-      });
+    // Use checkForUser to handle potential backend caching (USF-3516)
+    cy.then(() => {
+      const user1Email = Cypress.env('user1Email');
+      checkForUser(user1Email, 'Active');
+      
+      // Find test user 1 and click Manage
+      cy.logToTerminal('⚙️ Clicking Manage button for user...');
+      cy.contains(user1Email, { timeout: 10000 })
+        .parents('tr')
+        .within(() => {
+          cy.contains('button', 'Manage', { timeout: 5000 })
+            .should('be.visible')
+            .click();
+        });
+    });
 
     cy.wait(1000);
 
     // Click Delete
+    cy.logToTerminal('🗑️ Deleting user...');
     cy.contains('button', 'Delete', { timeout: 5000 })
       .should('be.visible')
       .click();
@@ -1114,6 +1053,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(2000);
 
     // Verify success message
+    cy.logToTerminal('✅ Verifying success message...');
     cy.contains(/deleted|removed/i, { timeout: 5000 })
       .should('be.visible');
 
@@ -1123,18 +1063,21 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.wait(3000);
 
     // User should be gone or marked inactive
-    cy.get('body').then(($body) => {
-      if ($body.text().includes(user1Email)) {
-        // Still in grid, check if Inactive
-        cy.contains(user1Email)
-          .parents('tr')
-          .within(() => {
-            cy.contains('Inactive').should('be.visible');
-          });
-        cy.logToTerminal('✅ User marked as Inactive');
-      } else {
-        cy.logToTerminal('✅ User removed from grid');
-      }
+    cy.then(() => {
+      const user1Email = Cypress.env('user1Email');
+      cy.get('body').then(($body) => {
+        if ($body.text().includes(user1Email)) {
+          // Still in grid, check if Inactive
+          cy.contains(user1Email)
+            .parents('tr')
+            .within(() => {
+              cy.contains('Inactive').should('be.visible');
+            });
+          cy.logToTerminal('✅ User marked as Inactive');
+        } else {
+          cy.logToTerminal('✅ User removed from grid');
+        }
+      });
     });
 
     cy.logToTerminal('✅ TC-24: User deleted successfully');
