@@ -1,11 +1,8 @@
 # Pre Setup for B2B specific
-
-## For ACCS SaaS Backend (Remote)
-
 1. Created server to server auth project 
    Note, these credentials are needed only for Admin Rest API interactions and not for Storefront graphql
  
-   Reference https://developer.adobe.com/commerce/webapi/rest/authentication/ 
+   Reference: https://developer.adobe.com/commerce/webapi/rest/authentication/ 
 
 2. Set cypress local env variable, these can be found in vault pre-fixed with LOCAL
    ```bash
@@ -16,33 +13,6 @@
    ```
    Same variables are set in Github Secret management for CI, these pre-fixed with CI in vault
 
-## For Local Backend (PaaS/Self-Hosted)
-
-1. Ensure your local Magento 2 instance has B2B modules installed and enabled:
-   ```bash
-   bin/magento module:status | grep Magento_Company
-   ```
-
-2. Configure your local backend URL in `cypress.b2b.paas.config.js` (default: `https://mcstaging.aemshop.net/graphql`)
-   
-   Or override with environment variable:
-   ```bash
-   export CYPRESS_graphqlEndPoint=https://your-local-magento.local/graphql
-   ```
-
-3. For API calls to work with local backend, you need to set up API credentials:
-   ```bash
-   export CYPRESS_API_ENDPOINT=https://your-local-magento.local
-   export CYPRESS_IMS_CLIENT_ID=your_integration_access_token
-   # For local Magento, IMS_ORG_ID and IMS_CLIENT_SECRET are optional
-   ```
-
-4. Ensure B2B features are enabled in your local Magento:
-   - Stores > Configuration > General > B2B Features > Enable Company: **Yes**
-   - Stores > Configuration > General > B2B Features > Enable B2B Quote: **Yes**
-   - Stores > Configuration > General > B2B Features > Enable Purchase Orders: **Yes**
-   - Stores > Configuration > General > B2B Features > Enable Requisition Lists: **Yes**
-
 # Running E2E tests
 
 1. Clone the repo and change directory to `cypress`
@@ -51,32 +21,41 @@
 4. Select which setup you need to run - SaaS, PaaS, B2B , as per your testing needs.
 5. To run all tests use `npm run cypress:run` For This command local server needs to be running at <http://127.0.0.1:3000/>.
 
+## Running Tests
+
+### Headless Mode (CI/CD)
+```bash
+npm run cypress:b2b:saas:run -- --spec "src/tests/b2b/yourTest.spec.js"
+```
+
+### Headed Mode (Debugging)
+```bash
+# Run with visible browser (helpful for debugging)
+npx cypress run --headed --browser chrome --config-file cypress.b2b.saas.config.js --spec 'src/tests/b2b/yourTest.spec.js'
+```
+
+### Interactive Mode
+```bash
+# Open Cypress UI
+npm run cypress:b2b:saas:open
+```
+
+### Local Backend Requirements
+- Local server must be running at <http://127.0.0.1:3000/>
+- B2B features must be enabled in Magento configuration
+- For B2B tests, ensure Company features are activated
+
 ## SaaS vs PaaS Configs
 
-All commands use a base config, defined in `cypress.base.config.js` and extend in the corresponding config:
-- `cypress.paas.config.js` - B2C tests on PaaS/local backend
-- `cypress.saas.config.js` - B2C tests on ACCS SaaS backend  
-- `cypress.b2b.saas.config.js` - B2B tests on ACCS SaaS backend
-- `cypress.b2b.paas.config.js` - B2B tests on PaaS/local backend
+All commands use a base config, defined in `cypress.base.config.js` and extend in the corresponding config,  `cypress.paas.config.js`, `cypress.saas.config.js`, `cypress.b2b.saas.config`, `cypress.b2b.paas.config` This allows us to use variables for things which differ in the environments, such as gift card codes, product option uids, etc.
 
-This allows us to use variables for things which differ in the environments, such as gift card codes, product option uids, etc.
+## Debugging Tests
 
-### Running Company Management Tests
-
-**On ACCS SaaS Backend (Remote):**
-```bash
-npm run cypress:b2b:saas:run -- --spec "src/tests/b2b/verifyCompany*.spec.js"
-```
-
-**On Local Backend:**
-```bash
-npm run cypress:b2b:paas:run -- --spec "src/tests/b2b/verifyCompany*.spec.js"
-```
-
-**Open Cypress UI (Local Backend):**
-```bash
-npm run cypress:b2b:paas:open
-```
+### Common Issues
+- **Tests timing out:** Increase wait times or check if local server is running
+- **Authentication errors:** Verify environment variables are set correctly
+- **Element not found:** Check if page is fully loaded, use `{ timeout: 10000 }` options
+- **API call failures:** Ensure backend is accessible and credentials are valid
 
 ### Skipping Tests
 
