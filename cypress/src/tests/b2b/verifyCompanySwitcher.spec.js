@@ -565,8 +565,8 @@ describe('USF-2524: Company Switcher Context', { tags: '@B2BSaas' }, () => {
       });
       cy.wait(1000);
       
-      cy.get('.companyUsersTable', { timeout: 10000 }).should('be.visible');
-      cy.get('.companyUsersTable').contains(companyAAdminEmail, { timeout: 15000 }).should('be.visible');
+      // Use shared helper with retry logic to check for Company A admin
+      cy.checkForUserInTable(companyAAdminEmail);
     });
 
     // Switch to Company B
@@ -583,20 +583,8 @@ describe('USF-2524: Company Switcher Context', { tags: '@B2BSaas' }, () => {
       const companyAAdminEmail = Cypress.env('companyAAdminEmail');
       cy.logToTerminal(`✅ Verifying Company B admin appears: ${companyBAdminEmail}`);
       
-      // Reload page to bypass cache
-      cy.reload();
-      cy.wait(2000);
-      cy.get('body').then(($body) => {
-        if ($body.find('[data-testid="picker-pageSize"]').length > 0) {
-          cy.get('[data-testid="picker-pageSize"]').select('20');
-        } else if ($body.find('select[name="pageSize"]').length > 0) {
-          cy.get('select[name="pageSize"]').first().select('20');
-        }
-      });
-      cy.wait(1000);
-      
-      cy.get('.companyUsersTable', { timeout: 10000 }).should('be.visible');
-      cy.get('.companyUsersTable').contains(companyBAdminEmail, { timeout: 15000 }).should('be.visible');
+      // Use shared helper with retry logic to check for Company B admin
+      cy.checkForUserInTable(companyBAdminEmail);
       
       // Company A admin should not be visible in the table
       cy.get('.companyUsersTable').contains(companyAAdminEmail).should('not.exist');

@@ -11,6 +11,7 @@ import './percyTakeSnapshot';
 import './waitForLoadingSkeletonToDisappear';
 import './deleteNegotiableQuotes';
 import './logToTerminal';
+import './checkForUserInTable';
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();

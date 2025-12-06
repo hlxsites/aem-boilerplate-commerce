@@ -192,40 +192,6 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
    * @param {string} userEmail - Email of user to find
    * @param {string} expectedStatus - Expected status ('Active' or 'Inactive')
    */
-  const checkForUser = (userEmail, expectedStatus = 'Active') => {
-    const maxRetries = 5;
-    let retries = 0;
-
-    function attemptFind() {
-      // Wait for table to be fully loaded
-      cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-      cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-      cy.wait(1000);
-
-      // Check specifically within the table
-      cy.get('.companyUsersTable').then(($table) => {
-        if ($table.text().includes(userEmail)) {
-          cy.logToTerminal(`✅ User found in grid: ${userEmail}`);
-          // Verify user is actually visible in the table
-          cy.get('.companyUsersTable').contains(userEmail).should('be.visible');
-        } else if (retries < maxRetries) {
-          retries++;
-          cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
-          cy.wait(8000); // Wait for backend cache to expire
-          cy.reload();
-          cy.wait(2000);
-          
-          attemptFind(); // Recursive retry
-        } else {
-          throw new Error(`User ${userEmail} not found in table after ${maxRetries} retries (USF-3516 cache issue)`);
-        }
-      });
-    }
-
-    cy.logToTerminal(`⏳ Checking for user in grid: ${userEmail}...`);
-    attemptFind();
-  };
-
   before(() => {
     cy.logToTerminal('👥 Company Users test suite started');
   });
@@ -319,17 +285,17 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
       
       // Check for admin
       if (adminEmail) {
-        checkForUser(adminEmail, 'Active');
+        cy.checkForUserInTable(adminEmail, 'Active');
       }
       
       // Check for user1
       if (user1Email) {
-        checkForUser(user1Email, 'Active');
+        cy.checkForUserInTable(user1Email, 'Active');
       }
       
       // Check for user2
       if (user2Email) {
-        checkForUser(user2Email, 'Active');
+        cy.checkForUserInTable(user2Email, 'Active');
       }
     });
 
@@ -459,7 +425,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify new user appears in grid (with retries for cache propagation - USF-3516)
     cy.then(() => {
       const newUserEmail = Cypress.env('newUserEmail');
-      checkForUser(newUserEmail, 'Active');
+      cy.checkForUserInTable(newUserEmail, 'Active');
     });
 
     cy.logToTerminal('✅ TC-17: New user added successfully');
@@ -589,7 +555,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify invited user appears in grid (with retries for cache propagation - USF-3516)
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      checkForUser(standaloneEmail, 'Active');
+      cy.checkForUserInTable(standaloneEmail, 'Active');
     });
 
     cy.logToTerminal('✅ TC-18: Invitation flow completed successfully');
@@ -650,7 +616,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify user appears as Inactive (with retry for caching - USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      checkForUser(user1Email, 'Inactive');
+      cy.checkForUserInTable(user1Email, 'Inactive');
       
       // Verify Inactive status is displayed in the table
       cy.logToTerminal('✅ Verifying Inactive status...');
@@ -673,7 +639,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify user appears as Active (with retry for caching - USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      checkForUser(user1Email, 'Active');
+      cy.checkForUserInTable(user1Email, 'Active');
       
       // Verify Active status is displayed in the table
       cy.logToTerminal('✅ Verifying Active status...');
@@ -701,7 +667,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Find admin in the grid (with retry for caching - USF-3516)
     cy.then(() => {
       const adminEmail = Cypress.env('adminEmail');
-      checkForUser(adminEmail, 'Active');
+      cy.checkForUserInTable(adminEmail, 'Active');
       
       // Click Manage button for admin
       cy.logToTerminal('⚙️ Clicking Manage button for admin...');
@@ -818,7 +784,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
       const adminEmail = Cypress.env('adminEmail');
-      checkForUser(adminEmail, 'Active');
+      cy.checkForUserInTable(adminEmail, 'Active');
       
       // Find admin's row and click Edit
       cy.logToTerminal('✏️ Clicking Edit button for admin...');
@@ -887,7 +853,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      checkForUser(user1Email, 'Active');
+      cy.checkForUserInTable(user1Email, 'Active');
       
       // Find test user's row and click Edit
       cy.logToTerminal('✏️ Clicking Edit button for user...');
@@ -964,7 +930,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
       const user2Email = Cypress.env('user2Email');
-      checkForUser(user2Email, 'Active');
+      cy.checkForUserInTable(user2Email, 'Active');
       
       // Find test user 2 and click Manage
       cy.logToTerminal('⚙️ Clicking Manage button for user...');
@@ -1029,7 +995,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
       const user1Email = Cypress.env('user1Email');
-      checkForUser(user1Email, 'Active');
+      cy.checkForUserInTable(user1Email, 'Active');
       
       // Find test user 1 and click Manage
       cy.logToTerminal('⚙️ Clicking Manage button for user...');

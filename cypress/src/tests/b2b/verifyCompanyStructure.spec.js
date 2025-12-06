@@ -755,13 +755,10 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.visit('/customer/company/users');
     cy.wait(3000);
 
-    // Find user and verify Inactive status
-    cy.contains(regularUserEmail, { timeout: 10000 })
-      .should('be.visible')
-      .parents('tr')
-      .within(() => {
-        cy.contains(/inactive/i, { timeout: 5000 }).should('be.visible');
-      });
+    // Find user and verify Inactive status using shared helper with retry logic
+    cy.then(() => {
+      cy.checkForUserInTable(regularUserEmail, 'Inactive');
+    });
 
     cy.logToTerminal('✅ TC-38: User removed and set to Inactive');
   });
