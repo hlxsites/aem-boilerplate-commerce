@@ -655,15 +655,16 @@ async function deleteCompanyRole(roleId) {
 
 /**
  * Create a team in company structure.
- * @param {Object} teamData - Team data
+ * @param {number} companyId - Company ID
+ * @param {Object} teamData - Team data (name, description, etc.)
  * @returns {Promise<Object>} Created team
  */
-async function createCompanyTeam(teamData) {
+async function createCompanyTeam(companyId, teamData) {
   const client = new ACCSApiClient();
 
-  safeLog('👥 Creating team:', teamData.name);
+  safeLog('👥 Creating team:', teamData.name, 'for company:', companyId);
 
-  const result = await client.post('/V1/team', { team: teamData });
+  const result = await client.post(`/V1/team/${companyId}`, { team: teamData });
   validateApiResponse(result, 'Team creation', 'id');
 
   safeLog('✅ Team created:', result);
