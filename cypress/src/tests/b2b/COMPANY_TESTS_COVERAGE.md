@@ -1,5 +1,11 @@
 # Company Management E2E Tests - Coverage Report
 
+> **📋 Test Plan Reference:** [Test Plan for Company Account Management Functionality](https://wiki.corp.adobe.com/display/~your-space/Test+Plan+for+Company+Account+Management+Functionality)  
+> **🎯 Test Case Naming:** TC-XX references correspond to test case IDs in the above test plan document  
+> **⚠️ Zephyr Integration Needed:** Automated tests currently reference test plan IDs (TC-XX). For proper QA tracking, each test case should be created in Zephyr with corresponding ticket IDs added to this matrix.
+
+---
+
 ## 📊 Test Files Summary
 
 | Test File | Tests | Status | Priority |
@@ -15,22 +21,73 @@
 
 ---
 
+## 🔗 Zephyr Integration Requirements
+
+### Current State
+- ❌ **No Zephyr ticket IDs mapped** - Automated tests reference test plan IDs (TC-XX) only
+- ❌ **No test case sync** - Changes to automated tests not reflected in Zephyr
+- ❌ **Limited QA traceability** - Cannot filter/run tests by priority, sprint, or Zephyr query
+
+### Required Actions for QA Team
+1. **Create Zephyr test cases** for each TC-XX from the test plan
+2. **Map Zephyr ticket IDs** to automated tests in this document (add "Zephyr ID" column)
+3. **Add Zephyr tags** to Cypress test files (e.g., `@ZEP-12345` in test description)
+4. **Establish sync process** - When automated test changes, Zephyr test case must be updated
+5. **Enable filtered execution** - Run tests by Zephyr query (e.g., `--grep "@ZEP-.*P0"`)
+
+### Example Mapping (Once Zephyr tickets are created)
+| Test Plan ID | Zephyr Ticket | Automated Test | Priority |
+|--------------|---------------|----------------|----------|
+| TC-15 | ZEP-12345 | `verifyCompanyUsers.spec.js` - "View company users grid" | P0 |
+| TC-40 | ZEP-12346 | `verifyCompanySwitcher.spec.js` - "Switch company - My Company page updates" | P1 |
+
+### Example Test Code Implementation
+Once Zephyr tickets are created, update test descriptions to include Zephyr IDs:
+
+```javascript
+// BEFORE (current state)
+it('TC-15: Should display company users grid correctly', () => {
+  // test implementation
+});
+
+// AFTER (with Zephyr integration)
+it('@ZEP-12345 TC-15: Should display company users grid correctly', () => {
+  // test implementation
+});
+```
+
+Then enable filtered test execution:
+```bash
+# Run only P0 tests
+npx cypress run --spec "**/*.spec.js" --env grep="@ZEP.*P0"
+
+# Run specific Zephyr ticket
+npx cypress run --spec "**/*.spec.js" --env grep="@ZEP-12345"
+
+# Run all tests in a Zephyr test plan
+npx cypress run --spec "**/*.spec.js" --env grep="@ZEP-(12345|12346|12347)"
+```
+
+---
+
 ## 📋 Detailed Test Coverage by File
 
 ### 1. verifyCompanyUsers.spec.js (11 tests)
 
 **COVERED Test Cases:**
-- ✅ TC-15: View company users grid
-- ✅ TC-16: Form validation (required fields, email format)
-- ✅ TC-17: Add new user (invitation message)
-- ✅ TC-18: Add user with registered email (invitation flow via REST API)
-- ✅ TC-19: Inactive user activation flow (via REST API)
-- ✅ TC-20: Admin cannot delete/deactivate themselves
-- ✅ TC-21: Duplicate email validation
-- ✅ TC-22: Admin can edit own user data
-- ✅ TC-23: Admin can edit other user data
-- ✅ TC-24: Set user Inactive via Manage
-- ✅ TC-24: Delete user via Manage
+| Test Plan ID | Zephyr ID | Description | Status |
+|--------------|-----------|-------------|--------|
+| TC-15 | _TBD_ | View company users grid | ✅ Automated |
+| TC-16 | _TBD_ | Form validation (required fields, email format) | ✅ Automated |
+| TC-17 | _TBD_ | Add new user (invitation message) | ✅ Automated |
+| TC-18 | _TBD_ | Add user with registered email (invitation flow via REST API) | ✅ Automated |
+| TC-19 | _TBD_ | Inactive user activation flow (via REST API) | ✅ Automated |
+| TC-20 | _TBD_ | Admin cannot delete/deactivate themselves | ✅ Automated |
+| TC-21 | _TBD_ | Duplicate email validation | ✅ Automated |
+| TC-22 | _TBD_ | Admin can edit own user data | ✅ Automated |
+| TC-23 | _TBD_ | Admin can edit other user data | ✅ Automated |
+| TC-24 (a) | _TBD_ | Set user Inactive via Manage | ✅ Automated |
+| TC-24 (b) | _TBD_ | Delete user via Manage | ✅ Automated |
 
 **NOT COVERED:**
 - ❌ TC-25: User without "Manage Users" permission - duplicates TC-35 (Company Structure)
@@ -238,6 +295,16 @@
 ---
 
 ## 🚀 Running Tests
+
+### ⚠️ Current Limitation: Cannot Run by Priority/Zephyr Query
+**Issue:** Without Zephyr integration, you can only run:
+- All company tests (`verifyCompany*.spec.js`)
+- Individual test files (`verifyCompanyUsers.spec.js`)
+- Cannot filter by P0/P1/P2, sprint, or Zephyr ticket ID
+
+**Once Zephyr Integration is Complete:** You'll be able to run focused test sessions (e.g., "only P0 tests", "only tests in JIRA-123 epic", "regression suite ZEP-SUITE-001")
+
+---
 
 ### Run All Company Tests
 ```bash
@@ -453,7 +520,14 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 
 ## 📚 References
 
-- **Test Plan:** `Test+Plan+for+Company+Account+Management+Functionality.doc`
+### Test Documentation
+- **Test Plan:** [Test Plan for Company Account Management Functionality](https://wiki.corp.adobe.com/display/~your-space/Test+Plan+for+Company+Account+Management+Functionality)
+  - All TC-XX references in this document correspond to test case IDs in this test plan
+- **Zephyr Test Cases:** ⚠️ **NOT YET CREATED** - Required for proper QA tracking and focused testing
+  - Once created, add Zephyr ticket IDs to test case tables above
+  - Add `@ZEP-XXXXX` tags to Cypress test descriptions for traceability
+
+### Technical Resources
 - **Backend API:** `../../swagger.json`
 - **Fixtures:** `../../fixtures/companyManagementData.js`
 - **Jira Issue (Caching):** USF-3516
@@ -464,5 +538,6 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 **Status:** ✅ All active tests passing (after unique email fix)  
 **Total Coverage:** 60 automated tests (3 removed due to API limitations, 1 not covered)  
 **Automation Rate:** 100% (of automatable scenarios)  
-**Refactoring Status:** ✅ Complete - all company test files migrated to custom commands & env objects
+**Refactoring Status:** ✅ Complete - all company test files migrated to custom commands & env objects  
+**QA Tracking Status:** ⚠️ **Zephyr integration pending** - Test plan link added, Zephyr ticket IDs not yet mapped
 
