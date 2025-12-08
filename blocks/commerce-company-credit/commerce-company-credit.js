@@ -55,7 +55,7 @@ export default async function decorate(block) {
   await companyRenderer.render(CompanyCredit, {
     showCreditHistory: shouldShowHistory,
     creditHistoryParams: shouldShowHistory ? {
-      pageSize: 20,
+      pageSize: 10,
       currentPage: 1,
     } : undefined,
   })(block);
