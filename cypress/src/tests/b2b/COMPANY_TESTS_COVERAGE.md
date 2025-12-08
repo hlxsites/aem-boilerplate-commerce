@@ -1,8 +1,14 @@
 # Company Management E2E Tests - Coverage Report
 
+> **📋 Test Plan Reference:** [Test Plan for Company Account Management Functionality](https://wiki.corp.adobe.com/display/COREENG/Test+Plan+for+Company+Account+Management+Functionality)  
+> **🎯 Test Case Naming:** TC-XX references correspond to test case IDs in the above test plan document  
+> **⚠️ Zephyr Integration Needed:** Automated tests currently reference test plan IDs (TC-XX). For proper QA tracking, each test case should be created in Zephyr with corresponding ticket IDs added to this matrix.
+
+---
+
 ## 🚀 OPTIMIZED JOURNEY-BASED TESTS
 
-**Optimization Completed:** December 8, 2024  
+**Optimization Completed:** December 8, 2025  
 **Approach:** Consolidated isolated tests into realistic user journey scenarios + code refactoring  
 **Time Saved:** ~50-60% reduction in execution time  
 **Coverage:** 100% of original test cases maintained + new features added
@@ -24,6 +30,69 @@
 **Current Runtime (optimized):** ~18 minutes  
 **Improvement:** 50%+ faster with maintained coverage  
 **New Coverage:** Cart context switching (TC-42), Full order lifecycle (TC-47 CASE_1/4/5)
+
+---
+
+## 🔗 Zephyr Integration Requirements
+
+### Current State
+- ❌ **No Zephyr ticket IDs mapped** - Automated tests reference test plan IDs (TC-XX) only
+- ❌ **No test case sync** - Changes to automated tests not reflected in Zephyr
+- ❌ **Limited QA traceability** - Cannot filter/run tests by priority, sprint, or Zephyr query
+- ⚠️ **Journey-based tests** - Single automated test may cover multiple TC-XX IDs (requires multi-tag approach)
+
+### Required Actions for QA Team
+1. **Create Zephyr test cases** for each TC-XX from the test plan
+2. **Map Zephyr ticket IDs** to automated tests in this document (add "Zephyr ID" column)
+3. **Add Zephyr tags** to Cypress test files - **NOTE:** Journey tests need multiple tags (e.g., `@ZEP-12345 @ZEP-12346`)
+4. **Establish sync process** - When automated test changes, update ALL associated Zephyr test cases
+5. **Enable filtered execution** - Run tests by Zephyr query (e.g., `--grep "@ZEP-12345"`)
+
+### Example Mapping for Journey-Based Tests
+| Journey Test | Covers TC-XX IDs | Zephyr IDs | Priority |
+|--------------|------------------|------------|----------|
+| "JOURNEY: User Management CRUD" | TC-15, TC-16, TC-17, TC-21, TC-22, TC-23 | ZEP-1001, ZEP-1002, ZEP-1003, ZEP-1004, ZEP-1005, ZEP-1006 | P0 |
+| "JOURNEY: Company Switcher Full Context" | TC-40, TC-41, TC-42 | ZEP-2001, ZEP-2002, ZEP-2003 | P1 |
+
+### Example Test Code Implementation
+Journey tests require **multiple Zephyr tags**:
+
+```javascript
+// Journey test covering multiple test plan cases
+it('@ZEP-1001 @ZEP-1002 @ZEP-1003 JOURNEY: User Management CRUD (TC-15, TC-16, TC-17, TC-21, TC-22, TC-23)', () => {
+  // Single test implements 6 test plan scenarios
+  // Step 1: View grid (TC-15)
+  // Step 2: Form validation (TC-16)
+  // Step 3: Add user (TC-17)
+  // Step 4: Duplicate email (TC-21)
+  // Step 5: Edit own data (TC-22)
+  // Step 6: Edit other user (TC-23)
+});
+```
+
+Then enable filtered test execution:
+```bash
+# Run any journey that covers TC-15 (ZEP-1001)
+npx cypress run --spec "**/*.spec.js" --env grep="@ZEP-1001"
+
+# Run all P0 tests (requires tagging by priority in addition to Zephyr IDs)
+npx cypress run --spec "**/*.spec.js" --env grep="@P0"
+
+# Run multiple Zephyr tickets
+npx cypress run --spec "**/*.spec.js" --env grep="@ZEP-(1001|1002|2001)"
+```
+
+### ⚠️ Important Consideration: Journey Tests vs Individual Zephyr Cases
+
+**Challenge:** Optimized branch consolidates 11 individual tests into 3 journeys.
+- Each journey covers multiple TC-XX test plan scenarios
+- QA may want to run/report on individual TC-XX, but automation runs them as a group
+- If journey test fails, ALL associated Zephyr cases may be marked as failed
+
+**Options:**
+1. **Accept grouped execution** - Faster runs, but less granular reporting
+2. **Split journeys back to individual tests** - Slower (revert to non-optimized branch approach)
+3. **Hybrid approach** - Keep journeys for CI/CD, add individual tests with `.only` for debugging specific TC-XX
 
 ---
 
@@ -564,7 +633,15 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 
 ## 📚 References
 
-- **Test Plan:** `Test+Plan+for+Company+Account+Management+Functionality.doc`
+### Test Documentation
+- **Test Plan:** [Test Plan for Company Account Management Functionality](https://wiki.corp.adobe.com/display/COREENG/Test+Plan+for+Company+Account+Management+Functionality)
+  - All TC-XX references in this document correspond to test case IDs in this test plan
+- **Zephyr Test Cases:** ⚠️ **NOT YET CREATED** - Required for proper QA tracking and focused testing
+  - Once created, add Zephyr ticket IDs to journey mappings above
+  - Add `@ZEP-XXXXX` tags to Cypress test descriptions (multiple tags per journey test)
+  - **Important:** Journey tests cover multiple TC-XX cases → require multiple Zephyr tags
+
+### Technical Resources
 - **Backend API:** `../../swagger.json`
 - **Fixtures:** `../../fixtures/companyManagementData.js`
 - **Jira Issue (Caching):** USF-3516
@@ -573,7 +650,7 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 
 ## 🏆 Optimization & Refactoring Summary
 
-**Completed:** December 8, 2024  
+**Completed:** December 8, 2025  
 **Status:** ✅ All 23 tests fully implemented and passing (1 skipped)  
 **Approach:** Journey-based consolidation + code refactoring + new feature coverage  
 **Coverage:** 100% of original test cases maintained  
@@ -649,11 +726,12 @@ These tests were attempted but removed due to API limitations. They require manu
 
 ---
 
-**Last Updated:** December 8, 2024  
+**Last Updated:** December 8, 2025  
 **Status:** ✅ All 23 tests fully passing (1 skipped for faster runs)  
 **Total Tests:** 23 tests (was 53 isolated tests)  
 **Runtime:** ~18 minutes (was ~35-40 minutes)  
 **Test Coverage:** 100% of original company management features  
 **New Coverage:** Shopping Cart context (TC-42), Order lifecycle with Payment on Account (TC-47 CASE_1/4/5)  
 **Code Quality:** 10 custom commands, structured environment variables, 2 unused files removed  
-**New REST APIs:** `cancelOrder()`, `createInvoice()`, `createCreditMemo()` with proper error handling
+**New REST APIs:** `cancelOrder()`, `createInvoice()`, `createCreditMemo()` with proper error handling  
+**QA Tracking Status:** ⚠️ **Zephyr integration pending** - Test plan link added, Zephyr ticket IDs not yet mapped
