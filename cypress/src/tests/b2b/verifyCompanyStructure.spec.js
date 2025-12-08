@@ -111,9 +111,14 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.logToTerminal('🏢 Setting up test company with admin...');
 
     cy.then(async () => {
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(7);
+      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
+      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
+
       const testCompany = await createCompany({
-        companyName: baseCompanyData.companyName,
-        companyEmail: baseCompanyData.companyEmail,
+        companyName: `${baseCompanyData.companyName} ${timestamp}`,
+        companyEmail: uniqueCompanyEmail,
         legalName: baseCompanyData.legalName,
         vatTaxId: baseCompanyData.vatTaxId,
         resellerId: baseCompanyData.resellerId,
@@ -125,20 +130,26 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
         telephone: baseCompanyData.telephone,
         adminFirstName: baseCompanyData.adminFirstName,
         adminLastName: baseCompanyData.adminLastName,
-        adminEmail: baseCompanyData.adminEmail,
+        adminEmail: uniqueAdminEmail,
         adminPassword: 'Test123!',
         status: 1, // Active
       });
 
       cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
 
-      // Store for cleanup and test usage
-      Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
-      Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
+      // Store for cleanup and test usage (NEW OBJECT STRUCTURE)
+      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
+      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
+      Cypress.env('testCompany', {
+        id: testCompany.id,
+        name: testCompany.name,
+        email: uniqueCompanyEmail,
+      });
+      Cypress.env('testAdmin', {
+        email: testCompany.company_admin.email,
+        password: testCompany.company_admin.password,
+        adminEmail: uniqueAdminEmail,
+      });
     });
   };
 
@@ -147,9 +158,15 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     cy.logToTerminal('🏢 Setting up test company with regular user...');
 
     cy.then(async () => {
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(7);
+      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
+      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
+      const uniqueRegularUserEmail = `regular.${timestamp}.${randomStr}@example.com`;
+
       const testCompany = await createCompany({
-        companyName: baseCompanyData.companyName,
-        companyEmail: baseCompanyData.companyEmail,
+        companyName: `${baseCompanyData.companyName} ${timestamp}`,
+        companyEmail: uniqueCompanyEmail,
         legalName: baseCompanyData.legalName,
         vatTaxId: baseCompanyData.vatTaxId,
         resellerId: baseCompanyData.resellerId,
@@ -161,7 +178,7 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
         telephone: baseCompanyData.telephone,
         adminFirstName: baseCompanyData.adminFirstName,
         adminLastName: baseCompanyData.adminLastName,
-        adminEmail: baseCompanyData.adminEmail,
+        adminEmail: uniqueAdminEmail,
         adminPassword: 'Test123!',
         status: 1, // Active
       });
@@ -169,75 +186,45 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
       cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
 
       const regularUser = await createCompanyUser({
-        email: companyUsers.regularUser.email,
+        email: uniqueRegularUserEmail,
         firstname: companyUsers.regularUser.firstname,
         lastname: companyUsers.regularUser.lastname,
         password: companyUsers.regularUser.password,
       }, testCompany.id);
 
-      cy.logToTerminal(`✅ Regular user created: ${regularUser.email || companyUsers.regularUser.email} (ID: ${regularUser.id})`);
+      cy.logToTerminal(`✅ Regular user created: ${regularUser.email || uniqueRegularUserEmail} (ID: ${regularUser.id})`);
 
-      // Store for cleanup
-      Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
-      Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-      // Use fixture email since API might not return it
-      Cypress.env('regularUserEmail', companyUsers.regularUser.email);
-      Cypress.env('regularUserPassword', companyUsers.regularUser.password);
-      Cypress.env('regularUserId', regularUser.id);
+      // Store for cleanup (NEW OBJECT STRUCTURE)
+      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
+      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
+      Cypress.env('testCompany', {
+        id: testCompany.id,
+        name: testCompany.name,
+        email: uniqueCompanyEmail,
+      });
+      Cypress.env('testAdmin', {
+        email: testCompany.company_admin.email,
+        password: testCompany.company_admin.password,
+        adminEmail: uniqueAdminEmail,
+      });
+      Cypress.env('testUsers', {
+        regular: {
+          email: uniqueRegularUserEmail,
+          password: companyUsers.regularUser.password,
+          id: regularUser.id,
+        },
+      });
     });
   };
 
-  // Helper function to login as company admin
+  // Helper function to login as company admin - NOW USING CUSTOM COMMAND
   const loginAsCompanyAdmin = () => {
-    // Wait for admin credentials to be set
-    cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const adminPassword = Cypress.env('adminPassword');
-      
-      if (!adminEmail || !adminPassword) {
-        throw new Error(`Admin credentials not set. Email: ${adminEmail}, Password: ${adminPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as admin: ${adminEmail}`);
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(adminEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(adminPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
+    cy.loginAsCompanyAdmin();
   };
 
-  // Helper function to login as regular user
+  // Helper function to login as regular user - NOW USING CUSTOM COMMAND
   const loginAsRegularUser = () => {
-    // Wait for regular user credentials to be set
-    cy.then(() => {
-      const regularUserEmail = Cypress.env('regularUserEmail');
-      const regularUserPassword = Cypress.env('regularUserPassword');
-      
-      if (!regularUserEmail || !regularUserPassword) {
-        throw new Error(`Regular user credentials not set. Email: ${regularUserEmail}, Password: ${regularUserPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as regular user: ${regularUserEmail}`);
-      cy.visit('/customer/login');
-      cy.wait(1000); // Ensure UI is ready
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(regularUserEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(regularUserPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
+    cy.loginAsRegularUser();
   };
 
   before(() => {
@@ -486,7 +473,7 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
       });
       
       registeredUserId = customerData.id;
-      testCompanyId = Cypress.env('testCompanyId');
+      testCompanyId = Cypress.env('testCompany').id;
       
       cy.logToTerminal(`✅ Pre-registered customer created: ${registeredUserEmail} (ID: ${registeredUserId})`);
       

@@ -108,10 +108,11 @@ import {
   createCompany,
   createStandaloneCustomer,
   assignRoleToUser,
+  assignCustomerToCompany,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
-import ACCSApiClient from '../../support/accsClient';
 import { baseCompanyData } from '../../fixtures/companyManagementData';
+import ACCSApiClient from '../../support/accsClient';
 
 /**
  * Get all roles for a company
@@ -159,22 +160,7 @@ async function findAdminRole(companyId) {
   return adminRole;
 }
 
-/**
- * Assigns a customer to a company using REST API
- * @param {number} customerId - Customer ID
- * @param {number} companyId - Company ID
- */
-async function assignCustomerToCompany(customerId, companyId) {
-  const client = new ACCSApiClient();
-  
-  const result = await client.put(`/V1/customers/${customerId}/companies/${companyId}`);
-  
-  if (result.error || result.message) {
-    throw new Error(`Failed to assign customer ${customerId} to company ${companyId}: ${result.message || JSON.stringify(result)}`);
-  }
-  
-  return result;
-}
+// assignCustomerToCompany function moved to b2bCompanyAPICalls.js
 
 /**
  * Setup two companies and a shared user assigned to both
@@ -186,55 +172,55 @@ const setupTwoCompaniesWithSharedUser = () => {
   cy.then(async () => {
     const timestamp = Date.now();
     
-    // Create Company A
+    // Create Company A (using fixtures)
     const companyA = await createCompany({
-      companyName: `TC-40-A Company ${timestamp}`,
-      companyEmail: `tc-40-a-company-${timestamp}@example.com`,
-      legalName: 'Company Legal Name AAA',
-      vatTaxId: 'VAT AAAAA',
-      resellerId: 'ID-AAAAA',
-      street: 'Street AAAA',
-      city: 'City AAA',
-      countryCode: 'US',
+      companyName: `${baseCompanyData.companyName} A ${timestamp}`,
+      companyEmail: `company-a-${timestamp}@example.com`,
+      legalName: baseCompanyData.legalName,
+      vatTaxId: baseCompanyData.vatTaxId,
+      resellerId: baseCompanyData.resellerId,
+      street: baseCompanyData.street,
+      city: baseCompanyData.city,
+      countryCode: baseCompanyData.countryCode,
       regionId: 1, // Alabama
-      postcode: '000000',
-      telephone: '111111',
-      adminFirstName: 'TC-40-A Admin',
-      adminLastName: 'company',
-      adminEmail: `tc-40-a-admin-${timestamp}@company.com`,
+      postcode: baseCompanyData.postcode,
+      telephone: baseCompanyData.telephone,
+      adminFirstName: baseCompanyData.adminFirstName,
+      adminLastName: baseCompanyData.adminLastName,
+      adminEmail: `admin-a-${timestamp}@example.com`,
       adminPassword: 'Test123!',
       status: 1,
     });
 
     cy.logToTerminal(`✅ Company A created: ${companyA.name} (ID: ${companyA.id})`);
 
-    // Create Company B
+    // Create Company B (using fixtures)
     const companyB = await createCompany({
-      companyName: `TC-40-B Company ${timestamp}`,
-      companyEmail: `tc-40-b-company-${timestamp}@example.com`,
-      legalName: 'Company Legal Name BBB',
-      vatTaxId: 'VAT BBBBB',
-      resellerId: 'ID-BBBBB',
-      street: 'Street BBBB',
-      city: 'City BBB',
-      countryCode: 'US',
+      companyName: `${baseCompanyData.companyName} B ${timestamp}`,
+      companyEmail: `company-b-${timestamp}@example.com`,
+      legalName: baseCompanyData.legalName,
+      vatTaxId: baseCompanyData.vatTaxId,
+      resellerId: baseCompanyData.resellerId,
+      street: baseCompanyData.street,
+      city: baseCompanyData.city,
+      countryCode: baseCompanyData.countryCode,
       regionId: 12, // California
-      postcode: '333333',
-      telephone: '444444',
-      adminFirstName: 'TC-40-B Admin',
-      adminLastName: 'company',
-      adminEmail: `tc-40-b-admin-${timestamp}@company.com`,
+      postcode: baseCompanyData.postcode,
+      telephone: baseCompanyData.telephone,
+      adminFirstName: baseCompanyData.adminFirstName,
+      adminLastName: baseCompanyData.adminLastName,
+      adminEmail: `admin-b-${timestamp}@example.com`,
       adminPassword: 'Test123!',
       status: 1,
     });
 
     cy.logToTerminal(`✅ Company B created: ${companyB.name} (ID: ${companyB.id})`);
 
-    // Create shared standalone customer
-    const sharedUserEmail = `tc-40-ab-user-${timestamp}@company.com`;
+    // Create shared standalone customer (using fixtures)
+    const sharedUserEmail = `shared-user-${timestamp}@example.com`;
     const sharedUser = await createStandaloneCustomer({
-      firstname: 'TC-40-AB User',
-      lastname: 'company',
+      firstname: baseCompanyData.adminFirstName,
+      lastname: baseCompanyData.adminLastName,
       email: sharedUserEmail,
       password: 'Test123!',
     });
@@ -833,5 +819,91 @@ describe('USF-2524: Company Switcher Context', { tags: '@B2BSaas' }, () => {
     });
 
     cy.logToTerminal('✅ TC-41: Roles page correctly respects company context and user permissions');
+  });
+
+  // ==========================================================================
+  // TC-42: Shopping Cart Context Switching
+  // ==========================================================================
+
+  it('TC-42: Company User assigned to two companies can switch context for Shopping Cart', () => {
+    // Ignore uncaught exceptions from company switcher (e.g., base64 company ID errors)
+    cy.on('uncaught:exception', (err) => {
+      cy.logToTerminal(`⚠️ Ignoring uncaught exception: ${err.message}`);
+      return false;
+    });
+
+    cy.logToTerminal('========= 📋 TC-42: Shopping Cart Context Switching =========');
+
+    setupTwoCompaniesWithSharedUser();
+
+    cy.then(() => {
+      loginAsSharedUser();
+
+      // Add product to cart for Company A
+      cy.logToTerminal('🛒 Adding product to cart for Company A...');
+      cy.visit('/products/alpine-double-barrel-backpack/ADB150');
+      cy.wait(2000);
+
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
+        .should('be.visible')
+        .click();
+      cy.wait(2000);
+
+      cy.logToTerminal('✅ Product added to cart, verifying cart content...');
+      cy.visit('/cart');
+      cy.wait(2000);
+
+      // Verify product is in cart
+      cy.contains(/alpine.*double.*barrel|ADB150/i, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ Product visible in cart for Company A');
+    });
+
+    cy.then(() => {
+      // Switch to Company B
+      const companyBName = Cypress.env('companyBName');
+      cy.logToTerminal(`🔄 Switching to Company B: ${companyBName}`);
+      cy.visit('/customer/company/profile');
+      cy.wait(2000);
+      cy.get('.dropin-picker__select').first().select(companyBName);
+      cy.wait(3000);
+
+      // Verify cart is empty for Company B
+      cy.logToTerminal('📍 Checking cart for Company B...');
+      cy.visit('/cart');
+      cy.wait(2000);
+
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+        
+        // Check if cart is empty
+        if (bodyText.match(/empty.*cart|no.*items|cart.*is.*empty/i)) {
+          cy.logToTerminal('✅ Cart is empty for Company B (expected)');
+        } else {
+          // If no "empty" message, verify product is NOT present
+          cy.contains(/alpine.*double.*barrel|ADB150/i).should('not.exist');
+          cy.logToTerminal('✅ Product from Company A not visible in Company B cart (expected)');
+        }
+      });
+    });
+
+    cy.then(() => {
+      // Switch back to Company A
+      const companyAName = Cypress.env('companyAName');
+      cy.logToTerminal(`🔄 Switching back to Company A: ${companyAName}`);
+      cy.visit('/customer/company/profile');
+      cy.wait(2000);
+      cy.get('.dropin-picker__select').first().select(companyAName);
+      cy.wait(3000);
+
+      // Verify original product is still in cart
+      cy.logToTerminal('📍 Verifying cart for Company A...');
+      cy.visit('/cart');
+      cy.wait(2000);
+
+      cy.contains(/alpine.*double.*barrel|ADB150/i, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ Original product still in cart for Company A');
+    });
+
+    cy.logToTerminal('✅ TC-42: Shopping Cart context switching verified successfully');
   });
 });

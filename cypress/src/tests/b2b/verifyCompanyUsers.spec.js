@@ -87,13 +87,19 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
       cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
 
-      // Store for cleanup and login
+      // Store for cleanup and login (NEW OBJECT STRUCTURE)
       Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
       Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
+      Cypress.env('testCompany', {
+        id: testCompany.id,
+        name: testCompany.name,
+        email: uniqueCompanyEmail,
+      });
+      Cypress.env('testAdmin', {
+        email: testCompany.company_admin.email,
+        password: testCompany.company_admin.password,
+        adminEmail: uniqueAdminEmail,
+      });
     });
   };
 
@@ -149,41 +155,37 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
       cy.logToTerminal(`✅ User 2 created: ${user2.email} (ID: ${user2.id})`);
 
-      // Store for cleanup and tests
+      // Store for cleanup and tests (NEW OBJECT STRUCTURE)
       Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
       Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-      Cypress.env('user1Email', uniqueUser1Email);
-      Cypress.env('user1Id', user1.id);
-      Cypress.env('user2Email', uniqueUser2Email);
-      Cypress.env('user2Id', user2.id);
+      Cypress.env('testCompany', {
+        id: testCompany.id,
+        name: testCompany.name,
+        email: uniqueCompanyEmail,
+      });
+      Cypress.env('testAdmin', {
+        email: testCompany.company_admin.email,
+        password: testCompany.company_admin.password,
+        adminEmail: uniqueAdminEmail,
+      });
+      Cypress.env('testUsers', {
+        user1: {
+          email: uniqueUser1Email,
+          password: companyUsers.regularUser.password,
+          id: user1.id,
+        },
+        user2: {
+          email: uniqueUser2Email,
+          password: companyUsers.managerUser.password,
+          id: user2.id,
+        },
+      });
     });
   };
 
-  // Helper function to login as company admin
+  // Helper function to login as company admin - NOW USING CUSTOM COMMAND
   const loginAsCompanyAdmin = () => {
-    cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const adminPassword = Cypress.env('adminPassword');
-      
-      if (!adminEmail || !adminPassword) {
-        throw new Error(`Admin credentials not set. Email: ${adminEmail}, Password: ${adminPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as admin: ${adminEmail}`);
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(adminEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(adminPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
+    cy.loginAsCompanyAdmin();
   };
 
   /**
@@ -279,9 +281,9 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     // Verify admin user appears in grid (with retry for cache - USF-3516)
     cy.logToTerminal('✅ Verifying users appear in grid...');
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const user1Email = Cypress.env('user1Email');
-      const user2Email = Cypress.env('user2Email');
+      const adminEmail = Cypress.env('testAdmin').email;
+      const user1Email = Cypress.env('testUsers').user1.email;
+      const user2Email = Cypress.env('testUsers').user2.email;
       
       // Check for admin
       if (adminEmail) {
@@ -514,7 +516,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // WORKAROUND: Accept invitation via REST API
     cy.then(async () => {
-      const companyId = Cypress.env('testCompanyId');
+      const companyId = Cypress.env('testCompany').id;
       const standaloneUserId = Cypress.env('standaloneUserId');
       const standaloneEmail = Cypress.env('standaloneEmail');
       
@@ -582,7 +584,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Set user 1 to inactive via REST API
     cy.then(async () => {
-      const user1Id = Cypress.env('user1Id');
+      const user1Id = Cypress.env('testUsers').user1.id;
       
       cy.logToTerminal(`🔄 Setting user ${user1Id} to inactive via REST API...`);
       await updateCompanyUserStatus(user1Id, 0); // 0 = Inactive
@@ -615,7 +617,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Verify user appears as Inactive (with retry for caching - USF-3516)
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.checkForUserInTable(user1Email, 'Inactive');
       
       // Verify Inactive status is displayed in the table
@@ -625,7 +627,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Now activate the user via REST API
     cy.then(async () => {
-      const user1Id = Cypress.env('user1Id');
+      const user1Id = Cypress.env('testUsers').user1.id;
       
       cy.logToTerminal(`🔄 Setting user ${user1Id} to active via REST API...`);
       await updateCompanyUserStatus(user1Id, 1); // 1 = Active
@@ -638,7 +640,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Verify user appears as Active (with retry for caching - USF-3516)
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.checkForUserInTable(user1Email, 'Active');
       
       // Verify Active status is displayed in the table
@@ -666,7 +668,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Find admin in the grid (with retry for caching - USF-3516)
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
+      const adminEmail = Cypress.env('testAdmin').email;
       cy.checkForUserInTable(adminEmail, 'Active');
       
       // Click Manage button for admin
@@ -721,7 +723,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
     cy.logToTerminal('🧪 Testing duplicate email validation...');
     cy.then(() => {
       // Get the email of user1 (already exists in company)
-      const existingEmail = Cypress.env('user1Email');
+      const existingEmail = Cypress.env('testUsers').user1.email;
 
       // Click Add New User
       cy.logToTerminal('➕ Opening Add New User form...');
@@ -783,7 +785,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
+      const adminEmail = Cypress.env('testAdmin').email;
       cy.checkForUserInTable(adminEmail, 'Active');
       
       // Find admin's row and click Edit
@@ -852,7 +854,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.checkForUserInTable(user1Email, 'Active');
       
       // Find test user's row and click Edit
@@ -929,7 +931,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
-      const user2Email = Cypress.env('user2Email');
+      const user2Email = Cypress.env('testUsers').user2.email;
       cy.checkForUserInTable(user2Email, 'Active');
       
       // Find test user 2 and click Manage
@@ -966,7 +968,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Verify user status updated to Inactive in grid
     cy.then(() => {
-      const user2Email = Cypress.env('user2Email');
+      const user2Email = Cypress.env('testUsers').user2.email;
       cy.contains(user2Email)
         .parents('tr')
         .within(() => {
@@ -994,7 +996,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // Use checkForUser to handle potential backend caching (USF-3516)
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.checkForUserInTable(user1Email, 'Active');
       
       // Find test user 1 and click Manage
@@ -1030,7 +1032,7 @@ describe('USF-2521: Company Users', { tags: '@B2BSaas' }, () => {
 
     // User should be gone or marked inactive
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.get('body').then(($body) => {
         if ($body.text().includes(user1Email)) {
           // Still in grid, check if Inactive

@@ -779,6 +779,11 @@ async function updateCompanyCredit(creditId, creditData) {
   };
 
   const result = await client.put(`/V1/companyCredits/${creditId}`, payload);
+  
+  // Log the actual response for debugging
+  safeLog('💰 Update credit API response:', result);
+  
+  // Validate response has id field
   validateApiResponse(result, 'Company credit update', 'id');
 
   safeLog('✅ Company credit updated');
@@ -1029,6 +1034,121 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
 }
 
 // ==========================================================================
+// Order Management (for Company Credit tests)
+// ==========================================================================
+
+/**
+ * Cancel an order via REST API.
+ * Used to trigger "Reverted" credit transactions for Payment on Account orders.
+ * 
+ * @param {string} orderId - Order increment ID (e.g., "000000123")
+ * @returns {Promise<boolean>} True if cancellation successful
+ * @throws {Error} If API request fails
+ */
+async function cancelOrder(orderId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`📦 Canceling order: ${orderId}`);
+
+  const cancelResult = await client.post(`/V1/orders/${orderId}/cancel`);
+  
+  // Cancel endpoint returns boolean true on success
+  if (cancelResult === true) {
+    safeLog(`✅ Order ${orderId} cancelled successfully`);
+    return true;
+  }
+  
+  // If not true, treat as error
+  throw new Error(`Order cancellation failed: ${JSON.stringify(cancelResult)}`);
+}
+
+/**
+ * Create an invoice for an order via REST API.
+ * Required before creating a credit memo for refunds.
+ * 
+ * @param {string} orderId - Order increment ID (e.g., "000000123")
+ * @returns {Promise<number>} Invoice entity ID
+ * @throws {Error} If API request fails
+ */
+async function createInvoice(orderId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`📄 Creating invoice for order ID: ${orderId}`);
+
+  // POST /V1/invoices/
+  const payload = {
+    entity: {
+      order_id: orderId,
+    },
+  };
+
+  const result = await client.post('/V1/invoices/', payload);
+
+  // Validate response - handles both objects with errors and successful responses
+  validateApiResponse(result, 'Invoice creation');
+
+  // According to swagger, POST /V1/invoices/ returns sales-data-invoice-interface object with entity_id
+  if (typeof result === 'object' && result !== null && result.entity_id) {
+    safeLog(`✅ Invoice created successfully for order ${orderId}, invoice ID: ${result.entity_id}`);
+    return result.entity_id;
+  }
+
+  throw new Error(`Invoice creation failed: Invalid response - expected invoice object with entity_id, got ${typeof result}: ${JSON.stringify(result)}`);
+}
+
+/**
+ * Create a credit memo (refund) for an order via REST API.
+ * For Payment on Account orders, this triggers automatic company credit restoration.
+ * 
+ * @param {string} orderId - Order increment ID (e.g., "000000123")
+ * @param {number} invoiceId - Invoice entity ID
+ * @param {Object} creditMemoData - Credit memo data (items, adjustment, shipping, etc.)
+ * @returns {Promise<number>} Credit memo entity ID
+ * @throws {Error} If API request fails
+ */
+async function createCreditMemo(orderId, invoiceId, creditMemoData = {}) {
+  const client = new ACCSApiClient();
+
+  safeLog(`💰 Creating credit memo for order ID: ${orderId} with invoice ID: ${invoiceId}`);
+
+  // First, get the order details to populate required fields
+  const order = await client.get(`/V1/orders/${orderId}`);
+  validateApiResponse(order, 'Order fetch');
+
+  // POST /V1/creditmemo/refund
+  // This triggers RefundCommand which calls CreditBalance::refund() for Payment on Account
+  // Must provide invoice_id for online refund processing
+  const payload = {
+    creditmemo: {
+      order_id: orderId,
+      invoice_id: invoiceId, // CRITICAL: Required for $creditmemo->getInvoice() to work
+      base_currency_code: order.base_currency_code,
+      global_currency_code: order.global_currency_code || order.base_currency_code,
+      order_currency_code: order.order_currency_code,
+      store_currency_code: order.store_currency_code || order.order_currency_code,
+      adjustment_positive: creditMemoData.adjustment_positive || 0,
+      adjustment_negative: creditMemoData.adjustment_negative || 0,
+      shipping_amount: creditMemoData.shipping_amount || 0,
+      ...creditMemoData,
+    },
+    offlineRequested: false, // false triggers RefundCommand when invoice is present
+  };
+
+  const result = await client.post('/V1/creditmemo/refund', payload);
+
+  // Validate response - handles both objects with errors and successful responses
+  validateApiResponse(result, 'Credit memo creation');
+
+  // According to swagger, POST /V1/creditmemo/refund returns sales-data-creditmemo-interface object with entity_id
+  if (typeof result === 'object' && result !== null && result.entity_id) {
+    safeLog(`✅ Credit memo created successfully for order ${orderId}, credit memo ID: ${result.entity_id}`);
+    return result.entity_id;
+  }
+
+  throw new Error(`Credit memo creation failed: Invalid response - expected credit memo object with entity_id, got ${typeof result}: ${JSON.stringify(result)}`);
+}
+
+// ==========================================================================
 // Exports
 // ==========================================================================
 
@@ -1073,10 +1193,42 @@ module.exports = {
   decreaseCompanyCreditBalance,
   CREDIT_OPERATION_TYPES,
 
+  // Order Management
+  cancelOrder,
+  createInvoice,
+  createCreditMemo,
+
   // Invitation Flow
   createStandaloneCustomer,
   acceptCompanyInvitation,
+  assignCustomerToCompany,
 
   // Test Cleanup
   cleanupTestCompany,
 };
+
+/**
+ * Assigns a customer to a company using REST API.
+ * Used for multi-company scenarios where a user needs to be assigned to multiple companies.
+ * 
+ * @param {number} customerId - Customer ID
+ * @param {number} companyId - Company ID to assign to
+ * @returns {Promise<Object>} Assignment result
+ * @throws {Error} If API request fails
+ */
+async function assignCustomerToCompany(customerId, companyId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`🔗 Assigning customer ${customerId} to company ${companyId}...`);
+
+  const result = await client.put(`/V1/customers/${customerId}/companies/${companyId}`);
+
+  // Validate response
+  if (result.error || result.message) {
+    throw new Error(`Failed to assign customer ${customerId} to company ${companyId}: ${result.message || JSON.stringify(result)}`);
+  }
+
+  safeLog(`✅ Customer ${customerId} assigned to company ${companyId}`);
+
+  return result;
+}

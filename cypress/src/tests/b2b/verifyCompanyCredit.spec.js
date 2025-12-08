@@ -89,7 +89,8 @@ import {
   baseCompanyData,
   companyUsers,
 } from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
+import { customerShippingAddress } from '../../fixtures';
+import { login, setGuestShippingAddress, checkTermsAndConditions } from '../../actions';
 
 describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -407,6 +408,208 @@ describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
       });
 
       cy.logToTerminal('✅ TC-48: Permission restriction verified - user cannot see credit history');
+    });
+  });
+
+  // ==========================================================================
+  // TC-47 CASE_5: Refund (Credit Memo)
+  // ==========================================================================
+
+  it('TC-47 CASE_5: Refunded record appears when order is refunded via credit memo', () => {
+    cy.logToTerminal('========= 📋 TC-47 CASE_5: Verify Refunded record after credit memo =========');
+
+    cy.then(async () => {
+      cy.logToTerminal('🏢 Setting up test company with Payment on Account...');
+      await cy.setupCompanyWithCredit();
+    });
+
+    cy.then(() => {
+      cy.loginAsCompanyAdmin();
+
+      cy.logToTerminal('🛒 Adding product to cart for order...');
+      cy.visit('/products/alpine-double-barrel-backpack/ADB150');
+      cy.wait(2000);
+
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
+        .should('be.visible')
+        .click();
+      cy.wait(2000);
+
+      cy.logToTerminal('✅ Product added to cart, proceeding to checkout...');
+      cy.visit('/checkout');
+      cy.wait(3000);
+
+      // Fill shipping address
+      cy.logToTerminal('📝 Filling shipping address...');
+      setGuestShippingAddress(customerShippingAddress, true);
+      cy.wait(3000);
+
+      // Select shipping method
+      cy.logToTerminal('📦 Selecting shipping method...');
+      cy.get('body').then(($body) => {
+        if ($body.find('input[name="shipping_method"]').length > 0) {
+          cy.get('input[name="shipping_method"]').first().check({ force: true });
+          cy.wait(2000);
+        }
+      });
+      cy.wait(5000);
+
+      // Select Payment on Account
+      cy.logToTerminal('💳 Selecting Payment on Account...');
+      cy.get('input[value="companycredit"]', { timeout: 10000 })
+        .should('exist')
+        .check({ force: true });
+      cy.wait(2000);
+
+      // Accept T&C if present
+      checkTermsAndConditions();
+
+      // Place order
+      cy.logToTerminal('🎯 Placing order...');
+      cy.contains('button', /place.*order/i, { timeout: 10000 }).click();
+
+      // Wait for success page and extract order number
+      cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
+      cy.wait(3000);
+
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+        const orderMatch = bodyText.match(/order.*?(\d{9})/i) || bodyText.match(/(\d{9})/);
+        if (orderMatch) {
+          const orderNumber = orderMatch[1];
+          cy.logToTerminal(`✅ Order placed successfully: ${orderNumber}`);
+          Cypress.env('testOrderNumber', orderNumber);
+        } else {
+          throw new Error('Could not extract order number from success page');
+        }
+      });
+    });
+
+    cy.then(async () => {
+      const orderNumber = Cypress.env('testOrderNumber');
+      cy.logToTerminal(`💰 Creating invoice and credit memo for order ${orderNumber}...`);
+
+      // Import API functions
+      const { createInvoice, createCreditMemo } = require('../../support/b2bCompanyAPICalls');
+
+      // Create invoice first (required for credit memo)
+      const invoiceId = await createInvoice(orderNumber);
+      cy.logToTerminal(`✅ Invoice created: ${invoiceId}`);
+
+      // Create credit memo (triggers automatic company credit refund)
+      const creditMemoId = await createCreditMemo(orderNumber, invoiceId);
+      cy.logToTerminal(`✅ Credit memo created: ${creditMemoId}`);
+
+      cy.wait(5000); // Wait for credit history to update
+    });
+
+    cy.then(() => {
+      cy.logToTerminal('📍 Verifying Refunded record in credit history...');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      // Verify "Refunded" record appears
+      cy.contains(/refund/i, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified in credit history');
+    });
+  });
+
+  // ==========================================================================
+  // TC-47 CASE_6: Revert (Order Cancellation)
+  // ==========================================================================
+
+  it('TC-47 CASE_6: Reverted record appears when order is cancelled', () => {
+    cy.logToTerminal('========= 📋 TC-47 CASE_6: Verify Reverted record after order cancellation =========');
+
+    cy.then(async () => {
+      cy.logToTerminal('🏢 Setting up test company with Payment on Account...');
+      await cy.setupCompanyWithCredit();
+    });
+
+    cy.then(() => {
+      cy.loginAsCompanyAdmin();
+
+      cy.logToTerminal('🛒 Adding product to cart for order...');
+      cy.visit('/products/alpine-double-barrel-backpack/ADB150');
+      cy.wait(2000);
+
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
+        .should('be.visible')
+        .click();
+      cy.wait(2000);
+
+      cy.logToTerminal('✅ Product added to cart, proceeding to checkout...');
+      cy.visit('/checkout');
+      cy.wait(3000);
+
+      // Fill shipping address
+      cy.logToTerminal('📝 Filling shipping address...');
+      setGuestShippingAddress(customerShippingAddress, true);
+      cy.wait(3000);
+
+      // Select shipping method
+      cy.logToTerminal('📦 Selecting shipping method...');
+      cy.get('body').then(($body) => {
+        if ($body.find('input[name="shipping_method"]').length > 0) {
+          cy.get('input[name="shipping_method"]').first().check({ force: true });
+          cy.wait(2000);
+        }
+      });
+      cy.wait(5000);
+
+      // Select Payment on Account
+      cy.logToTerminal('💳 Selecting Payment on Account...');
+      cy.get('input[value="companycredit"]', { timeout: 10000 })
+        .should('exist')
+        .check({ force: true });
+      cy.wait(2000);
+
+      // Accept T&C if present
+      checkTermsAndConditions();
+
+      // Place order
+      cy.logToTerminal('🎯 Placing order...');
+      cy.contains('button', /place.*order/i, { timeout: 10000 }).click();
+
+      // Wait for success page and extract order number
+      cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
+      cy.wait(3000);
+
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+        const orderMatch = bodyText.match(/order.*?(\d{9})/i) || bodyText.match(/(\d{9})/);
+        if (orderMatch) {
+          const orderNumber = orderMatch[1];
+          cy.logToTerminal(`✅ Order placed successfully: ${orderNumber}`);
+          Cypress.env('testOrderNumber', orderNumber);
+        } else {
+          throw new Error('Could not extract order number from success page');
+        }
+      });
+    });
+
+    cy.then(async () => {
+      const orderNumber = Cypress.env('testOrderNumber');
+      cy.logToTerminal(`❌ Cancelling order ${orderNumber}...`);
+
+      // Import API function
+      const { cancelOrder } = require('../../support/b2bCompanyAPICalls');
+
+      // Cancel order (triggers automatic company credit restoration)
+      await cancelOrder(orderNumber);
+      cy.logToTerminal(`✅ Order ${orderNumber} cancelled`);
+
+      cy.wait(5000); // Wait for credit history to update
+    });
+
+    cy.then(() => {
+      cy.logToTerminal('📍 Verifying Reverted record in credit history...');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      // Verify "Reverted" record appears
+      cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ TC-47 CASE_6: Reverted record verified in credit history');
     });
   });
 

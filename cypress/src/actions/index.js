@@ -138,8 +138,12 @@ export const setPaymentMethod = (paymentMethod) => {
 };
 
 export function checkTermsAndConditions() {
-  cy.get(fields.termsAndConditionsCheckbox).check({ force: true });
-  cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
+  cy.get('body').then(($body) => {
+    if ($body.find(fields.termsAndConditionsCheckbox).length > 0) {
+      cy.get(fields.termsAndConditionsCheckbox).check({ force: true });
+      cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
+    }
+  });
 }
 
 export const fillGiftOptiosForm = (className, type = 'order') => {

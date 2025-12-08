@@ -534,10 +534,15 @@ const setupTestCompanyAndAdmin = () => {
   cy.logToTerminal('🏢 Setting up test company and admin...');
 
   cy.then(async () => {
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(7);
+    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
+    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
+
     cy.logToTerminal('📝 Creating test company via REST API...');
     const testCompany = await createCompany({
-      companyName: baseCompanyData.companyName,
-      companyEmail: baseCompanyData.companyEmail,
+      companyName: `${baseCompanyData.companyName} ${timestamp}`,
+      companyEmail: uniqueCompanyEmail,
       legalName: baseCompanyData.legalName,
       vatTaxId: baseCompanyData.vatTaxId,
       resellerId: baseCompanyData.resellerId,
@@ -549,20 +554,26 @@ const setupTestCompanyAndAdmin = () => {
       telephone: baseCompanyData.telephone,
       adminFirstName: baseCompanyData.adminFirstName,
       adminLastName: baseCompanyData.adminLastName,
-      adminEmail: baseCompanyData.adminEmail,
+      adminEmail: uniqueAdminEmail,
       adminPassword: 'Test123!',
       status: 1, // Active
     });
 
     cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
 
-    // Store for cleanup
-    Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
-    Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
+    // Store for cleanup (NEW OBJECT STRUCTURE)
+    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
+    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
+    Cypress.env('testCompany', {
+      id: testCompany.id,
+      name: testCompany.name,
+      email: uniqueCompanyEmail,
+    });
+    Cypress.env('testAdmin', {
+      email: testCompany.company_admin.email,
+      password: testCompany.company_admin.password,
+      adminEmail: uniqueAdminEmail,
+    });
 
     cy.logToTerminal(`✅ Admin: ${testCompany.company_admin.email}`);
   });
@@ -577,10 +588,16 @@ const setupTestCompanyWithRegularUser = () => {
   cy.logToTerminal('🏢 Setting up test company with regular user...');
 
   cy.then(async () => {
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(7);
+    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
+    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
+    const uniqueRegularUserEmail = `regular.${timestamp}.${randomStr}@example.com`;
+
     cy.logToTerminal('📝 Creating test company via REST API...');
     const testCompany = await createCompany({
-      companyName: baseCompanyData.companyName,
-      companyEmail: baseCompanyData.companyEmail,
+      companyName: `${baseCompanyData.companyName} ${timestamp}`,
+      companyEmail: uniqueCompanyEmail,
       legalName: baseCompanyData.legalName,
       vatTaxId: baseCompanyData.vatTaxId,
       resellerId: baseCompanyData.resellerId,
@@ -592,7 +609,7 @@ const setupTestCompanyWithRegularUser = () => {
       telephone: baseCompanyData.telephone,
       adminFirstName: baseCompanyData.adminFirstName,
       adminLastName: baseCompanyData.adminLastName,
-      adminEmail: baseCompanyData.adminEmail,
+      adminEmail: uniqueAdminEmail,
       adminPassword: 'Test123!',
       status: 1, // Active
     });
@@ -601,7 +618,7 @@ const setupTestCompanyWithRegularUser = () => {
 
     cy.logToTerminal('👤 Creating regular company user...');
     const regularUser = await createCompanyUser({
-      email: companyUsers.regularUser.email,
+      email: uniqueRegularUserEmail,
       firstname: companyUsers.regularUser.firstname,
       lastname: companyUsers.regularUser.lastname,
       password: companyUsers.regularUser.password,
@@ -609,40 +626,38 @@ const setupTestCompanyWithRegularUser = () => {
 
     cy.logToTerminal(`✅ Regular user created: ${regularUser.email}`);
 
-    // Store for cleanup
-    Cypress.env('currentTestCompanyEmail', baseCompanyData.companyEmail);
-    Cypress.env('currentTestAdminEmail', baseCompanyData.adminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-    Cypress.env('regularUserEmail', regularUser.email);
-    Cypress.env('regularUserPassword', companyUsers.regularUser.password);
+    // Store for cleanup (NEW OBJECT STRUCTURE)
+    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
+    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
+    Cypress.env('testCompany', {
+      id: testCompany.id,
+      name: testCompany.name,
+      email: uniqueCompanyEmail,
+    });
+    Cypress.env('testAdmin', {
+      email: testCompany.company_admin.email,
+      password: testCompany.company_admin.password,
+      adminEmail: uniqueAdminEmail,
+    });
+    Cypress.env('testUsers', {
+      regular: {
+        email: uniqueRegularUserEmail,
+        password: companyUsers.regularUser.password,
+      },
+    });
   });
 };
 
 /**
- * Login as company admin using stored credentials.
+ * Login as company admin using stored credentials - NOW USING CUSTOM COMMAND.
  */
 const loginAsCompanyAdmin = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('adminEmail'),
-    password: Cypress.env('adminPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Admin logged in');
+  cy.loginAsCompanyAdmin();
 };
 
 /**
- * Login as regular company user using stored credentials.
+ * Login as regular company user using stored credentials - NOW USING CUSTOM COMMAND.
  */
 const loginAsRegularUser = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('regularUserEmail'),
-    password: Cypress.env('regularUserPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Regular user logged in');
+  cy.loginAsRegularUser();
 };
