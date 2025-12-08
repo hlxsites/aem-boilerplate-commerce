@@ -713,7 +713,7 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
     // Select regular user in tree
     const regularUserFirstName = companyUsers.regularUser.firstname;
     const regularUserLastName = companyUsers.regularUser.lastname;
-    const regularUserEmail = companyUsers.regularUser.email;
+    
     cy.contains(`${regularUserFirstName} ${regularUserLastName}`, { timeout: 10000 }).click();
     cy.wait(500);
 
@@ -744,6 +744,7 @@ describe('USF-2522: Company Structure', { tags: '@B2BSaas' }, () => {
 
     // Find user and verify Inactive status using shared helper with retry logic
     cy.then(() => {
+      const regularUserEmail = Cypress.env('testUsers').regular.email;
       cy.checkForUserInTable(regularUserEmail, 'Inactive');
     });
 

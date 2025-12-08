@@ -1148,6 +1148,36 @@ async function createCreditMemo(orderId, invoiceId, creditMemoData = {}) {
   throw new Error(`Credit memo creation failed: Invalid response - expected credit memo object with entity_id, got ${typeof result}: ${JSON.stringify(result)}`);
 }
 
+/**
+ * Get order details by increment ID (e.g., "000000123").
+ * 
+ * @param {string} incrementId - Order increment ID from storefront
+ * @returns {Promise<Object>} - Order object with entity_id
+ */
+async function getOrderByIncrementId(incrementId) {
+  const client = new ACCSApiClient();
+  
+  safeLog(`🔍 Looking up order by increment ID: ${incrementId}`);
+  
+  // GET /V1/orders?searchCriteria[filter_groups][0][filters][0][field]=increment_id&searchCriteria[filter_groups][0][filters][0][value]=000000123
+  const searchParams = new URLSearchParams({
+    'searchCriteria[filter_groups][0][filters][0][field]': 'increment_id',
+    'searchCriteria[filter_groups][0][filters][0][value]': incrementId,
+  });
+  
+  const result = await client.get(`/V1/orders?${searchParams.toString()}`);
+  
+  validateApiResponse(result, 'Order lookup');
+  
+  if (result.items && result.items.length > 0) {
+    const order = result.items[0];
+    safeLog(`✅ Found order: entity_id=${order.entity_id}, increment_id=${order.increment_id}`);
+    return order;
+  }
+  
+  throw new Error(`Order not found with increment ID: ${incrementId}`);
+}
+
 // ==========================================================================
 // Exports
 // ==========================================================================
@@ -1194,6 +1224,7 @@ module.exports = {
   CREDIT_OPERATION_TYPES,
 
   // Order Management
+  getOrderByIncrementId,
   cancelOrder,
   createInvoice,
   createCreditMemo,

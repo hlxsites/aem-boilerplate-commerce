@@ -483,6 +483,9 @@ describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
           throw new Error('Could not extract order number from success page');
         }
       });
+      
+      // Wait for backend to process order
+      cy.wait(5000);
     });
 
     cy.then(async () => {
@@ -490,17 +493,27 @@ describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
       cy.logToTerminal(`💰 Creating invoice and credit memo for order ${orderNumber}...`);
 
       // Import API functions
-      const { createInvoice, createCreditMemo } = require('../../support/b2bCompanyAPICalls');
+      const { createInvoice, createCreditMemo, getOrderByIncrementId } = require('../../support/b2bCompanyAPICalls');
 
-      // Create invoice first (required for credit memo)
-      const invoiceId = await createInvoice(orderNumber);
-      cy.logToTerminal(`✅ Invoice created: ${invoiceId}`);
+      // First, get the order entity_id from increment_id
+      try {
+        const order = await getOrderByIncrementId(orderNumber);
+        const orderId = order.entity_id;
+        cy.logToTerminal(`✅ Found order entity_id: ${orderId} for increment_id: ${orderNumber}`);
 
-      // Create credit memo (triggers automatic company credit refund)
-      const creditMemoId = await createCreditMemo(orderNumber, invoiceId);
-      cy.logToTerminal(`✅ Credit memo created: ${creditMemoId}`);
+        // Create invoice using entity_id
+        const invoiceId = await createInvoice(orderId);
+        cy.logToTerminal(`✅ Invoice created: ${invoiceId}`);
 
-      cy.wait(5000); // Wait for credit history to update
+        // Create credit memo (triggers automatic company credit refund)
+        const creditMemoId = await createCreditMemo(orderId, invoiceId);
+        cy.logToTerminal(`✅ Credit memo created: ${creditMemoId}`);
+
+        cy.wait(5000); // Wait for credit history to update
+      } catch (error) {
+        cy.logToTerminal(`❌ Error processing order ${orderNumber}: ${error.message}`);
+        throw error;
+      }
     });
 
     cy.then(() => {
@@ -586,20 +599,33 @@ describe('USF-2563: Company Credit', { tags: ['@B2BSaas'] }, () => {
           throw new Error('Could not extract order number from success page');
         }
       });
+      
+      // Wait for backend to process order
+      cy.wait(5000);
     });
 
     cy.then(async () => {
       const orderNumber = Cypress.env('testOrderNumber');
       cy.logToTerminal(`❌ Cancelling order ${orderNumber}...`);
 
-      // Import API function
-      const { cancelOrder } = require('../../support/b2bCompanyAPICalls');
+      // Import API functions
+      const { cancelOrder, getOrderByIncrementId } = require('../../support/b2bCompanyAPICalls');
 
-      // Cancel order (triggers automatic company credit restoration)
-      await cancelOrder(orderNumber);
-      cy.logToTerminal(`✅ Order ${orderNumber} cancelled`);
+      try {
+        // First, get the order entity_id from increment_id
+        const order = await getOrderByIncrementId(orderNumber);
+        const orderId = order.entity_id;
+        cy.logToTerminal(`✅ Found order entity_id: ${orderId} for increment_id: ${orderNumber}`);
 
-      cy.wait(5000); // Wait for credit history to update
+        // Cancel order using entity_id (triggers automatic company credit restoration)
+        await cancelOrder(orderId);
+        cy.logToTerminal(`✅ Order ${orderNumber} cancelled`);
+
+        cy.wait(5000); // Wait for credit history to update
+      } catch (error) {
+        cy.logToTerminal(`❌ Error cancelling order ${orderNumber}: ${error.message}`);
+        throw error;
+      }
     });
 
     cy.then(() => {
