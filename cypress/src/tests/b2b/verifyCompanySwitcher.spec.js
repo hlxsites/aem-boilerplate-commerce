@@ -287,7 +287,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
       // Retry logic for Company B admin visibility (increased retries for USF-3516)
-      const checkForCompanyBAdmin = (retriesLeft = 8) => {
+      const checkForCompanyBAdmin = (retriesLeft = 12) => {
         cy.get('.companyUsersTable').then(($table) => {
           const tableText = $table.text();
           // Check for either admin email or last name "CompanyB"
@@ -295,15 +295,16 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
             cy.logToTerminal('✅ Company Users grid shows Company B users');
             cy.contains(/CompanyB|Shared User/, { timeout: 5000 }).should('be.visible');
           } else if (retriesLeft > 0) {
-            cy.logToTerminal(`⏳ Company B users not yet visible, retrying (${8 - retriesLeft + 1}/8)...`);
-            cy.wait(10000); // Increased wait time
+            cy.logToTerminal(`⏳ Company B users not yet visible, retrying (${12 - retriesLeft + 1}/12)...`);
+            cy.wait(12000); // Increased wait time to 12 seconds
             cy.reload();
             cy.wait(3000);
             cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
+            cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
             checkForCompanyBAdmin(retriesLeft - 1);
           } else {
             cy.logToTerminal(`❌ Table content: ${tableText.substring(0, 200)}`);
-            throw new Error('Company B admin not found in users grid after 8 retries (USF-3516 cache issue)');
+            throw new Error('Company B admin not found in users grid after 12 retries (USF-3516 cache issue)');
           }
         });
       };
@@ -320,7 +321,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');
 
     // Retry logic for structure tree (USF-3516 caching) - increased retries
-    const checkForCompanyBStructure = (retriesLeft = 8) => {
+    const checkForCompanyBStructure = (retriesLeft = 12) => {
       cy.get('body').then(($body) => {
         const bodyText = $body.text();
         // Check for Company B admin name
@@ -328,14 +329,14 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
           cy.logToTerminal('✅ Company Structure shows Company B tree');
           cy.contains(/CompanyB|Shared User/, { timeout: 5000 }).should('be.visible');
         } else if (retriesLeft > 0) {
-          cy.logToTerminal(`⏳ Company B structure not yet visible, retrying (${8 - retriesLeft + 1}/8)...`);
-          cy.wait(10000);
+          cy.logToTerminal(`⏳ Company B structure not yet visible, retrying (${12 - retriesLeft + 1}/12)...`);
+          cy.wait(12000); // Increased wait time to 12 seconds
           cy.reload();
           cy.wait(3000);
           checkForCompanyBStructure(retriesLeft - 1);
         } else {
           cy.logToTerminal(`❌ Body content: ${bodyText.substring(0, 200)}`);
-          throw new Error('Company B structure not found after 8 retries (USF-3516 cache issue)');
+          throw new Error('Company B structure not found after 12 retries (USF-3516 cache issue)');
         }
       });
     };

@@ -383,23 +383,38 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Use the FIRST order for refund (invoice + credit memo) since it's the natural flow
       cy.logToTerminal('--- STEP 2: TC-47 CASE_5 - Invoice first order and create credit memo (refund) ---');
 
+      // Wait for backend to process order
+      cy.wait(5000);
+
       // Invoice and refund the first order
       cy.then(async () => {
         const orderNumber = Cypress.env('testOrderNumber');
+        const { getOrderByIncrementId, createInvoice, createCreditMemo } = require('../../support/b2bCompanyAPICalls');
 
         if (orderNumber && orderNumber !== 'unknown') {
-          // Step 1: Create invoice
-          cy.logToTerminal(`📄 Creating invoice for order: ${orderNumber}`);
-          const invoiceId = await createInvoice(orderNumber);
-          cy.logToTerminal(`✅ Invoice created for order ${orderNumber}, invoice ID: ${invoiceId}`);
-          cy.wait(2000);
+          try {
+            // Step 1: Get order entity_id from increment_id
+            cy.logToTerminal(`🔍 Looking up order entity_id for: ${orderNumber}`);
+            const order = await getOrderByIncrementId(orderNumber);
+            const orderId = order.entity_id;
+            cy.logToTerminal(`✅ Found order entity_id: ${orderId} for increment_id: ${orderNumber}`);
 
-          // Step 2: Create credit memo (triggers RefundCommand)
-          cy.logToTerminal(`💰 Creating credit memo for order: ${orderNumber} with invoice ID: ${invoiceId}`);
-          const creditMemoId = await createCreditMemo(orderNumber, invoiceId);
-          cy.logToTerminal(`✅ Credit memo created for order ${orderNumber}, credit memo ID: ${creditMemoId}`);
-          cy.logToTerminal('⏳ Waiting for RefundCommand to execute and update credit history...');
-          cy.wait(3000);
+            // Step 2: Create invoice using entity_id
+            cy.logToTerminal(`📄 Creating invoice for order: ${orderNumber}`);
+            const invoiceId = await createInvoice(orderId);
+            cy.logToTerminal(`✅ Invoice created for order ${orderNumber}, invoice ID: ${invoiceId}`);
+            cy.wait(2000);
+
+            // Step 3: Create credit memo (triggers RefundCommand)
+            cy.logToTerminal(`💰 Creating credit memo for order: ${orderNumber} with invoice ID: ${invoiceId}`);
+            const creditMemoId = await createCreditMemo(orderId, invoiceId);
+            cy.logToTerminal(`✅ Credit memo created for order ${orderNumber}, credit memo ID: ${creditMemoId}`);
+            cy.logToTerminal('⏳ Waiting for RefundCommand to execute and update credit history...');
+            cy.wait(3000);
+          } catch (error) {
+            cy.logToTerminal(`❌ Error processing order ${orderNumber}: ${error.message}`);
+            throw error;
+          }
         }
       });
 
@@ -549,22 +564,38 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         });
       });
 
+      // Wait for backend to process order
+      cy.wait(5000);
+
       // Cancel the second order (Revert)
       cy.then(async () => {
         const orderNumber2 = Cypress.env('testOrderNumber2');
+        const { getOrderByIncrementId, cancelOrder } = require('../../support/b2bCompanyAPICalls');
 
         if (orderNumber2 && orderNumber2 !== 'unknown') {
-          cy.logToTerminal(`🚫 Cancelling order: ${orderNumber2}`);
-          await cancelOrder(orderNumber2);
-          cy.logToTerminal(`✅ Order ${orderNumber2} cancelled successfully`);
-          
-          // Verify "Reverted" record in credit history
-          cy.logToTerminal('📊 Verifying Reverted record in credit history...');
-          cy.visit('/customer/company/credit');
-          cy.wait(2000);
-          
-          cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
-          cy.logToTerminal('✅ TC-47 CASE_4: Reverted record verified');
+          try {
+            cy.logToTerminal(`🚫 Cancelling order: ${orderNumber2}`);
+            
+            // Get order entity_id from increment_id
+            const order = await getOrderByIncrementId(orderNumber2);
+            const orderId = order.entity_id;
+            cy.logToTerminal(`✅ Found order entity_id: ${orderId} for increment_id: ${orderNumber2}`);
+            
+            // Cancel using entity_id
+            await cancelOrder(orderId);
+            cy.logToTerminal(`✅ Order ${orderNumber2} cancelled successfully`);
+            
+            // Verify "Reverted" record in credit history
+            cy.logToTerminal('📊 Verifying Reverted record in credit history...');
+            cy.visit('/customer/company/credit');
+            cy.wait(2000);
+            
+            cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
+            cy.logToTerminal('✅ TC-47 CASE_4: Reverted record verified');
+          } catch (error) {
+            cy.logToTerminal(`❌ Error cancelling order ${orderNumber2}: ${error.message}`);
+            throw error;
+          }
         }
       });
 
