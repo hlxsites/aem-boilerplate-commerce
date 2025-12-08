@@ -54,191 +54,16 @@
  */
 
 import {
-  createCompany,
-  createCompanyUser,
   createStandaloneCustomer,
   acceptCompanyInvitation,
   updateCompanyUserStatus,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 import {
-  baseCompanyData,
-  companyUsers,
   invalidData,
 } from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
 
 describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
-  // Helper function to setup test company with admin
-  const setupTestCompanyAndAdmin = () => {
-    cy.logToTerminal('🏢 Setting up test company with admin...');
-
-    cy.then(async () => {
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(7);
-      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-
-      const testCompany = await createCompany({
-        companyName: `${baseCompanyData.companyName} ${timestamp}`,
-        companyEmail: uniqueCompanyEmail,
-        legalName: baseCompanyData.legalName,
-        vatTaxId: baseCompanyData.vatTaxId,
-        resellerId: baseCompanyData.resellerId,
-        street: baseCompanyData.street,
-        city: baseCompanyData.city,
-        countryCode: baseCompanyData.countryCode,
-        regionId: 12, // California
-        postcode: baseCompanyData.postcode,
-        telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: baseCompanyData.adminLastName,
-        adminEmail: uniqueAdminEmail,
-        adminPassword: 'Test123!',
-        status: 1, // Active
-      });
-
-      cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-      // Store for cleanup and login
-      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-    });
-  };
-
-  // Helper function to setup test company with additional users
-  const setupTestCompanyWith2Users = () => {
-    cy.logToTerminal('🏢 Setting up test company with 2 additional users...');
-
-    cy.then(async () => {
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(7);
-      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-      const uniqueUser1Email = `regular.${timestamp}.${randomStr}@example.com`;
-      const uniqueUser2Email = `manager.${timestamp}.${randomStr}@example.com`;
-
-      const testCompany = await createCompany({
-        companyName: `${baseCompanyData.companyName} ${timestamp}`,
-        companyEmail: uniqueCompanyEmail,
-        legalName: baseCompanyData.legalName,
-        vatTaxId: baseCompanyData.vatTaxId,
-        resellerId: baseCompanyData.resellerId,
-        street: baseCompanyData.street,
-        city: baseCompanyData.city,
-        countryCode: baseCompanyData.countryCode,
-        regionId: 12,
-        postcode: baseCompanyData.postcode,
-        telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: baseCompanyData.adminLastName,
-        adminEmail: uniqueAdminEmail,
-        adminPassword: 'Test123!',
-        status: 1,
-      });
-
-      cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-      // Create two additional users with unique emails
-      const user1 = await createCompanyUser({
-        email: uniqueUser1Email,
-        firstname: companyUsers.regularUser.firstname,
-        lastname: companyUsers.regularUser.lastname,
-        password: companyUsers.regularUser.password,
-      }, testCompany.id);
-
-      cy.logToTerminal(`✅ User 1 created: ${user1.email} (ID: ${user1.id})`);
-
-      const user2 = await createCompanyUser({
-        email: uniqueUser2Email,
-        firstname: companyUsers.managerUser.firstname,
-        lastname: companyUsers.managerUser.lastname,
-        password: companyUsers.managerUser.password,
-      }, testCompany.id);
-
-      cy.logToTerminal(`✅ User 2 created: ${user2.email} (ID: ${user2.id})`);
-
-      // Store for cleanup and tests
-      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-      Cypress.env('user1Email', uniqueUser1Email);
-      Cypress.env('user1Id', user1.id);
-      Cypress.env('user2Email', uniqueUser2Email);
-      Cypress.env('user2Id', user2.id);
-    });
-  };
-
-  // Helper function to login as company admin
-  const loginAsCompanyAdmin = () => {
-    cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const adminPassword = Cypress.env('adminPassword');
-      
-      if (!adminEmail || !adminPassword) {
-        throw new Error(`Admin credentials not set. Email: ${adminEmail}, Password: ${adminPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as admin: ${adminEmail}`);
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(adminEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(adminPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
-  };
-
-  /**
-   * Helper function to check for user in grid with retry logic
-   * Handles backend GraphQL caching issue (USF-3516)
-   * @param {string} userEmail - Email of user to find
-   * @param {string} expectedStatus - Expected status ('Active' or 'Inactive')
-   */
-  const checkForUser = (userEmail, expectedStatus = 'Active') => {
-    const maxRetries = 5;
-    let retries = 0;
-
-    function attemptFind() {
-      // Wait for table to be fully loaded
-      cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-      cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-      cy.wait(1000);
-
-      // Check specifically within the table
-      cy.get('.companyUsersTable').then(($table) => {
-        if ($table.text().includes(userEmail)) {
-          cy.logToTerminal(`✅ User found in grid: ${userEmail}`);
-          // Verify user is actually visible in the table
-          cy.get('.companyUsersTable').contains(userEmail).should('be.visible');
-        } else if (retries < maxRetries) {
-          retries++;
-          cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
-          cy.wait(8000); // Wait for backend cache to expire
-          cy.reload();
-          cy.wait(2000);
-          
-          attemptFind(); // Recursive retry
-        } else {
-          throw new Error(`User ${userEmail} not found in table after ${maxRetries} retries (USF-3516 cache issue)`);
-        }
-      });
-    }
-
-    cy.logToTerminal(`⏳ Checking for user in grid: ${userEmail}...`);
-    attemptFind();
-  };
-
   before(() => {
     cy.logToTerminal('👥 Company Users test suite started (OPTIMIZED)');
   });
@@ -248,13 +73,13 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.intercept('**/graphql').as('defaultGraphQL');
-    
+
     // Handle uncaught exceptions from application code (unrelated to our tests)
     cy.on('uncaught:exception', (err) => {
       // Ignore application JS errors that don't affect our test logic
-      if (err.message.includes('renderCompanySwitcher') || 
-          err.message.includes('returns') ||
-          err.message.includes('Failed to fetch')) {
+      if (err.message.includes('renderCompanySwitcher')
+          || err.message.includes('returns')
+          || err.message.includes('Failed to fetch')) {
         return false;
       }
       return true;
@@ -290,11 +115,11 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('========= 🚀 JOURNEY 1: Complete User Management Workflow =========');
 
     // ========== SETUP: Create company with 2 users (ONCE) ==========
-    setupTestCompanyWith2Users();
+    cy.setupCompanyWith2Users();
     cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
-    loginAsCompanyAdmin();
+    cy.loginAsCompanyAdmin();
 
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
@@ -303,7 +128,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // ========== TC-15: Verify users grid display ==========
     cy.logToTerminal('--- STEP 1: TC-15 - Verify users grid display ---');
-    
+
     // Wait for table to be visible and fully loaded
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
@@ -329,13 +154,15 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Verify all users appear in grid (with retry for cache - USF-3516)
     cy.logToTerminal('✅ Verifying users appear in grid...');
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const user1Email = Cypress.env('user1Email');
-      const user2Email = Cypress.env('user2Email');
-      
-      checkForUser(adminEmail, 'Active');
-      checkForUser(user1Email, 'Active');
-      checkForUser(user2Email, 'Active');
+      const testAdmin = Cypress.env('testAdmin');
+      const testUsers = Cypress.env('testUsers');
+      const adminEmail = testAdmin.email;
+      const user1Email = testUsers.user1.email;
+      const user2Email = testUsers.user2.email;
+
+      cy.checkForUser(adminEmail, 'Active');
+      cy.checkForUser(user1Email, 'Active');
+      cy.checkForUser(user2Email, 'Active');
     });
 
     cy.logToTerminal('✅ TC-15: Users grid displays correctly');
@@ -392,8 +219,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('📝 Filling in new user details...');
     const newUserEmail = `newuser.${Date.now()}@example.com`;
     Cypress.env('newUserEmail', newUserEmail);
-    
-    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail).blur();
+
+    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail)
+      .blur();
     cy.get('input[name="first_name"]:visible').clear().type('New').blur();
     cy.get('input[name="last_name"]:visible').clear().type('TestUser').blur();
     cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
@@ -409,7 +237,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
 
     // Verify new user appears in grid (with retries for cache)
-    checkForUser(newUserEmail, 'Active');
+    cy.checkForUser(newUserEmail, 'Active');
     cy.logToTerminal('✅ TC-17: New user added successfully');
 
     // ========== TC-21: Duplicate email validation ==========
@@ -422,10 +250,11 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.wait(1000);
 
     cy.then(() => {
-      const existingEmail = Cypress.env('user1Email');
+      const existingEmail = Cypress.env('testUsers').user1.email;
       cy.logToTerminal(`📝 Attempting to add duplicate email: ${existingEmail}...`);
-      
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail).blur();
+
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail)
+        .blur();
       cy.get('input[name="first_name"]:visible').clear().type('Duplicate').blur();
       cy.get('input[name="last_name"]:visible').clear().type('User').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
@@ -439,7 +268,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       // Verify form stays open (validation error)
       cy.contains('h3', 'Add User', { timeout: 5000 }).should('be.visible');
       cy.logToTerminal('✅ TC-21: Duplicate email validation works correctly');
-      
+
       // Close form
       cy.get('body').type('{esc}');
       cy.wait(500);
@@ -449,8 +278,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('--- STEP 5: TC-23 - Admin edits other user data ---');
 
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
-      
+      const user1Email = Cypress.env('testUsers').user1.email;
+
       // Find test user's row and click Edit
       cy.logToTerminal('✏️ Clicking Edit button for user...');
       cy.contains(user1Email, { timeout: 10000 })
@@ -503,8 +332,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('--- STEP 6: TC-24 - Set user inactive ---');
 
     cy.then(() => {
-      const user2Email = Cypress.env('user2Email');
-      
+      const user2Email = Cypress.env('testUsers').user2.email;
+
       // Find user2 and click Manage
       cy.logToTerminal('⚙️ Clicking Manage button for user...');
       cy.contains(user2Email, { timeout: 10000 })
@@ -536,7 +365,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Verify user status updated to Inactive in grid
     cy.then(() => {
-      const user2Email = Cypress.env('user2Email');
+      const user2Email = Cypress.env('testUsers').user2.email;
       cy.contains(user2Email)
         .parents('tr')
         .within(() => {
@@ -554,8 +383,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
-      
+      const user1Email = Cypress.env('testUsers').user1.email;
+
       // Find user1 (now showing as "Updated UserName") and click Manage
       cy.logToTerminal('⚙️ Clicking Manage button for user to delete...');
       cy.contains(user1Email, { timeout: 10000 })
@@ -585,7 +414,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.wait(3000);
 
     cy.then(() => {
-      const user1Email = Cypress.env('user1Email');
+      const user1Email = Cypress.env('testUsers').user1.email;
       cy.get('body').then(($body) => {
         if ($body.text().includes(user1Email)) {
           cy.contains(user1Email)
@@ -617,7 +446,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('========= 🚀 JOURNEY 2: Registered Email & Invitation Flow =========');
 
     // ========== SETUP: Create company with admin (ONCE) ==========
-    setupTestCompanyAndAdmin();
+    cy.setupCompanyWithAdmin();
     cy.wait(2000);
 
     // ========== TC-18: Add user with registered email ==========
@@ -632,7 +461,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.then(async () => {
       const timestamp = Date.now();
       const standaloneEmail = `standalone.${timestamp}@example.com`;
-      
+
       cy.logToTerminal('👤 Creating standalone customer via REST...');
       const standaloneUser = await createStandaloneCustomer({
         firstname: 'Standalone',
@@ -640,15 +469,15 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         email: standaloneEmail,
         password: 'Test123!',
       });
-      
+
       cy.logToTerminal(`✅ Standalone customer created: ${standaloneUser.email} (ID: ${standaloneUser.id})`);
-      
+
       Cypress.env('standaloneEmail', standaloneEmail);
       Cypress.env('standaloneUserId', standaloneUser.id);
     });
 
     // Login as company admin
-    loginAsCompanyAdmin();
+    cy.loginAsCompanyAdmin();
 
     // Navigate to Company Users page
     cy.logToTerminal('📄 Navigating to Company Users page...');
@@ -669,7 +498,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('📝 Filling in invitation form with registered email...');
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail).blur();
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail)
+        .blur();
       cy.get('input[name="first_name"]:visible').clear().type('Invited').blur();
       cy.get('input[name="last_name"]:visible').clear().type('Member').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
@@ -688,12 +518,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // WORKAROUND: Accept invitation via REST API
     cy.then(async () => {
-      const companyId = Cypress.env('testCompanyId');
+      const companyId = Cypress.env('testCompany').id;
       const standaloneUserId = Cypress.env('standaloneUserId');
       const standaloneEmail = Cypress.env('standaloneEmail');
-      
+
       cy.logToTerminal('🔗 Accepting invitation via REST API (WORKAROUND)...');
-      
+
       await acceptCompanyInvitation(
         standaloneUserId,
         companyId,
@@ -703,9 +533,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
           lastname: 'Member',
         },
         'Team Member',
-        '555-0000'
+        '555-0000',
       );
-      
+
       cy.logToTerminal('✅ Invitation accepted via REST API');
     });
 
@@ -729,7 +559,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Verify invited user appears in grid (with retries for cache)
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      checkForUser(standaloneEmail, 'Active');
+      cy.checkForUser(standaloneEmail, 'Active');
     });
 
     cy.logToTerminal('✅ TC-18: Invitation flow completed successfully');
@@ -745,7 +575,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Set the invited user to inactive via REST API
     cy.then(async () => {
       const standaloneUserId = Cypress.env('standaloneUserId');
-      
+
       cy.logToTerminal(`🔄 Setting user ${standaloneUserId} to inactive via REST API...`);
       await updateCompanyUserStatus(standaloneUserId, 0); // 0 = Inactive
       cy.logToTerminal('✅ User set to inactive via REST API');
@@ -771,8 +601,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Verify user appears as Inactive (with retry for caching)
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      checkForUser(standaloneEmail, 'Inactive');
-      
+      cy.checkForUser(standaloneEmail, 'Inactive');
+
       // Verify Inactive status displayed
       cy.logToTerminal('✅ Verifying Inactive status...');
       cy.get('.companyUsersTable').should('contain', 'Inactive');
@@ -781,7 +611,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Now activate the user via REST API
     cy.then(async () => {
       const standaloneUserId = Cypress.env('standaloneUserId');
-      
+
       cy.logToTerminal(`🔄 Setting user ${standaloneUserId} to active via REST API...`);
       await updateCompanyUserStatus(standaloneUserId, 1); // 1 = Active
       cy.logToTerminal('✅ User set to active via REST API');
@@ -799,8 +629,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Verify user appears as Active (with retry for caching)
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      checkForUser(standaloneEmail, 'Active');
-      
+      cy.checkForUser(standaloneEmail, 'Active');
+
       // Verify Active status displayed
       cy.logToTerminal('✅ Verifying Active status...');
       cy.get('.companyUsersTable').should('contain', 'Active');
@@ -823,11 +653,11 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('========= 🚀 JOURNEY 3: Admin Self-Management =========');
 
     // ========== SETUP: Create company with admin (ONCE) ==========
-    setupTestCompanyAndAdmin();
+    cy.setupCompanyWithAdmin();
     cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
-    loginAsCompanyAdmin();
+    cy.loginAsCompanyAdmin();
 
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
@@ -838,9 +668,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('--- STEP 1: TC-22 - Admin edits own data ---');
 
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      checkForUser(adminEmail, 'Active');
-      
+      const adminEmail = Cypress.env('testAdmin').email;
+      cy.checkForUser(adminEmail, 'Active');
+
       // Find admin's row and click Edit
       cy.logToTerminal('✏️ Clicking Edit button for admin...');
       cy.contains('tr', adminEmail, { timeout: 10000 })
@@ -893,9 +723,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Find admin in the grid and click Manage
     cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      checkForUser(adminEmail, 'Active');
-      
+      const adminEmail = Cypress.env('testAdmin').email;
+      cy.checkForUser(adminEmail, 'Active');
+
       cy.logToTerminal('⚙️ Clicking Manage button for admin...');
       cy.get('.companyUsersTable').find('button.manage-user-button').first()
         .should('be.visible')

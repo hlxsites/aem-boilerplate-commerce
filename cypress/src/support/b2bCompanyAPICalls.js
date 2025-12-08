@@ -75,13 +75,20 @@ function safeError(...args) {
  * @throws {Error} If response indicates an error
  */
 function validateApiResponse(response, operation, expectedField = null) {
+  // Some APIs return boolean true on success (delete, update operations)
+  // Don't validate those
+  if (response === true) {
+    return;
+  }
+
   // Check for explicit error flag
   if (response.error) {
     throw new Error(`${operation} failed: ${response.message || JSON.stringify(response)}`);
   }
 
   // Check for error message without error flag (4xx responses)
-  if (response.message && !response.id && !response.items) {
+  // Allow response.message if response is true (already checked above) or has id/items
+  if (response.message && response !== true && !response.id && !response.items) {
     throw new Error(`${operation} failed: ${response.message}`);
   }
 
@@ -592,15 +599,10 @@ async function assignRoleToUser(userId, role) {
   });
 
   // This endpoint returns boolean true on success
-  // Check for error conditions
-  if (result.error || result.message) {
-    safeError('❌ Role assignment failed:', result);
-    throw new Error(`Role assignment failed: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, 'Role assignment');
 
   if (result !== true) {
-    safeError('❌ Role assignment returned unexpected result:', result);
-    throw new Error(`Role assignment failed: unexpected response ${JSON.stringify(result)}`);
+    throw new Error(`Role assignment failed: expected true, got ${JSON.stringify(result)}`);
   }
 
   safeLog('✅ Role assigned to user');
@@ -640,13 +642,10 @@ async function deleteCompanyRole(roleId) {
 
   const result = await client.delete(`/V1/company/role/${roleId}`);
   // DELETE returns true on success
-  if (result.error || (result.message && result !== true)) {
-    safeError('❌ Role deletion failed:', result);
-    throw new Error(`Role deletion failed: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, 'Role deletion');
 
   safeLog('✅ Role deleted');
-  return { success: true, roleId };
+  return result;
 }
 
 // ==========================================================================
@@ -701,13 +700,10 @@ async function deleteCompanyTeam(teamId) {
 
   const result = await client.delete(`/V1/team/${teamId}`);
   // DELETE returns true on success
-  if (result.error || (result.message && result !== true)) {
-    safeError('❌ Team deletion failed:', result);
-    throw new Error(`Team deletion failed: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, 'Team deletion');
 
   safeLog('✅ Team deleted');
-  return { success: true, teamId };
+  return result;
 }
 
 // ==========================================================================
@@ -790,12 +786,12 @@ async function updateCompanyCredit(creditId, creditData) {
  * Used in increaseBalance and decreaseBalance endpoints.
  */
 const CREDIT_OPERATION_TYPES = {
-  ALLOCATED: 1,    // Credit limit allocation
-  UPDATED: 2,      // General update
-  PURCHASED: 3,    // Purchase using company credit
-  REIMBURSED: 4,   // Reimbursement (add funds)
-  REFUNDED: 5,     // Refund from credit memo
-  REVERTED: 6,     // Reverted (order cancellation)
+  ALLOCATED: 1, // Credit limit allocation
+  UPDATED: 2, // General update
+  PURCHASED: 3, // Purchase using company credit
+  REIMBURSED: 4, // Reimbursement (add funds)
+  REFUNDED: 5, // Refund from credit memo
+  REVERTED: 6, // Reverted (order cancellation)
 };
 
 /**
@@ -813,7 +809,7 @@ async function increaseCompanyCreditBalance(
   amount,
   currency = 'USD',
   comment = '',
-  operationType = CREDIT_OPERATION_TYPES.REIMBURSED
+  operationType = CREDIT_OPERATION_TYPES.REIMBURSED,
 ) {
   const client = new ACCSApiClient();
 
@@ -828,10 +824,7 @@ async function increaseCompanyCreditBalance(
 
   const result = await client.post(`/V1/companyCredits/${creditId}/increaseBalance`, payload);
   // increaseBalance returns true on success, not an object with id
-  if (result.error || (result.message && result !== true)) {
-    safeError('❌ Increase credit balance failed:', result);
-    throw new Error(`Increase credit balance failed: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, 'Increase credit balance');
 
   safeLog('✅ Company credit balance increased by:', amount);
   return result;
@@ -859,13 +852,117 @@ async function decreaseCompanyCreditBalance(creditId, amount, currency = 'USD', 
 
   const result = await client.post(`/V1/companyCredits/${creditId}/decreaseBalance`, payload);
   // decreaseBalance returns true on success, not an object with id
-  if (result.error || (result.message && result !== true)) {
-    safeError('❌ Decrease credit balance failed:', result);
-    throw new Error(`Decrease credit balance failed: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, 'Decrease credit balance');
 
   safeLog('✅ Company credit balance decreased by:', amount);
   return result;
+}
+
+// ==========================================================================
+// Order Operations
+// ==========================================================================
+
+/**
+ * Cancel an order by order ID using REST API.
+ * This operation typically reverts company credit if Payment on Account was used.
+ * @param {number|string} orderId - The order ID to cancel
+ * @returns {Promise<Object>} Cancellation result
+ */
+async function cancelOrder(orderId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`🚫 Cancelling order ID: ${orderId}`);
+
+  // Adobe Commerce REST API: POST /V1/orders/{id}/cancel
+  const result = await client.post(`/V1/orders/${orderId}/cancel`);
+
+  // Validate response - handles both objects with errors and boolean true
+  validateApiResponse(result, 'Order cancellation');
+
+  safeLog(`✅ Order ${orderId} cancelled successfully`);
+  return result;
+}
+
+/**
+ * Create an invoice for an order using REST API.
+ * Required before creating credit memos.
+ * @param {number|string} orderId - The order ID to invoice
+ * @returns {Promise<Object>} Invoice creation result
+ */
+async function createInvoice(orderId) {
+  const client = new ACCSApiClient();
+
+  safeLog(`📄 Creating invoice for order ID: ${orderId}`);
+
+  // POST /V1/invoices/
+  const payload = {
+    entity: {
+      order_id: orderId,
+    },
+  };
+
+  const result = await client.post('/V1/invoices/', payload);
+
+  // Validate response - handles both objects with errors and successful responses
+  validateApiResponse(result, 'Invoice creation');
+
+  // According to swagger, POST /V1/invoices/ returns sales-data-invoice-interface object with entity_id
+  if (typeof result === 'object' && result !== null && result.entity_id) {
+    safeLog(`✅ Invoice created successfully for order ${orderId}, invoice ID: ${result.entity_id}`);
+    return result.entity_id;
+  }
+
+  throw new Error(`Invoice creation failed: Invalid response - expected invoice object with entity_id, got ${typeof result}: ${JSON.stringify(result)}`);
+}
+
+/**
+ * Create a credit memo (refund) for an order using REST API.
+ * For Payment on Account orders, Magento's RefundCommand automatically refunds to company credit.
+ * Order must be invoiced first.
+ * @param {number|string} orderId - The order ID to refund
+ * @param {Object} creditMemoData - Credit memo details (items, adjustment, etc.)
+ * @returns {Promise<Object>} Credit memo creation result
+ */
+async function createCreditMemo(orderId, invoiceId, creditMemoData = {}) {
+  const client = new ACCSApiClient();
+
+  safeLog(`💰 Creating credit memo for order ID: ${orderId} with invoice ID: ${invoiceId}`);
+
+  // First, get the order details to populate required fields
+  const order = await client.get(`/V1/orders/${orderId}`);
+  validateApiResponse(order, 'Order fetch');
+
+  // POST /V1/creditmemo/refund
+  // This triggers RefundCommand which calls CreditBalance::refund() for Payment on Account
+  // Must provide invoice_id for online refund processing
+  const payload = {
+    creditmemo: {
+      order_id: orderId,
+      invoice_id: invoiceId, // CRITICAL: Required for $creditmemo->getInvoice() to work
+      base_currency_code: order.base_currency_code,
+      global_currency_code: order.global_currency_code || order.base_currency_code,
+      order_currency_code: order.order_currency_code,
+      store_currency_code: order.store_currency_code || order.order_currency_code,
+      adjustment_positive: creditMemoData.adjustment_positive || 0,
+      adjustment_negative: creditMemoData.adjustment_negative || 0,
+      shipping_amount: creditMemoData.shipping_amount || 0,
+      ...creditMemoData,
+    },
+    offlineRequested: false, // false triggers RefundCommand when invoice is present
+  };
+
+  const result = await client.post('/V1/creditmemo/refund', payload);
+
+  // Validate response - handles both objects with errors and successful responses
+  validateApiResponse(result, 'Credit memo creation');
+
+  // According to swagger, POST /V1/creditmemo/refund returns sales-data-creditmemo-interface object with entity_id
+  if (typeof result === 'object' && result !== null && result.entity_id) {
+    safeLog(`✅ Credit memo created successfully for order ${orderId}, credit memo ID: ${result.entity_id}`);
+    return result.entity_id;
+  }
+
+  throw new Error(`Credit memo creation failed: Invalid response - expected credit memo object with entity_id, got ${typeof result}: ${JSON.stringify(result)}`);
 }
 
 // ==========================================================================
@@ -880,10 +977,11 @@ async function decreaseCompanyCreditBalance(creditId, amount, currency = 'USD', 
 async function cleanupTestCompany() {
   safeLog('🧹 Starting test cleanup');
 
-  const companyEmail = Cypress.env('currentTestCompanyEmail');
-  const adminEmail = Cypress.env('currentTestAdminEmail');
-  const regularUserEmail = Cypress.env('regularUserEmail');
-  const noCreditRoleId = Cypress.env('noCreditRoleId');
+  // Read from new object structure
+  const testCompany = Cypress.env('testCompany');
+  const testAdmin = Cypress.env('testAdmin');
+  const testUsers = Cypress.env('testUsers');
+  const testRole = Cypress.env('testRole');
 
   const results = {
     company: { success: true, message: 'No company to clean up' },
@@ -892,39 +990,46 @@ async function cleanupTestCompany() {
     role: { success: true, message: 'No custom role to clean up' },
   };
 
-  if (companyEmail) {
-    safeLog(`🧹 Cleaning up test company: ${companyEmail}`);
-    results.company = await deleteCompanyByEmail(companyEmail);
-    Cypress.env('currentTestCompanyEmail', null);
+  // Cleanup company
+  if (testCompany && testCompany.email) {
+    safeLog(`🧹 Cleaning up test company: ${testCompany.email}`);
+    results.company = await deleteCompanyByEmail(testCompany.email);
   } else {
     safeLog('⚠️ No company email found, skipping company cleanup');
   }
 
-  if (adminEmail) {
-    safeLog(`🧹 Cleaning up test admin: ${adminEmail}`);
-    results.admin = await deleteCustomerByEmail(adminEmail);
-    Cypress.env('currentTestAdminEmail', null);
+  // Cleanup admin
+  if (testAdmin && testAdmin.adminEmail) {
+    safeLog(`🧹 Cleaning up test admin: ${testAdmin.adminEmail}`);
+    results.admin = await deleteCustomerByEmail(testAdmin.adminEmail);
   } else {
     safeLog('⚠️ No admin email found, skipping admin cleanup');
   }
 
-  if (regularUserEmail) {
-    safeLog(`🧹 Cleaning up regular user: ${regularUserEmail}`);
-    results.regularUser = await deleteCustomerByEmail(regularUserEmail);
-    Cypress.env('regularUserEmail', null);
+  // Cleanup regular user
+  if (testUsers && testUsers.regular && testUsers.regular.email) {
+    safeLog(`🧹 Cleaning up regular user: ${testUsers.regular.email}`);
+    results.regularUser = await deleteCustomerByEmail(testUsers.regular.email);
   }
 
-  if (noCreditRoleId) {
-    safeLog(`🧹 Cleaning up custom role: ${noCreditRoleId}`);
+  // Cleanup custom role
+  if (testRole && testRole.restrictedId) {
+    safeLog(`🧹 Cleaning up custom role: ${testRole.restrictedId}`);
     try {
-      await deleteCompanyRole(noCreditRoleId);
+      await deleteCompanyRole(testRole.restrictedId);
       results.role = { success: true, message: 'Custom role deleted' };
     } catch (error) {
       safeLog(`⚠️ Role cleanup failed: ${error.message}`);
       results.role = { success: false, error: error.message };
     }
-    Cypress.env('noCreditRoleId', null);
   }
+
+  // Clear all test env vars
+  Cypress.env('testCompany', null);
+  Cypress.env('testAdmin', null);
+  Cypress.env('testUsers', null);
+  Cypress.env('testRole', null);
+  Cypress.env('testCredit', null);
 
   safeLog('✅ Test cleanup completed');
   return results;
@@ -947,10 +1052,7 @@ async function assignCustomerToCompany(customerId, companyId) {
   safeLog(`🔗 Assigning customer ${customerId} to company ${companyId}`);
 
   const result = await client.put(`/V1/customers/${customerId}/companies/${companyId}`);
-
-  if (result.error || result.message) {
-    throw new Error(`Failed to assign customer ${customerId} to company ${companyId}: ${result.message || JSON.stringify(result)}`);
-  }
+  validateApiResponse(result, `Assign customer ${customerId} to company ${companyId}`);
 
   safeLog('✅ Customer assigned to company');
   return result;
@@ -963,7 +1065,7 @@ async function assignCustomerToCompany(customerId, companyId) {
 /**
  * Create a standalone customer account (not assigned to any company).
  * This is used to simulate a pre-registered user who will receive an invitation.
- * 
+ *
  * @param {Object} userData - User data
  * @returns {Promise<Object>} Created customer data with ID
  */
@@ -1008,7 +1110,7 @@ async function createStandaloneCustomer(userData) {
 /**
  * Accept a company invitation by assigning a customer to a company with active status.
  * This simulates the invitation acceptance flow without requiring email verification.
- * 
+ *
  * @param {number} customerId - Customer ID
  * @param {number} companyId - Company ID to assign to
  * @param {Object} userData - User data (email, firstname, lastname)
@@ -1052,6 +1154,248 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
     companyId,
     status: 'active',
   };
+}
+
+// ==========================================================================
+// Shared Catalog Operations
+// ==========================================================================
+
+/**
+ * Create a shared catalog
+ * @param {Object} catalogData - Catalog configuration
+ * @param {string} catalogData.name - Catalog name
+ * @param {string} catalogData.description - Catalog description
+ * @param {string} catalogData.type - Catalog type (0=custom, 1=public)
+ * @param {number} catalogData.store_id - Store ID
+ * @param {string} catalogData.tax_class_id - Tax class ID
+ * @returns {Promise<Object>} Created shared catalog
+ */
+async function createSharedCatalog(catalogData) {
+  const client = new ACCSApiClient();
+  
+  const payload = {
+    sharedCatalog: {
+      name: catalogData.name,
+      description: catalogData.description || catalogData.name,
+      type: catalogData.type || 0, // 0 = custom, 1 = public
+      store_id: catalogData.store_id || 0,
+      tax_class_id: catalogData.tax_class_id || 3, // Default tax class
+      customer_group_id: catalogData.customer_group_id, // Will be auto-generated if not provided
+    },
+  };
+
+  try {
+    // POST returns just the ID (integer)
+    const response = await client.post('/V1/sharedCatalog', payload);
+    
+    // Log the raw response to debug
+    cy.logToTerminal(`📋 Shared Catalog POST raw response: ${JSON.stringify(response)}`);
+    cy.logToTerminal(`📋 Response type: ${typeof response}, isObject: ${typeof response === 'object'}`);
+    
+    // Extract the ID - response might be wrapped or direct
+    let catalogId;
+    if (typeof response === 'number') {
+      catalogId = response;
+    } else if (response && response.id) {
+      catalogId = response.id;
+    } else if (response && typeof response === 'object') {
+      // Might be wrapped in items or other structure
+      catalogId = response.items?.[0]?.id || response.entity_id || response.catalog_id;
+    }
+    
+    if (!catalogId) {
+      throw new Error(`Shared catalog creation failed: No ID in response: ${JSON.stringify(response)}`);
+    }
+    
+    cy.logToTerminal(`📋 Extracted catalog ID: ${catalogId}`);
+    
+    // Fetch the full catalog details to get customer_group_id
+    const catalog = await client.get(`/V1/sharedCatalog/${catalogId}`);
+    cy.logToTerminal(`📋 Shared catalog GET response: ${JSON.stringify(catalog)}`);
+    
+    safeLog(`✅ Shared catalog created: ${catalog.name} (ID: ${catalog.id}, Customer Group: ${catalog.customer_group_id})`);
+    return catalog;
+  } catch (error) {
+    cy.logToTerminal(`❌ Shared catalog creation error: ${error.message}`);
+    throw new Error(`Shared catalog creation failed: ${error.message}`);
+  }
+}
+
+/**
+ * Assign a company to a shared catalog
+ * @param {number} sharedCatalogId - Shared catalog ID
+ * @param {number} companyId - Company ID
+ * @returns {Promise<boolean>} Success status
+ */
+async function assignCompanyToSharedCatalog(sharedCatalogId, companyId) {
+  const client = new ACCSApiClient();
+  
+  const payload = {
+    companies: [
+      {
+        id: companyId,
+      },
+    ],
+  };
+
+  try {
+    const result = await client.post(`/V1/sharedCatalog/${sharedCatalogId}/assignCompanies`, payload);
+    validateApiResponse(result, 'Company assignment to shared catalog');
+    
+    safeLog(`✅ Company ${companyId} assigned to shared catalog ${sharedCatalogId}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Company assignment to shared catalog failed: ${error.message}`);
+  }
+}
+
+/**
+ * Assign products to a shared catalog
+ * @param {number} sharedCatalogId - Shared catalog ID
+ * @param {Array<Object>} products - Array of product configurations
+ * @returns {Promise<boolean>} Success status
+ */
+async function assignProductsToSharedCatalog(sharedCatalogId, products) {
+  const client = new ACCSApiClient();
+  
+  const payload = {
+    products: products.map(p => ({
+      sku: p.sku,
+    })),
+  };
+
+  try {
+    const result = await client.post(`/V1/sharedCatalog/${sharedCatalogId}/assignProducts`, payload);
+    validateApiResponse(result, 'Product assignment to shared catalog');
+    
+    safeLog(`✅ ${products.length} products assigned to shared catalog ${sharedCatalogId}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Product assignment to shared catalog failed: ${error.message}`);
+  }
+}
+
+/**
+ * Set tier prices for products in a shared catalog
+ * @param {number} sharedCatalogId - Shared catalog ID
+ * @param {Array<Object>} tierPrices - Array of tier price configurations
+ * @returns {Promise<boolean>} Success status
+ */
+async function setTierPricesForSharedCatalog(sharedCatalogId, tierPrices) {
+  const client = new ACCSApiClient();
+  
+  const payload = {
+    prices: tierPrices,
+  };
+
+  try {
+    const result = await client.post(`/V1/sharedCatalog/${sharedCatalogId}/assignTierPrices`, payload);
+    validateApiResponse(result, 'Tier price assignment');
+    
+    safeLog(`✅ Tier prices assigned to shared catalog ${sharedCatalogId}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Tier price assignment failed: ${error.message}`);
+  }
+}
+
+/**
+ * Delete a shared catalog
+ * @param {number} sharedCatalogId - Shared catalog ID to delete
+ * @returns {Promise<boolean>} Success status
+ */
+async function deleteSharedCatalog(sharedCatalogId) {
+  if (!sharedCatalogId) {
+    return false;
+  }
+
+  const client = new ACCSApiClient();
+
+  try {
+    await client.delete(`/V1/sharedCatalog/${sharedCatalogId}`);
+    safeLog(`✅ Shared catalog ${sharedCatalogId} deleted successfully`);
+    return true;
+  } catch (error) {
+    safeLog(`⚠️ Could not delete shared catalog ${sharedCatalogId}: ${error.message}`);
+    return false;
+  }
+}
+
+// ==========================================================================
+// Gift Message Operations
+// ==========================================================================
+
+/**
+ * Get the customer's current cart
+ * @returns {Promise<Object>} Cart object with ID
+ */
+async function getCustomerCart() {
+  const client = new ACCSApiClient();
+  
+  try {
+    const cart = await client.get('/V1/carts/mine');
+    validateApiResponse(cart, 'Customer cart retrieval');
+    
+    safeLog(`📦 Customer cart retrieved: ID ${cart.id}`);
+    return cart;
+  } catch (error) {
+    throw new Error(`Failed to get customer cart: ${error.message}`);
+  }
+}
+
+/**
+ * Set a gift message for the entire cart
+ * @param {number} cartId - Cart ID
+ * @param {Object} giftMessage - Gift message data
+ * @param {string} giftMessage.sender - Sender name
+ * @param {string} giftMessage.recipient - Recipient name
+ * @param {string} giftMessage.message - Gift message text
+ * @returns {Promise<boolean>} Success status
+ */
+async function setGiftMessageForCart(cartId, giftMessage) {
+  const client = new ACCSApiClient();
+  
+  const payload = {
+    giftMessage: {
+      sender: giftMessage.sender,
+      recipient: giftMessage.recipient,
+      message: giftMessage.message,
+    },
+  };
+
+  try {
+    const result = await client.post(`/V1/carts/${cartId}/gift-message`, payload);
+    validateApiResponse(result, 'Gift message creation');
+    
+    safeLog(`💝 Gift message set for cart ${cartId}`);
+    return true;
+  } catch (error) {
+    throw new Error(`Failed to set gift message: ${error.message}`);
+  }
+}
+
+/**
+ * Get the gift message for a cart
+ * @param {number} cartId - Cart ID
+ * @returns {Promise<Object|null>} Gift message object or null if not found
+ */
+async function getGiftMessageForCart(cartId) {
+  const client = new ACCSApiClient();
+  
+  try {
+    const giftMessage = await client.get(`/V1/carts/${cartId}/gift-message`);
+    // Only validate if we got a result (not null/empty)
+    if (giftMessage) {
+      validateApiResponse(giftMessage, 'Gift message retrieval');
+    }
+    return giftMessage;
+  } catch (error) {
+    // Return null if not found (404)
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    throw new Error(`Failed to get gift message: ${error.message}`);
+  }
 }
 
 // ==========================================================================
@@ -1105,6 +1449,23 @@ module.exports = {
   // Invitation Flow
   createStandaloneCustomer,
   acceptCompanyInvitation,
+
+  // Order Operations
+  cancelOrder,
+  createInvoice,
+  createCreditMemo,
+
+  // Shared Catalog Operations
+  createSharedCatalog,
+  assignCompanyToSharedCatalog,
+  assignProductsToSharedCatalog,
+  setTierPricesForSharedCatalog,
+  deleteSharedCatalog,
+
+  // Gift Message Operations
+  getCustomerCart,
+  setGiftMessageForCart,
+  getGiftMessageForCart,
 
   // Test Cleanup
   cleanupTestCompany,

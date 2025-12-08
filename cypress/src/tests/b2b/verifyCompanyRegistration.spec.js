@@ -294,9 +294,9 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
       .should('satisfy', ($el) => {
         // Check for error hint or error class on the field
         const hasErrorHint = $el.find('.dropin-field__hint--error').length > 0;
-        const hasErrorClass = $el.hasClass('dropin-field--error') ||
-          $el.find('.dropin-input--error').length > 0 ||
-          $el.find('[class*="error"]').length > 0;
+        const hasErrorClass = $el.hasClass('dropin-field--error')
+          || $el.find('.dropin-input--error').length > 0
+          || $el.find('[class*="error"]').length > 0;
         return hasErrorHint || hasErrorClass;
       });
 
@@ -340,9 +340,9 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
         .should('satisfy', ($el) => {
           // Check for error hint or error class
           const hasErrorHint = $el.find('.dropin-field__hint--error').length > 0;
-          const hasErrorClass = $el.hasClass('dropin-field--error') ||
-            $el.find('.dropin-input--error').length > 0 ||
-            $el.find('[class*="error"]').length > 0;
+          const hasErrorClass = $el.hasClass('dropin-field--error')
+            || $el.find('.dropin-input--error').length > 0
+            || $el.find('[class*="error"]').length > 0;
           return hasErrorHint || hasErrorClass;
         });
     };

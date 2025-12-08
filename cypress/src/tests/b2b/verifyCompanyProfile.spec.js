@@ -51,16 +51,12 @@
  */
 
 import {
-  createCompany,
-  createCompanyUser,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 import {
   baseCompanyData,
-  companyUsers,
   invalidData,
 } from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
 
 describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -99,12 +95,12 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
     cy.logToTerminal('========= 🚀 JOURNEY 1: Admin Profile Management =========');
 
     // ========== SETUP: Create company with admin (ONCE) ==========
-    setupTestCompanyAndAdmin();
+    cy.setupCompanyWithAdmin();
 
     cy.then(() => {
       // ========== LOGIN: As admin ==========
       cy.logToTerminal('🔐 Login as company admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       // ========== TC-11: Company info block on Account page ==========
       cy.logToTerminal('--- STEP 1: TC-11 - Verify company info block (admin) ---');
@@ -115,7 +111,7 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
         .should('exist');
 
       cy.logToTerminal('✅ Verify company name is displayed');
-      cy.contains(Cypress.env('testCompanyName')).should('be.visible');
+      cy.contains(Cypress.env('testCompany').name).should('be.visible');
 
       cy.logToTerminal('✅ Verify user role is displayed');
       cy.contains('Company Administrator').should('be.visible');
@@ -135,14 +131,14 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       // TC-07: Required fields
       cy.logToTerminal('✅ Verify company name');
-      cy.contains(Cypress.env('testCompanyName')).should('be.visible');
+      cy.contains(Cypress.env('testCompany').name).should('be.visible');
 
       cy.logToTerminal('✅ Verify legal address section');
       cy.contains('Legal Address').should('be.visible');
-      cy.contains(baseCompanyData.street).should('be.visible');
-      cy.contains(baseCompanyData.city).should('be.visible');
-      cy.contains(baseCompanyData.postcode).should('be.visible');
-      cy.contains(baseCompanyData.telephone).should('be.visible');
+      cy.contains(Cypress.env('testCompany').street).should('be.visible');
+      cy.contains(Cypress.env('testCompany').city).should('be.visible');
+      cy.contains(Cypress.env('testCompany').postcode).should('be.visible');
+      cy.contains(Cypress.env('testCompany').telephone).should('be.visible');
 
       cy.logToTerminal('✅ Verify contacts section');
       cy.contains('Contacts').should('be.visible');
@@ -150,13 +146,13 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       // TC-08: Optional fields (ALL fields)
       cy.logToTerminal('✅ Verify optional fields - Legal Name');
-      cy.contains(baseCompanyData.legalName).should('be.visible');
+      cy.contains(Cypress.env('testCompany').legalName).should('be.visible');
 
       cy.logToTerminal('✅ Verify optional fields - VAT/Tax ID');
-      cy.contains(baseCompanyData.vatTaxId).should('be.visible');
+      cy.contains(Cypress.env('testCompany').vatTaxId).should('be.visible');
 
       cy.logToTerminal('✅ Verify optional fields - Reseller ID');
-      cy.contains(baseCompanyData.resellerId).should('be.visible');
+      cy.contains(Cypress.env('testCompany').resellerId).should('be.visible');
 
       cy.logToTerminal('✅ TC-07/TC-08: Profile displays correctly with all fields');
 
@@ -213,7 +209,7 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       // Successful edit
       cy.logToTerminal('📝 Update company profile with valid data');
-      const updatedName = `Updated ${Cypress.env('testCompanyName')}`;
+      const updatedName = `Updated ${Cypress.env('testCompany').name}`;
       cy.get('input[name="name"]')
         .should('be.visible')
         .clear()
@@ -265,12 +261,12 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
     cy.logToTerminal('========= 🚀 JOURNEY 2: Regular User View-Only Access =========');
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
 
     cy.then(() => {
       // ========== LOGIN: As regular user ==========
       cy.logToTerminal('🔐 Login as regular user');
-      loginAsRegularUser();
+      cy.loginAsRegularUser();
 
       // ========== TC-11: Company info block for regular user ==========
       cy.logToTerminal('--- STEP 1: TC-11 - Verify company info block (user) ---');
@@ -281,7 +277,7 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
         .should('exist');
 
       cy.logToTerminal('✅ Verify company name is displayed');
-      cy.contains(Cypress.env('testCompanyName')).should('be.visible');
+      cy.contains(Cypress.env('testCompany').name).should('be.visible');
 
       cy.logToTerminal('✅ TC-11: Company info block displays for regular user');
 
@@ -297,7 +293,7 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
         .should('exist');
 
       cy.logToTerminal('✅ Verify company information is displayed (read-only)');
-      cy.contains(Cypress.env('testCompanyName')).should('be.visible');
+      cy.contains(Cypress.env('testCompany').name).should('be.visible');
 
       cy.logToTerminal('✅ Verify Edit button is NOT visible');
       cy.contains('button', 'Edit').should('not.exist');
@@ -311,109 +307,3 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
     cy.logToTerminal('🏁 Company Profile test suite completed');
   });
 });
-
-// ==========================================================================
-// Helper Functions
-// ==========================================================================
-
-const setupTestCompanyAndAdmin = () => {
-  cy.logToTerminal('🏢 Setting up test company and admin...');
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12,
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1,
-    });
-
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-  });
-};
-
-const setupTestCompanyWithRegularUser = () => {
-  cy.logToTerminal('🏢 Setting up test company with regular user...');
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-    const uniqueRegularUserEmail = `regular.${timestamp}.${randomStr}@example.com`;
-
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12,
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1,
-    });
-
-    const regularUser = await createCompanyUser({
-      email: uniqueRegularUserEmail,
-      firstname: companyUsers.regularUser.firstname,
-      lastname: companyUsers.regularUser.lastname,
-      password: companyUsers.regularUser.password,
-    }, testCompany.id);
-
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-    Cypress.env('regularUserEmail', uniqueRegularUserEmail);
-    Cypress.env('regularUserPassword', companyUsers.regularUser.password);
-  });
-};
-
-const loginAsCompanyAdmin = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('adminEmail'),
-    password: Cypress.env('adminPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Admin logged in');
-};
-
-const loginAsRegularUser = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('regularUserEmail'),
-    password: Cypress.env('regularUserPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Regular user logged in');
-};

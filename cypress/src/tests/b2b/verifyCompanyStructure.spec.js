@@ -52,8 +52,6 @@
  */
 
 import {
-  createCompany,
-  createCompanyUser,
   createStandaloneCustomer,
   acceptCompanyInvitation,
   cleanupTestCompany,
@@ -61,206 +59,9 @@ import {
 import {
   baseCompanyData,
   companyUsers,
-  teamData,
 } from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
 
 describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
-  /**
-   * Helper function to check for user in grid with retry logic
-   * Handles backend GraphQL caching issue (USF-3516)
-   * @param {string} userEmail - Email of user to find
-   * @param {string} expectedStatus - Expected status ('Active' or 'Inactive')
-   */
-  const checkForUser = (userEmail, expectedStatus = 'Active') => {
-    const maxRetries = 5;
-    let retries = 0;
-
-    function attemptFind() {
-      // Wait for table to be fully loaded
-      cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
-      cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
-      cy.wait(1000);
-
-      // Check specifically within the table
-      cy.get('.companyUsersTable').then(($table) => {
-        if ($table.text().includes(userEmail)) {
-          cy.logToTerminal(`✅ User found in grid: ${userEmail}`);
-          // Verify user is actually visible in the table
-          cy.get('.companyUsersTable').contains(userEmail).should('be.visible');
-          
-          // Verify status if specified
-          if (expectedStatus) {
-            cy.get('.companyUsersTable')
-              .contains(userEmail)
-              .parents('tr')
-              .within(() => {
-                cy.contains(new RegExp(expectedStatus, 'i'), { timeout: 5000 }).should('be.visible');
-              });
-            cy.logToTerminal(`✅ Status verified: ${expectedStatus}`);
-          }
-        } else if (retries < maxRetries) {
-          retries++;
-          cy.logToTerminal(`⏳ User not yet visible, retrying (${retries}/${maxRetries})...`);
-          cy.wait(8000); // Wait for backend cache to expire
-          cy.reload();
-          cy.wait(2000);
-          
-          attemptFind(); // Recursive retry
-        } else {
-          throw new Error(`User ${userEmail} not found in table after ${maxRetries} retries (USF-3516 cache issue)`);
-        }
-      });
-    }
-
-    cy.logToTerminal(`⏳ Checking for user in grid: ${userEmail}...`);
-    attemptFind();
-  };
-
-  // Helper function to setup test company with admin
-  const setupTestCompanyAndAdmin = () => {
-    cy.logToTerminal('🏢 Setting up test company with admin...');
-
-    cy.then(async () => {
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(7);
-      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-
-      const testCompany = await createCompany({
-        companyName: `${baseCompanyData.companyName} ${timestamp}`,
-        companyEmail: uniqueCompanyEmail,
-        legalName: baseCompanyData.legalName,
-        vatTaxId: baseCompanyData.vatTaxId,
-        resellerId: baseCompanyData.resellerId,
-        street: baseCompanyData.street,
-        city: baseCompanyData.city,
-        countryCode: baseCompanyData.countryCode,
-        regionId: 12, // California region ID
-        postcode: baseCompanyData.postcode,
-        telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: baseCompanyData.adminLastName,
-        adminEmail: uniqueAdminEmail,
-        adminPassword: 'Test123!',
-        status: 1, // Active
-      });
-
-      cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-      // Store for cleanup and test usage
-      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-    });
-  };
-
-  // Helper function to setup test company with regular user
-  const setupTestCompanyWithRegularUser = () => {
-    cy.logToTerminal('🏢 Setting up test company with regular user...');
-
-    cy.then(async () => {
-      const timestamp = Date.now();
-      const randomStr = Math.random().toString(36).substring(7);
-      const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-      const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-      const uniqueRegularUserEmail = `regular.${timestamp}.${randomStr}@example.com`;
-
-      const testCompany = await createCompany({
-        companyName: `${baseCompanyData.companyName} ${timestamp}`,
-        companyEmail: uniqueCompanyEmail,
-        legalName: baseCompanyData.legalName,
-        vatTaxId: baseCompanyData.vatTaxId,
-        resellerId: baseCompanyData.resellerId,
-        street: baseCompanyData.street,
-        city: baseCompanyData.city,
-        countryCode: baseCompanyData.countryCode,
-        regionId: 12, // California region ID
-        postcode: baseCompanyData.postcode,
-        telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: baseCompanyData.adminLastName,
-        adminEmail: uniqueAdminEmail,
-        adminPassword: 'Test123!',
-        status: 1, // Active
-      });
-
-      cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-      const regularUser = await createCompanyUser({
-        email: uniqueRegularUserEmail,
-        firstname: companyUsers.regularUser.firstname,
-        lastname: companyUsers.regularUser.lastname,
-        password: companyUsers.regularUser.password,
-      }, testCompany.id);
-
-      cy.logToTerminal(`✅ Regular user created: ${regularUser.email || uniqueRegularUserEmail} (ID: ${regularUser.id})`);
-
-      // Store for cleanup
-      Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-      Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-      Cypress.env('testCompanyId', testCompany.id);
-      Cypress.env('testCompanyName', testCompany.name);
-      Cypress.env('adminEmail', testCompany.company_admin.email);
-      Cypress.env('adminPassword', testCompany.company_admin.password);
-      Cypress.env('regularUserEmail', uniqueRegularUserEmail);
-      Cypress.env('regularUserPassword', companyUsers.regularUser.password);
-      Cypress.env('regularUserId', regularUser.id);
-    });
-  };
-
-  // Helper function to login as company admin
-  const loginAsCompanyAdmin = () => {
-    // Wait for admin credentials to be set
-    cy.then(() => {
-      const adminEmail = Cypress.env('adminEmail');
-      const adminPassword = Cypress.env('adminPassword');
-      
-      if (!adminEmail || !adminPassword) {
-        throw new Error(`Admin credentials not set. Email: ${adminEmail}, Password: ${adminPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as admin: ${adminEmail}`);
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(adminEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(adminPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
-  };
-
-  // Helper function to login as regular user
-  const loginAsRegularUser = () => {
-    // Wait for regular user credentials to be set
-    cy.then(() => {
-      const regularUserEmail = Cypress.env('regularUserEmail');
-      const regularUserPassword = Cypress.env('regularUserPassword');
-      
-      if (!regularUserEmail || !regularUserPassword) {
-        throw new Error(`Regular user credentials not set. Email: ${regularUserEmail}, Password: ${regularUserPassword ? '***' : 'null'}`);
-      }
-      
-      cy.logToTerminal(`🔐 Logging in as regular user: ${regularUserEmail}`);
-      cy.visit('/customer/login');
-      cy.wait(1000); // Ensure UI is ready
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(regularUserEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(regularUserPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(8000);
-    });
-  };
-
   before(() => {
     cy.logToTerminal('🌳 Company Structure test suite started (OPTIMIZED)');
   });
@@ -301,11 +102,11 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.logToTerminal('========= 🚀 JOURNEY 1: Admin Full Structure Management =========');
 
     // ========== SETUP: Create company with admin + 1 regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
     cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
-    loginAsCompanyAdmin();
+    cy.loginAsCompanyAdmin();
     cy.wait(3000);
 
     // ========== NAVIGATE: To Company Structure page ==========
@@ -330,11 +131,11 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.contains('button', 'Remove').should('be.disabled');
 
     // Verify admin and regular user appear in tree
-    const adminFirstName = baseCompanyData.adminFirstName;
-    const adminLastName = baseCompanyData.adminLastName;
+    const { adminFirstName } = baseCompanyData;
+    const { adminLastName } = baseCompanyData;
     const regularUserFirstName = companyUsers.regularUser.firstname;
     const regularUserLastName = companyUsers.regularUser.lastname;
-    
+
     cy.contains(`${adminFirstName} ${adminLastName}`, { timeout: 10000 }).should('be.visible');
     cy.contains(`${regularUserFirstName} ${regularUserLastName}`, { timeout: 10000 }).should('be.visible');
 
@@ -383,14 +184,14 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // Fill form with unregistered email
     const newUserEmail = `structureuser.${Date.now()}@example.com`;
     Cypress.env('newUserEmail', newUserEmail);
-    
+
     cy.get('.company-user-form__card, .acm-structure-panel, [class*="user-form"]').first().within(() => {
       cy.get('select[name="role"]', { timeout: 10000 }).select('Default User');
       cy.get('input[name="first_name"]').type('Structure');
       cy.get('input[name="last_name"]').type('NewUser');
       cy.get('input[name="email"]').type(newUserEmail).blur();
       cy.wait(500);
-    cy.contains('button', 'Save').click();
+      cy.contains('button', 'Save').click();
     });
     cy.wait(3000);
 
@@ -410,24 +211,24 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Drag "Structure NewUser" into the team
     cy.logToTerminal(`🔄 Dragging "Structure NewUser" into "${teamName}"...`);
-    
+
     cy.contains('Structure NewUser').closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dragUser');
     cy.contains(teamName).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dropTeam');
-    
+
     cy.get('@dragUser').trigger('dragstart', { dataTransfer: new DataTransfer() });
     cy.get('@dropTeam').trigger('dragover');
     cy.get('@dropTeam').trigger('drop');
     cy.wait(3000);
-    
+
     // Verify success message
     cy.contains(/successfully.*moved|moved.*successfully|user.*moved/i, { timeout: 5000 }).should('be.visible');
-    
+
     // Verify user is now under team in tree structure
     cy.contains('.acm-structure-label', teamName)
       .closest('.acm-tree__item')
       .find('.acm-tree__group')
       .should('contain', 'Structure NewUser');
-    
+
     cy.logToTerminal('✅ Drag & drop: User successfully moved into team');
 
     // ========== TC-36: Admin edit own account from Structure ==========
@@ -492,7 +293,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select the team
     cy.contains(teamName).click();
-      cy.wait(500);
+    cy.wait(500);
 
     // Click Edit
     cy.contains('button', 'Edit').should('not.be.disabled').click();
@@ -504,7 +305,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.get('input[name="team_description"]').clear().type('Updated sales department').blur();
 
     // Save
-      cy.contains('button', 'Save').click();
+    cy.contains('button', 'Save').click();
     cy.wait(2000);
 
     // Verify success message
@@ -522,7 +323,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.wait(500);
     cy.contains('button', 'Add Team').click();
     cy.wait(1000);
-    
+
     const marketingTeam = `Marketing Team ${Date.now()}`;
     cy.get('input[name="team_title"]').clear().type(marketingTeam).blur();
     cy.contains('button', 'Save').click();
@@ -535,10 +336,10 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Drag Marketing Team into Updated Sales Team
     cy.logToTerminal(`🔄 Dragging "${marketingTeam}" into "${updatedTeamName}"...`);
-    
+
     cy.contains(marketingTeam).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dragMarketing');
     cy.contains(updatedTeamName).closest('.acm-tree__item').should('have.attr', 'draggable', 'true').as('dropSales');
-    
+
     cy.get('@dragMarketing').trigger('dragstart', { dataTransfer: new DataTransfer() });
     cy.get('@dropSales').trigger('dragover');
     cy.get('@dropSales').trigger('drop');
@@ -546,13 +347,13 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Verify success message
     cy.contains(/team.*successfully.*moved|successfully.*moved/i, { timeout: 5000 }).should('be.visible');
-    
+
     // Verify Marketing Team is under Sales Team
     cy.contains('.acm-structure-label', updatedTeamName)
       .closest('.acm-tree__item')
       .find('.acm-tree__group')
       .should('contain', marketingTeam);
-    
+
     cy.logToTerminal('✅ Team hierarchy reorganized via drag & drop');
 
     // ========== TC-32 (Part 3): Test Collapse/Expand All ==========
@@ -584,7 +385,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.logToTerminal('========= 🚀 JOURNEY 2: Invitation Flow & Cleanup =========');
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
     cy.wait(2000);
 
     // ========== TC-34: Add user with registered email (invitation) ==========
@@ -601,20 +402,20 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     const registeredUserLastName = 'Invitee';
     let registeredUserId;
     let testCompanyId;
-    
+
     cy.then(async () => {
       cy.logToTerminal('👤 Creating pre-registered customer...');
-      
+
       const customerData = await createStandaloneCustomer({
         firstname: registeredUserFirstName,
         lastname: registeredUserLastName,
         email: registeredUserEmail,
         password: 'Test123!',
       });
-      
+
       registeredUserId = customerData.id;
-      testCompanyId = Cypress.env('testCompanyId');
-      
+      testCompanyId = Cypress.env('testCompany').id;
+
       cy.logToTerminal(`✅ Pre-registered customer created: ${registeredUserEmail} (ID: ${registeredUserId})`);
       Cypress.env('registeredUserEmail', registeredUserEmail);
       Cypress.env('registeredUserId', registeredUserId);
@@ -622,7 +423,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Login as company admin
     cy.then(() => {
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
     });
     cy.wait(3000);
 
@@ -658,7 +459,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // WORKAROUND: Accept invitation via REST API
     cy.then(async () => {
       cy.logToTerminal('🔗 Simulating invitation acceptance via REST API (WORKAROUND)...');
-      
+
       await acceptCompanyInvitation(
         registeredUserId,
         testCompanyId,
@@ -668,9 +469,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
           lastname: registeredUserLastName,
         },
         'Invited Member',
-        '555-1234'
+        '555-1234',
       );
-      
+
       cy.logToTerminal('✅ Invitation accepted via REST API');
     });
 
@@ -685,13 +486,14 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // ========== TC-38: Remove user from Structure ==========
     cy.logToTerminal('--- STEP 2: TC-38 - Remove user from structure ---');
 
-    // Select regular user (from setup)
-    const regularUserFirstName = companyUsers.regularUser.firstname;
-    const regularUserLastName = companyUsers.regularUser.lastname;
-    const regularUserEmail = Cypress.env('regularUserEmail');
-    
-    cy.contains(`${regularUserFirstName} ${regularUserLastName}`, { timeout: 10000 }).click();
-    cy.wait(500);
+    cy.then(() => {
+      // Select regular user (from setup)
+      const regularUserFirstName = companyUsers.regularUser.firstname;
+      const regularUserLastName = companyUsers.regularUser.lastname;
+      const regularUserEmail = Cypress.env('testUsers').regular.email;
+
+      cy.contains(`${regularUserFirstName} ${regularUserLastName}`, { timeout: 10000 }).click();
+      cy.wait(500);
 
     // Click Remove
     cy.contains('button', 'Remove').should('not.be.disabled').click();
@@ -702,7 +504,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.wait(200);
 
     // Confirm removal
-    cy.get('.dropin-modal button').then($buttons => {
+    cy.get('.dropin-modal button').then(($buttons) => {
       const removeBtn = $buttons.filter((i, el) => Cypress.$(el).text().includes('Remove'));
       cy.wrap(removeBtn.first()).click();
     });
@@ -711,21 +513,18 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // Verify success message
     cy.contains(/removed|inactive/i, { timeout: 5000 }).should('be.visible');
 
-    // Verify user removed from tree
-    cy.contains(`${regularUserFirstName} ${regularUserLastName}`).should('not.exist');
-    cy.logToTerminal('✅ User removed from structure');
+      // Verify user removed from tree
+      cy.contains(`${regularUserFirstName} ${regularUserLastName}`).should('not.exist');
+      cy.logToTerminal('✅ User removed from structure');
 
-    // Navigate to Company Users to verify status is Inactive
-    cy.visit('/customer/company/users');
-    cy.wait(3000);
+      // Navigate to Company Users to verify status is Inactive
+      cy.visit('/customer/company/users');
+      cy.wait(3000);
 
-    // Use retry helper to find user and verify Inactive status (USF-3516)
-    cy.then(() => {
-      const regularUserEmail = Cypress.env('regularUserEmail');
-      checkForUser(regularUserEmail, 'Inactive');
+      // Use retry helper to find user and verify Inactive status (USF-3516)
+      cy.checkForUser(regularUserEmail, 'Inactive');
+      cy.logToTerminal('✅ TC-38: User status is Inactive in Company Users grid');
     });
-    
-    cy.logToTerminal('✅ TC-38: User status is Inactive in Company Users grid');
 
     // ========== TC-39 (Part 4): Delete team ==========
     cy.logToTerminal('--- STEP 3: TC-39 (Part 4) - Delete team ---');
@@ -735,8 +534,8 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.wait(3000);
 
     // Create a team to delete
-    const adminFirstName = baseCompanyData.adminFirstName;
-    const adminLastName = baseCompanyData.adminLastName;
+    const { adminFirstName } = baseCompanyData;
+    const { adminLastName } = baseCompanyData;
 
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
     cy.wait(500);
@@ -748,7 +547,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.contains('button', 'Save').click();
     cy.wait(2000);
     cy.contains(teamToDelete, { timeout: 10000 }).should('be.visible');
-    
+
     // Select the team
     cy.contains(teamToDelete).click();
     cy.wait(500);
@@ -762,7 +561,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.wait(200);
 
     // Confirm deletion
-    cy.get('.dropin-modal button').then($buttons => {
+    cy.get('.dropin-modal button').then(($buttons) => {
       const deleteBtn = $buttons.filter((i, el) => Cypress.$(el).text().includes('Delete'));
       cy.wrap(deleteBtn.first()).click();
     });
@@ -791,26 +590,26 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.logToTerminal('========= 🚀 JOURNEY 3: View-Only Access =========');
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
     cy.wait(2000);
 
     // ========== LOGIN: As regular user ==========
-    loginAsRegularUser();
+    cy.loginAsRegularUser();
     cy.wait(3000);
-    
+
     // ========== TC-35: Default User view-only access ==========
     cy.logToTerminal('--- TC-35: Verify view-only access ---');
 
     // Navigate to Company Structure
     cy.visit('/customer/company/structure');
     cy.wait(3000);
-    
+
     // Verify page title
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');
 
     // Verify structure tree is visible (can view)
-    const adminFirstName = baseCompanyData.adminFirstName;
-    const adminLastName = baseCompanyData.adminLastName;
+    const { adminFirstName } = baseCompanyData;
+    const { adminLastName } = baseCompanyData;
     cy.contains(`${adminFirstName} ${adminLastName}`, { timeout: 10000 }).should('be.visible');
 
     // Verify Expand/Collapse controls are available

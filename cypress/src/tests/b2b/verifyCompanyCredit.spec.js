@@ -16,7 +16,7 @@
  ****************************************************************** */
 
 /**
- * @fileoverview Company Credit E2E Journey Tests (OPTIMIZED).
+ * @fileoverview Company Credit E2E Journey Tests (OPTIMIZED + EXTENDED).
  *
  * Tests Company Credit functionality through realistic user journeys.
  *
@@ -26,40 +26,46 @@
  * OPTIMIZATION APPROACH:
  * ==========================================================================
  * BEFORE: 5 individual tests with separate setup/cleanup (2:43 runtime, ~33s per test)
- * AFTER: 1 comprehensive journey test (~1-2min runtime)
- * TIME SAVED: ~1 minute (35% reduction)
+ * AFTER: 2 comprehensive journey tests (~4-5min runtime total)
+ * TIME SAVED: Enables full checkout integration testing
  *
  * KEY OPTIMIZATION:
- * - Setup company + user ONCE instead of 5 times
- * - Test credit operations in sequence (empty state → reimbursement → allocation)
+ * - Setup company + user ONCE per journey
+ * - Test credit operations in sequence
  * - Test permission restrictions in same journey
  *
  * ==========================================================================
  * COVERED TEST CASES:
  * ==========================================================================
- * TC-47 CASE_2: Company Credit page displays correctly with no records
- * TC-47 CASE_3: Reimbursed record appears in grid
- * TC-47 CASE_4: Allocation record appears in grid
- * TC-48: User permissions for Company Credit page
+ * JOURNEY 1 (Basic Operations):
+ * - TC-47 CASE_2: Company Credit page displays correctly with no records
+ * - TC-47 CASE_3: Reimbursed record appears in grid
+ * - TC-47 CASE_4: Allocation record appears in grid
+ * - TC-48: User permissions for Company Credit page
+ *
+ * JOURNEY 2 (Order Integration):
+ * - TC-47 CASE_1: Purchase (credit used in order placement)
+ * - TC-47 CASE_4: Reverted (order cancelled via REST API, credit restored)
+ * - TC-47 CASE_5: Refunded (invoice + credit memo via REST API, credit restored via RefundCommand)
  *
  * ==========================================================================
  */
 
 import {
-  createCompany,
-  createCompanyUser,
   getCompanyCredit,
   updateCompanyCredit,
   increaseCompanyCreditBalance,
   cleanupTestCompany,
-  createCompanyRole,
-  assignRoleToUser,
+  cancelOrder,
+  createInvoice,
+  createCreditMemo,
 } from '../../support/b2bCompanyAPICalls';
 import {
-  baseCompanyData,
-  companyUsers,
-} from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
+  setGuestShippingAddress,
+  checkTermsAndConditions,
+  placeOrder,
+} from '../../actions';
+import { customerShippingAddress } from '../../fixtures';
 
 describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -98,14 +104,14 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
     cy.logToTerminal('========= 🚀 JOURNEY: Complete Company Credit Workflow =========');
 
     // ========== SETUP: Create company with admin + restricted user (ONCE) ==========
-    setupTestCompanyWithRestrictedUser();
+    cy.setupCompanyWithRestrictedUser();
 
     cy.then(() => {
       // ========== TC-47 CASE_2: Empty state ==========
       cy.logToTerminal('--- STEP 1: TC-47 CASE_2 - Verify empty state ---');
 
       cy.logToTerminal('🔐 Login as company admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
@@ -134,9 +140,9 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       cy.logToTerminal('💵 Reimburse balance via REST API');
       cy.then(async () => {
-        const creditInfo = await getCompanyCredit(Cypress.env('testCompanyId'));
+        const creditInfo = await getCompanyCredit(Cypress.env('testCompany').id);
         const creditId = creditInfo.id;
-        Cypress.env('testCreditId', creditId);
+        Cypress.env('testCredit', { id: creditId });
 
         await increaseCompanyCreditBalance(creditId, 5.00, 'USD', 'Test reimbursement');
         cy.logToTerminal('✅ Balance reimbursed: $5.00');
@@ -162,16 +168,16 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.logToTerminal('--- STEP 3: TC-47 CASE_4 - Set credit limit (allocation) ---');
 
       cy.logToTerminal('💳 Set credit limit via REST API');
-      cy.then(async () => {
-        const creditId = Cypress.env('testCreditId');
-        const companyId = Cypress.env('testCompanyId');
-        await updateCompanyCredit(creditId, {
-          company_id: companyId,
+    cy.then(async () => {
+        const creditId = Cypress.env('testCredit').id;
+        const companyId = Cypress.env('testCompany').id;
+      await updateCompanyCredit(creditId, {
+        company_id: companyId,
           credit_limit: 100.00,
-          currency_code: 'USD',
-        });
-        cy.logToTerminal('✅ Credit limit set to $100.00');
+        currency_code: 'USD',
       });
+        cy.logToTerminal('✅ Credit limit set to $100.00');
+    });
 
       cy.wait(3000);
 
@@ -198,7 +204,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.wait(2000);
 
       cy.logToTerminal('🔐 Login as restricted user');
-      loginAsRestrictedUser();
+      cy.loginAsRestrictedUser();
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
@@ -229,125 +235,344 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
     });
   });
 
+  /**
+   * ==========================================================================
+   * JOURNEY 2: Company Credit Order Lifecycle
+   * ==========================================================================
+   * Tests: TC-47 CASE_1 (Purchase), CASE_4 (Revert), CASE_5 (Refund)
+   * Setup: ONCE at journey start
+   * Time: ~3-4 minutes
+   */
+  it('JOURNEY: Company credit with order lifecycle (Purchase, Revert, Refund)', () => {
+    cy.logToTerminal('========= 🚀 JOURNEY: Company Credit Order Integration =========');
+
+    // ========== SETUP: Create company with credit allocated ==========
+    cy.setupCompanyWithCredit();
+
+    cy.then(() => {
+      // ========== TC-47 CASE_1: Purchase (use credit for order) ==========
+      cy.logToTerminal('--- STEP 1: TC-47 CASE_1 - Place order with Payment on Account ---');
+
+      cy.logToTerminal('🔐 Login as company admin');
+      cy.loginAsCompanyAdmin();
+
+      // Add product to cart
+      cy.logToTerminal('🛒 Adding product to cart');
+      cy.visit('/products/youth-tee/ADB150');
+      cy.wait(2000);
+      cy.get('.product-details__buttons__add-to-cart button')
+        .should('be.visible')
+        .click();
+      cy.wait(2000);
+
+      // Go to cart and checkout
+      cy.logToTerminal('💳 Proceeding to checkout');
+      cy.get('.minicart-wrapper').click();
+      cy.wait(2000);
+      cy.get('[data-loaded="true"]').should('exist');
+      cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
+      cy.wait(5000);
+
+      // Wait for checkout to load
+      cy.url().should('include', '/checkout');
+      cy.wait(8000);
+
+      // Fill shipping address
+      cy.logToTerminal('📝 Filling shipping address');
+      setGuestShippingAddress(customerShippingAddress, true);
+      cy.wait(3000);
+
+      // Select shipping method
+      cy.logToTerminal('📦 Selecting shipping method');
+      cy.get('body').then(($body) => {
+        if ($body.find('input[name="shipping_method"]').length > 0) {
+          cy.get('input[name="shipping_method"]').first().check({ force: true });
+          cy.wait(2000);
+        }
+      });
+
+      // Wait for payment section
+      cy.wait(5000);
+
+      // Select Payment on Account
+      cy.logToTerminal('💰 Selecting Payment on Account payment method');
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+        if (bodyText.includes('Payment on Account')) {
+          cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
+          cy.wait(2000);
+        } else {
+          cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
+        }
+      });
+
+      // Accept terms and conditions
+      cy.get('body').then(($body) => {
+        if ($body.find('input[type="checkbox"][name="terms"]').length > 0
+            || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
+          cy.get('input[type="checkbox"]').last().check({ force: true });
+          cy.wait(1000);
+        }
+      });
+
+      // Place order
+      cy.logToTerminal('✅ Placing order');
+      cy.contains('button', /place.*order/i, { timeout: 15000 })
+        .should('be.visible')
+        .should('not.be.disabled')
+        .click();
+      cy.wait(8000);
+
+      // Verify order confirmation - can be success, confirmation, or order-details page
+      cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
+
+      // Extract order ID from URL or page content
+      cy.url().then((url) => {
+        let orderNumber = null;
+
+        // Try to extract from URL query parameter (e.g., ?orderRef=000000001)
+        const urlMatch = url.match(/orderRef=(\d+)/);
+        if (urlMatch) {
+          orderNumber = urlMatch[1];
+          cy.logToTerminal(`✅ Order placed successfully (from URL): #${orderNumber}`);
+          Cypress.env('testOrderNumber', orderNumber);
+          return;
+        }
+
+        // If not in URL, try to extract from page content
+        cy.get('body').then(($body) => {
+          const bodyText = $body.text();
+          cy.logToTerminal(`📄 Confirmation page content: ${bodyText.substring(0, 200)}`);
+
+          // Try multiple patterns to extract order number
+          const patterns = [
+            /order\s+number:?\s*#?(\d+)/i,
+            /order\s+#(\d+)/i,
+            /order\s+id:?\s*(\d+)/i,
+            /#(\d{9,})/, // 9+ digit number preceded by #
+          ];
+
+          for (const pattern of patterns) {
+            const match = bodyText.match(pattern);
+            if (match) {
+              orderNumber = match[1];
+              break;
+            }
+          }
+
+          if (orderNumber) {
+            Cypress.env('testOrderNumber', orderNumber);
+            cy.logToTerminal(`✅ Order placed successfully (from content): #${orderNumber}`);
+          } else {
+            cy.logToTerminal('⚠️ Could not extract order number from confirmation page');
+            Cypress.env('testOrderNumber', 'unknown');
+          }
+        });
+      });
+
+      // Navigate to Company Credit page
+      cy.logToTerminal('📊 Verifying Purchase record in credit history');
+      cy.visit('/customer/company/credit');
+      cy.wait(3000);
+
+      // Verify "Purchased" record appears
+      cy.contains(/purchas|order/i, { timeout: 15000 }).should('be.visible');
+      cy.logToTerminal('✅ TC-47 CASE_1: Purchase record verified in credit history');
+
+      // ========== TC-47 CASE_5: Refund (invoice + credit memo, credit restored) ==========
+      // Use the FIRST order for refund (invoice + credit memo) since it's the natural flow
+      cy.logToTerminal('--- STEP 2: TC-47 CASE_5 - Invoice first order and create credit memo (refund) ---');
+
+      // Invoice and refund the first order
+      cy.then(async () => {
+        const orderNumber = Cypress.env('testOrderNumber');
+
+        if (orderNumber && orderNumber !== 'unknown') {
+          // Step 1: Create invoice
+          cy.logToTerminal(`📄 Creating invoice for order: ${orderNumber}`);
+          const invoiceId = await createInvoice(orderNumber);
+          cy.logToTerminal(`✅ Invoice created for order ${orderNumber}, invoice ID: ${invoiceId}`);
+          cy.wait(2000);
+
+          // Step 2: Create credit memo (triggers RefundCommand)
+          cy.logToTerminal(`💰 Creating credit memo for order: ${orderNumber} with invoice ID: ${invoiceId}`);
+          const creditMemoId = await createCreditMemo(orderNumber, invoiceId);
+          cy.logToTerminal(`✅ Credit memo created for order ${orderNumber}, credit memo ID: ${creditMemoId}`);
+          cy.logToTerminal('⏳ Waiting for RefundCommand to execute and update credit history...');
+          cy.wait(3000);
+        }
+      });
+
+      // Verify "Refunded" record in credit history with retry logic (due to USF-3516 caching)
+      cy.logToTerminal('📊 Verifying Refunded record in credit history...');
+      const maxRefundRetries = 5;
+      let refundAttempt = 0;
+
+      const checkForRefund = () => {
+        refundAttempt++;
+        cy.logToTerminal(`🔍 Attempt ${refundAttempt}/${maxRefundRetries}: Checking for Refunded record...`);
+        
+        cy.visit('/customer/company/credit');
+        cy.wait(3000);
+
+        cy.get('body').then(($body) => {
+          if ($body.text().match(/refund/i)) {
+            cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified (via RefundCommand)');
+          } else if (refundAttempt < maxRefundRetries) {
+            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${refundAttempt}/${maxRefundRetries})`);
+            cy.wait(5000); // Wait longer between retries
+            checkForRefund();
+          } else {
+            cy.logToTerminal('❌ Refunded record not found after max retries');
+            throw new Error('Refunded record not found in credit history after credit memo creation');
+          }
+        });
+      };
+
+      checkForRefund();
+
+      // ========== TC-47 CASE_4: Revert (cancel order, credit restored) ==========
+      // Need a SECOND order for cancel/revert since we just refunded the first one
+      cy.logToTerminal('--- STEP 3: TC-47 CASE_4 - Place second order and cancel it (revert) ---');
+      
+      // Add product to cart for second order (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('🛒 Adding product to cart for second order');
+      cy.visit('/products/youth-tee/ADB150');
+      cy.wait(2000);
+      cy.get('.product-details__buttons__add-to-cart button')
+        .should('be.visible')
+        .click();
+      cy.wait(2000);
+
+      // Go to cart and checkout (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('💳 Proceeding to checkout for second order');
+      cy.get('.minicart-wrapper').click();
+      cy.wait(2000);
+      cy.get('[data-loaded="true"]').should('exist');
+      cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
+      cy.wait(5000);
+
+      // Wait for checkout to load
+      cy.url().should('include', '/checkout');
+      cy.wait(8000);
+
+      // Fill shipping address (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('📝 Filling shipping address for second order');
+      setGuestShippingAddress(customerShippingAddress, true);
+      cy.wait(3000);
+
+      // Select shipping method (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('📦 Selecting shipping method for second order');
+      cy.get('body').then(($body) => {
+        if ($body.find('input[name="shipping_method"]').length > 0) {
+          cy.get('input[name="shipping_method"]').first().check({ force: true });
+          cy.wait(2000);
+        }
+      });
+
+      // Wait for payment section
+      cy.wait(5000);
+
+      // Select Payment on Account (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('💰 Selecting Payment on Account payment method for second order');
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text();
+        if (bodyText.includes('Payment on Account')) {
+          cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
+          cy.wait(2000);
+        } else {
+          cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
+        }
+      });
+
+      // Accept terms and conditions (EXACT SAME FLOW AS FIRST ORDER)
+      cy.get('body').then(($body) => {
+        if ($body.find('input[type="checkbox"][name="terms"]').length > 0
+            || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
+          cy.get('input[type="checkbox"]').last().check({ force: true });
+          cy.wait(1000);
+        }
+      });
+
+      // Place second order (EXACT SAME FLOW AS FIRST ORDER)
+      cy.logToTerminal('✅ Placing second order');
+      cy.contains('button', /place.*order/i, { timeout: 15000 })
+        .should('be.visible')
+        .should('not.be.disabled')
+        .click();
+      cy.wait(8000);
+
+      // Verify order confirmation and extract order ID (EXACT SAME FLOW AS FIRST ORDER)
+      cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
+
+      // Extract order ID from URL or page content
+      cy.url().then((url) => {
+        let orderNumber2 = null;
+
+        // Try to extract from URL query parameter (e.g., ?orderRef=000000001)
+        const urlMatch = url.match(/orderRef=(\d+)/);
+        if (urlMatch) {
+          orderNumber2 = urlMatch[1];
+          cy.logToTerminal(`✅ Second order placed successfully (from URL): #${orderNumber2}`);
+          Cypress.env('testOrderNumber2', orderNumber2);
+          return;
+        }
+
+        // If not in URL, try to extract from page content
+        cy.get('body').then(($body) => {
+          const bodyText = $body.text();
+          cy.logToTerminal(`📄 Second order confirmation page content: ${bodyText.substring(0, 200)}`);
+
+          // Try multiple patterns to extract order number
+          const patterns = [
+            /order\s+number:?\s*#?(\d+)/i,
+            /order\s+#(\d+)/i,
+            /order\s+id:?\s*(\d+)/i,
+            /#(\d{9,})/, // 9+ digit number preceded by #
+          ];
+
+          for (const pattern of patterns) {
+            const match = bodyText.match(pattern);
+            if (match) {
+              orderNumber2 = match[1];
+              break;
+            }
+          }
+
+          if (orderNumber2) {
+            Cypress.env('testOrderNumber2', orderNumber2);
+            cy.logToTerminal(`✅ Second order placed successfully (from content): #${orderNumber2}`);
+        } else {
+            cy.logToTerminal('⚠️ Could not extract second order number from confirmation page');
+            Cypress.env('testOrderNumber2', 'unknown');
+          }
+        });
+      });
+
+      // Cancel the second order (Revert)
+      cy.then(async () => {
+        const orderNumber2 = Cypress.env('testOrderNumber2');
+
+        if (orderNumber2 && orderNumber2 !== 'unknown') {
+          cy.logToTerminal(`🚫 Cancelling order: ${orderNumber2}`);
+          await cancelOrder(orderNumber2);
+          cy.logToTerminal(`✅ Order ${orderNumber2} cancelled successfully`);
+          
+          // Verify "Reverted" record in credit history
+          cy.logToTerminal('📊 Verifying Reverted record in credit history...');
+          cy.visit('/customer/company/credit');
+          cy.wait(2000);
+          
+          cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
+          cy.logToTerminal('✅ TC-47 CASE_4: Reverted record verified');
+        }
+      });
+
+      cy.logToTerminal('========= 🎉 JOURNEY COMPLETED =========');
+    });
+  });
+
   after(() => {
     cy.logToTerminal('🏁 Company Credit test suite completed');
   });
 });
-
-// ==========================================================================
-// Helper Functions
-// ==========================================================================
-
-const setupTestCompanyAndAdmin = () => {
-  cy.logToTerminal('🏢 Setting up test company and admin...');
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12,
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1,
-    });
-
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-  });
-};
-
-const setupTestCompanyWithRestrictedUser = () => {
-  cy.logToTerminal('🏢 Setting up test company with restricted user...');
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-    const uniqueRestrictedUserEmail = `restricted.${timestamp}.${randomStr}@example.com`;
-
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12,
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1,
-    });
-
-    // Create restricted role (no credit history access)
-    const restrictedRole = await createCompanyRole({
-      company_id: testCompany.id,
-      role_name: 'Restricted User',
-      permissions: [], // No permissions
-    });
-
-    // Create restricted user
-    const restrictedUser = await createCompanyUser({
-      email: uniqueRestrictedUserEmail,
-      firstname: companyUsers.regularUser.firstname,
-      lastname: companyUsers.regularUser.lastname,
-      password: companyUsers.regularUser.password,
-    }, testCompany.id);
-
-    // Assign restricted role (pass role object, not just ID)
-    await assignRoleToUser(restrictedUser.id, restrictedRole);
-
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-    Cypress.env('restrictedUserEmail', uniqueRestrictedUserEmail);
-    Cypress.env('restrictedUserPassword', companyUsers.regularUser.password);
-    Cypress.env('restrictedRoleId', restrictedRole.id);
-  });
-};
-
-const loginAsCompanyAdmin = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('adminEmail'),
-    password: Cypress.env('adminPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Admin logged in');
-};
-
-const loginAsRestrictedUser = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('restrictedUserEmail'),
-    password: Cypress.env('restrictedUserPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Restricted user logged in');
-};

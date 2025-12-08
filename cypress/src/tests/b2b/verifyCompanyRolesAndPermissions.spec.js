@@ -50,16 +50,8 @@
  */
 
 import {
-  createCompany,
-  createCompanyUser,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
-import {
-  baseCompanyData,
-  companyUsers,
-  roleData,
-} from '../../fixtures/companyManagementData';
-import { login } from '../../actions';
 
 describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -98,12 +90,12 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
     cy.logToTerminal('========= 🚀 JOURNEY 1: Role Management Lifecycle =========');
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
 
     cy.then(() => {
       // ========== LOGIN: As admin ==========
       cy.logToTerminal('🔐 Login as company admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       // ========== NAVIGATE: To Roles page ==========
       cy.logToTerminal('📍 Navigate to Roles and Permissions page');
@@ -345,7 +337,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
     cy.logToTerminal('========= 🚀 JOURNEY 2: Permission Impact on UI Access =========');
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
-    setupTestCompanyWithRegularUser();
+    cy.setupCompanyWithRegularUser();
 
     cy.then(() => {
       // ========== TC-28 (Part 1): Remove "Company Profile View" permission ==========
@@ -353,7 +345,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Login as admin
       cy.logToTerminal('🔐 Login as admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       // Navigate to Roles page
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
@@ -403,7 +395,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       cy.wait(2000);
 
       cy.logToTerminal('🔐 Login as regular user (who has Default User role)');
-      loginAsRegularUser();
+      cy.loginAsRegularUser();
 
       cy.logToTerminal('📍 Try to access My Company page');
       cy.visit('/customer/company');
@@ -433,7 +425,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Login as admin
       cy.logToTerminal('🔐 Login as admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       // Navigate to Roles page
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
@@ -484,7 +476,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Login as regular user
       cy.logToTerminal('🔐 Login as regular user (now has edit permission)');
-      loginAsRegularUser();
+      cy.loginAsRegularUser();
 
       cy.logToTerminal('📍 Navigate to My Company page');
       cy.visit('/customer/company');
@@ -542,7 +534,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Login as admin
       cy.logToTerminal('🔐 Login as admin');
-      loginAsCompanyAdmin();
+      cy.loginAsCompanyAdmin();
 
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
       cy.visit('/customer/company/roles');
@@ -584,7 +576,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Login as regular user
       cy.logToTerminal('🔐 Login as regular user (now has manage roles permission)');
-      loginAsRegularUser();
+      cy.loginAsRegularUser();
 
       cy.logToTerminal('📍 Navigate to Roles and Permissions page');
       cy.visit('/customer/company/roles');
@@ -615,139 +607,3 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
     cy.logToTerminal('🏁 Roles and Permissions test suite completed');
   });
 });
-
-// ==========================================================================
-// Helper Functions
-// ==========================================================================
-
-/**
- * Setup test company and admin via REST API.
- * Stores company/admin info in Cypress.env for cleanup.
- */
-const setupTestCompanyAndAdmin = () => {
-  cy.logToTerminal('🏢 Setting up test company and admin...');
-
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-
-    cy.logToTerminal('📝 Creating test company via REST API...');
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12, // California region ID
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1, // Active
-    });
-
-    cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-    // Store for cleanup
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-
-    cy.logToTerminal(`✅ Admin: ${testCompany.company_admin.email}`);
-  });
-};
-
-/**
- * Setup test company with both admin and regular user.
- * Stores all info in Cypress.env for cleanup.
- */
-const setupTestCompanyWithRegularUser = () => {
-  cy.logToTerminal('🏢 Setting up test company with regular user...');
-
-  cy.then(async () => {
-    const timestamp = Date.now();
-    const randomStr = Math.random().toString(36).substring(7);
-    const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
-    const uniqueAdminEmail = `admin.${timestamp}.${randomStr}@example.com`;
-    const uniqueRegularUserEmail = `regular.${timestamp}.${randomStr}@example.com`;
-
-    cy.logToTerminal('📝 Creating test company via REST API...');
-    const testCompany = await createCompany({
-      companyName: `${baseCompanyData.companyName} ${timestamp}`,
-      companyEmail: uniqueCompanyEmail,
-      legalName: baseCompanyData.legalName,
-      vatTaxId: baseCompanyData.vatTaxId,
-      resellerId: baseCompanyData.resellerId,
-      street: baseCompanyData.street,
-      city: baseCompanyData.city,
-      countryCode: baseCompanyData.countryCode,
-      regionId: 12, // California region ID
-      postcode: baseCompanyData.postcode,
-      telephone: baseCompanyData.telephone,
-      adminFirstName: baseCompanyData.adminFirstName,
-      adminLastName: baseCompanyData.adminLastName,
-      adminEmail: uniqueAdminEmail,
-      adminPassword: 'Test123!',
-      status: 1, // Active
-    });
-
-    cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
-
-    cy.logToTerminal('👤 Creating regular company user...');
-    const regularUser = await createCompanyUser({
-      email: uniqueRegularUserEmail,
-      firstname: companyUsers.regularUser.firstname,
-      lastname: companyUsers.regularUser.lastname,
-      password: companyUsers.regularUser.password,
-    }, testCompany.id);
-
-    cy.logToTerminal(`✅ Regular user created: ${regularUser.email || uniqueRegularUserEmail} (ID: ${regularUser.id})`);
-
-    // Store for cleanup
-    Cypress.env('currentTestCompanyEmail', uniqueCompanyEmail);
-    Cypress.env('currentTestAdminEmail', uniqueAdminEmail);
-    Cypress.env('testCompanyId', testCompany.id);
-    Cypress.env('testCompanyName', testCompany.name);
-    Cypress.env('adminEmail', testCompany.company_admin.email);
-    Cypress.env('adminPassword', testCompany.company_admin.password);
-    Cypress.env('regularUserEmail', uniqueRegularUserEmail);
-    Cypress.env('regularUserPassword', companyUsers.regularUser.password);
-    Cypress.env('regularUserId', regularUser.id);
-  });
-};
-
-/**
- * Login as company admin using stored credentials.
- */
-const loginAsCompanyAdmin = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('adminEmail'),
-    password: Cypress.env('adminPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Admin logged in');
-};
-
-/**
- * Login as regular company user using stored credentials.
- */
-const loginAsRegularUser = () => {
-  const urls = Cypress.env('poUrls');
-  const user = {
-    email: Cypress.env('regularUserEmail'),
-    password: Cypress.env('regularUserPassword'),
-  };
-  login(user, urls);
-  cy.logToTerminal('✅ Regular user logged in');
-};
