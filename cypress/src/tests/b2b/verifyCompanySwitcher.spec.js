@@ -163,7 +163,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const sharedUser = await createStandaloneCustomer({
         firstname: 'Shared',
         lastname: 'User',
-        email: `shared-user-${timestamp}@example.com`,
+        email: `shared-user-${timestamp}.${randomStr}@example.com`,
         password: 'Test123!',
       });
 

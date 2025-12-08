@@ -169,8 +169,9 @@ Cypress.Commands.add('setupCompanyWithRestrictedUser', () => {
     const {
       createCompany, createCompanyUser, createCompanyRole, assignRoleToUser,
     } = await import('./b2bCompanyAPICalls.js');
-    const baseCompanyData = await import('../fixtures/companyManagementData.js').then((m) => m.default);
-    const companyUsers = await import('../fixtures/companyManagementData.js').then((m) => m.companyUsers);
+    const fixturesModule = await import('../fixtures/companyManagementData.js');
+    const baseCompanyData = fixturesModule.baseCompanyData;
+    const companyUsers = fixturesModule.companyUsers;
 
     cy.logToTerminal('🏢 Setting up test company with restricted user...');
     const timestamp = Date.now();
