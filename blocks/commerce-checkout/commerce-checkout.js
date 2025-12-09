@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
@@ -197,7 +198,7 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    renderBillToShippingAddress($billToShipping, placeOrder),
+    renderBillToShippingAddress($billToShipping),
 
     renderShippingMethods($delivery),
 
@@ -250,13 +251,13 @@ export default async function decorate(block) {
     } else if (!shippingForm) {
       shippingFormSkeleton.remove();
 
-      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, placeOrder, 'shipping');
+      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, 'shipping');
     }
 
     if (!billingForm) {
       billingFormSkeleton.remove();
 
-      billingForm = await renderAddressForm($billingForm, billingFormRef, data, placeOrder, 'billing');
+      billingForm = await renderAddressForm($billingForm, billingFormRef, data, 'billing');
     }
   }
 
@@ -274,7 +275,6 @@ export default async function decorate(block) {
         $shippingForm,
         shippingFormRef,
         data,
-        placeOrder,
       );
     }
 
@@ -287,7 +287,6 @@ export default async function decorate(block) {
         $billingForm,
         billingFormRef,
         data,
-        placeOrder,
       );
     }
   }
@@ -311,8 +310,7 @@ export default async function decorate(block) {
 
   function handleAuthenticated(authenticated) {
     if (!authenticated) return;
-    removeModal();
-    displayOverlaySpinner(loaderRef, $loader);
+    window.location.reload();
   }
 
   function handleCheckoutValues(payload) {

@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,12 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './transform-auth';
-export * from './transform-store-config';
-export * from './transform-password-reset-email';
-export * from './transform-revoke-customer-token';
-export * from './transform-customer-data';
-export * from './transform-attributes-form';
-export * from './transform-create-customer';
-export * from './transform-adobe-commerce-optimizer';
-//# sourceMappingURL=index.d.ts.map
+export declare const isSetAddressRequestPending: import('@preact/signals-core').Signal<boolean>;
+//# sourceMappingURL=ui.d.ts.map
