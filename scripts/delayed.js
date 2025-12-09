@@ -33,7 +33,7 @@ async function initAnalytics() {
         {
           eventForwardingContext: {
             commerce: true,
-            aep: analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id'],
+            aep: !!(analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id']),
           },
         },
         {
