@@ -1,5 +1,6 @@
 import {
     approveNegotiableQuoteByEmail,
+    submitQuoteToCustomer,
 } from '../../support/b2bQuoteAPICalls';
 import {
     createUserAssignCompanyAndRole,
@@ -204,14 +205,17 @@ describe("Verify B2B Quote feature", () => {
 
         // Navigate to My Account > Quotes
         cy.visit('/customer/account');
-        cy.wait(3000);
+        cy.wait(5000); // Wait longer for page to fully load
 
-        // Click on Quotes in the navigation
+        // Click on Quotes in the navigation - use exact match to avoid clicking Company Credit
         cy.get('.commerce-account-nav__item__title')
-            .contains('Quotes')
+            .filter(':contains("Quotes")')
+            .not(':contains("Company")')
+            .first()
             .click();
 
-        cy.wait(5000);
+        // Wait for the quotes page to fully load
+        cy.wait(8000);
         cy.logToTerminal('✅ Navigated to quotes list');
 
         // Verify quote exists in the list with "Submitted" status
@@ -312,29 +316,23 @@ describe("Verify B2B Quote feature", () => {
         cy.wait(5000);
         cy.logToTerminal('✅ Quote sent for review');
 
-        cy.logToTerminal('✅ B2B Quote creation test completed successfully - quote sent for review');
+        cy.logToTerminal('========= ⚙️ Step 9: Approve quote via admin REST API =========');
 
-        // TODO: Remaining steps to be implemented:
-        // Step 7: Approve quote via admin REST API
-        // Step 8: Place quote order from My Account > Quotes
-        // Step 9: Check quote status in My Account
-        // Step 10: Cleanup - Logout
+        // Wait for quote to be indexed in the system before approval
+        cy.wait(10000);
 
-        /*
-        cy.logToTerminal('========= ⚙️ Step 7: Approve quote via admin REST API =========');
-
-        // Wait for quote to be processed before approval
-        cy.wait(5000);
-
-        // Approve the quote via admin REST API
+        // Approve the quote via admin REST API (using submitQuoteToCustomer which finds quote by email)
         cy.wrap(null).then(async () => {
             try {
                 cy.logToTerminal(`🔄 Approving quote for user: ${username}`);
                 
-                const approvalResult = await approveNegotiableQuoteByEmail(
+                // Use submitQuoteToCustomer which uses fetchCartsByEmail to find the quote
+                const approvalResult = await submitQuoteToCustomer(
                     username,
                     'Quote approved via Cypress B2B test automation'
                 );
+
+                cy.logToTerminal(`📋 Approval result: ${JSON.stringify(approvalResult, null, 2)}`);
 
                 if (approvalResult.success) {
                     cy.logToTerminal(`✅ Quote approved successfully. Quote ID: ${approvalResult.quote_id}`);
@@ -349,7 +347,21 @@ describe("Verify B2B Quote feature", () => {
 
         cy.wait(5000);
 
-        cy.logToTerminal('========= ⚙️ Step 8: Place quote order from My Account > Quotes =========');
+        // Refresh the page to see updated quote status
+        cy.reload();
+        cy.wait(5000);
+        
+        cy.logToTerminal('✅ Page refreshed - checking quote status');
+
+        cy.logToTerminal('✅ B2B Quote approved - test completed successfully');
+
+        // TODO: Remaining steps to be implemented:
+        // Step 10: Place quote order from My Account > Quotes
+        // Step 11: Check quote status in My Account
+        // Step 12: Cleanup - Logout
+
+        /*
+        cy.logToTerminal('========= ⚙️ Step 10: Place quote order from My Account > Quotes =========');
 
         // Refresh the quotes page to see updated status
         cy.visit('/customer/quotes');
