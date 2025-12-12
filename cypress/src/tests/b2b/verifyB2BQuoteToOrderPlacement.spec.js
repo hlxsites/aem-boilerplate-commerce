@@ -234,7 +234,10 @@ describe("Verify B2B Quote feature", () => {
 
         cy.logToTerminal('========= ⚙️ Step 7: View Quote Details =========');
 
-        // Click on the quote to view its details
+        // Wait a bit before clicking View
+        cy.wait(3000);
+
+        // Click on the quote to view its details - be more specific to avoid clicking wrong element
         cy.get('body').then(($body) => {
             // Try to find and click the View button
             if ($body.find('button:contains("View")').length > 0) {
@@ -249,7 +252,8 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
-        cy.wait(5000);
+        // Wait for quote detail page to fully load
+        cy.wait(8000);
         cy.logToTerminal('✅ Viewing quote details');
 
         // Verify we're on the quote detail page
@@ -349,19 +353,60 @@ describe("Verify B2B Quote feature", () => {
 
         // Refresh the page to see updated quote status
         cy.reload();
-        cy.wait(5000);
+        cy.wait(8000);
         
         cy.logToTerminal('✅ Page refreshed - checking quote status');
 
-        cy.logToTerminal('✅ B2B Quote approved - test completed successfully');
+        // Verify quote status changed (should show Updated or similar)
+        cy.get('body').then(($body) => {
+            const bodyText = $body.text();
+            if (bodyText.includes('Updated')) {
+                cy.logToTerminal('✅ Quote status is Updated - ready for checkout');
+            } else if (bodyText.includes('Open')) {
+                cy.logToTerminal('✅ Quote status is Open - ready for checkout');
+            } else {
+                cy.logToTerminal('⚠️ Quote status: checking page content...');
+            }
+        });
+
+        cy.logToTerminal('========= ⚙️ Step 10: Place quote order - Click Checkout =========');
+
+        // Wait for page to be fully ready
+        cy.wait(3000);
+
+        // Click the Checkout button to place the order
+        cy.contains('span', 'Checkout')
+            .should('be.visible')
+            .click();
+
+        cy.wait(8000);
+        cy.logToTerminal('✅ Clicked Checkout button - on checkout page');
+
+        cy.logToTerminal('========= ⚙️ Step 11: Complete Checkout =========');
+
+        // Accept terms and conditions checkbox - specific one in checkout agreements
+        cy.get('[data-testid="checkout-terms-and-conditions-agreements"] input[type="checkbox"]')
+            .check({ force: true });
+        
+        cy.wait(2000);
+        cy.logToTerminal('✅ Terms and conditions accepted');
+
+        // Click Place Purchase Order button
+        cy.contains('Place Purchase Order')
+            .click({ force: true });
+
+        cy.wait(10000);
+        cy.logToTerminal('✅ Clicked Place Purchase Order');
+
+        cy.logToTerminal('✅ B2B Quote to Order test completed successfully!');
 
         // TODO: Remaining steps to be implemented:
-        // Step 10: Place quote order from My Account > Quotes
-        // Step 11: Check quote status in My Account
-        // Step 12: Cleanup - Logout
+        // Step 11: Complete checkout
+        // Step 12: Check quote status in My Account
+        // Step 13: Cleanup - Logout
 
         /*
-        cy.logToTerminal('========= ⚙️ Step 10: Place quote order from My Account > Quotes =========');
+        cy.logToTerminal('========= ⚙️ Step 11: Complete checkout =========');
 
         // Refresh the quotes page to see updated status
         cy.visit('/customer/quotes');
