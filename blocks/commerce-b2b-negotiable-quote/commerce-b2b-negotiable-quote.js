@@ -233,7 +233,7 @@ export default async function decorate(block) {
                     postcode: formValues.postcode,
                     prefix: formValues.prefix,
                     region: regionCode ? {
-                      regionCode: regionCode,
+                      regionCode,
                       regionId: regionIdNumber,
                     } : undefined,
                     street: streetInputValues,
@@ -246,15 +246,13 @@ export default async function decorate(block) {
                   shippingInformation.setAttribute('hidden', true);
 
                   createCustomerAddress(createCustomerAddressInput)
-                    .then(() => {
-                      return setShippingAddress({
-                        quoteUid: quoteId,
-                        addressData: {
-                          ...addressInput,
-                          additionalInput: additionalAddressInput,
-                        },
-                      });
-                    })
+                    .then(() => setShippingAddress({
+                      quoteUid: quoteId,
+                      addressData: {
+                        ...addressInput,
+                        additionalInput: additionalAddressInput,
+                      },
+                    }))
                     .finally(() => {
                       progressSpinner.setAttribute('hidden', true);
                       shippingInformation.removeAttribute('hidden');

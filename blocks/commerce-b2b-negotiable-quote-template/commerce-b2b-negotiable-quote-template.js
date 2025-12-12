@@ -209,7 +209,7 @@ export default async function decorate(block) {
                     postcode: formValues.postcode,
                     prefix: formValues.prefix,
                     region: regionCode ? {
-                      regionCode: regionCode,
+                      regionCode,
                       regionId: regionIdNumber,
                     } : undefined,
                     street: streetInputValues,
@@ -219,18 +219,16 @@ export default async function decorate(block) {
                   };
 
                   createCustomerAddress(createCustomerAddressInput)
-                    .then(() => {
-                      return addQuoteTemplateShippingAddress({
-                        templateId: quoteTemplateId,
-                        shippingAddress: {
-                          address: {
-                            ...addressInput,
-                            additionalInput: additionalAddressInput,
-                          },
-                          customerNotes: formValues.customerNotes,
+                    .then(() => addQuoteTemplateShippingAddress({
+                      templateId: quoteTemplateId,
+                      shippingAddress: {
+                        address: {
+                          ...addressInput,
+                          additionalInput: additionalAddressInput,
                         },
-                      });
-                    })
+                        customerNotes: formValues.customerNotes,
+                      },
+                    }))
                     .finally(() => {
                       progressSpinner.setAttribute('hidden', true);
                       shippingInformation.removeAttribute('hidden');
