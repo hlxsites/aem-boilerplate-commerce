@@ -10,11 +10,14 @@ import { getProductLink, rootLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   const createProductLink = (productData) => {
-    if (!productData?.product || !productData?.productUrlKey || !productData?.product?.sku) {
+    if (!productData) {
       return rootLink('#');
     }
-
-    return getProductLink(productData.productUrlKey, productData.product.sku);
+    const { product, productUrlKey } = productData;
+    if (!product || !productUrlKey || !product.sku) {
+      return rootLink('#');
+    }
+    return getProductLink(productUrlKey, product.sku);
   };
   await orderRenderer.render(OrderProductList, {
     slots: {
