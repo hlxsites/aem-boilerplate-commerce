@@ -29,7 +29,6 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
-
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
