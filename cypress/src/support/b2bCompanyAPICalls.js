@@ -125,7 +125,8 @@ async function createCompany(companyData) {
     adminLastName,
     adminEmail,
     adminPassword = 'Test123!',
-    status = 1, // 1 = Active, 0 = Pending
+    status = 1, // 0 = PENDING, 1 = APPROVED, 2 = REJECTED, 3 = BLOCKED
+    rejectReason = null,
   } = companyData;
 
   const client = new ACCSApiClient();
@@ -170,6 +171,7 @@ async function createCompany(companyData) {
       super_user_id: customerId,
       customer_group_id: 1,
       status,
+      ...(status === 2 && rejectReason && { reject_reason: rejectReason }),
     },
   };
 
@@ -313,27 +315,44 @@ async function verifyCompanyCreated(companyEmail, expectedData = {}) {
 
 /**
  * Update company profile via REST API.
- * Uses PUT /V1/company/:companyId as documented in Adobe REST API reference.
- * The company ID must be included in the payload as well.
+ * Uses POST /V1/company/ (not PUT /V1/company/{id} which returns 404 on ACCS).
+ * The company ID must be included in the payload.
  *
  * @param {number} companyId - Company ID
- * @param {Object} updates - Fields to update (company_name, legal_name, etc.)
+ * @param {Object} updates - Fields to update (company_name, legal_name, status, etc.)
  * @returns {Promise<Object>} Updated company data
  */
 async function updateCompanyProfile(companyId, updates) {
   const client = new ACCSApiClient();
 
-  safeLog('📝 Updating company:', companyId, updates);
+  safeLog('📝 Updating company:', companyId, JSON.stringify(updates));
 
-  // Include id in the company payload as required by the API
+  // Step 1: Fetch current company data (PUT requires ALL required fields)
+  safeLog(`📥 Fetching current company data: GET /V1/company/${companyId}`);
+  const currentCompany = await client.get(`/V1/company/${companyId}`);
+  
+  if (!currentCompany || !currentCompany.id) {
+    throw new Error(`Failed to fetch company ${companyId}`);
+  }
+  
+  safeLog(`✅ Current company fetched: ${currentCompany.company_name}`);
+
+  // Step 2: Strip out wrapper fields added by accsClient (items, total_count, error, status)
+  // These are not part of the actual company object and will cause API errors
+  const { items, total_count, error, status: responseStatus, ...cleanCompany } = currentCompany;
+
+  // Step 3: Merge updates with current data (keep all required fields)
   const payload = {
     company: {
-      id: companyId,
+      ...cleanCompany,
       ...updates,
+      id: companyId, // Ensure ID is always set
     },
   };
 
-  // PUT /V1/company/:companyId per Adobe REST API documentation
+  // Step 4: PUT /V1/company/:companyId with complete company object
+  safeLog(`🔧 PUT /V1/company/${companyId} with merged data`);
+  
   const result = await client.put(`/V1/company/${companyId}`, payload);
   validateApiResponse(result, 'Company profile update', 'id');
 

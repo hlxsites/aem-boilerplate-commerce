@@ -23,19 +23,27 @@
  * Test Plan Reference:
  * - TC-40 (P0): Company User assigned to two companies can switch context
  * - TC-41 (P0): Company context switches for user with different roles
+ * - USF-3555 (P0): Inactive companies filtered out, user can switch to BLOCKED companies
  *
  * NOTE: TC-44, TC-45, TC-46 are about PRICING/CATALOG context switching,
  * not Purchase Orders/Requisition Lists/Quotes. Those require different test setup.
  *
  * ==========================================================================
+ * COVERED TEST CASES:
+ * ==========================================================================
+ * - TC-40: User can switch between companies they are assigned to
+ * - TC-41: Context switches correctly for users with different roles
+ * - USF-3555: Only APPROVED and BLOCKED companies shown in switcher dropdown
+ *
+ * ==========================================================================
  * OPTIMIZATION APPROACH:
  * ==========================================================================
  * BEFORE: 6 individual tests with separate setup/cleanup (5:12 runtime, ~52s per test)
- * AFTER: 1 comprehensive journey test (~2min runtime)
- * TIME SAVED: ~3 minutes (60% reduction)
+ * AFTER: 2 journey tests (~3min total runtime)
+ * TIME SAVED: ~2 minutes (40% reduction)
  *
  * KEY OPTIMIZATION:
- * - Setup 2 companies + shared user ONCE instead of 6+ times
+ * - Setup companies + users ONCE per journey instead of 6+ times
  * - Test all context switching in single user session
  * - Realistic workflow: switch company → verify all pages (Company, Users, Structure, Roles)
  *
@@ -499,6 +507,275 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     });
 
     cy.logToTerminal('========= 🎉 JOURNEY COMPLETED: Company Switcher (TC-40, TC-41, TC-42) =========');
+  });
+
+  /**
+   * ==========================================================================
+   * JOURNEY: Company Status Filtering (USF-3555)
+   * ==========================================================================
+   * Tests: Inactive companies are filtered out from company switcher
+   * Setup: 1 user with 4 companies (APPROVED, PENDING, REJECTED, BLOCKED)
+   * Expected: Only APPROVED and BLOCKED companies appear in dropdown
+   * Time: ~1-2 minutes
+   */
+  it('JOURNEY: Company switcher filters out inactive companies (USF-3555)', { defaultCommandTimeout: 30000 }, () => {
+    cy.logToTerminal('========= 🚀 JOURNEY: Company Status Filtering (USF-3555) =========');
+
+    // ========== SETUP: Create 4 companies with different statuses ==========
+    cy.logToTerminal('🏢 Setting up 4 companies with different statuses (APPROVED, PENDING, REJECTED, BLOCKED)...');
+
+    cy.then({ timeout: 60000 }, async () => {
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 8);
+
+      // Use short, unique company names to avoid truncation issues
+      const companyApprovedName = `Approved ${randomStr}`;
+      const companyPendingName = `Pending ${randomStr}`;
+      const companyRejectedName = `Rejected ${randomStr}`;
+      const companyBlockedName = `Blocked ${randomStr}`;
+
+      // Create companies directly with their final statuses
+      cy.logToTerminal('🏢 Creating companies with various statuses...');
+
+      // Company 1: APPROVED (status: 1)
+      const companyApproved = await createCompany({
+        companyName: companyApprovedName,
+        companyEmail: `approved-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyApprovedName} Legal`,
+        vatTaxId: `VAT-APPR-${randomStr}`,
+        resellerId: `RES-APPR-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        adminFirstName: baseCompanyData.adminFirstName,
+        adminLastName: 'ApprovedAdmin',
+        adminEmail: `admin-approved-${timestamp}.${randomStr}@example.com`,
+        adminPassword: 'Test123!',
+        status: 1, // APPROVED
+      });
+      cy.logToTerminal(`✅ Company APPROVED created: ${companyApproved.name} (ID: ${companyApproved.id})`);
+
+      // Company 2: PENDING (status: 0)
+      const companyPending = await createCompany({
+        companyName: companyPendingName,
+        companyEmail: `pending-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyPendingName} Legal`,
+        vatTaxId: `VAT-PEND-${randomStr}`,
+        resellerId: `RES-PEND-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        adminFirstName: baseCompanyData.adminFirstName,
+        adminLastName: 'PendingAdmin',
+        adminEmail: `admin-pending-${timestamp}.${randomStr}@example.com`,
+        adminPassword: 'Test123!',
+        status: 0, // PENDING
+      });
+      cy.logToTerminal(`✅ Company PENDING created: ${companyPending.name} (ID: ${companyPending.id})`);
+
+      // Company 3: REJECTED (status: 2) - requires reject_reason
+      const companyRejected = await createCompany({
+        companyName: companyRejectedName,
+        companyEmail: `rejected-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyRejectedName} Legal`,
+        vatTaxId: `VAT-REJ-${randomStr}`,
+        resellerId: `RES-REJ-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        adminFirstName: baseCompanyData.adminFirstName,
+        adminLastName: 'RejectedAdmin',
+        adminEmail: `admin-rejected-${timestamp}.${randomStr}@example.com`,
+        adminPassword: 'Test123!',
+        status: 2, // REJECTED (correct: 0=PENDING, 1=APPROVED, 2=REJECTED, 3=BLOCKED)
+        rejectReason: 'Test rejection - company does not meet requirements',
+      });
+      cy.logToTerminal(`✅ Company REJECTED created: ${companyRejected.name} (ID: ${companyRejected.id})`);
+
+      // Company 4: BLOCKED (status: 3)
+      const companyBlocked = await createCompany({
+        companyName: companyBlockedName,
+        companyEmail: `blocked-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyBlockedName} Legal`,
+        vatTaxId: `VAT-BLOCK-${randomStr}`,
+        resellerId: `RES-BLOCK-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        adminFirstName: baseCompanyData.adminFirstName,
+        adminLastName: 'BlockedAdmin',
+        adminEmail: `admin-blocked-${timestamp}.${randomStr}@example.com`,
+        adminPassword: 'Test123!',
+        status: 3, // BLOCKED (correct: 0=PENDING, 1=APPROVED, 2=REJECTED, 3=BLOCKED)
+      });
+      cy.logToTerminal(`✅ Company BLOCKED created: ${companyBlocked.name} (ID: ${companyBlocked.id})`);
+
+      // Create shared user
+      const testUser = await createStandaloneCustomer({
+        firstname: 'Status',
+        lastname: 'Tester',
+        email: `status-tester-${timestamp}.${randomStr}@example.com`,
+        password: 'Test123!',
+      });
+
+      cy.logToTerminal(`✅ Test user created: ${testUser.email} (ID: ${testUser.id})`);
+
+      // Assign user to all 4 companies
+      await assignCustomerToCompany(testUser.id, companyApproved.id);
+      cy.logToTerminal('✅ User assigned to APPROVED company');
+
+      await assignCustomerToCompany(testUser.id, companyPending.id);
+      cy.logToTerminal('✅ User assigned to PENDING company');
+
+      await assignCustomerToCompany(testUser.id, companyRejected.id);
+      cy.logToTerminal('✅ User assigned to REJECTED company');
+
+      await assignCustomerToCompany(testUser.id, companyBlocked.id);
+      cy.logToTerminal('✅ User assigned to BLOCKED company');
+
+      // Store for cleanup and tests
+      Cypress.env('currentTestCompanyEmail', companyApproved.company_email);
+      Cypress.env('currentTestAdminEmail', companyApproved.company_admin.email);
+      Cypress.env('testCompanyId', companyApproved.id);
+      Cypress.env('companyApprovedId', companyApproved.id);
+      Cypress.env('companyApprovedName', companyApproved.name);
+      Cypress.env('companyPendingName', companyPending.name);
+      Cypress.env('companyRejectedName', companyRejected.name);
+      Cypress.env('companyBlockedId', companyBlocked.id);
+      Cypress.env('companyBlockedName', companyBlocked.name);
+      Cypress.env('testUserEmail', testUser.email);
+      Cypress.env('testUserPassword', 'Test123!');
+    });
+
+    cy.wait(3000); // Wait for indexing
+
+    // ========== LOGIN: As test user ==========
+    cy.logToTerminal('🔐 Login as test user');
+    cy.then(() => {
+      const testUserEmail = Cypress.env('testUserEmail');
+      const testUserPassword = Cypress.env('testUserPassword');
+
+      cy.visit('/customer/login');
+      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
+        cy.get('input[name="email"]').type(testUserEmail);
+        cy.wait(1500);
+        cy.get('input[name="password"]').type(testUserPassword);
+        cy.wait(1500);
+        cy.get('button[type="submit"]').click();
+      });
+      cy.wait(8000);
+    });
+
+    // ========== USF-3555: Verify only APPROVED and BLOCKED companies appear in dropdown ==========
+    cy.logToTerminal('--- STEP 1: USF-3555 - Verify dropdown shows only APPROVED and BLOCKED companies ---');
+
+    // Navigate to company page
+    cy.visit('/customer/company');
+    cy.wait(3000);
+
+    // Get the company picker dropdown
+    cy.get('.dropin-picker__select', { timeout: 15000 }).should('be.visible').then(($select) => {
+      const companyApprovedName = Cypress.env('companyApprovedName');
+      const companyPendingName = Cypress.env('companyPendingName');
+      const companyRejectedName = Cypress.env('companyRejectedName');
+      const companyBlockedName = Cypress.env('companyBlockedName');
+
+      const options = $select.find('option').map((i, el) => Cypress.$(el).text()).get();
+      const optionsText = options.join(', ');
+
+      cy.logToTerminal(`📋 Dropdown options: ${optionsText}`);
+
+      // Verify APPROVED company IS in dropdown
+      const hasApproved = options.some(opt => opt.includes('Approved'));
+      expect(hasApproved, 'APPROVED company should be visible').to.be.true;
+      cy.logToTerminal(`✅ APPROVED company "${companyApprovedName}" is visible in dropdown`);
+
+      // Verify BLOCKED company IS in dropdown
+      const hasBlocked = options.some(opt => opt.includes('Blocked'));
+      expect(hasBlocked, 'BLOCKED company should be visible').to.be.true;
+      cy.logToTerminal(`✅ BLOCKED company "${companyBlockedName}" is visible in dropdown`);
+
+      // Verify PENDING company is NOT in dropdown
+      const hasPending = options.some(opt => opt.includes('Pending'));
+      expect(hasPending, 'PENDING company should be filtered out').to.be.false;
+      cy.logToTerminal(`✅ PENDING company "${companyPendingName}" is correctly filtered out`);
+
+      // Verify REJECTED company is NOT in dropdown
+      const hasRejected = options.some(opt => opt.includes('Rejected'));
+      expect(hasRejected, 'REJECTED company should be filtered out').to.be.false;
+      cy.logToTerminal(`✅ REJECTED company "${companyRejectedName}" is correctly filtered out`);
+
+      // Verify dropdown has exactly 2 options (APPROVED + BLOCKED)
+      expect(options.length, 'Dropdown should have exactly 2 companies').to.equal(2);
+      cy.logToTerminal('✅ Dropdown shows exactly 2 companies (APPROVED + BLOCKED)');
+    });
+
+    // ========== USF-3555: Verify can switch to BLOCKED company ==========
+    cy.logToTerminal('--- STEP 2: USF-3555 - Verify user can switch to BLOCKED company ---');
+
+    cy.then(() => {
+      const companyBlockedName = Cypress.env('companyBlockedName');
+      cy.logToTerminal(`🔄 Switching to BLOCKED company: ${companyBlockedName}`);
+      cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyBlockedName);
+      cy.wait(3000);
+
+      // Reload workaround for caching
+      cy.reload();
+      cy.wait(2000);
+
+      cy.logToTerminal('✅ Switched to BLOCKED company');
+    });
+
+    // Verify company profile shows BLOCKED company data
+    cy.visit('/customer/company');
+    cy.wait(2000);
+
+    cy.then(() => {
+      const companyBlockedName = Cypress.env('companyBlockedName');
+      cy.get('.account-company-profile', { timeout: 15000 }).should('exist');
+      cy.get('.account-company-profile').contains(companyBlockedName, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ Company profile shows BLOCKED company data');
+    });
+
+    // ========== USF-3555: Switch back to APPROVED company ==========
+    cy.logToTerminal('--- STEP 3: USF-3555 - Verify user can switch back to APPROVED company ---');
+
+    cy.then(() => {
+      const companyApprovedName = Cypress.env('companyApprovedName');
+      cy.logToTerminal(`🔄 Switching back to APPROVED company: ${companyApprovedName}`);
+      cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyApprovedName);
+      cy.wait(3000);
+
+      // Reload workaround
+      cy.reload();
+      cy.wait(2000);
+
+      cy.logToTerminal('✅ Switched back to APPROVED company');
+    });
+
+    // Verify company profile shows APPROVED company data
+    cy.visit('/customer/company');
+    cy.wait(2000);
+
+    cy.then(() => {
+      const companyApprovedName = Cypress.env('companyApprovedName');
+      cy.get('.account-company-profile').contains(companyApprovedName, { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ Company profile shows APPROVED company data');
+    });
+
+    cy.logToTerminal('========= 🎉 JOURNEY COMPLETED: Company Status Filtering (USF-3555) =========');
   });
 
   after(() => {

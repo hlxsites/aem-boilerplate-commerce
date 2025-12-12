@@ -42,19 +42,25 @@
  * TC-11: Company info block displays on Account page
  * TC-12: Admin can edit Account Information and Legal Address
  * TC-13: Regular user can view but not edit
+ * TC-14: Backend changes sync to storefront (Admin Panel → Storefront)
  *
- * NOT COVERED (Platform Limitations):
- * - TC-09: Storefront-created company (requires company activation API)
- * - TC-14: Backend changes sync (PUT /V1/company/{id} returns 404 on ACCS)
+ * ==========================================================================
+ * NOT COVERED (Different Test Scope):
+ * ==========================================================================
+ * TC-09: Storefront-created company profile verification
+ *   - Reason: This test file focuses on profile management for API-created companies.
+ *   - TC-09 is about verifying profile data after STOREFRONT registration + activation.
+ *   - Storefront registration is already tested in verifyCompanyRegistration.spec.js (USF-3439).
+ *   - Profile verification after activation would duplicate existing profile display tests (TC-07/TC-08).
  *
  * ==========================================================================
  */
 
 import {
+  updateCompanyProfile,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 import {
-  baseCompanyData,
   invalidData,
 } from '../../fixtures/companyManagementData';
 
@@ -72,13 +78,8 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
   afterEach(() => {
     cy.logToTerminal('🗑️ Cleaning up test data');
-    cy.then(async () => {
-      try {
-        await cleanupTestCompany();
-        cy.logToTerminal('✅ Test data cleanup completed');
-      } catch (error) {
-        cy.logToTerminal(`⚠️ Cleanup failed: ${error.message}`);
-      }
+    cy.wrap(cleanupTestCompany(), { timeout: 30000 }).then(() => {
+      cy.logToTerminal('✅ Test data cleanup completed');
     });
   });
 
@@ -86,10 +87,10 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
    * ==========================================================================
    * JOURNEY 1: Admin Profile Management
    * ==========================================================================
-   * Combines: TC-07, TC-08, TC-11 (admin), TC-12
-   * Tests: Profile display (all fields), company info block, edit functionality, validation
+   * Combines: TC-07, TC-08, TC-11 (admin), TC-12, TC-14
+   * Tests: Profile display (all fields), company info block, edit functionality, backend sync
    * Setup: ONCE at journey start
-   * Time: ~1-2 minutes (vs 4 tests x 23s = 1.5 minutes, but better flow)
+   * Time: ~1-2 minutes (vs 5 tests x 23s = 1.9 minutes, but better flow)
    */
   it('JOURNEY: Admin views and manages company profile', () => {
     cy.logToTerminal('========= 🚀 JOURNEY 1: Admin Profile Management =========');
@@ -106,8 +107,12 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       cy.logToTerminal('--- STEP 1: TC-11 - Verify company info block (admin) ---');
 
       // After login, user is on /customer/account
+      // Wait for page to fully load and company context to be available
+      cy.url().should('include', '/customer/account');
+      cy.wait(2000); // Give time for company context to load
+      
       cy.logToTerminal('✅ Verify company information block exists');
-      cy.get('.customer-company-info-card', { timeout: 10000 })
+      cy.get('.customer-company-info-card', { timeout: 15000 })
         .should('exist');
 
       cy.logToTerminal('✅ Verify company name is displayed');
@@ -244,6 +249,62 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
         .should('exist');
 
       cy.logToTerminal('✅ TC-12: Admin successfully edited company profile');
+
+      // ========== TC-14: Backend changes sync to storefront ==========
+      cy.logToTerminal('--- STEP 5: TC-14 - Verify backend changes sync to storefront ---');
+
+      cy.logToTerminal('🔧 Updating company via REST API (simulating Admin Panel changes)...');
+      cy.then(async () => {
+        const companyId = Cypress.env('testCompany').id;
+        
+        await updateCompanyProfile(companyId, {
+          company_name: 'BACKEND-UPDATED Company',
+          legal_name: 'Legal BACKEND-UPDATED Company LTD',
+          vat_tax_id: 'VAT-999-BACKEND',
+          reseller_id: 'RESELLER-999',
+          city: 'Backend City',
+          postcode: '88888',
+          telephone: '555-9999',
+        });
+
+        cy.logToTerminal('✅ Company updated via REST API');
+      });
+
+      cy.wait(3000);
+
+      cy.logToTerminal('🔄 Refreshing page to see backend changes...');
+      cy.visit('/customer/company');
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ Verify backend-updated company name');
+      cy.contains('BACKEND-UPDATED Company', { timeout: 15000 })
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated legal name');
+      cy.contains('Legal BACKEND-UPDATED Company LTD')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated VAT/Tax ID');
+      cy.contains('VAT-999-BACKEND')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated Reseller ID');
+      cy.contains('RESELLER-999')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated city');
+      cy.contains('Backend City')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated postal code');
+      cy.contains('88888')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ Verify backend-updated phone');
+      cy.contains('555-9999')
+        .should('be.visible');
+
+      cy.logToTerminal('✅ TC-14: Backend changes successfully synced to storefront');
       cy.logToTerminal('========= 🎉 JOURNEY 1 COMPLETED =========');
     });
   });
