@@ -206,16 +206,10 @@ describe("Verify B2B Quote feature", () => {
         cy.visit('/customer/account');
         cy.wait(3000);
 
-        // Click on Quotes in account navigation
-        cy.get('body').then(($body) => {
-            if ($body.find('a[href*="/customer/quotes"]').length > 0) {
-                cy.get('a[href*="/customer/quotes"]').first().click();
-            } else if ($body.find('a:contains("Quotes")').length > 0) {
-                cy.contains('a', 'Quotes').click();
-            } else if ($body.find('a:contains("My Quotes")').length > 0) {
-                cy.contains('a', 'My Quotes').click();
-            }
-        });
+        // Click on Quotes in the navigation
+        cy.get('.commerce-account-nav__item__title')
+            .contains('Quotes')
+            .click();
 
         cy.wait(5000);
         cy.logToTerminal('✅ Navigated to quotes list');
@@ -260,12 +254,65 @@ describe("Verify B2B Quote feature", () => {
             if (bodyText.includes(quoteName)) {
                 cy.logToTerminal('✅ Quote detail page loaded - quote name visible');
             }
-            if (bodyText.includes('Submitted') || bodyText.includes('Open')) {
-                cy.logToTerminal('✅ Quote status visible on detail page');
+        });
+
+        cy.logToTerminal('========= ⚙️ Step 8: Fill shipping address and send for review =========');
+
+        // Fill out shipping address - step by step
+        // First name
+        cy.get('input[name="firstName"]').first().clear().type(customerData.customer.firstname);
+        
+        // Last name
+        cy.get('input[name="lastName"]').first().clear().type(customerData.customer.lastname);
+        
+        // Street
+        cy.get('input[name="street"]').first().clear().type('123 Test Street');
+        
+        // City
+        cy.get('input[name="city"]').first().clear().type('Austin');
+        
+        // Country - select first, then wait for region to update
+        cy.get('select[name="countryCode"]').first().select('US');
+        cy.wait(2000); // Wait for region dropdown to update based on country
+        
+        // Region/State - check if it's a dropdown or text input after country selection
+        cy.get('body').then(($body) => {
+            if ($body.find('select[name="region"]').length > 0) {
+                cy.get('select[name="region"]').first().select('Texas');
+            } else if ($body.find('select[name="regionCode"]').length > 0) {
+                cy.get('select[name="regionCode"]').first().select('TX');
+            } else if ($body.find('input[name="region"]').length > 0) {
+                cy.get('input[name="region"]').first().clear().type('Texas');
+            }
+        });
+        
+        // Postcode
+        cy.get('input[name="postcode"]').first().clear().type('78758');
+        
+        // Telephone
+        cy.get('input[name="telephone"]').first().clear().type('5551234567');
+
+        cy.wait(2000);
+        cy.logToTerminal('✅ Shipping address filled');
+
+        // Save the address if there's a save button
+        cy.get('body').then(($body) => {
+            if ($body.find('button:contains("Save")').length > 0) {
+                cy.contains('button', 'Save').first().click();
+                cy.wait(2000);
+                cy.logToTerminal('✅ Address saved');
             }
         });
 
-        cy.logToTerminal('✅ B2B Quote creation test completed successfully - quote details viewed');
+        // Click "Send for review" button
+        cy.get('button[data-testid="send-for-review-button"]')
+            .should('be.visible')
+            .click();
+
+        cy.wait(5000);
+        cy.logToTerminal('✅ Quote sent for review');
+
+        cy.logToTerminal('✅ B2B Quote creation test completed successfully - quote sent for review');
 
         // TODO: Remaining steps to be implemented:
         // Step 7: Approve quote via admin REST API
