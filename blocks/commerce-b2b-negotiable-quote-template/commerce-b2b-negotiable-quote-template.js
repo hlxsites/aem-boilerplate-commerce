@@ -34,6 +34,7 @@ import { ManageNegotiableQuoteTemplate } from '@dropins/storefront-quote-managem
 
 // API
 import { addQuoteTemplateShippingAddress } from '@dropins/storefront-quote-management/api.js';
+import { createCustomerAddress } from '@dropins/storefront-account/api.js';
 
 // Initialize
 import '../../scripts/initializers/company.js';
@@ -168,7 +169,8 @@ export default async function decorate(block) {
 
                   const formValues = getFormValues(event.target);
 
-                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
+                  const [regionCode, regionId] = formValues.region?.split(',') || [];
+                  const regionIdNumber = parseInt(regionId, 10);
 
                   // iterate through the object entries and combine the values of keys that have
                   // a prefix of 'street' into an array
@@ -194,21 +196,45 @@ export default async function decorate(block) {
                     vat_id: formValues.vatId,
                   };
 
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-                  addQuoteTemplateShippingAddress({
-                    templateId: quoteTemplateId,
-                    shippingAddress: {
-                      address: {
-                        ...addressInput,
-                        additionalInput: additionalAddressInput,
-                      },
-                      customerNotes: formValues.customerNotes,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
+                  const createCustomerAddressInput = {
+                    city: formValues.city,
+                    company: formValues.company,
+                    countryCode: formValues.countryCode,
+                    defaultBilling: !!formValues.defaultBilling || false,
+                    defaultShipping: !!formValues.defaultShipping || false,
+                    fax: formValues.fax,
+                    firstname: formValues.firstName,
+                    lastname: formValues.lastName,
+                    middlename: formValues.middlename,
+                    postcode: formValues.postcode,
+                    prefix: formValues.prefix,
+                    region: regionCode ? {
+                      regionCode: regionCode,
+                      regionId: regionIdNumber,
+                    } : undefined,
+                    street: streetInputValues,
+                    suffix: formValues.suffix,
+                    telephone: formValues.telephone,
+                    vatId: formValues.vatId,
+                  };
+
+                  createCustomerAddress(createCustomerAddressInput)
+                    .then(() => {
+                      return addQuoteTemplateShippingAddress({
+                        templateId: quoteTemplateId,
+                        shippingAddress: {
+                          address: {
+                            ...addressInput,
+                            additionalInput: additionalAddressInput,
+                          },
+                          customerNotes: formValues.customerNotes,
+                        },
+                      });
+                    })
+                    .finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
                 },
               })(shippingInformation);
             }
