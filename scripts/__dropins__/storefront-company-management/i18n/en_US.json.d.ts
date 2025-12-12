@@ -316,6 +316,10 @@ declare const _default: {
       "outstandingBalance": "Outstanding Balance",
       "messages": {
         "loadError": "Failed to load company credit"
+      },
+      "emptyState": {
+        "title": "No Credit Information",
+        "message": "There is no credit information to display."
       }
     },
     "CompanyCreditHistory": {
@@ -327,27 +331,23 @@ declare const _default: {
         "outstandingBalance": "Outstanding Balance",
         "availableCredit": "Available Credit",
         "creditLimit": "Credit Limit",
-        "customReference": "Custom Reference Number",
+        "customReference": "Custom Reference #",
         "updatedBy": "Updated By"
       },
       "pagination": {
-        "itemsRange": "Items {start} to {end} of {total}",
-        "itemsPerPage": "Items per page:",
-        "show": "Show",
-        "perPage": "per page"
+        "itemsRange": "Items {start}-{end} of {total}",
+        "show": "Show"
+      },
+      "emptyState": {
+        "title": "No Credit History",
+        "message": "There is no credit history to display."
       },
       "ariaLabels": {
         "dataLoaded": "Loaded {count} credit history entries",
         "dataError": "Failed to load credit history entries. Please try again.",
-        "loadingHistory": "Loading credit history",
         "historyTable": "Credit history table",
         "paginationNav": "Pagination navigation",
-        "pageNavigation": "Page navigation",
         "pageSizeSelector": "Items per page selector",
-        "previousPage": "Previous page",
-        "nextPage": "Next page",
-        "goToPage": "Go to page {page}",
-        "currentPage": "Current page {page}",
         "showingHistory": "Showing {count} credit history entries"
       }
     },
