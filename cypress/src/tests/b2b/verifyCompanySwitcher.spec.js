@@ -234,8 +234,12 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // Wait for company switcher dropin to be fully initialized and visible
     cy.get('.dropin-picker', { timeout: 20000 }).should('be.visible');
 
-    // Verify company picker select is visible (user has access to multiple companies)
-    cy.get('.dropin-picker__select', { timeout: 15000 }).should('be.visible');
+    // Wait for company picker select to exist, be visible, AND have options loaded
+    cy.get('.dropin-picker__select', { timeout: 25000 })
+      .should('exist')
+      .should('be.visible')
+      .find('option')
+      .should('have.length.at.least', 1);
     cy.logToTerminal('✅ Company picker is visible');
 
     // Verify Company A is displayed in the profile card (not in dropdown)
@@ -692,6 +696,13 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Wait for company switcher dropin to be fully initialized and visible
     cy.get('.dropin-picker', { timeout: 20000 }).should('be.visible');
+
+    // Wait for company picker select to exist, be visible, AND have options loaded
+    cy.get('.dropin-picker__select', { timeout: 25000 })
+      .should('exist')
+      .should('be.visible')
+      .find('option')
+      .should('have.length.at.least', 1);
     cy.logToTerminal('✅ Company profile loaded');
 
     // Get the company picker dropdown
