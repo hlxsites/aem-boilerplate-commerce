@@ -224,14 +224,13 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // ========== TC-41: Verify admin controls in Company A ==========
     cy.logToTerminal('--- STEP 1: TC-41 - Verify admin role in Company A ---');
 
-    // After login, user lands on /customer/account
+    // Navigate to My Company page (company picker is more reliably loaded here)
+    cy.visit('/customer/company');
+    cy.wait(3000);
+
     // Verify company picker is visible (user has access to multiple companies)
     cy.get('.dropin-picker__select', { timeout: 15000 }).should('be.visible');
     cy.logToTerminal('✅ Company picker is visible');
-
-    // Now navigate to My Company page
-    cy.visit('/customer/company');
-    cy.wait(3000);
 
     // Wait for company profile to load
     cy.get('.account-company-profile', { timeout: 15000 }).should('exist');
@@ -683,7 +682,11 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Navigate to company page
     cy.visit('/customer/company');
-    cy.wait(3000);
+    cy.wait(5000); // Increased wait for company context to fully load
+
+    // Verify company profile loaded first
+    cy.get('.account-company-profile', { timeout: 15000 }).should('exist');
+    cy.logToTerminal('✅ Company profile loaded');
 
     // Get the company picker dropdown
     cy.get('.dropin-picker__select', { timeout: 15000 }).should('be.visible').then(($select) => {
