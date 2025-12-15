@@ -47,6 +47,7 @@ import {
   checkIsAuthenticated,
   rootLink,
   fetchPlaceholders,
+  ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
 
 /**
@@ -132,17 +133,7 @@ export default async function decorate(block) {
     block.classList.add('negotiable-quote__manage');
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
-      acceptedFileTypes: [
-        'application/msword', // .doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-        'application/vnd.ms-excel', // .xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-        'application/pdf', // .pdf
-        'text/plain', // .txt
-        'image/jpeg', // .jpeg
-        'image/jpg', // .jpg
-        'image/png', // .png
-      ],
+      acceptedFileTypes: ACCEPTED_FILE_TYPES,
       slots: {
         Footer: (ctx) => {
           ctx.appendChild(checkoutButtonContainer);

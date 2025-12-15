@@ -36,7 +36,12 @@ import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quote-management.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  rootLink,
+  getProductLink,
+  ACCEPTED_FILE_TYPES,
+} from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -184,17 +189,7 @@ export default async function decorate(block) {
 
     quoteManagementRender.render(RequestNegotiableQuoteForm, {
       cartId,
-      acceptedFileTypes: [
-        'application/msword', // .doc
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-        'application/vnd.ms-excel', // .xls
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-        'application/pdf', // .pdf
-        'text/plain', // .txt
-        'image/jpeg', // .jpeg
-        'image/jpg', // .jpg
-        'image/png', // .png
-      ],
+      acceptedFileTypes: ACCEPTED_FILE_TYPES,
     })(content);
 
     currentModal = await createModal([content]);
