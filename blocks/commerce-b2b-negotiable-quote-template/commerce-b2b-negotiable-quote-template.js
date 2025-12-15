@@ -110,6 +110,17 @@ export default async function decorate(block) {
 
     // Render the quote template details view
     await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
+      acceptedFileTypes: [
+        'application/msword', // .doc
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+        'application/vnd.ms-excel', // .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/pdf', // .pdf
+        'text/plain', // .txt
+        'image/jpeg', // .jpeg
+        'image/jpg', // .jpg
+        'image/png', // .png
+      ],
       slots: {
         ShippingInformation: (ctx) => {
           const shippingInformation = document.createElement('div');

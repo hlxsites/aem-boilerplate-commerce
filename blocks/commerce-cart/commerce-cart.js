@@ -184,6 +184,17 @@ export default async function decorate(block) {
 
     quoteManagementRender.render(RequestNegotiableQuoteForm, {
       cartId,
+      acceptedFileTypes: [
+        'application/msword', // .doc
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+        'application/vnd.ms-excel', // .xls
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+        'application/pdf', // .pdf
+        'text/plain', // .txt
+        'image/jpeg', // .jpeg
+        'image/jpg', // .jpg
+        'image/png', // .png
+      ],
     })(content);
 
     currentModal = await createModal([content]);
