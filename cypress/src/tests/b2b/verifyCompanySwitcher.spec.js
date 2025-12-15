@@ -108,8 +108,13 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
    * Tests: Context switching across company management pages with different roles
    * Setup: ONCE at journey start
    * Time: ~2 minutes (vs 6 tests x 52s = 5+ minutes if separate)
+   * 
+   * SKIPPED: Waiting for backend 'status' field deployment to PROD/Sandbox environments.
+   * The GraphQL query includes 'status' field which is not yet available in PROD/Sandbox,
+   * causing all companies to be filtered out and the picker not to render.
+   * TODO: Remove .skip once backend is promoted (USF-3603)
    */
-  it('JOURNEY: Company context persists across company management pages with role-based permissions', { defaultCommandTimeout: 30000 }, () => {
+  it.skip('JOURNEY: Company context persists across company management pages with role-based permissions', { defaultCommandTimeout: 30000 }, () => {
     cy.logToTerminal('========= 🚀 JOURNEY: Complete Company Context Switching =========');
 
     // ========== SETUP: Create 2 companies + shared user (ONCE) ==========
@@ -523,8 +528,13 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
    * Setup: 1 user with 4 companies (APPROVED, PENDING, REJECTED, BLOCKED)
    * Expected: Only APPROVED and BLOCKED companies appear in dropdown
    * Time: ~1-2 minutes
+   * 
+   * SKIPPED: Waiting for backend 'status' field deployment to PROD/Sandbox environments.
+   * The GraphQL query includes 'status' field which is not yet available in PROD/Sandbox,
+   * causing the query to fail. This test will be re-enabled after backend promotion.
+   * TODO: Remove .skip once backend is promoted (USF-3603)
    */
-  it('JOURNEY: Company switcher filters out inactive companies (USF-3555)', { defaultCommandTimeout: 30000 }, () => {
+  it.skip('JOURNEY: Company switcher filters out inactive companies (USF-3555)', { defaultCommandTimeout: 30000 }, () => {
     cy.logToTerminal('========= 🚀 JOURNEY: Company Status Filtering (USF-3555) =========');
 
     // ========== SETUP: Create 4 companies with different statuses ==========
