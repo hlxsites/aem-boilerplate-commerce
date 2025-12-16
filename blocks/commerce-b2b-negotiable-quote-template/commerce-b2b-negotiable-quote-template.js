@@ -282,5 +282,4 @@ export default async function decorate(block) {
       description: `${error}`,
     })(block);
   });
-
 }
