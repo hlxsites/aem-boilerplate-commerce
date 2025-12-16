@@ -448,11 +448,212 @@ async function assignCustomerToCompany(customerId, companyId) {
   }
 }
 
+/**
+ * Fetches negotiable quotes for a customer by email
+ * Uses REST API to search for negotiable quotes
+ * @param {string} email - Customer email
+ * @returns {Promise<Object>} Negotiable quotes result
+ */
+async function fetchNegotiableQuotesByEmail(email) {
+  const client = new ACCSApiClient();
+
+  try {
+    safeLog(`Fetching negotiable quotes for customer email: ${email}...`);
+
+    const accessToken = await client.tokenManager.getValidToken();
+    const baseURL = Cypress.env("API_ENDPOINT");
+
+    // Search for negotiable quotes by customer email
+    const searchUrl = `${baseURL}/V1/negotiableQuote/search?searchCriteria[filterGroups][0][filters][0][field]=customer_email&searchCriteria[filterGroups][0][filters][0][value]=${encodeURIComponent(email)}&searchCriteria[filterGroups][0][filters][0][conditionType]=eq&searchCriteria[sortOrders][0][field]=created_at&searchCriteria[sortOrders][0][direction]=DESC`;
+
+    safeLog('Negotiable quote search URL:', searchUrl);
+
+    const response = await fetch(searchUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'x-api-key': process.env.IMS_CLIENT_ID,
+        'x-gw-ims-org-id': process.env.IMS_ORG_ID,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    const quotesResponse = await response.json();
+    safeLog('Negotiable quotes response:', JSON.stringify(quotesResponse, null, 2));
+
+    if (!quotesResponse || !quotesResponse.items || quotesResponse.items.length === 0) {
+      safeLog(`No negotiable quotes found for customer email: ${email}`);
+      return {
+        success: true,
+        customer_email: email,
+        quotes: [],
+        total_count: 0,
+        message: 'No negotiable quotes found for this customer email'
+      };
+    }
+
+    safeLog(`Found ${quotesResponse.items.length} negotiable quotes for email: ${email}`);
+
+    return {
+      success: true,
+      customer_email: email,
+      quotes: quotesResponse.items,
+      total_count: quotesResponse.items.length,
+      raw_response: quotesResponse
+    };
+
+  } catch (error) {
+    safeError('Fetch negotiable quotes by email failed:', error.message);
+    safeError('Error details:', error);
+
+    return {
+      success: false,
+      error: true,
+      message: error.message,
+      customer_email: email,
+      quotes: [],
+      total_count: 0
+    };
+  }
+}
+
+/**
+ * Gets the latest negotiable quote ID for a customer
+ * @param {string} email - Customer email
+ * @returns {Promise<Object>} Latest quote info
+ */
+async function getLatestNegotiableQuoteId(email) {
+  const result = await fetchNegotiableQuotesByEmail(email);
+
+  if (!result.success || result.quotes.length === 0) {
+    return {
+      success: false,
+      message: `No negotiable quotes found for email: ${email}`
+    };
+  }
+
+  const latestQuote = result.quotes[0];
+  safeLog('Latest negotiable quote:', JSON.stringify(latestQuote, null, 2));
+
+  return {
+    success: true,
+    quote_id: latestQuote.quote_id || latestQuote.entity_id,
+    quote_uid: latestQuote.uid,
+    quote_name: latestQuote.quote_name,
+    status: latestQuote.status,
+    quote: latestQuote
+  };
+}
+
+/**
+ * Admin sends the negotiable quote back to customer (approves quote with optional price adjustments)
+ * This is the admin action to approve/send the quote to the customer
+ * @param {number|string} quoteId - The negotiable quote ID
+ * @param {string} comment - Optional comment from admin
+ * @returns {Promise<Object>} Result of the operation
+ */
+async function adminSendNegotiableQuote(quoteId, comment = 'Quote approved by admin') {
+  const client = new ACCSApiClient();
+
+  try {
+    safeLog(`Admin sending negotiable quote ${quoteId} to customer...`);
+
+    const requestBody = {
+      quoteId: parseInt(quoteId),
+      comment: comment,
+      files: []
+    };
+
+    safeLog('Admin send quote request body:', requestBody);
+
+    // Use the submitToCustomer endpoint - this is the admin action to send quote back
+    const submitResponse = await client.post('/V1/negotiableQuote/submitToCustomer', requestBody);
+    safeLog('Quote sent to customer successfully:', submitResponse);
+
+    return {
+      success: true,
+      quote_id: quoteId,
+      comment: comment,
+      response: submitResponse,
+      message: 'Quote successfully sent to customer'
+    };
+
+  } catch (error) {
+    safeError('Admin send quote failed:', error.message);
+    safeError('Error details:', error.response?.data || error);
+
+    return {
+      success: false,
+      error: true,
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      quote_id: quoteId
+    };
+  }
+}
+
+/**
+ * Approves a negotiable quote using admin REST API
+ * This function fetches the quote by email and approves it
+ * @param {string} customerEmail - The customer email to find the quote
+ * @param {string} comment - Optional comment from admin
+ * @returns {Promise<Object>} Result of the approval
+ */
+async function approveNegotiableQuoteByEmail(customerEmail, comment = 'Quote approved by admin via Cypress test') {
+  try {
+    safeLog(`Approving negotiable quote for customer: ${customerEmail}...`);
+
+    // Step 1: Get the latest quote for this customer
+    const quoteResult = await getLatestNegotiableQuoteId(customerEmail);
+
+    if (!quoteResult.success) {
+      throw new Error(quoteResult.message);
+    }
+
+    const quoteId = quoteResult.quote_id;
+    safeLog(`Found quote ID: ${quoteId}, status: ${quoteResult.status}`);
+
+    // Step 2: Admin sends the quote to customer (approves it)
+    const approvalResult = await adminSendNegotiableQuote(quoteId, comment);
+
+    if (!approvalResult.success) {
+      throw new Error(approvalResult.message);
+    }
+
+    return {
+      success: true,
+      quote_id: quoteId,
+      quote_uid: quoteResult.quote_uid,
+      customer_email: customerEmail,
+      message: 'Quote approved and sent to customer successfully'
+    };
+
+  } catch (error) {
+    safeError('Approve negotiable quote by email failed:', error.message);
+
+    return {
+      success: false,
+      error: true,
+      message: error.message,
+      customer_email: customerEmail
+    };
+  }
+}
+
 // Export functions for use in Cypress tests
 module.exports = {
   retrieveCompanies,
   submitQuoteToCustomer,
   fetchCartsByEmail,
   createCustomerAndAssignCompany,
-  assignCustomerToCompany
+  assignCustomerToCompany,
+  fetchNegotiableQuotesByEmail,
+  getLatestNegotiableQuoteId,
+  adminSendNegotiableQuote,
+  approveNegotiableQuoteByEmail
 };

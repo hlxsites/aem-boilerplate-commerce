@@ -288,3 +288,17 @@ export const poRuleValueInput = 'input[name="ruleValue"]';
 export const poMultiSelect = '.dropin-multi-select';
 export const poTableRow =
   '.b2b-purchase-order-purchase-orders-table tr.dropin-table__body__row';
+
+// Negotiable Quote selectors
+export const quoteRequestForm = '.quote-request-form';
+export const quoteNameInput = 'input[name="quote-name"]';
+export const quoteCommentTextarea = 'textarea[name="comment"]';
+export const quoteSubmitButton = 'button[type="submit"]';
+export const quoteConfirmationMessage = '.quote-confirmation';
+export const quotesListWrapper = '.commerce-b2b-quotes-wrapper';
+export const quotesTable = '.b2b-quotes-table';
+export const quotesTableRow = '.b2b-quotes-table tr.dropin-table__body__row';
+export const quoteStatusBadge = '.quote-status-badge';
+export const quoteDetailWrapper = '.quote-detail-wrapper';
+export const quotePlaceOrderButton = '.quote-place-order-button';
+export const quoteCheckoutButton = '[data-testid="quote-checkout-button"]';
