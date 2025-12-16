@@ -116,6 +116,11 @@ export default async function decorate(block) {
   const checkoutButtonContainer = document.createElement('div');
   checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
 
+  // Create a container for the address error
+  const addressErrorContainer = document.createElement('div');
+  addressErrorContainer.classList.add('negotiable-quote__address-error-container');
+  addressErrorContainer.setAttribute('hidden', true);
+
   // Function for rendering or re-rendering the checkout button
   const renderCheckoutButton = (_context, checkoutEnabled = false) => {
     if (!quoteId) return;
@@ -140,6 +145,9 @@ export default async function decorate(block) {
           renderCheckoutButton(ctx, enabled);
         },
         ShippingInformation: (ctx) => {
+          // Append the address error container to the shipping information container
+          ctx.appendChild(addressErrorContainer);
+
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote__select-shipping-information');
           ctx.appendChild(shippingInformation);
@@ -253,6 +261,13 @@ export default async function decorate(block) {
                         additionalInput: additionalAddressInput,
                       },
                     }))
+                    .catch((error) => {
+                      addressErrorContainer.removeAttribute('hidden');
+                      UI.render(InLineAlert, {
+                        type: 'error',
+                        description: `${error}`,
+                      })(addressErrorContainer);
+                    })
                     .finally(() => {
                       progressSpinner.setAttribute('hidden', true);
                       shippingInformation.removeAttribute('hidden');
@@ -330,4 +345,5 @@ export default async function decorate(block) {
       description: `${error}`,
     })(block);
   });
+
 }

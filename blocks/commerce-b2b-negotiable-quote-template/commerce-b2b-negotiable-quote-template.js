@@ -102,6 +102,11 @@ export default async function decorate(block) {
     return;
   }
 
+  // Create a container for the address error
+  const addressErrorContainer = document.createElement('div');
+  addressErrorContainer.classList.add('negotiable-quote-template__address-error-container');
+  addressErrorContainer.setAttribute('hidden', true);
+
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
@@ -113,6 +118,9 @@ export default async function decorate(block) {
     await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
       slots: {
         ShippingInformation: (ctx) => {
+          // Append the address error container to the shipping information container
+          ctx.appendChild(addressErrorContainer);
+
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
           ctx.appendChild(shippingInformation);
@@ -218,6 +226,9 @@ export default async function decorate(block) {
                     vatId: formValues.vatId,
                   };
 
+                  progressSpinner.removeAttribute('hidden');
+                  shippingInformation.setAttribute('hidden', true);
+
                   createCustomerAddress(createCustomerAddressInput)
                     .then(() => addQuoteTemplateShippingAddress({
                       templateId: quoteTemplateId,
@@ -229,6 +240,13 @@ export default async function decorate(block) {
                         customerNotes: formValues.customerNotes,
                       },
                     }))
+                    .catch((error) => {
+                      addressErrorContainer.removeAttribute('hidden');
+                      UI.render(InLineAlert, {
+                        type: 'error',
+                        description: `${error}`,
+                      })(addressErrorContainer);
+                    })
                     .finally(() => {
                       progressSpinner.setAttribute('hidden', true);
                       shippingInformation.removeAttribute('hidden');
@@ -264,4 +282,5 @@ export default async function decorate(block) {
       description: `${error}`,
     })(block);
   });
+
 }
