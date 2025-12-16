@@ -68,6 +68,18 @@ export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-det
 export const CUSTOMER_PO_LIST_PATH = `${CUSTOMER_PATH}/purchase-orders`;
 export const CUSTOMER_PO_DETAILS_PATH = `${CUSTOMER_PATH}/purchase-order-details`;
 
+// FILE UPLOAD
+export const ACCEPTED_FILE_TYPES = [
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  'application/vnd.ms-excel', // .xls
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+  'application/pdf', // .pdf
+  'text/plain', // .txt
+  'image/jpeg', // .jpeg, .jpg
+  'image/png', // .png
+];
+
 /**
  * Auth Privacy Policy Consent Slot
  * @param {Object} ctx - The context object
