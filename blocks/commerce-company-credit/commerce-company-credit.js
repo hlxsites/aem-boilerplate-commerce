@@ -29,8 +29,6 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
-  const { 'show-history': showHistory = 'true' } = readBlockConfig(block);
-
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
@@ -50,12 +48,13 @@ export default async function decorate(block) {
   }
 
   // All checks passed, render company credit container
+  const { 'show-history': showHistory = 'true' } = readBlockConfig(block);
   const shouldShowHistory = showHistory === 'true';
 
   await companyRenderer.render(CompanyCredit, {
     showCreditHistory: shouldShowHistory,
     creditHistoryParams: shouldShowHistory ? {
-      pageSize: 20,
+      pageSize: 10,
       currentPage: 1,
     } : undefined,
   })(block);
