@@ -3,6 +3,7 @@
 ## Overview
 
 The Commerce B2B Negotiable Quote block provides two views for managing negotiable quotes for authenticated B2B customers:
+
 1. **List View**: Displays all quotes using the `QuotesListTable` container
 2. **Manage View**: Displays individual quote details using the `ManageNegotiableQuote` container with custom slots for checkout button and shipping address selection
 
@@ -27,11 +28,11 @@ It follows the `commerce-b2b-*` naming convention and initializes required drop-
 
 This block currently does not support configuration through block metadata. All settings are hardcoded in the implementation:
 
-| Setting              | Type    | Value   | Description                            |
-| -------------------- | ------- | ------- | -------------------------------------- |
-| `showItemRange`      | boolean | `true`  | Shows the item range text              |
-| `showPageSizePicker` | boolean | `true`  | Shows the page size picker             |
-| `showPagination`     | boolean | `true`  | Shows the pagination controls          |
+| Setting              | Type    | Value  | Description                   |
+| -------------------- | ------- | ------ | ----------------------------- |
+| `showItemRange`      | boolean | `true` | Shows the item range text     |
+| `showPageSizePicker` | boolean | `true` | Shows the page size picker    |
+| `showPagination`     | boolean | `true` | Shows the pagination controls |
 
 ### URL Parameters
 
@@ -55,6 +56,7 @@ No localStorage keys are used by this block.
 - `quote-management/quote-items-removed` – Disables the checkout button when quote items are removed
 - `quote-management/quantities-updated` – Disables the checkout button when item quantities are updated
 - `quote-management/shipping-address-set` – Disables the checkout button when shipping address is set
+- `quote-management/negotiable-quote-closed` - Disables the checkout button when the quote is closed
 - `companyContext/changed` – Removes `quoteid` from URL and reloads the page to show list view when company context changes
 
 **Note**: Delete and duplicate listeners are automatically cleaned up using a MutationObserver when the block is removed from the DOM.
@@ -77,6 +79,7 @@ This block does not directly emit events but uses containers that may emit event
 The block renders different views based on the presence of the `quoteid` URL parameter:
 
 - **List View** (`data-quote-view="list"`): No `quoteid` parameter
+
   - Renders `QuotesListTable` container
   - Displays all quotes with pagination
   - "View" action adds `quoteid` to URL to switch to manage view
@@ -93,6 +96,7 @@ The block renders different views based on the presence of the `quoteid` URL par
 When a quote can be sent for review (`quoteData.canSendForReview === true`), the manage view displays:
 
 - **Existing Addresses**: Renders the `Addresses` container from `@dropins/storefront-account` in selectable mode
+
   - Users can select from their saved addresses
   - On address selection, calls `setShippingAddress` API with the address UID
   - Shows a progress spinner during the address update
@@ -106,17 +110,20 @@ When a quote can be sent for review (`quoteData.canSendForReview === true`), the
 ### User Interaction Flows
 
 1. **Permissions Check**:
+
    - Verifies user authentication
    - Checks if company functionality is enabled via `companyEnabled()`
    - Verifies user has a company via `getCompany()`
    - Redirects if any check fails
 
 2. **List View Flow**:
+
    - Fetches and displays all quotes
    - Users can view, filter, and paginate quotes
    - Clicking "View" on a quote navigates to manage view with `quoteid` parameter
 
 3. **Manage View Flow**:
+
    - Displays quote details and quoted items
    - If `quoteData.canSendForReview` is true:
      - Shows shipping address selection
@@ -129,6 +136,7 @@ When a quote can be sent for review (`quoteData.canSendForReview === true`), the
    - Quote duplication redirects to the new quote after 2 seconds
 
 4. **Shipping Address Selection Flow**:
+
    - Only visible when quote can be sent for review
    - **Option 1 - Select Existing Address**:
      - User selects saved address from list
