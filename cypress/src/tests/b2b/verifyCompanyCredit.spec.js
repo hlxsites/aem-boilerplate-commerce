@@ -210,13 +210,15 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.visit('/customer/company/credit');
       cy.wait(3000);
 
-      cy.logToTerminal('✅ Verify restricted user can see summary blocks');
+      cy.logToTerminal('✅ Verify restricted user cannot see summary blocks');
       cy.contains('Company Credit', { timeout: 10000 })
         .should('be.visible');
       cy.contains(/outstanding.*balance/i)
-        .should('be.visible');
+        .should('not.exist');
+      cy.contains(/available.*credit/i)
+        .should('not.exist');
       cy.contains(/credit.*limit/i)
-        .should('be.visible');
+        .should('not.exist');
 
       cy.logToTerminal('✅ Verify restricted user cannot see history data');
       cy.get('body').then(($body) => {
