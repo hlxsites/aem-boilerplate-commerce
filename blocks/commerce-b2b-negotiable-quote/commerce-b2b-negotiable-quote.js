@@ -116,19 +116,13 @@ export default async function decorate(block) {
   const checkoutButtonContainer = document.createElement('div');
   checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
 
-  // Track if quote has been closed to keep button disabled
-  let isQuoteClosed = false;
-
   // Function for rendering or re-rendering the checkout button
   const renderCheckoutButton = (_context, checkoutEnabled = false) => {
     if (!quoteId) return;
 
-    // If quote is closed, disable the button
-    const disableCheckout = isQuoteClosed || !checkoutEnabled;
-
     UI.render(Button, {
       children: placeholders?.Cart?.PriceSummary?.checkout,
-      disabled: disableCheckout,
+      disabled: !checkoutEnabled,
       onClick: () => {
         window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
       },
@@ -316,9 +310,6 @@ export default async function decorate(block) {
   // On quote closed successfully disable checkout button
   events.on('quote-management/negotiable-quote-closed', (event) => {
     if (event?.resultStatus === 'success') {
-      // Set flag to keep button disabled even on future re-renders
-      isQuoteClosed = true;
-      // Immediately re-render the button in disabled state
       renderCheckoutButton(event, false);
     }
   });
