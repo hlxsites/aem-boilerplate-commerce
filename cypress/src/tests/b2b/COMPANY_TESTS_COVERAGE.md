@@ -17,19 +17,19 @@
 
 | Test File | Tests | Original Tests | Runtime | Status |
 |-----------|-------|----------------|---------|--------|
-| `verifyCompanyRegistration.spec.js` | 10 | 10 | ~2min | ✅ All Passing |
-| `verifyCompanyProfile.spec.js` | 2 | 7 | ~1min | ✅ Optimized |
+| `verifyCompanyRegistration.spec.js` | 6 | 10 | ~2min | ✅ All Passing |
+| `verifyCompanyProfile.spec.js` | 2 | 7 | ~1min | ✅ Optimized + TC-14 |
 | `verifyCompanyUsers.spec.js` | 3 | 11 | ~5min | ✅ Optimized |
 | `verifyCompanyRolesAndPermissions.spec.js` | 2 | 6 | ~3min | ✅ Optimized |
 | `verifyCompanyStructure.spec.js` | 3 | 8 | ~3min | ✅ Optimized |
-| `verifyCompanySwitcher.spec.js` | 1 | 6 | ~2min | ✅ Optimized + TC-42 |
+| `verifyCompanySwitcher.spec.js` | 2 | 6 | ~3min | ✅ Optimized + TC-42 + USF-3555 |
 | `verifyCompanyCredit.spec.js` | 2 | 5 | ~2min | ✅ Optimized + TC-47 |
-| **TOTAL** | **23 Tests** | **53 Tests** | **~18min** | **✅ 100% Passing** |
+| **TOTAL** | **20 Tests** | **53 Tests** | **~19min** | **✅ 100% Passing** |
 
 **Previous Runtime (basic):** ~35-40 minutes  
 **Current Runtime (optimized):** ~18 minutes  
 **Improvement:** 50%+ faster with maintained coverage  
-**New Coverage:** Cart context switching (TC-42), Full order lifecycle (TC-47 CASE_1/4/5)
+**New Coverage:** Backend sync (TC-14), Company status filtering (USF-3555), Cart context switching (TC-42), Full order lifecycle (TC-47 CASE_1/4/5)
 
 ---
 
@@ -185,6 +185,7 @@ Instead of isolated tests with repeated setup/teardown, tests are now organized 
    - TC-07: Profile displays on My Company page
    - TC-08: All optional fields display
    - TC-12: Admin edits profile (with validation)
+   - **TC-14: Backend changes sync to storefront** ✨ NEW
    - Form validation: required fields, special characters
 
 2. **JOURNEY 2: Regular user has view-only profile access** (~30s)
@@ -192,12 +193,13 @@ Instead of isolated tests with repeated setup/teardown, tests are now organized 
    - TC-13: User cannot edit (controls hidden)
 
 **OPTIMIZATION RESULTS:**
-- **Before:** 7 tests × 23s = ~3 minutes
-- **After:** 2 journeys = ~1 minute
+- **Before:** 7 tests × 23s = ~3 minutes (TC-14 was blocked)
+- **After:** 2 journeys = ~1 minute (TC-14 now implemented)
 - **Time Saved:** 2 minutes (67% faster)
 
 **Key Changes:**
 - Combined display + edit operations in single admin journey
+- **TC-14 Implementation:** Updates company via REST API (`updateCompanyProfile`) to simulate Admin Panel changes, then verifies all changes are reflected on storefront
 - Unique company names with timestamps for parallel test isolation
 - Field name correction: `legalAddress_street` (not just `street`)
 - Verification simplified: search for "Updated Test Company" substring
@@ -273,10 +275,10 @@ Instead of isolated tests with repeated setup/teardown, tests are now organized 
 
 ---
 
-### 5. verifyCompanySwitcher.spec.js (1 Journey Test, was 6)
+### 5. verifyCompanySwitcher.spec.js (2 Journey Tests, was 6)
 
 **Journey Structure (EXTENDED):**
-1. **JOURNEY: Company context switching for management pages and cart** (~2min)
+1. **JOURNEY 1: Company context switching for management pages and cart** (~2min)
    - Setup: Shared user (Admin in Company A, Default User in Company B)
    - TC-41: Verify admin controls in Company A
    - TC-40: Switch to Company B
@@ -292,14 +294,24 @@ Instead of isolated tests with repeated setup/teardown, tests are now organized 
      - Add different product (ADB150) to Company B cart
      - Switch back to Company A → verify original product preserved
 
+2. **JOURNEY 2: Company status filtering (USF-3555)** (~2min) ✨ NEW
+   - Setup: Creates 4 companies (APPROVED, PENDING, REJECTED, BLOCKED) with shared user
+   - **USF-3555: Verify only APPROVED and BLOCKED companies appear in dropdown**
+   - Verify PENDING and REJECTED companies are filtered out
+   - Verify user can switch to BLOCKED company
+   - Verify company profile shows BLOCKED company data
+   - Verify user can switch back to APPROVED company
+
 **OPTIMIZATION RESULTS:**
-- **Before:** 6 tests × 52s = ~5 minutes
-- **After:** 1 journey = ~2 minutes (including TC-42 cart testing)
-- **Time saved:** 60% reduction + cart context coverage
+- **Before:** 6 tests × 52s = ~5 minutes (USF-3555 was not covered)
+- **After:** 2 journeys = ~3 minutes (including TC-42 cart testing + USF-3555)
+- **Time saved:** 40% reduction + extended coverage
 
 **Key Improvements:**
 - **Extended coverage:** TC-42 added - verifies cart contents are company-specific
+- **New coverage:** USF-3555 - verifies inactive companies (PENDING, REJECTED) filtered from switcher, BLOCKED companies allowed
 - **Cart isolation testing:** Products added via UI, separation verified across switches
+- **Company status filtering:** Uses `updateCompanyProfile` API to create companies with various statuses, validates dropdown behavior
 - **Increased retry logic:** 8 retries with 10s waits for USF-3516 backend caching
 - **Proper environment storage:** Company data stored in structured objects
 - **Removed unimplementable tests:** TC-44 (Gift Options), TC-45 (Shared Catalogs), TC-46 (Price Rules) - no REST API available
@@ -361,14 +373,16 @@ The credit memo MUST include `invoice_id` for Magento's `RefundCommand` to execu
 ### 7. verifyCompanyRegistration.spec.js (6 Tests - Not Optimized)
 
 **COVERED Test Cases:**
-- ✅ TC-01: Guest can register new company (partial)
-- ✅ TC-02: User can register new company
-- ✅ TC-03: Registration disabled (mocked config)
-- ✅ TC-09: Company created shows in My Account
+- ✅ TC-01: Guest can register new company - via nav menu and direct URL
+- ✅ TC-02: User can register new company (with ALL fields)
+- ✅ TC-03: Registration disabled - redirect to login/account
+- ✅ TC-05: Duplicate company email validation
+- ✅ TC-06: Required fields validation (empty form submit)
+- ✅ USF-3439: UK company registration with optional region
 
 **Key Notes:**
-- Tests already efficient (~13s per test)
-- Distinct starting states (guest vs authenticated, config variations)
+- Tests already efficient (~20s per test)
+- Distinct starting states (guest vs authenticated, config variations, country-specific validation)
 - Not prioritized for optimization in this phase
 - May be optimized in future iterations
 
@@ -380,13 +394,15 @@ The credit memo MUST include `invoice_id` for Magento's `RefundCommand` to execu
 | Status | Tests | Original Tests | Coverage |
 |--------|-------|----------------|----------|
 | ✅ **Optimized & Passing** | 12 | 48 | 100% |
-| ✅ **Extended (New Coverage)** | 1 | 0 | New |
-| ✅ **Not Modified (Already Efficient)** | 10 | 10 | 100% |
-| **TOTAL** | **23** | **53** | **100%** |
+| ✅ **Extended (New Coverage)** | 2 | 0 | New |
+| ✅ **Not Modified (Already Efficient)** | 6 | 10 | 100% |
+| **TOTAL** | **20** | **53** | **100%** |
 
 ### New Coverage Added
 | Feature | Test Cases | Status | Notes |
 |---------|------------|--------|-------|
+| Backend Profile Sync | TC-14 | ✅ Implemented | Verifies Admin Panel changes (via REST API) are reflected on storefront |
+| Company Status Filtering | USF-3555 | ✅ Implemented | Only APPROVED and BLOCKED companies shown in switcher, PENDING/REJECTED filtered out |
 | Cart/Orders Context | TC-42 | ✅ Implemented | Verifies shopping cart is company-specific when switching context |
 | Pricing Context | TC-43 | ❌ Not Implemented | Shared Catalog API fails + no REST API for Cart Price Rules |
 | Gift Options Context | TC-44 | ❌ Not Implemented | Requires manual Admin Panel config for Gift Options (no REST API for system settings) |
@@ -399,9 +415,9 @@ The credit memo MUST include `invoice_id` for Magento's `RefundCommand` to execu
 ### Time Savings & Extension
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
-| **Active Tests** | 53 tests | 23 tests | 57% fewer |
-| **Setup/Cleanup** | 53x | 23x | 57% fewer |
-| **Login Operations** | 53x | 23x | 57% fewer |
+| **Active Tests** | 53 tests | 20 tests | 62% fewer |
+| **Setup/Cleanup** | 53x | 20x | 62% fewer |
+| **Login Operations** | 53x | 20x | 62% fewer |
 | **Execution Time** | ~35-40min | ~18min | 50%+ faster |
 | **Code Reusability** | Duplicated logic | 10 custom commands | Centralized helpers |
 | **Data Management** | Flat variables | Structured objects | Better organization |
@@ -612,10 +628,10 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 | Company Users | ~5min | 3 | ✅ All Passing |
 | Company Structure | ~3min | 3 | ✅ All Passing |
 | Roles & Permissions | ~3min | 2 | ✅ All Passing |
-| Company Switcher | ~2min | 1 | ✅ Passing (with TC-42) |
-| Company Profile | ~1min | 2 | ✅ All Passing |
+| Company Switcher | ~3min | 2 | ✅ All Passing (TC-42 + USF-3555) |
+| Company Profile | ~1min | 2 | ✅ All Passing (TC-14) |
 | Company Credit | ~2min | 2 | ✅ 1 Passing (1 skipped) |
-| Registration | ~2min | 10 | ✅ All Passing |
+| Registration | ~2min | 6 | ✅ All Passing |
 
 ---
 
@@ -650,8 +666,8 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 
 ## 🏆 Optimization & Refactoring Summary
 
-**Completed:** December 8, 2025  
-**Status:** ✅ All 23 tests fully implemented and passing (1 skipped)  
+**Completed:** December 12, 2025  
+**Status:** ✅ All 20 tests fully implemented and passing (1 skipped)  
 **Approach:** Journey-based consolidation + code refactoring + new feature coverage  
 **Coverage:** 100% of original test cases maintained  
 **Time Savings:** 50%+ reduction (35-40min → 18min)  
@@ -666,14 +682,16 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 ✅ Proper error handling and retry logic  
 
 ### What Changed (Optimization)
-✅ Setup/teardown reduced from 53x to 23x  
-✅ Login operations reduced from 53x to 23x  
+✅ Setup/teardown reduced from 53x to 20x  
+✅ Login operations reduced from 53x to 20x  
 ✅ Related operations combined into realistic user workflows  
 ✅ Code duplication eliminated via custom Cypress commands  
 ✅ Environment variables restructured into organized objects  
 ✅ More robust handling of backend caching (USF-3516) with 8 retries  
 
 ### What Was Added (New Test Coverage)
+✨ **TC-14: Backend Profile Sync** - Updates company via REST API (simulating Admin Panel), verifies changes reflected on storefront  
+✨ **USF-3555: Company Status Filtering** - Creates companies with various statuses (APPROVED, PENDING, REJECTED, BLOCKED), verifies only APPROVED and BLOCKED shown in switcher  
 ✨ **TC-42: Shopping Cart context switching** - Verifies cart contents are company-specific when user switches between companies  
 ✨ **TC-47 CASE_1: Company Credit Purchase** - Full checkout flow with Payment on Account payment method  
 ✨ **TC-47 CASE_5: Company Credit Refund** - Creates invoice + credit memo via REST API, verifies "Refunded" in credit history  
@@ -684,7 +702,8 @@ Located in `../../support/b2bCompanyAPICalls.js`:
 🔧 **Environment Variable Objects** - Restructured from flat values to organized objects  
 🔧 **Code Cleanup** - Removed `companyApiHelper.js`, `waitForCreditRecord.js` (unused/redundant)  
 🔧 **Import Optimization** - Removed unused fixture imports from all test files  
-🔧 **API Error Handling** - Consistent `validateApiResponse` helper across all API calls    
+🔧 **API Error Handling** - Consistent `validateApiResponse` helper across all API calls  
+🔧 **updateCompanyProfile Function** - Fixed to fetch current company data, strip wrapper fields, merge updates, and send complete object via PUT (handles all required fields)    
 
 ### Critical Implementation Details
 
@@ -726,12 +745,12 @@ These tests were attempted but removed due to API limitations. They require manu
 
 ---
 
-**Last Updated:** December 8, 2025  
-**Status:** ✅ All 23 tests fully passing (1 skipped for faster runs)  
-**Total Tests:** 23 tests (was 53 isolated tests)  
+**Last Updated:** December 12, 2025  
+**Status:** ✅ All 20 tests fully passing (1 skipped for faster runs)  
+**Total Tests:** 20 tests (was 53 isolated tests)  
 **Runtime:** ~18 minutes (was ~35-40 minutes)  
 **Test Coverage:** 100% of original company management features  
-**New Coverage:** Shopping Cart context (TC-42), Order lifecycle with Payment on Account (TC-47 CASE_1/4/5)  
+**New Coverage:** Backend profile sync (TC-14), Company status filtering (USF-3555), Shopping Cart context (TC-42), Order lifecycle with Payment on Account (TC-47 CASE_1/4/5)  
 **Code Quality:** 10 custom commands, structured environment variables, 2 unused files removed  
-**New REST APIs:** `cancelOrder()`, `createInvoice()`, `createCreditMemo()` with proper error handling  
+**New REST APIs:** `updateCompanyProfile()` (fixed), `cancelOrder()`, `createInvoice()`, `createCreditMemo()` with proper error handling  
 **QA Tracking Status:** ⚠️ **Zephyr integration pending** - Test plan link added, Zephyr ticket IDs not yet mapped

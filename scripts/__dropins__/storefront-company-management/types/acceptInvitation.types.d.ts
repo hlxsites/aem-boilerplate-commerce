@@ -22,18 +22,30 @@ export interface InvitationStatus {
     isCompanyDisabled: boolean;
 }
 export interface AcceptInvitationFormProps {
+    /** Callback function that returns the URL path to the My Account page */
     routeMyAccount?: () => string;
+    /** Callback function that returns the URL path to the Login page */
     routeLogin?: () => string;
+    /** Indicates whether the current user is authenticated */
     isAuthenticated?: boolean;
+    /** Optional custom labels for UI text customization */
     labels?: {
+        /** Title text displayed at the top of the invitation acceptance page */
         title?: string;
+        /** Loading message shown while processing the invitation */
         loadingText?: string;
+        /** Title for the success state */
         successTitle?: string;
+        /** Success message displayed after accepting invitation */
         successMessage?: string;
+        /** Title for error states */
         errorTitle?: string;
+        /** Button text for navigating to My Account (authenticated users) */
         myAccountButton?: string;
+        /** Button text for navigating to Login (unauthenticated users) */
         loginButton?: string;
     };
+    /** Additional CSS classes to apply to the container for custom styling */
     className?: string;
 }
 export interface AcceptInvitationProps extends AcceptInvitationFormProps {

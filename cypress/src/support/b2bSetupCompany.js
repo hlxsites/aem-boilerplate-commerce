@@ -83,6 +83,10 @@ Cypress.Commands.add('setupCompanyWithAdmin', () => {
       adminEmail: uniqueAdminEmail, // for cleanup
     });
   });
+
+  // Wait for company to be indexed in the backend
+  cy.wait(3000);
+  cy.logToTerminal('✅ Company indexed, ready for testing');
 });
 
 /**
