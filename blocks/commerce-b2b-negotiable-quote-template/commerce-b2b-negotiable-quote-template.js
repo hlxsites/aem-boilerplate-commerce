@@ -34,7 +34,6 @@ import { ManageNegotiableQuoteTemplate } from '@dropins/storefront-quote-managem
 
 // API
 import { addQuoteTemplateShippingAddress } from '@dropins/storefront-quote-management/api.js';
-import { createCustomerAddress } from '@dropins/storefront-account/api.js';
 
 // Initialize
 import '../../scripts/initializers/company.js';
@@ -155,6 +154,8 @@ export default async function decorate(block) {
                 className: 'negotiable-quote-template__shipping-information-addresses',
                 selectShipping: true,
                 defaultSelectAddressId: 0,
+                showShippingCheckBox: false,
+                showBillingCheckBox: false,
                 onAddressData: (params) => {
                   const { data, isDataValid: isValid } = params;
                   const addressUid = data?.uid;
@@ -179,8 +180,7 @@ export default async function decorate(block) {
 
                   const formValues = getFormValues(event.target);
 
-                  const [regionCode, regionId] = formValues.region?.split(',') || [];
-                  const regionIdNumber = parseInt(regionId, 10);
+                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
 
                   // iterate through the object entries and combine the values of keys that have
                   // a prefix of 'street' into an array
@@ -198,7 +198,6 @@ export default async function decorate(block) {
                     postcode: formValues.postcode,
                     countryCode: formValues.countryCode,
                     telephone: formValues.telephone,
-                    saveInAddressBook: formValues.saveInAddressBook,
                   };
 
                   // These values are not part of the standard address input
@@ -206,42 +205,19 @@ export default async function decorate(block) {
                     vat_id: formValues.vatId,
                   };
 
-                  const createCustomerAddressInput = {
-                    city: formValues.city,
-                    company: formValues.company,
-                    countryCode: formValues.countryCode,
-                    defaultBilling: !!formValues.defaultBilling || false,
-                    defaultShipping: !!formValues.defaultShipping || false,
-                    fax: formValues.fax,
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    middlename: formValues.middlename,
-                    postcode: formValues.postcode,
-                    prefix: formValues.prefix,
-                    region: regionCode ? {
-                      regionCode,
-                      regionId: regionIdNumber,
-                    } : undefined,
-                    street: streetInputValues,
-                    suffix: formValues.suffix,
-                    telephone: formValues.telephone,
-                    vatId: formValues.vatId,
-                  };
-
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
 
-                  createCustomerAddress(createCustomerAddressInput)
-                    .then(() => addQuoteTemplateShippingAddress({
-                      templateId: quoteTemplateId,
-                      shippingAddress: {
-                        address: {
-                          ...addressInput,
-                          additionalInput: additionalAddressInput,
-                        },
-                        customerNotes: formValues.customerNotes,
+                  addQuoteTemplateShippingAddress({
+                    templateId: quoteTemplateId,
+                    shippingAddress: {
+                      address: {
+                        ...addressInput,
+                        additionalInput: additionalAddressInput,
                       },
-                    }))
+                      customerNotes: formValues.customerNotes,
+                    },
+                  })
                     .catch((error) => {
                       addressErrorContainer.removeAttribute('hidden');
                       UI.render(InLineAlert, {
