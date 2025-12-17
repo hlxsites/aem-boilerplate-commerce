@@ -45,6 +45,7 @@ import {
   CUSTOMER_LOGIN_PATH,
   checkIsAuthenticated,
   rootLink,
+  ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
 
 /**
@@ -110,6 +111,7 @@ export default async function decorate(block) {
 
     // Render the quote template details view
     await negotiableQuoteRenderer.render(ManageNegotiableQuoteTemplate, {
+      acceptedFileTypes: ACCEPTED_FILE_TYPES,
       slots: {
         ShippingInformation: (ctx) => {
           const shippingInformation = document.createElement('div');

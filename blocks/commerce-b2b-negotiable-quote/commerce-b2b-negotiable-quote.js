@@ -47,6 +47,7 @@ import {
   checkIsAuthenticated,
   rootLink,
   fetchPlaceholders,
+  ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
 
 /**
@@ -132,6 +133,7 @@ export default async function decorate(block) {
     block.classList.add('negotiable-quote__manage');
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
+      acceptedFileTypes: ACCEPTED_FILE_TYPES,
       slots: {
         Footer: (ctx) => {
           ctx.appendChild(checkoutButtonContainer);
