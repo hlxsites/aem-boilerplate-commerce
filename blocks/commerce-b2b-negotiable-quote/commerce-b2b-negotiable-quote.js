@@ -143,8 +143,16 @@ export default async function decorate(block) {
       slots: {
         Footer: (ctx) => {
           ctx.appendChild(checkoutButtonContainer);
+
+          // Initial render
           const enabled = ctx.quoteData?.canCheckout;
           renderCheckoutButton(ctx, enabled);
+
+          // Re-render on state changes
+          ctx.onChange((next) => {
+            const nextEnabled = next.quoteData?.canCheckout;
+            renderCheckoutButton(next, nextEnabled);
+          });
         },
         ShippingInformation: (ctx) => {
           // Append the address error container to the shipping information container
@@ -338,6 +346,13 @@ export default async function decorate(block) {
   // On shipping address selected disable checkout button
   events.on('quote-management/shipping-address-set', ({ quote }) => {
     renderCheckoutButton(quote, false);
+  });
+
+  // On quote closed successfully disable checkout button
+  events.on('quote-management/negotiable-quote-closed', (event) => {
+    if (event?.resultStatus === 'success') {
+      renderCheckoutButton(event, false);
+    }
   });
 
   // Render error when quote data fails to load
