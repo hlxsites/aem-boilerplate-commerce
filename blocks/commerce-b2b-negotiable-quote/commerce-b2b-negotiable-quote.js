@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { getFormValues, getCookie } from '@dropins/tools/lib.js';
+import { getFormValues } from '@dropins/tools/lib.js';
 import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { h } from '@dropins/tools/preact.js';
@@ -36,6 +36,7 @@ import { QuotesListTable } from '@dropins/storefront-quote-management/containers
 // API
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
@@ -90,7 +91,7 @@ const checkPermissions = async () => {
  * @returns {Promise<string>} The current user email
  */
 async function getCurrentUserEmail() {
-  const token = getCookie('auth_dropin_user_token');
+  const token = getUserTokenCookie();
   if (!token) return null;
 
   try {
