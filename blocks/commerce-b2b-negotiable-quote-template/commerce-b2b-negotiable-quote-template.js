@@ -103,6 +103,11 @@ export default async function decorate(block) {
     return;
   }
 
+  // Create a container for the address error
+  const addressErrorContainer = document.createElement('div');
+  addressErrorContainer.classList.add('negotiable-quote-template__address-error-container');
+  addressErrorContainer.setAttribute('hidden', true);
+
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
 
@@ -135,6 +140,9 @@ export default async function decorate(block) {
       acceptedFileTypes: ACCEPTED_FILE_TYPES,
       slots: {
         ShippingInformation: (ctx) => {
+          // Append the address error container to the shipping information container
+          ctx.appendChild(addressErrorContainer);
+
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote-template__select-shipping-information');
           ctx.appendChild(shippingInformation);
@@ -167,6 +175,8 @@ export default async function decorate(block) {
                 className: 'negotiable-quote-template__shipping-information-addresses',
                 selectShipping: true,
                 defaultSelectAddressId: 0,
+                showShippingCheckBox: false,
+                showBillingCheckBox: false,
                 onAddressData: (params) => {
                   const { data, isDataValid: isValid } = params;
                   const addressUid = data?.uid;
@@ -209,7 +219,6 @@ export default async function decorate(block) {
                     postcode: formValues.postcode,
                     countryCode: formValues.countryCode,
                     telephone: formValues.telephone,
-                    saveInAddressBook: formValues.saveInAddressBook,
                   };
 
                   // These values are not part of the standard address input
@@ -219,6 +228,7 @@ export default async function decorate(block) {
 
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
+
                   addQuoteTemplateShippingAddress({
                     templateId: quoteTemplateId,
                     shippingAddress: {
@@ -228,10 +238,18 @@ export default async function decorate(block) {
                       },
                       customerNotes: formValues.customerNotes,
                     },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
+                  })
+                    .catch((error) => {
+                      addressErrorContainer.removeAttribute('hidden');
+                      UI.render(InLineAlert, {
+                        type: 'error',
+                        description: `${error}`,
+                      })(addressErrorContainer);
+                    })
+                    .finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
                 },
               })(shippingInformation);
             }

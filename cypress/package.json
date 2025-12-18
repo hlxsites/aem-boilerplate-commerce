@@ -9,7 +9,8 @@
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
     "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas",
     "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js",
-    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas"
+    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
+    "lint": "eslint src/"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
@@ -28,6 +29,8 @@
     "cypress-multi-reporters": "^1.5.0",
     "cypress-plugin-tab": "^1.0.5",
     "danger": "^10.7.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-cypress": "^5.2.0",
     "franc-min": "~6.2.0",
     "glob": "~7.2.0",
     "jimp": "~0.22.0",
