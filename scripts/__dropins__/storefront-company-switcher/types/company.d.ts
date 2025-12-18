@@ -15,11 +15,16 @@
  * from Adobe.
  *******************************************************************/
 /**
+ * Company status enum values
+ */
+export type CompanyStatusEnum = 'PENDING' | 'APPROVED' | 'REJECTED' | 'BLOCKED';
+/**
  * Represents a company entity
  */
 export interface Company {
     id: string;
     name: string;
+    status?: CompanyStatusEnum;
 }
 /**
  * Represents a company option for the picker component

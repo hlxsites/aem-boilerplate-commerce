@@ -15,7 +15,9 @@ export interface InLineAlertProps {
     icon?: any;
 }
 export interface CompanyProfileProps {
+    /** Additional CSS classes to apply to the container for custom styling */
     className?: string;
+    /** Slot configuration for customizing company data display */
     slots?: {
         CompanyData?: SlotProps<CompanyDataContext & {
             Default?: any;
