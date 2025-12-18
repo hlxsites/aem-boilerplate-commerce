@@ -38,10 +38,17 @@ This block currently does not support configuration through block metadata. All 
 ### Dependencies
 
 **Dropins:**
-- `@dropins/storefront-quote-management` - Provides quote template management containers and APIs
-- `@dropins/storefront-account` - Provides address management functionality
-- `@dropins/storefront-company-management` - Provides company verification APIs
-- `@dropins/tools` - Provides UI components, form utilities, and event bus
+- `@dropins/storefront-quote-management` - Quote template management containers, renderer, and API
+- `@dropins/storefront-account` - Account containers (Addresses) and renderer
+- `@dropins/storefront-company-management` - Company permission checks
+- `@dropins/tools/lib.js` - Form utilities (`getFormValues`)
+- `@dropins/tools/event-bus.js` - Event handling
+- `@dropins/tools/components.js` - UI components (InLineAlert, Icon, ProgressSpinner)
+- `@dropins/tools/preact.js` - Preact utilities (`h` function for JSX)
+- `../../scripts/initializers/company.js` - Company management initialization
+- `../../scripts/initializers/quote-management.js` - Quote management initialization
+- `../../scripts/initializers/account.js` - Account initialization
+- `../../scripts/commerce.js` - Authentication and utility functions (`checkIsAuthenticated`, `rootLink`, `CUSTOMER_LOGIN_PATH`)
 
 **Containers:**
 - `QuoteTemplatesListTable` - Renders the list of quote templates with pagination
@@ -52,6 +59,11 @@ This block currently does not support configuration through block metadata. All 
 - `companyEnabled()` - Checks if company functionality is enabled
 - `getCompany()` - Retrieves company information for the authenticated user
 - `addQuoteTemplateShippingAddress()` - Adds shipping address to a quote template
+  - With existing address: `{ templateId, shippingAddress: { customerAddressUid } }`
+  - With new address: `{ templateId, shippingAddress: { address: { ...addressInput, additionalInput: { vat_id } }, customerNotes } }`
+- `createCustomerAddress()` - Creates a new customer address (used before adding shipping address for new addresses)
+  - Accepts full address input including: city, company, countryCode, defaultBilling, defaultShipping, fax, firstname, lastname, middlename, postcode, prefix, region (with regionCode and regionId), street (array), suffix, telephone, vatId
+  - Called before `addQuoteTemplateShippingAddress` when user submits a new address form
 
 **UI Components:**
 - `InLineAlert` - Displays error messages
@@ -64,37 +76,67 @@ This block currently does not support configuration through block metadata. All 
 
 - **Authenticated Users with Company**: Renders the quote templates list or details view based on URL parameters
 - **Unauthenticated Users**: Redirects to the customer login page
-- **Company Not Enabled**: Redirects to the customer account page
-- **User Without Company**: Redirects to the customer account page
+- **Company Not Enabled**: Shows warning banner with message "B2B company functionality is not enabled for your account. Please contact your administrator for access."
+- **User Without Company**: Shows warning banner with message "You need to be associated with a company to access quote template management. Please contact your administrator."
 
 ### User Interaction Flows
 
-1. **Permissions Check**: Verifies user authentication, company functionality status, and company membership before rendering
+1. **Permissions Check**: 
+   - Verifies user authentication (redirects to login if not authenticated)
+   - Checks if company functionality is enabled via `companyEnabled()`
+   - Verifies user has a company via `getCompany()`
+   - Shows warning banner with appropriate message if company checks fail (instead of redirecting)
+   - Prevents content rendering if permissions are not met
 2. **List View**: Displays all quote templates with pagination controls, filtering, and page size selection
+   - Clicking "View" on a template navigates to details view with `quoteTemplateId` parameter
 3. **Details View**: Displays individual quote template details when accessed via `?quoteTemplateId={id}` parameter
    - Shows quote template management interface via `ManageNegotiableQuoteTemplate` container
-   - Provides shipping information selection when the template can be sent for review
+   - Provides shipping information selection when the template can be sent for review (`templateData.canSendForReview === true`)
    - Allows users to select from existing addresses or create a new shipping address
-   - Displays a progress spinner during shipping address operations
-   - Automatically refreshes after shipping address is added
+   - Displays a progress spinner during shipping address operations (hides address selection UI)
+   - Restores UI visibility after shipping address operations complete
 
 ### Error Handling
 
-- **Authentication Errors**: Redirects to login page (`CUSTOMER_LOGIN_PATH`)
-- **Company Not Enabled**: Redirects to customer account page (`CUSTOMER_ACCOUNT_PATH`)
-- **User Without Company**: Redirects to customer account page (`CUSTOMER_ACCOUNT_PATH`)
-- **Permission Check Failures**: Prevent content rendering and immediately redirect
+- **Authentication Errors**: Redirects to login page immediately if user is not authenticated
+- **Company Not Enabled**: Shows warning banner with message instead of redirecting
+- **User Without Company**: Shows warning banner with message (catches error from `getCompany()` API call)
+- **Permission Check Failures**: Prevent content rendering and show warning banner with appropriate message
 - **Quote Data Loading Errors**: Displays an inline error alert when quote data fails to load (via `quote-management/quote-data/error` event)
+- **Shipping Address Errors**: Handled by `addQuoteTemplateShippingAddress` API with `.finally()` block to hide spinner and restore UI visibility regardless of success or failure
+- **Address Form Validation**: Invalid forms prevent submission and do not trigger API calls (`formValid` check)
 - **Container Errors**: If container fails to render, the block remains empty
-- **Fallback Behavior**: Permission checks occur before rendering any content
+- **Fallback Behavior**: Permission checks occur before rendering any content; shows warning banner instead of redirecting for company-related issues
 
 ### Shipping Address Operations
 
-When viewing quote template details and the template can be sent for review, the block provides shipping information selection:
+When viewing quote template details and the template can be sent for review (`templateData.canSendForReview === true`), the block provides shipping information selection:
 
-- **Select Existing Address**: Users can choose from their saved addresses via the `Addresses` container
-- **Create New Address**: Users can fill out a form to add a new shipping address with optional VAT ID and customer notes
-- **Progress Indication**: A progress spinner is displayed while the shipping address is being added
+- **Renders `Addresses` container** in ShippingInformation slot with:
+  - `minifiedView: false`
+  - `withActionsInMinifiedView: false`
+  - `selectable: true`
+  - `selectShipping: true`
+  - `defaultSelectAddressId: 0`
+- **Select Existing Address** (`onAddressData` callback):
+  - Users can choose from their saved addresses via the `Addresses` container
+  - System validates address data (`isDataValid`)
+  - Extracts address UID from selected address
+  - Calls `addQuoteTemplateShippingAddress({ templateId, shippingAddress: { customerAddressUid } })`
+  - Shows progress spinner during update (hides address selection UI)
+  - Restores UI visibility after operation completes
+- **Create New Address** (`onSubmit` callback):
+  - Users can fill out a form to add a new shipping address
+  - Form includes: firstName, lastName, company, street (multiple lines), city, region, postcode, countryCode, telephone, vatId, customerNotes, saveInAddressBook
+  - Form validation occurs before submission (`formValid` check)
+  - Street addresses combined into array from fields starting with 'street'
+  - Region code and ID extracted from region field (format: "regionCode,regionId")
+  - VAT ID passed as additional input in `additionalAddressInput`
+  - First creates customer address via `createCustomerAddress()` API
+  - Then calls `addQuoteTemplateShippingAddress({ templateId, shippingAddress: { address: { ...addressInput, additionalInput }, customerNotes } })`
+  - Shows progress spinner during save (hides address selection UI)
+  - Restores UI visibility after operation completes
+- **Progress Indication**: A progress spinner is displayed while the shipping address is being added (address selection UI is hidden during operations)
 - **Asynchronous Updates**: Address operations are handled asynchronously via the `addQuoteTemplateShippingAddress` API
 
 ### Event Listeners
@@ -112,20 +154,30 @@ The details view implements custom slots for the `ManageNegotiableQuoteTemplate`
 **ShippingInformation Slot:**
 
 This slot provides a custom shipping address selection interface that:
+- Creates a shipping information container and progress spinner container (hidden by default)
 - Monitors template state changes via `onChange` callback
 - Only displays when `templateData.canSendForReview` is true
+- Clears existing content from shipping information container on each state change
 - Renders the `Addresses` container with shipping selection mode enabled
 - Handles two address submission workflows:
   1. **Existing Address Selection** (`onAddressData` callback):
-     - Receives selected address UID
-     - Validates address data
-     - Calls `addQuoteTemplateShippingAddress` with `customerAddressUid`
+     - Receives selected address data and validation status
+     - Validates address data (`isDataValid` check)
+     - Extracts address UID from selected address
+     - Shows progress spinner and hides address selection UI
+     - Calls `addQuoteTemplateShippingAddress({ templateId, shippingAddress: { customerAddressUid } })`
+     - Restores UI visibility after operation completes (via `.finally()`)
   2. **New Address Creation** (`onSubmit` callback):
-     - Collects form values including street lines, region, and optional VAT ID
+     - Receives form event and validation status
+     - Validates form data (`formValid` check)
+     - Collects form values including street lines (combined into array), region (split into code and ID), VAT ID, and customerNotes
      - Transforms form data into address input format
-     - Calls `addQuoteTemplateShippingAddress` with complete address object
-- Shows/hides progress spinner during API operations
-- Toggles visibility of address selection UI during operations
+     - Shows progress spinner and hides address selection UI
+     - First calls `createCustomerAddress()` to save address to address book
+     - Then calls `addQuoteTemplateShippingAddress({ templateId, shippingAddress: { address: { ...addressInput, additionalInput }, customerNotes } })`
+     - Restores UI visibility after operation completes (via `.finally()`)
+- Progress spinner shows/hides during API operations
+- Address selection UI visibility toggles during operations
 
 ### Callback Handlers
 

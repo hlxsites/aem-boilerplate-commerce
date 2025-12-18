@@ -3,6 +3,7 @@
 ## Overview
 
 The Commerce B2B Negotiable Quote block provides two views for managing negotiable quotes for authenticated B2B customers:
+
 1. **List View**: Displays all quotes using the `QuotesListTable` container
 2. **Manage View**: Displays individual quote details using the `ManageNegotiableQuote` container with custom slots for checkout button and shipping address selection
 
@@ -27,11 +28,11 @@ It follows the `commerce-b2b-*` naming convention and initializes required drop-
 
 This block currently does not support configuration through block metadata. All settings are hardcoded in the implementation:
 
-| Setting              | Type    | Value   | Description                            |
-| -------------------- | ------- | ------- | -------------------------------------- |
-| `showItemRange`      | boolean | `true`  | Shows the item range text              |
-| `showPageSizePicker` | boolean | `true`  | Shows the page size picker             |
-| `showPagination`     | boolean | `true`  | Shows the pagination controls          |
+| Setting              | Type    | Value  | Description                   |
+| -------------------- | ------- | ------ | ----------------------------- |
+| `showItemRange`      | boolean | `true` | Shows the item range text     |
+| `showPageSizePicker` | boolean | `true` | Shows the page size picker    |
+| `showPagination`     | boolean | `true` | Shows the pagination controls |
 
 ### URL Parameters
 
@@ -55,6 +56,7 @@ No localStorage keys are used by this block.
 - `quote-management/quote-items-removed` – Disables the checkout button when quote items are removed
 - `quote-management/quantities-updated` – Disables the checkout button when item quantities are updated
 - `quote-management/shipping-address-set` – Disables the checkout button when shipping address is set
+- `quote-management/negotiable-quote-closed` - Disables the checkout button when the quote is closed
 - `companyContext/changed` – Removes `quoteid` from URL and reloads the page to show list view when company context changes
 
 **Note**: Delete and duplicate listeners are automatically cleaned up using a MutationObserver when the block is removed from the DOM.
@@ -69,30 +71,37 @@ This block does not directly emit events but uses containers that may emit event
 
 - **Authenticated Users with Company**: Renders the quotes list or manage view based on URL parameters
 - **Unauthenticated Users**: Redirects to the customer login page
-- **Company Not Enabled**: Redirects to the customer account page
-- **User Without Company**: Redirects to the customer account page
+- **Company Not Enabled**: Shows warning banner with message "B2B company functionality is not enabled for your account. Please contact your administrator for access."
+- **User Without Company**: Shows warning banner with message "You need to be associated with a company to access quote management. Please contact your administrator."
 
 ### View Switching
 
 The block renders different views based on the presence of the `quoteid` URL parameter:
 
 - **List View** (`data-quote-view="list"`): No `quoteid` parameter
+
   - Renders `QuotesListTable` container
   - Displays all quotes with pagination
   - "View" action adds `quoteid` to URL to switch to manage view
 
 - **Manage View** (`data-quote-view="manage"`): When `quoteid` is present
   - Renders `ManageNegotiableQuote` container with custom slots:
-    - **Footer slot**: Renders checkout button (enabled based on `quoteData.canCheckout`)
+    - **Footer slot**: Renders checkout button container and button (enabled based on `quoteData.canCheckout`)
+      - Button text comes from placeholders (`Cart.PriceSummary.checkout`)
+      - Button disabled state managed dynamically based on quote state and events
     - **ShippingInformation slot**: Renders shipping address selection when `quoteData.canSendForReview` is true
+      - Includes progress spinner container (hidden by default)
+      - Renders `Addresses` container with shipping selection enabled
+      - Handles both existing address selection and new address creation
   - Navigates to `/b2b/quote-checkout?quoteId={quoteid}` on checkout
-  - Sets up event listeners for delete and duplicate operations with automatic cleanup
+  - Sets up event listeners for delete and duplicate operations with automatic cleanup via MutationObserver
 
 ### Shipping Address Selection
 
 When a quote can be sent for review (`quoteData.canSendForReview === true`), the manage view displays:
 
 - **Existing Addresses**: Renders the `Addresses` container from `@dropins/storefront-account` in selectable mode
+
   - Users can select from their saved addresses
   - On address selection, calls `setShippingAddress` API with the address UID
   - Shows a progress spinner during the address update
@@ -106,68 +115,81 @@ When a quote can be sent for review (`quoteData.canSendForReview === true`), the
 ### User Interaction Flows
 
 1. **Permissions Check**:
-   - Verifies user authentication
+
+   - Verifies user authentication (redirects to login if not authenticated)
    - Checks if company functionality is enabled via `companyEnabled()`
    - Verifies user has a company via `getCompany()`
-   - Redirects if any check fails
+   - Shows warning banner with appropriate message if company checks fail (instead of redirecting)
 
 2. **List View Flow**:
+
    - Fetches and displays all quotes
    - Users can view, filter, and paginate quotes
    - Clicking "View" on a quote navigates to manage view with `quoteid` parameter
 
 3. **Manage View Flow**:
+
    - Displays quote details and quoted items
    - If `quoteData.canSendForReview` is true:
      - Shows shipping address selection
      - Users can select existing address or add new address
      - Address updates trigger `setShippingAddress` API call
-   - Shows checkout button if `quoteData.canCheckout` is true
+     - Shows progress spinner during address operations
+   - Shows checkout button in Footer slot if `quoteData.canCheckout` is true
    - Checkout button navigates to `/b2b/quote-checkout?quoteId={quoteid}`
+   - Checkout button is initially disabled and enabled based on `quoteData.canCheckout`
    - Checkout button is disabled when quote items are removed, quantities updated, or shipping address is set
-   - Quote deletion redirects to list view after 2 seconds
-   - Quote duplication redirects to the new quote after 2 seconds
+   - Quote deletion redirects to list view after 2 seconds (removes `quoteid` parameter)
+   - Quote duplication redirects to the new quote after 2 seconds (updates `quoteid` parameter)
 
 4. **Shipping Address Selection Flow**:
-   - Only visible when quote can be sent for review
-   - **Option 1 - Select Existing Address**:
+   - Only visible when quote can be sent for review (`quoteData.canSendForReview === true`)
+   - Renders `Addresses` container in ShippingInformation slot with:
+     - `minifiedView: false`
+     - `withActionsInMinifiedView: false`
+     - `selectable: true`
+     - `selectShipping: true`
+     - `defaultSelectAddressId: 0`
+   - **Option 1 - Select Existing Address** (`onAddressData` callback):
      - User selects saved address from list
-     - System validates address data
-     - Calls `setShippingAddress({ quoteUid, addressId })`
-     - Shows spinner during update
-     - Disables checkout button after address is set
-   - **Option 2 - Add New Address**:
+     - System validates address data (`isDataValid`)
+     - Extracts address UID from selected address
+     - Calls `setShippingAddress({ quoteUid, addressId: addressUid })`
+     - Shows progress spinner during update (hides address selection UI)
+     - Restores UI visibility after operation completes
+   - **Option 2 - Add New Address** (`onSubmit` callback):
      - User fills out address form
-     - Form validation occurs before submission
-     - Street addresses combined into array
-     - Region code extracted from region field
-     - VAT ID passed as additional input
-     - Calls `setShippingAddress({ quoteUid, addressData })`
-     - Shows spinner during save
-     - Disables checkout button after address is saved
-
-5. **Company Context Change Flow**:
-   - When company context changes (user switches companies)
-   - Removes `quoteid` parameter from URL
-   - Replaces browser history state
-   - Reloads page to display list view
+     - Form validation occurs before submission (`formValid` check)
+     - Street addresses combined into array from fields starting with 'street'
+     - Region code and ID extracted from region field (format: "regionCode,regionId")
+     - VAT ID passed as additional input in `additionalAddressInput`
+     - First creates customer address via `createCustomerAddress()` API
+     - Then calls `setShippingAddress({ quoteUid, addressData: { ...addressInput, additionalInput } })`
+     - Shows progress spinner during save (hides address selection UI)
+     - Restores UI visibility after operation completes
 
 ### Error Handling
 
-- **Authentication Errors**: Redirects to login page
-- **Company Not Enabled**: Redirects to customer account page
-- **User Without Company**: Redirects to customer account page (catches error from `getCompany()` API call)
+- **Authentication Errors**: Redirects to login page immediately if user is not authenticated
+- **Company Not Enabled**: Shows warning banner with message instead of redirecting
+- **User Without Company**: Shows warning banner with message (catches error from `getCompany()` API call)
 - **Quote Data Load Errors**: Displays inline error alert with error message via `quote-management/quote-data/error` event
-- **Shipping Address Errors**: Handled by `setShippingAddress` API with `.finally()` block to hide spinner regardless of success or failure
-- **Address Form Validation**: Invalid forms prevent submission and do not trigger API calls
+- **Shipping Address Errors**: Handled by `setShippingAddress` API with `.finally()` block to hide spinner and restore UI visibility regardless of success or failure
+- **Address Form Validation**: Invalid forms prevent submission and do not trigger API calls (`formValid` check)
 - **Container Errors**: If containers fail to render, the section remains empty
-- **Fallback Behavior**: Permission checks occur before rendering any content
-- **Event Listener Cleanup**: MutationObserver monitors DOM and automatically cleans up delete/duplicate event listeners when block is removed
+- **Fallback Behavior**: Permission checks occur before rendering any content; shows warning banner instead of redirecting for company-related issues
+- **Event Listener Cleanup**: MutationObserver monitors DOM and automatically cleans up delete/duplicate event listeners when block is removed from the DOM
 
 ### API Calls
 
 - **`setShippingAddress`**: Updates the shipping address for a quote
-  - With existing address: `{ quoteUid, addressId }`
+
+  - With existing address: `{ quoteUid, addressId: addressUid }`
   - With new address: `{ quoteUid, addressData: { ...addressInput, additionalInput: { vat_id } } }`
   - Returns a promise that resolves when address is updated
   - Used in both address selection and new address creation flows
+  - Shows/hides progress spinner and address selection UI during operations
+
+- **`createCustomerAddress`**: Creates a new customer address (used before setting shipping address for new addresses)
+  - Accepts full address input including: city, company, countryCode, defaultBilling, defaultShipping, fax, firstname, lastname, middlename, postcode, prefix, region (with regionCode and regionId), street (array), suffix, telephone, vatId
+  - Called before `setShippingAddress` when user submits a new address form

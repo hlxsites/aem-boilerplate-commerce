@@ -37,6 +37,7 @@ import { QuotesListTable } from '@dropins/storefront-quote-management/containers
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+import { createCustomerAddress } from '@dropins/storefront-account/api.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
@@ -138,6 +139,11 @@ export default async function decorate(block) {
   const checkoutButtonContainer = document.createElement('div');
   checkoutButtonContainer.classList.add('negotiable-quote__checkout-button-container');
 
+  // Create a container for the address error
+  const addressErrorContainer = document.createElement('div');
+  addressErrorContainer.classList.add('negotiable-quote__address-error-container');
+  addressErrorContainer.setAttribute('hidden', true);
+
   // Function for rendering or re-rendering the checkout button
   const renderCheckoutButton = (_context, checkoutEnabled = false) => {
     if (!quoteId) return;
@@ -173,9 +179,20 @@ export default async function decorate(block) {
           currentUserEmail = await getCurrentUserEmail();
 
           const enabled = ctx.quoteData?.canCheckout && currentUserEmail === ctx.quoteData?.email;
+
+          // Initial render
           renderCheckoutButton(ctx, enabled);
+
+          // Re-render on state changes
+          ctx.onChange((next) => {
+            const nextEnabled = next.quoteData?.canCheckout;
+            renderCheckoutButton(next, nextEnabled);
+          });
         },
         ShippingInformation: (ctx) => {
+          // Append the address error container to the shipping information container
+          ctx.appendChild(addressErrorContainer);
+
           const shippingInformation = document.createElement('div');
           shippingInformation.classList.add('negotiable-quote__select-shipping-information');
           ctx.appendChild(shippingInformation);
@@ -230,7 +247,8 @@ export default async function decorate(block) {
 
                   const formValues = getFormValues(event.target);
 
-                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
+                  const [regionCode, regionId] = formValues.region?.split(',') || [];
+                  const regionIdNumber = parseInt(regionId, 10);
 
                   // iterate through the object entries and combine the values of keys that have
                   // a prefix of 'street' into an array
@@ -248,7 +266,6 @@ export default async function decorate(block) {
                     postcode: formValues.postcode,
                     countryCode: formValues.countryCode,
                     telephone: formValues.telephone,
-                    saveInAddressBook: formValues.saveInAddressBook,
                   };
 
                   // These values are not part of the standard address input
@@ -256,18 +273,50 @@ export default async function decorate(block) {
                     vat_id: formValues.vatId,
                   };
 
+                  const createCustomerAddressInput = {
+                    city: formValues.city,
+                    company: formValues.company,
+                    countryCode: formValues.countryCode,
+                    defaultBilling: !!formValues.defaultBilling || false,
+                    defaultShipping: !!formValues.defaultShipping || false,
+                    fax: formValues.fax,
+                    firstname: formValues.firstName,
+                    lastname: formValues.lastName,
+                    middlename: formValues.middlename,
+                    postcode: formValues.postcode,
+                    prefix: formValues.prefix,
+                    region: regionCode ? {
+                      regionCode,
+                      regionId: regionIdNumber,
+                    } : undefined,
+                    street: streetInputValues,
+                    suffix: formValues.suffix,
+                    telephone: formValues.telephone,
+                    vatId: formValues.vatId,
+                  };
+
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
-                  setShippingAddress({
-                    quoteUid: quoteId,
-                    addressData: {
-                      ...addressInput,
-                      additionalInput: additionalAddressInput,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
+
+                  createCustomerAddress(createCustomerAddressInput)
+                    .then(() => setShippingAddress({
+                      quoteUid: quoteId,
+                      addressData: {
+                        ...addressInput,
+                        additionalInput: additionalAddressInput,
+                      },
+                    }))
+                    .catch((error) => {
+                      addressErrorContainer.removeAttribute('hidden');
+                      UI.render(InLineAlert, {
+                        type: 'error',
+                        description: `${error}`,
+                      })(addressErrorContainer);
+                    })
+                    .finally(() => {
+                      progressSpinner.setAttribute('hidden', true);
+                      shippingInformation.removeAttribute('hidden');
+                    });
                 },
               })(shippingInformation);
             }
@@ -332,6 +381,13 @@ export default async function decorate(block) {
   // On shipping address selected disable checkout button
   events.on('quote-management/shipping-address-set', ({ quote }) => {
     renderCheckoutButton(quote, false);
+  });
+
+  // On quote closed successfully disable checkout button
+  events.on('quote-management/negotiable-quote-closed', (event) => {
+    if (event?.resultStatus === 'success') {
+      renderCheckoutButton(event, false);
+    }
   });
 
   // Render error when quote data fails to load
