@@ -47,8 +47,37 @@ const setupAemAssetsImageParams = () => {
   }
 };
 
+const setStoreView = () => {
+  // 1. Get Store View Code from URL param ?storeview=...
+  const storeViewCodeParam = new URLSearchParams(window.location.search).get('storeview');
+
+  if (storeViewCodeParam) {
+    // 2. Set Store View Code in session storage and set it in the URL
+    sessionStorage.setItem('DROPIN__STOREVIEW', storeViewCodeParam);
+  } else if (storeViewCodeParam === '') {
+    sessionStorage.removeItem('DROPIN__STOREVIEW');
+  }
+
+  // 3. Get current store view code from session storage
+  const storeViewCode = sessionStorage.getItem('DROPIN__STOREVIEW');
+
+  // 4. Set Store View Code in Core Fetch GraphQL
+  if (storeViewCode) {
+    CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('Store', storeViewCode);
+    CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Store', storeViewCode);
+    CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Store-View-Code', storeViewCode);
+
+    // 5. Set Store View Code in the URL
+    const url = new URL(window.location.href);
+    url.searchParams.set('storeview', storeViewCode);
+    window.history.replaceState(null, '', url.toString());
+  }
+};
+
 export default async function initializeDropins() {
   const init = async () => {
+    setStoreView();
+
     // Set Customer-Group-ID header
     events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
 
