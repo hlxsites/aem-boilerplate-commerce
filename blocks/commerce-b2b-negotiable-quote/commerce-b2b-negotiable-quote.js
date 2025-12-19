@@ -178,14 +178,21 @@ export default async function decorate(block) {
           // Get the current user email
           currentUserEmail = await getCurrentUserEmail();
 
-          const enabled = ctx.quoteData?.canCheckout && currentUserEmail === ctx.quoteData?.email;
+          // Checkout button is enabled if the quote can be checked out
+          // and the current user email is the same as the quote email
+          const enabled = ctx.quoteData?.canCheckout
+            && currentUserEmail === ctx.quoteData?.email;
 
           // Initial render
           renderCheckoutButton(ctx, enabled);
 
           // Re-render on state changes
           ctx.onChange((next) => {
-            const nextEnabled = next.quoteData?.canCheckout && currentUserEmail === next.quoteData?.email;
+            // Checkout button is enabled if the quote can be checked out
+            // and the current user email is the same as the quote email
+            const nextEnabled = next.quoteData?.canCheckout
+              && currentUserEmail === next.quoteData?.email;
+
             renderCheckoutButton(next, nextEnabled);
           });
         },
