@@ -421,9 +421,9 @@
     width: 100%;
 }
 
-/* When expanded, move address lookup to not interfere with grid */
+/* When expanded, move address lookup to bottom (row 10, after company row 9) */
 .checkout-address-address-wrapper--expanded .checkout-address-address-lookup {
-    grid-row: 100; /* Move to bottom */
+    grid-row: 10;
 }
 
 /* Responsive: stack fields on mobile (single column) */

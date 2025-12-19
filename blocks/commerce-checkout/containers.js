@@ -1111,8 +1111,8 @@ export const renderProgressiveAddressForm = async (container, formRef, data, add
           lookupInputWrapper.style.display = isExpanded ? 'none' : '';
         }
 
-        // Move address lookup section to bottom when expanded (or hide it)
-        addressLookupSection.style.gridArea = isExpanded ? '100 / 1 / auto / -1' : '4 / 1 / auto / -1';
+        // Move address lookup section to bottom when expanded (row 10, after company row 9)
+        addressLookupSection.style.gridArea = isExpanded ? '10 / 1 / auto / -1' : '4 / 1 / auto / -1';
       });
 
       // Optional: Address autocomplete functionality placeholder
