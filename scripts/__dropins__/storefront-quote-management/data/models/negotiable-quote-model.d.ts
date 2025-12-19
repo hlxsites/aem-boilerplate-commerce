@@ -41,6 +41,7 @@ export interface NegotiableQuoteModel {
         firstname: string;
         lastname: string;
     };
+    email?: string;
     templateName?: string;
     totalQuantity: number;
     comments?: {
