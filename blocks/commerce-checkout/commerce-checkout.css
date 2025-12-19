@@ -407,6 +407,20 @@
     display: flex !important;
 }
 
+/* Ensure all fields take up full width of their grid cell */
+.checkout-address-form-container .dropin-field {
+    width: 100%;
+}
+
+.checkout-address-form-container .dropin-field__content,
+.checkout-address-form-container .dropin-input-container,
+.checkout-address-form-container .dropin-input-label-container,
+.checkout-address-form-container .dropin-input,
+.checkout-address-form-container .dropin-picker,
+.checkout-address-form-container .dropin-picker__select {
+    width: 100%;
+}
+
 /* When expanded, move address lookup to not interfere with grid */
 .checkout-address-address-wrapper--expanded .checkout-address-address-lookup {
     grid-row: 100; /* Move to bottom */
