@@ -43,6 +43,7 @@ import '../../scripts/initializers/account.js';
 // Commerce
 import {
   CUSTOMER_LOGIN_PATH,
+  CUSTOMER_NEGOTIABLE_QUOTE_PATH,
   checkIsAuthenticated,
   rootLink,
   ACCEPTED_FILE_TYPES,
@@ -109,6 +110,26 @@ export default async function decorate(block) {
 
   // Get the quote id from the url
   const quoteTemplateId = new URLSearchParams(window.location.search).get('quoteTemplateId');
+
+  // On generate quote success: navigate to new quote after delay to show success banner
+  const generateQuoteListener = events.on('quote-management/quote-template-generated', ({ quoteId }) => {
+    if (quoteId) {
+      // Delay redirect by 2 seconds
+      setTimeout(() => {
+        // Navigate to the negotiable quote page with the new quote ID
+        window.location.href = rootLink(`${CUSTOMER_NEGOTIABLE_QUOTE_PATH}?quoteid=${quoteId}`);
+      }, 2000);
+    }
+  });
+
+  // Clean up listeners if block is removed
+  const observer = new MutationObserver(() => {
+    if (!document.body.contains(block)) {
+      generateQuoteListener?.off();
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 
   if (quoteTemplateId) {
     block.classList.add('negotiable-quote-template__details');
