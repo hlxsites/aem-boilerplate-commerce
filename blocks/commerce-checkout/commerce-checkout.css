@@ -292,8 +292,7 @@
     gap: var(--spacing-medium);
 }
 
-/* Hide the default form title/header in progressive disclosure layout */
-.checkout-address-address-wrapper .account-address-form-wrapper__title,
+/* Hide the default dropin header (not the title) in progressive disclosure layout */
 .checkout-address-address-wrapper .dropin-header-container__title,
 .checkout-address-address-wrapper .dropin-header-container {
     display: none;
@@ -330,9 +329,11 @@
     display: contents !important;
 }
 
-/* Hide the title inside the wrapper */
+/* Style the title inside the wrapper - spans full width */
 .checkout-address-form-container .account-address-form-wrapper__title {
-    display: none !important;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: var(--spacing-small);
 }
 
 /* Hide default shipping/billing checkboxes */
@@ -346,7 +347,7 @@
 /* Address lookup section - spans full width in grid */
 .checkout-address-address-lookup {
     grid-column: 1 / -1;
-    grid-row: 3;
+    grid-row: 4;
 }
 
 /* Search icon positioning inside the input */

@@ -857,11 +857,6 @@ const applyProgressiveFieldOrdering = (formContainer, addressWrapper) => {
       wrapper.style.display = 'contents';
     }
 
-    // Hide the title
-    const title = formContainer.querySelector('.account-address-form-wrapper__title');
-    if (title) {
-      title.style.display = 'none';
-    }
 
     // Hide default shipping/billing checkboxes
     formContainer.querySelectorAll('.account-address-form__field--default_shipping, .account-address-form__field--default_billing').forEach((el) => {
@@ -869,35 +864,38 @@ const applyProgressiveFieldOrdering = (formContainer, addressWrapper) => {
     });
 
     // Define grid rows for each field (determines vertical position)
+    // Row 1 is reserved for the title (addressesFormTitle)
     // Collapsed layout:
-    //   Row 1: First Name | Last Name
-    //   Row 2: Phone | VAT
-    //   Row 3: Address lookup (full width)
+    //   Row 1: Title (full width)
+    //   Row 2: First Name | Last Name
+    //   Row 3: Phone | VAT
+    //   Row 4: Address lookup (full width)
     // Expanded layout:
-    //   Row 1: First Name | Last Name
-    //   Row 2: Street 1 | Street 2
-    //   Row 3: City
-    //   Row 4: Region
-    //   Row 5: Postcode
-    //   Row 6: Country
-    //   Row 7: Phone | VAT
+    //   Row 1: Title (full width)
+    //   Row 2: First Name | Last Name
+    //   Row 3: Street 1 | Street 2
+    //   Row 4: City
+    //   Row 5: Region
+    //   Row 6: Postcode
+    //   Row 7: Country
+    //   Row 8: Phone | VAT
     const fieldConfig = {
-      // Always visible fields - Row 1
-      firstname: { row: 1, col: 1, alwaysVisible: true },
-      lastname: { row: 1, col: 2, alwaysVisible: true },
-      // Phone/VAT - Row 2 when collapsed, Row 7 when expanded
-      telephone: { row: 2, col: 1, visibleCollapsed: true, rowExpanded: 7 },
-      vat: { row: 2, col: 2, visibleCollapsed: true, rowExpanded: 7 },
+      // Always visible fields - Row 2 (after title)
+      firstname: { row: 2, col: 1, alwaysVisible: true },
+      lastname: { row: 2, col: 2, alwaysVisible: true },
+      // Phone/VAT - Row 3 when collapsed, Row 8 when expanded
+      telephone: { row: 3, col: 1, visibleCollapsed: true, rowExpanded: 8 },
+      vat: { row: 3, col: 2, visibleCollapsed: true, rowExpanded: 8 },
       // Address fields - hidden in collapsed, visible in expanded
-      street: { row: 2, visibleExpanded: true }, // street fields side by side in row 2
-      city: { row: 3, col: 'span', visibleExpanded: true },
-      region: { row: 4, col: 'span', visibleExpanded: true },
-      postcode: { row: 5, col: 'span', visibleExpanded: true },
-      country: { row: 6, col: 'span', visibleExpanded: true },
+      street: { row: 3, visibleExpanded: true }, // street fields side by side in row 3
+      city: { row: 4, col: 'span', visibleExpanded: true },
+      region: { row: 5, col: 'span', visibleExpanded: true },
+      postcode: { row: 6, col: 'span', visibleExpanded: true },
+      country: { row: 7, col: 'span', visibleExpanded: true },
       // Email - hidden in this Progressive disclosure layout
       email: { row: 0, col: 'span', hide: true },
       // Company - optional, at the end if shown
-      company: { row: 8, col: 'span', visibleExpanded: true },
+      company: { row: 9, col: 'span', visibleExpanded: true },
     };
 
     // Track street fields for special handling (street1, street2 side by side)
@@ -1053,8 +1051,8 @@ export const renderProgressiveAddressForm = async (container, formRef, data, add
       // Uses same dropin classes as other fields for consistent styling
       const addressLookupSection = document.createElement('div');
       addressLookupSection.className = 'checkout-address-address-lookup dropin-field';
-      // Grid position: full width, row 3 (after name row 1, phone/vat row 2)
-      addressLookupSection.style.gridArea = '3 / 1 / auto / -1';
+      // Grid position: full width, row 4 (after title row 1, name row 2, phone/vat row 3)
+      addressLookupSection.style.gridArea = '4 / 1 / auto / -1';
       addressLookupSection.innerHTML = `
         <div class="dropin-field__content">
           <div class="dropin-input-container dropin-input-container--primary dropin-input-container--floating">
@@ -1114,7 +1112,7 @@ export const renderProgressiveAddressForm = async (container, formRef, data, add
         }
 
         // Move address lookup section to bottom when expanded (or hide it)
-        addressLookupSection.style.gridArea = isExpanded ? '100 / 1 / auto / -1' : '3 / 1 / auto / -1';
+        addressLookupSection.style.gridArea = isExpanded ? '100 / 1 / auto / -1' : '4 / 1 / auto / -1';
       });
 
       // Optional: Address autocomplete functionality placeholder
