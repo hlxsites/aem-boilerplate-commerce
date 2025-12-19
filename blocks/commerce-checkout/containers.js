@@ -83,6 +83,9 @@ import {
   SHIPPING_FORM_NAME,
 } from './constants.js';
 
+// Address Autocomplete Service
+import { createAddressAutocomplete } from './address-autocomplete.js';
+
 /**
  * Container IDs for registry management
  * @enum {string}
@@ -818,6 +821,10 @@ export const renderGiftOptions = async (container) => renderContainer(
   })(container),
 );
 
+// =============================================================================
+// FIELD ORDERING
+// =============================================================================
+
 /**
  * Reorganizes form fields for Progressive disclosure layout
  * Places email first, then name fields, then phone at the end
@@ -1115,14 +1122,9 @@ export const renderProgressiveAddressForm = async (container, formRef, data, add
         addressLookupSection.style.gridArea = isExpanded ? '10 / 1 / auto / -1' : '4 / 1 / auto / -1';
       });
 
-      // Optional: Address autocomplete functionality placeholder
+      // Initialize address autocomplete
       if (addressInput) {
-        addressInput.addEventListener('input', (e) => {
-          // Placeholder for address autocomplete integration (e.g., Google Places API)
-          if (e.target.value.length > 3) {
-            console.log('Address lookup:', e.target.value);
-          }
-        });
+        createAddressAutocomplete(addressInput, formContainer, addressWrapper, toggleBtn);
       }
 
       // Apply CSS-based field ordering (does NOT move elements out of form)

@@ -426,6 +426,83 @@
     grid-row: 10;
 }
 
+/* =============================================================================
+   ADDRESS AUTOCOMPLETE SUGGESTIONS
+   ============================================================================= */
+
+.address-autocomplete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-neutral-50, #fff);
+    border: 1px solid var(--color-neutral-300, #ccc);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.address-autocomplete-suggestion {
+    padding: var(--spacing-small, 12px);
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-neutral-200, #eee);
+    transition: background-color 0.15s ease;
+}
+
+.address-autocomplete-suggestion:last-child {
+    border-bottom: none;
+}
+
+.address-autocomplete-suggestion:hover,
+.address-autocomplete-suggestion--selected {
+    background-color: var(--color-neutral-100, #f5f5f5);
+}
+
+.address-autocomplete-suggestion__content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xsmall, 8px);
+}
+
+.address-autocomplete-suggestion__icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--color-neutral-500);
+}
+
+.address-autocomplete-suggestion__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.address-autocomplete-suggestion__street {
+    font: var(--type-body-2-default-font);
+    color: var(--color-neutral-900);
+}
+
+.address-autocomplete-suggestion__location {
+    font: var(--type-body-2-default-font);
+    font-size: 0.85em;
+    color: var(--color-neutral-600);
+}
+
+.address-autocomplete-no-results {
+    padding: var(--spacing-small, 12px);
+    color: var(--color-neutral-600);
+    font: var(--type-body-2-default-font);
+    font-style: italic;
+}
+
+/* Ensure input wrapper has relative positioning for dropdown */
+.checkout-address-address-lookup .dropin-input-label-container {
+    position: relative;
+}
+
 /* Responsive: stack fields on mobile (single column) */
 @media only screen and (max-width: 767px) {
     .checkout-address-form-container form,
