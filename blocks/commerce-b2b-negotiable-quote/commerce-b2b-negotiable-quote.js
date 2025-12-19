@@ -185,7 +185,7 @@ export default async function decorate(block) {
 
           // Re-render on state changes
           ctx.onChange((next) => {
-            const nextEnabled = next.quoteData?.canCheckout;
+            const nextEnabled = next.quoteData?.canCheckout && currentUserEmail === next.quoteData?.email;
             renderCheckoutButton(next, nextEnabled);
           });
         },
