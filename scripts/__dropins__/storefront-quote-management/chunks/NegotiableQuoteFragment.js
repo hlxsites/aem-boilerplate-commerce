@@ -59,6 +59,7 @@ const e=`
       firstname
       lastname
     }
+    email
     comments {
       uid
       created_at

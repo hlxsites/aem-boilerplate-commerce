@@ -13,6 +13,7 @@ export declare const mockGraphQLResponse: {
                     firstname: string;
                     lastname: string;
                 };
+                email: string;
                 comments: {
                     uid: string;
                     created_at: string;
@@ -111,6 +112,7 @@ export declare const mockQuoteData: {
         firstname: string;
         lastname: string;
     };
+    email: string;
     comments: {
         uid: string;
         created_at: string;
@@ -648,6 +650,7 @@ export declare const mockNegotiableQuotesResponse: {
                     firstname: string;
                     lastname: string;
                 };
+                email: string;
                 items: {
                     uid: string;
                     product: {
