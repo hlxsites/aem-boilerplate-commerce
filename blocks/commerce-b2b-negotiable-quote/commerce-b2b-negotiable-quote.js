@@ -36,8 +36,8 @@ import { QuotesListTable } from '@dropins/storefront-quote-management/containers
 // API
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import { createCustomerAddress } from '@dropins/storefront-account/api.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
