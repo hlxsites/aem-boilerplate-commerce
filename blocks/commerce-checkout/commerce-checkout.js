@@ -47,6 +47,7 @@ import {
   renderGiftOptions,
   renderLoginForm,
   renderMergedCartBanner,
+  renderProgressiveAddressForm,
   renderOrderSummary,
   renderOutOfStock,
   renderPaymentMethods,
@@ -251,7 +252,8 @@ export default async function decorate(block) {
     } else if (!shippingForm) {
       shippingFormSkeleton.remove();
 
-      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, 'shipping');
+      // Use progressive disclosure shipping form
+      shippingForm = await renderProgressiveAddressForm($shippingForm, shippingFormRef, data, 'shipping');
     }
 
     if (!billingForm) {

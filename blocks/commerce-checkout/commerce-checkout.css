@@ -281,3 +281,145 @@
         margin-top: 0;
     }
 }
+
+/* =============================================================================
+   PROGRESSIVE DISCLOSURE ADDRESS FORM - Grid Layout
+   ============================================================================= */
+
+.checkout-address-address-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+}
+
+/* Hide the default form title/header in progressive disclosure layout */
+.checkout-address-address-wrapper .account-address-form-wrapper__title,
+.checkout-address-address-wrapper .dropin-header-container__title,
+.checkout-address-address-wrapper .dropin-header-container {
+    display: none;
+}
+
+/* Form container */
+.checkout-address-form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form uses CSS Grid for 2-column layout */
+.checkout-address-form-container form,
+.checkout-address-form-container .dropin-form,
+.checkout-address-form-container .account-address-form {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: var(--spacing-medium) !important;
+}
+
+/* Make wrapper elements AND form transparent so fields become direct grid items */
+.checkout-address-form-container .account-address-form-wrapper,
+.checkout-address-form-container .account-address-form-wrapper form,
+.checkout-address-form-container .account-address-form form,
+.checkout-address-form-container form.account-form,
+.checkout-address-form-container form.account-address-form,
+.checkout-address-form-container .dropin-form__row,
+.checkout-address-form-container .dropin-form__fields,
+.checkout-address-form-container .account-address-form__row,
+.checkout-address-form-container .account-address-form__fields,
+.checkout-address-form-container .account-address-form-wrapper__content,
+.checkout-address-form-container [class*="__row"],
+.checkout-address-form-container [class*="__fields"] {
+    display: contents !important;
+}
+
+/* Hide the title inside the wrapper */
+.checkout-address-form-container .account-address-form-wrapper__title {
+    display: none !important;
+}
+
+/* Hide default shipping/billing checkboxes */
+.checkout-address-form-container .account-address-form__field--default_shipping,
+.checkout-address-form-container .account-address-form__field--default_billing,
+.checkout-address-form-container .account-address-form__field--default_shipping-hidden,
+.checkout-address-form-container .account-address-form__field--default_billing-hidden {
+    display: none !important;
+}
+
+/* Address lookup section - spans full width in grid */
+.checkout-address-address-lookup {
+    grid-column: 1 / -1;
+    grid-row: 3;
+}
+
+/* Search icon positioning inside the input */
+.checkout-address-address-lookup__input-wrapper {
+    position: relative;
+}
+
+.checkout-address-address-lookup__icon {
+    position: absolute;
+    left: var(--spacing-small);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-neutral-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+
+
+/* "Enter address manually" toggle link */
+.checkout-address-address-toggle {
+    background: none;
+    border: none;
+    padding: var(--spacing-xsmall) 0;
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+    color: var(--color-neutral-800);
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: left;
+    width: fit-content;
+}
+
+.checkout-address-address-toggle:hover {
+    color: var(--color-neutral-600);
+}
+
+.checkout-address-address-toggle:hover {
+    color: var(--color-neutral-600);
+}
+
+/* Hidden fields (email, etc.) */
+.checkout-address-hidden-always {
+    display: none !important;
+}
+
+/* Address fields - hidden by default, shown when expanded */
+.checkout-address-address-field {
+    display: none;
+}
+
+/* Show address fields when expanded */
+.checkout-address-address-wrapper--expanded .checkout-address-address-field {
+    display: flex !important;
+}
+
+/* When expanded, move address lookup to not interfere with grid */
+.checkout-address-address-wrapper--expanded .checkout-address-address-lookup {
+    grid-row: 100; /* Move to bottom */
+}
+
+/* Responsive: stack fields on mobile (single column) */
+@media only screen and (max-width: 767px) {
+    .checkout-address-form-container form,
+    .checkout-address-form-container .dropin-form,
+    .checkout-address-form-container .account-address-form {
+        grid-template-columns: 1fr !important;
+    }
+
+    .checkout-address-address-wrapper .dropin-field {
+        grid-column: 1 !important;
+    }
+}

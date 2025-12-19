@@ -817,3 +817,358 @@ export const renderGiftOptions = async (container) => renderContainer(
     },
   })(container),
 );
+
+/**
+ * Reorganizes form fields for Progressive disclosure layout
+ * Places email first, then name fields, then phone at the end
+ * Hides address fields initially
+ * @param {HTMLElement} formContainer - The form container element
+ * @param {HTMLElement} addressWrapper - The wrapper element for toggling expanded state
+ */
+const applyProgressiveFieldOrdering = (formContainer, addressWrapper) => {
+  // Wait for form to be rendered
+  const observer = new MutationObserver((mutations, obs) => {
+    // Find the grid container - the outer .account-address-form div (not the form element)
+    const gridContainer = formContainer.querySelector('div.account-address-form');
+    if (!gridContainer) return;
+
+    // Find the actual <form> element
+    const formElement = formContainer.querySelector('form');
+    if (!formElement) return;
+
+    // Find all field containers
+    const allFields = formContainer.querySelectorAll('.dropin-field');
+    if (allFields.length === 0) return;
+
+    // Stop observing once we find fields
+    obs.disconnect();
+
+    // Set up grid on the outer container
+    gridContainer.style.display = 'grid';
+    gridContainer.style.gridTemplateColumns = '1fr 1fr';
+    gridContainer.style.gap = 'var(--spacing-medium)';
+
+    // Make the <form> element transparent so fields become direct grid items
+    formElement.style.display = 'contents';
+
+    // Make the wrapper transparent if it exists
+    const wrapper = formContainer.querySelector('.account-address-form-wrapper');
+    if (wrapper) {
+      wrapper.style.display = 'contents';
+    }
+
+    // Hide the title
+    const title = formContainer.querySelector('.account-address-form-wrapper__title');
+    if (title) {
+      title.style.display = 'none';
+    }
+
+    // Hide default shipping/billing checkboxes
+    formContainer.querySelectorAll('.account-address-form__field--default_shipping, .account-address-form__field--default_billing').forEach((el) => {
+      el.style.display = 'none';
+    });
+
+    // Define grid rows for each field (determines vertical position)
+    // Collapsed layout:
+    //   Row 1: First Name | Last Name
+    //   Row 2: Phone | VAT
+    //   Row 3: Address lookup (full width)
+    // Expanded layout:
+    //   Row 1: First Name | Last Name
+    //   Row 2: Street 1 | Street 2
+    //   Row 3: City
+    //   Row 4: Region
+    //   Row 5: Postcode
+    //   Row 6: Country
+    //   Row 7: Phone | VAT
+    const fieldConfig = {
+      // Always visible fields - Row 1
+      firstname: { row: 1, col: 1, alwaysVisible: true },
+      lastname: { row: 1, col: 2, alwaysVisible: true },
+      // Phone/VAT - Row 2 when collapsed, Row 7 when expanded
+      telephone: { row: 2, col: 1, visibleCollapsed: true, rowExpanded: 7 },
+      vat: { row: 2, col: 2, visibleCollapsed: true, rowExpanded: 7 },
+      // Address fields - hidden in collapsed, visible in expanded
+      street: { row: 2, visibleExpanded: true }, // street fields side by side in row 2
+      city: { row: 3, col: 'span', visibleExpanded: true },
+      region: { row: 4, col: 'span', visibleExpanded: true },
+      postcode: { row: 5, col: 'span', visibleExpanded: true },
+      country: { row: 6, col: 'span', visibleExpanded: true },
+      // Email - hidden in this Progressive disclosure layout
+      email: { row: 0, col: 'span', hide: true },
+      // Company - optional, at the end if shown
+      company: { row: 8, col: 'span', visibleExpanded: true },
+    };
+
+    // Track street fields for special handling (street1, street2 side by side)
+    let streetFieldCount = 0;
+
+    allFields.forEach((field) => {
+      const input = field.querySelector('input, select, textarea');
+      if (!input) return;
+
+      const fieldId = input.id || '';
+      const fieldName = input.name || '';
+
+      // Determine field type
+      let fieldType = null;
+      for (const type of Object.keys(fieldConfig)) {
+        if (fieldId.toLowerCase().includes(type) || fieldName.toLowerCase().includes(type)) {
+          fieldType = type;
+          break;
+        }
+      }
+
+      if (fieldType && fieldConfig[fieldType]) {
+        const config = fieldConfig[fieldType];
+
+        // Add data attribute for CSS targeting
+        field.setAttribute('data-field-type', fieldType);
+
+        // Handle street fields specially (street[0], street[1] side by side)
+        if (fieldType === 'street') {
+          streetFieldCount += 1;
+          field.setAttribute('data-street-index', streetFieldCount);
+          if (streetFieldCount === 1) {
+            // First street field: row 2, column 1
+            field.style.gridArea = `${config.row} / 1`;
+          } else {
+            // Second street field: row 2, column 2
+            field.style.gridArea = `${config.row} / 2`;
+          }
+        } else {
+          // Set grid position using grid-area shorthand
+          // grid-area: row-start / column-start / row-end / column-end
+          if (config.col === 'span') {
+            // Full width: span both columns
+            field.style.gridArea = `${config.row} / 1 / auto / -1`;
+          } else {
+            // Single column
+            field.style.gridArea = `${config.row} / ${config.col}`;
+          }
+        }
+
+        // Mark field visibility classes
+        if (config.hide) {
+          field.classList.add('checkout-address-hidden-always');
+          field.style.display = 'none';
+        } else if (config.visibleExpanded) {
+          field.classList.add('checkout-address-address-field');
+          field.style.display = 'none'; // Hidden initially
+        } else if (config.visibleCollapsed) {
+          field.classList.add('checkout-address-collapsed-field');
+          // Store expanded row for later
+          field.setAttribute('data-row-expanded', String(config.rowExpanded || config.row));
+          field.setAttribute('data-row-original', String(config.row));
+          field.setAttribute('data-col', String(config.col));
+        }
+      }
+    });
+
+    // Mark form as initialized
+    formContainer.classList.add('checkout-address-form-initialized');
+  });
+
+  observer.observe(formContainer, {
+    childList: true,
+    subtree: true,
+  });
+
+  // Fallback: disconnect observer after 5 seconds
+  setTimeout(() => observer.disconnect(), 5000);
+};
+
+/**
+ * Renders Progressive disclosure address form for guest users with progressive disclosure
+ * Shows email, name, address lookup, and phone fields with expandable full address
+ * IMPORTANT: All form fields stay inside the form element to preserve onChange handling
+ * @param {HTMLElement} container - DOM element to render address form in
+ * @param {Object} formRef - React-style ref for form reference
+ * @param {Object} data - Cart data containing address information
+ * @param {string} addressType - Type of address form ('shipping' or 'billing')
+ * @returns {Promise<Object>} - The rendered address form component
+ */
+export const renderProgressiveAddressForm = async (container, formRef, data, addressType) => {
+  const isShipping = addressType === 'shipping';
+  const containerKey = isShipping ? CONTAINERS.SHIPPING_ADDRESS_FORM : CONTAINERS.BILLING_ADDRESS_FORM;
+
+  return renderContainer(
+    containerKey,
+    async () => {
+      const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+
+      // Get address type specific configurations
+      const cartAddress = getCartAddress(data, addressType);
+      const addressDataKey = isShipping ? SHIPPING_ADDRESS_DATA_KEY : BILLING_ADDRESS_DATA_KEY;
+      const addressCache = sessionStorage.getItem(addressDataKey);
+
+      // Clear persisted address if cart has an address
+      if (cartAddress && addressCache) {
+        sessionStorage.removeItem(addressDataKey);
+      }
+
+      let isFirstRender = true;
+      const hasCartAddress = Boolean(isShipping ? data.shippingAddresses?.[0] : data.billingAddress);
+
+      // Create address setter with appropriate API
+      const setAddressOnCartFn = setAddressOnCart({
+        type: addressType,
+        debounceMs: DEBOUNCE_TIME,
+      });
+
+      // Create shipping cost estimator (only for shipping addresses)
+      const estimateShippingCostOnCart = isShipping ? estimateShippingCost({
+        debounceMs: DEBOUNCE_TIME,
+      }) : null;
+
+      const notifyValues = debounce((values) => {
+        const eventType = isShipping ? 'checkout/addresses/shipping' : 'checkout/addresses/billing';
+        events.emit(eventType, values);
+      }, ADDRESS_INPUT_DEBOUNCE_TIME);
+
+      const storeConfig = checkoutApi.getStoreConfigCache();
+
+      // Address type specific configurations
+      const formName = isShipping ? SHIPPING_FORM_NAME : BILLING_FORM_NAME;
+      const addressTitle = isShipping
+        ? 'Delivery address'
+        : placeholders?.Checkout?.Addresses?.billingAddressTitle;
+      const className = isShipping
+        ? 'checkout-shipping-form__address-form checkout-shipping-form--progressive'
+        : 'checkout-billing-form__address-form checkout-billing-form--progressive';
+
+      const inputsDefaultValueSet = cartAddress
+        ? transformCartAddressToFormValues(cartAddress)
+        : { countryCode: storeConfig.defaultCountry };
+
+      // Create wrapper structure for Progressive disclosure layout
+      const addressWrapper = document.createElement('div');
+      addressWrapper.className = 'checkout-address-address-wrapper';
+
+      // Create the form container - ALL fields stay inside this
+      const formContainer = document.createElement('div');
+      formContainer.className = 'checkout-address-form-container';
+
+      // Create address lookup section (positioned via CSS Grid)
+      // Uses same dropin classes as other fields for consistent styling
+      const addressLookupSection = document.createElement('div');
+      addressLookupSection.className = 'checkout-address-address-lookup dropin-field';
+      // Grid position: full width, row 3 (after name row 1, phone/vat row 2)
+      addressLookupSection.style.gridArea = '3 / 1 / auto / -1';
+      addressLookupSection.innerHTML = `
+        <div class="dropin-field__content">
+          <div class="dropin-input-container dropin-input-container--primary dropin-input-container--floating">
+            <div class="dropin-input-label-container checkout-address-address-lookup__input-wrapper">
+              <input
+                type="text"
+                id="address-lookup"
+                name="addressLookup"
+                aria-label="Start typing address"
+                placeholder="Start typing address"
+                autocomplete="off"
+                class="dropin-input dropin-input--medium dropin-input--primary dropin-input--floating"
+              />
+              <label for="address-lookup" class="dropin-input__label--floating">Start typing address</label>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="checkout-address-address-toggle">
+          Enter address manually
+        </button>
+      `;
+
+      // Append to wrapper
+      addressWrapper.appendChild(formContainer);
+      container.appendChild(addressWrapper);
+
+      // Setup toggle functionality
+      const toggleBtn = addressLookupSection.querySelector('.checkout-address-address-toggle');
+      const addressInput = addressLookupSection.querySelector('input#address-lookup');
+
+      toggleBtn.addEventListener('click', () => {
+        const isExpanded = addressWrapper.classList.toggle('checkout-address-address-wrapper--expanded');
+        toggleBtn.textContent = isExpanded ? 'Hide address fields' : 'Enter address manually';
+
+        // Toggle visibility of address fields
+        const addressFields = formContainer.querySelectorAll('.checkout-address-address-field');
+        addressFields.forEach((field) => {
+          field.style.display = isExpanded ? '' : 'none';
+        });
+
+        // Move phone/vat fields to bottom row when expanded
+        const collapsedFields = formContainer.querySelectorAll('.checkout-address-collapsed-field');
+        collapsedFields.forEach((field) => {
+          const expandedRow = field.getAttribute('data-row-expanded');
+          const originalRow = field.getAttribute('data-row-original');
+          const col = field.getAttribute('data-col');
+
+          // Update grid-area to move to new row
+          const row = isExpanded ? expandedRow : originalRow;
+          field.style.gridArea = `${row} / ${col}`;
+        });
+
+        // Hide/show address lookup input (keep toggle button visible)
+        const lookupInputWrapper = addressLookupSection.querySelector('.dropin-field__content');
+        if (lookupInputWrapper) {
+          lookupInputWrapper.style.display = isExpanded ? 'none' : '';
+        }
+
+        // Move address lookup section to bottom when expanded (or hide it)
+        addressLookupSection.style.gridArea = isExpanded ? '100 / 1 / auto / -1' : '3 / 1 / auto / -1';
+      });
+
+      // Optional: Address autocomplete functionality placeholder
+      if (addressInput) {
+        addressInput.addEventListener('input', (e) => {
+          // Placeholder for address autocomplete integration (e.g., Google Places API)
+          if (e.target.value.length > 3) {
+            console.log('Address lookup:', e.target.value);
+          }
+        });
+      }
+
+      // Apply CSS-based field ordering (does NOT move elements out of form)
+      applyProgressiveFieldOrdering(formContainer, addressWrapper);
+
+      // Render the actual address form - all fields stay inside formContainer
+      const addressForm = await AccountProvider.render(AddressForm, {
+        addressesFormTitle: addressTitle,
+        className,
+        fieldIdPrefix: addressType,
+        formName,
+        forwardFormRef: formRef,
+        hideActionFormButtons: true,
+        inputsDefaultValueSet,
+        isOpen: true,
+        onChange: (values) => {
+          const canSetAddressOnCart = !isFirstRender || !hasCartAddress;
+          if (canSetAddressOnCart) setAddressOnCartFn(values);
+
+          // Only estimate shipping cost for shipping addresses when no cart address exists
+          if (isShipping && !hasCartAddress && estimateShippingCostOnCart) {
+            estimateShippingCostOnCart(values);
+          }
+
+          if (isFirstRender) isFirstRender = false;
+
+          notifyValues(values);
+        },
+        showBillingCheckBox: false,
+        showFormLoader: false,
+        showShippingCheckBox: false,
+      })(formContainer);
+
+      // After form renders, insert the address lookup section into the form's flex container
+      // This allows it to be ordered among the form fields via CSS order
+      setTimeout(() => {
+        const form = formContainer.querySelector('form, .dropin-form, .account-address-form');
+        if (form) {
+          // Insert address lookup INTO the form so it can participate in flexbox ordering
+          form.appendChild(addressLookupSection);
+        }
+      }, 50);
+
+      return addressForm;
+    },
+  );
+};
