@@ -338,10 +338,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
+      // The requisitionList/alert event triggers a cart refresh which emits cart/data
+      // The header.js listener updates the data-count attribute on the cart button
       // Use the nav-cart-button selector directly (more reliable than nested selector)
-      // Cypress will retry the assertion until it passes or times out
+      // Cypress will retry the assertion until it passes or times out (30 seconds)
       cy.get(fields.poNavCartButton, { timeout: 30000 })
         .should("exist")
+        .should("have.attr", "data-count")
         .and("have.attr", "data-count", "14");
 
       // 4. Delete all items from the Requisition List
