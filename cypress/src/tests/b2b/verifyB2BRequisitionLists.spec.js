@@ -338,8 +338,9 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
+      // Use the nav-cart-button selector directly (more reliable than nested selector)
       // Cypress will retry the assertion until it passes or times out
-      cy.get(fields.miniCartButton, { timeout: 30000 })
+      cy.get(fields.poNavCartButton, { timeout: 30000 })
         .should("exist")
         .and("have.attr", "data-count", "14");
 
