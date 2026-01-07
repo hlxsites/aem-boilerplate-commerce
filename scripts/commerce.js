@@ -30,6 +30,10 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
  * Constants
  */
 
+// Environment checks
+export const IS_UE = window.location.hostname.includes('ue.da.live');
+export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
+
 /**
  * Product template paths - pages that are templates and should use
  * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
@@ -650,7 +654,7 @@ export function getProductLink(urlKey, sku) {
 export function getProductSku() {
   // If this is a product template page, and being viewed in the UE editor or in DA preview
   // return the default sku from the block or the default template SKU
-  if (isProductTemplate() && (window.location.hostname.includes('ue.da.live') || !new URL(window.location.href).searchParams.get('dapreview'))) {
+  if (isProductTemplate() && (IS_UE || IS_DA)) {
     return getDefaultSkuFromBlock() || DEFAULT_TEMPLATE_SKU;
   }
 
