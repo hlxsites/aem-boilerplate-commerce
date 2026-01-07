@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{h as u}from"./fetch-error.js";import{f as l,h as m}from"./network-error.js";const g=`
   mutation DELETE_COMPANY_USER($id: ID!) {

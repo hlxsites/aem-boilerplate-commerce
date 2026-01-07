@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as m,h as p}from"./network-error.js";import{h as u}from"./fetch-error.js";import{t as _}from"./validateCompanyEmail.js";const y=`
     query getStoreConfig {

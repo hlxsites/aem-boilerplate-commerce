@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as a,h as n}from"./network-error.js";import{h as i}from"./fetch-error.js";const s=`
   fragment CompanyRoleFragment on CompanyRole {
