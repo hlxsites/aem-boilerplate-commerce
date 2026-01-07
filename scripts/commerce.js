@@ -30,6 +30,17 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
  * Constants
  */
 
+/**
+ * Product template paths - pages that are templates and should use
+ * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
+ */
+export const PRODUCT_TEMPLATE_PATHS = [
+  'products/default',
+];
+
+// Default SKU to use for product template page
+export const DEFAULT_TEMPLATE_SKU = 'ADB127';
+
 // PATHS
 export const SUPPORT_PATH = '/support';
 export const PRIVACY_POLICY_PATH = '/privacy-policy';
@@ -600,6 +611,34 @@ function getSkuFromUrl() {
   return result?.[1];
 }
 
+/**
+ * Extracts the defaultSku property from the product-details block element.
+ * @returns {string|null} The defaultSku value from the block, or null if not found
+ */
+function getDefaultSkuFromBlock() {
+  const productDetailsBlock = document.querySelector('.product-details.block');
+  if (!productDetailsBlock) {
+    return null;
+  }
+
+  const config = readBlockConfig(productDetailsBlock);
+  return config.defaultsku || null;
+}
+
+/**
+ * Checks if the current page is a product template page.
+ * @returns {boolean} True if the current page matches a product template path
+ */
+export function isProductTemplate() {
+  const root = getRootPath();
+  const { pathname } = window.location;
+
+  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
+    const fullPath = root ? `${root}${templatePath}` : templatePath;
+    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
+  });
+}
+
 export function getProductLink(urlKey, sku) {
   return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
 }
@@ -609,6 +648,12 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
+  // If this is a product template page, and being viewed in the UE editor or in DA preview
+  // return the default sku from the block or the default template SKU
+  if (isProductTemplate() && (window.location.hostname.includes('ue.da.live') || !new URL(window.location.href).searchParams.get('dapreview'))) {
+    return getDefaultSkuFromBlock() || DEFAULT_TEMPLATE_SKU;
+  }
+
   return getMetadata('sku') || getSkuFromUrl();
 }
 
