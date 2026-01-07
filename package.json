@@ -48,7 +48,7 @@
     "@dropins/storefront-account": "~3.0.0-beta5",
     "@dropins/storefront-auth": "~3.0.0-beta2",
     "@dropins/storefront-cart": "~3.0.0-beta4",
-    "@dropins/storefront-checkout": "~3.0.0-beta4",
+    "@dropins/storefront-checkout": "~3.0.0",
     "@dropins/storefront-company-management": "1.0.0-beta27",
     "@dropins/storefront-company-switcher": "1.0.6-beta5",
     "@dropins/storefront-order": "~3.0.0-beta2",
