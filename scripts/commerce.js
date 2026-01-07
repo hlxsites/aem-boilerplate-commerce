@@ -652,8 +652,6 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
-  // If this is a product template page, and being viewed in the UE editor or in DA preview
-  // return the default sku from the block or the default template SKU
   if (isProductTemplate() && (IS_UE || IS_DA)) {
     return getDefaultSkuFromBlock() || DEFAULT_TEMPLATE_SKU;
   }
