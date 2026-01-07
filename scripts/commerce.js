@@ -42,9 +42,6 @@ export const PRODUCT_TEMPLATE_PATHS = [
   'products/default',
 ];
 
-// Default SKU to use for product template page
-export const DEFAULT_TEMPLATE_SKU = 'ADB127';
-
 // PATHS
 export const SUPPORT_PATH = '/support';
 export const PRIVACY_POLICY_PATH = '/privacy-policy';
@@ -622,11 +619,16 @@ function getSkuFromUrl() {
 function getDefaultSkuFromBlock() {
   const productDetailsBlock = document.querySelector('.product-details.block');
   if (!productDetailsBlock) {
+    console.warn('No product-details block found');
     return null;
   }
 
   const config = readBlockConfig(productDetailsBlock);
-  return config.defaultsku || null;
+  if (!config.defaultsku) {
+    console.warn('No defaultSku found in product-details block');
+    return null;
+  }
+  return config.defaultsku;
 }
 
 /**
@@ -653,7 +655,7 @@ export function getProductLink(urlKey, sku) {
  */
 export function getProductSku() {
   if (isProductTemplate() && (IS_UE || IS_DA)) {
-    return getDefaultSkuFromBlock() || DEFAULT_TEMPLATE_SKU;
+    return getDefaultSkuFromBlock();
   }
 
   return getMetadata('sku') || getSkuFromUrl();
