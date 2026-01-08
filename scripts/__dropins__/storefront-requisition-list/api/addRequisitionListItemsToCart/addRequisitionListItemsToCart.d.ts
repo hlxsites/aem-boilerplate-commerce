@@ -14,5 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const addRequisitionListItemsToCart: (requisitionListUid: string, requisitionListItemUids: Array<string>) => Promise<Array<string> | null>;
+export interface AddToCartError {
+    type: string;
+    message: string;
+}
+export declare const addRequisitionListItemsToCart: (requisitionListUid: string, requisitionListItemUids: Array<string>) => Promise<Array<AddToCartError> | null>;
 //# sourceMappingURL=addRequisitionListItemsToCart.d.ts.map
