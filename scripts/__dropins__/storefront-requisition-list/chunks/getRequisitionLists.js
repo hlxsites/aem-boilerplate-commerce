@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{R as a,f as m,h as g,t as l}from"./updateRequisitionList.js";import{events as p}from"@dropins/tools/event-bus.js";const S=`
   query GET_REQUISITION_LISTS_QUERY(
