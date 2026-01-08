@@ -1,0 +1,39 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "headers": {
+        "cs": {
+          "content-type":"application/json",
+          "AC-Channel-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
+          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
+          "AC-Price-Book-Id":"77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "AC-Scope-Locale":"en-US",
+          "Magento-Environment-Id": "LnjXjuam6uWmo5d2JLEgbA",
+          "Magento-Website-Code": "WEBSITE_CODE",
+          "Magento-Store-Code": "STORE_CODE",
+          "Magento-Store-View-Code": "en-US",
+          "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "X-Api-Key": "storefront-catalog-apollo"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "store-id": 1,
+        "store-name": "e2e cell prex dropin accs",
+        "store-url": "https://e2e-prex-dropin-aco2--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "en-US",
+        "website-id": 1,
+        "website-name": "Main Website",
+        "Magento-Environment-Id": "LnjXjuam6uWmo5d2JLEgbA",
+        "Magento-Website-Code": "WEBSITE_CODE",
+        "Magento-Store-Code": "STORE_CODE",
+        "Magento-Store-View-Code": "en-US",
+        "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb"
+      }
+    }
+  }
+}
