@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{h as o}from"./fetch-error.js";import{f as u,h as l}from"./network-error.js";import{i as m}from"./company-permissions.js";const d=a=>{if(!a)throw new Error("Invalid response: missing user data");return{id:a.id,email:a.email,firstName:a.firstname,lastName:a.lastname,jobTitle:a.job_title,telephone:a.telephone,status:a.status,role:a.role,isCompanyAdmin:m(a.role)}},c=`
   mutation createCompanyUser($input: CompanyUserCreateInput!) {
