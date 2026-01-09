@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as u,h as i}from"./network-error.js";import{h as o}from"./fetch-error.js";function d(n){return n.items.filter(t=>t.entity.__typename==="Customer"&&"status"in t.entity?t.entity.status==="ACTIVE":!0).map(t=>({structureId:t.entity.structure_id,parentStructureId:t.parent_id||null,label:t.entity.__typename==="CompanyTeam"?t.entity.name||"":`${t.entity.firstname||""} ${t.entity.lastname||""}`.trim(),type:t.entity.__typename==="CompanyTeam"?"team":"user",entityId:(t.entity.__typename==="CompanyTeam"?t.entity.companyTeamId:t.entity.customerId)||"",description:t.entity.__typename==="CompanyTeam"?t.entity.description||null:t.entity.job_title||null})).map(t=>{const r=t.parentStructureId||null,m=!r||r==="MA=="?null:r;return{id:t.structureId,parentId:m,label:t.label,type:t.type,entityId:t.entityId,description:t.description}})}const c=n=>{if(!n)throw new Error("Invalid response: missing team data");return{id:n.id,name:n.name,description:n.description}},y=`
   mutation createCompanyTeam($input: CompanyTeamCreateInput!) {

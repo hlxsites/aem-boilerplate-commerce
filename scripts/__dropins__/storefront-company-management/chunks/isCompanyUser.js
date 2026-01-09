@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as s}from"./network-error.js";const i=`
   query GET_ALLOW_COMPANY_REGISTRATION {

@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as l,h as c}from"./network-error.js";import{h as m}from"./fetch-error.js";const d=`
   query GET_COMPANY_ENABLED {
