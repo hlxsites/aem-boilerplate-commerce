@@ -341,7 +341,8 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Cypress will retry the assertion until it passes or times out
       cy.get(fields.miniCartButton, { timeout: 30000 })
         .should("exist")
-        .and("have.attr", "data-count", "14");
+        .invoke("attr", "data-count")
+        .should("eq", "14");
 
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
