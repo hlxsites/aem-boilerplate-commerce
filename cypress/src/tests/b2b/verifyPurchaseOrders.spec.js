@@ -420,7 +420,6 @@ describe('B2B Purchase Orders', () => {
     },
   );
 
-  // Following test is skipped as test is trying to find purchase order in my order table but this order is placed by some other companyuser
   // Test 6: Approver - View Purchase Order details and add comment
   it(
     'Approver - View Purchase Order details and add comment',
@@ -476,7 +475,6 @@ describe('B2B Purchase Orders', () => {
     },
   );
 
-  // Following test is skipped as order table is empty , debugging in progress
   // Test 7: Sales Manager - Create auto-approved Purchase Order
   it(
     'Sales Manager - Create auto-approved Purchase Order',
