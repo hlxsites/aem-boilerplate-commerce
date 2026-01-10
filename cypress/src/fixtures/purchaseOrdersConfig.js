@@ -52,25 +52,15 @@ export const poApprovalRules = {
     approverRole: RULES_MANAGER_ROLE_NAME,
   },
   rule2: {
-    name: `New Approval Rule for Multiple Product Orders ${random}`,
+    name: `Approval Rule for Orders Over 25 Dollars ${random}`,
     description:
       'This rule requires approval for purchase orders with more than one unique product SKU',
-    appliesTo: 'All Users',
-    role: null,
-    ruleType: 'Number of SKUs',
-    ruleCondition: 'is more than',
-    ruleValue: '1',
-    approverRole: APPROVER_ROLE_NAME,
-  },
-  rule2Edited: {
-    name: `Approval Rule for Orders Over 50 Dollars ${random}`,
-    description: 'This rule requires approval for purchase orders with grand total over 50 dollars',
     appliesTo: 'Specific Roles',
     role: SALES_MANAGER_ROLE_NAME,
     ruleType: 'Grand Total',
     ruleCondition: 'is more than or equal to',
-    ruleValue: '50',
-    approverRole: RULES_MANAGER_ROLE_NAME,
+    ruleValue: '25',
+    approverRole: APPROVER_ROLE_NAME,
   },
 };
 
@@ -107,6 +97,7 @@ export const poRolesConfig = {
       { resource_id: 'Magento_Sales::place_order', permission: 'allow' },
       { resource_id: 'Magento_Sales::view_orders', permission: 'allow' },
       { resource_id: 'Magento_PurchaseOrder::all', permission: 'allow' },
+      { resource_id: 'Magento_PurchaseOrder::view_purchase_orders', permission: 'allow' },
       {
         resource_id: 'Magento_PurchaseOrderRule::view_approval_rules',
         permission: 'allow',

@@ -745,8 +745,6 @@ export const createPurchaseOrder = (
 
 export const fillApprovalRuleForm = (rule, texts) => {
   cy.wait(3000);
-  cy.get(fields.poStatusCheckbox).click({ force: true });
-  cy.wait(1500);
   cy.get(fields.poNameInput).clear().type(rule.name);
   cy.wait(1500);
   cy.get(fields.poTextarea).clear().type(rule.description);
