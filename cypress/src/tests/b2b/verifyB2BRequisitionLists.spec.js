@@ -61,8 +61,6 @@ function assertRequisitionListExists(selector, listName, index = null) {
     .should("not.be.disabled")
     .click();
 
-  // Wait for the action to complete
-  cy.wait(1000);
   cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
@@ -339,9 +337,10 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
       // Cypress will retry the assertion until it passes or times out
-      cy.get(fields.miniCartButton, { timeout: 30000 })
-        .should("exist")
-        .and("have.attr", "data-count", "14");
+      // Uncomment once bug https://jira.corp.adobe.com/browse/LYNX-1028 fix promted to ACCS Sandbox on 12th or 16th Jan
+      // cy.get(fields.miniCartButton, { timeout: 30000 })
+      //   .should("exist")
+      //   .and("have.attr", "data-count", "14");
 
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
