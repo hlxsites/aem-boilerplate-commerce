@@ -337,7 +337,8 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
       // Cypress will retry the assertion until it passes or times out
-      // Uncomment once bug https://jira.corp.adobe.com/browse/LYNX-1028 fix promted to ACCS Sandbox on 12th or 16th Jan
+      
+      // Uncomment once bug https://jira.corp.adobe.com/browse/LYNX-1028 fix promoted to ACCS Sandbox on 12th or 16th Jan
       // cy.get(fields.miniCartButton, { timeout: 30000 })
       //   .should("exist")
       //   .and("have.attr", "data-count", "14");
