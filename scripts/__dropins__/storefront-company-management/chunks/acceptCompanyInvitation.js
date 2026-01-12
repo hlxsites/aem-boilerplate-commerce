@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{h as c}from"./fetch-error.js";import{g as i,r as l,f as p,h as u,a as d}from"./network-error.js";const m=`
   mutation acceptCompanyInvitation($input: CompanyInvitationInput!) {

@@ -745,7 +745,7 @@ These tests were attempted but removed due to API limitations. They require manu
 
 ---
 
-**Last Updated:** December 12, 2025  
+**Last Updated:** January 5, 2026  
 **Status:** ✅ All 20 tests fully passing (1 skipped for faster runs)  
 **Total Tests:** 20 tests (was 53 isolated tests)  
 **Runtime:** ~18 minutes (was ~35-40 minutes)  
@@ -753,4 +753,6 @@ These tests were attempted but removed due to API limitations. They require manu
 **New Coverage:** Backend profile sync (TC-14), Company status filtering (USF-3555), Shopping Cart context (TC-42), Order lifecycle with Payment on Account (TC-47 CASE_1/4/5)  
 **Code Quality:** 10 custom commands, structured environment variables, 2 unused files removed  
 **New REST APIs:** `updateCompanyProfile()` (fixed), `cancelOrder()`, `createInvoice()`, `createCreditMemo()` with proper error handling  
-**QA Tracking Status:** ⚠️ **Zephyr integration pending** - Test plan link added, Zephyr ticket IDs not yet mapped
+**QA Tracking Status:** ⚠️ **Zephyr integration pending** - Test plan link added, Zephyr ticket IDs not yet mapped  
+**Recent Changes:**  
+- **USF-3603 (Jan 5, 2026):** Re-enabled Company Switcher tests after backend `status` field promotion to PROD/Sandbox
