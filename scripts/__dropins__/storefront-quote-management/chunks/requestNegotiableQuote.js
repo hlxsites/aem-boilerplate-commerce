@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{events as f}from"@dropins/tools/event-bus.js";import{N}from"./NegotiableQuoteFragment.js";import{f as d,t as l}from"./transform-quote.js";import"./state.js";const g=`
   mutation REQUEST_NEGOTIABLE_QUOTE_MUTATION(
