@@ -210,7 +210,7 @@ export default async function decorate(block) {
               const latest = events.lastPayload('checkout/updated');
               // Unmount shipping address form and render again with latest checkout data
               unmountContainer(CONTAINERS.SHIPPING_ADDRESS_FORM);
-              await renderAddressForm($shippingForm, shippingFormRef, latest, placeOrder, 'shipping');
+              await renderAddressForm($shippingForm, shippingFormRef, latest, placeOrder, 'shipping'); // eslint-disable-line no-use-before-define
             } else {
               // Place order
               await orderApi.placeOrder(cartId);
