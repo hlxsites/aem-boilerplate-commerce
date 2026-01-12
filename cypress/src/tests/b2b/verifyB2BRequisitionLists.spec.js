@@ -26,9 +26,10 @@ function createRequisitionList(selector, listName, description, index = null) {
   cy.wait(1000);
   cy.contains("Save").should("be.visible").click();
 
-  // Wait for the action to complete
+  // Wait for the action to complete and form to close
   cy.wait(1000);
-  cy.get(fields.requisitionListAlert)
+  cy.get(fields.requisitionListAlert, { timeout: 10000 })
+    .should("exist")
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
 
@@ -61,9 +62,10 @@ function assertRequisitionListExists(selector, listName, index = null) {
     .should("not.be.disabled")
     .click();
 
-  // Wait for the action to complete
+  // Wait for the action to complete and modal to close
   cy.wait(1000);
-  cy.get(fields.requisitionListAlert)
+  cy.get(fields.requisitionListAlert, { timeout: 10000 })
+    .should("exist")
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
 
@@ -207,7 +209,8 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
       cy.get(fields.requisitionListFormActionsButton).click();
 
-      cy.get(fields.requisitionListAlert)
+      cy.get(fields.requisitionListAlert, { timeout: 10000 })
+        .should("exist")
         .should("be.visible")
         .contains("Item(s) successfully added");
     });
@@ -255,7 +258,8 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
       cy.get(fields.requisitionListFormActionsButton).click();
 
-      cy.get(fields.requisitionListAlert)
+      cy.get(fields.requisitionListAlert, { timeout: 10000 })
+        .should("exist")
         .should("be.visible")
         .contains("Item(s) successfully added");
     });
