@@ -20,6 +20,7 @@ import {
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
@@ -27,6 +28,8 @@ import {
   displayOverlaySpinner,
   removeModal,
   removeOverlaySpinner,
+  showModal,
+  validateAddress,
 } from './utils.js';
 
 // Fragment functions
@@ -67,6 +70,7 @@ import {
   renderShippingStatus,
   renderTermsAndConditions,
   unmountEmptyCart,
+  renderAddressValidation,
 } from './containers.js';
 
 // Constants
@@ -190,8 +194,32 @@ export default async function decorate(block) {
         // Submit Payment Services credit card form
         await creditCardFormRef.current.submit();
       }
-      // Place order
-      await orderApi.placeOrder(cartId);
+
+      // Address validation
+      const suggestion = await validateAddress();
+      if (suggestion) {
+        const container = document.createElement('div');
+        await showModal(container);
+        await renderAddressValidation(container, {
+          suggestedAddress: suggestion,
+          handleSelectedAddress: async ({ selection, address }) => {
+            if (selection === 'suggested') {
+              await checkoutApi.setShippingAddress({ address });
+              shippingForm.setProps((prevProps) => ({
+                ...prevProps,
+                inputsDefaultValueSet: address,
+              }));
+            } else {
+              // Place order
+              await orderApi.placeOrder(cartId);
+            }
+            removeModal();
+          },
+        });
+      } else {
+        // Place order
+        await orderApi.placeOrder(cartId);
+      }
     } catch (error) {
       console.error(error);
       throw error;

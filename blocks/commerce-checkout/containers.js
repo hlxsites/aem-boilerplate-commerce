@@ -7,6 +7,7 @@
 
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
+import AddressValidation from '@dropins/storefront-checkout/containers/AddressValidation.js';
 import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
 import EstimateShipping from '@dropins/storefront-checkout/containers/EstimateShipping.js';
 import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
@@ -990,3 +991,15 @@ export const renderOrderConfirmationFooterButton = async (container) => renderCo
     href: rootLink('/'),
   })(container),
 );
+
+/**
+ * Renders the AddressValidation container in its own host element
+ * @param {HTMLElement} container - DOM element to render into
+ */
+export const renderAddressValidation = async (
+  container,
+  { suggestedAddress, handleSelectedAddress },
+) => CheckoutProvider.render(AddressValidation, {
+  suggestedAddress,
+  handleSelectedAddress,
+})(container);

@@ -355,3 +355,8 @@
         margin-top: 0;
     }
 }
+
+/* commerce-checkout.css */
+.modal-content .checkout-address-validation {
+    padding: var(--spacing-big);
+}
