@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as b,h as R,a as E}from"./fetch-graphql.js";import{P as y,t as v}from"./rejectPurchaseOrders.js";const q=`
   mutation CANCEL_PURCHASE_ORDERS($input: PurchaseOrdersActionInput!) {
