@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{events as l}from"@dropins/tools/event-bus.js";import{a as p}from"./transform-quote-template.js";import{s as r}from"./state.js";import{N as u}from"./NegotiableQuoteTemplateFragment.js";import{f as d}from"./transform-quote.js";const s=`
   mutation SEND_QUOTE_TEMPLATE_FOR_REVIEW_MUTATION(
