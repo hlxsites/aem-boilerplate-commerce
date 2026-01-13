@@ -70,8 +70,6 @@ import {
   renderShippingStatus,
   renderTermsAndConditions,
   unmountEmptyCart,
-  unmountContainer,
-  CONTAINERS,
   renderAddressValidation,
 } from './containers.js';
 
