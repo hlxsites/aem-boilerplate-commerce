@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{Initializer as v}from"@dropins/tools/lib.js";import{f as p,h,a as d}from"./chunks/fetch-graphql.js";import{g as K,r as W,s as X,b as Y,c as Z}from"./chunks/fetch-graphql.js";import{P as R,t as _}from"./chunks/rejectPurchaseOrders.js";import{a as er,r as sr}from"./chunks/rejectPurchaseOrders.js";import{events as i}from"@dropins/tools/event-bus.js";import{c as ar,p as or}from"./chunks/placeOrderForPurchaseOrder.js";import{a as ur}from"./chunks/addPurchaseOrderComment.js";import{a as ir,c as pr,g as hr,u as dr}from"./chunks/currencyInfo.js";import{d as Rr,g as _r}from"./chunks/getPurchaseOrderApprovalRules.js";import{g as Or}from"./chunks/getPurchaseOrders.js";import{g as Er}from"./chunks/getPurchaseOrderApprovalRule.js";import{P as gr}from"./chunks/permissions.js";import"@dropins/tools/fetch-graphql.js";import"./chunks/transform-purchase-order-approval-rule.js";import"./chunks/case-converter.js";const T=`
   query GET_PURCHASE_ORDER($uid: ID!) {

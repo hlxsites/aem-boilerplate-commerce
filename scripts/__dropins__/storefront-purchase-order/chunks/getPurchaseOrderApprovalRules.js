@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{f as d,h as g,a as P}from"./fetch-graphql.js";import{t as R}from"./transform-purchase-order-approval-rule.js";const h=`
   mutation DELETE_PURCHASE_ORDER_APPROVAL_RULE(
