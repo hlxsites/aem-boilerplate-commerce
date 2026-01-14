@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{events as s}from"@dropins/tools/event-bus.js";import{t as n}from"./transform-quote-template.js";import{s as o}from"./state.js";import{f as i}from"./transform-quote.js";const l=`
   query QUOTE_TEMPLATES_QUERY(

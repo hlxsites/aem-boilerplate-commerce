@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 const e=`
   fragment SELECTED_SHIPPING_METHOD_FRAGMENT on SelectedShippingMethod {
@@ -59,6 +59,7 @@ const e=`
       firstname
       lastname
     }
+    email
     comments {
       uid
       created_at

@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{a as c,i as h,g as m}from"./company-permissions.js";import{h as e}from"./fetch-error.js";import{f as o,h as f}from"./network-error.js";const E=`
   query GET_CUSTOMER_ROLE_PERMISSIONS {

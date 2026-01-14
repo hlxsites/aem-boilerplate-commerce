@@ -35,7 +35,9 @@ import { QuotesListTable } from '@dropins/storefront-quote-management/containers
 
 // API
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';
+import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { createCustomerAddress } from '@dropins/storefront-account/api.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
@@ -86,6 +88,23 @@ const checkPermissions = async () => {
 };
 
 /**
+ * Get the current user email
+ * @returns {Promise<string>} The current user email
+ */
+async function getCurrentUserEmail() {
+  const token = getUserTokenCookie();
+  if (!token) return null;
+
+  try {
+    const customer = await getCustomerData(token);
+    return customer.email;
+  } catch (error) {
+    console.error('Error fetching customer email:', error);
+    return null;
+  }
+}
+
+/**
  * Decorate the block
  * @param {HTMLElement} block - The block to decorate
  */
@@ -94,6 +113,9 @@ export default async function decorate(block) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
   }
+
+  // Current user email
+  let currentUserEmail = null;
 
   const permissionCheck = await checkPermissions();
   if (!permissionCheck.hasPermission) {
@@ -140,17 +162,37 @@ export default async function decorate(block) {
     block.setAttribute('data-quote-view', 'manage');
     await negotiableQuoteRenderer.render(ManageNegotiableQuote, {
       acceptedFileTypes: ACCEPTED_FILE_TYPES,
+      onActionsButtonClick: (action) => {
+        switch (action) {
+          case 'print':
+            window.print();
+            break;
+          default:
+            break;
+        }
+      },
       slots: {
-        Footer: (ctx) => {
+        Footer: async (ctx) => {
           ctx.appendChild(checkoutButtonContainer);
 
+          // Get the current user email
+          currentUserEmail = await getCurrentUserEmail();
+
+          // Checkout button is enabled if the quote can be checked out
+          // and the current user email is the same as the quote email
+          const enabled = ctx.quoteData?.canCheckout
+            && currentUserEmail === ctx.quoteData?.email;
+
           // Initial render
-          const enabled = ctx.quoteData?.canCheckout;
           renderCheckoutButton(ctx, enabled);
 
           // Re-render on state changes
           ctx.onChange((next) => {
-            const nextEnabled = next.quoteData?.canCheckout;
+            // Checkout button is enabled if the quote can be checked out
+            // and the current user email is the same as the quote email
+            const nextEnabled = next.quoteData?.canCheckout
+              && currentUserEmail === next.quoteData?.email;
+
             renderCheckoutButton(next, nextEnabled);
           });
         },

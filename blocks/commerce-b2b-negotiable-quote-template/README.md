@@ -95,6 +95,7 @@ This block currently does not support configuration through block metadata. All 
    - Allows users to select from existing addresses or create a new shipping address
    - Displays a progress spinner during shipping address operations (hides address selection UI)
    - Restores UI visibility after shipping address operations complete
+4. **Quote Generation**: When a quote is generated from a template (from either view), the block redirects to the negotiable quote page after a 2-second delay to allow the success banner to be seen
 
 ### Error Handling
 
@@ -146,6 +147,9 @@ The block subscribes to the following events:
 | Event Name | Source | Purpose | Handler Action |
 |------------|--------|---------|----------------|
 | `quote-management/quote-data/error` | Quote Management Dropin | Triggered when quote data fails to load | Displays an inline error alert with the error message |
+| `quote-management/quote-template-generated` | Quote Management Dropin | Triggered when a quote is successfully generated from a template | Navigates to the newly created quote on the negotiable quote page after a 2-second delay |
+
+**Note**: The generate quote listener is registered at the block level (applies to both list and details views) and is automatically cleaned up using a MutationObserver when the block is removed from the DOM.
 
 ### Slots Implementation
 

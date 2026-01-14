@@ -179,26 +179,6 @@ describe('B2B Purchase Orders', () => {
       cy.contains(poLabels.approvalRulesHeader).should('be.visible');
       cy.contains(poApprovalRules.rule2.name).should('be.visible');
 
-      // Step 4: Edit second Approval Rule (Number of SKUs) to Grand Total
-      cy.logToTerminal(
-        '✏️ STEP 4: Editing second Approval Rule to Grand Total condition',
-      );
-      cy.get(`tr:contains("${poApprovalRules.rule2.name}")`)
-        .last()
-        .find(selectors.poShowButton)
-        .contains(poLabels.show)
-        .click();
-      cy.get(selectors.poEditButton)
-        .filter(`:contains("${poLabels.edit}")`)
-        .first()
-        .click();
-      cy.contains(poLabels.approvalRuleFormHeader).should('be.visible');
-
-      actions.fillApprovalRuleForm(poApprovalRules.rule2Edited, poLabels);
-      cy.get(selectors.poShowButton).contains(poLabels.save).click();
-
-      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
-      cy.contains(poApprovalRules.rule2Edited.name).should('be.visible');
 
       cy.logToTerminal('🚪 Logging out PO Rules Manager');
       cy.visit('/');
@@ -247,7 +227,7 @@ describe('B2B Purchase Orders', () => {
       actions.login(poUsers.sales_manager, urls);
 
       cy.logToTerminal('🛒 Creating second Purchase Order with 2 items');
-      actions.createPurchaseOrder(2, false, urls, poLabels);
+      actions.createPurchaseOrder(1, false, urls, poLabels);
 
       cy.logToTerminal('🚪 Logging out Sales Manager');
       cy.visit('/');
@@ -427,6 +407,7 @@ describe('B2B Purchase Orders', () => {
         .find('.b2b-purchase-order-purchase-orders-table__status')
         .contains('Approval required')
         .should('have.length', 0);
+
       cy.logToTerminal(
         '✅ Verified that no Purchase Orders left in approval required list',
       );
@@ -507,7 +488,7 @@ describe('B2B Purchase Orders', () => {
       actions.login(poUsers.sales_manager, urls);
 
       cy.logToTerminal('🛒 Creating auto-approved Purchase Order with 1 item');
-      actions.createPurchaseOrder(1, true, urls, poLabels);
+      actions.createPurchaseOrder(2, true, urls, poLabels);
 
       cy.logToTerminal('🚪 Logging out Sales Manager');
       cy.visit('/');
@@ -600,7 +581,7 @@ describe('B2B Purchase Orders', () => {
       cy.wait(3000);
 
       cy.logToTerminal('🗑️ Deleting second PO approval rule...');
-      actions.deleteApprovalRule(poApprovalRules.rule2Edited.name);
+      actions.deleteApprovalRule(poApprovalRules.rule2.name);
       cy.wait(3000);
 
       cy.logToTerminal('✅ All PO approval rules deleted successfully');

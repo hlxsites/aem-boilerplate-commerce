@@ -1,7 +1,7 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { NegotiableQuoteTemplateModel } from '../../data/models/negotiable-quote-template-model';
-import { ReferenceDocument } from '../../components';
+import { ReferenceDocument, AttachedFile } from '../../components';
 import { ReferenceDocumentLinkInput } from '../../api';
 
 export interface ManageNegotiableQuoteTemplateProps extends HTMLAttributes<HTMLDivElement> {
@@ -11,7 +11,11 @@ export interface ManageNegotiableQuoteTemplateProps extends HTMLAttributes<HTMLD
         name?: string;
         comment?: string;
         referenceDocumentLinks?: ReferenceDocumentLinkInput[];
+        attachments?: AttachedFile[];
     }) => void;
+    maxFiles?: number;
+    maxFileSize?: number;
+    acceptedFileTypes?: string[];
     slots?: {
         TemplateName?: SlotProps<{
             templateName?: string;
@@ -59,6 +63,19 @@ export interface ManageNegotiableQuoteTemplateProps extends HTMLAttributes<HTMLD
         Comments?: SlotProps<{
             templateData?: NegotiableQuoteTemplateModel;
         }>;
+        AttachFilesField?: SlotProps<{
+            templateData?: NegotiableQuoteTemplateModel;
+            onFileChange: (files: File[]) => void;
+            attachedFiles: AttachedFile[];
+            fileUploadError: string | undefined;
+            disabled: boolean;
+        }>;
+        AttachedFilesList?: SlotProps<{
+            templateData?: NegotiableQuoteTemplateModel;
+            files: AttachedFile[];
+            onRemove: (key: string) => void;
+            disabled: boolean;
+        }>;
         HistoryLogTitle?: SlotProps<{
             templateData?: NegotiableQuoteTemplateModel;
         }>;
@@ -69,6 +86,7 @@ export interface ManageNegotiableQuoteTemplateProps extends HTMLAttributes<HTMLD
             templateData?: NegotiableQuoteTemplateModel;
             comment?: string;
             isSubmitting?: boolean;
+            attachedFiles?: AttachedFile[];
             referenceDocuments?: ReferenceDocument[];
             hasUnsavedChanges?: boolean;
             handleSendForReview: () => void;
