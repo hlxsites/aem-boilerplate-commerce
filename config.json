@@ -1,0 +1,33 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://aem-stg.k24dhxxpqt72a.dummycachetest.com/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QDmZTJos8DgBZw96hVLwH1/graphql",
+      "headers": {
+        "all": {
+          "Store": "citisignal_us"
+        },
+        "cs": {
+          "AC-View-ID": "f6dda415-7d58-4109-aaa5-d8821b508b1e",
+          "AC-Source-Locale": "en-US"
+        }
+      },
+      "commerce-assets-enabled": false,
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "environment-id": "2176b66d-38dc-48bd-8426-9e75003e5ee6",
+        "store-code": "citisignal_store",
+        "store-id": "4",
+        "store-name": "CitiSignal Store",
+        "store-url": "http://aem-stg.k24dhxxpqt72a.dummycachetest.com/",
+        "store-view-code": "citisignal_us",
+        "store-view-id": "4",
+        "store-view-name": "CitiSignal US",
+        "website-code": "citisignal",
+        "website-id": "4",
+        "website-name": "CitiSignal Website"
+      }
+    }
+  }
+}
