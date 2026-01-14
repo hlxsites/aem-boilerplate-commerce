@@ -131,6 +131,20 @@ fragment PRODUCT_FRAGMENT on ProductView {
                 currency
             }
         }
+        tiers {
+          tier {
+            amount {
+              value
+              currency
+            }
+          }
+          quantity {
+            ... on ProductViewTierRangeCondition {
+              gte
+              lt
+            }
+          }
+        }
       }
     }
 
