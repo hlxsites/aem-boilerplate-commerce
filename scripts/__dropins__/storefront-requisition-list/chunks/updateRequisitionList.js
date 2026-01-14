@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{events as c}from"@dropins/tools/event-bus.js";import{FetchGraphQL as p}from"@dropins/tools/fetch-graphql.js";const d=e=>{const i=e.map(o=>o.message).join(" ");throw Error(i)},{setEndpoint:E,setFetchGraphQlHeader:v,removeFetchGraphQlHeader:y,setFetchGraphQlHeaders:h,fetchGraphQl:l,getConfig:N}=new p().getMethods(),f=`
   query REFINE_PRODUCT(

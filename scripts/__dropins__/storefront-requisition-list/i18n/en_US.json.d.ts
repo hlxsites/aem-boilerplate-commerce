@@ -52,6 +52,7 @@ declare const _default: {
       "successDeleteReqList": "Requisition list deleted successfully.",
       "errorMove": "Error moving item(s) to cart.",
       "successMove": "Item(s) successfully moved to cart.",
+      "partialMoveSuccess": "{successCount} product(s) successfully added and {failedCount} product(s) couldn't be added to your shopping cart.",
       "errorAddToRequisitionList": "Error adding item(s) to requisition list.",
       "successAddToRequisitionList": "Item(s) successfully added to requisition list."
     },
@@ -60,6 +61,7 @@ declare const _default: {
       "statusDeleting": "Deleting...",
       "actionDeleteSelected": "Delete Selected",
       "actionDeleteSelectedItems": "Delete selected items",
+      "actionSelect": "Select",
       "actionSelectAll": "Select All",
       "actionSelectNone": "Select None",
       "actionAddToCart": "Add to Cart",
