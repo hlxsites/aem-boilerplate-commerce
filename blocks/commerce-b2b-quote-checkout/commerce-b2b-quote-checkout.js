@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
@@ -170,7 +171,7 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    renderBillToShippingAddress($billToShipping, placeOrder),
+    renderBillToShippingAddress($billToShipping),
 
     renderShippingMethods($delivery),
 
@@ -215,7 +216,6 @@ export default async function decorate(block) {
         $billingForm,
         billingFormRef,
         data,
-        placeOrder,
       );
     }
   }

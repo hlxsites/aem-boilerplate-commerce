@@ -225,16 +225,6 @@ export default async function decorate(block) {
     // Update the URL
     window.history.pushState({}, '', url.toString());
   }, { eager: false });
-
-  // Listen for company context changed and reload data if needed.
-  events.on('companyContext/changed', async () => {
-    await performInitialSearch(config, {
-      q,
-      page,
-      sort,
-      filter,
-    });
-  });
 }
 
 async function performInitialSearch(config, urlParams) {
@@ -319,12 +309,14 @@ function getFilterFromParams(filterParam) {
   filters.forEach((filter) => {
     if (filter.includes(':')) {
       const [attribute, value] = filter.split(':');
+      const commaRegex = /,(?!\s)/;
 
-      if (value.includes(',')) {
-        // Handle array values (like categories)
+      if (commaRegex.test(value)) {
+        // Handle array values like categories,
+        // but allow for commas within an array value (eg. "Catalog, Search")
         results.push({
           attribute,
-          in: value.split(','),
+          in: value.split(commaRegex),
         });
       } else if (value.includes('-')) {
         // Handle range values (like price)

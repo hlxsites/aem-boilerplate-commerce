@@ -25,7 +25,6 @@ import { render as rlRenderer } from '@dropins/storefront-requisition-list/rende
 import {
   RequisitionListSelector,
 } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
-import { events } from '@dropins/tools/event-bus.js';
 import { checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 
 // Initialize dropins
@@ -52,7 +51,6 @@ function createRequisitionListRenderer(labels) {
         const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
         if (product.typename !== 'SimpleProductView') {
           sessionStorage.setItem('requisitionListRedirect', JSON.stringify({
-            timestamp: Date.now(),
             message: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options before adding it to a requisition list',
           }));
           window.location.href = url;
@@ -106,10 +104,5 @@ export async function initializeRequisitionList({
   return createRequisitionListAction({
     renderFunction,
     product,
-    onAuthenticated: ($container) => {
-      events.on('authenticated', async () => {
-        await renderFunction($container, product);
-      });
-    },
   });
 }

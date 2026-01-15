@@ -46,7 +46,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // External dependencies
-import { rootLink, CUSTOMER_NEGOTIABLE_QUOTE_PATH } from '../../scripts/commerce.js';
+import { fetchPlaceholders, rootLink, CUSTOMER_NEGOTIABLE_QUOTE_PATH } from '../../scripts/commerce.js';
 
 // Constants
 import {
@@ -225,18 +225,12 @@ export const renderBillingAddressFormSkeleton = async (container) => renderConta
 /**
  * Renders checkbox to set billing address same as shipping address - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render the checkbox in
- * @param {Object} placeOrderButton - Optional place order button reference for state management
  * @returns {Promise<Object>} - The rendered bill to shipping address component
  */
-export const renderBillToShippingAddress = async (container, placeOrderButton = null) => renderContainer(
+export const renderBillToShippingAddress = async (container) => renderContainer(
   CONTAINERS.BILL_TO_SHIPPING_ADDRESS,
   async () => {
-    // Create setAddressOnCart with optional place order button
-    const setBillingAddressOnCart = setAddressOnCart({
-      type: 'billing',
-      debounceMs: DEBOUNCE_TIME,
-      placeOrderBtn: placeOrderButton, // Optional - will be null initially
-    });
+    const setBillingAddressOnCart = setAddressOnCart({ type: 'billing' });
 
     return CheckoutProvider.render(BillToShippingAddress, {
       onChange: (checked) => {
@@ -391,12 +385,13 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
  * @param {HTMLElement} container - DOM element to render billing addresses in
  * @param {Object} formRef - React-style ref for form reference
  * @param {Object} data - Cart data containing billing address information
- * @param {Object} placeOrderButton - Place order button reference
  * @returns {Promise<Object>} - The rendered customer billing addresses component
  */
-export const renderCustomerBillingAddresses = async (container, formRef, data, placeOrderButton) => renderContainer(
+export const renderCustomerBillingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_BILLING_ADDRESSES,
   async () => {
+    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+
     const cartBillingAddress = getCartAddress(data, 'billing');
 
     const customerBillingAddressUid = cartBillingAddress
@@ -419,11 +414,9 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
     const hasCartBillingAddress = Boolean(data.billingAddress);
     let isFirstRenderBilling = true;
 
-    // Create address setter with constants moved inside
     const setBillingAddressOnCart = setAddressOnCart({
       type: 'billing',
       debounceMs: DEBOUNCE_TIME,
-      placeOrderBtn: placeOrderButton,
     });
 
     const notifyBillingValues = debounce((values) => {
@@ -431,7 +424,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
     }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
     return AccountProvider.render(Addresses, {
-      addressFormTitle: 'Bill to new address',
+      addressFormTitle: placeholders?.Checkout?.Addresses?.billToNewAddress,
       defaultSelectAddressId: customerBillingAddressUid,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,
@@ -448,7 +441,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data, p
       showBillingCheckBox: false,
       showSaveCheckBox: true,
       showShippingCheckBox: false,
-      title: 'Billing address',
+      title: placeholders?.Checkout?.Addresses?.billingAddressTitle,
     })(container);
   },
 );

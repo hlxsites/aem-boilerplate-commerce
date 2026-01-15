@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{R as L,f as T,h as q,t as R}from"./updateRequisitionList.js";import{events as E}from"@dropins/tools/event-bus.js";const a=`
   mutation DELETE_REQUISITION_LIST_MUTATION(

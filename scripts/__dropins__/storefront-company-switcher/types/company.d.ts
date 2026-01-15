@@ -15,11 +15,16 @@
  * from Adobe.
  *******************************************************************/
 /**
+ * Company status enum values
+ */
+export type CompanyStatusEnum = 'PENDING' | 'APPROVED' | 'REJECTED' | 'BLOCKED';
+/**
  * Represents a company entity
  */
 export interface Company {
     id: string;
     name: string;
+    status?: CompanyStatusEnum;
 }
 /**
  * Represents a company option for the picker component
@@ -35,6 +40,12 @@ export interface CustomerCompanyInfo {
     currentCompany: Company;
     customerCompanies: CompanyOption[];
     customerGroupId: string;
+}
+/**
+ * Props for the useCompanyData hook
+ */
+export interface UseCompanyDataProps {
+    onCompanyChange?: (company: Company) => void;
 }
 /**
  * Return type for the useCompanyData hook

@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 import{events as w}from"@dropins/tools/event-bus.js";import"./state.js";import{f as c}from"./transform-quote.js";const E=`
   mutation INITIATE_UPLOAD_MUTATION($input: initiateUploadInput!) {

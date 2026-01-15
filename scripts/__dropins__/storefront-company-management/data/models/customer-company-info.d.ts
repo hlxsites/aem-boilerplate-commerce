@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export interface CustomerCompanyInfo {
+    customerId?: string;
     companyName: string;
     jobTitle?: string;
     workPhoneNumber?: string;

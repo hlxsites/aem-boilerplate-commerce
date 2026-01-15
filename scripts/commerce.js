@@ -17,6 +17,26 @@ import {
 import initializeDropins from './initializers/index.js';
 
 /**
+ * Sanitizes the given string by:
+ * - convert to lower case
+ * - normalize all unicode characters
+ * - replace all non-alphanumeric characters with a dash
+ * - remove all consecutive dashes
+ * - remove all leading and trailing dashes
+ *
+ * @param {string} name
+ * @returns {string} sanitized name
+ */
+function sanitizeName(name) {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
  * Fetch GraphQL Instances
  */
 
@@ -29,6 +49,18 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 /**
  * Constants
  */
+
+// Environment checks
+export const IS_UE = window.location.hostname.includes('ue.da.live');
+export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
+
+/**
+ * Product template paths - pages that are templates and should use
+ * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
+ */
+export const PRODUCT_TEMPLATE_PATHS = [
+  'products/default',
+];
 
 // PATHS
 export const SUPPORT_PATH = '/support';
@@ -56,6 +88,7 @@ export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
 export const CUSTOMER_REQUISITION_LISTS_PATH = `${CUSTOMER_PATH}/requisition-lists`;
 export const CUSTOMER_REQUISITION_LIST_DETAILS_PATH = `${CUSTOMER_PATH}/requisition-list-view`;
 export const CUSTOMER_NEGOTIABLE_QUOTE_PATH = `${CUSTOMER_PATH}/negotiable-quote`;
+export const CUSTOMER_NEGOTIABLE_QUOTE_TEMPLATE_PATH = `${CUSTOMER_PATH}/negotiable-quote-template`;
 
 // TRACKING URL
 export const UPS_TRACKING_URL = 'https://www.ups.com/track';
@@ -66,6 +99,18 @@ export const CUSTOMER_PO_RULE_FORM_PATH = `${CUSTOMER_PATH}/approval-rule`;
 export const CUSTOMER_PO_RULE_DETAILS_PATH = `${CUSTOMER_PATH}/approval-rule-details`;
 export const CUSTOMER_PO_LIST_PATH = `${CUSTOMER_PATH}/purchase-orders`;
 export const CUSTOMER_PO_DETAILS_PATH = `${CUSTOMER_PATH}/purchase-order-details`;
+
+// FILE UPLOAD
+export const ACCEPTED_FILE_TYPES = [
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+  'application/vnd.ms-excel', // .xls
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+  'application/pdf', // .pdf
+  'text/plain', // .txt
+  'image/jpeg', // .jpeg, .jpg
+  'image/png', // .png
+];
 
 /**
  * Auth Privacy Policy Consent Slot
@@ -307,7 +352,7 @@ export async function initializeCommerce() {
   initializeConfig(await getConfigFromSession());
 
   // Set Fetch GraphQL (Core)
-  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint'));
+  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint') || await getConfigValue('commerce-endpoint'));
   CORE_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('all') }));
 
   // Set Fetch GraphQL (Catalog Service)
@@ -616,8 +661,49 @@ function getSkuFromUrl() {
   return result?.[1];
 }
 
+/**
+ * Extracts the defaultSku property from the product-details block element.
+ * @returns {string|null} The defaultSku value from the block, or null if not found
+ */
+function getDefaultSkuFromBlock() {
+  const productDetailsBlock = document.querySelector('.product-details.block');
+  if (!productDetailsBlock) {
+    console.warn('No product-details block found');
+    return null;
+  }
+
+  const config = readBlockConfig(productDetailsBlock);
+  if (!config.defaultsku) {
+    console.warn('No defaultSku found in product-details block');
+    return null;
+  }
+  return config.defaultsku;
+}
+
+/**
+ * Checks if the current page is a product template page.
+ * @returns {boolean} True if the current page matches a product template path
+ */
+export function isProductTemplate() {
+  const root = getRootPath();
+  const { pathname } = window.location;
+
+  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
+    const fullPath = root ? `${root}${templatePath}` : templatePath;
+    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
+  });
+}
+
 export function getProductLink(urlKey, sku) {
-  return rootLink(`/products/${urlKey}/${sku}`.toLowerCase());
+  if (!urlKey) {
+    console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
+  }
+  if (!sku) {
+    console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
+  }
+  const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
+  const sanitizedSku = sku ? sanitizeName(sku) : '';
+  return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
 }
 
 /**
@@ -625,6 +711,10 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
+  if (isProductTemplate() && (IS_UE || IS_DA)) {
+    return getDefaultSkuFromBlock();
+  }
+
   return getMetadata('sku') || getSkuFromUrl();
 }
 

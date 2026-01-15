@@ -36,7 +36,12 @@ import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quote-management.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  rootLink,
+  getProductLink,
+  ACCEPTED_FILE_TYPES,
+} from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -56,6 +61,9 @@ export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
   const _cart = Cart.getCartDataFromCache();
+
+  let minimumTotalForQuoteRequest = 0;
+  let minimumTotalForQuoteRequestMessage = placeholders?.NegotiableQuote?.Request?.Button?.insufficientTotalMessage || '';
 
   // Modal state
   let currentModal = null;
@@ -181,6 +189,7 @@ export default async function decorate(block) {
 
     quoteManagementRender.render(RequestNegotiableQuoteForm, {
       cartId,
+      acceptedFileTypes: ACCEPTED_FILE_TYPES,
     })(content);
 
     currentModal = await createModal([content]);
@@ -192,7 +201,14 @@ export default async function decorate(block) {
 
   // Render (or re-render) request quote button into an element
   const renderRequestQuoteButton = (element) => {
-    const { dataset: { cartId, canRequestQuote } } = element;
+    // Clear the element's innerHTML
+    element.innerHTML = '';
+
+    // Get the element's dataset
+    const { dataset: { cartId, canRequestQuote, cartSubtotal } } = element;
+
+    // Convert the minimum total for quote request to a number or return 0 if it's not a number
+    const minimumTotalNumberForQuoteRequest = parseInt(minimumTotalForQuoteRequest, 10) || 0;
 
     if (!canRequestQuote) {
       element.setAttribute('hidden', '');
@@ -201,23 +217,48 @@ export default async function decorate(block) {
 
     element.removeAttribute('hidden');
 
+    const parsedCartSubtotal = parseFloat(cartSubtotal) || 0;
+    const isInsufficientTotal = parsedCartSubtotal < minimumTotalNumberForQuoteRequest;
+
+    // Button is disabled is there is no cartId or the cart subtotal
+    // is less than the minimum total for quote request
+    const isDisabled = !cartId || isInsufficientTotal;
+
+    const message = minimumTotalForQuoteRequestMessage.replace('{count}', minimumTotalNumberForQuoteRequest);
+    element.setAttribute('title', isDisabled ? message : '');
+
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.classList.add('cart__request-quote-button-wrapper');
+
     UI.render(Button, {
-      children: placeholders?.Global?.CartRequestQuote || 'Request a Quote',
+      children: placeholders?.NegotiableQuote?.Request?.Button.label || 'Request Quote',
       variant: 'secondary',
       size: 'medium',
       onClick: () => {
         handleRequestQuoteButtonClick(cartId);
       },
-      disabled: !cartId,
+      disabled: isDisabled,
       className: 'cart__request-quote-button',
-    })(element);
+    })(buttonWrapper);
+    element.appendChild(buttonWrapper);
+
+    if (isInsufficientTotal) {
+      const messageWrapper = document.createElement('div');
+      messageWrapper.classList.add('cart__request-quote-message-wrapper');
+
+      const quoteRequestMessage = document.createElement('span');
+      quoteRequestMessage.classList.add('cart__request-quote-message');
+      quoteRequestMessage.textContent = message;
+      messageWrapper.appendChild(quoteRequestMessage);
+      element.appendChild(messageWrapper);
+    }
   };
 
   // Request Quote Button container
-  const requestQuoteButtonContainer = document.createElement('div');
-  requestQuoteButtonContainer.setAttribute('data-cart-id', _cart?.id);
-  requestQuoteButtonContainer.setAttribute('hidden', '');
-  renderRequestQuoteButton(requestQuoteButtonContainer);
+  const requestQuoteContainer = document.createElement('div');
+  requestQuoteContainer.setAttribute('data-cart-id', _cart?.id);
+  requestQuoteContainer.setAttribute('hidden', '');
+  renderRequestQuoteButton(requestQuoteContainer);
 
   // Render Containers
   const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
@@ -323,7 +364,7 @@ export default async function decorate(block) {
           ctx.appendChild(coupons);
 
           // Prepend request quote button
-          ctx.prependSibling(requestQuoteButtonContainer);
+          ctx.prependSibling(requestQuoteContainer);
         },
         GiftCards: (ctx) => {
           const giftCards = document.createElement('div');
@@ -350,8 +391,10 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
-      requestQuoteButtonContainer.dataset.cartId = cartData?.id;
-      renderRequestQuoteButton(requestQuoteButtonContainer);
+      const cartSubtotal = cartData?.subtotal?.excludingTax?.value || 0;
+      requestQuoteContainer.dataset.cartSubtotal = cartSubtotal;
+      requestQuoteContainer.dataset.cartId = cartData?.id;
+      renderRequestQuoteButton(requestQuoteContainer);
 
       toggleEmptyCart(isCartEmpty(cartData));
 
@@ -367,14 +410,21 @@ export default async function decorate(block) {
     { eager: true },
   );
 
+  // Listen for quote management initialized state to get minimum total for quote request
+  events.on('quote-management/initialized', (state) => {
+    minimumTotalForQuoteRequest = state?.config?.quoteMinimumAmount || 0;
+    minimumTotalForQuoteRequestMessage = state?.config?.quoteMinimumAmountMessage || '';
+    renderRequestQuoteButton(requestQuoteContainer);
+  }, { eager: true });
+
   // Listen for quote management permissions event to show/hide request quote button
   events.on('quote-management/permissions', (permissions) => {
     if (permissions?.requestQuote) {
-      requestQuoteButtonContainer.dataset.canRequestQuote = true;
+      requestQuoteContainer.dataset.canRequestQuote = true;
     } else {
-      requestQuoteButtonContainer.removeAttribute('data-can-request-quote');
+      requestQuoteContainer.removeAttribute('data-can-request-quote');
     }
-    renderRequestQuoteButton(requestQuoteButtonContainer);
+    renderRequestQuoteButton(requestQuoteContainer);
   }, { eager: true });
 
   // Refresh cart and close modal when quote is requested and successfully created
