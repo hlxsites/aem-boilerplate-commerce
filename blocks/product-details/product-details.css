@@ -153,7 +153,6 @@
   background-color: var(--color-neutral-200);
   position: relative;
   cursor: pointer;
-  aspect-ratio: 1;
   overflow: hidden;
 }
 
