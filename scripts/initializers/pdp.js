@@ -1,6 +1,7 @@
 import { initializers } from '@dropins/tools/initializer.js';
 import { Image, provider as UI } from '@dropins/tools/components.js';
-import { initialize, setEndpoint, fetchProductData } from '@dropins/storefront-pdp/api.js';
+import { initialize, setEndpoint, fetchGraphQl } from '@dropins/storefront-pdp/api.js';
+import { PRODUCT_FRAGMENT } from '@dropins/storefront-pdp/fragments.js';
 import { isAemAssetsEnabled, tryGenerateAemAssetsOptimizedUrl } from '@dropins/tools/lib/aem/assets.js';
 import { initializeDropin } from './index.js';
 import {
@@ -12,6 +13,45 @@ import {
   preloadFile,
 } from '../commerce.js';
 import { getMetadata } from '../aem.js';
+
+/**
+ * Custom GraphQL query that extends PRODUCT_FRAGMENT with videos field
+ */
+const PRODUCT_QUERY_WITH_VIDEOS = `
+  query GET_PRODUCT_DATA($skus: [String]) {
+    products(skus: $skus) {
+      ...PRODUCT_FRAGMENT
+      videos {
+        url
+        title
+      }
+    }
+  }
+  ${PRODUCT_FRAGMENT}
+`;
+
+/**
+ * Fetches product data with videos using custom query
+ * @param {string} sku - Product SKU
+ * @param {Object} options - Options including optionsUIDs
+ * @returns {Promise<Object|null>} Product data with videos or null
+ */
+async function fetchProductDataWithVideos(sku, options = {}) {
+  const { data } = await fetchGraphQl(PRODUCT_QUERY_WITH_VIDEOS, {
+    method: 'GET',
+    variables: { skus: [sku] },
+  });
+
+  const product = data?.products?.[0];
+  if (!product) return null;
+
+  // Add optionsUIDs if provided
+  if (options.optionsUIDs) {
+    product.optionUIDs = options.optionsUIDs;
+  }
+
+  return product;
+}
 
 export const IMAGES_SIZES = {
   width: 960,
@@ -78,18 +118,21 @@ await initializeDropin(async () => {
   // Preload PDP assets immediately when this module is imported
   preloadPDPAssets();
 
-  // Fetch product data
+  // Fetch product data with videos
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
   const [product, labels] = await Promise.all([
-    fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
+    fetchProductDataWithVideos(sku, { optionsUIDs }).then(preloadImageMiddleware),
     fetchPlaceholders('placeholders/pdp.json'),
   ]);
 
   if (!product?.sku) {
     return loadErrorPage();
   }
+
+  // Uncomment to debug video data:
+  // console.log('Product data with videos:', product);
 
   const langDefinitions = {
     default: {
@@ -100,6 +143,18 @@ await initializeDropin(async () => {
   const models = {
     ProductDetails: {
       initialData: { ...product },
+      // Transformer to add videos to the product model
+      transformer: (rawData) => {
+        if (rawData?.videos) {
+          return {
+            videos: rawData.videos.map((v) => ({
+              url: v.url,
+              title: v.title,
+            })),
+          };
+        }
+        return {};
+      },
     },
   };
 
