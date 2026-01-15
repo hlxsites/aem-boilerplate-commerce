@@ -131,9 +131,6 @@ await initializeDropin(async () => {
     return loadErrorPage();
   }
 
-  // Uncomment to debug video data:
-  // console.log('Product data with videos:', product);
-
   const langDefinitions = {
     default: {
       ...labels,
@@ -143,17 +140,32 @@ await initializeDropin(async () => {
   const models = {
     ProductDetails: {
       initialData: { ...product },
-      // Transformer to add videos to the product model
+      // Transformer to merge videos into images array for gallery display
       transformer: (rawData) => {
-        if (rawData?.videos) {
-          return {
-            videos: rawData.videos.map((v) => ({
-              url: v.url,
-              title: v.title,
-            })),
-          };
+        const result = {};
+
+        // Store original videos array
+        if (rawData?.videos?.length) {
+          result.videos = rawData.videos.map((v) => ({
+            url: v.url,
+            title: v.title,
+          }));
+
+          // Merge videos into images array with type indicator
+          // Videos will appear after images in the gallery
+          const videoAsImages = rawData.videos.map((v) => ({
+            url: v.url,
+            label: v.title || 'Product Video',
+            roles: ['video'],
+            type: 'video',
+          }));
+
+          // Combine existing images with video items
+          const existingImages = rawData?.images || [];
+          result.images = [...existingImages, ...videoAsImages];
         }
-        return {};
+
+        return result;
       },
     },
   };
