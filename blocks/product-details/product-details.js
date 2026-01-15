@@ -131,12 +131,27 @@ export default async function decorate(block) {
 
       // Check if this is a video item
       if (isVideoItem(defaultImageProps, data)) {
-        // Render video thumbnail placeholder
+        const previewUrl = getVideoPreviewUrl(defaultImageProps.src, data);
         const thumbnailWrapper = document.createElement('span');
         thumbnailWrapper.className = 'product-gallery__video-thumbnail';
-        thumbnailWrapper.innerHTML = `
-          <span class="product-gallery__video-icon">▶</span>
-        `;
+
+        if (previewUrl) {
+          // Render preview image with play icon overlay
+          thumbnailWrapper.innerHTML = `
+            <img 
+              class="product-gallery__video-thumbnail-img" 
+              src="${previewUrl}" 
+              alt="Video thumbnail"
+            />
+            <span class="product-gallery__video-icon">▶</span>
+          `;
+        } else {
+          // Fallback: just play icon
+          thumbnailWrapper.innerHTML = `
+            <span class="product-gallery__video-icon">▶</span>
+          `;
+        }
+
         ctx.replaceWith(thumbnailWrapper);
         return;
       }
@@ -156,6 +171,7 @@ export default async function decorate(block) {
         videoWrapper.className = 'product-gallery__video-wrapper';
 
         const videoUrl = defaultImageProps.src;
+        const previewUrl = getVideoPreviewUrl(videoUrl, data);
 
         // Use iframe for YouTube/Vimeo, video element for direct files
         if (isExternalVideoUrl(videoUrl)) {
@@ -170,12 +186,14 @@ export default async function decorate(block) {
             ></iframe>
           `;
         } else {
-          // Direct video file
+          // Direct video file with poster image
+          const posterAttr = previewUrl ? `poster="${previewUrl}"` : '';
           videoWrapper.innerHTML = `
             <video 
               class="product-gallery__video"
               controls
               preload="metadata"
+              ${posterAttr}
             >
               <source src="${videoUrl}" type="video/mp4">
               Your browser does not support the video tag.
@@ -642,6 +660,22 @@ function isExternalVideoUrl(url) {
   return lowerUrl.includes('youtube.com')
     || lowerUrl.includes('youtu.be')
     || lowerUrl.includes('vimeo.com');
+}
+
+/**
+ * Gets the preview image URL for a video
+ * @param {string} videoUrl - The video URL
+ * @param {Object} productData - The full product data
+ * @returns {string|null} The preview image URL or null
+ */
+function getVideoPreviewUrl(videoUrl, productData) {
+  if (!videoUrl || !productData?.videos?.length) return null;
+
+  const matchingVideo = productData.videos.find(
+    (v) => v.url && videoUrl.includes(v.url.replace(/^https?:/, '')),
+  );
+
+  return matchingVideo?.preview?.url || null;
 }
 
 /**

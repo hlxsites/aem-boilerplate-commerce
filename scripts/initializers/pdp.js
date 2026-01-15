@@ -24,6 +24,11 @@ const PRODUCT_QUERY_WITH_VIDEOS = `
       videos {
         url
         title
+        preview {
+          label
+          roles
+          url
+        }
       }
     }
   }
@@ -144,15 +149,15 @@ await initializeDropin(async () => {
       transformer: (rawData) => {
         const result = {};
 
-        // Store original videos array
         if (rawData?.videos?.length) {
+          // Store videos array with preview data
           result.videos = rawData.videos.map((v) => ({
             url: v.url,
             title: v.title,
+            preview: v.preview ? { url: v.preview.url } : null,
           }));
 
-          // Merge videos into images array with type indicator
-          // Videos will appear after images in the gallery
+          // Merge videos into images array for gallery carousel
           const videoAsImages = rawData.videos.map((v) => ({
             url: v.url,
             label: v.title || 'Product Video',
@@ -160,7 +165,6 @@ await initializeDropin(async () => {
             type: 'video',
           }));
 
-          // Combine existing images with video items
           const existingImages = rawData?.images || [];
           result.images = [...existingImages, ...videoAsImages];
         }
