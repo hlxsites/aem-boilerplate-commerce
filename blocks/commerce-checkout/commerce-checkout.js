@@ -21,8 +21,7 @@ import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-import { displayOverlaySpinner, removeModal, removeOverlaySpinner } from './utils.js';
+import { buildOrderDetailsUrl, displayOverlaySpinner, removeOverlaySpinner } from './utils.js';
 
 // Fragment functions
 import { createCheckoutFragment, selectors } from './fragments.js';
@@ -192,7 +191,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder,  b2bIsPoEnabled });
+  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder, b2bIsPoEnabled });
 
   // Render the remaining containers
   const [
