@@ -192,11 +192,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, {
-    handleValidation,
-    handlePlaceOrder,
-    b2bIsPoEnabled,
-  });
+  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder,  b2bIsPoEnabled });
 
   // Render the remaining containers
   const [
@@ -314,8 +310,7 @@ export default async function decorate(block) {
     // number as orderRef, allowing the order details to be displayed
     const orderData = events.lastPayload('order/placed');
     if (orderData) {
-      const encodedOrderNumber = encodeURIComponent(orderData.number);
-      const url = rootLink(`/order-details?orderRef=${encodedOrderNumber}`);
+      const url = buildOrderDetailsUrl(orderData);
       window.history.pushState({}, '', url);
     }
 
@@ -332,15 +327,7 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const token = getUserTokenCookie();
-    const orderRef = token ? orderData.number : orderData.token;
-    const orderNumber = orderData.number;
-    const encodedOrderRef = encodeURIComponent(orderRef);
-    const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-    const url = token
-      ? rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}`)
-      : rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+    const url = buildOrderDetailsUrl(orderData);
 
     window.history.pushState({}, '', url);
 
