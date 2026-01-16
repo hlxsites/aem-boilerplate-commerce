@@ -168,8 +168,8 @@
 }
 
 .checkout__block
-.quote-management-quote-summary-list
-.quote-management-quote-summary-list__footer-divider {
+    .quote-management-quote-summary-list
+    .quote-management-quote-summary-list__footer-divider {
     margin: var(--spacing-small) 0;
 }
 
