@@ -22,7 +22,6 @@ import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.
 // Auth Dropin
 import * as authApi from '@dropins/storefront-auth/api.js';
 import AuthCombine from '@dropins/storefront-auth/containers/AuthCombine.js';
-import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Account Dropin
