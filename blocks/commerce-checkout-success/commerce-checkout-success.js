@@ -120,7 +120,8 @@ let signUpModal;
 
 const handleAuthenticated = (authenticated) => {
   if (authenticated) {
-    window.location.reload();
+    signUpModal?.removeModal();
+    signUpModal = null;
   }
 };
 
