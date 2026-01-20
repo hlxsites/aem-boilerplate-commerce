@@ -297,7 +297,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
     describe("Requisition List View Workflow", () => {
       // Click first link on the list
-      cy.get(fields.requisitionListGridNameLink).eq(0).click();
+      cy.get(fields.requisitionListGridNameLink).eq(1).click();
       cy.contains("Newly Created Requisition List").should("be.visible");
 
       // 1. Rename Requisition List from the Requisition List view page
