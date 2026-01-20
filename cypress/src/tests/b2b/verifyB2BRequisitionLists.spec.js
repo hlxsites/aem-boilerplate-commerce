@@ -61,8 +61,6 @@ function assertRequisitionListExists(selector, listName, index = null) {
     .should("not.be.disabled")
     .click();
 
-  // Wait for the action to complete
-  cy.wait(1000);
   cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
@@ -117,52 +115,156 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.visit(products.simple.urlPath);
     cy.get(fields.addToRequisitionListButton).should("exist");
 
-    // PDP Workflow
+    describe("PDP Workflow", () => {
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Newly Created Requisition List"
+      );
+      createRequisitionList(
+        fields.requisitionListSelector,
+        "Req list created from PDP",
+        "Another dummy description"
+      );
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Req list created from PDP"
+      );
 
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Newly Created Requisition List"
-    );
-    createRequisitionList(
-      fields.requisitionListSelector,
-      "Req list created from PDP",
-      "Another dummy description"
-    );
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Req list created from PDP"
-    );
+      // Open Catalog Menu
+      cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
-    // Open Catalog Menu
-    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
+      // Navigate to Apparel category page
+      cy.contains("Apparel").should("be.visible").click();
+    });
 
-    // Navigate to Apparel category page
-    cy.contains("Apparel").should("be.visible").click();
+    describe("PLP Workflow", () => {
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Newly Created Requisition List",
+        0
+      );
+      createRequisitionList(
+        fields.requisitionListSelector,
+        "Now Req list created from PLP",
+        "Yet another dummy description",
+        0
+      );
+      assertRequisitionListExists(
+        fields.requisitionListSelector,
+        "Now Req list created from PLP",
+        0
+      );
 
-    // PLP Workflow
+      // Open Catalog Menu
+      cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
 
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Newly Created Requisition List",
-      0
-    );
-    createRequisitionList(
-      fields.requisitionListSelector,
-      "Now Req list created from PLP",
-      "Yet another dummy description",
-      0
-    );
-    assertRequisitionListExists(
-      fields.requisitionListSelector,
-      "Now Req list created from PLP",
-      0
-    );
+      // Navigate to Apparel category page
+      cy.contains("Apparel").should("be.visible").click();
+    });
 
-    // Open Catalog Menu
-    cy.get(fields.navDrop).first().should("be.visible").trigger("mouseenter");
+    describe("Configurable Product Option Validation", () => {
+      // Ignore the expected redirect error
+      cy.on("uncaught:exception", (err) => {
+        if (err.message.includes("Redirecting to product page")) {
+          return false;
+        }
+      });
 
-    // Navigate to Apparel category page
-    cy.contains("Apparel").should("be.visible").click();
+      // Navigate to search page to find configurable products
+      cy.visit("/search?q=configurable");
+      cy.wait(2000);
+
+      // Click requisition list on first configurable product in search results
+      cy.get(fields.requisitionListSelector).first().click();
+
+      // Should redirect to PDP
+      cy.url().should("include", "/products/");
+      cy.wait(2000);
+
+      // Should show validation message on PDP from the redirection
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select product options before adding it to a requisition list"
+        );
+
+      // Click requisition list again in PDP, should show validation when no options selected on PDP
+      cy.get(fields.requisitionListSelector).click();
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select all required product options before adding to a requisition list."
+        );
+
+      // Select all available options
+      cy.get(".product-details__options select").each(($select) => {
+        cy.wrap($select).select(1);
+        cy.wait(500);
+      });
+
+      cy.get(fields.productDetailsAlert).should("not.be.visible");
+
+      // Add configurable product to requisition list
+      cy.get(fields.requisitionListSelector).click();
+      cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
+      cy.get(fields.requisitionListFormActionsButton).click();
+
+      cy.get(fields.requisitionListAlert)
+        .should("be.visible")
+        .contains("Item(s) successfully added");
+    });
+
+    describe("Bundle Product Option Validation", () => {
+      // Ignore the expected redirect error
+      cy.on("uncaught:exception", (err) => {
+        if (err.message.includes("Redirecting to product page")) {
+          return false;
+        }
+      });
+
+      // Navigate to search page to find bundle products
+      cy.visit("/search?q=bundle");
+      cy.wait(2000);
+
+      // Click requisition list on first bundle product in search results
+      cy.get(fields.requisitionListSelector).eq(1).click();
+
+      // Should redirect to PDP
+      cy.url().should("include", "/products/");
+      cy.wait(2000);
+
+      // Should show validation message on PDP from the redirection
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select product options before adding it to a requisition list"
+        );
+
+      // Click requisition list again in PDP, should show validation when required options not selected
+      cy.get(fields.requisitionListSelector).click();
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select all required product options before adding to a requisition list."
+        );
+
+      // Select required options
+      cy.get(".product-details__options select").each(($select) => {
+        cy.wrap($select).select(1);
+        cy.wait(500);
+      });
+
+      cy.get(fields.productDetailsAlert).should("not.be.visible");
+
+      // Add bundle product to requisition list
+      cy.get(fields.requisitionListSelector).click();
+      cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
+      cy.get(fields.requisitionListFormActionsButton).click();
+
+      cy.get(fields.requisitionListAlert)
+        .should("be.visible")
+        .contains("Item(s) successfully added");
+    });
 
     // Go to customer account page
     cy.visit("/customer/account");
@@ -171,24 +273,115 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.get(fields.reqListGridWrapper).should("exist");
     cy.get(fields.requisitionListItemRow).should("have.length", 3);
 
-    // Rename Requisition List
-    cy.get(fields.requisitionListItemActionsUpdateButton).eq(1).click();
-    cy.contains("Update Requisition List").should("be.visible");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormName)
-      .clear()
-      .type("Updated Requisition List");
-    cy.wait(1000);
-    cy.get(fields.requisitionListFormDescription)
-      .clear()
-      .type("Dummy description");
-    cy.wait(1000);
-    cy.contains("Save").should("be.visible").click();
-    cy.contains("Updated Requisition List").should("be.visible");
+    describe("Requisition List Grid Workflow", () => {
+      // Rename Requisition List
+      cy.get(fields.requisitionListItemActionsRenameButton).eq(1).click();
+      cy.contains("Update Requisition List").should("be.visible");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormName)
+        .clear()
+        .type("Updated Requisition List");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormDescription)
+        .clear()
+        .type("Dummy description");
+      cy.wait(1000);
+      cy.contains("Save").should("be.visible").click();
+      cy.contains("Updated Requisition List").should("be.visible");
 
-    // Remove Requisition List
-    cy.get(fields.requisitionListItemActionsRemoveButton).eq(2).click();
-    cy.get(fields.requisitionListModalConfirmButton).click();
-    cy.get(fields.requisitionListItemRow).should("have.length", 2);
+      // Delete Requisition List
+      cy.get(fields.requisitionListItemActionsDeleteButton).eq(2).click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      cy.get(fields.requisitionListItemRow).should("have.length", 2);
+    });
+
+    describe("Requisition List View Workflow", () => {
+      // Click first link on the list
+      cy.get(fields.requisitionListGridNameLink).eq(1).click();
+      cy.contains("Newly Created Requisition List").should("be.visible");
+
+      // 1. Rename Requisition List from the Requisition List view page
+      cy.get(fields.requisitionListViewRenameButton).click();
+      cy.contains("Update Requisition List").should("be.visible");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormName)
+        .clear()
+        .type("Now updating from RL view page");
+      cy.wait(1000);
+      cy.get(fields.requisitionListFormDescription)
+        .clear()
+        .type("Dummy description one more time");
+      cy.wait(1000);
+      cy.contains("Save").should("be.visible").click();
+      cy.contains("Now updating from RL view page").should("be.visible");
+      cy.contains("Requisition list updated successfully.").should(
+        "be.visible"
+      );
+
+      // 2. Update quantity of the first item in the Requisition List
+      cy.get(fields.requisitionListViewQuantityInput).eq(0).click();
+      cy.wait(1000);
+      cy.get(fields.requisitionListViewQuantityInput)
+        .eq(0)
+        .clear()
+        .type("10")
+        .blur();
+      cy.wait(1000);
+      cy.contains("Item quantity updated successfully.").should("be.visible");
+      cy.get(fields.requisitionListViewQuantityInput)
+        .eq(0)
+        .should("have.value", "10");
+
+      // 3. Move all items to cart
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
+        "have.text",
+        "4"
+      );
+
+      cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
+
+      // Verify success message appears (check immediately before it auto-dismisses)
+      cy.contains("Item(s) successfully moved to cart.", {
+        timeout: 5000,
+      }).should("be.visible");
+
+      // Wait for the cart to be refreshed and the data-count attribute to be updated
+      // The cart refresh happens automatically via requisitionList/alert event
+      // Cypress will retry the assertion until it passes or times out
+      
+      cy.get(fields.miniCartButton, { timeout: 30000 })
+        .should("exist")
+        .and("have.attr", "data-count", "14");
+
+      // 4. Delete all items from the Requisition List
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
+        "not.exist"
+      );
+      cy.wait(1000);
+      cy.get(fields.requisitionListViewBatchActionsToggle).click();
+      cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
+        "have.text",
+        "4"
+      );
+      cy.get(fields.requisitionListViewBulkActionsDeleteButton).click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      cy.contains("Item(s) deleted successfully.").should("be.visible");
+      cy.get(fields.requisitionListItemRow).should("have.length", 0);
+
+      // 5. Delete the whole Requisition List
+      cy.get(fields.requisitionListViewDeleteButton).click();
+      cy.get(fields.requisitionListModalConfirmButton).click();
+      cy.contains("Requisition list deleted successfully.").should(
+        "be.visible"
+      );
+
+      cy.url().should("include", "customer/requisition-lists");
+      cy.get(fields.requisitionListItemRow).should(
+        "not.have",
+        "Now updating from RL view page"
+      );
+    });
   });
 });

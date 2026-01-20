@@ -8,6 +8,7 @@ declare const _default: {
         "legalName": "Legal Name",
         "vatTaxId": "VAT/Tax ID",
         "resellerId": "Reseller ID",
+        "accountInformation": "Account Information",
         "legalAddress": "Legal Address",
         "streetAddress": "Street Address",
         "city": "City",
@@ -174,7 +175,17 @@ declare const _default: {
           "jobTitleRequired": "Job title is required",
           "workPhoneRequired": "Work phone number is required",
           "selectRole": "Select a role",
-          "teamTitleRequired": "Team title is required"
+          "teamTitleRequired": "Team title is required",
+          "firstNameMaxLength": "First name must not exceed 255 characters",
+          "lastNameMaxLength": "Last name must not exceed 255 characters",
+          "emailMaxLength": "Email must not exceed 254 characters",
+          "jobTitleMaxLength": "Job title must not exceed 255 characters",
+          "telephoneMaxLength": "Phone number must not exceed 20 characters",
+          "teamNameMaxLength": "Team title must not exceed 39 characters",
+          "teamDescriptionMaxLength": "Team description must not exceed 1000 characters",
+          "firstNameInvalidChars": "First name contains invalid characters. Only letters, numbers, spaces, and ,-._'`& are allowed",
+          "lastNameInvalidChars": "Last name contains invalid characters. Only letters, numbers, spaces, and ,-._'`& are allowed",
+          "telephoneInvalidChars": "Phone number contains invalid characters. Only 0-9, +, -, (, ), and spaces are allowed"
         }
       },
       "messages": {
@@ -230,7 +241,7 @@ declare const _default: {
       },
       "emptyTeam": "-",
       "pagination": {
-        "itemsCount": "{count} Item(s)",
+        "itemsRange": "Items {start}-{end} of {total}",
         "itemsPerPage": "Items per page:",
         "show": "Show",
         "perPage": "per page",
@@ -239,6 +250,7 @@ declare const _default: {
         "pageInfo": "Page {current} of {total}"
       },
       "emptyActions": "",
+      "noUsersFound": "No users found.",
       "actions": {
         "manage": "Manage",
         "edit": "Edit",
@@ -299,11 +311,15 @@ declare const _default: {
     },
     "CompanyCredit": {
       "title": "Company Credit",
-      "creditAvailable": "Credit Available",
+      "creditAvailable": "Available Credit",
       "creditLimit": "Credit Limit",
       "outstandingBalance": "Outstanding Balance",
       "messages": {
         "loadError": "Failed to load company credit"
+      },
+      "emptyState": {
+        "title": "No Credit Information",
+        "message": "There is no credit information to display."
       }
     },
     "CompanyCreditHistory": {
@@ -315,28 +331,23 @@ declare const _default: {
         "outstandingBalance": "Outstanding Balance",
         "availableCredit": "Available Credit",
         "creditLimit": "Credit Limit",
-        "customReference": "Custom Reference",
+        "customReference": "Custom Reference #",
         "updatedBy": "Updated By"
       },
       "pagination": {
-        "itemsCount": "{count} Item(s)",
-        "itemsPerPage": "Items per page:",
-        "show": "Show",
-        "perPage": "per page",
-        "previous": "Previous",
-        "next": "Next",
-        "pageInfo": "Page {current} of {total}"
+        "itemsRange": "Items {start}-{end} of {total}",
+        "show": "Show"
+      },
+      "emptyState": {
+        "title": "No Credit History",
+        "message": "There is no credit history to display."
       },
       "ariaLabels": {
         "dataLoaded": "Loaded {count} credit history entries",
         "dataError": "Failed to load credit history entries. Please try again.",
-        "loadingHistory": "Loading credit history",
         "historyTable": "Credit history table",
         "paginationNav": "Pagination navigation",
-        "pageNavigation": "Page navigation",
         "pageSizeSelector": "Items per page selector",
-        "previousPageFull": "Go to previous page, current page {current}",
-        "nextPageFull": "Go to next page, current page {current}",
         "showingHistory": "Showing {count} credit history entries"
       }
     },
@@ -366,7 +377,20 @@ declare const _default: {
       "selectCountry": "Please select a country",
       "selectRegion": "Please select a region, state or province",
       "selectCountryFirst": "Please select a country first",
-      "companyNameLengthError": "Company name must be between {min} and {max} characters."
+      "companyNameLengthError": "Company name must be between {min} and {max} characters.",
+      "loading": "Loading...",
+      "submitting": "Registering your company..."
+    },
+    "AcceptInvitation": {
+      "title": "Accept Company Invitation",
+      "loadingText": "Processing your invitation...",
+      "successMessage": "You have successfully accepted the invitation to the company.",
+      "myAccountButton": "My Account",
+      "loginButton": "Go to Login",
+      "invalidLinkError": "Invalid invitation link. Please check the URL and try again.",
+      "companyDisabledError": "Company functionality is not enabled. Please contact the store administrator.",
+      "expiredLinkError": "This invitation link has expired or is no longer valid.",
+      "genericError": "An error occurred while processing your invitation. Please try again."
     },
     "RolesAndPermissions": {
       "containerTitle": "Company Roles & Permissions",
@@ -411,6 +435,7 @@ declare const _default: {
       "viewOnlyLabel": "View Only",
       "systemRoleLabel": "System Role",
       "itemCount": "Item(s)",
+      "itemsRange": "Items {start}-{end} of {total}",
       "show": "Show",
       "perPage": "per page",
       "deleteRole": {

@@ -11,6 +11,13 @@ declare const _default: {
       "quoteName": "Quote name",
       "quoteNameError": "Please add a quote name",
       "attachmentsError": "Error uploading attachments",
+      "maxFilesExceeded": "Maximum {maxFiles} file(s) allowed",
+      "maxFileSizeExceeded": "File size exceeds maximum limit of {maxSize}",
+      "invalidFileType": "File type not accepted",
+      "removeFile": "Remove file",
+      "uploading": "Uploading...",
+      "uploadSuccess": "Upload complete",
+      "uploadError": "Upload failed",
       "requestCta": "Request a Quote",
       "saveDraftCta": "Save as draft",
       "error": {
@@ -33,6 +40,16 @@ declare const _default: {
       "actions": {
         "remove": "Remove"
       },
+      "attachFile": "Attach File",
+      "attachFiles": "Attach Files",
+      "fileUploadError": "Failed to upload file. Please try again.",
+      "maxFilesExceeded": "Maximum {maxFiles} file(s) allowed",
+      "maxFileSizeExceeded": "File size exceeds maximum limit of {maxSize}",
+      "invalidFileType": "File type not accepted",
+      "removeFile": "Remove file",
+      "uploading": "Uploading...",
+      "uploadSuccess": "Upload complete",
+      "uploadError": "Upload failed",
       "bannerTitle": "Alert",
       "bannerStatusMessages": {
         "submitted": "This quote is currently locked for editing. It will become available once released by the Merchant.",
@@ -57,6 +74,17 @@ declare const _default: {
           "errorFallback": "Failed to delete quote",
           "successHeading": "Success",
           "successDescription": "Quote has been successfully deleted"
+        },
+        "duplicate": {
+          "title": "Duplicate Quote",
+          "message": "Are you sure you want to create a copy of this quote?",
+          "confirm": "Create Copy",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to duplicate quote",
+          "successHeading": "Success",
+          "successDescription": "Quote has been successfully duplicated. You will be redirected to the new quote shortly.",
+          "outOfStockWarningHeading": "Alert",
+          "outOfStockWarningMessage": "Some items were skipped during duplication due to errors."
         },
         "close": {
           "message": "Are you sure you want to close this quote?",
@@ -84,13 +112,16 @@ declare const _default: {
         "title": "Shipping Information"
       },
       "shippingAddress": {
-        "noAddress": "No shipping address has been set for this quote."
+        "noAddress": "No shipping address has been set for this quote.",
+        "noAddressHeading": "No Shipping Address",
+        "noAddressDescription": "Please select or enter a shipping address."
       },
       "quoteComments": {
         "title": "Quote Comments",
         "placeholder": "Add your comment",
         "emptyState": "No comments yet",
-        "by": "by"
+        "by": "by",
+        "attachments": "Attachments:"
       },
       "productListTable": {
         "headers": {
@@ -106,7 +137,15 @@ declare const _default: {
         "actions": {
           "editNoteToSeller": "Edit note to seller",
           "remove": "Remove"
-        }
+        },
+        "notes": {
+          "header": "NOTES",
+          "leftANote": "left a note:",
+          "buyer": "Buyer",
+          "seller": "Seller"
+        },
+        "outOfStock": "Out of Stock",
+        "outOfStockMessage": "This item is currently out of stock."
       },
       "rename": {
         "title": "Rename Quote",
@@ -119,6 +158,23 @@ declare const _default: {
         "errorDefault": "Failed to rename quote. Please try again.",
         "successHeading": "Success",
         "successMessage": "Quote renamed successfully!"
+      },
+      "lineItemNote": {
+        "title": "Leave a note to seller",
+        "productLabel": "Name & SKU",
+        "skuLabel": "SKU",
+        "priceLabel": "Price",
+        "stockLabel": "Stock",
+        "quantityLabel": "Qty",
+        "discountLabel": "Discount",
+        "subtotalLabel": "Subtotal",
+        "noteLabel": "Note to seller",
+        "notePlaceholder": "Can I get a discount on this?",
+        "noteHelper": "The seller will see the note when you send the quote back.",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel",
+        "noteError": "Please enter a note",
+        "quantityError": "Quantity must be greater than 0"
       },
       "tabbedContent": {
         "itemsQuoted": "Items quoted",
@@ -218,8 +274,31 @@ declare const _default: {
       "createdLabel": "Created:",
       "salesRepLabel": "Sales Rep:",
       "expiresLabel": "Expires:",
+      "templateIdLabel": "Template ID:",
       "referenceDocuments": {
-        "title": "Reference Documents"
+        "title": "Reference Documents",
+        "add": "Add",
+        "edit": "Edit",
+        "remove": "Remove",
+        "noReferenceDocuments": "No reference documents",
+        "form": {
+          "title": "Document Information",
+          "documentNameLabel": "Document name",
+          "documentIdentifierLabel": "Document identifier",
+          "referenceUrlLabel": "Reference URL",
+          "addButton": "Add to Quote Template",
+          "updateButton": "Update Document",
+          "cancelButton": "Cancel",
+          "documentNameRequired": "Document name is required",
+          "documentIdentifierRequired": "Document identifier is required",
+          "referenceUrlRequired": "Reference URL is required",
+          "invalidUrl": "Please enter a valid URL",
+          "errorHeading": "Error",
+          "duplicateUidError": "A document with this identifier already exists in the template. Please use a different identifier."
+        }
+      },
+      "shippingInformation": {
+        "title": "Shipping Information"
       },
       "comments": {
         "title": "Comments"
@@ -236,8 +315,74 @@ declare const _default: {
         "title": "Template Comments",
         "placeholder": "Add your comment"
       },
+      "actionsLabel": "Actions",
       "actionButtons": {
-        "sendForReview": "Send for review"
+        "sendForReview": "Send for review",
+        "delete": "Delete template",
+        "cancel": "Cancel template",
+        "accept": "Accept",
+        "generateQuote": "Generate quote"
+      },
+      "removeItemsModal": {
+        "title": "Change Quote Template Items",
+        "description": "Making changes to any quote template item changes the terms of the template. After you update the template, return it to the seller for review and approval.",
+        "cancelButton": "Cancel",
+        "confirmButton": "Remove",
+        "confirmButtonRemoving": "Removing...",
+        "successHeading": "Success",
+        "successMessage": "Quote template items have been successfully removed.",
+        "errorHeading": "Error",
+        "errorMessage": "Failed to remove quote template items. Please try again."
+      },
+      "updateQuantitiesModal": {
+        "title": "Change Quote Template Items",
+        "description": "Making changes to any quote template item changes the terms of the template. After you update the template, return it to the seller for review and approval.",
+        "cancelButton": "Cancel",
+        "updateButton": "Apply Changes",
+        "successHeading": "Success",
+        "successMessage": "Quote template quantities have been successfully updated.",
+        "errorHeading": "Error",
+        "errorMessage": "Failed to update quote template quantities. Please try again."
+      },
+      "confirmationModal": {
+        "cancel": "Cancel",
+        "delete": {
+          "title": "Delete Quote Template",
+          "message": "Are you sure you want to delete this quote template?",
+          "confirm": "Delete",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to delete quote template",
+          "successHeading": "Success",
+          "successDescription": "Quote template has been successfully deleted"
+        },
+        "cancelTemplate": {
+          "title": "Cancel Quote Template",
+          "message": "Are you sure you want to cancel this quote template?",
+          "confirm": "Cancel Template",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to cancel quote template",
+          "successHeading": "Success",
+          "successDescription": "Quote template has been successfully cancelled"
+        },
+        "accept": {
+          "title": "Accept Quote Template",
+          "message": "Are you sure you want to accept this quote template?",
+          "confirm": "Accept",
+          "confirmLoading": "Accepting...",
+          "successHeading": "Quote Template Accepted",
+          "successDescription": "Quote template has been successfully accepted.",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to accept quote template. Please try again."
+        },
+        "generateQuote": {
+          "message": "Are you sure you want to generate a quote from this template?",
+          "confirm": "Generate Quote",
+          "confirmLoading": "Generating...",
+          "successHeading": "Quote Generated",
+          "successDescription": "Quote has been successfully generated from the template.",
+          "errorHeading": "Error",
+          "errorFallback": "Failed to generate quote from template. Please try again."
+        }
       },
       "quotePricesSummary": {
         "subtotal": {
@@ -247,7 +392,26 @@ declare const _default: {
         "grandTotal": {
           "includingTax": "Quote Template Grand Total (including tax)"
         }
-      }
+      },
+      "lineItemNoteModal": {
+        "errorHeading": "Error"
+      },
+      "rename": {
+        "title": "Rename Quote Template",
+        "templateNameLabel": "Template name",
+        "reasonLabel": "Reason for change",
+        "renameButton": "Rename",
+        "cancelButton": "Cancel",
+        "errorHeading": "Error",
+        "templateNameRequired": "Template name is required",
+        "errorDefault": "Failed to rename quote template. Please try again.",
+        "successHeading": "Success",
+        "successMessage": "Quote template renamed successfully!"
+      },
+      "unsavedChangesWarningHeading": "Unsaved Changes",
+      "unsavedChangesWarningMessage": "The quote template must be submitted for review to save the changes.",
+      "shippingAddressWarningHeading": "No Shipping Address",
+      "shippingAddressWarningMessage": "No shipping address has been set for this quote template."
     }
   },
   "historyLog": {

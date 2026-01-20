@@ -21,17 +21,13 @@
  * rendering the requisition list component, event handling, and notifications.
  */
 
-import {
-  InLineAlert,
-  Icon,
-  provider as UI,
-} from '@dropins/tools/components.js';
+import { Icon, InLineAlert, provider as UI } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
-import * as rlApi from '@dropins/storefront-requisition-list/api.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import { RequisitionListSelector } from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
-import { companyEnabled } from '@dropins/storefront-company-management/api.js';
+import {
+  RequisitionListSelector,
+} from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { checkIsAuthenticated } from '../../scripts/commerce.js';
 
@@ -40,19 +36,26 @@ import '../../scripts/initializers/company.js';
 import '../../scripts/initializers/requisition-list.js';
 
 /**
- * Checks if requisition list feature is fully enabled
- * Requires both B2B (company) and requisition list to be enabled
- * @returns {Promise<boolean>} True if feature is enabled
+ * Validates if all required product options are selected
+ * @param {Object} product - Product data
+ * @param {Array|null} selectedOptions - Selected option UIDs
+ * @returns {boolean} True if validation passes (all required options selected)
  */
-export async function isRequisitionListFeatureEnabled() {
-  try {
-    const isB2BEnabled = await companyEnabled();
-    const isRequisitionListEnabled = await rlApi.isRequisitionListEnabled();
-    return isB2BEnabled && isRequisitionListEnabled;
-  } catch (error) {
-    console.error('Error checking requisition list feature status:', error);
-    return false;
-  }
+function validateRequiredOptions(product, selectedOptions) {
+  const productOptions = product?.options || [];
+  const isBundle = product?.isBundle || false;
+  const isArray = Array.isArray(selectedOptions);
+  const selectedOptionsCount = isArray ? selectedOptions.length : 0;
+
+  // For bundle products: check only required options
+  // For configurable/other products: ALL options must be selected
+  const optionsToValidate = isBundle
+    ? productOptions.filter((opt) => opt.required)
+    : productOptions;
+  const requiredOptionsCount = optionsToValidate.length;
+
+  // Returns true if all required options are selected
+  return requiredOptionsCount === 0 || selectedOptionsCount >= requiredOptionsCount;
 }
 
 /**
@@ -63,7 +66,11 @@ export async function isRequisitionListFeatureEnabled() {
  * @param {Object} params.labels - Placeholder labels
  * @returns {Function} Render function for requisition list selector
  */
-export function createRequisitionListRenderer({ $alert, product, labels }) {
+function createRequisitionListRenderer({
+  $alert,
+  product,
+  labels,
+}) {
   let inlineAlert = null;
 
   return async function renderRequisitionListSelectorIfEnabled($container, currentOptions = null) {
@@ -73,66 +80,56 @@ export function createRequisitionListRenderer({ $alert, product, labels }) {
       return null;
     }
 
-    // Check if both B2B and requisition list are enabled
-    const isEnabled = await isRequisitionListFeatureEnabled();
-
-    if (isEnabled) {
-      const reqLists = (await rlApi.getRequisitionLists()).items;
-      const configValues = pdpApi.getProductConfigurationValues();
-
-      // Render RequisitionListSelector with beforeAddProdToReqList validation
-      return rlRenderer.render(RequisitionListSelector, {
-        items: reqLists,
-        canCreate: true,
-        sku: product.sku,
-        quantity: configValues?.quantity || 1,
-        variant: 'neutral',
-        selectedOptions: currentOptions,
-        beforeAddProdToReqList: async () => {
-          // Check if product has options and if they are selected
-          const productHasOptions = product?.options && product.options.length > 0;
-          const isArray = Array.isArray(currentOptions);
-          const arrayLength = isArray ? currentOptions.length : 0;
-          const hasSelectedOptions = currentOptions != null && (isArray ? arrayLength > 0 : true);
-          const needsOptionSelection = productHasOptions && !hasSelectedOptions;
-
-          if (needsOptionSelection) {
-            // Show inline alert
-            if (inlineAlert) {
-              inlineAlert.remove();
-            }
-
-            inlineAlert = await UI.render(InLineAlert, {
-              heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
-              description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
-              icon: h(Icon, { source: 'Warning' }),
-              type: 'warning',
-              variant: 'secondary',
-              'aria-live': 'assertive',
-              role: 'alert',
-              onDismiss: () => {
-                if (inlineAlert) {
-                  inlineAlert.remove();
-                }
-              },
-            })($alert);
-
-            // Scroll the alert into view
-            setTimeout(() => {
-              $alert.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-              });
-            }, 100);
-
-            // Throw error to prevent modal from opening
-            throw new Error('Product options must be selected');
-          }
-        },
-      })($container);
+    // Automatically dismiss alert if all required options are now selected
+    if (inlineAlert && validateRequiredOptions(product, currentOptions)) {
+      inlineAlert.remove();
+      inlineAlert = null;
     }
-    $container.innerHTML = '';
-    return null;
+
+    // Render RequisitionListSelector with beforeAddProdToReqList validation if B2B is enabled
+    return rlRenderer.render(RequisitionListSelector, {
+      sku: product.sku,
+      quantity: pdpApi.getProductConfigurationValues()?.quantity || 1,
+      selectedOptions: currentOptions,
+      beforeAddProdToReqList: async () => {
+        // Check if all required product options are selected
+        const needsOptionSelection = !validateRequiredOptions(product, currentOptions);
+
+        if (needsOptionSelection) {
+          // Show inline alert
+          if (inlineAlert) {
+            inlineAlert.remove();
+          }
+
+          inlineAlert = await UI.render(InLineAlert, {
+            heading: labels.Global?.SelectProductOptionsBeforeRequisition || 'Please select product options',
+            description: labels.Global?.SelectProductOptionsBeforeRequisitionDescription || 'Please select all required product options before adding to a requisition list.',
+            icon: h(Icon, { source: 'Warning' }),
+            type: 'warning',
+            variant: 'secondary',
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => {
+              if (inlineAlert) {
+                inlineAlert.remove();
+                inlineAlert = null;
+              }
+            },
+          })($alert);
+
+          // Scroll the alert into view
+          setTimeout(() => {
+            $alert.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }, 100);
+
+          // Throw error to prevent modal from opening
+          throw new Error('Product options must be selected');
+        }
+      },
+    })($container);
   };
 }
 
@@ -140,52 +137,31 @@ export function createRequisitionListRenderer({ $alert, product, labels }) {
  * Sets up requisition list event handlers
  * @param {Object} params - Configuration parameters
  * @param {Function} params.renderFunction - The render function for requisition list names
- * @param {HTMLElement} params.$requisitionListNames - Container element for requisition list
+ * @param {HTMLElement} params.$requisitionListSelector - Container element for requisition list
  * @param {URLSearchParams} params.urlParams - URL search parameters
  */
-export function setupRequisitionListEventHandlers({
+function setupRequisitionListEventHandlers({
   renderFunction,
-  $requisitionListNames,
+  $requisitionListSelector,
   urlParams,
 }) {
   // Handle option changes
   events.on('pdp/values', async () => {
+    // Get current configuration values (updated with selected options)
     const configValues = pdpApi.getProductConfigurationValues();
-
-    // Check URL parameter for empty optionsUIDs
     const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
-    // Get optionsUIDs - prioritize actual selected values from configValues
+    // Determine selected options
     let optionUIDs = null;
-    // First priority: actual selected options from configValues
-    const hasConfigOptions = configValues?.optionsUIDs
-      && Array.isArray(configValues.optionsUIDs)
-      && configValues.optionsUIDs.length > 0;
-
-    if (hasConfigOptions) {
+    if (configValues?.optionsUIDs?.length > 0) {
       optionUIDs = configValues.optionsUIDs;
     } else if (urlOptionsUIDs === '') {
-      // Second priority: URL has explicit empty optionsUIDs parameter
       optionUIDs = null;
     }
 
     // Re-render requisition list component with updated options
     await renderFunction(
-      $requisitionListNames,
-      optionUIDs,
-    );
-  }, { eager: true });
-
-  // Handle authentication state changes (login/logout)
-  // Using { eager: true } to also catch the initial state on page load
-  events.on('authenticated', async () => {
-    // Get current selected options when rendering for authenticated user
-    const configValues = pdpApi.getProductConfigurationValues();
-    const urlOptionsUIDs = urlParams.get('optionsUIDs');
-    const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-    // Render requisition list for authenticated user
-    await renderFunction(
-      $requisitionListNames,
+      $requisitionListSelector,
       optionUIDs,
     );
   }, { eager: true });
@@ -195,20 +171,20 @@ export function setupRequisitionListEventHandlers({
  * Shows redirect notification if user was redirected from requisition list
  * @param {HTMLElement} $alert - Alert container element
  */
-export function showRequisitionListRedirectNotification($alert) {
+function showRequisitionListRedirectNotification($alert) {
   let redirectNotification = null;
 
   // Check if user was redirected from requisition list (sessionStorage)
   const redirectData = sessionStorage.getItem('requisitionListRedirect');
   if (redirectData) {
     try {
-      const { timestamp, message } = JSON.parse(redirectData);
+      const {
+        message,
+      } = JSON.parse(redirectData);
 
-      // Only show notification if redirect happened within last 5 seconds
-      // This prevents showing stale notifications
-      const isRecent = Date.now() - timestamp < 5000;
-
-      if (isRecent && message) {
+      // Show notification if message exists
+      // sessionStorage cleanup ensures this only shows once per redirect
+      if (message) {
         const showRedirectNotification = async () => {
           redirectNotification = await UI.render(InLineAlert, {
             heading: message,
@@ -244,14 +220,14 @@ export function showRequisitionListRedirectNotification($alert) {
  * Initialize requisition list functionality on the product details page
  * @param {Object} params - Configuration parameters
  * @param {HTMLElement} params.$alert - Alert container element
- * @param {HTMLElement} params.$requisitionListNames - Container element for requisition list
+ * @param {HTMLElement} params.$requisitionListSelector - Container element for requisition list
  * @param {Object} params.product - Product data
  * @param {Object} params.labels - Placeholder labels
  * @param {URLSearchParams} params.urlParams - URL search parameters
  */
 export async function initializeRequisitionList({
   $alert,
-  $requisitionListNames,
+  $requisitionListSelector,
   product,
   labels,
   urlParams,
@@ -263,10 +239,10 @@ export async function initializeRequisitionList({
     labels,
   });
 
-  // Setup event handlers
+  // Setup event handlers (they fetch current values inside each handler)
   setupRequisitionListEventHandlers({
     renderFunction,
-    $requisitionListNames,
+    $requisitionListSelector,
     urlParams,
   });
 
@@ -274,7 +250,10 @@ export async function initializeRequisitionList({
   const configValues = pdpApi.getProductConfigurationValues();
   const urlOptionsUIDs = urlParams.get('optionsUIDs');
   const optionUIDs = urlOptionsUIDs === '' ? null : (configValues?.optionsUIDs || null);
-  await renderFunction($requisitionListNames, optionUIDs);
+  await renderFunction(
+    $requisitionListSelector,
+    optionUIDs,
+  );
 
   // Show redirect notification if applicable
   showRequisitionListRedirectNotification($alert);

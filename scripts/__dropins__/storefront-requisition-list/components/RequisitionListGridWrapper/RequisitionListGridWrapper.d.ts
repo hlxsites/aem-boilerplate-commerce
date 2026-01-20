@@ -6,13 +6,13 @@ export interface RequisitionListGridWrapperProps extends HTMLAttributes<HTMLDivE
     isLoading?: boolean;
     header?: VNode;
     rows: Array<Record<string, VNode | string | number | undefined>>;
-    expandedRows: Set<number>;
     skeletonRowCount: number;
     pageInfo?: {
-        total_pages: number;
-        current_page: number;
-        page_size: number;
+        total_pages?: number;
+        current_page?: number;
+        page_size?: number;
     };
+    totalCount?: number;
     handlePageChange: (page?: number) => Promise<void>;
     handlePageSizeChange?: (pageSize: number) => Promise<void>;
     defaultPageSize?: number;

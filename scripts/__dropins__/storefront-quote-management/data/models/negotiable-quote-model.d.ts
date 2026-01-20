@@ -41,6 +41,7 @@ export interface NegotiableQuoteModel {
         firstname: string;
         lastname: string;
     };
+    email?: string;
     templateName?: string;
     totalQuantity: number;
     comments?: {
@@ -70,7 +71,7 @@ export interface NegotiableQuoteModel {
         subtotalWithDiscountExcludingTax?: Currency;
         totalTax?: Currency;
     };
-    items: NegotiableQuoteCartItem[];
+    items: CartItemModel[];
     shippingAddresses?: ShippingAddress[];
     canCheckout: boolean;
     canSendForReview: boolean;
@@ -101,7 +102,7 @@ export interface CustomizableOption {
         value: string;
     }[];
 }
-export interface NegotiableQuoteCartItem {
+export interface CartItemModel {
     itemType: string;
     uid: string;
     product: {

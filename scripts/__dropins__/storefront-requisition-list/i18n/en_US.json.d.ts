@@ -24,6 +24,8 @@ declare const _default: {
       "actionCancel": "Cancel",
       "actionSave": "Save",
       "requiredField": "This is a required field.",
+      "nameMinLength": "Name must be at least {min} characters long.",
+      "nameInvalidCharacters": "Name contains invalid characters. Only letters, numbers, spaces, and basic punctuation are allowed.",
       "floatingLabel": "Requisition List Name *",
       "placeholder": "Requisition List Name",
       "label": "Description",
@@ -50,6 +52,7 @@ declare const _default: {
       "successDeleteReqList": "Requisition list deleted successfully.",
       "errorMove": "Error moving item(s) to cart.",
       "successMove": "Item(s) successfully moved to cart.",
+      "partialMoveSuccess": "{successCount} product(s) successfully added and {failedCount} product(s) couldn't be added to your shopping cart.",
       "errorAddToRequisitionList": "Error adding item(s) to requisition list.",
       "successAddToRequisitionList": "Item(s) successfully added to requisition list."
     },
@@ -57,6 +60,8 @@ declare const _default: {
       "actionDelete": "Delete",
       "statusDeleting": "Deleting...",
       "actionDeleteSelected": "Delete Selected",
+      "actionDeleteSelectedItems": "Delete selected items",
+      "actionSelect": "Select",
       "actionSelectAll": "Select All",
       "actionSelectNone": "Select None",
       "actionAddToCart": "Add to Cart",
@@ -73,9 +78,11 @@ declare const _default: {
       "actionDeleteList": "Delete List",
       "deleteListTitle": "Delete Requisition List?",
       "deleteListMessage": "Are you sure you want to delete this requisition list? This action cannot be undone.",
+      "deleteItemsTitle": "Delete Item(s)?",
+      "deleteItemsMessage": "Are you sure you want to delete the selected item(s) from this requisition list? This action cannot be undone.",
+      "confirmAction": "Delete",
+      "cancelAction": "Cancel",
       "emptyRequisitionList": " Requisition List is empty",
-      "show": "Show",
-      "itemsCounter": "Items {from}-{to} of {total}",
       "productListTable": {
         "headers": {
           "productName": "Product name",
@@ -85,7 +92,9 @@ declare const _default: {
           "subtotal": "Subtotal",
           "actions": "Actions"
         },
-        "itemQuantity": "Item quantity"
+        "itemQuantity": "Item quantity",
+        "outOfStock": "Out of stock",
+        "onlyXLeftInStock": "Only {count} left in stock"
       },
       "errorLoadPage": "Failed to load page",
       "errorLoadingProducts": "Failed to load product data",
@@ -93,8 +102,17 @@ declare const _default: {
       "notFoundMessage": "The requisition list you are looking for does not exist or you do not have access to it.",
       "notFoundActionLabel": "Back to Requisition Lists"
     },
+    "RequisitionListsNotEnabled": {
+      "title": "Requisition Lists Not Available",
+      "message": "Requisition Lists are not available. Please contact your administrator for more information.",
+      "actionLabel": "Go to My Account"
+    },
     "PageSizePicker": {
+      "show": "Show",
       "itemsPerPage": "Items per page"
+    },
+    "PaginationItemsCounter": {
+      "itemsCounter": "Items {from}-{to} of {total}"
     }
   }
 }

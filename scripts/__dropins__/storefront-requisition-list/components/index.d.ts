@@ -24,4 +24,5 @@ export * from './NotFound/NotFound';
 export * from './ProductListTable/ProductListTable';
 export * from './BatchActions/BatchActions';
 export * from './PageSizePicker/PageSizePicker';
+export * from './PaginationItemsCounter/PaginationItemsCounter';
 //# sourceMappingURL=index.d.ts.map

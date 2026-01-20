@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
 
 // Dropin Tools
 import { events } from '@dropins/tools/event-bus.js';
@@ -10,7 +11,6 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 // Checkout Dropin Libraries
 import {
   createScopedSelector,
-  isEmptyCart,
   isVirtualCart,
   setMetaTags,
   validateForms,
@@ -21,8 +21,7 @@ import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-import { displayOverlaySpinner, removeModal, removeOverlaySpinner } from './utils.js';
+import { buildOrderDetailsUrl, displayOverlaySpinner, removeOverlaySpinner } from './utils.js';
 
 // Fragment functions
 import { createCheckoutFragment, selectors } from './fragments.js';
@@ -36,7 +35,6 @@ import {
   renderCheckoutHeader,
   renderCustomerBillingAddresses,
   renderCustomerShippingAddresses,
-  renderEmptyCart,
   renderGiftOptions,
   renderLoginForm,
   renderMergedCartBanner,
@@ -48,14 +46,12 @@ import {
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
   renderTermsAndConditions,
-  unmountEmptyCart,
 } from './containers.js';
 
 // Constants
 import {
   BILLING_ADDRESS_DATA_KEY,
   BILLING_FORM_NAME,
-  CHECKOUT_EMPTY_CLASS,
   LOGIN_FORM_NAME,
   PURCHASE_ORDER_FORM_NAME,
   SHIPPING_ADDRESS_DATA_KEY,
@@ -68,11 +64,20 @@ import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../sc
 import '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
 import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
+
+function redirectToCartIfEmpty(cartData) {
+  const isOrderPlaced = events.lastPayload('order/placed') !== undefined;
+
+  if (!isOrderPlaced && (cartData === null || cartData?.items?.length === 0)) {
+    window.location.href = rootLink('/cart');
+  }
+}
 
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
@@ -96,8 +101,13 @@ export default async function decorate(block) {
     b2bRenderPoSuccess = renderPOSuccess;
   }
 
+  setMetaTags('Checkout');
+  document.title = 'Checkout';
+
+  const cartData = events.lastPayload('cart/initialized');
+  redirectToCartIfEmpty(cartData);
+
   // Container and component references
-  let emptyCart;
   let shippingForm;
   let billingForm;
   let shippingAddresses;
@@ -107,9 +117,6 @@ export default async function decorate(block) {
   const billingFormRef = { current: null };
   const creditCardFormRef = { current: null };
   const loaderRef = { current: null };
-
-  setMetaTags('Checkout');
-  document.title = 'Checkout';
 
   events.on('order/placed', () => {
     setMetaTags('Order Confirmation');
@@ -127,7 +134,6 @@ export default async function decorate(block) {
   const $loader = getElement(selectors.checkout.loader);
   const $mergedCartBanner = getElement(selectors.checkout.mergedCartBanner);
   const $heading = getElement(selectors.checkout.heading);
-  const $emptyCart = getElement(selectors.checkout.emptyCart);
   const $serverError = getElement(selectors.checkout.serverError);
   const $outOfStock = getElement(selectors.checkout.outOfStock);
   const $login = getElement(selectors.checkout.login);
@@ -185,11 +191,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, {
-    handleValidation,
-    handlePlaceOrder,
-    b2bIsPoEnabled,
-  });
+  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder, b2bIsPoEnabled });
 
   // Render the remaining containers
   const [
@@ -220,7 +222,7 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    renderBillToShippingAddress($billToShipping, placeOrder),
+    renderBillToShippingAddress($billToShipping),
 
     renderShippingMethods($delivery),
 
@@ -237,26 +239,7 @@ export default async function decorate(block) {
     renderGiftOptions($giftOptions),
   ]);
 
-  async function displayEmptyCart() {
-    if (!emptyCart) {
-      emptyCart = await renderEmptyCart($emptyCart);
-      $content.classList.add(CHECKOUT_EMPTY_CLASS);
-    }
-
-    removeOverlaySpinner(loaderRef, $loader);
-  }
-
-  function removeEmptyCart() {
-    if (!emptyCart) return;
-
-    unmountEmptyCart();
-    emptyCart = null;
-
-    $content.classList.remove(CHECKOUT_EMPTY_CLASS);
-  }
-
   async function initializeCheckout(data) {
-    removeEmptyCart();
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
@@ -273,13 +256,13 @@ export default async function decorate(block) {
     } else if (!shippingForm) {
       shippingFormSkeleton.remove();
 
-      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, placeOrder, 'shipping');
+      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, 'shipping');
     }
 
     if (!billingForm) {
       billingFormSkeleton.remove();
 
-      billingForm = await renderAddressForm($billingForm, billingFormRef, data, placeOrder, 'billing');
+      billingForm = await renderAddressForm($billingForm, billingFormRef, data, 'billing');
     }
   }
 
@@ -297,7 +280,6 @@ export default async function decorate(block) {
         $shippingForm,
         shippingFormRef,
         data,
-        placeOrder,
       );
     }
 
@@ -310,32 +292,28 @@ export default async function decorate(block) {
         $billingForm,
         billingFormRef,
         data,
-        placeOrder,
       );
     }
   }
 
-  async function handleCheckoutInitialized(data) {
-    if (isEmptyCart(data)) {
-      await displayEmptyCart();
-    } else {
-      await initializeCheckout(data);
-    }
-  }
-
   async function handleCheckoutUpdated(data) {
-    if (isEmptyCart(data)) {
-      await displayEmptyCart();
-      return;
-    }
-
+    if (!data) return;
     await initializeCheckout(data);
   }
 
   function handleAuthenticated(authenticated) {
     if (!authenticated) return;
-    removeModal();
-    displayOverlaySpinner(loaderRef, $loader);
+
+    // When a customer creates an account on the checkout success page and then
+    // signs in, they will be redirected to the order details page with the order
+    // number as orderRef, allowing the order details to be displayed
+    const orderData = events.lastPayload('order/placed');
+    if (orderData) {
+      const url = buildOrderDetailsUrl(orderData);
+      window.history.pushState({}, '', url);
+    }
+
+    window.location.reload();
   }
 
   function handleCheckoutValues(payload) {
@@ -348,15 +326,7 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const token = getUserTokenCookie();
-    const orderRef = token ? orderData.number : orderData.token;
-    const orderNumber = orderData.number;
-    const encodedOrderRef = encodeURIComponent(orderRef);
-    const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-    const url = token
-      ? rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}`)
-      : rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+    const url = buildOrderDetailsUrl(orderData);
 
     window.history.pushState({}, '', url);
 
@@ -378,9 +348,11 @@ export default async function decorate(block) {
   }
 
   events.on('authenticated', handleAuthenticated);
-  events.on('checkout/initialized', handleCheckoutInitialized, { eager: true });
+  events.on('checkout/initialized', handleCheckoutUpdated, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
   events.on('order/placed', handleOrderPlaced);
+  events.on('cart/initialized', redirectToCartIfEmpty, { eager: true });
+  events.on('cart/data', redirectToCartIfEmpty);
   events.on('purchase-order/placed', handlePurchaseOrderPlaced);
 }

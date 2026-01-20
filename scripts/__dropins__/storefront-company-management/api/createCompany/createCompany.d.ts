@@ -31,6 +31,48 @@ export interface CompanyCreateInput {
         }>;
     };
 }
+/**
+ * Registers a new B2B company with complete business information.
+ *
+ * This function handles the entire company registration workflow including:
+ * - Company details validation (name, email, legal name, tax IDs)
+ * - Legal address validation with country/region support
+ * - Company administrator account creation
+ * - Email uniqueness validation
+ *
+ * @param formData - Company registration form data containing company info, legal address, and admin details
+ * @returns Promise resolving to registration result with success status, company data, or errors
+ *
+ * @example
+ * ```typescript
+ * const result = await createCompany({
+ *   company_name: 'Acme Corp',
+ *   company_email: 'contact@acme.com',
+ *   legal_name: 'Acme Corporation Inc.',
+ *   vat_tax_id: 'VAT123456789',
+ *   legal_address: {
+ *     street: ['123 Main St', 'Suite 100'],
+ *     city: 'San Francisco',
+ *     region: { region_code: 'CA', region: 'California', region_id: 12 },
+ *     postcode: '94105',
+ *     country_id: 'US',
+ *     telephone: '+1-555-123-4567'
+ *   },
+ *   company_admin: {
+ *     email: 'admin@acme.com',
+ *     firstname: 'John',
+ *     lastname: 'Doe',
+ *     job_title: 'CEO'
+ *   }
+ * });
+ *
+ * if (result.success) {
+ *   console.log('Company registered:', result.company);
+ * } else {
+ *   console.error('Registration failed:', result.errors);
+ * }
+ * ```
+ */
 export declare const createCompany: (formData: any) => Promise<{
     success: boolean;
     company?: CompanyRegistrationModel;

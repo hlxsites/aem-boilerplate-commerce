@@ -1,4 +1,4 @@
-import { Currency, ItemNote, PaginationInfo, ShippingAddress, ConfigurableOption, BundleOption } from './negotiable-quote-model';
+import { Currency, PaginationInfo, ShippingAddress, NegotiableQuoteHistoryEntry, CartItemModel } from './negotiable-quote-model';
 
 export interface NegotiableQuoteTemplateModel {
     id: string;
@@ -14,7 +14,7 @@ export interface NegotiableQuoteTemplateModel {
         lastname: string;
     };
     comments?: QuoteTemplateComment[];
-    history?: QuoteTemplateHistoryEntry[];
+    history?: NegotiableQuoteHistoryEntry[];
     prices: {
         subtotalExcludingTax?: Currency;
         subtotalIncludingTax?: Currency;
@@ -25,11 +25,12 @@ export interface NegotiableQuoteTemplateModel {
             label: string;
         }[];
     };
-    items: QuoteTemplateCartItem[];
+    items: CartItemModel[];
     shippingAddresses?: ShippingAddress[];
     referenceDocuments?: {
         uid: string;
         name: string;
+        identifier?: string;
         url: string;
     }[];
     quantityThresholds?: {
@@ -41,41 +42,24 @@ export interface NegotiableQuoteTemplateModel {
     canReopen: boolean;
     canCancel: boolean;
     canSendForReview: boolean;
+    canGenerateQuoteFromTemplate: boolean;
+    canEditTemplateItems: boolean;
 }
 export declare enum NegotiableQuoteTemplateStatus {
-    ACTIVE = "ACTIVE",
-    IN_REVIEW = "IN_REVIEW",
-    INACTIVE = "INACTIVE",
-    SUBMITTED = "SUBMITTED",
-    PENDING = "PENDING",
-    CLOSED = "CLOSED",
-    OPEN = "OPEN"
-}
-export interface QuoteTemplateCartItem {
-    uid?: string;
-    product: {
-        uid: string;
-        sku: string;
-        name: string;
-    };
-    quantity: number;
-    prices: {
-        originalItemPrice: Currency;
-        rowTotal: Currency;
-    };
-    catalogDiscount?: {
-        amountOff: number;
-        percentOff: number;
-    };
-    discounts?: {
-        label: string;
-        value: string;
-        amount: Currency;
-    }[];
-    noteFromBuyer?: ItemNote[];
-    noteFromSeller?: ItemNote[];
-    configurableOptions?: ConfigurableOption[];
-    bundleOptions?: BundleOption[];
+    ACTIVE = "Active",
+    IN_REVIEW = "In Review",
+    INACTIVE = "Inactive",
+    SUBMITTED = "Submitted",
+    PENDING = "Pending",
+    CLOSED = "Closed",
+    OPEN = "Open",
+    UPDATED = "Updated",
+    EDITED = "Edited",
+    NEW = "New",
+    DRAFT = "Draft",
+    DECLINED = "Declined",
+    CANCELED = "Canceled",
+    EXPIRED = "Expired"
 }
 export interface QuoteTemplateComment {
     uid: string;
@@ -89,16 +73,6 @@ export interface QuoteTemplateComment {
         name: string;
         url: string;
     }[];
-}
-export interface QuoteTemplateHistoryEntry {
-    uid: string;
-    createdAt: string;
-    author: {
-        firstname: string;
-        lastname: string;
-    };
-    changeType: string;
-    changes: any;
 }
 export interface NegotiableQuoteTemplatesListModel {
     items: NegotiableQuoteTemplateListEntry[];
@@ -133,5 +107,6 @@ export interface NegotiableQuoteTemplateListEntry {
         grandTotal: Currency;
         minNegotiatedGrandTotal: Currency;
     };
+    canGenerateQuoteFromTemplate?: boolean;
 }
 //# sourceMappingURL=negotiable-quote-template-model.d.ts.map
