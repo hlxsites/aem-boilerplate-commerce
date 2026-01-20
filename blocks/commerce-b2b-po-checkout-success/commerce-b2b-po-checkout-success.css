@@ -1,8 +1,8 @@
 .po-confirmation {
-  padding-bottom: var(--spacing-large);
-  padding-top: var(--spacing-large);
+    padding-bottom: var(--spacing-large);
+    padding-top: var(--spacing-large);
 }
 
 .po-confirmation__footer {
-  max-width: max-content;
+    max-width: max-content;
 }

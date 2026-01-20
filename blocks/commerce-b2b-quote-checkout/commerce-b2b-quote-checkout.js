@@ -21,8 +21,8 @@ import * as poApi from '@dropins/storefront-purchase-order/api.js';
 import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 
 // Block Utilities
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 import {
+  buildOrderDetailsUrl,
   displayOverlaySpinner,
   removeOverlaySpinner,
 } from './utils.js';
@@ -59,7 +59,7 @@ import {
   PURCHASE_ORDER_FORM_NAME,
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
-import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/commerce.js';
+import { CUSTOMER_PO_DETAILS_PATH, rootLink } from '../../scripts/commerce.js';
 
 // Success block entry points
 import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
@@ -143,7 +143,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, {
+  await renderPlaceOrder($placeOrder, {
     handleValidation,
     handlePlaceOrder,
     isPoEnabled,
@@ -237,15 +237,7 @@ export default async function decorate(block) {
     // Clear address form data
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const token = getUserTokenCookie();
-    const orderRef = token ? orderData.number : orderData.token;
-    const orderNumber = orderData.number;
-    const encodedOrderRef = encodeURIComponent(orderRef);
-    const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-    const url = token
-      ? rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}`)
-      : rootLink(`${ORDER_DETAILS_PATH}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+    const url = buildOrderDetailsUrl(orderData);
 
     window.history.pushState({}, '', url);
 
