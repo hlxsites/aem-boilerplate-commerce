@@ -127,6 +127,35 @@ export default async function decorate(block) {
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
+      const { data, defaultImageProps } = ctx;
+
+      // Check if this is a video item
+      if (isVideoItem(defaultImageProps, data)) {
+        const previewUrl = getVideoPreviewUrl(defaultImageProps.src, data);
+        const thumbnailWrapper = document.createElement('span');
+        thumbnailWrapper.className = 'product-gallery__video-thumbnail';
+
+        if (previewUrl) {
+          // Render preview image with play icon overlay
+          thumbnailWrapper.innerHTML = `
+            <img 
+              class="product-gallery__video-thumbnail-img" 
+              src="${previewUrl}" 
+              alt="Video thumbnail"
+            />
+            <span class="product-gallery__video-icon">▶</span>
+          `;
+        } else {
+          // Fallback: just play icon
+          thumbnailWrapper.innerHTML = `
+            <span class="product-gallery__video-icon">▶</span>
+          `;
+        }
+
+        ctx.replaceWith(thumbnailWrapper);
+        return;
+      }
+
       tryRenderAemAssetsImage(ctx, {
         ...imageSlotConfig(ctx),
         wrapper: document.createElement('span'),
@@ -134,6 +163,48 @@ export default async function decorate(block) {
     },
 
     CarouselMainImage: (ctx) => {
+      const { data, defaultImageProps } = ctx;
+
+      // Check if this is a video item
+      if (isVideoItem(defaultImageProps, data)) {
+        const videoWrapper = document.createElement('div');
+        videoWrapper.className = 'product-gallery__video-wrapper';
+
+        const videoUrl = defaultImageProps.src;
+        const previewUrl = getVideoPreviewUrl(videoUrl, data);
+
+        // Use iframe for YouTube/Vimeo, video element for direct files
+        if (isExternalVideoUrl(videoUrl)) {
+          const embedUrl = getEmbedUrl(videoUrl);
+          videoWrapper.innerHTML = `
+            <iframe 
+              class="product-gallery__video-iframe"
+              src="${embedUrl}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          `;
+        } else {
+          // Direct video file with poster image
+          const posterAttr = previewUrl ? `poster="${previewUrl}"` : '';
+          videoWrapper.innerHTML = `
+            <video 
+              class="product-gallery__video"
+              controls
+              preload="metadata"
+              ${posterAttr}
+            >
+              <source src="${videoUrl}" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          `;
+        }
+
+        ctx.replaceWith(videoWrapper);
+        return;
+      }
+
       tryRenderAemAssetsImage(ctx, {
         ...imageSlotConfig(ctx),
       });
@@ -533,4 +604,107 @@ function imageSlotConfig(ctx) {
       height: defaultImageProps.height,
     },
   };
+}
+
+/**
+ * Checks if the gallery item is a video based on URL, roles, or product data
+ * @param {Object} imageProps - The image properties from the slot context
+ * @param {Object} productData - The full product data from context
+ * @returns {boolean} True if the item is a video
+ */
+function isVideoItem(imageProps, productData) {
+  if (!imageProps?.src) return false;
+
+  const url = imageProps.src.toLowerCase();
+
+  // Check URL for video extensions
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv'];
+  if (videoExtensions.some((ext) => url.includes(ext))) {
+    return true;
+  }
+
+  // Check for YouTube/Vimeo URLs
+  if (isExternalVideoUrl(imageProps.src)) {
+    return true;
+  }
+
+  // Check if URL matches any video URL in product data
+  if (productData?.videos?.length) {
+    const isInVideos = productData.videos.some(
+      (v) => v.url && imageProps.src.includes(v.url.replace(/^https?:/, '')),
+    );
+    if (isInVideos) return true;
+  }
+
+  // Check if the image item has 'video' in roles
+  if (productData?.images?.length) {
+    const matchingImage = productData.images.find(
+      (img) => img.url && imageProps.src.includes(img.url.replace(/^https?:/, '')),
+    );
+    if (matchingImage?.roles?.includes('video') || matchingImage?.type === 'video') {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Checks if URL is from YouTube or Vimeo
+ * @param {string} url - The video URL
+ * @returns {boolean} True if external video service
+ */
+function isExternalVideoUrl(url) {
+  if (!url) return false;
+  const lowerUrl = url.toLowerCase();
+  return lowerUrl.includes('youtube.com')
+    || lowerUrl.includes('youtu.be')
+    || lowerUrl.includes('vimeo.com');
+}
+
+/**
+ * Gets the preview image URL for a video
+ * @param {string} videoUrl - The video URL
+ * @param {Object} productData - The full product data
+ * @returns {string|null} The preview image URL or null
+ */
+function getVideoPreviewUrl(videoUrl, productData) {
+  if (!videoUrl || !productData?.videos?.length) return null;
+
+  const matchingVideo = productData.videos.find(
+    (v) => v.url && videoUrl.includes(v.url.replace(/^https?:/, '')),
+  );
+
+  return matchingVideo?.preview?.url || null;
+}
+
+/**
+ * Converts YouTube/Vimeo URLs to embeddable URLs
+ * @param {string} url - The original video URL
+ * @returns {string} The embed URL
+ */
+function getEmbedUrl(url) {
+  if (!url) return '';
+
+  // YouTube: various formats
+  // https://www.youtube.com/watch?v=VIDEO_ID
+  // https://youtu.be/VIDEO_ID
+  // https://www.youtube.com/embed/VIDEO_ID
+  const youtubeMatch = url.match(
+    /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/,
+  );
+  if (youtubeMatch) {
+    return `https://www.youtube.com/embed/${youtubeMatch[1]}?rel=0`;
+  }
+
+  // Vimeo: various formats
+  // https://vimeo.com/VIDEO_ID
+  // https://player.vimeo.com/video/VIDEO_ID
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeoMatch) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+  }
+
+  // Return original if no match (might be direct video file)
+  return url;
 }
