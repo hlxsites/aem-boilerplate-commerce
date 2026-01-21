@@ -1,0 +1,37 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QyEqr5zS1dMDikt66dgJnP/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QyEqr5zS1dMDikt66dgJnP/graphql",
+      "headers": {
+        "cs": {
+          "content-type":"application/json",
+          "AC-View-Id":"8563851b-d44c-4be6-b6a8-e054dcf11b9d",
+          "AC-Environment-Id":"QyEqr5zS1dMDikt66dgJnP",
+          "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "AC-Source-Locale":"en-US",
+          "X-Api-Key": "storefront-catalog-apollo",
+          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "store-id": 1,
+        "store-name": "e2e cell aco",
+        "store-url": "https://e2edc-eventing-preprod--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "en-US",
+        "store-view-code": "en-US",
+        "website-id": 1,
+        "website-name": "Main Website",
+        "environment-id": "QyEqr5zS1dMDikt66dgJnP",
+        "website-code": "WEBSITE_CODE",
+        "store-code": "STORE_CODE",
+        "view-id":"8563851b-d44c-4be6-b6a8-e054dcf11b9d",
+        "aep-ims-org-id":"DEDB2A52641B1D460A495F8E@AdobeOrg",
+        "aep-datastream-id":"725a1656-5fa7-4d1c-b19e-b4e838fce399"
+      }
+    }
+  }
+}
