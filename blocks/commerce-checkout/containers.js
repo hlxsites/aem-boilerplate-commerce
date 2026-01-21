@@ -354,6 +354,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
 
             PaymentServices.render(CreditCard, {
               getCartId: () => ctx.cartId,
+              onError: () => { /* Patch: define 'onError' callback for submit() to reject on error. */ },
               creditCardFormRef,
             })($creditCard);
 
