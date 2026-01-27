@@ -297,7 +297,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
     describe("Requisition List View Workflow", () => {
       // Click first link on the list
-      cy.get(fields.requisitionListGridNameLink).eq(0).click();
+      cy.get(fields.requisitionListGridNameLink).eq(1).click();
       cy.contains("Newly Created Requisition List").should("be.visible");
 
       // 1. Rename Requisition List from the Requisition List view page
@@ -350,10 +350,9 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // The cart refresh happens automatically via requisitionList/alert event
       // Cypress will retry the assertion until it passes or times out
       
-      // Uncomment once bug https://jira.corp.adobe.com/browse/LYNX-1028 fix promoted to ACCS Sandbox on 12th or 16th Jan
-      // cy.get(fields.miniCartButton, { timeout: 30000 })
-      //   .should("exist")
-      //   .and("have.attr", "data-count", "14");
+      cy.get(fields.miniCartButton, { timeout: 30000 })
+        .should("exist")
+        .and("have.attr", "data-count", "14");
 
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
