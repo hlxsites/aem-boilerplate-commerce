@@ -22,9 +22,7 @@ export default async function decorate(block) {
         throw new Error('No product list page block found');
       }
 
-      // Check dataset.category (set after decoration) or config urlpath/category
-      const plpConfig = readBlockConfig(plpBlock);
-      const category = plpConfig.urlpath || plpConfig.category;
+      const category = readBlockConfig(plpBlock).urlpath;
       if (!category) {
         throw new Error('No category ID found in product list page block');
       }
