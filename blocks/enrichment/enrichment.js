@@ -16,7 +16,7 @@ export default async function decorate(block) {
     }
 
     if (type === 'category') {
-      // Look for PLP block using decorated selector
+      // Look for PLP block using "product-list-page" block selector
       const plpBlock = document.querySelector('.product-list-page');
       if (!plpBlock) {
         throw new Error('No product list page block found');
