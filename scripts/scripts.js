@@ -19,6 +19,8 @@ import {
   decorateLinks,
   loadErrorPage,
   decorateSections,
+  IS_UE,
+  IS_DA,
 } from './commerce.js';
 
 /**
@@ -30,6 +32,10 @@ function buildHeroBlock(main) {
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    // Check if h1 or picture is already inside a hero block
+    if (h1.closest('.hero') || picture.closest('.hero')) {
+      return; // Don't create a duplicate hero block
+    }
     const section = document.createElement('div');
     section.append(buildBlock('hero', { elems: [picture, h1] }));
     main.prepend(section);
@@ -161,7 +167,7 @@ async function loadPage() {
 }
 
 // UE Editor support before page load
-if (window.location.hostname.includes('ue.da.live')) {
+if (IS_UE) {
   // eslint-disable-next-line import/no-unresolved
   await import(`${window.hlx.codeBasePath}/scripts/ue.js`).then(({ default: ue }) => ue());
 }
@@ -169,7 +175,7 @@ if (window.location.hostname.includes('ue.da.live')) {
 loadPage();
 
 (async function loadDa() {
-  if (!new URL(window.location.href).searchParams.get('dapreview')) return;
+  if (!IS_DA) return;
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
