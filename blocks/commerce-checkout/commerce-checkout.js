@@ -18,10 +18,10 @@ import {
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Block Utilities
 import {
+  buildOrderDetailsUrl,
   displayOverlaySpinner,
   removeOverlaySpinner,
 } from './utils.js';
@@ -178,7 +178,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
+  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
 
   // Render the remaining containers
   const [
@@ -296,8 +296,7 @@ export default async function decorate(block) {
     // number as orderRef, allowing the order details to be displayed
     const orderData = events.lastPayload('order/placed');
     if (orderData) {
-      const encodedOrderNumber = encodeURIComponent(orderData.number);
-      const url = rootLink(`/order-details?orderRef=${encodedOrderNumber}`);
+      const url = buildOrderDetailsUrl(orderData);
       window.history.pushState({}, '', url);
     }
 
@@ -330,15 +329,7 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const token = getUserTokenCookie();
-    const orderRef = token ? orderData.number : orderData.token;
-    const orderNumber = orderData.number;
-    const encodedOrderRef = encodeURIComponent(orderRef);
-    const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-    const url = token
-      ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-      : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+    const url = buildOrderDetailsUrl(orderData);
 
     window.history.pushState({}, '', url);
 
