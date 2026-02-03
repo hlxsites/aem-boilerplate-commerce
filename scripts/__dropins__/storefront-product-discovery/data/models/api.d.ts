@@ -70,6 +70,8 @@ export interface FacetBucket {
     from?: number;
     to?: number;
     selected?: boolean;
+    name?: string;
+    path?: string;
 }
 export interface AttributeMetadataResponse {
     attributeMetadata: AttributeMetadata;
