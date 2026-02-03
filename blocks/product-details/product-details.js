@@ -204,7 +204,6 @@ export default async function decorate(block) {
         ctx.replaceWith(videoWrapper);
         return;
       }
-
       tryRenderAemAssetsImage(ctx, {
         ...imageSlotConfig(ctx),
       });
