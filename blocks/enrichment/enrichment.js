@@ -7,6 +7,10 @@ export default async function decorate(block) {
 
   try {
     const filters = {};
+    if (!type) {
+      throw new Error('No type found in enrichment block configuration');
+    }
+
     if (type === 'product') {
       const productSku = getProductSku();
       if (!productSku) {
