@@ -10,11 +10,6 @@
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
           "AC-Price-Book-Id":"77de68daecd823babbb58edb1c8e14d7106e83bb",
           "AC-Scope-Locale":"en-US",
-          "Magento-Environment-Id": "LnjXjuam6uWmo5d2JLEgbA",
-          "Magento-Website-Code": "WEBSITE_CODE",
-          "Magento-Store-Code": "STORE_CODE",
-          "Magento-Store-View-Code": "en-US",
-          "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb",
           "X-Api-Key": "storefront-catalog-apollo"
         }
       },
