@@ -13,6 +13,8 @@
         }
       },
       "commerce-assets-enabled": false,
+      "commerce-b2b-enabled": true,
+      "commerce-companies-enabled": true,
       "analytics": {
         "base-currency-code": "USD",
         "environment": "Testing",
