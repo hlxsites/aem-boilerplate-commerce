@@ -17,7 +17,7 @@ const setAuthHeaders = (state) => {
 };
 
 const setCustomerGroupHeader = (customerGroupId) => {
-  CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+  CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-Id', customerGroupId);
 };
 
 const persistCartDataInSession = (data) => {
