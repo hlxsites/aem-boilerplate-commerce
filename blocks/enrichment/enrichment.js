@@ -20,12 +20,13 @@ export default async function decorate(block) {
     }
 
     if (type === 'category') {
-      const plpBlock = document.querySelector('.block.product-list-page');
+      // Look for PLP block using "product-list-page" block selector
+      const plpBlock = document.querySelector('.product-list-page');
       if (!plpBlock) {
         throw new Error('No product list page block found');
       }
 
-      const category = plpBlock.dataset?.category || readBlockConfig(plpBlock).category;
+      const category = readBlockConfig(plpBlock).urlpath;
       if (!category) {
         throw new Error('No category ID found in product list page block');
       }
