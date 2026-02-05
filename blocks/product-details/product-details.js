@@ -173,20 +173,8 @@ export default async function decorate(block) {
         const videoUrl = defaultImageProps.src;
         const previewUrl = getVideoPreviewUrl(videoUrl, data);
 
-        // Use iframe for YouTube/Vimeo, video element for direct files
-        if (isExternalVideoUrl(videoUrl)) {
-          const embedUrl = getEmbedUrl(videoUrl);
-          videoWrapper.innerHTML = `
-            <iframe 
-              class="product-gallery__video-iframe"
-              src="${embedUrl}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen
-            ></iframe>
-          `;
-        } else {
-          // Direct video file with poster image
+        // Use video element for direct files, iframe for everything else
+        if (isDirectVideoFile(videoUrl)) {
           const posterAttr = previewUrl ? `poster="${previewUrl}"` : '';
           videoWrapper.innerHTML = `
             <video 
@@ -198,6 +186,17 @@ export default async function decorate(block) {
               <source src="${videoUrl}" type="video/mp4">
               Your browser does not support the video tag.
             </video>
+          `;
+        } else {
+          const embedUrl = getEmbedUrl(videoUrl);
+          videoWrapper.innerHTML = `
+            <iframe 
+              class="product-gallery__video-iframe"
+              src="${embedUrl}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
           `;
         }
 
@@ -622,11 +621,6 @@ function isVideoItem(imageProps, productData) {
     return true;
   }
 
-  // Check for YouTube/Vimeo URLs
-  if (isExternalVideoUrl(imageProps.src)) {
-    return true;
-  }
-
   // Check if URL matches any video URL in product data
   if (productData?.videos?.length) {
     const isInVideos = productData.videos.some(
@@ -649,16 +643,15 @@ function isVideoItem(imageProps, productData) {
 }
 
 /**
- * Checks if URL is from YouTube or Vimeo
+ * Checks if URL is a direct video file based on extension
  * @param {string} url - The video URL
- * @returns {boolean} True if external video service
+ * @returns {boolean} True if direct video file
  */
-function isExternalVideoUrl(url) {
+function isDirectVideoFile(url) {
   if (!url) return false;
   const lowerUrl = url.toLowerCase();
-  return lowerUrl.includes('youtube.com')
-    || lowerUrl.includes('youtu.be')
-    || lowerUrl.includes('vimeo.com');
+  const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv'];
+  return videoExtensions.some((ext) => lowerUrl.includes(ext));
 }
 
 /**
@@ -668,13 +661,25 @@ function isExternalVideoUrl(url) {
  * @returns {string|null} The preview image URL or null
  */
 function getVideoPreviewUrl(videoUrl, productData) {
-  if (!videoUrl || !productData?.videos?.length) return null;
+  if (!videoUrl) return null;
 
-  const matchingVideo = productData.videos.find(
-    (v) => v.url && videoUrl.includes(v.url.replace(/^https?:/, '')),
-  );
+  // Check if we have a preview from product data
+  if (productData?.videos?.length) {
+    const matchingVideo = productData.videos.find(
+      (v) => v.url && videoUrl.includes(v.url.replace(/^https?:/, '')),
+    );
+    if (matchingVideo?.preview?.url) {
+      return matchingVideo.preview.url;
+    }
+  }
 
-  return matchingVideo?.preview?.url || null;
+  // Fallback: For AEM Assets URLs, try to derive thumbnail
+  // Pattern: .../urn:aaid:aem:.../play -> .../urn:aaid:aem:.../as/thumbnail.png
+  if (videoUrl.includes('adobeaemcloud.com') && videoUrl.endsWith('/play')) {
+    return videoUrl.replace(/\/play$/, '/as/thumbnail.png');
+  }
+
+  return null;
 }
 
 /**
