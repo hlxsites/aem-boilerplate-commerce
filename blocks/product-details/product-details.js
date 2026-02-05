@@ -194,6 +194,7 @@ export default async function decorate(block) {
               class="product-gallery__video-iframe"
               src="${embedUrl}"
               frameborder="0"
+              loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen
             ></iframe>
