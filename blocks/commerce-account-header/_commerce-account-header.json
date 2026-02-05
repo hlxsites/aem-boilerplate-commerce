@@ -1,0 +1,23 @@
+{
+  "definitions": [{
+    "title": "Commerce Account Header",
+    "id": "commerce-account-header",
+    "model": "commerce-account-header",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-account-header",
+    "fields": [
+      {
+        "component": "text",
+        "name": "title",
+        "label": "Title"
+      }
+    ]
+  }],
+  "filters": []
+}
