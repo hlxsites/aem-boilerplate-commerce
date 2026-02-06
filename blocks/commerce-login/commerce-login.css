@@ -3,3 +3,24 @@ main .commerce-login-container {
     margin: 40px auto;
     width: 100%;
 }
+
+/* .block.commerce-login .auth-sign-in-form__title {
+    margin-block-end: 0;
+} */
+
+.block.commerce-login .auth-sign-in-form__title {
+    margin-block-end: var(--spacing-big);
+}
+
+.block.commerce-login .commerce-login__content-header p:first-child {
+    margin-block-start: 0;
+}
+
+.block.commerce-login .commerce-login__content-footer p:first-child {
+    margin-block-start: 0;
+}
+
+/* Normalize inputs */
+.block.commerce-login .dropin-input-password>div:first-child {
+    margin-bottom: 0;
+}

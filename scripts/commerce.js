@@ -882,3 +882,14 @@ export function decorateSections(main) {
     }
   });
 }
+
+export function getElementFromRow(block, label) {
+  const section = [...block.querySelectorAll(':scope > div')].find(
+    (div) => div.querySelector(':scope > div')?.textContent.trim() === label,
+  );
+  const contentDiv = section?.querySelector(':scope > div + div') ?? null;
+  if (contentDiv) {
+    contentDiv.classList.add(`commerce-login__${label}`);
+  }
+  return contentDiv;
+}
