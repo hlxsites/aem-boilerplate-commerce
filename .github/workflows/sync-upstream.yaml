@@ -104,7 +104,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push -u origin sync/upstream --force
+          # Delete remote branch to force a fresh push
+          git push origin --delete sync/upstream 2>/dev/null || true
+
+          # Push the new sync branch
+          git push -u origin sync/upstream
           
           PR_OUTPUT=$(gh pr create \
             --base ${{ env.TARGET_BRANCH }} \
