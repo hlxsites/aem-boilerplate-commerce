@@ -58,7 +58,9 @@ jobs:
       
       - name: Checkout or create sync branch
         run: |
-          git checkout sync/upstream 2>/dev/null || git checkout -b sync/upstream
+          git checkout ${{ env.TARGET_BRANCH }}
+          git branch -D sync/upstream 2>/dev/null || true
+          git checkout -b sync/upstream
       
       - name: Merge upstream changes
         id: merge
@@ -69,17 +71,17 @@ jobs:
             echo "merge_status=success" >> $GITHUB_OUTPUT
             
             # Get merge details
-            COMMITS_AHEAD=$(git rev-list --count origin/${{ env.TARGET_BRANCH }}..HEAD 2>/dev/null || echo "0")
+            COMMITS_AHEAD=$(git rev-list --count ${{ env.TARGET_BRANCH }}..HEAD 2>/dev/null || echo "0")
             echo "commits_ahead=$COMMITS_AHEAD" >> $GITHUB_OUTPUT
             
             # Get list of changed files
-            CHANGED_FILES=$(git diff --name-only origin/${{ env.TARGET_BRANCH }}..HEAD | head -20)
+            CHANGED_FILES=$(git diff --name-only ${{ env.TARGET_BRANCH }}..HEAD | head -20)
             echo "changed_files<<EOF" >> $GITHUB_OUTPUT
             echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
             
             # Get commit messages
-            COMMIT_MESSAGES=$(git log origin/${{ env.TARGET_BRANCH }}..HEAD --oneline --no-decorate | head -10)
+            COMMIT_MESSAGES=$(git log ${{ env.TARGET_BRANCH }}..HEAD --oneline --no-decorate | head -10)
             echo "commit_messages<<EOF" >> $GITHUB_OUTPUT
             echo "$COMMIT_MESSAGES" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
@@ -102,7 +104,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push -u origin sync/upstream
+          git push -u origin sync/upstream --force
           
           PR_OUTPUT=$(gh pr create \
             --base ${{ env.TARGET_BRANCH }} \
