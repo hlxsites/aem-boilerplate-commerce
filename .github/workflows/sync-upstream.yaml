@@ -99,43 +99,51 @@ jobs:
       - name: Push changes and create PR
         id: create_pr
         if: steps.merge.outputs.merge_status == 'success'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: sync/upstream
-          base: ${{ env.TARGET_BRANCH }}
-          title: "🔄 Sync with upstream (${{ env.UPSTREAM_REPO }})"
-          body: |
-            ## Automated Upstream Sync
-            
-            This PR synchronizes our fork with the latest changes from [${{ env.UPSTREAM_REPO }}](https://github.com/${{ env.UPSTREAM_REPO }}).
-            
-            ### 📊 Summary
-            - **Upstream**: `${{ env.UPSTREAM_REPO }}@${{ env.UPSTREAM_BRANCH }}`
-            - **Target branch**: `${{ env.TARGET_BRANCH }}`
-            - **Commits ahead**: ${{ steps.merge.outputs.commits_ahead }}
-            - **Files changed**: See below
-            
-            ### 📝 Recent Commits
-            ```
-            ${{ steps.merge.outputs.commit_messages }}
-            ```
-            
-            ### 📁 Changed Files
-            ```
-            ${{ steps.merge.outputs.changed_files }}
-            ```
-            
-            ### ⚠️ Review Guidelines
-            - Review all changes carefully for compatibility
-            - Pay special attention to changes in core files (`scripts/aem.js`, `scripts/scripts.js`)
-            - Run tests locally if needed
-            - Check for any breaking changes in the commit messages
-            
-            ---
-            *This PR was automatically created by the upstream sync workflow.*
-          commit-message: "chore: sync with upstream ${{ env.UPSTREAM_REPO }}"
-          delete-branch: false
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push -u origin sync/upstream
+          
+          PR_OUTPUT=$(gh pr create \
+            --base ${{ env.TARGET_BRANCH }} \
+            --head sync/upstream \
+            --title "🔄 Sync with upstream (${{ env.UPSTREAM_REPO }})" \
+            --body "## Automated Upstream Sync
+
+          This PR synchronizes our fork with the latest changes from [${{ env.UPSTREAM_REPO }}](https://github.com/${{ env.UPSTREAM_REPO }}).
+
+          ### 📊 Summary
+          - **Upstream**: \`${{ env.UPSTREAM_REPO }}@${{ env.UPSTREAM_BRANCH }}\`
+          - **Target branch**: \`${{ env.TARGET_BRANCH }}\`
+          - **Commits ahead**: ${{ steps.merge.outputs.commits_ahead }}
+          - **Files changed**: See below
+
+          ### 📝 Recent Commits
+          \`\`\`
+          ${{ steps.merge.outputs.commit_messages }}
+          \`\`\`
+
+          ### 📁 Changed Files
+          \`\`\`
+          ${{ steps.merge.outputs.changed_files }}
+          \`\`\`
+
+          ### ⚠️ Review Guidelines
+          - Review all changes carefully for compatibility
+          - Pay special attention to changes in core files (\`scripts/aem.js\`, \`scripts/scripts.js\`)
+          - Run tests locally if needed
+          - Check for any breaking changes in the commit messages
+
+          ---
+          *This PR was automatically created by the upstream sync workflow.*" 2>&1 || true)
+          
+          # Extract PR number and URL
+          if echo "$PR_OUTPUT" | grep -q "https://github.com"; then
+            PR_URL=$(echo "$PR_OUTPUT" | grep "https://github.com" | head -1)
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE "[0-9]+$")
+            echo "pull-request-number=$PR_NUMBER" >> $GITHUB_OUTPUT
+            echo "pull-request-url=$PR_URL" >> $GITHUB_OUTPUT
+          fi
       
       - name: Generate Summary - Success
         if: steps.merge.outputs.merge_status == 'success' && steps.create_pr.outputs.pull-request-number
