@@ -72,7 +72,7 @@ export default async function decorate(block) {
       pageSize: 8,
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
-        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        { attribute: 'categories', in: [config.urlpath] }, // Add category filter
         { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
         ...getFilterFromParams(filter),
       ],
