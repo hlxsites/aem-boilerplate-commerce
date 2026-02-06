@@ -34,8 +34,7 @@ permissions:
 jobs:
   sync-upstream:
     runs-on: ubuntu-latest
-    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
