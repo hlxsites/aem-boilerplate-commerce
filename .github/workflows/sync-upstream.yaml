@@ -63,32 +63,31 @@ jobs:
           if git diff --name-only --diff-filter=U | grep -q .; then
             echo "::warning::Merge conflicts detected. Please resolve them manually."
             git merge --abort
-            git merge upstream/${{ env.UPSTREAM_BRANCH }} --no-edit --strategy-option theirs
           fi
 
       - name: Push sync branch
         if: env.HAS_CHANGES == 'true'
         run: git push origin "${{ env.SYNC_BRANCH }}"
 
-      - name: Output PR link
+      - name: Pull request link
         if: env.HAS_CHANGES == 'true'
         run: |
           REPO="${{ github.repository }}"
-          ENCODED_TITLE=$(python3 -c "import urllib.parse; print(urllib.parse.quote('Sync with upstream (${{ env.UPSTREAM_REPO }})'))")
-          ENCODED_BODY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('This PR syncs the latest changes from [${{ env.UPSTREAM_REPO }}](https://github.com/${{ env.UPSTREAM_REPO }}) (${{ env.UPSTREAM_BRANCH }}) into \`${{ env.TARGET_BRANCH }}\`.'))")
 
-          PR_URL="https://github.com/${REPO}/compare/${{ env.TARGET_BRANCH }}...${{ env.SYNC_BRANCH }}?expand=1&title=${ENCODED_TITLE}&body=${ENCODED_BODY}"
+          PR_URL="https://github.com/${REPO}/compare/${{ env.TARGET_BRANCH }}...${{ env.SYNC_BRANCH }}?expand=1"
 
           echo ""
           echo "=============================================="
+          echo "⚠️  Upstream changes detected!"
+          echo ""
           echo "✅ Sync branch pushed: ${{ env.SYNC_BRANCH }}"
           echo ""
-          echo "📝 Create a Pull Request:"
+          echo "📝 Create a Pull Request to merge the changes:"
           echo "$PR_URL"
           echo "=============================================="
 
-          echo "### 🔄 Upstream Sync" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Upstream Changes Detected" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Sync branch \`${{ env.SYNC_BRANCH }}\` has been pushed." >> $GITHUB_STEP_SUMMARY
+          echo "New changes from upstream \`${{ env.UPSTREAM_REPO }}\` (\`${{ env.UPSTREAM_BRANCH }}\`) have been detected and pushed to branch \`${{ env.SYNC_BRANCH }}\`." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "[👉 Click here to create the Pull Request](${PR_URL})" >> $GITHUB_STEP_SUMMARY
