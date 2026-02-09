@@ -1,0 +1,23 @@
+{
+  "definitions": [{
+    "title": "Commerce Returns List",
+    "id": "commerce-returns-list",
+    "model": "commerce-returns-list",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-returns-list",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "minified-view",
+        "label": "Minified View"
+      }
+    ]
+  }],
+  "filters": []
+}
