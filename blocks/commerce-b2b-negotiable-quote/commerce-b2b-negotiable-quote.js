@@ -263,23 +263,6 @@ export default async function decorate(block) {
                     .filter(([key]) => key.startsWith('street'))
                     .map(([_, value]) => value);
 
-                  const addressInput = {
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    company: formValues.company,
-                    street: streetInputValues,
-                    city: formValues.city,
-                    region: regionCode,
-                    postcode: formValues.postcode,
-                    countryCode: formValues.countryCode,
-                    telephone: formValues.telephone,
-                  };
-
-                  // These values are not part of the standard address input
-                  const additionalAddressInput = {
-                    vat_id: formValues.vatId,
-                  };
-
                   const createCustomerAddressInput = {
                     city: formValues.city,
                     company: formValues.company,
@@ -305,14 +288,18 @@ export default async function decorate(block) {
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
 
+                  // createCustomerAddress will return the new address uid (once account dropin is updated)
                   createCustomerAddress(createCustomerAddressInput)
-                    .then(() => setShippingAddress({
-                      quoteUid: quoteId,
-                      addressData: {
-                        ...addressInput,
-                        additionalInput: additionalAddressInput,
-                      },
-                    }))
+                    .then((result) => {
+                      const addressUid = typeof result === 'string' ? result : result?.uid;
+                      if (!addressUid) {
+                        throw new Error('Address uid not returned from createCustomerAddress.');
+                      }
+                      return setShippingAddress({
+                        quoteUid: quoteId,
+                        addressId: addressUid,
+                      });
+                    })
                     .catch((error) => {
                       addressErrorContainer.removeAttribute('hidden');
                       UI.render(InLineAlert, {
