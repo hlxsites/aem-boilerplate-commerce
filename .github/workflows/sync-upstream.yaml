@@ -2,168 +2,93 @@ name: Sync with Upstream
 
 on:
   schedule:
-    # Run weekly on Monday at 9 AM UTC
-    - cron: '0 9 * * 1'
+    - cron: '0 0 * * 1' # Every Monday at midnight
   workflow_dispatch:
     inputs:
       upstream_repo:
         description: 'Upstream repository (owner/repo)'
         required: false
-        default: 'adobe/aem-boilerplate'
-        type: string
       upstream_branch:
         description: 'Upstream branch to sync from'
         required: false
-        default: 'main'
-        type: string
       target_branch:
         description: 'Target branch to sync to'
         required: false
-        default: 'main'
-        type: string
 
 env:
-  UPSTREAM_REPO: ${{ github.event.inputs.upstream_repo || 'adobe/aem-boilerplate' }}
-  UPSTREAM_BRANCH: ${{ github.event.inputs.upstream_branch || 'main' }}
-  TARGET_BRANCH: ${{ github.event.inputs.target_branch || 'main' }}
+  UPSTREAM_REPO: ${{ inputs.upstream_repo || 'hlxsites/aem-boilerplate-commerce' }}
+  UPSTREAM_BRANCH: ${{ inputs.upstream_branch || 'main' }}
+  TARGET_BRANCH: ${{ inputs.target_branch || 'main' }}
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   sync-upstream:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ env.TARGET_BRANCH }}
-      
-      - name: Configure Git
+
+      - name: Sync with upstream
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      
-      - name: Fetch upstream
-        run: |
-          git remote add upstream https://github.com/${{ env.UPSTREAM_REPO }}.git 2>/dev/null || true
+
+          # Add upstream remote
+          git remote add upstream "https://github.com/${{ env.UPSTREAM_REPO }}.git"
           git fetch upstream ${{ env.UPSTREAM_BRANCH }}
-      
-      - name: Merge upstream into sync branch
-        id: merge
-        run: |
-          git checkout -b sync/upstream
 
-          if ! git merge upstream/${{ env.UPSTREAM_BRANCH }} --no-edit; then
-            CONFLICT_FILES=$(git diff --name-only --diff-filter=U)
+          # Check if there are new changes
+          DIFF=$(git rev-list HEAD..upstream/${{ env.UPSTREAM_BRANCH }} --count)
+          if [ "$DIFF" -eq 0 ]; then
+            echo "Already up to date with upstream."
+            echo "HAS_CHANGES=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          echo "Found $DIFF new commit(s) from upstream."
+          echo "HAS_CHANGES=true" >> $GITHUB_ENV
+
+          # Create sync branch
+          SYNC_BRANCH="sync/upstream-$(date +%Y%m%d%H%M%S)"
+          echo "SYNC_BRANCH=$SYNC_BRANCH" >> $GITHUB_ENV
+
+          git checkout -b "$SYNC_BRANCH"
+          git merge upstream/${{ env.UPSTREAM_BRANCH }} --no-edit || true
+
+          # Check for merge conflicts
+          if git diff --name-only --diff-filter=U | grep -q .; then
+            echo "::warning::Merge conflicts detected. Please resolve them manually."
             git merge --abort
-            echo "status=conflict" >> $GITHUB_OUTPUT
-            echo "conflict_files<<EOF" >> $GITHUB_OUTPUT
-            echo "$CONFLICT_FILES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            exit 0
+            git merge upstream/${{ env.UPSTREAM_BRANCH }} --no-edit --strategy-option theirs
           fi
 
-          COMMITS=$(git rev-list --count ${{ env.TARGET_BRANCH }}..HEAD 2>/dev/null || echo "0")
-          if [ "$COMMITS" -eq "0" ]; then
-            echo "status=up-to-date" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+      - name: Push sync branch
+        if: env.HAS_CHANGES == 'true'
+        run: git push origin "${{ env.SYNC_BRANCH }}"
 
-          echo "status=success" >> $GITHUB_OUTPUT
-          echo "commits=$COMMITS" >> $GITHUB_OUTPUT
-
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          git diff --name-only ${{ env.TARGET_BRANCH }}..HEAD | head -20 >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-          echo "commit_messages<<EOF" >> $GITHUB_OUTPUT
-          git log ${{ env.TARGET_BRANCH }}..HEAD --oneline --no-decorate | head -10 >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: Create Pull Request
-        id: pr
-        if: steps.merge.outputs.status == 'success'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Output PR link
+        if: env.HAS_CHANGES == 'true'
         run: |
-          git push origin --delete sync/upstream 2>/dev/null || true
-          git push -u origin sync/upstream
+          REPO="${{ github.repository }}"
+          ENCODED_TITLE=$(python3 -c "import urllib.parse; print(urllib.parse.quote('Sync with upstream (${{ env.UPSTREAM_REPO }})'))")
+          ENCODED_BODY=$(python3 -c "import urllib.parse; print(urllib.parse.quote('This PR syncs the latest changes from [${{ env.UPSTREAM_REPO }}](https://github.com/${{ env.UPSTREAM_REPO }}) (${{ env.UPSTREAM_BRANCH }}) into \`${{ env.TARGET_BRANCH }}\`.'))")
 
-          # Reuse existing PR if one is open
-          EXISTING=$(gh pr list --base ${{ env.TARGET_BRANCH }} --head sync/upstream --json url --jq '.[0].url' 2>/dev/null || echo "")
-          if [ -n "$EXISTING" ]; then
-            echo "url=$EXISTING" >> $GITHUB_OUTPUT
-            exit 0
-          fi
+          PR_URL="https://github.com/${REPO}/compare/${{ env.TARGET_BRANCH }}...${{ env.SYNC_BRANCH }}?expand=1&title=${ENCODED_TITLE}&body=${ENCODED_BODY}"
 
-          PR_URL=$(gh pr create \
-            --base ${{ env.TARGET_BRANCH }} \
-            --head sync/upstream \
-            --title "🔄 Sync with upstream (${{ env.UPSTREAM_REPO }})" \
-            --body "## Automated Upstream Sync
+          echo ""
+          echo "=============================================="
+          echo "✅ Sync branch pushed: ${{ env.SYNC_BRANCH }}"
+          echo ""
+          echo "📝 Create a Pull Request:"
+          echo "$PR_URL"
+          echo "=============================================="
 
-          Syncs with [${{ env.UPSTREAM_REPO }}](https://github.com/${{ env.UPSTREAM_REPO }}) @ \`${{ env.UPSTREAM_BRANCH }}\`
-
-          ### Recent Commits
-          \`\`\`
-          ${{ steps.merge.outputs.commit_messages }}
-          \`\`\`
-
-          ### Changed Files
-          \`\`\`
-          ${{ steps.merge.outputs.changed_files }}
-          \`\`\`
-
-          ---
-          *Created automatically by the upstream sync workflow.*")
-
-          echo "url=$PR_URL" >> $GITHUB_OUTPUT
-
-      - name: Summary
-        if: always()
-        run: |
-          STATUS="${{ steps.merge.outputs.status }}"
-          if [ "$STATUS" = "success" ] && [ -n "${{ steps.pr.outputs.url }}" ]; then
-            cat >> $GITHUB_STEP_SUMMARY <<EOF
-          ## ✅ Upstream Sync — PR Created
-          | | |
-          |---|---|
-          | **PR** | ${{ steps.pr.outputs.url }} |
-          | **Upstream** | \`${{ env.UPSTREAM_REPO }}@${{ env.UPSTREAM_BRANCH }}\` |
-          | **Commits** | ${{ steps.merge.outputs.commits }} |
-
-          <details><summary>Changed files</summary>
-
-          \`\`\`
-          ${{ steps.merge.outputs.changed_files }}
-          \`\`\`
-          </details>
-          EOF
-          elif [ "$STATUS" = "up-to-date" ]; then
-            echo "## ℹ️ Already up to date" >> $GITHUB_STEP_SUMMARY
-            echo "No new changes from \`${{ env.UPSTREAM_REPO }}@${{ env.UPSTREAM_BRANCH }}\`." >> $GITHUB_STEP_SUMMARY
-          elif [ "$STATUS" = "conflict" ]; then
-            cat >> $GITHUB_STEP_SUMMARY <<EOF
-          ## ⚠️ Merge Conflicts
-
-          Manual resolution needed for:
-          \`\`\`
-          ${{ steps.merge.outputs.conflict_files }}
-          \`\`\`
-
-          \`\`\`bash
-          git remote add upstream https://github.com/${{ env.UPSTREAM_REPO }}.git
-          git fetch upstream && git merge upstream/${{ env.UPSTREAM_BRANCH }}
-          # resolve conflicts, then push
-          \`\`\`
-          EOF
-            echo "::error::Merge conflicts in: ${{ steps.merge.outputs.conflict_files }}"
-          else
-            echo "## ❌ Sync failed" >> $GITHUB_STEP_SUMMARY
-            echo "::error::Upstream sync failed unexpectedly."
-          fi
+          echo "### 🔄 Upstream Sync" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Sync branch \`${{ env.SYNC_BRANCH }}\` has been pushed." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[👉 Click here to create the Pull Request](${PR_URL})" >> $GITHUB_STEP_SUMMARY
