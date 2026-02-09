@@ -8,6 +8,7 @@ import {
   fetchPlaceholders,
   getOptionsUIDsFromUrl,
   getProductSku,
+  IS_UE,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
@@ -82,6 +83,11 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
+  // If we cannot find a sku, and we are not in UE, there's a problem.
+  if (!sku && !IS_UE) {
+    return loadErrorPage();
+  }
+
   const getProductData = async (skipTransform) => {
     const data = await fetchProductData(sku, { optionsUIDs, skipTransform })
       .then(preloadImageMiddleware);
@@ -92,10 +98,6 @@ await initializeDropin(async () => {
     getProductData(true),
     fetchPlaceholders('placeholders/pdp.json'),
   ]);
-
-  if (!product?.sku) {
-    return loadErrorPage();
-  }
 
   const langDefinitions = {
     default: {
