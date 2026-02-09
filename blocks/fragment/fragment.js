@@ -16,7 +16,7 @@ import {
  * @returns {Promise<HTMLElement>} The root element of the fragment
  */
 export async function loadFragment(path) {
-  if (path && path.startsWith('/')) {
+  if (path && path.startsWith('/') && !path.startsWith('//')) {
     const root = getRootPath().replace(/\/$/, '');
     const url = `${root}${path}.plain.html`;
     const resp = await fetch(url);
@@ -45,11 +45,5 @@ export default async function decorate(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);
-  if (fragment) {
-    const fragmentSection = fragment.querySelector(':scope .section');
-    if (fragmentSection) {
-      block.closest('.section').classList.add(...fragmentSection.classList);
-      block.closest('.fragment').replaceWith(...fragment.childNodes);
-    }
-  }
+  if (fragment) block.replaceChildren(...fragment.childNodes);
 }
