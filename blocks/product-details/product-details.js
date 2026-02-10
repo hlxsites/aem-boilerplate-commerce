@@ -72,7 +72,10 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
 }
 
 export default async function decorate(block) {
-  const product = events.lastPayload('pdp/data') ?? null;
+  const eventProduct = events.lastPayload('pdp/data') ?? null;
+  // bug: the pdp sends an object with event data even if product is not found.
+  const product = eventProduct?.sku ? eventProduct : null;
+
   const labels = await fetchPlaceholders();
 
   // Read itemUid from URL
@@ -495,7 +498,7 @@ function createMetaTag(property, content, type) {
 }
 
 function setMetaTags(product) {
-  if (!product) {
+  if (!product?.sku) {
     return;
   }
 
