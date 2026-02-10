@@ -1,5 +1,4 @@
 helix-importer-ui
-*.min.js
 scripts/acdl
 tools/picker
 tools/segments

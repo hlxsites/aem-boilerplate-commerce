@@ -18,5 +18,5 @@ await initializeDropin(async () => {
 
   // Initialize auth
   const customerPermissionRoles = getConfigValue('commerce-b2b-enabled') === true;
-  return initializers.mountImmediately(initialize, { langDefinitions, adobeCommerceOptimizer: getConfigValue('adobe-commerce-optimizer'), customerPermissionRoles });
+  return initializers.mountImmediately(initialize, { langDefinitions, customerPermissionRoles });
 })();
