@@ -1,18 +1,7 @@
 import { Initializer } from '@dropins/tools/types/elsie/src/lib';
 import { Lang } from '@dropins/tools/types/elsie/src/i18n';
-import { ProductModel, Option } from '../../data/models';
+import { ProductModel } from '../../data/models';
 
-export type OptionsTransformer = (options: Option[]) => Option[];
-type ModelConfig = {
-    initialData?: any;
-    /** @deprecated Use "transformer" instead */
-    transform?: (data?: ProductModel) => ProductModel;
-    transformer?: (data?: ProductModel) => ProductModel;
-    fallbackData?: (parentProduct: any, simpleProduct: ProductModel) => ProductModel;
-};
-type ProductOptionsConfig = {
-    optionsTransformer?: OptionsTransformer;
-};
 type ConfigProps = {
     scope?: string;
     langDefinitions?: Lang;
@@ -25,9 +14,13 @@ type ConfigProps = {
     preselectFirstOption?: boolean;
     optionsUIDs?: string[];
     models?: {
-        ProductDetails?: ModelConfig;
-        ProductOptions?: ProductOptionsConfig;
-        [name: string]: ModelConfig | ProductOptionsConfig | undefined;
+        [name: string]: {
+            initialData: any;
+            /** @deprecated Use "transformer" instead */
+            transform?: (data?: ProductModel) => ProductModel;
+            transformer?: (data?: ProductModel) => ProductModel;
+            fallbackData?: (parentProduct: any, simpleProduct: ProductModel) => ProductModel;
+        };
     };
 };
 export declare const initialize: Initializer<ConfigProps>;

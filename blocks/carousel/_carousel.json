@@ -3,28 +3,18 @@
     {
       "title": "Carousel",
       "id": "carousel",
-      "model": "carousel",
-      "filter": "carousel",
       "plugins": {
         "da": {
-          "rows": 1,
-          "columns": 2
+          "unsafeHTML": "<div class=\"carousel\"><div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div>"
         }
       }
     },
     {
       "title": "Carousel Slide",
       "id": "carousel-item",
-      "model": "carousel-item",
       "plugins": {
         "da": {
-          "rows": 1,
-          "columns": 2,
-          "fields": [
-            { "name": "backgroundImage", "selector": "div:nth-child(1)>picture>img[src]" },
-            { "name": "backgroundImageAlt", "selector": "div:nth-child(1)>picture>img[alt]" },
-            { "name": "text", "selector": "div:nth-child(2)" }
-          ]
+          "unsafeHTML": "<div><div><picture><source type=\"image/webp\" srcset=\"\"><source type=\"image/jpeg\" srcset=\"\"><img loading=\"lazy\"></picture></div><div></div></div>"
         }
       }
     }
@@ -36,19 +26,19 @@
         {
           "component": "reference",
           "valueType": "string",
-          "name": "backgroundImage",
+          "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[src]",
           "label": "Background Image",
           "multi": false
         },
         {
           "component": "text",
           "valueType": "string",
-          "name": "backgroundImageAlt",
+          "name": "div:nth-child(1)>picture:nth-child(1)>img:nth-child(3)[alt]",
           "label": "Background Image Alt"
         },
         {
           "component": "richtext",
-          "name": "text",
+          "name": "div:nth-child(2)",
           "label": "Text",
           "valueType": "string"
         }

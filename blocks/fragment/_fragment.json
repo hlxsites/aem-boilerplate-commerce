@@ -3,15 +3,9 @@
     {
       "title": "Fragment",
       "id": "fragment",
-      "model": "fragment",
       "plugins": {
         "da": {
-          "rows": 1,
-          "columns": 1,
-          "fields": [
-            { "name": "fragmentUrl", "selector": "div>div>p>a[href]" },
-            { "name": "fragmentUrlText", "selector": "div>div>p>a" }
-          ]
+          "unsafeHTML": "<div class=\"fragment\"><div><div><p><a href=\"\">Fragment URL</a></p></div></div></div>"
         }
       }
     }
@@ -22,13 +16,13 @@
       "fields": [
         {
           "component": "text",
-          "name": "fragmentUrl",
+          "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)[href]",
           "label": "Fragment URL",
           "required": true
         },
         {
           "component": "text",
-          "name": "fragmentUrlText",
+          "name": "div:nth-child(1)>div:nth-child(1)>p:nth-child(1)>a:nth-child(1)",
           "label": "Fragment URL Text"
         }
       ]

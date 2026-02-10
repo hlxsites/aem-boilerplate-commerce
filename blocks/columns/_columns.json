@@ -3,8 +3,6 @@
     {
       "title": "Columns",
       "id": "columns",
-      "model": "columns",
-      "filter": "columns",
       "plugins": {
         "da": {
           "name": "columns",
@@ -17,8 +15,6 @@
     {
       "title": "Columns Row",
       "id": "columns-row",
-      "model": "columns-row",
-      "filter": "columns-row",
       "plugins": {
         "da": {
           "name": "columns-row",
@@ -29,8 +25,6 @@
     {
       "title": "Columns Cell",
       "id": "columns-cell",
-      "model": "columns-cell",
-      "filter": "columns-cell",
       "plugins": {
         "da": {
           "unsafeHTML": "<div></div>",

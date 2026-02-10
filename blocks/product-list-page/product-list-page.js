@@ -49,6 +49,11 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
+  // Add category url path to block for enrichment
+  if (config.urlpath) {
+    block.dataset.category = config.urlpath;
+  }
+
   // Get variables from the URL
   const urlParams = new URLSearchParams(window.location.search);
   // get all params
