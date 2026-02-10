@@ -130,6 +130,10 @@ export default async function decorate(block) {
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
+      // If the media type is video, let the dropin handle video rendering
+      if (ctx.mediaType === 'video') {
+        return;
+      }
       tryRenderAemAssetsImage(ctx, {
         ...imageSlotConfig(ctx),
         wrapper: document.createElement('span'),
@@ -137,6 +141,10 @@ export default async function decorate(block) {
     },
 
     CarouselMainImage: (ctx) => {
+      // if the media type is video, let the dropin handle video rendering
+      if (ctx.mediaType === 'video') {
+        return;
+      }
       tryRenderAemAssetsImage(ctx, {
         ...imageSlotConfig(ctx),
       });
@@ -167,6 +175,7 @@ export default async function decorate(block) {
       peak: false,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
@@ -181,6 +190,7 @@ export default async function decorate(block) {
       peak: true,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
