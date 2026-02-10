@@ -130,24 +130,20 @@ export default async function decorate(block) {
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
-      // If the media type is video, let the dropin handle video rendering
-      if (ctx.mediaType === 'video') {
-        return;
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+          wrapper: document.createElement('span'),
+        });
       }
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-        wrapper: document.createElement('span'),
-      });
     },
 
     CarouselMainImage: (ctx) => {
-      // if the media type is video, let the dropin handle video rendering
-      if (ctx.mediaType === 'video') {
-        return;
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+        });
       }
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-      });
     },
   };
 
