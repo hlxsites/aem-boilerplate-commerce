@@ -24,5 +24,4 @@ export * from './Header';
 export * from './Price';
 export * from './PriceTiers';
 export * from './GiftCardOptions';
-export * from './DownloadableOptions';
 //# sourceMappingURL=index.d.ts.map

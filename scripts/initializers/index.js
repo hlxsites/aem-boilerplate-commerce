@@ -25,14 +25,6 @@ const setCustomerGroupHeader = (customerGroupId) => {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
 };
 
-const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
-  if (adobeCommerceOptimizer?.priceBookId) {
-    CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-ID', adobeCommerceOptimizer.priceBookId);
-  } else {
-    CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('AC-Price-Book-ID');
-  }
-};
-
 const persistCartDataInSession = (data) => {
   if (data?.id) {
     sessionStorage.setItem('DROPINS_CART_ID', data.id);
@@ -58,11 +50,7 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
-    if (getConfigValue('adobe-commerce-optimizer')) {
-      events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
-    } else {
-      events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
-    }
+    events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
 
     // Set auth headers on authenticated event
     events.on('authenticated', setAuthHeaders, { eager: true });

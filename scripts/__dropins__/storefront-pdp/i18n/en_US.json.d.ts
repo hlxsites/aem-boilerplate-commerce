@@ -25,6 +25,14 @@ declare const _default: {
       "TierPricing": {
         "label": "Buy {quantity} for {price} each and save {percent}%"
       },
+      "PriceRange": {
+        "From": {
+          "label": "From"
+        },
+        "To": {
+          "label": "to"
+        }
+      },
       "Image": {
         "label": "{product} Image {key} of {total}"
       },
@@ -69,14 +77,6 @@ declare const _default: {
         "label": "Choose an option"
       }
     },
-    "DownloadableOptions": {
-      "Sample": {
-        "label": "Sample"
-      },
-      "ViewSample": {
-        "label": "View sample for {label}"
-      }
-    },
     "Carousel": {
       "label": "Carousel",
       "Next": {
@@ -105,6 +105,9 @@ declare const _default: {
         "label": "Close"
       }
     }
+  },
+  "Custom": {
+    "quantityLabel": "Quantity"
   }
 }
 ;

@@ -1,11 +1,8 @@
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { ProductModel } from '../../data/models';
-import { OptionsTransformer } from '../../api';
 import { ImageNodeRenderProps, ImageProps } from '@dropins/tools/types/elsie/src/components';
 
-/** @deprecated Use OptionsTransformer from @/pdp/api instead */
-export type ProductOptionsTransformer = OptionsTransformer;
 export interface ProductOptionsProps extends HTMLAttributes<HTMLDivElement> {
     scope?: string;
     hideSelectedValue?: boolean;
@@ -13,7 +10,6 @@ export interface ProductOptionsProps extends HTMLAttributes<HTMLDivElement> {
     onErrors?: (errors: {
         [id: string]: string;
     }) => void;
-    transformer?: ProductOptionsTransformer;
     slots?: {
         Swatches?: SlotProps<{
             data: ProductModel | null;
