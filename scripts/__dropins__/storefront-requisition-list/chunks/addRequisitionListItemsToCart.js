@@ -237,5 +237,5 @@ fragment PRICE_RANGE_FRAGMENT on ComplexProductView {
       }
     }
   }
-`,D=async(i,r)=>m(N,{variables:{requisitionListUid:i,requisitionListItemUids:r}}).then(({errors:t,data:n})=>{var s;return t?I(t):(s=n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors)!=null&&s.length?n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors.map(e=>({type:e.type,message:e.message||""})):null});export{D as a,$ as b,P as d,y as g,S as i,A as u};
+`,D=async(i,r)=>m(N,{variables:{requisitionListUid:i,requisitionListItemUids:r}}).then(({errors:t,data:n})=>{var s;return t?I(t):(s=n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors)!=null&&s.length?n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors.map(e=>({type:e.type,message:e.message||""})):null});export{D as a,y as b,P as d,$ as g,S as i,A as u};
 //# sourceMappingURL=addRequisitionListItemsToCart.js.map

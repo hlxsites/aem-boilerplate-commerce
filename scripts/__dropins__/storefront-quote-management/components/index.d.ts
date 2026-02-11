@@ -25,6 +25,7 @@ export * from './TabbedContent';
 export * from './QuoteCommentsList';
 export * from './ConfirmationModal';
 export * from './RenameQuoteModal';
+export * from './ExpirationDateModal';
 export * from './ManageNegotiableQuoteTemplate';
 export * from './LineItemNoteModal';
 export * from './ReferenceDocumentFormModal';

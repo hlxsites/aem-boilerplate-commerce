@@ -1,13 +1,11 @@
 /********************************************************************
- *  Copyright 2024 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  Adobe permits you to use, modify, and distribute this
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export declare const debounce: (fn: Function, ms: number) => {
-    (this: any, ...args: any[]): void;
-    cancel(): void;
-};
-//# sourceMappingURL=debounce.d.ts.map
+export { ExpirationDateModal } from './ExpirationDateModal';
+export type { ExpirationDateModalProps } from './ExpirationDateModal';
+//# sourceMappingURL=index.d.ts.map
