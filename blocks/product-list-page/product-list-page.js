@@ -154,12 +154,20 @@ export default async function decorate(block) {
             },
           });
 
-          // Example: Display the first attribute as a banner
+          // Display the first attribute as a banner
           if (product.attributes?.length > 0 && product.attributes[0].label) {
             const banner = document.createElement('div');
             banner.className = 'product-attribute-banner';
             banner.textContent = product.attributes[0].label;
-            ctx.appendChild(banner);
+            ctx.prependSibling(banner);
+          }
+
+          // Display "Ready to Ship" badge when not low stock
+          if (!product.lowStock) {
+            const stockBadge = document.createElement('div');
+            stockBadge.className = 'product-stock-banner';
+            stockBadge.textContent = 'Ready to Ship';
+            ctx.prependSibling(stockBadge);
           }
         },
         ProductActions: (ctx) => {

@@ -26,4 +26,16 @@ overrideGQLOperations([
   //     `,
   //   ],
   // },
+  {
+    npm: '@dropins/storefront-product-discovery',
+    operations: [
+      `
+      fragment ProductView on ProductSearchItem {
+        productView {
+          lowStock
+        }
+      }
+      `,
+    ],
+  },
 ]);
