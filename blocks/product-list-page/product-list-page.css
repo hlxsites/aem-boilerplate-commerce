@@ -97,6 +97,35 @@
     display: none;
 }
 
+/* Product Attribute Banner */
+.block.product-list-page .dropin-product-item-card__image-container {
+    position: relative;
+}
+
+.block.product-list-page .product-attribute-banner,
+.block.product-list-page .product-stock-banner {
+    position: absolute;
+    right: var(--spacing-xsmall);
+    padding: var(--spacing-xsmall) var(--spacing-small);
+    font: var(--type-body-2-strong-font);
+    letter-spacing: var(--type-body-2-strong-letter-spacing);
+    border-radius: var(--shape-border-radius-1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.block.product-list-page .product-attribute-banner {
+    top: var(--spacing-xsmall);
+    background-color: var(--color-brand-700);
+    color: var(--color-neutral-50);
+}
+
+.block.product-list-page .product-stock-banner {
+    top: calc(var(--spacing-xsmall) + var(--spacing-xlarge));
+    background-color: var(--color-informational-500);
+    color: var(--color-neutral-50);
+}
+
 /* Media Queries */
 @media only screen and (min-width: 768px) {
     .block.product-list-page .search__wrapper {

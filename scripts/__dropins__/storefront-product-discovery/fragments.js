@@ -1,6 +1,4 @@
-/*! Copyright 2026 Adobe
-All Rights Reserved. */
-const e=`
+const e = `
   fragment Facet on Aggregation {
     title
     attribute
@@ -26,67 +24,42 @@ const e=`
       }
     }
   }
-`,t=`
-  fragment ProductView on ProductSearchItem {
-    productView {
-      __typename
-      sku
+`, t = (`fragment ProductView on ProductSearchItem {
+  productView {
+    __typename
+    sku
+    name
+    inStock
+    url
+    urlKey
+    attributes(roles: []) {
       name
-      inStock
+      label
+      value
+      roles
+    }
+    images {
+      label
       url
-      urlKey
-      images {
-        label
-        url
-        roles
-      }
-      ... on ComplexProductView {
-        priceRange {
-          maximum {
-            final {
-              amount {
-                value
-                currency
-              }
-            }
-            regular {
-              amount {
-                value
-                currency
-              }
-            }
-          }
-          minimum {
-            final {
-              amount {
-                value
-                currency
-              }
-            }
-            regular {
-              amount {
-                value
-                currency
-              }
-            }
-          }
-        }
-        options {
-          id
-          title
-          values {
-            title
-            ... on ProductViewOptionValueSwatch {
-              id
-              inStock
-              type
+      roles
+    }
+    ... on ComplexProductView {
+      priceRange {
+        maximum {
+          final {
+            amount {
               value
+              currency
+            }
+          }
+          regular {
+            amount {
+              value
+              currency
             }
           }
         }
-      }
-      ... on SimpleProductView {
-        price {
+        minimum {
           final {
             amount {
               value
@@ -101,12 +74,45 @@ const e=`
           }
         }
       }
+      options {
+        id
+        title
+        values {
+          title
+          ... on ProductViewOptionValueSwatch {
+            id
+            inStock
+            type
+            value
+          }
+        }
+      }
     }
-    highlights {
-      attribute
-      value
-      matched_words
+    ... on SimpleProductView {
+      price {
+        final {
+          amount {
+            value
+            currency
+          }
+        }
+        regular {
+          amount {
+            value
+            currency
+          }
+        }
+      }
     }
+    lowStock
   }
-`;export{e as Facet,t as ProductView};
-//# sourceMappingURL=fragments.js.map
+  highlights {
+    attribute
+    value
+    matched_words
+  }
+}`);
+export {
+e as Facet,
+t as ProductView
+};

@@ -153,6 +153,22 @@ export default async function decorate(block) {
               height: defaultImageProps.height,
             },
           });
+
+          // Display the first product attribute as a banner
+          if (product.attributes?.length > 0 && product.attributes[0].label) {
+            const banner = document.createElement('div');
+            banner.className = 'product-attribute-banner';
+            banner.textContent = product.attributes[0].label;
+            ctx.prependSibling(banner);
+          }
+
+          // Display "Ready to Ship" badge when not low stock
+          if (!product.lowStock) {
+            const stockBadge = document.createElement('div');
+            stockBadge.className = 'product-stock-banner';
+            stockBadge.textContent = 'Ready to Ship';
+            ctx.prependSibling(stockBadge);
+          }
         },
         ProductActions: (ctx) => {
           const actionsWrapper = document.createElement('div');
