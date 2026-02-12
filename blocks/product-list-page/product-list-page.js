@@ -252,7 +252,7 @@ function getFilterFromParams(filterParam) {
           attribute,
           in: value.split(commaRegex),
         });
-      } 
+      }
 
       const rangeRegex = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
 
