@@ -288,7 +288,6 @@ export default async function decorate(block) {
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
 
-                  // createCustomerAddress will return the new address uid (once account dropin is updated)
                   createCustomerAddress(createCustomerAddressInput)
                     .then((result) => {
                       const addressUid = typeof result === 'string' ? result : result?.uid;
