@@ -1,6 +1,7 @@
 import { Product } from './product';
 
 export type Scope = 'search' | 'popover' | string;
+export declare const SEARCH_PATHNAME = "search";
 export interface SearchVariables {
     scope?: Scope;
     phrase?: string;
