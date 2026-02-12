@@ -154,7 +154,7 @@ export default async function decorate(block) {
             },
           });
 
-          // Display the first attribute as a banner
+          // Display the first product attribute as a banner
           if (product.attributes?.length > 0 && product.attributes[0].label) {
             const banner = document.createElement('div');
             banner.className = 'product-attribute-banner';

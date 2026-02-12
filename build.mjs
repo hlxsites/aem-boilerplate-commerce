@@ -26,6 +26,7 @@ overrideGQLOperations([
   //     `,
   //   ],
   // },
+  // Extend the ProductView fragment to include lowStock
   {
     npm: '@dropins/storefront-product-discovery',
     operations: [
