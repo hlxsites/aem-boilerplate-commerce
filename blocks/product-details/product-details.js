@@ -58,15 +58,26 @@ function isProductPrerendered() {
   }
 }
 
-// Function to update the Add to Cart button text
-function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
-  const buttonText = inCart
-    ? labels.Global?.UpdateProductInCart
-    : labels.Global?.AddProductToCart;
-  if (addToCartInstance) {
-    addToCartInstance.setProps((prev) => ({
+// Function to update the primary CTA based on stock and cart state
+function updatePrimaryCTA(buttonInstance, { isOutOfStock, isUpdateMode, labels }) {
+  if (!buttonInstance) return;
+
+  if (isOutOfStock) {
+    buttonInstance.setProps((prev) => ({
+      ...prev,
+      // ToDo: add the custom label to the content source
+      children: labels.Global?.NotifyMe || 'Notify Me',
+      icon: null,
+      disabled: false,
+    }));
+  } else {
+    const buttonText = isUpdateMode
+      ? labels.Global?.UpdateProductInCart
+      : labels.Global?.AddProductToCart;
+    buttonInstance.setProps((prev) => ({
       ...prev,
       children: buttonText,
+      icon: h(Icon, { source: 'Cart' }),
     }));
   }
 }
@@ -81,6 +92,8 @@ export default async function decorate(block) {
 
   // State to track if we are in update mode
   let isUpdateMode = false;
+  // State to track if the selected product/variant is out of stock
+  let isOutOfStock = false;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -230,6 +243,18 @@ export default async function decorate(block) {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
+      // When user clicks the notify-me button, emit notify-me event
+      // Optional: allow you to use the notify-me event to trigger a notification or email
+      // to the customer when the product is back in stock
+      if (isOutOfStock) {
+        const values = pdpApi.getProductConfigurationValues();
+        events.emit('pdp/notify-me', {
+          sku: values?.sku,
+          parentSku: product?.sku,
+        });
+        return;
+      }
+
       const buttonActionText = isUpdateMode
         ? labels.Global?.UpdatingInCart
         : labels.Global?.AddingToCart;
@@ -300,8 +325,8 @@ export default async function decorate(block) {
           block: 'center',
         });
       } finally {
-        // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
+        // Reset CTA based on current stock and cart state
+        updatePrimaryCTA(addToCart, { isOutOfStock, isUpdateMode, labels });
         // Re-enable button
         addToCart.setProps((prev) => ({
           ...prev,
@@ -313,8 +338,16 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    // Only apply validity-based disabling when product is in stock
+    if (!isOutOfStock) {
+      addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    }
+  }, { eager: true });
+
+  // Track stock status and update CTA accordingly
+  events.on('pdp/data', (data) => {
+    isOutOfStock = data?.inStock === false;
+    updatePrimaryCTA(addToCart, { isOutOfStock, isUpdateMode, labels });
   }, { eager: true });
 
   // Handle option changes
@@ -370,8 +403,8 @@ export default async function decorate(block) {
       // Set the update mode state
       isUpdateMode = itemIsInCart;
 
-      // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
+      // Update CTA based on current stock and cart state
+      updatePrimaryCTA(addToCart, { isOutOfStock, isUpdateMode, labels });
     },
     { eager: true },
   );
