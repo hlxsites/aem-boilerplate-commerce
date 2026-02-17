@@ -246,6 +246,7 @@ export default async function decorate(block) {
       // When out of stock, handle "Notify Me" action
       if (isOutOfStock) {
         const values = pdpApi.getProductConfigurationValues();
+        // eslint-disable-next-line no-console
         console.log('TODO: Notify Me Callback', { sku: product?.sku, values });
         return;
       }
