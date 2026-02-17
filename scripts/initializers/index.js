@@ -5,6 +5,10 @@ import { initializers } from '@dropins/tools/initializer.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
+import {
+  setFetchGraphQlHeader as setToolsMeshHeader,
+  removeFetchGraphQlHeader as removeToolsMeshHeader,
+} from '@dropins/tools/fetch-graphql.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -13,16 +17,19 @@ const setAuthHeaders = (state) => {
     const token = getUserTokenCookie();
     CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
     CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
+    setToolsMeshHeader('Authorization', `Bearer ${token}`);
   } else {
     sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
     sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__GROUP__CONTEXT');
     CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
     CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
+    removeToolsMeshHeader('Authorization');
   }
 };
 
 const setCustomerGroupHeader = (customerGroupId) => {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+  setToolsMeshHeader('Magento-Customer-Group', customerGroupId);
 };
 
 const persistCartDataInSession = (data) => {
@@ -84,6 +91,9 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+
+    // Configure requisition list drop-in (endpoint + headers) before any block uses it (fixes "Missing url")
+    await import('./requisition-list.js');
 
     // Initialize Company Switcher
     const authenticated = events.lastPayload('authenticated');
