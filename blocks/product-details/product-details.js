@@ -243,15 +243,10 @@ export default async function decorate(block) {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
-      // When user clicks the notify-me button, emit notify-me event
-      // Optional: allow you to use the notify-me event to trigger a notification or email
-      // to the customer when the product is back in stock
+      // When out of stock, handle "Notify Me" action
       if (isOutOfStock) {
         const values = pdpApi.getProductConfigurationValues();
-        events.emit('pdp/notify-me', {
-          sku: values?.sku,
-          parentSku: product?.sku,
-        });
+        console.log('TODO: Notify Me Callback', { sku: product?.sku, values });
         return;
       }
 
