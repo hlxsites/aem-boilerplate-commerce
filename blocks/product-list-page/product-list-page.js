@@ -254,6 +254,7 @@ function getFilterFromParams(filterParam) {
         });
       }
 
+      // Detect real numeric ranges only (e.g. 10-50, 19.99-29.99)
       const rangeRegex = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
 
       if (rangeRegex.test(value)) {
@@ -266,7 +267,7 @@ function getFilterFromParams(filterParam) {
           },
         });
       } else {
-        // Supports hyphens in category/url keys
+        // Supports hyphens in category/url keys, treat as a real string value instead of a range
         results.push({
           attribute,
           in: [value],
