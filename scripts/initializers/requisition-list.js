@@ -17,7 +17,7 @@ import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { getCookie } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 
-// Normalize product to requisition list Product shape (required: url, urlKey, images[].url)
+// Normalize product to requisition list Product shape (url, urlKey, images[].url, and price for table display)
 function ensureProductShape(product) {
   if (!product) return product;
   const url = product.url ?? product.canonicalUrl ?? '';
@@ -29,11 +29,32 @@ function ensureProductShape(product) {
         roles: Array.isArray(img?.roles) ? img.roles : [],
       }))
     : [];
+  // Requisition list table expects product.price.final.amount.{ value, currency }.
+  // PDP can return: (1) price.final.amount (GraphQL object or number), (2) prices.final.{ amount, currency } (transformed), or (3) priceRange (complex).
+  let price = product.price;
+  if (price?.final?.amount != null && typeof price.final.amount === 'object' && 'value' in price.final.amount) {
+    // Already GraphQL shape: price.final.amount.value/currency
+  } else if (price?.final?.amount != null && typeof price.final.amount === 'number') {
+    price = { final: { amount: { value: price.final.amount, currency: price.final?.currency ?? '' } } };
+  } else if (product.prices?.final != null) {
+    // PDP transformed shape: prices.final.amount (number), prices.final.currency (string)
+    const pf = product.prices.final;
+    price = {
+      final: { amount: { value: pf.amount ?? 0, currency: pf.currency ?? '' } },
+      regular: product.prices.regular != null ? { amount: { value: product.prices.regular.amount ?? 0, currency: product.prices.regular.currency ?? '' } } : undefined,
+    };
+  } else if (product.priceRange?.minimum?.final?.amount != null) {
+    price = {
+      final: { amount: product.priceRange.minimum.final.amount },
+      regular: product.priceRange.minimum.regular,
+    };
+  }
   return {
     ...product,
     url,
     urlKey,
     images,
+    ...(price != null && { price }),
   };
 }
 
