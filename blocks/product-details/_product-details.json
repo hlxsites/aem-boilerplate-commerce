@@ -1,0 +1,24 @@
+{
+  "definitions": [{
+    "title": "Product Details",
+    "id": "product-details",
+    "model": "product-details",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "product-details",
+    "fields": [
+      {
+        "component": "text",
+        "name": "defaultSku",
+        "label": "Default SKU",
+        "description": "Optional: Specify a default product SKU if this is a template page"
+      }
+    ]
+  }],
+  "filters": []
+}

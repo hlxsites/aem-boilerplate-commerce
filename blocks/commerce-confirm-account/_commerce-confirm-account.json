@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Confirm Account",
+    "id": "commerce-confirm-account",
+    "model": "commerce-confirm-account",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

@@ -195,6 +195,16 @@
           }
         },
         {
+          "title": "Enrichment",
+          "id": "enrichment",
+          "model": "enrichment",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
           "title": "Fragment",
           "id": "fragment",
           "model": "fragment",
@@ -249,6 +259,296 @@
               "type": "key-value-block"
             }
           }
+        },
+        {
+          "title": "Commerce Account Header",
+          "id": "commerce-account-header",
+          "model": "commerce-account-header",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Account Sidebar",
+          "id": "commerce-account-sidebar",
+          "model": "commerce-account-sidebar",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Addresses",
+          "id": "commerce-addresses",
+          "model": "commerce-addresses",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Cart",
+          "id": "commerce-cart",
+          "model": "commerce-cart",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Checkout Success",
+          "id": "commerce-checkout-success",
+          "model": "commerce-checkout-success",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Checkout",
+          "id": "commerce-checkout",
+          "model": "commerce-checkout",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Confirm Account",
+          "id": "commerce-confirm-account",
+          "model": "commerce-confirm-account",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Create Account",
+          "id": "commerce-create-account",
+          "model": "commerce-create-account",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Create Password",
+          "id": "commerce-create-password",
+          "model": "commerce-create-password",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Create Return",
+          "id": "commerce-create-return",
+          "model": "commerce-create-return",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Customer Details",
+          "id": "commerce-customer-details",
+          "model": "commerce-customer-details",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Customer Information",
+          "id": "commerce-customer-information",
+          "model": "commerce-customer-information",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Forgot Password",
+          "id": "commerce-forgot-password",
+          "model": "commerce-forgot-password",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Gift Options",
+          "id": "commerce-gift-options",
+          "model": "commerce-gift-options",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Login",
+          "id": "commerce-login",
+          "model": "commerce-login",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Mini Cart",
+          "id": "commerce-mini-cart",
+          "model": "commerce-mini-cart",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Order Cost Summary",
+          "id": "commerce-order-cost-summary",
+          "model": "commerce-order-cost-summary",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Order Header",
+          "id": "commerce-order-header",
+          "model": "commerce-order-header",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Order Product List",
+          "id": "commerce-order-product-list",
+          "model": "commerce-order-product-list",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Order Returns",
+          "id": "commerce-order-returns",
+          "model": "commerce-order-returns",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Order Status",
+          "id": "commerce-order-status",
+          "model": "commerce-order-status",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Orders List",
+          "id": "commerce-orders-list",
+          "model": "commerce-orders-list",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Return Header",
+          "id": "commerce-return-header",
+          "model": "commerce-return-header",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Returns List",
+          "id": "commerce-returns-list",
+          "model": "commerce-returns-list",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Commerce Search Order",
+          "id": "commerce-search-order",
+          "model": "commerce-search-order",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Shipping Status",
+          "id": "commerce-shipping-status",
+          "model": "commerce-shipping-status",
+          "plugins": {
+            "da": {
+              "rows": 1,
+              "columns": 2
+            }
+          }
+        },
+        {
+          "title": "Commerce Wishlist",
+          "id": "commerce-wishlist",
+          "model": "commerce-wishlist",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
         }
       ]
     },
@@ -256,6 +556,26 @@
       "title": "Product",
       "id": "product",
       "components": [
+        {
+          "title": "Product Details",
+          "id": "product-details",
+          "model": "product-details",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
+          "title": "Product List Page",
+          "id": "product-list-page",
+          "model": "product-list-page",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
         {
           "title": "Product Recommendations",
           "id": "product-recommendations",
