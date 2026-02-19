@@ -67,15 +67,32 @@ export default async function decorate(block) {
   // Request search based on the page type on block load
   if (config.urlpath) {
     // If it's a category page...
+    const urlFilters = getFilterFromParams(filter);
+
+    // Normalize urlpath
+    const baseCategory = config.urlpath?.replace(/^\/|\/$/g, '');
+
+    // Detect filters already present
+    const hasCategory = urlFilters.some((f) => f.attribute === 'categories');
+    const hasVisibility = urlFilters.some((f) => f.attribute === 'visibility');
+
+    // Inject only when missing
+    const injectedFilters = [
+      ...(hasCategory ? [] : [{ attribute: 'categories', in: [baseCategory] }]),
+      ...(hasVisibility ? [] : [{
+        attribute: 'visibility',
+        in: ['Search', 'Catalog', 'Catalog, Search'],
+      }]),
+    ];
+
     await search({
-      phrase: '', // search all products in the category
+      phrase: '',
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
-        { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
-        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
-        ...getFilterFromParams(filter),
+        ...injectedFilters,
+        ...urlFilters,
       ],
     }).catch(() => {
       console.error('Error searching for products');
@@ -241,41 +258,58 @@ function getParamsFromSort(sort) {
 function getFilterFromParams(filterParam) {
   if (!filterParam) return [];
 
-  // Decode the URL-encoded parameter
   const decodedParam = decodeURIComponent(filterParam);
   const results = [];
   const filters = decodedParam.split('|');
 
   filters.forEach((filter) => {
-    if (filter.includes(':')) {
-      const [attribute, value] = filter.split(':');
-      const commaRegex = /,(?!\s)/;
+    if (!filter.includes(':')) return;
 
-      if (commaRegex.test(value)) {
-        // Handle array values like categories,
-        // but allow for commas within an array value (eg. "Catalog, Search")
-        results.push({
-          attribute,
-          in: value.split(commaRegex),
-        });
-      } else if (value.includes('-')) {
-        // Handle range values (like price)
-        const [from, to] = value.split('-');
-        results.push({
-          attribute,
-          range: {
-            from: Number(from),
-            to: Number(to),
-          },
-        });
-      } else {
-        // Handle single values (like categories with one value)
-        results.push({
-          attribute,
-          in: [value],
-        });
-      }
+    const [attribute, value] = filter.split(':');
+
+    // Detect numeric range (price etc.)
+    const rangeRegex = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
+    if (rangeRegex.test(value)) {
+      const [from, to] = value.split('-');
+      results.push({
+        attribute,
+        range: {
+          from: Number(from),
+          to: Number(to),
+        },
+      });
+      return;
     }
+
+    // Detect multi-select (comma separated)
+    if (value.includes(',')) {
+      const values = [...new Set(value.split(','))];
+      results.push({
+        attribute,
+        in: values,
+      });
+      return;
+    }
+
+    if (value.includes(',')) {
+      const values = value
+        .split(',')
+        .map((v) => v.trim())
+        .filter(Boolean);
+    
+      results.push({
+        attribute,
+        in: [...new Set(values)],
+      });
+      return;
+    }
+    
+
+    // Single value (supports hyphenated category keys)
+    results.push({
+      attribute,
+      in: [value],
+    });
   });
 
   return results;
