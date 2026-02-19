@@ -61,15 +61,23 @@ export default async function decorate(block) {
   // Request search based on the page type on block load
   if (config.urlpath) {
     // If it's a category page...
+    const urlFilters = getFilterFromParams(filter);
+    // Detect if categories already exist in URL
+    const hasCategoryFilter = urlFilters.some((f) => f.attribute === 'categories');
+    // Only inject base category if user hasn't selected any yet
+    const categoryFilter = hasCategoryFilter
+      ? []
+      : [{ attribute: 'categories', in: [config.urlpath] }];
+
     await search({
-      phrase: '', // search all products in the category
+      phrase: '',
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
-        { attribute: 'categories', in: [config.urlpath] }, // Add category filter
+        ...categoryFilter,
         { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
-        ...getFilterFromParams(filter),
+        ...urlFilters,
       ],
     }).catch(() => {
       console.error('Error searching for products');
