@@ -277,6 +277,15 @@ function getFilterFromParams(filterParam) {
 
     // Detect multi-select (comma separated)
     if (value.includes(',')) {
+      const values = [...new Set(value.split(','))];
+      results.push({
+        attribute,
+        in: values,
+      });
+      return;
+    }
+
+    if (value.includes(',')) {
       const values = value
         .split(',')
         .map((v) => v.trim())
