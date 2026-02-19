@@ -91,6 +91,10 @@ export declare const mockQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -188,6 +192,10 @@ export declare const mockQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -260,6 +268,10 @@ export declare const mockQuoteTemplateData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
@@ -521,6 +533,10 @@ export declare const mockSubmittedQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -618,6 +634,10 @@ export declare const mockSubmittedQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -690,6 +710,10 @@ export declare const mockSubmittedQuoteTemplateData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
@@ -938,6 +962,10 @@ export declare const mockInReviewQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1035,6 +1063,10 @@ export declare const mockInReviewQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1107,6 +1139,10 @@ export declare const mockInReviewQuoteTemplateData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
@@ -1355,6 +1391,10 @@ export declare const mockClosedQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1452,6 +1492,10 @@ export declare const mockClosedQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1524,6 +1568,10 @@ export declare const mockClosedQuoteTemplateData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
@@ -1772,6 +1820,10 @@ export declare const mockInactiveQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1869,6 +1921,10 @@ export declare const mockInactiveQuoteTemplateData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: string;
@@ -1941,6 +1997,10 @@ export declare const mockInactiveQuoteTemplateData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };

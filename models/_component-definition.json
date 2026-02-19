@@ -38,6 +38,10 @@
           "...": "../blocks/columns/_*.json#/definitions"
         },
         {
+          "...": "../blocks/enrichment/_*.json#/definitions"
+        },
+
+        {
           "...": "../blocks/fragment/_*.json#/definitions"
         },
         {
@@ -45,6 +49,9 @@
         },
         {
           "...": "../blocks/targeted-block/_*.json#/definitions"
+        },
+        {
+          "...": "../blocks/commerce-*/_*.json#/definitions"
         }
       ]
     },

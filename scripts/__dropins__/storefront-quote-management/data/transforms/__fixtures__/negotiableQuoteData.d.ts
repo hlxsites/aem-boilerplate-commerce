@@ -190,6 +190,10 @@ export declare const mockQuoteData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: number;
@@ -279,6 +283,10 @@ export declare const mockQuoteData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
@@ -395,6 +403,10 @@ export declare const mockQuoteData: {
                 amount_off: number;
                 percent_off: number;
             };
+            row_catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
             discounts: {
                 label: string;
                 value: number;
@@ -504,6 +516,10 @@ export declare const mockQuoteData: {
                 value: number;
             };
             catalog_discount: {
+                amount_off: number;
+                percent_off: number;
+            };
+            row_catalog_discount: {
                 amount_off: number;
                 percent_off: number;
             };
