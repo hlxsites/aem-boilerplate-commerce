@@ -95,7 +95,7 @@ export default async function decorate(block) {
       pageSize: 8,
       sort: getSortFromParams(sort),
       filter: [
-        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        { attribute: 'visibility', in: ['Search', 'Catalog', 'Catalog, Search'] },
         ...getFilterFromParams(filter),
       ],
     }).catch(() => {
