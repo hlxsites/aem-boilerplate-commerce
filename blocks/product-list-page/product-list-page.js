@@ -61,33 +61,17 @@ export default async function decorate(block) {
   // Request search based on the page type on block load
   if (config.urlpath) {
     // If it's a category page...
-    const urlFilters = getFilterFromParams(filter);
-
-    // Normalize urlpath
+    const parsedUrlFilters = getFilterFromParams(filter);
     const baseCategory = config.urlpath?.replace(/^\/|\/$/g, '');
-
-    // Detect filters already present
-    const hasCategory = urlFilters.some((f) => f.attribute === 'categories');
-    const hasVisibility = urlFilters.some((f) => f.attribute === 'visibility');
-
-    // Inject only when missing
-    const injectedFilters = [
-      ...(hasCategory ? [] : [{ attribute: 'categories', in: [baseCategory] }]),
-      ...(hasVisibility ? [] : [{
-        attribute: 'visibility',
-        in: ['Search', 'Catalog', 'Catalog, Search'],
-      }]),
-    ];
-
+    
+    const finalFilters = normalizeFilters(parsedUrlFilters, baseCategory);
+    
     await search({
       phrase: '',
       currentPage: page ? Number(page) : 1,
       pageSize: 8,
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
-      filter: [
-        ...injectedFilters,
-        ...urlFilters,
-      ],
+      filter: finalFilters,
     }).catch(() => {
       console.error('Error searching for products');
     });
@@ -249,6 +233,43 @@ function getParamsFromSort(sort) {
   return sort.map((item) => `${item.attribute}_${item.direction}`).join(',');
 }
 
+function normalizeFilters(urlFilters, baseCategory) {
+  const map = new Map();
+
+  // Always enforce base category unless categories already exist
+  if (!urlFilters.some((f) => f.attribute === 'categories')) {
+    map.set('categories', new Set([baseCategory]));
+  }
+
+  urlFilters.forEach((filter) => {
+    // Ignore legacy categoryPath completely
+    if (filter.attribute === 'categoryPath') return;
+
+    if (!map.has(filter.attribute)) {
+      map.set(filter.attribute, new Set());
+    }
+
+    if (filter.in) {
+      filter.in.forEach((val) => {
+        const clean = val.trim();
+        if (clean) map.get(filter.attribute).add(clean);
+      });
+    }
+  });
+
+  // Ensure visibility exists (required by Product Discovery)
+  if (!map.has('visibility')) {
+    map.set('visibility', new Set(['Search', 'Catalog', 'Catalog, Search']));
+  }
+
+  // Convert Map to API format
+  return Array.from(map.entries()).map(([attribute, values]) => ({
+    attribute,
+    in: Array.from(values),
+  }));
+}
+
+
 function getFilterFromParams(filterParam) {
   if (!filterParam) return [];
 
@@ -277,13 +298,15 @@ function getFilterFromParams(filterParam) {
 
     // Detect multi-select (comma separated)
     if (value.includes(',')) {
-      const values = [...new Set(value.split(','))];
+      const values = value.split(',').map((v) => v.trim()).filter(Boolean);
+      
       results.push({
         attribute,
-        in: values,
+        in: [...new Set(values)],
       });
       return;
     }
+    
 
     // Single value (supports hyphenated category keys)
     results.push({
