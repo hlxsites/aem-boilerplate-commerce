@@ -53,7 +53,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
   const placeholders = await fetchPlaceholders();
 
   // Try to get fresh cart item data, fallback to the provided cartItem if unavailable
-  const freshCartItem = await getFreshCartItem(cartItem.uid) || cartItem;
+  const freshCartItem = (await getFreshCartItem(cartItem.uid)) || cartItem;
 
   const sku = freshCartItem.topLevelSku || freshCartItem.sku;
 
@@ -91,7 +91,9 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             ...parent,
             ...refinedData,
             images:
-              refinedData.images?.length > 0 ? refinedData.images : parent.images,
+              refinedData.images?.length > 0
+                ? refinedData.images
+                : parent.images,
             description:
               refinedData.description && refinedData.description !== ''
                 ? refinedData.description
@@ -108,10 +110,13 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     }
 
     // Set initial quantity using PDP API BEFORE rendering components
-    setProductConfigurationValues((prev) => ({
-      ...prev,
-      quantity: freshCartItem.quantity || 1,
-    }), { scope: 'modal' });
+    setProductConfigurationValues(
+      (prev) => ({
+        ...prev,
+        quantity: freshCartItem.quantity || 1,
+      }),
+      { scope: 'modal' },
+    );
 
     // Create the mini PDP container
     const miniPDPContainer = document.createElement('div');
@@ -184,9 +189,10 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       _viewDetailsButton,
     ] = await Promise.all([
       // Gallery - Simple image for now
+      // Using cart's item image to respect the configured thumbnail source
       UI.render(Image, {
-        src: product.images?.[0]?.url || freshCartItem.image,
-        alt: product.images?.[0]?.label || product.name,
+        src: freshCartItem.image.src,
+        alt: freshCartItem.image.alt || product.name,
         width: 400,
         height: 400,
         imageParams: {
@@ -200,7 +206,10 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
       pdpRender.render(ProductPrice, { scope: 'modal' })($price),
 
-      pdpRender.render(ProductOptions, { hideSelectedValue: false, scope: 'modal' })($options),
+      pdpRender.render(ProductOptions, {
+        hideSelectedValue: false,
+        scope: 'modal',
+      })($options),
 
       pdpRender.render(ProductQuantity, { scope: 'modal' })($quantity),
 
@@ -274,8 +283,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             isLoading = false;
             updateButton.setProps((prev) => ({
               ...prev,
-              children:
-                placeholders?.Global?.UpdateProductInCart,
+              children: placeholders?.Global?.UpdateProductInCart,
               disabled: false,
             }));
           }
