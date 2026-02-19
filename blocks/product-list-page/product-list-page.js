@@ -243,45 +243,44 @@ function getParamsFromSort(sort) {
 function getFilterFromParams(filterParam) {
   if (!filterParam) return [];
 
-  // Decode the URL-encoded parameter
   const decodedParam = decodeURIComponent(filterParam);
   const results = [];
   const filters = decodedParam.split('|');
 
   filters.forEach((filter) => {
-    if (filter.includes(':')) {
-      const [attribute, value] = filter.split(':');
-      const commaRegex = /,(?!\s)/;
+    if (!filter.includes(':')) return;
 
-      if (commaRegex.test(value)) {
-        // Handle array values like categories,
-        // but allow for commas within an array value (eg. "Catalog, Search")
-        results.push({
-          attribute,
-          in: value.split(commaRegex),
-        });
-      }
+    const [attribute, value] = filter.split(':');
 
-      // Detect real numeric ranges only (e.g. 10-50, 19.99-29.99)
-      const rangeRegex = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
-
-      if (rangeRegex.test(value)) {
-        const [from, to] = value.split('-');
-        results.push({
-          attribute,
-          range: {
-            from: Number(from),
-            to: Number(to),
-          },
-        });
-      } else {
-        // Supports hyphens in category/url keys, treat as a real string value instead of a range
-        results.push({
-          attribute,
-          in: [value],
-        });
-      }
+    // Detect numeric range (price etc.)
+    const rangeRegex = /^\d+(\.\d+)?-\d+(\.\d+)?$/;
+    if (rangeRegex.test(value)) {
+      const [from, to] = value.split('-');
+      results.push({
+        attribute,
+        range: {
+          from: Number(from),
+          to: Number(to),
+        },
+      });
+      return;
     }
+
+    // Detect multi-select (comma separated)
+    if (value.includes(',')) {
+      const values = [...new Set(value.split(','))];
+      results.push({
+        attribute,
+        in: values,
+      });
+      return;
+    }
+
+    // Single value (supports hyphenated category keys)
+    results.push({
+      attribute,
+      in: [value],
+    });
   });
 
   return results;
