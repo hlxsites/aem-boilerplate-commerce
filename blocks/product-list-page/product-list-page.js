@@ -63,16 +63,21 @@ export default async function decorate(block) {
     // If it's a category page...
     const urlFilters = getFilterFromParams(filter);
 
-    // Normalize urlpath (defensive — removes accidental slashes)
+    // Normalize urlpath
     const baseCategory = config.urlpath?.replace(/^\/|\/$/g, '');
 
-    // Check whether URL already defines categories
-    const urlCategoryFilter = urlFilters.find((f) => f.attribute === 'categories');
+    // Detect filters already present
+    const hasCategory = urlFilters.some((f) => f.attribute === 'categories');
+    const hasVisibility = urlFilters.some((f) => f.attribute === 'visibility');
 
-    // If no categories in URL → enforce base category
-    const categoryFilter = urlCategoryFilter
-      ? []
-      : [{ attribute: 'categories', in: [baseCategory] }];
+    // Inject only when missing
+    const injectedFilters = [
+      ...(hasCategory ? [] : [{ attribute: 'categories', in: [baseCategory] }]),
+      ...(hasVisibility ? [] : [{
+        attribute: 'visibility',
+        in: ['Search', 'Catalog', 'Catalog, Search'],
+      }]),
+    ];
 
     await search({
       phrase: '',
@@ -80,8 +85,7 @@ export default async function decorate(block) {
       pageSize: 8,
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
-        ...categoryFilter,
-        { attribute: 'visibility', in: ['Search', 'Catalog', 'Catalog, Search'] },
+        ...injectedFilters,
         ...urlFilters,
       ],
     }).catch(() => {
@@ -95,7 +99,7 @@ export default async function decorate(block) {
       pageSize: 8,
       sort: getSortFromParams(sort),
       filter: [
-        { attribute: 'visibility', in: ['Search', 'Catalog', 'Catalog, Search'] },
+        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
         ...getFilterFromParams(filter),
       ],
     }).catch(() => {
