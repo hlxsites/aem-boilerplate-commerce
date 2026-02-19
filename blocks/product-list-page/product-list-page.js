@@ -62,12 +62,17 @@ export default async function decorate(block) {
   if (config.urlpath) {
     // If it's a category page...
     const urlFilters = getFilterFromParams(filter);
-    // Detect if categories already exist in URL
-    const hasCategoryFilter = urlFilters.some((f) => f.attribute === 'categories');
-    // Only inject base category if user hasn't selected any yet
-    const categoryFilter = hasCategoryFilter
+
+    // Normalize urlpath (defensive — removes accidental slashes)
+    const baseCategory = config.urlpath?.replace(/^\/|\/$/g, '');
+
+    // Check whether URL already defines categories
+    const urlCategoryFilter = urlFilters.find((f) => f.attribute === 'categories');
+
+    // If no categories in URL → enforce base category
+    const categoryFilter = urlCategoryFilter
       ? []
-      : [{ attribute: 'categories', in: [config.urlpath] }];
+      : [{ attribute: 'categories', in: [baseCategory] }];
 
     await search({
       phrase: '',
@@ -76,7 +81,7 @@ export default async function decorate(block) {
       sort: sort ? getSortFromParams(sort) : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
         ...categoryFilter,
-        { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+        { attribute: 'visibility', in: ['Search', 'Catalog', 'Catalog, Search'] },
         ...urlFilters,
       ],
     }).catch(() => {
