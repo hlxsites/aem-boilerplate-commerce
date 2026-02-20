@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{f as o,h as r}from"./chunks/updateRequisitionList.js";import{e as R,g as y,r as F,s as L,a as b,b as E,u as G}from"./chunks/updateRequisitionList.js";import{events as a}from"@dropins/tools/event-bus.js";import{g as Q}from"./chunks/getRequisitionLists.js";import{a as x,d as O,b as w,g as z,u as H}from"./chunks/addRequisitionListItemsToCart.js";import{d as T}from"./chunks/deleteRequisitionList.js";import{Initializer as c}from"@dropins/tools/lib.js";import{s as t}from"./chunks/state.js";import"@dropins/tools/fetch-graphql.js";const f=`
+import{f as o,h as r}from"./chunks/updateRequisitionList.js";import{e as R,g as y,r as F,s as L,a as b,b as E,u as G}from"./chunks/updateRequisitionList.js";import{events as a}from"@dropins/tools/event-bus.js";import{g as Q}from"./chunks/getRequisitionLists.js";import{a as x,d as O,g as w,b as z,u as H}from"./chunks/addRequisitionListItemsToCart.js";import{d as T}from"./chunks/deleteRequisitionList.js";import{Initializer as c}from"@dropins/tools/lib.js";import{s as t}from"./chunks/state.js";import"@dropins/tools/fetch-graphql.js";const f=`
 query STORE_CONFIG_QUERY {
   storeConfig {
     is_requisition_list_active

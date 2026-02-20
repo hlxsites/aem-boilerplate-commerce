@@ -408,6 +408,18 @@ declare const _default: {
         "successHeading": "Success",
         "successMessage": "Quote template renamed successfully!"
       },
+      "expirationDate": {
+        "title": "Set Expiration Date",
+        "expirationDateLabel": "Expiration date",
+        "saveButton": "Save",
+        "cancelButton": "Cancel",
+        "errorHeading": "Error",
+        "expirationDateRequired": "Expiration date is required",
+        "invalidDate": "Please enter a valid date",
+        "pastDateError": "Expiration date must be in the future",
+        "errorDefault": "Failed to set expiration date. Please try again.",
+        "successHeading": "Success"
+      },
       "unsavedChangesWarningHeading": "Unsaved Changes",
       "unsavedChangesWarningMessage": "The quote template must be submitted for review to save the changes.",
       "shippingAddressWarningHeading": "No Shipping Address",
