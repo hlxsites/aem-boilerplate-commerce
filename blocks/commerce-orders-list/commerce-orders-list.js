@@ -64,6 +64,12 @@ export default async function decorate(block) {
             },
           });
         },
+        OrdersListOrderTime: (ctx) => {
+          const container = document.createElement('p');
+          const tpl = `${ctx.deliveryDateText} ${ctx.orderDate} ${ctx.orderTime}`;
+          container.append(tpl);
+          ctx.replaceWith(container);
+        },
       },
     })(block);
   }
