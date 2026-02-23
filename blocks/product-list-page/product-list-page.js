@@ -17,7 +17,7 @@ import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
-import { getSearchStateFromUrl, applySearchStateToUrl } from '../../scripts/search-url.js';
+import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -57,7 +57,7 @@ export default async function decorate(block) {
 
   const searchState = getSearchStateFromUrl(new URL(window.location.href));
 
-  // Visibility is required by the API but not stored in the URL; always add it.
+  // Default visibility filter for all of our requests
   const visibilityFilter = { attribute: 'visibility', in: ['Search', 'Catalog, Search'] };
   const userFilters = searchState.filter.filter((f) => f.attribute !== 'visibility');
 
@@ -76,6 +76,7 @@ export default async function decorate(block) {
       sort: searchState?.sort?.length ? searchState.sort : [{ attribute: 'position', direction: 'DESC' }],
       filter: [
         { attribute: 'categoryPath', eq: config.urlpath }, // Add category filter
+        // Always add visibility filter to the request
         visibilityFilter,
         ...userFilters,
       ],
@@ -89,6 +90,7 @@ export default async function decorate(block) {
       currentPage: searchState.currentPage,
       pageSize: 8,
       sort: searchState.sort,
+      // Always add visibility filter to the request
       filter: [visibilityFilter, ...userFilters],
     }).catch((e) => {
       console.error('Error searching for products', e);

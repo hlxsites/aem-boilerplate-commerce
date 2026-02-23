@@ -16,7 +16,7 @@ Block configuration is read via `readBlockConfig(block)`.
 
 ### URL Parameters
 
-Search state is read from and written to the URL by this project (see `scripts/search-url.js`). The dropin does not parse the URL.
+Search state is read from and written to the URL by this project (see `search-url.js`). The dropin does not parse the URL.
 
 | Parameter | Description |
 |-----------|-------------|

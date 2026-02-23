@@ -136,6 +136,8 @@ export function applySearchStateToUrl(url, request) {
     url.searchParams.set('sort', serializeSort(request.sort));
   }
   if (request?.filter != null) {
-    url.searchParams.set('filter', serializeFilter(request.filter));
+    // Don't add visibility filter to the URL, since we always add it in product-list-page.js
+    const urlFilters = request.filter.filter((f) => f.attribute !== 'visibility');
+    url.searchParams.set('filter', serializeFilter(urlFilters));
   }
 }
