@@ -10,6 +10,7 @@ type DefaultSlotContext = {
 };
 export interface SignInProps {
     slots?: {
+        Form?: SlotProps<DefaultSlotContext>;
         Title?: SlotProps<DefaultSlotContext>;
         SuccessNotification?: SlotProps<DefaultSlotContext>;
         Buttons?: SlotProps<DefaultSlotContext>;

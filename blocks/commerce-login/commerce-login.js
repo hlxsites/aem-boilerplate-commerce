@@ -23,9 +23,9 @@ export default async function decorate(block) {
       routeRedirectOnSignIn: () => rootLink(CUSTOMER_ACCOUNT_PATH),
       renderSignUpLink: true,
       slots: {
-        Title: (ctx) => {
+        Form: (ctx) => {
           if (header) {
-            ctx.appendSibling(header);
+            ctx.prependSibling(header);
           }
         },
 
