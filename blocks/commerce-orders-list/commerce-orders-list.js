@@ -66,8 +66,8 @@ export default async function decorate(block) {
         },
         OrdersListOrderTime: (ctx) => {
           const container = document.createElement('p');
-          const tpl = `${ctx.deliveryDateText} ${ctx.orderDate} ${ctx.orderTime}`;
-          container.append(tpl);
+          // Sample output: "Placed on 02/16/2026 03:35 AM"
+          container.textContent = `${ctx.deliveryDateText ?? ''} ${ctx.orderDate ?? ''} ${ctx.orderTime ?? ''}`;
           ctx.replaceWith(container);
         },
       },
