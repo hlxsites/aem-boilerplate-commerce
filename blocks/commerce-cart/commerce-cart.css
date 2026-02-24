@@ -22,10 +22,6 @@
   display: none;
 }
 
-.cart__gift-options {
-  margin-top: var(--spacing-medium);
-}
-
 .dropin-cart-item__footer {
   margin-top: var(--spacing-xsmall);
   gap: var(--spacing-xsmall);
@@ -60,34 +56,6 @@
 
 .dropin-cart-item__quantity {
   width: fit-content;
-}
-
-/* Request Quote */
-.cart__request-quote-button {
-  width: 100%;
-}
-
-#cart-request-quote-modal-dialog > .close-button {
-  top: 0 !important;
-  right: 0 !important;
-}
-
-.cart__request-quote-content {
-  padding-top: var(--spacing-medium);
-}
-
-/* Request Quote Message */
-.cart__request-quote-message-wrapper {
-  margin-top: var(--spacing-xsmall);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.cart__request-quote-message {
-  font: var(--type-details-caption-2-font);
-  letter-spacing: var(--type-details-caption-2-letter-spacing);
-  color: var(--color-alert-800);
 }
 
 @media (min-width: 768px) {

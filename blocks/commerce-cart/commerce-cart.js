@@ -13,15 +13,10 @@ import {
 import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
 import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
-import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
-import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
-import { render as quoteManagementRender } from '@dropins/storefront-quote-management/render.js';
-import { RequestNegotiableQuoteForm } from '@dropins/storefront-quote-management/containers/RequestNegotiableQuoteForm.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
@@ -33,14 +28,12 @@ import createModal from '../modal/modal.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-import '../../scripts/initializers/quote-management.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
   fetchPlaceholders,
   rootLink,
   getProductLink,
-  ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
@@ -60,11 +53,6 @@ export default async function decorate(block) {
 
   const placeholders = await fetchPlaceholders();
 
-  const _cart = Cart.getCartDataFromCache();
-
-  let minimumTotalForQuoteRequest = 0;
-  let minimumTotalForQuoteRequestMessage = placeholders?.NegotiableQuote?.Request?.Button?.insufficientTotalMessage || '';
-
   // Modal state
   let currentModal = null;
   let currentNotification = null;
@@ -78,7 +66,6 @@ export default async function decorate(block) {
       </div>
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
-        <div class="cart__gift-options"></div>
       </div>
     </div>
 
@@ -90,7 +77,6 @@ export default async function decorate(block) {
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
-  const $giftOptions = fragment.querySelector('.cart__gift-options');
   const $rightColumn = fragment.querySelector('.cart__right-column');
 
   block.innerHTML = '';
@@ -178,88 +164,6 @@ export default async function decorate(block) {
     }
   }
 
-  // Handle Request Quote Button Click
-  async function handleRequestQuoteButtonClick(cartId) {
-    if (!cartId) {
-      return;
-    }
-
-    const content = document.createElement('div');
-    content.classList.add('cart__request-quote-content');
-
-    quoteManagementRender.render(RequestNegotiableQuoteForm, {
-      cartId,
-      acceptedFileTypes: ACCEPTED_FILE_TYPES,
-    })(content);
-
-    currentModal = await createModal([content]);
-    const modalDialog = currentModal.block.querySelector('dialog');
-    modalDialog.classList.add('cart__request-quote-modal-dialog');
-    modalDialog.id = 'cart-request-quote-modal-dialog';
-    currentModal.showModal();
-  }
-
-  // Render (or re-render) request quote button into an element
-  const renderRequestQuoteButton = (element) => {
-    // Clear the element's innerHTML
-    element.innerHTML = '';
-
-    // Get the element's dataset
-    const { dataset: { cartId, canRequestQuote, cartSubtotal } } = element;
-
-    // Convert the minimum total for quote request to a number or return 0 if it's not a number
-    const minimumTotalNumberForQuoteRequest = parseInt(minimumTotalForQuoteRequest, 10) || 0;
-
-    if (!canRequestQuote) {
-      element.setAttribute('hidden', '');
-      return;
-    }
-
-    element.removeAttribute('hidden');
-
-    const parsedCartSubtotal = parseFloat(cartSubtotal) || 0;
-    const isInsufficientTotal = parsedCartSubtotal < minimumTotalNumberForQuoteRequest;
-
-    // Button is disabled is there is no cartId or the cart subtotal
-    // is less than the minimum total for quote request
-    const isDisabled = !cartId || isInsufficientTotal;
-
-    const message = minimumTotalForQuoteRequestMessage.replace('{count}', minimumTotalNumberForQuoteRequest);
-    element.setAttribute('title', isDisabled ? message : '');
-
-    const buttonWrapper = document.createElement('div');
-    buttonWrapper.classList.add('cart__request-quote-button-wrapper');
-
-    UI.render(Button, {
-      children: placeholders?.NegotiableQuote?.Request?.Button.label || 'Request Quote',
-      variant: 'secondary',
-      size: 'medium',
-      onClick: () => {
-        handleRequestQuoteButtonClick(cartId);
-      },
-      disabled: isDisabled,
-      className: 'cart__request-quote-button',
-    })(buttonWrapper);
-    element.appendChild(buttonWrapper);
-
-    if (isInsufficientTotal) {
-      const messageWrapper = document.createElement('div');
-      messageWrapper.classList.add('cart__request-quote-message-wrapper');
-
-      const quoteRequestMessage = document.createElement('span');
-      quoteRequestMessage.classList.add('cart__request-quote-message');
-      quoteRequestMessage.textContent = message;
-      messageWrapper.appendChild(quoteRequestMessage);
-      element.appendChild(messageWrapper);
-    }
-  };
-
-  // Request Quote Button container
-  const requestQuoteContainer = document.createElement('div');
-  requestQuoteContainer.setAttribute('data-cart-id', _cart?.id);
-  requestQuoteContainer.setAttribute('hidden', '');
-  renderRequestQuoteButton(requestQuoteContainer);
-
   // Render Containers
   const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
   await Promise.all([
@@ -323,23 +227,6 @@ export default async function decorate(block) {
           })($wishlistToggle);
 
           ctx.appendChild($wishlistToggle);
-
-          // Gift Options
-          const giftOptions = document.createElement('div');
-
-          provider.render(GiftOptions, {
-            item: ctx.item,
-            view: 'product',
-            dataSource: 'cart',
-            handleItemsLoading: ctx.handleItemsLoading,
-            handleItemsError: ctx.handleItemsError,
-            onItemUpdate: ctx.onItemUpdate,
-            slots: {
-              SwatchImage: swatchImageSlot,
-            },
-          })(giftOptions);
-
-          ctx.appendChild(giftOptions);
         },
       },
     })($list),
@@ -356,34 +243,8 @@ export default async function decorate(block) {
             ctx.replaceWith(wrapper);
           }
         },
-        Coupons: (ctx) => {
-          const coupons = document.createElement('div');
-
-          provider.render(Coupons)(coupons);
-
-          ctx.appendChild(coupons);
-
-          // Prepend request quote button
-          ctx.prependSibling(requestQuoteContainer);
-        },
-        GiftCards: (ctx) => {
-          const giftCards = document.createElement('div');
-
-          provider.render(GiftCards)(giftCards);
-
-          ctx.appendChild(giftCards);
-        },
       },
     })($summary),
-
-    provider.render(GiftOptions, {
-      view: 'order',
-      dataSource: 'cart',
-
-      slots: {
-        SwatchImage: swatchImageSlot,
-      },
-    })($giftOptions),
   ]);
 
   let cartViewEventPublished = false;
@@ -391,15 +252,9 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
-      const cartSubtotal = cartData?.subtotal?.excludingTax?.value || 0;
-      requestQuoteContainer.dataset.cartSubtotal = cartSubtotal;
-      requestQuoteContainer.dataset.cartId = cartData?.id;
-      renderRequestQuoteButton(requestQuoteContainer);
-
       toggleEmptyCart(isCartEmpty(cartData));
 
       const isEmpty = !cartData || cartData.totalQuantity < 1;
-      $giftOptions.style.display = isEmpty ? 'none' : '';
       $rightColumn.style.display = isEmpty ? 'none' : '';
 
       if (!cartViewEventPublished) {
@@ -409,34 +264,6 @@ export default async function decorate(block) {
     },
     { eager: true },
   );
-
-  // Listen for quote management initialized state to get minimum total for quote request
-  events.on('quote-management/initialized', (state) => {
-    minimumTotalForQuoteRequest = state?.config?.quoteMinimumAmount || 0;
-    minimumTotalForQuoteRequestMessage = state?.config?.quoteMinimumAmountMessage || '';
-    renderRequestQuoteButton(requestQuoteContainer);
-  }, { eager: true });
-
-  // Listen for quote management permissions event to show/hide request quote button
-  events.on('quote-management/permissions', (permissions) => {
-    if (permissions?.requestQuote) {
-      requestQuoteContainer.dataset.canRequestQuote = true;
-    } else {
-      requestQuoteContainer.removeAttribute('data-can-request-quote');
-    }
-    renderRequestQuoteButton(requestQuoteContainer);
-  }, { eager: true });
-
-  // Refresh cart and close modal when quote is requested and successfully created
-  events.on('quote-management/negotiable-quote-requested', () => {
-    Cart.refreshCart();
-
-    // Close modal after 3 seconds
-    setTimeout(() => {
-      currentModal?.removeModal();
-      currentModal = null;
-    }, 3000);
-  });
 
   events.on('wishlist/alert', ({ action, item }) => {
     wishlistRender.render(WishlistAlert, {
@@ -455,18 +282,4 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
-}
-
-function swatchImageSlot(ctx) {
-  const { imageSwatchContext, defaultImageProps } = ctx;
-  tryRenderAemAssetsImage(ctx, {
-    alias: imageSwatchContext.label,
-    imageProps: defaultImageProps,
-    wrapper: document.createElement('span'),
-
-    params: {
-      width: defaultImageProps.width,
-      height: defaultImageProps.height,
-    },
-  });
 }
