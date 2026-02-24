@@ -11,10 +11,18 @@
   <script nonce="aem" type="importmap">
     {
         "imports": {
-            "@dropins/tools/": "/scripts/__dropins__/tools/",
-            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
+            "@dropins/storefront-account/": "/scripts/__dropins__/storefront-account/",
             "@dropins/storefront-auth/": "/scripts/__dropins__/storefront-auth/",
-            "@dropins/storefront-personalization/": "/scripts/__dropins__/storefront-personalization/"
+            "@dropins/storefront-cart/": "/scripts/__dropins__/storefront-cart/",
+            "@dropins/storefront-checkout/": "/scripts/__dropins__/storefront-checkout/",
+            "@dropins/storefront-order/": "/scripts/__dropins__/storefront-order/",
+            "@dropins/storefront-payment-services/": "/scripts/__dropins__/storefront-payment-services/",
+            "@dropins/storefront-pdp/": "/scripts/__dropins__/storefront-pdp/",
+            "@dropins/storefront-recommendations/": "/scripts/__dropins__/storefront-recommendations/",
+            "@dropins/storefront-wishlist/": "/scripts/__dropins__/storefront-wishlist/",
+            "@dropins/storefront-personalization/": "/scripts/__dropins__/storefront-personalization/",
+            "@dropins/storefront-product-discovery/": "/scripts/__dropins__/storefront-product-discovery/",
+            "@dropins/tools/": "/scripts/__dropins__/tools/"
         }
     }
   </script>
@@ -60,62 +68,38 @@
         console.error(err);
       });
   </script>
-  <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
   <script nonce="aem" type="module">
-    window.addEventListener('load', () => {
-      if (document.referrer) {
-        const { origin, pathname } = new URL(document.referrer);
-        if (origin === window.location.origin) {
-          const backBtn = document.createElement('a');
-          backBtn.classList.add('button', 'error-button-back');
-          backBtn.href = pathname;
-          backBtn.textContent = 'Go back';
-          backBtn.title = 'Go back';
-          const btnContainer = document.querySelector('.button-container');
-          btnContainer.append(backBtn);
-        }
+    if (!(HTMLScriptElement.supports?.('importmap'))) {
+      import('/scripts/__dropins__/tools/shims/importmap.js');
+    }
+  </script>
+
+  <script nonce="aem" src="/scripts/aem.js" type="module"></script>
+  <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
+  <script nonce="aem" src="/scripts/commerce.js" type="module"></script>
+  <script nonce="aem" type="module">
+
+    (async function load404Fragment() {
+      const { loadFragment } = await import(`${window.hlx?.codeBasePath ?? ''}/blocks/fragment/fragment.js`);
+      const fragment = await loadFragment('/drafts/cacabrer/404');
+      if (fragment) {
+        const section = document.querySelector('main > .section');
+        if (section) section.replaceWith(fragment);
       }
-    });
+    })();
   </script>
   <script nonce="aem" type="module">
     import { sampleRUM } from '/scripts/aem.js';
     sampleRUM('404', { source: document.referrer });
   </script>
   <link rel="stylesheet" href="/styles/styles.css">
-  <style>
-    main.error {
-      align-items: center;
-      display: flex;
-      margin: 0 auto;
-      max-width: 1264px;
-      min-height: calc(100vh - var(--nav-height));
-      padding: 0 32px;
-      width: 100%;
-    }
-
-    main.error .error-number {
-      width: 100%;
-    }
-
-    main.error .error-number text {
-      font-family: monospace;
-    }
-  </style>
   <link rel="stylesheet" href="/styles/lazy-styles.css">
 </head>
 
 <body>
   <header></header>
   <main class="error">
-    <div class="section">
-      <svg viewBox="1 0 38 18" class="error-number">
-        <text x="0" y="17">404</text>
-      </svg>
-      <h2 class="error-message">Page Not Found</h2>
-      <p class="button-container">
-        <a href="/" class="button secondary error-button-home">Go home</a>
-      </p>
-    </div>
+    <div class="section"></div>
   </main>
   <footer></footer>
 </body>
