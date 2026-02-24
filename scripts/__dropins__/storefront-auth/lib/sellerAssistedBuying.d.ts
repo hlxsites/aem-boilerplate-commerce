@@ -14,5 +14,17 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const CREATE_CUSTOMER_V2: string;
-//# sourceMappingURL=createCustomerV2.graphql.d.ts.map
+export interface SellerAssistedBuyingConfig {
+    triggerUrl?: string;
+    enabled?: boolean;
+}
+/**
+ * Checks if the current session is an admin-driven session
+ */
+export declare const isAdminSession: () => boolean;
+/**
+ * Main flow for Seller Assisted Buying session initialization
+ * Returns true if session was successfully initialized, false otherwise
+ */
+export declare const initializeSellerAssistedBuyingSession: (config?: SellerAssistedBuyingConfig) => Promise<boolean>;
+//# sourceMappingURL=sellerAssistedBuying.d.ts.map

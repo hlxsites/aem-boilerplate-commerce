@@ -1,15 +1,22 @@
-import { initializers } from '@dropins/tools/initializer.js';
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
-import { initialize, setEndpoint } from '@dropins/storefront-auth/api.js';
-import { initializeDropin } from './index.js';
-import { CORE_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
+import { initializers } from "@dropins/tools/initializer.js";
+import { getConfigValue } from "@dropins/tools/lib/aem/configs.js";
+import { initialize, setEndpoint } from "@dropins/storefront-auth/api.js";
+import { initializeDropin } from "./index.js";
+import { CORE_FETCH_GRAPHQL, fetchPlaceholders } from "../commerce.js";
 
 await initializeDropin(async () => {
   // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
+  const loginAsAdmin = {
+    sellerAssistedBuying: {
+      enabled: true,
+      triggerUrl: "/customer/login",
+    },
+  };
+
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/auth.json');
+  const labels = await fetchPlaceholders("placeholders/auth.json");
   const langDefinitions = {
     default: {
       ...labels,
@@ -17,6 +24,12 @@ await initializeDropin(async () => {
   };
 
   // Initialize auth
-  const customerPermissionRoles = getConfigValue('commerce-b2b-enabled') === true;
-  return initializers.mountImmediately(initialize, { langDefinitions, adobeCommerceOptimizer: getConfigValue('adobe-commerce-optimizer'), customerPermissionRoles });
+  const customerPermissionRoles =
+    getConfigValue("commerce-b2b-enabled") === true;
+  return initializers.mountImmediately(initialize, {
+    langDefinitions,
+    adobeCommerceOptimizer: getConfigValue("adobe-commerce-optimizer"),
+    customerPermissionRoles,
+    ...loginAsAdmin,
+  });
 })();

@@ -20,6 +20,7 @@ export interface storeConfigProps {
     required_character_classes_number: string;
     create_account_confirmation: boolean;
     customer_access_token_lifetime: number;
+    login_as_customer_enabled?: boolean;
 }
 export interface getStoreConfigResponse {
     data: {

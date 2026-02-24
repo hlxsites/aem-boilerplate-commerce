@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{f as o,h as r}from"./network-error.js";const t=`
+import{f as o,h as r}from"./setReCaptchaToken.js";const t=`
   mutation CONFIRM_EMAIL($email: String!, $confirmation_key: String!) {
     confirmEmail(
       input: { email: $email, confirmation_key: $confirmation_key }
