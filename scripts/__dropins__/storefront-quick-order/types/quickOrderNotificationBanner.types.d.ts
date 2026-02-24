@@ -16,6 +16,7 @@
  *******************************************************************/
 export interface QuickOrderNotificationBannerProps {
     notification: {
+        type: 'validation' | 'partial-success' | 'success' | 'backend-error';
         variant: 'success' | 'warning' | 'neutral' | 'brand';
         message: string;
         details?: string;

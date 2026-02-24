@@ -61,11 +61,11 @@ declare const _default: {
             "addAllToCart": "Add to Cart",
             "disabledMessage": "Quick Order feature disabled",
             "notification": {
-                "validationError": "Products require attention",
-                "backendError": "Error while adding products to cart",
-                "success": "{count} products successfully added to cart",
-                "partialSuccess": "{count} of {total} products added. Failed products",
-                "unexpectedError": "An unexpected error occurred"
+                "validationError": "Product(s) require(s) your attention",
+                "backendError": "An error occurred while adding products to the cart",
+                "success": "{count} product(s) successfully added to the cart",
+                "partialSuccess": "{count} of {total} products were added to the cart. Some products could not be added",
+                "unexpectedError": "An unexpected error has occurred"
             }
         }
     }
