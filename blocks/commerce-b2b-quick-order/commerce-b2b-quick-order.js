@@ -64,7 +64,6 @@ export default async function decorate(block) {
       if (!values.length) return undefined;
 
       try {
-        await cartApi.createGuestCart();
         await cartApi.addProductsToCart(values);
 
         // Return undefined for success
