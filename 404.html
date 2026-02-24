@@ -82,6 +82,7 @@
 
     (async function load404Fragment() {
       const { loadFragment } = await import(`${window.hlx?.codeBasePath ?? ''}/blocks/fragment/fragment.js`);
+      // TODO: replace with the actual 404 fragment
       const fragment = await loadFragment('/drafts/cacabrer/404');
       if (fragment) {
         const section = document.querySelector('main > .section');
