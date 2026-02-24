@@ -17,6 +17,7 @@ import QuickOrderCsvUpload from '@dropins/storefront-quick-order/containers/Quic
 import QuickOrderItems from '@dropins/storefront-quick-order/containers/QuickOrderItems.js';
 
 import '../../scripts/initializers/quick-order.js';
+import '../../scripts/initializers/cart.js';
 
 export default async function decorate(block) {
   // Create fragment with container structure
@@ -60,7 +61,7 @@ export default async function decorate(block) {
       },
     ],
     className: 'quick-order-items',
-    onAddAllToCart: async (values) => {
+    handleAddToCart: async (values) => {
       if (!values.length) return undefined;
 
       try {
