@@ -21,7 +21,7 @@ import '../../scripts/initializers/quick-order.js';
 export default async function decorate(block) {
   // Create fragment with container structure
   const fragment = document.createRange().createContextualFragment(`
-    <h1>Quick Order Demo</h1>
+    <h1 class="quick-order-title">Quick Order</h1>
     <div class="quick-order-main-container">
       <div class="quick-order-items-container"></div>
       <div class="quick-order-right-side">
