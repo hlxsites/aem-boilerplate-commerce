@@ -559,3 +559,38 @@ body.columns main > .section:empty {
 main[hidden] {
   display: none !important;
 }
+
+
+/* Global Toast */
+.toast {
+  position: fixed;
+  top: var(--spacing-small);
+  right: var(--spacing-small);
+  z-index: 999;
+  background: inherit;
+  padding: var(--spacing-small);
+  padding-right: calc(var(--spacing-small) + 1em);
+  border: 1px solid;
+}
+
+.toast--success {
+  background: var(--color-positive-200);
+  color: var(--color-positive-800);
+}
+
+.toast--error {
+  background: var(--color-alert-200);
+  color: var(--color-alert-800);
+}
+
+.toast__close-button {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  background: none;
+  border: none;
+  color: indianred;
+  padding: 0;
+  line-height: 0.5;
+  cursor: pointer;
+}

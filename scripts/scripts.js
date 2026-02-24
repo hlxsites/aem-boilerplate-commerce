@@ -180,3 +180,36 @@ loadPage();
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
+
+/**
+ * Shows a global toast message
+ * @param {Element} wrapper The wrapper element
+ * @param {Object} options The options
+ * @param {string} options.type The type of toast
+ * @param {number} options.duration The duration of the toast
+ */
+export function showToast(wrapper, options = { type: 'success', duration: null }) {
+  const toast = document.createElement('div');
+  toast.classList.add('toast', `toast--${options.type}`);
+
+  // close button
+  const closeButton = document.createElement('button');
+  closeButton.classList.add('toast__close-button');
+  closeButton.innerHTML = '×';
+
+  closeButton.onclick = () => {
+    toast.remove();
+  };
+
+  toast.append(closeButton);
+
+  toast.append(wrapper);
+
+  document.body.appendChild(toast);
+
+  if (options.duration) {
+    setTimeout(() => {
+      toast.remove();
+    }, options.duration);
+  }
+}

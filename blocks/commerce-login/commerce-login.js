@@ -6,6 +6,7 @@ import {
   checkIsAuthenticated,
   rootLink,
 } from '../../scripts/commerce.js';
+import { showToast } from '../../scripts/scripts.js';
 
 // Initialize
 import '../../scripts/initializers/auth.js';
@@ -17,6 +18,14 @@ export default async function decorate(block) {
     await authRenderer.render(SignIn, {
       routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
       routeRedirectOnSignIn: () => rootLink(CUSTOMER_ACCOUNT_PATH),
+
+      // tab the container's callback to defer the error message to the toast
+      onErrorCallback: (error) => {
+        const wrapper = document.createElement('div');
+        wrapper.innerText = error;
+
+        showToast(wrapper, { type: 'error' });
+      },
     })(block);
   }
 }

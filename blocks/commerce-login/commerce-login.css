@@ -3,3 +3,8 @@ main .commerce-login-container {
     margin: 40px auto;
     width: 100%;
 }
+
+/* Hide the error message from the form */
+.auth-sign-in-form .dropin-in-line-alert--error {
+    display: none;
+}
