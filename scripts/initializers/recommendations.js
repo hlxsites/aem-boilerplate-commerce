@@ -15,6 +15,25 @@ await initializeDropin(async () => {
     },
   };
 
+  const models = {
+    RecommendationUnitModel: {
+      transformer: (data) => {
+        console.log('🟢 transformProductRecommendationsResponse', data.results);
+
+        data.results.forEach(result => {
+          if (!result.images || result.images.length === 0) {
+            result.images = [{
+              url: 'https://via.placeholder.com/150', // your default image
+              alt: result.name,
+            }];
+          }
+        });
+        
+        return data;
+      },
+    },
+  };
+
   // Initialize recommendations
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, { langDefinitions, models });
 })();

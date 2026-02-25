@@ -102,6 +102,16 @@ await initializeDropin(async () => {
   const models = {
     ProductDetails: {
       initialData: { ...product },
+      transformer: (data) => {
+        // If images array is empty, add a default image
+        if (!data.images || data.images.length === 0) {
+          data.images = [{
+            url: 'https://via.placeholder.com/150', // your default image
+            alt: data.name,
+          }];
+        }
+        return data;
+      },
     },
   };
 
