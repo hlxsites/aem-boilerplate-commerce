@@ -121,8 +121,7 @@ await initializeDropin(async () => {
   setEndpoint(endpoint);
   // Fallback for drop-in chunks that may use a different FetchGraphQL instance
   // (fixes "Missing url")
-  const global = typeof globalThis !== 'undefined' ? globalThis : window;
-  global.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = endpoint;
+  window.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = endpoint;
   // Use same Catalog Service auth headers as the host
   // (required for customer/requisition list APIs)
   setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));

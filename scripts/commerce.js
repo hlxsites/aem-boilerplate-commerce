@@ -52,8 +52,7 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 // Requisition list drop-in: getter so it can read endpoint at request time
 // (avoids "Missing url" race)
-const g = typeof globalThis !== 'undefined' ? globalThis : window;
-g.__REQUISITION_LIST_GET_ENDPOINT__ = function getRequisitionListEndpoint() {
+window.__REQUISITION_LIST_GET_ENDPOINT__ = function getRequisitionListEndpoint() {
   const e = CS_FETCH_GRAPHQL?.endpoint;
   if (typeof e === 'string') return e;
   if (e && typeof e === 'object' && 'href' in e) return e.href;
@@ -378,8 +377,7 @@ export async function initializeCommerce() {
   // so "Missing url" and auth work.
   if (csEndpointUrl) setToolsMeshEndpoint(csEndpointUrl);
   setToolsMeshHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  const global = typeof globalThis !== 'undefined' ? globalThis : window;
-  global.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = csEndpointUrl;
+  window.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = csEndpointUrl;
 
   return initializeDropins();
 }
