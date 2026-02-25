@@ -1,0 +1,24 @@
+{
+  "definitions": [{
+    "title": "Product List Page",
+    "id": "product-list-page",
+    "model": "product-list-page",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "product-list-page",
+    "fields": [
+      {
+        "component": "text",
+        "name": "urlpath",
+        "label": "URL Path",
+        "description": "URL Path of the category as defined in the catalog (not CMS)"
+      }
+    ]
+  }],
+  "filters": []
+}
