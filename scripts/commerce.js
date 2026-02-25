@@ -50,7 +50,8 @@ export const CORE_FETCH_GRAPHQL = new FetchGraphQL();
 // Catalog Service Fetch GraphQL Instance
 export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
-// Requisition list drop-in: getter so it can read endpoint at request time (avoids "Missing url" race)
+// Requisition list drop-in: getter so it can read endpoint at request time
+// (avoids "Missing url" race)
 const g = typeof globalThis !== 'undefined' ? globalThis : window;
 g.__REQUISITION_LIST_GET_ENDPOINT__ = function getRequisitionListEndpoint() {
   const e = CS_FETCH_GRAPHQL?.endpoint;
@@ -373,10 +374,12 @@ export async function initializeCommerce() {
   const csEndpointUrl = typeof csEndpoint === 'string' ? csEndpoint : csEndpoint?.href;
   CS_FETCH_GRAPHQL.setEndpoint(csEndpoint);
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  // Requisition list chunks use new FetchGraphQL().getMethods() from tools – they read the tools' global mesh. Set mesh endpoint + headers so "Missing url" and auth work.
+  // Requisition list chunks use FetchGraphQL from tools – set mesh endpoint + headers
+  // so "Missing url" and auth work.
   if (csEndpointUrl) setToolsMeshEndpoint(csEndpointUrl);
   setToolsMeshHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  (typeof globalThis !== 'undefined' ? globalThis : window).__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = csEndpointUrl;
+  const global = typeof globalThis !== 'undefined' ? globalThis : window;
+  global.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = csEndpointUrl;
 
   return initializeDropins();
 }

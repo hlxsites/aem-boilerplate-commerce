@@ -4,11 +4,11 @@ import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
-import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 import {
   setFetchGraphQlHeader as setToolsMeshHeader,
   removeFetchGraphQlHeader as removeToolsMeshHeader,
 } from '@dropins/tools/fetch-graphql.js';
+import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -104,7 +104,8 @@ export default async function initializeDropins() {
     // Initialize Global Drop-ins
     await import('./auth.js');
 
-    // Configure requisition list drop-in (endpoint + headers) before any block uses it (fixes "Missing url")
+    // Configure requisition list drop-in (endpoint + headers) before any block uses it
+    // (fixes "Missing url")
     await import('./requisition-list.js');
 
     // Initialize Company Switcher

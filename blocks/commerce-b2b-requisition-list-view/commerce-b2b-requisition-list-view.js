@@ -13,7 +13,8 @@ export default async function decorate(block) {
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
   } else {
-    // Ensure requisition list is initialized and get required props (getProductData, enrichConfigurableProducts)
+    // Ensure requisition list is initialized and get required props
+    // (getProductData, enrichConfigurableProducts)
     const {
       getProductData,
       enrichConfigurableProducts,
