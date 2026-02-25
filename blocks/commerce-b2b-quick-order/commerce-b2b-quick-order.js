@@ -67,6 +67,9 @@ export default async function decorate(block) {
       try {
         await cartApi.addProductsToCart(values);
 
+        // TODO - Hardcoded URL
+        window.location.href = '/cart';
+
         // Return undefined for success
         return undefined;
       } catch (error) {
@@ -101,7 +104,7 @@ export default async function decorate(block) {
         UI.render(Button, {
           children: buttonText,
 
-          onClick: () => {
+          onClick: async () => {
             ctx.handleAddToList();
           },
         })(elem);
