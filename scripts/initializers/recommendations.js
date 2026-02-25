@@ -18,8 +18,6 @@ await initializeDropin(async () => {
   const models = {
     RecommendationUnitModel: {
       transformer: (data) => {
-        console.log('🟢 transformProductRecommendationsResponse', data.results);
-
         data.results.forEach(result => {
           if (!result.images || result.images.length === 0) {
             result.images = [{
