@@ -2,6 +2,12 @@
  * Video utility functions for ProductGallery
  */
 /**
+ * Gets the MIME type for a video URL based on file extension
+ * @param url - The video URL
+ * @returns The MIME type string, defaults to 'video/mp4' if unknown
+ */
+export declare function getVideoMimeType(url: string): string;
+/**
  * Checks if URL is a direct video file based on extension
  * @param url - The video URL
  * @returns true if direct video file
