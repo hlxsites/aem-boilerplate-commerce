@@ -13,8 +13,14 @@ import {
   fetchPlaceholders,
 } from '../commerce.js';
 
-// Normalize product to requisition list Product shape
-// (url, urlKey, images[].url, and price for table display)
+/**
+ * Normalizes a product object into the shape expected by the requisition list UI:
+ * url, urlKey, images[].url, and price (final.amount.{ value, currency }).
+ * Handles multiple PDP response shapes (GraphQL, transformed prices, priceRange).
+ *
+ * @param {Object} product - Raw product from PDP (getProductData / getRefinedProduct).
+ * @returns {Object} Product with normalized url, urlKey, images, price; or original if null.
+ */
 function ensureProductShape(product) {
   if (!product) return product;
   const url = product.url ?? product.canonicalUrl ?? '';
@@ -26,18 +32,14 @@ function ensureProductShape(product) {
       roles: Array.isArray(img?.roles) ? img.roles : [],
     }))
     : [];
-  // Requisition list table expects product.price.final.amount.{ value, currency }.
-  // PDP can return: (1) price.final.amount (GraphQL/number),
-  // (2) prices.final.{ amount, currency }, or (3) priceRange (complex).
   let { price } = product;
   const { final: priceFinal } = price || {};
   const { amount: amt } = priceFinal || {};
   if (amt != null && typeof amt === 'object' && 'value' in amt) {
-    // Already GraphQL shape: price.final.amount.value/currency
+    // Already in GraphQL shape; no change
   } else if (amt != null && typeof amt === 'number') {
     price = { final: { amount: { value: amt, currency: priceFinal?.currency ?? '' } } };
   } else if (product.prices?.final != null) {
-    // PDP transformed shape: prices.final.amount (number), prices.final.currency (string)
     const { final: pf, regular: pr } = product.prices;
     const regularAmount = pr != null
       ? { amount: { value: pr.amount ?? 0, currency: pr.currency ?? '' } }
@@ -61,15 +63,26 @@ function ensureProductShape(product) {
   };
 }
 
-// Adapter: PDP getProductData(sku) => single product;
-// requisition list expects getProductData(skus) => products[]
-// Exported so blocks can pass them explicitly to RequisitionListView (required props).
+/**
+ * Fetches products by SKU and normalizes them for the requisition list.
+ * PDP exposes getProductData(sku) → single product; this adapts it to
+ * getProductData(skus) → products[] and is passed as a required prop to RequisitionListView.
+ *
+ * @param {string[]} skus - Product SKUs to fetch.
+ * @returns {Promise<Object[]>} Resolved array of normalized products (falsy results omitted).
+ */
 export const getProductData = async (skus) => {
   const results = await Promise.all(skus.map((sku) => pdpGetProductData(sku)));
   return results.filter(Boolean).map(ensureProductShape);
 };
 
-// Use PDP getRefinedProduct to enrich requisition list items that have configurable options
+/**
+ * Enriches requisition list line items that have configurable options by resolving
+ * the configured variant via PDP getRefinedProduct and attaching it as configured_product.
+ *
+ * @param {Object[]} items - Requisition list items (each with product, configurable_options).
+ * @returns {Promise<Object[]>} Same items with configured_product set where resolution succeeds.
+ */
 export const enrichConfigurableProducts = async (items) => {
   if (!items?.length) return items;
   return Promise.all(
@@ -95,11 +108,13 @@ export const enrichConfigurableProducts = async (items) => {
   );
 };
 
+/**
+ * Registers the requisition list drop-in: sets GraphQL endpoint (Core), placeholders,
+ * and mounts with getProductData and enrichConfigurableProducts for list/view blocks.
+ */
 await initializeDropin(async () => {
-  // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
-  // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/requisition-list.json');
 
   const langDefinitions = {
