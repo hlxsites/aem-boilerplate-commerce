@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{f as o,h as w}from"./network-error.js";import{s as d}from"./setReCaptchaToken.js";const i=`
+import{c as w,f as o,h as d}from"./setReCaptchaToken.js";const P=`
   mutation RESET_PASSWORD(
     $email: String!
     $resetPasswordToken: String!
@@ -12,5 +12,5 @@ import{f as o,h as w}from"./network-error.js";import{s as d}from"./setReCaptchaT
       newPassword: $newPassword
     )
   }
-`,P=a=>{var r,s,e;let t="";return(r=a==null?void 0:a.errors)!=null&&r.length&&(t=(s=a==null?void 0:a.errors[0])==null?void 0:s.message),{message:t,success:!!((e=a==null?void 0:a.data)!=null&&e.resetPassword)}},S=async(a,t,r)=>(await d(),await o(i,{method:"POST",variables:{email:a,resetPasswordToken:t,newPassword:r}}).then(s=>P(s)).catch(w));export{S as r};
+`,i=a=>{var r,s,e;let t="";return(r=a==null?void 0:a.errors)!=null&&r.length&&(t=(s=a==null?void 0:a.errors[0])==null?void 0:s.message),{message:t,success:!!((e=a==null?void 0:a.data)!=null&&e.resetPassword)}},m=async(a,t,r)=>(await w(),await o(P,{method:"POST",variables:{email:a,resetPasswordToken:t,newPassword:r}}).then(s=>i(s)).catch(d));export{m as r};
 //# sourceMappingURL=resetPassword.js.map
