@@ -17,6 +17,7 @@ import {
 import { initializeDropin } from './index.js';
 import {
   CS_FETCH_GRAPHQL,
+  CORE_FETCH_GRAPHQL,
   commerceEndpointWithQueryParams,
   fetchPlaceholders,
 } from '../commerce.js';
@@ -106,8 +107,8 @@ export const enrichConfigurableProducts = async (items) => {
 await initializeDropin(async () => {
   // Set Fetch GraphQL (Catalog Service) – pass URL string so the drop-in uses same endpoint
   // (passing the instance can fail across bundles due to different FetchGraphQL class reference)
-  let endpoint = (typeof CS_FETCH_GRAPHQL?.endpoint === 'string' && CS_FETCH_GRAPHQL.endpoint)
-    || (CS_FETCH_GRAPHQL?.endpoint?.href?.toString?.())
+  let endpoint = (typeof CORE_FETCH_GRAPHQL?.endpoint === 'string' && CORE_FETCH_GRAPHQL.endpoint)
+    || (CORE_FETCH_GRAPHQL?.endpoint?.href?.toString?.())
     || '';
   if (!endpoint) {
     const url = await commerceEndpointWithQueryParams();
