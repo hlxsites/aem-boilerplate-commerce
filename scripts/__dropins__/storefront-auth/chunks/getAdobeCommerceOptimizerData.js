@@ -25,7 +25,7 @@ import{a as B,f as E,h as U,c as W,r as X}from"./setReCaptchaToken.js";import"@d
       locale
       create_account_confirmation
       customer_access_token_lifetime
-      login_as_customer_enabled
+      # login_as_customer_enabled
     }
   }
 `,Q=async()=>await E(Se,{method:"GET",cache:"force-cache"}).then(e=>{var t;return(t=e.errors)!=null&&t.length?de(e.errors):ce(e)}).catch(U),pe=`
