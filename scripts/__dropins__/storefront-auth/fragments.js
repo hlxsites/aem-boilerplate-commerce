@@ -6,7 +6,6 @@ const e=`
     firstname
     lastname
     email
-    allow_remote_shopping_assistance
     group {
       uid
     }

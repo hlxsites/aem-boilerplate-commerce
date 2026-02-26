@@ -8,15 +8,6 @@ await initializeDropin(async () => {
   // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
-  const loginAsAdmin = {
-    sellerAssistedBuying: {
-      enabled: true,
-      triggerUrl: '/loginascustomer',
-      errorRedirectUrl: '/',
-      successRedirectUrl: '/customer/account',
-    },
-  };
-
   // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/auth.json');
   const langDefinitions = {
@@ -31,6 +22,5 @@ await initializeDropin(async () => {
     langDefinitions,
     adobeCommerceOptimizer: getConfigValue('adobe-commerce-optimizer'),
     customerPermissionRoles,
-    ...loginAsAdmin,
   });
 })();

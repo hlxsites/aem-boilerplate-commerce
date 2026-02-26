@@ -33,6 +33,14 @@ export interface JwtPayload {
  */
 export declare const decodeJwtToken: (token: string) => JwtPayload | null;
 /**
+ * Sets the admin session cookie with the same lifetime as the auth token
+ */
+export declare const setAdminSessionCookie: () => Promise<void>;
+/**
+ * Deletes the admin session cookie
+ */
+export declare const deleteAdminSessionCookie: () => void;
+/**
  * Checks if JWT token belongs to an admin user
  * Checks multiple possible admin indicators in token payload
  *

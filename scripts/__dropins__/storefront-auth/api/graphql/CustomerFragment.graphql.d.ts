@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const CUSTOMER_INFORMATION_FRAGMENT = "\n  fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {\n    __typename\n    firstname\n    lastname\n    email\n    allow_remote_shopping_assistance\n    group {\n      uid\n    }\n  }\n";
+export declare const CUSTOMER_INFORMATION_FRAGMENT = "\n  fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {\n    __typename\n    firstname\n    lastname\n    email\n    group {\n      uid\n    }\n  }\n";
 //# sourceMappingURL=CustomerFragment.graphql.d.ts.map

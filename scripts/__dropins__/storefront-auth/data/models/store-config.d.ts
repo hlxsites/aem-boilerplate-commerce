@@ -20,6 +20,6 @@ export interface StoreConfigModel {
     requiredCharacterClasses: number;
     createAccountConfirmation: boolean;
     customerAccessTokenLifetime: number;
-    loginAsCustomerEnabled?: boolean;
+    loginAsCustomerEnabled: boolean;
 }
 //# sourceMappingURL=store-config.d.ts.map
