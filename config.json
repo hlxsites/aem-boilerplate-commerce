@@ -5,15 +5,9 @@
       "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QyEqr5zS1dMDikt66dgJnP/graphql",
       "headers": {
         "cs": {
-          "AC-Channel-Id":"8563851b-d44c-4be6-b6a8-e054dcf11b9d",
+          "AC-View-Id":"8563851b-d44c-4be6-b6a8-e054dcf11b9d",
           "AC-Environment-Id":"QyEqr5zS1dMDikt66dgJnP",
           "AC-Price-Book-Id":"NLI",
-          "AC-Scope-Locale":"en-US",
-          "Magento-Environment-Id": "QyEqr5zS1dMDikt66dgJnP",
-          "Magento-Website-Code": "WEBSITE_CODE",
-          "Magento-Store-Code": "STORE_CODE",
-          "Magento-Store-View-Code": "en-US",
-          "Magento-Customer-Group": "NLI",
           "X-Api-Key": "storefront-catalog-apollo",
           "content-type": "application/json"
         }
@@ -31,7 +25,8 @@
         "website-name": "",
         "environment-id": "QyEqr5zS1dMDikt66dgJnP",
         "website-code": "WEBSITE_CODE",
-        "store-code": "STORE_CODE"
+        "store-code": "STORE_CODE",
+        "view-id": "8563851b-d44c-4be6-b6a8-e054dcf11b9d"
       }
     }
   }
