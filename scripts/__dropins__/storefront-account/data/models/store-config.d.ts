@@ -19,6 +19,5 @@ export interface StoreConfigModel {
     minLength: number;
     requiredCharacterClasses: number;
     storeCode: string;
-    allowRemoteShoppingAssistance: boolean;
 }
 //# sourceMappingURL=store-config.d.ts.map

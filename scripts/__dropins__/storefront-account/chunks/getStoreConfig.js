@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{f as e,h as g,a as f}from"./removeCustomerAddress.js";const u=a=>{var t,r,i,_,c,o,h,l,d,m;return{baseMediaUrl:(r=(t=a==null?void 0:a.data)==null?void 0:t.storeConfig)==null?void 0:r.base_media_url,minLength:+((_=(i=a==null?void 0:a.data)==null?void 0:i.storeConfig)==null?void 0:_.minimum_password_length)||3,requiredCharacterClasses:+((o=(c=a==null?void 0:a.data)==null?void 0:c.storeConfig)==null?void 0:o.required_character_classes_number)||0,storeCode:((l=(h=a==null?void 0:a.data)==null?void 0:h.storeConfig)==null?void 0:l.store_code)??"",allowRemoteShoppingAssistance:((m=(d=a==null?void 0:a.data)==null?void 0:d.storeConfig)==null?void 0:m.allow_remote_shopping_assistance)??!1}},C=`
+import{f as e,h as m,a as u}from"./removeCustomerAddress.js";const f=t=>{var a,r,c,_,i,o,d,h;return{baseMediaUrl:(r=(a=t==null?void 0:t.data)==null?void 0:a.storeConfig)==null?void 0:r.base_media_url,minLength:+((_=(c=t==null?void 0:t.data)==null?void 0:c.storeConfig)==null?void 0:_.minimum_password_length)||3,requiredCharacterClasses:+((o=(i=t==null?void 0:t.data)==null?void 0:i.storeConfig)==null?void 0:o.required_character_classes_number)||0,storeCode:((h=(d=t==null?void 0:t.data)==null?void 0:d.storeConfig)==null?void 0:h.store_code)??""}},g=`
   query GET_STORE_CONFIG {
     storeConfig {
       base_media_url
@@ -8,8 +8,7 @@ import{f as e,h as g,a as f}from"./removeCustomerAddress.js";const u=a=>{var t,r
       minimum_password_length
       required_character_classes_number
       store_code
-      allow_remote_shopping_assistance
     }
   }
-`,w=async()=>await e(C,{method:"GET",cache:"force-cache"}).then(a=>{var t;return(t=a.errors)!=null&&t.length?g(a.errors):u(a)}).catch(f);export{w as g};
+`,C=async()=>await e(g,{method:"GET",cache:"force-cache"}).then(t=>{var a;return(a=t.errors)!=null&&a.length?m(t.errors):f(t)}).catch(u);export{C as g};
 //# sourceMappingURL=getStoreConfig.js.map

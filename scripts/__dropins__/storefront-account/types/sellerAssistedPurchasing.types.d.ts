@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'preact/compat';
 export interface SellerAssistedPurchasingProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
-export interface SellerAssistedPurchasingControlProps {
+export interface SellerAssistedPurchasingCardProps {
     loading: boolean;
     isFeatureAvailable: boolean;
     isEnabled: boolean;
