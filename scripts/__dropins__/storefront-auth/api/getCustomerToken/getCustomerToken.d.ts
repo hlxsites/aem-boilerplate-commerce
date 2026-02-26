@@ -7,8 +7,10 @@ interface getCustomerTokenProps {
     translations: Record<string, string>;
     onErrorCallback?: (value?: unknown) => void;
     apiErrorMessageOverride?: string;
+    errorRedirectUrl?: string;
+    successRedirectUrl?: string;
 }
-export declare const getCustomerToken: ({ email, password, translations, onErrorCallback, handleSetInLineAlertProps, apiErrorMessageOverride, }: getCustomerTokenProps) => Promise<{
+export declare const getCustomerToken: ({ email, password, translations, onErrorCallback, handleSetInLineAlertProps, apiErrorMessageOverride, errorRedirectUrl, successRedirectUrl, }: getCustomerTokenProps) => Promise<{
     errorMessage: string;
     displayErrorMessage: string;
     userName: string;
