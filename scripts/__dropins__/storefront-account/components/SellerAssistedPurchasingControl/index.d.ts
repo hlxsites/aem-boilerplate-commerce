@@ -14,21 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '../containers/AddressForm';
-export * from './Form';
-export * from './Form/FormInputs';
-export * from './AddressCard';
-export * from './AddressActions';
-export * from './AddressModal';
-export * from './EmptyList';
-export * from './OrdersListAction';
-export * from './OrdersListCard';
-export * from './AccountLoaders';
-export * from './AddressesWrapper';
-export * from './AddressFormWrapper';
-export * from './ChangePassword';
-export * from './EditCustomerInformation';
-export * from './CustomerInformationCard';
-export * from './AddressValidation';
 export * from './SellerAssistedPurchasingControl';
 //# sourceMappingURL=index.d.ts.map
