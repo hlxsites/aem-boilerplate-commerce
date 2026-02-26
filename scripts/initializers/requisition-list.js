@@ -96,7 +96,7 @@ export const enrichConfigurableProducts = async (items) => {
 };
 
 await initializeDropin(async () => {
-    // Set Fetch GraphQL (Core)
+  // Set Fetch GraphQL (Core)
   setEndpoint(CORE_FETCH_GRAPHQL);
 
   // Fetch placeholders
