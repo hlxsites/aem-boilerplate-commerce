@@ -17,6 +17,8 @@
 export interface SellerAssistedBuyingConfig {
     triggerUrl?: string;
     enabled?: boolean;
+    errorRedirectUrl?: string;
+    successRedirectUrl?: string;
 }
 /**
  * Checks if the current session is an admin-driven session
