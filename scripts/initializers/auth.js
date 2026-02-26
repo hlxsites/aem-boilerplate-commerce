@@ -13,7 +13,7 @@ await initializeDropin(async () => {
       enabled: true,
       triggerUrl: '/loginascustomer',
       errorRedirectUrl: '/',
-      successRedirectUrl: '/account',
+      successRedirectUrl: '/customer/account',
     },
   };
 
