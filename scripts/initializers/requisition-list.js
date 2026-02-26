@@ -1,14 +1,7 @@
 import { initializers } from '@dropins/tools/initializer.js';
-import { events } from '@dropins/tools/event-bus.js';
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
-import { getCookie } from '@dropins/tools/lib.js';
 import {
   initialize,
   setEndpoint,
-  setFetchGraphQlHeaders,
-  setFetchGraphQlHeader,
-  removeFetchGraphQlHeader,
-  config as requisitionListConfig,
 } from '@dropins/storefront-requisition-list/api.js';
 import {
   getProductData as pdpGetProductData,
@@ -16,9 +9,7 @@ import {
 } from '@dropins/storefront-pdp/api.js';
 import { initializeDropin } from './index.js';
 import {
-  CS_FETCH_GRAPHQL,
   CORE_FETCH_GRAPHQL,
-  commerceEndpointWithQueryParams,
   fetchPlaceholders,
 } from '../commerce.js';
 
@@ -105,42 +96,8 @@ export const enrichConfigurableProducts = async (items) => {
 };
 
 await initializeDropin(async () => {
-  // Set Fetch GraphQL (Catalog Service) – pass URL string so the drop-in uses same endpoint
-  // (passing the instance can fail across bundles due to different FetchGraphQL class reference)
-  let endpoint = (typeof CORE_FETCH_GRAPHQL?.endpoint === 'string' && CORE_FETCH_GRAPHQL.endpoint)
-    || (CORE_FETCH_GRAPHQL?.endpoint?.href?.toString?.())
-    || '';
-  if (!endpoint) {
-    const url = await commerceEndpointWithQueryParams();
-    endpoint = url?.href ?? '';
-  }
-  if (!endpoint) {
-    throw new Error(
-      'Requisition list: Commerce GraphQL endpoint not available. Ensure commerce is initialized.',
-    );
-  }
-  setEndpoint(endpoint);
-  // Fallback for drop-in chunks that may use a different FetchGraphQL instance
-  // (fixes "Missing url")
-  window.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = endpoint;
-  // Use same Catalog Service auth headers as the host
-  // (required for customer/requisition list APIs)
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  // Auth and customer-group are set on CS_FETCH_GRAPHQL in main initializer
-  // but not in getHeaders('cs') – sync them
-  const token = getCookie('auth_dropin_user_token');
-  if (token) setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
-  events.on('authenticated', (state) => {
-    if (state) {
-      const t = getCookie('auth_dropin_user_token');
-      if (t) setFetchGraphQlHeader('Authorization', `Bearer ${t}`);
-    } else {
-      removeFetchGraphQlHeader('Authorization');
-    }
-  }, { eager: true });
-  events.on('auth/group-uid', (customerGroupId) => {
-    setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
-  }, { eager: true });
+    // Set Fetch GraphQL (Core)
+  setEndpoint(CORE_FETCH_GRAPHQL);
 
   // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/requisition-list.json');
@@ -158,10 +115,4 @@ await initializeDropin(async () => {
   };
 
   await initializers.mountImmediately(initialize, initConfig);
-
-  // Ensure config has our functions
-  // (in case the package merge missed them or view reads config later)
-  if (typeof requisitionListConfig?.setConfig === 'function') {
-    requisitionListConfig.setConfig(initConfig);
-  }
 })();
