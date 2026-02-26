@@ -209,6 +209,11 @@ declare const _default: {
       "subtitle": "To ensure accurate delivery, we suggest the changes highlighted below. Please choose which address you would like to use. If neither option is correct, edit your address.",
       "suggestedAddress": "Suggested Address",
       "originalAddress": "Original Address"
+    },
+    "sellerAssistedPurchasing": {
+      "checkboxLabel": "Enable Seller Assisted Purchasing",
+      "alertMessage": "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      "featureDisabledMessage": "Seller Assisted Purchasing is currently unavailable. This feature has been disabled by the administrator."
     }
   }
 }

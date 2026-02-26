@@ -114,5 +114,5 @@ import{events as E}from"@dropins/tools/event-bus.js";import{FetchGraphQL as C}fr
   mutation REMOVE_CUSTOMER_ADDRESS($id: Int!) {
     deleteCustomerAddress(id: $id)
   }
-`,X=async t=>await s(B,{method:"POST",variables:{id:t}}).then(r=>{var n;return(n=r.errors)!=null&&n.length?_(r.errors):r.data.deleteCustomerAddress}).catch(f);export{f as a,k as b,P as c,K as d,z as e,s as f,J as g,_ as h,Z as i,W as j,X as k,b as l,g as m,T as n,L as r,j as s,$ as t,Y as u};
+`,X=async t=>await s(B,{method:"POST",variables:{id:t}}).then(r=>{var n;return(n=r.errors)!=null&&n.length?_(r.errors):r.data.deleteCustomerAddress}).catch(f);export{f as a,J as b,z as c,W as d,Z as e,s as f,K as g,_ as h,L as i,k as j,P as k,b as l,g as m,T as n,X as r,j as s,$ as t,Y as u};
 //# sourceMappingURL=removeCustomerAddress.js.map

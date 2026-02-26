@@ -1,7 +1,8 @@
 import { Country } from '../../data/models';
 
 export declare const getCountries: () => Promise<{
-    availableCountries: Country[] | [];
+    availableCountries: Country[] | [
+    ];
     countriesWithRequiredRegion: string[];
     optionalZipCountries: string[];
 }>;

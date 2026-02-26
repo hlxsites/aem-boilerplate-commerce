@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const updateCustomer: (form: Record<string, string>) => Promise<string>;
+export declare const updateCustomer: (form: Record<string, string | boolean>) => Promise<string>;
 //# sourceMappingURL=updateCustomer.d.ts.map
