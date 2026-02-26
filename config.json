@@ -1,0 +1,38 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QyEqr5zS1dMDikt66dgJnP/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/QyEqr5zS1dMDikt66dgJnP/graphql",
+      "headers": {
+        "cs": {
+          "AC-Channel-Id":"8563851b-d44c-4be6-b6a8-e054dcf11b9d",
+          "AC-Environment-Id":"QyEqr5zS1dMDikt66dgJnP",
+          "AC-Price-Book-Id":"NLI",
+          "AC-Scope-Locale":"en-US",
+          "Magento-Environment-Id": "QyEqr5zS1dMDikt66dgJnP",
+          "Magento-Website-Code": "WEBSITE_CODE",
+          "Magento-Store-Code": "STORE_CODE",
+          "Magento-Store-View-Code": "en-US",
+          "Magento-Customer-Group": "NLI",
+          "X-Api-Key": "storefront-catalog-apollo",
+          "content-type": "application/json"
+        }
+      },
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "store-id": 1,
+        "store-name": "suite release 5 prex dropin aco",
+        "store-url": "https://acosterel5--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-view-id": 1,
+        "store-view-name": "en-US",
+        "store-view-code": "en-US",
+        "website-id": 1,
+        "website-name": "",
+        "environment-id": "QyEqr5zS1dMDikt66dgJnP",
+        "website-code": "WEBSITE_CODE",
+        "store-code": "STORE_CODE"
+      }
+    }
+  }
+}
