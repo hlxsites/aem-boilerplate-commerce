@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{l as $,f as B,h as D,a as P,m as k}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as q}from"../fragments.js";import{c as K}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as L}from"@dropins/tools/lib.js";const Q=t=>{var m,u,i,l,_,f,h,C,o,E,T,g,N,S,b,O,A,M,R,U,w,G,v,x,F,I,d,V;const a=(i=(u=(m=t==null?void 0:t.data)==null?void 0:m.customer)==null?void 0:u.custom_attributes)==null?void 0:i.filter(r=>r).reduce((r,y)=>(r[$(y.code)]=y.value??"",r),{}),c={email:((_=(l=t==null?void 0:t.data)==null?void 0:l.customer)==null?void 0:_.email)||"",firstName:((h=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:h.firstname)||"",lastName:((o=(C=t==null?void 0:t.data)==null?void 0:C.customer)==null?void 0:o.lastname)||"",middleName:((T=(E=t==null?void 0:t.data)==null?void 0:E.customer)==null?void 0:T.middlename)||"",gender:((N=(g=t==null?void 0:t.data)==null?void 0:g.customer)==null?void 0:N.gender)||"1",dateOfBirth:((b=(S=t==null?void 0:t.data)==null?void 0:S.customer)==null?void 0:b.date_of_birth)||"",prefix:((A=(O=t==null?void 0:t.data)==null?void 0:O.customer)==null?void 0:A.prefix)||"",suffix:((R=(M=t==null?void 0:t.data)==null?void 0:M.customer)==null?void 0:R.suffix)||"",createdAt:((w=(U=t==null?void 0:t.data)==null?void 0:U.customer)==null?void 0:w.created_at)||"",allowRemoteShoppingAssistance:(v=(G=t==null?void 0:t.data)==null?void 0:G.customer)==null?void 0:v.allow_remote_shopping_assistance,...a};return L(c,(V=(d=(I=(F=(x=K)==null?void 0:x.getConfig())==null?void 0:F.models)==null?void 0:I.CustomerDataModelShort)==null?void 0:d.transformer)==null?void 0:V.call(d,t.data))},j=`
+import{l as P,f as y,h as B,a as D,m as $}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as k}from"../fragments.js";import{c as q}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as K}from"@dropins/tools/lib.js";const L=t=>{var i,a,u,c,d,r,o,h,C,g,E,T,S,N,b,A,O,R,M,U,w,v,F,G,e,x,l,I;const m=(u=(a=(i=t==null?void 0:t.data)==null?void 0:i.customer)==null?void 0:a.custom_attributes)==null?void 0:u.filter(_=>_).reduce((_,V)=>(_[P(V.code)]=V.value??"",_),{}),f={email:((d=(c=t==null?void 0:t.data)==null?void 0:c.customer)==null?void 0:d.email)||"",firstName:((o=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:o.firstname)||"",lastName:((C=(h=t==null?void 0:t.data)==null?void 0:h.customer)==null?void 0:C.lastname)||"",middleName:((E=(g=t==null?void 0:t.data)==null?void 0:g.customer)==null?void 0:E.middlename)||"",gender:((S=(T=t==null?void 0:t.data)==null?void 0:T.customer)==null?void 0:S.gender)||"1",dateOfBirth:((b=(N=t==null?void 0:t.data)==null?void 0:N.customer)==null?void 0:b.date_of_birth)||"",prefix:((O=(A=t==null?void 0:t.data)==null?void 0:A.customer)==null?void 0:O.prefix)||"",suffix:((M=(R=t==null?void 0:t.data)==null?void 0:R.customer)==null?void 0:M.suffix)||"",createdAt:((w=(U=t==null?void 0:t.data)==null?void 0:U.customer)==null?void 0:w.created_at)||"",allowRemoteShoppingAssistance:(F=(v=t==null?void 0:t.data)==null?void 0:v.customer)==null?void 0:F.allow_remote_shopping_assistance,...m};return K(f,(I=(l=(x=(e=(G=q)==null?void 0:G.getConfig())==null?void 0:e.models)==null?void 0:x.CustomerDataModelShort)==null?void 0:l.transformer)==null?void 0:I.call(l,t.data))},Q=`
   query GET_CUSTOMER {
     customer {
       ...BASIC_CUSTOMER_INFO_FRAGMENT
@@ -13,8 +13,8 @@ import{l as $,f as B,h as D,a as P,m as k}from"./removeCustomerAddress.js";impor
       }
     }
   }
-  ${q}
-`,Z=async()=>await B(j,{method:"GET",cache:"no-cache"}).then(t=>{var a;return(a=t.errors)!=null&&a.length?D(t.errors):Q(t)}).catch(P),z=`
+  ${k}
+`,Y=async()=>await y(Q,{method:"GET",cache:"no-cache"}).then(t=>{var m;return(m=t.errors)!=null&&m.length?B(t.errors):L(t)}).catch(D),j=`
   mutation UPDATE_CUSTOMER_V2($input: CustomerUpdateInput!) {
     updateCustomerV2(input: $input) {
       customer {
@@ -23,5 +23,5 @@ import{l as $,f as B,h as D,a as P,m as k}from"./removeCustomerAddress.js";impor
       }
     }
   }
-`,e=async t=>await B(z,{method:"POST",variables:{input:k(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(a=>{var c,m,u,i;return(c=a.errors)!=null&&c.length?D(a.errors):((i=(u=(m=a==null?void 0:a.data)==null?void 0:m.updateCustomerV2)==null?void 0:u.customer)==null?void 0:i.email)||""}).catch(P);export{Z as g,e as u};
+`,Z=async t=>{const{allowRemoteShoppingAssistance:m,...f}=t,i=$(f,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"});return m!==void 0&&(i.allow_remote_shopping_assistance=m),await y(j,{method:"POST",variables:{input:i}}).then(a=>{var u,c,d,r;return(u=a.errors)!=null&&u.length?B(a.errors):((r=(d=(c=a==null?void 0:a.data)==null?void 0:c.updateCustomerV2)==null?void 0:d.customer)==null?void 0:r.email)||""}).catch(D)};export{Y as g,Z as u};
 //# sourceMappingURL=updateCustomer.js.map
