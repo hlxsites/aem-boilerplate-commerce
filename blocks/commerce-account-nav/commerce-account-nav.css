@@ -13,6 +13,10 @@
     border-bottom: var(--shape-border-width-2) solid var(--color-neutral-300);
 }
 
+.commerce-account-nav-wrapper:has(> .commerce-account-nav:empty) {
+    display: none;
+}
+
 .commerce-account-nav__item {
     display: grid;
     grid-template-areas:

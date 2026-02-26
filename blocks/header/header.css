@@ -837,6 +837,7 @@ header .nav-search-input .search_autocomplete .popover-container {
 .impersonation-banner {
     background-color: #666;
     color: #fff;
+    height: var(--spacing-xxbig);
     padding: var(--spacing-xsmall) var(--spacing-big);
     display: flex;
     justify-content: space-between;
@@ -870,8 +871,8 @@ body:has(.impersonation-banner) header {
 .impersonation-banner__close-button {
     background-color: transparent;
     color: #fff;
-    border: 2px solid #fff;
-    padding: var(--spacing-xsmall) var(--spacing-small);
+    border: 1px solid #fff;
+    padding: var(--spacing-xxsmall) var(--spacing-small);
     cursor: pointer;
     font-family: var(--type-base-font-family);
     font-size: var(--type-body-1-default-size, 14px);
