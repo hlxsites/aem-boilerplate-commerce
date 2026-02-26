@@ -12,6 +12,8 @@ await initializeDropin(async () => {
     sellerAssistedBuying: {
       enabled: true,
       triggerUrl: '/loginascustomer',
+      errorRedirectUrl: '/',
+      successRedirectUrl: '/account',
     },
   };
 
