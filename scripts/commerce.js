@@ -7,11 +7,7 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
-import {
-  FetchGraphQL,
-  setEndpoint as setToolsMeshEndpoint,
-  setFetchGraphQlHeaders as setToolsMeshHeaders,
-} from '@dropins/tools/fetch-graphql.js';
+import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
   getMetadata,
   readBlockConfig,
