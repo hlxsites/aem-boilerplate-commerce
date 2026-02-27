@@ -104,10 +104,6 @@ export default async function initializeDropins() {
     // Initialize Global Drop-ins
     await import('./auth.js');
 
-    // Configure requisition list drop-in (endpoint + headers) before any block uses it
-    // (fixes "Missing url")
-    //await import('./requisition-list.js');
-
     // Initialize Company Switcher
     const authenticated = events.lastPayload('authenticated');
 
