@@ -15,6 +15,20 @@ await initializeDropin(async () => {
     },
   };
 
+  // Extend model
+  const models = {
+    RecommendationUnitModel: {
+      transformer: (data) => data.results.map((result) => ({
+        items: result.productsView?.map((product) => ({
+          // results[0].productsView[0].inStock
+          inStock: product.inStock,
+          // results[0].productsView[0].attributes
+          attributes: product.attributes,
+        })),
+      })),
+    },
+  };
+
   // Initialize recommendations
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, { langDefinitions, models });
 })();
