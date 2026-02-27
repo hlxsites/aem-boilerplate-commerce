@@ -1,4 +1,6 @@
+import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { initializers } from '@dropins/tools/initializer.js';
+
 import {
   initialize,
   setEndpoint,
@@ -10,6 +12,7 @@ import {
 import { initializeDropin } from './index.js';
 import {
   CORE_FETCH_GRAPHQL,
+  CS_FETCH_GRAPHQL,
   fetchPlaceholders,
 } from '../commerce.js';
 
@@ -113,6 +116,7 @@ export const enrichConfigurableProducts = async (items) => {
  * and mounts with getProductData and enrichConfigurableProducts for list/view blocks.
  */
 await initializeDropin(async () => {
+  pdpApi.setEndpoint(CS_FETCH_GRAPHQL);
   setEndpoint(CORE_FETCH_GRAPHQL);
 
   const labels = await fetchPlaceholders('placeholders/requisition-list.json');

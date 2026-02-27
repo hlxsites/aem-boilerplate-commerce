@@ -362,10 +362,6 @@ export async function initializeCommerce() {
   // Set Fetch GraphQL (Catalog Service)
   CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  // Requisition list chunks use FetchGraphQL from tools – set mesh endpoint + headers
-  // so "Missing url" and auth work.
-  setToolsMeshEndpoint(CS_FETCH_GRAPHQL.endpoint);
-  setToolsMeshHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
   return initializeDropins();
 }
