@@ -553,8 +553,7 @@ body.columns main > .section:empty {
 
 @media (min-width: 900px) {
   body.columns main {
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
   }
 
   body.columns main > .section {
