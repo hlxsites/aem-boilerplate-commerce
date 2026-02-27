@@ -366,7 +366,6 @@ export async function initializeCommerce() {
   // so "Missing url" and auth work.
   setToolsMeshEndpoint(CS_FETCH_GRAPHQL.endpoint);
   setToolsMeshHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
-  window.__REQUISITION_LIST_GRAPHQL_ENDPOINT__ = CS_FETCH_GRAPHQL.endpoint;
 
   return initializeDropins();
 }
