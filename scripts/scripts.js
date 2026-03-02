@@ -23,6 +23,90 @@ import {
   IS_DA,
 } from './commerce.js';
 
+// Reused regexes for rich-text decorator (reset lastIndex before each use)
+const RICH_TEXT_PATTERN = /\{\{(.*?)\}\}(.*?)\{\{\/\}\}/gs;
+const ATTR_PATTERN = /\s*(\w+):\s*["']([^"']*)["']\s*/g;
+
+/**
+ * Parses a DA-style attribute string (e.g. style: "color: red;", class: "foo") into an object.
+ * @param {string} attrStr - String like 'style: "color: red;"' or 'class: "x", style: "..."'
+ * @returns {Record<string, string>} Key-value attributes
+ */
+function parseRichTextAttributes(attrStr) {
+  const attrs = {};
+  ATTR_PATTERN.lastIndex = 0;
+  let m = ATTR_PATTERN.exec(attrStr);
+  while (m !== null) {
+    const [, key, val] = m;
+    attrs[key] = val;
+    m = ATTR_PATTERN.exec(attrStr);
+  }
+  return attrs;
+}
+
+/**
+ * Rich-text decorator: replaces {{attr: "value";}}content{{/}} with
+ * <span attr="value">content</span>. Only walks candidate nodes.
+ * @param {Element} container - Element to process (e.g. main)
+ */
+function decorateRichText(container) {
+  const skipTags = new Set(['SCRIPT', 'STYLE', 'TEMPLATE', 'NOSCRIPT']);
+  const filter = (node) => {
+    const parent = node.parentElement;
+    if (parent && skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+    const text = node.textContent;
+    if (text.indexOf('{{') === -1 || text.indexOf('{{/}}') === -1) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;
+  };
+
+  const walker = document.createTreeWalker(
+    container,
+    NodeFilter.SHOW_TEXT,
+    { acceptNode: filter },
+    false,
+  );
+
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+  for (let i = 0; i < textNodes.length; i += 1) {
+    const textNode = textNodes[i];
+    const text = textNode.textContent;
+    const parts = [];
+    let lastIndex = 0;
+
+    RICH_TEXT_PATTERN.lastIndex = 0;
+    let match = RICH_TEXT_PATTERN.exec(text);
+    while (match !== null) {
+      const [, attrSpec, content] = match;
+      parts.push({ type: 'text', value: text.slice(lastIndex, match.index) });
+      parts.push({ type: 'span', attrs: parseRichTextAttributes(attrSpec), content });
+      lastIndex = RICH_TEXT_PATTERN.lastIndex;
+      match = RICH_TEXT_PATTERN.exec(text);
+    }
+    parts.push({ type: 'text', value: text.slice(lastIndex) });
+
+    const hasSpans = parts.length > 1;
+    if (hasSpans) {
+      const fragment = document.createDocumentFragment();
+      for (let j = 0; j < parts.length; j += 1) {
+        const part = parts[j];
+        if (part.type === 'text') {
+          fragment.appendChild(document.createTextNode(part.value));
+        } else {
+          const span = document.createElement('span');
+          Object.entries(part.attrs).forEach(([k, v]) => span.setAttribute(k, v));
+          span.textContent = part.content;
+          fragment.appendChild(span);
+        }
+      }
+
+      textNode.parentNode.insertBefore(fragment, textNode);
+      textNode.remove();
+    }
+  }
+}
+
 /**
  * Builds hero block and prepends to main in a new section.
  * @param {Element} main The container element
@@ -92,6 +176,7 @@ export function decorateMain(main) {
   decorateLinks(main);
   decorateButtons(main);
   decorateIcons(main);
+  decorateRichText(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
