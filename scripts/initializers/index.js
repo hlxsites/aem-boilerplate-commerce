@@ -100,9 +100,7 @@ export default async function initializeDropins() {
     events.on('authenticated', (isAuthenticated) => {
       if (isAuthenticated) {
         if (!getCookie(AUTH_WEBSITE_COOKIE)) {
-          const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-          const secureFlag = isLocalhost ? '' : '; Secure';
-          document.cookie = `${AUTH_WEBSITE_COOKIE}=${getWebsitePath()}; path=/${secureFlag}`;
+          document.cookie = `${AUTH_WEBSITE_COOKIE}=${getWebsitePath()}; path=/`;
         }
       } else {
         clearCookie(AUTH_WEBSITE_COOKIE);
