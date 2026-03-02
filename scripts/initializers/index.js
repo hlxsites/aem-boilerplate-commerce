@@ -3,14 +3,37 @@ import { getCookie } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
-import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
-import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
+import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
+import {
+  CORE_FETCH_GRAPHQL,
+  CS_FETCH_GRAPHQL,
+  fetchPlaceholders,
+  AUTH_TOKEN_COOKIE,
+  AUTH_FIRSTNAME_COOKIE,
+  AUTH_WEBSITE_COOKIE,
+} from '../commerce.js';
 
-export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
+const getWebsitePath = () => getRootPath() || '/';
+const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
+
+/**
+ * Returns the auth token only if it was issued for the current website.
+ * Returns null when the token belongs to a different website, preventing
+ * cross-website authentication bleed when Account Sharing is "Per Website".
+ */
+export const getUserTokenCookie = () => {
+  const token = getCookie(AUTH_TOKEN_COOKIE);
+  if (!token) return null;
+
+  const tokenWebsitePath = getCookie(AUTH_WEBSITE_COOKIE);
+  if (!tokenWebsitePath) return token;
+
+  return tokenWebsitePath === getWebsitePath() ? token : null;
+};
 
 const setAuthHeaders = (state) => {
-  if (state) {
-    const token = getUserTokenCookie();
+  const token = state ? getUserTokenCookie() : null;
+  if (token) {
     CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
   } else {
     CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
@@ -60,13 +83,37 @@ export default async function initializeDropins() {
       events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
     }
 
-    // Set auth headers on authenticated event
-    events.on('authenticated', setAuthHeaders, { eager: true });
+    // Clear auth and cart state if the token belongs to a different website.
+    const storedPath = getCookie(AUTH_WEBSITE_COOKIE);
+    if (storedPath && storedPath !== getWebsitePath()) {
+      clearCookie(AUTH_TOKEN_COOKIE);
+      clearCookie(AUTH_FIRSTNAME_COOKIE);
+      clearCookie(AUTH_WEBSITE_COOKIE);
+      clearCookie('DROPIN__CART__CART-ID');
+      sessionStorage.removeItem('DROPINS_CART_ID');
+      sessionStorage.removeItem('DROPIN__CART__CART__DATA');
+      sessionStorage.removeItem('DROPIN__CART__SHIPPING__DATA');
+      localStorage.removeItem('DROPIN__CART__CART__AUTHENTICATED');
+    }
+
+    // Set auth headers on authenticated event and persist website path
+    events.on('authenticated', (isAuthenticated) => {
+      if (isAuthenticated) {
+        if (!getCookie(AUTH_WEBSITE_COOKIE)) {
+          const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+          const secureFlag = isLocalhost ? '' : '; Secure';
+          document.cookie = `${AUTH_WEBSITE_COOKIE}=${getWebsitePath()}; path=/${secureFlag}`;
+        }
+      } else {
+        clearCookie(AUTH_WEBSITE_COOKIE);
+      }
+      setAuthHeaders(isAuthenticated);
+    }, { eager: true });
 
     // Cache cart data in session storage
     events.on('cart/data', persistCartDataInSession, { eager: true });
 
-    // on page load, check if user is authenticated
+    // on page load, check if user is authenticated for the current website
     const token = getUserTokenCookie();
     // set auth headers
     setAuthHeaders(!!token);

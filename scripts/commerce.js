@@ -799,12 +799,24 @@ export async function loadErrorPage(code = 404) {
     });
 }
 
+export const AUTH_TOKEN_COOKIE = 'auth_dropin_user_token';
+export const AUTH_FIRSTNAME_COOKIE = 'auth_dropin_firstname';
+export const AUTH_WEBSITE_COOKIE = 'auth_dropin_website_path';
+
 /**
- * Checks if the user is authenticated
- * @returns {boolean} - true if the user is authenticated
+ * Checks if the user is authenticated for the current website.
+ * Respects the "Per Website" Account Sharing configuration by comparing the
+ * website root path stored at login time against the current website root path.
+ * @returns {boolean} - true if the user is authenticated on this website
  */
 export function checkIsAuthenticated() {
-  return !!getCookie('auth_dropin_user_token') ?? false;
+  const token = getCookie(AUTH_TOKEN_COOKIE);
+  if (!token) return false;
+
+  const tokenWebsitePath = getCookie(AUTH_WEBSITE_COOKIE);
+  if (!tokenWebsitePath) return true;
+
+  return tokenWebsitePath === (getRootPath() || '/');
 }
 
 /**

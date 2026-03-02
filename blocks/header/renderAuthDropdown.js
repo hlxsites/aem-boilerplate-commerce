@@ -4,7 +4,9 @@ import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
 import {
   CUSTOMER_FORGOTPASSWORD_PATH,
+  AUTH_FIRSTNAME_COOKIE,
   rootLink,
+  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 function handleLogout(redirections) {
@@ -93,10 +95,10 @@ export function renderAuthDropdown(navTools) {
   renderSignIn(authDropinContainer);
 
   const updateDropDownUI = (isAuthenticated) => {
-    const getUserTokenCookie = getCookie('auth_dropin_user_token');
-    const getUserNameCookie = getCookie('auth_dropin_firstname');
+    const isAuth = isAuthenticated ?? checkIsAuthenticated();
+    const getUserNameCookie = getCookie(AUTH_FIRSTNAME_COOKIE);
 
-    if (isAuthenticated || getUserTokenCookie) {
+    if (isAuth) {
       authDropDownMenuList.style.display = 'block';
       authDropinContainer.style.display = 'none';
       loginButton.textContent = `Hi, ${getUserNameCookie}`;

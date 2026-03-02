@@ -9,8 +9,10 @@ import {
   CUSTOMER_LOGIN_PATH,
   CUSTOMER_ACCOUNT_PATH,
   CUSTOMER_FORGOTPASSWORD_PATH,
+  AUTH_FIRSTNAME_COOKIE,
   rootLink,
   getProductLink,
+  checkIsAuthenticated,
 } from '../../scripts/commerce.js';
 
 const signInFormConfig = {
@@ -123,7 +125,7 @@ const onHeaderLinkClick = (element) => {
   const viewportMeta = document.querySelector('meta[name="viewport"]');
   const originalViewportContent = viewportMeta.getAttribute('content');
 
-  if (getCookie('auth_dropin_firstname')) {
+  if (checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
     return;
   }
@@ -207,7 +209,7 @@ const onHeaderLinkClick = (element) => {
 };
 
 const renderAuthCombine = (navSections, toggleMenu) => {
-  if (getCookie('auth_dropin_firstname')) return;
+  if (checkIsAuthenticated()) return;
 
   const navListEl = navSections.querySelector('.default-content-wrapper > ul');
 
@@ -264,7 +266,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
           if (headerLoginButton) {
             const spanElementText = headerLoginButton.querySelector('span');
             spanElementText.textContent = `Hi, ${getCookie(
-              'auth_dropin_firstname',
+              AUTH_FIRSTNAME_COOKIE,
             )}`;
           }
           popupMenuContainer.insertAdjacentHTML(
