@@ -13,17 +13,12 @@
         }
       },
       "analytics": {
-        "base-currency-code": "USD",
+        "view-id": "a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
         "environment": "Testing",
-        "store-id": 1,
-        "store-name": "e2e cell prex dropin aco s5",
+        "base-currency-code": "USD",
+        "locale":"en-US",
         "store-url": "https://e2e-prex-dropin-aco5--aem-boilerplate-commerce--hlxsites.aem.live/",
-        "store-view-id": 1,
-        "store-view-name": "en-US",
-        "website-id": 1,
-        "website-name": "Main Website",
-        "AC-Price-Book-Id": "77de68daecd823babbb58edb1c8e14d7106e83bb",
-        "view-id": "a74839dc-1ad5-4ef7-aaf7-a2ff25393195"
+        "environment-id": "LnjXjuam6uWmo5d2JLEgbA"
       }
     }
   }
