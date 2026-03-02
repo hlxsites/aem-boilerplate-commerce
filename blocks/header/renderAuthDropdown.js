@@ -95,10 +95,10 @@ export function renderAuthDropdown(navTools) {
   renderSignIn(authDropinContainer);
 
   const updateDropDownUI = (isAuthenticated) => {
-    const isAuth = isAuthenticated ?? checkIsAuthenticated();
+    const isUserAuthenticated = isAuthenticated ?? checkIsAuthenticated();
     const getUserNameCookie = getCookie(AUTH_FIRSTNAME_COOKIE);
 
-    if (isAuth) {
+    if (isUserAuthenticated) {
       authDropDownMenuList.style.display = 'block';
       authDropinContainer.style.display = 'none';
       loginButton.textContent = `Hi, ${getUserNameCookie}`;
