@@ -1,3 +1,4 @@
+import { default as React } from 'preact/compat';
 import { SearchItem } from '../types/search.types';
 
 export interface UseSearchOptions<T extends SearchItem> {

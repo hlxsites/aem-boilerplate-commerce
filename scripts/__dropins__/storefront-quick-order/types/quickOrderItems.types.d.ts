@@ -117,7 +117,7 @@ export interface QuickOrderItemsProps {
     }) => Promise<{
         items: OrderItem[];
     }>;
-    handleAddToCart?: (items: any[]) => void | string | Promise<void | string>;
+    handleAddToCart?: (items: any[], clearItems: () => void) => void | string | Promise<void | string>;
     searchFilter?: Array<{
         attribute: string;
         in: string[];
