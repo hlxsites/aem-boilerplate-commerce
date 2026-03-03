@@ -7,7 +7,7 @@ import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
-import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/cart.js'; // <- important, you must initialize the drop-in in every file it is used in
 import { getProductLink, rootLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
