@@ -68,7 +68,7 @@ export default async function decorate(block) {
 
         // Reorder button
         const reorderButton = document.createElement('button');
-        reorderButton.textContent = 'Reorder'; // ideally use a placeholder value ctx.dictionary.Global.Reorder
+        reorderButton.textContent = 'Reorder'; // ideally use a placeholder value ctx.dictionary.Global.Reorder (must add to the placeholder file)
 
         // get the item data from the context
         const item = {
