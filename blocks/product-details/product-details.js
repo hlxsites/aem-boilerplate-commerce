@@ -179,7 +179,7 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-  const isGridView = product
+  const isQuickOrderGridView = product
     && product.sku
     && product.productType === 'complex'
     && !product.isBundle;
@@ -236,7 +236,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    !isGridView
+    !isQuickOrderGridView
       ? pdpRendered.render(ProductOptions, {
         hideSelectedValue: false,
         slots: {
@@ -251,7 +251,7 @@ export default async function decorate(block) {
       : null,
 
     // Configuration  Quantity
-    !isGridView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
+    !isQuickOrderGridView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
 
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
@@ -285,7 +285,7 @@ export default async function decorate(block) {
     })($quickOrderContainer),
 
     // Attributes
-    !isGridView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
+    !isQuickOrderGridView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -298,7 +298,7 @@ export default async function decorate(block) {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
-      if (isGridView && selectedProductsList.length) {
+      if (isQuickOrderGridView && selectedProductsList.length) {
         const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
         await addProductsToCart(selectedProductsList);
         return;
@@ -390,7 +390,7 @@ export default async function decorate(block) {
   events.on(
     'pdp/valid',
     (valid) => {
-      if (isGridView) return;
+      if (isQuickOrderGridView) return;
       // update add to cart button disabled state based on product selection validity
       addToCart.setProps((prev) => ({
         ...prev,
@@ -403,7 +403,7 @@ export default async function decorate(block) {
   events.on(
     'quick-order/grid-ordering-list-updated',
     (values) => {
-      if (!isGridView) return;
+      if (!isQuickOrderGridView) return;
       updateGridOrderButton(addToCart, values, labels);
     },
     { eager: true },
@@ -504,7 +504,7 @@ export default async function decorate(block) {
     'aem/lcp',
     () => {
       let variants = null;
-      if (isGridView) {
+      if (isQuickOrderGridView) {
         getProductVariants(product.sku, pdpApi).then((variantsList) => {
           const filteredVariants = filterVariantsByOptions(
             variantsList,
