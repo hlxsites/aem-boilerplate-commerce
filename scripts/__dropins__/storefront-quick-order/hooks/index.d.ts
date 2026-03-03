@@ -18,5 +18,5 @@ export * from './useQuickOrderMultipleSku';
 export * from './useQuickOrderCsvUpload';
 export * from './useQuickOrderItems';
 export * from './useItemSearch';
-export * from './useSearch';
+export * from './useQuickOrderVariantsData';
 //# sourceMappingURL=index.d.ts.map

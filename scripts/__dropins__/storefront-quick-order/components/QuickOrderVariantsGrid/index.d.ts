@@ -14,5 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './getStoreConfig';
+export * from './QuickOrderVariantsGrid';
+export { QuickOrderVariantsGrid as default } from './QuickOrderVariantsGrid';
 //# sourceMappingURL=index.d.ts.map

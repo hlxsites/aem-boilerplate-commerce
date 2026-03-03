@@ -1,4 +1,4 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{c as i,f as o,g as p,i as h,r as c,s as f,a as l,b as m}from"./chunks/initialize.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/event-bus.js";export{i as config,o as fetchGraphQl,p as getConfig,h as initialize,c as removeFetchGraphQlHeader,f as setEndpoint,l as setFetchGraphQlHeader,m as setFetchGraphQlHeaders};
+import{Initializer as n}from"@dropins/tools/lib.js";import{FetchGraphQL as o}from"@dropins/tools/fetch-graphql.js";const e=new n({init:async t=>{const i={};e.config.setConfig({...i,...t})},listeners:()=>[]}),s=e.config,{setEndpoint:a,setFetchGraphQlHeader:h,removeFetchGraphQlHeader:f,setFetchGraphQlHeaders:p,fetchGraphQl:g,getConfig:l}=new o().getMethods();export{s as config,g as fetchGraphQl,l as getConfig,e as initialize,f as removeFetchGraphQlHeader,a as setEndpoint,h as setFetchGraphQlHeader,p as setFetchGraphQlHeaders};
 //# sourceMappingURL=api.js.map

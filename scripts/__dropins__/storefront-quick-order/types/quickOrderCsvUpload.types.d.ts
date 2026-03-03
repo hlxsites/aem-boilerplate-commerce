@@ -12,7 +12,6 @@ export interface CsvFileInputProps {
     fileName: string | null;
     onDownloadSample: () => void;
     showSampleDownload: boolean;
-    disabled?: boolean;
 }
 export interface UseQuickOrderCsvUploadProps {
     routeSampleCSV?: string;

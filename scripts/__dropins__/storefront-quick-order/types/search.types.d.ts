@@ -18,7 +18,7 @@ export interface SearchProps<T extends SearchItem = SearchItem> {
         ProductPrice?: SlotProps<ProductPriceContext>;
         ProductOptions?: SlotProps<ProductOptionsContext>;
         QuickOrderItemSearch?: SlotProps<QuickOrderItemSearchContext>;
-        QuickOrderSearchAutocompleteItem?: SlotProps<QuickOrderSearchAutocompleteItemContext<T>>;
+        QuickOrderSearchAutocompleteItem?: SlotProps<QuickOrderSearchAutocompleteItemContext<SearchItem>>;
     };
 }
 export interface UseItemSearchProps {

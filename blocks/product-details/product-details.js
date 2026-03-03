@@ -1,5 +1,8 @@
 import {
-  Button, Icon, InLineAlert, provider as UI,
+  Button,
+  Icon,
+  InLineAlert,
+  provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
@@ -23,22 +26,36 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
+// -------
+import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
+import QuickOrderVariantsGridContainer from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
+// -------
 // Libs
 import {
-  fetchPlaceholders, getProductLink, rootLink, setJsonLd,
+  fetchPlaceholders,
+  getProductLink,
+  rootLink,
+  setJsonLd,
 } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/quick-order.js';
+import {
+  getProductAttributes,
+  updateGridOrderButton,
+} from './helpers.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
  * @returns {boolean} True if product JSON-LD exists and contains @type=Product
  */
 function isProductPrerendered() {
-  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+  const jsonLdScript = document.querySelector(
+    'script[type="application/ld+json"]',
+  );
 
   if (!jsonLdScript?.textContent) {
     return false;
@@ -81,8 +98,7 @@ export default async function decorate(block) {
   let isUpdateMode = false;
 
   // Layout
-  const fragment = document.createRange()
-    .createContextualFragment(`
+  const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__alert"></div>
     <div class="product-details__wrapper">
       <div class="product-details__left-column">
@@ -103,26 +119,44 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-req-list"></div>
           </div>
         </div>
+
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
+       
     </div>
+     <div class="product-details__quick-order__container"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
-  const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $galleryMobile = fragment.querySelector(
+    '.product-details__right-column .product-details__gallery',
+  );
+  const $shortDescription = fragment.querySelector(
+    '.product-details__short-description',
+  );
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
-  const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
-  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
-  const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
+  const $giftCardOptions = fragment.querySelector(
+    '.product-details__gift-card-options',
+  );
+  const $addToCart = fragment.querySelector(
+    '.product-details__buttons__add-to-cart',
+  );
+  const $wishlistToggleBtn = fragment.querySelector(
+    '.product-details__buttons__add-to-wishlist',
+  );
+  const $requisitionListSelector = fragment.querySelector(
+    '.product-details__buttons__add-to-req-list',
+  );
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $quickOrderContainer = fragment.querySelector(
+    '.product-details__quick-order__container',
+  );
 
   block.replaceChildren(fragment);
 
@@ -144,6 +178,11 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
+  const isGridView = product
+    && product.sku
+    && product.productType === 'complex'
+    && !product.isBundle;
+  let selectedProductsList = [];
 
   const [
     _galleryMobile,
@@ -196,20 +235,22 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, {
-      hideSelectedValue: false,
-      slots: {
-        SwatchImage: (ctx) => {
-          tryRenderAemAssetsImage(ctx, {
-            ...imageSlotConfig(ctx),
-            wrapper: document.createElement('span'),
-          });
+    !isGridView
+      ? pdpRendered.render(ProductOptions, {
+        hideSelectedValue: false,
+        slots: {
+          SwatchImage: (ctx) => {
+            tryRenderAemAssetsImage(ctx, {
+              ...imageSlotConfig(ctx),
+              wrapper: document.createElement('span'),
+            });
+          },
         },
-      },
-    })($options),
+      })($options)
+      : null,
 
     // Configuration  Quantity
-    pdpRendered.render(ProductQuantity, {})($quantity),
+    !isGridView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
 
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
@@ -217,8 +258,74 @@ export default async function decorate(block) {
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
+    quickOrderProvider.render(QuickOrderVariantsGridContainer, {
+      className: 'quick-order-variants-grid',
+      // variants: [],
+      columns: [
+        { key: 'image', label: 'Image' },
+        { key: 'variant', label: 'Variant' },
+        { key: 'sku', label: 'SKU' },
+        {
+          key: 'availability',
+          label: 'Availability',
+        },
+        { key: 'price', label: 'Price' },
+        { key: 'quantity', label: 'Quantity' },
+        { key: 'subtotal', label: 'Subtotal' },
+      ],
+      onVariantsLoaded: (_variants) => {
+        events.emit('grid-order/update', []); // Reset selected products when new variants are loaded
+      },
+      onTableDataChange: (data) => {
+        selectedProductsList = [...data];
+        events.emit('grid-order/update', data);
+      },
+      debounceMs: 300,
+      // slots: {
+      //   Actions: (variantsActionsContext) => {
+      //     const actionsContainer = document.createElement('div');
+      //     actionsContainer.className = 'b2b-quick-order-variants-actions__buttons';
+      //     actionsContainer.style.display = 'flex';
+      //     actionsContainer.style.gap = '12px';
+
+      //     const clearButton = document.createElement('div');
+      //     clearButton.className = 'variants-clear-button';
+      //     clearButton.disabled = variantsActionsContext.isDisabled
+      //       || variantsActionsContext.variantsCount === 0;
+
+      //     UI.render(Button, {
+      //       variant: 'secondary',
+      //       children: 'Clear All',
+      //       onClick: () => {
+      //         variantsActionsContext.onClear();
+      //         selectedProductsList = [];
+      //         events.emit('grid-order/update', []);
+      //       },
+      //     })(clearButton);
+
+      //     const csvButton = document.createElement('div');
+      //     csvButton.className = 'variants-csv-button';
+      //     csvButton.disabled = variantsActionsContext.isDisabled
+      //       || variantsActionsContext.variantsCount === 0;
+
+      //     UI.render(Button, {
+      //       variant: 'secondary',
+      //       children: 'Save to CSV',
+      //       onClick: () => {
+      //         variantsActionsContext.onSaveToCsv();
+      //       },
+      //     })(csvButton);
+
+      //     actionsContainer.appendChild(clearButton);
+      //     actionsContainer.appendChild(csvButton);
+
+      //     variantsActionsContext.replaceWith(actionsContainer);
+      //   },
+      // },
+    })($quickOrderContainer),
+
     // Attributes
-    pdpRendered.render(ProductAttributes, {})($attributes),
+    !isGridView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -231,6 +338,12 @@ export default async function decorate(block) {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
+      if (isGridView && selectedProductsList.length) {
+        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+        await addProductsToCart(selectedProductsList);
+        return;
+      }
+
       const buttonActionText = isUpdateMode
         ? labels.Global?.UpdatingInCart
         : labels.Global?.AddingToCart;
@@ -251,10 +364,12 @@ export default async function decorate(block) {
             // --- Update existing item ---
             const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
 
-            await updateProductsFromCart([{
-              ...values,
-              uid: itemUidFromUrl,
-            }]);
+            await updateProductsFromCart([
+              {
+                ...values,
+                uid: itemUidFromUrl,
+              },
+            ]);
 
             // --- START REDIRECT ON UPDATE ---
             const updatedSku = values?.sku;
@@ -312,50 +427,65 @@ export default async function decorate(block) {
   })($addToCart);
 
   // Lifecycle Events
-  events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({
-      ...prev,
-      disabled: !valid,
-    }));
-  }, { eager: true });
+  events.on(
+    'pdp/valid',
+    (valid) => {
+      if (isGridView) return;
+      // update add to cart button disabled state based on product selection validity
+      addToCart.setProps((prev) => ({
+        ...prev,
+        disabled: !valid,
+      }));
+    },
+    { eager: true },
+  );
+
+  events.on(
+    'grid-order/update',
+    (values) => {
+      if (!isGridView) return;
+      updateGridOrderButton(addToCart, values, labels);
+    },
+    { eager: true },
+  );
 
   // Handle option changes
-  events.on('pdp/values', async () => {
-    const configValues = pdpApi.getProductConfigurationValues();
+  events.on(
+    'pdp/values',
+    async () => {
+      const configValues = pdpApi.getProductConfigurationValues();
 
-    // Check URL parameter for empty optionsUIDs
-    const urlOptionsUIDs = urlParams.get('optionsUIDs');
+      // Check URL parameter for empty optionsUIDs
+      const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
-    // Get optionsUIDs - prioritize actual selected values from configValues
-    let optionUIDs = null;
-    // First priority: actual selected options from configValues
-    const hasConfigOptions = configValues?.optionsUIDs
-      && Array.isArray(configValues.optionsUIDs)
-      && configValues.optionsUIDs.length > 0;
+      // Get optionsUIDs - prioritize actual selected values from configValues
+      let optionUIDs = null;
+      // First priority: actual selected options from configValues
+      const hasConfigOptions = configValues?.optionsUIDs
+        && Array.isArray(configValues.optionsUIDs)
+        && configValues.optionsUIDs.length > 0;
 
-    if (hasConfigOptions) {
-      optionUIDs = configValues.optionsUIDs;
-    } else if (urlOptionsUIDs === '') {
-      // Second priority: URL has explicit empty optionsUIDs parameter
-      optionUIDs = null;
-    }
+      if (hasConfigOptions) {
+        optionUIDs = configValues.optionsUIDs;
+      } else if (urlOptionsUIDs === '') {
+        // Second priority: URL has explicit empty optionsUIDs parameter
+        optionUIDs = null;
+      }
 
-    if (wishlistToggleBtn) {
-      wishlistToggleBtn.setProps((prev) => ({
-        ...prev,
-        product: {
-          ...product,
-          optionUIDs,
-        },
-      }));
-    }
-  }, { eager: true });
+      if (wishlistToggleBtn) {
+        wishlistToggleBtn.setProps((prev) => ({
+          ...prev,
+          product: {
+            ...product,
+            optionUIDs,
+          },
+        }));
+      }
+    },
+    { eager: true },
+  );
 
-  events.on('wishlist/alert', ({
-    action,
-    item,
-  }) => {
+  events.on('wishlist/alert', ({ action, item }) => {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
@@ -410,14 +540,27 @@ export default async function decorate(block) {
   );
 
   // Set JSON-LD and Meta Tags
-  events.on('aem/lcp', () => {
-    const isPrerendered = isProductPrerendered();
-    if (product && !isPrerendered) {
-      setJsonLdProduct(product);
-      setMetaTags(product);
-      document.title = product.name;
-    }
-  }, { eager: true });
+  events.on(
+    'aem/lcp',
+    () => {
+      if (isGridView) {
+        getProductAttributes(product.sku, pdpApi).then((variants) => {
+          if (variants.length === 0) return;
+
+          events.emit('quick-order/grid-ordering-variants', {
+            variants,
+          });
+        });
+      }
+      const isPrerendered = isProductPrerendered();
+      if (product && !isPrerendered) {
+        setJsonLdProduct(product);
+        setMetaTags(product);
+        document.title = product.name;
+      }
+    },
+    { eager: true },
+  );
 
   return Promise.resolve();
 }
@@ -438,32 +581,7 @@ async function setJsonLdProduct(product) {
   const brand = attributes?.find((attr) => attr.name === 'brand');
 
   // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
+  const variants = await getProductAttributes(sku, pdpApi);
 
   const ldJson = {
     '@context': 'http://schema.org',
@@ -483,21 +601,27 @@ async function setJsonLdProduct(product) {
   };
 
   if (variants.length > 1) {
-    ldJson.offers.push(...variants.map((variant) => ({
-      '@type': 'Offer',
-      name: variant.product.name,
-      image: variant.product.images[0]?.url,
-      price: variant.product.price.final.amount.value,
-      priceCurrency: variant.product.price.final.amount.currency,
-      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-      sku: variant.product.sku,
-    })));
+    ldJson.offers.push(
+      ...variants.map((variant) => ({
+        '@type': 'Offer',
+        name: variant.product.name,
+        image: variant.product.images[0]?.url,
+        price: variant.product.price.final.amount.value,
+        priceCurrency: variant.product.price.final.amount.currency,
+        availability: variant.product.inStock
+          ? 'http://schema.org/InStock'
+          : 'http://schema.org/OutOfStock',
+        sku: variant.product.sku,
+      })),
+    );
   } else {
     ldJson.offers.push({
       '@type': 'Offer',
       price: amount?.value,
       priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+      availability: inStock
+        ? 'http://schema.org/InStock'
+        : 'http://schema.org/OutOfStock',
     });
   }
 
@@ -556,10 +680,7 @@ function setMetaTags(product) {
  * @returns The configuration for the image slot.
  */
 function imageSlotConfig(ctx) {
-  const {
-    data,
-    defaultImageProps,
-  } = ctx;
+  const { data, defaultImageProps } = ctx;
   return {
     alias: data.sku,
     imageProps: defaultImageProps,

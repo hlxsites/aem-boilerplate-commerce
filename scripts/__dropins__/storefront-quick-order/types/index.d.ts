@@ -18,6 +18,5 @@ export * from './quickOrderMultipleSku.types';
 export * from './quickOrderCsvUpload.types';
 export * from './quickOrderItems.types';
 export * from './search.types';
-export * from './quickOrderNotificationBanner.types';
-export * from './quickOrderDisabledOverlay.types';
+export * from './quickOrderVariantsGrid.types';
 //# sourceMappingURL=index.d.ts.map
