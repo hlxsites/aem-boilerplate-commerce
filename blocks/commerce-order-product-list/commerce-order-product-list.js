@@ -3,9 +3,11 @@ import { OrderProductList } from '@dropins/storefront-order/containers/OrderProd
 import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { addProductsToCart } from '@dropins/storefront-cart/api.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/cart.js';
 import { getProductLink, rootLink } from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
@@ -63,6 +65,26 @@ export default async function decorate(block) {
         })(giftOptions);
 
         ctx.appendChild(giftOptions);
+
+        // Reorder button
+        const reorderButton = document.createElement('button');
+        reorderButton.textContent = 'Reorder'; // ideally use a placeholder value ctx.dictionary.Global.Reorder
+
+        // get the item data from the context
+        const item = {
+          sku: ctx.item.productSku,
+          quantity: ctx.item.quantityOrdered,
+        };
+
+        reorderButton.addEventListener('click', async () => {
+          try {
+            // Use the Cart Drop-in's API function to add the item to the cart
+            await addProductsToCart([{ ...item }]);
+          } catch (error) {
+            console.error(error);
+          }
+        });
+        ctx.appendChild(reorderButton);
       },
     },
     routeProductDetails: createProductLink,
