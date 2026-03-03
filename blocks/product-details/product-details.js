@@ -44,8 +44,9 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quick-order.js';
 import {
-  getProductAttributes,
+  getProductVariants,
   updateGridOrderButton,
+  filterVariantsByOptions,
 } from './helpers.js';
 
 /**
@@ -274,54 +275,13 @@ export default async function decorate(block) {
         { key: 'subtotal', label: 'Subtotal' },
       ],
       onVariantsLoaded: (_variants) => {
-        events.emit('grid-order/update', []); // Reset selected products when new variants are loaded
+        events.emit('quick-order/grid-ordering-list-updated', []); // Reset selected products when new variants are loaded
       },
       onTableDataChange: (data) => {
         selectedProductsList = [...data];
-        events.emit('grid-order/update', data);
+        events.emit('quick-order/grid-ordering-list-updated', data);
       },
       debounceMs: 300,
-      // slots: {
-      //   Actions: (variantsActionsContext) => {
-      //     const actionsContainer = document.createElement('div');
-      //     actionsContainer.className = 'b2b-quick-order-variants-actions__buttons';
-      //     actionsContainer.style.display = 'flex';
-      //     actionsContainer.style.gap = '12px';
-
-      //     const clearButton = document.createElement('div');
-      //     clearButton.className = 'variants-clear-button';
-      //     clearButton.disabled = variantsActionsContext.isDisabled
-      //       || variantsActionsContext.variantsCount === 0;
-
-      //     UI.render(Button, {
-      //       variant: 'secondary',
-      //       children: 'Clear All',
-      //       onClick: () => {
-      //         variantsActionsContext.onClear();
-      //         selectedProductsList = [];
-      //         events.emit('grid-order/update', []);
-      //       },
-      //     })(clearButton);
-
-      //     const csvButton = document.createElement('div');
-      //     csvButton.className = 'variants-csv-button';
-      //     csvButton.disabled = variantsActionsContext.isDisabled
-      //       || variantsActionsContext.variantsCount === 0;
-
-      //     UI.render(Button, {
-      //       variant: 'secondary',
-      //       children: 'Save to CSV',
-      //       onClick: () => {
-      //         variantsActionsContext.onSaveToCsv();
-      //       },
-      //     })(csvButton);
-
-      //     actionsContainer.appendChild(clearButton);
-      //     actionsContainer.appendChild(csvButton);
-
-      //     variantsActionsContext.replaceWith(actionsContainer);
-      //   },
-      // },
     })($quickOrderContainer),
 
     // Attributes
@@ -441,7 +401,7 @@ export default async function decorate(block) {
   );
 
   events.on(
-    'grid-order/update',
+    'quick-order/grid-ordering-list-updated',
     (values) => {
       if (!isGridView) return;
       updateGridOrderButton(addToCart, values, labels);
@@ -543,18 +503,25 @@ export default async function decorate(block) {
   events.on(
     'aem/lcp',
     () => {
+      let variants = null;
       if (isGridView) {
-        getProductAttributes(product.sku, pdpApi).then((variants) => {
-          if (variants.length === 0) return;
+        getProductVariants(product.sku, pdpApi).then((variantsList) => {
+          const filteredVariants = filterVariantsByOptions(
+            variantsList,
+            product.options,
+          );
+          variants = filteredVariants;
+
+          if (filteredVariants.length === 0) return;
 
           events.emit('quick-order/grid-ordering-variants', {
-            variants,
+            variants: filteredVariants,
           });
         });
       }
       const isPrerendered = isProductPrerendered();
       if (product && !isPrerendered) {
-        setJsonLdProduct(product);
+        setJsonLdProduct(product, variants);
         setMetaTags(product);
         document.title = product.name;
       }
@@ -565,7 +532,7 @@ export default async function decorate(block) {
   return Promise.resolve();
 }
 
-async function setJsonLdProduct(product) {
+async function setJsonLdProduct(product, variants = null) {
   const {
     name,
     inStock,
@@ -581,7 +548,7 @@ async function setJsonLdProduct(product) {
   const brand = attributes?.find((attr) => attr.name === 'brand');
 
   // get variants
-  const variants = await getProductAttributes(sku, pdpApi);
+  const variantsList = variants || (await getProductVariants(sku, pdpApi));
 
   const ldJson = {
     '@context': 'http://schema.org',
@@ -600,9 +567,9 @@ async function setJsonLdProduct(product) {
     '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
-  if (variants.length > 1) {
+  if (variantsList && variantsList.length > 1) {
     ldJson.offers.push(
-      ...variants.map((variant) => ({
+      ...variantsList.map((variant) => ({
         '@type': 'Offer',
         name: variant.product.name,
         image: variant.product.images[0]?.url,

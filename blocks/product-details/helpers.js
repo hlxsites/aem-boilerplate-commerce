@@ -4,7 +4,7 @@
  * @param {Object} fetcherApi - API fetcher instance
  * @returns {Promise<Array>} Array of product variants
  */
-export async function getProductAttributes(sku, fetcherApi) {
+export async function getProductVariants(sku, fetcherApi) {
   const { data } = await fetcherApi.fetchGraphQl(
     `
       query GET_PRODUCT_VARIANTS($sku: String!) {
@@ -34,7 +34,7 @@ export async function getProductAttributes(sku, fetcherApi) {
       }
     `,
     {
-      method: "GET",
+      method: 'GET',
       variables: { sku },
     },
   );
@@ -49,6 +49,41 @@ export async function getProductAttributes(sku, fetcherApi) {
  */
 export function calculateTotalQuantity(products) {
   return products.reduce((acc, item) => acc + (item.quantity || 0), 0);
+}
+
+/**
+ * Filters variants to only include those with attributes matching product options
+ * Also filters attributes inside each variant to only keep matching ones
+ * @param {Array} variants - Array of product variants
+ * @param {Array} productOptions - Array of product options with id field
+ * @returns {Array} Filtered variants with filtered attributes
+ */
+export function filterVariantsByOptions(variants, productOptions) {
+  if (!productOptions || productOptions.length === 0) {
+    return variants;
+  }
+
+  const optionIds = new Set(productOptions.map((option) => option.id));
+
+  return variants
+    .map((variant) => {
+      const filteredAttributes = variant.product.attributes.filter(
+        (attr) => optionIds?.has(attr.name),
+      );
+
+      if (filteredAttributes.length === 0) {
+        return null;
+      }
+
+      return {
+        ...variant,
+        product: {
+          ...variant.product,
+          attributes: filteredAttributes,
+        },
+      };
+    })
+    .filter((variant) => variant !== null);
 }
 
 /**
