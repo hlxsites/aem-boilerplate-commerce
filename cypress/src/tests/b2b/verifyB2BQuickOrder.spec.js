@@ -104,8 +104,6 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.visit("/quick-order", {
       failOnStatusCode: false,
       timeout: 30000,
-    }).then((resp) => {
-      cy.logToTerminal(`Visit response: ${JSON.stringify(resp)}`);
     });
 
     cy.wait(2000);
