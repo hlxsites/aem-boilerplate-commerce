@@ -2,12 +2,19 @@
 /* eslint-disable import/no-unresolved */
 import * as orderApi from '@dropins/storefront-order/api.js';
 
+const extensionBasePath = new URL('.', import.meta.url).pathname;
+
 let testPaymentData = null;
 let testCheckboxRef = null;
+
+const PAYMENT_METHOD_CODE = 'checkmo';
 
 export default {
   id: 'test-extension',
   name: 'Test Extension (Hooks Demo)',
+
+  externalScripts: [],
+  externalStyles: [`${extensionBasePath}test-extension.css`],
 
   hooks: {
     /**
@@ -19,7 +26,7 @@ export default {
       console.log('[Test Extension] Hook: checkout/validate');
       console.log('[Test Extension] ↳ Payment method code:', code);
 
-      if (code !== 'checkmo') {
+      if (code !== PAYMENT_METHOD_CODE) {
         console.log('[Test Extension] ↳ Not our payment method, skipping');
         return;
       }
@@ -35,41 +42,41 @@ export default {
     },
 
     /**
-     * COMPOSITION HOOK: Add payment methods to context.paymentMethods
+     * PAYMENT METHODS HOOK: Register custom payment method UI and behavior
      */
     'checkout/payment-methods': async ({ context }) => {
       console.log('[Test Extension] Hook: checkout/payment-methods');
 
-      context.paymentMethods.checkmo = {
+      context.paymentMethods[PAYMENT_METHOD_CODE] = {
         autoSync: false,
         render: (ctx) => {
           console.log('[Test Extension] Rendering test payment method');
 
           const container = document.createElement('div');
-          container.style.cssText = 'padding: 20px; border: 2px dashed #ff6b6b; border-radius: 8px; background: #fff5f5;';
+          container.className = 'test-payment';
 
           const title = document.createElement('h3');
           title.textContent = 'Test Payment Method';
-          title.style.cssText = 'margin: 0 0 10px 0; color: #c92a2a;';
+          title.className = 'test-payment__title';
 
           const description = document.createElement('p');
           description.textContent = 'This is a test payment method for demonstration purposes.';
-          description.style.cssText = 'margin: 0 0 15px 0; color: #666;';
+          description.className = 'test-payment__description';
 
           const checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
           checkbox.id = 'test-payment-confirm';
           checkbox.required = true;
-          checkbox.style.cssText = 'margin-right: 8px;';
+          checkbox.className = 'test-payment__checkbox';
           testCheckboxRef = checkbox;
 
           const label = document.createElement('label');
           label.htmlFor = 'test-payment-confirm';
           label.textContent = 'I confirm this test payment';
-          label.style.cssText = 'cursor: pointer;';
+          label.className = 'test-payment__label';
 
           const checkboxContainer = document.createElement('div');
-          checkboxContainer.style.cssText = 'margin-bottom: 10px;';
+          checkboxContainer.className = 'test-payment__checkbox-container';
           checkboxContainer.appendChild(checkbox);
           checkboxContainer.appendChild(label);
 
@@ -97,7 +104,7 @@ export default {
       console.log('[Test Extension] ↳ Cart ID:', cartId);
       console.log('[Test Extension] ↳ Payment method code:', code);
 
-      if (code !== 'checkmo') {
+      if (code !== PAYMENT_METHOD_CODE) {
         console.log('[Test Extension] ↳ Not our payment method, skipping');
         return;
       }

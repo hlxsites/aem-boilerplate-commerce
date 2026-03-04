@@ -1,0 +1,28 @@
+.test-payment {
+  padding: 20px;
+  border: 2px dashed #ff6b6b;
+  border-radius: 8px;
+  background: #fff5f5;
+}
+
+.test-payment__title {
+  margin: 0 0 10px 0;
+  color: #c92a2a;
+}
+
+.test-payment__description {
+  margin: 0 0 15px 0;
+  color: #666;
+}
+
+.test-payment__checkbox-container {
+  margin-bottom: 10px;
+}
+
+.test-payment__checkbox {
+  margin-right: 8px;
+}
+
+.test-payment__label {
+  cursor: pointer;
+}
