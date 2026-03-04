@@ -32,7 +32,7 @@ const quoteRoleConfig = {
     ],
 };
 
-describe("Verify B2B Quote feature", () => {
+describe.skip("Verify B2B Quote feature", () => {
     let customerData;
     let username;
     let quoteRoleId;

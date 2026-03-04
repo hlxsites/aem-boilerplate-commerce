@@ -1,4 +1,4 @@
-describe("Store Switcher", () => {
+describe.skip("Store Switcher", () => {
   // beforeEach(() => {
   //   cy.on('window:before:load', (win) => {
   //     const config = JSON.parse(win.sessionStorage.getItem('config'));

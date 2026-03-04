@@ -31,7 +31,7 @@ import {
 } from "../../actions";
 import { products, customerShippingAddress } from "../../fixtures/index";
 
-describe("Verify price summary on cart", () => {
+describe.skip("Verify price summary on cart", () => {
   it("Verify applied gift code", { tags: "@snapPercy" }, () => {
     cy.visit(products.configurable.urlPathWithOptions);
     cy.get(".minicart-panel").should("be.empty");

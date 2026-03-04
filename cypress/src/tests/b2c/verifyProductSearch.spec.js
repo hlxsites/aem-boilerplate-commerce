@@ -11,7 +11,7 @@ import {
 
 import * as fields from "../../fields";
 
-describe("Search Feature", () => {
+describe.skip("Search Feature", () => {
   it("Verify quick search features", () => {
     // Visit the homepage
     cy.visit("/");

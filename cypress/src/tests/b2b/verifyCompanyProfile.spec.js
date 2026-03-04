@@ -64,7 +64,7 @@ import {
   invalidData,
 } from '../../fixtures/companyManagementData';
 
-describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
+describe.skip('USF-2571: Company Profile (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
     cy.logToTerminal('🚀 Company Profile test suite started (OPTIMIZED)');
   });

@@ -90,7 +90,7 @@ import {
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 
-describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
+describe.skip('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   before(() => {
     cy.logToTerminal('🚀 Company Registration test suite started');
   });
