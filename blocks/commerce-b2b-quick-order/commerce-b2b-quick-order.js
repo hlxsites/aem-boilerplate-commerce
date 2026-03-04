@@ -25,7 +25,7 @@ import { rootLink } from '../../scripts/commerce.js';
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/quick-order.js';
 import '../../scripts/initializers/cart.js';
-import '../../scripts/initializers/pdp.js';
+// import '../../scripts/initializers/pdp.js';
 
 export default async function decorate(block) {
   const fragment = document.createRange().createContextualFragment(`
