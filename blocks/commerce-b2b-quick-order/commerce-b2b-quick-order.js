@@ -1,4 +1,4 @@
-import { Button, Header, provider as UI } from '@dropins/tools/components.js';
+import { Header, provider as UI } from '@dropins/tools/components.js';
 
 // Quick Order Drop-in
 import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
