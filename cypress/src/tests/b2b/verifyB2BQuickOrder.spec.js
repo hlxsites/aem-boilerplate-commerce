@@ -81,9 +81,47 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.clearCookies();
     cy.clearLocalStorage();
 
+    // Log configuration and environment
+    cy.task('log', '=== CYPRESS CONFIG DEBUG ===');
+    cy.task('log', `baseUrl: ${Cypress.config('baseUrl')}`);
+    cy.task('log', `env: ${JSON.stringify(Cypress.env())}`);
+    cy.task('log', `browser: ${Cypress.browser.name}`);
+    cy.task('log', `viewportWidth: ${Cypress.config('viewportWidth')}`);
+    cy.task('log', `viewportHeight: ${Cypress.config('viewportHeight')}`);
+    cy.task('log', '============================');
+
     cy.logToTerminal("🚀 Navigating to Quick Order page");
-    cy.visit("/quick-order");
+    cy.logToTerminal(`📍 Full URL: ${Cypress.config('baseUrl')}/quick-order`);
+    
+    cy.on('fail', (error) => {
+      cy.task('log', `❌ Test failed with error: ${error.message}`);
+      cy.task('log', `Error stack: ${error.stack}`);
+      throw error;
+    });
+    
+    cy.visit("/quick-order", {
+      failOnStatusCode: false,
+      timeout: 30000,
+    }).then((resp) => {
+      cy.task('log', `Visit response: ${JSON.stringify(resp)}`);
+    });
+    
     cy.wait(2000);
+
+    // Log page state
+    cy.url().then((url) => {
+      cy.task('log', `Current URL after visit: ${url}`);
+    });
+    
+    cy.document().then((doc) => {
+      cy.task('log', `Document readyState: ${doc.readyState}`);
+      cy.task('log', `Document title: ${doc.title}`);
+    });
+
+    cy.logToTerminal("🔍 Checking for Quick Order components...");
+    cy.task('log', `Looking for: ${fields.quickOrderItemsContainer}`);
+    cy.task('log', `Looking for: ${fields.quickOrderMultipleSkuContainer}`);
+    cy.task('log', `Looking for: ${fields.quickOrderCsvUploadContainer}`);
 
     cy.get(fields.quickOrderItemsContainer, { timeout: 10000 }).should(
       "be.visible",
