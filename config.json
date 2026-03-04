@@ -7,14 +7,14 @@
       "headers": {
         "cs": {
           "content-type":"application/json",
-          "AC-View-Id":"a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
+          "AC-View-Id":"14d7917c-441a-490c-a424-098e130c2d50",
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
           "AC-Price-Book-Id":"77de68daecd823babbb58edb1c8e14d7106e83bb",
           "X-Api-Key": "storefront-catalog-apollo"
         }
       },
       "analytics": {
-        "view-id": "a74839dc-1ad5-4ef7-aaf7-a2ff25393195",
+        "view-id": "14d7917c-441a-490c-a424-098e130c2d50",
         "environment": "Testing",
         "base-currency-code": "USD",
         "locale":"en-US",
