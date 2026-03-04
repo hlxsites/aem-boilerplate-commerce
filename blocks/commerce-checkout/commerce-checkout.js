@@ -26,6 +26,9 @@ import {
   removeOverlaySpinner,
 } from './utils.js';
 
+// Extension Manager
+import { getExtensionManager } from './extension-manager.js';
+
 // Fragment functions
 import {
   createCheckoutFragment,
@@ -87,6 +90,12 @@ function redirectToCartIfEmpty(cartData) {
 }
 
 export default async function decorate(block) {
+  const extensionManager = await getExtensionManager();
+
+  const redirectContext = { block, shouldExit: false };
+  await extensionManager.executeHook('checkout/payment-response', redirectContext);
+  if (redirectContext.shouldExit) return;
+
   setMetaTags('Checkout');
   document.title = 'Checkout';
 
@@ -136,17 +145,37 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  const handleValidation = () => validateForms([
-    { name: LOGIN_FORM_NAME },
-    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
-    { name: BILLING_FORM_NAME, ref: billingFormRef },
-    { name: PURCHASE_ORDER_FORM_NAME },
-    { name: TERMS_AND_CONDITIONS_FORM_NAME },
-  ]);
+  const handleValidation = async () => {
+    const isDefaultValid = await validateForms([
+      { name: LOGIN_FORM_NAME },
+      { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
+      { name: BILLING_FORM_NAME, ref: billingFormRef },
+      { name: PURCHASE_ORDER_FORM_NAME },
+      { name: TERMS_AND_CONDITIONS_FORM_NAME },
+    ]);
+
+    if (!isDefaultValid) return false;
+
+    const checkoutValues = events.lastPayload('checkout/values');
+    const code = checkoutValues?.selectedPaymentMethod?.code;
+
+    const validationContext = { code, isValid: true };
+    await extensionManager.executeHook('checkout/validate', validationContext);
+    return validationContext.isValid;
+  };
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
+      const placeOrderContext = {
+        cartId,
+        code,
+        preventDefault: false,
+      };
+      await extensionManager.executeHook('checkout/place-order', placeOrderContext);
+
+      if (placeOrderContext.preventDefault) return;
+
       // Payment Services credit card
       if (code === PaymentMethodCode.CREDIT_CARD) {
         if (!creditCardFormRef.current) {
@@ -173,7 +202,13 @@ export default async function decorate(block) {
   // First, render the place order component
   await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
 
+  // Get custom payment methods from extensions
+  const paymentMethodsContext = { paymentMethods: {} };
+  await extensionManager.executeHook('checkout/payment-methods', paymentMethodsContext);
+  const customPaymentMethods = paymentMethodsContext.paymentMethods;
+
   // Render the remaining containers
+  /* eslint-disable no-unused-vars */
   const [
     _mergedCartBanner,
     _header,
@@ -191,36 +226,24 @@ export default async function decorate(block) {
     _giftOptions,
   ] = await Promise.all([
     renderMergedCartBanner($mergedCartBanner),
-
     renderCheckoutHeader($heading, 'Checkout'),
-
     renderServerError($serverError, $content),
-
     renderOutOfStock($outOfStock),
-
     renderLoginForm($login),
-
     renderShippingAddressFormSkeleton($shippingForm),
-
     renderBillToShippingAddress($billToShipping),
-
     renderShippingMethods($delivery),
-
-    renderPaymentMethods($paymentMethods, creditCardFormRef),
-
+    renderPaymentMethods($paymentMethods, creditCardFormRef, customPaymentMethods),
     renderBillingAddressFormSkeleton($billingForm),
-
     renderOrderSummary($orderSummary),
-
     renderCartSummaryList($cartSummary),
-
     renderTermsAndConditions($termsAndConditions),
-
     renderGiftOptions($giftOptions),
   ]);
 
   async function initializeCheckout(data) {
     await initReCaptcha(0);
+
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
       removeOverlaySpinner(loaderRef, $loader);
@@ -229,21 +252,29 @@ export default async function decorate(block) {
   }
 
   async function displayGuestAddressForms(data) {
+    const renderPromises = [];
+
     if (isVirtualCart(data)) {
       shippingForm?.remove();
       shippingForm = null;
       $shippingForm.innerHTML = '';
     } else if (!shippingForm) {
       shippingFormSkeleton.remove();
-
-      shippingForm = await renderAddressForm($shippingForm, shippingFormRef, data, 'shipping');
+      renderPromises.push(
+        renderAddressForm($shippingForm, shippingFormRef, data, 'shipping')
+          .then((form) => { shippingForm = form; }),
+      );
     }
 
     if (!billingForm) {
       billingFormSkeleton.remove();
-
-      billingForm = await renderAddressForm($billingForm, billingFormRef, data, 'billing');
+      renderPromises.push(
+        renderAddressForm($billingForm, billingFormRef, data, 'billing')
+          .then((form) => { billingForm = form; }),
+      );
     }
+
+    await Promise.all(renderPromises);
   }
 
   async function displayCustomerAddressForms(data) {
