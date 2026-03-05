@@ -71,6 +71,7 @@
   margin-top: var(--spacing-xsmall);
 }
 
+/* TODO: Consider to remove this */
 .quick-order-variants-grid
 .b2b-quick-order-variants-grid__table
 .dropin-table__table
