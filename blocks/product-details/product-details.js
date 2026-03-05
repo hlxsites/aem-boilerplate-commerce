@@ -10,7 +10,6 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
 
 // Quick Order Dropin
-// TODO lint abd naming issues here
 import QuickOrderVariantsGrid from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
 
 // Wishlist Dropin
