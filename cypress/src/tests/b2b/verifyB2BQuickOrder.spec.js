@@ -171,7 +171,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.logToTerminal("✅ All Quick Order components rendered successfully");
 
     // ========== STEP 2: Add items via Multiple SKU ==========
-    cy.logToTerminal("--- STEP 2: Add items via Multiple SKU input ---");
+    cy.logToTerminal("--- STEP 2: Add items via Multiple SKU input -----");
 
     const skuText = `${testProducts.simple1.sku} ${testProducts.simple2.sku}`;
 
