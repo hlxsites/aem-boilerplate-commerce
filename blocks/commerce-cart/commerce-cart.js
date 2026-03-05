@@ -48,7 +48,7 @@ export default async function decorate(block) {
     'checkout-url': checkoutURL = '',
     'enable-updating-product': enableUpdatingProduct = 'false',
     'undo-remove-item': undo = 'false',
-    'show-inventory-issue-items-in-main-list': showInventoryIssueItemsInMainList = 'false',
+    'include-out-of-stock-items': includeOutOfStockItems = 'false',
   } = readBlockConfig(block);
 
   const placeholders = await fetchPlaceholders();
@@ -183,7 +183,7 @@ export default async function decorate(block) {
       enableUpdateItemQuantity: enableUpdateItemQuantity === 'true',
       enableRemoveItem: enableRemoveItem === 'true',
       undo: undo === 'true',
-      showInventoryIssueItemsInMainList: showInventoryIssueItemsInMainList === 'true',
+      includeOutOfStockItems: includeOutOfStockItems === 'true',
       slots: {
         Thumbnail: (ctx) => {
           const { item, defaultImageProps } = ctx;

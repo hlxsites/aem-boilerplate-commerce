@@ -26,7 +26,7 @@ export default async function decorate(block) {
     'checkout-url': checkoutURL = '',
     'enable-updating-product': enableUpdatingProduct = 'false',
     'undo-remove-item': undo = 'false',
-    'show-inventory-issue-items-in-main-list': showInventoryIssueItemsInMainList = 'false',
+    'include-out-of-stock-items': includeOutOfStockItems = 'false',
   } = readBlockConfig(block);
 
   // Get translations for custom messages
@@ -168,7 +168,7 @@ export default async function decorate(block) {
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: createProductLink,
     undo: undo === 'true',
-    showInventoryIssueItemsInMainList: showInventoryIssueItemsInMainList === 'true',
+    includeOutOfStockItems: includeOutOfStockItems === 'true',
 
     slots: {
       Thumbnail: (ctx) => {
