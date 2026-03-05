@@ -3,6 +3,7 @@ import { SearchItem } from './search.types';
 
 export type AddAllToCartContext = {
     handleAddToCart: (() => void) | undefined;
+    clearItems: (() => void) | undefined;
     loading?: boolean;
     isDisabledButton?: boolean;
 };
@@ -15,11 +16,11 @@ export type QuickOrderItemSearchContext = {
     shouldShowResults: boolean;
     handleItemClick: (item: OrderItem) => void;
 };
-export type QuickOrderSearchAutocompleteItemContext<T> = {
-    item: SearchItem;
+export type QuickOrderSearchAutocompleteItemContext<T extends SearchItem = SearchItem> = {
+    item: T;
     index: number;
+    activeIndex: number;
     createItemClickHandler: (item: T) => () => void;
-    createResultItemKeyDownHandler: (item: T, index: number) => () => void;
 };
 export type ProductPriceContext = {
     item: OrderItem;
@@ -116,7 +117,7 @@ export interface QuickOrderItemsProps {
     }) => Promise<{
         items: OrderItem[];
     }>;
-    onAddAllToCart?: (items: any[]) => void | Promise<void>;
+    handleAddToCart?: (items: any[], clearItems: () => void) => void | string | Promise<void | string>;
     searchFilter?: Array<{
         attribute: string;
         in: string[];
@@ -126,7 +127,7 @@ export interface QuickOrderItemsProps {
         ProductPrice?: SlotProps<ProductPriceContext>;
         ProductOptions?: SlotProps<ProductOptionsContext>;
         QuickOrderItemSearch?: SlotProps<QuickOrderItemSearchContext>;
-        QuickOrderSearchAutocompleteItem?: SlotProps<QuickOrderSearchAutocompleteItemContext<SearchItem>>;
+        QuickOrderSearchAutocompleteItem?: SlotProps<QuickOrderSearchAutocompleteItemContext<OrderItem>>;
     };
 }
 export interface QuickOrderItemProps {
@@ -168,6 +169,7 @@ export interface QuickOrderItemsListProps {
     t: Record<string, string>;
     items: OrderItem[];
     onRemove: (sku: string) => void;
+    clearItems?: () => void;
     onUpdateQuantity?: (sku: string, quantity: number) => void;
     handleAddToCart?: () => void;
     isItemUpdating?: (sku: string) => boolean;
@@ -196,10 +198,20 @@ export interface UseQuickOrderItemsReturn {
     items: OrderItem[];
     loading: boolean;
     removeItem: (sku: string) => void;
+    clearItems: () => void;
     updateItemQuantity: (sku: string, quantity: number) => void;
-    handleAddToCart: () => void;
+    addToCart: () => void;
     isItemUpdating: (sku: string) => boolean;
     isDisabledButton: boolean;
     setDisabledCartButton: (disabled: boolean) => void;
+    notification: {
+        type: 'validation' | 'partial-success' | 'success' | 'backend-error';
+        variant: 'success' | 'warning' | 'neutral' | 'brand';
+        message: string;
+        details?: string;
+        count?: number;
+        clickableSkus?: string[];
+    } | null;
+    dismissNotification: () => void;
 }
 //# sourceMappingURL=quickOrderItems.types.d.ts.map

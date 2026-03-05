@@ -53,7 +53,7 @@ function assertRequisitionListExists(selector, listName, index = null) {
     .should("be.disabled");
   cy.get(fields.requisitionListSelectorAvailableLists).should(
     "contain",
-    listName
+    listName,
   );
   cy.wait(1000);
   cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
@@ -101,10 +101,10 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     // Create new Requisition List
     cy.contains("Add new Requisition List").should("be.visible").click();
     cy.get(fields.requisitionListFormName).type(
-      "Newly Created Requisition List"
+      "Newly Created Requisition List",
     );
     cy.get(fields.requisitionListFormDescription).type(
-      "Here goes a dummy description"
+      "Here goes a dummy description",
     );
     cy.contains("Cancel").should("be.visible");
     cy.contains("Save").should("be.visible").click();
@@ -118,16 +118,16 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     describe("PDP Workflow", () => {
       assertRequisitionListExists(
         fields.requisitionListSelector,
-        "Newly Created Requisition List"
+        "Newly Created Requisition List",
       );
       createRequisitionList(
         fields.requisitionListSelector,
         "Req list created from PDP",
-        "Another dummy description"
+        "Another dummy description",
       );
       assertRequisitionListExists(
         fields.requisitionListSelector,
-        "Req list created from PDP"
+        "Req list created from PDP",
       );
 
       // Open Catalog Menu
@@ -141,18 +141,18 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       assertRequisitionListExists(
         fields.requisitionListSelector,
         "Newly Created Requisition List",
-        0
+        0,
       );
       createRequisitionList(
         fields.requisitionListSelector,
         "Now Req list created from PLP",
         "Yet another dummy description",
-        0
+        0,
       );
       assertRequisitionListExists(
         fields.requisitionListSelector,
         "Now Req list created from PLP",
-        0
+        0,
       );
 
       // Open Catalog Menu
@@ -185,7 +185,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
-          "Please select product options before adding it to a requisition list"
+          "Please select product options before adding it to a requisition list",
         );
 
       // Click requisition list again in PDP, should show validation when no options selected on PDP
@@ -193,7 +193,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
-          "Please select all required product options before adding to a requisition list."
+          "Please select all required product options before adding to a requisition list.",
         );
 
       // Select all available options
@@ -237,7 +237,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
-          "Please select product options before adding it to a requisition list"
+          "Please select product options before adding it to a requisition list",
         );
 
       // Click requisition list again in PDP, should show validation when required options not selected
@@ -245,7 +245,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
-          "Please select all required product options before adding to a requisition list."
+          "Please select all required product options before adding to a requisition list.",
         );
 
       // Select required options
@@ -315,7 +315,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.contains("Save").should("be.visible").click();
       cy.contains("Now updating from RL view page").should("be.visible");
       cy.contains("Requisition list updated successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       // 2. Update quantity of the first item in the Requisition List
@@ -336,7 +336,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
 
       cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
@@ -349,7 +349,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
       // Cypress will retry the assertion until it passes or times out
-      
+
       cy.get(fields.miniCartButton, { timeout: 30000 })
         .should("exist")
         .and("have.attr", "data-count", "14");
@@ -357,13 +357,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
-        "not.exist"
+        "not.exist",
       );
       cy.wait(1000);
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
       cy.get(fields.requisitionListViewBulkActionsDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
@@ -374,13 +374,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
       cy.contains("Requisition list deleted successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       cy.url().should("include", "customer/requisition-lists");
       cy.get(fields.requisitionListItemRow).should(
         "not.have",
-        "Now updating from RL view page"
+        "Now updating from RL view page",
       );
     });
   });

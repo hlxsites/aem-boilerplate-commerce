@@ -2,7 +2,7 @@ import { SubmitSkuValue } from './quickOrderMultipleSku.types';
 
 export interface QuickOrderCsvUploadProps {
     className?: string;
-    routeSampleCSV?: string;
+    routeSampleCSV?: () => string;
     onFileUpload?: (values: SubmitSkuValue) => void;
 }
 export interface CsvFileInputProps {
@@ -14,7 +14,7 @@ export interface CsvFileInputProps {
     showSampleDownload: boolean;
 }
 export interface UseQuickOrderCsvUploadProps {
-    routeSampleCSV?: string;
+    routeSampleCSV?: () => string;
     onFileUpload?: (values: SubmitSkuValue) => void;
 }
 export interface UseQuickOrderCsvUploadReturn {

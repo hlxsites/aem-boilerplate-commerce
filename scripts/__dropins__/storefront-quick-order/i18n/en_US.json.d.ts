@@ -53,7 +53,7 @@ declare const _default: {
             "productNotFound": "Product not found",
             "productNotFoundDescription": "The product with SKU {sku} could not be found",
             "configurableProductError": "Configuration required",
-            "configurableProductErrorDescription": "Configurable products aren’t supported here. Use the correct component for products with options.            ",
+            "configurableProductErrorDescription": "Use ProductOptions Slot in QuickOrderItems container to enable configurable product options.",
             "configurableOptionsWarning": "Product configuration required",
             "configurableOptionsWarningDescription": "Please select all required product options before adding to cart",
             "productOptions": "Product Options",

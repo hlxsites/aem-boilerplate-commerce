@@ -1,16 +1,12 @@
-/* Mobile first: vertical layout */
+.commerce-b2b-quick-order {
+    padding: var(--spacing-large) 0;
+}
+
 .quick-order-main-container {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-medium, 24px);
     width: 100%;
-}
-
-.quick-order-title {
-    font-size: var(--font-size-heading-2, 32px);
-    margin: 0;
-    border-bottom: 1px solid var(--color-border-secondary, #e5e5e5);
-    margin-bottom: var(--spacing-medium, 24px);
 }
 
 .quick-order-items-container {
