@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderVariantsActions';
-export { QuickOrderVariantsActions as default } from './QuickOrderVariantsActions';
-//# sourceMappingURL=index.d.ts.map
+export declare const GET_STORE_CONFIG = "\n  query GET_STORE_CONFIG {\n    storeConfig {\n      quickorder_active\n    }\n  }\n";
+//# sourceMappingURL=getStoreConfig.graphql.d.ts.map

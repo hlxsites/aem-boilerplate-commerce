@@ -14,10 +14,20 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './quickOrderMultipleSku.types';
-export * from './quickOrderCsvUpload.types';
-export * from './quickOrderItems.types';
-export * from './search.types';
-export * from './quickOrderNotificationBanner.types';
-export * from './quickOrderDisabledOverlay.types';
-//# sourceMappingURL=index.d.ts.map
+export interface QuickOrderNotificationBannerProps {
+    notification: {
+        type: 'validation' | 'partial-success' | 'success' | 'backend-error';
+        variant: 'success' | 'warning' | 'neutral' | 'brand';
+        message: string;
+        details?: string;
+        count?: number;
+        clickableSkus?: string[];
+    } | null;
+    onDismiss: () => void;
+    onSkuClick?: (sku: string) => void;
+    validationErrorText: string;
+    backendErrorText: string;
+    successText: string;
+    partialSuccessText?: string;
+}
+//# sourceMappingURL=quickOrderNotificationBanner.types.d.ts.map

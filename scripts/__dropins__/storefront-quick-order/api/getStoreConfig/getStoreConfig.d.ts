@@ -14,10 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './quickOrderMultipleSku.types';
-export * from './quickOrderCsvUpload.types';
-export * from './quickOrderItems.types';
-export * from './search.types';
-export * from './quickOrderNotificationBanner.types';
-export * from './quickOrderDisabledOverlay.types';
-//# sourceMappingURL=index.d.ts.map
+export declare const getStoreConfig: () => Promise<{
+    storeConfig: {
+        quickOrderActive: boolean;
+    };
+}>;
+//# sourceMappingURL=getStoreConfig.d.ts.map

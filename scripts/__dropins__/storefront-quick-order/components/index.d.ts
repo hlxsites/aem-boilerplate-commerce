@@ -19,6 +19,6 @@ export * from './CsvFileInput/CsvFileInput';
 export * from './QuickOrderItemsList/QuickOrderItemsList';
 export * from './QuickOrderListItem/QuickOrderListItem';
 export * from './Search/Search';
-export * from './QuickOrderVariantsGrid/QuickOrderVariantsGrid';
-export * from './QuickOrderVariantsActions/QuickOrderVariantsActions';
+export * from './QuickOrderNotificationBanner/QuickOrderNotificationBanner';
+export * from './QuickOrderDisabledOverlay/QuickOrderDisabledOverlay';
 //# sourceMappingURL=index.d.ts.map

@@ -17,5 +17,4 @@
 export * from './QuickOrderMultipleSku/QuickOrderMultipleSku';
 export * from './QuickOrderCsvUpload/QuickOrderCsvUpload';
 export * from './QuickOrderItems/QuickOrderItems';
-export * from './QuickOrderVariantsGrid/QuickOrderVariantsGrid';
 //# sourceMappingURL=index.d.ts.map

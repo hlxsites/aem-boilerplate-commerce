@@ -21,6 +21,7 @@ export interface SkuListInputProps {
     onChange: (e: Event) => void;
     textAreaValue: string;
     loading: boolean;
+    disabled?: boolean;
 }
 export interface UseQuickOrderMultipleSkuProps extends Omit<QuickOrderMultipleSkuProps, 'className'> {
 }
