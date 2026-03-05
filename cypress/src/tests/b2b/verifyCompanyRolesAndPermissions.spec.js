@@ -49,11 +49,11 @@
  * ==========================================================================
  */
 
-import { cleanupTestCompany } from "../../support/b2bCompanyAPICalls";
+import { cleanupTestCompany } from '../../support/b2bCompanyAPICalls';
 
 describe(
-  "USF-2523: Roles and Permissions (Optimized Journeys)",
-  { tags: ["@B2BSaas"] },
+  'USF-2523: Roles and Permissions (Optimized Journeys)',
+  { tags: ['@B2BSaas'] },
   () => {
     before(() => {
       cy.logToTerminal(

@@ -1,10 +1,10 @@
-import { signUpUser, createAddress } from "../../actions";
-import { assertAuthUser } from "../../assertions";
+import { signUpUser, createAddress } from '../../actions';
+import { assertAuthUser } from '../../assertions';
 
-describe("Verify user account functionality", () => {
-  it("Verify auth user can create addresses", { tags: "@snapPercy" }, () => {
-    cy.visit("/customer/create");
-    cy.fixture("userInfo").then(({ sign_up }) => {
+describe('Verify user account functionality', () => {
+  it('Verify auth user can create addresses', { tags: '@snapPercy' }, () => {
+    cy.visit('/customer/create');
+    cy.fixture('userInfo').then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
       cy.wait(5000);

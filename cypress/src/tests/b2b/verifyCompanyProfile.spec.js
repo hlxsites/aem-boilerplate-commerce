@@ -59,12 +59,12 @@
 import {
   updateCompanyProfile,
   cleanupTestCompany,
-} from "../../support/b2bCompanyAPICalls";
-import { invalidData } from "../../fixtures/companyManagementData";
+} from '../../support/b2bCompanyAPICalls';
+import { invalidData } from '../../fixtures/companyManagementData';
 
 describe(
-  "USF-2571: Company Profile (Optimized Journeys)",
-  { tags: "@B2BSaas" },
+  'USF-2571: Company Profile (Optimized Journeys)',
+  { tags: '@B2BSaas' },
   () => {
     before(() => {
       cy.logToTerminal("🚀 Company Profile test suite started (OPTIMIZED)");

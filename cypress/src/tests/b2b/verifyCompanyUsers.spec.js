@@ -58,12 +58,12 @@ import {
   acceptCompanyInvitation,
   updateCompanyUserStatus,
   cleanupTestCompany,
-} from "../../support/b2bCompanyAPICalls";
-import { invalidData } from "../../fixtures/companyManagementData";
+} from '../../support/b2bCompanyAPICalls';
+import { invalidData } from '../../fixtures/companyManagementData';
 
 describe(
-  "USF-2521: Company Users (Optimized Journeys)",
-  { tags: "@B2BSaas" },
+  'USF-2521: Company Users (Optimized Journeys)',
+  { tags: '@B2BSaas' },
   () => {
     before(() => {
       cy.logToTerminal("👥 Company Users test suite started (OPTIMIZED)");

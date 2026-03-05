@@ -28,13 +28,13 @@ import {
   setGuestShippingAddress,
   placeOrder,
   checkTermsAndConditions,
-} from "../../actions";
-import { products, customerShippingAddress } from "../../fixtures/index";
+} from '../../actions';
+import { products, customerShippingAddress } from '../../fixtures/index';
 
-describe("Verify price summary on cart", () => {
-  it("Verify applied gift code", { tags: "@snapPercy" }, () => {
+describe('Verify price summary on cart', () => {
+  it('Verify applied gift code', { tags: '@snapPercy' }, () => {
     cy.visit(products.configurable.urlPathWithOptions);
-    cy.get(".minicart-panel").should("be.empty");
+    cy.get('.minicart-panel').should('be.empty');
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();

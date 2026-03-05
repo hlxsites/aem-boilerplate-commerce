@@ -10,13 +10,13 @@ import {
   assertWishlistCountWithWait,
   assertWishlistEmptyWithWait,
 } from "../../assertions";
-import { signUpUser } from "../../actions";
-import { products } from "../../fixtures";
+import { signUpUser } from '../../actions';
+import { products } from '../../fixtures';
 
-describe("Verify auth user can manage products across wishlist and cart", () => {
-  it("Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it", () => {
-    cy.visit("/customer/create");
-    cy.fixture("userInfo").then(({ sign_up }) => {
+describe('Verify auth user can manage products across wishlist and cart', () => {
+  it('Successfully add simple product to wishlist, move it to cart, return this to wishlist and remove it', () => {
+    cy.visit('/customer/create');
+    cy.fixture('userInfo').then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
       cy.wait(5000);

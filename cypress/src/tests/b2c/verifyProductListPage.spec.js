@@ -1,8 +1,8 @@
-import { assertImageListDisplay } from "../../assertions";
+import { assertImageListDisplay } from '../../assertions';
 
-describe("Verify Product List Page", () => {
-  it("Verify PLP page loads", { tags: "@snapPercy" }, () => {
-    cy.visit("");
+describe('Verify Product List Page', () => {
+  it('Verify PLP page loads', { tags: '@snapPercy' }, () => {
+    cy.visit('');
 
     // Open Catalog Menu
     cy.get(".nav-drop").first().should("be.visible").trigger("mouseenter");

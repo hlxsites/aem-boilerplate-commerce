@@ -2,11 +2,11 @@ import {
   assertCartSummaryProduct,
   assertTitleHasLink,
   assertProductImage,
-} from "../../assertions";
-import { products } from "../../fixtures";
+} from '../../assertions';
+import { products } from '../../fixtures';
 
-describe("Verify Cart undo feature", () => {
-  it("Verify Cart undo feature", () => {
+describe('Verify Cart undo feature', () => {
+  it('Verify Cart undo feature', () => {
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
 

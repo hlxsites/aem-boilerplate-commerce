@@ -23,12 +23,12 @@ import {
   paymentServicesCreditCard,
   checkMoneyOrder,
   products,
-} from "../../fixtures/index";
-import * as fields from "../../fields";
+} from '../../fixtures/index';
+import * as fields from '../../fields';
 
-describe("Verify guest user can place order", () => {
-  it("Verify guest user can place order", () => {
-    cy.visit("");
+describe('Verify guest user can place order', () => {
+  it('Verify guest user can place order', () => {
+    cy.visit('');
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
     cy.get(".dropin-incrementer__increase-button").click();

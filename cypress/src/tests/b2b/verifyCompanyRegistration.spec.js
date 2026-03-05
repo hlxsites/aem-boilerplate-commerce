@@ -88,11 +88,11 @@ import {
 import {
   verifyCompanyCreated,
   cleanupTestCompany,
-} from "../../support/b2bCompanyAPICalls";
+} from '../../support/b2bCompanyAPICalls';
 
-describe("USF-2528: Company Registration", { tags: ["@B2BSaas"] }, () => {
+describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   before(() => {
-    cy.logToTerminal("🚀 Company Registration test suite started");
+    cy.logToTerminal('🚀 Company Registration test suite started');
   });
 
   beforeEach(() => {

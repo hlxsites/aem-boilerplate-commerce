@@ -10,11 +10,11 @@ import {
   poUsers,
   poRolesConfig,
 } from "../../fixtures";
-import * as selectors from "../../fields";
-import * as actions from "../../actions";
+import * as selectors from '../../fields';
+import * as actions from '../../actions';
 
-describe("B2B Purchase Orders", () => {
-  const urls = Cypress.env("poUrls");
+describe('B2B Purchase Orders', () => {
+  const urls = Cypress.env('poUrls');
 
   before(() => {
     cy.logToTerminal("🚀 B2B Purchase Orders test suite started");

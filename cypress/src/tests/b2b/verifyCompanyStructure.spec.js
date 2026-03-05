@@ -59,11 +59,11 @@ import {
 import {
   baseCompanyData,
   companyUsers,
-} from "../../fixtures/companyManagementData";
+} from '../../fixtures/companyManagementData';
 
 describe(
-  "USF-2577: Company Structure (Optimized Journeys)",
-  { tags: "@B2BSaas" },
+  'USF-2577: Company Structure (Optimized Journeys)',
+  { tags: '@B2BSaas' },
   () => {
     before(() => {
       cy.logToTerminal("🌳 Company Structure test suite started (OPTIMIZED)");

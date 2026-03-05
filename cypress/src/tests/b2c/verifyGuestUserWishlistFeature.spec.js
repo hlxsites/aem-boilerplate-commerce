@@ -10,13 +10,13 @@ import {
   assertWishlistEmptyWithWait,
   assertWishlistCountWithWait,
 } from "../../assertions";
-import { products } from "../../fixtures";
-import { signUpUser } from "../../actions";
+import { products } from '../../fixtures';
+import { signUpUser } from '../../actions';
 
-describe("Verify guest user can manage products across wishlist and cart", () => {
+describe('Verify guest user can manage products across wishlist and cart', () => {
   beforeEach(() => {
-    cy.visit("");
-    cy.get(".wishlist-wrapper").should("be.visible").click();
+    cy.visit('');
+    cy.get('.wishlist-wrapper').should('be.visible').click();
     // Wait for wishlist page to load and assert empty state
     assertWishlistEmptyWithWait();
   });

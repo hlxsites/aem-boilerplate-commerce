@@ -6,12 +6,12 @@ import {
 
 import { inputSearchString } from "../../actions";
 
-import * as fields from "../../fields";
+import * as fields from '../../fields';
 
-describe("Search Feature", () => {
-  it("Verify quick search features", () => {
+describe('Search Feature', () => {
+  it('Verify quick search features', () => {
     // Visit the homepage
-    cy.visit("/");
+    cy.visit('/');
 
     //Input search string
     inputSearchString("tops");
