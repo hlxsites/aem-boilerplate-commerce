@@ -11,7 +11,7 @@ import { render as quickOrderProvider } from '@dropins/storefront-quick-order/re
 
 // Quick Order Dropin
 // TODO lint abd naming issues here
-import QuickOrderVariantsGridContainer from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
+import QuickOrderVariantsGrid from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
 
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
@@ -238,7 +238,7 @@ export default async function decorate(block) {
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
-    quickOrderProvider.render(QuickOrderVariantsGridContainer, {
+    quickOrderProvider.render(QuickOrderVariantsGrid, {
       className: 'quick-order-variants-grid',
       // variants: [],
       columns: [
