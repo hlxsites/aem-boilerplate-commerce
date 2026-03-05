@@ -476,7 +476,7 @@
         "component": "number",
         "name": "pageSize",
         "label": "Page Size",
-        "value": 2,
+        "value": 9,
         "description": "Number of products per page (default: 9)"
       }
     ]
