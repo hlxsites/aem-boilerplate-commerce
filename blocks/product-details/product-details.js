@@ -38,11 +38,6 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quick-order.js';
-import {
-  getProductVariants,
-  updateGridOrderButton,
-  filterVariantsByOptions,
-} from './helpers.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -376,7 +371,17 @@ export default async function decorate(block) {
   // TODO - Add comment
   events.on('quick-order/grid-ordering-list-updated', (values) => {
     if (!isQuickOrderGridView) return;
-    updateGridOrderButton(addToCart, values, labels);
+
+    const totalQuantity = values.reduce((acc, item) => acc + (item.quantity || 0), 0);
+    const hasItems = totalQuantity > 0;
+
+    addToCart.setProps((prev) => ({
+      ...prev,
+      children: hasItems
+        ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
+        : labels.Global?.AddProductToCart,
+      disabled: !hasItems,
+    }));
   }, { eager: true });
 
   // Handle option changes
@@ -469,39 +474,33 @@ export default async function decorate(block) {
   );
 
   // Set JSON-LD and Meta Tags
-  events.on(
-    'aem/lcp',
-    () => {
-      let variants = null;
+  events.on('aem/lcp', async () => {
+    if (!product) return;
+
+    const isPrerendered = isProductPrerendered();
+
+    if (isPrerendered) {
+      if (!isQuickOrderGridView) return;
+
+      const variants = await getProductVariants(product.sku);
+      initQuickOrderGridOrdering(product, variants);
+    } else {
+      const variants = await getProductVariants(product.sku);
+
       if (isQuickOrderGridView) {
-        getProductVariants(product.sku, pdpApi).then((variantsList) => {
-          const filteredVariants = filterVariantsByOptions(
-            variantsList,
-            product.options,
-          );
-          variants = filteredVariants;
-
-          if (filteredVariants.length === 0) return;
-
-          events.emit('quick-order/grid-ordering-variants', {
-            variants: filteredVariants,
-          });
-        });
+        initQuickOrderGridOrdering(product, variants);
       }
-      const isPrerendered = isProductPrerendered();
-      if (product && !isPrerendered) {
-        setJsonLdProduct(product, variants);
-        setMetaTags(product);
-        document.title = product.name;
-      }
-    },
-    { eager: true },
-  );
+
+      setJsonLdProduct(product, variants);
+      setMetaTags(product);
+      document.title = product.name;
+    }
+  }, { eager: true });
 
   return Promise.resolve();
 }
 
-async function setJsonLdProduct(product, fetchedVariants = null) {
+function setJsonLdProduct(product, variants) {
   const {
     name,
     inStock,
@@ -515,14 +514,6 @@ async function setJsonLdProduct(product, fetchedVariants = null) {
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
   const brand = attributes?.find((attr) => attr.name === 'brand');
-
-  let variants = null;
-
-  if (fetchedVariants) {
-    variants = fetchedVariants;
-  } else {
-    variants = await getProductVariants(sku, pdpApi);
-  }
 
   const ldJson = {
     '@context': 'http://schema.org',
@@ -628,4 +619,88 @@ function imageSlotConfig(ctx) {
       height: defaultImageProps.height,
     },
   };
+}
+
+/**
+ * Fetches product variants with their attributes
+ * @param {string} sku - Product SKU
+ * @param {Object} fetcherApi - API fetcher instance
+ * @returns {Promise<Array>} Array of product variants
+ */
+async function getProductVariants(sku) {
+  const { data } = await pdpApi.fetchGraphQl(
+    `
+      query GET_PRODUCT_VARIANTS($sku: String!) {
+        variants(sku: $sku) {
+          variants {
+            product {
+              sku
+              name
+              inStock
+              attributes {
+                name
+                label
+                value
+                roles
+              }
+              images(roles: ["image"]) {
+                url
+              }
+              ...on SimpleProductView {
+                price {
+                  final { amount { currency value } }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      method: 'GET',
+      variables: { sku },
+    },
+  );
+
+  return data?.variants?.variants ?? [];
+}
+
+// TODO - Add comments
+function initQuickOrderGridOrdering(product, variantsList) {
+  const variants = variantsList;
+  const productOptions = product.options;
+
+  // TODO - This piece of login incorrect. We should filter attributes but not variants
+  let filteredVariants;
+  if (!productOptions || productOptions.length === 0) {
+    filteredVariants = variants;
+  } else {
+    const optionIds = new Set(productOptions.map((option) => option.id));
+
+    filteredVariants = variants
+      .map((variant) => {
+        const filteredAttributes = variant.product.attributes.filter(
+          (attr) => optionIds?.has(attr.name),
+        );
+
+        if (filteredAttributes.length === 0) {
+          return null;
+        }
+
+        return {
+          ...variant,
+          product: {
+            ...variant.product,
+            attributes: filteredAttributes,
+          },
+        };
+      })
+      .filter((variant) => variant !== null);
+  }
+
+  if (filteredVariants.length === 0) return;
+
+  events.emit('quick-order/grid-ordering-variants', {
+    variants: filteredVariants,
+  });
 }
