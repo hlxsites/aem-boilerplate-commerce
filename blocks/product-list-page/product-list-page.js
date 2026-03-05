@@ -27,7 +27,7 @@ export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   const config = readBlockConfig(block);
-  const pageSize = parseInt(config.pageSize, 10) || 9;
+  const pageSize = parseInt(config.pagesize, 10) || 9;
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__wrapper">
