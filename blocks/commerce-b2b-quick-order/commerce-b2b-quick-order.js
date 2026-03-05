@@ -22,10 +22,11 @@ import * as searchApi from '@dropins/storefront-product-discovery/api.js';
 import { rootLink } from '../../scripts/commerce.js';
 
 // Initializers
-import '../../scripts/initializers/recommendations.js';
+// Initializers
 import '../../scripts/initializers/quick-order.js';
+import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/cart.js';
-// import '../../scripts/initializers/pdp.js';
+import '../../scripts/initializers/pdp.js';
 
 export default async function decorate(block) {
   const fragment = document.createRange().createContextualFragment(`
@@ -41,9 +42,7 @@ export default async function decorate(block) {
 
   block.appendChild(fragment);
 
-  const quickOrderTitleContainer = block.querySelector(
-    '.quick-order-title',
-  );
+  const quickOrderTitleContainer = block.querySelector('.quick-order-title');
   const quickOrderItemsContainer = block.querySelector(
     '.quick-order-items-container',
   );
@@ -54,7 +53,9 @@ export default async function decorate(block) {
     '.quick-order-csv-upload-container',
   );
 
-  UI.render(Header, { title: 'Quick Order', size: 'large', divider: true })(quickOrderTitleContainer);
+  UI.render(Header, { title: 'Quick Order', size: 'large', divider: true })(
+    quickOrderTitleContainer,
+  );
 
   quickOrderProvider.render(QuickOrderItems, {
     getProductsData: pdpApi.getProductsData,
@@ -79,7 +80,7 @@ export default async function decorate(block) {
       } catch (error) {
         // Return an error message string to display a notification
         // eslint-disable-next-line consistent-return
-        return (error.message || 'Failed to add products to cart.');
+        return error.message || 'Failed to add products to cart.';
       }
     },
     slots: {
