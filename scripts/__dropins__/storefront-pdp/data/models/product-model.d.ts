@@ -67,6 +67,7 @@ interface Attribute {
     id: string;
     label: string;
     value: string;
+    roles?: string[];
 }
 export {};
 //# sourceMappingURL=product-model.d.ts.map

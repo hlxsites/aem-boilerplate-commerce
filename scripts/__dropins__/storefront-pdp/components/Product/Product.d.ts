@@ -17,6 +17,7 @@ export interface ProductProps extends Omit<HTMLAttributes<HTMLDivElement>, 'titl
     images: VNode[];
     options?: VNode;
     giftCardOptions?: VNode;
+    downloadableOptions?: VNode;
     sku?: VNode;
     price?: VNode;
     specialPrice?: VNode;
