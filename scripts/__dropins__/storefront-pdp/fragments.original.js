@@ -1,55 +1,55 @@
-const e = (`fragment PRODUCT_OPTION_FRAGMENT on ProductViewOption {
-  id
-  title
-  required
-  multi
-  values {
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const e=`
+fragment PRODUCT_OPTION_FRAGMENT on ProductViewOption {
     id
     title
-    inStock
-    __typename
-    ... on ProductViewOptionValueProduct {
-      title
-      quantity
-      isDefault
-      __typename
-      product {
-        sku
-        shortDescription
-        metaDescription
-        metaKeyword
-        metaTitle
-        name
-        price {
-          final {
-            amount {
-              value
-              currency
-            }
-          }
-          regular {
-            amount {
-              value
-              currency
-            }
-          }
-          roles
-        }
-        images {
-          url
-          label
-        }
-      }
-    }
-    ... on ProductViewOptionValueSwatch {
+    required
+    multi
+    values {
       id
       title
-      type
-      value
       inStock
+      __typename
+      ... on ProductViewOptionValueProduct {
+        title
+        quantity
+        isDefault
+        __typename
+        product {
+          sku
+          shortDescription
+          metaDescription
+          metaKeyword
+          metaTitle
+          name
+          price {
+            final {
+              amount {
+                value
+                currency
+              }
+            }
+            regular {
+              amount {
+                value
+                currency
+              }
+            }
+            roles
+          }
+        }
+      }
+      ... on ProductViewOptionValueSwatch {
+        id
+        title
+        type
+        value
+        inStock
+      }
     }
   }
-}`), t = `
+`,t=`
   fragment PRICE_RANGE_FRAGMENT on ComplexProductView {
     priceRange {
       maximum {
@@ -84,7 +84,7 @@ const e = (`fragment PRODUCT_OPTION_FRAGMENT on ProductViewOption {
       }
     }
   }
-`, r = `
+`,r=`
 fragment PRODUCT_FRAGMENT on ProductView {
   __typename
   id
@@ -159,9 +159,5 @@ fragment PRODUCT_FRAGMENT on ProductView {
 
 ${e}
 ${t}
-`;
-export {
-t as PRICE_RANGE_FRAGMENT,
-r as PRODUCT_FRAGMENT,
-e as PRODUCT_OPTION_FRAGMENT
-};
+`;export{t as PRICE_RANGE_FRAGMENT,r as PRODUCT_FRAGMENT,e as PRODUCT_OPTION_FRAGMENT};
+//# sourceMappingURL=fragments.js.map
