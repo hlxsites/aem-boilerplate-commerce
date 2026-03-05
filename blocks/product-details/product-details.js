@@ -79,7 +79,7 @@ export default async function decorate(block) {
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
 
-  const isGroupProduct = product.options?.[0].items?.some((item) => !!item.product);
+  const isGroupProduct = product.options?.[0]?.items?.some((item) => !!item.product);
 
   const labels = await fetchPlaceholders();
 
@@ -115,7 +115,7 @@ export default async function decorate(block) {
         <div class="product-details__attributes"></div>
       </div>
       </div>
-      <div class="product-details__group-product-list"></div>
+      <div class="product-details__group-product-list-wrapper"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
@@ -131,7 +131,7 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-  const $groupProductList = fragment.querySelector('.product-details__group-product-list');
+  const $groupProductList = fragment.querySelector('.product-details__group-product-list-wrapper');
 
   block.replaceChildren(fragment);
 
@@ -205,7 +205,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    isGroupProduct ? null: pdpRendered.render(ProductOptions, {
+    isGroupProduct ? null : pdpRendered.render(ProductOptions, {
       hideSelectedValue: false,
       slots: {
         SwatchImage: (ctx) => {
@@ -236,7 +236,7 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
-  const addToCart = await UI.render(Button, {
+  const addToCart = isGroupProduct ? null : await UI.render(Button, {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
@@ -411,7 +411,7 @@ export default async function decorate(block) {
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    addToCart?.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes

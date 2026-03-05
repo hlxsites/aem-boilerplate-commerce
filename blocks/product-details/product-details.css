@@ -74,10 +74,10 @@
 /* Group product list */
 .product-details__group-product-list {
   list-style: none;
-  margin: 0;
+  margin: var(--spacing-large) 0;
   padding: 0;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-small);
 }
 
@@ -119,6 +119,10 @@
 }
 
 @media (min-width: 900px) {
+  .product-details__group-product-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   .product-details__wrapper {
     grid-template-columns: repeat(var(--grid-3-columns), 1fr);
     column-gap: var(--grid-3-gutters);

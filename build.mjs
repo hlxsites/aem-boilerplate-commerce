@@ -36,7 +36,7 @@ overrideGQLOperations([
       }
       `,
     ],
-  }
+  },
   // {
   //   npm: '@dropins/storefront-checkout',
   //   operations: [],
