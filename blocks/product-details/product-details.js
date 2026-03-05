@@ -501,7 +501,7 @@ export default async function decorate(block) {
   return Promise.resolve();
 }
 
-async function setJsonLdProduct(product, variants = null) {
+async function setJsonLdProduct(product, fetchedVariants = null) {
   const {
     name,
     inStock,
@@ -516,8 +516,13 @@ async function setJsonLdProduct(product, variants = null) {
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
   const brand = attributes?.find((attr) => attr.name === 'brand');
 
-  // get variants
-  const variantsList = variants || (await getProductVariants(sku, pdpApi));
+  let variants = null;
+
+  if (fetchedVariants) {
+    variants = fetchedVariants;
+  } else {
+    variants = await getProductVariants(sku, pdpApi);
+  }
 
   const ldJson = {
     '@context': 'http://schema.org',
@@ -536,28 +541,22 @@ async function setJsonLdProduct(product, variants = null) {
     '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
-  if (variantsList && variantsList.length > 1) {
-    ldJson.offers.push(
-      ...variantsList.map((variant) => ({
-        '@type': 'Offer',
-        name: variant.product.name,
-        image: variant.product.images[0]?.url,
-        price: variant.product.price.final.amount.value,
-        priceCurrency: variant.product.price.final.amount.currency,
-        availability: variant.product.inStock
-          ? 'http://schema.org/InStock'
-          : 'http://schema.org/OutOfStock',
-        sku: variant.product.sku,
-      })),
-    );
+  if (variants?.length > 1) {
+    ldJson.offers.push(...variants.map((variant) => ({
+      '@type': 'Offer',
+      name: variant.product.name,
+      image: variant.product.images[0]?.url,
+      price: variant.product.price.final.amount.value,
+      priceCurrency: variant.product.price.final.amount.currency,
+      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+      sku: variant.product.sku,
+    })));
   } else {
     ldJson.offers.push({
       '@type': 'Offer',
       price: amount?.value,
       priceCurrency: amount?.currency,
-      availability: inStock
-        ? 'http://schema.org/InStock'
-        : 'http://schema.org/OutOfStock',
+      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
     });
   }
 
@@ -616,7 +615,10 @@ function setMetaTags(product) {
  * @returns The configuration for the image slot.
  */
 function imageSlotConfig(ctx) {
-  const { data, defaultImageProps } = ctx;
+  const {
+    data,
+    defaultImageProps,
+  } = ctx;
   return {
     alias: data.sku,
     imageProps: defaultImageProps,
