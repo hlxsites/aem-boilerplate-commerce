@@ -314,6 +314,76 @@ export default async function decorate(block) {
     },
   })($addToCart);
 
+  // Test Events - Add to Cart
+  await UI.render(Button, {
+    children: 'Test Add To Cart Event',
+    icon: h(Icon, { source: 'Delivery' }),
+    onClick: async () => {
+      if (window.adobeDataLayer?.push) {
+        window.adobeDataLayer.push((acdl) => {
+          const state = acdl.getState ? acdl.getState() : {};
+
+          acdl.push({
+            event: 'add-to-cart',
+            eventInfo: {
+              ...state,
+              ...{
+                changedProductsContext: {
+                  items: [{
+                    product: {
+                      sku: product.sku,
+                    },
+                  }],
+                },
+              },
+            },
+          });
+        });
+      }
+    },
+  })($testEventsAddToCart);
+
+  // Test Events - Checkout
+  await UI.render(Button, {
+    children: 'Test Checkout Event',
+    icon: h(Icon, { source: 'OrderSuccess' }),
+    onClick: async () => {
+      if (window.adobeDataLayer?.push) {
+        window.adobeDataLayer.push((acdl) => {
+          const state = acdl.getState ? acdl.getState() : {};
+
+          acdl.push({
+            event: 'place-order',
+            eventInfo: {
+              ...state,
+              ...{
+                orderContext: {
+                  orderId: 'test-order-id',
+                },
+                shoppingCartContext: {
+                  items: [{
+                    prices: {
+                      price: {
+                        value: product.prices.regular.amount,
+                      },
+                    },
+                    id: '0',
+                    quantity: 1,
+                    product: {
+                      sku: product.sku,
+                      name: product.name,
+                    },
+                  }],
+
+                },
+              },
+            },
+          });
+        });
+      }
+    },
+  })($testEventsCheckout);
+
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
