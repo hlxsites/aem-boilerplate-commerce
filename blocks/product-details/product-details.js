@@ -1,8 +1,5 @@
 import {
-  Button,
-  Icon,
-  InLineAlert,
-  provider as UI,
+  Button, Icon, InLineAlert, provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 import { events } from '@dropins/tools/event-bus.js';
@@ -10,12 +7,17 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
+
+// Quick Order Dropin
+// TODO lint abd naming issues here
+import QuickOrderVariantsGridContainer from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
 
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
-// Containers
+// PDP Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
@@ -26,16 +28,9 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
-// -------
-import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
-import QuickOrderVariantsGridContainer from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
-// -------
 // Libs
 import {
-  fetchPlaceholders,
-  getProductLink,
-  rootLink,
-  setJsonLd,
+  fetchPlaceholders, getProductLink, rootLink, setJsonLd,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -54,9 +49,7 @@ import {
  * @returns {boolean} True if product JSON-LD exists and contains @type=Product
  */
 function isProductPrerendered() {
-  const jsonLdScript = document.querySelector(
-    'script[type="application/ld+json"]',
-  );
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
 
   if (!jsonLdScript?.textContent) {
     return false;
@@ -99,7 +92,8 @@ export default async function decorate(block) {
   let isUpdateMode = false;
 
   // Layout
-  const fragment = document.createRange().createContextualFragment(`
+  const fragment = document.createRange()
+    .createContextualFragment(`
     <div class="product-details__alert"></div>
     <div class="product-details__wrapper">
       <div class="product-details__left-column">
@@ -120,44 +114,29 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-req-list"></div>
           </div>
         </div>
-
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
-       
     </div>
-     <div class="product-details__quick-order__container"></div>
+    <!-- TODO: Weird class name -->
+    <div class="product-details__quick-order__container"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
-  const $galleryMobile = fragment.querySelector(
-    '.product-details__right-column .product-details__gallery',
-  );
-  const $shortDescription = fragment.querySelector(
-    '.product-details__short-description',
-  );
+  const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
+  const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
-  const $giftCardOptions = fragment.querySelector(
-    '.product-details__gift-card-options',
-  );
-  const $addToCart = fragment.querySelector(
-    '.product-details__buttons__add-to-cart',
-  );
-  const $wishlistToggleBtn = fragment.querySelector(
-    '.product-details__buttons__add-to-wishlist',
-  );
-  const $requisitionListSelector = fragment.querySelector(
-    '.product-details__buttons__add-to-req-list',
-  );
+  const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
+  const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
+  const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-  const $quickOrderContainer = fragment.querySelector(
-    '.product-details__quick-order__container',
-  );
+  const $quickOrderContainer = fragment.querySelector('.product-details__quick-order__container');
 
   block.replaceChildren(fragment);
 
@@ -324,12 +303,10 @@ export default async function decorate(block) {
             // --- Update existing item ---
             const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
 
-            await updateProductsFromCart([
-              {
-                ...values,
-                uid: itemUidFromUrl,
-              },
-            ]);
+            await updateProductsFromCart([{
+              ...values,
+              uid: itemUidFromUrl,
+            }]);
 
             // --- START REDIRECT ON UPDATE ---
             const updatedSku = values?.sku;
@@ -387,65 +364,57 @@ export default async function decorate(block) {
   })($addToCart);
 
   // Lifecycle Events
-  events.on(
-    'pdp/valid',
-    (valid) => {
-      if (isQuickOrderGridView) return;
-      // update add to cart button disabled state based on product selection validity
-      addToCart.setProps((prev) => ({
-        ...prev,
-        disabled: !valid,
-      }));
-    },
-    { eager: true },
-  );
+  events.on('pdp/valid', (valid) => {
+    if (isQuickOrderGridView) return;
+    // update add to cart button disabled state based on product selection validity
+    addToCart.setProps((prev) => ({
+      ...prev,
+      disabled: !valid,
+    }));
+  }, { eager: true });
 
-  events.on(
-    'quick-order/grid-ordering-list-updated',
-    (values) => {
-      if (!isQuickOrderGridView) return;
-      updateGridOrderButton(addToCart, values, labels);
-    },
-    { eager: true },
-  );
+  // TODO - Add comment
+  events.on('quick-order/grid-ordering-list-updated', (values) => {
+    if (!isQuickOrderGridView) return;
+    updateGridOrderButton(addToCart, values, labels);
+  }, { eager: true });
 
   // Handle option changes
-  events.on(
-    'pdp/values',
-    async () => {
-      const configValues = pdpApi.getProductConfigurationValues();
+  events.on('pdp/values', async () => {
+    const configValues = pdpApi.getProductConfigurationValues();
 
-      // Check URL parameter for empty optionsUIDs
-      const urlOptionsUIDs = urlParams.get('optionsUIDs');
+    // Check URL parameter for empty optionsUIDs
+    const urlOptionsUIDs = urlParams.get('optionsUIDs');
 
-      // Get optionsUIDs - prioritize actual selected values from configValues
-      let optionUIDs = null;
-      // First priority: actual selected options from configValues
-      const hasConfigOptions = configValues?.optionsUIDs
-        && Array.isArray(configValues.optionsUIDs)
-        && configValues.optionsUIDs.length > 0;
+    // Get optionsUIDs - prioritize actual selected values from configValues
+    let optionUIDs = null;
+    // First priority: actual selected options from configValues
+    const hasConfigOptions = configValues?.optionsUIDs
+      && Array.isArray(configValues.optionsUIDs)
+      && configValues.optionsUIDs.length > 0;
 
-      if (hasConfigOptions) {
-        optionUIDs = configValues.optionsUIDs;
-      } else if (urlOptionsUIDs === '') {
-        // Second priority: URL has explicit empty optionsUIDs parameter
-        optionUIDs = null;
-      }
+    if (hasConfigOptions) {
+      optionUIDs = configValues.optionsUIDs;
+    } else if (urlOptionsUIDs === '') {
+      // Second priority: URL has explicit empty optionsUIDs parameter
+      optionUIDs = null;
+    }
 
-      if (wishlistToggleBtn) {
-        wishlistToggleBtn.setProps((prev) => ({
-          ...prev,
-          product: {
-            ...product,
-            optionUIDs,
-          },
-        }));
-      }
-    },
-    { eager: true },
-  );
+    if (wishlistToggleBtn) {
+      wishlistToggleBtn.setProps((prev) => ({
+        ...prev,
+        product: {
+          ...product,
+          optionUIDs,
+        },
+      }));
+    }
+  }, { eager: true });
 
-  events.on('wishlist/alert', ({ action, item }) => {
+  events.on('wishlist/alert', ({
+    action,
+    item,
+  }) => {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
