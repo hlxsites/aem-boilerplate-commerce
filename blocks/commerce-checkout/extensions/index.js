@@ -6,7 +6,9 @@
  */
 
 // import testExtension from './test-extension/test-extension.js';
+import subscriptionExtension from './subscription/subscription-extension.js';
 
 export default [
   // testExtension,
+  subscriptionExtension,
 ];

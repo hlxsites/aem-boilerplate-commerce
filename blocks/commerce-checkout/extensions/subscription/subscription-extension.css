@@ -1,0 +1,85 @@
+.subscription-extension {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--color-neutral-400, #d1d5db);
+  border-radius: 8px;
+  background: var(--color-neutral-50, #f9fafb);
+  font: var(--type-body-2-default-font);
+  letter-spacing: var(--type-body-1-default-letter-spacing);
+}
+
+.subscription-extension__title {
+  margin: 0 0 16px;
+  font: var(--type-body-1-default-font);
+  letter-spacing: var(--type-headline-2-default-letter-spacing);
+}
+
+.subscription-extension__field {
+  margin-bottom: 12px;
+}
+
+.subscription-extension__field:last-child {
+  margin-bottom: 0;
+}
+
+.subscription-extension__toggle-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.subscription-extension__toggle-label input[type='checkbox'] {
+  width: 40px;
+  height: 22px;
+  appearance: none;
+  background: var(--color-neutral-400, #d1d5db);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.subscription-extension__toggle-label input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.subscription-extension__toggle-label input[type='checkbox']:checked {
+  background: var(--color-positive, #16a34a);
+}
+
+.subscription-extension__toggle-label input[type='checkbox']:checked::after {
+  transform: translateX(18px);
+}
+
+.subscription-extension__frequency {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.subscription-extension__frequency[data-hidden='true'] {
+  display: none;
+}
+
+.subscription-extension__frequency label {
+  font: var(--type-body-2-default-font);
+  letter-spacing: var(--type-body-2-default-letter-spacing);
+}
+
+.subscription-extension__frequency select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-neutral-400, #d1d5db);
+  border-radius: 6px;
+  font: var(--type-body-2-default-font);
+  letter-spacing: var(--type-body-1-default-letter-spacing);
+  background: #fff;
+}
