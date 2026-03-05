@@ -22,13 +22,13 @@ import {
   customerShippingAddress,
   paymentServicesCreditCard,
   checkMoneyOrder,
-  products,
-} from '../../fixtures/index';
-import * as fields from '../../fields';
+  products
+} from "../../fixtures/index";
+import * as fields from "../../fields";
 
-describe('Verify guest user can place order', () => {
-  it('Verify guest user can place order', () => {
-    cy.visit('');
+describe("Verify guest user can place order", () => {
+  it("Verify guest user can place order", () => {
+    cy.visit("");
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
     cy.get(".dropin-incrementer__increase-button").click();
@@ -38,7 +38,7 @@ describe('Verify guest user can place order', () => {
     cy.get(".minicart-panel").should("be.empty");
     cy.contains("Add to Cart").click();
     cy.get(".minicart-wrapper").click();
-    cy.get(".minicart-panel[data-loaded='true']").should("exist");
+    cy.get(".minicart-panel[data-loaded='true']").should('exist');
     cy.get(".minicart-panel").should("not.be.empty");
     assertCartSummaryProduct(
       "Youth tee",

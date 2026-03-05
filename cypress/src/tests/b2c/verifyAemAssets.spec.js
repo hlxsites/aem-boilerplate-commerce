@@ -1,81 +1,62 @@
-import { expectAemAssetsImage } from "../../assertions/assets.js";
+import { expectAemAssetsImage } from '../../assertions/assets.js';
 
 // The overridden config keys.
-const MAGENTO_ENVIRONMENT_ID_KEY =
-  "public.default.headers.cs.Magento-Environment-Id";
-const MAGENTO_API_KEY_KEY = "public.default.headers.cs.x-api-key";
-const ASSETS_ENABLED_KEY = "public.default.commerce-assets-enabled";
-const COMMERCE_CORE_ENDPOINT_KEY = "public.default.commerce-core-endpoint";
-const COMMERCE_ENDPOINT_KEY = "public.default.commerce-endpoint";
+const MAGENTO_ENVIRONMENT_ID_KEY = 'public.default.headers.cs.Magento-Environment-Id';
+const MAGENTO_API_KEY_KEY = 'public.default.headers.cs.x-api-key';
+const ASSETS_ENABLED_KEY = 'public.default.commerce-assets-enabled';
+const COMMERCE_CORE_ENDPOINT_KEY = 'public.default.commerce-core-endpoint';
+const COMMERCE_ENDPOINT_KEY = 'public.default.commerce-endpoint';
 
-describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
+describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas"] }, () => {
   let aemAssetsEnvironment;
   let envConfig;
 
   before(() => {
     Cypress.env("isAemAssetsSuite", true);
-    envConfig = Cypress.env("aemAssetsConfig");
+    envConfig = Cypress.env('aemAssetsConfig');
 
     const envId = envConfig.author.environmentId;
     const programId = envConfig.author.programId;
     const isStage = envConfig.author.isStage;
 
-    aemAssetsEnvironment = isStage
-      ? `${programId}-${envId}-cmstg`
-      : `${programId}-${envId}`;
-  });
+    aemAssetsEnvironment = isStage ? `${programId}-${envId}-cmstg` : `${programId}-${envId}`;
+  })
 
   beforeEach(() => {
     cy.interceptConfig((config) => {
-      Cypress._.set(
-        config,
-        MAGENTO_ENVIRONMENT_ID_KEY,
-        envConfig.credentials.magentoEnvironmentId,
-      );
-      Cypress._.set(
-        config,
-        MAGENTO_API_KEY_KEY,
-        envConfig.credentials.xPublicApiKey,
-      );
-      Cypress._.set(
-        config,
-        COMMERCE_CORE_ENDPOINT_KEY,
-        envConfig.commerceConfig.coreEndpoint,
-      );
-      Cypress._.set(
-        config,
-        COMMERCE_ENDPOINT_KEY,
-        envConfig.commerceConfig.endpoint,
-      );
-      Cypress._.set(config, ASSETS_ENABLED_KEY, "true");
+      Cypress._.set(config, MAGENTO_ENVIRONMENT_ID_KEY, envConfig.credentials.magentoEnvironmentId)
+      Cypress._.set(config, MAGENTO_API_KEY_KEY, envConfig.credentials.xPublicApiKey)
+      Cypress._.set(config, COMMERCE_CORE_ENDPOINT_KEY, envConfig.commerceConfig.coreEndpoint)
+      Cypress._.set(config, COMMERCE_ENDPOINT_KEY, envConfig.commerceConfig.endpoint)
+      Cypress._.set(config, ASSETS_ENABLED_KEY, 'true')
 
-      return config;
-    });
+      return config
+    })
   });
 
   after(() => {
     Cypress.env("isAemAssetsSuite", false);
-  });
+  })
 
-  it("[Product Discovery Dropin]: should load and show AEM Assets optimized images", () => {
-    visitWithEagerImages("/");
-    cy.get(".nav-search-button").click();
-    cy.get(".nav-search-panel").should("be.visible");
-    cy.get("#search").type("gift");
+  it('[Product Discovery Dropin]: should load and show AEM Assets optimized images', () => {
+    visitWithEagerImages('/');
+    cy.get('.nav-search-button').click();
+    cy.get('.nav-search-panel').should('be.visible');
+    cy.get('#search').type('gift');
     cy.wait(2000);
     const expectedOptions = {
-      protocol: "//",
+      protocol: '//',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
-    };
+    }
 
     const srcSetExpectedOptions = {
       ...expectedOptions,
-      protocol: "//",
+      protocol: '//',
     };
 
-    waitForAemAssetImages(".search-bar-result img", (images) => {
+    waitForAemAssetImages('.search-bar-result img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -85,7 +66,7 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
@@ -96,10 +77,10 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
       }
     });
 
-    visitWithEagerImages("/apparel");
+    visitWithEagerImages('/apparel');
     cy.wait(2000);
 
-    waitForAemAssetImages(".search__product-list img", (images) => {
+    waitForAemAssetImages('.search__product-list img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -109,7 +90,7 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
@@ -121,22 +102,22 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
     });
   });
 
-  it("[PDP Dropin]: should load and show AEM Assets optimized images", () => {
-    visitWithEagerImages("/products/gift-packaging/adb102");
+  it('[PDP Dropin]: should load and show AEM Assets optimized images', () => {
+    visitWithEagerImages('/products/gift-packaging/adb102');
     const expectedOptions = {
-      protocol: "http://",
+      protocol: 'http://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
-    };
+    }
 
     const srcSetExpectedOptions = {
       ...expectedOptions,
-      protocol: "//",
-    };
+      protocol: '//',
+    }
 
     // Normal gallery images.
-    waitForAemAssetImages(".pdp-carousel__wrapper img", (images) => {
+    waitForAemAssetImages('.pdp-carousel__wrapper img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -146,7 +127,7 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...srcSetExpectedOptions,
@@ -157,8 +138,8 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
       }
     });
 
-    visitWithEagerImages("products/denim-apron/adb119");
-    waitForAemAssetImages(".pdp-carousel__wrapper ~ div img", (images) => {
+    visitWithEagerImages('products/denim-apron/adb119');
+    waitForAemAssetImages('.pdp-carousel__wrapper ~ div img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -168,7 +149,7 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...srcSetExpectedOptions,
@@ -183,122 +164,117 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
     // TODO: Once Swatch Images are supported by AEM Assets, add tests for them.
   });
 
-  it("[Cart Dropin]: should load and show AEM Assets optimized images", () => {
+  it('[Cart Dropin]: should load and show AEM Assets optimized images', () => {
     const expectedOptions = {
-      protocol: "https://",
+      protocol: 'https://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
       width: 300,
       height: 300,
-    };
+    }
 
-    visitWithEagerImages("/products/gift-packaging/adb102");
+    visitWithEagerImages('/products/gift-packaging/adb102');
     cy.wait(3000);
-    cy.get(".product-details__buttons__add-to-cart button").click();
+    cy.get('.product-details__buttons__add-to-cart button').click();
 
     // Assert mini cart.
-    waitForAemAssetImages(".cart-mini-cart img", (images) => {
+    waitForAemAssetImages('.cart-mini-cart img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
             width: (expectedOptions.width * screenWidth) / 1920,
-          });
+          })
         }
       }
-    });
+    })
 
-    visitWithEagerImages("/cart");
+    visitWithEagerImages('/cart');
 
     // Assert cart.
-    waitForAemAssetImages(".cart-mini-cart img", (images) => {
+    waitForAemAssetImages('.cart-mini-cart img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
             width: (expectedOptions.width * screenWidth) / 1920,
-          });
+          })
         }
       }
-    });
+    })
 
     // TODO: Once gift options are supported by AEM Assets, add tests for them.
   });
 
-  it("[My Account Dropin]: should load and show AEM Assets optimized images", () => {
+  it('[My Account Dropin]: should load and show AEM Assets optimized images', () => {
     if (!envConfig.user.email || !envConfig.user.password) {
-      cy.log("No email or password provided, skipping test");
+      cy.log('No email or password provided, skipping test');
       return;
     }
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]')
-      .eq(1)
-      .clear()
-      .type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
 
     cy.wait(2000);
-    cy.get(".auth-sign-in-form__button--submit").eq(1).click({ force: true });
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click( { force: true } );
     cy.wait(6000);
 
     visitWithEagerImages("/customer/account");
     const expectedOptions = {
-      protocol: "https://",
+      protocol: 'https://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
-    };
+    }
 
-    waitForAemAssetImages(".account-orders-list-card__images img", (images) => {
+    waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
           width: 65,
           height: 65,
+
         });
       }
     });
   });
 
-  it("[Order Dropin]: should load and show AEM Assets optimized images", () => {
+  it('[Order Dropin]: should load and show AEM Assets optimized images', () => {
     if (!envConfig.user.email || !envConfig.user.password) {
-      cy.log("No email or password provided, skipping test");
+      cy.log('No email or password provided, skipping test');
       return;
     }
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]')
-      .eq(1)
-      .clear()
-      .type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
 
     cy.wait(2000);
-    cy.get(".auth-sign-in-form__button--submit").eq(1).click({ force: true });
+    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
     cy.wait(6000);
 
     const expectedOptions = {
-      protocol: "https://",
+      protocol: 'https://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
-    };
+    }
 
     // 1. Test Order List
     visitWithEagerImages("/customer/orders");
-    waitForAemAssetImages(".account-orders-list-card__images img", (images) => {
+    waitForAemAssetImages('.account-orders-list-card__images img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -309,10 +285,8 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
     });
 
     // 2. Test Order Details page
-    visitWithEagerImages(
-      `/customer/order-details?orderRef=${envConfig.user.order}`,
-    );
-    waitForAemAssetImages(".dropin-cart-item img", (images) => {
+    visitWithEagerImages(`/customer/order-details?orderRef=${envConfig.user.order}`);
+    waitForAemAssetImages('.dropin-cart-item img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -324,54 +298,42 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
 
     // 3. Test Returns List
     visitWithEagerImages("customer/returns");
-    waitForAemAssetImages(
-      ".order-returns-list-content__images img",
-      (images) => {
-        for (const image of images) {
-          expectAemAssetsImage(image.src, {
-            ...expectedOptions,
-            width: 85,
-            height: 114,
-          });
-        }
-      },
-    );
+    waitForAemAssetImages('.order-returns-list-content__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 85,
+          height: 114,
+        });
+      }
+    });
 
     // 4. Test Order Returns in a specific order
-    visitWithEagerImages(
-      `/customer/order-details?orderRef=${envConfig.user.returnedOrder}`,
-    );
+    visitWithEagerImages(`/customer/order-details?orderRef=${envConfig.user.returnedOrder}`);
     cy.wait(3000);
-    waitForAemAssetImages(
-      ".order-returns-list-content__images img",
-      (images) => {
-        for (const image of images) {
-          expectAemAssetsImage(image.src, {
-            ...expectedOptions,
-            width: 85,
-            height: 114,
-          });
-        }
-      },
-    );
+    waitForAemAssetImages('.order-returns-list-content__images img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, {
+          ...expectedOptions,
+          width: 85,
+          height: 114,
+        });
+      }
+    });
 
     // 5. Test Create Return flow
-    visitWithEagerImages(
-      `/customer/order-details?orderRef=${envConfig.user.order}`,
-    );
-    cy.get(".order-order-actions__wrapper button").contains("Return").click();
+    visitWithEagerImages(`/customer/order-details?orderRef=${envConfig.user.order}`);
+    cy.get('.order-order-actions__wrapper button').contains('Return').click();
 
-    waitForAemAssetImages(".order-return-order-product-list img", () => {
+    waitForAemAssetImages('.order-return-order-product-list img', () => {
       cy.get(".dropin-checkbox__checkbox").each(($checkbox) => {
         cy.wrap($checkbox).click({ force: true });
       });
 
-      cy.get(".order-create-return button")
-        .contains("Continue")
-        .click({ force: true });
+      cy.get(".order-create-return button").contains("Continue").click({ force: true });
     });
 
-    waitForAemAssetImages(".order-return-reason-form img", (images) => {
+    waitForAemAssetImages('.order-return-reason-form img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, {
           ...expectedOptions,
@@ -382,122 +344,118 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
     });
   });
 
-  it("[Checkout Dropin]: should load and show AEM Assets optimized images", () => {
-    visitWithEagerImages("/products/gift-packaging/adb102");
+  it('[Checkout Dropin]: should load and show AEM Assets optimized images', () => {
+    visitWithEagerImages('/products/gift-packaging/adb102');
 
-    cy.get(".product-details__buttons__add-to-cart button")
-      .should("be.visible")
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
       .click();
 
     cy.wait(3000);
-    visitWithEagerImages("/checkout");
+    visitWithEagerImages('/checkout');
 
     const expectedOptions = {
-      protocol: "https://",
+      protocol: 'https://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
       width: 300,
       height: 300,
     };
 
-    waitForAemAssetImages(".checkout__cart-summary img", (images) => {
+    waitForAemAssetImages('.checkout__cart-summary img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
             width: (expectedOptions.width * screenWidth) / 1920,
-          });
+          })
         }
       }
-    });
+    })
   });
 
-  it("[Recommendations Dropin]: should load and show AEM Assets optimized images", () => {
+  it('[Recommendations Dropin]: should load and show AEM Assets optimized images', () => {
     // Visit products to populate "Recently Viewed" recommendations.
     // Wait a bit to ensure data is collected by Adobe Analytics.
-    visitWithEagerImages("/products/gift-packaging/adb102");
+    visitWithEagerImages('/products/gift-packaging/adb102');
     cy.wait(3000);
 
-    visitWithEagerImages("/products/denim-apron/adb119");
+    visitWithEagerImages('/products/denim-apron/adb119');
     cy.wait(3000);
 
     visitWithEagerImages(envConfig.prexDraft);
     const expectedOptions = {
-      protocol: "https://",
+      protocol: 'https://',
       environment: aemAssetsEnvironment,
-      format: "webp",
+      format: 'webp',
       quality: 80,
       width: 300,
       height: 300,
     };
 
-    waitForAemAssetImages(".recommendations-product-list img", (images) => {
+    waitForAemAssetImages('.recommendations-product-list img', (images) => {
       for (const image of images) {
         expectAemAssetsImage(image.src, expectedOptions);
 
         for (const { url, screenWidth, density } of image.srcsetEntries) {
           expect(density).to.be.undefined;
-          expect(screenWidth).to.be.a("number");
+          expect(screenWidth).to.be.a('number');
 
           expectAemAssetsImage(url, {
             ...expectedOptions,
             width: (expectedOptions.width * screenWidth) / 1920,
-          });
+          })
         }
       }
     });
   });
 
-  it(
-    "[Wishlist Dropin]: should load and show AEM Assets optimized images",
-    { tags: "@skipSaas" },
-    () => {
-      visitWithEagerImages("/products/denim-apron/adb119");
-      cy.get(".product-details__buttons__add-to-wishlist button")
-        .should("be.visible")
-        .click();
-      cy.wait(2000);
+  it('[Wishlist Dropin]: should load and show AEM Assets optimized images', { tags: "@skipSaas" }, () => {
+    visitWithEagerImages('/products/denim-apron/adb119');
+    cy.get('.product-details__buttons__add-to-wishlist button')
+      .should('be.visible')
+      .click();
+    cy.wait(2000);
 
-      visitWithEagerImages("/wishlist");
-      cy.wait(3000);
+    visitWithEagerImages('/wishlist');
+    cy.wait(3000);
 
-      const expectedOptions = {
-        protocol: "http://",
-        environment: aemAssetsEnvironment,
-        format: "webp",
-        quality: 80,
-        width: 288,
-        height: 288,
-      };
+    const expectedOptions = {
+      protocol: 'http://',
+      environment: aemAssetsEnvironment,
+      format: 'webp',
+      quality: 80,
+      width: 288,
+      height: 288,
+    };
 
-      const srcSetExpectedOptions = {
-        ...expectedOptions,
-        protocol: "//",
-      };
+    const srcSetExpectedOptions = {
+      ...expectedOptions,
+      protocol: '//',
+    };
 
-      waitForAemAssetImages(".wishlist-wishlist img", (images) => {
-        for (const image of images) {
-          expectAemAssetsImage(image.src, expectedOptions);
+    waitForAemAssetImages('.wishlist-wishlist img', (images) => {
+      for (const image of images) {
+        expectAemAssetsImage(image.src, expectedOptions);
 
-          for (const { url, screenWidth, density } of image.srcsetEntries) {
-            expect(density).to.be.undefined;
-            expect(screenWidth).to.be.a("number");
+        for (const { url, screenWidth, density } of image.srcsetEntries) {
+          expect(density).to.be.undefined;
+          expect(screenWidth).to.be.a('number');
 
-            expectAemAssetsImage(url, {
-              ...srcSetExpectedOptions,
-              width: (expectedOptions.width * screenWidth) / 1920,
-            });
-          }
+          expectAemAssetsImage(url, {
+            ...srcSetExpectedOptions,
+            width: (expectedOptions.width * screenWidth) / 1920,
+          })
         }
-      });
-    },
-  );
+      }
+    });
+  });
 });
 
 /**
@@ -506,16 +464,12 @@ describe("AEM Assets enabled", { tags: ["@skipSaas", "@skipPaas"] }, () => {
  * @param {(images: import('../../support/index').ImageData[]) => void} callback - The callback to call with the images.
  */
 function waitForAemAssetImages(selector, callback) {
-  cy.waitForImages(
-    selector,
-    (images) => {
-      expect(images.length).to.be.greaterThan(0);
-      callback(images);
-    },
-    (image) => {
-      expect(image.src).to.include("adobeaemcloud.com");
-    },
-  );
+  cy.waitForImages(selector, (images) => {
+    expect(images.length).to.be.greaterThan(0);
+    callback(images);
+  }, (image) => {
+    expect(image.src).to.include("adobeaemcloud.com");
+  });
 }
 
 /**
@@ -528,13 +482,11 @@ function visitWithEagerImages(url) {
   return cy.visit(url, {
     onBeforeLoad(win) {
       // Force eager loading for all images
-      Object.defineProperty(win.HTMLImageElement.prototype, "loading", {
+      Object.defineProperty(win.HTMLImageElement.prototype, 'loading', {
         configurable: true,
-        get() {
-          return "eager";
-        },
-        set() {},
+        get() { return 'eager'; },
+        set() {}
       });
-    },
+    }
   });
 }

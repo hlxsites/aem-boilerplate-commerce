@@ -29,7 +29,7 @@ import {
   quickOrderSearchResults,
   quickOrderSearchResultItem,
   quickOrderAddAllToCartButton,
-} from '../../fields/index.js';
+} from "../../fields/index.js";
 /**
  * @fileoverview B2B Quick Order E2E Journey Tests.
  *
@@ -82,9 +82,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     cy.wait(2000);
 
-    cy.get(quickOrderItemsContainer, { timeout: 10000 }).should(
-      "be.visible",
-    );
+    cy.get(quickOrderItemsContainer, { timeout: 10000 }).should("be.visible");
     cy.get(quickOrderMultipleSkuContainer, { timeout: 10000 }).should(
       "be.visible",
     );
@@ -224,7 +222,10 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // ========== STEP 4: Remove one item and add to cart ==========
 
     cy.get(quickOrderItemsContainer).within(() => {
-      cy.get(quickOrderItemCard).last().find(quickOrderItemRemoveButton).click();
+      cy.get(quickOrderItemCard)
+        .last()
+        .find(quickOrderItemRemoveButton)
+        .click();
     });
     cy.wait(500);
 
@@ -241,7 +242,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // Return to quick order page for next test
     cy.visit("/quick-order");
     cy.wait(2000);
-    
+
     cy.logToTerminal("✅ JOURNEY 2: Complete - CSV workflow successful");
   });
 
@@ -316,7 +317,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // Return to quick order page for next test
     cy.visit("/quick-order");
     cy.wait(2000);
-    
+
     cy.logToTerminal(
       "✅ JOURNEY 3: Complete - Search and configurable products workflow successful",
     );
