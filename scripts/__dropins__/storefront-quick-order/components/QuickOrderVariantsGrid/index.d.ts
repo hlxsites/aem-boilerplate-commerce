@@ -14,11 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './quickOrderMultipleSku.types';
-export * from './quickOrderCsvUpload.types';
-export * from './quickOrderItems.types';
-export * from './search.types';
-export * from './quickOrderNotificationBanner.types';
-export * from './quickOrderDisabledOverlay.types';
-export * from './quickOrderVariantsGrid.types';
+export * from './QuickOrderVariantsGrid';
+export { QuickOrderVariantsGrid as default } from './QuickOrderVariantsGrid';
 //# sourceMappingURL=index.d.ts.map

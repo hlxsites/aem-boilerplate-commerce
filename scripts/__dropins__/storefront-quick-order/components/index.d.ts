@@ -21,4 +21,6 @@ export * from './QuickOrderListItem/QuickOrderListItem';
 export * from './Search/Search';
 export * from './QuickOrderNotificationBanner/QuickOrderNotificationBanner';
 export * from './QuickOrderDisabledOverlay/QuickOrderDisabledOverlay';
+export * from './QuickOrderVariantsGrid/QuickOrderVariantsGrid';
+export * from './QuickOrderVariantsActions/QuickOrderVariantsActions';
 //# sourceMappingURL=index.d.ts.map

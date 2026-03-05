@@ -67,6 +67,26 @@ declare const _default: {
                 "partialSuccess": "{count} of {total} products were added to the cart. Some products could not be added",
                 "unexpectedError": "An unexpected error has occurred"
             }
+        },
+        "VariantsGrid": {
+            "imageColumn": "Image",
+            "attributesColumn": "Attributes",
+            "variantColumn": "Variant",
+            "skuColumn": "SKU",
+            "availabilityColumn": "Availability",
+            "priceColumn": "Price",
+            "minOrderColumn": "Min Order / Pack Size",
+            "quantityColumn": "Quantity",
+            "subtotalColumn": "Subtotal",
+            "clearButton": "Clear",
+            "saveToCsvButton": "Save to CSV",
+            "collectDataButton": "Collect Data",
+            "inStock": "In Stock",
+            "outOfStock": "Out of Stock",
+            "tableCaption": "Product Variants Grid",
+            "quantityLabel": "Quantity for",
+            "showAll": "Show All Items",
+            "showLess": "Show Less"
         }
     }
 };
