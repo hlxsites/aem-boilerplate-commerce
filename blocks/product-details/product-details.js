@@ -104,6 +104,8 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
+            <div class="product-details__test_events-add-to-cart"></div>
+            <div class="product-details__test_events-checkout"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -125,6 +127,8 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $testEventsAddToCart = fragment.querySelector('.product-details__test_events-add-to-cart');
+  const $testEventsCheckout = fragment.querySelector('.product-details__test_events-checkout');
 
   block.replaceChildren(fragment);
 
