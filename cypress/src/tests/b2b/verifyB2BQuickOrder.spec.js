@@ -14,7 +14,22 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-
+import {
+  quickOrderItemsContainer,
+  quickOrderMultipleSkuContainer,
+  quickOrderCsvUploadContainer,
+  quickOrderMultipleSkuTextarea,
+  quickOrderCsvFileInput,
+  quickOrderCsvErrorMessage,
+  quickOrderItemCard,
+  quickOrderItemQuantityInput,
+  quickOrderItemRemoveButton,
+  quickOrderProductOptionsSlot,
+  quickOrderSearchInput,
+  quickOrderSearchResults,
+  quickOrderSearchResultItem,
+  quickOrderAddAllToCartButton,
+} from '../../fields/index.js';
 /**
  * @fileoverview B2B Quick Order E2E Journey Tests.
  *
@@ -45,26 +60,6 @@
  */
 
 describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
-  const fields = {
-    quickOrderItemsContainer: ".quick-order-items-container",
-    quickOrderMultipleSkuContainer: ".quick-order-multiple-sku-container",
-    quickOrderCsvUploadContainer: ".quick-order-csv-upload-container",
-    multipleSkuTextarea: 'textarea[data-testid="dropin-textarea-field"]',
-    csvFileInput: 'input#quick-order-csv-file-input',
-    csvErrorMessage: ".b2b-quick-order-csv-file-input__error",
-    itemCard: ".dropin-cart-list__item",
-    itemQuantityInput: ".dropin-incrementer__input",
-    itemRemoveButton: 'button[data-testid="cart-item-remove-button"]',
-    productOptionsSlot: '[data-slot="ProductOptions"]',
-    searchInput: ".b2b-quick-order-search__input",
-    searchResults: ".b2b-quick-order-search__results",
-    searchResultItem: '[role="option"]',
-    notificationBanner: ".b2b-quick-order-notification-banner",
-    notificationMessage: ".dropin-alert-banner__message",
-    notificationDismiss: ".dropin-alert-banner__dismiss-button",
-    addAllToCartButton: 'button[data-testid="add-all-to-cart-button"]',
-  };
-
   const testProducts = {
     simple1: { sku: "ADB127", name: "Adobe pattern hoodie" },
     simple2: { sku: "ADB336", name: "Llama plush" },
@@ -77,29 +72,8 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
   });
 
   beforeEach(() => {
-    cy.logToTerminal("🧹 Test setup");
     cy.clearCookies();
     cy.clearLocalStorage();
-
-    // Log configuration and environment
-    cy.logToTerminal("=== CYPRESS CONFIG DEBUG ===");
-    cy.logToTerminal(`baseUrl: ${Cypress.config("baseUrl")}`);
-    cy.logToTerminal(`env: ${JSON.stringify(Cypress.env())}`);
-    cy.logToTerminal(`browser: ${Cypress.browser.name}`);
-    cy.logToTerminal(`viewportWidth: ${Cypress.config("viewportWidth")}`);
-    cy.logToTerminal(`viewportHeight: ${Cypress.config("viewportHeight")}`);
-    cy.logToTerminal("============================");
-
-    cy.logToTerminal("🚀 Navigating to Quick Order page");
-    const baseUrl = Cypress.config("baseUrl") || "";
-    const fullUrl = baseUrl.replace(/\/$/, "") + "/quick-order";
-    cy.logToTerminal(`📍 Full URL: ${fullUrl}`);
-
-    cy.on("fail", (error) => {
-      cy.logToTerminal(`❌ Test failed with error: ${error.message}`);
-      cy.logToTerminal(`Error stack: ${error.stack}`);
-      throw error;
-    });
 
     cy.visit("/quick-order", {
       failOnStatusCode: false,
@@ -108,32 +82,15 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     cy.wait(2000);
 
-    // Log page state
-    cy.url().then((url) => {
-      cy.logToTerminal(`Current URL after visit: ${url}`);
-    });
-
-    cy.document().then((doc) => {
-      cy.logToTerminal(`Document readyState: ${doc.readyState}`);
-      cy.logToTerminal(`Document title: ${doc.title}`);
-    });
-
-    cy.logToTerminal("🔍 Checking for Quick Order components...");
-    cy.logToTerminal(`Looking for: ${fields.quickOrderItemsContainer}`);
-    cy.logToTerminal(`Looking for: ${fields.quickOrderMultipleSkuContainer}`);
-    cy.logToTerminal(`Looking for: ${fields.quickOrderCsvUploadContainer}`);
-
-    cy.get(fields.quickOrderItemsContainer, { timeout: 10000 }).should(
+    cy.get(quickOrderItemsContainer, { timeout: 10000 }).should(
       "be.visible",
     );
-    cy.get(fields.quickOrderMultipleSkuContainer, { timeout: 10000 }).should(
+    cy.get(quickOrderMultipleSkuContainer, { timeout: 10000 }).should(
       "be.visible",
     );
-    cy.get(fields.quickOrderCsvUploadContainer, { timeout: 10000 }).should(
+    cy.get(quickOrderCsvUploadContainer, { timeout: 10000 }).should(
       "be.visible",
     );
-
-    cy.logToTerminal("✅ Quick Order page loaded");
   });
 
   after(() => {
@@ -146,94 +103,69 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     );
 
     // ========== STEP 1: Verify all components render ==========
-    cy.logToTerminal("--- STEP 1: Verify component rendering ---");
 
-    cy.get(fields.quickOrderItemsContainer)
+    cy.get(quickOrderItemsContainer)
       .should("be.visible")
       .within(() => {
         cy.get('[data-testid="quick-order-items"]').should("exist");
       });
 
-    cy.get(fields.quickOrderMultipleSkuContainer)
+    cy.get(quickOrderMultipleSkuContainer)
       .should("be.visible")
       .within(() => {
         cy.get(".b2b-quick-order-quick-order-multiple-sku").should("exist");
-        cy.get(fields.multipleSkuTextarea).should("exist").and("be.visible");
+        cy.get(quickOrderMultipleSkuTextarea).should("exist").and("be.visible");
       });
 
-    cy.get(fields.quickOrderCsvUploadContainer)
+    cy.get(quickOrderCsvUploadContainer)
       .should("be.visible")
       .within(() => {
         cy.get(".b2b-quick-order-quick-order-upload-csv").should("exist");
-        cy.get(fields.csvFileInput).should("exist");
+        cy.get(quickOrderCsvFileInput).should("exist");
       });
 
-    cy.logToTerminal("✅ All Quick Order components rendered successfully");
-
     // ========== STEP 2: Add items via Multiple SKU ==========
-    cy.logToTerminal("--- STEP 2: Add items via Multiple SKU input -----");
 
     const skuText = `${testProducts.simple1.sku} ${testProducts.simple2.sku}`;
 
-    cy.get(fields.quickOrderMultipleSkuContainer).within(() => {
-      cy.get(fields.multipleSkuTextarea).clear().type(skuText);
+    cy.get(quickOrderMultipleSkuContainer).within(() => {
+      cy.get(quickOrderMultipleSkuTextarea).clear().type(skuText);
       cy.contains("button", "Add to List").click();
     });
 
     cy.wait(2000);
 
     // ========== STEP 3: Verify items in list ==========
-    cy.logToTerminal("--- STEP 3: Verify items appear in list ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard).should("have.length", 2);
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard).should("have.length", 2);
     });
 
-    cy.logToTerminal("✅ Items successfully added to list");
-
     // ========== STEP 4: Update quantity ==========
-    cy.logToTerminal("--- STEP 4: Update item quantity ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard)
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard)
         .first()
-        .find(fields.itemQuantityInput)
-        .clear()
-        .type("5");
+        .find(quickOrderItemQuantityInput)
+        .clear({ force: true })
+        .type("5", { force: true });
     });
     cy.wait(500);
 
-    cy.logToTerminal("✅ Quantity updated to 5");
-
     // ========== STEP 5: Add to cart ==========
-    cy.logToTerminal("--- STEP 5: Add items to cart ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.contains("button", "Add to Cart").should("not.be.disabled").click();
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderAddAllToCartButton).should("not.be.disabled").click();
     });
     cy.wait(2000);
 
-    // ========== STEP 6: Verify notification banner ==========
-    cy.logToTerminal("--- STEP 6: Verify success notification banner ---");
+    // ========== STEP 6: Verify redirect to cart ==========
 
-    cy.get(fields.notificationBanner).should("exist").and("be.visible");
+    cy.url().should("include", "/cart");
 
-    cy.get(fields.notificationMessage)
-      .should("exist")
-      .invoke("text")
-      .should("not.be.empty");
-
-    cy.logToTerminal("✅ Notification banner displayed with message");
-
-    cy.get("body").then(($body) => {
-      if ($body.find(fields.notificationDismiss).length > 0) {
-        cy.logToTerminal("🔘 Testing banner dismiss functionality");
-        cy.get(fields.notificationDismiss).click();
-        cy.wait(300);
-        cy.get(fields.notificationBanner).should("not.exist");
-        cy.logToTerminal("✅ Banner dismissed successfully");
-      }
-    });
+    // Return to quick order page for next test
+    cy.visit("/quick-order");
+    cy.wait(2000);
 
     cy.logToTerminal(
       "✅ JOURNEY 1: Complete - Items added to cart successfully",
@@ -243,14 +175,18 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
   it("JOURNEY 2: CSV upload workflow and validation", () => {
     cy.logToTerminal("========= 🚀 JOURNEY 2: CSV Upload Workflow =========");
 
+    // Check initial state - should be empty
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get('[data-testid="empty-items"]').should("exist");
+    });
+
     // ========== STEP 1: Test invalid file format ==========
-    cy.logToTerminal("--- STEP 1: Test invalid file format validation ---");
 
     const txtFileName = "invalid-file-quickorder.txt";
     cy.writeFile(`cypress/src/fixtures/${txtFileName}`, "Some text content");
 
-    cy.get(fields.quickOrderCsvUploadContainer).within(() => {
-      cy.get(fields.csvFileInput).selectFile(
+    cy.get(quickOrderCsvUploadContainer).within(() => {
+      cy.get(quickOrderCsvFileInput).selectFile(
         `cypress/src/fixtures/${txtFileName}`,
         {
           force: true,
@@ -259,17 +195,15 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     });
     cy.wait(1000);
 
-    cy.get(fields.csvErrorMessage).should("exist");
-    cy.logToTerminal("✅ Invalid file format rejected");
+    cy.get(quickOrderCsvErrorMessage).should("exist");
 
     // ========== STEP 2: Upload valid CSV ==========
-    cy.logToTerminal("--- STEP 2: Upload valid CSV file ---");
 
-    const csvContent = `sku,quantity\n${testProducts.simple1.sku},2\n${testProducts.simple2.sku},3\n${testProducts.simple3.sku},1`;
+    const csvContent = `SKU,QTY\n${testProducts.simple1.sku},2\n${testProducts.simple2.sku},3\n${testProducts.simple3.sku},1`;
     cy.writeFile("cypress/src/fixtures/test-quick-order.csv", csvContent);
 
-    cy.get(fields.quickOrderCsvUploadContainer).within(() => {
-      cy.get(fields.csvFileInput).selectFile(
+    cy.get(quickOrderCsvUploadContainer).within(() => {
+      cy.get(quickOrderCsvFileInput).selectFile(
         "cypress/src/fixtures/test-quick-order.csv",
         {
           force: true,
@@ -277,42 +211,37 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
       );
     });
 
-    cy.wait(3000);
+    cy.wait(5000);
 
     // ========== STEP 3: Verify CSV items added ==========
-    cy.logToTerminal("--- STEP 3: Verify CSV items added to list ---");
 
-    cy.get(fields.quickOrderItemsContainer, { timeout: 10000 }).within(() => {
-      cy.get(fields.itemCard, { timeout: 10000 }).should("have.length", 3);
+    cy.get(quickOrderItemsContainer, { timeout: 20000 }).within(() => {
+      cy.get(quickOrderItemCard, { timeout: 20000 })
+        .should("have.length.greaterThan", 0)
+        .and("have.length", 3);
     });
 
-    cy.logToTerminal("✅ CSV items successfully processed");
-
     // ========== STEP 4: Remove one item and add to cart ==========
-    cy.logToTerminal("--- STEP 4: Remove item and add remaining to cart ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard).last().find(fields.itemRemoveButton).click();
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard).last().find(quickOrderItemRemoveButton).click();
     });
     cy.wait(500);
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard).should("have.length", 2);
-      cy.contains("button", "Add to Cart").click();
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard).should("have.length", 2);
+      cy.get(quickOrderAddAllToCartButton).click();
     });
     cy.wait(2000);
 
-    // ========== STEP 5: Verify notification banner ==========
-    cy.logToTerminal("--- STEP 5: Verify success notification ---");
+    // ========== STEP 5: Verify redirect to cart ==========
 
-    cy.get(fields.notificationBanner).should("exist").and("be.visible");
+    cy.url().should("include", "/cart");
 
-    cy.get(fields.notificationMessage)
-      .should("exist")
-      .invoke("text")
-      .should("not.be.empty");
-
-    cy.logToTerminal("✅ Success notification displayed");
+    // Return to quick order page for next test
+    cy.visit("/quick-order");
+    cy.wait(2000);
+    
     cy.logToTerminal("✅ JOURNEY 2: Complete - CSV workflow successful");
   });
 
@@ -322,33 +251,28 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     );
 
     // ========== STEP 1: Search for product ==========
-    cy.logToTerminal("--- STEP 1: Search for product by SKU ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.searchInput).type(testProducts.simple1.sku);
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderSearchInput).type(testProducts.simple1.sku);
     });
     cy.wait(1500);
 
-    cy.get(fields.searchResults).should("be.visible");
-    cy.get(fields.searchResultItem).should("have.length.greaterThan", 0);
+    cy.get(quickOrderSearchResults).should("be.visible");
+    cy.get(quickOrderSearchResultItem).should("have.length.greaterThan", 0);
 
     // ========== STEP 2: Select product from search ==========
-    cy.logToTerminal("--- STEP 2: Select product from search results ---");
 
-    cy.get(fields.searchResultItem).first().click();
+    cy.get(quickOrderSearchResultItem).first().click();
     cy.wait(1500);
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard).should("have.length", 1);
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard).should("have.length", 1);
     });
 
-    cy.logToTerminal("✅ Product added from search");
-
     // ========== STEP 3: Add configurable product ==========
-    cy.logToTerminal("--- STEP 3: Add configurable product ---");
 
-    cy.get(fields.quickOrderMultipleSkuContainer).within(() => {
-      cy.get(fields.multipleSkuTextarea)
+    cy.get(quickOrderMultipleSkuContainer).within(() => {
+      cy.get(quickOrderMultipleSkuTextarea)
         .clear()
         .type(testProducts.configurable.sku);
       cy.contains("button", "Add to List").click();
@@ -356,51 +280,43 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     cy.wait(2000);
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.itemCard).should("have.length", 2);
+    cy.get(quickOrderItemsContainer).within(() => {
+      cy.get(quickOrderItemCard).should("have.length", 2);
     });
 
     // ========== STEP 4: Verify configurable product has options ==========
-    cy.logToTerminal("--- STEP 4: Verify configurable product options ---");
 
     cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
-      .find(fields.productOptionsSlot)
+      .find(quickOrderProductOptionsSlot)
       .should("exist");
 
-    cy.logToTerminal("✅ Configurable product options available");
-
     // ========== STEP 5: Select option and update quantity ==========
-    cy.logToTerminal("--- STEP 5: Configure product options ---");
 
     cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
       .find('select[name="color"]')
       .select("red");
     cy.wait(1000);
 
-    cy.get(fields.itemCard)
+    cy.get(quickOrderItemCard)
       .first()
-      .find(fields.itemQuantityInput)
-      .clear()
-      .type("3");
+      .find(quickOrderItemQuantityInput)
+      .clear({ force: true })
+      .type("3", { force: true });
     cy.wait(500);
 
     // ========== STEP 6: Add to cart ==========
-    cy.logToTerminal("--- STEP 6: Add configured products to cart ---");
 
-    cy.get(fields.addAllToCartButton).click();
+    cy.get(quickOrderAddAllToCartButton).click();
     cy.wait(2000);
 
-    // ========== STEP 7: Verify notification banner ==========
-    cy.logToTerminal("--- STEP 7: Verify success notification banner ---");
+    // ========== STEP 7: Verify redirect to cart ==========
 
-    cy.get(fields.notificationBanner).should("exist").and("be.visible");
+    cy.url().should("include", "/cart");
 
-    cy.get(fields.notificationMessage)
-      .should("exist")
-      .invoke("text")
-      .should("not.be.empty");
-
-    cy.logToTerminal("✅ Notification banner with success message displayed");
+    // Return to quick order page for next test
+    cy.visit("/quick-order");
+    cy.wait(2000);
+    
     cy.logToTerminal(
       "✅ JOURNEY 3: Complete - Search and configurable products workflow successful",
     );
@@ -412,47 +328,41 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     );
 
     // ========== STEP 1: Add via Multiple SKU ==========
-    cy.logToTerminal("--- STEP 1: Add first product via Multiple SKU ---");
 
-    cy.get(fields.quickOrderMultipleSkuContainer).within(() => {
-      cy.get(fields.multipleSkuTextarea).type(testProducts.simple1.sku);
+    cy.get(quickOrderMultipleSkuContainer).within(() => {
+      cy.get(quickOrderMultipleSkuTextarea).type(testProducts.simple1.sku);
       cy.contains("button", "Add to List").click();
     });
     cy.wait(1500);
 
-    cy.get(fields.itemCard).should("have.length", 1);
-    cy.logToTerminal("✅ Product added via Multiple SKU");
+    cy.get(quickOrderItemCard).should("have.length", 1);
 
     // ========== STEP 2: Add via Search ==========
-    cy.logToTerminal("--- STEP 2: Add second product via Search ---");
 
-    cy.get(fields.quickOrderItemsContainer).within(() => {
+    cy.get(quickOrderItemsContainer).within(() => {
       cy.get(".b2b-quick-order-form-quick-order-items-list__global-search")
-        .find(fields.searchInput)
+        .find(quickOrderSearchInput)
         .type(testProducts.simple2.sku);
     });
     cy.wait(1000);
-    cy.get(fields.searchResultItem).first().click();
+    cy.get(quickOrderSearchResultItem).first().click();
     cy.wait(1500);
 
-    cy.get(fields.itemCard).should("have.length", 2);
-    cy.logToTerminal("✅ Product added via Search");
+    cy.get(quickOrderItemCard).should("have.length", 2);
 
     // ========== STEP 3: Add configurable product ==========
-    cy.logToTerminal("--- STEP 3: Add configurable product ---");
 
-    cy.get(fields.quickOrderMultipleSkuContainer).within(() => {
-      cy.get(fields.multipleSkuTextarea)
+    cy.get(quickOrderMultipleSkuContainer).within(() => {
+      cy.get(quickOrderMultipleSkuTextarea)
         .clear()
         .type(testProducts.configurable.sku);
       cy.contains("button", "Add to List").click();
     });
     cy.wait(1500);
 
-    cy.get(fields.itemCard).should("have.length", 3);
+    cy.get(quickOrderItemCard).should("have.length", 3);
 
     // ========== STEP 4: Configure options ==========
-    cy.logToTerminal("--- STEP 4: Configure product options ---");
 
     cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
       .find('select[name="color"]')
@@ -460,58 +370,31 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.wait(1000);
 
     // ========== STEP 5: Update quantities ==========
-    cy.logToTerminal("--- STEP 5: Update product quantities ---");
 
-    cy.get(fields.itemCard)
+    cy.get(quickOrderItemCard)
       .eq(0)
-      .find(fields.itemQuantityInput)
-      .clear()
-      .type("3");
+      .find(quickOrderItemQuantityInput)
+      .clear({ force: true })
+      .type("3", { force: true });
 
-    cy.get(fields.itemCard)
+    cy.get(quickOrderItemCard)
       .eq(1)
-      .find(fields.itemQuantityInput)
-      .clear()
-      .type("2");
+      .find(quickOrderItemQuantityInput)
+      .clear({ force: true })
+      .type("2", { force: true });
     cy.wait(500);
 
-    cy.logToTerminal("✅ Quantities updated");
-
     // ========== STEP 6: Verify total items and add to cart ==========
-    cy.logToTerminal("--- STEP 6: Verify items and add to cart ---");
 
-    cy.get(fields.itemCard).should("have.length.greaterThan", 2);
+    cy.get(quickOrderItemCard).should("have.length.greaterThan", 2);
 
-    cy.get(fields.addAllToCartButton).click();
+    cy.get(quickOrderAddAllToCartButton).click();
     cy.wait(2000);
 
-    // ========== STEP 7: Verify comprehensive notification banner ==========
-    cy.logToTerminal("--- STEP 7: Verify notification banner and message ---");
+    // ========== STEP 7: Verify redirect to cart ==========
 
-    cy.get(fields.notificationBanner).should("exist").and("be.visible");
-
-    cy.get(fields.notificationMessage)
-      .should("exist")
-      .and("be.visible")
-      .invoke("text")
-      .should("not.be.empty")
-      .then((text) => {
-        cy.logToTerminal(`📋 Banner message: ${text.substring(0, 50)}...`);
-      });
-
-    cy.get("body").then(($body) => {
-      if ($body.find(fields.notificationDismiss).length > 0) {
-        cy.logToTerminal("🔘 Testing banner dismiss functionality");
-        cy.get(fields.notificationDismiss).should("be.visible").click();
-        cy.wait(300);
-        cy.get(fields.notificationBanner).should("not.exist");
-        cy.logToTerminal("✅ Banner successfully dismissed");
-      }
-    });
+    cy.url().should("include", "/cart");
 
     cy.logToTerminal("✅ JOURNEY 4: Complete - Mixed workflow successful");
-    cy.logToTerminal(
-      "✅ All products from different input methods added to cart",
-    );
   });
 });

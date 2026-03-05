@@ -1,4 +1,4 @@
-describe.skip("Verify stock notification message", () => {
+describe("Verify stock notification message", () => {
   it("Verify low stock and max qty allowed notification message", () => {
     cy.visit("/products/play-create-repeat-crewneck/adb388");
     cy.get(".dropin-incrementer__input").clear().type("1000");
