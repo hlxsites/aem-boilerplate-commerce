@@ -82,6 +82,11 @@ function updatePrimaryCTA(buttonInstance, { isOutOfStock, isUpdateMode, labels }
   }
 }
 
+function updateStockStateClasses(configurationElement, isOutOfStock) {
+  if (!configurationElement) return;
+  configurationElement.classList.toggle('product-details__configuration--out-of-stock', isOutOfStock);
+}
+
 export default async function decorate(block) {
   const product = events.lastPayload('pdp/data') ?? null;
   const labels = await fetchPlaceholders();
@@ -128,6 +133,7 @@ export default async function decorate(block) {
   const $price = fragment.querySelector('.product-details__price');
   const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
   const $shortDescription = fragment.querySelector('.product-details__short-description');
+  const $configuration = fragment.querySelector('.product-details__configuration');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
@@ -343,6 +349,7 @@ export default async function decorate(block) {
   // Track stock status and update CTA accordingly
   events.on('pdp/data', (data) => {
     isOutOfStock = data?.inStock === false;
+    updateStockStateClasses($configuration, isOutOfStock);
     updatePrimaryCTA(addToCart, { isOutOfStock, isUpdateMode, labels });
   }, { eager: true });
 
