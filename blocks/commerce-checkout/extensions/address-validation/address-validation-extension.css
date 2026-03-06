@@ -1,0 +1,4 @@
+/* Address Validation Extension Styles */
+.modal-content .checkout-address-validation {
+    padding: var(--spacing-medium);
+}

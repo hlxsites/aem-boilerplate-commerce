@@ -5,8 +5,8 @@
  * See README.md for documentation and examples.
  */
 
-// import testExtension from './test-extension/test-extension.js';
+import addressValidationExtension from './address-validation/address-validation-extension.js';
 
 export default [
-  // testExtension,
+  addressValidationExtension,
 ];
