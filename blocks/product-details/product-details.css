@@ -71,14 +71,6 @@
   margin-top: var(--spacing-xsmall);
 }
 
-/* TODO: Consider to remove this */
-.quick-order-variants-grid
-.b2b-quick-order-variants-grid__table
-.dropin-table__table
-.dropin-table__caption {
-  display: none;
-}
-
 @media (min-width: 900px) {
   .product-details__wrapper {
     grid-template-columns: repeat(var(--grid-3-columns), 1fr);

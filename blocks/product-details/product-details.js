@@ -59,7 +59,31 @@ function isProductPrerendered() {
 }
 
 // Function to update the Add to Cart button text
-function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
+function updateAddToCartButtonText(
+  addToCartInstance,
+  inCart,
+  labels,
+  isGridOrderingView,
+  gridOrderingSelectedVariants,
+) {
+  // Grid Ordering B2B feature flow
+  if (isGridOrderingView && addToCartInstance) {
+    const totalQuantity = gridOrderingSelectedVariants.reduce((acc, item) => {
+      const quantity = item.quantity || 0;
+      return acc + quantity;
+    }, 0);
+    const hasItems = totalQuantity > 0;
+
+    addToCartInstance.setProps((prev) => ({
+      ...prev,
+      children: hasItems
+        ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
+        : labels.Global?.AddProductToCart,
+      disabled: !hasItems,
+    }));
+    return;
+  }
+
   const buttonText = inCart
     ? labels.Global?.UpdateProductInCart
     : labels.Global?.AddProductToCart;
@@ -112,8 +136,7 @@ export default async function decorate(block) {
         <div class="product-details__attributes"></div>
       </div>
     </div>
-    <!-- TODO: Weird class name -->
-    <div class="product-details__quick-order__container"></div>
+    <div class="product-details__grid-ordering"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
@@ -130,7 +153,7 @@ export default async function decorate(block) {
   const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-  const $quickOrderContainer = fragment.querySelector('.product-details__quick-order__container');
+  const $girdOrderingContainer = fragment.querySelector('.product-details__grid-ordering');
 
   block.replaceChildren(fragment);
 
@@ -152,11 +175,10 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-  const isQuickOrderGridView = product
-    && product.sku
-    && product.productType === 'complex'
-    && !product.isBundle;
-  let selectedProductsList = [];
+
+  // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
+  const isGridOrderingView = product?.productType === 'complex' && !product?.isBundle;
+  let gridOrderingSelectedVariants = [];
 
   const [
     _galleryMobile,
@@ -169,6 +191,7 @@ export default async function decorate(block) {
     _giftCardOptions,
     _description,
     _attributes,
+    _gridOrdering,
     wishlistToggleBtn,
   ] = await Promise.all([
     // Gallery (Mobile)
@@ -209,7 +232,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    !isQuickOrderGridView
+    !isGridOrderingView
       ? pdpRendered.render(ProductOptions, {
         hideSelectedValue: false,
         slots: {
@@ -224,7 +247,7 @@ export default async function decorate(block) {
       : null,
 
     // Configuration  Quantity
-    !isQuickOrderGridView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
+    !isGridOrderingView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
 
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
@@ -232,33 +255,24 @@ export default async function decorate(block) {
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
-    quickOrderProvider.render(QuickOrderVariantsGrid, {
-      className: 'quick-order-variants-grid',
-      // variants: [],
-      columns: [
-        { key: 'image', label: 'Image' },
-        { key: 'variant', label: 'Variant' },
-        { key: 'sku', label: 'SKU' },
-        {
-          key: 'availability',
-          label: 'Availability',
-        },
-        { key: 'price', label: 'Price' },
-        { key: 'quantity', label: 'Quantity' },
-        { key: 'subtotal', label: 'Subtotal' },
-      ],
-      onVariantsLoaded: (_variants) => {
-        events.emit('quick-order/grid-ordering-list-updated', []); // Reset selected products when new variants are loaded
-      },
-      onTableDataChange: (data) => {
-        selectedProductsList = [...data];
-        events.emit('quick-order/grid-ordering-list-updated', data);
-      },
-      debounceMs: 300,
-    })($quickOrderContainer),
-
     // Attributes
-    !isQuickOrderGridView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
+    !isGridOrderingView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
+
+    // Grid Ordering
+    isGridOrderingView
+      ? quickOrderProvider.render(QuickOrderVariantsGrid, {
+        className: 'quick-order-variants-grid',
+        columns: [
+          { key: 'image', label: 'Image' },
+          { key: 'variant', label: 'Variant' },
+          { key: 'sku', label: 'SKU' },
+          { key: 'availability', label: 'Availability' },
+          { key: 'price', label: 'Price' },
+          { key: 'quantity', label: 'Quantity' },
+          { key: 'subtotal', label: 'Subtotal' },
+        ],
+      })($girdOrderingContainer)
+      : null,
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -271,16 +285,28 @@ export default async function decorate(block) {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
-      if (isQuickOrderGridView && selectedProductsList.length) {
-        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-        await addProductsToCart(selectedProductsList);
-        return;
-      }
-
       const buttonActionText = isUpdateMode
         ? labels.Global?.UpdatingInCart
         : labels.Global?.AddingToCart;
       try {
+        // --- Grid ordering flow ---
+        if (isGridOrderingView && gridOrderingSelectedVariants.length) {
+          addToCart.setProps((prev) => ({
+            ...prev,
+            children: labels.Global?.AddingToCart,
+            disabled: true,
+          }));
+
+          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+          await addProductsToCart(gridOrderingSelectedVariants);
+
+          // Reset Grid Ordering state after adding variants to cart
+          events.emit('quick-order/grid-ordering-reset-selected-variants');
+          gridOrderingSelectedVariants = [];
+
+          return;
+        }
+
         addToCart.setProps((prev) => ({
           ...prev,
           children: buttonActionText,
@@ -347,11 +373,17 @@ export default async function decorate(block) {
         });
       } finally {
         // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
-        // Re-enable button
+        updateAddToCartButtonText(
+          addToCart,
+          isUpdateMode,
+          labels,
+          isGridOrderingView,
+          gridOrderingSelectedVariants,
+        );
+        // Re-enable button (keep disabled for Grid Ordering flow)
         addToCart.setProps((prev) => ({
           ...prev,
-          disabled: false,
+          disabled: !!isGridOrderingView,
         }));
       }
     },
@@ -359,7 +391,9 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
-    if (isQuickOrderGridView) return;
+    // Pdp validation not relevant for Grid Ordering flow (no options selection available)
+    if (isGridOrderingView) return;
+
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({
       ...prev,
@@ -367,20 +401,18 @@ export default async function decorate(block) {
     }));
   }, { eager: true });
 
-  // TODO - Add comment
-  events.on('quick-order/grid-ordering-list-updated', (values) => {
-    if (!isQuickOrderGridView) return;
+  // Grid Ordering flow - Sync state and update Add To Cart button text on variants selection change
+  events.on('quick-order/grid-ordering-selected-variants', (variants) => {
+    if (!isGridOrderingView) return;
+    gridOrderingSelectedVariants = [...variants];
 
-    const totalQuantity = values.reduce((acc, item) => acc + (item.quantity || 0), 0);
-    const hasItems = totalQuantity > 0;
-
-    addToCart.setProps((prev) => ({
-      ...prev,
-      children: hasItems
-        ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
-        : labels.Global?.AddProductToCart,
-      disabled: !hasItems,
-    }));
+    updateAddToCartButtonText(
+      addToCart,
+      false,
+      labels,
+      isGridOrderingView,
+      gridOrderingSelectedVariants,
+    );
   }, { eager: true });
 
   // Handle option changes
@@ -467,7 +499,13 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
+      updateAddToCartButtonText(
+        addToCart,
+        itemIsInCart,
+        labels,
+        isGridOrderingView,
+        gridOrderingSelectedVariants,
+      );
     },
     { eager: true },
   );
@@ -479,14 +517,14 @@ export default async function decorate(block) {
     const isPrerendered = isProductPrerendered();
 
     if (isPrerendered) {
-      if (!isQuickOrderGridView) return;
+      if (!isGridOrderingView) return;
 
       const variants = await getProductVariants(product.sku);
       initQuickOrderGridOrdering(product, variants);
     } else {
       const variants = await getProductVariants(product.sku);
 
-      if (isQuickOrderGridView) {
+      if (isGridOrderingView) {
         initQuickOrderGridOrdering(product, variants);
       }
 
@@ -699,7 +737,5 @@ function initQuickOrderGridOrdering(product, variantsList) {
 
   if (filteredVariants.length === 0) return;
 
-  events.emit('quick-order/grid-ordering-variants', {
-    variants: filteredVariants,
-  });
+  events.emit('quick-order/grid-ordering-variants', filteredVariants);
 }

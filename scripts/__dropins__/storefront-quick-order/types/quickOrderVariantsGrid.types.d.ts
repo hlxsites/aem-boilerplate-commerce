@@ -42,10 +42,23 @@ export interface VariantRow {
 export interface VariantWithQuantity extends ProductVariant {
     quantity: number;
 }
+export interface VariantTableData {
+    sku: string;
+    name: string;
+    inStock: boolean;
+    attributes: Record<string, {
+        label: string;
+        value: string | number;
+    }>;
+    price: number;
+    quantity: number;
+    subtotal: number;
+    image: string;
+}
 export type VariantActionsContext = {
     onClear: () => void;
     onSaveToCsv: () => void;
-    onCollectData: () => any[];
+    onCollectData: () => VariantTableData[];
     isDisabled: boolean;
     variantsCount: number;
 };
@@ -56,28 +69,25 @@ export type VariantCellContext = {
 };
 export interface UseQuickOrderVariantsDataProps {
     initialVariants?: ProductVariant[];
-    fetchVariants?: () => Promise<ProductVariant[]>;
     onVariantsLoaded?: (variants: VariantWithQuantity[]) => void;
-    onTableDataChange?: (data: any[]) => void;
+    onSelectedVariantsChange?: (data: VariantTableData[]) => void;
     debounceMs?: number;
     initialLoading?: boolean;
 }
 export interface UseQuickOrderVariantsDataReturn {
     variants: VariantWithQuantity[];
     loading: boolean;
-    error: string | null;
     updateQuantity: (sku: string, quantity: number) => void;
     clearAllQuantities: () => void;
     exportToCsv: () => void;
-    refetchVariants: () => Promise<void>;
-    collectTableData: () => any[];
+    collectTableData: () => VariantTableData[];
     variantsWithQuantity: number;
 }
 export interface QuickOrderVariantsActionsProps {
     t: Record<string, string>;
     onClear: () => void;
     onSaveToCsv: () => void;
-    onCollectData?: () => any[];
+    onCollectData?: () => VariantTableData[];
     isDisabled?: boolean;
     variantsCount?: number;
     className?: string;
@@ -109,10 +119,9 @@ export interface QuickOrderVariantsGridComponentProps {
 }
 export interface QuickOrderVariantsGridProps {
     className?: string;
-    variants?: ProductVariant[];
-    fetchVariants?: () => Promise<ProductVariant[]>;
+    initialVariants?: ProductVariant[];
     onVariantsLoaded?: (variants: VariantWithQuantity[]) => void;
-    onTableDataChange?: (data: any[]) => void;
+    onSelectedVariantsChange?: (data: VariantTableData[]) => void;
     debounceMs?: number;
     initialLoading?: boolean;
     initialVisibleVariantsCount?: number;
