@@ -22,7 +22,6 @@ import * as searchApi from '@dropins/storefront-product-discovery/api.js';
 import { rootLink } from '../../scripts/commerce.js';
 
 // Initializers
-// Initializers
 import '../../scripts/initializers/quick-order.js';
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/cart.js';
