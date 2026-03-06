@@ -102,6 +102,24 @@ await initializeDropin(async () => {
   const models = {
     ProductDetails: {
       initialData: { ...product },
+      // Normalizes product images at options[].items[].product for group products. Transformer
+      // receives GraphQL data and returns an object that gets deep-merged with the payload;
+      // return only this structure (no spread) to avoid exposing unnecessary data. Items without
+      // item.product get product: undefined and are skipped for images.
+      // @see https://experienceleague.adobe.com/developer/commerce/storefront/dropins/product-details/initialization/
+      // @see https://experienceleague.adobe.com/developer/commerce/storefront/dropins/all/extending/
+      transformer: (data) => ({
+        options: data.options?.map((option) => ({
+          items: option.items?.map((item) => ({
+            product: item.product ? {
+              images: item.product?.images?.map((image) => ({
+                url: image.url,
+                label: image.label,
+              })) ?? [],
+            } : undefined,
+          })) ?? [],
+        })) ?? [],
+      }),
     },
   };
 
