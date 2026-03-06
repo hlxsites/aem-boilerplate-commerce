@@ -11,7 +11,7 @@
         "cs": {
           "content-type":"application/json",
           "AC-View-Id":"08115f8d-bf17-4dfc-a6dd-af8fea7fb574",
-          "AC-Environment-Id":"787ef9d9-e07f-47e5-ad8c-3cec1139dbed",
+          "AC-Environment-Id":"TfpwVBcuyz6LwDnKMNBVxP",
           "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "AC-Source-Locale":"default",
           "X-Api-Key": "storefront-catalog-apollo"        }
@@ -22,7 +22,7 @@
         "base-currency-code": "USD",
         "locale":"default",
         "store-url": "https://e2e-qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/",
-        "environment-id": "787ef9d9-e07f-47e5-ad8c-3cec1139dbed"
+        "environment-id": "TfpwVBcuyz6LwDnKMNBVxP"
       }
     }
   }
