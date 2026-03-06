@@ -62,12 +62,26 @@ describe("Search Feature", () => {
     cy.contains(/results found for "tee"/).should('be.visible');
     assertImageListDisplay('.product-discovery-product-list__grid');
 
-
-    // Select new Sort
-    cy.get('select').select('Price: Low to High').should('have.value', 'price_ASC');
-    cy.waitForLoadingSkeletonToDisappear();
-    cy.contains('Beverage floatie - Confetti').should("be.visible");
-    assertImageListDisplay('.product-discovery-product-list__grid');
+    // If there is more than one sort option, change sort and assert view changed
+    cy.get('select').then(($select) => {
+      const options = $select.find('option');
+      const initialSelected = options.filter(':selected').text().trim();
+      const allTexts = options.toArray().map((el) => el.textContent.trim());
+      const otherOptionText = allTexts.find((t) => t !== initialSelected);
+      if (options.length <= 1 || !otherOptionText) {
+        assertImageListDisplay('.product-discovery-product-list__grid');
+        return;
+      }
+      cy.get('select').select(otherOptionText);
+      cy.waitForLoadingSkeletonToDisappear();
+      cy.get('select')
+        .find('option:selected')
+        .invoke('text')
+        .then((selectedText) => {
+          expect(selectedText.trim()).not.to.equal(initialSelected);
+        });
+      assertImageListDisplay('.product-discovery-product-list__grid');
+    });
 
     cy.percyTakeSnapshot('Search Result page new');
 

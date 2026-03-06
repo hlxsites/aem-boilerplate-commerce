@@ -36,7 +36,5 @@ describe("Verify Product List Page", () => {
             assertImageListDisplay('.product-discovery-product-list__grid');
             cy.percyTakeSnapshot('Product List page Category new');
         });
-
     });
 });
-
