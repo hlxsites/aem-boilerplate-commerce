@@ -82,6 +82,8 @@ import {
   SHIPPING_FORM_NAME,
 } from './constants.js';
 
+import { getExtensionManager } from './extension-manager.js';
+
 /**
  * Container IDs for registry management
  * @enum {string}
@@ -131,6 +133,13 @@ const registry = new Map();
  * @returns {boolean} - Returns true if the container has been rendered, false otherwise.
  */
 export const hasContainer = (id) => registry.has(id);
+
+/**
+ * Gets a container API from the registry by its ID.
+ * @param {string} id - The unique ID of the container to get.
+ * @returns {Object|undefined} - The container API object, or undefined if not found.
+ */
+export const getContainer = (id) => registry.get(id);
 
 /**
  * Helper to get a container from the registry or render and register it if not present.
@@ -323,22 +332,38 @@ export const renderBillToShippingAddress = async (container) => renderContainer(
 );
 
 /**
- * Renders available shipping methods with selection interface
+ * Renders available shipping methods with selection interface.
+ *
  * @param {HTMLElement} container - DOM element to render shipping methods in
  * @returns {Promise<Object>} - The rendered shipping methods component
  */
 export const renderShippingMethods = async (container) => renderContainer(
   CONTAINERS.SHIPPING_METHODS,
-  async () => CheckoutProvider.render(ShippingMethods)(container),
+  async () => {
+    const render = (propsOverride = {}) => CheckoutProvider.render(ShippingMethods, {
+      ...propsOverride,
+    })(container);
+
+    const hookContext = {
+      container,
+      render,
+    };
+
+    const extensionManager = await getExtensionManager();
+    await extensionManager.executeHook('checkout/shipping-methods-render', hookContext);
+
+    return hookContext.render();
+  },
 );
 
 /**
  * Renders payment methods with credit card integration - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render payment methods in
  * @param {Object} creditCardFormRef - React-style ref for credit card form
+ * @param {Object} customPaymentMethods - Custom payment methods from extensions
  * @returns {Promise<Object>} - The rendered payment methods component
  */
-export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
+export const renderPaymentMethods = async (container, creditCardFormRef, customPaymentMethods = {}) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
   async () => CheckoutProvider.render(PaymentMethods, {
     slots: {
@@ -370,6 +395,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
         },
+        ...customPaymentMethods,
       },
     },
   })(container),
@@ -703,83 +729,94 @@ export const renderAddressForm = async (container, formRef, data, addressType) =
   const isShipping = addressType === 'shipping';
   const containerKey = isShipping ? CONTAINERS.SHIPPING_ADDRESS_FORM : CONTAINERS.BILLING_ADDRESS_FORM;
 
-  return renderContainer(
-    containerKey,
-    async () => {
-      const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+  const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
-      // Get address type specific configurations
-      const cartAddress = getCartAddress(data, addressType);
-      const addressDataKey = isShipping ? SHIPPING_ADDRESS_DATA_KEY : BILLING_ADDRESS_DATA_KEY;
-      const addressCache = sessionStorage.getItem(addressDataKey);
+  const cartAddress = getCartAddress(data, addressType);
+  const addressDataKey = isShipping ? SHIPPING_ADDRESS_DATA_KEY : BILLING_ADDRESS_DATA_KEY;
+  const addressCache = sessionStorage.getItem(addressDataKey);
 
-      // Clear persisted address if cart has an address
-      if (cartAddress && addressCache) {
-        sessionStorage.removeItem(addressDataKey);
+  if (cartAddress && addressCache) {
+    sessionStorage.removeItem(addressDataKey);
+  }
+
+  let isFirstRender = true;
+  const hasCartAddress = Boolean(isShipping ? data.shippingAddresses?.[0] : data.billingAddress);
+
+  const setAddressOnCartFn = setAddressOnCart({
+    type: addressType,
+    debounceMs: DEBOUNCE_TIME,
+  });
+
+  const estimateShippingCostOnCart = isShipping ? estimateShippingCost({
+    debounceMs: DEBOUNCE_TIME,
+  }) : null;
+
+  const notifyValues = debounce((values) => {
+    const eventType = isShipping ? 'checkout/addresses/shipping' : 'checkout/addresses/billing';
+    events.emit(eventType, values);
+  }, ADDRESS_INPUT_DEBOUNCE_TIME);
+
+  const storeConfig = checkoutApi.getStoreConfigCache();
+
+  const formName = isShipping ? SHIPPING_FORM_NAME : BILLING_FORM_NAME;
+  const addressTitle = isShipping
+    ? placeholders?.Checkout?.Addresses?.shippingAddressTitle
+    : placeholders?.Checkout?.Addresses?.billingAddressTitle;
+  const className = isShipping
+    ? 'checkout-shipping-form__address-form'
+    : 'checkout-billing-form__address-form';
+
+  const inputsDefaultValueSet = cartAddress
+    ? transformCartAddressToFormValues(cartAddress)
+    : { countryCode: storeConfig.defaultCountry };
+
+  const formProps = {
+    addressesFormTitle: addressTitle,
+    className,
+    fieldIdPrefix: addressType,
+    formName,
+    forwardFormRef: formRef,
+    hideActionFormButtons: true,
+    inputsDefaultValueSet,
+    isOpen: true,
+    onChange: (values) => {
+      const canSetAddressOnCart = !isFirstRender || !hasCartAddress;
+      if (canSetAddressOnCart) setAddressOnCartFn(values);
+
+      if (isShipping && !hasCartAddress && estimateShippingCostOnCart) {
+        estimateShippingCostOnCart(values);
       }
 
-      let isFirstRender = true;
-      const hasCartAddress = Boolean(isShipping ? data.shippingAddresses?.[0] : data.billingAddress);
+      if (isFirstRender) isFirstRender = false;
 
-      // Create address setter with appropriate API
-      const setAddressOnCartFn = setAddressOnCart({
-        type: addressType,
-        debounceMs: DEBOUNCE_TIME,
-      });
-
-      // Create shipping cost estimator (only for shipping addresses)
-      const estimateShippingCostOnCart = isShipping ? estimateShippingCost({
-        debounceMs: DEBOUNCE_TIME,
-      }) : null;
-
-      const notifyValues = debounce((values) => {
-        const eventType = isShipping ? 'checkout/addresses/shipping' : 'checkout/addresses/billing';
-        events.emit(eventType, values);
-      }, ADDRESS_INPUT_DEBOUNCE_TIME);
-
-      const storeConfig = checkoutApi.getStoreConfigCache();
-
-      // Address type specific configurations
-      const formName = isShipping ? SHIPPING_FORM_NAME : BILLING_FORM_NAME;
-      const addressTitle = isShipping
-        ? placeholders?.Checkout?.Addresses?.shippingAddressTitle
-        : placeholders?.Checkout?.Addresses?.billingAddressTitle;
-      const className = isShipping
-        ? 'checkout-shipping-form__address-form'
-        : 'checkout-billing-form__address-form';
-
-      const inputsDefaultValueSet = cartAddress
-        ? transformCartAddressToFormValues(cartAddress)
-        : { countryCode: storeConfig.defaultCountry };
-
-      return AccountProvider.render(AddressForm, {
-        addressesFormTitle: addressTitle,
-        className,
-        fieldIdPrefix: addressType,
-        formName,
-        forwardFormRef: formRef,
-        hideActionFormButtons: true,
-        inputsDefaultValueSet,
-        isOpen: true,
-        onChange: (values) => {
-          const canSetAddressOnCart = !isFirstRender || !hasCartAddress;
-          if (canSetAddressOnCart) setAddressOnCartFn(values);
-
-          // Only estimate shipping cost for shipping addresses when no cart address exists
-          if (isShipping && !hasCartAddress && estimateShippingCostOnCart) {
-            estimateShippingCostOnCart(values);
-          }
-
-          if (isFirstRender) isFirstRender = false;
-
-          notifyValues(values);
-        },
-        showBillingCheckBox: false,
-        showFormLoader: false,
-        showShippingCheckBox: false,
-      })(container);
+      notifyValues(values);
     },
+    showBillingCheckBox: false,
+    showFormLoader: false,
+    showShippingCheckBox: false,
+  };
+
+  const render = (propsOverride = {}) => renderContainer(
+    containerKey,
+    async () => AccountProvider.render(AddressForm, { ...formProps, ...propsOverride })(container),
   );
+
+  const getFormContainer = () => getContainer(containerKey);
+
+  const hookContext = {
+    container,
+    addressType,
+    formProps,
+    render,
+    getFormContainer,
+    hasCartAddress,
+    addressDataKey,
+  };
+
+  const extensionManager = await getExtensionManager();
+  await extensionManager.executeHook('checkout/address-form-render', hookContext);
+
+  return hookContext.render();
 };
 
 /**
