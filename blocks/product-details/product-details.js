@@ -79,7 +79,7 @@ export default async function decorate(block) {
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
 
-  const isGroupProduct = product.options?.[0]?.items?.some((item) => !!item.product);
+  const isGroupProduct = product?.options?.[0]?.items?.some((item) => !!item?.product);
 
   const labels = await fetchPlaceholders();
 
@@ -406,7 +406,27 @@ export default async function decorate(block) {
       })($groupItemPriceContainer);
     });
 
-    $groupProductList.replaceChildren($groupItemsList);
+    // Add all products to the cart (each with its selected quantity)
+    const $groupAddToCartBtn = document.createElement('div');
+    $groupAddToCartBtn.className = 'product-details__group-product-add-to-cart-btn';
+    UI.render(Button, {
+      children: 'Add All to Cart', // ideally this will be added to placeholders: labels.Global?.AddAllProductsToCart,
+      icon: h(Icon, { source: 'Cart' }),
+      variant: 'primary',
+      onClick: async () => {
+        const cartItems = product.options?.[0]?.items
+          ?.filter((item) => item.product?.sku)
+          ?.map((item) => ({
+            sku: item.product.sku,
+            quantity: groupItemQuantities[item.product.sku] ?? 1,
+          })) ?? [];
+        if (cartItems.length === 0) return;
+        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+        await addProductsToCart(cartItems);
+      },
+    })($groupAddToCartBtn);
+
+    $groupProductList.replaceChildren($groupAddToCartBtn, $groupItemsList);
   }
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {

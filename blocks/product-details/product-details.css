@@ -72,9 +72,21 @@
 }
 
 /* Group product list */
+.product-details__group-product-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-large) 0;
+  gap: var(--spacing-small);
+}
+
+.product-details__group-product-add-to-cart-btn {
+  display: flex;
+  justify-content: end;
+}
+
 .product-details__group-product-list {
   list-style: none;
-  margin: var(--spacing-large) 0;
+  margin: 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
