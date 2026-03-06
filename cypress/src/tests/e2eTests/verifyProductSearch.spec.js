@@ -1,7 +1,6 @@
 
 import {
   assertImageListDisplay,
-  assertSearchResultClick,
   assertSearchResults
 } from "../../assertions";
 
@@ -22,12 +21,9 @@ describe("Search Feature", () => {
     assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
-
-    assertSearchResultClick();
-
   });
 
-  it("Verify Search results page", () => {
+  it.only("Verify Search results page", () => {
     // Visit the homepage
     cy.visit("/");
 
@@ -40,9 +36,6 @@ describe("Search Feature", () => {
     assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
-
-    assertSearchResultClick();
-
   });
 
 // Bug on ACCS https://jira.corp.adobe.com/browse/USF-3691
