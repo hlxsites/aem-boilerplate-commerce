@@ -179,13 +179,9 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     });
 
     // ========== STEP 1: Test invalid file format ==========
-
-    const txtFileName = "invalid-file-quickorder.txt";
-    cy.writeFile(`cypress/src/fixtures/${txtFileName}`, "Some text content");
-
     cy.get(quickOrderCsvUploadContainer).within(() => {
       cy.get(quickOrderCsvFileInput).selectFile(
-        `cypress/src/fixtures/${txtFileName}`,
+        `src/fixtures/quick-order-invalid-file.txt`,
         {
           force: true,
         },
@@ -196,13 +192,9 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.get(quickOrderCsvErrorMessage).should("exist");
 
     // ========== STEP 2: Upload valid CSV ==========
-
-    const csvContent = `SKU,QTY\n${testProducts.simple1.sku},2\n${testProducts.simple2.sku},3\n${testProducts.simple3.sku},1`;
-    cy.writeFile("cypress/src/fixtures/test-quick-order.csv", csvContent);
-
     cy.get(quickOrderCsvUploadContainer).within(() => {
       cy.get(quickOrderCsvFileInput).selectFile(
-        "cypress/src/fixtures/test-quick-order.csv",
+        "src/fixtures/quick-order-valid-file.csv",
         {
           force: true,
         },
