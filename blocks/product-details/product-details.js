@@ -7,12 +7,16 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { render as pdpRendered } from '@dropins/storefront-pdp/render.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
+import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
+
+// Quick Order Dropin
+import QuickOrderVariantsGrid from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
 
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 
-// Containers
+// PDP Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
@@ -32,6 +36,7 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/quick-order.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -54,7 +59,31 @@ function isProductPrerendered() {
 }
 
 // Function to update the Add to Cart button text
-function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
+function updateAddToCartButtonText(
+  addToCartInstance,
+  inCart,
+  labels,
+  isGridOrderingView,
+  gridOrderingSelectedVariants,
+) {
+  // Grid Ordering B2B feature flow
+  if (isGridOrderingView && addToCartInstance) {
+    const totalQuantity = gridOrderingSelectedVariants.reduce((acc, item) => {
+      const quantity = item.quantity || 0;
+      return acc + quantity;
+    }, 0);
+    const hasItems = totalQuantity > 0;
+
+    addToCartInstance.setProps((prev) => ({
+      ...prev,
+      children: hasItems
+        ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
+        : labels.Global?.AddProductToCart,
+      disabled: !hasItems,
+    }));
+    return;
+  }
+
   const buttonText = inCart
     ? labels.Global?.UpdateProductInCart
     : labels.Global?.AddProductToCart;
@@ -107,6 +136,7 @@ export default async function decorate(block) {
         <div class="product-details__attributes"></div>
       </div>
     </div>
+    <div class="product-details__grid-ordering"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
@@ -123,6 +153,7 @@ export default async function decorate(block) {
   const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $girdOrderingContainer = fragment.querySelector('.product-details__grid-ordering');
 
   block.replaceChildren(fragment);
 
@@ -145,6 +176,10 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
 
+  // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
+  const isGridOrderingView = product?.productType === 'complex' && !product?.isBundle;
+  let gridOrderingSelectedVariants = [];
+
   const [
     _galleryMobile,
     _gallery,
@@ -156,6 +191,7 @@ export default async function decorate(block) {
     _giftCardOptions,
     _description,
     _attributes,
+    _gridOrdering,
     wishlistToggleBtn,
   ] = await Promise.all([
     // Gallery (Mobile)
@@ -196,20 +232,22 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, {
-      hideSelectedValue: false,
-      slots: {
-        SwatchImage: (ctx) => {
-          tryRenderAemAssetsImage(ctx, {
-            ...imageSlotConfig(ctx),
-            wrapper: document.createElement('span'),
-          });
+    !isGridOrderingView
+      ? pdpRendered.render(ProductOptions, {
+        hideSelectedValue: false,
+        slots: {
+          SwatchImage: (ctx) => {
+            tryRenderAemAssetsImage(ctx, {
+              ...imageSlotConfig(ctx),
+              wrapper: document.createElement('span'),
+            });
+          },
         },
-      },
-    })($options),
+      })($options)
+      : null,
 
     // Configuration  Quantity
-    pdpRendered.render(ProductQuantity, {})($quantity),
+    !isGridOrderingView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
 
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
@@ -218,7 +256,47 @@ export default async function decorate(block) {
     pdpRendered.render(ProductDescription, {})($description),
 
     // Attributes
-    pdpRendered.render(ProductAttributes, {})($attributes),
+    !isGridOrderingView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
+
+    // Grid Ordering
+    isGridOrderingView
+      ? quickOrderProvider.render(QuickOrderVariantsGrid, {
+        className: 'quick-order-variants-grid',
+        columns: [
+          { key: 'image', label: 'Image' },
+          { key: 'variantOptionAttributes', label: 'Variant' },
+          { key: 'sku', label: 'SKU' },
+          { key: 'availability', label: 'Availability' },
+          { key: 'price', label: 'Price' },
+          { key: 'quantity', label: 'Quantity' },
+          { key: 'subtotal', label: 'Subtotal' },
+        ],
+        slots: {
+          VariantOptionAttributesCell: (ctx) => {
+            const { variant } = ctx;
+            const { variantOptionAttributes } = variant.product;
+
+            const cellWrapper = document.createElement('div');
+
+            variantOptionAttributes.forEach((attr) => {
+              const attributeWrapper = document.createElement('div');
+              attributeWrapper.classList.add('product-details__variants-grid-attribute');
+
+              const label = document.createElement('strong');
+              label.textContent = `${attr.label}:`;
+              const value = document.createElement('span');
+              value.textContent = attr.value;
+              attributeWrapper.appendChild(label);
+              attributeWrapper.appendChild(value);
+
+              cellWrapper.appendChild(attributeWrapper);
+            });
+
+            ctx.appendChild(cellWrapper);
+          },
+        },
+      })($girdOrderingContainer)
+      : null,
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -235,6 +313,24 @@ export default async function decorate(block) {
         ? labels.Global?.UpdatingInCart
         : labels.Global?.AddingToCart;
       try {
+        // --- Grid ordering flow ---
+        if (isGridOrderingView && gridOrderingSelectedVariants.length) {
+          addToCart.setProps((prev) => ({
+            ...prev,
+            children: labels.Global?.AddingToCart,
+            disabled: true,
+          }));
+
+          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+          await addProductsToCart(gridOrderingSelectedVariants);
+
+          // Reset Grid Ordering state after adding variants to cart
+          events.emit('quick-order/grid-ordering-reset-selected-variants');
+          gridOrderingSelectedVariants = [];
+
+          return;
+        }
+
         addToCart.setProps((prev) => ({
           ...prev,
           children: buttonActionText,
@@ -301,11 +397,17 @@ export default async function decorate(block) {
         });
       } finally {
         // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
-        // Re-enable button
+        updateAddToCartButtonText(
+          addToCart,
+          isUpdateMode,
+          labels,
+          isGridOrderingView,
+          gridOrderingSelectedVariants,
+        );
+        // Re-enable button (keep disabled for Grid Ordering flow)
         addToCart.setProps((prev) => ({
           ...prev,
-          disabled: false,
+          disabled: !!isGridOrderingView,
         }));
       }
     },
@@ -313,11 +415,28 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
+    // Pdp validation not relevant for Grid Ordering flow (no options selection available)
+    if (isGridOrderingView) return;
+
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({
       ...prev,
       disabled: !valid,
     }));
+  }, { eager: true });
+
+  // Grid Ordering flow - Sync state and update Add To Cart button text on variants selection change
+  events.on('quick-order/grid-ordering-selected-variants', (variants) => {
+    if (!isGridOrderingView) return;
+    gridOrderingSelectedVariants = [...variants];
+
+    updateAddToCartButtonText(
+      addToCart,
+      false,
+      labels,
+      isGridOrderingView,
+      gridOrderingSelectedVariants,
+    );
   }, { eager: true });
 
   // Handle option changes
@@ -404,16 +523,36 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
+      updateAddToCartButtonText(
+        addToCart,
+        itemIsInCart,
+        labels,
+        isGridOrderingView,
+        gridOrderingSelectedVariants,
+      );
     },
     { eager: true },
   );
 
   // Set JSON-LD and Meta Tags
-  events.on('aem/lcp', () => {
+  events.on('aem/lcp', async () => {
+    if (!product) return;
+
     const isPrerendered = isProductPrerendered();
-    if (product && !isPrerendered) {
-      setJsonLdProduct(product);
+
+    if (isPrerendered) {
+      if (!isGridOrderingView) return;
+
+      const variants = await getProductVariants(product.sku);
+      initQuickOrderGridOrdering(product, variants);
+    } else {
+      const variants = await getProductVariants(product.sku);
+
+      if (isGridOrderingView) {
+        initQuickOrderGridOrdering(product, variants);
+      }
+
+      setJsonLdProduct(product, variants);
       setMetaTags(product);
       document.title = product.name;
     }
@@ -422,7 +561,7 @@ export default async function decorate(block) {
   return Promise.resolve();
 }
 
-async function setJsonLdProduct(product) {
+function setJsonLdProduct(product, variants) {
   const {
     name,
     inStock,
@@ -436,34 +575,6 @@ async function setJsonLdProduct(product) {
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
   const brand = attributes?.find((attr) => attr.name === 'brand');
-
-  // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
 
   const ldJson = {
     '@context': 'http://schema.org',
@@ -482,7 +593,7 @@ async function setJsonLdProduct(product) {
     '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
-  if (variants.length > 1) {
+  if (variants?.length > 1) {
     ldJson.offers.push(...variants.map((variant) => ({
       '@type': 'Offer',
       name: variant.product.name,
@@ -569,4 +680,77 @@ function imageSlotConfig(ctx) {
       height: defaultImageProps.height,
     },
   };
+}
+
+/**
+ * Fetches product variants with their attributes
+ * @param {string} sku - Product SKU
+ * @param {Object} fetcherApi - API fetcher instance
+ * @returns {Promise<Array>} Array of product variants
+ */
+async function getProductVariants(sku) {
+  const { data } = await pdpApi.fetchGraphQl(
+    `
+      query GET_PRODUCT_VARIANTS($sku: String!) {
+        variants(sku: $sku) {
+          variants {
+            product {
+              sku
+              name
+              inStock
+              attributes {
+                name
+                label
+                value
+                roles
+              }
+              images(roles: ["image"]) {
+                url
+              }
+              ...on SimpleProductView {
+                price {
+                  final { amount { currency value } }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    {
+      method: 'GET',
+      variables: { sku },
+    },
+  );
+
+  return data?.variants?.variants ?? [];
+}
+
+// Grid Ordering feature initialization
+function initQuickOrderGridOrdering(product, variants) {
+  const productOptions = product.options;
+
+  // Example of including and displaying additional fields in the variants grid
+  const extendedVariants = variants.map((variant) => {
+    const variantOptionAttributes = variant.product.attributes.filter((variantAttribute) => {
+      const isVariantAttribute = productOptions.some((productOption) => {
+        const productOptionId = productOption.id;
+        const variantAttributeName = variantAttribute.name;
+
+        return productOptionId === variantAttributeName;
+      });
+
+      return isVariantAttribute;
+    });
+
+    return {
+      ...variant,
+      product: {
+        ...variant.product,
+        variantOptionAttributes,
+      },
+    };
+  });
+
+  events.emit('quick-order/grid-ordering-variants', extendedVariants);
 }

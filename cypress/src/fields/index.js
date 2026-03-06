@@ -302,3 +302,19 @@ export const quoteStatusBadge = '.quote-status-badge';
 export const quoteDetailWrapper = '.quote-detail-wrapper';
 export const quotePlaceOrderButton = '.quote-place-order-button';
 export const quoteCheckoutButton = '[data-testid="quote-checkout-button"]';
+
+// Quick Order selectors
+export const quickOrderItemsContainer = '.quick-order-items-container';
+export const quickOrderMultipleSkuContainer = '.quick-order-multiple-sku-container';
+export const quickOrderCsvUploadContainer = '.quick-order-csv-upload-container';
+export const quickOrderMultipleSkuTextarea = 'textarea[data-testid="dropin-textarea-field"]';
+export const quickOrderCsvFileInput = 'input#quick-order-csv-file-input';
+export const quickOrderCsvErrorMessage = '.b2b-quick-order-csv-file-input__error';
+export const quickOrderItemCard = '.b2b-quick-order-form-quick-order-items__item-form';
+export const quickOrderItemQuantityInput = 'input.dropin-incrementer__input[name="quantity"]';
+export const quickOrderItemRemoveButton = 'button[data-testid="cart-item-remove-button"]';
+export const quickOrderProductOptionsSlot = '[data-slot="ProductOptions"]';
+export const quickOrderSearchInput = '.b2b-quick-order-search__input';
+export const quickOrderSearchResults = '.b2b-quick-order-search__results';
+export const quickOrderSearchResultItem = '[role="option"]';
+export const quickOrderAddAllToCartButton = 'button[data-testid="add-all-to-cart-button"]';
