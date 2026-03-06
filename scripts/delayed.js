@@ -30,8 +30,12 @@ async function initAnalytics() {
             viewId: analyticsConfig['view-id'], // applicable for ACO storefronts
           },
         },
-        { eventForwardingContext: { commerce: true, aep: true } },
-        { aepContext: { imsOrgId : "DEDB2A52641B1D460A495F8E@AdobeOrg", datastreamId : "725a1656-5fa7-4d1c-b19e-b4e838fce399" }},
+        {
+          eventForwardingContext: {
+            commerce: true,
+            aep: !!(analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id']),
+          },
+        },
         {
           shopperContext: {
             shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
