@@ -36,9 +36,14 @@ interface Price {
     minimumAmount?: number;
     variant?: 'default' | 'strikethrough';
 }
+export interface Tier {
+    tier: Price;
+    quantity: number;
+}
 interface Prices {
     regular: Price;
     final: Price;
+    tiers: Tier[];
     visible: boolean;
 }
 export interface Option {
@@ -62,6 +67,7 @@ interface Attribute {
     id: string;
     label: string;
     value: string;
+    roles?: string[];
 }
 export {};
 //# sourceMappingURL=product-model.d.ts.map

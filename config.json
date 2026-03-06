@@ -14,25 +14,15 @@
           "AC-Environment-Id":"787ef9d9-e07f-47e5-ad8c-3cec1139dbed",
           "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "AC-Source-Locale":"default",
-          "X-Api-Key": "storefront-catalog-apollo",
-          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
-        }
+          "X-Api-Key": "storefront-catalog-apollo"        }
       },
       "analytics": {
-        "base-currency-code": "USD",
+        "view-id": "08115f8d-bf17-4dfc-a6dd-af8fea7fb574",
         "environment": "Testing",
-        "store-id": 1,
-        "store-name": "e2e prex dropin aco2 en US",
+        "base-currency-code": "USD",
+        "locale":"default",
         "store-url": "https://e2e-qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/",
-        "store-view-id": 1,
-        "store-view-name": "default",
-        "website-id": 1,
-        "website-name": "Main Website",
-        "Magento-Environment-Id": "787ef9d9-e07f-47e5-ad8c-3cec1139dbed",
-        "Magento-Website-Code": "base",
-        "Magento-Store-Code": "main-website-store",
-        "Magento-Store-View-Code": "default",
-        "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
+        "environment-id": "787ef9d9-e07f-47e5-ad8c-3cec1139dbed"
       }
     }
   }
