@@ -64,6 +64,12 @@ export default async function decorate(block) {
             },
           });
         },
+        OrdersListOrderTime: (ctx) => {
+          const container = document.createElement('p');
+          // Sample output: "Placed on 02/16/2026 03:35 AM"
+          container.textContent = `${ctx.deliveryDateText ?? ''} ${ctx.orderDate ?? ''} ${ctx.orderTime ?? ''}`;
+          ctx.replaceWith(container);
+        },
       },
     })(block);
   }
