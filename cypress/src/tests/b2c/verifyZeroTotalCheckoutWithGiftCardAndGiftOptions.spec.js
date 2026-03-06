@@ -38,19 +38,19 @@ describe("Verify price summary on cart", () => {
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
-    cy.get(".minicart-panel[data-loaded='true']").should("exist");
+    cy.get(".minicart-panel[data-loaded='true']").should('exist');
     cy.get(".minicart-panel").should("not.be.empty");
     cy.get(".minicart-wrapper").click();
     assertCartSummaryProduct(
-      "Configurable product",
-      "CYPRESS456",
-      "1",
-      "$60.00",
-      "$60.00",
-      "0",
-    )(".cart-mini-cart");
-    cy.visit("/cart");
-    cy.get(fields.orderSummary).contains("Order Summary").should("be.visible");
+      'Configurable product',
+      'CYPRESS456',
+      '1',
+      '$60.00',
+      '$60.00',
+      '0'
+    )('.cart-mini-cart');
+    cy.visit('/cart');
+    cy.get(fields.orderSummary).contains('Order Summary').should('be.visible');
     cy.get(`.cart-coupons.cart-gift-cards`)
       .contains("Gift Card")
       .should("be.visible")
@@ -88,12 +88,12 @@ describe("Verify price summary on cart", () => {
       .click({ force: true });
     assertCartSummaryMisc(1);
     assertCartSummaryProductsOnCheckout(
-      "Configurable product",
-      "CYPRESS456",
-      "1",
-      "$60.00",
-      "$60.00",
-      "1",
+      'Configurable product',
+      'CYPRESS456',
+      '1',
+      '$60.00',
+      '$60.00',
+      '1'
     );
     assertGiftOptionsSummary("Printed card", "$100.00");
     assertGiftOptionsSummary("Item gift wrapping", "$100.00");
@@ -115,7 +115,7 @@ describe("Verify price summary on cart", () => {
     cy.contains(Cypress.env("giftCardA"));
     checkTermsAndConditions();
     cy.wait(5000);
-    cy.percyTakeSnapshot("Checkout page no payment");
+    cy.percyTakeSnapshot('Checkout page no payment');
     placeOrder();
     // Uncomment following once https://jira.corp.adobe.com/browse/USF-2241 is fixed
     // assertOrderConfirmationShippingDetails(customerShippingAddress);
