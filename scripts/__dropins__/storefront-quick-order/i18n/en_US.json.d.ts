@@ -71,7 +71,6 @@ declare const _default: {
     "VariantsGrid": {
       "imageColumn": "Image",
       "attributesColumn": "Attributes",
-      "variantColumn": "Variant",
       "skuColumn": "SKU",
       "availabilityColumn": "Availability",
       "priceColumn": "Price",

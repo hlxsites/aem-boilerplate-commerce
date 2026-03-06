@@ -31,7 +31,6 @@ export interface ProductVariant {
 export interface VariantRow {
     id: string;
     image: VNode | string;
-    variant: VNode | string;
     sku: VNode | string;
     availability: VNode | string;
     price: VNode | string;
@@ -101,7 +100,7 @@ export interface QuickOrderVariantsGridComponentProps {
     loading?: boolean;
     className?: string;
     onQuantityChange: (sku: string, quantity: number) => void;
-    initialVisibleVariantsCount?: number;
+    visibleVariantsLimit?: number;
     columns?: Array<{
         key: string;
         label: string;
@@ -109,7 +108,6 @@ export interface QuickOrderVariantsGridComponentProps {
     }>;
     slots?: {
         ImageCell?: SlotProps<VariantCellContext>;
-        VariantCell?: SlotProps<VariantCellContext>;
         SKUCell?: SlotProps<VariantCellContext>;
         AvailabilityCell?: SlotProps<VariantCellContext>;
         PriceCell?: SlotProps<VariantCellContext>;
@@ -124,7 +122,7 @@ export interface QuickOrderVariantsGridProps {
     onSelectedVariantsChange?: (data: VariantTableData[]) => void;
     debounceMs?: number;
     initialLoading?: boolean;
-    initialVisibleVariantsCount?: number;
+    visibleVariantsLimit?: number;
     columns?: Array<{
         key: string;
         label: string;
@@ -133,7 +131,6 @@ export interface QuickOrderVariantsGridProps {
     slots?: {
         Actions?: SlotProps<VariantActionsContext>;
         ImageCell?: SlotProps<VariantCellContext>;
-        VariantCell?: SlotProps<VariantCellContext>;
         SKUCell?: SlotProps<VariantCellContext>;
         AvailabilityCell?: SlotProps<VariantCellContext>;
         PriceCell?: SlotProps<VariantCellContext>;

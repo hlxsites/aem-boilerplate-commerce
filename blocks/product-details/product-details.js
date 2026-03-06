@@ -264,13 +264,37 @@ export default async function decorate(block) {
         className: 'quick-order-variants-grid',
         columns: [
           { key: 'image', label: 'Image' },
-          { key: 'variant', label: 'Variant' },
+          { key: 'variantOptionAttributes', label: 'Variant' },
           { key: 'sku', label: 'SKU' },
           { key: 'availability', label: 'Availability' },
           { key: 'price', label: 'Price' },
           { key: 'quantity', label: 'Quantity' },
           { key: 'subtotal', label: 'Subtotal' },
         ],
+        slots: {
+          VariantOptionAttributesCell: (ctx) => {
+            const { variant } = ctx;
+            const { variantOptionAttributes } = variant.product;
+
+            const cellWrapper = document.createElement('div');
+
+            variantOptionAttributes.forEach((attr) => {
+              const attributeWrapper = document.createElement('div');
+              attributeWrapper.classList.add('product-details__variants-grid-attribute');
+
+              const label = document.createElement('strong');
+              label.textContent = `${attr.label}:`;
+              const value = document.createElement('span');
+              value.textContent = attr.value;
+              attributeWrapper.appendChild(label);
+              attributeWrapper.appendChild(value);
+
+              cellWrapper.appendChild(attributeWrapper);
+            });
+
+            ctx.appendChild(cellWrapper);
+          },
+        },
       })($girdOrderingContainer)
       : null,
 
@@ -702,40 +726,31 @@ async function getProductVariants(sku) {
   return data?.variants?.variants ?? [];
 }
 
-// TODO - Add comments
-function initQuickOrderGridOrdering(product, variantsList) {
-  const variants = variantsList;
+// Grid Ordering feature initialization
+function initQuickOrderGridOrdering(product, variants) {
   const productOptions = product.options;
 
-  // TODO - This piece of login incorrect. We should filter attributes but not variants
-  let filteredVariants;
-  if (!productOptions || productOptions.length === 0) {
-    filteredVariants = variants;
-  } else {
-    const optionIds = new Set(productOptions.map((option) => option.id));
+  // Example of including and displaying additional fields in the variants grid
+  const extendedVariants = variants.map((variant) => {
+    const variantOptionAttributes = variant.product.attributes.filter((variantAttribute) => {
+      const isVariantAttribute = productOptions.some((productOption) => {
+        const productOptionId = productOption.id;
+        const variantAttributeName = variantAttribute.name;
 
-    filteredVariants = variants
-      .map((variant) => {
-        const filteredAttributes = variant.product.attributes.filter(
-          (attr) => optionIds?.has(attr.name),
-        );
+        return productOptionId === variantAttributeName;
+      });
 
-        if (filteredAttributes.length === 0) {
-          return null;
-        }
+      return isVariantAttribute;
+    });
 
-        return {
-          ...variant,
-          product: {
-            ...variant.product,
-            attributes: filteredAttributes,
-          },
-        };
-      })
-      .filter((variant) => variant !== null);
-  }
+    return {
+      ...variant,
+      product: {
+        ...variant.product,
+        variantOptionAttributes,
+      },
+    };
+  });
 
-  if (filteredVariants.length === 0) return;
-
-  events.emit('quick-order/grid-ordering-variants', filteredVariants);
+  events.emit('quick-order/grid-ordering-variants', extendedVariants);
 }
