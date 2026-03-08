@@ -72,10 +72,6 @@ describe(
       });
 
       cy.wait(3000);
-
-      actions.initializeVariantsGrid();
-
-      cy.logToTerminal('✅ Variants grid loaded');
     });
 
     after(() => {
@@ -143,6 +139,9 @@ describe(
         '========= 🚀 TEST 1: Grid Rendering and Data Display ========='
       );
 
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
+
       cy.get(fields.variantsGridMainContainer).should('be.visible');
       cy.get(fields.variantsGridContainer).should('exist');
 
@@ -180,6 +179,9 @@ describe(
         '========= 🚀 TEST 2: Quantity Update Functionality ========='
       );
 
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
+
       cy.logToTerminal('📝 Setting quantity to 5 for blue variant...');
       actions.updateVariantQuantity(0, 5);
       cy.wait(500);
@@ -213,6 +215,9 @@ describe(
         '========= 🚀 TEST 3: ARIA Labels and Accessibility ========='
       );
 
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
+
       cy.logToTerminal('♿ Verifying ARIA labels...');
       cy.get(fields.variantsGridQuantityInput(0))
         .should('have.attr', 'aria-label')
@@ -235,7 +240,8 @@ describe(
       cy.logToTerminal(
         '========= 🚀 TEST 4: Clear All Functionality ========='
       );
-
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
       cy.logToTerminal('📝 Setting quantities for all variants...');
       actions.updateVariantQuantity(0, 5);
       actions.updateVariantQuantity(1, 3);
@@ -286,6 +292,9 @@ describe(
         '========= 🚀 TEST 5: Action Buttons State Management ========='
       );
 
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
+
       cy.logToTerminal('🔒 Verifying buttons are disabled initially...');
       cy.get(fields.variantsGridActionsButtons)
         .contains('button', 'Clear')
@@ -315,6 +324,9 @@ describe(
       cy.logToTerminal(
         '========= 🚀 TEST 6: Complete Workflow ========='
       );
+
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
 
       cy.logToTerminal('📝 Setting initial quantities for all variants...');
       actions.updateVariantQuantity(0, 5);
@@ -350,7 +362,8 @@ describe(
       cy.logToTerminal(
         '========= 🚀 TEST 7: Images, Attributes, and Prices Display ========='
       );
-
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
       cy.logToTerminal('🖼️ Verifying all variant images are displayed...');
       cy.get(fields.variantsGridImage).should('have.length', 3);
       cy.get(fields.variantsGridImage).eq(0).should('have.attr', 'src').and('include', 'adb402');
@@ -393,6 +406,9 @@ describe(
         '========= 🚀 TEST 8: Subtotal Calculations ========='
       );
 
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
+
       cy.logToTerminal('📝 Setting quantity to 2 for blue variant ($45 × 2 = $90)...');
       actions.updateVariantQuantity(0, 2);
       cy.wait(500);
@@ -421,7 +437,8 @@ describe(
       cy.logToTerminal(
         '========= 🚀 TEST 9: Add to Cart Workflow with Reset ========='
       );
-
+      actions.initializeVariantsGrid();
+      cy.logToTerminal('✅ Variants grid loaded');
       cy.logToTerminal('📝 Setting quantities for all variants...');
       actions.updateVariantQuantity(0, 2);
       actions.updateVariantQuantity(1, 3);
