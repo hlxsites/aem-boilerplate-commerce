@@ -84,6 +84,60 @@ describe(
       );
     });
 
+    it('Should load product page and verify environment', () => {
+      cy.logToTerminal(
+        '========= 🔍 TEST 0: Diagnostic - Page Load Verification ========='
+      );
+
+      cy.url().should('include', '/products/ssg-configurable-product/ssgconfig123');
+      cy.logToTerminal(`✅ Current URL: ${cy.url()}`);
+
+      cy.get('body').then(($body) => {
+        if ($body.find('.product-details__wrapper').length > 0) {
+          cy.logToTerminal('✅ Product details wrapper found');
+        } else {
+          cy.logToTerminal('❌ Product details wrapper NOT found');
+        }
+
+        if ($body.find('.product-details__header').length > 0) {
+          cy.get('.product-details__header').invoke('text').then((text) => {
+            cy.logToTerminal(`📦 Product name: ${text.trim()}`);
+          });
+        } else {
+          cy.logToTerminal('❌ Product header NOT found');
+        }
+
+        if ($body.find('.product-details__grid-ordering').length > 0) {
+          cy.get('.product-details__grid-ordering').then(($el) => {
+            const width = $el.width();
+            const height = $el.height();
+            cy.logToTerminal(`📏 Grid container dimensions: ${width}x${height}px`);
+            cy.logToTerminal(
+              `🔍 Grid container visible: ${$el.is(':visible')}`
+            );
+            cy.logToTerminal(
+              `🔍 Grid container HTML: ${$el.html().substring(0, 200)}`
+            );
+          });
+        } else {
+          cy.logToTerminal('❌ Grid ordering container NOT found');
+        }
+
+        if ($body.find('.product-details__options').length > 0) {
+          cy.logToTerminal('ℹ️ Product has options (regular configurable view)');
+        }
+      });
+
+      cy.document().then((doc) => {
+        const errors = doc.querySelectorAll('[class*="error"], [class*="alert"]');
+        if (errors.length > 0) {
+          cy.logToTerminal(`⚠️ Found ${errors.length} error/alert elements`);
+        }
+      });
+
+      cy.logToTerminal('✅ TEST 0 COMPLETED: Diagnostic info collected');
+    });
+
     it('Should render grid and display variant data correctly', () => {
       cy.logToTerminal(
         '========= 🚀 TEST 1: Grid Rendering and Data Display ========='
