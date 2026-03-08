@@ -594,15 +594,17 @@ function setJsonLdProduct(product, variants) {
   };
 
   if (variants?.length > 1) {
-    ldJson.offers.push(...variants.map((variant) => ({
-      '@type': 'Offer',
-      name: variant.product.name,
-      image: variant.product.images[0]?.url,
-      price: variant.product.price.final.amount.value,
-      priceCurrency: variant.product.price.final.amount.currency,
-      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-      sku: variant.product.sku,
-    })));
+    ldJson.offers.push(...variants
+      .filter((variant) => variant.product)
+      .map((variant) => ({
+        '@type': 'Offer',
+        name: variant.product.name,
+        image: variant.product.images[0]?.url,
+        price: variant.product.price.final.amount.value,
+        priceCurrency: variant.product.price.final.amount.currency,
+        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+        sku: variant.product.sku,
+      })));
   } else {
     ldJson.offers.push({
       '@type': 'Offer',
@@ -731,26 +733,28 @@ function initQuickOrderGridOrdering(product, variants) {
   const productOptions = product.options;
 
   // Example of including and displaying additional fields in the variants grid
-  const extendedVariants = variants.map((variant) => {
-    const variantOptionAttributes = variant.product.attributes.filter((variantAttribute) => {
-      const isVariantAttribute = productOptions.some((productOption) => {
-        const productOptionId = productOption.id;
-        const variantAttributeName = variantAttribute.name;
+  const extendedVariants = variants
+    .filter((variant) => variant.product)
+    .map((variant) => {
+      const variantOptionAttributes = variant.product.attributes.filter((variantAttribute) => {
+        const isVariantAttribute = productOptions.some((productOption) => {
+          const productOptionId = productOption.id;
+          const variantAttributeName = variantAttribute.name;
 
-        return productOptionId === variantAttributeName;
+          return productOptionId === variantAttributeName;
+        });
+
+        return isVariantAttribute;
       });
 
-      return isVariantAttribute;
+      return {
+        ...variant,
+        product: {
+          ...variant.product,
+          variantOptionAttributes,
+        },
+      };
     });
-
-    return {
-      ...variant,
-      product: {
-        ...variant.product,
-        variantOptionAttributes,
-      },
-    };
-  });
 
   events.emit('quick-order/grid-ordering-variants', extendedVariants);
 }
