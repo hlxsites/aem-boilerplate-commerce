@@ -15,8 +15,8 @@
  * from Adobe.
  ****************************************************************** */
 
-import * as actions from '../../actions/index';
-import * as fields from '../../fields/index';
+import * as actions from '../../actions';
+import * as fields from '../../fields';
 
 /**
  * @fileoverview B2B Quick Order Variants Grid E2E Tests
@@ -27,24 +27,39 @@ import * as fields from '../../fields/index';
  * ==========================================================================
  * COVERAGE:
  * ==========================================================================
- * - Variants grid rendering and data display for ALL 3 variants
- * - Quantity updates using incrementer and +/- buttons for ALL variants
- * - ARIA labels and accessibility for ALL variants
- * - Clear all quantities functionality for ALL variants
+ * - Variants grid rendering and data display
+ * - Quantity updates using incrementer and +/- buttons
+ * - ARIA labels and accessibility
+ * - Clear all quantities functionality
  * - Action buttons state management
- * - Complete workflow (set → clear → set again) for ALL variants
- * - Subtotal calculations with exact values for ALL variants
- * - Add to cart workflow with quantity reset for ALL variants
- * - Images, attributes, and prices display for ALL variants
+ * - Complete workflow (set → clear → set again)
+ * - Subtotal calculations
+ * - Add to cart workflow with quantity reset
+ * - Images, attributes, and prices display
  *
  * ==========================================================================
- * TEST PRODUCT:
+ * TEST CONFIGURATION:
  * ==========================================================================
- * URL: /products/cypress-configurable-product-latest/cypress456
- * Variants: Configurable product with multiple color variants
+ * See constants below for all hardcoded test dependencies:
+ * - Product URL, SKUs, expected values, etc.
+ * - All configuration is centralized for easy maintenance
  *
  * ==========================================================================
  */
+
+// ==========================================================================
+// TEST CONFIGURATION CONSTANTS
+// ==========================================================================
+const TEST_PRODUCT_URL = '/products/cypress-configurable-product-latest/cypress456';
+const VARIANT_SKUS = [
+  'CYPRESS456-blue',
+  'CYPRESS456-green',
+  'CYPRESS456-1-2-3-red',
+];
+const EXPECTED_STOCK_STATUS = 'In Stock';
+const EXPECTED_CURRENCY_SYMBOL = '$';
+const EXPECTED_ZERO_SUBTOTAL = '$0.00';
+const ARIA_LABEL_PREFIX = 'Quantity for';
 
 describe(
   'B2B Quick Order Variants Grid - E2E Tests',
@@ -63,7 +78,7 @@ describe(
       cy.logToTerminal(
         '📦 Navigating to product page with variants grid...'
       );
-      cy.visit('/products/cypress-configurable-product-latest/cypress456', {
+      cy.visit(TEST_PRODUCT_URL, {
         failOnStatusCode: false,
         timeout: 30000,
       });
@@ -98,18 +113,18 @@ describe(
       
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should('contain.text', 'In Stock')
-        .and('contain.text', 'CYPRESS456');
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should('contain.text', 'In Stock')
-        .and('contain.text', 'CYPRESS456');
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should('contain.text', 'In Stock')
-        .and('contain.text', 'CYPRESS456');
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[2]);
 
       cy.logToTerminal('✅ TEST 1 PASSED: Grid rendered correctly');
     });
@@ -122,27 +137,27 @@ describe(
       actions.initializeVariantsGrid();
       cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.logToTerminal('📝 Setting quantity to 5 for blue variant...');
+      cy.logToTerminal('📝 Setting quantity to 5 for first variant...');
       actions.updateVariantQuantity(0, 5);
       cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 5 });
 
-      cy.logToTerminal('📝 Setting quantity to 3 for green variant...');
+      cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
       cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 3 });
 
-      cy.logToTerminal('📝 Setting quantity to 2 for red variant...');
+      cy.logToTerminal('📝 Setting quantity to 2 for third variant...');
       actions.updateVariantQuantity(2, 2);
       cy.wait(500);
       actions.verifyVariantRow(2, { quantity: 2 });
 
-      cy.logToTerminal('➕ Incrementing blue variant quantity...');
+      cy.logToTerminal('➕ Incrementing first variant quantity...');
       actions.incrementVariantQuantity(0);
       cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 6 });
 
-      cy.logToTerminal('➖ Decrementing green variant quantity...');
+      cy.logToTerminal('➖ Decrementing second variant quantity...');
       actions.decrementVariantQuantity(1);
       cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 2 });
@@ -161,15 +176,18 @@ describe(
       cy.logToTerminal('♿ Verifying ARIA labels...');
       cy.get(fields.variantsGridQuantityInput(0))
         .should('have.attr', 'aria-label')
-        .and('include', 'Quantity for CYPRESS456');
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridQuantityInput(1))
         .should('have.attr', 'aria-label')
-        .and('include', 'Quantity for CYPRESS456');
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridQuantityInput(2))
         .should('have.attr', 'aria-label')
-        .and('include', 'Quantity for CYPRESS456');
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[2]);
 
       cy.logToTerminal(
         '✅ TEST 3 PASSED: ARIA labels are correct'
@@ -203,7 +221,7 @@ describe(
             value === '0' || value === '' || value === 0 || !value;
           expect(
             isCleared,
-            `Blue variant should be cleared but got: "${value}"`
+            `First variant (${VARIANT_SKUS[0]}) should be cleared but got: "${value}"`
           ).to.be.true;
         }
       );
@@ -212,7 +230,7 @@ describe(
         const value = $input.val();
         const isCleared =
           value === '0' || value === '' || value === 0 || !value;
-        expect(isCleared, `Green variant should be cleared but got: "${value}"`)
+        expect(isCleared, `Second variant (${VARIANT_SKUS[1]}) should be cleared but got: "${value}"`)
           .to.be.true;
       });
 
@@ -220,7 +238,7 @@ describe(
         const value = $input.val();
         const isCleared =
           value === '0' || value === '' || value === 0 || !value;
-        expect(isCleared, `Red variant should be cleared but got: "${value}"`)
+        expect(isCleared, `Third variant (${VARIANT_SKUS[2]}) should be cleared but got: "${value}"`)
           .to.be.true;
       });
 
@@ -311,20 +329,20 @@ describe(
       cy.logToTerminal('🏷️ Verifying variant attributes and SKUs...');
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should('contain.text', 'CYPRESS456');
+        .should('contain.text', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should('contain.text', 'CYPRESS456');
+        .should('contain.text', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should('contain.text', 'CYPRESS456');
+        .should('contain.text', VARIANT_SKUS[2]);
 
       cy.logToTerminal('💰 Verifying all variant prices are displayed...');
-      cy.get(fields.variantsGridTableRow).eq(0).should('contain.text', '$');
-      cy.get(fields.variantsGridTableRow).eq(1).should('contain.text', '$');
-      cy.get(fields.variantsGridTableRow).eq(2).should('contain.text', '$');
+      cy.get(fields.variantsGridTableRow).eq(0).should('contain.text', EXPECTED_CURRENCY_SYMBOL);
+      cy.get(fields.variantsGridTableRow).eq(1).should('contain.text', EXPECTED_CURRENCY_SYMBOL);
+      cy.get(fields.variantsGridTableRow).eq(2).should('contain.text', EXPECTED_CURRENCY_SYMBOL);
 
       cy.logToTerminal(
         '✅ TEST 7 PASSED: All variants display images, attributes, and prices correctly'
@@ -344,21 +362,21 @@ describe(
       cy.wait(500);
 
       cy.logToTerminal('💵 Verifying subtotal is calculated for first variant...');
-      cy.get(fields.variantsGridTableRow).eq(0).should('contain.text', '$').and('not.contain.text', '$0.00');
+      cy.get(fields.variantsGridTableRow).eq(0).should('contain.text', EXPECTED_CURRENCY_SYMBOL).and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
       cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
       cy.wait(500);
 
       cy.logToTerminal('💵 Verifying subtotal is calculated for second variant...');
-      cy.get(fields.variantsGridTableRow).eq(1).should('contain.text', '$').and('not.contain.text', '$0.00');
+      cy.get(fields.variantsGridTableRow).eq(1).should('contain.text', EXPECTED_CURRENCY_SYMBOL).and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
       cy.logToTerminal('📝 Setting quantity to 4 for third variant...');
       actions.updateVariantQuantity(2, 4);
       cy.wait(500);
 
       cy.logToTerminal('💵 Verifying subtotal is calculated for third variant...');
-      cy.get(fields.variantsGridTableRow).eq(2).should('contain.text', '$').and('not.contain.text', '$0.00');
+      cy.get(fields.variantsGridTableRow).eq(2).should('contain.text', EXPECTED_CURRENCY_SYMBOL).and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
       cy.logToTerminal('✅ TEST 8 PASSED: Subtotals calculated correctly for all variants');
     });
@@ -398,7 +416,7 @@ describe(
             value === '0' || value === '' || value === 0 || !value;
           expect(
             isCleared,
-            `Blue variant should be reset but got: "${value}"`
+            `First variant (${VARIANT_SKUS[0]}) should be reset but got: "${value}"`
           ).to.be.true;
         }
       );
@@ -407,7 +425,7 @@ describe(
         const value = $input.val();
         const isCleared =
           value === '0' || value === '' || value === 0 || !value;
-        expect(isCleared, `Green variant should be reset but got: "${value}"`)
+        expect(isCleared, `Second variant (${VARIANT_SKUS[1]}) should be reset but got: "${value}"`)
           .to.be.true;
       });
 
@@ -415,7 +433,7 @@ describe(
         const value = $input.val();
         const isCleared =
           value === '0' || value === '' || value === 0 || !value;
-        expect(isCleared, `Red variant should be reset but got: "${value}"`)
+        expect(isCleared, `Third variant (${VARIANT_SKUS[2]}) should be reset but got: "${value}"`)
           .to.be.true;
       });
 

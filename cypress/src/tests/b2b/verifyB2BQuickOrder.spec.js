@@ -29,7 +29,8 @@ import {
   quickOrderSearchResults,
   quickOrderSearchResultItem,
   quickOrderAddAllToCartButton,
-} from "../../fields/index.js";
+} from '../../fields';
+
 /**
  * @fileoverview B2B Quick Order E2E Journey Tests.
  *
@@ -37,16 +38,14 @@ import {
  * covering the main features and use cases.
  *
  * ==========================================================================
- * COVERAGE APPROACH:
+ * COVERAGE:
  * ==========================================================================
- * This test suite covers approximately 50-60% of the full Quick Order functionality,
- * focusing on the most critical user journeys:
  * - Component initialization and rendering
  * - Multiple SKU input workflow
- * - CSV upload workflow
+ * - CSV upload workflow with validation
  * - Product search and selection
  * - Configurable products with options
- * - Mixed input methods (comprehensive workflow)
+ * - Mixed input methods workflow
  *
  * ==========================================================================
  * TEST JOURNEYS:
@@ -57,15 +56,29 @@ import {
  * JOURNEY 4: Complete mixed workflow
  *
  * ==========================================================================
+ * TEST CONFIGURATION:
+ * ==========================================================================
+ * See constants below for all hardcoded test dependencies:
+ * - Product SKUs, URLs, file paths, etc.
+ * - All configuration is centralized for easy maintenance
+ *
+ * ==========================================================================
  */
 
+// ==========================================================================
+// TEST CONFIGURATION CONSTANTS
+// ==========================================================================
+const QUICK_ORDER_PAGE_URL = '/quick-order';
+const CART_PAGE_URL = '/cart';
+
+const TEST_SIMPLE_PRODUCT_1_SKU = 'ADB127';
+const TEST_SIMPLE_PRODUCT_2_SKU = 'ADB336';
+const TEST_CONFIGURABLE_PRODUCT_SKU = 'CYPRESS456';
+
+const CSV_INVALID_FILE_PATH = 'src/fixtures/quick-order-invalid-file.txt';
+const CSV_VALID_FILE_PATH = 'src/fixtures/quick-order-valid-file.csv';
+
 describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
-  const testProducts = {
-    simple1: { sku: "ADB127", name: "Adobe pattern hoodie" },
-    simple2: { sku: "ADB336", name: "Llama plush" },
-    simple3: { sku: "ADB174", name: "Recycled performance hat" },
-    configurable: { sku: "CYPRESS456", name: "Configurable product" },
-  };
 
   before(() => {
     cy.logToTerminal("🛒 B2B Quick Order test suite started");
@@ -75,7 +88,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.clearCookies();
     cy.clearLocalStorage();
 
-    cy.visit("/quick-order", {
+    cy.visit(QUICK_ORDER_PAGE_URL, {
       failOnStatusCode: false,
       timeout: 30000,
     });
@@ -124,7 +137,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 2: Add items via Multiple SKU ==========
 
-    const skuText = `${testProducts.simple1.sku} ${testProducts.simple2.sku}`;
+    const skuText = `${TEST_SIMPLE_PRODUCT_1_SKU} ${TEST_SIMPLE_PRODUCT_2_SKU}`;
 
     cy.get(quickOrderMultipleSkuContainer).within(() => {
       cy.get(quickOrderMultipleSkuTextarea).clear().type(skuText);
@@ -159,10 +172,10 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 6: Verify redirect to cart ==========
 
-    cy.url().should("include", "/cart");
+    cy.url().should("include", CART_PAGE_URL);
 
     // Return to quick order page for next test
-    cy.visit("/quick-order");
+    cy.visit(QUICK_ORDER_PAGE_URL);
     cy.wait(2000);
 
     cy.logToTerminal(
@@ -181,7 +194,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // ========== STEP 1: Test invalid file format ==========
     cy.get(quickOrderCsvUploadContainer).within(() => {
       cy.get(quickOrderCsvFileInput).selectFile(
-        `src/fixtures/quick-order-invalid-file.txt`,
+        CSV_INVALID_FILE_PATH,
         {
           force: true,
         },
@@ -194,7 +207,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // ========== STEP 2: Upload valid CSV ==========
     cy.get(quickOrderCsvUploadContainer).within(() => {
       cy.get(quickOrderCsvFileInput).selectFile(
-        "src/fixtures/quick-order-valid-file.csv",
+        CSV_VALID_FILE_PATH,
         {
           force: true,
         },
@@ -229,10 +242,10 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 5: Verify redirect to cart ==========
 
-    cy.url().should("include", "/cart");
+    cy.url().should("include", CART_PAGE_URL);
 
     // Return to quick order page for next test
-    cy.visit("/quick-order");
+    cy.visit(QUICK_ORDER_PAGE_URL);
     cy.wait(2000);
 
     cy.logToTerminal("✅ JOURNEY 2: Complete - CSV workflow successful");
@@ -246,7 +259,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // ========== STEP 1: Search for product ==========
 
     cy.get(quickOrderItemsContainer).within(() => {
-      cy.get(quickOrderSearchInput).type(testProducts.simple1.sku);
+      cy.get(quickOrderSearchInput).type(TEST_SIMPLE_PRODUCT_1_SKU);
     });
     cy.wait(1500);
 
@@ -267,7 +280,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.get(quickOrderMultipleSkuContainer).within(() => {
       cy.get(quickOrderMultipleSkuTextarea)
         .clear()
-        .type(testProducts.configurable.sku);
+        .type(TEST_CONFIGURABLE_PRODUCT_SKU);
       cy.contains("button", "Add to List").click();
     });
 
@@ -279,13 +292,13 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 4: Verify configurable product has options ==========
 
-    cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
+    cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find(quickOrderProductOptionsSlot)
       .should("exist");
 
     // ========== STEP 5: Select option and update quantity ==========
 
-    cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
+    cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find('select[name="color"]')
       .select("red");
     cy.wait(1000);
@@ -304,10 +317,10 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 7: Verify redirect to cart ==========
 
-    cy.url().should("include", "/cart");
+    cy.url().should("include", CART_PAGE_URL);
 
     // Return to quick order page for next test
-    cy.visit("/quick-order");
+    cy.visit(QUICK_ORDER_PAGE_URL);
     cy.wait(2000);
 
     cy.logToTerminal(
@@ -323,7 +336,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     // ========== STEP 1: Add via Multiple SKU ==========
 
     cy.get(quickOrderMultipleSkuContainer).within(() => {
-      cy.get(quickOrderMultipleSkuTextarea).type(testProducts.simple1.sku);
+      cy.get(quickOrderMultipleSkuTextarea).type(TEST_SIMPLE_PRODUCT_1_SKU);
       cy.contains("button", "Add to List").click();
     });
     cy.wait(1500);
@@ -335,7 +348,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.get(quickOrderItemsContainer).within(() => {
       cy.get(".b2b-quick-order-form-quick-order-items-list__global-search")
         .find(quickOrderSearchInput)
-        .type(testProducts.simple2.sku);
+        .type(TEST_SIMPLE_PRODUCT_2_SKU);
     });
     cy.wait(1000);
     cy.get(quickOrderSearchResultItem).first().click();
@@ -348,7 +361,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
     cy.get(quickOrderMultipleSkuContainer).within(() => {
       cy.get(quickOrderMultipleSkuTextarea)
         .clear()
-        .type(testProducts.configurable.sku);
+        .type(TEST_CONFIGURABLE_PRODUCT_SKU);
       cy.contains("button", "Add to List").click();
     });
     cy.wait(1500);
@@ -357,7 +370,7 @@ describe("B2B Quick Order - Core Functionality", { tags: "@B2BSaas" }, () => {
 
     // ========== STEP 4: Configure options ==========
 
-    cy.get(`form[data-sku="${testProducts.configurable.sku}"]`)
+    cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find('select[name="color"]')
       .select("green");
     cy.wait(1000);
