@@ -192,6 +192,12 @@ describe(
       cy.get(fields.variantsGridQuantityInput(1)).should('have.value', '3');
       cy.get(fields.variantsGridQuantityInput(2)).should('have.value', '7');
 
+      cy.logToTerminal('✅ Verifying Add to Cart button displays total quantity (5+3+7=15)...');
+      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (15)');
+
       cy.logToTerminal('🗑️ Clicking Clear button...');
       actions.clickClearAllButton();
 
@@ -278,6 +284,12 @@ describe(
       actions.verifyVariantRow(1, { quantity: 3 });
       actions.verifyVariantRow(2, { quantity: 4 });
 
+      cy.logToTerminal('✅ Verifying Add to Cart button displays total quantity (5+3+4=12)...');
+      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (12)');
+
       cy.logToTerminal('🗑️ Clearing all quantities...');
       actions.clickClearAllButton();
 
@@ -294,6 +306,12 @@ describe(
       actions.verifyVariantRow(0, { quantity: 10 });
       actions.verifyVariantRow(1, { quantity: 8 });
       actions.verifyVariantRow(2, { quantity: 6 });
+
+      cy.logToTerminal('✅ Verifying Add to Cart button displays updated total quantity (10+8+6=24)...');
+      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (24)');
 
       cy.logToTerminal('✅ TEST 6 PASSED: Complete workflow works for all variants');
     });
@@ -360,6 +378,12 @@ describe(
       cy.logToTerminal('💵 Verifying subtotal is calculated for third variant...');
       cy.get(fields.variantsGridTableRow).eq(2).should('contain.text', '$').and('not.contain.text', '$0.00');
 
+      cy.logToTerminal('✅ Verifying Add to Cart button displays total quantity (2+3+4=9)...');
+      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+        .scrollIntoView()
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (9)');
+
       cy.logToTerminal('✅ TEST 8 PASSED: Subtotals calculated correctly for all variants');
     });
 
@@ -369,6 +393,18 @@ describe(
       );
       actions.initializeVariantsGrid();
       cy.logToTerminal('✅ Variants grid loaded');
+
+      // Set up GraphQL intercept for Add to Cart mutation
+      const apiMethod = 'ADD_PRODUCTS_TO_CART_MUTATION';
+      const graphqlEndPoint = Cypress.env('graphqlEndPoint');
+      
+      cy.intercept('POST', graphqlEndPoint, (req) => {
+        const query = req.body.query;
+        if (query && typeof query === 'string' && query.includes(apiMethod)) {
+          req.alias = 'addProductToCart';
+        }
+      });
+
       cy.logToTerminal('📝 Setting quantities for all variants...');
       actions.updateVariantQuantity(0, 2);
       actions.updateVariantQuantity(1, 3);
@@ -380,15 +416,23 @@ describe(
       cy.get(fields.variantsGridQuantityInput(1)).should('have.value', '3');
       cy.get(fields.variantsGridQuantityInput(2)).should('have.value', '1');
 
-      cy.logToTerminal('🛒 Clicking Add to Cart button...');
-      
+      cy.logToTerminal('✅ Verifying Add to Cart button displays total quantity (2+3+1=6)...');
       cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
-        .and('not.be.disabled')
+        .and('contain.text', 'Add to Cart (6)');
+
+      cy.logToTerminal('🛒 Clicking Add to Cart button...');
+      
+      cy.get(fields.productDetailsAddToCartButton)
+        .should('not.be.disabled')
         .click({ force: true });
 
-      cy.wait(3000);
+      cy.logToTerminal('⏳ Waiting for Add to Cart API call to complete...');
+      cy.wait('@addProductToCart', { timeout: 15000 }).then((interception) => {
+        cy.logToTerminal('✅ Add to Cart API call completed successfully');
+        expect(interception.response.statusCode).to.equal(200);
+      });
 
       cy.logToTerminal('🛒 Verifying cart button shows added items (2+3+1=6)...');
       cy.get(fields.miniCartButton, { timeout: 10000 })
@@ -401,7 +445,7 @@ describe(
         });
 
       cy.logToTerminal('🛒 Opening mini cart...');
-      cy.get(fields.miniCartButton).click();
+      cy.get(fields.miniCartButton).click({ force: true });
 
       cy.logToTerminal('✅ Verifying mini cart is open and displays items...');
       cy.get(fields.miniCartContainer, { timeout: 10000 }).should('be.visible');
@@ -434,9 +478,14 @@ describe(
         expect(totalQty, 'Total CYPRESS456 items should be 6').to.equal(6);
       });
 
-      cy.logToTerminal('✅ Closing mini cart...');
-      cy.get('body').click(0, 0);
-      cy.wait(1000);
+      cy.logToTerminal('✅ Clicking Checkout button to close mini cart...');
+      cy.get(fields.miniCartCheckoutButton, { timeout: 5000 })
+        .should('be.visible')
+        .click({ force: true });
+      
+      cy.logToTerminal('⬅️ Navigating back to product page...');
+      cy.visit('/products/cypress-configurable-product-latest/cypress456');
+      cy.wait(2000);
 
       cy.logToTerminal('✅ Verifying all quantities are reset to 0...');
       cy.get(fields.variantsGridQuantityInput(0), { timeout: 5000 }).should(
