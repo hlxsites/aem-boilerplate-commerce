@@ -1,0 +1,26 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/AtUfSdkmssSoJecYmn4FAJ/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/AtUfSdkmssSoJecYmn4FAJ/graphql",
+      "adobe-commerce-optimizer": true,
+      "headers": {
+        "cs": {
+          "content-type":"application/json",
+          "AC-View-Id":"2d2fb17c-984f-495e-a27b-f92141e60044",
+          "AC-Environment-Id":"AtUfSdkmssSoJecYmn4FAJ",
+          "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "X-Api-Key": "storefront-catalog-apollo"
+        }
+      },
+      "analytics": {
+        "view-id": "2d2fb17c-984f-495e-a27b-f92141e60044",
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "locale":"en-US",
+        "store-url": "https://e2eacopreprd-catview-mar12demo--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "AtUfSdkmssSoJecYmn4FAJ"
+      }
+    }
+  }
+}
