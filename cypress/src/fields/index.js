@@ -215,6 +215,12 @@ export const requisitionListViewBulkActionsDeleteButton =
 export const requisitionListViewDeleteButton =
   '[data-testid="delete-list-btn"]';
 export const miniCartButton = '.minicart-wrapper .nav-cart-button';
+export const miniCartContainer = '.cart-mini-cart';
+export const miniCartHeading = '[data-testid="default-cart-heading"]';
+export const miniCartProductsList = '[data-testid="default-cart-summary-list"]';
+export const miniCartItems = '.dropin-cart-list__item';
+export const miniCartItemSku = '[data-testid="cart-list-item-sku"]';
+export const miniCartQuantity = '.dropin-cart-item__quantity__number';
 export const productDetailsAlert = '.product-details__alert';
 
 export const COMPANY_CREATE_PATH = '/customer/company/create';
