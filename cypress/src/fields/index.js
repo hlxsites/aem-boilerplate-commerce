@@ -336,22 +336,14 @@ export const variantsGridTableRow = '.dropin-table__body__row';
 export const variantsGridTableHeaderRow = '.dropin-table__header__row';
 export const variantsGridTableCell = '.dropin-table__body__cell';
 export const variantsGridImage = '.b2b-quick-order-variants-grid__image';
-export const variantsGridQuantityInput = (index) =>
-  `[data-testid="variant-quantity-input-${index}"] .dropin-incrementer__input`;
-export const variantsGridIncrementButton =
-  '.dropin-incrementer__increase-button';
-export const variantsGridDecrementButton =
-  '.dropin-incrementer__decrease-button';
-export const variantsGridAvailability =
-  '.b2b-quick-order-variants-grid__availability';
-export const variantsGridShowAllButton =
-  '.b2b-quick-order-variants-grid__toggle-button';
+export const variantsGridQuantityInput = (index) => `[data-testid="variant-quantity-input-${index}"] .dropin-incrementer__input`;
+export const variantsGridIncrementButton = '.dropin-incrementer__increase-button';
+export const variantsGridDecrementButton = '.dropin-incrementer__decrease-button';
+export const variantsGridAvailability = '.b2b-quick-order-variants-grid__availability';
+export const variantsGridShowAllButton = '.b2b-quick-order-variants-grid__toggle-button';
 export const variantsGridActionsContainer = '.b2b-quick-order-variants-actions';
-export const variantsGridActionsButtons =
-  '.b2b-quick-order-variants-actions__buttons';
+export const variantsGridActionsButtons = '.b2b-quick-order-variants-actions__buttons';
 export const variantsGridClearButton = '[data-testid="variants-clear-button"]';
-export const variantsGridSaveCsvButton =
-  '[data-testid="variants-save-csv-button"]';
-export const variantsGridError =
-  '[data-testid="variants-grid-container-error"]';
+export const variantsGridSaveCsvButton = '[data-testid="variants-save-csv-button"]';
+export const variantsGridError = '[data-testid="variants-grid-container-error"]';
 export const productDetailsAddToCartButton = '.product-details__buttons__add-to-cart button';
