@@ -42,15 +42,9 @@ export default async function decorate(block) {
   block.appendChild(fragment);
 
   const quickOrderTitleContainer = block.querySelector('.quick-order-title');
-  const quickOrderItemsContainer = block.querySelector(
-    '.quick-order-items-container',
-  );
-  const quickOrderMultipleSkuContainer = block.querySelector(
-    '.quick-order-multiple-sku-container',
-  );
-  const quickOrderCsvUploadContainer = block.querySelector(
-    '.quick-order-csv-upload-container',
-  );
+  const quickOrderItemsContainer = block.querySelector('.quick-order-items-container');
+  const quickOrderMultipleSkuContainer = block.querySelector('.quick-order-multiple-sku-container');
+  const quickOrderCsvUploadContainer = block.querySelector('.quick-order-csv-upload-container');
 
   UI.render(Header, { title: 'Quick Order', size: 'large', divider: true })(
     quickOrderTitleContainer,
