@@ -97,12 +97,16 @@ function updateAddToCartButtonText(
 }
 
 export default async function decorate(block) {
-  const { 'grid-ordering-enabled': gridOrderingEnabledString = 'false' } = readBlockConfig(block);
-  const gridOrderingEnabled = gridOrderingEnabledString === 'true';
-
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
+
+  const { 'grid-ordering-enabled': gridOrderingEnabledString = 'false' } = readBlockConfig(block);
+  const gridOrderingEnabled = gridOrderingEnabledString === 'true';
+
+  // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
+  const isGridOrderingView = gridOrderingEnabled && product?.productType === 'complex' && !product?.isBundle;
+  let gridOrderingSelectedVariants = [];
 
   const labels = await fetchPlaceholders();
 
@@ -140,7 +144,7 @@ export default async function decorate(block) {
         <div class="product-details__attributes"></div>
       </div>
     </div>
-    <div class="product-details__grid-ordering"></div>
+    <div class="product-details__grid-ordering ${isGridOrderingView ? 'product-details__grid-ordering--enabled' : 'product-details__grid-ordering--disabled'}"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
@@ -179,10 +183,6 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = '/wishlist';
-
-  // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
-  const isGridOrderingView = gridOrderingEnabled && product?.productType === 'complex' && !product?.isBundle;
-  let gridOrderingSelectedVariants = [];
 
   const [
     _galleryMobile,
@@ -250,10 +250,10 @@ export default async function decorate(block) {
       })($options)
       : null,
 
-    // Configuration  Quantity
+    // Configuration - Quantity
     !isGridOrderingView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
 
-    // Configuration  Gift Card Options
+    // Configuration - Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
 
     // Description
@@ -499,18 +499,20 @@ export default async function decorate(block) {
 
   // Conditionally load requisition list functionality
   // The module sets up event handlers that check feature status on each render
-  try {
-    const { initializeRequisitionList } = await import('./requisition-list.js');
-    await initializeRequisitionList({
-      $alert,
-      $requisitionListSelector,
-      product,
-      labels,
-      urlParams,
-    });
-  } catch (error) {
-    // If module fails to load, requisition list features won't be available
-    console.warn('Requisition list module not available:', error);
+  if (!isGridOrderingView) {
+    try {
+      const { initializeRequisitionList } = await import('./requisition-list.js');
+      await initializeRequisitionList({
+        $alert,
+        $requisitionListSelector,
+        product,
+        labels,
+        urlParams,
+      });
+    } catch (error) {
+      // If module fails to load, requisition list features won't be available
+      console.warn('Requisition list module not available:', error);
+    }
   }
 
   // --- Add new event listener for cart/data ---
