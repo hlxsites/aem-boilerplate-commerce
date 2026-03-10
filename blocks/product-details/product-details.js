@@ -31,6 +31,7 @@ import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGi
 import {
   fetchPlaceholders, getProductLink, rootLink, setJsonLd,
 } from '../../scripts/commerce.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -96,6 +97,8 @@ function updateAddToCartButtonText(
 }
 
 export default async function decorate(block) {
+  const { gridOrderingEnabled = false } = readBlockConfig(block);
+
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
@@ -177,7 +180,7 @@ export default async function decorate(block) {
   const routeToWishlist = '/wishlist';
 
   // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
-  const isGridOrderingView = product?.productType === 'complex' && !product?.isBundle;
+  const isGridOrderingView = gridOrderingEnabled && product?.productType === 'complex' && !product?.isBundle;
   let gridOrderingSelectedVariants = [];
 
   const [
