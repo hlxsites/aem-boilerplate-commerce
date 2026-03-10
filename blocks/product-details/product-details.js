@@ -97,7 +97,8 @@ function updateAddToCartButtonText(
 }
 
 export default async function decorate(block) {
-  const { gridOrderingEnabled = false } = readBlockConfig(block);
+  const { 'grid-ordering-enabled': gridOrderingEnabledString = 'false' } = readBlockConfig(block);
+  const gridOrderingEnabled = gridOrderingEnabledString === 'true';
 
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
