@@ -593,18 +593,16 @@ function setJsonLdProduct(product, variants) {
     '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
-  if (variants?.length > 1) {
-    ldJson.offers.push(...variants
-      .filter((variant) => variant.product)
-      .map((variant) => ({
-        '@type': 'Offer',
-        name: variant.product.name,
-        image: variant.product.images[0]?.url,
-        price: variant.product.price.final.amount.value,
-        priceCurrency: variant.product.price.final.amount.currency,
-        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-        sku: variant.product.sku,
-      })));
+  if (variants.length > 1) {
+    ldJson.offers.push(...variants.map((variant) => ({
+      '@type': 'Offer',
+      name: variant.product.name,
+      image: variant.product.images[0]?.url,
+      price: variant.product.price.final.amount.value,
+      priceCurrency: variant.product.price.final.amount.currency,
+      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+      sku: variant.product.sku,
+    })));
   } else {
     ldJson.offers.push({
       '@type': 'Offer',
