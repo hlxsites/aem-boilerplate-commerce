@@ -20,32 +20,21 @@ export interface JwtPayload {
     iat?: number;
     sub?: string;
     isAdmin?: boolean;
-    admin?: boolean;
-    role?: string;
 }
 /**
  * Decodes JWT token payload without verification
  * JWT format: header.payload.signature
- * We only decode the payload part (base64url encoded)
+ * Only decodes the payload part (base64url encoded)
  *
  * @param token - JWT token string
  * @returns Decoded payload object or null if invalid
  */
 export declare const decodeJwtToken: (token: string) => JwtPayload | null;
 /**
- * Sets the admin session cookie with the same lifetime as the auth token
- */
-export declare const setAdminSessionCookie: () => Promise<void>;
-/**
- * Deletes the admin session cookie
- */
-export declare const deleteAdminSessionCookie: () => void;
-/**
- * Checks if JWT token belongs to an admin user
- * Checks multiple possible admin indicators in token payload
+ * Checks if the JWT token belongs to an admin user
  *
  * @param token - JWT token string
  * @returns true if token indicates admin user, false otherwise
  */
 export declare const isAdminToken: (token: string) => boolean;
-//# sourceMappingURL=decodeJwtToken.d.ts.map
+//# sourceMappingURL=jwtUtils.d.ts.map
