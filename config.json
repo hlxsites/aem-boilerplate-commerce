@@ -1,7 +1,7 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://master-7rqtwti-wdxwuaerh4gbm.eu-4.magentosite.cloud/graphql",
+      "commerce-core-endpoint": "https://qa-h47ppbq-oqyof733ykmii.us-4.magentosite.cloud/graphql",
       "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/TfpwVBcuyz6LwDnKMNBVxP/graphql",
       "adobe-commerce-optimizer": true,
       "headers": {
