@@ -161,7 +161,7 @@ export default async function decorate(block) {
   const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
-  const $girdOrderingContainer = fragment.querySelector('.product-details__grid-ordering');
+  const $gridOrderingContainer = fragment.querySelector('.product-details__grid-ordering');
 
   block.replaceChildren(fragment);
 
@@ -305,7 +305,7 @@ export default async function decorate(block) {
             ctx.appendChild(cellWrapper);
           },
         },
-      })($girdOrderingContainer)
+      })($gridOrderingContainer)
       : null,
 
     // Wishlist button - WishlistToggle Container
