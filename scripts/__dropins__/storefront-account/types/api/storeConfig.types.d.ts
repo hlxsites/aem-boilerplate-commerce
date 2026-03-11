@@ -19,6 +19,7 @@ export interface StoreConfigProps {
     minimum_password_length: number;
     required_character_classes_number: string;
     store_code: string;
+    allow_remote_shopping_assistance: boolean;
 }
 export interface GetStoreConfigResponse {
     data: {

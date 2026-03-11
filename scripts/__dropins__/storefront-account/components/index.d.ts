@@ -30,4 +30,5 @@ export * from './ChangePassword';
 export * from './EditCustomerInformation';
 export * from './CustomerInformationCard';
 export * from './AddressValidation';
+export * from './SellerAssistedPurchasingControl';
 //# sourceMappingURL=index.d.ts.map

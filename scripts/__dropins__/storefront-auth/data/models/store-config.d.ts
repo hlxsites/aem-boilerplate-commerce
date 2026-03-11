@@ -20,5 +20,8 @@ export interface StoreConfigModel {
     requiredCharacterClasses: number;
     createAccountConfirmation: boolean;
     customerAccessTokenLifetime: number;
+    loginAsCustomerEnabled: boolean;
+    loginAsCustomerConsentLabel: string;
+    loginAsCustomerConsentTooltip: string;
 }
 //# sourceMappingURL=store-config.d.ts.map

@@ -24,7 +24,8 @@ export interface CustomerDataModelShort {
     suffix: string;
     email: string;
     createdAt: string;
-    [key: string]: string | boolean | number;
+    allowRemoteShoppingAssistance?: boolean;
+    [key: string]: string | boolean | number | undefined;
 }
 export interface AccountModel {
     firstName?: string;

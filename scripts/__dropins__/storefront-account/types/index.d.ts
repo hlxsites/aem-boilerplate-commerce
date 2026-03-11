@@ -32,4 +32,5 @@ export * from './ordersList.types';
 export * from './emptyList.types';
 export * from './customerInformation.types';
 export * from './notification.types';
+export * from './sellerAssistedPurchasing.types';
 //# sourceMappingURL=index.d.ts.map

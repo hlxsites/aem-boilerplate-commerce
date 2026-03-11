@@ -11,6 +11,7 @@ const e=`
     prefix
     suffix
     created_at
+    allow_remote_shopping_assistance
   }
 `,t=`
   fragment ADDRESS_FRAGMENT on OrderAddress {

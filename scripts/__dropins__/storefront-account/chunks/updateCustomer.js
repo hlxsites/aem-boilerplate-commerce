@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{l as n,f as C,h as o,a as h,m as x}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as F}from"../fragments.js";import{c as V}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as B}from"@dropins/tools/lib.js";const L=t=>{var r,u,i,d,_,f,E,S,T,w,e,g,O,P,A,M,U,R,b,N,$,G,v,D,c,I;const m=(i=(u=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:u.custom_attributes)==null?void 0:i.filter(l=>l).reduce((l,y)=>(l[n(y.code)]=y.value??"",l),{}),a={email:((_=(d=t==null?void 0:t.data)==null?void 0:d.customer)==null?void 0:_.email)||"",firstName:((E=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:E.firstname)||"",lastName:((T=(S=t==null?void 0:t.data)==null?void 0:S.customer)==null?void 0:T.lastname)||"",middleName:((e=(w=t==null?void 0:t.data)==null?void 0:w.customer)==null?void 0:e.middlename)||"",gender:((O=(g=t==null?void 0:t.data)==null?void 0:g.customer)==null?void 0:O.gender)||"1",dateOfBirth:((A=(P=t==null?void 0:t.data)==null?void 0:P.customer)==null?void 0:A.date_of_birth)||"",prefix:((U=(M=t==null?void 0:t.data)==null?void 0:M.customer)==null?void 0:U.prefix)||"",suffix:((b=(R=t==null?void 0:t.data)==null?void 0:R.customer)==null?void 0:b.suffix)||"",createdAt:(($=(N=t==null?void 0:t.data)==null?void 0:N.customer)==null?void 0:$.created_at)||"",...m};return B(a,(I=(c=(D=(v=(G=V)==null?void 0:G.getConfig())==null?void 0:v.models)==null?void 0:D.CustomerDataModelShort)==null?void 0:c.transformer)==null?void 0:I.call(c,t.data))},k=`
+import{l as P,f as x,h as I,a as V,m as B}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as D}from"../fragments.js";import{c as $}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as k}from"@dropins/tools/lib.js";const q=t=>{var o,u,a,m,i,l,c,f,n,C,h,_,s,S,y,T,w,E,A,R,b,N,O,v,M,U,d,p;const e=(a=(u=(o=t==null?void 0:t.data)==null?void 0:o.customer)==null?void 0:u.custom_attributes)==null?void 0:a.filter(g=>g).reduce((g,F)=>(g[P(F.code)]=F.value??"",g),{}),r={email:((i=(m=t==null?void 0:t.data)==null?void 0:m.customer)==null?void 0:i.email)||"",firstName:((c=(l=t==null?void 0:t.data)==null?void 0:l.customer)==null?void 0:c.firstname)||"",lastName:((n=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:n.lastname)||"",middleName:((h=(C=t==null?void 0:t.data)==null?void 0:C.customer)==null?void 0:h.middlename)||"",gender:((s=(_=t==null?void 0:t.data)==null?void 0:_.customer)==null?void 0:s.gender)||"1",dateOfBirth:((y=(S=t==null?void 0:t.data)==null?void 0:S.customer)==null?void 0:y.date_of_birth)||"",prefix:((w=(T=t==null?void 0:t.data)==null?void 0:T.customer)==null?void 0:w.prefix)||"",suffix:((A=(E=t==null?void 0:t.data)==null?void 0:E.customer)==null?void 0:A.suffix)||"",createdAt:((b=(R=t==null?void 0:t.data)==null?void 0:R.customer)==null?void 0:b.created_at)||"",allowRemoteShoppingAssistance:(O=(N=t==null?void 0:t.data)==null?void 0:N.customer)==null?void 0:O.allow_remote_shopping_assistance,...e};return k(r,(p=(d=(U=(M=(v=$)==null?void 0:v.getConfig())==null?void 0:M.models)==null?void 0:U.CustomerDataModelShort)==null?void 0:d.transformer)==null?void 0:p.call(d,t.data))},J=`
   query GET_CUSTOMER {
     customer {
       ...BASIC_CUSTOMER_INFO_FRAGMENT
@@ -13,34 +13,15 @@ import{l as n,f as C,h as o,a as h,m as x}from"./removeCustomerAddress.js";impor
       }
     }
   }
-  ${F}
-`,X=async()=>await C(k,{method:"GET",cache:"no-cache"}).then(t=>{var m;return(m=t.errors)!=null&&m.length?o(t.errors):L(t)}).catch(h),H=`
-  mutation CHANGE_CUSTOMER_PASSWORD(
-    $currentPassword: String!
-    $newPassword: String!
-  ) {
-    changeCustomerPassword(
-      currentPassword: $currentPassword
-      newPassword: $newPassword
-    ) {
-      email
-    }
-  }
-`,Y=async({currentPassword:t,newPassword:m})=>await C(H,{method:"POST",variables:{currentPassword:t,newPassword:m}}).then(a=>{var r,u,i;return(r=a.errors)!=null&&r.length?o(a.errors):((i=(u=a==null?void 0:a.data)==null?void 0:u.changeCustomerPassword)==null?void 0:i.email)||""}).catch(h),W=`
-  mutation UPDATE_CUSTOMER_EMAIL($email: String!, $password: String!) {
-    updateCustomerEmail(email: $email, password: $password) {
-      customer {
-        email
-      }
-    }
-  }
-`,Z=async({email:t,password:m})=>await C(W,{method:"POST",variables:{email:t,password:m}}).then(a=>{var r,u,i,d;return(r=a.errors)!=null&&r.length?o(a.errors):((d=(i=(u=a==null?void 0:a.data)==null?void 0:u.updateCustomerEmail)==null?void 0:i.customer)==null?void 0:d.email)||""}).catch(h),q=`
+  ${D}
+`,H=async()=>await x(J,{method:"GET",cache:"no-cache"}).then(t=>{var e;return(e=t.errors)!=null&&e.length?I(t.errors):q(t)}).catch(V),G=`
   mutation UPDATE_CUSTOMER_V2($input: CustomerUpdateInput!) {
     updateCustomerV2(input: $input) {
       customer {
         email
+        allow_remote_shopping_assistance
       }
     }
   }
-`,s=async t=>await C(q,{method:"POST",variables:{input:x(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(m=>{var a,r,u,i;return(a=m.errors)!=null&&a.length?o(m.errors):((i=(u=(r=m==null?void 0:m.data)==null?void 0:r.updateCustomerV2)==null?void 0:u.customer)==null?void 0:i.email)||""}).catch(h);export{Z as a,s as b,X as g,Y as u};
+`,W=async t=>{console.log("updateCustomer - form received:",t),console.log("updateCustomer - form type:",typeof t),console.log("updateCustomer - allowRemoteShoppingAssistance type:",typeof t.allowRemoteShoppingAssistance);const{allowRemoteShoppingAssistance:e,...r}=t;console.log("updateCustomer - allowRemoteShoppingAssistance:",e),console.log("updateCustomer - allowRemoteShoppingAssistance type:",typeof e),console.log("updateCustomer - restForm:",r);const o=B(r,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"});console.log("updateCustomer - input after convertKeysCase:",o),console.log("updateCustomer - input type:",typeof o),e!==void 0&&(o.allow_remote_shopping_assistance=e),console.log("updateCustomer - final input:",o),console.log("updateCustomer - final input stringified:",JSON.stringify(o,null,2)),console.log("updateCustomer - allow_remote_shopping_assistance type:",typeof o.allow_remote_shopping_assistance);const u={input:o};return console.log("updateCustomer - variables object:",u),console.log("updateCustomer - variables stringified:",JSON.stringify(u,null,2)),console.log("updateCustomer - calling fetchGraphQl with:",{query:G,method:"POST",variables:u}),await x(G,{method:"POST",variables:u}).then(a=>{var m,i,l,c;return console.log("updateCustomer - response received:",a),(m=a.errors)!=null&&m.length?(console.error("updateCustomer - errors:",a.errors),I(a.errors)):((c=(l=(i=a==null?void 0:a.data)==null?void 0:i.updateCustomerV2)==null?void 0:l.customer)==null?void 0:c.email)||""}).catch(a=>(console.error("updateCustomer - catch error:",a),V(a)))};export{H as g,W as u};
 //# sourceMappingURL=updateCustomer.js.map
