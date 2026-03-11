@@ -9,6 +9,7 @@
           "content-type":"application/json",
           "AC-View-Id":"575f4392-a5f3-4043-ba99-5e2079911b5e",
           "AC-Environment-Id":"AtUfSdkmssSoJecYmn4FAJ",
+          "AC-Price-Book-Id":"global_visibility",
           "X-Api-Key": "storefront-catalog-apollo"
         }
       },
