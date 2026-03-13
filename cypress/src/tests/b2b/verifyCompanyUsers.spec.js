@@ -223,6 +223,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail)
       .blur();
     cy.get('input[name="first_name"]:visible').clear().type('New').blur();
+    // Guardians team will check further
+    cy.wait(1000);
     cy.get('input[name="last_name"]:visible').clear().type('TestUser').blur();
     cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
 
