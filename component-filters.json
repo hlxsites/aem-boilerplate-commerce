@@ -28,6 +28,7 @@
       "commerce-login",
       "commerce-mini-cart",
       "commerce-order-cost-summary",
+      "commerce-order-comments",
       "commerce-order-header",
       "commerce-order-product-list",
       "commerce-order-returns",
