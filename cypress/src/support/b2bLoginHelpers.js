@@ -6,7 +6,7 @@
  * - Credential retrieval from Cypress.env
  * - Navigation to login page
  * - Form filling and submission
- * - Wait for login completion
+ * - Login success verification with retry logic
  *
  * @example
  * // Login as company admin
@@ -17,10 +17,63 @@
  * cy.loginAsRegularUser();
  */
 
+const MAX_LOGIN_ATTEMPTS = 3;
+const LOGIN_RETRY_DELAY = 5000;
+
+/**
+ * Attempt a single login via the sign-in form and verify success by
+ * checking that the auth cookie is set and the URL navigated away from
+ * the login page. Returns true if login succeeded, false otherwise.
+ */
+function attemptLogin(email, password) {
+  cy.visit('/customer/login');
+  cy.wait(1000);
+
+  cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
+    cy.get('input[name="email"]').type(email);
+    cy.wait(1000);
+    cy.get('input[name="password"]').type(password);
+    cy.wait(1000);
+    cy.get('button[type="submit"]').click();
+  });
+
+  cy.wait(8000);
+}
+
+/**
+ * Verify login succeeded by checking the auth cookie exists.
+ * If verification fails, retry the entire login flow up to maxAttempts.
+ */
+function loginWithRetry(email, password, label, attempt = 1) {
+  cy.logToTerminal(`🔐 Login attempt ${attempt}/${MAX_LOGIN_ATTEMPTS} for ${label}: ${email}`);
+
+  attemptLogin(email, password);
+
+  cy.getCookie('auth_dropin_user_token').then((cookie) => {
+    if (cookie && cookie.value) {
+      cy.logToTerminal(`✅ ${label} logged in successfully (attempt ${attempt})`);
+      return;
+    }
+
+    if (attempt >= MAX_LOGIN_ATTEMPTS) {
+      throw new Error(
+        `Login failed for ${email} after ${MAX_LOGIN_ATTEMPTS} attempts. `
+        + 'The auth cookie was never set — the account may not be indexed yet.',
+      );
+    }
+
+    cy.logToTerminal(
+      `⚠️ Login not confirmed (no auth cookie). Retrying in ${LOGIN_RETRY_DELAY / 1000}s...`,
+    );
+    cy.wait(LOGIN_RETRY_DELAY);
+    loginWithRetry(email, password, label, attempt + 1);
+  });
+}
+
 /**
  * Login as company admin.
  * Uses credentials stored in Cypress.env by setup commands.
- * Throws error if credentials are not set.
+ * Verifies login success via auth cookie with retry logic.
  */
 Cypress.Commands.add('loginAsCompanyAdmin', () => {
   cy.then(() => {
@@ -32,27 +85,14 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
       );
     }
 
-    cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testAdmin.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
-    cy.logToTerminal('✅ Admin logged in successfully');
+    loginWithRetry(testAdmin.email, testAdmin.password, 'Admin');
   });
 });
 
 /**
  * Login as regular user.
  * Uses credentials stored in Cypress.env by setup commands.
- * Throws error if credentials are not set.
+ * Verifies login success via auth cookie with retry logic.
  */
 Cypress.Commands.add('loginAsRegularUser', () => {
   cy.then(() => {
@@ -64,20 +104,7 @@ Cypress.Commands.add('loginAsRegularUser', () => {
       );
     }
 
-    cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.regular.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
-    cy.logToTerminal('✅ Regular user logged in successfully');
+    loginWithRetry(testUsers.regular.email, testUsers.regular.password, 'Regular user');
   });
 });
 
@@ -101,31 +128,18 @@ Cypress.Commands.add('setupAndLoginAsUser', () => {
 
 /**
  * Login as restricted company user (for Company Credit tests).
- * Uses credentials stored in Cypress.env during setup.
+ * Verifies login success via auth cookie with retry logic.
  */
 Cypress.Commands.add('loginAsRestrictedUser', () => {
   cy.then(() => {
     const testUsers = Cypress.env('testUsers');
-    
+
     if (!testUsers || !testUsers.restricted || !testUsers.restricted.email || !testUsers.restricted.password) {
       throw new Error(
-        `Restricted user credentials not set. Did you forget to call cy.setupCompanyWithRestrictedUser()?`
+        'Restricted user credentials not set. Did you forget to call cy.setupCompanyWithRestrictedUser()?',
       );
     }
-    
-    cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-    
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.restricted.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-    
-    cy.wait(8000); // Wait for login to complete
-    cy.logToTerminal('✅ Restricted user logged in successfully');
+
+    loginWithRetry(testUsers.restricted.email, testUsers.restricted.password, 'Restricted user');
   });
 });

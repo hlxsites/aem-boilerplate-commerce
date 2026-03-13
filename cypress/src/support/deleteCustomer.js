@@ -37,6 +37,7 @@ afterEach(() => {
     'Purchase Orders end-to-end workflow',
     'B2B Purchase Orders',
     'Cleanup - Delete approval rules, users and roles',
+    'USF-2521: Company Users (Optimized Journeys)',
   ];
 
   const shouldSkip = skipDeleteTests.some(
