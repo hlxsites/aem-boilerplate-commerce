@@ -47,6 +47,7 @@ function createRequisitionListRenderer(labels) {
     rlRenderer.render(RequisitionListSelector, {
       sku: product.sku,
       quantity: 1,
+      matchBySKU: true,
       beforeAddProdToReqList: () => {
         const url = rootLink(`/products/${product.urlKey}/${product.sku}`.toLowerCase());
         if (product.typename !== 'SimpleProductView') {

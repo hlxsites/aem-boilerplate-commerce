@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{R as a,f as m,h as g,t as l}from"./updateRequisitionList.js";import{events as p}from"@dropins/tools/event-bus.js";const S=`
+import{R as S,a as T,f as c,h as E,t as g}from"./updateRequisitionList.js";import{events as m}from"@dropins/tools/event-bus.js";const p=`
   query GET_REQUISITION_LISTS_QUERY(
     $currentPage: Int = 1
     $pageSize: Int = 10,
@@ -9,6 +9,9 @@ import{R as a,f as m,h as g,t as l}from"./updateRequisitionList.js";import{event
       requisition_lists(pageSize: $pageSize, currentPage: $currentPage) {
         items {
           ...REQUISITION_LIST_FRAGMENT
+          items(pageSize: 100, currentPage: 1) {
+            ...REQUISITION_LIST_ITEMS_FRAGMENT
+          }
         }
         page_info {
           page_size
@@ -19,6 +22,7 @@ import{R as a,f as m,h as g,t as l}from"./updateRequisitionList.js";import{event
       }
     }
   }
-${a}
-`,R=async(_,c)=>m(S,{variables:{currentPage:_,pageSize:c}}).then(({errors:e,data:t})=>{var s,r,n,o,u;if(e)return g(e);if(!((s=t==null?void 0:t.customer)!=null&&s.requisition_lists))return null;const i=t.customer.requisition_lists.items.map(I=>l(I));return p.emit("requisitionLists/data",i),{items:i,page_info:(n=(r=t.customer)==null?void 0:r.requisition_lists)==null?void 0:n.page_info,total_count:(u=(o=t.customer)==null?void 0:o.requisition_lists)==null?void 0:u.total_count}});export{R as g};
+${S}
+${T}
+`,f=async(I,u)=>c(p,{variables:{currentPage:I,pageSize:u}}).then(({errors:t,data:e})=>{var s,r,n,o,_;if(t)return E(t);if(!((s=e==null?void 0:e.customer)!=null&&s.requisition_lists))return null;const i=e.customer.requisition_lists.items.map(a=>g(a));return m.emit("requisitionLists/data",i),{items:i,page_info:(n=(r=e.customer)==null?void 0:r.requisition_lists)==null?void 0:n.page_info,total_count:(_=(o=e.customer)==null?void 0:o.requisition_lists)==null?void 0:_.total_count}});export{f as g};
 //# sourceMappingURL=getRequisitionLists.js.map
