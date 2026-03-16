@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,16 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export { BASIC_CUSTOMER_INFO_FRAGMENT } from './graphql/CustomerFragment.graphql';
-export { ADDRESS_FRAGMENT } from './graphql/CustomerAddressFragment.graphql';
-export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql';
-export { CUSTOMER_ORDER_FRAGMENT } from './graphql/CustomerOrderFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map
+export interface PaymentCardProps {
+    /** Display name of the card type (e.g. "Visa", "American Express") */
+    cardType: string;
+    /** Last four digits of the card number to display (e.g. "1001") */
+    lastFourDigits: string;
+    /** When true, shows an EXPIRED badge on the card */
+    expired?: boolean;
+    /** Called when the user clicks Remove. When omitted, the Remove action is not shown. */
+    onRemove?: () => void;
+    /** Optional variant for the card container */
+    variant?: 'secondary' | 'primary';
+}
+//# sourceMappingURL=paymentCard.types.d.ts.map

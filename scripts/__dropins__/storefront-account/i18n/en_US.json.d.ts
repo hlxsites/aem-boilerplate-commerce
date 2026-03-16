@@ -107,6 +107,9 @@ declare const _default: {
         },
         "OrdersList": {
           "message": "No orders"
+        },
+        "Payments": {
+          "message": "No saved payments"
         }
       }
     },
@@ -170,6 +173,9 @@ declare const _default: {
         },
         "OrdersList": {
           "message": "No orders"
+        },
+        "Payments": {
+          "message": "No saved payments"
         }
       }
     },
@@ -211,9 +217,18 @@ declare const _default: {
       "originalAddress": "Original Address"
     },
     "sellerAssistedPurchasing": {
-      "checkboxLabel": "Enable Seller Assisted Purchasing",
+      "checkboxLabel": "Enable seller assisted purchasing",
+      "checkboxTooltip": "This allows merchants to \"see what you see\" and take actions on your behalf in order to provide better assistance.",
       "alertMessage": "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-      "featureDisabledMessage": "Seller Assisted Purchasing is currently unavailable. This feature has been disabled by the administrator."
+      "featureDisabledMessage": "Seller assisted purchasing is unavailable. This feature has been disabled by the store administrator."
+    },
+    "Payments": {
+      "containerTitle": "Payments",
+      "paymentCard": {
+        "actionRemove": "Remove",
+        "cardEndingIn": "Credit card ending in",
+        "expiredLabel": "Expired"
+      }
     }
   }
 }

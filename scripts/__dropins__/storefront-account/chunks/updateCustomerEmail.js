@@ -20,5 +20,5 @@ import{f as u,h as i,a as d}from"./removeCustomerAddress.js";const n=`
       }
     }
   }
-`,h=async({email:o,password:s})=>await u(c,{method:"POST",variables:{email:o,password:s}}).then(a=>{var r,t,e,m;return(r=a.errors)!=null&&r.length?i(a.errors):((m=(e=(t=a==null?void 0:a.data)==null?void 0:t.updateCustomerEmail)==null?void 0:e.customer)==null?void 0:m.email)||""}).catch(d);export{l as a,h as u};
+`,h=async({email:o,password:s})=>await u(c,{method:"POST",variables:{email:o,password:s}}).then(a=>{var r,t,e,m;return(r=a.errors)!=null&&r.length?i(a.errors):((m=(e=(t=a==null?void 0:a.data)==null?void 0:t.updateCustomerEmail)==null?void 0:e.customer)==null?void 0:m.email)||""}).catch(d);export{h as a,l as u};
 //# sourceMappingURL=updateCustomerEmail.js.map

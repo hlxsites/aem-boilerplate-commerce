@@ -3,24 +3,25 @@ import { HTMLAttributes } from 'preact/compat';
 export interface SellerAssistedPurchasingProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
 }
-export interface SellerAssistedPurchasingCardProps {
+export interface SellerAssistedPurchasingControlProps {
     loading: boolean;
-    isFeatureAvailable: boolean;
-    isEnabled: boolean;
+    isRemoteShoppingAssistanceAvailable: boolean;
+    isRemoteShoppingAssistanceEnabled: boolean;
     showAlert: boolean;
     checkboxLabel: string;
+    checkboxTooltip: string;
     alertMessage: string;
     featureDisabledMessage: string;
-    handleCheckboxChange: (event: Event) => void;
+    handleCheckboxChange: (checked: boolean) => void;
     handleDismissAlert: () => void;
     children?: any;
 }
 export interface UseSellerAssistedPurchasingReturn {
     loading: boolean;
-    isFeatureAvailable: boolean;
-    isEnabled: boolean;
+    isRemoteShoppingAssistanceAvailable: boolean;
+    isRemoteShoppingAssistanceEnabled: boolean;
     showAlert: boolean;
-    handleCheckboxChange: (event: Event) => void;
+    handleCheckboxChange: (checked: boolean) => void;
     handleDismissAlert: () => void;
 }
 //# sourceMappingURL=sellerAssistedPurchasing.types.d.ts.map

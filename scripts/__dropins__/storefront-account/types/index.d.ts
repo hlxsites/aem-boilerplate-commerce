@@ -33,4 +33,5 @@ export * from './emptyList.types';
 export * from './customerInformation.types';
 export * from './notification.types';
 export * from './sellerAssistedPurchasing.types';
+export * from './paymentCard.types';
 //# sourceMappingURL=index.d.ts.map

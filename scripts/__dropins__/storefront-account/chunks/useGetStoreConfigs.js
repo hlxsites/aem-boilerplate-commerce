@@ -1,0 +1,4 @@
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+import"@dropins/tools/event-bus.js";import{g as u}from"./getStoreConfig.js";import{useState as n,useEffect as l}from"@dropins/tools/preact-hooks.js";const h=()=>{const[r,i]=n(null),[g,a]=n(null),e=t=>{const{minLength:s,requiredCharacterClasses:o,loginAsCustomerEnabled:f,loginAsCustomerConsentLabel:C,loginAsCustomerConsentTooltip:c}=t;i({minLength:s,requiredCharacterClasses:o}),a({loginAsCustomerEnabled:f,loginAsCustomerConsentLabel:C,loginAsCustomerConsentTooltip:c})};return l(()=>{const t=sessionStorage.getItem("accountStoreConfig"),s=t?JSON.parse(t):null;if(s){e(s);return}u().then(o=>{o&&(sessionStorage.setItem("accountStoreConfig",JSON.stringify(o)),e(o))})},[]),{passwordConfigs:r,remoteShoppingAssistanceConfigs:g}};export{h as u};
+//# sourceMappingURL=useGetStoreConfigs.js.map
