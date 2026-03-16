@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export interface RemoteShoppingAssistanceProps {
-    label?: string;
+    labelText?: string;
     tooltipText?: string;
     name?: string;
     defaultChecked?: boolean;
