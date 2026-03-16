@@ -344,7 +344,6 @@ export declare const transformMockOrderInput: {
                     carrier: string;
                     shipping_method: null;
                     applied_coupons: never[];
-                    comments: never[];
                     payment_methods: {
                         test: null;
                         prop: undefined;
@@ -615,7 +614,6 @@ export declare const transformMockOrderOutput: {
     carrier: string;
     shippingMethod: null;
     coupons: never[];
-    comments: never[];
     shipments: ({
         id: string;
         tracking: {
