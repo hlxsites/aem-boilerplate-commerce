@@ -776,19 +776,6 @@ body:has(.seller-assisted-buying-banner) {
 
 .seller-assisted-buying-banner {
   height: var(--spacing-xxbig);
-}
-
-@media (max-width: 768px) {
-  body:has(.seller-assisted-buying-banner) {
-    padding-top: var(--spacing-large);
-  }
-
-  .seller-assisted-buying-banner {
-    height: var(--spacing-large);
-  }
-}
-
-.seller-assisted-buying-banner {
   padding: var(--spacing-xsmall) var(--spacing-big);
   font: var(--type-body-1-default-font);
   background-color: var(--color-brand-300);
@@ -851,6 +838,14 @@ body:has(.seller-assisted-buying-banner) {
 }
 
 @media (max-width: 768px) {
+  body:has(.seller-assisted-buying-banner) {
+    padding-top: var(--spacing-large);
+  }
+
+  .seller-assisted-buying-banner {
+    height: var(--spacing-large);
+  }
+
   .seller-assisted-buying-banner__close-button {
     max-width: 90px;
     white-space: break-spaces;
