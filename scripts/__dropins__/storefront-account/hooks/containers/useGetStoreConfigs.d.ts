@@ -19,5 +19,10 @@ export declare const useGetStoreConfigs: () => {
         minLength: number;
         requiredCharacterClasses: number;
     } | null;
+    remoteShoppingAssistanceConfigs: {
+        loginAsCustomerEnabled: boolean;
+        loginAsCustomerConsentLabel: string;
+        loginAsCustomerConsentTooltip: string;
+    } | null;
 };
 //# sourceMappingURL=useGetStoreConfigs.d.ts.map

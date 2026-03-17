@@ -24,6 +24,8 @@ declare const _default: {
       "buttonSecondary": "Already a member? Sign in",
       "keepMeLoggedText": "Keep me logged in after account creation",
       "failedCreateCustomerAddress": "Failed to create customer addresses:",
+      "loginAsCustomerConsentLabel": "Allow remote shopping assistance",
+      "loginAsCustomerConsentTooltip": "This allows merchants to \"see what you see\" and take actions on your behalf in order to provide better assistance.",
       "confirmPassword": {
         "placeholder": "Confirm password",
         "floatingLabel": "Confirm password *",

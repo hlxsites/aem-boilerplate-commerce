@@ -26,6 +26,7 @@ export * from './authCombine.types';
 export * from './skeletonLoader.types';
 export * from './updatePassword.types';
 export * from './notification.types';
+export * from './remoteShoppingAssistance.types';
 export * from './resetPassword.types';
 export * from './signIn.types';
 export * from './signUp.types';

@@ -19,5 +19,8 @@ export interface StoreConfigModel {
     minLength: number;
     requiredCharacterClasses: number;
     storeCode: string;
+    loginAsCustomerEnabled: boolean;
+    loginAsCustomerConsentLabel: string;
+    loginAsCustomerConsentTooltip: string;
 }
 //# sourceMappingURL=store-config.d.ts.map
