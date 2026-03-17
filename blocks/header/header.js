@@ -5,15 +5,10 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import {
-  fetchPlaceholders,
-  getProductLink,
-  rootLink,
-} from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import createImpersonationBanner from './impersonation-banner.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -29,9 +24,7 @@ function closeOnEscape(e) {
     const nav = document.getElementById('nav');
     const navSections = nav.querySelector('.nav-sections');
     if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector(
-      '[aria-expanded="true"]',
-    );
+    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
       toggleAllNavSections(navSections);
       overlay.classList.remove('show');
@@ -51,9 +44,7 @@ function closeOnFocusLost(e) {
   if (!nav.contains(e.relatedTarget)) {
     const navSections = nav.querySelector('.nav-sections');
     if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector(
-      '[aria-expanded="true"]',
-    );
+    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
       toggleAllNavSections(navSections, false);
       overlay.classList.remove('show');
@@ -98,20 +89,12 @@ function toggleAllNavSections(sections, expanded = false) {
  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null
-    ? !forceExpanded
-    : nav.getAttribute('aria-expanded') === 'true';
+  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = expanded || isDesktop.matches ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(
-    navSections,
-    expanded || isDesktop.matches ? 'false' : 'true',
-  );
-  button.setAttribute(
-    'aria-label',
-    expanded ? 'Open navigation' : 'Close navigation',
-  );
+  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
+  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
   // enable nav dropdown keyboard accessibility
   if (navSections) {
     const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -194,7 +177,6 @@ export default async function decorate(block) {
 
   // decorate nav DOM
   block.textContent = '';
-
   const nav = document.createElement('nav');
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
@@ -254,9 +236,7 @@ export default async function decorate(block) {
   const wishlistButton = navTools.querySelector('.nav-wishlist-button');
 
   const wishlistMeta = getMetadata('wishlist');
-  const wishlistPath = wishlistMeta
-    ? new URL(wishlistMeta, window.location).pathname
-    : '/wishlist';
+  const wishlistPath = wishlistMeta ? new URL(wishlistMeta, window.location).pathname : '/wishlist';
 
   wishlistButton.addEventListener('click', () => {
     window.location.href = rootLink(wishlistPath);
@@ -305,11 +285,7 @@ export default async function decorate(block) {
       // Execute pending toggle if exists
       if (panel.dataset.pendingToggle === 'true') {
         // eslint-disable-next-line no-nested-ternary
-        const pendingState = panel.dataset.pendingState === 'true'
-          ? true
-          : panel.dataset.pendingState === 'false'
-            ? false
-            : undefined;
+        const pendingState = panel.dataset.pendingState === 'true' ? true : (panel.dataset.pendingState === 'false' ? false : undefined);
 
         // Clear pending flags
         panel.removeAttribute('data-pending-toggle');
@@ -339,9 +315,7 @@ export default async function decorate(block) {
   async function loadMiniCartFragment() {
     await withLoadingState(minicartPanel, cartButton, async () => {
       const miniCartMeta = getMetadata('mini-cart');
-      const miniCartPath = miniCartMeta
-        ? new URL(miniCartMeta, window.location).pathname
-        : '/mini-cart';
+      const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
       const miniCartFragment = await loadFragment(miniCartPath);
       minicartPanel.append(miniCartFragment.firstElementChild);
     });
@@ -360,20 +334,16 @@ export default async function decorate(block) {
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
   // Cart Item Counter
-  events.on(
-    'cart/data',
-    (data) => {
-      // preload mini cart fragment if user has a cart
-      if (data) loadMiniCartFragment();
+  events.on('cart/data', (data) => {
+    // preload mini cart fragment if user has a cart
+    if (data) loadMiniCartFragment();
 
-      if (data?.totalQuantity) {
-        cartButton.setAttribute('data-count', data.totalQuantity);
-      } else {
-        cartButton.removeAttribute('data-count');
-      }
-    },
-    { eager: true },
-  );
+    if (data?.totalQuantity) {
+      cartButton.setAttribute('data-count', data.totalQuantity);
+    } else {
+      cartButton.removeAttribute('data-count');
+    }
+  }, { eager: true });
 
   /** Search */
   const searchFragment = document.createRange().createContextualFragment(`
@@ -480,19 +450,13 @@ export default async function decorate(block) {
               return;
             }
 
-            search(
-              {
-                phrase,
-                pageSize,
-                filter: [
-                  {
-                    attribute: 'visibility',
-                    in: ['Search', 'Catalog, Search'],
-                  },
-                ],
-              },
-              { scope: 'popover' },
-            );
+            search({
+              phrase,
+              pageSize,
+              filter: [
+                { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+              ],
+            }, { scope: 'popover' });
           },
         })(searchForm);
       });
@@ -524,8 +488,8 @@ export default async function decorate(block) {
     // For mini cart: if undo is enabled, be more restrictive about when to close
     const shouldCloseMiniCart = undoEnabled
       ? !minicartPanel.contains(e.target)
-        && !cartButton.contains(e.target)
-        && !e.target.closest('header')
+      && !cartButton.contains(e.target)
+      && !e.target.closest('header')
       : !minicartPanel.contains(e.target) && !cartButton.contains(e.target);
 
     if (shouldCloseMiniCart) {
@@ -580,10 +544,7 @@ export default async function decorate(block) {
 
   /** Company Switcher */
   const isAuthenticated = events.lastPayload('authenticated');
-  if (
-    isAuthenticated
-    && getConfigValue('commerce-companies-enabled') === true
-  ) {
+  if (isAuthenticated && getConfigValue('commerce-companies-enabled') === true) {
     await (await import('./renderCompanySwitcher.js')).default(navTools);
   }
 }
