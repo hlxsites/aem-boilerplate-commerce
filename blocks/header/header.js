@@ -164,11 +164,10 @@ function setupSubmenu(navSection) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // Add impersonation banner at the top of body if in admin session
-  const impersonationBanner = renderSellerAssistedBuyingBanner();
-  if (impersonationBanner && !document.querySelector('.impersonation-banner')) {
-    // Insert as the very first child of body
-    document.body.insertAdjacentElement('afterbegin', impersonationBanner);
+  // Render a banner at the top of the page if seller assisted buying session identified
+  const sellerAssistedBuyingBanner = await renderSellerAssistedBuyingBanner();
+  if (sellerAssistedBuyingBanner && !document.querySelector('.seller-assisted-buying-banner')) {
+    document.body.insertAdjacentElement('afterbegin', sellerAssistedBuyingBanner);
   }
 
   // load nav as fragment

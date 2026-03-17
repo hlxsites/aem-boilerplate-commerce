@@ -769,19 +769,34 @@ header .nav-search-input .search_autocomplete .popover-container {
   max-height: 15rem;
 }
 
-/* Impersonation Banner - Seller Assisted Buying Session Indicator */
-.impersonation-banner {
-  background-color: #666;
-  color: #fff;
+/* Seller Assisted Buying Banner - Session Indicator */
+body:has(.seller-assisted-buying-banner) {
+  padding-top: var(--spacing-xxbig);
+}
+
+.seller-assisted-buying-banner {
   height: var(--spacing-xxbig);
+}
+
+@media (max-width: 768px) {
+  body:has(.seller-assisted-buying-banner) {
+    padding-top: var(--spacing-large);
+  }
+
+  .seller-assisted-buying-banner {
+    height: var(--spacing-large);
+  }
+}
+
+.seller-assisted-buying-banner {
   padding: var(--spacing-xsmall) var(--spacing-big);
+  font: var(--type-body-1-default-font);
+  background-color: var(--color-brand-300);
+  color: var(--color-neutral-50);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: var(--spacing-small);
-  font-family: var(--type-base-font-family);
-  font-size: var(--type-body-1-default-size, 14px);
-  line-height: var(--type-body-1-default-line-height, 20px);
   width: 100%;
   box-sizing: border-box;
   position: fixed;
@@ -791,76 +806,59 @@ header .nav-search-input .search_autocomplete .popover-container {
   z-index: 999;
 }
 
-body:has(.impersonation-banner) {
-  padding-top: var(--spacing-xxbig);
+.seller-assisted-buying-banner strong {
+  font: var(--type-body-1-strong-font);
 }
 
-body:has(.impersonation-banner) header {
-  margin-top: 0;
-}
-
-.impersonation-banner__message {
+.seller-assisted-buying-banner__message {
   flex: 1;
-  font-weight: var(--type-body-1-strong-font-weight, 500);
 }
 
-.impersonation-banner__close-button {
+.seller-assisted-buying-banner__close-button {
   background-color: transparent;
-  color: #fff;
-  border: 1px solid #fff;
+  color: var(--color-neutral-50);
+  border: var(--shape-border-width-1) solid var(--color-neutral-50);
   padding: var(--spacing-xxsmall) var(--spacing-small);
   cursor: pointer;
-  font-family: var(--type-base-font-family);
-  font-size: var(--type-body-1-default-size, 14px);
-  font-weight: var(--type-body-1-strong-font-weight, 500);
-  border-radius: var(--spacing-xxsmall);
-  transition:
-          background-color 0.2s,
-          color 0.2s;
+  font: var(--type-body-1-default-font);
+  border-radius: var(--shape-border-radius-1);
+  transition: background-color 0.2s, color 0.2s;
   white-space: nowrap;
 }
 
-.impersonation-banner__close-button:hover {
-  background-color: #fff;
-  color: #666;
+.seller-assisted-buying-banner__close-button:hover {
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
 }
 
-.impersonation-banner__close-button:active {
-  background-color: #f5f5f5;
+.seller-assisted-buying-banner__close-button:active {
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
 }
 
-.impersonation-banner__close-button:disabled {
+.seller-assisted-buying-banner__close-button:disabled {
   opacity: 0.6;
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
   cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-  .impersonation-banner {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 900px) {
+  .seller-assisted-buying-banner {
     gap: var(--spacing-xsmall);
-    padding: var(--spacing-xsmall) var(--spacing-medium);
-  }
-
-  .impersonation-banner__close-button {
-    width: 100%;
-  }
-
-  body:has(.impersonation-banner) {
-    padding-top: var(--spacing-xxlarge);
+    padding: var(--spacing-small) var(--spacing-medium);
   }
 }
 
-/* Tablet */
-@media (min-width: 769px) and (max-width: 1023px) {
-  .impersonation-banner {
-    padding: var(--spacing-xsmall) var(--spacing-big);
+@media (max-width: 768px) {
+  .seller-assisted-buying-banner__close-button {
+    max-width: 90px;
+    white-space: break-spaces;
+  }
+
+  .seller-assisted-buying-banner__close-button span {
+    line-height: 1.1;
+    display: inline-block;
   }
 }
 
-/* Desktop */
-@media (min-width: 1024px) {
-  .impersonation-banner {
-    padding: var(--spacing-xsmall) var(--spacing-big);
-  }
-}

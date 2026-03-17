@@ -20,6 +20,7 @@ export interface StoreConfigModel {
     requiredCharacterClasses: number;
     createAccountConfirmation: boolean;
     customerAccessTokenLifetime: number;
+    websiteName: string;
     loginAsCustomerEnabled: boolean;
     loginAsCustomerConsentLabel: string;
     loginAsCustomerConsentTooltip: string;
