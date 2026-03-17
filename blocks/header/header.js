@@ -9,6 +9,7 @@ import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/comme
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
+import renderSellerAssistedBuyingBanner from './renderSellerAssistedBuyingBanner.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -164,7 +165,7 @@ function setupSubmenu(navSection) {
  */
 export default async function decorate(block) {
   // Add impersonation banner at the top of body if in admin session
-  const impersonationBanner = createImpersonationBanner();
+  const impersonationBanner = renderSellerAssistedBuyingBanner();
   if (impersonationBanner && !document.querySelector('.impersonation-banner')) {
     // Insert as the very first child of body
     document.body.insertAdjacentElement('afterbegin', impersonationBanner);
