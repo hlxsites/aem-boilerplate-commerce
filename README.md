@@ -32,6 +32,6 @@ This is a custom script which copies files out of `node_modules` and into a loca
 
 ## Changelog
 
-Major changes are described and documented as part of pull requests and tracked via the `changelog` tag. To keep your project up to date, please follow this list:
+Major changes are described and documented as part of pull requests and tracked via the `changelog` tag. To keep your project up to date, please follow this list: 
 
 <https://github.com/hlxsites/aem-boilerplate-commerce/issues?q=label%3Achangelog+is%3Aclosed>
