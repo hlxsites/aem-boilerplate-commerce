@@ -21,11 +21,19 @@ export declare class RecaptchaModule {
     _enableReCAPTCHA: boolean;
     _recaptchaBackendEndpoint: string;
     _recaptchaScriptUrl: string;
+    _recaptchaEnterpriseScriptUrl: string;
     _configStorageKey: string;
     _logger: boolean;
     _updateBadgePosition(badgeId: string, config: ReCaptchaV3Model): Promise<void | null>;
     _addRecaptchaScript(): Promise<void>;
     _fetchStoreConfig(): Promise<ReCaptchaV3Response | undefined>;
+    /**
+     * Fetches config from recaptchaFormConfig (new API). Used when backend
+     * is configured with reCAPTCHA Enterprise. Normalizes the nested
+     * response to match recaptchaV3Config shape for downstream pipeline.
+     * Returns undefined if query fails (older backend) or config is invalid.
+     */
+    _fetchFormConfig(): Promise<ReCaptchaV3Response | undefined>;
     _loadConfig(): Promise<ReCaptchaV3Model | null>;
     setEndpoint(url: string): void;
     setConfig(configList: PropsFormTypes[]): Promise<void>;
