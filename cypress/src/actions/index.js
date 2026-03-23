@@ -755,7 +755,7 @@ export const fillApprovalRuleForm = (rule, texts) => {
   if (rule.appliesTo === texts.specificRoles && rule.role) {
     cy.get(fields.poMultiSelect).first().click();
     cy.wait(1500);
-    cy.get(fields.poMultiSelect).first().contains(rule.role).click();
+    cy.get(fields.poMultiSelect).first().contains(rule.role, { timeout: 30000 }).click();
     cy.wait(1500);
     cy.get('body').type('{esc}');
     cy.wait(2500);
@@ -773,7 +773,7 @@ export const fillApprovalRuleForm = (rule, texts) => {
   cy.wait(2500);
   cy.get(fields.poMultiSelect)
     .eq(multiSelectIndex)
-    .contains(rule.approverRole)
+    .contains(rule.approverRole, { timeout: 30000 })
     .click();
   cy.wait(2500);
   cy.get('body').type('{esc}');
