@@ -444,17 +444,32 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 };
 
 // B2B Purchase Orders Actions
-export const login = (user, urls) => {
-  cy.visit(urls.login);
-  cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email);
-    cy.wait(1500);
-    cy.get(fields.poPasswordInput).type(user.password);
-    cy.wait(1500);
-    cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
-  });
-  cy.url().should('include', urls.account);
+export const login = (user, urls, maxRetries = 3) => {
+  const attemptLogin = (attempt = 1) => {
+    cy.visit(urls.login);
+    cy.get(fields.poLoginForm).within(() => {
+      cy.get(fields.poEmailInput).clear().type(user.email, { delay: 50 });
+      cy.wait(1500);
+      cy.get(fields.poPasswordInput).clear().type(user.password, { delay: 50 });
+      cy.wait(1500);
+      cy.get(fields.poSubmitButton).click();
+      cy.wait(8000);
+    });
+    cy.url().then((currentUrl) => {
+      if (!currentUrl.includes(urls.account)) {
+        if (attempt < maxRetries) {
+          cy.log(`Login attempt ${attempt} failed, retrying...`);
+          cy.wait(5000);
+          attemptLogin(attempt + 1);
+        } else {
+          throw new Error(
+            `Login failed after ${maxRetries} attempts. Expected URL to include '${urls.account}', got '${currentUrl}'`,
+          );
+        }
+      }
+    });
+  };
+  attemptLogin();
   // Waiting for session and permissions to initialize
   cy.wait(3000);
 };
