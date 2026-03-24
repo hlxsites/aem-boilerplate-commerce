@@ -90,6 +90,7 @@ function createRequisitionListRenderer({
     return rlRenderer.render(RequisitionListSelector, {
       sku: product.sku,
       quantity: pdpApi.getProductConfigurationValues()?.quantity || 1,
+      matchBySKU: false,
       selectedOptions: currentOptions,
       beforeAddProdToReqList: async () => {
         // Check if all required product options are selected
