@@ -1,5 +1,11 @@
 # @dropins/storefront-order
 
+## 3.3.0-alpha-20260319163023
+
+### Minor Changes
+
+- 2d34f43: This branch adds order-level comments from the GraphQL CustomerOrder.comments field and a new OrderComments UI (component + container).
+
 ## 3.2.0
 
 ### Minor Changes

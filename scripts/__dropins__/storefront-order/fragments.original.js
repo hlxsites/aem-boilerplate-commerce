@@ -328,6 +328,10 @@ const d=`
     shipping_method
     available_actions
     is_virtual
+    comments {
+      message
+      timestamp
+    }
     payment_methods {
       name
       type
