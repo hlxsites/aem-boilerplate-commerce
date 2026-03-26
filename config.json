@@ -7,18 +7,18 @@
       "headers": {
         "cs": {
           "content-type":"application/json",
-          "AC-View-Id":"14d7917c-441a-490c-a424-098e130c2d50",
+          "AC-View-Id":"6f7a55b8-580e-4ba9-a5e0-c3f11c1806d6",
           "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
-          "AC-Price-Book-Id":"77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "AC-Price-Book-Id":"base",
           "X-Api-Key": "storefront-catalog-apollo"
         }
       },
       "analytics": {
-        "view-id": "14d7917c-441a-490c-a424-098e130c2d50",
+        "view-id": "6f7a55b8-580e-4ba9-a5e0-c3f11c1806d6",
         "environment": "Testing",
         "base-currency-code": "USD",
-        "locale":"en-US",
-        "store-url": "https://e2e-prex-dropin-aco6--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "locale":"default",
+        "store-url": "https://e2e-prex-dropin-aco6def--aem-boilerplate-commerce--hlxsites.aem.live/",
         "environment-id": "LnjXjuam6uWmo5d2JLEgbA"
       }
     }
