@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello, world!</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      background: linear-gradient(145deg, #ffe4ec 0%, #e8d5ff 45%, #d4f4ff 100%);
+      overflow-x: hidden;
+    }
+    .card {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      max-width: 22rem;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      box-shadow:
+        0 8px 32px rgba(200, 150, 200, 0.25),
+        0 0 0 3px rgba(255, 255, 255, 0.9) inset;
+      animation: pop-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes pop-in {
+      from { opacity: 0; transform: scale(0.85) translateY(12px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .mascot {
+      font-size: 4rem;
+      line-height: 1;
+      display: inline-block;
+      animation: wiggle 2.5s ease-in-out infinite;
+      cursor: pointer;
+      user-select: none;
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-4deg) translateY(0); }
+      50% { transform: rotate(4deg) translateY(-6px); }
+    }
+    .mascot:active { transform: scale(0.92); }
+    h1 {
+      margin: 1rem 0 0.35rem;
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #e879a9, #a78bfa, #38bdf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .sub {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #6b5b7a;
+      line-height: 1.5;
+    }
+    .sparkle {
+      display: inline-block;
+      animation: twinkle 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.5; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1.05); }
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.65rem 1.35rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5b4d6b;
+      background: linear-gradient(180deg, #fff 0%, #f5eff8 100%);
+      border: 2px solid rgba(200, 170, 220, 0.6);
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(180, 140, 200, 0.2);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(180, 140, 200, 0.28);
+    }
+    button:active { transform: translateY(0); }
+    .heart {
+      position: fixed;
+      font-size: 1.25rem;
+      pointer-events: none;
+      animation: float-up 2s ease-out forwards;
+      z-index: 10;
+    }
+    @keyframes float-up {
+      to {
+        opacity: 0;
+        transform: translateY(-120px) rotate(20deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="mascot" id="mascot" title="boop">🐣</div>
+    <h1>Hello, world! <span class="sparkle">✨</span></h1>
+    <p class="sub">You look lovely today. Click the chick or the button for tiny joy.</p>
+    <button type="button" id="btn">Send hugs</button>
+  </div>
+  <script>
+    (function () {
+      var emojis = ['💕', '✨', '🌸', '⭐', '💫', '🍬'];
+      function spawnHeart(x, y) {
+        var el = document.createElement('span');
+        el.className = 'heart';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        document.body.appendChild(el);
+        setTimeout(function () { el.remove(); }, 2000);
+      }
+      function burst(clientX, clientY) {
+        for (var i = 0; i < 6; i++) {
+          (function (delay) {
+            setTimeout(function () {
+              spawnHeart(
+                clientX + (Math.random() - 0.5) * 80,
+                clientY + (Math.random() - 0.5) * 40
+              );
+            }, delay);
+          })(i * 60);
+        }
+      }
+      document.getElementById('btn').addEventListener('click', function (e) {
+        burst(e.clientX, e.clientY);
+      });
+      document.getElementById('mascot').addEventListener('click', function (e) {
+        var faces = ['🐣', '🐥', '🐤', '🦆'];
+        e.target.textContent = faces[Math.floor(Math.random() * faces.length)];
+        burst(e.clientX, e.clientY);
+      });
+      document.getElementById('card').addEventListener('click', function (e) {
+        if (e.target === e.currentTarget) burst(e.clientX, e.clientY);
+      });
+    })();
+  </script>
+</body>
+</html>
