@@ -1,4 +1,5 @@
-import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from './commerce.js';
+/* eslint-disable no-console */
+import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from "./commerce.js";
 
 // Cache fetched variant data by parent SKU to avoid redundant network calls
 const variantsCache = new Map();
@@ -92,19 +93,40 @@ const SAAS_PRICES_QUERY = `
  */
 async function fetchVariantsPAAS(parentSku) {
   try {
-    const response = await CORE_FETCH_GRAPHQL.query(PAAS_VARIANTS_QUERY, { parentSku });
+    console.log("[Supersize] trying PAAS query for:", parentSku);
+    const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(
+      PAAS_VARIANTS_QUERY,
+      {
+        variables: { parentSku },
+      },
+    );
+    console.log(
+      "[Supersize] PAAS raw response:",
+      JSON.stringify(response?.data),
+    );
     const items = response?.data?.products?.items;
-    if (!items?.length) return null;
+    if (!items?.length) {
+      console.log(
+        "[Supersize] PAAS: no items returned (expected on SAAS endpoint)",
+      );
+      return null;
+    }
 
     const product = items[0];
-    if (!product?.variants?.length) return null;
+    if (!product?.variants?.length) {
+      console.log("[Supersize] PAAS: product has no variants");
+      return null;
+    }
 
-    const attributeCodes = (product.configurable_options || []).map((opt) => opt.attribute_code);
+    const attributeCodes = (product.configurable_options || []).map(
+      (opt) => opt.attribute_code,
+    );
 
     return product.variants.map((variant) => ({
       sku: variant.product.sku,
       price: variant.product.price_range?.minimum_price?.final_price?.value,
-      currency: variant.product.price_range?.minimum_price?.final_price?.currency,
+      currency:
+        variant.product.price_range?.minimum_price?.final_price?.currency,
       attributes: (variant.attributes || []).reduce((acc, attr) => {
         acc[attr.code] = attr.label;
         return acc;
@@ -112,7 +134,7 @@ async function fetchVariantsPAAS(parentSku) {
       attributeCodes,
     }));
   } catch (err) {
-    console.debug('[Supersize] PAAS query failed:', err.message || err);
+    console.log("[Supersize] PAAS query threw:", err.message || err);
     return null;
   }
 }
@@ -134,40 +156,88 @@ async function fetchVariantsPAAS(parentSku) {
  */
 async function fetchVariantsSAAS(parentSku, currentVariantSku) {
   try {
+    console.log("[Supersize] trying SAAS options query for:", parentSku);
     // Step 1 – get option value titles from the parent ComplexProductView
-    const parentResponse = await CS_FETCH_GRAPHQL.query(SAAS_OPTIONS_QUERY, { parentSku });
+    const parentResponse = await CS_FETCH_GRAPHQL.fetchGraphQl(
+      SAAS_OPTIONS_QUERY,
+      {
+        variables: { parentSku },
+      },
+    );
+    console.log(
+      "[Supersize] SAAS options raw response:",
+      JSON.stringify(parentResponse?.data),
+    );
     const parentProducts = parentResponse?.data?.products;
-    if (!parentProducts?.length) return null;
+    if (!parentProducts?.length) {
+      console.log("[Supersize] SAAS: no products returned for parent SKU");
+      return null;
+    }
 
     const parent = parentProducts[0];
     const options = parent?.options;
-    if (!options?.length) return null;
+    console.log("[Supersize] SAAS: options found:", options);
+    if (!options?.length) {
+      console.log(
+        "[Supersize] SAAS: product has no options (may not be ComplexProductView)",
+      );
+      return null;
+    }
 
     // Use the first option that has multiple in-stock values
-    const sizeOption = options.find((opt) => opt.values?.length > 1) || options[0];
+    const sizeOption =
+      options.find((opt) => opt.values?.length > 1) || options[0];
     if (!sizeOption?.values?.length) return null;
 
     const inStockValues = sizeOption.values.filter((v) => v.inStock !== false);
 
     // Step 2 – validate the SKU pattern against the current variant
     const candidateSkus = inStockValues.map((v) => `${parentSku}-${v.title}`);
+    console.log(
+      "[Supersize] SAAS: candidate SKUs:",
+      candidateSkus,
+      "— current:",
+      currentVariantSku,
+    );
     if (!candidateSkus.includes(currentVariantSku)) {
-      // SKU pattern doesn't match; cannot reliably determine variant SKUs in SAAS mode
+      console.log(
+        "[Supersize] ✗ SAAS: SKU pattern mismatch — current variant SKU not in candidates",
+      );
       return null;
     }
 
     // Step 3 – fetch individual variant prices
-    const pricesResponse = await CS_FETCH_GRAPHQL.query(SAAS_PRICES_QUERY, { skus: candidateSkus });
+    console.log("[Supersize] SAAS: fetching prices for:", candidateSkus);
+    const pricesResponse = await CS_FETCH_GRAPHQL.fetchGraphQl(
+      SAAS_PRICES_QUERY,
+      {
+        variables: { skus: candidateSkus },
+      },
+    );
+    console.log(
+      "[Supersize] SAAS prices raw response:",
+      JSON.stringify(pricesResponse?.data),
+    );
     const priceProducts = pricesResponse?.data?.products;
-    if (!priceProducts?.length) return null;
+    if (!priceProducts?.length) {
+      console.log("[Supersize] SAAS: no price data returned for variant SKUs");
+      return null;
+    }
 
     const priceMap = Object.fromEntries(
       priceProducts
         .filter((p) => p?.price?.final?.amount)
-        .map((p) => [p.sku, { value: p.price.final.amount.value, currency: p.price.final.amount.currency }]),
+        .map((p) => [
+          p.sku,
+          {
+            value: p.price.final.amount.value,
+            currency: p.price.final.amount.currency,
+          },
+        ]),
     );
+    console.log("[Supersize] SAAS priceMap:", priceMap);
 
-    const optionKey = (sizeOption.title || 'size').toLowerCase();
+    const optionKey = (sizeOption.title || "size").toLowerCase();
     return inStockValues
       .map((v) => {
         const sku = `${parentSku}-${v.title}`;
@@ -183,7 +253,7 @@ async function fetchVariantsSAAS(parentSku, currentVariantSku) {
       })
       .filter(Boolean);
   } catch (err) {
-    console.debug('[Supersize] SAAS query failed:', err.message || err);
+    console.log("[Supersize] SAAS query threw:", err.message || err);
     return null;
   }
 }
@@ -199,8 +269,9 @@ async function fetchVariantsSAAS(parentSku, currentVariantSku) {
 async function fetchProductVariants(parentSku, currentVariantSku) {
   if (variantsCache.has(parentSku)) return variantsCache.get(parentSku);
 
-  const variants = (await fetchVariantsPAAS(parentSku))
-    ?? (await fetchVariantsSAAS(parentSku, currentVariantSku));
+  const variants =
+    (await fetchVariantsPAAS(parentSku)) ??
+    (await fetchVariantsSAAS(parentSku, currentVariantSku));
 
   if (variants) variantsCache.set(parentSku, variants);
   return variants ?? null;
@@ -228,54 +299,124 @@ function getSortedNumericValues(variants, attributeCode) {
  *
  * Saving formula: (nextSize / currentSize) × currentPrice − nextVariantPrice > 0
  *
- * @param {import('../scripts/__dropins__/storefront-cart/data/models/cart-model').Item} cartItem
- * @returns {Promise<{sku: string, price: number, savings: number, currency: string, sizeLabel: string, attributeCode: string}|null>}
+ * @param {object} cartItem - Cart item from the dropin (see cart-model.d.ts Item interface)
+ * @returns {Promise<object|null>}
  */
 export async function getSupersizeOption(cartItem) {
   const parentSku = cartItem.topLevelSku;
   const currentSku = cartItem.sku;
 
+  console.log("[Supersize] evaluating item:", {
+    itemType: cartItem.itemType,
+    sku: currentSku,
+    topLevelSku: parentSku,
+    price: cartItem.price,
+  });
+
   // Only applies to configurable product variants
-  if (!parentSku || !currentSku || parentSku === currentSku) return null;
+  if (!parentSku || !currentSku) {
+    console.log("[Supersize] ✗ missing parentSku or currentSku");
+    return null;
+  }
+  if (parentSku === currentSku) {
+    console.log(
+      "[Supersize] ✗ parentSku === currentSku — item.sku may not be the variant SKU in this environment",
+    );
+    return null;
+  }
 
   // price is a flat { value, currency } object on the cart Item model
   const currentPrice = cartItem.price?.value;
-  if (!currentPrice) return null;
+  if (!currentPrice) {
+    console.log("[Supersize] ✗ no price value on cart item");
+    return null;
+  }
 
   const variants = await fetchProductVariants(parentSku, currentSku);
-  if (!variants?.length) return null;
+  console.log("[Supersize] variants fetched:", variants);
+  if (!variants?.length) {
+    console.log("[Supersize] ✗ no variants returned");
+    return null;
+  }
 
   const currentVariant = variants.find((v) => v.sku === currentSku);
-  if (!currentVariant) return null;
+  console.log("[Supersize] currentVariant match:", currentVariant);
+  if (!currentVariant) {
+    console.log("[Supersize] ✗ current variant SKU not found in variants list");
+    return null;
+  }
 
   // Auto-detect the "size" attribute: first attribute whose value is numeric
-  const attributeCodes = currentVariant.attributeCodes || Object.keys(currentVariant.attributes);
+  const attributeCodes =
+    currentVariant.attributeCodes || Object.keys(currentVariant.attributes);
   const sizeAttributeCode = attributeCodes.find((code) => {
     const val = currentVariant.attributes[code];
     return val !== undefined && !Number.isNaN(parseFloat(val));
   });
-  if (!sizeAttributeCode) return null;
+  console.log(
+    "[Supersize] sizeAttributeCode:",
+    sizeAttributeCode,
+    "attributes:",
+    currentVariant.attributes,
+  );
+  if (!sizeAttributeCode) {
+    console.log("[Supersize] ✗ no numeric size attribute detected");
+    return null;
+  }
 
   const currentSize = parseFloat(currentVariant.attributes[sizeAttributeCode]);
   const sortedSizes = getSortedNumericValues(variants, sizeAttributeCode);
   const currentIndex = sortedSizes.indexOf(currentSize);
+  console.log(
+    "[Supersize] sizes:",
+    sortedSizes,
+    "currentSize:",
+    currentSize,
+    "index:",
+    currentIndex,
+  );
 
   // No next size available
-  if (currentIndex === -1 || currentIndex >= sortedSizes.length - 1) return null;
+  if (currentIndex === -1 || currentIndex >= sortedSizes.length - 1) {
+    console.log(
+      "[Supersize] ✗ no next size available (already at largest or not found)",
+    );
+    return null;
+  }
 
   const nextSize = sortedSizes[currentIndex + 1];
-  const nextVariant = variants.find((v) => parseFloat(v.attributes[sizeAttributeCode]) === nextSize);
-  if (!nextVariant?.price) return null;
+  const nextVariant = variants.find(
+    (v) => parseFloat(v.attributes[sizeAttributeCode]) === nextSize,
+  );
+  if (!nextVariant?.price) {
+    console.log("[Supersize] ✗ next variant has no price:", nextVariant);
+    return null;
+  }
 
   // Calculate the saving when upgrading: buying (nextSize/currentSize) units at current price
   // compared to the actual price of the next size
   const sizeFactor = nextSize / currentSize;
   const equivalentPrice = currentPrice * sizeFactor;
   const savings = Math.round((equivalentPrice - nextVariant.price) * 100) / 100;
+  console.log("[Supersize] savings calc:", {
+    currentPrice,
+    sizeFactor,
+    equivalentPrice,
+    nextVariantPrice: nextVariant.price,
+    savings,
+  });
 
   // Only show the button when there is a meaningful saving
-  if (savings <= 0.01) return null;
+  if (savings <= 0.01) {
+    console.log("[Supersize] ✗ no meaningful saving (savings =", savings, ")");
+    return null;
+  }
 
+  console.log("[Supersize] ✓ showing supersize button:", {
+    nextSku: nextVariant.sku,
+    savings,
+    sizeLabel: String(nextSize),
+  });
   return {
     sku: nextVariant.sku,
     price: nextVariant.price,
