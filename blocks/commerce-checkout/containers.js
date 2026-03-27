@@ -368,6 +368,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
         [PaymentMethodCode.SMART_BUTTONS]: {
           enabled: false,
         },
+        [PaymentMethodCode.APM]: {
+          enabled: false,
+        },
         [PaymentMethodCode.APPLE_PAY]: {
           render: (ctx) => {
             const $applePay = document.createElement('div');
@@ -407,9 +410,6 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
           enabled: false,
         },
         [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
           enabled: false,
         },
       },
