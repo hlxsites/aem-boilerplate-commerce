@@ -34,6 +34,7 @@ import '../../scripts/initializers/wishlist.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import { getSupersizeOption } from '../../scripts/supersize-service.js';
 
 export default async function decorate(block) {
   // Configuration
@@ -215,6 +216,51 @@ export default async function decorate(block) {
             })(editLink);
 
             ctx.appendChild(editLink);
+          }
+
+          // Supersize Button — shown when upgrading to the next size yields a saving
+          if (ctx.item?.itemType === 'ConfigurableCartItem') {
+            const $supersize = document.createElement('div');
+            $supersize.className = 'cart-item-supersize';
+            ctx.appendChild($supersize);
+
+            getSupersizeOption(ctx.item).then((option) => {
+              if (!option) return;
+
+              const { savings, currency, sizeLabel } = option;
+              const savingsFormatted = new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency,
+              }).format(savings);
+
+              const button = document.createElement('button');
+              button.type = 'button';
+              button.className = 'cart-item-supersize__button';
+              button.setAttribute('aria-label', `Upgrade to ${sizeLabel} and save ${savingsFormatted}`);
+              button.innerHTML = '<span>+</span> Super';
+
+              const text = document.createElement('span');
+              text.className = 'cart-item-supersize__text';
+              text.textContent = `Upgrade to ${sizeLabel} \u2014 save ${savingsFormatted}`;
+
+              button.addEventListener('click', async () => {
+                button.disabled = true;
+                $supersize.classList.add('cart-item-supersize--loading');
+                try {
+                  await Cart.addProductsToCart([{ sku: option.sku, quantity: ctx.item.quantity }]);
+                  await Cart.updateProductsFromCart([{ uid: ctx.item.uid, quantity: 0 }]);
+                } catch (err) {
+                  console.error('[Supersize] Upgrade failed:', err);
+                  button.disabled = false;
+                  $supersize.classList.remove('cart-item-supersize--loading');
+                }
+              });
+
+              $supersize.appendChild(button);
+              $supersize.appendChild(text);
+            }).catch((err) => {
+              console.debug('[Supersize] Could not determine upgrade option:', err);
+            });
           }
 
           // Wishlist Button (if product is not configurable)

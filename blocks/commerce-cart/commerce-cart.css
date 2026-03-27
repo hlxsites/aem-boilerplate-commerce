@@ -62,6 +62,57 @@
     width: fit-content;
 }
 
+/* ── Supersize button ──────────────────────────────────────────────── */
+
+.cart-item-supersize {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xsmall);
+}
+
+.cart-item-supersize--loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cart-item-supersize__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1.5px solid var(--color-brand-500, #c00);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-brand-500, #c00);
+  font: var(--type-body-2-strong-font, 600 12px/1.4 sans-serif);
+  letter-spacing: var(--type-body-2-strong-letter-spacing, 0.02em);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cart-item-supersize__button span {
+  font-weight: 700;
+}
+
+.cart-item-supersize__button:hover:not(:disabled) {
+  background-color: var(--color-brand-500, #c00);
+  color: #fff;
+}
+
+.cart-item-supersize__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.cart-item-supersize__text {
+  font: var(--type-body-2-font, 400 12px/1.4 sans-serif);
+  color: var(--color-neutral-600, #555);
+  white-space: nowrap;
+}
+
 @media (min-width: 768px) {
   .cart__wrapper {
     flex-direction: row;

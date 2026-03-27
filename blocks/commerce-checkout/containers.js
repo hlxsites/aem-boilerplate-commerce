@@ -68,6 +68,7 @@ import {
   fetchPlaceholders,
   rootLink,
 } from '../../scripts/commerce.js';
+import { getSupersizeOption } from '../../scripts/supersize-service.js';
 
 // Constants
 import {
@@ -529,7 +530,41 @@ export const renderCartSummaryList = async (container) => renderContainer(
             },
           });
         },
-        Footer: renderCartGiftOptions,
+        Footer: (ctx) => {
+          // Supersize button — full variant for checkout summary
+          if (ctx.item?.itemType === 'ConfigurableCartItem') {
+            const $supersize = document.createElement('div');
+            $supersize.className = 'cart-item-supersize cart-item-supersize--full';
+            ctx.appendChild($supersize);
+
+            getSupersizeOption(ctx.item).then((option) => {
+              if (!option) return;
+
+              const { savings, currency, sizeLabel } = option;
+              const savingsFormatted = new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency,
+              }).format(savings);
+
+              const button = document.createElement('a');
+              button.className = 'cart-item-supersize__button';
+              button.href = rootLink('/cart');
+              button.setAttribute('aria-label', `Upgrade to ${sizeLabel} and save ${savingsFormatted}`);
+              button.innerHTML = '<span>+</span> SUPER';
+
+              const text = document.createElement('p');
+              text.className = 'cart-item-supersize__description';
+              text.textContent = `Upgrade size to ${sizeLabel} and save ${savingsFormatted}`;
+
+              $supersize.appendChild(button);
+              $supersize.appendChild(text);
+            }).catch((err) => {
+              console.debug('[Supersize] Could not determine upgrade option:', err);
+            });
+          }
+
+          renderCartGiftOptions(ctx);
+        },
       },
     })(container);
   },

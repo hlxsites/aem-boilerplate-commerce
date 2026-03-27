@@ -268,3 +268,54 @@
         margin-top: 0;
     }
 }
+
+/* ── Supersize button (checkout variant) ───────────────────────────── */
+
+.cart-item-supersize {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xsmall);
+}
+
+.cart-item-supersize--full {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.cart-item-supersize--full .cart-item-supersize__button {
+  padding: 6px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  border-width: 2px;
+  text-decoration: none;
+}
+
+.cart-item-supersize__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1.5px solid var(--color-brand-500, #c00);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-brand-500, #c00);
+  font: var(--type-body-2-strong-font, 600 12px/1.4 sans-serif);
+  letter-spacing: var(--type-body-2-strong-letter-spacing, 0.02em);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cart-item-supersize__button:hover {
+  background-color: var(--color-brand-500, #c00);
+  color: #fff;
+}
+
+.cart-item-supersize__description {
+  margin: 0;
+  font: var(--type-body-2-font, 400 12px/1.4 sans-serif);
+  color: var(--color-neutral-600, #555);
+}
