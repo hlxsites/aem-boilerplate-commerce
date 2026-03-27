@@ -245,14 +245,43 @@ export default async function decorate(block) {
 
               button.addEventListener('click', async () => {
                 button.disabled = true;
-                $supersize.classList.add('cart-item-supersize--loading');
+                // Dim the whole cart row for immediate visual feedback
+                const $row = $supersize.closest('li') ?? $supersize.parentElement;
+                $row?.classList.add('cart-item--upgrading');
+
                 try {
-                  await Cart.addProductsToCart([{ sku: option.sku, quantity: ctx.item.quantity }]);
-                  await Cart.updateProductsFromCart([{ uid: ctx.item.uid, quantity: 0 }]);
+                  // Check if the target variant already exists in the cart so we can
+                  // merge quantities in a single call instead of creating a duplicate line
+                  const cartData = await Cart.getCartData();
+                  const existingItem = cartData?.items?.find(
+                    (item) => item.sku === option.sku,
+                  );
+
+                  if (existingItem) {
+                    // Merge: increment existing line + remove current — one round-trip
+                    await Cart.updateProductsFromCart([
+                      {
+                        uid: existingItem.uid,
+                        quantity: existingItem.quantity + ctx.item.quantity,
+                      },
+                      { uid: ctx.item.uid, quantity: 0 },
+                    ]);
+                  } else {
+                    // Add the upgraded variant using parent SKU + option UIDs so Magento
+                    // recognises it as a configurable item (enables future supersize display)
+                    await Cart.addProductsToCart([{
+                      sku: option.parentSku,
+                      quantity: ctx.item.quantity,
+                      optionsUIDs: option.optionUids,
+                    }]);
+                    await Cart.updateProductsFromCart([
+                      { uid: ctx.item.uid, quantity: 0 },
+                    ]);
+                  }
                 } catch (err) {
                   console.error('[Supersize] Upgrade failed:', err);
                   button.disabled = false;
-                  $supersize.classList.remove('cart-item-supersize--loading');
+                  $row?.classList.remove('cart-item--upgrading');
                 }
               });
 

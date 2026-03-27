@@ -72,6 +72,13 @@
   margin-top: var(--spacing-xsmall);
 }
 
+/* Applied to the entire <li> row during upgrade so the whole item dims */
+.cart-item--upgrading {
+  opacity: 0.45;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 .cart-item-supersize--loading {
   opacity: 0.5;
   pointer-events: none;

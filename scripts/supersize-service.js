@@ -31,6 +31,7 @@ const PAAS_VARIANTS_QUERY = `
             attributes {
               code
               label
+              uid
             }
           }
         }
@@ -114,6 +115,8 @@ function normalisePAASResponse(data) {
       acc[attr.code] = attr.label;
       return acc;
     }, {}),
+    // UIDs are needed to add the correct configurable variant to cart
+    optionUids: (variant.attributes || []).map((a) => a.uid).filter(Boolean),
     attributeCodes,
   }));
 }
@@ -240,6 +243,7 @@ async function fetchVariantsSAAS(parentSku, currentVariantSku) {
             currency: product.price?.final?.amount?.currency,
             attributes: { [optionKey]: optValue.title },
             attributeCodes: [optionKey],
+            optionUids: [optValue.id],
           };
         } catch (err) {
           console.log(
@@ -438,6 +442,8 @@ export async function getSupersizeOption(cartItem) {
   });
   return {
     sku: nextVariant.sku,
+    parentSku,
+    optionUids: nextVariant.optionUids || [],
     price: nextVariant.price,
     savings,
     currency: nextVariant.currency || cartItem.price.currency,
