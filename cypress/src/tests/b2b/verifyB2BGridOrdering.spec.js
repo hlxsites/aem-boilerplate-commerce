@@ -205,7 +205,7 @@ describe(
       cy.logToTerminal(
         '✅ Verifying Add to Cart button displays total quantity (5+3+7=15)...',
       );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
         .and('contain.text', 'Add to Cart (15)');
@@ -301,7 +301,7 @@ describe(
       cy.logToTerminal(
         '✅ Verifying Add to Cart button displays total quantity (5+3+4=12)...',
       );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
         .and('contain.text', 'Add to Cart (12)');
@@ -326,7 +326,7 @@ describe(
       cy.logToTerminal(
         '✅ Verifying Add to Cart button displays updated total quantity (10+8+6=24)...',
       );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
         .and('contain.text', 'Add to Cart (24)');
@@ -423,7 +423,7 @@ describe(
       cy.logToTerminal(
         '✅ Verifying Add to Cart button displays total quantity (2+3+4=9)...',
       );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
         .and('contain.text', 'Add to Cart (9)');
@@ -478,13 +478,13 @@ describe(
       cy.logToTerminal(
         `✅ Verifying Add to Cart button displays total quantity (${expectedVariants.map((v) => v.quantity).join('+')}=${totalQuantity})...`,
       );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
         .should('be.visible')
         .and('contain.text', `Add to Cart (${totalQuantity})`);
 
       cy.logToTerminal('🛒 Adding variants to cart...');
-      cy.get(fields.productDetailsAddToCartButton)
+      cy.get(fields.variantsGridAddToCartButton)
         .should('not.be.disabled')
         .click({ force: true });
 
