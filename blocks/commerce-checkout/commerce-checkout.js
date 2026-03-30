@@ -144,11 +144,21 @@ export default async function decorate(block) {
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
 
+  // CHECKOUT_PAYMENT_UI_REFACTOR_2026-03-30: effectivePaymentCode (see containers.js renderPaymentMethods).
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
+      const checkoutValues = events.lastPayload('checkout/values');
+      const effectiveCode = checkoutValues?.effectivePaymentCode ?? code;
+
+      // Stored card flows are expected to set payment details on cart
+      // before place order. No credit card form submission is required.
+      if (effectiveCode === PaymentMethodCode.VAULT) {
+        await orderApi.placeOrder(cartId);
+        return;
+      }
       // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
+      if (effectiveCode === PaymentMethodCode.CREDIT_CARD) {
         if (!creditCardFormRef.current) {
           console.error('Credit card form not rendered.');
           return;

@@ -39,8 +39,9 @@ import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import { StoredCards } from '@dropins/storefront-payment-services/containers/StoredCards.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Tools
@@ -51,6 +52,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { debounce } from '@dropins/tools/lib.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 
 // Checkout Dropin Libs
 import {
@@ -68,6 +70,7 @@ import {
   fetchPlaceholders,
   rootLink,
 } from '../../scripts/commerce.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Constants
 import {
@@ -81,6 +84,182 @@ import {
   SHIPPING_ADDRESS_DATA_KEY,
   SHIPPING_FORM_NAME,
 } from './constants.js';
+
+/** Must match `STORED_CARDS_NEW_CARD_PUBLIC_HASH` in storefront-payment-services StoredCards. */
+const STORED_CARDS_NEW_CARD_PUBLIC_HASH = '__NEW_CARD__';
+
+/**
+ * Place order reads `getValue('selectedPaymentMethod')` (always the visible method, e.g. CC).
+ * When vault UI is merged under CC, set this so handlePlaceOrder can branch like `code === VAULT`.
+ * @param {string} code
+ */
+function setCheckoutEffectivePaymentCode(code) {
+  try {
+    const prev = events.lastPayload('checkout/values') || {};
+    events.emit('checkout/values', { ...prev, effectivePaymentCode: code });
+  } catch (_err) {
+    /* ignore */
+  }
+}
+
+const GET_CUSTOMER_PAYMENT_TOKENS = `
+  query GET_CUSTOMER_PAYMENT_TOKENS {
+    customerPaymentTokens {
+      items {
+        details
+        public_hash
+        payment_method_code
+        type
+      }
+    }
+  }
+`;
+
+const CREATE_PAYMENT_ORDER_FOR_VAULT = `
+  mutation CreatePaymentOrderForVault($input: CreatePaymentOrderInput!) {
+    createPaymentOrder(input: $input) {
+      id
+      mp_order_id
+      status
+    }
+  }
+`;
+
+function parseTokenDetails(details) {
+  if (!details) return {};
+  if (typeof details === 'object') return details;
+
+  try {
+    return JSON.parse(details);
+  } catch (_error) {
+    return {};
+  }
+}
+
+function normalizeVaultToken(token) {
+  const details = parseTokenDetails(token?.details);
+  const methodCode = token?.payment_method_code || '';
+  return {
+    publicHash: token?.public_hash,
+    methodCode,
+    type: token?.type || '',
+    brand: details.type || details.brand || '',
+    masked: details.maskedCC || details.maskedNumber || details.last4 || '',
+    expiry: details.expirationDate || details.expiryDate || '',
+    holder: details.holderName || details.cardHolder || '',
+  };
+}
+
+function isPaymentServicesStoredCardToken(token) {
+  const methodCode = (token.methodCode || '').toLowerCase();
+  if (methodCode === PaymentMethodCode.VAULT) return true;
+  // Some environments may return hosted-fields method code for vaulted cards.
+  if (methodCode === PaymentMethodCode.CREDIT_CARD) return true;
+  if (methodCode.includes('payment_services') && methodCode.includes('vault')) return true;
+
+  return token.type === 'card' && methodCode.includes('payment_services');
+}
+
+async function fetchVaultTokens() {
+  if (!getUserTokenCookie()) return [];
+
+  try {
+    const { data } = await checkoutApi.fetchGraphQl(GET_CUSTOMER_PAYMENT_TOKENS, {
+      method: 'GET',
+    });
+
+    const items = data?.customerPaymentTokens?.items ?? [];
+    return items
+      .map(normalizeVaultToken)
+      .filter((token) => token.publicHash && isPaymentServicesStoredCardToken(token));
+  } catch (error) {
+    console.error('Unable to fetch customer payment tokens', error);
+    return [];
+  }
+}
+
+/**
+ * @param {{ publicHash?: string }} token
+ * @param {{ paypal_order_id: string, payments_order_id: string }} [paymentOrder]
+ */
+function createVaultAdditionalData(token, paymentOrder) {
+  const publicHash = token?.publicHash;
+
+  if (!publicHash) return {};
+
+  const vault = {
+    public_hash: publicHash,
+    payment_source: 'vault',
+  };
+
+  if (paymentOrder?.paypal_order_id && paymentOrder?.payments_order_id) {
+    vault.paypal_order_id = paymentOrder.paypal_order_id;
+    vault.payments_order_id = paymentOrder.payments_order_id;
+  }
+
+  return {
+    [PaymentMethodCode.VAULT]: vault,
+  };
+}
+
+/**
+ * Vault checkout must follow Payment Services GraphQL: create a PayPal / MP payment order,
+ * then setPaymentMethodOnCart with public_hash + order ids (see CheckoutWithVaultedCardTest).
+ * AuthorizationRequest requires paypal_order_id on the quote payment.
+ *
+ * @param {{ publicHash?: string }} token
+ * @param {string} [cartId]
+ * @returns {Promise<Record<string, unknown> | null>}
+ */
+async function syncVaultMethodOnCart(token, cartId) {
+  if (!cartId) return null;
+
+  const publicHash = token?.publicHash;
+  if (!publicHash) return null;
+
+  try {
+    const { data, errors } = await checkoutApi.fetchGraphQl(CREATE_PAYMENT_ORDER_FOR_VAULT, {
+      variables: {
+        input: {
+          cartId,
+          methodCode: PaymentMethodCode.VAULT,
+          paymentSource: 'vault',
+          location: PaymentLocation.CHECKOUT,
+          vaultIntent: false,
+        },
+      },
+    });
+
+    if (errors?.length) {
+      console.error('createPaymentOrder (vault) failed', errors);
+      return null;
+    }
+
+    const created = data?.createPaymentOrder;
+    const paypalOrderId = created?.id;
+    const paymentsOrderId = created?.mp_order_id;
+
+    if (!paypalOrderId || !paymentsOrderId) {
+      console.error('createPaymentOrder (vault) returned no order ids', created);
+      return null;
+    }
+
+    const payload = createVaultAdditionalData(token, {
+      paypal_order_id: paypalOrderId,
+      payments_order_id: paymentsOrderId,
+    });
+
+    await checkoutApi.setPaymentMethod({
+      code: PaymentMethodCode.VAULT,
+      ...payload,
+    });
+
+    return payload;
+  } catch (error) {
+    console.error('Vault payment method sync failed', error);
+    return null;
+  }
+}
 
 /**
  * Container IDs for registry management
@@ -337,45 +516,150 @@ export const renderShippingMethods = async (container) => renderContainer(
  * @param {HTMLElement} container - DOM element to render payment methods in
  * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @returns {Promise<Object>} - The rendered payment methods component
+ *
+ * CHECKOUT_PAYMENT_UI_REFACTOR_2026-03-30 — unified CC slot (stored cards + pay-with-new-card).
+ * Revert: restore separate VAULT slot + remove effectivePaymentCode from commerce-checkout.js.
  */
 export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
-  async () => CheckoutProvider.render(PaymentMethods, {
-    slots: {
-      Methods: {
-        [PaymentMethodCode.CREDIT_CARD]: {
-          render: (ctx) => {
-            const $creditCard = document.createElement('div');
+  async () => {
+    const vaultTokens = await fetchVaultTokens();
+    const hasVaultTokens = vaultTokens.length > 0;
 
-            PaymentServices.render(CreditCard, {
-              getCartId: () => ctx.cartId,
-              creditCardFormRef,
-            })($creditCard);
+    return CheckoutProvider.render(PaymentMethods, {
+      autoSync: !hasVaultTokens,
+      slots: {
+        Methods: {
+          [PaymentMethodCode.CREDIT_CARD]: {
+            autoSync: !hasVaultTokens,
+            render: (ctx) => {
+              const root = document.createElement('div');
+              root.className = 'checkout-payment-cc-with-vault';
 
-            ctx.replaceHTML($creditCard);
+              const $ccForm = document.createElement('div');
+              $ccForm.className = 'checkout-payment-cc-with-vault__cc-form';
+
+              /**
+               * PayPal hosted fields must not initialize inside `display:none` / hidden containers.
+               * After a vault card is selected we tear the drop-in down: hiding breaks iframes, and the
+               * next "Pay with a new card" must remount (second visit would otherwise skip mount).
+               */
+              let ccDropinApi = null;
+              let ccMountPromise = null;
+
+              const teardownCreditCardForm = async () => {
+                if (ccMountPromise) {
+                  try {
+                    await ccMountPromise;
+                  } catch {
+                    /* mount failed */
+                  }
+                  ccMountPromise = null;
+                }
+                creditCardFormRef.current = null;
+                if (ccDropinApi?.remove) {
+                  try {
+                    ccDropinApi.remove();
+                  } catch (e) {
+                    console.warn('Credit card drop-in teardown failed', e);
+                  }
+                }
+                ccDropinApi = null;
+                delete $ccForm.dataset.psCcMounted;
+              };
+
+              const mountCreditCardForm = () => {
+                if ($ccForm.dataset.psCcMounted === 'true') return;
+                ccMountPromise = Promise.resolve(
+                  PaymentServices.render(CreditCard, {
+                    getCartId: () => ctx.cartId,
+                    apiUrl: getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'),
+                    getCustomerToken: getUserTokenCookie,
+                    creditCardFormRef,
+                  })($ccForm),
+                )
+                  .then((api) => {
+                    ccDropinApi = api;
+                    $ccForm.dataset.psCcMounted = 'true';
+                    return api;
+                  })
+                  .catch((err) => {
+                    ccMountPromise = null;
+                    console.error(err);
+                  });
+              };
+
+              if (!hasVaultTokens) {
+                mountCreditCardForm();
+                root.appendChild($ccForm);
+                ctx.replaceHTML(root);
+                return;
+              }
+
+              const $stored = document.createElement('div');
+              $stored.className = 'checkout-payment-cc-with-vault__stored';
+
+              PaymentServices.render(StoredCards, {
+                cards: vaultTokens.map((token) => ({
+                  publicHash: token.publicHash,
+                  brand: token.brand,
+                  maskedNumber: token.masked,
+                  expiry: token.expiry,
+                  holderName: token.holder,
+                })),
+                payWithNewCardLabel: 'Pay with a new card',
+                onSelectionChange: (card) => {
+                  if (card.publicHash === STORED_CARDS_NEW_CARD_PUBLIC_HASH) {
+                    $ccForm.hidden = false;
+                    $ccForm.style.display = '';
+                    mountCreditCardForm();
+                    setCheckoutEffectivePaymentCode(PaymentMethodCode.CREDIT_CARD);
+                    checkoutApi.setPaymentMethod({ code: PaymentMethodCode.CREDIT_CARD }).catch(console.error);
+                    return;
+                  }
+                  void (async () => {
+                    const selectedToken = vaultTokens.find((token) => token.publicHash === card.publicHash);
+                    const token = selectedToken || card;
+                    const syncPromise = syncVaultMethodOnCart(token, ctx.cartId);
+                    await teardownCreditCardForm();
+                    $ccForm.hidden = true;
+                    $ccForm.style.display = 'none';
+                    const payload = await syncPromise;
+                    if (payload) ctx.setAdditionalData(payload);
+                    setCheckoutEffectivePaymentCode(PaymentMethodCode.VAULT);
+                  })();
+                },
+              })($stored);
+
+              $ccForm.hidden = true;
+              $ccForm.style.display = 'none';
+              root.appendChild($stored);
+              root.appendChild($ccForm);
+              ctx.replaceHTML(root);
+            },
+          },
+          [PaymentMethodCode.SMART_BUTTONS]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.APPLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.GOOGLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.VAULT]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.APM]: {
+            enabled: false,
           },
         },
-        [PaymentMethodCode.SMART_BUTTONS]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.APPLE_PAY]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.APM]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.GOOGLE_PAY]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
-        },
       },
-    },
-  })(container),
+    })(container);
+  },
 );
 
 /**
