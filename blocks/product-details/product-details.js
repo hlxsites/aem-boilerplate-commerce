@@ -59,43 +59,6 @@ function isProductPrerendered() {
   }
 }
 
-// Function to update the Add to Cart button text
-function updateAddToCartButtonText(
-  addToCartInstance,
-  inCart,
-  labels,
-  isGridOrderingView,
-  gridOrderingSelectedVariants,
-) {
-  // Grid Ordering B2B feature flow
-  if (isGridOrderingView && addToCartInstance) {
-    const totalQuantity = gridOrderingSelectedVariants.reduce((acc, item) => {
-      const quantity = item.quantity || 0;
-      return acc + quantity;
-    }, 0);
-    const hasItems = totalQuantity > 0;
-
-    addToCartInstance.setProps((prev) => ({
-      ...prev,
-      children: hasItems
-        ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
-        : labels.Global?.AddProductToCart,
-      disabled: !hasItems,
-    }));
-    return;
-  }
-
-  const buttonText = inCart
-    ? labels.Global?.UpdateProductInCart
-    : labels.Global?.AddProductToCart;
-  if (addToCartInstance) {
-    addToCartInstance.setProps((prev) => ({
-      ...prev,
-      children: buttonText,
-    }));
-  }
-}
-
 export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
@@ -104,14 +67,22 @@ export default async function decorate(block) {
   const { 'grid-ordering-enabled': gridOrderingEnabledString = 'false' } = readBlockConfig(block);
   const gridOrderingEnabled = gridOrderingEnabledString === 'true';
 
+  // Read URL params early to detect configurable products
+  const urlParams = new URLSearchParams(window.location.search);
+
   // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
-  const isGridOrderingView = gridOrderingEnabled && product?.productType === 'complex' && !product?.isBundle;
+  // - productType 'complex' = configurable product
+  // - externalParentId = variant of configurable product (has parent)
+  // - options array = configurable product or its variant
+  const isConfigurableProduct = product?.productType === 'complex'
+    || !!product?.externalParentId
+    || (product?.options && product.options.length > 0);
+  const isGridOrderingView = gridOrderingEnabled && isConfigurableProduct && !product?.isBundle;
+
   let gridOrderingSelectedVariants = [];
 
   const labels = await fetchPlaceholders();
 
-  // Read itemUid from URL
-  const urlParams = new URLSearchParams(window.location.search);
   const itemUidFromUrl = urlParams.get('itemUid');
 
   // State to track if we are in update mode
@@ -188,6 +159,139 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
 
+  // Configuration – Button - Add to Cart
+  let addToCart;
+  let gridOrderingAddToCartButton = null;
+
+  // Shared add to cart handler function
+  async function handleAddToCart() {
+    const buttonActionText = isUpdateMode
+      ? labels.Global?.UpdatingInCart
+      : labels.Global?.AddingToCart;
+
+    // Track which flow was used for this specific call
+    let usedGridOrderingFlow = false;
+
+    try {
+      // --- Grid ordering flow ---
+      if (isGridOrderingView && gridOrderingSelectedVariants.length) {
+        usedGridOrderingFlow = true;
+
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: labels.Global?.AddingToCart,
+          disabled: true,
+        }));
+
+        if (gridOrderingAddToCartButton) {
+          gridOrderingAddToCartButton.setProps((prev) => ({
+            ...prev,
+            children: labels.Global?.AddingToCart,
+            disabled: true,
+          }));
+        }
+
+        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+        await addProductsToCart(gridOrderingSelectedVariants);
+
+        // Reset Grid Ordering state after adding variants to cart
+        events.emit('quick-order/grid-ordering-reset-selected-variants');
+        gridOrderingSelectedVariants = [];
+
+        return;
+      }
+
+      addToCart.setProps((prev) => ({
+        ...prev,
+        children: buttonActionText,
+        disabled: true,
+      }));
+
+      // get the current selection values
+      const values = pdpApi.getProductConfigurationValues();
+      const valid = pdpApi.isProductConfigurationValid();
+
+      // add or update the product in the cart
+      if (valid) {
+        if (isUpdateMode) {
+          // --- Update existing item ---
+          const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
+
+          await updateProductsFromCart([{
+            ...values,
+            uid: itemUidFromUrl,
+          }]);
+
+          // --- START REDIRECT ON UPDATE ---
+          const updatedSku = values?.sku;
+          if (updatedSku) {
+            const cartRedirectUrl = new URL(
+              rootLink('/cart'),
+              window.location.origin,
+            );
+            cartRedirectUrl.searchParams.set('itemUid', itemUidFromUrl);
+            window.location.href = cartRedirectUrl.toString();
+          } else {
+            // Fallback if SKU is somehow missing (shouldn't happen in normal flow)
+            console.warn(
+              'Could not retrieve SKU for updated item. Redirecting to cart without parameter.',
+            );
+            window.location.href = rootLink('/cart');
+          }
+          return;
+        }
+        // --- Add new item ---
+        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+        await addProductsToCart([{ ...values }]);
+      }
+
+      // reset any previous alerts if successful
+      inlineAlert?.remove();
+    } catch (error) {
+      // add alert message
+      inlineAlert = await UI.render(InLineAlert, {
+        heading: 'Error',
+        description: error.message,
+        icon: h(Icon, { source: 'Warning' }),
+        'aria-live': 'assertive',
+        role: 'alert',
+        onDismiss: () => {
+          inlineAlert.remove();
+        },
+      })($alert);
+
+      // Scroll the alertWrapper into view
+      $alert.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    } finally {
+      // Reset button states based on which flow was actually used
+      if (usedGridOrderingFlow) {
+        // Grid Ordering flow was used - restore main button text
+        // Keep main button enabled if product configuration is valid
+        const valid = pdpApi.isProductConfigurationValid();
+
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: labels.Global?.AddProductToCart,
+          disabled: !valid,
+        }));
+      } else {
+        // Normal flow was used - reset main button text and enable it
+        const buttonText = isUpdateMode
+          ? labels.Global?.UpdateProductInCart
+          : labels.Global?.AddProductToCart;
+
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: buttonText,
+          disabled: false,
+        }));
+      }
+    }
+  }
+
   const [
     _galleryMobile,
     _gallery,
@@ -242,22 +346,20 @@ export default async function decorate(block) {
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    !isGridOrderingView
-      ? pdpRendered.render(ProductOptions, {
-        hideSelectedValue: false,
-        slots: {
-          SwatchImage: (ctx) => {
-            tryRenderAemAssetsImage(ctx, {
-              ...imageSlotConfig(ctx),
-              wrapper: document.createElement('span'),
-            });
-          },
+    pdpRendered.render(ProductOptions, {
+      hideSelectedValue: false,
+      slots: {
+        SwatchImage: (ctx) => {
+          tryRenderAemAssetsImage(ctx, {
+            ...imageSlotConfig(ctx),
+            wrapper: document.createElement('span'),
+          });
         },
-      })($options)
-      : null,
+      },
+    })($options),
 
     // Configuration - Quantity
-    !isGridOrderingView ? pdpRendered.render(ProductQuantity, {})($quantity) : null,
+    pdpRendered.render(ProductQuantity, {})($quantity),
 
     // Configuration - Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
@@ -266,7 +368,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductDescription, {})($description),
 
     // Attributes
-    !isGridOrderingView ? pdpRendered.render(ProductAttributes, {})($attributes) : null,
+    pdpRendered.render(ProductAttributes, {})($attributes),
 
     // Grid Ordering
     isGridOrderingView
@@ -304,6 +406,25 @@ export default async function decorate(block) {
 
             ctx.appendChild(cellWrapper);
           },
+          Actions: async (ctx) => {
+            const {
+              isDisabled,
+            } = ctx;
+
+            // Create wrapper for the button
+            const buttonContainer = document.createElement('div');
+            buttonContainer.classList.add('product-details__variants-grid-actions');
+
+            // Create a new Button instance for Grid Ordering
+            gridOrderingAddToCartButton = await UI.render(Button, {
+              children: labels.Global?.AddProductToCart || 'Add to Cart',
+              icon: h(Icon, { source: 'Cart' }),
+              disabled: isDisabled,
+              onClick: handleAddToCart,
+            })(buttonContainer);
+
+            ctx.appendChild(buttonContainer);
+          },
         },
       })($gridOrderingContainer)
       : null,
@@ -315,119 +436,14 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
-  const addToCart = await UI.render(Button, {
+  addToCart = await UI.render(Button, {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
-    onClick: async () => {
-      const buttonActionText = isUpdateMode
-        ? labels.Global?.UpdatingInCart
-        : labels.Global?.AddingToCart;
-      try {
-        // --- Grid ordering flow ---
-        if (isGridOrderingView && gridOrderingSelectedVariants.length) {
-          addToCart.setProps((prev) => ({
-            ...prev,
-            children: labels.Global?.AddingToCart,
-            disabled: true,
-          }));
-
-          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-          await addProductsToCart(gridOrderingSelectedVariants);
-
-          // Reset Grid Ordering state after adding variants to cart
-          events.emit('quick-order/grid-ordering-reset-selected-variants');
-          gridOrderingSelectedVariants = [];
-
-          return;
-        }
-
-        addToCart.setProps((prev) => ({
-          ...prev,
-          children: buttonActionText,
-          disabled: true,
-        }));
-
-        // get the current selection values
-        const values = pdpApi.getProductConfigurationValues();
-        const valid = pdpApi.isProductConfigurationValid();
-
-        // add or update the product in the cart
-        if (valid) {
-          if (isUpdateMode) {
-            // --- Update existing item ---
-            const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
-
-            await updateProductsFromCart([{
-              ...values,
-              uid: itemUidFromUrl,
-            }]);
-
-            // --- START REDIRECT ON UPDATE ---
-            const updatedSku = values?.sku;
-            if (updatedSku) {
-              const cartRedirectUrl = new URL(
-                rootLink('/cart'),
-                window.location.origin,
-              );
-              cartRedirectUrl.searchParams.set('itemUid', itemUidFromUrl);
-              window.location.href = cartRedirectUrl.toString();
-            } else {
-              // Fallback if SKU is somehow missing (shouldn't happen in normal flow)
-              console.warn(
-                'Could not retrieve SKU for updated item. Redirecting to cart without parameter.',
-              );
-              window.location.href = rootLink('/cart');
-            }
-            return;
-          }
-          // --- Add new item ---
-          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-          await addProductsToCart([{ ...values }]);
-        }
-
-        // reset any previous alerts if successful
-        inlineAlert?.remove();
-      } catch (error) {
-        // add alert message
-        inlineAlert = await UI.render(InLineAlert, {
-          heading: 'Error',
-          description: error.message,
-          icon: h(Icon, { source: 'Warning' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          onDismiss: () => {
-            inlineAlert.remove();
-          },
-        })($alert);
-
-        // Scroll the alertWrapper into view
-        $alert.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      } finally {
-        // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(
-          addToCart,
-          isUpdateMode,
-          labels,
-          isGridOrderingView,
-          gridOrderingSelectedVariants,
-        );
-        // Re-enable button (keep disabled for Grid Ordering flow)
-        addToCart.setProps((prev) => ({
-          ...prev,
-          disabled: !!isGridOrderingView,
-        }));
-      }
-    },
+    onClick: handleAddToCart,
   })($addToCart);
 
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
-    // Pdp validation not relevant for Grid Ordering flow (no options selection available)
-    if (isGridOrderingView) return;
-
     // update add to cart button disabled state based on product selection validity
     addToCart.setProps((prev) => ({
       ...prev,
@@ -440,13 +456,22 @@ export default async function decorate(block) {
     if (!isGridOrderingView) return;
     gridOrderingSelectedVariants = [...variants];
 
-    updateAddToCartButtonText(
-      addToCart,
-      false,
-      labels,
-      isGridOrderingView,
-      gridOrderingSelectedVariants,
-    );
+    // Only update grid ordering button, not the main button
+    if (gridOrderingAddToCartButton) {
+      const totalQuantity = gridOrderingSelectedVariants.reduce((acc, item) => {
+        const quantity = item.quantity || 0;
+        return acc + quantity;
+      }, 0);
+      const hasItems = totalQuantity > 0;
+
+      gridOrderingAddToCartButton.setProps((prev) => ({
+        ...prev,
+        children: hasItems
+          ? `${labels.Global?.AddProductToCart} (${totalQuantity})`
+          : labels.Global?.AddProductToCart,
+        disabled: !hasItems,
+      }));
+    }
   }, { eager: true });
 
   // Handle option changes
@@ -525,6 +550,9 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
+      // Only update main button in non-Grid Ordering mode
+      if (isGridOrderingView) return;
+
       let itemIsInCart = false;
       if (itemUidFromUrl && cartData?.items) {
         itemIsInCart = cartData.items.some(
@@ -535,13 +563,14 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(
-        addToCart,
-        itemIsInCart,
-        labels,
-        isGridOrderingView,
-        gridOrderingSelectedVariants,
-      );
+      const buttonText = itemIsInCart
+        ? labels.Global?.UpdateProductInCart
+        : labels.Global?.AddProductToCart;
+
+      addToCart.setProps((prev) => ({
+        ...prev,
+        children: buttonText,
+      }));
     },
     { eager: true },
   );
