@@ -1,25 +1,28 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/UHqVoEdFbBjznNE6pKwBw4/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/UHqVoEdFbBjznNE6pKwBw4/graphql",
       "adobe-commerce-optimizer": true,
       "headers": {
+        "all": {
+          "Store": "default"
+        },
         "cs": {
-          "content-type":"application/json",
-          "AC-View-Id":"14d7917c-441a-490c-a424-098e130c2d50",
-          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
-          "AC-Price-Book-Id":"77de68daecd823babbb58edb1c8e14d7106e83bb",
-          "X-Api-Key": "storefront-catalog-apollo"
+          "content-type": "application/json",
+          "AC-View-Id": "263bc3d0-25f7-4871-bc64-919e6d9a1626",
+          "AC-Environment-Id": "UHqVoEdFbBjznNE6pKwBw4",
+          "AC-Price-Book-Id": "base::356a192b7913b04c54574d18c28d46e6395428ab",
+          "AC-Source-Locale": "default"
         }
       },
       "analytics": {
-        "view-id": "14d7917c-441a-490c-a424-098e130c2d50",
+        "view-id": "263bc3d0-25f7-4871-bc64-919e6d9a1626",
         "environment": "Testing",
         "base-currency-code": "USD",
-        "locale":"en-US",
-        "store-url": "https://e2e-prex-dropin-aco6--aem-boilerplate-commerce--hlxsites.aem.live/",
-        "environment-id": "LnjXjuam6uWmo5d2JLEgbA"
+        "locale": "default",
+        "store-url": "https://sd_price_filter_test--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "UHqVoEdFbBjznNE6pKwBw4"
       }
     }
   }
