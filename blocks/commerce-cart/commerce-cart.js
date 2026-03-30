@@ -220,76 +220,7 @@ export default async function decorate(block) {
 
           // Supersize Button — shown when upgrading to the next size yields a saving
           if (ctx.item?.itemType === 'ConfigurableCartItem') {
-            const $supersize = document.createElement('div');
-            $supersize.className = 'cart-item-supersize';
-            ctx.appendChild($supersize);
-
-            getSupersizeOption(ctx.item).then((option) => {
-              if (!option) return;
-
-              const { savings, currency, sizeLabel } = option;
-              const savingsFormatted = new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency,
-              }).format(savings);
-
-              const button = document.createElement('button');
-              button.type = 'button';
-              button.className = 'cart-item-supersize__button';
-              button.setAttribute('aria-label', `Upgrade to ${sizeLabel} and save ${savingsFormatted}`);
-              button.innerHTML = '<span>+</span> Super';
-
-              const text = document.createElement('span');
-              text.className = 'cart-item-supersize__text';
-              text.textContent = `Upgrade to ${sizeLabel} \u2014 save ${savingsFormatted}`;
-
-              button.addEventListener('click', async () => {
-                button.disabled = true;
-                // Dim the whole cart row for immediate visual feedback
-                const $row = $supersize.closest('li') ?? $supersize.parentElement;
-                $row?.classList.add('cart-item--upgrading');
-
-                try {
-                  // Check if the target variant already exists in the cart so we can
-                  // merge quantities in a single call instead of creating a duplicate line
-                  const cartData = await Cart.getCartData();
-                  const existingItem = cartData?.items?.find(
-                    (item) => item.sku === option.sku,
-                  );
-
-                  if (existingItem) {
-                    // Merge: increment existing line + remove current — one round-trip
-                    await Cart.updateProductsFromCart([
-                      {
-                        uid: existingItem.uid,
-                        quantity: existingItem.quantity + ctx.item.quantity,
-                      },
-                      { uid: ctx.item.uid, quantity: 0 },
-                    ]);
-                  } else {
-                    // Add the upgraded variant using parent SKU + option UIDs so Magento
-                    // recognises it as a configurable item (enables future supersize display)
-                    await Cart.addProductsToCart([{
-                      sku: option.parentSku,
-                      quantity: ctx.item.quantity,
-                      optionsUIDs: option.optionUids,
-                    }]);
-                    await Cart.updateProductsFromCart([
-                      { uid: ctx.item.uid, quantity: 0 },
-                    ]);
-                  }
-                } catch (err) {
-                  console.error('[Supersize] Upgrade failed:', err);
-                  button.disabled = false;
-                  $row?.classList.remove('cart-item--upgrading');
-                }
-              });
-
-              $supersize.appendChild(button);
-              $supersize.appendChild(text);
-            }).catch((err) => {
-              console.debug('[Supersize] Could not determine upgrade option:', err);
-            });
+            renderSupersizeButton(ctx, ctx.item);
           }
 
           // Wishlist Button (if product is not configurable)
@@ -401,6 +332,81 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
+}
+
+function formatCurrency(value, currency) {
+  return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(value);
+}
+
+/**
+ * Handles the supersize upgrade click: merges into an existing cart line when
+ * the target variant is already in the cart, or adds it and removes the current one.
+ */
+async function handleSupersizeClick(option, cartItem, button, $supersize) {
+  button.disabled = true;
+  const $row = $supersize.closest('li') ?? $supersize.parentElement;
+  $row?.classList.add('cart-item--upgrading');
+
+  try {
+    const cartData = await Cart.getCartData();
+    const existingItem = cartData?.items?.find((item) => item.sku === option.sku);
+
+    if (existingItem) {
+      // Merge: increment existing line + remove current — one round-trip
+      await Cart.updateProductsFromCart([
+        { uid: existingItem.uid, quantity: existingItem.quantity + cartItem.quantity },
+        { uid: cartItem.uid, quantity: 0 },
+      ]);
+    } else {
+      // Add the upgraded variant using parent SKU + option UIDs so Magento
+      // recognises it as a configurable item (enables future supersize display)
+      await Cart.addProductsToCart([{
+        sku: option.parentSku,
+        quantity: cartItem.quantity,
+        optionsUIDs: option.optionUids,
+      }]);
+      await Cart.updateProductsFromCart([{ uid: cartItem.uid, quantity: 0 }]);
+    }
+  } catch (err) {
+    console.error('[Supersize] Upgrade failed:', err);
+    button.disabled = false;
+    $row?.classList.remove('cart-item--upgrading');
+  }
+}
+
+/**
+ * Renders the supersize upgrade button into the cart item footer slot.
+ * Appended only when an upgrade option with a positive saving exists.
+ */
+async function renderSupersizeButton(ctx, cartItem) {
+  try {
+    const option = await getSupersizeOption(cartItem);
+    if (!option) return;
+
+    const { savings, currency, sizeLabel } = option;
+    const savingsFormatted = formatCurrency(savings, currency);
+
+    const $supersize = document.createElement('div');
+    $supersize.className = 'cart-item-supersize';
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'cart-item-supersize__button';
+    button.setAttribute('aria-label', `Upgrade to ${sizeLabel} and save ${savingsFormatted}`);
+    button.innerHTML = '<span>+</span> Super';
+
+    const text = document.createElement('span');
+    text.className = 'cart-item-supersize__text';
+    text.textContent = `Upgrade to ${sizeLabel} \u2014 save ${savingsFormatted}`;
+
+    button.addEventListener('click', () => handleSupersizeClick(option, cartItem, button, $supersize));
+
+    $supersize.appendChild(button);
+    $supersize.appendChild(text);
+    ctx.appendChild($supersize);
+  } catch (err) {
+    console.debug('[Supersize] Could not determine upgrade option:', err);
+  }
 }
 
 function swatchImageSlot(ctx) {
