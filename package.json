@@ -32,7 +32,7 @@
     "@adobe/aem-cli": "^16.5.8",
     "@babel/eslint-parser": "7.28.6",
     "@dropins/build-tools": "1.0.1",
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@adobe/adobe-client-data-layer": "^3.0.1",
-    "@adobe/alloy": "^2.31.1",
+    "@adobe/alloy": "^2.20.0",
     "@adobe/magento-storefront-event-collector": "^1.16.0",
     "@adobe/magento-storefront-events-sdk": "^1.15.0",
     "@dropins/storefront-account": "~3.1.0",
