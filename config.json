@@ -10,14 +10,14 @@
         },
         "cs": {
           "content-type": "application/json",
-          "AC-View-Id": "7d0bcf92-cfa0-4440-af2b-fdaf07c6d5ef",
+          "AC-View-Id": "263bc3d0-25f7-4871-bc64-919e6d9a1626",
           "AC-Environment-Id": "UHqVoEdFbBjznNE6pKwBw4",
-          "AC-Price-Book-Id": "base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "AC-Price-Book-Id": "base::356a192b7913b04c54574d18c28d46e6395428ab",
           "AC-Source-Locale": "default"
         }
       },
       "analytics": {
-        "view-id": "7d0bcf92-cfa0-4440-af2b-fdaf07c6d5ef",
+        "view-id": "263bc3d0-25f7-4871-bc64-919e6d9a1626",
         "environment": "Testing",
         "base-currency-code": "USD",
         "locale": "default",
