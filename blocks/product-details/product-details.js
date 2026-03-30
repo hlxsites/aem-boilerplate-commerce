@@ -73,10 +73,8 @@ export default async function decorate(block) {
   // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
   // - productType 'complex' = configurable product
   // - externalParentId = variant of configurable product (has parent)
-  // - options array = configurable product or its variant
   const isConfigurableProduct = product?.productType === 'complex'
-    || !!product?.externalParentId
-    || (product?.options && product.options.length > 0);
+    || !!product?.externalParentId;
   const isGridOrderingView = gridOrderingEnabled && isConfigurableProduct && !product?.isBundle;
 
   let gridOrderingSelectedVariants = [];
