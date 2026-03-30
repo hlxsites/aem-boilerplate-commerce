@@ -39,7 +39,13 @@ import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
-import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import {
+  GET_CUSTOMER_PAYMENT_TOKENS,
+  getVaultEligibleTokensFromCustomerPaymentTokensData,
+  normalizedVaultTokenToStoredCardProps,
+  PaymentMethodCode,
+  syncVaultToCart,
+} from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import { StoredCards } from '@dropins/storefront-payment-services/containers/StoredCards.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
@@ -99,64 +105,6 @@ function setCheckoutEffectivePaymentCode(code) {
   }
 }
 
-const GET_CUSTOMER_PAYMENT_TOKENS = `
-  query GET_CUSTOMER_PAYMENT_TOKENS {
-    customerPaymentTokens {
-      items {
-        details
-        public_hash
-        payment_method_code
-        type
-      }
-    }
-  }
-`;
-
-const CREATE_PAYMENT_ORDER_FOR_VAULT = `
-  mutation CreatePaymentOrderForVault($input: CreatePaymentOrderInput!) {
-    createPaymentOrder(input: $input) {
-      id
-      mp_order_id
-      status
-    }
-  }
-`;
-
-function parseTokenDetails(details) {
-  if (!details) return {};
-  if (typeof details === 'object') return details;
-
-  try {
-    return JSON.parse(details);
-  } catch (_error) {
-    return {};
-  }
-}
-
-function normalizeVaultToken(token) {
-  const details = parseTokenDetails(token?.details);
-  const methodCode = token?.payment_method_code || '';
-  return {
-    publicHash: token?.public_hash,
-    methodCode,
-    type: token?.type || '',
-    brand: details.brand || details.type || '',
-    masked: details.maskedCC || details.maskedNumber || details.last4 || '',
-    expiry: details.expirationDate || details.expiryDate || '',
-    holder: details.holderName || details.cardHolder || '',
-  };
-}
-
-function isPaymentServicesStoredCardToken(token) {
-  const methodCode = (token.methodCode || '').toLowerCase();
-  if (methodCode === PaymentMethodCode.VAULT) return true;
-  // Some environments may return hosted-fields method code for vaulted cards.
-  if (methodCode === PaymentMethodCode.CREDIT_CARD) return true;
-  if (methodCode.includes('payment_services') && methodCode.includes('vault')) return true;
-
-  return token.type === 'card' && methodCode.includes('payment_services');
-}
-
 async function fetchVaultTokens() {
   if (!getUserTokenCookie()) return [];
 
@@ -165,38 +113,11 @@ async function fetchVaultTokens() {
       method: 'GET',
     });
 
-    const items = data?.customerPaymentTokens?.items ?? [];
-    return items
-      .map(normalizeVaultToken)
-      .filter((token) => token.publicHash && isPaymentServicesStoredCardToken(token));
+    return getVaultEligibleTokensFromCustomerPaymentTokensData(data);
   } catch (error) {
     console.error('Unable to fetch customer payment tokens', error);
     return [];
   }
-}
-
-/**
- * @param {{ publicHash?: string }} token
- * @param {{ paypal_order_id: string, payments_order_id: string }} [paymentOrder]
- */
-function createVaultAdditionalData(token, paymentOrder) {
-  const publicHash = token?.publicHash;
-
-  if (!publicHash) return {};
-
-  const vault = {
-    public_hash: publicHash,
-    payment_source: 'vault',
-  };
-
-  if (paymentOrder?.paypal_order_id && paymentOrder?.payments_order_id) {
-    vault.paypal_order_id = paymentOrder.paypal_order_id;
-    vault.payments_order_id = paymentOrder.payments_order_id;
-  }
-
-  return {
-    [PaymentMethodCode.VAULT]: vault,
-  };
 }
 
 /**
@@ -209,53 +130,10 @@ function createVaultAdditionalData(token, paymentOrder) {
  * @returns {Promise<Record<string, unknown> | null>}
  */
 async function syncVaultMethodOnCart(token, cartId) {
-  if (!cartId) return null;
-
-  const publicHash = token?.publicHash;
-  if (!publicHash) return null;
-
-  try {
-    const { data, errors } = await checkoutApi.fetchGraphQl(CREATE_PAYMENT_ORDER_FOR_VAULT, {
-      variables: {
-        input: {
-          cartId,
-          methodCode: PaymentMethodCode.VAULT,
-          paymentSource: 'vault',
-          location: PaymentLocation.CHECKOUT,
-          vaultIntent: false,
-        },
-      },
-    });
-
-    if (errors?.length) {
-      console.error('createPaymentOrder (vault) failed', errors);
-      return null;
-    }
-
-    const created = data?.createPaymentOrder;
-    const paypalOrderId = created?.id;
-    const paymentsOrderId = created?.mp_order_id;
-
-    if (!paypalOrderId || !paymentsOrderId) {
-      console.error('createPaymentOrder (vault) returned no order ids', created);
-      return null;
-    }
-
-    const payload = createVaultAdditionalData(token, {
-      paypal_order_id: paypalOrderId,
-      payments_order_id: paymentsOrderId,
-    });
-
-    await checkoutApi.setPaymentMethod({
-      code: PaymentMethodCode.VAULT,
-      ...payload,
-    });
-
-    return payload;
-  } catch (error) {
-    console.error('Vault payment method sync failed', error);
-    return null;
-  }
+  return syncVaultToCart(token, cartId, {
+    fetchGraphQl: checkoutApi.fetchGraphQl,
+    setPaymentMethod: checkoutApi.setPaymentMethod,
+  });
 }
 
 /**
@@ -594,13 +472,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
               $stored.className = 'checkout-payment-cc-with-vault__stored';
 
               PaymentServices.render(StoredCards, {
-                cards: vaultTokens.map((token) => ({
-                  publicHash: token.publicHash,
-                  brand: token.brand,
-                  maskedNumber: token.masked,
-                  expiry: token.expiry,
-                  holderName: token.holder,
-                })),
+                cards: vaultTokens.map(normalizedVaultTokenToStoredCardProps),
                 payWithNewCardLabel: 'Pay with a new card',
                 onPaymentChoice: (choice) => {
                   if (choice.kind === 'new') {
