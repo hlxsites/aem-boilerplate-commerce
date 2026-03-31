@@ -402,8 +402,6 @@ export default async function decorate(block) {
           }
           // --- Add new item ---
           const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-          console.log('REGULAR:> ', [{ ...values }]);
-
           await addProductsToCart([{ ...values }]);
         }
 
