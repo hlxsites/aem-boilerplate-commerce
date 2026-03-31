@@ -144,7 +144,6 @@ export default async function decorate(block) {
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
 
-  // CHECKOUT_PAYMENT_UI_REFACTOR_2026-03-30: effectivePaymentCode (see containers.js renderPaymentMethods).
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {

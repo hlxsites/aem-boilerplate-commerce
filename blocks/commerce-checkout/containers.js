@@ -85,9 +85,6 @@ import {
   SHIPPING_FORM_NAME,
 } from './constants.js';
 
-/** Must match `STORED_CARDS_NEW_CARD_PUBLIC_HASH` in storefront-payment-services StoredCards. */
-const STORED_CARDS_NEW_CARD_PUBLIC_HASH = '__NEW_CARD__';
-
 /**
  * Place order reads `getValue('selectedPaymentMethod')` (always the visible method, e.g. CC).
  * When vault UI is merged under CC, set this so handlePlaceOrder can branch like `code === VAULT`.
@@ -516,9 +513,6 @@ export const renderShippingMethods = async (container) => renderContainer(
  * @param {HTMLElement} container - DOM element to render payment methods in
  * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @returns {Promise<Object>} - The rendered payment methods component
- *
- * CHECKOUT_PAYMENT_UI_REFACTOR_2026-03-30 — unified CC slot (stored cards + pay-with-new-card).
- * Revert: restore separate VAULT slot + remove effectivePaymentCode from commerce-checkout.js.
  */
 export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
@@ -608,8 +602,8 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
                   holderName: token.holder,
                 })),
                 payWithNewCardLabel: 'Pay with a new card',
-                onSelectionChange: (card) => {
-                  if (card.publicHash === STORED_CARDS_NEW_CARD_PUBLIC_HASH) {
+                onPaymentChoice: (choice) => {
+                  if (choice.kind === 'new') {
                     $ccForm.hidden = false;
                     $ccForm.style.display = '';
                     mountCreditCardForm();
@@ -617,7 +611,8 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
                     checkoutApi.setPaymentMethod({ code: PaymentMethodCode.CREDIT_CARD }).catch(console.error);
                     return;
                   }
-                  void (async () => {
+                  const { card } = choice;
+                  (async () => {
                     const selectedToken = vaultTokens.find((token) => token.publicHash === card.publicHash);
                     const token = selectedToken || card;
                     const syncPromise = syncVaultMethodOnCart(token, ctx.cartId);
@@ -627,7 +622,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
                     const payload = await syncPromise;
                     if (payload) ctx.setAdditionalData(payload);
                     setCheckoutEffectivePaymentCode(PaymentMethodCode.VAULT);
-                  })();
+                  })().catch(console.error);
                 },
               })($stored);
 
