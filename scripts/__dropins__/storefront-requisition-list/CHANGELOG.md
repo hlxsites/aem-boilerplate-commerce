@@ -1,10 +1,10 @@
 # @dropins/storefront-requisition-list
 
-## 1.3.0-alpha-20260330080852
+## 1.3.0-alpha-20260331122640
 
 ### Minor Changes
 
-- dd26742: feat: add Move to List and Copy to List features for requisition list items
+- 4205285: feat: add Move to List and Copy to List features for requisition list items
 
   - Add `moveItemsBetweenRequisitionLists` API to move items from one requisition list to another, removing them from the source and adding to the destination
   - Add `copyItemsBetweenRequisitionLists` API to copy items between requisition lists, keeping items in the source list
@@ -13,7 +13,7 @@
   - Refactor `RequisitionListSelector` to use `RequisitionListPicker` for consistent list selection UX
   - Include destination list name in success alert messages for both move and copy operations
 
-- 8a25534: Begin next development cycle
+- 4205285: Begin next development cycle
 - 9fdf4f4: Add an an active class and prop to the **RequisitionListSelector** so the button on the PDP page can reflect when the current product is already in the requisition list. Both an `active` prop as well as `requisition-list-selector--active` class was added. In addition, the `activeIcon` was also included should that the developer would like to change the button icon once an active state is truthy.
 - 98cd3b9: fix: merge user-provided langDefinitions in Provider
 
