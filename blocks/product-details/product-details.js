@@ -59,6 +59,19 @@ function isProductPrerendered() {
   }
 }
 
+// Function to update the Add to Cart button text
+function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
+  const buttonText = inCart
+    ? labels.Global?.UpdateProductInCart
+    : labels.Global?.AddProductToCart;
+  if (addToCartInstance) {
+    addToCartInstance.setProps((prev) => ({
+      ...prev,
+      children: buttonText,
+    }));
+  }
+}
+
 export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
@@ -67,20 +80,18 @@ export default async function decorate(block) {
   const { 'grid-ordering-enabled': gridOrderingEnabledString = 'false' } = readBlockConfig(block);
   const gridOrderingEnabled = gridOrderingEnabledString === 'true';
 
-  // Read URL params early to detect configurable products
-  const urlParams = new URLSearchParams(window.location.search);
-
   // Grid Ordering B2B feature (Quick Order Drop-in) - enabled only for Configurable Products
-  // - productType 'complex' = configurable product
-  // - externalParentId = variant of configurable product (has parent)
-  const isConfigurableProduct = product?.productType === 'complex'
-    || !!product?.externalParentId;
-  const isGridOrderingView = gridOrderingEnabled && isConfigurableProduct && !product?.isBundle;
-
+  const isConfigurableProduct = (product?.productType === 'complex' || !!product?.externalParentId) && !product?.isBundle;
+  const isGridOrderingView = gridOrderingEnabled && isConfigurableProduct;
+  // Separate Add to Cart button used in the Grid Ordering container
+  let gridOrderingAddToCartButton = null;
+  let gridOrderingVariants = [];
   let gridOrderingSelectedVariants = [];
 
   const labels = await fetchPlaceholders();
 
+  // Read itemUid from URL
+  const urlParams = new URLSearchParams(window.location.search);
   const itemUidFromUrl = urlParams.get('itemUid');
 
   // State to track if we are in update mode
@@ -156,139 +167,6 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
-
-  // Configuration – Button - Add to Cart
-  let addToCart;
-  let gridOrderingAddToCartButton = null;
-
-  // Shared add to cart handler function
-  async function handleAddToCart() {
-    const buttonActionText = isUpdateMode
-      ? labels.Global?.UpdatingInCart
-      : labels.Global?.AddingToCart;
-
-    // Track which flow was used for this specific call
-    let usedGridOrderingFlow = false;
-
-    try {
-      // --- Grid ordering flow ---
-      if (isGridOrderingView && gridOrderingSelectedVariants.length) {
-        usedGridOrderingFlow = true;
-
-        addToCart.setProps((prev) => ({
-          ...prev,
-          children: labels.Global?.AddingToCart,
-          disabled: true,
-        }));
-
-        if (gridOrderingAddToCartButton) {
-          gridOrderingAddToCartButton.setProps((prev) => ({
-            ...prev,
-            children: labels.Global?.AddingToCart,
-            disabled: true,
-          }));
-        }
-
-        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-        await addProductsToCart(gridOrderingSelectedVariants);
-
-        // Reset Grid Ordering state after adding variants to cart
-        events.emit('quick-order/grid-ordering-reset-selected-variants');
-        gridOrderingSelectedVariants = [];
-
-        return;
-      }
-
-      addToCart.setProps((prev) => ({
-        ...prev,
-        children: buttonActionText,
-        disabled: true,
-      }));
-
-      // get the current selection values
-      const values = pdpApi.getProductConfigurationValues();
-      const valid = pdpApi.isProductConfigurationValid();
-
-      // add or update the product in the cart
-      if (valid) {
-        if (isUpdateMode) {
-          // --- Update existing item ---
-          const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
-
-          await updateProductsFromCart([{
-            ...values,
-            uid: itemUidFromUrl,
-          }]);
-
-          // --- START REDIRECT ON UPDATE ---
-          const updatedSku = values?.sku;
-          if (updatedSku) {
-            const cartRedirectUrl = new URL(
-              rootLink('/cart'),
-              window.location.origin,
-            );
-            cartRedirectUrl.searchParams.set('itemUid', itemUidFromUrl);
-            window.location.href = cartRedirectUrl.toString();
-          } else {
-            // Fallback if SKU is somehow missing (shouldn't happen in normal flow)
-            console.warn(
-              'Could not retrieve SKU for updated item. Redirecting to cart without parameter.',
-            );
-            window.location.href = rootLink('/cart');
-          }
-          return;
-        }
-        // --- Add new item ---
-        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
-        await addProductsToCart([{ ...values }]);
-      }
-
-      // reset any previous alerts if successful
-      inlineAlert?.remove();
-    } catch (error) {
-      // add alert message
-      inlineAlert = await UI.render(InLineAlert, {
-        heading: 'Error',
-        description: error.message,
-        icon: h(Icon, { source: 'Warning' }),
-        'aria-live': 'assertive',
-        role: 'alert',
-        onDismiss: () => {
-          inlineAlert.remove();
-        },
-      })($alert);
-
-      // Scroll the alertWrapper into view
-      $alert.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-    } finally {
-      // Reset button states based on which flow was actually used
-      if (usedGridOrderingFlow) {
-        // Grid Ordering flow was used - restore main button text
-        // Keep main button enabled if product configuration is valid
-        const valid = pdpApi.isProductConfigurationValid();
-
-        addToCart.setProps((prev) => ({
-          ...prev,
-          children: labels.Global?.AddProductToCart,
-          disabled: !valid,
-        }));
-      } else {
-        // Normal flow was used - reset main button text and enable it
-        const buttonText = isUpdateMode
-          ? labels.Global?.UpdateProductInCart
-          : labels.Global?.AddProductToCart;
-
-        addToCart.setProps((prev) => ({
-          ...prev,
-          children: buttonText,
-          disabled: false,
-        }));
-      }
-    }
-  }
 
   const [
     _galleryMobile,
@@ -369,7 +247,7 @@ export default async function decorate(block) {
     pdpRendered.render(ProductAttributes, {})($attributes),
 
     // Grid Ordering
-    isGridOrderingView
+    isGridOrderingView && !isUpdateMode
       ? quickOrderProvider.render(QuickOrderVariantsGrid, {
         className: 'quick-order-variants-grid',
         columns: [
@@ -405,9 +283,7 @@ export default async function decorate(block) {
             ctx.appendChild(cellWrapper);
           },
           Actions: async (ctx) => {
-            const {
-              isDisabled,
-            } = ctx;
+            const { isDisabled } = ctx;
 
             // Create wrapper for the button
             const buttonContainer = document.createElement('div');
@@ -415,10 +291,53 @@ export default async function decorate(block) {
 
             // Create a new Button instance for Grid Ordering
             gridOrderingAddToCartButton = await UI.render(Button, {
-              children: labels.Global?.AddProductToCart || 'Add to Cart',
-              icon: h(Icon, { source: 'Cart' }),
+              children: labels.Global?.AddProductToCart,
               disabled: isDisabled,
-              onClick: handleAddToCart,
+              onClick: async () => {
+                try {
+                  if (gridOrderingAddToCartButton) {
+                    gridOrderingAddToCartButton.setProps((prev) => ({
+                      ...prev,
+                      children: labels.Global?.AddingToCart,
+                      disabled: true,
+                    }));
+                  }
+
+                  const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+                  await addProductsToCart(gridOrderingSelectedVariants);
+
+                  // Reset Grid Ordering state after adding variants to cart
+                  events.emit('quick-order/grid-ordering-reset-selected-variants');
+                  gridOrderingSelectedVariants = [];
+
+                  // reset any previous alerts if successful
+                  inlineAlert?.remove();
+                } catch (error) {
+                  // add alert message
+                  inlineAlert = await UI.render(InLineAlert, {
+                    heading: 'Error',
+                    description: error.message,
+                    icon: h(Icon, { source: 'Warning' }),
+                    'aria-live': 'assertive',
+                    role: 'alert',
+                    onDismiss: () => {
+                      inlineAlert.remove();
+                    },
+                  })($alert);
+
+                  // Scroll the alertWrapper into view
+                  $alert.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  });
+                } finally {
+                  gridOrderingAddToCartButton.setProps((prev) => ({
+                    ...prev,
+                    children: labels.Global?.AddProductToCart,
+                    disabled: true,
+                  }));
+                }
+              },
             })(buttonContainer);
 
             ctx.appendChild(buttonContainer);
@@ -434,10 +353,90 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
-  addToCart = await UI.render(Button, {
+  const addToCart = await UI.render(Button, {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
-    onClick: handleAddToCart,
+    onClick: async () => {
+      const buttonActionText = isUpdateMode
+        ? labels.Global?.UpdatingInCart
+        : labels.Global?.AddingToCart;
+      try {
+        addToCart.setProps((prev) => ({
+          ...prev,
+          children: buttonActionText,
+          disabled: true,
+        }));
+
+        // get the current selection values
+        const values = pdpApi.getProductConfigurationValues();
+        const valid = pdpApi.isProductConfigurationValid();
+
+        // add or update the product in the cart
+        if (valid) {
+          if (isUpdateMode) {
+            // --- Update existing item ---
+            const { updateProductsFromCart } = await import('@dropins/storefront-cart/api.js');
+
+            await updateProductsFromCart([{
+              ...values,
+              uid: itemUidFromUrl,
+            }]);
+
+            // --- START REDIRECT ON UPDATE ---
+            const updatedSku = values?.sku;
+            if (updatedSku) {
+              const cartRedirectUrl = new URL(
+                rootLink('/cart'),
+                window.location.origin,
+              );
+              cartRedirectUrl.searchParams.set('itemUid', itemUidFromUrl);
+              window.location.href = cartRedirectUrl.toString();
+            } else {
+              // Fallback if SKU is somehow missing (shouldn't happen in normal flow)
+              console.warn(
+                'Could not retrieve SKU for updated item. Redirecting to cart without parameter.',
+              );
+              window.location.href = rootLink('/cart');
+            }
+            return;
+          }
+          // --- Add new item ---
+          const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+          console.log('REGULAR:> ', [{ ...values }]);
+
+          await addProductsToCart([{ ...values }]);
+        }
+
+        // reset any previous alerts if successful
+        inlineAlert?.remove();
+      } catch (error) {
+        // add alert message
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: 'Error',
+          description: error.message,
+          icon: h(Icon, { source: 'Warning' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          onDismiss: () => {
+            inlineAlert.remove();
+          },
+        })($alert);
+
+        // Scroll the alertWrapper into view
+        $alert.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      } finally {
+        // Reset button text using the helper function which respects the current mode
+        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
+        // Re-enable button
+        addToCart.setProps((prev) => ({
+          ...prev,
+          disabled: false,
+        }));
+      }
+    },
   })($addToCart);
 
   // Lifecycle Events
@@ -450,9 +449,23 @@ export default async function decorate(block) {
   }, { eager: true });
 
   // Grid Ordering flow - Sync state and update Add To Cart button text on variants selection change
-  events.on('quick-order/grid-ordering-selected-variants', (variants) => {
+  events.on('quick-order/grid-ordering-selected-variants', (rawSelectedVariants) => {
     if (!isGridOrderingView) return;
-    gridOrderingSelectedVariants = [...variants];
+
+    // Map event payload to configurable add-to-cart format
+    gridOrderingSelectedVariants = rawSelectedVariants.map((rawVariant) => {
+      const selectedVariantSku = rawVariant?.sku?.toLowerCase();
+
+      const matchedVariantData = gridOrderingVariants.find(
+        (variantData) => variantData?.product?.sku?.toLowerCase() === selectedVariantSku,
+      );
+
+      return {
+        optionsUIDs: matchedVariantData?.selections,
+        quantity: rawVariant?.quantity,
+        sku: product?.sku,
+      };
+    });
 
     // Only update grid ordering button, not the main button
     if (gridOrderingAddToCartButton) {
@@ -528,29 +541,24 @@ export default async function decorate(block) {
 
   // Conditionally load requisition list functionality
   // The module sets up event handlers that check feature status on each render
-  if (!isGridOrderingView) {
-    try {
-      const { initializeRequisitionList } = await import('./requisition-list.js');
-      await initializeRequisitionList({
-        $alert,
-        $requisitionListSelector,
-        product,
-        labels,
-        urlParams,
-      });
-    } catch (error) {
-      // If module fails to load, requisition list features won't be available
-      console.warn('Requisition list module not available:', error);
-    }
+  try {
+    const { initializeRequisitionList } = await import('./requisition-list.js');
+    await initializeRequisitionList({
+      $alert,
+      $requisitionListSelector,
+      product,
+      labels,
+      urlParams,
+    });
+  } catch (error) {
+    // If module fails to load, requisition list features won't be available
+    console.warn('Requisition list module not available:', error);
   }
 
   // --- Add new event listener for cart/data ---
   events.on(
     'cart/data',
     (cartData) => {
-      // Only update main button in non-Grid Ordering mode
-      if (isGridOrderingView) return;
-
       let itemIsInCart = false;
       if (itemUidFromUrl && cartData?.items) {
         itemIsInCart = cartData.items.some(
@@ -561,14 +569,7 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      const buttonText = itemIsInCart
-        ? labels.Global?.UpdateProductInCart
-        : labels.Global?.AddProductToCart;
-
-      addToCart.setProps((prev) => ({
-        ...prev,
-        children: buttonText,
-      }));
+      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
     },
     { eager: true },
   );
@@ -583,12 +584,12 @@ export default async function decorate(block) {
       if (!isGridOrderingView) return;
 
       const variants = await getProductVariants(product.sku);
-      initQuickOrderGridOrdering(product, variants);
+      gridOrderingVariants = initQuickOrderGridOrdering(product, variants);
     } else {
       const variants = await getProductVariants(product.sku);
 
       if (isGridOrderingView) {
-        initQuickOrderGridOrdering(product, variants);
+        gridOrderingVariants = initQuickOrderGridOrdering(product, variants);
       }
 
       setJsonLdProduct(product, variants);
@@ -733,6 +734,7 @@ async function getProductVariants(sku) {
       query GET_PRODUCT_VARIANTS($sku: String!) {
         variants(sku: $sku) {
           variants {
+            selections
             product {
               sku
               name
@@ -794,4 +796,6 @@ function initQuickOrderGridOrdering(product, variants) {
     });
 
   events.emit('quick-order/grid-ordering-variants', extendedVariants);
+
+  return extendedVariants;
 }
