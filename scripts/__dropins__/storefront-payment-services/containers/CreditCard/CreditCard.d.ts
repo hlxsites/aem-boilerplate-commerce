@@ -39,6 +39,12 @@ export interface CreditCardProps {
      * "PaymentServices.CreditCard.errors" language definitions.
      */
     onError: (localizedError: LocalizedError) => void;
+    /**
+     * Optional override for the customer token getter. When provided and returns a
+     * non-null string, the "Save this card" checkbox is shown. When not provided,
+     * the value from the drop-in's initialize config is used.
+     */
+    getCustomerToken?: (() => string | null) | null;
 }
 export interface CreditCardFormRef {
     /**
@@ -51,5 +57,5 @@ export interface CreditCardFormRef {
      */
     submit: () => Promise<void>;
 }
-export declare const CreditCard: ({ getCartId, creditCardFormRef, onSuccess, onError, ...props }: CreditCardProps) => import("preact/compat").JSX.Element;
+export declare const CreditCard: ({ getCartId, creditCardFormRef, onSuccess, onError, getCustomerToken: getCustomerTokenProp, ...props }: CreditCardProps) => import("preact/compat").JSX.Element;
 //# sourceMappingURL=CreditCard.d.ts.map

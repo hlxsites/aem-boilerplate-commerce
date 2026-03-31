@@ -1,5 +1,12 @@
 # @dropins/storefront-account
 
+## 3.3.0-alpha-20260331161744
+
+### Minor Changes
+
+- 98d4563: Adds stored payment methods to My Account: customers can see saved cards (and similar methods), remove a stored method, and optionally filter by payment method code. Data comes from GraphQL (getCustomerPaymentTokens, deletePaymentToken) or from the event bus when tokens are already on the client. The UI reuses and extends PaymentCard, introduces PaymentMethods / PaymentMethodsWrapper, and includes Storybook, html-host, and unit test coverage across API, transforms, hooks, fixtures, and containers.
+- 01c919b: Add a new component for a Payment Card
+
 ## 3.2.0
 
 ### Minor Changes

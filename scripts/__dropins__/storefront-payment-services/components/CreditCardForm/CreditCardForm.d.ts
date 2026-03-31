@@ -13,6 +13,10 @@ export interface CreditCardFormProps extends HTMLAttributes<HTMLDivElement> {
         [key: string]: string;
     };
     isLoading?: boolean;
+    showSaveCard?: boolean;
+    saveCard?: boolean;
+    onSaveCardChange?: (checked: boolean) => void;
+    saveCardLabel?: string;
 }
 export declare const CreditCardForm: FunctionComponent<CreditCardFormProps>;
 //# sourceMappingURL=CreditCardForm.d.ts.map
