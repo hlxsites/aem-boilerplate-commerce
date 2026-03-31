@@ -361,6 +361,21 @@
     ]
   },
   {
+    "id": "commerce-payment-methods",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "with-header",
+        "label": "With Header"
+      },
+      {
+        "component": "boolean",
+        "name": "minified-view",
+        "label": "Minified View"
+      }
+    ]
+  },
+  {
     "id": "commerce-returns-list",
     "fields": [
       {

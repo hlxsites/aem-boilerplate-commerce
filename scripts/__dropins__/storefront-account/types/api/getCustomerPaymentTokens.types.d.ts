@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,9 +14,20 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './AddressForm';
-export * from './Addresses';
-export * from './OrdersList';
-export * from './CustomerInformation';
-export * from './PaymentMethods';
-//# sourceMappingURL=index.d.ts.map
+export interface CustomerPaymentTokenItem {
+    details: string;
+    public_hash: string;
+    payment_method_code: string;
+    type: string;
+}
+export interface GetCustomerPaymentTokensResponse {
+    data?: {
+        customerPaymentTokens?: {
+            items?: CustomerPaymentTokenItem[];
+        };
+    };
+    errors?: {
+        message: string;
+    }[];
+}
+//# sourceMappingURL=getCustomerPaymentTokens.types.d.ts.map
