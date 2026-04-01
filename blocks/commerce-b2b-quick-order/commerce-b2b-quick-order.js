@@ -66,9 +66,12 @@ export default async function decorate(block) {
     className: 'quick-order-items',
     handleAddToCart: async (values) => {
       if (!values.length) return;
-
+      const cartItems = values.map((item) => ({
+        ...item,
+        sku: item.parentSku || item.sku,
+      }));
       try {
-        await cartApi.addProductsToCart(values);
+        await cartApi.addProductsToCart(cartItems);
         window.location.href = rootLink('/cart');
       } catch (error) {
         // Return an error message string to display a notification

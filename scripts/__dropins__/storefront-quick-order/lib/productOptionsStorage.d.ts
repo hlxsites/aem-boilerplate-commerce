@@ -35,7 +35,9 @@ export declare const enrichCartItemsWithOptions: <T extends {
     id?: string;
     sku: string;
     variantSku?: string;
+    parentSku?: string;
 }>, storageData: Record<string, string[]>) => (T & {
     optionsUIDs?: string[] | undefined;
+    parentSku?: string | undefined;
 })[];
 //# sourceMappingURL=productOptionsStorage.d.ts.map
