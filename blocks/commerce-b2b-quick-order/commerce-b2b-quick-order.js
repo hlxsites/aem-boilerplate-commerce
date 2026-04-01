@@ -28,6 +28,8 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/pdp.js';
 
 export default async function decorate(block) {
+  // Cache for ProductOptions containers to prevent re-creating on each render
+  const pdpOptionsCache = new Map();
   const fragment = document.createRange().createContextualFragment(`
     <div class="quick-order-title"></div>
     <div class="quick-order-main-container">
@@ -91,11 +93,19 @@ export default async function decorate(block) {
         ctx.replaceWith(priceContainer);
       },
       ProductOptions: (ctx) => {
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = 'product-options-slot';
-        pdpProvider.render(ProductOptions, {
-          scope: ctx.scope,
-        })(optionsContainer);
+        // Check cache first to avoid creating duplicate containers
+        let optionsContainer = pdpOptionsCache.get(ctx.scope);
+
+        if (!optionsContainer) {
+          // Create new container only if not cached
+          optionsContainer = document.createElement('div');
+          optionsContainer.className = 'product-options-slot';
+          pdpProvider.render(ProductOptions, {
+            scope: ctx.scope,
+          })(optionsContainer);
+
+          pdpOptionsCache.set(ctx.scope, optionsContainer);
+        }
 
         ctx.replaceWith(optionsContainer);
       },
