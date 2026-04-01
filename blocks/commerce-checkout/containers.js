@@ -140,7 +140,7 @@ function normalizeVaultToken(token) {
     publicHash: token?.public_hash,
     methodCode,
     type: token?.type || '',
-    brand: details.type || details.brand || '',
+    brand: details.brand || details.type || '',
     masked: details.maskedCC || details.maskedNumber || details.last4 || '',
     expiry: details.expirationDate || details.expiryDate || '',
     holder: details.holderName || details.cardHolder || '',
