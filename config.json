@@ -1,0 +1,28 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/JNjfhWJ3MJvZhj3bwsamRP/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/JNjfhWJ3MJvZhj3bwsamRP/graphql",
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "Magento-Store-View-Code": "default",
+          "Magento-Website-Code": "base",
+          "Magento-Store-Code": "main_website_store",
+          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
+        }
+      },
+      "analytics": {
+        "environment-id": "JNjfhWJ3MJvZhj3bwsamRP",
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "store-view-currency-code": "USD",
+        "store-code": "default",
+        "store-name": "Default Store View",
+        "store-view-code": "default"
+      }
+    }
+  }
+}
