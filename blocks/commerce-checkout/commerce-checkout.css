@@ -150,6 +150,23 @@
     display: none;
 }
 
+/* Vault / CC payment section overlay */
+.checkout-payment-cc-with-vault {
+    position: relative;
+}
+
+.checkout-payment-cc-with-vault__overlay {
+    background: var(--color-neutral-50, #fff);
+    inset: 0;
+    opacity: 0.6;
+    position: absolute;
+    z-index: 1;
+}
+
+.checkout-payment-cc-with-vault__overlay[hidden] {
+    display: none;
+}
+
 /* remove margin from the heading divider */
 .checkout__heading .dropin-divider {
     margin: 0;

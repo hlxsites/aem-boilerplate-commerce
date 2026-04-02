@@ -121,8 +121,6 @@ async function fetchVaultTokens() {
 }
 
 /**
- * Vault checkout must follow Payment Services GraphQL: create a PayPal / MP payment order,
- * then setPaymentMethodOnCart with public_hash + order ids (see CheckoutWithVaultedCardTest).
  * AuthorizationRequest requires paypal_order_id on the quote payment.
  *
  * @param {{ publicHash?: string }} token
@@ -471,20 +469,32 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
               const $stored = document.createElement('div');
               $stored.className = 'checkout-payment-cc-with-vault__stored';
 
+              const $overlay = document.createElement('div');
+              $overlay.className = 'checkout-payment-cc-with-vault__overlay';
+              $overlay.hidden = true;
+
+              const showOverlay = () => { $overlay.hidden = false; };
+              const hideOverlay = () => { $overlay.hidden = true; };
+
               PaymentServices.render(StoredCards, {
                 cards: vaultTokens.map(normalizedVaultTokenToStoredCardProps),
                 payWithNewCardLabel: 'Pay with a new card',
                 onPaymentChoice: (choice) => {
                   if (choice.kind === 'new') {
+                    showOverlay();
                     $ccForm.hidden = false;
                     $ccForm.style.display = '';
                     mountCreditCardForm();
+                    ctx.setAdditionalData({});
                     setCheckoutEffectivePaymentCode(PaymentMethodCode.CREDIT_CARD);
-                    checkoutApi.setPaymentMethod({ code: PaymentMethodCode.CREDIT_CARD }).catch(console.error);
+                    checkoutApi.setPaymentMethod({ code: PaymentMethodCode.CREDIT_CARD })
+                      .catch(console.error)
+                      .finally(hideOverlay);
                     return;
                   }
                   const { card } = choice;
                   (async () => {
+                    showOverlay();
                     const selectedToken = vaultTokens.find((token) => token.publicHash === card.publicHash);
                     const token = selectedToken || card;
                     const syncPromise = syncVaultMethodOnCart(token, ctx.cartId);
@@ -494,12 +504,13 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
                     const payload = await syncPromise;
                     if (payload) ctx.setAdditionalData(payload);
                     setCheckoutEffectivePaymentCode(PaymentMethodCode.VAULT);
-                  })().catch(console.error);
+                  })().catch(console.error).finally(hideOverlay);
                 },
               })($stored);
 
               $ccForm.hidden = true;
               $ccForm.style.display = 'none';
+              root.appendChild($overlay);
               root.appendChild($stored);
               root.appendChild($ccForm);
               ctx.replaceHTML(root);
