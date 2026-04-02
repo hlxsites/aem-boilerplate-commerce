@@ -37,14 +37,15 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').and('not.be.disabled').type(testAdmin.email);
+      cy.get('input[name="email"]').type(testAdmin.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').should('be.visible').and('not.be.disabled').type(testAdmin.password);
+      cy.get('input[name="password"]').type(testAdmin.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
 
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -69,14 +70,15 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').and('not.be.disabled').type(testUsers.regular.email);
+      cy.get('input[name="email"]').type(testUsers.regular.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').should('be.visible').and('not.be.disabled').type(testUsers.regular.password);
+      cy.get('input[name="password"]').type(testUsers.regular.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
 
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -118,14 +120,15 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     cy.wait(1000); // Ensure page is ready
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').and('not.be.disabled').type(testUsers.restricted.email);
+      cy.get('input[name="email"]').type(testUsers.restricted.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').should('be.visible').and('not.be.disabled').type(testUsers.restricted.password);
+      cy.get('input[name="password"]').type(testUsers.restricted.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
     
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });
