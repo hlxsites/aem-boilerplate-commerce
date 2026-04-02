@@ -175,12 +175,14 @@ export default async function decorate(block) {
    * @param {Object} productData - Product information
    * @param {HTMLElement} alertContainer - Container for alerts
    * @param {HTMLElement} selectorContainer - Container for requisition list selector
+   * @param {boolean} isGridOrdering - Flag for grid ordering variant
    * @returns {Promise<void>}
    */
   const initializeRequisitionListForProduct = async (
     productData,
     alertContainer,
     selectorContainer,
+    isGridOrdering = false,
   ) => {
     try {
       await initializeRequisitionList({
@@ -189,6 +191,7 @@ export default async function decorate(block) {
         product: productData,
         labels,
         urlParams,
+        isGridOrdering,
       });
     } catch (error) {
       // If module fails to load, requisition list features won't be available
@@ -287,7 +290,7 @@ export default async function decorate(block) {
           { key: 'quantity', label: 'Quantity' },
           { key: 'subtotal', label: 'Subtotal' },
           ...(checkIsAuthenticated()
-            ? [{ key: 'requisitionList', label: 'Requisition List' }]
+            ? [{ key: 'requisitionList', label: 'Action' }]
             : []),
         ],
         slots: {
@@ -312,12 +315,28 @@ export default async function decorate(block) {
               variant.product,
               variantAlertContainer,
               variantSelectorContainer,
+              true, // isGridOrdering
             );
             ctx.onChange(async (nextState) => {
+              // Find the matching variant data with selections
+              const matchedVariant = gridOrderingVariants.find(
+                (v) => v?.product?.sku?.toLowerCase() === variant.product.sku.toLowerCase(),
+              );
+
+              // Build proper product structure for requisition list
+              const productForRequisitionList = {
+                ...variant.product, // Variant data (price, images, attributes)
+                sku: product.sku, // ✅ Parent SKU (CYPRESS456)
+                quantity: nextState.quantity, // ✅ Current quantity
+                optionUIDs: matchedVariant?.selections || [], // ✅ Selected options UIDs
+                options: product.options, // Parent product options for validation
+              };
+
               await initializeRequisitionListForProduct(
-                { ...variant.product, quantity: nextState.quantity },
+                productForRequisitionList,
                 variantAlertContainer,
                 variantSelectorContainer,
+                true, // isGridOrdering
               );
             });
           },
@@ -350,7 +369,9 @@ export default async function decorate(block) {
 
             // Create wrapper for the button
             const buttonContainer = document.createElement('div');
-            buttonContainer.classList.add('product-details__variants-grid-actions');
+            buttonContainer.classList.add(
+              'product-details__variants-grid-actions',
+            );
 
             // Create a new Button instance for Grid Ordering
             gridOrderingAddToCartButton = await UI.render(Button, {
@@ -370,7 +391,9 @@ export default async function decorate(block) {
                   await addProductsToCart(gridOrderingSelectedVariants);
 
                   // Reset Grid Ordering state after adding variants to cart
-                  events.emit('quick-order/grid-ordering-reset-selected-variants');
+                  events.emit(
+                    'quick-order/grid-ordering-reset-selected-variants',
+                  );
                   gridOrderingSelectedVariants = [];
 
                   // reset any previous alerts if successful
