@@ -38,6 +38,7 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quick-order.js';
+import { initializeRequisitionList } from './requisition-list.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -168,6 +169,32 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
 
+  /**
+   * Helper function to initialize requisition list for a given product and containers
+   * @param {Object} productData - Product information
+   * @param {HTMLElement} alertContainer - Container for alerts
+   * @param {HTMLElement} selectorContainer - Container for requisition list selector
+   * @returns {Promise<void>}
+   */
+  const initializeRequisitionListForProduct = async (
+    productData,
+    alertContainer,
+    selectorContainer,
+  ) => {
+    try {
+      await initializeRequisitionList({
+        $alert: alertContainer,
+        $requisitionListSelector: selectorContainer,
+        product: productData,
+        labels,
+        urlParams,
+      });
+    } catch (error) {
+      // If module fails to load, requisition list features won't be available
+      console.warn('Requisition list module not available:', error);
+    }
+  };
+
   const [
     _galleryMobile,
     _gallery,
@@ -258,8 +285,39 @@ export default async function decorate(block) {
           { key: 'price', label: 'Price' },
           { key: 'quantity', label: 'Quantity' },
           { key: 'subtotal', label: 'Subtotal' },
+          { key: 'requisitionList', label: 'Requisition List' },
         ],
         slots: {
+          RequisitionListCell: async (ctx) => {
+            const { variant } = ctx;
+
+            // Create containers for this variant's requisition list
+            const variantAlertContainer = document.createElement('div');
+            variantAlertContainer.classList.add('variant-requisition-alert');
+
+            const variantSelectorContainer = document.createElement('div');
+            variantSelectorContainer.classList.add(
+              'variant-requisition-selector',
+            );
+
+            // Append containers to the cell
+            ctx.appendChild(variantAlertContainer);
+            ctx.appendChild(variantSelectorContainer);
+
+            // Initialize requisition list for this variant
+            await initializeRequisitionListForProduct(
+              variant.product,
+              variantAlertContainer,
+              variantSelectorContainer,
+            );
+            ctx.onChange(async (nextState) => {
+              await initializeRequisitionListForProduct(
+                { ...variant.product, quantity: nextState.quantity },
+                variantAlertContainer,
+                variantSelectorContainer,
+              );
+            });
+          },
           VariantOptionAttributesCell: (ctx) => {
             const { variant } = ctx;
             const { variantOptionAttributes } = variant.product;
@@ -268,7 +326,9 @@ export default async function decorate(block) {
 
             variantOptionAttributes.forEach((attr) => {
               const attributeWrapper = document.createElement('div');
-              attributeWrapper.classList.add('product-details__variants-grid-attribute');
+              attributeWrapper.classList.add(
+                'product-details__variants-grid-attribute',
+              );
 
               const label = document.createElement('strong');
               label.textContent = `${attr.label}:`;
@@ -537,21 +597,12 @@ export default async function decorate(block) {
     }, 0);
   });
 
-  // Conditionally load requisition list functionality
-  // The module sets up event handlers that check feature status on each render
-  try {
-    const { initializeRequisitionList } = await import('./requisition-list.js');
-    await initializeRequisitionList({
-      $alert,
-      $requisitionListSelector,
-      product,
-      labels,
-      urlParams,
-    });
-  } catch (error) {
-    // If module fails to load, requisition list features won't be available
-    console.warn('Requisition list module not available:', error);
-  }
+  // Initialize requisition list functionality for main PDP view
+  await initializeRequisitionListForProduct(
+    product,
+    $alert,
+    $requisitionListSelector,
+  );
 
   // --- Add new event listener for cart/data ---
   events.on(

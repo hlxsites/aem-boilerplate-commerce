@@ -89,7 +89,7 @@ function createRequisitionListRenderer({
     // Render RequisitionListSelector with beforeAddProdToReqList validation if B2B is enabled
     return rlRenderer.render(RequisitionListSelector, {
       sku: product.sku,
-      quantity: pdpApi.getProductConfigurationValues()?.quantity || 1,
+      quantity: product?.quantity || pdpApi.getProductConfigurationValues()?.quantity || 1,
       selectedOptions: currentOptions,
       beforeAddProdToReqList: async () => {
         // Check if all required product options are selected
