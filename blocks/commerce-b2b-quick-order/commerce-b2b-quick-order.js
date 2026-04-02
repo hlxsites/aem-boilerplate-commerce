@@ -28,8 +28,9 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/pdp.js';
 
 export default async function decorate(block) {
-  // Cache for ProductOptions containers to prevent re-creating on each render
-  const pdpOptionsCache = new Map();
+  // Stores rendered ProductOptions containers by scope, prevent redundant container re-rendering
+  const productOptionsContainerMap = new Map();
+
   const fragment = document.createRange().createContextualFragment(`
     <div class="quick-order-title"></div>
     <div class="quick-order-main-container">
@@ -93,21 +94,21 @@ export default async function decorate(block) {
         ctx.replaceWith(priceContainer);
       },
       ProductOptions: (ctx) => {
-        // Check cache first to avoid creating duplicate containers
-        let optionsContainer = pdpOptionsCache.get(ctx.scope);
+        // Preventing re-creating duplicated containers
+        let productOptionsContainer = productOptionsContainerMap.get(ctx.scope);
 
-        if (!optionsContainer) {
-          // Create new container only if not cached
-          optionsContainer = document.createElement('div');
-          optionsContainer.className = 'product-options-slot';
+        if (!productOptionsContainer) {
+          // Create a new container only if not exist yet
+          productOptionsContainer = document.createElement('div');
+          productOptionsContainer.className = 'product-options-slot';
           pdpProvider.render(ProductOptions, {
             scope: ctx.scope,
-          })(optionsContainer);
+          })(productOptionsContainer);
 
-          pdpOptionsCache.set(ctx.scope, optionsContainer);
+          productOptionsContainerMap.set(ctx.scope, productOptionsContainer);
         }
 
-        ctx.replaceWith(optionsContainer);
+        ctx.replaceWith(productOptionsContainer);
       },
     },
   })(quickOrderItemsContainer);
