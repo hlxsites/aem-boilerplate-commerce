@@ -58,7 +58,7 @@
     "@dropins/storefront-product-discovery": "~3.1.0",
     "@dropins/storefront-purchase-order": "~1.1.1",
     "@dropins/storefront-quote-management": "~1.1.2",
-    "@dropins/storefront-recommendations": "~3.0.0",
+    "@dropins/storefront-recommendations": "~4.0.1",
     "@dropins/storefront-requisition-list": "~1.2.0",
     "@dropins/storefront-wishlist": "~3.2.0",
     "@dropins/storefront-quick-order": "~1.0.0",
