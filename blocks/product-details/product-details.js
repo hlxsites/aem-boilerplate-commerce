@@ -29,6 +29,7 @@ import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGi
 
 // Libs
 import {
+  checkIsAuthenticated,
   fetchPlaceholders, getProductLink, rootLink, setJsonLd,
 } from '../../scripts/commerce.js';
 import { readBlockConfig } from '../../scripts/aem.js';
@@ -285,7 +286,9 @@ export default async function decorate(block) {
           { key: 'price', label: 'Price' },
           { key: 'quantity', label: 'Quantity' },
           { key: 'subtotal', label: 'Subtotal' },
-          { key: 'requisitionList', label: 'Requisition List' },
+          ...(checkIsAuthenticated()
+            ? [{ key: 'requisitionList', label: 'Requisition List' }]
+            : []),
         ],
         slots: {
           RequisitionListCell: async (ctx) => {
