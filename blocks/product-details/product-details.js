@@ -39,7 +39,10 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/quick-order.js';
-import { initializeRequisitionList } from './requisition-list.js';
+import {
+  initializeRequisitionListForProduct,
+  createRequisitionListRenderer,
+} from './requisition-list.js';
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -170,35 +173,6 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
 
-  /**
-   * Helper function to initialize requisition list for a given product and containers
-   * @param {Object} productData - Product information
-   * @param {HTMLElement} alertContainer - Container for alerts
-   * @param {HTMLElement} selectorContainer - Container for requisition list selector
-   * @param {boolean} isGridOrdering - Flag for grid ordering variant
-   * @returns {Promise<void>}
-   */
-  const initializeRequisitionListForProduct = async (
-    productData,
-    alertContainer,
-    selectorContainer,
-    isGridOrdering = false,
-  ) => {
-    try {
-      await initializeRequisitionList({
-        $alert: alertContainer,
-        $requisitionListSelector: selectorContainer,
-        product: productData,
-        labels,
-        urlParams,
-        isGridOrdering,
-      });
-    } catch (error) {
-      // If module fails to load, requisition list features won't be available
-      console.warn('Requisition list module not available:', error);
-    }
-  };
-
   const [
     _galleryMobile,
     _gallery,
@@ -310,33 +284,46 @@ export default async function decorate(block) {
             ctx.appendChild(variantAlertContainer);
             ctx.appendChild(variantSelectorContainer);
 
-            // Initialize requisition list for this variant
-            await initializeRequisitionListForProduct(
-              variant.product,
-              variantAlertContainer,
-              variantSelectorContainer,
-              true, // isGridOrdering
+            // Cache matchedVariant lookup (variant data doesn't change)
+            const matchedVariant = gridOrderingVariants.find(
+              (v) => v?.product?.sku?.toLowerCase() === variant.product.sku.toLowerCase(),
             );
+
+            // Helper to build product data with current quantity
+            const buildProductData = (quantity) => ({
+              ...variant.product, // Variant data (price, images, attributes)
+              sku: product.sku, // Parent SKU for configurable product
+              quantity,
+              optionUIDs: matchedVariant?.selections || [], // Selected option UIDs
+              options: product.options, // Parent product options for validation
+            });
+
+            // Create render function ONCE - preserves inlineAlert state across updates
+            // Product is passed as parameter, not captured in closure
+            const renderFunction = createRequisitionListRenderer({
+              $alert: variantAlertContainer,
+              labels,
+            });
+
+            // Initial render
+            let currentProductData = buildProductData(variant.product.quantity || 1);
+            await renderFunction(
+              variantSelectorContainer,
+              currentProductData,
+              currentProductData.optionUIDs,
+            );
+
+            // Handle quantity changes
             ctx.onChange(async (nextState) => {
-              // Find the matching variant data with selections
-              const matchedVariant = gridOrderingVariants.find(
-                (v) => v?.product?.sku?.toLowerCase() === variant.product.sku.toLowerCase(),
-              );
+              // Update product data with new quantity
+              currentProductData = buildProductData(nextState.quantity);
 
-              // Build proper product structure for requisition list
-              const productForRequisitionList = {
-                ...variant.product, // Variant data (price, images, attributes)
-                sku: product.sku, // ✅ Parent SKU (CYPRESS456)
-                quantity: nextState.quantity, // ✅ Current quantity
-                optionUIDs: matchedVariant?.selections || [], // ✅ Selected options UIDs
-                options: product.options, // Parent product options for validation
-              };
-
-              await initializeRequisitionListForProduct(
-                productForRequisitionList,
-                variantAlertContainer,
+              // Reuse same render function - product passed as parameter
+              // This preserves inlineAlert state and avoids recreating closures
+              await renderFunction(
                 variantSelectorContainer,
-                true, // isGridOrdering
+                currentProductData,
+                currentProductData.optionUIDs,
               );
             });
           },
@@ -624,11 +611,13 @@ export default async function decorate(block) {
   });
 
   // Initialize requisition list functionality for main PDP view
-  await initializeRequisitionListForProduct(
+  await initializeRequisitionListForProduct({
     product,
     $alert,
     $requisitionListSelector,
-  );
+    labels,
+    urlParams,
+  });
 
   // --- Add new event listener for cart/data ---
   events.on(
