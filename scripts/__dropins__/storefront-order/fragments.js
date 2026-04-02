@@ -289,6 +289,10 @@ ${u}`, i = `fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
   shipping_method
   available_actions
   is_virtual
+  comments {
+    message
+    timestamp
+  }
   payment_methods {
     name
     type
