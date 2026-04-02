@@ -222,7 +222,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail)
       .blur();
-    cy.get('input[name="first_name"]:visible').clear().type('New').blur();
+    cy.get('input[name="first_name"]:visible').focus().clear().type('New').blur();
     cy.get('input[name="last_name"]:visible').clear().type('TestUser').blur();
     cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
 
@@ -255,7 +255,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
       cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail)
         .blur();
-      cy.get('input[name="first_name"]:visible').clear().type('Duplicate').blur();
+      cy.get('input[name="first_name"]:visible').focus().clear().type('Duplicate').blur();
       cy.get('input[name="last_name"]:visible').clear().type('User').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
 
@@ -303,6 +303,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('📝 Updating user name...');
     cy.get('input[name="first_name"]:visible')
       .should('be.visible')
+      .focus()
       .clear()
       .type('Updated')
       .blur();
@@ -500,7 +501,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       const standaloneEmail = Cypress.env('standaloneEmail');
       cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail)
         .blur();
-      cy.get('input[name="first_name"]:visible').clear().type('Invited').blur();
+      cy.get('input[name="first_name"]:visible').focus().clear().type('Invited').blur();
       cy.get('input[name="last_name"]:visible').clear().type('Member').blur();
       cy.get('select[name="role"]:visible', { timeout: 5000 }).should('be.visible').select('Default User');
     });
