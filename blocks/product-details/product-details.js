@@ -2,6 +2,9 @@ import {
   InLineAlert,
   Icon,
   Button,
+  Incrementer,
+  PriceRange,
+  Image,
   provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
@@ -76,6 +79,8 @@ export default async function decorate(block) {
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
 
+  const isGroupProduct = product?.options?.[0]?.items?.some((item) => !!item?.product);
+
   const labels = await fetchPlaceholders();
 
   // Read itemUid from URL
@@ -109,7 +114,8 @@ export default async function decorate(block) {
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
-    </div>
+      </div>
+      <div class="product-details__group-product-list-wrapper"></div>
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
@@ -125,6 +131,7 @@ export default async function decorate(block) {
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
+  const $groupProductList = fragment.querySelector('.product-details__group-product-list-wrapper');
 
   block.replaceChildren(fragment);
 
@@ -198,13 +205,13 @@ export default async function decorate(block) {
     pdpRendered.render(ProductHeader, {})($header),
 
     // Price
-    pdpRendered.render(ProductPrice, {})($price),
+    isGroupProduct ? null : pdpRendered.render(ProductPrice, {})($price),
 
     // Short Description
     pdpRendered.render(ProductShortDescription, {})($shortDescription),
 
     // Configuration - Swatches
-    pdpRendered.render(ProductOptions, {
+    isGroupProduct ? null : pdpRendered.render(ProductOptions, {
       hideSelectedValue: false,
       slots: {
         SwatchImage: (ctx) => {
@@ -217,10 +224,10 @@ export default async function decorate(block) {
     })($options),
 
     // Configuration  Quantity
-    pdpRendered.render(ProductQuantity, {})($quantity),
+    isGroupProduct ? null : pdpRendered.render(ProductQuantity, {})($quantity),
 
     // Configuration  Gift Card Options
-    pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
+    isGroupProduct ? null : pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
@@ -229,13 +236,13 @@ export default async function decorate(block) {
     pdpRendered.render(ProductAttributes, {})($attributes),
 
     // Wishlist button - WishlistToggle Container
-    wishlistRender.render(WishlistToggle, {
+    isGroupProduct ? null : wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
   ]);
 
   // Configuration – Button - Add to Cart
-  const addToCart = await UI.render(Button, {
+  const addToCart = isGroupProduct ? null : await UI.render(Button, {
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
@@ -320,10 +327,117 @@ export default async function decorate(block) {
     },
   })($addToCart);
 
+  // Render list of products in group product
+  if (isGroupProduct) {
+    const $groupItemsList = document.createElement('ul');
+    $groupItemsList.className = 'product-details__group-product-list';
+    const groupItemQuantities = {};
+
+    product.options?.[0].items.forEach(({ product: groupProduct }) => {
+      const { sku } = groupProduct;
+      groupItemQuantities[sku] = 1;
+
+      const $groupItemLi = document.createElement('li');
+      $groupItemLi.className = 'product-details__group-product-item';
+
+      const thumbnail = groupProduct?.images?.[0];
+      const imageUrl = thumbnail?.url ?? '';
+      const $groupItemImage = document.createElement('div');
+      $groupItemImage.className = 'product-details__group-product-image';
+      if (imageUrl) {
+        UI.render(Image, {
+          src: imageUrl,
+          alt: thumbnail?.label ?? groupProduct?.name ?? '',
+          width: 200,
+          height: 200,
+          loading: 'lazy',
+        })($groupItemImage);
+      }
+
+      const $groupItemContent = document.createElement('div');
+      $groupItemContent.className = 'product-details__group-product-content';
+
+      const $groupItemName = document.createElement('h2');
+      $groupItemName.className = 'product-details__group-product-name';
+      $groupItemName.textContent = groupProduct.name;
+
+      const $groupItemSku = document.createElement('div');
+      $groupItemSku.className = 'product-details__group-product-sku';
+      $groupItemSku.textContent = groupProduct.sku;
+
+      const $groupItemPriceContainer = document.createElement('div');
+      $groupItemPriceContainer.className = 'product-details__group-product-price';
+
+      const $groupItemQuantityContainer = document.createElement('div');
+      $groupItemQuantityContainer.className = 'product-details__group-product-quantity';
+      UI.render(Incrementer, {
+        onValue: (value) => {
+          groupItemQuantities[sku] = value;
+        },
+      })($groupItemQuantityContainer);
+
+      const $groupItemCtas = document.createElement('div');
+      $groupItemCtas.className = 'product-details__group-product-ctas';
+
+      const $groupItemAddToCartBtn = document.createElement('div');
+      UI.render(Button, {
+        children: labels.Global?.AddProductToCart,
+        icon: h(Icon, { source: 'Cart' }),
+        variant: 'primary',
+        onClick: async () => {
+          const { addProductsToCart } = await import(
+            '@dropins/storefront-cart/api.js'
+          );
+          await addProductsToCart([{
+            sku,
+            quantity: groupItemQuantities[sku] ?? 1,
+          }]);
+        },
+      })($groupItemAddToCartBtn);
+      $groupItemCtas.appendChild($groupItemAddToCartBtn);
+
+      $groupItemContent.append(
+        $groupItemName,
+        $groupItemSku,
+        $groupItemPriceContainer,
+        $groupItemQuantityContainer,
+        $groupItemCtas,
+      );
+      $groupItemLi.append($groupItemImage, $groupItemContent);
+      $groupItemsList.appendChild($groupItemLi);
+
+      UI.render(PriceRange, {
+        amount: groupProduct.price.final.amount.value,
+        currency: groupProduct.price.final.amount.currency,
+      })($groupItemPriceContainer);
+    });
+
+    // Add all products to the cart (each with its selected quantity)
+    const $groupAddToCartBtn = document.createElement('div');
+    $groupAddToCartBtn.className = 'product-details__group-product-add-to-cart-btn';
+    UI.render(Button, {
+      children: 'Add All to Cart', // ideally this will be added to placeholders: labels.Global?.AddAllProductsToCart,
+      icon: h(Icon, { source: 'Cart' }),
+      variant: 'primary',
+      onClick: async () => {
+        const cartItems = product.options?.[0]?.items
+          ?.filter((item) => item.product?.sku)
+          ?.map((item) => ({
+            sku: item.product.sku,
+            quantity: groupItemQuantities[item.product.sku] ?? 1,
+          })) ?? [];
+        if (cartItems.length === 0) return;
+        const { addProductsToCart } = await import('@dropins/storefront-cart/api.js');
+        await addProductsToCart(cartItems);
+      },
+    })($groupAddToCartBtn);
+
+    $groupProductList.replaceChildren($groupAddToCartBtn, $groupItemsList);
+  }
   // Lifecycle Events
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
+    addToCart?.setProps((prev) => ({ ...prev, disabled: !valid }));
   }, { eager: true });
 
   // Handle option changes
