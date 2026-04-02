@@ -45,6 +45,7 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     });
 
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -77,6 +78,7 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     });
 
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -126,6 +128,7 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     });
     
     cy.wait(8000); // Wait for login to complete
+    cy.url().should('not.include', '/customer/login');
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });
