@@ -15,6 +15,9 @@ declare const _default: {
           "message": "An unexpected error occurred. Please try again or contact support."
         }
       },
+      "saveCard": {
+        "label": "Save this card for future purchases"
+      },
       "formFields": {
         "cvv": {
           "invalidError": "Enter valid cvv.",
@@ -40,6 +43,10 @@ declare const _default: {
       "methodNotAvailable": "Payment method not available. Please contact support.",
       "methodNotLoaded": "Failed to load payment method. Please try again later.",
       "methodLoading": "Loading payment method..."
+    },
+    "StoredCards": {
+      "groupLegend": "Stored payment methods",
+      "selectSavedCard": "Select saved card"
     }
   }
 }
