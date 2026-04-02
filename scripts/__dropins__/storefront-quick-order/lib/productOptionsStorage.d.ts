@@ -27,10 +27,15 @@ export declare const getOptionsFromStorage: (storageKey: string) => Record<strin
  */
 export declare const saveOptionsToStorage: (storageKey: string, itemId: string, optionsUIDs: string[]) => void;
 /**
+ * Remove options from localStorage for a specific item
+ */
+export declare const removeOptionsFromStorage: (storageKey: string, itemId: string) => void;
+/**
  * Enrich cart items with selected options from storage
  */
 export declare const enrichCartItemsWithOptions: <T extends {
     sku: string;
+    itemId?: string | undefined;
 }>(cartItems: T[], items: Array<{
     id?: string;
     sku: string;
