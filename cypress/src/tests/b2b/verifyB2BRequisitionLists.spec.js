@@ -12,7 +12,7 @@ import * as fields from "../../fields";
  */
 function createRequisitionList(selector, listName, description, index = null) {
   const element =
-    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector).first();
   element.click();
 
   cy.get(fields.requisitionListActions).should("exist").click();
@@ -43,7 +43,7 @@ function createRequisitionList(selector, listName, description, index = null) {
  */
 function assertRequisitionListExists(selector, listName, index = null) {
   const element =
-    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector).first();
   element.click();
 
   cy.get(fields.requisitionListSelectorForm).should("exist");
@@ -189,7 +189,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         );
 
       // Click requisition list again in PDP, should show validation when no options selected on PDP
-      cy.get(fields.requisitionListSelector).click();
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
@@ -204,7 +204,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         cy.get(fields.productDetailsAlert).should("not.be.visible");
 
         // Add configurable product to requisition list
-        cy.get(fields.requisitionListSelector).click();
+        cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
         cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
         cy.get(fields.requisitionListFormActionsButton).click();
 
@@ -241,7 +241,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         );
 
       // Click requisition list again in PDP, should show validation when required options not selected
-      cy.get(fields.requisitionListSelector).click();
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
@@ -257,7 +257,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert).should("not.be.visible");
 
       // Add bundle product to requisition list
-      cy.get(fields.requisitionListSelector).click();
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
       cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
       cy.get(fields.requisitionListFormActionsButton).click();
 
