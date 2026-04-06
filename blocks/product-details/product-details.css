@@ -56,6 +56,10 @@
   margin-top: var(--spacing-big);
 }
 
+.product-details__configuration--out-of-stock .product-details__quantity {
+  display: none;
+}
+
 .product-details__buttons {
   display: grid;
   grid-template-columns: 1fr auto;
