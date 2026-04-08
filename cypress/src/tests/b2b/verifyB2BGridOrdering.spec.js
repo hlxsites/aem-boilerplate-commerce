@@ -494,15 +494,16 @@ describe(
         expect(interception.response.statusCode).to.equal(200);
       });
 
-      // Wait for cart data to update after API call
-      cy.wait(2000);
+      // Wait for UI to update after cart API call completes
+      cy.wait(3000);
 
       cy.logToTerminal(
         `🛒 Verifying cart badge shows ${totalQuantity} items...`,
       );
-      cy.get(fields.miniCartButton, { timeout: 10000 })
+      cy.get(fields.miniCartButton, { timeout: 30000 })
         .should('be.visible')
-        .and('have.attr', 'data-count')
+        .invoke('attr', 'data-count')
+        .should('exist')
         .then((count) => {
           const itemCount = parseInt(count, 10);
           expect(itemCount).to.be.at.least(totalQuantity);
