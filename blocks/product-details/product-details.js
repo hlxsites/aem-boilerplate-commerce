@@ -523,20 +523,19 @@ export default async function decorate(block) {
   events.on('quick-order/grid-ordering-selected-variants', (selectedVariants) => {
     if (!isGridOrderingView) return;
 
-    // Map event payload to configurable add-to-cart format
-    // selectedVariants already contains optionsUIDs, just need parent SKU
+    // Critical: Replace child SKU with parent SKU for configurable products
     gridOrderingSelectedVariants = selectedVariants.map((variant) => ({
       optionsUIDs: variant.optionsUIDs,
       quantity: variant.quantity,
-      sku: product.sku, // Parent SKU for configurable product
+      sku: product.sku, // Use parent SKU for cart operations
     }));
 
-    // Only update grid ordering button, not the main button
+    // Update grid ordering button with total quantity
     if (gridOrderingAddToCartButton) {
-      const totalQuantity = gridOrderingSelectedVariants.reduce((acc, item) => {
-        const quantity = item.quantity || 0;
-        return acc + quantity;
-      }, 0);
+      const totalQuantity = selectedVariants.reduce(
+        (acc, variant) => acc + (variant.quantity || 0),
+        0,
+      );
       const hasItems = totalQuantity > 0;
 
       gridOrderingAddToCartButton.setProps((prev) => ({
