@@ -494,6 +494,9 @@ describe(
         expect(interception.response.statusCode).to.equal(200);
       });
 
+      // Wait for cart data to update after API call
+      cy.wait(2000);
+
       cy.logToTerminal(
         `🛒 Verifying cart badge shows ${totalQuantity} items...`,
       );
