@@ -1,11 +1,20 @@
 # @dropins/storefront-account
 
-## 3.3.0-alpha-20260331161744
+## 3.3.0-alpha-20260408151706
 
 ### Minor Changes
 
+- 573f3e7: Add fieldIdPrefix prop support to the Addresses container
 - 98d4563: Adds stored payment methods to My Account: customers can see saved cards (and similar methods), remove a stored method, and optionally filter by payment method code. Data comes from GraphQL (getCustomerPaymentTokens, deletePaymentToken) or from the event bus when tokens are already on the client. The UI reuses and extends PaymentCard, introduces PaymentMethods / PaymentMethodsWrapper, and includes Storybook, html-host, and unit test coverage across API, transforms, hooks, fixtures, and containers.
 - 01c919b: Add a new component for a Payment Card
+
+## 3.2.1
+
+### Patch Changes
+
+- b47c3b4: Fix customer **select/dropdown custom attributes** end-to-end: extend `GET_CUSTOMER` with `AttributeSelectedOptions` / `selected_options`, map those values in `transformCustomer`, and prefer field `defaultValue` over option `isDefault` in `FormInputs` selects.
+
+  Fix **date-only** strings in `formatDateToLocale` so calendar days do not shift by timezone (ISO `YYYY-MM-DD` formatted with UTC; optional whitespace trimmed).
 
 ## 3.2.0
 
