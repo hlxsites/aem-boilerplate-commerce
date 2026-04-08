@@ -313,6 +313,6 @@ export async function initializeRequisitionListForProduct({
     });
   } catch (error) {
     // If module fails to load, requisition list features won't be available
-    console.warn('Requisition list module not available:', error);
+    console.warn('Error initialize requisition list for product:', error);
   }
 }

@@ -520,23 +520,16 @@ export default async function decorate(block) {
   }, { eager: true });
 
   // Grid Ordering flow - Sync state and update Add To Cart button text on variants selection change
-  events.on('quick-order/grid-ordering-selected-variants', (rawSelectedVariants) => {
+  events.on('quick-order/grid-ordering-selected-variants', (selectedVariants) => {
     if (!isGridOrderingView) return;
 
     // Map event payload to configurable add-to-cart format
-    gridOrderingSelectedVariants = rawSelectedVariants.map((rawVariant) => {
-      const selectedVariantSku = rawVariant?.sku?.toLowerCase();
-
-      const matchedVariantData = gridOrderingVariants.find(
-        (variantData) => variantData?.product?.sku?.toLowerCase() === selectedVariantSku,
-      );
-
-      return {
-        optionsUIDs: matchedVariantData?.selections,
-        quantity: rawVariant?.quantity,
-        sku: product?.sku,
-      };
-    });
+    // selectedVariants already contains optionsUIDs, just need parent SKU
+    gridOrderingSelectedVariants = selectedVariants.map((variant) => ({
+      optionsUIDs: variant.optionsUIDs,
+      quantity: variant.quantity,
+      sku: product.sku, // Parent SKU for configurable product
+    }));
 
     // Only update grid ordering button, not the main button
     if (gridOrderingAddToCartButton) {
