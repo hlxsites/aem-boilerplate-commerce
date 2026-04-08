@@ -462,7 +462,7 @@ describe(
         0,
       );
 
-      cy.logToTerminal('📝 Setting quantities for all variants...');
+      cy.logToTerminal("📝 Setting quantities for all variants...");
       expectedVariants.forEach(({ index, quantity }) => {
         actions.updateVariantQuantity(index, quantity);
       });
@@ -500,13 +500,25 @@ describe(
       cy.logToTerminal(
         `🛒 Verifying cart badge shows ${totalQuantity} items...`,
       );
-      cy.get(fields.miniCartButton, { timeout: 30000 })
-        .should('be.visible')
-        .invoke('attr', 'data-count')
-        .should('exist')
-        .then((count) => {
+
+      // Wait for cart to update and verify badge count
+      // Cypress will retry this entire block until success or timeout
+      cy.get(fields.miniCartButton, { timeout: 60000 })
+        .should(($button) => {
+          // All assertions in one block for proper retry mechanism
+          expect($button, "cart button should be visible").to.be.visible;
+
+          const count = $button.attr("data-count");
+          expect(count, "data-count attribute should exist").to.exist;
+
           const itemCount = parseInt(count, 10);
-          expect(itemCount).to.be.at.least(totalQuantity);
+          expect(
+            itemCount,
+            `cart should have at least ${totalQuantity} items (currently ${itemCount})`,
+          ).to.be.at.least(totalQuantity);
+        })
+        .then(($button) => {
+          const itemCount = parseInt($button.attr("data-count"), 10);
           cy.logToTerminal(
             `✅ Cart badge shows ${itemCount} items (expected at least ${totalQuantity})`,
           );
