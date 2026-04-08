@@ -315,7 +315,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.contains("Save").should("be.visible").click();
       cy.contains("Now updating from RL view page").should("be.visible");
       cy.contains("Requisition list updated successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       // 2. Update quantity of the first item in the Requisition List
@@ -336,15 +336,18 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
 
       cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
 
-      // Verify success message appears (check immediately before it auto-dismisses)
-      cy.contains("Item(s) successfully added to cart.", {
-        timeout: 5000,
-      }).should("be.visible");
+      // Verify success message appears in requisition list view alert
+      // The alert uses class .requisition-list__alert-wrapper with "moved to cart" text
+      cy.get(".requisition-list__alert-wrapper .dropin-in-line-alert__title", {
+        timeout: 30000,
+      })
+        .should("be.visible")
+        .and("contain", "Item(s) successfully moved to cart.");
 
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
@@ -357,13 +360,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
-        "not.exist"
+        "not.exist",
       );
       cy.wait(1000);
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
       cy.get(fields.requisitionListViewBulkActionsDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
@@ -374,13 +377,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
       cy.contains("Requisition list deleted successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       cy.url().should("include", "customer/requisition-lists");
       cy.get(fields.requisitionListItemRow).should(
         "not.have",
-        "Now updating from RL view page"
+        "Now updating from RL view page",
       );
     });
   });
