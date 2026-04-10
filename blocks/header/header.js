@@ -4,7 +4,9 @@ import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
+import {
+  fetchIndex, fetchPlaceholders, getProductLink, rootLink,
+} from '../../scripts/commerce.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
@@ -158,25 +160,85 @@ function setupSubmenu(navSection) {
 }
 
 /**
+ * Builds a tree structure from flat nav entries based on path hierarchy.
+ * @param {Array} entries Flat array of nav entries
+ * @returns {Array} Tree-structured entries with children arrays
+ */
+function buildNavTree(entries) {
+  const sorted = [...entries].sort((a, b) => a.path.localeCompare(b.path));
+  const byPath = new Map(sorted.map((e) => [e.path, { ...e, children: [] }]));
+  const roots = [];
+
+  byPath.forEach((entry) => {
+    const parentPath = entry.path.substring(0, entry.path.lastIndexOf('/'));
+    const parent = byPath.get(parentPath);
+    if (parent) {
+      parent.children.push(entry);
+    } else {
+      roots.push(entry);
+    }
+  });
+
+  return roots;
+}
+
+/**
+ * Recursively builds a UL/LI nav list from tree-structured entries.
+ * Parent entries with children render as text labels with nested lists.
+ * Leaf entries render as links.
+ * @param {Array} entries Tree-structured nav entries
+ * @returns {HTMLUListElement} Navigation list element
+ */
+function buildNavList(entries) {
+  const ul = document.createElement('ul');
+
+  entries.forEach((entry) => {
+    const li = document.createElement('li');
+    const label = entry.navTitle || entry.title;
+
+    if (entry.children.length > 0) {
+      li.append(label);
+      li.appendChild(buildNavList(entry.children));
+    } else {
+      const a = document.createElement('a');
+      a.href = rootLink(entry.path);
+      a.textContent = label;
+      li.appendChild(a);
+    }
+
+    ul.appendChild(li);
+  });
+
+  return ul;
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav fragment and fetch nav index in parallel
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+  const [fragment, navIndex] = await Promise.all([
+    loadFragment(navPath),
+    fetchIndex('nav').catch(() => ({ data: [] })),
+  ]);
+  const navEntries = navIndex.data.filter((entry) => entry.category && entry.title);
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+  if (fragment) {
+    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+  }
 
+  // Ensure all three nav sections exist (brand, sections, tools)
   const classes = ['brand', 'sections', 'tools'];
   classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
+    if (!nav.children[i]) nav.appendChild(document.createElement('div'));
+    nav.children[i].classList.add(`nav-${c}`);
   });
 
   const navBrand = nav.querySelector('.nav-brand');
@@ -187,6 +249,21 @@ export default async function decorate(block) {
   }
 
   const navSections = nav.querySelector('.nav-sections');
+
+  // Replace nav sections with index-based navigation if available
+  if (navEntries.length > 0 && navSections) {
+    let wrapper = navSections.querySelector('.default-content-wrapper');
+    if (!wrapper) {
+      wrapper = document.createElement('div');
+      wrapper.classList.add('default-content-wrapper');
+      navSections.innerHTML = '';
+      navSections.appendChild(wrapper);
+    }
+    wrapper.innerHTML = '';
+    const tree = buildNavTree(navEntries);
+    wrapper.appendChild(buildNavList(tree));
+  }
+
   if (navSections) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')

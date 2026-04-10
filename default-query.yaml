@@ -52,3 +52,23 @@ indices:
         select: head > meta[name="enrichment-positions"]
         values: |
           match(attribute(el, 'content'), '([^,]+)')
+  nav:
+    target: /nav.json
+    exclude:
+      - 'drafts/**'
+      - 'enrichment/**'
+      - 'fragments/**'
+      - 'products/**'
+    properties:
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      navTitle:
+        select: head > meta[name="nav-title"]
+        value: |
+          attribute(el, 'content')
+      category:
+        select: div.product-list-page
+        value: |
+          attribute(el, 'class')
