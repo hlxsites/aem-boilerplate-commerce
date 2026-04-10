@@ -271,41 +271,32 @@ export default async function decorate(block) {
           RequisitionListCell: async (ctx) => {
             const { variant } = ctx;
 
-            // Create containers for this variant's requisition list
             const variantAlertContainer = document.createElement('div');
             variantAlertContainer.classList.add('variant-requisition-alert');
 
             const variantSelectorContainer = document.createElement('div');
-            variantSelectorContainer.classList.add(
-              'variant-requisition-selector',
-            );
+            variantSelectorContainer.classList.add('variant-requisition-selector');
 
-            // Append containers to the cell
             ctx.appendChild(variantAlertContainer);
             ctx.appendChild(variantSelectorContainer);
 
-            // Cache matchedVariant lookup (variant data doesn't change)
             const matchedVariant = gridOrderingVariants.find(
               (v) => v?.product?.sku?.toLowerCase() === variant.product.sku.toLowerCase(),
             );
 
-            // Helper to build product data with current quantity
             const buildProductData = (quantity) => ({
-              ...variant.product, // Variant data (price, images, attributes)
+              ...variant.product,
               sku: product.sku, // Parent SKU for configurable product
               quantity,
-              optionUIDs: matchedVariant?.selections || [], // Selected option UIDs
-              options: product.options, // Parent product options for validation
+              optionUIDs: matchedVariant?.selections || [],
+              options: product.options,
             });
 
-            // Create render function ONCE - preserves inlineAlert state across updates
-            // Product is passed as parameter, not captured in closure
             const renderFunction = createRequisitionListRenderer({
               $alert: variantAlertContainer,
               labels,
             });
 
-            // Initial render
             let currentProductData = buildProductData(variant.product.quantity || 1);
             await renderFunction(
               variantSelectorContainer,
@@ -315,11 +306,8 @@ export default async function decorate(block) {
 
             // Handle quantity changes
             ctx.onChange(async (nextState) => {
-              // Update product data with new quantity
               currentProductData = buildProductData(nextState.quantity);
 
-              // Reuse same render function - product passed as parameter
-              // This preserves inlineAlert state and avoids recreating closures
               await renderFunction(
                 variantSelectorContainer,
                 currentProductData,
@@ -354,11 +342,8 @@ export default async function decorate(block) {
           Actions: async (ctx) => {
             const { isDisabled } = ctx;
 
-            // Create wrapper for the button
             const buttonContainer = document.createElement('div');
-            buttonContainer.classList.add(
-              'product-details__variants-grid-actions',
-            );
+            buttonContainer.classList.add('product-details__variants-grid-actions');
 
             // Create a new Button instance for Grid Ordering
             gridOrderingAddToCartButton = await UI.render(Button, {
@@ -378,15 +363,12 @@ export default async function decorate(block) {
                   await addProductsToCart(gridOrderingSelectedVariants);
 
                   // Reset Grid Ordering state after adding variants to cart
-                  events.emit(
-                    'quick-order/grid-ordering-reset-selected-variants',
-                  );
+                  events.emit('quick-order/grid-ordering-reset-selected-variants');
                   gridOrderingSelectedVariants = [];
 
-                  // reset any previous alerts if successful
+                  // Reset any previous alerts if successful
                   inlineAlert?.remove();
                 } catch (error) {
-                  // add alert message
                   inlineAlert = await UI.render(InLineAlert, {
                     heading: 'Error',
                     description: error.message,
@@ -398,7 +380,6 @@ export default async function decorate(block) {
                     },
                   })($alert);
 
-                  // Scroll the alertWrapper into view
                   $alert.scrollIntoView({
                     behavior: 'smooth',
                     block: 'center',
@@ -523,11 +504,11 @@ export default async function decorate(block) {
   events.on('quick-order/grid-ordering-selected-variants', (selectedVariants) => {
     if (!isGridOrderingView) return;
 
-    // Critical: Replace child SKU with parent SKU for configurable products
+    // Replace child SKU with parent SKU for configurable products
     gridOrderingSelectedVariants = selectedVariants.map((variant) => ({
       optionsUIDs: variant.optionsUIDs,
       quantity: variant.quantity,
-      sku: product.sku, // Use parent SKU for cart operations
+      sku: product.sku,
     }));
 
     // Update grid ordering button with total quantity
