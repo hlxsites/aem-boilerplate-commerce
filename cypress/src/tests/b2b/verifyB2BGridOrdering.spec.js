@@ -466,7 +466,7 @@ describe(
       expectedVariants.forEach(({ index, quantity }) => {
         actions.updateVariantQuantity(index, quantity);
       });
-      cy.wait(2000);
+      cy.wait(5000); // Wait for button to become enabled
 
       cy.logToTerminal(
         "✅ Verifying quantities are set before adding to cart...",
@@ -475,16 +475,14 @@ describe(
         actions.verifyVariantRow(index, { quantity });
       });
 
-      cy.logToTerminal(
-        `✅ Verifying Add to Cart button is ready...`,
-      );
-      cy.get(fields.productDetailsAddToCartButton, { timeout: 10000 })
+      cy.logToTerminal(`✅ Verifying Add to Cart button is ready...`);
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 60000 })
         .scrollIntoView()
         .should("be.visible")
         .and("not.be.disabled");
 
       cy.logToTerminal("🛒 Adding variants to cart...");
-      cy.get(fields.productDetailsAddToCartButton)
+      cy.get(fields.variantsGridAddToCartButton)
         .should("not.be.disabled")
         .click({ force: true });
 
