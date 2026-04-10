@@ -15,6 +15,20 @@ await initializeDropin(async () => {
     },
   };
 
+  const models = {
+    RecommendationUnitModel: {
+      transformer: (response) => {
+        const results = response?.results ?? [];
+        return results.map((unit) => ({
+          items: (unit.productsView ?? []).map((product) => ({
+            // Removable when @dropins/storefront-recommendations exposes inStock natively
+            inStock: product.inStock ?? false,
+          })),
+        }));
+      },
+    },
+  };
+
   // Initialize recommendations
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, { langDefinitions, models });
 })();

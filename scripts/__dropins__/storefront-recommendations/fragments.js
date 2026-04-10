@@ -1,18 +1,34 @@
-/*! Copyright 2025 Adobe
-All Rights Reserved. */
-const e=`
-  fragment PRODUCTS_VIEW_FRAGMENT on ProductView {
-    __typename
-    name
-    sku
-    queryType
-    visibility
-    images {
-      url
+const e = (`fragment PRODUCTS_VIEW_FRAGMENT on ProductView {
+  __typename
+  name
+  sku
+  queryType
+  visibility
+  images {
+    url
+  }
+  urlKey
+  ... on SimpleProductView {
+    price {
+      final {
+        amount {
+          currency
+          value
+        }
+      }
     }
-    urlKey
-    ... on SimpleProductView {
-      price {
+  }
+  ... on ComplexProductView {
+    priceRange {
+      maximum {
+        final {
+          amount {
+            currency
+            value
+          }
+        }
+      }
+      minimum {
         final {
           amount {
             currency
@@ -21,28 +37,9 @@ const e=`
         }
       }
     }
-    ... on ComplexProductView {
-      priceRange {
-        maximum {
-          final {
-            amount {
-              currency
-              value
-            }
-          }
-        }
-        minimum {
-          final {
-            amount {
-              currency
-              value
-            }
-          }
-        }
-      }
-    }
   }
-`,n=`
+  inStock
+}`), n = `
   fragment UNIT_FRAGMENT on RecommendationUnit {
     displayOrder
     pageType
@@ -57,5 +54,8 @@ const e=`
   }
 
   ${e}
-`;export{e as PRODUCTS_VIEW_FRAGMENT,n as UNIT_FRAGMENT};
-//# sourceMappingURL=fragments.js.map
+`;
+export {
+e as PRODUCTS_VIEW_FRAGMENT,
+n as UNIT_FRAGMENT
+};

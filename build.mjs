@@ -12,6 +12,17 @@ overrideGQLOperations([
     skipFragments: ['DOWNLOADABLE_ORDER_ITEMS_FRAGMENT'],
     operations: [],
   },
+  // This can be removed if/when @dropins/storefront-recommendations includes inStock natively
+  {
+    npm: '@dropins/storefront-recommendations',
+    operations: [
+      `
+      fragment PRODUCTS_VIEW_FRAGMENT on ProductView {
+        inStock
+      }
+      `,
+    ],
+  },
   // {
   //   npm: '@dropins/storefront-checkout',
   //   operations: [],
