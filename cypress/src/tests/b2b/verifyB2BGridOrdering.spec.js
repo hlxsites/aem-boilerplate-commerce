@@ -445,15 +445,27 @@ describe(
       cy.get(fields.miniCartButton, { timeout: 10000 }).click({ force: true });
       cy.wait(1000);
       
-      // Remove all items from cart
-      cy.get('[data-testid="cart-item-remove-button"]', { timeout: 10000 }).each(
-        ($removeBtn) => {
-          cy.wrap($removeBtn).click({ force: true });
-          cy.wait(500);
-        },
-      );
+      // Check if cart has items to remove
+      cy.get(fields.miniCartContainer, { timeout: 5000 }).then(($container) => {
+        const removeButtons = $container.find(
+          '[data-testid="cart-item-remove-button"]',
+        );
+        
+        if (removeButtons.length > 0) {
+          cy.logToTerminal(`Found ${removeButtons.length} items to remove`);
+          
+          // Remove all items from cart
+          cy.get('[data-testid="cart-item-remove-button"]').each(($removeBtn) => {
+            cy.wrap($removeBtn).click({ force: true });
+            cy.wait(500);
+          });
+          
+          cy.logToTerminal('✅ Cart cleared');
+        } else {
+          cy.logToTerminal('✅ Cart is already empty');
+        }
+      });
       
-      cy.logToTerminal('✅ Cart cleared');
       cy.wait(1000);
 
       // Set up GraphQL intercept for Add to Cart mutation
