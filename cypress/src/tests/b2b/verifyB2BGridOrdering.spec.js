@@ -433,7 +433,7 @@ describe(
       );
     });
 
-    it('Should add variants to cart and verify in mini cart', () => {
+    it("Should add variants to cart and verify in mini cart", () => {
       cy.logToTerminal(
         "========= 🚀 TEST 9: Add to Cart and Mini Cart Verification =========",
       );
@@ -448,6 +448,13 @@ describe(
         const query = req.body.query;
         if (query && typeof query === "string" && query.includes(apiMethod)) {
           req.alias = "addProductToCart";
+          
+          // DEBUG: Log request body to see what's being sent
+          cy.log("📤 API Request body:", JSON.stringify(req.body, null, 2).substring(0, 500));
+          
+          if (req.body.variables) {
+            cy.log("📤 Request variables:", JSON.stringify(req.body.variables, null, 2));
+          }
         }
       });
 
@@ -491,6 +498,29 @@ describe(
         cy.logToTerminal("✅ Add to Cart API call completed successfully");
         expect(interception.response.statusCode).to.equal(200);
 
+        // DEBUG: Log REQUEST to see what was sent
+        const requestBody = interception.request.body;
+        if (requestBody.variables) {
+          cy.logToTerminal(
+            `📤 API Request variables: ${JSON.stringify(requestBody.variables, null, 2).substring(0, 800)}`,
+          );
+          
+          if (requestBody.variables.cartItems) {
+            cy.logToTerminal(
+              `📤 Items being added: ${requestBody.variables.cartItems.length} items`,
+            );
+            requestBody.variables.cartItems.forEach((item, idx) => {
+              cy.logToTerminal(
+                `   📤 Item ${idx + 1}: SKU ${item.sku} x ${item.quantity}`,
+              );
+            });
+          } else {
+            cy.logToTerminal("⚠️ WARNING: No cartItems in request variables!");
+          }
+        } else {
+          cy.logToTerminal("⚠️ WARNING: No variables in request body!");
+        }
+
         // DEBUG: Log API response to see what was returned
         const responseBody = interception.response.body;
         if (responseBody.data && responseBody.data.addProductsToCart) {
@@ -523,9 +553,7 @@ describe(
       cy.wait(3000);
 
       cy.logToTerminal("🛒 Opening mini cart to verify added items...");
-      cy.get(fields.miniCartButton)
-        .should("be.visible")
-        .click({ force: true });
+      cy.get(fields.miniCartButton).should("be.visible").click({ force: true });
       cy.logToTerminal("✅ Mini cart button clicked");
 
       cy.wait(2000); // Wait for mini cart animation
