@@ -680,6 +680,6 @@ describe(
       cy.logToTerminal(
         "✅ TEST 9 PASSED: Variants added to cart and verified in mini cart",
       );
-    };);
+    });
   },
 );
