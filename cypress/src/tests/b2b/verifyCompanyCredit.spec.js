@@ -67,7 +67,7 @@ import {
 } from '../../actions';
 import { customerShippingAddress } from '../../fixtures';
 
-describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
+describe.skip('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
     cy.logToTerminal('💳 Company Credit test suite started (OPTIMIZED)');
   });

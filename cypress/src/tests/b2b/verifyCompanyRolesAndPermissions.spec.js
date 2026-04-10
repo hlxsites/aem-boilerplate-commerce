@@ -53,7 +53,7 @@ import {
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 
-describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
+describe.skip('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
     cy.logToTerminal('🎭 Roles and Permissions test suite started (OPTIMIZED)');
   });

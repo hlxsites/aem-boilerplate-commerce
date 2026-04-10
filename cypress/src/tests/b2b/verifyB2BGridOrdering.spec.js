@@ -501,24 +501,45 @@ describe(
         `🛒 Verifying cart badge shows ${totalQuantity} items...`,
       );
 
-      // Wait for cart to update and verify badge count
-      // Cypress will retry this entire block until success or timeout
-      cy.get(fields.miniCartButton, { timeout: 60000 })
-        .should(($button) => {
-          // All assertions in one block for proper retry mechanism
-          expect($button, "cart button should be visible").to.be.visible;
+      // Debug: Log current state for CI/CD troubleshooting
+      cy.get(fields.miniCartButton).then(($button) => {
+        const buttonHtml = $button.html();
+        const dataCount = $button.attr('data-count');
+        const isVisible = $button.is(':visible');
+        cy.logToTerminal(
+          `📊 DEBUG: Button visible=${isVisible}, data-count=${dataCount}, HTML=${buttonHtml.substring(0, 50)}...`,
+        );
+      });
 
-          const count = $button.attr("data-count");
-          expect(count, "data-count attribute should exist").to.exist;
+      // Retry assertion with detailed error messages
+      cy.get(fields.miniCartButton, { timeout: 60000 }).should(($button) => {
+        // Step 1: Verify button exists and is visible
+        expect($button).to.have.length(1);
+        expect($button).to.be.visible;
 
+        // Step 2: Check for data-count attribute
+        const count = $button.attr('data-count');
+        if (!count) {
+          // Log full button content for debugging
+          cy.logToTerminal(
+            `❌ data-count missing! Button HTML: ${$button.html()}`,
+          );
+        }
+        expect(count, 'data-count attribute should exist').to.not.be.undefined;
+
+        // Step 3: Verify count value
+        const itemCount = parseInt(count, 10);
+        expect(
+          itemCount,
+          `cart should have at least ${totalQuantity} items (currently ${itemCount})`,
+        ).to.be.at.least(totalQuantity);
+      });
+
+      // Extract final count for logging
+      cy.get(fields.miniCartButton)
+        .invoke('attr', 'data-count')
+        .then((count) => {
           const itemCount = parseInt(count, 10);
-          expect(
-            itemCount,
-            `cart should have at least ${totalQuantity} items (currently ${itemCount})`,
-          ).to.be.at.least(totalQuantity);
-        })
-        .then(($button) => {
-          const itemCount = parseInt($button.attr("data-count"), 10);
           cy.logToTerminal(
             `✅ Cart badge shows ${itemCount} items (expected at least ${totalQuantity})`,
           );
