@@ -448,13 +448,6 @@ describe(
         const query = req.body.query;
         if (query && typeof query === "string" && query.includes(apiMethod)) {
           req.alias = "addProductToCart";
-          
-          // DEBUG: Log request body to see what's being sent
-          cy.log("📤 API Request body:", JSON.stringify(req.body, null, 2).substring(0, 500));
-          
-          if (req.body.variables) {
-            cy.log("📤 Request variables:", JSON.stringify(req.body.variables, null, 2));
-          }
         }
       });
 
@@ -504,7 +497,7 @@ describe(
           cy.logToTerminal(
             `📤 API Request variables: ${JSON.stringify(requestBody.variables, null, 2).substring(0, 800)}`,
           );
-          
+
           if (requestBody.variables.cartItems) {
             cy.logToTerminal(
               `📤 Items being added: ${requestBody.variables.cartItems.length} items`,
