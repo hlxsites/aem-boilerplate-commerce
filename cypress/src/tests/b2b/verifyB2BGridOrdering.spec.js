@@ -378,11 +378,35 @@ describe(
       );
     });
 
-    it("Should calculate and display subtotals correctly", () => {
-      cy.logToTerminal("========= 🚀 TEST 8: Subtotal Calculations =========");
+    it("Should calculate and display subtotals correctly and add to cart", () => {
+      cy.logToTerminal(
+        "========= 🚀 TEST 8: Subtotal Calculations & Add to Cart =========",
+      );
 
       actions.initializeVariantsGrid();
       cy.logToTerminal("✅ Variants grid loaded");
+
+      // Set up GraphQL intercept for Add to Cart mutation
+      const apiMethod = "ADD_PRODUCTS_TO_CART_MUTATION";
+      const graphqlEndPoint = Cypress.env("graphqlEndPoint");
+
+      cy.intercept("POST", graphqlEndPoint, (req) => {
+        const query = req.body.query;
+        if (query && typeof query === "string" && query.includes(apiMethod)) {
+          req.alias = "addProductToCart";
+        }
+      });
+
+      // Define test data: specific variants with their expected quantities
+      const expectedVariants = [
+        { index: 0, sku: VARIANT_SKUS[0], quantity: 2 },
+        { index: 1, sku: VARIANT_SKUS[1], quantity: 3 },
+        { index: 2, sku: VARIANT_SKUS[2], quantity: 4 },
+      ];
+      const totalQuantity = expectedVariants.reduce(
+        (sum, v) => sum + v.quantity,
+        0,
+      );
 
       cy.logToTerminal("📝 Setting quantity to 2 for first variant...");
       actions.updateVariantQuantity(0, 2);
@@ -428,12 +452,153 @@ describe(
         .should("be.visible")
         .and("contain.text", "Add to Cart (9)");
 
+      cy.logToTerminal("✅ Subtotals calculated correctly for all variants");
+
+      // ========== Continue with Add to Cart and Mini Cart verification ==========
+
+      cy.logToTerminal("🛒 Adding variants to cart...");
+      cy.get(fields.variantsGridAddToCartButton)
+        .should("not.be.disabled")
+        .click({ force: true });
+
+      cy.logToTerminal("⏳ Waiting for Add to Cart API call to complete...");
+      cy.wait("@addProductToCart", { timeout: 15000 }).then((interception) => {
+        cy.logToTerminal("✅ Add to Cart API call completed successfully");
+        expect(interception.response.statusCode).to.equal(200);
+
+        // DEBUG: Log REQUEST to see what was sent
+        const requestBody = interception.request.body;
+        if (requestBody.variables) {
+          cy.logToTerminal(
+            `📤 API Request variables: ${JSON.stringify(requestBody.variables, null, 2).substring(0, 800)}`,
+          );
+
+          if (requestBody.variables.cartItems) {
+            cy.logToTerminal(
+              `📤 Items being added: ${requestBody.variables.cartItems.length} items`,
+            );
+            requestBody.variables.cartItems.forEach((item, idx) => {
+              cy.logToTerminal(
+                `   📤 Item ${idx + 1}: SKU ${item.sku} x ${item.quantity}`,
+              );
+            });
+          } else {
+            cy.logToTerminal("⚠️ WARNING: No cartItems in request variables!");
+          }
+        } else {
+          cy.logToTerminal("⚠️ WARNING: No variables in request body!");
+        }
+
+        // DEBUG: Log API response to see what was returned
+        const responseBody = interception.response.body;
+        if (responseBody.data && responseBody.data.addProductsToCart) {
+          const cart = responseBody.data.addProductsToCart.cart;
+          cy.logToTerminal(
+            `📦 API Response - Cart ID: ${cart?.id}, Total quantity: ${cart?.total_quantity}, Items count: ${cart?.items?.length || 0}`,
+          );
+
+          if (cart?.items && cart.items.length > 0) {
+            cart.items.forEach((item, idx) => {
+              cy.logToTerminal(
+                `   📦 Item ${idx + 1}: ${item.product?.sku} x ${item.quantity}`,
+              );
+            });
+          } else {
+            cy.logToTerminal(
+              "⚠️ WARNING: API returned 0 items in cart response!",
+            );
+          }
+        }
+
+        if (responseBody.errors && responseBody.errors.length > 0) {
+          cy.logToTerminal(
+            `❌ API returned errors: ${JSON.stringify(responseBody.errors)}`,
+          );
+        }
+      });
+
+      // Wait for cart to update after API call
+      cy.wait(3000);
+
+      cy.logToTerminal("🛒 Opening mini cart to verify added items...");
+      cy.get(fields.miniCartButton).should("be.visible").click({ force: true });
+      cy.logToTerminal("✅ Mini cart button clicked");
+
+      cy.wait(2000); // Wait for mini cart animation
+
+      cy.logToTerminal("🔍 Checking mini cart container...");
+      cy.get(fields.miniCartContainer, { timeout: 10000 }).should("be.visible");
+      cy.logToTerminal("✅ Mini cart container is visible");
+
+      // Debug: Log what's in the cart
+      cy.get(fields.miniCartContainer).then(($container) => {
+        const hasEmptyCart =
+          $container.find('[data-testid="empty-cart"]').length > 0;
+        const hasHeading =
+          $container.find('[data-testid="default-cart-heading"]').length > 0;
+        const itemsCount = $container.find(fields.miniCartItems).length;
+
+        cy.logToTerminal(
+          `📊 Cart state - Empty: ${hasEmptyCart}, Has heading: ${hasHeading}, Items count: ${itemsCount}`,
+        );
+
+        if (hasEmptyCart) {
+          cy.logToTerminal("❌ ERROR: Cart is EMPTY after adding items!");
+        }
+      });
+
+      cy.logToTerminal("🔍 Verifying cart heading...");
+      cy.get(fields.miniCartHeading)
+        .should("be.visible")
+        .and("contain.text", "Shopping Cart");
+      cy.logToTerminal("✅ Cart heading verified");
+
       cy.logToTerminal(
-        "✅ TEST 8 PASSED: Subtotals calculated correctly for all variants",
+        "🔍 Verifying each specific variant is in mini cart with correct quantity...",
+      );
+      cy.get(fields.miniCartItems).should("have.length.greaterThan", 0);
+
+      // Main verification: each specific SKU is in cart with its expected quantity
+      expectedVariants.forEach(({ sku, quantity }) => {
+        cy.get(fields.miniCartItems).then(($items) => {
+          let foundItem = null;
+
+          $items.each((index, item) => {
+            const $item = Cypress.$(item);
+            const itemSku = $item.find(fields.miniCartItemSku).text().trim();
+            if (itemSku.includes(sku)) {
+              foundItem = $item;
+              return false; // break the loop
+            }
+          });
+
+          expect(foundItem, `${sku} should be found in mini cart`).to.not.be
+            .null;
+
+          const actualQty = parseInt(
+            foundItem.find(fields.miniCartQuantity).text().trim(),
+            10,
+          );
+          expect(actualQty, `${sku} should have quantity ${quantity}`).to.equal(
+            quantity,
+          );
+          cy.logToTerminal(`   ✓ ${sku}: ${quantity} item(s) in cart`);
+        });
+      });
+
+      cy.logToTerminal(
+        "✅ Bonus verification: Grid quantities auto-reset after add to cart...",
+      );
+      expectedVariants.forEach(({ index }) => {
+        actions.verifyVariantRow(index, { quantity: 0 });
+      });
+
+      cy.logToTerminal(
+        "✅ TEST 8 PASSED: Subtotals calculated correctly and variants added to cart",
       );
     });
 
-    it("Should add variants to cart and verify in mini cart", () => {
+    it.skip("Should add variants to cart and verify in mini cart", () => {
       cy.logToTerminal(
         "========= 🚀 TEST 9: Add to Cart and Mini Cart Verification =========",
       );
