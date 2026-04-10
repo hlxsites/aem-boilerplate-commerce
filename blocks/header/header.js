@@ -2,9 +2,12 @@
 import { events } from '@dropins/tools/event-bus.js';
 
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
+import {
+  CS_FETCH_GRAPHQL, fetchIndex, fetchPlaceholders, getProductLink, rootLink,
+} from '../../scripts/commerce.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
@@ -157,26 +160,123 @@ function setupSubmenu(navSection) {
   }
 }
 
+const ACO_NAVIGATION_QUERY = `query Navigation($family: String!) {
+  navigation(family: $family) {
+    slug
+    name
+    children {
+      slug
+      name
+      children {
+        slug
+        name
+        children {
+          slug
+          name
+        }
+      }
+    }
+  }
+}`;
+
+/**
+ * Fetches the navigation tree from Commerce GraphQL.
+ * ACO sites use the navigation query; non-ACO sites are not yet supported.
+ * @returns {Promise<Array>} Navigation tree nodes
+ */
+async function fetchNavigationTree() {
+  const isACO = getConfigValue('adobe-commerce-optimizer');
+  if (!isACO) {
+    // TODO: implement non-ACO navigation query
+    return [];
+  }
+
+  const family = getConfigValue('navigation-family') || 'top_menu';
+
+  const { data } = await CS_FETCH_GRAPHQL.fetchGraphQl(ACO_NAVIGATION_QUERY, {
+    variables: { family },
+  });
+
+  return data?.navigation || [];
+}
+
+/**
+ * Maps a navigation tree into entries with full paths built from slugs.
+ * @param {Array} nodes Navigation tree nodes
+ * @param {string} parentPath Parent path prefix
+ * @returns {Array} Tree with path property added to each node
+ */
+function mapNavTree(nodes, parentPath = '') {
+  return (nodes || []).map((node) => ({
+    name: node.name,
+    path: `${parentPath}/${node.slug}`,
+    children: node.children?.length
+      ? mapNavTree(node.children, `${parentPath}/${node.slug}`)
+      : [],
+  }));
+}
+
+/**
+ * Recursively builds a UL/LI nav list from a navigation tree.
+ * All entries render as links. Parents also get nested child lists.
+ * Unpublished pages (not in publishedPaths) are styled red.
+ * @param {Array} entries Navigation tree entries with path and name
+ * @param {Set<string>} publishedPaths Set of published page paths
+ * @returns {HTMLUListElement} Navigation list element
+ */
+function buildNavList(entries, publishedPaths) {
+  const ul = document.createElement('ul');
+
+  entries.forEach((entry) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = rootLink(entry.path);
+    a.textContent = entry.name;
+    if (!publishedPaths.has(entry.path)) {
+      a.style.color = 'red';
+    }
+    li.appendChild(a);
+
+    if (entry.children.length > 0) {
+      li.appendChild(buildNavList(entry.children, publishedPaths));
+    }
+
+    ul.appendChild(li);
+  });
+
+  return ul;
+}
+
 /**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav fragment, navigation tree, and sitemap in parallel
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+  const [fragment, navNodes, sitemap] = await Promise.all([
+    loadFragment(navPath),
+    fetchNavigationTree().catch(() => []),
+    fetchIndex('sitemap').catch(() => ({ data: [] })),
+  ]);
+
+  const publishedPaths = new Set(sitemap.data.map((entry) => entry.path));
+  const navTree = mapNavTree(navNodes);
 
   // decorate nav DOM
   block.textContent = '';
   const nav = document.createElement('nav');
   nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+  if (fragment) {
+    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+  }
 
+  // Ensure all three nav sections exist (brand, sections, tools)
   const classes = ['brand', 'sections', 'tools'];
   classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
+    if (!nav.children[i]) nav.appendChild(document.createElement('div'));
+    nav.children[i].classList.add(`nav-${c}`);
   });
 
   const navBrand = nav.querySelector('.nav-brand');
@@ -187,6 +287,20 @@ export default async function decorate(block) {
   }
 
   const navSections = nav.querySelector('.nav-sections');
+
+  // Replace nav sections with navigation tree if available
+  if (navTree.length > 0 && navSections) {
+    let wrapper = navSections.querySelector('.default-content-wrapper');
+    if (!wrapper) {
+      wrapper = document.createElement('div');
+      wrapper.classList.add('default-content-wrapper');
+      navSections.innerHTML = '';
+      navSections.appendChild(wrapper);
+    }
+    wrapper.innerHTML = '';
+    wrapper.appendChild(buildNavList(navTree, publishedPaths));
+  }
+
   if (navSections) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
