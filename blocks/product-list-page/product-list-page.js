@@ -113,8 +113,11 @@ export default async function decorate(block) {
     UI.render(Button, {
       children: labels.Global?.AddProductToCart,
       icon: Icon({ source: 'Cart' }),
-      onClick: () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }]),
+      onClick: product.inStock
+        ? () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }])
+        : undefined,
       variant: 'primary',
+      disabled: !product.inStock,
     })(button);
     return button;
   };
