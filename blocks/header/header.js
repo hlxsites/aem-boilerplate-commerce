@@ -196,14 +196,13 @@ function buildNavList(entries) {
     const li = document.createElement('li');
     const label = entry.navTitle || entry.title;
 
+    const a = document.createElement('a');
+    a.href = rootLink(entry.path);
+    a.textContent = label;
+    li.appendChild(a);
+
     if (entry.children.length > 0) {
-      li.append(label);
       li.appendChild(buildNavList(entry.children));
-    } else {
-      const a = document.createElement('a');
-      a.href = rootLink(entry.path);
-      a.textContent = label;
-      li.appendChild(a);
     }
 
     ul.appendChild(li);
