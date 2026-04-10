@@ -17,6 +17,15 @@ The Product Recommendations block provides personalized product recommendations 
 
 No URL parameters directly affect this block's behavior. -->
 
+### GraphQL Extensions
+
+The `@dropins/storefront-recommendations` drop-in does not include `inStock` in its default `PRODUCTS_VIEW_FRAGMENT` or item model. To support disabling add-to-cart for out-of-stock products, two workarounds are applied:
+
+1. **Fragment override** (`build.mjs`): `overrideGQLOperations` extends `PRODUCTS_VIEW_FRAGMENT` with `inStock` so the field is requested from the API.
+2. **Model transformer** (`scripts/initializers/recommendations.js`): A `RecommendationUnitModel` transformer maps `inStock` from the raw GraphQL response onto items, since the drop-in's built-in transform drops unknown fields.
+
+These can be removed once the upstream drop-in includes `inStock` natively.
+
 ### Local Storage
 
 - `{storeViewCode}:productViewHistory` - Stores user's product view history for recommendation context
@@ -47,7 +56,7 @@ No URL parameters directly affect this block's behavior. -->
 1. **Initialization**: Block sets up recommendation context and loads initial recommendations
 2. **Lazy Loading**: On mobile, recommendations load when section becomes visible
 3. **Context Tracking**: Monitors page, product, category, and cart changes to update recommendations
-4. **Product Actions**: Users can add products to cart or navigate to product details
+4. **Product Actions**: Users can add simple products to cart or navigate to product details for complex products. The add-to-cart button is disabled for out-of-stock simple products using the `inStock` property
 5. **Wishlist Integration**: Users can add/remove products from wishlist
 6. **Dynamic Reloading**: Recommendations reload when significant context changes occur
 
