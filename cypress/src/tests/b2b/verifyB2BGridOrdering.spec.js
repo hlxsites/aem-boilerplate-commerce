@@ -87,138 +87,138 @@ describe(
       cy.logToTerminal('🏁 B2B Quick Order Variants Grid test suite completed');
     });
 
-    it("Should render grid and display variant data correctly", () => {
+    it('Should render grid and display variant data correctly', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 1: Grid Rendering and Data Display =========",
+        '========= 🚀 TEST 1: Grid Rendering and Data Display =========',
       );
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.get(fields.variantsGridMainContainer).should("be.visible");
-      cy.get(fields.variantsGridContainer).should("exist");
+      cy.get(fields.variantsGridMainContainer).should('be.visible');
+      cy.get(fields.variantsGridContainer).should('exist');
 
-      cy.get(fields.variantsGridTable).should("exist").and("be.visible");
-      cy.get(fields.variantsGridTableRow).should("have.length.greaterThan", 0);
+      cy.get(fields.variantsGridTable).should('exist').and('be.visible');
+      cy.get(fields.variantsGridTableRow).should('have.length.greaterThan', 0);
 
-      cy.logToTerminal("✅ Verifying variant rows...");
+      cy.logToTerminal('✅ Verifying variant rows...');
 
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should("contain.text", EXPECTED_STOCK_STATUS)
-        .and("contain.text", VARIANT_SKUS[0]);
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should("contain.text", EXPECTED_STOCK_STATUS)
-        .and("contain.text", VARIANT_SKUS[1]);
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should("contain.text", EXPECTED_STOCK_STATUS)
-        .and("contain.text", VARIANT_SKUS[2]);
+        .should('contain.text', EXPECTED_STOCK_STATUS)
+        .and('contain.text', VARIANT_SKUS[2]);
 
-      cy.logToTerminal("✅ TEST 1 PASSED: Grid rendered correctly");
+      cy.logToTerminal('✅ TEST 1 PASSED: Grid rendered correctly');
     });
 
-    it("Should update quantity using incrementer and +/- buttons", () => {
+    it('Should update quantity using incrementer and +/- buttons', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 2: Quantity Update Functionality =========",
+        '========= 🚀 TEST 2: Quantity Update Functionality =========',
       );
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.logToTerminal("📝 Setting quantity to 5 for first variant...");
+      cy.logToTerminal('📝 Setting quantity to 5 for first variant...');
       actions.updateVariantQuantity(0, 5);
       cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 5 });
 
-      cy.logToTerminal("📝 Setting quantity to 3 for second variant...");
+      cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
       cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 3 });
 
-      cy.logToTerminal("📝 Setting quantity to 2 for third variant...");
+      cy.logToTerminal('📝 Setting quantity to 2 for third variant...');
       actions.updateVariantQuantity(2, 2);
       cy.wait(500);
       actions.verifyVariantRow(2, { quantity: 2 });
 
-      cy.logToTerminal("➕ Incrementing first variant quantity...");
+      cy.logToTerminal('➕ Incrementing first variant quantity...');
       actions.incrementVariantQuantity(0);
       cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 6 });
 
-      cy.logToTerminal("➖ Decrementing second variant quantity...");
+      cy.logToTerminal('➖ Decrementing second variant quantity...');
       actions.decrementVariantQuantity(1);
       cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 2 });
 
       cy.logToTerminal(
-        "✅ TEST 2 PASSED: Quantity updates work for all variants",
+        '✅ TEST 2 PASSED: Quantity updates work for all variants',
       );
     });
 
-    it("Should have proper ARIA labels for accessibility", () => {
+    it('Should have proper ARIA labels for accessibility', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 3: ARIA Labels and Accessibility =========",
+        '========= 🚀 TEST 3: ARIA Labels and Accessibility =========',
       );
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.logToTerminal("♿ Verifying ARIA labels...");
+      cy.logToTerminal('♿ Verifying ARIA labels...');
       cy.get(fields.variantsGridQuantityInput(0))
-        .should("have.attr", "aria-label")
-        .and("include", ARIA_LABEL_PREFIX)
-        .and("include", VARIANT_SKUS[0]);
+        .should('have.attr', 'aria-label')
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridQuantityInput(1))
-        .should("have.attr", "aria-label")
-        .and("include", ARIA_LABEL_PREFIX)
-        .and("include", VARIANT_SKUS[1]);
+        .should('have.attr', 'aria-label')
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridQuantityInput(2))
-        .should("have.attr", "aria-label")
-        .and("include", ARIA_LABEL_PREFIX)
-        .and("include", VARIANT_SKUS[2]);
+        .should('have.attr', 'aria-label')
+        .and('include', ARIA_LABEL_PREFIX)
+        .and('include', VARIANT_SKUS[2]);
 
-      cy.logToTerminal("✅ TEST 3 PASSED: ARIA labels are correct");
+      cy.logToTerminal('✅ TEST 3 PASSED: ARIA labels are correct');
     });
 
-    it("Should clear all quantities when Clear button is clicked", () => {
+    it('Should clear all quantities when Clear button is clicked', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 4: Clear All Functionality =========",
+        '========= 🚀 TEST 4: Clear All Functionality =========',
       );
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
-      cy.logToTerminal("📝 Setting quantities for all variants...");
+      cy.logToTerminal('✅ Variants grid loaded');
+      cy.logToTerminal('📝 Setting quantities for all variants...');
       actions.updateVariantQuantity(0, 5);
       actions.updateVariantQuantity(1, 3);
       actions.updateVariantQuantity(2, 7);
       cy.wait(1500);
 
-      cy.get(fields.variantsGridQuantityInput(0)).should("have.value", "5");
-      cy.get(fields.variantsGridQuantityInput(1)).should("have.value", "3");
-      cy.get(fields.variantsGridQuantityInput(2)).should("have.value", "7");
+      cy.get(fields.variantsGridQuantityInput(0)).should('have.value', '5');
+      cy.get(fields.variantsGridQuantityInput(1)).should('have.value', '3');
+      cy.get(fields.variantsGridQuantityInput(2)).should('have.value', '7');
 
       cy.logToTerminal(
-        "✅ Verifying Add to Cart button displays total quantity (5+3+7=15)...",
+        '✅ Verifying Add to Cart button displays total quantity (5+3+7=15)...',
       );
       cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
-        .should("be.visible")
-        .and("contain.text", "Add to Cart (15)");
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (15)');
 
-      cy.logToTerminal("🗑️ Clicking Clear button...");
+      cy.logToTerminal('🗑️ Clicking Clear button...');
       actions.clickClearAllButton();
 
-      cy.logToTerminal("✅ Verifying all quantities are cleared...");
+      cy.logToTerminal('✅ Verifying all quantities are cleared...');
       cy.get(fields.variantsGridQuantityInput(0), { timeout: 5000 }).should(
         ($input) => {
           const value = $input.val();
           const isCleared =
-            value === "0" || value === "" || value === 0 || !value;
+            value === '0' || value === '' || value === 0 || !value;
           expect(
             isCleared,
             `First variant (${VARIANT_SKUS[0]}) should be cleared but got: "${value}"`,
@@ -229,7 +229,7 @@ describe(
       cy.get(fields.variantsGridQuantityInput(1)).should(($input) => {
         const value = $input.val();
         const isCleared =
-          value === "0" || value === "" || value === 0 || !value;
+          value === '0' || value === '' || value === 0 || !value;
         expect(
           isCleared,
           `Second variant (${VARIANT_SKUS[1]}) should be cleared but got: "${value}"`,
@@ -239,56 +239,56 @@ describe(
       cy.get(fields.variantsGridQuantityInput(2)).should(($input) => {
         const value = $input.val();
         const isCleared =
-          value === "0" || value === "" || value === 0 || !value;
+          value === '0' || value === '' || value === 0 || !value;
         expect(
           isCleared,
           `Third variant (${VARIANT_SKUS[2]}) should be cleared but got: "${value}"`,
         ).to.be.true;
       });
 
-      cy.logToTerminal("✅ TEST 4 PASSED: Clear all works for all variants");
+      cy.logToTerminal('✅ TEST 4 PASSED: Clear all works for all variants');
     });
 
-    it("Should toggle action buttons state based on quantities", () => {
+    it('Should toggle action buttons state based on quantities', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 5: Action Buttons State Management =========",
+        '========= 🚀 TEST 5: Action Buttons State Management =========',
       );
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.logToTerminal("🔒 Verifying buttons are disabled initially...");
+      cy.logToTerminal('🔒 Verifying buttons are disabled initially...');
       cy.get(fields.variantsGridActionsButtons)
-        .contains("button", "Clear")
-        .should("be.disabled");
+        .contains('button', 'Clear')
+        .should('be.disabled');
       cy.get(fields.variantsGridActionsButtons)
-        .contains("button", "Save to CSV")
-        .should("be.disabled");
+        .contains('button', 'Save to CSV')
+        .should('be.disabled');
 
-      cy.logToTerminal("📝 Setting quantity...");
+      cy.logToTerminal('📝 Setting quantity...');
       actions.updateVariantQuantity(0, 2);
       cy.wait(1500);
 
-      cy.logToTerminal("🔓 Verifying buttons are enabled...");
+      cy.logToTerminal('🔓 Verifying buttons are enabled...');
       cy.get(fields.variantsGridActionsButtons)
-        .contains("button", "Clear")
-        .should("not.be.disabled");
+        .contains('button', 'Clear')
+        .should('not.be.disabled');
       cy.get(fields.variantsGridActionsButtons)
-        .contains("button", "Save to CSV")
-        .should("not.be.disabled");
+        .contains('button', 'Save to CSV')
+        .should('not.be.disabled');
 
       cy.logToTerminal(
-        "✅ TEST 5 PASSED: Action buttons state management works",
+        '✅ TEST 5 PASSED: Action buttons state management works',
       );
     });
 
-    it("Complete workflow: Set quantities → Clear → Set again", () => {
-      cy.logToTerminal("========= 🚀 TEST 6: Complete Workflow =========");
+    it('Complete workflow: Set quantities → Clear → Set again', () => {
+      cy.logToTerminal('========= 🚀 TEST 6: Complete Workflow =========');
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      cy.logToTerminal("📝 Setting initial quantities for all variants...");
+      cy.logToTerminal('📝 Setting initial quantities for all variants...');
       actions.updateVariantQuantity(0, 5);
       actions.updateVariantQuantity(1, 3);
       actions.updateVariantQuantity(2, 4);
@@ -299,21 +299,21 @@ describe(
       actions.verifyVariantRow(2, { quantity: 4 });
 
       cy.logToTerminal(
-        "✅ Verifying Add to Cart button displays total quantity (5+3+4=12)...",
+        '✅ Verifying Add to Cart button displays total quantity (5+3+4=12)...',
       );
       cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
-        .should("be.visible")
-        .and("contain.text", "Add to Cart (12)");
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (12)');
 
-      cy.logToTerminal("🗑️ Clearing all quantities...");
+      cy.logToTerminal('🗑️ Clearing all quantities...');
       actions.clickClearAllButton();
 
       actions.verifyVariantRow(0, { quantity: 0 });
       actions.verifyVariantRow(1, { quantity: 0 });
       actions.verifyVariantRow(2, { quantity: 0 });
 
-      cy.logToTerminal("📝 Setting new quantities for all variants...");
+      cy.logToTerminal('📝 Setting new quantities for all variants...');
       actions.updateVariantQuantity(0, 10);
       actions.updateVariantQuantity(1, 8);
       actions.updateVariantQuantity(2, 6);
@@ -324,295 +324,130 @@ describe(
       actions.verifyVariantRow(2, { quantity: 6 });
 
       cy.logToTerminal(
-        "✅ Verifying Add to Cart button displays updated total quantity (10+8+6=24)...",
+        '✅ Verifying Add to Cart button displays updated total quantity (10+8+6=24)...',
       );
       cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
-        .should("be.visible")
-        .and("contain.text", "Add to Cart (24)");
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (24)');
 
       cy.logToTerminal(
-        "✅ TEST 6 PASSED: Complete workflow works for all variants",
+        '✅ TEST 6 PASSED: Complete workflow works for all variants',
       );
     });
 
-    it("Should display variant images, attributes, and prices", () => {
+    it('Should display variant images, attributes, and prices', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 7: Images, Attributes, and Prices Display =========",
+        '========= 🚀 TEST 7: Images, Attributes, and Prices Display =========',
       );
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
-      cy.logToTerminal("🖼️ Verifying all variant images are displayed...");
-      cy.get(fields.variantsGridImage).should("have.length.greaterThan", 0);
+      cy.logToTerminal('✅ Variants grid loaded');
+      cy.logToTerminal('🖼️ Verifying all variant images are displayed...');
+      cy.get(fields.variantsGridImage).should('have.length.greaterThan', 0);
       cy.get(fields.variantsGridImage)
         .eq(0)
-        .should("have.attr", "src")
-        .and("not.be.empty");
+        .should('have.attr', 'src')
+        .and('not.be.empty');
 
-      cy.logToTerminal("🏷️ Verifying variant attributes and SKUs...");
+      cy.logToTerminal('🏷️ Verifying variant attributes and SKUs...');
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should("contain.text", VARIANT_SKUS[0]);
+        .should('contain.text', VARIANT_SKUS[0]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should("contain.text", VARIANT_SKUS[1]);
+        .should('contain.text', VARIANT_SKUS[1]);
 
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should("contain.text", VARIANT_SKUS[2]);
+        .should('contain.text', VARIANT_SKUS[2]);
 
-      cy.logToTerminal("💰 Verifying all variant prices are displayed...");
+      cy.logToTerminal('💰 Verifying all variant prices are displayed...');
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL);
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL);
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL);
 
       cy.logToTerminal(
-        "✅ TEST 7 PASSED: All variants display images, attributes, and prices correctly",
+        '✅ TEST 7 PASSED: All variants display images, attributes, and prices correctly',
       );
     });
 
-    it("Should calculate and display subtotals correctly and add to cart", () => {
-      cy.logToTerminal(
-        "========= 🚀 TEST 8: Subtotal Calculations & Add to Cart =========",
-      );
+    it('Should calculate and display subtotals correctly', () => {
+      cy.logToTerminal('========= 🚀 TEST 8: Subtotal Calculations =========');
 
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
-      // Set up GraphQL intercept for Add to Cart mutation
-      const apiMethod = "ADD_PRODUCTS_TO_CART_MUTATION";
-      const graphqlEndPoint = Cypress.env("graphqlEndPoint");
-
-      cy.intercept("POST", graphqlEndPoint, (req) => {
-        const query = req.body.query;
-        if (query && typeof query === "string" && query.includes(apiMethod)) {
-          req.alias = "addProductToCart";
-        }
-      });
-
-      // Define test data: specific variants with their expected quantities
-      const expectedVariants = [
-        { index: 0, sku: VARIANT_SKUS[0], quantity: 2 },
-        { index: 1, sku: VARIANT_SKUS[1], quantity: 3 },
-        { index: 2, sku: VARIANT_SKUS[2], quantity: 4 },
-      ];
-      const totalQuantity = expectedVariants.reduce(
-        (sum, v) => sum + v.quantity,
-        0,
-      );
-
-      cy.logToTerminal("📝 Setting quantity to 2 for first variant...");
+      cy.logToTerminal('📝 Setting quantity to 2 for first variant...');
       actions.updateVariantQuantity(0, 2);
       cy.wait(500);
 
       cy.logToTerminal(
-        "💵 Verifying subtotal is calculated for first variant...",
+        '💵 Verifying subtotal is calculated for first variant...',
       );
       cy.get(fields.variantsGridTableRow)
         .eq(0)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL)
-        .and("not.contain.text", EXPECTED_ZERO_SUBTOTAL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL)
+        .and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
-      cy.logToTerminal("📝 Setting quantity to 3 for second variant...");
+      cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
       cy.wait(500);
 
       cy.logToTerminal(
-        "💵 Verifying subtotal is calculated for second variant...",
+        '💵 Verifying subtotal is calculated for second variant...',
       );
       cy.get(fields.variantsGridTableRow)
         .eq(1)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL)
-        .and("not.contain.text", EXPECTED_ZERO_SUBTOTAL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL)
+        .and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
-      cy.logToTerminal("📝 Setting quantity to 4 for third variant...");
+      cy.logToTerminal('📝 Setting quantity to 4 for third variant...');
       actions.updateVariantQuantity(2, 4);
       cy.wait(500);
 
       cy.logToTerminal(
-        "💵 Verifying subtotal is calculated for third variant...",
+        '💵 Verifying subtotal is calculated for third variant...',
       );
       cy.get(fields.variantsGridTableRow)
         .eq(2)
-        .should("contain.text", EXPECTED_CURRENCY_SYMBOL)
-        .and("not.contain.text", EXPECTED_ZERO_SUBTOTAL);
+        .should('contain.text', EXPECTED_CURRENCY_SYMBOL)
+        .and('not.contain.text', EXPECTED_ZERO_SUBTOTAL);
 
       cy.logToTerminal(
-        "✅ Verifying Add to Cart button displays total quantity (2+3+4=9)...",
+        '✅ Verifying Add to Cart button displays total quantity (2+3+4=9)...',
       );
       cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
-        .should("be.visible")
-        .and("contain.text", "Add to Cart (9)");
-
-      cy.logToTerminal("✅ Subtotals calculated correctly for all variants");
-
-      // ========== Continue with Add to Cart and Mini Cart verification ==========
-
-      cy.logToTerminal("🛒 Adding variants to cart...");
-      cy.get(fields.variantsGridAddToCartButton)
-        .should("not.be.disabled")
-        .click({ force: true });
-
-      cy.logToTerminal("⏳ Waiting for Add to Cart API call to complete...");
-      cy.wait("@addProductToCart", { timeout: 15000 }).then((interception) => {
-        cy.logToTerminal("✅ Add to Cart API call completed successfully");
-        expect(interception.response.statusCode).to.equal(200);
-
-        // DEBUG: Log REQUEST to see what was sent
-        const requestBody = interception.request.body;
-        if (requestBody.variables) {
-          cy.logToTerminal(
-            `📤 API Request variables: ${JSON.stringify(requestBody.variables, null, 2).substring(0, 800)}`,
-          );
-
-          if (requestBody.variables.cartItems) {
-            cy.logToTerminal(
-              `📤 Items being added: ${requestBody.variables.cartItems.length} items`,
-            );
-            requestBody.variables.cartItems.forEach((item, idx) => {
-              cy.logToTerminal(
-                `   📤 Item ${idx + 1}: SKU ${item.sku} x ${item.quantity}`,
-              );
-            });
-          } else {
-            cy.logToTerminal("⚠️ WARNING: No cartItems in request variables!");
-          }
-        } else {
-          cy.logToTerminal("⚠️ WARNING: No variables in request body!");
-        }
-
-        // DEBUG: Log API response to see what was returned
-        const responseBody = interception.response.body;
-        if (responseBody.data && responseBody.data.addProductsToCart) {
-          const cart = responseBody.data.addProductsToCart.cart;
-          cy.logToTerminal(
-            `📦 API Response - Cart ID: ${cart?.id}, Total quantity: ${cart?.total_quantity}, Items count: ${cart?.items?.length || 0}`,
-          );
-
-          if (cart?.items && cart.items.length > 0) {
-            cart.items.forEach((item, idx) => {
-              cy.logToTerminal(
-                `   📦 Item ${idx + 1}: ${item.product?.sku} x ${item.quantity}`,
-              );
-            });
-          } else {
-            cy.logToTerminal(
-              "⚠️ WARNING: API returned 0 items in cart response!",
-            );
-          }
-        }
-
-        if (responseBody.errors && responseBody.errors.length > 0) {
-          cy.logToTerminal(
-            `❌ API returned errors: ${JSON.stringify(responseBody.errors)}`,
-          );
-        }
-      });
-
-      // Wait for cart to update after API call
-      cy.wait(3000);
-
-      cy.logToTerminal("🛒 Opening mini cart to verify added items...");
-      cy.get(fields.miniCartButton).should("be.visible").click({ force: true });
-      cy.logToTerminal("✅ Mini cart button clicked");
-
-      cy.wait(2000); // Wait for mini cart animation
-
-      cy.logToTerminal("🔍 Checking mini cart container...");
-      cy.get(fields.miniCartContainer, { timeout: 10000 }).should("be.visible");
-      cy.logToTerminal("✅ Mini cart container is visible");
-
-      // Debug: Log what's in the cart
-      cy.get(fields.miniCartContainer).then(($container) => {
-        const hasEmptyCart =
-          $container.find('[data-testid="empty-cart"]').length > 0;
-        const hasHeading =
-          $container.find('[data-testid="default-cart-heading"]').length > 0;
-        const itemsCount = $container.find(fields.miniCartItems).length;
-
-        cy.logToTerminal(
-          `📊 Cart state - Empty: ${hasEmptyCart}, Has heading: ${hasHeading}, Items count: ${itemsCount}`,
-        );
-
-        if (hasEmptyCart) {
-          cy.logToTerminal("❌ ERROR: Cart is EMPTY after adding items!");
-        }
-      });
-
-      cy.logToTerminal("🔍 Verifying cart heading...");
-      cy.get(fields.miniCartHeading)
-        .should("be.visible")
-        .and("contain.text", "Shopping Cart");
-      cy.logToTerminal("✅ Cart heading verified");
+        .should('be.visible')
+        .and('contain.text', 'Add to Cart (9)');
 
       cy.logToTerminal(
-        "🔍 Verifying each specific variant is in mini cart with correct quantity...",
-      );
-      cy.get(fields.miniCartItems).should("have.length.greaterThan", 0);
-
-      // Main verification: each specific SKU is in cart with its expected quantity
-      expectedVariants.forEach(({ sku, quantity }) => {
-        cy.get(fields.miniCartItems).then(($items) => {
-          let foundItem = null;
-
-          $items.each((index, item) => {
-            const $item = Cypress.$(item);
-            const itemSku = $item.find(fields.miniCartItemSku).text().trim();
-            if (itemSku.includes(sku)) {
-              foundItem = $item;
-              return false; // break the loop
-            }
-          });
-
-          expect(foundItem, `${sku} should be found in mini cart`).to.not.be
-            .null;
-
-          const actualQty = parseInt(
-            foundItem.find(fields.miniCartQuantity).text().trim(),
-            10,
-          );
-          expect(actualQty, `${sku} should have quantity ${quantity}`).to.equal(
-            quantity,
-          );
-          cy.logToTerminal(`   ✓ ${sku}: ${quantity} item(s) in cart`);
-        });
-      });
-
-      cy.logToTerminal(
-        "✅ Bonus verification: Grid quantities auto-reset after add to cart...",
-      );
-      expectedVariants.forEach(({ index }) => {
-        actions.verifyVariantRow(index, { quantity: 0 });
-      });
-
-      cy.logToTerminal(
-        "✅ TEST 8 PASSED: Subtotals calculated correctly and variants added to cart",
+        '✅ TEST 8 PASSED: Subtotals calculated correctly for all variants',
       );
     });
 
-    it.skip("Should add variants to cart and verify in mini cart", () => {
+    it('Should add variants to cart and verify in mini cart', () => {
       cy.logToTerminal(
-        "========= 🚀 TEST 9: Add to Cart and Mini Cart Verification =========",
+        '========= 🚀 TEST 9: Add to Cart and Mini Cart Verification =========',
       );
       actions.initializeVariantsGrid();
-      cy.logToTerminal("✅ Variants grid loaded");
+      cy.logToTerminal('✅ Variants grid loaded');
 
       // Set up GraphQL intercept for Add to Cart mutation
-      const apiMethod = "ADD_PRODUCTS_TO_CART_MUTATION";
-      const graphqlEndPoint = Cypress.env("graphqlEndPoint");
+      const apiMethod = 'ADD_PRODUCTS_TO_CART_MUTATION';
+      const graphqlEndPoint = Cypress.env('graphqlEndPoint');
 
-      cy.intercept("POST", graphqlEndPoint, (req) => {
+      cy.intercept('POST', graphqlEndPoint, (req) => {
         const query = req.body.query;
-        if (query && typeof query === "string" && query.includes(apiMethod)) {
-          req.alias = "addProductToCart";
+        if (query && typeof query === 'string' && query.includes(apiMethod)) {
+          req.alias = 'addProductToCart';
         }
       });
 
@@ -631,123 +466,77 @@ describe(
       expectedVariants.forEach(({ index, quantity }) => {
         actions.updateVariantQuantity(index, quantity);
       });
-      cy.wait(5000); // Wait for button to become enabled
+      cy.wait(2000);
 
       cy.logToTerminal(
-        "✅ Verifying quantities are set before adding to cart...",
+        '✅ Verifying quantities are set before adding to cart...',
       );
       expectedVariants.forEach(({ index, quantity }) => {
         actions.verifyVariantRow(index, { quantity });
       });
 
-      cy.logToTerminal(`✅ Verifying Add to Cart button is ready...`);
-      cy.get(fields.variantsGridAddToCartButton, { timeout: 60000 })
+      cy.logToTerminal(
+        `✅ Verifying Add to Cart button displays total quantity (${expectedVariants.map((v) => v.quantity).join('+')}=${totalQuantity})...`,
+      );
+      cy.get(fields.variantsGridAddToCartButton, { timeout: 10000 })
         .scrollIntoView()
-        .should("be.visible")
-        .and("not.be.disabled");
+        .should('be.visible')
+        .and('contain.text', `Add to Cart (${totalQuantity})`);
 
-      cy.logToTerminal("🛒 Adding variants to cart...");
+      cy.logToTerminal('🛒 Adding variants to cart...');
       cy.get(fields.variantsGridAddToCartButton)
-        .should("not.be.disabled")
+        .should('not.be.disabled')
         .click({ force: true });
 
-      cy.logToTerminal("⏳ Waiting for Add to Cart API call to complete...");
-      cy.wait("@addProductToCart", { timeout: 15000 }).then((interception) => {
-        cy.logToTerminal("✅ Add to Cart API call completed successfully");
+      cy.logToTerminal('⏳ Waiting for Add to Cart API call to complete...');
+      cy.wait('@addProductToCart', { timeout: 15000 }).then((interception) => {
+        cy.logToTerminal('✅ Add to Cart API call completed successfully');
         expect(interception.response.statusCode).to.equal(200);
-
-        // DEBUG: Log REQUEST to see what was sent
-        const requestBody = interception.request.body;
-        if (requestBody.variables) {
-          cy.logToTerminal(
-            `📤 API Request variables: ${JSON.stringify(requestBody.variables, null, 2).substring(0, 800)}`,
-          );
-
-          if (requestBody.variables.cartItems) {
-            cy.logToTerminal(
-              `📤 Items being added: ${requestBody.variables.cartItems.length} items`,
-            );
-            requestBody.variables.cartItems.forEach((item, idx) => {
-              cy.logToTerminal(
-                `   📤 Item ${idx + 1}: SKU ${item.sku} x ${item.quantity}`,
-              );
-            });
-          } else {
-            cy.logToTerminal("⚠️ WARNING: No cartItems in request variables!");
-          }
-        } else {
-          cy.logToTerminal("⚠️ WARNING: No variables in request body!");
-        }
-
-        // DEBUG: Log API response to see what was returned
-        const responseBody = interception.response.body;
-        if (responseBody.data && responseBody.data.addProductsToCart) {
-          const cart = responseBody.data.addProductsToCart.cart;
-          cy.logToTerminal(
-            `📦 API Response - Cart ID: ${cart?.id}, Total quantity: ${cart?.total_quantity}, Items count: ${cart?.items?.length || 0}`,
-          );
-
-          if (cart?.items && cart.items.length > 0) {
-            cart.items.forEach((item, idx) => {
-              cy.logToTerminal(
-                `   📦 Item ${idx + 1}: ${item.product?.sku} x ${item.quantity}`,
-              );
-            });
-          } else {
-            cy.logToTerminal(
-              "⚠️ WARNING: API returned 0 items in cart response!",
-            );
-          }
-        }
-
-        if (responseBody.errors && responseBody.errors.length > 0) {
-          cy.logToTerminal(
-            `❌ API returned errors: ${JSON.stringify(responseBody.errors)}`,
-          );
-        }
       });
 
-      // Wait for cart to update after API call
+      // Wait for UI to update after cart API call completes
       cy.wait(3000);
 
-      cy.logToTerminal("🛒 Opening mini cart to verify added items...");
-      cy.get(fields.miniCartButton).should("be.visible").click({ force: true });
-      cy.logToTerminal("✅ Mini cart button clicked");
+      cy.logToTerminal(
+        `🛒 Verifying cart badge shows ${totalQuantity} items...`,
+      );
 
-      cy.wait(2000); // Wait for mini cart animation
+      // Wait for cart to update and verify badge count
+      // Cypress will retry this entire block until success or timeout
+      cy.get(fields.miniCartButton, { timeout: 60000 })
+        .should(($button) => {
+          // All assertions in one block for proper retry mechanism
+          expect($button, "cart button should be visible").to.be.visible;
 
-      cy.logToTerminal("🔍 Checking mini cart container...");
-      cy.get(fields.miniCartContainer, { timeout: 10000 }).should("be.visible");
-      cy.logToTerminal("✅ Mini cart container is visible");
+          const count = $button.attr("data-count");
+          expect(count, "data-count attribute should exist").to.exist;
 
-      // Debug: Log what's in the cart
-      cy.get(fields.miniCartContainer).then(($container) => {
-        const hasEmptyCart =
-          $container.find('[data-testid="empty-cart"]').length > 0;
-        const hasHeading =
-          $container.find('[data-testid="default-cart-heading"]').length > 0;
-        const itemsCount = $container.find(fields.miniCartItems).length;
+          const itemCount = parseInt(count, 10);
+          expect(
+            itemCount,
+            `cart should have at least ${totalQuantity} items (currently ${itemCount})`,
+          ).to.be.at.least(totalQuantity);
+        })
+        .then(($button) => {
+          const itemCount = parseInt($button.attr("data-count"), 10);
+          cy.logToTerminal(
+            `✅ Cart badge shows ${itemCount} items (expected at least ${totalQuantity})`,
+          );
+        });
 
-        cy.logToTerminal(
-          `📊 Cart state - Empty: ${hasEmptyCart}, Has heading: ${hasHeading}, Items count: ${itemsCount}`,
-        );
+      cy.logToTerminal('🛒 Opening mini cart to verify added items...');
+      cy.get(fields.miniCartButton).click({ force: true });
 
-        if (hasEmptyCart) {
-          cy.logToTerminal("❌ ERROR: Cart is EMPTY after adding items!");
-        }
-      });
-
-      cy.logToTerminal("🔍 Verifying cart heading...");
+      cy.logToTerminal('✅ Verifying mini cart is open...');
+      cy.get(fields.miniCartContainer, { timeout: 10000 }).should('be.visible');
       cy.get(fields.miniCartHeading)
-        .should("be.visible")
-        .and("contain.text", "Shopping Cart");
-      cy.logToTerminal("✅ Cart heading verified");
+        .should('be.visible')
+        .and('contain.text', 'Shopping Cart');
 
       cy.logToTerminal(
-        "🔍 Verifying each specific variant is in mini cart with correct quantity...",
+        '🔍 Verifying each specific variant is in mini cart with correct quantity...',
       );
-      cy.get(fields.miniCartItems).should("have.length.greaterThan", 0);
-      cy.logToTerminal(`✅ Found ${fields.miniCartItems} items in cart`);
+      cy.get(fields.miniCartItems).should('have.length.greaterThan', 0);
 
       // Main verification: each specific SKU is in cart with its expected quantity
       expectedVariants.forEach(({ sku, quantity }) => {
@@ -778,14 +567,14 @@ describe(
       });
 
       cy.logToTerminal(
-        "✅ Bonus verification: Grid quantities auto-reset after add to cart...",
+        '✅ Bonus verification: Grid quantities auto-reset after add to cart...',
       );
       expectedVariants.forEach(({ index }) => {
         actions.verifyVariantRow(index, { quantity: 0 });
       });
 
       cy.logToTerminal(
-        "✅ TEST 9 PASSED: Variants added to cart and verified in mini cart",
+        '✅ TEST 9 PASSED: Variants added to cart and verified in mini cart',
       );
     });
   },

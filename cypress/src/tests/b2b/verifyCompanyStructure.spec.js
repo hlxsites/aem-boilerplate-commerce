@@ -61,7 +61,7 @@ import {
   companyUsers,
 } from '../../fixtures/companyManagementData';
 
-describe.skip('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
+describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
     cy.logToTerminal('🌳 Company Structure test suite started (OPTIMIZED)');
   });
