@@ -490,24 +490,78 @@ describe(
       cy.wait("@addProductToCart", { timeout: 15000 }).then((interception) => {
         cy.logToTerminal("✅ Add to Cart API call completed successfully");
         expect(interception.response.statusCode).to.equal(200);
+
+        // DEBUG: Log API response to see what was returned
+        const responseBody = interception.response.body;
+        if (responseBody.data && responseBody.data.addProductsToCart) {
+          const cart = responseBody.data.addProductsToCart.cart;
+          cy.logToTerminal(
+            `📦 API Response - Cart ID: ${cart?.id}, Total quantity: ${cart?.total_quantity}, Items count: ${cart?.items?.length || 0}`,
+          );
+
+          if (cart?.items && cart.items.length > 0) {
+            cart.items.forEach((item, idx) => {
+              cy.logToTerminal(
+                `   📦 Item ${idx + 1}: ${item.product?.sku} x ${item.quantity}`,
+              );
+            });
+          } else {
+            cy.logToTerminal(
+              "⚠️ WARNING: API returned 0 items in cart response!",
+            );
+          }
+        }
+
+        if (responseBody.errors && responseBody.errors.length > 0) {
+          cy.logToTerminal(
+            `❌ API returned errors: ${JSON.stringify(responseBody.errors)}`,
+          );
+        }
       });
 
       // Wait for cart to update after API call
       cy.wait(3000);
 
       cy.logToTerminal("🛒 Opening mini cart to verify added items...");
-      cy.get(fields.miniCartButton).click({ force: true });
+      cy.get(fields.miniCartButton)
+        .should("be.visible")
+        .click({ force: true });
+      cy.logToTerminal("✅ Mini cart button clicked");
 
-      cy.logToTerminal("✅ Verifying mini cart is open...");
+      cy.wait(2000); // Wait for mini cart animation
+
+      cy.logToTerminal("🔍 Checking mini cart container...");
       cy.get(fields.miniCartContainer, { timeout: 10000 }).should("be.visible");
+      cy.logToTerminal("✅ Mini cart container is visible");
+
+      // Debug: Log what's in the cart
+      cy.get(fields.miniCartContainer).then(($container) => {
+        const hasEmptyCart =
+          $container.find('[data-testid="empty-cart"]').length > 0;
+        const hasHeading =
+          $container.find('[data-testid="default-cart-heading"]').length > 0;
+        const itemsCount = $container.find(fields.miniCartItems).length;
+
+        cy.logToTerminal(
+          `📊 Cart state - Empty: ${hasEmptyCart}, Has heading: ${hasHeading}, Items count: ${itemsCount}`,
+        );
+
+        if (hasEmptyCart) {
+          cy.logToTerminal("❌ ERROR: Cart is EMPTY after adding items!");
+        }
+      });
+
+      cy.logToTerminal("🔍 Verifying cart heading...");
       cy.get(fields.miniCartHeading)
         .should("be.visible")
         .and("contain.text", "Shopping Cart");
+      cy.logToTerminal("✅ Cart heading verified");
 
       cy.logToTerminal(
         "🔍 Verifying each specific variant is in mini cart with correct quantity...",
       );
       cy.get(fields.miniCartItems).should("have.length.greaterThan", 0);
+      cy.logToTerminal(`✅ Found ${fields.miniCartItems} items in cart`);
 
       // Main verification: each specific SKU is in cart with its expected quantity
       expectedVariants.forEach(({ sku, quantity }) => {
@@ -547,6 +601,6 @@ describe(
       cy.logToTerminal(
         "✅ TEST 9 PASSED: Variants added to cart and verified in mini cart",
       );
-    });
+    };);
   },
 );
