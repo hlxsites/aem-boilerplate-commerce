@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,7 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CreditCard/CreditCard';
-export * from './ApplePay/ApplePay';
-export * from './StoredCards';
-//# sourceMappingURL=index.d.ts.map
+/**
+ * A function which can be attached to fetchGraphQL to handle thrown errors in
+ * a generic way (same pattern as storefront-account). Uses `source: payment-services`
+ * so listeners can attribute failures to this drop-in.
+ */
+export declare const handleNetworkError: (error: Error) => never;
+//# sourceMappingURL=network-error.d.ts.map
