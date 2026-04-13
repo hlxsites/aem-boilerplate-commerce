@@ -16,6 +16,7 @@ export interface CreditCardFormProps extends HTMLAttributes<HTMLDivElement> {
     showSaveCard?: boolean;
     saveCard?: boolean;
     onSaveCardChange?: (checked: boolean) => void;
+    /** Overrides default i18n label for the save-card control */
     saveCardLabel?: string;
 }
 export declare const CreditCardForm: FunctionComponent<CreditCardFormProps>;

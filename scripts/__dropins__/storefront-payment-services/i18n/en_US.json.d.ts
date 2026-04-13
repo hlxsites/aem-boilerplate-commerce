@@ -43,10 +43,6 @@ declare const _default: {
       "methodNotAvailable": "Payment method not available. Please contact support.",
       "methodNotLoaded": "Failed to load payment method. Please try again later.",
       "methodLoading": "Loading payment method..."
-    },
-    "StoredCards": {
-      "groupLegend": "Stored payment methods",
-      "selectSavedCard": "Select saved card"
     }
   }
 }

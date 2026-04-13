@@ -41,8 +41,8 @@ export interface CreditCardProps {
     onError: (localizedError: LocalizedError) => void;
     /**
      * Optional override for the customer token getter. When provided and returns a
-     * non-null string, the "Save this card" checkbox is shown. When not provided,
-     * the value from the drop-in's initialize config is used.
+     * non-null string, the shopper is treated as logged in for the save-card UI.
+     * When omitted, the drop-in initialize config `getCustomerToken` is used.
      */
     getCustomerToken?: (() => string | null) | null;
 }
