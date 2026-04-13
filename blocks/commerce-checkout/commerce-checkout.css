@@ -43,6 +43,31 @@
     border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
 }
 
+.checkout-payment-cc-with-vault {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-medium);
+    position: relative;
+}
+
+.checkout-payment-cc-with-vault__stored {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+}
+
+.checkout-payment-cc-with-vault__cc-form[hidden] {
+    display: none !important;
+}
+
+/* Match BillToShippingAddress / address form: Elsie Checkbox (dropin-checkbox), not native input */
+.checkout-payment-cc-with-vault__new-card-option .dropin-checkbox {
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+    gap: 0;
+    color: var(--color-neutral-800);
+}
+
 /* Server error visibility */
 .checkout__server-error {
     display: none;
@@ -123,6 +148,19 @@
 }
 
 .checkout__loader:empty {
+    display: none;
+}
+
+/* Vault / CC payment section overlay */
+.checkout-payment-cc-with-vault__overlay {
+    background: var(--color-neutral-50, #fff);
+    inset: 0;
+    opacity: 0.6;
+    position: absolute;
+    z-index: 1;
+}
+
+.checkout-payment-cc-with-vault__overlay[hidden] {
     display: none;
 }
 
@@ -268,3 +306,4 @@
         margin-top: 0;
     }
 }
+

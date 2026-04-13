@@ -39,8 +39,15 @@ import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import {
+  GET_CUSTOMER_PAYMENT_TOKENS,
+  getVaultEligibleTokensFromCustomerPaymentTokensData,
+  normalizedVaultTokenToStoredCardProps,
+  PaymentMethodCode,
+  syncVaultToCart,
+} from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import { StoredCards } from '@dropins/storefront-payment-services/containers/StoredCards.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Tools
@@ -51,6 +58,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { debounce } from '@dropins/tools/lib.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 
 // Checkout Dropin Libs
 import {
@@ -68,6 +76,7 @@ import {
   fetchPlaceholders,
   rootLink,
 } from '../../scripts/commerce.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Constants
 import {
@@ -81,6 +90,49 @@ import {
   SHIPPING_ADDRESS_DATA_KEY,
   SHIPPING_FORM_NAME,
 } from './constants.js';
+
+/**
+ * Place order reads `getValue('selectedPaymentMethod')` (always the visible method, e.g. CC).
+ * When vault UI is merged under CC, set this so handlePlaceOrder can branch like `code === VAULT`.
+ * @param {string} code
+ */
+function setCheckoutEffectivePaymentCode(code) {
+  try {
+    const prev = events.lastPayload('checkout/values') || {};
+    events.emit('checkout/values', { ...prev, effectivePaymentCode: code });
+  } catch (_err) {
+    /* ignore */
+  }
+}
+
+async function fetchVaultTokens() {
+  if (!getUserTokenCookie()) return [];
+
+  try {
+    const { data } = await checkoutApi.fetchGraphQl(GET_CUSTOMER_PAYMENT_TOKENS, {
+      method: 'GET',
+    });
+
+    return getVaultEligibleTokensFromCustomerPaymentTokensData(data);
+  } catch (error) {
+    console.error('Unable to fetch customer payment tokens', error);
+    return [];
+  }
+}
+
+/**
+ * AuthorizationRequest requires paypal_order_id on the quote payment.
+ *
+ * @param {{ publicHash?: string }} token
+ * @param {string} [cartId]
+ * @returns {Promise<Record<string, unknown> | null>}
+ */
+async function syncVaultMethodOnCart(token, cartId) {
+  return syncVaultToCart(token, cartId, {
+    fetchGraphQl: checkoutApi.fetchGraphQl,
+    setPaymentMethod: checkoutApi.setPaymentMethod,
+  });
+}
 
 /**
  * Container IDs for registry management
@@ -340,42 +392,152 @@ export const renderShippingMethods = async (container) => renderContainer(
  */
 export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
-  async () => CheckoutProvider.render(PaymentMethods, {
-    slots: {
-      Methods: {
-        [PaymentMethodCode.CREDIT_CARD]: {
-          render: (ctx) => {
-            const $creditCard = document.createElement('div');
+  async () => {
+    const vaultTokens = await fetchVaultTokens();
+    const hasVaultTokens = vaultTokens.length > 0;
 
-            PaymentServices.render(CreditCard, {
-              getCartId: () => ctx.cartId,
-              creditCardFormRef,
-            })($creditCard);
+    return CheckoutProvider.render(PaymentMethods, {
+      autoSync: !hasVaultTokens,
+      slots: {
+        Methods: {
+          [PaymentMethodCode.CREDIT_CARD]: {
+            autoSync: !hasVaultTokens,
+            render: (ctx) => {
+              const root = document.createElement('div');
+              root.className = 'checkout-payment-cc-with-vault';
 
-            ctx.replaceHTML($creditCard);
+              const $ccForm = document.createElement('div');
+              $ccForm.className = 'checkout-payment-cc-with-vault__cc-form';
+
+              /**
+               * PayPal hosted fields must not initialize inside `display:none` / hidden containers.
+               * After a vault card is selected we tear the drop-in down: hiding breaks iframes, and the
+               * next "Pay with a new card" must remount (second visit would otherwise skip mount).
+               */
+              let ccDropinApi = null;
+              let ccMountPromise = null;
+
+              const teardownCreditCardForm = async () => {
+                if (ccMountPromise) {
+                  try {
+                    await ccMountPromise;
+                  } catch {
+                    /* mount failed */
+                  }
+                  ccMountPromise = null;
+                }
+                creditCardFormRef.current = null;
+                if (ccDropinApi?.remove) {
+                  try {
+                    ccDropinApi.remove();
+                  } catch (e) {
+                    console.warn('Credit card drop-in teardown failed', e);
+                  }
+                }
+                ccDropinApi = null;
+                delete $ccForm.dataset.psCcMounted;
+              };
+
+              const mountCreditCardForm = () => {
+                if ($ccForm.dataset.psCcMounted === 'true') return;
+                ccMountPromise = Promise.resolve(
+                  PaymentServices.render(CreditCard, {
+                    getCartId: () => ctx.cartId,
+                    apiUrl: getConfigValue('commerce-core-endpoint') || getConfigValue('commerce-endpoint'),
+                    getCustomerToken: getUserTokenCookie,
+                    creditCardFormRef,
+                  })($ccForm),
+                )
+                  .then((api) => {
+                    ccDropinApi = api;
+                    $ccForm.dataset.psCcMounted = 'true';
+                    return api;
+                  })
+                  .catch((err) => {
+                    ccMountPromise = null;
+                    console.error(err);
+                  });
+              };
+
+              if (!hasVaultTokens) {
+                mountCreditCardForm();
+                root.appendChild($ccForm);
+                ctx.replaceHTML(root);
+                return;
+              }
+
+              const $stored = document.createElement('div');
+              $stored.className = 'checkout-payment-cc-with-vault__stored';
+
+              const $overlay = document.createElement('div');
+              $overlay.className = 'checkout-payment-cc-with-vault__overlay';
+              $overlay.hidden = true;
+
+              const showOverlay = () => { $overlay.hidden = false; };
+              const hideOverlay = () => { $overlay.hidden = true; };
+
+              PaymentServices.render(StoredCards, {
+                cards: vaultTokens.map(normalizedVaultTokenToStoredCardProps),
+                payWithNewCardLabel: 'Pay with a new card',
+                onPaymentChoice: (choice) => {
+                  if (choice.kind === 'new') {
+                    showOverlay();
+                    $ccForm.hidden = false;
+                    $ccForm.style.display = '';
+                    mountCreditCardForm();
+                    ctx.setAdditionalData({});
+                    setCheckoutEffectivePaymentCode(PaymentMethodCode.CREDIT_CARD);
+                    checkoutApi.setPaymentMethod({ code: PaymentMethodCode.CREDIT_CARD })
+                      .catch(console.error)
+                      .finally(hideOverlay);
+                    return;
+                  }
+                  const { card } = choice;
+                  (async () => {
+                    showOverlay();
+                    const selectedToken = vaultTokens.find((token) => token.publicHash === card.publicHash);
+                    const token = selectedToken || card;
+                    const syncPromise = syncVaultMethodOnCart(token, ctx.cartId);
+                    await teardownCreditCardForm();
+                    $ccForm.hidden = true;
+                    $ccForm.style.display = 'none';
+                    const payload = await syncPromise;
+                    if (payload) ctx.setAdditionalData(payload);
+                    setCheckoutEffectivePaymentCode(PaymentMethodCode.VAULT);
+                  })().catch(console.error).finally(hideOverlay);
+                },
+              })($stored);
+
+              $ccForm.hidden = true;
+              $ccForm.style.display = 'none';
+              root.appendChild($overlay);
+              root.appendChild($stored);
+              root.appendChild($ccForm);
+              ctx.replaceHTML(root);
+            },
+          },
+          [PaymentMethodCode.SMART_BUTTONS]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.APPLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.GOOGLE_PAY]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.VAULT]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.APM]: {
+            enabled: false,
           },
         },
-        [PaymentMethodCode.SMART_BUTTONS]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.APPLE_PAY]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.APM]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.GOOGLE_PAY]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
-        },
       },
-    },
-  })(container),
+    })(container);
+  },
 );
 
 /**
