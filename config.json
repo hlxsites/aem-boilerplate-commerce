@@ -1,8 +1,8 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/QUxJ3FeSXX7nmPAGdqUBMX/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/QUxJ3FeSXX7nmPAGdqUBMX/graphql",
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/JNjfhWJ3MJvZhj3bwsamRP/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/JNjfhWJ3MJvZhj3bwsamRP/graphql",
       "headers": {
         "all": {
           "Store": "default"
@@ -15,7 +15,7 @@
         }
       },
       "analytics": {
-        "environment-id": "QUxJ3FeSXX7nmPAGdqUBMX",
+        "environment-id": "JNjfhWJ3MJvZhj3bwsamRP",
         "environment": "Testing",
         "base-currency-code": "USD",
         "store-view-currency-code": "USD",
