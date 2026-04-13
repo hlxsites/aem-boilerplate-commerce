@@ -30,4 +30,15 @@ export interface PaymentCardProps {
      */
     minifiedView?: boolean;
 }
+export interface PaymentModalProps {
+    open: boolean;
+    submitLoading: boolean;
+    onRemoveToken: () => void;
+    closeModal: () => void;
+    cardBrand?: string;
+    lastFourDigits?: string;
+    expired?: boolean;
+    variant?: 'secondary' | 'primary';
+    minifiedView?: boolean;
+}
 //# sourceMappingURL=paymentCard.types.d.ts.map

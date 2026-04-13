@@ -224,6 +224,12 @@ declare const _default: {
         "actionRemove": "Remove",
         "cardEndingIn": "Credit card ending in",
         "expiredLabel": "Expired"
+      },
+      "removePaymentModal": {
+        "title": "Remove Payment Method",
+        "description": "Are you sure you would like to remove this payment method?",
+        "actionCancel": "Cancel",
+        "actionConfirm": "Remove"
       }
     }
   }
