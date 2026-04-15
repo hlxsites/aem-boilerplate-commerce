@@ -34,6 +34,12 @@ No localStorage keys are used by this block. -->
 - `events.emit('checkout/addresses/shipping', values)` - Emits shipping address form values with debouncing
 - `events.emit('checkout/addresses/billing', values)` - Emits billing address form values with debouncing
 
+## Extensions
+
+This block supports extensions that allow you to customize checkout behavior without modifying the base block files. Extensions can add custom payment methods, validate forms, customize address forms, replace shipping method UI, and more.
+
+See the [Extensions README](./extensions/README.md) for available hooks, patterns, and examples.
+
 ## Behavior Patterns
 
 ### Page Context Detection
