@@ -386,6 +386,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef, customP
         [PaymentMethodCode.APPLE_PAY]: {
           enabled: false,
         },
+        [PaymentMethodCode.APM]: {
+          enabled: false,
+        },
         [PaymentMethodCode.GOOGLE_PAY]: {
           enabled: false,
         },
