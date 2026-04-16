@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 3.3.0-alpha-20260413141055
+## 3.3.0-beta.0
 
 ### Minor Changes
 
