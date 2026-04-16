@@ -509,6 +509,16 @@
           }
         },
         {
+          "title": "Commerce Payment Methods",
+          "id": "commerce-payment-methods",
+          "model": "commerce-payment-methods",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
           "title": "Commerce Return Header",
           "id": "commerce-return-header",
           "model": "commerce-return-header",

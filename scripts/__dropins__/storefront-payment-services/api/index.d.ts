@@ -15,6 +15,13 @@
  * from Adobe.
  *******************************************************************/
 export * from './initialize';
-export { PaymentMethodCode } from '../data/models/method';
-export { PaymentLocation } from '../data/models/location';
+export * from './fetch-graphql';
+export * from './getCustomerPaymentTokens';
+export * from './createPaymentOrderForVault';
+export * from '../lib/vault/tokens';
+export * from '../lib/vault/checkout-payload';
+export * from '../lib/vault/syncVaultToCart';
+export * from '../data/models/vault-token';
+export * from '../data/models/method';
+export * from '../data/models/location';
 //# sourceMappingURL=index.d.ts.map

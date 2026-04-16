@@ -1,0 +1,28 @@
+{
+  "definitions": [{
+    "title": "Commerce Payment Methods",
+    "id": "commerce-payment-methods",
+    "model": "commerce-payment-methods",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-payment-methods",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "with-header",
+        "label": "With Header"
+      },
+      {
+        "component": "boolean",
+        "name": "minified-view",
+        "label": "Minified View"
+      }
+    ]
+  }],
+  "filters": []
+}
