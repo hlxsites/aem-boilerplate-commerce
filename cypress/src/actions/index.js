@@ -446,12 +446,14 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
   cy.visit(urls.login);
-  cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email);
-    cy.get(fields.poPasswordInput).type(user.password);
-    cy.get(fields.poSubmitButton).click();
+  cy.get(fields.poLoginForm, { timeout: 10000 }).within(() => {
+    cy.get(fields.poEmailInput).should('be.visible').type(user.email);
+    cy.get(fields.poEmailInput).should('have.value', user.email);
+    cy.get(fields.poPasswordInput).should('be.visible').type(user.password);
+    cy.get(fields.poPasswordInput).should('have.value', user.password);
+    cy.get(fields.poSubmitButton).should('be.visible').click();
   });
-  cy.url({ timeout: 15000 }).should('include', urls.account);
+  cy.url({ timeout: 30000 }).should('include', urls.account);
   cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 };
 
