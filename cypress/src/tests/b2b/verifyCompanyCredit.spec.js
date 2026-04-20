@@ -52,20 +52,15 @@
  */
 
 import {
-  getCompanyCredit,
-  updateCompanyCredit,
-  increaseCompanyCreditBalance,
-  cleanupTestCompany,
-  cancelOrder,
-  createInvoice,
-  createCreditMemo,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  setGuestShippingAddress,
-  checkTermsAndConditions,
-  placeOrder,
+  setGuestShippingAddress
 } from '../../actions';
 import { customerShippingAddress } from '../../fixtures';
+import {
+  cleanupTestCompany,
+  getCompanyCredit,
+  increaseCompanyCreditBalance,
+  updateCompanyCredit
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -115,7 +110,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify page title');
       cy.contains('Company Credit', { timeout: 10000 })
@@ -152,7 +146,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       // Reload page to see reimbursement
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify balance value $5.00 is displayed');
       cy.contains('5.00', { timeout: 15000 })
@@ -183,7 +176,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       // Reload page to see allocation
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify credit limit $100.00 is displayed');
       cy.contains('100', { timeout: 15000 })
@@ -208,7 +200,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify restricted user cannot see summary blocks');
       cy.contains('Company Credit', { timeout: 10000 })
@@ -261,8 +252,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Add product to cart
       cy.logToTerminal('🛒 Adding product to cart');
       cy.visit('/products/youth-tee/ADB150');
-      cy.wait(2000);
-      cy.get('.product-details__buttons__add-to-cart button')
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
       cy.wait(2000);
@@ -375,7 +365,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Navigate to Company Credit page
       cy.logToTerminal('📊 Verifying Purchase record in credit history');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       // Verify "Purchased" record appears - scoped to block to avoid matching nav links
       // Uses /purchas|order/i in case the dropin renders the record type as "Order" vs "Purchased"
@@ -435,7 +424,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         cy.logToTerminal(`🔍 Attempt ${refundAttempt}/${maxRefundRetries}: Checking for Refunded record...`);
 
         cy.visit('/customer/company/credit');
-        cy.wait(3000);
+        cy.contains('Company Credit', { timeout: 15000 }).should('be.visible');
 
         cy.get('body').then(($body) => {
           if ($body.text().match(/refund/i)) {
@@ -460,8 +449,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Add product to cart for second order (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('🛒 Adding product to cart for second order');
       cy.visit('/products/youth-tee/ADB150');
-      cy.wait(2000);
-      cy.get('.product-details__buttons__add-to-cart button')
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
       cy.wait(2000);
@@ -595,7 +583,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
             // Verify "Reverted" record in credit history
             cy.logToTerminal('📊 Verifying Reverted record in credit history...');
             cy.visit('/customer/company/credit');
-            cy.wait(2000);
 
             cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
             cy.logToTerminal('✅ TC-47 CASE_4: Reverted record verified');

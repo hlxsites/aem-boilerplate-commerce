@@ -79,8 +79,6 @@ describe(
         failOnStatusCode: false,
         timeout: 30000,
       });
-
-      cy.wait(3000);
     });
 
     after(() => {

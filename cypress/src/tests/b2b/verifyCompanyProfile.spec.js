@@ -57,12 +57,12 @@
  */
 
 import {
-  updateCompanyProfile,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  invalidData,
+    invalidData,
 } from '../../fixtures/companyManagementData';
+import {
+    cleanupTestCompany,
+    updateCompanyProfile,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -109,7 +109,6 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       // After login, user is on /customer/account
       // Wait for page to fully load and company context to be available
       cy.url().should('include', '/customer/account');
-      cy.wait(2000); // Give time for company context to load
 
       cy.logToTerminal('✅ Verify company information block exists');
       cy.get('.customer-company-info-card', { timeout: 15000 })
@@ -128,7 +127,6 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       cy.logToTerminal('📍 Navigate to My Company page');
       cy.visit('/customer/company');
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Verify company information sections exist');
       cy.get('.account-company-profile', { timeout: 10000 })
@@ -274,7 +272,6 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       cy.logToTerminal('🔄 Refreshing page to see backend changes...');
       cy.visit('/customer/company');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify backend-updated company name');
       cy.contains('BACKEND-UPDATED Company', { timeout: 15000 })
@@ -347,7 +344,6 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
 
       cy.logToTerminal('📍 Navigate to My Company page');
       cy.visit('/customer/company');
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Verify company profile is visible');
       cy.get('.account-company-profile', { timeout: 10000 })

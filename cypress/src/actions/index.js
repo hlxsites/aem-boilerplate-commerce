@@ -495,9 +495,6 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
 export const proceedToCheckout = (texts, urls) => {
   cy.logToTerminal('🔗 Navigating to checkout page');
   cy.visit(urls.checkout);
-  cy.wait(5000); // Increased wait for checkout page to initialize
-
-  // Verify we're actually on checkout page
   cy.url().should('include', urls.checkout);
 };
 
@@ -506,9 +503,6 @@ export const completeCheckout = (urls, texts) => {
   cy.reload();
   cy.url().should('include', urls.checkout);
   cy.logToTerminal('⏳ Waiting for checkout data to load...');
-
-  // Wait for checkout forms to be ready
-  cy.wait(15000);
 
   const shippingFirstNameSelectors = [
     'input[name="firstName"]',

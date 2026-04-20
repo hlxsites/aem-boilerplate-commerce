@@ -1,7 +1,7 @@
 import { signUpUser } from "../../actions";
 import { assertAuthUser } from "../../assertions";
-import { products } from "../../fixtures";
 import * as fields from "../../fields";
+import { products } from "../../fixtures";
 
 /**
  * Create a new Requisition List from PDP and PLP
@@ -172,10 +172,9 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Navigate to search page to find configurable products
       cy.visit("/search?q=configurable");
-      cy.wait(2000);
 
       // Click requisition list on first configurable product in search results
-      cy.get(fields.requisitionListSelector).first().click();
+      cy.get(fields.requisitionListSelector, { timeout: 15000 }).first().click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");
@@ -224,10 +223,9 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Navigate to search page to find bundle products
       cy.visit("/search?q=bundle");
-      cy.wait(2000);
 
       // Click requisition list on first bundle product in search results
-      cy.get(fields.requisitionListSelector).eq(1).click();
+      cy.get(fields.requisitionListSelector, { timeout: 15000 }).eq(1).click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");

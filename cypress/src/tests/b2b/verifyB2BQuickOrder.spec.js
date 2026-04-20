@@ -70,8 +70,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       timeout: 30000,
     });
 
-    cy.wait(2000);
-
     cy.get(fields.quickOrderItemsContainer, { timeout: 10000 }).should(
       'be.visible',
     );
@@ -159,7 +157,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal('✅ TEST 1 PASSED: Items added to cart successfully');
   });
@@ -223,7 +220,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal('✅ TEST 2 PASSED: CSV workflow successful');
   });
@@ -301,7 +297,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal(
       '✅ TEST 3 PASSED: Search and configurable products workflow successful',

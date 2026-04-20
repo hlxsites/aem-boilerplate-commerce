@@ -1,17 +1,17 @@
 import {
-    submitQuoteToCustomer,
-} from '../../support/b2bQuoteAPICalls';
+  signInUser,
+} from "../../actions";
 import {
-    createUserAssignCompanyAndRole,
-    manageCompanyRole,
-} from '../../support/b2bPOAPICalls';
-import {
-    assertCartSummaryProduct,
-    assertSignInSuccess,
+  assertCartSummaryProduct,
+  assertSignInSuccess,
 } from "../../assertions";
 import {
-    signInUser,
-} from "../../actions";
+  createUserAssignCompanyAndRole,
+  manageCompanyRole,
+} from '../../support/b2bPOAPICalls';
+import {
+  submitQuoteToCustomer,
+} from '../../support/b2bQuoteAPICalls';
 
 // Quote role configuration with negotiable quote permissions
 const quoteRoleConfig = {
@@ -98,7 +98,8 @@ describe("Verify B2B Quote feature", () => {
         // Step 4: Add product to cart
         cy.logToTerminal('========= Step 4: Add product to cart =========');
         cy.visit("/products/youth-tee/adb150");
-        cy.wait(3000);
+        cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
+            .should('be.visible');
         cy.get(".dropin-incrementer__input").clear().type(10);
         cy.wait(1000);
         cy.get(".dropin-incrementer__input").should("have.value", "10");
@@ -155,7 +156,7 @@ describe("Verify B2B Quote feature", () => {
         // Step 6: Navigate to Quotes page
         cy.logToTerminal('========= Step 6: View Quote in My Account =========');
         cy.visit('/customer/account');
-        cy.wait(5000);
+        cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 
         // Click on Quotes navigation (exact match to avoid Company Credit)
         cy.get('.commerce-account-nav__item__title').each(($el) => {
@@ -247,17 +248,17 @@ describe("Verify B2B Quote feature", () => {
 
         cy.wait(5000);
         cy.reload();
-        cy.wait(8000);
+        cy.contains('span', 'Checkout', { timeout: 15000 })
+            .should('be.visible');
         cy.logToTerminal('✅ Page refreshed');
 
         // Step 10: Click Checkout
         cy.logToTerminal('========= Step 10: Place quote order - Click Checkout =========');
-        cy.wait(3000);
-
         cy.contains('span', 'Checkout')
             .should('be.visible')
             .click();
-        cy.wait(8000);
+        cy.get('[data-testid="checkout-terms-and-conditions-agreements"]', { timeout: 15000 })
+            .should('exist');
         cy.logToTerminal('✅ On checkout page');
 
         // Step 11: Complete Checkout

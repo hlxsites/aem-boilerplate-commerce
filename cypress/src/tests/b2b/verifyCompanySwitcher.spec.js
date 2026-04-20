@@ -50,15 +50,15 @@
  * ==========================================================================
  */
 
-import {
-  createCompany,
-  createStandaloneCustomer,
-  createCompanyRole,
-  assignRoleToUser,
-  assignCustomerToCompany,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
+import {
+    assignCustomerToCompany,
+    assignRoleToUser,
+    cleanupTestCompany,
+    createCompany,
+    createCompanyRole,
+    createStandaloneCustomer,
+} from '../../support/b2bCompanyAPICalls';
 
 /**
  * Create an admin role with full permissions for a company.
@@ -226,7 +226,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Navigate to My Company page (company picker is more reliably loaded here)
     cy.visit('/customer/company');
-    cy.wait(3000);
 
     // Wait for company profile to load first
     cy.get('.account-company-profile', { timeout: 15000 }).should('exist');
@@ -263,7 +262,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       // Reload workaround for caching (USF-3516)
       cy.reload();
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Switched to Company B');
     });
@@ -272,7 +270,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('--- STEP 3: TC-40 - Verify My Company page shows Company B data ---');
 
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyBName = Cypress.env('companyBName');
@@ -290,7 +287,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('--- STEP 5: TC-40 - Verify Company Users grid shows Company B users ---');
 
     cy.visit('/customer/company/users');
-    cy.wait(3000);
 
     // Use retry helper for cache issues (USF-3516)
     cy.then(() => {
@@ -312,7 +308,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
             cy.logToTerminal(`⏳ Company B users not yet visible, retrying (${12 - retriesLeft + 1}/12)...`);
             cy.wait(12000); // Increased wait time to 12 seconds
             cy.reload();
-            cy.wait(3000);
             cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
             cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
             checkForCompanyBAdmin(retriesLeft - 1);
@@ -330,7 +325,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('--- STEP 6: TC-40 - Verify Company Structure shows Company B tree ---');
 
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');
 
@@ -346,7 +340,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
           cy.logToTerminal(`⏳ Company B structure not yet visible, retrying (${12 - retriesLeft + 1}/12)...`);
           cy.wait(12000); // Increased wait time to 12 seconds
           cy.reload();
-          cy.wait(3000);
           checkForCompanyBStructure(retriesLeft - 1);
         } else {
           cy.logToTerminal(`❌ Body content: ${bodyText.substring(0, 200)}`);
@@ -361,7 +354,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('--- STEP 7: TC-41 - Verify Roles page shows Company B roles ---');
 
     cy.visit('/customer/company/roles');
-    cy.wait(2000);
+    cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 
     // Regular user might not have access, but if they do, should see Company B roles
     cy.get('body').then(($body) => {
@@ -376,7 +369,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('--- STEP 8: TC-40 - Switch back to Company A and verify context reversion ---');
 
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyAName = Cypress.env('companyAName');
@@ -386,14 +378,12 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       // Reload workaround
       cy.reload();
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Switched back to Company A');
     });
 
     // Verify context reverted to Company A
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyAName = Cypress.env('companyAName');
@@ -410,8 +400,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // Add product to cart for Company A
     cy.logToTerminal('🛒 Adding product to cart for Company A...');
     cy.visit('/products/pride-at-adobe-t-shirt/ADB169');
-    cy.wait(3000);
-
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
       .should('be.visible')
       .click();
@@ -419,7 +407,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Verify cart has items
     cy.visit('/cart');
-    cy.wait(3000);
 
     cy.get('body').then(($body) => {
       if ($body.find('.cart-item').length > 0 || $body.text().includes('ADB169') || $body.text().includes('Pride at Adobe')) {
@@ -432,7 +419,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // Switch to Company B
     cy.logToTerminal('🔄 Switching to Company B to check cart context...');
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyBName = Cypress.env('companyBName');
@@ -440,12 +426,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyBName);
       cy.wait(3000);
       cy.reload();
-      cy.wait(2000);
     });
 
     // Verify cart is empty for Company B (cart is company-specific)
     cy.visit('/cart');
-    cy.wait(3000);
 
     cy.get('body').then(($body) => {
       const hasEmptyCartMessage = $body.text().includes('empty') ||
@@ -462,8 +446,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // Add different product to Company B cart
     cy.logToTerminal('🛒 Adding different product to Company B cart...');
     cy.visit('/products/youth-tee/ADB150');
-    cy.wait(3000);
-
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
       .should('be.visible')
       .click();
@@ -471,7 +453,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Verify Company B cart has the new product
     cy.visit('/cart');
-    cy.wait(3000);
 
     cy.get('body').then(($body) => {
       if ($body.text().includes('ADB150') || $body.text().includes('Youth Tee')) {
@@ -484,7 +465,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     // Switch back to Company A
     cy.logToTerminal('🔄 Switching back to Company A to verify cart persistence...');
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyAName = Cypress.env('companyAName');
@@ -492,12 +472,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyAName);
       cy.wait(3000);
       cy.reload();
-      cy.wait(2000);
     });
 
     // Verify Company A cart still has original product (not Company B's product)
     cy.visit('/cart');
-    cy.wait(3000);
 
     cy.get('body').then(($body) => {
       const hasOriginalProduct = $body.text().includes('ADB169') || $body.text().includes('Pride at Adobe');
@@ -689,7 +667,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // Navigate to company page
     cy.visit('/customer/company');
-    cy.wait(5000); // Increased wait for company context to fully load
 
     // Verify company profile loaded first
     cy.get('.account-company-profile', { timeout: 15000 }).should('exist');
@@ -753,14 +730,12 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       // Reload workaround for caching
       cy.reload();
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Switched to BLOCKED company');
     });
 
     // Verify company profile shows BLOCKED company data
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyBlockedName = Cypress.env('companyBlockedName');
@@ -780,14 +755,12 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       // Reload workaround
       cy.reload();
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Switched back to APPROVED company');
     });
 
     // Verify company profile shows APPROVED company data
     cy.visit('/customer/company');
-    cy.wait(2000);
 
     cy.then(() => {
       const companyApprovedName = Cypress.env('companyApprovedName');

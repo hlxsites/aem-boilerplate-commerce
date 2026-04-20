@@ -52,14 +52,14 @@
  */
 
 import {
-  createStandaloneCustomer,
-  acceptCompanyInvitation,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  baseCompanyData,
-  companyUsers,
+    baseCompanyData,
+    companyUsers,
 } from '../../fixtures/companyManagementData';
+import {
+    acceptCompanyInvitation,
+    cleanupTestCompany,
+    createStandaloneCustomer,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
@@ -112,7 +112,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // ========== NAVIGATE: To Company Structure page ==========
     cy.logToTerminal('📄 Navigating to Company Structure page...');
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // ========== TC-32: Default state and controls ==========
     cy.logToTerminal('--- STEP 1: TC-32 - Verify default state and controls ---');
@@ -429,7 +428,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Navigate to Company Structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
+    cy.contains('Company Structure', { timeout: 15000 }).should('be.visible');
 
     // Click Add User
     cy.contains('button', 'Add User').click();
@@ -477,7 +476,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Reload structure page
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
+    cy.contains('Company Structure', { timeout: 15000 }).should('be.visible');
 
     // NOW user should appear in tree
     cy.contains(`${registeredUserFirstName} ${registeredUserLastName}`, { timeout: 10000 }).should('be.visible');
@@ -519,7 +518,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
       // Navigate to Company Users to verify status is Inactive
       cy.visit('/customer/company/users');
-      cy.wait(3000);
 
       // Use retry helper to find user and verify Inactive status (USF-3516)
       cy.checkForUser(regularUserEmail, 'Inactive');
@@ -531,7 +529,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Navigate back to structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
+    cy.contains('Company Structure', { timeout: 15000 }).should('be.visible');
 
     // Create a team to delete
     const { adminFirstName } = baseCompanyData;
@@ -602,7 +600,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Navigate to Company Structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // Verify page title
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');

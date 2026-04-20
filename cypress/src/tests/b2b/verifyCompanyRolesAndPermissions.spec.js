@@ -100,7 +100,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       // ========== NAVIGATE: To Roles page ==========
       cy.logToTerminal('📍 Navigate to Roles and Permissions page');
       cy.visit('/customer/company/roles');
-      cy.wait(3000);
 
       // ========== TC-26: Default roles state ==========
       cy.logToTerminal('--- STEP 1: TC-26 - Verify default roles state ---');
@@ -350,7 +349,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       // Navigate to Roles page
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
       cy.visit('/customer/company/roles');
-      cy.wait(3000);
 
       cy.logToTerminal('✏️ Edit Default User role');
       cy.contains('Default User', { timeout: 10000 })
@@ -399,7 +397,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('📍 Try to access My Company page');
       cy.visit('/customer/company');
-      cy.wait(2000);
+      cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 
       cy.logToTerminal('✅ Verify user cannot see company profile');
       cy.get('body').then(($body) => {
@@ -430,10 +428,9 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       // Navigate to Roles page
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
       cy.visit('/customer/company/roles');
-      cy.wait(3000);
 
       cy.logToTerminal('✏️ Edit Default User role to add edit permission');
-      cy.get('[data-testid="role-and-permission-table"]')
+      cy.get('[data-testid="role-and-permission-table"]', { timeout: 15000 })
         .contains('td', 'Default User')
         .parent('tr')
         .within(() => {
@@ -480,7 +477,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('📍 Navigate to My Company page');
       cy.visit('/customer/company');
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Verify Edit button IS now visible');
       cy.contains('button', 'Edit', { timeout: 10000 })
@@ -516,7 +512,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       // First verify user CANNOT access Roles page
       cy.logToTerminal('📍 Verify user currently cannot access Roles page');
       cy.visit('/customer/company/roles');
-      cy.wait(2000);
+      cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 
       cy.get('body').then(($body) => {
         if ($body.find('[data-testid="role-and-permission-table"]').length === 0) {
@@ -538,10 +534,9 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('📍 Navigate to Roles and Permissions');
       cy.visit('/customer/company/roles');
-      cy.wait(3000);
 
       cy.logToTerminal('✏️ Edit Default User role to add manage roles permission');
-      cy.get('[data-testid="role-and-permission-table"]')
+      cy.get('[data-testid="role-and-permission-table"]', { timeout: 15000 })
         .contains('td', 'Default User')
         .parent('tr')
         .within(() => {
@@ -580,7 +575,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('📍 Navigate to Roles and Permissions page');
       cy.visit('/customer/company/roles');
-      cy.wait(2000);
 
       cy.logToTerminal('✅ Verify user can access Roles page');
       cy.contains('Company Roles & Permissions', { timeout: 10000 })

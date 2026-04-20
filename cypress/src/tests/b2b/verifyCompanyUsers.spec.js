@@ -54,14 +54,14 @@
  */
 
 import {
-  createStandaloneCustomer,
-  acceptCompanyInvitation,
-  updateCompanyUserStatus,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  invalidData,
+    invalidData,
 } from '../../fixtures/companyManagementData';
+import {
+    acceptCompanyInvitation,
+    cleanupTestCompany,
+    createStandaloneCustomer,
+    updateCompanyUserStatus,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
@@ -124,7 +124,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(3000);
 
     // ========== TC-15: Verify users grid display ==========
     cy.logToTerminal('--- STEP 1: TC-15 - Verify users grid display ---');
@@ -321,7 +320,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Verify updated name appears in grid
     cy.reload();
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.contains('Updated UserName', { timeout: 10000 }).should('be.visible');
     cy.logToTerminal('✅ TC-23: Admin edited other user successfully');
@@ -377,7 +375,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Refresh to get latest state
     cy.reload();
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     cy.then(() => {
@@ -407,9 +404,8 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains(/deleted|removed/i, { timeout: 5000 }).should('be.visible');
 
     // Verify user no longer appears or is Inactive
-    cy.wait(2000);
     cy.reload();
-    cy.wait(3000);
+    cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     cy.then(() => {
       const user1Email = Cypress.env('testUsers').user1.email;
@@ -480,7 +476,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Navigate to Company Users page
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(2000);
 
     // Wait for table to load
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
@@ -543,7 +538,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload and verify user appears in grid
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
@@ -585,7 +579,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload page
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
@@ -621,7 +614,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload page
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     // Verify user appears as Active (with retry for caching)
@@ -660,7 +652,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(3000);
 
     // ========== TC-22: Admin can edit their own user data ==========
     cy.logToTerminal('--- STEP 1: TC-22 - Admin edits own data ---');
@@ -717,7 +708,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload to get fresh state
     cy.visit('/customer/company/users');
-    cy.wait(2000);
 
     // Find admin in the grid and click Manage
     cy.then(() => {
