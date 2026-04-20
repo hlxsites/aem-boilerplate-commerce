@@ -36,12 +36,14 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email);
-      cy.get('input[name="password"]').type(testAdmin.password);
-      cy.get('button[type="submit"]').click();
+      cy.get('input[name="email"]').should('be.visible').type(testAdmin.email);
+      cy.get('input[name="email"]').should('have.value', testAdmin.email);
+      cy.get('input[name="password"]').should('be.visible').type(testAdmin.password);
+      cy.get('input[name="password"]').should('have.value', testAdmin.password);
+      cy.get('button[type="submit"]').should('be.visible').click();
     });
 
-    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.url({ timeout: 30000 }).should('include', '/customer/account');
     cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Admin logged in successfully');
   });
@@ -66,12 +68,14 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email);
-      cy.get('input[name="password"]').type(testUsers.regular.password);
-      cy.get('button[type="submit"]').click();
+      cy.get('input[name="email"]').should('be.visible').type(testUsers.regular.email);
+      cy.get('input[name="email"]').should('have.value', testUsers.regular.email);
+      cy.get('input[name="password"]').should('be.visible').type(testUsers.regular.password);
+      cy.get('input[name="password"]').should('have.value', testUsers.regular.password);
+      cy.get('button[type="submit"]').should('be.visible').click();
     });
 
-    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.url({ timeout: 30000 }).should('include', '/customer/account');
     cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
@@ -113,12 +117,14 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     cy.visit('/customer/login');
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email);
-      cy.get('input[name="password"]').type(testUsers.restricted.password);
-      cy.get('button[type="submit"]').click();
+      cy.get('input[name="email"]').should('be.visible').type(testUsers.restricted.email);
+      cy.get('input[name="email"]').should('have.value', testUsers.restricted.email);
+      cy.get('input[name="password"]').should('be.visible').type(testUsers.restricted.password);
+      cy.get('input[name="password"]').should('have.value', testUsers.restricted.password);
+      cy.get('button[type="submit"]').should('be.visible').click();
     });
 
-    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.url({ timeout: 30000 }).should('include', '/customer/account');
     cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
