@@ -54,13 +54,13 @@
  */
 
 import {
-    invalidData,
+  invalidData,
 } from '../../fixtures/companyManagementData';
 import {
-    acceptCompanyInvitation,
-    cleanupTestCompany,
-    createStandaloneCustomer,
-    updateCompanyUserStatus,
+  acceptCompanyInvitation,
+  cleanupTestCompany,
+  createStandaloneCustomer,
+  updateCompanyUserStatus,
 } from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
@@ -219,7 +219,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     const newUserEmail = `newuser.${Date.now()}@example.com`;
     Cypress.env('newUserEmail', newUserEmail);
 
-    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail)
+    cy.get('input[name="email"]:visible').should('be.visible').clear().type(newUserEmail, { delay: 50 })
       .blur();
     cy.get('input[name="first_name"]:visible').should('be.visible').type('{selectall}New').blur();
     cy.get('input[name="last_name"]:visible').clear().type('TestUser').blur();
@@ -252,7 +252,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       const existingEmail = Cypress.env('testUsers').user1.email;
       cy.logToTerminal(`📝 Attempting to add duplicate email: ${existingEmail}...`);
 
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail)
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(existingEmail, { delay: 50 })
         .blur();
       cy.get('input[name="first_name"]:visible').should('be.visible').type('{selectall}Duplicate').blur();
       cy.get('input[name="last_name"]:visible').clear().type('User').blur();
@@ -491,7 +491,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.logToTerminal('📝 Filling in invitation form with registered email...');
     cy.then(() => {
       const standaloneEmail = Cypress.env('standaloneEmail');
-      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail)
+      cy.get('input[name="email"]:visible').should('be.visible').clear().type(standaloneEmail, { delay: 50 })
         .blur();
       cy.get('input[name="first_name"]:visible').should('be.visible').type('{selectall}Invited').blur();
       cy.get('input[name="last_name"]:visible').clear().type('Member').blur();

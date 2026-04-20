@@ -490,7 +490,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       cy.get('input[name="legalAddress_street"]')
         .should('be.visible')
         .clear()
-        .type(updatedStreet)
+        .type(updatedStreet, { delay: 50 })
         .blur();
 
       cy.logToTerminal('💾 Save changes');

@@ -212,13 +212,14 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(sharedUserEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(sharedUserPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
+        cy.get('input[name="email"]').should('be.visible').clear().type(sharedUserEmail, { delay: 50 });
+        cy.get('input[name="email"]').should('have.value', sharedUserEmail);
+        cy.get('input[name="password"]').should('be.visible').clear().type(sharedUserPassword, { delay: 50 });
+        cy.get('input[name="password"]').should('have.value', sharedUserPassword);
+        cy.get('button[type="submit"]').should('be.visible').click();
       });
-      cy.wait(8000);
+      cy.url({ timeout: 30000 }).should('include', '/customer/account');
+      cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     });
 
     // ========== TC-41: Verify admin controls in Company A ==========
@@ -653,13 +654,14 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(testUserEmail);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(testUserPassword);
-        cy.wait(1500);
-        cy.get('button[type="submit"]').click();
+        cy.get('input[name="email"]').should('be.visible').clear().type(testUserEmail, { delay: 50 });
+        cy.get('input[name="email"]').should('have.value', testUserEmail);
+        cy.get('input[name="password"]').should('be.visible').clear().type(testUserPassword, { delay: 50 });
+        cy.get('input[name="password"]').should('have.value', testUserPassword);
+        cy.get('button[type="submit"]').should('be.visible').click();
       });
-      cy.wait(8000);
+      cy.url({ timeout: 30000 }).should('include', '/customer/account');
+      cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     });
 
     // ========== USF-3555: Verify only APPROVED and BLOCKED companies appear in dropdown ==========

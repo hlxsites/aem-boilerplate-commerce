@@ -216,7 +216,7 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       cy.get('input[name="name"]')
         .should('be.visible')
         .clear()
-        .type(updatedName);
+        .type(updatedName, { delay: 50 });
 
       cy.logToTerminal('📝 Update legal name');
       cy.get('input[name="legalName"]')

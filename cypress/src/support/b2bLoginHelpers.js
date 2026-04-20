@@ -36,9 +36,9 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testAdmin.email);
+      cy.get('input[name="email"]').should('be.visible').clear().type(testAdmin.email, { delay: 50 });
       cy.get('input[name="email"]').should('have.value', testAdmin.email);
-      cy.get('input[name="password"]').should('be.visible').type(testAdmin.password);
+      cy.get('input[name="password"]').should('be.visible').clear().type(testAdmin.password, { delay: 50 });
       cy.get('input[name="password"]').should('have.value', testAdmin.password);
       cy.get('button[type="submit"]').should('be.visible').click();
     });
@@ -68,9 +68,9 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testUsers.regular.email);
+      cy.get('input[name="email"]').should('be.visible').clear().type(testUsers.regular.email, { delay: 50 });
       cy.get('input[name="email"]').should('have.value', testUsers.regular.email);
-      cy.get('input[name="password"]').should('be.visible').type(testUsers.regular.password);
+      cy.get('input[name="password"]').should('be.visible').clear().type(testUsers.regular.password, { delay: 50 });
       cy.get('input[name="password"]').should('have.value', testUsers.regular.password);
       cy.get('button[type="submit"]').should('be.visible').click();
     });
@@ -117,9 +117,9 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     cy.visit('/customer/login');
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testUsers.restricted.email);
+      cy.get('input[name="email"]').should('be.visible').clear().type(testUsers.restricted.email, { delay: 50 });
       cy.get('input[name="email"]').should('have.value', testUsers.restricted.email);
-      cy.get('input[name="password"]').should('be.visible').type(testUsers.restricted.password);
+      cy.get('input[name="password"]').should('be.visible').clear().type(testUsers.restricted.password, { delay: 50 });
       cy.get('input[name="password"]').should('have.value', testUsers.restricted.password);
       cy.get('button[type="submit"]').should('be.visible').click();
     });

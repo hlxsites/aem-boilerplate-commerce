@@ -188,7 +188,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
       cy.get('select[name="role"]', { timeout: 10000 }).select('Default User');
       cy.get('input[name="first_name"]').type('Structure');
       cy.get('input[name="last_name"]').type('NewUser');
-      cy.get('input[name="email"]').type(newUserEmail).blur();
+      cy.get('input[name="email"]').type(newUserEmail, { delay: 50 }).blur();
       cy.wait(500);
       cy.contains('button', 'Save').click();
     });
@@ -246,7 +246,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Update job title
     const updatedAdminJobTitle = `Chief Admin ${Date.now()}`;
-    cy.get('input[name="job_title"]').clear().type(updatedAdminJobTitle).blur();
+    cy.get('input[name="job_title"]').clear().type(updatedAdminJobTitle, { delay: 50 }).blur();
 
     // Save
     cy.contains('button', 'Save').click();
@@ -439,7 +439,7 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
       cy.get('select[name="role"]', { timeout: 10000 }).select('Default User');
       cy.get('input[name="first_name"]').type(registeredUserFirstName);
       cy.get('input[name="last_name"]').type(registeredUserLastName);
-      cy.get('input[name="email"]:visible').type(registeredUserEmail).blur();
+      cy.get('input[name="email"]:visible').type(registeredUserEmail, { delay: 50 }).blur();
       cy.wait(500);
       cy.get('input[name="job_title"]').type('Invited Member');
       cy.get('input[name="telephone"]').type('555-1234');
