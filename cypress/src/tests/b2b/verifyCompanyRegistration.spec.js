@@ -270,7 +270,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
     cy.get('input[name="street"]').clear().type('456 Test Ave').blur();
     cy.get('input[name="city"]').clear().type('Test City').blur();
     cy.get('select[name="countryCode"]').select('US');
-    cy.wait(1000);
+    cy.get('select[name="region"], input[name="region"]', { timeout: 5000 }).should('exist');
     cy.get('select[name="region"]').select('Texas');
     cy.get('input[name="postcode"]').clear().type('54321').blur();
     cy.get('input[name="addressTelephone"]').clear().type('9876543210').blur();

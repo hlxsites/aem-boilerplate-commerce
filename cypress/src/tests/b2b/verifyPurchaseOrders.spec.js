@@ -564,7 +564,6 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal(
         '⏳ Waiting for session and permissions to initialize...',
       );
-      cy.wait(3000);
 
       cy.logToTerminal('📄 Navigating to Approval Rules page...');
       cy.visit(urls.approvalRules);
@@ -572,11 +571,11 @@ describe('B2B Purchase Orders', () => {
 
       cy.logToTerminal('🗑️ Deleting first PO approval rule...');
       actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
-      cy.wait(3000);
+      cy.wait(1000);
 
       cy.logToTerminal('🗑️ Deleting second PO approval rule...');
       actions.deleteApprovalRule(poApprovalRules.rule2.name);
-      cy.wait(3000);
+      cy.wait(1000);
 
       cy.logToTerminal('✅ All PO approval rules deleted successfully');
 
@@ -646,7 +645,6 @@ describe('B2B Purchase Orders', () => {
         );
       });
 
-      cy.wait(1000);
       cy.logToTerminal('✅ B2B Purchase Orders test suite completed');
     },
   );

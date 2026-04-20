@@ -272,7 +272,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyBName = Cypress.env('companyBName');
       cy.logToTerminal(`🔄 Switching to Company B: ${companyBName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyBName);
-      cy.wait(3000);
+      cy.wait(1000);
 
       // Reload workaround for caching (USF-3516)
       cy.reload();
@@ -388,7 +388,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyAName = Cypress.env('companyAName');
       cy.logToTerminal(`🔄 Switching back to Company A: ${companyAName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyAName);
-      cy.wait(3000);
+      cy.wait(1000);
 
       // Reload workaround
       cy.reload();
@@ -417,7 +417,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify cart has items
     cy.visit('/cart');
@@ -438,7 +437,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyBName = Cypress.env('companyBName');
       cy.logToTerminal(`🔄 Switching to Company B: ${companyBName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyBName);
-      cy.wait(3000);
+      cy.wait(1000);
       cy.reload();
     });
 
@@ -463,7 +462,6 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify Company B cart has the new product
     cy.visit('/cart');
@@ -484,7 +482,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyAName = Cypress.env('companyAName');
       cy.logToTerminal(`🔄 Switching back to Company A: ${companyAName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyAName);
-      cy.wait(3000);
+      cy.wait(1000);
       cy.reload();
     });
 
@@ -754,7 +752,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyBlockedName = Cypress.env('companyBlockedName');
       cy.logToTerminal(`🔄 Switching to BLOCKED company: ${companyBlockedName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyBlockedName);
-      cy.wait(3000);
+      cy.wait(1000);
 
       // Reload workaround for caching
       cy.reload();
@@ -779,7 +777,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const companyApprovedName = Cypress.env('companyApprovedName');
       cy.logToTerminal(`🔄 Switching back to APPROVED company: ${companyApprovedName}`);
       cy.get('.dropin-picker__select', { timeout: 10000 }).first().select(companyApprovedName);
-      cy.wait(3000);
+      cy.wait(1000);
 
       // Reload workaround
       cy.reload();

@@ -101,12 +101,10 @@ describe("Verify B2B Quote feature", () => {
         cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
             .should('be.visible');
         cy.get(".dropin-incrementer__input").clear().type(10);
-        cy.wait(1000);
         cy.get(".dropin-incrementer__input").should("have.value", "10");
         cy.get(".product-details__buttons__add-to-cart button")
             .should("be.visible")
             .click();
-        cy.wait(2000);
 
         // Verify product in mini cart
         cy.get(".minicart-wrapper").click();
@@ -121,7 +119,7 @@ describe("Verify B2B Quote feature", () => {
         // Step 5: Request a quote
         cy.logToTerminal('========= Step 5: Request a quote =========');
         cy.contains('Request a Quote').click();
-        cy.wait(3000);
+        cy.get('input[name="quote-name"], input[name="quoteName"], input[name="name"]', { timeout: 15000 }).should('be.visible');
 
         // Fill quote form
         cy.get('body').then(($body) => {
@@ -134,8 +132,6 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
-        cy.wait(1000);
-
         cy.get('body').then(($body) => {
             if ($body.find('textarea[name="comment"]').length > 0) {
                 cy.get('textarea[name="comment"]').type(customerData.quote.comment);
@@ -143,8 +139,6 @@ describe("Verify B2B Quote feature", () => {
                 cy.get('textarea').first().type(customerData.quote.comment);
             }
         });
-
-        cy.wait(1000);
 
         // Submit quote
         cy.get('button[data-testid="form-request-button"]')
@@ -192,7 +186,7 @@ describe("Verify B2B Quote feature", () => {
         cy.get('input[name="street"]').first().clear().type('123 Test Street');
         cy.get('input[name="city"]').first().clear().type('Austin');
         cy.get('select[name="countryCode"]').first().select('US');
-        cy.wait(2000);
+        cy.get('select[name="region"], select[name="regionCode"], input[name="region"]', { timeout: 5000 }).should('exist');
 
         cy.get('body').then(($body) => {
             if ($body.find('select[name="region"]').length > 0) {
@@ -206,7 +200,6 @@ describe("Verify B2B Quote feature", () => {
 
         cy.get('input[name="postcode"]').first().clear().type('78758');
         cy.get('input[name="telephone"]').first().clear().type('5551234567');
-        cy.wait(2000);
         cy.logToTerminal('✅ Shipping address filled');
 
         // Save address if button exists
@@ -267,7 +260,7 @@ describe("Verify B2B Quote feature", () => {
         // Accept terms and conditions
         cy.get('[data-testid="checkout-terms-and-conditions-agreements"] input[type="checkbox"]')
             .check({ force: true });
-        cy.wait(2000);
+        cy.contains('Place Purchase Order', { timeout: 5000 }).should('not.be.disabled');
         cy.logToTerminal('✅ Terms accepted');
 
         // Place Purchase Order

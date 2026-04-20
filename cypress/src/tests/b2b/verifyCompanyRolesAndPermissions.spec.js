@@ -144,8 +144,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
             .click();
         });
 
-      cy.wait(1000);
-
       cy.logToTerminal('✅ Verify edit form appears');
       cy.contains('Edit Role', { timeout: 5000 }).should('be.visible');
       cy.get('[data-testid="role-and-permission-table"]').should('not.exist');
@@ -165,7 +163,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       // Cancel out of edit form
       cy.contains('button', 'Cancel', { timeout: 5000 }).click();
-      cy.wait(1000);
 
       // ========== TC-27: Duplicate and delete role ==========
       cy.logToTerminal('--- STEP 2: TC-27 - Duplicate and delete role ---');
@@ -178,8 +175,6 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
             .should('be.visible')
             .click();
         });
-
-      cy.wait(1000);
 
       cy.logToTerminal('✅ Verify form appears with pre-filled name');
       cy.contains('Add New Role', { timeout: 5000 }).should('be.visible');
@@ -195,10 +190,8 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
         .should('be.visible')
         .click();
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Verify success message');
-      cy.contains(/role.*created|successfully/i, { timeout: 5000 })
+      cy.contains(/role.*created|successfully/i, { timeout: 10000 })
         .should('be.visible');
 
       cy.logToTerminal('✅ Verify new role appears in grid');
@@ -224,18 +217,14 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
             .click();
         });
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Confirm deletion in modal');
       cy.get('button.dropin-button')
-        .contains('Delete', { timeout: 5000 })
+        .contains('Delete', { timeout: 10000 })
         .should('be.visible')
         .click();
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Verify success message');
-      cy.contains(/deleted|removed/i, { timeout: 5000 })
+      cy.contains(/deleted|removed/i, { timeout: 10000 })
         .should('be.visible');
 
       cy.logToTerminal('✅ Verify role no longer in grid');
@@ -270,18 +259,15 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       cy.contains('button', 'Add New Role', { timeout: 5000 })
         .click();
 
-      cy.wait(1000);
-
-      cy.get('input[name="roleName"]')
+      cy.get('input[name="roleName"]', { timeout: 5000 })
+        .should('be.visible')
         .type('Empty Test Role');
 
       cy.contains('button', 'Save', { timeout: 5000 })
         .click();
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Verify new role appears in table');
-      cy.get('[data-testid="role-and-permission-table"]')
+      cy.get('[data-testid="role-and-permission-table"]', { timeout: 10000 })
         .contains('Empty Test Role')
         .should('be.visible');
 
@@ -303,18 +289,14 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
             .click();
         });
 
-      cy.wait(1000);
-
       cy.logToTerminal('✅ Confirm deletion in modal');
       cy.get('button.dropin-button')
-        .contains('Delete', { timeout: 5000 })
+        .contains('Delete', { timeout: 10000 })
         .should('be.visible')
         .click();
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Verify empty role is deleted');
-      cy.get('[data-testid="role-and-permission-table"]')
+      cy.get('[data-testid="role-and-permission-table"]', { timeout: 10000 })
         .contains('Empty Test Role')
         .should('not.exist');
 
@@ -359,17 +341,13 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
             .click();
         });
 
-      cy.wait(1000);
-
       cy.logToTerminal('📂 Expand permissions tree');
       cy.contains('button', 'Expand All', { timeout: 5000 })
         .should('be.visible')
         .click();
 
-      cy.wait(1000);
-
       cy.logToTerminal('❌ Uncheck "Company Profile View" permission');
-      cy.get('.edit-role-and-permission__tree-container')
+      cy.get('.edit-role-and-permission__tree-container', { timeout: 5000 })
         .contains('.edit-role-and-permission__tree-node', 'Company Profile')
         .find('input[type="checkbox"]')
         .should('be.checked')
@@ -381,16 +359,14 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
         .should('be.visible')
         .click();
 
-      cy.wait(2000);
-
       cy.logToTerminal('✅ Verify success message');
-      cy.contains(/updated|saved/i, { timeout: 5000 })
+      cy.contains(/updated|saved/i, { timeout: 10000 })
         .should('be.visible');
 
       cy.logToTerminal('🚪 Logout admin');
       cy.get('.nav-dropdown-button').click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       cy.logToTerminal('🔐 Login as regular user (who has Default User role)');
       cy.loginAsRegularUser();
@@ -419,7 +395,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       cy.logToTerminal('🚪 Logout regular user');
       cy.get('.nav-dropdown-button').click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       // Login as admin
       cy.logToTerminal('🔐 Login as admin');
@@ -437,15 +413,14 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
           cy.contains('button', 'Edit').click();
         });
 
-      cy.wait(1000);
-
       cy.logToTerminal('📂 Expand all permissions');
-      cy.contains('button', 'Expand All').click();
-      cy.wait(1000);
+      cy.contains('button', 'Expand All', { timeout: 5000 })
+        .should('be.visible')
+        .click();
 
       // First, re-enable Company Profile view
       cy.logToTerminal('✅ Re-enable "Company Profile View" permission');
-      cy.get('.edit-role-and-permission__tree-container')
+      cy.get('.edit-role-and-permission__tree-container', { timeout: 5000 })
         .contains('.edit-role-and-permission__tree-node', 'Company Profile')
         .find('input[type="checkbox"]')
         .parent()
@@ -463,13 +438,12 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('💾 Save role with new permission');
       cy.contains('button', 'Save', { timeout: 5000 }).click();
-      cy.wait(2000);
 
       // Logout admin
       cy.logToTerminal('🚪 Logout admin');
-      cy.get('.nav-dropdown-button').click();
+      cy.get('.nav-dropdown-button', { timeout: 10000 }).click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       // Login as regular user
       cy.logToTerminal('🔐 Login as regular user (now has edit permission)');
@@ -483,11 +457,9 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
         .should('be.visible')
         .click();
 
-      cy.wait(1000);
-
       cy.logToTerminal('✏️ Edit company information (street address)');
       const updatedStreet = `${Date.now()} Updated St`;
-      cy.get('input[name="legalAddress_street"]')
+      cy.get('input[name="legalAddress_street"]', { timeout: 5000 })
         .should('be.visible')
         .clear()
         .type(updatedStreet, { delay: 50 })
@@ -526,7 +498,7 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
       cy.logToTerminal('🚪 Logout regular user');
       cy.get('.nav-dropdown-button').click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       // Login as admin
       cy.logToTerminal('🔐 Login as admin');
@@ -543,14 +515,13 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
           cy.contains('button', 'Edit').click();
         });
 
-      cy.wait(1000);
-
       cy.logToTerminal('📂 Expand all permissions');
-      cy.contains('button', 'Expand All').click();
-      cy.wait(1000);
+      cy.contains('button', 'Expand All', { timeout: 5000 })
+        .should('be.visible')
+        .click();
 
       cy.logToTerminal('✅ Enable "Manage roles and permissions"');
-      cy.get('.edit-role-and-permission__tree-container')
+      cy.get('.edit-role-and-permission__tree-container', { timeout: 5000 })
         .contains('li', 'View roles and permissions')
         .find('> ul > li')
         .contains('.edit-role-and-permission__tree-label', 'Manage roles and permissions')
@@ -561,13 +532,12 @@ describe('USF-2523: Roles and Permissions (Optimized Journeys)', { tags: ['@B2BS
 
       cy.logToTerminal('💾 Save role with new permission');
       cy.contains('button', 'Save', { timeout: 5000 }).click();
-      cy.wait(2000);
 
       // Logout admin
       cy.logToTerminal('🚪 Logout admin');
-      cy.get('.nav-dropdown-button').click();
+      cy.get('.nav-dropdown-button', { timeout: 10000 }).click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       // Login as regular user
       cy.logToTerminal('🔐 Login as regular user (now has manage roles permission)');

@@ -137,7 +137,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.logToTerminal('📊 Setting page size to 20 to show all users');
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
+        cy.get('.companyUsersTable tbody tr', { timeout: 10000 }).should('have.length.greaterThan', 0);
       }
     });
 
@@ -174,7 +174,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Verify form fields are visible
     cy.get('input[name="first_name"]', { timeout: 5000 }).should('be.visible');
@@ -184,8 +183,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
-    cy.get('body').should('contain', 'Select a role');
+    cy.get('body', { timeout: 10000 }).should('contain', 'Select a role');
 
     // Test invalid email format
     cy.logToTerminal('🧪 Testing invalid email format validation...');
@@ -196,14 +194,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('input[name="first_name"]:visible').type('Test').blur();
     cy.get('input[name="last_name"]:visible').type('User').blur();
     cy.contains('button', 'Save').click();
-    cy.wait(1000);
-    cy.get('body').should('contain', 'Enter a valid email');
+    cy.get('body', { timeout: 10000 }).should('contain', 'Enter a valid email');
 
     cy.logToTerminal('✅ TC-16: Form validation works correctly');
 
     // Close the form (ESC or Cancel)
     cy.get('body').type('{esc}');
-    cy.wait(500);
 
     // ========== TC-17: Add new user with unregistered email ==========
     cy.logToTerminal('--- STEP 3: TC-17 - Add new user with unregistered email ---');
@@ -212,7 +208,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Fill the form with valid data
     cy.logToTerminal('📝 Filling in new user details...');
@@ -230,10 +225,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(3000);
 
     // Verify form closed successfully
-    cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
+    cy.contains('h3', 'Add User', { timeout: 15000 }).should('not.exist');
 
     // Verify new user appears in grid (with retries for cache)
     cy.checkForUser(newUserEmail, 'Active');
@@ -246,7 +240,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     cy.then(() => {
       const existingEmail = Cypress.env('testUsers').user1.email;
@@ -262,15 +255,13 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       cy.contains('button', 'Save', { timeout: 5000 })
         .should('be.visible')
         .click();
-      cy.wait(3000);
 
       // Verify form stays open (validation error)
-      cy.contains('h3', 'Add User', { timeout: 5000 }).should('be.visible');
+      cy.contains('h3', 'Add User', { timeout: 15000 }).should('be.visible');
       cy.logToTerminal('✅ TC-21: Duplicate email validation works correctly');
 
       // Close form
       cy.get('body').type('{esc}');
-      cy.wait(500);
     });
 
     // ========== TC-23: Admin can edit other user data ==========
@@ -289,8 +280,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
             .click();
         });
     });
-
-    cy.wait(1000);
 
     // Verify Edit User form loaded
     cy.contains('h3', 'Edit User', { timeout: 5000 }).should('be.visible');
@@ -313,10 +302,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
-    cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/successfully.*updated/i, { timeout: 10000 }).should('be.visible');
 
     // Verify updated name appears in grid
     cy.reload();
@@ -341,8 +329,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         });
     });
 
-    cy.wait(1000);
-
     // Verify Manage dialog appears
     cy.get('.company-management-company-users-management-modal', { timeout: 5000 })
       .should('be.visible');
@@ -354,10 +340,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .should('be.visible')
         .click();
     });
-    cy.wait(2000);
 
     // Verify success message
-    cy.contains(/deactivated|inactive/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/deactivated|inactive/i, { timeout: 10000 }).should('be.visible');
 
     // Verify user status updated to Inactive in grid
     cy.then(() => {
@@ -391,17 +376,14 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         });
     });
 
-    cy.wait(1000);
-
     // Click Delete
     cy.logToTerminal('🗑️ Deleting user...');
     cy.contains('button', 'Delete', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
-    cy.contains(/deleted|removed/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/deleted|removed/i, { timeout: 10000 }).should('be.visible');
 
     // Verify user no longer appears or is Inactive
     cy.reload();
@@ -485,7 +467,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Fill the form with standalone user email (invitation)
     cy.logToTerminal('📝 Filling in invitation form with registered email...');
@@ -503,10 +484,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(3000);
 
     // Verify form closed
-    cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
+    cy.contains('h3', 'Add User', { timeout: 15000 }).should('not.exist');
     cy.logToTerminal('✅ Invitation sent via UI');
 
     // WORKAROUND: Accept invitation via REST API
@@ -544,7 +524,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('body').then(($body) => {
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
+        cy.get('.companyUsersTable tbody tr', { timeout: 10000 }).should('have.length.greaterThan', 0);
       }
     });
 
@@ -585,7 +565,7 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('body').then(($body) => {
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
+        cy.get('.companyUsersTable tbody tr', { timeout: 10000 }).should('have.length.greaterThan', 0);
       }
     });
 
@@ -668,8 +648,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .click();
     });
 
-    cy.wait(1000);
-
     // Verify Edit User form loaded
     cy.contains('h3', 'Edit User', { timeout: 5000 }).should('be.visible');
 
@@ -697,10 +675,9 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
-    cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/successfully.*updated/i, { timeout: 10000 }).should('be.visible');
     cy.logToTerminal('✅ TC-22: Admin edited own data successfully');
 
     // ========== TC-20: Admin cannot delete or deactivate themselves ==========
@@ -719,8 +696,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .should('be.visible')
         .click();
     });
-
-    cy.wait(1000);
 
     // Verify Manage dialog appears
     cy.get('.company-management-company-users-management-modal', { timeout: 5000 })

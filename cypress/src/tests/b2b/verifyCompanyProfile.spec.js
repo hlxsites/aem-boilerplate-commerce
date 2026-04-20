@@ -57,11 +57,11 @@
  */
 
 import {
-    invalidData,
+  invalidData,
 } from '../../fixtures/companyManagementData';
 import {
-    cleanupTestCompany,
-    updateCompanyProfile,
+  cleanupTestCompany,
+  updateCompanyProfile,
 } from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] }, () => {
@@ -166,7 +166,6 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       cy.contains('button', 'Edit', { timeout: 10000 })
         .should('be.visible')
         .click();
-      cy.wait(1000);
 
       cy.logToTerminal('✅ Verify edit form appears');
       cy.get('.account-edit-company-profile-form', { timeout: 5000 })
@@ -183,10 +182,9 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       cy.contains('button', 'Save', { timeout: 5000 })
         .should('be.visible')
         .click();
-      cy.wait(1000);
 
       cy.logToTerminal('✅ Verify form validation prevents save');
-      cy.get('.account-edit-company-profile-form').should('exist');
+      cy.get('.account-edit-company-profile-form', { timeout: 5000 }).should('exist');
 
       // Validation: Special characters
       cy.logToTerminal('📝 Test special characters validation');
@@ -198,10 +196,9 @@ describe('USF-2525: Company Profile (Optimized Journeys)', { tags: ['@B2BSaas'] 
       cy.contains('button', 'Save', { timeout: 5000 })
         .should('be.visible')
         .click();
-      cy.wait(1000);
 
       cy.logToTerminal('✅ Verify special characters handled');
-      cy.get('body').then(($body) => {
+      cy.get('body', { timeout: 5000 }).then(($body) => {
         if ($body.text().match(/invalid.*character|not.*allowed/i)) {
           cy.logToTerminal('✅ Special characters blocked by validation');
         } else {

@@ -142,8 +142,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         cy.logToTerminal('✅ Balance reimbursed: $5.00');
       });
 
-      cy.wait(3000);
-
       // Reload page to see reimbursement
       cy.visit('/customer/company/credit');
 
@@ -172,8 +170,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         cy.logToTerminal('✅ Credit limit set to $100.00');
     });
 
-      cy.wait(3000);
-
       // Reload page to see allocation
       cy.visit('/customer/company/credit');
 
@@ -193,7 +189,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.logToTerminal('🚪 Logout admin');
       cy.get('.nav-dropdown-button').click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('include', '/customer/login');
 
       cy.logToTerminal('🔐 Login as restricted user');
       cy.loginAsRestrictedUser();
@@ -255,13 +251,11 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
-      cy.wait(2000);
 
       // Go to cart and checkout
       cy.logToTerminal('💳 Proceeding to checkout');
       cy.get('.minicart-wrapper').click();
-      cy.wait(2000);
-      cy.get('[data-loaded="true"]').should('exist');
+      cy.get('[data-loaded="true"]', { timeout: 10000 }).should('exist');
       cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
       cy.wait(5000);
 
@@ -279,7 +273,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.get('body').then(($body) => {
         if ($body.find('input[name="shipping_method"]').length > 0) {
           cy.get('input[name="shipping_method"]').first().check({ force: true });
-          cy.wait(2000);
         }
       });
 
@@ -303,7 +296,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         if ($body.find('input[type="checkbox"][name="terms"]').length > 0
             || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
           cy.get('input[type="checkbox"]').last().check({ force: true });
-          cy.wait(1000);
         }
       });
 
@@ -452,13 +444,11 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
-      cy.wait(2000);
 
       // Go to cart and checkout (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('💳 Proceeding to checkout for second order');
       cy.get('.minicart-wrapper').click();
-      cy.wait(2000);
-      cy.get('[data-loaded="true"]').should('exist');
+      cy.get('[data-loaded="true"]', { timeout: 10000 }).should('exist');
       cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
       cy.wait(5000);
 
@@ -476,7 +466,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.get('body').then(($body) => {
         if ($body.find('input[name="shipping_method"]').length > 0) {
           cy.get('input[name="shipping_method"]').first().check({ force: true });
-          cy.wait(2000);
         }
       });
 
@@ -500,7 +489,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         if ($body.find('input[type="checkbox"][name="terms"]').length > 0
             || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
           cy.get('input[type="checkbox"]').last().check({ force: true });
-          cy.wait(1000);
         }
       });
 
