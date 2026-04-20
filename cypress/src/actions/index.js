@@ -447,10 +447,10 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 export const login = (user, urls) => {
   cy.visit(urls.login);
   cy.get(fields.poLoginForm, { timeout: 10000 }).within(() => {
-    cy.get(fields.poEmailInput).should('be.visible').clear().type(user.email, { delay: 50 });
+    cy.get(fields.poEmailInput).should('be.visible').type(user.email, { delay: 50 });
     cy.get(fields.poEmailInput).should('have.value', user.email);
-    cy.get(fields.poPasswordInput).should('be.visible').clear().type(user.password, { delay: 50 });
-    cy.get(fields.poPasswordInput).should('have.value', user.password);
+    cy.get(fields.poPasswordInput).should('be.visible').type(user.password, { delay: 50 });
+    cy.get(fields.poPasswordInput).should('have.value', user.password).blur();
     cy.get(fields.poSubmitButton).should('be.visible').click();
   });
   cy.url({ timeout: 30000 }).should('include', urls.account);

@@ -52,12 +52,12 @@
 
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 import {
-    assignCustomerToCompany,
-    assignRoleToUser,
-    cleanupTestCompany,
-    createCompany,
-    createCompanyRole,
-    createStandaloneCustomer,
+  assignCustomerToCompany,
+  assignRoleToUser,
+  cleanupTestCompany,
+  createCompany,
+  createCompanyRole,
+  createStandaloneCustomer,
 } from '../../support/b2bCompanyAPICalls';
 
 /**
@@ -212,10 +212,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').should('be.visible').clear().type(sharedUserEmail, { delay: 50 });
+        cy.get('input[name="email"]').should('be.visible').type(sharedUserEmail, { delay: 50 });
         cy.get('input[name="email"]').should('have.value', sharedUserEmail);
-        cy.get('input[name="password"]').should('be.visible').clear().type(sharedUserPassword, { delay: 50 });
-        cy.get('input[name="password"]').should('have.value', sharedUserPassword);
+        cy.get('input[name="password"]').should('be.visible').type(sharedUserPassword, { delay: 50 });
+        cy.get('input[name="password"]').should('have.value', sharedUserPassword).blur();
         cy.get('button[type="submit"]').should('be.visible').click();
       });
       cy.url({ timeout: 30000 }).should('include', '/customer/account');
@@ -654,10 +654,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').should('be.visible').clear().type(testUserEmail, { delay: 50 });
+        cy.get('input[name="email"]').should('be.visible').type(testUserEmail, { delay: 50 });
         cy.get('input[name="email"]').should('have.value', testUserEmail);
-        cy.get('input[name="password"]').should('be.visible').clear().type(testUserPassword, { delay: 50 });
-        cy.get('input[name="password"]').should('have.value', testUserPassword);
+        cy.get('input[name="password"]').should('be.visible').type(testUserPassword, { delay: 50 });
+        cy.get('input[name="password"]').should('have.value', testUserPassword).blur();
         cy.get('button[type="submit"]').should('be.visible').click();
       });
       cy.url({ timeout: 30000 }).should('include', '/customer/account');
