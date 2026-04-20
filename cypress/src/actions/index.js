@@ -461,6 +461,8 @@ export const login = (user, urls) => {
     cy.get(fields.poPasswordInput).should('have.value', user.password);
   });
 
+  // Wait for React/Preact to finalize state from last keystroke before submit
+  cy.wait(500);
   cy.get(`${fields.poLoginForm} ${fields.poSubmitButton}`).should('be.visible').click({ force: true });
   cy.wait('@loginMutation', { timeout: 15000 });
 

@@ -49,6 +49,8 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
       cy.get('input[name="password"]').should('have.value', testAdmin.password);
     });
 
+    // Wait for React/Preact to finalize state from last keystroke before submit
+    cy.wait(500);
     cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
     cy.wait('@loginMutation', { timeout: 15000 });
 
@@ -90,6 +92,8 @@ Cypress.Commands.add('loginAsRegularUser', () => {
       cy.get('input[name="password"]').should('have.value', testUsers.regular.password);
     });
 
+    // Wait for React/Preact to finalize state from last keystroke before submit
+    cy.wait(500);
     cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
     cy.wait('@loginMutation', { timeout: 15000 });
 
@@ -148,6 +152,8 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
       cy.get('input[name="password"]').should('have.value', testUsers.restricted.password);
     });
 
+    // Wait for React/Preact to finalize state from last keystroke before submit
+    cy.wait(500);
     cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
     cy.wait('@loginMutation', { timeout: 15000 });
 

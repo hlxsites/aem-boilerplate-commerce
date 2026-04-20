@@ -226,6 +226,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
         cy.get('input[name="password"]').should('have.value', sharedUserPassword);
       });
 
+      // Wait for React/Preact to finalize state from last keystroke before submit
+      cy.wait(500);
       cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
       cy.wait('@loginMutation', { timeout: 15000 });
 
@@ -679,6 +681,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
         cy.get('input[name="password"]').should('have.value', testUserPassword);
       });
 
+      // Wait for React/Preact to finalize state from last keystroke before submit
+      cy.wait(500);
       cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
       cy.wait('@loginMutation', { timeout: 15000 });
 
