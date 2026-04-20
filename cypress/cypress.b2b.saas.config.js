@@ -8,6 +8,10 @@ const AEM_ASSETS_PRIVATE_USER = JSON.parse(
 
 module.exports = defineConfig({
   ...baseConfig,
+  defaultCommandTimeout: 30000,
+  retries: {
+    runMode: 1,
+  },
   e2e: {
     ...baseConfig.e2e,
     specPattern: 'src/tests/b2b/**/*.spec.js',

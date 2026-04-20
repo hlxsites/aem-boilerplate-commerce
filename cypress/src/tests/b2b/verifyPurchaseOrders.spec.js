@@ -54,26 +54,27 @@ describe('B2B Purchase Orders', () => {
         },
       ];
 
-      // Create roles
+      // Create roles (parallel — roles are independent)
       cy.logToTerminal('⚙️ Creating user roles');
       const createdRoleIds = [];
-      poUsersConfig
-        .reduce((chain, element, index) => {
-          return chain.then(() => {
-            cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
-            cy.wait(1500);
-
-            return manageCompanyRole(element.role).then((result) => {
-              poUsersConfig[index].roleId = result?.role?.id;
-              createdRoleIds.push(result?.role?.id);
-
-              cy.logToTerminal(
-                `✅ Role created: ${element.role.role_name} | ID: ${result?.role?.id}`,
-              );
-            });
-          });
-        }, cy.wrap(null))
+      cy.wrap(null)
         .then(() => {
+          cy.logToTerminal('Creating all roles in parallel...');
+          return Promise.all(
+            poUsersConfig.map((element) => {
+              cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
+              return manageCompanyRole(element.role);
+            }),
+          );
+        })
+        .then((results) => {
+          results.forEach((result, index) => {
+            poUsersConfig[index].roleId = result?.role?.id;
+            createdRoleIds.push(result?.role?.id);
+            cy.logToTerminal(
+              `✅ Role created: ${poUsersConfig[index].role.role_name} | ID: ${result?.role?.id}`,
+            );
+          });
           Cypress.env('poTestRoleIds', createdRoleIds);
           Cypress.env('poUsersConfig', poUsersConfig);
           cy.logToTerminal(
@@ -85,12 +86,12 @@ describe('B2B Purchase Orders', () => {
           cy.wait(5000);
         });
 
-      // Create users
+      // Create users (sequential — each needs role ID from above, and backend
+      // needs time to index each user before the next can be assigned)
       cy.logToTerminal('⚙️ Creating test users & assigning roles');
       poUsersConfig
         .reduce((chain, element) => {
           return chain.then(() => {
-            cy.wait(5000);
             return cy.wrap(null).then(() => {
               cy.logToTerminal(
                 `Creating user: ${element.user.email} with role ID: ${element.roleId}...`,
@@ -99,7 +100,7 @@ describe('B2B Purchase Orders', () => {
                 element.user,
                 element.roleId,
               ).then(() => {
-                cy.logToTerminal(`✅ User crated`);
+                cy.logToTerminal(`✅ User created`);
               });
             });
           });
