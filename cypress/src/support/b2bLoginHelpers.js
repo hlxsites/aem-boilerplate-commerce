@@ -34,17 +34,15 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
 
     cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
     cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
       cy.get('input[name="email"]').type(testAdmin.email);
-      cy.wait(1500);
       cy.get('input[name="password"]').type(testAdmin.password);
-      cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
 
-    cy.wait(8000); // Wait for login to complete
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -66,17 +64,15 @@ Cypress.Commands.add('loginAsRegularUser', () => {
 
     cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
     cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
       cy.get('input[name="email"]').type(testUsers.regular.email);
-      cy.wait(1500);
       cy.get('input[name="password"]').type(testUsers.regular.password);
-      cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
 
-    cy.wait(8000); // Wait for login to complete
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -115,17 +111,15 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     
     cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
     cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
       cy.get('input[name="email"]').type(testUsers.restricted.email);
-      cy.wait(1500);
       cy.get('input[name="password"]').type(testUsers.restricted.password);
-      cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
-    
-    cy.wait(8000); // Wait for login to complete
+
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
+    cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });

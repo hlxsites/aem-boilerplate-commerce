@@ -1,5 +1,5 @@
-import * as fields from '../fields/index';
 import * as selectors from '../fields';
+import * as fields from '../fields/index';
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -448,15 +448,11 @@ export const login = (user, urls) => {
   cy.visit(urls.login);
   cy.get(fields.poLoginForm).within(() => {
     cy.get(fields.poEmailInput).type(user.email);
-    cy.wait(1500);
     cy.get(fields.poPasswordInput).type(user.password);
-    cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
   });
-  cy.url().should('include', urls.account);
-  // Waiting for session and permissions to initialize
-  cy.wait(3000);
+  cy.url({ timeout: 15000 }).should('include', urls.account);
+  cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 };
 
 export const logout = (texts) => {
@@ -466,14 +462,33 @@ export const logout = (texts) => {
 
 export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   const productUrl = isCheap ? urls.cheapProduct : urls.product;
+  const addToCartOperations = ['addProductsToCart', 'addSimpleProductsToCart', 'addConfigurableProductsToCart'];
+
+  cy.intercept('POST', '**/graphql', (req) => {
+    const body = req.body || {};
+    const operationName = body.operationName || '';
+    const queryText = typeof body.query === 'string' ? body.query : '';
+
+    const isAddToCartMutation = addToCartOperations.includes(operationName)
+      || addToCartOperations.some((name) => queryText.includes(name));
+
+    if (isAddToCartMutation) {
+      req.alias = 'addToCartMutation';
+    }
+  });
+
   cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
   cy.visit(productUrl);
-  cy.wait(4000);
+  cy.contains(fields.poAddToCartButton, texts.addToCart, { timeout: 15000 })
+    .should('be.visible');
+
   for (let i = 0; i < times; i++) {
     cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
-    cy.wait(4000);
-    cy.contains(fields.poAddToCartButton, texts.addToCart).click();
-    cy.wait(4000);
+    cy.contains(fields.poAddToCartButton, texts.addToCart)
+      .should('be.visible')
+      .click();
+    cy.wait('@addToCartMutation', { timeout: 20000 });
+    cy.get('.dropin-header-minicart__counter').should('exist');
   }
 };
 
