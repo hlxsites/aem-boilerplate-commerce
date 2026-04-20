@@ -446,13 +446,24 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
   cy.visit(urls.login);
+
+  cy.intercept('POST', '**/graphql', (req) => {
+    const body = req.body || {};
+    if (body.query && body.query.includes('generateCustomerToken')) {
+      req.alias = 'loginMutation';
+    }
+  });
+
   cy.get(fields.poLoginForm, { timeout: 10000 }).within(() => {
     cy.get(fields.poEmailInput).should('be.visible').type(user.email, { delay: 50 });
     cy.get(fields.poEmailInput).should('have.value', user.email);
     cy.get(fields.poPasswordInput).should('be.visible').type(user.password, { delay: 50 });
-    cy.get(fields.poPasswordInput).should('have.value', user.password).blur();
-    cy.get(fields.poSubmitButton).should('be.visible').click();
+    cy.get(fields.poPasswordInput).should('have.value', user.password);
   });
+
+  cy.get(`${fields.poLoginForm} ${fields.poSubmitButton}`).should('be.visible').click({ force: true });
+  cy.wait('@loginMutation', { timeout: 15000 });
+
   cy.url({ timeout: 30000 }).should('include', urls.account);
   cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
 };

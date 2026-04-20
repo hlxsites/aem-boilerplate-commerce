@@ -211,13 +211,24 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const sharedUserPassword = Cypress.env('sharedUserPassword');
 
       cy.visit('/customer/login');
+
+      cy.intercept('POST', '**/graphql', (req) => {
+        const body = req.body || {};
+        if (body.query && body.query.includes('generateCustomerToken')) {
+          req.alias = 'loginMutation';
+        }
+      });
+
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
         cy.get('input[name="email"]').should('be.visible').type(sharedUserEmail, { delay: 50 });
         cy.get('input[name="email"]').should('have.value', sharedUserEmail);
         cy.get('input[name="password"]').should('be.visible').type(sharedUserPassword, { delay: 50 });
-        cy.get('input[name="password"]').should('have.value', sharedUserPassword).blur();
-        cy.get('button[type="submit"]').should('be.visible').click();
+        cy.get('input[name="password"]').should('have.value', sharedUserPassword);
       });
+
+      cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
+      cy.wait('@loginMutation', { timeout: 15000 });
+
       cy.url({ timeout: 30000 }).should('include', '/customer/account');
       cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     });
@@ -653,13 +664,24 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const testUserPassword = Cypress.env('testUserPassword');
 
       cy.visit('/customer/login');
+
+      cy.intercept('POST', '**/graphql', (req) => {
+        const body = req.body || {};
+        if (body.query && body.query.includes('generateCustomerToken')) {
+          req.alias = 'loginMutation';
+        }
+      });
+
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
         cy.get('input[name="email"]').should('be.visible').type(testUserEmail, { delay: 50 });
         cy.get('input[name="email"]').should('have.value', testUserEmail);
         cy.get('input[name="password"]').should('be.visible').type(testUserPassword, { delay: 50 });
-        cy.get('input[name="password"]').should('have.value', testUserPassword).blur();
-        cy.get('button[type="submit"]').should('be.visible').click();
+        cy.get('input[name="password"]').should('have.value', testUserPassword);
       });
+
+      cy.get('main .auth-sign-in-form button[type="submit"]').should('be.visible').click({ force: true });
+      cy.wait('@loginMutation', { timeout: 15000 });
+
       cy.url({ timeout: 30000 }).should('include', '/customer/account');
       cy.get('.commerce-account-nav', { timeout: 15000 }).should('exist');
     });
