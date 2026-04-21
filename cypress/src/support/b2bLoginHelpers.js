@@ -43,9 +43,9 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     });
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testAdmin.email, { delay: 50 });
+      cy.get('input[name="email"]').should('be.visible').type(testAdmin.email, { delay: 100 });
       cy.get('input[name="email"]').should('have.value', testAdmin.email);
-      cy.get('input[name="password"]').should('be.visible').type(testAdmin.password, { delay: 50 });
+      cy.get('input[name="password"]').should('be.visible').type(testAdmin.password, { delay: 100 });
       cy.get('input[name="password"]').should('have.value', testAdmin.password);
     });
 
@@ -86,9 +86,9 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     });
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testUsers.regular.email, { delay: 50 });
+      cy.get('input[name="email"]').should('be.visible').type(testUsers.regular.email, { delay: 100 });
       cy.get('input[name="email"]').should('have.value', testUsers.regular.email);
-      cy.get('input[name="password"]').should('be.visible').type(testUsers.regular.password, { delay: 50 });
+      cy.get('input[name="password"]').should('be.visible').type(testUsers.regular.password, { delay: 100 });
       cy.get('input[name="password"]').should('have.value', testUsers.regular.password);
     });
 
@@ -146,9 +146,9 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     });
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').should('be.visible').type(testUsers.restricted.email, { delay: 50 });
+      cy.get('input[name="email"]').should('be.visible').type(testUsers.restricted.email, { delay: 100 });
       cy.get('input[name="email"]').should('have.value', testUsers.restricted.email);
-      cy.get('input[name="password"]').should('be.visible').type(testUsers.restricted.password, { delay: 50 });
+      cy.get('input[name="password"]').should('be.visible').type(testUsers.restricted.password, { delay: 100 });
       cy.get('input[name="password"]').should('have.value', testUsers.restricted.password);
     });
 
