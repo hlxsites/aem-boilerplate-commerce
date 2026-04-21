@@ -47,7 +47,7 @@ jobs:
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          command: npx cypress run --config-file cypress.b2b.saas.config.js --spec "${{ matrix.spec }}"
+          command: npx cypress run --config-file cypress.b2b.saas.config.js --spec ${{ matrix.spec }}
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
           CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT }}
