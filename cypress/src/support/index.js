@@ -1,20 +1,21 @@
-import './hideFetchAndXhrLogs';
-import './deleteCustomer';
-import './getUserTokenCookie';
-import './waitForResource';
-import './sessionStorage';
-import './getIFrameField';
-import './waitForImages';
-import './interceptConfig';
-import './waitForWishlistPage';
 import '@percy/cypress';
-import './percyTakeSnapshot';
-import './waitForLoadingSkeletonToDisappear';
-import './deleteNegotiableQuotes';
-import './logToTerminal';
-import './waitForUserInGrid';
-import './b2bSetupCompany';
 import './b2bLoginHelpers';
+import './b2bSetupCompany';
+import './deleteCustomer';
+import './deleteNegotiableQuotes';
+import './getIFrameField';
+import './getUserTokenCookie';
+import './hideFetchAndXhrLogs';
+import './interceptConfig';
+import './logToTerminal';
+import './percyTakeSnapshot';
+import './safeType';
+import './sessionStorage';
+import './waitForImages';
+import './waitForLoadingSkeletonToDisappear';
+import './waitForResource';
+import './waitForUserInGrid';
+import './waitForWishlistPage';
 
-import registerCypressGrep from '@cypress/grep'
+import registerCypressGrep from '@cypress/grep';
 registerCypressGrep();
