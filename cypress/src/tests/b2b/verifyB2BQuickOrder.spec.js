@@ -70,8 +70,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       timeout: 30000,
     });
 
-    cy.wait(2000);
-
     cy.get(fields.quickOrderItemsContainer, { timeout: 10000 }).should(
       'be.visible',
     );
@@ -125,12 +123,10 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       cy.contains('button', 'Add to List').click();
     });
 
-    cy.wait(2000);
-
     // ========== STEP 3: Verify items in list ==========
 
     cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.quickOrderItemCard).should('have.length', 2);
+      cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 2);
     });
 
     // ========== STEP 4: Update quantity ==========
@@ -142,7 +138,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         .clear({ force: true })
         .type('5', { force: true });
     });
-    cy.wait(500);
 
     // ========== STEP 5: Add to cart ==========
 
@@ -151,15 +146,13 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         .should('not.be.disabled')
         .click();
     });
-    cy.wait(2000);
 
     // ========== STEP 6: Verify redirect to cart ==========
 
-    cy.url().should('include', CART_PAGE_URL);
+    cy.url({ timeout: 15000 }).should('include', CART_PAGE_URL);
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal('✅ TEST 1 PASSED: Items added to cart successfully');
   });
@@ -180,7 +173,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         force: true,
       });
     });
-    cy.wait(1000);
 
     cy.get(fields.quickOrderCsvErrorMessage).should('exist');
 
@@ -190,8 +182,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         force: true,
       });
     });
-
-    cy.wait(5000);
 
     // ========== STEP 3: Verify CSV items added ==========
 
@@ -209,21 +199,18 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         .find(fields.quickOrderItemRemoveButton)
         .click();
     });
-    cy.wait(500);
 
     cy.get(fields.quickOrderItemsContainer).within(() => {
       cy.get(fields.quickOrderItemCard).should('have.length', 2);
       cy.get(fields.quickOrderAddAllToCartButton).click();
     });
-    cy.wait(2000);
 
     // ========== STEP 5: Verify redirect to cart ==========
 
-    cy.url().should('include', CART_PAGE_URL);
+    cy.url({ timeout: 15000 }).should('include', CART_PAGE_URL);
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal('✅ TEST 2 PASSED: CSV workflow successful');
   });
@@ -238,9 +225,8 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     cy.get(fields.quickOrderItemsContainer).within(() => {
       cy.get(fields.quickOrderSearchInput).type(TEST_SIMPLE_PRODUCT_1_SKU);
     });
-    cy.wait(1500);
 
-    cy.get(fields.quickOrderSearchResults).should('be.visible');
+    cy.get(fields.quickOrderSearchResults, { timeout: 10000 }).should('be.visible');
     cy.get(fields.quickOrderSearchResultItem).should(
       'have.length.greaterThan',
       0,
@@ -249,10 +235,9 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 2: Select product from search ==========
 
     cy.get(fields.quickOrderSearchResultItem).first().click();
-    cy.wait(1500);
 
     cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.quickOrderItemCard).should('have.length', 1);
+      cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 1);
     });
 
     // ========== STEP 3: Add configurable product ==========
@@ -264,10 +249,8 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       cy.contains('button', 'Add to List').click();
     });
 
-    cy.wait(2000);
-
     cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.quickOrderItemCard).should('have.length', 2);
+      cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 2);
     });
 
     // ========== STEP 4: Verify configurable product has options ==========
@@ -281,27 +264,23 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find('select[name="color"]')
       .select('red');
-    cy.wait(1000);
 
     cy.get(fields.quickOrderItemCard)
       .first()
       .find(fields.quickOrderItemQuantityInput)
       .clear({ force: true })
       .type('3', { force: true });
-    cy.wait(500);
 
     // ========== STEP 6: Add to cart ==========
 
     cy.get(fields.quickOrderAddAllToCartButton).click();
-    cy.wait(2000);
 
     // ========== STEP 7: Verify redirect to cart ==========
 
-    cy.url().should('include', CART_PAGE_URL);
+    cy.url({ timeout: 15000 }).should('include', CART_PAGE_URL);
 
     // Return to quick order page for next test
     cy.visit(QUICK_ORDER_PAGE_URL);
-    cy.wait(2000);
 
     cy.logToTerminal(
       '✅ TEST 3 PASSED: Search and configurable products workflow successful',
@@ -321,9 +300,8 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       );
       cy.contains('button', 'Add to List').click();
     });
-    cy.wait(1500);
 
-    cy.get(fields.quickOrderItemCard).should('have.length', 1);
+    cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 1);
 
     // ========== STEP 2: Add via Search ==========
 
@@ -332,11 +310,9 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         .find(fields.quickOrderSearchInput)
         .type(TEST_SIMPLE_PRODUCT_2_SKU);
     });
-    cy.wait(1000);
-    cy.get(fields.quickOrderSearchResultItem).first().click();
-    cy.wait(1500);
+    cy.get(fields.quickOrderSearchResultItem, { timeout: 10000 }).first().click();
 
-    cy.get(fields.quickOrderItemCard).should('have.length', 2);
+    cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 2);
 
     // ========== STEP 3: Add configurable product ==========
 
@@ -346,16 +322,14 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
         .type(TEST_CONFIGURABLE_PRODUCT_SKU);
       cy.contains('button', 'Add to List').click();
     });
-    cy.wait(1500);
 
-    cy.get(fields.quickOrderItemCard).should('have.length', 3);
+    cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 3);
 
     // ========== STEP 4: Configure options ==========
 
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find('select[name="color"]')
       .select('green');
-    cy.wait(1000);
 
     // ========== STEP 5: Update quantities ==========
 
@@ -370,18 +344,16 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       .find(fields.quickOrderItemQuantityInput)
       .clear({ force: true })
       .type('2', { force: true });
-    cy.wait(500);
 
     // ========== STEP 6: Verify total items and add to cart ==========
 
     cy.get(fields.quickOrderItemCard).should('have.length.greaterThan', 2);
 
     cy.get(fields.quickOrderAddAllToCartButton).click();
-    cy.wait(2000);
 
     // ========== STEP 7: Verify redirect to cart ==========
 
-    cy.url().should('include', '/cart');
+    cy.url({ timeout: 15000 }).should('include', '/cart');
 
     cy.logToTerminal('✅ TEST 4 PASSED: Mixed workflow successful');
   });
@@ -421,10 +393,9 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       cy.get(fields.quickOrderMultipleSkuTextarea).clear().type(skuText);
       cy.contains('button', 'Add to List').click();
     });
-    cy.wait(2000);
 
     cy.get(fields.quickOrderItemsContainer).within(() => {
-      cy.get(fields.quickOrderItemCard).should('have.length', 3);
+      cy.get(fields.quickOrderItemCard, { timeout: 10000 }).should('have.length', 3);
     });
 
     // ========== STEP 2: Configure the configurable product ==========
@@ -432,7 +403,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find('select[name="color"]')
       .select(expectedItems[2].color);
-    cy.wait(1000);
 
     // ========== STEP 3: Set specific quantities for each product ==========
 
@@ -455,8 +425,6 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       .find(fields.quickOrderItemQuantityInput)
       .clear({ force: true })
       .type(expectedItems[2].quantity.toString(), { force: true });
-
-    cy.wait(500);
 
     // ========== STEP 4: Add all items to cart ==========
 

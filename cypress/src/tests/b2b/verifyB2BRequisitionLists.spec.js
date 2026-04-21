@@ -1,7 +1,7 @@
 import { signUpUser } from "../../actions";
 import { assertAuthUser } from "../../assertions";
-import { products } from "../../fixtures";
 import * as fields from "../../fields";
+import { products } from "../../fixtures";
 
 /**
  * Create a new Requisition List from PDP and PLP
@@ -18,21 +18,13 @@ function createRequisitionList(selector, listName, description, index = null) {
   cy.get(fields.requisitionListActions).should("exist").click();
   cy.get(fields.requisitionListForm).should("be.visible");
 
-  // Wait for the form to be interactable
-  cy.wait(1000);
-  cy.get(fields.requisitionListFormName).type(listName);
-  cy.wait(1000);
+  cy.get(fields.requisitionListFormName).should('be.visible').type(listName);
   cy.get(fields.requisitionListFormDescription).type(description);
-  cy.wait(1000);
   cy.contains("Save").should("be.visible").click();
 
-  // Wait for the action to complete
-  cy.wait(1000);
   cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
-
-  cy.wait(2000);
 }
 
 /**
@@ -55,7 +47,6 @@ function assertRequisitionListExists(selector, listName, index = null) {
     "contain",
     listName
   );
-  cy.wait(1000);
   cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
   cy.get(fields.requisitionListPickerActionsButton)
     .should("not.be.disabled")
@@ -64,8 +55,6 @@ function assertRequisitionListExists(selector, listName, index = null) {
   cy.get(fields.requisitionListAlert)
     .should("be.visible")
     .contains("Item(s) successfully added to requisition list");
-
-  cy.wait(2000);
 }
 
 describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
@@ -87,7 +76,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
 
     // Navigate to Requisition Lists from Account menu
@@ -172,14 +160,12 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Navigate to search page to find configurable products
       cy.visit("/search?q=configurable");
-      cy.wait(2000);
 
       // Click requisition list on first configurable product in search results
       cy.get(fields.requisitionListSelector).first().click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");
-      cy.wait(2000);
 
       // Should show validation message on PDP from the redirection
       cy.get(fields.productDetailsAlert)
@@ -199,7 +185,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Select all available options
       cy.get(".product-details__options select").each(($select) => {
         cy.wrap($select).select(1);
-        cy.wait(500);
 
         cy.get(fields.productDetailsAlert).should("not.be.visible");
 
@@ -224,14 +209,12 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // Navigate to search page to find bundle products
       cy.visit("/search?q=bundle");
-      cy.wait(2000);
 
       // Click requisition list on first bundle product in search results
       cy.get(fields.requisitionListSelector).eq(1).click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");
-      cy.wait(2000);
 
       // Should show validation message on PDP from the redirection
       cy.get(fields.productDetailsAlert)
@@ -251,7 +234,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Select required options
       cy.get(".product-details__options select").each(($select) => {
         cy.wrap($select).select(1);
-        cy.wait(500);
       });
 
       cy.get(fields.productDetailsAlert).should("not.be.visible");
@@ -277,15 +259,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // Rename Requisition List
       cy.get(fields.requisitionListItemActionsRenameButton).eq(1).click();
       cy.contains("Update Requisition List").should("be.visible");
-      cy.wait(1000);
       cy.get(fields.requisitionListFormName)
+        .should('be.visible')
         .clear()
         .type("Updated Requisition List");
-      cy.wait(1000);
       cy.get(fields.requisitionListFormDescription)
         .clear()
         .type("Dummy description");
-      cy.wait(1000);
       cy.contains("Save").should("be.visible").click();
       cy.contains("Updated Requisition List").should("be.visible");
 
@@ -303,15 +283,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // 1. Rename Requisition List from the Requisition List view page
       cy.get(fields.requisitionListViewRenameButton).click();
       cy.contains("Update Requisition List").should("be.visible");
-      cy.wait(1000);
       cy.get(fields.requisitionListFormName)
+        .should('be.visible')
         .clear()
         .type("Now updating from RL view page");
-      cy.wait(1000);
       cy.get(fields.requisitionListFormDescription)
         .clear()
         .type("Dummy description one more time");
-      cy.wait(1000);
       cy.contains("Save").should("be.visible").click();
       cy.contains("Now updating from RL view page").should("be.visible");
       cy.contains("Requisition list updated successfully.").should(
@@ -320,13 +298,11 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
 
       // 2. Update quantity of the first item in the Requisition List
       cy.get(fields.requisitionListViewQuantityInput).eq(0).click();
-      cy.wait(1000);
       cy.get(fields.requisitionListViewQuantityInput)
         .eq(0)
         .clear()
         .type("10")
         .blur();
-      cy.wait(1000);
       cy.contains("Item quantity updated successfully.").should("be.visible");
       cy.get(fields.requisitionListViewQuantityInput)
         .eq(0)
@@ -362,7 +338,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "not.exist",
       );
-      cy.wait(1000);
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
@@ -394,7 +369,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
 
     // Navigate to Requisition Lists and create an empty destination list
@@ -468,7 +442,6 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
 
     // Navigate to Requisition Lists and create an empty destination list

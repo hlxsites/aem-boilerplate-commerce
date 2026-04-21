@@ -67,27 +67,27 @@
  */
 
 import {
-  assertCompanyRegistrationForm,
-  assertCompanyRegistrationSuccess,
-  assertHomePageLoaded,
-  assertAccountSectionAccessible,
+    fillCompanyRegistrationForm,
+    navigateToCompanyRegistration,
+    signUpUser,
+    submitCompanyRegistrationForm,
+} from '../../actions';
+import {
+    assertAccountSectionAccessible,
+    assertCompanyRegistrationForm,
+    assertCompanyRegistrationSuccess,
+    assertHomePageLoaded,
 } from '../../assertions';
 import { COMPANY_CREATE_PATH } from '../../fields';
 import {
-  fillCompanyRegistrationForm,
-  submitCompanyRegistrationForm,
-  navigateToCompanyRegistration,
-  signUpUser,
-} from '../../actions';
-import {
-  companyRegistrationData,
-  companyRegistrationDataAllFields,
-  companyRegistrationDataUKNoRegion,
-  companyRegistrationDataUKWithRegion,
+    companyRegistrationData,
+    companyRegistrationDataAllFields,
+    companyRegistrationDataUKNoRegion,
+    companyRegistrationDataUKWithRegion,
 } from '../../fixtures/companyData';
 import {
-  verifyCompanyCreated,
-  cleanupTestCompany,
+    cleanupTestCompany,
+    verifyCompanyCreated,
 } from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
@@ -270,8 +270,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
     cy.get('input[name="street"]').clear().type('456 Test Ave').blur();
     cy.get('input[name="city"]').clear().type('Test City').blur();
     cy.get('select[name="countryCode"]').select('US');
-    cy.wait(1000);
-    cy.get('select[name="region"]').select('Texas');
+    cy.get('select[name="region"]', { timeout: 10000 }).should('exist').select('Texas');
     cy.get('input[name="postcode"]').clear().type('54321').blur();
     cy.get('input[name="addressTelephone"]').clear().type('9876543210').blur();
 

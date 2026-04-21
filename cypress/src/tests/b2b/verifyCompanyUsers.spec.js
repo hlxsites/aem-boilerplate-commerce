@@ -54,14 +54,14 @@
  */
 
 import {
-  createStandaloneCustomer,
-  acceptCompanyInvitation,
-  updateCompanyUserStatus,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  invalidData,
+    invalidData,
 } from '../../fixtures/companyManagementData';
+import {
+    acceptCompanyInvitation,
+    cleanupTestCompany,
+    createStandaloneCustomer,
+    updateCompanyUserStatus,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
@@ -116,7 +116,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // ========== SETUP: Create company with 2 users (ONCE) ==========
     cy.setupCompanyWith2Users();
-    cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
     cy.loginAsCompanyAdmin();
@@ -124,7 +123,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(3000);
 
     // ========== TC-15: Verify users grid display ==========
     cy.logToTerminal('--- STEP 1: TC-15 - Verify users grid display ---');
@@ -138,7 +136,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.logToTerminal('📊 Setting page size to 20 to show all users');
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
       }
     });
 
@@ -175,7 +172,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Verify form fields are visible
     cy.get('input[name="first_name"]', { timeout: 5000 }).should('be.visible');
@@ -185,7 +181,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
     cy.get('body').should('contain', 'Select a role');
 
     // Test invalid email format
@@ -197,14 +192,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.get('input[name="first_name"]:visible').type('Test').blur();
     cy.get('input[name="last_name"]:visible').type('User').blur();
     cy.contains('button', 'Save').click();
-    cy.wait(1000);
     cy.get('body').should('contain', 'Enter a valid email');
 
     cy.logToTerminal('✅ TC-16: Form validation works correctly');
 
     // Close the form (ESC or Cancel)
     cy.get('body').type('{esc}');
-    cy.wait(500);
 
     // ========== TC-17: Add new user with unregistered email ==========
     cy.logToTerminal('--- STEP 3: TC-17 - Add new user with unregistered email ---');
@@ -213,7 +206,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Fill the form with valid data
     cy.logToTerminal('📝 Filling in new user details...');
@@ -231,7 +223,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(3000);
 
     // Verify form closed successfully
     cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
@@ -247,7 +238,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     cy.then(() => {
       const existingEmail = Cypress.env('testUsers').user1.email;
@@ -263,7 +253,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
       cy.contains('button', 'Save', { timeout: 5000 })
         .should('be.visible')
         .click();
-      cy.wait(3000);
 
       // Verify form stays open (validation error)
       cy.contains('h3', 'Add User', { timeout: 5000 }).should('be.visible');
@@ -271,7 +260,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
       // Close form
       cy.get('body').type('{esc}');
-      cy.wait(500);
     });
 
     // ========== TC-23: Admin can edit other user data ==========
@@ -290,8 +278,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
             .click();
         });
     });
-
-    cy.wait(1000);
 
     // Verify Edit User form loaded
     cy.contains('h3', 'Edit User', { timeout: 5000 }).should('be.visible');
@@ -314,14 +300,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
 
     // Verify updated name appears in grid
     cy.reload();
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.contains('Updated UserName', { timeout: 10000 }).should('be.visible');
     cy.logToTerminal('✅ TC-23: Admin edited other user successfully');
@@ -343,8 +327,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         });
     });
 
-    cy.wait(1000);
-
     // Verify Manage dialog appears
     cy.get('.company-management-company-users-management-modal', { timeout: 5000 })
       .should('be.visible');
@@ -356,7 +338,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .should('be.visible')
         .click();
     });
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/deactivated|inactive/i, { timeout: 5000 }).should('be.visible');
@@ -377,7 +358,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Refresh to get latest state
     cy.reload();
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     cy.then(() => {
@@ -394,22 +374,16 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         });
     });
 
-    cy.wait(1000);
-
     // Click Delete
     cy.logToTerminal('🗑️ Deleting user...');
     cy.contains('button', 'Delete', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/deleted|removed/i, { timeout: 5000 }).should('be.visible');
 
-    // Verify user no longer appears or is Inactive
-    cy.wait(2000);
     cy.reload();
-    cy.wait(3000);
 
     cy.then(() => {
       const user1Email = Cypress.env('testUsers').user1.email;
@@ -445,7 +419,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // ========== SETUP: Create company with admin (ONCE) ==========
     cy.setupCompanyWithAdmin();
-    cy.wait(2000);
 
     // ========== TC-18: Add user with registered email ==========
     cy.logToTerminal('--- STEP 1: TC-18 - Invite registered user ---');
@@ -480,7 +453,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // Navigate to Company Users page
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(2000);
 
     // Wait for table to load
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
@@ -490,7 +462,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Add New User', { timeout: 10000 })
       .should('be.visible')
       .click();
-    cy.wait(1000);
 
     // Fill the form with standalone user email (invitation)
     cy.logToTerminal('📝 Filling in invitation form with registered email...');
@@ -508,7 +479,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(3000);
 
     // Verify form closed
     cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');
@@ -543,14 +513,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload and verify user appears in grid
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
     cy.get('body').then(($body) => {
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
       }
     });
 
@@ -585,14 +553,12 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload page
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
     cy.get('[aria-busy="true"]', { timeout: 10000 }).should('not.exist');
 
     cy.get('body').then(($body) => {
       if ($body.find('select[name="pageSize"]').length > 0) {
         cy.get('select[name="pageSize"]').select('20');
-        cy.wait(2000);
       }
     });
 
@@ -621,7 +587,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload page
     cy.visit('/customer/company/users');
-    cy.wait(2000);
     cy.get('.companyUsersTable', { timeout: 15000 }).should('be.visible');
 
     // Verify user appears as Active (with retry for caching)
@@ -652,7 +617,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // ========== SETUP: Create company with admin (ONCE) ==========
     cy.setupCompanyWithAdmin();
-    cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
     cy.loginAsCompanyAdmin();
@@ -660,7 +624,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     // ========== NAVIGATE: To Company Users page ==========
     cy.logToTerminal('📄 Navigating to Company Users page...');
     cy.visit('/customer/company/users');
-    cy.wait(3000);
 
     // ========== TC-22: Admin can edit their own user data ==========
     cy.logToTerminal('--- STEP 1: TC-22 - Admin edits own data ---');
@@ -676,8 +639,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .should('be.visible')
         .click();
     });
-
-    cy.wait(1000);
 
     // Verify Edit User form loaded
     cy.contains('h3', 'Edit User', { timeout: 5000 }).should('be.visible');
@@ -706,7 +667,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
@@ -717,7 +677,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Reload to get fresh state
     cy.visit('/customer/company/users');
-    cy.wait(2000);
 
     // Find admin in the grid and click Manage
     cy.then(() => {
@@ -729,8 +688,6 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
         .should('be.visible')
         .click();
     });
-
-    cy.wait(1000);
 
     // Verify Manage dialog appears
     cy.get('.company-management-company-users-management-modal', { timeout: 5000 })

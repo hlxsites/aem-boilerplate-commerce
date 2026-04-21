@@ -52,20 +52,15 @@
  */
 
 import {
-  getCompanyCredit,
-  updateCompanyCredit,
-  increaseCompanyCreditBalance,
-  cleanupTestCompany,
-  cancelOrder,
-  createInvoice,
-  createCreditMemo,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  setGuestShippingAddress,
-  checkTermsAndConditions,
-  placeOrder,
+  setGuestShippingAddress
 } from '../../actions';
 import { customerShippingAddress } from '../../fixtures';
+import {
+  cleanupTestCompany,
+  getCompanyCredit,
+  increaseCompanyCreditBalance,
+  updateCompanyCredit
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
   before(() => {
@@ -115,7 +110,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify page title');
       cy.contains('Company Credit', { timeout: 10000 })
@@ -148,11 +142,8 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         cy.logToTerminal('✅ Balance reimbursed: $5.00');
       });
 
-      cy.wait(3000);
-
       // Reload page to see reimbursement
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify balance value $5.00 is displayed');
       cy.contains('5.00', { timeout: 15000 })
@@ -179,11 +170,8 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         cy.logToTerminal('✅ Credit limit set to $100.00');
     });
 
-      cy.wait(3000);
-
       // Reload page to see allocation
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify credit limit $100.00 is displayed');
       cy.contains('100', { timeout: 15000 })
@@ -201,14 +189,13 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       cy.logToTerminal('🚪 Logout admin');
       cy.get('.nav-dropdown-button').click();
       cy.contains('button', /sign out|logout/i).click();
-      cy.wait(2000);
+      cy.url({ timeout: 15000 }).should('not.include', '/customer/account');
 
       cy.logToTerminal('🔐 Login as restricted user');
       cy.loginAsRestrictedUser();
 
       cy.logToTerminal('📍 Navigate to Company Credit page');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       cy.logToTerminal('✅ Verify restricted user cannot see summary blocks');
       cy.contains('Company Credit', { timeout: 10000 })
@@ -261,40 +248,30 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Add product to cart
       cy.logToTerminal('🛒 Adding product to cart');
       cy.visit('/products/youth-tee/ADB150');
-      cy.wait(2000);
-      cy.get('.product-details__buttons__add-to-cart button')
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
-      cy.wait(2000);
 
       // Go to cart and checkout
       cy.logToTerminal('💳 Proceeding to checkout');
       cy.get('.minicart-wrapper').click();
-      cy.wait(2000);
-      cy.get('[data-loaded="true"]').should('exist');
+      cy.get('[data-loaded="true"]', { timeout: 15000 }).should('exist');
       cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
-      cy.wait(5000);
 
       // Wait for checkout to load
-      cy.url().should('include', '/checkout');
-      cy.wait(8000);
+      cy.url({ timeout: 15000 }).should('include', '/checkout');
 
       // Fill shipping address
       cy.logToTerminal('📝 Filling shipping address');
       setGuestShippingAddress(customerShippingAddress, true);
-      cy.wait(3000);
 
       // Select shipping method
       cy.logToTerminal('📦 Selecting shipping method');
       cy.get('body').then(($body) => {
         if ($body.find('input[name="shipping_method"]').length > 0) {
           cy.get('input[name="shipping_method"]').first().check({ force: true });
-          cy.wait(2000);
         }
       });
-
-      // Wait for payment section
-      cy.wait(5000);
 
       // Select Payment on Account
       cy.logToTerminal('💰 Selecting Payment on Account payment method');
@@ -302,7 +279,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         const bodyText = $body.text();
         if (bodyText.includes('Payment on Account')) {
           cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
-          cy.wait(2000);
         } else {
           cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
         }
@@ -313,7 +289,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         if ($body.find('input[type="checkbox"][name="terms"]').length > 0
             || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
           cy.get('input[type="checkbox"]').last().check({ force: true });
-          cy.wait(1000);
         }
       });
 
@@ -323,7 +298,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         .should('be.visible')
         .should('not.be.disabled')
         .click();
-      cy.wait(8000);
 
       // Verify order confirmation - can be success, confirmation, or order-details page
       cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
@@ -375,7 +349,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Navigate to Company Credit page
       cy.logToTerminal('📊 Verifying Purchase record in credit history');
       cy.visit('/customer/company/credit');
-      cy.wait(3000);
 
       // Verify "Purchased" record appears - scoped to block to avoid matching nav links
       // Uses /purchas|order/i in case the dropin renders the record type as "Order" vs "Purchased"
@@ -389,9 +362,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // ========== TC-47 CASE_5: Refund (invoice + credit memo, credit restored) ==========
       // Use the FIRST order for refund (invoice + credit memo) since it's the natural flow
       cy.logToTerminal('--- STEP 2: TC-47 CASE_5 - Invoice first order and create credit memo (refund) ---');
-
-      // Wait for backend to process order
-      cy.wait(5000);
 
       // Invoice and refund the first order
       cy.then(async () => {
@@ -410,14 +380,12 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
             cy.logToTerminal(`📄 Creating invoice for order: ${orderNumber}`);
             const invoiceId = await createInvoice(orderId);
             cy.logToTerminal(`✅ Invoice created for order ${orderNumber}, invoice ID: ${invoiceId}`);
-            cy.wait(2000);
 
             // Step 3: Create credit memo (triggers RefundCommand)
             cy.logToTerminal(`💰 Creating credit memo for order: ${orderNumber} with invoice ID: ${invoiceId}`);
             const creditMemoId = await createCreditMemo(orderId, invoiceId);
             cy.logToTerminal(`✅ Credit memo created for order ${orderNumber}, credit memo ID: ${creditMemoId}`);
             cy.logToTerminal('⏳ Waiting for RefundCommand to execute and update credit history...');
-            cy.wait(3000);
           } catch (error) {
             cy.logToTerminal(`❌ Error processing order ${orderNumber}: ${error.message}`);
             throw error;
@@ -427,31 +395,19 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
 
       // Verify "Refunded" record in credit history with retry logic (due to USF-3516 caching)
       cy.logToTerminal('📊 Verifying Refunded record in credit history...');
-      const maxRefundRetries = 5;
-      let refundAttempt = 0;
-
-      const checkForRefund = () => {
-        refundAttempt++;
-        cy.logToTerminal(`🔍 Attempt ${refundAttempt}/${maxRefundRetries}: Checking for Refunded record...`);
-
-        cy.visit('/customer/company/credit');
-        cy.wait(3000);
-
-        cy.get('body').then(($body) => {
-          if ($body.text().match(/refund/i)) {
-            cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified (via RefundCommand)');
-          } else if (refundAttempt < maxRefundRetries) {
-            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${refundAttempt}/${maxRefundRetries})`);
-            cy.wait(5000); // Wait longer between retries
-            checkForRefund();
-          } else {
-            cy.logToTerminal('❌ Refunded record not found after max retries');
-            throw new Error('Refunded record not found in credit history after credit memo creation');
-          }
-        });
-      };
-
-      checkForRefund();
+      cy.retryUntil(
+        () => {
+          cy.visit('/customer/company/credit');
+          cy.contains('Company Credit', { timeout: 10000 }).should('be.visible');
+          return cy.get('body').then(($body) => $body.text().match(/refund/i));
+        },
+        {
+          maxRetries: 5,
+          delay: 3000,
+          errorMessage: 'Refunded record not found in credit history after credit memo creation',
+        },
+      );
+      cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified (via RefundCommand)');
 
       // ========== TC-47 CASE_4: Revert (cancel order, credit restored) ==========
       // Need a SECOND order for cancel/revert since we just refunded the first one
@@ -460,40 +416,30 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
       // Add product to cart for second order (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('🛒 Adding product to cart for second order');
       cy.visit('/products/youth-tee/ADB150');
-      cy.wait(2000);
-      cy.get('.product-details__buttons__add-to-cart button')
+      cy.get('.product-details__buttons__add-to-cart button', { timeout: 15000 })
         .should('be.visible')
         .click();
-      cy.wait(2000);
 
       // Go to cart and checkout (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('💳 Proceeding to checkout for second order');
       cy.get('.minicart-wrapper').click();
-      cy.wait(2000);
-      cy.get('[data-loaded="true"]').should('exist');
+      cy.get('[data-loaded="true"]', { timeout: 15000 }).should('exist');
       cy.contains('Checkout', { timeout: 10000 }).should('be.visible').click();
-      cy.wait(5000);
 
       // Wait for checkout to load
-      cy.url().should('include', '/checkout');
-      cy.wait(8000);
+      cy.url({ timeout: 15000 }).should('include', '/checkout');
 
       // Fill shipping address (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('📝 Filling shipping address for second order');
       setGuestShippingAddress(customerShippingAddress, true);
-      cy.wait(3000);
 
       // Select shipping method (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('📦 Selecting shipping method for second order');
       cy.get('body').then(($body) => {
         if ($body.find('input[name="shipping_method"]').length > 0) {
           cy.get('input[name="shipping_method"]').first().check({ force: true });
-          cy.wait(2000);
         }
       });
-
-      // Wait for payment section
-      cy.wait(5000);
 
       // Select Payment on Account (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('💰 Selecting Payment on Account payment method for second order');
@@ -501,7 +447,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         const bodyText = $body.text();
         if (bodyText.includes('Payment on Account')) {
           cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
-          cy.wait(2000);
         } else {
           cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
         }
@@ -512,7 +457,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         if ($body.find('input[type="checkbox"][name="terms"]').length > 0
             || $body.find('.checkout-terms-and-conditions__form input[type="checkbox"]').length > 0) {
           cy.get('input[type="checkbox"]').last().check({ force: true });
-          cy.wait(1000);
         }
       });
 
@@ -522,7 +466,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         .should('be.visible')
         .should('not.be.disabled')
         .click();
-      cy.wait(8000);
 
       // Verify order confirmation and extract order ID (EXACT SAME FLOW AS FIRST ORDER)
       cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
@@ -571,9 +514,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
         });
       });
 
-      // Wait for backend to process order
-      cy.wait(5000);
-
       // Cancel the second order (Revert)
       cy.then(async () => {
         const orderNumber2 = Cypress.env('testOrderNumber2');
@@ -595,7 +535,6 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
             // Verify "Reverted" record in credit history
             cy.logToTerminal('📊 Verifying Reverted record in credit history...');
             cy.visit('/customer/company/credit');
-            cy.wait(2000);
 
             cy.contains(/revert/i, { timeout: 10000 }).should('be.visible');
             cy.logToTerminal('✅ TC-47 CASE_4: Reverted record verified');

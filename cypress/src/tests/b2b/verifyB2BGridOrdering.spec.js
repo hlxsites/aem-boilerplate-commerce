@@ -79,8 +79,6 @@ describe(
         failOnStatusCode: false,
         timeout: 30000,
       });
-
-      cy.wait(3000);
     });
 
     after(() => {
@@ -131,27 +129,22 @@ describe(
 
       cy.logToTerminal('📝 Setting quantity to 5 for first variant...');
       actions.updateVariantQuantity(0, 5);
-      cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 5 });
 
       cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
-      cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 3 });
 
       cy.logToTerminal('📝 Setting quantity to 2 for third variant...');
       actions.updateVariantQuantity(2, 2);
-      cy.wait(500);
       actions.verifyVariantRow(2, { quantity: 2 });
 
       cy.logToTerminal('➕ Incrementing first variant quantity...');
       actions.incrementVariantQuantity(0);
-      cy.wait(500);
       actions.verifyVariantRow(0, { quantity: 6 });
 
       cy.logToTerminal('➖ Decrementing second variant quantity...');
       actions.decrementVariantQuantity(1);
-      cy.wait(500);
       actions.verifyVariantRow(1, { quantity: 2 });
 
       cy.logToTerminal(
@@ -196,7 +189,6 @@ describe(
       actions.updateVariantQuantity(0, 5);
       actions.updateVariantQuantity(1, 3);
       actions.updateVariantQuantity(2, 7);
-      cy.wait(1500);
 
       cy.get(fields.variantsGridQuantityInput(0)).should('have.value', '5');
       cy.get(fields.variantsGridQuantityInput(1)).should('have.value', '3');
@@ -267,7 +259,6 @@ describe(
 
       cy.logToTerminal('📝 Setting quantity...');
       actions.updateVariantQuantity(0, 2);
-      cy.wait(1500);
 
       cy.logToTerminal('🔓 Verifying buttons are enabled...');
       cy.get(fields.variantsGridActionsButtons)
@@ -292,7 +283,6 @@ describe(
       actions.updateVariantQuantity(0, 5);
       actions.updateVariantQuantity(1, 3);
       actions.updateVariantQuantity(2, 4);
-      cy.wait(1500);
 
       actions.verifyVariantRow(0, { quantity: 5 });
       actions.verifyVariantRow(1, { quantity: 3 });
@@ -317,7 +307,6 @@ describe(
       actions.updateVariantQuantity(0, 10);
       actions.updateVariantQuantity(1, 8);
       actions.updateVariantQuantity(2, 6);
-      cy.wait(500);
 
       actions.verifyVariantRow(0, { quantity: 10 });
       actions.verifyVariantRow(1, { quantity: 8 });
@@ -386,7 +375,6 @@ describe(
 
       cy.logToTerminal('📝 Setting quantity to 2 for first variant...');
       actions.updateVariantQuantity(0, 2);
-      cy.wait(500);
 
       cy.logToTerminal(
         '💵 Verifying subtotal is calculated for first variant...',
@@ -398,7 +386,6 @@ describe(
 
       cy.logToTerminal('📝 Setting quantity to 3 for second variant...');
       actions.updateVariantQuantity(1, 3);
-      cy.wait(500);
 
       cy.logToTerminal(
         '💵 Verifying subtotal is calculated for second variant...',
@@ -410,7 +397,6 @@ describe(
 
       cy.logToTerminal('📝 Setting quantity to 4 for third variant...');
       actions.updateVariantQuantity(2, 4);
-      cy.wait(500);
 
       cy.logToTerminal(
         '💵 Verifying subtotal is calculated for third variant...',
@@ -466,7 +452,6 @@ describe(
       expectedVariants.forEach(({ index, quantity }) => {
         actions.updateVariantQuantity(index, quantity);
       });
-      cy.wait(2000);
 
       cy.logToTerminal(
         '✅ Verifying quantities are set before adding to cart...',
@@ -493,9 +478,6 @@ describe(
         cy.logToTerminal('✅ Add to Cart API call completed successfully');
         expect(interception.response.statusCode).to.equal(200);
       });
-
-      // Wait for UI to update after cart API call completes
-      cy.wait(3000);
 
       cy.logToTerminal(
         `🛒 Verifying cart badge shows ${totalQuantity} items...`,

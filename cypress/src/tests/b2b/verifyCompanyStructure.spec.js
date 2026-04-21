@@ -52,14 +52,14 @@
  */
 
 import {
-  createStandaloneCustomer,
-  acceptCompanyInvitation,
-  cleanupTestCompany,
-} from '../../support/b2bCompanyAPICalls';
-import {
-  baseCompanyData,
-  companyUsers,
+    baseCompanyData,
+    companyUsers,
 } from '../../fixtures/companyManagementData';
+import {
+    acceptCompanyInvitation,
+    cleanupTestCompany,
+    createStandaloneCustomer,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
   before(() => {
@@ -103,16 +103,13 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // ========== SETUP: Create company with admin + 1 regular user (ONCE) ==========
     cy.setupCompanyWithRegularUser();
-    cy.wait(2000);
 
     // ========== LOGIN: Once for entire journey ==========
     cy.loginAsCompanyAdmin();
-    cy.wait(3000);
 
     // ========== NAVIGATE: To Company Structure page ==========
     cy.logToTerminal('📄 Navigating to Company Structure page...');
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // ========== TC-32: Default state and controls ==========
     cy.logToTerminal('--- STEP 1: TC-32 - Verify default state and controls ---');
@@ -141,7 +138,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select admin in tree
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
 
     // Edit and Remove buttons should be enabled after selection
     cy.contains('button', 'Edit').should('not.be.disabled');
@@ -154,14 +150,12 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Admin is already selected, click Add Team
     cy.contains('button', 'Add Team').click();
-    cy.wait(2000);
 
     // Fill team form
     const teamName = `Sales Team ${Date.now()}`;
-    cy.get('input[name="team_title"]').clear().type(teamName);
+    cy.get('input[name="team_title"]').should('be.visible').clear().type(teamName);
     cy.get('input[name="team_description"]').type('Sales department team').blur();
     cy.contains('button', 'Save').click();
-    cy.wait(3000);
 
     // Verify team appears in tree
     cy.contains(teamName, { timeout: 10000 }).should('be.visible');
@@ -172,11 +166,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select admin node to add user under it
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
 
     // Click Add User
     cy.contains('button', 'Add User').click();
-    cy.wait(2000);
 
     // Verify Add User form appears
     cy.contains('Add User', { timeout: 10000 }).should('be.visible');
@@ -190,10 +182,8 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
       cy.get('input[name="first_name"]').type('Structure');
       cy.get('input[name="last_name"]').type('NewUser');
       cy.get('input[name="email"]').type(newUserEmail).blur();
-      cy.wait(500);
       cy.contains('button', 'Save').click();
     });
-    cy.wait(3000);
 
     // Verify success message
     cy.contains(/successfully.*created/i, { timeout: 10000 }).should('be.visible');
@@ -207,7 +197,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Expand all to ensure visibility
     cy.contains('button', 'Expand All').click();
-    cy.wait(1000);
 
     // Drag "Structure NewUser" into the team
     cy.logToTerminal(`🔄 Dragging "Structure NewUser" into "${teamName}"...`);
@@ -218,10 +207,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.get('@dragUser').trigger('dragstart', { dataTransfer: new DataTransfer() });
     cy.get('@dropTeam').trigger('dragover');
     cy.get('@dropTeam').trigger('drop');
-    cy.wait(3000);
 
     // Verify success message
-    cy.contains(/successfully.*moved|moved.*successfully|user.*moved/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/successfully.*moved|moved.*successfully|user.*moved/i, { timeout: 10000 }).should('be.visible');
 
     // Verify user is now under team in tree structure
     cy.contains('.acm-structure-label', teamName)
@@ -236,11 +224,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select admin node
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
 
     // Click Edit
     cy.contains('button', 'Edit').should('not.be.disabled').click();
-    cy.wait(1000);
 
     // Verify role is disabled (cannot change own role)
     cy.get('select[name="role"]').should('be.disabled');
@@ -251,7 +237,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Save
     cy.contains('button', 'Save').click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
@@ -265,11 +250,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select regular user in tree
     cy.contains(`${regularUserFirstName} ${regularUserLastName}`).click();
-    cy.wait(500);
 
     // Click Edit
     cy.contains('button', 'Edit').should('not.be.disabled').click();
-    cy.wait(1000);
 
     // Role should be editable (not admin's own account)
     cy.get('select[name="role"]').should('not.be.disabled');
@@ -279,7 +262,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Save
     cy.contains('button', 'Save').click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/successfully.*updated/i, { timeout: 5000 }).should('be.visible');
@@ -293,11 +275,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Select the team
     cy.contains(teamName).click();
-    cy.wait(500);
 
     // Click Edit
     cy.contains('button', 'Edit').should('not.be.disabled').click();
-    cy.wait(1000);
 
     // Update team name
     const updatedTeamName = `Updated Sales Team ${Date.now()}`;
@@ -306,7 +286,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Save
     cy.contains('button', 'Save').click();
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/team.*updated|successfully/i, { timeout: 5000 }).should('be.visible');
@@ -320,19 +299,15 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Create "Marketing Team"
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
     cy.contains('button', 'Add Team').click();
-    cy.wait(1000);
 
     const marketingTeam = `Marketing Team ${Date.now()}`;
-    cy.get('input[name="team_title"]').clear().type(marketingTeam).blur();
+    cy.get('input[name="team_title"]').should('be.visible').clear().type(marketingTeam).blur();
     cy.contains('button', 'Save').click();
-    cy.wait(2000);
     cy.contains(marketingTeam, { timeout: 10000 }).should('be.visible');
 
     // Expand all
     cy.contains('button', 'Expand All').click();
-    cy.wait(1000);
 
     // Drag Marketing Team into Updated Sales Team
     cy.logToTerminal(`🔄 Dragging "${marketingTeam}" into "${updatedTeamName}"...`);
@@ -343,10 +318,9 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.get('@dragMarketing').trigger('dragstart', { dataTransfer: new DataTransfer() });
     cy.get('@dropSales').trigger('dragover');
     cy.get('@dropSales').trigger('drop');
-    cy.wait(3000);
 
     // Verify success message
-    cy.contains(/team.*successfully.*moved|successfully.*moved/i, { timeout: 5000 }).should('be.visible');
+    cy.contains(/team.*successfully.*moved|successfully.*moved/i, { timeout: 10000 }).should('be.visible');
 
     // Verify Marketing Team is under Sales Team
     cy.contains('.acm-structure-label', updatedTeamName)
@@ -361,12 +335,10 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Test Collapse All
     cy.contains('button', 'Collapse All').click();
-    cy.wait(1000);
     cy.logToTerminal('✅ Collapse All tested');
 
     // Test Expand All
     cy.contains('button', 'Expand All').click();
-    cy.wait(1000);
     cy.logToTerminal('✅ Expand All tested');
 
     cy.logToTerminal('========= 🎉 JOURNEY 1 COMPLETED =========');
@@ -386,7 +358,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
     cy.setupCompanyWithRegularUser();
-    cy.wait(2000);
 
     // ========== TC-34: Add user with registered email (invitation) ==========
     cy.logToTerminal('--- STEP 1: TC-34 - Add user with registered email ---');
@@ -425,15 +396,12 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     cy.then(() => {
       cy.loginAsCompanyAdmin();
     });
-    cy.wait(3000);
 
     // Navigate to Company Structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // Click Add User
-    cy.contains('button', 'Add User').click();
-    cy.wait(2000);
+    cy.contains('button', 'Add User', { timeout: 10000 }).should('be.visible').click();
 
     // Fill form with REGISTERED email (sends invitation)
     cy.get('.company-user-form__card, .acm-structure-panel, [class*="user-form"]').first().within(() => {
@@ -441,12 +409,10 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
       cy.get('input[name="first_name"]').type(registeredUserFirstName);
       cy.get('input[name="last_name"]').type(registeredUserLastName);
       cy.get('input[name="email"]:visible').type(registeredUserEmail).blur();
-      cy.wait(500);
       cy.get('input[name="job_title"]').type('Invited Member');
       cy.get('input[name="telephone"]').type('555-1234');
       cy.contains('button', 'Save').click();
     });
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/successfully|sent|invitation/i, { timeout: 10000 }).should('be.visible');
@@ -477,7 +443,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Reload structure page
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // NOW user should appear in tree
     cy.contains(`${registeredUserFirstName} ${registeredUserLastName}`, { timeout: 10000 }).should('be.visible');
@@ -493,7 +458,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
       const regularUserEmail = Cypress.env('testUsers').regular.email;
 
       cy.contains(`${regularUserFirstName} ${regularUserLastName}`, { timeout: 10000 }).click();
-      cy.wait(500);
 
     // Click Remove
     cy.contains('button', 'Remove').should('not.be.disabled').click();
@@ -501,14 +465,12 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // Wait for confirmation modal
     cy.get('.dropin-modal').should('be.visible');
     cy.get('.acm-structure-modal-content').should('be.visible');
-    cy.wait(200);
 
     // Confirm removal
     cy.get('.dropin-modal button').then(($buttons) => {
       const removeBtn = $buttons.filter((i, el) => Cypress.$(el).text().includes('Remove'));
       cy.wrap(removeBtn.first()).click();
     });
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/removed|inactive/i, { timeout: 5000 }).should('be.visible');
@@ -519,7 +481,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
       // Navigate to Company Users to verify status is Inactive
       cy.visit('/customer/company/users');
-      cy.wait(3000);
 
       // Use retry helper to find user and verify Inactive status (USF-3516)
       cy.checkForUser(regularUserEmail, 'Inactive');
@@ -531,26 +492,21 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Navigate back to structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // Create a team to delete
     const { adminFirstName } = baseCompanyData;
     const { adminLastName } = baseCompanyData;
 
-    cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
+    cy.contains(`${adminFirstName} ${adminLastName}`, { timeout: 10000 }).click();
     cy.contains('button', 'Add Team').click();
-    cy.wait(1000);
 
     const teamToDelete = `Delete Me Team ${Date.now()}`;
-    cy.get('input[name="team_title"]').clear().type(teamToDelete).blur();
+    cy.get('input[name="team_title"]').should('be.visible').clear().type(teamToDelete).blur();
     cy.contains('button', 'Save').click();
-    cy.wait(2000);
     cy.contains(teamToDelete, { timeout: 10000 }).should('be.visible');
 
     // Select the team
     cy.contains(teamToDelete).click();
-    cy.wait(500);
 
     // Click Remove
     cy.contains('button', 'Remove').should('not.be.disabled').click();
@@ -558,14 +514,12 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
     // Wait for confirmation modal
     cy.get('.dropin-modal').should('be.visible');
     cy.get('.acm-structure-modal-content').should('be.visible');
-    cy.wait(200);
 
     // Confirm deletion
     cy.get('.dropin-modal button').then(($buttons) => {
       const deleteBtn = $buttons.filter((i, el) => Cypress.$(el).text().includes('Delete'));
       cy.wrap(deleteBtn.first()).click();
     });
-    cy.wait(2000);
 
     // Verify success message
     cy.contains(/team.*deleted|successfully/i, { timeout: 5000 }).should('be.visible');
@@ -591,18 +545,15 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // ========== SETUP: Create company with regular user (ONCE) ==========
     cy.setupCompanyWithRegularUser();
-    cy.wait(2000);
 
     // ========== LOGIN: As regular user ==========
     cy.loginAsRegularUser();
-    cy.wait(3000);
 
     // ========== TC-35: Default User view-only access ==========
     cy.logToTerminal('--- TC-35: Verify view-only access ---');
 
     // Navigate to Company Structure
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     // Verify page title
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');
@@ -624,7 +575,6 @@ describe('USF-2522: Company Structure (Optimized Journeys)', { tags: '@B2BSaas' 
 
     // Try to select admin in tree
     cy.contains(`${adminFirstName} ${adminLastName}`).click();
-    cy.wait(500);
 
     // Controls should still be disabled after selection
     cy.contains('button', 'Edit').should('be.disabled');
