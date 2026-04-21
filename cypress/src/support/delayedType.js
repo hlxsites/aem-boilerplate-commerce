@@ -9,7 +9,7 @@
  * cy.delayedType('input[name="email"]', 'user@example.com');
  * cy.delayedType('input[name="email"]', 'user@example.com', 100);
  */
-Cypress.Commands.add('delayedType', (selector, value, delay = 50) => {
+Cypress.Commands.add('delayedType', (selector, value, delay = 100) => {
   cy.get(selector).clear();
   cy.get(selector).type(value, { delay });
 });
