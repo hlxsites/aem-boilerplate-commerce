@@ -14,7 +14,10 @@ module.exports = defineConfig({
   },
   e2e: {
     ...baseConfig.e2e,
-    specPattern: 'src/tests/b2b/**/*.spec.js',
+    specPattern: [
+      'src/tests/b2b/**/*.spec.js',
+      'src/tests/b2c/verifyUserAccount.spec.js',
+    ],
   },
   env: {
     ...baseConfig.env,
