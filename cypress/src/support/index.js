@@ -1,6 +1,7 @@
 import '@percy/cypress';
 import './b2bLoginHelpers';
 import './b2bSetupCompany';
+import './delayedType';
 import './deleteCustomer';
 import './deleteNegotiableQuotes';
 import './getIFrameField';
@@ -9,7 +10,6 @@ import './hideFetchAndXhrLogs';
 import './interceptConfig';
 import './logToTerminal';
 import './percyTakeSnapshot';
-import './safeType';
 import './sessionStorage';
 import './waitForImages';
 import './waitForLoadingSkeletonToDisappear';

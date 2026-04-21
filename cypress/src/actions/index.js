@@ -454,8 +454,8 @@ export const login = (user, urls) => {
 
   cy.visit(urls.login);
   cy.get(fields.poLoginForm).within(() => {
-    cy.safeType(fields.poEmailInput, user.email);
-    cy.safeType(fields.poPasswordInput, user.password);
+    cy.delayedType(fields.poEmailInput, user.email);
+    cy.delayedType(fields.poPasswordInput, user.password);
     cy.get(fields.poSubmitButton).click();
   });
 

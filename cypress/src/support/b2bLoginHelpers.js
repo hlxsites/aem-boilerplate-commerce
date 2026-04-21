@@ -44,8 +44,8 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.safeType('input[name="email"]', testAdmin.email);
-      cy.safeType('input[name="password"]', testAdmin.password);
+      cy.delayedType('input[name="email"]', testAdmin.email);
+      cy.delayedType('input[name="password"]', testAdmin.password);
       cy.get('button[type="submit"]').click();
     });
 
@@ -82,8 +82,8 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.safeType('input[name="email"]', testUsers.regular.email);
-      cy.safeType('input[name="password"]', testUsers.regular.password);
+      cy.delayedType('input[name="email"]', testUsers.regular.email);
+      cy.delayedType('input[name="password"]', testUsers.regular.password);
       cy.get('button[type="submit"]').click();
     });
 
@@ -137,8 +137,8 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     cy.visit('/customer/login');
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.safeType('input[name="email"]', testUsers.restricted.email);
-      cy.safeType('input[name="password"]', testUsers.restricted.password);
+      cy.delayedType('input[name="email"]', testUsers.restricted.email);
+      cy.delayedType('input[name="password"]', testUsers.restricted.password);
       cy.get('button[type="submit"]').click();
     });
     
