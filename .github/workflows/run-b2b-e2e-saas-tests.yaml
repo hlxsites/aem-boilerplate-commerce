@@ -20,7 +20,6 @@ jobs:
               src/tests/b2b/verifyCompanyUsers.spec.js,
               src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js,
               src/tests/b2b/verifyCompanySwitcher.spec.js
-            grepTags: '@B2BSaas'
           - group: orders
             spec: >-
               src/tests/b2b/verifyPurchaseOrders.spec.js,
@@ -28,10 +27,8 @@ jobs:
               src/tests/b2b/verifyB2BGridOrdering.spec.js,
               src/tests/b2b/verifyB2BQuickOrder.spec.js,
               src/tests/b2b/verifyB2BRequisitionLists.spec.js
-            grepTags: '@B2BSaas'
           - group: b2c
             spec: src/tests/b2c/verifyUserAccount.spec.js
-            grepTags: '@snapPercy'
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -50,7 +47,7 @@ jobs:
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          command: npx cypress run --config-file cypress.b2b.saas.config.js --env grepTags=${{ matrix.grepTags }} --spec "${{ matrix.spec }}"
+          command: npx cypress run --config-file cypress.b2b.saas.config.js --spec "${{ matrix.spec }}"
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
           CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT }}
