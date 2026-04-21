@@ -21,48 +21,40 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
-  cy.wait(1000);
   cy.get(fields.billingFormFirstName)
+    .should('be.visible')
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.firstName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormLastName)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.lastName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.street, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet1)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.street1, { force: true });
   if (isSelectableState) {
-    cy.wait(1000);
     cy.get(fields.billingFormState)
       .should('not.be.disabled')
       .select(customerAddress.region, { force: true });
   } else {
-    cy.wait(1000);
     cy.get(fields.billingFormInputState)
       .should('not.be.disabled')
       .type(customerAddress.region, { force: true });
   }
-  cy.wait(1000);
   cy.get(fields.billingFormCity)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.city, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormPostCode)
     .should('not.be.disabled')
     .clear()
     .type(customerAddress.postCode, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormTelephone)
     .should('not.be.disabled')
     .clear()
@@ -87,10 +79,9 @@ export const signInUser = (username, password) => {
   cy.get('[name="email"]').eq(1).should('be.visible').clear().type(username);
   cy.get('[name="password"]').eq(1).should('be.visible').clear().type(password);
   cy.get('[name="password"]').eq(1).should('have.value', password);
-  // Cypress click is too quick, need to waiit for password to be actully typed and set
-  cy.wait(1000);
   cy.get('.auth-sign-in-form__form__buttons button')
     .eq(3)
+    .should('not.be.disabled')
     .click({ force: true });
 };
 
@@ -123,7 +114,6 @@ export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
     const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
-    cy.wait(5000);
     cy.getIFrameField(
       fields.creditCardNumberIFrame,
       fields.creditCardNumber,
@@ -144,71 +134,66 @@ export function checkTermsAndConditions() {
 
 export const fillGiftOptiosForm = (className, type = 'order') => {
   if (type === 'product') {
-    cy.wait(3000);
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
   if (type === 'order') {
-    cy.wait(3000);
-
     cy.get(`${className} ${fields.giftOptionCardIncludedCheckBox}`)
+      .should('be.visible')
       .click({
         force: true,
       })
       .should('be.checked');
   }
 
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionWrapCheckBox}`)
+    .should('be.visible')
     .click({
       force: true,
     })
     .should('be.checked');
 
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .should('be.visible')
     .type('giftOptionRecipientName')
     .should('have.value', 'giftOptionRecipientName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .should('be.visible')
     .type('giftOptionSenderName')
     .should('have.value', 'giftOptionSenderName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionMessage}`)
+    .should('be.visible')
     .type('giftOptionMessage')
     .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
-  cy.wait(4000);
+    .blur();
 
-  cy.get(className).contains('Customize').click();
+  cy.get(className).contains('Customize').should('be.visible').click();
   cy.get(`.cart-gift-options-view__modal-grid-item img`).eq(1).click();
   cy.contains('.dropin-button--primary', 'Apply').click();
 };
 
 export const fillGiftOptiosMessageForm = (className, type = 'order') => {
-  cy.wait(2000);
   if (type === 'product') {
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
-  cy.wait(2000);
-
   cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .should('be.visible')
     .type('giftOptionRecipientName')
     .should('have.value', 'giftOptionRecipientName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .should('be.visible')
     .type('giftOptionSenderName')
     .should('have.value', 'giftOptionSenderName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionMessage}`)
+    .should('be.visible')
     .type('giftOptionMessage')
     .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
+    .blur();
 };
 
 export const fillGiftOptiosFormEmpty = (className) => {
@@ -298,7 +283,15 @@ export const fillCompanyRegistrationForm = (companyData) => {
   // Select country FIRST so region field is properly configured (dropdown vs text input)
   cy.log(`🌍 Selecting country: ${companyData.legalAddress.countryCode}`);
   cy.get(fields.companyFormCountryCode).select(companyData.legalAddress.countryCode);
-  cy.wait(1000); // Wait for region field to update based on country
+
+  // Wait for region field to update based on country selection
+  cy.get('body').then(($body) => {
+    if (companyData.legalAddress.region) {
+      // Wait until region dropdown or input is available (country change triggers re-render)
+      const regionSelector = `${fields.companyFormRegion}, ${fields.companyFormRegionInput}`;
+      cy.get(regionSelector, { timeout: 10000 }).should('exist');
+    }
+  });
 
   cy.get(fields.companyFormStreet)
     .clear()
@@ -472,22 +465,29 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   const productUrl = isCheap ? urls.cheapProduct : urls.product;
   cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
   cy.visit(productUrl);
-  cy.wait(4000);
+  cy.contains(fields.poAddToCartButton, texts.addToCart, { timeout: 15000 })
+    .should('be.visible');
   for (let i = 0; i < times; i++) {
     cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
-    cy.wait(4000);
-    cy.contains(fields.poAddToCartButton, texts.addToCart).click();
-    cy.wait(4000);
+    cy.contains(fields.poAddToCartButton, texts.addToCart)
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+    // Wait for cart update to complete before adding next item
+    if (i < times - 1) {
+      cy.contains(fields.poAddToCartButton, texts.addToCart, { timeout: 15000 })
+        .should('be.visible')
+        .and('not.be.disabled');
+    }
   }
 };
 
 export const proceedToCheckout = (texts, urls) => {
   cy.logToTerminal('🔗 Navigating to checkout page');
   cy.visit(urls.checkout);
-  cy.wait(5000); // Increased wait for checkout page to initialize
 
   // Verify we're actually on checkout page
-  cy.url().should('include', urls.checkout);
+  cy.url({ timeout: 15000 }).should('include', urls.checkout);
 };
 
 export const completeCheckout = (urls, texts) => {
@@ -495,9 +495,6 @@ export const completeCheckout = (urls, texts) => {
   cy.reload();
   cy.url().should('include', urls.checkout);
   cy.logToTerminal('⏳ Waiting for checkout data to load...');
-
-  // Wait for checkout forms to be ready
-  cy.wait(15000);
 
   const shippingFirstNameSelectors = [
     'input[name="firstName"]',
@@ -692,7 +689,6 @@ export const completeCheckout = (urls, texts) => {
   typeIntoField(shippingPostcodeSelectors, '1235');
   typeIntoField(shippingTelephoneSelectors, '123456789');
 
-  cy.wait(2000);
   ensureShippingMethodSelected();
   ensurePaymentSectionVisible();
 
@@ -701,18 +697,16 @@ export const completeCheckout = (urls, texts) => {
   })
     .should('be.visible')
     .click();
-  cy.wait(1500);
   cy.get('.checkout-terms-and-conditions__form')
     .find(fields.poTermsCheckbox)
+    .should('be.visible')
     .check({ force: true });
-  cy.wait(1500);
 
   cy.logToTerminal('🔘 Clicking Place Order button...');
   cy.get(fields.poPlacePOButton, { timeout: 60000 })
     .should('be.visible')
     .should('not.be.disabled')
     .click();
-  cy.wait(3000);
   cy.logToTerminal('✅ Place Order button clicked');
 };
 
@@ -748,29 +742,22 @@ export const createPurchaseOrder = (
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
-  cy.wait(3000);
-  cy.get(fields.poNameInput).clear().type(rule.name);
-  cy.wait(1500);
-  cy.get(fields.poTextarea).clear().type(rule.description);
-  cy.wait(1500);
-  cy.contains(rule.appliesTo).click();
-  cy.wait(1500);
+  cy.get(fields.poNameInput, { timeout: 10000 })
+    .should('be.visible')
+    .clear()
+    .type(rule.name);
+  cy.get(fields.poTextarea).should('be.visible').clear().type(rule.description);
+  cy.contains(rule.appliesTo).should('be.visible').click();
 
   if (rule.appliesTo === texts.specificRoles && rule.role) {
     cy.get(fields.poMultiSelect).first().click();
-    cy.wait(1500);
-    cy.get(fields.poMultiSelect).first().contains(rule.role).click();
-    cy.wait(1500);
+    cy.get(fields.poMultiSelect).first().contains(rule.role).should('be.visible').click();
     cy.get('body').type('{esc}');
-    cy.wait(2500);
   }
 
-  cy.get(fields.poRuleTypeSelect).select(rule.ruleType);
-  cy.wait(1500);
-  cy.get(fields.poRuleConditionSelect).select(rule.ruleCondition);
-  cy.wait(1500);
-  cy.get(fields.poRuleValueInput).clear().type(rule.ruleValue);
-  cy.wait(1500);
+  cy.get(fields.poRuleTypeSelect).should('not.be.disabled').select(rule.ruleType);
+  cy.get(fields.poRuleConditionSelect).should('not.be.disabled').select(rule.ruleCondition);
+  cy.get(fields.poRuleValueInput).should('be.visible').clear().type(rule.ruleValue);
 
   const multiSelectIndex = rule.appliesTo === texts.specificRoles ? 1 : 0;
   cy.get(fields.poMultiSelect).eq(multiSelectIndex).click();
@@ -779,9 +766,7 @@ export const fillApprovalRuleForm = (rule, texts) => {
     .eq(multiSelectIndex)
     .contains(rule.approverRole)
     .click();
-  cy.wait(2500);
   cy.get('body').type('{esc}');
-  cy.wait(2500);
 };
 
 export const deleteApprovalRule = (ruleName) => {
@@ -795,15 +780,10 @@ export const deleteApprovalRule = (ruleName) => {
     });
   });
 
-  cy.wait(2000);
+  cy.contains('button', 'Delete').should('be.visible').click();
 
-  cy.contains('button', 'Delete').click();
-
-  cy.wait(10000);
-
+  // Wait for the row to be removed from the DOM after deletion
   getRowByName(ruleName).should('not.exist');
-
-  cy.wait(5000);
 };
 
 // Quick Order Variants Grid Actions
@@ -819,7 +799,6 @@ export const initializeVariantsGrid = () => {
   cy.get(fields.variantsGridTable, { timeout: 10000 }).should('be.visible');
   cy.get(fields.variantsGridTableRow, { timeout: 10000 }).should('have.length.greaterThan', 0);
   
-  cy.wait(1000);
   cy.log('QuickOrderVariantsGrid component loaded');
 };
 
@@ -847,9 +826,9 @@ export const decrementVariantQuantity = (rowIndex) => {
 
 export const clickClearAllButton = () => {
   cy.get(fields.variantsGridClearButton).click({ force: true });
-  cy.wait(1000);
+  // Wait for grid to reset before clicking again
+  cy.get(fields.variantsGridQuantityInput(0), { timeout: 5000 }).should('exist');
   cy.get(fields.variantsGridClearButton).click({ force: true });
-  cy.wait(1000);
 };
 
 export const clickSaveToCsvButton = () => {
