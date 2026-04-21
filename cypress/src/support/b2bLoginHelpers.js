@@ -33,17 +33,26 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
+
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('generateCustomerToken')) {
+        req.alias = 'loginMutation';
+      }
+    });
+
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email)
-        .should('have.value', testAdmin.email);
-      cy.get('input[name="password"]').type(testAdmin.password)
-        .should('have.value', testAdmin.password);
+      cy.get('input[name="email"]').type(testAdmin.email);
+      cy.get('input[name="email"]').should('have.value', testAdmin.email);
+      cy.get('input[name="password"]').type(testAdmin.password);
+      cy.get('input[name="password"]').should('have.value', testAdmin.password);
       cy.get('button[type="submit"]').click();
     });
 
-    cy.url({ timeout: 15000 }).should('not.include', '/customer/login');
+    cy.wait('@loginMutation');
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -64,17 +73,26 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
+
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('generateCustomerToken')) {
+        req.alias = 'loginMutation';
+      }
+    });
+
     cy.visit('/customer/login');
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email)
-        .should('have.value', testUsers.regular.email);
-      cy.get('input[name="password"]').type(testUsers.regular.password)
-        .should('have.value', testUsers.regular.password);
+      cy.get('input[name="email"]').type(testUsers.regular.email);
+      cy.get('input[name="email"]').should('have.value', testUsers.regular.email);
+      cy.get('input[name="password"]').type(testUsers.regular.password);
+      cy.get('input[name="password"]').should('have.value', testUsers.regular.password);
       cy.get('button[type="submit"]').click();
     });
 
-    cy.url({ timeout: 15000 }).should('not.include', '/customer/login');
+    cy.wait('@loginMutation');
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -112,17 +130,26 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     }
     
     cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
+
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('generateCustomerToken')) {
+        req.alias = 'loginMutation';
+      }
+    });
+
     cy.visit('/customer/login');
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email)
-        .should('have.value', testUsers.restricted.email);
-      cy.get('input[name="password"]').type(testUsers.restricted.password)
-        .should('have.value', testUsers.restricted.password);
+      cy.get('input[name="email"]').type(testUsers.restricted.email);
+      cy.get('input[name="email"]').should('have.value', testUsers.restricted.email);
+      cy.get('input[name="password"]').type(testUsers.restricted.password);
+      cy.get('input[name="password"]').should('have.value', testUsers.restricted.password);
       cy.get('button[type="submit"]').click();
     });
     
-    cy.url({ timeout: 15000 }).should('not.include', '/customer/login');
+    cy.wait('@loginMutation');
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });

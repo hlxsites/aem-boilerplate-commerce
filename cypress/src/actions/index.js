@@ -445,14 +445,23 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
+  cy.intercept('POST', '**/graphql', (req) => {
+    const body = req.body || {};
+    if (body.query && body.query.includes('generateCustomerToken')) {
+      req.alias = 'loginMutation';
+    }
+  });
+
   cy.visit(urls.login);
   cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email)
-      .should('have.value', user.email);
-    cy.get(fields.poPasswordInput).type(user.password)
-      .should('have.value', user.password);
+    cy.get(fields.poEmailInput).type(user.email);
+    cy.get(fields.poEmailInput).should('have.value', user.email);
+    cy.get(fields.poPasswordInput).type(user.password);
+    cy.get(fields.poPasswordInput).should('have.value', user.password);
     cy.get(fields.poSubmitButton).click();
   });
+
+  cy.wait('@loginMutation');
   cy.url({ timeout: 15000 }).should('include', urls.account);
 };
 

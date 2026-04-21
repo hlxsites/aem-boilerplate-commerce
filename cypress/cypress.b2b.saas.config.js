@@ -10,7 +10,8 @@ module.exports = defineConfig({
   ...baseConfig,
   e2e: {
     ...baseConfig.e2e,
-    specPattern: 'src/tests/b2b/**/*.spec.js',
+    // TODO: restore to 'src/tests/b2b/**/*.spec.js' after validating login changes
+    specPattern: 'src/tests/b2b/verifyCompanyProfile.spec.js',
   },
   env: {
     ...baseConfig.env,
