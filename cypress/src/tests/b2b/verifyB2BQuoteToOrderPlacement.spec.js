@@ -94,8 +94,8 @@ describe("Verify B2B Quote feature", () => {
         });
         cy.visit('/customer/login');
         cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-            cy.get('input[name="email"]').type(username);
-            cy.get('input[name="password"]').type(customerData.customer.password);
+            cy.delayedType('input[name="email"]', username);
+            cy.delayedType('input[name="password"]', customerData.customer.password);
             cy.get('button[type="submit"]').click();
         });
         cy.wait('@loginMutation');

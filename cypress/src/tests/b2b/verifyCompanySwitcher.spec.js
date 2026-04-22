@@ -217,8 +217,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(sharedUserEmail);
-        cy.get('input[name="password"]').type(sharedUserPassword);
+        cy.delayedType('input[name="email"]', sharedUserEmail);
+        cy.delayedType('input[name="password"]', sharedUserPassword);
         cy.get('button[type="submit"]').click();
       });
     });
@@ -660,8 +660,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(testUserEmail);
-        cy.get('input[name="password"]').type(testUserPassword);
+        cy.delayedType('input[name="email"]', testUserEmail);
+        cy.delayedType('input[name="password"]', testUserPassword);
         cy.get('button[type="submit"]').click();
       });
     });
