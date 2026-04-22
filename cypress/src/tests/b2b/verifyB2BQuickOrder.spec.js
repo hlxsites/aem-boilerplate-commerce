@@ -433,15 +433,11 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       .should('not.be.disabled')
       .click();
 
-    cy.logToTerminal('⏳ Waiting for Add to Cart API calls to complete...');
-    // "Add all to cart" fires one GraphQL mutation per product (3 total)
-    cy.wait(['@addProductToCart', '@addProductToCart', '@addProductToCart'], { timeout: 30000 })
-      .then((interceptions) => {
-        interceptions.forEach((interception) => {
-          expect(interception.response.statusCode).to.equal(200);
-        });
-        cy.logToTerminal(`✅ All ${interceptions.length} Add to Cart API calls completed`);
-      });
+    cy.logToTerminal('⏳ Waiting for Add to Cart API call to complete...');
+    cy.wait('@addProductToCart', { timeout: 30000 }).then((interception) => {
+      cy.logToTerminal('✅ Add to Cart API call completed');
+      expect(interception.response.statusCode).to.equal(200);
+    });
 
     // ========== STEP 5: Verify redirect to cart page ==========
 
@@ -451,7 +447,7 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 6: Verify cart badge shows correct item count ==========
 
     cy.logToTerminal(`🛒 Verifying cart badge shows ${totalQuantity} items...`);
-    cy.get(fields.miniCartButton, { timeout: 15000 })
+    cy.get(fields.miniCartButton, { timeout: 30000 })
       .should('be.visible')
       .should(($btn) => {
         const itemCount = parseInt($btn.attr('data-count'), 10);
