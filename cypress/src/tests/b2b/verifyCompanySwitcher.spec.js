@@ -208,12 +208,22 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const sharedUserEmail = Cypress.env('sharedUserEmail');
       const sharedUserPassword = Cypress.env('sharedUserPassword');
 
+      cy.intercept('POST', '**/graphql', (req) => {
+        const body = req.body || {};
+        if (body.query && body.query.includes('generateCustomerToken')) {
+          req.alias = 'loginMutation';
+        }
+      });
+
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
         cy.get('input[name="email"]').type(sharedUserEmail);
         cy.get('input[name="password"]').type(sharedUserPassword);
         cy.get('button[type="submit"]').click();
       });
+
+      cy.wait('@loginMutation');
+      cy.url({ timeout: 15000 }).should('include', '/customer/account');
     });
 
     // ========== TC-41: Verify admin controls in Company A ==========
@@ -641,12 +651,22 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
       const testUserEmail = Cypress.env('testUserEmail');
       const testUserPassword = Cypress.env('testUserPassword');
 
+      cy.intercept('POST', '**/graphql', (req) => {
+        const body = req.body || {};
+        if (body.query && body.query.includes('generateCustomerToken')) {
+          req.alias = 'loginMutation';
+        }
+      });
+
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
         cy.get('input[name="email"]').type(testUserEmail);
         cy.get('input[name="password"]').type(testUserPassword);
         cy.get('button[type="submit"]').click();
       });
+
+      cy.wait('@loginMutation');
+      cy.url({ timeout: 15000 }).should('include', '/customer/account');
     });
 
     // ========== USF-3555: Verify only APPROVED and BLOCKED companies appear in dropdown ==========

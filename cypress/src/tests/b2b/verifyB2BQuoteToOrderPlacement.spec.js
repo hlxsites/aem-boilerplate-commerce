@@ -195,7 +195,7 @@ describe("Verify B2B Quote feature", () => {
         cy.get('body').then(($body) => {
             if ($body.find('button:contains("Save")').length > 0) {
                 cy.contains('button', 'Save').first().click();
-
+            }
         });
 
         // Send for review

@@ -220,9 +220,17 @@ describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, (
 
     // Save
     cy.logToTerminal('💾 Saving new user...');
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('createCompanyUser')) {
+        req.alias = 'createUserMutation';
+      }
+    });
     cy.contains('button', 'Save', { timeout: 5000 })
       .should('be.visible')
       .click();
+
+    cy.wait('@createUserMutation');
 
     // Verify form closed successfully
     cy.contains('h3', 'Add User', { timeout: 10000 }).should('not.exist');

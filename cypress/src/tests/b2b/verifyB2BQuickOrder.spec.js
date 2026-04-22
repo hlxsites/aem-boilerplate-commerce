@@ -447,12 +447,14 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 6: Verify cart badge shows correct item count ==========
 
     cy.logToTerminal(`🛒 Verifying cart badge shows ${totalQuantity} items...`);
-    cy.get(fields.miniCartButton, { timeout: 10000 })
+    cy.get(fields.miniCartButton, { timeout: 15000 })
       .should('be.visible')
-      .and('have.attr', 'data-count')
-      .then((count) => {
-        const itemCount = parseInt(count, 10);
+      .should(($btn) => {
+        const itemCount = parseInt($btn.attr('data-count'), 10);
         expect(itemCount).to.be.at.least(totalQuantity);
+      })
+      .then(($btn) => {
+        const itemCount = parseInt($btn.attr('data-count'), 10);
         cy.logToTerminal(
           `✅ Cart badge shows ${itemCount} items (expected at least ${totalQuantity})`,
         );
