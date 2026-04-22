@@ -1,7 +1,4 @@
 import {
-  signInUser,
-} from "../../actions";
-import {
   assertCartSummaryProduct,
   assertSignInSuccess,
 } from "../../assertions";
@@ -96,7 +93,11 @@ describe("Verify B2B Quote feature", () => {
             }
         });
         cy.visit('/customer/login');
-        signInUser(username, customerData.customer.password);
+        cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
+            cy.get('input[name="email"]').type(username);
+            cy.get('input[name="password"]').type(customerData.customer.password);
+            cy.get('button[type="submit"]').click();
+        });
         cy.wait('@loginMutation');
         assertSignInSuccess(customerData.customer.firstname, customerData.customer.lastname, username);
         cy.logToTerminal('✅ User logged in');
