@@ -52,12 +52,12 @@
 
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 import {
-    assignCustomerToCompany,
-    assignRoleToUser,
-    cleanupTestCompany,
-    createCompany,
-    createCompanyRole,
-    createStandaloneCustomer,
+  assignCustomerToCompany,
+  assignRoleToUser,
+  cleanupTestCompany,
+  createCompany,
+  createCompanyRole,
+  createStandaloneCustomer,
 } from '../../support/b2bCompanyAPICalls';
 
 /**
@@ -204,16 +204,16 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // ========== LOGIN: As shared user (starts in Company A context) ==========
     cy.logToTerminal('🔐 Login as shared user');
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('generateCustomerToken')) {
+        req.alias = 'loginMutation';
+      }
+    });
+
     cy.then(() => {
       const sharedUserEmail = Cypress.env('sharedUserEmail');
       const sharedUserPassword = Cypress.env('sharedUserPassword');
-
-      cy.intercept('POST', '**/graphql', (req) => {
-        const body = req.body || {};
-        if (body.query && body.query.includes('generateCustomerToken')) {
-          req.alias = 'loginMutation';
-        }
-      });
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
@@ -221,10 +221,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
         cy.get('input[name="password"]').type(sharedUserPassword);
         cy.get('button[type="submit"]').click();
       });
-
-      cy.wait('@loginMutation');
-      cy.url({ timeout: 15000 }).should('include', '/customer/account');
     });
+
+    cy.wait('@loginMutation');
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
 
     // ========== TC-41: Verify admin controls in Company A ==========
     cy.logToTerminal('--- STEP 1: TC-41 - Verify admin role in Company A ---');
@@ -647,16 +647,16 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
 
     // ========== LOGIN: As test user ==========
     cy.logToTerminal('🔐 Login as test user');
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = req.body || {};
+      if (body.query && body.query.includes('generateCustomerToken')) {
+        req.alias = 'loginMutation';
+      }
+    });
+
     cy.then(() => {
       const testUserEmail = Cypress.env('testUserEmail');
       const testUserPassword = Cypress.env('testUserPassword');
-
-      cy.intercept('POST', '**/graphql', (req) => {
-        const body = req.body || {};
-        if (body.query && body.query.includes('generateCustomerToken')) {
-          req.alias = 'loginMutation';
-        }
-      });
 
       cy.visit('/customer/login');
       cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
@@ -664,10 +664,10 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
         cy.get('input[name="password"]').type(testUserPassword);
         cy.get('button[type="submit"]').click();
       });
-
-      cy.wait('@loginMutation');
-      cy.url({ timeout: 15000 }).should('include', '/customer/account');
     });
+
+    cy.wait('@loginMutation');
+    cy.url({ timeout: 15000 }).should('include', '/customer/account');
 
     // ========== USF-3555: Verify only APPROVED and BLOCKED companies appear in dropdown ==========
     cy.logToTerminal('--- STEP 1: USF-3555 - Verify dropdown shows only APPROVED and BLOCKED companies ---');

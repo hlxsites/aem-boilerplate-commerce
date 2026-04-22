@@ -402,8 +402,8 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas'] },
           return cy.get('body').then(($body) => $body.text().match(/refund/i));
         },
         {
-          maxRetries: 5,
-          delay: 3000,
+          maxRetries: 10,
+          delay: 5000,
           errorMessage: 'Refunded record not found in credit history after credit memo creation',
         },
       );

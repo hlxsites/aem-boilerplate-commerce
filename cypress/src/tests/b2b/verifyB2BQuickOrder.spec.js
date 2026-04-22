@@ -404,6 +404,12 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       .find('select[name="color"]')
       .select(expectedItems[2].color);
 
+    // Wait for variant resolution after option selection (form re-renders)
+    cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
+      .find(fields.quickOrderItemQuantityInput, { timeout: 10000 })
+      .should('be.visible')
+      .and('have.value', '1');
+
     // ========== STEP 3: Set specific quantities for each product ==========
 
     cy.logToTerminal('📝 Setting quantities for all products...');
@@ -420,8 +426,8 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
       .clear({ force: true })
       .type(expectedItems[1].quantity.toString(), { force: true });
 
-    cy.get(fields.quickOrderItemCard)
-      .eq(2)
+    // Set configurable product quantity LAST (after variant resolved)
+    cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
       .find(fields.quickOrderItemQuantityInput)
       .clear({ force: true })
       .type(expectedItems[2].quantity.toString(), { force: true });

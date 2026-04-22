@@ -89,8 +89,15 @@ describe("Verify B2B Quote feature", () => {
 
         // Step 3: Login as company user
         cy.logToTerminal('========= Step 3: Login as company user =========');
+        cy.intercept('POST', '**/graphql', (req) => {
+            const body = req.body || {};
+            if (body.query && body.query.includes('generateCustomerToken')) {
+                req.alias = 'loginMutation';
+            }
+        });
         cy.visit('/customer/login');
         signInUser(username, customerData.customer.password);
+        cy.wait('@loginMutation');
         assertSignInSuccess(customerData.customer.firstname, customerData.customer.lastname, username);
         cy.logToTerminal('✅ User logged in');
 
