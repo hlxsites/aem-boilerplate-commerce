@@ -12,7 +12,8 @@ export interface ProductModel {
     metaTitle?: string;
     description?: string;
     images?: Image[];
-    prices: Prices;
+    videos?: Video[];
+    prices?: Prices;
     attributes?: Attribute[];
     options?: Option[];
     optionUIDs?: string[];
@@ -21,6 +22,7 @@ export interface ProductModel {
     externalId?: string;
     externalParentId?: string;
     variantSku?: string;
+    variantName?: string;
     productType?: ProductType | undefined;
 }
 interface Image {
@@ -28,6 +30,17 @@ interface Image {
     label: string;
     width: number;
     height: number;
+    roles?: string[];
+}
+interface Video {
+    url: string;
+    title?: string;
+    description?: string;
+    preview?: {
+        url: string;
+        label?: string;
+        roles?: string[];
+    };
 }
 interface Price {
     amount?: number;

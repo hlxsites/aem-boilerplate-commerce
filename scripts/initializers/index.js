@@ -3,7 +3,12 @@ import { getCookie } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
+import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
+
+const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
+const getWebsitePath = () => getRootPath() || '/';
+const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -18,6 +23,14 @@ const setAuthHeaders = (state) => {
 
 const setCustomerGroupHeader = (customerGroupId) => {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+};
+
+const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
+  if (adobeCommerceOptimizer?.priceBookId) {
+    CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-ID', adobeCommerceOptimizer.priceBookId);
+  } else {
+    CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('AC-Price-Book-ID');
+  }
 };
 
 const persistCartDataInSession = (data) => {
@@ -45,7 +58,24 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
-    events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
+    if (getConfigValue('adobe-commerce-optimizer')) {
+      events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
+    } else {
+      events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
+    }
+
+    // Clear cart state when switching between websites to avoid stale cart IDs
+    // and authentication state from a different website causing errors.
+    const storedWebsitePath = getCookie(DROPIN_WEBSITE_COOKIE);
+    const currentWebsitePath = getWebsitePath();
+    if (storedWebsitePath && storedWebsitePath !== currentWebsitePath) {
+      clearCookie('DROPIN__CART__CART-ID');
+      sessionStorage.removeItem('DROPINS_CART_ID');
+      sessionStorage.removeItem('DROPIN__CART__CART__DATA');
+      sessionStorage.removeItem('DROPIN__CART__SHIPPING__DATA');
+      localStorage.removeItem('DROPIN__CART__CART__AUTHENTICATED');
+    }
+    document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
     // Set auth headers on authenticated event
     events.on('authenticated', setAuthHeaders, { eager: true });

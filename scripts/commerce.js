@@ -709,14 +709,14 @@ function trackHistory() {
   const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', (event) => {
-      if (!event.productContext) {
+      if (!event.productContext || !event.productContext.sku) {
         return;
       }
       const key = `${storeViewCode}:productViewHistory`;
       let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
       viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
       viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-10)));
+      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
     }, { path: 'productContext' });
     dl.addEventListener('place-order', () => {
       const shoppingCartContext = dl.getState('shoppingCartContext');
@@ -753,10 +753,16 @@ export function setJsonLd(data, name) {
 }
 
 /**
- * Loads and displays an error page (e.g., 404) by replacing the current page content.
+ * Loads and displays an error page (e.g., 418) by replacing the current page
+ * content. If the code is a 404, we redirect to a non-existant page which
+ * causes the 404.html from this repo to be loaded.
  * @param {number} [code=404] - The HTTP error code for the error page
  */
 export async function loadErrorPage(code = 404) {
+  if (code === 404) {
+    window.location.replace('/notfound');
+    return;
+  }
   const htmlText = await fetch(`/${code}.html`).then((response) => {
     if (response.ok) {
       return response.text();
@@ -771,15 +777,6 @@ export async function loadErrorPage(code = 404) {
     doc.head.appendChild(style);
   });
   document.head.innerHTML = doc.head.innerHTML;
-
-  // https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript
-  // Point 2. prevent soft 404 errors
-  if (code === 404) {
-    const metaRobots = document.createElement('meta');
-    metaRobots.name = 'robots';
-    metaRobots.content = 'noindex';
-    document.head.appendChild(metaRobots);
-  }
 
   // When moving script tags via innerHTML, they are not executed. They need to be re-created.
   const notImportMap = (c) => c.textContent && c.type !== 'importmap';

@@ -22,6 +22,9 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
         Heading?: SlotProps;
         EmptyCart?: SlotProps;
         Footer?: SlotProps;
+        RowTotalFooter?: SlotProps<{
+            item: CartModel['items'][number];
+        }>;
         Thumbnail?: SlotProps<{
             item: CartModel['items'][number];
             defaultImageProps: ImageProps;
@@ -85,6 +88,7 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
         text: string;
     }[];
     undo?: boolean;
+    includeOutOfStockItems?: boolean;
     /**
      * TEST ONLY: Allows test to inject recentlyRemovedItems for coverage
      */

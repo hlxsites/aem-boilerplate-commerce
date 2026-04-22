@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Create Return",
+    "id": "commerce-create-return",
+    "model": "commerce-create-return",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

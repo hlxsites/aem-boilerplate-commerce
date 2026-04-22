@@ -10,7 +10,10 @@ type DefaultSlotContext = {
 };
 export interface SignInProps {
     slots?: {
+        Form?: SlotProps<DefaultSlotContext>;
+        Title?: SlotProps<DefaultSlotContext>;
         SuccessNotification?: SlotProps<DefaultSlotContext>;
+        Buttons?: SlotProps<DefaultSlotContext>;
     };
     labels?: Record<string, string>;
     formSize?: 'default' | 'small';
@@ -28,6 +31,7 @@ export interface SignInProps {
     }) => Promise<void>;
     onErrorCallback?: (error?: unknown) => void;
     onSignUpLinkClick?: () => void;
+    apiErrorMessageOverride?: string;
 }
 export interface SignInFormProps extends SignInProps {
     setActiveComponent?: (componentName: activeComponentType) => void;

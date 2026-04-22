@@ -403,6 +403,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
           },
           enabled: false,
         },
+        [PaymentMethodCode.APM]: {
+          enabled: false,
+        },
         [PaymentMethodCode.GOOGLE_PAY]: {
           enabled: false,
         },

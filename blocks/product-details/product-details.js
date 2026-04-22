@@ -88,8 +88,21 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   }
 }
 
+/**
+ * Formats numeric attribute values for display (e.g., "10.000000" → "10").
+ * Non-numeric values are returned as-is.
+ */
+function formatNumericAttributeValue(value) {
+  const trimmed = value.trim();
+  if (!/^[+-]?\d+(\.\d+)?$/.test(trimmed)) return value;
+  return new Intl.NumberFormat(document.documentElement.lang).format(Number(trimmed));
+}
+
 export default async function decorate(block) {
-  const product = events.lastPayload('pdp/data') ?? null;
+  const eventProduct = events.lastPayload('pdp/data') ?? null;
+  // bug: the pdp sends an object with event data even if product is not found.
+  const product = eventProduct?.sku ? eventProduct : null;
+
   const labels = await fetchPlaceholders();
 
   // Read itemUid from URL
@@ -146,22 +159,26 @@ export default async function decorate(block) {
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-        wrapper: document.createElement('span'),
-      });
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+          wrapper: document.createElement('span'),
+        });
+      }
     },
 
     CarouselMainImage: (ctx) => {
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-      });
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+        });
+      }
     },
   };
 
   // Alert
   let inlineAlert = null;
-  const routeToWishlist = '/wishlist';
+  const routeToWishlist = rootLink('/wishlist');
 
   const [
     _galleryMobile,
@@ -184,6 +201,7 @@ export default async function decorate(block) {
       peak: false,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
@@ -198,6 +216,7 @@ export default async function decorate(block) {
       peak: true,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
@@ -237,7 +256,9 @@ export default async function decorate(block) {
     pdpRendered.render(ProductDescription, {})($description),
 
     // Attributes
-    pdpRendered.render(ProductAttributes, {})($attributes),
+    pdpRendered.render(ProductAttributes, {
+      formatValue: formatNumericAttributeValue,
+    })($attributes),
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -578,7 +599,7 @@ function createMetaTag(property, content, type) {
 }
 
 function setMetaTags(product) {
-  if (!product) {
+  if (!product?.sku) {
     return;
   }
 

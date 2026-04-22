@@ -1,4 +1,5 @@
 import { expectsEventWithContext } from "../../../assertions";
+import { products } from "../../../fixtures";
 
 const baselineContexts = (adobeDataLayer) => {
   expectsEventWithContext(
@@ -21,7 +22,7 @@ it("has baseline contexts on homepage", () => {
 });
 
 it("has baseline contexts on PDP", () => {
-  cy.visit("/products/frankie-sweatshirt/mh04");
+  cy.visit(products.simple.urlPath);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window().its("adobeDataLayer").then(baselineContexts);
   });

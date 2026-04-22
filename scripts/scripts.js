@@ -2,7 +2,6 @@ import {
   buildBlock,
   loadHeader,
   loadFooter,
-  decorateButtons,
   decorateIcons,
   decorateBlocks,
   decorateTemplateAndTheme,
@@ -60,8 +59,8 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
-    // auto block `*/fragments/*` references
-    const fragments = main.querySelectorAll('a[href*="/fragments/"]');
+    // auto load `*/fragments/*` references
+    const fragments = [...main.querySelectorAll('a[href*="/fragments/"]')].filter((f) => !f.closest('.fragment'));
     if (fragments.length > 0) {
       // eslint-disable-next-line import/no-cycle
       import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
@@ -69,7 +68,7 @@ function buildAutoBlocks(main) {
           try {
             const { pathname } = new URL(fragment.href);
             const frag = await loadFragment(pathname);
-            fragment.parentElement.replaceWith(frag.firstElementChild);
+            fragment.parentElement.replaceWith(...frag.children);
           } catch (error) {
             // eslint-disable-next-line no-console
             console.error('Fragment loading failed', error);
@@ -85,16 +84,55 @@ function buildAutoBlocks(main) {
 }
 
 /**
+ * Decorates formatted links to style them as buttons.
+ * @param {HTMLElement} main The main container element
+ */
+function decorateButtons(main) {
+  main.querySelectorAll('p a[href]').forEach((a) => {
+    a.title = a.title || a.textContent;
+    const p = a.closest('p');
+    const text = a.textContent.trim();
+
+    // quick structural checks
+    if (a.querySelector('img') || p.textContent.trim() !== text) return;
+
+    // skip URL display links
+    try {
+      if (new URL(a.href).href === new URL(text, window.location).href) return;
+    } catch { /* continue */ }
+
+    // require authored formatting for buttonization
+    const strong = a.closest('strong');
+    const em = a.closest('em');
+    if (!strong && !em) return;
+
+    p.className = 'button-wrapper';
+    a.className = 'button';
+    if (strong && em) { // high-impact call-to-action
+      a.classList.add('accent');
+      const outer = strong.contains(em) ? strong : em;
+      outer.replaceWith(a);
+    } else if (strong) {
+      a.classList.add('primary');
+      strong.replaceWith(a);
+    } else {
+      a.classList.add('secondary');
+      em.replaceWith(a);
+    }
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
 export function decorateMain(main) {
   decorateLinks(main);
-  decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateButtons(main);
 }
 
 /**
@@ -135,6 +173,8 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  loadHeader(doc.querySelector('header'));
+
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -142,7 +182,6 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
   loadCommerceLazy();
