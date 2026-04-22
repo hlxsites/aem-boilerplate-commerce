@@ -1,17 +1,17 @@
 import {
-    submitQuoteToCustomer,
-} from '../../support/b2bQuoteAPICalls';
+  signInUser,
+} from "../../actions";
 import {
-    createUserAssignCompanyAndRole,
-    manageCompanyRole,
-} from '../../support/b2bPOAPICalls';
-import {
-    assertCartSummaryProduct,
-    assertSignInSuccess,
+  assertCartSummaryProduct,
+  assertSignInSuccess,
 } from "../../assertions";
 import {
-    signInUser,
-} from "../../actions";
+  createUserAssignCompanyAndRole,
+  manageCompanyRole,
+} from '../../support/b2bPOAPICalls';
+import {
+  submitQuoteToCustomer,
+} from '../../support/b2bQuoteAPICalls';
 
 // Quote role configuration with negotiable quote permissions
 const quoteRoleConfig = {
@@ -202,10 +202,13 @@ describe("Verify B2B Quote feature", () => {
         cy.get('button[data-testid="send-for-review-button"]')
             .should('be.visible')
             .click();
-            cy.logToTerminal('✅ Quote sent for review');
+        cy.logToTerminal('✅ Quote sent for review');
 
-            // Step 9: Approve quote via admin REST API
-            cy.logToTerminal('========= Step 9: Approve quote via admin REST API =========');
+        // Step 9: Approve quote via admin REST API
+        cy.logToTerminal('========= Step 9: Approve quote via admin REST API =========');
+
+        cy.wrap(null).then(async () => {
+            try {
                 const approvalResult = await submitQuoteToCustomer(
                     username,
                     'Quote approved via Cypress B2B test automation'
@@ -222,27 +225,28 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
-            cy.reload();
-            cy.logToTerminal('✅ Page refreshed');
+        cy.reload();
+        cy.logToTerminal('✅ Page refreshed');
 
-            // Step 10: Click Checkout
-            cy.logToTerminal('========= Step 10: Place quote order - Click Checkout =========');
+        // Step 10: Click Checkout
+        cy.logToTerminal('========= Step 10: Place quote order - Click Checkout =========');
 
-            cy.contains('span', 'Checkout', { timeout: 15000 })
-                .should('be.visible')
-                .click();
+        cy.contains('span', 'Checkout', { timeout: 15000 })
+            .should('be.visible')
+            .click();
+
         // Step 11: Complete Checkout
         cy.logToTerminal('========= Step 11: Complete Checkout =========');
 
         // Accept terms and conditions
         cy.get('[data-testid="checkout-terms-and-conditions-agreements"] input[type="checkbox"]')
             .check({ force: true });
-            cy.logToTerminal('✅ Terms accepted');
+        cy.logToTerminal('✅ Terms accepted');
 
-            // Place Purchase Order
-            cy.contains('Place Purchase Order')
-                .should('be.visible')
-                .click({ force: true });
+        // Place Purchase Order
+        cy.contains('Place Purchase Order')
+            .should('be.visible')
+            .click({ force: true });
         cy.logToTerminal('🎉 B2B Quote to Order test completed successfully!');
     });
 });
