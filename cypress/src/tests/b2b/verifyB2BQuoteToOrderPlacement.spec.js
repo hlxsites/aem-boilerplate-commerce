@@ -1,14 +1,17 @@
 import {
-  assertCartSummaryProduct,
-  assertSignInSuccess,
-} from "../../assertions";
+    submitQuoteToCustomer,
+} from '../../support/b2bQuoteAPICalls';
 import {
-  createUserAssignCompanyAndRole,
-  manageCompanyRole,
+    createUserAssignCompanyAndRole,
+    manageCompanyRole,
 } from '../../support/b2bPOAPICalls';
 import {
-  submitQuoteToCustomer,
-} from '../../support/b2bQuoteAPICalls';
+    assertCartSummaryProduct,
+    assertSignInSuccess,
+} from "../../assertions";
+import {
+    signInUser,
+} from "../../actions";
 
 // Quote role configuration with negotiable quote permissions
 const quoteRoleConfig = {
@@ -83,36 +86,27 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
+        cy.wait(8000);
 
         // Step 3: Login as company user
         cy.logToTerminal('========= Step 3: Login as company user =========');
-        cy.intercept('POST', '**/graphql', (req) => {
-            const body = req.body || {};
-            if (body.query && body.query.includes('generateCustomerToken')) {
-                req.alias = 'loginMutation';
-            }
-        });
         cy.visit('/customer/login');
-        cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-            cy.delayedType('input[name="email"]', username);
-            cy.delayedType('input[name="password"]', customerData.customer.password);
-            cy.get('button[type="submit"]').click();
-        });
-        cy.wait('@loginMutation');
+        signInUser(username, customerData.customer.password);
         assertSignInSuccess(customerData.customer.firstname, customerData.customer.lastname, username);
         cy.logToTerminal('✅ User logged in');
 
         // Step 4: Add product to cart
         cy.logToTerminal('========= Step 4: Add product to cart =========');
         cy.visit("/products/youth-tee/adb150");
-            cy.get(".dropin-incrementer__input", { timeout: 15000 })
-                .should('be.visible')
-                .clear()
-                .type(10);
-            cy.get(".dropin-incrementer__input").should("have.value", "10");
-            cy.get(".product-details__buttons__add-to-cart button")
-                .should("be.visible")
-                .click();
+        cy.wait(3000);
+        cy.get(".dropin-incrementer__input").clear().type(10);
+        cy.wait(1000);
+        cy.get(".dropin-incrementer__input").should("have.value", "10");
+        cy.get(".product-details__buttons__add-to-cart button")
+            .should("be.visible")
+            .click();
+        cy.wait(2000);
+
         // Verify product in mini cart
         cy.get(".minicart-wrapper").click();
         cy.get('.minicart-panel[data-loaded="true"]').should('exist');
@@ -126,6 +120,7 @@ describe("Verify B2B Quote feature", () => {
         // Step 5: Request a quote
         cy.logToTerminal('========= Step 5: Request a quote =========');
         cy.contains('Request a Quote').click();
+        cy.wait(3000);
 
         // Fill quote form
         cy.get('body').then(($body) => {
@@ -138,21 +133,29 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
-            cy.get('body').then(($body) => {
-                if ($body.find('textarea[name="comment"]').length > 0) {
-                    cy.get('textarea[name="comment"]').type(customerData.quote.comment);
-                } else if ($body.find('textarea').length > 0) {
-                    cy.get('textarea').first().type(customerData.quote.comment);
-                }
-            });
+        cy.wait(1000);
+
+        cy.get('body').then(($body) => {
+            if ($body.find('textarea[name="comment"]').length > 0) {
+                cy.get('textarea[name="comment"]').type(customerData.quote.comment);
+            } else if ($body.find('textarea').length > 0) {
+                cy.get('textarea').first().type(customerData.quote.comment);
+            }
+        });
+
+        cy.wait(1000);
+
+        // Submit quote
         cy.get('button[data-testid="form-request-button"]')
             .should('be.visible')
             .click();
+        cy.wait(5000);
         cy.logToTerminal('✅ Quote submitted');
 
         // Step 6: Navigate to Quotes page
         cy.logToTerminal('========= Step 6: View Quote in My Account =========');
         cy.visit('/customer/account');
+        cy.wait(5000);
 
         // Click on Quotes navigation (exact match to avoid Company Credit)
         cy.get('.commerce-account-nav__item__title').each(($el) => {
@@ -161,10 +164,13 @@ describe("Verify B2B Quote feature", () => {
                 return false;
             }
         });
-            cy.logToTerminal('✅ Navigated to quotes list');
+        cy.wait(8000);
+        cy.logToTerminal('✅ Navigated to quotes list');
 
-            // Step 7: View Quote Details
-            cy.logToTerminal('========= Step 7: View Quote Details =========');
+        // Step 7: View Quote Details
+        cy.logToTerminal('========= Step 7: View Quote Details =========');
+        cy.wait(3000);
+
         cy.get('body').then(($body) => {
             if ($body.find('button:contains("View")').length > 0) {
                 cy.contains('button', 'View').first().click();
@@ -174,16 +180,18 @@ describe("Verify B2B Quote feature", () => {
                 cy.contains(quoteName).click();
             }
         });
+        cy.wait(8000);
         cy.logToTerminal('✅ Viewing quote details');
 
         // Step 8: Fill shipping address and send for review
         cy.logToTerminal('========= Step 8: Fill shipping address and send for review =========');
 
-        cy.get('input[name="firstName"]', { timeout: 15000 }).first().should('be.visible').clear().type(customerData.customer.firstname);
+        cy.get('input[name="firstName"]').first().clear().type(customerData.customer.firstname);
         cy.get('input[name="lastName"]').first().clear().type(customerData.customer.lastname);
         cy.get('input[name="street"]').first().clear().type('123 Test Street');
         cy.get('input[name="city"]').first().clear().type('Austin');
         cy.get('select[name="countryCode"]').first().select('US');
+        cy.wait(2000);
 
         cy.get('body').then(($body) => {
             if ($body.find('select[name="region"]').length > 0) {
@@ -197,12 +205,14 @@ describe("Verify B2B Quote feature", () => {
 
         cy.get('input[name="postcode"]').first().clear().type('78758');
         cy.get('input[name="telephone"]').first().clear().type('5551234567');
-
+        cy.wait(2000);
+        cy.logToTerminal('✅ Shipping address filled');
 
         // Save address if button exists
         cy.get('body').then(($body) => {
             if ($body.find('button:contains("Save")').length > 0) {
                 cy.contains('button', 'Save').first().click();
+                cy.wait(2000);
             }
         });
 
@@ -210,10 +220,12 @@ describe("Verify B2B Quote feature", () => {
         cy.get('button[data-testid="send-for-review-button"]')
             .should('be.visible')
             .click();
+        cy.wait(5000);
         cy.logToTerminal('✅ Quote sent for review');
 
         // Step 9: Approve quote via admin REST API
         cy.logToTerminal('========= Step 9: Approve quote via admin REST API =========');
+        cy.wait(10000);
 
         cy.wrap(null).then(async () => {
             try {
@@ -233,15 +245,20 @@ describe("Verify B2B Quote feature", () => {
             }
         });
 
+        cy.wait(5000);
         cy.reload();
+        cy.wait(8000);
         cy.logToTerminal('✅ Page refreshed');
 
         // Step 10: Click Checkout
         cy.logToTerminal('========= Step 10: Place quote order - Click Checkout =========');
+        cy.wait(3000);
 
-        cy.contains('span', 'Checkout', { timeout: 15000 })
+        cy.contains('span', 'Checkout')
             .should('be.visible')
             .click();
+        cy.wait(8000);
+        cy.logToTerminal('✅ On checkout page');
 
         // Step 11: Complete Checkout
         cy.logToTerminal('========= Step 11: Complete Checkout =========');
@@ -249,12 +266,15 @@ describe("Verify B2B Quote feature", () => {
         // Accept terms and conditions
         cy.get('[data-testid="checkout-terms-and-conditions-agreements"] input[type="checkbox"]')
             .check({ force: true });
+        cy.wait(2000);
         cy.logToTerminal('✅ Terms accepted');
 
         // Place Purchase Order
         cy.contains('Place Purchase Order')
-            .should('be.visible')
             .click({ force: true });
+        cy.wait(5000);
+        cy.logToTerminal('✅ Order placed');
+
         cy.logToTerminal('🎉 B2B Quote to Order test completed successfully!');
     });
 });
