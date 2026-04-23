@@ -1,19 +1,19 @@
+import * as actions from '../../actions';
+import * as selectors from '../../fields';
+import {
+  poApprovalRules,
+  poLabels,
+  poRolesConfig,
+  poUsers,
+} from '../../fixtures';
 import {
   createUserAssignCompanyAndRole,
-  manageCompanyRole,
   deleteCompanyRoles,
+  manageCompanyRole,
   unassignRoles,
 } from '../../support/b2bPOAPICalls';
-import {
-  poLabels,
-  poApprovalRules,
-  poUsers,
-  poRolesConfig,
-} from '../../fixtures';
-import * as selectors from '../../fields';
-import * as actions from '../../actions';
 
-describe('B2B Purchase Orders', () => {
+describe('B2B Purchase Orders', { retries: 0 }, () => {
   const urls = Cypress.env('poUrls');
 
   before(() => {
