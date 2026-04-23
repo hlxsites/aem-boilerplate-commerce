@@ -1,5 +1,5 @@
-import * as fields from '../fields/index';
 import * as selectors from '../fields';
+import * as fields from '../fields/index';
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -452,11 +452,8 @@ export const login = (user, urls) => {
     cy.get(fields.poPasswordInput).type(user.password);
     cy.wait(1500);
     cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
   });
-  cy.url().should('include', urls.account);
-  // Waiting for session and permissions to initialize
-  cy.wait(3000);
+  cy.url({ timeout: 15000 }).should('include', urls.account);
 };
 
 export const logout = (texts) => {
@@ -468,21 +465,21 @@ export const addProductToCart = (times = 1, isCheap = false, urls, texts) => {
   const productUrl = isCheap ? urls.cheapProduct : urls.product;
   cy.logToTerminal(`🔗 Navigating to product page: ${productUrl}`);
   cy.visit(productUrl);
-  cy.wait(4000);
+  cy.contains(fields.poAddToCartButton, texts.addToCart, { timeout: 15000 }).should('be.visible');
   for (let i = 0; i < times; i++) {
     cy.logToTerminal(`➕ Adding item ${i + 1}/${times} to cart`);
-    cy.wait(4000);
-    cy.contains(fields.poAddToCartButton, texts.addToCart).click();
-    cy.wait(4000);
+    cy.contains(fields.poAddToCartButton, texts.addToCart, { timeout: 15000 })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+    cy.get('.dropin-in-line-alert--success, .minicart-header__counter, [data-count]', { timeout: 15000 })
+      .should('be.visible');
   }
 };
 
 export const proceedToCheckout = (texts, urls) => {
   cy.logToTerminal('🔗 Navigating to checkout page');
   cy.visit(urls.checkout);
-  cy.wait(5000); // Increased wait for checkout page to initialize
-
-  // Verify we're actually on checkout page
   cy.url().should('include', urls.checkout);
 };
 
@@ -491,9 +488,6 @@ export const completeCheckout = (urls, texts) => {
   cy.reload();
   cy.url().should('include', urls.checkout);
   cy.logToTerminal('⏳ Waiting for checkout data to load...');
-
-  // Wait for checkout forms to be ready
-  cy.wait(15000);
 
   const shippingFirstNameSelectors = [
     'input[name="firstName"]',
@@ -566,29 +560,7 @@ export const completeCheckout = (urls, texts) => {
       return;
     }
 
-    // Recursively wait for field to appear with retry logic
-    const waitForField = (attempt = 0) => {
-      cy.get('body').then(($body) => {
-        const hasVisibleField = selectors.some(
-          (selector) => $body.find(selector + ':visible').length > 0,
-        );
-
-        if (!hasVisibleField && attempt < 120) {
-          cy.wait(500);
-          return waitForField(attempt + 1);
-        }
-
-        if (!hasVisibleField) {
-          throw new Error(
-            `Timeout: Field not found after 60s - ${selectors[0]}`,
-          );
-        }
-      });
-    };
-
-    waitForField();
-
-    cy.get(selectorQuery, { timeout: 10000 })
+    cy.get(selectorQuery, { timeout: 60000 })
       .filter(':visible')
       .first()
       .should('be.visible')
@@ -640,26 +612,9 @@ export const completeCheckout = (urls, texts) => {
   cy.logToTerminal('⏳ Waiting for shipping form to be ready...');
 
   // Wait until at least one shipping field is visible before proceeding
-  const checkFormReady = (attempt = 0) => {
-    cy.get('body').then(($body) => {
-      const hasAnyField = shippingFirstNameSelectors.some(
-        (selector) => $body.find(selector + ':visible').length > 0,
-      );
-
-      if (!hasAnyField && attempt < 60) {
-        cy.wait(1000);
-        return checkFormReady(attempt + 1);
-      }
-
-      if (!hasAnyField) {
-        throw new Error('Checkout form did not load after 60 seconds');
-      }
-
-      cy.logToTerminal('✅ Shipping form is ready');
-    });
-  };
-
-  checkFormReady();
+  const allShippingSelectors = shippingFirstNameSelectors.join(', ');
+  cy.get(allShippingSelectors, { timeout: 60000 }).filter(':visible').first().should('be.visible');
+  cy.logToTerminal('✅ Shipping form is ready');
 
   cy.logToTerminal('📝 Filling shipping address form');
 
@@ -688,7 +643,6 @@ export const completeCheckout = (urls, texts) => {
   typeIntoField(shippingPostcodeSelectors, '1235');
   typeIntoField(shippingTelephoneSelectors, '123456789');
 
-  cy.wait(2000);
   ensureShippingMethodSelected();
   ensurePaymentSectionVisible();
 
@@ -697,18 +651,15 @@ export const completeCheckout = (urls, texts) => {
   })
     .should('be.visible')
     .click();
-  cy.wait(1500);
   cy.get('.checkout-terms-and-conditions__form')
     .find(fields.poTermsCheckbox)
     .check({ force: true });
-  cy.wait(1500);
 
   cy.logToTerminal('🔘 Clicking Place Order button...');
   cy.get(fields.poPlacePOButton, { timeout: 60000 })
     .should('be.visible')
     .should('not.be.disabled')
     .click();
-  cy.wait(3000);
   cy.logToTerminal('✅ Place Order button clicked');
 };
 
@@ -744,29 +695,19 @@ export const createPurchaseOrder = (
 };
 
 export const fillApprovalRuleForm = (rule, texts) => {
-  cy.wait(3000);
-  cy.get(fields.poNameInput).clear().type(rule.name);
-  cy.wait(1500);
+  cy.get(fields.poNameInput, { timeout: 10000 }).should('be.visible').clear().type(rule.name);
   cy.get(fields.poTextarea).clear().type(rule.description);
-  cy.wait(1500);
   cy.contains(rule.appliesTo).click();
-  cy.wait(1500);
 
   if (rule.appliesTo === texts.specificRoles && rule.role) {
     cy.get(fields.poMultiSelect).first().click();
-    cy.wait(1500);
-    cy.get(fields.poMultiSelect).first().contains(rule.role).click();
-    cy.wait(1500);
+    cy.get(fields.poMultiSelect).first().contains(rule.role).should('be.visible').click();
     cy.get('body').type('{esc}');
-    cy.wait(2500);
   }
 
   cy.get(fields.poRuleTypeSelect).select(rule.ruleType);
-  cy.wait(1500);
   cy.get(fields.poRuleConditionSelect).select(rule.ruleCondition);
-  cy.wait(1500);
   cy.get(fields.poRuleValueInput).clear().type(rule.ruleValue);
-  cy.wait(1500);
 
   const multiSelectIndex = rule.appliesTo === texts.specificRoles ? 1 : 0;
   cy.get(fields.poMultiSelect).eq(multiSelectIndex).click();
@@ -775,9 +716,7 @@ export const fillApprovalRuleForm = (rule, texts) => {
     .eq(multiSelectIndex)
     .contains(rule.approverRole)
     .click();
-  cy.wait(2500);
   cy.get('body').type('{esc}');
-  cy.wait(2500);
 };
 
 export const deleteApprovalRule = (ruleName) => {
@@ -791,15 +730,9 @@ export const deleteApprovalRule = (ruleName) => {
     });
   });
 
-  cy.wait(2000);
-
-  cy.contains('button', 'Delete').click();
-
-  cy.wait(10000);
+  cy.contains('button', 'Delete').should('be.visible').click();
 
   getRowByName(ruleName).should('not.exist');
-
-  cy.wait(5000);
 };
 
 // Quick Order Variants Grid Actions
