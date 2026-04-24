@@ -24,8 +24,12 @@ Cypress.Commands.add('fillField', (selector, value, options = {}) => {
   const { blur = false, delay = 30, timeout = 10000 } = options;
 
   cy.get(selector, { timeout }).should('be.visible');
-  cy.get(selector).clear();
-  cy.get(selector).type(value, { delay });
+  // Use {selectall} instead of clear() — Preact controlled inputs may
+  // re-render and restore state between clear() and type(), causing
+  // characters to mix with leftover content. {selectall} + typing
+  // replaces the selection in a single input flow that Preact handles
+  // correctly.
+  cy.get(selector).type(`{selectall}${value}`, { delay });
   cy.get(selector).should('have.value', value);
 
   if (blur) {
