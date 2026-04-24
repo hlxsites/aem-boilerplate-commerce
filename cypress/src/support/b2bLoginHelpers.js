@@ -28,9 +28,19 @@ function performLogin(email, password) {
   cy.visit('/customer/login');
 
   cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-    cy.fillField('input[name="email"]', email);
-    cy.fillField('input[name="password"]', password);
-    cy.get('button[type="submit"]').click();
+    cy.get('input[name="email"]').should('be.visible');
+    cy.get('input[name="email"]').type(email, { delay: 30 });
+    cy.get('input[name="email"]').should('have.value', email);
+
+    cy.get('input[name="password"]').should('be.visible');
+    cy.get('input[name="password"]').type(password, { delay: 30 });
+    cy.get('input[name="password"]').should('have.value', password);
+
+    // Preact needs a tick to commit form state after the last input event
+    // before the submit handler can read the correct values
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
+    cy.get('button[type="submit"]').click({ force: true });
   });
 
   // Wait for login redirect instead of static wait
