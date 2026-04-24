@@ -226,6 +226,8 @@ export const requisitionListViewBulkActionsDeleteButton =
   '[data-testid="bulk-actions-delete-btn"]';
 export const requisitionListViewDeleteButton =
   '[data-testid="delete-list-btn"]';
+export const requisitionListViewShareButton =
+  '[data-testid="share-list-btn"]';
 export const miniCartButton = ".minicart-wrapper .nav-cart-button";
 export const miniCartContainer = ".cart-mini-cart";
 export const miniCartHeading = '[data-testid="default-cart-heading"]';
@@ -235,6 +237,11 @@ export const miniCartItemSku = '[data-testid="cart-list-item-sku"]';
 export const miniCartQuantity = ".dropin-cart-item__quantity__number";
 export const miniCartCheckoutButton = '[data-testid="route-checkout-button"]';
 export const productDetailsAlert = ".product-details__alert";
+
+// Requisition List Sharing
+export const requisitionListSharingError = '.shared-requisition-list__container .dropin-in-line-alert--error';
+export const requisitionListSharingLoading = '.shared-requisition-list__loading';
+export const requisitionListSharingSignInForm = '.commerce-b2b-requisition-list-sharing .auth-sign-in-form';
 
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 
