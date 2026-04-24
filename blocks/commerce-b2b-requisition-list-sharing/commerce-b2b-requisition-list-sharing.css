@@ -1,0 +1,27 @@
+.commerce-b2b-requisition-list-sharing__loading {
+  min-height: 120px;
+}
+
+.commerce-b2b-requisition-list-sharing__preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.commerce-b2b-requisition-list-sharing__title {
+  margin: 0;
+}
+
+.commerce-b2b-requisition-list-sharing__meta {
+  margin: 0;
+  color: var(--color-neutral-700);
+  font: var(--type-details-caption-1-font);
+}
+
+.commerce-b2b-requisition-list-sharing__import-btn {
+  align-self: flex-start;
+}
+
+.commerce-b2b-requisition-list-sharing__error {
+  color: var(--color-negative-500);
+}
