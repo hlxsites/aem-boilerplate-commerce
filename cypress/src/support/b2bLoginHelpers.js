@@ -18,6 +18,26 @@
  */
 
 /**
+ * Shared login implementation. Navigates to login page, fills credentials,
+ * submits the form, and waits for redirect to /customer/account.
+ *
+ * @param {string} email - User email address
+ * @param {string} password - User password
+ */
+function performLogin(email, password) {
+  cy.visit('/customer/login');
+
+  cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
+    cy.fillField('input[name="email"]', email);
+    cy.fillField('input[name="password"]', password);
+    cy.get('button[type="submit"]').click();
+  });
+
+  // Wait for login redirect instead of static wait
+  cy.url({ timeout: 30000 }).should('include', '/customer/account');
+}
+
+/**
  * Login as company admin.
  * Uses credentials stored in Cypress.env by setup commands.
  * Throws error if credentials are not set.
@@ -33,18 +53,7 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testAdmin.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
+    performLogin(testAdmin.email, testAdmin.password);
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -65,18 +74,7 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.regular.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
+    performLogin(testUsers.regular.email, testUsers.regular.password);
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -114,18 +112,7 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     }
     
     cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-    
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.restricted.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-    
-    cy.wait(8000); // Wait for login to complete
+    performLogin(testUsers.restricted.email, testUsers.restricted.password);
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });
