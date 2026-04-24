@@ -17,14 +17,15 @@
  * @param {string} value - Value to type into the field
  * @param {Object} [options] - Optional configuration
  * @param {boolean} [options.blur=false] - Whether to blur after typing
+ * @param {number} [options.delay=30] - Delay between keystrokes in ms (Preact needs time to re-render between keystrokes)
  * @param {number} [options.timeout=10000] - Timeout for visibility/value assertions
  */
 Cypress.Commands.add('fillField', (selector, value, options = {}) => {
-  const { blur = false, timeout = 10000 } = options;
+  const { blur = false, delay = 30, timeout = 10000 } = options;
 
   cy.get(selector, { timeout }).should('be.visible');
   cy.get(selector).clear();
-  cy.get(selector).type(value);
+  cy.get(selector).type(value, { delay });
   cy.get(selector).should('have.value', value);
 
   if (blur) {
