@@ -135,6 +135,39 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+let quickEditLoadPromise = null;
+
+/**
+ * Dynamically loads the Quick Edit plugin (da.live).
+ * @param {...*} args forwarded to quick-edit init (Sidekick payload or URL deep-link).
+ */
+async function loadQuickEdit(...args) {
+  if (quickEditLoadPromise) return quickEditLoadPromise;
+
+  quickEditLoadPromise = (async () => {
+    // eslint-disable-next-line import/no-cycle
+    const { default: initQuickEdit } = await import('../tools/quick-edit/quick-edit.js');
+    initQuickEdit(...args);
+  })();
+
+  return quickEditLoadPromise;
+}
+
+function registerQuickEditSidekick() {
+  const addSidekickListeners = (sk) => {
+    sk.addEventListener('custom:quick-edit', loadQuickEdit);
+  };
+
+  const sk = document.querySelector('aem-sidekick');
+  if (sk) {
+    addSidekickListeners(sk);
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      addSidekickListeners(document.querySelector('aem-sidekick'));
+    }, { once: true });
+  }
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -192,24 +225,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  const loadQuickEdit = async (...args) => {
-    // eslint-disable-next-line import/no-cycle
-    const { default: initQuickEdit } = await import('../tools/quick-edit/quick-edit.js');
-    initQuickEdit(...args);
-  };
-
-  const addSidekickListeners = (sk) => {
-    sk.addEventListener('custom:quick-edit', loadQuickEdit);
-  };
-
-  const sk = document.querySelector('aem-sidekick');
-  if (sk) {
-    addSidekickListeners(sk);
-  } else {
-    document.addEventListener('sidekick-ready', () => {
-      addSidekickListeners(document.querySelector('aem-sidekick'));
-    }, { once: true });
-  }
+  registerQuickEditSidekick();
 }
 
 /**
@@ -240,3 +256,8 @@ loadPage();
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
+
+setTimeout(() => {
+  const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
+  if (hasQE) loadQuickEdit();
+}, 500);
