@@ -344,6 +344,7 @@ export default async function decorate(block) {
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
+    // update add to cart button disabled state based on product selection validity and stock status
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
   }, { eager: true });
 
