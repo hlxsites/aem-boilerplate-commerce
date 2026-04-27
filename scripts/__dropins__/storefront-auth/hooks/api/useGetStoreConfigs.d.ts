@@ -21,9 +21,9 @@ export declare const useGetStoreConfigs: () => {
     } | null;
     isEmailConfirmationRequired: boolean;
     remoteShoppingAssistanceConfigs: {
-        loginAsCustomerEnabled: boolean;
-        loginAsCustomerConsentLabel: string;
-        loginAsCustomerConsentTooltip: string;
+        shoppingAssistanceEnabled: boolean;
+        shoppingAssistanceCheckboxTitle: string;
+        shoppingAssistanceCheckboxTooltip: string;
     } | null;
 };
 //# sourceMappingURL=useGetStoreConfigs.d.ts.map

@@ -32,4 +32,6 @@ export * from './CustomerInformationCard';
 export * from './AddressValidation';
 export * from './SellerAssistedPurchasingControl';
 export * from './PaymentCard';
+export * from './PaymentMethodsWrapper';
+export * from './PaymentModal';
 //# sourceMappingURL=index.d.ts.map

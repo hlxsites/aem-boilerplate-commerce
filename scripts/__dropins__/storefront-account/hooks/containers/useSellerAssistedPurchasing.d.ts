@@ -1,9 +1,9 @@
 import { UseSellerAssistedPurchasingReturn } from '../../types';
 
 interface RemoteShoppingAssistanceConfigs {
-    loginAsCustomerEnabled: boolean;
-    loginAsCustomerConsentLabel: string;
-    loginAsCustomerConsentTooltip: string;
+    shoppingAssistanceEnabled: boolean;
+    shoppingAssistanceCheckboxTitle: string;
+    shoppingAssistanceCheckboxTooltip: string;
 }
 export declare const useSellerAssistedPurchasing: (remoteShoppingAssistanceConfigs: RemoteShoppingAssistanceConfigs | null) => UseSellerAssistedPurchasingReturn;
 export {};

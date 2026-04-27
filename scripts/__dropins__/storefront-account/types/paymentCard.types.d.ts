@@ -15,8 +15,8 @@
  * from Adobe.
  *******************************************************************/
 export interface PaymentCardProps {
-    /** Display name of the card type (e.g. "Visa", "American Express") */
-    cardType: string;
+    /** Display name of the card brand (e.g. "Visa", "Mastercard", "American Express") */
+    cardBrand: string;
     /** Last four digits of the card number to display (e.g. "1001") */
     lastFourDigits: string;
     /** When true, shows an EXPIRED badge on the card */
@@ -25,5 +25,20 @@ export interface PaymentCardProps {
     onRemove?: () => void;
     /** Optional variant for the card container */
     variant?: 'secondary' | 'primary';
+    /**
+     * When true, lays out brand, masked number, expired tag (if any), and Remove on one row.
+     */
+    minifiedView?: boolean;
+}
+export interface PaymentModalProps {
+    open: boolean;
+    submitLoading: boolean;
+    onRemoveToken: () => void;
+    closeModal: () => void;
+    cardBrand?: string;
+    lastFourDigits?: string;
+    expired?: boolean;
+    variant?: 'secondary' | 'primary';
+    minifiedView?: boolean;
 }
 //# sourceMappingURL=paymentCard.types.d.ts.map

@@ -21,9 +21,9 @@ export interface storeConfigProps {
     create_account_confirmation: boolean;
     customer_access_token_lifetime: number;
     website_name?: string;
-    login_as_customer_enabled?: boolean;
-    login_as_customer_consent_label?: string;
-    login_as_customer_consent_tooltip?: string;
+    shopping_assistance_enabled?: boolean;
+    shopping_assistance_checkbox_title?: string;
+    shopping_assistance_checkbox_tooltip?: string;
 }
 export interface getStoreConfigResponse {
     data: {

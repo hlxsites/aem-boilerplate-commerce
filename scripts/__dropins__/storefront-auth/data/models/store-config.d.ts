@@ -21,8 +21,8 @@ export interface StoreConfigModel {
     createAccountConfirmation: boolean;
     customerAccessTokenLifetime: number;
     websiteName: string;
-    loginAsCustomerEnabled: boolean;
-    loginAsCustomerConsentLabel: string;
-    loginAsCustomerConsentTooltip: string;
+    shoppingAssistanceEnabled: boolean;
+    shoppingAssistanceCheckboxTitle: string;
+    shoppingAssistanceCheckboxTooltip: string;
 }
 //# sourceMappingURL=store-config.d.ts.map

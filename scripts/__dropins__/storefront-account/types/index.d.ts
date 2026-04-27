@@ -25,6 +25,8 @@ export * from './api/getRegions.types';
 export * from './api/updateCustomerAddress.types';
 export * from './api/getCustomer.types';
 export * from './api/removeCustomerAddress.types';
+export * from './api/getCustomerPaymentTokens.types';
+export * from './api/deletePaymentToken.types';
 export * from './api/getOrderHistoryList.types';
 export * from './api/updateCustomerPassword.types';
 export * from './api/storeConfig.types';
@@ -34,4 +36,5 @@ export * from './customerInformation.types';
 export * from './notification.types';
 export * from './sellerAssistedPurchasing.types';
 export * from './paymentCard.types';
+export * from './paymentMethods.types';
 //# sourceMappingURL=index.d.ts.map

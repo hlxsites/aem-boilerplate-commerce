@@ -224,10 +224,18 @@ declare const _default: {
     },
     "Payments": {
       "containerTitle": "Payments",
+      "loadError": "We couldn’t load your saved payment methods. Try again later.",
+      "removeError": "We couldn’t remove this payment method. Try again.",
       "paymentCard": {
         "actionRemove": "Remove",
         "cardEndingIn": "Credit card ending in",
         "expiredLabel": "Expired"
+      },
+      "removePaymentModal": {
+        "title": "Remove Payment Method",
+        "description": "Are you sure you would like to remove this payment method?",
+        "actionCancel": "Cancel",
+        "actionConfirm": "Remove"
       }
     }
   }

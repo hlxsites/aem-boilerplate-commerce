@@ -19,7 +19,9 @@ export interface JwtPayload {
     exp?: number;
     iat?: number;
     sub?: string;
-    isAdmin?: boolean;
+    admin_id?: number;
+    uid?: number;
+    utypid?: number;
 }
 /**
  * Decodes JWT token payload without verification
@@ -37,4 +39,12 @@ export declare const decodeJwtToken: (token: string) => JwtPayload | null;
  * @returns true if token indicates admin user, false otherwise
  */
 export declare const isAdminToken: (token: string) => boolean;
+/**
+ * Gets JWT token expiration as Max-Age string for cookie
+ *
+ * @param token - JWT token string
+ * @param defaultMaxAge - Default Max-Age string to return if token is invalid or missing exp claim (e.g., "Max-Age=3600")
+ * @returns Max-Age string for cookie (e.g., "Max-Age=3600") based on token exp or defaultMaxAge
+ */
+export declare const getTokenExpiration: (token: string, defaultMaxAge: string) => string;
 //# sourceMappingURL=jwtUtils.d.ts.map
