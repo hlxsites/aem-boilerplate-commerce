@@ -99,8 +99,6 @@ export default async function decorate(block) {
   }
 
   const getAddToCartButton = (product) => {
-    const isOutOfStock = product?.inStock === false;
-
     if (product.typename === 'ComplexProductView') {
       const button = document.createElement('div');
       UI.render(Button, {
@@ -108,7 +106,6 @@ export default async function decorate(block) {
         icon: Icon({ source: 'Cart' }),
         href: getProductLink(product.urlKey, product.sku),
         variant: 'primary',
-        disabled: isOutOfStock,
       })(button);
       return button;
     }
@@ -118,7 +115,7 @@ export default async function decorate(block) {
       icon: Icon({ source: 'Cart' }),
       onClick: () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }]),
       variant: 'primary',
-      disabled: isOutOfStock,
+      disabled: !product.inStock,
     })(button);
     return button;
   };
