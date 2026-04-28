@@ -338,9 +338,7 @@ export default async function decorate(block) {
   // Lifecycle Events
   events.on('pdp/data', (data) => {
     isOutOfStock = data?.inStock === false;
-    if (isOutOfStock) {
-      addToCart.setProps((prev) => ({ ...prev, disabled: true }));
-    }
+    addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
