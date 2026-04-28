@@ -257,7 +257,7 @@ loadPage();
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
 
-setTimeout(() => {
+(() => {
   const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
-  if (hasQE) loadQuickEdit();
-}, 500);
+  if (hasQE) import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
+})();
