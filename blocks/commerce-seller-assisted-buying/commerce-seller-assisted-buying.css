@@ -1,1 +1,5 @@
 /* stylelint-disable no-empty-source */
+
+.commerce-seller-assisted-buying > div > div:last-child {
+  margin-top: 20px;
+}

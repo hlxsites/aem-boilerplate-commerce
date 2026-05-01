@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const BASIC_CUSTOMER_INFO_FRAGMENT = "\n  fragment BASIC_CUSTOMER_INFO_FRAGMENT on Customer {\n    date_of_birth\n    email\n    firstname\n    gender\n    lastname\n    middlename\n    prefix\n    suffix\n    created_at\n    allow_remote_shopping_assistance\n  }\n";
+export declare const BASIC_CUSTOMER_INFO_FRAGMENT = "\n  fragment BASIC_CUSTOMER_INFO_FRAGMENT on Customer {\n    date_of_birth\n    email\n    firstname\n    gender\n    lastname\n    middlename\n    prefix\n    suffix\n    created_at\n    allow_remote_shopping_assistance\n    admin_assistance_actions(pageSize: 10, currentPage: 1) {\n      total_count\n      items {\n        action\n        date\n        details\n      }\n      page_info {\n        current_page\n        page_size\n        total_pages\n      }\n    }\n  }\n";
 //# sourceMappingURL=CustomerFragment.graphql.d.ts.map

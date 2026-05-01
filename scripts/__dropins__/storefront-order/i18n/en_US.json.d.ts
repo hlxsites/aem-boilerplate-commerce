@@ -27,6 +27,10 @@ declare const _default: {
         "backStore": "Back to order"
       }
     },
+    "OrderComments": {
+      "emptyState": "No order comments.",
+      "title": "Order comments"
+    },
     "OrderCostSummary": {
       "headerText": "Order summary",
       "headerReturnText": "Return summary",
@@ -187,6 +191,7 @@ declare const _default: {
     },
     "OrderStatusContent": {
       "noInfoTitle": "Check back later for more details.",
+      "adminAssistedLabel": "Order placed with admin assistance",
       "returnMessage": "The order was placed on {ORDER_CREATE_DATE} and your return process started on {RETURN_CREATE_DATE}",
       "returnStatus": {
         "pending": "Pending",

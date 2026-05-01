@@ -31,6 +31,7 @@ export * from './EditCustomerInformation';
 export * from './CustomerInformationCard';
 export * from './AddressValidation';
 export * from './SellerAssistedPurchasingControl';
+export * from './SellerAssistedBuyingControl';
 export * from './PaymentCard';
 export * from './PaymentMethodsWrapper';
 export * from './PaymentModal';

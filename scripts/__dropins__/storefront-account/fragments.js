@@ -12,6 +12,19 @@ const e=`
     suffix
     created_at
     allow_remote_shopping_assistance
+    admin_assistance_actions(pageSize: 10, currentPage: 1) {
+      total_count
+      items {
+        action
+        date
+        details
+      }
+      page_info {
+        current_page
+        page_size
+        total_pages
+      }
+    }
   }
 `,t=`
   fragment ADDRESS_FRAGMENT on OrderAddress {
@@ -31,7 +44,7 @@ const e=`
     telephone
     vat_id
   }
-`,r=`
+`,a=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     grand_total {
       value
@@ -77,8 +90,9 @@ const e=`
       label
     }
   }
-`,a=`
+`,r=`
   fragment CUSTOMER_ORDER_FRAGMENT on CustomerOrder {
+    admin_assisted_order
     token
     email
     shipping_method
@@ -117,5 +131,5 @@ const e=`
       }
     }
   }
-`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as CUSTOMER_ORDER_FRAGMENT,r as ORDER_SUMMARY_FRAGMENT};
+`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,r as CUSTOMER_ORDER_FRAGMENT,a as ORDER_SUMMARY_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

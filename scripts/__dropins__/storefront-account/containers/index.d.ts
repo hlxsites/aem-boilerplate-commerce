@@ -19,5 +19,6 @@ export * from './Addresses';
 export * from './OrdersList';
 export * from './CustomerInformation';
 export * from './SellerAssistedPurchasing';
+export * from './SellerAssistedBuying';
 export * from './PaymentMethods';
 //# sourceMappingURL=index.d.ts.map
