@@ -17,7 +17,7 @@
         "view-id": "1ff94004-64db-487c-88c5-094760c67d2e",
         "environment": "Testing",
         "base-currency-code": "USD",
-        "locale":"default",
+        "locale":"en-US",
         "store-url": "https://fy26acodadi-pen-test1--aem-boilerplate-commerce--hlxsites.aem.live/",
         "environment-id": "7yLRJ9SKrqwmf1iBdDE6KY"
       }
