@@ -1,0 +1,62 @@
+name: Sync Nav Categories
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # daily at midnight UTC
+  workflow_dispatch:
+    inputs:
+      site:
+        description: 'EDS site hostname (leave blank to use NAV_SITE below)'
+        required: false
+        default: ''
+      store:
+        description: 'Store to sync ("default" or a config.json key). Leave blank to run all stores.'
+        required: false
+        default: ''
+      family:
+        description: 'ACO product family (required — every family must be created in ACO first)'
+        required: false
+        default: ''
+
+env:
+  # Hostname of the live EDS site. Update this when targeting a different branch or repo.
+  NAV_SITE: main--my-repo--my-org.aem.live
+  # ACO product family. Every family must be created manually in ACO — there is no
+  # universal default. Change this to the family configured for your store.
+  NAV_FAMILY: my-family
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Add one step per store. Each step runs independently so a single store
+      # failure does not block the others. Set `continue-on-error: true` if you
+      # want the workflow to continue even when one store fails.
+      - name: Sync default store
+        if: >
+          github.event_name == 'schedule'
+          || github.event.inputs.store == ''
+          || github.event.inputs.store == 'default'
+        env:
+          DA_TOKEN: ${{ secrets.DA_TOKEN }}
+          DA_CLIENT_ID: ${{ secrets.DA_CLIENT_ID }}
+          DA_CLIENT_SECRET: ${{ secrets.DA_CLIENT_SECRET }}
+        run: |
+          node tools/nav-sync/nav-sync.js \
+            "${{ github.event.inputs.site || env.NAV_SITE }}" \
+            default \
+            "${{ github.event.inputs.family || env.NAV_FAMILY }}"
+
+      - name: Upload nav files as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nav-categories
+          path: tools/nav-sync/*/nav-dynamic.txt
