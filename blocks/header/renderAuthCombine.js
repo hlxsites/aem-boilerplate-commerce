@@ -10,6 +10,7 @@ import {
   CUSTOMER_ACCOUNT_PATH,
   CUSTOMER_FORGOTPASSWORD_PATH,
   rootLink,
+  getProductLink,
 } from '../../scripts/commerce.js';
 
 const signInFormConfig = {
@@ -186,6 +187,7 @@ const onHeaderLinkClick = (element) => {
     document.body.style.overflow = 'auto';
     viewportMeta.setAttribute('content', originalViewportContent);
     window.removeEventListener('keydown', trapFocus);
+    window.location.reload();
   };
 
   const signInForm = document.createElement('div');
@@ -269,7 +271,7 @@ const renderAuthCombine = (navSections, toggleMenu) => {
             'afterend',
             `<ul class="popupMenuUrlList">
               <li><a href="${rootLink(CUSTOMER_ACCOUNT_PATH)}">My Account</a></li>
-              <li><a href="${rootLink('/products/hollister-backyard-sweatshirt/MH05')}">Product page</a></li>
+              <li><a href="${getProductLink('hollister-backyard-sweatshirt', 'MH05')}">Product page</a></li>
               <li><button class="logoutButton">Logout</button></li>
             </ul>`,
           );

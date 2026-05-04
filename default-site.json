@@ -14,9 +14,6 @@
       "type": "onedrive"
     }
   },
-  "folders": {
-    "/products/": "/products/default"
-  },
   "cdn": {
     "live": {
       "host": "main--{SITE}--{ORG}.aem.live"
@@ -35,7 +32,6 @@
           "Store": "default"
         },
         "cs": {
-          "Magento-Customer-Group": "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "Magento-Store-Code": "{STORE_CODE}",
           "Magento-Store-View-Code": "{STORE_VIEW_CODE}",
           "Magento-Website-Code": "{WEBSITE_CODE}",
@@ -56,38 +52,13 @@
       },
       "plugins": {
         "picker": {
-           "rootCategory": "2"
+           "rootCategory": "{YOUR_ROOT_CATEGORY_ID}"
          }
       }
     }
   },
   "robots": {
     "txt": "User-agent: *\nAllow: /\nDisallow: /drafts/\nDisallow: /enrichment/\nDisallow: /tools/\nDisallow: /plugins/experimentation/\n\nSitemap: https://{DOMAIN}/sitemap-index.xml"
-  },
-  "sidekick": {
-    "project": "Boilerplate",
-    "plugins": [
-      {
-        "id": "cif",
-        "title": "Commerce",
-        "environments": [
-          "edit"
-        ],
-        "url": "https://main--{SITE}--{ORG}.aem.live/tools/picker/dist/index.html",
-        "isPalette": true,
-        "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
-      },
-      {
-        "id": "personalisation",
-        "title": "Personalisation",
-        "environments": [
-          "edit"
-        ],
-        "url": "https://main--{SITE}--{ORG}.aem.live/tools/segments/dist/index.html",
-        "isPalette": true,
-        "paletteRect": "top: 54px; left: 5px; bottom: 5px; width: 300px; height: calc(100% - 59px); border-radius: var(--hlx-sk-button-border-radius); overflow: hidden; resize: horizontal;"
-      }
-    ]
   },
   "access": {
     "admin": {

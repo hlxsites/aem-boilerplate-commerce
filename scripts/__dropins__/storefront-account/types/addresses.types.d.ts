@@ -14,6 +14,7 @@ export interface AddressCardContext {
 }
 export interface AddressesProps {
     hideActionFormButtons?: boolean;
+    fieldIdPrefix?: string;
     formName?: string;
     slots?: {
         [key: string]: SlotProps;
@@ -42,7 +43,7 @@ export interface AddressesProps {
     routeAddressesPage?: () => string;
     onSuccess?: () => void;
     onError?: (error: string) => void;
-    onSubmit?: () => Promise<void>;
+    onSubmit?: (event: Event, formValid: boolean) => Promise<void>;
     onAddressData?: (values: {} | CustomerAddressesModel | undefined) => void;
 }
 export interface AddressesWrapperProps extends Omit<AddressesProps, 'formName'> {

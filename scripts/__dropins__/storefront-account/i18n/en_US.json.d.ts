@@ -107,6 +107,9 @@ declare const _default: {
         },
         "OrdersList": {
           "message": "No orders"
+        },
+        "Payments": {
+          "message": "No saved payments"
         }
       }
     },
@@ -170,6 +173,9 @@ declare const _default: {
         },
         "OrdersList": {
           "message": "No orders"
+        },
+        "Payments": {
+          "message": "No saved payments"
         }
       }
     },
@@ -180,6 +186,16 @@ declare const _default: {
         "defaultShippingLabel": "Set as default shipping address",
         "defaultBillingLabel": "Set as default billing address",
         "saveAddressBook": "Save in address book"
+      },
+      "fields": {
+        "street": {
+          "label": "Street Address",
+          "placeholder": "Enter your street address"
+        },
+        "street_multiline_2": {
+          "label": "House/Flat Number",
+          "placeholder": "Enter your house/flat number"
+        }
       }
     },
     "FormText": {
@@ -193,6 +209,28 @@ declare const _default: {
       "dateLengthError": "Date must be between {min} and {max}.",
       "urlError": "Please enter a valid URL, e.g., http://www.adobe.com.",
       "lengthTextError": "Text length must be between {min} and {max} characters."
+    },
+    "AddressValidation": {
+      "title": "Verify your address",
+      "subtitle": "To ensure accurate delivery, we suggest the changes highlighted below. Please choose which address you would like to use. If neither option is correct, edit your address.",
+      "suggestedAddress": "Suggested Address",
+      "originalAddress": "Original Address"
+    },
+    "Payments": {
+      "containerTitle": "Payments",
+      "loadError": "We couldn’t load your saved payment methods. Try again later.",
+      "removeError": "We couldn’t remove this payment method. Try again.",
+      "paymentCard": {
+        "actionRemove": "Remove",
+        "cardEndingIn": "Credit card ending in",
+        "expiredLabel": "Expired"
+      },
+      "removePaymentModal": {
+        "title": "Remove Payment Method",
+        "description": "Are you sure you would like to remove this payment method?",
+        "actionCancel": "Cancel",
+        "actionConfirm": "Remove"
+      }
     }
   }
 }

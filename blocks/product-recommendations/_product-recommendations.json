@@ -1,0 +1,33 @@
+{
+  "definitions": [
+    {
+      "title": "Product Recommendations",
+      "id": "product-recommendations",
+      "model": "product-recommendations",
+      "plugins": {
+        "da": {
+          "type": "key-value-block"
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "product-recommendations",
+      "fields": [
+        {
+          "component": "text",
+          "name": "recId",
+          "label": "Rec ID",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "currentSku",
+          "label": "Current SKU"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

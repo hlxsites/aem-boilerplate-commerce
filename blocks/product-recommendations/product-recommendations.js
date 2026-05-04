@@ -20,13 +20,29 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
+
+/**
+ * Validates and returns a product view history entry if valid
+ * @param {Object} entry - The history entry to validate
+ * @returns {Object|null} - Validated history entry or null if invalid
+ */
+function getValidHistoryEntry(entry) {
+  // Basic validation to ensure the entry has necessary properties
+  if (entry && typeof entry === 'object' && entry.sku && entry.date) {
+    return {
+      sku: entry.sku,
+      date: entry.date,
+    };
+  }
+  return null;
+}
 
 /**
  * Gets product view history from localStorage
@@ -36,7 +52,16 @@ const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches
 function getProductViewHistory(storeViewCode) {
   try {
     const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
-    return JSON.parse(viewHistory);
+    const parsedHistory = JSON.parse(viewHistory);
+    if (!Array.isArray(parsedHistory)) {
+      throw new Error('Product view history is not an array');
+    }
+    const validHistory = parsedHistory.map(getValidHistoryEntry).filter((entry) => entry !== null);
+    if (validHistory.length === 0) {
+      // If no valid entries, clear the history to prevent future parsing issues
+      window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
+    }
+    return validHistory;
   } catch (e) {
     window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
     console.error('Error parsing product view history', e);
@@ -63,6 +88,12 @@ function getPurchaseHistory(storeViewCode) {
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
+  // Hide configuration rows if they exist
+  const children = [...block.children];
+  children.forEach((child) => {
+    child.style.display = 'none';
+  });
+
   // Configuration
   const { currentsku, recid } = readBlockConfig(block);
 
@@ -74,6 +105,7 @@ export default async function decorate(block) {
   `);
 
   const $list = fragment.querySelector('.recommendations__list');
+  const $wrapper = fragment.querySelector('.recommendations__wrapper');
 
   block.appendChild(fragment);
 
@@ -110,7 +142,7 @@ export default async function decorate(block) {
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-    const getProductLink = (item) => rootLink(`/products/${item.urlKey}/${item.sku}`);
+    const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory(storeViewCode);
@@ -135,7 +167,7 @@ export default async function decorate(block) {
     try {
       await Promise.all([
         provider.render(ProductList, {
-          routeProduct: getProductLink,
+          routeProduct: createProductLink,
           recId: recid,
           currentSku: currentsku || context.currentSku,
           userViewHistory: context.userViewHistory,
@@ -183,7 +215,7 @@ export default async function decorate(block) {
                 UI.render(Button, {
                   children:
                     labels.Global?.SelectProductOptions,
-                  href: rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`),
+                  href: createProductLink(ctx.item),
                   variant: 'tertiary',
                 })(addToCart);
               }
@@ -206,7 +238,7 @@ export default async function decorate(block) {
             Thumbnail: (ctx) => {
               const { item, defaultImageProps } = ctx;
               const wrapper = document.createElement('a');
-              wrapper.href = getProductLink(item);
+              wrapper.href = createProductLink(item);
 
               tryRenderAemAssetsImage(ctx, {
                 alias: item.sku,
@@ -220,7 +252,7 @@ export default async function decorate(block) {
               });
             },
           },
-        })(block),
+        })($wrapper),
       ]);
     } finally {
       isLoading = false;

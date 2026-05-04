@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Order Cost Summary",
+    "id": "commerce-order-cost-summary",
+    "model": "commerce-order-cost-summary",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

@@ -7,12 +7,60 @@ import {
   getListOfRootPaths,
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
-import { getMetadata } from './aem.js';
+import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
+import {
+  getMetadata,
+  readBlockConfig,
+  toCamelCase,
+  toClassName,
+} from './aem.js';
 import initializeDropins from './initializers/index.js';
+
+/**
+ * Sanitizes the given string by:
+ * - convert to lower case
+ * - normalize all unicode characters
+ * - replace all non-alphanumeric characters with a dash
+ * - remove all consecutive dashes
+ * - remove all leading and trailing dashes
+ *
+ * @param {string} name
+ * @returns {string} sanitized name
+ */
+function sanitizeName(name) {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
+ * Fetch GraphQL Instances
+ */
+
+// Core Fetch GraphQL Instance
+export const CORE_FETCH_GRAPHQL = new FetchGraphQL();
+
+// Catalog Service Fetch GraphQL Instance
+export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 /**
  * Constants
  */
+
+// Environment checks
+export const IS_UE = window.location.hostname.includes('ue.da.live');
+export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
+
+/**
+ * Product template paths - pages that are templates and should use
+ * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
+ */
+export const PRODUCT_TEMPLATE_PATHS = [
+  'products/default',
+];
 
 // PATHS
 export const SUPPORT_PATH = '/support';
@@ -267,11 +315,6 @@ export async function loadCommerceLazy() {
   // Initialize Adobe Client Data Layer
   await import('./acdl/adobe-client-data-layer.min.js');
 
-  // Initialize Adobe Client Data Layer validation
-  if (sessionStorage.getItem('acdl:debug')) {
-    import('./acdl/validate.js');
-  }
-
   // Track history
   trackHistory();
 }
@@ -280,7 +323,17 @@ export async function loadCommerceLazy() {
  * Initializes commerce configuration
  */
 export async function initializeCommerce() {
+  // Initialize Config
   initializeConfig(await getConfigFromSession());
+
+  // Set Fetch GraphQL (Core)
+  CORE_FETCH_GRAPHQL.setEndpoint(getConfigValue('commerce-core-endpoint') || await getConfigValue('commerce-endpoint'));
+  CORE_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('all') }));
+
+  // Set Fetch GraphQL (Catalog Service)
+  CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
+  CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
   return initializeDropins();
 }
 
@@ -481,9 +534,9 @@ export async function fetchPlaceholders(path) {
         });
 
         // Merge the new placeholders into the global merged object
-        Object.assign(window.placeholders._merged, placeholders);
+        const merged = Object.assign(window.placeholders._merged, placeholders);
 
-        resolve(placeholders);
+        resolve(merged);
       })
       .catch((error) => {
         console.error(`Error loading placeholders for path: ${path}${fallback ? ` and fallback: ${fallback}` : ''}`, error);
@@ -573,10 +626,67 @@ export async function commerceEndpointWithQueryParams() {
  * Extracts the SKU from the current URL path.
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
-export function getSkuFromUrl() {
+function getSkuFromUrl() {
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
+}
+
+/**
+ * Extracts the defaultSku property from the product-details block element.
+ * @returns {string|null} The defaultSku value from the block, or null if not found
+ */
+function getDefaultSkuFromBlock() {
+  const productDetailsBlock = document.querySelector('.product-details.block');
+  if (!productDetailsBlock) {
+    console.warn('No product-details block found');
+    return null;
+  }
+
+  const config = readBlockConfig(productDetailsBlock);
+  if (!config.defaultsku) {
+    console.warn('No defaultSku found in product-details block');
+    return null;
+  }
+  return config.defaultsku;
+}
+
+/**
+ * Checks if the current page is a product template page.
+ * @returns {boolean} True if the current page matches a product template path
+ */
+export function isProductTemplate() {
+  const root = getRootPath();
+  const { pathname } = window.location;
+
+  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
+    const fullPath = root ? `${root}${templatePath}` : templatePath;
+    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
+  });
+}
+
+export function getProductLink(urlKey, sku) {
+  if (!urlKey) {
+    console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
+  }
+  if (!sku) {
+    console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
+  }
+  const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
+  const sanitizedSku = sku ? sanitizeName(sku) : '';
+  return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
+}
+
+/**
+ * Gets the product SKU from metadata or URL fallback.
+ * @returns {string|null} The SKU from metadata or URL, or null if not found
+ */
+export function getProductSku() {
+  if (isProductTemplate() && (IS_UE || IS_DA)) {
+    return getDefaultSkuFromBlock();
+  }
+
+  return getMetadata('sku') || getSkuFromUrl();
 }
 
 /**
@@ -599,14 +709,14 @@ function trackHistory() {
   const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', (event) => {
-      if (!event.productContext) {
+      if (!event.productContext || !event.productContext.sku) {
         return;
       }
       const key = `${storeViewCode}:productViewHistory`;
       let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
       viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
       viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-10)));
+      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
     }, { path: 'productContext' });
     dl.addEventListener('place-order', () => {
       const shoppingCartContext = dl.getState('shoppingCartContext');
@@ -643,10 +753,16 @@ export function setJsonLd(data, name) {
 }
 
 /**
- * Loads and displays an error page (e.g., 404) by replacing the current page content.
+ * Loads and displays an error page (e.g., 418) by replacing the current page
+ * content. If the code is a 404, we redirect to a non-existant page which
+ * causes the 404.html from this repo to be loaded.
  * @param {number} [code=404] - The HTTP error code for the error page
  */
 export async function loadErrorPage(code = 404) {
+  if (code === 404) {
+    window.location.replace('/notfound');
+    return;
+  }
   const htmlText = await fetch(`/${code}.html`).then((response) => {
     if (response.ok) {
       return response.text();
@@ -661,15 +777,6 @@ export async function loadErrorPage(code = 404) {
     doc.head.appendChild(style);
   });
   document.head.innerHTML = doc.head.innerHTML;
-
-  // https://developers.google.com/search/docs/crawling-indexing/javascript/fix-search-javascript
-  // Point 2. prevent soft 404 errors
-  if (code === 404) {
-    const metaRobots = document.createElement('meta');
-    metaRobots.name = 'robots';
-    metaRobots.content = 'noindex';
-    document.head.appendChild(metaRobots);
-  }
 
   // When moving script tags via innerHTML, they are not executed. They need to be re-created.
   const notImportMap = (c) => c.textContent && c.type !== 'importmap';
@@ -719,6 +826,56 @@ function autolinkModals(element) {
       e.preventDefault();
       const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
       openModal(origin.href);
+    }
+  });
+}
+
+/**
+ * Decorates all sections in a container element.
+ * @param {Element} main The container element
+ */
+export function decorateSections(main) {
+  main.querySelectorAll(':scope > div').forEach((section) => {
+    const wrappers = [];
+    let defaultContent = false;
+    [...section.children].forEach((e) => {
+      if (e.classList.contains('richtext')) {
+        e.removeAttribute('class');
+        if (!defaultContent) {
+          const wrapper = document.createElement('div');
+          wrapper.classList.add('default-content-wrapper');
+          wrappers.push(wrapper);
+          defaultContent = true;
+        }
+      } else if (e.tagName === 'DIV' || !defaultContent) {
+        const wrapper = document.createElement('div');
+        wrappers.push(wrapper);
+        defaultContent = e.tagName !== 'DIV';
+        if (defaultContent) wrapper.classList.add('default-content-wrapper');
+      }
+      wrappers[wrappers.length - 1].append(e);
+    });
+    wrappers.forEach((wrapper) => section.append(wrapper));
+    section.classList.add('section');
+    section.dataset.sectionStatus = 'initialized';
+    section.style.display = 'none';
+
+    // Process section metadata
+    const sectionMeta = section.querySelector('div.section-metadata');
+    if (sectionMeta) {
+      const meta = readBlockConfig(sectionMeta);
+      Object.keys(meta).forEach((key) => {
+        if (key === 'style') {
+          const styles = meta.style
+            .split(',')
+            .filter((style) => style)
+            .map((style) => toClassName(style.trim()));
+          styles.forEach((style) => section.classList.add(style));
+        } else {
+          section.dataset[toCamelCase(key)] = meta[key];
+        }
+      });
+      sectionMeta.parentNode.remove();
     }
   });
 }

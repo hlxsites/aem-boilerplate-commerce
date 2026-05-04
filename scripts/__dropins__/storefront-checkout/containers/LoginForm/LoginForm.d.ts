@@ -1,4 +1,4 @@
-import { TitleProps } from '../../types/TitleProps';
+import { TitleProps } from '../../types';
 import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { HTMLAttributes } from 'preact/compat';
 
@@ -22,6 +22,11 @@ export interface LoginFormProps extends HTMLAttributes<HTMLFormElement>, TitlePr
     slots?: {
         Heading?: SlotProps<{
             authenticated: boolean;
+        }>;
+        Preferences?: SlotProps<{
+            email: string;
+            isEmailValid: boolean;
+            isAuthenticated: boolean;
         }>;
     } & TitleProps['slots'];
 }

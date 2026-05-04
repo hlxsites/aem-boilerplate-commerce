@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export declare const shippingAddressFixture: {
+    uid: string;
     firstname: string;
     lastname: string;
     company: null;
@@ -33,8 +34,8 @@ export declare const shippingAddressFixture: {
         label: string;
     };
     telephone: string;
-    custom_attributes: {}[];
-    available_shipping_methods: {
+    custom_attributes: never[];
+    available_shipping_methods: ({
         amount: {
             currency: import('../../../__generated__/types').CurrencyEnum;
             value: number;
@@ -53,7 +54,31 @@ export declare const shippingAddressFixture: {
             value: number;
             currency: import('../../../__generated__/types').CurrencyEnum;
         };
-    }[];
+        original_amount?: undefined;
+    } | {
+        amount: {
+            currency: import('../../../__generated__/types').CurrencyEnum;
+            value: number;
+        };
+        available: boolean;
+        carrier_code: string;
+        carrier_title: string;
+        error_message: string;
+        method_code: string;
+        method_title: string;
+        original_amount: {
+            value: number;
+            currency: import('../../../__generated__/types').CurrencyEnum;
+        };
+        price_excl_tax: {
+            value: number;
+            currency: import('../../../__generated__/types').CurrencyEnum;
+        };
+        price_incl_tax: {
+            value: number;
+            currency: import('../../../__generated__/types').CurrencyEnum;
+        };
+    })[];
     selected_shipping_method: null;
     prefix: string;
     suffix: string;

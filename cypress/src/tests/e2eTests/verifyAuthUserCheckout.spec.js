@@ -6,6 +6,7 @@ import {
   uncheckBillToShippingAddress,
   setPaymentMethod,
   checkTermsAndConditions,
+  editProductOptions
 } from "../../actions";
 import {
   assertCartSummaryProduct,
@@ -20,6 +21,8 @@ import {
   assertOrderConfirmationShippingMethod,
   assertSelectedPaymentMethod,
   assertAuthUser,
+  assertOrderImageDisplay,
+  assertOrderCommentsVisible,
 } from "../../assertions";
 import {
   customerShippingAddress,
@@ -31,7 +34,7 @@ import {
 import * as fields from "../../fields";
 
 describe("Verify auth user can place order", () => {
-  it("Verify auth user can place order", () => {
+  it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
     // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
     cy.visit(products.configurable.urlPathWithOptions);
     cy.wait(5000);
@@ -50,10 +53,33 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
+    editProductOptions("red", "green");
+    cy.get(".minicart-wrapper").click();
+    cy.get('.minicart-panel[data-loaded="true"]').should('exist');
+    cy.get(".minicart-panel").should("not.be.empty");
+    cy.contains('CYPRESS456-green').should('be.visible')
     cy.contains('View Cart').click();
+    cy.contains('Shopping Cart (2)').should('be.visible')
+    cy.contains('CYPRESS456-green').should('be.visible')
+
+    // Edit product in Overlay
+    cy.contains('Edit').click();
+    cy.get('.modal-content').should('be.visible');
+    cy.get('select').eq(1)
+      .find('option:selected')
+      .should('have.text', 'green');
+    cy.get(".dropin-incrementer__decrease-button").eq(1).click();
+    cy.get(".dropin-incrementer__input").eq(1).should("have.value", "1");
+    cy.get('select').eq(1).select('red');
+    cy.get('select').eq(1)
+      .find('option:selected')
+      .should('have.text', 'red');
+    cy.percyTakeSnapshot('Cart Edit Overlay');
+    cy.contains('Update in Cart').should('be.visible').click();
+
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
@@ -64,7 +90,7 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.commerce-cart-wrapper');
     cy.visit("/customer/create");
     cy.get(".minicart-wrapper").should("be.visible");
@@ -84,10 +110,10 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.visit("/products/youth-tee/ADB150");
+    cy.visit("/products/youth-tee/adb150");
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
@@ -102,7 +128,7 @@ describe("Verify auth user can place order", () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     assertCartSummaryProduct(
@@ -115,7 +141,7 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageName'))('.cart-mini-cart');
     cy.contains('View Cart').click();
@@ -129,7 +155,7 @@ describe("Verify auth user can place order", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",
@@ -145,10 +171,11 @@ describe("Verify auth user can place order", () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/cypress-configurable-product-latest/CYPRESS456'
+      '/products/cypress-configurable-product-latest/cypress456'
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');
+    cy.percyTakeSnapshot('Cart page');
     cy.get('.dropin-button.dropin-button--medium.dropin-button--primary')
       .contains('Checkout')
       .click({ force: true });
@@ -179,6 +206,7 @@ describe("Verify auth user can place order", () => {
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
     checkTermsAndConditions();
     cy.wait(5000);
+    cy.percyTakeSnapshot('Checkout Page');
     placeOrder();
     assertOrderConfirmationCommonDetails(
       customerBillingAddress,
@@ -187,6 +215,7 @@ describe("Verify auth user can place order", () => {
     assertOrderConfirmationShippingDetails(customerShippingAddress);
     assertOrderConfirmationBillingDetails(customerBillingAddress);
     assertOrderConfirmationShippingMethod(customerShippingAddress);
+    cy.percyTakeSnapshot('Order Confirmation');
 
     /**
      * TODO - when /customer/order-details page will be ready
@@ -210,13 +239,19 @@ describe("Verify auth user can place order", () => {
       const orderRef = url.split("?")[1];
       cy.visit("/order-details?" + orderRef);
     });
+
+    // ORDER COMMENTS
+    assertOrderCommentsVisible();
+
     // CANCEL ORDER
     cy.get(fields.cancelButton).should("exist");
+    cy.percyTakeSnapshot('Order Details');
     cy.get(fields.cancelButton).click();
 
     cy.get(fields.cancellationReasonsSelector).select("1");
+    cy.contains('Submit Cancellation').should('be.visible');
     cy.get(fields.cancellationReasonsSelector).should("have.value", "1");
-
+    cy.percyTakeSnapshot('Cancel Order');
     cy.get(fields.submitCancelOrderButton).click();
 
     cy.get(".dropin-header-container__title", { timeout: 3000 })
@@ -235,5 +270,18 @@ describe("Verify auth user can place order", () => {
       );
 
     cy.get(fields.cancelButton).should("not.exist");
+
+    cy.visit("/customer/orders");
+    assertOrderImageDisplay();
+    cy.waitForLoadingSkeletonToDisappear();
+    cy.percyTakeSnapshot('My Account Order');
+
+    cy.visit("/customer/account");
+    assertOrderImageDisplay();
+    cy.waitForLoadingSkeletonToDisappear();
+    cy.contains('No returns').should('be.visible');
+    cy.percyTakeSnapshot('My Account');
+
+
   });
 });

@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 const e=`
   fragment Facet on Aggregation {
@@ -35,6 +35,12 @@ const e=`
       inStock
       url
       urlKey
+      attributes(roles: []) {
+        name
+        label
+        value
+        roles
+      }
       images {
         label
         url

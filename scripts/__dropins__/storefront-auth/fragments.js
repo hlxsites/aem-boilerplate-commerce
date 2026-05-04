@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 const e=`
   fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {
@@ -6,6 +6,9 @@ const e=`
     firstname
     lastname
     email
+    group {
+      uid
+    }
   }
 `;export{e as CUSTOMER_INFORMATION_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

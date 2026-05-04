@@ -1,6 +1,8 @@
 import { Product } from './product';
 
+export type Scope = 'search' | 'popover' | string;
 export interface SearchVariables {
+    scope?: Scope;
     phrase?: string;
     filter?: SearchFilter[];
     sort?: SortOrder[];
@@ -18,12 +20,14 @@ export interface ViewHistoryRecord {
 }
 export interface SearchFilter {
     attribute: string;
+    contains?: string;
     in?: string[];
     eq?: string;
     range?: {
         from: number;
         to: number;
     };
+    startsWith?: string;
 }
 export interface SortOrder {
     attribute: string;
@@ -33,6 +37,7 @@ export interface RefineOption {
     label: string;
     attribute: string;
     numeric: boolean;
+    bidirectional: boolean;
 }
 export interface ProductSearchResponse {
     productSearch: ProductSearchResult;
@@ -48,6 +53,10 @@ export interface ProductSearchResult {
     };
     suggestions?: string[];
     totalCount: number;
+    metadata?: {
+        filterableAttributes: RefineOption[];
+        sortableAttributes: RefineOption[];
+    };
 }
 export interface SearchFacet {
     title: string;

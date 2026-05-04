@@ -1,0 +1,23 @@
+{
+  "definitions": [{
+    "title": "Commerce Addresses",
+    "id": "commerce-addresses",
+    "model": "commerce-addresses",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-addresses",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "minified-view",
+        "label": "Minified View"
+      }
+    ]
+  }],
+  "filters": []
+}

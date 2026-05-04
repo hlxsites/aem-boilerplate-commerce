@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Create Account",
+    "id": "commerce-create-account",
+    "model": "commerce-create-account",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

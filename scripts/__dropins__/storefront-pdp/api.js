@@ -1,4 +1,12 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{c as i,f as d,h as c,g as n,k as u,d as g,e as f,i as h,m as p,r as l,s as m,a as P,b as C,l as F,j as G}from"./chunks/isProductConfigurationValid.js";import{g as V}from"./chunks/getFetchedProductData.js";import"@dropins/tools/lib.js";import"@dropins/tools/event-bus.js";import"./fragments.js";import"@dropins/tools/fetch-graphql.js";export{i as config,d as fetchGraphQl,c as fetchProductData,n as getConfig,V as getFetchedProductData,u as getProductConfigurationValues,g as getProductData,f as getRefinedProduct,h as initialize,p as isProductConfigurationValid,l as removeFetchGraphQlHeader,m as setEndpoint,P as setFetchGraphQlHeader,C as setFetchGraphQlHeaders,F as setProductConfigurationValid,G as setProductConfigurationValues};
+import{a as i,t as c}from"./chunks/fetchProductData.js";import{c as m,f as C,j as F,h as k,k as R,l as U,i as A,r as E,b as _,d as x,e as Q}from"./chunks/fetchProductData.js";import{PRODUCT_FRAGMENT as p}from"./fragments.js";import"@dropins/tools/event-bus.js";import{g as V,s as I}from"./chunks/getProductConfigurationValues.js";import{i as O,s as S}from"./chunks/isProductConfigurationValid.js";import{g as b}from"./chunks/getFetchedProductData.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
+query GET_PRODUCTS_DATA($skus: [String]) {
+    products(skus: $skus) {
+        ...PRODUCT_FRAGMENT
+    }
+}
+
+${p}
+`,P=async(s,e)=>{if(!s||s.length===0)return null;const n=s.map(r=>r.sku),{data:a}=await i(d,{method:"GET",variables:{skus:n}}),o=a==null?void 0:a.products;if(!o||o.length===0)return null;const u=s.reduce((r,t)=>(r[t.sku]=t,r),{});return e?o:o.map(r=>{const t=u[r.sku];return t!=null&&t.optionsUIDs&&(r.optionUIDs=t.optionsUIDs),c(r,{preselectFirstOption:t==null?void 0:t.preselectFirstOption})})};export{m as config,i as fetchGraphQl,C as fetchProductData,F as getConfig,k as getFetchGraphQlHeader,b as getFetchedProductData,V as getProductConfigurationValues,R as getProductData,P as getProductsData,U as getRefinedProduct,A as initialize,O as isProductConfigurationValid,E as removeFetchGraphQlHeader,_ as setEndpoint,x as setFetchGraphQlHeader,Q as setFetchGraphQlHeaders,S as setProductConfigurationValid,I as setProductConfigurationValues};
 //# sourceMappingURL=api.js.map

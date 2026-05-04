@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Account Sidebar",
+    "id": "commerce-account-sidebar",
+    "model": "commerce-account-sidebar",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

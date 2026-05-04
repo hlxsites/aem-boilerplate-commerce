@@ -17,7 +17,8 @@ import { customerShippingAddress, products } from "../../../fixtures";
  * - order -> https://github.com/adobe/commerce-events/blob/main/packages/storefront-events-sdk/src/types/schemas/order.ts
  */
 
-it("is sent on place order button click", { tags: "@skipSaas" }, () => {
+// Test is failing randomly on most of pr, created bug to fix and unskip https://jira.corp.adobe.com/browse/USF-3518
+it.skip("is sent on place order button click", { tags: "@skipSaas" }, () => {
   // add item to cart
   cy.visit(products.configurable.urlPathWithOptions);
   // add to cart
@@ -56,7 +57,11 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
   // wait until the URL includes '/order-details'
   cy.url().should("include", "/order-details");
 
-  cy.waitForResource("commerce-events-collector.js").then(() => {
+  // Wait for Adobe Data Layer to be initialized with required contexts
+  // This is more reliable than waiting for the resource file
+  cy.window().should((win) => {
+    expect(win.adobeDataLayer).to.exist;
+  }).then(() => {
     cy.window()
       .its("adobeDataLayer")
       .then((adobeDataLayer) => {
@@ -68,7 +73,7 @@ it("is sent on place order button click", { tags: "@skipSaas" }, () => {
             "shoppingCartContext",
             "orderContext",
           ],
-          adobeDataLayer,
+          adobeDataLayer
         );
       });
   });

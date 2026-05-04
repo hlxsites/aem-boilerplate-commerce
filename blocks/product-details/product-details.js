@@ -23,18 +23,40 @@ import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.
 import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
+import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
 import {
   rootLink,
   setJsonLd,
   fetchPlaceholders,
+  getProductLink,
 } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+
+/**
+ * Checks if the page has prerendered product JSON-LD data
+ * @returns {boolean} True if product JSON-LD exists and contains @type=Product
+ */
+function isProductPrerendered() {
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+
+  if (!jsonLdScript?.textContent) {
+    return false;
+  }
+
+  try {
+    const jsonLd = JSON.parse(jsonLdScript.textContent);
+    return jsonLd?.['@type'] === 'Product';
+  } catch (error) {
+    console.debug('Failed to parse JSON-LD:', error);
+    return false;
+  }
+}
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -49,8 +71,21 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
   }
 }
 
+/**
+ * Formats numeric attribute values for display (e.g., "10.000000" → "10").
+ * Non-numeric values are returned as-is.
+ */
+function formatNumericAttributeValue(value) {
+  const trimmed = value.trim();
+  if (!/^[+-]?\d+(\.\d+)?$/.test(trimmed)) return value;
+  return new Intl.NumberFormat(document.documentElement.lang).format(Number(trimmed));
+}
+
 export default async function decorate(block) {
-  const product = events.lastPayload('pdp/data') ?? null;
+  const eventProduct = events.lastPayload('pdp/data') ?? null;
+  // bug: the pdp sends an object with event data even if product is not found.
+  const product = eventProduct?.sku ? eventProduct : null;
+
   const labels = await fetchPlaceholders();
 
   // Read itemUid from URL
@@ -72,6 +107,7 @@ export default async function decorate(block) {
         <div class="product-details__price"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
+        <div class="product-details__gift-card-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
@@ -94,6 +130,7 @@ export default async function decorate(block) {
   const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
+  const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
@@ -103,22 +140,26 @@ export default async function decorate(block) {
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-        wrapper: document.createElement('span'),
-      });
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+          wrapper: document.createElement('span'),
+        });
+      }
     },
 
     CarouselMainImage: (ctx) => {
-      tryRenderAemAssetsImage(ctx, {
-        ...imageSlotConfig(ctx),
-      });
+      if (ctx.mediaType === 'image') {
+        tryRenderAemAssetsImage(ctx, {
+          ...imageSlotConfig(ctx),
+        });
+      }
     },
   };
 
   // Alert
   let inlineAlert = null;
-  const routeToWishlist = '/wishlist';
+  const routeToWishlist = rootLink('/wishlist');
 
   const [
     _galleryMobile,
@@ -128,6 +169,7 @@ export default async function decorate(block) {
     _shortDescription,
     _options,
     _quantity,
+    _giftCardOptions,
     _description,
     _attributes,
     wishlistToggleBtn,
@@ -139,6 +181,7 @@ export default async function decorate(block) {
       peak: false,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
@@ -153,6 +196,7 @@ export default async function decorate(block) {
       peak: true,
       gap: 'small',
       loop: false,
+      videos: true, // Display videos if available
       imageParams: {
         ...IMAGES_SIZES,
       },
@@ -185,11 +229,16 @@ export default async function decorate(block) {
     // Configuration  Quantity
     pdpRendered.render(ProductQuantity, {})($quantity),
 
+    // Configuration  Gift Card Options
+    pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
+
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
     // Attributes
-    pdpRendered.render(ProductAttributes, {})($attributes),
+    pdpRendered.render(ProductAttributes, {
+      formatValue: formatNumericAttributeValue,
+    })($attributes),
 
     // Wishlist button - WishlistToggle Container
     wishlistRender.render(WishlistToggle, {
@@ -350,7 +399,8 @@ export default async function decorate(block) {
 
   // Set JSON-LD and Meta Tags
   events.on('aem/lcp', () => {
-    if (product) {
+    const isPrerendered = isProductPrerendered();
+    if (product && !isPrerendered) {
       setJsonLdProduct(product);
       setMetaTags(product);
       document.title = product.name;
@@ -373,7 +423,7 @@ async function setJsonLdProduct(product) {
     attributes,
   } = product;
   const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes.find((attr) => attr.name === 'brand');
+  const brand = attributes?.find((attr) => attr.name === 'brand');
 
   // get variants
   const { data } = await pdpApi.fetchGraphQl(`
@@ -415,9 +465,9 @@ async function setJsonLdProduct(product) {
       '@type': 'Brand',
       name: brand?.value,
     },
-    url: new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    url: new URL(getProductLink(urlKey, sku), window.location),
     sku,
-    '@id': new URL(rootLink(`/products/${urlKey}/${sku}`), window.location),
+    '@id': new URL(getProductLink(urlKey, sku), window.location),
   };
 
   if (variants.length > 1) {
@@ -466,7 +516,7 @@ function createMetaTag(property, content, type) {
 }
 
 function setMetaTags(product) {
-  if (!product) {
+  if (!product?.sku) {
     return;
   }
 

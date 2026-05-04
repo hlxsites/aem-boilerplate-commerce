@@ -1,12 +1,14 @@
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializers } from '@dropins/tools/initializer.js';
-import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-auth/api.js';
+import { initialize, setEndpoint } from '@dropins/storefront-auth/api.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { initializeDropin } from './index.js';
-import { fetchPlaceholders } from '../commerce.js';
+import { CORE_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 await initializeDropin(async () => {
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('auth') }));
+  // Set Fetch GraphQL (Core)
+  setEndpoint(CORE_FETCH_GRAPHQL);
 
+  // Fetch placeholders
   const labels = await fetchPlaceholders('placeholders/auth.json');
   const langDefinitions = {
     default: {
@@ -14,5 +16,6 @@ await initializeDropin(async () => {
     },
   };
 
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  // Initialize auth
+  return initializers.mountImmediately(initialize, { langDefinitions, adobeCommerceOptimizer: getConfigValue('adobe-commerce-optimizer') });
 })();

@@ -19,16 +19,46 @@ declare const _default: {
       "SpecialPrice": {
         "label": "Special Price"
       },
-      "PriceRange": {
-        "From": {
-          "label": "From"
-        },
-        "To": {
-          "label": "to"
-        }
+      "TierPrice": {
+        "label": "Tier Price"
+      },
+      "TierPricing": {
+        "label": "Buy {quantity} for {price} each and save {percent}%"
       },
       "Image": {
         "label": "{product} Image {key} of {total}"
+      },
+      "GiftCardOptions": {
+        "ChooseAmount": {
+          "label": "Choose amount"
+        },
+        "OtherAmount": {
+          "label": "Other amount"
+        },
+        "RequiredFieldError": {
+          "label": "This field is required"
+        },
+        "NumberError": {
+          "label": "Please enter a valid number"
+        },
+        "MinError": {
+          "label": "Minimum value is {min}"
+        },
+        "MaxError": {
+          "label": "Maximum value is {max}"
+        },
+        "MinLengthError": {
+          "label": "Minimum length is {min_length} characters"
+        },
+        "MaxLengthError": {
+          "label": "Maximum length is {max_length} characters"
+        },
+        "EmailError": {
+          "label": "Please enter a valid email address"
+        },
+        "InvalidValueError": {
+          "label": "Please select one of the allowed values: {values}"
+        }
       }
     },
     "Swatches": {
@@ -37,6 +67,14 @@ declare const _default: {
       },
       "ChooseOption": {
         "label": "Choose an option"
+      }
+    },
+    "DownloadableOptions": {
+      "Sample": {
+        "label": "Sample"
+      },
+      "ViewSample": {
+        "label": "View sample for {label}"
       }
     },
     "Carousel": {
@@ -67,9 +105,6 @@ declare const _default: {
         "label": "Close"
       }
     }
-  },
-  "Custom": {
-    "quantityLabel": "Quantity"
   }
 }
 ;
