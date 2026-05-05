@@ -12,7 +12,7 @@ import * as fields from "../../fields";
  */
 function createRequisitionList(selector, listName, description, index = null) {
   const element =
-    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector).first();
   element.click();
 
   cy.get(fields.requisitionListActions).should("exist").click();
@@ -43,21 +43,21 @@ function createRequisitionList(selector, listName, description, index = null) {
  */
 function assertRequisitionListExists(selector, listName, index = null) {
   const element =
-    index !== null ? cy.get(selector).eq(index) : cy.get(selector);
+    index !== null ? cy.get(selector).eq(index) : cy.get(selector).first();
   element.click();
 
-  cy.get(fields.requisitionListSelectorForm).should("exist");
-  cy.get(fields.requisitionListSelectorAvailableLists).should("exist");
-  cy.get(fields.requisitionListFormActionsButton)
+  cy.get(fields.requisitionListPickerForm).should("exist");
+  cy.get(fields.requisitionListPickerAvailableLists).should("exist");
+  cy.get(fields.requisitionListPickerActionsButton)
     .should("exist")
     .should("be.disabled");
-  cy.get(fields.requisitionListSelectorAvailableLists).should(
+  cy.get(fields.requisitionListPickerAvailableLists).should(
     "contain",
     listName
   );
   cy.wait(1000);
-  cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
-  cy.get(fields.requisitionListFormActionsButton)
+  cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
+  cy.get(fields.requisitionListPickerActionsButton)
     .should("not.be.disabled")
     .click();
 
@@ -181,58 +181,36 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.url().should("include", "/products/");
       cy.wait(2000);
 
-      // Check if grid ordering feature is enabled
-      cy.get("body").then(($body) => {
-        const isEnabled = $body.find(".product-details__grid-ordering--enabled").length > 0;
+      // Should show validation message on PDP from the redirection
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select product options before adding it to a requisition list"
+        );
 
-        if (isEnabled) {
-          // Grid ordering is enabled, requisition list not available on configurable PDP
-          // Navigate to a simple product instead
-          cy.visit(products.additionalSimple.urlPath);
-          cy.wait(2000);
+      // Click requisition list again in PDP, should show validation when no options selected on PDP
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
+      cy.get(fields.productDetailsAlert)
+        .should("be.visible")
+        .contains(
+          "Please select all required product options before adding to a requisition list."
+        );
 
-          // Add simple product to requisition list
-          cy.get(fields.requisitionListSelector).click();
-          cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
-          cy.get(fields.requisitionListFormActionsButton).click();
+      // Select all available options
+      cy.get(".product-details__options select").each(($select) => {
+        cy.wrap($select).select(1);
+        cy.wait(500);
 
-          cy.get(fields.requisitionListAlert)
-            .should("be.visible")
-            .contains("Item(s) successfully added");
-        } else {
-          // Grid ordering is disabled, proceed with existing configurable product flow
-          // Should show validation message on PDP from the redirection
-          cy.get(fields.productDetailsAlert)
-            .should("be.visible")
-            .contains(
-              "Please select product options before adding it to a requisition list"
-            );
+        cy.get(fields.productDetailsAlert).should("not.be.visible");
 
-          // Click requisition list again in PDP, should show validation when no options selected on PDP
-          cy.get(fields.requisitionListSelector).click();
-          cy.get(fields.productDetailsAlert)
-            .should("be.visible")
-            .contains(
-              "Please select all required product options before adding to a requisition list."
-            );
+        // Add configurable product to requisition list
+        cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
+        cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
+        cy.get(fields.requisitionListPickerActionsButton).click();
 
-          // Select all available options
-          cy.get(".product-details__options select").each(($select) => {
-            cy.wrap($select).select(1);
-            cy.wait(500);
-          });
-
-          cy.get(fields.productDetailsAlert).should("not.be.visible");
-
-          // Add configurable product to requisition list
-          cy.get(fields.requisitionListSelector).click();
-          cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
-          cy.get(fields.requisitionListFormActionsButton).click();
-
-          cy.get(fields.requisitionListAlert)
-            .should("be.visible")
-            .contains("Item(s) successfully added");
-        }
+        cy.get(fields.requisitionListAlert)
+          .should("be.visible")
+          .contains("Item(s) successfully added");
       });
     });
 
@@ -263,7 +241,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         );
 
       // Click requisition list again in PDP, should show validation when required options not selected
-      cy.get(fields.requisitionListSelector).click();
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
       cy.get(fields.productDetailsAlert)
         .should("be.visible")
         .contains(
@@ -279,9 +257,9 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.productDetailsAlert).should("not.be.visible");
 
       // Add bundle product to requisition list
-      cy.get(fields.requisitionListSelector).click();
-      cy.get(fields.requisitionListSelectorAvailableListFirstChild).click();
-      cy.get(fields.requisitionListFormActionsButton).click();
+      cy.get('.product-details__buttons').find(fields.requisitionListSelector).click();
+      cy.get(fields.requisitionListPickerAvailableListFirstChild).click();
+      cy.get(fields.requisitionListPickerActionsButton).click();
 
       cy.get(fields.requisitionListAlert)
         .should("be.visible")
@@ -337,7 +315,7 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.contains("Save").should("be.visible").click();
       cy.contains("Now updating from RL view page").should("be.visible");
       cy.contains("Requisition list updated successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       // 2. Update quantity of the first item in the Requisition List
@@ -354,19 +332,22 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
         .eq(0)
         .should("have.value", "10");
 
-      // 3. Move all items to cart
+      // 3. Add all items to cart
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
 
       cy.get(fields.requisitionListViewBulkActionsAddToCartButton).click();
 
-      // Verify success message appears (check immediately before it auto-dismisses)
-      cy.contains("Item(s) successfully moved to cart.", {
-        timeout: 5000,
-      }).should("be.visible");
+      // Verify success message appears in requisition list view alert
+      // The alert uses class .requisition-list__alert-wrapper with "moved to cart" text
+      cy.get(".requisition-list__alert-wrapper .dropin-in-line-alert__title", {
+        timeout: 30000,
+      })
+        .should("be.visible")
+        .and("contain", "Item(s) successfully moved to cart.");
 
       // Wait for the cart to be refreshed and the data-count attribute to be updated
       // The cart refresh happens automatically via requisitionList/alert event
@@ -379,13 +360,13 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       // 4. Delete all items from the Requisition List
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
-        "not.exist"
+        "not.exist",
       );
       cy.wait(1000);
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
         "have.text",
-        "4"
+        "4",
       );
       cy.get(fields.requisitionListViewBulkActionsDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
@@ -396,14 +377,162 @@ describe("Verify B2B Requisition Lists feature", { tags: "@B2BSaas" }, () => {
       cy.get(fields.requisitionListViewDeleteButton).click();
       cy.get(fields.requisitionListModalConfirmButton).click();
       cy.contains("Requisition list deleted successfully.").should(
-        "be.visible"
+        "be.visible",
       );
 
       cy.url().should("include", "customer/requisition-lists");
       cy.get(fields.requisitionListItemRow).should(
         "not.have",
-        "Now updating from RL view page"
+        "Now updating from RL view page",
       );
     });
+  });
+
+  it("Verify copy items between requisition lists", () => {
+    // Sign in as a new user
+    cy.visit("/customer/create");
+    cy.fixture("userInfo").then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+      cy.wait(5000);
+    });
+
+    // Navigate to Requisition Lists and create an empty destination list
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.contains("Add new Requisition List").should("be.visible").click();
+    cy.get(fields.requisitionListFormName).type("Copy Destination List");
+    cy.get(fields.requisitionListFormDescription).type(
+      "Destination list for copy test"
+    );
+    cy.contains("Save").should("be.visible").click();
+    cy.contains("Copy Destination List").should("be.visible");
+
+    // Navigate to PDP and create the source list with an item
+    cy.visit(products.simple.urlPath);
+    createRequisitionList(
+      fields.requisitionListSelector,
+      "Copy Source List",
+      "Source list for copy test"
+    );
+
+    // Navigate to Requisition Lists page and verify 2 lists exist
+    cy.visit("/customer/account");
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.get(fields.requisitionListItemRow).should("have.length", 2);
+
+    // Open Copy Source List view
+    cy.contains(fields.requisitionListGridNameLink, "Copy Source List").click();
+    cy.contains("Copy Source List").should("be.visible");
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
+
+    // Select all items
+    cy.get(fields.requisitionListViewBatchActionsToggle).click();
+    cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
+      "have.text",
+      "1"
+    );
+
+    // Click Copy to List and select destination
+    cy.get(fields.requisitionListViewBulkActionsCopyToListButton).click();
+    cy.get(fields.requisitionListPickerForm).should("be.visible");
+    cy.get(fields.requisitionListPickerAvailableLists)
+      .should("contain", "Copy Destination List")
+      .contains("Copy Destination List")
+      .click();
+    cy.get(fields.requisitionListPickerActionsButton)
+      .should("not.be.disabled")
+      .click();
+
+    // Verify success message
+    cy.contains("Item(s) successfully copied to Copy Destination List.", {
+      timeout: 5000,
+    }).should("be.visible");
+
+    // Source list still has item (copy keeps original)
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
+
+    // Navigate to destination list and verify the item was copied
+    cy.visit("/customer/account");
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.contains(
+      fields.requisitionListGridNameLink,
+      "Copy Destination List"
+    ).click();
+    cy.contains("Copy Destination List").should("be.visible");
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
+  });
+
+  it("Verify move items between requisition lists", () => {
+    // Sign in as a new user
+    cy.visit("/customer/create");
+    cy.fixture("userInfo").then(({ sign_up }) => {
+      signUpUser(sign_up);
+      assertAuthUser(sign_up);
+      cy.wait(5000);
+    });
+
+    // Navigate to Requisition Lists and create an empty destination list
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.contains("Add new Requisition List").should("be.visible").click();
+    cy.get(fields.requisitionListFormName).type("Move Destination List");
+    cy.get(fields.requisitionListFormDescription).type(
+      "Destination list for move test"
+    );
+    cy.contains("Save").should("be.visible").click();
+    cy.contains("Move Destination List").should("be.visible");
+
+    // Navigate to PDP and create the source list with an item
+    cy.visit(products.simple.urlPath);
+    createRequisitionList(
+      fields.requisitionListSelector,
+      "Move Source List",
+      "Source list for move test"
+    );
+
+    // Navigate to Requisition Lists page and verify 2 lists exist
+    cy.visit("/customer/account");
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.get(fields.requisitionListItemRow).should("have.length", 2);
+
+    // Open Move Source List view
+    cy.contains(fields.requisitionListGridNameLink, "Move Source List").click();
+    cy.contains("Move Source List").should("be.visible");
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
+
+    // Select all items
+    cy.get(fields.requisitionListViewBatchActionsToggle).click();
+    cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
+      "have.text",
+      "1"
+    );
+
+    // Click Move to List and select destination
+    cy.get(fields.requisitionListViewBulkActionsMoveToListButton).click();
+    cy.get(fields.requisitionListPickerForm).should("be.visible");
+    cy.get(fields.requisitionListPickerAvailableLists)
+      .should("contain", "Move Destination List")
+      .contains("Move Destination List")
+      .click();
+    cy.get(fields.requisitionListPickerActionsButton)
+      .should("not.be.disabled")
+      .click();
+
+    // Verify success message
+    cy.contains("Item(s) successfully moved to Move Destination List.", {
+      timeout: 5000,
+    }).should("be.visible");
+
+    // Source list is now empty (move removes items from source)
+    cy.get(fields.requisitionListItemRow).should("have.length", 0);
+
+    // Navigate to destination list and verify the item was moved
+    cy.visit("/customer/account");
+    cy.contains("Requisition Lists").should("be.visible").click();
+    cy.contains(
+      fields.requisitionListGridNameLink,
+      "Move Destination List"
+    ).click();
+    cy.contains("Move Destination List").should("be.visible");
+    cy.get(fields.requisitionListItemRow).should("have.length", 1);
   });
 });

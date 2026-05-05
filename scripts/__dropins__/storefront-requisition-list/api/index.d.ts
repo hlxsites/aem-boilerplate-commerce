@@ -16,7 +16,6 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
-export * from './refineProduct';
 export * from './getStoreConfig';
 export * from './getRequisitionLists';
 export * from './getRequisitionList';
@@ -27,5 +26,6 @@ export * from './updateRequisitionListItems';
 export * from './deleteRequisitionListItems';
 export * from './addProductsToRequisitionList';
 export * from './addRequisitionListItemsToCart';
-export * from './getProductData';
+export * from './moveItemsBetweenRequisitionLists';
+export * from './copyItemsBetweenRequisitionLists';
 //# sourceMappingURL=index.d.ts.map

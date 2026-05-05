@@ -30,8 +30,6 @@ export * from './ChangePassword';
 export * from './EditCustomerInformation';
 export * from './CustomerInformationCard';
 export * from './AddressValidation';
-export * from './SellerAssistedBuyingSettingsControl';
-export * from './SellerAssistedBuyingActivityTable';
 export * from './PaymentCard';
 export * from './PaymentMethodsWrapper';
 export * from './PaymentModal';

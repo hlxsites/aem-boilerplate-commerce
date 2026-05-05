@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{l as $,f as D,h as P,a as V,m as q}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as K}from"../fragments.js";import{c as L}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as Q}from"@dropins/tools/lib.js";const j=t=>{var m,i,c,_,f,o,h,C,E,T,e,g,S,b,N,O,A,M,R,U,v,w,G,x,y,F,l,I;const a=(c=(i=(m=t==null?void 0:t.data)==null?void 0:m.customer)==null?void 0:i.custom_attributes)==null?void 0:c.filter(d=>d).reduce((d,r)=>{var B;const k=$(r.code);return(B=r.selected_options)!=null&&B.length?d[k]=r.selected_options[0].value??"":d[k]=r.value??"",d},{}),u={email:((f=(_=t==null?void 0:t.data)==null?void 0:_.customer)==null?void 0:f.email)||"",firstName:((h=(o=t==null?void 0:t.data)==null?void 0:o.customer)==null?void 0:h.firstname)||"",lastName:((E=(C=t==null?void 0:t.data)==null?void 0:C.customer)==null?void 0:E.lastname)||"",middleName:((e=(T=t==null?void 0:t.data)==null?void 0:T.customer)==null?void 0:e.middlename)||"",gender:((S=(g=t==null?void 0:t.data)==null?void 0:g.customer)==null?void 0:S.gender)||"1",dateOfBirth:((N=(b=t==null?void 0:t.data)==null?void 0:b.customer)==null?void 0:N.date_of_birth)||"",prefix:((A=(O=t==null?void 0:t.data)==null?void 0:O.customer)==null?void 0:A.prefix)||"",suffix:((R=(M=t==null?void 0:t.data)==null?void 0:M.customer)==null?void 0:R.suffix)||"",createdAt:((v=(U=t==null?void 0:t.data)==null?void 0:U.customer)==null?void 0:v.created_at)||"",allowRemoteShoppingAssistance:(G=(w=t==null?void 0:t.data)==null?void 0:w.customer)==null?void 0:G.allow_remote_shopping_assistance,...a};return Q(u,(I=(l=(F=(y=(x=L)==null?void 0:x.getConfig())==null?void 0:y.models)==null?void 0:F.CustomerDataModelShort)==null?void 0:l.transformer)==null?void 0:I.call(l,t.data))},z=`
+import{l as F,f as e,h as C,a as _,m as k}from"./removeCustomerAddress.js";import{BASIC_CUSTOMER_INFO_FRAGMENT as B}from"../fragments.js";import{c as L}from"./initialize.js";import"@dropins/tools/event-bus.js";import{merge as V}from"@dropins/tools/lib.js";const H=t=>{var r,i,u,d,h,f,E,S,T,w,g,O,P,A,M,U,b,R,N,$,n,v,G,y,l,D;const m=(u=(i=(r=t==null?void 0:t.data)==null?void 0:r.customer)==null?void 0:i.custom_attributes)==null?void 0:u.filter(c=>c).reduce((c,o)=>{var x;const I=F(o.code);return(x=o.selected_options)!=null&&x.length?c[I]=o.selected_options[0].value??"":c[I]=o.value??"",c},{}),a={email:((h=(d=t==null?void 0:t.data)==null?void 0:d.customer)==null?void 0:h.email)||"",firstName:((E=(f=t==null?void 0:t.data)==null?void 0:f.customer)==null?void 0:E.firstname)||"",lastName:((T=(S=t==null?void 0:t.data)==null?void 0:S.customer)==null?void 0:T.lastname)||"",middleName:((g=(w=t==null?void 0:t.data)==null?void 0:w.customer)==null?void 0:g.middlename)||"",gender:((P=(O=t==null?void 0:t.data)==null?void 0:O.customer)==null?void 0:P.gender)||"1",dateOfBirth:((M=(A=t==null?void 0:t.data)==null?void 0:A.customer)==null?void 0:M.date_of_birth)||"",prefix:((b=(U=t==null?void 0:t.data)==null?void 0:U.customer)==null?void 0:b.prefix)||"",suffix:((N=(R=t==null?void 0:t.data)==null?void 0:R.customer)==null?void 0:N.suffix)||"",createdAt:((n=($=t==null?void 0:t.data)==null?void 0:$.customer)==null?void 0:n.created_at)||"",...m};return V(a,(D=(l=(y=(G=(v=L)==null?void 0:v.getConfig())==null?void 0:G.models)==null?void 0:y.CustomerDataModelShort)==null?void 0:l.transformer)==null?void 0:D.call(l,t.data))},W=`
   query GET_CUSTOMER {
     customer {
       ...BASIC_CUSTOMER_INFO_FRAGMENT
@@ -19,15 +19,34 @@ import{l as $,f as D,h as P,a as V,m as q}from"./removeCustomerAddress.js";impor
       }
     }
   }
-  ${K}
-`,n=async()=>await D(z,{method:"GET",cache:"no-cache"}).then(t=>{var a;return(a=t.errors)!=null&&a.length?P(t.errors):j(t)}).catch(V),H=`
+  ${B}
+`,Z=async()=>await e(W,{method:"GET",cache:"no-cache"}).then(t=>{var m;return(m=t.errors)!=null&&m.length?C(t.errors):H(t)}).catch(_),q=`
+  mutation CHANGE_CUSTOMER_PASSWORD(
+    $currentPassword: String!
+    $newPassword: String!
+  ) {
+    changeCustomerPassword(
+      currentPassword: $currentPassword
+      newPassword: $newPassword
+    ) {
+      email
+    }
+  }
+`,s=async({currentPassword:t,newPassword:m})=>await e(q,{method:"POST",variables:{currentPassword:t,newPassword:m}}).then(a=>{var r,i,u;return(r=a.errors)!=null&&r.length?C(a.errors):((u=(i=a==null?void 0:a.data)==null?void 0:i.changeCustomerPassword)==null?void 0:u.email)||""}).catch(_),K=`
+  mutation UPDATE_CUSTOMER_EMAIL($email: String!, $password: String!) {
+    updateCustomerEmail(email: $email, password: $password) {
+      customer {
+        email
+      }
+    }
+  }
+`,p=async({email:t,password:m})=>await e(K,{method:"POST",variables:{email:t,password:m}}).then(a=>{var r,i,u,d;return(r=a.errors)!=null&&r.length?C(a.errors):((d=(u=(i=a==null?void 0:a.data)==null?void 0:i.updateCustomerEmail)==null?void 0:u.customer)==null?void 0:d.email)||""}).catch(_),Q=`
   mutation UPDATE_CUSTOMER_V2($input: CustomerUpdateInput!) {
     updateCustomerV2(input: $input) {
       customer {
         email
-        allow_remote_shopping_assistance
       }
     }
   }
-`,p=async t=>await D(H,{method:"POST",variables:{input:q(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(a=>{var u,m,i,c;return(u=a.errors)!=null&&u.length?P(a.errors):((c=(i=(m=a==null?void 0:a.data)==null?void 0:m.updateCustomerV2)==null?void 0:i.customer)==null?void 0:c.email)||""}).catch(V);export{n as g,p as u};
+`,tt=async t=>await e(Q,{method:"POST",variables:{input:k(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(m=>{var a,r,i,u;return(a=m.errors)!=null&&a.length?C(m.errors):((u=(i=(r=m==null?void 0:m.data)==null?void 0:r.updateCustomerV2)==null?void 0:i.customer)==null?void 0:u.email)||""}).catch(_);export{p as a,tt as b,Z as g,s as u};
 //# sourceMappingURL=updateCustomer.js.map

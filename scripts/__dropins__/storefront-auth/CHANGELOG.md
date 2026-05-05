@@ -1,13 +1,5 @@
 # @dropins/storefront-auth
 
-## 3.3.0-alpha-20260505114106
-
-### Minor Changes
-
-- 7b147c7: Cypress coverage for Seller Assisted Buying functionality
-- b0a2eba: Introduce Seller Assisted Buying authentication flow.
-- 366ba28: Add seller-assisted buying consent to a sign-up form
-
 ## 3.2.0
 
 ### Minor Changes
