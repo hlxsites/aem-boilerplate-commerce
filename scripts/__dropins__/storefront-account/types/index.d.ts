@@ -28,12 +28,15 @@ export * from './api/removeCustomerAddress.types';
 export * from './api/getCustomerPaymentTokens.types';
 export * from './api/deletePaymentToken.types';
 export * from './api/getOrderHistoryList.types';
+export * from './api/getAdminAssistanceActions.types';
 export * from './api/updateCustomerPassword.types';
 export * from './api/storeConfig.types';
 export * from './ordersList.types';
 export * from './emptyList.types';
 export * from './customerInformation.types';
 export * from './notification.types';
+export * from './sellerAssistedBuyingSettings.types';
+export * from './sellerAssistedBuyingActivity.types';
 export * from './paymentCard.types';
 export * from './paymentMethods.types';
 //# sourceMappingURL=index.d.ts.map
