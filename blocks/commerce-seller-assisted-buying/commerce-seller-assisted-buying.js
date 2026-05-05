@@ -1,6 +1,6 @@
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
-import { SellerAssistedPurchasing } from '@dropins/storefront-account/containers/SellerAssistedPurchasing.js';
-import { SellerAssistedBuying } from '@dropins/storefront-account/containers/SellerAssistedBuying.js';
+import { SellerAssistedBuyingSettings } from '@dropins/storefront-account/containers/SellerAssistedBuyingSettings.js';
+import { SellerAssistedBuyingActivity } from '@dropins/storefront-account/containers/SellerAssistedBuyingActivity.js';
 
 // Initialize
 import '../../scripts/initializers/account.js';
@@ -12,12 +12,12 @@ export default async function decorate(block) {
   const buyingContainer = document.createElement('div');
 
   const purchasing = await accountRenderer.render(
-    SellerAssistedPurchasing,
+    SellerAssistedBuyingSettings,
     {},
   )(purchasingContainer);
 
   if (purchasing) {
-    await accountRenderer.render(SellerAssistedBuying, {})(buyingContainer);
+    await accountRenderer.render(SellerAssistedBuyingActivity, {})(buyingContainer);
   }
 
   container.appendChild(purchasingContainer);
