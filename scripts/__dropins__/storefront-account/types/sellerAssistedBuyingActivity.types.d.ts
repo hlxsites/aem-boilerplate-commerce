@@ -5,6 +5,7 @@ export type { AdminAssistanceAction, AdminAssistanceActions, AdminAssistanceActi
 export interface SellerAssistedBuyingActivityProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
     pageSize?: number;
+    withWrapper?: boolean;
 }
 export interface SellerAssistedBuyingActivityTableProps {
     loading: boolean;
@@ -19,6 +20,7 @@ export interface SellerAssistedBuyingActivityTableProps {
     errorMessage?: string;
     currentPage: number;
     onPageChange: (page: number) => void;
+    withWrapper?: boolean;
 }
 export interface UseSellerAssistedBuyingActivityReturn {
     loading: boolean;
