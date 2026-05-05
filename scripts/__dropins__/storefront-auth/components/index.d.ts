@@ -23,5 +23,5 @@ export * from './ResetPasswordForm';
 export * from './SkeletonLoader';
 export * from './Form';
 export * from './Button';
-export * from './RemoteShoppingAssistance';
+export * from './RemoteShoppingAssistanceConsent';
 //# sourceMappingURL=index.d.ts.map

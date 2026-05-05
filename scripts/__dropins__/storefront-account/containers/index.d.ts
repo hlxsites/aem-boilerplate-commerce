@@ -18,7 +18,7 @@ export * from './AddressForm';
 export * from './Addresses';
 export * from './OrdersList';
 export * from './CustomerInformation';
-export * from './SellerAssistedPurchasing';
-export * from './SellerAssistedBuying';
+export * from './SellerAssistedBuyingSettings';
+export * from './SellerAssistedBuyingActivity';
 export * from './PaymentMethods';
 //# sourceMappingURL=index.d.ts.map

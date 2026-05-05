@@ -19,7 +19,10 @@ export interface getCustomerShortResponse {
         customer: {
             custom_attributes: {
                 code: string;
-                value: string | number | boolean;
+                value?: string | number | boolean | null;
+                selected_options?: {
+                    value?: string | null;
+                }[];
             }[];
             firstname: string;
             lastname: string;
@@ -30,6 +33,7 @@ export interface getCustomerShortResponse {
             prefix: string;
             suffix: string;
             created_at: string;
+            allow_remote_shopping_assistance?: boolean;
         };
     };
     errors?: {

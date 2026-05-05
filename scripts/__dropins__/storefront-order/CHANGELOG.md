@@ -1,5 +1,11 @@
 # @dropins/storefront-order
 
+## 3.4.0-alpha-20260505120832
+
+### Minor Changes
+
+- 6e4bfae: Indicate orders placed during Seller Assisted Buying session
+
 ## 3.3.0
 
 ### Minor Changes

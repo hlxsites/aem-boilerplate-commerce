@@ -218,13 +218,13 @@ declare const _default: {
       "suggestedAddress": "Suggested Address",
       "originalAddress": "Original Address"
     },
-    "sellerAssistedPurchasing": {
+    "sellerAssistedBuyingSettings": {
       "checkboxLabel": "Enable seller assisted purchasing",
       "checkboxTooltip": "This allows merchants to \"see what you see\" and take actions on your behalf in order to provide better assistance.",
       "alertMessage": "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
       "featureDisabledMessage": "Seller assisted purchasing is unavailable. This feature has been disabled by the store administrator."
     },
-    "sellerAssistedBuying": {
+    "sellerAssistedBuyingActivity": {
       "tableHeaders": {
         "action": "Action",
         "date": "Date",
