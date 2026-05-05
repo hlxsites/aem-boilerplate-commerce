@@ -10,7 +10,9 @@ export default async function decorate(block) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
   } else {
     const container = document.createElement('div');
-    await accountRenderer.render(SellerAssistedBuyingActivity, {})(container);
+    await accountRenderer.render(SellerAssistedBuyingActivity, {
+      withWrapper: false,
+    })(container);
     block.appendChild(container);
   }
 }
