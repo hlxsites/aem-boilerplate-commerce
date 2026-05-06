@@ -328,6 +328,7 @@ const A=`
     shipping_method
     available_actions
     is_virtual
+    admin_assisted_order
     comments {
       message
       timestamp

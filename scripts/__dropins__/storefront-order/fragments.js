@@ -289,6 +289,7 @@ ${d}`, i = `fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
   shipping_method
   available_actions
   is_virtual
+  admin_assisted_order
   comments {
     message
     timestamp

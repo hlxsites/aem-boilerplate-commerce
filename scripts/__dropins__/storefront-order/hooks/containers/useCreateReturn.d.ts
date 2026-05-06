@@ -23,7 +23,7 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
         shippingMethod?: string;
         carrier?: string;
         orderDate?: string | undefined;
-        adminAssistedOrder?: number;
+        adminAssistedOrder?: boolean;
         comments?: import('../../types').OrderCommentItem[] | undefined;
         returns?: import('../../data/models').OrdersReturnPropsModel[] | undefined;
         discounts?: {

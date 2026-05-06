@@ -247,7 +247,7 @@ declare const _default: {
       },
       "emptyStateMessage": "No administrator-assisted actions yet.",
       "errorMessage": "Couldn't load administrator-assisted actions. Please try again later.",
-      "featureDisabledMessage": "Seller-assisted activity log is unavailable because this feature is currently disabled."
+      "featureDisabledMessage": "Seller assisted activity log is unavailable. This feature has been disabled by the store administrator."
     },
     "Payments": {
       "containerTitle": "Payments",

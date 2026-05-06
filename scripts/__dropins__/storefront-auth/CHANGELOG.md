@@ -1,6 +1,6 @@
 # @dropins/storefront-auth
 
-## 3.3.0-alpha-20260505114106
+## 3.3.0-alpha-20260505185112
 
 ### Minor Changes
 
