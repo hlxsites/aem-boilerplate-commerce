@@ -28,7 +28,7 @@ function performLogin(email, password) {
   cy.visit('/customer/login');
 
   cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-    cy.fillField('input[name="email"]', email);
+    cy.fillField('input[name="email"]', email, { delay: 50});
     cy.fillField('input[name="password"]', password);
 
     // Preact needs a tick to commit form state after the last input event
