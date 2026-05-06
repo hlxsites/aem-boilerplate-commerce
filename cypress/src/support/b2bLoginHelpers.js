@@ -8,6 +8,8 @@
  * - Form filling and submission
  * - Wait for login completion
  *
+ * Uses the shared `cy.performLogin` command from loginHelper.js.
+ *
  * @example
  * // Login as company admin
  * cy.loginAsCompanyAdmin();
@@ -16,31 +18,6 @@
  * // Login as regular user
  * cy.loginAsRegularUser();
  */
-
-/**
- * Shared login implementation. Navigates to login page, fills credentials,
- * submits the form, and waits for redirect to /customer/account.
- *
- * @param {string} email - User email address
- * @param {string} password - User password
- */
-function performLogin(email, password) {
-  cy.visit('/customer/login');
-
-  cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-    cy.fillField('input[name="email"]', email, { delay: 50});
-    cy.fillField('input[name="password"]', password);
-
-    // Preact needs a tick to commit form state after the last input event
-    // before the submit handler can read the correct values
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
-    cy.get('button[type="submit"]').click({ force: true });
-  });
-
-  // Wait for login redirect instead of static wait
-  cy.url({ timeout: 30000 }).should('include', '/customer/account');
-}
 
 /**
  * Login as company admin.
@@ -58,7 +35,7 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
-    performLogin(testAdmin.email, testAdmin.password);
+    cy.performLogin(testAdmin.email, testAdmin.password);
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -79,7 +56,7 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
-    performLogin(testUsers.regular.email, testUsers.regular.password);
+    cy.performLogin(testUsers.regular.email, testUsers.regular.password);
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -117,7 +94,7 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     }
     
     cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
-    performLogin(testUsers.restricted.email, testUsers.restricted.password);
+    cy.performLogin(testUsers.restricted.email, testUsers.restricted.password);
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });

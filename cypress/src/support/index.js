@@ -8,6 +8,7 @@ import './getIFrameField';
 import './getUserTokenCookie';
 import './hideFetchAndXhrLogs';
 import './interceptConfig';
+import './loginHelper';
 import './logToTerminal';
 import './percyTakeSnapshot';
 import './sessionStorage';
