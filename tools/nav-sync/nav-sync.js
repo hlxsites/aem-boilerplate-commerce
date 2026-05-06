@@ -11,19 +11,33 @@
  * The DA org and repo are derived automatically from the site URL.
  *
  * Usage:
- *   node nav-sync.js <site> <store> <family>
+ *   node nav-sync.js <site> <store> <family> [--mode <mode>]
  *
  *   site    — EDS site hostname, e.g. main--thunderbolts-aco--adobe-commerce.aem.live
  *   store   — "default" or a store key from config.json (e.g. "spain")
  *   family  — ACO product family passed to navigation(family:). Required.
  *             Every ACO family must be created manually — there is no
  *             universal default.
+ *   --mode  — Controls what happens after fetching the category tree:
+ *               local   — generate local files only; skip DA upload entirely
+ *               preview — upload to DA and preview; do not publish live
+ *               publish — upload, preview, and publish (default)
  *
  * Examples:
- *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live default my-family
- *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live spain   my-family
+ *   # Generate local files only (no DA credentials needed)
+ *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live default my-family --mode local
  *
- * DA upload (optional — skipped when no credentials are set):
+ *   # Upload and preview (for review before going live)
+ *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live \
+ *     default my-family --mode preview
+ *
+ *   # Full sync: upload, preview, and publish (default behavior)
+ *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live \
+ *     default my-family
+ *   node nav-sync.js main--thunderbolts-aco--adobe-commerce.aem.live \
+ *     spain my-family --mode publish
+ *
+ * DA upload (required for preview and publish modes, skipped in local mode):
  *   DA_TOKEN        — Pre-generated IMS Bearer token. Simplest option for
  *                     local runs: copy from an active da.live browser session
  *                     (DevTools → Network → any request → Authorization header).
@@ -244,9 +258,11 @@ async function getToken() {
  * Steps:
  *   1. PUT  /source/{org}/{repo}/{daPath}  — saves the sheet content
  *   2. POST /preview/{org}/{repo}/{daPath} — stages it at the preview URL
- *   3. POST /live/{org}/{repo}/{daPath}    — publishes it so EDS serves it live
+ *   3. POST /live/{org}/{repo}/{daPath}    — publishes it so EDS serves it live (publish mode only)
+ *
+ * @param {string} mode 'preview' or 'publish'
  */
-async function uploadToDA(token, org, repo, daPath, edsJson, tag) {
+async function uploadToDA(token, org, repo, daPath, edsJson, tag, mode) {
   const authHeader = { Authorization: `Bearer ${token}` };
   const basePath = `${org}/${repo}/${daPath}`;
   const sourcePath = `${basePath}.json`;
@@ -273,14 +289,18 @@ async function uploadToDA(token, org, repo, daPath, edsJson, tag) {
   });
   if (previewRes.ok) {
     console.info(`✅ ${tag} DA: previewed`);
-    const publishRes = await fetch(`${HLX_ADMIN}/live/${aemPath}`, {
-      method: 'POST',
-      headers: authHeader,
-    });
-    if (publishRes.ok) {
-      console.info(`✅ ${tag} DA: published`);
+    if (mode === 'publish') {
+      const publishRes = await fetch(`${HLX_ADMIN}/live/${aemPath}`, {
+        method: 'POST',
+        headers: authHeader,
+      });
+      if (publishRes.ok) {
+        console.info(`✅ ${tag} DA: published`);
+      } else {
+        console.warn(`⚠️ ${tag} DA publish skipped: ${publishRes.status} ${publishRes.statusText}`);
+      }
     } else {
-      console.warn(`⚠️ ${tag} DA publish skipped: ${publishRes.status} ${publishRes.statusText}`);
+      console.info(`ℹ️ ${tag} DA: publish skipped (mode: preview). Use --mode publish to go live.`);
     }
   } else {
     console.warn(`⚠️ ${tag} DA preview skipped: ${previewRes.status} ${previewRes.statusText} — file saved to da.live but not yet published`);
@@ -289,7 +309,7 @@ async function uploadToDA(token, org, repo, daPath, edsJson, tag) {
 
 // ─── Per-store sync ───────────────────────────────────────────────────────────
 
-async function syncStore(pub, storeKey, family, site) {
+async function syncStore(pub, storeKey, family, site, mode) {
   const config = getStoreConfig(pub, storeKey);
   const endpoint = config['commerce-endpoint'];
   const headers = { ...config.headers?.all, ...config.headers?.cs };
@@ -325,37 +345,75 @@ async function syncStore(pub, storeKey, family, site) {
   console.info(`✅ ${tag} Written ${txtPath}`);
   console.info(`✅ ${tag} Written ${jsonPath}`);
 
-  // Upload to DA if credentials are available
-  const token = await getToken();
-  if (token) {
-    const { org, repo } = parseSiteUrl(site);
-    const daPath = storeSlug === 'default' ? NAV_SHEET_NAME : `${storeSlug}/${NAV_SHEET_NAME}`;
-    await uploadToDA(token, org, repo, daPath, toEdsJson(rows), tag);
+  if (mode === 'local') {
+    console.info(`ℹ️ ${tag} DA upload skipped (mode: local)`);
   } else {
-    console.info(`⚠️ ${tag} DA upload skipped — set DA_TOKEN or DA_CLIENT_ID + DA_CLIENT_SECRET to enable`);
+    const token = await getToken();
+    if (token) {
+      const { org, repo } = parseSiteUrl(site);
+      const daPath = storeSlug === 'default' ? NAV_SHEET_NAME : `${storeSlug}/${NAV_SHEET_NAME}`;
+      await uploadToDA(token, org, repo, daPath, toEdsJson(rows), tag, mode);
+    } else {
+      console.warn(`⚠️ ${tag} DA upload skipped — set DA_TOKEN or DA_CLIENT_ID + DA_CLIENT_SECRET to enable`);
+    }
   }
 
   console.info('');
 }
 
+// ─── CLI argument parsing ─────────────────────────────────────────────────────
+
+const VALID_MODES = ['local', 'preview', 'publish'];
+
+function parseArgs(argv) {
+  const args = argv.slice(2);
+  const positional = [];
+  let mode = 'publish';
+
+  for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === '--mode') {
+      i += 1;
+      if (!args[i] || !VALID_MODES.includes(args[i])) {
+        throw new Error(`Invalid --mode value "${args[i]}". Must be one of: ${VALID_MODES.join(', ')}`);
+      }
+      mode = args[i];
+    } else {
+      positional.push(args[i]);
+    }
+  }
+
+  return { positional, mode };
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 (async () => {
-  const [siteArg, storeArg, familyArg] = process.argv.slice(2);
+  let parsed;
+  try {
+    parsed = parseArgs(process.argv);
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
+  }
+
+  const [siteArg, storeArg, familyArg] = parsed.positional;
+  const { mode } = parsed;
 
   if (!siteArg || !storeArg || !familyArg) {
-    console.error('Usage: node nav-sync.js <site> <store> <family>');
+    console.error('Usage: node nav-sync.js <site> <store> <family> [--mode <mode>]');
     console.error('  site   — EDS site hostname, e.g. main--thunderbolts-aco--adobe-commerce.aem.live');
     console.error('  store  — "default" or a store key from config.json (e.g. "spain")');
     console.error('  family — ACO product family (required; must be created in ACO first)');
+    console.error('  --mode — local | preview | publish (default: publish)');
     process.exit(1);
   }
 
   try {
     console.info(`Site: ${siteArg}`);
+    console.info(`Mode: ${mode}`);
     const pub = await fetchPublicConfig(siteArg);
     const storeKey = resolveStoreKey(pub, storeArg);
-    await syncStore(pub, storeKey, familyArg, siteArg);
+    await syncStore(pub, storeKey, familyArg, siteArg, mode);
     console.info('Done.');
   } catch (err) {
     console.error(`\nError: ${err.message}`);

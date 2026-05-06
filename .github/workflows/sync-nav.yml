@@ -17,6 +17,15 @@ on:
         description: 'ACO product family (required — every family must be created in ACO first)'
         required: false
         default: ''
+      mode:
+        description: 'Sync mode: local (files only), preview (upload + preview), publish (full — default)'
+        required: false
+        default: 'publish'
+        type: choice
+        options:
+          - publish
+          - preview
+          - local
 
 env:
   # Hostname of the live EDS site. Update this when targeting a different branch or repo.
@@ -52,7 +61,8 @@ jobs:
           node tools/nav-sync/nav-sync.js \
             "${{ github.event.inputs.site || env.NAV_SITE }}" \
             default \
-            "${{ github.event.inputs.family || env.NAV_FAMILY }}"
+            "${{ github.event.inputs.family || env.NAV_FAMILY }}" \
+            --mode "${{ github.event.inputs.mode || 'publish' }}"
 
       - name: Upload nav files as artifact
         if: always()

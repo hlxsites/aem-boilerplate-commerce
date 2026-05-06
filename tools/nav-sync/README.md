@@ -8,14 +8,17 @@ Fetches the navigation category tree from the ACO Catalog Service and publishes 
 2. Calls the ACO Catalog Service `navigation` GraphQL query for the requested store
 3. Flattens the category tree into `path / title` rows
 4. Writes local output files (`nav-dynamic.json`, `nav-dynamic.txt`) under `tools/nav-sync/<store>/`
-5. When DA credentials are present, uploads the sheet to da.live then previews and publishes it via the AEM Admin API
+5. Depending on the `--mode` flag:
+   - `local` — stops here
+   - `preview` — uploads to da.live and stages at the preview URL
+   - `publish` (default) — uploads, previews, and publishes live via the AEM Admin API
 
 The published sheet is served by EDS at `/nav-dynamic.json` (default store) or `/<store>/nav-dynamic.json` (other stores) and consumed by the `header-dynamic` block to render the nav.
 
 ## Usage
 
 ```bash
-node tools/nav-sync/nav-sync.js <site> <store> <family>
+node tools/nav-sync/nav-sync.js <site> <store> <family> [--mode <mode>]
 ```
 
 | Argument | Description |
@@ -23,22 +26,41 @@ node tools/nav-sync/nav-sync.js <site> <store> <family>
 | `site` | EDS site hostname, e.g. `main--my-repo--my-org.aem.live` |
 | `store` | `default` or a store key from `config.json` (e.g. `spain`) |
 | `family` | ACO product family passed to `navigation(family:)`. Required — every ACO family must be created manually; there is no universal default. |
+| `--mode` | Controls what happens after fetching the category tree (see below). Defaults to `publish`. |
+
+### Modes
+
+| Mode | Local files | DA upload | Preview | Publish |
+| --- | --- | --- | --- | --- |
+| `local` | Yes | No | No | No |
+| `preview` | Yes | Yes | Yes | No |
+| `publish` | Yes | Yes | Yes | Yes |
+
+- **`local`** — generates the `nav-dynamic.json` and `.txt` files locally. No DA credentials are needed. Useful for inspecting output or feeding the JSON into a custom workflow.
+- **`preview`** — uploads to da.live and stages the file at the preview URL for review. Does not publish live. Requires DA credentials.
+- **`publish`** — full pipeline: upload, preview, and publish so EDS serves the file on the live site. This is the default when `--mode` is omitted.
 
 ### Examples
 
 ```bash
-# Sync the default store
+# Generate local files only (no DA credentials needed)
+node tools/nav-sync/nav-sync.js main--my-repo--my-org.aem.live default my-family --mode local
+
+# Upload and preview for review before going live
+node tools/nav-sync/nav-sync.js main--my-repo--my-org.aem.live default my-family --mode preview
+
+# Full sync: upload, preview, and publish (default)
 node tools/nav-sync/nav-sync.js main--my-repo--my-org.aem.live default my-family
 
 # Sync a secondary store
-node tools/nav-sync/nav-sync.js main--my-repo--my-org.aem.live spain my-family
+node tools/nav-sync/nav-sync.js main--my-repo--my-org.aem.live spain my-family --mode publish
 ```
 
 The script derives the DA org and repo automatically from the site URL (`branch--repo--org.aem.live`), so no extra configuration is needed.
 
 ## DA upload
 
-The upload step is skipped when no credentials are configured, so local runs without a DA account still produce the local output files.
+The upload step requires DA credentials and is only used in `preview` and `publish` modes. In `local` mode (or when no credentials are configured), the script still produces the local output files.
 
 Set one of the following to enable upload:
 
