@@ -65,7 +65,12 @@ import {
   TERMS_AND_CONDITIONS_FORM_NAME,
 } from './constants.js';
 
-import { rootLink } from '../../scripts/commerce.js';
+import {
+  CORE_FETCH_GRAPHQL,
+  rootLink,
+  CUSTOMER_PO_DETAILS_PATH,
+  ORDER_DETAILS_PATH,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/account.js';
@@ -78,6 +83,14 @@ import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-check
 
 preloadCheckoutSuccess();
 
+const FREE_GIFT_AVAILABILITY_QUERY = `
+  query GET_CART_FREE_GIFT_AVAILABILITY($cartId: String!) {
+    cart(cart_id: $cartId) {
+      has_available_free_gifts
+    }
+  }
+`;
+
 function redirectToCartIfEmpty(cartData) {
   const isOrderPlaced = events.lastPayload('order/placed') !== undefined;
 
@@ -87,6 +100,7 @@ function redirectToCartIfEmpty(cartData) {
 }
 
 export default async function decorate(block) {
+  let hasOpenedFreeGiftPopup = false;
   setMetaTags('Checkout');
   document.title = 'Checkout';
 
@@ -143,6 +157,51 @@ export default async function decorate(block) {
     { name: PURCHASE_ORDER_FORM_NAME },
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
+
+  const sleep = (ms) => new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+  const tryOpenExistingFreeGiftPopup = () => {
+    const candidates = [...document.querySelectorAll('button, a, [role="button"]')];
+    const trigger = candidates.find((element) => element.textContent
+      ?.trim()
+      .toLowerCase()
+      .includes('choose your free gift'));
+
+    if (!trigger) {
+      return false;
+    }
+
+    trigger.click();
+    hasOpenedFreeGiftPopup = true;
+    return true;
+  };
+
+  const checkAndOpenFreeGiftPopup = async (cartId) => {
+    if (!cartId || hasOpenedFreeGiftPopup) {
+      return;
+    }
+
+    try {
+      const { data } = await CORE_FETCH_GRAPHQL.fetchGraphQl(FREE_GIFT_AVAILABILITY_QUERY, {
+        method: 'GET',
+        variables: { cartId },
+      });
+
+      if (data?.cart?.has_available_free_gifts === true) {
+        const maxAttempts = 12;
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+          if (tryOpenExistingFreeGiftPopup()) {
+            break;
+          }
+          await sleep(250);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to check free gift availability.', error);
+    }
+  };
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
@@ -279,6 +338,7 @@ export default async function decorate(block) {
   async function handleCheckoutUpdated(data) {
     if (!data) return;
     await initializeCheckout(data);
+    await checkAndOpenFreeGiftPopup(data.id);
   }
 
   function handleAuthenticated(authenticated) {
