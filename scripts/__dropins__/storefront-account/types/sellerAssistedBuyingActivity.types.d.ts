@@ -17,6 +17,8 @@ export interface SellerAssistedBuyingActivityTableProps {
     };
     actionTypesMap: Record<string, string>;
     emptyStateMessage: string;
+    featureDisabledMessage: string;
+    isRemoteShoppingAssistanceAvailable?: boolean;
     errorMessage?: string;
     currentPage: number;
     onPageChange: (page: number) => void;

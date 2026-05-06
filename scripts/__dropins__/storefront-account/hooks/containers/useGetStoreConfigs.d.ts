@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export declare const useGetStoreConfigs: () => {
+    loading: boolean;
     passwordConfigs: {
         minLength: number;
         requiredCharacterClasses: number;

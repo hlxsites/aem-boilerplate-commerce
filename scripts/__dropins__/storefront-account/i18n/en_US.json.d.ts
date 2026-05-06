@@ -94,7 +94,7 @@ declare const _default: {
           "carrier": "Carrier:",
           "returns": "Return(s):",
           "orderDate": "Placed on",
-          "placedByAdministrator": "Placed by Administrator"
+          "placedByAdministrator": "Placed by an administrator"
         },
         "OrdersListSelectDate": {
           "pastSixMonths": "Past 6 months",
@@ -161,7 +161,7 @@ declare const _default: {
           "carrier": "Carrier:",
           "returns": "Return(s):",
           "orderDate": "Placed on",
-          "placedByAdministrator": "Placed by Administrator"
+          "placedByAdministrator": "Placed by an administrator"
         },
         "OrdersListSelectDate": {
           "pastSixMonths": "Past 6 months",
@@ -245,8 +245,9 @@ declare const _default: {
         "update_customer_info": "Customer Info Updated",
         "save": "Saved"
       },
-      "emptyStateMessage": "No admin assistance actions have been recorded yet.",
-      "errorMessage": "Unable to load admin assistance actions. Please try again later."
+      "emptyStateMessage": "No administrator-assisted actions yet.",
+      "errorMessage": "Couldn't load administrator-assisted actions. Please try again later.",
+      "featureDisabledMessage": "Seller-assisted activity log is unavailable because this feature is currently disabled."
     },
     "Payments": {
       "containerTitle": "Payments",
