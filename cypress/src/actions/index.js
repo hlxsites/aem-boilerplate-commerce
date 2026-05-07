@@ -441,9 +441,9 @@ export const login = (user, urls) => {
     loginUrl: urls.login,
     redirectUrl: urls.account,
   });
-  // Waiting for session and permissions to initialize
+  // Waiting for session and B2B permissions to fully initialize server-side
   // eslint-disable-next-line cypress/no-unnecessary-waiting
-  cy.wait(3000);
+  cy.wait(10000);
 };
 
 export const logout = (texts) => {
