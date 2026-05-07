@@ -99,7 +99,7 @@ The workflow at `.github/workflows/sync-nav.yml` runs automatically every day at
 ```yaml
 - name: Sync <store> store
   if: github.event_name == 'schedule' || ...
-  run: node tools/nav-sync/nav-sync.js "$SITE" <store> <family>
+  run: node tools/nav-sync/nav-sync.js "$SITE" <store> <family> --mode publish
 ```
 
 **Manual trigger inputs:**
@@ -109,6 +109,7 @@ The workflow at `.github/workflows/sync-nav.yml` runs automatically every day at
 | `site` | EDS site hostname (defaults to `NAV_SITE` env in the workflow) |
 | `store` | Store to sync. Leave blank to run all configured stores. |
 | `family` | ACO product family (required; must be created in ACO first) |
+| `mode` | `publish` (default), `preview`, or `local` |
 
 After each run, the output `.txt` files are uploaded as a `nav-categories` artifact so you can inspect the synced categories without pulling the repo.
 

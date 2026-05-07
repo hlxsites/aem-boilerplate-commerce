@@ -1,6 +1,7 @@
 import {
   buildBlock,
-  loadHeader,
+  decorateBlock,
+  loadBlock,
   loadFooter,
   decorateButtons,
   decorateIcons,
@@ -112,7 +113,11 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
+  const headerEl = doc.querySelector('header');
+  const headerBlock = buildBlock('header-dynamic', '');
+  headerEl.append(headerBlock);
+  decorateBlock(headerBlock);
+  loadBlock(headerBlock);
   loadFooter(doc.querySelector('footer'));
 
   loadCommerceLazy();

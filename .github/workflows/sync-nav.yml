@@ -10,7 +10,7 @@ on:
         required: false
         default: ''
       store:
-        description: 'Store to sync ("default" or a config.json key). Leave blank to run all stores.'
+        description: 'Store to sync ("default" or a config.json key e.g. "spain"). Leave blank to run all stores.'
         required: false
         default: ''
       family:
@@ -32,7 +32,7 @@ env:
   NAV_SITE: main--my-repo--my-org.aem.live
   # ACO product family. Every family must be created manually in ACO — there is no
   # universal default. Change this to the family configured for your store.
-  NAV_FAMILY: my-family
+  NAV_FAMILY: default
 
 jobs:
   sync:
