@@ -109,6 +109,8 @@ async function loadEager(doc) {
   if (main) {
     try {
       // Parallel loading (JUMO-style optimization for burst test)
+      // eslint-disable-next-line no-console
+      console.log('[USF-4022] loadEager: parallel loading active');
       const commerceInitPromise = initializeCommerce().catch((e) => {
         console.warn('Commerce init failed:', e);
         return null;
