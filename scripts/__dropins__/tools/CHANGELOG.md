@@ -1,5 +1,11 @@
 # @adobe-commerce/elsie
 
+## 1.8.2-alpha-20260508203100
+
+### Patch Changes
+
+- 2510b53: Consolidate SVG icon chunks into a single bundle to reduce HTTP requests on EDS origins.
+
 ## 1.8.1
 
 ### Patch Changes
