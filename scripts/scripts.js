@@ -123,6 +123,10 @@ async function loadEager(doc) {
       decorateMain(main);
       applyTemplates(doc);
 
+      // [USF-4022] Load header/footer eagerly (JUMO-style) to reproduce single-burst pattern
+      loadHeader(doc.querySelector('header'));
+      loadFooter(doc.querySelector('footer'));
+
       await Promise.race([
         Promise.all([commerceInitPromise, commerceEagerPromise]),
         new Promise((resolve) => { setTimeout(resolve, 500); }),
@@ -150,7 +154,7 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  // [USF-4022] header/footer moved to loadEager for burst reproduction test
 
   const main = doc.querySelector('main');
   await loadSections(main);
@@ -158,8 +162,6 @@ async function loadLazy(doc) {
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
-
-  loadFooter(doc.querySelector('footer'));
 
   loadCommerceLazy();
 
