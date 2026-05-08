@@ -108,10 +108,23 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     try {
-      await initializeCommerce();
+      // Parallel loading (JUMO-style optimization for burst test)
+      const commerceInitPromise = initializeCommerce().catch((e) => {
+        console.warn('Commerce init failed:', e);
+        return null;
+      });
+      const commerceEagerPromise = loadCommerceEager().catch((e) => {
+        console.warn('Commerce eager failed:', e);
+        return null;
+      });
+
       decorateMain(main);
       applyTemplates(doc);
-      await loadCommerceEager();
+
+      await Promise.race([
+        Promise.all([commerceInitPromise, commerceEagerPromise]),
+        new Promise((resolve) => { setTimeout(resolve, 500); }),
+      ]);
     } catch (e) {
       console.error('Error initializing commerce configuration:', e);
       loadErrorPage(418);
