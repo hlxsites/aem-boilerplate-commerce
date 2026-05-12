@@ -33,14 +33,6 @@ You can also trigger the workflow manually from the **Actions** tab in GitHub.
 
 ### Manual updates
 
-To check for and apply all updates at once:
-
-```bash
-npm run update-dependencies:dry-run  # preview changes without modifying any files
-npm run update-dependencies          # update package.json
-npm install                          # update package-lock.json and scripts/__dropins__/
-```
-
 To update a specific package:
 
 ```bash
