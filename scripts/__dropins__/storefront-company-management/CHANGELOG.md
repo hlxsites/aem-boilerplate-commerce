@@ -1,5 +1,11 @@
 # @dropins/storefront-company-management
 
+## 1.3.0-alpha-20260512122633
+
+### Minor Changes
+
+- b73e85f: Implement Company Hierarchy functionality
+
 ## 1.2.0
 
 ### Minor Changes

@@ -15,20 +15,14 @@
  * from Adobe.
  *******************************************************************/
 /**
- * Permission flags interface for company operations
- * Only contains permission-based access control flags, not role information
+ * Company basic info from GraphQL response
  */
-export interface CompanyPermissionFlags {
-    canViewAccount: boolean;
-    canEditAccount: boolean;
-    canViewAddress: boolean;
-    canEditAddress: boolean;
-    canViewContacts: boolean;
-    canViewPaymentInformation: boolean;
-    canViewShippingInformation: boolean;
-    canViewUsers: boolean;
-    canEditUsers: boolean;
-    canViewRoles: boolean;
-    canManageRoles: boolean;
+export interface CompanyBasicInfoResponse {
+    id: string;
+    is_admin: boolean;
+    legal_name?: string | null;
+    name: string;
+    status?: string | null;
+    __typename: string;
 }
-//# sourceMappingURL=companyPermission.types.d.ts.map
+//# sourceMappingURL=companyBasicInfo.types.d.ts.map
