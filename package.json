@@ -16,7 +16,9 @@
     "build:json:models": "merge-json-cli -i \"models/_component-models.json\" -o \"component-models.json\"",
     "build:json:definitions": "merge-json-cli -i \"models/_component-definition.json\" -o \"component-definition.json\"",
     "build:json:filters": "merge-json-cli -i \"models/_component-filters.json\" -o \"component-filters.json\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "update-dependencies": "node tools/update-dependencies/update-dependencies.js",
+    "update-dependencies:dry-run": "node tools/update-dependencies/update-dependencies.js --dry-run"
   },
   "repository": {
     "type": "git",
@@ -43,14 +45,14 @@
   },
   "dependencies": {
     "@adobe/adobe-client-data-layer": "^3.0.1",
-    "@adobe/magento-storefront-event-collector": "^1.15.0",
-    "@adobe/magento-storefront-events-sdk": "^1.15.0",
+    "@adobe/magento-storefront-event-collector": "^1.17.0",
+    "@adobe/magento-storefront-events-sdk": "^1.17.0",
     "@dropins/storefront-account": "~3.3.0",
     "@dropins/storefront-auth": "~3.2.0",
     "@dropins/storefront-cart": "~3.2.0",
     "@dropins/storefront-checkout": "~3.2.1",
     "@dropins/storefront-order": "~3.3.0",
-    "@dropins/storefront-payment-services": "~3.1.0",
+    "@dropins/storefront-payment-services": "~3.1.1",
     "@dropins/storefront-pdp": "3.0.4-beta2",
     "@dropins/storefront-personalization": "~3.1.1",
     "@dropins/storefront-product-discovery": "~3.1.0",
