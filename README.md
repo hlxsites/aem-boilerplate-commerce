@@ -61,7 +61,7 @@ Always run `postinstall` after any drop-in update — it copies the built assets
 
 ### Automated dependency PRs
 
-This repo includes a GitHub Actions workflow that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available. The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
+This repo includes a GitHub Actions workflow that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
 
 You can also trigger the workflow manually from the **Actions** tab in GitHub.
 
