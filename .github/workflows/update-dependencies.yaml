@@ -82,7 +82,7 @@ jobs:
         uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: chore/dependency-updates
+          branch: chore-dependency-updates
           delete-branch: true
           commit-message: 'chore: update @adobe and @dropins dependencies'
           title: 'chore: weekly @adobe / @dropins dependency updates'
