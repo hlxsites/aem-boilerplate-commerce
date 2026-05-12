@@ -59,6 +59,16 @@ const FETCH_TIMEOUT_MS = 10_000;  // per-request timeout in milliseconds
 const FETCH_MAX_BYTES  = 100 * 1024;  // maximum response size in bytes
 ```
 
+## Permissions
+
+The workflow uses the built-in `GITHUB_TOKEN` provided automatically by GitHub Actions — no manual secret setup is required. The token is granted the following permissions so it can commit the changes and open the PR:
+
+```yaml
+permissions:
+  contents: write
+  pull-requests: write
+```
+
 ## Automated workflow
 
 A GitHub Actions workflow (`.github/workflows/update-dependencies.yaml`) runs this script every Monday at 08:00 UTC and opens a pull request when updates are found. The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets. It can also be triggered manually from the **Actions** tab in GitHub.

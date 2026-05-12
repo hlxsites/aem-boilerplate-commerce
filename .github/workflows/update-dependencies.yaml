@@ -38,17 +38,9 @@ jobs:
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Update package-lock.json
+      - name: Install and regenerate dropin assets
         if: steps.update.outputs.has_changes == 'true'
-        run: npm install --package-lock-only --ignore-scripts
-
-      - name: Install packages for dropin generation
-        if: steps.update.outputs.has_changes == 'true'
-        run: npm ci --ignore-scripts
-
-      - name: Regenerate dropin assets
-        if: steps.update.outputs.has_changes == 'true'
-        run: node build.mjs && node postinstall.js
+        run: npm install
 
       - name: Build PR body
         if: steps.update.outputs.has_changes == 'true'
