@@ -28,10 +28,10 @@ jobs:
       - name: Snapshot package.json before updates
         run: cp package.json /tmp/pkg_before.json
 
-      - name: Run dependency update script
+      - name: Update @adobe and @dropins packages
         id: update
         run: |
-          node tools/update-dependencies/update-dependencies.js
+          npm update --save $(jq -r '.dependencies | keys[] | select(startswith("@adobe/") or startswith("@dropins/"))' package.json | tr '\n' ' ')
           if git diff --quiet package.json; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
