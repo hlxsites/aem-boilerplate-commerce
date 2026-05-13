@@ -177,6 +177,7 @@ export default async function decorate(block) {
         provider.render(ProductList, {
           routeProduct: createProductLink,
           recId: recid,
+          currentSku: resolvedSku,
           currentProduct,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
