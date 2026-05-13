@@ -1,0 +1,45 @@
+{
+  "public": {
+    "default": {
+      "commerce-endpoint": "https://na1.api.commerce.adobe.com/N5raScCffY2MjWSEEyALCV/graphql",
+      "commerce-core-endpoint": "https://master-7rqtwti-jn4nwore4bb34.us-a1.magentosite.cloud/graphql",
+      "adobe-commerce-optimizer": true,
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "AC-View-ID": "c793c282-70b5-4328-9440-068b4c7522c3",
+          "AC-Price-Book-ID": "base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c"
+        }
+      },
+      "commerce-b2b-enabled": true,
+      "commerce-companies-enabled": true,
+      "commerce-assets-enabled": true,
+      "analytics": {
+        "base-currency-code": "USD",
+        "environment": "Testing",
+        "environment-id": "N5raScCffY2MjWSEEyALCV",
+        "store-url": "https://usf-4030--asad-store--amoin-magento.aem.live/",
+        "store-view-currency-code": "USD",
+        "storefront-template": "Other",
+        "view-id": "c793c282-70b5-4328-9440-068b4c7522c3",
+        "locale": "en-US",
+        "store-code": "main_website_store",
+        "store-id": "main_website_store",
+        "store-name": "Default Store View",
+        "store-view-code": "default",
+        "store-view-id": "default",
+        "store-view-name": "Default Store View",
+        "website-code": "base",
+        "website-id": "base",
+        "website-name": "Main Website"
+      },
+      "plugins": {
+        "picker": {
+          "rootCategory": "2"
+        }
+      }
+    }
+  }
+}
