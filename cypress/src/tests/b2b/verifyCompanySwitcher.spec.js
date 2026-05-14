@@ -75,7 +75,7 @@ async function createAdminRole(companyId) {
   return adminRole;
 }
 
-describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas'] }, () => {
+describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   before(() => {
     cy.logToTerminal('🔄 Company Switcher test suite started (OPTIMIZED)');
   });

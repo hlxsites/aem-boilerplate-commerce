@@ -13,7 +13,7 @@ import {
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
-describe('B2B Purchase Orders', () => {
+describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('poUrls');
 
   before(() => {

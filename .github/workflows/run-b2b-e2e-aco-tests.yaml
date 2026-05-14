@@ -1,7 +1,5 @@
 name: Cypress E2E B2B ACO Tests
-on:
-  # Run manually until B2B tests are tagged with @B2BAco
-  workflow_dispatch:
+on: push
 jobs:
   cypress-b2b-aco-groups:
     # If you want this job to run on your fork, remove the below "if" line.
