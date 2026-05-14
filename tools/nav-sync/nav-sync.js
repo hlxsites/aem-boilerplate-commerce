@@ -6,9 +6,9 @@
  * present — uploads and publishes the sheet to da.live so EDS serves it at
  * /nav-dynamic.json.
  *
- * Config is fetched from the live EDS site, mirroring what the browser SDK
- * does, so this script works without a local copy of the repository.
- * The DA org and repo are derived automatically from the site URL.
+ * Config is fetched from the live EDS site so this script works without a
+ * local copy of the repository. The DA org and repo are derived
+ * automatically from the site URL.
  *
  * Usage:
  *   node nav-sync.js <site> <store> <family> [--mode <mode>]
@@ -45,11 +45,9 @@
  *                     Use for automated / CI runs.
  */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const fs = require('fs');
+const path = require('path');
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const NAV_SHEET_NAME = 'nav-dynamic';
 
 // ─── Config ───────────────────────────────────────────────────────────────────

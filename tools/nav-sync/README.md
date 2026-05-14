@@ -13,7 +13,7 @@ This makes the navigation both **automated and flexible**: Commerce provides the
 
 > **Note — ACO only (for now)**
 > The reference implementation targets ACO / ACO Connector using the `navigation(family:)` GraphQL query.
-> ACCS / federated gateway deployments use a different API (`categories` query) and require a separate script.
+> ACCS uses a different API (`categories` query) and would require a separate script.
 
 ## What you'll build
 
@@ -26,8 +26,8 @@ By the end of this setup, you'll have:
 
 ## How it works
 
-1. Fetches `config.json` from the live EDS site URL (same pattern as the browser SDK)
-2. Calls the ACO Catalog Service `navigation` GraphQL query for the requested store
+1. Fetches `config.json` from your live EDS site URL to get the Commerce endpoint and headers
+2. Calls the ACO `navigation(family:)` GraphQL query for the requested store. The `family` is a product family defined in your ACO instance — it determines which part of the catalog tree is returned
 3. Flattens the category tree into `path / title` rows
 4. Writes local output files (`nav-dynamic.json`, `nav-dynamic.txt`) under `tools/nav-sync/<store>/`
 5. Depending on the `--mode` flag:
@@ -53,15 +53,13 @@ Before starting, make sure you have:
 
 The `tools/nav-sync/` directory already contains the script in this repository. Copy it into your own storefront repo:
 
-- `tools/nav-sync/package.json`
 - `tools/nav-sync/nav-sync.js`
 
 **Key design decisions in the script:**
 
-- **Config is fetched from the live site URL** (`https://<site>/config.json`), not from the local filesystem. This makes the script compatible with the [repoless](https://www.aem.live/docs/repoless) pattern where a single repo serves multiple sites.
+- **Config is fetched from the live site URL** (`https://<site>/config.json`), not from the local filesystem. This means the script works without a local copy of your repo and is compatible with the [repoless](https://www.aem.live/docs/repoless) pattern.
 - **Org and repo are derived from the site hostname** (`branch--repo--org.aem.live`), so no extra DA configuration is needed.
 - **The GraphQL query is ACO-specific.** ACCS uses a different data model and would require a separate implementation.
-
 ---
 
 ## Step 2: Configure authentication
@@ -118,7 +116,7 @@ node tools/nav-sync/nav-sync.js <site> <store> <family> [--mode <mode>]
 | --- | --- |
 | `site` | EDS site hostname (e.g. `main--my-repo--my-org.aem.live`) |
 | `store` | `default` or a store key from `config.json` (e.g. `spain`) |
-| `family` | ACO product family — required; must be created in ACO first |
+| `family` | ACO product family — the family defined in your Commerce Optimizer instance that groups the categories you want in the navigation. Must be created in ACO first |
 | `--mode` | `local`, `preview`, or `publish` (default: `publish`) |
 
 ### Modes
