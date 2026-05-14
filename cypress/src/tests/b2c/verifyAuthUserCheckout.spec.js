@@ -68,15 +68,11 @@ describe("Verify auth user can place order", () => {
     // Edit product in Overlay
     cy.contains('Edit').click();
     cy.get('.modal-content').should('be.visible');
-    cy.get('select').eq(1)
-      .find('option:selected')
-      .should('have.text', 'green');
-    cy.get(".dropin-incrementer__decrease-button").eq(1).click();
-    cy.get(".dropin-incrementer__input").eq(1).should("have.value", "1");
-    cy.get('select').eq(1).select('red');
-    cy.get('select').eq(1)
-      .find('option:selected')
-      .should('have.text', 'red');
+    cy.get('.modal-content').assertSelectedProductOption('color', 'green');
+    cy.get('.modal-content').find('.dropin-incrementer__decrease-button').click();
+    cy.get('.modal-content').find('.dropin-incrementer__input').should('have.value', '1');
+    cy.get('.modal-content').selectProductOption('color', 'red');
+    cy.get('.modal-content').assertSelectedProductOption('color', 'red');
     cy.percyTakeSnapshot('Cart Edit Overlay');
     cy.contains('Update in Cart').should('be.visible').click();
 

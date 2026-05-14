@@ -1,0 +1,91 @@
+name: Cypress E2E B2B ACO Tests
+on:
+  # Run manually until B2B tests are tagged with @B2BAco
+  workflow_dispatch:
+jobs:
+  cypress-b2b-aco-groups:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: group-a
+            specs:
+              - src/tests/b2b/verifyCompanyCredit.spec.js
+              - src/tests/b2b/verifyCompanyProfile.spec.js
+              - src/tests/b2b/verifyCompanyRegistration.spec.js
+              - src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js
+              - src/tests/b2b/verifyCompanyStructure.spec.js
+              - src/tests/b2b/verifyCompanySwitcher.spec.js
+              - src/tests/b2b/verifyCompanyUsers.spec.js
+          - group: group-b
+            specs:
+              - src/tests/b2b/runB2CTests.spec.js
+              - src/tests/b2b/verifyB2BGridOrdering.spec.js
+              - src/tests/b2b/verifyB2BQuickOrder.spec.js
+              - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
+              - src/tests/b2b/verifyB2BRequisitionLists.spec.js
+          # Purchase Orders isolated in its own group due to long execution
+          # time (~16 min). It is fully self-contained (creates and cleans up
+          # its own roles, users, and approval rules) with no dependencies on
+          # other spec files, so it can safely run in parallel.
+          - group: group-c
+            specs:
+              - src/tests/b2b/verifyPurchaseOrders.spec.js
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            cypress/node_modules
+            ~/.cache/Cypress
+          key: deps-b2b-cypress-${{ hashFiles('package-lock.json', 'cypress/package-lock.json') }}
+      - name: Install root dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Install adobe aem cli dependencies
+        run: npm install -g @adobe/aem-cli
+      - name: Start server in the background
+        run: aem up --url https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live &
+      - name: Install Cypress and run tests (${{ matrix.group }})
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: cypress
+          wait-on: 'http://localhost:3000'
+          install: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
+          command: npx cypress run --config-file cypress.b2b.aco.config.js --env grepTags=@B2BAco --spec '${{ join(matrix.specs, ',') }}'
+        env:
+          AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
+          CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT_ACO }}  # maps to Cypress.env("API_ENDPOINT")
+          CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
+          CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
+          CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-${{ matrix.group }}
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+  cypress-b2b-aco-run:
+    if: always()
+    needs: cypress-b2b-aco-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check matrix result
+        run: |
+          if [ "${{ needs.cypress-b2b-aco-groups.result }}" != "success" ]; then
+            echo "One or more test groups failed: ${{ needs.cypress-b2b-aco-groups.result }}"
+            exit 1
+          fi

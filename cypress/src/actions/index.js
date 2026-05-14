@@ -425,17 +425,11 @@ export const navigateToCompanyRegistration = () => {
 export const editProductOptions = (selectedOption, updateProductOptionTo) => {
   cy.contains('Edit').click();
   cy.get('.modal-content').should('be.visible');
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', selectedOption);
-  cy.get('.dropin-incrementer__increase-button').eq(1).click();
-  cy.get('.dropin-incrementer__input').eq(1).should('have.value', '2');
-  cy.get('select').eq(1).select(updateProductOptionTo);
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', selectedOption);
+  cy.get('.modal-content').find('.dropin-incrementer__increase-button').click();
+  cy.get('.modal-content').find('.dropin-incrementer__input').should('have.value', '2');
+  cy.get('.modal-content').selectProductOption('color', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', updateProductOptionTo);
   cy.contains('Update in Cart').should('be.visible').click();
 };
 

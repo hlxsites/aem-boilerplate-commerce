@@ -24,7 +24,7 @@ import {
 } from "../../fixtures/index";
 import * as fields from "../../fields";
 
-describe("Verify guest user can place order with virtual product", () => {
+describe("Verify guest user can place order with virtual product", { tags: "@skipAco" }, () => {
   it("Verify guest user can place order with virtual product", { tags: "@snapPercy" }, () => {
     cy.visit(products.virtualGiftCard.urlPath);
     cy.get('select')
