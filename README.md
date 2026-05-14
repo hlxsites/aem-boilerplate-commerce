@@ -25,15 +25,13 @@ Once you fork or clone this repo, the code is yours — you are not subscribed t
 
 ### What a suite release is (and is not)
 
-A suite release — for example "B2C v8.0.0" — is a tagged snapshot of this boilerplate at a point in time when a specific combination of drop-in package versions and boilerplate code was tested together and verified to work. That tag is useful as a **starting point** for developers who are setting up a new project.
+A suite release — for example "[b2c-march-2026](https://github.com/hlxsites/aem-boilerplate-commerce/tree/b2c-march-2026)" — is a tagged snapshot of this boilerplate at a point in time when a specific combination of drop-in package versions and boilerplate code was tested together and verified to work. That tag is useful as a **starting point** for developers who are setting up a new project. You can find the release notes for each suite release in the [releases](https://experienceleague.adobe.com/developer/commerce/storefront/releases/) page.
 
 If you have already forked or cloned this repo, a new suite release is not an upgrade you need to apply. There is no mechanism that pushes boilerplate code changes into your fork, and nothing will break in your project because a new release tag was created upstream. Treat suite releases the same way you would treat a new major version of a project template: relevant only if you are starting fresh.
 
-### Updating your drop-in packages
+### Updating your drop-in dependencies
 
-The only thing you need to actively track after forking is your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure the `postinstall` script runs so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
-
-- Drop-in components: <https://experienceleague.adobe.com/developer/commerce/storefront/release-notes/>
+The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure the `postinstall` script runs so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
 
 These packages follow semantic versioning. Minor and patch releases are non-breaking by contract, so routine updates should be safe to apply.
 
