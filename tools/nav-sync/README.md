@@ -369,7 +369,7 @@ Each run writes two files per store under `tools/nav-sync/<store>/`:
 | File | Format | Purpose |
 | --- | --- | --- |
 | `nav-dynamic.json` | EDS sheet JSON | Uploaded to da.live; served by EDS |
-| `nav-dynamic.txt` | TSV (`path\ttitle`) | Human-readable audit log; attached as CI artifact |
+| `nav-dynamic.txt` | TSV (tab-separated `path` and `title`) | Human-readable audit log; attached as CI artifact |
 
 ---
 
