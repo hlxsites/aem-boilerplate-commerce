@@ -264,7 +264,6 @@ header nav .nav-sections ul > li:empty {
     box-sizing: border-box;
     left: 0;
     max-height: var(--desktop-panel-max-height);
-    min-height: var(--desktop-panel-min-height);
     padding: var(--spacing-xbig);
     position: absolute;
     top: var(--spacing-large);
@@ -284,7 +283,7 @@ header nav .nav-sections ul > li:empty {
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] ul {
     display: flex;
     margin: 0 auto;
-    overflow-x: auto;
+    overflow-x: hidden;
     width: var(--desktop-large-panel-width);
   }
 
@@ -303,6 +302,32 @@ header nav .nav-sections ul > li:empty {
   header nav .nav-sections .default-content-wrapper > ul > li ul > li {
     min-width: var(--desktop-item-panel-min-width);
     max-width: var(--desktop-item-panel-max-width);
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul > li.nav-group {
+    margin-top: var(--spacing-medium);
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul > li.nav-group:first-child {
+    margin-top: 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul > li.nav-group > a {
+    font-weight: bold;
+    display: block;
+    margin-bottom: var(--spacing-xsmall);
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul > li.nav-group .nav-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+    padding-left: var(--spacing-small);
+    margin: 0;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li ul > li.nav-group .nav-group-items li {
+    font-weight: 400;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li:hover,
