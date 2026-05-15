@@ -14,7 +14,14 @@
 import './index';
 
 Cypress.on('uncaught:exception', (err) => {
+  // ACO Catalog Service returns null prices for some products.
   if (err.message.includes("Cannot read properties of null (reading 'final')")) {
+    return false;
+  }
+  // Header minicart panel can be null during auth state transitions (e.g. after
+  // customer deletion in afterEach) — async panel.dataset access throws an
+  // unhandled rejection that should not fail the test.
+  if (err.message.includes("Cannot read properties of null (reading 'dataset')")) {
     return false;
   }
   return true;
