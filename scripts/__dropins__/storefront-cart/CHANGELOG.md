@@ -1,5 +1,15 @@
 # @dropins/storefront-cart
 
+## 3.3.0-alpha-20260515201802
+
+### Minor Changes
+
+- 304a59c: Add confirmBeforeDelete feature and quantity incrementer empty input error state feature
+
+### Patch Changes
+
+- 855a803: Fixed bug due to a case-sensitive SKU comparison in addProductsToCart() that caused items to be silently excluded from ACDL data collection events. The sku input (lowercase) was compared against item.topLevelSku (uppercase) using strict equality, so the filter always returned false. Both values are now normalized with .toUpperCase() before comparison.
+
 ## 3.2.0
 
 ### Minor Changes

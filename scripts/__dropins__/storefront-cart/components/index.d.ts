@@ -24,4 +24,5 @@ export * from './Coupons';
 export * from './OrderSummaryLine';
 export * from './GiftOptions';
 export * from './CartSummaryTable';
+export * from './QuantityIncrementer';
 //# sourceMappingURL=index.d.ts.map

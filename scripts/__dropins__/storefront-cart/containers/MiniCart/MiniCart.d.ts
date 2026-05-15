@@ -66,6 +66,13 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
             }) => void;
             itemsLoading: Set<string>;
         }>;
+        ConfirmDeleteBanner?: SlotProps<{
+            item: CartModel['items'][0];
+            loading: boolean;
+            error?: string;
+            onConfirm: () => void;
+            onCancel: () => void;
+        }>;
     };
     hideFooter?: boolean;
     displayAllItems?: boolean;
@@ -75,6 +82,7 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     enableQuantityUpdate?: boolean;
     hideHeading?: boolean;
     undo?: boolean;
+    confirmBeforeDelete?: boolean;
 }
 export declare const MiniCart: Container<MiniCartProps, CartModel | null>;
 //# sourceMappingURL=MiniCart.d.ts.map

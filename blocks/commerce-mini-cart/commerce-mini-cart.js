@@ -26,6 +26,7 @@ export default async function decorate(block) {
     'checkout-url': checkoutURL = '',
     'enable-updating-product': enableUpdatingProduct = 'false',
     'undo-remove-item': undo = 'false',
+    'confirm-before-delete': confirmBeforeDelete = 'false',
   } = readBlockConfig(block);
 
   // Get translations for custom messages
@@ -167,6 +168,7 @@ export default async function decorate(block) {
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: createProductLink,
     undo: undo === 'true',
+    confirmBeforeDelete: confirmBeforeDelete === 'true',
 
     slots: {
       Thumbnail: (ctx) => {

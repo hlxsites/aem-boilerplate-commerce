@@ -39,6 +39,13 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
             onUndo: () => void;
             onDismiss: () => void;
         }>;
+        ConfirmDeleteBanner?: SlotProps<{
+            item: CartModel['items'][0];
+            loading: boolean;
+            error?: string;
+            onConfirm: () => void;
+            onCancel: () => void;
+        }>;
         ItemTitle?: SlotProps<{
             item: CartModel['items'][number];
         }>;
@@ -88,6 +95,7 @@ export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
         text: string;
     }[];
     undo?: boolean;
+    confirmBeforeDelete?: boolean;
     includeOutOfStockItems?: boolean;
     /**
      * TEST ONLY: Allows test to inject recentlyRemovedItems for coverage
