@@ -1,25 +1,36 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/LnjXjuam6uWmo5d2JLEgbA/graphql",
-      "adobe-commerce-optimizer": true,
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/861iUXRfBWuoGqNcwajH4c/graphql",
+      "adobe-commerce-optimizer": false,
       "headers": {
         "cs": {
-          "content-type":"application/json",
-          "AC-View-Id":"6f7a55b8-580e-4ba9-a5e0-c3f11c1806d6",
-          "AC-Environment-Id":"LnjXjuam6uWmo5d2JLEgbA",
-          "AC-Price-Book-Id":"base",
-          "X-Api-Key": "storefront-catalog-apollo"
+          "Magento-Environment-Id": "861iUXRfBWuoGqNcwajH4c",
+          "Magento-Website-Code": "base",
+          "Magento-Store-Code": "main_website_store",
+          "Magento-Store-View-Code": "default",
+          "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "X-Api-Key": "storefront-catalog-apollo",
+          "content-type": "application/json"
         }
       },
       "analytics": {
-        "view-id": "6f7a55b8-580e-4ba9-a5e0-c3f11c1806d6",
+        
         "environment": "Testing",
         "base-currency-code": "USD",
-        "locale":"default",
-        "store-url": "https://e2e-prex-dropin-aco6def--aem-boilerplate-commerce--hlxsites.aem.live/",
-        "environment-id": "LnjXjuam6uWmo5d2JLEgbA"
+        "store-view-code": "default",
+        "store-view-name": "default",
+        "store-url": "https://e2e-prexls-dropin-accs6--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "861iUXRfBWuoGqNcwajH4c",
+        "store-id": 1,
+        "store-name": "e2e cell prex dropin accs6",
+        "store-view-id": 1,
+        "website-id": 1,
+        "website-name": "Main Website",
+        "website-code": "base",
+        "store-code": "main_website_store"
+
       }
     }
   }
