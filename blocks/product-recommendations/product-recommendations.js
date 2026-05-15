@@ -166,9 +166,12 @@ export default async function decorate(block) {
 
     try {
       const resolvedSku = currentsku || context.currentSku;
-      const resolvedPrice = currentprice != null
+      const isACO = getConfigValue('adobe-commerce-optimizer') === true
+        || getConfigValue('adobe-commerce-optimizer') === 'true';
+      const contextPrice = currentprice != null
         ? Number(currentprice)
         : context.currentProductPrice;
+      const resolvedPrice = isACO ? contextPrice : null;
       const currentProduct = resolvedSku
         ? { sku: resolvedSku, ...(resolvedPrice != null && { price: resolvedPrice }) }
         : undefined;
@@ -177,7 +180,6 @@ export default async function decorate(block) {
         provider.render(ProductList, {
           routeProduct: createProductLink,
           recId: recid,
-          currentSku: resolvedSku,
           currentProduct,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
