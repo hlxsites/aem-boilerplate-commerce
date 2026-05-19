@@ -18,6 +18,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
+import { preloadSearchRedirects, getSearchRedirectDestination } from '../../scripts/search-redirects.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -66,6 +67,18 @@ export default async function decorate(block) {
   const normalizedUrl = new URL(window.location.href);
   applySearchStateToUrl(normalizedUrl, searchState);
   window.history.replaceState({}, '', normalizedUrl.toString());
+
+  // On the search page, preload redirect data and redirect if the query matches a known term
+  if (!config.urlpath) {
+    preloadSearchRedirects();
+    if (searchState.phrase) {
+      const destination = await getSearchRedirectDestination(searchState.phrase);
+      if (destination) {
+        window.location.replace(destination);
+        return;
+      }
+    }
+  }
 
   // Request search based on the page type on block load
   if (config.urlpath) {

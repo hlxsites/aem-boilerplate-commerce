@@ -8,6 +8,7 @@ import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/comme
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
+import { preloadSearchRedirects, getSearchRedirectDestination } from '../../scripts/search-redirects.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -421,11 +422,12 @@ export default async function decorate(block) {
           },
         })(searchResult);
 
-        searchForm.addEventListener('submit', (e) => {
+        searchForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const query = e.target.search.value;
           if (query.length) {
-            window.location.href = `${rootLink('/search')}?q=${encodeURIComponent(query)}`;
+            const destination = await getSearchRedirectDestination(query);
+            window.location.href = destination || `${rootLink('/search')}?q=${encodeURIComponent(query)}`;
           }
         });
 
@@ -458,7 +460,10 @@ export default async function decorate(block) {
     if (state) searchForm?.querySelector('input')?.focus();
   }
 
-  searchButton.addEventListener('click', () => toggleSearch(!searchPanel.classList.contains('nav-tools-panel--show')));
+  searchButton.addEventListener('click', () => {
+    preloadSearchRedirects();
+    toggleSearch(!searchPanel.classList.contains('nav-tools-panel--show'));
+  });
 
   navTools.querySelector('.nav-search-button').addEventListener('click', () => {
     if (isDesktop.matches) {

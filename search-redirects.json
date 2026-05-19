@@ -1,0 +1,11 @@
+{
+  "total": 3,
+  "offset": 0,
+  "limit": 256,
+  "data": [
+    { "Search Term": "login", "Destination URL": "/customer/login" },
+    { "Search Term": "foo", "Destination URL": "/search?q=shirts" },
+    { "Search Term": "account", "Destination URL": "/customer/account" }
+  ],
+  ":type": "sheet"
+}
