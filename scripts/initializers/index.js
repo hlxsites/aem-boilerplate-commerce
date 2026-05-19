@@ -20,6 +20,7 @@ const setAuthHeaders = (state) => {
   } else {
     sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
     sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__GROUP__CONTEXT');
+    CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('X-Adobe-Company');
     CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
     CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
   }
@@ -143,7 +144,7 @@ export default async function initializeDropins() {
      * the correct payload.
      */
     const companyContext = sessionStorage.getItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
-    if (companyContext) {
+    if (token && companyContext) {
       CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('X-Adobe-Company', companyContext);
     }
 
