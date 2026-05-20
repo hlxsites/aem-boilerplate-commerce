@@ -13,27 +13,7 @@ jobs:
         include:
           - group: group-a
             specs:
-              - src/tests/b2b/verifyCompanyCredit.spec.js
-              - src/tests/b2b/verifyCompanyProfile.spec.js
-              - src/tests/b2b/verifyCompanyRegistration.spec.js
-              - src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js
-              - src/tests/b2b/verifyCompanyStructure.spec.js
-              - src/tests/b2b/verifyCompanySwitcher.spec.js
-              - src/tests/b2b/verifyCompanyUsers.spec.js
-          - group: group-b
-            specs:
-              - src/tests/b2b/runB2CTests.spec.js
-              - src/tests/b2b/verifyB2BGridOrdering.spec.js
-              - src/tests/b2b/verifyB2BQuickOrder.spec.js
-              - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
-              - src/tests/b2b/verifyB2BRequisitionLists.spec.js
-          # Purchase Orders isolated in its own group due to long execution
-          # time (~16 min). It is fully self-contained (creates and cleans up
-          # its own roles, users, and approval rules) with no dependencies on
-          # other spec files, so it can safely run in parallel.
-          - group: group-c
-            specs:
-              - src/tests/b2b/verifyPurchaseOrders.spec.js
+              - src/tests/b2b/CompanyHierarchy.spec.js
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
