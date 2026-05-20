@@ -35,9 +35,17 @@ jobs:
       - name: Install adobe aem cli dependencies
         run: npm install -g @adobe/aem-cli
       - name: Start server in the background
-        run: aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live &
+        run: |
+          echo "Starting AEM server..."
+          aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live > aem-server.log 2>&1 &
+          echo "AEM server started with PID $!"
       - name: Wait for server to initialize
-        run: sleep 10
+        run: |
+          echo "Waiting for server initialization..."
+          sleep 15
+          echo "Checking if server is running..."
+          curl -I http://localhost:3000 || echo "Server not responding yet"
+          cat aem-server.log || echo "No server logs"
       - name: Install Cypress and run tests (${{ matrix.group }})
         uses: cypress-io/github-action@v6
         with:
