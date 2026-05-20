@@ -36,11 +36,14 @@ jobs:
         run: npm install -g @adobe/aem-cli
       - name: Start server in the background
         run: aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live &
+      - name: Wait for server to initialize
+        run: sleep 10
       - name: Install Cypress and run tests (${{ matrix.group }})
         uses: cypress-io/github-action@v6
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
+          wait-on-timeout: 180
           install: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
           command: npx cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas --spec '${{ join(matrix.specs, ',') }}'
         env:
