@@ -6,7 +6,7 @@ import {
 } from '../../support/b2bPOAPICalls';
 import * as actions from '../../actions';
 
-describe.skip("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
+describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
   const urls = Cypress.env("poUrls");
   const COMPANY_ID = 13; // Existing company
   
