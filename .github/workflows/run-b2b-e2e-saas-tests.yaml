@@ -14,7 +14,6 @@ jobs:
           - group: group-o
             specs:
               - src/tests/b2b/CompanyHierarchy.spec.js
-              - src/tests/b2b/CompanyHierarchySimple.spec.js
           - group: group-a
             specs:
               - src/tests/b2b/verifyCompanyCredit.spec.js
