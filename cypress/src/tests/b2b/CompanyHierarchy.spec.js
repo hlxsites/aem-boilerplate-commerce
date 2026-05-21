@@ -219,26 +219,94 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.visit("/customer/company/hierarchy");
       cy.wait(5000);
 
+      cy.logToTerminal("🔄 Reloading page to ensure fresh data...");
+      cy.reload();
+      cy.wait(3000);
+
       cy.logToTerminal("✅ Checking page URL");
       cy.url().should("include", "/customer/company/hierarchy");
 
       cy.logToTerminal("✅ Checking hierarchy container exists");
-      cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should("exist");
+      cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should(
+        "exist",
+      );
+
+      // Wait for either: permission denial, empty state, or hierarchy to load
+      cy.logToTerminal(
+        "⏳ Waiting for page state to settle (permission/empty/hierarchy)...",
+      );
+      cy.wait(5000);
+
+      // Debug: check what's actually on the page
+      cy.get("body").then(($body) => {
+        const bodyText = $body.text();
+        cy.logToTerminal(
+          `🔍 Page content preview: ${bodyText.substring(0, 500)}`,
+        );
+
+        // Check if permission denied message exists
+        if (bodyText.includes("You do not have permission")) {
+          cy.logToTerminal(
+            "❌ Permission denied message found - user doesn't have access!",
+          );
+          throw new Error("User should have access but permission denied");
+        }
+
+        // Check if tree exists
+        const hasTree = $body.find(".acm-tree").length > 0;
+        cy.logToTerminal(`🌲 Tree exists: ${hasTree}`);
+
+        // Check label count
+        const labelCount = $body.find(".company-hierarchy-label").length;
+        cy.logToTerminal(`📊 Found ${labelCount} company labels in hierarchy`);
+
+        if (labelCount === 0) {
+          cy.logToTerminal(
+            "⚠️ No companies found in hierarchy - might be empty or still loading",
+          );
+        }
+      });
 
       const company1 = Cypress.env("company1");
       const company2 = Cypress.env("company2");
 
       cy.logToTerminal(`✅ Checking Company 1 is displayed: ${company1.name}`);
-      cy.get(".company-hierarchy-label").contains(company1.name, { timeout: 10000 }).should("be.visible");
 
-      cy.logToTerminal(`✅ Checking Company 2 is NOT displayed: ${company2.name}`);
+      // Check if any labels exist first
+      cy.get("body").then(($body) => {
+        if ($body.find(".company-hierarchy-label").length === 0) {
+          cy.logToTerminal(
+            "⚠️ Hierarchy appears empty - waiting longer and retrying...",
+          );
+          cy.wait(5000);
+          cy.reload();
+          cy.wait(5000);
+        }
+      });
+
+      cy.get(".company-hierarchy-label", { timeout: 20000 }).should(
+        "have.length.at.least",
+        1,
+      );
+      cy.get(".company-hierarchy-label")
+        .contains(company1.name, { timeout: 10000 })
+        .should("be.visible");
+
+      cy.logToTerminal(
+        `✅ Checking Company 2 is NOT displayed: ${company2.name}`,
+      );
       cy.get(".company-hierarchy-label").then(($labels) => {
         const labelTexts = $labels.map((i, el) => Cypress.$(el).text()).get();
+        cy.logToTerminal(
+          `📋 All companies in hierarchy: ${labelTexts.join(", ")}`,
+        );
         expect(labelTexts).to.not.include(company2.name);
       });
 
-      cy.logToTerminal("✅ Employee 1 sees only Company 1 (not assigned to Company 2 yet)");
-    });
+      cy.logToTerminal(
+        "✅ Employee 1 sees only Company 1 (not assigned to Company 2 yet)",
+      );
+    };);
 
     // ========== STEP 10: Logout Employee 1 ==========
     cy.logToTerminal("--- STEP 10: Logout Employee 1 ---");
