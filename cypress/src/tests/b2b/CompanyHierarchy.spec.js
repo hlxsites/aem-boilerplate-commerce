@@ -232,7 +232,10 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.get(".company-hierarchy-label").contains(company1.name, { timeout: 10000 }).should("be.visible");
 
       cy.logToTerminal(`✅ Checking Company 2 is NOT displayed: ${company2.name}`);
-      cy.get(".company-hierarchy-label").contains(company2.name).should("not.exist");
+      cy.get(".company-hierarchy-label").then(($labels) => {
+        const labelTexts = $labels.map((i, el) => Cypress.$(el).text()).get();
+        expect(labelTexts).to.not.include(company2.name);
+      });
 
       cy.logToTerminal("✅ Employee 1 sees only Company 1 (not assigned to Company 2 yet)");
     });
