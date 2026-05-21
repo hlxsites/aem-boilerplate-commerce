@@ -5,7 +5,10 @@ import {
   createCompanyRole,
   assignRoleToUser,
 } from '../../support/b2bCompanyAPICalls';
-import { baseCompanyData } from '../../fixtures/companyManagementData';
+import {
+  baseCompanyData,
+  fullAdminPermissions,
+} from "../../fixtures/companyManagementData";
 
 describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
   const urls = Cypress.env("poUrls");
@@ -163,12 +166,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       const directorRole1 = await createCompanyRole({
         company_id: company1.id,
         role_name: "Director",
-        permissions: [
-          { resource_id: "Magento_Company::index", permission: "allow" },
-          { resource_id: "Magento_Company::view", permission: "allow" },
-          { resource_id: "Magento_Company::view_account", permission: "allow" },
-          { resource_id: "Magento_Company::user_management", permission: "allow" },
-        ],
+        permissions: fullAdminPermissions,
       });
 
       Cypress.env("directorRole1", {
