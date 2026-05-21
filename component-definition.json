@@ -303,6 +303,16 @@
           }
         },
         {
+          "title": "Commerce Breadcrumbs",
+          "id": "commerce-breadcrumbs",
+          "model": "commerce-breadcrumbs",
+          "plugins": {
+            "da": {
+              "type": "key-value-block"
+            }
+          }
+        },
+        {
           "title": "Commerce Cart",
           "id": "commerce-cart",
           "model": "commerce-cart",
