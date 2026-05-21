@@ -1,4 +1,8 @@
-import { createCompany } from '../../support/b2bCompanyAPICalls';
+import {
+  createCompany,
+  deleteCompanyById,
+  deleteCustomerById,
+} from '../../support/b2bCompanyAPICalls';
 import { baseCompanyData } from '../../fixtures/companyManagementData';
 
 describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
@@ -398,6 +402,44 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
   );
 
   after(() => {
-    cy.logToTerminal("🏁 Company Hierarchy test suite completed");
+    cy.logToTerminal("🧹 Cleanup: Deleting test companies and users...");
+
+    cy.then({ timeout: 60000 }, async () => {
+      const company1 = Cypress.env("company1");
+      const company2 = Cypress.env("company2");
+      const admin = Cypress.env("sharedAdmin");
+
+      try {
+        if (company1?.id) {
+          cy.logToTerminal(`🗑️ Deleting Company 1 (ID: ${company1.id})...`);
+          await deleteCompanyById(company1.id);
+          cy.logToTerminal("✅ Company 1 deleted");
+        }
+      } catch (error) {
+        cy.logToTerminal(`⚠️ Could not delete Company 1: ${error.message}`);
+      }
+
+      try {
+        if (company2?.id) {
+          cy.logToTerminal(`🗑️ Deleting Company 2 (ID: ${company2.id})...`);
+          await deleteCompanyById(company2.id);
+          cy.logToTerminal("✅ Company 2 deleted");
+        }
+      } catch (error) {
+        cy.logToTerminal(`⚠️ Could not delete Company 2: ${error.message}`);
+      }
+
+      try {
+        if (admin?.id) {
+          cy.logToTerminal(`🗑️ Deleting Admin user (ID: ${admin.id})...`);
+          await deleteCustomerById(admin.id);
+          cy.logToTerminal("✅ Admin user deleted");
+        }
+      } catch (error) {
+        cy.logToTerminal(`⚠️ Could not delete Admin user: ${error.message}`);
+      }
+
+      cy.logToTerminal("🏁 Company Hierarchy test suite completed");
+    });
   });
 });
