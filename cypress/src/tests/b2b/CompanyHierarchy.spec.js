@@ -55,12 +55,12 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
       Cypress.env("company1", {
         id: company1.id,
-        name: company1.company_name,
+        name: company1.name,
       });
 
       Cypress.env("sharedAdmin", sharedAdmin);
 
-      cy.logToTerminal(`✅ Company 1: ${company1.company_name} (ID: ${company1.id})`);
+      cy.logToTerminal(`✅ Company 1: ${company1.name} (ID: ${company1.id})`);
       cy.logToTerminal(`✅ Admin: ${sharedAdmin.email} (ID: ${sharedAdmin.id})`);
     });
 
