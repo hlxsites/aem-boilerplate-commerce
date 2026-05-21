@@ -2,8 +2,8 @@ import {
   createCompany,
   deleteCompanyById,
   deleteCustomerById,
-} from '../../support/b2bCompanyAPICalls';
-import { baseCompanyData } from '../../fixtures/companyManagementData';
+} from "../../support/b2bCompanyAPICalls";
+import { baseCompanyData } from "../../fixtures/companyManagementData";
 
 describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
   before(() => {
@@ -145,13 +145,13 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.then(() => {
         cy.getUserTokenCookie().then((token) => {
           cy.request({
-            method: 'POST',
-            url: Cypress.env('graphqlEndPoint'),
+            method: "POST",
+            url: Cypress.env("graphqlEndPoint"),
             auth: {
               bearer: token,
             },
             headers: {
-              'content-type': 'application/json',
+              "content-type": "application/json",
             },
             body: {
               query: `
@@ -187,37 +187,45 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
             },
           }).then((response) => {
             expect(response.status).to.equal(200);
-            
-            const companies = response.body.data?.customer?.companies?.items || [];
-            const hierarchy = response.body.data?.customer?.company_hierarchy || [];
-            
+
+            const companies =
+              response.body.data?.customer?.companies?.items || [];
+            const hierarchy =
+              response.body.data?.customer?.company_hierarchy || [];
+
             cy.logToTerminal("📊 ========= GraphQL Response =========");
             cy.logToTerminal(`Companies (${companies.length} total):`);
-            companies.forEach(c => {
-              cy.logToTerminal(`  - ${c.name} (ID: ${c.id}, is_admin: ${c.is_admin})`);
+            companies.forEach((c) => {
+              cy.logToTerminal(
+                `  - ${c.name} (ID: ${c.id}, is_admin: ${c.is_admin})`,
+              );
             });
-            
+
             cy.logToTerminal(`Hierarchy (${hierarchy.length} nodes):`);
             hierarchy.forEach((node, idx) => {
-              const parent = node.parent ? `${node.parent.name} (ID: ${node.parent.id})` : null;
+              const parent = node.parent
+                ? `${node.parent.name} (ID: ${node.parent.id})`
+                : null;
               const children = node.children || [];
-              
+
               if (parent) {
                 cy.logToTerminal(`  Node ${idx + 1}: Parent = ${parent}`);
               } else {
                 cy.logToTerminal(`  Node ${idx + 1}: ROOT level`);
               }
-              
+
               if (children.length > 0) {
-                children.forEach(child => {
-                  cy.logToTerminal(`    └─ Child: ${child.name} (ID: ${child.id})`);
+                children.forEach((child) => {
+                  cy.logToTerminal(
+                    `    └─ Child: ${child.name} (ID: ${child.id})`,
+                  );
                 });
               } else {
                 cy.logToTerminal(`    └─ No children`);
               }
             });
             cy.logToTerminal("========================================");
-            
+
             // Store GraphQL IDs for potential use
             Cypress.env("companiesFromGraphQL", companies);
             Cypress.env("hierarchyFromGraphQL", hierarchy);
@@ -270,27 +278,33 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("--- STEP 6: Assign Child Company via GraphQL ---");
       cy.then(() => {
         const companies = Cypress.env("companiesFromGraphQL");
-        
+
         if (!companies || companies.length < 2) {
           throw new Error("Need 2 companies from GraphQL to test assignment");
         }
 
-        const company1GQL = companies.find(c => c.name === Cypress.env("company1").name);
-        const company2GQL = companies.find(c => c.name === Cypress.env("company2").name);
+        const company1GQL = companies.find(
+          (c) => c.name === Cypress.env("company1").name,
+        );
+        const company2GQL = companies.find(
+          (c) => c.name === Cypress.env("company2").name,
+        );
 
-        cy.logToTerminal(`🔗 Assigning ${company2GQL.name} as child of ${company1GQL.name}`);
+        cy.logToTerminal(
+          `🔗 Assigning ${company2GQL.name} as child of ${company1GQL.name}`,
+        );
         cy.logToTerminal(`   Parent ID: ${company1GQL.id}`);
         cy.logToTerminal(`   Child ID: ${company2GQL.id}`);
 
         cy.getUserTokenCookie().then((token) => {
           cy.request({
-            method: 'POST',
-            url: Cypress.env('graphqlEndPoint'),
+            method: "POST",
+            url: Cypress.env("graphqlEndPoint"),
             auth: {
               bearer: token,
             },
             headers: {
-              'content-type': 'application/json',
+              "content-type": "application/json",
             },
             body: {
               query: `
@@ -324,17 +338,19 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
             },
           }).then((response) => {
             expect(response.status).to.equal(200);
-            
+
             const result = response.body.data?.assignChildCompany;
-            
+
             if (!result || result === null) {
-              cy.logToTerminal("❌ Mutation returned null - assignment may have failed");
+              cy.logToTerminal(
+                "❌ Mutation returned null - assignment may have failed",
+              );
               throw new Error("assignChildCompany returned null");
             }
 
             cy.logToTerminal("✅ Assignment mutation successful!");
             cy.logToTerminal(`   Response: ${JSON.stringify(result)}`);
-            
+
             Cypress.env("assignmentResult", result);
           });
         });
@@ -349,7 +365,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.reload();
         cy.wait(5000);
 
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should("exist");
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should(
+          "exist",
+        );
         cy.logToTerminal("✅ Page reloaded");
       });
 
@@ -371,15 +389,21 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
         // Try to find and click expand button if it exists
         cy.get(".commerce-b2b-company-hierarchy").then(($hierarchy) => {
-          const expandButton = $hierarchy.find('button[aria-expanded="false"], button[aria-label*="Expand"]').first();
-          
+          const expandButton = $hierarchy
+            .find('button[aria-expanded="false"], button[aria-label*="Expand"]')
+            .first();
+
           if (expandButton.length > 0) {
-            cy.logToTerminal("📂 Found expand button - clicking to expand hierarchy...");
+            cy.logToTerminal(
+              "📂 Found expand button - clicking to expand hierarchy...",
+            );
             cy.wrap(expandButton).click();
             cy.wait(2000);
             cy.logToTerminal("✅ Hierarchy expanded");
           } else {
-            cy.logToTerminal("ℹ️ No collapsed nodes found - hierarchy already expanded or flat");
+            cy.logToTerminal(
+              "ℹ️ No collapsed nodes found - hierarchy already expanded or flat",
+            );
           }
         });
 
@@ -387,12 +411,14 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company1.name, { timeout: 5000 })
           .should("be.visible");
-        
+
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company2.name, { timeout: 5000 })
           .should("be.visible");
 
-        cy.logToTerminal(`✅ SUCCESS: Hierarchy mutation worked! Both companies visible after assignment.`);
+        cy.logToTerminal(
+          `✅ SUCCESS: Hierarchy mutation worked! Both companies visible after assignment.`,
+        );
         cy.logToTerminal(`   Parent: ${company1.name}`);
         cy.logToTerminal(`   Child: ${company2.name}`);
       });
