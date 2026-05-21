@@ -262,6 +262,135 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ SUCCESS: Admin sees both companies in hierarchy!");
       });
 
+      // STEP 6: Assign Company2 as child of Company1 using GraphQL
+      cy.logToTerminal("--- STEP 6: Assign Child Company via GraphQL ---");
+      cy.then(() => {
+        const companies = Cypress.env("companiesFromGraphQL");
+        
+        if (!companies || companies.length < 2) {
+          throw new Error("Need 2 companies from GraphQL to test assignment");
+        }
+
+        const company1GQL = companies.find(c => c.name === Cypress.env("company1").name);
+        const company2GQL = companies.find(c => c.name === Cypress.env("company2").name);
+
+        cy.logToTerminal(`🔗 Assigning ${company2GQL.name} as child of ${company1GQL.name}`);
+        cy.logToTerminal(`   Parent ID: ${company1GQL.id}`);
+        cy.logToTerminal(`   Child ID: ${company2GQL.id}`);
+
+        cy.getUserTokenCookie().then((token) => {
+          cy.request({
+            method: 'POST',
+            url: Cypress.env('graphqlEndPoint'),
+            auth: {
+              bearer: token,
+            },
+            headers: {
+              'content-type': 'application/json',
+            },
+            body: {
+              query: `
+                mutation assignChildCompany($input: AssignChildCompanyInput!) {
+                  assignChildCompany(input: $input) {
+                    company_hierarchy {
+                      parent {
+                        id
+                        name
+                        is_admin
+                        legal_name
+                        status
+                      }
+                      children {
+                        id
+                        name
+                        is_admin
+                        legal_name
+                        status
+                      }
+                    }
+                  }
+                }
+              `,
+              variables: {
+                input: {
+                  parent_company_id: company1GQL.id,
+                  child_company_id: company2GQL.id,
+                },
+              },
+            },
+          }).then((response) => {
+            expect(response.status).to.equal(200);
+            
+            const result = response.body.data?.assignChildCompany;
+            
+            if (!result || result === null) {
+              cy.logToTerminal("❌ Mutation returned null - assignment may have failed");
+              throw new Error("assignChildCompany returned null");
+            }
+
+            cy.logToTerminal("✅ Assignment mutation successful!");
+            cy.logToTerminal(`   Response: ${JSON.stringify(result)}`);
+            
+            Cypress.env("assignmentResult", result);
+          });
+        });
+      });
+
+      cy.wait(3000); // Wait for backend processing
+
+      // STEP 7: Refresh page to see updated hierarchy
+      cy.logToTerminal("--- STEP 7: Refresh Page to See Updated Hierarchy ---");
+      cy.then(() => {
+        cy.logToTerminal("🔄 Reloading hierarchy page...");
+        cy.reload();
+        cy.wait(5000);
+
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should("exist");
+        cy.logToTerminal("✅ Page reloaded");
+      });
+
+      // STEP 8: Verify nested structure (Company1 parent, Company2 child)
+      cy.logToTerminal("--- STEP 8: Verify Nested Hierarchy Structure ---");
+      cy.then(() => {
+        const company1 = Cypress.env("company1");
+        const company2 = Cypress.env("company2");
+
+        cy.logToTerminal(`🔍 Looking for parent company: ${company1.name}`);
+        cy.get(".commerce-b2b-company-hierarchy")
+          .contains(company1.name, { timeout: 15000 })
+          .should("be.visible");
+
+        // Look for expand/collapse button or nested structure
+        cy.get(".commerce-b2b-company-hierarchy").within(() => {
+          // Try to find expand button for Company1
+          cy.get('body').then(($body) => {
+            const hierarchy = $body.find('.commerce-b2b-company-hierarchy');
+            const hasExpandButton = hierarchy.find('button[aria-label*="Expand"], button[aria-expanded]').length > 0;
+            
+            if (hasExpandButton) {
+              cy.logToTerminal("📂 Found expand/collapse button - clicking to expand...");
+              cy.get('button[aria-label*="Expand"], button[aria-expanded="false"]').first().click();
+              cy.wait(2000);
+            } else {
+              cy.logToTerminal("ℹ️ No expand button found - hierarchy may be auto-expanded");
+            }
+          });
+        });
+
+        cy.logToTerminal(`🔍 Looking for child company: ${company2.name}`);
+        cy.get(".commerce-b2b-company-hierarchy")
+          .contains(company2.name, { timeout: 15000 })
+          .should("be.visible");
+
+        // Verify Company2 is nested under Company1 (indented or in child container)
+        cy.get(".commerce-b2b-company-hierarchy").within(() => {
+          cy.contains(company1.name).parent().parent().within(() => {
+            cy.contains(company2.name).should("exist");
+            cy.logToTerminal(`✅ SUCCESS: ${company2.name} is nested under ${company1.name}!`);
+          });
+        });
+      });
+
       cy.logToTerminal("========= 🎉 TEST PASSED =========");
     },
   );
