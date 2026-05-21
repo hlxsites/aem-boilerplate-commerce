@@ -162,16 +162,19 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
                       }
                     }
                     company_hierarchy {
-                      id
-                      name
-                      is_admin
-                      parent_company {
+                      parent {
                         id
                         name
+                        is_admin
+                        legal_name
+                        status
                       }
-                      child_companies {
+                      children {
                         id
                         name
+                        is_admin
+                        legal_name
+                        status
                       }
                     }
                   }
@@ -190,11 +193,24 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
               cy.logToTerminal(`  - ${c.name} (ID: ${c.id}, is_admin: ${c.is_admin})`);
             });
             
-            cy.logToTerminal(`Hierarchy (${hierarchy.length} items):`);
-            hierarchy.forEach(h => {
-              const parent = h.parent_company ? `parent: ${h.parent_company.name}` : 'ROOT';
-              const children = h.child_companies?.length || 0;
-              cy.logToTerminal(`  - ${h.name} (ID: ${h.id}, ${parent}, children: ${children})`);
+            cy.logToTerminal(`Hierarchy (${hierarchy.length} nodes):`);
+            hierarchy.forEach((node, idx) => {
+              const parent = node.parent ? `${node.parent.name} (ID: ${node.parent.id})` : null;
+              const children = node.children || [];
+              
+              if (parent) {
+                cy.logToTerminal(`  Node ${idx + 1}: Parent = ${parent}`);
+              } else {
+                cy.logToTerminal(`  Node ${idx + 1}: ROOT level`);
+              }
+              
+              if (children.length > 0) {
+                children.forEach(child => {
+                  cy.logToTerminal(`    └─ Child: ${child.name} (ID: ${child.id})`);
+                });
+              } else {
+                cy.logToTerminal(`    └─ No children`);
+              }
             });
             cy.logToTerminal("========================================");
             
