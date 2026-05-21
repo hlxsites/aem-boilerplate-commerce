@@ -11,6 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - group: group-o
+            specs:
+              - src/tests/b2b/CompanyHierarchy.spec.js
           - group: group-a
             specs:
               - src/tests/b2b/verifyCompanyCredit.spec.js
