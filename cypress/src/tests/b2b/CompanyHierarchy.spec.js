@@ -306,7 +306,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal(
         "✅ Employee 1 sees only Company 1 (not assigned to Company 2 yet)",
       );
-    };);
+    });
 
     // ========== STEP 10: Logout Employee 1 ==========
     cy.logToTerminal("--- STEP 10: Logout Employee 1 ---");
