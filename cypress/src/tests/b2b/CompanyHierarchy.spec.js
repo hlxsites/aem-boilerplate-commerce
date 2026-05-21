@@ -175,37 +175,57 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
     cy.wait(3000); // Wait for companies to be indexed
 
-    // ========== STEP 6: Assign Employee 1 to Company 1 ==========
-    cy.logToTerminal("--- STEP 6: Assigning Employee 1 to Company 1 ---");
+    // ========== STEP 6: Assign Employee 1 to all 3 companies ==========
+    cy.logToTerminal("--- STEP 6: Assigning Employee 1 to all 3 companies ---");
     cy.then({ timeout: 60000 }, async () => {
       const employee1 = Cypress.env("employee1");
       const company1 = Cypress.env("company1");
+      const company2 = Cypress.env("company2");
+      const company3 = Cypress.env("company3");
 
       cy.logToTerminal(`🔗 Assigning Employee 1 (ID: ${employee1.id}) to Company 1 (ID: ${company1.id})...`);
       await assignCustomerToCompany(employee1.id, company1.id);
       cy.logToTerminal("✅ Employee 1 assigned to Company 1");
+
+      cy.logToTerminal(`🔗 Assigning Employee 1 (ID: ${employee1.id}) to Company 2 (ID: ${company2.id})...`);
+      await assignCustomerToCompany(employee1.id, company2.id);
+      cy.logToTerminal("✅ Employee 1 assigned to Company 2");
+
+      cy.logToTerminal(`🔗 Assigning Employee 1 (ID: ${employee1.id}) to Company 3 (ID: ${company3.id})...`);
+      await assignCustomerToCompany(employee1.id, company3.id);
+      cy.logToTerminal("✅ Employee 1 assigned to Company 3 (as regular employee, no admin rights)");
     });
 
-    // ========== STEP 7: Assign Employee 2 to Company 1 ==========
-    cy.logToTerminal("--- STEP 7: Assigning Employee 2 to Company 1 ---");
+    // ========== STEP 7: Assign Employee 2 to all 3 companies ==========
+    cy.logToTerminal("--- STEP 7: Assigning Employee 2 to all 3 companies ---");
     cy.then({ timeout: 60000 }, async () => {
       const employee2 = Cypress.env("employee2");
       const company1 = Cypress.env("company1");
+      const company2 = Cypress.env("company2");
+      const company3 = Cypress.env("company3");
 
       cy.logToTerminal(`🔗 Assigning Employee 2 (ID: ${employee2.id}) to Company 1 (ID: ${company1.id})...`);
       await assignCustomerToCompany(employee2.id, company1.id);
-      cy.logToTerminal("✅ Employee 2 assigned to Company 1");
+      cy.logToTerminal("✅ Employee 2 assigned to Company 1 (no admin rights)");
+
+      cy.logToTerminal(`🔗 Assigning Employee 2 (ID: ${employee2.id}) to Company 2 (ID: ${company2.id})...`);
+      await assignCustomerToCompany(employee2.id, company2.id);
+      cy.logToTerminal("✅ Employee 2 assigned to Company 2 (no admin rights)");
+
+      cy.logToTerminal(`🔗 Assigning Employee 2 (ID: ${employee2.id}) to Company 3 (ID: ${company3.id})...`);
+      await assignCustomerToCompany(employee2.id, company3.id);
+      cy.logToTerminal("✅ Employee 2 assigned to Company 3 (no admin rights)");
     });
 
     cy.wait(3000); // Wait for assignments to be indexed
 
-    // ========== STEP 8: Create Director Role with Hierarchy Permissions ==========
-    cy.logToTerminal("--- STEP 8: Creating Director role with hierarchy permissions ---");
+    // ========== STEP 8: Create Director Role in Company 1 ==========
+    cy.logToTerminal("--- STEP 8: Creating Director role in Company 1 ---");
     cy.then({ timeout: 60000 }, async () => {
       const company1 = Cypress.env("company1");
 
-      cy.logToTerminal("⚙️ Creating Director role...");
-      const directorRole = await createCompanyRole({
+      cy.logToTerminal("⚙️ Creating Director role for Company 1...");
+      const directorRole1 = await createCompanyRole({
         company_id: company1.id,
         role_name: "Director",
         permissions: [
@@ -216,30 +236,67 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         ],
       });
 
-      Cypress.env("directorRole", {
-        id: directorRole.id,
-        name: directorRole.role_name,
+      Cypress.env("directorRole1", {
+        id: directorRole1.id,
+        name: directorRole1.role_name,
       });
-      cy.logToTerminal(`✅ Director role created (ID: ${directorRole.id})`);
+      cy.logToTerminal(`✅ Director role created for Company 1 (ID: ${directorRole1.id})`);
     });
 
-    cy.wait(3000); // Wait for role to be indexed
+    // ========== STEP 9: Create Director Role in Company 2 ==========
+    cy.logToTerminal("--- STEP 9: Creating Director role in Company 2 ---");
+    cy.then({ timeout: 60000 }, async () => {
+      const company2 = Cypress.env("company2");
 
-    // ========== STEP 9: Assign Director Role to Employee 1 ==========
-    cy.logToTerminal("--- STEP 9: Assigning Director role to Employee 1 ---");
+      cy.logToTerminal("⚙️ Creating Director role for Company 2...");
+      const directorRole2 = await createCompanyRole({
+        company_id: company2.id,
+        role_name: "Director",
+        permissions: [
+          { resource_id: "Magento_Company::index", permission: "allow" },
+          { resource_id: "Magento_Company::view", permission: "allow" },
+          { resource_id: "Magento_Company::view_account", permission: "allow" },
+          { resource_id: "Magento_Company::user_management", permission: "allow" },
+        ],
+      });
+
+      Cypress.env("directorRole2", {
+        id: directorRole2.id,
+        name: directorRole2.role_name,
+      });
+      cy.logToTerminal(`✅ Director role created for Company 2 (ID: ${directorRole2.id})`);
+    });
+
+    cy.wait(3000); // Wait for roles to be indexed
+
+    // ========== STEP 10: Assign Director Role to Employee 1 in Company 1 ==========
+    cy.logToTerminal("--- STEP 10: Assigning Director role to Employee 1 in Company 1 ---");
     cy.then({ timeout: 60000 }, async () => {
       const employee1 = Cypress.env("employee1");
-      const directorRole = Cypress.env("directorRole");
+      const directorRole1 = Cypress.env("directorRole1");
 
-      cy.logToTerminal(`👔 Assigning Director role (ID: ${directorRole.id}) to Employee 1 (ID: ${employee1.id})...`);
-      await assignRoleToUser(employee1.id, directorRole);
-      cy.logToTerminal("✅ Employee 1 is now Director with hierarchy permissions");
+      cy.logToTerminal(`👔 Assigning Director role (ID: ${directorRole1.id}) to Employee 1 in Company 1...`);
+      await assignRoleToUser(employee1.id, directorRole1);
+      cy.logToTerminal("✅ Employee 1 is now Director in Company 1");
+    });
+
+    // ========== STEP 11: Assign Director Role to Employee 1 in Company 2 ==========
+    cy.logToTerminal("--- STEP 11: Assigning Director role to Employee 1 in Company 2 ---");
+    cy.then({ timeout: 60000 }, async () => {
+      const employee1 = Cypress.env("employee1");
+      const directorRole2 = Cypress.env("directorRole2");
+
+      cy.logToTerminal(`👔 Assigning Director role (ID: ${directorRole2.id}) to Employee 1 in Company 2...`);
+      await assignRoleToUser(employee1.id, directorRole2);
+      cy.logToTerminal("✅ Employee 1 is now Director in Company 2");
+      cy.logToTerminal("📝 Employee 1 summary: Admin in Company 1 & 2, regular employee in Company 3");
+      cy.logToTerminal("📝 Employee 2 summary: Regular employee in all 3 companies (no admin rights)");
     });
 
     cy.wait(5000); // Wait for permissions to propagate
 
-    // ========== STEP 10: Login as Employee 1 (Director) ==========
-    cy.logToTerminal("--- STEP 10: Login as Employee 1 (Director) ---");
+    // ========== STEP 12: Login as Employee 1 (Director) ==========
+    cy.logToTerminal("--- STEP 12: Login as Employee 1 (Director) ---");
     cy.then(() => {
       const employee1 = Cypress.env("employee1");
 
@@ -256,8 +313,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("✅ Employee 1 logged in successfully");
     });
 
-    // ========== STEP 11: Employee 1 Navigates to Hierarchy Page ==========
-    cy.logToTerminal("--- STEP 11: Employee 1 navigates to hierarchy page ---");
+    // ========== STEP 13: Employee 1 Navigates to Hierarchy Page ==========
+    cy.logToTerminal("--- STEP 13: Employee 1 navigates to hierarchy page ---");
     cy.then(() => {
       cy.logToTerminal("📄 Navigating to /customer/company/hierarchy...");
       cy.visit("/customer/company/hierarchy");
@@ -269,10 +326,59 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("✅ Checking hierarchy container exists");
       cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should("exist");
       cy.logToTerminal("✅ Employee 1 (Director) can view company hierarchy");
+
+      // Check hierarchy toolbar
+      cy.logToTerminal("✅ Checking hierarchy toolbar exists");
+      cy.get(".company-hierarchy-toolbar", { timeout: 10000 }).should("be.visible");
+
+      cy.logToTerminal("✅ Checking Expand All button");
+      cy.contains("button", "Expand All", { timeout: 5000 }).should("be.visible");
+
+      cy.logToTerminal("✅ Checking Collapse All button");
+      cy.contains("button", "Collapse All", { timeout: 5000 }).should("be.visible");
+
+      // Check hierarchy tree exists
+      cy.logToTerminal("✅ Checking hierarchy tree exists");
+      cy.get(".company-hierarchy-tree-card", { timeout: 10000 }).should("be.visible");
+      cy.get(".acm-tree", { timeout: 10000 }).should("be.visible");
+
+      // Check companies are displayed in the tree at root level
+      const company1 = Cypress.env("company1");
+      const company2 = Cypress.env("company2");
+      const company3 = Cypress.env("company3");
+
+      cy.logToTerminal(`✅ Checking Company 1 is displayed: ${company1.name}`);
+      cy.get(".company-hierarchy-label").contains(company1.name, { timeout: 10000 })
+        .should("be.visible")
+        .parents(".acm-tree__item")
+        .should("have.attr", "data-level", "2")
+        .find(".company-hierarchy-icon.is-root")
+        .should("exist");
+      cy.logToTerminal(`✅ Company 1 "${company1.name}" is at root level`);
+
+      cy.logToTerminal(`✅ Checking Company 2 is displayed: ${company2.name}`);
+      cy.get(".company-hierarchy-label").contains(company2.name, { timeout: 10000 })
+        .should("be.visible")
+        .parents(".acm-tree__item")
+        .should("have.attr", "data-level", "2")
+        .find(".company-hierarchy-icon.is-root")
+        .should("exist");
+      cy.logToTerminal(`✅ Company 2 "${company2.name}" is at root level`);
+
+      cy.logToTerminal(`✅ Checking Company 3 is displayed: ${company3.name}`);
+      cy.get(".company-hierarchy-label").contains(company3.name, { timeout: 10000 })
+        .should("be.visible")
+        .parents(".acm-tree__item")
+        .should("have.attr", "data-level", "2")
+        .find(".company-hierarchy-icon.is-root")
+        .should("exist");
+      cy.logToTerminal(`✅ Company 3 "${company3.name}" is at root level`);
+
+      cy.logToTerminal("✅ All 3 companies are visible at root level (flat structure)");
     });
 
-    // ========== STEP 12: Logout Employee 1 ==========
-    cy.logToTerminal("--- STEP 12: Logout Employee 1 ---");
+    // ========== STEP 14: Logout Employee 1 ==========
+    cy.logToTerminal("--- STEP 14: Logout Employee 1 ---");
     cy.then(() => {
       cy.logToTerminal("🚪 Logging out Employee 1...");
       cy.visit("/");
@@ -283,8 +389,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("✅ Employee 1 logged out");
     });
 
-    // ========== STEP 13: Login as Employee 2 (No Permissions) ==========
-    cy.logToTerminal("--- STEP 13: Login as Employee 2 (No Permissions) ---");
+    // ========== STEP 15: Login as Employee 2 (No Permissions) ==========
+    cy.logToTerminal("--- STEP 15: Login as Employee 2 (No Permissions) ---");
     cy.then(() => {
       const employee2 = Cypress.env("employee2");
 
@@ -301,8 +407,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("✅ Employee 2 logged in successfully");
     });
 
-    // ========== STEP 14: Employee 2 Sees Permission Denied ==========
-    cy.logToTerminal("--- STEP 14: Employee 2 sees permission denied message ---");
+    // ========== STEP 16: Employee 2 Sees Permission Denied ==========
+    cy.logToTerminal("--- STEP 16: Employee 2 sees permission denied message ---");
     cy.then(() => {
       cy.logToTerminal("📄 Navigating to /customer/company/hierarchy...");
       cy.visit("/customer/company/hierarchy");
@@ -318,8 +424,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.logToTerminal("✅ Employee 2 (No Permissions) sees denial message correctly");
     });
 
-    // ========== STEP 15: Logout Employee 2 ==========
-    cy.logToTerminal("--- STEP 15: Logout Employee 2 ---");
+    // ========== STEP 17: Logout Employee 2 ==========
+    cy.logToTerminal("--- STEP 17: Logout Employee 2 ---");
     cy.then(() => {
       cy.logToTerminal("🚪 Logging out Employee 2...");
       cy.visit("/");
