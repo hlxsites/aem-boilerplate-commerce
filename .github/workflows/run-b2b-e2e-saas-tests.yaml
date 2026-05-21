@@ -13,7 +13,27 @@ jobs:
         include:
           - group: group-a
             specs:
-              - src/tests/b2b/CompanyHierarchy.spec.js
+              - src/tests/b2b/verifyCompanyCredit.spec.js
+              - src/tests/b2b/verifyCompanyProfile.spec.js
+              - src/tests/b2b/verifyCompanyRegistration.spec.js
+              - src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js
+              - src/tests/b2b/verifyCompanyStructure.spec.js
+              - src/tests/b2b/verifyCompanySwitcher.spec.js
+              - src/tests/b2b/verifyCompanyUsers.spec.js
+          - group: group-b
+            specs:
+              - src/tests/b2b/runB2CTests.spec.js
+              - src/tests/b2b/verifyB2BGridOrdering.spec.js
+              - src/tests/b2b/verifyB2BQuickOrder.spec.js
+              - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
+              - src/tests/b2b/verifyB2BRequisitionLists.spec.js
+          # Purchase Orders isolated in its own group due to long execution
+          # time (~16 min). It is fully self-contained (creates and cleans up
+          # its own roles, users, and approval rules) with no dependencies on
+          # other spec files, so it can safely run in parallel.
+          - group: group-c
+            specs:
+              - src/tests/b2b/verifyPurchaseOrders.spec.js
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
@@ -35,23 +55,12 @@ jobs:
       - name: Install adobe aem cli dependencies
         run: npm install -g @adobe/aem-cli
       - name: Start server in the background
-        run: |
-          echo "Starting AEM server..."
-          aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live > aem-server.log 2>&1 &
-          echo "AEM server started with PID $!"
-      - name: Wait for server to initialize
-        run: |
-          echo "Waiting for server initialization..."
-          sleep 15
-          echo "Checking if server is running..."
-          curl -I http://localhost:3000 || echo "Server not responding yet"
-          cat aem-server.log || echo "No server logs"
+        run: aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live &
       - name: Install Cypress and run tests (${{ matrix.group }})
         uses: cypress-io/github-action@v6
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 180
           install: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
           command: npx cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas --spec '${{ join(matrix.specs, ',') }}'
         env:
