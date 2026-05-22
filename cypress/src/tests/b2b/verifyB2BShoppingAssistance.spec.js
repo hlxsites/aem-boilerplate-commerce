@@ -46,7 +46,7 @@
 
 import * as fields from '../../fields';
 import * as actions from '../../actions';
-import { customerShippingAddress } from "../../fixtures";
+import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
 import {
   findCustomerByEmail,
   requestCustomerOtp,
@@ -323,69 +323,96 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.logToTerminal(
                 "📦 Step 17: Completing checkout and placing order",
               );
-              cy.get("body").then(($body) => {
-                const hasVisibleShippingForm =
-                  $body.find(".checkout__shipping-form:visible").length > 0;
+              cy.logToTerminal(
+                "📝 Waiting for shipping form and filling address for new user",
+              );
+              cy.get('input[name="firstName"]:visible', { timeout: 60000 })
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="firstName"]:visible')
+                .first()
+                .type(customerShippingAddress.firstName, { force: true });
+              cy.get('input[name="lastName"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="lastName"]:visible')
+                .first()
+                .type(customerShippingAddress.lastName, { force: true });
+              cy.get('input[name="street"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="street"]:visible')
+                .first()
+                .type(customerShippingAddress.street, { force: true });
+              cy.get('input[name="streetMultiline_2"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="streetMultiline_2"]:visible')
+                .first()
+                .type(customerShippingAddress.street1, { force: true });
+              cy.get('select[name="region"]:visible')
+                .first()
+                .select(customerShippingAddress.region, { force: true });
+              cy.get('input[name="city"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="city"]:visible')
+                .first()
+                .type(customerShippingAddress.city, { force: true });
+              cy.get('input[name="postcode"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="postcode"]:visible')
+                .first()
+                .type(customerShippingAddress.postCode, { force: true });
+              cy.get('input[name="telephone"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="telephone"]:visible')
+                .first()
+                .type(customerShippingAddress.telephone, {
+                  force: true,
+                });
 
-                if (hasVisibleShippingForm) {
+              // Ensure shipping method is selected when method radios are present
+              cy.get('input[name="shipping_method"]:visible').then(
+                ($shippingMethods) => {
+                  if (
+                    $shippingMethods.length > 0 &&
+                    !$shippingMethods.is(":checked")
+                  ) {
+                    cy.logToTerminal("🚚 Selecting shipping method");
+                    cy.wrap($shippingMethods.first()).check({ force: true });
+                  }
+                },
+              );
+
+              // Ensure payment method is selected (same pattern as checkout tests)
+              cy.get("body").then(($body) => {
+                if ($body.text().includes(checkMoneyOrder.name)) {
                   cy.logToTerminal(
-                    "📝 Shipping form is visible, filling shipping address for authenticated user",
+                    `💰 Selecting payment method: ${checkMoneyOrder.name}`,
                   );
-                  cy.get('input[name="firstName"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="firstName"]:visible')
-                    .first()
-                    .type(customerShippingAddress.firstName, { force: true });
-                  cy.get('input[name="lastName"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="lastName"]:visible')
-                    .first()
-                    .type(customerShippingAddress.lastName, { force: true });
-                  cy.get('input[name="street"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="street"]:visible')
-                    .first()
-                    .type(customerShippingAddress.street, { force: true });
-                  cy.get('input[name="streetMultiline_2"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="streetMultiline_2"]:visible')
-                    .first()
-                    .type(customerShippingAddress.street1, { force: true });
-                  cy.get('select[name="region"]:visible')
-                    .first()
-                    .select(customerShippingAddress.region, { force: true });
-                  cy.get('input[name="city"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="city"]:visible')
-                    .first()
-                    .type(customerShippingAddress.city, { force: true });
-                  cy.get('input[name="postcode"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="postcode"]:visible')
-                    .first()
-                    .type(customerShippingAddress.postCode, { force: true });
-                  cy.get('input[name="telephone"]:visible')
-                    .first()
-                    .clear({ force: true });
-                  cy.get('input[name="telephone"]:visible')
-                    .first()
-                    .type(customerShippingAddress.telephone, {
-                      force: true,
-                    });
-                } else {
-                  cy.logToTerminal(
-                    "ℹ️ Shipping form is hidden for this user/session, skipping shipping form fill",
-                  );
+                  actions.setPaymentMethod(checkMoneyOrder);
                 }
               });
-              actions.checkTermsAndConditions();
-              actions.placeOrder();
+
+              // Accept terms if terms checkbox exists
+              cy.get("body").then(($body) => {
+                const $termsCheckbox = $body.find(
+                  'input[name="default"][type="checkbox"]',
+                );
+
+                if ($termsCheckbox.length > 0) {
+                  cy.logToTerminal("📄 Accepting checkout terms");
+                  actions.checkTermsAndConditions();
+                }
+              });
+
+              // Place order when button becomes visible
+              cy.get(".checkout-place-order__button", { timeout: 60000 })
+                .should("be.visible")
+                .click({ force: true });
 
               // Step 18: Verify order confirmation details
               cy.logToTerminal(
@@ -395,7 +422,7 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.contains("Order placed by an administrator").should(
                 "be.visible",
               );
-            },
+            };,
           );
         });
 
