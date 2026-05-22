@@ -142,6 +142,9 @@ async function createCompany(companyData) {
       website_id: 1,
       store_id: 1,
       group_id: 1,
+      extension_attributes: {
+        allow_remote_shopping_assistance: true,
+      },
     },
     password: adminPassword,
   };
@@ -150,7 +153,7 @@ async function createCompany(companyData) {
   validateApiResponse(customerData, 'Customer creation', 'id');
 
   const customerId = customerData.id;
-  safeLog('✅ Customer created with ID:', customerId);
+  safeLog('✅ Customer created with ID:', customerId, '(remote assistance enabled)');
 
   // Step 2: Create the company with the customer as super_user_id
   safeLog('🏢 Creating company:', companyName);
@@ -464,6 +467,7 @@ async function createCompanyUser(userData, companyId) {
       lastname,
       website_id: 1,
       extension_attributes: {
+        allow_remote_shopping_assistance: true,
         company_attributes: {
           company_id: companyId,
           status: 1, // Active
@@ -477,7 +481,7 @@ async function createCompanyUser(userData, companyId) {
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
   validateApiResponse(assignResult, 'Company assignment', 'id');
 
-  safeLog('✅ User assigned to company');
+  safeLog('✅ User assigned to company (remote assistance enabled)');
 
   return {
     id: customerId,
@@ -1108,6 +1112,9 @@ async function createStandaloneCustomer(userData) {
       website_id: 1,
       store_id: 1,
       group_id: 1,
+      extension_attributes: {
+        allow_remote_shopping_assistance: true,
+      },
     },
     password,
   };
@@ -1115,7 +1122,7 @@ async function createStandaloneCustomer(userData) {
   const customerData = await client.post('/V1/customers', customerPayload);
   validateApiResponse(customerData, 'Standalone customer creation', 'id');
 
-  safeLog('✅ Standalone customer created with ID:', customerData.id);
+  safeLog('✅ Standalone customer created with ID:', customerData.id, '(remote assistance enabled)');
 
   return {
     id: customerData.id,
@@ -1152,6 +1159,7 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
       lastname,
       website_id: 1,
       extension_attributes: {
+        allow_remote_shopping_assistance: true,
         company_attributes: {
           company_id: companyId,
           status: 1, // Active - this simulates accepting the invitation!
@@ -1165,7 +1173,7 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
   validateApiResponse(assignResult, 'Invitation acceptance', 'id');
 
-  safeLog('✅ Invitation accepted - user assigned to company');
+  safeLog('✅ Invitation accepted - user assigned to company (remote assistance enabled)');
 
   return {
     id: customerId,

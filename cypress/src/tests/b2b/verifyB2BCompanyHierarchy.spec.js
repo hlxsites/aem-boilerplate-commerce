@@ -90,10 +90,12 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
             {
               customerId: admin.id,
               reason: "test-hierarchy-verification",
-            }
+            },
           );
 
-          cy.logToTerminal(`✅ OTP endpoint response: ${JSON.stringify(otpResponse)}`);
+          cy.logToTerminal(
+            `✅ OTP endpoint response: ${JSON.stringify(otpResponse)}`,
+          );
           cy.logToTerminal("✅ OTP test completed successfully");
         } catch (error) {
           cy.logToTerminal(`⚠️ OTP test failed: ${error.message}`);
@@ -170,7 +172,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       cy.wait(10000);
 
       // STEP 4: Verify companies are accessible via GraphQL first
-      cy.logToTerminal("--- STEP 4: Check companies are accessible via GraphQL ---");
+      cy.logToTerminal(
+        "--- STEP 4: Check companies are accessible via GraphQL ---",
+      );
       cy.then(() => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
@@ -178,8 +182,10 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.getUserTokenCookie().then((token) => {
           // Retry GraphQL query until companies appear (max 30 seconds)
           const checkCompanies = (attempt = 1, maxAttempts = 6) => {
-            cy.logToTerminal(`🔍 GraphQL check attempt ${attempt}/${maxAttempts}...`);
-            
+            cy.logToTerminal(
+              `🔍 GraphQL check attempt ${attempt}/${maxAttempts}...`,
+            );
+
             cy.request({
               method: "POST",
               url: Cypress.env("graphqlEndPoint"),
@@ -197,22 +203,31 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
                 `,
               },
             }).then((response) => {
-              const companies = response.body.data?.customer?.companies?.items || [];
-              cy.logToTerminal(`📊 Found ${companies.length} companies via GraphQL`);
-              
+              const companies =
+                response.body.data?.customer?.companies?.items || [];
+              cy.logToTerminal(
+                `📊 Found ${companies.length} companies via GraphQL`,
+              );
+
               if (companies.length >= 2) {
                 cy.logToTerminal("✅ Both companies accessible via GraphQL");
-                companies.forEach(c => cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`));
+                companies.forEach((c) =>
+                  cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`),
+                );
               } else if (attempt < maxAttempts) {
-                cy.logToTerminal(`⏳ Only ${companies.length} companies, retrying in 5s...`);
+                cy.logToTerminal(
+                  `⏳ Only ${companies.length} companies, retrying in 5s...`,
+                );
                 cy.wait(5000);
                 checkCompanies(attempt + 1, maxAttempts);
               } else {
-                cy.logToTerminal("⚠️ Companies not fully indexed after 30s, proceeding anyway...");
+                cy.logToTerminal(
+                  "⚠️ Companies not fully indexed after 30s, proceeding anyway...",
+                );
               }
             });
           };
-          
+
           checkCompanies();
         });
       });
@@ -250,7 +265,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         // Debug: log page content if companies not found
         cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
           const blockText = $block.text();
-          cy.logToTerminal(`📄 Hierarchy block content length: ${blockText.length} chars`);
+          cy.logToTerminal(
+            `📄 Hierarchy block content length: ${blockText.length} chars`,
+          );
           if (blockText.length < 50) {
             cy.logToTerminal(`⚠️ Block appears empty: "${blockText.trim()}"`);
           }
@@ -258,12 +275,16 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
         // First, check if companies appear at all (more lenient check with retry)
         cy.logToTerminal(`🔍 Checking Company 1 visible: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 })
-          .should("contain.text", company1.name);
-        
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 }).should(
+          "contain.text",
+          company1.name,
+        );
+
         cy.logToTerminal(`🔍 Checking Company 2 visible: ${company2.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 })
-          .should("contain.text", company2.name);
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 }).should(
+          "contain.text",
+          company2.name,
+        );
 
         cy.logToTerminal("✅ Both companies are visible in hierarchy!");
 
@@ -282,17 +303,17 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
 
-        cy.logToTerminal(
-          `🔗 Dragging ${company2.name} into ${company1.name}`,
-        );
+        cy.logToTerminal(`🔗 Dragging ${company2.name} into ${company1.name}`);
         cy.logToTerminal(`   Parent: ${company1.name} (ID: ${company1.id})`);
         cy.logToTerminal(`   Child: ${company2.name} (ID: ${company2.id})`);
 
         // Ensure hierarchy is expanded
-        cy.get('.commerce-b2b-company-hierarchy').then(($hierarchy) => {
-          const expandButtons = $hierarchy.find('button[aria-expanded="false"]');
+        cy.get(".commerce-b2b-company-hierarchy").then(($hierarchy) => {
+          const expandButtons = $hierarchy.find(
+            'button[aria-expanded="false"]',
+          );
           if (expandButtons.length > 0) {
-            cy.logToTerminal('📂 Expanding hierarchy nodes...');
+            cy.logToTerminal("📂 Expanding hierarchy nodes...");
             expandButtons.each((idx, btn) => cy.wrap(btn).click());
             cy.wait(1000);
           }
@@ -303,26 +324,30 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company2.name)
           .closest('[draggable="true"]')
-          .should('have.attr', 'draggable', 'true')
-          .as('dragCompany2');
+          .should("have.attr", "draggable", "true")
+          .as("dragCompany2");
 
         cy.logToTerminal(`🎯 Finding drop target for ${company1.name}...`);
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company1.name)
           .closest('[draggable="true"]')
-          .should('have.attr', 'draggable', 'true')
-          .as('dropCompany1');
+          .should("have.attr", "draggable", "true")
+          .as("dropCompany1");
 
         // Perform drag and drop
-        cy.logToTerminal('🔄 Executing drag & drop...');
-        cy.get('@dragCompany2').trigger('dragstart', { dataTransfer: new DataTransfer() });
-        cy.get('@dropCompany1').trigger('dragover');
-        cy.get('@dropCompany1').trigger('drop');
+        cy.logToTerminal("🔄 Executing drag & drop...");
+        cy.get("@dragCompany2").trigger("dragstart", {
+          dataTransfer: new DataTransfer(),
+        });
+        cy.get("@dropCompany1").trigger("dragover");
+        cy.get("@dropCompany1").trigger("drop");
         cy.wait(3000);
 
         // Verify success message
-        cy.contains(/successfully.*moved|moved.*successfully|company.*assigned/i, { timeout: 5000 })
-          .should('be.visible');
+        cy.contains(
+          /successfully.*moved|moved.*successfully|company.*assigned/i,
+          { timeout: 5000 },
+        ).should("be.visible");
 
         cy.logToTerminal("✅ Drag & drop assignment successful!");
       });
@@ -341,7 +366,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       });
 
       // STEP 8: Verify nested structure in DOM (Company2 is child of Company1)
-      cy.logToTerminal("--- STEP 8: Verify Nested Hierarchy Structure in DOM ---");
+      cy.logToTerminal(
+        "--- STEP 8: Verify Nested Hierarchy Structure in DOM ---",
+      );
       cy.then(() => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
@@ -350,14 +377,18 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.wait("@defaultGraphQL");
         cy.wait(3000);
 
-        cy.logToTerminal(`🔍 Verifying parent company visible: ${company1.name}`);
+        cy.logToTerminal(
+          `🔍 Verifying parent company visible: ${company1.name}`,
+        );
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company1.name, { timeout: 20000 })
           .should("be.visible");
 
         // Expand all nodes to ensure nested structure is visible
         cy.get(".commerce-b2b-company-hierarchy").then(($hierarchy) => {
-          const expandButtons = $hierarchy.find('button[aria-expanded="false"]');
+          const expandButtons = $hierarchy.find(
+            'button[aria-expanded="false"]',
+          );
           if (expandButtons.length > 0) {
             cy.logToTerminal("📂 Expanding all hierarchy nodes...");
             expandButtons.each((idx, btn) => cy.wrap(btn).click());
@@ -370,15 +401,16 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(
           `🔍 Verifying ${company2.name} is nested under ${company1.name}...`,
         );
-        
+
         cy.get(".commerce-b2b-company-hierarchy")
           .contains(company1.name)
           .parents('[draggable="true"]')
           .first()
           .within(() => {
             // Look for nested children container (might be different class than .acm-tree__group)
-            cy.get('[class*="child"], [class*="group"], [class*="nested"], ul, ol')
-              .should('contain.text', company2.name);
+            cy.get(
+              '[class*="child"], [class*="group"], [class*="nested"], ul, ol',
+            ).should("contain.text", company2.name);
           });
 
         cy.logToTerminal(
@@ -389,7 +421,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       });
 
       cy.logToTerminal("========= 🎉 TEST PASSED =========");
-    },
+    };,
   );
 
   after(() => {
