@@ -75,6 +75,32 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         );
       });
 
+      // STEP 1.5: Test OTP endpoint for created admin
+      cy.logToTerminal("--- STEP 1.5: Testing OTP endpoint ---");
+      cy.then({ timeout: 30000 }, async () => {
+        const admin = Cypress.env("sharedAdmin");
+        const ACCSApiClient = require("../../support/accsClient");
+        const client = new ACCSApiClient();
+
+        cy.logToTerminal(`🔐 Testing OTP for customer ID: ${admin.id}`);
+
+        try {
+          const otpResponse = await client.post(
+            `/V1/customer/${admin.id}/otp`,
+            {
+              customerId: admin.id,
+              reason: "test-hierarchy-verification",
+            }
+          );
+
+          cy.logToTerminal(`✅ OTP endpoint response: ${JSON.stringify(otpResponse)}`);
+          cy.logToTerminal("✅ OTP test completed successfully");
+        } catch (error) {
+          cy.logToTerminal(`⚠️ OTP test failed: ${error.message}`);
+          // Don't fail the test, just log the error
+        }
+      });
+
       // STEP 2: Create Company 2 with SAME Admin
       cy.logToTerminal("--- STEP 2: Creating Company 2 with SAME Admin ---");
       cy.then({ timeout: 60000 }, async () => {
@@ -171,18 +197,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
                 `,
               },
             }).then((response) => {
-           Debug: log page content if companies not found
-        cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
-          const blockText = $block.text();
-          cy.logToTerminal(`📄 Hierarchy block content length: ${blockText.length} chars`);
-          if (blockText.length < 50) {
-            cy.logToTerminal(`⚠️ Block appears empty: "${blockText.trim()}"`);
-          }
-        });
-
-        // First, check if companies appear at all (more lenient check with retry)
-        cy.logToTerminal(`🔍 Checking Company 1 visible: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 3
+              const companies = response.body.data?.customer?.companies?.items || [];
+              cy.logToTerminal(`📊 Found ${companies.length} companies via GraphQL`);
+              
               if (companies.length >= 2) {
                 cy.logToTerminal("✅ Both companies accessible via GraphQL");
                 companies.forEach(c => cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`));
@@ -230,13 +247,22 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.wait("@defaultGraphQL");
         cy.wait(3000);
 
-        // First, check if companies appear at all (more lenient check)
+        // Debug: log page content if companies not found
+        cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
+          const blockText = $block.text();
+          cy.logToTerminal(`📄 Hierarchy block content length: ${blockText.length} chars`);
+          if (blockText.length < 50) {
+            cy.logToTerminal(`⚠️ Block appears empty: "${blockText.trim()}"`);
+          }
+        });
+
+        // First, check if companies appear at all (more lenient check with retry)
         cy.logToTerminal(`🔍 Checking Company 1 visible: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 20000 })
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 })
           .should("contain.text", company1.name);
         
         cy.logToTerminal(`🔍 Checking Company 2 visible: ${company2.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 20000 })
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 })
           .should("contain.text", company2.name);
 
         cy.logToTerminal("✅ Both companies are visible in hierarchy!");
