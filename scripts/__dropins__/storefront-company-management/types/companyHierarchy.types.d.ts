@@ -16,6 +16,8 @@ export interface CompanyHierarchyProps {
     className?: string;
     /** Controls whether the tree is expanded by default. If true, all nodes are expanded. If false, all nodes are collapsed. @default true */
     defaultExpanded?: boolean;
+    /** Controls whether to display admin badge for companies where user is admin. If true, shows "Admin" tag for companies with is_admin=true. @default false */
+    showAdminBadge?: boolean;
 }
 export declare enum CompanyHierarchyViewMode {
     IS_LOADING = "IS_LOADING",
@@ -53,6 +55,7 @@ export interface CompanyHierarchyContentProps {
     slots?: {
         Actions?: SlotProps<HierarchyActionsContext>;
     };
+    showAdminBadge?: boolean;
     translations: {
         expandAll: string;
         collapseAll: string;
