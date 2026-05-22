@@ -1,14 +1,10 @@
 import {
   createStandaloneCustomer,
-  assignCustomerToCompany,
-  createCompanyRole,
-  assignRoleToUser,
   deleteCompanyById,
   deleteCustomerById,
 } from "../../support/b2bCompanyAPICalls";
 import {
   baseCompanyData,
-  fullAdminPermissions,
 } from "../../fixtures/companyManagementData";
 
 describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
@@ -102,30 +98,30 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(`   Admin ID: ${admin.id} assigned as super_user`);
       });
 
-      // STEP 3: Assign admin full permissions to Company 1
+      // STEP 3: Verify admin permissions for Company 1
       cy.logToTerminal(
-        "--- STEP 3: Assigning admin to Company 1 with full permissions ---",
+        "--- STEP 3: Verifying admin permissions for Company 1 ---",
       );
       cy.then({ timeout: 60000 }, async () => {
         const admin = Cypress.env("sharedAdmin");
         const company1 = Cypress.env("company1");
-
-        cy.logToTerminal("🔗 Assigning admin to Company 1...");
-        await assignCustomerToCompany(admin.id, company1.id);
-
-        cy.logToTerminal("🎭 Creating full-access admin role in Company 1...");
-        const company1AdminRole = await createCompanyRole({
-          company_id: company1.id,
-          role_name: `Company 1 Administrator ${Date.now()}`,
-          permissions: fullAdminPermissions,
-        });
-
-        await assignRoleToUser(admin.id, company1AdminRole);
-        Cypress.env("company1AdminRoleId", company1AdminRole.id);
+        const ACCSApiClient = require("../../support/accsClient");
+        const client = new ACCSApiClient();
 
         cy.logToTerminal(
-          `✅ Admin assigned to Company 1 with full permissions (role: ${company1AdminRole.id})`,
+          "ℹ️ Company admin (super_user) already has full permissions by default",
         );
+
+        const comp1 = await client.get(`/V1/company/${company1.id}`);
+        cy.logToTerminal(
+          `✅ Verified Company 1 super_user_id: ${comp1.super_user_id}`,
+        );
+
+        if (Number(comp1.super_user_id) !== Number(admin.id)) {
+          throw new Error(
+            `Company 1 super_user mismatch. Expected ${admin.id}, got ${comp1.super_user_id}`,
+          );
+        }
       });
 
       // STEP 4: Create Company 2 with SAME admin
@@ -185,21 +181,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const ACCSApiClient = require("../../support/accsClient");
         const client = new ACCSApiClient();
 
-        cy.logToTerminal("🔗 Assigning admin to Company 2...");
-        await assignCustomerToCompany(admin.id, company2.id);
-
-        cy.logToTerminal("🎭 Creating full-access admin role in Company 2...");
-        const company2AdminRole = await createCompanyRole({
-          company_id: company2.id,
-          role_name: `Company 2 Administrator ${Date.now()}`,
-          permissions: fullAdminPermissions,
-        });
-
-        await assignRoleToUser(admin.id, company2AdminRole);
-        Cypress.env("company2AdminRoleId", company2AdminRole.id);
-
         cy.logToTerminal(
-          `✅ Admin assigned to Company 2 with full permissions (role: ${company2AdminRole.id})`,
+          "ℹ️ Skipping role assignment: API forbids changing role for company admin",
         );
 
         cy.logToTerminal(`🔍 Fetching customer ${admin.id} details...`);
