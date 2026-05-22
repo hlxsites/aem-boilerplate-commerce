@@ -422,7 +422,7 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.contains("Order placed by an administrator").should(
                 "be.visible",
               );
-            };,
+            },
           );
         });
 
