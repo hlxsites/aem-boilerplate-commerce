@@ -180,42 +180,6 @@ async function createCompany(companyData) {
 
   safeLog('✅ Company created with ID:', company.id);
 
-  // Step 3: Enable remote shopping assistance for admin
-  safeLog('🔧 Enabling remote shopping assistance for admin...');
-  
-  const updatePayload = {
-    customer: {
-      id: customerId,
-      email: adminEmail,
-      firstname: adminFirstName,
-      lastname: adminLastName,
-      website_id: 1,
-      extension_attributes: {
-        allow_remote_shopping_assistance: true,
-      },
-    },
-  };
-
-  await client.put(`/V1/customers/${customerId}`, updatePayload);
-  safeLog('✅ Remote shopping assistance enabled for admin');
-
-  // Step 4: Generate OTP for remote login
-  safeLog('🔐 Generating OTP for admin remote login...');
-  
-  try {
-    const otpResponse = await client.post(
-      `/V1/customer/${customerId}/otp`,
-      {
-        customerId: customerId,
-        reason: 'company-admin-setup',
-      }
-    );
-    safeLog('✅ OTP generated successfully:', otpResponse);
-  } catch (error) {
-    safeLog('⚠️ OTP generation failed (non-critical):', error.message);
-    // Don't fail company creation if OTP fails
-  }
-
   return {
     id: company.id,
     name: company.company_name,
@@ -500,7 +464,6 @@ async function createCompanyUser(userData, companyId) {
       lastname,
       website_id: 1,
       extension_attributes: {
-        allow_remote_shopping_assistance: true,
         company_attributes: {
           company_id: companyId,
           status: 1, // Active
@@ -514,7 +477,7 @@ async function createCompanyUser(userData, companyId) {
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
   validateApiResponse(assignResult, 'Company assignment', 'id');
 
-  safeLog('✅ User assigned to company (remote assistance enabled)');
+  safeLog('✅ User assigned to company');
 
   return {
     id: customerId,
@@ -1203,8 +1166,7 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
   validateApiResponse(assignResult, 'Invitation acceptance', 'id');
 
-  safeLog('✅ Invitation accepted - user assigned to company (remote assistance enabled)');
-
+  safeLog('✅ Invitation accepted - user assigned to company
   return {
     id: customerId,
     email,

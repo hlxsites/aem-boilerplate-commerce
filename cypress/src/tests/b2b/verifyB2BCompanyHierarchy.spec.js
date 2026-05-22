@@ -1,5 +1,5 @@
 import {
-  createCompany,
+  createStandaloneCustomer,
   deleteCompanyById,
   deleteCustomerById,
 } from "../../support/b2bCompanyAPICalls";
@@ -30,53 +30,109 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
       let sharedAdmin = null;
 
-      // STEP 1: Create Company 1 with Admin
-      cy.logToTerminal("--- STEP 1: Creating Company 1 with Admin ---");
+      // STEP 1: Create standalone customer first
+      cy.logToTerminal("--- STEP 1: Creating standalone customer ---");
       cy.then({ timeout: 60000 }, async () => {
         const timestamp = Date.now();
-        const randomStr = Math.random().toString(36).substring(2, 8);
 
-        cy.logToTerminal("🏢 Creating Company 1...");
-        const company1 = await createCompany({
-          companyName: `Company1 ${randomStr}`,
-          companyEmail: `company1-${timestamp}@example.com`,
-          legalName: `Company 1 Legal`,
-          vatTaxId: `VAT-1-${randomStr}`,
-          resellerId: `RES-1-${randomStr}`,
-          street: baseCompanyData.street,
-          city: baseCompanyData.city,
-          countryCode: baseCompanyData.countryCode,
-          regionId: 12,
-          postcode: baseCompanyData.postcode,
-          telephone: baseCompanyData.telephone,
-          adminFirstName: "Shared",
-          adminLastName: "Admin",
-          adminEmail: `shared.admin-${timestamp}@example.com`,
-          adminPassword: "Test123!",
-          status: 1,
+        cy.logToTerminal("👤 Creating shared admin customer...");
+        const customer = await createStandaloneCustomer({
+          firstname: "Shared",
+          lastname: "Admin",
+          email: `shared.admin-${timestamp}@example.com`,
+          password: "Test123!",
         });
 
         sharedAdmin = {
-          id: company1.company_admin.id,
-          email: company1.company_admin.email,
-          password: company1.company_admin.password,
+          id: customer.id,
+          email: customer.email,
+          password: customer.password,
         };
+
+        Cypress.env("sharedAdmin", sharedAdmin);
+        cy.logToTerminal(`✅ Customer created (ID: ${sharedAdmin.id})`);
+      });
+
+      // STEP 2: Create Company 1
+      cy.logToTerminal("--- STEP 2: Creating Company 1 ---");
+      cy.then({ timeout: 60000 }, async () => {
+        const timestamp = Date.now();
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        const admin = Cypress.env("sharedAdmin");
+
+        const ACCSApiClient = require("../../support/accsClient");
+        const client = new ACCSApiClient();
+
+        cy.logToTerminal("🏢 Creating Company 1...");
+        const companyPayload = {
+          company: {
+            company_name: `Company1 ${randomStr}`,
+            company_email: `company1-${timestamp}@example.com`,
+            legal_name: `Company 1 Legal`,
+            vat_tax_id: `VAT-1-${randomStr}`,
+            reseller_id: `RES-1-${randomStr}`,
+            street: [baseCompanyData.street],
+            city: baseCompanyData.city,
+            country_id: baseCompanyData.countryCode,
+            region_id: 12,
+            postcode: baseCompanyData.postcode,
+            telephone: baseCompanyData.telephone,
+            super_user_id: admin.id,
+            customer_group_id: 1,
+            status: 1,
+          },
+        };
+
+        const company1 = await client.post("/V1/company/", companyPayload);
 
         Cypress.env("company1", {
           id: company1.id,
-          name: company1.name,
+          name: company1.company_name,
         });
 
-        Cypress.env("sharedAdmin", sharedAdmin);
-
-        cy.logToTerminal(`✅ Company 1: ${company1.name} (ID: ${company1.id})`);
         cy.logToTerminal(
-          `✅ Admin: ${sharedAdmin.email} (ID: ${sharedAdmin.id})`,
+          `✅ Company 1: ${company1.company_name} (ID: ${company1.id})`,
         );
+        cy.logToTerminal(`   Admin ID: ${admin.id} assigned as super_user`);
       });
 
-      // STEP 2: Create Company 2 with SAME Admin
-      cy.logToTerminal("--- STEP 2: Creating Company 2 with SAME Admin ---");
+      // STEP 3: Assign admin full permissions to Company 1
+      cy.logToTerminal(
+        "--- STEP 3: Assigning admin to Company 1 with full permissions ---",
+      );
+      cy.then({ timeout: 60000 }, async () => {
+        const admin = Cypress.env("sharedAdmin");
+        const company1 = Cypress.env("company1");
+
+        const ACCSApiClient = require("../../support/accsClient");
+        const client = new ACCSApiClient();
+
+        cy.logToTerminal("🔧 Updating admin with Company 1 attributes...");
+        const updatePayload = {
+          customer: {
+            id: admin.id,
+            email: admin.email,
+            firstname: "Shared",
+            lastname: "Admin",
+            website_id: 1,
+            extension_attributes: {
+              company_attributes: {
+                company_id: company1.id,
+                status: 1, // Active
+                job_title: "Company Administrator",
+              },
+            },
+          },
+        };
+
+        await client.put(`/V1/customers/${admin.id}`, updatePayload);
+        cy.logToTerminal("✅ Admin assigned to Company 1");
+      });
+
+      // STEP 4: Create Company 2 with SAME admin
+      cy.logToTerminal("--- STEP 4: Creating Company 2 with SAME Admin ---");
+      // STEP 4: Create Company 2 with SAME admin
+      cy.logToTerminal("--- STEP 4: Creating Company 2 with SAME Admin ---");
       cy.then({ timeout: 60000 }, async () => {
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 8);
@@ -117,13 +173,58 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(
           `✅ Company 2: ${company2.company_name} (ID: ${company2.id})`,
         );
-        cy.logToTerminal(`✅ Same admin is super_user for both companies`);
+        cy.logToTerminal(`   Admin ID: ${admin.id} assigned as super_user`);
+      });
+
+      // STEP 5: Verify admin has access to both companies
+      cy.logToTerminal(
+        "--- STEP 5: Verifying admin company access via REST API ---",
+      );
+      cy.then({ timeout: 60000 }, async () => {
+        const admin = Cypress.env("sharedAdmin");
+        const company1 = Cypress.env("company1");
+        const company2 = Cypress.env("company2");
+
+        const ACCSApiClient = require("../../support/accsClient");
+        const client = new ACCSApiClient();
+
+        cy.logToTerminal(`🔍 Fetching customer ${admin.id} details...`);
+        const customer = await client.get(`/V1/customers/${admin.id}`);
+
+        const companyAttr = customer?.extension_attributes?.company_attributes;
+        if (companyAttr) {
+          cy.logToTerminal(`   company_id: ${companyAttr.company_id}`);
+          cy.logToTerminal(`   status: ${companyAttr.status}`);
+          cy.logToTerminal(`   job_title: ${companyAttr.job_title || "N/A"}`);
+        } else {
+          cy.logToTerminal(`   ⚠️ No company_attributes found!`);
+        }
+
+        // Check both companies exist and have this admin
+        cy.logToTerminal(`🔍 Verifying Company 1 (${company1.id})...`);
+        const comp1 = await client.get(`/V1/company/${company1.id}`);
+        cy.logToTerminal(`   super_user_id: ${comp1.super_user_id}`);
+
+        cy.logToTerminal(`🔍 Verifying Company 2 (${company2.id})...`);
+        const comp2 = await client.get(`/V1/company/${company2.id}`);
+        cy.logToTerminal(`   super_user_id: ${comp2.super_user_id}`);
+
+        if (
+          comp1.super_user_id === admin.id &&
+          comp2.super_user_id === admin.id
+        ) {
+          cy.logToTerminal("✅ Same admin is super_user for both companies");
+        } else {
+          cy.logToTerminal("⚠️ Warning: super_user_id mismatch!");
+        }
       });
 
       cy.wait(15000); // Wait for indexing and company data propagation
 
-      // STEP 3: Login as Admin
-      cy.logToTerminal("--- STEP 3: Login as Shared Admin ---");
+      // STEP 6: Login as Admin
+      cy.logToTerminal("--- STEP 6: Login as Shared Admin ---");
+      // STEP 6: Login as Admin
+      cy.logToTerminal("--- STEP 6: Login as Shared Admin ---");
       cy.then(() => {
         const admin = Cypress.env("sharedAdmin");
 
@@ -143,9 +244,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       // Wait for company data to be available via GraphQL
       cy.wait(10000);
 
-      // STEP 4: Verify companies are accessible via GraphQL first
+      // STEP 7: Verify companies are accessible via GraphQL first
       cy.logToTerminal(
-        "--- STEP 4: Check companies are accessible via GraphQL ---",
+        "--- STEP 7: Check companies are accessible via GraphQL ---",
       );
       cy.then(() => {
         const company1 = Cypress.env("company1");
@@ -206,8 +307,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
       cy.wait(2000);
 
-      // STEP 5: Check Hierarchy Shows Both Companies
-      cy.logToTerminal("--- STEP 5: Verify Hierarchy Shows Both Companies ---");
+      // STEP 8: Check Hierarchy Shows Both Companies
+      cy.logToTerminal("--- STEP 8: Verify Hierarchy Shows Both Companies ---");
       cy.then(() => {
         cy.logToTerminal("📄 Navigating to hierarchy...");
         cy.visit("/customer/company/hierarchy");
@@ -269,8 +370,8 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ SUCCESS: Admin sees both companies in hierarchy!");
       });
 
-      // STEP 6: Assign Company2 as child of Company1 via Drag & Drop UI
-      cy.logToTerminal("--- STEP 6: Assign Child Company via Drag & Drop ---");
+      // STEP 9: Assign Company2 as child of Company1 via Drag & Drop UI
+      cy.logToTerminal("--- STEP 9: Assign Child Company via Drag & Drop ---");
       cy.then(() => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
@@ -324,8 +425,10 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ Drag & drop assignment successful!");
       });
 
-      // STEP 7: Refresh page to see updated hierarchy
-      cy.logToTerminal("--- STEP 7: Refresh Page to See Updated Hierarchy ---");
+      // STEP 10: Refresh page to see updated hierarchy
+      cy.logToTerminal(
+        "--- STEP 10: Refresh Page to See Updated Hierarchy ---",
+      );
       cy.then(() => {
         cy.logToTerminal("🔄 Reloading hierarchy page...");
         cy.reload();
@@ -337,9 +440,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ Page reloaded");
       });
 
-      // STEP 8: Verify nested structure in DOM (Company2 is child of Company1)
+      // STEP 11: Verify nested structure in DOM (Company2 is child of Company1)
       cy.logToTerminal(
-        "--- STEP 8: Verify Nested Hierarchy Structure in DOM ---",
+        "--- STEP 11: Verify Nested Hierarchy Structure in DOM ---",
       );
       cy.then(() => {
         const company1 = Cypress.env("company1");
