@@ -142,9 +142,6 @@ async function createCompany(companyData) {
       website_id: 1,
       store_id: 1,
       group_id: 1,
-      extension_attributes: {
-        allow_remote_shopping_assistance: true,
-      },
     },
     password: adminPassword,
   };
@@ -153,7 +150,7 @@ async function createCompany(companyData) {
   validateApiResponse(customerData, 'Customer creation', 'id');
 
   const customerId = customerData.id;
-  safeLog('✅ Customer created with ID:', customerId, '(remote assistance enabled)');
+  safeLog('✅ Customer created with ID:', customerId);
 
   // Step 2: Create the company with the customer as super_user_id
   safeLog('🏢 Creating company:', companyName);
@@ -182,6 +179,25 @@ async function createCompany(companyData) {
   validateApiResponse(company, 'Company creation', 'id');
 
   safeLog('✅ Company created with ID:', company.id);
+
+  // Step 3: Enable remote shopping assistance for admin
+  safeLog('🔧 Enabling remote shopping assistance for admin...');
+  
+  const updatePayload = {
+    customer: {
+      id: customerId,
+      email: adminEmail,
+      firstname: adminFirstName,
+      lastname: adminLastName,
+      website_id: 1,
+      extension_attributes: {
+        allow_remote_shopping_assistance: true,
+      },
+    },
+  };
+
+  await client.put(`/V1/customers/${customerId}`, updatePayload);
+  safeLog('✅ Remote shopping assistance enabled for admin');
 
   return {
     id: company.id,
@@ -1112,9 +1128,6 @@ async function createStandaloneCustomer(userData) {
       website_id: 1,
       store_id: 1,
       group_id: 1,
-      extension_attributes: {
-        allow_remote_shopping_assistance: true,
-      },
     },
     password,
   };
@@ -1122,7 +1135,7 @@ async function createStandaloneCustomer(userData) {
   const customerData = await client.post('/V1/customers', customerPayload);
   validateApiResponse(customerData, 'Standalone customer creation', 'id');
 
-  safeLog('✅ Standalone customer created with ID:', customerData.id, '(remote assistance enabled)');
+  safeLog('✅ Standalone customer created with ID:', customerData.id);
 
   return {
     id: customerData.id,
