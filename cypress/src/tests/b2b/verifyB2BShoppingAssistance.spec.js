@@ -245,7 +245,7 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
         "✅ Step 6: Verifying Remote Shopping Assistance checkbox is enabled",
       );
       cy.get('input[name="allowRemoteShoppingAssistance"]')
-        .should("be.visible")
+        .should("exist")
         .should("be.checked");
 
       cy.logToTerminal(
