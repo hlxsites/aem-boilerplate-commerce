@@ -56,6 +56,61 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
   let testUserPassword;
   const otpReason = "test";
 
+  const completeOtpVerification = (otpCode) => {
+    cy.logToTerminal("🔐 Completing OTP verification step");
+
+    cy.get("body", { timeout: 20000 }).then(($body) => {
+      const otpInputSelector = [
+        'input[name="otp"]',
+        'input[name="oneTimePassword"]',
+        'input[name="verificationCode"]',
+        'input[autocomplete="one-time-code"]',
+        '[data-testid*="otp"] input',
+        '[data-testid*="verification"] input',
+      ].join(", ");
+
+      const $otpInputs = $body.find(otpInputSelector).filter(":visible");
+
+      if ($otpInputs.length > 0) {
+        cy.wrap($otpInputs.first()).clear();
+        cy.wrap($otpInputs.first()).type(otpCode, { force: true });
+      } else {
+        const $singleCharInputs = $body
+          .find('input[type="text"], input[type="tel"], input[type="number"]')
+          .filter(":visible")
+          .filter((_, el) => {
+            const maxLength = Number(el.getAttribute("maxlength") || 0);
+            return maxLength === 1;
+          });
+
+        if ($singleCharInputs.length >= otpCode.length) {
+          otpCode.split("").forEach((char, index) => {
+            cy.wrap($singleCharInputs[index]).clear();
+            cy.wrap($singleCharInputs[index]).type(char, {
+              force: true,
+            });
+          });
+        } else {
+          throw new Error(
+            "OTP input was not found on the login flow. Cannot verify OTP login.",
+          );
+        }
+      }
+    });
+
+    cy.get("body").then(($body) => {
+      const hasVerifyButton =
+        $body.find('[data-testid*="verify"], [data-testid*="otp"]').length > 0 ||
+        /verify|continue|submit/i.test($body.text());
+
+      if (hasVerifyButton) {
+        cy.contains("button", /verify|continue|submit/i)
+          .first()
+          .click({ force: true });
+      }
+    });
+  };
+
   before(() => {
     cy.logToTerminal('🚀 B2B Shopping Assistance test suite started');
   });
@@ -175,31 +230,6 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Step 4.2: Find customer ID and request OTP
-      cy.logToTerminal(
-        "🔎 Step 4.2: Looking up customer by email to get numeric ID",
-      );
-      cy.wrap(null)
-        .then(() => findCustomerByEmail(testUserEmail))
-        .then((customer) => {
-          expect(customer, `Customer should exist for email: ${testUserEmail}`)
-            .to.exist;
-          expect(customer.id, "Customer ID should be numeric").to.be.a(
-            "number",
-          );
-
-          cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
-          cy.logToTerminal(`📨 Requesting OTP with reason: ${otpReason}`);
-
-          return requestCustomerOtp(customer.id, otpReason).then(
-            (otpResponse) => {
-              cy.logToTerminal(
-                `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
-              );
-            },
-          );
-        });
-
       // Step 5: Navigate to Seller Assisted Purchasing page
       cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
       cy.visit("/customer/seller-assisted-purchasing");
@@ -214,11 +244,8 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
       cy.logToTerminal(
         "✅ Step 6: Verifying Remote Shopping Assistance checkbox is enabled",
       );
-
-      cy.get('[data-testid="sellerAssistedPurchasingId"]').should("be.visible");
-
       cy.get('input[name="allowRemoteShoppingAssistance"]')
-        .should("exist")
+        .should("be.visible")
         .should("be.checked");
 
       cy.logToTerminal(
@@ -264,6 +291,54 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
       ).should("not.exist");
 
       cy.logToTerminal("✅ Disabled message is not visible");
+
+      // Step 11: Logout current user after completing main shopping assistance flow
+      cy.logToTerminal("🚪 Step 11: Logging out current user");
+      cy.visit("/customer/account/logout");
+      cy.visit("/customer/login");
+      cy.get('[name="signIn_form"]').should("be.visible");
+
+      // Step 12: Request OTP only after main flow is finished
+      cy.logToTerminal(
+        "🔎 Step 12: Looking up customer and requesting OTP for login verification",
+      );
+      cy.wrap(null)
+        .then(() => findCustomerByEmail(testUserEmail))
+        .then((customer) => {
+          expect(customer, `Customer should exist for email: ${testUserEmail}`)
+            .to.exist;
+          expect(customer.id, "Customer ID should be numeric").to.be.a(
+            "number",
+          );
+
+          cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
+          cy.logToTerminal(`📨 Requesting OTP with reason: ${otpReason}`);
+
+          return requestCustomerOtp(customer.id, otpReason).then(
+            (otpResponse) => {
+              expect(otpResponse, "OTP response should exist").to.exist;
+              expect(otpResponse.otp, "OTP code should be present").to.be.a(
+                "string",
+              );
+
+              cy.logToTerminal(
+                `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
+              );
+
+              // Step 13: Sign in with email and password, then submit OTP
+              cy.logToTerminal(
+                "🔐 Step 13: Signing in with email/password and OTP code",
+              );
+              actions.signInUser(testUserEmail, testUserPassword);
+              completeOtpVerification(otpResponse.otp);
+
+              // Step 14: Verify user is logged in successfully after OTP
+              cy.url().should("include", "/customer/account");
+              cy.contains(sign_up.firstName).should("be.visible");
+              cy.logToTerminal("✅ OTP login verification completed");
+            },
+          );
+        });
 
       cy.logToTerminal(
         "✅ TC-01: Complete Shopping Assistance flow completed successfully",
