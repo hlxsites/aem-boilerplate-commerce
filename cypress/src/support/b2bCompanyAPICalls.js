@@ -1166,7 +1166,7 @@ async function acceptCompanyInvitation(customerId, companyId, userData, jobTitle
   const assignResult = await client.put(`/V1/customers/${customerId}`, updatePayload);
   validateApiResponse(assignResult, 'Invitation acceptance', 'id');
 
-  safeLog('✅ Invitation accepted - user assigned to company
+  safeLog("✅ Invitation accepted - user assigned to company");
   return {
     id: customerId,
     email,
