@@ -53,63 +53,7 @@ import {
 
 describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
   let testUserEmail;
-  let testUserPassword;
   const otpReason = "test";
-
-  const completeOtpVerification = (otpCode) => {
-    cy.logToTerminal("🔐 Completing OTP verification step");
-
-    cy.get("body", { timeout: 20000 }).then(($body) => {
-      const otpInputSelector = [
-        'input[name="otp"]',
-        'input[name="oneTimePassword"]',
-        'input[name="verificationCode"]',
-        'input[autocomplete="one-time-code"]',
-        '[data-testid*="otp"] input',
-        '[data-testid*="verification"] input',
-      ].join(", ");
-
-      const $otpInputs = $body.find(otpInputSelector).filter(":visible");
-
-      if ($otpInputs.length > 0) {
-        cy.wrap($otpInputs.first()).clear();
-        cy.wrap($otpInputs.first()).type(otpCode, { force: true });
-      } else {
-        const $singleCharInputs = $body
-          .find('input[type="text"], input[type="tel"], input[type="number"]')
-          .filter(":visible")
-          .filter((_, el) => {
-            const maxLength = Number(el.getAttribute("maxlength") || 0);
-            return maxLength === 1;
-          });
-
-        if ($singleCharInputs.length >= otpCode.length) {
-          otpCode.split("").forEach((char, index) => {
-            cy.wrap($singleCharInputs[index]).clear();
-            cy.wrap($singleCharInputs[index]).type(char, {
-              force: true,
-            });
-          });
-        } else {
-          throw new Error(
-            "OTP input was not found on the login flow. Cannot verify OTP login.",
-          );
-        }
-      }
-    });
-
-    cy.get("body").then(($body) => {
-      const hasVerifyButton =
-        $body.find('[data-testid*="verify"], [data-testid*="otp"]').length >
-          0 || /verify|continue|submit/i.test($body.text());
-
-      if (hasVerifyButton) {
-        cy.contains("button", /verify|continue|submit/i)
-          .first()
-          .click({ force: true });
-      }
-    });
-  };
 
   before(() => {
     cy.logToTerminal('🚀 B2B Shopping Assistance test suite started');
@@ -165,7 +109,6 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
       // Generate unique email for this test
       const random = Cypress._.random(0, 10000000);
       testUserEmail = `${random}${sign_up.email}`;
-      testUserPassword = sign_up.password;
 
       cy.logToTerminal(`📧 Test user email: ${testUserEmail}`);
 
@@ -326,17 +269,24 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
                 `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
               );
 
-              // Step 13: Sign in with email and password, then submit OTP
+              // Step 13: Sign in using email + OTP (OTP works as one-time password)
               cy.logToTerminal(
-                "🔐 Step 13: Signing in with email/password and OTP code",
+                "🔐 Step 13: Signing in with email and OTP password",
               );
-              actions.signInUser(testUserEmail, testUserPassword);
-              completeOtpVerification(otpResponse.otp);
+              actions.signInUser(testUserEmail, otpResponse.otp);
 
-              // Step 14: Verify user is logged in successfully after OTP
+              // Step 14: Verify seller-assisted session banner is present
               cy.url().should("include", "/customer/account");
-              cy.contains(sign_up.firstName).should("be.visible");
-              cy.logToTerminal("✅ OTP login verification completed");
+              cy.get(".seller-assisted-buying-banner").should("be.visible");
+              cy.get(".seller-assisted-buying-banner__message")
+                .should("be.visible")
+                .and("contain", "You are connected as");
+              cy.get(".seller-assisted-buying-banner__close-button")
+                .should("be.visible")
+                .and("contain", "Close Session");
+              cy.logToTerminal(
+                "✅ OTP login verification completed with banner presence validation",
+              );
             },
           );
         });
