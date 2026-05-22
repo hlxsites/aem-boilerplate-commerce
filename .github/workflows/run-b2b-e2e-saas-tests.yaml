@@ -27,6 +27,7 @@ jobs:
               - src/tests/b2b/verifyB2BQuickOrder.spec.js
               - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
               - src/tests/b2b/verifyB2BRequisitionLists.spec.js
+              - src/tests/b2b/verifyB2BCompanyHierarchy.spec.js
           # Purchase Orders isolated in its own group due to long execution
           # time (~16 min). It is fully self-contained (creates and cleans up
           # its own roles, users, and approval rules) with no dependencies on
