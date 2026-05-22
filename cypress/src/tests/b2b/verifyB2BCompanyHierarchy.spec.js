@@ -421,7 +421,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
       });
 
       cy.logToTerminal("========= 🎉 TEST PASSED =========");
-    };,
+    },
   );
 
   after(() => {
