@@ -234,116 +234,18 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ Admin logged in");
       });
 
-      // Wait for company data to be available via GraphQL
-      cy.wait(10000);
-
-      // STEP 7: Verify companies are accessible via GraphQL first
+      // STEP 7: Pre-check hierarchy access via UI session (no direct token handling)
       cy.logToTerminal(
-        "--- STEP 7: Check companies are accessible via GraphQL ---",
+        "--- STEP 7: Pre-check hierarchy access via UI session ---",
       );
       cy.then(() => {
-        const company1 = Cypress.env("company1");
-        const company2 = Cypress.env("company2");
-
-        // Retry GraphQL query until auth cookie exists and both companies appear
-        const checkCompanies = (attempt = 1, maxAttempts = 8) => {
-          cy.logToTerminal(
-            `🔍 GraphQL check attempt ${attempt}/${maxAttempts}...`,
-          );
-
-          cy.getCookie("auth_dropin_user_token").then((tokenCookie) => {
-            const token = tokenCookie?.value || "";
-
-            if (!token) {
-              if (attempt < maxAttempts) {
-                cy.logToTerminal("⏳ Auth token cookie not ready yet, retrying in 3s...");
-                cy.wait(3000);
-                checkCompanies(attempt + 1, maxAttempts);
-                return;
-              }
-              throw new Error("Auth token cookie is empty after retries");
-            }
-
-            cy.request({
-              method: "POST",
-              url: Cypress.env("graphqlEndPoint"),
-              auth: { bearer: token },
-              headers: { "content-type": "application/json" },
-              failOnStatusCode: false,
-              body: {
-                query: `
-                  query {
-                    customer {
-                      companies(input: {}) {
-                        items { id name }
-                      }
-                    }
-                  }
-                `,
-              },
-            }).then((response) => {
-              if (response.status !== 200) {
-                if (attempt < maxAttempts) {
-                  cy.logToTerminal(
-                    `⏳ GraphQL HTTP ${response.status}, retrying in 5s...`,
-                  );
-                  cy.wait(5000);
-                  checkCompanies(attempt + 1, maxAttempts);
-                  return;
-                }
-
-                throw new Error(
-                  `GraphQL request failed with status ${response.status}: ${JSON.stringify(response.body)}`,
-                );
-              }
-
-              const gqlErrors = response.body?.errors || [];
-              if (gqlErrors.length) {
-                if (attempt < maxAttempts) {
-                  cy.logToTerminal(
-                    `⏳ GraphQL validation/auth errors, retrying in 5s: ${JSON.stringify(gqlErrors)}`,
-                  );
-                  cy.wait(5000);
-                  checkCompanies(attempt + 1, maxAttempts);
-                  return;
-                }
-
-                throw new Error(`GraphQL errors: ${JSON.stringify(gqlErrors)}`);
-              }
-
-              const companies =
-                response.body.data?.customer?.companies?.items || [];
-              const companyIds = companies.map((c) => Number(c.id));
-
-              cy.logToTerminal(`📊 Found ${companies.length} companies via GraphQL`);
-
-              const hasCompany1 = companyIds.includes(Number(company1.id));
-              const hasCompany2 = companyIds.includes(Number(company2.id));
-
-              if (hasCompany1 && hasCompany2) {
-                cy.logToTerminal("✅ Both expected companies accessible via GraphQL");
-                companies.forEach((c) =>
-                  cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`),
-                );
-              } else if (attempt < maxAttempts) {
-                cy.logToTerminal(
-                  `⏳ Expected companies not visible yet (got IDs: [${companyIds.join(", ")}]), retrying in 5s...`,
-                );
-                cy.wait(5000);
-                checkCompanies(attempt + 1, maxAttempts);
-              } else {
-                throw new Error(
-                  `Expected companies ${company1.id} and ${company2.id} not visible in GraphQL after retries. Got IDs: [${companyIds.join(", ")}].`,
-                );
-              }
-            });
-          });
-        };
-
-        checkCompanies();
+        cy.visit("/customer/company/hierarchy");
+        cy.url().should("include", "/customer/company/hierarchy");
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 20000 }).should(
+          "exist",
+        );
+        cy.logToTerminal("✅ Session is valid and hierarchy page is accessible");
       });
-
-      cy.wait(2000);
 
       // STEP 8: Check Hierarchy Shows Both Companies
       cy.logToTerminal("--- STEP 8: Verify Hierarchy Shows Both Companies ---");
