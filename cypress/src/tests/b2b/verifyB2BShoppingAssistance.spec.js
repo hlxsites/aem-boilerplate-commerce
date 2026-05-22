@@ -106,7 +106,7 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
     // Step 2: Fill registration form using fixture data
     cy.logToTerminal('✍️ Step 2: Filling registration form');
     
-    cy.fixture('userInfo').then(({ sign_up }) => {
+    cy.fixture("userInfo").then(({ sign_up }) => {
       // Generate unique email for this test
       const random = Cypress._.random(0, 10000000);
       testUserEmail = `${random}${sign_up.email}`;
@@ -268,6 +268,6 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
       cy.logToTerminal(
         "✅ TC-01: Complete Shopping Assistance flow completed successfully",
       );
-    };);
+    });
   });
 });
