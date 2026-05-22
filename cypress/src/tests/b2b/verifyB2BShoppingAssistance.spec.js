@@ -294,7 +294,8 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
 
       // Step 11: Logout current user after completing main shopping assistance flow
       cy.logToTerminal("🚪 Step 11: Logging out current user");
-      cy.visit("/customer/account/logout");
+      cy.clearCookies();
+      cy.clearLocalStorage();
       cy.visit("/customer/login");
       cy.get('[name="signIn_form"]').should("be.visible");
 
