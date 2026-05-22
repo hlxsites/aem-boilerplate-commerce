@@ -1,9 +1,15 @@
 import {
   createStandaloneCustomer,
+  assignCustomerToCompany,
+  createCompanyRole,
+  assignRoleToUser,
   deleteCompanyById,
   deleteCustomerById,
 } from "../../support/b2bCompanyAPICalls";
-import { baseCompanyData } from "../../fixtures/companyManagementData";
+import {
+  baseCompanyData,
+  fullAdminPermissions,
+} from "../../fixtures/companyManagementData";
 
 describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
   before(() => {
@@ -104,33 +110,24 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const admin = Cypress.env("sharedAdmin");
         const company1 = Cypress.env("company1");
 
-        const ACCSApiClient = require("../../support/accsClient");
-        const client = new ACCSApiClient();
+        cy.logToTerminal("🔗 Assigning admin to Company 1...");
+        await assignCustomerToCompany(admin.id, company1.id);
 
-        cy.logToTerminal("🔧 Updating admin with Company 1 attributes...");
-        const updatePayload = {
-          customer: {
-            id: admin.id,
-            email: admin.email,
-            firstname: "Shared",
-            lastname: "Admin",
-            website_id: 1,
-            extension_attributes: {
-              company_attributes: {
-                company_id: company1.id,
-                status: 1, // Active
-                job_title: "Company Administrator",
-              },
-            },
-          },
-        };
+        cy.logToTerminal("🎭 Creating full-access admin role in Company 1...");
+        const company1AdminRole = await createCompanyRole({
+          company_id: company1.id,
+          role_name: `Company 1 Administrator ${Date.now()}`,
+          permissions: fullAdminPermissions,
+        });
 
-        await client.put(`/V1/customers/${admin.id}`, updatePayload);
-        cy.logToTerminal("✅ Admin assigned to Company 1");
+        await assignRoleToUser(admin.id, company1AdminRole);
+        Cypress.env("company1AdminRoleId", company1AdminRole.id);
+
+        cy.logToTerminal(
+          `✅ Admin assigned to Company 1 with full permissions (role: ${company1AdminRole.id})`,
+        );
       });
 
-      // STEP 4: Create Company 2 with SAME admin
-      cy.logToTerminal("--- STEP 4: Creating Company 2 with SAME Admin ---");
       // STEP 4: Create Company 2 with SAME admin
       cy.logToTerminal("--- STEP 4: Creating Company 2 with SAME Admin ---");
       cy.then({ timeout: 60000 }, async () => {
@@ -188,6 +185,23 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const ACCSApiClient = require("../../support/accsClient");
         const client = new ACCSApiClient();
 
+        cy.logToTerminal("🔗 Assigning admin to Company 2...");
+        await assignCustomerToCompany(admin.id, company2.id);
+
+        cy.logToTerminal("🎭 Creating full-access admin role in Company 2...");
+        const company2AdminRole = await createCompanyRole({
+          company_id: company2.id,
+          role_name: `Company 2 Administrator ${Date.now()}`,
+          permissions: fullAdminPermissions,
+        });
+
+        await assignRoleToUser(admin.id, company2AdminRole);
+        Cypress.env("company2AdminRoleId", company2AdminRole.id);
+
+        cy.logToTerminal(
+          `✅ Admin assigned to Company 2 with full permissions (role: ${company2AdminRole.id})`,
+        );
+
         cy.logToTerminal(`🔍 Fetching customer ${admin.id} details...`);
         const customer = await client.get(`/V1/customers/${admin.id}`);
 
@@ -197,7 +211,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
           cy.logToTerminal(`   status: ${companyAttr.status}`);
           cy.logToTerminal(`   job_title: ${companyAttr.job_title || "N/A"}`);
         } else {
-          cy.logToTerminal(`   ⚠️ No company_attributes found!`);
+          cy.logToTerminal("   ⚠️ No company_attributes found!");
         }
 
         // Check both companies exist and have this admin
@@ -221,8 +235,6 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
 
       cy.wait(15000); // Wait for indexing and company data propagation
 
-      // STEP 6: Login as Admin
-      cy.logToTerminal("--- STEP 6: Login as Shared Admin ---");
       // STEP 6: Login as Admin
       cy.logToTerminal("--- STEP 6: Login as Shared Admin ---");
       cy.then(() => {
@@ -271,31 +283,59 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
                       companies(input: {}) {
                         items { id name }
                       }
+                      company_hierarchy {
+                        id
+                        name
+                        children { id name }
+                      }
                     }
                   }
                 `,
               },
             }).then((response) => {
+              const gqlErrors = response.body?.errors || [];
+              if (gqlErrors.length) {
+                cy.logToTerminal(
+                  `⚠️ GraphQL errors: ${JSON.stringify(gqlErrors)}`,
+                );
+              }
+
               const companies =
                 response.body.data?.customer?.companies?.items || [];
+              const companyIds = companies.map((c) => Number(c.id));
+              const hierarchyRoot =
+                response.body.data?.customer?.company_hierarchy;
+
               cy.logToTerminal(
                 `📊 Found ${companies.length} companies via GraphQL`,
               );
+              if (hierarchyRoot?.id) {
+                cy.logToTerminal(
+                  `🌳 Hierarchy root from GraphQL: ${hierarchyRoot.name} (ID: ${hierarchyRoot.id})`,
+                );
+              } else {
+                cy.logToTerminal("🌳 Hierarchy root from GraphQL: <empty>");
+              }
 
-              if (companies.length >= 2) {
-                cy.logToTerminal("✅ Both companies accessible via GraphQL");
+              const hasCompany1 = companyIds.includes(Number(company1.id));
+              const hasCompany2 = companyIds.includes(Number(company2.id));
+
+              if (hasCompany1 && hasCompany2) {
+                cy.logToTerminal(
+                  "✅ Both expected companies accessible via GraphQL",
+                );
                 companies.forEach((c) =>
                   cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`),
                 );
               } else if (attempt < maxAttempts) {
                 cy.logToTerminal(
-                  `⏳ Only ${companies.length} companies, retrying in 5s...`,
+                  `⏳ Expected companies not visible yet (got IDs: [${companyIds.join(", ")}]), retrying in 5s...`,
                 );
                 cy.wait(5000);
                 checkCompanies(attempt + 1, maxAttempts);
               } else {
-                cy.logToTerminal(
-                  "⚠️ Companies not fully indexed after 30s, proceeding anyway...",
+                throw new Error(
+                  `Expected companies ${company1.id} and ${company2.id} not visible in GraphQL after retries. Got IDs: [${companyIds.join(", ")}]. GraphQL errors: ${JSON.stringify(gqlErrors)}`,
                 );
               }
             });
