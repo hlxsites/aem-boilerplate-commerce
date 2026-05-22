@@ -208,9 +208,13 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         // Ensure customer-company membership exists for Company 2 as well.
         try {
           await assignCustomerToCompany(admin.id, company2.id);
-          cy.logToTerminal(`✅ Admin ${admin.id} explicitly assigned to Company 2 membership`);
+          cy.logToTerminal(
+            `✅ Admin ${admin.id} explicitly assigned to Company 2 membership`,
+          );
         } catch (error) {
-          cy.logToTerminal(`ℹ️ Company 2 membership assign skipped/non-fatal: ${error.message}`);
+          cy.logToTerminal(
+            `ℹ️ Company 2 membership assign skipped/non-fatal: ${error.message}`,
+          );
         }
 
         if (
@@ -287,7 +291,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
             `🔍 Hierarchy company visibility attempt ${attempt}/${maxAttempts}`,
           );
 
-          cy.wait("@defaultGraphQL");
+          cy.wait(2000);
           cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
             const blockText = $block.text();
             const hasCompany1 = blockText.includes(company1.name);
@@ -318,8 +322,6 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         };
 
         waitForHierarchyCompanies();
-
-        cy.logToTerminal("✅ Both companies are visible in hierarchy!");
 
         // Now verify they are also draggable (for drag & drop functionality)
         cy.get(".commerce-b2b-company-hierarchy [draggable='true']", {
@@ -409,7 +411,6 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const company2 = Cypress.env("company2");
 
         // Wait for hierarchy to fully load
-        cy.wait("@defaultGraphQL");
         cy.wait(3000);
 
         cy.logToTerminal(
