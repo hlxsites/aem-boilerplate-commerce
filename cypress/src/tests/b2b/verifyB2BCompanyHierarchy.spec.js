@@ -259,6 +259,16 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
 
+        // Wait for hierarchy to load data (GraphQL request + rendering)
+        cy.wait("@defaultGraphQL");
+        cy.wait(3000);
+
+        // Wait for at least one draggable item to appear (indicates hierarchy loaded)
+        cy.get(".commerce-b2b-company-hierarchy [draggable='true']", {
+          timeout: 20000,
+        }).should("exist");
+        cy.logToTerminal("✅ Hierarchy loaded with draggable items");
+
         // Check Company 1 name visible in hierarchy (root level)
         cy.logToTerminal(`✅ Checking Company 1 visible: ${company1.name}`);
         cy.get(".commerce-b2b-company-hierarchy")
