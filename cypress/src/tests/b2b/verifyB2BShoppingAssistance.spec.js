@@ -100,8 +100,8 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
 
     cy.get("body").then(($body) => {
       const hasVerifyButton =
-        $body.find('[data-testid*="verify"], [data-testid*="otp"]').length > 0 ||
-        /verify|continue|submit/i.test($body.text());
+        $body.find('[data-testid*="verify"], [data-testid*="otp"]').length >
+          0 || /verify|continue|submit/i.test($body.text());
 
       if (hasVerifyButton) {
         cy.contains("button", /verify|continue|submit/i)
