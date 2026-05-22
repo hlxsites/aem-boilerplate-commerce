@@ -46,11 +46,15 @@
 
 import * as fields from '../../fields';
 import * as actions from '../../actions';
-import { findCustomerByEmail } from '../../support/b2bCompanyAPICalls';
+import {
+  findCustomerByEmail,
+  requestCustomerOtp,
+} from '../../support/b2bCompanyAPICalls';
 
 describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
   let testUserEmail;
   let testUserPassword;
+  const otpReason = 'test';
 
   before(() => {
     cy.logToTerminal('🚀 B2B Shopping Assistance test suite started');
@@ -165,6 +169,22 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
       cy.contains(sign_up.firstName).should('be.visible');
       
       cy.logToTerminal('✅ User successfully registered and auto-logged in');
+
+      // Step 4.2: Find customer ID and request OTP
+      cy.logToTerminal('🔎 Step 4.2: Looking up customer by email to get numeric ID');
+      cy.wrap(null)
+        .then(() => findCustomerByEmail(testUserEmail))
+        .then((customer) => {
+          expect(customer, `Customer should exist for email: ${testUserEmail}`).to.exist;
+          expect(customer.id, 'Customer ID should be numeric').to.be.a('number');
+
+          cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
+          cy.logToTerminal(`📨 Requesting OTP with reason: ${otpReason}`);
+
+          return requestCustomerOtp(customer.id, otpReason).then((otpResponse) => {
+            cy.logToTerminal(`✅ OTP request completed: ${JSON.stringify(otpResponse)}`);
+          });
+        });
 
       // Step 5: Navigate to Seller Assisted Purchasing page
       cy.logToTerminal('🔍 Step 5: Navigating to Seller Assisted Purchasing');
