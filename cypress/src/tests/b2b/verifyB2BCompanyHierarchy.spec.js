@@ -1,5 +1,6 @@
 import {
   createStandaloneCustomer,
+  assignCustomerToCompany,
   deleteCompanyById,
   deleteCustomerById,
 } from "../../support/b2bCompanyAPICalls";
@@ -204,6 +205,14 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const comp2 = await client.get(`/V1/company/${company2.id}`);
         cy.logToTerminal(`   super_user_id: ${comp2.super_user_id}`);
 
+        // Ensure customer-company membership exists for Company 2 as well.
+        try {
+          await assignCustomerToCompany(admin.id, company2.id);
+          cy.logToTerminal(`✅ Admin ${admin.id} explicitly assigned to Company 2 membership`);
+        } catch (error) {
+          cy.logToTerminal(`ℹ️ Company 2 membership assign skipped/non-fatal: ${error.message}`);
+        }
+
         if (
           comp1.super_user_id === admin.id &&
           comp2.super_user_id === admin.id
@@ -244,7 +253,9 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.get(".commerce-b2b-company-hierarchy", { timeout: 20000 }).should(
           "exist",
         );
-        cy.logToTerminal("✅ Session is valid and hierarchy page is accessible");
+        cy.logToTerminal(
+          "✅ Session is valid and hierarchy page is accessible",
+        );
       });
 
       // STEP 8: Check Hierarchy Shows Both Companies
@@ -271,33 +282,42 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         const company1 = Cypress.env("company1");
         const company2 = Cypress.env("company2");
 
-        // Wait for hierarchy to load data (GraphQL request + rendering)
-        cy.wait("@defaultGraphQL");
-        cy.wait(3000);
-
-        // Debug: log page content if companies not found
-        cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
-          const blockText = $block.text();
+        const waitForHierarchyCompanies = (attempt = 1, maxAttempts = 8) => {
           cy.logToTerminal(
-            `📄 Hierarchy block content length: ${blockText.length} chars`,
+            `🔍 Hierarchy company visibility attempt ${attempt}/${maxAttempts}`,
           );
-          if (blockText.length < 50) {
-            cy.logToTerminal(`⚠️ Block appears empty: "${blockText.trim()}"`);
-          }
-        });
 
-        // First, check if companies appear at all (more lenient check with retry)
-        cy.logToTerminal(`🔍 Checking Company 1 visible: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 }).should(
-          "contain.text",
-          company1.name,
-        );
+          cy.wait("@defaultGraphQL");
+          cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
+            const blockText = $block.text();
+            const hasCompany1 = blockText.includes(company1.name);
+            const hasCompany2 = blockText.includes(company2.name);
 
-        cy.logToTerminal(`🔍 Checking Company 2 visible: ${company2.name}`);
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 30000 }).should(
-          "contain.text",
-          company2.name,
-        );
+            cy.logToTerminal(
+              `📄 Hierarchy block content length: ${blockText.length} chars`,
+            );
+
+            if (hasCompany1 && hasCompany2) {
+              cy.logToTerminal("✅ Both companies are visible in hierarchy!");
+              return;
+            }
+
+            if (attempt >= maxAttempts) {
+              throw new Error(
+                `Hierarchy still missing expected companies after retries. Expected: ${company1.name}, ${company2.name}. Actual text length: ${blockText.length}`,
+              );
+            }
+
+            cy.logToTerminal(
+              `⏳ Companies not visible yet, reloading hierarchy in 5s...`,
+            );
+            cy.wait(5000);
+            cy.reload();
+            waitForHierarchyCompanies(attempt + 1, maxAttempts);
+          });
+        };
+
+        waitForHierarchyCompanies();
 
         cy.logToTerminal("✅ Both companies are visible in hierarchy!");
 
