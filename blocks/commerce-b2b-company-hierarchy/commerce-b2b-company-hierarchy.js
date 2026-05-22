@@ -28,6 +28,6 @@ export default async function decorate(block) {
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
   } else {
-    await provider.render(CompanyHierarchy, {})(block);
+    await provider.render(CompanyHierarchy, { showAdminBadge: true })(block);
   }
 }
