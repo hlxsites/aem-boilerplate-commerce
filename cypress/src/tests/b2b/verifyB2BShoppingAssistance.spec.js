@@ -46,6 +46,7 @@
 
 import * as fields from '../../fields';
 import * as actions from '../../actions';
+import { customerShippingAddress } from "../../fixtures";
 import {
   findCustomerByEmail,
   requestCustomerOtp,
@@ -290,7 +291,39 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.logToTerminal(
                 "✅ OTP login verification completed with banner presence validation",
               );
-            },
+
+              // Step 15: Add one simple product to cart
+              cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
+              cy.visit("/products/youth-tee/adb150");
+              cy.get(".product-details__buttons__add-to-cart button")
+                .should("be.visible")
+                .click();
+
+              // Step 16: Go to checkout
+              cy.logToTerminal("💳 Step 16: Navigating to checkout");
+              cy.get(".minicart-wrapper").click();
+              cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+              cy.contains("View Cart").click();
+              cy.get(".dropin-button--primary").contains("Checkout").click();
+              cy.url().should("include", "/checkout");
+
+              // Step 17: Complete checkout and place order
+              cy.logToTerminal(
+                "📦 Step 17: Completing checkout and placing order",
+              );
+              actions.setGuestShippingAddress(customerShippingAddress, true);
+              actions.checkTermsAndConditions();
+              actions.placeOrder();
+
+              // Step 18: Verify order confirmation details
+              cy.logToTerminal(
+                "✅ Step 18: Verifying order confirmation details",
+              );
+              cy.contains("thank you for your order!").should("be.visible");
+              cy.contains("Order placed by an administrator").should(
+                "be.visible",
+              );
+            };,
           );
         });
 
