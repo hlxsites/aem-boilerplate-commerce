@@ -18,7 +18,6 @@ export * from './AcceptInvitationForm';
 export * from './CompanyLoaders';
 export * from './CompanyProfileCard';
 export * from './CompanyStructureCard';
-export * from './CompanyHierarchyContent';
 export * from './CompanyTeamForm';
 export * from './CompanyUserForm';
 export * from './CompanyUsersFilters';

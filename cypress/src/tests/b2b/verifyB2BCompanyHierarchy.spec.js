@@ -274,89 +274,56 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ SUCCESS: Admin sees both companies in hierarchy!");
       });
 
-      // STEP 6: Assign Company2 as child of Company1 using GraphQL
-      cy.logToTerminal("--- STEP 6: Assign Child Company via GraphQL ---");
+      // STEP 6: Assign Company2 as child of Company1 via Drag & Drop UI
+      cy.logToTerminal("--- STEP 6: Assign Child Company via Drag & Drop ---");
       cy.then(() => {
-        const companies = Cypress.env("companiesFromGraphQL");
-
-        if (!companies || companies.length < 2) {
-          throw new Error("Need 2 companies from GraphQL to test assignment");
-        }
-
-        const company1GQL = companies.find(
-          (c) => c.name === Cypress.env("company1").name,
-        );
-        const company2GQL = companies.find(
-          (c) => c.name === Cypress.env("company2").name,
-        );
+        const company1 = Cypress.env("company1");
+        const company2 = Cypress.env("company2");
 
         cy.logToTerminal(
-          `🔗 Assigning ${company2GQL.name} as child of ${company1GQL.name}`,
+          `🔗 Dragging ${company2.name} into ${company1.name}`,
         );
-        cy.logToTerminal(`   Parent ID: ${company1GQL.id}`);
-        cy.logToTerminal(`   Child ID: ${company2GQL.id}`);
+        cy.logToTerminal(`   Parent: ${company1.name} (ID: ${company1.id})`);
+        cy.logToTerminal(`   Child: ${company2.name} (ID: ${company2.id})`);
 
-        cy.getUserTokenCookie().then((token) => {
-          cy.request({
-            method: "POST",
-            url: Cypress.env("graphqlEndPoint"),
-            auth: {
-              bearer: token,
-            },
-            headers: {
-              "content-type": "application/json",
-            },
-            body: {
-              query: `
-                mutation assignChildCompany($input: AssignChildCompanyInput!) {
-                  assignChildCompany(input: $input) {
-                    company_hierarchy {
-                      parent {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                      children {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                    }
-                  }
-                }
-              `,
-              variables: {
-                input: {
-                  parent_company_id: company1GQL.id,
-                  child_company_id: company2GQL.id,
-                },
-              },
-            },
-          }).then((response) => {
-            expect(response.status).to.equal(200);
-
-            const result = response.body.data?.assignChildCompany;
-
-            if (!result || result === null) {
-              cy.logToTerminal(
-                "❌ Mutation returned null - assignment may have failed",
-              );
-              throw new Error("assignChildCompany returned null");
-            }
-
-            cy.logToTerminal("✅ Assignment mutation successful!");
-            cy.logToTerminal(`   Response: ${JSON.stringify(result)}`);
-
-            Cypress.env("assignmentResult", result);
-          });
+        // Ensure hierarchy is expanded
+        cy.get('.commerce-b2b-company-hierarchy').then(($hierarchy) => {
+          const expandButtons = $hierarchy.find('button[aria-expanded="false"]');
+          if (expandButtons.length > 0) {
+            cy.logToTerminal('📂 Expanding hierarchy nodes...');
+            expandButtons.each((idx, btn) => cy.wrap(btn).click());
+            cy.wait(1000);
+          }
         });
-      });
 
-      cy.wait(3000); // Wait for backend processing
+        // Find and prepare draggable company nodes
+        cy.logToTerminal(`🎯 Finding draggable node for ${company2.name}...`);
+        cy.get(".commerce-b2b-company-hierarchy")
+          .contains(company2.name)
+          .closest('[draggable="true"]')
+          .should('have.attr', 'draggable', 'true')
+          .as('dragCompany2');
+
+        cy.logToTerminal(`🎯 Finding drop target for ${company1.name}...`);
+        cy.get(".commerce-b2b-company-hierarchy")
+          .contains(company1.name)
+          .closest('[draggable="true"]')
+          .should('have.attr', 'draggable', 'true')
+          .as('dropCompany1');
+
+        // Perform drag and drop
+        cy.logToTerminal('🔄 Executing drag & drop...');
+        cy.get('@dragCompany2').trigger('dragstart', { dataTransfer: new DataTransfer() });
+        cy.get('@dropCompany1').trigger('dragover');
+        cy.get('@dropCompany1').trigger('drop');
+        cy.wait(3000);
+
+        // Verify success message
+        cy.contains(/successfully.*moved|moved.*successfully|company.*assigned/i, { timeout: 5000 })
+          .should('be.visible');
+
+        cy.logToTerminal("✅ Drag & drop assignment successful!");
+      });
 
       // STEP 7: Refresh page to see updated hierarchy
       cy.logToTerminal("--- STEP 7: Refresh Page to See Updated Hierarchy ---");

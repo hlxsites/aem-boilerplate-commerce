@@ -15,7 +15,6 @@
  * from Adobe.
  *******************************************************************/
 export * from './transform-company';
-export * from './transform-company-hierarchy';
 export * from './transform-company-roles';
 export * from './transform-company-structure';
 export * from './transform-company-team';

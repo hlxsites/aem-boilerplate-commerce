@@ -4,7 +4,6 @@ export interface TreeItem {
     id: string;
     parentId?: string | null;
     label: string;
-    metadata?: Record<string, unknown>;
 }
 export interface RenderNodeArgs {
     item: TreeItem;

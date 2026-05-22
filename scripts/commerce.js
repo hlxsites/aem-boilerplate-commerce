@@ -610,8 +610,50 @@ export async function getConfigFromSession() {
     if (!config.ok) throw new Error('Failed to fetch config');
     const configJSON = await config.json();
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
-    window.sessionStorage.setItem('config', JSON.stringify(configJSON));
-    return configJSON;
+    const test = {
+      public: {
+        default: {
+          "commerce-core-endpoint":
+            "https://integration2-hohc4oi-t35oyq7dhw7ti.us-3.magentosite.cloud/graphql",
+          "commerce-endpoint":
+            "https://integration2-hohc4oi-t35oyq7dhw7ti.us-3.magentosite.cloud/graphql",
+          "commerce-b2b-enabled": true,
+          "commerce-companies-enabled": true,
+          headers: {
+            all: { Store: "default" },
+            cs: {
+              "Magento-Customer-Group":
+                "b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+              "Magento-Store-Code": "main_website_store",
+              "Magento-Store-View-Code": "default",
+              "Magento-Website-Code": "base",
+              "x-api-key": "",
+              "Magento-Environment-Id": "",
+            },
+          },
+          analytics: {
+            "base-currency-code": "USD",
+            environment: "Testing",
+            "environment-id": "LwndYQs37CvkUQk9WEmNkz",
+            "store-code": "main_website_store",
+            "store-id": 1,
+            "store-name": "ACCS B2B Store",
+            "store-url":
+              "https://main--boilerplate-b2b-accs--adobe-commerce.aem.live",
+            "store-view-code": "default",
+            "store-view-id": 1,
+            "store-view-name": "Default Store View",
+            "website-code": "base",
+            "website-id": 1,
+            "website-name": "Main Website",
+          },
+          plugins: { picker: { rootCategory: "2" } },
+        },
+      },
+      ":expiry": 1779451107,
+    };
+    window.sessionStorage.setItem("config", JSON.stringify(test));
+    return test;
   }
 }
 

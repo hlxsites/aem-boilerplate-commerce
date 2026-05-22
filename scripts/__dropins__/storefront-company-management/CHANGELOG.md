@@ -1,5 +1,13 @@
 # @dropins/storefront-company-management
 
+## 1.3.0-alpha-20260519164312
+
+### Minor Changes
+
+- 4f14206: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
 ## 1.2.0
 
 ### Minor Changes
