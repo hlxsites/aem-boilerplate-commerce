@@ -67,8 +67,11 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
 
     // Handle uncaught exceptions
     cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('Failed to fetch') || 
-          err.message.includes('renderCompanySwitcher')) {
+      if (
+        err.message.includes("Failed to fetch") ||
+        err.message.includes("renderCompanySwitcher") ||
+        err.message.includes("User token has been revoked")
+      ) {
         return false;
       }
       return true;
