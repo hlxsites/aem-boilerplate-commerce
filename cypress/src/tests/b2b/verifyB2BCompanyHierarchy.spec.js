@@ -120,7 +120,7 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(`✅ Same admin is super_user for both companies`);
       });
 
-      cy.wait(10000); // Wait for indexing and company data propagation
+      cy.wait(15000); // Wait for indexing and company data propagation
 
       // STEP 3: Login as Admin
       cy.logToTerminal("--- STEP 3: Login as Shared Admin ---");
@@ -140,8 +140,67 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal("✅ Admin logged in");
       });
 
-      // Wait for company data to be available
-      cy.wait(5000);
+      // Wait for company data to be available via GraphQL
+      cy.wait(10000);
+
+      // STEP 4: Verify companies are accessible via GraphQL first
+      cy.logToTerminal("--- STEP 4: Check companies are accessible via GraphQL ---");
+      cy.then(() => {
+        const company1 = Cypress.env("company1");
+        const company2 = Cypress.env("company2");
+
+        cy.getUserTokenCookie().then((token) => {
+          // Retry GraphQL query until companies appear (max 30 seconds)
+          const checkCompanies = (attempt = 1, maxAttempts = 6) => {
+            cy.logToTerminal(`🔍 GraphQL check attempt ${attempt}/${maxAttempts}...`);
+            
+            cy.request({
+              method: "POST",
+              url: Cypress.env("graphqlEndPoint"),
+              auth: { bearer: token },
+              headers: { "content-type": "application/json" },
+              body: {
+                query: `
+                  query {
+                    customer {
+                      companies(input: {}) {
+                        items { id name }
+                      }
+                    }
+                  }
+                `,
+              },
+            }).then((response) => {
+           Debug: log page content if companies not found
+        cy.get(".commerce-b2b-company-hierarchy").then(($block) => {
+          const blockText = $block.text();
+          cy.logToTerminal(`📄 Hierarchy block content length: ${blockText.length} chars`);
+          if (blockText.length < 50) {
+            cy.logToTerminal(`⚠️ Block appears empty: "${blockText.trim()}"`);
+          }
+        });
+
+        // First, check if companies appear at all (more lenient check with retry)
+        cy.logToTerminal(`🔍 Checking Company 1 visible: ${company1.name}`);
+        cy.get(".commerce-b2b-company-hierarchy", { timeout: 3
+              if (companies.length >= 2) {
+                cy.logToTerminal("✅ Both companies accessible via GraphQL");
+                companies.forEach(c => cy.logToTerminal(`  - ${c.name} (ID: ${c.id})`));
+              } else if (attempt < maxAttempts) {
+                cy.logToTerminal(`⏳ Only ${companies.length} companies, retrying in 5s...`);
+                cy.wait(5000);
+                checkCompanies(attempt + 1, maxAttempts);
+              } else {
+                cy.logToTerminal("⚠️ Companies not fully indexed after 30s, proceeding anyway...");
+              }
+            });
+          };
+          
+          checkCompanies();
+        });
+      });
+
+      cy.wait(2000);
 
       // STEP 5: Check Hierarchy Shows Both Companies
       cy.logToTerminal("--- STEP 5: Verify Hierarchy Shows Both Companies ---");
