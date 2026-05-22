@@ -199,6 +199,23 @@ async function createCompany(companyData) {
   await client.put(`/V1/customers/${customerId}`, updatePayload);
   safeLog('✅ Remote shopping assistance enabled for admin');
 
+  // Step 4: Generate OTP for remote login
+  safeLog('🔐 Generating OTP for admin remote login...');
+  
+  try {
+    const otpResponse = await client.post(
+      `/V1/customer/${customerId}/otp`,
+      {
+        customerId: customerId,
+        reason: 'company-admin-setup',
+      }
+    );
+    safeLog('✅ OTP generated successfully:', otpResponse);
+  } catch (error) {
+    safeLog('⚠️ OTP generation failed (non-critical):', error.message);
+    // Don't fail company creation if OTP fails
+  }
+
   return {
     id: company.id,
     name: company.company_name,

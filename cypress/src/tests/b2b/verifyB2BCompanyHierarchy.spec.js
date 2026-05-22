@@ -75,34 +75,6 @@ describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
         );
       });
 
-      // STEP 1.5: Test OTP endpoint for created admin
-      cy.logToTerminal("--- STEP 1.5: Testing OTP endpoint ---");
-      cy.then({ timeout: 30000 }, async () => {
-        const admin = Cypress.env("sharedAdmin");
-        const ACCSApiClient = require("../../support/accsClient");
-        const client = new ACCSApiClient();
-
-        cy.logToTerminal(`🔐 Testing OTP for customer ID: ${admin.id}`);
-
-        try {
-          const otpResponse = await client.post(
-            `/V1/customer/${admin.id}/otp`,
-            {
-              customerId: admin.id,
-              reason: "test-hierarchy-verification",
-            },
-          );
-
-          cy.logToTerminal(
-            `✅ OTP endpoint response: ${JSON.stringify(otpResponse)}`,
-          );
-          cy.logToTerminal("✅ OTP test completed successfully");
-        } catch (error) {
-          cy.logToTerminal(`⚠️ OTP test failed: ${error.message}`);
-          // Don't fail the test, just log the error
-        }
-      });
-
       // STEP 2: Create Company 2 with SAME Admin
       cy.logToTerminal("--- STEP 2: Creating Company 2 with SAME Admin ---");
       cy.then({ timeout: 60000 }, async () => {
