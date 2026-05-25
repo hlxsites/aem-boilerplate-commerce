@@ -504,8 +504,21 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.logToTerminal(`✅ ${phaseLabel}: Order submitted`);
   };
 
-  const signInAsAdminWithOtp = (email, otp) => {
+  const resetAuthStateAndOpenLogin = () => {
+    cy.logToTerminal("🧹 Clearing cookies/storage before admin OTP login");
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });
+
     cy.visit("/customer/login");
+    cy.reload();
+    cy.url().should("include", "/customer/login");
+    cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
+  };
+
+  const signInAsAdminWithOtp = (email, otp) => {
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
       .within(() => {
@@ -524,6 +537,19 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           .and("not.be.disabled")
           .click({ force: true });
       });
+
+    // Guard against occasional missed submit handling on first click.
+    cy.location("pathname", { timeout: 15000 }).then((pathname) => {
+      if (pathname.includes("/customer/login")) {
+        cy.logToTerminal(
+          "ℹ️ Still on login page after submit, retrying submit once",
+        );
+        cy.get('main .auth-sign-in-form button[type="submit"]')
+          .should("be.visible")
+          .and("not.be.disabled")
+          .click({ force: true });
+      }
+    });
   };
 
   before(() => {
@@ -756,8 +782,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             );
 
             cy.logToTerminal("🚪 Step 16: Logging out before admin OTP login");
-            cy.clearCookies();
-            cy.clearLocalStorage();
+            resetAuthStateAndOpenLogin();
 
             cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
             signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
