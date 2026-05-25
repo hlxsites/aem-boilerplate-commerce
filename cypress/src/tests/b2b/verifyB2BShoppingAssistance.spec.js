@@ -127,11 +127,11 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
 
         // Log submit button info using specific selector
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
+        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
           cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
         });
         
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
+        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
           .click();
@@ -195,12 +195,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         });
         
         // Log button state separately using specific selector
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btns => {
+        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]').then($btns => {
           cy.logToTerminal(`📍 Retry - Found ${$btns.length} submit buttons`);
         });
         
         // Click first button to avoid multiple elements error
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
+        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]')
           .first()
           .should("be.visible")
           .and("not.be.disabled")
