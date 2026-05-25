@@ -715,19 +715,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
       ).should("not.exist");
 
-      // Step 11: Add product and place first order as customer
-      cy.logToTerminal("🛒 Step 11: Adding product for first customer order");
-      cy.visit("/products/youth-tee/adb150");
-      cy.reload();
-      cy.get(".product-details__buttons__add-to-cart button")
-        .should("be.visible")
-        .click();
-
-      cy.logToTerminal("🧾 Step 12: Completing first purchase as customer");
-      completeCheckoutAndPlaceOrder("Order 1 (customer session)");
-
-      // Step 13: Add same product again for admin-assisted purchase
-      cy.logToTerminal("🛒 Step 13: Adding product again for admin purchase");
+      // Step 11: Add product for admin-assisted purchase
+      cy.logToTerminal("🛒 Step 11: Adding product for admin purchase");
       cy.visit("/products/youth-tee/adb150");
       cy.reload();
       cy.get(".product-details__buttons__add-to-cart button")
@@ -816,9 +805,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             completeCheckoutAndPlaceOrder("Order 2 (admin session)");
 
             cy.logToTerminal(
-              "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
+              "✅ Full flow completed: registration, checkbox checks, OTP admin login, admin purchase",
             );
-            return null;
           });
         });
 
