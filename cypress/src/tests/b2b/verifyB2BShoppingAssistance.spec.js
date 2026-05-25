@@ -56,19 +56,38 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   let testUserEmail;
   const otpReason = "test";
 
-  const typeIntoVisibleField = (selectors, value) => {
+  const typeIntoVisibleField = (selectors, value, fieldLabel = "field") => {
     const selectorQuery = selectors.join(", ");
 
-    cy.get("body", { timeout: 60000 }).should(($body) => {
-      const hasVisibleField = selectors.some(
-        (selector) => $body.find(`${selector}:visible`).length > 0,
-      );
+    const waitForVisibleField = (attempt = 1, maxAttempts = 8) =>
+      cy.get("body", { timeout: 5000 }).then(($body) => {
+        const visibleSelectors = selectors.filter(
+          (selector) => $body.find(`${selector}:visible`).length > 0,
+        );
 
-      expect(
-        hasVisibleField,
-        `expected visible field for selectors: ${selectorQuery}`,
-      ).to.equal(true);
-    });
+        if (visibleSelectors.length > 0) {
+          cy.logToTerminal(
+            `✅ ${fieldLabel} is visible via: ${visibleSelectors[0]}`,
+          );
+          return;
+        }
+
+        if (attempt >= maxAttempts) {
+          throw new Error(
+            `Timed out waiting for visible ${fieldLabel}. Selectors: ${selectorQuery}`,
+          );
+        }
+
+        cy.logToTerminal(
+          `⏳ ${fieldLabel} is not visible yet (${attempt}/${maxAttempts}), scrolling checkout section and retrying`,
+        );
+        scrollCheckoutShippingSection();
+        return Cypress.Promise.delay(1000).then(() =>
+          waitForVisibleField(attempt + 1, maxAttempts),
+        );
+      });
+
+    waitForVisibleField();
 
     cy.get(selectorQuery)
       .filter(":visible")
@@ -127,6 +146,69 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       ).to.be.greaterThan(0);
     });
   };
+
+  const waitForVisibleSelectors = (
+    selectors,
+    label,
+    attempt = 1,
+    maxAttempts = 8,
+  ) => {
+    const selectorQuery = selectors.join(", ");
+
+    return cy.get("body", { timeout: 5000 }).then(($body) => {
+      const visibleSelectors = selectors.filter(
+        (selector) => $body.find(`${selector}:visible`).length > 0,
+      );
+
+      if (visibleSelectors.length > 0) {
+        cy.logToTerminal(`✅ ${label} is visible via: ${visibleSelectors[0]}`);
+        return;
+      }
+
+      if (attempt >= maxAttempts) {
+        const bodyText = $body.text().replace(/\s+/g, " ").trim().slice(0, 600);
+        cy.logToTerminal(
+          `⚠️ ${label} debug before failure. Selectors: ${selectorQuery}`,
+        );
+        cy.logToTerminal(`⚠️ ${label} body preview: ${bodyText}`);
+        throw new Error(
+          `Timed out waiting for visible ${label}. Selectors: ${selectorQuery}`,
+        );
+      }
+
+      cy.logToTerminal(
+        `⏳ ${label} not visible yet (${attempt}/${maxAttempts}), scrolling and retrying`,
+      );
+      scrollCheckoutShippingSection();
+      return Cypress.Promise.delay(1000).then(() =>
+        waitForVisibleSelectors(selectors, label, attempt + 1, maxAttempts),
+      );
+    });
+  };
+
+  const waitForTextInBody = (text, label, attempt = 1, maxAttempts = 8) =>
+    cy.get("body", { timeout: 5000 }).then(($body) => {
+      const bodyText = $body.text().replace(/\s+/g, " ");
+
+      if (bodyText.includes(text)) {
+        cy.logToTerminal(`✅ ${label} text found: ${text}`);
+        return;
+      }
+
+      if (attempt >= maxAttempts) {
+        cy.logToTerminal(`⚠️ ${label} text not found: ${text}`);
+        cy.logToTerminal(`⚠️ ${label} body preview: ${bodyText.trim().slice(0, 600)}`);
+        throw new Error(`Timed out waiting for text "${text}" in ${label}`);
+      }
+
+      cy.logToTerminal(
+        `⏳ ${label} text not found yet (${attempt}/${maxAttempts}), scrolling and retrying`,
+      );
+      scrollCheckoutShippingSection();
+      return Cypress.Promise.delay(1000).then(() =>
+        waitForTextInBody(text, label, attempt + 1, maxAttempts),
+      );
+    });
 
   const scrollCheckoutShippingSection = () => {
     cy.get(".checkout__shipping-form", { timeout: 60000 })
@@ -450,6 +532,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               cy.logToTerminal(
                 "📝 Waiting for shipping form and filling address for new user",
               );
+              scrollCheckoutShippingSection();
               typeIntoVisibleField(
                 [
                   'input[name="firstName"]',
@@ -457,6 +540,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="shippingAddress.firstName"]',
                 ],
                 customerShippingAddress.firstName,
+                "shipping first name",
               );
               typeIntoVisibleField(
                 [
@@ -465,6 +549,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="shippingAddress.lastName"]',
                 ],
                 customerShippingAddress.lastName,
+                "shipping last name",
               );
               typeIntoVisibleField(
                 [
@@ -473,6 +558,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="shippingAddress.street"]',
                 ],
                 customerShippingAddress.street,
+                "shipping street line 1",
               );
               typeIntoVisibleField(
                 [
@@ -480,6 +566,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="street[1]"]',
                 ],
                 customerShippingAddress.street1,
+                "shipping street line 2",
               );
               cy.get("body").then(($body) => {
                 if ($body.find('select[name="region"]:visible').length > 0) {
@@ -490,12 +577,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   typeIntoVisibleField(
                     ['input[name="region"]', 'input[name="shippingAddress.region"]'],
                     customerShippingAddress.region,
+                    "shipping region",
                   );
                 }
               });
               typeIntoVisibleField(
                 ['input[name="city"]', 'input[name="shippingAddress.city"]'],
                 customerShippingAddress.city,
+                "shipping city",
               );
               typeIntoVisibleField(
                 [
@@ -504,6 +593,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="shippingAddress.postcode"]',
                 ],
                 customerShippingAddress.postCode,
+                "shipping postcode",
               );
               typeIntoVisibleField(
                 [
@@ -512,6 +602,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   'input[name="shippingAddress.telephone"]',
                 ],
                 customerShippingAddress.telephone,
+                "shipping telephone",
               );
 
               // Requested flow: after form fill, reload checkout and continue with methods.
@@ -524,6 +615,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               ensureShippingMethodsReady();
 
               // Ensure shipping method is selected when method radios are present
+              waitForVisibleSelectors(
+                [
+                  'input[name="shipping-method"]',
+                  'input[name="shipping_method"]',
+                  'input[data-testid="shipping-method-radioButton"]',
+                ],
+                "shipping methods",
+              );
               cy.get("body").then(($body) => {
                 const shippingMethodSelector =
                   'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
@@ -543,6 +642,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               });
 
               // Ensure payment method is selected (same pattern as checkout tests)
+              waitForTextInBody(checkMoneyOrder.name, "payment section");
               cy.contains(checkMoneyOrder.name).should("be.visible");
               cy.logToTerminal(
                 `💰 Selecting payment method: ${checkMoneyOrder.name}`,
