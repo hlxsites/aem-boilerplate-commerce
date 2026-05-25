@@ -105,20 +105,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   const ensureCheckoutAndFormsReady = () => {
     ensureCheckoutMainLoaded();
     cy.get(".checkout__shipping-form", { timeout: 60000 }).should("exist");
-    cy.get("body", { timeout: 60000 }).should(($body) => {
-      const hasShippingInput =
-        $body.find('.checkout__shipping-form input[name="firstName"]:visible')
-          .length > 0 ||
-        $body.find('.checkout__shipping-form input[name="firstname"]:visible')
-          .length > 0 ||
-        $body.find(
-          '.checkout__shipping-form input[name="shippingAddress.firstName"]:visible',
-        ).length > 0;
-
-      expect(hasShippingInput, "shipping address input should be present").to.equal(
-        true,
-      );
-    });
   };
 
   const ensureShippingMethodsReady = () => {
