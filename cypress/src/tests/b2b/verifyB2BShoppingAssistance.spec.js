@@ -104,6 +104,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
+    cy.logToTerminal(`🔐 Attempting OTP login with email: ${email}, OTP: ${otp}`);
+    
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
       .within(() => {
@@ -117,29 +119,89 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           .clear({ force: true })
           .type(otp, { force: true });
 
+        // Verify values were entered correctly
+        cy.get('input[name="email"]').should('have.value', email);
+        cy.get('input[name="password"]').should('have.value', otp);
+        cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
+
         cy.get('button[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
+          .then($btn => {
+            cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
+          })
           .click({ force: true });
 
-        // Give post-submit auth state a brief moment to settle.
+        cy.logToTerminal("⏳ Waiting 5s after first submit...");
         cy.wait(5000);
       });
 
+    // Log current URL after submit
+    cy.url().then(url => {
+      cy.logToTerminal(`📍 Current URL after submit: ${url}`);
+    });
+
+    // Check for any error messages on the page
+    cy.get('body').then($body => {
+      const errorSelectors = [
+        '.error-message',
+        '[role="alert"]',
+        '.message-error',
+        '.field-error',
+        '.auth-sign-in-form__error',
+        '.dropin-notification--error'
+      ];
+      
+      errorSelectors.forEach(selector => {
+        const $error = $body.find(selector);
+        if ($error.length > 0) {
+          cy.logToTerminal(`❌ Error found (${selector}): ${$error.text().trim()}`);
+        }
+      });
+      
+      const allErrors = $body.find(errorSelectors.join(', ')).text().trim();
+      if (!allErrors) {
+        cy.logToTerminal('✅ No error messages found on page');
+      }
+    });
+
     // Guard against occasional missed submit handling on first click.
     cy.location("pathname", { timeout: 15000 }).then((pathname) => {
+      cy.logToTerminal(`📍 Current pathname: ${pathname}`);
+      
       if (pathname.includes("/customer/login")) {
-        cy.logToTerminal(
-          "ℹ️ Still on login page after submit, retrying submit once",
-        );
+        cy.logToTerminal("ℹ️ Still on login page after submit, retrying submit once");
+        
+        // Check form state before retry
+        cy.get('main .auth-sign-in-form').then($form => {
+          cy.logToTerminal(`📋 Form visible: ${$form.is(':visible')}`);
+          
+          const emailValue = $form.find('input[name="email"]').val();
+          const passValue = $form.find('input[name="password"]').val();
+          cy.logToTerminal(`📋 Email field value: ${emailValue}`);
+          cy.logToTerminal(`📋 Password field length: ${passValue ? passValue.length : 0}`);
+        });
+        
         cy.get('main .auth-sign-in-form button[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
+          .then($btn => {
+            cy.logToTerminal(`📍 Retry - Submit button state: visible=${$btn.is(':visible')}, disabled=${$btn.is(':disabled')}`);
+          })
           .click({ force: true });
+        
+        cy.logToTerminal("⏳ Waiting 8s after retry submit...");
+        cy.wait(8000);
+        
+        cy.url().then(url => {
+          cy.logToTerminal(`📍 URL after retry: ${url}`);
+        });
         
         // Explicitly wait for redirect away from login page
         cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
         cy.logToTerminal("✅ Successfully redirected after retry");
+      } else {
+        cy.logToTerminal("✅ Successfully redirected on first submit");
       }
     });
   };
