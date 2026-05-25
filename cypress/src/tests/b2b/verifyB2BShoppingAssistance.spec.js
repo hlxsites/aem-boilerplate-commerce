@@ -659,6 +659,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
+      // Debug: read runtime config from localStorage after registration.
+      cy.window().then((win) => {
+        const configValue = win.localStorage.getItem("config");
+        cy.logToTerminal(
+          `🗂 localStorage config: ${configValue || "<empty>"}`,
+        );
+      });
+
       // Skipping seller-assisted UI checks for now.
       // Minimal flow requested: register user -> request OTP -> stop.
 
