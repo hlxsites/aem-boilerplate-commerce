@@ -23,6 +23,7 @@ export * from './getCountries';
 export * from './getRegions';
 export * from './updateCustomerAddress';
 export * from './getCustomer';
+export * from './getAdminAssistanceActions';
 export * from './removeCustomerAddress';
 export * from './getCustomerPaymentTokens';
 export * from './deletePaymentToken';

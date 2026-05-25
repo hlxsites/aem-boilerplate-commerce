@@ -15,9 +15,15 @@
  * from Adobe.
  *******************************************************************/
 export declare const useGetStoreConfigs: () => {
+    loading: boolean;
     passwordConfigs: {
         minLength: number;
         requiredCharacterClasses: number;
+    } | null;
+    remoteShoppingAssistanceConfigs: {
+        shoppingAssistanceEnabled: boolean;
+        shoppingAssistanceCheckboxTitle: string;
+        shoppingAssistanceCheckboxTooltip: string;
     } | null;
 };
 //# sourceMappingURL=useGetStoreConfigs.d.ts.map

@@ -19,6 +19,9 @@ export interface StoreConfigProps {
     minimum_password_length: number;
     required_character_classes_number: string;
     store_code: string;
+    shopping_assistance_enabled?: boolean;
+    shopping_assistance_checkbox_title?: string;
+    shopping_assistance_checkbox_tooltip?: string;
 }
 export interface GetStoreConfigResponse {
     data: {
