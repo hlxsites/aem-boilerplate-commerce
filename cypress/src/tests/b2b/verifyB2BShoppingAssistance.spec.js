@@ -796,27 +796,65 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
           cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
 
-          const otpReasonWithEmail = `test:${testUserEmail}`;
-          cy.logToTerminal(
-            `📨 Step 16: Requesting OTP with reason: ${otpReasonWithEmail}`,
-          );
-          return requestCustomerOtp(customer.id, otpReasonWithEmail).then((otpResponse) => {
-            expect(otpResponse, "OTP response should exist").to.exist;
-            expect(otpResponse.otp, "OTP code should be present").to.be.a(
-              "string",
-            );
-
+          const signInAsAdminWithFreshOtp = (
+            loginAttempt = 1,
+            maxLoginAttempts = 3,
+            reasonPrefix = "step17-login",
+          ) => {
+            const otpReason = `${reasonPrefix}:${testUserEmail}:${loginAttempt}:${Date.now()}`;
             cy.logToTerminal(
-              `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
+              `📨 Requesting OTP for admin login (attempt ${loginAttempt}/${maxLoginAttempts}) with reason: ${otpReason}`,
             );
-            cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
-            cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            // Step 17: Login as admin using OTP
-            cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-            cy.visit("/customer/login");
-            signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
-            cy.url().should("include", "/customer/account");
+            return requestCustomerOtp(customer.id, otpReason).then((otpResponse) => {
+              expect(otpResponse, "OTP response should exist").to.exist;
+              expect(otpResponse.otp, "OTP code should be present").to.be.a(
+                "string",
+              );
+
+              cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
+              cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
+
+              cy.visit("/customer/login");
+              signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+
+              return cy.location("pathname", { timeout: 20000 }).then((pathname) => {
+                if (pathname.includes("/customer/account")) {
+                  cy.logToTerminal(
+                    `✅ Admin OTP login succeeded on attempt ${loginAttempt}/${maxLoginAttempts}`,
+                  );
+                  return;
+                }
+
+                if (loginAttempt >= maxLoginAttempts) {
+                  throw new Error(
+                    `Admin OTP login failed after ${maxLoginAttempts} attempts (last path: ${pathname}).`,
+                  );
+                }
+
+                cy.logToTerminal(
+                  `⚠️ Admin OTP login attempt ${loginAttempt}/${maxLoginAttempts} failed (path: ${pathname}). Clearing auth state and retrying with fresh OTP`,
+                );
+                cy.clearCookies();
+                cy.clearLocalStorage();
+                cy.window().then((win) => {
+                  win.sessionStorage.clear();
+                });
+
+                return Cypress.Promise.delay(1000).then(() =>
+                  signInAsAdminWithFreshOtp(
+                    loginAttempt + 1,
+                    maxLoginAttempts,
+                    reasonPrefix,
+                  ),
+                );
+              });
+            });
+          };
+
+          // Step 17: Login as admin using OTP
+          cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
+          return signInAsAdminWithFreshOtp(1, 3, "step17-login").then(() => {
 
             // Step 18: Complete order in admin session
             cy.logToTerminal("🧾 Step 18: Completing purchase as admin");
@@ -846,20 +884,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                 win.sessionStorage.clear();
               });
 
-              const reloginReason = `${reasonPrefix}:${testUserEmail}:${nextAttempt}`;
-              return requestCustomerOtp(customer.id, reloginReason).then(
-                (newOtpResponse) => {
-                  expect(
-                    newOtpResponse.otp,
-                    "Re-login OTP code should be present",
-                  ).to.be.a("string");
-
-                  cy.visit("/customer/login");
-                  signInAsAdminWithOtp(testUserEmail, newOtpResponse.otp);
-                  cy.url().should("include", "/customer/account");
-
-                  return verifySellerAssistedActivity(nextAttempt, maxAttempts);
-                },
+              return signInAsAdminWithFreshOtp(
+                1,
+                3,
+                `${reasonPrefix}-reauth-${nextAttempt}`,
+              ).then(() =>
+                verifySellerAssistedActivity(nextAttempt, maxAttempts),
               );
             };
 
