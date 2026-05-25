@@ -659,79 +659,17 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Debug: runtime config is stored in sessionStorage (not localStorage).
-      cy.window().then((win) => {
-        const localConfigValue = win.localStorage.getItem("config");
-        const sessionConfigValue = win.sessionStorage.getItem("config");
-        const graphqlEndPoint = Cypress.env("graphqlEndPoint");
-
-        const toB64 = (value) => {
-          if (!value) return "<empty>";
-          try {
-            return win.btoa(unescape(encodeURIComponent(String(value))));
-          } catch (e) {
-            return "<encode_error>";
-          }
-        };
-
-        const describeUrl = (value, label) => {
-          if (!value) {
-            cy.logToTerminal(`⚙️ ${label}: <empty>`);
-            return;
-          }
-
-          try {
-            const parsed = new URL(value);
-            cy.logToTerminal(
-              `⚙️ ${label} parts -> protocol=${parsed.protocol} host=${parsed.host} path=${parsed.pathname}`,
-            );
-          } catch (e) {
-            cy.logToTerminal(`⚙️ ${label} raw (non-url): ${value}`);
-          }
-
-          cy.logToTerminal(`⚙️ ${label} length: ${String(value).length}`);
-          cy.logToTerminal(`⚙️ ${label} b64: ${toB64(value)}`);
-        };
-
-        cy.logToTerminal(
-          `🗂 localStorage config: ${localConfigValue || "<empty>"}`,
-        );
-        cy.logToTerminal(
-          `🗂 sessionStorage config: ${sessionConfigValue || "<empty>"}`,
-        );
-        cy.logToTerminal(
-          `⚙️ Cypress.env graphqlEndPoint: ${graphqlEndPoint || "<empty>"}`,
-        );
-
-        if (sessionConfigValue) {
-          try {
-            const parsedConfig = JSON.parse(sessionConfigValue);
-            const defaultPublicConfig = parsedConfig?.public?.default || {};
-            describeUrl(
-              defaultPublicConfig["commerce-endpoint"],
-              "sessionStorage config public.default.commerce-endpoint",
-            );
-            describeUrl(
-              defaultPublicConfig["commerce-core-endpoint"],
-              "sessionStorage config public.default.commerce-core-endpoint",
-            );
-          } catch (e) {
-            cy.logToTerminal("⚠️ Failed to parse sessionStorage config JSON");
-          }
-        }
-
-        describeUrl(graphqlEndPoint, "Cypress.env graphqlEndPoint");
-      });
-
-      // Skipping seller-assisted UI checks for now.
-      // Minimal flow requested: register user -> request OTP -> stop.
+      // Minimal flow requested: register -> logout -> get OTP -> login as admin.
+      cy.logToTerminal("🚪 Step 5: Logging out after registration");
+      cy.contains("button", /sign out|logout/i).first().click({ force: true });
+      cy.url().should("include", "/customer/login");
 
       // ======================================================================
       // TODO START: OTP re-login + checkout order placement extension
       // ======================================================================
 
-      // Step 11: Lookup customer for OTP flow
-      cy.logToTerminal("🔎 Step 11: Looking up customer for admin OTP login");
+      // Step 6: Lookup customer for OTP flow
+      cy.logToTerminal("🔎 Step 6: Looking up customer for admin OTP login");
       cy.wrap(null)
         .then(() => findCustomerByEmail(testUserEmail))
         .then((customer) => {
@@ -745,7 +683,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
           const otpReasonWithEmail = `test:${testUserEmail}`;
           cy.logToTerminal(
-            `📨 Step 12: Requesting OTP with reason: ${otpReasonWithEmail}`,
+            `📨 Step 7: Requesting OTP with reason: ${otpReasonWithEmail}`,
           );
           return requestCustomerOtp(customer.id, otpReasonWithEmail).then((otpResponse) => {
             expect(otpResponse, "OTP response should exist").to.exist;
@@ -759,8 +697,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
             cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            // Paused flow for manual OTP verification.
-            // The test intentionally ends after OTP is received.
+            // Step 8: Login as admin using OTP
+            cy.logToTerminal("🔐 Step 8: Signing in as admin with OTP password");
+            signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+            cy.url().should("include", "/customer/account");
+
+            // Step 9+: intentionally not executed in this simplified scenario
 
             // Step 13: First order must be placed as the customer
             // cy.logToTerminal("🧾 Step 13: Placing first order as customer");
@@ -812,7 +754,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             // );
             // completeCheckoutAndPlaceOrder("Order 2 (admin session)");
 
-            cy.logToTerminal("✅ Flow intentionally stopped after OTP retrieval");
+            cy.logToTerminal("✅ Minimal flow completed: register -> logout -> OTP -> admin login");
             return null;
           });
         });
