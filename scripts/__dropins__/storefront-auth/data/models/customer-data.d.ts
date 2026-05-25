@@ -19,6 +19,7 @@ export interface CustomerModel {
     lastName: string;
     email: string;
     groupUid: string;
+    allowRemoteShoppingAssistance?: boolean;
     customAttributes?: Record<string, string>[];
     errors?: {
         message: string;

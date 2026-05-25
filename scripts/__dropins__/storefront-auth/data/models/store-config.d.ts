@@ -20,5 +20,9 @@ export interface StoreConfigModel {
     requiredCharacterClasses: number;
     createAccountConfirmation: boolean;
     customerAccessTokenLifetime: number;
+    websiteName: string;
+    shoppingAssistanceEnabled: boolean;
+    shoppingAssistanceCheckboxTitle: string;
+    shoppingAssistanceCheckboxTooltip: string;
 }
 //# sourceMappingURL=store-config.d.ts.map

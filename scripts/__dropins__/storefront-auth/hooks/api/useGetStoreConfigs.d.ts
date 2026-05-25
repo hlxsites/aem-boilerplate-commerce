@@ -20,5 +20,10 @@ export declare const useGetStoreConfigs: () => {
         requiredCharacterClasses: number;
     } | null;
     isEmailConfirmationRequired: boolean;
+    remoteShoppingAssistanceConfigs: {
+        shoppingAssistanceEnabled: boolean;
+        shoppingAssistanceCheckboxTitle: string;
+        shoppingAssistanceCheckboxTooltip: string;
+    } | null;
 };
 //# sourceMappingURL=useGetStoreConfigs.d.ts.map
