@@ -659,8 +659,83 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Minimal flow requested: register -> logout -> get OTP -> login as admin.
-      cy.logToTerminal("🚪 Step 5: Logging out after registration");
+      // Step 5: Navigate to Seller Assisted Purchasing page
+      cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
+      cy.visit("/customer/seller-assisted-purchasing");
+
+      // Verify page loaded with correct header
+      cy.get('[data-testid="dropin-header-container"]')
+        .should("be.visible")
+        .contains("Seller assisted purchasing");
+      cy.logToTerminal("✅ Seller Assisted Purchasing page loaded");
+
+      // Step 6: Verify checkbox exists and is checked
+      cy.logToTerminal(
+        "✅ Step 6: Verifying Remote Shopping Assistance checkbox is enabled",
+      );
+      cy.get('input[name="allowRemoteShoppingAssistance"]')
+        .should("exist")
+        .then(($checkbox) => {
+          if (!$checkbox.is(":checked")) {
+            cy.logToTerminal(
+              "ℹ️ Remote Shopping Assistance checkbox was not checked after registration, enabling it now",
+            );
+            cy.wrap($checkbox).check({ force: true });
+          }
+        })
+        .should("be.checked");
+
+      // Step 7: Uncheck the checkbox
+      cy.logToTerminal("⬜ Step 7: Disabling Remote Shopping Assistance");
+      cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
+        force: true,
+      });
+      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+        "not.be.checked",
+      );
+
+      // Step 8: Verify disabled message appears
+      cy.logToTerminal("🔍 Step 8: Verifying disabled message appears");
+      cy.contains(
+        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      ).should("be.visible");
+
+      // Step 9: Re-enable the checkbox
+      cy.logToTerminal("✅ Step 9: Re-enabling Remote Shopping Assistance");
+      cy.get('input[name="allowRemoteShoppingAssistance"]').check({
+        force: true,
+      });
+      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+        "be.checked",
+      );
+
+      // Step 10: Verify disabled message is gone
+      cy.logToTerminal("🔍 Step 10: Verifying disabled message is gone");
+      cy.contains(
+        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      ).should("not.exist");
+
+      // Step 11: Add product and place first order as customer
+      cy.logToTerminal("🛒 Step 11: Adding product for first customer order");
+      cy.visit("/products/youth-tee/adb150");
+      cy.reload();
+      cy.get(".product-details__buttons__add-to-cart button")
+        .should("be.visible")
+        .click();
+
+      cy.logToTerminal("🧾 Step 12: Completing first purchase as customer");
+      completeCheckoutAndPlaceOrder("Order 1 (customer session)");
+
+      // Step 13: Add same product again for admin-assisted purchase
+      cy.logToTerminal("🛒 Step 13: Adding product again for admin purchase");
+      cy.visit("/products/youth-tee/adb150");
+      cy.reload();
+      cy.get(".product-details__buttons__add-to-cart button")
+        .should("be.visible")
+        .click();
+
+      // Step 14: Logout and move to OTP login flow
+      cy.logToTerminal("🚪 Step 14: Logging out before OTP admin login");
       cy.contains("button", /sign out|logout/i).first().click({ force: true });
       cy.url().should("include", "/customer/login");
 
@@ -668,8 +743,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       // TODO START: OTP re-login + checkout order placement extension
       // ======================================================================
 
-      // Step 6: Lookup customer for OTP flow
-      cy.logToTerminal("🔎 Step 6: Looking up customer for admin OTP login");
+      // Step 15: Lookup customer for OTP flow
+      cy.logToTerminal("🔎 Step 15: Looking up customer for admin OTP login");
       cy.wrap(null)
         .then(() => findCustomerByEmail(testUserEmail))
         .then((customer) => {
@@ -683,7 +758,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
           const otpReasonWithEmail = `test:${testUserEmail}`;
           cy.logToTerminal(
-            `📨 Step 7: Requesting OTP with reason: ${otpReasonWithEmail}`,
+            `📨 Step 16: Requesting OTP with reason: ${otpReasonWithEmail}`,
           );
           return requestCustomerOtp(customer.id, otpReasonWithEmail).then((otpResponse) => {
             expect(otpResponse, "OTP response should exist").to.exist;
@@ -697,64 +772,18 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
             cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            // Step 8: Login as admin using OTP
-            cy.logToTerminal("🔐 Step 8: Signing in as admin with OTP password");
+            // Step 17: Login as admin using OTP
+            cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
             signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
             cy.url().should("include", "/customer/account");
 
-            // Step 9+: intentionally not executed in this simplified scenario
+            // Step 18: Complete second order in admin session
+            cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
+            completeCheckoutAndPlaceOrder("Order 2 (admin session)");
 
-            // Step 13: First order must be placed as the customer
-            // cy.logToTerminal("🧾 Step 13: Placing first order as customer");
-            // completeCheckoutAndPlaceOrder("Order 1 (customer session)");
-
-            // Step 14: Add the same product to cart again for admin-assisted order
-            // cy.logToTerminal(
-            //   "🛒 Step 14: Adding the same product again for admin-assisted checkout",
-            // );
-            // cy.visit("/products/youth-tee/adb150");
-            // cy.reload();
-            // cy.get(".product-details__buttons__add-to-cart button")
-            //   .should("be.visible")
-            //   .click();
-
-            // Step 15-17: Logout, login as admin via OTP, then complete second order
-            // cy.logToTerminal(`📨 Step 15: Requesting OTP with reason: ${otpReasonWithEmail}`);
-            // cy.logToTerminal("🚪 Step 16: Logging out before admin OTP login");
-            // resetAuthStateAndOpenLogin();
-
-            // cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-            // signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
-
-            // // Login submit is sometimes successful without immediate redirect.
-            // // Validate auth state by explicitly opening account page.
-            // cy.logToTerminal(
-            //   "🔎 Verifying admin session by navigating to account page",
-            // );
-            // cy.visit("/customer/account");
-
-            // cy.url().should("include", "/customer/account");
-            // cy.get(".seller-assisted-buying-banner").should("be.visible");
-            // cy.get(".seller-assisted-buying-banner__message")
-            //   .should("be.visible")
-            //   .and("contain", "You are connected as");
-            // cy.contains(
-            //   ".seller-assisted-buying-banner__message",
-            //   "You are connected as",
-            // ).should("be.visible");
-            // cy.get(".seller-assisted-buying-banner__close-button")
-            //   .should("be.visible")
-            //   .and("contain", "Close Session");
-            // cy.logToTerminal(
-            //   "✅ Seller-assisted admin session banner is visible",
-            // );
-
-            // cy.logToTerminal(
-            //   "🧾 Step 18: Completing second order as admin session",
-            // );
-            // completeCheckoutAndPlaceOrder("Order 2 (admin session)");
-
-            cy.logToTerminal("✅ Minimal flow completed: register -> logout -> OTP -> admin login");
+            cy.logToTerminal(
+              "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
+            );
             return null;
           });
         });
