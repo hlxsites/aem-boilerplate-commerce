@@ -826,24 +826,77 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
             );
 
-            cy.visit("/customer/seller-assisted-purchasing");
-            cy.url().should("include", "/customer/seller-assisted-purchasing");
-            cy.get('[data-testid="dropin-header-container"]')
-              .should("be.visible")
-              .contains("Seller assisted purchasing");
-            cy.get(".account-seller-assisted-buying-activity-table__table").should(
-              "be.visible",
-            );
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              "Order Placed",
-            ).should("be.visible");
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              `email = ${testUserEmail}`,
-            ).should("be.visible");
+            const verifySellerAssistedActivity = (attempt = 1, maxAttempts = 4) =>
+              cy.visit("/customer/seller-assisted-purchasing").then(() => {
+                return cy.url().then((url) => {
+                  if (url.includes("/customer/login")) {
+                    if (attempt >= maxAttempts) {
+                      throw new Error(
+                        "Session expired before seller-assisted activity verification and re-login retries were exhausted.",
+                      );
+                    }
 
-            return null;
+                    cy.logToTerminal(
+                      `ℹ️ Session expired before activity check, requesting fresh OTP (attempt ${attempt}/${maxAttempts})`,
+                    );
+                    const reloginReason = `relogin:${testUserEmail}:${attempt}`;
+                    return requestCustomerOtp(customer.id, reloginReason).then(
+                      (newOtpResponse) => {
+                        expect(
+                          newOtpResponse.otp,
+                          "Re-login OTP code should be present",
+                        ).to.be.a("string");
+
+                        cy.visit("/customer/login");
+                        signInAsAdminWithOtp(testUserEmail, newOtpResponse.otp);
+                        cy.url().should("include", "/customer/account");
+
+                        return verifySellerAssistedActivity(
+                          attempt + 1,
+                          maxAttempts,
+                        );
+                      },
+                    );
+                  }
+
+                  cy.get('[data-testid="dropin-header-container"]')
+                    .should("be.visible")
+                    .contains("Seller assisted purchasing");
+
+                  cy.get("body").then(($body) => {
+                    const tableSelector =
+                      ".account-seller-assisted-buying-activity-table__table";
+                    const hasActivityTable = $body.find(tableSelector).length > 0;
+
+                    if (hasActivityTable) {
+                      cy.get(tableSelector).should("be.visible");
+                      cy.contains(tableSelector, "Order Placed").should(
+                        "be.visible",
+                      );
+                      cy.contains(tableSelector, `email = ${testUserEmail}`).should(
+                        "be.visible",
+                      );
+                      return;
+                    }
+
+                    if (attempt >= maxAttempts) {
+                      throw new Error(
+                        "Seller-assisted activity table did not appear after retries.",
+                      );
+                    }
+
+                    cy.logToTerminal(
+                      `⏳ Seller-assisted activity table not visible yet (${attempt}/${maxAttempts}), reloading and retrying`,
+                    );
+                    cy.reload();
+                    return Cypress.Promise.delay(1500).then(() =>
+                      verifySellerAssistedActivity(attempt + 1, maxAttempts),
+                    );
+                  });
+                });
+              });
+
+            return verifySellerAssistedActivity();
           });
         });
 
