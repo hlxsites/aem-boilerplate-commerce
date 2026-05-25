@@ -152,7 +152,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.logToTerminal("🧹 B2B Shopping Assistance test cleanup");
     cy.clearCookies();
     cy.clearLocalStorage();
-    cy.intercept("**/graphql").as("defaultGraphQL");
+    // cy.intercept("**/graphql").as("defaultGraphQL");
 
     // Handle uncaught exceptions
     cy.on("uncaught:exception", (err) => {
