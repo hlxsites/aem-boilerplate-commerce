@@ -51,7 +51,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     
     // Wait for checkout form to fully reinitialize after reload
     cy.wait(2000); // Reduced from 5000
-    cy.get('form[name="selectedShippingAddress"]', { timeout: 15000 })
+    cy.get('form[name="selectedShippingAddress"]', { timeout: 12000 })
       .should('be.visible');
     
     // Scroll down to ensure form visibility
