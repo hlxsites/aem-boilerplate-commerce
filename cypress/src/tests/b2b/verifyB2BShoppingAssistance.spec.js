@@ -126,13 +126,15 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.get('input[name="password"]').should('have.value', otp);
         cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
 
-        cy.get('button[type="submit"]')
+        // Log submit button info using specific selector
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
+          cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
+        });
+        
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
-          .then($btn => {
-            cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
-          })
-          .click({ force: true });
+          .click();
 
         cy.logToTerminal("⏳ Waiting 5s after first submit...");
         cy.wait(5000);
@@ -184,13 +186,16 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           cy.logToTerminal(`📋 Password field length: ${passValue ? passValue.length : 0}`);
         });
         
-        cy.get('main .auth-sign-in-form button[type="submit"]')
+        // Log button state separately using specific selector
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
+          cy.logToTerminal(`📍 Retry - Submit button state: visible=${$btn.is(':visible')}, disabled=${$btn.is(':disabled')}`);
+        });
+        
+        // Click in separate chain to avoid null
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
-          .then($btn => {
-            cy.logToTerminal(`📍 Retry - Submit button state: visible=${$btn.is(':visible')}, disabled=${$btn.is(':disabled')}`);
-          })
-          .click({ force: true });
+          .click();
         
         cy.logToTerminal("⏳ Waiting 8s after retry submit...");
         cy.wait(8000);
