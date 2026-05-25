@@ -1,5 +1,13 @@
 # @dropins/storefront-order
 
+## 3.4.0-alpha-20260519155912
+
+### Minor Changes
+
+- d09caca: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
 ## 3.3.0
 
 ### Minor Changes
