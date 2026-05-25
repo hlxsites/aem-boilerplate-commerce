@@ -329,7 +329,11 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           cy.logToTerminal(
             `✅ ${label} add-to-cart button is visible via: ${selectedSelector}`,
           );
-          return selectedSelector;
+          cy.get(`${selectedSelector}:visible`)
+            .first()
+            .scrollIntoView({ duration: 200 })
+            .click({ force: true });
+          return;
         }
 
         if (attempt >= maxAttempts) {
@@ -357,12 +361,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         );
       });
 
-    return waitForAddToCartButton().then((selectedSelector) => {
-      cy.get(`${selectedSelector}:visible`)
-        .first()
-        .scrollIntoView({ duration: 200 })
-        .click({ force: true });
-    });
+    return waitForAddToCartButton();
   };
 
   const completeCheckoutAndPlaceOrder = (phaseLabel) => {
