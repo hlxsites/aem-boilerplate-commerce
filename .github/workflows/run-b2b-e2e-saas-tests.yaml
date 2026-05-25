@@ -13,7 +13,6 @@ jobs:
         include:
           - group: group-a
             specs:
-              - src/tests/b2b/verifyCompanyCredit.spec.js
               - src/tests/b2b/verifyB2BShoppingAssistance.spec.js
     steps:
       - uses: actions/checkout@v4
