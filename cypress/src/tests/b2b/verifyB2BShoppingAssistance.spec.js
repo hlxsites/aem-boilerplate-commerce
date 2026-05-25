@@ -391,30 +391,15 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         "✅ Step 3: Enabling Remote Shopping Assistance checkbox",
       );
 
-      cy.get("body").then(($body) => {
-        if (
-          $body.find('[data-testid="remoteShoppingAssistanceConsent"]').length >
-          0
-        ) {
-          cy.logToTerminal("Found Remote Shopping Assistance consent section");
-
-          // Find and check the checkbox
-          cy.get('[data-testid="remoteShoppingAssistanceConsent"]')
-            .find('input[name="allowRemoteShoppingAssistance"]')
-            .check({ force: true });
-
-          // Verify checkbox is checked
-          cy.get('[data-testid="remoteShoppingAssistanceConsent"]')
-            .find('input[name="allowRemoteShoppingAssistance"]')
-            .should("be.checked");
-
-          cy.logToTerminal("✅ Remote Shopping Assistance checkbox enabled");
-        } else {
-          cy.logToTerminal(
-            "⚠️ Remote Shopping Assistance checkbox not found, proceeding without it",
-          );
-        }
-      });
+      cy.get('[data-testid="remoteShoppingAssistanceConsent"]', {
+        timeout: 30000,
+      }).should("exist");
+      cy.get('[data-testid="remoteShoppingAssistanceConsent"]')
+        .find('input[name="allowRemoteShoppingAssistance"]')
+        .should("exist")
+        .check({ force: true })
+        .should("be.checked");
+      cy.logToTerminal("✅ Remote Shopping Assistance checkbox enabled");
 
       // Step 4: Submit registration (user is auto-logged in)
       cy.logToTerminal("📤 Step 4: Submitting registration form");
