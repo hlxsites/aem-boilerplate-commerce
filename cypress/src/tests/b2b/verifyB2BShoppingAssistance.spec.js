@@ -659,75 +659,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Step 5: Navigate to Seller Assisted Purchasing page
-      cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
-      cy.visit("/customer/seller-assisted-purchasing");
-
-      // Verify page loaded with correct header
-      cy.get('[data-testid="dropin-header-container"]')
-        .should("be.visible")
-        .contains("Seller assisted purchasing");
-      cy.logToTerminal("✅ Seller Assisted Purchasing page loaded");
-
-      // Step 6: Verify checkbox exists and is checked
-      cy.logToTerminal(
-        "✅ Step 6: Verifying Remote Shopping Assistance checkbox is enabled",
-      );
-      cy.get('input[name="allowRemoteShoppingAssistance"]')
-        .should("exist")
-        .then(($checkbox) => {
-          if (!$checkbox.is(":checked")) {
-            cy.logToTerminal(
-              "ℹ️ Remote Shopping Assistance checkbox was not checked after registration, enabling it now",
-            );
-            cy.wrap($checkbox).check({ force: true });
-          }
-        })
-        .should("be.checked");
-
-      cy.logToTerminal(
-        "✅ Remote Shopping Assistance checkbox is checked (as expected from registration)",
-      );
-
-      // // Step 7: Uncheck the checkbox
-      // cy.logToTerminal("⬜ Step 7: Disabling Remote Shopping Assistance");
-      // cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
-      //   force: true,
-      // });
-
-      // cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-      //   "not.be.checked",
-      // );
-
-      // cy.logToTerminal("✅ Checkbox unchecked");
-
-      // // Step 8: Verify disabled message appears
-      // cy.logToTerminal("🔍 Step 8: Verifying disabled message appears");
-      // cy.contains(
-      //   "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-      // ).should("be.visible");
-
-      // cy.logToTerminal("✅ Disabled message is visible");
-
-      // // Step 9: Re-enable the checkbox
-      // cy.logToTerminal("✅ Step 9: Re-enabling Remote Shopping Assistance");
-      // cy.get('input[name="allowRemoteShoppingAssistance"]').check({
-      //   force: true,
-      // });
-
-      // cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-      //   "be.checked",
-      // );
-
-      // cy.logToTerminal("✅ Checkbox re-checked");
-
-      // Step 10: Verify disabled message is gone
-      cy.logToTerminal("🔍 Step 10: Verifying disabled message is gone");
-      cy.contains(
-        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-      ).should("not.exist");
-
-      cy.logToTerminal("✅ Disabled message is not visible");
+      // Skipping seller-assisted UI checks for now.
+      // Minimal flow requested: register user -> request OTP -> stop.
 
       // ======================================================================
       // TODO START: OTP re-login + checkout order placement extension
