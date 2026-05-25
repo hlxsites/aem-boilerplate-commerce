@@ -446,6 +446,26 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
             completeCheckoutAndPlaceOrder("Order 2 (admin session)");
 
+            // Step 19: Verify order appears in Seller Assisted Purchasing activity table
+            cy.logToTerminal("📋 Step 19: Verifying order in Seller Assisted Purchasing");
+            cy.visit("/customer/seller-assisted-purchasing");
+            cy.url().should("include", "/customer/seller-assisted-purchasing");
+            cy.get('[data-testid="dropin-header-container"]')
+              .should("be.visible")
+              .contains("Seller assisted purchasing");
+            cy.get(".account-seller-assisted-buying-activity-table__table").should(
+              "be.visible",
+            );
+            cy.contains(
+              ".account-seller-assisted-buying-activity-table__table",
+              "Order Placed",
+            ).should("be.visible");
+            cy.contains(
+              ".account-seller-assisted-buying-activity-table__table",
+              `email = ${testUserEmail}`,
+            ).should("be.visible");
+            cy.logToTerminal("✅ Order verified in activity table");
+
             cy.logToTerminal(
               "✅ Full flow completed: registration, checkbox checks, OTP admin login, admin purchase",
             );
@@ -455,23 +475,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       // ==================================================================
       // TODO END: OTP re-login + checkout order placement extension
       // ==================================================================
-
-      // cy.visit("/customer/seller-assisted-purchasing");
-      // cy.url().should("include", "/customer/seller-assisted-purchasing");
-      // cy.get('[data-testid="dropin-header-container"]')
-      //   .should("be.visible")
-      //   .contains("Seller assisted purchasing");
-      // cy.get(".account-seller-assisted-buying-activity-table__table").should(
-      //   "be.visible",
-      // );
-      // cy.contains(
-      //   ".account-seller-assisted-buying-activity-table__table",
-      //   "Order Placed",
-      // ).should("be.visible");
-      // cy.contains(
-      //   ".account-seller-assisted-buying-activity-table__table",
-      //   `email = ${testUserEmail}`,
-      // ).should("be.visible");
 
       cy.logToTerminal(
         "✅ TC-01: Complete Shopping Assistance flow completed successfully",
