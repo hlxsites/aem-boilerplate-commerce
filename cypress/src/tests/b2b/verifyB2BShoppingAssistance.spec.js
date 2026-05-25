@@ -205,9 +205,21 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     
     // Click first button to avoid multiple elements error
     cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 })
-        // Explicitly wait for redirect away from login page
-        cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
-        cy.logToTerminal("✅ Successfully redirected after retry");
+      .first()
+      .should("be.visible")
+      .and("not.be.disabled")
+      .click();
+    
+    cy.logToTerminal("⏳ Waiting 8s after retry submit...");
+    cy.wait(8000);
+    
+    cy.url().then(url => {
+      cy.logToTerminal(`📍 URL after retry: ${url}`);
+    });
+    
+    // Explicitly wait for redirect away from login page
+    cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
+    cy.logToTerminal("✅ Successfully redirected after retry");
       } else {
         cy.logToTerminal("✅ Successfully redirected on first submit");
       }
