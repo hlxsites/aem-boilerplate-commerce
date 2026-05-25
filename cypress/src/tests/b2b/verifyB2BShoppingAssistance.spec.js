@@ -735,8 +735,17 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         .click();
 
       // Step 14: Logout and move to OTP login flow
+      cy.logToTerminal("🔄 Pre-Step 14: Reloading page before logout");
+      cy.reload();
       cy.logToTerminal("🚪 Step 14: Logging out before OTP admin login");
-      cy.contains("button", /sign out|logout/i).first().click({ force: true });
+      cy.visit("/");
+      cy.get("ul.authenticated-user-menu", { timeout: 60000 })
+        .should("be.visible")
+        .and("have.css", "display", "block");
+      cy.get("ul.authenticated-user-menu")
+        .contains("button", "Logout")
+        .should("be.visible")
+        .click({ force: true });
       cy.url().should("include", "/customer/login");
 
       // ======================================================================
