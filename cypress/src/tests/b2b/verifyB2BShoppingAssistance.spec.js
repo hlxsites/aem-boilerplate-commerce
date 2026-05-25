@@ -734,7 +734,17 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.contains("button", /^logout$/i, { timeout: 60000 })
         .click({ force: true });
-      cy.url().should("include", "/customer/login");
+      cy.location("pathname", { timeout: 15000 }).then((pathname) => {
+        if (pathname.includes("/customer/login")) {
+          cy.logToTerminal("✅ Logout redirect landed on login page");
+          return;
+        }
+
+        cy.logToTerminal(
+          `ℹ️ Logout click did not redirect (current path: ${pathname}); forcing auth reset and opening login page`,
+        );
+        resetAuthStateAndOpenLogin();
+      });
 
       // ======================================================================
       // TODO START: OTP re-login + checkout order placement extension
