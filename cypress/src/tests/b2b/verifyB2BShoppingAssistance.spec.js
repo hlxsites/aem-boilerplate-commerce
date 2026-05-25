@@ -239,6 +239,10 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
 
       cy.logToTerminal("✅ Disabled message is not visible");
 
+      // ======================================================================
+      // TODO START: OTP re-login + checkout order placement extension
+      // ======================================================================
+
       // Step 11: Logout current user after completing main shopping assistance flow
       cy.logToTerminal("🚪 Step 11: Logging out current user");
       cy.clearCookies();
@@ -422,6 +426,10 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.contains("Order placed by an administrator").should(
                 "be.visible",
               );
+
+              // ==================================================================
+              // TODO END: OTP re-login + checkout order placement extension
+              // ==================================================================
             },
           );
         });
