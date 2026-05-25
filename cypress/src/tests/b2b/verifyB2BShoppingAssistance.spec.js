@@ -122,6 +122,10 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           .should("be.visible")
           .and("not.be.disabled")
           .click({ force: true });
+        
+        // Explicitly wait for redirect away from login page
+        cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
+        cy.logToTerminal("✅ Successfully redirected after retry");
       }
     });
   };
