@@ -523,6 +523,29 @@ async function findCustomerByEmail(customerEmail) {
 }
 
 /**
+ * Request OTP for a customer by numeric customer ID.
+ * @param {number} customerId - Numeric customer ID
+ * @param {string} reason - OTP reason
+ * @returns {Promise<Object|boolean>} OTP API response
+ */
+async function requestCustomerOtp(customerId, reason = 'test') {
+  const client = new ACCSApiClient();
+
+  safeLog(`📨 Requesting OTP for customer ID: ${customerId} | reason: ${reason}`);
+
+  const payload = {
+    customerId,
+    reason,
+  };
+
+  const result = await client.post(`/V1/customer/${customerId}/otp`, payload);
+  validateApiResponse(result, 'Customer OTP request');
+
+  safeLog(`✅ OTP request submitted for customer ID: ${customerId}`);
+  return result;
+}
+
+/**
  * Delete a customer by ID using REST API.
  * @param {number} customerId - The customer ID to delete
  * @returns {Promise<Object>} Deletion result
@@ -1470,6 +1493,7 @@ module.exports = {
   // User Management
   createCompanyUser,
   findCustomerByEmail,
+  requestCustomerOtp,
   deleteCustomerById,
   deleteCustomerByEmail,
   updateCompanyUserStatus,

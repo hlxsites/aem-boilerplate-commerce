@@ -416,12 +416,34 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Step 5-10 are intentionally skipped for this reduced flow.
-      // The test now focuses on user registration + purchase path.
-      //
-      // // Step 5: Navigate to Seller Assisted Purchasing page
-      // cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
-      // cy.visit("/customer/seller-assisted-purchasing");
+      // Step 5: Temporary password capture before Seller Assisted Purchasing page
+      cy.logToTerminal(
+        "🔐 Temporary: fetching password before Seller Assisted Purchasing page",
+      );
+      cy.wrap(null)
+        .then(() => findCustomerByEmail(testUserEmail))
+        .then((customer) => {
+          expect(customer, `Customer should exist for email: ${testUserEmail}`)
+            .to.exist;
+          expect(customer.id, "Customer ID should be numeric").to.be.a(
+            "number",
+          );
+
+          return requestCustomerOtp(customer.id, otpReason);
+        })
+        .then((otpResponse) => {
+          expect(otpResponse, "OTP response should exist").to.exist;
+          expect(otpResponse.otp, "OTP code should be present").to.be.a(
+            "string",
+          );
+          cy.logToTerminal(
+            `🔑 TEMP password (OTP): ${otpResponse.otp}`,
+          );
+        });
+
+      // Step 5: Navigate to Seller Assisted Purchasing page
+      cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
+      cy.visit("/customer/seller-assisted-purchasing");
       //
       // // Verify page loaded with correct header
       // cy.get('[data-testid="dropin-header-container"]')
