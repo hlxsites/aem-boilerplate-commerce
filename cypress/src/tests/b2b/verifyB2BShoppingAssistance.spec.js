@@ -659,11 +659,20 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.logToTerminal("✅ User successfully registered and auto-logged in");
 
-      // Debug: read runtime config from localStorage after registration.
+      // Debug: runtime config is stored in sessionStorage (not localStorage).
       cy.window().then((win) => {
-        const configValue = win.localStorage.getItem("config");
+        const localConfigValue = win.localStorage.getItem("config");
+        const sessionConfigValue = win.sessionStorage.getItem("config");
+        const graphqlEndPoint = Cypress.env("graphqlEndPoint");
+
         cy.logToTerminal(
-          `🗂 localStorage config: ${configValue || "<empty>"}`,
+          `🗂 localStorage config: ${localConfigValue || "<empty>"}`,
+        );
+        cy.logToTerminal(
+          `🗂 sessionStorage config: ${sessionConfigValue || "<empty>"}`,
+        );
+        cy.logToTerminal(
+          `⚙️ Cypress.env graphqlEndPoint: ${graphqlEndPoint || "<empty>"}`,
         );
       });
 
