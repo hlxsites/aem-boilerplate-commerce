@@ -39,9 +39,17 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.url().should("include", "/checkout");
 
     cy.logToTerminal(`📦 ${phaseLabel}: Filling shipping address`);
+    
+    // Wait for shipping form to be ready
+    cy.get('form[name="shippingAddress"], form[name="selectedShippingAddress"]', { timeout: 15000 })
+      .should('be.visible');
+    cy.logToTerminal(`✅ ${phaseLabel}: Shipping form found`);
+    
     cy.get("body").then(($body) => {
       const isSelectableState = $body.find(`${fields.shippingFormState}:visible`).length > 0;
+      cy.logToTerminal(`📋 ${phaseLabel}: isSelectableState = ${isSelectableState}`);
       actions.setGuestShippingAddress(customerShippingAddress, isSelectableState);
+      cy.logToTerminal(`✅ ${phaseLabel}: setGuestShippingAddress completed`);
     });
 
     // Reload page after filling shipping address to ensure state persistence
