@@ -305,6 +305,9 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               // Step 15: Add one simple product to cart
               cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
               cy.visit("/products/youth-tee/adb150");
+              cy.reload();
+              cy.logToTerminal("⏳ Waiting 3 seconds after product page reload");
+              cy.then(() => Cypress.Promise.delay(3000));
               cy.get(".product-details__buttons__add-to-cart button")
                 .should("be.visible")
                 .click();
@@ -448,7 +451,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                 `💰 Selecting payment method: ${checkMoneyOrder.name}`,
               );
               actions.setPaymentMethod(checkMoneyOrder);
-              
+
               // Explicitly accept checkout terms before placing order
               cy.get('[data-testid="checkout-terms-and-conditions-form"]', {
                 timeout: 60000,
