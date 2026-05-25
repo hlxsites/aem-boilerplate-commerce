@@ -13,6 +13,7 @@ jobs:
         include:
           - group: group-a
             specs:
+              - src/tests/b2c/verifyAuthUserCheckout.spec.js
               - src/tests/b2b/verifyB2BShoppingAssistance.spec.js
     steps:
       - uses: actions/checkout@v4
