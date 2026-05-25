@@ -535,6 +535,9 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           .should("be.visible")
           .and("not.be.disabled")
           .click({ force: true });
+
+        // Give post-submit auth state a brief moment to settle.
+        cy.wait(916);
       });
 
     // Guard against occasional missed submit handling on first click.
