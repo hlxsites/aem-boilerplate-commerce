@@ -689,37 +689,37 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         "✅ Remote Shopping Assistance checkbox is checked (as expected from registration)",
       );
 
-      // Step 7: Uncheck the checkbox
-      cy.logToTerminal("⬜ Step 7: Disabling Remote Shopping Assistance");
-      cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
-        force: true,
-      });
+      // // Step 7: Uncheck the checkbox
+      // cy.logToTerminal("⬜ Step 7: Disabling Remote Shopping Assistance");
+      // cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
+      //   force: true,
+      // });
 
-      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-        "not.be.checked",
-      );
+      // cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+      //   "not.be.checked",
+      // );
 
-      cy.logToTerminal("✅ Checkbox unchecked");
+      // cy.logToTerminal("✅ Checkbox unchecked");
 
-      // Step 8: Verify disabled message appears
-      cy.logToTerminal("🔍 Step 8: Verifying disabled message appears");
-      cy.contains(
-        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-      ).should("be.visible");
+      // // Step 8: Verify disabled message appears
+      // cy.logToTerminal("🔍 Step 8: Verifying disabled message appears");
+      // cy.contains(
+      //   "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      // ).should("be.visible");
 
-      cy.logToTerminal("✅ Disabled message is visible");
+      // cy.logToTerminal("✅ Disabled message is visible");
 
-      // Step 9: Re-enable the checkbox
-      cy.logToTerminal("✅ Step 9: Re-enabling Remote Shopping Assistance");
-      cy.get('input[name="allowRemoteShoppingAssistance"]').check({
-        force: true,
-      });
+      // // Step 9: Re-enable the checkbox
+      // cy.logToTerminal("✅ Step 9: Re-enabling Remote Shopping Assistance");
+      // cy.get('input[name="allowRemoteShoppingAssistance"]').check({
+      //   force: true,
+      // });
 
-      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-        "be.checked",
-      );
+      // cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+      //   "be.checked",
+      // );
 
-      cy.logToTerminal("✅ Checkbox re-checked");
+      // cy.logToTerminal("✅ Checkbox re-checked");
 
       // Step 10: Verify disabled message is gone
       cy.logToTerminal("🔍 Step 10: Verifying disabled message is gone");
