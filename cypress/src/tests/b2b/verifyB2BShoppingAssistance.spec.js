@@ -504,6 +504,10 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   };
 
   const resetAuthStateAndOpenLogin = () => {
+    cy.logToTerminal("➡️ Opening login page before auth state reset");
+    cy.visit("/customer/login");
+    cy.url().should("include", "/customer/login");
+
     cy.logToTerminal("🧹 Clearing cookies/storage before admin OTP login");
     cy.clearCookies();
     cy.clearLocalStorage();
@@ -511,7 +515,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       win.sessionStorage.clear();
     });
 
-    cy.visit("/customer/login");
+    cy.logToTerminal("🔄 Reloading login page after auth cleanup");
     cy.reload();
     cy.url().should("include", "/customer/login");
     cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
@@ -737,17 +741,9 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       cy.contains("button", /^logout$/i, { timeout: 60000 })
         .click({ force: true });
-      cy.location("pathname", { timeout: 15000 }).then((pathname) => {
-        if (pathname.includes("/customer/login")) {
-          cy.logToTerminal("✅ Logout redirect landed on login page");
-          return;
-        }
 
-        cy.logToTerminal(
-          `ℹ️ Logout click did not redirect (current path: ${pathname}); forcing auth reset and opening login page`,
-        );
-        resetAuthStateAndOpenLogin();
-      });
+      // Always enforce a clean login state after logout before OTP login flow.
+      resetAuthStateAndOpenLogin();
 
       // ======================================================================
       // TODO START: OTP re-login + checkout order placement extension
