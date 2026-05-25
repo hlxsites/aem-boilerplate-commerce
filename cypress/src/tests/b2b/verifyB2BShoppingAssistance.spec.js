@@ -564,34 +564,28 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     const sanitizedOtp = `${otp}`.trim();
     const sanitizedEmail = `${email}`.trim();
 
-    const setVisibleInputValue = (selector, value, label) =>
-      cy.get(`main .auth-sign-in-form ${selector}:visible`, { timeout: 30000 })
-        .first()
-        .should("be.visible")
-        .then(($input) => {
-          cy.wrap($input)
-            .scrollIntoView({ duration: 150 })
-            .click({ force: true })
-            .clear({ force: true })
-            .type(value, { force: true, delay: 0 })
-            .should("have.value", value);
+    // Keep selector strategy aligned with existing stable login helpers.
+    cy.get('[name="signIn_form"]', { timeout: 30000 }).should("be.visible");
 
-          // Some storefront implementations rely on input/change events for submit enablement.
-          cy.wrap($input).trigger("input", { force: true });
-          cy.wrap($input).trigger("change", { force: true });
-          cy.logToTerminal(`✅ Login ${label} field set`);
-        });
-
-    cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
-    setVisibleInputValue('input[name="email"]', sanitizedEmail, "email");
-    setVisibleInputValue('input[name="password"]', sanitizedOtp, "password");
-
-    cy.get('main .auth-sign-in-form button[type="submit"]:visible', {
-      timeout: 30000,
-    })
-      .first()
+    cy.get('input[name="email"]', { timeout: 30000 })
+      .eq(1)
       .should("be.visible")
-      .and("not.be.disabled")
+      .clear({ force: true })
+      .type(sanitizedEmail, { force: true })
+      .should("have.value", sanitizedEmail);
+
+    cy.get('input[name="password"]', { timeout: 30000 })
+      .eq(1)
+      .should("be.visible")
+      .clear({ force: true })
+      .type(sanitizedOtp, { force: true })
+      .should("have.value", sanitizedOtp);
+
+    // Slight delay mirrors existing helpers and reduces race with form validation state.
+    cy.wait(1000);
+    cy.get('.auth-sign-in-form__button--submit', { timeout: 30000 })
+      .eq(1)
+      .should("be.visible")
       .click({ force: true });
 
     // Do not re-submit the same OTP: one-time code can be invalidated by
@@ -599,7 +593,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.location("pathname", { timeout: 15000 }).then((pathname) => {
       if (pathname.includes("/customer/login")) {
         cy.logToTerminal("ℹ️ Still on login page after submit");
-        cy.get("main .auth-sign-in-form")
+        cy.get('[name="signIn_form"]')
+          .eq(1)
           .invoke("text")
           .then((formText) => {
             const condensed = formText.replace(/\s+/g, " ").trim().slice(0, 220);
