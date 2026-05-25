@@ -307,6 +307,39 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     });
   };
 
+  const addProductToCartWithRetry = (productPath, label) => {
+    cy.logToTerminal(`🛒 ${label}`);
+    cy.visit(productPath);
+    cy.reload();
+
+    const addToCartSelectors = [
+      ".product-details__buttons__add-to-cart button",
+      'button[data-testid="add-to-cart-button"]',
+      'button[aria-label*="Add to Cart"]',
+      'button:contains("Add to Cart")',
+    ];
+
+    waitForVisibleSelectors(
+      addToCartSelectors,
+      `${label} add-to-cart button`,
+      1,
+      12,
+      true,
+    );
+
+    cy.get("body").then(($body) => {
+      const selectedSelector = addToCartSelectors.find(
+        (selector) => $body.find(`${selector}:visible`).length > 0,
+      );
+
+      expect(selectedSelector, `${label} add-to-cart selector`).to.exist;
+      cy.get(`${selectedSelector}:visible`)
+        .first()
+        .scrollIntoView({ duration: 200 })
+        .click({ force: true });
+    });
+  };
+
   const completeCheckoutAndPlaceOrder = (phaseLabel) => {
     cy.logToTerminal(`💳 ${phaseLabel}: Navigating to checkout`);
     cy.get(".minicart-wrapper").click();
@@ -716,23 +749,19 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       ).should("not.exist");
 
       // Step 11: Add product and place first order as customer
-      cy.logToTerminal("🛒 Step 11: Adding product for first customer order");
-      cy.visit("/products/youth-tee/adb150");
-      cy.reload();
-      cy.get(".product-details__buttons__add-to-cart button")
-        .should("be.visible")
-        .click();
+      addProductToCartWithRetry(
+        "/products/youth-tee/adb150",
+        "Step 11: Adding product for first customer order",
+      );
 
       cy.logToTerminal("🧾 Step 12: Completing first purchase as customer");
       completeCheckoutAndPlaceOrder("Order 1 (customer session)");
 
       // Step 13: Add same product again for admin-assisted purchase
-      cy.logToTerminal("🛒 Step 13: Adding product again for admin purchase");
-      cy.visit("/products/youth-tee/adb150");
-      cy.reload();
-      cy.get(".product-details__buttons__add-to-cart button")
-        .should("be.visible")
-        .click();
+      addProductToCartWithRetry(
+        "/products/youth-tee/adb150",
+        "Step 13: Adding product again for admin purchase",
+      );
 
       // Step 14: Reset browser auth state before OTP login flow
       cy.logToTerminal("🔄 Pre-Step 14: Reloading page before logout");
@@ -795,6 +824,24 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal(
               "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
             );
+
+            cy.visit("/customer/seller-assisted-purchasing");
+            cy.url().should("include", "/customer/seller-assisted-purchasing");
+            cy.get('[data-testid="dropin-header-container"]')
+              .should("be.visible")
+              .contains("Seller assisted purchasing");
+            cy.get(".account-seller-assisted-buying-activity-table__table").should(
+              "be.visible",
+            );
+            cy.contains(
+              ".account-seller-assisted-buying-activity-table__table",
+              "Order Placed",
+            ).should("be.visible");
+            cy.contains(
+              ".account-seller-assisted-buying-activity-table__table",
+              `email = ${testUserEmail}`,
+            ).should("be.visible");
+
             return null;
           });
         });
@@ -802,23 +849,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       // ==================================================================
       // TODO END: OTP re-login + checkout order placement extension
       // ==================================================================
-
-      cy.visit("/customer/seller-assisted-purchasing");
-      cy.url().should("include", "/customer/seller-assisted-purchasing");
-      cy.get('[data-testid="dropin-header-container"]')
-        .should("be.visible")
-        .contains("Seller assisted purchasing");
-      cy.get(".account-seller-assisted-buying-activity-table__table").should(
-        "be.visible",
-      );
-      cy.contains(
-        ".account-seller-assisted-buying-activity-table__table",
-        "Order Placed",
-      ).should("be.visible");
-      cy.contains(
-        ".account-seller-assisted-buying-activity-table__table",
-        `email = ${testUserEmail}`,
-      ).should("be.visible");
 
       cy.logToTerminal(
         "✅ TC-01: Complete Shopping Assistance flow completed successfully",
