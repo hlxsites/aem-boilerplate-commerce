@@ -728,37 +728,11 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       cy.reload();
       cy.logToTerminal("🚪 Step 14: Logging out before OTP admin login");
       cy.visit("/");
-      cy.get("ul.authenticated-user-menu", { timeout: 60000 }).should("exist");
-      cy.get("ul.authenticated-user-menu").then(($menu) => {
-        if (!$menu.is(":visible")) {
-          cy.logToTerminal(
-            "ℹ️ Authenticated user menu is hidden, trying to open it",
-          );
-          cy.get("body").then(($body) => {
-            const triggerSelectors = [
-              'button[aria-label*="account" i]',
-              'button[aria-label*="profile" i]',
-              'a[aria-label*="account" i]',
-              '.header .nav-sections .icon-user',
-            ];
+      cy.get(".nav-dropdown-button", { timeout: 60000 })
+        .should("be.visible")
+        .click({ force: true });
 
-            const visibleTrigger = triggerSelectors
-              .map((selector) => $body.find(`${selector}:visible`).first())
-              .find(($el) => $el.length > 0);
-
-            if (visibleTrigger) {
-              cy.wrap(visibleTrigger).click({ force: true });
-            } else {
-              cy.logToTerminal(
-                "ℹ️ Menu trigger not found, attempting direct Logout click",
-              );
-            }
-          });
-        }
-      });
-
-      cy.get("ul.authenticated-user-menu")
-        .contains("button", "Logout")
+      cy.contains("button", /^logout$/i, { timeout: 60000 })
         .click({ force: true });
       cy.url().should("include", "/customer/login");
 
