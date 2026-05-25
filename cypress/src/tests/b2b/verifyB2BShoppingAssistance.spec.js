@@ -83,6 +83,15 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     const shippingMethodSelector =
       'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
 
+    // Some checkout implementations lazy-render shipping methods only when
+    // the shipping section enters viewport.
+    cy.get(".checkout__shipping-form", { timeout: 60000 })
+      .should("exist")
+      .scrollIntoView({ duration: 300 });
+    cy.window().then((win) => {
+      win.scrollBy(0, 250);
+    });
+
     cy.get("body", { timeout: 15000 }).should(($body) => {
       expect(
         $body.find(shippingMethodSelector).length,
