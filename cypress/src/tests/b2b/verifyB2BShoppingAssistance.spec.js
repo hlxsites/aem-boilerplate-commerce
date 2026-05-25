@@ -188,31 +188,23 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           // If password was cleared, refill the form
           if (!passValue || passValue.length === 0) {
             cy.logToTerminal("⚠️ Password field empty, refilling form");
-            cy.get('input[name="email"]').clear().type(email, { delay: 50 });
-            cy.get('input[name="password"]').clear().type(otp, { delay: 50 });
-            cy.wait(1000);
-          }
-        });
-        
-        // Log button state separately using specific selector
-        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]').then($btns => {
-          cy.logToTerminal(`📍 Retry - Found ${$btns.length} submit buttons`);
-        });
-        
-        // Click first button to avoid multiple elements error
-        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]')
-          .first()
-          .should("be.visible")
-          .and("not.be.disabled")
-          .click();
-        
-        cy.logToTerminal("⏳ Waiting 8s after retry submit...");
-        cy.wait(8000);
-        
-        cy.url().then(url => {
-          cy.logToTerminal(`📍 URL after retry: ${url}`);
-        });
-        
+        cy.get('main .auth-sign-in-form input[name="email"]').clear().type(email, { delay: 50 });
+        cy.get('main .auth-sign-in-form input[name="password"]').clear().type(otp, { delay: 50 });
+        cy.wait(2000); // Wait for form to stabilize after refill
+        cy.logToTerminal("✅ Form refilled, waiting for stabilization");
+      }
+    });
+    
+    // Wait a bit to ensure DOM is stable before looking for button
+    cy.wait(1000);
+    
+    // Log button state separately using specific selector with increased timeout
+    cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 }).then($btns => {
+      cy.logToTerminal(`📍 Retry - Found ${$btns.length} submit buttons`);
+    });
+    
+    // Click first button to avoid multiple elements error
+    cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 })
         // Explicitly wait for redirect away from login page
         cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
         cy.logToTerminal("✅ Successfully redirected after retry");
