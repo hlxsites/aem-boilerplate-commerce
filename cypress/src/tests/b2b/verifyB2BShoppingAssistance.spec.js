@@ -319,20 +319,45 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       'button:contains("Add to Cart")',
     ];
 
-    waitForVisibleSelectors(
-      addToCartSelectors,
-      `${label} add-to-cart button`,
-      1,
-      12,
-      true,
-    );
+    const waitForAddToCartButton = (attempt = 1, maxAttempts = 12) =>
+      cy.get("body", { timeout: 5000 }).then(($body) => {
+        const selectedSelector = addToCartSelectors.find(
+          (selector) => $body.find(`${selector}:visible`).length > 0,
+        );
 
-    cy.get("body").then(($body) => {
-      const selectedSelector = addToCartSelectors.find(
-        (selector) => $body.find(`${selector}:visible`).length > 0,
-      );
+        if (selectedSelector) {
+          cy.logToTerminal(
+            `✅ ${label} add-to-cart button is visible via: ${selectedSelector}`,
+          );
+          return selectedSelector;
+        }
 
-      expect(selectedSelector, `${label} add-to-cart selector`).to.exist;
+        if (attempt >= maxAttempts) {
+          const bodyText = $body.text().replace(/\s+/g, " ").trim().slice(0, 600);
+          cy.logToTerminal(
+            `⚠️ ${label} add-to-cart button not visible after retries`,
+          );
+          cy.logToTerminal(`⚠️ ${label} body preview: ${bodyText}`);
+          throw new Error(
+            `Timed out waiting for add-to-cart button on PDP. Selectors: ${addToCartSelectors.join(", ")}`,
+          );
+        }
+
+        cy.logToTerminal(
+          `⏳ ${label} add-to-cart button not visible yet (${attempt}/${maxAttempts}), retrying`,
+        );
+
+        if (attempt === 4 || attempt === 8) {
+          cy.logToTerminal(`🔄 ${label} retry reload on attempt ${attempt}`);
+          cy.reload();
+        }
+
+        return Cypress.Promise.delay(1000).then(() =>
+          waitForAddToCartButton(attempt + 1, maxAttempts),
+        );
+      });
+
+    return waitForAddToCartButton().then((selectedSelector) => {
       cy.get(`${selectedSelector}:visible`)
         .first()
         .scrollIntoView({ duration: 200 })
@@ -534,20 +559,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       .should("be.visible")
       .click({ force: true });
     cy.logToTerminal(`✅ ${phaseLabel}: Order submitted`);
-  };
-
-  const resetAuthStateAndOpenLogin = () => {
-    cy.logToTerminal("🧹 Clearing cookies/storage before admin OTP login");
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.window().then((win) => {
-      win.sessionStorage.clear();
-    });
-
-    cy.visit("/customer/login");
-    cy.reload();
-    cy.url().should("include", "/customer/login");
-    cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
