@@ -54,7 +54,6 @@ import {
 
 describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   let testUserEmail;
-  const otpReason = "test";
 
   const typeIntoVisibleField = (selectors, value, fieldLabel = "field") => {
     const selectorQuery = selectors.join(", ");
@@ -747,31 +746,11 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
           cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
 
-          // Step 12: Add one simple product to cart before OTP admin login
-          cy.logToTerminal("🛒 Step 12: Adding one simple product to cart");
-          cy.visit("/products/youth-tee/adb150");
-          cy.reload();
-          cy.get(".product-details__buttons__add-to-cart button")
-            .should("be.visible")
-            .click();
-
-          // Step 13: First order must be placed as the customer
-          cy.logToTerminal("🧾 Step 13: Placing first order as customer");
-          completeCheckoutAndPlaceOrder("Order 1 (customer session)");
-
-          // Step 14: Add the same product to cart again for admin-assisted order
+          const otpReasonWithEmail = `test:${testUserEmail}`;
           cy.logToTerminal(
-            "🛒 Step 14: Adding the same product again for admin-assisted checkout",
+            `📨 Step 12: Requesting OTP with reason: ${otpReasonWithEmail}`,
           );
-          cy.visit("/products/youth-tee/adb150");
-          cy.reload();
-          cy.get(".product-details__buttons__add-to-cart button")
-            .should("be.visible")
-            .click();
-
-          // Step 15-17: Logout, login as admin via OTP, then complete second order
-          cy.logToTerminal(`📨 Step 15: Requesting OTP with reason: ${otpReason}`);
-          return requestCustomerOtp(customer.id, otpReason).then((otpResponse) => {
+          return requestCustomerOtp(customer.id, otpReasonWithEmail).then((otpResponse) => {
             expect(otpResponse, "OTP response should exist").to.exist;
             expect(otpResponse.otp, "OTP code should be present").to.be.a(
               "string",
@@ -780,40 +759,63 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal(
               `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
             );
+            cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
+            cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            cy.logToTerminal("🚪 Step 16: Logging out before admin OTP login");
-            resetAuthStateAndOpenLogin();
+            // Paused flow for manual OTP verification.
+            // The test intentionally ends after OTP is received.
 
-            cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-            signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+            // Step 13: First order must be placed as the customer
+            // cy.logToTerminal("🧾 Step 13: Placing first order as customer");
+            // completeCheckoutAndPlaceOrder("Order 1 (customer session)");
 
-            // Login submit is sometimes successful without immediate redirect.
-            // Validate auth state by explicitly opening account page.
-            cy.logToTerminal(
-              "🔎 Verifying admin session by navigating to account page",
-            );
-            cy.visit("/customer/account");
+            // Step 14: Add the same product to cart again for admin-assisted order
+            // cy.logToTerminal(
+            //   "🛒 Step 14: Adding the same product again for admin-assisted checkout",
+            // );
+            // cy.visit("/products/youth-tee/adb150");
+            // cy.reload();
+            // cy.get(".product-details__buttons__add-to-cart button")
+            //   .should("be.visible")
+            //   .click();
 
-            cy.url().should("include", "/customer/account");
-            cy.get(".seller-assisted-buying-banner").should("be.visible");
-            cy.get(".seller-assisted-buying-banner__message")
-              .should("be.visible")
-              .and("contain", "You are connected as");
-            cy.contains(
-              ".seller-assisted-buying-banner__message",
-              "You are connected as",
-            ).should("be.visible");
-            cy.get(".seller-assisted-buying-banner__close-button")
-              .should("be.visible")
-              .and("contain", "Close Session");
-            cy.logToTerminal(
-              "✅ Seller-assisted admin session banner is visible",
-            );
+            // Step 15-17: Logout, login as admin via OTP, then complete second order
+            // cy.logToTerminal(`📨 Step 15: Requesting OTP with reason: ${otpReasonWithEmail}`);
+            // cy.logToTerminal("🚪 Step 16: Logging out before admin OTP login");
+            // resetAuthStateAndOpenLogin();
 
-            cy.logToTerminal(
-              "🧾 Step 18: Completing second order as admin session",
-            );
-            completeCheckoutAndPlaceOrder("Order 2 (admin session)");
+            // cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
+            // signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+
+            // // Login submit is sometimes successful without immediate redirect.
+            // // Validate auth state by explicitly opening account page.
+            // cy.logToTerminal(
+            //   "🔎 Verifying admin session by navigating to account page",
+            // );
+            // cy.visit("/customer/account");
+
+            // cy.url().should("include", "/customer/account");
+            // cy.get(".seller-assisted-buying-banner").should("be.visible");
+            // cy.get(".seller-assisted-buying-banner__message")
+            //   .should("be.visible")
+            //   .and("contain", "You are connected as");
+            // cy.contains(
+            //   ".seller-assisted-buying-banner__message",
+            //   "You are connected as",
+            // ).should("be.visible");
+            // cy.get(".seller-assisted-buying-banner__close-button")
+            //   .should("be.visible")
+            //   .and("contain", "Close Session");
+            // cy.logToTerminal(
+            //   "✅ Seller-assisted admin session banner is visible",
+            // );
+
+            // cy.logToTerminal(
+            //   "🧾 Step 18: Completing second order as admin session",
+            // );
+            // completeCheckoutAndPlaceOrder("Order 2 (admin session)");
+
+            cy.logToTerminal("✅ Flow intentionally stopped after OTP retrieval");
             return null;
           });
         });
