@@ -44,6 +44,20 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       actions.setGuestShippingAddress(customerShippingAddress, isSelectableState);
     });
 
+    // Reload page after filling shipping address to ensure state persistence
+    cy.logToTerminal(`🔄 ${phaseLabel}: Reloading page after shipping address fill`);
+    cy.reload();
+    cy.url().should("include", "/checkout");
+    
+    // Wait for checkout form to fully reinitialize after reload
+    cy.wait(5000);
+    cy.get('form[name="selectedShippingAddress"]', { timeout: 15000 })
+      .should('be.visible');
+    
+    // Scroll down to ensure form visibility
+    cy.scrollTo(0, 300);
+    cy.wait(1000);
+
     cy.wait(3000);
     cy.logToTerminal(`📦 ${phaseLabel}: Selecting shipping method (if shown)`);
     cy.get("body").then(($body) => {
@@ -294,13 +308,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
       ).should("not.exist");
 
-      // Step 11: Add product for admin-assisted purchase
-      cy.logToTerminal("🛒 Step 11: Adding product for admin purchase");
-      cy.visit("/products/youth-tee/adb150");
-      cy.reload();
-      cy.get(".product-details__buttons__add-to-cart button")
-        .should("be.visible")
-        .click();
+      // Step 11: Product will be added by admin after OTP login
+      cy.logToTerminal("ℹ️ Step 11: Skipping product add - will be done by admin");
 
       // Step 14: Logout and move to OTP login flow
       cy.logToTerminal("🔄 Pre-Step 14: Reloading page before logout");
@@ -354,6 +363,15 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
             signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
             cy.url().should("include", "/customer/account");
+
+            // Step 17.5: Add product as admin for assisted purchase
+            cy.logToTerminal("🛒 Step 17.5: Admin adding product for customer");
+            cy.visit("/products/youth-tee/adb150");
+            cy.reload();
+            cy.get(".product-details__buttons__add-to-cart button")
+              .should("be.visible")
+              .click();
+            cy.wait(2000);
 
             // Step 18: Complete second order in admin session
             cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
