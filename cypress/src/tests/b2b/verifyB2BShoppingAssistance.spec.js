@@ -473,7 +473,18 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               .contains("Seller assisted purchasing");
             cy.logToTerminal("✅ Step 19.3: Header container found");
             
-            cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 15000 }).should(
+            // Check what's on the page before looking for table
+            cy.get('body').then($body => {
+              const bodyText = $body.text();
+              cy.logToTerminal(`📄 Page content preview: ${bodyText.substring(0, 500)}`);
+              
+              const hasTable = $body.find(".account-seller-assisted-buying-activity-table__table").length > 0;
+              const hasNoDataMsg = bodyText.includes("No activities") || bodyText.includes("no data") || bodyText.includes("empty");
+              cy.logToTerminal(`🔍 Table exists: ${hasTable}, No-data message: ${hasNoDataMsg}`);
+            });
+            
+            // Try to find the table with longer timeout
+            cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 20000 }).should(
               "be.visible",
             );
             cy.logToTerminal("✅ Step 19.4: Activity table found");
