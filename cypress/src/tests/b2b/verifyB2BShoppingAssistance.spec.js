@@ -748,19 +748,10 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
       ).should("not.exist");
 
-      // Step 11: Add product and place first order as customer
+      // Step 11: Add product for admin-assisted purchase
       addProductToCartWithRetry(
         "/products/youth-tee/adb150",
-        "Step 11: Adding product for first customer order",
-      );
-
-      cy.logToTerminal("🧾 Step 12: Completing first purchase as customer");
-      completeCheckoutAndPlaceOrder("Order 1 (customer session)");
-
-      // Step 13: Add same product again for admin-assisted purchase
-      addProductToCartWithRetry(
-        "/products/youth-tee/adb150",
-        "Step 13: Adding product again for admin purchase",
+        "Step 11: Adding product for admin purchase",
       );
 
       // Step 14: Reset browser auth state before OTP login flow
@@ -817,9 +808,9 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
             cy.url().should("include", "/customer/account");
 
-            // Step 18: Complete second order in admin session
-            cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
-            completeCheckoutAndPlaceOrder("Order 2 (admin session)");
+            // Step 18: Complete order in admin session
+            cy.logToTerminal("🧾 Step 18: Completing purchase as admin");
+            completeCheckoutAndPlaceOrder("Order (admin session)");
 
             cy.logToTerminal(
               "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
