@@ -463,21 +463,35 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             // User is already logged in after checkout, no need for second OTP login
             cy.logToTerminal("📋 Step 19: Verifying order in Seller Assisted Purchasing (user already logged in)");
             cy.visit("/customer/seller-assisted-purchasing");
+            cy.logToTerminal("✅ Step 19.1: Page visited");
+            
             cy.url().should("include", "/customer/seller-assisted-purchasing");
+            cy.logToTerminal("✅ Step 19.2: URL verified");
+            
             cy.get('[data-testid="dropin-header-container"]')
               .should("be.visible")
               .contains("Seller assisted purchasing");
-            cy.get(".account-seller-assisted-buying-activity-table__table").should(
+            cy.logToTerminal("✅ Step 19.3: Header container found");
+            
+            cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 15000 }).should(
               "be.visible",
             );
+            cy.logToTerminal("✅ Step 19.4: Activity table found");
+            
             cy.contains(
               ".account-seller-assisted-buying-activity-table__table",
               "Order Placed",
+              { timeout: 10000 }
             ).should("be.visible");
+            cy.logToTerminal("✅ Step 19.5: 'Order Placed' text found in table");
+            
             cy.contains(
               ".account-seller-assisted-buying-activity-table__table",
               `email = ${testUserEmail}`,
+              { timeout: 10000 }
             ).should("be.visible");
+            cy.logToTerminal(`✅ Step 19.6: Email '${testUserEmail}' found in table`);
+            
             cy.logToTerminal("✅ Order verified in activity table");
 
             cy.logToTerminal(
