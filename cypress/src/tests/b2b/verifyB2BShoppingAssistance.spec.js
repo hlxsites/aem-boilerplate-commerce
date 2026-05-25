@@ -210,6 +210,67 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       );
     });
 
+  const ensureShippingAddressFieldsReady = (
+    attempt = 1,
+    maxAttempts = 12,
+    reloaded = false,
+  ) => {
+    const firstNameSelectors = [
+      'input[name="firstName"]',
+      'input[name="firstname"]',
+      'input[name="shippingAddress.firstName"]',
+      'input[name="shippingAddress.firstname"]',
+      'input[autocomplete="given-name"]',
+    ];
+
+    return cy.get("body", { timeout: 5000 }).then(($body) => {
+      const visibleSelector = firstNameSelectors.find(
+        (selector) => $body.find(`${selector}:visible`).length > 0,
+      );
+
+      if (visibleSelector) {
+        cy.logToTerminal(
+          `✅ shipping address fields are ready via: ${visibleSelector}`,
+        );
+        return;
+      }
+
+      if (attempt >= maxAttempts) {
+        const bodyText = $body.text().replace(/\s+/g, " ").trim().slice(0, 600);
+        cy.logToTerminal(
+          "⚠️ shipping address fields are not visible after retries",
+        );
+        cy.logToTerminal(`⚠️ shipping form body preview: ${bodyText}`);
+        throw new Error(
+          `Timed out waiting for shipping address fields. Selectors: ${firstNameSelectors.join(", ")}`,
+        );
+      }
+
+      if (!reloaded && attempt === 6) {
+        cy.logToTerminal(
+          "🔄 Shipping fields still missing, reloading checkout and retrying",
+        );
+        cy.reload();
+        cy.url().should("include", "/checkout");
+        ensureCheckoutAndFormsReady();
+        scrollCheckoutShippingSection();
+        return ensureShippingAddressFieldsReady(
+          attempt + 1,
+          maxAttempts,
+          true,
+        );
+      }
+
+      cy.logToTerminal(
+        `⏳ shipping address fields are not visible yet (${attempt}/${maxAttempts}), scrolling and retrying`,
+      );
+      scrollCheckoutShippingSection();
+      return Cypress.Promise.delay(1000).then(() =>
+        ensureShippingAddressFieldsReady(attempt + 1, maxAttempts, reloaded),
+      );
+    });
+  };
+
   const scrollCheckoutShippingSection = () => {
     cy.get(".checkout__shipping-form", { timeout: 60000 })
       .should("exist")
@@ -533,11 +594,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                 "📝 Waiting for shipping form and filling address for new user",
               );
               scrollCheckoutShippingSection();
+              ensureShippingAddressFieldsReady();
               typeIntoVisibleField(
                 [
                   'input[name="firstName"]',
                   'input[name="firstname"]',
                   'input[name="shippingAddress.firstName"]',
+                  'input[name="shippingAddress.firstname"]',
+                  'input[autocomplete="given-name"]',
                 ],
                 customerShippingAddress.firstName,
                 "shipping first name",
