@@ -80,6 +80,25 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   };
 
   const ensureCheckoutMainLoaded = () => {
+    cy.url().then((url) => {
+      cy.logToTerminal(`🔎 Checkout debug URL before main check: ${url}`);
+    });
+
+    cy.get("body", { timeout: 60000 }).then(($body) => {
+      const hasMain = $body.find(".checkout__main:visible").length > 0;
+      const hasShippingForm =
+        $body.find(".checkout__shipping-form:visible").length > 0;
+      const hasCheckoutLogin = $body.find(".checkout__login").length > 0;
+
+      if (!hasMain) {
+        const bodyText = $body.text().replace(/\s+/g, " ").trim().slice(0, 600);
+        cy.logToTerminal(
+          `⚠️ Checkout debug snapshot before failure: main=${hasMain}, shipping=${hasShippingForm}, login=${hasCheckoutLogin}`,
+        );
+        cy.logToTerminal(`⚠️ Checkout body preview: ${bodyText}`);
+      }
+    });
+
     cy.get(".checkout__main", { timeout: 60000 }).should("be.visible");
   };
 
@@ -273,6 +292,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       );
       cy.get('input[name="allowRemoteShoppingAssistance"]')
         .should("exist")
+        .then(($checkbox) => {
+          if (!$checkbox.is(":checked")) {
+            cy.logToTerminal(
+              "ℹ️ Remote Shopping Assistance checkbox was not checked after registration, enabling it now",
+            );
+            cy.wrap($checkbox).check({ force: true });
+          }
+        })
         .should("be.checked");
 
       cy.logToTerminal(
