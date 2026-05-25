@@ -315,13 +315,28 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.reload();
               cy.url().should("include", "/checkout");
               cy.logToTerminal("⏳ Waiting for checkout to fully load...");
+              cy.get(".checkout__main", { timeout: 60000 }).should(
+                "be.visible",
+              );
+              cy.get(".checkout-login-form__customer-email", {
+                timeout: 60000,
+              })
+                .should("be.visible")
+                .and("contain", testUserEmail);
+              cy.logToTerminal(
+                `✅ Checkout contact email is visible: ${testUserEmail}`,
+              );
+
               cy.get(
-                ".checkout__shipping-form, .checkout-terms-and-conditions__form",
+                '.checkout__shipping-form form[name="selectedShippingAddress"]',
                 {
                   timeout: 60000,
                 },
-              ).should("exist");
-              cy.logToTerminal("✅ Checkout UI is loaded");
+              ).should("be.visible");
+              cy.get('.checkout__shipping-form input[name="firstName"]', {
+                timeout: 60000,
+              }).should("be.visible");
+              cy.logToTerminal("✅ Checkout UI and shipping form are loaded");
 
               // Step 17: Complete checkout and place order
               cy.logToTerminal(
