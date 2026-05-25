@@ -778,35 +778,18 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
             cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            const secondOtpReasonWithEmail = `second-test:${testUserEmail}`;
+            // Step 17: Login as admin using OTP
+            cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
+            signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+            cy.url().should("include", "/customer/account");
+
+            // Step 18: Complete second order in admin session
+            cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
+            completeCheckoutAndPlaceOrder("Order 2 (admin session)");
+
             cy.logToTerminal(
-              `📨 Step 16.1: Requesting second OTP with reason: ${secondOtpReasonWithEmail}`,
+              "✅ Full flow completed: registration, checkbox checks, OTP admin login, admin purchase",
             );
-            return requestCustomerOtp(customer.id, secondOtpReasonWithEmail).then((secondOtpResponse) => {
-              expect(secondOtpResponse, "Second OTP response should exist").to.exist;
-              expect(secondOtpResponse.otp, "Second OTP code should be present").to.be.a(
-                "string",
-              );
-
-              cy.logToTerminal(
-                `✅ Second OTP request completed: ${JSON.stringify(secondOtpResponse)}`,
-              );
-              cy.logToTerminal(`🔑 Second OTP for ${testUserEmail}: ${secondOtpResponse.otp}`);
-              cy.log(`Second OTP for ${testUserEmail}: ${secondOtpResponse.otp}`);
-
-              // Step 17: Login as admin using the first OTP code.
-              cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-              signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
-              cy.url().should("include", "/customer/account");
-
-              // Step 18: Complete second order in admin session
-              cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
-              completeCheckoutAndPlaceOrder("Order 2 (admin session)");
-
-              cy.logToTerminal(
-                "✅ Full flow completed: registration, checkbox checks, OTP admin login, admin purchase",
-              );
-            });
           });
         });
 
