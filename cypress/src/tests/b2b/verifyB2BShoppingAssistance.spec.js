@@ -44,30 +44,30 @@
  * ==========================================================================
  */
 
-import * as fields from '../../fields';
-import * as actions from '../../actions';
+import * as fields from "../../fields";
+import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
 import {
   findCustomerByEmail,
   requestCustomerOtp,
 } from "../../support/b2bCompanyAPICalls";
 
-describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
+describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   let testUserEmail;
   const otpReason = "test";
 
   before(() => {
-    cy.logToTerminal('🚀 B2B Shopping Assistance test suite started');
+    cy.logToTerminal("🚀 B2B Shopping Assistance test suite started");
   });
 
   beforeEach(() => {
-    cy.logToTerminal('🧹 B2B Shopping Assistance test cleanup');
+    cy.logToTerminal("🧹 B2B Shopping Assistance test cleanup");
     cy.clearCookies();
     cy.clearLocalStorage();
-    cy.intercept('**/graphql').as('defaultGraphQL');
+    cy.intercept("**/graphql").as("defaultGraphQL");
 
     // Handle uncaught exceptions
-    cy.on('uncaught:exception', (err) => {
+    cy.on("uncaught:exception", (err) => {
       if (
         err.message.includes("Failed to fetch") ||
         err.message.includes("renderCompanySwitcher") ||
@@ -80,7 +80,7 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
   });
 
   after(() => {
-    cy.logToTerminal('🏁 B2B Shopping Assistance test suite completed');
+    cy.logToTerminal("🏁 B2B Shopping Assistance test suite completed");
   });
 
   /**
@@ -98,17 +98,19 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
    * 8. Save changes
    * 9. Verify changes persisted
    */
-  it('TC-01: Complete Shopping Assistance flow - register and modify settings', () => {
-    cy.logToTerminal('========= 🚀 TC-01: Complete Shopping Assistance Flow =========');
+  it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
+    cy.logToTerminal(
+      "========= 🚀 TC-01: Complete Shopping Assistance Flow =========",
+    );
 
     // Step 1: Navigate to registration page
-    cy.logToTerminal('📝 Step 1: Navigating to registration page');
-    cy.visit('/customer/create');
-    cy.contains('Create account').should('be.visible');
+    cy.logToTerminal("📝 Step 1: Navigating to registration page");
+    cy.visit("/customer/create");
+    cy.contains("Create account").should("be.visible");
 
     // Step 2: Fill registration form using fixture data
-    cy.logToTerminal('✍️ Step 2: Filling registration form');
-    
+    cy.logToTerminal("✍️ Step 2: Filling registration form");
+
     cy.fixture("userInfo").then(({ sign_up }) => {
       // Generate unique email for this test
       const random = Cypress._.random(0, 10000000);
@@ -300,170 +302,163 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
                 "✅ OTP login verification completed with banner presence validation",
               );
 
-              // Step 15: Add one simple product to cart
-              cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
-              cy.visit("/products/youth-tee/adb150");
-              cy.get(".product-details__buttons__add-to-cart button")
-                .should("be.visible")
-                .click();
+      // Step 15: Add one simple product to cart
+      cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
+      cy.visit("/products/youth-tee/adb150");
+      cy.get(".product-details__buttons__add-to-cart button")
+        .should("be.visible")
+        .click();
 
-              // Step 16: Go to checkout
-              cy.logToTerminal("💳 Step 16: Navigating to checkout");
-              cy.get(".minicart-wrapper").click();
-              cy.get('.minicart-panel[data-loaded="true"]').should("exist");
-              cy.contains("View Cart").click();
-              cy.get(".dropin-button--primary").contains("Checkout").click();
-              cy.url().should("include", "/checkout");
+      // Step 16: Go to checkout
+      cy.logToTerminal("💳 Step 16: Navigating to checkout");
+      cy.get(".minicart-wrapper").click();
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+      cy.contains("View Cart").click();
+      cy.get(".dropin-button--primary").contains("Checkout").click();
+      cy.url().should("include", "/checkout");
 
-              // In this project checkout can hydrate with delay after navigation.
-              cy.reload();
-              cy.url().should("include", "/checkout");
-              cy.logToTerminal("⏳ Waiting for checkout to fully load...");
-              cy.get(".checkout__main", { timeout: 60000 }).should(
-                "be.visible",
-              );
-              cy.get(".checkout__login", { timeout: 60000 }).should("exist");
-              cy.get("body").then(($body) => {
-                if ($body.find(".checkout-login-form__customer-email").length > 0) {
-                  cy.get(".checkout-login-form__customer-email")
-                    .first()
-                    .should(($email) => {
-                      expect($email.text().trim()).to.contain(testUserEmail);
-                    });
-                  cy.logToTerminal(
-                    `✅ Checkout contact email is present: ${testUserEmail}`,
-                  );
-                } else {
-                  cy.contains(".checkout__login", testUserEmail, {
-                    timeout: 60000,
-                  }).should("exist");
-                  cy.logToTerminal(
-                    `✅ Checkout login section contains email text: ${testUserEmail}`,
-                  );
-                }
-              });
+      // In this project checkout can hydrate with delay after navigation.
+      cy.reload();
+      cy.url().should("include", "/checkout");
+      cy.logToTerminal("⏳ Waiting for checkout to fully load...");
+      cy.get(".checkout__main", { timeout: 60000 }).should("be.visible");
+      cy.get(".checkout__login", { timeout: 60000 }).should("exist");
+      cy.get("body").then(($body) => {
+        if ($body.find(".checkout-login-form__customer-email").length > 0) {
+          cy.get(".checkout-login-form__customer-email")
+            .first()
+            .should(($email) => {
+              expect($email.text().trim()).to.contain(testUserEmail);
+            });
+          cy.logToTerminal(
+            `✅ Checkout contact email is present: ${testUserEmail}`,
+          );
+        } else {
+          cy.contains(".checkout__login", testUserEmail, {
+            timeout: 60000,
+          }).should("exist");
+          cy.logToTerminal(
+            `✅ Checkout login section contains email text: ${testUserEmail}`,
+          );
+        }
+      });
 
-              cy.get(
-                '.checkout__shipping-form form[name="selectedShippingAddress"]',
-                {
-                  timeout: 60000,
-                },
-              ).should("be.visible");
-              cy.get('.checkout__shipping-form input[name="firstName"]', {
-                timeout: 60000,
-              }).should("be.visible");
-              cy.logToTerminal("✅ Checkout UI and shipping form are loaded");
+      cy.get('.checkout__shipping-form form[name="selectedShippingAddress"]', {
+        timeout: 60000,
+      }).should("be.visible");
+      cy.get('.checkout__shipping-form input[name="firstName"]', {
+        timeout: 60000,
+      }).should("be.visible");
+      cy.logToTerminal("✅ Checkout UI and shipping form are loaded");
 
-              // Step 17: Complete checkout and place order
-              cy.logToTerminal(
-                "📦 Step 17: Completing checkout and placing order",
-              );
-              cy.logToTerminal(
-                "📝 Waiting for shipping form and filling address for new user",
-              );
-              cy.get('input[name="firstName"]:visible', { timeout: 60000 })
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="firstName"]:visible')
-                .first()
-                .type(customerShippingAddress.firstName, { force: true });
-              cy.get('input[name="lastName"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="lastName"]:visible')
-                .first()
-                .type(customerShippingAddress.lastName, { force: true });
-              cy.get('input[name="street"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="street"]:visible')
-                .first()
-                .type(customerShippingAddress.street, { force: true });
-              cy.get('input[name="streetMultiline_2"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="streetMultiline_2"]:visible')
-                .first()
-                .type(customerShippingAddress.street1, { force: true });
-              cy.get('select[name="region"]:visible')
-                .first()
-                .select(customerShippingAddress.region, { force: true });
-              cy.get('input[name="city"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="city"]:visible')
-                .first()
-                .type(customerShippingAddress.city, { force: true });
-              cy.get('input[name="postcode"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="postcode"]:visible')
-                .first()
-                .type(customerShippingAddress.postCode, { force: true });
-              cy.get('input[name="telephone"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="telephone"]:visible')
-                .first()
-                .type(customerShippingAddress.telephone, {
-                  force: true,
-                });
+      // Step 17: Complete checkout and place order
+      cy.logToTerminal("📦 Step 17: Completing checkout and placing order");
+      cy.logToTerminal(
+        "📝 Waiting for shipping form and filling address for new user",
+      );
+      cy.get('input[name="firstName"]:visible', { timeout: 60000 })
+        .first()
+        .clear({ force: true });
+      cy.get('input[name="firstName"]:visible')
+        .first()
+        .type(customerShippingAddress.firstName, { force: true });
+      cy.get('input[name="lastName"]:visible').first().clear({ force: true });
+      cy.get('input[name="lastName"]:visible')
+        .first()
+        .type(customerShippingAddress.lastName, { force: true });
+      cy.get('input[name="street"]:visible').first().clear({ force: true });
+      cy.get('input[name="street"]:visible')
+        .first()
+        .type(customerShippingAddress.street, { force: true });
+      cy.get('input[name="streetMultiline_2"]:visible')
+        .first()
+        .clear({ force: true });
+      cy.get('input[name="streetMultiline_2"]:visible')
+        .first()
+        .type(customerShippingAddress.street1, { force: true });
+      cy.get('select[name="region"]:visible')
+        .first()
+        .select(customerShippingAddress.region, { force: true });
+      cy.get('input[name="city"]:visible').first().clear({ force: true });
+      cy.get('input[name="city"]:visible')
+        .first()
+        .type(customerShippingAddress.city, { force: true });
+      cy.get('input[name="postcode"]:visible').first().clear({ force: true });
+      cy.get('input[name="postcode"]:visible')
+        .first()
+        .type(customerShippingAddress.postCode, { force: true });
+      cy.get('input[name="telephone"]:visible').first().clear({ force: true });
+      cy.get('input[name="telephone"]:visible')
+        .first()
+        .type(customerShippingAddress.telephone, {
+          force: true,
+        });
 
-              // Ensure shipping method is selected when method radios are present
-              cy.get('input[name="shipping_method"]:visible').then(
-                ($shippingMethods) => {
-                  if (
-                    $shippingMethods.length > 0 &&
-                    !$shippingMethods.is(":checked")
-                  ) {
-                    cy.logToTerminal("🚚 Selecting shipping method");
-                    cy.wrap($shippingMethods.first()).check({ force: true });
-                  }
-                },
-              );
+      // Ensure shipping method is selected when method radios are present
+      cy.get("body").then(($body) => {
+        const shippingSelector =
+          'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
+        const $shippingMethods = $body.find(shippingSelector);
 
-              // Ensure payment method is selected (same pattern as checkout tests)
-              cy.get("body").then(($body) => {
-                if ($body.text().includes(checkMoneyOrder.name)) {
-                  cy.logToTerminal(
-                    `💰 Selecting payment method: ${checkMoneyOrder.name}`,
-                  );
-                  actions.setPaymentMethod(checkMoneyOrder);
-                }
-              });
+        if ($shippingMethods.length > 0) {
+          const isAnyChecked = $shippingMethods.is(":checked");
+          if (!isAnyChecked) {
+            cy.logToTerminal("🚚 Selecting shipping method");
+            cy.wrap($shippingMethods.first()).check({ force: true });
+          }
+        } else {
+          cy.logToTerminal("ℹ️ Shipping method radios not found, continuing");
+        }
+      });
 
-              // Accept terms if terms checkbox exists
-              cy.get("body").then(($body) => {
-                const $termsCheckbox = $body.find(
-                  'input[name="default"][type="checkbox"]',
-                );
+      // Ensure payment method is selected (same pattern as checkout tests)
+      cy.get("body").then(($body) => {
+        if ($body.text().includes(checkMoneyOrder.name)) {
+          cy.logToTerminal(
+            `💰 Selecting payment method: ${checkMoneyOrder.name}`,
+          );
+          actions.setPaymentMethod(checkMoneyOrder);
+        }
+      });
 
-                if ($termsCheckbox.length > 0) {
-                  cy.logToTerminal("📄 Accepting checkout terms");
-                  actions.checkTermsAndConditions();
-                }
-              });
+      // Explicitly accept checkout terms before placing order
+      cy.get('[data-testid="checkout-terms-and-conditions-form"]', {
+        timeout: 60000,
+      }).should("exist");
+      cy.get(
+        '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
+      )
+        .first()
+        .then(($checkbox) => {
+          if (!$checkbox.is(":checked")) {
+            cy.logToTerminal("📄 Accepting checkout terms");
+            cy.wrap($checkbox).check({ force: true });
+          }
+        });
+      cy.get(
+        '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
+      )
+        .first()
+        .should("be.checked");
 
-              // Place order when button becomes visible
-              cy.get(".checkout-place-order__button", { timeout: 60000 })
-                .should("be.visible")
-                .click({ force: true });
+      // Place order when button becomes visible
+      cy.get(".checkout-place-order__button", { timeout: 60000 })
+        .should("be.visible")
+        .click({ force: true });
 
-              // Step 18: Verify order confirmation details
-              cy.logToTerminal(
-                "✅ Step 18: Verifying order confirmation details",
-              );
-              cy.contains("thank you for your order!").should("be.visible");
-              cy.contains("Order placed by an administrator").should(
-                "be.visible",
-              );
+      // Step 18: Verify order confirmation details
+      cy.logToTerminal("✅ Step 18: Verifying order confirmation details");
+      cy.contains("thank you for your order!").should("be.visible");
+      cy.contains("Order placed by an administrator").should("be.visible");
 
-              // ==================================================================
-              // TODO END: OTP re-login + checkout order placement extension
-              // ==================================================================
+              return null;
             },
           );
         });
+
+      // ==================================================================
+      // TODO END: OTP re-login + checkout order placement extension
+      // ==================================================================
 
       cy.logToTerminal(
         "✅ TC-01: Complete Shopping Assistance flow completed successfully",
