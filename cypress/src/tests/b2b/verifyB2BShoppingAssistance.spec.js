@@ -826,6 +826,43 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               "✅ Full flow completed: registration, checkbox checks, customer purchase, OTP admin login, admin purchase",
             );
 
+            const forceAdminReauthAndRetry = (
+              nextAttempt,
+              maxAttempts,
+              reasonPrefix,
+            ) => {
+              if (nextAttempt > maxAttempts) {
+                throw new Error(
+                  "Seller-assisted activity verification retries were exhausted after re-login attempts.",
+                );
+              }
+
+              cy.logToTerminal(
+                `🔄 Re-auth attempt ${nextAttempt}/${maxAttempts}: clearing auth state and requesting fresh OTP (${reasonPrefix})`,
+              );
+              cy.clearCookies();
+              cy.clearLocalStorage();
+              cy.window().then((win) => {
+                win.sessionStorage.clear();
+              });
+
+              const reloginReason = `${reasonPrefix}:${testUserEmail}:${nextAttempt}`;
+              return requestCustomerOtp(customer.id, reloginReason).then(
+                (newOtpResponse) => {
+                  expect(
+                    newOtpResponse.otp,
+                    "Re-login OTP code should be present",
+                  ).to.be.a("string");
+
+                  cy.visit("/customer/login");
+                  signInAsAdminWithOtp(testUserEmail, newOtpResponse.otp);
+                  cy.url().should("include", "/customer/account");
+
+                  return verifySellerAssistedActivity(nextAttempt, maxAttempts);
+                },
+              );
+            };
+
             const verifySellerAssistedActivity = (attempt = 1, maxAttempts = 4) =>
               cy.visit("/customer/seller-assisted-purchasing").then(() => {
                 return cy.url().then((url) => {
@@ -839,23 +876,10 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                     cy.logToTerminal(
                       `ℹ️ Session expired before activity check, requesting fresh OTP (attempt ${attempt}/${maxAttempts})`,
                     );
-                    const reloginReason = `relogin:${testUserEmail}:${attempt}`;
-                    return requestCustomerOtp(customer.id, reloginReason).then(
-                      (newOtpResponse) => {
-                        expect(
-                          newOtpResponse.otp,
-                          "Re-login OTP code should be present",
-                        ).to.be.a("string");
-
-                        cy.visit("/customer/login");
-                        signInAsAdminWithOtp(testUserEmail, newOtpResponse.otp);
-                        cy.url().should("include", "/customer/account");
-
-                        return verifySellerAssistedActivity(
-                          attempt + 1,
-                          maxAttempts,
-                        );
-                      },
+                    return forceAdminReauthAndRetry(
+                      attempt + 1,
+                      maxAttempts,
+                      "relogin",
                     );
                   }
 
@@ -886,11 +910,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                     }
 
                     cy.logToTerminal(
-                      `⏳ Seller-assisted activity table not visible yet (${attempt}/${maxAttempts}), reloading and retrying`,
+                      `⏳ Seller-assisted activity table not visible yet (${attempt}/${maxAttempts}), forcing logout and re-login with fresh OTP`,
                     );
-                    cy.reload();
-                    return Cypress.Promise.delay(1500).then(() =>
-                      verifySellerAssistedActivity(attempt + 1, maxAttempts),
+                    return forceAdminReauthAndRetry(
+                      attempt + 1,
+                      maxAttempts,
+                      "activity-retry",
                     );
                   });
                 });
