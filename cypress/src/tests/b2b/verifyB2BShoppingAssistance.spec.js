@@ -665,6 +665,34 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         const sessionConfigValue = win.sessionStorage.getItem("config");
         const graphqlEndPoint = Cypress.env("graphqlEndPoint");
 
+        const toB64 = (value) => {
+          if (!value) return "<empty>";
+          try {
+            return win.btoa(unescape(encodeURIComponent(String(value))));
+          } catch (e) {
+            return "<encode_error>";
+          }
+        };
+
+        const describeUrl = (value, label) => {
+          if (!value) {
+            cy.logToTerminal(`⚙️ ${label}: <empty>`);
+            return;
+          }
+
+          try {
+            const parsed = new URL(value);
+            cy.logToTerminal(
+              `⚙️ ${label} parts -> protocol=${parsed.protocol} host=${parsed.host} path=${parsed.pathname}`,
+            );
+          } catch (e) {
+            cy.logToTerminal(`⚙️ ${label} raw (non-url): ${value}`);
+          }
+
+          cy.logToTerminal(`⚙️ ${label} length: ${String(value).length}`);
+          cy.logToTerminal(`⚙️ ${label} b64: ${toB64(value)}`);
+        };
+
         cy.logToTerminal(
           `🗂 localStorage config: ${localConfigValue || "<empty>"}`,
         );
@@ -674,6 +702,25 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.logToTerminal(
           `⚙️ Cypress.env graphqlEndPoint: ${graphqlEndPoint || "<empty>"}`,
         );
+
+        if (sessionConfigValue) {
+          try {
+            const parsedConfig = JSON.parse(sessionConfigValue);
+            const defaultPublicConfig = parsedConfig?.public?.default || {};
+            describeUrl(
+              defaultPublicConfig["commerce-endpoint"],
+              "sessionStorage config public.default.commerce-endpoint",
+            );
+            describeUrl(
+              defaultPublicConfig["commerce-core-endpoint"],
+              "sessionStorage config public.default.commerce-core-endpoint",
+            );
+          } catch (e) {
+            cy.logToTerminal("⚠️ Failed to parse sessionStorage config JSON");
+          }
+        }
+
+        describeUrl(graphqlEndPoint, "Cypress.env graphqlEndPoint");
       });
 
       // Skipping seller-assisted UI checks for now.
