@@ -15,35 +15,6 @@
  * from Adobe.
  ****************************************************************** */
 
-/**
- * @fileoverview B2B Shopping Assistance E2E Tests.
- * Tests cover:
- * - User registration with Remote Shopping Assistance consent
- * - Verification that user is auto-logged in after registration
- * - Navigation to Seller Assisted Purchasing page
- * - Verification of page header and checkbox state
- * - Toggle checkbox on/off and verify UI messages
- * - Verification of "disabled" message when checkbox is unchecked
- * - Verification that message disappears when checkbox is re-enabled
- *
- * Test Plan: B2B Shopping Assistance feature
- *
- * ==========================================================================
- * COVERED TEST CASES:
- * ==========================================================================
- * TC-01 (P0): Complete Shopping Assistance flow (Frontend)
- *   - Register with consent enabled
- *   - Auto-login after registration
- *   - Navigate to /customer/seller-assisted-purchasing
- *   - Verify page header "Seller assisted purchasing"
- *   - Verify checkbox is checked
- *   - Uncheck checkbox
- *   - Verify disabled message appears
- *   - Re-check checkbox
- *   - Verify disabled message disappears
- * ==========================================================================
- */
-
 import * as fields from "../../fields";
 import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
@@ -122,23 +93,23 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
       .within(() => {
-        cy.get('input[name="email"]', { timeout: 30000 })
+        cy.get('input[name="email"]')
           .should("be.visible")
           .clear({ force: true })
           .type(email, { force: true });
 
-        cy.get('input[name="password"]', { timeout: 30000 })
+        cy.get('input[name="password"]')
           .should("be.visible")
           .clear({ force: true })
           .type(otp, { force: true });
 
-        cy.get('button[type="submit"]', { timeout: 30000 })
+        cy.get('button[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
           .click({ force: true });
 
         // Give post-submit auth state a brief moment to settle.
-        cy.wait(916);
+        cy.wait(5000);
       });
 
     // Guard against occasional missed submit handling on first click.
