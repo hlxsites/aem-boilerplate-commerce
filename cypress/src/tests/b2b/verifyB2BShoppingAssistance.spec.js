@@ -446,29 +446,56 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
             completeCheckoutAndPlaceOrder("Order 2 (admin session)");
 
-            // Step 19: Verify order appears in Seller Assisted Purchasing activity table
-            cy.logToTerminal("📋 Step 19: Verifying order in Seller Assisted Purchasing");
-            cy.visit("/customer/seller-assisted-purchasing");
-            cy.url().should("include", "/customer/seller-assisted-purchasing");
-            cy.get('[data-testid="dropin-header-container"]')
+            // Step 18.5: Logout and re-login with new OTP before verification
+            cy.logToTerminal("🔄 Step 18.5: Logging out before second OTP login");
+            cy.visit("/");
+            cy.get(".nav-dropdown-button", { timeout: 60000 })
               .should("be.visible")
-              .contains("Seller assisted purchasing");
-            cy.get(".account-seller-assisted-buying-activity-table__table").should(
-              "be.visible",
-            );
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              "Order Placed",
-            ).should("be.visible");
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              `email = ${testUserEmail}`,
-            ).should("be.visible");
-            cy.logToTerminal("✅ Order verified in activity table");
+              .click({ force: true });
+            cy.contains("button", /^logout$/i, { timeout: 60000 })
+              .click({ force: true });
+            
+            // Wait for logout to complete
+            cy.wait(3000);
+            
+            // Reset auth state for second OTP login
+            resetAuthStateAndOpenLogin();
+            
+            // Step 18.6: Request new OTP for verification
+            cy.logToTerminal("🔎 Step 18.6: Requesting second OTP for verification");
+            const otpReasonSecond = `verify:${testUserEmail}`;
+            return requestCustomerOtp(customer.id, otpReasonSecond).then((otpResponse2) => {
+              cy.logToTerminal(`🔑 Second OTP for ${testUserEmail}: ${otpResponse2.otp}`);
+              
+              // Step 18.7: Login with second OTP
+              cy.logToTerminal("🔐 Step 18.7: Signing in with second OTP");
+              signInAsAdminWithOtp(testUserEmail, otpResponse2.otp);
+              cy.url().should("include", "/customer/account");
+              
+              // Step 19: Verify order appears in Seller Assisted Purchasing activity table
+              cy.logToTerminal("📋 Step 19: Verifying order in Seller Assisted Purchasing");
+              cy.visit("/customer/seller-assisted-purchasing");
+              cy.url().should("include", "/customer/seller-assisted-purchasing");
+              cy.get('[data-testid="dropin-header-container"]')
+                .should("be.visible")
+                .contains("Seller assisted purchasing");
+              cy.get(".account-seller-assisted-buying-activity-table__table").should(
+                "be.visible",
+              );
+              cy.contains(
+                ".account-seller-assisted-buying-activity-table__table",
+                "Order Placed",
+              ).should("be.visible");
+              cy.contains(
+                ".account-seller-assisted-buying-activity-table__table",
+                `email = ${testUserEmail}`,
+              ).should("be.visible");
+              cy.logToTerminal("✅ Order verified in activity table");
 
-            cy.logToTerminal(
-              "✅ Full flow completed: registration, checkbox checks, OTP admin login, admin purchase",
-            );
+              cy.logToTerminal(
+                "✅ Full flow completed: registration, checkbox checks, 2x OTP admin logins, admin purchase, verification",
+              );
+            });
           });
         });
 
