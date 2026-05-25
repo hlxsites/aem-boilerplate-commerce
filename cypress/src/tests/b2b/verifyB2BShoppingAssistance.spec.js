@@ -302,154 +302,182 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                 "✅ OTP login verification completed with banner presence validation",
               );
 
-      // Step 15: Add one simple product to cart
-      cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
-      cy.visit("/products/youth-tee/adb150");
-      cy.get(".product-details__buttons__add-to-cart button")
-        .should("be.visible")
-        .click();
+              // Step 15: Add one simple product to cart
+              cy.logToTerminal("🛒 Step 15: Adding one simple product to cart");
+              cy.visit("/products/youth-tee/adb150");
+              cy.get(".product-details__buttons__add-to-cart button")
+                .should("be.visible")
+                .click();
 
-      // Step 16: Go to checkout
-      cy.logToTerminal("💳 Step 16: Navigating to checkout");
-      cy.get(".minicart-wrapper").click();
-      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
-      cy.contains("View Cart").click();
-      cy.get(".dropin-button--primary").contains("Checkout").click();
-      cy.url().should("include", "/checkout");
+              // Step 16: Go to checkout
+              cy.logToTerminal("💳 Step 16: Navigating to checkout");
+              cy.get(".minicart-wrapper").click();
+              cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+              cy.contains("View Cart").click();
+              cy.get(".dropin-button--primary").contains("Checkout").click();
+              cy.url().should("include", "/checkout");
 
-      // In this project checkout can hydrate with delay after navigation.
-      cy.reload();
-      cy.url().should("include", "/checkout");
-      cy.logToTerminal("⏳ Waiting for checkout to fully load...");
-      cy.get(".checkout__main", { timeout: 60000 }).should("be.visible");
-      cy.get(".checkout__login", { timeout: 60000 }).should("exist");
-      cy.get("body").then(($body) => {
-        if ($body.find(".checkout-login-form__customer-email").length > 0) {
-          cy.get(".checkout-login-form__customer-email")
-            .first()
-            .should(($email) => {
-              expect($email.text().trim()).to.contain(testUserEmail);
-            });
-          cy.logToTerminal(
-            `✅ Checkout contact email is present: ${testUserEmail}`,
-          );
-        } else {
-          cy.contains(".checkout__login", testUserEmail, {
-            timeout: 60000,
-          }).should("exist");
-          cy.logToTerminal(
-            `✅ Checkout login section contains email text: ${testUserEmail}`,
-          );
-        }
-      });
+              // In this project checkout can hydrate with delay after navigation.
+              cy.reload();
+              cy.wait("@defaultGraphQL", { timeout: 60000 });
+              cy.url().should("include", "/checkout");
+              cy.logToTerminal("⏳ Waiting for checkout to fully load...");
+              cy.get(".checkout__main", { timeout: 60000 }).should(
+                "be.visible",
+              );
+              cy.get(".checkout__login", { timeout: 60000 }).should("exist");
+              cy.get("body").then(($body) => {
+                if (
+                  $body.find(".checkout-login-form__customer-email").length > 0
+                ) {
+                  cy.get(".checkout-login-form__customer-email")
+                    .first()
+                    .should(($email) => {
+                      expect($email.text().trim()).to.contain(testUserEmail);
+                    });
+                  cy.logToTerminal(
+                    `✅ Checkout contact email is present: ${testUserEmail}`,
+                  );
+                } else {
+                  cy.contains(".checkout__login", testUserEmail, {
+                    timeout: 60000,
+                  }).should("exist");
+                  cy.logToTerminal(
+                    `✅ Checkout login section contains email text: ${testUserEmail}`,
+                  );
+                }
+              });
 
-      cy.get('.checkout__shipping-form form[name="selectedShippingAddress"]', {
-        timeout: 60000,
-      }).should("be.visible");
-      cy.get('.checkout__shipping-form input[name="firstName"]', {
-        timeout: 60000,
-      }).should("be.visible");
-      cy.logToTerminal("✅ Checkout UI and shipping form are loaded");
+              cy.get(
+                '.checkout__shipping-form form[name="selectedShippingAddress"]',
+                {
+                  timeout: 60000,
+                },
+              ).should("be.visible");
+              cy.get('.checkout__shipping-form input[name="firstName"]', {
+                timeout: 60000,
+              }).should("be.visible");
+              cy.logToTerminal("✅ Checkout UI and shipping form are loaded");
 
-      // Step 17: Complete checkout and place order
-      cy.logToTerminal("📦 Step 17: Completing checkout and placing order");
-      cy.logToTerminal(
-        "📝 Waiting for shipping form and filling address for new user",
-      );
-      cy.get('input[name="firstName"]:visible', { timeout: 60000 })
-        .first()
-        .clear({ force: true });
-      cy.get('input[name="firstName"]:visible')
-        .first()
-        .type(customerShippingAddress.firstName, { force: true });
-      cy.get('input[name="lastName"]:visible').first().clear({ force: true });
-      cy.get('input[name="lastName"]:visible')
-        .first()
-        .type(customerShippingAddress.lastName, { force: true });
-      cy.get('input[name="street"]:visible').first().clear({ force: true });
-      cy.get('input[name="street"]:visible')
-        .first()
-        .type(customerShippingAddress.street, { force: true });
-      cy.get('input[name="streetMultiline_2"]:visible')
-        .first()
-        .clear({ force: true });
-      cy.get('input[name="streetMultiline_2"]:visible')
-        .first()
-        .type(customerShippingAddress.street1, { force: true });
-      cy.get('select[name="region"]:visible')
-        .first()
-        .select(customerShippingAddress.region, { force: true });
-      cy.get('input[name="city"]:visible').first().clear({ force: true });
-      cy.get('input[name="city"]:visible')
-        .first()
-        .type(customerShippingAddress.city, { force: true });
-      cy.get('input[name="postcode"]:visible').first().clear({ force: true });
-      cy.get('input[name="postcode"]:visible')
-        .first()
-        .type(customerShippingAddress.postCode, { force: true });
-      cy.get('input[name="telephone"]:visible').first().clear({ force: true });
-      cy.get('input[name="telephone"]:visible')
-        .first()
-        .type(customerShippingAddress.telephone, {
-          force: true,
-        });
+              // Step 17: Complete checkout and place order
+              cy.logToTerminal(
+                "📦 Step 17: Completing checkout and placing order",
+              );
+              cy.logToTerminal(
+                "📝 Waiting for shipping form and filling address for new user",
+              );
+              cy.get('input[name="firstName"]:visible', { timeout: 60000 })
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="firstName"]:visible')
+                .first()
+                .type(customerShippingAddress.firstName, { force: true });
+              cy.get('input[name="lastName"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="lastName"]:visible')
+                .first()
+                .type(customerShippingAddress.lastName, { force: true });
+              cy.get('input[name="street"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="street"]:visible')
+                .first()
+                .type(customerShippingAddress.street, { force: true });
+              cy.get('input[name="streetMultiline_2"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="streetMultiline_2"]:visible')
+                .first()
+                .type(customerShippingAddress.street1, { force: true });
+              cy.get('select[name="region"]:visible')
+                .first()
+                .select(customerShippingAddress.region, { force: true });
+              cy.get('input[name="city"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="city"]:visible')
+                .first()
+                .type(customerShippingAddress.city, { force: true });
+              cy.get('input[name="postcode"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="postcode"]:visible')
+                .first()
+                .type(customerShippingAddress.postCode, { force: true });
+              cy.get('input[name="telephone"]:visible')
+                .first()
+                .clear({ force: true });
+              cy.get('input[name="telephone"]:visible')
+                .first()
+                .type(customerShippingAddress.telephone, {
+                  force: true,
+                });
 
-      // Ensure shipping method is selected when method radios are present
-      cy.get("body").then(($body) => {
-        const shippingSelector =
-          'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
-        const $shippingMethods = $body.find(shippingSelector);
+              // Ensure shipping method is selected when method radios are present
+              cy.get("body").then(($body) => {
+                const shippingSelector =
+                  'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
+                const $shippingMethods = $body.find(shippingSelector);
 
-        if ($shippingMethods.length > 0) {
-          const isAnyChecked = $shippingMethods.is(":checked");
-          if (!isAnyChecked) {
-            cy.logToTerminal("🚚 Selecting shipping method");
-            cy.wrap($shippingMethods.first()).check({ force: true });
-          }
-        } else {
-          cy.logToTerminal("ℹ️ Shipping method radios not found, continuing");
-        }
-      });
+                if ($shippingMethods.length > 0) {
+                  const isAnyChecked = $shippingMethods.is(":checked");
+                  if (!isAnyChecked) {
+                    cy.logToTerminal("🚚 Selecting shipping method");
+                    cy.wrap($shippingMethods.first()).check({ force: true });
+                  }
+                } else {
+                  cy.logToTerminal(
+                    "ℹ️ Shipping method radios not found, continuing",
+                  );
+                }
+              });
 
-      // Ensure payment method is selected (same pattern as checkout tests)
-      cy.get("body").then(($body) => {
-        if ($body.text().includes(checkMoneyOrder.name)) {
-          cy.logToTerminal(
-            `💰 Selecting payment method: ${checkMoneyOrder.name}`,
-          );
-          actions.setPaymentMethod(checkMoneyOrder);
-        }
-      });
+              // Ensure payment method is selected (same pattern as checkout tests)
+              cy.get("body").then(($body) => {
+                if ($body.text().includes(checkMoneyOrder.name)) {
+                  cy.logToTerminal(
+                    `💰 Selecting payment method: ${checkMoneyOrder.name}`,
+                  );
+                  actions.setPaymentMethod(checkMoneyOrder);
+                }
+              });
+              cy.visit("/");
+              cy.visit("/checkout");
+              
+              // Explicitly accept checkout terms before placing order
+              cy.get('[data-testid="checkout-terms-and-conditions-form"]', {
+                timeout: 60000,
+              }).should("exist");
+              cy.get(
+                '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
+              )
+                .first()
+                .then(($checkbox) => {
+                  if (!$checkbox.is(":checked")) {
+                    cy.logToTerminal("📄 Accepting checkout terms");
+                    cy.wrap($checkbox).check({ force: true });
+                  }
+                });
+              cy.get(
+                '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
+              )
+                .first()
+                .should("be.checked");
 
-      // Explicitly accept checkout terms before placing order
-      cy.get('[data-testid="checkout-terms-and-conditions-form"]', {
-        timeout: 60000,
-      }).should("exist");
-      cy.get(
-        '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
-      )
-        .first()
-        .then(($checkbox) => {
-          if (!$checkbox.is(":checked")) {
-            cy.logToTerminal("📄 Accepting checkout terms");
-            cy.wrap($checkbox).check({ force: true });
-          }
-        });
-      cy.get(
-        '[data-testid="checkout-terms-and-conditions-form"] input[name="default"][type="checkbox"]',
-      )
-        .first()
-        .should("be.checked");
+              // Place order when button becomes visible
+              cy.get(".checkout-place-order__button", { timeout: 60000 })
+                .should("be.visible")
+                .click({ force: true });
 
-      // Place order when button becomes visible
-      cy.get(".checkout-place-order__button", { timeout: 60000 })
-        .should("be.visible")
-        .click({ force: true });
-
-      // Step 18: Verify order confirmation details
-      cy.logToTerminal("✅ Step 18: Verifying order confirmation details");
-      cy.contains("thank you for your order!").should("be.visible");
-      cy.contains("Order placed by an administrator").should("be.visible");
+              // Step 18: Verify order confirmation details
+              cy.logToTerminal(
+                "✅ Step 18: Verifying order confirmation details",
+              );
+              cy.contains("thank you for your order!").should("be.visible");
+              cy.contains("Order placed by an administrator").should(
+                "be.visible",
+              );
 
               return null;
             },
