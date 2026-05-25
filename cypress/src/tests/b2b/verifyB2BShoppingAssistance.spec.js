@@ -562,25 +562,37 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
   const signInAsAdminWithOtp = (email, otp) => {
     const sanitizedOtp = `${otp}`.trim();
+    const sanitizedEmail = `${email}`.trim();
 
-    cy.get("main .auth-sign-in-form", { timeout: 30000 })
+    const setVisibleInputValue = (selector, value, label) =>
+      cy.get(`main .auth-sign-in-form ${selector}:visible`, { timeout: 30000 })
+        .first()
+        .should("be.visible")
+        .then(($input) => {
+          cy.wrap($input)
+            .scrollIntoView({ duration: 150 })
+            .click({ force: true })
+            .clear({ force: true })
+            .type(value, { force: true, delay: 0 })
+            .should("have.value", value);
+
+          // Some storefront implementations rely on input/change events for submit enablement.
+          cy.wrap($input).trigger("input", { force: true });
+          cy.wrap($input).trigger("change", { force: true });
+          cy.logToTerminal(`✅ Login ${label} field set`);
+        });
+
+    cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
+    setVisibleInputValue('input[name="email"]', sanitizedEmail, "email");
+    setVisibleInputValue('input[name="password"]', sanitizedOtp, "password");
+
+    cy.get('main .auth-sign-in-form button[type="submit"]:visible', {
+      timeout: 30000,
+    })
+      .first()
       .should("be.visible")
-      .within(() => {
-        cy.get('input[name="email"]', { timeout: 30000 })
-          .should("be.visible")
-          .clear({ force: true })
-          .type(email, { force: true });
-
-        cy.get('input[name="password"]', { timeout: 30000 })
-          .should("be.visible")
-          .clear({ force: true })
-          .type(sanitizedOtp, { force: true });
-
-        cy.get('button[type="submit"]', { timeout: 30000 })
-          .should("be.visible")
-          .and("not.be.disabled")
-          .click({ force: true });
-      });
+      .and("not.be.disabled")
+      .click({ force: true });
 
     // Do not re-submit the same OTP: one-time code can be invalidated by
     // duplicate submit and should be retried only with a fresh OTP.
@@ -813,11 +825,35 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
             return requestCustomerOtp(customer.id, otpReason).then((otpResponse) => {
               expect(otpResponse, "OTP response should exist").to.exist;
-              expect(otpResponse.otp, "OTP code should be present").to.be.a(
-                "string",
-              );
 
-              const normalizedOtp = otpResponse.otp.trim();
+              const otpCode = [
+                otpResponse?.otp,
+                otpResponse?.code,
+                otpResponse?.oneTimePassword,
+              ].find((value) => typeof value === "string" && value.trim().length > 0);
+
+              if (!otpCode) {
+                const otpResponsePreview = JSON.stringify(otpResponse).slice(0, 300);
+                cy.logToTerminal(
+                  `⚠️ OTP response did not contain code on attempt ${loginAttempt}/${maxLoginAttempts}: ${otpResponsePreview}`,
+                );
+
+                if (loginAttempt >= maxLoginAttempts) {
+                  throw new Error(
+                    `OTP request returned no code after ${maxLoginAttempts} attempts. Last response: ${otpResponsePreview}`,
+                  );
+                }
+
+                return Cypress.Promise.delay(1000).then(() =>
+                  signInAsAdminWithFreshOtp(
+                    loginAttempt + 1,
+                    maxLoginAttempts,
+                    reasonPrefix,
+                  ),
+                );
+              }
+
+              const normalizedOtp = otpCode.trim();
               expect(normalizedOtp, "Normalized OTP should not be empty").to.have
                 .length.greaterThan(0);
 
