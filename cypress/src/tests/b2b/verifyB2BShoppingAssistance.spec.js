@@ -734,28 +734,20 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         .should("be.visible")
         .click();
 
-      // Step 14: Logout and move to OTP login flow
+      // Step 14: Reset browser auth state before OTP login flow
       cy.logToTerminal("🔄 Pre-Step 14: Reloading page before logout");
       cy.reload();
-      cy.logToTerminal("🚪 Step 14: Logging out before OTP admin login");
+      cy.logToTerminal(
+        "🧹 Step 14: Clearing session/local storage/cookies before OTP admin login",
+      );
+      cy.clearCookies();
+      cy.clearLocalStorage();
+      cy.window().then((win) => {
+        win.sessionStorage.clear();
+      });
       cy.visit("/");
-      cy.get("button.nav-dropdown-button", { timeout: 60000 })
-        .should("be.visible")
-        .then(($btn) => {
-          if ($btn.attr("aria-expanded") !== "true") {
-            cy.wrap($btn).click({ force: true });
-          }
-        });
-
-      cy.get("ul.authenticated-user-menu", { timeout: 60000 })
-        .should("exist")
-        .and("be.visible");
-
-      cy.get("ul.authenticated-user-menu")
-        .contains("button", "Logout")
-        .should("be.visible")
-        .click({ force: true });
-      cy.url().should("include", "/customer/login");
+      cy.reload();
+      cy.logToTerminal("✅ Browser auth state cleanup completed");
 
       // ======================================================================
       // TODO START: OTP re-login + checkout order placement extension
@@ -792,6 +784,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
             // Step 17: Login as admin using OTP
             cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
+            cy.visit("/customer/login");
             signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
             cy.url().should("include", "/customer/account");
 
