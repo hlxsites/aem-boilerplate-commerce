@@ -100,6 +100,17 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     });
   };
 
+  const scrollCheckoutShippingSection = () => {
+    cy.get(".checkout__shipping-form", { timeout: 60000 })
+      .should("exist")
+      .scrollIntoView({ duration: 300 });
+    cy.window().then((win) => {
+      // Trigger lazy observers: scroll down and then slightly back up.
+      win.scrollBy(0, 260);
+      win.scrollBy(0, -140);
+    });
+  };
+
   before(() => {
     cy.logToTerminal("🚀 B2B Shopping Assistance test suite started");
   });
@@ -370,6 +381,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               cy.url().should("include", "/checkout");
               cy.logToTerminal("⏳ Waiting for checkout to fully load...");
               ensureCheckoutAndFormsReady();
+              scrollCheckoutShippingSection();
               cy.get(".checkout__login").should("exist");
               cy.get("body").then(($body) => {
                 if (
@@ -402,10 +414,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               cy.logToTerminal(
                 "📝 Waiting for shipping form and filling address for new user",
               );
-              cy.get('input[name="firstName"]:visible')
+              cy.get(
+                'input[name="firstName"]:visible, input[name="firstname"]:visible, input[name="shippingAddress.firstName"]:visible',
+              )
                 .first()
                 .clear({ force: true });
-              cy.get('input[name="firstName"]:visible')
+              cy.get(
+                'input[name="firstName"]:visible, input[name="firstname"]:visible, input[name="shippingAddress.firstName"]:visible',
+              )
                 .first()
                 .type(customerShippingAddress.firstName, { force: true });
               cy.get('input[name="lastName"]:visible')
