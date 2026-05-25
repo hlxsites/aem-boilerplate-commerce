@@ -125,6 +125,10 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.get('input[name="password"]').should('have.value', otp);
         cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
 
+        // Wait for React form state to stabilize after typing
+        cy.wait(2000);
+        cy.logToTerminal("⏸️ Waited 2s for form state to stabilize");
+
         // Log submit button info using specific selector (within form scope)
         cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
           cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
