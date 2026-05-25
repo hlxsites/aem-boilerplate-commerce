@@ -106,7 +106,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       .scrollIntoView({ duration: 300 });
     cy.window().then((win) => {
       // Trigger lazy observers: scroll down and then slightly back up.
-      win.scrollBy(0, 260);
+      win.scrollBy(0, 300);
       win.scrollBy(0, -140);
     });
   };
