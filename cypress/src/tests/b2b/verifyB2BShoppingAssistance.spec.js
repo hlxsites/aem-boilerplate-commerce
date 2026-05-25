@@ -414,36 +414,40 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                   force: true,
                 });
 
-              // Ensure shipping method is selected when method radios are present
-              cy.get("body").then(($body) => {
-                const shippingSelector =
-                  'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]';
-                const $shippingMethods = $body.find(shippingSelector);
+              // Requested flow: after form fill, reload checkout and continue with methods.
+              cy.logToTerminal(
+                "🔄 Shipping form is filled, reloading checkout before methods checks",
+              );
+              cy.reload();
+              cy.wait("@defaultGraphQL", { timeout: 60000 });
+              cy.url().should("include", "/checkout");
+              cy.get(".checkout__main", { timeout: 60000 }).should(
+                "be.visible",
+              );
+              cy.get(".checkout__shipping-form", { timeout: 60000 }).should(
+                "exist",
+              );
 
-                if ($shippingMethods.length > 0) {
-                  const isAnyChecked = $shippingMethods.is(":checked");
-                  if (!isAnyChecked) {
-                    cy.logToTerminal("🚚 Selecting shipping method");
-                    cy.wrap($shippingMethods.first()).check({ force: true });
-                  }
-                } else {
-                  cy.logToTerminal(
-                    "ℹ️ Shipping method radios not found, continuing",
-                  );
+              // Ensure shipping method is selected when method radios are present
+              cy.get(
+                'input[name="shipping-method"], input[name="shipping_method"], input[data-testid="shipping-method-radioButton"]',
+                { timeout: 60000 },
+              ).then(($shippingMethods) => {
+                const isAnyChecked = $shippingMethods.is(":checked");
+                if (!isAnyChecked) {
+                  cy.logToTerminal("🚚 Selecting shipping method");
+                  cy.wrap($shippingMethods.first()).check({ force: true });
                 }
               });
 
               // Ensure payment method is selected (same pattern as checkout tests)
-              cy.get("body").then(($body) => {
-                if ($body.text().includes(checkMoneyOrder.name)) {
-                  cy.logToTerminal(
-                    `💰 Selecting payment method: ${checkMoneyOrder.name}`,
-                  );
-                  actions.setPaymentMethod(checkMoneyOrder);
-                }
-              });
-              cy.visit("/");
-              cy.visit("/checkout");
+              cy.contains(checkMoneyOrder.name, { timeout: 60000 }).should(
+                "be.visible",
+              );
+              cy.logToTerminal(
+                `💰 Selecting payment method: ${checkMoneyOrder.name}`,
+              );
+              actions.setPaymentMethod(checkMoneyOrder);
               
               // Explicitly accept checkout terms before placing order
               cy.get('[data-testid="checkout-terms-and-conditions-form"]', {
