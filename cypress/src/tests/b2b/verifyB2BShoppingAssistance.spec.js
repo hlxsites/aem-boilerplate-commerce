@@ -56,6 +56,29 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   let testUserEmail;
   const otpReason = "test";
 
+  const typeIntoVisibleField = (selectors, value) => {
+    const selectorQuery = selectors.join(", ");
+
+    cy.get("body", { timeout: 60000 }).should(($body) => {
+      const hasVisibleField = selectors.some(
+        (selector) => $body.find(`${selector}:visible`).length > 0,
+      );
+
+      expect(
+        hasVisibleField,
+        `expected visible field for selectors: ${selectorQuery}`,
+      ).to.equal(true);
+    });
+
+    cy.get(selectorQuery)
+      .filter(":visible")
+      .first()
+      .then(($field) => {
+        cy.wrap($field).clear({ force: true });
+        cy.wrap($field).type(value, { force: true });
+      });
+  };
+
   const ensureCheckoutMainLoaded = () => {
     cy.get(".checkout__main", { timeout: 60000 }).should("be.visible");
   };
@@ -65,12 +88,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.get(".checkout__shipping-form", { timeout: 60000 }).should("exist");
     cy.get("body", { timeout: 60000 }).should(($body) => {
       const hasShippingInput =
-        $body.find('.checkout__shipping-form input[name="firstName"]').length >
-          0 ||
-        $body.find('.checkout__shipping-form input[name="firstname"]').length >
-          0 ||
+        $body.find('.checkout__shipping-form input[name="firstName"]:visible')
+          .length > 0 ||
+        $body.find('.checkout__shipping-form input[name="firstname"]:visible')
+          .length > 0 ||
         $body.find(
-          '.checkout__shipping-form input[name="shippingAddress.firstName"]',
+          '.checkout__shipping-form input[name="shippingAddress.firstName"]:visible',
         ).length > 0;
 
       expect(hasShippingInput, "shipping address input should be present").to.equal(
@@ -414,57 +437,69 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               cy.logToTerminal(
                 "📝 Waiting for shipping form and filling address for new user",
               );
-              cy.get(
-                'input[name="firstName"]:visible, input[name="firstname"]:visible, input[name="shippingAddress.firstName"]:visible',
-              )
-                .first()
-                .clear({ force: true });
-              cy.get(
-                'input[name="firstName"]:visible, input[name="firstname"]:visible, input[name="shippingAddress.firstName"]:visible',
-              )
-                .first()
-                .type(customerShippingAddress.firstName, { force: true });
-              cy.get('input[name="lastName"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="lastName"]:visible')
-                .first()
-                .type(customerShippingAddress.lastName, { force: true });
-              cy.get('input[name="street"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="street"]:visible')
-                .first()
-                .type(customerShippingAddress.street, { force: true });
-              cy.get('input[name="streetMultiline_2"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="streetMultiline_2"]:visible')
-                .first()
-                .type(customerShippingAddress.street1, { force: true });
-              cy.get('select[name="region"]:visible')
-                .first()
-                .select(customerShippingAddress.region, { force: true });
-              cy.get('input[name="city"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="city"]:visible')
-                .first()
-                .type(customerShippingAddress.city, { force: true });
-              cy.get('input[name="postcode"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="postcode"]:visible')
-                .first()
-                .type(customerShippingAddress.postCode, { force: true });
-              cy.get('input[name="telephone"]:visible')
-                .first()
-                .clear({ force: true });
-              cy.get('input[name="telephone"]:visible')
-                .first()
-                .type(customerShippingAddress.telephone, {
-                  force: true,
-                });
+              typeIntoVisibleField(
+                [
+                  'input[name="firstName"]',
+                  'input[name="firstname"]',
+                  'input[name="shippingAddress.firstName"]',
+                ],
+                customerShippingAddress.firstName,
+              );
+              typeIntoVisibleField(
+                [
+                  'input[name="lastName"]',
+                  'input[name="lastname"]',
+                  'input[name="shippingAddress.lastName"]',
+                ],
+                customerShippingAddress.lastName,
+              );
+              typeIntoVisibleField(
+                [
+                  'input[name="street"]',
+                  'input[name="street[0]"]',
+                  'input[name="shippingAddress.street"]',
+                ],
+                customerShippingAddress.street,
+              );
+              typeIntoVisibleField(
+                [
+                  'input[name="streetMultiline_2"]',
+                  'input[name="street[1]"]',
+                ],
+                customerShippingAddress.street1,
+              );
+              cy.get("body").then(($body) => {
+                if ($body.find('select[name="region"]:visible').length > 0) {
+                  cy.get('select[name="region"]:visible')
+                    .first()
+                    .select(customerShippingAddress.region, { force: true });
+                } else {
+                  typeIntoVisibleField(
+                    ['input[name="region"]', 'input[name="shippingAddress.region"]'],
+                    customerShippingAddress.region,
+                  );
+                }
+              });
+              typeIntoVisibleField(
+                ['input[name="city"]', 'input[name="shippingAddress.city"]'],
+                customerShippingAddress.city,
+              );
+              typeIntoVisibleField(
+                [
+                  'input[name="postcode"]',
+                  'input[name="postalCode"]',
+                  'input[name="shippingAddress.postcode"]',
+                ],
+                customerShippingAddress.postCode,
+              );
+              typeIntoVisibleField(
+                [
+                  'input[name="telephone"]',
+                  'input[name="phone"]',
+                  'input[name="shippingAddress.telephone"]',
+                ],
+                customerShippingAddress.telephone,
+              );
 
               // Requested flow: after form fill, reload checkout and continue with methods.
               cy.logToTerminal(
