@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 3.4.0-alpha-20260506114252
+## 3.4.0-alpha-20260519102334
 
 ### Minor Changes
 

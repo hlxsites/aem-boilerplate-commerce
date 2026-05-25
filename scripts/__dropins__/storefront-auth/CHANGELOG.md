@@ -1,12 +1,20 @@
 # @dropins/storefront-auth
 
-## 3.3.0-alpha-20260505185112
+## 3.3.0-alpha-20260519102316
 
 ### Minor Changes
 
 - 7b147c7: Cypress coverage for Seller Assisted Buying functionality
+- 85883d0: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
 - b0a2eba: Introduce Seller Assisted Buying authentication flow.
 - 366ba28: Add seller-assisted buying consent to a sign-up form
+
+### Patch Changes
+
+- 3cadf48: Ensure `getCustomerRolePermissions` always emits `auth/permissions` so consumers (e.g. account navigation) keep working. For non-admin customers with no granular ACL tree from GraphQL, set `Magento_Sales::place_order` so storefront checkout does not treat B2C users as denied.
 
 ## 3.2.0
 
