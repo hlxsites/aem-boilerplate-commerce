@@ -111,13 +111,15 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       .within(() => {
         cy.get('input[name="email"]')
           .should("be.visible")
+          .should("not.be.disabled")
           .clear({ force: true })
-          .type(email, { force: true });
+          .type(email, { delay: 50 }); // Add delay to prevent character scrambling in CI/CD
 
         cy.get('input[name="password"]')
           .should("be.visible")
+          .should("not.be.disabled")
           .clear({ force: true })
-          .type(otp, { force: true });
+          .type(otp, { delay: 50 }); // Add delay for password too
 
         // Verify values were entered correctly
         cy.get('input[name="email"]').should('have.value', email);
