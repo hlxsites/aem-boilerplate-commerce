@@ -126,12 +126,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.get('input[name="password"]').should('have.value', otp);
         cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
 
-        // Log submit button info using specific selector
-        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
+        // Log submit button info using specific selector (within form scope)
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
           cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
         });
         
-        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]')
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
           .click();
