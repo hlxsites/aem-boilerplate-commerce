@@ -561,6 +561,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
+    const sanitizedOtp = `${otp}`.trim();
+
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
       .within(() => {
@@ -572,7 +574,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
         cy.get('input[name="password"]', { timeout: 30000 })
           .should("be.visible")
           .clear({ force: true })
-          .type(otp, { force: true });
+          .type(sanitizedOtp, { force: true });
 
         cy.get('button[type="submit"]', { timeout: 30000 })
           .should("be.visible")
@@ -580,16 +582,19 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           .click({ force: true });
       });
 
-    // Guard against occasional missed submit handling on first click.
+    // Do not re-submit the same OTP: one-time code can be invalidated by
+    // duplicate submit and should be retried only with a fresh OTP.
     cy.location("pathname", { timeout: 15000 }).then((pathname) => {
       if (pathname.includes("/customer/login")) {
-        cy.logToTerminal(
-          "ℹ️ Still on login page after submit, retrying submit once",
-        );
-        cy.get('main .auth-sign-in-form button[type="submit"]')
-          .should("be.visible")
-          .and("not.be.disabled")
-          .click({ force: true });
+        cy.logToTerminal("ℹ️ Still on login page after submit");
+        cy.get("main .auth-sign-in-form")
+          .invoke("text")
+          .then((formText) => {
+            const condensed = formText.replace(/\s+/g, " ").trim().slice(0, 220);
+            if (condensed) {
+              cy.logToTerminal(`⚠️ Login form message: ${condensed}`);
+            }
+          });
       }
     });
   };
@@ -812,42 +817,49 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
                 "string",
               );
 
-              cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
-              cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
+              const normalizedOtp = otpResponse.otp.trim();
+              expect(normalizedOtp, "Normalized OTP should not be empty").to.have
+                .length.greaterThan(0);
 
-              cy.visit("/customer/login");
-              signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+              cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${normalizedOtp}`);
+              cy.log(`OTP for ${testUserEmail}: ${normalizedOtp}`);
 
-              return cy.location("pathname", { timeout: 20000 }).then((pathname) => {
-                if (pathname.includes("/customer/account")) {
+              // Backend OTP propagation can lag briefly; waiting reduces false login failures.
+              return Cypress.Promise.delay(800).then(() => {
+                cy.visit("/customer/login");
+                signInAsAdminWithOtp(testUserEmail, normalizedOtp);
+
+                return cy.location("pathname", { timeout: 20000 }).then((pathname) => {
+                  if (pathname.includes("/customer/account")) {
+                    cy.logToTerminal(
+                      `✅ Admin OTP login succeeded on attempt ${loginAttempt}/${maxLoginAttempts}`,
+                    );
+                    return;
+                  }
+
+                  if (loginAttempt >= maxLoginAttempts) {
+                    throw new Error(
+                      `Admin OTP login failed after ${maxLoginAttempts} attempts (last path: ${pathname}).`,
+                    );
+                  }
+
                   cy.logToTerminal(
-                    `✅ Admin OTP login succeeded on attempt ${loginAttempt}/${maxLoginAttempts}`,
+                    `⚠️ Admin OTP login attempt ${loginAttempt}/${maxLoginAttempts} failed (path: ${pathname}). Clearing auth state and retrying with fresh OTP`,
                   );
-                  return;
-                }
+                  cy.clearCookies();
+                  cy.clearLocalStorage();
+                  cy.window().then((win) => {
+                    win.sessionStorage.clear();
+                  });
 
-                if (loginAttempt >= maxLoginAttempts) {
-                  throw new Error(
-                    `Admin OTP login failed after ${maxLoginAttempts} attempts (last path: ${pathname}).`,
+                  return Cypress.Promise.delay(1000).then(() =>
+                    signInAsAdminWithFreshOtp(
+                      loginAttempt + 1,
+                      maxLoginAttempts,
+                      reasonPrefix,
+                    ),
                   );
-                }
-
-                cy.logToTerminal(
-                  `⚠️ Admin OTP login attempt ${loginAttempt}/${maxLoginAttempts} failed (path: ${pathname}). Clearing auth state and retrying with fresh OTP`,
-                );
-                cy.clearCookies();
-                cy.clearLocalStorage();
-                cy.window().then((win) => {
-                  win.sessionStorage.clear();
                 });
-
-                return Cypress.Promise.delay(1000).then(() =>
-                  signInAsAdminWithFreshOtp(
-                    loginAttempt + 1,
-                    maxLoginAttempts,
-                    reasonPrefix,
-                  ),
-                );
               });
             });
           };
