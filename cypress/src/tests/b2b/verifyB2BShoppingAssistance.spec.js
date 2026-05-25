@@ -184,15 +184,24 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
           const passValue = $form.find('input[name="password"]').val();
           cy.logToTerminal(`📋 Email field value: ${emailValue}`);
           cy.logToTerminal(`📋 Password field length: ${passValue ? passValue.length : 0}`);
+          
+          // If password was cleared, refill the form
+          if (!passValue || passValue.length === 0) {
+            cy.logToTerminal("⚠️ Password field empty, refilling form");
+            cy.get('input[name="email"]').clear().type(email, { delay: 50 });
+            cy.get('input[name="password"]').clear().type(otp, { delay: 50 });
+            cy.wait(1000);
+          }
         });
         
         // Log button state separately using specific selector
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
-          cy.logToTerminal(`📍 Retry - Submit button state: visible=${$btn.is(':visible')}, disabled=${$btn.is(':disabled')}`);
+        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btns => {
+          cy.logToTerminal(`📍 Retry - Found ${$btns.length} submit buttons`);
         });
         
-        // Click in separate chain to avoid null
+        // Click first button to avoid multiple elements error
         cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
+          .first()
           .should("be.visible")
           .and("not.be.disabled")
           .click();
