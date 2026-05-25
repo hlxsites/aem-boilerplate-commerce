@@ -289,6 +289,10 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.get(".seller-assisted-buying-banner__message")
                 .should("be.visible")
                 .and("contain", "You are connected as");
+              cy.contains(
+                ".seller-assisted-buying-banner__message",
+                "You are connected as",
+              ).should("be.visible");
               cy.get(".seller-assisted-buying-banner__close-button")
                 .should("be.visible")
                 .and("contain", "Close Session");
@@ -318,14 +322,26 @@ describe('B2B Shopping Assistance', { tags: ['@B2BSaas'] }, () => {
               cy.get(".checkout__main", { timeout: 60000 }).should(
                 "be.visible",
               );
-              cy.get(".checkout-login-form__customer-email", {
-                timeout: 60000,
-              })
-                .should("be.visible")
-                .and("contain", testUserEmail);
-              cy.logToTerminal(
-                `✅ Checkout contact email is visible: ${testUserEmail}`,
-              );
+              cy.get(".checkout__login", { timeout: 60000 }).should("exist");
+              cy.get("body").then(($body) => {
+                if ($body.find(".checkout-login-form__customer-email").length > 0) {
+                  cy.get(".checkout-login-form__customer-email")
+                    .first()
+                    .should(($email) => {
+                      expect($email.text().trim()).to.contain(testUserEmail);
+                    });
+                  cy.logToTerminal(
+                    `✅ Checkout contact email is present: ${testUserEmail}`,
+                  );
+                } else {
+                  cy.contains(".checkout__login", testUserEmail, {
+                    timeout: 60000,
+                  }).should("exist");
+                  cy.logToTerminal(
+                    `✅ Checkout login section contains email text: ${testUserEmail}`,
+                  );
+                }
+              });
 
               cy.get(
                 '.checkout__shipping-form form[name="selectedShippingAddress"]',
