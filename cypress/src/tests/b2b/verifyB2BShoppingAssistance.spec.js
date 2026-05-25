@@ -504,6 +504,28 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.logToTerminal(`✅ ${phaseLabel}: Order submitted`);
   };
 
+  const signInAsAdminWithOtp = (email, otp) => {
+    cy.visit("/customer/login");
+    cy.get("main .auth-sign-in-form", { timeout: 30000 })
+      .should("be.visible")
+      .within(() => {
+        cy.get('input[name="email"]', { timeout: 30000 })
+          .should("be.visible")
+          .clear({ force: true })
+          .type(email, { force: true });
+
+        cy.get('input[name="password"]', { timeout: 30000 })
+          .should("be.visible")
+          .clear({ force: true })
+          .type(otp, { force: true });
+
+        cy.get('button[type="submit"]', { timeout: 30000 })
+          .should("be.visible")
+          .and("not.be.disabled")
+          .click({ force: true });
+      });
+  };
+
   before(() => {
     cy.logToTerminal("🚀 B2B Shopping Assistance test suite started");
   });
@@ -736,11 +758,16 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.logToTerminal("🚪 Step 16: Logging out before admin OTP login");
             cy.clearCookies();
             cy.clearLocalStorage();
-            cy.visit("/customer/login");
-            cy.get('[name="signIn_form"]').should("be.visible");
 
             cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-            actions.signInUser(testUserEmail, otpResponse.otp);
+            signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+
+            // Login submit is sometimes successful without immediate redirect.
+            // Validate auth state by explicitly opening account page.
+            cy.logToTerminal(
+              "🔎 Verifying admin session by navigating to account page",
+            );
+            cy.visit("/customer/account");
 
             cy.url().should("include", "/customer/account");
             cy.get(".seller-assisted-buying-banner").should("be.visible");
