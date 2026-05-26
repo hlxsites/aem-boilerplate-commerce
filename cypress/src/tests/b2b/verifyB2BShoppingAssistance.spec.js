@@ -203,7 +203,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.logToTerminal("🧹 B2B Shopping Assistance test cleanup");
     cy.clearCookies();
     cy.clearLocalStorage();
-    // cy.intercept("**/graphql").as("defaultGraphQL");
 
     // Handle uncaught exceptions
     cy.on("uncaught:exception", (err) => {
@@ -385,10 +384,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       // Always enforce a clean login state after logout before OTP login flow.
       resetAuthStateAndOpenLogin();
 
-      // ======================================================================
-      // TODO START: OTP re-login + checkout order placement extension
-      // ======================================================================
-
       // Step 15: Lookup customer for OTP flow
       cy.logToTerminal("🔎 Step 15: Looking up customer for admin OTP login");
       cy.wrap(null)
@@ -437,13 +432,8 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               "✅ TC-01 Part 1 completed: registration, checkbox checks, OTP admin login, admin purchase",
             );
             
-            // testUserEmail is already available at describe() scope for TC-02
           });
         });
-
-      // ==================================================================
-      // TODO END: OTP re-login + checkout order placement extension
-      // ==================================================================
 
       cy.logToTerminal(
         "✅ TC-01 Part 1: Shopping Assistance flow completed successfully",
