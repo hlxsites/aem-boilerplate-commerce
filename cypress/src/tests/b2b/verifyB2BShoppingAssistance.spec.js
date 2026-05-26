@@ -43,14 +43,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     // Wait for shipping form to be ready
     cy.get('form[name="shippingAddress"], form[name="selectedShippingAddress"]', { timeout: 15000 })
       .should('be.visible');
-    cy.logToTerminal(`✅ ${phaseLabel}: Shipping form found`);
     
     cy.get("body").then(($body) => {
       const isSelectableState = $body.find(`${fields.shippingFormState}:visible`).length > 0;
-      cy.logToTerminal(`📋 ${phaseLabel}: isSelectableState = ${isSelectableState}`);
       actions.setGuestShippingAddress(customerShippingAddress, isSelectableState);
-      cy.logToTerminal(`✅ ${phaseLabel}: setGuestShippingAddress completed`);
     });
+    cy.logToTerminal(`✅ ${phaseLabel}: Shipping address filled`);
 
     // Reload page after filling shipping address to ensure state persistence
     cy.logToTerminal(`🔄 ${phaseLabel}: Reloading page after shipping address fill`);
@@ -90,13 +88,9 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
     cy.logToTerminal(`🛒 ${phaseLabel}: Placing order...`);
     actions.placeOrder();
-    cy.logToTerminal(`✅ ${phaseLabel}: Place Order button clicked`);
     
     // Wait for order processing
     cy.wait(3000);
-    cy.url().then(url => {
-      cy.logToTerminal(`📍 ${phaseLabel}: Current URL after place order: ${url}`);
-    });
     
     // Wait for order confirmation page and verify success
     cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
@@ -139,123 +133,64 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
       .within(() => {
-        cy.get('input[name="email"]')
+        cy.get(fields.authFormUserEmail)
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
           .type(email, { delay: 50 }); // Add delay to prevent character scrambling in CI/CD
 
-        cy.get('input[name="password"]')
+        cy.get(fields.authFormUserPassword)
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
           .type(otp, { delay: 50 }); // Add delay for password too
 
         // Verify values were entered correctly
-        cy.get('input[name="email"]').should('have.value', email);
-        cy.get('input[name="password"]').should('have.value', otp);
-        cy.logToTerminal(`✅ Form filled - Email: ${email}, Password length: ${otp.length}`);
+        cy.get(fields.authFormUserEmail).should('have.value', email);
+        cy.get(fields.authFormUserPassword).should('have.value', otp);
 
         // Wait for React form state to stabilize after typing
         cy.wait(2000);
-        cy.logToTerminal("⏸️ Waited 2s for form state to stabilize");
-
-        // Log submit button info using specific selector (within form scope)
-        cy.get('button.auth-sign-in-form__button--submit[type="submit"]').then($btn => {
-          cy.logToTerminal(`📍 Submit button text: "${$btn.text().trim()}"`);
-        });
         
         cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
           .should("be.visible")
           .and("not.be.disabled")
           .click();
 
-        cy.logToTerminal("⏳ Waiting 5s after first submit...");
         cy.wait(5000);
       });
 
-    // Log current URL after submit
-    cy.url().then(url => {
-      cy.logToTerminal(`📍 Current URL after submit: ${url}`);
-    });
-
-    // Check for any error messages on the page
-    cy.get('body').then($body => {
-      const errorSelectors = [
-        '.error-message',
-        '[role="alert"]',
-        '.message-error',
-        '.field-error',
-        '.auth-sign-in-form__error',
-        '.dropin-notification--error'
-      ];
-      
-      errorSelectors.forEach(selector => {
-        const $error = $body.find(selector);
-        if ($error.length > 0) {
-          cy.logToTerminal(`❌ Error found (${selector}): ${$error.text().trim()}`);
-        }
-      });
-      
-      const allErrors = $body.find(errorSelectors.join(', ')).text().trim();
-      if (!allErrors) {
-        cy.logToTerminal('✅ No error messages found on page');
-      }
-    });
-
     // Guard against occasional missed submit handling on first click.
     cy.location("pathname", { timeout: 15000 }).then((pathname) => {
-      cy.logToTerminal(`📍 Current pathname: ${pathname}`);
-      
       if (pathname.includes("/customer/login")) {
-        cy.logToTerminal("ℹ️ Still on login page after submit, retrying submit once");
+        cy.logToTerminal("ℹ️ Still on login page, retrying submit");
         
         // Check form state before retry
         cy.get('main .auth-sign-in-form').then($form => {
-          cy.logToTerminal(`📋 Form visible: ${$form.is(':visible')}`);
-          
-          const emailValue = $form.find('input[name="email"]').val();
-          const passValue = $form.find('input[name="password"]').val();
-          cy.logToTerminal(`📋 Email field value: ${emailValue}`);
-          cy.logToTerminal(`📋 Password field length: ${passValue ? passValue.length : 0}`);
+          const passValue = $form.find(fields.authFormUserPassword).val();
           
           // If password was cleared, refill the form
           if (!passValue || passValue.length === 0) {
-            cy.logToTerminal("⚠️ Password field empty, refilling form");
-        cy.get('main .auth-sign-in-form input[name="email"]').clear().type(email, { delay: 50 });
-        cy.get('main .auth-sign-in-form input[name="password"]').clear().type(otp, { delay: 50 });
-        cy.wait(2000); // Wait for form to stabilize after refill
-        cy.logToTerminal("✅ Form refilled, waiting for stabilization");
-      }
-    });
-    
-    // Wait a bit to ensure DOM is stable before looking for button
-    cy.wait(1000);
-    
-    // Log button state separately using specific selector with increased timeout
-    cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 }).then($btns => {
-      cy.logToTerminal(`📍 Retry - Found ${$btns.length} submit buttons`);
-    });
-    
-    // Click first button to avoid multiple elements error
-    cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 })
-      .first()
-      .should("be.visible")
-      .and("not.be.disabled")
-      .click();
-    
-    cy.logToTerminal("⏳ Waiting 8s after retry submit...");
-    cy.wait(8000);
-    
-    cy.url().then(url => {
-      cy.logToTerminal(`📍 URL after retry: ${url}`);
-    });
-    
-    // Explicitly wait for redirect away from login page
-    cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
-    cy.logToTerminal("✅ Successfully redirected after retry");
-      } else {
-        cy.logToTerminal("✅ Successfully redirected on first submit");
+            cy.get(`main .auth-sign-in-form ${fields.authFormUserEmail}`).clear().type(email, { delay: 50 });
+            cy.get(`main .auth-sign-in-form ${fields.authFormUserPassword}`).clear().type(otp, { delay: 50 });
+            cy.wait(2000);
+          }
+        });
+        
+        // Wait a bit to ensure DOM is stable before looking for button
+        cy.wait(1000);
+        
+        // Click first button to avoid multiple elements error
+        cy.get('main button.auth-sign-in-form__button--submit[type="submit"]', { timeout: 10000 })
+          .first()
+          .should("be.visible")
+          .and("not.be.disabled")
+          .click();
+        
+        cy.wait(8000);
+        
+        // Explicitly wait for redirect away from login page
+        cy.url({ timeout: 30000 }).should("not.include", "/customer/login");
       }
     });
   };
@@ -477,9 +412,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               "string",
             );
 
-            cy.logToTerminal(
-              `✅ OTP request completed: ${JSON.stringify(otpResponse)}`,
-            );
             cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
             cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
@@ -558,9 +490,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             "string",
           );
 
-          cy.logToTerminal(
-            `✅ Verification OTP request completed: ${JSON.stringify(otpResponse)}`,
-          );
           cy.logToTerminal(`🔑 Verification OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
           // Step 3: Login with new OTP
@@ -581,16 +510,6 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             .should("be.visible")
             .contains("Seller assisted purchasing");
           cy.logToTerminal("✅ Step 4.3: Header container found");
-          
-          // Check what's on the page before looking for table
-          cy.get('body').then($body => {
-            const bodyText = $body.text();
-            cy.logToTerminal(`📄 Page content preview: ${bodyText.substring(0, 500)}`);
-            
-            const hasTable = $body.find(".account-seller-assisted-buying-activity-table__table").length > 0;
-            const hasNoDataMsg = bodyText.includes("No activities") || bodyText.includes("no data") || bodyText.includes("empty");
-            cy.logToTerminal(`🔍 Table exists: ${hasTable}, No-data message: ${hasNoDataMsg}`);
-          });
           
           // Try to find the table with longer timeout
           cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 20000 }).should(
