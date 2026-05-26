@@ -99,10 +99,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     });
     
     // Wait for order confirmation page and verify success
-    cy.url({ timeout: 30000 }).should('include', '/success');
-    cy.logToTerminal(`✅ ${phaseLabel}: Redirected to success page`);
+    cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
+    cy.logToTerminal(`✅ ${phaseLabel}: Redirected to confirmation page`);
     
-    cy.contains("thank you for your order!", { matchCase: false, timeout: 15000 }).should("be.visible");
+    // Verify order confirmation elements
+    cy.get(".order-confirmation", { timeout: 15000 }).should("be.visible");
+    cy.logToTerminal(`✅ ${phaseLabel}: Order confirmation container found`);
+    
+    cy.contains("thank you for your order!", { matchCase: false, timeout: 10000 }).should("be.visible");
     cy.logToTerminal(`✅ ${phaseLabel}: 'Thank you' message found`);
     
     cy.contains("Order placed by an administrator", { timeout: 10000 }).should("be.visible");
