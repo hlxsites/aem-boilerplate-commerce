@@ -90,6 +90,13 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
     cy.logToTerminal(`🛒 ${phaseLabel}: Placing order...`);
     actions.placeOrder();
+    cy.logToTerminal(`✅ ${phaseLabel}: Place Order button clicked`);
+    
+    // Wait for order processing
+    cy.wait(3000);
+    cy.url().then(url => {
+      cy.logToTerminal(`📍 ${phaseLabel}: Current URL after place order: ${url}`);
+    });
     
     // Wait for order confirmation page and verify success
     cy.url({ timeout: 30000 }).should('include', '/success');
