@@ -41,6 +41,8 @@ import {
   assignRoleToUser,
   assignCustomerToCompany,
   cleanupTestCompany,
+  deleteCompanyByEmail,
+  deleteCustomerByEmail,
 } from '../../support/b2bCompanyAPICalls';
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 
@@ -156,8 +158,57 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('🗑️ Cleaning up test data');
     cy.then(async () => {
       try {
-        await cleanupTestCompany();
-        cy.logToTerminal('✅ Test data cleanup completed');
+        const testCompany = Cypress.env('testCompany');
+        const testAdmin = Cypress.env('testAdmin');
+        const companyBEmail = Cypress.env('companyBEmail');
+
+        // IMPORTANT: Delete companies FIRST, then users
+        // Otherwise users will be deleted while still linked to companies
+        
+        // Step 1: Delete Company A
+        if (testCompany && testCompany.email) {
+          cy.logToTerminal(`🗑️ Cleaning up Company A: ${testCompany.email}`);
+          const resultA = await deleteCompanyByEmail(testCompany.email);
+          if (resultA.success) {
+            cy.logToTerminal('✅ Company A deleted');
+          } else {
+            cy.logToTerminal(`⚠️ Company A deletion failed: ${resultA.error}`);
+          }
+        }
+        
+        // Step 2: Delete Company B
+        if (companyBEmail) {
+          cy.logToTerminal(`🗑️ Cleaning up Company B: ${companyBEmail}`);
+          const resultB = await deleteCompanyByEmail(companyBEmail);
+          if (resultB.success) {
+            cy.logToTerminal('✅ Company B deleted');
+          } else {
+            cy.logToTerminal(`⚠️ Company B deletion failed: ${resultB.error}`);
+          }
+        }
+        
+        // Step 3: Delete super user (now that companies are gone)
+        if (testAdmin && testAdmin.adminEmail) {
+          cy.logToTerminal(`🗑️ Cleaning up super user: ${testAdmin.adminEmail}`);
+          const resultUser = await deleteCustomerByEmail(testAdmin.adminEmail);
+          if (resultUser.success) {
+            cy.logToTerminal('✅ Super user deleted');
+          } else {
+            cy.logToTerminal(`⚠️ Super user deletion failed: ${resultUser.error}`);
+          }
+        }
+        
+        // Clear all env vars
+        const envVarsToClean = [
+          'testCompany', 'testAdmin', 'companyBEmail',
+          'currentTestCompanyEmail', 'currentTestAdminEmail',
+          'testCompanyId', 'testCompanyName',
+          'companyAId', 'companyAName', 'companyBId', 'companyBName',
+          'superUserEmail', 'superUserPassword',
+        ];
+        envVarsToClean.forEach((key) => Cypress.env(key, null));
+        
+        cy.logToTerminal('✅ All test data cleanup completed');
       } catch (error) {
         cy.logToTerminal(`⚠️ Cleanup failed: ${error.message}`);
       }
@@ -248,16 +299,29 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
       cy.logToTerminal(`✅ Company B created: ${companyB.name} (ID: ${companyB.id})`);
 
       // Store for cleanup and test usage
-      Cypress.env('currentTestCompanyEmail', companyA.company_email);
-      Cypress.env('currentTestAdminEmail', superUser.email);
-      Cypress.env('testCompanyId', companyA.id);
-      Cypress.env('testCompanyName', companyA.name);
-      Cypress.env('companyAId', companyA.id);
-      Cypress.env('companyAName', companyA.name);
-      Cypress.env('companyBId', companyB.id);
-      Cypress.env('companyBName', companyB.name);
-      Cypress.env('superUserEmail', superUser.email);
-      Cypress.env('superUserPassword', 'Test123!');
+      Cypress.env('testCompany', {
+        id: companyA.id,
+        name: companyA.name,
+        email: companyA.company_email,
+      });
+      Cypress.env('testAdmin', {
+        adminEmail: superUser.email,
+      });
+      Cypress.env('companyBEmail', companyB.company_email);
+      
+      // Store additional data for test
+      Object.assign(Cypress.env(), {
+        currentTestCompanyEmail: companyA.company_email,
+        currentTestAdminEmail: superUser.email,
+        testCompanyId: companyA.id,
+        testCompanyName: companyA.name,
+        companyAId: companyA.id,
+        companyAName: companyA.name,
+        companyBId: companyB.id,
+        companyBName: companyB.name,
+        superUserEmail: superUser.email,
+        superUserPassword: 'Test123!',
+      });
 
       // Store company names for test
       firstCompanyName = companyA.name;
