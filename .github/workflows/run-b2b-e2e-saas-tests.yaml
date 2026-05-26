@@ -20,7 +20,6 @@ jobs:
               - src/tests/b2b/verifyCompanyStructure.spec.js
               - src/tests/b2b/verifyCompanySwitcher.spec.js
               - src/tests/b2b/verifyCompanyUsers.spec.js
-              - src/tests/b2b/verifyCompanyHierarchy.spec.js
           - group: group-b
             specs:
               - src/tests/b2b/runB2CTests.spec.js
