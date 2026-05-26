@@ -14,21 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-/**
- * Permission flags interface for company operations
- * Only contains permission-based access control flags, not role information
- */
-export interface CompanyPermissionFlags {
-    canViewAccount: boolean;
-    canEditAccount: boolean;
-    canViewAddress: boolean;
-    canEditAddress: boolean;
-    canViewContacts: boolean;
-    canViewPaymentInformation: boolean;
-    canViewShippingInformation: boolean;
-    canViewUsers: boolean;
-    canEditUsers: boolean;
-    canViewRoles: boolean;
-    canManageRoles: boolean;
-}
-//# sourceMappingURL=companyPermission.types.d.ts.map
+export declare const COMPANY_HIERARCHY_ITEM_FRAGMENT = "\n  fragment COMPANY_HIERARCHY_ITEM_FRAGMENT on CompanyBasicInfo {\n    id\n    is_admin\n    legal_name\n    name\n    status\n    __typename\n  }\n";
+//# sourceMappingURL=CompanyHierarchyFragment.graphql.d.ts.map

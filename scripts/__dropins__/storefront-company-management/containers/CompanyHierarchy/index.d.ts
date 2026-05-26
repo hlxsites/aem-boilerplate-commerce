@@ -14,21 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-/**
- * Permission flags interface for company operations
- * Only contains permission-based access control flags, not role information
- */
-export interface CompanyPermissionFlags {
-    canViewAccount: boolean;
-    canEditAccount: boolean;
-    canViewAddress: boolean;
-    canEditAddress: boolean;
-    canViewContacts: boolean;
-    canViewPaymentInformation: boolean;
-    canViewShippingInformation: boolean;
-    canViewUsers: boolean;
-    canEditUsers: boolean;
-    canViewRoles: boolean;
-    canManageRoles: boolean;
-}
-//# sourceMappingURL=companyPermission.types.d.ts.map
+export * from './CompanyHierarchy';
+export { CompanyHierarchy as default } from './CompanyHierarchy';
+//# sourceMappingURL=index.d.ts.map
