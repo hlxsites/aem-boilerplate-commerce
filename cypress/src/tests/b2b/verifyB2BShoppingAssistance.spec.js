@@ -264,15 +264,12 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.logToTerminal("🏁 B2B Shopping Assistance test suite completed");
     
     // Manual cleanup: delete test user since auto-delete is disabled for this suite
-    cy.logToTerminal("🗑️ Manual cleanup: Deleting test user");
-    cy.get('@testUserEmail', { log: false }).then((email) => {
-      if (email) {
-        cy.logToTerminal(`🗑️ Deleting test user: ${email}`);
-        cy.deleteCustomer();
-      }
-    }).catch(() => {
+    if (testUserEmail) {
+      cy.logToTerminal(`🗑️ Manual cleanup: Deleting test user ${testUserEmail}`);
+      cy.deleteCustomer();
+    } else {
       cy.logToTerminal("⚠️ No test user email found to delete (test may have failed early)");
-    });
+    }
   });
 
   /**
@@ -485,8 +482,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
               "✅ TC-01 Part 1 completed: registration, checkbox checks, OTP admin login, admin purchase",
             );
             
-            // Save testUserEmail for next test
-            cy.wrap(testUserEmail).as('testUserEmail');
+            // testUserEmail is already available at describe() scope for TC-02
           });
         });
 
@@ -512,94 +508,93 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
       "========= 🚀 TC-02: Verify Shopping Assistance Order =========",
     );
 
-    // Get the test user email from previous test
-    cy.get('@testUserEmail').then((email) => {
-      cy.logToTerminal(`📧 Retrieved test user email: ${email}`);
-      
-      // Step 1: Find customer and request new OTP for verification
-      cy.logToTerminal("🔎 Step 1: Looking up customer for verification OTP");
-      cy.wrap(null)
-        .then(() => findCustomerByEmail(email))
-        .then((customer) => {
-          expect(customer, `Customer should exist for email: ${email}`)
-            .to.exist;
-          expect(customer.id, "Customer ID should be numeric").to.be.a(
-            "number",
+    // Use testUserEmail from describe() scope set by TC-01
+    expect(testUserEmail, 'testUserEmail should be set by TC-01').to.exist;
+    cy.logToTerminal(`📧 Using test user email from TC-01: ${testUserEmail}`);
+    
+    // Step 1: Find customer and request new OTP for verification
+    cy.logToTerminal("🔎 Step 1: Looking up customer for verification OTP");
+    cy.wrap(null)
+      .then(() => findCustomerByEmail(testUserEmail))
+      .then((customer) => {
+        expect(customer, `Customer should exist for email: ${testUserEmail}`)
+          .to.exist;
+        expect(customer.id, "Customer ID should be numeric").to.be.a(
+          "number",
+        );
+
+        cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
+
+        const otpReasonVerify = `verify:${testUserEmail}`;
+        cy.logToTerminal(
+          `📨 Step 2: Requesting verification OTP with reason: ${otpReasonVerify}`,
+        );
+        return requestCustomerOtp(customer.id, otpReasonVerify).then((otpResponse) => {
+          expect(otpResponse, "OTP response should exist").to.exist;
+          expect(otpResponse.otp, "OTP code should be present").to.be.a(
+            "string",
           );
 
-          cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
-
-          const otpReasonVerify = `verify:${email}`;
           cy.logToTerminal(
-            `📨 Step 2: Requesting verification OTP with reason: ${otpReasonVerify}`,
+            `✅ Verification OTP request completed: ${JSON.stringify(otpResponse)}`,
           );
-          return requestCustomerOtp(customer.id, otpReasonVerify).then((otpResponse) => {
-            expect(otpResponse, "OTP response should exist").to.exist;
-            expect(otpResponse.otp, "OTP code should be present").to.be.a(
-              "string",
-            );
+          cy.logToTerminal(`🔑 Verification OTP for ${testUserEmail}: ${otpResponse.otp}`);
 
-            cy.logToTerminal(
-              `✅ Verification OTP request completed: ${JSON.stringify(otpResponse)}`,
-            );
-            cy.logToTerminal(`🔑 Verification OTP for ${email}: ${otpResponse.otp}`);
+          // Step 3: Login with new OTP
+          cy.logToTerminal("🔐 Step 3: Signing in with verification OTP");
+          resetAuthStateAndOpenLogin();
+          signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+          cy.url().should("include", "/customer/account");
 
-            // Step 3: Login with new OTP
-            cy.logToTerminal("🔐 Step 3: Signing in with verification OTP");
-            resetAuthStateAndOpenLogin();
-            signInAsAdminWithOtp(email, otpResponse.otp);
-            cy.url().should("include", "/customer/account");
-
-            // Step 4: Verify order appears in Seller Assisted Purchasing activity table
-            cy.logToTerminal("📋 Step 4: Verifying order in Seller Assisted Purchasing");
-            cy.visit("/customer/seller-assisted-purchasing");
-            cy.logToTerminal("✅ Step 4.1: Page visited");
+          // Step 4: Verify order appears in Seller Assisted Purchasing activity table
+          cy.logToTerminal("📋 Step 4: Verifying order in Seller Assisted Purchasing");
+          cy.visit("/customer/seller-assisted-purchasing");
+          cy.logToTerminal("✅ Step 4.1: Page visited");
+          
+          cy.url().should("include", "/customer/seller-assisted-purchasing");
+          cy.logToTerminal("✅ Step 4.2: URL verified");
+          
+          cy.get('[data-testid="dropin-header-container"]')
+            .should("be.visible")
+            .contains("Seller assisted purchasing");
+          cy.logToTerminal("✅ Step 4.3: Header container found");
+          
+          // Check what's on the page before looking for table
+          cy.get('body').then($body => {
+            const bodyText = $body.text();
+            cy.logToTerminal(`📄 Page content preview: ${bodyText.substring(0, 500)}`);
             
-            cy.url().should("include", "/customer/seller-assisted-purchasing");
-            cy.logToTerminal("✅ Step 4.2: URL verified");
-            
-            cy.get('[data-testid="dropin-header-container"]')
-              .should("be.visible")
-              .contains("Seller assisted purchasing");
-            cy.logToTerminal("✅ Step 4.3: Header container found");
-            
-            // Check what's on the page before looking for table
-            cy.get('body').then($body => {
-              const bodyText = $body.text();
-              cy.logToTerminal(`📄 Page content preview: ${bodyText.substring(0, 500)}`);
-              
-              const hasTable = $body.find(".account-seller-assisted-buying-activity-table__table").length > 0;
-              const hasNoDataMsg = bodyText.includes("No activities") || bodyText.includes("no data") || bodyText.includes("empty");
-              cy.logToTerminal(`🔍 Table exists: ${hasTable}, No-data message: ${hasNoDataMsg}`);
-            });
-            
-            // Try to find the table with longer timeout
-            cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 20000 }).should(
-              "be.visible",
-            );
-            cy.logToTerminal("✅ Step 4.4: Activity table found");
-            
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              "Order Placed",
-              { timeout: 10000 }
-            ).should("be.visible");
-            cy.logToTerminal("✅ Step 4.5: 'Order Placed' text found in table");
-            
-            cy.contains(
-              ".account-seller-assisted-buying-activity-table__table",
-              `email = ${email}`,
-              { timeout: 10000 }
-            ).should("be.visible");
-            cy.logToTerminal(`✅ Step 4.6: Email '${email}' found in table`);
-            
-            cy.logToTerminal("✅ Order verified in activity table");
-
-            cy.logToTerminal(
-              "✅ TC-02 completed: Shopping assistance order verification successful",
-            );
+            const hasTable = $body.find(".account-seller-assisted-buying-activity-table__table").length > 0;
+            const hasNoDataMsg = bodyText.includes("No activities") || bodyText.includes("no data") || bodyText.includes("empty");
+            cy.logToTerminal(`🔍 Table exists: ${hasTable}, No-data message: ${hasNoDataMsg}`);
           });
+          
+          // Try to find the table with longer timeout
+          cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 20000 }).should(
+            "be.visible",
+          );
+          cy.logToTerminal("✅ Step 4.4: Activity table found");
+          
+          cy.contains(
+            ".account-seller-assisted-buying-activity-table__table",
+            "Order Placed",
+            { timeout: 10000 }
+          ).should("be.visible");
+          cy.logToTerminal("✅ Step 4.5: 'Order Placed' text found in table");
+          
+          cy.contains(
+            ".account-seller-assisted-buying-activity-table__table",
+            `email = ${testUserEmail}`,
+            { timeout: 10000 }
+          ).should("be.visible");
+          cy.logToTerminal(`✅ Step 4.6: Email '${testUserEmail}' found in table`);
+          
+          cy.logToTerminal("✅ Order verified in activity table");
+
+          cy.logToTerminal(
+            "✅ TC-02 completed: Shopping assistance order verification successful",
+          );
         });
-    });
+      });
   });
 });
