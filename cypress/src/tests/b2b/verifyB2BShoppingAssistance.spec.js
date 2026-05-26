@@ -88,8 +88,20 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     actions.checkTermsAndConditions();
     cy.wait(2000); // Reduced from 5000
 
+    cy.logToTerminal(`🛒 ${phaseLabel}: Placing order...`);
     actions.placeOrder();
-    cy.logToTerminal(`✅ ${phaseLabel}: Order submitted`);
+    
+    // Wait for order confirmation page and verify success
+    cy.url({ timeout: 30000 }).should('include', '/success');
+    cy.logToTerminal(`✅ ${phaseLabel}: Redirected to success page`);
+    
+    cy.contains("thank you for your order!", { matchCase: false, timeout: 15000 }).should("be.visible");
+    cy.logToTerminal(`✅ ${phaseLabel}: 'Thank you' message found`);
+    
+    cy.contains("Order placed by an administrator", { timeout: 10000 }).should("be.visible");
+    cy.logToTerminal(`✅ ${phaseLabel}: 'Order placed by administrator' message found`);
+    
+    cy.logToTerminal(`✅ ${phaseLabel}: Order submitted successfully`);
   };
 
   const resetAuthStateAndOpenLogin = () => {
@@ -505,7 +517,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
    */
   it("TC-02: Verify shopping assistance order appears in activity table", () => {
     cy.logToTerminal(
-      "========= 🚀 TC-02: Verify Shopping Assistance Order =========",
+      "========= 🚀 TC-02: Verify Shopping Assistance Order ========= 🙈",
     );
 
     // Use testUserEmail from describe() scope set by TC-01
