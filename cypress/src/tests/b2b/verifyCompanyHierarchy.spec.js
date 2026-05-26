@@ -44,10 +44,71 @@ import {
 } from '../../support/b2bCompanyAPICalls';
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 
+const ACCSApiClient = require('../../support/accsClient');
+
+/**
+ * Create a company with explicit super_user_id.
+ * Bypasses auto-customer creation to use an existing customer as super_user.
+ * @param {Object} companyData - Company data
+ * @param {number} superUserId - Existing customer ID to use as super_user
+ * @returns {Promise<Object>} Created company
+ */
+async function createCompanyWithSuperUser(companyData, superUserId) {
+  const {
+    companyName,
+    companyEmail,
+    legalName,
+    vatTaxId,
+    resellerId,
+    street,
+    city,
+    countryCode,
+    regionId,
+    postcode,
+    telephone,
+    status = 1,
+  } = companyData;
+
+  const client = new ACCSApiClient();
+
+  const companyPayload = {
+    company: {
+      company_name: companyName,
+      company_email: companyEmail,
+      legal_name: legalName,
+      vat_tax_id: vatTaxId,
+      reseller_id: resellerId,
+      street: [street],
+      city,
+      country_id: countryCode,
+      region_id: regionId,
+      postcode,
+      telephone,
+      super_user_id: superUserId,
+      customer_group_id: 1,
+      status,
+    },
+  };
+
+  const company = await client.post('/V1/company/', companyPayload);
+
+  if (company.error || !company.id) {
+    throw new Error(`Company creation failed: ${company.message || JSON.stringify(company)}`);
+  }
+
+  return {
+    id: company.id,
+    name: company.company_name,
+    company_email: company.company_email,
+    legal_name: company.legal_name,
+    status: company.status,
+  };
+}
+
 /**
  * Create an admin role with full permissions for a company.
  * @param {number} companyId - Company ID
- * @returns {Promise<Object>} Created admin role
+ * @returns {Promise<Object>} Created admin role with permissions
  */
 async function createAdminRole(companyId) {
   const adminRole = await createCompanyRole({
@@ -55,6 +116,13 @@ async function createAdminRole(companyId) {
     role_name: 'Company Administrator',
     permissions: fullAdminPermissions,
   });
+  
+  // Ensure permissions are included in the returned object
+  // API may not return permissions, so we add them back
+  if (!adminRole.permissions) {
+    adminRole.permissions = fullAdminPermissions;
+  }
+  
   return adminRole;
 }
 
@@ -122,8 +190,8 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
       return true;
     });
 
-    // ========== SETUP: Create 2 companies + shared admin user (via API) ==========
-    cy.logToTerminal('--- SETUP: Creating 2 companies with shared admin user ---');
+    // ========== SETUP: Create 2 companies with shared super_user (via API) ==========
+    cy.logToTerminal('--- SETUP: Creating 2 companies with shared super_user ---');
     
     cy.then({ timeout: 120000 }, async () => {
       const timestamp = Date.now();
@@ -133,9 +201,19 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
       const companyAName = `HierarchyA ${randomStr}`;
       const companyBName = `HierarchyB ${randomStr}`;
 
-      // Create Company A
-      cy.logToTerminal(`🏢 Creating Company A: ${companyAName}`);
-      const companyA = await createCompany({
+      // Step 1: Create standalone customer (will be super_user for both companies)
+      cy.logToTerminal('👤 Creating super user for both companies...');
+      const superUser = await createStandaloneCustomer({
+        firstname: 'Hierarchy',
+        lastname: 'SuperUser',
+        email: `hierarchy-super-${timestamp}.${randomStr}@example.com`,
+        password: 'Test123!',
+      });
+      cy.logToTerminal(`✅ Super user created: ${superUser.email} (ID: ${superUser.id})`);
+
+      // Step 2: Create Company A with super user
+      cy.logToTerminal(`🏢 Creating Company A with super_user_id=${superUser.id}`);
+      const companyA = await createCompanyWithSuperUser({
         companyName: companyAName,
         companyEmail: `hierarchy-a-${timestamp}.${randomStr}@example.com`,
         legalName: `${companyAName} Legal`,
@@ -147,17 +225,13 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
         regionId: 12, // California
         postcode: baseCompanyData.postcode,
         telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: 'HierarchyA',
-        adminEmail: `hierarchy-admin-a-${timestamp}.${randomStr}@example.com`,
-        adminPassword: 'Test123!',
         status: 1, // APPROVED
-      });
+      }, superUser.id);
       cy.logToTerminal(`✅ Company A created: ${companyA.name} (ID: ${companyA.id})`);
 
-      // Create Company B
-      cy.logToTerminal(`🏢 Creating Company B: ${companyBName}`);
-      const companyB = await createCompany({
+      // Step 3: Create Company B with SAME super user
+      cy.logToTerminal(`🏢 Creating Company B with super_user_id=${superUser.id}`);
+      const companyB = await createCompanyWithSuperUser({
         companyName: companyBName,
         companyEmail: `hierarchy-b-${timestamp}.${randomStr}@example.com`,
         legalName: `${companyBName} Legal`,
@@ -169,49 +243,21 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
         regionId: 12, // California
         postcode: baseCompanyData.postcode,
         telephone: baseCompanyData.telephone,
-        adminFirstName: baseCompanyData.adminFirstName,
-        adminLastName: 'HierarchyB',
-        adminEmail: `hierarchy-admin-b-${timestamp}.${randomStr}@example.com`,
-        adminPassword: 'Test123!',
         status: 1, // APPROVED
-      });
+      }, superUser.id);
       cy.logToTerminal(`✅ Company B created: ${companyB.name} (ID: ${companyB.id})`);
-
-      // Create shared admin user
-      cy.logToTerminal('👤 Creating shared admin user...');
-      const sharedUser = await createStandaloneCustomer({
-        firstname: 'Hierarchy',
-        lastname: 'Admin',
-        email: `hierarchy-shared-${timestamp}.${randomStr}@example.com`,
-        password: 'Test123!',
-      });
-      cy.logToTerminal(`✅ Shared user created: ${sharedUser.email} (ID: ${sharedUser.id})`);
-
-      // Assign shared user to Company A with admin role
-      cy.logToTerminal('🔗 Assigning user to Company A as ADMIN...');
-      await assignCustomerToCompany(sharedUser.id, companyA.id);
-      const adminRoleA = await createAdminRole(companyA.id);
-      await assignRoleToUser(sharedUser.id, adminRoleA);
-      cy.logToTerminal('✅ User assigned to Company A as ADMIN');
-
-      // Assign shared user to Company B with admin role
-      cy.logToTerminal('🔗 Assigning user to Company B as ADMIN...');
-      await assignCustomerToCompany(sharedUser.id, companyB.id);
-      const adminRoleB = await createAdminRole(companyB.id);
-      await assignRoleToUser(sharedUser.id, adminRoleB);
-      cy.logToTerminal('✅ User assigned to Company B as ADMIN');
 
       // Store for cleanup and test usage
       Cypress.env('currentTestCompanyEmail', companyA.company_email);
-      Cypress.env('currentTestAdminEmail', sharedUser.email);
+      Cypress.env('currentTestAdminEmail', superUser.email);
       Cypress.env('testCompanyId', companyA.id);
       Cypress.env('testCompanyName', companyA.name);
       Cypress.env('companyAId', companyA.id);
       Cypress.env('companyAName', companyA.name);
       Cypress.env('companyBId', companyB.id);
       Cypress.env('companyBName', companyB.name);
-      Cypress.env('sharedUserEmail', sharedUser.email);
-      Cypress.env('sharedUserPassword', 'Test123!');
+      Cypress.env('superUserEmail', superUser.email);
+      Cypress.env('superUserPassword', 'Test123!');
 
       // Store company names for test
       firstCompanyName = companyA.name;
@@ -219,18 +265,18 @@ describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
 
       cy.logToTerminal('========================================');
       cy.logToTerminal('✅ SETUP COMPLETE:');
-      cy.logToTerminal(`   Company A: ${companyA.name}`);
-      cy.logToTerminal(`   Company B: ${companyB.name}`);
-      cy.logToTerminal(`   Shared Admin: ${sharedUser.email}`);
+      cy.logToTerminal(`   Company A: ${companyA.name} (Super User: ${superUser.email})`);
+      cy.logToTerminal(`   Company B: ${companyB.name} (Super User: ${superUser.email})`);
+      cy.logToTerminal(`   Super User has full access to BOTH companies`);
       cy.logToTerminal('========================================');
     });
 
-    // ========== STEP 1: Login as shared admin user ==========
-    cy.logToTerminal('--- STEP 1: Login as shared admin user ---');
+    // ========== STEP 1: Login as super user ==========
+    cy.logToTerminal('--- STEP 1: Login as super user (owner of both companies) ---');
     
     cy.then(() => {
-      const userEmail = Cypress.env('sharedUserEmail');
-      const userPassword = Cypress.env('sharedUserPassword');
+      const userEmail = Cypress.env('superUserEmail');
+      const userPassword = Cypress.env('superUserPassword');
       
       cy.logToTerminal(`🔐 Logging in as: ${userEmail}`);
       cy.visit('/customer/login');
