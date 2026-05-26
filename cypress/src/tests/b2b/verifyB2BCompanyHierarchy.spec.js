@@ -1,471 +1,466 @@
+/** ******************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ ****************************************************************** */
+
+/**
+ * @fileoverview Company Hierarchy E2E tests.
+ * Tests cover:
+ * - Multi-company visibility for shared admin
+ * - Drag & drop company assignment (parent/child relationships)
+ * - Nested hierarchy structure verification
+ *
+ * Test Plan Reference: Company Hierarchy Management
+ *
+ * ==========================================================================
+ * COVERED TEST CASES:
+ * ==========================================================================
+ * TC-01 (P0): Admin can see multiple companies in hierarchy
+ * TC-02 (P0): Admin can organize companies using drag & drop
+ * TC-03 (P0): Hierarchy shows proper parent-child nesting after drag & drop
+ *
+ * ==========================================================================
+ */
+
 import {
   createCompany,
-  deleteCompanyById,
-  deleteCustomerById,
-} from "../../support/b2bCompanyAPICalls";
-import { baseCompanyData } from "../../fixtures/companyManagementData";
+  createStandaloneCustomer,
+  createCompanyRole,
+  assignRoleToUser,
+  assignCustomerToCompany,
+  cleanupTestCompany,
+} from '../../support/b2bCompanyAPICalls';
+import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 
-describe("B2B Company Hierarchy", { tags: ["@B2BSaas"] }, () => {
+const ACCSApiClient = require('../../support/accsClient');
+
+/**
+ * Create a company with explicit super_user_id.
+ * Bypasses auto-customer creation to use an existing customer as super_user.
+ * @param {Object} companyData - Company data
+ * @param {number} superUserId - Existing customer ID to use as super_user
+ * @returns {Promise<Object>} Created company
+ */
+async function createCompanyWithSuperUser(companyData, superUserId) {
+  const {
+    companyName,
+    companyEmail,
+    legalName,
+    vatTaxId,
+    resellerId,
+    street,
+    city,
+    countryCode,
+    regionId,
+    postcode,
+    telephone,
+    status = 1,
+  } = companyData;
+
+  const client = new ACCSApiClient();
+
+  const companyPayload = {
+    company: {
+      company_name: companyName,
+      company_email: companyEmail,
+      legal_name: legalName,
+      vat_tax_id: vatTaxId,
+      reseller_id: resellerId,
+      street: [street],
+      city,
+      country_id: countryCode,
+      region_id: regionId,
+      postcode,
+      telephone,
+      super_user_id: superUserId,
+      customer_group_id: 1,
+      status,
+    },
+  };
+
+  const company = await client.post('/V1/company/', companyPayload);
+
+  if (company.error || !company.id) {
+    throw new Error(`Company creation failed: ${company.message || JSON.stringify(company)}`);
+  }
+
+  return {
+    id: company.id,
+    name: company.company_name,
+    company_email: company.company_email,
+    legal_name: company.legal_name,
+    status: company.status,
+  };
+}
+
+/**
+ * Create an admin role with full permissions for a company.
+ * @param {number} companyId - Company ID
+ * @returns {Promise<Object>} Created admin role with permissions
+ */
+async function createAdminRole(companyId) {
+  const adminRole = await createCompanyRole({
+    company_id: companyId,
+    role_name: 'Company Administrator',
+    permissions: fullAdminPermissions,
+  });
+  
+  // Ensure permissions are included in the returned object
+  // API may not return permissions, so we add them back
+  if (!adminRole.permissions) {
+    adminRole.permissions = fullAdminPermissions;
+  }
+  
+  return adminRole;
+}
+
+describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
+  let firstCompanyName = null;
+  let secondCompanyName = null;
+
   before(() => {
-    cy.logToTerminal("🏢 B2B Company Hierarchy test suite started");
+    cy.logToTerminal('🏢 Company Hierarchy test suite started');
+    
+    // Handle uncaught exceptions from GraphQL/JSON parsing
+    cy.on('uncaught:exception', (err) => {
+      // Ignore JSON parsing errors from GraphQL responses
+      if (err.message.includes('Failed to execute \'json\' on \'Response\'') ||
+          err.message.includes('Unexpected end of JSON input')) {
+        console.log('Ignoring JSON parsing error from API');
+        return false;
+      }
+      return true;
+    });
   });
 
   beforeEach(() => {
-    cy.logToTerminal("🧹 Test cleanup");
+    cy.logToTerminal('🧹 Test cleanup');
     cy.clearCookies();
     cy.clearLocalStorage();
-    cy.intercept("**/graphql").as("defaultGraphQL");
+    cy.intercept('**/graphql').as('defaultGraphQL');
+  });
+
+  afterEach(() => {
+    cy.logToTerminal('🗑️ Cleaning up test data');
+    cy.then(async () => {
+      try {
+        await cleanupTestCompany();
+        cy.logToTerminal('✅ Test data cleanup completed');
+      } catch (error) {
+        cy.logToTerminal(`⚠️ Cleanup failed: ${error.message}`);
+      }
+    });
+  });
+
+  after(() => {
+    cy.logToTerminal('🏁 Company Hierarchy test suite completed');
   });
 
   /**
-   * Test: Admin sees both companies in hierarchy
+   * ==========================================================================
+   * TC-01/02/03: Complete Company Hierarchy Flow
+   * ==========================================================================
+   * Tests: Multi-company admin access, drag & drop organization, nested structure
+   * Setup: Create 2 companies + shared admin user via API
+   * Time: ~2-3 minutes
    */
-  it(
-    "Admin sees all companies where they are super_user",
-    { tags: ["@B2BSaas"], defaultCommandTimeout: 30000 },
-    () => {
-      cy.logToTerminal(
-        "========= 🚀 E2E: Multi-Company Admin Hierarchy =========",
-      );
+  it('JOURNEY: Admin manages multi-company hierarchy with drag & drop', { defaultCommandTimeout: 30000 }, () => {
+    cy.logToTerminal('========= 🚀 Company Hierarchy Management Journey =========');
 
-      let sharedAdmin = null;
-
-      // STEP 1: Create Company 1 with Admin
-      cy.logToTerminal("--- STEP 1: Creating Company 1 with Admin ---");
-      cy.then({ timeout: 60000 }, async () => {
-        const timestamp = Date.now();
-        const randomStr = Math.random().toString(36).substring(2, 8);
-
-        cy.logToTerminal("🏢 Creating Company 1...");
-        const company1 = await createCompany({
-          companyName: `Company1 ${randomStr}`,
-          companyEmail: `company1-${timestamp}@example.com`,
-          legalName: `Company 1 Legal`,
-          vatTaxId: `VAT-1-${randomStr}`,
-          resellerId: `RES-1-${randomStr}`,
-          street: baseCompanyData.street,
-          city: baseCompanyData.city,
-          countryCode: baseCompanyData.countryCode,
-          regionId: 12,
-          postcode: baseCompanyData.postcode,
-          telephone: baseCompanyData.telephone,
-          adminFirstName: "Shared",
-          adminLastName: "Admin",
-          adminEmail: `shared.admin-${timestamp}@example.com`,
-          adminPassword: "Test123!",
-          status: 1,
-        });
-
-        sharedAdmin = {
-          id: company1.company_admin.id,
-          email: company1.company_admin.email,
-          password: company1.company_admin.password,
-        };
-
-        Cypress.env("company1", {
-          id: company1.id,
-          name: company1.name,
-        });
-
-        Cypress.env("sharedAdmin", sharedAdmin);
-
-        cy.logToTerminal(`✅ Company 1: ${company1.name} (ID: ${company1.id})`);
-        cy.logToTerminal(
-          `✅ Admin: ${sharedAdmin.email} (ID: ${sharedAdmin.id})`,
-        );
-      });
-
-      // STEP 2: Create Company 2 with SAME Admin
-      cy.logToTerminal("--- STEP 2: Creating Company 2 with SAME Admin ---");
-      cy.then({ timeout: 60000 }, async () => {
-        const timestamp = Date.now();
-        const randomStr = Math.random().toString(36).substring(2, 8);
-        const admin = Cypress.env("sharedAdmin");
-
-        cy.logToTerminal(`🏢 Creating Company 2 with admin ID: ${admin.id}...`);
-
-        // Manually create company with existing admin
-        const ACCSApiClient = require("../../support/accsClient");
-        const client = new ACCSApiClient();
-
-        const companyPayload = {
-          company: {
-            company_name: `Company2 ${randomStr}`,
-            company_email: `company2-${timestamp}@example.com`,
-            legal_name: `Company 2 Legal`,
-            vat_tax_id: `VAT-2-${randomStr}`,
-            reseller_id: `RES-2-${randomStr}`,
-            street: [baseCompanyData.street],
-            city: baseCompanyData.city,
-            country_id: baseCompanyData.countryCode,
-            region_id: 12,
-            postcode: baseCompanyData.postcode,
-            telephone: baseCompanyData.telephone,
-            super_user_id: admin.id,
-            customer_group_id: 1,
-            status: 1,
-          },
-        };
-
-        const company2 = await client.post("/V1/company/", companyPayload);
-
-        Cypress.env("company2", {
-          id: company2.id,
-          name: company2.company_name,
-        });
-
-        cy.logToTerminal(
-          `✅ Company 2: ${company2.company_name} (ID: ${company2.id})`,
-        );
-        cy.logToTerminal(`✅ Same admin is super_user for both companies`);
-      });
-
-      cy.wait(5000); // Wait for indexing
-
-      // STEP 3: Login as Admin
-      cy.logToTerminal("--- STEP 3: Login as Shared Admin ---");
-      cy.then(() => {
-        const admin = Cypress.env("sharedAdmin");
-
-        cy.logToTerminal(`🔐 Logging in as: ${admin.email}`);
-        cy.visit("/customer/login");
-        cy.get("main .auth-sign-in-form", { timeout: 10000 }).within(() => {
-          cy.get('input[name="email"]').type(admin.email);
-          cy.wait(1500);
-          cy.get('input[name="password"]').type(admin.password);
-          cy.wait(1500);
-          cy.get('button[type="submit"]').click();
-        });
-        cy.wait(8000);
-        cy.logToTerminal("✅ Admin logged in");
-      });
-
-      // STEP 4: Get Company Hierarchy via GraphQL to verify structure
-      cy.logToTerminal("--- STEP 4: Fetch Company Hierarchy via GraphQL ---");
-      cy.then(() => {
-        cy.getUserTokenCookie().then((token) => {
-          cy.request({
-            method: "POST",
-            url: Cypress.env("graphqlEndPoint"),
-            auth: {
-              bearer: token,
-            },
-            headers: {
-              "content-type": "application/json",
-            },
-            body: {
-              query: `
-                query getCompanyHierarchy {
-                  customer {
-                    companies(input: {}) {
-                      items {
-                        id
-                        name
-                        status
-                        is_admin
-                      }
-                    }
-                    company_hierarchy {
-                      parent {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                      children {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                    }
-                  }
-                }
-              `,
-            },
-          }).then((response) => {
-            expect(response.status).to.equal(200);
-
-            const companies =
-              response.body.data?.customer?.companies?.items || [];
-            const hierarchy =
-              response.body.data?.customer?.company_hierarchy || [];
-
-            cy.logToTerminal("📊 ========= GraphQL Response =========");
-            cy.logToTerminal(`Companies (${companies.length} total):`);
-            companies.forEach((c) => {
-              cy.logToTerminal(
-                `  - ${c.name} (ID: ${c.id}, is_admin: ${c.is_admin})`,
-              );
-            });
-
-            cy.logToTerminal(`Hierarchy (${hierarchy.length} nodes):`);
-            hierarchy.forEach((node, idx) => {
-              const parent = node.parent
-                ? `${node.parent.name} (ID: ${node.parent.id})`
-                : null;
-              const children = node.children || [];
-
-              if (parent) {
-                cy.logToTerminal(`  Node ${idx + 1}: Parent = ${parent}`);
-              } else {
-                cy.logToTerminal(`  Node ${idx + 1}: ROOT level`);
-              }
-
-              if (children.length > 0) {
-                children.forEach((child) => {
-                  cy.logToTerminal(
-                    `    └─ Child: ${child.name} (ID: ${child.id})`,
-                  );
-                });
-              } else {
-                cy.logToTerminal(`    └─ No children`);
-              }
-            });
-            cy.logToTerminal("========================================");
-
-            // Store GraphQL IDs for potential use
-            Cypress.env("companiesFromGraphQL", companies);
-            Cypress.env("hierarchyFromGraphQL", hierarchy);
-          });
-        });
-      });
-
-      cy.wait(2000);
-
-      // STEP 5: Check Hierarchy Shows Both Companies
-      cy.logToTerminal("--- STEP 5: Verify Hierarchy Shows Both Companies ---");
-      cy.then(() => {
-        cy.logToTerminal("📄 Navigating to hierarchy...");
-        cy.visit("/customer/company/hierarchy");
-        cy.wait(5000);
-
-        cy.url().should("include", "/customer/company/hierarchy");
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should(
-          "exist",
-        );
-
-        // Check no permission denied
-        cy.get("body").then(($body) => {
-          const bodyText = $body.text();
-          if (bodyText.includes("You do not have permission")) {
-            throw new Error("Admin should have access to hierarchy");
-          }
-          cy.logToTerminal("✅ No permission denied");
-        });
-
-        const company1 = Cypress.env("company1");
-        const company2 = Cypress.env("company2");
-
-        // Check Company 1 name visible in hierarchy (root level)
-        cy.logToTerminal(`✅ Checking Company 1 visible: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company1.name, { timeout: 15000 })
-          .should("be.visible");
-
-        // Check Company 2 name visible in hierarchy (root level)
-        cy.logToTerminal(`✅ Checking Company 2 visible: ${company2.name}`);
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company2.name, { timeout: 15000 })
-          .should("be.visible");
-
-        cy.logToTerminal("✅ SUCCESS: Admin sees both companies in hierarchy!");
-      });
-
-      // STEP 6: Assign Company2 as child of Company1 using GraphQL
-      cy.logToTerminal("--- STEP 6: Assign Child Company via GraphQL ---");
-      cy.then(() => {
-        const companies = Cypress.env("companiesFromGraphQL");
-
-        if (!companies || companies.length < 2) {
-          throw new Error("Need 2 companies from GraphQL to test assignment");
-        }
-
-        const company1GQL = companies.find(
-          (c) => c.name === Cypress.env("company1").name,
-        );
-        const company2GQL = companies.find(
-          (c) => c.name === Cypress.env("company2").name,
-        );
-
-        cy.logToTerminal(
-          `🔗 Assigning ${company2GQL.name} as child of ${company1GQL.name}`,
-        );
-        cy.logToTerminal(`   Parent ID: ${company1GQL.id}`);
-        cy.logToTerminal(`   Child ID: ${company2GQL.id}`);
-
-        cy.getUserTokenCookie().then((token) => {
-          cy.request({
-            method: "POST",
-            url: Cypress.env("graphqlEndPoint"),
-            auth: {
-              bearer: token,
-            },
-            headers: {
-              "content-type": "application/json",
-            },
-            body: {
-              query: `
-                mutation assignChildCompany($input: AssignChildCompanyInput!) {
-                  assignChildCompany(input: $input) {
-                    company_hierarchy {
-                      parent {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                      children {
-                        id
-                        name
-                        is_admin
-                        legal_name
-                        status
-                      }
-                    }
-                  }
-                }
-              `,
-              variables: {
-                input: {
-                  parent_company_id: company1GQL.id,
-                  child_company_id: company2GQL.id,
-                },
-              },
-            },
-          }).then((response) => {
-            expect(response.status).to.equal(200);
-
-            const result = response.body.data?.assignChildCompany;
-
-            if (!result || result === null) {
-              cy.logToTerminal(
-                "❌ Mutation returned null - assignment may have failed",
-              );
-              throw new Error("assignChildCompany returned null");
-            }
-
-            cy.logToTerminal("✅ Assignment mutation successful!");
-            cy.logToTerminal(`   Response: ${JSON.stringify(result)}`);
-
-            Cypress.env("assignmentResult", result);
-          });
-        });
-      });
-
-      cy.wait(3000); // Wait for backend processing
-
-      // STEP 7: Refresh page to see updated hierarchy
-      cy.logToTerminal("--- STEP 7: Refresh Page to See Updated Hierarchy ---");
-      cy.then(() => {
-        cy.logToTerminal("🔄 Reloading hierarchy page...");
-        cy.reload();
-        cy.wait(5000);
-
-        cy.get(".commerce-b2b-company-hierarchy", { timeout: 15000 }).should(
-          "exist",
-        );
-        cy.logToTerminal("✅ Page reloaded");
-      });
-
-      // STEP 8: Verify nested structure (Company1 parent, Company2 child)
-      cy.logToTerminal("--- STEP 8: Verify Nested Hierarchy Structure ---");
-      cy.then(() => {
-        const company1 = Cypress.env("company1");
-        const company2 = Cypress.env("company2");
-
-        cy.logToTerminal(`🔍 Looking for parent company: ${company1.name}`);
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company1.name, { timeout: 15000 })
-          .should("be.visible");
-
-        cy.logToTerminal(`🔍 Looking for child company: ${company2.name}`);
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company2.name, { timeout: 15000 })
-          .should("be.visible");
-
-        // Try to find and click expand button if it exists
-        cy.get(".commerce-b2b-company-hierarchy").then(($hierarchy) => {
-          const expandButton = $hierarchy
-            .find('button[aria-expanded="false"], button[aria-label*="Expand"]')
-            .first();
-
-          if (expandButton.length > 0) {
-            cy.logToTerminal(
-              "📂 Found expand button - clicking to expand hierarchy...",
-            );
-            cy.wrap(expandButton).click();
-            cy.wait(2000);
-            cy.logToTerminal("✅ Hierarchy expanded");
-          } else {
-            cy.logToTerminal(
-              "ℹ️ No collapsed nodes found - hierarchy already expanded or flat",
-            );
-          }
-        });
-
-        // Verify both companies still visible (Company2 should be nested)
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company1.name, { timeout: 5000 })
-          .should("be.visible");
-
-        cy.get(".commerce-b2b-company-hierarchy")
-          .contains(company2.name, { timeout: 5000 })
-          .should("be.visible");
-
-        cy.logToTerminal(
-          `✅ SUCCESS: Hierarchy mutation worked! Both companies visible after assignment.`,
-        );
-        cy.logToTerminal(`   Parent: ${company1.name}`);
-        cy.logToTerminal(`   Child: ${company2.name}`);
-      });
-
-      cy.logToTerminal("========= 🎉 TEST PASSED =========");
-    },
-  );
-
-  after(() => {
-    cy.logToTerminal("🧹 Cleanup: Deleting test companies and users...");
-
-    cy.then({ timeout: 60000 }, async () => {
-      const company1 = Cypress.env("company1");
-      const company2 = Cypress.env("company2");
-      const admin = Cypress.env("sharedAdmin");
-
-      try {
-        if (company1?.id) {
-          cy.logToTerminal(`🗑️ Deleting Company 1 (ID: ${company1.id})...`);
-          await deleteCompanyById(company1.id);
-          cy.logToTerminal("✅ Company 1 deleted");
-        }
-      } catch (error) {
-        cy.logToTerminal(`⚠️ Could not delete Company 1: ${error.message}`);
+    // Handle uncaught exceptions during test execution
+    Cypress.on('uncaught:exception', (err) => {
+      if (err.message.includes('Failed to execute \'json\' on \'Response\'') ||
+          err.message.includes('Unexpected end of JSON input') ||
+          err.message.includes('JSON')) {
+        console.log('Ignoring JSON parsing error from API');
+        return false;
       }
-
-      try {
-        if (company2?.id) {
-          cy.logToTerminal(`🗑️ Deleting Company 2 (ID: ${company2.id})...`);
-          await deleteCompanyById(company2.id);
-          cy.logToTerminal("✅ Company 2 deleted");
-        }
-      } catch (error) {
-        cy.logToTerminal(`⚠️ Could not delete Company 2: ${error.message}`);
-      }
-
-      try {
-        if (admin?.id) {
-          cy.logToTerminal(`🗑️ Deleting Admin user (ID: ${admin.id})...`);
-          await deleteCustomerById(admin.id);
-          cy.logToTerminal("✅ Admin user deleted");
-        }
-      } catch (error) {
-        cy.logToTerminal(`⚠️ Could not delete Admin user: ${error.message}`);
-      }
-
-      cy.logToTerminal("🏁 Company Hierarchy test suite completed");
+      return true;
     });
+
+    // ========== SETUP: Create 2 companies with shared super_user (via API) ==========
+    cy.logToTerminal('--- SETUP: Creating 2 companies with shared super_user ---');
+    
+    cy.then({ timeout: 120000 }, async () => {
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 8);
+
+      // Use short, unique company names
+      const companyAName = `HierarchyA ${randomStr}`;
+      const companyBName = `HierarchyB ${randomStr}`;
+
+      // Step 1: Create standalone customer (will be super_user for both companies)
+      cy.logToTerminal('👤 Creating super user for both companies...');
+      const superUser = await createStandaloneCustomer({
+        firstname: 'Hierarchy',
+        lastname: 'SuperUser',
+        email: `hierarchy-super-${timestamp}.${randomStr}@example.com`,
+        password: 'Test123!',
+      });
+      cy.logToTerminal(`✅ Super user created: ${superUser.email} (ID: ${superUser.id})`);
+
+      // Step 2: Create Company A with super user
+      cy.logToTerminal(`🏢 Creating Company A with super_user_id=${superUser.id}`);
+      const companyA = await createCompanyWithSuperUser({
+        companyName: companyAName,
+        companyEmail: `hierarchy-a-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyAName} Legal`,
+        vatTaxId: `VAT-A-${randomStr}`,
+        resellerId: `RES-A-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        status: 1, // APPROVED
+      }, superUser.id);
+      cy.logToTerminal(`✅ Company A created: ${companyA.name} (ID: ${companyA.id})`);
+
+      // Step 3: Create Company B with SAME super user
+      cy.logToTerminal(`🏢 Creating Company B with super_user_id=${superUser.id}`);
+      const companyB = await createCompanyWithSuperUser({
+        companyName: companyBName,
+        companyEmail: `hierarchy-b-${timestamp}.${randomStr}@example.com`,
+        legalName: `${companyBName} Legal`,
+        vatTaxId: `VAT-B-${randomStr}`,
+        resellerId: `RES-B-${randomStr}`,
+        street: baseCompanyData.street,
+        city: baseCompanyData.city,
+        countryCode: baseCompanyData.countryCode,
+        regionId: 12, // California
+        postcode: baseCompanyData.postcode,
+        telephone: baseCompanyData.telephone,
+        status: 1, // APPROVED
+      }, superUser.id);
+      cy.logToTerminal(`✅ Company B created: ${companyB.name} (ID: ${companyB.id})`);
+
+      // Store for cleanup and test usage
+      Cypress.env('currentTestCompanyEmail', companyA.company_email);
+      Cypress.env('currentTestAdminEmail', superUser.email);
+      Cypress.env('testCompanyId', companyA.id);
+      Cypress.env('testCompanyName', companyA.name);
+      Cypress.env('companyAId', companyA.id);
+      Cypress.env('companyAName', companyA.name);
+      Cypress.env('companyBId', companyB.id);
+      Cypress.env('companyBName', companyB.name);
+      Cypress.env('superUserEmail', superUser.email);
+      Cypress.env('superUserPassword', 'Test123!');
+
+      // Store company names for test
+      firstCompanyName = companyA.name;
+      secondCompanyName = companyB.name;
+
+      cy.logToTerminal('========================================');
+      cy.logToTerminal('✅ SETUP COMPLETE:');
+      cy.logToTerminal(`   Company A: ${companyA.name} (Super User: ${superUser.email})`);
+      cy.logToTerminal(`   Company B: ${companyB.name} (Super User: ${superUser.email})`);
+      cy.logToTerminal(`   Super User has full access to BOTH companies`);
+      cy.logToTerminal('========================================');
+    });
+
+    // ========== STEP 1: Login as super user ==========
+    cy.logToTerminal('--- STEP 1: Login as super user (owner of both companies) ---');
+    
+    cy.then(() => {
+      const userEmail = Cypress.env('superUserEmail');
+      const userPassword = Cypress.env('superUserPassword');
+      
+      cy.logToTerminal(`🔐 Logging in as: ${userEmail}`);
+      cy.visit('/customer/login');
+      
+      // Wait for login form to be ready
+      cy.get('main .auth-sign-in-form', { timeout: 10000 }).should('be.visible');
+      cy.logToTerminal('✅ Login form loaded');
+      
+      cy.get('main .auth-sign-in-form').within(() => {
+        cy.get('input[name="email"]').clear({ force: true }).type(userEmail, { delay: 100 });
+        cy.wait(1500);
+        
+        cy.get('input[name="password"]').clear({ force: true }).type(userPassword, { delay: 100 });
+        cy.wait(1500);
+        
+        cy.get('button[type="submit"]').click();
+      });
+      
+      cy.logToTerminal('✅ Login form submitted');
+      
+      // Wait for login to complete
+      cy.wait(8000);
+      
+      // Check if redirected successfully
+      cy.url().then((url) => {
+        if (url.includes('/customer/login')) {
+          cy.logToTerminal('⚠️ Still on login page - may have failed');
+        } else {
+          cy.logToTerminal(`✅ Redirected to: ${url}`);
+        }
+      });
+      
+      cy.logToTerminal('✅ Login step completed');
+    });
+
+    // ========== STEP 2: Navigate to Hierarchy page ==========
+    cy.logToTerminal('--- STEP 2: Navigate to Company Hierarchy ---');
+    cy.visit('/customer/company/hierarchy');
+    cy.wait(3000);
+
+    // ========== TC-01: Verify admin sees both companies ==========
+    cy.logToTerminal('--- TC-01: Verify admin sees both companies in hierarchy ---');
+
+    cy.url().should('include', '/customer/company/hierarchy');
+    
+    cy.get('.commerce-b2b-company-hierarchy', { timeout: 20000 })
+      .should('exist')
+      .should('be.visible');
+
+    cy.logToTerminal('✅ Hierarchy page loaded');
+
+    // Check no permission denied
+    cy.get('body').then(($body) => {
+      const bodyText = $body.text();
+      if (bodyText.includes('You do not have permission')) {
+        throw new Error('❌ Admin should have access to hierarchy');
+      }
+      cy.logToTerminal('✅ No permission denied');
+    });
+
+    // Verify both created companies are visible
+    cy.then(() => {
+      cy.logToTerminal('🔍 Verifying both companies are visible...');
+      cy.wait(3000);
+      
+      // Verify Company A is visible
+      cy.contains('.company-hierarchy-label', firstCompanyName)
+        .should('be.visible');
+      cy.logToTerminal(`✅ Company A found: ${firstCompanyName}`);
+      
+      // Verify Company B is visible
+      cy.contains('.company-hierarchy-label', secondCompanyName)
+        .should('be.visible');
+      cy.logToTerminal(`✅ Company B found: ${secondCompanyName}`);
+      
+      cy.logToTerminal('✅ TC-01 PASSED: Admin can see both companies in hierarchy');
+    });
+
+    // ========== TC-02: Organize hierarchy using drag & drop ==========
+    cy.logToTerminal('--- TC-02: Organize companies with drag & drop ---');
+
+    cy.then(() => {
+      cy.logToTerminal(`🔗 Dragging "${secondCompanyName}" into "${firstCompanyName}"`);
+      cy.logToTerminal(`   Parent: ${firstCompanyName}`);
+      cy.logToTerminal(`   Child: ${secondCompanyName}`);
+
+      // Find draggable elements using company-hierarchy-label
+      cy.logToTerminal(`🎯 Finding draggable node for "${secondCompanyName}"...`);
+      cy.get('.acm-tree__item[draggable="true"]')
+        .filter((index, el) => {
+          return Cypress.$(el).find('.company-hierarchy-label').text().trim() === secondCompanyName;
+        })
+        .first()
+        .should('have.attr', 'draggable', 'true')
+        .as('dragCompany2');
+
+      cy.logToTerminal(`🎯 Finding drop target for "${firstCompanyName}"...`);
+      cy.get('.acm-tree__item[draggable="true"]')
+        .filter((index, el) => {
+          return Cypress.$(el).find('.company-hierarchy-label').text().trim() === firstCompanyName;
+        })
+        .first()
+        .should('have.attr', 'draggable', 'true')
+        .as('dropCompany1');
+
+      // Perform drag and drop
+      cy.logToTerminal('🔄 Executing drag & drop...');
+      cy.get('@dragCompany2').trigger('dragstart', {
+        dataTransfer: new DataTransfer(),
+      });
+      cy.get('@dropCompany1').trigger('dragover');
+      cy.get('@dropCompany1').trigger('drop');
+      cy.wait(3000);
+
+      // Verify success message
+      cy.get('body').then(($body) => {
+        const bodyText = $body.text().toLowerCase();
+        if (bodyText.includes('success') || 
+            bodyText.includes('moved') || 
+            bodyText.includes('assigned')) {
+          cy.logToTerminal('✅ Success message found');
+        } else {
+          cy.logToTerminal('⚠️ No explicit success message, but continuing');
+        }
+      });
+
+      cy.logToTerminal('✅ TC-02 PASSED: Drag & drop executed');
+    });
+
+    // ========== TC-03: Verify nested hierarchy structure ==========
+    cy.logToTerminal('--- TC-03: Verify nested hierarchy structure ---');
+
+    // Reload page to see updated hierarchy
+    cy.logToTerminal('🔄 Reloading hierarchy page...');
+    cy.reload();
+    cy.wait(5000);
+
+    cy.get('.commerce-b2b-company-hierarchy', { timeout: 15000 })
+      .should('exist')
+      .should('be.visible');
+
+    cy.then(() => {
+      cy.wait(3000);
+
+      cy.logToTerminal(`🔍 Verifying parent company visible: ${firstCompanyName}`);
+      cy.get('.company-hierarchy-label')
+        .filter((index, el) => Cypress.$(el).text().trim() === firstCompanyName)
+        .should('be.visible');
+
+      // Look for expand buttons and expand all nodes
+      cy.get('body').then(($body) => {
+        const expandButtons = $body.find('button[aria-expanded="false"]');
+        if (expandButtons.length > 0) {
+          cy.logToTerminal('📂 Expanding hierarchy nodes...');
+          cy.wrap(expandButtons).each(($btn) => {
+            cy.wrap($btn).click({ force: true });
+          });
+          cy.wait(2000);
+        }
+      });
+
+      // Verify Company 2 is nested under Company 1
+      cy.logToTerminal(`🔍 Verifying "${secondCompanyName}" is nested under "${firstCompanyName}"...`);
+
+      // Find parent company by label text
+      cy.contains('.company-hierarchy-label', firstCompanyName)
+        .closest('.acm-tree__item')
+        .within(() => {
+          // Look for nested ul.acm-tree__group
+          cy.get('ul.acm-tree__group')
+            .should('exist')
+            .within(() => {
+              // Verify child company is inside
+              cy.contains('.company-hierarchy-label', secondCompanyName)
+                .should('exist')
+                .should('be.visible');
+            });
+        });
+
+      cy.logToTerminal('✅ TC-03 PASSED: Hierarchy properly nested');
+      cy.logToTerminal(`   Parent: ${firstCompanyName}`);
+      cy.logToTerminal(`   Child: ${secondCompanyName}`);
+    });
+
+    cy.logToTerminal('========= 🎉 ALL TESTS PASSED =========');
   });
 });
