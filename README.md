@@ -30,7 +30,7 @@ npm run postinstall # Copies scripts from node_modules into scripts/__dropins__
 
 This is a custom script which copies files out of `node_modules` and into a local directory which EDS can serve. You must manually run `postinstall` due to a design choice in `npm` which does not execute `postinstall` after you install a _specific_ package.
 
-## Changelog.
+## Changelog
 
 Major changes are described and documented as part of pull requests and tracked via the `changelog` tag. To keep your project up to date, please follow this list:
 
