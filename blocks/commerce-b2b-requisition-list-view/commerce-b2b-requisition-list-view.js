@@ -53,8 +53,11 @@ export default async function decorate(block) {
         if (listName) alertPayload.listName = listName;
         localStorage.removeItem('requisitionListPendingAlert');
         const { events } = await import('@dropins/tools/event-bus.js');
-        // Delay ensures the dropin is fully mounted before receiving the alert event
-        setTimeout(() => events.emit('requisitionList/alert', alertPayload), 500);
+        // Delay ensures the dropin is fully mounted and translations are settled
+        // before the event is emitted. The dropin's useEffect re-runs when i18n
+        // translations load, briefly deregistering the listener; 1500 ms gives
+        // enough headroom for that cycle to complete.
+        setTimeout(() => events.emit('requisitionList/alert', alertPayload), 1500);
       }
     } catch { /* ignore storage errors */ }
   }

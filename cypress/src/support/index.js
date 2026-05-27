@@ -15,7 +15,6 @@ import './logToTerminal';
 import './waitForUserInGrid';
 import './b2bSetupCompany';
 import './b2bLoginHelpers';
-import './b2bRequisitionListAPICalls';
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();

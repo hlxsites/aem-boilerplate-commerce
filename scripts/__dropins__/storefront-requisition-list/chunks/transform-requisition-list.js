@@ -8,5 +8,98 @@ fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
     items_count
     updated_at
   }
-`;function c(t){var o,_;return t?{uid:t.uid,name:t.name,description:t.description,updated_at:t.updated_at,items_count:t.items_count,items:l((o=t.items)==null?void 0:o.items),page_info:(_=t.items)==null?void 0:_.page_info}:null}function l(t){return t!=null&&t.length?t.map(o=>{var r,n,i,s;const _={uid:o.uid,sku:(r=o.product)==null?void 0:r.sku,quantity:o.quantity,stock_status:((n=o.product)==null?void 0:n.stock_status)||"IN_STOCK",only_x_left_in_stock:((i=o.product)==null?void 0:i.only_x_left_in_stock)??null,customizable_options:o.customizable_options?o.customizable_options.map(u=>({uid:u.customizable_option_uid,is_required:u.is_required,label:u.label,sort_order:u.sort_order,type:u.type,values:u.values.map(e=>({uid:e.customizable_option_value_uid,label:e.label,price:e.price,value:e.value}))})):[],bundle_options:o.bundle_options||[],configurable_options:o.configurable_options?o.configurable_options.map(u=>({option_uid:u.configurable_product_option_uid,option_label:u.option_label,value_uid:u.configurable_product_option_value_uid,value_label:u.value_label})):[],samples:o.samples?o.samples.map(u=>({url:u.sample_url,sort_order:u.sort_order,title:u.title})):[],gift_card_options:o.gift_card_options||{}};return(s=o.configured_product)!=null&&s.name?{..._,configured_product:o.configured_product}:_}):[]}export{a as R,c as t};
+`,c=`
+fragment REQUISITION_LIST_ITEMS_FRAGMENT on RequistionListItems {
+  items {
+    uid
+    quantity
+    product {
+      sku
+      stock_status
+      only_x_left_in_stock
+    }
+    customizable_options {
+      customizable_option_uid
+      is_required
+      label
+      sort_order
+      type
+      values {
+        customizable_option_value_uid
+        label
+        value
+        price {
+          type
+          units
+          value
+        }
+      }
+    }
+    ... on ConfigurableRequisitionListItem {
+      configurable_options {
+        configurable_product_option_uid
+        configurable_product_option_value_uid
+        option_label
+        value_label
+      }
+    }
+    ... on DownloadableRequisitionListItem {
+      links {
+        price
+        sample_url
+        sort_order
+        title
+        uid
+      }
+      samples {
+        sample_url
+        sort_order
+        title
+      }
+    }
+    ... on BundleRequisitionListItem {
+      bundle_options {
+        uid
+        type
+        label
+        values {
+          uid
+          label
+          quantity
+          priceV2 {
+            value
+            currency
+          }
+          original_price {
+            value
+            currency
+          }
+        }
+      }
+    }
+    ... on GiftCardRequisitionListItem {
+      gift_card_options {
+        amount {
+          currency
+          value
+        }
+        custom_giftcard_amount {
+          currency
+          value
+        }
+        message
+        recipient_email
+        recipient_name
+        sender_name
+        sender_email
+      }
+    }
+  }
+  page_info {
+    page_size
+    current_page
+    total_pages
+  }
+}
+`;function p(o){var e,t;return o?{uid:o.uid,name:o.name,description:o.description,updated_at:o.updated_at,items_count:o.items_count,items:l((e=o.items)==null?void 0:e.items),page_info:(t=o.items)==null?void 0:t.page_info}:null}function l(o){return o!=null&&o.length?o.map(e=>{var _,n,r,s;const t={uid:e.uid,sku:(_=e.product)==null?void 0:_.sku,quantity:e.quantity,stock_status:((n=e.product)==null?void 0:n.stock_status)||"IN_STOCK",only_x_left_in_stock:((r=e.product)==null?void 0:r.only_x_left_in_stock)??null,customizable_options:e.customizable_options?e.customizable_options.map(i=>({uid:i.customizable_option_uid,is_required:i.is_required,label:i.label,sort_order:i.sort_order,type:i.type,values:i.values.map(u=>({uid:u.customizable_option_value_uid,label:u.label,price:u.price,value:u.value}))})):[],bundle_options:e.bundle_options||[],configurable_options:e.configurable_options?e.configurable_options.map(i=>({option_uid:i.configurable_product_option_uid,option_label:i.option_label,value_uid:i.configurable_product_option_value_uid,value_label:i.value_label})):[],samples:e.samples?e.samples.map(i=>({url:i.sample_url,sort_order:i.sort_order,title:i.title})):[],gift_card_options:e.gift_card_options||{}};return(s=e.configured_product)!=null&&s.name?{...t,configured_product:e.configured_product}:t}):[]}export{a as R,c as a,p as t};
 //# sourceMappingURL=transform-requisition-list.js.map

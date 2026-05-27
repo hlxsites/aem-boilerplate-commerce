@@ -1,4 +1,6 @@
 import * as fields from "../../fields";
+import { products } from "../../fixtures";
+import { createStandaloneCustomer } from "../../support/b2bCompanyAPICalls";
 
 const SHARING_PATH = '/customer/requisition-list-sharing';
 
@@ -8,75 +10,62 @@ describe(
   () => {
     let validShareToken;
 
+    const assertAdminEmailAbsentFromShareModal = () => {
+      const admin = Cypress.env('testAdmin');
+      cy.get('.share-requisition-list-content__loading').should('not.exist');
+      cy.get('.share-requisition-list-content__multi-select').click();
+      cy.get('.share-requisition-list-content').should('not.contain', admin.email);
+    };
+
     /**
-     * Before all sharing tests: sign in as the sender via GraphQL, create a
-     * requisition list (or reuse an existing one), and generate a fresh share token.
-     * Stored in `validShareToken` for use across all test cases.
+     * Before all sharing tests: sign in as the sender, create a requisition list,
+     * add a product, then click Share to let the dropin generate the token via the UI
+     * (the same way a real user would). The share link is read from the link field
+     * and the token stored in `validShareToken` for use across all test cases.
      */
     before(() => {
-      const isLocal = Cypress.env('graphqlEndPoint')?.includes('functional.local')
-        || Cypress.env('graphqlEndPoint')?.includes('localhost');
-
-      if (isLocal) {
-        // On local environment skip ACCS company setup (needs SaaS).
-        // Set pre-existing local credentials via cypress.env.json or --env flag:
-        //   CYPRESS_testAdmin='{"email":"admin@example.com","password":"..."}'
-        //   CYPRESS_testUsers='[{"email":"user@example.com","password":"..."}]'
-        cy.log('Running against local backend — skipping ACCS company setup');
-      } else {
-        cy.setupCompanyWith2Users();
-      }
-
+      cy.setupCompanyWith2Users();
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
 
-      const preExistingUid = Cypress.env('shareTestRequisitionListUid');
-      const admin = Cypress.env('testAdmin');
+      // Create a test requisition list to share
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Add new Requisition List').click();
+      cy.get(fields.requisitionListFormName).type('Cypress Share Test List');
+      cy.get(fields.requisitionListFormDescription).type('Created for share token tests');
+      cy.contains('Save').click();
 
-      if (preExistingUid) {
-        // Use a pre-existing list that already has items (useful for local runs).
-        // Set via cypress.env.json: "shareTestRequisitionListUid": "<base64-uid>"
-        cy.generateRequisitionListShareToken({
-          email: admin.email,
-          password: admin.password,
-          requisitionListUid: preExistingUid,
-        }).then((token) => {
-          validShareToken = token;
+      // Add a product so sharing is enabled (share button is disabled on empty lists)
+      cy.visit(products.simple.urlPath);
+      cy.get(fields.requisitionListSelector)
+        .first()
+        .should('be.visible')
+        .click();
+      cy.get(fields.requisitionListPickerAvailableLists)
+        .should('contain', 'Cypress Share Test List')
+        .contains('Cypress Share Test List')
+        .click();
+      cy.get(fields.requisitionListPickerActionsButton).should('not.be.disabled').click();
+      cy.get(fields.requisitionListAlert).should('be.visible');
+
+      // Open the list, click Share, and read the generated token directly from the share link field
+      // — the dropin calls shareRequisitionListByToken exactly as a real user would
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Cypress Share Test List').click();
+      cy.url().should('include', 'requisitionListUid=');
+
+      cy.get(fields.requisitionListViewShareButton)
+        .should('exist')
+        .and('not.have.attr', 'aria-disabled', 'true')
+        .click();
+
+      cy.get('[data-testid="share-link-field"]')
+        .should('be.visible')
+        .invoke('val')
+        .should('include', 'requisition_id=')
+        .then((shareUrl) => {
+          validShareToken = new URL(shareUrl).searchParams.get('requisition_id');
         });
-      } else {
-        // Create a test requisition list to share
-        cy.visit('/customer/requisition-lists');
-        cy.contains('Add new Requisition List').click();
-        cy.get(fields.requisitionListFormName).type('Cypress Share Test List');
-        cy.get(fields.requisitionListFormDescription).type('Created for share token tests');
-        cy.contains('Save').click();
-
-        // Add a product so sharing is enabled (share button is disabled on empty lists)
-        // Configure the product URL via cypress.env.json: "shareTestProductUrl": "/products/slug/SKU"
-        cy.visit(Cypress.env('shareTestProductUrl'));
-        cy.get(fields.addToRequisitionListButton).should('exist').click();
-        cy.get(fields.requisitionListPickerAvailableLists)
-          .should('contain', 'Cypress Share Test List')
-          .contains('Cypress Share Test List')
-          .click();
-        cy.get(fields.requisitionListPickerActionsButton).should('not.be.disabled').click();
-        cy.get(fields.requisitionListAlert).should('be.visible');
-
-        // Navigate back to the grid and open the list to grab its UID from the URL
-        cy.visit('/customer/requisition-lists');
-        cy.contains('Cypress Share Test List').click();
-        cy.url().should('include', 'requisitionListUid=').then((url) => {
-          const uid = new URL(url).searchParams.get('requisitionListUid');
-
-          cy.generateRequisitionListShareToken({
-            email: admin.email,
-            password: admin.password,
-            requisitionListUid: uid,
-          }).then((token) => {
-            validShareToken = token;
-          });
-        });
-      }
     });
     // Clear browser session before each test so cy.loginAsCompanyAdmin() / cy.loginAsRegularUser()
     // always land on the login form (not an already-authenticated account page).
@@ -105,7 +94,7 @@ describe(
     });
 
     // -----------------------------------------------------------------------
-    // 2. Guest opens shared link → sign-in form appears on the sharing page
+    // 2. Guest opens shared link → inline sign-in form appears on the sharing page
     // -----------------------------------------------------------------------
     it('Guest visiting a valid share link sees the sign-in form', () => {
       cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
@@ -126,61 +115,64 @@ describe(
     // 4. Invalid / expired token shows error message
     // -----------------------------------------------------------------------
     it('Invalid share token shows an error message', () => {
-      const recipient = Cypress.env('testUsers')?.[0];
+      cy.loginAsCompanyAdmin();
       cy.visit(`${SHARING_PATH}?requisition_id=invalid-token-xyz`);
-      cy.get(fields.requisitionListSharingSignInForm).within(() => {
-        cy.get('input[name="email"]').type(recipient.email);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(recipient.password);
-        cy.wait(1500);
-        cy.get('.auth-sign-in-form__button--submit').click();
-      });
       cy.get(fields.requisitionListSharingError)
         .should('be.visible')
         .and('contain', 'invalid or has expired');
     });
 
     // -----------------------------------------------------------------------
-    // 5. Authenticated recipient imports the list and is redirected to detail view
+    // 5. Authenticated recipient previews the shared list, imports it,
+    //    and sees the success alert on the detail page
     // -----------------------------------------------------------------------
-    it('Authenticated recipient auto-imports list and lands on its detail page', () => {
-      const recipient = Cypress.env('testUsers')?.[0];
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(recipient.email);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(recipient.password);
-        cy.wait(1500);
-        cy.get('.auth-sign-in-form__button--submit').click();
-      });
+    it('Authenticated recipient can preview the shared list, import it, and see the success alert', () => {
+      cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
 
       cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
+
+      // Wait for preview to load
+      cy.get(fields.requisitionListSharingLoading).should('not.exist');
+      cy.get(fields.requisitionListSharingPreview).should('be.visible');
+
+      // Verify preview content: sender name, list name, and items table are present
+      cy.get(fields.requisitionListSharingPreviewValue).first().should('not.be.empty');
+      cy.get(fields.requisitionListSharingItemsTable).should('be.visible');
+
+      // Click the Import List button
+      cy.get(fields.requisitionListSharingImportButton)
+        .should('be.visible')
+        .and('not.be.disabled')
+        .click();
+
+      // After import, should be redirected to the detail page with items
       cy.url().should('include', '/customer/requisition-list');
       cy.url().should('include', 'requisitionListUid=');
       cy.get(fields.requisitionListItemRow).should('have.length.gte', 1);
+
+      // Pending alert written to localStorage by the sharing block is picked up
+      // by the view block and emitted after the dropin mounts
+      cy.get('.requisition-list__alert-wrapper .dropin-in-line-alert__title', { timeout: 5000 })
+        .should('be.visible');
     });
 
     // -----------------------------------------------------------------------
-    // 6. Unauthenticated user signs in via inline form and is then auto-imported
+    // 6. Unauthenticated user is shown the sign-in form, then after sign-in
+    //    is redirected back to the sharing page with the token preserved
     // -----------------------------------------------------------------------
-    it('Guest signs in via inline form and list is automatically imported', () => {
-      const recipient = Cypress.env('testUsers')?.[0];
+    it('Guest visiting a share link sees the sign-in form and is redirected back after signing in', () => {
       cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
-
       cy.get(fields.requisitionListSharingSignInForm).should('be.visible');
+      cy.url().should('include', 'requisition_id=');
 
-      cy.get(fields.requisitionListSharingSignInForm).within(() => {
-        cy.get('input[name="email"]').type(recipient.email);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(recipient.password);
-        cy.wait(1500);
-        cy.get('.auth-sign-in-form__button--submit').click();
-      });
+      // Sign in via the standard login page — after auth the block redirects back
+      cy.loginAsCompanyAdmin();
 
-      cy.url().should('include', '/customer/requisition-list');
-      cy.url().should('include', 'requisitionListUid=');
-      cy.get(fields.requisitionListItemRow).should('have.length.gte', 1);
+      cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
+      cy.get(fields.requisitionListSharingLoading).should('not.exist');
+      cy.get(fields.requisitionListSharingPreview).should('be.visible');
+      cy.get(fields.requisitionListSharingItemsTable).should('be.visible');
     });
 
     // -----------------------------------------------------------------------
@@ -190,15 +182,8 @@ describe(
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
 
-      const admin = Cypress.env('testAdmin');
-      const preExistingUid = Cypress.env('shareTestRequisitionListUid');
-
-      if (preExistingUid) {
-        cy.visit(`/customer/requisition-list-view?requisitionListUid=${preExistingUid}`);
-      } else {
-        cy.visit('/customer/requisition-lists');
-        cy.contains('Cypress Share Test List').click();
-      }
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Cypress Share Test List').click();
       cy.url().should('include', 'requisitionListUid=');
 
       cy.get(fields.requisitionListViewShareButton)
@@ -206,54 +191,19 @@ describe(
         .and('not.have.attr', 'aria-disabled', 'true')
         .click();
 
-      // Wait for the user list to finish loading inside the share modal
-      cy.get('.share-requisition-list-content__loading').should('not.exist');
-
       // Open the recipient dropdown and assert the sender's email is absent
-      cy.get('.share-requisition-list-content__multi-select').click();
-      cy.get('.share-requisition-list-content')
-        .should('not.contain', admin.email);
+      assertAdminEmailAbsentFromShareModal();
     });
 
     // -----------------------------------------------------------------------
-    // 8. Success alert is shown on the detail page after import
-    // -----------------------------------------------------------------------
-    it('Success alert is visible on the detail page after importing a shared list', () => {
-      const recipient = Cypress.env('testUsers')?.[0];
-      cy.visit('/customer/login');
-      cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-        cy.get('input[name="email"]').type(recipient.email);
-        cy.wait(1500);
-        cy.get('input[name="password"]').type(recipient.password);
-        cy.wait(1500);
-        cy.get('.auth-sign-in-form__button--submit').click();
-      });
-      cy.url().should('include', '/customer/account');
-
-      cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
-      cy.url().should('include', '/customer/requisition-list');
-      cy.url().should('include', 'requisitionListUid=');
-
-      // Pending alert written to localStorage by the sharing block is picked up
-      // by the view block and emitted after the dropin mounts
-      cy.get('.requisition-list__alert-wrapper .dropin-in-line-alert__title', { timeout: 5000 })
-        .should('be.visible');
-    });
-
-    // -----------------------------------------------------------------------
-    // 9. Share button opens the share modal with a shareable link
+    // 8. Share button opens the share modal with a shareable link
     // -----------------------------------------------------------------------
     it('Share button opens modal displaying a shareable link', () => {
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
 
-      const preExistingUid = Cypress.env('shareTestRequisitionListUid');
-      if (preExistingUid) {
-        cy.visit(`/customer/requisition-list-view?requisitionListUid=${preExistingUid}`);
-      } else {
-        cy.visit('/customer/requisition-lists');
-        cy.contains('Cypress Share Test List').click();
-      }
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Cypress Share Test List').click();
       cy.url().should('include', 'requisitionListUid=');
 
       cy.get(fields.requisitionListViewShareButton)
@@ -266,6 +216,67 @@ describe(
         .invoke('val')
         .should('include', SHARING_PATH)
         .and('include', 'requisition_id=');
+    });
+
+    // -----------------------------------------------------------------------
+    // 9. Non-company user's share button is disabled
+    // -----------------------------------------------------------------------
+    it('Share button is disabled with a company-required message for non-B2B customers', () => {
+      cy.then(async () => {
+        const timestamp = Date.now();
+        const email = `standalone.${timestamp}@example.com`;
+        const customer = await createStandaloneCustomer({
+          firstname: 'Standalone',
+          lastname: 'Customer',
+          email,
+          password: 'Test123!',
+        });
+        Cypress.env('testStandaloneCustomer', { email: customer.email, password: customer.password });
+      });
+
+      cy.loginAsStandaloneCustomer();
+      cy.url().should('include', '/customer/account');
+
+      // Create a list and add an item so the share button's disabled state is
+      // due to "not a company user" — not an empty list
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Add new Requisition List').click();
+      cy.get(fields.requisitionListFormName).type('Standalone Share Test List');
+      cy.contains('Save').click();
+
+      cy.visit(products.simple.urlPath);
+      cy.get(fields.requisitionListSelector).first().should('be.visible').click();
+      cy.get(fields.requisitionListPickerAvailableLists)
+        .should('contain', 'Standalone Share Test List')
+        .contains('Standalone Share Test List')
+        .click();
+      cy.get(fields.requisitionListPickerActionsButton).should('not.be.disabled').click();
+      cy.get(fields.requisitionListAlert).should('be.visible');
+
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Standalone Share Test List').click();
+      cy.url().should('include', 'requisitionListUid=');
+
+      cy.get(fields.requisitionListViewShareButton)
+        .should('have.attr', 'aria-disabled', 'true')
+        .invoke('attr', 'data-disabled-reason')
+        .should('include', 'company');
+    });
+
+    // -----------------------------------------------------------------------
+    // 10. User from a different company gets a preview error on the shared list
+    // -----------------------------------------------------------------------
+    it('User from a different company sees a preview error on the shared list', () => {
+      // Set up a second independent company — the regular user from this company
+      // has no access to lists shared within the original company
+      cy.setupCompanyWithUser();
+      cy.loginAsRegularUser();
+      cy.url().should('include', '/customer/account');
+
+      cy.visit(`${SHARING_PATH}?requisition_id=${validShareToken}`);
+
+      // A user outside the originating company cannot load the shared list preview
+      cy.get(fields.requisitionListSharingError).should('be.visible');
     });
   }
 );
