@@ -24,7 +24,7 @@ describe(
      * and the token stored in `validShareToken` for use across all test cases.
      */
     before(() => {
-      cy.setupCompanyWith2Users();
+      cy.setupCompanyWithAdmin();
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
 
