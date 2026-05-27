@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const STORE_CONFIG_QUERY = "\nquery STORE_CONFIG_QUERY {\n  storeConfig {\n    is_requisition_list_active\n    company_enabled\n  }\n}\n";
+export declare const STORE_CONFIG_QUERY = "\nquery STORE_CONFIG_QUERY {\n  storeConfig {\n    is_requisition_list_active\n    company_enabled\n    requisition_list_sharing_enabled\n    requisition_list_share_max_recipients\n    requisition_list_share_storefront_path\n  }\n}\n";
 //# sourceMappingURL=storeConfigQuery.d.ts.map

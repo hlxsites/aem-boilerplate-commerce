@@ -100,6 +100,37 @@ Cypress.Commands.add('setupAndLoginAsUser', () => {
 });
 
 /**
+ * Login as standalone (non-B2B) customer.
+ * Uses credentials stored in Cypress.env by cy.setupStandaloneCustomer().
+ */
+Cypress.Commands.add('loginAsStandaloneCustomer', () => {
+  cy.then(() => {
+    const customer = Cypress.env('testStandaloneCustomer');
+
+    if (!customer?.email || !customer?.password) {
+      throw new Error(
+        'Standalone customer credentials not set. Did you forget to call cy.setupStandaloneCustomer()?',
+      );
+    }
+
+    cy.logToTerminal(`🔐 Logging in as standalone customer: ${customer.email}`);
+    cy.visit('/customer/login');
+    cy.wait(1000);
+
+    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
+      cy.get('input[name="email"]').type(customer.email);
+      cy.wait(1500);
+      cy.get('input[name="password"]').type(customer.password);
+      cy.wait(1500);
+      cy.get('button[type="submit"]').click();
+    });
+
+    cy.wait(8000);
+    cy.logToTerminal('✅ Standalone customer logged in successfully');
+  });
+});
+
+/**
  * Login as restricted company user (for Company Credit tests).
  * Uses credentials stored in Cypress.env during setup.
  */

@@ -3,11 +3,15 @@ import { RequisitionList } from '../data/models/requisitionList';
 export type StoreConfig = {
     is_requisition_list_active?: string;
     company_enabled?: boolean;
+    requisition_list_sharing_enabled?: boolean | string;
+    requisition_list_share_max_recipients?: string | number | null;
+    requisition_list_share_storefront_path?: string | null;
     [key: string]: any;
 };
 type State = {
     authenticated: boolean;
     config: StoreConfig | undefined;
+    isCompanyUser: boolean;
     requisitionLists: RequisitionList[];
     requisitionListsLoading: boolean;
     requisitionListsVersion: number;
