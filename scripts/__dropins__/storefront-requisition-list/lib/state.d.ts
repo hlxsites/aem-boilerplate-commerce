@@ -11,6 +11,7 @@ export type StoreConfig = {
 type State = {
     authenticated: boolean;
     config: StoreConfig | undefined;
+    isCompanyUser: boolean;
     requisitionLists: RequisitionList[];
     requisitionListsLoading: boolean;
     requisitionListsVersion: number;

@@ -63,7 +63,18 @@ declare const _default: {
       "successImport": "Requisition list \"{listName}\" has been added to your account."
     },
     "SharedRequisitionList": {
-      "loading": "Importing requisition list..."
+      "loading": "Loading shared requisition list...",
+      "previewTitle": "Shared Requisition List",
+      "senderLabel": "Shared by",
+      "listNameLabel": "List name",
+      "descriptionLabel": "Description",
+      "itemsCountLabel": "Items",
+      "importButton": "Import List",
+      "importingButton": "Importing...",
+      "errorPreview": "Unable to load the shared requisition list.",
+      "skuHeader": "SKU",
+      "qtyHeader": "Qty",
+      "optionsHeader": "Options"
     },
     "RequisitionListView": {
       "actionDelete": "Delete",
@@ -87,6 +98,7 @@ declare const _default: {
       "actionDeleteList": "Delete List",
       "actionShare": "Share",
       "shareDisabledReason": "You cannot share an empty requisition list.",
+      "shareDisabledNoCompany": "Sharing is available only for company account users.",
       "shareListTitle": "Share Requisition List",
       "deleteListTitle": "Delete Requisition List?",
       "deleteListMessage": "Are you sure you want to delete this requisition list? This action cannot be undone.",
@@ -131,6 +143,7 @@ declare const _default: {
       "loadingUsers": "Loading users...",
       "loadingLink": "Generating share link...",
       "noUsersAvailable": "No company colleagues available to share with.",
+      "usersLoadError": "Unable to load company users. Please try again.",
       "maxRecipientsValidation": "You can select up to {max} recipients.",
       "shareSuccessMessage": "You have shared your list with the below email addresses:"
     },

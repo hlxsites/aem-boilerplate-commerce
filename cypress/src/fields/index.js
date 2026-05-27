@@ -242,6 +242,10 @@ export const productDetailsAlert = ".product-details__alert";
 export const requisitionListSharingError = '.shared-requisition-list__container .dropin-in-line-alert--error';
 export const requisitionListSharingLoading = '.shared-requisition-list__loading';
 export const requisitionListSharingSignInForm = '.commerce-b2b-requisition-list-sharing .auth-sign-in-form';
+export const requisitionListSharingPreview = '.shared-requisition-list__preview';
+export const requisitionListSharingPreviewValue = '.shared-requisition-list__preview-value';
+export const requisitionListSharingItemsTable = '[data-testid="shared-list-items-table"]';
+export const requisitionListSharingImportButton = '[data-testid="import-shared-list-btn"]';
 
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 

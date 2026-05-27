@@ -2,6 +2,7 @@ import { FunctionComponent } from 'preact';
 
 export interface ShareRequisitionListContentProps {
     loadingUsers: boolean;
+    usersErrorMessage: string | null;
     loadingLink: boolean;
     selectedUserValues: string[];
     multiSelectOptions: Array<{
