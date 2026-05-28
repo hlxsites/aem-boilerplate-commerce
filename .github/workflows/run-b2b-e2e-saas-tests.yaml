@@ -27,8 +27,6 @@ jobs:
               - src/tests/b2b/verifyB2BQuickOrder.spec.js
               - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
               - src/tests/b2b/verifyB2BRequisitionLists.spec.js
-          - group: group-c
-            specs:
               - src/tests/b2b/verifyB2BShoppingAssistance.spec.js
           # Purchase Orders isolated in its own group due to long execution
           # time (~16 min). It is fully self-contained (creates and cleans up
