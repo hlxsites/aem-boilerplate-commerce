@@ -35,7 +35,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.url().should("include", "/checkout");
 
     // Reuse the stable checkout pattern used in b2c checkout specs.
-    cy.wait(2000); // Reduced from 5000
+    cy.wait(2000);
     cy.url().should("include", "/checkout");
 
     cy.logToTerminal(`📦 ${phaseLabel}: Filling shipping address`);
@@ -56,14 +56,14 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
     cy.url().should("include", "/checkout");
     
     // Wait for checkout form to fully reinitialize after reload
-    cy.wait(2000); // Reduced from 5000
+    cy.wait(2000);
     cy.get('form[name="selectedShippingAddress"]', { timeout: 12000 })
       .should('be.visible');
     
     // Scroll down to ensure form visibility
     cy.scrollTo(0, 300);
 
-    cy.wait(1000); // Reduced from 3000
+    cy.wait(1000);
     cy.logToTerminal(`📦 ${phaseLabel}: Selecting shipping method (if shown)`);
     cy.get("body").then(($body) => {
       const shippingMethodSelector =
@@ -72,19 +72,19 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
 
       if ($shippingMethods.length > 0) {
         cy.wrap($shippingMethods.first()).check({ force: true });
-        cy.wait(1000); // Reduced from 2000
+        cy.wait(1000);
       } else {
         cy.logToTerminal("ℹ️ Shipping method is not shown, continuing checkout");
       }
     });
 
     cy.logToTerminal(`💰 Selecting payment method: ${checkMoneyOrder.name}`);
-    cy.wait(2000); // Reduced from 5000
+    cy.wait(2000);
     actions.setPaymentMethod(checkMoneyOrder);
 
     cy.logToTerminal("📄 Accepting checkout terms");
     actions.checkTermsAndConditions();
-    cy.wait(2000); // Reduced from 5000
+    cy.wait(2000);
 
     cy.logToTerminal(`🛒 ${phaseLabel}: Placing order...`);
     actions.placeOrder();
@@ -422,7 +422,7 @@ describe("B2B Shopping Assistance", { tags: ["@B2BSaas"] }, () => {
             cy.get(".product-details__buttons__add-to-cart button")
               .should("be.visible")
               .click();
-            cy.wait(1000); // Reduced from 2000
+            cy.wait(1000);
 
             // Step 18: Complete second order in admin session
             cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
