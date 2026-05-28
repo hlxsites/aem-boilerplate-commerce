@@ -1,13 +1,14 @@
 # @dropins/storefront-account
 
-## 3.4.0-alpha-20260519102334
+## 3.4.0-alpha-20260528100139
 
 ### Minor Changes
 
-- 00eaf29: Implement SellerAssistedBuyingActivity container
-- 012a846: Implement SellerAssistedBuyingSettings container
-- 00dde49: Indicate seller-assisted orders in order history
-- fc1252b: Implement cypress coverage for Seller Assisted Buying feature
+- 2ced9f4: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
+- 5cb8528: Implement Seller Assisted Buying functionality
 
 ## 3.3.0
 

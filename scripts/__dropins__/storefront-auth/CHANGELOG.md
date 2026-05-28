@@ -1,16 +1,14 @@
 # @dropins/storefront-auth
 
-## 3.3.0-alpha-20260519102316
+## 3.3.0-alpha-20260528101733
 
 ### Minor Changes
 
-- 7b147c7: Cypress coverage for Seller Assisted Buying functionality
 - 85883d0: Migrate to Node.js 24 LTS
 
   Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
 
-- b0a2eba: Introduce Seller Assisted Buying authentication flow.
-- 366ba28: Add seller-assisted buying consent to a sign-up form
+- fc6bcba: Implement Seller Assisted Buying functionality
 
 ### Patch Changes
 

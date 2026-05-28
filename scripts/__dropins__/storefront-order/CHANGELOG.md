@@ -1,10 +1,14 @@
 # @dropins/storefront-order
 
-## 3.4.0-alpha-20260519102421
+## 3.4.0-alpha-20260528101229
 
 ### Minor Changes
 
-- 6e4bfae: Indicate orders placed during Seller Assisted Buying session
+- d09caca: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
+- 5c64b9d: Indicate orders placed during the Seller Assisted Buying session
 
 ## 3.3.0
 
