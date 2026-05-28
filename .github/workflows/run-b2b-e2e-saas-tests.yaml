@@ -32,7 +32,7 @@ jobs:
           # time (~16 min). It is fully self-contained (creates and cleans up
           # its own roles, users, and approval rules) with no dependencies on
           # other spec files, so it can safely run in parallel.
-          - group: group-d
+          - group: group-c
             specs:
               - src/tests/b2b/verifyPurchaseOrders.spec.js
     steps:
