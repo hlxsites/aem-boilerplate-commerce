@@ -32,7 +32,7 @@
     "@adobe/aem-cli": "^16.19.11",
     "@babel/eslint-parser": "7.29.7",
     "@dropins/build-tools": "1.1.0",
-    "eslint": "10.4.0",
+    "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",
     "husky": "^9.1.7",
