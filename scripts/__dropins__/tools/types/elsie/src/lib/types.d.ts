@@ -6,5 +6,6 @@ export type Container<T, D = {
     initialData?: D;
 }> & {
     getInitialData?: (props: T) => Promise<D>;
+    displayName?: string;
 };
 //# sourceMappingURL=types.d.ts.map

@@ -28,6 +28,7 @@ export declare const definition: {
                 increaseLabel: string;
                 label: string;
                 errorMessage: string;
+                requiredMessage: string;
                 minQuantityMessage: string;
                 maxQuantityMessage: string;
             };
@@ -212,6 +213,7 @@ export declare const definition: {
                 increaseLabel: string;
                 label: string;
                 errorMessage: string;
+                requiredMessage: string;
                 minQuantityMessage: string;
                 maxQuantityMessage: string;
             };
@@ -398,6 +400,7 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
             increaseLabel: string;
             label: string;
             errorMessage: string;
+            requiredMessage: string;
             minQuantityMessage: string;
             maxQuantityMessage: string;
         };

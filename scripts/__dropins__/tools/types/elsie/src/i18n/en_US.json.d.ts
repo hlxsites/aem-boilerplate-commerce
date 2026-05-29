@@ -18,6 +18,7 @@ declare const _default: {
       "increaseLabel": "Increase Quantity",
       "label": "Quantity",
       "errorMessage": "Enter a valid quantity",
+      "requiredMessage": "Quantity is required",
       "minQuantityMessage": "Enter at least {{minQuantity}}",
       "maxQuantityMessage": "Maximum quantity is {{maxQuantity}}"
     },
