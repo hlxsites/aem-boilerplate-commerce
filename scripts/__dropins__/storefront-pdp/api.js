@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{a as i,t as c}from"./chunks/fetchProductData.js";import{c as m,f as C,j as F,h as k,k as R,l as U,i as A,r as E,b as _,d as x,e as Q}from"./chunks/fetchProductData.js";import{PRODUCT_FRAGMENT as p}from"./fragments.js";import"@dropins/tools/event-bus.js";import{g as V,s as I}from"./chunks/getProductConfigurationValues.js";import{i as O,s as S}from"./chunks/isProductConfigurationValid.js";import{g as b}from"./chunks/getFetchedProductData.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
+import{a as i,t as c}from"./chunks/fetchProductData.js";import{c as m,f as C,b as F,d as k,e as R,h as U,i as A,r as E,j as _,k as x,l as Q}from"./chunks/fetchProductData.js";import{PRODUCT_FRAGMENT as p}from"./fragments.js";import"@dropins/tools/event-bus.js";import{g as V,s as I}from"./chunks/getProductConfigurationValues.js";import{i as O,s as S}from"./chunks/isProductConfigurationValid.js";import{g as b}from"./chunks/getFetchedProductData.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";const d=`
 query GET_PRODUCTS_DATA($skus: [String]) {
     products(skus: $skus) {
         ...PRODUCT_FRAGMENT
