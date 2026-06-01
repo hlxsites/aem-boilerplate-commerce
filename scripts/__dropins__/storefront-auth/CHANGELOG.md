@@ -1,14 +1,30 @@
 # @dropins/storefront-auth
 
-## 3.3.0-alpha-20260528101733
+## 4.0.0-beta.3
+
+### Major Changes
+
+- 515ce05: Add support for Remote Shopping Assistance feature that enables store administrators to help customers with purchases. The implementation includes admin session management via JWT token validation, a consent UI component for customer approval, and enhanced cookie security with proper encoding and SameSite protection for all authentication cookies
+
+## 3.3.0-beta.2
+
+### Minor Changes
+
+- 572b81a: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
+## 3.3.0-beta.1
+
+### Minor Changes
+
+- 1703268: Upgraded Elsie package to use the 1.9.0-beta.0 version
+
+## 3.3.0-beta.0
 
 ### Minor Changes
 
 - 85883d0: Migrate to Node.js 24 LTS
 
   Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
-
-- fc6bcba: Implement Seller Assisted Buying functionality
 
 ### Patch Changes
 

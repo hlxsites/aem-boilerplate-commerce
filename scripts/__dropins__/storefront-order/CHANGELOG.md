@@ -1,14 +1,14 @@
 # @dropins/storefront-order
 
-## 3.4.0-alpha-20260528101229
+## 4.0.0-beta.0
+
+### Major Changes
+
+- 6a3e582: Add support for Seller Assisted Buying feature that allows store administrators to place orders on behalf of customers. Orders placed by administrators are marked with a visible "Order placed by an administrator" label on the order details page. The feature also integrates with order comments to track admin actions and provide a history of administrative assistance throughout the order lifecycle.
 
 ### Minor Changes
 
-- d09caca: Migrate to Node.js 24 LTS
-
-  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
-
-- 5c64b9d: Indicate orders placed during the Seller Assisted Buying session
+- d09caca: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
 
 ## 3.3.0
 
