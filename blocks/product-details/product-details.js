@@ -25,17 +25,6 @@ import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttribu
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
-// Order Dropin Components
-import * as orderApi from '@dropins/storefront-order/api.js';
-
-// Payment Services Dropin
-import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
-import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
-import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
-
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 // Libs
 import {
   rootLink,
@@ -48,12 +37,6 @@ import {
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-import '../../scripts/initializers/payment-services.js';
-
-// Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
-
-preloadCheckoutSuccess();
 
 /**
  * Checks if the page has prerendered product JSON-LD data
@@ -112,6 +95,9 @@ export default async function decorate(block) {
   // State to track if we are in update mode
   let isUpdateMode = false;
 
+  // State to track if the current product/variant is out of stock
+  let isOutOfStock = false;
+
   // Layout
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-details__alert"></div>
@@ -131,7 +117,6 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
-            <div class="product-details__buttons__payment-services-apple-pay"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -150,7 +135,6 @@ export default async function decorate(block) {
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
-  const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -192,7 +176,6 @@ export default async function decorate(block) {
     _description,
     _attributes,
     wishlistToggleBtn,
-    applePayButton,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -264,37 +247,6 @@ export default async function decorate(block) {
     wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
-
-    PaymentServices.render(ApplePay, {
-      location: PaymentLocation.PRODUCT_DETAIL,
-      createCart: {
-        getCartItems: () => {
-          const values = events.lastPayload('pdp/values');
-          if (!values) {
-            throw new Error('No products selected.');
-          }
-          return [{
-            sku: values.sku,
-            quantity: values.quantity,
-            selectedOptions: values.optionsUIDs,
-            enteredOptions: values.enteredOptions,
-          }];
-        },
-      },
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: async (localizedError) => {
-        inlineAlert = await UI.render(InLineAlert, {
-          heading: localizedError.name,
-          description: localizedError.message,
-          icon: h(Icon, { source: 'OrderError' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          type: 'error',
-          onDismiss: () => inlineAlert.remove(),
-        })($alert);
-      },
-      hidden: true,
-    })($applePay),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -374,20 +326,24 @@ export default async function decorate(block) {
       } finally {
         // Reset button text using the helper function which respects the current mode
         updateAddToCartButtonText(addToCart, isUpdateMode, labels);
-        // Re-enable button
+        // Re-enable button, unless the current variant is out of stock
         addToCart.setProps((prev) => ({
           ...prev,
-          disabled: false,
+          disabled: isOutOfStock,
         }));
       }
     },
   })($addToCart);
 
   // Lifecycle Events
+  events.on('pdp/data', (data) => {
+    isOutOfStock = data?.inStock === false;
+    addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+  }, { eager: true });
+
   events.on('pdp/valid', (valid) => {
-    // update add to cart button disabled state based on product selection validity
-    addToCart.setProps((prev) => ({ ...prev, disabled: !valid }));
-    applePayButton.setProps((prev) => ({ ...prev, disabled: !valid }));
+    // update add to cart button disabled state based on product selection validity and stock status
+    addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
   }, { eager: true });
 
   // Handle option changes
@@ -459,38 +415,7 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  // Show Apple Pay button if available
-  events.on('payment-services/initialized/product-detail', ({ availablePaymentMethods }) => {
-    if (availablePaymentMethods.includes(PaymentMethodCode.APPLE_PAY)) {
-      applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
-    }
-  }, { eager: true });
-
-  // Handle order placed event
-  events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
-
   return Promise.resolve();
-}
-
-/**
- * Handle order placed event
- * @param {Object} orderData - The order data
- * @param {Object} block - The block
- */
-async function handleOrderPlaced(orderData, block) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(block, { orderData });
 }
 
 async function setJsonLdProduct(product) {
