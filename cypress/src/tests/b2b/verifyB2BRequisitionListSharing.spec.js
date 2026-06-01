@@ -17,18 +17,26 @@ describe(
       cy.get('.share-requisition-list-content').should('not.contain', admin.email);
     };
 
-    /**
-     * Before all sharing tests: sign in as the sender, create a requisition list,
-     * add a product, then click Share to let the dropin generate the token via the UI
-     * (the same way a real user would). The share link is read from the link field
-     * and the token stored in `validShareToken` for use across all test cases.
-     */
-    before(() => {
-      // Clear any session left by previous specs in the same CI job
-      // (before() runs before beforeEach, so cookies are not yet cleared)
+    // Clear browser session before each test so cy.loginAsCompanyAdmin() /
+    // cy.loginAsRegularUser() always land on the login form (not an already-
+    // authenticated account page). Running cleanup here (not in before()) ensures
+    // cookies are always cleared before any login attempt, matching the pattern
+    // used by other B2B specs in this suite.
+    beforeEach(() => {
       cy.clearAllCookies();
       cy.clearLocalStorage();
+    });
 
+    /**
+     * Setup: sign in as the sender, create a requisition list, add a product,
+     * then click Share to let the dropin generate the token via the UI (the same
+     * way a real user would). The share link is read from the link field and the
+     * token stored in `validShareToken` for use across all subsequent test cases.
+     *
+     * Running this as an it() instead of before() ensures beforeEach() clears
+     * any stale session from previous specs before the login is attempted.
+     */
+    it('Setup: create company, build share token for use in subsequent tests', () => {
       cy.setupCompanyWithAdmin();
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');
@@ -71,11 +79,6 @@ describe(
         .then((shareUrl) => {
           validShareToken = new URL(shareUrl).searchParams.get('requisition_id');
         });
-    });
-    // Clear browser session before each test so cy.loginAsCompanyAdmin() / cy.loginAsRegularUser()
-    // always land on the login form (not an already-authenticated account page).
-    beforeEach(() => {
-      cy.clearAllCookies();
     });
     // -----------------------------------------------------------------------
     // 1. Share button is aria-disabled when the list has no items
