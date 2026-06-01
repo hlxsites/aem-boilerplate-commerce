@@ -55,8 +55,6 @@ jobs:
           || github.event.inputs.store == 'default'
         env:
           DA_TOKEN: ${{ secrets.DA_TOKEN }}
-          DA_CLIENT_ID: ${{ secrets.DA_CLIENT_ID }}
-          DA_CLIENT_SECRET: ${{ secrets.DA_CLIENT_SECRET }}
         run: |
           node tools/nav-sync/nav-sync.js \
             "${{ github.event.inputs.site || env.NAV_SITE }}" \

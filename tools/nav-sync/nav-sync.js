@@ -38,11 +38,9 @@
  *     spain my-family --mode publish
  *
  * DA upload (required for preview and publish modes, skipped in local mode):
- *   DA_TOKEN        — Pre-generated IMS Bearer token. Simplest option for
- *                     local runs: copy from an active da.live browser session
- *                     (DevTools → Network → any request → Authorization header).
- *   DA_CLIENT_ID  + DA_CLIENT_SECRET  — IMS OAuth server-to-server credentials.
- *                     Use for automated / CI runs.
+ *   DA_TOKEN  — Bearer token copied from an active da.live browser session
+ *               (DevTools → Network → any request → Authorization header).
+ *               Store it as a GitHub Actions secret for automated runs.
  */
 
 const fs = require('fs');
@@ -205,42 +203,14 @@ function toEdsJson(rows) {
 
 const DA_ADMIN = 'https://admin.da.live';
 const HLX_ADMIN = 'https://admin.hlx.page';
-const IMS_TOKEN_URL = 'https://ims-na1.adobelogin.com/ims/token/v3';
 
 /**
- * Resolves a DA Bearer token from the environment.
- *
- * Priority:
- *   1. DA_TOKEN         — pre-generated token; ideal for local runs.
- *   2. DA_CLIENT_ID + DA_CLIENT_SECRET — IMS server-to-server exchange; ideal for CI.
- *
- * Returns null (without throwing) when no credentials are set so that local
- * runs without a DA account simply skip the upload step.
+ * Returns the DA Bearer token from the DA_TOKEN environment variable.
+ * Returns null when not set so that local runs without credentials
+ * simply skip the upload step.
  */
-async function getToken() {
-  if (process.env.DA_TOKEN) return process.env.DA_TOKEN;
-
-  const clientId = process.env.DA_CLIENT_ID;
-  const clientSecret = process.env.DA_CLIENT_SECRET;
-  if (!clientId || !clientSecret) return null;
-
-  const body = new URLSearchParams({
-    grant_type: 'client_credentials',
-    client_id: clientId,
-    client_secret: clientSecret,
-    scope: 'read_organizations,additional_info.projectedProductContext,AdobeID,openid,aem.frontend.all',
-  });
-
-  const response = await fetch(IMS_TOKEN_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString(),
-  });
-  if (!response.ok) {
-    throw new Error(`IMS token exchange failed: ${response.status} ${response.statusText}`);
-  }
-  const json = await response.json();
-  return json.access_token;
+function getToken() {
+  return process.env.DA_TOKEN || null;
 }
 
 /**
@@ -352,7 +322,7 @@ async function syncStore(pub, storeKey, family, site, mode) {
       const daPath = storeSlug === 'default' ? NAV_SHEET_NAME : `${storeSlug}/${NAV_SHEET_NAME}`;
       await uploadToDA(token, org, repo, daPath, toEdsJson(rows), tag, mode);
     } else {
-      console.warn(`⚠️ ${tag} DA upload skipped — set DA_TOKEN or DA_CLIENT_ID + DA_CLIENT_SECRET to enable`);
+      console.warn(`⚠️ ${tag} DA upload skipped — set DA_TOKEN to enable`);
     }
   }
 
