@@ -37,9 +37,9 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email);
+      cy.get('input[name="email"]').clear().type(testAdmin.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').type(testAdmin.password);
+      cy.get('input[name="password"]').clear().type(testAdmin.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
@@ -69,9 +69,9 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     cy.wait(1000); // Ensure page is ready
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email);
+      cy.get('input[name="email"]').clear().type(testUsers.regular.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.regular.password);
+      cy.get('input[name="password"]').clear().type(testUsers.regular.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
@@ -118,9 +118,9 @@ Cypress.Commands.add('loginAsStandaloneCustomer', () => {
     cy.wait(1000);
 
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(customer.email);
+      cy.get('input[name="email"]').clear().type(customer.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').type(customer.password);
+      cy.get('input[name="password"]').clear().type(customer.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
@@ -149,9 +149,9 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     cy.wait(1000); // Ensure page is ready
     
     cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email);
+      cy.get('input[name="email"]').clear().type(testUsers.restricted.email);
       cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.restricted.password);
+      cy.get('input[name="password"]').clear().type(testUsers.restricted.password);
       cy.wait(1500);
       cy.get('button[type="submit"]').click();
     });
