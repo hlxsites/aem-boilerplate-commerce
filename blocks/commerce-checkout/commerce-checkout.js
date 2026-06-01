@@ -178,7 +178,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
+  const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
 
   // Render the remaining containers
   const [
