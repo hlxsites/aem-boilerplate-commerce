@@ -1,13 +1,16 @@
 # @dropins/storefront-company-management
 
-## 1.3.0-alpha-20260528110825
+## 1.3.0-beta.1
 
 ### Minor Changes
 
-- bdca67b: Implement Company Hierarchy functionality
-- 4f14206: Migrate to Node.js 24 LTS
+- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
 
-  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+## 1.3.0-beta.0
+
+### Minor Changes
+
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
 
 ## 1.2.0
 
