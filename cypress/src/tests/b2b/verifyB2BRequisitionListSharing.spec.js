@@ -24,6 +24,11 @@ describe(
      * and the token stored in `validShareToken` for use across all test cases.
      */
     before(() => {
+      // Clear any session left by previous specs in the same CI job
+      // (before() runs before beforeEach, so cookies are not yet cleared)
+      cy.clearAllCookies();
+      cy.clearLocalStorage();
+
       cy.setupCompanyWithAdmin();
       cy.loginAsCompanyAdmin();
       cy.url().should('include', '/customer/account');

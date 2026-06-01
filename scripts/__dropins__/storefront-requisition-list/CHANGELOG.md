@@ -1,10 +1,10 @@
 # @dropins/storefront-requisition-list
 
-## 1.4.0-alpha-20260526092218
+## 1.4.0-beta.0
 
 ### Minor Changes
 
-- 22f378f: feat: add requisition list sharing feature (USF-3911)
+- f047a2d: feat: add requisition list sharing feature (USF-3911)
 
   Introduces the ability for authenticated company users to share requisition lists with colleagues, either via a generated link or by email. Recipients can preview and import the shared list into their own account.
 
@@ -18,9 +18,7 @@
   - Emit `auth/permissions` in sandbox on login/logout to correctly enable the share button for company users
   - Added `SharedRequisitionList` button in sandbox
 
-- 66b8852: Migrate to Node.js 24 LTS
-
-  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+- 66b8852: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
 
 ## 1.3.0
 

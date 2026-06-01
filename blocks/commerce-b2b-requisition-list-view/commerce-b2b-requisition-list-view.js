@@ -39,7 +39,7 @@ export default async function decorate(block) {
         getProductData,
         enrichConfigurableProducts,
         currentCustomerEmail,
-        routeSharedRequisitionList: (relativeUrl) => `${window.location.origin}${relativeUrl}`,
+        routeSharedRequisitionList: (relativeUrl) => `${window.location.origin}${rootLink(relativeUrl)}`,
       })(block);
     };
 
