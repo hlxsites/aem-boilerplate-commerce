@@ -64,7 +64,9 @@ The `tools/nav-sync/` directory already contains the script in this repository. 
 
 ## Step 2: Configure authentication
 
-The script uses a `DA_TOKEN` Bearer token to upload to da.live.
+The script supports two authentication methods for uploading to da.live.
+
+**Option A — `DA_TOKEN` (simplest for local runs):**
 
 Copy the Bearer token from an active da.live browser session:
 
@@ -78,8 +80,25 @@ DA_TOKEN="eyJhbGci..." node tools/nav-sync/nav-sync.js \
   main--my-repo--my-org.aem.live default my-family
 ```
 
+**Option B — IMS server-to-server credentials (for CI / GitHub Actions):**
+
+Create an OAuth server-to-server credential in the [Adobe Developer Console](https://developer.adobe.com/developer-console/docs/guides/services/services-add-api-oauth-s2s/) and set:
+
+```bash
+export DA_CLIENT_ID="<client-id>"
+export DA_CLIENT_SECRET="<client-secret>"
+```
+
 > **⚠️ da.live permissions**
-> Your Adobe account email must be added to the `/**` path group in the da.live config sheet at `da.live/config#/{org}/{repo}/`.
+> The identity used to upload must be added to the `/**` path group in the da.live config sheet at `da.live/config#/{org}/{repo}/`.
+>
+> - For `DA_TOKEN`: use your Adobe account email.
+> - For IMS server-to-server: use the technical account's IMS **profile email** (not the JWT `user_id`). To find it:
+>
+> ```http
+> GET https://ims-na1.adobelogin.com/ims/profile/v1
+> Authorization: Bearer <token>
+> ```
 
 **Without credentials**, the script still runs. It fetches and flattens the categories and writes local output files, but skips the DA upload. This is equivalent to running with `--mode local` and is useful for inspecting the category tree before committing to a publish.
 
@@ -249,9 +268,10 @@ The workflow at `.github/workflows/sync-nav.yml` runs automatically every day at
 > **💡 When to disable the schedule**
 > Once the navigation is stable and you have customized `nav-dynamic.json` in da.live, **disable the `schedule` trigger** to prevent automated runs from overwriting your edits. Re-enable it or trigger manually whenever taxonomy changes need to be picked up.
 
-**Required repository secret:**
+**Required repository secrets** (at least one set):
 
-- `DA_TOKEN` — Bearer token copied from an active da.live browser session
+- `DA_TOKEN` — pre-generated Bearer token, or
+- `DA_CLIENT_ID` + `DA_CLIENT_SECRET` — IMS server-to-server credentials
 
 **Manual trigger inputs:**
 
@@ -269,6 +289,8 @@ The workflow at `.github/workflows/sync-nav.yml` runs automatically every day at
   if: github.event_name == 'schedule' || github.event.inputs.store == '<store>'
   env:
     DA_TOKEN: ${{ secrets.DA_TOKEN }}
+    DA_CLIENT_ID: ${{ secrets.DA_CLIENT_ID }}
+    DA_CLIENT_SECRET: ${{ secrets.DA_CLIENT_SECRET }}
   run: |
     node tools/nav-sync/nav-sync.js "$NAV_SITE" <store> "$NAV_FAMILY" --mode publish
 ```
@@ -367,7 +389,7 @@ Each run writes two files per store under `tools/nav-sync/<store>/`:
 
 ### DA upload returns 401 or 403
 
-> Your token has expired or the identity lacks permissions. Copy a fresh `DA_TOKEN` from da.live DevTools and verify your Adobe account email is added to the da.live config sheet at `da.live/config#/{org}/{repo}/`.
+> Your token has expired or the identity lacks permissions. For `DA_TOKEN`, copy a fresh token from da.live DevTools. For IMS credentials, verify the technical account email is added to the da.live config sheet at `da.live/config#/{org}/{repo}/`.
 
 ### Navigation doesn't update on the live site
 
