@@ -49,7 +49,9 @@ export default function decorate(block) {
 
   UI.render(Breadcrumbs, {
     categories: [
-      ...ancestors.map((item) => h('a', { href: rootLink(item.url) }, item.label)),
+      ...ancestors.map((item) => (item.url
+        ? h('a', { href: rootLink(item.url) }, item.label)
+        : h('span', null, item.label))),
       h('span', null, leaf.label),
     ],
   })(block);
