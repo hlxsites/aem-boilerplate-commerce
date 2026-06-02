@@ -53,11 +53,10 @@ export default function decorate(block) {
   // clicks so the destination PDP can render the user's actual path.
   const propagatedTrail = [...ancestors, { label: leaf.label, url: currentPath }];
 
-  document.querySelector('main')?.addEventListener('click', (event) => {
+  document.querySelector('main .product-list-page')?.addEventListener('click', (event) => {
     const anchor = event.target.closest('a');
     if (!anchor) return;
     const targetPath = new URL(anchor.href).pathname;
-    if (!targetPath.startsWith('/products/')) return;
     sessionStorage.setItem(
       SESSION_KEY,
       JSON.stringify({ path: targetPath, trail: propagatedTrail }),

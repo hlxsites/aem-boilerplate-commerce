@@ -25,7 +25,7 @@ Every crumb (including `Home`) is provided by the author; the block does not pre
 
 ## Context propagation (PLP → PDP)
 
-When the user clicks a `/products/...` link anywhere under `<main>`, the block writes the full breadcrumb (ancestors + current page) to `sessionStorage` keyed to the destination path. On the PDP, if the stored entry's `path` matches the current pathname, its trail replaces the authored ancestors so the user sees the path they actually took (e.g. `Home / Men / Men's Clothing / Sprite Yoga Strap`). The leaf still comes from the authored HTML.
+When the user clicks any link inside `main .product-list-page`, the block writes the full breadcrumb (ancestors + current page) to `sessionStorage` keyed to the destination path. On the PDP, if the stored entry's `path` matches the current pathname, its trail replaces the authored ancestors so the user sees the path they actually took (e.g. `Home / Men / Men's Clothing / Sprite Yoga Strap`). The leaf still comes from the authored HTML.
 
 ### SessionStorage shape
 
