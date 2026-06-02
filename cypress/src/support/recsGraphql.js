@@ -64,9 +64,9 @@ export function visitPrexPage(key) {
 
 export function waitForRecsCarousel(minProducts = 1) {
   cy.get('.recommendations-product-list__content', { timeout: 60000 })
-    .scrollIntoView()
-    .should('be.visible');
-  cy.get('.recommendations-product-list__content img')
+    .should('be.visible')
+    .scrollIntoView();
+  cy.get('.recommendations-product-list__content img', { timeout: 60000 })
     .should('have.length.at.least', minProducts);
 }
 

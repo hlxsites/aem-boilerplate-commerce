@@ -16,7 +16,8 @@ describe('Verify Product Recommendation dropin display', () => {
     cy.get('.product-details').should('be.visible');
   });
 
-  it('loads rec carousel on tenant-specific PDP draft', { tags: ['@skipSaas', '@skipAco'] }, () => {
+  // Remove @skipPaas once /drafts/decepticons/products/paas/adb125 has a rec block + recId
+  it('loads rec carousel on tenant-specific PDP draft', { tags: ['@skipPaas', '@skipSaas', '@skipAco'] }, () => {
     visitPrexPage('displayPdp');
 
     cy.get('.recommendations-product-list__content').scrollIntoView();
@@ -24,12 +25,18 @@ describe('Verify Product Recommendation dropin display', () => {
   });
 });
 
-describe('Verify Product Recommendation dropin display — ACCS PLP', () => {
-  it('loads rec carousel on ACCS PLP draft', { tags: ['@skipPaas', '@skipAco'] }, () => {
+describe('Verify Product Recommendation dropin display — ACCS', () => {
+  // Remove @skipSaas once saas drafts + recIds exist under /drafts/decepticons/products/saas/
+  it('loads rec carousel on ACCS PLP draft', { tags: ['@skipPaas', '@skipSaas', '@skipAco'] }, () => {
     cy.visit(getPrexPage('displayPlp'));
     cy.get('.recommendations-product-list__content', { timeout: 60000 })
-      .scrollIntoView()
-      .should('be.visible');
+      .should('be.visible')
+      .scrollIntoView();
+    assertImageListDisplay('.recommendations-product-list__content', 1);
+  });
+
+  it('loads rec carousel on ACCS PDP draft', { tags: ['@skipPaas', '@skipSaas', '@skipAco'] }, () => {
+    visitPrexPage('displayPdp');
     assertImageListDisplay('.recommendations-product-list__content', 1);
   });
 });

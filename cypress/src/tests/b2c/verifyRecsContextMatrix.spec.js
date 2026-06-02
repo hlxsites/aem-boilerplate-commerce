@@ -102,8 +102,9 @@ describe('PREX context matrix — non-ACO must omit currentProduct price', () =>
     interceptRecsGraphQL();
   });
 
+  // Remove @skipPaas once /drafts/decepticons/products/paas/adb125 has a rec block + recId
   it('PDP with recid only: no currentProduct in GraphQL (PaaS)', {
-    tags: ['@skipSaas', '@skipAco'],
+    tags: ['@skipPaas', '@skipSaas', '@skipAco'],
   }, () => {
     visitPrexPage('pdpAcdlOnly');
     waitForRecsCarousel();

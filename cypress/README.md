@@ -128,7 +128,11 @@ npm run cypress:aco:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-results-view.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
-| `verifyRecsDisplay` (PLP/PDP) | ACCS, ACO | Remove `@skipSaas` / `@skipAco` when tenant drafts + recIds exist |
+| `verifyRecsDisplay` PaaS PLP | — | Runs on `/drafts/tests/apparel` today |
+| `verifyRecsDisplay` PaaS PDP | PaaS | Remove `@skipPaas` when `…/paas/adb125` has rec block + recId |
+| `verifyRecsDisplay` ACCS PLP/PDP | ACCS | Remove `@skipSaas` when `…/saas/recs-plp` and `…/saas/adb125` exist |
+| `verifyRecsDisplay` ACO PLP/PDP | ACO | Remove `@skipAco` when tenant drafts + recIds exist |
+| `verifyRecsContextMatrix` PaaS PDP | PaaS | Remove `@skipPaas` when `…/paas/adb125` has rec block + recId |
 | `verifyRecsContextMatrix` | ACCS, ACO | Remove skips per scenario when matching da.live page is authored |
 
 ## Metadata/SKUs in Tests
