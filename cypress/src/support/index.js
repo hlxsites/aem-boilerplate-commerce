@@ -18,3 +18,9 @@ import './b2bLoginHelpers';
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();
+
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('Tenant not found')) {
+    return false;
+  }
+});

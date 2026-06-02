@@ -1,5 +1,6 @@
 const { defineConfig } = require('cypress');
 const baseConfig = require('./cypress.base.config');
+const { buildPrexPages } = require('./prexPages.config');
 
 // A private user used with AEM Assets testing suite.
 const AEM_ASSETS_PRIVATE_USER = JSON.parse(
@@ -19,6 +20,9 @@ module.exports = defineConfig({
     productImageName: '/ADB150.jpg',
     productImageNameConfigurable: '/adb124.jpg',
     productWithOptionImageNameConfigurable: '/adb192.jpg',
+
+    // Tenant-specific da.live draft paths — see prexPages.config.js
+    prexPages: buildPrexPages('paas'),
 
     aemAssetsConfig: {
       commerceConfig: {

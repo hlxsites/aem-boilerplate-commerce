@@ -62,9 +62,65 @@ All commands use a base config, defined in `cypress.base.config.js` and extend i
 For various reasons, certain tests fail against certain environments. Eventually these will issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.
 
 - `{ tags: '@skipSaas' }` skips the test when run with `cypress:saas:run`
-- `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`.
+- `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`
+- `{ tags: '@skipAco' }` skips the test when run with `cypress:aco:run`
 
-| Skipped Tests | Backned Env | Notes |
+## Product Recommendations (PREX) E2E tests
+
+Specs: `verifyRecsDisplay.spec.js` (carousel smoke), `verifyRecsContextMatrix.spec.js` (GraphQL wiring).
+
+### Scope — what boilerplate Cypress does NOT cover
+
+Per-operator filter math (STATIC range, GT/LT current, DYNAMIC, PERCENTAGE) and exhaustive rec unit types are **already covered** by:
+
+- Cell integration tests (`RecServiceFilterTests`, `RecPreviewGQLTests`)
+- Studio Playwright (`e2e-qa-aco`, COMOPT-1868)
+
+Boilerplate Cypress validates **storefront wiring only**: block → dropin → GraphQL request shape. One **static** rec unit + one **dynamic** rec unit per tenant is enough — do not duplicate the IT/Studio operator matrix here.
+
+### productContext — where it comes from (verified in codebase)
+
+| Source | Sets `productContext`? | Used by rec block for anchor? |
+| --- | --- | --- |
+| **PDP** (`scripts/initializers/pdp.js`, `acdl: true`) | ✅ sku + pricing | ✅ primary anchor on PDP |
+| PLP, category, search, cart, checkout | ❌ | ❌ — use block `currentsku` / `currentprice` |
+| Cart (`shoppingCartContext`) | ❌ for anchor | ✅ `cartSkus` only (dedup), not sku/price anchor |
+
+Only the PDP dropin publishes `productContext` to ACDL today. Non-PDP pages with a rec block **must** set `currentsku` (and `currentprice` on ACO for dynamic filters) in Document Authoring.
+
+### `prexPages` — tenant-specific da.live drafts
+
+Defined in `prexPages.config.js`, wired per config via `buildPrexPages('paas'|'saas'|'aco')`.
+
+| Key | Block config | Page type | What it tests |
+| --- | --- | --- | --- |
+| `displayPlp` / `displayPdp` | recid (+ optional currentsku) | PLP / PDP | Carousel smoke |
+| `pdpAcdlOnly` | recid only | PDP | ACDL → currentProduct + price (ACO) |
+| `plpStaticSkuOnly` | recid + currentsku | PLP | Static/MLT anchor, no price in GQL |
+| `plpBlockSkuAndPrice` | recid + currentsku + currentprice | PLP | ACO dynamic from block config |
+| `pdpBlockSkuNoPrice` | recid + currentsku on PDP | PDP | #1272 guard — no ACDL price leak |
+| `plpRecidOnly` | recid only | PLP | Optional — unit types without anchor |
+| `cartRecsBlock` | recid + block anchor fields | Cart | Non-PDP block-config path |
+
+Paths under `/drafts/decepticons/products/{paas|saas|aco}/…` except PaaS `displayPlp` / `plpStaticSkuOnly` which use `/drafts/tests/apparel` today.
+
+### Enabling skipped PREX tests
+
+Remove `@skipSaas`, `@skipAco`, or both once the da.live page exists **and** a rec unit is created in that environment's admin:
+
+| Environment | Config | Proxy URL for local `aem up --url` |
+| --- | --- | --- |
+| PaaS | `cypress.paas.config.js` | `main--boilerplate-paas--adobe-commerce.aem.live` |
+| ACCS | `cypress.saas.config.js` | `main--boilerplate-accs--adobe-commerce.aem.live` |
+| ACO | `cypress.aco.config.js` | `b2b--boilerplate-aco-b2b--adobe-commerce.aem.live` |
+
+```bash
+npm run cypress:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
+npm run cypress:saas:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
+npm run cypress:aco:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
+```
+
+| Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |
 | `verifyStoreSwitcher.spec`  | SaaS, PaaS | Story to re-configire multi store <https://jira.corp.adobe.com/browse/USF-2253> |
 | `verifyUserAccount.spec` | SaaS, PaaS | Task <https://jira.corp.adobe.com/browse/USF-2310> |
@@ -72,6 +128,8 @@ For various reasons, certain tests fail against certain environments. Eventually
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-results-view.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
+| `verifyRecsDisplay` (PLP/PDP) | ACCS, ACO | Remove `@skipSaas` / `@skipAco` when tenant drafts + recIds exist |
+| `verifyRecsContextMatrix` | ACCS, ACO | Remove skips per scenario when matching da.live page is authored |
 
 ## Metadata/SKUs in Tests
 
