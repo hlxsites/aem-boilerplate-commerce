@@ -11,7 +11,6 @@ import {
   poRolesConfig,
 } from '../../fixtures';
 import * as selectors from '../../fields';
-import * as fields from '../../fields';
 import * as actions from '../../actions';
 
 describe('B2B Purchase Orders', () => {
@@ -36,32 +35,6 @@ describe('B2B Purchase Orders', () => {
       cy.logToTerminal(
         '========= ⚙️ Test 1: Setup - Creating roles and users =========',
       );
-
-      // Pre-cleanup: Delete any leftover data from previous failed runs
-      cy.logToTerminal('🧹 Pre-cleanup: Removing any leftover test data from previous runs...');
-      
-      const testRoleNames = [
-        poRolesConfig.rulesManager.role_name,
-        poRolesConfig.salesManager.role_name,
-        poRolesConfig.approver.role_name,
-      ];
-
-      const testUserEmails = [
-        poUsers.po_rules_manager.email,
-        poUsers.sales_manager.email,
-        poUsers.approver_manager.email,
-      ];
-
-      cy.wrap(unassignRoles(testUserEmails), { timeout: 60000 })
-        .then(() => {
-          cy.logToTerminal('✅ Pre-cleanup: Roles unassigned (if any existed)');
-          return cy.wrap(deleteCompanyRoles(testRoleNames), { timeout: 60000 });
-        })
-        .then(() => {
-          cy.logToTerminal('✅ Pre-cleanup: Old roles deleted (if any existed)');
-          cy.logToTerminal('⏳ Waiting for cleanup to propagate...');
-          cy.wait(3000);
-        });
 
       const poUsersConfig = [
         {
@@ -575,115 +548,49 @@ describe('B2B Purchase Orders', () => {
         '========= ⚙️ Test 8: Cleanup - Deleting approval rules, users and roles =========',
       );
 
-      // Helper to safely delete customer (continue on failure)
-      const safeDeleteCustomer = (user) => {
-        cy.logToTerminal(`🗑️ Attempting to delete user: ${user.email}...`);
-        
-        return cy.visit(urls.login)
-          .then(() => cy.wait(2000))
-          .then(() => {
-            return cy.get(fields.poLoginForm, { timeout: 10000 })
-              .should('be.visible')
-              .within(() => {
-                cy.get(fields.poEmailInput).clear().type(user.email);
-                cy.wait(1000);
-                cy.get(fields.poPasswordInput).clear().type(user.password);
-                cy.wait(1000);
-                cy.get(fields.poSubmitButton).click();
-              })
-              .then(() => cy.wait(8000))
-              .then(() => {
-                return cy.url({ timeout: 20000 });
-              })
-              .then((url) => {
-                if (url.includes(urls.account)) {
-                  cy.logToTerminal(`✅ Logged in as ${user.email}, deleting...`);
-                  cy.visit('/');
-                  cy.wait(2000);
-                  cy.deleteCustomer();
-                  cy.logToTerminal(`✅ User ${user.email} deleted`);
-                } else {
-                  cy.logToTerminal(`⚠️ Login failed for ${user.email} - may already be deleted`);
-                }
-              })
-              .then(() => {
-                cy.clearCookies();
-                cy.clearLocalStorage();
-                cy.wait(2000);
-              });
-          })
-          .catch((err) => {
-            cy.logToTerminal(`⚠️ Error deleting ${user.email}: ${err.message} - continuing cleanup`);
-            cy.clearCookies();
-            cy.clearLocalStorage();
-            cy.wait(1000);
-          });
-      };
+      // Delete Sales Manager user
+      cy.logToTerminal('🗑️ Deleting Sales Manager user...');
+      actions.login(poUsers.sales_manager, urls);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
-      // Delete users sequentially with error handling
-      cy.wrap(null)
-        .then(() => safeDeleteCustomer(poUsers.sales_manager))
-        .then(() => safeDeleteCustomer(poUsers.approver_manager))
-        .then(() => {
-          // Delete approval rules as PO Rules Manager
-          cy.logToTerminal('🗑️ Attempting to delete approval rules...');
-          
-          return cy.visit(urls.login)
-            .then(() => cy.wait(2000))
-            .then(() => {
-              return cy.get(fields.poLoginForm, { timeout: 10000 })
-                .should('be.visible')
-                .within(() => {
-                  cy.get(fields.poEmailInput).clear().type(poUsers.po_rules_manager.email);
-                  cy.wait(1000);
-                  cy.get(fields.poPasswordInput).clear().type(poUsers.po_rules_manager.password);
-                  cy.wait(1000);
-                  cy.get(fields.poSubmitButton).click();
-                })
-                .then(() => cy.wait(8000))
-                .then(() => cy.url({ timeout: 20000 }))
-                .then((url) => {
-                  if (url.includes(urls.account)) {
-                    cy.logToTerminal('✅ PO Rules Manager logged in');
-                    cy.wait(3000);
+      // Delete Approver Manager user
+      cy.logToTerminal('🗑️ Deleting Approver user...');
+      actions.login(poUsers.approver_manager, urls);
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
-                    cy.visit(urls.approvalRules);
-                    cy.wait(5000);
+      // Delete approval rules as PO Rules Manager
+      cy.logToTerminal('🔐 Login as PO Rules Manager');
+      actions.login(poUsers.po_rules_manager, urls);
 
-                    // Check if approval rules page loaded
-                    return cy.get('body').then(($body) => {
-                      if ($body.text().includes(poLabels.approvalRulesHeader)) {
-                        cy.logToTerminal('🗑️ Deleting approval rules...');
-                        actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
-                        cy.wait(3000);
-                        actions.deleteApprovalRule(poApprovalRules.rule2.name);
-                        cy.wait(3000);
-                        cy.logToTerminal('✅ Approval rules deleted');
-                      } else {
-                        cy.logToTerminal('⚠️ Approval rules not found - may already be deleted');
-                      }
-                    }).then(() => {
-                      // Delete PO Rules Manager user
-                      cy.logToTerminal('🗑️ Deleting PO Rules Manager user...');
-                      cy.visit('/');
-                      cy.wait(2000);
-                      cy.deleteCustomer();
-                      cy.logToTerminal('✅ PO Rules Manager deleted');
-                    });
-                  } else {
-                    cy.logToTerminal('⚠️ PO Rules Manager login failed - may already be deleted');
-                  }
-                });
-            })
-            .catch((err) => {
-              cy.logToTerminal(`⚠️ Error in approval rules cleanup: ${err.message}`);
-            })
-            .then(() => {
-              cy.clearCookies();
-              cy.clearLocalStorage();
-              cy.wait(2000);
-            });
-        });
+      cy.logToTerminal(
+        '⏳ Waiting for session and permissions to initialize...',
+      );
+      cy.wait(3000);
+
+      cy.logToTerminal('📄 Navigating to Approval Rules page...');
+      cy.visit(urls.approvalRules);
+      cy.wait(5000);
+      cy.contains(poLabels.approvalRulesHeader).should('be.visible');
+
+      cy.logToTerminal('🗑️ Deleting first PO approval rule...');
+      actions.deleteApprovalRule(poApprovalRules.rule1Edited.name);
+      cy.wait(3000);
+
+      cy.logToTerminal('🗑️ Deleting second PO approval rule...');
+      actions.deleteApprovalRule(poApprovalRules.rule2.name);
+      cy.wait(3000);
+
+      cy.logToTerminal('✅ All PO approval rules deleted successfully');
+
+      // Delete PO Rules Manager user
+      cy.logToTerminal('🗑️ Deleting PO Rules Manager user...');
+      cy.visit('/');
+      cy.wait(3000);
+      cy.deleteCustomer();
 
       // Delete roles AFTER all users are deleted
       cy.then(() => {
