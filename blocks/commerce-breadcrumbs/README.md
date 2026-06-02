@@ -39,3 +39,7 @@ When the user clicks any link inside `main .product-list-page`, the block writes
   ]
 }
 ```
+
+## Notes
+
+Drop the `commerce-breadcrumbs` block in wherever page you want a breadcrumb. The PLP→PDP trail propagation is the only "smart" commerce feature, and it gracefully degrades to "just render what the author wrote" everywhere else.
