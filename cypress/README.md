@@ -118,7 +118,10 @@ Remove `@skipSaas`, `@skipAco`, or both once the da.live page exists **and** a r
 npm run cypress:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
 npm run cypress:saas:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
 npm run cypress:aco:run -- --spec "src/tests/b2c/verifyRecs*.spec.js"
+npm run cypress:aco:prex:run   # same as CI (run-e2e-tests-aco.yaml)
 ```
+
+CI `run-e2e-tests-aco.yaml` runs **`cypress:aco:prex:run` only** (not the full B2C suite). Full ACO checkout/assets coverage is tracked separately in PR #1246.
 
 | Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |

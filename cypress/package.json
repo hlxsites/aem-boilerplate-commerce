@@ -12,6 +12,7 @@
     "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
     "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
     "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco",
+    "cypress:aco:prex:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco --spec \"src/tests/b2c/verifyRecs*.spec.js\"",
     "lint": "eslint src/"
   },
   "author": "Adobe Commerce",
