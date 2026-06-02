@@ -38,8 +38,13 @@ export default function decorate(block) {
   // instead of whatever the author put in the HTML.
   const raw = sessionStorage.getItem(SESSION_KEY);
   if (raw) {
-    const session = JSON.parse(raw);
-    if (session.path === currentPath) ancestors = session.trail;
+    try {
+      const session = JSON.parse(raw);
+      if (session.path === currentPath) ancestors = session.trail;
+    } catch (error) {
+      sessionStorage.removeItem(SESSION_KEY);
+      throw new Error(`Malformed ${SESSION_KEY} in sessionStorage: ${error.message}`);
+    }
   }
 
   UI.render(Breadcrumbs, {
