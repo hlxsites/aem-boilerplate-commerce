@@ -250,16 +250,13 @@ describe("Seller Assisted Buying", () => {
     // Test OTP requests for customer IDs 1 through 10
     const customerIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     
-    cy.wrap(customerIds).each((customerId) => {
-      cy.log(`\n🔍 Testing customer ID: ${customerId}`);
+    customerIds.forEach((customerId) => {
+      cy.log(`🔍 Testing customer ID: ${customerId}`);
       
-      cy.wrap(null)
-        .then(() => {
-          const otpReason = `test:customer_${customerId}`;
-          cy.log(`📨 Requesting OTP for customer ID ${customerId}`);
-          
-          return requestCustomerOtp(customerId, otpReason);
-        })
+      const otpReason = `test:customer_${customerId}`;
+      cy.log(`📨 Requesting OTP for customer ID ${customerId}`);
+      
+      cy.wrap(null).then(() => requestCustomerOtp(customerId, otpReason))
         .then((otpResponse) => {
           if (otpResponse && otpResponse.otp) {
             cy.log(`✅ Customer ID ${customerId}: SUCCESS - OTP: ${otpResponse.otp}`);
@@ -268,14 +265,11 @@ describe("Seller Assisted Buying", () => {
             cy.log(`❌ Customer ID ${customerId}: FAILED - No OTP received`);
             cy.task("log", `❌ Customer ID ${customerId}: FAILED - Response: ${JSON.stringify(otpResponse)}`);
           }
-        })
-        .catch((error) => {
+        }, (error) => {
           cy.log(`❌ Customer ID ${customerId}: ERROR - ${error.message}`);
           cy.task("log", `❌ Customer ID ${customerId}: ERROR - ${error.message}`);
         });
     });
-    
-    cy.log("✅ TC-01 completed: All OTP requests tested");
   });
   // it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
   //   cy.logToTerminal(
