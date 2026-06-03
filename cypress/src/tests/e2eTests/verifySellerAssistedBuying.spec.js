@@ -18,10 +18,6 @@
 import * as fields from "../../fields";
 import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
-import {
-  findCustomerByEmail,
-  requestCustomerOtp,
-} from "../../support/TBU";
 
 describe("Seller Assisted Buying", () => {
   let testUserEmail;
@@ -231,56 +227,54 @@ describe("Seller Assisted Buying", () => {
 
   /**
    * ==========================================================================
-   * TC-01: Complete Shopping Assistance Flow - Register, Verify, and Modify
+   * TC-01: Register New User
    * ==========================================================================
-   * Steps:
-   * 1. Navigate to registration page
-   * 2. Fill registration form with all required fields
-   * 3. Enable "Allow remote shopping assistance" checkbox
-   * 4. Submit registration (user is auto-logged in after registration)
-   * 5. Navigate to Shopping Assistance settings page
-   * 6. Verify checkbox is checked (from registration)
-   * 7. Uncheck the checkbox
-   * 8. Save changes
-   * 9. Verify changes persisted
+   * This test:
+   * 1. Navigates to registration page
+   * 2. Fills in user registration form
+   * 3. Submits registration
+   * 4. Verifies user is in account dashboard
    */
-  it("TC-01: Test OTP request for customer IDs 1-10", () => {
-    cy.log("========= 🚀 TC-01: Testing OTP Requests =========");
+  it("TC-01: Register new user", () => {
+    cy.log("========= 🚀 TC-01: Register New User =========");
 
-    // Test OTP requests for customer IDs 1 through 10
-    const customerIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    
-    customerIds.forEach((customerId) => {
-      cy.log(`🔍 Testing customer ID: ${customerId}`);
+    // Step 1: Navigate to registration page
+    cy.log("📝 Navigating to registration page");
+    cy.visit("/customer/create");
+    cy.contains("Create account").should("be.visible");
+
+    // Step 2: Fill and submit registration form
+    cy.fixture("userInfo").then(({ sign_up }) => {
+      // Generate unique email
+      const random = Cypress._.random(0, 10000000);
+      testUserEmail = `${random}${sign_up.email}`;
+
+      cy.log(`📧 Creating user: ${testUserEmail}`);
+
+      // Fill in form fields
+      cy.get(fields.authFormUserEmail).eq(1).clear({ force: true });
+      cy.get(fields.authFormUserEmail).eq(1).type(testUserEmail);
+
+      cy.get(fields.authFormUserFirstName).clear();
+      cy.get(fields.authFormUserFirstName).type(sign_up.firstName);
+
+      cy.get(fields.authFormUserLastName).clear();
+      cy.get(fields.authFormUserLastName).type(sign_up.lastName);
+
+      cy.get(fields.authFormUserPassword).eq(1).clear();
+      cy.get(fields.authFormUserPassword).eq(1).type(sign_up.password);
+
+      // Submit registration
+      cy.log("📤 Submitting registration form");
+      actions.createAccount();
+
+      // Step 3: Verify successful registration
+      cy.log("🔍 Verifying successful registration");
+      cy.url({ timeout: 10000 }).should("include", "/customer/account");
+      cy.contains(sign_up.firstName, { timeout: 10000 }).should("be.visible");
       
-      const otpReason = `test:customer_${customerId}`;
-      cy.log(`📨 Requesting OTP for customer ID ${customerId}`);
-      
-      cy.wrap(null).then(() => requestCustomerOtp(customerId, otpReason))
-        .then((otpResponse) => {
-          // Log full response for debugging
-          cy.log(`📋 Full Response for ID ${customerId}: ${JSON.stringify(otpResponse, null, 2)}`);
-          cy.task("log", `\n📋 Customer ID ${customerId} - Full Response:\n${JSON.stringify(otpResponse, null, 2)}\n`);
-          
-          if (otpResponse && otpResponse.otp) {
-            cy.log(`✅ Customer ID ${customerId}: SUCCESS - OTP: ${otpResponse.otp}`);
-            cy.task("log", `✅ Customer ID ${customerId}: OTP = ${otpResponse.otp}`);
-          } else if (otpResponse && otpResponse.error) {
-            cy.log(`❌ Customer ID ${customerId}: ERROR from API - ${otpResponse.message || 'Unknown error'}`);
-            cy.task("log", `❌ Customer ID ${customerId}: ERROR - ${otpResponse.message || JSON.stringify(otpResponse)}`);
-          } else {
-            cy.log(`❌ Customer ID ${customerId}: FAILED - No OTP received`);
-            cy.task("log", `❌ Customer ID ${customerId}: FAILED - Response: ${JSON.stringify(otpResponse)}`);
-          }
-        }, (error) => {
-          // Log detailed error information
-          cy.log(`❌ Customer ID ${customerId}: ERROR - Status: ${error.response?.status}, Message: ${error.message}`);
-          cy.task("log", `\n❌ Customer ID ${customerId} - ERROR Details:\n` +
-            `  Status: ${error.response?.status || 'N/A'}\n` +
-            `  Message: ${error.message}\n` +
-            `  Response Body: ${JSON.stringify(error.response?.data || error.response?.body, null, 2)}\n`
-          );
-        });
+      cy.log("✅ User successfully registered and logged in");
+      cy.log(`✅ Test completed - User: ${testUserEmail}`);
     });
   });
   // it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
