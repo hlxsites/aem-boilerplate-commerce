@@ -531,6 +531,10 @@ async function findCustomerByEmail(customerEmail) {
 async function requestCustomerOtp(customerId, reason = 'test') {
   const client = new ACCSApiClient();
 
+  console.log(`\n🔐 ====== REQUEST CUSTOMER OTP ======`);
+  console.log(`📨 Customer ID: ${customerId} (type: ${typeof customerId})`);
+  console.log(`📝 Reason: ${reason}`);
+  
   safeLog(`📨 Requesting OTP for customer ID: ${customerId} | reason: ${reason}`);
 
   const payload = {
@@ -538,11 +542,26 @@ async function requestCustomerOtp(customerId, reason = 'test') {
     reason,
   };
 
-  const result = await client.post(`/V1/customer/${customerId}/otp`, payload);
-  validateApiResponse(result, 'Customer OTP request');
+  console.log(`📦 OTP Request Payload:`, JSON.stringify(payload, null, 2));
+  
+  try {
+    const result = await client.post(`/V1/customer/${customerId}/otp`, payload);
+    console.log(`📥 OTP Response received:`, JSON.stringify(result, null, 2));
+    
+    validateApiResponse(result, 'Customer OTP request');
 
-  safeLog(`✅ OTP request submitted for customer ID: ${customerId}`);
-  return result;
+    console.log(`✅ OTP request submitted successfully for customer ID: ${customerId}`);
+    safeLog(`✅ OTP request submitted for customer ID: ${customerId}`);
+    
+    return result;
+  } catch (error) {
+    console.error(`❌ OTP Request failed for customer ${customerId}:`, error.message);
+    console.error(`❌ Error details:`, {
+      message: error.message,
+      stack: error.stack
+    });
+    throw error;
+  }
 }
 
 /**

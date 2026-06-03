@@ -29,8 +29,10 @@ class TokenManager {
 
   async getValidToken() {
     if (this.isTokenValid()) {
+      console.log('✅ TokenManager: Using existing valid token');
       return this.token;
     }
+    console.log('🔄 TokenManager: Token expired or missing, generating new token...');
     return await this.generateToken();
   }
 
@@ -39,6 +41,10 @@ class TokenManager {
   }
 
   async generateToken() {
+    console.log('🔑 TokenManager: Generating new access token...');
+    console.log('📋 TokenManager: IMS Client ID:', Cypress.env("IMS_CLIENT_ID"));
+    console.log('📋 TokenManager: IMS Client Secret:', Cypress.env("IMS_CLIENT_SECRET") ? '***' + Cypress.env("IMS_CLIENT_SECRET").slice(-4) : 'MISSING');
+    
     try {
       const response = await httpClient({
         method: 'POST',
@@ -56,8 +62,11 @@ class TokenManager {
 
       this.token = response.data.access_token;
       this.tokenExpiry = Date.now() + (response.data.expires_in * 1000);
+      console.log('✅ TokenManager: Token generated successfully');
+      console.log('⏱️  TokenManager: Token expires in', response.data.expires_in, 'seconds');
       return this.token;
     } catch (error) {
+      console.error('❌ TokenManager: Token generation failed:', error.message);
       safeLog('Token generation failed:', error.message);
       
       // If this is a CORS error, provide helpful message

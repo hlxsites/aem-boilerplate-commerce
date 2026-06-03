@@ -258,16 +258,28 @@ describe("Seller Assisted Buying", () => {
       
       cy.wrap(null).then(() => requestCustomerOtp(customerId, otpReason))
         .then((otpResponse) => {
+          // Log full response for debugging
+          cy.log(`📋 Full Response for ID ${customerId}: ${JSON.stringify(otpResponse, null, 2)}`);
+          cy.task("log", `\n📋 Customer ID ${customerId} - Full Response:\n${JSON.stringify(otpResponse, null, 2)}\n`);
+          
           if (otpResponse && otpResponse.otp) {
             cy.log(`✅ Customer ID ${customerId}: SUCCESS - OTP: ${otpResponse.otp}`);
             cy.task("log", `✅ Customer ID ${customerId}: OTP = ${otpResponse.otp}`);
+          } else if (otpResponse && otpResponse.error) {
+            cy.log(`❌ Customer ID ${customerId}: ERROR from API - ${otpResponse.message || 'Unknown error'}`);
+            cy.task("log", `❌ Customer ID ${customerId}: ERROR - ${otpResponse.message || JSON.stringify(otpResponse)}`);
           } else {
             cy.log(`❌ Customer ID ${customerId}: FAILED - No OTP received`);
             cy.task("log", `❌ Customer ID ${customerId}: FAILED - Response: ${JSON.stringify(otpResponse)}`);
           }
         }, (error) => {
-          cy.log(`❌ Customer ID ${customerId}: ERROR - ${error.message}`);
-          cy.task("log", `❌ Customer ID ${customerId}: ERROR - ${error.message}`);
+          // Log detailed error information
+          cy.log(`❌ Customer ID ${customerId}: ERROR - Status: ${error.response?.status}, Message: ${error.message}`);
+          cy.task("log", `\n❌ Customer ID ${customerId} - ERROR Details:\n` +
+            `  Status: ${error.response?.status || 'N/A'}\n` +
+            `  Message: ${error.message}\n` +
+            `  Response Body: ${JSON.stringify(error.response?.data || error.response?.body, null, 2)}\n`
+          );
         });
     });
   });

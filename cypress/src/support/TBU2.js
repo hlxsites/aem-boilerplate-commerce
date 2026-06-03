@@ -9,7 +9,14 @@ class ACCSApiClient {
   }
 
   async request(method, endpoint, data = null, queryParams = {}) {
+    console.log(`\n🌐 API Request: ${method} ${endpoint}`);
+    console.log(`📍 Base URL: ${this.baseURL}`);
+    if (data) {
+      console.log(`📦 Request Data:`, JSON.stringify(data, null, 2));
+    }
+    
     const accessToken = await this.tokenManager.getValidToken();
+    console.log(`🔑 Access Token: ${accessToken ? accessToken.substring(0, 20) + '...' : 'MISSING'}`);
 
     const headers = {
       'Authorization': `Bearer ${accessToken}`,
@@ -17,6 +24,12 @@ class ACCSApiClient {
       'x-gw-ims-org-id': Cypress.env("IMS_ORG_ID"),
       'Content-Type': 'application/json'
     };
+    
+    console.log(`🔧 Headers:`, {
+      'x-api-key': Cypress.env("IMS_CLIENT_ID"),
+      'x-gw-ims-org-id': Cypress.env("IMS_ORG_ID"),
+      'Authorization': 'Bearer ' + (accessToken ? '***' : 'MISSING')
+    });
 
     // Build URL with query parameters
     let url = `${this.baseURL}${endpoint}`;
@@ -32,6 +45,8 @@ class ACCSApiClient {
       url += `?${searchParams.toString()}`;
     }
 
+    console.log(`🚀 Full Request URL: ${url}`);
+    
     try {
       const response = await httpClient({
         method,
@@ -40,6 +55,9 @@ class ACCSApiClient {
         data,
         validateStatus: status => status < 500
       });
+
+      console.log(`📥 Response Status: ${response.status}`);
+      console.log(`📋 Response Data:`, JSON.stringify(response.data, null, 2));
 
       if (response.status === 429) {
         // Handle rate limiting
@@ -70,6 +88,13 @@ class ACCSApiClient {
 
       return responseData;
     } catch (error) {
+      console.error(`❌ Request Error:`, {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data || error.response?.body
+      });
+      
       this.handleError(error);
 
       // Return consistent error structure
@@ -78,7 +103,8 @@ class ACCSApiClient {
         total_count: 0,
         error: true,
         message: error.message,
-        status: error.response?.status
+        status: error.response?.status,
+        responseData: error.response?.data || error.response?.body
       };
     }
   }
