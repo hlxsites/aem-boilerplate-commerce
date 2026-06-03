@@ -25,4 +25,5 @@ export * from './deviceUtils';
 export * from './get-path-value';
 export * from './get-cookie';
 export * from './get-price-formatter';
+export * from './extension-manager';
 //# sourceMappingURL=index.d.ts.map

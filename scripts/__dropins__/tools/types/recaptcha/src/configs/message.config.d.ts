@@ -12,6 +12,5 @@ export declare const recaptchaMessage: {
     failedGetStorageConfig: string;
     failedExecutionRecaptcha: string;
     failedInitializing: string;
-    mixedTypesWarning: string;
 };
 //# sourceMappingURL=message.config.d.ts.map
