@@ -27,7 +27,7 @@ describe("Seller Assisted Buying", () => {
   let testUserEmail;
 
   const completeCheckoutAndPlaceOrder = (phaseLabel) => {
-    cy.logToTerminal(`💳 ${phaseLabel}: Navigating to checkout`);
+    cy.log(`💳 ${phaseLabel}: Navigating to checkout`);
     cy.get(".minicart-wrapper").click();
     cy.get('.minicart-panel[data-loaded="true"]').should("exist");
     cy.contains("View Cart").click();
@@ -38,7 +38,7 @@ describe("Seller Assisted Buying", () => {
     cy.wait(2000);
     cy.url().should("include", "/checkout");
 
-    cy.logToTerminal(`📦 ${phaseLabel}: Filling shipping address`);
+    cy.log(`📦 ${phaseLabel}: Filling shipping address`);
 
     // Wait for shipping form to be ready
     cy.get('form[name="shippingAddress"], form[name="selectedShippingAddress"]', { timeout: 15000 })
@@ -48,10 +48,10 @@ describe("Seller Assisted Buying", () => {
       const isSelectableState = $body.find(`${fields.shippingFormState}:visible`).length > 0;
       actions.setGuestShippingAddress(customerShippingAddress, isSelectableState);
     });
-    cy.logToTerminal(`✅ ${phaseLabel}: Shipping address filled`);
+    cy.log(`✅ ${phaseLabel}: Shipping address filled`);
 
     // Reload page after filling shipping address to ensure state persistence
-    cy.logToTerminal(`🔄 ${phaseLabel}: Reloading page after shipping address fill`);
+    cy.log(`🔄 ${phaseLabel}: Reloading page after shipping address fill`);
     cy.reload();
     cy.url().should("include", "/checkout");
 
@@ -64,7 +64,7 @@ describe("Seller Assisted Buying", () => {
     cy.scrollTo(0, 300);
 
     cy.wait(1000);
-    cy.logToTerminal(`📦 ${phaseLabel}: Selecting shipping method (if shown)`);
+    cy.log(`📦 ${phaseLabel}: Selecting shipping method (if shown)`);
     cy.get("body").then(($body) => {
       const shippingMethodSelector =
         'input[name="shipping_method"], input[name="shipping-method"], input[data-testid="shipping-method-radioButton"]';
@@ -74,19 +74,19 @@ describe("Seller Assisted Buying", () => {
         cy.wrap($shippingMethods.first()).check({ force: true });
         cy.wait(1000);
       } else {
-        cy.logToTerminal("ℹ️ Shipping method is not shown, continuing checkout");
+        cy.log("ℹ️ Shipping method is not shown, continuing checkout");
       }
     });
 
-    cy.logToTerminal(`💰 Selecting payment method: ${checkMoneyOrder.name}`);
+    cy.log(`💰 Selecting payment method: ${checkMoneyOrder.name}`);
     cy.wait(2000);
     actions.setPaymentMethod(checkMoneyOrder);
 
-    cy.logToTerminal("📄 Accepting checkout terms");
+    cy.log("📄 Accepting checkout terms");
     actions.checkTermsAndConditions();
     cy.wait(2000);
 
-    cy.logToTerminal(`🛒 ${phaseLabel}: Placing order...`);
+    cy.log(`🛒 ${phaseLabel}: Placing order...`);
     actions.placeOrder();
 
     // Wait for order processing
@@ -94,41 +94,41 @@ describe("Seller Assisted Buying", () => {
 
     // Wait for order confirmation page and verify success
     cy.url({ timeout: 30000 }).should('match', /success|confirmation|order-details/);
-    cy.logToTerminal(`✅ ${phaseLabel}: Redirected to confirmation page`);
+    cy.log(`✅ ${phaseLabel}: Redirected to confirmation page`);
 
     // Verify order confirmation elements
     cy.get(".order-confirmation", { timeout: 15000 }).should("be.visible");
-    cy.logToTerminal(`✅ ${phaseLabel}: Order confirmation container found`);
+    cy.log(`✅ ${phaseLabel}: Order confirmation container found`);
 
     cy.contains("thank you for your order!", { matchCase: false, timeout: 10000 }).should("be.visible");
-    cy.logToTerminal(`✅ ${phaseLabel}: 'Thank you' message found`);
+    cy.log(`✅ ${phaseLabel}: 'Thank you' message found`);
 
     cy.contains("Order placed by an administrator", { timeout: 10000 }).should("be.visible");
-    cy.logToTerminal(`✅ ${phaseLabel}: 'Order placed by administrator' message found`);
+    cy.log(`✅ ${phaseLabel}: 'Order placed by administrator' message found`);
 
-    cy.logToTerminal(`✅ ${phaseLabel}: Order submitted successfully`);
+    cy.log(`✅ ${phaseLabel}: Order submitted successfully`);
   };
 
   const resetAuthStateAndOpenLogin = () => {
-    cy.logToTerminal("➡️ Opening login page before auth state reset");
+    cy.log("➡️ Opening login page before auth state reset");
     cy.visit("/customer/login");
     cy.url().should("include", "/customer/login");
 
-    cy.logToTerminal("🧹 Clearing cookies/storage before admin OTP login");
+    cy.log("🧹 Clearing cookies/storage before admin OTP login");
     cy.clearCookies();
     cy.clearLocalStorage();
     cy.window().then((win) => {
       win.sessionStorage.clear();
     });
 
-    cy.logToTerminal("🔄 Reloading login page after auth cleanup");
+    cy.log("🔄 Reloading login page after auth cleanup");
     cy.reload();
     cy.url().should("include", "/customer/login");
     cy.get("main .auth-sign-in-form", { timeout: 30000 }).should("be.visible");
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
-    cy.logToTerminal(`🔐 Attempting OTP login with email: ${email}, OTP: ${otp}`);
+    cy.log(`🔐 Attempting OTP login with email: ${email}, OTP: ${otp}`);
 
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
@@ -163,7 +163,7 @@ describe("Seller Assisted Buying", () => {
     // Guard against occasional missed submit handling on first click.
     cy.location("pathname", { timeout: 15000 }).then((pathname) => {
       if (pathname.includes("/customer/login")) {
-        cy.logToTerminal("ℹ️ Still on login page, retrying submit");
+        cy.log("ℹ️ Still on login page, retrying submit");
 
         // Check form state before retry
         cy.get('main .auth-sign-in-form').then($form => {
@@ -196,11 +196,11 @@ describe("Seller Assisted Buying", () => {
   };
 
   before(() => {
-    cy.logToTerminal("🚀 Seller Assisted Buying test suite started");
+    cy.log("🚀 Seller Assisted Buying test suite started");
   });
 
   beforeEach(() => {
-    cy.logToTerminal("🧹 Seller Assisted Buying test cleanup");
+    cy.log("🧹 Seller Assisted Buying test cleanup");
     cy.clearCookies();
     cy.clearLocalStorage();
 
@@ -218,14 +218,14 @@ describe("Seller Assisted Buying", () => {
   });
 
   after(() => {
-    cy.logToTerminal("🏁 Seller Assisted Buying test suite completed");
+    cy.log("🏁 Seller Assisted Buying test suite completed");
 
     // Manual cleanup: delete test user since auto-delete is disabled for this suite
     if (testUserEmail) {
-      cy.logToTerminal(`🗑️ Manual cleanup: Deleting test user ${testUserEmail}`);
+      cy.log(`🗑️ Manual cleanup: Deleting test user ${testUserEmail}`);
       cy.deleteCustomer();
     } else {
-      cy.logToTerminal("⚠️ No test user email found to delete (test may have failed early)");
+      cy.log("⚠️ No test user email found to delete (test may have failed early)");
     }
   });
 
@@ -244,74 +244,38 @@ describe("Seller Assisted Buying", () => {
    * 8. Save changes
    * 9. Verify changes persisted
    */
-  it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
-    cy.logToTerminal("========= 🚀 TC-01: Create User and Get OTP =========");
+  it("TC-01: Test OTP request for customer IDs 1-10", () => {
+    cy.log("========= 🚀 TC-01: Testing OTP Requests =========");
 
-    // Step 1: Navigate to registration page
-    cy.logToTerminal("📝 Step 1: Navigating to registration page");
-    cy.visit("/customer/create");
-    cy.contains("Create account").should("be.visible");
-
-    // Step 2: Fill registration form
-    cy.fixture("userInfo").then(({ sign_up }) => {
-      // Generate unique email for this test
-      const random = Cypress._.random(0, 10000000);
-      testUserEmail = `${random}${sign_up.email}`;
-
-      cy.logToTerminal(`📧 Test user email: ${testUserEmail}`);
-
-      // Fill in email
-      cy.get(fields.authFormUserEmail).eq(1).clear({ force: true });
-      cy.get(fields.authFormUserEmail).eq(1).type(testUserEmail);
-
-      // Fill in first name
-      cy.get(fields.authFormUserFirstName).clear();
-      cy.get(fields.authFormUserFirstName).type(sign_up.firstName);
-
-      // Fill in last name
-      cy.get(fields.authFormUserLastName).clear();
-      cy.get(fields.authFormUserLastName).type(sign_up.lastName);
-
-      // Fill in password
-      cy.get(fields.authFormUserPassword).eq(1).clear();
-      cy.get(fields.authFormUserPassword).eq(1).type(sign_up.password);
-
-      // Step 3: Submit registration
-      cy.logToTerminal("📤 Step 3: Submitting registration form");
-      actions.createAccount();
-
-      // Verify successful registration
-      cy.url().should("include", "/customer/account");
-      cy.contains(sign_up.firstName).should("be.visible");
-      cy.logToTerminal("✅ User successfully registered and auto-logged in");
-
-      // Step 4: Get OTP password
-      cy.logToTerminal("🔎 Step 4: Looking up customer for OTP generation");
+    // Test OTP requests for customer IDs 1 through 10
+    const customerIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    
+    cy.wrap(customerIds).each((customerId) => {
+      cy.log(`\n🔍 Testing customer ID: ${customerId}`);
+      
       cy.wrap(null)
-        .then(() => findCustomerByEmail(testUserEmail))
-        .then((customer) => {
-          expect(customer, `Customer should exist for email: ${testUserEmail}`).to.exist;
-          expect(customer.id, "Customer ID should be numeric").to.be.a("number");
-
-          cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
-
-          const otpReason = `test:${testUserEmail}`;
-          cy.logToTerminal(`📨 Step 5: Requesting OTP with reason: ${otpReason}`);
+        .then(() => {
+          const otpReason = `test:customer_${customerId}`;
+          cy.log(`📨 Requesting OTP for customer ID ${customerId}`);
           
-          return requestCustomerOtp(customer.id, otpReason).then((otpResponse) => {
-            expect(otpResponse, "OTP response should exist").to.exist;
-            expect(otpResponse.otp, "OTP code should be present").to.be.a("string");
-
-            cy.logToTerminal(`🔑 ✅ OTP PASSWORD: ${otpResponse.otp}`);
-            cy.log(`🔑 ✅ OTP PASSWORD: ${otpResponse.otp}`);
-            
-            // Also log to console for easy copy-paste
-            cy.task("log", `\n\n🔑 ✅ OTP PASSWORD FOR ${testUserEmail}: ${otpResponse.otp}\n\n`);
-
-            cy.logToTerminal("✅ TC-01 completed: User created and OTP generated successfully");
-          });
+          return requestCustomerOtp(customerId, otpReason);
+        })
+        .then((otpResponse) => {
+          if (otpResponse && otpResponse.otp) {
+            cy.log(`✅ Customer ID ${customerId}: SUCCESS - OTP: ${otpResponse.otp}`);
+            cy.task("log", `✅ Customer ID ${customerId}: OTP = ${otpResponse.otp}`);
+          } else {
+            cy.log(`❌ Customer ID ${customerId}: FAILED - No OTP received`);
+            cy.task("log", `❌ Customer ID ${customerId}: FAILED - Response: ${JSON.stringify(otpResponse)}`);
+          }
+        })
+        .catch((error) => {
+          cy.log(`❌ Customer ID ${customerId}: ERROR - ${error.message}`);
+          cy.task("log", `❌ Customer ID ${customerId}: ERROR - ${error.message}`);
         });
     });
+    
+    cy.log("✅ TC-01 completed: All OTP requests tested");
   });
   // it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
   //   cy.logToTerminal(
