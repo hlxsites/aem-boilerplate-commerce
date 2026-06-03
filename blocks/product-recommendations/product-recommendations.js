@@ -95,7 +95,7 @@ export default async function decorate(block) {
   });
 
   // Configuration
-  const { currentsku, recid } = readBlockConfig(block);
+  const { currentsku, currentprice, recid } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -165,11 +165,29 @@ export default async function decorate(block) {
     );
 
     try {
+      const skuFromConfig = !!currentsku;
+      const resolvedSku = currentsku || context.currentSku;
+      const isACO = getConfigValue('adobe-commerce-optimizer') === true
+        || getConfigValue('adobe-commerce-optimizer') === 'true';
+      // Price source must match SKU source: if SKU is pinned via block config,
+      // do not pull price from ACDL context (it would belong to a different product).
+      let resolvedPrice = null;
+      if (isACO) {
+        if (currentprice != null) {
+          resolvedPrice = Number(currentprice);
+        } else if (!skuFromConfig) {
+          resolvedPrice = context.currentProductPrice ?? null;
+        }
+      }
+      const currentProduct = resolvedSku
+        ? { sku: resolvedSku, ...(resolvedPrice != null && { price: resolvedPrice }) }
+        : undefined;
+
       await Promise.all([
         provider.render(ProductList, {
           routeProduct: createProductLink,
           recId: recid,
-          currentSku: currentsku || context.currentSku,
+          currentProduct,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
           slots: {
@@ -279,7 +297,7 @@ export default async function decorate(block) {
 
   function shouldReloadRecommendations(newContext) {
     // Check if significant context changes occurred that warrant reloading recommendations
-    const significantChanges = ['currentSku', 'pageType', 'category'];
+    const significantChanges = ['currentSku', 'currentProductPrice', 'pageType', 'category'];
 
     return significantChanges.some(
       (key) => newContext[key] !== previousContext[key] && newContext[key] !== undefined,
@@ -309,7 +327,14 @@ export default async function decorate(block) {
   }
 
   function handleProductChanges({ productContext }) {
-    updateContext({ currentSku: productContext?.sku });
+    const pricing = productContext?.pricing;
+    const price = pricing
+      ? (pricing.specialPrice ?? pricing.regularPrice)
+      : undefined;
+    updateContext({
+      currentSku: productContext?.sku,
+      currentProductPrice: price,
+    });
   }
 
   function handleCategoryChanges({ categoryContext }) {
