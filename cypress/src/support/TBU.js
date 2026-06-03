@@ -29,7 +29,7 @@
  * - Company credit operations
  */
 
-const ACCSApiClient = require('./accsClient');
+const ACCSApiClient = require('./TBU2');
 
 // ==========================================================================
 // Logging Utilities
