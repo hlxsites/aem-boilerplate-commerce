@@ -29,5 +29,21 @@ afterEach(() => {
     return;
   }
 
+  // Skip automatic customer deletion
+  const currentTestTitle = Cypress.currentTest?.title || '';
+  const currentSuiteName = Cypress.currentTest?.titlePath?.[0] || '';
+
+  const skipDeleteTests = ['Seller Assisted Buying'];
+
+  const shouldSkip = skipDeleteTests.some(
+    (testName) =>
+      currentTestTitle.includes(testName) || currentSuiteName.includes(testName)
+  );
+
+  if (shouldSkip) {
+    cy.log('Skipping automatic customer deletion for B2B Purchase Orders test');
+    return;
+  }
+
   cy.deleteCustomer();
 });
