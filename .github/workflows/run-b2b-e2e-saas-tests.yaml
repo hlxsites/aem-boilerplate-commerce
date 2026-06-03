@@ -1,13 +1,5 @@
 name: Cypress E2E B2B SaaS Tests
-on:
-  push:
-    paths:
-      - 'cypress/src/tests/b2b/**'
-      - 'cypress/cypress.b2b.saas.config.js'
-      - 'cypress/src/support/b2b*.js'
-      - 'cypress/src/fixtures/purchaseOrdersConfig.js'
-      - 'cypress/src/fixtures/company*.js'
-      - 'cypress/src/fixtures/index.js'
+on: push
 jobs:
   cypress-b2b-saas-groups:
     # If you want this job to run on your fork, remove the below "if" line.
