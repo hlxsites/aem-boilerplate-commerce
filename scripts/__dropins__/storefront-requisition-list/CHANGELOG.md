@@ -1,5 +1,20 @@
 # @dropins/storefront-requisition-list
 
+## 1.4.0-beta.1
+
+### Patch Changes
+
+- c809d65: fix: correct isCompanyUser detection for B2C customers (USF-3911)
+
+  The `auth/permissions` listener now checks specifically for `admin: true` or
+  a `Magento_Company::*` key to identify company membership, instead of treating
+  any truthy key beyond `all` as proof. This prevents non-company permissions
+  from being mistaken for company membership.
+
+  Also aligns the `routeSharedRequisitionList` prop parameter name to
+  `relativeUrl` across `RequisitionListHeader` and `RequisitionListView`
+  to match `ShareRequisitionListContent`.
+
 ## 1.4.0-beta.0
 
 ### Minor Changes

@@ -10,7 +10,7 @@ query STORE_CONFIG_QUERY {
     requisition_list_share_storefront_path
   }
 }
-`,T=i=>{const t=i.map(s=>s.message).join(" ");throw Error(t)},A=async()=>{try{const{errors:i,data:t}=await l(M,{cache:"force-cache"});if(i){if(i.some(o=>o.message&&o.message.includes('Cannot query field "is_requisition_list_active"')||o.message.includes('Cannot query field "company_enabled"')))return!1;const n=i.some(o=>o.message.includes('Cannot query field "requisition_list_sharing_enabled"')),e=i.some(o=>o.message.includes('Cannot query field "requisition_list_share_max_recipients"')),u=i.some(o=>o.message.includes('Cannot query field "requisition_list_share_storefront_path"'));return n||e||u?{...t==null?void 0:t.storeConfig,...n?{requisition_list_sharing_enabled:!1}:{},...e?{requisition_list_share_max_recipients:null}:{},...u?{requisition_list_share_storefront_path:null}:{}}:T(i)}return t==null?void 0:t.storeConfig}catch{return{is_requisition_list_active:"0",company_enabled:!1,requisition_list_sharing_enabled:!1,requisition_list_share_max_recipients:null,requisition_list_share_storefront_path:null}}},E=new N({init:async i=>{const t={};c.config||(c.config=await A(),L.emit("requisitionList/initialized",c.config)),E.config.setConfig({...t,...i})},listeners:()=>[L.on("authenticated",i=>{c.authenticated=i,i||(c.isCompanyUser=!1)}),L.on("auth/permissions",i=>{c.isCompanyUser=i!=null&&typeof i=="object"&&Object.entries(i).some(([t,s])=>s===!0&&t!=="all")},{eager:!0})]}),ti=E.config,{setEndpoint:ei,setFetchGraphQlHeader:si,removeFetchGraphQlHeader:ni,setFetchGraphQlHeaders:ri,fetchGraphQl:l,getConfig:oi}=new $().getMethods(),d=`
+`,m=i=>{const t=i.map(s=>s.message).join(" ");throw Error(t)},A=async()=>{try{const{errors:i,data:t}=await l(M,{cache:"force-cache"});if(i){if(i.some(o=>o.message&&o.message.includes('Cannot query field "is_requisition_list_active"')||o.message.includes('Cannot query field "company_enabled"')))return!1;const n=i.some(o=>o.message.includes('Cannot query field "requisition_list_sharing_enabled"')),e=i.some(o=>o.message.includes('Cannot query field "requisition_list_share_max_recipients"')),u=i.some(o=>o.message.includes('Cannot query field "requisition_list_share_storefront_path"'));return n||e||u?{...t==null?void 0:t.storeConfig,...n?{requisition_list_sharing_enabled:!1}:{},...e?{requisition_list_share_max_recipients:null}:{},...u?{requisition_list_share_storefront_path:null}:{}}:m(i)}return t==null?void 0:t.storeConfig}catch{return{is_requisition_list_active:"0",company_enabled:!1,requisition_list_sharing_enabled:!1,requisition_list_share_max_recipients:null,requisition_list_share_storefront_path:null}}},E=new N({init:async i=>{const t={};c.config||(c.config=await A(),L.emit("requisitionList/initialized",c.config)),E.config.setConfig({...t,...i})},listeners:()=>[L.on("authenticated",i=>{c.authenticated=i,i||(c.isCompanyUser=!1)}),L.on("auth/permissions",i=>{c.isCompanyUser=i!=null&&typeof i=="object"&&Object.entries(i).some(([t,s])=>s===!0&&(t==="admin"||t.startsWith("Magento_Company::")))},{eager:!0})]}),ti=E.config,{setEndpoint:ei,setFetchGraphQlHeader:si,removeFetchGraphQlHeader:ni,setFetchGraphQlHeaders:ri,fetchGraphQl:l,getConfig:oi}=new $().getMethods(),d=`
 fragment REQUISITION_LIST_FRAGMENT on RequisitionList {
     uid
     name
@@ -162,7 +162,7 @@ ${d}
   }
 ${d}
 ${g}
-`;function q(i){var t,s;return i?{uid:i.uid,name:i.name,description:i.description,updated_at:i.updated_at,items_count:i.items_count,items:Q((t=i.items)==null?void 0:t.items),page_info:(s=i.items)==null?void 0:s.page_info}:null}function Q(i){return i!=null&&i.length?i.map(t=>{var n,e,u,o;const s={uid:t.uid,sku:(n=t.product)==null?void 0:n.sku,quantity:t.quantity,stock_status:((e=t.product)==null?void 0:e.stock_status)||"IN_STOCK",only_x_left_in_stock:((u=t.product)==null?void 0:u.only_x_left_in_stock)??null,customizable_options:t.customizable_options?t.customizable_options.map(r=>({uid:r.customizable_option_uid,is_required:r.is_required,label:r.label,sort_order:r.sort_order,type:r.type,values:r.values.map(a=>({uid:a.customizable_option_value_uid,label:a.label,price:a.price,value:a.value}))})):[],bundle_options:t.bundle_options||[],configurable_options:t.configurable_options?t.configurable_options.map(r=>({option_uid:r.configurable_product_option_uid,option_label:r.option_label,value_uid:r.configurable_product_option_value_uid,value_label:r.value_label})):[],samples:t.samples?t.samples.map(r=>({url:r.sample_url,sort_order:r.sort_order,title:r.title})):[],gift_card_options:t.gift_card_options||{}};return(o=t.configured_product)!=null&&o.name?{...s,configured_product:t.configured_product}:s}):[]}function f(i){return!i||typeof i!="string"||i.length<2||!/^[A-Za-z0-9+/]+(==|=)?$/.test(i)?!1:i.length%4===0}async function h(i,t){var u,o,r,a;const s=i.page_info;if(!s||s.total_pages<=1||s.current_page>=s.total_pages)return i;const n=String(i.uid);if(!f(n))return i;const e=[...i.items??[]];for(let _=s.current_page+1;_<=s.total_pages;_+=1){const{errors:I,data:m}=await l(U,{variables:{requisitionListUid:n,currentPage:_,pageSize:t}});I&&T(I);const p=(r=(o=(u=m==null?void 0:m.customer)==null?void 0:u.requisition_lists)==null?void 0:o.items)==null?void 0:r[0];if(!p)break;const S=q(p);(a=S==null?void 0:S.items)!=null&&a.length&&e.push(...S.items)}return{...i,items:e,page_info:{current_page:1,total_pages:1,page_size:e.length}}}const ui=async(i,t,s=100)=>{var o,r,a,_,I;const{errors:n,data:e}=await l(y,{variables:{currentPage:i,pageSize:t,listItemsPageSize:s,listItemsCurrentPage:1}});if(n)return T(n);if(!((o=e==null?void 0:e.customer)!=null&&o.requisition_lists))return null;let u=e.customer.requisition_lists.items.map(m=>q(m));return u=await Promise.all(u.map(m=>m==null?Promise.resolve(m):h(m,s))),L.emit("requisitionLists/data",u),{items:u,page_info:(a=(r=e.customer)==null?void 0:r.requisition_lists)==null?void 0:a.page_info,total_count:(I=(_=e.customer)==null?void 0:_.requisition_lists)==null?void 0:I.total_count}},ai=async(i,t,s,n)=>{var a,_,I,m;if(!f(i))return console.error("Invalid requisition list UID format:",i),null;const{errors:e,data:u}=await l(U,{variables:{requisitionListUid:i,currentPage:t,pageSize:s}});if(e)return T(e);if(!((I=(_=(a=u==null?void 0:u.customer)==null?void 0:a.requisition_lists)==null?void 0:_.items)!=null&&I[0]))return null;const o=u.customer.requisition_lists.items[0];let r=q(o);return(m=r==null?void 0:r.items)!=null&&m.length&&n&&(r={...r,items:await n(r.items)}),L.emit("requisitionList/data",r),r},b=`
+`;function q(i){var t,s;return i?{uid:i.uid,name:i.name,description:i.description,updated_at:i.updated_at,items_count:i.items_count,items:h((t=i.items)==null?void 0:t.items),page_info:(s=i.items)==null?void 0:s.page_info}:null}function h(i){return i!=null&&i.length?i.map(t=>{var n,e,u,o;const s={uid:t.uid,sku:(n=t.product)==null?void 0:n.sku,quantity:t.quantity,stock_status:((e=t.product)==null?void 0:e.stock_status)||"IN_STOCK",only_x_left_in_stock:((u=t.product)==null?void 0:u.only_x_left_in_stock)??null,customizable_options:t.customizable_options?t.customizable_options.map(r=>({uid:r.customizable_option_uid,is_required:r.is_required,label:r.label,sort_order:r.sort_order,type:r.type,values:r.values.map(a=>({uid:a.customizable_option_value_uid,label:a.label,price:a.price,value:a.value}))})):[],bundle_options:t.bundle_options||[],configurable_options:t.configurable_options?t.configurable_options.map(r=>({option_uid:r.configurable_product_option_uid,option_label:r.option_label,value_uid:r.configurable_product_option_value_uid,value_label:r.value_label})):[],samples:t.samples?t.samples.map(r=>({url:r.sample_url,sort_order:r.sort_order,title:r.title})):[],gift_card_options:t.gift_card_options||{}};return(o=t.configured_product)!=null&&o.name?{...s,configured_product:t.configured_product}:s}):[]}function f(i){return!i||typeof i!="string"||i.length<2||!/^[A-Za-z0-9+/]+(==|=)?$/.test(i)?!1:i.length%4===0}async function Q(i,t){var u,o,r,a;const s=i.page_info;if(!s||s.total_pages<=1||s.current_page>=s.total_pages)return i;const n=String(i.uid);if(!f(n))return i;const e=[...i.items??[]];for(let _=s.current_page+1;_<=s.total_pages;_+=1){const{errors:I,data:T}=await l(U,{variables:{requisitionListUid:n,currentPage:_,pageSize:t}});I&&m(I);const S=(r=(o=(u=T==null?void 0:T.customer)==null?void 0:u.requisition_lists)==null?void 0:o.items)==null?void 0:r[0];if(!S)break;const p=q(S);(a=p==null?void 0:p.items)!=null&&a.length&&e.push(...p.items)}return{...i,items:e,page_info:{current_page:1,total_pages:1,page_size:e.length}}}const ui=async(i,t,s=100)=>{var o,r,a,_,I;const{errors:n,data:e}=await l(y,{variables:{currentPage:i,pageSize:t,listItemsPageSize:s,listItemsCurrentPage:1}});if(n)return m(n);if(!((o=e==null?void 0:e.customer)!=null&&o.requisition_lists))return null;let u=e.customer.requisition_lists.items.map(T=>q(T));return u=await Promise.all(u.map(T=>T==null?Promise.resolve(T):Q(T,s))),L.emit("requisitionLists/data",u),{items:u,page_info:(a=(r=e.customer)==null?void 0:r.requisition_lists)==null?void 0:a.page_info,total_count:(I=(_=e.customer)==null?void 0:_.requisition_lists)==null?void 0:I.total_count}},ai=async(i,t,s,n)=>{var a,_,I,T;if(!f(i))return console.error("Invalid requisition list UID format:",i),null;const{errors:e,data:u}=await l(U,{variables:{requisitionListUid:i,currentPage:t,pageSize:s}});if(e)return m(e);if(!((I=(_=(a=u==null?void 0:u.customer)==null?void 0:a.requisition_lists)==null?void 0:_.items)!=null&&I[0]))return null;const o=u.customer.requisition_lists.items[0];let r=q(o);return(T=r==null?void 0:r.items)!=null&&T.length&&n&&(r={...r,items:await n(r.items)}),L.emit("requisitionList/data",r),r},b=`
   mutation UPDATE_REQUISITION_LIST_MUTATION(
       $requisitionListUid: ID!,
       $name: String!,
@@ -187,7 +187,7 @@ ${g}
   }
 ${d}
 ${g}
-`,_i=async(i,t,s,n,e,u)=>{var I,m;const{errors:o,data:r}=await l(b,{variables:{requisitionListUid:i,name:t,description:s,pageSize:n,currentPage:e}});if(o)return T(o);if(!((I=r==null?void 0:r.updateRequisitionList)!=null&&I.requisition_list))return null;const a=r.updateRequisitionList.requisition_list;let _=q(a);return(m=_==null?void 0:_.items)!=null&&m.length&&u&&(_={..._,items:await u(_.items)}),L.emit("requisitionList/data",_),_},P=`
+`,_i=async(i,t,s,n,e,u)=>{var I,T;const{errors:o,data:r}=await l(b,{variables:{requisitionListUid:i,name:t,description:s,pageSize:n,currentPage:e}});if(o)return m(o);if(!((I=r==null?void 0:r.updateRequisitionList)!=null&&I.requisition_list))return null;const a=r.updateRequisitionList.requisition_list;let _=q(a);return(T=_==null?void 0:_.items)!=null&&T.length&&u&&(_={..._,items:await u(_.items)}),L.emit("requisitionList/data",_),_},P=`
   mutation DELETE_REQUISITION_LIST_MUTATION(
       $requisitionListUid: ID!,
     ) {
@@ -209,7 +209,7 @@ ${g}
     }
   }
 ${d}
-`,Ii=async i=>l(P,{variables:{requisitionListUid:i}}).then(({errors:t,data:s})=>{var e,u,o,r,a,_;if(!i)return null;if(t)return T(t);if(!((e=s==null?void 0:s.deleteRequisitionList)!=null&&e.requisition_lists))return null;const n=((o=(u=s.deleteRequisitionList.requisition_lists)==null?void 0:u.items)==null?void 0:o.map(I=>q(I)))||[];return L.emit("requisitionLists/data",n),{items:n,page_info:(a=(r=s.deleteRequisitionList)==null?void 0:r.requisition_lists)==null?void 0:a.page_info,status:(_=s.deleteRequisitionList)==null?void 0:_.status}}),v=`
+`,Ii=async i=>l(P,{variables:{requisitionListUid:i}}).then(({errors:t,data:s})=>{var e,u,o,r,a,_;if(!i)return null;if(t)return m(t);if(!((e=s==null?void 0:s.deleteRequisitionList)!=null&&e.requisition_lists))return null;const n=((o=(u=s.deleteRequisitionList.requisition_lists)==null?void 0:u.items)==null?void 0:o.map(I=>q(I)))||[];return L.emit("requisitionLists/data",n),{items:n,page_info:(a=(r=s.deleteRequisitionList)==null?void 0:r.requisition_lists)==null?void 0:a.page_info,status:(_=s.deleteRequisitionList)==null?void 0:_.status}}),v=`
   mutation UPDATE_REQUISITION_LIST_ITEMS_MUTATION(
       $requisitionListUid: ID!, 
       $requisitionListItems: [UpdateRequisitionListItemsInput!]!,
@@ -230,7 +230,7 @@ ${d}
   }
 ${d}
 ${g}
-`,li=async(i,t,s,n,e)=>{var _,I;const{errors:u,data:o}=await l(v,{variables:{requisitionListUid:i,requisitionListItems:t,pageSize:s,currentPage:n}});if(u)return T(u);if(!((_=o==null?void 0:o.updateRequisitionListItems)!=null&&_.requisition_list))return null;const r=o.updateRequisitionListItems.requisition_list;let a=q(r);return(I=a==null?void 0:a.items)!=null&&I.length&&e&&(a={...a,items:await e(a.items)}),L.emit("requisitionList/data",a),a},z=`
+`,li=async(i,t,s,n,e)=>{var _,I;const{errors:u,data:o}=await l(v,{variables:{requisitionListUid:i,requisitionListItems:t,pageSize:s,currentPage:n}});if(u)return m(u);if(!((_=o==null?void 0:o.updateRequisitionListItems)!=null&&_.requisition_list))return null;const r=o.updateRequisitionListItems.requisition_list;let a=q(r);return(I=a==null?void 0:a.items)!=null&&I.length&&e&&(a={...a,items:await e(a.items)}),L.emit("requisitionList/data",a),a},z=`
   mutation DELETE_REQUISITION_LIST_ITEMS_MUTATION(
       $requisitionListUid: ID!, 
       $requisitionListItemUids: [ID!]!,
@@ -251,7 +251,7 @@ ${g}
   }
 ${d}
 ${g}
-`,ci=async(i,t,s,n,e)=>{var _,I;const{errors:u,data:o}=await l(z,{variables:{requisitionListUid:i,requisitionListItemUids:t,pageSize:s,currentPage:n}});if(u)return T(u);if(!((_=o==null?void 0:o.deleteRequisitionListItems)!=null&&_.requisition_list))return null;const r=o.deleteRequisitionListItems.requisition_list;let a=q(r);return(I=a==null?void 0:a.items)!=null&&I.length&&e&&(a={...a,items:await e(a.items)}),L.emit("requisitionList/data",a),a},w=`
+`,ci=async(i,t,s,n,e)=>{var _,I;const{errors:u,data:o}=await l(z,{variables:{requisitionListUid:i,requisitionListItemUids:t,pageSize:s,currentPage:n}});if(u)return m(u);if(!((_=o==null?void 0:o.deleteRequisitionListItems)!=null&&_.requisition_list))return null;const r=o.deleteRequisitionListItems.requisition_list;let a=q(r);return(I=a==null?void 0:a.items)!=null&&I.length&&e&&(a={...a,items:await e(a.items)}),L.emit("requisitionList/data",a),a},w=`
   mutation ADD_REQUISITION_LIST_ITEMS_TO_CART_MUTATION(
       $requisitionListUid: ID!, 
       $requisitionListItemUids: [ID!]!
@@ -281,7 +281,7 @@ ${g}
       }
     }
   }
-`,Ti=async(i,t)=>l(w,{variables:{requisitionListUid:i,requisitionListItemUids:t}}).then(({errors:s,data:n})=>{var e;return s?T(s):(e=n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors)!=null&&e.length?n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors.map(u=>({type:u.type,message:u.message||""})):null}),G=`
+`,mi=async(i,t)=>l(w,{variables:{requisitionListUid:i,requisitionListItemUids:t}}).then(({errors:s,data:n})=>{var e;return s?m(s):(e=n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors)!=null&&e.length?n.addRequisitionListItemsToCart.add_requisition_list_items_to_cart_user_errors.map(u=>({type:u.type,message:u.message||""})):null}),G=`
   mutation MOVE_ITEMS_BETWEEN_REQUISITION_LISTS_MUTATION(
       $sourceRequisitionListUid: ID!,
       $destinationRequisitionListUid: ID!,
@@ -307,7 +307,7 @@ ${g}
   }
 ${d}
 ${g}
-`,mi=async(i,t,s,n,e)=>{const{errors:u,data:o}=await l(G,{variables:{sourceRequisitionListUid:i,destinationRequisitionListUid:t,requisitionListItem:{requisitionListItemUids:s},pageSize:n,currentPage:e}});if(u)return T(u);if(!(o!=null&&o.moveItemsBetweenRequisitionLists))return null;const{source_requisition_list:r,destination_requisition_list:a}=o.moveItemsBetweenRequisitionLists,_=r?q(r):null,I=a?q(a):null;return _&&L.emit("requisitionList/data",_),{sourceList:_,destinationList:I}},D=`
+`,Ti=async(i,t,s,n,e)=>{const{errors:u,data:o}=await l(G,{variables:{sourceRequisitionListUid:i,destinationRequisitionListUid:t,requisitionListItem:{requisitionListItemUids:s},pageSize:n,currentPage:e}});if(u)return m(u);if(!(o!=null&&o.moveItemsBetweenRequisitionLists))return null;const{source_requisition_list:r,destination_requisition_list:a}=o.moveItemsBetweenRequisitionLists,_=r?q(r):null,I=a?q(a):null;return _&&L.emit("requisitionList/data",_),{sourceList:_,destinationList:I}},D=`
   mutation COPY_ITEMS_BETWEEN_REQUISITION_LISTS_MUTATION(
       $sourceRequisitionListUid: ID!,
       $destinationRequisitionListUid: ID!,
@@ -324,7 +324,7 @@ ${g}
     }
   }
 ${d}
-`,qi=async(i,t,s)=>{var o;const{errors:n,data:e}=await l(D,{variables:{sourceRequisitionListUid:i,destinationRequisitionListUid:t,requisitionListItem:{requisitionListItemUids:s}}});return n?T(n):(o=e==null?void 0:e.copyItemsBetweenRequisitionLists)!=null&&o.requisition_list?{destinationList:q(e.copyItemsBetweenRequisitionLists.requisition_list)}:null},C=`
+`,qi=async(i,t,s)=>{var o;const{errors:n,data:e}=await l(D,{variables:{sourceRequisitionListUid:i,destinationRequisitionListUid:t,requisitionListItem:{requisitionListItemUids:s}}});return n?m(n):(o=e==null?void 0:e.copyItemsBetweenRequisitionLists)!=null&&o.requisition_list?{destinationList:q(e.copyItemsBetweenRequisitionLists.requisition_list)}:null},C=`
   query GET_COMPANY_USERS_QUERY(
     $pageSize: Int = 100
     $currentPage: Int = 1
@@ -366,7 +366,7 @@ ${d}
       }
     }
   }
-`,di=async(i,t)=>l(k,{variables:{requisitionListUid:i,customerUids:t}}).then(({errors:s,data:n})=>{var u;if(s)return T(s);const e=n==null?void 0:n.shareRequisitionListByEmail;return((e==null?void 0:e.sent_count)??0)>0?null:(u=e==null?void 0:e.user_errors)!=null&&u.length?e.user_errors.map(o=>({message:o.message,code:o.code})):[{code:"SHARE_FAILED",message:"Unable to share requisition list."}]}),B=`
+`,di=async(i,t)=>l(k,{variables:{requisitionListUid:i,customerUids:t}}).then(({errors:s,data:n})=>{var u;if(s)return m(s);const e=n==null?void 0:n.shareRequisitionListByEmail;return((e==null?void 0:e.sent_count)??0)>0?null:(u=e==null?void 0:e.user_errors)!=null&&u.length?e.user_errors.map(o=>({message:o.message,code:o.code})):[{code:"SHARE_FAILED",message:"Unable to share requisition list."}]}),B=`
   mutation SHARE_REQUISITION_LIST_BY_TOKEN_MUTATION(
     $requisitionListUid: ID!
   ) {
@@ -394,7 +394,7 @@ ${d}
   }
 ${g}
 ${d}
-`,Si=async(i,t,s,n)=>{var a;const{errors:e,data:u}=await l(Y,{variables:{token:i,currentPage:t,pageSize:s}});if(e)return T(e);const o=u==null?void 0:u.sharedRequisitionList;if(!(o!=null&&o.requisition_list))return null;let r=q(o.requisition_list);return r?((a=r.items)!=null&&a.length&&n&&(r={...r,items:await n(r.items)}),{senderName:o.sender_name,requisitionList:r}):null},x=`
+`,pi=async(i,t,s,n)=>{var a;const{errors:e,data:u}=await l(Y,{variables:{token:i,currentPage:t,pageSize:s}});if(e)return m(e);const o=u==null?void 0:u.sharedRequisitionList;if(!(o!=null&&o.requisition_list))return null;let r=q(o.requisition_list);return r?((a=r.items)!=null&&a.length&&n&&(r={...r,items:await n(r.items)}),{senderName:o.sender_name,requisitionList:r}):null},x=`
   mutation IMPORT_SHARED_REQUISITION_LIST_MUTATION($token: String!) {
     importSharedRequisitionList(token: $token) {
       requisition_list {
@@ -407,7 +407,7 @@ ${d}
     }
   }
 ${d}
-`,pi=async i=>{const{errors:t,data:s}=await l(x,{variables:{token:i}});if(t)return T(t);const n=s==null?void 0:s.importSharedRequisitionList;return{requisitionList:n!=null&&n.requisition_list?q(n.requisition_list)??null:null,userErrors:((n==null?void 0:n.user_errors)??[]).map(e=>({message:e.message,code:e.code}))}},H=`
+`,Si=async i=>{const{errors:t,data:s}=await l(x,{variables:{token:i}});if(t)return m(t);const n=s==null?void 0:s.importSharedRequisitionList;return{requisitionList:n!=null&&n.requisition_list?q(n.requisition_list)??null:null,userErrors:((n==null?void 0:n.user_errors)??[]).map(e=>({message:e.message,code:e.code}))}},H=`
   mutation CREATE_REQUISITION_LIST_MUTATION(
       $requisitionListName: String!,
       $requisitionListDescription: String,
@@ -424,7 +424,7 @@ ${d}
     }
   }
 ${d}
-`,Ri=async(i,t)=>l(H,{variables:{requisitionListName:i,requisitionListDescription:t}}).then(({errors:s,data:n})=>{var u;if(s)return T(s);if(!((u=n==null?void 0:n.createRequisitionList)!=null&&u.requisition_list))return null;const e=q(n.createRequisitionList.requisition_list);return L.emit("requisitionList/data",e),e}),V=`
+`,Ri=async(i,t)=>l(H,{variables:{requisitionListName:i,requisitionListDescription:t}}).then(({errors:s,data:n})=>{var u;if(s)return m(s);if(!((u=n==null?void 0:n.createRequisitionList)!=null&&u.requisition_list))return null;const e=q(n.createRequisitionList.requisition_list);return L.emit("requisitionList/data",e),e}),V=`
   mutation ADD_PRODUCTS_TO_REQUISITION_LIST_MUTATION(
       $requisitionListUid: ID!, 
       $requisitionListItems: [RequisitionListItemsInput!]!
@@ -443,5 +443,5 @@ ${d}
   }
 ${g}
 ${d}
-`,Ei=async(i,t)=>{var o;const s=t.map(r=>{const a={sku:r.sku,quantity:r.quantity};return r.parent_sku&&(a.parent_sku=r.parent_sku),r.selected_options&&r.selected_options.length>0&&(a.selected_options=r.selected_options),r.entered_options&&r.entered_options.length>0&&(a.entered_options=r.entered_options),a}),{errors:n,data:e}=await l(V,{variables:{requisitionListUid:i,requisitionListItems:s}});if(n)return T(n);if(!((o=e==null?void 0:e.addProductsToRequisitionList)!=null&&o.requisition_list))return null;const u=q(e.addProductsToRequisitionList.requisition_list);return L.emit("requisitionList/data",u),u};export{ii as a,Ti as addRequisitionListItemsToCart,Z as b,Ri as c,ti as config,qi as copyItemsBetweenRequisitionLists,Ei as d,Ii as deleteRequisitionList,ci as deleteRequisitionListItems,l as fetchGraphQl,X as g,Li as getCompanyUsers,oi as getConfig,ai as getRequisitionList,ui as getRequisitionLists,Si as getSharedRequisitionList,A as getStoreConfig,f as i,pi as importSharedRequisitionList,E as initialize,mi as moveItemsBetweenRequisitionLists,ni as removeFetchGraphQlHeader,c as s,ei as setEndpoint,si as setFetchGraphQlHeader,ri as setFetchGraphQlHeaders,di as shareRequisitionListByEmail,gi as shareRequisitionListByToken,J as u,_i as updateRequisitionList,li as updateRequisitionListItems};
+`,Ei=async(i,t)=>{var o;const s=t.map(r=>{const a={sku:r.sku,quantity:r.quantity};return r.parent_sku&&(a.parent_sku=r.parent_sku),r.selected_options&&r.selected_options.length>0&&(a.selected_options=r.selected_options),r.entered_options&&r.entered_options.length>0&&(a.entered_options=r.entered_options),a}),{errors:n,data:e}=await l(V,{variables:{requisitionListUid:i,requisitionListItems:s}});if(n)return m(n);if(!((o=e==null?void 0:e.addProductsToRequisitionList)!=null&&o.requisition_list))return null;const u=q(e.addProductsToRequisitionList.requisition_list);return L.emit("requisitionList/data",u),u};export{ii as a,mi as addRequisitionListItemsToCart,Z as b,Ri as c,ti as config,qi as copyItemsBetweenRequisitionLists,Ei as d,Ii as deleteRequisitionList,ci as deleteRequisitionListItems,l as fetchGraphQl,X as g,Li as getCompanyUsers,oi as getConfig,ai as getRequisitionList,ui as getRequisitionLists,pi as getSharedRequisitionList,A as getStoreConfig,f as i,Si as importSharedRequisitionList,E as initialize,Ti as moveItemsBetweenRequisitionLists,ni as removeFetchGraphQlHeader,c as s,ei as setEndpoint,si as setFetchGraphQlHeader,ri as setFetchGraphQlHeaders,di as shareRequisitionListByEmail,gi as shareRequisitionListByToken,J as u,_i as updateRequisitionList,li as updateRequisitionListItems};
 //# sourceMappingURL=api.js.map
