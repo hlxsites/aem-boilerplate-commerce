@@ -12,8 +12,8 @@ module.exports = defineConfig({
     ...baseConfig.env,
     graphqlEndPoint: "https://mcstaging.aemshop.net/graphql",
     commerceRestEndPoint: "https://mcstaging.aemshop.net/rest/default",
-    COMMERCE_ADMIN_USERNAME: process.env.COMMERCE_ADMIN_USERNAME,
-    COMMERCE_ADMIN_PASSWORD: process.env.COMMERCE_ADMIN_PASSWORD,
+    COMMERCE_ADMIN_USERNAME: process.env.CYPRESS_COMMERCE_ADMIN_USERNAME,
+    COMMERCE_ADMIN_PASSWORD: process.env.CYPRESS_COMMERCE_ADMIN_PASSWORD,
     giftCardA: "00GO12SK6WF3",
     productUrlWithOptions:
       "/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzI3OS8zOQ%3D%3D",
