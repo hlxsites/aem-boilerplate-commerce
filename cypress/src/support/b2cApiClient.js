@@ -203,7 +203,20 @@ const requestCustomerOtp = (customerId, reason = 'test') => request({
   },
 });
 
+const deleteCustomerByEmail = (customerEmail) => findCustomerByEmail(customerEmail)
+  .then((customer) => {
+    if (!customer) {
+      return null;
+    }
+
+    return request({
+      method: 'DELETE',
+      endpoint: `/V1/customers/${customer.id}`,
+    });
+  });
+
 module.exports = {
+  deleteCustomerByEmail,
   findCustomerByEmail,
   requestCustomerOtp,
 };

@@ -29,19 +29,19 @@ afterEach(() => {
     return;
   }
 
-  // Skip automatic customer deletion
+  // If a suite shares one customer between its two tests - automatic afterEach cleanup should be skipped
   const currentTestTitle = Cypress.currentTest?.title || '';
   const currentSuiteName = Cypress.currentTest?.titlePath?.[0] || '';
 
-  const skipDeleteTests = ['Seller Assisted Buying'];
+  const skipDeleteSuites = ['Seller Assisted Buying'];
 
-  const shouldSkip = skipDeleteTests.some(
-    (testName) =>
-      currentTestTitle.includes(testName) || currentSuiteName.includes(testName)
+  const shouldSkip = skipDeleteSuites.some(
+    (suiteName) =>
+      currentTestTitle.includes(suiteName) || currentSuiteName.includes(suiteName)
   );
 
   if (shouldSkip) {
-    cy.log('Skipping automatic customer deletion for B2B Purchase Orders test');
+    cy.log(`Skipping automatic customer deletion for ${currentSuiteName} suite`);
     return;
   }
 

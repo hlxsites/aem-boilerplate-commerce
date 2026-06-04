@@ -18,7 +18,11 @@
 import * as fields from "../../fields";
 import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
-import { findCustomerByEmail, requestCustomerOtp } from "../../support/b2cApiClient.js";
+import {
+  deleteCustomerByEmail,
+  findCustomerByEmail,
+  requestCustomerOtp,
+} from "../../support/b2cApiClient.js";
 
 describe("Seller Assisted Buying", () => {
   let testUserEmail;
@@ -217,10 +221,10 @@ describe("Seller Assisted Buying", () => {
   after(() => {
     cy.log("🏁 Seller Assisted Buying test suite completed");
 
-    // Manual cleanup: delete test user since auto-delete is disabled for this suite
+    // Delete through Admin REST because browser auth may have been cleared by a failed test.
     if (testUserEmail) {
       cy.log(`🗑️ Manual cleanup: Deleting test user ${testUserEmail}`);
-      cy.deleteCustomer();
+      deleteCustomerByEmail(testUserEmail);
     } else {
       cy.log("⚠️ No test user email found to delete (test may have failed early)");
     }
