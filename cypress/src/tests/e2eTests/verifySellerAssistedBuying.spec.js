@@ -18,7 +18,7 @@
 import * as fields from "../../fields";
 import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
-import { findCustomerByEmail, requestCustomerOtp } from "../../support/commerceAdmin.js";
+import { findCustomerByEmail, requestCustomerOtp } from "../../support/b2cApiClient.js";
 
 describe("Seller Assisted Buying", () => {
   let testUserEmail;

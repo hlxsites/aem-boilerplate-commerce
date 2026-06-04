@@ -1,13 +1,11 @@
+// B2C Admin REST access for both PaaS and SaaS test environments.
 let accessToken;
 let accessTokenExpiresAt;
 
 const getConfig = () => ({
-  // PaaS
-  restUrl: Cypress.env('commerceRestEndPoint')?.replace(/\/+$/, ''),
+  apiEndpoint: Cypress.env('API_ENDPOINT')?.replace(/\/+$/, ''),
   username: Cypress.env('COMMERCE_ADMIN_USERNAME'),
   password: Cypress.env('COMMERCE_ADMIN_PASSWORD'),
-
-  // SaaS
   imsClientId: Cypress.env('IMS_CLIENT_ID'),
   imsClientSecret: Cypress.env('IMS_CLIENT_SECRET'),
   imsOrgId: Cypress.env('IMS_ORG_ID'),
@@ -20,12 +18,15 @@ const getErrorMessage = (body) => (
 );
 
 const getPaasAuth = (config) => {
-  if (!config.restUrl || !config.username || !config.password) {
+  if (!config.apiEndpoint || !config.username || !config.password) {
     throw new Error('Missing Adobe Commerce PaaS Admin credentials in Cypress configuration.');
   }
 
+  const apiUrl = `${config.apiEndpoint}/rest/default`;
+
   if (accessToken) {
     return cy.wrap({
+      apiUrl,
       token: accessToken,
       headers: {},
     }, { log: false });
@@ -33,7 +34,7 @@ const getPaasAuth = (config) => {
 
   return cy.request({
     method: 'POST',
-    url: `${config.restUrl}/V1/integration/admin/token`,
+    url: `${apiUrl}/V1/integration/admin/token`,
     body: {
       username: config.username,
       password: config.password,
@@ -54,6 +55,7 @@ const getPaasAuth = (config) => {
 
     accessToken = body;
     return {
+      apiUrl,
       token: accessToken,
       headers: {},
     };
@@ -61,12 +63,13 @@ const getPaasAuth = (config) => {
 };
 
 const getSaasAuth = (config) => {
-  if (!config.restUrl || !config.imsClientId || !config.imsClientSecret || !config.imsOrgId) {
+  if (!config.apiEndpoint || !config.imsClientId || !config.imsClientSecret || !config.imsOrgId) {
     throw new Error('Missing Adobe Commerce SaaS IMS credentials in Cypress configuration.');
   }
 
   if (accessToken && Date.now() < accessTokenExpiresAt) {
     return cy.wrap({
+      apiUrl: config.apiEndpoint,
       token: accessToken,
       headers: {
         'x-api-key': config.imsClientId,
@@ -111,6 +114,7 @@ const getSaasAuth = (config) => {
     accessTokenExpiresAt = Date.now() + (Math.max(body.expires_in - 60, 0) * 1000);
 
     return {
+      apiUrl: config.apiEndpoint,
       token: accessToken,
       headers: {
         'x-api-key': config.imsClientId,
@@ -121,15 +125,22 @@ const getSaasAuth = (config) => {
 };
 
 const getAuth = (config) => {
-  if (config.username && config.password) {
+  const hasPaasCredentials = config.username && config.password;
+  const hasSaasCredentials = config.imsClientId && config.imsClientSecret && config.imsOrgId;
+
+  if (hasPaasCredentials && hasSaasCredentials) {
+    throw new Error('Both PaaS and SaaS Adobe Commerce credentials are configured in one workflow.');
+  }
+
+  if (hasPaasCredentials) {
     return getPaasAuth(config);
   }
 
-  if (config.imsClientId && config.imsClientSecret && config.imsOrgId) {
+  if (hasSaasCredentials) {
     return getSaasAuth(config);
   }
 
-  throw new Error('Missing config (env) parameters');
+  throw new Error('Missing Adobe Commerce API credentials in Cypress configuration.');
 };
 
 const request = ({
@@ -144,9 +155,9 @@ const request = ({
 
   const config = getConfig();
 
-  return getAuth(config).then(({ token, headers }) => cy.request({
+  return getAuth(config).then(({ apiUrl, token, headers }) => cy.request({
     method,
-    url: `${config.restUrl}${endpoint}`,
+    url: `${apiUrl}${endpoint}`,
     qs: query,
     body,
     headers: {
