@@ -23,6 +23,8 @@ jobs:
           command: npm run cypress:run
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
+          COMMERCE_ADMIN_USERNAME: ${{ secrets.COMMERCE_ADMIN_USERNAME }}
+          COMMERCE_ADMIN_PASSWORD: ${{ secrets.COMMERCE_ADMIN_PASSWORD }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

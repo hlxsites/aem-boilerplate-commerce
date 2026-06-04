@@ -18,6 +18,7 @@
 import * as fields from "../../fields";
 import * as actions from "../../actions";
 import { customerShippingAddress, checkMoneyOrder } from "../../fixtures";
+import { findCustomerByEmail, requestCustomerOtp } from "../../support/commerceAdmin.js";
 
 describe("Seller Assisted Buying", () => {
   let testUserEmail;
@@ -225,341 +226,167 @@ describe("Seller Assisted Buying", () => {
     }
   });
 
-  /**
-   * ==========================================================================
-   * TC-01: Register New User
-   * ==========================================================================
-   * This test:
-   * 1. Navigates to registration page
-   * 2. Fills in user registration form
-   * 3. Submits registration
-   * 4. Verifies user is in account dashboard
-   */
-  it("TC-01: Register new user", () => {
-    cy.log("========= 🚀 TC-01: Register New User =========");
+  it("Complete Shopping Assistance flow - register and modify settings", () => {
+    cy.log("========= Complete Shopping Assistance Flow =========");
 
-    // Step 1: Navigate to registration page
-    cy.log("📝 Navigating to registration page");
+    cy.log("Step 1: Navigating to registration page");
     cy.visit("/customer/create");
     cy.contains("Create account").should("be.visible");
 
-    // Step 2: Fill and submit registration form
     cy.fixture("userInfo").then(({ sign_up }) => {
-      // Generate unique email
       const random = Cypress._.random(0, 10000000);
       testUserEmail = `${random}${sign_up.email}`;
 
-      cy.log(`📧 Creating user: ${testUserEmail}`);
-
-      // Fill in form fields
+      cy.log(`Test user email: ${testUserEmail}`);
       cy.get(fields.authFormUserEmail).eq(1).clear({ force: true });
       cy.get(fields.authFormUserEmail).eq(1).type(testUserEmail);
-
       cy.get(fields.authFormUserFirstName).clear();
       cy.get(fields.authFormUserFirstName).type(sign_up.firstName);
-
       cy.get(fields.authFormUserLastName).clear();
       cy.get(fields.authFormUserLastName).type(sign_up.lastName);
-
       cy.get(fields.authFormUserPassword).eq(1).clear();
       cy.get(fields.authFormUserPassword).eq(1).type(sign_up.password);
 
-      // Submit registration
-      cy.log("📤 Submitting registration form");
-      actions.createAccount();
+      cy.log("Step 3: Enabling Remote Shopping Assistance checkbox");
+      cy.get('[data-testid="remoteShoppingAssistanceConsent"]', {
+        timeout: 30000,
+      }).should("exist");
+      cy.get('[data-testid="remoteShoppingAssistanceConsent"]')
+        .find('input[name="allowRemoteShoppingAssistance"]')
+        .should("exist")
+        .check({ force: true })
+        .should("be.checked");
 
-      // Step 3: Verify successful registration
-      cy.log("🔍 Verifying successful registration");
-      cy.url({ timeout: 10000 }).should("include", "/customer/account");
-      cy.contains(sign_up.firstName, { timeout: 10000 }).should("be.visible");
-      
-      cy.log("✅ User successfully registered and logged in");
-      cy.log(`✅ Test completed - User: ${testUserEmail}`);
+      cy.log("Step 4: Submitting registration form");
+      actions.createAccount();
+      cy.url().should("include", "/customer/account");
+      cy.contains(sign_up.firstName).should("be.visible");
+
+      cy.log("Step 5: Navigating to Seller Assisted Purchasing");
+      cy.visit("/customer/seller-assisted-purchasing");
+      cy.get('[data-testid="dropin-header-container"]')
+        .should("be.visible")
+        .contains("Seller assisted purchasing");
+
+      cy.log("Step 6: Verifying Remote Shopping Assistance checkbox is enabled");
+      cy.get('input[name="allowRemoteShoppingAssistance"]')
+        .should("exist")
+        .then(($checkbox) => {
+          if (!$checkbox.is(":checked")) {
+            cy.wrap($checkbox).check({ force: true });
+          }
+        })
+        .should("be.checked");
+
+      cy.log("Step 7: Disabling Remote Shopping Assistance");
+      cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
+        force: true,
+      });
+      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+        "not.be.checked",
+      );
+
+      cy.log("Step 8: Verifying disabled message appears");
+      cy.contains(
+        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      ).should("be.visible");
+
+      cy.log("Step 9: Re-enabling Remote Shopping Assistance");
+      cy.get('input[name="allowRemoteShoppingAssistance"]').check({
+        force: true,
+      });
+      cy.get('input[name="allowRemoteShoppingAssistance"]').should(
+        "be.checked",
+      );
+
+      cy.log("Step 10: Verifying disabled message is gone");
+      cy.contains(
+        "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
+      ).should("not.exist");
+
+      cy.log("Step 14: Logging out before OTP admin login");
+      cy.reload();
+      cy.visit("/");
+      cy.get(".nav-dropdown-button", { timeout: 60000 })
+        .should("be.visible")
+        .click({ force: true });
+      cy.contains("button", /^logout$/i, { timeout: 60000 })
+        .click({ force: true });
+
+      resetAuthStateAndOpenLogin();
+
+      cy.log("Step 15: Looking up customer for admin OTP login");
+      findCustomerByEmail(testUserEmail).then((customer) => {
+        expect(customer, `Customer should exist for email: ${testUserEmail}`)
+          .to.exist;
+        expect(customer.id, "Customer ID should be numeric").to.be.a("number");
+
+        const otpReasonWithEmail = `test:${testUserEmail}`;
+        cy.log(`Step 16: Requesting OTP with reason: ${otpReasonWithEmail}`);
+
+        return requestCustomerOtp(customer.id, otpReasonWithEmail);
+      }).then((otpResponse) => {
+        expect(otpResponse, "OTP response should exist").to.exist;
+        expect(otpResponse.otp, "OTP code should be present").to.be.a("string");
+
+        cy.log("Step 17: Signing in as admin with OTP password");
+        signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+        cy.url().should("include", "/customer/account");
+
+        cy.log("Step 17.5: Admin adding product for customer");
+        cy.visit("/products/youth-tee/adb150");
+        cy.reload();
+        cy.wait(2000);
+        cy.get(".product-details__buttons__add-to-cart button")
+          .should("be.visible")
+          .click();
+        cy.wait(2000);
+
+        cy.log("Step 18: Completing purchase as admin");
+        completeCheckoutAndPlaceOrder("Admin session order");
+      });
     });
   });
-  // it("TC-01: Complete Shopping Assistance flow - register and modify settings", () => {
-  //   cy.logToTerminal(
-  //     "========= 🚀 TC-01: Complete Shopping Assistance Flow =========",
-  //   );
 
-  //   // Step 1: Navigate to registration page
-  //   cy.logToTerminal("📝 Step 1: Navigating to registration page");
-  //   cy.visit("/customer/create");
-  //   cy.contains("Create account").should("be.visible");
+  it("Verify shopping assistance order appears in activity table", () => {
+    cy.log("========= Verify Shopping Assistance Order =========");
+    expect(testUserEmail, "testUserEmail should be set").to.exist;
 
-  //   // Step 2: Fill registration form using fixture data
-  //   cy.logToTerminal("✍️ Step 2: Filling registration form");
+    findCustomerByEmail(testUserEmail).then((customer) => {
+      expect(customer, `Customer should exist for email: ${testUserEmail}`)
+        .to.exist;
+      expect(customer.id, "Customer ID should be numeric").to.be.a("number");
 
-  //   cy.fixture("userInfo").then(({ sign_up }) => {
-  //     // Generate unique email for this test
-  //     const random = Cypress._.random(0, 10000000);
-  //     testUserEmail = `${random}${sign_up.email}`;
+      const otpReasonVerify = `verify:${testUserEmail}`;
+      cy.log(`Requesting verification OTP with reason: ${otpReasonVerify}`);
+      return requestCustomerOtp(customer.id, otpReasonVerify);
+    }).then((otpResponse) => {
+      expect(otpResponse, "OTP response should exist").to.exist;
+      expect(otpResponse.otp, "OTP code should be present").to.be.a("string");
 
-  //     cy.logToTerminal(`📧 Test user email: ${testUserEmail}`);
+      resetAuthStateAndOpenLogin();
+      signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
+      cy.url().should("include", "/customer/account");
 
-  //     // Fill in email
-  //     cy.get(fields.authFormUserEmail).eq(1).clear({ force: true });
-  //     cy.get(fields.authFormUserEmail).eq(1).type(testUserEmail);
+      cy.visit("/customer/seller-assisted-purchasing");
+      cy.url().should("include", "/customer/seller-assisted-purchasing");
+      cy.get('[data-testid="dropin-header-container"]')
+        .should("be.visible")
+        .contains("Seller assisted purchasing");
 
-  //     // Fill in first name
-  //     cy.get(fields.authFormUserFirstName).clear();
-  //     cy.get(fields.authFormUserFirstName).type(sign_up.firstName);
-
-  //     // Fill in last name
-  //     cy.get(fields.authFormUserLastName).clear();
-  //     cy.get(fields.authFormUserLastName).type(sign_up.lastName);
-
-  //     // Fill in password
-  //     cy.get(fields.authFormUserPassword).eq(1).clear();
-  //     cy.get(fields.authFormUserPassword).eq(1).type(sign_up.password);
-
-  //     // Step 3: Enable Remote Shopping Assistance checkbox
-  //     cy.logToTerminal(
-  //       "✅ Step 3: Enabling Remote Shopping Assistance checkbox",
-  //     );
-
-  //     cy.get('[data-testid="remoteShoppingAssistanceConsent"]', {
-  //       timeout: 30000,
-  //     }).should("exist");
-  //     cy.get('[data-testid="remoteShoppingAssistanceConsent"]')
-  //       .find('input[name="allowRemoteShoppingAssistance"]')
-  //       .should("exist")
-  //       .check({ force: true })
-  //       .should("be.checked");
-  //     cy.logToTerminal("✅ Remote Shopping Assistance checkbox enabled");
-
-  //     // Step 4: Submit registration (user is auto-logged in)
-  //     cy.logToTerminal("📤 Step 4: Submitting registration form");
-  //     actions.createAccount();
-
-  //     // Verify successful registration and auto-login
-  //     cy.logToTerminal(
-  //       "🔍 Step 4.1: Verifying successful registration and auto-login",
-  //     );
-  //     cy.url().should("include", "/customer/account");
-
-  //     // Verify user is logged in
-  //     cy.contains(sign_up.firstName).should("be.visible");
-
-  //     cy.logToTerminal("✅ User successfully registered and auto-logged in");
-
-  //     // Step 5: Navigate to Seller Assisted Purchasing page
-  //     cy.logToTerminal("🔍 Step 5: Navigating to Seller Assisted Purchasing");
-  //     cy.visit("/customer/seller-assisted-purchasing");
-
-  //     // Verify page loaded with correct header
-  //     cy.get('[data-testid="dropin-header-container"]')
-  //       .should("be.visible")
-  //       .contains("Seller assisted purchasing");
-  //     cy.logToTerminal("✅ Seller Assisted Purchasing page loaded");
-
-  //     // Step 6: Verify checkbox exists and is checked
-  //     cy.logToTerminal(
-  //       "✅ Step 6: Verifying Remote Shopping Assistance checkbox is enabled",
-  //     );
-  //     cy.get('input[name="allowRemoteShoppingAssistance"]')
-  //       .should("exist")
-  //       .then(($checkbox) => {
-  //         if (!$checkbox.is(":checked")) {
-  //           cy.logToTerminal(
-  //             "ℹ️ Remote Shopping Assistance checkbox was not checked after registration, enabling it now",
-  //           );
-  //           cy.wrap($checkbox).check({ force: true });
-  //         }
-  //       })
-  //       .should("be.checked");
-
-  //     // Step 7: Uncheck the checkbox
-  //     cy.logToTerminal("⬜ Step 7: Disabling Remote Shopping Assistance");
-  //     cy.get('input[name="allowRemoteShoppingAssistance"]').uncheck({
-  //       force: true,
-  //     });
-  //     cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-  //       "not.be.checked",
-  //     );
-
-  //     // Step 8: Verify disabled message appears
-  //     cy.logToTerminal("🔍 Step 8: Verifying disabled message appears");
-  //     cy.contains(
-  //       "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-  //     ).should("be.visible");
-
-  //     // Step 9: Re-enable the checkbox
-  //     cy.logToTerminal("✅ Step 9: Re-enabling Remote Shopping Assistance");
-  //     cy.get('input[name="allowRemoteShoppingAssistance"]').check({
-  //       force: true,
-  //     });
-  //     cy.get('input[name="allowRemoteShoppingAssistance"]').should(
-  //       "be.checked",
-  //     );
-
-  //     // Step 10: Verify disabled message is gone
-  //     cy.logToTerminal("🔍 Step 10: Verifying disabled message is gone");
-  //     cy.contains(
-  //       "Seller assisted purchasing is currently disabled. New sessions cannot be started.",
-  //     ).should("not.exist");
-
-  //     // Step 11: Product will be added by admin after OTP login
-  //     cy.logToTerminal("ℹ️ Step 11: Skipping product add - will be done by admin");
-
-  //     // Step 14: Logout and move to OTP login flow
-  //     cy.logToTerminal("🔄 Pre-Step 14: Reloading page before logout");
-  //     cy.reload();
-  //     cy.logToTerminal("🚪 Step 14: Logging out before OTP admin login");
-  //     cy.visit("/");
-  //     cy.get(".nav-dropdown-button", { timeout: 60000 })
-  //       .should("be.visible")
-  //       .click({ force: true });
-
-  //     cy.contains("button", /^logout$/i, { timeout: 60000 })
-  //       .click({ force: true });
-
-  //     // Always enforce a clean login state after logout before OTP login flow.
-  //     resetAuthStateAndOpenLogin();
-
-  //     // Step 15: Lookup customer for OTP flow
-  //     cy.logToTerminal("🔎 Step 15: Looking up customer for admin OTP login");
-  //     cy.wrap(null)
-  //       .then(() => findCustomerByEmail(testUserEmail))
-  //       .then((customer) => {
-  //         expect(customer, `Customer should exist for email: ${testUserEmail}`)
-  //           .to.exist;
-  //         expect(customer.id, "Customer ID should be numeric").to.be.a(
-  //           "number",
-  //         );
-
-  //         cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
-
-  //         const otpReasonWithEmail = `test:${testUserEmail}`;
-  //         cy.logToTerminal(
-  //           `📨 Step 16: Requesting OTP with reason: ${otpReasonWithEmail}`,
-  //         );
-  //         return requestCustomerOtp(customer.id, otpReasonWithEmail).then((otpResponse) => {
-  //           expect(otpResponse, "OTP response should exist").to.exist;
-  //           expect(otpResponse.otp, "OTP code should be present").to.be.a(
-  //             "string",
-  //           );
-
-  //           cy.logToTerminal(`🔑 OTP for ${testUserEmail}: ${otpResponse.otp}`);
-  //           cy.log(`OTP for ${testUserEmail}: ${otpResponse.otp}`);
-
-  //           // Step 17: Login as admin using OTP
-  //           cy.logToTerminal("🔐 Step 17: Signing in as admin with OTP password");
-  //           signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
-  //           cy.url().should("include", "/customer/account");
-
-  //           // Step 17.5: Add product as admin for assisted purchase
-  //           cy.logToTerminal("🛒 Step 17.5: Admin adding product for customer");
-  //           cy.visit("/products/youth-tee/adb150");
-  //           cy.reload();
-  //           cy.get(".product-details__buttons__add-to-cart button")
-  //             .should("be.visible")
-  //             .click();
-  //           cy.wait(1000);
-
-  //           // Step 18: Complete second order in admin session
-  //           cy.logToTerminal("🧾 Step 18: Completing second purchase as admin");
-  //           completeCheckoutAndPlaceOrder("Order 2 (admin session)");
-
-  //           cy.logToTerminal(
-  //             "✅ TC-01 Part 1 completed: registration, checkbox checks, OTP admin login, admin purchase",
-  //           );
-
-  //         });
-  //       });
-
-  //     cy.logToTerminal(
-  //       "✅ TC-01 Part 1: Shopping Assistance flow completed successfully",
-  //     );
-  //   });
-  // });
-
-  /**
-   * ==========================================================================
-   * TC-02: Verify Shopping Assistance Order in Activity Table
-   * ==========================================================================
-   * This test runs separately after TC-01 to allow requesting a fresh OTP
-   * for verification, avoiding token expiration issues.
-   */
-  // it("TC-02: Verify shopping assistance order appears in activity table", () => {
-  //   cy.logToTerminal(
-  //     "========= 🚀 TC-02: Verify Shopping Assistance Order ========= 🙈",
-  //   );
-
-  //   // Use testUserEmail from describe() scope set by TC-01
-  //   expect(testUserEmail, 'testUserEmail should be set by TC-01').to.exist;
-  //   cy.logToTerminal(`📧 Using test user email from TC-01: ${testUserEmail}`);
-
-  //   // Step 1: Find customer and request new OTP for verification
-  //   cy.logToTerminal("🔎 Step 1: Looking up customer for verification OTP");
-  //   cy.wrap(null)
-  //     .then(() => findCustomerByEmail(testUserEmail))
-  //     .then((customer) => {
-  //       expect(customer, `Customer should exist for email: ${testUserEmail}`)
-  //         .to.exist;
-  //       expect(customer.id, "Customer ID should be numeric").to.be.a(
-  //         "number",
-  //       );
-
-  //       cy.logToTerminal(`🆔 Found customer ID: ${customer.id}`);
-
-  //       const otpReasonVerify = `verify:${testUserEmail}`;
-  //       cy.logToTerminal(
-  //         `📨 Step 2: Requesting verification OTP with reason: ${otpReasonVerify}`,
-  //       );
-  //       return requestCustomerOtp(customer.id, otpReasonVerify).then((otpResponse) => {
-  //         expect(otpResponse, "OTP response should exist").to.exist;
-  //         expect(otpResponse.otp, "OTP code should be present").to.be.a(
-  //           "string",
-  //         );
-
-  //         cy.logToTerminal(`🔑 Verification OTP for ${testUserEmail}: ${otpResponse.otp}`);
-
-  //         // Step 3: Login with new OTP
-  //         cy.logToTerminal("🔐 Step 3: Signing in with verification OTP");
-  //         resetAuthStateAndOpenLogin();
-  //         signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
-  //         cy.url().should("include", "/customer/account");
-
-  //         // Step 4: Verify order appears in Seller Assisted Purchasing activity table
-  //         cy.logToTerminal("📋 Step 4: Verifying order in Seller Assisted Purchasing");
-  //         cy.visit("/customer/seller-assisted-purchasing");
-  //         cy.logToTerminal("✅ Step 4.1: Page visited");
-
-  //         cy.url().should("include", "/customer/seller-assisted-purchasing");
-  //         cy.logToTerminal("✅ Step 4.2: URL verified");
-
-  //         cy.get('[data-testid="dropin-header-container"]')
-  //           .should("be.visible")
-  //           .contains("Seller assisted purchasing");
-  //         cy.logToTerminal("✅ Step 4.3: Header container found");
-
-  //         // Try to find the table with longer timeout
-  //         cy.get(".account-seller-assisted-buying-activity-table__table", { timeout: 20000 }).should(
-  //           "be.visible",
-  //         );
-  //         cy.logToTerminal("✅ Step 4.4: Activity table found");
-
-  //         cy.contains(
-  //           ".account-seller-assisted-buying-activity-table__table",
-  //           "Order Placed",
-  //           { timeout: 10000 }
-  //         ).should("be.visible");
-  //         cy.logToTerminal("✅ Step 4.5: 'Order Placed' text found in table");
-
-  //         cy.contains(
-  //           ".account-seller-assisted-buying-activity-table__table",
-  //           `email = ${testUserEmail}`,
-  //           { timeout: 10000 }
-  //         ).should("be.visible");
-  //         cy.logToTerminal(`✅ Step 4.6: Email '${testUserEmail}' found in table`);
-
-  //         cy.logToTerminal("✅ Order verified in activity table");
-
-  //         cy.logToTerminal(
-  //           "✅ TC-02 completed: Shopping assistance order verification successful",
-  //         );
-  //       });
-  //     });
-  // });
+      cy.get(".account-seller-assisted-buying-activity-table__table", {
+        timeout: 20000,
+      }).should("be.visible");
+      cy.contains(
+        ".account-seller-assisted-buying-activity-table__table",
+        "Order Placed",
+        { timeout: 10000 },
+      ).should("be.visible");
+      cy.contains(
+        ".account-seller-assisted-buying-activity-table__table",
+        `email = ${testUserEmail}`,
+        { timeout: 10000 },
+      ).should("be.visible");
+    });
+  });
 });
