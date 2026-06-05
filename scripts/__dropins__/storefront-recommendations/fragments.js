@@ -54,7 +54,6 @@ const e=`
     typeId
     unitId
     unitName
-    userError
   }
 
   ${e}
