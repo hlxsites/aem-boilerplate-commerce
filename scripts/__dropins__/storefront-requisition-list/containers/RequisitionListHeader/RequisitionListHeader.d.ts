@@ -13,7 +13,7 @@ export interface RequisitionListHeaderProps {
     }) => void;
     enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>;
     currentCustomerEmail?: string;
-    routeSharedRequisitionList?: (token: string) => string;
+    routeSharedRequisitionList?: (relativeUrl: string) => string;
 }
 export declare const RequisitionListHeader: Container<RequisitionListHeaderProps>;
 //# sourceMappingURL=RequisitionListHeader.d.ts.map
