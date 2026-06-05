@@ -1,4 +1,62 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{P as T,R as m}from"./api.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/lib.js";import"@dropins/tools/fetch-graphql.js";export{T as PRODUCTS_VIEW_FRAGMENT,m as RECOMMENDATION_UNIT_FRAGMENT};
+const e=`
+  fragment PRODUCTS_VIEW_FRAGMENT on ProductView {
+    __typename
+    name
+    sku
+    queryType
+    visibility
+    inStock
+    images {
+      url
+    }
+    urlKey
+    ... on SimpleProductView {
+      price {
+        final {
+          amount {
+            currency
+            value
+          }
+        }
+      }
+    }
+    ... on ComplexProductView {
+      priceRange {
+        maximum {
+          final {
+            amount {
+              currency
+              value
+            }
+          }
+        }
+        minimum {
+          final {
+            amount {
+              currency
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`,n=`
+  fragment RECOMMENDATION_UNIT_FRAGMENT on RecommendationUnit {
+    displayOrder
+    productsView {
+      ...PRODUCTS_VIEW_FRAGMENT
+    }
+    storefrontLabel
+    totalProducts
+    typeId
+    unitId
+    unitName
+    userError
+  }
+
+  ${e}
+`;export{e as PRODUCTS_VIEW_FRAGMENT,n as RECOMMENDATION_UNIT_FRAGMENT};
 //# sourceMappingURL=fragments.js.map
