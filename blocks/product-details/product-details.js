@@ -38,6 +38,12 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
+// AEM
+import { readBlockConfig } from '../../scripts/aem.js';
+
+// Extensions
+import { getExtensionManager } from './extension-manager.js';
+
 /**
  * Checks if the page has prerendered product JSON-LD data
  * @returns {boolean} True if product JSON-LD exists and contains @type=Product
@@ -82,6 +88,9 @@ function formatNumericAttributeValue(value) {
 }
 
 export default async function decorate(block) {
+  const config = readBlockConfig(block);
+  const template = config.template?.toString().trim().toLowerCase() || null;
+
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
@@ -126,6 +135,9 @@ export default async function decorate(block) {
   `);
 
   const $alert = fragment.querySelector('.product-details__alert');
+  const $wrapper = fragment.querySelector('.product-details__wrapper');
+  const $leftColumn = fragment.querySelector('.product-details__left-column');
+  const $rightColumn = fragment.querySelector('.product-details__right-column');
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
@@ -140,6 +152,30 @@ export default async function decorate(block) {
   const $attributes = fragment.querySelector('.product-details__attributes');
 
   block.replaceChildren(fragment);
+
+  const extensionManager = await getExtensionManager();
+  await extensionManager.executeHook('pdp/layout', {
+    block,
+    template,
+    wrapper: $wrapper,
+    leftColumn: $leftColumn,
+    rightColumn: $rightColumn,
+    elements: {
+      alert: $alert,
+      gallery: $gallery,
+      galleryMobile: $galleryMobile,
+      header: $header,
+      price: $price,
+      shortDescription: $shortDescription,
+      giftCardOptions: $giftCardOptions,
+      options: $options,
+      quantity: $quantity,
+      addToCart: $addToCart,
+      wishlistToggle: $wishlistToggleBtn,
+      description: $description,
+      attributes: $attributes,
+    },
+  });
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
