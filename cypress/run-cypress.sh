@@ -17,7 +17,8 @@ show_menu() {
     echo -e "${GREEN}1)${NC} B2C PaaS Configuration (localhost + cypress:open)"
     echo -e "${GREEN}2)${NC} B2C SaaS Configuration (localhost + cypress:saas:open)"
     echo -e "${GREEN}3)${NC} B2B SaaS Configuration (localhost + cypress:b2b:saas:open)"
-    echo -e "${RED}4)${NC} Exit"
+    echo -e "${GREEN}4)${NC} B2C ACO Configuration (localhost + cypress:aco:open)"
+    echo -e "${RED}5)${NC} Exit"
     echo ""
 }
 
@@ -94,11 +95,30 @@ run_configuration() {
             echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
             ;;
         4)
+            echo -e "${YELLOW}Starting AEM localhost with ACO B2C configuration...${NC}"
+            echo -e "${BLUE}URL: https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live${NC}"
+
+            cd "$ROOT_DIR" && npx aem up --url https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live &
+            AEM_PID=$!
+
+            echo -e "${GREEN}AEM localhost server started (PID: $AEM_PID)${NC}"
+            echo -e "${YELLOW}Waiting a moment for server to initialize...${NC}"
+            sleep 3
+
+            cd "$ROOT_DIR/cypress"
+            echo -e "${YELLOW}Opening Cypress with ACO configuration...${NC}"
+            npm run cypress:aco:open
+
+            echo ""
+            echo -e "${BLUE}Note: AEM localhost server (PID: $AEM_PID) is still running in the background.${NC}"
+            echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
+            ;;
+        5)
             echo -e "${YELLOW}Exiting...${NC}"
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid option. Please select 1, 2, 3, or 4.${NC}"
+            echo -e "${RED}Invalid option. Please select 1, 2, 3, 4, or 5.${NC}"
             return 1
             ;;
     esac
@@ -136,7 +156,7 @@ main() {
 
     while true; do
         show_menu
-        read -p "Enter your choice (1-4): " choice
+        read -p "Enter your choice (1-5): " choice
         
         if run_configuration "$choice"; then
             break
