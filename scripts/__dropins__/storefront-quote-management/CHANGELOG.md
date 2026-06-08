@@ -1,5 +1,17 @@
 # @dropins/storefront-quote-management
 
+## 1.2.0-beta.1
+
+### Patch Changes
+
+- d9eb120: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
+## 1.2.0-beta.0
+
+### Minor Changes
+
+- 9dde3ae: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
 ## 1.1.2
 
 ### Patch Changes

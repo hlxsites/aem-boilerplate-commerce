@@ -1,5 +1,11 @@
 # @dropins/storefront-requisition-list
 
+## 1.4.0-beta.2
+
+### Patch Changes
+
+- 1877178: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
 ## 1.4.0-beta.1
 
 ### Patch Changes
