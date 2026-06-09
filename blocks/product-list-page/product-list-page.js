@@ -119,6 +119,7 @@ export default async function decorate(block) {
         quantity: 1,
       }]),
       variant: 'primary',
+      disabled: !product.inStock,
     })(button);
     return button;
   };

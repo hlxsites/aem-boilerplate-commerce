@@ -220,6 +220,19 @@ declare const _default: {
         "fetchPermissionsError": "Failed to fetch permissions"
       }
     },
+    "CompanyHierarchy": {
+      "containerTitle": "Company Hierarchy",
+      "messages": {
+        "noCompaniesData": "No companies data available.",
+        "loading": "Loading company hierarchy...",
+        "loadError": "Failed to load company hierarchy. Please try again.",
+        "moveError": "Failed to update company hierarchy. Your changes were not saved."
+      },
+      "noAccess": {
+        "title": "Access Denied",
+        "message": "You do not have permission to view company hierarchy."
+      }
+    },
     "CompanyUsers": {
       "filters": {
         "showAll": "Show All Users",
