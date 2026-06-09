@@ -73,9 +73,6 @@ export const RETURN_DETAILS_PATH = '/return-details';
 export const CREATE_RETURN_PATH = '/create-return';
 export const SALES_GUEST_VIEW_PATH = '/sales/guest/view/';
 
-// Pay By Link — standalone token-gated payment surface, accessible without auth.
-export const PAY_BY_LINK_PATH = '/pay';
-
 // CUSTOMER PATHS
 export const CUSTOMER_PATH = '/customer';
 export const CUSTOMER_ORDER_DETAILS_PATH = `${CUSTOMER_PATH}${ORDER_DETAILS_PATH}`;

@@ -65,12 +65,12 @@ function renderShell(block) {
 
 export default async function decorate(block) {
   const result = extractToken(window.location.search);
-  const labels = await fetchPlaceholders('placeholders/pay-by-link.json');
 
-  if (result.status !== 'valid') {
-    renderError(block, result.status, labels);
+  if (result.status === 'valid') {
+    renderShell(block);
     return;
   }
 
-  renderShell(block);
+  const labels = await fetchPlaceholders();
+  renderError(block, result.status, labels);
 }
