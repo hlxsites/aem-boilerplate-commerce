@@ -1,0 +1,14 @@
+.pdp-mirrored .product-details__left-column {
+    grid-column: 8 / span 5;
+    grid-row: 1;
+}
+
+.pdp-mirrored .product-details__right-column {
+    grid-column: 1 / span 6;
+    grid-row: 1;
+}
+
+.pdp-mirrored .product-details__configuration {
+    margin-top: 0;
+    margin-bottom: 0;
+}
