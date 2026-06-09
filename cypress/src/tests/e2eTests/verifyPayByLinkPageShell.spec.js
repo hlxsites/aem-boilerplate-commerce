@@ -6,10 +6,17 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
   // 64-char lowercase hex matches the HLD §5.A token spec.
   const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec629d59';
 
+  // Tracks GraphQL requests whose body references the payByLinkOrder operation.
+  // Other commerce dropins (cart, auth) issue unrelated GraphQL calls on every
+  // page load; those are out of scope for this assertion.
+  let payByLinkOrderCalls;
+
   beforeEach(() => {
-    // Story 1 must render its error state synchronously, before any GraphQL
-    // call. We spy on the storefront GraphQL endpoint to prove this contract.
-    cy.intercept('**/graphql*', cy.spy().as('graphqlSpy'));
+    payByLinkOrderCalls = [];
+    cy.intercept('**/graphql*', (req) => {
+      const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+      if (body.includes('payByLinkOrder')) payByLinkOrderCalls.push(req);
+    });
   });
 
   it('renders the missing-token error state when /pay has no token', () => {
@@ -28,7 +35,7 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
     cy.get('.pay-by-link__error-body').invoke('text').should('match', /\S/);
     cy.get('[data-testid="pay-by-link-error-cta"]').should('be.visible');
 
-    cy.get('@graphqlSpy').should('not.have.been.called');
+    cy.then(() => expect(payByLinkOrderCalls).to.have.length(0));
   });
 
   it('renders the malformed-token error state when /pay has an invalid token', () => {
@@ -39,7 +46,7 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
     cy.get('.pay-by-link__error-title').invoke('text').should('match', /\S/);
     cy.get('.pay-by-link__error-body').invoke('text').should('match', /\S/);
 
-    cy.get('@graphqlSpy').should('not.have.been.called');
+    cy.then(() => expect(payByLinkOrderCalls).to.have.length(0));
   });
 
   it('renders the shell with empty mount points when /pay has a structurally valid token', () => {
@@ -57,8 +64,8 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
     cy.get('.pay-by-link__payment').should('exist');
     cy.get('.pay-by-link__footer').should('exist');
 
-    // Story 1 makes no API calls; downstream stories will replace this assertion
-    // with positive ones against payByLinkOrder.
-    cy.get('@graphqlSpy').should('not.have.been.called');
+    // Story 1 has no payByLinkOrder call yet; downstream stories will replace
+    // this assertion with positive ones.
+    cy.then(() => expect(payByLinkOrderCalls).to.have.length(0));
   });
 });
