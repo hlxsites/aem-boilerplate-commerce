@@ -680,7 +680,9 @@ export function getProductLink(urlKey, sku) {
     if (!urlKey) {
       console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
     }
-    return rootLink(`/products/${sanitizeName(urlKey)}/${sanitizeName(sku || '')}`);
+    const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
+    const sanitizedSku = sku ? sanitizeName(sku) : '';
+    return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
   }
 
   // Use template page path + sku query parameter to render product
