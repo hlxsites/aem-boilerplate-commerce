@@ -113,7 +113,7 @@ describe("Verify auth user can place order", () => {
       '/products/default?sku=cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.visit("/products/default?sku=adb150");
+    cy.visit("/products/default?sku=ADB150");
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
@@ -128,7 +128,7 @@ describe("Verify auth user can place order", () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/default?sku=adb150",
+      "/products/default?sku=ADB150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     assertCartSummaryProduct(
@@ -155,7 +155,7 @@ describe("Verify auth user can place order", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/default?sku=adb150",
+      "/products/default?sku=ADB150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",

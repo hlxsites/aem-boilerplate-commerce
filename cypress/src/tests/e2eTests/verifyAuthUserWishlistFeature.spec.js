@@ -61,7 +61,7 @@ describe("Verify auth user can manage products across wishlist and cart", () => 
 
     assertWishlistTitleHasLink(
       "Youth tee",
-      "/products/default?sku=adb150"
+      "/products/default?sku=ADB150"
     )(".commerce-wishlist-wrapper");
 
     assertWishlistProductImage(Cypress.env("productImageName"))(".commerce-wishlist-wrapper");

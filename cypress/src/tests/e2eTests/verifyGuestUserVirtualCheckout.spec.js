@@ -84,7 +84,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Virtual Product",
-      "/products/default?sku=virtual123",
+      "/products/default?sku=VIRTUAL123",
     )(".cart-mini-cart");
     cy.contains("View Cart").click();
 
@@ -99,7 +99,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Virtual Product",
-      "/products/default?sku=virtual123",
+      "/products/default?sku=VIRTUAL123",
     )(".commerce-cart-wrapper");
 
     assertCartSummaryProduct(
