@@ -21,7 +21,7 @@ module.exports = defineConfig({
     giftCardA:
       process.env.IS_PROD_RELEASE === "true" ? "01J2UN97NBO0" : "00419VQ5C341",
     productUrlWithOptions:
-      "/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
+      "/products/default?sku=cypress456&optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
     stateShippingId: "TX,57",
     stateBillingId: "NY,43",
     productImageName: "/adb150.jpg",
