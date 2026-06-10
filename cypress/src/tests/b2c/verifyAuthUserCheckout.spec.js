@@ -110,7 +110,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       '/products/default?sku=cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.visit("/products/default?sku=adb150");
+    cy.visit("/products/default?sku=ADB150");
     // Button can be visible before the product form finishes hydrating;
     // clicking while still disabled registers in the UI but never reaches
     // the cart model (see the same pattern guarded against above).
@@ -133,7 +133,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/default?sku=adb150",
+      "/products/default?sku=ADB150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     assertCartSummaryProduct(
@@ -160,7 +160,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/default?sku=adb150",
+      "/products/default?sku=ADB150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",
