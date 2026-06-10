@@ -623,7 +623,7 @@ export async function commerceEndpointWithQueryParams() {
 }
 
 /**
- * Extracts the SKU from the current URL query or path
+ * Extracts the SKU from the current URL .
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
 function getSkuFromUrl() {
