@@ -46,6 +46,7 @@ export interface CustomerCompanyInfo {
  */
 export interface UseCompanyDataProps {
     onCompanyChange?: (company: Company) => void;
+    pageSize?: number;
 }
 /**
  * Return type for the useCompanyData hook

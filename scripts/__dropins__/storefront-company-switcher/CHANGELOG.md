@@ -1,5 +1,26 @@
 # @dropins/storefront-company-switcher
 
+## 1.2.0-beta.2
+
+### Patch Changes
+
+- 4ba4949: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
+## 1.2.0-beta.1
+
+### Minor Changes
+
+- 46ca833: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
+## 1.2.0-beta.0
+
+### Minor Changes
+
+- 3fbf7de: Add optional `size` prop on `CompanySwitcher` (and `useCompanyData`) to control GraphQL `customer.companies` `pageSize`, defaulting to 100 instead of the API’s typical cap of 20. `getCustomerCompanyInfo` accepts `{ size }` and caches per page size. Restore `CustomerFragment` for extensibility; `GET_CUSTOMER_COMPANIES` uses operation variable `$pageSize`.
+- 4860a42: Migrate to Node.js 24 LTS
+
+  Minimum required Node.js version is now 24. Updated engines.node from >=20 to >=24.
+
 ## 1.1.1
 
 ### Patch Changes

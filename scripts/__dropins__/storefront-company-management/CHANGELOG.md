@@ -1,5 +1,11 @@
 # @dropins/storefront-company-management
 
+## 1.3.0-beta.2
+
+### Patch Changes
+
+- 931c25f: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
 ## 1.3.0-beta.1
 
 ### Minor Changes
