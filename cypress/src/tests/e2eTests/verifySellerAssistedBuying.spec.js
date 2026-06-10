@@ -338,7 +338,7 @@ describe("Seller Assisted Buying", () => {
         cy.url().should("include", "/customer/account");
 
         cy.log("Step 17.5: Admin adding product for customer");
-        cy.visit("/products/youth-tee/adb150");
+        cy.visit("/products/default?sku=adb150");
         cy.reload();
         cy.wait(2000);
         cy.get(".product-details__buttons__add-to-cart button")

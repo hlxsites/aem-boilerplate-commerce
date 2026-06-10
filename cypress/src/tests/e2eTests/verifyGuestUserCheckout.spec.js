@@ -51,7 +51,7 @@ describe("Verify guest user can place order", () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/adb150",
+      "/products/default?sku=adb150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     cy.contains("View Cart").click();
@@ -65,7 +65,7 @@ describe("Verify guest user can place order", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/adb150",
+      "/products/default?sku=adb150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",

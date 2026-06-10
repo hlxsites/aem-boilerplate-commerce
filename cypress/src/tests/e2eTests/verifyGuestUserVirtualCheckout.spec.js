@@ -54,7 +54,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Gift Card (Virtual)",
-      "/products/gift-card-virtual/gift-card-virtual",
+      "/products/default?sku=gift-card-virtual",
     )(".cart-mini-cart");
     cy.get('.dropin-cart-list__item').within(() => {
       cy.contains('Jane Smith (jane20@example.com)').should('be.visible');
@@ -84,7 +84,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Virtual Product",
-      "/products/virtual-product/virtual123",
+      "/products/default?sku=virtual123",
     )(".cart-mini-cart");
     cy.contains("View Cart").click();
 
@@ -99,7 +99,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Virtual Product",
-      "/products/virtual-product/virtual123",
+      "/products/default?sku=virtual123",
     )(".commerce-cart-wrapper");
 
     assertCartSummaryProduct(
@@ -113,7 +113,7 @@ describe("Verify guest user can place order with virtual product", () => {
 
     assertTitleHasLink(
       "Gift Card (Virtual)",
-      "/products/gift-card-virtual/gift-card-virtual",
+      "/products/default?sku=gift-card-virtual",
     )(".commerce-cart-wrapper");
     cy.get('.cart-cart-summary-list__content').within(() => {
       cy.contains('Jane Smith (jane20@example.com)').should('be.visible');
