@@ -16,7 +16,7 @@ module.exports = defineConfig({
     COMMERCE_ADMIN_PASSWORD: process.env.CYPRESS_COMMERCE_ADMIN_PASSWORD,
     giftCardA: "00GO12SK6WF3",
     productUrlWithOptions:
-      "/products/default?sku=cypress456&optionsUIDs=Y29uZmlndXJhYmxlLzI3OS8zOQ%3D%3D",
+      "/products/default?sku=CYPRESS456&optionsUIDs=Y29uZmlndXJhYmxlLzI3OS8zOQ%3D%3D",
     stateShippingId: "TX,171",
     stateBillingId: "NY,129",
     productImageName: "/ADB150.jpg",

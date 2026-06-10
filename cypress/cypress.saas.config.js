@@ -17,7 +17,7 @@ module.exports = defineConfig({
     IMS_ORG_ID: process.env.CYPRESS_IMS_ORG_ID,
     giftCardA: "00419VQ5C341",
     productUrlWithOptions:
-      "/products/default?sku=cypress456&optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
+      "/products/default?sku=CYPRESS456&optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
     stateShippingId: "TX,57",
     stateBillingId: "NY,43",
     productImageName: "/adb150.jpg",
