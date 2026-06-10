@@ -623,10 +623,16 @@ export async function commerceEndpointWithQueryParams() {
 }
 
 /**
- * Extracts the SKU from the current URL path.
+ * Extracts the SKU from the current URL query or path
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
 function getSkuFromUrl() {
+  const sku = new URLSearchParams(window.location.search).get('sku');
+  if (sku) {
+    return decodeURIComponent(sku);
+  }
+
+  // Fall back to path based
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
@@ -666,15 +672,21 @@ export function isProductTemplate() {
 }
 
 export function getProductLink(urlKey, sku) {
-  if (!urlKey) {
-    console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
-  }
   if (!sku) {
     console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
   }
-  const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
-  const sanitizedSku = sku ? sanitizeName(sku) : '';
-  return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
+  // Use folder mapping path to route to product
+  if (getConfigValue('use-folder-mapping') === 'true') {
+    if (!urlKey) {
+      console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
+    }
+    return rootLink(`/products/${sanitizeName(urlKey)}/${sanitizeName(sku || '')}`);
+  }
+
+  // Use template page path + sku query parameter to render product
+  const url = new URL(rootLink('/products/default'), window.location.origin);
+  url.searchParams.set('sku', sku || '');
+  return url.pathname + url.search;
 }
 
 /**
