@@ -54,7 +54,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/default?sku=cypress456'
+      '/products/default?sku=CYPRESS456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
     editProductOptions("red", "green");
@@ -87,7 +87,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/default?sku=cypress456'
+      '/products/default?sku=CYPRESS456'
     )('.commerce-cart-wrapper');
     cy.visit("/customer/create");
     cy.get(".minicart-wrapper").should("be.visible");
@@ -107,7 +107,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/default?sku=cypress456'
+      '/products/default?sku=CYPRESS456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
     cy.visit("/products/default?sku=ADB150");
@@ -146,7 +146,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )('.cart-mini-cart');
     assertTitleHasLink(
       'Configurable product',
-      '/products/default?sku=cypress456'
+      '/products/default?sku=CYPRESS456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageName'))('.cart-mini-cart');
     cy.visit('/cart');
@@ -176,7 +176,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
     )('.commerce-cart-wrapper');
     assertTitleHasLink(
       'Configurable product',
-      '/products/default?sku=cypress456'
+      '/products/default?sku=CYPRESS456'
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');

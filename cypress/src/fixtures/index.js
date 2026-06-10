@@ -47,7 +47,7 @@ export const checkMoneyOrder = {
 
 export const products = {
   configurable: {
-    urlPath: "/products/default?sku=cypress456",
+    urlPath: "/products/default?sku=CYPRESS456",
     urlPathWithOptions: Cypress.env('productUrlWithOptions'),
   },
   virtual: {
