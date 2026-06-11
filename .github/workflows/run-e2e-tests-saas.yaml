@@ -7,6 +7,20 @@ jobs:
     # demo backend.
     if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
+    strategy:
+      # Run all shards even if one fails, so a single flaky shard doesn't hide
+      # results from the others.
+      fail-fast: false
+      # Static spec-split across parallel jobs. Each shard is an independent set
+      # of spec files (no overlap); @cypress/grep still filters tests per env, so
+      # specs tagged @skipSaas simply run 0 tests in whichever shard they land.
+      # NOTE: when adding a new spec file, add it to exactly one shard below.
+      matrix:
+        spec:
+          - "src/tests/e2eTests/verifyAuthUserCheckout.spec.js,src/tests/e2eTests/verifyGuestUserWishlistFeature.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/events/add-to-cart.spec.js,src/tests/e2eTests/events/initialization.spec.js"
+          - "src/tests/e2eTests/verifyUserAccount.spec.js,src/tests/e2eTests/verifyAuthUserWishlistFeature.spec.js,src/tests/e2eTests/verifyCartUndo.spec.js,src/tests/e2eTests/events/auth.spec.js,src/tests/e2eTests/events/product-page-view.spec.js"
+          - "src/tests/e2eTests/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/e2eTests/verifyGuestUserCheckout.spec.js,src/tests/e2eTests/verifyLowStockInfoMessage.spec.js,src/tests/e2eTests/verifyStoreSwitcher.spec.js,src/tests/e2eTests/events/initiate-checkout.spec.js,src/tests/e2eTests/events/shopping-cart-view.spec.js"
+          - "src/tests/e2eTests/verifyGuestUserVirtualCheckout.spec.js,src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/verifySellerAssistedBuying.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
     steps:
       - uses: actions/checkout@v4
       - name: Install root dependencies
@@ -20,12 +34,12 @@ jobs:
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          command: npm run cypress:saas:run
+          command: npm run cypress:saas:run -- --spec "${{ matrix.spec }}"
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots
+          name: cypress-screenshots-saas-${{ strategy.job-index }}
           path: cypress/screenshots
           if-no-files-found: ignore
