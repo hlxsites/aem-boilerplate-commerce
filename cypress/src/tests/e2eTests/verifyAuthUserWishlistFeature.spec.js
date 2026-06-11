@@ -21,7 +21,6 @@ describe("Verify auth user can manage products across wishlist and cart", () => 
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
@@ -127,7 +126,6 @@ describe("Verify auth user can manage products across wishlist and cart", () => 
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
@@ -236,7 +234,6 @@ describe("Verify auth user can manage products across wishlist and cart", () => 
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
     cy.get(".wishlist-wrapper").should('be.visible').click();
 
