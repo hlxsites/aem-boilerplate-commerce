@@ -254,6 +254,7 @@ export const renderLoginForm = async (container) => renderContainer(
         signInFormConfig: {
           renderSignUpLink: true,
           initialEmailValue,
+          apiErrorMessageOverride: 'Custom error: Unable to sign in. Please contact support.',
           // No onSuccessCallback needed - the 'authenticated' event will be fired automatically
         },
         signUpFormConfig: {
