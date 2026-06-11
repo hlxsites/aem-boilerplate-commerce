@@ -12,6 +12,8 @@ export interface RequisitionListHeaderProps {
         context: string;
     }) => void;
     enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>;
+    currentCustomerEmail?: string;
+    routeSharedRequisitionList?: (relativeUrl: string) => string;
 }
 export declare const RequisitionListHeader: Container<RequisitionListHeaderProps>;
 //# sourceMappingURL=RequisitionListHeader.d.ts.map

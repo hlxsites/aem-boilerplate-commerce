@@ -34,8 +34,8 @@ export declare class CustomerCompanyContext {
      * @returns Promise containing current company and list of available companies
      * @throws Will not throw errors - returns empty data on failure
      */
-    getCustomerCompanyInfo(): Promise<CustomerCompanyInfo>;
+    getCustomerCompanyInfo(pageSize?: number): Promise<CustomerCompanyInfo>;
 }
-export declare const getCustomerCompanyInfo: () => Promise<CustomerCompanyInfo>;
+export declare const getCustomerCompanyInfo: (pageSize?: number) => Promise<CustomerCompanyInfo>;
 export declare const updateCustomerGroup: () => Promise<string | null>;
 //# sourceMappingURL=customerCompanyContext.d.ts.map

@@ -58,7 +58,23 @@ declare const _default: {
       "errorMoveToList": "Error moving item(s) to requisition list.",
       "successMoveToList": "Item(s) successfully moved to {listName}.",
       "errorCopyToList": "Error copying item(s) to requisition list.",
-      "successCopyToList": "Item(s) successfully copied to {listName}."
+      "successCopyToList": "Item(s) successfully copied to {listName}.",
+      "errorImport": "Error importing requisition list.",
+      "successImport": "Requisition list \"{listName}\" has been added to your account."
+    },
+    "SharedRequisitionList": {
+      "loading": "Loading shared requisition list...",
+      "previewTitle": "Shared Requisition List",
+      "senderLabel": "Shared by",
+      "listNameLabel": "List name",
+      "descriptionLabel": "Description",
+      "itemsCountLabel": "Items",
+      "importButton": "Import List",
+      "importingButton": "Importing...",
+      "errorPreview": "Unable to load the shared requisition list.",
+      "skuHeader": "SKU",
+      "qtyHeader": "Qty",
+      "optionsHeader": "Options"
     },
     "RequisitionListView": {
       "actionDelete": "Delete",
@@ -80,6 +96,10 @@ declare const _default: {
       "actionBackToRequisitionLists": "Back to Requisition Lists",
       "actionRename": "Rename",
       "actionDeleteList": "Delete List",
+      "actionShare": "Share",
+      "shareDisabledReason": "You cannot share an empty requisition list.",
+      "shareDisabledNoCompany": "Sharing is available only for company account users.",
+      "shareListTitle": "Share Requisition List",
       "deleteListTitle": "Delete Requisition List?",
       "deleteListMessage": "Are you sure you want to delete this requisition list? This action cannot be undone.",
       "deleteItemsTitle": "Delete Item(s)?",
@@ -111,6 +131,21 @@ declare const _default: {
       "notFoundTitle": "Requisition List Not Found",
       "notFoundMessage": "The requisition list you are looking for does not exist or you do not have access to it.",
       "notFoundActionLabel": "Back to Requisition Lists"
+    },
+    "ShareRequisitionListContent": {
+      "emailInstruction": "Select below the email addresses of the people with whom you'd like to share your list. Your name, email address and the details of your list will be shared with recipients. You can send your list with multiple recipients. Please note only registered users will be able to import lists.",
+      "emailLabel": "Email addresses",
+      "emailPlaceholder": "Select company users",
+      "submitLabel": "Submit",
+      "linkInstruction": "Copy the link below and send it to people with whom you'd like to share your list. Please note only registered users will be able to import lists.",
+      "copyLink": "Copy Link",
+      "linkCopied": "Copied!",
+      "loadingUsers": "Loading users...",
+      "loadingLink": "Generating share link...",
+      "noUsersAvailable": "No company colleagues available to share with.",
+      "usersLoadError": "Unable to load company users. Please try again.",
+      "maxRecipientsValidation": "You can select up to {max} recipients.",
+      "shareSuccessMessage": "You have shared your list with the below email addresses:"
     },
     "RequisitionListsNotEnabled": {
       "title": "Requisition Lists Not Available",

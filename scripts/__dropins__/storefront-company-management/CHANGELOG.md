@@ -1,5 +1,41 @@
 # @dropins/storefront-company-management
 
+## 1.3.0
+
+### Minor Changes
+
+- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
+### Patch Changes
+
+- 931c25f: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+- ac5cf51: Bump storefront SDK stable version
+
+## 1.3.0-beta.3
+
+### Patch Changes
+
+- ac5cf51: Bump storefront SDK stable version
+
+## 1.3.0-beta.2
+
+### Patch Changes
+
+- 931c25f: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
+## 1.3.0-beta.1
+
+### Minor Changes
+
+- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+## 1.3.0-beta.0
+
+### Minor Changes
+
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
 ## 1.2.0
 
 ### Minor Changes

@@ -32,6 +32,8 @@ export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement>
     fallbackRoute?: string;
     getProductData: (skus: string[]) => Promise<Product[] | null>;
     enrichConfigurableProducts: (items: Item[]) => Promise<Item[]>;
+    currentCustomerEmail?: string;
+    routeSharedRequisitionList?: (relativeUrl: string) => string;
 }
 export declare const RequisitionListView: Container<RequisitionListViewProps>;
 //# sourceMappingURL=RequisitionListView.d.ts.map
