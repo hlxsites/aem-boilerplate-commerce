@@ -20,31 +20,15 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink, getProductViewHistory, getPurchaseHistory } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders, getProductLink, getProductViewHistory, getPurchaseHistory,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
-
-/**
- * Validates and returns a product view history entry if valid
- * @param {Object} entry - The history entry to validate
- * @returns {Object|null} - Validated history entry or null if invalid
- */
-function getValidHistoryEntry(entry) {
-  // Basic validation to ensure the entry has necessary properties
-  if (entry && typeof entry === 'object' && entry.sku && entry.date) {
-    return {
-      sku: entry.sku,
-      date: entry.date,
-    };
-  }
-  return null;
-}
-
-
 
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
