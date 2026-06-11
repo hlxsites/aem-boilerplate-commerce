@@ -12,7 +12,6 @@ describe("Verify user account functionality", () => {
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
 
     // Edit Account 
@@ -75,9 +74,13 @@ describe("Verify user account functionality", () => {
     cy.get('[data-testid="toggle-password-icon"]').eq(2).click();
     cy.get('input[name="confirmPassword"]', { timeout: 10000 })
       .should('be.visible')
-      .type('Testtttt3!');
-    cy.wait(1000);
+      .type('Testtttt3!')
+      .should('have.value', 'Testtttt3!');
     cy.get('.dropin-input__field-icon--error').should('not.exist');
+    // The password form validates asynchronously with no DOM signal once both
+    // fields match; a short settle is intentionally kept so Save submits a
+    // form the dropin already considers valid.
+    cy.wait(1000);
     cy.get('button').contains('Save').click({ force: true });
     cy.contains('Your password has been updated').should('be.visible');
 

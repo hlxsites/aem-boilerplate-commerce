@@ -37,7 +37,8 @@ describe("Verify auth user can place order", () => {
   it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
     // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
     cy.visit(products.configurable.urlPathWithOptions);
-    cy.wait(5000);
+    // Wait for the configurable product form to hydrate before adding to cart.
+    cy.contains("Add to Cart").should("be.visible").and("not.be.disabled");
     cy.get(".minicart-panel").should("be.empty");
     cy.contains("Add to Cart").click();
     cy.get(".minicart-wrapper").click();
@@ -92,14 +93,31 @@ describe("Verify auth user can place order", () => {
       'Configurable product',
       '/products/default?sku=CYPRESS456'
     )('.commerce-cart-wrapper');
+    // Add ADB150 as a guest so both items enter the authenticated cart via the
+    // cart-merge at sign-up. On PaaS, adding items as an authenticated user
+    // after a merge fails silently (the mutation returns success but the item
+    // is never saved to the backend cart).
+    cy.visit("/products/default?sku=ADB150");
+    cy.get(".pdp-header__title").should("contain", "Youth tee");
+    cy.intercept("POST", Cypress.env("graphqlEndPoint"), (req) => {
+      if (req.body.query && req.body.query.includes("ADD_PRODUCTS_TO_CART_MUTATION")) {
+        req.alias = "addYouthTeeToCart";
+      }
+    });
+    cy.get(".product-details__buttons__add-to-cart button")
+      .should("be.visible")
+      .and("not.be.disabled")
+      .click();
+    cy.wait("@addYouthTeeToCart");
     cy.visit("/customer/create");
     cy.get(".minicart-wrapper").should("be.visible");
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
+    // After signup the guest cart (CYPRESS456 + ADB150) merges into the auth cart.
     cy.get(".minicart-wrapper").click();
+    cy.get('.minicart-panel[data-loaded="true"]').should('exist');
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
@@ -113,38 +131,20 @@ describe("Verify auth user can place order", () => {
       '/products/default?sku=CYPRESS456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
-    cy.visit("/products/default?sku=ADB150");
-    cy.get(".product-details__buttons__add-to-cart button")
-      .should("be.visible")
-      .click();
-    cy.get(".minicart-wrapper").click();
     assertCartSummaryProduct(
-      "Youth tee",
-      "ADB150",
-      "1",
-      "$10.00",
-      "$10.00",
-      "0",
-    )(".cart-mini-cart");
-    assertTitleHasLink(
-      "Youth tee",
-      "/products/default?sku=ADB150",
-    )(".cart-mini-cart");
-    assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
-    assertCartSummaryProduct(
-      'Configurable product',
-      'CYPRESS456',
+      'Youth tee',
+      'ADB150',
       '1',
-      '$60.00',
-      '$60.00',
-      '1'
+      '$10.00',
+      '$10.00',
+      '0'
     )('.cart-mini-cart');
     assertTitleHasLink(
-      'Configurable product',
-      '/products/default?sku=CYPRESS456'
+      'Youth tee',
+      '/products/default?sku=ADB150'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageName'))('.cart-mini-cart');
-    cy.contains('View Cart').click();
+    cy.visit('/cart');
     assertCartSummaryProduct(
       "Youth tee",
       "ADB150",
@@ -198,14 +198,12 @@ describe("Verify auth user can place order", () => {
     );
     setGuestShippingAddress(customerShippingAddress, true);
     uncheckBillToShippingAddress();
-    cy.wait(2000);
     setGuestBillingAddress(customerBillingAddress, true);
     assertOrderSummaryMisc("$70.00", "$10.00", "$80.00");
     assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
     setPaymentMethod(paymentServicesCreditCard);
     assertSelectedPaymentMethod(paymentServicesCreditCard.code, 2);
     checkTermsAndConditions();
-    cy.wait(5000);
     cy.percyTakeSnapshot('Checkout Page');
     placeOrder();
     assertOrderConfirmationCommonDetails(

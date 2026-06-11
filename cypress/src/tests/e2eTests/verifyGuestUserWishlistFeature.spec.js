@@ -321,7 +321,6 @@ describe("Verify guest user can manage products across wishlist and cart", () =>
     cy.fixture("userInfo").then(({ sign_up }) => {
       signUpUser(sign_up);
       assertAuthUser(sign_up);
-      cy.wait(5000);
     });
 
     // Navigate back to wishlist and verify item was added
