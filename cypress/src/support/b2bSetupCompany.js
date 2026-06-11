@@ -84,9 +84,8 @@ Cypress.Commands.add('setupCompanyWithAdmin', () => {
     });
   });
 
-  // Wait for company to be indexed in the backend
-  cy.wait(3000);
-  cy.logToTerminal('✅ Company indexed, ready for testing');
+  // Company is created via REST API — subsequent login will verify readiness
+  cy.logToTerminal('✅ Company created, ready for testing');
 });
 
 /**

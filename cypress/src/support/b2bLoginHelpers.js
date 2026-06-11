@@ -8,6 +8,8 @@
  * - Form filling and submission
  * - Wait for login completion
  *
+ * Uses the shared `cy.performLogin` command from loginHelper.js.
+ *
  * @example
  * // Login as company admin
  * cy.loginAsCompanyAdmin();
@@ -33,18 +35,7 @@ Cypress.Commands.add('loginAsCompanyAdmin', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as admin: ${testAdmin.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testAdmin.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testAdmin.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
+    cy.performLogin(testAdmin.email, testAdmin.password);
     cy.logToTerminal('✅ Admin logged in successfully');
   });
 });
@@ -65,18 +56,7 @@ Cypress.Commands.add('loginAsRegularUser', () => {
     }
 
     cy.logToTerminal(`🔐 Logging in as regular user: ${testUsers.regular.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.regular.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.regular.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-
-    cy.wait(8000); // Wait for login to complete
+    cy.performLogin(testUsers.regular.email, testUsers.regular.password);
     cy.logToTerminal('✅ Regular user logged in successfully');
   });
 });
@@ -145,18 +125,7 @@ Cypress.Commands.add('loginAsRestrictedUser', () => {
     }
     
     cy.logToTerminal(`🔐 Logging in as restricted user: ${testUsers.restricted.email}`);
-    cy.visit('/customer/login');
-    cy.wait(1000); // Ensure page is ready
-    
-    cy.get('main .auth-sign-in-form', { timeout: 10000 }).within(() => {
-      cy.get('input[name="email"]').type(testUsers.restricted.email);
-      cy.wait(1500);
-      cy.get('input[name="password"]').type(testUsers.restricted.password);
-      cy.wait(1500);
-      cy.get('button[type="submit"]').click();
-    });
-    
-    cy.wait(8000); // Wait for login to complete
+    cy.performLogin(testUsers.restricted.email, testUsers.restricted.password);
     cy.logToTerminal('✅ Restricted user logged in successfully');
   });
 });

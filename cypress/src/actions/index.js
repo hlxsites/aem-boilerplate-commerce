@@ -1,5 +1,5 @@
-import * as fields from '../fields/index';
 import * as selectors from '../fields';
+import * as fields from '../fields/index';
 
 export const setGuestEmail = (customerEmail) => {
   cy.get(fields.shippingFormGuestEmail).clear().type(customerEmail);
@@ -83,15 +83,7 @@ export const createAccount = () => {
 };
 
 export const signInUser = (username, password) => {
-  cy.get('[name="signIn_form"]').should('be.visible');
-  cy.get('[name="email"]').eq(1).should('be.visible').clear().type(username);
-  cy.get('[name="password"]').eq(1).should('be.visible').clear().type(password);
-  cy.get('[name="password"]').eq(1).should('have.value', password);
-  // Cypress click is too quick, need to waiit for password to be actully typed and set
-  cy.wait(1000);
-  cy.get('.auth-sign-in-form__form__buttons button')
-    .eq(3)
-    .click({ force: true });
+  cy.performLogin(username, password, { visit: false, waitForRedirect: false });
 };
 
 export const signUpUser = (sign_up, isValid = true) => {
@@ -445,18 +437,13 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
-  cy.visit(urls.login);
-  cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email);
-    cy.wait(1500);
-    cy.get(fields.poPasswordInput).type(user.password);
-    cy.wait(1500);
-    cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
+  cy.performLogin(user.email, user.password, {
+    loginUrl: urls.login,
+    redirectUrl: urls.account,
   });
-  cy.url().should('include', urls.account);
-  // Waiting for session and permissions to initialize
-  cy.wait(3000);
+  // Waiting for session and B2B permissions to fully initialize server-side
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(10000);
 };
 
 export const logout = (texts) => {
