@@ -698,6 +698,19 @@ export function getOptionsUIDsFromUrl() {
 }
 
 /**
+ * Determines the store identifier for tracking history, prioritizing the Store View Code header and falling back to Catalog View ID if necessary.
+ * @returns {string|undefined} Store identifier based on header values or undefined if neither is set
+ */
+function getStoreIdentifier() {
+  const storeIdentifier = getConfigValue('headers.cs.Magento-Store-View-Code') || getConfigValue('headers.cs.AC-View-ID');
+  if (!storeIdentifier) {
+    console.warn('No store view code found in config headers for tracking history');
+    return;
+  }
+  return storeIdentifier;
+}
+
+/**
  * Tracks user browsing and purchase history for recommendations.
  * Stores product view history and purchase history in localStorage.
  */
@@ -706,30 +719,88 @@ function trackHistory() {
     return;
   }
   // Store product view history in session storage
-  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-  window.adobeDataLayer.push((dl) => {
-    dl.addEventListener('adobeDataLayer:change', (event) => {
-      if (!event.productContext || !event.productContext.sku) {
-        return;
-      }
-      const key = `${storeViewCode}:productViewHistory`;
-      let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-      viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
-      viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
-    }, { path: 'productContext' });
-    dl.addEventListener('place-order', () => {
-      const shoppingCartContext = dl.getState('shoppingCartContext');
-      if (!shoppingCartContext) {
-        return;
-      }
-      const key = `${storeViewCode}:purchaseHistory`;
-      const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-      const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-      purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
-      window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
+  const storeIdentifier = getStoreIdentifier();
+  if (storeIdentifier) {
+    window.adobeDataLayer.push((dl) => {
+      dl.addEventListener('adobeDataLayer:change', (event) => {
+        if (!event.productContext || !event.productContext.sku) {
+          return;
+        }
+        const key = `${storeIdentifier}:productViewHistory`;
+        let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+        viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
+        viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
+        window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+      }, { path: 'productContext' });
+      dl.addEventListener('place-order', () => {
+        const shoppingCartContext = dl.getState('shoppingCartContext');
+        if (!shoppingCartContext) {
+          return;
+        }
+        const key = `${storeIdentifier}:purchaseHistory`;
+        const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+        const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+        purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+        window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
+      });
     });
-  });
+  }
+}
+
+/**
+ * Gets product view history from localStorage
+ * @returns {Array} - Array of view history items
+ */
+export function getProductViewHistory() {
+  try {
+    const storeIdentifier = getStoreIdentifier();
+    if (!storeIdentifier) {
+      return [];
+    }
+    const viewHistory = window.localStorage.getItem(`${storeIdentifier}:productViewHistory`) || '[]';
+    const parsedHistory = JSON.parse(viewHistory);
+    if (!Array.isArray(parsedHistory)) {
+      throw new Error('Product view history is not an array');
+    }
+    const validHistory = parsedHistory.map(getValidHistoryEntry).filter((entry) => entry !== null);
+    if (validHistory.length === 0) {
+      // If no valid entries, clear the history to prevent future parsing issues
+      window.localStorage.removeItem(`${storeIdentifier}:productViewHistory`);
+    }
+    return validHistory;
+  } catch (e) {
+    window.localStorage.removeItem(`${storeIdentifier}:productViewHistory`);
+    console.error('Error parsing product view history', e);
+    return [];
+  }
+}
+
+/**
+ * Gets purchase history from localStorage
+ * @returns {Array} - Array of purchase history items
+ */
+export function getPurchaseHistory() {
+  try {
+    const storeIdentifier = getStoreIdentifier();
+    if (!storeIdentifier) {
+      return [];
+    }
+    const purchaseHistory = window.localStorage.getItem(`${storeIdentifier}:purchaseHistory`) || '[]';
+    const parsedHistory = JSON.parse(purchaseHistory);
+    if (!Array.isArray(parsedHistory)) {
+      throw new Error('Purchase history is not an array');
+    }
+    const validHistory = parsedHistory.map(getValidPurchaseEntry).filter((entry) => entry !== null);
+    if (validHistory.length === 0) {
+      // If no valid entries, clear the history to prevent future parsing issues
+      window.localStorage.removeItem(`${storeIdentifier}:purchaseHistory`);
+    }
+    return validHistory;
+  } catch (e) {
+    window.localStorage.removeItem(`${storeIdentifier}:purchaseHistory`);
+    console.error('Error parsing purchase history', e);
+    return [];
+  }
 }
 
 /**

@@ -20,7 +20,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink, getProductViewHistory, getPurchaseHistory } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/recommendations.js';
@@ -44,46 +44,7 @@ function getValidHistoryEntry(entry) {
   return null;
 }
 
-/**
- * Gets product view history from localStorage
- * @param {string} storeViewCode - The store view code
- * @returns {Array} - Array of view history items
- */
-function getProductViewHistory(storeViewCode) {
-  try {
-    const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
-    const parsedHistory = JSON.parse(viewHistory);
-    if (!Array.isArray(parsedHistory)) {
-      throw new Error('Product view history is not an array');
-    }
-    const validHistory = parsedHistory.map(getValidHistoryEntry).filter((entry) => entry !== null);
-    if (validHistory.length === 0) {
-      // If no valid entries, clear the history to prevent future parsing issues
-      window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
-    }
-    return validHistory;
-  } catch (e) {
-    window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
-    console.error('Error parsing product view history', e);
-    return [];
-  }
-}
 
-/**
- * Gets purchase history from localStorage
- * @param {string} storeViewCode - The store view code
- * @returns {Array} - Array of purchase history items
- */
-function getPurchaseHistory(storeViewCode) {
-  try {
-    const purchaseHistory = window.localStorage.getItem(`${storeViewCode}:purchaseHistory`) || '[]';
-    return JSON.parse(purchaseHistory);
-  } catch (e) {
-    window.localStorage.removeItem(`${storeViewCode}:purchaseHistory`);
-    console.error('Error parsing purchase history', e);
-    return [];
-  }
-}
 
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
@@ -141,14 +102,13 @@ export default async function decorate(block) {
       container.innerHTML = '';
     }
 
-    const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
     const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
 
     // Get product view history
-    context.userViewHistory = getProductViewHistory(storeViewCode);
+    context.userViewHistory = getProductViewHistory();
 
     // Get purchase history
-    context.userPurchaseHistory = getPurchaseHistory(storeViewCode);
+    context.userPurchaseHistory = getPurchaseHistory();
 
     let recommendationsData = null;
 
