@@ -47,24 +47,24 @@ export const checkMoneyOrder = {
 
 export const products = {
   configurable: {
-    urlPath: '/products/cypress-configurable-product-latest/cypress456',
+    urlPath: Cypress.env('productUrlConfigurable') || '/products/cypress-configurable-product-latest/cypress456',
     urlPathWithOptions: Cypress.env('productUrlWithOptions'),
   },
   virtual: {
-    urlPath: '/products/virtual-product/virtual123',
-    sku: 'VIRTUAL123',
+    urlPath: Cypress.env('productUrlVirtual') || '/products/virtual-product/virtual123',
+    sku: Cypress.env('productSkuVirtual') || 'VIRTUAL123',
   },
   simple: {
-    urlPath: '/products/youth-tee/ADB150',
-    sku: 'ADB150',
+    urlPath: Cypress.env('productUrlSimple') || '/products/youth-tee/ADB150',
+    sku: Cypress.env('productSkuSimple') || 'ADB150',
   },
   additionalSimple: {
-    urlPath: '/products/adobe-staff-event-tee/adb295',
-    sku: 'ADB295',
+    urlPath: Cypress.env('productUrlAdditionalSimple') || '/products/adobe-staff-event-tee/adb295',
+    sku: Cypress.env('productSkuAdditionalSimple') || 'ADB295',
   },
   virtualGiftCard: {
-    urlPath: '/products/gift-card-virtual/gift-card-virtual',
-    sku: 'gift-card-virtual',
+    urlPath: Cypress.env('productUrlVirtualGiftCard') || '/products/gift-card-virtual/gift-card-virtual',
+    sku: Cypress.env('productSkuVirtualGiftCard') || 'gift-card-virtual',
   },
 };
 

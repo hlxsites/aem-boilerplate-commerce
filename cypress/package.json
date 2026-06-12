@@ -10,6 +10,10 @@
     "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas",
     "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js",
     "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
+    "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
+    "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco",
+    "cypress:b2b:aco:open": "cypress open --browser chrome --config-file cypress.b2b.aco.config.js",
+    "cypress:b2b:aco:run": "cypress run --config-file cypress.b2b.aco.config.js --env grepTags=-@skipAco",
     "lint": "eslint src/"
   },
   "author": "Adobe Commerce",

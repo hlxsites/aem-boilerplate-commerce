@@ -56,7 +56,7 @@ const TEST_CONFIGURABLE_PRODUCT_SKU = 'CYPRESS456';
 const CSV_INVALID_FILE_PATH = 'src/fixtures/quick-order-invalid-file.txt';
 const CSV_VALID_FILE_PATH = 'src/fixtures/quick-order-valid-file.csv';
 
-describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
+describe('B2B Quick Order - E2E Tests', { tags: ['@B2BSaas', '@skipAco'] }, () => {
   before(() => {
     cy.logToTerminal('🛒 B2B Quick Order test suite started');
   });
@@ -279,8 +279,7 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 5: Select option and update quantity ==========
 
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
-      .find('select[name="color"]')
-      .select('red');
+      .selectProductOption('color', 'red');
     cy.wait(1000);
 
     cy.get(fields.quickOrderItemCard)
@@ -353,8 +352,7 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 4: Configure options ==========
 
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
-      .find('select[name="color"]')
-      .select('green');
+      .selectProductOption('color', 'green');
     cy.wait(1000);
 
     // ========== STEP 5: Update quantities ==========
@@ -430,8 +428,7 @@ describe('B2B Quick Order - E2E Tests', { tags: '@B2BSaas' }, () => {
     // ========== STEP 2: Configure the configurable product ==========
 
     cy.get(`form[data-sku="${TEST_CONFIGURABLE_PRODUCT_SKU}"]`)
-      .find('select[name="color"]')
-      .select(expectedItems[2].color);
+      .selectProductOption('color', expectedItems[2].color);
     cy.wait(1000);
 
     // ========== STEP 3: Set specific quantities for each product ==========

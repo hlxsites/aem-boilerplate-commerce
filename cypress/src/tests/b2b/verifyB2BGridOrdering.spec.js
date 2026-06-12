@@ -64,7 +64,7 @@ const ARIA_LABEL_PREFIX = 'Quantity for';
 
 describe(
   'B2B Quick Order Variants Grid - E2E Tests',
-  { tags: '@B2BSaas' },
+  { tags: ['@B2BSaas', '@B2BAco'] },
   () => {
     before(() => {
       cy.logToTerminal('🛒 B2B Quick Order Variants Grid test suite started');
