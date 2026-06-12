@@ -142,15 +142,18 @@ export function submitAdyenPayment() {
 /** Called from onPaymentCompleted — resolves the awaiting handlePlaceOrder. */
 export function resolveAdyenPayment(result) {
   if (paymentResolve) {
+    // Save reference before clearPaymentCallbacks() nulls it out.
+    const resolve = paymentResolve;
     clearPaymentCallbacks();
-    paymentResolve(result);
+    resolve(result);
   }
 }
 
 /** Called from onPaymentFailed / onError — rejects the awaiting handlePlaceOrder. */
 export function rejectAdyenPayment(reason) {
   if (paymentReject) {
+    const reject = paymentReject;
     clearPaymentCallbacks();
-    paymentReject(new Error(reason || 'Payment failed'));
+    reject(new Error(reason || 'Payment failed'));
   }
 }

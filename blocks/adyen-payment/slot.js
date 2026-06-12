@@ -122,6 +122,7 @@ export default function renderAdyenGateway(ctx) {
         clientKey,
         environment: env,
         onPaymentCompleted: (result) => {
+          console.log('[Adyen] onPaymentCompleted:', result.resultCode);
           resolveAdyenPayment({
             sessionId: session.id,
             resultCode: result.resultCode,
@@ -130,7 +131,9 @@ export default function renderAdyenGateway(ctx) {
           });
         },
         onPaymentFailed: (result) => {
+          console.error('[Adyen] onPaymentFailed:', result.resultCode, result);
           rejectAdyenPayment(`Payment ${result.resultCode}`);
+          showError(`Payment declined (${result.resultCode}). Please try a different card.`);
         },
         onError: (error) => {
           console.error('[Adyen] onError:', error);
