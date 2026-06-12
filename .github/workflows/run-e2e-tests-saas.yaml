@@ -11,16 +11,21 @@ jobs:
       # Run all shards even if one fails, so a single flaky shard doesn't hide
       # results from the others.
       fail-fast: false
-      # Static spec-split across parallel jobs. Each shard is an independent set
-      # of spec files (no overlap); @cypress/grep still filters tests per env, so
-      # specs tagged @skipSaas simply run 0 tests in whichever shard they land.
+      # Shards are grouped by functional area so specs within a shard share
+      # environmental state. verifySellerAssistedBuying is placed last in shard 3
+      # so the cart dropin is already initialized by the preceding checkout specs
+      # (avoids a null-cart race on cold browser startup).
       # NOTE: when adding a new spec file, add it to exactly one shard below.
       matrix:
         spec:
-          - "src/tests/e2eTests/verifyAuthUserCheckout.spec.js,src/tests/e2eTests/verifyGuestUserWishlistFeature.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/events/add-to-cart.spec.js,src/tests/e2eTests/events/initialization.spec.js"
-          - "src/tests/e2eTests/verifyUserAccount.spec.js,src/tests/e2eTests/verifyAuthUserWishlistFeature.spec.js,src/tests/e2eTests/verifyCartUndo.spec.js,src/tests/e2eTests/events/auth.spec.js,src/tests/e2eTests/events/product-page-view.spec.js"
-          - "src/tests/e2eTests/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/e2eTests/verifyGuestUserCheckout.spec.js,src/tests/e2eTests/verifyLowStockInfoMessage.spec.js,src/tests/e2eTests/verifyStoreSwitcher.spec.js,src/tests/e2eTests/events/initiate-checkout.spec.js,src/tests/e2eTests/events/shopping-cart-view.spec.js"
-          - "src/tests/e2eTests/verifyGuestUserVirtualCheckout.spec.js,src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/verifySellerAssistedBuying.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
+          # Shard 1 — Auth & account flows
+          - "src/tests/e2eTests/verifyAuthUserCheckout.spec.js,src/tests/e2eTests/verifyUserAccount.spec.js,src/tests/e2eTests/verifyAuthUserWishlistFeature.spec.js,src/tests/e2eTests/events/auth.spec.js,src/tests/e2eTests/events/product-page-view.spec.js,src/tests/e2eTests/events/initialization.spec.js"
+          # Shard 2 — Guest checkout flows
+          - "src/tests/e2eTests/verifyGuestUserCheckout.spec.js,src/tests/e2eTests/verifyGuestUserVirtualCheckout.spec.js,src/tests/e2eTests/verifyGuestUserWishlistFeature.spec.js,src/tests/e2eTests/events/add-to-cart.spec.js,src/tests/e2eTests/events/initiate-checkout.spec.js,src/tests/e2eTests/events/place-order.spec.js,src/tests/e2eTests/events/shopping-cart-view.spec.js"
+          # Shard 3 — Cart features + B2B (verifySellerAssistedBuying last so cart is warm)
+          - "src/tests/e2eTests/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/e2eTests/verifyCartUndo.spec.js,src/tests/e2eTests/verifyLowStockInfoMessage.spec.js,src/tests/e2eTests/verifyStoreSwitcher.spec.js,src/tests/e2eTests/verifySellerAssistedBuying.spec.js"
+          # Shard 4 — Discovery & search (events/recs and verifyAemAssets are skipped)
+          - "src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
     steps:
       - uses: actions/checkout@v4
       - name: Install root dependencies
