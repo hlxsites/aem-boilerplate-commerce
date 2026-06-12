@@ -47,11 +47,9 @@ it.skip("is sent on place order button click", { tags: "@skipSaas" }, () => {
   cy.wait("@setEmailOnCart");
   // fill in the shipping address form
   setGuestShippingAddress(customerShippingAddress, true);
-  cy.wait(2000);
 
   // check terms and conditions
   checkTermsAndConditions();
-  cy.wait(5000);
   // click the place order button
   placeOrder();
   // wait until the URL includes '/order-details'

@@ -30,9 +30,6 @@ describe("Search Feature", () => {
     // Input search string and hit enter
     inputSearchString("sleeve{enter}");
 
-    // Wait for random quick search dropdown to disappear
-    cy.wait(1000);
-
     assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
