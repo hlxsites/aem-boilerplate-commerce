@@ -12,26 +12,63 @@ import {
   clearDropinInstance,
   resolveAdyenPayment,
   rejectAdyenPayment,
+  dropinInstance,
 } from './session.js';
+
+// True while the async IIFE is running. Prevents a second IIFE from starting
+// when checkout/updated re-invokes render() during SDK / session setup.
+let isRenderingAdyen = false;
+
+// Updated on every render call so the single IIFE always uses the freshest ctx.
+let activeCtx = null;
+
+// DOM element the Adyen Drop-in was mounted into. Passed back to ctx.replaceHTML
+// on every subsequent render() call so Preact keeps the slot instead of clearing it
+// when render() would otherwise return void.
+let activeDropinEl = null;
 
 /**
  * Render the Adyen Drop-in inside the PaymentMethods slot.
  * Called by the checkout dropin when the customer selects adyen_gateway.
  *
+ * Intentionally synchronous so the dropin renders the skeleton immediately.
+ * SDK load and session creation run in a single background async IIFE.
+ *
  * @param {object} ctx - Slot render context ({ cartId, replaceHTML, ... })
  */
-export default async function renderAdyenGateway(ctx) {
-  // Read OOPE config from availablePaymentMethods — this is static data set at
-  // checkout initialization, so it's reliable regardless of render timing.
-  // selectedPaymentMethod is NOT available yet when render fires (notifyValues
-  // emits checkout/values in a useEffect that runs after the render cycle).
+export default function renderAdyenGateway(ctx) {
+  // Drop-in already mounted. Re-pass the existing element back so Preact keeps
+  // the slot instead of clearing it (render returning void clears the slot).
+  if (dropinInstance) {
+    if (activeDropinEl) ctx.replaceHTML(activeDropinEl);
+    return;
+  }
+
+  // Update the shared ctx pointer — the IIFE always uses the freshest one.
+  activeCtx = ctx;
+
+  // Always show a skeleton with the current ctx. If render() returns without
+  // calling ctx.replaceHTML the dropin clears the slot.
+  const $skeleton = document.createElement('div');
+  $skeleton.className = 'checkout__adyen-skeleton';
+  ctx.replaceHTML($skeleton);
+
+  // IIFE already running — ctx and skeleton updated, nothing else to do.
+  if (isRenderingAdyen) return;
+  isRenderingAdyen = true;
+
+  // Read OOPE config from availablePaymentMethods — static data set at checkout
+  // initialization, reliable regardless of render timing.
   const checkoutData = events.lastPayload('checkout/initialized');
   const oopeConfig = checkoutData?.availablePaymentMethods
     ?.find((m) => m.code === ADYEN_PAYMENT_CODE)
     ?.oope_payment_method_config;
 
   if (!oopeConfig?.backend_integration_url) {
-    throw new Error(`[Adyen] backend_integration_url missing in oope_payment_method_config for ${ADYEN_PAYMENT_CODE}`);
+    $skeleton.className = 'checkout__adyen-error';
+    $skeleton.textContent = `[Adyen] backend_integration_url missing in oope_payment_method_config for ${ADYEN_PAYMENT_CODE}`;
+    isRenderingAdyen = false;
+    return;
   }
 
   const endpoint = `${oopeConfig.backend_integration_url.replace(/\/$/, '')}/create-session`;
@@ -41,71 +78,111 @@ export default async function renderAdyenGateway(ctx) {
   const clientKey = cfg.client_key;
   const env = (cfg.environment || 'TEST').toLowerCase();
 
-  // Show skeleton immediately — before any async work.
-  const $skeleton = document.createElement('div');
-  $skeleton.className = 'checkout__adyen-skeleton';
-  ctx.replaceHTML($skeleton);
+  // Uses activeCtx so the error always lands in the slot the dropin expects.
+  const showError = (message) => {
+    const $error = document.createElement('div');
+    $error.className = 'checkout__adyen-error';
+    $error.textContent = message || 'Payment could not be processed. Please refresh and try again.';
+    activeCtx.replaceHTML($error);
+  };
 
-  // Load SDK and create session in parallel — safe to call concurrently since
-  // loadAdyenWebSDK deduplicates in-flight requests via a module-level promise.
-  const cartData = events.lastPayload('cart/data') || events.lastPayload('cart/initialized');
+  // Single background async IIFE. Subsequent render() calls only update
+  // activeCtx and show a fresh skeleton; they never start a second IIFE.
+  (async () => {
+    const cartData = events.lastPayload('cart/data') || events.lastPayload('cart/initialized');
 
-  let session;
-  try {
-    [, session] = await Promise.all([
-      loadAdyenWebSDK(env),
-      createAdyenSession(endpoint, {
-        amount: {
-          value: Math.round((cartData?.total?.includingTax?.value || 0) * 100),
-          currency: cartData?.total?.includingTax?.currency || 'USD',
-        },
-        reference: cartData?.id,
-        returnUrl: `${window.location.origin}/checkout`,
-        countryCode: checkoutData?.billingAddress?.country?.code
-          || checkoutData?.shippingAddresses?.[0]?.country?.code
-          || 'US',
-      }),
-    ]);
-  } catch (err) {
-    $skeleton.className = 'checkout__adyen-error';
-    $skeleton.textContent = 'Payment form could not be loaded. Please refresh and try again.';
-    throw err;
-  }
-
-  const $dropin = document.createElement('div');
-  ctx.replaceHTML($dropin);
-
-  const AdyenCheckoutFactory = window.AdyenWeb?.AdyenCheckout ?? window.AdyenCheckout;
-  const DropinComponent = window.AdyenWeb?.Dropin ?? window.Dropin;
-
-  const checkout = await AdyenCheckoutFactory({
-    session: { id: session.id, sessionData: session.sessionData },
-    clientKey,
-    environment: env,
-    onPaymentCompleted: (result) => {
-      resolveAdyenPayment({
-        sessionId: session.id,
-        resultCode: result.resultCode,
-        sessionData: result.sessionData ?? '',
-        sessionResult: result.sessionResult ?? '',
-      });
-    },
-    onPaymentFailed: (result) => {
-      rejectAdyenPayment(`Payment ${result.resultCode}`);
-    },
-    onError: (error) => {
-      rejectAdyenPayment(error.message);
-    },
-  });
-
-  const dropin = new DropinComponent(checkout, { showPayButton: false }).mount($dropin);
-  setDropinInstance(dropin);
-
-  // Clean up when the customer switches to a different payment method.
-  const unsubscribe = events.on('checkout/updated', (data) => {
-    if (data?.selectedPaymentMethod?.code !== ADYEN_PAYMENT_CODE) {
-      clearDropinInstance();
-      unsubscribe.off();
+    let session;
+    try {
+      [, session] = await Promise.all([
+        loadAdyenWebSDK(env),
+        createAdyenSession(endpoint, {
+          amount: {
+            value: Math.round((cartData?.total?.includingTax?.value || 0) * 100),
+            currency: cartData?.total?.includingTax?.currency || 'USD',
+          },
+          reference: cartData?.id,
+          returnUrl: `${window.location.origin}/checkout`,
+          countryCode: checkoutData?.billingAddress?.country?.code
+            || checkoutData?.shippingAddresses?.[0]?.country?.code
+            || 'US',
+        }),
+      ]);
+    } catch (err) {
+      showError('Payment form could not be loaded. Please refresh and try again.');
+      return;
     }
+
+    const AdyenCheckoutFactory = window.AdyenWeb?.AdyenCheckout ?? window.AdyenCheckout;
+    const DropinComponent = window.AdyenWeb?.Dropin ?? window.Dropin;
+
+    let checkout;
+    try {
+      checkout = await AdyenCheckoutFactory({
+        session: { id: session.id, sessionData: session.sessionData },
+        clientKey,
+        environment: env,
+        onPaymentCompleted: (result) => {
+          resolveAdyenPayment({
+            sessionId: session.id,
+            resultCode: result.resultCode,
+            sessionData: result.sessionData ?? '',
+            sessionResult: result.sessionResult ?? '',
+          });
+        },
+        onPaymentFailed: (result) => {
+          rejectAdyenPayment(`Payment ${result.resultCode}`);
+        },
+        onError: (error) => {
+          console.error('[Adyen] onError:', error);
+          rejectAdyenPayment(error.message);
+          showError('Payment could not be processed. Please refresh and try again.');
+        },
+      });
+    } catch (err) {
+      showError('Payment form could not be loaded. Please refresh and try again.');
+      throw err;
+    }
+
+    // Find the skeleton currently in the slot and get its parent — this IS the
+    // slot's DOM container managed by the dropin. We insert $dropin directly into
+    // the parent rather than via ctx.replaceHTML because ctx.replaceHTML goes
+    // through Preact's batched update cycle, which may delay DOM insertion past
+    // the synchronous mount() call, causing the Drop-in to mount into a detached
+    // node. Direct DOM manipulation is synchronous and guaranteed in-document.
+    const $currentSkeleton = document.querySelector('.checkout__adyen-skeleton');
+    const $slotParent = $currentSkeleton?.parentElement;
+
+    if (!$slotParent) {
+      showError('Payment slot not found. Please refresh and try again.');
+      return;
+    }
+
+    // Replace skeleton with the dropin container and mount synchronously.
+    // No await between these operations — the Drop-in claims $dropin before
+    // any Preact reconciliation can run.
+    const $dropin = document.createElement('div');
+    $slotParent.innerHTML = '';
+    $slotParent.appendChild($dropin);
+    const dropin = new DropinComponent(checkout, { showPayButton: false }).mount($dropin);
+
+    // Store the dropin element so render() can re-pass it to ctx.replaceHTML on
+    // subsequent checkout/updated calls, keeping the slot alive.
+    activeDropinEl = $dropin;
+    setDropinInstance(dropin);
+
+    // Clean up when the customer switches to a different payment method.
+    const unsubscribe = events.on('checkout/updated', (data) => {
+      if (data?.selectedPaymentMethod?.code !== ADYEN_PAYMENT_CODE) {
+        clearDropinInstance();
+        activeDropinEl = null;
+        isRenderingAdyen = false;
+        unsubscribe.off();
+      }
+    });
+  })().catch((err) => {
+    showError('Payment form could not be loaded. Please refresh and try again.');
+    console.error('[Adyen]', err);
+  }).finally(() => {
+    isRenderingAdyen = false;
   });
 }

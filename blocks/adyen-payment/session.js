@@ -65,10 +65,16 @@ export async function createAdyenSession(endpoint, payload) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!response.ok) throw new Error(`create-session failed: ${response.status}`);
   const body = await response.json();
-  // App Builder wraps the Adyen response in { message: { ... } }
-  return body.message ?? body;
+  if (!response.ok || body.success === false) {
+    throw new Error(`create-session failed: ${JSON.stringify(body.error ?? body)}`);
+  }
+  // App Builder wraps the Adyen response in { success: true, message: { id, sessionData, ... } }
+  const session = body.message ?? body;
+  if (!session?.id || !session?.sessionData) {
+    throw new Error(`create-session returned invalid session — check App Builder logs. Response: ${JSON.stringify(body)}`);
+  }
+  return session;
 }
 
 // ─── Drop-in coordination ─────────────────────────────────────────────────────
@@ -79,7 +85,7 @@ export async function createAdyenSession(endpoint, payload) {
 // 10-minute timeout matches typical Adyen session expiry.
 const PAYMENT_TIMEOUT_MS = 10 * 60 * 1000;
 
-let dropinInstance = null;
+export let dropinInstance = null;
 let paymentResolve = null;
 let paymentReject = null;
 let paymentTimeoutId = null;
