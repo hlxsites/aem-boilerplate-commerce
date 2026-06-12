@@ -1,0 +1,29 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1.api.commerce.adobe.com/4Bz9AeJnixcbbKvgEdvMn5/graphql",
+      "commerce-endpoint": "https://na1.api.commerce.adobe.com/4Bz9AeJnixcbbKvgEdvMn5/graphql",
+      "adobe-commerce-optimizer": true,
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "content-type": "application/json",
+          "AC-View-Id": "578c11e9-6abc-4376-94f4-74c941ab881d",
+          "AC-Environment-Id": "4Bz9AeJnixcbbKvgEdvMn5",
+          "AC-Price-Book-Id": "base::77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "AC-Source-Locale": "default"
+        }
+      },
+      "analytics": {
+        "view-id": "578c11e9-6abc-4376-94f4-74c941ab881d",
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "locale": "default",
+        "store-url": "https://sd-rec-composit-prod--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "4Bz9AeJnixcbbKvgEdvMn5"
+      }
+    }
+  }
+}
