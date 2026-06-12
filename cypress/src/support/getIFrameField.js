@@ -1,32 +1,17 @@
+// Pure chain of retriable query commands with no .then() in the middle.
+// A trailing .should('be.visible') from the caller re-runs the whole chain,
+// re-reading contentDocument from the live iframe element so a mid-load
+// re-render that detaches the iframe body doesn't permanently break it.
 const getIFrameField = (iframe, field) => {
   return getIframeBody(iframe).find(field);
 };
 
-const getIframeDocument = (iframe) => {
+const getIframeBody = (iframe) => {
   return (
     cy
       .get(iframe)
-      // Cypress yields jQuery element, which has the real
-      // DOM element under property "0".
-      // From the real DOM iframe element we can get
-      // the "document" element, it is stored in "contentDocument" property
-      // Cypress "its" command can access deep properties using dot notation
-      // https://on.cypress.io/its
-      .its('0.contentDocument')
-      .should('exist')
-  );
-};
-
-const getIframeBody = (iframe) => {
-  // get the document
-  return (
-    getIframeDocument(iframe)
-      // automatically retries until body is loaded
-      .its('body')
-      .should('not.be.undefined')
-      // wraps "body" DOM element to allow
-      // chaining more Cypress commands, like ".find(...)"
-      .then(cy.wrap)
+      .its('0.contentDocument.body')
+      .should('not.be.empty')
   );
 };
 
