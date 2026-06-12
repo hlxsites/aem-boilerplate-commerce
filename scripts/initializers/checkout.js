@@ -15,6 +15,16 @@ await initializeDropin(async () => {
     },
   };
 
-  // Initialize checkout
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  // Initialize checkout — expose OOPE payment method config to dropin event payloads
+  return initializers.mountImmediately(initialize, {
+    langDefinitions,
+    models: {
+      CartModel: {
+        transformer: (data) => ({
+          availablePaymentMethods: data?.available_payment_methods,
+          selectedPaymentMethod: data?.selected_payment_method,
+        }),
+      },
+    },
+  });
 })();
