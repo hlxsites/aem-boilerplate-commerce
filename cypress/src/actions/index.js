@@ -110,17 +110,15 @@ export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
     const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
-    cy.wait(5000);
-    cy.getIFrameField(
-      fields.creditCardNumberIFrame,
-      fields.creditCardNumber
-    ).type(cc_number);
-    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      cc_exp
-    );
-    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      cc_cid
-    );
+    cy.getIFrameField(fields.creditCardNumberIFrame, fields.creditCardNumber)
+      .should('be.visible')
+      .type(cc_number);
+    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp)
+      .should('be.visible')
+      .type(cc_exp);
+    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv)
+      .should('be.visible')
+      .type(cc_cid);
   }
 };
 
