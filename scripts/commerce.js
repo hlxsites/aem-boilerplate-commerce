@@ -702,7 +702,13 @@ export function getOptionsUIDsFromUrl() {
  * @returns {string|undefined} Store identifier based on header values or undefined.
  */
 function getStoreIdentifier() {
-  const storeIdentifier = getConfigValue('headers.cs.Magento-Store-View-Code') || getConfigValue('headers.cs.AC-View-ID');
+  const headers = getHeaders('cs');
+  const saasStoreIdentifier = 'magento-store-view-code';
+  const acoStoreIdentifier = 'ac-view-id';
+  const storeIdentifierKey = Object.keys(headers).find(
+    (key) => [saasStoreIdentifier, acoStoreIdentifier].includes(key.toLowerCase()),
+  );
+  const storeIdentifier = storeIdentifierKey ? headers[storeIdentifierKey] : undefined;
   if (!storeIdentifier) {
     console.warn('No store view code found in config headers for tracking history');
     return undefined;
