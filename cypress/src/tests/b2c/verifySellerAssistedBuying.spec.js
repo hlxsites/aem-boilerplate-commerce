@@ -309,14 +309,8 @@ describe("Seller Assisted Buying", () => {
       ).should("not.exist");
 
       cy.log("Step 14: Logging out before OTP admin login");
-      cy.reload();
-      cy.visit("/");
-      cy.get(".nav-dropdown-button", { timeout: 60000 })
-        .should("be.visible")
-        .click({ force: true });
-      cy.contains("button", /^logout$/i, { timeout: 60000 })
-        .click({ force: true });
-
+      cy.get('.nav-dropdown-button').click();
+      cy.contains('button', /sign out|logout/i).click();
       resetAuthStateAndOpenLogin();
 
       cy.log("Step 15: Looking up customer for admin OTP login");
