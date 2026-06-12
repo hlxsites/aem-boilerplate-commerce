@@ -89,6 +89,10 @@ let dropinInstance = null;
 
 /** Returns true if the Adyen Drop-in is currently mounted. */
 export function isDropinMounted() { return !!dropinInstance; }
+
+/** Returns true when submitAdyenPayment() has been called and is awaiting a result. */
+export function isPaymentPending() { return !!paymentResolve; }
+
 let paymentResolve = null;
 let paymentReject = null;
 let paymentTimeoutId = null;

@@ -13,6 +13,7 @@ import {
   resolveAdyenPayment,
   rejectAdyenPayment,
   isDropinMounted,
+  isPaymentPending,
 } from './session.js';
 
 // True while the async IIFE is running. Prevents a second IIFE from starting
@@ -121,6 +122,16 @@ export default function renderAdyenGateway(ctx) {
         session: { id: session.id, sessionData: session.sessionData },
         clientKey,
         environment: env,
+        beforeSubmit: (data, _component, actions) => {
+          // Only allow Drop-in submission when Place Order triggered it.
+          // Without this guard, pressing Enter in the card fields would send
+          // the payment to Adyen without creating a Commerce order.
+          if (isPaymentPending()) {
+            actions.resolve(data);
+          } else {
+            actions.reject();
+          }
+        },
         onPaymentCompleted: (result) => {
           resolveAdyenPayment({
             sessionId: session.id,
