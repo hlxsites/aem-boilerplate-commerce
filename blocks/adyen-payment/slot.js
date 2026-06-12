@@ -12,7 +12,7 @@ import {
   clearDropinInstance,
   resolveAdyenPayment,
   rejectAdyenPayment,
-  dropinInstance,
+  isDropinMounted,
 } from './session.js';
 
 // True while the async IIFE is running. Prevents a second IIFE from starting
@@ -39,7 +39,7 @@ let activeDropinEl = null;
 export default function renderAdyenGateway(ctx) {
   // Drop-in already mounted. Re-pass the existing element back so Preact keeps
   // the slot instead of clearing it (render returning void clears the slot).
-  if (dropinInstance) {
+  if (isDropinMounted()) {
     if (activeDropinEl) ctx.replaceHTML(activeDropinEl);
     return;
   }
@@ -122,7 +122,6 @@ export default function renderAdyenGateway(ctx) {
         clientKey,
         environment: env,
         onPaymentCompleted: (result) => {
-          console.log('[Adyen] onPaymentCompleted:', result.resultCode);
           resolveAdyenPayment({
             sessionId: session.id,
             resultCode: result.resultCode,

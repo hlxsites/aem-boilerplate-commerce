@@ -85,7 +85,10 @@ export async function createAdyenSession(endpoint, payload) {
 // 10-minute timeout matches typical Adyen session expiry.
 const PAYMENT_TIMEOUT_MS = 10 * 60 * 1000;
 
-export let dropinInstance = null;
+let dropinInstance = null;
+
+/** Returns true if the Adyen Drop-in is currently mounted. */
+export function isDropinMounted() { return !!dropinInstance; }
 let paymentResolve = null;
 let paymentReject = null;
 let paymentTimeoutId = null;
