@@ -701,7 +701,7 @@ export function getOptionsUIDsFromUrl() {
  * Determines the store identifier for tracking history based on configuration headers.
  * @returns {string|undefined} Store identifier based on header values or undefined.
  */
-function getStoreIdentifier() {
+export function getStoreIdentifier() {
   const headers = getHeaders('cs');
   const saasStoreIdentifier = 'magento-store-view-code';
   const acoStoreIdentifier = 'ac-view-id';
@@ -750,92 +750,6 @@ function trackHistory() {
         window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
       });
     });
-  }
-}
-
-/**
- * Validates and returns a product view history entry if valid
- * @param {Object} entry - The history entry to validate
- * @returns {Object|null} - Validated history entry or null if invalid
- */
-function getValidViewEntry(entry) {
-  // Basic validation to ensure the entry has necessary properties
-  if (entry && typeof entry === 'object' && entry.sku && entry.date) {
-    return {
-      sku: entry.sku,
-      date: entry.date,
-    };
-  }
-  return null;
-}
-
-/**
- * Gets product view history from localStorage
- * @returns {Array} - Array of view history items
- */
-export function getProductViewHistory() {
-  const storeIdentifier = getStoreIdentifier();
-  try {
-    if (!storeIdentifier) {
-      return [];
-    }
-    const viewHistory = window.localStorage.getItem(`${storeIdentifier}:productViewHistory`) || '[]';
-    const parsedHistory = JSON.parse(viewHistory);
-    if (!Array.isArray(parsedHistory)) {
-      throw new Error('Product view history is not an array');
-    }
-    const validHistory = parsedHistory.map(getValidViewEntry).filter((entry) => entry !== null);
-    if (validHistory.length === 0) {
-      // If no valid entries, clear the history to prevent future parsing issues
-      window.localStorage.removeItem(`${storeIdentifier}:productViewHistory`);
-    }
-    return validHistory;
-  } catch (e) {
-    window.localStorage.removeItem(`${storeIdentifier}:productViewHistory`);
-    console.error('Error parsing product view history', e);
-    return [];
-  }
-}
-
-/**
- * Validates and returns a purchase history entry if valid
- * @param {Object} entry - The history entry to validate
- * @returns {Object|null} - Validated history entry or null if invalid
- */
-function getValidPurchaseEntry(entry) {
-  // Basic validation to ensure the entry has necessary properties
-  const { items, date } = entry ?? {};
-  if (Array.isArray(items) && items.every((item) => typeof item === 'string') && date) {
-    return { items, date };
-  }
-  return null;
-}
-
-/**
- * Gets purchase history from localStorage
- * @returns {Array} - Array of purchase history items
- */
-export function getPurchaseHistory() {
-  const storeIdentifier = getStoreIdentifier();
-  try {
-    if (!storeIdentifier) {
-      return [];
-    }
-    const purchaseHistory = window.localStorage.getItem(`${storeIdentifier}:purchaseHistory`) || '[]';
-    const parsedHistory = JSON.parse(purchaseHistory);
-    if (!Array.isArray(parsedHistory)) {
-      throw new Error('Purchase history is not an array');
-    }
-    const validHistory = parsedHistory.map(getValidPurchaseEntry).filter((entry) => entry !== null);
-    if (validHistory.length === 0) {
-      // If no valid entries, clear the history to prevent future parsing issues
-      window.localStorage.removeItem(`${storeIdentifier}:purchaseHistory`);
-    }
-    return validHistory;
-  } catch (e) {
-    window.localStorage.removeItem(`${storeIdentifier}:purchaseHistory`);
-    console.error('Error parsing purchase history', e);
-    return [];
   }
 }
 
