@@ -50,15 +50,15 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
   });
 
   it('renders the shell and fires one payByLinkOrder query when /pay has a structurally valid token', () => {
-    // Stub the order query so the page renders the summary, not an error state.
-    cy.intercept('POST', Cypress.env('graphqlEndPoint'), (req) => {
+    cy.intercept('POST', '**/graphql*', (req) => {
       const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (body.includes('PAY_BY_LINK_ORDER')) {
         req.reply({ fixture: 'payByLinkOrder' });
       }
-    });
+    }).as('payByLinkOrder');
 
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
+    cy.wait('@payByLinkOrder');
 
     cy.get('.pay-by-link').should('exist').should('not.have.class', 'pay-by-link--error');
     cy.get('.pay-by-link__main').should('exist');
@@ -71,7 +71,5 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
     cy.get('.pay-by-link__order-totals').should('exist');
     cy.get('.pay-by-link__payment').should('exist');
     cy.get('.pay-by-link__footer').should('exist');
-
-    cy.then(() => expect(payByLinkOrderCalls.length).to.be.greaterThan(0));
   });
 });

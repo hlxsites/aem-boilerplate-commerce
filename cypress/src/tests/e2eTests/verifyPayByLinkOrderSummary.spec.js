@@ -7,7 +7,7 @@ const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec6
 
 describe('Pay By Link — Order Summary (ACCS-873)', () => {
   function stubPayByLinkOrder(body) {
-    cy.intercept('POST', Cypress.env('graphqlEndPoint'), (req) => {
+    cy.intercept('POST', '**/graphql*', (req) => {
       const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (query.includes('PAY_BY_LINK_ORDER')) {
         req.reply({ body });
@@ -101,25 +101,26 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
   });
 
   it('shows the loading skeleton while the query is in flight and removes it after', () => {
-    let resolveQuery;
-    cy.intercept('POST', Cypress.env('graphqlEndPoint'), (req) => {
-      const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
-      if (query.includes('PAY_BY_LINK_ORDER')) {
-        return new Promise((resolve) => {
-          resolveQuery = () => {
-            cy.fixture('payByLinkOrder').then((fixture) => {
+    cy.fixture('payByLinkOrder').then((fixture) => {
+      let resolveQuery;
+
+      cy.intercept('POST', '**/graphql*', (req) => {
+        const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+        if (query.includes('PAY_BY_LINK_ORDER')) {
+          return new Promise((resolve) => {
+            resolveQuery = () => {
               req.reply({ body: fixture });
               resolve();
-            });
-          };
-        });
-      }
-    }).as('payByLinkOrder');
+            };
+          });
+        }
+      }).as('payByLinkOrder');
 
-    cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
-    cy.get('.pay-by-link__skeleton').should('exist');
-    cy.then(() => resolveQuery?.());
-    cy.wait('@payByLinkOrder');
-    cy.get('.pay-by-link__skeleton').should('not.exist');
+      cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
+      cy.get('.pay-by-link__skeleton').should('exist');
+      cy.then(() => resolveQuery?.());
+      cy.wait('@payByLinkOrder');
+      cy.get('.pay-by-link__skeleton').should('not.exist');
+    });
   });
 });
