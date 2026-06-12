@@ -8,7 +8,6 @@ import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 // Order Dropin Modules
 import * as orderApi from '@dropins/storefront-order/api.js';
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import { ADYEN_PAYMENT_CODE, submitAdyenPayment } from '../adyen-payment/session.js';
 
 // Checkout Dropin Libraries
 import {
@@ -20,6 +19,8 @@ import {
 
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+
+import { ADYEN_PAYMENT_CODE, submitAdyenPayment } from '../adyen-payment/session.js';
 
 // Block Utilities
 import {

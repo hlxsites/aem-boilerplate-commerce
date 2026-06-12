@@ -27,7 +27,7 @@ let sdkLoadPromise = null;
  * @param {string} environment - 'test' | 'live'
  */
 export async function loadAdyenWebSDK(environment = 'test') {
-  if (window.AdyenWeb?.AdyenCheckout || window.AdyenCheckout) return;
+  if (window.AdyenWeb?.AdyenCheckout || window.AdyenCheckout) return Promise.resolve();
   if (sdkLoadPromise) return sdkLoadPromise;
 
   const base = `https://checkoutshopper-${environment}.adyen.com/checkoutshopper/sdk/${SDK_VERSION}`;
