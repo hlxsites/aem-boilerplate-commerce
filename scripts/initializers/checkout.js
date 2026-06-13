@@ -20,10 +20,23 @@ await initializeDropin(async () => {
     langDefinitions,
     models: {
       CartModel: {
-        transformer: (data) => ({
-          availablePaymentMethods: data?.available_payment_methods,
-          selectedPaymentMethod: data?.selected_payment_method,
-        }),
+        // Strip oope_payment_method_config from payment method objects — if left
+        // in, the dropin's input transformer passes it to setPaymentMethodOnCart
+        // which the Commerce schema rejects (not a field of PaymentMethodInput).
+        // Expose it separately as oopePaymentMethodConfigs for the Adyen slot.
+        transformer: (data) => {
+          const methods = data?.available_payment_methods ?? [];
+          return {
+            availablePaymentMethods: methods.map(
+              // eslint-disable-next-line camelcase
+              ({ oope_payment_method_config, ...rest }) => rest,
+            ),
+            oopePaymentMethodConfigs: Object.fromEntries(
+              // eslint-disable-next-line camelcase
+              methods.map(({ code, oope_payment_method_config }) => [code, oope_payment_method_config]),
+            ),
+          };
+        },
       },
     },
   });

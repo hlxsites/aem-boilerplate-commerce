@@ -58,12 +58,11 @@ export default function renderAdyenGateway(ctx) {
   if (isRenderingAdyen) return;
   isRenderingAdyen = true;
 
-  // Read OOPE config from availablePaymentMethods — static data set at checkout
-  // initialization, reliable regardless of render timing.
+  // Read OOPE config from oopePaymentMethodConfigs — a map keyed by payment
+  // method code, separated from availablePaymentMethods so the dropin's
+  // setPaymentMethodOnCart input transformer never sees oope_payment_method_config.
   const checkoutData = events.lastPayload('checkout/initialized');
-  const oopeConfig = checkoutData?.availablePaymentMethods
-    ?.find((m) => m.code === ADYEN_PAYMENT_CODE)
-    ?.oope_payment_method_config;
+  const oopeConfig = checkoutData?.oopePaymentMethodConfigs?.[ADYEN_PAYMENT_CODE];
 
   if (!oopeConfig?.backend_integration_url) {
     $skeleton.className = 'checkout__adyen-error';
