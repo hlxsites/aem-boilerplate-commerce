@@ -28,7 +28,10 @@ await initializeDropin(async () => {
           const methods = data?.available_payment_methods ?? [];
           return {
             // eslint-disable-next-line camelcase
-            availablePaymentMethods: methods.map(({ oope_payment_method_config: _, ...rest }) => rest),
+            availablePaymentMethods: methods.map(
+              // eslint-disable-next-line camelcase
+              ({ oope_payment_method_config: _, ...rest }) => rest,
+            ),
             oopePaymentMethodConfigs: Object.fromEntries(
               // eslint-disable-next-line camelcase
               methods.map(({ code, oope_payment_method_config: cfg }) => [code, cfg]),
