@@ -4,6 +4,8 @@ import { Button, provider as UI } from '@dropins/tools/components.js';
 
 import { fetchPlaceholders, rootLink, SUPPORT_PATH } from '../../scripts/commerce.js';
 
+import { renderErrorCard } from './errors/error-card.js';
+
 // token is varchar(64) secure random hash. Strict lowercase hex.
 export const TOKEN_REGEX = /^[a-f0-9]{64}$/;
 
@@ -72,5 +74,5 @@ export default async function decorate(block) {
   }
 
   const labels = await fetchPlaceholders();
-  renderError(block, result.status, labels);
+  renderErrorCard(block, result.status, { labels });
 }
