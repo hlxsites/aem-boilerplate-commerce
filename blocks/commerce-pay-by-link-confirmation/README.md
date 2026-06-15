@@ -1,6 +1,6 @@
 # Commerce Pay By Link Confirmation
 
-Standalone EDS page block that hosts the Pay By Link post-payment confirmation surface. Drop the block onto an authored page at `/pay/confirmation`. The block reads `?order=<order_number>` from the URL, optionally consumes a full order object from `window.history.state.orderData`, and renders either the complete order summary (via the `storefront-order` dropin) or a degraded "thank you" view when state is not available.
+Standalone EDS page block that hosts the Pay By Link post-payment confirmation surface. Drop the block onto an authored page at `/pay/confirmation`. The block reads `?order=<order_number>` from the URL, optionally consumes a full order object from `window.history.state.orderData`, and renders either the complete order summary (via the `storefront-order` dropin) or a thank-you "thank you" view when state is not available.
 
 ## Authored content
 
@@ -41,13 +41,13 @@ window.history.pushState(
 
 `orderData` must be the shape `payByLinkOrder` returns — the `storefront-order` dropin's `orderApi.initialize({ orderData })` consumes it directly.
 
-When `history.state.orderData` is absent (refresh, direct nav, email link), the block falls through to a degraded thank-you view rendered from the URL's `order_number` alone. The customer's confirmation email is the durable record.
+When `history.state.orderData` is absent (refresh, direct nav, email link), the block falls through to a thank-you thank-you view rendered from the URL's `order_number` alone. The customer's confirmation email is the durable record.
 
 ## Events
 
 ### Event Emitters
 
-- `events.emit('pay-by-link/confirmation', { orderNumber })` — fires once per page load whenever `?order` is a structurally valid order number, before the block decides between the full-summary and degraded views. Subscribers (e.g. analytics, ACCS-878) should treat this as a "confirmation page rendered for order X" signal. Not emitted when `?order` is missing or malformed.
+- `events.emit('pay-by-link/confirmation', { orderNumber })` — fires once per page load whenever `?order` is a structurally valid order number, before the block decides between the full-summary and thank-you views. Subscribers (e.g. analytics, ACCS-878) should treat this as a "confirmation page rendered for order X" signal. Not emitted when `?order` is missing or malformed.
 
 Payload:
 
@@ -77,10 +77,10 @@ The block reads i18n strings via `fetchPlaceholders()` (no path argument), which
 
 | Key | Used for |
 | --- | --- |
-| `PayByLinkConfirmation.DegradedTitle` | Heading on the degraded view |
-| `PayByLinkConfirmation.DegradedBody` | Body copy on the degraded view |
+| `PayByLinkConfirmation.ThankYouTitle` | Heading on the thank-you view |
+| `PayByLinkConfirmation.ThankYouBody` | Body copy on the thank-you view |
 | `PayByLinkConfirmation.OrderNumberLabel` | Label preceding the order number |
-| `PayByLinkConfirmation.ContinueShoppingLabel` | CTA label on the degraded view |
+| `PayByLinkConfirmation.ContinueShoppingLabel` | CTA label on the thank-you view |
 | `PayByLinkConfirmation.ErrorMissingOrderTitle` | Heading when `?order` is missing |
 | `PayByLinkConfirmation.ErrorMissingOrderBody` | Body when `?order` is missing |
 | `PayByLinkConfirmation.ErrorMalformedOrderTitle` | Heading when `?order` fails format validation |

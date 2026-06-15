@@ -38,7 +38,7 @@ function consumeOrderDataFromHistory(expectedOrderNumber) {
   if (!orderData) return null;
   // The URL's order_number is the ground truth. orderData must carry the same
   // number; anything else is mismatched navigation or tampered state, in which
-  // case we fall back to the degraded view.
+  // case we fall back to the thank-you view.
   if (orderData.number !== expectedOrderNumber) return null;
   return orderData;
 }
@@ -74,29 +74,32 @@ function renderError(block, kind, labels) {
   }, 0);
 }
 
-// Degraded view: we know an order_number but have no order data to render
-// containers against. Happens on refresh / direct nav / link from email.
-function renderDegraded(block, orderNumber, labels) {
+// Successful payment, leaner view: the order_number is known but we don't have
+// the order object needed to mount the storefront-order containers (e.g.
+// refresh, direct nav, link from email dropped the history.state handoff).
+// Renders thank-you + order number + CTA — the confirmation email is the
+// durable record of the full transaction.
+function renderThankYou(block, orderNumber, labels) {
   const ns = labels?.PayByLinkConfirmation || {};
 
   block.innerHTML = `
-    <div class="pay-by-link-confirmation pay-by-link-confirmation--degraded">
-      <div class="pay-by-link-confirmation__degraded-card">
-        <h1 class="pay-by-link-confirmation__degraded-title" tabindex="-1"></h1>
-        <p class="pay-by-link-confirmation__degraded-order-number">
-          <span class="pay-by-link-confirmation__degraded-order-number-label"></span>
-          <strong class="pay-by-link-confirmation__degraded-order-number-value" data-testid="pay-by-link-confirmation-order-number"></strong>
+    <div class="pay-by-link-confirmation pay-by-link-confirmation--thank-you">
+      <div class="pay-by-link-confirmation__thank-you-card">
+        <h1 class="pay-by-link-confirmation__thank-you-title" tabindex="-1"></h1>
+        <p class="pay-by-link-confirmation__thank-you-order-number">
+          <span class="pay-by-link-confirmation__thank-you-order-number-label"></span>
+          <strong class="pay-by-link-confirmation__thank-you-order-number-value" data-testid="pay-by-link-confirmation-order-number"></strong>
         </p>
-        <p class="pay-by-link-confirmation__degraded-body"></p>
-        <div class="pay-by-link-confirmation__degraded-cta"></div>
+        <p class="pay-by-link-confirmation__thank-you-body"></p>
+        <div class="pay-by-link-confirmation__thank-you-cta"></div>
       </div>
     </div>
   `;
 
-  block.querySelector('.pay-by-link-confirmation__degraded-title').textContent = ns.DegradedTitle || '';
-  block.querySelector('.pay-by-link-confirmation__degraded-order-number-label').textContent = ns.OrderNumberLabel || '';
-  block.querySelector('.pay-by-link-confirmation__degraded-order-number-value').textContent = orderNumber;
-  block.querySelector('.pay-by-link-confirmation__degraded-body').textContent = ns.DegradedBody || '';
+  block.querySelector('.pay-by-link-confirmation__thank-you-title').textContent = ns.ThankYouTitle || '';
+  block.querySelector('.pay-by-link-confirmation__thank-you-order-number-label').textContent = ns.OrderNumberLabel || '';
+  block.querySelector('.pay-by-link-confirmation__thank-you-order-number-value').textContent = orderNumber;
+  block.querySelector('.pay-by-link-confirmation__thank-you-body').textContent = ns.ThankYouBody || '';
 
   UI.render(Button, {
     children: ns.ContinueShoppingLabel || '',
@@ -104,10 +107,10 @@ function renderDegraded(block, orderNumber, labels) {
     size: 'medium',
     href: rootLink('/'),
     'data-testid': 'pay-by-link-confirmation-continue-cta',
-  })(block.querySelector('.pay-by-link-confirmation__degraded-cta'));
+  })(block.querySelector('.pay-by-link-confirmation__thank-you-cta'));
 
   setTimeout(() => {
-    block.querySelector('.pay-by-link-confirmation__degraded-title')?.focus();
+    block.querySelector('.pay-by-link-confirmation__thank-you-title')?.focus();
   }, 0);
 }
 
@@ -168,12 +171,12 @@ export default async function decorate(block) {
       return;
     } catch (e) {
       // orderData shape didn't satisfy the dropin (initialize or a container
-      // render threw). Fall back to degraded — a customer who has already paid
+      // render threw). Fall back to thank-you — a customer who has already paid
       // should never see a broken page.
       // eslint-disable-next-line no-console
-      console.error('Pay By Link confirmation: full-summary render failed, falling back to degraded.', e);
+      console.error('Pay By Link confirmation: full-summary render failed, falling back to thank-you.', e);
     }
   }
 
-  renderDegraded(block, result.orderNumber, labels);
+  renderThankYou(block, result.orderNumber, labels);
 }
