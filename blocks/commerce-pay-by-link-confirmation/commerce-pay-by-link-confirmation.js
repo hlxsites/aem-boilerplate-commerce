@@ -69,8 +69,9 @@ function renderError(block, kind, labels) {
     href: rootLink('/'),
     'data-testid': 'pay-by-link-confirmation-error-cta',
   })(block.querySelector('.pay-by-link-confirmation__error-cta'));
-
-  block.querySelector('.pay-by-link-confirmation__error-title').focus();
+  setTimeout(() => {
+    block.querySelector('.pay-by-link-confirmation__error-title')?.focus();
+  }, 0);
 }
 
 // Degraded view: we know an order_number but have no order data to render
@@ -105,7 +106,9 @@ function renderDegraded(block, orderNumber, labels) {
     'data-testid': 'pay-by-link-confirmation-continue-cta',
   })(block.querySelector('.pay-by-link-confirmation__degraded-cta'));
 
-  block.querySelector('.pay-by-link-confirmation__degraded-title').focus();
+  setTimeout(() => {
+    block.querySelector('.pay-by-link-confirmation__degraded-title')?.focus();
+  }, 0);
 }
 
 async function renderFullSummary(block, orderData, labels) {
