@@ -1,11 +1,8 @@
 /* eslint-disable import/no-unresolved */
 
-import { Button, provider as UI } from '@dropins/tools/components.js';
 import {
   CORE_FETCH_GRAPHQL,
   fetchPlaceholders,
-  rootLink,
-  SUPPORT_PATH,
 } from '../../scripts/commerce.js';
 import { renderErrorCard } from './errors/error-card.js';
 import { mapErrorToState } from './errors/error-states.js';

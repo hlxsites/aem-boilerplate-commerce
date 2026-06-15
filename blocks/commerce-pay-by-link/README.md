@@ -37,18 +37,40 @@ slots.Payment = async (ctx) => {
 | `ctx.appendChild(el)` | Function | Append to the slot container |
 | `ctx.prependChild(el)` | Function | Prepend to the slot container |
 
-## Error states
+## Error handling
 
-| Condition | Error kind | Notes |
+Token validation and `payByLinkOrder` failures use the shared error library in `errors/`. The block calls `renderErrorCard()` with states from `mapErrorToState()`. Payment Services and OOPE submission stories should import the same modules for consistent UI.
+
+```js
+import { renderErrorCard } from './errors/error-card.js';
+import { mapErrorToState, PAY_BY_LINK_ERROR } from './errors/error-states.js';
+```
+
+### Error states
+
+| State | Source | CTA |
 |---|---|---|
-| No `token` param | `missing` | Shown before any network call |
-| Token fails regex | `malformed` | Shown before any network call |
-| `TOKEN_NOT_FOUND` from API | `not-found` | |
-| `TOKEN_EXPIRED` from API | `expired` | |
-| `ORDER_ALREADY_PAID` from API | `already-paid` | |
-| `ORDER_CANCELLED` from API | `cancelled` | |
+| `missing` | No `token` param (pre-flight) | Contact support |
+| `malformed` | Token fails regex (pre-flight) | Contact support |
+| `not-found` | `TOKEN_NOT_FOUND` / HTTP 404 | Contact support |
+| `expired` | `TOKEN_EXPIRED` / HTTP 410 | Contact support |
+| `already-completed` | `ORDER_ALREADY_PAID` | None |
+| `cancelled` | `ORDER_CANCELLED` / HTTP 409 | Contact support |
+| `gateway-decline` | Payment gateway decline | Try again (in-place) |
+| `sdk-load-failure` | Payment SDK failed to load | Try again (in-place) |
+| `generic` | Unmapped API or transport error | Try again (in-place) |
 
-All error states render a focusable alert card with a support CTA.
+Each error card sets `data-state`, uses `role="alert"` with `aria-live="assertive"`, and moves focus to the error heading on render. Copy comes from the `PayByLink.*` placeholder namespace — no hardcoded strings.
+
+For gateway decline, pass an `onRetry` handler to `renderErrorCard()` so the user can retry without a full page reload and the SDK stays mounted:
+
+```js
+renderErrorCard(container, PAY_BY_LINK_ERROR.GATEWAY_DECLINE, {
+  labels,
+  headingLevel: 2,
+  onRetry: () => { /* re-submit payment */ },
+});
+```
 
 ## Loading skeleton
 
@@ -56,8 +78,20 @@ While the GraphQL query is in flight, slots `.pay-by-link__order-header`, `.pay-
 
 ## i18n
 
-Labels are loaded via `fetchPlaceholders()` from the AEM CMS spreadsheet under the `PayByLink` namespace. See [scripts/commerce.js](../../scripts/commerce.js) for the placeholder loading pattern. Required keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyPaidTitle`, `ErrorAlreadyPaidBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorContactSupportLabel`, `CustomerEmailLabel`, `OrderItemsHeading`, `QtyLabel`, `OrderTotalsHeading`, `SubtotalLabel`, `TaxLabel`, `ShippingLabel`, `GrandTotalLabel`, `ShippingAddressHeading`, `BillingAddressHeading`.
+Labels are loaded via `fetchPlaceholders()` from the AEM CMS spreadsheet under the `PayByLink` namespace. See [scripts/commerce.js](../../scripts/commerce.js) for the placeholder loading pattern.
+
+Error keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyCompletedTitle`, `ErrorAlreadyCompletedBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorGatewayDeclineTitle`, `ErrorGatewayDeclineBody`, `ErrorSdkLoadFailureTitle`, `ErrorSdkLoadFailureBody`, `ErrorGenericTitle`, `ErrorGenericBody`, `ErrorContactSupportLabel`, `ErrorTryAgainLabel`.
+
+Order summary keys: `CustomerEmailLabel`, `OrderItemsHeading`, `QtyLabel`, `OrderTotalsHeading`, `SubtotalLabel`, `TaxLabel`, `ShippingLabel`, `GrandTotalLabel`, `ShippingAddressHeading`, `BillingAddressHeading`.
 
 ## Page shell
 
 This block expects `body.pay-by-link-page` to be set by the AEM page template. That class drives the simplified header (logo only, no nav) defined in `blocks/header/header.css`.
+
+## Exports
+
+| Export | Module | Description |
+|---|---|---|
+| `extractToken`, `TOKEN_REGEX`, `slots` | `commerce-pay-by-link.js` | Token validation and payment slot |
+| `renderErrorCard` | `errors/error-card.js` | Render the shared error card |
+| `mapErrorToState`, `PAY_BY_LINK_ERROR`, `ERROR_STATE_CONFIG` | `errors/error-states.js` | Error taxonomy and mapping |
