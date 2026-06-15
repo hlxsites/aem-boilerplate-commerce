@@ -92,7 +92,6 @@
 @media (min-width: 900px) {
   .pay-by-link-confirmation:not(.pay-by-link-confirmation--error, .pay-by-link-confirmation--degraded) {
     grid-template-columns: repeat(var(--grid-4-columns), 1fr);
-    grid-template-areas: 'main aside';
     column-gap: var(--grid-4-gutters);
     padding-top: var(--spacing-xxlarge);
   }
