@@ -36,9 +36,10 @@ function consumeOrderDataFromHistory(expectedOrderNumber) {
   const { state } = window.history;
   const orderData = state && typeof state === 'object' ? state.orderData : undefined;
   if (!orderData) return null;
-  if (expectedOrderNumber && orderData.number && orderData.number !== expectedOrderNumber) {
-    return null;
-  }
+  // The URL's order_number is the ground truth. orderData must carry the same
+  // number; anything else is mismatched navigation or tampered state, in which
+  // case we fall back to the degraded view.
+  if (orderData.number !== expectedOrderNumber) return null;
   return orderData;
 }
 
@@ -159,8 +160,16 @@ export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
   if (orderData) {
-    await renderFullSummary(block, orderData, labels);
-    return;
+    try {
+      await renderFullSummary(block, orderData, labels);
+      return;
+    } catch (e) {
+      // orderData shape didn't satisfy the dropin (initialize or a container
+      // render threw). Fall back to degraded — a customer who has already paid
+      // should never see a broken page.
+      // eslint-disable-next-line no-console
+      console.error('Pay By Link confirmation: full-summary render failed, falling back to degraded.', e);
+    }
   }
 
   renderDegraded(block, result.orderNumber, labels);
