@@ -72,8 +72,11 @@ const HTTP_STATUS_TO_STATE = {
   410: PAY_BY_LINK_ERROR.EXPIRED,
 };
 
-// TODO(ACCS-<ticket>): confirm backend error codes before relying on these.
 const BACKEND_CODE_TO_STATE = {
+  TOKEN_NOT_FOUND: PAY_BY_LINK_ERROR.NOT_FOUND,
+  TOKEN_EXPIRED: PAY_BY_LINK_ERROR.EXPIRED,
+  ORDER_ALREADY_PAID: PAY_BY_LINK_ERROR.ALREADY_COMPLETED,
+  ORDER_CANCELLED: PAY_BY_LINK_ERROR.CANCELLED,
   PAY_BY_LINK_TOKEN_NOT_FOUND: PAY_BY_LINK_ERROR.NOT_FOUND,
   PAY_BY_LINK_TOKEN_CANCELLED: PAY_BY_LINK_ERROR.CANCELLED,
   PAY_BY_LINK_TOKEN_EXPIRED: PAY_BY_LINK_ERROR.EXPIRED,
@@ -94,6 +97,7 @@ function getBackendCode(error) {
   if (!error || typeof error !== 'object') return undefined;
   const code = error.extensions?.code
       ?? error.graphQLErrors?.[0]?.extensions?.code
+      ?? error.errors?.[0]?.extensions?.code
       ?? error.body?.error?.code
       ?? error.code;
   return typeof code === 'string' ? code : undefined;

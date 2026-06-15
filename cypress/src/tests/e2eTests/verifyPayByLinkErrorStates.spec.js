@@ -1,7 +1,5 @@
 const PAY_PATH = '/drafts/aries/pay';
 
-const runner = Cypress.env('payByLinkQueryWired') ? describe : describe.skip;
-
 function interceptPayByLinkOrder(response) {
   cy.intercept('**/graphql*', (req) => {
     const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
@@ -32,7 +30,7 @@ function assertApiErrorCard(state, { expectCta = true } = {}) {
   }
 }
 
-runner('Pay By Link — API-driven error states', () => {
+describe('Pay By Link — API-driven error states', () => {
   // 64-char lowercase hex — required for the block to attempt the query at all.
   const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec629d59';
 

@@ -7,6 +7,8 @@ import {
   rootLink,
   SUPPORT_PATH,
 } from '../../scripts/commerce.js';
+import { renderErrorCard } from './errors/error-card.js';
+import { mapErrorToState } from './errors/error-states.js';
 
 // Token is varchar(64) secure random hash. Strict lowercase hex.
 export const TOKEN_REGEX = /^[a-f0-9]{64}$/;
@@ -38,14 +40,6 @@ const QUERY = `
   }
 `;
 
-// Maps backend error extension codes to i18n kinds.
-const ERROR_CODE_MAP = {
-  TOKEN_NOT_FOUND: 'not-found',
-  TOKEN_EXPIRED: 'expired',
-  ORDER_ALREADY_PAID: 'already-paid',
-  ORDER_CANCELLED: 'cancelled',
-};
-
 // Override slots.Payment to mount a gateway payment SDK.
 // ctx.order = full payByLinkOrder payload; ctx.token = the raw token string.
 // ctx.replaceWith(el) replaces the empty payment container with your element.
@@ -67,43 +61,6 @@ function formatMoney({ value, currency }) {
     style: 'currency',
     currency,
   }).format(value);
-}
-
-function renderError(block, kind, labels) {
-  const ns = labels?.PayByLink || {};
-  const errorLabels = {
-    missing: { title: ns.ErrorMissingTokenTitle, body: ns.ErrorMissingTokenBody },
-    malformed: { title: ns.ErrorMalformedTokenTitle, body: ns.ErrorMalformedTokenBody },
-    'not-found': { title: ns.ErrorNotFoundTitle, body: ns.ErrorNotFoundBody },
-    expired: { title: ns.ErrorExpiredTitle, body: ns.ErrorExpiredBody },
-    'already-paid': { title: ns.ErrorAlreadyPaidTitle, body: ns.ErrorAlreadyPaidBody },
-    cancelled: { title: ns.ErrorCancelledTitle, body: ns.ErrorCancelledBody },
-  };
-
-  const { title = '', body = '' } = errorLabels[kind] || errorLabels['not-found'];
-
-  block.innerHTML = `
-    <div class="pay-by-link pay-by-link--error">
-      <div class="pay-by-link__error-card" role="alert" aria-live="assertive">
-        <h1 class="pay-by-link__error-title" tabindex="-1"></h1>
-        <p class="pay-by-link__error-body"></p>
-        <div class="pay-by-link__error-cta"></div>
-      </div>
-    </div>
-  `;
-
-  block.querySelector('.pay-by-link__error-title').textContent = title;
-  block.querySelector('.pay-by-link__error-body').textContent = body;
-
-  UI.render(Button, {
-    children: ns.ErrorContactSupportLabel || '',
-    variant: 'primary',
-    size: 'medium',
-    href: rootLink(SUPPORT_PATH),
-    'data-testid': 'pay-by-link-error-cta',
-  })(block.querySelector('.pay-by-link__error-cta'));
-
-  block.querySelector('.pay-by-link__error-title').focus();
 }
 
 function renderShell(block) {
@@ -288,7 +245,7 @@ export default async function decorate(block) {
 
   if (result.status !== 'valid') {
     const labels = await fetchPlaceholders();
-    renderError(block, result.status, labels);
+    renderErrorCard(block, result.status, { labels });
     return;
   }
 
@@ -303,8 +260,7 @@ export default async function decorate(block) {
   setSkeleton(block, false);
 
   if (response.errors?.length || !response.data?.payByLinkOrder) {
-    const code = response.errors?.[0]?.extensions?.code;
-    renderError(block, ERROR_CODE_MAP[code] || 'not-found', labels);
+    renderErrorCard(block, mapErrorToState(response), { labels });
     return;
   }
 
