@@ -11,7 +11,7 @@ module.exports = defineConfig({
   env: {
     ...baseConfig.env,
     graphqlEndPoint:
-      'https://integration2-hohc4oi-t35oyq7dhw7ti.us-3.magentosite.cloud/graphql',
+      'https://mcstaging.t35oyq7dhw7ti.dummycachetest.com/graphql',
     graphqlCatalogEndPoint: 'https://na1.api.commerce.adobe.com/WbqPAxMhK9b37TKrp8htRx/graphql',
     giftCardA: '02R7NXP5HJI5',
     productUrlWithOptions:

@@ -56,7 +56,7 @@ const TEST_CONFIGURABLE_PRODUCT_SKU = 'CYPRESS456';
 const CSV_INVALID_FILE_PATH = 'src/fixtures/quick-order-invalid-file.txt';
 const CSV_VALID_FILE_PATH = 'src/fixtures/quick-order-valid-file.csv';
 
-describe('B2B Quick Order - E2E Tests', { tags: ['@B2BSaas', '@skipAco'] }, () => {
+describe('B2B Quick Order - E2E Tests', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   before(() => {
     cy.logToTerminal('🛒 B2B Quick Order test suite started');
   });

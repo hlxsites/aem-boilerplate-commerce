@@ -15,9 +15,9 @@ module.exports = defineConfig({
   env: {
     ...baseConfig.env,
     graphqlEndPoint:
-      'https://integration2-hohc4oi-t35oyq7dhw7ti.us-3.magentosite.cloud/graphql',
+      'https://mcstaging.t35oyq7dhw7ti.dummycachetest.com/graphql',
     graphqlCatalogEndPoint: 'https://na1.api.commerce.adobe.com/WbqPAxMhK9b37TKrp8htRx/graphql',
-    // ACO Catalog Service credentials for integration2
+    // ACO Catalog Service credentials for mcstaging
     catalogApiKey: '4dfa19c9fe6f4cccade55cc5b3da94f7',
     catalogEnvironmentId: 'f38a0de0-764b-41fa-bd2c-5bc2f3c7b39a',
     giftCardA: '02R7NXP5HJI5',
@@ -33,7 +33,7 @@ module.exports = defineConfig({
       commerceConfig: {
         endpoint: 'https://na1.api.commerce.adobe.com/WbqPAxMhK9b37TKrp8htRx/graphql',
         coreEndpoint:
-          'https://integration2-hohc4oi-t35oyq7dhw7ti.us-3.magentosite.cloud/graphql',
+          'https://mcstaging.t35oyq7dhw7ti.dummycachetest.com/graphql',
       },
       author: {
         programId: '', // TODO: AEM Assets program ID if configured

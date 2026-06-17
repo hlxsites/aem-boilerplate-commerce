@@ -4,19 +4,57 @@ const TokenManager = require('./tokenManager');
 
 class ACCSApiClient {
     constructor() {
-        this.baseURL = Cypress.env("API_ENDPOINT");
-        this.tokenManager = new TokenManager();
+        const rawEndpoint = (Cypress.env("API_ENDPOINT") || '').replace(/\/+$/, '');
+        this.adminUsername = Cypress.env("COMMERCE_ADMIN_USERNAME");
+        this.adminPassword = Cypress.env("COMMERCE_ADMIN_PASSWORD");
+        // IS_ACO=true → admin-token auth under /rest/default; false/absent → SaaS IMS auth
+        this.isAco = Cypress.env("IS_ACO") === true;
+
+        this.baseURL = this.isAco ? `${rawEndpoint}/rest/default` : rawEndpoint;
+
+        if (!this.isAco) {
+            this.tokenManager = new TokenManager();
+        }
+        this.adminToken = null;
+    }
+
+    async getAccessToken() {
+        if (!this.isAco) {
+            return this.tokenManager.getValidToken();
+        }
+
+        if (this.adminToken) {
+            return this.adminToken;
+        }
+
+        const response = await httpClient({
+            method: 'POST',
+            url: `${this.baseURL}/V1/integration/admin/token`,
+            headers: { 'Content-Type': 'application/json' },
+            data: { username: this.adminUsername, password: this.adminPassword },
+            validateStatus: status => status < 500,
+        });
+
+        if (typeof response.data !== 'string') {
+            throw new Error(`Admin token request failed: ${JSON.stringify(response.data)}`);
+        }
+
+        this.adminToken = response.data;
+        return this.adminToken;
     }
 
     async request(method, endpoint, data = null, queryParams = {}) {
-        const accessToken = await this.tokenManager.getValidToken();
+        const accessToken = await this.getAccessToken();
 
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
-              'x-api-key': Cypress.env("IMS_CLIENT_ID"),
-              'x-gw-ims-org-id': Cypress.env("IMS_ORG_ID"),
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         };
+
+        if (!this.isAco) {
+            headers['x-api-key'] = Cypress.env("IMS_CLIENT_ID");
+            headers['x-gw-ims-org-id'] = Cypress.env("IMS_ORG_ID");
+        }
 
         // Build URL with query parameters
         let url = `${this.baseURL}${endpoint}`;
@@ -85,7 +123,11 @@ class ACCSApiClient {
 
     handleError(error) {
         if (error.response?.status === 401) {
-            this.tokenManager.token = null;
+            if (this.isAco) {
+                this.adminToken = null;
+            } else {
+                this.tokenManager.token = null;
+            }
         }
         throw error;
     }
