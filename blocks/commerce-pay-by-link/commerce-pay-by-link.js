@@ -249,11 +249,17 @@ export default async function decorate(block) {
   renderShell(block);
   setSkeleton(block, true);
 
-  const [labels, response] = await Promise.all([
-    fetchPlaceholders(),
-    CORE_FETCH_GRAPHQL.fetchGraphQl(QUERY, { variables: { token: result.token } }),
-  ]);
+  const labelsPromise = fetchPlaceholders();
+  let response;
+  try {
+    response = await CORE_FETCH_GRAPHQL.fetchGraphQl(QUERY, { variables: { token: result.token } });
+  } catch (error) {
+    setSkeleton(block, false);
+    renderErrorCard(block, mapErrorToState(error), { labels: await labelsPromise });
+    return;
+  }
 
+  const labels = await labelsPromise;
   setSkeleton(block, false);
 
   if (response.errors?.length || !response.data?.payByLinkOrder) {
