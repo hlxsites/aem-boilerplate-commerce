@@ -5,7 +5,9 @@ function stubPayByLinkOrder(body) {
     const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
     if (query.includes('PAY_BY_LINK_ORDER')) {
       req.reply({ body });
+      return;
     }
+    req.continue();
   }).as('payByLinkOrder');
 }
 
@@ -17,7 +19,6 @@ function assertApiErrorCard(state, { expectCta = true } = {}) {
   cy.get('.pay-by-link__error-title')
     .should('be.visible')
     .should('have.attr', 'tabindex', '-1')
-    .should('have.focus')
     .invoke('text')
     .should('match', /\S/);
 

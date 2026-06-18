@@ -80,7 +80,7 @@ While the GraphQL query is in flight, slots `.pay-by-link__order-header`, `.pay-
 
 Labels are loaded via `fetchPlaceholders()` from the AEM CMS spreadsheet under the `PayByLink` namespace. See [scripts/commerce.js](../../scripts/commerce.js) for the placeholder loading pattern.
 
-Error keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyCompletedTitle`, `ErrorAlreadyCompletedBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorGatewayDeclineTitle`, `ErrorGatewayDeclineBody`, `ErrorSdkLoadFailureTitle`, `ErrorSdkLoadFailureBody`, `ErrorGenericTitle`, `ErrorGenericBody`, `ErrorContactSupportLabel`, `ErrorTryAgainLabel`.
+Error keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyPaidTitle`, `ErrorAlreadyPaidBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorGatewayDeclineTitle`, `ErrorGatewayDeclineBody`, `ErrorSdkLoadFailureTitle`, `ErrorSdkLoadFailureBody`, `ErrorContactSupportLabel`.
 
 Order summary keys: `CustomerEmailLabel`, `OrderItemsHeading`, `QtyLabel`, `OrderTotalsHeading`, `SubtotalLabel`, `TaxLabel`, `ShippingLabel`, `GrandTotalLabel`, `ShippingAddressHeading`, `BillingAddressHeading`.
 

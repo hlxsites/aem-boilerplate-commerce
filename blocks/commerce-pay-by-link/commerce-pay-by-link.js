@@ -4,8 +4,14 @@ import {
   CORE_FETCH_GRAPHQL,
   fetchPlaceholders,
 } from '../../scripts/commerce.js';
+import { getMetadata } from '../../scripts/aem.js';
 import { renderErrorCard } from './errors/error-card.js';
 import { mapErrorToState } from './errors/error-states.js';
+
+function loadPayByLinkLabels() {
+  const path = getMetadata('placeholders')?.replace(/^\//, '');
+  return fetchPlaceholders(path || 'placeholders/pay-by-link.json');
+}
 
 // Token is varchar(64) secure random hash. Strict lowercase hex.
 export const TOKEN_REGEX = /^[a-f0-9]{64}$/;
@@ -241,7 +247,7 @@ export default async function decorate(block) {
   const result = extractToken(window.location.search);
 
   if (result.status !== 'valid') {
-    const labels = await fetchPlaceholders();
+    const labels = await loadPayByLinkLabels();
     renderErrorCard(block, result.status, { labels });
     return;
   }
@@ -249,7 +255,7 @@ export default async function decorate(block) {
   renderShell(block);
   setSkeleton(block, true);
 
-  const labelsPromise = fetchPlaceholders();
+  const labelsPromise = loadPayByLinkLabels();
   let response;
   try {
     response = await CORE_FETCH_GRAPHQL.fetchGraphQl(QUERY, { variables: { token: result.token } });

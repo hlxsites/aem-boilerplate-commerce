@@ -38,8 +38,8 @@ export const ERROR_STATE_CONFIG = {
     cta: ERROR_CTA.CONTACT_SUPPORT,
   },
   [PAY_BY_LINK_ERROR.ALREADY_COMPLETED]: {
-    titleKey: 'ErrorAlreadyCompletedTitle',
-    bodyKey: 'ErrorAlreadyCompletedBody',
+    titleKey: 'ErrorAlreadyPaidTitle',
+    bodyKey: 'ErrorAlreadyPaidBody',
     cta: ERROR_CTA.NONE,
   },
   [PAY_BY_LINK_ERROR.CANCELLED]: {
@@ -58,9 +58,9 @@ export const ERROR_STATE_CONFIG = {
     cta: ERROR_CTA.TRY_AGAIN,
   },
   [PAY_BY_LINK_ERROR.GENERIC]: {
-    titleKey: 'ErrorGenericTitle',
-    bodyKey: 'ErrorGenericBody',
-    cta: ERROR_CTA.TRY_AGAIN,
+    titleKey: 'ErrorSdkLoadFailureTitle',
+    bodyKey: 'ErrorSdkLoadFailureBody',
+    cta: ERROR_CTA.CONTACT_SUPPORT,
   },
 };
 
