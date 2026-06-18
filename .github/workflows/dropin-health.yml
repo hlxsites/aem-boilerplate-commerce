@@ -1,0 +1,92 @@
+name: Dropin Health Check
+
+# This workflow does NOT validate individual feature PRs.
+# It validates that the release candidate (release/* branches) remains healthy
+# against the latest dropin registry from @dropins/mcp.
+
+on:
+  pull_request:
+    branches: [main, b2b]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'blocks/**'
+      - 'scripts/initializers/**'
+      - 'package.json'
+  push:
+    branches: [main, b2b]
+    paths:
+      - 'blocks/**'
+      - 'scripts/initializers/**'
+      - 'package.json'
+  schedule:
+    # Weekly Monday 8:00 UTC — detect drift from new dropin releases
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event_name != 'pull_request' ||
+      startsWith(github.head_ref, 'release/')
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run dropin block health check
+        id: health
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          npx --yes @dropins/mcp@latest check-health --fix --fail-on error --json | tee health.json
+
+      - name: Print findings
+        if: always()
+        run: |
+          if [ -f health.json ]; then
+            node -e "
+              const r = JSON.parse(require('fs').readFileSync('health.json','utf8'));
+              const icon = s => s === 'error' ? '❌' : '⚠️';
+              const fmt = (prefix, f) => '  ' + icon(f.severity) + ' [' + f.severity + '] ' + prefix + ': ' + f.detail + (f.fix?.hint ? ' → ' + f.fix.hint : '');
+              console.log(r.message);
+              (r.data?.blocks || []).filter(b => !b.healthy).forEach(b => {
+                b.findings.forEach(f => console.log(fmt(b.block, f)));
+              });
+              (r.data?.initializers?.findings || []).forEach(f => {
+                console.log(fmt('initializer', f));
+              });
+              (r.data?.findings || []).forEach(f => {
+                console.log(fmt(r.data.block || 'block', f));
+              });
+            "
+          fi
+
+      - name: Post job summary
+        if: always()
+        run: |
+          if [ -f health.json ]; then
+            echo "## Dropin Health Check" >> $GITHUB_STEP_SUMMARY
+            node -e "
+              const r = JSON.parse(require('fs').readFileSync('health.json','utf8'));
+              const icon = s => s === 'error' ? '❌' : '⚠️';
+              const fmt = (prefix, f) => '- ' + icon(f.severity) + ' **' + prefix + '** [' + f.severity + ']: ' + f.detail;
+              console.log(r.message);
+              console.log('');
+              (r.data?.blocks || []).filter(b => !b.healthy).forEach(b => {
+                b.findings.forEach(f => console.log(fmt(b.block, f)));
+              });
+              (r.data?.initializers?.findings || []).forEach(f => {
+                console.log(fmt('initializer', f));
+              });
+              (r.data?.findings || []).forEach(f => {
+                console.log(fmt(r.data.block || 'block', f));
+              });
+            " >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail if unhealthy
+        if: steps.health.outcome == 'failure'
+        run: exit 1
