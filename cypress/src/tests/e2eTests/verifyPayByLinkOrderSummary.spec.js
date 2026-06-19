@@ -11,7 +11,9 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
       const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (query.includes('PAY_BY_LINK_ORDER')) {
         req.reply({ body });
+        return;
       }
+      req.continue();
     }).as('payByLinkOrder');
   }
 
@@ -102,23 +104,17 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
 
   it('shows the loading skeleton while the query is in flight and removes it after', () => {
     cy.fixture('payByLinkOrder').then((fixture) => {
-      let resolveQuery;
-
       cy.intercept('POST', '**/graphql*', (req) => {
         const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
         if (query.includes('PAY_BY_LINK_ORDER')) {
-          return new Promise((resolve) => {
-            resolveQuery = () => {
-              req.reply({ body: fixture });
-              resolve();
-            };
-          });
+          req.reply({ body: fixture, delay: 2000 });
+          return;
         }
+        req.continue();
       }).as('payByLinkOrder');
 
       cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
       cy.get('.pay-by-link__skeleton').should('exist');
-      cy.then(() => resolveQuery?.());
       cy.wait('@payByLinkOrder');
       cy.get('.pay-by-link__skeleton').should('not.exist');
     });
