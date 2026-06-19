@@ -1,6 +1,8 @@
 import { Button, provider as UI } from '@dropins/tools/components.js';
 import { rootLink, SUPPORT_PATH } from '../../../scripts/commerce.js';
-import { ERROR_STATE_CONFIG, ERROR_CTA, PAY_BY_LINK_ERROR } from './error-states.js';
+import {
+  ERROR_STATE_CONFIG, ERROR_CTA, PAY_BY_LINK_ERROR, mapErrorToState, resolveOnRetry,
+} from './error-states.js';
 
 function renderCta(ctaEl, cta, ns, onRetry) {
   if (cta === ERROR_CTA.CONTACT_SUPPORT) {
@@ -57,4 +59,18 @@ export function renderErrorCard(container, state, { labels, onRetry, headingLeve
 
   renderCta(ctaEl, config.cta, ns, onRetry);
   titleEl.focus();
+}
+
+/**
+ * Map an API/transport error to a state and render the matching error card.
+ * @param {Element} container
+ * @param {unknown} error - GraphQL response, thrown error, or pre-flight state string.
+ * @param {{ labels?: object, retry?: Function }} options
+ */
+export function renderMappedError(container, error, { labels, retry } = {}) {
+  const state = mapErrorToState(error);
+  renderErrorCard(container, state, {
+    labels,
+    onRetry: resolveOnRetry(state, retry),
+  });
 }

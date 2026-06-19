@@ -5,18 +5,38 @@ const PAY_PATH = '/drafts/aries/pay';
 // Structurally-valid 64-char hex token used across all tests.
 const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec629d59';
 
-describe('Pay By Link — Order Summary (ACCS-873)', () => {
-  function stubPayByLinkOrder(body) {
-    cy.intercept('POST', '**/graphql*', (req) => {
-      const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
-      if (query.includes('PAY_BY_LINK_ORDER')) {
-        req.reply({ body });
-        return;
-      }
-      req.continue();
-    }).as('payByLinkOrder');
-  }
+function stubPayByLinkOrder(body) {
+  cy.intercept('POST', '**/graphql*', (req) => {
+    const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+    if (query.includes('PAY_BY_LINK_ORDER')) {
+      const responseBody = typeof body === 'function' ? body(req) : body;
+      req.reply({ body: responseBody });
+      return;
+    }
+    req.continue();
+  }).as('payByLinkOrder');
+}
 
+function assertErrorCard(state, { expectCta = true } = {}) {
+  cy.get(`.pay-by-link.pay-by-link--error[data-state="${state}"]`).should('be.visible');
+  cy.get('.pay-by-link__error-card[role="alert"]').should('be.visible');
+  cy.get('.pay-by-link__error-card').should('have.attr', 'aria-live', 'assertive');
+
+  cy.get('.pay-by-link__error-title')
+    .should('have.attr', 'tabindex', '-1')
+    .invoke('text')
+    .should('match', /\S/);
+
+  cy.get('.pay-by-link__error-body').invoke('text').should('match', /\S/);
+
+  if (expectCta) {
+    cy.get('[data-testid="pay-by-link-error-cta"]').should('be.visible');
+  } else {
+    cy.get('[data-testid="pay-by-link-error-cta"]').should('not.exist');
+  }
+}
+
+describe('Pay By Link — Order Summary (ACCS-873)', () => {
   it('renders the order summary for a valid token (happy path)', () => {
     cy.fixture('payByLinkOrder').then((fixture) => {
       stubPayByLinkOrder(fixture);
@@ -59,15 +79,7 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
     cy.wait('@payByLinkOrder');
 
-    cy.get('.pay-by-link.pay-by-link--error').should('be.visible');
-    cy.get('.pay-by-link__error-card[role="alert"]')
-      .should('be.visible')
-      .should('have.attr', 'aria-live', 'assertive');
-    cy.get('.pay-by-link__error-title')
-      .should('have.attr', 'tabindex', '-1')
-      .invoke('text')
-      .should('match', /\S/);
-    cy.get('.pay-by-link__error-body').invoke('text').should('match', /\S/);
+    assertErrorCard('expired');
   });
 
   it('renders the already-paid error state', () => {
@@ -81,9 +93,7 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
     cy.wait('@payByLinkOrder');
 
-    cy.get('.pay-by-link.pay-by-link--error').should('be.visible');
-    cy.get('.pay-by-link__error-card[role="alert"]').should('be.visible');
-    cy.get('.pay-by-link__error-title').invoke('text').should('match', /\S/);
+    assertErrorCard('already-completed', { expectCta: false });
   });
 
   it('renders the cancelled-order error state', () => {
@@ -97,15 +107,13 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
     cy.wait('@payByLinkOrder');
 
-    cy.get('.pay-by-link.pay-by-link--error').should('be.visible');
-    cy.get('.pay-by-link__error-card[role="alert"]').should('be.visible');
-    cy.get('.pay-by-link__error-title').invoke('text').should('match', /\S/);
+    assertErrorCard('cancelled');
   });
 
   it('shows the loading skeleton while the query is in flight and removes it after', () => {
     cy.fixture('payByLinkOrder').then((fixture) => {
       cy.intercept('POST', '**/graphql*', (req) => {
-        const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+        const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
         if (query.includes('PAY_BY_LINK_ORDER')) {
           req.reply({ body: fixture, delay: 2000 });
           return;

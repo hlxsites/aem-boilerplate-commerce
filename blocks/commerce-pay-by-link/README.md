@@ -39,11 +39,14 @@ slots.Payment = async (ctx) => {
 
 ## Error handling
 
-Token validation and `payByLinkOrder` failures use the shared error library in `errors/`. The block calls `renderErrorCard()` with states from `mapErrorToState()`. Payment Services and OOPE submission stories should import the same modules for consistent UI.
+Token validation and `payByLinkOrder` failures use the shared error library in `errors/`. The block calls `renderErrorCard()` for pre-flight errors and `renderMappedError()` for API failures. Payment Services and OOPE submission stories should import the same modules for consistent UI.
 
 ```js
-import { renderErrorCard } from './errors/error-card.js';
-import { mapErrorToState, PAY_BY_LINK_ERROR } from './errors/error-states.js';
+import { renderErrorCard, renderMappedError } from './errors/error-card.js';
+import { mapErrorToState, resolveOnRetry, PAY_BY_LINK_ERROR } from './errors/error-states.js';
+
+// API / transport failure — maps error to state and wires retry when appropriate
+renderMappedError(container, error, { labels, retry: () => { /* re-fetch or re-submit */ } });
 ```
 
 ### Error states
@@ -58,7 +61,7 @@ import { mapErrorToState, PAY_BY_LINK_ERROR } from './errors/error-states.js';
 | `cancelled` | `ORDER_CANCELLED` / HTTP 409 | Contact support |
 | `gateway-decline` | Payment gateway decline | Try again (in-place) |
 | `sdk-load-failure` | Payment SDK failed to load | Try again (in-place) |
-| `generic` | Unmapped API or transport error | Try again (in-place) |
+| `generic` | Unmapped API or transport error | Try again (re-fetches order) |
 
 Each error card sets `data-state`, uses `role="alert"` with `aria-live="assertive"`, and moves focus to the error heading on render. Copy comes from the `PayByLink.*` placeholder namespace — no hardcoded strings.
 
@@ -72,15 +75,26 @@ renderErrorCard(container, PAY_BY_LINK_ERROR.GATEWAY_DECLINE, {
 });
 ```
 
+For generic API errors, the block passes a `retry` callback to `renderMappedError()` that re-runs the `payByLinkOrder` query automatically.
+
 ## Loading skeleton
 
 While the GraphQL query is in flight, slots `.pay-by-link__order-header`, `.pay-by-link__order-summary`, `.pay-by-link__addresses`, and `.pay-by-link__order-totals` carry the `pay-by-link__skeleton` class and `aria-busy="true"`. Both are removed once the response resolves.
 
 ## i18n
 
-Labels are loaded via `fetchPlaceholders()` from the AEM CMS spreadsheet under the `PayByLink` namespace. See [scripts/commerce.js](../../scripts/commerce.js) for the placeholder loading pattern.
+Labels are loaded via `fetchPlaceholders()` from the AEM CMS spreadsheet at `placeholders/pay-by-link.json` under the `PayByLink` namespace. See [scripts/commerce.js](../../scripts/commerce.js) for the placeholder loading pattern.
 
-Error keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyPaidTitle`, `ErrorAlreadyPaidBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorGatewayDeclineTitle`, `ErrorGatewayDeclineBody`, `ErrorSdkLoadFailureTitle`, `ErrorSdkLoadFailureBody`, `ErrorContactSupportLabel`.
+All error and CTA copy must be authored in da.live — no hardcoded strings in code. Required keys:
+
+| da.live key | Used for |
+|---|---|
+| `PayByLink.ErrorContactSupportLabel` | Contact support CTA button |
+| `PayByLink.ErrorTryAgainLabel` | Try again CTA button |
+| `PayByLink.ErrorGenericTitle` | Generic error heading |
+| `PayByLink.ErrorGenericBody` | Generic error body |
+
+Error title/body keys: `ErrorMissingTokenTitle`, `ErrorMissingTokenBody`, `ErrorMalformedTokenTitle`, `ErrorMalformedTokenBody`, `ErrorNotFoundTitle`, `ErrorNotFoundBody`, `ErrorExpiredTitle`, `ErrorExpiredBody`, `ErrorAlreadyPaidTitle`, `ErrorAlreadyPaidBody`, `ErrorCancelledTitle`, `ErrorCancelledBody`, `ErrorGatewayDeclineTitle`, `ErrorGatewayDeclineBody`, `ErrorSdkLoadFailureTitle`, `ErrorSdkLoadFailureBody`, `ErrorGenericTitle`, `ErrorGenericBody`.
 
 Order summary keys: `CustomerEmailLabel`, `OrderItemsHeading`, `QtyLabel`, `OrderTotalsHeading`, `SubtotalLabel`, `TaxLabel`, `ShippingLabel`, `GrandTotalLabel`, `ShippingAddressHeading`, `BillingAddressHeading`.
 
@@ -93,5 +107,5 @@ This block expects `body.pay-by-link-page` to be set by the AEM page template. T
 | Export | Module | Description |
 |---|---|---|
 | `extractToken`, `TOKEN_REGEX`, `slots` | `commerce-pay-by-link.js` | Token validation and payment slot |
-| `renderErrorCard` | `errors/error-card.js` | Render the shared error card |
-| `mapErrorToState`, `PAY_BY_LINK_ERROR`, `ERROR_STATE_CONFIG` | `errors/error-states.js` | Error taxonomy and mapping |
+| `renderErrorCard`, `renderMappedError` | `errors/error-card.js` | Render error UI; map API errors automatically |
+| `mapErrorToState`, `resolveOnRetry`, `PAY_BY_LINK_ERROR`, `ERROR_STATE_CONFIG` | `errors/error-states.js` | Error taxonomy and mapping |

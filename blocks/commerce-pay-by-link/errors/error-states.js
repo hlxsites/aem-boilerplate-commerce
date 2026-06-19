@@ -58,9 +58,9 @@ export const ERROR_STATE_CONFIG = {
     cta: ERROR_CTA.TRY_AGAIN,
   },
   [PAY_BY_LINK_ERROR.GENERIC]: {
-    titleKey: 'ErrorSdkLoadFailureTitle',
-    bodyKey: 'ErrorSdkLoadFailureBody',
-    cta: ERROR_CTA.CONTACT_SUPPORT,
+    titleKey: 'ErrorGenericTitle',
+    bodyKey: 'ErrorGenericBody',
+    cta: ERROR_CTA.TRY_AGAIN,
   },
 };
 
@@ -113,4 +113,9 @@ export function mapErrorToState(error) {
   if (status && HTTP_STATUS_TO_STATE[status]) return HTTP_STATUS_TO_STATE[status];
 
   return PAY_BY_LINK_ERROR.GENERIC;
+}
+
+export function resolveOnRetry(state, retry) {
+  const { cta } = ERROR_STATE_CONFIG[state] || ERROR_STATE_CONFIG[PAY_BY_LINK_ERROR.GENERIC];
+  return cta === ERROR_CTA.TRY_AGAIN ? retry : undefined;
 }

@@ -5,8 +5,7 @@ import {
   fetchPlaceholders,
 } from '../../scripts/commerce.js';
 import { getMetadata } from '../../scripts/aem.js';
-import { renderErrorCard } from './errors/error-card.js';
-import { mapErrorToState } from './errors/error-states.js';
+import { renderErrorCard, renderMappedError } from './errors/error-card.js';
 
 function loadPayByLinkLabels() {
   const path = getMetadata('placeholders')?.replace(/^\//, '');
@@ -243,37 +242,39 @@ async function invokeSlots(block, order, token) {
   if (el) await slots.Payment(createCtx(el, order, token));
 }
 
-export default async function decorate(block) {
-  const result = extractToken(window.location.search);
-
-  if (result.status !== 'valid') {
-    const labels = await loadPayByLinkLabels();
-    renderErrorCard(block, result.status, { labels });
-    return;
-  }
-
+async function fetchOrder(block, token, labelsPromise) {
   renderShell(block);
   setSkeleton(block, true);
 
-  const labelsPromise = loadPayByLinkLabels();
-  let response;
+  const retry = () => fetchOrder(block, token, labelsPromise);
+
   try {
-    response = await CORE_FETCH_GRAPHQL.fetchGraphQl(QUERY, { variables: { token: result.token } });
+    const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(QUERY, { variables: { token } });
+    const labels = await labelsPromise;
+    setSkeleton(block, false);
+
+    if (response.errors?.length || !response.data?.payByLinkOrder) {
+      renderMappedError(block, response, { labels, retry });
+      return;
+    }
+
+    const order = response.data.payByLinkOrder;
+    populateSlots(block, order, labels?.PayByLink || {});
+    await invokeSlots(block, order, token);
   } catch (error) {
     setSkeleton(block, false);
-    renderErrorCard(block, mapErrorToState(error), { labels: await labelsPromise });
+    renderMappedError(block, error, { labels: await labelsPromise, retry });
+  }
+}
+
+export default async function decorate(block) {
+  const result = extractToken(window.location.search);
+  const labelsPromise = loadPayByLinkLabels();
+
+  if (result.status !== 'valid') {
+    renderErrorCard(block, result.status, { labels: await labelsPromise });
     return;
   }
 
-  const labels = await labelsPromise;
-  setSkeleton(block, false);
-
-  if (response.errors?.length || !response.data?.payByLinkOrder) {
-    renderErrorCard(block, mapErrorToState(response), { labels });
-    return;
-  }
-
-  const order = response.data.payByLinkOrder;
-  populateSlots(block, order, labels?.PayByLink || {});
-  await invokeSlots(block, order, result.token);
+  await fetchOrder(block, result.token, labelsPromise);
 }
