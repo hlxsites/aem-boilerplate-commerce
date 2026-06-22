@@ -1,17 +1,13 @@
 name: Dropin Health Check
 
-# This workflow does NOT validate individual feature PRs.
-# It validates that the release candidate (release/* branches) remains healthy
-# against the latest dropin registry from @dropins/mcp.
+# Monitors the health of blocks and initializers against the published dropin
+# registry. Runs after changes land on main/b2b, on a weekly schedule to detect
+# silent drift from new dropin releases, and on demand.
+#
+# Not used as a PR gate: the MCP registry is updated after each dropin release,
+# so checking during a release PR would use stale registry data.
 
 on:
-  pull_request:
-    branches: [main, b2b]
-    types: [opened, synchronize, reopened]
-    paths:
-      - 'blocks/**'
-      - 'scripts/initializers/**'
-      - 'package.json'
   push:
     branches: [main, b2b]
     paths:
@@ -26,9 +22,6 @@ on:
 jobs:
   health-check:
     runs-on: ubuntu-latest
-    if: >-
-      github.event_name != 'pull_request' ||
-      startsWith(github.head_ref, 'release/')
     steps:
       - uses: actions/checkout@v4
 
