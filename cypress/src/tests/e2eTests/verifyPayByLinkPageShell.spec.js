@@ -3,6 +3,26 @@
 const PAY_PATH = '/drafts/aries/pay';
 const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec629d59';
 
+function stubNonPayByLinkGraphql() {
+  cy.intercept('GET', '**/graphql*', {
+    body: {
+      data: {
+        storeConfig: {
+          share_active_segments: false,
+          graphql_share_customer_group: false,
+          share_applied_cart_rule: false,
+        },
+      },
+    },
+  });
+  cy.intercept('POST', '**/graphql*', (req) => {
+    const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+    if (!query.includes('PAY_BY_LINK_ORDER')) {
+      req.reply({ body: { data: {} } });
+    }
+  });
+}
+
 function assertErrorCard(state) {
   cy.get(`.pay-by-link.pay-by-link--error[data-state="${state}"]`).should('be.visible');
   cy.get('.pay-by-link__error-card[role="alert"]').should('be.visible');
@@ -24,7 +44,8 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
 
   beforeEach(() => {
     payByLinkOrderCalls = [];
-    cy.intercept('**/graphql*', (req) => {
+    stubNonPayByLinkGraphql();
+    cy.intercept('POST', '**/graphql*', (req) => {
       const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (body.includes('payByLinkOrder')) payByLinkOrderCalls.push(req);
     });
@@ -49,9 +70,7 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
       const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (body.includes('PAY_BY_LINK_ORDER')) {
         req.reply({ fixture: 'payByLinkOrder' });
-        return;
       }
-      req.reply({ body: { data: {} } });
     }).as('payByLinkOrder');
 
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);

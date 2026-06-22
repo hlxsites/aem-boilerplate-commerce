@@ -5,16 +5,34 @@ const PAY_PATH = '/drafts/aries/pay';
 // Structurally-valid 64-char hex token used across all tests.
 const VALID_TOKEN = '4d6b20e9f8ed98dcb4287ad80b2e82206c71e4abe0bc3e04015c9ca5ec629d59';
 
+function stubNonPayByLinkGraphql() {
+  cy.intercept('GET', '**/graphql*', {
+    body: {
+      data: {
+        storeConfig: {
+          share_active_segments: false,
+          graphql_share_customer_group: false,
+          share_applied_cart_rule: false,
+        },
+      },
+    },
+  });
+  cy.intercept('POST', '**/graphql*', (req) => {
+    const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+    if (!query.includes('PAY_BY_LINK_ORDER')) {
+      req.reply({ body: { data: {} } });
+    }
+  });
+}
+
 function stubPayByLinkOrder(body) {
+  stubNonPayByLinkGraphql();
   cy.intercept('POST', '**/graphql*', (req) => {
     const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
     if (query.includes('PAY_BY_LINK_ORDER')) {
       const responseBody = typeof body === 'function' ? body(req) : body;
       req.reply({ body: responseBody });
-      return;
     }
-    // Other dropins (e.g. personalization) also call GraphQL on page load.
-    req.reply({ body: { data: {} } });
   }).as('payByLinkOrder');
 }
 
@@ -112,13 +130,12 @@ describe('Pay By Link — Order Summary (ACCS-873)', () => {
 
   it('shows the loading skeleton while the query is in flight and removes it after', () => {
     cy.fixture('payByLinkOrder').then((fixture) => {
+      stubNonPayByLinkGraphql();
       cy.intercept('POST', '**/graphql*', (req) => {
         const query = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
         if (query.includes('PAY_BY_LINK_ORDER')) {
           req.reply({ body: fixture, delay: 2000 });
-          return;
         }
-        req.reply({ body: { data: {} } });
       }).as('payByLinkOrder');
 
       cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
