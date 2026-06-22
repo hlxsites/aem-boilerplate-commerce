@@ -221,7 +221,9 @@ function populateSlots(block, data, ns) {
   thead.append(headerRow);
 
   const tbody = document.createElement('tbody');
-  data.items.forEach(({ name, sku, quantity, price }) => {
+  data.items.forEach(({
+    name, sku, quantity, price,
+  }) => {
     const tr = document.createElement('tr');
     tr.className = 'pay-by-link__item';
 
