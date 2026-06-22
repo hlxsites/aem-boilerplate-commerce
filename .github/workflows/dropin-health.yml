@@ -1,22 +1,10 @@
 name: Dropin Health Check
 
-# Monitors the health of blocks and initializers against the published dropin
-# registry. Runs after changes land on main/b2b, on a weekly schedule to detect
-# silent drift from new dropin releases, and on demand.
-#
-# Not used as a PR gate: the MCP registry is updated after each dropin release,
-# so checking during a release PR would use stale registry data.
+# Validates block and initializer health against the published dropin registry.
+# Run manually after each dropin release, once the MCP registry has been updated,
+# to confirm main is in sync with the latest published API surface.
 
 on:
-  push:
-    branches: [main, b2b]
-    paths:
-      - 'blocks/**'
-      - 'scripts/initializers/**'
-      - 'package.json'
-  schedule:
-    # Weekly Monday 8:00 UTC — detect drift from new dropin releases
-    - cron: '0 8 * * 1'
   workflow_dispatch:
 
 jobs:
