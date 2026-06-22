@@ -1,0 +1,23 @@
+{
+  "definitions": [{
+    "title": "Commerce Orders List",
+    "id": "commerce-orders-list",
+    "model": "commerce-orders-list",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-orders-list",
+    "fields": [
+      {
+        "component": "boolean",
+        "name": "minified-view",
+        "label": "Minified View"
+      }
+    ]
+  }],
+  "filters": []
+}

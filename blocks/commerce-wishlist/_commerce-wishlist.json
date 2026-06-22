@@ -1,0 +1,23 @@
+{
+  "definitions": [{
+    "title": "Commerce Wishlist",
+    "id": "commerce-wishlist",
+    "model": "commerce-wishlist",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "commerce-wishlist",
+    "fields": [
+      {
+        "component": "text",
+        "name": "start-shopping-url",
+        "label": "Start Shopping URL"
+      }
+    ]
+  }],
+  "filters": []
+}

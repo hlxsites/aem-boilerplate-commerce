@@ -16,8 +16,9 @@ import {
   assertOrderConfirmationShippingDetails,
   assertOrderConfirmationBillingDetails,
   assertOrderConfirmationShippingMethod,
+  assertSelectedPaymentMethod,
+  assertOrderCommentsVisible,
 } from "../../assertions";
-import { assertSelectedPaymentMethod } from "../../assertions";
 import {
   customerShippingAddress,
   paymentServicesCreditCard,
@@ -50,7 +51,7 @@ describe("Verify guest user can place order", () => {
     )(".cart-mini-cart");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".cart-mini-cart");
     assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
     cy.contains("View Cart").click();
@@ -64,7 +65,7 @@ describe("Verify guest user can place order", () => {
     )(".commerce-cart-wrapper");
     assertTitleHasLink(
       "Youth tee",
-      "/products/youth-tee/ADB150",
+      "/products/youth-tee/adb150",
     )(".commerce-cart-wrapper");
     assertProductImage(Cypress.env("productImageName"))(
       ".commerce-cart-wrapper",
@@ -125,6 +126,9 @@ describe("Verify guest user can place order", () => {
       const orderRef = url.split("?")[1];
       cy.visit("/order-details?" + orderRef);
     });
+
+    // ORDER COMMENTS
+    assertOrderCommentsVisible();
 
     // CANCEL ORDER
     cy.get(fields.cancelButton).should("exist");

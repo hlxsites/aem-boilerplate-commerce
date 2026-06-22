@@ -2,9 +2,7 @@ import {
   buildBlock,
   loadHeader,
   loadFooter,
-  decorateButtons,
   decorateIcons,
-  decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
@@ -18,6 +16,10 @@ import {
   initializeCommerce,
   applyTemplates,
   decorateLinks,
+  loadErrorPage,
+  decorateSections,
+  IS_UE,
+  IS_DA,
 } from './commerce.js';
 
 /**
@@ -29,6 +31,10 @@ function buildHeroBlock(main) {
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
   if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    // Check if h1 or picture is already inside a hero block
+    if (h1.closest('.hero') || picture.closest('.hero')) {
+      return; // Don't create a duplicate hero block
+    }
     const section = document.createElement('div');
     section.append(buildBlock('hero', { elems: [picture, h1] }));
     main.prepend(section);
@@ -53,10 +59,67 @@ async function loadFonts() {
  */
 function buildAutoBlocks(main) {
   try {
-    buildHeroBlock(main);
+    // auto load `*/fragments/*` references
+    const fragments = [...main.querySelectorAll('a[href*="/fragments/"]')].filter((f) => !f.closest('.fragment'));
+    if (fragments.length > 0) {
+      // eslint-disable-next-line import/no-cycle
+      import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
+        fragments.forEach(async (fragment) => {
+          try {
+            const { pathname } = new URL(fragment.href);
+            const frag = await loadFragment(pathname);
+            fragment.parentElement.replaceWith(...frag.children);
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error('Fragment loading failed', error);
+          }
+        });
+      });
+    }
+
+    if (!main.querySelector('.hero')) buildHeroBlock(main);
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }
+}
+
+/**
+ * Decorates formatted links to style them as buttons.
+ * @param {HTMLElement} main The main container element
+ */
+function decorateButtons(main) {
+  main.querySelectorAll('p a[href]').forEach((a) => {
+    a.title = a.title || a.textContent;
+    const p = a.closest('p');
+    const text = a.textContent.trim();
+
+    // quick structural checks
+    if (a.querySelector('img') || p.textContent.trim() !== text) return;
+
+    // skip URL display links
+    try {
+      if (new URL(a.href).href === new URL(text, window.location).href) return;
+    } catch { /* continue */ }
+
+    // require authored formatting for buttonization
+    const strong = a.closest('strong');
+    const em = a.closest('em');
+    if (!strong && !em) return;
+
+    p.className = 'button-wrapper';
+    a.className = 'button';
+    if (strong && em) { // high-impact call-to-action
+      a.classList.add('accent');
+      const outer = strong.contains(em) ? strong : em;
+      outer.replaceWith(a);
+    } else if (strong) {
+      a.classList.add('primary');
+      strong.replaceWith(a);
+    } else {
+      a.classList.add('secondary');
+      em.replaceWith(a);
+    }
+  });
 }
 
 /**
@@ -65,11 +128,11 @@ function buildAutoBlocks(main) {
  */
 export function decorateMain(main) {
   decorateLinks(main);
-  decorateButtons(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateButtons(main);
 }
 
 /**
@@ -82,10 +145,15 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
-    await initializeCommerce();
-    decorateMain(main);
-    applyTemplates(doc);
-    await loadCommerceEager();
+    try {
+      await initializeCommerce();
+      decorateMain(main);
+      applyTemplates(doc);
+      await loadCommerceEager();
+    } catch (e) {
+      console.error('Error initializing commerce configuration:', e);
+      loadErrorPage(418);
+    }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -105,6 +173,8 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  loadHeader(doc.querySelector('header'));
+
   const main = doc.querySelector('main');
   await loadSections(main);
 
@@ -112,7 +182,6 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadHeader(doc.querySelector('header'));
   loadFooter(doc.querySelector('footer'));
 
   loadCommerceLazy();
@@ -136,10 +205,16 @@ async function loadPage() {
   loadDelayed();
 }
 
+// UE Editor support before page load
+if (IS_UE) {
+  // eslint-disable-next-line import/no-unresolved
+  await import(`${window.hlx.codeBasePath}/scripts/ue.js`).then(({ default: ue }) => ue());
+}
+
 loadPage();
 
 (async function loadDa() {
-  if (!new URL(window.location.href).searchParams.get('dapreview')) return;
+  if (!IS_DA) return;
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());

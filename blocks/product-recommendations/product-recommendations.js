@@ -20,13 +20,29 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink } from '../../scripts/commerce.js';
+import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
+
+/**
+ * Validates and returns a product view history entry if valid
+ * @param {Object} entry - The history entry to validate
+ * @returns {Object|null} - Validated history entry or null if invalid
+ */
+function getValidHistoryEntry(entry) {
+  // Basic validation to ensure the entry has necessary properties
+  if (entry && typeof entry === 'object' && entry.sku && entry.date) {
+    return {
+      sku: entry.sku,
+      date: entry.date,
+    };
+  }
+  return null;
+}
 
 /**
  * Gets product view history from localStorage
@@ -36,7 +52,16 @@ const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches
 function getProductViewHistory(storeViewCode) {
   try {
     const viewHistory = window.localStorage.getItem(`${storeViewCode}:productViewHistory`) || '[]';
-    return JSON.parse(viewHistory);
+    const parsedHistory = JSON.parse(viewHistory);
+    if (!Array.isArray(parsedHistory)) {
+      throw new Error('Product view history is not an array');
+    }
+    const validHistory = parsedHistory.map(getValidHistoryEntry).filter((entry) => entry !== null);
+    if (validHistory.length === 0) {
+      // If no valid entries, clear the history to prevent future parsing issues
+      window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
+    }
+    return validHistory;
   } catch (e) {
     window.localStorage.removeItem(`${storeViewCode}:productViewHistory`);
     console.error('Error parsing product view history', e);
@@ -63,8 +88,14 @@ function getPurchaseHistory(storeViewCode) {
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
 
+  // Hide configuration rows if they exist
+  const children = [...block.children];
+  children.forEach((child) => {
+    child.style.display = 'none';
+  });
+
   // Configuration
-  const { currentsku, recid } = readBlockConfig(block);
+  const { currentsku, currentprice, recid } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -74,6 +105,7 @@ export default async function decorate(block) {
   `);
 
   const $list = fragment.querySelector('.recommendations__list');
+  const $wrapper = fragment.querySelector('.recommendations__wrapper');
 
   block.appendChild(fragment);
 
@@ -110,7 +142,7 @@ export default async function decorate(block) {
     }
 
     const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-    const getProductLink = (item) => rootLink(`/products/${item.urlKey}/${item.sku}`);
+    const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory(storeViewCode);
@@ -133,11 +165,29 @@ export default async function decorate(block) {
     );
 
     try {
+      const skuFromConfig = !!currentsku;
+      const resolvedSku = currentsku || context.currentSku;
+      const isACO = getConfigValue('adobe-commerce-optimizer') === true
+        || getConfigValue('adobe-commerce-optimizer') === 'true';
+      // Price source must match SKU source: if SKU is pinned via block config,
+      // do not pull price from ACDL context (it would belong to a different product).
+      let resolvedPrice = null;
+      if (isACO) {
+        if (currentprice != null) {
+          resolvedPrice = Number(currentprice);
+        } else if (!skuFromConfig) {
+          resolvedPrice = context.currentProductPrice ?? null;
+        }
+      }
+      const currentProduct = resolvedSku
+        ? { sku: resolvedSku, ...(resolvedPrice != null && { price: resolvedPrice }) }
+        : undefined;
+
       await Promise.all([
         provider.render(ProductList, {
-          routeProduct: getProductLink,
+          routeProduct: createProductLink,
           recId: recid,
-          currentSku: currentsku || context.currentSku,
+          currentProduct,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
           slots: {
@@ -154,36 +204,39 @@ export default async function decorate(block) {
                 UI.render(Button, {
                   children: labels.Global?.AddProductToCart,
                   icon: Icon({ source: 'Cart' }),
-                  onClick: (event) => {
-                    cartApi.addProductsToCart([
-                      { sku: ctx.item.sku, quantity: 1 },
-                    ]);
-                    // Prevent the click event from bubbling up to the parent span
-                    // to avoid triggering the recs-item-click event
-                    event.stopPropagation();
-                    // Publish ACDL event for add to cart click
-                    const recommendationUnit = recommendationsData?.find(
-                      (unit) => unit.items?.some(
-                        (unitItem) => unitItem.sku === ctx.item.sku,
-                      ),
-                    );
-                    publishRecsItemAddToCartClick({
-                      recommendationUnit,
-                      pagePlacement: 'product-list',
-                      yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
-                      yOffsetBottom:
-                        addToCart.getBoundingClientRect().bottom ?? 0,
-                      productId: ctx.index,
-                    });
-                  },
+                  onClick: ctx.item.inStock
+                    ? (event) => {
+                      cartApi.addProductsToCart([
+                        { sku: ctx.item.sku, quantity: 1 },
+                      ]);
+                      // Prevent the click event from bubbling up to the parent span
+                      // to avoid triggering the recs-item-click event
+                      event.stopPropagation();
+                      // Publish ACDL event for add to cart click
+                      const recommendationUnit = recommendationsData?.find(
+                        (unit) => unit.items?.some(
+                          (unitItem) => unitItem.sku === ctx.item.sku,
+                        ),
+                      );
+                      publishRecsItemAddToCartClick({
+                        recommendationUnit,
+                        pagePlacement: 'product-list',
+                        yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
+                        yOffsetBottom:
+                          addToCart.getBoundingClientRect().bottom ?? 0,
+                        productId: ctx.index,
+                      });
+                    }
+                    : undefined,
                   variant: 'primary',
+                  disabled: !ctx.item.inStock,
                 })(addToCart);
               } else {
                 // Select Options Button
                 UI.render(Button, {
                   children:
                     labels.Global?.SelectProductOptions,
-                  href: rootLink(`/products/${ctx.item.urlKey}/${ctx.item.sku}`),
+                  href: createProductLink(ctx.item),
                   variant: 'tertiary',
                 })(addToCart);
               }
@@ -206,7 +259,7 @@ export default async function decorate(block) {
             Thumbnail: (ctx) => {
               const { item, defaultImageProps } = ctx;
               const wrapper = document.createElement('a');
-              wrapper.href = getProductLink(item);
+              wrapper.href = createProductLink(item);
 
               tryRenderAemAssetsImage(ctx, {
                 alias: item.sku,
@@ -220,7 +273,7 @@ export default async function decorate(block) {
               });
             },
           },
-        })(block),
+        })($wrapper),
       ]);
     } finally {
       isLoading = false;
@@ -244,7 +297,7 @@ export default async function decorate(block) {
 
   function shouldReloadRecommendations(newContext) {
     // Check if significant context changes occurred that warrant reloading recommendations
-    const significantChanges = ['currentSku', 'pageType', 'category'];
+    const significantChanges = ['currentSku', 'currentProductPrice', 'pageType', 'category'];
 
     return significantChanges.some(
       (key) => newContext[key] !== previousContext[key] && newContext[key] !== undefined,
@@ -274,7 +327,14 @@ export default async function decorate(block) {
   }
 
   function handleProductChanges({ productContext }) {
-    updateContext({ currentSku: productContext?.sku });
+    const pricing = productContext?.pricing;
+    const price = pricing
+      ? (pricing.specialPrice ?? pricing.regularPrice)
+      : undefined;
+    updateContext({
+      currentSku: productContext?.sku,
+      currentProductPrice: price,
+    });
   }
 
   function handleCategoryChanges({ categoryContext }) {

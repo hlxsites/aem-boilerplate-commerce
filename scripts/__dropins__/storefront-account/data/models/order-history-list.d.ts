@@ -51,6 +51,7 @@ export type ShipmentsModel = {
     tracking: ShipmentsTracingModel[];
 };
 export type OrderDetails = {
+    adminAssistedOrder?: number | null;
     status: string;
     token: string;
     carrier: string;
@@ -58,6 +59,7 @@ export type OrderDetails = {
     id: string;
     number: string;
     orderDate: string;
+    orderTime: string;
     items: OrderItem[];
     returns: ReturnProps[];
     shipments: ShipmentsModel[];

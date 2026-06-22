@@ -1,0 +1,38 @@
+{
+  "definitions": [{
+    "title": "Enrichment",
+    "id": "enrichment",
+    "model": "enrichment",
+    "plugins": {
+      "da": {
+        "type": "key-value-block"
+      }
+    }
+  }],
+  "models": [{
+    "id": "enrichment",
+    "fields": [
+      {
+        "component": "select",
+        "name": "type",
+        "label": "Type",
+        "options": [
+          {
+            "name": "Product",
+            "value": "product"
+          },
+          {
+            "name": "Category",
+            "value": "category"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "position",
+        "label": "Position"
+      }
+    ]
+  }],
+  "filters": []
+}

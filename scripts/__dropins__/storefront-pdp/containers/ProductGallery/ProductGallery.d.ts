@@ -6,6 +6,9 @@ import { ProductModel } from '../../data/models/product-model';
 type DefaultSlotContext = {
     data: ProductModel | null;
 };
+type VideosProp = boolean | {
+    position: 'first' | 'last';
+};
 export interface ProductGalleryProps extends Omit<HTMLAttributes<HTMLDivElement>, 'controls'> {
     scope?: string;
     controls?: 'thumbnailsRow' | 'thumbnailsColumn' | 'dots' | null;
@@ -19,12 +22,17 @@ export interface ProductGalleryProps extends Omit<HTMLAttributes<HTMLDivElement>
     zoom?: {
         closeButton: boolean;
     } | boolean;
+    videos?: VideosProp;
     slots?: {
         CarouselThumbnail?: SlotProps<DefaultSlotContext & {
             defaultImageProps: ImageProps;
+            mediaType?: 'image' | 'video';
+            previewUrl?: string;
         }>;
         CarouselMainImage?: SlotProps<DefaultSlotContext & {
             defaultImageProps: ImageProps;
+            mediaType?: 'image' | 'video';
+            previewUrl?: string;
         }>;
     };
 }

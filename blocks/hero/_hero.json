@@ -1,0 +1,49 @@
+{
+  "definitions": [
+    {
+      "title": "Hero",
+      "id": "hero",
+      "model": "hero",
+      "plugins": {
+        "da": {
+          "rows": 1,
+          "columns": 1,
+          "fields": [
+            { "name": "image", "selector": "div>div>picture>img[src]" },
+            { "name": "alt", "selector": "div>div>picture>img[alt]" },
+            { "name": "text", "selector": "div>div>h1" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "hero",
+      "fields": [
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "image",
+          "label": "Image",
+          "multi": false
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "alt",
+          "label": "Alt",
+          "value": ""
+        },
+        {
+          "component": "text",
+          "name": "text",
+          "value": "",
+          "label": "Text",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

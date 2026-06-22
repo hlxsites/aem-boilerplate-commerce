@@ -1,0 +1,44 @@
+{
+  "definitions": [
+    {
+      "title": "Image",
+      "id": "image",
+      "model": "image",
+      "plugins": {
+        "da": {
+          "name": "image",
+          "type": "image",
+          "fields": [
+            {
+              "name": "imageAlt",
+              "selector": "img[alt]"
+            },
+            {
+              "name": "image",
+              "selector": "img[src]"
+            }
+          ]
+        }
+      }
+    }
+  ],
+"models": [
+    {
+      "id": "image",
+      "fields": [
+        {
+          "component": "reference",
+          "name": "image",
+          "label": "Image",
+          "multi": false,
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "name": "imageAlt",
+          "label": "Alt Text"
+        }
+      ]
+    }
+  ]
+}
