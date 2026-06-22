@@ -219,9 +219,11 @@
 
 /* --- Order totals (tfoot rows inside items table) --- */
 
-.pay-by-link .pay-by-link__totals tr:first-child td {
-  padding-top: var(--spacing-medium);
-  border-top: var(--shape-border-width-1) solid var(--color-neutral-200);
+.pay-by-link .pay-by-link__total-row td {
+  padding: var(--spacing-xsmall) 0;
+  font: var(--type-body-1-default-font);
+  letter-spacing: var(--type-body-1-default-letter-spacing);
+  color: var(--color-neutral-700);
 }
 
 .pay-by-link .pay-by-link__total-row--grand td {
@@ -232,11 +234,9 @@
   color: var(--color-neutral-900);
 }
 
-.pay-by-link .pay-by-link__total-row td {
-  padding: var(--spacing-xsmall) 0;
-  font: var(--type-body-1-default-font);
-  letter-spacing: var(--type-body-1-default-letter-spacing);
-  color: var(--color-neutral-700);
+.pay-by-link .pay-by-link__totals tr:first-child td {
+  padding-top: var(--spacing-medium);
+  border-top: var(--shape-border-width-1) solid var(--color-neutral-200);
 }
 
 .pay-by-link .pay-by-link__total-label {
