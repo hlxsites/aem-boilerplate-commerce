@@ -127,6 +127,7 @@ async function createCompany(companyData) {
     adminPassword = 'Test123!',
     status = 1, // 0 = PENDING, 1 = APPROVED, 2 = REJECTED, 3 = BLOCKED
     rejectReason = null,
+    extensionAttributes = null,
   } = companyData;
 
   const client = new ACCSApiClient();
@@ -172,6 +173,7 @@ async function createCompany(companyData) {
       customer_group_id: 1,
       status,
       ...(status === 2 && rejectReason && { reject_reason: rejectReason }),
+      ...(extensionAttributes && { extension_attributes: extensionAttributes }),
     },
   };
 

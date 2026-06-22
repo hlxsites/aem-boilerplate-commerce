@@ -3,8 +3,7 @@ const random = Cypress._.random(0, 999999);
 const SALES_MANAGER_ROLE_NAME = `PO Sales Manager ${random}`;
 const RULES_MANAGER_ROLE_NAME = `PO Rules Manager ${random}`;
 const APPROVER_ROLE_NAME = `PO Approver ${random}`;
-const USER_PASSWORD = 'Qwe123456';
-const COMPANY_ID = 13;
+const USER_PASSWORD = 'Test123!';
 
 export const poLabels = {
   addToCart: 'Add to Cart',
@@ -88,7 +87,6 @@ export const poUsers = {
 export const poRolesConfig = {
   salesManager: {
     role_name: SALES_MANAGER_ROLE_NAME,
-    company_id: COMPANY_ID,
     permissions: [
       { resource_id: 'Magento_Company::index', permission: 'allow' },
       { resource_id: 'Magento_Company::view', permission: 'allow' },
@@ -106,7 +104,6 @@ export const poRolesConfig = {
   },
   rulesManager: {
     role_name: RULES_MANAGER_ROLE_NAME,
-    company_id: COMPANY_ID,
     permissions: [
       { resource_id: 'Magento_Company::index', permission: 'allow' },
       { resource_id: 'Magento_Company::view', permission: 'allow' },
@@ -141,7 +138,6 @@ export const poRolesConfig = {
   },
   approver: {
     role_name: APPROVER_ROLE_NAME,
-    company_id: COMPANY_ID,
     permissions: [
       { resource_id: 'Magento_Company::index', permission: 'allow' },
       { resource_id: 'Magento_Company::view', permission: 'allow' },
