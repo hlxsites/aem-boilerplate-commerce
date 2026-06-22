@@ -9,7 +9,7 @@ function stubPayByLinkOrder(body) {
       req.reply({ body: responseBody });
       return;
     }
-    req.continue();
+    req.reply({ body: { data: {} } });
   }).as('payByLinkOrder');
 }
 

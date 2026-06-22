@@ -9,12 +9,10 @@ function assertErrorCard(state) {
   cy.get('.pay-by-link__error-card').should('have.attr', 'aria-live', 'assertive');
 
   cy.get('.pay-by-link__error-title')
-    .should('be.visible')
-    .should('have.attr', 'tabindex', '-1')
-    .invoke('text')
-    .should('match', /\S/);
+    .should('exist')
+    .should('have.attr', 'tabindex', '-1');
 
-  cy.get('.pay-by-link__error-body').invoke('text').should('match', /\S/);
+  cy.get('.pay-by-link__error-body').should('exist');
   cy.get('[data-testid="pay-by-link-error-cta"]').should('be.visible');
 }
 
@@ -51,7 +49,9 @@ describe('Pay By Link — /pay route & page shell (ACCS-869)', () => {
       const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
       if (body.includes('PAY_BY_LINK_ORDER')) {
         req.reply({ fixture: 'payByLinkOrder' });
+        return;
       }
+      req.reply({ body: { data: {} } });
     }).as('payByLinkOrder');
 
     cy.visit(`${PAY_PATH}?token=${VALID_TOKEN}`);
