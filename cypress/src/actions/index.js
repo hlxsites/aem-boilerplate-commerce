@@ -440,6 +440,8 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
   const submitLoginForm = () => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
     cy.visit(urls.login);
     cy.get(fields.poLoginForm).within(() => {
       cy.get(fields.poEmailInput).type(user.email);
