@@ -186,11 +186,11 @@ function populateSlots(block, data, ns) {
   const customerName = addr ? `${addr.firstname} ${addr.lastname}`.trim() : data.customer_email;
   const namePara = document.createElement('p');
   namePara.className = 'pay-by-link__customer-name';
-  namePara.textContent = customerName + ',';
+  namePara.textContent = `${customerName},`;
   header.append(namePara);
 
   // Expiration date
-  const expiryDate = new Date(data.expires_at.replace(' ', 'T') + 'Z');
+  const expiryDate = new Date(`${data.expires_at.replace(' ', 'T')}Z`);
   const formattedExpiry = new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
     month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
   }).format(expiryDate);
@@ -243,7 +243,10 @@ function populateSlots(block, data, ns) {
 
     const tdSubtotal = document.createElement('td');
     tdSubtotal.className = 'pay-by-link__item-subtotal';
-    tdSubtotal.textContent = formatMoney({ value: price.value * quantity, currency: price.currency });
+    tdSubtotal.textContent = formatMoney({
+      value: price.value * quantity,
+      currency: price.currency,
+    });
 
     tr.append(tdName, tdSku, tdQty, tdPrice, tdSubtotal);
     tbody.append(tr);
