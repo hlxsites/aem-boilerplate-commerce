@@ -10,7 +10,7 @@ module.exports = defineConfig({
   ...baseConfig,
   env: {
     ...baseConfig.env,
-    graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
+    graphqlEndPoint: process.env.CYPRESS_GRAPHQL_ENDPOINT ?? "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
     API_ENDPOINT: process.env.CYPRESS_API_ENDPOINT,
     IMS_CLIENT_ID: process.env.CYPRESS_IMS_CLIENT_ID,
     IMS_CLIENT_SECRET: process.env.CYPRESS_IMS_CLIENT_SECRET,
