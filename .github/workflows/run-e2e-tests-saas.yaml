@@ -1,5 +1,7 @@
 name: Cypress E2E SaaS Tests
-on: pull_request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 jobs:
   cypress-saas-run:
     # If you want this job to run on your fork, remove the below "if" line.
