@@ -68,14 +68,9 @@ For various reasons, certain tests fail against certain environments. Eventually
 | Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |
 | `verifyStoreSwitcher.spec`  | SaaS, PaaS, ACO | Story to re-configure multi store <https://jira.corp.adobe.com/browse/USF-2253> |
-| `verifyUserAccount.spec` | SaaS, PaaS | Task <https://jira.corp.adobe.com/browse/USF-2310> |
 | `verifyAemAssets.spec` | SaaS, PaaS, ACO | Requires AEM Assets-specific configuration |
 | `verifyRecsDisplay.spec` | SaaS, ACO | Recommendations not configured on these environments |
-| `verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec` | ACO | Gift options not yet configured on ACO |
-| `verifyGuestUserVirtualCheckout.spec` | ACO | Virtual product checkout not yet configured on ACO |
-| `verifyB2BQuickOrder.spec` | ACO | Quick Order not yet validated on ACO |
-| `verifyB2BGridOrdering.spec` | ACO | Grid Ordering not yet validated on ACO |
-| `verifyB2BRequisitionLists.spec` | ACO | Requisition Lists not yet validated on ACO |
+| `verifyCompanyRegistration.spec` | ACO | Company registration not yet validated on ACO |
 | `verifyB2BQuoteToOrderPlacement.spec` | ACO | Quote Management not yet validated on ACO |
 | `recs.spec` | SaaS, PaaS, ACO | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |

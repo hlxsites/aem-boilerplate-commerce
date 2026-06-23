@@ -200,7 +200,6 @@ describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // Test 3: Sales Manager - Create first Purchase Order requiring approval
   it(
     'Sales Manager - Create first Purchase Order requiring approval',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 3: Sales Manager - Creating first Purchase Order requiring approval =========',
@@ -226,7 +225,6 @@ describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // Test 4: Sales Manager - Create second Purchase Order requiring approval
   it(
     'Sales Manager - Create second Purchase Order requiring approval',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 4: Sales Manager - Creating second Purchase Order requiring approval =========',
@@ -252,7 +250,6 @@ describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // Test 5: Approver - Approve and reject Purchase Orders
   it(
     'Approver - Approve and reject Purchase Orders',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 5: Approver - Managing Purchase Orders approval =========',
@@ -432,7 +429,6 @@ describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // Test 6: Approver - View Purchase Order details and add comment
   it(
     'Approver - View Purchase Order details and add comment',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 6: Approver - Viewing Purchase Order details =========',
@@ -517,7 +513,6 @@ describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // Test 7: Sales Manager - Create auto-approved Purchase Order
   it(
     'Sales Manager - Create auto-approved Purchase Order',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 7: Sales Manager - Creating auto-approved Purchase Order =========',
