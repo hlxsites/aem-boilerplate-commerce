@@ -15,6 +15,7 @@ import {
   loadCommerceLazy,
   initializeCommerce,
   applyTemplates,
+  buildProductDetailsBlock,
   decorateLinks,
   loadErrorPage,
   decorateSections,
@@ -145,6 +146,7 @@ async function loadEager(doc) {
 
   const main = doc.querySelector('main');
   if (main) {
+    buildProductDetailsBlock(main);
     try {
       await initializeCommerce();
       decorateMain(main);
