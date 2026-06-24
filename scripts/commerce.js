@@ -832,7 +832,7 @@ function autolinkModals(element) {
 }
 
 /**
- * Ensures a product-details block is present on any page with a sku meta tag.
+ * Ensures a product-details block is present on any page with a SKU.
  * On product bus pages (first section has no authored blocks), strips generated
  * content (h1, price, images) and variant sections first.
  * @param {Element} main The main element
