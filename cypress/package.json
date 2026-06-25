@@ -7,7 +7,8 @@
     "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas,grepFilterSpecs=true,grepOmitFiltered=true",
     "cypress:percy": "percy exec -- cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas+@snapPercy",
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
-    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas,grepFilterSpecs=true,grepOmitFiltered=true"
+    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas,grepFilterSpecs=true,grepOmitFiltered=true",
+    "check:shards": "node scripts/check-shard-coverage.js"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
