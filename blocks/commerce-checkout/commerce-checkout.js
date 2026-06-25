@@ -344,7 +344,7 @@ export default async function decorate(block) {
             ...prev.slots.Methods,
             [code]: {
               ...prev.slots.Methods[code],
-              enabled: true,
+              enabled: !!prev.slots.Methods[code].render,
             },
           },
         },
