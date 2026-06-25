@@ -42,6 +42,7 @@ import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 import { PaymentMethodCode, PaymentLocation } from '@dropins/storefront-payment-services/api.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Order Dropin
@@ -407,6 +408,24 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
           enabled: false,
         },
         [PaymentMethodCode.GOOGLE_PAY]: {
+          render: (ctx) => {
+            const $googlePay = document.createElement('div');
+
+            PaymentServices.render(GooglePay, {
+              onButtonClick: (showPaymentSheet) => {
+                if (validateCheckoutForms()) {
+                  showPaymentSheet();
+                }
+              },
+              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+              onError: (localizedError) => {
+                events.emit('checkout/error', {
+                  message: localizedError.message,
+                });
+              },
+            })($googlePay);
+            ctx.replaceHTML($googlePay);
+          },
           enabled: false,
         },
         [PaymentMethodCode.VAULT]: {
