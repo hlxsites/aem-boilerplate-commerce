@@ -26,6 +26,7 @@ const {
   createCompanyRole,
   assignRoleToUser,
 } = require('./b2bCompanyAPICalls');
+const ACCSApiClient = require('./accsClient');
 
 const { baseCompanyData, companyUsers } = require('../fixtures/companyManagementData');
 
@@ -34,7 +35,7 @@ const { baseCompanyData, companyUsers } = require('../fixtures/companyManagement
  * Creates a company with a single admin user.
  * Stores credentials in Cypress.env for later use.
  */
-Cypress.Commands.add('setupCompanyWithAdmin', () => {
+Cypress.Commands.add('setupCompanyWithAdmin', (options = {}) => {
   cy.logToTerminal('🏢 Setting up test company with admin...');
 
   cy.then(async () => {
@@ -60,9 +61,34 @@ Cypress.Commands.add('setupCompanyWithAdmin', () => {
       adminEmail: uniqueAdminEmail,
       adminPassword: 'Test123!',
       status: 1, // Active
+      ...(options.extensionAttributes && { extensionAttributes: options.extensionAttributes }),
     });
 
     cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
+
+    // If PO was requested, verify the flag was actually stored and force-set it if not.
+    // Some ACO versions silently drop extension_attributes on POST /V1/company/.
+    if (options.extensionAttributes?.is_purchase_order_enabled) {
+      const client = new ACCSApiClient();
+      const companyDetails = await client.get(`/V1/company/${testCompany.id}`);
+      const { items: _i, total_count: _tc, error: _e, message: _m, ...company } = companyDetails;
+      const poEnabled = company?.extension_attributes?.is_purchase_order_enabled;
+      cy.logToTerminal(`🔍 is_purchase_order_enabled after creation: ${poEnabled}`);
+
+      if (!poEnabled) {
+        cy.logToTerminal('⚠️ PO flag not stored — forcing update via PUT /V1/company/...');
+        await client.put(`/V1/company/${testCompany.id}`, {
+          company: {
+            ...company,
+            extension_attributes: {
+              ...(company.extension_attributes || {}),
+              is_purchase_order_enabled: 1,
+            },
+          },
+        });
+        cy.logToTerminal('✅ is_purchase_order_enabled forced to 1');
+      }
+    }
 
     // Store for cleanup and login
     Cypress.env('testCompany', {

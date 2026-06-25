@@ -139,12 +139,13 @@ describe("Verify guest user can place order", () => {
 
     cy.get(fields.submitCancelOrderButton).click();
 
-    cy.get(".dropin-header-container__title", { timeout: 3000 })
+    // Wait for the modal to close before asserting the updated order status
+    cy.get(fields.cancellationReasonsModal).should("not.exist");
+
+    cy.get(".dropin-header-container__title")
       .should("exist")
       .and("be.visible")
       .and("contain.text", "Cancellation requested");
-
-    cy.get(fields.cancellationReasonsModal).should("not.exist");
 
     cy.get(".order-order-status-content__wrapper-description p")
       .should("exist")

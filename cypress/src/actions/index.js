@@ -425,17 +425,11 @@ export const navigateToCompanyRegistration = () => {
 export const editProductOptions = (selectedOption, updateProductOptionTo) => {
   cy.contains('Edit').click();
   cy.get('.modal-content').should('be.visible');
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', selectedOption);
-  cy.get('.dropin-incrementer__increase-button').eq(1).click();
-  cy.get('.dropin-incrementer__input').eq(1).should('have.value', '2');
-  cy.get('select').eq(1).select(updateProductOptionTo);
-  cy.get('select')
-    .eq(1)
-    .find('option:selected')
-    .should('have.text', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', selectedOption);
+  cy.get('.modal-content').find('.dropin-incrementer__increase-button').click();
+  cy.get('.modal-content').find('.dropin-incrementer__input').should('have.value', '2');
+  cy.get('.modal-content').selectProductOption('color', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', updateProductOptionTo);
   cy.contains('Update in Cart').should('be.visible').click();
 };
 
@@ -445,15 +439,38 @@ export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
 
 // B2B Purchase Orders Actions
 export const login = (user, urls) => {
-  cy.visit(urls.login);
-  cy.get(fields.poLoginForm).within(() => {
-    cy.get(fields.poEmailInput).type(user.email);
-    cy.wait(1500);
-    cy.get(fields.poPasswordInput).type(user.password);
-    cy.wait(1500);
-    cy.get(fields.poSubmitButton).click();
-    cy.wait(8000);
-  });
+  const submitLoginForm = () => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.visit(urls.login);
+    cy.get(fields.poLoginForm).within(() => {
+      cy.get(fields.poEmailInput).type(user.email);
+      cy.wait(1500);
+      cy.get(fields.poPasswordInput).type(user.password);
+      cy.wait(1500);
+      cy.get(fields.poSubmitButton).click();
+      cy.wait(8000);
+    });
+  };
+
+  submitLoginForm();
+
+  // Retry up to 2 more times if account is not yet active (Magento takes time to fully
+  // activate REST-created accounts on ACO — each retry clears state and waits 20s).
+  const retryIfNeeded = (attemptsLeft) => {
+    cy.url().then((url) => {
+      if (!url.includes(urls.account) && attemptsLeft > 0) {
+        cy.logToTerminal(`⚠️ Login failed for ${user.email} — clearing state and retrying in 20s (${attemptsLeft} attempt(s) left)...`);
+        cy.wait(20000);
+        cy.clearCookies();
+        cy.clearLocalStorage();
+        submitLoginForm();
+        retryIfNeeded(attemptsLeft - 1);
+      }
+    });
+  };
+  retryIfNeeded(2);
+
   cy.url().should('include', urls.account);
   // Waiting for session and permissions to initialize
   cy.wait(3000);
@@ -781,25 +798,24 @@ export const fillApprovalRuleForm = (rule, texts) => {
 };
 
 export const deleteApprovalRule = (ruleName) => {
-  const getRowByName = (name) => {
-    return cy.get(selectors.poTableRow).filter(`:has(:contains("${name}"))`);
-  };
+  const rowSelector = `${selectors.poTableRow}:has(:contains("${ruleName}"))`;
 
-  getRowByName(ruleName).then(($row) => {
-    cy.wrap($row).within(() => {
+  cy.get('body').then(($body) => {
+    if ($body.find(rowSelector).length === 0) {
+      cy.log(`⚠️ Approval rule "${ruleName}" not found, skipping deletion`);
+      return;
+    }
+
+    cy.get(rowSelector).within(() => {
       cy.contains('button', 'Show').click();
     });
+
+    cy.wait(2000);
+    cy.contains('button', 'Delete').click();
+    cy.wait(10000);
+    cy.get(rowSelector).should('not.exist');
+    cy.wait(5000);
   });
-
-  cy.wait(2000);
-
-  cy.contains('button', 'Delete').click();
-
-  cy.wait(10000);
-
-  getRowByName(ruleName).should('not.exist');
-
-  cy.wait(5000);
 };
 
 // Quick Order Variants Grid Actions

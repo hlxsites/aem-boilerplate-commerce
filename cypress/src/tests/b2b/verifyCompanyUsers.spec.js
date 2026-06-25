@@ -63,7 +63,7 @@ import {
   invalidData,
 } from '../../fixtures/companyManagementData';
 
-describe('USF-2521: Company Users (Optimized Journeys)', { tags: '@B2BSaas' }, () => {
+describe('USF-2521: Company Users (Optimized Journeys)', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   before(() => {
     cy.logToTerminal('👥 Company Users test suite started (OPTIMIZED)');
   });

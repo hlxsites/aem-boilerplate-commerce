@@ -128,7 +128,7 @@ async function createAdminRole(companyId) {
   return adminRole;
 }
 
-describe('Company Hierarchy', { tags: ['@B2BSaas'] }, () => {
+describe('Company Hierarchy', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   let firstCompanyName = null;
   let secondCompanyName = null;
 

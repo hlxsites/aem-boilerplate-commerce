@@ -102,13 +102,15 @@ export const assertProductImage =
 
 export const assertSelectedPaymentMethod = (
   selected_payment_method,
+  // index_number is kept for backward compatibility but no longer used —
+  // finding by value is environment-agnostic (number of payment methods
+  // varies between PaaS, SaaS, and ACO).
+  // eslint-disable-next-line no-unused-vars
   index_number,
 ) => {
   cy.get(".checkout-payment-methods__methods")
-    .find('[type="radio"]')
-    .eq(index_number)
-    .should("be.checked")
-    .and("have.value", selected_payment_method);
+    .find(`[type="radio"][value="${selected_payment_method}"]`)
+    .should("be.checked");
 };
 
 export const assertOrderConfirmationCommonDetails = (
