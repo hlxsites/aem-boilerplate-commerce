@@ -139,10 +139,7 @@ declare const _default: {
       "itemRemoved": "\"{product}\" was removed",
       "itemRemovedDescription": "Changed your mind? You can undo this action.",
       "undoAction": "Undo",
-      "dismissAction": "Dismiss",
-      "confirmDeleteHeading": "Remove \"{product}\" from your cart?",
-      "confirmAction": "Remove",
-      "cancelAction": "Cancel"
+      "dismissAction": "Dismiss"
     },
     "EstimateShipping": {
       "label": "Shipping",
