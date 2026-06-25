@@ -16,4 +16,5 @@
  *******************************************************************/
 export * from './CreditCard/CreditCard';
 export * from './ApplePay/ApplePay';
+export * from './GooglePay/GooglePay';
 //# sourceMappingURL=index.d.ts.map

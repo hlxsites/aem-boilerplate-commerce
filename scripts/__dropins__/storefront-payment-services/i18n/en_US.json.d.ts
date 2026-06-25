@@ -36,6 +36,14 @@ declare const _default: {
         }
       }
     },
+    "GooglePay": {
+      "errors": {
+        "default": {
+          "name": "Google Pay error",
+          "message": "An unexpected error occurred. Please try again or contact support."
+        }
+      }
+    },
     "messages": {
       "methodNotAvailable": "Payment method not available. Please contact support.",
       "methodNotLoaded": "Failed to load payment method. Please try again later.",
