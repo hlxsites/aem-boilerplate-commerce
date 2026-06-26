@@ -17,11 +17,11 @@
       "analytics": {
         "base-currency-code": "USD",
         "environment": "Production",
-        "environment-id": "DHUbHGWamuFFQYVAZEq7k7",
+        "environment-id": "VwgTMUXna925HCUU3QFusN",
         "store-code": "main_website_store",
         "store-id": "main_website_store",
         "store-name": "Default Store View",
-        "store-url": "https://na1-ccsaas-service-stg-int.commerce-core-saas.com/DHUbHGWamuFFQYVAZEq7k7/",
+        "store-url": "https://na1-ccsaas-service-stg-int.commerce-core-saas.com/VwgTMUXna925HCUU3QFusN/",
         "store-view-code": "default",
         "store-view-id": "default",
         "store-view-name": "Default Store View",
