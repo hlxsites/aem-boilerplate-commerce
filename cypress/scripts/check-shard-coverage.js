@@ -14,6 +14,7 @@ const CYPRESS_DIR = resolve(__dirname, '..');
 const WORKFLOW_FILES = [
   resolve(CYPRESS_DIR, '../.github/workflows/run-e2e-tests.yaml'),
   resolve(CYPRESS_DIR, '../.github/workflows/run-e2e-tests-saas.yaml'),
+  resolve(CYPRESS_DIR, '../.github/workflows/run-e2e-tests-aco.yaml'),
 ];
 
 const allSpecs = glob.sync('src/tests/e2eTests/**/*.spec.js', { cwd: CYPRESS_DIR });
