@@ -1,4 +1,4 @@
-name: Cypress E2E B2C ACO Tests
+name: Cypress E2E ACO Tests
 on: push
 jobs:
   cypress-aco-run:

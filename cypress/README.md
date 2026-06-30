@@ -31,7 +31,7 @@ For various reasons, certain tests fail against certain environments. Eventually
 | Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |
 | `verifyStoreSwitcher.spec`  | SaaS, PaaS, ACO | Story to re-configure multi store <https://jira.corp.adobe.com/browse/USF-2253> |
-| `recs.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
+| `recs.spec` | SaaS, ACO | Epic <https://jira.corp.adobe.com/browse/COMOPT-81>; uses `.product-grid-item` (PaaS recs markup) not available on ACO |
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-results-view.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
