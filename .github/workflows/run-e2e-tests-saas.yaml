@@ -1,5 +1,7 @@
 name: Cypress E2E SaaS Tests
-on: push
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 jobs:
   cypress-saas-run:
     # If you want this job to run on your fork, remove the below "if" line.
@@ -36,12 +38,23 @@ jobs:
           - "src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
     steps:
       - uses: actions/checkout@v4
+      - name: Set storefront config
+        id: config
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+          if [[ "$BASE_REF" == "main" ]]; then
+            echo "aem_url=https://main--boilerplate-accs-prod--adobe-commerce.aem.live/" >> "$GITHUB_OUTPUT"
+            echo "graphql_endpoint=https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql" >> "$GITHUB_OUTPUT"
+          else
+            echo "aem_url=https://main--boilerplate-accs--adobe-commerce.aem.live/" >> "$GITHUB_OUTPUT"
+            echo "graphql_endpoint=https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql" >> "$GITHUB_OUTPUT"
+          fi
       - name: Install root dependencies
         run: npm ci
       - name: Install adobe aem cli dependencies
         run: npm install -g @adobe/aem-cli
       - name: Start server in the background
-        run: aem up --url https://main--boilerplate-accs--adobe-commerce.aem.live/ &
+        run: aem up --url ${{ steps.config.outputs.aem_url }} &
       - name: Install Cypress and run tests
         uses: cypress-io/github-action@v6
         with:
@@ -50,10 +63,11 @@ jobs:
           command: npm run cypress:saas:run -- --spec "${{ matrix.spec }}"
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
-          CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT }}
+          CYPRESS_API_ENDPOINT: ${{ github.base_ref == 'main' && secrets.CYPRESS_API_ENDPOINT_PROD || secrets.CYPRESS_API_ENDPOINT }}
           CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
           CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
           CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
+          CYPRESS_GRAPHQL_ENDPOINT: ${{ steps.config.outputs.graphql_endpoint }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
