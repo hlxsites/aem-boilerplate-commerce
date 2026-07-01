@@ -42,7 +42,7 @@ jobs:
         id: config
         run: |
           BASE_REF="${{ github.base_ref }}"
-          if [[ "$BASE_REF" == "main" ]]; then
+          if [[ "$BASE_REF" == "integration" ]]; then
             echo "aem_url=https://main--boilerplate-accs-prod--adobe-commerce.aem.live/" >> "$GITHUB_OUTPUT"
             echo "graphql_endpoint=https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql" >> "$GITHUB_OUTPUT"
           else
@@ -63,7 +63,7 @@ jobs:
           command: npm run cypress:saas:run -- --spec "${{ matrix.spec }}"
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
-          CYPRESS_API_ENDPOINT: ${{ github.base_ref == 'main' && secrets.CYPRESS_API_ENDPOINT_PROD || secrets.CYPRESS_API_ENDPOINT }}
+          CYPRESS_API_ENDPOINT: ${{ github.base_ref == 'integration' && secrets.CYPRESS_API_ENDPOINT_PROD || secrets.CYPRESS_API_ENDPOINT }}
           CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
           CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
           CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
