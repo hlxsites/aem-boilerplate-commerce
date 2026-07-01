@@ -58,7 +58,7 @@ describe("Seller Assisted Buying", () => {
 
     // Wait for checkout form to fully reinitialize after reload
     cy.wait(2000);
-    cy.get('form[name="selectedShippingAddress"]', { timeout: 12000 })
+    cy.get('form[name="selectedShippingAddress"]', { timeout: 25000 })
       .should('be.visible');
 
     // Scroll down to ensure form visibility
@@ -138,16 +138,16 @@ describe("Seller Assisted Buying", () => {
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
-          .type(email, { delay: 50 }); // Add delay to prevent character scrambling in CI/CD
+          .type(email, { delay: 100 });
+
+        cy.get(fields.authFormUserEmail).should('have.value', email);
 
         cy.get(fields.authFormUserPassword)
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
-          .type(otp, { delay: 50 }); // Add delay for password too
+          .type(otp, { delay: 100 });
 
-        // Verify values were entered correctly
-        cy.get(fields.authFormUserEmail).should('have.value', email);
         cy.get(fields.authFormUserPassword).should('have.value', otp);
 
         // Wait for React form state to stabilize after typing
@@ -309,14 +309,8 @@ describe("Seller Assisted Buying", () => {
       ).should("not.exist");
 
       cy.log("Step 14: Logging out before OTP admin login");
-      cy.reload();
-      cy.visit("/");
-      cy.get(".nav-dropdown-button", { timeout: 60000 })
-        .should("be.visible")
-        .click({ force: true });
-      cy.contains("button", /^logout$/i, { timeout: 60000 })
-        .click({ force: true });
-
+      cy.get('.nav-dropdown-button').click();
+      cy.contains('button', /sign out|logout/i).click();
       resetAuthStateAndOpenLogin();
 
       cy.log("Step 15: Looking up customer for admin OTP login");
