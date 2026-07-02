@@ -47,16 +47,15 @@ jobs:
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          command: npm run cypress:run -- --spec "${{ matrix.spec }}"
+          # No quotes around matrix.spec: the comma-separated list has no
+          # spaces, and quoting it here caused cypress-io/github-action's
+          # command execution to leave stray literal `"` characters glued to
+          # the first/last spec paths, silently dropping them from every run.
+          command: npm run cypress:run -- --spec ${{ matrix.spec }}
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
           CYPRESS_COMMERCE_ADMIN_USERNAME: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME }}
           CYPRESS_COMMERCE_ADMIN_PASSWORD: ${{ secrets.CYPRESS_COMMERCE_ADMIN_PASSWORD }}
-          # TEMP diagnostic: some spec files are silently missing from the
-          # "Specs found" list in CI (never run) despite no skip tag and no
-          # errors. This traces @cypress/grep's spec discovery/filtering.
-          # Remove once root-caused.
-          DEBUG: "cypress:server:*,cypress:cli:*"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
