@@ -48,7 +48,7 @@ jobs:
           # "Specs found" list in CI (never run) despite no skip tag and no
           # errors. This traces @cypress/grep's spec discovery/filtering.
           # Remove once root-caused.
-          DEBUG: "@cypress/grep,find-test-names*"
+          DEBUG: "cypress:server:specs,cypress:server:project,cypress:cli:*"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
