@@ -4,13 +4,13 @@
   "description": "Boilerplate E2E tests",
   "scripts": {
     "cypress:open": "cypress open --browser chrome --config-file cypress.paas.config.js",
-    "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas,grepFilterSpecs=true,grepOmitFiltered=true",
+    "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas",
     "cypress:percy": "percy exec -- cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas+@snapPercy",
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
-    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas,grepFilterSpecs=true,grepOmitFiltered=true",
+    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas",
     "check:shards": "node scripts/check-shard-coverage.js",
     "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
-    "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco,grepFilterSpecs=true,grepOmitFiltered=true"
+    "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
