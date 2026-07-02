@@ -111,10 +111,18 @@ describe("Verify auth user can place order", () => {
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.cart-mini-cart');
     cy.visit("/products/youth-tee/adb150");
+    // Button can be visible before the product form finishes hydrating;
+    // clicking while still disabled registers in the UI but never reaches
+    // the cart model (see the same pattern guarded against above).
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
+      .and("not.be.disabled")
       .click();
     cy.get(".minicart-wrapper").click();
+    // Panel re-fetches/re-renders cart contents on open; wait for the
+    // loaded flag like the first add-to-cart above, otherwise the
+    // assertion below can run against the stale (pre-add) cart state.
+    cy.get('.minicart-panel[data-loaded="true"]').should('exist');
     assertCartSummaryProduct(
       "Youth tee",
       "ADB150",
