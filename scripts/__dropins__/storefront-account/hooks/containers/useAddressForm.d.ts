@@ -4,7 +4,7 @@ import { VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 
 export declare const findNonEmptyObject: (obj1: Record<string, unknown> | undefined, obj2: CustomerAddressesModel | undefined) => CustomerAddressesModel | Record<string, unknown>;
-export declare const useAddressForm: ({ showFormLoader, showSaveCheckBox, saveCheckBoxValue, addressFormId, billingCheckBoxValue, shippingCheckBoxValue, showShippingCheckBox, showBillingCheckBox, inputsDefaultValueSet, onCloseBtnClick, onSuccess, onError, formName, }: useAddressFormProps) => {
+export declare const useAddressForm: ({ showFormLoader, showSaveCheckBox, saveCheckBoxValue, addressFormId, billingCheckBoxValue, shippingCheckBoxValue, showShippingCheckBox, showBillingCheckBox, inputsDefaultValueSet, onCloseBtnClick, onSuccess, onError, formName, isB2BFlow, permissions, }: useAddressFormProps) => {
     regionOptions: {
         text: string;
         value: string;

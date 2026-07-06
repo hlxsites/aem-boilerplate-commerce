@@ -14,14 +14,13 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './customer-address';
-export * from './attributes-form';
-export * from './country';
-export * from './region';
-export * from './order-history-list';
-export * from './store-config';
-export * from './stored-payment-method';
-export * from './admin-assistance-actions';
-export * from './company-address';
-export * from './company-address-book';
-//# sourceMappingURL=index.d.ts.map
+export interface DeleteCompanyAddressResponse {
+    data: {
+        deleteCompanyAddress: boolean;
+    };
+    errors?: {
+        message: string;
+    }[];
+}
+export type DeleteCompanyAddressResult = boolean;
+//# sourceMappingURL=deleteCompanyAddress.types.d.ts.map

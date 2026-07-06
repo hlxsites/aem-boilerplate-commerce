@@ -1,5 +1,6 @@
 import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
 import { CustomerAddressesModel } from '../data/models';
+import { CompanyAddressPermissions } from '../hooks/useCompanyAddressPermissions';
 
 interface AddressFormActionsContext {
     handleUpdateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;
@@ -38,6 +39,8 @@ export interface AddressFormProps {
     onError?: (error: string) => void;
     handleRenderForm?: () => void;
     onChange?: (values: Record<string, FormDataEntryValue>, inputValue: Record<string, string>, event: Event) => void;
+    isB2BFlow?: boolean;
+    permissions?: CompanyAddressPermissions;
 }
 export interface AddressFormWrapperProps extends AddressFormProps {
 }

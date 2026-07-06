@@ -14,14 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './customer-address';
-export * from './attributes-form';
-export * from './country';
-export * from './region';
-export * from './order-history-list';
-export * from './store-config';
-export * from './stored-payment-method';
-export * from './admin-assistance-actions';
-export * from './company-address';
-export * from './company-address-book';
-//# sourceMappingURL=index.d.ts.map
+/**
+ * Hook to determine customer type (B2B vs B2C)
+ */
+export declare const useCustomerType: () => {
+    isB2BCustomer: boolean;
+    loading: boolean;
+};
+//# sourceMappingURL=useCustomerType.d.ts.map

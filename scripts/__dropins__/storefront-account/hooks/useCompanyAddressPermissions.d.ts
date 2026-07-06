@@ -14,14 +14,20 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './customer-address';
-export * from './attributes-form';
-export * from './country';
-export * from './region';
-export * from './order-history-list';
-export * from './store-config';
-export * from './stored-payment-method';
-export * from './admin-assistance-actions';
-export * from './company-address';
-export * from './company-address-book';
-//# sourceMappingURL=index.d.ts.map
+/**
+ * Company address-specific permissions interface
+ */
+export interface CompanyAddressPermissions {
+    canAccessAddressBook: boolean;
+    canViewAddress: boolean;
+    canCreateAddress: boolean;
+    canEditAddress: boolean;
+    canDeleteAddress: boolean;
+    canSetDefaultAddress: boolean;
+    loading: boolean;
+}
+/**
+ * Hook to fetch company address management permissions
+ */
+export declare const useCompanyAddressPermissions: () => CompanyAddressPermissions;
+//# sourceMappingURL=useCompanyAddressPermissions.d.ts.map

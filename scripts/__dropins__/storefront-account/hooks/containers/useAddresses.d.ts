@@ -1,7 +1,7 @@
 import { CustomerAddressesModel } from '../../data/models';
 import { KeysSortOrderProps, useAddressesProps } from '../../types';
 
-export declare const useAddresses: ({ selectShipping, selectBilling, defaultSelectAddressId, onAddressData, minifiedView, routeAddressesPage, onSuccess, }: useAddressesProps) => {
+export declare const useAddresses: ({ selectShipping, selectBilling, selectable, defaultSelectAddressId, onAddressData, minifiedView, routeAddressesPage, onSuccess, }: useAddressesProps) => {
     keysSortOrder: [] | KeysSortOrderProps[];
     submitLoading: boolean;
     isModalRendered: boolean;
@@ -20,5 +20,8 @@ export declare const useAddresses: ({ selectShipping, selectBilling, defaultSele
     handleOnSuccess: () => Promise<void>;
     handleSelectAddressOption: (event: Event, item?: {} | CustomerAddressesModel | undefined) => void;
     selectedAddressOption: string;
+    permissions: import('../useCompanyAddressPermissions').CompanyAddressPermissions;
+    isB2BFlow: boolean;
+    isAddressSelectionLocked: boolean;
 };
 //# sourceMappingURL=useAddresses.d.ts.map
