@@ -385,6 +385,9 @@ header nav .nav-tools button.nav-search-button {
 
 header .nav-search-panel {
   padding: var(--spacing-small);
+  box-sizing: border-box;
+  max-height: 760px;
+  overflow-y: auto;
 }
 
 header .nav-search-panel input {
@@ -444,6 +447,10 @@ header .nav-search-panel .search-bar-result .product-discovery-product-list__foo
   }
 
   .cart-mini-cart:has(.cart-empty-cart) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  header .nav-search-panel {
     max-height: calc(100vh - var(--nav-height));
   }
 }
