@@ -10,7 +10,7 @@
  * - PDP draft pages must have a metadata block with sku set to the UPPERCASE SKU (e.g. ADB125)
  *   The Catalog Service query is case-sensitive and will return empty products for lowercase SKUs.
  * - pdpAcdlOnly: recid only (PDP dropin populates productContext via acdl)
- * - plpStaticSkuOnly: recid + currentsku (static / MLT anchor, no currentprice)
+ * - displayPlp: recid + currentsku (static / MLT anchor, no currentprice) — also used for display test
  * - plpBlockSkuAndPrice: recid + currentsku + currentprice (ACO dynamic on non-PDP)
  * - pdpBlockSkuNoPrice: PDP page + block currentsku, no currentprice (#1272 guard)
  * - cartRecsBlock: cart page with rec block + currentsku (+ currentprice on ACO dynamic)
@@ -23,7 +23,6 @@ function buildPrexPages(envFolder) {
     displayPlp: isPaas ? '/drafts/tests/apparel' : `/drafts/tests/apparel-${envFolder}`,
     displayPdp: `${pdpBase}/adb125`,
     pdpAcdlOnly: `${pdpBase}/adb125`,
-    plpStaticSkuOnly: isPaas ? '/drafts/tests/apparel' : `/drafts/tests/apparel-${envFolder}`,
     plpBlockSkuAndPrice: `/drafts/tests/apparel-${envFolder}-price`,
     pdpBlockSkuNoPrice: `${pdpBase}/adb125-sku`,
     cartRecsBlock: `/drafts/tests/cart-recs-${envFolder}`,

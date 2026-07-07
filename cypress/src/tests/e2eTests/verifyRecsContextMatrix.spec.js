@@ -30,7 +30,7 @@ describe('PREX context matrix — PLP static SKU anchor', () => {
   });
 
   it('PLP with currentsku only: no currentProduct in GraphQL URL', () => {
-    visitPrexPage('plpStaticSkuOnly');
+    visitPrexPage('displayPlp');
     // PLP pages never set productContext — it is only populated on PDP via acdl: true
     assertProductContextAbsent();
     waitForRecsCarousel();
