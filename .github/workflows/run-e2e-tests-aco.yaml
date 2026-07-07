@@ -25,7 +25,7 @@ jobs:
           # Shard 3 — Cart features + SAB (verifySellerAssistedBuying last so cart is warm)
           - "src/tests/e2eTests/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/e2eTests/verifyCartUndo.spec.js,src/tests/e2eTests/verifyLowStockInfoMessage.spec.js,src/tests/e2eTests/verifyStoreSwitcher.spec.js,src/tests/e2eTests/verifySellerAssistedBuying.spec.js"
           # Shard 4 — Discovery & search (verifyAemAssets and verifyRecsDisplay are @skipAco)
-          - "src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
+          - "src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyRecsContextMatrix.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
     steps:
       - uses: actions/checkout@v4
       - name: Install root dependencies
