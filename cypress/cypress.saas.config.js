@@ -6,17 +6,20 @@ const AEM_ASSETS_PRIVATE_USER = JSON.parse(
   process.env.AEM_ASSETS_PRIVATE_USER ?? '{}'
 );
 
+const IS_PROD_RELEASE = process.env.IS_PROD_RELEASE === 'true';
+
 module.exports = defineConfig({
   ...baseConfig,
   env: {
     ...baseConfig.env,
     graphqlEndPoint:
+      process.env.CYPRESS_GRAPHQL_ENDPOINT ??
       'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql',
     API_ENDPOINT: process.env.CYPRESS_API_ENDPOINT,
     IMS_CLIENT_ID: process.env.CYPRESS_IMS_CLIENT_ID,
     IMS_CLIENT_SECRET: process.env.CYPRESS_IMS_CLIENT_SECRET,
     IMS_ORG_ID: process.env.CYPRESS_IMS_ORG_ID,
-    giftCardA: '00419VQ5C341',
+    giftCardA: IS_PROD_RELEASE ? '01J2UN97NBO0' : '00419VQ5C341',
     productUrlWithOptions:
       '/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz',
     stateShippingId: 'TX,57',
