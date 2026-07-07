@@ -1,16 +1,21 @@
 name: Cypress E2E B2B SaaS Tests
-on: push
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
 jobs:
   cypress-b2b-saas-groups:
     uses: ./.github/workflows/_b2b-e2e-base.yaml
     with:
       config-file: cypress.b2b.saas.config.js
       grep-tags: '@B2BSaas'
-      url: 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live'
+      url: ${{ github.base_ref == 'b2b' && 'https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live' || 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live' }}
+      graphql-endpoint: ${{ github.base_ref == 'b2b' && 'https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql' || 'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql' }}
+      is-prod-release: ${{ github.base_ref == 'b2b' }}
       is-aco: false
     secrets:
       AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
       CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT }}
+      CYPRESS_API_ENDPOINT_PROD: ${{ secrets.CYPRESS_API_ENDPOINT_PROD }}
       CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
       CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
       CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
