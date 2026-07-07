@@ -27,7 +27,7 @@ import * as fields from "../../fields";
 
 describe(
   "Verify guest user can place order",
-  { tags: "@skipSaasNoProd" },
+  { tags: ["@skipSaasNoProd", "@skipPaas", "@skipAco"] },
   () => {
     it("Verify guest user can place order", () => {
       cy.visit("");

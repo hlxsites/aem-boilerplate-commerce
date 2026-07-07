@@ -33,7 +33,7 @@ import * as fields from "../../fields";
 
 describe(
   "Verify auth user can place order",
-  { tags: "@skipSaasNoProd" },
+  { tags: ["@skipSaasNoProd", "@skipPaas", "@skipAco"] },
   () => {
     it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
       // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
