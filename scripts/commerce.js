@@ -627,9 +627,11 @@ export async function commerceEndpointWithQueryParams() {
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
 function getSkuFromUrl() {
+  // URLSearchParams already decodes the value; decoding again would corrupt
+  // any sku containing a literal % character.
   const sku = new URLSearchParams(window.location.search).get('sku');
   if (sku) {
-    return decodeURIComponent(sku);
+    return sku;
   }
 
   // Fall back to path based
@@ -675,8 +677,19 @@ export function getProductLink(urlKey, sku) {
   if (!sku) {
     console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
   }
+  // getConfigValue throws if called before initializeConfig() has resolved.
+  // getProductLink is called from render paths (header, mini-cart, cart,
+  // wishlist, order lists) that can run before that promise settles, and an
+  // uncaught throw here breaks the whole render, not just this link. Default
+  // to the (non-folder-mapped) template link in that case.
+  let useFolderMapping = false;
+  try {
+    useFolderMapping = getConfigValue('use-folder-mapping') === 'true';
+  } catch (e) {
+    console.warn('getProductLink: config not yet initialized, defaulting to template link', e);
+  }
   // Use folder mapping path to route to product
-  if (getConfigValue('use-folder-mapping') === 'true') {
+  if (useFolderMapping) {
     if (!urlKey) {
       console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
     }
