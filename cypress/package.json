@@ -7,7 +7,8 @@
     "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas,grepFilterSpecs=false,grepOmitFiltered=false",
     "cypress:percy": "percy exec -- cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas+@snapPercy",
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
-    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas,grepFilterSpecs=false,grepOmitFiltered=false",
+    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas+-@skipSaasNoProd,grepFilterSpecs=false,grepOmitFiltered=false",
+    "cypress:saas-prod:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas+-@skipSaasProd,grepFilterSpecs=false,grepOmitFiltered=false",
     "check:shards": "node scripts/check-shard-coverage.js",
     "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
     "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco,grepFilterSpecs=false,grepOmitFiltered=false"

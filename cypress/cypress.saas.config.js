@@ -4,19 +4,22 @@ const { buildPrexPages } = require('./prexPages.config');
 
 // A private user used with AEM Assets testing suite.
 const AEM_ASSETS_PRIVATE_USER = JSON.parse(
-  process.env.AEM_ASSETS_PRIVATE_USER ?? "{}"
+  process.env.AEM_ASSETS_PRIVATE_USER ?? "{}",
 );
 
 module.exports = defineConfig({
   ...baseConfig,
   env: {
     ...baseConfig.env,
-    graphqlEndPoint: "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
+    graphqlEndPoint:
+      process.env.CYPRESS_GRAPHQL_ENDPOINT ??
+      "https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql",
     API_ENDPOINT: process.env.CYPRESS_API_ENDPOINT,
     IMS_CLIENT_ID: process.env.CYPRESS_IMS_CLIENT_ID,
     IMS_CLIENT_SECRET: process.env.CYPRESS_IMS_CLIENT_SECRET,
     IMS_ORG_ID: process.env.CYPRESS_IMS_ORG_ID,
-    giftCardA: "00419VQ5C341",
+    giftCardA:
+      process.env.IS_PROD_RELEASE === "true" ? "01J2UN97NBO0" : "00419VQ5C341",
     productUrlWithOptions:
       "/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz",
     stateShippingId: "TX,57",
@@ -30,8 +33,10 @@ module.exports = defineConfig({
 
     aemAssetsConfig: {
       commerceConfig: {
-        coreEndpoint: "https://na1-sandbox.api.commerce.adobe.com/QhUjcEq9dMrdCF7h8a4e5g/graphql",
-        endpoint: "https://na1-sandbox.api.commerce.adobe.com/QhUjcEq9dMrdCF7h8a4e5g/graphql",
+        coreEndpoint:
+          "https://na1-sandbox.api.commerce.adobe.com/QhUjcEq9dMrdCF7h8a4e5g/graphql",
+        endpoint:
+          "https://na1-sandbox.api.commerce.adobe.com/QhUjcEq9dMrdCF7h8a4e5g/graphql",
       },
 
       author: {
