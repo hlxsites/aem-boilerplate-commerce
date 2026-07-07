@@ -432,9 +432,18 @@ header .nav-search-panel .search-bar-result .product-discovery-product-list__foo
   min-height: 360px;
 }
 
+.cart-mini-cart:has(.cart-empty-cart) {
+  max-height: 760px;
+  overflow-y: auto;
+}
+
 /* If viewport height is below max, set max height to 90% of viewport */
 @media (max-height: 819px) {
   .cart-mini-cart:not(:has(.cart-empty-cart)) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  .cart-mini-cart:has(.cart-empty-cart) {
     max-height: calc(100vh - var(--nav-height));
   }
 }
@@ -514,6 +523,12 @@ header .nav-search-input .search_autocomplete .popover-container {
   font: var(--type-body-1-default-font) !important;
   letter-spacing: var(--type-body-1-default-letter-spacing) !important;
   width: 100%;
+  max-height: calc(100vh - var(--nav-height));
+  overflow-y: auto;
+
+  @supports (height: 100dvh) {
+    max-height: calc(100dvh - var(--nav-height));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -856,4 +871,3 @@ body:has(.seller-assisted-buying-banner) {
     display: inline-block;
   }
 }
-

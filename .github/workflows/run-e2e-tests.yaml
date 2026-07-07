@@ -47,7 +47,11 @@ jobs:
         with:
           working-directory: cypress
           wait-on: 'http://localhost:3000'
-          command: npm run cypress:run -- --spec "${{ matrix.spec }}"
+          # No quotes around matrix.spec: the comma-separated list has no
+          # spaces, and quoting it here caused cypress-io/github-action's
+          # command execution to leave stray literal `"` characters glued to
+          # the first/last spec paths, silently dropping them from every run.
+          command: npm run cypress:run -- --spec ${{ matrix.spec }}
         env:
           AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
           CYPRESS_COMMERCE_ADMIN_USERNAME: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME }}
