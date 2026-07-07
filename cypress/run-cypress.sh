@@ -73,9 +73,9 @@ run_configuration() {
             ;;
         3)
             echo -e "${YELLOW}Starting AEM localhost with ACO configuration...${NC}"
-            echo -e "${BLUE}URL: https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live${NC}"
+            echo -e "${BLUE}URL: https://main--boilerplate-aco--adobe-commerce.aem.live${NC}"
 
-            cd "$ROOT_DIR" && npx aem up --url https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live &
+            cd "$ROOT_DIR" && npx aem up --url https://main--boilerplate-aco--adobe-commerce.aem.live &
             AEM_PID=$!
 
             echo -e "${GREEN}AEM localhost server started (PID: $AEM_PID)${NC}"
