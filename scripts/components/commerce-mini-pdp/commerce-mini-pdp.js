@@ -72,8 +72,10 @@ async function loadCartWithPendingFreeGiftRule(sku, cartHint = null) {
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (attempt > 0 || !cart) {
       if (typeof Cart.refreshCart === 'function') {
+        // eslint-disable-next-line no-await-in-loop
         cart = await Cart.refreshCart();
       } else {
+        // eslint-disable-next-line no-await-in-loop
         cart = await Cart.getCartData();
       }
     }
@@ -84,6 +86,7 @@ async function loadCartWithPendingFreeGiftRule(sku, cartHint = null) {
     }
 
     if (attempt < maxAttempts - 1) {
+      // eslint-disable-next-line no-await-in-loop
       await new Promise((resolve) => {
         setTimeout(resolve, 150);
       });

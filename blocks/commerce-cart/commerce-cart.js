@@ -6,7 +6,6 @@ import {
   InLineAlert,
   Icon,
   Button,
-  Price,
   provider as UI,
 } from '@dropins/tools/components.js';
 
@@ -54,7 +53,7 @@ export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
   const _cart = Cart.getCartDataFromCache();
-  
+
   // Modal state
   let currentModal = null;
   let currentNotification = null;

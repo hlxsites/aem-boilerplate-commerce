@@ -5,7 +5,6 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {
   InLineAlert,
   Icon,
-  Price,
   provider as UI,
   Button,
 } from '@dropins/tools/components.js';
