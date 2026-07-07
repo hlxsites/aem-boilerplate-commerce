@@ -27,7 +27,7 @@ import {
 } from "../../fixtures/index";
 import * as fields from "../../fields";
 
-describe("Verify guest user can place order", () => {
+describe("Verify guest user can place order", { tags: "@skipSaasProd" }, () => {
   it("Verify guest user can place order", () => {
     cy.visit("");
     // Navigate to PDP
