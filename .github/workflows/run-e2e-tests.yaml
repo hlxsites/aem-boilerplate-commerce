@@ -1,7 +1,7 @@
 name: Cypress E2E Tests
 on: push
 jobs:
-  cypress-paas-run:
+  cypress-paas-groups:
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commmerce's
     # demo backend.
@@ -64,3 +64,19 @@ jobs:
           name: cypress-screenshots-paas-${{ strategy.job-index }}
           path: cypress/screenshots
           if-no-files-found: ignore
+
+  # Aggregation gate: a single, stable status check for branch protection.
+  # Requiring the per-shard "cypress-paas-groups (...)" checks is brittle because
+  # their names embed the spec list, so every shard change needs a manual
+  # branch-protection edit. Require this job instead.
+  cypress-paas-run:
+    if: always()
+    needs: cypress-paas-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check shards result
+        run: |
+          if [ "${{ needs.cypress-paas-groups.result }}" != "success" ]; then
+            echo "One or more test shards failed: ${{ needs.cypress-paas-groups.result }}"
+            exit 1
+          fi

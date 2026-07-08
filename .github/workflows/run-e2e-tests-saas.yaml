@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 jobs:
-  cypress-saas-run:
+  cypress-saas-groups:
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commmerce's
     # demo backend.
@@ -81,3 +81,19 @@ jobs:
           name: cypress-screenshots-saas-${{ strategy.job-index }}
           path: cypress/screenshots
           if-no-files-found: ignore
+
+  # Aggregation gate: a single, stable status check for branch protection.
+  # Requiring the per-shard "cypress-saas-groups (...)" checks is brittle because
+  # their names embed the spec list, so every shard change needs a manual
+  # branch-protection edit. Require this job instead.
+  cypress-saas-run:
+    if: always()
+    needs: cypress-saas-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check shards result
+        run: |
+          if [ "${{ needs.cypress-saas-groups.result }}" != "success" ]; then
+            echo "One or more test shards failed: ${{ needs.cypress-saas-groups.result }}"
+            exit 1
+          fi
