@@ -2,15 +2,17 @@ name: Cypress E2E B2B SaaS Tests
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
+env:
+  IS_PROD_RELEASE: ${{ github.base_ref == 'b2b-integration' }}
 jobs:
   cypress-b2b-saas-groups:
     uses: ./.github/workflows/_b2b-e2e-base.yaml
     with:
       config-file: cypress.b2b.saas.config.js
       grep-tags: '@B2BSaas'
-      url: ${{ github.base_ref == 'b2b' && 'https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live' || 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live' }}
-      graphql-endpoint: ${{ github.base_ref == 'b2b' && 'https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql' || 'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql' }}
-      is-prod-release: ${{ github.base_ref == 'b2b' }}
+      url: ${{ env.IS_PROD_RELEASE == 'true' && 'https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live' || 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live' }}
+      graphql-endpoint: ${{ env.IS_PROD_RELEASE == 'true' && 'https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql' || 'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql' }}
+      is-prod-release: ${{ env.IS_PROD_RELEASE == 'true' }}
       is-aco: false
     secrets:
       AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
