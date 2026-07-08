@@ -98,8 +98,11 @@ export default async function decorate(block) {
     });
   }
 
+  const requiresPdpConfiguration = (product) => product.typename === 'ComplexProductView'
+    || product.attributes?.some((attr) => attr.name === 'ac_giftcard');
+
   const getAddToCartButton = (product) => {
-    if (product.typename === 'ComplexProductView') {
+    if (requiresPdpConfiguration(product)) {
       const button = document.createElement('div');
       UI.render(Button, {
         children: labels.Global?.AddProductToCart,
