@@ -16,7 +16,8 @@ show_menu() {
     echo ""
     echo -e "${GREEN}1)${NC} PaaS Configuration (localhost + cypress:open)"
     echo -e "${GREEN}2)${NC} SaaS Configuration (localhost + cypress:saas:open)"
-    echo -e "${RED}3)${NC} Exit"
+    echo -e "${GREEN}3)${NC} ACO Configuration (localhost + cypress:aco:open)"
+    echo -e "${RED}4)${NC} Exit"
     echo ""
 }
 
@@ -71,11 +72,30 @@ run_configuration() {
             echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
             ;;
         3)
+            echo -e "${YELLOW}Starting AEM localhost with ACO configuration...${NC}"
+            echo -e "${BLUE}URL: https://main--boilerplate-aco--adobe-commerce.aem.live${NC}"
+
+            cd "$ROOT_DIR" && npx aem up --url https://main--boilerplate-aco--adobe-commerce.aem.live &
+            AEM_PID=$!
+
+            echo -e "${GREEN}AEM localhost server started (PID: $AEM_PID)${NC}"
+            echo -e "${YELLOW}Waiting a moment for server to initialize...${NC}"
+            sleep 3
+
+            cd "$ROOT_DIR/cypress"
+            echo -e "${YELLOW}Opening Cypress with ACO configuration...${NC}"
+            npm run cypress:aco:open
+
+            echo ""
+            echo -e "${BLUE}Note: AEM localhost server (PID: $AEM_PID) is still running in the background.${NC}"
+            echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
+            ;;
+        4)
             echo -e "${YELLOW}Exiting...${NC}"
             exit 0
             ;;
         *)
-            echo -e "${RED}Invalid option. Please select 1, 2, or 3.${NC}"
+            echo -e "${RED}Invalid option. Please select 1, 2, 3, or 4.${NC}"
             return 1
             ;;
     esac
@@ -113,7 +133,7 @@ main() {
 
     while true; do
         show_menu
-        read -p "Enter your choice (1-3): " choice
+        read -p "Enter your choice (1-4): " choice
         
         if run_configuration "$choice"; then
             break

@@ -1,5 +1,6 @@
 const { defineConfig } = require('cypress');
 const baseConfig = require('./cypress.base.config');
+const { buildPrexPages } = require('./prexPages.config');
 
 // A private user used with AEM Assets testing suite.
 const AEM_ASSETS_PRIVATE_USER = JSON.parse(
@@ -29,6 +30,9 @@ module.exports = defineConfig({
     productImageNameConfigurable: 'adb124.jpg',
     productWithOptionImageNameConfigurable: 'adb192.jpg',
 
+    // Tenant-specific da.live draft paths — see prexPages.config.js
+    prexPages: buildPrexPages('aco'),
+
     aemAssetsConfig: {
       commerceConfig: {
         endpoint: 'https://na1.api.commerce.adobe.com/WbqPAxMhK9b37TKrp8htRx/graphql',
@@ -49,7 +53,7 @@ module.exports = defineConfig({
         order: '', // TODO: add a completed test order number
         returnedOrder: '', // TODO: add a returned test order number
       },
-      prexDraft: '/drafts/decepticons/products/aco/adb125',
+      prexDraft: '/drafts/tests/products/aco/adb125',
     },
   },
 });
