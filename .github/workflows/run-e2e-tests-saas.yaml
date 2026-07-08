@@ -10,7 +10,7 @@ jobs:
     if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     env:
-      IS_PROD_RELEASE: ${{ github.base_ref == 'b2b' }}
+      IS_PROD_RELEASE: ${{ github.base_ref == 'b2b-integration' }}
     steps:
       - uses: actions/checkout@v4
       - name: Set storefront config
