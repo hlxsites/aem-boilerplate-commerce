@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Verifies every spec file under src/tests/e2eTests/ is assigned to exactly
+ * Verifies every spec file under src/tests/b2c/ is assigned to exactly
  * one shard in each CI workflow that uses the matrix strategy.
  *
  * Run: node scripts/check-shard-coverage.js
@@ -17,7 +17,7 @@ const WORKFLOW_FILES = [
   resolve(CYPRESS_DIR, '../.github/workflows/run-e2e-tests-aco.yaml'),
 ];
 
-const allSpecs = glob.sync('src/tests/e2eTests/**/*.spec.js', { cwd: CYPRESS_DIR });
+const allSpecs = glob.sync('src/tests/b2c/**/*.spec.js', { cwd: CYPRESS_DIR });
 
 function parseShardsFromWorkflow(workflowPath) {
   const content = readFileSync(workflowPath, 'utf8');

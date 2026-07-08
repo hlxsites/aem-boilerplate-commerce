@@ -22,20 +22,20 @@ jobs:
           # Shard 1 — Auth & account flows
           # Add here if: spec tests sign-in/sign-out, account management pages,
           # authenticated-user wishlist, or event SDK initialization.
-          - "src/tests/e2eTests/verifyAuthUserCheckout.spec.js,src/tests/e2eTests/verifyUserAccount.spec.js,src/tests/e2eTests/verifyAuthUserWishlistFeature.spec.js,src/tests/e2eTests/events/auth.spec.js,src/tests/e2eTests/events/product-page-view.spec.js,src/tests/e2eTests/events/initialization.spec.js"
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
           # Shard 2 — Guest checkout flows
           # Add here if: spec tests guest checkout (including virtual products),
           # guest wishlist, or event SDK calls fired during cart/checkout/order flows.
-          - "src/tests/e2eTests/verifyGuestUserCheckout.spec.js,src/tests/e2eTests/verifyGuestUserVirtualCheckout.spec.js,src/tests/e2eTests/verifyGuestUserWishlistFeature.spec.js,src/tests/e2eTests/events/add-to-cart.spec.js,src/tests/e2eTests/events/initiate-checkout.spec.js,src/tests/e2eTests/events/place-order.spec.js,src/tests/e2eTests/events/shopping-cart-view.spec.js"
+          - "src/tests/b2c/verifyGuestUserCheckout.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckout.spec.js,src/tests/b2c/verifyGuestUserWishlistFeature.spec.js,src/tests/b2c/events/add-to-cart.spec.js,src/tests/b2c/events/initiate-checkout.spec.js,src/tests/b2c/events/place-order.spec.js,src/tests/b2c/events/shopping-cart-view.spec.js"
           # Shard 3 — Cart features + B2B (verifySellerAssistedBuying last so cart is warm)
           # Add here if: spec tests cart manipulation (undo, stock messages, gift cards,
           # store switcher) or B2B seller-assisted buying. Keep ordering-dependent
           # specs last — verifySellerAssistedBuying relies on a warm cart state.
-          - "src/tests/e2eTests/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/e2eTests/verifyCartUndo.spec.js,src/tests/e2eTests/verifyLowStockInfoMessage.spec.js,src/tests/e2eTests/verifyStoreSwitcher.spec.js,src/tests/e2eTests/verifySellerAssistedBuying.spec.js"
+          - "src/tests/b2c/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/b2c/verifyCartUndo.spec.js,src/tests/b2c/verifyLowStockInfoMessage.spec.js,src/tests/b2c/verifyStoreSwitcher.spec.js,src/tests/b2c/verifySellerAssistedBuying.spec.js"
           # Shard 4 — Discovery & search (events/recs and verifyAemAssets are skipped)
-          - "src/tests/e2eTests/verifyProductSearch.spec.js,src/tests/e2eTests/verifyProductListPage.spec.js,src/tests/e2eTests/verifyRecsDisplay.spec.js,src/tests/e2eTests/verifyRecsContextMatrix.spec.js,src/tests/e2eTests/verifyAemAssets.spec.js,src/tests/e2eTests/events/recs.spec.js,src/tests/e2eTests/events/search-product-click.spec.js,src/tests/e2eTests/events/search-request-sent.spec.js,src/tests/e2eTests/events/search-results-view.spec.js"
+          - "src/tests/b2c/verifyProductSearch.spec.js,src/tests/b2c/verifyProductListPage.spec.js,src/tests/b2c/verifyRecsDisplay.spec.js,src/tests/b2c/verifyRecsContextMatrix.spec.js,src/tests/b2c/verifyAemAssets.spec.js,src/tests/b2c/events/recs.spec.js,src/tests/b2c/events/search-product-click.spec.js,src/tests/b2c/events/search-request-sent.spec.js,src/tests/b2c/events/search-results-view.spec.js"
           # Shard 5 — ACCS Prod specific tests without using Payment Services
-          - "src/tests/e2eTests/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/e2eTests/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/e2eTests/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
+          - "src/tests/b2c/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
     steps:
       - uses: actions/checkout@v4
       - name: Install root dependencies
