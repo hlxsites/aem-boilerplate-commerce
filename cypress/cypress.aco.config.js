@@ -23,7 +23,7 @@ module.exports = defineConfig({
     catalogEnvironmentId: 'f38a0de0-764b-41fa-bd2c-5bc2f3c7b39a',
     giftCardA: '02R7NXP5HJI5',
     productUrlWithOptions:
-      '/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzIzMA==',
+      '/products/default?sku=CYPRESS456&optionsUIDs=Y29uZmlndXJhYmxlLzkzLzIzMA==',
     stateShippingId: 'TX,57',
     stateBillingId: 'NY,43',
     productImageName: 'ADB150_1.jpg',

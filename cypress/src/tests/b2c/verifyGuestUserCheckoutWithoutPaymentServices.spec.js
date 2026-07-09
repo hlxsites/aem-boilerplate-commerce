@@ -58,7 +58,7 @@ describe(
       )(".cart-mini-cart");
       assertTitleHasLink(
         "Youth tee",
-        "/products/youth-tee/adb150",
+        "/products/default?sku=ADB150",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
       cy.contains("View Cart").click();
@@ -72,7 +72,7 @@ describe(
       )(".commerce-cart-wrapper");
       assertTitleHasLink(
         "Youth tee",
-        "/products/youth-tee/adb150",
+        "/products/default?sku=ADB150",
       )(".commerce-cart-wrapper");
       assertProductImage(Cypress.env("productImageName"))(
         ".commerce-cart-wrapper",
