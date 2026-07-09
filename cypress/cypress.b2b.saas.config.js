@@ -3,7 +3,7 @@ const baseConfig = require('./cypress.base.config');
 
 // A private user used with AEM Assets testing suite.
 const AEM_ASSETS_PRIVATE_USER = JSON.parse(
-  process.env.AEM_ASSETS_PRIVATE_USER ?? '{}'
+  process.env.AEM_ASSETS_PRIVATE_USER ?? '{}',
 );
 
 module.exports = defineConfig({
@@ -19,6 +19,7 @@ module.exports = defineConfig({
       'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql',
     giftCardA:
       process.env.IS_PROD_RELEASE === "true" ? "01J2UN97NBO0" : "00419VQ5C341",
+    poCypressCompanyId: process.env.IS_PROD_RELEASE === "true" ? 69 : 13,
     productUrlWithOptions:
       '/products/cypress-configurable-product-latest/cypress456?optionsUIDs=Y29uZmlndXJhYmxlLzkzLzEz',
     stateShippingId: 'TX,57',
