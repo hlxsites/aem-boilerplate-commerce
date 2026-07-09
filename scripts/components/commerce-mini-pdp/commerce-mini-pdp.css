@@ -139,6 +139,10 @@
     width: 100%;
 }
 
+.mini-pdp__update-button button.dropin-button.dropin-button--primary--disabled {
+    color: var(--color-neutral-800);
+}
+
 @media (min-width: 768px) {
     #mini-pdp-modal .mini-pdp__wrapper {
         grid-template-columns: repeat(var(--grid-2-columns), 1fr);
