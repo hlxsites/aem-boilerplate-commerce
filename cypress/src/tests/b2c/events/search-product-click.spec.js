@@ -24,8 +24,7 @@ it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
     cy.window().then((win) => {
       cy.spy(win.adobeDataLayer, "push").as("adl");
       cy.get(".nav-search-button").should("be.visible").click();
-      cy.wait(2000);
-      cy.get("#search").type("shirt");
+      cy.get("#search").should("be.visible").type("shirt");
       cy.get(".search-bar-result .dropin-product-item-card a", { timeout: 10000 })
         .first()
         .click()

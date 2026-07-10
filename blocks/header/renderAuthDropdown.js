@@ -68,6 +68,7 @@ export function renderAuthDropdown(navTools) {
     authDropDownPanel.setAttribute('aria-hidden', 'false');
     authDropDownPanel.setAttribute('aria-labelledby', 'modal-title');
     authDropDownPanel.setAttribute('aria-describedby', 'modal-description');
+    loginButton.setAttribute('aria-expanded', show ? 'true' : 'false');
     authDropDownPanel.focus();
   }
 
