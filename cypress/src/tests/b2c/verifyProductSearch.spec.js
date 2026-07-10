@@ -1,6 +1,7 @@
 
 import {
   assertImageListDisplay,
+  assertProductLinksUseSkuQueryParam,
   assertSearchResults
 } from "../../assertions";
 
@@ -21,6 +22,7 @@ describe("Search Feature", () => {
     assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
+    assertProductLinksUseSkuQueryParam();
   });
 
   it("Verify Search results page", () => {

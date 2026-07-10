@@ -412,6 +412,15 @@ export const assertOrderCommentItem = (text) => {
     .and('contain.text', text);
 };
 
+export const assertProductLinksUseSkuQueryParam = (selector = fields.productListGrid) => {
+  cy.get(selector)
+    .find("a[href]")
+    .should("have.length.greaterThan", 0)
+    .each(($a) => {
+      expect($a.attr("href")).to.match(/^\/products\/default\?sku=[^&]+/);
+    });
+};
+
 export const assertSearchResults = () => {
   // Check if search results are displayed
   cy.get(fields.productListGrid)
