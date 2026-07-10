@@ -15,26 +15,6 @@ import {
 import initializeDropins from './initializers/index.js';
 
 /**
- * Sanitizes the given string by:
- * - convert to lower case
- * - normalize all unicode characters
- * - replace all non-alphanumeric characters with a dash
- * - remove all consecutive dashes
- * - remove all leading and trailing dashes
- *
- * @param {string} name
- * @returns {string} sanitized name
- */
-function sanitizeName(name) {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-/**
  * Fetch GraphQL Instances
  */
 
@@ -673,29 +653,9 @@ export function isProductTemplate() {
   });
 }
 
-export function getProductLink(urlKey, sku) {
+export function getProductLink(sku) {
   if (!sku) {
-    console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
-  }
-  // getConfigValue throws if called before initializeConfig() has resolved.
-  // getProductLink is called from render paths (header, mini-cart, cart,
-  // wishlist, order lists) that can run before that promise settles, and an
-  // uncaught throw here breaks the whole render, not just this link. Default
-  // to the (non-folder-mapped) template link in that case.
-  let useFolderMapping = false;
-  try {
-    useFolderMapping = getConfigValue('use-folder-mapping') === 'true';
-  } catch (e) {
-    console.warn('getProductLink: config not yet initialized, defaulting to template link', e);
-  }
-  // Use folder mapping path to route to product
-  if (useFolderMapping) {
-    if (!urlKey) {
-      console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
-    }
-    const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
-    const sanitizedSku = sku ? sanitizeName(sku) : '';
-    return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
+    console.warn('getProductLink: sku is missing or empty', { sku });
   }
 
   // Use template page path + sku query parameter to render product

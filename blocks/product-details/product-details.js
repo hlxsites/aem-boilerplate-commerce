@@ -424,7 +424,6 @@ async function setJsonLdProduct(product) {
     inStock,
     description,
     sku,
-    urlKey,
     price,
     priceRange,
     images,
@@ -473,9 +472,9 @@ async function setJsonLdProduct(product) {
       '@type': 'Brand',
       name: brand?.value,
     },
-    url: new URL(getProductLink(urlKey, sku), window.location),
+    url: new URL(getProductLink(sku), window.location),
     sku,
-    '@id': new URL(getProductLink(urlKey, sku), window.location),
+    '@id': new URL(getProductLink(sku), window.location),
   };
 
   if (variants.length > 1) {

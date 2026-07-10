@@ -160,7 +160,7 @@ export default async function decorate(block) {
   block.innerHTML = '';
 
   // Render MiniCart
-  const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
+  const createProductLink = (product) => getProductLink(product.topLevelSku);
   await provider.render(MiniCart, {
     routeEmptyCartCTA: startShoppingURL ? () => rootLink(startShoppingURL) : undefined,
     routeCart: cartURL ? () => rootLink(cartURL) : undefined,
