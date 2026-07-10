@@ -33,9 +33,15 @@ describe(
       cy.visit("");
       // Navigate to PDP
       cy.visit(products.simple.urlPath);
+      // Wait for the product form to hydrate (Add to Cart enabled) before touching
+      // the incrementer; clicking too early registers in the UI but not the cart
+      // model, leaving quantity at 1.
+      cy.contains("Add to Cart").should("be.visible").and("not.be.disabled");
       cy.get(".dropin-incrementer__increase-button").click();
       cy.get(".dropin-incrementer__input").should("have.value", "2");
-      // cypress fails intermittently as it takes old value 1, this is needed for tests to be stable
+      // The incrementer dropin re-renders shortly after the click and can revert
+      // the quantity in the cart model; there is no DOM signal for "committed", so
+      // a short settle is intentionally kept here to avoid adding quantity 1.
       cy.wait(1000);
       cy.get(".minicart-panel").should("be.empty");
       cy.contains("Add to Cart").click();
@@ -102,7 +108,6 @@ describe(
       assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
 
       checkTermsAndConditions();
-      cy.wait(5000);
       placeOrder();
 
       assertOrderConfirmationCommonDetails(
@@ -120,7 +125,6 @@ describe(
        */
 
       // Obtain order reference from URL and visit order details page
-
       cy.url().then((url) => {
         const orderRef = url.split("?")[1];
         cy.visit("/order-details?" + orderRef);

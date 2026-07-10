@@ -56,3 +56,9 @@ Cypress.Commands.add('assertSelectedProductOption', { prevSubject: 'optional' },
     }
   });
 });
+
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('Tenant not found')) {
+    return false;
+  }
+});

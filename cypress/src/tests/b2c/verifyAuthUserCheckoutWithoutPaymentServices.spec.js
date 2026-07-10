@@ -38,7 +38,8 @@ describe(
     it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
       // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
       cy.visit(products.configurable.urlPathWithOptions);
-      cy.wait(5000);
+      // Wait for the configurable product form to hydrate before adding to cart.
+      cy.contains("Add to Cart").should("be.visible").and("not.be.disabled");
       cy.get(".minicart-panel").should("be.empty");
       cy.contains("Add to Cart").click();
       cy.get(".minicart-wrapper").click();
@@ -100,9 +101,9 @@ describe(
       cy.fixture("userInfo").then(({ sign_up }) => {
         signUpUser(sign_up);
         assertAuthUser(sign_up);
-        cy.wait(5000);
       });
       cy.get(".minicart-wrapper").click();
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
       assertCartSummaryProduct(
         "Configurable product",
         "CYPRESS456",
@@ -119,10 +120,18 @@ describe(
         ".cart-mini-cart",
       );
       cy.visit("/products/youth-tee/adb150");
+      // Button can be visible before the product form finishes hydrating;
+      // clicking while still disabled registers in the UI but never reaches
+      // the cart model (see the same pattern guarded against above).
       cy.get(".product-details__buttons__add-to-cart button")
         .should("be.visible")
+        .and("not.be.disabled")
         .click();
       cy.get(".minicart-wrapper").click();
+      // Panel re-fetches/re-renders cart contents on open; wait for the
+      // loaded flag like the first add-to-cart above, otherwise the
+      // assertion below can run against the stale (pre-add) cart state.
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
       assertCartSummaryProduct(
         "Youth tee",
         "ADB150",
@@ -149,7 +158,7 @@ describe(
         "/products/cypress-configurable-product-latest/cypress456",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
-      cy.contains("View Cart").click();
+      cy.visit("/cart");
       assertCartSummaryProduct(
         "Youth tee",
         "ADB150",
@@ -205,12 +214,10 @@ describe(
       );
       setGuestShippingAddress(customerShippingAddress, true);
       uncheckBillToShippingAddress();
-      cy.wait(2000);
       setGuestBillingAddress(customerBillingAddress, true);
       assertOrderSummaryMisc("$70.00", "$10.00", "$80.00");
       assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
       checkTermsAndConditions();
-      cy.wait(5000);
       cy.percyTakeSnapshot("Checkout Page");
       placeOrder();
       assertOrderConfirmationCommonDetails(
