@@ -4,10 +4,14 @@
   "description": "Boilerplate E2E tests",
   "scripts": {
     "cypress:open": "cypress open --browser chrome --config-file cypress.paas.config.js",
-    "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas",
+    "cypress:run": "cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas,grepFilterSpecs=false,grepOmitFiltered=false",
     "cypress:percy": "percy exec -- cypress run --config-file cypress.paas.config.js --env grepTags=-@skipPaas+@snapPercy",
     "cypress:saas:open": "cypress open --browser chrome --config-file cypress.saas.config.js",
-    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas"
+    "cypress:saas:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas+-@skipSaasNoProd,grepFilterSpecs=false,grepOmitFiltered=false",
+    "cypress:saas-prod:run": "cypress run --config-file cypress.saas.config.js --env grepTags=-@skipSaas+-@skipSaasProd,grepFilterSpecs=false,grepOmitFiltered=false",
+    "check:shards": "node scripts/check-shard-coverage.js",
+    "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
+    "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco,grepFilterSpecs=false,grepOmitFiltered=false"
   },
   "author": "Adobe Commerce",
   "license": "Apache License 2.0",
@@ -20,7 +24,6 @@
     "cross-env": "^7.0.0",
     "cypress": "^13.0.0",
     "cypress-dotenv": "2.0.0",
-    "cypress-grep": "~2.14.0",
     "cypress-log-to-output": "^1.1.2",
     "cypress-multi-reporters": "^1.5.0",
     "cypress-plugin-tab": "^1.0.5",
