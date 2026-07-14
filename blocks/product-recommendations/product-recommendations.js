@@ -172,7 +172,7 @@ export default async function decorate(block) {
       container.innerHTML = '';
     }
 
-    const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
+    const createProductLink = (item) => getProductLink(item.sku);
 
     // Get product view history
     context.userViewHistory = getProductViewHistory();

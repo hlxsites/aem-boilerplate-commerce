@@ -13,11 +13,11 @@ export default async function decorate(block) {
     if (!productData) {
       return rootLink('#');
     }
-    const { product, productUrlKey } = productData;
-    if (!product || !productUrlKey || !product.sku) {
+    const { product } = productData;
+    if (!product || !product.sku) {
       return rootLink('#');
     }
-    return getProductLink(productUrlKey, product.sku);
+    return getProductLink(product.sku);
   };
   await orderRenderer.render(OrderProductList, {
     slots: {

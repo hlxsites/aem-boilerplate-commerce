@@ -1,5 +1,6 @@
 import {
-    assertImageListDisplay
+    assertImageListDisplay,
+    assertProductLinksUseSkuQueryParam
 } from "../../assertions";
 
 describe("Verify Product List Page", () => {
@@ -16,6 +17,7 @@ describe("Verify Product List Page", () => {
         cy.waitForLoadingSkeletonToDisappear();
 
         assertImageListDisplay('.product-discovery-product-list__grid');
+        assertProductLinksUseSkuQueryParam();
 
         // If there is more than one sort option, change sort and assert it changed
         cy.get('select').then($select => {

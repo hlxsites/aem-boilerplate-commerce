@@ -55,7 +55,7 @@ describe(
       )(".cart-mini-cart");
       assertTitleHasLink(
         "Configurable product",
-        "/products/cypress-configurable-product-latest/cypress456",
+        "/products/default?sku=CYPRESS456",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageNameConfigurable"))(
         ".cart-mini-cart",
@@ -94,7 +94,7 @@ describe(
       )(".commerce-cart-wrapper");
       assertTitleHasLink(
         "Configurable product",
-        "/products/cypress-configurable-product-latest/cypress456",
+        "/products/default?sku=CYPRESS456",
       )(".commerce-cart-wrapper");
       cy.visit("/customer/create");
       cy.get(".minicart-wrapper").should("be.visible");
@@ -114,12 +114,12 @@ describe(
       )(".cart-mini-cart");
       assertTitleHasLink(
         "Configurable product",
-        "/products/cypress-configurable-product-latest/cypress456",
+        "/products/default?sku=CYPRESS456",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageNameConfigurable"))(
         ".cart-mini-cart",
       );
-      cy.visit("/products/youth-tee/adb150");
+      cy.visit("/products/default?sku=ADB150");
       // Button can be visible before the product form finishes hydrating;
       // clicking while still disabled registers in the UI but never reaches
       // the cart model (see the same pattern guarded against above).
@@ -142,7 +142,7 @@ describe(
       )(".cart-mini-cart");
       assertTitleHasLink(
         "Youth tee",
-        "/products/youth-tee/adb150",
+        "/products/default?sku=ADB150",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
       assertCartSummaryProduct(
@@ -155,7 +155,7 @@ describe(
       )(".cart-mini-cart");
       assertTitleHasLink(
         "Configurable product",
-        "/products/cypress-configurable-product-latest/cypress456",
+        "/products/default?sku=CYPRESS456",
       )(".cart-mini-cart");
       assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
       cy.visit("/cart");
@@ -169,7 +169,7 @@ describe(
       )(".commerce-cart-wrapper");
       assertTitleHasLink(
         "Youth tee",
-        "/products/youth-tee/adb150",
+        "/products/default?sku=ADB150",
       )(".commerce-cart-wrapper");
       assertProductImage(Cypress.env("productImageName"))(
         ".commerce-cart-wrapper",
@@ -185,7 +185,7 @@ describe(
       )(".commerce-cart-wrapper");
       assertTitleHasLink(
         "Configurable product",
-        "/products/cypress-configurable-product-latest/cypress456",
+        "/products/default?sku=CYPRESS456",
       )(".commerce-cart-wrapper");
       assertProductImage(Cypress.env("productImageNameConfigurable"))(
         ".commerce-cart-wrapper",

@@ -55,7 +55,7 @@ describe("Verify Cart undo feature", () => {
         )(".commerce-cart-wrapper");
         assertTitleHasLink(
             "Youth tee",
-            "/products/youth-tee/adb150",
+            "/products/default?sku=ADB150",
         )(".commerce-cart-wrapper");
         assertProductImage(Cypress.env("productImageName"))(
             ".commerce-cart-wrapper",
@@ -80,7 +80,7 @@ describe("Verify Cart undo feature", () => {
         )(".commerce-cart-wrapper");
         assertTitleHasLink(
             "Youth tee",
-            "/products/youth-tee/adb150",
+            "/products/default?sku=ADB150",
         )(".commerce-cart-wrapper");
         assertProductImage(Cypress.env("productImageName"))(
             ".commerce-cart-wrapper",

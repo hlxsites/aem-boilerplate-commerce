@@ -15,26 +15,6 @@ import {
 import initializeDropins from './initializers/index.js';
 
 /**
- * Sanitizes the given string by:
- * - convert to lower case
- * - normalize all unicode characters
- * - replace all non-alphanumeric characters with a dash
- * - remove all consecutive dashes
- * - remove all leading and trailing dashes
- *
- * @param {string} name
- * @returns {string} sanitized name
- */
-function sanitizeName(name) {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
-/**
  * Fetch GraphQL Instances
  */
 
@@ -623,10 +603,18 @@ export async function commerceEndpointWithQueryParams() {
 }
 
 /**
- * Extracts the SKU from the current URL path.
+ * Extracts the SKU from the current URL query or path.
  * @returns {string|null} The SKU extracted from the URL, or null if not found
  */
 function getSkuFromUrl() {
+  // URLSearchParams already decodes the value; decoding again would corrupt
+  // any sku containing a literal % character.
+  const sku = new URLSearchParams(window.location.search).get('sku');
+  if (sku) {
+    return sku;
+  }
+
+  // Fall back to path based
   const path = window.location.pathname;
   const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
   return result?.[1];
@@ -665,16 +653,15 @@ export function isProductTemplate() {
   });
 }
 
-export function getProductLink(urlKey, sku) {
-  if (!urlKey) {
-    console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
-  }
+export function getProductLink(sku) {
   if (!sku) {
-    console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
+    console.warn('getProductLink: sku is missing or empty', { sku });
   }
-  const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
-  const sanitizedSku = sku ? sanitizeName(sku) : '';
-  return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
+
+  // Use template page path + sku query parameter to render product
+  const url = new URL(rootLink('/products/default'), window.location.origin);
+  url.searchParams.set('sku', sku || '');
+  return url.pathname + url.search;
 }
 
 /**
