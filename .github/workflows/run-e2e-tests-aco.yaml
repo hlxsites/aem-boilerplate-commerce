@@ -1,0 +1,74 @@
+name: Cypress E2E ACO Tests
+on: push
+jobs:
+  cypress-aco-groups:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
+    runs-on: ubuntu-latest
+    strategy:
+      # Run all shards even if one fails, so a single flaky shard doesn't hide
+      # results from the others.
+      fail-fast: false
+      # Shards mirror the PaaS/SaaS grouping. Specs tagged @skipAco are filtered
+      # out at runtime by grepFilterSpecs=true — they still need to appear in a
+      # shard so check-shard-coverage passes.
+      # NOTE: when adding a new spec file, add it to exactly one shard below.
+      # check-shard-coverage.yaml will fail CI if any spec file is missing.
+      matrix:
+        spec:
+          # Shard 1 — Auth & account flows
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
+          # Shard 2 — Guest checkout flows
+          - "src/tests/b2c/verifyGuestUserCheckout.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckout.spec.js,src/tests/b2c/verifyGuestUserWishlistFeature.spec.js,src/tests/b2c/events/add-to-cart.spec.js,src/tests/b2c/events/initiate-checkout.spec.js,src/tests/b2c/events/place-order.spec.js,src/tests/b2c/events/shopping-cart-view.spec.js"
+          # Shard 3 — Cart features + SAB (verifySellerAssistedBuying last so cart is warm)
+          - "src/tests/b2c/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/b2c/verifyCartUndo.spec.js,src/tests/b2c/verifyLowStockInfoMessage.spec.js,src/tests/b2c/verifyStoreSwitcher.spec.js,src/tests/b2c/verifySellerAssistedBuying.spec.js"
+          # Shard 4 — Discovery & search (verifyAemAssets and verifyRecsDisplay)
+          - "src/tests/b2c/verifyProductSearch.spec.js,src/tests/b2c/verifyProductListPage.spec.js,src/tests/b2c/verifyRecsDisplay.spec.js,src/tests/b2c/verifyRecsContextMatrix.spec.js,src/tests/b2c/verifyAemAssets.spec.js,src/tests/b2c/events/recs.spec.js,src/tests/b2c/events/search-product-click.spec.js,src/tests/b2c/events/search-request-sent.spec.js,src/tests/b2c/events/search-results-view.spec.js"
+          # Shard 5 — ACCS Prod specific tests without using Payment Services
+          - "src/tests/b2c/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install adobe aem cli dependencies
+        run: npm install -g @adobe/aem-cli
+      - name: Start server in the background
+        run: aem up --url https://main--boilerplate-aco--adobe-commerce.aem.live/ &
+      - name: Install Cypress and run tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: cypress
+          wait-on: 'http://localhost:3000'
+          # No quotes around matrix.spec: the comma-separated list has no
+          # spaces, and quoting it here caused cypress-io/github-action's
+          # command execution to leave stray literal `"` characters glued to
+          # the first/last spec paths, silently dropping them from every run.
+          command: npm run cypress:aco:run -- --spec ${{ matrix.spec }}
+        env:
+          CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT_ACO }}
+          CYPRESS_COMMERCE_ADMIN_USERNAME: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME_ACO }}
+          CYPRESS_COMMERCE_ADMIN_PASSWORD: ${{ secrets.CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-aco-${{ strategy.job-index }}
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+  # Aggregation gate: a single, stable status check for branch protection.
+  # Requiring the per-shard "cypress-aco-groups (...)" checks is brittle because
+  # their names embed the spec list, so every shard change needs a manual
+  # branch-protection edit. Require this job instead.
+  cypress-aco-run:
+    if: always()
+    needs: cypress-aco-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check shards result
+        run: |
+          if [ "${{ needs.cypress-aco-groups.result }}" != "success" ]; then
+            echo "One or more test shards failed: ${{ needs.cypress-aco-groups.result }}"
+            exit 1
+          fi
