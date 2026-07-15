@@ -11,8 +11,6 @@ import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
   getMetadata,
   readBlockConfig,
-  toCamelCase,
-  toClassName,
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
@@ -450,7 +448,9 @@ export async function fetchPlaceholders(path) {
       }
 
       // Create new fetch promise
-      const resourceFetchPromise = fetch(`${url}?sheet=data`).then(async (response) => {
+      // Use force-cache to serve any available cache entry without revalidation,
+      // reducing CDN traffic for static localization assets past their max-age.
+      const resourceFetchPromise = fetch(`${url}?sheet=data`, { cache: 'force-cache' }).then(async (response) => {
         if (response.ok) {
           const data = await response.json();
           // Cache the response
@@ -698,6 +698,25 @@ export function getOptionsUIDsFromUrl() {
 }
 
 /**
+ * Determines the store identifier for tracking history based on configuration headers.
+ * @returns {string|undefined} Store identifier based on header values or undefined.
+ */
+export function getStoreIdentifier() {
+  const headers = getHeaders('cs');
+  const saasStoreIdentifier = 'magento-store-view-code';
+  const acoStoreIdentifier = 'ac-view-id';
+  const storeIdentifierKey = Object.keys(headers).find(
+    (key) => [saasStoreIdentifier, acoStoreIdentifier].includes(key.toLowerCase()),
+  );
+  const storeIdentifier = storeIdentifierKey ? headers[storeIdentifierKey] : undefined;
+  if (!storeIdentifier) {
+    console.warn('No store view code found in config headers for tracking history');
+    return undefined;
+  }
+  return storeIdentifier;
+}
+
+/**
  * Tracks user browsing and purchase history for recommendations.
  * Stores product view history and purchase history in localStorage.
  */
@@ -706,30 +725,32 @@ function trackHistory() {
     return;
   }
   // Store product view history in session storage
-  const storeViewCode = getConfigValue('headers.cs.Magento-Store-View-Code');
-  window.adobeDataLayer.push((dl) => {
-    dl.addEventListener('adobeDataLayer:change', (event) => {
-      if (!event.productContext || !event.productContext.sku) {
-        return;
-      }
-      const key = `${storeViewCode}:productViewHistory`;
-      let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-      viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
-      viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-      window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
-    }, { path: 'productContext' });
-    dl.addEventListener('place-order', () => {
-      const shoppingCartContext = dl.getState('shoppingCartContext');
-      if (!shoppingCartContext) {
-        return;
-      }
-      const key = `${storeViewCode}:purchaseHistory`;
-      const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-      const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-      purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
-      window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-5)));
+  const storeIdentifier = getStoreIdentifier();
+  if (storeIdentifier) {
+    window.adobeDataLayer.push((dl) => {
+      dl.addEventListener('adobeDataLayer:change', (event) => {
+        if (!event.productContext || !event.productContext.sku) {
+          return;
+        }
+        const key = `${storeIdentifier}:productViewHistory`;
+        let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+        viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
+        viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
+        window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+      }, { path: 'productContext' });
+      dl.addEventListener('place-order', () => {
+        const shoppingCartContext = dl.getState('shoppingCartContext');
+        if (!shoppingCartContext) {
+          return;
+        }
+        const key = `${storeIdentifier}:purchaseHistory`;
+        const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+        const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+        purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+        window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
+      });
     });
-  });
+  }
 }
 
 /**
@@ -859,23 +880,5 @@ export function decorateSections(main) {
     section.classList.add('section');
     section.dataset.sectionStatus = 'initialized';
     section.style.display = 'none';
-
-    // Process section metadata
-    const sectionMeta = section.querySelector('div.section-metadata');
-    if (sectionMeta) {
-      const meta = readBlockConfig(sectionMeta);
-      Object.keys(meta).forEach((key) => {
-        if (key === 'style') {
-          const styles = meta.style
-            .split(',')
-            .filter((style) => style)
-            .map((style) => toClassName(style.trim()));
-          styles.forEach((style) => section.classList.add(style));
-        } else {
-          section.dataset[toCamelCase(key)] = meta[key];
-        }
-      });
-      sectionMeta.parentNode.remove();
-    }
   });
 }

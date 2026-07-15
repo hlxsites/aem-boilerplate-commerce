@@ -385,6 +385,9 @@ header nav .nav-tools button.nav-search-button {
 
 header .nav-search-panel {
   padding: var(--spacing-small);
+  box-sizing: border-box;
+  max-height: 760px;
+  overflow-y: auto;
 }
 
 header .nav-search-panel input {
@@ -432,9 +435,22 @@ header .nav-search-panel .search-bar-result .product-discovery-product-list__foo
   min-height: 360px;
 }
 
+.cart-mini-cart:has(.cart-empty-cart) {
+  max-height: 760px;
+  overflow-y: auto;
+}
+
 /* If viewport height is below max, set max height to 90% of viewport */
 @media (max-height: 819px) {
   .cart-mini-cart:not(:has(.cart-empty-cart)) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  .cart-mini-cart:has(.cart-empty-cart) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  header .nav-search-panel {
     max-height: calc(100vh - var(--nav-height));
   }
 }
@@ -514,6 +530,12 @@ header .nav-search-input .search_autocomplete .popover-container {
   font: var(--type-body-1-default-font) !important;
   letter-spacing: var(--type-body-1-default-letter-spacing) !important;
   width: 100%;
+  max-height: calc(100vh - var(--nav-height));
+  overflow-y: auto;
+
+  @supports (height: 100dvh) {
+    max-height: calc(100dvh - var(--nav-height));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -767,4 +789,92 @@ header .nav-search-input .search_autocomplete .popover-container {
   height: 15rem;
   max-width: 15rem;
   max-height: 15rem;
+}
+
+/* Seller Assisted Buying Banner - Session Indicator */
+body:has(.seller-assisted-buying-banner) {
+  padding-top: var(--spacing-xxbig);
+}
+
+.seller-assisted-buying-banner {
+  height: var(--spacing-xxbig);
+  padding: var(--spacing-xsmall) var(--spacing-big);
+  font: var(--type-body-1-default-font);
+  background-color: var(--color-brand-300);
+  color: var(--color-neutral-50);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.seller-assisted-buying-banner strong {
+  font: var(--type-body-1-strong-font);
+}
+
+.seller-assisted-buying-banner__message {
+  flex: 1;
+}
+
+.seller-assisted-buying-banner__close-button {
+  background-color: transparent;
+  color: var(--color-neutral-50);
+  border: var(--shape-border-width-1) solid var(--color-neutral-50);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  cursor: pointer;
+  font: var(--type-body-1-default-font);
+  border-radius: var(--shape-border-radius-1);
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.seller-assisted-buying-banner__close-button:hover {
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
+}
+
+.seller-assisted-buying-banner__close-button:active {
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
+}
+
+.seller-assisted-buying-banner__close-button:disabled {
+  opacity: 0.6;
+  background-color: var(--color-neutral-50);
+  color: var(--color-brand-300);
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .seller-assisted-buying-banner {
+    gap: var(--spacing-xsmall);
+    padding: var(--spacing-small) var(--spacing-medium);
+  }
+}
+
+@media (max-width: 768px) {
+  body:has(.seller-assisted-buying-banner) {
+    padding-top: var(--spacing-large);
+  }
+
+  .seller-assisted-buying-banner {
+    height: var(--spacing-large);
+  }
+
+  .seller-assisted-buying-banner__close-button {
+    max-width: 90px;
+    white-space: break-spaces;
+  }
+
+  .seller-assisted-buying-banner__close-button span {
+    line-height: 1.1;
+    display: inline-block;
+  }
 }
