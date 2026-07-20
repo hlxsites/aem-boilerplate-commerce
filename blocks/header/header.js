@@ -1,21 +1,19 @@
-/* eslint-disable import/no-unresolved */
-
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
 
-// Cart dropin
-import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
-
+import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
+import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
 
 import renderAuthCombine from './renderAuthCombine.js';
 import { renderAuthDropdown } from './renderAuthDropdown.js';
-import { rootLink } from '../../scripts/scripts.js';
-import applyHashTagsForDomElement from '../../scripts/api/hashtags/api.js';
+import renderSellerAssistedBuyingBanner from './renderSellerAssistedBuyingBanner.js';
 
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
+
+const labels = await fetchPlaceholders();
 
 const overlay = document.createElement('div');
 overlay.classList.add('overlay');
@@ -25,14 +23,13 @@ function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
     const navSections = nav.querySelector('.nav-sections');
+    if (!navSections) return;
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
       overlay.classList.remove('show');
       navSectionExpanded.focus();
     } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections);
       overlay.classList.remove('show');
       nav.querySelector('button').focus();
@@ -46,13 +43,12 @@ function closeOnFocusLost(e) {
   const nav = e.currentTarget;
   if (!nav.contains(e.relatedTarget)) {
     const navSections = nav.querySelector('.nav-sections');
+    if (!navSections) return;
     const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
     if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections, false);
       overlay.classList.remove('show');
     } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections, true);
     }
   }
@@ -63,7 +59,6 @@ function openOnKeydown(e) {
   const isNavDrop = focused.className === 'nav-drop';
   if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
     const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
     toggleAllNavSections(focused.closest('.nav-sections'));
     focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
   }
@@ -79,6 +74,7 @@ function focusNavSection() {
  * @param {Boolean} expanded Whether the element should be expanded or collapsed
  */
 function toggleAllNavSections(sections, expanded = false) {
+  if (!sections) return;
   sections
     .querySelectorAll('.nav-sections .default-content-wrapper > ul > li')
     .forEach((section) => {
@@ -100,20 +96,22 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
   button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
   // enable nav dropdown keyboard accessibility
-  const navDrops = navSections.querySelectorAll('.nav-drop');
-  if (isDesktop.matches) {
-    navDrops.forEach((drop) => {
-      if (!drop.hasAttribute('tabindex')) {
-        drop.setAttribute('tabindex', 0);
-        drop.addEventListener('focus', focusNavSection);
-      }
-    });
-  } else {
-    navDrops.forEach((drop) => {
-      drop.classList.remove('active');
-      drop.removeAttribute('tabindex');
-      drop.removeEventListener('focus', focusNavSection);
-    });
+  if (navSections) {
+    const navDrops = navSections.querySelectorAll('.nav-drop');
+    if (isDesktop.matches) {
+      navDrops.forEach((drop) => {
+        if (!drop.hasAttribute('tabindex')) {
+          drop.setAttribute('tabindex', 0);
+          drop.addEventListener('focus', focusNavSection);
+        }
+      });
+    } else {
+      navDrops.forEach((drop) => {
+        drop.classList.remove('active');
+        drop.removeAttribute('tabindex');
+        drop.removeEventListener('focus', focusNavSection);
+      });
+    }
   }
 
   // enable menu collapse on escape keypress
@@ -165,6 +163,12 @@ function setupSubmenu(navSection) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
+  // Render a banner at the top of the page if seller assisted buying session identified
+  const sellerAssistedBuyingBanner = await renderSellerAssistedBuyingBanner();
+  if (sellerAssistedBuyingBanner && !document.querySelector('.seller-assisted-buying-banner')) {
+    document.body.insertAdjacentElement('afterbegin', sellerAssistedBuyingBanner);
+  }
+
   // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
@@ -218,13 +222,32 @@ export default async function decorate(block) {
 
   const navTools = nav.querySelector('.nav-tools');
 
+  /** Wishlist */
+  const wishlist = document.createRange().createContextualFragment(`
+     <div class="wishlist-wrapper nav-tools-wrapper">
+       <button type="button" class="nav-wishlist-button" aria-label="Wishlist"></button>
+       <div class="wishlist-panel nav-tools-panel"></div>
+     </div>
+   `);
+
+  navTools.append(wishlist);
+
+  const wishlistButton = navTools.querySelector('.nav-wishlist-button');
+
+  const wishlistMeta = getMetadata('wishlist');
+  const wishlistPath = wishlistMeta ? new URL(wishlistMeta, window.location).pathname : '/wishlist';
+
+  wishlistButton.addEventListener('click', () => {
+    window.location.href = rootLink(wishlistPath);
+  });
+
   /** Mini Cart */
   const excludeMiniCartFromPaths = ['/checkout'];
 
   const minicart = document.createRange().createContextualFragment(`
      <div class="minicart-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-cart-button" aria-label="Cart"></button>
-       <div class="minicart-panel nav-tools-panel"></div>
+       <button type="button" class="nav-cart-button" aria-label="Cart" aria-haspopup="dialog" aria-expanded="false" aria-controls="minicart-panel"></button>
+       <div class="minicart-panel nav-tools-panel" id="minicart-panel"></div>
        <div class="nav-cart-status" role="status" aria-live="polite"></div>
      </div>
    `);
@@ -244,102 +267,256 @@ export default async function decorate(block) {
     cartButton.style.display = 'none';
   }
 
-  // load nav as fragment
-  const miniCartMeta = getMetadata('mini-cart');
-  const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
-  loadFragment(miniCartPath).then((miniCartFragment) => {
-    minicartPanel.append(miniCartFragment.firstElementChild);
-  });
+  /**
+   * Handles loading states for navigation panels with state management
+   *
+   * @param {HTMLElement} panel - The panel element to manage loading state for
+   * @param {HTMLElement} button - The button that triggers the panel
+   * @param {Function} loader - Async function to execute during loading
+   */
+  async function withLoadingState(panel, button, loader) {
+    if (panel.dataset.loaded === 'true' || panel.dataset.loading === 'true') return;
 
-  async function toggleMiniCart(state) {
-    const show = state ?? !minicartPanel.classList.contains('nav-tools-panel--show');
-    const stateChanged = show !== minicartPanel.classList.contains('nav-tools-panel--show');
-    minicartPanel.classList.toggle('nav-tools-panel--show', show);
+    button.setAttribute('aria-busy', 'true');
+    panel.dataset.loading = 'true';
 
-    if (stateChanged && show) {
-      publishShoppingCartViewEvent();
+    try {
+      await loader();
+      panel.dataset.loaded = 'true';
+    } finally {
+      panel.dataset.loading = 'false';
+      button.removeAttribute('aria-busy');
+
+      // Execute pending toggle if exists
+      if (panel.dataset.pendingToggle === 'true') {
+        // eslint-disable-next-line no-nested-ternary
+        const pendingState = panel.dataset.pendingState === 'true' ? true : (panel.dataset.pendingState === 'false' ? false : undefined);
+
+        // Clear pending flags
+        panel.removeAttribute('data-pending-toggle');
+        panel.removeAttribute('data-pending-state');
+
+        // Execute the pending toggle
+        const show = pendingState ?? !panel.classList.contains('nav-tools-panel--show');
+        panel.classList.toggle('nav-tools-panel--show', show);
+      }
     }
   }
 
-  cartButton.addEventListener('click', () => toggleMiniCart());
+  function togglePanel(panel, state) {
+    // If loading is in progress, queue the toggle action
+    if (panel.dataset.loading === 'true') {
+      // Store the pending toggle action
+      panel.dataset.pendingToggle = 'true';
+      panel.dataset.pendingState = state !== undefined ? state.toString() : '';
+      return;
+    }
+
+    const show = state ?? !panel.classList.contains('nav-tools-panel--show');
+    panel.classList.toggle('nav-tools-panel--show', show);
+  }
+
+  // Lazy loading for mini cart fragment
+  async function loadMiniCartFragment() {
+    await withLoadingState(minicartPanel, cartButton, async () => {
+      const miniCartMeta = getMetadata('mini-cart');
+      const miniCartPath = miniCartMeta ? new URL(miniCartMeta, window.location).pathname : '/mini-cart';
+      const miniCartFragment = await loadFragment(miniCartPath);
+      minicartPanel.append(miniCartFragment.firstElementChild);
+    });
+  }
+
+  async function toggleMiniCart(state) {
+    if (state) {
+      await loadMiniCartFragment();
+      const { publishShoppingCartViewEvent } = await import('@dropins/storefront-cart/api.js');
+      publishShoppingCartViewEvent();
+    }
+
+    togglePanel(minicartPanel, state);
+    cartButton.setAttribute(
+      'aria-expanded',
+      minicartPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
+  }
+
+  cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
   // Cart Item Counter
   let previousCartQuantity;
 
-  events.on(
-    'cart/data',
-    (data) => {
-      const totalQuantity = data?.totalQuantity ?? 0;
+  events.on('cart/data', (data) => {
+    // preload mini cart fragment if user has a cart
+    if (data) loadMiniCartFragment();
 
-      if (totalQuantity) {
-        cartButton.setAttribute('data-count', totalQuantity);
-      } else {
-        cartButton.removeAttribute('data-count');
-      }
+    const totalQuantity = data?.totalQuantity ?? 0;
 
-      // Skip the announcement for the initial value on page load so screen
-      // reader users aren't told about the cart contents before they've
-      // interacted with it; only announce actual changes.
-      if (previousCartQuantity !== undefined && previousCartQuantity !== totalQuantity) {
-        cartStatus.textContent = totalQuantity
-          ? `Cart updated, ${totalQuantity} item${totalQuantity === 1 ? '' : 's'} in cart`
-          : 'Cart updated, cart is empty';
-      }
+    if (totalQuantity) {
+      cartButton.setAttribute('data-count', totalQuantity);
+    } else {
+      cartButton.removeAttribute('data-count');
+    }
 
-      previousCartQuantity = totalQuantity;
-    },
-    { eager: true },
-  );
+    // Skip the announcement for the initial value on page load so screen
+    // reader users aren't told about the cart contents before they've
+    // interacted with it; only announce actual changes.
+    if (previousCartQuantity !== undefined && previousCartQuantity !== totalQuantity) {
+      cartStatus.textContent = totalQuantity
+        ? `Cart updated, ${totalQuantity} item${totalQuantity === 1 ? '' : 's'} in cart`
+        : 'Cart updated, cart is empty';
+    }
+
+    previousCartQuantity = totalQuantity;
+  }, { eager: true });
 
   /** Search */
-
-  // TODO
-  const search = document.createRange().createContextualFragment(`
+  const searchFragment = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
     <button type="button" class="nav-search-button">Search</button>
     <div class="nav-search-input nav-search-panel nav-tools-panel">
-      <form action="/search" method="GET">
-        <input id="search" type="search" name="q" placeholder="Search" />
-        <div id="search_autocomplete" class="search-autocomplete"></div>
-      </form>
+      <form id="search-bar-form"></form>
+      <div class="search-bar-result" style="display: none;"></div>
     </div>
   </div>
   `);
 
-  navTools.append(search);
+  navTools.append(searchFragment);
 
   const searchPanel = navTools.querySelector('.nav-search-panel');
-
   const searchButton = navTools.querySelector('.nav-search-button');
-
-  const searchInput = searchPanel.querySelector('input');
-
-  const searchForm = searchPanel.querySelector('form');
-
-  searchForm.action = rootLink('/search');
+  const searchForm = searchPanel.querySelector('#search-bar-form');
+  const searchResult = searchPanel.querySelector('.search-bar-result');
 
   async function toggleSearch(state) {
-    const show = state ?? !searchPanel.classList.contains('nav-tools-panel--show');
+    const pageSize = 4;
 
-    searchPanel.classList.toggle('nav-tools-panel--show', show);
+    if (state) {
+      await withLoadingState(searchPanel, searchButton, async () => {
+        await import('../../scripts/initializers/search.js');
 
-    if (show) {
-      await import('./searchbar.js');
-      searchInput.focus();
+        // Load search components in parallel
+        const [
+          { search },
+          { render },
+          { SearchResults },
+          { provider: UI, Input, Button },
+        ] = await Promise.all([
+          import('@dropins/storefront-product-discovery/api.js'),
+          import('@dropins/storefront-product-discovery/render.js'),
+          import('@dropins/storefront-product-discovery/containers/SearchResults.js'),
+          import('@dropins/tools/components.js'),
+          import('@dropins/tools/lib.js'),
+        ]);
+
+        render.render(SearchResults, {
+          skeletonCount: pageSize,
+          scope: 'popover',
+          routeProduct: ({ urlKey, sku }) => getProductLink(urlKey, sku),
+          onSearchResult: (results) => {
+            searchResult.style.display = results.length > 0 ? 'block' : 'none';
+          },
+          slots: {
+            ProductImage: (ctx) => {
+              const { product, defaultImageProps } = ctx;
+              const anchorWrapper = document.createElement('a');
+              anchorWrapper.href = getProductLink(product.urlKey, product.sku);
+
+              tryRenderAemAssetsImage(ctx, {
+                alias: product.sku,
+                imageProps: defaultImageProps,
+                wrapper: anchorWrapper,
+                params: {
+                  width: defaultImageProps.width,
+                  height: defaultImageProps.height,
+                },
+              });
+            },
+            Footer: async (ctx) => {
+              // View all results button
+              const viewAllResultsWrapper = document.createElement('div');
+
+              const viewAllResultsButton = await UI.render(Button, {
+                children: labels.Global?.SearchViewAll,
+                variant: 'secondary',
+                href: rootLink('/search'),
+              })(viewAllResultsWrapper);
+
+              ctx.appendChild(viewAllResultsWrapper);
+
+              ctx.onChange((next) => {
+                viewAllResultsButton?.setProps((prev) => ({
+                  ...prev,
+                  href: `${rootLink('/search')}?q=${encodeURIComponent(next.variables?.phrase || '')}`,
+                }));
+              });
+            },
+          },
+        })(searchResult);
+
+        searchForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const query = e.target.search.value;
+          if (query.length) {
+            window.location.href = `${rootLink('/search')}?q=${encodeURIComponent(query)}`;
+          }
+        });
+
+        UI.render(Input, {
+          name: 'search',
+          placeholder: labels.Global?.Search,
+          onValue: (phrase) => {
+            if (!phrase) {
+              search(null, { scope: 'popover' });
+              return;
+            }
+
+            if (phrase.length < 3) {
+              return;
+            }
+
+            search({
+              phrase,
+              pageSize,
+              filter: [
+                { attribute: 'visibility', in: ['Search', 'Catalog, Search'] },
+              ],
+            }, { scope: 'popover' });
+          },
+        })(searchForm);
+      });
     }
+
+    togglePanel(searchPanel, state);
+    if (state) searchForm?.querySelector('input')?.focus();
   }
+
+  searchButton.addEventListener('click', () => toggleSearch(!searchPanel.classList.contains('nav-tools-panel--show')));
 
   navTools.querySelector('.nav-search-button').addEventListener('click', () => {
     if (isDesktop.matches) {
       toggleAllNavSections(navSections);
       overlay.classList.remove('show');
     }
-    toggleSearch();
   });
 
   // Close panels when clicking outside
   document.addEventListener('click', (e) => {
-    if (!minicartPanel.contains(e.target) && !cartButton.contains(e.target)) {
+    // Check if undo is enabled for mini cart
+    const miniCartElement = document.querySelector(
+      '[data-block-name="commerce-mini-cart"]',
+    );
+    const undoEnabled = miniCartElement
+      && (miniCartElement.textContent?.includes('undo-remove-item')
+        || miniCartElement.innerHTML?.includes('undo-remove-item'));
+
+    // For mini cart: if undo is enabled, be more restrictive about when to close
+    const shouldCloseMiniCart = undoEnabled
+      ? !minicartPanel.contains(e.target)
+      && !cartButton.contains(e.target)
+      && !e.target.closest('header')
+      : !minicartPanel.contains(e.target) && !cartButton.contains(e.target);
+
+    if (shouldCloseMiniCart) {
       toggleMiniCart(false);
     }
 
@@ -389,15 +566,3 @@ export default async function decorate(block) {
   );
   renderAuthDropdown(navTools);
 }
-
-events.on('cart/initialized', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });
-
-events.on('cart/updated', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });
-
-events.on('cart/reset', () => {
-  applyHashTagsForDomElement('nav');
-}, { eager: true });

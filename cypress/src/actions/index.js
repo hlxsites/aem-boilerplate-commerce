@@ -20,48 +20,39 @@ export const setGuestShippingAddress = (customerAddress, isSelectableState) => {
 };
 
 export const setGuestBillingAddress = (customerAddress, isSelectableState) => {
-  cy.wait(1000);
   cy.get(fields.billingFormFirstName)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.firstName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormLastName)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.lastName, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.street, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormStreet1)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.street1, { force: true });
   if (isSelectableState) {
-    cy.wait(1000);
     cy.get(fields.billingFormState)
       .should("not.be.disabled")
       .select(customerAddress.region, { force: true });
   } else {
-    cy.wait(1000);
     cy.get(fields.billingFormInputState)
       .should("not.be.disabled")
       .type(customerAddress.region, { force: true });
   }
-  cy.wait(1000);
   cy.get(fields.billingFormCity)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.city, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormPostCode)
     .should("not.be.disabled")
     .clear()
     .type(customerAddress.postCode, { force: true });
-  cy.wait(1000);
   cy.get(fields.billingFormTelephone)
     .should("not.be.disabled")
     .clear()
@@ -73,7 +64,10 @@ export const uncheckBillToShippingAddress = () => {
 };
 
 export const placeOrder = () => {
-  cy.get(fields.placeOrderButton).should("be.visible");
+  // Wait for the button to be both visible and enabled — it stays disabled
+  // until payment details have finished validating/tokenizing, so this is the
+  // deterministic anchor that replaces fixed waits before placing the order.
+  cy.get(fields.placeOrderButton).should("be.visible").and("not.be.disabled");
   cy.get(fields.placeOrderButton).click();
 };
 
@@ -103,25 +97,26 @@ export const signUpUser = (sign_up, isValid = true) => {
       .clear()
       .type(sign_up.shortPassword);
   }
-  cy.get(".dropin-picker__select").eq(1).select("Male");
   createAccount();
 };
 
 export const setPaymentMethod = (paymentMethod) => {
   cy.get(fields.paymentMethods).contains(paymentMethod.name).click();
   if (paymentMethod.name === 'Credit Card') {
-    const {cc_number, cc_exp, cc_cid} = paymentMethod.params;
-    cy.wait(5000);
-    cy.getIFrameField(
-      fields.creditCardNumberIFrame,
-      fields.creditCardNumber
-    ).type(cc_number);
-    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp).type(
-      cc_exp
-    );
-    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv).type(
-      cc_cid
-    );
+    const { cc_number, cc_exp, cc_cid } = paymentMethod.params;
+    // The hosted payment-services dropin mounts its iframes and then re-renders
+    // them once it finishes loading. Assert each field is visible before typing
+    // so Cypress requeries past the re-render instead of grabbing a stale
+    // (about-to-detach) iframe reference.
+    cy.getIFrameField(fields.creditCardNumberIFrame, fields.creditCardNumber)
+      .should('be.visible')
+      .type(cc_number);
+    cy.getIFrameField(fields.creditCardExpIFrame, fields.creditCardExp)
+      .should('be.visible')
+      .type(cc_exp);
+    cy.getIFrameField(fields.creditCardCvvIFrame, fields.creditCardCvv)
+      .should('be.visible')
+      .type(cc_cid);
   }
 };
 
@@ -132,13 +127,12 @@ export function checkTermsAndConditions() {
 
 export const fillGiftOptiosForm = (className, type = 'order') => {
   if (type === 'product') {
-    cy.wait(3000);
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
   if (type === 'order') {
-    cy.wait(3000);
-
+    // These dropin checkboxes are visually-hidden inputs (hence force click);
+    // cy.get retries for existence and the trailing should('be.checked') confirms.
     cy.get(`${className} ${fields.giftOptionCardIncludedCheckBox}`)
       .click({
         force: true,
@@ -146,55 +140,64 @@ export const fillGiftOptiosForm = (className, type = 'order') => {
       .should('be.checked');
   }
 
-  cy.wait(3000);
   cy.get(`${className} ${fields.giftOptionWrapCheckBox}`)
     .click({
       force: true,
     })
     .should('be.checked');
 
+  // Toggling the checkboxes above re-renders the form; the recipient input
+  // re-mounts and may drop the first keystroke. .click() triggers focus after
+  // the re-render; .clear() makes the Cypress retry chain safe (removes any
+  // partial value from a previous attempt before retyping).
   cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .should('be.visible')
+    .click()
+    .clear()
     .type('giftOptionRecipientName')
     .should('have.value', 'giftOptionRecipientName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .should('be.visible')
     .type('giftOptionSenderName')
     .should('have.value', 'giftOptionSenderName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionMessage}`)
+    .should('be.visible')
     .type('giftOptionMessage')
     .should('have.value', 'giftOptionMessage')
     .blur(); // Added .blur() here
-  cy.wait(4000);
 
-  cy.get(className).contains('Customize').click();
-  cy.get(`${className} .cart-gift-options-view__modal-grid-item img`)
+  cy.get(className).contains('Customize').should('be.visible').click();
+  // Wait for the wrap-design modal to render before selecting an image and
+  // applying; clicking before the grid loads silently skips the selection so
+  // the gift-wrap charge never appears in the order summary.
+  cy.get(`.cart-gift-options-view__modal-grid-item img`)
     .eq(1)
+    .should('be.visible')
     .click();
-  cy.contains('.dropin-button--primary', 'Apply').click();
+  cy.contains('.dropin-button--primary', 'Apply')
+    .should('be.visible')
+    .click();
 };
 
 export const fillGiftOptiosMessageForm = (className, type = 'order') => {
-  cy.wait(2000);
   if (type === 'product') {
-    cy.get(className).contains('Gift options').click();
+    cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
-  cy.wait(2000);
-
   cy.get(`${className} ${fields.giftOptionRecipientName}`)
+    .should('be.visible')
     .type('giftOptionRecipientName')
     .should('have.value', 'giftOptionRecipientName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionSenderName}`)
+    .should('be.visible')
     .type('giftOptionSenderName')
     .should('have.value', 'giftOptionSenderName')
     .blur();
-  cy.wait(2000);
   cy.get(`${className} ${fields.giftOptionMessage}`)
+    .should('be.visible')
     .type('giftOptionMessage')
     .should('have.value', 'giftOptionMessage')
     .blur(); // Added .blur() here
@@ -222,3 +225,44 @@ export const fillGiftOptiosFormEmpty = (className) => {
     .should('have.value', '')
     .blur();
 };
+
+export const createAddress = (address, isValid = true) => {
+  cy.get(fields.fieldUserFirstName).clear().type(address.firstName);
+  cy.get(fields.fieldUserLastName).clear().type(address.lastName);
+  cy.get(fields.fieldUserStreet).clear().type(address.street);
+  cy.get(fields.fieldUserStreet2).clear().type(address.streetMultiline_2);
+  cy.get(fields.fieldUserSelectCountry).select(address.countryCode);
+  cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+  cy.get(fields.fieldUserCity).clear().type(address.city);
+  cy.get(fields.fieldUserPhone).clear().type(address.telephone);
+  cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
+  cy.get(fields.fieldUserVatId).clear().type(address.vatId);
+  cy.get(fields.authFormUserCheckBoxShipping).then(($checkbox) => {
+    $checkbox.prop('checked', address.defaultShipping);
+  });
+};
+
+export const inputSearchString = (searchString) => {
+  cy.get(fields.searchIcon).click();
+  cy.get(fields.searchField)
+    .should("be.visible")
+    .type(searchString);
+};
+
+export const editProductOptions = (selectedOption, updateProductOptionTo) => {
+  cy.contains('Edit').click();
+  cy.get('.modal-content').should('be.visible');
+  cy.get('.modal-content').assertSelectedProductOption('color', selectedOption);
+  cy.get('.modal-content').find('.dropin-incrementer__increase-button').click();
+  cy.get('.modal-content').find('.dropin-incrementer__input').should('have.value', '2');
+  cy.get('.modal-content').selectProductOption('color', updateProductOptionTo);
+  cy.get('.modal-content').assertSelectedProductOption('color', updateProductOptionTo);
+  cy.contains('Update in Cart').should('be.visible').click();
+}
+
+export const typeInFieldBasedOnText = (textToSearch, enterInput) => {
+  cy.contains(textToSearch)
+    .parent()
+    .find('input')
+    .type(enterInput);
+}

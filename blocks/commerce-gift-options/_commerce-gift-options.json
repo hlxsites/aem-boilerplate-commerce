@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Gift Options",
+    "id": "commerce-gift-options",
+    "model": "commerce-gift-options",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

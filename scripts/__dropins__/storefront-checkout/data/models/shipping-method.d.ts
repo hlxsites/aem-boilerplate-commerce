@@ -1,19 +1,18 @@
-import { Price } from './price';
+import { Money } from './money';
 
-type Code = string;
-type Title = string;
 type Carrier = {
-    code: Code;
-    title: Title;
+    code: string;
+    title: string;
 };
 export type ShippingMethod = {
-    amount: Price;
+    amount: Money;
     carrier: Carrier;
-    code: Code;
-    title: Title;
+    code: string;
+    title: string;
     value: string;
-    amountExclTax?: Price;
-    amountInclTax?: Price;
+    amountExclTax?: Money;
+    amountInclTax?: Money;
+    originalAmount?: Money;
 };
 export {};
 //# sourceMappingURL=shipping-method.d.ts.map

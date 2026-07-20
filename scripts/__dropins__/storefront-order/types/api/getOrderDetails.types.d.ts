@@ -1,18 +1,5 @@
-/********************************************************************
- * ADOBE CONFIDENTIAL
- *
- *  Copyright 2024 Adobe
- *  All Rights Reserved.
- *
- * NOTICE:  All information contained herein is, and remains
- * the property of Adobe and its suppliers, if any. The intellectual
- * and technical concepts contained herein are proprietary to Adobe
- * and its suppliers and are protected by all applicable intellectual
- * property laws, including trade secret and copyright laws.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from Adobe.
- *******************************************************************/
+import { OrderCommentItem } from '../orderComments.types';
+
 export type QueryType = 'orderData';
 export interface UserAddressesProps {
     city?: string;
@@ -59,6 +46,8 @@ export interface MoneyProps {
 }
 interface GrandTotalProps extends MoneyProps {
 }
+interface GrandTotalExclTaxProps extends MoneyProps {
+}
 interface SubtotalProps extends MoneyProps {
 }
 interface TotalTaxProps extends MoneyProps {
@@ -87,6 +76,7 @@ export interface TotalGiftOptionsProps {
 export interface TotalProps {
     total_giftcard?: MoneyProps;
     grand_total?: GrandTotalProps;
+    grand_total_excl_tax?: GrandTotalExclTaxProps;
     subtotal?: SubtotalProps;
     taxes?: TaxDetailProps[];
     total_tax?: TotalTaxProps;
@@ -101,10 +91,7 @@ interface InvoiceProps {
     number?: string;
     total?: TotalProps;
     items?: InvoiceItemInterface[];
-    comments?: {
-        message: string;
-        timestamp: string;
-    }[];
+    comments?: OrderCommentItem[];
 }
 export interface GiftMessageProps {
     form: string;
@@ -192,10 +179,7 @@ export interface ShipmentsProps {
         number: string;
         title: string;
     }[];
-    comments: {
-        message: string;
-        timestamp: string;
-    }[];
+    comments: OrderCommentItem[];
     items: {
         id: string;
         product_sku: string;
@@ -252,9 +236,11 @@ export interface OrderProps {
     number: string;
     order_date: string;
     printed_card_included: boolean;
+    admin_assisted_order?: number;
     applied_coupons: {
         code: string;
     }[];
+    comments?: OrderCommentItem[];
     returns: {
         __typename: string;
         items: ReturnsItemsProps[];

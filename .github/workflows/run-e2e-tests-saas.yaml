@@ -1,0 +1,99 @@
+name: Cypress E2E SaaS Tests
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+jobs:
+  cypress-saas-groups:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commmerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
+    runs-on: ubuntu-latest
+    env:
+      IS_PROD_RELEASE: ${{ github.base_ref == 'main' }}
+    strategy:
+      # Run all shards even if one fails, so a single flaky shard doesn't hide
+      # results from the others.
+      fail-fast: false
+      # Shards are grouped by functional area so specs within a shard share
+      # environmental state. verifySellerAssistedBuying is placed last in shard 3
+      # so the cart dropin is already initialized by the preceding checkout specs
+      # (avoids a null-cart race on cold browser startup).
+      # NOTE: when adding a new spec file, add it to exactly one shard below.
+      # check-shard-coverage.yaml will fail CI if any spec file is missing.
+      matrix:
+        spec:
+          # Shard 1 — Auth & account flows
+          # Add here if: spec tests sign-in/sign-out, account management pages,
+          # authenticated-user wishlist, or event SDK initialization.
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
+          # Shard 2 — Guest checkout flows
+          # Add here if: spec tests guest checkout (including virtual products),
+          # guest wishlist, or event SDK calls fired during cart/checkout/order flows.
+          - "src/tests/b2c/verifyGuestUserCheckout.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckout.spec.js,src/tests/b2c/verifyGuestUserWishlistFeature.spec.js,src/tests/b2c/events/add-to-cart.spec.js,src/tests/b2c/events/initiate-checkout.spec.js,src/tests/b2c/events/place-order.spec.js,src/tests/b2c/events/shopping-cart-view.spec.js"
+          # Shard 3 — Cart features + B2B (verifySellerAssistedBuying last so cart is warm)
+          # Add here if: spec tests cart manipulation (undo, stock messages, gift cards,
+          # store switcher) or B2B seller-assisted buying. Keep ordering-dependent
+          # specs last — verifySellerAssistedBuying relies on a warm cart state.
+          - "src/tests/b2c/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/b2c/verifyCartUndo.spec.js,src/tests/b2c/verifyLowStockInfoMessage.spec.js,src/tests/b2c/verifyStoreSwitcher.spec.js,src/tests/b2c/verifySellerAssistedBuying.spec.js"
+          # Shard 4 — Discovery & search (events/recs and verifyAemAssets are skipped)
+          - "src/tests/b2c/verifyProductSearch.spec.js,src/tests/b2c/verifyProductListPage.spec.js,src/tests/b2c/verifyRecsDisplay.spec.js,src/tests/b2c/verifyRecsContextMatrix.spec.js,src/tests/b2c/verifyAemAssets.spec.js,src/tests/b2c/events/recs.spec.js,src/tests/b2c/events/search-product-click.spec.js,src/tests/b2c/events/search-request-sent.spec.js,src/tests/b2c/events/search-results-view.spec.js"
+          # Shard 5 — ACCS Prod specific tests without using Payment Services
+          - "src/tests/b2c/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set storefront config
+        id: config
+        run: |
+          if [[ "$IS_PROD_RELEASE" == "true" ]]; then
+            echo "aem_url=https://main--boilerplate-accs-prod--adobe-commerce.aem.live/" >> "$GITHUB_OUTPUT"
+            echo "graphql_endpoint=https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql" >> "$GITHUB_OUTPUT"
+          else
+            echo "aem_url=https://main--boilerplate-accs--adobe-commerce.aem.live/" >> "$GITHUB_OUTPUT"
+            echo "graphql_endpoint=https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install adobe aem cli dependencies
+        run: npm install -g @adobe/aem-cli
+      - name: Start server in the background
+        run: aem up --url ${{ steps.config.outputs.aem_url }} &
+      - name: Install Cypress and run tests
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: cypress
+          wait-on: 'http://localhost:3000'
+          # No quotes around matrix.spec: the comma-separated list has no
+          # spaces, and quoting it here caused cypress-io/github-action's
+          # command execution to leave stray literal `"` characters glued to
+          # the first/last spec paths, silently dropping them from every run.
+          command: ${{ env.IS_PROD_RELEASE == 'true' && 'npm run cypress:saas-prod:run' || 'npm run cypress:saas:run' }} -- --spec ${{ matrix.spec }}
+        env:
+          AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
+          CYPRESS_API_ENDPOINT: ${{ env.IS_PROD_RELEASE == 'true' && secrets.CYPRESS_API_ENDPOINT_PROD || secrets.CYPRESS_API_ENDPOINT }}
+          CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
+          CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
+          CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
+          CYPRESS_GRAPHQL_ENDPOINT: ${{ steps.config.outputs.graphql_endpoint }}
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots-saas-${{ strategy.job-index }}
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+  # Aggregation gate: a single, stable status check for branch protection.
+  # Requiring the per-shard "cypress-saas-groups (...)" checks is brittle because
+  # their names embed the spec list, so every shard change needs a manual
+  # branch-protection edit. Require this job instead.
+  cypress-saas-run:
+    if: always()
+    needs: cypress-saas-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check shards result
+        run: |
+          if [ "${{ needs.cypress-saas-groups.result }}" != "success" ]; then
+            echo "One or more test shards failed: ${{ needs.cypress-saas-groups.result }}"
+            exit 1
+          fi

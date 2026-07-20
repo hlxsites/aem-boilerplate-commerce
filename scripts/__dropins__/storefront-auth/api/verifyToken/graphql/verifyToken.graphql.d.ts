@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const VALIDATE_CUSTOMER_TOKEN = "\n  query VALIDATE_TOKEN {\n    customerCart {\n      id\n    }\n  }\n";
+export declare const VALIDATE_CUSTOMER_TOKEN = "\n  query VALIDATE_TOKEN {\n    customer {\n      group {\n        uid\n      }\n    }\n  }\n";
 //# sourceMappingURL=verifyToken.graphql.d.ts.map

@@ -24,21 +24,27 @@ export interface SignUpProps {
     hideCloseBtnOnEmailConfirmation?: boolean;
     routeRedirectOnEmailConfirmationClose?: () => string;
     slots?: {
+        Title?: SlotProps<DefaultSlotContext>;
+        Form?: SlotProps<DefaultSlotContext>;
+        Buttons?: SlotProps<DefaultSlotContext>;
         SuccessNotification?: SlotProps<DefaultSlotContext>;
-        PrivacyPolicyConsent: SlotProps;
+        PrivacyPolicyConsent?: SlotProps;
+        RemoteShoppingAssistanceConsent?: SlotProps;
     };
     routeSignIn?: () => string;
     routeRedirectOnSignIn?: () => string;
     onErrorCallback?: (value?: unknown) => void;
     onSuccessCallback?: (value?: {
         userName: string;
+        userEmail: string;
         status: boolean;
     }) => Promise<void>;
 }
 export interface SignUpFormProps extends SignUpProps {
     setActiveComponent?: (componentName: activeComponentType) => void;
     slot?: {
-        PrivacyPolicyConsent: SlotProps;
+        PrivacyPolicyConsent?: SlotProps;
+        RemoteShoppingAssistanceConsent?: SlotProps;
     };
 }
 export interface UseSingUpFormProps extends Omit<SignUpFormProps, 'formSize' | 'inputsDefaultValueSet' | 'slots'> {

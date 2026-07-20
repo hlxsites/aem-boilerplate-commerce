@@ -1,7 +1,7 @@
-/* eslint-disable import/extensions */
 const fs = require('fs');
 const path = require('path');
-const { dependencies } = require('./package.json');
+
+const { dependencies } = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
 // Define the dropins folder
 const dropinsDir = path.join('scripts', '__dropins__');
@@ -35,6 +35,8 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
 [
   { from: '@adobe/magento-storefront-event-collector/dist/index.js', to: 'commerce-events-collector.js' },
   { from: '@adobe/magento-storefront-events-sdk/dist/index.js', to: 'commerce-events-sdk.js' },
+  { from: '@adobe/adobe-client-data-layer/dist/adobe-client-data-layer.min.js', to: 'acdl/adobe-client-data-layer.min.js' },
+  { from: '@adobe/adobe-client-data-layer/dist/adobe-client-data-layer.min.js.map', to: 'acdl/adobe-client-data-layer.min.js.map' },
 ].forEach((file) => {
   fs.copyFileSync(path.resolve(__dirname, 'node_modules', file.from), path.resolve(__dirname, 'scripts', file.to));
 });
@@ -63,6 +65,15 @@ function checkPackageLockForArtifactory() {
     });
   });
 }
+
+function checkSourceMaps() {
+  const hlxIgnorePath = '.hlxignore';
+  if (!fs.existsSync(hlxIgnorePath) || !fs.readFileSync(hlxIgnorePath, 'utf-8').includes('*.map')) {
+    console.info('⚠️ Sourcemaps may be added to the repo. WARNING: Please remove the *.map files or add "*.map" to .hlxignore before going live!\n');
+  }
+}
+
+checkSourceMaps();
 
 checkPackageLockForArtifactory()
   .then((found) => {

@@ -3,26 +3,64 @@ import fs from 'fs';
 import he from 'he';
 import productSearchQuery from './queries/products.graphql.js';
 import { variantsFragment } from './queries/variants.graphql.js';
-
 const basePath = 'https://www.aemshop.net';
-const configFile = `${basePath}/configs.json?sheet=prod`;
+const configFile = `${basePath}/config.json`;
+
+/**
+ * Performs a deep merge of objects
+ * @param {Object} target - The target object to merge into
+ * @param {Object} source - The source object to merge from
+ * @returns {Object} The merged object
+ */
+function deepMerge(target, source) {
+  const result = { ...target };
+
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      result[key] = deepMerge(target[key] || {}, source[key]);
+    } else {
+      result[key] = source[key];
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Merges a store configuration with the default configuration
+ * @param {Object} defaultConfig - The default configuration object
+ * @param {Object} storeConfig - The store-specific configuration object
+ * @returns {Object} Merged configuration object
+ */
+function mergeStoreConfig(defaultConfig, storeConfig) {
+  const mergedConfig = { ...defaultConfig };
+
+  // Deep merge the entire headers object if defined
+  if (storeConfig.headers) {
+    mergedConfig.headers = deepMerge(mergedConfig.headers || {}, storeConfig.headers);
+  }
+
+  // Override commerce-endpoint if defined
+  if (storeConfig['commerce-endpoint']) {
+    mergedConfig['commerce-endpoint'] = storeConfig['commerce-endpoint'];
+  }
+
+  return mergedConfig;
+}
 
 export async function commerceEndpointWithQueryParams(config) {
   const urlWithQueryParams = new URL(config['commerce-endpoint']);
   // Set some query parameters for use as a cache-buster. No other purpose.
-  urlWithQueryParams.searchParams.append('ac-storecode', config['commerce.headers.cs.Magento-Store-Code']);
+  const hash = createHashFromObject(config.headers?.cs ?? {});
+  urlWithQueryParams.searchParams.append('cb', hash);
   return urlWithQueryParams;
 }
 
 async function performCatalogServiceQuery(config, query, variables) {
   const headers = {
     'Content-Type': 'application/json',
-    'x-api-key': config['commerce.headers.cs.x-api-key'],
-    'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
-    'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
-    'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
-    'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
-    'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
+    ...config.headers?.all,
+    ...config.headers?.cs,
   };
 
   const apiCall = await commerceEndpointWithQueryParams(config);
@@ -45,6 +83,27 @@ async function performCatalogServiceQuery(config, query, variables) {
   return queryResponse.data;
 }
 
+/**
+ * Creates a short hash from an object by sorting its entries and hashing them.
+ * @param {Object} obj - The object to hash
+ * @param {number} [length=5] - Length of the resulting hash
+ * @returns {string} A short hash string
+ */
+function createHashFromObject(obj, length = 5) {
+  // Sort entries by key and create a string of key-value pairs
+  const objString = Object.entries(obj)
+    .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+    .map(([key, value]) => `${key}:${value}`)
+    .join('|');
+
+  // Create a short hash using a simple string manipulation
+  return objString
+    .split('')
+    .reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) % 2147483647, 0)
+    .toString(36)
+    .slice(0, length);
+}
+
 function getJsonLd(product, { variants }) {
   const amount = product.priceRange?.minimum?.final?.amount || product.price?.final?.amount;
   const brand = product.attributes.find((attr) => attr.name === 'brand');
@@ -65,7 +124,7 @@ function getJsonLd(product, { variants }) {
   if (brand?.value) {
     product.brand = {
       '@type': 'Brand',
-        name: brand?.value,
+      name: brand?.value,
     };
   }
 
@@ -145,7 +204,7 @@ const getProducts = async (config, pageNumber) => {
         productView: {
           ...item.productView,
           image: baseImageUrl,
-          path: `/products/${urlKey}/${sku}`,
+          path: `products/${urlKey}/${sku}`.toLowerCase(),
           meta_keyword: (metaKeyword !== null) ? metaKeyword : '',
           meta_title: he.decode((metaTitle !== '') ? metaTitle : name),
           meta_description: finalDescription,
@@ -193,18 +252,54 @@ async function addVariantsToProducts(products, config) {
 }
 
 (async () => {
-  const config = {};
-  try {
-    const resp = await fetch(configFile).then((res) => res.json());
-    resp.data.forEach((item) => {
-      config[item.key] = item.value;
+  const configResponse = await fetch(configFile)
+    .then((res) => res.json())
+    .then((data) => data.public)
+    .catch((err) => {
+      console.error(err);
+      return {};
     });
-  } catch (err) {
-    console.error(err);
+
+  const defaultConfig = configResponse.default;
+  if (!defaultConfig) {
+    console.error('No default configuration found');
     return;
   }
 
-  const products = await getProducts(config, 1);
+  // Get all store configurations (excluding 'default')
+  const storeConfigs = Object.entries(configResponse)
+    .filter(([key]) => key !== 'default')
+    .map(([rootPath, storeConfig]) => ({
+      rootPath,
+      config: mergeStoreConfig(defaultConfig, storeConfig)
+    }));
+
+  // Add default store to the list
+  const allStores = [
+    { rootPath: 'default', config: defaultConfig },
+    ...storeConfigs
+  ];
+
+  console.log(`Processing ${allStores.length} stores: ${allStores.map(s => s.rootPath).join(', ')}`);
+
+  // Process all stores and collect products
+  const allProducts = [];
+  for (const store of allStores) {
+    console.log(`Processing store: ${store.rootPath}`);
+    try {
+      const storeProducts = await getProducts(store.config, 1);
+      storeProducts.forEach(product => {
+        // Ensure path includes the store "root"
+        product.productView.path = store.rootPath === 'default' ? `/${product.productView.path}` : `${store.rootPath}${product.productView.path}`;
+      });
+      allProducts.push(...storeProducts);
+      console.log(`Retrieved ${storeProducts.length} products from store: ${store.rootPath}`);
+    } catch (error) {
+      console.error(`Error processing store ${store.rootPath}:`, error);
+    }
+  }
+
+  const products = allProducts;
 
   const data = [
     [
@@ -212,6 +307,7 @@ async function addVariantsToProducts(products, config) {
       'title',
       'description',
       'keywords',
+      'sku',
       'og:type',
       'og:title',
       'og:description',
@@ -229,6 +325,7 @@ async function addVariantsToProducts(products, config) {
         metaData.meta_title, // title
         metaData.meta_description, // description
         metaData.meta_keyword, // keywords
+        metaData.sku, //sku
         'product', // og:type
         metaData.meta_title, // og:title
         metaData.meta_description, // og:description
@@ -246,4 +343,36 @@ async function addVariantsToProducts(products, config) {
   const workbook = { Sheets: { Sheet1: worksheet }, SheetNames: ['Sheet1'] };
   const xlsx = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
   await fs.promises.writeFile('metadata.xlsx', xlsx);
+
+  // Generate JSON data in the expected format
+  const jsonData = {
+    data: {
+      total: products.length,
+      limit: products.length,
+      offset: 0,
+      data: products.map(({ productView: metaData, variants }) => ({
+        URL: metaData.path,
+        title: metaData.meta_title,
+        description: metaData.meta_description,
+        keywords: metaData.meta_keyword,
+        sku: metaData.sku,
+        'og:type': 'product',
+        'og:title': metaData.meta_title,
+        'og:description': metaData.meta_description,
+        'og:url': `${basePath}${metaData.path}`,
+        'og:image': metaData['og:image'],
+        'og:image:secure_url': metaData['og:image:secure_url'],
+        'last-modified': metaData['last-modified'],
+        'json-ld': getJsonLd(metaData, variants)
+      })),
+      ':colWidths': [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
+    },
+    ':names': ['data'],
+    ':version': 3,
+    ':type': 'multi-sheet',
+  };
+
+  // Write JSON file
+  await fs.promises.writeFile('metadata.json', JSON.stringify(jsonData, null, 2));
+  console.log(`Generated metadata.xlsx and metadata.json with ${products.length} products`);
 })();

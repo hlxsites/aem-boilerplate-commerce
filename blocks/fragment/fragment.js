@@ -1,12 +1,11 @@
-/* eslint-disable import/no-cycle */
 /*
  * Fragment Block
  * Include content on a page as a fragment.
  * https://www.aem.live/developer/block-collection/fragment
  */
 
+import { getRootPath } from '@dropins/tools/lib/aem/configs.js';
 import { decorateMain } from '../../scripts/scripts.js';
-import { getRootPath } from '../../scripts/configs.js';
 import {
   loadSections,
 } from '../../scripts/aem.js';
@@ -17,7 +16,7 @@ import {
  * @returns {Promise<HTMLElement>} The root element of the fragment
  */
 export async function loadFragment(path) {
-  if (path && path.startsWith('/')) {
+  if (path && path.startsWith('/') && !path.startsWith('//')) {
     const root = getRootPath().replace(/\/$/, '');
     const url = `${root}${path}.plain.html`;
     const resp = await fetch(url);
@@ -46,11 +45,5 @@ export default async function decorate(block) {
   const link = block.querySelector('a');
   const path = link ? link.getAttribute('href') : block.textContent.trim();
   const fragment = await loadFragment(path);
-  if (fragment) {
-    const fragmentSection = fragment.querySelector(':scope .section');
-    if (fragmentSection) {
-      block.closest('.section').classList.add(...fragmentSection.classList);
-      block.closest('.fragment').replaceWith(...fragment.childNodes);
-    }
-  }
+  if (fragment) block.replaceChildren(...fragment.childNodes);
 }

@@ -1,4 +1,4 @@
-/*! Copyright 2025 Adobe
+/*! Copyright 2026 Adobe
 All Rights Reserved. */
 const e=`
 fragment PRODUCT_OPTION_FRAGMENT on ProductViewOption {
@@ -107,6 +107,17 @@ fragment PRODUCT_FRAGMENT on ProductView {
     roles
   }
 
+  videos {
+		description
+		url
+		title
+		preview {
+			label
+			roles
+			url
+		}
+	}
+
   attributes(roles: []) {
     name
     label
@@ -131,6 +142,20 @@ fragment PRODUCT_FRAGMENT on ProductView {
                 currency
             }
         }
+        tiers {
+          tier {
+            amount {
+              value
+              currency
+            }
+          }
+          quantity {
+            ... on ProductViewTierRangeCondition {
+              gte
+              lt
+            }
+          }
+        }
       }
     }
 
@@ -146,3 +171,4 @@ fragment PRODUCT_FRAGMENT on ProductView {
 ${e}
 ${t}
 `;export{t as PRICE_RANGE_FRAGMENT,r as PRODUCT_FRAGMENT,e as PRODUCT_OPTION_FRAGMENT};
+//# sourceMappingURL=fragments.js.map

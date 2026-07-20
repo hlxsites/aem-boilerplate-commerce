@@ -1,0 +1,4 @@
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+import{useState as s,useEffect as c}from"@dropins/tools/preact-compat.js";import{events as o}from"@dropins/tools/event-bus.js";function b({scope:u,initialData:n=null,initialValues:e={}}={}){const[t,a]=s(n),[i,f]=s({sku:"",quantity:1,...e});return c(()=>{const l=o.on("pdp/data",a,{scope:u}),r=o.on("pdp/values",f,{eager:!0,scope:u});return()=>{l==null||l.off(),r==null||r.off()}},[u]),{data:t,values:i}}function m(u,n){return u!=null&&u.attributes?u.attributes.filter(({id:e})=>e===n).map(e=>{try{const t=typeof e.value=="string"?JSON.parse(e.value):e.value;return{id:e.id,label:e.label,value:t}}catch{return console.warn(`Invalid ${n} data format`),{id:e.id,label:e.label,value:e.value}}}):[]}export{m as g,b as u};
+//# sourceMappingURL=useProductData.js.map

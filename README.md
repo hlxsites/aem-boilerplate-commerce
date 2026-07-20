@@ -1,129 +1,74 @@
 # Edge Delivery Services + Adobe Commerce Boilerplate
+
 This project boilerplate is for Edge Delivery Services projects that integrate with Adobe Commerce.
 
 ## Documentation
-https://experienceleague.adobe.com/developer/commerce/storefront/
 
-## Environments
-- Preview: https://main--{repo}--{owner}.aem.page/
-- Live: https://main--{repo}--{owner}.aem.live/
+Before using the boilerplate, we recommend you to go through the documentation on <https://experienceleague.adobe.com/developer/commerce/storefront/> and more specifically:
 
-## Pre-requisites
+1. [Storefront Developer Tutorial](https://experienceleague.adobe.com/developer/commerce/storefront/get-started/)
+1. [AEM Docs](https://www.aem.live/docs/)
+1. [AEM Developer Tutorial](https://www.aem.live/developer/tutorial)
+1. [The Anatomy of an AEM Project](https://www.aem.live/developer/anatomy-of-a-project)
+1. [Web Performance](https://www.aem.live/developer/keeping-it-100)
+1. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
 
-Out of the box, this project template uses a pre-configured Adobe Commerce environment. If you want to use your own Adobe Commerce environment, you'll need to update the public `config` in your [site config](https://www.aem.live/docs/admin.html#tag/siteConfig) to have values that match your environment.
+## Getting Started
 
-Additionally, you need to have the following modules and customizations installed on your environment:
+Use the [Site Creator Tool](https://da.live/app/adobe-commerce/storefront-tools/tools/site-creator/site-creator) to quickly spin up your own copy of code and content.
 
-1. adobe-commerce/storefront-compatibility: Contains changes to the Adobe Commerce GraphQL API that enable drop-ins functionality.
-1. magento/module-data-services-graphql: Commerce module with the functionality necessary for adding context to events.
-1. magento/module-page-builder-product-recommendations: Commerce module required for PRex Widget
-1. magento/module-visual-product-recommendations: Commerce module required for PRex Widget
-<!-- 1. TODO: Add further prereqs.  -->
+Alternatively, you can follow our [Guide](https://experienceleague.adobe.com/developer/commerce/storefront/get-started/) for a more detailed walkthrough.
 
-## Documentation
+## Staying Up to Date
 
-Before using the boilerplate, we recommend you to go through the documentation on https://www.aem.live/docs/ and more specifically:
-1. [Developer Tutorial](https://www.aem.live/developer/tutorial)
-2. [The Anatomy of a Project](https://www.aem.live/developer/anatomy-of-a-project)
-3. [Web Performance](https://www.aem.live/developer/keeping-it-100)
-4. [Markup, Sections, Blocks, and Auto Blocking](https://www.aem.live/developer/markup-sections-blocks)
+Once you fork or clone this repo, the code is yours — you are not subscribed to updates.
 
-## Initial Setup
+### What a suite release is (and is not)
 
-The boilerplate assumes you already have an `aem.live` org and will onboard a new site via config service. If you do not have an `aem.live` org, you will need to [contact Adobe](https://discord.gg/aem-live) to have one created, or you can do the following:
+A suite release — for example "[b2c-march-2026](https://github.com/hlxsites/aem-boilerplate-commerce/tree/b2c-march-2026)" — is a tagged snapshot of this boilerplate at a point in time when a specific combination of drop-in package versions and boilerplate code was tested together and verified to work. That tag is useful as a **starting point** for developers who are setting up a new project. You can find the release notes for each suite release in the [releases](https://experienceleague.adobe.com/developer/commerce/storefront/releases/) page.
 
-1. Upload the [starter content](https://github.com/hlxsites/aem-boilerplate-commerce/releases/tag/starter-content) somewhere (https://da.live, sharepoint, google drive, etc).
-1. Copy `default-fstab.yaml` to a file named `fstab.yaml`.
-1. Update `fstab.yaml` with your own mountpoint for your content.
-1. Rename `demo-config.json` to a file named `config.json`
-1. Update `config.json` with your endpoints, headers, etc.
-1. Move and rename `demo-sidekick.json` to a file named `tools/sidekick/config.json`.
-1. Update `tools/sidekick/config.json` with your site urls (replace aem-boilerplate-commerce, hlxsites with your site and org)
-1. Commit and push both files.
-1. Install the [AEM Code Sync Bot](https://github.com/apps/aem-code-sync)
-1. Verify the site is working at https://main--{site}--{org}.aem.page
-1. Add a `/.helix/config.xlsx` to your content, and add a `admin.role.admin` row with your email address.
-1. Preview/save this file. This should update the site config with the permissions.
-1. Delete the `/.helix/config.xlsx` and the `fstab.yaml` again and use the site config from here on.
+If you have already forked or cloned this repo, a new suite release is not an upgrade you need to apply. There is no mechanism that pushes boilerplate code changes into your fork, and nothing will break in your project because a new release tag was created upstream. Treat suite releases the same way you would treat a new major version of a project template: relevant only if you are starting fresh.
 
-### Config Service
+### Updating your drop-in dependencies
 
-Before running the command, replace all variables to match your project values:
+The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure the `postinstall` script runs so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
 
-* `{ORG}` - Name of your organistation in GitHub.
-* `{SITE}` - Name of your site in the org. For the first site in your org, it must be equal to the GitHub repository name.
-* `{REPO}` - Name of your GitHub repository.
-* `{ADMIN_USER_EMAIL}` - Email address of your config admin user.
-* `{ADMIN_USER_ID}` - User ID of your authoring admin (click user icon in top right, then click "share" icon in da.live to copy).
-* `{DOMAIN}` - Public facing domain of your site (e.g. `www.your-shop.com`).
-* `{ENDPOINT}` - Your Commerce graphql endpoint.
-* `{CS_ENDPOINT}` - Your Catalog Services endpoint.
-* `{YOUR_TOKEN}` - Your personal access token. You can retrieve one from login via one of the methods from https://admin.hlx.page/login and copy the token from the `auth_token` cookie in the response.
+These packages follow semantic versioning. Minor and patch releases are non-breaking by contract, so routine updates should be safe to apply.
 
-! Double check that there are no remaining template variables in the default files before you push !
-
-Please use HTTP [PUT](https://www.aem.live/docs/admin.html#tag/siteConfig/operation/createSiteSite) for the initial creation of the configuration and [POST](https://www.aem.live/docs/admin.html#tag/siteConfig/operation/updateConfigSite) for subsequent updates.
+To see which packages have newer versions available:
 
 ```bash
-curl -X PUT 'https://admin.hlx.page/config/{org}/sites/{site}.json' \
-  -H 'content-type: application/json' \
-  -H 'x-auth-token: {YOUR_TOKEN}' \
-  --data-binary '@default-site.json'
+npm outdated
 ```
 
-### Apply Index Configuration
+To install a specific version:
+
 ```bash
-curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/content/query.yaml' \
-  -H 'content-type: text/yaml' \
-  -H 'x-auth-token: {YOUR_TOKEN}' \
-  --data-binary '@default-query.yaml'
+npm install @dropins/storefront-cart@2.0.0  # updates the package in node_modules/
+npm run postinstall                         # copies scripts from node_modules into scripts/__dropins__/
 ```
 
-### Apply Sitemap Configuration
+To update a drop-in to its latest stable release:
+
 ```bash
-curl -X POST 'https://admin.hlx.page/config/{org}/sites/{site}/content/sitemap.yaml' \
-  -H 'content-type: text/yaml' \
-  -H 'x-auth-token: {YOUR_TOKEN}' \
-  --data-binary '@default-sitemap.yaml'
+npm install @dropins/storefront-cart@latest
+npm run postinstall
 ```
 
-After you onboard to config service you can delete fstab.yaml and [other files](https://www.aem.live/docs/config-service-setup#remove-unused-configuration-files) that are no longer necessary.
+Always run `postinstall` after any drop-in update — it copies the built assets from `node_modules` into `scripts/__dropins__`, which is what Edge Delivery Services serves. Note that `npm` does not run `postinstall` automatically when you install a specific package, so this step must always be done manually.
 
-## Installation
+### Automated dependency PRs
 
-```sh
-npm i
-```
+This repo includes a GitHub Actions workflow that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
 
-## Updating Drop-in dependencies
+You can also trigger the workflow manually from the **Actions** tab in GitHub.
 
-You may need to update one of the drop-in components, or `@adobe/magento-storefront-event-collector` or `@adobe/magento-storefront-events-sdk` to a new version. Besides checking the release notes for any breaking changes, ensure you also execute the `postinstall` script so that the dependenices in your `scripts/__dropins__` directory are updated to the latest build. This should be run immediately after you update the component, for example:
+### Pulling boilerplate code changes into your fork (optional)
 
-```
-npm install @dropins/storefront-cart@2.0. # Updates the storefront-cart dependency in node_modules/
-npm run postinstall # Copies scripts from node_modules into scripts/__dropins__
-```
-
-This is a custom script which copies files out of `node_modules` and into a local directory which EDS can serve. You must manually run `postinstall` due to a design choice in `npm` which does not execute `postinstall` after you install a _specific_ package.
-
-## Linting
-
-```sh
-npm run lint
-```
-
-## Local development
-
-1. Create a new repository based on the `aem-boilerplate-commerce` template,
-1. Rename `default-fstab.yaml` to `fstab.yaml` and add a mountpoint for your site content. Commit and push this file.
-1. Rename `demo-config.json` to `config.json` and update with your site values.
-1. Add the [AEM Code Sync GitHub App](https://github.com/apps/aem-code-sync) to the repository
-1. Install all dependencies using `npm i`.
-1. Start AEM Proxy: `aem-up --url htps://main--{SITE}--{ORG}.aem.page` (opens your browser at `http://localhost:3000`)
-1. Open the `{repo}` directory in your favourite IDE and start coding :)
+If you want to incorporate code changes made to this upstream boilerplate after you forked — for example, a new block or a bug fix in `scripts/` — you can do so by adding this repo as a git remote and merging selectively. This is entirely optional. Upstream changes may conflict with modifications you have made to your fork, so expect to resolve conflicts manually. There is no guarantee of a clean merge, and nothing in your project depends on staying in sync with the upstream boilerplate code.
 
 ## Changelog
 
-Major changes are described and documented as part of pull requests and tracked via the `changelog` tag. To keep your project up to date, please follow this list:
+Major changes to this boilerplate are described and documented as part of pull requests and tracked via the `changelog` tag. This log documents changes to the canonical starting point — not upgrades that forked implementations must apply. Review it if you are considering pulling specific upstream changes into your fork:
 
-https://github.com/hlxsites/aem-boilerplate-commerce/issues?q=label%3Achangelog+is%3Aclosed
+<https://github.com/hlxsites/aem-boilerplate-commerce/issues?q=label%3Achangelog+is%3Aclosed>

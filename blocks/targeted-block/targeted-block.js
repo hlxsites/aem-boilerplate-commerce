@@ -1,52 +1,44 @@
-import { events } from '@dropins/tools/event-bus.js';
-import { getActiveRules } from '../../scripts/api/personalization/api.js';
-
-import conditionsMatched from './condition-matcher.js';
+import { TargetedBlock } from '@dropins/storefront-personalization/containers/TargetedBlock.js';
+import { render } from '@dropins/storefront-personalization/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-const blocks = [];
-const displayedBlockTypes = [];
-
-const updateTargetedBlocksVisibility = async () => {
-  const activeRules = await getActiveRules();
-
-  displayedBlockTypes.length = 0;
-  blocks.forEach(async (blockConfig) => {
-    const index = blocks.indexOf(blockConfig);
-    const { fragment, type } = blockConfig;
-
-    const block = document.querySelector(`[data-targeted-block-key="${index}"]`);
-    block.style.display = 'none';
-
-    if (!displayedBlockTypes.includes(type) && conditionsMatched(activeRules, blockConfig)) {
-      displayedBlockTypes.push(type);
-      if (fragment !== undefined) {
-        const content = await loadFragment(fragment);
-        const blockContent = document.createElement('div');
-        while (content.firstElementChild) blockContent.append(content.firstElementChild);
-        block.textContent = '';
-        block.append(blockContent);
-      }
-      block.style.display = '';
-    }
-  });
-};
-
-export default function decorate(block) {
-  block.style.display = 'none';
-  blocks.push(readBlockConfig(block));
-  block.setAttribute('data-targeted-block-key', blocks.length - 1);
+function prepareIds(providedIds) {
+  return providedIds.split(',').map((num) => btoa(num.trim()));
 }
 
-events.on('cart/reset', () => {
-  updateTargetedBlocksVisibility();
-}, { eager: true });
+export default async function decorate(block) {
+  const blockConfig = readBlockConfig(block);
 
-events.on('cart/initialized', () => {
-  updateTargetedBlocksVisibility();
-}, { eager: true });
+  const {
+    fragment,
+    type,
+    'customer-segments': customerSegments,
+    'customer-groups': customerGroups,
+    'cart-rules': rules,
+  } = blockConfig;
 
-events.on('cart/updated', () => {
-  updateTargetedBlocksVisibility();
-}, { eager: true });
+  const content = (blockConfig.fragment !== undefined)
+    ? await loadFragment(fragment)
+    : block.children[block.children.length - 1];
+
+  const segments = customerSegments !== undefined ? prepareIds(customerSegments) : [];
+  const groups = customerGroups !== undefined ? prepareIds(customerGroups) : [];
+  const cartRules = rules !== undefined ? prepareIds(rules) : [];
+
+  render.render(TargetedBlock, {
+    type,
+    personalizationData: {
+      segments,
+      groups,
+      cartRules,
+    },
+    slots: {
+      Content: (ctx) => {
+        const container = document.createElement('div');
+        container.append(content);
+        ctx.replaceWith(container);
+      },
+    },
+  })(block);
+}

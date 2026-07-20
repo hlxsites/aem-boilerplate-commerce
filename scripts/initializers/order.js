@@ -1,11 +1,11 @@
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
-import { initialize, setFetchGraphQlHeaders } from '@dropins/storefront-order/api.js';
-import { checkIsAuthenticated, getHeaders } from '../configs.js';
+import { initialize, setEndpoint } from '@dropins/storefront-order/api.js';
 import { initializeDropin } from './index.js';
-import { fetchPlaceholders } from '../commerce.js';
-
 import {
+  CORE_FETCH_GRAPHQL,
+  fetchPlaceholders,
+  checkIsAuthenticated,
   CUSTOMER_ORDER_DETAILS_PATH,
   ORDER_DETAILS_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
@@ -14,11 +14,16 @@ import {
   CREATE_RETURN_PATH,
   CUSTOMER_ORDERS_PATH,
   ORDER_STATUS_PATH,
-  CUSTOMER_PATH, SALES_GUEST_VIEW_PATH, SALES_ORDER_VIEW_PATH,
-} from '../constants.js';
-import { rootLink } from '../scripts.js';
+  CUSTOMER_PATH,
+  SALES_GUEST_VIEW_PATH,
+  SALES_ORDER_VIEW_PATH,
+  rootLink,
+} from '../commerce.js';
 
 await initializeDropin(async () => {
+  // Set Fetch GraphQL (Core)
+  setEndpoint(CORE_FETCH_GRAPHQL);
+
   const { pathname, searchParams } = new URL(window.location.href);
   if (pathname.includes(CUSTOMER_ORDERS_PATH)) {
     return;
@@ -29,9 +34,8 @@ await initializeDropin(async () => {
   const orderNumber = searchParams.get('orderNumber');
   const isTokenProvided = orderRef && orderRef.length > 20;
 
-  setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('order') }));
-
-  const labels = await fetchPlaceholders();
+  // Fetch placeholders
+  const labels = await fetchPlaceholders('placeholders/order.json');
   const langDefinitions = {
     default: {
       ...labels,
@@ -62,6 +66,7 @@ await initializeDropin(async () => {
     return;
   }
 
+  // Initialize order
   await initializers.mountImmediately(initialize, {
     langDefinitions,
     orderRef,

@@ -1,0 +1,38 @@
+{
+  "definitions": [
+    {
+      "title": "Fragment",
+      "id": "fragment",
+      "model": "fragment",
+      "plugins": {
+        "da": {
+          "rows": 1,
+          "columns": 1,
+          "fields": [
+            { "name": "fragmentUrl", "selector": "div>div>p>a[href]" },
+            { "name": "fragmentUrlText", "selector": "div>div>p>a" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "fragment",
+      "fields": [
+        {
+          "component": "text",
+          "name": "fragmentUrl",
+          "label": "Fragment URL",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "fragmentUrlText",
+          "label": "Fragment URL Text"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

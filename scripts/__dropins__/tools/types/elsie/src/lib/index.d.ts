@@ -19,6 +19,10 @@ export * from './types';
 export * from './slot';
 export * from './vcomponent';
 export * from './image-params-keymap';
+export * from './locale-config';
 export * from './is-number';
 export * from './deviceUtils';
+export * from './get-path-value';
+export * from './get-cookie';
+export * from './get-price-formatter';
 //# sourceMappingURL=index.d.ts.map

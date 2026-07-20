@@ -15,12 +15,13 @@
  * from Adobe.
  *******************************************************************/
 export * from './authenticateCustomer';
-export * from './errors';
 export * from './estimateShippingMethods';
 export * from './fetch-graphql';
 export * from './getCart';
 export * from './getCheckoutAgreements';
+export * from './getCompanyCredit';
 export * from './getCustomer';
+export * from './getNegotiableQuote';
 export * from './getStoreConfig';
 export * from './initialize';
 export * from './initializeCheckout';
@@ -32,5 +33,4 @@ export * from './setPaymentMethod';
 export * from './setShippingAddress';
 export * from './setShippingMethods';
 export * from './synchronizeCheckout';
-export { getStoreConfigCache } from '../lib/state';
 //# sourceMappingURL=index.d.ts.map

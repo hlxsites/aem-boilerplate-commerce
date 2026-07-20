@@ -1,0 +1,171 @@
+{
+  "definitions": [
+    {
+      "title": "Section",
+      "id": "section",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div></div>"
+        }
+      },
+      "filter": "section",
+      "model": "section"
+    }
+  ],
+  "models": [
+    {
+      "id": "section",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "style",
+          "label": "Style",
+          "options": [
+            {
+              "name": "Highlight",
+              "value": "highlight"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "padding",
+          "label": "Padding",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Small",
+              "value": "small"
+            },
+            {
+              "name": "Medium",
+              "value": "medium"
+            },
+            {
+              "name": "Large",
+              "value": "large"
+            },
+            {
+              "name": "Big",
+              "value": "big"
+            },
+            {
+              "name": "XBig",
+              "value": "xbig"
+            },
+            {
+              "name": "XXBig",
+              "value": "xxbig"
+            },
+            {
+              "name": "Huge",
+              "value": "huge"
+            },
+            {
+              "name": "XHuge",
+              "value": "xhuge"
+            },
+            {
+              "name": "XXHuge",
+              "value": "xxhuge"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "margin",
+          "label": "Margin",
+          "options": [
+            {
+              "name": "Default",
+              "value": ""
+            },
+            {
+              "name": "Small",
+              "value": "small"
+            },
+            {
+              "name": "Medium",
+              "value": "medium"
+            },
+            {
+              "name": "Large",
+              "value": "large"
+            },
+            {
+              "name": "Big",
+              "value": "big"
+            },
+            {
+              "name": "XBig",
+              "value": "xbig"
+            },
+            {
+              "name": "XXBig",
+              "value": "xxbig"
+            },
+            {
+              "name": "Huge",
+              "value": "huge"
+            },
+            {
+              "name": "XHuge",
+              "value": "xhuge"
+            },
+            {
+              "name": "XXHuge",
+              "value": "xxhuge"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "section",
+      "components": [
+        "hero",
+        "accordion",
+        "cards",
+        "carousel",
+        "columns",
+        "commerce-account-header",
+        "commerce-account-sidebar",
+        "commerce-cart",
+        "commerce-checkout",
+        "commerce-checkout-success",
+        "commerce-confirm-account",
+        "commerce-create-account",
+        "commerce-create-password",
+        "commerce-create-return",
+        "commerce-customer-details",
+        "commerce-forgot-password",
+        "commerce-gift-options",
+        "commerce-login",
+        "commerce-mini-cart",
+        "commerce-order-comments",
+        "commerce-order-cost-summary",
+        "commerce-order-header",
+        "commerce-order-product-list",
+        "commerce-order-returns",
+        "commerce-order-status",
+        "commerce-return-header",
+        "commerce-search-order",
+        "commerce-shipping-status",
+        "commerce-wishlist",
+        "enrichment",
+        "fragment",
+        "image",
+        "product-details",
+        "product-list-page",
+        "product-recommendations",
+        "targeted-block",
+        "text"
+      ]
+    }
+  ]
+}

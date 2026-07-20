@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Shipping Status",
+    "id": "commerce-shipping-status",
+    "model": "commerce-shipping-status",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

@@ -1,6 +1,7 @@
 .*
 *.md
 *.d.ts
+*.map
 karma.config.js
 LICENSE
 package.json
@@ -12,3 +13,4 @@ cypress/
 tools/picker/src/*
 tools/pdp-metadata/*
 plugins/experimentation/documentation/images/*
+_*.json

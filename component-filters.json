@@ -1,0 +1,85 @@
+[
+  {
+    "id": "main",
+    "components": [
+      "section"
+    ]
+  },
+  {
+    "id": "section",
+    "components": [
+      "hero",
+      "accordion",
+      "cards",
+      "carousel",
+      "columns",
+      "commerce-account-header",
+      "commerce-account-sidebar",
+      "commerce-cart",
+      "commerce-checkout",
+      "commerce-checkout-success",
+      "commerce-confirm-account",
+      "commerce-create-account",
+      "commerce-create-password",
+      "commerce-create-return",
+      "commerce-customer-details",
+      "commerce-forgot-password",
+      "commerce-gift-options",
+      "commerce-login",
+      "commerce-mini-cart",
+      "commerce-order-comments",
+      "commerce-order-cost-summary",
+      "commerce-order-header",
+      "commerce-order-product-list",
+      "commerce-order-returns",
+      "commerce-order-status",
+      "commerce-return-header",
+      "commerce-search-order",
+      "commerce-shipping-status",
+      "commerce-wishlist",
+      "enrichment",
+      "fragment",
+      "image",
+      "product-details",
+      "product-list-page",
+      "product-recommendations",
+      "targeted-block",
+      "text"
+    ]
+  },
+  {
+    "id": "accordion",
+    "components": [
+      "accordion-item"
+    ]
+  },
+  {
+    "id": "cards",
+    "components": [
+      "card"
+    ]
+  },
+  {
+    "id": "carousel",
+    "components": [
+      "carousel-item"
+    ]
+  },
+  {
+    "id": "columns",
+    "components": [
+      "columns-row"
+    ]
+  },
+  {
+    "id": "columns-row",
+    "components": []
+  },
+  {
+    "id": "columns-cell",
+    "components": [
+      "text",
+      "image"
+    ]
+  }
+]

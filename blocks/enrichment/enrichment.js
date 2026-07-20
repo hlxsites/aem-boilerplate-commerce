@@ -1,6 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchIndex } from '../../scripts/scripts.js';
-import { getSkuFromUrl } from '../../scripts/commerce.js';
+import { getProductSku, fetchIndex, IS_UE } from '../../scripts/commerce.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
@@ -8,8 +7,12 @@ export default async function decorate(block) {
 
   try {
     const filters = {};
+    if (!type) {
+      throw new Error('No type found in enrichment block configuration');
+    }
+
     if (type === 'product') {
-      const productSku = getSkuFromUrl();
+      const productSku = getProductSku();
       if (!productSku) {
         throw new Error('No product SKU found in URL');
       }
@@ -17,19 +20,17 @@ export default async function decorate(block) {
     }
 
     if (type === 'category') {
-      const plpBlock = document.querySelector('.block.product-list-page');
+      // Look for PLP block using "product-list-page" block selector
+      const plpBlock = document.querySelector('.product-list-page');
       if (!plpBlock) {
         throw new Error('No product list page block found');
       }
 
-      let categoryId = plpBlock.dataset?.category;
-      if (!categoryId) {
-        categoryId = readBlockConfig(plpBlock).category;
-      }
-      if (!categoryId) {
+      const category = plpBlock.dataset?.urlpath || readBlockConfig(plpBlock).urlpath;
+      if (!category) {
         throw new Error('No category ID found in product list page block');
       }
-      filters.categories = categoryId;
+      filters.categories = category;
     }
 
     if (position) {
@@ -67,6 +68,7 @@ export default async function decorate(block) {
   } catch (error) {
     console.error(error);
   } finally {
-    block.closest('.enrichment-wrapper')?.remove();
+    // don't remove wrapper in UE because then it will not be authorable
+    if (!IS_UE) block.closest('.enrichment-wrapper')?.remove();
   }
 }
