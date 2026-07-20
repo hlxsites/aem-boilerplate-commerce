@@ -52,6 +52,7 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
           </div>
+          <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
@@ -69,6 +70,10 @@ export default async function decorate(block) {
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $addToWishlist = fragment.querySelector('.product-details__buttons__add-to-wishlist');
+  // Kept mounted at all times so the "Adding to Cart" status is reliably
+  // announced instead of relying on the button's text/disabled state
+  // changing, which isn't announced by screen readers on its own.
+  const $addToCartStatus = fragment.querySelector('.product-details__add-to-cart-status');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
 
@@ -141,6 +146,7 @@ export default async function decorate(block) {
             children: labels.Custom?.AddingToCart?.label,
             disabled: true,
           }));
+          $addToCartStatus.textContent = labels.Custom?.AddingToCart?.label ?? 'Adding to Cart';
 
           // get the current selection values
           const values = pdpApi.getProductConfigurationValues();
@@ -178,6 +184,7 @@ export default async function decorate(block) {
             children: labels.PDP?.Product?.AddToCart?.label,
             disabled: false,
           }));
+          $addToCartStatus.textContent = '';
         }
       },
     })($addToCart),

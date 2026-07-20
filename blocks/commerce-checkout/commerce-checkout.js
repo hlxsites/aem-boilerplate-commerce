@@ -143,6 +143,7 @@ export default async function decorate(block) {
   const checkoutFragment = document.createRange().createContextualFragment(`
     <div class="checkout__wrapper">
       <div class="checkout__loader"></div>
+      <div class="checkout__loader-status" role="status" aria-live="polite"></div>
       <div class="checkout__merged-cart-banner"></div>
       <div class="checkout__content">
         <div class="checkout__main">
@@ -170,6 +171,9 @@ export default async function decorate(block) {
 
   const $content = checkoutFragment.querySelector('.checkout__content');
   const $loader = checkoutFragment.querySelector('.checkout__loader');
+  const $loaderStatus = checkoutFragment.querySelector(
+    '.checkout__loader-status',
+  );
   const $mergedCartBanner = checkoutFragment.querySelector(
     '.checkout__merged-cart-banner',
   );
@@ -559,6 +563,11 @@ export default async function decorate(block) {
   };
 
   const displayOverlaySpinner = async () => {
+    // Kept as a separate, persistently mounted live region so the
+    // announcement isn't missed when the spinner mounts and unmounts
+    // together with the live region attached to it.
+    $loaderStatus.textContent = 'Placing your order…';
+
     if (loader) return;
 
     loader = await UI.render(ProgressSpinner, {
@@ -567,6 +576,8 @@ export default async function decorate(block) {
   };
 
   const removeOverlaySpinner = () => {
+    $loaderStatus.textContent = '';
+
     if (!loader) return;
 
     loader.remove();
