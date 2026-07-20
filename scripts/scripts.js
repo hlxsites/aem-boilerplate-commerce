@@ -51,24 +51,30 @@ function installDefaultPolicy(tt) {
 installDefaultPolicy(window.trustedTypes);
 
 if (window.trustedTypes) {
-  const { get } = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentWindow');
-  Object.defineProperty(HTMLIFrameElement.prototype, 'contentWindow', {
-    configurable: true,
-    get() {
-      const win = get.call(this);
-      try {
-        installDefaultPolicy(win.trustedTypes);
-      } catch (e) {
-        // cross-origin iframes throw a SecurityError here - expected, their
-        // CSP isn't ours to satisfy. Anything else means this genuinely
-        // failed to install and is worth knowing about.
-        if (e.name !== 'SecurityError') {
-          console.warn('Failed to install Trusted Types policy in iframe realm', e);
+  try {
+    const { get } = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentWindow');
+    Object.defineProperty(HTMLIFrameElement.prototype, 'contentWindow', {
+      configurable: true,
+      get() {
+        const win = get.call(this);
+        try {
+          installDefaultPolicy(win.trustedTypes);
+        } catch (e) {
+          // cross-origin iframes throw a SecurityError here - expected, their
+          // CSP isn't ours to satisfy. Anything else means this genuinely
+          // failed to install and is worth knowing about.
+          if (e.name !== 'SecurityError') {
+            console.warn('Failed to install Trusted Types policy in iframe realm', e);
+          }
         }
-      }
-      return win;
-    },
-  });
+        return win;
+      },
+    });
+  } catch (e) {
+    // e.g. contentWindow was made non-configurable by other code - the
+    // top-level policy above still applies, iframes just won't get one.
+    console.warn('Failed to patch HTMLIFrameElement.prototype.contentWindow for Trusted Types', e);
+  }
 }
 
 /**
