@@ -138,10 +138,6 @@
   border: 0;
 }
 
-.checkout__merged-cart-banner {
-  grid-column: 1;
-}
-
 /* remove margin from the heading divider */
 .checkout__heading .dropin-divider {
     margin: 0;
