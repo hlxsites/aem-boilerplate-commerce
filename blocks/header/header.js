@@ -246,8 +246,8 @@ export default async function decorate(block) {
 
   const minicart = document.createRange().createContextualFragment(`
      <div class="minicart-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-cart-button" aria-label="Cart"></button>
-       <div class="minicart-panel nav-tools-panel"></div>
+       <button type="button" class="nav-cart-button" aria-label="Cart" aria-haspopup="dialog" aria-expanded="false" aria-controls="minicart-panel"></button>
+       <div class="minicart-panel nav-tools-panel" id="minicart-panel"></div>
      </div>
    `);
 
@@ -328,6 +328,10 @@ export default async function decorate(block) {
     }
 
     togglePanel(minicartPanel, state);
+    cartButton.setAttribute(
+      'aria-expanded',
+      minicartPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
