@@ -22,12 +22,13 @@ import {
   IS_DA,
 } from './commerce.js';
 
-if (window.trustedTypes && window.trustedTypes.createPolicy) {
-  const innerTT = window.trustedTypes.createPolicy('tt-inner', {
+function installDefaultPolicy(tt) {
+  if (!tt || !tt.createPolicy || tt.defaultPolicy) return;
+  const innerTT = tt.createPolicy('tt-inner', {
     createHTML: (s) => s, // avoid stack overflow
   });
 
-  window.trustedTypes.createPolicy('default', {
+  tt.createPolicy('default', {
     createHTML: (input, type, sink) => {
       let processedInput = input;
       if (/srcdoc\s*=/i.test(processedInput)) {
@@ -44,6 +45,29 @@ if (window.trustedTypes && window.trustedTypes.createPolicy) {
     },
     createScriptURL: (input) => input,
     createScript: (input) => input,
+  });
+}
+
+installDefaultPolicy(window.trustedTypes);
+
+if (window.trustedTypes) {
+  const { get } = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentWindow');
+  Object.defineProperty(HTMLIFrameElement.prototype, 'contentWindow', {
+    configurable: true,
+    get() {
+      const win = get.call(this);
+      try {
+        installDefaultPolicy(win.trustedTypes);
+      } catch (e) {
+        // cross-origin iframes throw a SecurityError here - expected, their
+        // CSP isn't ours to satisfy. Anything else means this genuinely
+        // failed to install and is worth knowing about.
+        if (e.name !== 'SecurityError') {
+          console.warn('Failed to install Trusted Types policy in iframe realm', e);
+        }
+      }
+      return win;
+    },
   });
 }
 
