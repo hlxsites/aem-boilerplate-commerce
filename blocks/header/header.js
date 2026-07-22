@@ -246,8 +246,9 @@ export default async function decorate(block) {
 
   const minicart = document.createRange().createContextualFragment(`
      <div class="minicart-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-cart-button" aria-label="Cart"></button>
-       <div class="minicart-panel nav-tools-panel"></div>
+       <button type="button" class="nav-cart-button" aria-label="Cart" aria-haspopup="dialog" aria-expanded="false" aria-controls="minicart-panel"></button>
+       <div class="minicart-panel nav-tools-panel" id="minicart-panel"></div>
+       <div class="nav-cart-status" role="status" aria-live="polite"></div>
      </div>
    `);
 
@@ -256,6 +257,11 @@ export default async function decorate(block) {
   const minicartPanel = navTools.querySelector('.minicart-panel');
 
   const cartButton = navTools.querySelector('.nav-cart-button');
+
+  // Kept mounted at all times so the item count change is reliably
+  // announced instead of being missed, since the visual badge is a
+  // `data-count` attribute rendered via CSS and isn't announced on its own.
+  const cartStatus = navTools.querySelector('.nav-cart-status');
 
   if (excludeMiniCartFromPaths.includes(window.location.pathname)) {
     cartButton.style.display = 'none';
@@ -328,20 +334,39 @@ export default async function decorate(block) {
     }
 
     togglePanel(minicartPanel, state);
+    cartButton.setAttribute(
+      'aria-expanded',
+      minicartPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
   // Cart Item Counter
+  let previousCartQuantity;
+
   events.on('cart/data', (data) => {
     // preload mini cart fragment if user has a cart
     if (data) loadMiniCartFragment();
 
-    if (data?.totalQuantity) {
-      cartButton.setAttribute('data-count', data.totalQuantity);
+    const totalQuantity = data?.totalQuantity ?? 0;
+
+    if (totalQuantity) {
+      cartButton.setAttribute('data-count', totalQuantity);
     } else {
       cartButton.removeAttribute('data-count');
     }
+
+    // Skip the announcement for the initial value on page load so screen
+    // reader users aren't told about the cart contents before they've
+    // interacted with it; only announce actual changes.
+    if (previousCartQuantity !== undefined && previousCartQuantity !== totalQuantity) {
+      cartStatus.textContent = totalQuantity
+        ? `Cart updated, ${totalQuantity} item${totalQuantity === 1 ? '' : 's'} in cart`
+        : 'Cart updated, cart is empty';
+    }
+
+    previousCartQuantity = totalQuantity;
   }, { eager: true });
 
   /** Search */

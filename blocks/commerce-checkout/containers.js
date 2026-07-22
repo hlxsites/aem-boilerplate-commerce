@@ -508,6 +508,7 @@ export const renderCartSummaryList = async (container) => renderContainer(
           editCartLink.href = rootLink('/cart');
           editCartLink.rel = 'noreferrer';
           editCartLink.innerText = placeholders?.Checkout?.Summary?.Edit;
+          editCartLink.setAttribute('aria-label', `${placeholders?.Checkout?.Summary?.Edit} cart`);
 
           cartSummaryListHeading.appendChild(cartSummaryListHeadingText);
           cartSummaryListHeading.appendChild(editCartLink);

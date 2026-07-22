@@ -14,6 +14,7 @@ import {
   Icon,
   Button,
   Image,
+  ProgressSpinner,
   provider as UI,
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
@@ -249,7 +250,10 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
           </div>
         </div>
         <div class="mini-pdp__buttons">
-          <div class="mini-pdp__update-button"></div>
+          <div class="mini-pdp__update-button-wrapper">
+            <div class="mini-pdp__update-button"></div>
+            <div class="mini-pdp__update-spinner"></div>
+          </div>
           <div class="mini-pdp__cancel-button"></div>
           <div class="mini-pdp__buttons__redirect-to-pdp">
             <a href="/products/${product.urlKey}/${product.sku}">
@@ -265,8 +269,13 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     const $gallery = fragment.querySelector('.mini-pdp__gallery');
     const $options = fragment.querySelector('.mini-pdp__options');
     const $quantity = fragment.querySelector('.mini-pdp__quantity');
+    const $updateButtonWrapper = fragment.querySelector(
+      '.mini-pdp__update-button-wrapper',
+    );
     const $updateButton = fragment.querySelector('.mini-pdp__update-button');
+    const $updateSpinner = fragment.querySelector('.mini-pdp__update-spinner');
     const $cancelButton = fragment.querySelector('.mini-pdp__cancel-button');
+    const updateButtonBusyClass = 'mini-pdp__update-button-wrapper--busy';
 
     miniPDPContainer.appendChild(fragment);
 
@@ -278,6 +287,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
     // State management
     let isLoading = false;
     let inlineAlert = null;
+    let updateSpinner = null;
 
     // Render components
     const [
@@ -324,11 +334,17 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
           try {
             isLoading = true;
+            $updateButtonWrapper.classList.add(updateButtonBusyClass);
             updateButton.setProps((prev) => ({
               ...prev,
               children: placeholders?.Global?.UpdatingInCart,
-              disabled: true,
             }));
+            // ProgressSpinner has aria-live="polite" + role="status" built in,
+            // so its label is announced to screen readers.
+            updateSpinner = await UI.render(ProgressSpinner, {
+              className: 'mini-pdp__update-spinner-icon',
+              ariaLabel: placeholders?.Global?.UpdatingInCart,
+            })($updateSpinner);
 
             // Get current product configuration
             const values = getProductConfigurationValues({ scope: 'modal' });
@@ -390,15 +406,16 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
             });
           } finally {
             isLoading = false;
+            $updateButtonWrapper.classList.remove(updateButtonBusyClass);
             updateButton.setProps((prev) => ({
               ...prev,
               children:
                 placeholders?.Global?.UpdateProductInCart,
-              disabled: false,
             }));
+            updateSpinner?.remove();
+            updateSpinner = null;
           }
         },
-        disabled: isLoading,
       })($updateButton),
 
       // Cancel button
@@ -428,7 +445,7 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
       (valid) => {
         updateButton.setProps((prev) => ({
           ...prev,
-          disabled: !valid || isLoading,
+          disabled: !valid,
         }));
       },
       { eager: true, scope: 'modal' },

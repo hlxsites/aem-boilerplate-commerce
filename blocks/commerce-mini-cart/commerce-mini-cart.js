@@ -194,6 +194,9 @@ export default async function decorate(block) {
 
           UI.render(Button, {
             children: placeholders?.Global?.CartEditButton,
+            // Every cart item renders its own Edit button, so the accessible
+            // name must include the product name to distinguish them.
+            'aria-label': `${placeholders?.Global?.CartEditButton} ${item.name}`,
             variant: 'tertiary',
             size: 'medium',
             icon: h(Icon, { source: 'Edit' }),

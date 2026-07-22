@@ -1,0 +1,13 @@
+name: Check Test Shard Coverage
+on: push
+jobs:
+  check-shard-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Cypress dependencies
+        run: npm ci
+        working-directory: cypress
+      - name: Verify all test specs are assigned to a shard
+        run: node scripts/check-shard-coverage.js
+        working-directory: cypress

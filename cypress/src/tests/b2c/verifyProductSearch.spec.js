@@ -30,16 +30,12 @@ describe("Search Feature", () => {
     // Input search string and hit enter
     inputSearchString("sleeve{enter}");
 
-    // Wait for random quick search dropdown to disappear
-    cy.wait(1000);
-
     assertSearchResults();
 
     assertImageListDisplay('.product-discovery-product-list__grid');
   });
 
-// Bug on ACCS https://jira.corp.adobe.com/browse/USF-3691
-  it("Verify Filter on search results page",  {tags: ["@skipSaas", "@snapPercy" ]}, () => {
+  it("Verify Filter on search results page",  {tags: ["@snapPercy"]}, () => {
     // Visit the homepage
     cy.visit("/search?q=tee");
 
