@@ -439,8 +439,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                 }
               },
               onSuccess: ({ cartId }) => {
-                throw new Error('Something went wrong');
-                // orderApi.placeOrder(cartId);
+                orderApi.placeOrder(cartId);
               },
               onError: (localizedError) => {
                 events.emit('checkout/error', {
