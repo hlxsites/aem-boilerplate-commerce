@@ -22,6 +22,35 @@ import {
   IS_DA,
 } from './commerce.js';
 
+/*
+ * Trusted Types default policy.
+ *
+ * This policy is defined but NOT currently enforced: the
+ * `require-trusted-types-for 'script'` CSP directive that activates it has been
+ * removed from the Content-Security-Policy meta in head.html. The policy is kept
+ * here so enforcement can be turned back on without re-authoring it.
+ *
+ * Why the directive was removed: with it enforced, payment SDKs that build a
+ * same-origin iframe and synchronously inject a <script> into it fail to render.
+ * The Credit Card checkout flow hits this because its hosted-fields SDK does
+ * exactly that. Trusted Types policies are scoped per document/realm, so the
+ * child iframe inherits the CSP directive but not this default policy; the SDK's
+ * `script.src` assignment in that realm then throws "This document requires
+ * 'TrustedScriptURL' assignment" and the card fields never mount. Any dependency
+ * that injects scripts into a same-origin iframe realm hits the same wall.
+ *
+ * To re-enable enforcement: add `require-trusted-types-for 'script';` back to the
+ * `Content-Security-Policy` meta in head.html. Before doing so, note that the
+ * policy below is a passthrough (createScriptURL/createScript return their input
+ * unchanged), so enforcing it satisfies the API without adding real containment;
+ * hardening it into an allowlist is the useful next step. Enforcement will also
+ * re-break any same-origin-iframe SDK unless that SDK installs its own policy in
+ * the iframe realm (the correct long-term fix).
+ *
+ * References:
+ * - Directive introduced upstream: https://github.com/adobe/aem-boilerplate/pull/641
+ * - Trusted Types API: https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
+ */
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
   const innerTT = window.trustedTypes.createPolicy('tt-inner', {
     createHTML: (s) => s, // avoid stack overflow
