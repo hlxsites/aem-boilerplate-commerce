@@ -304,7 +304,7 @@ export default async function decorate(block) {
   }
 
   const EXPRESS_PAYMENT_METHODS = [
-    PaymentMethodCode.SMART_BUTTONS,
+    PaymentMethodCode.PAYPAL_BUTTONS,
     PaymentMethodCode.APPLE_PAY,
     PaymentMethodCode.GOOGLE_PAY,
   ];

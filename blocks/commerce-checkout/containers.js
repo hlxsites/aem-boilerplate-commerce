@@ -43,6 +43,7 @@ import { PaymentMethodCode, PaymentLocation } from '@dropins/storefront-payment-
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
+import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Order Dropin
@@ -366,7 +367,27 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
         },
-        [PaymentMethodCode.SMART_BUTTONS]: {
+        [PaymentMethodCode.PAYPAL_BUTTONS]: {
+          render: (ctx) => {
+            const $paypalButtons = document.createElement('div');
+
+            PaymentServices.render(PayPalButtons, {
+              onButtonClick: (showPaymentSheet) => {
+                if (validateCheckoutForms()) {
+                  showPaymentSheet();
+                }
+              },
+              onSuccess: ({ cartId }) => {
+                orderApi.placeOrder(cartId);
+              },
+              onError: (localizedError) => {
+                events.emit('checkout/error', {
+                  message: localizedError.message,
+                });
+              },
+            })($paypalButtons);
+            ctx.replaceHTML($paypalButtons);
+          },
           enabled: false,
         },
         [PaymentMethodCode.APPLE_PAY]: {
@@ -417,7 +438,10 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                   showPaymentSheet();
                 }
               },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+              onSuccess: ({ cartId }) => {
+                throw new Error('Something went wrong');
+                // orderApi.placeOrder(cartId);
+              },
               onError: (localizedError) => {
                 events.emit('checkout/error', {
                   message: localizedError.message,
