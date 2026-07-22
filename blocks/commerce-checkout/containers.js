@@ -438,9 +438,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                   showPaymentSheet();
                 }
               },
-              onSuccess: ({ cartId }) => {
-                orderApi.placeOrder(cartId);
-              },
+              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
               onError: (localizedError) => {
                 events.emit('checkout/error', {
                   message: localizedError.message,
