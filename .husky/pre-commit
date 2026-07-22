@@ -1,2 +1,3 @@
+node .github/scripts/check-branch-name-length.mjs
 node .husky/check-block-readme.js
 node .husky/pre-commit.mjs
