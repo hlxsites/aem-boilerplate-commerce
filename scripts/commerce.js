@@ -51,6 +51,10 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 // Environment checks
 export const IS_UE = window.location.hostname.includes('ue.da.live');
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
+// Quick Edit / Experience Workspace also author/preview a page in place (see
+// tools/quick-edit/quick-edit.js); treat that the same as IS_UE/IS_DA
+// wherever a template page needs to render a default product for editing.
+export const IS_QUICK_EDIT = new URL(window.location.href).searchParams.has('quick-edit');
 
 /**
  * Product template paths - pages that are templates and should use
@@ -682,7 +686,7 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
-  if (isProductTemplate() && (IS_UE || IS_DA)) {
+  if (isProductTemplate() && (IS_UE || IS_DA || IS_QUICK_EDIT)) {
     return getDefaultSkuFromBlock();
   }
 

@@ -9,6 +9,8 @@ import {
   getOptionsUIDsFromUrl,
   getProductSku,
   IS_UE,
+  IS_DA,
+  IS_QUICK_EDIT,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
@@ -83,8 +85,10 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  // If we cannot find a sku, and we are not in UE, there's a problem.
-  if (!sku && !IS_UE) {
+  // If we cannot find a sku, and we are not authoring/previewing this page
+  // (Universal Editor, Document Authoring preview, or Quick Edit /
+  // Experience Workspace), there's a problem.
+  if (!sku && !IS_UE && !IS_DA && !IS_QUICK_EDIT) {
     return loadErrorPage();
   }
 
