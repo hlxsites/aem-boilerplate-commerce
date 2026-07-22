@@ -148,6 +148,16 @@ With this information, you can construct URLs for the preview environment (same 
 - **Production Live**: `https://main--{repo}--{owner}.aem.live/`
 - **Feature Preview**: `https://{branch}--{repo}--{owner}.aem.page/`
 
+### Branch Naming
+
+The `{branch}--{repo}--{owner}` hostname above is a single DNS label, which RFC 1035 caps at 63 characters. Branches whose name pushes this over the limit will never get a working preview or live URL — before creating a branch, check the proposed name fits:
+
+```
+node .github/scripts/check-branch-name-length.mjs
+```
+
+(Run this after `git switch -c <name>`, or compute the limit yourself: `63 - len(repo) - len(owner) - 4`.) This is also enforced automatically by a pre-commit hook and a GitHub Actions check, but confirming upfront avoids wasted work on an undeployable branch.
+
 ### Publishing Process
 1. Push changes to a feature branch
 2. AEM Code Sync automatically processes changes making them available on feature preview environment for that branch
