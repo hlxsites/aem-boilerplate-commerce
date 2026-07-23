@@ -56,13 +56,9 @@ describe("Verify price summary on cart", () => {
       .should("be.visible")
       .click({ multiple: true });
 
-    cy.wait(2000);
-
     cy.get(`.cart-coupons.cart-gift-cards ${fields.giftCardField}`)
       .should("be.visible")
       .type(Cypress.env("giftCardA"));
-
-    cy.wait(2000);
 
     cy.get(`.cart-coupons.cart-gift-cards button`)
       .contains("Apply")
@@ -72,8 +68,11 @@ describe("Verify price summary on cart", () => {
     const orderClassName = ".cart-gift-options-view--order";
     cy.get(orderClassName).should("exist").should("be.visible");
     fillGiftOptiosForm(orderClassName);
-
-    cy.wait(3000);
+    // Wait for the order-level gift wrapping to be persisted by the backend before
+    // opening the product-level form. Opening the product form triggers a cart
+    // refresh; if the order-level save hasn't completed, that refresh can reset
+    // the unsaved order gift-wrap selection.
+    cy.get('.cart-order-summary__content').should('contain', 'Order gift wrapping');
 
     const itemsClassName =
       ".cart-gift-options-view.cart-gift-options-view--product";
@@ -114,7 +113,6 @@ describe("Verify price summary on cart", () => {
     cy.contains("No Payment Information Required");
     cy.contains(Cypress.env("giftCardA"));
     checkTermsAndConditions();
-    cy.wait(5000);
     cy.percyTakeSnapshot('Checkout page no payment');
     placeOrder();
     // Uncomment following once https://jira.corp.adobe.com/browse/USF-2241 is fixed

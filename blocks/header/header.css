@@ -369,6 +369,18 @@ header nav .nav-tools button.nav-cart-button[data-count]::after {
   justify-content: center;
 }
 
+header nav .nav-tools .nav-cart-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 header nav .nav-tools button.nav-wishlist-button {
   background-image: url('../../icons/heart.svg');
   background-repeat: no-repeat;
@@ -385,6 +397,9 @@ header nav .nav-tools button.nav-search-button {
 
 header .nav-search-panel {
   padding: var(--spacing-small);
+  box-sizing: border-box;
+  max-height: 760px;
+  overflow-y: auto;
 }
 
 header .nav-search-panel input {
@@ -432,9 +447,22 @@ header .nav-search-panel .search-bar-result .product-discovery-product-list__foo
   min-height: 360px;
 }
 
+.cart-mini-cart:has(.cart-empty-cart) {
+  max-height: 760px;
+  overflow-y: auto;
+}
+
 /* If viewport height is below max, set max height to 90% of viewport */
 @media (max-height: 819px) {
   .cart-mini-cart:not(:has(.cart-empty-cart)) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  .cart-mini-cart:has(.cart-empty-cart) {
+    max-height: calc(100vh - var(--nav-height));
+  }
+
+  header .nav-search-panel {
     max-height: calc(100vh - var(--nav-height));
   }
 }
@@ -514,6 +542,12 @@ header .nav-search-input .search_autocomplete .popover-container {
   font: var(--type-body-1-default-font) !important;
   letter-spacing: var(--type-body-1-default-letter-spacing) !important;
   width: 100%;
+  max-height: calc(100vh - var(--nav-height));
+  overflow-y: auto;
+
+  @supports (height: 100dvh) {
+    max-height: calc(100dvh - var(--nav-height));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -856,4 +890,3 @@ body:has(.seller-assisted-buying-banner) {
     display: inline-block;
   }
 }
-
