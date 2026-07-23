@@ -22,4 +22,3 @@ export * from './preact';
 export * from './state';
 export * from './validation';
 export * from './values';
-//# sourceMappingURL=index.d.ts.map

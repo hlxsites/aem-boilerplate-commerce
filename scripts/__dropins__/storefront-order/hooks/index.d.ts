@@ -27,4 +27,3 @@ export * from './containers/useOrderActions';
 export * from './useInLineAlert';
 export * from './useIsMobile';
 export * from './api/useGetStoreConfig';
-//# sourceMappingURL=index.d.ts.map

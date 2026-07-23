@@ -19,4 +19,3 @@ export declare const COOKIE_NAME = "personalization_dropin_data";
 export declare const setCookie: (value: string) => Promise<void>;
 export declare const getCookie: () => undefined;
 export declare const deleteCookie: () => void;
-//# sourceMappingURL=cookieUtils.d.ts.map

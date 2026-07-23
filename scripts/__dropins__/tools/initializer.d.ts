@@ -1,1 +1,1 @@
-export * from './types/elsie/src/lib/initializer'
+export * from './types/elsie/src/lib/initializer';
