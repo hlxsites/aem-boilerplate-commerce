@@ -24,4 +24,9 @@ export declare function timeout(ms: number): Promise<void>;
 export declare function screamingSnakeToKebabCase(screamCaseText: string): string;
 /** Maps an optional value or returns undefined if the value is undefined. */
 export declare function mapOptional<T, R>(value: T | undefined, mapper: (v: T) => R): R | undefined;
+/**
+ * Generates a short random alphanumeric string (0-9, a-z), useful for building unique DOM
+ * element ids.
+ */
+export declare function randomAlphanumericSuffix(length?: number): string;
 //# sourceMappingURL=utils.d.ts.map
