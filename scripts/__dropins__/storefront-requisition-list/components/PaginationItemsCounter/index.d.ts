@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from '.';
 export { PaginationItemsCounter as default } from './PaginationItemsCounter';
-//# sourceMappingURL=index.d.ts.map

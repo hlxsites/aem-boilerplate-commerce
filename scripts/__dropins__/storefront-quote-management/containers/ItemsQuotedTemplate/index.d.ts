@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ItemsQuotedTemplate';
 export { ItemsQuotedTemplate as default } from './ItemsQuotedTemplate';
-//# sourceMappingURL=index.d.ts.map

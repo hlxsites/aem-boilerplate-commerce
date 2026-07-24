@@ -27,4 +27,3 @@ export * from './useModal';
 export * from './usePermissions';
 export * from './useUserPermissions';
 export * from './useCompanyHierarchy';
-//# sourceMappingURL=index.d.ts.map

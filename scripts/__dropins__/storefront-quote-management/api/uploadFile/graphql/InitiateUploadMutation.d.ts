@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const INITIATE_UPLOAD_MUTATION = "\n  mutation INITIATE_UPLOAD_MUTATION($input: initiateUploadInput!) {\n    initiateUpload(input: $input) {\n      upload_url\n      key\n      expires_at\n    }\n  }\n";
-//# sourceMappingURL=InitiateUploadMutation.d.ts.map

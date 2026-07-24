@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const SHARE_REQUISITION_LIST_BY_EMAIL_MUTATION = "\n  mutation SHARE_REQUISITION_LIST_BY_EMAIL_MUTATION(\n    $requisitionListUid: ID!\n    $customerUids: [ID!]!\n  ) {\n    shareRequisitionListByEmail(\n      input: {\n        requisitionListUid: $requisitionListUid\n        customerUids: $customerUids\n      }\n    ) {\n      sent_count\n      user_errors {\n        message\n        code\n      }\n    }\n  }\n";
-//# sourceMappingURL=shareRequisitionListByEmail.d.ts.map

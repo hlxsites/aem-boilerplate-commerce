@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const COMPANY_HIERARCHY_ITEM_FRAGMENT = "\n  fragment COMPANY_HIERARCHY_ITEM_FRAGMENT on CompanyBasicInfo {\n    id\n    is_admin\n    legal_name\n    name\n    status\n    __typename\n  }\n";
-//# sourceMappingURL=CompanyHierarchyFragment.graphql.d.ts.map

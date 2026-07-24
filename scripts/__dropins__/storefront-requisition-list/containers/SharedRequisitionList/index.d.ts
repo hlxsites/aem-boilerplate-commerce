@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './SharedRequisitionList';
 export { SharedRequisitionList as default } from './SharedRequisitionList';
-//# sourceMappingURL=index.d.ts.map

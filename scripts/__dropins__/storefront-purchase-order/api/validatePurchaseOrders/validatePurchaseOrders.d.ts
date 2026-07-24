@@ -1,5 +1,4 @@
 import { PurchaseOrderModel } from '../../data/models';
-
 export declare const validatePurchaseOrders: (uids: string | string[]) => Promise<{
     errors: {
         message: string;
@@ -7,4 +6,3 @@ export declare const validatePurchaseOrders: (uids: string | string[]) => Promis
     }[];
     purchaseOrders: PurchaseOrderModel[];
 }>;
-//# sourceMappingURL=validatePurchaseOrders.d.ts.map

@@ -1,5 +1,11 @@
 # @dropins/storefront-quote-management
 
+## 1.2.1-beta.0
+
+### Patch Changes
+
+- a7e0156: Bump SDK beta versions
+
 ## 1.2.0
 
 ### Minor Changes

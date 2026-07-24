@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const RENAME_NEGOTIABLE_QUOTE_MUTATION: string;
-//# sourceMappingURL=RenameNegotiableQuoteMutation.d.ts.map

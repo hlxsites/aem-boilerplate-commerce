@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './addQuoteTemplateShippingAddress';
-//# sourceMappingURL=index.d.ts.map

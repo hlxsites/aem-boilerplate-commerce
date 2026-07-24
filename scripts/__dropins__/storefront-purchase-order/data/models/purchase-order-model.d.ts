@@ -287,4 +287,3 @@ type QuoteProps = {
     appliedGiftCards: AppliedGiftCardProps[];
 };
 export {};
-//# sourceMappingURL=purchase-order-model.d.ts.map

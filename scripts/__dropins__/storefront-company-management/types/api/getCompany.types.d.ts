@@ -80,4 +80,3 @@ export interface getCompanyResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=getCompany.types.d.ts.map

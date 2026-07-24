@@ -70,4 +70,3 @@ export type UpdateCompanyDto = Partial<{
         telephone?: string;
     };
 }>;
-//# sourceMappingURL=updateCompany.types.d.ts.map

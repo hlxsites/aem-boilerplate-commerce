@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COMPANY_USER = "\n  query getCompanyUser($id: ID!) {\n    company {\n      user(id: $id) {\n        id\n        email\n        firstname\n        lastname\n        job_title\n        telephone\n        status\n        role { id name }\n      }\n    }\n  }\n";
-//# sourceMappingURL=getCompanyUser.graphql.d.ts.map

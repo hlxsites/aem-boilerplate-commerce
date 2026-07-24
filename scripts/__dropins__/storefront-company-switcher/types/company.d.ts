@@ -70,4 +70,3 @@ export interface GraphQLResponse {
         uid: string;
     };
 }
-//# sourceMappingURL=company.d.ts.map

@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const COPY_ITEMS_BETWEEN_REQUISITION_LISTS_MUTATION: string;
-//# sourceMappingURL=copyItemsBetweenRequisitionLists.d.ts.map
+export declare const COPY_ITEMS_BETWEEN_REQUISITION_LISTS_MUTATION = "\n  mutation COPY_ITEMS_BETWEEN_REQUISITION_LISTS_MUTATION(\n      $sourceRequisitionListUid: ID!,\n      $destinationRequisitionListUid: ID!,\n      $requisitionListItem: CopyItemsBetweenRequisitionListsInput\n    ) {\n    copyItemsBetweenRequisitionLists(\n      sourceRequisitionListUid: $sourceRequisitionListUid\n      destinationRequisitionListUid: $destinationRequisitionListUid\n      requisitionListItem: $requisitionListItem\n    ) {\n      requisition_list {\n        ...REQUISITION_LIST_FRAGMENT\n      }\n    }\n  }\n\nfragment REQUISITION_LIST_FRAGMENT on RequisitionList {\n    uid\n    name\n    description\n    items_count\n    updated_at\n  }\n\n";

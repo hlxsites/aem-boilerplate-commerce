@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './copyItemsBetweenRequisitionLists';
-//# sourceMappingURL=index.d.ts.map

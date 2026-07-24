@@ -21,4 +21,3 @@ export interface ApprovalRuleDetailsProps {
     approvalRuleID?: string;
     routeApprovalRulesList: () => string;
 }
-//# sourceMappingURL=approvalRuleDetailsProps.types.d.ts.map

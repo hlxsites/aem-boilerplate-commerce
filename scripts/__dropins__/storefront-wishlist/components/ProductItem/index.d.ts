@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from '.';
 export { ProductItem } from './ProductItem';
-//# sourceMappingURL=index.d.ts.map

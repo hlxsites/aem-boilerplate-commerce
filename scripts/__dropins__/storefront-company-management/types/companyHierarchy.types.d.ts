@@ -1,6 +1,5 @@
 import { TreeItem } from '../components/Tree/Tree';
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
-
+import { SlotProps } from '@dropins/tools/lib';
 export interface HierarchyActionsContext {
     expandAll: () => void;
     collapseAll: () => void;
@@ -68,4 +67,3 @@ export interface CompanyHierarchyContentProps {
         moveError: string;
     };
 }
-//# sourceMappingURL=companyHierarchy.types.d.ts.map

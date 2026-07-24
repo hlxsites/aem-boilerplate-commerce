@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const getStoreConfig: () => Promise<any>;
-//# sourceMappingURL=getStoreConfig.d.ts.map

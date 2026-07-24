@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrderCommentForm';
 export { PurchaseOrderCommentForm as default } from './PurchaseOrderCommentForm';
-//# sourceMappingURL=index.d.ts.map

@@ -12,4 +12,3 @@ export interface DeleteQuoteTemplateParams {
 export declare const deleteQuoteTemplate: (params: DeleteQuoteTemplateParams) => Promise<{
     templateId: string;
 }>;
-//# sourceMappingURL=deleteQuoteTemplate.d.ts.map

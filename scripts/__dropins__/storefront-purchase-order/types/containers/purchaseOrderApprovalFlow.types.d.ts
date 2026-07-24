@@ -3,4 +3,3 @@ export interface PurchaseOrderApprovalFlowProps {
     withHeader?: boolean;
     withWrapper?: boolean;
 }
-//# sourceMappingURL=purchaseOrderApprovalFlow.types.d.ts.map

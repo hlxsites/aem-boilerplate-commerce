@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrderApprovalFlowContent';
 export { PurchaseOrderApprovalFlowContent as default } from './PurchaseOrderApprovalFlowContent';
-//# sourceMappingURL=index.d.ts.map

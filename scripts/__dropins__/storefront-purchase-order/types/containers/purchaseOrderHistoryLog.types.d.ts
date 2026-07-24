@@ -20,4 +20,3 @@ export interface PurchaseOrderHistoryLogProps {
     withWrapper?: boolean;
     className?: string;
 }
-//# sourceMappingURL=purchaseOrderHistoryLog.types.d.ts.map

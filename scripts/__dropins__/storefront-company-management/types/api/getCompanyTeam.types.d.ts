@@ -17,4 +17,3 @@
 export interface GetCompanyTeamInput {
     id: string;
 }
-//# sourceMappingURL=getCompanyTeam.types.d.ts.map

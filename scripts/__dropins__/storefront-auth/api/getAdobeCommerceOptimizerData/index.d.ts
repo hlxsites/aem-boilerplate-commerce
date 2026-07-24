@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './getAdobeCommerceOptimizerData';
-//# sourceMappingURL=index.d.ts.map

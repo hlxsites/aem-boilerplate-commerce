@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrdersHeader';
 export { PurchaseOrdersHeader as default } from './PurchaseOrdersHeader';
-//# sourceMappingURL=index.d.ts.map

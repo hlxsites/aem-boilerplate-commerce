@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export { PURCHASE_ORDERS_FRAGMENT } from './graphql/PurchaseOrdersFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map

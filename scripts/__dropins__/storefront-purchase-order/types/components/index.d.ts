@@ -25,4 +25,3 @@ export * from './purchaseOrderCommentsListContent.types';
 export * from './purchaseOrderCommentFormContent.types';
 export * from './approvalFlowContent.types';
 export * from './purchaseOrderHistoryLogContent.types';
-//# sourceMappingURL=index.d.ts.map

@@ -1,1 +1,1 @@
-export * from './ShippingAddressDisplay/index'
+export * from './ShippingAddressDisplay/index';

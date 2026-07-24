@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const DELETE_COMPANY_TEAM = "\n  mutation deleteCompanyTeam($id: ID!) {\n    deleteCompanyTeam(id: $id) { __typename }\n  }\n";
-//# sourceMappingURL=deleteCompanyTeam.graphql.d.ts.map

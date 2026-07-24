@@ -19,4 +19,3 @@ export interface ShareRequisitionListByTokenResult {
     errorMessage: string | null;
 }
 export declare const shareRequisitionListByToken: (requisitionListUid: string) => Promise<ShareRequisitionListByTokenResult>;
-//# sourceMappingURL=shareRequisitionListByToken.d.ts.map

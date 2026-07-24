@@ -30,4 +30,3 @@ export interface PurchaseOrderApprovalRuleMetadataModel {
     availableAppliesTo: CompanyRole[];
     availableRequiresApprovalFrom: CompanyRole[];
 }
-//# sourceMappingURL=purchase-order-approval-rule-metadata-model.d.ts.map

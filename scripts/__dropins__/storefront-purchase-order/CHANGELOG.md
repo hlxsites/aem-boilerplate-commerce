@@ -1,5 +1,11 @@
 # @dropins/storefront-purchase-order
 
+## 1.2.1-beta.0
+
+### Patch Changes
+
+- 1969b8e: Bump SDK beta versions
+
 ## 1.2.0
 
 ### Minor Changes

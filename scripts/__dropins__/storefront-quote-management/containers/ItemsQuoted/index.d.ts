@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ItemsQuoted';
 export { ItemsQuoted as default } from './ItemsQuoted';
-//# sourceMappingURL=index.d.ts.map

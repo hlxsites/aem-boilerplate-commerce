@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const CREATE_REQUISITION_LIST_MUTATION: string;
-//# sourceMappingURL=createRequisitionList.d.ts.map
+export declare const CREATE_REQUISITION_LIST_MUTATION = "\n  mutation CREATE_REQUISITION_LIST_MUTATION(\n      $requisitionListName: String!,\n      $requisitionListDescription: String,\n    ) {\n    createRequisitionList(\n      input: {\n        name: $requisitionListName\n        description: $requisitionListDescription\n      }\n    ) {\n      requisition_list {\n        ...REQUISITION_LIST_FRAGMENT\n      }\n    }\n  }\n\nfragment REQUISITION_LIST_FRAGMENT on RequisitionList {\n    uid\n    name\n    description\n    items_count\n    updated_at\n  }\n\n";

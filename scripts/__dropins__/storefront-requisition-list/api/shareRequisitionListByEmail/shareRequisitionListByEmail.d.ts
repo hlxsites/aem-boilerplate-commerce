@@ -19,4 +19,3 @@ export interface ShareRequisitionListByEmailError {
     code: string;
 }
 export declare const shareRequisitionListByEmail: (requisitionListUid: string, customerUids: string[]) => Promise<Array<ShareRequisitionListByEmailError> | null>;
-//# sourceMappingURL=shareRequisitionListByEmail.d.ts.map

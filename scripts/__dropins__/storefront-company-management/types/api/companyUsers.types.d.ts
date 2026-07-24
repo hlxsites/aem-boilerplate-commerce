@@ -67,4 +67,3 @@ export interface CompanyUsersResponse {
     pageInfo: CompanyUsersPageInfo;
     totalCount?: number;
 }
-//# sourceMappingURL=companyUsers.types.d.ts.map

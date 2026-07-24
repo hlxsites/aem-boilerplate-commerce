@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { State } from '../types/state.types';
-
 /**
  * Type definition for the auth/permissions event payload
  * Contains flat Adobe Commerce permission keys with boolean values
@@ -36,4 +43,3 @@ export type AuthPermissionsPayload = {
  * ```
  */
 export declare function mapAuthPermissions(payload: AuthPermissionsPayload | null | undefined): State['permissions'];
-//# sourceMappingURL=mapAuthPermissions.d.ts.map

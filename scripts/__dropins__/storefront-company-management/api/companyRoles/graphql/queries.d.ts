@@ -18,4 +18,3 @@ export declare const GET_COMPANY_ROLES: string;
 export declare const GET_COMPANY_ROLE: string;
 export declare const GET_COMPANY_ACL_RESOURCES = "\n  query GetCompanyAclResources {\n    company {\n      acl_resources {\n        id\n        text\n        sort_order\n        children {\n          id\n          text\n          sort_order\n          children {\n            id\n            text\n            sort_order\n            children {\n              id\n              text\n              sort_order\n              children {\n                id\n                text\n                sort_order\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n";
 export declare const IS_COMPANY_ROLE_NAME_AVAILABLE = "\n  query IsCompanyRoleNameAvailable($name: String!) {\n    isCompanyRoleNameAvailable(name: $name) {\n      is_role_name_available\n    }\n  }\n";
-//# sourceMappingURL=queries.d.ts.map

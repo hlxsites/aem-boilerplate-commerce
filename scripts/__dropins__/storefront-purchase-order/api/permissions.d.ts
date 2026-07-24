@@ -24,4 +24,3 @@ export declare const PO_PERMISSIONS: {
     VIEW_RULES: string;
     MANAGE_RULES: string;
 };
-//# sourceMappingURL=permissions.d.ts.map

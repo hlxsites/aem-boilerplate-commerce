@@ -1,7 +1,14 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { CartItemModel } from '../../data/models/negotiable-quote-model';
-
 export interface ProductListTableProps extends HTMLAttributes<HTMLDivElement | HTMLFormElement> {
     items: CartItemModel[];
     canEdit: boolean;
@@ -14,4 +21,3 @@ export interface ProductListTableProps extends HTMLAttributes<HTMLDivElement | H
     dropdownSelections?: Record<string, string | undefined>;
 }
 export declare const ProductListTable: FunctionComponent<ProductListTableProps>;
-//# sourceMappingURL=ProductListTable.d.ts.map

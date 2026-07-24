@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './openQuoteTemplate';
-//# sourceMappingURL=index.d.ts.map

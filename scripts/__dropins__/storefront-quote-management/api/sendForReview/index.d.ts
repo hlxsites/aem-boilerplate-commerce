@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './sendForReview';
-//# sourceMappingURL=index.d.ts.map

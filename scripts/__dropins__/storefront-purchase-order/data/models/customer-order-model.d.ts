@@ -124,4 +124,3 @@ export interface CustomerOrderModel {
     token: string;
     total: OrderTotal;
 }
-//# sourceMappingURL=customer-order-model.d.ts.map

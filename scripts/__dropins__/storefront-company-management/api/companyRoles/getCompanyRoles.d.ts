@@ -1,6 +1,21 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { GetCompanyRolesVariables } from '../../types/api/companyRoles.types';
 import { CompanyRolesResponseModel } from '../../data/models/company-role';
-
 /**
  * Retrieves a paginated list of all company roles with basic information.
  *
@@ -29,4 +44,3 @@ import { CompanyRolesResponseModel } from '../../data/models/company-role';
  * ```
  */
 export declare const getCompanyRoles: (variables?: GetCompanyRolesVariables) => Promise<CompanyRolesResponseModel>;
-//# sourceMappingURL=getCompanyRoles.d.ts.map

@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './getQuoteData';
-//# sourceMappingURL=index.d.ts.map

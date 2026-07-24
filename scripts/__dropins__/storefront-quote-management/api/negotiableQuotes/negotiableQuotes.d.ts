@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { NegotiableQuotesListModel } from '../../data/models/negotiable-quote-model';
-
 export declare enum FilterMatchTypeEnum {
     FULL = "FULL",
     PARTIAL = "PARTIAL"
@@ -36,4 +43,3 @@ export interface NegotiableQuotesParams {
     sort?: NegotiableQuoteSortInput;
 }
 export declare const negotiableQuotes: (params?: NegotiableQuotesParams) => Promise<NegotiableQuotesListModel>;
-//# sourceMappingURL=negotiableQuotes.d.ts.map

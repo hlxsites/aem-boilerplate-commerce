@@ -21,4 +21,3 @@ export interface PurchaseOrdersTableActionsProps {
     handleRejectSelected?: () => void;
     handleApproveSelected?: () => void;
 }
-//# sourceMappingURL=purchaseOrdersTableActions.d.ts.map

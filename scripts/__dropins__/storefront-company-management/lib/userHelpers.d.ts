@@ -44,4 +44,3 @@ export declare const hasUserStatus: (userStatus: string, expectedStatus: string)
  * @returns The opposite status, or the current status if not recognized
  */
 export declare const getToggleStatus: (currentStatus: string) => string;
-//# sourceMappingURL=userHelpers.d.ts.map

@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from '.';
 export { RequisitionListPicker } from './RequisitionListPicker';
-//# sourceMappingURL=index.d.ts.map

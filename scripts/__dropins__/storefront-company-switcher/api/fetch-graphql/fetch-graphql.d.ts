@@ -26,15 +26,14 @@ setFetchGraphQlHeader: (key: string, value: string | null) => void,
 /** Removes a GraphQL header */
 removeFetchGraphQlHeader: (key: string) => void, 
 /** Sets multiple GraphQL headers at once */
-setFetchGraphQlHeaders: (header: import('@adobe-commerce/fetch-graphql').Header | ((prev: import('@adobe-commerce/fetch-graphql').Header) => import('@adobe-commerce/fetch-graphql').Header)) => void, 
+setFetchGraphQlHeaders: (header: import("@adobe-commerce/fetch-graphql").Header | ((prev: import("@adobe-commerce/fetch-graphql").Header) => import("@adobe-commerce/fetch-graphql").Header)) => void, 
 /** Executes a GraphQL query or mutation */
-fetchGraphQl: <T = any>(query: string, options?: import('@adobe-commerce/fetch-graphql').FetchOptions | undefined) => Promise<{
-    errors?: import('@adobe-commerce/fetch-graphql').FetchQueryError | undefined;
+fetchGraphQl: <T = any>(query: string, options?: import("@adobe-commerce/fetch-graphql").FetchOptions) => Promise<{
+    errors?: import("@adobe-commerce/fetch-graphql").FetchQueryError;
     data: T;
 }>, 
 /** Gets the current configuration */
 getConfig: () => {
     endpoint: string | undefined;
-    fetchGraphQlHeaders: import('@adobe-commerce/fetch-graphql').Header;
+    fetchGraphQlHeaders: import("@adobe-commerce/fetch-graphql").Header;
 };
-//# sourceMappingURL=fetch-graphql.d.ts.map

@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ContentGrid';
 export { ContentGrid as default } from './ContentGrid';
-//# sourceMappingURL=index.d.ts.map

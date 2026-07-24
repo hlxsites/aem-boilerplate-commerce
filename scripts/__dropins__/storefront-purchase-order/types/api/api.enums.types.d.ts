@@ -34,4 +34,3 @@ export declare enum EnumPurchaseOrdersView {
     COMPANY_PURCHASE_ORDERS = "companyPurchaseOrders",
     CUSTOMER_APPROVAL_PURCHASE_ORDERS = "customerApprovalPurchaseOrders"
 }
-//# sourceMappingURL=api.enums.types.d.ts.map

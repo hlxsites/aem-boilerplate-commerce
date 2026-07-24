@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from '.';
 export { RequisitionListGridWrapper } from './RequisitionListGridWrapper';
-//# sourceMappingURL=index.d.ts.map

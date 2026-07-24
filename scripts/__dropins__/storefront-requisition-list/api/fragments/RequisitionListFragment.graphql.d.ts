@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const REQUISITION_LIST_FRAGMENT = "\nfragment REQUISITION_LIST_FRAGMENT on RequisitionList {\n    uid\n    name\n    description\n    items_count\n    updated_at\n  }\n";
-//# sourceMappingURL=RequisitionListFragment.graphql.d.ts.map
