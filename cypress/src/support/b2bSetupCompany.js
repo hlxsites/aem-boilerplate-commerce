@@ -38,7 +38,7 @@ const { baseCompanyData, companyUsers } = require('../fixtures/companyManagement
 Cypress.Commands.add('setupCompanyWithAdmin', (options = {}) => {
   cy.logToTerminal('🏢 Setting up test company with admin...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
@@ -123,7 +123,7 @@ Cypress.Commands.add('setupCompanyWithAdmin', (options = {}) => {
 Cypress.Commands.add('setupCompanyWithUser', () => {
   cy.logToTerminal('🏢 Setting up test company with regular user...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
@@ -195,7 +195,7 @@ Cypress.Commands.add('setupCompanyWithUser', () => {
  * Used for Company Credit permission testing.
  */
 Cypress.Commands.add('setupCompanyWithRestrictedUser', () => {
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const {
       createCompany, createCompanyUser, createCompanyRole, assignRoleToUser,
     } = await import('./b2bCompanyAPICalls.js');
@@ -276,7 +276,7 @@ Cypress.Commands.add('setupCompanyWithRestrictedUser', () => {
  * Used for Company Credit order lifecycle testing.
  */
 Cypress.Commands.add('setupCompanyWithCredit', () => {
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const { createCompany, getCompanyCredit, updateCompanyCredit, createCompanyRole, assignRoleToUser } = await import('../support/b2bCompanyAPICalls.js');
     const fixturesModule = await import('../fixtures/companyManagementData.js');
     const baseCompanyData = fixturesModule.baseCompanyData;
@@ -347,7 +347,7 @@ Cypress.Commands.add('setupCompanyWithCredit', () => {
 Cypress.Commands.add('setupCompanyWith2Users', () => {
   cy.logToTerminal('🏢 Setting up test company with 2 additional users...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;

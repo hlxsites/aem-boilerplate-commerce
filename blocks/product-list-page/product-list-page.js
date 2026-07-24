@@ -103,9 +103,13 @@ export default async function decorate(block) {
     || product.attributes?.some((attr) => attr.name === 'ac_giftcard');
 
   const getAddToCartButton = (product) => {
+    const productName = product.name || product.sku;
+    const addToCartLabel = `${labels.Global?.AddProductToCart} ${productName}`;
+
     if (requiresPdpConfiguration(product)) {
       const button = document.createElement('div');
       UI.render(Button, {
+        'aria-label': addToCartLabel,
         children: labels.Global?.AddProductToCart,
         icon: Icon({ source: 'Cart' }),
         href: getProductLink(product.urlKey, product.sku),
@@ -115,6 +119,7 @@ export default async function decorate(block) {
     }
     const button = document.createElement('div');
     UI.render(Button, {
+      'aria-label': addToCartLabel,
       children: labels.Global?.AddProductToCart,
       icon: Icon({ source: 'Cart' }),
       onClick: () => cartApi.addProductsToCart([{
@@ -165,6 +170,7 @@ export default async function decorate(block) {
           } = ctx;
           const anchorWrapper = document.createElement('a');
           anchorWrapper.href = getProductLink(product.urlKey, product.sku);
+          anchorWrapper.setAttribute('aria-label', product.name || product.sku);
 
           tryRenderAemAssetsImage(ctx, {
             alias: product.sku,
