@@ -729,7 +729,10 @@ function trackHistory() {
   if (storeIdentifier) {
     window.adobeDataLayer.push((dl) => {
       dl.addEventListener('adobeDataLayer:change', (event) => {
-        if (!event.productContext || !event.productContext.sku) {
+        // Speculation Rules prerendering pushes productContext once immediately and
+        // again on activation. Ignore the prerender-only push so hovering a link
+        // doesn't record a view that never actually happened.
+        if (document.prerendering || !event.productContext || !event.productContext.sku) {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;
