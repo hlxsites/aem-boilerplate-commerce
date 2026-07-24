@@ -29,7 +29,11 @@ module.exports = defineConfig({
     productWithOptionImageNameConfigurable: "/adb192_1.jpg",
 
     // Tenant-specific da.live draft paths — see prexPages.config.js
-    prexPages: buildPrexPages("saas"),
+    // Prod releases run against a different SaaS ACCS tenant, whose rec units live
+    // on the saas-prod draft pages (recIds differ from the sandbox saas pages).
+    prexPages: buildPrexPages(
+      process.env.IS_PROD_RELEASE === "true" ? "saas-prod" : "saas",
+    ),
 
     aemAssetsConfig: {
       commerceConfig: {
@@ -60,7 +64,10 @@ module.exports = defineConfig({
       // Because AEM Assets uses a different Commerce instance
       // the hardcoded one in the default content source will not work.
       // To test PREX, we will render a custom draft page with our own recommendation unit id.
-      prexDraft: "/drafts/tests/products/saas/adb125",
+      prexDraft:
+        process.env.IS_PROD_RELEASE === "true"
+          ? "/drafts/tests/products/saas-prod/adb125"
+          : "/drafts/tests/products/saas/adb125",
     },
   },
 });
