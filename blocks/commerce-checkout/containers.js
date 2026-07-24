@@ -374,6 +374,18 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
           enabled: false,
         },
       },
+      StoredMethods: {
+        [PaymentMethodCode.CREDIT_CARD]: {
+          vaultCode: PaymentMethodCode.VAULT,
+          render: (ctx) => {
+            const details = JSON.parse(ctx.details);
+            const $storedOption = document.createElement('div');
+            $storedOption.className = 'stored-payment-method-placeholder';
+            $storedOption.textContent = `${details.brand} •••• ${details.maskedCC} (exp ${details.expirationDate})`;
+            ctx.replaceHTML($storedOption);
+          },
+        },
+      },
     },
   })(container),
 );
