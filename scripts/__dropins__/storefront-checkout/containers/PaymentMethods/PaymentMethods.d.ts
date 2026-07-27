@@ -38,6 +38,7 @@ interface StoredMethodRenderContext {
     cartId: string;
     details?: string;
     publicHash?: string;
+    selected: boolean;
     replaceHTML: (domElement: HTMLElement) => void;
 }
 export interface StoredPaymentMethodConfig {
