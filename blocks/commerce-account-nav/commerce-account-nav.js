@@ -1,9 +1,14 @@
 import { provider as UI, Icon } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { isCompanyUser } from '@dropins/storefront-company-management/api.js';
 
 import '../../scripts/initializers/auth.js';
+import '../../scripts/initializers/company.js';
 
 export default async function decorate(block) {
+  /** Whether the current customer belongs to a company (independent of B2B role/PO permissions) */
+  const hasCompanyPromise = isCompanyUser().catch(() => false);
+
   /** Get rows data */
   const [keys, ...$items] = [...block.children].map((child, index) => {
     if (index === 0) return [...child.children].map((c) => c.textContent.trim());
@@ -22,7 +27,10 @@ export default async function decorate(block) {
   };
 
   /** Get permissions */
-  events.on('auth/permissions', (permissions) => {
+  events.on('auth/permissions', async (basePermissions) => {
+    const hasCompany = await hasCompanyPromise;
+    const permissions = { ...basePermissions, hasCompany };
+
     /** Clear nav */
     $nav.innerHTML = '';
 

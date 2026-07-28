@@ -30,6 +30,7 @@ The block expects a tabular structure with a header row defining column names an
 ```
 
 The block processes:
+
 - **Header Row**: Defines column structure (label, icon, permission)
 - **Data Rows**: Each row creates a navigation item
 - **Title**: From the `<a>` element within the label column
@@ -41,6 +42,8 @@ The block processes:
 ### Permission System
 
 The block uses the event bus to retrieve user permissions via `'auth/permissions'` event (emitted by auth dropin). The permission system implements a three-state permission model to handle enabled, disabled, and missing permissions.
+
+In addition to the permissions emitted on `'auth/permissions'`, the block merges in a synthetic `hasCompany` flag, computed via `isCompanyUser()` from `@dropins/storefront-company-management`. Unlike the B2B role/ACL permissions (e.g. `Magento_PurchaseOrder::*`), `hasCompany` reflects only whether the customer belongs to a company, independent of company feature flags (e.g. Purchase Orders) or the granularity of their assigned role. Use `hasCompany` for nav items that should be visible to any company member (e.g. "My Company"), rather than reusing a role-specific ACL permission that may be `false`/`undefined` for company members with a restricted role.
 
 #### Permission Logic
 
