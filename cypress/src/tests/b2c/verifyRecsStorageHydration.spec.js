@@ -37,7 +37,8 @@ function waitForProductContextSku(sku) {
   });
 }
 
-describe('Verify recs-related client storage hydration', () => {
+// SaaS (ACCS) and ACO only — recommendations aren't enabled on the PaaS demo.
+describe('Verify recs-related client storage hydration', { tags: '@skipPaas' }, () => {
   it('records viewed PDPs in productViewHistory keyed by store view code / ac-view-id', () => {
     PRODUCT_VIEW_HISTORY_PRODUCTS.forEach(({ sku, path }) => {
       cy.visit(path);
