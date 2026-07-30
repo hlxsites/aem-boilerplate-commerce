@@ -17,12 +17,13 @@
 export declare const useOrderSelectList: () => {
     selectableDateList: {
         value: string;
-        text: string;
+        text: string | undefined;
     }[];
     selectedDate: string;
     selectedPage: number;
+    searchText: string;
     handleSelectDate: (event: Event) => void;
-    setSelectedPage: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<number>>;
+    handleSearch: (value: string) => void;
+    setSelectedPage: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<number>>;
     handleSetFirstOrderDate: (date: string) => void;
 };
-//# sourceMappingURL=useOrderSelectList.d.ts.map

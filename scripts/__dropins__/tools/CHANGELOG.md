@@ -1,5 +1,11 @@
 # @adobe-commerce/elsie
 
+## 1.9.1-alpha-20260702101934
+
+### Patch Changes
+
+- fa16e7d: fix(Picker): auto-select and emit the sole option when the control auto-disables, so single-option narrowing on configurable PDPs no longer leaves the value unselected and Add to Cart permanently disabled
+
 ## 1.9.0
 
 ### Minor Changes

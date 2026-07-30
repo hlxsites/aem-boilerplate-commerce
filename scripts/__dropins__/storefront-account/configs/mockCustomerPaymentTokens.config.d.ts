@@ -25,4 +25,3 @@ export declare const mockCustomerPaymentTokensData: {
         }[];
     };
 };
-//# sourceMappingURL=mockCustomerPaymentTokens.config.d.ts.map

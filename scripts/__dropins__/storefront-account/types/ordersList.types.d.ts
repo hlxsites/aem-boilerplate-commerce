@@ -1,8 +1,23 @@
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import { SlotProps } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 import { OrderDetails, OrderItem, ShipmentsTracingModel } from '../data/models';
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-
+import { ImageProps } from '@dropins/tools/components';
 export interface OrdersListActionContext {
     orderHistoryListItem: OrderDetails;
 }
@@ -34,6 +49,7 @@ export interface OrdersListProps extends HTMLAttributes<HTMLDivElement> {
         returnNumber: string;
     }) => string;
     withFilter?: boolean;
+    withSearch?: boolean;
     ordersInMinifiedView?: 1 | 2 | 3;
     pageSize: number;
     routeTracking?: (shipping: ShipmentsTracingModel) => string;
@@ -75,6 +91,6 @@ export interface UseOrdersListProps {
     pageSize: number;
     ordersInMinifiedView: number;
     selectedDate: string;
+    searchText: string;
     handleSetFirstOrderDate: (date: string) => void;
 }
-//# sourceMappingURL=ordersList.types.d.ts.map

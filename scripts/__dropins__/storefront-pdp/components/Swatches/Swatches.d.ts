@@ -11,13 +11,10 @@ type OptionValue = {
     inStock: boolean;
     value: string;
     selected?: boolean;
-    quantity?: number;
-    canEditQuantity?: boolean;
 };
 export type Option = {
     id: string;
     type: (typeof supportedTypes)[number];
-    typename?: 'ProductViewOptionValueProduct' | 'ProductViewOptionValueSwatch' | 'ProductViewOptionValueConfiguration';
     label: string;
     required?: boolean;
     multiple?: boolean;
@@ -33,9 +30,6 @@ export interface SwatchesProps extends HTMLAttributes<HTMLDivElement> {
     onErrors?: (errors: {
         [id: string]: string;
     }) => void;
-    /** Per bundle option value UID quantities for selected bundle children. */
-    bundleOptionQuantities?: Record<string, number>;
-    onBundleOptionQuantityChange?: (optionValueId: string, quantity: number) => void;
     selectedUIDs?: string[];
     imageSwatchNode?: VNode | ((props: ImageNodeRenderProps) => JSX.Element);
 }

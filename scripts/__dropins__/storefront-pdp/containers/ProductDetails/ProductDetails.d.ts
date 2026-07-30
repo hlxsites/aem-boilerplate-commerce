@@ -13,7 +13,6 @@ export type Values = {
         uid: string;
         value: string;
     }>;
-    bundleOptionQuantities?: Record<string, number>;
 };
 /** @deprecated This type is part of the deprecated ProductDetails component. */
 type DefaultSlotContext = {

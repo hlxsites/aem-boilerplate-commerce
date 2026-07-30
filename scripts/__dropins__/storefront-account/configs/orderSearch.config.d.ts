@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,7 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export { BASIC_CUSTOMER_INFO_FRAGMENT } from './graphql/CustomerFragment.graphql';
-export { ADDRESS_FRAGMENT } from './graphql/CustomerAddressFragment.graphql';
-export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql';
-export { CUSTOMER_ORDER_FRAGMENT } from './graphql/CustomerOrderFragment.graphql';
+export declare const ORDER_SEARCH_MIN_LENGTH = 3;
+export declare const ORDER_SEARCH_MAX_LENGTH = 100;
