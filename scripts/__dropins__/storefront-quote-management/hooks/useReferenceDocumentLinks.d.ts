@@ -1,6 +1,13 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { ReferenceDocument } from '../components';
 import { ReferenceDocumentLinkInput } from '../api/sendQuoteTemplateForReview/sendQuoteTemplateForReview';
-
 export interface UseReferenceDocumentLinksParams {
     templateReferenceDocuments?: ReferenceDocument[];
     localReferenceDocuments: ReferenceDocument[];
@@ -31,4 +38,3 @@ export interface UseReferenceDocumentLinksReturn {
  * Note: getReferenceDocumentLinks() returns all local reference documents, not just new ones.
  */
 export declare const useReferenceDocumentLinks: (params: UseReferenceDocumentLinksParams) => UseReferenceDocumentLinksReturn;
-//# sourceMappingURL=useReferenceDocumentLinks.d.ts.map

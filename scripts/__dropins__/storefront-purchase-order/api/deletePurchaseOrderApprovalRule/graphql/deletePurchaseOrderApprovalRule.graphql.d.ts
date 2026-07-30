@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const DELETE_PURCHASE_ORDER_APPROVAL_RULE = "\n  mutation DELETE_PURCHASE_ORDER_APPROVAL_RULE(\n    $input: DeletePurchaseOrderApprovalRuleInput!\n  ) {\n    deletePurchaseOrderApprovalRule(input: $input) {\n      errors {\n        message\n        type\n      }\n    }\n  }\n";
-//# sourceMappingURL=deletePurchaseOrderApprovalRule.graphql.d.ts.map

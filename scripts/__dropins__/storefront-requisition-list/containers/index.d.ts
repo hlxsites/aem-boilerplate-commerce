@@ -21,4 +21,3 @@ export * from './RequisitionListSelector';
 export * from './RequisitionListHeader';
 export * from './ShareRequisitionListContent';
 export * from './SharedRequisitionList';
-//# sourceMappingURL=index.d.ts.map

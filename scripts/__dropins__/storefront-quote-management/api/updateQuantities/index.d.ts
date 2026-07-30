@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './updateQuantities';
-//# sourceMappingURL=index.d.ts.map

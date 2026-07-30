@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './QuoteTemplateCommentsList';
 export { QuoteTemplateCommentsList as default } from './QuoteTemplateCommentsList';
-//# sourceMappingURL=index.d.ts.map

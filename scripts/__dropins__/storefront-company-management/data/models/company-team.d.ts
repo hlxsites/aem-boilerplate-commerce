@@ -21,4 +21,3 @@ export interface CompanyTeam {
 }
 export interface CompanyTeamModel extends CompanyTeam {
 }
-//# sourceMappingURL=company-team.d.ts.map

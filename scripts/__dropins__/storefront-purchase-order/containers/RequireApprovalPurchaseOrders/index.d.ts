@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequireApprovalPurchaseOrders';
 export { RequireApprovalPurchaseOrders as default } from './RequireApprovalPurchaseOrders';
-//# sourceMappingURL=index.d.ts.map

@@ -1,8 +1,15 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { VNode } from 'preact';
 import { Container } from '.';
 import { Signal } from './signals';
-
-export declare const SlotQueueContext: import('preact').Context<Signal<Set<string>> | null>;
+export declare const SlotQueueContext: import("preact").Context<Signal<Set<string>> | null>;
 type RenderAPI = {
     remove: () => void;
     setProps: (cb: (prev: any) => any) => void;
@@ -44,4 +51,3 @@ export declare class Render {
     toString<T>(Component: Container<T>, props: T, options?: T): Promise<string>;
 }
 export {};
-//# sourceMappingURL=render.d.ts.map

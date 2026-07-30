@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const CUSTOMER_FRAGMENT = "\n  fragment CUSTOMER_FRAGMENT on Customer {\n    companies(input: { pageSize: $pageSize }) {\n      items {\n        name\n        id\n        status\n      }\n    }\n  }\n";
-//# sourceMappingURL=CustomerFragment.graphql.d.ts.map

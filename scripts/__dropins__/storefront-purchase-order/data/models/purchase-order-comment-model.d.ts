@@ -36,4 +36,3 @@ export interface PurchaseOrderCommentModel {
         telephone: string;
     };
 }
-//# sourceMappingURL=purchase-order-comment-model.d.ts.map

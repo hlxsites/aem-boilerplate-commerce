@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './deleteQuote';
-//# sourceMappingURL=index.d.ts.map

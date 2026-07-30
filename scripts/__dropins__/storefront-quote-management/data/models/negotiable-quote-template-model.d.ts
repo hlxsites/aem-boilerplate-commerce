@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { Currency, PaginationInfo, ShippingAddress, NegotiableQuoteHistoryEntry, CartItemModel } from './negotiable-quote-model';
-
 export interface NegotiableQuoteTemplateModel {
     id: string;
     uid: string;
@@ -109,4 +116,3 @@ export interface NegotiableQuoteTemplateListEntry {
     };
     canGenerateQuoteFromTemplate?: boolean;
 }
-//# sourceMappingURL=negotiable-quote-template-model.d.ts.map

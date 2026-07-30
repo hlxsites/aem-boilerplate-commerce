@@ -19,4 +19,3 @@ export declare const defaultPageSizeConfig: {
     value: string;
     selected: boolean;
 }[];
-//# sourceMappingURL=pageSize.config.d.ts.map

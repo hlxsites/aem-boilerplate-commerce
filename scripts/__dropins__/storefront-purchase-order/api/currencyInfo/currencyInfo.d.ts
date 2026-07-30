@@ -21,4 +21,3 @@ export declare const currencyInfo: () => Promise<{
         value: string;
     }[];
 }>;
-//# sourceMappingURL=currencyInfo.d.ts.map

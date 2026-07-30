@@ -22,4 +22,3 @@ export * from './useApprovalRulesList';
 export * from './usePurchaseOrderData';
 export * from './usePurchaseOrderStatus';
 export * from './usePurchaseOrderData';
-//# sourceMappingURL=index.d.ts.map

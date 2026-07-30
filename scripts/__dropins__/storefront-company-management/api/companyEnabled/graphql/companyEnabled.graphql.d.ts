@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COMPANY_ENABLED = "\n  query GET_COMPANY_ENABLED {\n    storeConfig {\n      company_enabled\n    }\n  }\n";
-//# sourceMappingURL=companyEnabled.graphql.d.ts.map

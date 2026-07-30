@@ -4,4 +4,3 @@ export interface PurchaseOrderCommentsListProps {
     visibleRecordsLimit?: number;
     className?: string;
 }
-//# sourceMappingURL=purchaseOrderCommentsList.types.d.ts.map

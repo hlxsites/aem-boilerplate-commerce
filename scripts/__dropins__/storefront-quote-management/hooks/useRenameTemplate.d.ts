@@ -68,4 +68,3 @@ export interface UseRenameTemplateReturn {
  * included when calling sendQuoteTemplateForReview.
  */
 export declare const useRenameTemplate: (params?: UseRenameTemplateParams) => UseRenameTemplateReturn;
-//# sourceMappingURL=useRenameTemplate.d.ts.map

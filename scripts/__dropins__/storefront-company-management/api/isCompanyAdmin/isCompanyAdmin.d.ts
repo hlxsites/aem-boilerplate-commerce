@@ -19,4 +19,3 @@
  * @returns Promise<boolean> - true if customer is a company admin in at least one company, false otherwise
  */
 export declare const isCompanyAdmin: () => Promise<boolean>;
-//# sourceMappingURL=isCompanyAdmin.d.ts.map

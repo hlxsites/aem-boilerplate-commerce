@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from '.';
 export { RequisitionListModal } from './RequisitionListModal';
-//# sourceMappingURL=index.d.ts.map

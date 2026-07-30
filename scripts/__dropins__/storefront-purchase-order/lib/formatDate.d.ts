@@ -26,4 +26,3 @@ export declare function getEffectiveLocale(locale?: string): string;
  * @returns Formatted date string
  */
 export declare const formatDate: (dateString: string, locale?: string) => string;
-//# sourceMappingURL=formatDate.d.ts.map

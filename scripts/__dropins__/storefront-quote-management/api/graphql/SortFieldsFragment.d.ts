@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SORT_FIELDS_FRAGMENT = "\n  fragment SortFieldsFragment on SortFields {\n    default\n    options {\n      label\n      value\n    }\n  }\n";
-//# sourceMappingURL=SortFieldsFragment.d.ts.map

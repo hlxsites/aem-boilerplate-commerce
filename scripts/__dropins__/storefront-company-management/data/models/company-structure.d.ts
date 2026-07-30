@@ -23,4 +23,3 @@ export interface CompanyStructureNode {
     entityId?: string;
     description?: string | null;
 }
-//# sourceMappingURL=company-structure.d.ts.map

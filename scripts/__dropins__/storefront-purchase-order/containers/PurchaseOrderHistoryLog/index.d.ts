@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrderHistoryLog';
 export { PurchaseOrderHistoryLog as default } from './PurchaseOrderHistoryLog';
-//# sourceMappingURL=index.d.ts.map

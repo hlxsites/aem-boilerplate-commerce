@@ -22,4 +22,3 @@
  * @returns true if the UID appears to be valid base64 encoding
  */
 export declare function isValidBase64Uid(uid: string | undefined | null): boolean;
-//# sourceMappingURL=validate-uid.d.ts.map

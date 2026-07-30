@@ -22,4 +22,3 @@ export declare const toSnakeCase: (obj: any) => any;
  * Converts snake_case object keys to camelCase recursively
  */
 export declare const toCamelCase: (obj: any) => any;
-//# sourceMappingURL=case-converter.d.ts.map

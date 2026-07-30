@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const COMPANY_USERS_QUERY = "\n  query COMPANY_USERS($pageSize: Int!, $currentPage: Int!, $filter: CompanyUsersFilterInput) {\n    company {\n      users(pageSize: $pageSize, currentPage: $currentPage, filter: $filter) {\n        items {\n          id\n          firstname\n          lastname\n          email\n          role {\n            name\n          }\n          status\n          team {\n            name\n          }\n        }\n        page_info {\n          page_size\n          current_page\n          total_pages\n        }\n        total_count\n      }\n    }\n  }\n";
-//# sourceMappingURL=companyUsers.graphql.d.ts.map

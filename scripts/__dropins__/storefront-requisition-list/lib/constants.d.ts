@@ -25,4 +25,3 @@ export declare const NAME_MIN_LENGTH = 3;
 export declare const NAME_MAX_LENGTH = 40;
 export declare const DESCRIPTION_MAX_LENGTH = 255;
 export declare const NAME_VALID_CHARS: RegExp;
-//# sourceMappingURL=constants.d.ts.map

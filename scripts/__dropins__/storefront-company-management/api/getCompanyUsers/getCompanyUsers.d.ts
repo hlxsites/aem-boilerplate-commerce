@@ -1,5 +1,4 @@
 import { CompanyUsersParams, CompanyUsersResponse } from '../../types';
-
 /**
  * Fetches the list of company users with pagination and optional filtering
  * @param params - Query parameters
@@ -9,4 +8,3 @@ import { CompanyUsersParams, CompanyUsersResponse } from '../../types';
  * @returns Promise<CompanyUsersResponse> - Object containing array of company users with base64-encoded IDs and pagination info
  */
 export declare const getCompanyUsers: (params?: CompanyUsersParams) => Promise<CompanyUsersResponse>;
-//# sourceMappingURL=getCompanyUsers.d.ts.map

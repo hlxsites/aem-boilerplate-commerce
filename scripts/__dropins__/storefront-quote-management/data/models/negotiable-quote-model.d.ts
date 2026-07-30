@@ -267,7 +267,7 @@ export declare enum NegotiableQuoteHistoryEntryChangeType {
     UPDATED_BY_SYSTEM = "UPDATED_BY_SYSTEM"
 }
 export declare enum NegotiableQuoteStatus {
-    NEW = "NEW",
+    NEW = "NEW",// Currently not returned by the API, but is used to indicate a new quote
     SUBMITTED = "SUBMITTED",
     PENDING = "PENDING",
     UPDATED = "UPDATED",
@@ -288,4 +288,3 @@ export interface PaginationInfo {
     pageSizeOptions?: number[];
 }
 export {};
-//# sourceMappingURL=negotiable-quote-model.d.ts.map

@@ -1,9 +1,24 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '@dropins/tools/types/elsie/src/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { Item, Product } from '../../data/models';
-import { ImageNodeRenderProps } from '@dropins/tools/types/elsie/src/components';
+import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
 import { JSX } from 'preact';
-
 export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
     getProductData?: (sku: string) => Promise<Product | null>;
@@ -20,4 +35,3 @@ export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     }) => JSX.Element;
 }
 export declare const WishlistItem: Container<WishlistItemProps>;
-//# sourceMappingURL=WishlistItem.d.ts.map

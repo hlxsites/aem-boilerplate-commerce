@@ -17,4 +17,3 @@
 export interface DeleteCompanyTeamInput {
     id: string;
 }
-//# sourceMappingURL=deleteCompanyTeam.types.d.ts.map

@@ -6,4 +6,3 @@ export declare const deletePurchaseOrderApprovalRule: (uids: string | string[]) 
         }[];
     };
 }>;
-//# sourceMappingURL=deletePurchaseOrderApprovalRule.d.ts.map

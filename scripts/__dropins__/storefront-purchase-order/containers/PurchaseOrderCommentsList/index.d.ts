@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrderCommentsList';
 export { PurchaseOrderCommentsList as default } from './PurchaseOrderCommentsList';
-//# sourceMappingURL=index.d.ts.map

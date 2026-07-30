@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './QuotesListTable';
 export { QuotesListTable as default } from './QuotesListTable';
-//# sourceMappingURL=index.d.ts.map

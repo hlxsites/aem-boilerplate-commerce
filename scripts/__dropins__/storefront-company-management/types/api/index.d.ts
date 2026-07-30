@@ -26,4 +26,3 @@ export * from './updateCompany.types';
 export * from './updateCompanyUser.types';
 export * from './updateCompanyUserStatus.types';
 export * from './validateCompanyEmail.types';
-//# sourceMappingURL=index.d.ts.map

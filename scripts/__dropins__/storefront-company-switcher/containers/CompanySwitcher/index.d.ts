@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './CompanySwitcher';
 export { CompanySwitcher as default } from './CompanySwitcher';
-//# sourceMappingURL=index.d.ts.map

@@ -21,4 +21,3 @@ export interface CustomerCompanyInfo {
     workPhoneNumber?: string;
     userRole?: string;
 }
-//# sourceMappingURL=customer-company-info.d.ts.map

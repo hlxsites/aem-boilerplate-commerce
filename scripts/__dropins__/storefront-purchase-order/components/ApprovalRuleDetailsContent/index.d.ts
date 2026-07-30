@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './ApprovalRuleDetailsContent';
 export { ApprovalRuleDetailsContent as default } from './ApprovalRuleDetailsContent';
-//# sourceMappingURL=index.d.ts.map

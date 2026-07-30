@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const IMPORT_SHARED_REQUISITION_LIST_MUTATION: string;
-//# sourceMappingURL=importSharedRequisitionList.d.ts.map
+export declare const IMPORT_SHARED_REQUISITION_LIST_MUTATION = "\n  mutation IMPORT_SHARED_REQUISITION_LIST_MUTATION($token: String!) {\n    importSharedRequisitionList(token: $token) {\n      requisition_list {\n        ...REQUISITION_LIST_FRAGMENT\n      }\n      user_errors {\n        message\n        code\n      }\n    }\n  }\n\nfragment REQUISITION_LIST_FRAGMENT on RequisitionList {\n    uid\n    name\n    description\n    items_count\n    updated_at\n  }\n\n";

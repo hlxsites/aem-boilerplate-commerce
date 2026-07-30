@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const ASSIGN_CHILD_COMPANY: string;
-//# sourceMappingURL=assignChildCompany.graphql.d.ts.map

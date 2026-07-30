@@ -59,4 +59,3 @@ export interface CompanyContextListenerOptions {
  * ```
  */
 export declare const useCompanyContextListener: (callback: () => void, options?: CompanyContextListenerOptions) => void;
-//# sourceMappingURL=useCompanyContextListener.d.ts.map

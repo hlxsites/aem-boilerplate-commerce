@@ -24,4 +24,3 @@ export declare const transformConfigurableOptions: (data: any) => {
 export declare const transformCustomizableOptions: (data: any) => {
     [key: string]: any;
 };
-//# sourceMappingURL=configurationTransformers.d.ts.map

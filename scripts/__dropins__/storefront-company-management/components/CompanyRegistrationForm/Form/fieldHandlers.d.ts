@@ -1,7 +1,22 @@
-import { default as React } from '../../../../preact/compat';
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import React from 'react';
 import { CompanyFormData } from '../../../data/models/company';
 import { FieldsProps } from '../../../types/form.types';
-
 export type FieldChangeHandler = (key: string, value: string | string[] | number | boolean) => void;
 export type ValidationHandler = (fieldCode: string, value: string | string[] | number | boolean) => void;
 export interface FieldHandlersConfig {
@@ -23,4 +38,3 @@ export declare const createFieldHandlers: (config: FieldHandlersConfig) => {
     handleCountryChange: (value: string) => void;
     handleGenericFieldChange: (key: string, value: string | string[] | number | boolean) => void;
 };
-//# sourceMappingURL=fieldHandlers.d.ts.map

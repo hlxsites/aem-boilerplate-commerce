@@ -37,4 +37,3 @@ export interface CompanyCreditResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=getCompanyCredit.types.d.ts.map

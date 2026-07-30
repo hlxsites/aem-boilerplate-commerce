@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const SHARE_REQUISITION_LIST_BY_TOKEN_MUTATION = "\n  mutation SHARE_REQUISITION_LIST_BY_TOKEN_MUTATION(\n    $requisitionListUid: ID!\n  ) {\n    shareRequisitionListByToken(\n      requisitionListUid: $requisitionListUid\n    ) {\n      token\n    }\n  }\n";
-//# sourceMappingURL=shareRequisitionListByToken.d.ts.map

@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getRequisitionList';
-//# sourceMappingURL=index.d.ts.map

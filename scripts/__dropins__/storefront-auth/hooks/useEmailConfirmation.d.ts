@@ -24,4 +24,3 @@ export declare const useEmailConfirmation: ({ enableEmailConfirmation, }: useEma
     };
 };
 export {};
-//# sourceMappingURL=useEmailConfirmation.d.ts.map

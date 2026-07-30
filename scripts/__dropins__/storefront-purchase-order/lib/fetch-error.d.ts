@@ -19,4 +19,3 @@ export declare const handleFetchError: (errors: Array<{
     message: string;
     path: string[];
 }>) => void;
-//# sourceMappingURL=fetch-error.d.ts.map

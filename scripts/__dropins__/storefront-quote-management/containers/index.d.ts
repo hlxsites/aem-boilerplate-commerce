@@ -21,4 +21,3 @@ export * from './ItemsQuotedTemplate';
 export * from './QuoteTemplateCommentsList';
 export * from './QuoteTemplateHistoryLog';
 export * from './QuoteTemplatesListTable';
-//# sourceMappingURL=index.d.ts.map

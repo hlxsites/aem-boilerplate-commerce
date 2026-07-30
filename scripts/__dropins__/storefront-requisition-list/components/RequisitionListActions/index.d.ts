@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequisitionListActions';
 export { RequisitionListActions as default } from './RequisitionListActions';
-//# sourceMappingURL=index.d.ts.map

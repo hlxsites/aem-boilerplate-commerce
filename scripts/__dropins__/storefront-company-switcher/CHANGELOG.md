@@ -1,5 +1,24 @@
 # @dropins/storefront-company-switcher
 
+## 1.2.1
+
+### Patch Changes
+
+- 9f022f5: Bump SDK stable versions
+- cf69e60: Bump SDK beta version
+
+## 1.2.1-beta.1
+
+### Patch Changes
+
+- 9f022f5: Bump SDK stable versions
+
+## 1.2.1-beta.0
+
+### Patch Changes
+
+- cf69e60: Bump SDK beta version
+
 ## 1.2.0
 
 ### Minor Changes

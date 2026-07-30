@@ -30,4 +30,3 @@ export interface CompanyUser {
 export interface CompanyUserModel extends CompanyUser {
     isCompanyAdmin?: boolean;
 }
-//# sourceMappingURL=company-user.d.ts.map

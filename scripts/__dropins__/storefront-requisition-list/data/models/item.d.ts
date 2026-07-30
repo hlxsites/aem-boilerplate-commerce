@@ -29,6 +29,20 @@ interface Product {
     url: string;
     urlKey: string;
     externalId: string;
+    price?: {
+        regular?: {
+            amount: {
+                value: number;
+                currency: string;
+            };
+        };
+        final?: {
+            amount: {
+                value: number;
+                currency: string;
+            };
+        };
+    };
     images: {
         url: string;
         label: string;
@@ -48,6 +62,12 @@ interface ConfiguredProduct {
         url: string;
     }];
     price: {
+        regular?: {
+            amount: {
+                value: number;
+                currency: string;
+            };
+        };
         final: {
             amount: {
                 value: number;
@@ -151,4 +171,3 @@ interface Item {
     gift_card_options?: GiftCardOption;
 }
 export { Product, ConfigurableOption, ConfiguredProduct, BundleOption, CustomizableOption, Link, GiftCardOption, Sample, Item, };
-//# sourceMappingURL=item.d.ts.map

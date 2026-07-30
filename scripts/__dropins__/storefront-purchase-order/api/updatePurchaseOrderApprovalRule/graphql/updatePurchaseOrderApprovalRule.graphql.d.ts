@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const UPDATE_PURCHASE_ORDER_APPROVAL_RULE = "\n  mutation UPDATE_PURCHASE_ORDER_APPROVAL_RULE(\n    $input: UpdatePurchaseOrderApprovalRuleInput!\n  ) {\n    updatePurchaseOrderApprovalRule(input: $input) {\n      created_at\n      created_by\n      description\n      name\n      status\n      uid\n      updated_at\n      applies_to_roles {\n        id\n        name\n        users_count\n        permissions {\n          id\n          sort_order\n          text\n        }\n      }\n      condition {\n        attribute\n        operator\n      }\n      approver_roles {\n        id\n        name\n        users_count\n        permissions {\n          id\n          sort_order\n          text\n        }\n      }\n    }\n  }\n";
-//# sourceMappingURL=updatePurchaseOrderApprovalRule.graphql.d.ts.map

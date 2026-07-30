@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_STORE_CONFIG = "\n  query GET_STORE_CONFIG {\n    storeConfig {\n      base_media_url\n      autocomplete_on_storefront\n      minimum_password_length\n      required_character_classes_number\n      store_code\n      shopping_assistance_enabled\n      shopping_assistance_checkbox_title\n      shopping_assistance_checkbox_tooltip\n    }\n  }\n";
-//# sourceMappingURL=getStoreConfig.graphql.d.ts.map

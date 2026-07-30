@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import { RequisitionListActionPayload } from 'adobe-commerce/event-bus';
 export interface Alert {
     type: string;
     description: string;
@@ -22,7 +23,6 @@ export interface Alert {
 }
 export declare function useRequisitionListAlert(translationsOverride?: Record<string, string>): {
     alert: Alert | null;
-    setAlert: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<Alert | null>>;
+    setAlert: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<Alert | null>>;
     handleRequisitionListAlert: (payload: RequisitionListActionPayload) => () => void;
 };
-//# sourceMappingURL=useRequisitionListAlert.d.ts.map

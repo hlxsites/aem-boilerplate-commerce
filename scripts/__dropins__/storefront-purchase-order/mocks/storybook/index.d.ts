@@ -29,4 +29,3 @@ export { storybookHandlers, purchaseOrderHandlers, purchaseOrderLoadingHandlers,
 export * from './events-data';
 export * from './purchase-orders';
 export * from './approval-rules';
-//# sourceMappingURL=index.d.ts.map

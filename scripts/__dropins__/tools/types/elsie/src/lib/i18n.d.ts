@@ -13,4 +13,3 @@
  * @returns {string} A BCP 47 language tag (e.g. `fr-FR`).
  */
 export declare const toLanguageTag: (locale: string) => string;
-//# sourceMappingURL=i18n.d.ts.map

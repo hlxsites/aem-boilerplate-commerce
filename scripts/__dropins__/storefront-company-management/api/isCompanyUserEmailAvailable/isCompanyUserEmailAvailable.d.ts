@@ -4,4 +4,3 @@
  * @returns Promise resolving to boolean indicating availability or null if check failed
  */
 export declare function isCompanyUserEmailAvailable(email: string): Promise<boolean | null>;
-//# sourceMappingURL=isCompanyUserEmailAvailable.d.ts.map

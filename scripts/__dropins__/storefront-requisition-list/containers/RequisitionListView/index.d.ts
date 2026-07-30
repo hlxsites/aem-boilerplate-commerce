@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequisitionListView';
 export { RequisitionListView as default } from './RequisitionListView';
-//# sourceMappingURL=index.d.ts.map

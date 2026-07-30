@@ -1,7 +1,22 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { CustomerRolePermissionsModel } from '../../data/models';
 import { PageSizeListProps, PaginationState } from '../components/pagination.types';
 import { Column, Row } from '../components/purchaseOrdersTable.types';
-
 export interface UseApprovalRulesList {
     initialPageSize: PageSizeListProps[];
     permissions: CustomerRolePermissionsModel;
@@ -28,4 +43,3 @@ export interface UseApprovalRulesListReturn {
     };
     handleCreateUrl: (id: string, type: 'edit' | 'new' | 'view') => string;
 }
-//# sourceMappingURL=useApprovalRulesList.types.d.ts.map

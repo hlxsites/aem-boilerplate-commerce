@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './setLineItemNote';
-//# sourceMappingURL=index.d.ts.map
