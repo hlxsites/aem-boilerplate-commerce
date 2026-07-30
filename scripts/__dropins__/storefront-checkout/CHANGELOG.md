@@ -1,5 +1,26 @@
 # @dropins/storefront-checkout
 
+## 3.3.1
+
+### Patch Changes
+
+- f036a88: Fix accessibility issue where the payment method radio buttons were not associated with their "Payment" group label. Screen readers now announce the group label and the correct index count for each option (WCAG 1.3.1 - Info and Relationships).
+- 969a366: Add a visually-hidden "Shipping option" prefix to each shipping method radio's accessible name (WCAG 2.4.6), so its purpose is clear to screen reader users without relying on the surrounding "Shipping options" heading.
+- 301e4f4: Bump SDK stable versions
+
+## 3.3.1-beta.1
+
+### Patch Changes
+
+- 301e4f4: Bump SDK stable versions
+
+## 3.3.1-beta.0
+
+### Patch Changes
+
+- f036a88: Fix accessibility issue where the payment method radio buttons were not associated with their "Payment" group label. Screen readers now announce the group label and the correct index count for each option (WCAG 1.3.1 - Info and Relationships).
+- 969a366: Add a visually-hidden "Shipping option" prefix to each shipping method radio's accessible name (WCAG 2.4.6), so its purpose is clear to screen reader users without relying on the surrounding "Shipping options" heading.
+
 ## 3.3.0
 
 ### Minor Changes

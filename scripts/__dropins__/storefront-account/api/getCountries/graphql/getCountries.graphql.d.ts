@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COUNTRIES_QUERY = "\n  query GET_COUNTRIES_QUERY {\n    countries {\n      two_letter_abbreviation\n      full_name_locale\n      available_regions {\n        id\n        code\n        name\n      }\n    }\n    storeConfig {\n      countries_with_required_region\n      optional_zip_countries\n    }\n  }\n";
-//# sourceMappingURL=getCountries.graphql.d.ts.map
