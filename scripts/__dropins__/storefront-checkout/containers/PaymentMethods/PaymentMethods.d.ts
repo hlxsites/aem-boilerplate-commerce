@@ -44,10 +44,10 @@ interface StoredMethodRenderContext {
 export interface StoredPaymentMethodConfig {
     enabled?: boolean;
     render?: SlotProps<StoredMethodRenderContext>;
-    vaultCode?: string;
+    tokenCode?: string;
 }
 export interface StoredPaymentMethodHandlers {
-    [code: string]: StoredPaymentMethodConfig;
+    [vaultCode: string]: StoredPaymentMethodConfig;
 }
 interface CartSyncError {
     method: PaymentMethod;
