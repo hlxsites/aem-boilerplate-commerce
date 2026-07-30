@@ -9,4 +9,3 @@
 export * from './transform-store-config';
 export * from './transform-quote';
 export * from './transform-quote-template';
-//# sourceMappingURL=index.d.ts.map

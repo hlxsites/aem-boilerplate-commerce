@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequisitionListSelector';
 export { RequisitionListSelector as default } from './RequisitionListSelector';
-//# sourceMappingURL=index.d.ts.map

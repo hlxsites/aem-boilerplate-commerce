@@ -137,6 +137,7 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-wishlist"></div>
             <div class="product-details__buttons__add-to-req-list"></div>
           </div>
+          <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
@@ -157,6 +158,10 @@ export default async function decorate(block) {
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $requisitionListSelector = fragment.querySelector('.product-details__buttons__add-to-req-list');
+  // Kept mounted at all times so the "Adding to Cart" status is reliably
+  // announced instead of relying on the button's text/disabled state
+  // changing, which isn't announced by screen readers on its own.
+  const $addToCartStatus = fragment.querySelector('.product-details__add-to-cart-status');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
   const $gridOrderingContainer = fragment.querySelector('.product-details__grid-ordering');
@@ -435,6 +440,7 @@ export default async function decorate(block) {
           children: buttonActionText,
           disabled: true,
         }));
+        $addToCartStatus.textContent = buttonActionText ?? 'Adding to Cart';
 
         // get the current selection values
         const values = pdpApi.getProductConfigurationValues();
@@ -502,6 +508,7 @@ export default async function decorate(block) {
           ...prev,
           disabled: isOutOfStock,
         }));
+        $addToCartStatus.textContent = '';
       }
     },
   })($addToCart);
@@ -691,15 +698,20 @@ function setJsonLdProduct(product, variants) {
   };
 
   if (variants.length > 1) {
-    ldJson.offers.push(...variants.map((variant) => ({
-      '@type': 'Offer',
-      name: variant.product.name,
-      image: variant.product.images[0]?.url,
-      price: variant.product.price.final.amount.value,
-      priceCurrency: variant.product.price.final.amount.currency,
-      availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-      sku: variant.product.sku,
-    })));
+    ldJson.offers.push(...variants
+      // A variant can come back without a resolved product (e.g. an
+      // unavailable option combination); skip those so JSON-LD generation
+      // doesn't throw on null property access.
+      .filter((variant) => variant.product)
+      .map((variant) => ({
+        '@type': 'Offer',
+        name: variant.product.name,
+        image: variant.product.images?.[0]?.url,
+        price: variant.product.price?.final?.amount?.value,
+        priceCurrency: variant.product.price?.final?.amount?.currency,
+        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
+        sku: variant.product.sku,
+      })));
   } else {
     ldJson.offers.push({
       '@type': 'Offer',

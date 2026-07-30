@@ -59,19 +59,29 @@ All commands use a base config, defined in `cypress.base.config.js` and extend i
 
 ### Skipping Tests
 
-For various reasons, certain tests fail against certain environments. Eventually these will issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.
+For various reasons, certain tests fail against certain environments. Eventually these issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.
 
 - `{ tags: '@skipSaas' }` skips the test when run with `cypress:saas:run`
-- `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`.
+- `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`
+- `{ tags: '@skipAco' }` skips the test when run with `cypress:aco:run` or `cypress:b2b:aco:run`
 
-| Skipped Tests | Backned Env | Notes |
+| Skipped Tests | Backend Env | Notes |
+| Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |
-| `verifyStoreSwitcher.spec`  | SaaS, PaaS | Story to re-configire multi store <https://jira.corp.adobe.com/browse/USF-2253> |
-| `verifyUserAccount.spec` | SaaS, PaaS | Task <https://jira.corp.adobe.com/browse/USF-2310> |
-| `recs.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
+| `verifyStoreSwitcher.spec`  | SaaS, PaaS, ACO | Story to re-configure multi store <https://jira.corp.adobe.com/browse/USF-2253> |
+| `verifyAemAssets.spec` | SaaS, PaaS, ACO | Requires AEM Assets-specific configuration |
+| `verifyRecsDisplay.spec` | SaaS, ACO | Recommendations not configured on these environments |
+| `verifyCompanyRegistration.spec` | ACO | Company registration not yet validated on ACO |
+| `verifyB2BQuoteToOrderPlacement.spec` | ACO | Quote Management not yet validated on ACO |
+| `recs.spec` | SaaS, PaaS, ACO | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-results-view.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
+| `verifyAemAssets.spec` | SaaS, PaaS, ACO | AEM Assets not configured on ACO |
+| `verifyRecsDisplay.spec` | SaaS, PaaS, ACO | Recommendations not configured on ACO |
+| `verifyAuthUserCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
+| `verifyGuestUserCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
+| `verifyGuestUserVirtualCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
 
 ## Metadata/SKUs in Tests
 

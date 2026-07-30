@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './uploadFile';
-//# sourceMappingURL=index.d.ts.map

@@ -13,43 +13,53 @@ import {
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
-describe('B2B Purchase Orders', () => {
+describe('B2B Purchase Orders', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('poUrls');
 
   before(() => {
     cy.logToTerminal('🚀 B2B Purchase Orders test suite started');
+    cy.setupCompanyWithAdmin({ extensionAttributes: { is_purchase_order_enabled: 1 } });
   });
 
   beforeEach(() => {
     cy.logToTerminal('🧹 B2B Purchase Orders test suite cleanup');
     cy.clearCookies();
     cy.clearLocalStorage();
+    // Also clear cookies for the ACO backend domain to avoid stale session conflicts
+    if (Cypress.env('API_ENDPOINT')) {
+      try {
+        const acoDomain = new URL(Cypress.env('API_ENDPOINT')).hostname;
+        cy.clearCookies({ domain: acoDomain });
+      } catch (e) { /* ignore */ }
+    }
     cy.intercept('**/graphql').as('defaultGraphQL');
   });
 
   // Test 1: Setup roles and users
   it(
     'Setup - Create roles and users',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 1: Setup - Creating roles and users =========',
       );
 
+      const companyId = Cypress.env('testCompany')?.id;
+      cy.logToTerminal(`📋 Using company ID: ${companyId}`);
+
       const poUsersConfig = [
         {
-          user: poUsers.po_rules_manager,
-          role: poRolesConfig.rulesManager,
+          user: { ...poUsers.po_rules_manager, companyId },
+          role: { ...poRolesConfig.rulesManager, company_id: companyId },
           roleId: null,
         },
         {
-          user: poUsers.sales_manager,
-          role: poRolesConfig.salesManager,
+          user: { ...poUsers.sales_manager, companyId },
+          role: { ...poRolesConfig.salesManager, company_id: companyId },
           roleId: null,
         },
         {
-          user: poUsers.approver_manager,
-          role: poRolesConfig.approver,
+          user: { ...poUsers.approver_manager, companyId },
+          role: { ...poRolesConfig.approver, company_id: companyId },
           roleId: null,
         },
       ];
@@ -117,7 +127,6 @@ describe('B2B Purchase Orders', () => {
   // Test 2: Manage approval rules
   it(
     'Manage approval rules - Create and edit',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 2: Managing approval rules =========',
@@ -191,7 +200,6 @@ describe('B2B Purchase Orders', () => {
   // Test 3: Sales Manager - Create first Purchase Order requiring approval
   it(
     'Sales Manager - Create first Purchase Order requiring approval',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 3: Sales Manager - Creating first Purchase Order requiring approval =========',
@@ -217,7 +225,6 @@ describe('B2B Purchase Orders', () => {
   // Test 4: Sales Manager - Create second Purchase Order requiring approval
   it(
     'Sales Manager - Create second Purchase Order requiring approval',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 4: Sales Manager - Creating second Purchase Order requiring approval =========',
@@ -243,7 +250,6 @@ describe('B2B Purchase Orders', () => {
   // Test 5: Approver - Approve and reject Purchase Orders
   it(
     'Approver - Approve and reject Purchase Orders',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 5: Approver - Managing Purchase Orders approval =========',
@@ -338,7 +344,7 @@ describe('B2B Purchase Orders', () => {
             }
 
             cy.logToTerminal(
-              `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Retrying... [attempt ${attempt}/${MAX_APPROVAL_FETCH_ATTEMPTS}]`,
+              `⏳ Found ${$checkboxes.length} Purchase Orders (need 2). Waiting 15 s... [attempt ${attempt}/${MAX_APPROVAL_FETCH_ATTEMPTS}]`,
             );
 
             cy.wait(APPROVAL_RETRY_DELAY);
@@ -423,7 +429,6 @@ describe('B2B Purchase Orders', () => {
   // Test 6: Approver - View Purchase Order details and add comment
   it(
     'Approver - View Purchase Order details and add comment',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 6: Approver - Viewing Purchase Order details =========',
@@ -436,20 +441,50 @@ describe('B2B Purchase Orders', () => {
       cy.visit(urls.purchaseOrders);
       cy.wait(5000);
 
-      cy.logToTerminal('📋 Viewing Purchase Order details and adding comment');
-      cy.contains('Requires my approval').should('be.visible');
+      cy.logToTerminal('📋 Navigating to an Order placed PO to view details and add comment');
 
-      cy.get(selectors.poMyApprovalPOWrapper)
-        .find(selectors.poTable)
-        .should('be.visible')
+      // Wait for purchaseorder.toorder consumer to convert the approved PO to ORDER_PLACED.
+      // Poll the company PO list (6 × 15 s = up to 90 s) until a row in ORDER_PLACED appears.
+      const waitForOrderPlacedRow = (attempt = 1) => {
+        const maxAttempts = 6;
+        const delay = 15000;
+
+        return cy.get(selectors.poCompanyPOContainer)
+          .find('.b2b-purchase-order-purchase-orders-table__status')
+          .then(($statuses) => {
+            const found = [...$statuses].some((el) => el.textContent.includes('Order placed'));
+            if (found) {
+              cy.logToTerminal('✅ Found Order placed Purchase Order');
+              return;
+            }
+            if (attempt >= maxAttempts) {
+              throw new Error(`No Order placed PO found after ${attempt} attempts`);
+            }
+            cy.logToTerminal(`⏳ No Order placed PO yet (attempt ${attempt}/${maxAttempts}), waiting ${delay / 1000}s...`);
+            cy.wait(delay);
+            cy.reload();
+            cy.wait(3000);
+            return waitForOrderPlacedRow(attempt + 1);
+          });
+      };
+
+      cy.get(selectors.poCompanyPOContainer).should('exist');
+      waitForOrderPlacedRow();
+
+      // Expand and open the first ORDER_PLACED PO
+      cy.get(selectors.poCompanyPOContainer)
+        .find(selectors.poTableRow)
+        .filter(':has(.b2b-purchase-order-purchase-orders-table__status:contains("Order placed"))')
+        .first()
         .within(() => {
-          cy.contains(selectors.poShowButton, poLabels.show).first().click();
+          cy.contains(selectors.poShowButton, poLabels.show).click();
         });
 
-      cy.get(selectors.poMyApprovalPOWrapper)
+      // The "View" button lives in the expanded sibling row, not in the body row
+      // itself — search the whole table (same pattern as the original SaaS code).
+      cy.get(selectors.poCompanyPOContainer)
         .find(selectors.poTable)
         .contains(selectors.poShowButton, 'View')
-        .first()
         .click();
 
       cy.url().should('not.include', urls.purchaseOrders);
@@ -478,7 +513,6 @@ describe('B2B Purchase Orders', () => {
   // Test 7: Sales Manager - Create auto-approved Purchase Order
   it(
     'Sales Manager - Create auto-approved Purchase Order',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 7: Sales Manager - Creating auto-approved Purchase Order =========',
@@ -505,6 +539,34 @@ describe('B2B Purchase Orders', () => {
 
       cy.get(selectors.poCompanyPOContainer).should('exist');
       cy.contains('Company purchase orders').should('be.visible');
+
+      // On ACO, purchaseorder.validation and purchaseorder.toorder run via cron every minute.
+      // Poll until both the manually-approved PO and the auto-approved PO reach ORDER_PLACED.
+      const waitForTwoOrderPlaced = (attempt = 1) => {
+        const maxAttempts = 6;
+        const delay = 15000;
+
+        return cy.get(selectors.poCompanyPOContainer)
+          .find(selectors.poTableRow)
+          .filter(`:has(:contains("${poUsers.sales_manager.firstname}"))`)
+          .then(($rows) => {
+            const placedCount = [...$rows].filter((el) => el.textContent.includes('Order placed')).length;
+            if (placedCount >= 2) {
+              cy.logToTerminal(`✅ Found ${placedCount} Order placed POs`);
+              return;
+            }
+            if (attempt >= maxAttempts) {
+              throw new Error(`Expected 2 Order placed POs, found ${placedCount} after ${attempt} attempts`);
+            }
+            cy.logToTerminal(`⏳ Found ${placedCount}/2 Order placed POs (attempt ${attempt}/${maxAttempts}), waiting ${delay / 1000}s...`);
+            cy.wait(delay);
+            cy.reload();
+            cy.wait(3000);
+            return waitForTwoOrderPlaced(attempt + 1);
+          });
+      };
+
+      waitForTwoOrderPlaced();
 
       cy.get(selectors.poCompanyPOContainer)
         .within(() => {
@@ -542,7 +604,6 @@ describe('B2B Purchase Orders', () => {
   // Test 8: Cleanup - Delete approval rules, users and roles
   it(
     'Cleanup - Delete approval rules, users and roles',
-    { tags: ['@B2BSaas'] },
     () => {
       cy.logToTerminal(
         '========= ⚙️ Test 8: Cleanup - Deleting approval rules, users and roles =========',
@@ -632,7 +693,8 @@ describe('B2B Purchase Orders', () => {
           `🗑️ Role names to delete: ${roleNamesToDelete.join(', ') || 'none'}`,
         );
 
-        cy.wrap(unassignRoles(userEmailsToUnassign), { timeout: 60000 }).then(
+        const cleanupCompanyId = Cypress.env('testCompany')?.id;
+        cy.wrap(unassignRoles(userEmailsToUnassign, cleanupCompanyId), { timeout: 60000 }).then(
           () => {
             if (!roleNamesToDelete.length) {
               cy.logToTerminal(

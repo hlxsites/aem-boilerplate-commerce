@@ -26,6 +26,7 @@ const {
   createCompanyRole,
   assignRoleToUser,
 } = require('./b2bCompanyAPICalls');
+const ACCSApiClient = require('./accsClient');
 
 const { baseCompanyData, companyUsers } = require('../fixtures/companyManagementData');
 
@@ -34,10 +35,10 @@ const { baseCompanyData, companyUsers } = require('../fixtures/companyManagement
  * Creates a company with a single admin user.
  * Stores credentials in Cypress.env for later use.
  */
-Cypress.Commands.add('setupCompanyWithAdmin', () => {
+Cypress.Commands.add('setupCompanyWithAdmin', (options = {}) => {
   cy.logToTerminal('🏢 Setting up test company with admin...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
@@ -60,9 +61,34 @@ Cypress.Commands.add('setupCompanyWithAdmin', () => {
       adminEmail: uniqueAdminEmail,
       adminPassword: 'Test123!',
       status: 1, // Active
+      ...(options.extensionAttributes && { extensionAttributes: options.extensionAttributes }),
     });
 
     cy.logToTerminal(`✅ Test company created: ${testCompany.name} (ID: ${testCompany.id})`);
+
+    // If PO was requested, verify the flag was actually stored and force-set it if not.
+    // Some ACO versions silently drop extension_attributes on POST /V1/company/.
+    if (options.extensionAttributes?.is_purchase_order_enabled) {
+      const client = new ACCSApiClient();
+      const companyDetails = await client.get(`/V1/company/${testCompany.id}`);
+      const { items: _i, total_count: _tc, error: _e, message: _m, ...company } = companyDetails;
+      const poEnabled = company?.extension_attributes?.is_purchase_order_enabled;
+      cy.logToTerminal(`🔍 is_purchase_order_enabled after creation: ${poEnabled}`);
+
+      if (!poEnabled) {
+        cy.logToTerminal('⚠️ PO flag not stored — forcing update via PUT /V1/company/...');
+        await client.put(`/V1/company/${testCompany.id}`, {
+          company: {
+            ...company,
+            extension_attributes: {
+              ...(company.extension_attributes || {}),
+              is_purchase_order_enabled: 1,
+            },
+          },
+        });
+        cy.logToTerminal('✅ is_purchase_order_enabled forced to 1');
+      }
+    }
 
     // Store for cleanup and login
     Cypress.env('testCompany', {
@@ -97,7 +123,7 @@ Cypress.Commands.add('setupCompanyWithAdmin', () => {
 Cypress.Commands.add('setupCompanyWithUser', () => {
   cy.logToTerminal('🏢 Setting up test company with regular user...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;
@@ -169,7 +195,7 @@ Cypress.Commands.add('setupCompanyWithUser', () => {
  * Used for Company Credit permission testing.
  */
 Cypress.Commands.add('setupCompanyWithRestrictedUser', () => {
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const {
       createCompany, createCompanyUser, createCompanyRole, assignRoleToUser,
     } = await import('./b2bCompanyAPICalls.js');
@@ -250,7 +276,7 @@ Cypress.Commands.add('setupCompanyWithRestrictedUser', () => {
  * Used for Company Credit order lifecycle testing.
  */
 Cypress.Commands.add('setupCompanyWithCredit', () => {
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const { createCompany, getCompanyCredit, updateCompanyCredit, createCompanyRole, assignRoleToUser } = await import('../support/b2bCompanyAPICalls.js');
     const fixturesModule = await import('../fixtures/companyManagementData.js');
     const baseCompanyData = fixturesModule.baseCompanyData;
@@ -321,7 +347,7 @@ Cypress.Commands.add('setupCompanyWithCredit', () => {
 Cypress.Commands.add('setupCompanyWith2Users', () => {
   cy.logToTerminal('🏢 Setting up test company with 2 additional users...');
 
-  cy.then(async () => {
+  cy.then({ timeout: 45000 }, async () => {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(7);
     const uniqueCompanyEmail = `company.${timestamp}.${randomStr}@example.com`;

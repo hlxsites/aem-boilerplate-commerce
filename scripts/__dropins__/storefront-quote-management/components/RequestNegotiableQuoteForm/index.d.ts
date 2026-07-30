@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './RequestNegotiableQuoteForm';
 export { RequestNegotiableQuoteForm as default } from './RequestNegotiableQuoteForm';
-//# sourceMappingURL=index.d.ts.map

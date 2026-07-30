@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const GET_QUOTE_TEMPLATE_DATA: string;
-//# sourceMappingURL=getQuoteTemplateData.d.ts.map

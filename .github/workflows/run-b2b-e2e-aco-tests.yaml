@@ -1,0 +1,30 @@
+name: Cypress E2E B2B ACO Tests
+on: push
+jobs:
+  cypress-b2b-aco-groups:
+    uses: ./.github/workflows/_b2b-e2e-base.yaml
+    with:
+      config-file: cypress.b2b.aco.config.js
+      grep-tags: '@B2BAco'
+      url: 'https://b2b--boilerplate-aco-b2b--adobe-commerce.aem.live'
+      is-aco: true
+    secrets:
+      AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}
+      CYPRESS_API_ENDPOINT_ACO: ${{ secrets.CYPRESS_API_ENDPOINT_ACO }}
+      CYPRESS_IMS_CLIENT_ID: ${{ secrets.CYPRESS_IMS_CLIENT_ID }}
+      CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
+      CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
+      CYPRESS_COMMERCE_ADMIN_USERNAME_ACO: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME_ACO }}
+      CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO: ${{ secrets.CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO }}
+
+  cypress-b2b-aco-run:
+    if: always()
+    needs: cypress-b2b-aco-groups
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check matrix result
+        run: |
+          if [ "${{ needs.cypress-b2b-aco-groups.result }}" != "success" ]; then
+            echo "One or more test groups failed: ${{ needs.cypress-b2b-aco-groups.result }}"
+            exit 1
+          fi

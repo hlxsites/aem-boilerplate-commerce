@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const UPDATE_NEGOTIABLE_QUOTE_TEMPLATE_QUANTITIES_MUTATION: string;
-//# sourceMappingURL=updateNegotiableQuoteTemplateQuantities.d.ts.map

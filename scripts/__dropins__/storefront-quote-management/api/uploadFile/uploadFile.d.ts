@@ -9,4 +9,3 @@
 export declare const uploadFile: (file: File) => Promise<{
     key: string;
 }>;
-//# sourceMappingURL=uploadFile.d.ts.map

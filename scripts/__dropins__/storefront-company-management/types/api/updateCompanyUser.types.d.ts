@@ -24,4 +24,3 @@ export interface UpdateCompanyUserInput {
     roleId?: string | null;
     status?: string | null;
 }
-//# sourceMappingURL=updateCompanyUser.types.d.ts.map

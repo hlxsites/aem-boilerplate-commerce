@@ -19,4 +19,3 @@ export interface AddToCartError {
     message: string;
 }
 export declare const addRequisitionListItemsToCart: (requisitionListUid: string, requisitionListItemUids: Array<string>) => Promise<Array<AddToCartError> | null>;
-//# sourceMappingURL=addRequisitionListItemsToCart.d.ts.map

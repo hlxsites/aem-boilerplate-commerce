@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrderConfirmation';
 export { PurchaseOrderConfirmation as default } from './PurchaseOrderConfirmation';
-//# sourceMappingURL=index.d.ts.map

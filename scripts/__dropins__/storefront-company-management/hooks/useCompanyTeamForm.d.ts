@@ -1,5 +1,4 @@
 import { CompanyTeamModel } from '../data/models';
-
 export declare const TEAM_FIELD_MAX_LENGTHS: {
     readonly name: 39;
     readonly description: 1000;
@@ -27,4 +26,3 @@ export declare function useCompanyTeamForm(opts: {
     submit: () => Promise<void>;
     generalError: string | null;
 };
-//# sourceMappingURL=useCompanyTeamForm.d.ts.map

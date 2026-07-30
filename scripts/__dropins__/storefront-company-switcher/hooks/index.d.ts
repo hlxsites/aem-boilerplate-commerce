@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export { useCompanyData } from './useCompanyData';
-//# sourceMappingURL=index.d.ts.map

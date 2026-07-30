@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SET_NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_MUTATION: string;
-//# sourceMappingURL=SetNegotiableQuoteShippingAddressMutation.d.ts.map

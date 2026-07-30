@@ -178,7 +178,7 @@ export default async function initializeDropins() {
         recaptcha.enableLogger(true);
         return recaptcha.setConfig();
       });
-    });
+    }, { eager: true });
   };
 
   // re-initialize on prerendering changes

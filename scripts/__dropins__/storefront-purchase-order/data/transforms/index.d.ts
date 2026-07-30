@@ -20,4 +20,3 @@ export * from './transform-purchase-order-approval-rule-metadata';
 export * from './transform-purchase-order-approval-rule';
 export * from './transform-purchase-order-comment';
 export * from './transform-purchase-order';
-//# sourceMappingURL=index.d.ts.map

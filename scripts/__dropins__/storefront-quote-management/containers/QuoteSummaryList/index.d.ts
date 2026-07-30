@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './QuoteSummaryList';
 export { QuoteSummaryList as default } from './QuoteSummaryList';
-//# sourceMappingURL=index.d.ts.map

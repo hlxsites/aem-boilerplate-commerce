@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ProductListTable';
 export { ProductListTable as default } from './ProductListTable';
-//# sourceMappingURL=index.d.ts.map

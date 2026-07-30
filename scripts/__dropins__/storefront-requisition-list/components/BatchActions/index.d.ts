@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './BatchActions';
 export { BatchActions as default } from './BatchActions';
-//# sourceMappingURL=index.d.ts.map

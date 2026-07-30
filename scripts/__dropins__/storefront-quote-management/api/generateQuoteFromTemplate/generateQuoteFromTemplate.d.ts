@@ -12,4 +12,3 @@ export interface GenerateQuoteFromTemplateParams {
 export declare const generateQuoteFromTemplate: (params: GenerateQuoteFromTemplateParams) => Promise<{
     quoteId: any;
 }>;
-//# sourceMappingURL=generateQuoteFromTemplate.d.ts.map

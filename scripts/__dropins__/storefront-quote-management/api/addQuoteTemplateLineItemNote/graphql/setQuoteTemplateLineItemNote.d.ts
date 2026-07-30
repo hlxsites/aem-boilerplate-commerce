@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SET_QUOTE_TEMPLATE_LINE_ITEM_NOTE_MUTATION: string;
-//# sourceMappingURL=setQuoteTemplateLineItemNote.d.ts.map

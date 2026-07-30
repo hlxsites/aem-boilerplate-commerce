@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './CompanyStructureEmpty';
 export { CompanyStructureEmpty as default } from './CompanyStructureEmpty';
-//# sourceMappingURL=index.d.ts.map

@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SEND_QUOTE_TEMPLATE_FOR_REVIEW_MUTATION: string;
-//# sourceMappingURL=sendQuoteTemplateForReview.d.ts.map

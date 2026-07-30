@@ -20,4 +20,3 @@ export * from './purchaseOrderApprovalRules.config';
 export * from './companyPurchaseOrders.config';
 export * from './purchaseOrderApprovalRules.config';
 export * from './approvalRuleForm.config';
-//# sourceMappingURL=index.d.ts.map

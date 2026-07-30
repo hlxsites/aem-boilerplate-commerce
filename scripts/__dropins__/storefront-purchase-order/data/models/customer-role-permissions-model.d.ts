@@ -32,4 +32,3 @@ export interface CustomerRolePermissionsModel {
         manageApprovalRules: boolean;
     };
 }
-//# sourceMappingURL=customer-role-permissions-model.d.ts.map

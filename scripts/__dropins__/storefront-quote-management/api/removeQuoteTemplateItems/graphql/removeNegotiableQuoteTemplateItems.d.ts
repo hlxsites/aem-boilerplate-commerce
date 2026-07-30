@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const REMOVE_NEGOTIABLE_QUOTE_TEMPLATE_ITEMS_MUTATION: string;
-//# sourceMappingURL=removeNegotiableQuoteTemplateItems.d.ts.map

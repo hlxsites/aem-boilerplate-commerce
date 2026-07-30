@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './TabbedContent';
 export { TabbedContent as default } from './TabbedContent';
-//# sourceMappingURL=index.d.ts.map

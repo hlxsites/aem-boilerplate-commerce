@@ -21,4 +21,3 @@ export * from './purchase-order-approval-rule-model';
 export * from './purchase-order-comment-model';
 export * from './purchase-order-model';
 export * from './customer-role-permissions-model';
-//# sourceMappingURL=index.d.ts.map

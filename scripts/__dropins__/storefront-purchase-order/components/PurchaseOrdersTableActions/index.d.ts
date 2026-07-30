@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrdersTableActions';
 export { PurchaseOrdersTableActions as default } from './PurchaseOrdersTableActions';
-//# sourceMappingURL=index.d.ts.map

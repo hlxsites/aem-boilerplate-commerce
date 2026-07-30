@@ -1,1 +1,1 @@
-export * from './CustomerCompanyInfo/index'
+export * from './CustomerCompanyInfo/index';

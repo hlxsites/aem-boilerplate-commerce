@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './closeNegotiableQuote';
-//# sourceMappingURL=index.d.ts.map

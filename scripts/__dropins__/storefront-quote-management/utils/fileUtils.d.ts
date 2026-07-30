@@ -43,4 +43,3 @@ export declare const validateFileType: (fileType: string, acceptedTypes?: string
  * validateFileSize(1024, undefined) // true (no limit)
  */
 export declare const validateFileSize: (fileSize: number, maxSize?: number) => boolean;
-//# sourceMappingURL=fileUtils.d.ts.map

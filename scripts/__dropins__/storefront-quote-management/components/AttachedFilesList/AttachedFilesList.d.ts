@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent } from 'preact';
-
 export interface AttachedFile {
     key: string;
     name: string;
@@ -13,4 +20,3 @@ export interface AttachedFilesListProps {
     disabled?: boolean;
 }
 export declare const AttachedFilesList: FunctionComponent<AttachedFilesListProps>;
-//# sourceMappingURL=AttachedFilesList.d.ts.map

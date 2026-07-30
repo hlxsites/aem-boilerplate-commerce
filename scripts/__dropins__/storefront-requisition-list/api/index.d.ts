@@ -17,6 +17,7 @@
 export * from './initialize';
 export * from './fetch-graphql';
 export * from './getStoreConfig';
+export * from './enrichConfigurableProducts';
 export * from './getRequisitionLists';
 export * from './getRequisitionList';
 export * from './createRequisitionList';
@@ -33,4 +34,3 @@ export * from './shareRequisitionListByEmail';
 export * from './shareRequisitionListByToken';
 export * from './getSharedRequisitionList';
 export * from './importSharedRequisitionList';
-//# sourceMappingURL=index.d.ts.map

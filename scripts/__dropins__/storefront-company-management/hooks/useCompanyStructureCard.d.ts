@@ -1,7 +1,6 @@
-import { CompanyStructureNode } from '../data/models';
-import { UseCompanyStructureProps } from '../types/hook.types';
-
+import type { CompanyStructureNode } from '../data/models';
 export type StructureNode = CompanyStructureNode;
+import { UseCompanyStructureProps } from '../types/hook.types';
 export declare function useCompanyStructureCard({ handleSetInLineAlert, permissions }?: UseCompanyStructureProps): {
     nodes: CompanyStructureNode[] | null;
     loading: boolean;
@@ -9,11 +8,11 @@ export declare function useCompanyStructureCard({ handleSetInLineAlert, permissi
     showEditForm: boolean;
     inputChange: Record<string, string | number | boolean>;
     expanded: Set<string>;
-    setExpanded: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<Set<string>>>;
+    setExpanded: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<Set<string>>>;
     selected: string | null;
-    setSelected: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<string | null>>;
+    setSelected: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<string | null>>;
     selectedMany: Set<string>;
-    setSelectedMany: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<Set<string>>>;
+    setSelectedMany: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<Set<string>>>;
     move: (id: string, newParentId: string) => Promise<boolean>;
     expandAll: () => void;
     collapseAll: () => void;
@@ -21,7 +20,7 @@ export declare function useCompanyStructureCard({ handleSetInLineAlert, permissi
         id: string;
         parentId: string | null;
         label: string;
-        type: 'team' | 'user';
+        type: "team" | "user";
         entityId?: string;
         description?: string;
     }) => void;
@@ -30,7 +29,6 @@ export declare function useCompanyStructureCard({ handleSetInLineAlert, permissi
     handleInputChange: (value: Record<string, string | number | boolean>) => void;
     handleShowEditForm: () => void;
     handleHideEditForm: (clearStates?: () => void) => void;
-    renderAlertMessage: (type: 'success' | 'error', message: string) => void;
+    renderAlertMessage: (type: "success" | "error", message: string) => void;
     working: boolean;
 };
-//# sourceMappingURL=useCompanyStructureCard.d.ts.map

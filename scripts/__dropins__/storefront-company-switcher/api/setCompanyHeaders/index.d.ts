@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './setCompanyHeaders';
-//# sourceMappingURL=index.d.ts.map

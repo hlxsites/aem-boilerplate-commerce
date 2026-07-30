@@ -24,4 +24,3 @@ export * from './transform-place-order';
 export * from './transform-place-negotiable-quote-order';
 export * from './transform-store-config';
 export * from './transform-request-return';
-//# sourceMappingURL=index.d.ts.map

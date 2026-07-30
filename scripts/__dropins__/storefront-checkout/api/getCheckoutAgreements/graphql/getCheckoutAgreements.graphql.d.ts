@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CHECKOUT_AGREEMENTS = "\n  query GET_CHECKOUT_AGREEMENTS {\n    checkoutAgreements {\n      agreement_id\n      checkbox_text\n      content\n      content_height\n      is_html\n      mode\n      name\n    }\n  }\n";
-//# sourceMappingURL=getCheckoutAgreements.graphql.d.ts.map

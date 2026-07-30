@@ -61,4 +61,3 @@ export interface UseExpirationDateReturn {
  * Saves the expiration date immediately when user clicks "Save" in the modal.
  */
 export declare const useExpirationDate: (params?: UseExpirationDateParams) => UseExpirationDateReturn;
-//# sourceMappingURL=useExpirationDate.d.ts.map

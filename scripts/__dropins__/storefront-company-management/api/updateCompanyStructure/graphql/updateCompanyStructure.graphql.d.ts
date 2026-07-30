@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const UPDATE_COMPANY_STRUCTURE = "\n  mutation updateCompanyStructure($treeId: ID!, $parentTreeId: ID!) {\n    updateCompanyStructure(input: { tree_id: $treeId, parent_tree_id: $parentTreeId }) {\n      __typename\n    }\n  }\n";
-//# sourceMappingURL=updateCompanyStructure.graphql.d.ts.map

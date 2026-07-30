@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const CANCEL_QUOTE_TEMPLATE_MUTATION: string;
-//# sourceMappingURL=cancelQuoteTemplate.d.ts.map

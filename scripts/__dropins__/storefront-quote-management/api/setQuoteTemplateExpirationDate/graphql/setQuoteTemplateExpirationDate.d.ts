@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SET_QUOTE_TEMPLATE_EXPIRATION_DATE_MUTATION: string;
-//# sourceMappingURL=setQuoteTemplateExpirationDate.d.ts.map

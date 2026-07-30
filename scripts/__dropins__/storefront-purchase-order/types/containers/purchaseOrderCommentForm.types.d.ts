@@ -3,4 +3,3 @@ export interface PurchaseOrderCommentFormProps {
     withWrapper?: boolean;
     className?: string;
 }
-//# sourceMappingURL=purchaseOrderCommentForm.types.d.ts.map

@@ -1,5 +1,20 @@
-import { Container } from '@dropins/tools/types/elsie/src/lib';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2026 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import { Container } from '@dropins/tools/lib';
 export interface SharedRequisitionListProps {
     /**
      * The share token from the URL (e.g. from ?requisition_id=<token>).
@@ -16,4 +31,3 @@ export interface SharedRequisitionListProps {
     routeRequisitionList?: (uid: string, listName: string) => string | void;
 }
 export declare const SharedRequisitionList: Container<SharedRequisitionListProps>;
-//# sourceMappingURL=SharedRequisitionList.d.ts.map

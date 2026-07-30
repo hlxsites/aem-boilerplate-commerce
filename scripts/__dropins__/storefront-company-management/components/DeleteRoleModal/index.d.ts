@@ -16,4 +16,3 @@
  *******************************************************************/
 export { DeleteRoleModal } from './DeleteRoleModal';
 export type { DeleteRoleModalProps } from './DeleteRoleModal';
-//# sourceMappingURL=index.d.ts.map

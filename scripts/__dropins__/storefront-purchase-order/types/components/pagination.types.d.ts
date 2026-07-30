@@ -24,4 +24,3 @@ export interface PageSizeListProps {
     value: string;
     selected: boolean;
 }
-//# sourceMappingURL=pagination.types.d.ts.map

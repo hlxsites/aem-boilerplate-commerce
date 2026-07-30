@@ -25,4 +25,3 @@ export * from './transform-customer-company-info';
 export * from './transform-store-config';
 export * from './transform-company-credit';
 export * from './transform-company-credit-history';
-//# sourceMappingURL=index.d.ts.map

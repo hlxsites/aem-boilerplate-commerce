@@ -25,4 +25,3 @@ export interface DeleteQuoteOutput {
     operationResults: Array<DeleteQuoteSuccessResult | DeleteQuoteFailureResult>;
 }
 export declare const deleteQuote: (quoteUids: string[] | string) => Promise<DeleteQuoteOutput>;
-//# sourceMappingURL=deleteQuote.d.ts.map

@@ -1,25 +1,25 @@
-import {
-    assertImageListDisplay
-} from "../../assertions";
+import { assertImageListDisplay } from '../../assertions';
+import { visitPrexPage, waitForRecsCarousel } from '../../support/recsGraphql';
 
-describe("Verify Product Recommendation dropin display", { tags: ["@skipSaas", "@skipPaas"] }, () => {
-    it("Verify recs dropin loads on PLP", () => {
-        //Navaigate to draft page 
-        cy.visit("/drafts/tests/apparel");
+describe('Verify Product Recommendation dropin display', () => {
+  it('loads rec carousel on PLP draft', () => {
+    visitPrexPage('displayPlp');
 
-        cy.get('.recommendations-product-list__content').scrollIntoView();
-        assertImageListDisplay('.recommendations-product-list__content', 3);
-        cy.get('.recommendations-carousel__content').scrollTo('right');
-        cy.get('[aria-label="Product 4 of 5"]').should('be.visible');
-        cy.get('[aria-label="Product 5 of 5"]').should('be.visible');
-        cy.get('[aria-label="Product 4 of 5"]').click();
+    waitForRecsCarousel(3);
+    assertImageListDisplay('.recommendations-product-list__content', 3);
+    cy.get('.recommendations-carousel__content').scrollTo('right');
+    cy.get('[aria-label="Product 4 of 5"]').should('be.visible');
+    cy.get('[aria-label="Product 5 of 5"]').should('be.visible');
+    cy.get('[aria-label="Product 4 of 5"]').click();
 
-        // Verify navigation to product page
-        cy.url().should("include", "/products/");
+    cy.url().should('include', '/products/');
+    cy.get('.product-details').should('be.visible');
+  });
 
-        // Verify product page elements are loaded
-        cy.get(".product-details")
-            .should("be.visible");
-    });
+  it('loads rec carousel on PDP draft', () => {
+    visitPrexPage('displayPdp');
+
+    waitForRecsCarousel(3);
+    assertImageListDisplay('.recommendations-product-list__content', 3);
+  });
 });
-

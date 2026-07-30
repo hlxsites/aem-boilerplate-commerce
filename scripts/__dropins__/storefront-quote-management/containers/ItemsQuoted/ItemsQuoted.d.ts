@@ -1,7 +1,14 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { NegotiableQuoteModel, CartItemModel } from '../../data/models/negotiable-quote-model';
-
 export interface ItemsQuotedProps extends HTMLAttributes<HTMLDivElement> {
     quoteData?: NegotiableQuoteModel;
     onItemCheckboxChange?: (item: CartItemModel, isSelected: boolean) => void;
@@ -27,4 +34,3 @@ export interface ItemsQuotedProps extends HTMLAttributes<HTMLDivElement> {
     };
 }
 export declare const ItemsQuoted: Container<ItemsQuotedProps>;
-//# sourceMappingURL=ItemsQuoted.d.ts.map

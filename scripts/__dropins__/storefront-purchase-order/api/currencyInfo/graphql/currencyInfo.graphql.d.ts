@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CURRENCY_INFO = "\n  query GET_CURRENCY_INFO {\n    currency {\n      base_currency_code\n      available_currency_codes\n    }\n  }\n";
-//# sourceMappingURL=currencyInfo.graphql.d.ts.map

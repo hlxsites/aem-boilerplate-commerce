@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './PurchaseOrdersTable';
 export { PurchaseOrdersTable as default } from './PurchaseOrdersTable';
-//# sourceMappingURL=index.d.ts.map

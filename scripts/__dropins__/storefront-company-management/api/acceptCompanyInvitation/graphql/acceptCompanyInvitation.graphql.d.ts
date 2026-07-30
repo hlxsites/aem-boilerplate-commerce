@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const ACCEPT_COMPANY_INVITATION = "\n  mutation acceptCompanyInvitation($input: CompanyInvitationInput!) {\n    acceptCompanyInvitation(input: $input) {\n      success\n    }\n  }\n";
-//# sourceMappingURL=acceptCompanyInvitation.graphql.d.ts.map

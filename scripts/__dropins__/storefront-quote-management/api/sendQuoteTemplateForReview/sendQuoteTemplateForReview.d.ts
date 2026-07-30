@@ -21,5 +21,4 @@ export interface SendQuoteTemplateForReviewParams {
         key: string;
     }[];
 }
-export declare const sendQuoteTemplateForReview: (params: SendQuoteTemplateForReviewParams) => Promise<import('../../data/models/negotiable-quote-template-model').NegotiableQuoteTemplateModel>;
-//# sourceMappingURL=sendQuoteTemplateForReview.d.ts.map
+export declare const sendQuoteTemplateForReview: (params: SendQuoteTemplateForReviewParams) => Promise<any>;

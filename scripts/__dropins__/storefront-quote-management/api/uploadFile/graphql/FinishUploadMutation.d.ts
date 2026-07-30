@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const FINISH_UPLOAD_MUTATION = "\n  mutation FINISH_UPLOAD_MUTATION($input: finishUploadInput!) {\n    finishUpload(input: $input) {\n      success\n      key\n      message\n    }\n  }\n";
-//# sourceMappingURL=FinishUploadMutation.d.ts.map

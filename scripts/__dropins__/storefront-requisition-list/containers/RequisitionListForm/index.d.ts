@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequisitionListForm';
 export { RequisitionListForm as default } from './RequisitionListForm';
-//# sourceMappingURL=index.d.ts.map

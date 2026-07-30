@@ -6,7 +6,7 @@ const SHARING_PATH = '/customer/requisition-list-sharing';
 
 describe(
   "Verify B2B Requisition List Sharing feature",
-  { tags: "@B2BSaas" },
+  { tags: ['@B2BSaas', '@B2BAco'] },
   () => {
     let validShareToken;
 

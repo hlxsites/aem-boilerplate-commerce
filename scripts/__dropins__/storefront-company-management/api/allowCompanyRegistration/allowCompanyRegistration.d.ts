@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const allowCompanyRegistration: () => Promise<boolean>;
-//# sourceMappingURL=allowCompanyRegistration.d.ts.map

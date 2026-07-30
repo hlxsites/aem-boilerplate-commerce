@@ -49,4 +49,3 @@ export * from './updateCompanyUserStatus';
 export * from './unassignChildCompany';
 export * from './validateCompanyEmail';
 export * from './companyRoles';
-//# sourceMappingURL=index.d.ts.map

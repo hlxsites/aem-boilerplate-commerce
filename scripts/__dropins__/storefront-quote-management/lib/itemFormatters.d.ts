@@ -1,8 +1,15 @@
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-import { SlotProps } from '@dropins/tools/types/elsie/src/lib';
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
+import { ImageProps } from '@dropins/tools/components';
+import { SlotProps } from '@dropins/tools/lib';
 import { CartItemModel as NegotiableQuoteItemModel, StoreConfigModel } from '../data/models';
 import { SwitchableAttributes } from '../containers/QuoteSummaryList/QuoteSummaryList';
-
 export interface ItemFormatterOptions {
     attributesToHide: SwitchableAttributes[];
     routeProduct?: (item: NegotiableQuoteItemModel) => string;
@@ -37,11 +44,8 @@ export declare const getProductAttributes: (item: NegotiableQuoteItemModel, opti
 /**
  * Get configurations for an item (bundle, configurable, customizable options)
  */
-export declare const getConfigurations: (item: NegotiableQuoteItemModel, options: ItemFormatterOptions) => {
-    [x: string]: any;
-} | undefined;
+export declare const getConfigurations: (item: NegotiableQuoteItemModel, options: ItemFormatterOptions) => any;
 /**
  * Get total excluding tax component for an item
  */
 export declare const getTotalExcludingTax: (item: NegotiableQuoteItemModel, options: ItemFormatterOptions) => import("preact").JSX.Element | undefined;
-//# sourceMappingURL=itemFormatters.d.ts.map

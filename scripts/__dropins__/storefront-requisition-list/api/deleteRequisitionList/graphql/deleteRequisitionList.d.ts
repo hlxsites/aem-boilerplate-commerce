@@ -1,2 +1,1 @@
-export declare const DELETE_REQUISITION_LIST_MUTATION: string;
-//# sourceMappingURL=deleteRequisitionList.d.ts.map
+export declare const DELETE_REQUISITION_LIST_MUTATION = "\n  mutation DELETE_REQUISITION_LIST_MUTATION(\n      $requisitionListUid: ID!,\n    ) {\n    deleteRequisitionList(\n      requisitionListUid: $requisitionListUid\n    ) {\n      status\n      requisition_lists {\n        items {\n          ...REQUISITION_LIST_FRAGMENT\n        }\n        page_info {\n          page_size\n          current_page\n          total_pages\n        }\n        total_count\n      }\n    }\n  }\n\nfragment REQUISITION_LIST_FRAGMENT on RequisitionList {\n    uid\n    name\n    description\n    items_count\n    updated_at\n  }\n\n";

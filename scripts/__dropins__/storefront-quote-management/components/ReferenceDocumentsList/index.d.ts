@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ReferenceDocumentsList';
 export { ReferenceDocumentsList as default } from './ReferenceDocumentsList';
-//# sourceMappingURL=index.d.ts.map

@@ -1,0 +1,298 @@
+import {
+  setGuestShippingAddress,
+  setGuestBillingAddress,
+  placeOrder,
+  signUpUser,
+  uncheckBillToShippingAddress,
+  checkTermsAndConditions,
+  editProductOptions,
+} from "../../actions";
+import {
+  assertCartSummaryProduct,
+  assertCartSummaryProductsOnCheckout,
+  assertTitleHasLink,
+  assertProductImage,
+  assertCartSummaryMisc,
+  assertOrderSummaryMisc,
+  assertOrderConfirmationCommonDetails,
+  assertOrderConfirmationShippingDetails,
+  assertOrderConfirmationBillingDetails,
+  assertOrderConfirmationShippingMethod,
+  assertSelectedPaymentMethod,
+  assertAuthUser,
+  assertOrderImageDisplay,
+  assertOrderCommentsVisible,
+} from "../../assertions";
+import {
+  customerShippingAddress,
+  customerBillingAddress,
+  checkMoneyOrder,
+  products,
+} from "../../fixtures/index";
+import * as fields from "../../fields";
+
+describe(
+  "Verify auth user can place order",
+  { tags: ["@skipSaasNoProd", "@skipPaas", "@skipAco"] },
+  () => {
+    it("Verify auth user can place order", { tags: "@snapPercy" }, () => {
+      // TODO: replace with single "test" product shared between all tests (not this vs products.configurable.urlPathWithOptions).
+      cy.visit(products.configurable.urlPathWithOptions);
+      // Wait for the configurable product form to hydrate before adding to cart.
+      cy.contains("Add to Cart").should("be.visible").and("not.be.disabled");
+      cy.get(".minicart-panel").should("be.empty");
+      cy.contains("Add to Cart").click();
+      cy.get(".minicart-wrapper").click();
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+      cy.get(".minicart-panel").should("not.be.empty");
+      assertCartSummaryProduct(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "0",
+      )(".cart-mini-cart");
+      assertTitleHasLink(
+        "Configurable product",
+        "/products/cypress-configurable-product-latest/cypress456",
+      )(".cart-mini-cart");
+      assertProductImage(Cypress.env("productImageNameConfigurable"))(
+        ".cart-mini-cart",
+      );
+      editProductOptions("red", "green");
+      cy.get(".minicart-wrapper").click();
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+      cy.get(".minicart-panel").should("not.be.empty");
+      cy.contains("CYPRESS456-green").should("be.visible");
+      cy.contains("View Cart").click();
+      cy.contains("Shopping Cart (2)").should("be.visible");
+      cy.contains("CYPRESS456-green").should("be.visible");
+
+      // Edit product in Overlay
+      cy.contains("Edit").click();
+      cy.get(".modal-content").should("be.visible");
+      cy.get(".modal-content").assertSelectedProductOption("color", "green");
+      cy.get(".modal-content")
+        .find(".dropin-incrementer__decrease-button")
+        .click();
+      cy.get(".modal-content")
+        .find(".dropin-incrementer__input")
+        .should("have.value", "1");
+      cy.get(".modal-content").selectProductOption("color", "red");
+      cy.get(".modal-content").assertSelectedProductOption("color", "red");
+      cy.percyTakeSnapshot("Cart Edit Overlay");
+      cy.contains("Update in Cart").should("be.visible").click();
+
+      assertCartSummaryProduct(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "0",
+      )(".commerce-cart-wrapper");
+      assertTitleHasLink(
+        "Configurable product",
+        "/products/cypress-configurable-product-latest/cypress456",
+      )(".commerce-cart-wrapper");
+      cy.visit("/customer/create");
+      cy.get(".minicart-wrapper").should("be.visible");
+      cy.fixture("userInfo").then(({ sign_up }) => {
+        signUpUser(sign_up);
+        assertAuthUser(sign_up);
+      });
+      cy.get(".minicart-wrapper").click();
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+      assertCartSummaryProduct(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "0",
+      )(".cart-mini-cart");
+      assertTitleHasLink(
+        "Configurable product",
+        "/products/cypress-configurable-product-latest/cypress456",
+      )(".cart-mini-cart");
+      assertProductImage(Cypress.env("productImageNameConfigurable"))(
+        ".cart-mini-cart",
+      );
+      cy.visit("/products/youth-tee/adb150");
+      // Button can be visible before the product form finishes hydrating;
+      // clicking while still disabled registers in the UI but never reaches
+      // the cart model (see the same pattern guarded against above).
+      cy.get(".product-details__buttons__add-to-cart button")
+        .should("be.visible")
+        .and("not.be.disabled")
+        .click();
+      cy.get(".minicart-wrapper").click();
+      // Panel re-fetches/re-renders cart contents on open; wait for the
+      // loaded flag like the first add-to-cart above, otherwise the
+      // assertion below can run against the stale (pre-add) cart state.
+      cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+      assertCartSummaryProduct(
+        "Youth tee",
+        "ADB150",
+        "1",
+        "$10.00",
+        "$10.00",
+        "0",
+      )(".cart-mini-cart");
+      assertTitleHasLink(
+        "Youth tee",
+        "/products/youth-tee/adb150",
+      )(".cart-mini-cart");
+      assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
+      assertCartSummaryProduct(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "1",
+      )(".cart-mini-cart");
+      assertTitleHasLink(
+        "Configurable product",
+        "/products/cypress-configurable-product-latest/cypress456",
+      )(".cart-mini-cart");
+      assertProductImage(Cypress.env("productImageName"))(".cart-mini-cart");
+      cy.visit("/cart");
+      assertCartSummaryProduct(
+        "Youth tee",
+        "ADB150",
+        "1",
+        "$10.00",
+        "$10.00",
+        "0",
+      )(".commerce-cart-wrapper");
+      assertTitleHasLink(
+        "Youth tee",
+        "/products/youth-tee/adb150",
+      )(".commerce-cart-wrapper");
+      assertProductImage(Cypress.env("productImageName"))(
+        ".commerce-cart-wrapper",
+      );
+
+      assertCartSummaryProduct(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "1",
+      )(".commerce-cart-wrapper");
+      assertTitleHasLink(
+        "Configurable product",
+        "/products/cypress-configurable-product-latest/cypress456",
+      )(".commerce-cart-wrapper");
+      assertProductImage(Cypress.env("productImageNameConfigurable"))(
+        ".commerce-cart-wrapper",
+      );
+      cy.contains("Estimated Shipping").should("be.visible");
+      cy.percyTakeSnapshot("Cart page");
+      cy.get(".dropin-button.dropin-button--medium.dropin-button--primary")
+        .contains("Checkout")
+        .click({ force: true });
+      assertCartSummaryMisc(2);
+      assertCartSummaryProductsOnCheckout(
+        "Youth tee",
+        "ADB150",
+        "1",
+        "$10.00",
+        "$10.00",
+        "0",
+      );
+      assertCartSummaryProductsOnCheckout(
+        "Configurable product",
+        "CYPRESS456",
+        "1",
+        "$60.00",
+        "$60.00",
+        "1",
+      );
+      setGuestShippingAddress(customerShippingAddress, true);
+      uncheckBillToShippingAddress();
+      setGuestBillingAddress(customerBillingAddress, true);
+      assertOrderSummaryMisc("$70.00", "$10.00", "$80.00");
+      assertSelectedPaymentMethod(checkMoneyOrder.code, 0);
+      checkTermsAndConditions();
+      cy.percyTakeSnapshot("Checkout Page");
+      placeOrder();
+      assertOrderConfirmationCommonDetails(
+        customerBillingAddress,
+        checkMoneyOrder,
+      );
+      assertOrderConfirmationShippingDetails(customerShippingAddress);
+      assertOrderConfirmationBillingDetails(customerBillingAddress);
+      assertOrderConfirmationShippingMethod(customerShippingAddress);
+      cy.percyTakeSnapshot("Order Confirmation");
+
+      /**
+       * TODO - when /customer/order-details page will be ready
+       * Redirect to /order-details?orderRef={ORDER_TOKEN}
+       * Confirm that elements similar to orderConfirmation page present (not exactly the same, separate assert needed)
+       */
+      /**
+       * TODO - when /customer/account page will be ready
+       * Redirect to /customer/account
+       * Confirm that new order is visible in Recent Orders section of account dashboard
+       */
+      /**
+       * TODO - when /customer/orders page will be ready
+       * Redirect to /customer/orders
+       * Confirm that new order is visible on Orders page
+       */
+
+      // Obtain order reference from URL and visit order details page
+
+      cy.url().then((url) => {
+        const orderRef = url.split("?")[1];
+        cy.visit("/order-details?" + orderRef);
+      });
+
+      // ORDER COMMENTS
+      assertOrderCommentsVisible();
+
+      // CANCEL ORDER
+      cy.get(fields.cancelButton).should("exist");
+      cy.percyTakeSnapshot("Order Details");
+      cy.get(fields.cancelButton).click();
+
+      cy.get(fields.cancellationReasonsSelector).select("1");
+      cy.contains("Submit Cancellation").should("be.visible");
+      cy.get(fields.cancellationReasonsSelector).should("have.value", "1");
+      cy.percyTakeSnapshot("Cancel Order");
+      cy.get(fields.submitCancelOrderButton).click();
+
+      cy.get(".dropin-header-container__title", { timeout: 3000 })
+        .should("exist")
+        .and("be.visible")
+        .and("contain.text", "Canceled");
+
+      cy.get(fields.cancellationReasonsModal).should("not.exist");
+
+      cy.get(".order-order-status-content__wrapper-description p")
+        .should("exist")
+        .and("be.visible")
+        .and(
+          "contain.text",
+          "This order was cancelled by you. You should see a refund to your original payment method with 5-7 business days.",
+        );
+
+      cy.get(fields.cancelButton).should("not.exist");
+
+      cy.visit("/customer/orders");
+      assertOrderImageDisplay();
+      cy.waitForLoadingSkeletonToDisappear();
+      cy.percyTakeSnapshot("My Account Order");
+
+      cy.visit("/customer/account");
+      assertOrderImageDisplay();
+      cy.waitForLoadingSkeletonToDisappear();
+      cy.contains("No returns").should("be.visible");
+      cy.percyTakeSnapshot("My Account");
+    });
+  },
+);

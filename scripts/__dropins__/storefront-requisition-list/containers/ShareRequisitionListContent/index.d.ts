@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './ShareRequisitionListContent';
 export { ShareRequisitionListContent as default } from './ShareRequisitionListContent';
-//# sourceMappingURL=index.d.ts.map

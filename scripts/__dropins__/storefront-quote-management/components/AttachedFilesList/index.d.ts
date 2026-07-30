@@ -8,4 +8,3 @@
  *******************************************************************/
 export { AttachedFilesList } from './AttachedFilesList';
 export type { AttachedFile, AttachedFilesListProps } from './AttachedFilesList';
-//# sourceMappingURL=index.d.ts.map

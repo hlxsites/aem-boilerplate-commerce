@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COMPANY_TEAM = "\n  query getCompanyTeam($id: ID!) {\n    company { team(id: $id) { id name description } }\n  }\n";
-//# sourceMappingURL=getCompanyTeam.graphql.d.ts.map

@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const NEGOTIABLE_QUOTE_FRAGMENT: string;
-//# sourceMappingURL=NegotiableQuoteFragment.d.ts.map

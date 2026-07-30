@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './CompanyHierarchy';
 export { CompanyHierarchy as default } from './CompanyHierarchy';
-//# sourceMappingURL=index.d.ts.map

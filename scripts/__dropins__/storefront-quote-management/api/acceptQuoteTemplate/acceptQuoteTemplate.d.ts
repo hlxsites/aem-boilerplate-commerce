@@ -9,5 +9,4 @@
 export interface AcceptQuoteTemplateParams {
     templateId: string;
 }
-export declare const acceptQuoteTemplate: (params: AcceptQuoteTemplateParams) => Promise<import('../../data/models/negotiable-quote-template-model').NegotiableQuoteTemplateModel>;
-//# sourceMappingURL=acceptQuoteTemplate.d.ts.map
+export declare const acceptQuoteTemplate: (params: AcceptQuoteTemplateParams) => Promise<any>;

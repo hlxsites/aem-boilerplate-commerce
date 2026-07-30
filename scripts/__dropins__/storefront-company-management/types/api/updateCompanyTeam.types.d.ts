@@ -19,4 +19,3 @@ export interface UpdateCompanyTeamInput {
     name?: string;
     description?: string | null;
 }
-//# sourceMappingURL=updateCompanyTeam.types.d.ts.map

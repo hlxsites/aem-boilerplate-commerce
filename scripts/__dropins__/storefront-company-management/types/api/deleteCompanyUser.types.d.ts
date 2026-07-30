@@ -25,4 +25,3 @@ export interface DeleteCompanyUserParams {
 export interface DeleteCompanyUserResponse {
     success: boolean;
 }
-//# sourceMappingURL=deleteCompanyUser.types.d.ts.map

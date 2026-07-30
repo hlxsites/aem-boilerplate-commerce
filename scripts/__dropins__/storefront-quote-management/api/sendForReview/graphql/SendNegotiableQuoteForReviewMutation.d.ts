@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SEND_NEGOTIABLE_QUOTE_FOR_REVIEW_MUTATION: string;
-//# sourceMappingURL=SendNegotiableQuoteForReviewMutation.d.ts.map

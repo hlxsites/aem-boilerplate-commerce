@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ActionsBar';
 export { ActionsBar as default } from './ActionsBar';
-//# sourceMappingURL=index.d.ts.map
