@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './Item';
 export { Item as default } from './Item';
-//# sourceMappingURL=index.d.ts.map

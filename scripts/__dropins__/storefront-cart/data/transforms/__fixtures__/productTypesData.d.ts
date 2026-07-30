@@ -1550,4 +1550,3 @@ declare const simpleWithEmptyPriceTiers: {
     };
 };
 export { bundleOptions, bundleOptionsEmpty, giftCardPhysical, giftCardVirtual, simple, simpleCustomizable, configurable, configurableCustomizable, giftCard, downloadbleWithMultipleLinks, simpleLowInventory, complexInsufficientQuantity, complexInsufficientQuantityGeneralMessage, complexWithProductAttributes, simpleWithNoDiscount, simpleWithPriceTiers, simpleWithPriceTiersNoMatch, simpleWithEmptyPriceTiers, configurableWithPriceTiers, configurableWithoutPriceTiers, };
-//# sourceMappingURL=productTypesData.d.ts.map

@@ -47,4 +47,3 @@ export declare const isAdminToken: (token: string) => boolean;
  * @returns Max-Age string for cookie (e.g., "Max-Age=3600") based on token exp or defaultMaxAge
  */
 export declare const getTokenExpiration: (token: string, defaultMaxAge: string) => string;
-//# sourceMappingURL=jwtUtils.d.ts.map

@@ -118,6 +118,7 @@ export default async function decorate(block) {
   // Get all checkout elements using centralized selectors
   const $content = getElement(selectors.checkout.content);
   const $loader = getElement(selectors.checkout.loader);
+  const $loaderStatus = getElement(selectors.checkout.loaderStatus);
   const $mergedCartBanner = getElement(selectors.checkout.mergedCartBanner);
   const $heading = getElement(selectors.checkout.heading);
   const $serverError = getElement(selectors.checkout.serverError);
@@ -145,7 +146,7 @@ export default async function decorate(block) {
   ]);
 
   const handlePlaceOrder = async ({ cartId, code }) => {
-    await displayOverlaySpinner(loaderRef, $loader);
+    await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
       if (code === PaymentMethodCode.CREDIT_CARD) {
@@ -166,7 +167,7 @@ export default async function decorate(block) {
       console.error(error);
       throw error;
     } finally {
-      removeOverlaySpinner(loaderRef, $loader);
+      removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
     }
   };
 
@@ -223,7 +224,7 @@ export default async function decorate(block) {
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
-      removeOverlaySpinner(loaderRef, $loader);
+      removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
     }
   }

@@ -1,5 +1,52 @@
 # @dropins/storefront-account
 
+## 4.1.0
+
+### Minor Changes
+
+- b3826fd: Begin next development cycle
+
+### Patch Changes
+
+- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a different address" radio option (WCAG 2.4.7)
+- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG 2.4.6) and align the "use a different address" radio's accessible name with its visible text (WCAG 2.5.3)
+- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields (WCAG 1.3.5).
+
+  The first name, last name, and email fields on the customer account and addresses forms were missing an `autocomplete` attribute entirely; they now use `given-name`, `family-name`, and `email` respectively.
+
+  The current password, new password, and confirm password fields on the change password form, and the password confirmation field shown when changing the account email, used invalid `autocomplete` values (`currentPassword`, `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5 tokens). They now use the correct `current-password` / `new-password` values.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 660a316: Fix visual heading text not marked as heading across orders, addresses, payment methods and customer information sections
+- 952c2ec: Bump SDK stable versions
+
+## 4.1.0-beta.1
+
+### Patch Changes
+
+- 952c2ec: Bump SDK stable versions
+
+## 4.1.0-beta.0
+
+### Minor Changes
+
+- b3826fd: Begin next development cycle
+
+### Patch Changes
+
+- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a different address" radio option (WCAG 2.4.7)
+- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG 2.4.6) and align the "use a different address" radio's accessible name with its visible text (WCAG 2.5.3)
+- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields (WCAG 1.3.5).
+
+  The first name, last name, and email fields on the customer account and addresses forms were missing an `autocomplete` attribute entirely; they now use `given-name`, `family-name`, and `email` respectively.
+
+  The current password, new password, and confirm password fields on the change password form, and the password confirmation field shown when changing the account email, used invalid `autocomplete` values (`currentPassword`, `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5 tokens). They now use the correct `current-password` / `new-password` values.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 660a316: Fix visual heading text not marked as heading across orders, addresses, payment methods and customer information sections
+
 ## 4.0.0
 
 ### Major Changes

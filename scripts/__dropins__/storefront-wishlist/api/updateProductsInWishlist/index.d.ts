@@ -15,4 +15,3 @@
  * from Adobe.
  ****************************************************************** */
 export * from './updateProductsInWishlist';
-//# sourceMappingURL=index.d.ts.map

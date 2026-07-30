@@ -17,6 +17,5 @@
 type GetNegotiableQuoteInput = {
     uid?: string;
 };
-export declare const getNegotiableQuote: (input?: GetNegotiableQuoteInput) => Promise<import('../../data/models/quote').NegotiableQuote | null>;
+export declare const getNegotiableQuote: (input?: GetNegotiableQuoteInput) => Promise<import("../../data/models").NegotiableQuote | null>;
 export {};
-//# sourceMappingURL=getNegotiableQuote.d.ts.map

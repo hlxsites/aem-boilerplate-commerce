@@ -1,1 +1,1 @@
-export * from './types/elsie/src/components/index'
+export * from './types/elsie/src/components/index';
