@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CUSTOMER_PAYMENT_TOKENS = "\n  query getCustomerPaymentTokens {\n    customerPaymentTokens {\n      items {\n        details\n        public_hash\n        payment_method_code\n        type\n      }\n    }\n  }\n";
-//# sourceMappingURL=getCustomerPaymentTokens.graphql.d.ts.map

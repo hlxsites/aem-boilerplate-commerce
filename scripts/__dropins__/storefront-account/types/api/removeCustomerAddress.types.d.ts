@@ -22,4 +22,3 @@ export interface RemoveCustomerAddressResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=removeCustomerAddress.types.d.ts.map

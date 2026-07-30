@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './GiftOptions';
 export { GiftOptions as default } from './GiftOptions';
-//# sourceMappingURL=index.d.ts.map

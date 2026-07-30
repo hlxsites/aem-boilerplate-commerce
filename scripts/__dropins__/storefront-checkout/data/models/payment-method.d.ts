@@ -20,4 +20,3 @@ export type PaymentMethod = {
     title: string;
     additionalData?: AdditionalData;
 };
-//# sourceMappingURL=payment-method.d.ts.map

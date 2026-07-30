@@ -23,4 +23,3 @@ export interface StoreConfigModel {
     shoppingAssistanceCheckboxTitle: string;
     shoppingAssistanceCheckboxTooltip: string;
 }
-//# sourceMappingURL=store-config.d.ts.map
