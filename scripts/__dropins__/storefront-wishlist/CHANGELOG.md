@@ -1,5 +1,36 @@
 # @dropins/storefront-wishlist
 
+## 3.4.0
+
+### Minor Changes
+
+- 53ab3b8: Added `pageSize` option to the `initialize` config to control how many wishlist items are fetched and displayed per page. Defaults to 9. Set a custom value to enable page-by-page navigation with pagination controls. Pagination UI renders automatically when total pages exceed one.
+
+### Patch Changes
+
+- ea5042e: Bump SDK stable versions
+- 8a3423a: Redirect gift card wishlist items to the PDP for configuration instead of silently failing on Move to Cart.
+- 0973b90: Fixed WishlistToggle heart icon showing incorrect state on PLP and PDP when a product exists on a wishlist page beyond the first. The drop-in now fetches all wishlist pages in the background on initialization and checks the full item list when determining whether a product is wishlisted, regardless of pagination.
+- bf0c101: Make image carousel dot controls keyboard accessible by replacing span elements with button elements (USF-3327)
+
+## 3.4.0-beta.1
+
+### Patch Changes
+
+- ea5042e: Bump SDK stable versions
+
+## 3.4.0-beta.0
+
+### Minor Changes
+
+- 53ab3b8: Added `pageSize` option to the `initialize` config to control how many wishlist items are fetched and displayed per page. Defaults to 9. Set a custom value to enable page-by-page navigation with pagination controls. Pagination UI renders automatically when total pages exceed one.
+
+### Patch Changes
+
+- 8a3423a: Redirect gift card wishlist items to the PDP for configuration instead of silently failing on Move to Cart.
+- 0973b90: Fixed WishlistToggle heart icon showing incorrect state on PLP and PDP when a product exists on a wishlist page beyond the first. The drop-in now fetches all wishlist pages in the background on initialization and checks the full item list when determining whether a product is wishlisted, regardless of pagination.
+- bf0c101: Make image carousel dot controls keyboard accessible by replacing span elements with button elements (USF-3327)
+
 ## 3.3.0
 
 ### Minor Changes

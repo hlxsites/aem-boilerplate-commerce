@@ -218,6 +218,7 @@ export default async function decorate(block) {
           routeProduct: createProductLink,
           recId: recid,
           currentProduct,
+          cartSkus: context.cartSkus,
           userViewHistory: context.userViewHistory,
           userPurchaseHistory: context.userPurchaseHistory,
           slots: {
@@ -329,9 +330,16 @@ export default async function decorate(block) {
     // Check if significant context changes occurred that warrant reloading recommendations
     const significantChanges = ['currentSku', 'currentProductPrice', 'pageType', 'category'];
 
-    return significantChanges.some(
+    const hasSignificantChanges = significantChanges.some(
       (key) => newContext[key] !== previousContext[key] && newContext[key] !== undefined,
     );
+
+    // cartSkus is a new array reference on every update, so compare by content
+    const cartSkusChanged = newContext.cartSkus !== undefined
+      && (newContext.cartSkus.length !== previousContext.cartSkus?.length
+        || newContext.cartSkus.some((sku, index) => sku !== previousContext.cartSkus?.[index]));
+
+    return hasSignificantChanges || cartSkusChanged;
   }
 
   function updateContext(updates) {
@@ -375,18 +383,19 @@ export default async function decorate(block) {
     updateContext({ pageType: pageContext?.pageType });
   }
 
-  function handleCartChanges({ shoppingCartContext }) {
-    const cartSkus = shoppingCartContext?.totalQuantity === 0
+  function handleCartChanges(cartData) {
+    const cartSkus = !cartData || cartData.totalQuantity === 0
       ? []
-      : shoppingCartContext?.items?.map(({ product }) => product.sku);
+      : cartData.items?.map((item) => item.sku) ?? [];
     updateContext({ cartSkus });
   }
+
+  events.on('cart/data', handleCartChanges, { eager: true });
 
   window.adobeDataLayer.push((dl) => {
     dl.addEventListener('adobeDataLayer:change', handlePageTypeChanges, { path: 'pageContext' });
     dl.addEventListener('adobeDataLayer:change', handleProductChanges, { path: 'productContext' });
     dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
-    dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });
 
   if (isMobile) {

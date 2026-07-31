@@ -22,4 +22,3 @@ export * from './customer-data';
 export * from './attributes-form';
 export * from './permissions';
 export * from './adobe-commerce-optimizer';
-//# sourceMappingURL=index.d.ts.map

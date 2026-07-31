@@ -38,4 +38,3 @@ export interface AccountModel {
     company?: string;
     customerGroup?: string;
 }
-//# sourceMappingURL=customer.d.ts.map

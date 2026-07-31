@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getCustomerPaymentTokens';
-//# sourceMappingURL=index.d.ts.map

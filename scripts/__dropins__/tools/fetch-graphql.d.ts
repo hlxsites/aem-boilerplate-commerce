@@ -1,1 +1,1 @@
-export * from './types/fetch-graphql/src/index'
+export * from './types/fetch-graphql/src/index';
