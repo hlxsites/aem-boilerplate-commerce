@@ -32,8 +32,9 @@ jobs:
           # store switcher) or B2B seller-assisted buying. Keep ordering-dependent
           # specs last — verifySellerAssistedBuying relies on a warm cart state.
           - "src/tests/b2c/verifyZeroTotalCheckoutWithGiftCardAndGiftOptions.spec.js,src/tests/b2c/verifyCartUndo.spec.js,src/tests/b2c/verifyLowStockInfoMessage.spec.js,src/tests/b2c/verifyStoreSwitcher.spec.js,src/tests/b2c/verifySellerAssistedBuying.spec.js"
-          # Shard 4 — Discovery & search (events/recs and verifyAemAssets are skipped)
-          - "src/tests/b2c/verifyProductSearch.spec.js,src/tests/b2c/verifyProductListPage.spec.js,src/tests/b2c/verifyRecsDisplay.spec.js,src/tests/b2c/verifyRecsContextMatrix.spec.js,src/tests/b2c/verifyAemAssets.spec.js,src/tests/b2c/events/recs.spec.js,src/tests/b2c/events/search-product-click.spec.js,src/tests/b2c/events/search-request-sent.spec.js,src/tests/b2c/events/search-results-view.spec.js"
+          # Shard 4 — Discovery & search (events/recs, verifyAemAssets, and
+          # verifyRecsStorageHydration are skipped)
+          - "src/tests/b2c/verifyProductSearch.spec.js,src/tests/b2c/verifyProductListPage.spec.js,src/tests/b2c/verifyRecsDisplay.spec.js,src/tests/b2c/verifyRecsStorageHydration.spec.js,src/tests/b2c/verifyRecsContextMatrix.spec.js,src/tests/b2c/verifyAemAssets.spec.js,src/tests/b2c/events/recs.spec.js,src/tests/b2c/events/search-product-click.spec.js,src/tests/b2c/events/search-request-sent.spec.js,src/tests/b2c/events/search-results-view.spec.js"
           # Shard 5 — ACCS Prod specific tests without using Payment Services
           - "src/tests/b2c/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
     steps:
