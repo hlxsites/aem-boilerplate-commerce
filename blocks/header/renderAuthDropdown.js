@@ -30,6 +30,7 @@ function renderSignIn(element) {
     },
     formSize: 'small',
     routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
+    apiErrorMessageOverride: 'Custom error: Unable to sign in. Please contact support.',
   })(element);
 }
 

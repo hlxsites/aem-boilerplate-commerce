@@ -16,6 +16,7 @@ import {
 const signInFormConfig = {
   renderSignUpLink: true,
   routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
+  apiErrorMessageOverride: 'Custom error: Unable to sign in. Please contact support.',
   slots: {
     SuccessNotification: (ctx) => {
       const userName = ctx?.isSuccessful?.userName || '';
