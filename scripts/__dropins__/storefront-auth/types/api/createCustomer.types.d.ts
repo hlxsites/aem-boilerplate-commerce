@@ -41,4 +41,3 @@ export interface DataCreateCustomer {
     errors?: errorProps[];
 }
 export {};
-//# sourceMappingURL=createCustomer.types.d.ts.map

@@ -24,4 +24,3 @@ export interface UpdateCustomerAddressResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=updateCustomerAddress.types.d.ts.map

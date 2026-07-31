@@ -1,7 +1,14 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes, JSX } from 'preact/compat';
 import { ImageProps } from '../Image';
-
 export interface ImageNodeRenderProps extends ImageProps {
     imageSwatchContext: {
         disabled?: boolean;
@@ -32,4 +39,3 @@ export interface ImageSwatchProps extends Omit<HTMLAttributes<HTMLInputElement>,
     onUpdateError?: (error: Error) => void;
 }
 export declare const ImageSwatch: FunctionComponent<ImageSwatchProps>;
-//# sourceMappingURL=ImageSwatch.d.ts.map

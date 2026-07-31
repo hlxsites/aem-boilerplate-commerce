@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './applyGiftCardToCart';
-//# sourceMappingURL=index.d.ts.map
