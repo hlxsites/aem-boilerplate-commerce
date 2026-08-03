@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './initialize';
+export { default as createPaymentOrder } from './createPaymentOrder';
 export { PaymentMethodCode } from '../data/models/method';
 export { PaymentLocation } from '../data/models/location';
 //# sourceMappingURL=index.d.ts.map
