@@ -449,11 +449,18 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
           },
           enabled: false,
         },
-        [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
+        },
+      },
+      StoredMethods: {
+        [PaymentMethodCode.VAULT]: {
+          tokenCode: PaymentMethodCode.CREDIT_CARD,
+          render: (ctx) => {
+            const $storedOption = document.createElement('div');
+            $storedOption.innerHTML = JSON.stringify(ctx.details);
+            ctx.replaceHTML($storedOption);
+          },
         },
       },
     },

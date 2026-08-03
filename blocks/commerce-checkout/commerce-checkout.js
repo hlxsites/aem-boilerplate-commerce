@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 // Dropin Tools
+import { deepmerge } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
@@ -17,7 +18,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import {
@@ -147,8 +148,17 @@ export default async function decorate(block) {
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader);
     try {
-      // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
+      // Payment Services stored card
+      if (code === paymentsApi.PaymentMethodCode.VAULT) {
+        await paymentsApi.createPaymentOrder({
+          cartId,
+          location: 'CHECKOUT',
+          methodCode: paymentsApi.PaymentMethodCode.VAULT,
+          paymentSource: 'vault',
+        });
+      }
+      // Payment Services new card
+      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
         if (!creditCardFormRef.current) {
           console.error('Credit card form not rendered.');
           return;
@@ -304,9 +314,9 @@ export default async function decorate(block) {
   }
 
   const EXPRESS_PAYMENT_METHODS = [
-    PaymentMethodCode.PAYPAL_BUTTONS,
-    PaymentMethodCode.APPLE_PAY,
-    PaymentMethodCode.GOOGLE_PAY,
+    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
+    paymentsApi.PaymentMethodCode.APPLE_PAY,
+    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
   ];
 
   const isExpressPaymentMethod = (method) => (
@@ -337,19 +347,15 @@ export default async function decorate(block) {
   }
 
   function handlePaymentServicesInitialized({ availablePaymentMethods }) {
-    availablePaymentMethods.forEach((code) => {
-      paymentMethods.setProps((prev) => ({
-        slots: {
-          Methods: {
-            ...prev.slots.Methods,
-            [code]: {
-              ...prev.slots.Methods[code],
-              enabled: !!prev.slots.Methods[code].render,
-            },
-          },
-        },
-      }));
-    });
+    const slotsUpdate = {
+      Methods: Object.fromEntries(availablePaymentMethods.map(
+        (code) => [code, { enabled: true }],
+      )),
+    };
+    paymentMethods.setProps((prev) => ({
+      ...prev,
+      slots: deepmerge(prev.slots, slotsUpdate),
+    }));
   }
 
   events.on('authenticated', handleAuthenticated);
