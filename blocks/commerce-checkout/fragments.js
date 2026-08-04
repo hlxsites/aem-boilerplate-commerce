@@ -51,9 +51,9 @@ export function createCheckoutFragment() {
           <div class="checkout__out-of-stock ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__login ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__shipping-form ${CHECKOUT_BLOCK}"></div>
-          <div class="checkout__bill-to-shipping ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__delivery ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__payment-methods ${CHECKOUT_BLOCK}"></div>
+          <div class="checkout__bill-to-shipping ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__billing-form ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__terms-and-conditions ${CHECKOUT_BLOCK}"></div>
           <div class="checkout__place-order ${CHECKOUT_BLOCK}"></div>

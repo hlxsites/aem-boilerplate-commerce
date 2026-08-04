@@ -43,6 +43,12 @@
     border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
 }
 
+/* No billing section to divide from when a stored payment method is selected */
+.checkout__payment-methods--stored-selected {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
 /* Server error visibility */
 .checkout__server-error {
     display: none;
