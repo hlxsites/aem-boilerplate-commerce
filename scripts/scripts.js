@@ -1,5 +1,4 @@
 import {
-  buildBlock,
   loadHeader,
   loadFooter,
   decorateIcons,
@@ -9,6 +8,7 @@ import {
   loadSection,
   loadSections,
   loadCSS,
+  buildBlock,
 } from './aem.js';
 import {
   loadCommerceEager,
@@ -22,23 +22,58 @@ import {
   IS_DA,
 } from './commerce.js';
 
-/**
- * Builds hero block and prepends to main in a new section.
- * @param {Element} main The container element
+/*
+ * Trusted Types default policy.
+ *
+ * This policy is defined but NOT currently enforced: the
+ * `require-trusted-types-for 'script'` CSP directive that activates it has been
+ * removed from the Content-Security-Policy meta in head.html. The policy is kept
+ * here so enforcement can be turned back on without re-authoring it.
+ *
+ * Why the directive was removed: with it enforced, payment SDKs that build a
+ * same-origin iframe and synchronously inject a <script> into it fail to render.
+ * The Credit Card checkout flow hits this because its hosted-fields SDK does
+ * exactly that. Trusted Types policies are scoped per document/realm, so the
+ * child iframe inherits the CSP directive but not this default policy; the SDK's
+ * `script.src` assignment in that realm then throws "This document requires
+ * 'TrustedScriptURL' assignment" and the card fields never mount. Any dependency
+ * that injects scripts into a same-origin iframe realm hits the same wall.
+ *
+ * To re-enable enforcement: add `require-trusted-types-for 'script';` back to the
+ * `Content-Security-Policy` meta in head.html. Before doing so, note that the
+ * policy below is a passthrough (createScriptURL/createScript return their input
+ * unchanged), so enforcing it satisfies the API without adding real containment;
+ * hardening it into an allowlist is the useful next step. Enforcement will also
+ * re-break any same-origin-iframe SDK unless that SDK installs its own policy in
+ * the iframe realm (the correct long-term fix).
+ *
+ * References:
+ * - Directive introduced upstream: https://github.com/adobe/aem-boilerplate/pull/641
+ * - Trusted Types API: https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
  */
-function buildHeroBlock(main) {
-  const h1 = main.querySelector('h1');
-  const picture = main.querySelector('picture');
-  // eslint-disable-next-line no-bitwise
-  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
-    // Check if h1 or picture is already inside a hero block
-    if (h1.closest('.hero') || picture.closest('.hero')) {
-      return; // Don't create a duplicate hero block
-    }
-    const section = document.createElement('div');
-    section.append(buildBlock('hero', { elems: [picture, h1] }));
-    main.prepend(section);
-  }
+if (window.trustedTypes && window.trustedTypes.createPolicy) {
+  const innerTT = window.trustedTypes.createPolicy('tt-inner', {
+    createHTML: (s) => s, // avoid stack overflow
+  });
+
+  window.trustedTypes.createPolicy('default', {
+    createHTML: (input, type, sink) => {
+      let processedInput = input;
+      if (/srcdoc\s*=/i.test(processedInput)) {
+        const doc = new DOMParser().parseFromString(innerTT.createHTML(processedInput), 'text/html');
+        doc.querySelectorAll('iframe[srcdoc]').forEach((el) => el.removeAttribute('srcdoc'));
+        processedInput = doc.body.innerHTML;
+      }
+      if (sink.includes('createContextualFragment') || sink.includes('Document write')) {
+        const doc = new DOMParser().parseFromString(innerTT.createHTML(processedInput), 'text/html');
+        doc.querySelectorAll('script').forEach((el) => el.remove());
+        processedInput = doc.body.innerHTML;
+      }
+      return processedInput;
+    },
+    createScriptURL: (input) => input,
+    createScript: (input) => input,
+  });
 }
 
 /**
@@ -51,6 +86,30 @@ async function loadFonts() {
   } catch (e) {
     // do nothing
   }
+}
+
+/**
+ * Turns `/widgets/...` links into widget blocks.
+ * @param {Element} main The container element
+ */
+function buildWidgetAutoBlocks(main) {
+  const widgetLinks = [...main.querySelectorAll('a[href*="/widgets/"]')];
+  widgetLinks.forEach((link) => {
+    if (link.closest('.widget')) return;
+    const newLink = link.cloneNode(true);
+    const widgetBlock = buildBlock('widget', { elems: [newLink] });
+    const p = link.closest('p');
+    if (
+      p
+      && p.querySelectorAll('a').length === 1
+      && p.querySelector('a') === link
+      && p.textContent.trim() === link.textContent.trim()
+    ) {
+      p.replaceWith(widgetBlock);
+    } else {
+      link.replaceWith(widgetBlock);
+    }
+  });
 }
 
 /**
@@ -76,8 +135,7 @@ function buildAutoBlocks(main) {
         });
       });
     }
-
-    if (!main.querySelector('.hero')) buildHeroBlock(main);
+    buildWidgetAutoBlocks(main);
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }

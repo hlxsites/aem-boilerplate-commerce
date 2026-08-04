@@ -27,4 +27,3 @@ export * from './ServerError';
 export * from './ShippingMethods';
 export * from './TermsAndConditions';
 export * from './PaymentOnAccount';
-//# sourceMappingURL=index.d.ts.map

@@ -21,4 +21,3 @@ export { NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT, NEGOTIABLE_QUOTE_SHIPPING_AD
 export { NEGOTIABLE_QUOTE_FRAGMENT } from './graphql/NegotiableQuoteFragment.graphql';
 export { AVAILABLE_PAYMENT_METHOD_FRAGMENT, SELECTED_PAYMENT_METHOD_FRAGMENT, } from './graphql/PaymentMethodFragment.graphql';
 export { AVAILABLE_SHIPPING_METHOD_FRAGMENT, ESTIMATE_SHIPPING_METHOD_FRAGMENT, SELECTED_SHIPPING_METHOD_FRAGMENT, } from './graphql/ShippingMethodFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map

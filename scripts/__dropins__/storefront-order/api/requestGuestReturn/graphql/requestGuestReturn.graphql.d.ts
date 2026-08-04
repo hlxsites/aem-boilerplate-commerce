@@ -14,4 +14,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const REQUEST_RETURN_GUEST_ORDER = "\n  mutation REQUEST_RETURN_GUEST_ORDER($input: RequestGuestReturnInput!) {\n    requestGuestReturn(input: $input) {\n      return {\n        ...REQUEST_RETURN_ORDER_FRAGMENT\n      }\n    }\n  }\n  \n  fragment REQUEST_RETURN_ORDER_FRAGMENT on Return {\n    __typename\n    uid\n    status\n    number\n    created_at\n  }\n\n";
-//# sourceMappingURL=requestGuestReturn.graphql.d.ts.map

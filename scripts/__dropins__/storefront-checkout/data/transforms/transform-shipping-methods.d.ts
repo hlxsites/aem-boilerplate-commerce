@@ -1,6 +1,21 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { ShippingMethod } from '../models/shipping-method';
 import { GetCartQuery } from '../../__generated__/types';
-
 type Cart = NonNullable<GetCartQuery['cart']>;
 type ShippingAddresses = Cart['shipping_addresses'];
 type ShippingAddress = NonNullable<NonNullable<ShippingAddresses>[number]>;
@@ -12,4 +27,3 @@ export declare const transformSelectedShippingMethod: (data: SelectedShippingMet
 export declare const transformAvailableShippingMethod: (data: AvailableShippingMethod) => ShippingMethod | undefined;
 export declare const transformShippingMethods: (data: AvailableShippingMethods) => ShippingMethod[];
 export {};
-//# sourceMappingURL=transform-shipping-methods.d.ts.map
