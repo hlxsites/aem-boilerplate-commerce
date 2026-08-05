@@ -349,7 +349,6 @@ export default async function decorate(block) {
   let previousCartQuantity;
 
   events.on('cart/data', (data) => {
-
     const totalQuantity = data?.totalQuantity ?? 0;
 
     if (totalQuantity) {
