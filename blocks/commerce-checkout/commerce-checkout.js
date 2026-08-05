@@ -54,6 +54,7 @@ import {
   renderShippingMethods,
   renderTermsAndConditions,
   resyncBillingAddress,
+  unmountPayAndPlaceOrder,
 } from './containers.js';
 
 // Constants
@@ -134,6 +135,7 @@ export default async function decorate(block) {
   const $orderSummary = getElement(selectors.checkout.orderSummary);
   const $cartSummary = getElement(selectors.checkout.cartSummary);
   const $placeOrder = getElement(selectors.checkout.placeOrder);
+  const $payAndPlaceOrder = getElement(selectors.checkout.payAndPlaceOrder);
   const $giftOptions = getElement(selectors.checkout.giftOptions);
   const $termsAndConditions = getElement(selectors.checkout.termsAndConditions);
 
@@ -225,7 +227,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods, creditCardFormRef, handleValidation),
+    renderPaymentMethods($paymentMethods, creditCardFormRef, handleValidation, $payAndPlaceOrder),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -315,14 +317,14 @@ export default async function decorate(block) {
     window.location.reload();
   }
 
-  const EXPRESS_PAYMENT_METHODS = [
+  const ORDER_PLACING_PAYMENT_METHODS = [
     paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
     paymentsApi.PaymentMethodCode.APPLE_PAY,
     paymentsApi.PaymentMethodCode.GOOGLE_PAY,
   ];
 
-  const isExpressPaymentMethod = (method) => (
-    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  const isOrderPlacingPaymentMethod = (method) => (
+    method && ORDER_PLACING_PAYMENT_METHODS.includes(method.code)
   );
 
   function handleCheckoutValues(payload) {
@@ -339,11 +341,12 @@ export default async function decorate(block) {
 
     wasStoredPaymentMethodSelected = isStoredPaymentMethodSelected;
 
-    if (isExpressPaymentMethod(selectedPaymentMethod)) {
-      // Express payment methods take over the responsibility of placing the order
+    if (isOrderPlacingPaymentMethod(selectedPaymentMethod)) {
+      // Order-placing payment methods take over the responsibility of placing the order
       placeOrder.setProps((prev) => ({ ...prev, active: false }));
     } else {
       placeOrder.setProps((prev) => ({ ...prev, active: true }));
+      unmountPayAndPlaceOrder();
     }
   }
 

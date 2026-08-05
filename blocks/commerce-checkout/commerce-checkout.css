@@ -49,6 +49,12 @@
     border-bottom: none;
 }
 
+/* Tighten default paragraph spacing for the pay-and-place-order notice */
+.checkout-payment-methods__pay-and-place-order-notice {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 /* Server error visibility */
 .checkout__server-error {
     display: none;
@@ -103,14 +109,24 @@
 }
 
 /* Integrate place order button into Order Summary - mobile */
-.checkout__place-order {
+.checkout__place-order-group {
     grid-column: unset;
     justify-items: unset;
     margin-top: calc(var(--spacing-big) * -1);
 }
 
-/* Hide the place order button when there is a server error */
-.checkout__content--error .checkout__place-order {
+/* Hide the place order slot when there is a server error */
+.checkout__content--error .checkout__place-order-group {
+    display: none;
+}
+
+/* Match the Place Order button's own spacing, so order-placing payment buttons look consistent with it */
+.checkout__pay-and-place-order {
+    padding-bottom: var(--spacing-big);
+}
+
+/* Hide the pay-and-place-order slot when nothing is mounted in it */
+.checkout__pay-and-place-order:empty {
     display: none;
 }
 
@@ -242,9 +258,26 @@
         order: 2;
     }
 
-    .checkout__place-order {
+    .checkout__place-order-group {
         order: 4;
     }
+
+    .checkout__pay-and-place-order:not(:empty) {
+        background-color: var(--color-neutral-200);
+        padding: var(--spacing-medium) var(--spacing-medium) var(--spacing-big) var(--spacing-medium);
+    }
+}
+
+.payment-services_apple-pay-container {
+    --apple-pay-button-border-radius: var(--shape-border-radius-3);
+}
+
+.payment-services_google-pay-container {
+    --google-pay-button-border-radius: var(--shape-border-radius-3);
+}
+
+.payment-services_paypal-buttons-container {
+    --paypal-buttons-border-radius: var(--shape-border-radius-3);
 }
 
 @media only screen and (min-width: 768px) {
@@ -270,7 +303,7 @@
         gap: var(--spacing-xbig);
     }
 
-    .checkout__place-order {
+    .checkout__place-order-group {
         margin-top: 0;
     }
 }

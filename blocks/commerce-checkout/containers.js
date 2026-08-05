@@ -357,17 +357,63 @@ export const renderShippingMethods = async (container) => renderContainer(
 );
 
 /**
+ * Creates a short notice explaining that the given order-placing payment method's button
+ * renders in the Pay & Place Order slot instead of inline in the Payment section.
+ * @param {string} label - Display label of the order-placing payment method (e.g. "Apple Pay")
+ * @returns {HTMLElement} - The notice element
+ */
+const createPayAndPlaceOrderNotice = (label) => {
+  const $notice = document.createElement('p');
+  $notice.className = 'checkout-payment-methods__pay-and-place-order-notice';
+  $notice.textContent = `Complete your purchase using the ${label} button below.`;
+  return $notice;
+};
+
+// Tracks the currently mounted Pay & Place Order button (Apple Pay / Google Pay / PayPal
+// Buttons), so it can be properly unmounted via its own RenderAPI instead of just detached from
+// the DOM, which would leave its dropin component "mounted" from Preact's perspective and throw
+// later if its async initialization (e.g. PayPal's iframe) resolves after the fact.
+let payAndPlaceOrderMount = null;
+
+/**
+ * Unmounts whatever Pay & Place Order button is currently mounted, if any.
+ */
+export const unmountPayAndPlaceOrder = () => {
+  const pending = payAndPlaceOrderMount;
+  payAndPlaceOrderMount = null;
+  if (pending) pending.then((api) => api.remove());
+};
+
+/**
+ * Mounts a Pay & Place Order button, properly unmounting whatever was previously mounted first.
+ * @param {HTMLElement} container - The Pay & Place Order slot.
+ * @param {(container: HTMLElement) => Promise<Object>} mount - Starts the dropin render.
+ */
+const mountPayAndPlaceOrder = (container, mount) => {
+  unmountPayAndPlaceOrder();
+  payAndPlaceOrderMount = mount(container);
+};
+
+/**
  * Renders payment methods with credit card integration - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render payment methods in
  * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @param {Function} validateCheckoutForms - Function that returns true if all Checkout forms are valid
+ * @param {HTMLElement} payAndPlaceOrderContainer - DOM element order-placing payment buttons
+ *   mount into, in place of the standard Place Order button
  * @returns {Promise<Object>} - The rendered payment methods component
  */
-export const renderPaymentMethods = async (container, creditCardFormRef, validateCheckoutForms) => renderContainer(
+export const renderPaymentMethods = async (
+  container,
+  creditCardFormRef,
+  validateCheckoutForms,
+  payAndPlaceOrderContainer,
+) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
   async () => CheckoutProvider.render(PaymentMethods, {
     slots: {
       Methods: {
+        checkmo: { enabled: false },
         [PaymentMethodCode.CREDIT_CARD]: {
           render: (ctx) => {
             const $creditCard = document.createElement('div');
@@ -387,9 +433,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
         },
         [PaymentMethodCode.PAYPAL_BUTTONS]: {
           render: (ctx) => {
-            const $paypalButtons = document.createElement('div');
-
-            PaymentServices.render(PayPalButtons, {
+            mountPayAndPlaceOrder(payAndPlaceOrderContainer, (container) => PaymentServices.render(PayPalButtons, {
               onButtonClick: (showPaymentSheet) => {
                 if (validateCheckoutForms()) {
                   showPaymentSheet();
@@ -403,26 +447,26 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                   message: localizedError.message,
                 });
               },
-            })($paypalButtons);
-            ctx.replaceHTML($paypalButtons);
+            })(container));
+
+            ctx.replaceHTML(createPayAndPlaceOrderNotice('PayPal'));
           },
           enabled: false,
         },
         [PaymentMethodCode.APPLE_PAY]: {
           render: (ctx) => {
-            const $applePay = document.createElement('div');
-
             const checkoutData = events.lastPayload('checkout/updated')
               || events.lastPayload('checkout/initialized')
               || null;
 
             if (checkoutData === null) {
               console.error('Cannot render apple pay button without checkout data.');
-              ctx.replaceHTML($applePay);
+              unmountPayAndPlaceOrder();
+              ctx.replaceHTML(document.createElement('div'));
               return;
             }
 
-            PaymentServices.render(ApplePay, {
+            mountPayAndPlaceOrder(payAndPlaceOrderContainer, (container) => PaymentServices.render(ApplePay, {
               location: PaymentLocation.CHECKOUT,
               getCartId: () => ctx.cartId,
               isVirtualCart: checkoutData.isVirtual,
@@ -437,9 +481,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                   message: localizedError.message,
                 });
               },
-            })($applePay);
+            })(container));
 
-            ctx.replaceHTML($applePay);
+            ctx.replaceHTML(createPayAndPlaceOrderNotice('Apple Pay'));
           },
           enabled: false,
         },
@@ -448,9 +492,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
         },
         [PaymentMethodCode.GOOGLE_PAY]: {
           render: (ctx) => {
-            const $googlePay = document.createElement('div');
-
-            PaymentServices.render(GooglePay, {
+            mountPayAndPlaceOrder(payAndPlaceOrderContainer, (container) => PaymentServices.render(GooglePay, {
               onButtonClick: (showPaymentSheet) => {
                 if (validateCheckoutForms()) {
                   showPaymentSheet();
@@ -462,8 +504,9 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
                   message: localizedError.message,
                 });
               },
-            })($googlePay);
-            ctx.replaceHTML($googlePay);
+            })(container));
+
+            ctx.replaceHTML(createPayAndPlaceOrderNotice('Google Pay'));
           },
           enabled: false,
         },
