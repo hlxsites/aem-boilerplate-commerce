@@ -193,6 +193,41 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+let quickEditLoadPromise = null;
+
+/**
+ * Dynamically loads the Quick Edit plugin (da.live). Also used by
+ * Experience Workspace, which drives the same plugin as a parent controller
+ * over postMessage rather than embedding its own iframe.
+ * @param {...*} args forwarded to quick-edit init (Sidekick payload or URL deep-link).
+ */
+async function loadQuickEdit(...args) {
+  if (quickEditLoadPromise) return quickEditLoadPromise;
+
+  quickEditLoadPromise = (async () => {
+    // eslint-disable-next-line import/no-cycle
+    const { default: initQuickEdit } = await import('../tools/quick-edit/quick-edit.js');
+    initQuickEdit(...args);
+  })();
+
+  return quickEditLoadPromise;
+}
+
+function registerQuickEditSidekick() {
+  const addSidekickListeners = (sk) => {
+    sk.addEventListener('custom:quick-edit', loadQuickEdit);
+  };
+
+  const sk = document.querySelector('aem-sidekick');
+  if (sk) {
+    addSidekickListeners(sk);
+  } else {
+    document.addEventListener('sidekick-ready', () => {
+      addSidekickListeners(document.querySelector('aem-sidekick'));
+    }, { once: true });
+  }
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -213,7 +248,10 @@ async function loadEager(doc) {
       loadErrorPage(418);
     }
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await loadSection(main.querySelector('.section'), (section) => {
+      if (document.body.classList.contains('quick-edit')) return Promise.resolve();
+      return waitForFirstImage(section);
+    });
   }
 
   try {
@@ -246,6 +284,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  registerQuickEditSidekick();
 }
 
 /**
@@ -257,7 +297,7 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
-async function loadPage() {
+export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
@@ -276,3 +316,11 @@ loadPage();
   // eslint-disable-next-line import/no-unresolved
   import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
 }());
+
+// Experience Workspace / Quick Edit deep-link: da.live opens this page with a
+// `quick-edit` query param (directly, or as the parent-controlled iframe inside
+// Experience Workspace) instead of waiting for a Sidekick button click.
+(() => {
+  const hasQE = new URL(window.location.href).searchParams.has('quick-edit');
+  if (hasQE) import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
+})();
