@@ -347,8 +347,6 @@ export default async function decorate(block) {
   let previousCartQuantity;
 
   events.on('cart/data', (data) => {
-    // preload mini cart fragment if user has a cart
-    if (data) loadMiniCartFragment();
 
     const totalQuantity = data?.totalQuantity ?? 0;
 
