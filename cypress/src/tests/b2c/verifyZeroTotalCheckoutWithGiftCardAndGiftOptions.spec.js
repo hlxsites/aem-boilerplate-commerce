@@ -38,9 +38,9 @@ describe("Verify price summary on cart", () => {
     cy.get(".product-details__buttons__add-to-cart button")
       .should("be.visible")
       .click();
+    cy.get(".minicart-wrapper").click();
     cy.get(".minicart-panel[data-loaded='true']").should('exist');
     cy.get(".minicart-panel").should("not.be.empty");
-    cy.get(".minicart-wrapper").click();
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
