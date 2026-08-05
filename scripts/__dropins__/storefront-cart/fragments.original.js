@@ -105,11 +105,12 @@ const e=`
      value
    }
   }
-`,u=`
+`,l=`
   fragment CART_ITEM_FRAGMENT on CartItemInterface {
     __typename
     uid
     quantity
+    is_salable
     is_available
     not_available_message
     errors {
@@ -300,6 +301,7 @@ const e=`
         currency
         value
       }
+      is_salable
       is_available
     }
   }
@@ -310,7 +312,7 @@ const e=`
   ${r}
   ${i}
   ${n}
-`,c=`
+`,u=`
   fragment CART_FRAGMENT on Cart {
     id
     total_quantity
@@ -418,7 +420,7 @@ const e=`
     }
   }
 
-  ${u}
+  ${l}
   ${t}
-`;export{t as APPLIED_GIFT_CARDS_FRAGMENT,n as AVAILABLE_GIFT_WRAPPING_FRAGMENT,c as CART_FRAGMENT,u as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,i as GIFT_MESSAGE_FRAGMENT,r as GIFT_WRAPPING_FRAGMENT};
+`;export{t as APPLIED_GIFT_CARDS_FRAGMENT,n as AVAILABLE_GIFT_WRAPPING_FRAGMENT,u as CART_FRAGMENT,l as CART_ITEM_FRAGMENT,a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,i as GIFT_MESSAGE_FRAGMENT,r as GIFT_WRAPPING_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

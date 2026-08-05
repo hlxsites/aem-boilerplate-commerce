@@ -150,6 +150,8 @@ export interface Item {
     onlyXLeftInStock?: number | null;
     outOfStock?: boolean;
     notAvailableMessage?: string;
+    /** Cart line backorder notice from commerce when the item is still purchasable */
+    backorderMessage?: string;
     stockLevel?: string;
     discountPercentage?: number;
     savingsAmount?: Price;

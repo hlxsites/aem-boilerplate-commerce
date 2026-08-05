@@ -1,5 +1,28 @@
 # @dropins/storefront-cart
 
+## 3.4.0-alpha-20260805202224
+
+### Minor Changes
+
+- 45c2fec: Add a `setCartId` API to point the cart drop-in at an externally-resolved cart id (e.g. a guest-clone cart from an external checkout-recovery flow). Unlike writing the `DROPIN__CART__CART-ID` cookie directly, this correctly resets internal authenticated state so a previously signed-in shopper's next cart fetch resolves the given cart, not their own.
+- 48e69a4: Make backorder behavior clear in the cart: when Commerce returns a backorder_message on a cart line (including cases where not_available_message is null), shoppers should see that message instead of generic “limited stock” / wrong stock warnings.
+
+  Work done
+
+  - GraphQL — Added backorder_message to the shared cart item fragment so it’s loaded on cart fetches and mutations that use that fragment.
+  - Data model & transform — Mapped it to backorderMessage on cart items (only when non-empty after trim). Tuned stock-related flags so backorder lines aren’t misclassified:
+
+  * hasOutOfStockItems / hasFullyOutOfStockItems — Ignore lines with a backorder notice; don’t treat OUT_OF_STOCK + is_salable: true as a cart-wide problem.
+  * insufficientQuantity / outOfStock — Don’t set these when a backorder notice is present, so IN_STOCK + is_salable: false + backorder_message no longer drives the “limited stock” banner or blocks the backorder text.
+
+  - UI — CartSummaryList and useCartItems (getWarningMessage / table) show the decoded backorder text in the warning row (with sensible ordering vs. errors and low stock).
+  - Tests — Coverage for mapping backorder_message, cart flags for backorder vs. OOS / insufficient qty, and the is_salable: false + backorder + IN_STOCK case.
+
+### Patch Changes
+
+- 4f00eae: Fix the empty-cart message in the cart summary list (used by both the Mini Cart and the Cart page) not being announced to screen readers when it appears (WCAG 4.1.2). It's now wrapped in an `aria-live` region, matching how populated cart items are already announced.
+- c5132a9: Fix the discount code input's accessible name not including its visible "Discount code" section label (WCAG 2.5.3 Label in Name). The `aria-label` previously mirrored the placeholder text ("Enter code"); it now uses a dedicated string ("Enter discount code") so screen readers announce a name that contains the visible label, matching the existing pattern used for the "Apply" button.
+
 ## 3.3.1
 
 ### Patch Changes

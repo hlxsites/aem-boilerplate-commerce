@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,10 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CartModel } from '../models';
-/** Supports Commerce `is_salable` and legacy mesh fields that still expose `is_available`. */
-export declare function resolveIsSalable(item: {
-    is_salable?: boolean | null;
-    is_available?: boolean | null;
-}): boolean;
-export declare function transformCart(data: any): CartModel | null;
+export * from './setCartId';
