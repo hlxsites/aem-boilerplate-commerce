@@ -4,7 +4,8 @@ import { PBL_FETCH_GRAPHQL } from './pay-by-link-client.js';
 import { PAY_BY_LINK_CART_QUERY } from './queries/pay-by-link-cart.graphql.js';
 
 export const PBL_READY_EVENT = 'pbl/ready';
-export const PBL_ERROR_EVENT = 'pbl/error';
+export const PBL_LINK_ERROR_EVENT = 'pbl/link-error';
+export const PBL_SETUP_ERROR_EVENT = 'pbl/setup-error';
 
 const CREATE_POC_CART_MUTATION = `
   mutation CreatePocCart {
@@ -105,17 +106,23 @@ export async function initializePayByLink() {
   const { hostname, searchParams } = new URL(window.location.href);
   const token = searchParams.get('token');
   const isLocalDemo = hostname === 'localhost' && searchParams.get('demo') === 'true';
+  let cartId;
 
   try {
     if (!token && !isLocalDemo) throw new Error('The payment link token is missing.');
+    cartId = token ? await resolveCartId(token) : await createDemoCart();
+  } catch (error) {
+    events.emit(token ? PBL_LINK_ERROR_EVENT : PBL_SETUP_ERROR_EVENT, { error });
+    return null;
+  }
 
-    const cartId = token ? await resolveCartId(token) : await createDemoCart();
-
+  try {
     checkoutApi.setEndpoint(PBL_FETCH_GRAPHQL);
     await checkoutApi.authenticateCustomer(false);
     await checkoutApi.initializeCheckout({ id: cartId });
 
     let checkoutData = events.lastPayload('checkout/initialized') ?? null;
+    if (!checkoutData) throw new Error('The payment checkout could not be initialized.');
     if (isLocalDemo) {
       checkoutData = await prepareDemoCheckout();
     }
@@ -126,7 +133,7 @@ export async function initializePayByLink() {
     });
     return cartId;
   } catch (error) {
-    events.emit(PBL_ERROR_EVENT, { error });
+    events.emit(PBL_SETUP_ERROR_EVENT, { error });
     return null;
   }
 }

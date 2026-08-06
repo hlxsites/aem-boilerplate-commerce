@@ -17,8 +17,9 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 import {
   initializePayByLink,
-  PBL_ERROR_EVENT,
+  PBL_LINK_ERROR_EVENT,
   PBL_READY_EVENT,
+  PBL_SETUP_ERROR_EVENT,
 } from '../../scripts/initializers/pay-by-link.js';
 import { PBL_FETCH_GRAPHQL } from '../../scripts/initializers/pay-by-link-client.js';
 import initializePayByLinkPaymentServices from '../../scripts/initializers/pay-by-link-payment-services.js';
@@ -116,7 +117,7 @@ const renderOrderSummary = (container, cart) => {
 
 export default async function decorate(block) {
   const heading = document.createElement('h2');
-  const status = document.createElement('p');
+  const status = document.createElement('div');
   const checkout = document.createElement('div');
   const main = document.createElement('div');
   const aside = document.createElement('aside');
@@ -167,9 +168,27 @@ export default async function decorate(block) {
   checkout.append(main, aside);
   block.replaceChildren(heading, description, status, checkout);
 
+  const showError = (error, retryable = false) => {
+    const message = document.createElement('span');
+    message.textContent = error.message;
+    checkout.hidden = true;
+    status.setAttribute('role', 'alert');
+    status.replaceChildren(message);
+
+    if (retryable) {
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'button secondary';
+      retry.textContent = 'Retry';
+      retry.addEventListener('click', () => window.location.reload());
+      status.append(retry);
+    }
+  };
+
   events.on(PBL_READY_EVENT, async ({ checkoutData }) => {
     try {
-      status.textContent = 'Your items are reserved and ready for payment.';
+      status.setAttribute('role', 'status');
+      status.replaceChildren('Your items are reserved and ready for payment.');
       checkout.hidden = false;
 
       renderOrderSummary(summary, checkoutData);
@@ -238,7 +257,7 @@ export default async function decorate(block) {
         if (nextCheckoutData) renderOrderSummary(summary, nextCheckoutData);
       });
     } catch (error) {
-      events.emit(PBL_ERROR_EVENT, { error });
+      events.emit(PBL_SETUP_ERROR_EVENT, { error });
     }
   });
 
@@ -246,11 +265,8 @@ export default async function decorate(block) {
     billingForm.hidden = isBillToShipping;
   });
 
-  events.on(PBL_ERROR_EVENT, ({ error }) => {
-    checkout.hidden = true;
-    status.setAttribute('role', 'alert');
-    status.textContent = error.message;
-  });
+  events.on(PBL_LINK_ERROR_EVENT, ({ error }) => showError(error));
+  events.on(PBL_SETUP_ERROR_EVENT, ({ error }) => showError(error, true));
 
   await initializePayByLink();
 }

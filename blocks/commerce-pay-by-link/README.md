@@ -27,6 +27,7 @@ The temporary Cart action intentionally navigates to the authored draft on the s
 ## PoC constraints
 
 - The committed Checkout runtime assets include the summary-model extension from `storefront-checkout` commit `ca2ab355`. Rebuild those assets from that source after regenerating drop-ins until the change is available in a published package.
+- `postinstall.js` fails explicitly when regenerated Checkout assets do not contain that extension, preventing a silent summary regression.
 - Confirmation renders from the successful `placeOrder` response without authentication. It is not persisted; refreshing a completed PBL token displays its terminal backend status instead of reconstructing the confirmation.
 
 

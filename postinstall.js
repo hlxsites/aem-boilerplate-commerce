@@ -73,11 +73,29 @@ function checkSourceMaps() {
   }
 }
 
+function checkPayByLinkCheckoutRuntime() {
+  const fragments = fs.readFileSync(path.join(dropinsDir, 'storefront-checkout', 'fragments.js'), 'utf8');
+  const api = fs.readFileSync(path.join(dropinsDir, 'storefront-checkout', 'api.js'), 'utf8');
+  const requiredFragments = ['itemsV2', 'subtotal_excluding_tax', 'applied_taxes'];
+  const requiredTransforms = ['itemsV2', 'subtotalExcludingTax', 'appliedTaxes'];
+
+  if (
+    requiredFragments.some((field) => !fragments.includes(field))
+    || requiredTransforms.some((field) => !api.includes(field))
+  ) {
+    throw new Error(
+      'The installed Checkout package does not include the PBL summary model. '
+      + 'Rebuild it from storefront-checkout commit ca2ab355 or use a published version containing that change.',
+    );
+  }
+}
+
 checkSourceMaps();
 
 checkPackageLockForArtifactory()
   .then((found) => {
     if (!found) {
+      checkPayByLinkCheckoutRuntime();
       console.info('✅ Drop-ins installed successfully!', '\n');
       process.exit(0);
     } else {

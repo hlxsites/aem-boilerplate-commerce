@@ -49,10 +49,16 @@ const CREATE_PAYMENT_LINK_MUTATION = `
   }
 `;
 
-const isPaymentLinkDemoEnabled = () => (
-  window.location.hostname === 'localhost'
-  || new URL(window.location.href).searchParams.get('pblDemo') === 'true'
-);
+const PBL_DEMO_HOSTS = new Set([
+  'pbl-standalone--aem-boilerplate-commerce--hlxsites.aem.live',
+  'pbl-standalone--aem-boilerplate-commerce--hlxsites.aem.page',
+]);
+
+const isPaymentLinkDemoEnabled = () => {
+  const { hostname, searchParams } = new URL(window.location.href);
+  return searchParams.get('pblDemo') === 'true'
+    && (hostname === 'localhost' || PBL_DEMO_HOSTS.has(hostname));
+};
 
 export default async function decorate(block) {
   // Configuration

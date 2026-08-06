@@ -1,4 +1,6 @@
 import { events } from '@dropins/tools/event-bus.js';
+import { initializers } from '@dropins/tools/initializer.js';
+import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 import {
   CORE_FETCH_GRAPHQL,
   fetchPlaceholders,
@@ -23,7 +25,11 @@ export default async function initializePayByLinkPage() {
   setMeta('robots', 'noindex,nofollow');
   setMeta('referrer', 'no-referrer');
   configurePayByLinkClient(CORE_FETCH_GRAPHQL);
-  await fetchPlaceholders('placeholders/global.json');
+  const labels = await fetchPlaceholders('placeholders/checkout.json');
+  checkoutApi.setEndpoint(PBL_FETCH_GRAPHQL);
+  await initializers.mountImmediately(checkoutApi.initialize, {
+    langDefinitions: { default: { ...labels } },
+  });
 
   events.on('aem/lcp', async () => {
     const recaptcha = await import('@dropins/tools/recaptcha.js');
