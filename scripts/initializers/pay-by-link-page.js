@@ -19,6 +19,7 @@ const setMeta = (name, content) => {
 };
 
 export default async function initializePayByLinkPage() {
+  document.body.classList.add('pay-by-link-page');
   setMeta('robots', 'noindex,nofollow');
   setMeta('referrer', 'no-referrer');
   configurePayByLinkClient(CORE_FETCH_GRAPHQL);

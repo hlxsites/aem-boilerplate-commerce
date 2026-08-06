@@ -58,6 +58,10 @@ No localStorage keys are used by this block. -->
 5. **Checkout Flow**: Users can proceed to checkout via configured checkout URL
 6. **Empty Cart Handling**: When cart is empty, shows start shopping CTA and hides order summary
 
+### Pay By Link demo
+
+On localhost, or when `?pblDemo=true` is present, the order-summary column shows a temporary **Create payment link** form. It calls `createPaymentLink` for the active cart and navigates to the standalone `/pay` flow. This control is for local/product validation only and is hidden in normal storefront sessions.
+
 ### Error Handling
 
 - **Mini-PDP Errors**: If mini-PDP modal fails to open, shows error notification with dismiss option

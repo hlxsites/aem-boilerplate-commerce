@@ -33,7 +33,26 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import {
+  CORE_FETCH_GRAPHQL,
+  fetchPlaceholders,
+  getProductLink,
+  rootLink,
+} from '../../scripts/commerce.js';
+
+const CREATE_PAYMENT_LINK_MUTATION = `
+  mutation CreatePaymentLink($cartId: String!, $recipientEmail: String) {
+    createPaymentLink(cartId: $cartId, recipientEmail: $recipientEmail) {
+      token
+      payUrl
+    }
+  }
+`;
+
+const isPaymentLinkDemoEnabled = () => (
+  window.location.hostname === 'localhost'
+  || new URL(window.location.href).searchParams.get('pblDemo') === 'true'
+);
 
 export default async function decorate(block) {
   // Configuration
@@ -52,7 +71,7 @@ export default async function decorate(block) {
 
   const placeholders = await fetchPlaceholders();
 
-  const _cart = Cart.getCartDataFromCache();
+  let currentCart = Cart.getCartDataFromCache();
 
   // Modal state
   let currentModal = null;
@@ -84,6 +103,59 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
   block.appendChild(fragment);
+
+  if (isPaymentLinkDemoEnabled()) {
+    const paymentLinkForm = document.createElement('form');
+    const heading = document.createElement('h3');
+    const email = document.createElement('input');
+    const button = document.createElement('button');
+    const status = document.createElement('p');
+
+    paymentLinkForm.className = 'cart__payment-link-demo';
+    heading.textContent = 'Pay by Link demo';
+    email.type = 'email';
+    email.name = 'recipientEmail';
+    email.placeholder = 'Recipient email (optional)';
+    email.setAttribute('aria-label', 'Recipient email');
+    button.type = 'submit';
+    button.className = 'button secondary';
+    button.textContent = 'Create payment link';
+    status.className = 'cart__payment-link-demo-status';
+    status.setAttribute('aria-live', 'polite');
+    paymentLinkForm.append(heading, email, button, status);
+    $rightColumn.append(paymentLinkForm);
+
+    paymentLinkForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!currentCart?.id) {
+        status.textContent = 'No active cart is available.';
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = 'Creating payment link...';
+      try {
+        const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(CREATE_PAYMENT_LINK_MUTATION, {
+          method: 'POST',
+          variables: {
+            cartId: currentCart.id,
+            recipientEmail: email.value || null,
+          },
+        });
+        const { token, payUrl } = response.data?.createPaymentLink || {};
+        if (response.errors?.length || !token) {
+          throw new Error(response.errors?.[0]?.message || 'Payment link could not be created.');
+        }
+
+        window.location.href = window.location.hostname === 'localhost'
+          ? rootLink(`/drafts/aries/pay?token=${encodeURIComponent(token)}`)
+          : payUrl;
+      } catch (error) {
+        status.textContent = error.message;
+        button.disabled = false;
+      }
+    });
+  }
 
   // Wishlist variables
   const routeToWishlist = rootLink('/wishlist');
@@ -297,6 +369,7 @@ export default async function decorate(block) {
   events.on(
     'cart/data',
     (cartData) => {
+      currentCart = cartData;
       toggleEmptyCart(isCartEmpty(cartData));
 
       const isEmpty = !cartData || cartData.totalQuantity < 1;

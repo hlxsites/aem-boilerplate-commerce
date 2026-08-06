@@ -2,6 +2,10 @@ body:has(.commerce-pay-by-link) > header {
 	border-bottom: 1px solid var(--color-neutral-300);
 }
 
+body.pay-by-link-page main > .section > div {
+	max-width: 1264px;
+}
+
 .pay-by-link-header {
 	display: flex;
 	justify-content: center;
