@@ -205,11 +205,6 @@ export default async function decorate(block) {
             [PaymentMethodCode.VAULT]: { enabled: false },
           },
         },
-        onSelectionChange: ({ code }) => {
-          checkoutApi.setPaymentMethod({ code }).catch((error) => {
-            events.emit('checkout/error', { message: error.message });
-          });
-        },
       })(paymentMethods);
       CheckoutProvider.render(ServerError, {
         autoScroll: false,
@@ -224,6 +219,11 @@ export default async function decorate(block) {
         handlePlaceOrder: async ({ cartId: submittedCartId, code }) => {
           if (code === PaymentMethodCode.CREDIT_CARD) {
             if (!creditCardFormRef.current?.validate()) return;
+          }
+
+          await checkoutApi.setPaymentMethod({ code });
+
+          if (code === PaymentMethodCode.CREDIT_CARD) {
             await creditCardFormRef.current.submit();
           }
 
