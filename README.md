@@ -19,6 +19,20 @@ Use the [Site Creator Tool](https://da.live/app/adobe-commerce/storefront-tools/
 
 Alternatively, you can follow our [Guide](https://experienceleague.adobe.com/developer/commerce/storefront/get-started/) for a more detailed walkthrough.
 
+## Installation
+
+Run `npm install` to install dependencies.
+
+This repo's `.npmrc` sets `ignore-scripts=true`, which disables npm lifecycle scripts (`preinstall`/`install`/`postinstall`) for every package. This is a defense against npm supply-chain attacks that hide malicious code inside those scripts. One consequence is that `npm install` alone will **not** copy the drop-in assets into `scripts/__dropins__` or apply the GraphQL overrides defined in `build.mjs`.
+
+After every `npm install` — initial setup, or any time a `@dropins/*` or `@adobe/*` dependency changes — run:
+
+```bash
+npm run install:dropins
+```
+
+This copies the built assets from `node_modules/@dropins` and the relevant `@adobe/*` packages into `scripts/__dropins__`, and applies the GraphQL fragment/operation overrides in `build.mjs`. Edge Delivery Services serves the copied files directly, so this step must complete before `npm start` will reflect the correct drop-in behavior.
+
 ## Staying Up to Date
 
 Once you fork or clone this repo, the code is yours — you are not subscribed to updates.
@@ -31,7 +45,7 @@ If you have already forked or cloned this repo, a new suite release is not an up
 
 ### Updating your drop-in dependencies
 
-The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure the `postinstall` script runs so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
+The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure you run `npm run install:dropins` so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
 
 These packages follow semantic versioning. Minor and patch releases are non-breaking by contract, so routine updates should be safe to apply.
 
@@ -45,17 +59,17 @@ To install a specific version:
 
 ```bash
 npm install @dropins/storefront-cart@2.0.0  # updates the package in node_modules/
-npm run postinstall                         # copies scripts from node_modules into scripts/__dropins__/
+npm run install:dropins                     # copies scripts from node_modules into scripts/__dropins__/
 ```
 
 To update a drop-in to its latest stable release:
 
 ```bash
 npm install @dropins/storefront-cart@latest
-npm run postinstall
+npm run install:dropins
 ```
 
-Always run `postinstall` after any drop-in update — it copies the built assets from `node_modules` into `scripts/__dropins__`, which is what Edge Delivery Services serves. Note that `npm` does not run `postinstall` automatically when you install a specific package, so this step must always be done manually.
+Always run `npm run install:dropins` after any drop-in update — it copies the built assets from `node_modules` into `scripts/__dropins__`, which is what Edge Delivery Services serves. Since this repo disables npm lifecycle scripts (see [Installation](#installation)), this step is never run automatically and must always be done manually.
 
 ### Automated dependency PRs
 
