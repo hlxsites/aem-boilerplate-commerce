@@ -20,6 +20,8 @@ import {
   decorateSections,
   IS_UE,
   IS_DA,
+  isPayByLinkPage,
+  rootLink,
 } from './commerce.js';
 
 /*
@@ -231,7 +233,19 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  const header = doc.querySelector('header');
+  if (isPayByLinkPage()) {
+    const nav = document.createElement('nav');
+    const brand = document.createElement('a');
+    nav.className = 'pay-by-link-header';
+    nav.setAttribute('aria-label', 'Pay By Link');
+    brand.href = rootLink('/');
+    brand.textContent = 'Boilerplate';
+    nav.append(brand);
+    header.replaceChildren(nav);
+  } else {
+    loadHeader(header);
+  }
 
   const main = doc.querySelector('main');
   await loadSections(main);
@@ -242,7 +256,7 @@ async function loadLazy(doc) {
 
   loadFooter(doc.querySelector('footer'));
 
-  loadCommerceLazy();
+  if (!isPayByLinkPage()) loadCommerceLazy();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -253,6 +267,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
+  if (isPayByLinkPage()) return;
   window.setTimeout(() => import('./delayed.js'), 3000);
   // load anything that can be postponed to the latest here
 }
