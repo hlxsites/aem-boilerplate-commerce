@@ -37,6 +37,7 @@ import {
   CORE_FETCH_GRAPHQL,
   fetchPlaceholders,
   getProductLink,
+  PAY_BY_LINK_DRAFT_PATH,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -44,7 +45,6 @@ const CREATE_PAYMENT_LINK_MUTATION = `
   mutation CreatePaymentLink($cartId: String!, $recipientEmail: String) {
     createPaymentLink(cartId: $cartId, recipientEmail: $recipientEmail) {
       token
-      payUrl
     }
   }
 `;
@@ -142,14 +142,14 @@ export default async function decorate(block) {
             recipientEmail: email.value || null,
           },
         });
-        const { token, payUrl } = response.data?.createPaymentLink || {};
+        const { token } = response.data?.createPaymentLink || {};
         if (response.errors?.length || !token) {
           throw new Error(response.errors?.[0]?.message || 'Payment link could not be created.');
         }
 
-        window.location.href = window.location.hostname === 'localhost'
-          ? rootLink(`/drafts/aries/pay?token=${encodeURIComponent(token)}`)
-          : payUrl;
+        window.location.href = rootLink(
+          `${PAY_BY_LINK_DRAFT_PATH}?token=${encodeURIComponent(token)}`,
+        );
       } catch (error) {
         status.textContent = error.message;
         button.disabled = false;

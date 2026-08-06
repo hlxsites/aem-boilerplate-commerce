@@ -63,7 +63,7 @@ export const PRODUCT_TEMPLATE_PATHS = [
 export const SUPPORT_PATH = '/support';
 export const PRIVACY_POLICY_PATH = '/privacy-policy';
 export const PAY_BY_LINK_PATH = '/pay';
-const PAY_BY_LINK_DRAFT_PATH = '/drafts/aries/pay';
+export const PAY_BY_LINK_DRAFT_PATH = '/drafts/aries/pay';
 
 export const isPayByLinkPage = () => [
   PAY_BY_LINK_PATH,

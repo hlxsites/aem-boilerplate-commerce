@@ -60,7 +60,7 @@ No localStorage keys are used by this block. -->
 
 ### Pay By Link demo
 
-On localhost, or when `?pblDemo=true` is present, the order-summary column shows a temporary **Create payment link** form. It calls `createPaymentLink` for the active cart and navigates to the standalone `/pay` flow. This control is for local/product validation only and is hidden in normal storefront sessions.
+On localhost, or when `?pblDemo=true` is present, the order-summary column shows a temporary **Create payment link** form. It calls `createPaymentLink` for the active cart and navigates to the authored `/drafts/aries/pay` flow on the same EDS branch. This control is for local/product validation only and is hidden in normal storefront sessions.
 
 ### Error Handling
 
