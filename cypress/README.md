@@ -66,13 +66,11 @@ For various reasons, certain tests fail against certain environments. Eventually
 - `{ tags: '@skipAco' }` skips the test when run with `cypress:aco:run` or `cypress:b2b:aco:run`
 
 | Skipped Tests | Backend Env | Notes |
-| Skipped Tests | Backend Env | Notes |
 | ------------- | ------------- | -------- |
 | `verifyStoreSwitcher.spec`  | SaaS, PaaS, ACO | Story to re-configure multi store <https://jira.corp.adobe.com/browse/USF-2253> |
 | `verifyAemAssets.spec` | SaaS, PaaS, ACO | Requires AEM Assets-specific configuration |
-| `verifyRecsDisplay.spec` | SaaS, ACO | Recommendations not configured on these environments |
-| `verifyCompanyRegistration.spec` | ACO | Company registration not yet validated on ACO |
-| `verifyB2BQuoteToOrderPlacement.spec` | ACO | Quote Management not yet validated on ACO |
+| `verifyCompanyRegistration.spec` | ACO | Some TC skipped as Guest company registration is not supported |
+| `verifyB2BQuoteToOrderPlacement.spec` | ACO | Quote Management cannot be created on ACO |
 | `recs.spec` | SaaS, PaaS, ACO | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
