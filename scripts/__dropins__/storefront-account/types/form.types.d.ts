@@ -18,6 +18,7 @@ import { SlotProps } from '@dropins/tools/src/lib';
 import { AttributesFormModel, Country, FieldEnumList, RegionTransform } from '../data/models';
 export interface FieldsProps extends Omit<AttributesFormModel, 'options' | 'className'> {
     className?: string;
+    forceLabel?: boolean;
     fieldType: FieldEnumList;
     id: string;
     options: Country[];

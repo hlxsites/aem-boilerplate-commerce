@@ -25,4 +25,7 @@ export declare const useGetStoreConfigs: () => {
         shoppingAssistanceCheckboxTitle: string;
         shoppingAssistanceCheckboxTooltip: string;
     } | null;
+    b2bConfigs: {
+        b2bEnabled: boolean;
+    } | null;
 };
