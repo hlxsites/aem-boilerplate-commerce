@@ -319,6 +319,9 @@ export default async function createMiniPDP(cartItem, onUpdate, onClose) {
 
       pdpRender.render(ProductOptions, { hideSelectedValue: false, scope: 'modal' })($options),
 
+      // ProductQuantityProps doesn't declare `disabled`, but unrecognized props are
+      // forwarded to the underlying Incrementer, which applies the native `disabled`
+      // attribute to its input/buttons - this blocks keyboard input too, not just clicks.
       pdpRender.render(ProductQuantity, {
         scope: 'modal',
         ...(isFreeGift ? { disabled: true } : {}),
