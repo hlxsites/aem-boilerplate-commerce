@@ -1,25 +1,5 @@
 # @dropins/storefront-account
 
-## 4.2.0-alpha-20260810173211
-
-### Minor Changes
-
-- ff8b34c: The Addresses and AddressForm containers now support company address books. When B2B is enabled, the customer belongs to a company, and the company's address book is enabled, both containers switch from the personal customer address flow to company address operations. B2C behavior is unchanged, and any failure to resolve company context or company endpoints falls back to the personal address flow.
-
-  - Full company address CRUD from the account address book: list, create, edit, delete, and set default.
-  - Role-based permission gating. The customer's company role ACL is resolved into six capabilities (access address book, view, create, edit, delete, set default) and enforced throughout the UI: no view access hides the list, missing create/edit rights replace the form with a no-permission notice, and unavailable card actions and modal confirmations are hidden or disabled.
-  - B2B address semantics. A company address is either shipping or billing and carries a single "default" flag, rather than B2C's separate default shipping and billing flags. The form exposes mutually exclusive B2B checkboxes, freezes the address type when editing, and blocks setting one address as default for both types.
-  - New contextMode prop (addressBook or checkout) separates the two usages. In checkout, permissions are not enforced, addresses are filtered to the requested type, and selecting "new address" is locked when the company disallows custom shipping addresses.
-  - Address nicknames are now supported in the form, data transforms, and address cards — for B2C addresses as well.
-  - New API methods: getCompanyAddressBook, createCompanyAddress, updateCompanyAddress, deleteCompanyAddress, setDefaultCompanyAddress, getCustomerCompanyContext, and getCustomerRolePermissions.
-  - New i18n keys under Account.AddressForm for the B2B checkbox labels and the permission/default-address notifications.
-
-  No breaking changes. All new container props are optional, and containers behave exactly as before when B2B is not enabled.
-
-### Patch Changes
-
-- 73ee059: Fix broken border-radius selector for "Use a different address" button
-
 ## 4.1.0
 
 ### Minor Changes

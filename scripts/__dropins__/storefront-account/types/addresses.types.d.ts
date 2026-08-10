@@ -103,6 +103,7 @@ export interface AddressActionsProps {
     routeAddressesPage: (event: Event) => void;
     isB2BFlow?: boolean;
     permissions?: import('../hooks/useCompanyAddressPermissions').CompanyAddressPermissions;
+    loading?: boolean;
 }
 export interface AddressModalProps {
     minifiedView: boolean;
