@@ -50,6 +50,7 @@ import {
 } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { debounce } from '@dropins/tools/lib.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Checkout Dropin Libs
@@ -573,6 +574,7 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
 export const renderCustomerShippingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_SHIPPING_ADDRESSES,
   async () => {
+    const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
     const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
     const cartShippingAddress = getCartAddress(data, 'shipping');
@@ -613,6 +615,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
 
     return AccountProvider.render(Addresses, {
       addressFormTitle: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
+      b2bEnabled: isB2BEnabled,
       defaultSelectAddressId: shippingAddressId,
       fieldIdPrefix: 'shipping',
       formName: SHIPPING_FORM_NAME,
@@ -646,6 +649,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
 export const renderCustomerBillingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_BILLING_ADDRESSES,
   async () => {
+    const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
     const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
     const cartBillingAddress = getCartAddress(data, 'billing');
@@ -682,6 +686,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
 
     return AccountProvider.render(Addresses, {
       addressFormTitle: placeholders?.Checkout?.Addresses?.billToNewAddress,
+      b2bEnabled: isB2BEnabled,
       defaultSelectAddressId: billingAddressId,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,

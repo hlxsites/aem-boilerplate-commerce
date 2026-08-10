@@ -17,6 +17,7 @@
 import { getFormValues } from '@dropins/tools/lib.js';
 import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
@@ -109,6 +110,8 @@ async function getCurrentUserEmail() {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
@@ -226,6 +229,7 @@ export default async function decorate(block) {
 
             if (quoteData.canSendForReview) {
               accountRenderer.render(Addresses, {
+                b2bEnabled: isB2BEnabled,
                 minifiedView: false,
                 withActionsInMinifiedView: false,
                 selectable: true,
