@@ -8,9 +8,6 @@ export interface FacetsProps extends HTMLAttributes<HTMLDivElement> {
         Facet?: SlotProps<{
             data: SearchFacet;
         }>;
-        FacetHeading?: SlotProps<{
-            data: SearchFacet;
-        }>;
         SelectedFacets?: SlotProps<{
             data: SearchFacet[];
         }>;
