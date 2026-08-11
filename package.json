@@ -62,7 +62,7 @@
     "@dropins/storefront-recommendations": "^4.0.4",
     "@dropins/storefront-requisition-list": "^1.5.0",
     "@dropins/storefront-wishlist": "^3.4.0",
-    "@dropins/tools": "2.0.1-alpha-20260806134012"
+    "@dropins/tools": "2.0.1"
   },
   "overrides": {
     "@adobe/alloy": {
