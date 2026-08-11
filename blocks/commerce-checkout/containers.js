@@ -304,14 +304,16 @@ export const renderBillingAddressFormSkeleton = async (container) => renderConta
 /**
  * Renders checkbox to set billing address same as shipping address - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render the checkbox in
+ * @param {boolean} active - whether the checkbox should be active/visible (disabled for B2B checkout)
  * @returns {Promise<Object>} - The rendered bill to shipping address component
  */
-export const renderBillToShippingAddress = async (container) => renderContainer(
+export const renderBillToShippingAddress = async (container, active = true) => renderContainer(
   CONTAINERS.BILL_TO_SHIPPING_ADDRESS,
   async () => {
     const setBillingAddressOnCart = setAddressOnCart({ type: 'billing' });
 
     return CheckoutProvider.render(BillToShippingAddress, {
+      active,
       onChange: (checked) => {
         const billingFormValues = events.lastPayload('checkout/addresses/billing');
 
@@ -614,6 +616,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
     }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
     return AccountProvider.render(Addresses, {
+      hideActionFormButtons: true,
       addressFormTitle: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
       b2bEnabled: isB2BEnabled,
       defaultSelectAddressId: shippingAddressId,
@@ -623,6 +626,8 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
       inputsDefaultValueSet,
       minifiedView: false,
       onAddressData: (values) => {
+        // eslint-disable-next-line no-console
+        console.log('🚚 [DEBUG][onAddressData][shipping]', values);
         const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
         if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
         if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
@@ -693,6 +698,8 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       inputsDefaultValueSet,
       minifiedView: false,
       onAddressData: (values) => {
+        // eslint-disable-next-line no-console
+        console.log('💳 [DEBUG][onAddressData][billing]', values);
         const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
         if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
         if (isFirstRenderBilling) isFirstRenderBilling = false;
@@ -701,7 +708,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       selectable: true,
       selectBilling: true,
       showBillingCheckBox: false,
-      showSaveCheckBox: true,
+      showSaveCheckBox: false,
       showShippingCheckBox: false,
       title: placeholders?.Checkout?.Addresses?.billingAddressTitle,
     })(container);

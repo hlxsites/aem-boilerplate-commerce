@@ -37,11 +37,13 @@ export declare const resolveIsB2BFlow: ({ isB2BCandidate, isCompanyAddressBookEn
     isCompanyAddressBookEnabled: boolean;
     isB2BWithoutViewAccess: boolean;
 }) => boolean;
-export declare const resolveIsAddressSelectionLocked: ({ isCheckoutContext, isB2BFlow, selectable, isCustomShippingAddressAllowed, }: {
+export declare const resolveIsAddressSelectionLocked: ({ isCheckoutContext, isB2BFlow, selectable, isCustomShippingAddressAllowed, selectShipping, selectBilling, }: {
     isCheckoutContext: boolean;
     isB2BFlow: boolean;
     selectable?: boolean;
     isCustomShippingAddressAllowed: boolean;
+    selectShipping?: boolean;
+    selectBilling?: boolean;
 }) => boolean;
 export declare const shouldSkipAddressFetchForCustomerType: ({ b2bEnabled, customerTypeLoading, }: {
     b2bEnabled?: boolean;
