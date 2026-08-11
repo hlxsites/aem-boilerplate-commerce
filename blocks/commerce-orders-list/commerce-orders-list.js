@@ -37,6 +37,8 @@ export default async function decorate(block) {
   } else {
     await accountRenderer.render(OrdersList, {
       minifiedView: minifiedViewConfig === 'true',
+      withSearch: true,
+      searchScope: 'selectedDate',
       routeTracking: ({ carrier, number }) => {
         if (carrier === 'ups') {
           return `${UPS_TRACKING_URL}?tracknum=${number}`;

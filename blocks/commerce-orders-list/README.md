@@ -38,14 +38,16 @@ No events are emitted by this block. -->
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
 - **Minified View**: When `minified-view` is 'true', displays orders in a compact format
 - **Full View**: When `minified-view` is 'false', displays orders in full format with all details
+- **Order Search**: Full view adds a search box (order number, product name, or SKU) that combines with the selected date filter
 
 ### User Interaction Flows
 
 1. **Authentication Check**: Block first verifies user authentication status
 2. **Redirect Flow**: If not authenticated, redirects to login page
 3. **Orders Display**: If authenticated, renders orders list with product images and tracking
-4. **Navigation**: Users can navigate to order details, return details, and product pages
-5. **Tracking**: Users can click tracking links to view shipping status
+4. **Order Search**: Submitting a search filters the current date range by order number, product name, or SKU
+5. **Navigation**: Users can navigate to order details, return details, and product pages
+6. **Tracking**: Users can click tracking links to view shipping status
 
 ### Error Handling
 
