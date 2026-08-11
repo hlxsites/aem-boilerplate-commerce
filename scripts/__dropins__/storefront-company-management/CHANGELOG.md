@@ -1,5 +1,11 @@
 # @dropins/storefront-company-management
 
+## 1.4.1
+
+### Patch Changes
+
+- 6309f15: Revert reCAPTCHA support for B2B company registration (createCompany)
+
 ## 1.4.0
 
 ### Minor Changes
