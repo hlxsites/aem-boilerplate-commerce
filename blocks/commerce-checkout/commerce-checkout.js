@@ -178,7 +178,7 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  const placeOrder = await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
+  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
 
   // Render the remaining containers
   const [
@@ -213,7 +213,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods, creditCardFormRef, handleValidation),
+    renderPaymentMethods($paymentMethods, $placeOrder, creditCardFormRef, handleValidation),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -316,11 +316,11 @@ export default async function decorate(block) {
   function handleCheckoutValues(payload) {
     const { isBillToShipping, selectedPaymentMethod } = payload;
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
-    if (isExpressPaymentMethod(selectedPaymentMethod)) {
-      // Express payment methods take over the responsibility of placing the order
-      placeOrder.setProps((prev) => ({ ...prev, active: false }));
-    } else {
-      placeOrder.setProps((prev) => ({ ...prev, active: true }));
+
+    if (!isExpressPaymentMethod(selectedPaymentMethod)
+        && !$placeOrder.querySelector('.checkout-place-order')) {
+      // Express payment methods replace the place order button; restore it for non-express methods
+      renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }
   }
 

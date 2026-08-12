@@ -238,6 +238,14 @@
 
     .checkout__place-order {
         order: 4;
+        background-color: var(--color-neutral-200);
+        padding: 0 var(--spacing-medium) var(--spacing-big) var(--spacing-medium);
+    }
+
+    /* Neutralize the checkout dropin's own background/padding so it doesn't stack with the rule above */
+    .checkout__place-order .checkout-place-order {
+        background-color: transparent;
+        padding: 0;
     }
 }
 
