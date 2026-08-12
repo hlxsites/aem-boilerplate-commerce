@@ -18,6 +18,7 @@ import { SlotProps } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 import { OrderDetails, OrderItem, ShipmentsTracingModel } from '../data/models';
 import { ImageProps } from '@dropins/tools/components';
+import { InLineAlertProps } from './notification.types';
 export interface OrdersListActionContext {
     orderHistoryListItem: OrderDetails;
 }
@@ -29,6 +30,7 @@ export interface OrdersListOrderTimeContext {
     orderDate?: string;
     orderTime?: string;
 }
+export type OrdersListSearchScope = 'selectedDate' | 'allOrders';
 export interface OrdersListProps extends HTMLAttributes<HTMLDivElement> {
     minifiedView?: boolean;
     withHeader?: boolean;
@@ -49,6 +51,8 @@ export interface OrdersListProps extends HTMLAttributes<HTMLDivElement> {
         returnNumber: string;
     }) => string;
     withFilter?: boolean;
+    withSearch?: boolean;
+    searchScope?: OrdersListSearchScope;
     ordersInMinifiedView?: 1 | 2 | 3;
     pageSize: number;
     routeTracking?: (shipping: ShipmentsTracingModel) => string;
@@ -90,5 +94,7 @@ export interface UseOrdersListProps {
     pageSize: number;
     ordersInMinifiedView: number;
     selectedDate: string;
+    searchText: string;
     handleSetFirstOrderDate: (date: string) => void;
+    handleSetInLineAlert?: (value?: InLineAlertProps) => void;
 }

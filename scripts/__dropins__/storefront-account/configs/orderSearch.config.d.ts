@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,17 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import type { OrdersListSearchScope } from '../../types';
-export declare const useOrderSelectList: (searchScope?: OrdersListSearchScope) => {
-    selectableDateList: {
-        value: string;
-        text: string | undefined;
-    }[];
-    selectedDate: string;
-    selectedPage: number;
-    searchText: string;
-    handleSelectDate: (event: Event) => void;
-    handleSearch: (value: string) => void;
-    setSelectedPage: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<number>>;
-    handleSetFirstOrderDate: (date: string) => void;
-};
+export declare const ORDER_SEARCH_MIN_LENGTH = 3;
+export declare const ORDER_SEARCH_MAX_LENGTH = 100;
