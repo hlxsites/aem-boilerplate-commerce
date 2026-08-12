@@ -27,9 +27,11 @@ export interface AddressCardContext {
         value?: string;
     }[];
 }
+export type AddressContextMode = 'addressBook' | 'checkout';
 export interface AddressesProps {
     hideActionFormButtons?: boolean;
     fieldIdPrefix?: string;
+    b2bEnabled?: boolean;
     formName?: string;
     slots?: {
         [key: string]: SlotProps;
@@ -61,6 +63,7 @@ export interface AddressesProps {
     onError?: (error: string) => void;
     onSubmit?: (event: Event, formValid: boolean) => Promise<void>;
     onAddressData?: (values: {} | CustomerAddressesModel | undefined) => void;
+    contextMode?: AddressContextMode;
 }
 export interface AddressesWrapperProps extends Omit<AddressesProps, 'formName'> {
     inputName: string;
@@ -88,6 +91,8 @@ export interface AddressCardProps {
     setAddressId?: (id: string) => void;
     handleRenderModal?: () => void | undefined;
     handleRenderForm?: () => void | undefined;
+    isB2BFlow?: boolean;
+    permissions?: import('../hooks/useCompanyAddressPermissions').CompanyAddressPermissions;
 }
 export interface AddressActionsProps {
     className?: string;
@@ -96,6 +101,9 @@ export interface AddressActionsProps {
     addNewAddress?: boolean;
     viewAllAddressesText?: string;
     routeAddressesPage: (event: Event) => void;
+    isB2BFlow?: boolean;
+    permissions?: import('../hooks/useCompanyAddressPermissions').CompanyAddressPermissions;
+    loading?: boolean;
 }
 export interface AddressModalProps {
     minifiedView: boolean;
@@ -105,4 +113,6 @@ export interface AddressModalProps {
     submitLoading: boolean;
     onRemoveAddress: () => void;
     closeModal: () => void;
+    isB2BFlow?: boolean;
+    permissions?: import('../hooks/useCompanyAddressPermissions').CompanyAddressPermissions;
 }

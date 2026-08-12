@@ -8,6 +8,9 @@ import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 // Order Dropin Modules
 import * as orderApi from '@dropins/storefront-order/api.js';
 
+// Account Dropin Modules
+import { getCompanyAddressBook } from '@dropins/storefront-account/api.js';
+
 // Checkout Dropin Libraries
 import {
   createScopedSelector,
@@ -151,13 +154,21 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  const handleValidation = () => validateForms([
-    { name: LOGIN_FORM_NAME },
-    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
-    { name: BILLING_FORM_NAME, ref: billingFormRef },
-    { name: PURCHASE_ORDER_FORM_NAME },
-    { name: TERMS_AND_CONDITIONS_FORM_NAME },
-  ]);
+  const handleValidation = () => {
+    const isValid = validateForms([
+      { name: LOGIN_FORM_NAME },
+      { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
+      { name: BILLING_FORM_NAME, ref: billingFormRef },
+      { name: PURCHASE_ORDER_FORM_NAME },
+      { name: TERMS_AND_CONDITIONS_FORM_NAME },
+    ]);
+    // eslint-disable-next-line no-console
+    console.log('✅🛒 [DEBUG][handleValidation] result:', isValid, {
+      shippingFormRefCurrent: shippingFormRef.current,
+      billingFormRefCurrent: billingFormRef.current,
+    });
+    return isValid;
+  };
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
@@ -192,7 +203,60 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder, b2bIsPoEnabled });
+  const placeOrderContainer = await renderPlaceOrder($placeOrder, {
+    handleValidation,
+    handlePlaceOrder,
+    b2bIsPoEnabled,
+  });
+
+  // 🚧 [DEBUG][placeOrderGate] Disable Place Order while we don't yet know whether the
+  // company address book has a shipping AND a billing address. Remove this whole block
+  // (and the getCompanyAddressBook import above) once this ships for real — for now it's
+  // wrapped in obvious debug logs so it's easy to find and rip out.
+  if (isB2BEnabled) {
+    // eslint-disable-next-line no-console
+    console.log('🚧 [DEBUG][placeOrderGate] B2B checkout — disabling Place Order until company address book is checked');
+    placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: true }));
+
+    (async () => {
+      try {
+        const companyAddressBook = await getCompanyAddressBook();
+        // eslint-disable-next-line no-console
+        console.log('🚧 [DEBUG][placeOrderGate] getCompanyAddressBook() result:', companyAddressBook);
+
+        const addressBookEnabled = Boolean(companyAddressBook?.addressBookEnabled);
+        const items = companyAddressBook?.addresses?.items ?? [];
+        const hasShippingAddress = items.some((item) => item.addressType === 'SHIPPING');
+        const hasBillingAddress = items.some((item) => item.addressType === 'BILLING');
+
+        // If the company doesn't use an address book at all, this gate doesn't apply —
+        // fall back to the normal (enabled) Place Order behavior.
+        const shouldDisablePlaceOrder = addressBookEnabled
+          && (!hasShippingAddress || !hasBillingAddress);
+
+        // eslint-disable-next-line no-console
+        console.log(
+          '🚧 [DEBUG][placeOrderGate] addressBookEnabled:',
+          addressBookEnabled,
+          '| hasShippingAddress:',
+          hasShippingAddress,
+          '| hasBillingAddress:',
+          hasBillingAddress,
+          '| => Place Order disabled:',
+          shouldDisablePlaceOrder,
+        );
+
+        placeOrderContainer.setProps((prevProps) => ({
+          ...prevProps,
+          disabled: shouldDisablePlaceOrder,
+        }));
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('🚧 [DEBUG][placeOrderGate] failed to load company address book — leaving Place Order enabled', error);
+        placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: false }));
+      }
+    })();
+  }
 
   // Render the remaining containers
   const [
@@ -223,7 +287,7 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    renderBillToShippingAddress($billToShipping),
+    renderBillToShippingAddress($billToShipping, !isB2BEnabled),
 
     renderShippingMethods($delivery),
 
@@ -276,6 +340,8 @@ export default async function decorate(block) {
       shippingForm?.remove();
       shippingForm = null;
       shippingFormRef.current = null;
+
+      console.log('!!!!!!!!!!Rendering customer shipping addresses...', data);
 
       shippingAddresses = await renderCustomerShippingAddresses(
         $shippingForm,

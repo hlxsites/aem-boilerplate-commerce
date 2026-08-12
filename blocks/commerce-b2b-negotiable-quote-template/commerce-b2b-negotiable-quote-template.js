@@ -19,6 +19,7 @@ import { companyEnabled, getCompany } from '@dropins/storefront-company-manageme
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
@@ -88,6 +89,8 @@ const checkPermissions = async () => {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
   // Check if user has permissions to access the block
   const permissionCheck = await checkPermissions();
 
@@ -169,6 +172,7 @@ export default async function decorate(block) {
 
             if (templateData.canSendForReview) {
               accountRenderer.render(Addresses, {
+                b2bEnabled: isB2BEnabled,
                 minifiedView: false,
                 withActionsInMinifiedView: false,
                 selectable: true,
