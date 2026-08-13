@@ -7,8 +7,7 @@ declare const _default: {
         "Facet": {
             "showMore": "Show more",
             "showLess": "Show less",
-            "clearAll": "Clear all",
-            "clearAllFilters": "Clear all filters"
+            "clearAll": "Clear all"
         },
         "SortBy": {
             "title": "Sort by",
