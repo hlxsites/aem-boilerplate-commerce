@@ -42,6 +42,8 @@ export default async function decorate(block) {
       minifiedView: minifiedViewConfig === 'true',
       // OrdersList defaults search off; enable it here.
       withSearch: searchConfig === 'true',
+      // Search all orders, not just the selected date range.
+      searchScope: 'allOrders',
       routeTracking: ({ carrier, number }) => {
         if (carrier === 'ups') {
           return `${UPS_TRACKING_URL}?tracknum=${number}`;

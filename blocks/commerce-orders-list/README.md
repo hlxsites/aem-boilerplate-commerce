@@ -39,7 +39,7 @@ No events are emitted by this block. -->
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
 - **Minified View**: When `minified-view` is 'true', displays orders in a compact format
 - **Full View**: When `minified-view` is 'false', displays orders in full format with all details
-- **Order Search**: When `search` is 'true' (default), a search box filters orders by order number, product name, or SKU. The drop-in enforces a minimum of 3 and a maximum of 100 characters
+- **Order Search**: When `search` is 'true' (default), a search box filters orders by order number, product name, or SKU. This block searches all orders, so the date filter does not limit search results. The drop-in enforces a minimum of 3 and a maximum of 100 characters
 
 ### User Interaction Flows
 
