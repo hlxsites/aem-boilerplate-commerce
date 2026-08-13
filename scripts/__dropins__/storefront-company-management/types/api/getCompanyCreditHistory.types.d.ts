@@ -58,3 +58,4 @@ export interface CompanyCreditHistoryResponse {
         message: string;
     }[];
 }
+//# sourceMappingURL=getCompanyCreditHistory.types.d.ts.map

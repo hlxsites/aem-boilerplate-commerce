@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './CompanyCredit';
 export { CompanyCredit as default } from './CompanyCredit';
+//# sourceMappingURL=index.d.ts.map

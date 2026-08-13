@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './createCompanyTeam';
+//# sourceMappingURL=index.d.ts.map

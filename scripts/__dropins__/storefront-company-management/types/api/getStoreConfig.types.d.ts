@@ -30,3 +30,4 @@ export interface StoreConfigModel {
     defaultCountry: string;
     storeCode: string;
 }
+//# sourceMappingURL=getStoreConfig.types.d.ts.map

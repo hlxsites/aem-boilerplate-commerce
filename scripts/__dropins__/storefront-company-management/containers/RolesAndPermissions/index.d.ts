@@ -14,5 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './RolesAndPermissions';
-export { RolesAndPermissions as default } from './RolesAndPermissions';
+export * from '../../containers/RolesAndPermissions/RolesAndPermissions';
+export { RolesAndPermissions as default } from '../../containers/RolesAndPermissions/RolesAndPermissions';
+//# sourceMappingURL=index.d.ts.map

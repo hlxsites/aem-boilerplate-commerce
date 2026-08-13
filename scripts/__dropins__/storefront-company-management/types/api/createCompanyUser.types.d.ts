@@ -29,3 +29,4 @@ export interface CreateCompanyUserResult {
     structureId?: string;
     jobTitle?: string | null;
 }
+//# sourceMappingURL=createCompanyUser.types.d.ts.map

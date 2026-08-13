@@ -30,3 +30,4 @@ export interface CompanyCreditInfo {
         };
     };
 }
+//# sourceMappingURL=company-credit-info.d.ts.map

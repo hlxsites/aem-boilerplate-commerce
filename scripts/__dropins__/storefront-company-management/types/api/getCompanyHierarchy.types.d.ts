@@ -44,3 +44,4 @@ export interface CompanyHierarchyItemResponse {
     legal_name?: string | null;
     __typename: string;
 }
+//# sourceMappingURL=getCompanyHierarchy.types.d.ts.map

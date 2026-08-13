@@ -51,3 +51,4 @@ export interface CompanyCreditHistory {
     pageInfo: CompanyCreditHistoryPageInfo;
     totalCount: number;
 }
+//# sourceMappingURL=company-credit-history.d.ts.map

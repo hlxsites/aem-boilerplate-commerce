@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const companyEnabled: () => Promise<boolean>;
+//# sourceMappingURL=companyEnabled.d.ts.map

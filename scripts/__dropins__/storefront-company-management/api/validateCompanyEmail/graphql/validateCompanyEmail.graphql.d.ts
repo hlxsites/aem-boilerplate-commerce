@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const VALIDATE_COMPANY_EMAIL_QUERY = "\n  query validateCompanyEmail($email: String!) {\n    isCompanyEmailAvailable(email: $email) {\n      is_email_available\n    }\n  }\n";
+//# sourceMappingURL=validateCompanyEmail.graphql.d.ts.map

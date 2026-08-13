@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_STORE_CONFIG_QUERY = "\n    query getStoreConfig {\n        storeConfig {\n            default_country\n            store_code\n        }\n    }\n";
+//# sourceMappingURL=getStoreConfig.graphql.d.ts.map

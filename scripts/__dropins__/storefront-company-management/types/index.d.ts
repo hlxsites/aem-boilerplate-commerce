@@ -42,6 +42,7 @@ export * from './api/getCustomerCompanyInfo.types';
 export * from './api/initialize.types';
 export * from './api/isCompanyUserEmailAvailable.types';
 export * from './api/updateCompany.types';
+export * from './api/updateCompanyConfig.types';
 export * from './api/updateCompanyStructure.types';
 export * from './api/updateCompanyTeam.types';
 export * from './api/updateCompanyUser.types';
@@ -50,3 +51,4 @@ export * from './api/validateCompanyEmail.types';
 export * from './api/getStoreConfig.types';
 export * from './api/companyUsers.types';
 export * from './api/updateCompanyUserStatus.types';
+//# sourceMappingURL=index.d.ts.map

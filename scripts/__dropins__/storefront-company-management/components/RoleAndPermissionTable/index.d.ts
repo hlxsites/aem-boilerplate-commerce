@@ -16,3 +16,4 @@
  *******************************************************************/
 export { RoleAndPermissionTable } from './RoleAndPermissionTable';
 export type { RoleAndPermissionTableProps } from './RoleAndPermissionTable';
+//# sourceMappingURL=index.d.ts.map

@@ -23,3 +23,4 @@ export declare const useUserPermissions: () => {
     error: Error | null;
     refetch: () => Promise<void>;
 };
+//# sourceMappingURL=useUserPermissions.d.ts.map

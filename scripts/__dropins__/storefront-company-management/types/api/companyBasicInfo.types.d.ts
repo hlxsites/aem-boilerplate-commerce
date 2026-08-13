@@ -25,3 +25,4 @@ export interface CompanyBasicInfoResponse {
     status?: string | null;
     __typename: string;
 }
+//# sourceMappingURL=companyBasicInfo.types.d.ts.map

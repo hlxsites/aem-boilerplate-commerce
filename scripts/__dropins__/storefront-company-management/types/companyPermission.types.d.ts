@@ -31,3 +31,4 @@ export interface CompanyPermissionFlags {
     canViewRoles: boolean;
     canManageRoles: boolean;
 }
+//# sourceMappingURL=companyPermission.types.d.ts.map

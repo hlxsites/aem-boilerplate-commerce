@@ -1,4 +1,5 @@
 import { CreateCompanyTeamInput, CreateCompanyTeamResult } from '../../types/api/createCompanyTeam.types';
+
 /**
  * Creates a new company team with the provided information
  *
@@ -7,3 +8,4 @@ import { CreateCompanyTeamInput, CreateCompanyTeamResult } from '../../types/api
  * @throws {Error} When network errors or GraphQL errors occur
  */
 export declare function createCompanyTeam(input: CreateCompanyTeamInput): Promise<CreateCompanyTeamResult | null>;
+//# sourceMappingURL=createCompanyTeam.d.ts.map

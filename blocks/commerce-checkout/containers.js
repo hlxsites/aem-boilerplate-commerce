@@ -710,6 +710,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       showBillingCheckBox: false,
       showSaveCheckBox: false,
       showShippingCheckBox: false,
+      hideActionFormButtons: true,
       title: placeholders?.Checkout?.Addresses?.billingAddressTitle,
     })(container);
   },

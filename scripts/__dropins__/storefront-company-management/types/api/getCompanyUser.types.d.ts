@@ -17,3 +17,4 @@
 export interface GetCompanyUserInput {
     id: string;
 }
+//# sourceMappingURL=getCompanyUser.types.d.ts.map

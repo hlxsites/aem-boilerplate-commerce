@@ -34,3 +34,4 @@ export interface CountriesFormResponse {
         message: string;
     }[];
 }
+//# sourceMappingURL=getCountries.types.d.ts.map

@@ -55,6 +55,8 @@ export interface getCompanyResponse {
                 code: string;
                 title: string;
             }[];
+            address_book_enabled?: boolean;
+            custom_shipping_address_enabled?: boolean;
         };
         customer?: {
             role?: {
@@ -80,3 +82,4 @@ export interface getCompanyResponse {
         message: string;
     }[];
 }
+//# sourceMappingURL=getCompany.types.d.ts.map

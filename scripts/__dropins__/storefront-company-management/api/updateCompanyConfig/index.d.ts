@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2026 Adobe
+ *  Copyright 2025 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-/** GraphQL ReCaptchaFormEnum value for B2B company registration. */
-export declare const COMPANY_RECAPTCHA_FORM_TYPE = "COMPANY_CREATE";
-/** DOM element id for inline reCAPTCHA badge placement (must match tools typeForms mapping). */
-export declare const COMPANY_RECAPTCHA_BADGE_ID = "createCompany";
-export declare const RECAPTCHA_CONFIG_STORAGE_KEY = "recaptchaConfig";
+export * from './updateCompanyConfig';
+//# sourceMappingURL=index.d.ts.map

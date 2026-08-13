@@ -29,3 +29,4 @@ export interface AcceptCompanyInvitationInput {
 export interface AcceptCompanyInvitationResult {
     success: boolean;
 }
+//# sourceMappingURL=acceptCompanyInvitation.types.d.ts.map

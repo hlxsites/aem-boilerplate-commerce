@@ -1,4 +1,5 @@
-import type { Country } from '../data/models';
+import { Country } from '../data/models';
+
 interface UseCountriesResult {
     countryOptions: Country[];
     regionOptions: {
@@ -11,3 +12,4 @@ interface UseCountriesResult {
 }
 export declare const useCountries: (selectedCountryCode: string | undefined) => UseCountriesResult;
 export {};
+//# sourceMappingURL=useCountries.d.ts.map

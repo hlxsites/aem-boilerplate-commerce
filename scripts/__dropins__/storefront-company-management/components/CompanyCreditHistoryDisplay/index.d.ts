@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './CompanyCreditHistoryDisplay';
 export { CompanyCreditHistoryDisplay as default } from './CompanyCreditHistoryDisplay';
+//# sourceMappingURL=index.d.ts.map

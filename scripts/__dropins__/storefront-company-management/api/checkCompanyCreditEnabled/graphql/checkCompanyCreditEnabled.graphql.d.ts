@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const CHECK_COMPANY_CREDIT_ENABLED = "\n query CHECK_COMPANY_CREDIT_ENABLED {\n   storeConfig{\n     company_credit_enabled\n   }\n  }\n";
+//# sourceMappingURL=checkCompanyCreditEnabled.graphql.d.ts.map

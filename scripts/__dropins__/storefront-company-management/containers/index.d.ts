@@ -23,3 +23,4 @@ export * from './CompanyRegistration';
 export * from './CompanyCredit';
 export * from './RolesAndPermissions';
 export * from './CompanyHierarchy';
+//# sourceMappingURL=index.d.ts.map

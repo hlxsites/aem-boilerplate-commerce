@@ -19,3 +19,4 @@
  * @returns Promise<boolean> - true if customer belongs to one or more companies, false otherwise
  */
 export declare const isCompanyUser: () => Promise<boolean>;
+//# sourceMappingURL=isCompanyUser.d.ts.map

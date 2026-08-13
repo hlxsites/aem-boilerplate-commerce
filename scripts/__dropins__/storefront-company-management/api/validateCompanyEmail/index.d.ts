@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './validateCompanyEmail';
+//# sourceMappingURL=index.d.ts.map

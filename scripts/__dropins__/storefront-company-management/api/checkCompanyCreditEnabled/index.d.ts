@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './checkCompanyCreditEnabled';
+//# sourceMappingURL=index.d.ts.map

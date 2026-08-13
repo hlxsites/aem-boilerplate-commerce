@@ -1,4 +1,5 @@
 import { CompanyTeamModel } from '../../data/models';
+
 /**
  * Retrieves a specific company team by their ID
  *
@@ -7,3 +8,4 @@ import { CompanyTeamModel } from '../../data/models';
  * @throws {Error} When network errors or GraphQL errors occur
  */
 export declare function getCompanyTeam(id: string): Promise<CompanyTeamModel | null>;
+//# sourceMappingURL=getCompanyTeam.d.ts.map

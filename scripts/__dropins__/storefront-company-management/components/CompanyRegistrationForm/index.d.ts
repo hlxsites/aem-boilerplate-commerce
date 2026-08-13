@@ -17,3 +17,4 @@
 export * from './CompanyRegistrationForm';
 export * from './Form';
 export { CompanyRegistrationForm as default } from './CompanyRegistrationForm';
+//# sourceMappingURL=index.d.ts.map

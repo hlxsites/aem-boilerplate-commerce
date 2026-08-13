@@ -16,3 +16,4 @@
  *******************************************************************/
 export { EditRoleAndPermission } from './EditRoleAndPermission';
 export type { EditRoleAndPermissionProps } from './EditRoleAndPermission';
+//# sourceMappingURL=index.d.ts.map

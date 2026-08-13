@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './CompanyRegistration';
 export { CompanyRegistration as default } from './CompanyRegistration';
+//# sourceMappingURL=index.d.ts.map

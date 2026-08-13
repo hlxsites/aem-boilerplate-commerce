@@ -134,3 +134,4 @@ export interface DeleteCompanyRoleVariables {
 export interface IsCompanyRoleNameAvailableVariables {
     name: string;
 }
+//# sourceMappingURL=companyRoles.types.d.ts.map

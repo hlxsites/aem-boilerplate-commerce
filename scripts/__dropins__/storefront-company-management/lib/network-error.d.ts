@@ -7,3 +7,4 @@
  * @throws {Error} Re-throws the original error after emitting event
  */
 export declare const handleNetworkError: (error: Error) => never;
+//# sourceMappingURL=network-error.d.ts.map

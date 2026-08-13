@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './getCompanyHierarchy';
+//# sourceMappingURL=index.d.ts.map

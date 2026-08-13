@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export declare const UPDATE_COMPANY_USER_STATUS_MUTATION = "\n  mutation UPDATE_COMPANY_USER_STATUS($input: CompanyUserUpdateInput!) {\n    updateCompanyUser(input: $input) {\n      user {\n        id\n        status\n      }\n    }\n  }\n";
+//# sourceMappingURL=updateCompanyUserStatus.graphql.d.ts.map

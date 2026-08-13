@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './getCompanyCreditHistory';
 export * from '../../types/api/getCompanyCreditHistoryParams.types';
+//# sourceMappingURL=index.d.ts.map

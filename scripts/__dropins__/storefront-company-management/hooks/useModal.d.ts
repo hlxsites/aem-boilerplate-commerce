@@ -21,3 +21,4 @@ export interface UseModalResult {
     close: () => void;
 }
 export declare const useModal: (onClose?: () => void) => UseModalResult;
+//# sourceMappingURL=useModal.d.ts.map

@@ -50,3 +50,4 @@ export interface AcceptInvitationFormProps {
 }
 export interface AcceptInvitationProps extends AcceptInvitationFormProps {
 }
+//# sourceMappingURL=acceptInvitation.types.d.ts.map

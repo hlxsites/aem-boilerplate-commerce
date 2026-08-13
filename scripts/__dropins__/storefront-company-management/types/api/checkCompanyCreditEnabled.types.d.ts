@@ -18,3 +18,4 @@ export interface CheckCompanyCreditEnabledResponse {
     creditEnabled: boolean;
     error?: string;
 }
+//# sourceMappingURL=checkCompanyCreditEnabled.types.d.ts.map

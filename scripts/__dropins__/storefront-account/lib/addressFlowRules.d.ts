@@ -37,7 +37,7 @@ export declare const resolveIsB2BFlow: ({ isB2BCandidate, isCompanyAddressBookEn
     isCompanyAddressBookEnabled: boolean;
     isB2BWithoutViewAccess: boolean;
 }) => boolean;
-export declare const resolveIsAddressSelectionLocked: ({ isCheckoutContext, isB2BFlow, selectable, isCustomShippingAddressAllowed, selectShipping, selectBilling, }: {
+export declare const resolveIsAddressSelectionLocked: ({ isCheckoutContext, isB2BFlow, selectable, isCustomShippingAddressAllowed, }: {
     isCheckoutContext: boolean;
     isB2BFlow: boolean;
     selectable?: boolean;

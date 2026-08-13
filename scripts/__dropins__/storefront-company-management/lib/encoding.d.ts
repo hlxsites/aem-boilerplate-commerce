@@ -40,3 +40,4 @@ export declare const encodeUserId: (userId: string) => string;
  * @returns The decoded user ID, or the original string if decoding fails
  */
 export declare const decodeUserId: (encodedUserId: string) => string;
+//# sourceMappingURL=encoding.d.ts.map

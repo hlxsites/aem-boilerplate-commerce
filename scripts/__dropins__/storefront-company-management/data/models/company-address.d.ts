@@ -26,3 +26,4 @@ export interface CompanyLegalAddressModel {
     postcode?: string;
     telephone?: string;
 }
+//# sourceMappingURL=company-address.d.ts.map
