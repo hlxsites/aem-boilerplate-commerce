@@ -1,20 +1,5 @@
 # @dropins/storefront-account
 
-## 4.2.0-alpha-20260813101821
-
-### Minor Changes
-
-- d58ebf7: Add configurable order history search by order number, product name,
-  or SKU.
-
-### Patch Changes
-
-- 42a521f: fix(AddressesWrapper, OrdersListWrapper): announce loading states to
-  screen readers via a persistent live region instead of a skeleton loader that
-  mounts and unmounts with the content (WCAG 4.1.3)
-- 73ee059: Fix broken border-radius selector for "Use a different address"
-  button
-
 ## 4.1.0
 
 ### Minor Changes
@@ -23,30 +8,17 @@
 
 ### Patch Changes
 
-- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a
-  different address" radio option (WCAG 2.4.7)
-- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG
-  2.4.6) and align the "use a different address" radio's accessible name with
-  its visible text (WCAG 2.5.3)
-- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields
-  (WCAG 1.3.5).
+- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a different address" radio option (WCAG 2.4.7)
+- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG 2.4.6) and align the "use a different address" radio's accessible name with its visible text (WCAG 2.5.3)
+- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields (WCAG 1.3.5).
 
-  The first name, last name, and email fields on the customer account and
-  addresses forms were missing an `autocomplete` attribute entirely; they now
-  use `given-name`, `family-name`, and `email` respectively.
+  The first name, last name, and email fields on the customer account and addresses forms were missing an `autocomplete` attribute entirely; they now use `given-name`, `family-name`, and `email` respectively.
 
-  The current password, new password, and confirm password fields on the change
-  password form, and the password confirmation field shown when changing the
-  account email, used invalid `autocomplete` values (`currentPassword`,
-  `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5
-  tokens). They now use the correct `current-password` / `new-password` values.
+  The current password, new password, and confirm password fields on the change password form, and the password confirmation field shown when changing the account email, used invalid `autocomplete` values (`currentPassword`, `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5 tokens). They now use the correct `current-password` / `new-password` values.
 
-  This helps browsers and assistive technology correctly identify the purpose of
-  each field, making autofill and form-filling easier for everyone, including
-  people using screen readers or who have difficulty typing.
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
 
-- 660a316: Fix visual heading text not marked as heading across orders,
-  addresses, payment methods and customer information sections
+- 660a316: Fix visual heading text not marked as heading across orders, addresses, payment methods and customer information sections
 - 952c2ec: Bump SDK stable versions
 
 ## 4.1.0-beta.1
@@ -63,48 +35,27 @@
 
 ### Patch Changes
 
-- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a
-  different address" radio option (WCAG 2.4.7)
-- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG
-  2.4.6) and align the "use a different address" radio's accessible name with
-  its visible text (WCAG 2.5.3)
-- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields
-  (WCAG 1.3.5).
+- 9afe8a2: fix(AddressesWrapper): show keyboard focus indicator on the "use a different address" radio option (WCAG 2.4.7)
+- 7f35291: fix(AddressesWrapper): mark address section title as a heading (WCAG 2.4.6) and align the "use a different address" radio's accessible name with its visible text (WCAG 2.5.3)
+- 0e45792: Fix incorrect and missing `autocomplete` attributes on form fields (WCAG 1.3.5).
 
-  The first name, last name, and email fields on the customer account and
-  addresses forms were missing an `autocomplete` attribute entirely; they now
-  use `given-name`, `family-name`, and `email` respectively.
+  The first name, last name, and email fields on the customer account and addresses forms were missing an `autocomplete` attribute entirely; they now use `given-name`, `family-name`, and `email` respectively.
 
-  The current password, new password, and confirm password fields on the change
-  password form, and the password confirmation field shown when changing the
-  account email, used invalid `autocomplete` values (`currentPassword`,
-  `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5
-  tokens). They now use the correct `current-password` / `new-password` values.
+  The current password, new password, and confirm password fields on the change password form, and the password confirmation field shown when changing the account email, used invalid `autocomplete` values (`currentPassword`, `newPassword`, `confirmPassword`, `password`, none of which are valid HTML5 tokens). They now use the correct `current-password` / `new-password` values.
 
-  This helps browsers and assistive technology correctly identify the purpose of
-  each field, making autofill and form-filling easier for everyone, including
-  people using screen readers or who have difficulty typing.
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
 
-- 660a316: Fix visual heading text not marked as heading across orders,
-  addresses, payment methods and customer information sections
+- 660a316: Fix visual heading text not marked as heading across orders, addresses, payment methods and customer information sections
 
 ## 4.0.0
 
 ### Major Changes
 
-- dd20d14: Add support for Seller Assisted Buying feature that allows store
-  administrators to place orders on behalf of customers. Orders placed by
-  administrators are marked with a visible "Order placed by an administrator"
-  label on the order details page. The feature also integrates with order
-  comments to track admin actions and provide a history of administrative
-  assistance throughout the order lifecycle.
+- dd20d14: Add support for Seller Assisted Buying feature that allows store administrators to place orders on behalf of customers. Orders placed by administrators are marked with a visible "Order placed by an administrator" label on the order details page. The feature also integrates with order comments to track admin actions and provide a history of administrative assistance throughout the order lifecycle.
 
 ### Minor Changes
 
-- 2ced9f4: Removed the `engines.node` constraint from `package.json`. This
-  package targets browser environments exclusively and does not depend on a
-  specific Node.js runtime version. The package is now built and distributed
-  using Node.js 22 LTS.
+- 2ced9f4: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
 
 ### Patch Changes
 
@@ -135,40 +86,19 @@
 
 ### Major Changes
 
-- dd20d14: Add support for Seller Assisted Buying feature that allows store
-  administrators to place orders on behalf of customers. Orders placed by
-  administrators are marked with a visible "Order placed by an administrator"
-  label on the order details page. The feature also integrates with order
-  comments to track admin actions and provide a history of administrative
-  assistance throughout the order lifecycle.
+- dd20d14: Add support for Seller Assisted Buying feature that allows store administrators to place orders on behalf of customers. Orders placed by administrators are marked with a visible "Order placed by an administrator" label on the order details page. The feature also integrates with order comments to track admin actions and provide a history of administrative assistance throughout the order lifecycle.
 
 ### Minor Changes
 
-- 2ced9f4: Removed the `engines.node` constraint from `package.json`. This
-  package targets browser environments exclusively and does not depend on a
-  specific Node.js runtime version. The package is now built and distributed
-  using Node.js 22 LTS.
+- 2ced9f4: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
 
 ## 3.3.0
 
 ### Minor Changes
 
 - 573f3e7: Add fieldIdPrefix prop support to the Addresses container
-- 98d4563: Adds stored payment methods to My Account: customers can see saved
-  cards (and similar methods), remove a stored method, and optionally filter by
-  payment method code. Data comes from GraphQL (getCustomerPaymentTokens,
-  deletePaymentToken) or from the event bus when tokens are already on the
-  client. The UI reuses and extends PaymentCard, introduces PaymentMethods /
-  PaymentMethodsWrapper, and includes Storybook, html-host, and unit test
-  coverage across API, transforms, hooks, fixtures, and containers.
-- 3cbdd4f: Adds a confirmation step before removing a stored payment method in
-  My Account: choosing Remove opens a PaymentModal with copy and a preview of
-  the card; Cancel closes without deleting, and Remove confirms and runs the
-  existing delete flow (deletePaymentToken via removeToken). Introduces
-  PaymentModal (component, styles, Storybook, and tests), wires
-  PaymentMethodsWrapper to pending-removal state, extends payment card modal
-  props and English strings, and adds unit tests for the modal and delete
-  confirmation behavior.
+- 98d4563: Adds stored payment methods to My Account: customers can see saved cards (and similar methods), remove a stored method, and optionally filter by payment method code. Data comes from GraphQL (getCustomerPaymentTokens, deletePaymentToken) or from the event bus when tokens are already on the client. The UI reuses and extends PaymentCard, introduces PaymentMethods / PaymentMethodsWrapper, and includes Storybook, html-host, and unit test coverage across API, transforms, hooks, fixtures, and containers.
+- 3cbdd4f: Adds a confirmation step before removing a stored payment method in My Account: choosing Remove opens a PaymentModal with copy and a preview of the card; Cancel closes without deleting, and Remove confirms and runs the existing delete flow (deletePaymentToken via removeToken). Introduces PaymentModal (component, styles, Storybook, and tests), wires PaymentMethodsWrapper to pending-removal state, extends payment card modal props and English strings, and adds unit tests for the modal and delete confirmation behavior.
 - 01c919b: Add a new component for a Payment Card
 
 ## 3.3.0-beta.0
@@ -176,46 +106,26 @@
 ### Minor Changes
 
 - 573f3e7: Add fieldIdPrefix prop support to the Addresses container
-- 98d4563: Adds stored payment methods to My Account: customers can see saved
-  cards (and similar methods), remove a stored method, and optionally filter by
-  payment method code. Data comes from GraphQL (getCustomerPaymentTokens,
-  deletePaymentToken) or from the event bus when tokens are already on the
-  client. The UI reuses and extends PaymentCard, introduces PaymentMethods /
-  PaymentMethodsWrapper, and includes Storybook, html-host, and unit test
-  coverage across API, transforms, hooks, fixtures, and containers.
-- 3cbdd4f: Adds a confirmation step before removing a stored payment method in
-  My Account: choosing Remove opens a PaymentModal with copy and a preview of
-  the card; Cancel closes without deleting, and Remove confirms and runs the
-  existing delete flow (deletePaymentToken via removeToken). Introduces
-  PaymentModal (component, styles, Storybook, and tests), wires
-  PaymentMethodsWrapper to pending-removal state, extends payment card modal
-  props and English strings, and adds unit tests for the modal and delete
-  confirmation behavior.
+- 98d4563: Adds stored payment methods to My Account: customers can see saved cards (and similar methods), remove a stored method, and optionally filter by payment method code. Data comes from GraphQL (getCustomerPaymentTokens, deletePaymentToken) or from the event bus when tokens are already on the client. The UI reuses and extends PaymentCard, introduces PaymentMethods / PaymentMethodsWrapper, and includes Storybook, html-host, and unit test coverage across API, transforms, hooks, fixtures, and containers.
+- 3cbdd4f: Adds a confirmation step before removing a stored payment method in My Account: choosing Remove opens a PaymentModal with copy and a preview of the card; Cancel closes without deleting, and Remove confirms and runs the existing delete flow (deletePaymentToken via removeToken). Introduces PaymentModal (component, styles, Storybook, and tests), wires PaymentMethodsWrapper to pending-removal state, extends payment card modal props and English strings, and adds unit tests for the modal and delete confirmation behavior.
 - 01c919b: Add a new component for a Payment Card
 
 ## 3.2.1
 
 ### Patch Changes
 
-- b47c3b4: Fix customer **select/dropdown custom attributes** end-to-end: extend
-  `GET_CUSTOMER` with `AttributeSelectedOptions` / `selected_options`, map those
-  values in `transformCustomer`, and prefer field `defaultValue` over option
-  `isDefault` in `FormInputs` selects.
+- b47c3b4: Fix customer **select/dropdown custom attributes** end-to-end: extend `GET_CUSTOMER` with `AttributeSelectedOptions` / `selected_options`, map those values in `transformCustomer`, and prefer field `defaultValue` over option `isDefault` in `FormInputs` selects.
 
-  Fix **date-only** strings in `formatDateToLocale` so calendar days do not
-  shift by timezone (ISO `YYYY-MM-DD` formatted with UTC; optional whitespace
-  trimmed).
+  Fix **date-only** strings in `formatDateToLocale` so calendar days do not shift by timezone (ISO `YYYY-MM-DD` formatted with UTC; optional whitespace trimmed).
 
 ## 3.2.0
 
 ### Minor Changes
 
-- d6e93e0: This PR adds `orderTime` to `OrderModel`. This is required to show
-  order date and time in OrdersListCard. By default, only date is displayed.
+- d6e93e0: This PR adds `orderTime` to `OrderModel`. This is required to show order date and time in OrdersListCard.
+  By default, only date is displayed.
 
-  To show the date and the time, there is a new slot implemented
-  (`OrdersListOrderTime`). To use it, it needs to be added to block in
-  Boilerplate, like in the following example:
+  To show the date and the time, there is a new slot implemented (`OrdersListOrderTime`). To use it, it needs to be added to block in Boilerplate, like in the following example:
 
   ```javascript
   (...)
@@ -234,8 +144,7 @@
 
 - 4d27653: Bump "@adobe-commerce/elsie" from 1.7.0 to 1.8.0-beta.1
 - d8a9db4: Bump build-tools version
-- b4c01f1: Add Changesets-based release automation with branch-aware workflows
-  (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
+- b4c01f1: Add Changesets-based release automation with branch-aware workflows (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
 - 63456fd: Bump adobe-commerce/elsie from 1.8.0-beta.1 to 1.8.0
 
 ## 3.2.0-beta.3
@@ -260,12 +169,10 @@
 
 ### Minor Changes
 
-- d6e93e0: This PR adds `orderTime` to `OrderModel`. This is required to show
-  order date and time in OrdersListCard. By default, only date is displayed.
+- d6e93e0: This PR adds `orderTime` to `OrderModel`. This is required to show order date and time in OrdersListCard.
+  By default, only date is displayed.
 
-  To show the date and the time, there is a new slot implemented
-  (`OrdersListOrderTime`). To use it, it needs to be added to block in
-  Boilerplate, like in the following example:
+  To show the date and the time, there is a new slot implemented (`OrdersListOrderTime`). To use it, it needs to be added to block in Boilerplate, like in the following example:
 
   ```javascript
   (...)
@@ -282,5 +189,4 @@
 
 ### Patch Changes
 
-- b4c01f1: Add Changesets-based release automation with branch-aware workflows
-  (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
+- b4c01f1: Add Changesets-based release automation with branch-aware workflows (alpha/beta/stable), PR changeset validation, and contributor helper scripts.

@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 import { CustomerAddressesModel } from '../data/models';
 interface AddressFormActionsContext {
     handleUpdateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;

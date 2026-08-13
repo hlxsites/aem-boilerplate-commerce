@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { OrdersListProps } from '../../types';
 export declare const OrdersList: Container<OrdersListProps>;

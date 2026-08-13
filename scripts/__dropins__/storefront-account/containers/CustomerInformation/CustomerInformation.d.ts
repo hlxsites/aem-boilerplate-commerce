@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 import { CustomerInformationProps } from '../../types';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 export declare const CustomerInformation: Container<CustomerInformationProps>;
