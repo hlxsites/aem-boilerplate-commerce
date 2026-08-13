@@ -45,4 +45,3 @@ export interface CompanyRoleUpdateInputModel {
     name?: string;
     permissions?: string[];
 }
-//# sourceMappingURL=company-role.d.ts.map

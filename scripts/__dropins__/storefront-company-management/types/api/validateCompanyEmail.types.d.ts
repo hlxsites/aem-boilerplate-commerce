@@ -23,4 +23,3 @@ export interface ValidateCompanyEmailResponse {
     isValid: boolean;
     error?: string;
 }
-//# sourceMappingURL=validateCompanyEmail.types.d.ts.map

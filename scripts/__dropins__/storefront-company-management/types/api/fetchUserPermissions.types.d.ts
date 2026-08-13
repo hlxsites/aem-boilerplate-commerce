@@ -40,4 +40,3 @@ export interface FetchUserPermissionsResult {
     allowedIds: Set<string>;
     roleResponse: FetchUserPermissionsResponse;
 }
-//# sourceMappingURL=fetchUserPermissions.types.d.ts.map

@@ -1,6 +1,5 @@
 import { CompanyModel } from '../../data/models/company';
 import { UpdateCompanyConfigDto } from '../../types';
-
 /**
  * Updates company address book configuration (Company Administrator only).
  *
@@ -25,4 +24,3 @@ import { UpdateCompanyConfigDto } from '../../types';
  * ```
  */
 export declare const updateCompanyConfig: (input: UpdateCompanyConfigDto) => Promise<CompanyModel>;
-//# sourceMappingURL=updateCompanyConfig.d.ts.map

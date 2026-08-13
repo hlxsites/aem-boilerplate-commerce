@@ -26,4 +26,3 @@
  * @param invitedCustomerId - The customer ID from the invitation (base64 encoded)
  */
 export declare function switchCompanyContext(companyId: string, invitedCustomerId: string): Promise<void>;
-//# sourceMappingURL=switchCompanyContext.d.ts.map

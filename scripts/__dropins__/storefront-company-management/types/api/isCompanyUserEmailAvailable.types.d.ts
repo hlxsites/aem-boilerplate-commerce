@@ -17,4 +17,3 @@
 export interface IsCompanyUserEmailAvailableInput {
     email: string;
 }
-//# sourceMappingURL=isCompanyUserEmailAvailable.types.d.ts.map

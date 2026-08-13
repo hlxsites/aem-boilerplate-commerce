@@ -1,5 +1,4 @@
 import { DeleteCompanyUserParams, DeleteCompanyUserResponse } from '../../types';
-
 /**
  * Deletes a company user by their ID
  * @param params - The parameters containing user ID
@@ -7,4 +6,3 @@ import { DeleteCompanyUserParams, DeleteCompanyUserResponse } from '../../types'
  * @returns Promise<DeleteCompanyUserResponse> - Object containing success status
  */
 export declare const deleteCompanyUser: (params: DeleteCompanyUserParams) => Promise<DeleteCompanyUserResponse>;
-//# sourceMappingURL=deleteCompanyUser.d.ts.map

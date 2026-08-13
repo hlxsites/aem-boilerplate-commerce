@@ -1,1 +1,1 @@
-export * from './AcceptInvitation/index'
+export * from './AcceptInvitation/index';

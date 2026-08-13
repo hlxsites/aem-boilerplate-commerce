@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COMPANY_HIERARCHY: string;
-//# sourceMappingURL=getCompanyHierarchy.graphql.d.ts.map

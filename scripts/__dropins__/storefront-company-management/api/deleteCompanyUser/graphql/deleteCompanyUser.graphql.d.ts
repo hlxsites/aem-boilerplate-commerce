@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const DELETE_COMPANY_USER_MUTATION = "\n  mutation DELETE_COMPANY_USER($id: ID!) {\n    deleteCompanyUserV2(id: $id) {\n      success\n    }\n  }\n";
-//# sourceMappingURL=deleteCompanyUser.graphql.d.ts.map

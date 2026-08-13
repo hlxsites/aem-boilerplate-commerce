@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const COMPANY_ROLE_FRAGMENT = "\n  fragment CompanyRoleFragment on CompanyRole {\n    id\n    name\n    users_count\n    permissions {\n      id\n      text\n      sort_order\n      children {\n        id\n        text\n        sort_order\n        children {\n          id\n          text\n          sort_order\n          children {\n            id\n            text\n            sort_order\n            children {\n              id\n              text\n              sort_order\n            }\n          }\n        }\n      }\n    }\n  }\n";
-//# sourceMappingURL=fragments.d.ts.map

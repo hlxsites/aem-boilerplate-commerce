@@ -1,5 +1,4 @@
 import { UpdateCompanyTeamInput } from '../../types/api/updateCompanyTeam.types';
-
 /**
  * Updates an existing company team with the provided information
  *
@@ -8,4 +7,3 @@ import { UpdateCompanyTeamInput } from '../../types/api/updateCompanyTeam.types'
  * @throws {Error} When network errors or GraphQL errors occur
  */
 export declare function updateCompanyTeam(input: UpdateCompanyTeamInput): Promise<boolean>;
-//# sourceMappingURL=updateCompanyTeam.d.ts.map

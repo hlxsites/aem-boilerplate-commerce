@@ -43,8 +43,10 @@ export interface updateCompanyConfigResponse {
                     email: string;
                     job_title?: string;
                 };
-                address_book_enabled?: boolean;
-                custom_shipping_address_enabled?: boolean;
+                config?: {
+                    address_book_enabled: boolean;
+                    address_book_custom_shipping_address_enabled: boolean;
+                };
             };
         };
     };
@@ -56,4 +58,3 @@ export type UpdateCompanyConfigDto = Partial<{
     addressBookEnabled: boolean;
     customShippingAddressEnabled: boolean;
 }>;
-//# sourceMappingURL=updateCompanyConfig.types.d.ts.map

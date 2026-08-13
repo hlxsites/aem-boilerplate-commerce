@@ -1,5 +1,78 @@
 # @dropins/storefront-company-management
 
+## 1.4.1
+
+### Patch Changes
+
+- 6309f15: Revert reCAPTCHA support for B2B company registration (createCompany)
+
+## 1.4.0
+
+### Minor Changes
+
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+### Patch Changes
+
+- 36eab4d: Bump SDK stable versions
+- a76b2c6: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
+## 1.4.0-beta.1
+
+### Patch Changes
+
+- 36eab4d: Bump SDK stable versions
+
+## 1.4.0-beta.0
+
+### Minor Changes
+
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+### Patch Changes
+
+- a76b2c6: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
+## 1.3.0
+
+### Minor Changes
+
+- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
+### Patch Changes
+
+- 931c25f: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+- ac5cf51: Bump storefront SDK stable version
+
+## 1.3.0-beta.3
+
+### Patch Changes
+
+- ac5cf51: Bump storefront SDK stable version
+
+## 1.3.0-beta.2
+
+### Patch Changes
+
+- 931c25f: Bump @adobe-commerce/elsie to v1.9.0-beta.3
+
+## 1.3.0-beta.1
+
+### Minor Changes
+
+- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+## 1.3.0-beta.0
+
+### Minor Changes
+
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+
 ## 1.2.0
 
 ### Minor Changes

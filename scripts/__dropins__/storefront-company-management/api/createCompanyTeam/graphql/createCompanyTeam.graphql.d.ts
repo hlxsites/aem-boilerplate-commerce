@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const CREATE_COMPANY_TEAM = "\n  mutation createCompanyTeam($input: CompanyTeamCreateInput!) {\n    createCompanyTeam(input: $input) { __typename team { id structure_id name } }\n  }\n";
-//# sourceMappingURL=createCompanyTeam.graphql.d.ts.map

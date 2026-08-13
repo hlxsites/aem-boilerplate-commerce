@@ -13,4 +13,3 @@ export declare const buildUpdateCompanyMutation: (allowed: Set<string>, isAdmin?
  * exclusively surfaced to that role in the UI.
  */
 export declare const buildUpdateCompanyConfigMutation: (allowed: Set<string>, isAdmin?: boolean) => string;
-//# sourceMappingURL=buildCompanyQueries.d.ts.map

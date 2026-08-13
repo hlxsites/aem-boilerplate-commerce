@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CUSTOMER_COMPANIES_WITH_ROLES = "\n  query GET_CUSTOMER_COMPANIES_WITH_ROLES {\n    customer {\n      companies(input: {}) {\n        items {\n          id\n          name\n        }\n      }\n      role {\n        id\n        name\n      }\n    }\n  }\n";
-//# sourceMappingURL=isCompanyAdmin.graphql.d.ts.map

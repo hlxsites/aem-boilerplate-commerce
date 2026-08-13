@@ -43,7 +43,6 @@ export declare const convertTimestampToDate: (timestamp: string | null | undefin
 export declare const validateUrl: (url: string) => boolean;
 export declare const validateLength: (value: string, minLength: number, maxLength: number) => boolean;
 export declare const validationFields: (value: string, configs: ValidationFieldsConfig, translations: TranslationList, errorsList: ErrorsList) => {
-    [x: string]: string;
+    [x: string]: string | undefined;
 };
 export {};
-//# sourceMappingURL=validationFields.d.ts.map

@@ -24,4 +24,3 @@ export interface CreateCompanyTeamResult {
     structureId?: string;
     name?: string;
 }
-//# sourceMappingURL=createCompanyTeam.types.d.ts.map

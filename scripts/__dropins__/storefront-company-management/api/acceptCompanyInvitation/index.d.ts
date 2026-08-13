@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './acceptCompanyInvitation';
-//# sourceMappingURL=index.d.ts.map
