@@ -250,7 +250,7 @@ async function addProductColumn(block, item, allowedAttrs = null, searchFilters 
       }
     });
 
-    if (newSkus.length >= MAX_PRODUCTS) {
+    if (liveSkus.length + 1 >= MAX_PRODUCTS) {
       const searchWrap = block.querySelector('.product-compare__search');
       if (searchWrap) searchWrap.hidden = true;
     }
@@ -476,7 +476,10 @@ export default async function decorate(block) {
   // Each entry is "attribute:value"; maps to { attribute, in } filter objects.
   const searchFilters = config.filter
     ? config.filter.split(',').flatMap((pair) => {
-      const [attribute, value] = pair.split(':').map((s) => s.trim());
+      const colonIdx = pair.indexOf(':');
+      if (colonIdx === -1) return [];
+      const attribute = pair.slice(0, colonIdx).trim();
+      const value = pair.slice(colonIdx + 1).trim();
       return attribute && value ? [{ attribute, in: [value] }] : [];
     })
     : [];
