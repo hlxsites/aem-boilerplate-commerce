@@ -6,9 +6,22 @@ The Product Compare block renders a side-by-side comparison table for up to thre
 
 ## Integration
 
-<!-- ### Block Configuration
+### Block Configuration
 
-No block configuration is read via `readBlockConfig()`. -->
+Both keys are optional. Omitting them falls back to showing all attributes and searching all products.
+
+| Configuration Key | Format | Description |
+|---|---|---|
+| `attributes` | Comma-separated attribute names | Restricts which product attributes appear as rows in the comparison table, in the authored order. Names must match the `name` field returned by the Catalog Service (e.g. `color, weight, sensor_size`). |
+| `filter` | Comma-separated `attribute:value` pairs | Narrows which products are eligible for comparison. Applied to both the search dropdown and the initial SKU lookup. Use this to restrict comparisons to a category or a merchant-defined flag (e.g. `comparable:1, product_type:camera`). The attribute must be configured as **filterable** in the Adobe Commerce Catalog for the filter to take effect. |
+
+**Example — cameras only, specific attributes:**
+
+```
+| Product Compare |                                       |
+| attributes      | sensor_size, iso_range, weight, color  |
+| filter          | product_type:camera, comparable:1      |
+```
 
 ### URL Parameters
 

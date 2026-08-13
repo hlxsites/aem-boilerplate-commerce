@@ -6,6 +6,7 @@ import { isAemAssetsEnabled, tryGenerateAemAssetsOptimizedUrl } from '@dropins/t
 import { h } from '@dropins/tools/preact.js';
 import { search } from '@dropins/storefront-product-discovery/api.js';
 import { getProductLink } from '../../scripts/commerce.js';
+import { readBlockConfig } from '../../scripts/aem.js';
 import '../../scripts/initializers/search.js';
 
 const IMAGE_SIZE = { width: 400, height: 400 };
@@ -47,9 +48,9 @@ function buildPriceProps(product) {
   };
 }
 
-async function fetchProductsBySkus(skus) {
+async function fetchProductsBySkus(skus, searchFilters = []) {
   const result = await search(
-    { filter: [{ attribute: 'sku', in: skus }], pageSize: skus.length },
+    { filter: [{ attribute: 'sku', in: skus }, ...searchFilters], pageSize: skus.length },
     { scope: `${SEARCH_SCOPE}-lookup` },
   );
   return result?.items ?? [];
@@ -169,8 +170,10 @@ function removeProductColumn(block, sku) {
 /**
  * Adds a product column without re-fetching — item data comes directly from the search result.
  * Falls back to a full re-render when no table exists yet.
+ * @param {string[]|null} allowedAttrs Authored attribute allowlist, or null to show all.
+ * @param {object[]} searchFilters Parsed filter objects kept in sync with renderBlock.
  */
-async function addProductColumn(block, item) {
+async function addProductColumn(block, item, allowedAttrs = null, searchFilters = []) {
   const currentSkus = getCurrentSkus(block);
   if (currentSkus.includes(item.sku) || currentSkus.length >= MAX_PRODUCTS) return;
 
@@ -181,7 +184,7 @@ async function addProductColumn(block, item) {
 
   // No table yet — initial add, full render (no visible content to flicker)
   if (!block.querySelector('table')) {
-    await renderBlock(block, newSkus);
+    await renderBlock(block, newSkus, allowedAttrs, searchFilters);
     return;
   }
 
@@ -199,7 +202,10 @@ async function addProductColumn(block, item) {
     });
   }
 
-  (item.attributes ?? []).forEach(({ name, label, value }) => {
+  const attrs = (item.attributes ?? [])
+    .filter(({ name }) => !allowedAttrs || allowedAttrs.includes(name));
+
+  attrs.forEach(({ name, label, value }) => {
     if (!value) return;
     if (attrRows.has(name)) {
       const td = document.createElement('td');
@@ -227,7 +233,7 @@ async function addProductColumn(block, item) {
 
   // Pad empty td for existing rows the new product lacks
   attrRows.forEach((row, name) => {
-    if (!(item.attributes ?? []).some((a) => a.name === name)) {
+    if (!attrs.some((a) => a.name === name)) {
       const td = document.createElement('td');
       td.textContent = '--';
       row.append(td);
@@ -245,8 +251,9 @@ async function addProductColumn(block, item) {
  * @param {HTMLElement} container
  * @param {Function} getSkus Live callback — called on each selection to read the current SKU list
  * @param {Function} onAdd Called with the selected product item
+ * @param {object[]} searchFilters Parsed filter objects forwarded to every search call
  */
-async function renderSearch(container, getSkus, onAdd) {
+async function renderSearch(container, getSkus, onAdd, searchFilters = []) {
   const itemMap = new Map();
 
   const dropdown = document.createElement('ul');
@@ -293,7 +300,14 @@ async function renderSearch(container, getSkus, onAdd) {
   });
 
   const triggerSearch = debounce(async (phrase) => {
-    const result = await search({ phrase, pageSize: 5 }, { scope: SEARCH_SCOPE });
+    const result = await search(
+      {
+        phrase,
+        pageSize: 5,
+        ...(searchFilters.length ? { filter: searchFilters } : {}),
+      },
+      { scope: SEARCH_SCOPE },
+    );
     updateDropdown(result?.items ?? []);
   }, 300);
 
@@ -338,21 +352,28 @@ async function renderSearch(container, getSkus, onAdd) {
  * Clears and fully re-renders the block: search form then comparison table.
  * @param {HTMLElement} block
  * @param {string[]} skus
+ * @param {string[]|null} allowedAttrs Authored attribute allowlist, or null to show all.
+ * @param {object[]} searchFilters Parsed filter objects applied to every search call.
  */
-async function renderBlock(block, skus) {
+async function renderBlock(block, skus, allowedAttrs = null, searchFilters = []) {
   block.innerHTML = '';
 
   const searchWrap = document.createElement('div');
   searchWrap.className = 'product-compare__search';
   searchWrap.hidden = skus.length >= MAX_PRODUCTS;
   block.append(searchWrap);
-  renderSearch(searchWrap, () => getCurrentSkus(block), (item) => addProductColumn(block, item));
+  renderSearch(
+    searchWrap,
+    () => getCurrentSkus(block),
+    (item) => addProductColumn(block, item, allowedAttrs, searchFilters),
+    searchFilters,
+  );
 
   if (!skus.length) return;
 
   let products;
   try {
-    products = await fetchProductsBySkus(skus);
+    products = await fetchProductsBySkus(skus, searchFilters);
   } catch (err) {
     console.error('[product-compare]', err);
     const msg = document.createElement('p');
@@ -369,11 +390,22 @@ async function renderBlock(block, skus) {
   }
 
   const attrMap = new Map();
-  products.forEach((p) => {
-    (p.attributes ?? []).forEach(({ name, label }) => {
-      if (!attrMap.has(name)) attrMap.set(name, label);
+  if (allowedAttrs) {
+    // Preserve authored order; look up the label from the first product that carries the attribute.
+    allowedAttrs.forEach((name) => {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const p of products) {
+        const attr = p.attributes?.find((a) => a.name === name);
+        if (attr) { attrMap.set(name, attr.label); break; }
+      }
     });
-  });
+  } else {
+    products.forEach((p) => {
+      (p.attributes ?? []).forEach(({ name, label }) => {
+        if (!attrMap.has(name)) attrMap.set(name, label);
+      });
+    });
+  }
 
   const table = document.createElement('table');
   const headerRow = document.createElement('tr');
@@ -417,14 +449,29 @@ async function renderBlock(block, skus) {
 
 /**
  * Loads and decorates the block. Reads initial SKUs from the ?compare= URL parameter.
+ * Supports optional `attributes` and `filters` config rows for attribute display and search scoping
  * @param {Element} block
  */
 export default async function decorate(block) {
+  const config = readBlockConfig(block);
+
+  const allowedAttrs = config.attributes
+    ? config.attributes.split(',').map((s) => s.trim()).filter(Boolean)
+    : null;
+
+  // Each entry is "attribute:value"; maps to { attribute, in } filter objects.
+  const searchFilters = config.filter
+    ? config.filter.split(',').flatMap((pair) => {
+      const [attribute, value] = pair.split(':').map((s) => s.trim());
+      return attribute && value ? [{ attribute, in: [value] }] : [];
+    })
+    : [];
+
   const skus = (new URLSearchParams(window.location.search).get('compare') ?? '')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
     .slice(0, MAX_PRODUCTS);
 
-  await renderBlock(block, skus);
+  await renderBlock(block, skus, allowedAttrs, searchFilters);
 }
