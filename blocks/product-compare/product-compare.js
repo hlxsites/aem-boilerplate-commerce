@@ -12,6 +12,7 @@ import '../../scripts/initializers/search.js';
 const IMAGE_SIZE = { width: 400, height: 400 };
 
 const MAX_PRODUCTS = 3;
+
 const SEARCH_SCOPE = 'product-compare';
 
 /**
@@ -27,7 +28,8 @@ function buildPriceProps(product) {
     const minRegular = priceRange.minimum.regular?.amount?.value;
     const maxFinal = priceRange.maximum?.final?.amount?.value;
     const maxRegular = priceRange.maximum?.regular?.amount?.value;
-    const hasSpecial = minFinal < minRegular || maxFinal < maxRegular;
+    const hasSpecial = (minFinal !== undefined && minFinal < minRegular)
+      || (maxFinal !== undefined && maxFinal < maxRegular);
     return {
       currency,
       regular: { display: 'from to', minimumAmount: minRegular, maximumAmount: maxRegular },
@@ -119,7 +121,7 @@ async function buildProductTh(p, onRemove) {
     onClick: onRemove,
   })(removeBtnWrap);
 
-  if (regular.amount || regular.minimumAmount) {
+  if (regular.amount !== undefined || regular.minimumAmount !== undefined) {
     if (!final) {
       await UI.render(PriceRange, { ...regular, currency })(priceWrap);
     } else {
@@ -174,75 +176,87 @@ function removeProductColumn(block, sku) {
  * @param {object[]} searchFilters Parsed filter objects kept in sync with renderBlock.
  */
 async function addProductColumn(block, item, allowedAttrs = null, searchFilters = []) {
+  // eslint-disable-next-line no-param-reassign
+  if (block.addPending) return;
   const currentSkus = getCurrentSkus(block);
   if (currentSkus.includes(item.sku) || currentSkus.length >= MAX_PRODUCTS) return;
 
-  const newSkus = [...currentSkus, item.sku];
-  const url = new URL(window.location.href);
-  url.searchParams.set('compare', newSkus.join(','));
-  window.history.replaceState({}, '', url);
+  // eslint-disable-next-line no-param-reassign
+  block.addPending = true;
+  try {
+    const newSkus = [...currentSkus, item.sku];
+    const url = new URL(window.location.href);
+    url.searchParams.set('compare', newSkus.join(','));
+    window.history.replaceState({}, '', url);
 
-  // No table yet — initial add, full render (no visible content to flicker)
-  if (!block.querySelector('table')) {
-    await renderBlock(block, newSkus, allowedAttrs, searchFilters);
-    return;
-  }
+    // No table yet — initial add, full render (no visible content to flicker)
+    if (!block.querySelector('table')) {
+      await renderBlock(block, newSkus, allowedAttrs, searchFilters);
+      return;
+    }
 
-  // Append new header column using the item already in hand — no second fetch
-  const th = await buildProductTh(item, () => removeProductColumn(block, item.sku));
-  block.querySelector('thead tr').append(th);
+    // Append new header column using the item already in hand — no second fetch
+    const th = await buildProductTh(item, () => removeProductColumn(block, item.sku));
 
-  // Update tbody: add td to existing rows, create new rows for new attributes
-  const tbody = block.querySelector('tbody');
-  const attrRows = new Map();
-  if (tbody) {
-    Array.from(tbody.rows).forEach((row) => {
-      const key = row.querySelector('th[data-attr]')?.dataset.attr;
-      if (key) attrRows.set(key, row);
+    // Re-read live SKUs after the async gap — a remove may have fired during buildProductTh.
+    const liveSkus = getCurrentSkus(block);
+    block.querySelector('thead tr').append(th);
+
+    // Update tbody: add td to existing rows, create new rows for new attributes
+    const tbody = block.querySelector('tbody');
+    const attrRows = new Map();
+    if (tbody) {
+      Array.from(tbody.rows).forEach((row) => {
+        const key = row.querySelector('th[data-attr]')?.dataset.attr;
+        if (key) attrRows.set(key, row);
+      });
+    }
+
+    const attrs = (item.attributes ?? [])
+      .filter(({ name }) => !allowedAttrs || allowedAttrs.includes(name));
+
+    attrs.forEach(({ name, label, value }) => {
+      if (!value) return;
+      if (attrRows.has(name)) {
+        const td = document.createElement('td');
+        td.textContent = value;
+        attrRows.get(name).append(td);
+      } else {
+        const row = document.createElement('tr');
+        const attrTh = document.createElement('th');
+        attrTh.scope = 'row';
+        attrTh.dataset.attr = name;
+        attrTh.textContent = label;
+        row.append(attrTh);
+        liveSkus.forEach(() => {
+          const td = document.createElement('td');
+          td.textContent = '--';
+          row.append(td);
+        });
+        const td = document.createElement('td');
+        td.textContent = value;
+        row.append(td);
+        tbody?.append(row);
+        attrRows.set(name, row);
+      }
     });
-  }
 
-  const attrs = (item.attributes ?? [])
-    .filter(({ name }) => !allowedAttrs || allowedAttrs.includes(name));
-
-  attrs.forEach(({ name, label, value }) => {
-    if (!value) return;
-    if (attrRows.has(name)) {
-      const td = document.createElement('td');
-      td.textContent = value;
-      attrRows.get(name).append(td);
-    } else {
-      const row = document.createElement('tr');
-      const attrTh = document.createElement('th');
-      attrTh.scope = 'row';
-      attrTh.dataset.attr = name;
-      attrTh.textContent = label;
-      row.append(attrTh);
-      currentSkus.forEach(() => {
+    // Pad empty td for existing rows the new product lacks
+    attrRows.forEach((row, name) => {
+      if (!attrs.some((a) => a.name === name)) {
         const td = document.createElement('td');
         td.textContent = '--';
         row.append(td);
-      });
-      const td = document.createElement('td');
-      td.textContent = value;
-      row.append(td);
-      tbody?.append(row);
-      attrRows.set(name, row);
-    }
-  });
+      }
+    });
 
-  // Pad empty td for existing rows the new product lacks
-  attrRows.forEach((row, name) => {
-    if (!attrs.some((a) => a.name === name)) {
-      const td = document.createElement('td');
-      td.textContent = '--';
-      row.append(td);
+    if (newSkus.length >= MAX_PRODUCTS) {
+      const searchWrap = block.querySelector('.product-compare__search');
+      if (searchWrap) searchWrap.hidden = true;
     }
-  });
-
-  if (newSkus.length >= MAX_PRODUCTS) {
-    const searchWrap = block.querySelector('.product-compare__search');
-    if (searchWrap) searchWrap.hidden = true;
+  } finally {
+    // eslint-disable-next-line no-param-reassign
+    block.addPending = false;
   }
 }
 
@@ -362,7 +376,7 @@ async function renderBlock(block, skus, allowedAttrs = null, searchFilters = [])
   searchWrap.className = 'product-compare__search';
   searchWrap.hidden = skus.length >= MAX_PRODUCTS;
   block.append(searchWrap);
-  renderSearch(
+  await renderSearch(
     searchWrap,
     () => getCurrentSkus(block),
     (item) => addProductColumn(block, item, allowedAttrs, searchFilters),
