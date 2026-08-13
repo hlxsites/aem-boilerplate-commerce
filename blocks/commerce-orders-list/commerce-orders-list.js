@@ -17,7 +17,10 @@ import {
 import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
-  const { 'minified-view': minifiedViewConfig = 'false' } = readBlockConfig(block);
+  const {
+    'minified-view': minifiedViewConfig = 'false',
+    search: searchConfig = 'true',
+  } = readBlockConfig(block);
   const createProductLink = (productData) => {
     // If product is null/undefined, it's been deleted from catalog
     if (!productData?.product) {
@@ -37,6 +40,8 @@ export default async function decorate(block) {
   } else {
     await accountRenderer.render(OrdersList, {
       minifiedView: minifiedViewConfig === 'true',
+      // OrdersList defaults search off; enable it here.
+      withSearch: searchConfig === 'true',
       routeTracking: ({ carrier, number }) => {
         if (carrier === 'ups') {
           return `${UPS_TRACKING_URL}?tracknum=${number}`;
