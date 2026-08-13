@@ -138,7 +138,7 @@ export default async function decorate(block) {
     wrap.className = 'product-discovery-product-actions__compare';
     UI.render(Button, {
       icon: Icon({ source: 'Bulk' }),
-      'aria-label': `labels.Global?.Compare ?? 'Compare' ${productName}`,
+      'aria-label': `${labels.Global?.Compare ?? 'Compare'} ${productName}`,
       variant: 'tertiary',
       onClick: () => events.emit('compare/products', {
         sku: product.sku,
