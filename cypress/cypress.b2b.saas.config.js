@@ -34,5 +34,16 @@ module.exports = defineConfig({
       purchaseOrders: '/customer/purchase-orders',
       approvalRules: '/customer/approval-rules',
     },
+    // Address Book (B2B) URLs
+    // NOTE: `companyProfile` is a confirmed existing route (see verifyCompanyProfile.spec.js).
+    // `login`/`account` are reused as-is. There is no confirmed dedicated route for the
+    // company address book page yet — `actions.openCompanyAddressBook()` navigates via
+    // `companyProfile` and clicks a nav link/tab by text, which must be calibrated against
+    // the live app on first run (see plan "known unknowns").
+    addressBookUrls: {
+      login: '/customer/login',
+      account: '/customer/account',
+      companyProfile: '/customer/company',
+    },
   },
 });

@@ -73,3 +73,6 @@ export * from './companyData';
 
 // Export PO fixtures
 export * from './purchaseOrdersConfig';
+
+// Export Address Book fixtures
+export * from './addressBookConfig';

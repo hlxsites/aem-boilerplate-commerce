@@ -388,3 +388,34 @@ export const variantsGridAddToCartButton =
   ".product-details__variants-grid-actions button";
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
+
+// Address Book (B2B) selectors
+// The address card/modal/form classes below are shared with the B2C personal
+// address dropin components (AddressCard/AddressModal/AddressForm — same
+// bundle per scripts/__dropins__/storefront-account) and are confirmed real
+// selectors via verifyUserAccount.spec.js. Everything marked "TBD" below is a
+// best-effort guess derived from the minified dropin bundle and MUST be
+// confirmed against the live rendered DOM on first run — the component ships
+// pre-minified so it cannot be verified from source alone.
+export const addressBookFormTitle = '[data-testid="addressesFormTitle"]';
+export const addressBookCard = '.account-address-card';
+export const addressBookCardDescription = '.account-address-card__description';
+export const addressBookModalButtons = '.account-address-modal__buttons';
+// TBD: confirm against live DOM
+export const addressBookNoPermissionMessage = '[data-testid="noPermissionMessage"]';
+// TBD: confirm against live DOM
+export const addressBookActionsLoader = '[data-testid="addressActionsLoaderWrapper"]';
+export const addressBookDefaultShippingCheckbox = 'input[name="default_shipping"]';
+export const addressBookDefaultBillingCheckbox = 'input[name="default_billing"]';
+export const addressBookIsDefaultCheckbox = 'input[name="is_default"]';
+export const addressBookTypeShippingRadio = 'input[name="address_type_shipping"]';
+export const addressBookTypeBillingRadio = 'input[name="address_type_billing"]';
+
+// Edit Company Profile — Address Book settings.
+// TBD: input names are inferred from the UpdateCompanyConfigDto field names
+// (addressBookEnabled/customShippingAddressEnabled) — confirm against the
+// live rendered Edit Company Profile form on first run.
+export const companyProfileAddressBookEnabledCheckbox =
+  'input[name="addressBookEnabled"]';
+export const companyProfileCustomShippingEnabledCheckbox =
+  'input[name="customShippingAddressEnabled"]';

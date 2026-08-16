@@ -31,5 +31,12 @@ module.exports = defineConfig({
       purchaseOrders: '/customer/purchase-orders',
       approvalRules: '/customer/approval-rules',
     },
+    // Address Book (B2B) URLs — see cypress.b2b.saas.config.js for notes on
+    // the unconfirmed dedicated address-book route.
+    addressBookUrls: {
+      login: '/customer/login',
+      account: '/customer/account',
+      companyProfile: '/customer/company',
+    },
   },
 });

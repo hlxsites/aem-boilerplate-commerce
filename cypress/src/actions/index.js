@@ -929,3 +929,93 @@ export const onVariantsUpdated = (callback) => {
     }
   });
 };
+
+// ==========================================================================
+// Company Address Book (B2B) Actions
+// ==========================================================================
+
+/**
+ * Navigates to the My Company page and opens the company address book.
+ * NOTE: the exact nav-link text/route for the address book page is not yet
+ * confirmed against the live app (see plan "known unknowns") — this clicks a
+ * link/tab whose text matches /address/i, which must be calibrated on first run.
+ */
+export const openCompanyAddressBook = (urls) => {
+  cy.visit(urls.companyProfile);
+  cy.wait(3000);
+  cy.contains(/address/i).should('be.visible').click({ force: true });
+  cy.wait(2000);
+};
+
+/**
+ * Opens the Edit Company Profile form and toggles the Address Book settings
+ * checkboxes (addressBookEnabled / customShippingAddressEnabled), then saves.
+ * Pass `undefined` for a flag to leave its current state untouched.
+ */
+export const toggleCompanyAddressBookSettings = (
+  urls,
+  { addressBookEnabled, customShippingAddressEnabled } = {},
+) => {
+  cy.visit(urls.companyProfile);
+  cy.wait(2000);
+  cy.contains('button', 'Edit').should('be.visible').click();
+  cy.wait(1000);
+
+  if (addressBookEnabled !== undefined) {
+    cy.get(fields.companyProfileAddressBookEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== addressBookEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  if (customShippingAddressEnabled !== undefined) {
+    cy.get(fields.companyProfileCustomShippingEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== customShippingAddressEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  cy.contains('button', 'Save').should('be.visible').click();
+  cy.wait(2000);
+};
+
+/**
+ * Fills the common address fields shared by the B2C and B2B address forms
+ * (same AddressForm dropin component). Unlike `createAddress`, this does NOT
+ * touch the B2C-only `defaultShipping` checkbox — the B2B form uses different
+ * field names (`default_shipping`/`default_billing`/`address_type_*`, see
+ * fields.addressBookDefaultShippingCheckbox etc.), handled separately by the
+ * caller so the correct real fields are exercised.
+ */
+export const fillCompanyAddressFields = (address) => {
+  cy.get(fields.fieldUserFirstName).clear().type(address.firstName);
+  cy.get(fields.fieldUserLastName).clear().type(address.lastName);
+  cy.get(fields.fieldUserStreet).clear().type(address.street);
+  cy.get(fields.fieldUserStreet2).clear().type(address.streetMultiline_2);
+  cy.get(fields.fieldUserSelectCountry).select(address.countryCode);
+  cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+  cy.get(fields.fieldUserCity).clear().type(address.city);
+  cy.get(fields.fieldUserPhone).clear().type(address.telephone);
+  cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
+  cy.get(fields.fieldUserVatId).clear().type(address.vatId);
+};
+
+/**
+ * Removes a company address card identified by text contained within it
+ * (e.g. a street or lastname fragment), confirming the removal modal.
+ */
+export const deleteCompanyAddressCard = (identifyingText, labels) => {
+  cy.get(fields.addressBookCard)
+    .contains(identifyingText)
+    .closest(fields.addressBookCard)
+    .within(() => {
+      cy.contains(labels.remove).click();
+    });
+  cy.contains(labels.removeConfirm).should('be.visible');
+  cy.get(fields.addressBookModalButtons)
+    .contains(labels.remove)
+    .click();
+  cy.wait(2000);
+};
