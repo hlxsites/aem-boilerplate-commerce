@@ -341,8 +341,6 @@ export default async function decorate(block) {
       shippingForm = null;
       shippingFormRef.current = null;
 
-      console.log('!!!!!!!!!!Rendering customer shipping addresses...', data);
-
       shippingAddresses = await renderCustomerShippingAddresses(
         $shippingForm,
         shippingFormRef,
