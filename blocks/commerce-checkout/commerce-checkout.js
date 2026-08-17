@@ -34,6 +34,7 @@ import {
 
 // Container functions
 import {
+  isPlaceOrderRendered,
   renderAddressForm,
   renderBillingAddressFormSkeleton,
   renderBillToShippingAddress,
@@ -318,7 +319,7 @@ export default async function decorate(block) {
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
 
     if (!isExpressPaymentMethod(selectedPaymentMethod)
-        && !$placeOrder.querySelector('.checkout-place-order')) {
+        && !isPlaceOrderRendered($placeOrder)) {
       // Express payment methods replace the place order button; restore it for non-express methods
       renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }

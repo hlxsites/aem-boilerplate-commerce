@@ -700,6 +700,14 @@ export const renderPlaceOrder = async (container, options = {}) => mountPlaceOrd
 );
 
 /**
+ * Checks whether the standard Place Order button currently occupies the Place Order slot,
+ * as opposed to an express payment method's own button (or nothing, if unmounted).
+ * @param {HTMLElement} container - The Place Order slot element.
+ * @returns {boolean}
+ */
+export const isPlaceOrderRendered = (container) => !!container.querySelector('.checkout-place-order');
+
+/**
  * Renders customer shipping addresses selector/form for authenticated users - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render shipping addresses in
  * @param {Object} formRef - React-style ref for form reference
