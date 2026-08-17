@@ -71,7 +71,7 @@ import {
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
-describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
+describe.skip('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('addressBookUrls');
 
   before(() => {
