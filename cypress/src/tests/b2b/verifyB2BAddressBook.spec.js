@@ -167,6 +167,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // being found on the last run. No guessing at selectors this time — dump
   // real select elements + a body text snippet into the log.
   it('DEBUG - login, visit company page, detect company switcher', () => {
+    cy.logToTerminal(`🔎 API_ENDPOINT=${Cypress.env('API_ENDPOINT')} | graphqlEndPoint=${Cypress.env('graphqlEndPoint')} | IS_ACO=${Cypress.env('IS_ACO')} | baseUrl=${Cypress.config('baseUrl')}`);
     cy.logToTerminal('🔐 Login as company admin (real account)');
     // This platform sometimes doesn't redirect to /customer/account right
     // after submit — same retry-if-not-redirected logic as actions.login(),
