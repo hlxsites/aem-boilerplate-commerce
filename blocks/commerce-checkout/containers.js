@@ -472,7 +472,6 @@ export const renderPaymentMethods = async (
  */
 const createExpressPaymentNotice = (label) => {
   const $notice = document.createElement('p');
-  $notice.className = 'checkout-payment-methods__express-notice';
   $notice.textContent = `Complete your purchase using the ${label} button below.`;
   return $notice;
 };
