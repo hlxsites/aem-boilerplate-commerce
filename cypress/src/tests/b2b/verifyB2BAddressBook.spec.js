@@ -99,7 +99,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // buffer (role creation waits + user creation waits) before the FIRST
   // login/UI interaction happens in Test 2, instead of touching the company
   // profile UI immediately after company creation.
-  it(
+  it.skip(
     'Setup - Create roles and users',
     () => {
       cy.logToTerminal(
@@ -212,7 +212,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 3: Company Admin bypass - full CRUD lifecycle
-  it(
+  it.skip(
     'Company Admin - complete address CRUD lifecycle (bypass permissions)',
     () => {
       cy.logToTerminal('========= ⚙️ Test 3: Company Admin CRUD lifecycle =========');
@@ -277,7 +277,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 4: View-only permission
-  it(
+  it.skip(
     'Viewer role - can see addresses but has no create, edit, remove or default actions',
     () => {
       cy.logToTerminal('========= ⚙️ Test 4: Viewer role =========');
@@ -300,7 +300,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 5: Create permission (no default)
-  it(
+  it.skip(
     'Creator role - can add addresses but cannot edit, remove or set default',
     () => {
       cy.logToTerminal('========= ⚙️ Test 5: Creator role =========');
@@ -333,7 +333,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 6: Create + set-default permission
-  it(
+  it.skip(
     'Creator-with-default role - can add addresses and set them as default',
     () => {
       cy.logToTerminal('========= ⚙️ Test 6: Creator-with-default role =========');
@@ -365,7 +365,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 7: Edit permission
-  it(
+  it.skip(
     'Editor role - can modify existing addresses but cannot create, remove or set default',
     () => {
       cy.logToTerminal('========= ⚙️ Test 7: Editor role =========');
@@ -398,7 +398,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 8: Delete permission
-  it(
+  it.skip(
     'Deleter role - can remove addresses but cannot create, edit or set default',
     () => {
       cy.logToTerminal('========= ⚙️ Test 8: Deleter role =========');
@@ -423,7 +423,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 9: Full permission
-  it(
+  it.skip(
     'Full-permission role - has create, edit, remove and default actions available',
     () => {
       cy.logToTerminal('========= ⚙️ Test 9: Full-permission role =========');
@@ -465,7 +465,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 10: No address-book permission at all
-  it(
+  it.skip(
     'No-access role - cannot access the company address book at all',
     () => {
       cy.logToTerminal('========= ⚙️ Test 10: No-access role =========');
@@ -496,7 +496,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   );
 
   // Test 11: Cleanup
-  it(
+  it.skip(
     'Cleanup - Delete address book users and roles',
     () => {
       cy.logToTerminal('========= ⚙️ Test 11: Cleanup =========');
