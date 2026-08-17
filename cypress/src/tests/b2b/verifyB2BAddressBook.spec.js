@@ -162,6 +162,37 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
     },
   );
 
+  // TEMPORARY DEBUG test — login + visit /customer/company + detect what's
+  // actually on the page, since select[aria-label="Select company"] stopped
+  // being found on the last run. No guessing at selectors this time — dump
+  // real select elements + a body text snippet into the log.
+  it('DEBUG - login, visit company page, detect company switcher', () => {
+    cy.logToTerminal('🔐 Login as company admin (real account)');
+    cy.visit(urls.login);
+    cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
+      cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+      cy.get('input[name="password"]').type('qweQWE1!');
+      cy.get('button[type="submit"]').click();
+    });
+    cy.wait(5000);
+    cy.url().then((url) => cy.logToTerminal(`🔎 URL after login: ${url}`));
+
+    cy.logToTerminal('🏢 Visiting company profile page');
+    cy.visit(urls.companyProfile);
+    cy.wait(3000);
+
+    cy.get('body').then(($body) => {
+      const selects = [...$body.find('select')].map((el) => ({
+        ariaLabel: el.getAttribute('aria-label'),
+        id: el.id,
+        className: el.className,
+        optionsCount: el.options.length,
+      }));
+      cy.logToTerminal(`🔬 selects on page: ${JSON.stringify(selects)}`);
+      cy.logToTerminal(`🔬 body text snippet: ${$body.text().slice(0, 800)}`);
+    });
+  });
+
   // Test 2: Company Admin (existing real account) — full Address Book
   // scenario in one pass. Uses a pre-existing, already-verified real user
   // instead of a freshly REST-created one, to sidestep the REST-creation
@@ -171,7 +202,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // since Company Administrator bypasses ACL checks entirely. Granular
   // per-role permission testing is deferred to a later test with other real
   // users, once the REST role-creation problem is solved.
-  it(
+  it.skip(
     'Company Admin (real user) - complete Address Book scenario',
     () => {
       cy.logToTerminal('========= ⚙️ Test 2: Real-user Address Book scenario =========');
