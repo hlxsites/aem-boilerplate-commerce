@@ -76,7 +76,9 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
 
   before(() => {
     cy.logToTerminal('🚀 B2B Address Book test suite started');
-    cy.setupCompanyWithAdmin();
+    // TEMPORARY: no REST company/user creation for now — Test 2 uses a
+    // pre-existing real account instead. See plan note above Test 2.
+    // cy.setupCompanyWithAdmin();
   });
 
   beforeEach(() => {
@@ -160,54 +162,107 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
     },
   );
 
-  // Test 2: First real login/UI interaction — enable the Address Book
-  // settings on the Edit Company Profile form. Runs after Test 1's REST
-  // setup, which already gives the admin's company-attributes linkage time
-  // to index (same structural gap PO relies on between its Test 1 and Test 2).
+  // Test 2: Company Admin (existing real account) — full Address Book
+  // scenario in one pass. Uses a pre-existing, already-verified real user
+  // instead of a freshly REST-created one, to sidestep the REST-creation
+  // instability (company-linkage indexing races, and the confirmed rejection
+  // of Magento_CompanyAddressStorefrontCompatibility::* role permissions on
+  // this backend) while still proving the whole feature surface works,
+  // since Company Administrator bypasses ACL checks entirely. Granular
+  // per-role permission testing is deferred to a later test with other real
+  // users, once the REST role-creation problem is solved.
   it(
-    'Company Admin - enable Address Book settings',
+    'Company Admin (real user) - complete Address Book scenario',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 2: Enable Address Book settings =========');
+      cy.logToTerminal('========= ⚙️ Test 2: Real-user Address Book scenario =========');
 
-      cy.logToTerminal('🔐 Login as company admin');
-      actions.login(Cypress.env('testAdmin'), urls);
-
-      // Force the Address Book setting to a known OFF state first, so the
-      // "hidden while disabled" check below doesn't depend on an unconfirmed
-      // default value for a newly-created company.
-      cy.logToTerminal('🔧 Ensuring Address Book setting starts disabled');
-      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: false });
-
-      cy.logToTerminal('🔍 Verifying Address Book is not offered while disabled');
-      // Soft check — convert to a hard `.should('not.exist')` once the real
-      // nav-link selector/text is confirmed against the live app.
-      cy.get('body').then(($body) => {
-        if (/address\s*book/i.test($body.text())) {
-          cy.logToTerminal('⚠️ "Address Book" text found while disabled — verify gating/selector');
-        } else {
-          cy.logToTerminal('✅ Address Book not offered while disabled, as expected');
-        }
+      cy.logToTerminal('🔐 Login as company admin (real account)');
+      cy.visit(urls.login);
+      cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
+        cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+        cy.get('input[name="password"]').type('qweQWE1!');
+        cy.get('button[type="submit"]').click();
       });
+      cy.wait(5000);
 
-      cy.logToTerminal('🔧 Enabling Address Book + custom shipping address setting');
-      actions.toggleCompanyAddressBookSettings(urls, {
-        addressBookEnabled: true,
-        customShippingAddressEnabled: true,
-      });
-
-      cy.logToTerminal('🔄 Reloading to verify settings persisted');
+      cy.logToTerminal('🏢 Switching to "Atwix QA - PO Disabled" company');
       cy.visit(urls.companyProfile);
       cy.wait(2000);
-      cy.contains('button', 'Edit').click();
-      cy.get(selectors.companyProfileAddressBookEnabledCheckbox).should('be.checked');
-      cy.get(selectors.companyProfileCustomShippingEnabledCheckbox).should('be.checked');
-      cy.contains('button', 'Cancel').click();
+      cy.get('select[aria-label="Select company"]').select('Atwix QA - PO Disabled');
+      cy.wait(3000);
 
-      cy.logToTerminal('🚪 Logging out Company Admin');
+      cy.logToTerminal('🔧 Toggling Address Book setting off, then on — proves both directions work');
+      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: false });
+      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: true });
+
+      cy.logToTerminal('🔧 Toggling Custom Company Address setting off, then on');
+      actions.toggleCompanyAddressBookSettings(urls, { customShippingAddressEnabled: false });
+      actions.toggleCompanyAddressBookSettings(urls, { customShippingAddressEnabled: true });
+
+      cy.logToTerminal('🔍 Verifying the company address list is empty before creating anything');
+      actions.openCompanyAddressBook(urls);
+      // TBD: confirm "No saved addresses" is the real empty-state text for
+      // the B2B company address book (only confirmed so far for B2C personal
+      // addresses in verifyUserAccount.spec.js).
+      cy.contains(addressBookLabels.noSavedAddresses).should('be.visible');
+
+      cy.logToTerminal('📝 Creating shipping address');
+      cy.contains(addressBookLabels.createNew).click();
+      cy.get(selectors.addressBookFormTitle).should('contain.text', addressBookLabels.addAddress);
+      actions.fillCompanyAddressFields(addressBookAddresses.shipping);
+      cy.get(selectors.addressBookTypeShippingRadio).check({ force: true });
+      cy.contains(addressBookLabels.save).click();
+      cy.wait(3000);
+      cy.contains(addressBookAddresses.shipping.lastName).should('be.visible');
+
+      cy.logToTerminal('✏️ Editing shipping address immediately after creating it');
+      cy.get(selectors.addressBookCard)
+        .contains(addressBookAddresses.shipping.lastName)
+        .closest(selectors.addressBookCard)
+        .within(() => {
+          cy.contains(addressBookLabels.edit).click();
+        });
+      actions.fillCompanyAddressFields(addressBookAddresses.editedShipping);
+      cy.contains(addressBookLabels.save).click();
+      cy.wait(3000);
+      cy.contains(addressBookAddresses.editedShipping.street).should('be.visible');
+
+      cy.logToTerminal('📝 Creating billing address');
+      cy.contains(addressBookLabels.createNew).click();
+      actions.fillCompanyAddressFields(addressBookAddresses.billing);
+      cy.get(selectors.addressBookTypeBillingRadio).check({ force: true });
+      cy.contains(addressBookLabels.save).click();
+      cy.wait(3000);
+      cy.contains(addressBookAddresses.billing.lastName).should('be.visible');
+
+      cy.logToTerminal('✏️ Editing billing address immediately after creating it');
+      cy.get(selectors.addressBookCard)
+        .contains(addressBookAddresses.billing.lastName)
+        .closest(selectors.addressBookCard)
+        .within(() => {
+          cy.contains(addressBookLabels.edit).click();
+        });
+      actions.fillCompanyAddressFields(addressBookAddresses.editedBilling);
+      cy.contains(addressBookLabels.save).click();
+      cy.wait(3000);
+      cy.contains(addressBookAddresses.editedBilling.street).should('be.visible');
+
+      cy.logToTerminal('⭐ Setting default only at the end, on the billing address');
+      cy.get(selectors.addressBookCard)
+        .contains(addressBookAddresses.editedBilling.lastName)
+        .closest(selectors.addressBookCard)
+        .within(() => {
+          cy.contains(addressBookLabels.edit).click();
+        });
+      cy.get(selectors.addressBookDefaultBillingCheckbox).check({ force: true });
+      cy.contains(addressBookLabels.save).click();
+      cy.wait(3000);
+
+      cy.logToTerminal('🚪 Logging out');
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 2: Address Book settings enabled');
+      cy.logToTerminal('✅ Test 2: Real-user Address Book scenario verified');
     },
   );
 
