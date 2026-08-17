@@ -150,6 +150,7 @@ export const addressBookAddresses = {
   shipping: {
     firstName: 'Company',
     lastName: 'Shipping',
+    nickname: 'AB Shipping',
     street: '111 Warehouse Way',
     streetMultiline_2: 'Dock 3',
     countryCode: 'US',
@@ -163,6 +164,7 @@ export const addressBookAddresses = {
   billing: {
     firstName: 'Company',
     lastName: 'Billing',
+    nickname: 'AB Billing',
     street: '222 Finance Blvd',
     streetMultiline_2: 'Suite 400',
     countryCode: 'US',
@@ -176,6 +178,7 @@ export const addressBookAddresses = {
   edited: {
     firstName: 'Company',
     lastName: 'Shipping Updated',
+    nickname: 'AB Shipping Updated',
     street: '999 Updated Warehouse Way',
     streetMultiline_2: 'Dock 3',
     countryCode: 'US',

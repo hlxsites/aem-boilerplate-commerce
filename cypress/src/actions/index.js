@@ -995,11 +995,31 @@ export const fillCompanyAddressFields = (address) => {
   cy.get(fields.fieldUserStreet).clear().type(address.street);
   cy.get(fields.fieldUserStreet2).clear().type(address.streetMultiline_2);
   cy.get(fields.fieldUserSelectCountry).select(address.countryCode);
-  cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+
+  // Selecting a country with a predefined region list (e.g. US) triggers an
+  // async GET_REGIONS reload that swaps the region field from <input> to
+  // <select> shortly after — interacting with it too soon fails with
+  // "the page updated while this command was executing" because the node
+  // gets replaced mid-command. Wait for it to settle, then use whichever
+  // element is actually present (mirrors the select-vs-swatch detection
+  // already used by the `selectProductOption` custom command).
+  cy.wait(1500);
+  cy.get('body').then(($body) => {
+    if ($body.find(fields.fieldUserSelectRegion).length) {
+      cy.get(fields.fieldUserSelectRegion).select(address.region);
+    } else {
+      cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+    }
+  });
+
   cy.get(fields.fieldUserCity).clear().type(address.city);
   cy.get(fields.fieldUserPhone).clear().type(address.telephone);
   cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
   cy.get(fields.fieldUserVatId).clear().type(address.vatId);
+
+  if (address.nickname) {
+    cy.get(fields.fieldUserNickname).clear().type(address.nickname);
+  }
 };
 
 /**

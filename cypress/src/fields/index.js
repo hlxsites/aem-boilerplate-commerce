@@ -156,10 +156,12 @@ export const fieldUserStreet = 'input[name="street"]';
 export const fieldUserStreet2 = 'input[name="streetMultiline_2"]';
 export const fieldUserSelectCountry = 'select[name="countryCode"]';
 export const fieldUserTextRegion = 'input[name="region"]';
+export const fieldUserSelectRegion = 'select[name="region"]';
 export const fieldUserCity = 'input[name="city"]';
 export const fieldUserPhone = 'input[name="telephone"]';
 export const fieldUserPostCode = 'input[name="postcode"]';
 export const fieldUserVatId = 'input[name="vatId"]';
+export const fieldUserNickname = 'input[name="nickname"]';
 export const authFormUserCheckBoxShipping = 'input[name="defaultShipping"]';
 export const authFormUserCheckBoxBilling = 'input[name="defaultBilling"]';
 
