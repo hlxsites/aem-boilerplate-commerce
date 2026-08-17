@@ -52,7 +52,7 @@
  *     address-actions loading spinner.
  *   - Whether the live backend actually enforces the
  *     Magento_CompanyAddressStorefrontCompatibility::* ACL end-to-end when set
- *     via POST /V1/company/role — this suite's role/permission tests (3-9)
+ *     via POST /V1/company/role — this suite's role/permission tests (4-10)
  *     are the first real verification of that "alpha" ACL.
  */
 
@@ -93,50 +93,21 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
     cy.intercept('**/graphql').as('defaultGraphQL');
   });
 
-  // Test 1: Enable Address Book settings, create the permission-matrix roles and users
+  // Test 1: Create the permission-matrix roles and users (pure REST, no
+  // login/UI at all — mirrors verifyPurchaseOrders.spec.js Test 1 exactly,
+  // so the admin's company-attributes linkage has the same natural indexing
+  // buffer (role creation waits + user creation waits) before the FIRST
+  // login/UI interaction happens in Test 2, instead of touching the company
+  // profile UI immediately after company creation.
   it(
-    'Setup - Enable Address Book settings and create roles and users',
+    'Setup - Create roles and users',
     () => {
       cy.logToTerminal(
-        '========= ⚙️ Test 1: Setup - Address Book settings + roles/users =========',
+        '========= ⚙️ Test 1: Setup - Create roles and users =========',
       );
 
       const companyId = Cypress.env('testCompany')?.id;
       cy.logToTerminal(`📋 Using company ID: ${companyId}`);
-
-      cy.logToTerminal('🔐 Login as company admin');
-      actions.login(Cypress.env('testAdmin'), urls);
-
-      // Force the Address Book setting to a known OFF state first, so the
-      // "hidden while disabled" check below doesn't depend on an unconfirmed
-      // default value for a newly-created company.
-      cy.logToTerminal('🔧 Ensuring Address Book setting starts disabled');
-      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: false });
-
-      cy.logToTerminal('🔍 Verifying Address Book is not offered while disabled');
-      // Soft check — convert to a hard `.should('not.exist')` once the real
-      // nav-link selector/text is confirmed against the live app.
-      cy.get('body').then(($body) => {
-        if (/address\s*book/i.test($body.text())) {
-          cy.logToTerminal('⚠️ "Address Book" text found while disabled — verify gating/selector');
-        } else {
-          cy.logToTerminal('✅ Address Book not offered while disabled, as expected');
-        }
-      });
-
-      cy.logToTerminal('🔧 Enabling Address Book + custom shipping address setting');
-      actions.toggleCompanyAddressBookSettings(urls, {
-        addressBookEnabled: true,
-        customShippingAddressEnabled: true,
-      });
-
-      cy.logToTerminal('🔄 Reloading to verify settings persisted');
-      cy.visit(urls.companyProfile);
-      cy.wait(2000);
-      cy.contains('button', 'Edit').click();
-      cy.get(selectors.companyProfileAddressBookEnabledCheckbox).should('be.checked');
-      cy.get(selectors.companyProfileCustomShippingEnabledCheckbox).should('be.checked');
-      cy.contains('button', 'Cancel').click();
 
       // Build the 7-role permission matrix, mirroring PO Test 1's pattern.
       const addressBookUsersConfig = [
@@ -186,16 +157,65 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
           cy.wait(5000);
           cy.logToTerminal('✅ Test 1: Setup completed successfully');
         });
-
-      actions.logout(addressBookLabels);
     },
   );
 
-  // Test 2: Company Admin bypass - full CRUD lifecycle
+  // Test 2: First real login/UI interaction — enable the Address Book
+  // settings on the Edit Company Profile form. Runs after Test 1's REST
+  // setup, which already gives the admin's company-attributes linkage time
+  // to index (same structural gap PO relies on between its Test 1 and Test 2).
+  it(
+    'Company Admin - enable Address Book settings',
+    () => {
+      cy.logToTerminal('========= ⚙️ Test 2: Enable Address Book settings =========');
+
+      cy.logToTerminal('🔐 Login as company admin');
+      actions.login(Cypress.env('testAdmin'), urls);
+
+      // Force the Address Book setting to a known OFF state first, so the
+      // "hidden while disabled" check below doesn't depend on an unconfirmed
+      // default value for a newly-created company.
+      cy.logToTerminal('🔧 Ensuring Address Book setting starts disabled');
+      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: false });
+
+      cy.logToTerminal('🔍 Verifying Address Book is not offered while disabled');
+      // Soft check — convert to a hard `.should('not.exist')` once the real
+      // nav-link selector/text is confirmed against the live app.
+      cy.get('body').then(($body) => {
+        if (/address\s*book/i.test($body.text())) {
+          cy.logToTerminal('⚠️ "Address Book" text found while disabled — verify gating/selector');
+        } else {
+          cy.logToTerminal('✅ Address Book not offered while disabled, as expected');
+        }
+      });
+
+      cy.logToTerminal('🔧 Enabling Address Book + custom shipping address setting');
+      actions.toggleCompanyAddressBookSettings(urls, {
+        addressBookEnabled: true,
+        customShippingAddressEnabled: true,
+      });
+
+      cy.logToTerminal('🔄 Reloading to verify settings persisted');
+      cy.visit(urls.companyProfile);
+      cy.wait(2000);
+      cy.contains('button', 'Edit').click();
+      cy.get(selectors.companyProfileAddressBookEnabledCheckbox).should('be.checked');
+      cy.get(selectors.companyProfileCustomShippingEnabledCheckbox).should('be.checked');
+      cy.contains('button', 'Cancel').click();
+
+      cy.logToTerminal('🚪 Logging out Company Admin');
+      cy.visit('/');
+      cy.wait(3000);
+      actions.logout(addressBookLabels);
+      cy.logToTerminal('✅ Test 2: Address Book settings enabled');
+    },
+  );
+
+  // Test 3: Company Admin bypass - full CRUD lifecycle
   it(
     'Company Admin - complete address CRUD lifecycle (bypass permissions)',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 2: Company Admin CRUD lifecycle =========');
+      cy.logToTerminal('========= ⚙️ Test 3: Company Admin CRUD lifecycle =========');
 
       cy.logToTerminal('🔐 Login as company admin');
       actions.login(Cypress.env('testAdmin'), urls);
@@ -252,15 +272,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 2: Company Admin CRUD lifecycle verified');
+      cy.logToTerminal('✅ Test 3: Company Admin CRUD lifecycle verified');
     },
   );
 
-  // Test 3: View-only permission
+  // Test 4: View-only permission
   it(
     'Viewer role - can see addresses but has no create, edit, remove or default actions',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 3: Viewer role =========');
+      cy.logToTerminal('========= ⚙️ Test 4: Viewer role =========');
 
       cy.logToTerminal('🔐 Login as Viewer');
       actions.login(addressBookUsers.viewer, urls);
@@ -275,15 +295,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 3: Viewer role verified (view-only)');
+      cy.logToTerminal('✅ Test 4: Viewer role verified (view-only)');
     },
   );
 
-  // Test 4: Create permission (no default)
+  // Test 5: Create permission (no default)
   it(
     'Creator role - can add addresses but cannot edit, remove or set default',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 4: Creator role =========');
+      cy.logToTerminal('========= ⚙️ Test 5: Creator role =========');
 
       cy.logToTerminal('🔐 Login as Creator');
       actions.login(addressBookUsers.creator, urls);
@@ -308,15 +328,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 4: Creator role verified (create-only, no default)');
+      cy.logToTerminal('✅ Test 5: Creator role verified (create-only, no default)');
     },
   );
 
-  // Test 5: Create + set-default permission
+  // Test 6: Create + set-default permission
   it(
     'Creator-with-default role - can add addresses and set them as default',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 5: Creator-with-default role =========');
+      cy.logToTerminal('========= ⚙️ Test 6: Creator-with-default role =========');
 
       cy.logToTerminal('🔐 Login as Creator-with-default');
       actions.login(addressBookUsers.creatorWithDefault, urls);
@@ -340,15 +360,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 5: Creator-with-default role verified');
+      cy.logToTerminal('✅ Test 6: Creator-with-default role verified');
     },
   );
 
-  // Test 6: Edit permission
+  // Test 7: Edit permission
   it(
     'Editor role - can modify existing addresses but cannot create, remove or set default',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 6: Editor role =========');
+      cy.logToTerminal('========= ⚙️ Test 7: Editor role =========');
 
       cy.logToTerminal('🔐 Login as Editor');
       actions.login(addressBookUsers.editor, urls);
@@ -373,15 +393,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 6: Editor role verified (edit-only)');
+      cy.logToTerminal('✅ Test 7: Editor role verified (edit-only)');
     },
   );
 
-  // Test 7: Delete permission
+  // Test 8: Delete permission
   it(
     'Deleter role - can remove addresses but cannot create, edit or set default',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 7: Deleter role =========');
+      cy.logToTerminal('========= ⚙️ Test 8: Deleter role =========');
 
       cy.logToTerminal('🔐 Login as Deleter');
       actions.login(addressBookUsers.deleter, urls);
@@ -390,7 +410,7 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.contains(addressBookLabels.createNew).should('not.exist');
       cy.contains(addressBookLabels.edit).should('not.exist');
 
-      cy.logToTerminal('🗑️ Removing the address edited in Test 6');
+      cy.logToTerminal('🗑️ Removing the address edited in Test 7');
       actions.deleteCompanyAddressCard(addressBookAddresses.edited.street, addressBookLabels);
       cy.contains(addressBookAddresses.edited.street).should('not.exist');
 
@@ -398,15 +418,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 7: Deleter role verified (delete-only)');
+      cy.logToTerminal('✅ Test 8: Deleter role verified (delete-only)');
     },
   );
 
-  // Test 8: Full permission
+  // Test 9: Full permission
   it(
     'Full-permission role - has create, edit, remove and default actions available',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 8: Full-permission role =========');
+      cy.logToTerminal('========= ⚙️ Test 9: Full-permission role =========');
 
       cy.logToTerminal('🔐 Login as Full-permission user');
       actions.login(addressBookUsers.full, urls);
@@ -440,15 +460,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 8: Full-permission role verified');
+      cy.logToTerminal('✅ Test 9: Full-permission role verified');
     },
   );
 
-  // Test 9: No address-book permission at all
+  // Test 10: No address-book permission at all
   it(
     'No-access role - cannot access the company address book at all',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 9: No-access role =========');
+      cy.logToTerminal('========= ⚙️ Test 10: No-access role =========');
 
       cy.logToTerminal('🔐 Login as No-access user');
       actions.login(addressBookUsers.noAccess, urls);
@@ -471,15 +491,15 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.visit('/');
       cy.wait(3000);
       actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 9: No-access role verified');
+      cy.logToTerminal('✅ Test 10: No-access role verified');
     },
   );
 
-  // Test 10: Cleanup
+  // Test 11: Cleanup
   it(
     'Cleanup - Delete address book users and roles',
     () => {
-      cy.logToTerminal('========= ⚙️ Test 10: Cleanup =========');
+      cy.logToTerminal('========= ⚙️ Test 11: Cleanup =========');
 
       const addressBookUsersConfig = Cypress.env('addressBookUsersConfig') || [];
 
