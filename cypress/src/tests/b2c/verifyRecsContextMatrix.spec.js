@@ -4,6 +4,7 @@ import {
   assertUrlExcludesCurrentProduct,
   assertUrlExcludesCurrentProductPrice,
   assertUrlIncludesCurrentProduct,
+  assertUrlIncludesCurrentSku,
   interceptRecsGraphQL,
   visitPrexPage,
   waitForRecsCarousel,
@@ -123,6 +124,45 @@ describe('PREX context matrix — cart page rec block', () => {
       } else {
         assertUrlExcludesCurrentProduct(request.url);
       }
+    });
+  });
+});
+
+// --- PDP: cart dropin's own productContext push must not hijack currentSku ---
+// PREX-2255 (#1403): adding a recommended item to cart re-uses the cart dropin's
+// generic add-to-cart tracking, which pushes ACDL productContext for the *added*
+// item, not the PDP being viewed. Before the fix, product-recommendations.js
+// treated that push the same as a PDP navigation and re-anchored context.currentSku
+// on the added item's SKU. The cart update still triggers a legitimate reload
+// (cartSkus changed), so this asserts the currentSku GraphQL variable on that
+// reload — always sent, regardless of environment — stays pinned to the PDP's
+// own SKU, never the added-to-cart SKU or any other.
+describe('PREX context matrix — cart add-to-cart must not hijack currentSku', () => {
+  beforeEach(() => {
+    interceptRecsGraphQL();
+  });
+
+  it('PDP with recid only: adding a recommended item to cart keeps currentSku pinned to the PDP SKU', () => {
+    visitPrexPage('pdpAcdlOnly');
+    waitForRecsCarousel();
+    assertProductContextPresent();
+
+    let pdpSku;
+    cy.window().then((win) => {
+      pdpSku = win.adobeDataLayer.getState('productContext')?.sku;
+    });
+
+    waitForRecsGraphQL().then(({ request }) => {
+      assertUrlIncludesCurrentSku(request.url, pdpSku);
+    });
+
+    // Add a recommended product to cart — this triggers the cart dropin's own
+    // productContext push (for the added item, a different SKU) and, via the
+    // resulting cart/data event, a legitimate recs reload.
+    cy.get('.product-grid-item').first().find('button').should('be.visible').click();
+
+    waitForRecsGraphQL().then(({ request }) => {
+      assertUrlIncludesCurrentSku(request.url, pdpSku);
     });
   });
 });
