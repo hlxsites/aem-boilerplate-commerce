@@ -168,13 +168,36 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   // real select elements + a body text snippet into the log.
   it('DEBUG - login, visit company page, detect company switcher', () => {
     cy.logToTerminal('🔐 Login as company admin (real account)');
-    cy.visit(urls.login);
-    cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
-      cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
-      cy.get('input[name="password"]').type('qweQWE1!');
-      cy.get('button[type="submit"]').click();
-    });
-    cy.wait(5000);
+    // This platform sometimes doesn't redirect to /customer/account right
+    // after submit — same retry-if-not-redirected logic as actions.login(),
+    // just written inline here instead of calling the shared action.
+    const submitLogin = () => {
+      cy.clearCookies();
+      cy.clearLocalStorage();
+      cy.visit(urls.login);
+      cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
+        cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+        cy.wait(1500);
+        cy.get('input[name="password"]').type('qweQWE1!');
+        cy.wait(1500);
+        cy.get('button[type="submit"]').click();
+        cy.wait(8000);
+      });
+    };
+    submitLogin();
+    const retryLoginIfNeeded = (attemptsLeft) => {
+      cy.url().then((url) => {
+        if (!url.includes(urls.account) && attemptsLeft > 0) {
+          cy.logToTerminal(`⚠️ Login didn't redirect to account page — retrying in 20s (${attemptsLeft} left)`);
+          cy.wait(20000);
+          submitLogin();
+          retryLoginIfNeeded(attemptsLeft - 1);
+        }
+      });
+    };
+    retryLoginIfNeeded(2);
+    cy.url().should('include', urls.account);
+    cy.wait(3000);
     cy.url().then((url) => cy.logToTerminal(`🔎 URL after login: ${url}`));
 
     cy.logToTerminal('🏢 Visiting company profile page');
@@ -208,13 +231,36 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
       cy.logToTerminal('========= ⚙️ Test 2: Real-user Address Book scenario =========');
 
       cy.logToTerminal('🔐 Login as company admin (real account)');
-      cy.visit(urls.login);
-      cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
-        cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
-        cy.get('input[name="password"]').type('qweQWE1!');
-        cy.get('button[type="submit"]').click();
-      });
-      cy.wait(5000);
+      // Same retry-if-not-redirected logic as actions.login() — this
+      // platform sometimes doesn't redirect to /customer/account right
+      // after submit, written inline here instead of calling the shared action.
+      const submitLogin = () => {
+        cy.clearCookies();
+        cy.clearLocalStorage();
+        cy.visit(urls.login);
+        cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
+          cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+          cy.wait(1500);
+          cy.get('input[name="password"]').type('qweQWE1!');
+          cy.wait(1500);
+          cy.get('button[type="submit"]').click();
+          cy.wait(8000);
+        });
+      };
+      submitLogin();
+      const retryLoginIfNeeded = (attemptsLeft) => {
+        cy.url().then((url) => {
+          if (!url.includes(urls.account) && attemptsLeft > 0) {
+            cy.logToTerminal(`⚠️ Login didn't redirect to account page — retrying in 20s (${attemptsLeft} left)`);
+            cy.wait(20000);
+            submitLogin();
+            retryLoginIfNeeded(attemptsLeft - 1);
+          }
+        });
+      };
+      retryLoginIfNeeded(2);
+      cy.url().should('include', urls.account);
+      cy.wait(3000);
 
       cy.logToTerminal('🏢 Switching to "Atwix QA - PO Disabled" company');
       cy.visit(urls.companyProfile);
