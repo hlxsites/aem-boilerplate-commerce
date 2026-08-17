@@ -520,3 +520,31 @@ describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
     },
   );
 });
+
+// TEMPORARY DEBUG suite — separate from the main describe above on purpose,
+// so it isn't gated by that suite's `before()` REST company creation.
+// Automates the manual scenario: login as a real existing user -> visit
+// /customer/company -> switch company via the company-switcher dropdown ->
+// verify the Address Book Configuration text is present. Remove once this
+// manual check is no longer needed.
+describe('B2B Address Book - manual scenario check (TEMP)', () => {
+  it('DEBUG - login, switch company, verify Address Book config text', () => {
+    cy.visit('/customer/login');
+    cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
+      cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+      cy.get('input[name="password"]').type('qweQWE1!');
+      cy.get('button[type="submit"]').click();
+    });
+    cy.wait(5000);
+
+    cy.visit('/customer/company');
+    cy.wait(2000);
+
+    cy.get('select[aria-label="Select company"]').select('Atwix QA - PO Disabled');
+    cy.wait(3000);
+
+    cy.contains('Enable Company Address Book: Disabled').should('be.visible');
+    cy.contains('Allow Custom Company Address: Disabled').should('be.visible');
+    cy.logToTerminal('✅ Manual scenario verified: login, switch company, Address Book config text present');
+  });
+});
