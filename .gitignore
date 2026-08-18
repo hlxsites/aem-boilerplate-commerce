@@ -12,6 +12,9 @@ helix-importer-ui
 scripts/__dropins__/**/*.map
 .env
 
+# Local storefront config (points at a specific tenant/endpoint — keep out of git)
+config.json
+
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md

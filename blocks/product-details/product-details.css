@@ -127,3 +127,159 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.product-details__saleable-qty {
+  margin: var(--spacing-xsmall) 0 var(--spacing-small);
+}
+
+/* Stock indicator: icon + text, no filled pill. */
+.pdp-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font: var(--type-details-caption-1-font);
+  letter-spacing: var(--type-details-caption-1-letter-spacing);
+}
+
+.pdp-stock--in-stock { color: var(--color-positive-800); }
+.pdp-stock--low { color: var(--color-warning-800); }
+.pdp-stock--out-of-stock { color: var(--color-alert-800); }
+
+/* Per-source list: an icon-led list, one row per fulfillment location. */
+.product-details__source-availability {
+  margin: 0 0 var(--spacing-medium);
+}
+
+.pdp-avail__title {
+  margin: 0 0 var(--spacing-xxsmall);
+  font: var(--type-details-caption-1-font);
+  letter-spacing: var(--type-details-caption-1-letter-spacing);
+  color: var(--color-neutral-700);
+}
+
+.pdp-avail__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdp-avail__row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+  font: var(--type-details-caption-1-font);
+  letter-spacing: var(--type-details-caption-1-letter-spacing);
+}
+
+.pdp-avail__row:last-child { border-bottom: 0; }
+
+.pdp-avail__fulfill { color: var(--color-neutral-600); }
+
+.pdp-avail__name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.pdp-avail__qty {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  white-space: nowrap;
+}
+
+/* Informational, not a per-source warning: available reads positive, out-of-stock muted. */
+.pdp-avail__row[data-state="available"] .pdp-avail__qty { color: var(--color-positive-800); }
+.pdp-avail__row[data-state="out-of-stock"] .pdp-avail__qty { color: var(--color-neutral-500); }
+
+.product-details__matrix {
+  width: 100%;
+  margin: var(--spacing-small) 0 var(--spacing-medium);
+  border-collapse: collapse;
+  font: var(--type-details-caption-1-font);
+}
+
+.product-details__matrix th,
+.product-details__matrix td {
+  border: 1px solid var(--color-neutral-300);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  text-align: center;
+  vertical-align: top;
+}
+
+.product-details__matrix thead th,
+.product-details__matrix tbody th {
+  background: var(--color-neutral-100);
+  font-weight: 700;
+}
+
+.product-details__matrix__cell {
+  min-width: 84px;
+}
+
+.product-details__matrix__cell--none {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+}
+
+.product-details__matrix__price,
+.product-details__matrix__qty,
+.product-details__matrix__restock {
+  display: block;
+}
+
+.product-details__matrix__price {
+  font-weight: 700;
+}
+
+.product-details__matrix__cell[data-state="in-stock"] .product-details__matrix__qty {
+  color: var(--color-positive-800);
+}
+
+.product-details__matrix__cell[data-state="low"] .product-details__matrix__qty {
+  color: var(--color-warning-800);
+}
+
+.product-details__matrix__cell[data-state="out-of-stock"] .product-details__matrix__qty {
+  color: var(--color-alert-800);
+}
+
+/* The one API gap, drawn as a muted dashed placeholder so it stands out. */
+.product-details__matrix__restock {
+  margin-top: var(--spacing-xxsmall);
+  padding: 0 var(--spacing-xxsmall);
+  border: 1px dashed var(--color-neutral-400);
+  border-radius: 3px;
+  font: var(--type-details-caption-2-font);
+  color: var(--color-neutral-500);
+}
+
+/* Reserve space (invisibly) while availability loads, so the result lands without a shift. */
+.product-details__saleable-qty[data-loading] {
+  min-height: 1.25rem;
+}
+
+.product-details__source-availability[data-loading] {
+  min-height: 4.5rem;
+}
+
+/* Matrix trigger: a secondary action that opens the grid in a modal (no inline space). */
+.product-details__matrix-trigger {
+  margin: var(--spacing-small) 0 var(--spacing-medium);
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  border: 1px solid var(--color-neutral-500);
+  border-radius: var(--shape-border-radius-2, 4px);
+  background: transparent;
+  font: var(--type-details-caption-1-font);
+  cursor: pointer;
+}
+
+.product-details__matrix-trigger:hover {
+  background: var(--color-neutral-100);
+}
+
+.product-details__matrix-modal {
+  padding: var(--spacing-medium);
+  overflow-x: auto;
+}
