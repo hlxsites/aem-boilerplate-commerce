@@ -1,9 +1,10 @@
 # @dropins/storefront-checkout
 
-## 3.3.2-alpha-20260811161203
+## 3.3.2-alpha-20260818085815
 
 ### Patch Changes
 
+- ddd589f: Hide the empty state and "Pay another way" toggle when there are no live payment methods
 - 7aaec10: Add stored payment methods support in checkout
 
 ## 3.3.1
