@@ -19,6 +19,9 @@ import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+import Wishlist from '@dropins/storefront-wishlist/containers/Wishlist.js';
+import * as WishlistApi from '@dropins/storefront-wishlist/api.js';
+import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API
@@ -33,7 +36,13 @@ import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders, rootLink, getProductLink, CS_FETCH_GRAPHQL,
+} from '../../scripts/commerce.js';
+
+// Point the PDP API at the Catalog Service so the SFL section can hydrate
+// full product data (price, stock) for its items.
+pdpApi.setEndpoint(CS_FETCH_GRAPHQL);
 
 export default async function decorate(block) {
   // Configuration
@@ -64,6 +73,8 @@ export default async function decorate(block) {
     <div class="cart__wrapper">
       <div class="cart__left-column">
         <div class="cart__list"></div>
+        <h2 class="cart__save-for-later-title" hidden>Save for later</h2>
+        <div class="cart__save-for-later"></div>
       </div>
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
@@ -81,6 +92,8 @@ export default async function decorate(block) {
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
   const $rightColumn = fragment.querySelector('.cart__right-column');
+  const $sfl = fragment.querySelector('.cart__save-for-later');
+  const $sflTitle = fragment.querySelector('.cart__save-for-later-title');
 
   block.innerHTML = '';
   block.appendChild(fragment);
@@ -169,6 +182,69 @@ export default async function decorate(block) {
 
   // Render Containers
   const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
+
+  // ---- Save for Later (SFL) ----
+  // SFL is a distinct, reserved wishlist that is only surfaced in the cart.
+  // It is identified by a reserved name (SFL_LIST_NAME): the list with that
+  // name is reused if it exists, otherwise it is created.
+  let sflId = null;
+
+  // Reserved name used to identify the SFL list. Matched exactly, so an
+  // existing SFL list is reused rather than duplicated. The display heading is
+  // relabeled separately, so this is just an internal identifier.
+  const SFL_LIST_NAME = 'Save for Later';
+
+  async function ensureSflList() {
+    const lists = await WishlistApi.getWishlists();
+    if (!Array.isArray(lists)) return null; // guest / not authenticated
+    let sfl = lists.find((w) => w.name === SFL_LIST_NAME);
+    if (!sfl) {
+      sfl = await WishlistApi.createWishlist(SFL_LIST_NAME);
+    }
+    return sfl?.id ?? null;
+  }
+
+  // Keep the "Saved for later (N)" heading in sync and hide the whole section
+  // when the list is empty. Reads the SFL list non-emitting so it doesn't
+  // disturb the active-wishlist state.
+  async function updateSflCount() {
+    let count = 0;
+    if (sflId) {
+      try {
+        const wl = await WishlistApi.getWishlistById(sflId, 1, 1, {
+          emit: false,
+        });
+        count = wl?.items_count ?? 0;
+      } catch (e) {
+        count = 0;
+      }
+    }
+    const hasItems = count > 0;
+    $sflTitle.hidden = !hasItems;
+    $sfl.hidden = !hasItems;
+    $sflTitle.textContent = `Saved for later (${count})`;
+  }
+
+  function renderSfl() {
+    $sfl.innerHTML = '';
+    if (!sflId) {
+      $sflTitle.hidden = true;
+      $sfl.hidden = true;
+      return;
+    }
+    updateSflCount();
+    wishlistRender.render(Wishlist, {
+      wishlistId: sflId,
+      moveProdToCart: Cart.addProductsToCart,
+      routeProdDetailPage: (product) => getProductLink(product.urlKey, product.sku),
+      getProductData: pdpApi.getProductData,
+      getRefinedProduct: pdpApi.getRefinedProduct,
+    })($sfl);
+  }
+
+  sflId = await ensureSflList();
+  renderSfl();
+
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
@@ -233,6 +309,50 @@ export default async function decorate(block) {
           })($wishlistToggle);
 
           ctx.appendChild($wishlistToggle);
+
+          // Save for Later button: add the item to the reserved SFL list, then
+          // remove it from the active cart.
+          if (sflId) {
+            const $saveForLater = document.createElement('div');
+            $saveForLater.classList.add('cart__action--save-for-later');
+
+            UI.render(Button, {
+              children: 'Save for later',
+              variant: 'secondary',
+              size: 'medium',
+              onClick: async () => {
+                const productName = ctx.item.name;
+                await WishlistApi.addProductsToWishlist(
+                  [{ sku: ctx.item.sku, quantity: ctx.item.quantity || 1 }],
+                  sflId,
+                );
+                await Cart.updateProductsFromCart([
+                  { uid: ctx.item.uid, quantity: 0 },
+                ]);
+                renderSfl();
+
+                // Saving to SFL is a targeted (non-emitting) add, so no
+                // wishlist/alert fires. Show a cart notification here.
+                currentNotification?.remove();
+                currentNotification = await UI.render(InLineAlert, {
+                  heading: 'Saved for later',
+                  description: `${productName} has been saved for later`,
+                  type: 'success',
+                  variant: 'primary',
+                  icon: h(Icon, { source: 'CheckWithCircle' }),
+                  'aria-live': 'polite',
+                  onDismiss: () => {
+                    currentNotification?.remove();
+                  },
+                })($notification);
+                setTimeout(() => {
+                  currentNotification?.remove();
+                }, 5000);
+              },
+            })($saveForLater);
+
+            ctx.appendChild($saveForLater);
+          }
 
           // Gift Options
           const giftOptions = document.createElement('div');
@@ -312,6 +432,9 @@ export default async function decorate(block) {
   );
 
   events.on('wishlist/alert', ({ action, item }) => {
+    // Keep the SFL heading count current after move/remove within the section.
+    updateSflCount();
+
     wishlistRender.render(WishlistAlert, {
       action,
       item,
