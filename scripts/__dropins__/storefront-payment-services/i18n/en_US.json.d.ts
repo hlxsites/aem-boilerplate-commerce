@@ -18,21 +18,37 @@ declare const _default: {
       "formFields": {
         "cvv": {
           "invalidError": "Enter valid cvv.",
-          "label": "",
+          "label": "CVV",
           "missingError": "This field is required.",
           "placeholder": "CVV*"
         },
         "expirationDate": {
           "invalidError": "Enter valid expiration date.",
-          "label": "",
+          "label": "Expiration date",
           "missingError": "This field is required.",
           "placeholder": "MM/YY*"
         },
         "number": {
           "invalidError": "Enter valid card number.",
-          "label": "",
+          "label": "Card number",
           "missingError": "This field is required.",
           "placeholder": "Card Number*"
+        }
+      }
+    },
+    "GooglePay": {
+      "errors": {
+        "default": {
+          "name": "Google Pay error",
+          "message": "An unexpected error occurred. Please try again or contact support."
+        }
+      }
+    },
+    "PayPalButtons": {
+      "errors": {
+        "default": {
+          "name": "PayPal error",
+          "message": "An unexpected error occurred. Please try again or contact support."
         }
       }
     },
