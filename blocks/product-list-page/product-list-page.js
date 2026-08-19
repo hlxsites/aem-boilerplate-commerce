@@ -31,7 +31,7 @@ export default async function decorate(block) {
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__wrapper">
-      <div class="search__result-info"></div>
+      <div class="search__result-info" role="status" aria-live="polite"></div>
       <div class="search__view-facets"></div>
       <div class="search__facets"></div>
       <div class="search__product-sort"></div>
@@ -102,9 +102,13 @@ export default async function decorate(block) {
     || product.attributes?.some((attr) => attr.name === 'ac_giftcard');
 
   const getAddToCartButton = (product) => {
+    const productName = product.name || product.sku;
+    const addToCartLabel = `${labels.Global?.AddProductToCart} ${productName}`;
+
     if (requiresPdpConfiguration(product)) {
       const button = document.createElement('div');
       UI.render(Button, {
+        'aria-label': addToCartLabel,
         children: labels.Global?.AddProductToCart,
         icon: Icon({ source: 'Cart' }),
         href: getProductLink(product.urlKey, product.sku),
@@ -114,6 +118,7 @@ export default async function decorate(block) {
     }
     const button = document.createElement('div');
     UI.render(Button, {
+      'aria-label': addToCartLabel,
       children: labels.Global?.AddProductToCart,
       icon: Icon({ source: 'Cart' }),
       onClick: () => cartApi.addProductsToCart([{ sku: product.sku, quantity: 1 }]),
@@ -155,6 +160,7 @@ export default async function decorate(block) {
           const { product, defaultImageProps } = ctx;
           const anchorWrapper = document.createElement('a');
           anchorWrapper.href = getProductLink(product.urlKey, product.sku);
+          anchorWrapper.setAttribute('aria-label', product.name || product.sku);
 
           tryRenderAemAssetsImage(ctx, {
             alias: product.sku,

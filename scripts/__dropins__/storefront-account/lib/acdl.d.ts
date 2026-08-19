@@ -25,4 +25,3 @@ export declare function getAdobeDataLayer(): any;
 declare function pushEvent(event: string, additionalContext?: any): void;
 declare const publishEvents: (eventType: string, eventParams: any) => null | undefined;
 export { EventsList, publishEvents, pushEvent };
-//# sourceMappingURL=acdl.d.ts.map

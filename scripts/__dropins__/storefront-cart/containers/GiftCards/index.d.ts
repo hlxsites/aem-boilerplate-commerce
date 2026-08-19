@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './GiftCards';
 export { GiftCards as default } from './GiftCards';
-//# sourceMappingURL=index.d.ts.map
