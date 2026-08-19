@@ -189,36 +189,51 @@ async function updateSaleableQty(els, sku, labels, isCurrent = () => true) {
   });
 }
 
-// Variant matrix for configurable products: color x size grid from `variants` +
-// `sourceAvailability`. Returns/renders nothing for simple products, so it self-guards.
-async function updateVariantMatrix($el, sku, labels, isCurrent = () => true) {
-  if (!$el || !sku) return;
-  $el.hidden = true;
-  $el.replaceChildren();
-  let model;
-  try {
-    model = await fetchVariantMatrix(sku, {
-      csFetch: CS_FETCH_GRAPHQL,
-      coreFetch: CORE_FETCH_GRAPHQL,
-    });
-  } catch (error) {
-    console.debug('variant-matrix: failed', error);
+// Variant availability overview for configurable products, behind a trigger. The fetch
+// (options + variants + per-variant availability) runs only when the shopper opens the
+// modal, so a PDP that is never expanded pays nothing. Simple products get no trigger.
+function setupVariantMatrix($el, product, labels) {
+  if (!$el) return;
+  const sku = product?.sku;
+  // Only configurables carry options; simple products have none, so show no trigger.
+  if (!sku || (product?.options?.length ?? 0) === 0) {
+    $el.hidden = true;
+    $el.replaceChildren();
     return;
   }
-  if (!model || !isCurrent()) return;
 
-  // The grid is large, so keep it behind a trigger (a modal) instead of reserving inline space.
   const t = labels?.Custom?.SaleableQty ?? {};
   const trigger = document.createElement('button');
   trigger.type = 'button';
   trigger.className = 'product-details__matrix-trigger';
-  trigger.textContent = t.ViewMatrix ?? 'Availability by size & color';
+  trigger.textContent = t.ViewMatrix ?? 'See availability for all options';
+
+  let model; // memoize a resolved fetch (including a definitive null) across re-opens
   trigger.addEventListener('click', async () => {
     const content = document.createElement('div');
     content.className = 'product-details__matrix-modal';
-    renderMatrix(content, model, labels);
+    content.textContent = t.Loading ?? 'Loading…';
     const modal = await createModal([content]);
     modal.showModal();
+
+    if (model === undefined) {
+      try {
+        model = await fetchVariantMatrix(sku, {
+          csFetch: CS_FETCH_GRAPHQL,
+          coreFetch: CORE_FETCH_GRAPHQL,
+        });
+      } catch (error) {
+        console.debug('variant-matrix: failed', error);
+        content.textContent = t.Unavailable ?? 'Variant availability is unavailable.';
+        return; // leave model unset so re-opening retries the fetch
+      }
+    }
+    if (model) {
+      content.textContent = '';
+      renderMatrix(content, model, labels);
+    } else {
+      content.textContent = t.Unavailable ?? 'Variant availability is unavailable.';
+    }
   });
   $el.replaceChildren(trigger);
   $el.hidden = false;
@@ -322,23 +337,14 @@ export default async function decorate(block) {
     );
   }, { eager: true });
 
-  // Variant matrix keyed on the parent (configurable) sku, so it fetches once, not per
-  // variant selection. Hidden for simple products.
+  // Variant overview trigger, set up from the parent (configurable) sku. That sku is
+  // constant across variant selections, so rebuild only when it actually changes.
   let matrixSku;
-  let matrixReq = 0;
   events.on('pdp/data', (data) => {
     const parentSku = data?.sku;
-    if (!parentSku) {
-      matrixReq += 1;
-      matrixSku = undefined;
-      $variantMatrix.hidden = true;
-      return;
-    }
     if (parentSku === matrixSku) return;
     matrixSku = parentSku;
-    matrixReq += 1;
-    const reqId = matrixReq;
-    updateVariantMatrix($variantMatrix, parentSku, labels, () => reqId === matrixReq);
+    setupVariantMatrix($variantMatrix, data, labels);
   }, { eager: true });
 
   const gallerySlots = {

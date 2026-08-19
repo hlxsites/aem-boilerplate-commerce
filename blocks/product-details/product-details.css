@@ -223,9 +223,37 @@
   color: var(--color-neutral-500);
 }
 
+/* Per-variant list (1 or 3+ axes) renders on the design-system Table. */
+.product-details__matrix__availability {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.product-details__matrix__qty[data-state="in-stock"] { color: var(--color-positive-800); }
+.product-details__matrix__qty[data-state="low"] { color: var(--color-warning-800); }
+.product-details__matrix__qty[data-state="out-of-stock"] { color: var(--color-alert-800); }
+
+.product-details__matrix__sources {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-details__matrix__source {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.product-details__matrix__source[data-state="out"] {
+  color: var(--color-neutral-500);
+}
+
 .product-details__matrix__price,
-.product-details__matrix__qty,
-.product-details__matrix__restock {
+.product-details__matrix__qty {
   display: block;
 }
 
@@ -243,16 +271,6 @@
 
 .product-details__matrix__cell[data-state="out-of-stock"] .product-details__matrix__qty {
   color: var(--color-alert-800);
-}
-
-/* The one API gap, drawn as a muted dashed placeholder so it stands out. */
-.product-details__matrix__restock {
-  margin-top: var(--spacing-xxsmall);
-  padding: 0 var(--spacing-xxsmall);
-  border: 1px dashed var(--color-neutral-400);
-  border-radius: 3px;
-  font: var(--type-details-caption-2-font);
-  color: var(--color-neutral-500);
 }
 
 /* Reserve space (invisibly) while availability loads, so the result lands without a shift. */
@@ -280,6 +298,7 @@
 }
 
 .product-details__matrix-modal {
-  padding: var(--spacing-medium);
+  /* Top padding clears the modal's 48px close button (position: absolute, top-right). */
+  padding: 48px var(--spacing-medium) var(--spacing-medium);
   overflow-x: auto;
 }
