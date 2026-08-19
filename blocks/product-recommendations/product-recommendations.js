@@ -126,7 +126,7 @@ export default async function decorate(block) {
   });
 
   // Configuration
-  const { currentsku, currentprice, recid } = readBlockConfig(block);
+  const { currentsku, currentprice, recid, referenceKey: label, } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -216,6 +216,7 @@ export default async function decorate(block) {
       await Promise.all([
         provider.render(ProductList, {
           routeProduct: createProductLink,
+          label: label,
           recId: recid,
           currentProduct,
           cartSkus: context.cartSkus,
