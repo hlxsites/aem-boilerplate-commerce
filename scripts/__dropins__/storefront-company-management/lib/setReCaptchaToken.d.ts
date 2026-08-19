@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,16 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './acdl';
-export * from './company-permissions';
-export * from './convertCase';
-export * from './convertToBoolean';
-export * from './convertToInputDateFormat';
-export * from './cookies';
-export * from './encoding';
-export * from './fetch-error';
-export * from './network-error';
-export * from './switchCompanyContext';
-export * from './userHelpers';
-export * from './validationFields';
-export * from './recaptcha.constants';
+export declare const setReCaptchaToken: () => Promise<void>;
