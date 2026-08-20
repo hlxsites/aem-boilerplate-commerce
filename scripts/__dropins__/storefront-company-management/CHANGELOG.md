@@ -1,6 +1,6 @@
 # @dropins/storefront-company-management
 
-## 1.4.2-alpha-20260818153608
+## 1.4.2-alpha-20260820082032
 
 ### Patch Changes
 
