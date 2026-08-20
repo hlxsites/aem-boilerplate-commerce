@@ -17,7 +17,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import {
@@ -101,7 +101,6 @@ export default async function decorate(block) {
 
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
-  const creditCardFormRef = { current: null };
   const loaderRef = { current: null };
 
   events.on('order/placed', () => {
@@ -149,17 +148,8 @@ export default async function decorate(block) {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
-        if (!creditCardFormRef.current) {
-          console.error('Credit card form not rendered.');
-          return;
-        }
-        if (!creditCardFormRef.current.validate()) {
-          // Credit card form invalid; abort order placement
-          return;
-        }
-        // Submit Payment Services credit card form
-        await creditCardFormRef.current.submit();
+      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
+        await paymentsApi.submitCreditCard();
       }
       // Place order
       await orderApi.placeOrder(cartId);
@@ -207,7 +197,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods, creditCardFormRef),
+    renderPaymentMethods($paymentMethods),
 
     renderBillingAddressFormSkeleton($billingForm),
 
