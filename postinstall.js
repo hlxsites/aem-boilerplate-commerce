@@ -14,6 +14,15 @@ if (fs.existsSync(dropinsDir)) {
 // Create scripts/__dropins__ directory if not exists
 fs.mkdirSync(dropinsDir, { recursive: true });
 
+// Read package-lock.json to get the expected resolved versions
+const packageLock = JSON.parse(fs.readFileSync('./package-lock.json', 'utf8'));
+
+// Verify that every @dropins/* dependency in node_modules matches the version
+// declared in package-lock.json. A mismatch means `npm install` did not
+// reconcile node_modules correctly (e.g. stale prerelease version) and
+// vendoring would silently ship the wrong dropin code.
+const versionMismatches = [];
+
 // Copy specified files from node_modules/@dropins to scripts/__dropins__
 fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
   // Skip if package is not in package.json dependencies / skip devDependencies
@@ -25,11 +34,34 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   if (!file.isDirectory()) {
     return;
   }
+
+  // Check installed version against package-lock.json
+  const pkgName = `@dropins/${file.name}`;
+  const installedPkgPath = path.join('node_modules', '@dropins', file.name, 'package.json');
+  if (fs.existsSync(installedPkgPath)) {
+    const installedVersion = JSON.parse(fs.readFileSync(installedPkgPath, 'utf8')).version;
+    const lockEntry = packageLock.packages[`node_modules/${pkgName}`];
+    const expectedVersion = lockEntry && lockEntry.version;
+    if (expectedVersion && installedVersion !== expectedVersion) {
+      versionMismatches.push({ pkgName, installedVersion, expectedVersion });
+    }
+  }
+
   fs.cpSync(path.join('node_modules', '@dropins', file.name), path.join(dropinsDir, file.name), {
     recursive: true,
     filter: (src) => (!src.endsWith('package.json')),
   });
 });
+
+if (versionMismatches.length > 0) {
+  console.error('\n🚨 Drop-in version mismatch detected!\n');
+  console.error('The following packages in node_modules do not match package-lock.json:');
+  versionMismatches.forEach(({ pkgName, installedVersion, expectedVersion }) => {
+    console.error(`  ${pkgName}: installed ${installedVersion}, expected ${expectedVersion}`);
+  });
+  console.error('\nRun "rm -rf node_modules && npm install" to fix this.\n');
+  process.exit(1);
+}
 
 // Other files to copy
 [
@@ -49,10 +81,10 @@ function checkPackageLockForArtifactory() {
         return;
       }
       try {
-        const packageLock = JSON.parse(data);
+        const lockData = JSON.parse(data);
         let found = false;
-        Object.keys(packageLock.packages).forEach((packageName) => {
-          const packageInfo = packageLock.packages[packageName];
+        Object.keys(lockData.packages).forEach((packageName) => {
+          const packageInfo = lockData.packages[packageName];
           if (packageInfo.resolved && packageInfo.resolved.includes('artifactory')) {
             console.warn(`Warning: artifactory found in resolved property for package ${packageName}`);
             found = true;
