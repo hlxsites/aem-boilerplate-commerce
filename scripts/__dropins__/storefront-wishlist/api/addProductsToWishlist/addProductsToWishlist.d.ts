@@ -23,4 +23,4 @@ export declare const addProductsToWishlist: (items: [{
         uid: string;
         value: string;
     }[];
-}], wishlistId?: string) => Promise<Wishlist | null>;
+}]) => Promise<Wishlist | null>;

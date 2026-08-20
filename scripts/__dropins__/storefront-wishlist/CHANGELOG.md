@@ -1,5 +1,11 @@
 # @dropins/storefront-wishlist
 
+## 3.5.0-alpha-20260818084911
+
+### Minor Changes
+
+- c0ef1dc: Add `createWishlist(name, visibility)` API for creating additional named wishlists for a logged-in customer. Authenticated only; guests are a no-op. The default wishlist and guest behavior are unchanged (additive, backwards compatible).
+
 ## 3.4.0
 
 ### Minor Changes
