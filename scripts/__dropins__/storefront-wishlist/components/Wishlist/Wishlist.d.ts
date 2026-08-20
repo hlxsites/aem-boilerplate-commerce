@@ -35,6 +35,7 @@ export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
     onLoginClick?: () => void;
     routeProdDetailPage: (product: Product) => string;
     wishlistId?: string;
+    scope?: string;
     pageInfo?: PageInfo;
     activePage?: number;
     onPageChange?: (page: number) => void;

@@ -149,7 +149,7 @@ ${Z}
   }
 
 ${Z}
-`,St=async(t,e=v,s=U,i={})=>{const{emit:r=!0}=i;if(!n.authenticated)return D();if(!t)throw Error("Wishlist ID is not set");return g(j,{variables:{wishlistId:t,pageSize:e,currentPage:s}}).then(({errors:o,data:l})=>{var a;if(o)return f(o);if(!((a=l==null?void 0:l.customer)!=null&&a.wishlist_v2))return null;const h=P(l.customer.wishlist_v2);return r&&d.emit("wishlist/data",h),h})},Tt=`
+`,St=async(t,e=v,s=U,i={})=>{const{scope:r}=i;if(!n.authenticated)return D();if(!t)throw Error("Wishlist ID is not set");return g(j,{variables:{wishlistId:t,pageSize:e,currentPage:s}}).then(({errors:o,data:l})=>{var a;if(o)return f(o);if(!((a=l==null?void 0:l.customer)!=null&&a.wishlist_v2))return null;const h=P(l.customer.wishlist_v2);return d.emit("wishlist/data",h,{scope:r}),h})},Tt=`
   query GET_WISHLISTS_QUERY($pageSize: Int = 9, $currentPage: Int = 1) {
     customer {
       wishlists {

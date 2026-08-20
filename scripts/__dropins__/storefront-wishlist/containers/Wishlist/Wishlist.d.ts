@@ -22,6 +22,7 @@ export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
     routeEmptyWishlistCTA?: () => string;
     routeToWishlist?: string;
     wishlistId?: string;
+    scope?: string;
     moveProdToCart: (products: {
         sku: string;
         quantity: number;

@@ -194,6 +194,12 @@ export default async function decorate(block) {
   // relabeled separately, so this is just an internal identifier.
   const SFL_LIST_NAME = 'Save for Later';
 
+  // Event scope for the SFL container instance. The drop-in emits/listens for
+  // this list's data and alerts on this scope, so the SFL section never
+  // collides with the main wishlist's events on the page. This is the developer
+  // opting a second container into its own channel via event scoping.
+  const SFL_SCOPE = 'save-for-later';
+
   async function ensureSflList() {
     const lists = await WishlistApi.getWishlists();
     if (!Array.isArray(lists)) return null; // guest / not authenticated
@@ -204,21 +210,10 @@ export default async function decorate(block) {
     return sfl?.id ?? null;
   }
 
-  // Keep the "Saved for later (N)" heading in sync and hide the whole section
-  // when the list is empty. Reads the SFL list non-emitting so it doesn't
-  // disturb the active-wishlist state.
-  async function updateSflCount() {
-    let count = 0;
-    if (sflId) {
-      try {
-        const wl = await WishlistApi.getWishlistById(sflId, 1, 1, {
-          emit: false,
-        });
-        count = wl?.items_count ?? 0;
-      } catch (e) {
-        count = 0;
-      }
-    }
+  // Keep the "Saved for later (N)" heading in sync and hide the section when
+  // empty. The count is driven by the scoped wishlist/data event below, so this
+  // just applies a known count.
+  function setSflCount(count) {
     const hasItems = count > 0;
     $sflTitle.hidden = !hasItems;
     $sfl.hidden = !hasItems;
@@ -232,15 +227,27 @@ export default async function decorate(block) {
       $sfl.hidden = true;
       return;
     }
-    updateSflCount();
+    // Render a second wishlist container, scoped to SFL_SCOPE so its events do
+    // not collide with the main wishlist. `wishlistId` says which list to load;
+    // `scope` isolates this instance's data/alert events.
     wishlistRender.render(Wishlist, {
       wishlistId: sflId,
+      scope: SFL_SCOPE,
       moveProdToCart: Cart.addProductsToCart,
       routeProdDetailPage: (product) => getProductLink(product.urlKey, product.sku),
       getProductData: pdpApi.getProductData,
       getRefinedProduct: pdpApi.getRefinedProduct,
     })($sfl);
   }
+
+  // The SFL count/visibility is driven by this list's scoped data event: every
+  // load, add, remove, and move re-emits on SFL_SCOPE, and the eager replay
+  // covers the current value on (re)subscribe.
+  events.on(
+    'wishlist/data',
+    (wl) => setSflCount(wl?.items_count ?? 0),
+    { eager: true, scope: SFL_SCOPE },
+  );
 
   sflId = await ensureSflList();
   renderSfl();
@@ -431,10 +438,7 @@ export default async function decorate(block) {
     { eager: true },
   );
 
-  events.on('wishlist/alert', ({ action, item }) => {
-    // Keep the SFL heading count current after move/remove within the section.
-    updateSflCount();
-
+  function showWishlistToast({ action, item }) {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
@@ -444,7 +448,14 @@ export default async function decorate(block) {
     setTimeout(() => {
       $notification.innerHTML = '';
     }, 5000);
-  });
+  }
+
+  // Main wishlist (heart toggle on cart items) emits unscoped alerts.
+  events.on('wishlist/alert', showWishlistToast);
+
+  // The SFL section emits on its own scope. Toast here; the count updates via
+  // the scoped wishlist/data event the reload triggers.
+  events.on('wishlist/alert', showWishlistToast, { scope: SFL_SCOPE });
 
   return Promise.resolve();
 }

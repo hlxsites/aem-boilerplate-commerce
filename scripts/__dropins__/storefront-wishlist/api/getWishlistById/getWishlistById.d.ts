@@ -16,5 +16,5 @@
  *******************************************************************/
 import { Wishlist } from '../../data/models';
 export declare const getWishlistById: (wishlistId: string, pageSize?: number, currentPage?: number, options?: {
-    emit?: boolean;
+    scope?: string;
 }) => Promise<void | Wishlist | null>;
