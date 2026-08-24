@@ -18,4 +18,3 @@ export interface UpdateCompanyStructureInput {
     id: string;
     parentId: string;
 }
-//# sourceMappingURL=updateCompanyStructure.types.d.ts.map

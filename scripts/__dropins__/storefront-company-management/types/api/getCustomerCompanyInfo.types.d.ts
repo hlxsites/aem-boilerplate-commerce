@@ -37,4 +37,3 @@ export interface GetCustomerCompanyInfoResponse {
         };
     }>;
 }
-//# sourceMappingURL=getCustomerCompanyInfo.types.d.ts.map

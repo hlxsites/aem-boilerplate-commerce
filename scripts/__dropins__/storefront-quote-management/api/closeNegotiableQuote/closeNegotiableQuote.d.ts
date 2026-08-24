@@ -28,4 +28,3 @@ export interface CloseNegotiableQuoteResult {
     operationResults: Array<CloseNegotiableQuoteSuccessResult | CloseNegotiableQuoteFailureResult>;
 }
 export declare const closeNegotiableQuote: (input: CloseNegotiableQuoteInput) => Promise<CloseNegotiableQuoteResult>;
-//# sourceMappingURL=closeNegotiableQuote.d.ts.map

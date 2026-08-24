@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './LineItemNoteModal';
 export { LineItemNoteModal as default } from './LineItemNoteModal';
-//# sourceMappingURL=index.d.ts.map

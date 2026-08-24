@@ -37,4 +37,3 @@ export interface CartModel {
         message: string;
     }>;
 }
-//# sourceMappingURL=cart-model.d.ts.map

@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const COMPANY_FRAGMENT = "\n  fragment COMPANY_FRAGMENT on Company {\n    name\n    id\n    status\n  }\n";
-//# sourceMappingURL=CompanyFragment.graphql.d.ts.map

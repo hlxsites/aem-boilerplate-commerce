@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './rejectPurchaseOrders';
-//# sourceMappingURL=index.d.ts.map

@@ -1,7 +1,14 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
-
 export interface OrderSummaryLineItem {
     key: string;
     title?: string;
@@ -45,4 +52,3 @@ export interface OrderSummaryProps extends HTMLAttributes<HTMLDivElement> {
     updateLineItems?: (lineItems: Array<OrderSummaryLineItem>) => Array<OrderSummaryLineItem>;
 }
 export declare const OrderSummary: FunctionComponent<OrderSummaryProps>;
-//# sourceMappingURL=OrderSummary.d.ts.map

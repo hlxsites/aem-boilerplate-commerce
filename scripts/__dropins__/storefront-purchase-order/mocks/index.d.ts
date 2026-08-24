@@ -163,14 +163,14 @@ export declare const mockCancelPurchaseOrderSingleSuccessResponse: {
 export declare const mockCancelPurchaseOrderMultipleSuccessResponse: {
     data: {
         cancelPurchaseOrders: {
-            purchase_orders: {
+            purchase_orders: ({
                 uid: string;
                 number: string;
                 status: string;
                 created_at: string;
                 updated_at: string;
                 available_actions: string[];
-            }[];
+            } | undefined)[];
             errors: never[];
         };
     };
@@ -3036,4 +3036,3 @@ export declare const mockGetPurchaseOrderApprovalRulesMissingRulesSnakeCase: {
         };
     };
 };
-//# sourceMappingURL=index.d.ts.map

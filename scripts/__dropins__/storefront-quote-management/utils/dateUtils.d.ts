@@ -23,4 +23,3 @@ export declare function isValidDate(dateString: string): boolean;
  * @returns Formatted date string or "–" for invalid dates
  */
 export declare function formattedDate(dateString: string, type?: 'short' | 'long'): string;
-//# sourceMappingURL=dateUtils.d.ts.map

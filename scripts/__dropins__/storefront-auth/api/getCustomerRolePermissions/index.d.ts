@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './getCustomerRolePermissions';
-//# sourceMappingURL=index.d.ts.map

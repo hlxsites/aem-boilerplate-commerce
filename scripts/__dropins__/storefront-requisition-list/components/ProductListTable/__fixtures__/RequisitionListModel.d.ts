@@ -47,4 +47,3 @@ export declare const RequisitionListModel: {
     uid: string;
     updated_at: string;
 };
-//# sourceMappingURL=RequisitionListModel.d.ts.map

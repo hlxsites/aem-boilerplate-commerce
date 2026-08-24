@@ -10,5 +10,4 @@ export interface RemoveQuoteTemplateItemsParams {
     templateId: string;
     itemUids: string[];
 }
-export declare const removeQuoteTemplateItems: (params: RemoveQuoteTemplateItemsParams) => Promise<import('../../data/models/negotiable-quote-template-model').NegotiableQuoteTemplateModel>;
-//# sourceMappingURL=removeQuoteTemplateItems.d.ts.map
+export declare const removeQuoteTemplateItems: (params: RemoveQuoteTemplateItemsParams) => Promise<any>;

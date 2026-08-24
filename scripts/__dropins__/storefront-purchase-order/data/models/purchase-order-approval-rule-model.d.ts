@@ -52,4 +52,3 @@ export interface PurchaseOrderApprovalRuleModel {
         }>;
     }[];
 }
-//# sourceMappingURL=purchase-order-approval-rule-model.d.ts.map

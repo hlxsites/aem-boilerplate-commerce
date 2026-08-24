@@ -1,5 +1,20 @@
-import { CustomerCompanyInfo } from '../../types/company';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import type { CustomerCompanyInfo } from '../../types/company';
 export declare class CustomerCompanyContext {
     private static instance;
     private readonly EMPTY_CUSTOMER_COMPANY_CONTEXT;
@@ -38,4 +53,3 @@ export declare class CustomerCompanyContext {
 }
 export declare const getCustomerCompanyInfo: (pageSize?: number) => Promise<CustomerCompanyInfo>;
 export declare const updateCustomerGroup: () => Promise<string | null>;
-//# sourceMappingURL=customerCompanyContext.d.ts.map

@@ -17,4 +17,3 @@
 export declare const CREATE_COMPANY_ROLE: string;
 export declare const UPDATE_COMPANY_ROLE: string;
 export declare const DELETE_COMPANY_ROLE = "\n  mutation DeleteCompanyRole($id: ID!) {\n    deleteCompanyRole(id: $id) {\n      success\n    }\n  }\n";
-//# sourceMappingURL=mutations.d.ts.map

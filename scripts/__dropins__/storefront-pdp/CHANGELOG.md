@@ -1,5 +1,41 @@
 # @dropins/storefront-pdp
 
+## 3.3.0
+
+### Minor Changes
+
+- 3a3bfc1: Respect per-option `canEditQuantity` for bundle option quantities on the PDP.
+
+  - **Transform:** Read `canEditQuantity` from `ProductViewOptionValueProduct` values (now included in the GraphQL fragment) and expose it on each bundle option value in the model.
+  - **Swatches:** Render a quantity `Incrementer` for selected bundle option values; enabled when `canEditQuantity` is true, disabled when false or unset. Hide `ProductQuantity` (and the monolith quantity slot) when `isBundle` so shoppers do not see two quantity controls.
+  - **Configuration:** Sync `bundleOptionQuantities` and `enteredOptions` on bundle init and when selections change; keep both shapes aligned in `setProductConfigurationValues`.
+
+### Patch Changes
+
+- a6f404d: Fix accessibility issue where the product name and "Details" section title were rendered as plain `<div>` text instead of headings, so screen reader users could not navigate to them by heading (WCAG 1.3.1 - Info and Relationships).
+- 2413664: Make the ProductGallery main image keyboard-operable when it opens the image preview overlay (WCAG 2.1.1 Keyboard, Level A).
+
+  - **ProductGallery:** In the non-`zoom` (overlay) path, expose the clickable main image as a control with `role="button"`, `tabindex="0"`, and an `onKeyDown` handler so it can be activated with Enter and Space, not just clicked. The interactive attributes are only applied to the displayed layer; the `aria-hidden` crossfade layer stays non-interactive and unfocusable.
+  - **Tests:** Add coverage asserting the main image is focusable, exposed as a button, and opens the preview overlay via Enter and Space.
+
+## 3.3.0-beta.1
+
+### Minor Changes
+
+- 3a3bfc1: Respect per-option `canEditQuantity` for bundle option quantities on the PDP.
+
+  - **Transform:** Read `canEditQuantity` from `ProductViewOptionValueProduct` values (now included in the GraphQL fragment) and expose it on each bundle option value in the model.
+  - **Swatches:** Render a quantity `Incrementer` for selected bundle option values; enabled when `canEditQuantity` is true, disabled when false or unset. Hide `ProductQuantity` (and the monolith quantity slot) when `isBundle` so shoppers do not see two quantity controls.
+  - **Configuration:** Sync `bundleOptionQuantities` and `enteredOptions` on bundle init and when selections change; keep both shapes aligned in `setProductConfigurationValues`.
+
+### Patch Changes
+
+- a6f404d: Fix accessibility issue where the product name and "Details" section title were rendered as plain `<div>` text instead of headings, so screen reader users could not navigate to them by heading (WCAG 1.3.1 - Info and Relationships).
+- 2413664: Make the ProductGallery main image keyboard-operable when it opens the image preview overlay (WCAG 2.1.1 Keyboard, Level A).
+
+  - **ProductGallery:** In the non-`zoom` (overlay) path, expose the clickable main image as a control with `role="button"`, `tabindex="0"`, and an `onKeyDown` handler so it can be activated with Enter and Space, not just clicked. The interactive attributes are only applied to the displayed layer; the `aria-hidden` crossfade layer stays non-interactive and unfocusable.
+  - **Tests:** Add coverage asserting the main image is focusable, exposed as a button, and opens the preview overlay via Enter and Space.
+
 ## 3.2.0
 
 ### Minor Changes

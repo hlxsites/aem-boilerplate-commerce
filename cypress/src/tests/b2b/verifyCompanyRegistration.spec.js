@@ -90,7 +90,7 @@ import {
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
 
-describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, () => {
+describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   before(() => {
     cy.logToTerminal('🚀 Company Registration test suite started');
   });
@@ -118,7 +118,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // TC-01 (P0): Create a new company as a Guest user
   // ==========================================================================
 
-  it('TC-01: Create new company as Guest via navigation menu', () => {
+  it('TC-01: Create new company as Guest via navigation menu', { tags: ['@skipAco'] }, () => {
     cy.logToTerminal('========= 📝 TC-01: Create new company as Guest via navigation menu =========');
 
     cy.logToTerminal('📍 Navigate to homepage');
@@ -135,7 +135,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
     cy.logToTerminal('✅ TC-01: Company registration via navigation menu completed');
   });
 
-  it('TC-01: Create new company as Guest via direct URL', () => {
+  it('TC-01: Create new company as Guest via direct URL', { tags: ['@skipAco'] },() => {
     cy.logToTerminal('========= 📝 TC-01: Create new company as Guest via direct URL =========');
 
     cy.logToTerminal('📍 Navigate directly to company registration page');
@@ -149,7 +149,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // TC-02 (P0): Create new Company as registered but not company user
   // ==========================================================================
 
-  it('TC-02: Create new company as authenticated non-company user', () => {
+  it('TC-02: Create new company as authenticated non-company user', { tags: ['@B2BAco'] }, () => {
     cy.logToTerminal('========= 📝 TC-02: Create new company as authenticated non-company user =========');
 
     cy.logToTerminal('👤 Create and authenticate user');
@@ -179,7 +179,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // TC-03 (P1): User cannot create new company if registration is disabled
   // ==========================================================================
 
-  it('TC-03: Redirect to login when registration disabled (unauthenticated, nav menu)', () => {
+  it('TC-03: Redirect to login when registration disabled (unauthenticated, nav menu)', { tags: ['@B2BAco'] }, () => {
     cy.logToTerminal('========= 🔒 TC-03: Redirect to login (nav menu, config disabled) =========');
 
     cy.logToTerminal('🔧 Mock disabled configuration');
@@ -193,7 +193,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
     cy.logToTerminal('✅ TC-03: Redirect to login verified');
   });
 
-  it('TC-03: Redirect to login when registration disabled (unauthenticated, direct URL)', () => {
+  it('TC-03: Redirect to login when registration disabled (unauthenticated, direct URL)', { tags: ['@B2BAco'] }, () => {
     cy.logToTerminal('========= 🔒 TC-03: Redirect to login (direct URL, config disabled) =========');
 
     cy.logToTerminal('🔧 Mock disabled configuration');
@@ -207,7 +207,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
     cy.logToTerminal('✅ TC-03: Redirect to login verified');
   });
 
-  it('TC-03: Redirect to account when registration disabled (authenticated)', () => {
+  it('TC-03: Redirect to account when registration disabled (authenticated)', { tags: ['@B2BAco'] }, () => {
     cy.logToTerminal('========= 🔒 TC-03: Redirect to account (authenticated, config disabled) =========');
 
     cy.logToTerminal('🔧 Mock disabled configuration (allow real auth)');
@@ -246,7 +246,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // TC-05 (P2): User cannot create company using email already associated with another company
   // ==========================================================================
 
-  it('TC-05: Duplicate company email validation', () => {
+  it('TC-05: Duplicate company email validation', { tags: ['@skipAco'] }, () => {
     cy.logToTerminal('========= 📝 TC-05: Duplicate company email validation =========');
 
     cy.logToTerminal('📍 Step 1: Create first company');
@@ -316,7 +316,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // TC-06 (P2): Form validation - required fields
   // ==========================================================================
 
-  it('TC-06: Required fields validation on empty form submit', () => {
+  it('TC-06: Required fields validation on empty form submit', { tags: ['@B2BAco'] }, () => {
     cy.logToTerminal('========= 📝 TC-06: Required fields validation =========');
 
     cy.logToTerminal('📍 Navigate to company registration page');
@@ -372,7 +372,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
   // USF-3439: Tests for countries without required regions (UK)
   // ==========================================================================
 
-  it('USF-3439: UK company registration with empty region', () => {
+  it('USF-3439: UK company registration with empty region', { tags: ['@skipAco'] }, () => {
     cy.logToTerminal('========= 🇬🇧 USF-3439: UK company registration with empty region =========');
 
     cy.logToTerminal('📍 Navigate to company registration page');
@@ -383,7 +383,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas', '@skipAco'] }, (
     cy.logToTerminal('✅ USF-3439: UK company with empty region registered successfully');
   });
 
-  it('USF-3439: UK company registration with optional region name', () => {
+  it('USF-3439: UK company registration with optional region name', { tags: ['@skipAco'] }, () => {
     cy.logToTerminal('========= 🇬🇧 USF-3439: UK company registration with optional region =========');
 
     cy.logToTerminal('📍 Navigate to company registration page');

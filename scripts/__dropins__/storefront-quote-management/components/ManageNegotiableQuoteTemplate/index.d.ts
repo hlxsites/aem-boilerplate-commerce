@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './ManageNegotiableQuoteTemplate';
 export { ManageNegotiableQuoteTemplate as default } from './ManageNegotiableQuoteTemplate';
-//# sourceMappingURL=index.d.ts.map

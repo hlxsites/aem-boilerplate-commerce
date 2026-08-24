@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const CREATE_QUOTE_TEMPLATE_MUTATION: string;
-//# sourceMappingURL=createQuoteTemplate.d.ts.map

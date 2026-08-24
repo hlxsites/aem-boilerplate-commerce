@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export * from './cancelQuoteTemplate';
-//# sourceMappingURL=index.d.ts.map

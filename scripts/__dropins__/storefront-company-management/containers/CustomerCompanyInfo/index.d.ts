@@ -16,4 +16,3 @@
  *******************************************************************/
 export { CustomerCompanyInfo } from './CustomerCompanyInfo';
 export type { CustomerCompanyInfoProps } from './CustomerCompanyInfo';
-//# sourceMappingURL=index.d.ts.map

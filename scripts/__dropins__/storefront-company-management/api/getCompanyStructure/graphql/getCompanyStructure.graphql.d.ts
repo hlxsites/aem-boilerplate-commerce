@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_COMPANY_STRUCTURE = "\n  query getCompanyStructure {\n    company {\n      structure {\n        items {\n          id\n          parent_id\n          entity {\n            __typename\n            ... on CompanyTeam { companyTeamId: id structure_id name description }\n            ... on Customer { customerId: id structure_id firstname lastname status job_title }\n          }\n        }\n      }\n    }\n  }\n";
-//# sourceMappingURL=getCompanyStructure.graphql.d.ts.map

@@ -1,6 +1,12 @@
-import { PriceProps } from '@dropins/tools/types/elsie/src/components';
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { CartItemModel as NegotiableQuoteItemModel, StoreConfigModel } from '../data/models';
-
 export interface PriceCalculatorOptions {
     dictionary: Record<string, string>;
     quoteDisplaySettings?: StoreConfigModel['quoteDisplaySettings'];
@@ -9,8 +15,8 @@ export interface PriceCalculatorOptions {
  * Get price props for an item
  */
 export declare const getPriceProps: (item: NegotiableQuoteItemModel, options: PriceCalculatorOptions) => {
-    amount: number;
-    currency: string;
+    amount: any;
+    currency: any;
     style: {
         font: string;
     };
@@ -20,8 +26,8 @@ export declare const getPriceProps: (item: NegotiableQuoteItemModel, options: Pr
  * Get savings amount props for an item
  */
 export declare const getSavingsAmount: (item: NegotiableQuoteItemModel) => {
-    amount: number | undefined;
-    currency: string | undefined;
+    amount: any;
+    currency: any;
     style: {
         font: string;
     };
@@ -31,11 +37,6 @@ export declare const getSavingsAmount: (item: NegotiableQuoteItemModel) => {
  * Calculate total price props and discount props for an item
  */
 export declare const getTotalPriceProps: (item: NegotiableQuoteItemModel, options: PriceCalculatorOptions) => {
-    totalProps: PriceProps & {
-        'data-testid'?: string | undefined;
-    };
-    discountProps: (PriceProps & {
-        'data-testid'?: string | undefined;
-    }) | null;
+    totalProps: any;
+    discountProps: any;
 };
-//# sourceMappingURL=priceCalculators.d.ts.map

@@ -21,4 +21,3 @@ export interface CompanyUser {
     email: string;
 }
 export declare const getCompanyUsers: () => Promise<CompanyUser[]>;
-//# sourceMappingURL=getCompanyUsers.d.ts.map

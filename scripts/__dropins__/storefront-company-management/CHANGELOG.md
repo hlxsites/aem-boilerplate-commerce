@@ -1,5 +1,42 @@
 # @dropins/storefront-company-management
 
+## 1.4.1
+
+### Patch Changes
+
+- 6309f15: Revert reCAPTCHA support for B2B company registration (createCompany)
+
+## 1.4.0
+
+### Minor Changes
+
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+### Patch Changes
+
+- 36eab4d: Bump SDK stable versions
+- a76b2c6: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
+## 1.4.0-beta.1
+
+### Patch Changes
+
+- 36eab4d: Bump SDK stable versions
+
+## 1.4.0-beta.0
+
+### Minor Changes
+
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+
+### Patch Changes
+
+- a76b2c6: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
 ## 1.3.0
 
 ### Minor Changes

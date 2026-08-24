@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './RequisitionListGrid';
 export { RequisitionListGrid as default } from './RequisitionListGrid';
-//# sourceMappingURL=index.d.ts.map

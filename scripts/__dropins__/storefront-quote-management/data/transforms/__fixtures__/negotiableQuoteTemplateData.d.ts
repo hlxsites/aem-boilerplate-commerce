@@ -2208,4 +2208,3 @@ export declare const mockEmptyQuoteTemplateListData: {
     };
     total_count: number;
 };
-//# sourceMappingURL=negotiableQuoteTemplateData.d.ts.map

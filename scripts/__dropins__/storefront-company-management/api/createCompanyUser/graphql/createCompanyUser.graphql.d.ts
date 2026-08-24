@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const CREATE_COMPANY_USER = "\n  mutation createCompanyUser($input: CompanyUserCreateInput!) {\n    createCompanyUser(input: $input) { __typename user { id structure_id email firstname lastname job_title } }\n  }\n";
-//# sourceMappingURL=createCompanyUser.graphql.d.ts.map

@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CUSTOMER_COMPANY_CONTEXT: string;
-//# sourceMappingURL=customerCompanyContext.graphql.d.ts.map

@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './RenameQuoteModal';
 export { RenameQuoteModal as default } from './RenameQuoteModal';
-//# sourceMappingURL=index.d.ts.map

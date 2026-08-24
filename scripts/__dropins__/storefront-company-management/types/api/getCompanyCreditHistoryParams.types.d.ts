@@ -50,4 +50,3 @@ export interface GetCompanyCreditHistoryParams {
      */
     currentPage?: number;
 }
-//# sourceMappingURL=getCompanyCreditHistoryParams.types.d.ts.map

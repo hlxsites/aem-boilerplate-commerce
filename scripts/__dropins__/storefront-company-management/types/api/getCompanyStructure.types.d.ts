@@ -31,4 +31,3 @@ export interface CompanyStructureItemResponse {
         status?: 'ACTIVE' | 'INACTIVE';
     };
 }
-//# sourceMappingURL=getCompanyStructure.types.d.ts.map

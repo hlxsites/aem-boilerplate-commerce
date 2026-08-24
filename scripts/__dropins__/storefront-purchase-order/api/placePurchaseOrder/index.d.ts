@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './placePurchaseOrder';
-//# sourceMappingURL=index.d.ts.map

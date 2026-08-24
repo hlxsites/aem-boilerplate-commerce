@@ -6,4 +6,3 @@
  * @returns {any} - The value of the key.
  */
 export declare function getPathValue(obj: Record<string, any>, key: string): any;
-//# sourceMappingURL=get-path-value.d.ts.map

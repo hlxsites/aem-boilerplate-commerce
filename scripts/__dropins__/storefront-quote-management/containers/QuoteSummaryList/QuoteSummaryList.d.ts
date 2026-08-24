@@ -1,8 +1,15 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { ImageProps } from '@dropins/tools/components';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartItemModel as NegotiableQuoteItemModel } from '../../data/models';
-
 export interface QuoteSummaryListProps extends HTMLAttributes<HTMLDivElement> {
     hideHeading?: boolean;
     hideFooter?: boolean;
@@ -48,4 +55,3 @@ export interface QuoteSummaryListProps extends HTMLAttributes<HTMLDivElement> {
 }
 export type SwitchableAttributes = 'name' | 'image' | 'configurations' | 'warning' | 'alert' | 'sku' | 'price' | 'quantity' | 'total' | 'totalDiscount' | 'totalExcludingTax';
 export declare const QuoteSummaryList: Container<QuoteSummaryListProps>;
-//# sourceMappingURL=QuoteSummaryList.d.ts.map

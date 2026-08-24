@@ -8,4 +8,3 @@
  *******************************************************************/
 export { COMPANY_FRAGMENT } from './graphql/CompanyFragment.graphql';
 export { CUSTOMER_FRAGMENT } from './graphql/CustomerFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map

@@ -8,4 +8,3 @@
  *******************************************************************/
 export { ShippingAddressDisplay } from './ShippingAddressDisplay';
 export type { ShippingAddressDisplayProps } from './ShippingAddressDisplay';
-//# sourceMappingURL=index.d.ts.map

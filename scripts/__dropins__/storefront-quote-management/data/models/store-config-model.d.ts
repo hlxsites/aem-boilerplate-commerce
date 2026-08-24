@@ -26,4 +26,3 @@ export interface StoreConfigModel {
     quoteMinimumAmount: number | null;
     quoteMinimumAmountMessage: string | null;
 }
-//# sourceMappingURL=store-config-model.d.ts.map

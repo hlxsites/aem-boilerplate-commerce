@@ -4,4 +4,3 @@ type ExtractErrorKeyAndMessage = {
 };
 export declare const extractErrorKeyAndMessage: (errorConfig: string) => ExtractErrorKeyAndMessage;
 export {};
-//# sourceMappingURL=extractErrorKeyAndMessage.d.ts.map

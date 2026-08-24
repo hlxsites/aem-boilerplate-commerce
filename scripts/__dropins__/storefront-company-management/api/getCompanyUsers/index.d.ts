@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getCompanyUsers';
-//# sourceMappingURL=index.d.ts.map

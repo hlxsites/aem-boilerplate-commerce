@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './QuoteHistoryLog';
 export { QuoteHistoryLog as default } from './QuoteHistoryLog';
-//# sourceMappingURL=index.d.ts.map

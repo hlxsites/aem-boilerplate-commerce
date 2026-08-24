@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const PLACE_ORDER_FOR_PURCHASE_ORDER = "\n  mutation PLACE_ORDER_FOR_PURCHASE_ORDER(\n    $input: PlaceOrderForPurchaseOrderInput!\n  ) {\n    placeOrderForPurchaseOrder(input: $input) {\n      order {\n        available_actions\n        carrier\n        email\n        gift_receipt_included\n        id\n        is_virtual\n        number\n        order_date\n        order_status_change_date\n        printed_card_included\n        shipping_method\n        status\n        token\n      }\n    }\n  }\n";
-//# sourceMappingURL=placeOrderForPurchaseOrder.graphql.d.ts.map

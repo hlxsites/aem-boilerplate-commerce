@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const IS_COMPANY_USER_EMAIL_AVAILABLE = "\n  query isCompanyUserEmailAvailable($email: String!) {\n    isCompanyUserEmailAvailable(email: $email) { is_email_available }\n  }\n";
-//# sourceMappingURL=isCompanyUserEmailAvailable.graphql.d.ts.map

@@ -1,5 +1,48 @@
 # @dropins/storefront-requisition-list
 
+## 1.5.0
+
+### Minor Changes
+
+- f3b5b17: fix: display variant-specific SKU, options, price and thumbnail for configurable requisition list items
+
+  `ProductListTable` previously showed only the parent product's name/SKU and never rendered the selected configurable options (e.g. color, size), and the configured product's thumbnail was shown unconditionally, ignoring the storefront's "Configurable Product Image" setting used by the cart.
+
+  - Renders the selected configurable options next to the SKU.
+  - Adds a `useParentConfigurableThumbnail` prop to `ProductListTable`, driven by the new `configurable_thumbnail_source` store config field, so the thumbnail is consistent with the cart's admin-configured behavior.
+  - Adds a built-in `enrichConfigurableProducts` default (exported from `@dropins/storefront-requisition-list`) that resolves the selected variant's SKU, price and thumbnail via Catalog Service's `refineProduct`, matching selected options by label, so integrators no longer need to implement this resolution themselves. Passing a custom `enrichConfigurableProducts` still overrides the default.
+
+### Patch Changes
+
+- 4a9f96b: Bump SDK stable versions
+- 33ac652: fix: show original and final price in requisition list
+
+  `ProductListTable` previously rendered only the final (discounted) price for an item's unit price and subtotal. It now also renders the original price with a strikethrough when a discount applies, for simple, configured, and bundle products, matching wishlist's price display.
+
+## 1.5.0-beta.1
+
+### Patch Changes
+
+- 4a9f96b: Bump SDK stable versions
+
+## 1.5.0-beta.0
+
+### Minor Changes
+
+- f3b5b17: fix: display variant-specific SKU, options, price and thumbnail for configurable requisition list items
+
+  `ProductListTable` previously showed only the parent product's name/SKU and never rendered the selected configurable options (e.g. color, size), and the configured product's thumbnail was shown unconditionally, ignoring the storefront's "Configurable Product Image" setting used by the cart.
+
+  - Renders the selected configurable options next to the SKU.
+  - Adds a `useParentConfigurableThumbnail` prop to `ProductListTable`, driven by the new `configurable_thumbnail_source` store config field, so the thumbnail is consistent with the cart's admin-configured behavior.
+  - Adds a built-in `enrichConfigurableProducts` default (exported from `@dropins/storefront-requisition-list`) that resolves the selected variant's SKU, price and thumbnail via Catalog Service's `refineProduct`, matching selected options by label, so integrators no longer need to implement this resolution themselves. Passing a custom `enrichConfigurableProducts` still overrides the default.
+
+### Patch Changes
+
+- 33ac652: fix: show original and final price in requisition list
+
+  `ProductListTable` previously rendered only the final (discounted) price for an item's unit price and subtotal. It now also renders the original price with a strikethrough when a discount applies, for simple, configured, and bundle products, matching wishlist's price display.
+
 ## 1.4.0
 
 ### Minor Changes

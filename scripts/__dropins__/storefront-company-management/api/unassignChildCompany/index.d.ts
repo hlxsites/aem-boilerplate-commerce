@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './unassignChildCompany';
-//# sourceMappingURL=index.d.ts.map

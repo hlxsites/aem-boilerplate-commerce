@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './CompanyUsers';
 export { CompanyUsers as default } from './CompanyUsers';
-//# sourceMappingURL=index.d.ts.map

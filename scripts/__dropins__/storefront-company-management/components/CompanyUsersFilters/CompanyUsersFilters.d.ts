@@ -26,4 +26,3 @@ export interface CompanyUsersFiltersProps {
     };
 }
 export declare const CompanyUsersFilters: ({ filterType, onFilterChange, translations }: CompanyUsersFiltersProps) => import("preact").JSX.Element;
-//# sourceMappingURL=CompanyUsersFilters.d.ts.map

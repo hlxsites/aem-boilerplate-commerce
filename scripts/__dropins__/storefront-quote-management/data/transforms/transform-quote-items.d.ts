@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { CartItemModel } from '../models/negotiable-quote-model';
-
 /**
  * Transforms a single quote item from the API format to the model format
  * @param item - Raw quote item from API
@@ -12,4 +19,3 @@ export declare function transformQuoteItem(item: any): CartItemModel;
  * @returns Array of transformed quote items
  */
 export declare function transformQuoteItems(items: any[] | null | undefined): CartItemModel[];
-//# sourceMappingURL=transform-quote-items.d.ts.map

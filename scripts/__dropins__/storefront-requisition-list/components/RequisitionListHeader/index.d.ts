@@ -16,4 +16,3 @@
  *******************************************************************/
 export { RequisitionListHeader } from './RequisitionListHeader';
 export type { RequisitionListHeaderProps } from './RequisitionListHeader';
-//# sourceMappingURL=index.d.ts.map

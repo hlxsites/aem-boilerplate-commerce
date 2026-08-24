@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './QuotePricesSummary';
 export { QuotePricesSummary as default } from './QuotePricesSummary';
-//# sourceMappingURL=index.d.ts.map

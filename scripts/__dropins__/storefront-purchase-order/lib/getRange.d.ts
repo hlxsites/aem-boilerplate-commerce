@@ -19,4 +19,3 @@ export declare const getRange: (currentPage: number, pageSize: number, total: nu
     to: number;
     total: number;
 };
-//# sourceMappingURL=getRange.d.ts.map

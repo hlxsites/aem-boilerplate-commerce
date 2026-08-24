@@ -11,5 +11,4 @@ export interface AddQuoteTemplateLineItemNoteParams {
     itemId: string;
     note?: string;
 }
-export declare const addQuoteTemplateLineItemNote: (params: AddQuoteTemplateLineItemNoteParams) => Promise<import('../../data/models/negotiable-quote-template-model').NegotiableQuoteTemplateModel>;
-//# sourceMappingURL=addQuoteTemplateLineItemNote.d.ts.map
+export declare const addQuoteTemplateLineItemNote: (params: AddQuoteTemplateLineItemNoteParams) => Promise<any>;

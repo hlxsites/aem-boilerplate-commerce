@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './deleteCompanyUser';
-//# sourceMappingURL=index.d.ts.map

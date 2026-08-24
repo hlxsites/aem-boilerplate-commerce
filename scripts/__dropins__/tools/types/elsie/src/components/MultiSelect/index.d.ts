@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './MultiSelect';
 export { MultiSelect as default } from './MultiSelect';
-//# sourceMappingURL=index.d.ts.map

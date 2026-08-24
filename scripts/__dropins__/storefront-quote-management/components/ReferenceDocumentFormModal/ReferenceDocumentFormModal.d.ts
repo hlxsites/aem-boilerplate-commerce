@@ -1,6 +1,13 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent, HTMLAttributes } from 'preact/compat';
 import { VNode } from 'preact';
-
 export interface ReferenceDocument {
     uid?: string;
     name: string;
@@ -27,4 +34,3 @@ export interface ReferenceDocumentFormModalProps extends Omit<HTMLAttributes<HTM
     onClose?: () => void;
 }
 export declare const ReferenceDocumentFormModal: FunctionComponent<ReferenceDocumentFormModalProps>;
-//# sourceMappingURL=ReferenceDocumentFormModal.d.ts.map

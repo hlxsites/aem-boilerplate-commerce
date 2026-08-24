@@ -1,5 +1,4 @@
 import { CustomerCompanyInfo } from '../../data/models';
-
 /**
  * Gets customer company information for display on account information page
  * This is a simplified API that only returns the essential company info needed
@@ -9,4 +8,3 @@ import { CustomerCompanyInfo } from '../../data/models';
  * @throws {Error} When network errors or GraphQL errors occur
  */
 export declare function getCustomerCompany(): Promise<CustomerCompanyInfo | null>;
-//# sourceMappingURL=getCustomerCompany.d.ts.map

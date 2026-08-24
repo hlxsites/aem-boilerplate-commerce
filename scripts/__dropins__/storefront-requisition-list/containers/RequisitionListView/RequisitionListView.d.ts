@@ -1,7 +1,6 @@
-import { HTMLAttributes } from 'preact/compat';
-import { Container } from '@dropins/tools/types/elsie/src/lib';
 import { Item, Product } from '../../data/models/item';
-
+import { Container } from '@dropins/tools/lib';
+import { HTMLAttributes } from 'preact/compat';
 export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * The UID of the requisition list to display.
@@ -31,9 +30,14 @@ export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement>
      */
     fallbackRoute?: string;
     getProductData: (skus: string[]) => Promise<Product[] | null>;
-    enrichConfigurableProducts: (items: Item[]) => Promise<Item[]>;
+    /**
+     * Resolves the selected variant (SKU, price, thumbnail) for configurable
+     * requisition list items. Defaults to a built-in resolver that queries
+     * `ConfigurableProduct.variants`; pass a custom implementation to route
+     * variant lookups elsewhere (e.g. a separate Catalog Service endpoint).
+     */
+    enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>;
     currentCustomerEmail?: string;
     routeSharedRequisitionList?: (relativeUrl: string) => string;
 }
 export declare const RequisitionListView: Container<RequisitionListViewProps>;
-//# sourceMappingURL=RequisitionListView.d.ts.map

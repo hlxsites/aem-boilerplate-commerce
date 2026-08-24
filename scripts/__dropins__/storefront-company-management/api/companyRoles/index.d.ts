@@ -24,4 +24,3 @@ export { isCompanyRoleNameAvailable } from './isCompanyRoleNameAvailable';
 export { flattenPermissionIds, buildPermissionTree } from './utils';
 export type { CompanyAclResourceModel, CompanyRoleModel, PageInfoModel, CompanyRolesResponseModel, CompanyRoleCreateInputModel, CompanyRoleUpdateInputModel, } from '../../data/models/company-role';
 export type { GetCompanyRolesVariables, GetCompanyRoleVariables, DeleteCompanyRoleVariables, IsCompanyRoleNameAvailableVariables, } from '../../types/api/companyRoles.types';
-//# sourceMappingURL=index.d.ts.map

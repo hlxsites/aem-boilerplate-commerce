@@ -4,4 +4,3 @@ export interface HistoryLogProps {
     withWrapper?: boolean;
     className?: string;
 }
-//# sourceMappingURL=historyLog.types.d.ts.map

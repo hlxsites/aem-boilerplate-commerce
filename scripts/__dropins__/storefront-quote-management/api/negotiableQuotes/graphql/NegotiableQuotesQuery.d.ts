@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const NEGOTIABLE_QUOTES_QUERY: string;
-//# sourceMappingURL=NegotiableQuotesQuery.d.ts.map

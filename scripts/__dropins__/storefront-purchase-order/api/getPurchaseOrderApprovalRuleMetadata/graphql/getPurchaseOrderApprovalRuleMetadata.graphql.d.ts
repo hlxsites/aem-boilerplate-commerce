@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_PURCHASE_ORDER_APPROVAL_RULE_METADATA = "\n  query GET_PURCHASE_ORDER_APPROVAL_RULE_METADATA {\n    customer {\n      purchase_order_approval_rule_metadata {\n        available_applies_to {\n          id\n          name\n          users_count\n          permissions {\n            id\n            sort_order\n            text\n            children {\n              id\n              sort_order\n              text\n            }\n          }\n        }\n        available_requires_approval_from {\n          id\n          name\n          users_count\n          permissions {\n            id\n            sort_order\n            text\n            children {\n              id\n              sort_order\n              text\n            }\n          }\n        }\n      }\n    }\n  }\n";
-//# sourceMappingURL=getPurchaseOrderApprovalRuleMetadata.graphql.d.ts.map

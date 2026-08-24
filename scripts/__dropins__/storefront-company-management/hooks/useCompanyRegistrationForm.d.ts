@@ -34,4 +34,3 @@ export interface UseCompanyRegistrationFormReturn {
     formTranslations: Record<string, string>;
 }
 export declare const useCompanyRegistrationForm: ({ onSuccess, onError, }: UseCompanyRegistrationFormProps) => UseCompanyRegistrationFormReturn;
-//# sourceMappingURL=useCompanyRegistrationForm.d.ts.map

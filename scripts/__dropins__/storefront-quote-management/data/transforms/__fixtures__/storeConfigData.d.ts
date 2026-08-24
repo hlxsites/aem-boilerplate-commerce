@@ -32,4 +32,3 @@ export declare const mockStoreConfigGraphQLResponseWithWrongValues: {
     shopping_cart_display_grand_total: boolean;
     configurable_thumbnail_source: string;
 };
-//# sourceMappingURL=storeConfigData.d.ts.map

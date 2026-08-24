@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './synchronizeCheckout';
-//# sourceMappingURL=index.d.ts.map

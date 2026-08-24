@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_CUSTOMER_COMPANY_INFO = "\n  query GET_CUSTOMER_COMPANY_INFO {\n    customer {\n      id\n      job_title\n      telephone\n      role {\n        id\n        name\n      }\n    }\n    company {\n      id\n      name\n    }\n  }\n";
-//# sourceMappingURL=getCustomerCompanyInfo.graphql.d.ts.map

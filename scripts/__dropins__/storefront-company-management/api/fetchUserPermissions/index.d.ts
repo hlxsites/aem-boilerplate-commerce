@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export { fetchUserPermissions } from './fetchUserPermissions';
-//# sourceMappingURL=index.d.ts.map

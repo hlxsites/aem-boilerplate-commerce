@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const SET_LINE_ITEM_NOTE_MUTATION: string;
-//# sourceMappingURL=SetLineItemNoteMutation.d.ts.map

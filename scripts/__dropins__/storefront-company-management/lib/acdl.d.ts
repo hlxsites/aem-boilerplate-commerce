@@ -41,4 +41,3 @@ declare const pushEvent: (event: Record<string, any>) => void;
  */
 declare const publishEvents: (eventType: string, eventParams: any) => null | undefined;
 export { EventsList, publishEvents, pushEvent, setContext };
-//# sourceMappingURL=acdl.d.ts.map
