@@ -1,0 +1,23 @@
+{
+	"public": {
+		"default": {
+			"adobe-commerce-optimizer": true,
+			"commerce-endpoint": "https://na1.api.commerce.adobe.com/7Znwr4QExjmVgZKVZwdSce/graphql",
+			"commerce-core-endpoint": "https://master-7rqtwti-cwlirllwjo5ws.us-4.magentosite.cloud/graphql",
+			"headers": {
+				"cs": {
+					"ac-view-id": "5363c567-5f9f-4833-880c-737837fa2a3d",
+					"ac-price-book-id": "base"
+				}
+			},
+			"commerce-website-code": "base",
+			"commerce-store-code": "main_website_store",
+			"commerce-store-view-code": "default",
+			"plugins": {
+				"picker": {
+					"rootCategory": "2"
+				}
+			}
+		}
+	}
+}
