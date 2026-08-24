@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './initialize';
-export { submitCreditCard } from './submitCreditCard';
-export { PaymentMethodCode } from '../data/models/method';
-export { PaymentLocation } from '../data/models/location';
+export * from './PayPalButtons';
+export { PayPalButtons as default } from './PayPalButtons';
 //# sourceMappingURL=index.d.ts.map
