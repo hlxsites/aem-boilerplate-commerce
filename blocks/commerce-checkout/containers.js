@@ -454,6 +454,16 @@ export const renderPaymentMethods = async (
           enabled: false,
         },
       },
+      StoredMethods: {
+        [PaymentMethodCode.VAULT]: {
+          tokenCode: PaymentMethodCode.CREDIT_CARD,
+          render: (ctx) => {
+            const $storedOption = document.createElement('div');
+            $storedOption.innerHTML = JSON.stringify(ctx.details);
+            ctx.replaceHTML($storedOption);
+          },
+        },
+      },
     },
   })(paymentMethodsContainer),
 );
