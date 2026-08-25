@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 
 // Dropin Tools
+import { deepmerge } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
@@ -348,19 +349,18 @@ export default async function decorate(block) {
   }
 
   function handlePaymentServicesInitialized({ availablePaymentMethods }) {
-    availablePaymentMethods.forEach((code) => {
-      paymentMethods.setProps((prev) => ({
-        slots: {
-          Methods: {
-            ...prev.slots.Methods,
-            [code]: {
-              ...prev.slots.Methods[code],
-              enabled: !!prev.slots.Methods[code].render,
-            },
-          },
-        },
-      }));
+    const slotsUpdate = (prev) => ({
+      Methods: Object.fromEntries(availablePaymentMethods.map(
+        (code) => [code, {
+          enabled: !!prev.slots.Methods[code].render,
+        }],
+      )),
     });
+
+    paymentMethods.setProps((prev) => ({
+      ...prev,
+      slots: deepmerge(prev.slots, slotsUpdate(prev)),
+    }));
   }
 
   events.on('authenticated', handleAuthenticated);
