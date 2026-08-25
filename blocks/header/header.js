@@ -357,6 +357,11 @@ export default async function decorate(block) {
       cartButton.removeAttribute('data-count');
     }
 
+    cartButton.setAttribute(
+      'aria-label',
+      (labels.Global?.CartWithItems ?? 'Cart with {count} item(s)').replace('{count}', totalQuantity),
+    );
+
     // Skip the announcement for the initial value on page load so screen
     // reader users aren't told about the cart contents before they've
     // interacted with it; only announce actual changes.
