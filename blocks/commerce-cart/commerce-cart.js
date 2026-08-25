@@ -185,18 +185,32 @@ export default async function decorate(block) {
 
   // ---- Save for Later (SFL) ----
   // SFL is a distinct, reserved wishlist that is only surfaced in the cart.
-  // It is identified by a reserved name (SFL_LIST_NAME): the list with that
-  // name is reused if it exists, otherwise it is created.
+  // For authenticated shoppers it is a server list identified by a reserved
+  // name (SFL_LIST_NAME), reused if present and created otherwise. For guests
+  // there are no server lists, so SFL is a reserved *local* list keyed by
+  // GUEST_SFL_KEY; the wishlist drop-in persists it in localStorage and applies
+  // the configured guest TTL. The same value is passed as `wishlistId`
+  // throughout, so the rest of the SFL code path is auth-agnostic.
   let sflId = null;
 
-  // Reserved name used to identify the SFL list. Matched exactly, so an
-  // existing SFL list is reused rather than duplicated. The display heading is
-  // relabeled separately, so this is just an internal identifier.
+  // Reserved name used to identify the SFL list for authenticated shoppers.
+  // Matched exactly, so an existing SFL list is reused rather than duplicated.
   const SFL_LIST_NAME = 'Save for Later';
+
+  // Reserved guest list key. Must match the key configured for guest expiry in
+  // scripts/initializers/wishlist.js (guestWishlistTtl: { 'save-for-later': 14 }).
+  const GUEST_SFL_KEY = 'save-for-later';
+
+  // Event scope for the SFL container instance. The drop-in emits/listens for
+  // this list's data and alerts on this scope, so the SFL section never
+  // collides with the main wishlist's events on the page.
+  const SFL_SCOPE = 'save-for-later';
 
   async function ensureSflList() {
     const lists = await WishlistApi.getWishlists();
-    if (!Array.isArray(lists)) return null; // guest / not authenticated
+    // getWishlists() returns a plain object (the single local list) for guests
+    // and an array for authenticated shoppers.
+    if (!Array.isArray(lists)) return GUEST_SFL_KEY; // guest -> reserved local key
     let sfl = lists.find((w) => w.name === SFL_LIST_NAME);
     if (!sfl) {
       sfl = await WishlistApi.createWishlist(SFL_LIST_NAME);
@@ -204,21 +218,25 @@ export default async function decorate(block) {
     return sfl?.id ?? null;
   }
 
-  // Keep the "Saved for later (N)" heading in sync and hide the whole section
-  // when the list is empty. Reads the SFL list non-emitting so it doesn't
-  // disturb the active-wishlist state.
-  async function updateSflCount() {
-    let count = 0;
-    if (sflId) {
-      try {
-        const wl = await WishlistApi.getWishlistById(sflId, 1, 1, {
-          emit: false,
-        });
-        count = wl?.items_count ?? 0;
-      } catch (e) {
-        count = 0;
-      }
+  // On login, fold the guest SFL list into the shopper's server SFL list. The
+  // wishlist drop-in owns the read/dedup(by sku + options)/add/clear mechanics
+  // via mergeWishlists(serverList, listKey); this block just resolves the
+  // server list and passes it in. The fetch is scoped to the SFL section, so it
+  // feeds only that container. Best-effort: failures are logged and swallowed.
+  async function mergeGuestSflIntoServer(serverSflId) {
+    if (!serverSflId || serverSflId === GUEST_SFL_KEY) return;
+    const serverSfl = await WishlistApi.getWishlistById(serverSflId, 200, 1, {
+      scope: SFL_SCOPE,
+    });
+    if (serverSfl) {
+      await WishlistApi.mergeWishlists(serverSfl, GUEST_SFL_KEY);
     }
+  }
+
+  // Keep the "Saved for later (N)" heading in sync and hide the section when
+  // empty. The count is driven by the scoped wishlist/data event below, so this
+  // just applies a known count.
+  function setSflCount(count) {
     const hasItems = count > 0;
     $sflTitle.hidden = !hasItems;
     $sfl.hidden = !hasItems;
@@ -232,9 +250,9 @@ export default async function decorate(block) {
       $sfl.hidden = true;
       return;
     }
-    updateSflCount();
     wishlistRender.render(Wishlist, {
       wishlistId: sflId,
+      scope: SFL_SCOPE,
       moveProdToCart: Cart.addProductsToCart,
       routeProdDetailPage: (product) => getProductLink(product.urlKey, product.sku),
       getProductData: pdpApi.getProductData,
@@ -242,7 +260,21 @@ export default async function decorate(block) {
     })($sfl);
   }
 
+  // The SFL count/visibility is driven entirely by this list's scoped data
+  // event: every load, add, remove, and move re-emits on SFL_SCOPE, and the
+  // eager replay covers the current value on (re)subscribe.
+  events.on(
+    'wishlist/data',
+    (wl) => setSflCount(wl?.items_count ?? 0),
+    { eager: true, scope: SFL_SCOPE },
+  );
+
   sflId = await ensureSflList();
+  // If the shopper is already authenticated on load (e.g. login triggered a
+  // page reload), fold any leftover guest SFL blob into their server list.
+  if (sflId && sflId !== GUEST_SFL_KEY) {
+    await mergeGuestSflIntoServer(sflId);
+  }
   renderSfl();
 
   await Promise.all([
@@ -431,10 +463,21 @@ export default async function decorate(block) {
     { eager: true },
   );
 
-  events.on('wishlist/alert', ({ action, item }) => {
-    // Keep the SFL heading count current after move/remove within the section.
-    updateSflCount();
+  // In-page login (no reload): migrate the guest SFL into the server list and
+  // re-render the section against the server list.
+  events.on('authenticated', async (authenticated) => {
+    if (!authenticated) return;
+    try {
+      const serverSflId = await ensureSflList();
+      await mergeGuestSflIntoServer(serverSflId);
+      sflId = serverSflId;
+      renderSfl();
+    } catch (e) {
+      console.error('SFL guest -> server merge failed:', e);
+    }
+  });
 
+  function showWishlistToast({ action, item }) {
     wishlistRender.render(WishlistAlert, {
       action,
       item,
@@ -444,7 +487,14 @@ export default async function decorate(block) {
     setTimeout(() => {
       $notification.innerHTML = '';
     }, 5000);
-  });
+  }
+
+  // Main wishlist (heart toggle on cart items) emits unscoped alerts.
+  events.on('wishlist/alert', showWishlistToast);
+
+  // The SFL section emits on its own scope. Toast here; the count updates via
+  // the scoped wishlist/data event the reload triggers.
+  events.on('wishlist/alert', showWishlistToast, { scope: SFL_SCOPE });
 
   return Promise.resolve();
 }

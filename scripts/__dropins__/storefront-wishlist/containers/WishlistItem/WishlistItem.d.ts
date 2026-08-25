@@ -21,6 +21,8 @@ import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/c
 import { JSX } from 'preact';
 export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
+    wishlistId?: string;
+    scope?: string;
     getProductData?: (sku: string) => Promise<Product | null>;
     getRefinedProduct?: (sku: string, optionUIDs: string[], anchorOptions?: string[], raw?: boolean) => Promise<Product | null>;
     moveProdToCart: (products: {
