@@ -343,14 +343,12 @@ export const renderShippingMethods = async (container) => renderContainer(
  * @param {HTMLElement} paymentMethodsContainer - DOM element to render payment methods in
  * @param {HTMLElement} placeOrderButtonContainer - DOM element express payment buttons mount into,
  *   in place of the standard Place Order button
- * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @param {Function} validateCheckoutForms - Function that returns true if all Checkout forms are valid
  * @returns {Promise<Object>} - The rendered payment methods component
  */
 export const renderPaymentMethods = async (
   paymentMethodsContainer,
   placeOrderButtonContainer,
-  creditCardFormRef,
   validateCheckoutForms,
 ) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
@@ -361,11 +359,7 @@ export const renderPaymentMethods = async (
           render: (ctx) => {
             const $creditCard = document.createElement('div');
 
-            PaymentServices.render(CreditCard, {
-              getCartId: () => ctx.cartId,
-              onError: () => { /* Patch: define 'onError' callback for submit() to reject on error. */ },
-              creditCardFormRef,
-            })($creditCard);
+            PaymentServices.render(CreditCard)($creditCard);
 
             ctx.replaceHTML($creditCard);
           },
