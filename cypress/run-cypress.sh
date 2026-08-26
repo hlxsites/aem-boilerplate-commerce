@@ -52,10 +52,10 @@ run_configuration() {
             ;;
         2)
             echo -e "${YELLOW}Starting AEM localhost with SaaS configuration...${NC}"
-            echo -e "${BLUE}URL: https://main--boilerplate-accs--adobe-commerce.aem.live${NC}"
+            echo -e "${BLUE}URL: https://main--boilerplate-b2b-accs--adobe-commerce.aem.live${NC}"
             
             # Start AEM localhost server in background
-            cd "$ROOT_DIR" && npx aem up --url https://main--boilerplate-accs--adobe-commerce.aem.live &
+            cd "$ROOT_DIR" && npx aem up --url https://main--boilerplate-b2b-accs--adobe-commerce.aem.live &
             AEM_PID=$!
             
             echo -e "${GREEN}AEM localhost server started (PID: $AEM_PID)${NC}"
