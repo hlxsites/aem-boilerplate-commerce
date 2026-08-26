@@ -359,7 +359,11 @@ export default async function decorate(block) {
 
     cartButton.setAttribute(
       'aria-label',
-      (labels.Global?.CartWithItems ?? 'Cart with {count} item(s)').replace('{count}', totalQuantity),
+      totalQuantity === 1
+        ? (labels.Global?.CartWithItem?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} item`)
+        : (labels.Global?.CartWithItems?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} items`),
     );
 
     // Skip the announcement for the initial value on page load so screen
