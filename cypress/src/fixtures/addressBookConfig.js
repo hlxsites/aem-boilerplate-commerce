@@ -25,6 +25,9 @@ export const addressBookLabels = {
   billingAddress: 'Billing Address',
   removeConfirm: 'Are you sure you would like to remove this address?',
   logout: 'Logout',
+  // Confirmed via _____EXAMPLES_____/cypress/src/tests/e2eTests/B2BAddressList.spec.js
+  defaultShippingBadge: 'DEFAULT SHIPPING',
+  defaultBillingBadge: 'DEFAULT BILLING',
 };
 
 export const addressBookUsers = {

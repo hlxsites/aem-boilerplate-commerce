@@ -391,6 +391,13 @@ export const variantsGridAddToCartButton =
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
 
+// Purchase order confirmation + order details (B2B checkout places a PO)
+export const poConfirmationLink = '.purchase-orders-confirmation-content__link';
+export const orderShippingAddress =
+  '.order-customer-details-content__container-shipping_address';
+export const orderBillingAddress =
+  '.order-customer-details-content__container-billing_address';
+
 // Address Book (B2B) selectors
 // The address card/modal/form classes below are shared with the B2C personal
 // address dropin components (AddressCard/AddressModal/AddressForm — same
@@ -407,9 +414,18 @@ export const addressBookModalButtons = '.account-address-modal__buttons';
 export const addressBookNoPermissionMessage = '[data-testid="noPermissionMessage"]';
 // TBD: confirm against live DOM
 export const addressBookActionsLoader = '[data-testid="addressActionsLoaderWrapper"]';
+// Confirmed against _____EXAMPLES_____/cypress/src/tests/e2eTests/B2BAddressList.spec.js
+// (same suite that correctly predicted the addressBookEnabled/customShippingAddressEnabled
+// checkbox names before we confirmed those against the live DOM) — real names
+// are camelCase, and there is ONE isDefault checkbox (not split shipping/billing
+// ones), whose visible label text switches based on the addressType checkboxes.
+export const addressBookIsDefaultCheckbox = 'input[name="isDefault"]';
+export const addressBookTypeShippingCheckbox = 'input[name="addressTypeShipping"]';
+export const addressBookTypeBillingCheckbox = 'input[name="addressTypeBilling"]';
+// Legacy guesses (snake_case) — wrong, kept only so the still-skipped older
+// tests referencing them don't throw ReferenceErrors. Do not use for new code.
 export const addressBookDefaultShippingCheckbox = 'input[name="default_shipping"]';
 export const addressBookDefaultBillingCheckbox = 'input[name="default_billing"]';
-export const addressBookIsDefaultCheckbox = 'input[name="is_default"]';
 export const addressBookTypeShippingRadio = 'input[name="address_type_shipping"]';
 export const addressBookTypeBillingRadio = 'input[name="address_type_billing"]';
 

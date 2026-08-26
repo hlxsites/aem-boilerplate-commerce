@@ -936,14 +936,15 @@ export const onVariantsUpdated = (callback) => {
 
 /**
  * Navigates to the My Company page and opens the company address book.
- * NOTE: the exact nav-link text/route for the address book page is not yet
- * confirmed against the live app (see plan "known unknowns") — this clicks a
- * link/tab whose text matches /address/i, which must be calibrated on first run.
+ * Confirmed nav link text is "Company Addresses" (see the account sidebar
+ * screenshot from Test 6) — NOT a generic /address/i match, which can
+ * instead match the personal "Addresses" sidebar item that every logged-in
+ * customer sees regardless of company role, opening the wrong (B2C) form.
  */
 export const openCompanyAddressBook = (urls) => {
   cy.visit(urls.companyProfile);
   cy.wait(3000);
-  cy.contains(/address/i).should('be.visible').click({ force: true });
+  cy.contains('Company Addresses').should('be.visible').click({ force: true });
   cy.wait(2000);
 };
 
@@ -1017,8 +1018,17 @@ export const fillCompanyAddressFields = (address) => {
   cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
   cy.get(fields.fieldUserVatId).clear().type(address.vatId);
 
+  // Nickname only exists on the B2B company address form, not the personal
+  // (B2C) address form — check the field is actually present before typing,
+  // not just that the fixture happens to have a nickname value, since the
+  // same fixtures get reused for personal-address creation too (Address
+  // Book disabled) where this input doesn't render at all.
   if (address.nickname) {
-    cy.get(fields.fieldUserNickname).clear().type(address.nickname);
+    cy.get('body').then(($body) => {
+      if ($body.find(fields.fieldUserNickname).length) {
+        cy.get(fields.fieldUserNickname).clear().type(address.nickname);
+      }
+    });
   }
 };
 

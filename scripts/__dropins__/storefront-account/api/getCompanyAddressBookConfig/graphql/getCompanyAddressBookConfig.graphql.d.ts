@@ -14,20 +14,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CompanyAddressModel } from './company-address';
-export interface CompanyAddressesModel {
-    items: CompanyAddressModel[];
-    pageInfo: {
-        currentPage: number;
-        pageSize: number;
-        totalPages: number;
-    };
-    totalCount: number;
-}
-export interface CompanyAddressBookConfigModel {
-    addressBookEnabled: boolean;
-    addressBookCustomShippingAddressEnabled: boolean;
-}
-export interface CompanyAddressBookModel extends CompanyAddressBookConfigModel {
-    addresses: CompanyAddressesModel;
-}
+/**
+ * Config-only counterpart of GET_COMPANY_ADDRESS_BOOK.
+ *
+ * The full query asks for `config` *and* `addresses`; a customer without the
+ * company address permission gets an error for the address fields, which fails
+ * the whole request and takes the config down with it. Callers that only need
+ * to know whether the address book is switched on must use this query instead.
+ */
+export declare const GET_COMPANY_ADDRESS_BOOK_CONFIG = "\n  query GET_COMPANY_ADDRESS_BOOK_CONFIG {\n    company {\n      config {\n        address_book_enabled\n        address_book_custom_shipping_address_enabled\n      }\n    }\n  }\n";

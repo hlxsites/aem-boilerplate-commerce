@@ -2,6 +2,21 @@ import { provider as UI, Icon } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
 
 import '../../scripts/initializers/auth.js';
+import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
+
+/**
+ * Synthetic permission key, not a backend ACL id.
+ *
+ * The authored row for the standard "Addresses" item uses this in its
+ * `permission` column so that the item disappears once the company address book
+ * takes over, which the customer's own permissions cannot express. It relies on
+ * the `permissions[key] === false` rule below, which is checked before the admin
+ * bypass, so the item is hidden for company admins too.
+ *
+ * The same convention already exists in storefront-auth, which forces every
+ * `Magento_PurchaseOrder::*` key to false when `purchase_orders_enabled` is off.
+ */
+const COMPANY_ADDRESS_BOOK_DISABLED = 'company_address_book_disabled';
 
 export default async function decorate(block) {
   /** Get rows data */
@@ -21,8 +36,25 @@ export default async function decorate(block) {
     permission: Math.max(0, keys.indexOf('permission') + 1),
   };
 
+  /**
+   * Resolved before the subscription below is registered, so the handler stays
+   * synchronous. Awaiting inside the handler would let `block.replaceWith($nav)`
+   * run against a still-empty nav, and would let two overlapping firings of
+   * `auth/permissions` race, with the slower one winning.
+   */
+  const addressBookEnabled = await isCompanyAddressBookEnabled();
+
   /** Get permissions */
   events.on('auth/permissions', (permissions) => {
+    /**
+     * Copy, never mutate: the event bus replays the auth drop-in's own cached
+     * object by reference, so writing to it would leak into every other consumer.
+     */
+    const resolvedPermissions = {
+      ...permissions,
+      [COMPANY_ADDRESS_BOOK_DISABLED]: !addressBookEnabled,
+    };
+
     /** Clear nav */
     $nav.innerHTML = '';
 
@@ -38,12 +70,12 @@ export default async function decorate(block) {
       const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
 
       // Skip if permission is explicitly disabled (false)
-      if (permissions[permission] === false) {
+      if (resolvedPermissions[permission] === false) {
         return;
       }
 
       // Skip if the user is not an admin and permission is not granted
-      if (!permissions.admin && !permissions[permission]) {
+      if (!resolvedPermissions.admin && !resolvedPermissions[permission]) {
         return;
       }
 

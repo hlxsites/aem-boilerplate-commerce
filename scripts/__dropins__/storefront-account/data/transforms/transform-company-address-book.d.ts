@@ -15,5 +15,22 @@
  * from Adobe.
  *******************************************************************/
 import { GetCompanyAddressBookResponse } from '../../types';
-import { CompanyAddressBookModel } from '../models/company-address-book';
+import { CompanyAddressBookConfigModel, CompanyAddressBookModel } from '../models/company-address-book';
+type CompanyConfigSource = {
+    config?: {
+        address_book_enabled?: boolean;
+        address_book_custom_shipping_address_enabled?: boolean;
+    };
+    address_book_enabled?: boolean;
+    address_book_custom_shipping_address_enabled?: boolean;
+} | null;
+/**
+ * Reads the address book flags off a `company` payload.
+ * Falls back to the flags sitting directly on `company` because older
+ * backends returned them there rather than under `config`. Anything missing
+ * resolves to `false`, so a customer without a company never ends up with the
+ * address book treated as enabled.
+ */
+export declare const transformCompanyAddressBookConfig: (company: CompanyConfigSource) => CompanyAddressBookConfigModel;
 export declare const transformCompanyAddressBook: (response: GetCompanyAddressBookResponse) => CompanyAddressBookModel;
+export {};

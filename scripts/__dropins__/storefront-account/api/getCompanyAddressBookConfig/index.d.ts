@@ -14,20 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CompanyAddressModel } from './company-address';
-export interface CompanyAddressesModel {
-    items: CompanyAddressModel[];
-    pageInfo: {
-        currentPage: number;
-        pageSize: number;
-        totalPages: number;
-    };
-    totalCount: number;
-}
-export interface CompanyAddressBookConfigModel {
-    addressBookEnabled: boolean;
-    addressBookCustomShippingAddressEnabled: boolean;
-}
-export interface CompanyAddressBookModel extends CompanyAddressBookConfigModel {
-    addresses: CompanyAddressesModel;
-}
+export * from './getCompanyAddressBookConfig';

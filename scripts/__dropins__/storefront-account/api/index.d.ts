@@ -23,6 +23,8 @@ export * from './updateCompanyAddress';
 export * from './deleteCompanyAddress';
 export * from './setDefaultCompanyAddress';
 export * from './getCompanyAddressBook';
+export * from './getCompanyAddressBookConfig';
+export * from './permissions';
 export * from './getCustomerAddress';
 export * from './getCustomerCompanyContext';
 export * from './getCustomerRolePermissions';

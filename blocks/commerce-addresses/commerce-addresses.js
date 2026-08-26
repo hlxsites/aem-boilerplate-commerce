@@ -1,4 +1,5 @@
 import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
+import { COMPANY_ADDRESS_PERMISSIONS } from '@dropins/storefront-account/api.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { getCustomerRolePermissions } from '@dropins/storefront-auth/api.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
@@ -12,8 +13,6 @@ import {
 
 // Initialize
 import '../../scripts/initializers/account.js';
-
-const COMPANY_ADDRESS_PERMISSION = 'Magento_CompanyAddressStorefrontCompatibility::company_address';
 
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
@@ -29,7 +28,7 @@ export default async function decorate(block) {
       ? await getCustomerRolePermissions().catch(() => ({}))
       : {};
     const hasCompanyAddressBook = Boolean(
-      permissions.admin || permissions[COMPANY_ADDRESS_PERMISSION],
+      permissions.admin || permissions[COMPANY_ADDRESS_PERMISSIONS.VIEW],
     );
 
     await accountRenderer.render(Addresses, {
