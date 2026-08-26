@@ -346,6 +346,14 @@ header nav .nav-tools-wrapper>button {
   width: 40px;
 }
 
+header nav .nav-sections .authCombineNavElement button {
+  all: unset;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
   background-repeat: no-repeat;
