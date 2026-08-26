@@ -54,6 +54,7 @@ import {
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
   renderTermsAndConditions,
+  resyncBillingAddress,
 } from './containers.js';
 
 // Constants
@@ -100,6 +101,7 @@ export default async function decorate(block) {
   let billingForm;
   let shippingAddresses;
   let billingAddresses;
+  let wasStoredPaymentMethodSelected = false;
 
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
@@ -327,10 +329,20 @@ export default async function decorate(block) {
 
   function handleCheckoutValues(payload) {
     const { isBillToShipping, selectedPaymentMethod } = payload;
-    $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
+
+    $billToShipping.style.display = isStoredPaymentMethodSelected ? 'none' : 'block';
+    $billingForm.style.display = (isBillToShipping || isStoredPaymentMethodSelected) ? 'none' : 'block';
+    $paymentMethods.classList.toggle('checkout__payment-methods--stored-selected', isStoredPaymentMethodSelected);
+
+    if (wasStoredPaymentMethodSelected && !isStoredPaymentMethodSelected) {
+      resyncBillingAddress(isBillToShipping);
+    }
+
+    wasStoredPaymentMethodSelected = isStoredPaymentMethodSelected;
 
     if (!isExpressPaymentMethod(selectedPaymentMethod)
-        && !isPlaceOrderRendered($placeOrder)) {
+      && !isPlaceOrderRendered($placeOrder)) {
       // Express payment methods replace the place order button; restore it for non-express methods
       renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }

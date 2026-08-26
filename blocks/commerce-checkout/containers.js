@@ -329,6 +329,24 @@ export const renderBillToShippingAddress = async (container) => renderContainer(
 );
 
 /**
+ * Resyncs the cart's billing address to what checkout currently shows. Needed when
+ * switching from a stored payment method back to a live one, since the cart's billing
+ * address may have been overwritten server-side by the stored method while it was selected.
+ * @param {boolean} isBillToShipping - Whether the "bill to shipping" checkbox is checked
+ */
+export const resyncBillingAddress = (isBillToShipping) => {
+  if (isBillToShipping) {
+    checkoutApi.setBillingAddress({ sameAsShipping: true });
+    return;
+  }
+
+  const billingFormValues = events.lastPayload('checkout/addresses/billing');
+  if (billingFormValues) {
+    setAddressOnCart({ type: 'billing' })(billingFormValues);
+  }
+};
+
+/**
  * Renders available shipping methods with selection interface
  * @param {HTMLElement} container - DOM element to render shipping methods in
  * @returns {Promise<Object>} - The rendered shipping methods component
