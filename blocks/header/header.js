@@ -198,7 +198,12 @@ export default async function decorate(block) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        if (navSection.querySelector('ul')) {
+          navSection.classList.add('nav-drop');
+          navSection.setAttribute('role', 'button');
+          navSection.setAttribute('aria-haspopup', 'true');
+          navSection.setAttribute('aria-expanded', 'false');
+        }
         setupSubmenu(navSection);
         navSection.addEventListener('click', (event) => {
           if (event.target.tagName === 'A') return;
