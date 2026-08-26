@@ -8,9 +8,9 @@ jobs:
     with:
       config-file: cypress.b2b.saas.config.js
       grep-tags: '@B2BSaas'
-      url: ${{ github.base_ref == 'b2b-integration' && 'https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live' || 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live' }}
-      graphql-endpoint: ${{ github.base_ref == 'b2b-integration' && 'https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql' || 'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql' }}
-      is-prod-release: ${{ github.base_ref == 'b2b-integration' }}
+      url: ${{ github.base_ref == 'b2b' && 'https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live' || 'https://main--boilerplate-b2b-accs--adobe-commerce.aem.live' }}
+      graphql-endpoint: ${{ github.base_ref == 'b2b' && 'https://na1.api.commerce.adobe.com/MYAtJvyuQfnr4nW37jbfp1/graphql' || 'https://na1-sandbox.api.commerce.adobe.com/LwndYQs37CvkUQk9WEmNkz/graphql' }}
+      is-prod-release: ${{ github.base_ref == 'b2b' }}
       is-aco: false
     secrets:
       AEM_ASSETS_PRIVATE_USER: ${{ secrets.AEM_ASSETS_PRIVATE_USER }}

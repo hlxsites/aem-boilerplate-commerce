@@ -10,7 +10,7 @@ jobs:
     if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     env:
-      IS_PROD_RELEASE: ${{ github.base_ref == 'b2b-integration' }}
+      IS_PROD_RELEASE: ${{ github.base_ref == 'b2b' }}
     strategy:
       # Run all shards even if one fails, so a single flaky shard doesn't hide
       # results from the others.

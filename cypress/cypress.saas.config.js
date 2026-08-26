@@ -1,6 +1,6 @@
 const { defineConfig } = require("cypress");
 const baseConfig = require("./cypress.base.config");
-const { buildPrexPages } = require("./prexPages.config");
+const { buildPrexPages } = require('./prexPages.config');
 
 // A private user used with AEM Assets testing suite.
 const AEM_ASSETS_PRIVATE_USER = JSON.parse(
@@ -44,20 +44,20 @@ module.exports = defineConfig({
       },
 
       author: {
-        programId: "p150710",
-        environmentId: "e1553109",
+        programId: 'p150710',
+        environmentId: 'e1553109',
         isStage: false,
       },
 
       credentials: {
-        xPublicApiKey: "",
-        magentoEnvironmentId: "",
+        xPublicApiKey: '',
+        magentoEnvironmentId: '',
       },
 
       user: {
         ...AEM_ASSETS_PRIVATE_USER,
-        order: "000000001",
-        returnedOrder: "000000002",
+        order: '000000001',
+        returnedOrder: '000000002',
       },
 
       // For PREX we need a custom recommendation unit id.
