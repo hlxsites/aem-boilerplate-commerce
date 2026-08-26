@@ -372,8 +372,8 @@ export default async function decorate(block) {
   /** Search */
   const searchFragment = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-search-button">Search</button>
-    <div class="nav-search-input nav-search-panel nav-tools-panel">
+    <button type="button" class="nav-search-button" aria-haspopup="dialog" aria-expanded="false" aria-controls="search-panel">Search</button>
+    <div class="nav-search-input nav-search-panel nav-tools-panel" id="search-panel">
       <form id="search-bar-form"></form>
       <div class="search-bar-result" style="display: none;"></div>
     </div>
@@ -487,6 +487,10 @@ export default async function decorate(block) {
     }
 
     togglePanel(searchPanel, state);
+    searchButton.setAttribute(
+      'aria-expanded',
+      searchPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
     if (state) searchForm?.querySelector('input')?.focus();
   }
 
