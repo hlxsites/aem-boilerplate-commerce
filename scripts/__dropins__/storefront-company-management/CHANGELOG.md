@@ -1,5 +1,13 @@
 # @dropins/storefront-company-management
 
+## 1.4.2-alpha-20260820082032
+
+### Patch Changes
+
+- e17318c: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.3.0-alpha-20260818101543` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
 ## 1.4.1
 
 ### Patch Changes
