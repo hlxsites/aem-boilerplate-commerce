@@ -176,7 +176,8 @@ export default async function decorate(block) {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
-      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
+      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD
+        || code === paymentsApi.PaymentMethodCode.VAULT) {
         const success = await trySubmitPaymentServicesCreditCard();
         if (!success) {
           return;
