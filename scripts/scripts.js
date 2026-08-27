@@ -20,6 +20,16 @@ import {
   decorateSections,
   IS_UE,
   IS_DA,
+  checkIsAuthenticated,
+  rootLink,
+  CUSTOMER_LOGIN_PATH,
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_ORDERS_PATH,
+  CUSTOMER_ORDER_DETAILS_PATH,
+  CUSTOMER_RETURNS_PATH,
+  CUSTOMER_RETURN_DETAILS_PATH,
+  CUSTOMER_CREATE_RETURN_PATH,
+  CUSTOMER_ADDRESS_PATH,
 } from './commerce.js';
 
 /*
@@ -257,7 +267,33 @@ function loadDelayed() {
   // load anything that can be postponed to the latest here
 }
 
+// Account routes that require a signed-in customer.
+const AUTH_GATED_PATHS = [
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_ORDERS_PATH,
+  CUSTOMER_ORDER_DETAILS_PATH,
+  CUSTOMER_RETURNS_PATH,
+  CUSTOMER_RETURN_DETAILS_PATH,
+  CUSTOMER_CREATE_RETURN_PATH,
+  CUSTOMER_ADDRESS_PATH,
+];
+
+// Redirect logged-out visitors before the page renders, instead of after the block loads.
+function shouldRedirectToLogin() {
+  if (IS_UE || IS_DA) return false;
+  const { pathname } = window.location;
+  const gated = AUTH_GATED_PATHS.some((p) => {
+    const rp = rootLink(p);
+    return pathname === rp || pathname.startsWith(`${rp}/`);
+  });
+  return gated && !checkIsAuthenticated();
+}
+
 async function loadPage() {
+  if (shouldRedirectToLogin()) {
+    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+    return;
+  }
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
