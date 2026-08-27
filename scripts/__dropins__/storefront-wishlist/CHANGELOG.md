@@ -1,6 +1,6 @@
 # @dropins/storefront-wishlist
 
-## 3.5.0-alpha-20260825110002
+## 3.5.0-alpha-20260827092943
 
 ### Minor Changes
 
