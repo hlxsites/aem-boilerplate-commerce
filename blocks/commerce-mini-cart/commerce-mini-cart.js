@@ -48,6 +48,8 @@ export default async function decorate(block) {
   // Create a container for the update message
   const updateMessage = document.createElement('div');
   updateMessage.className = 'commerce-mini-cart__update-message';
+  updateMessage.setAttribute('role', 'status');
+  updateMessage.setAttribute('aria-live', 'polite');
 
   // Create shadow wrapper
   const shadowWrapper = document.createElement('div');
