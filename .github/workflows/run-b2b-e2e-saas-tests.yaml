@@ -15,6 +15,7 @@ jobs:
       CYPRESS_IMS_ORG_ID: ${{ secrets.CYPRESS_IMS_ORG_ID }}
       CYPRESS_IMS_CLIENT_SECRET: ${{ secrets.CYPRESS_IMS_CLIENT_SECRET }}
 
+
   cypress-b2b-saas-run:
     if: always()
     needs: cypress-b2b-saas-groups
