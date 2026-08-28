@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,4 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const navigate: (url: string) => void;
+export declare const RECOMMENDATION_UNIT_WITH_LABEL_FRAGMENT: string;
+//# sourceMappingURL=RecommendationUnitWithLabelFragment.d.ts.map
