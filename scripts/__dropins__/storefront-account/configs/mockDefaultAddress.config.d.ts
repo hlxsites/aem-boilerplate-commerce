@@ -166,4 +166,3 @@ export declare const mockDefaultRegions: {
     value: string;
     text: string;
 }[];
-//# sourceMappingURL=mockDefaultAddress.config.d.ts.map

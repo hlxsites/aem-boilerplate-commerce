@@ -17,7 +17,7 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 // Payment Services Dropin
-import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
+import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import {
@@ -101,7 +101,6 @@ export default async function decorate(block) {
 
   const shippingFormRef = { current: null };
   const billingFormRef = { current: null };
-  const creditCardFormRef = { current: null };
   const loaderRef = { current: null };
 
   events.on('order/placed', () => {
@@ -118,6 +117,7 @@ export default async function decorate(block) {
   // Get all checkout elements using centralized selectors
   const $content = getElement(selectors.checkout.content);
   const $loader = getElement(selectors.checkout.loader);
+  const $loaderStatus = getElement(selectors.checkout.loaderStatus);
   const $mergedCartBanner = getElement(selectors.checkout.mergedCartBanner);
   const $heading = getElement(selectors.checkout.heading);
   const $serverError = getElement(selectors.checkout.serverError);
@@ -144,29 +144,40 @@ export default async function decorate(block) {
     { name: TERMS_AND_CONDITIONS_FORM_NAME },
   ]);
 
+  const trySubmitPaymentServicesCreditCard = async () => {
+    try {
+      await paymentsApi.submitCreditCard();
+      return true;
+    } catch (error) {
+      switch (error.code) {
+        case 'payment-services/credit-card-form-not-rendered':
+          console.error('Credit card form not rendered.');
+          return false;
+        case 'payment-services/credit-card-form-invalid':
+          // Credit card form invalid; abort order placement
+          return false;
+        default:
+          throw error;
+      }
+    }
+  };
+
   const handlePlaceOrder = async ({ cartId, code }) => {
-    await displayOverlaySpinner(loaderRef, $loader);
+    await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
-      if (code === PaymentMethodCode.CREDIT_CARD) {
-        if (!creditCardFormRef.current) {
-          console.error('Credit card form not rendered.');
+      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
+        const success = await trySubmitPaymentServicesCreditCard();
+        if (!success) {
           return;
         }
-        if (!creditCardFormRef.current.validate()) {
-          // Credit card form invalid; abort order placement
-          return;
-        }
-        // Submit Payment Services credit card form
-        await creditCardFormRef.current.submit();
       }
-      // Place order
       await orderApi.placeOrder(cartId);
     } catch (error) {
       console.error(error);
       throw error;
     } finally {
-      removeOverlaySpinner(loaderRef, $loader);
+      removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
     }
   };
 
@@ -206,7 +217,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods, creditCardFormRef),
+    renderPaymentMethods($paymentMethods),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -223,7 +234,7 @@ export default async function decorate(block) {
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
-      removeOverlaySpinner(loaderRef, $loader);
+      removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
     }
   }

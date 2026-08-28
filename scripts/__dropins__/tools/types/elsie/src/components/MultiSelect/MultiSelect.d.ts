@@ -1,5 +1,12 @@
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent } from 'preact';
-
 type OptionValue = string | number;
 interface Option {
     label: string;
@@ -26,4 +33,3 @@ export interface MultiSelectProps {
 }
 export declare const MultiSelect: FunctionComponent<MultiSelectProps>;
 export {};
-//# sourceMappingURL=MultiSelect.d.ts.map

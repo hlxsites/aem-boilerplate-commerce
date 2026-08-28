@@ -94,7 +94,10 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
   document.body.style.overflowY = expanded || isDesktop.matches ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
   toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  button.setAttribute(
+    'aria-label',
+    expanded ? (labels.Global?.OpenNavigation ?? 'Open navigation') : (labels.Global?.CloseNavigation ?? 'Close navigation'),
+  );
   // enable nav dropdown keyboard accessibility
   if (navSections) {
     const navDrops = navSections.querySelectorAll('.nav-drop');
@@ -128,7 +131,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
 const subMenuHeader = document.createElement('div');
 subMenuHeader.classList.add('submenu-header');
-subMenuHeader.innerHTML = '<h5 class="back-link">All Categories</h5><hr />';
+subMenuHeader.innerHTML = `<h5 class="back-link">${labels.Global?.AllCategories ?? 'All Categories'}</h5><hr />`;
 
 /**
  * Sets up the submenu
@@ -225,7 +228,7 @@ export default async function decorate(block) {
   /** Wishlist */
   const wishlist = document.createRange().createContextualFragment(`
      <div class="wishlist-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-wishlist-button" aria-label="Wishlist"></button>
+       <button type="button" class="nav-wishlist-button" aria-label="${labels.Global?.Wishlist ?? 'Wishlist'}"></button>
        <div class="wishlist-panel nav-tools-panel"></div>
      </div>
    `);
@@ -246,8 +249,9 @@ export default async function decorate(block) {
 
   const minicart = document.createRange().createContextualFragment(`
      <div class="minicart-wrapper nav-tools-wrapper">
-       <button type="button" class="nav-cart-button" aria-label="Cart"></button>
-       <div class="minicart-panel nav-tools-panel"></div>
+       <button type="button" class="nav-cart-button" aria-label="${labels.Global?.Cart ?? 'Cart'}" aria-haspopup="dialog" aria-expanded="false" aria-controls="minicart-panel"></button>
+       <div class="minicart-panel nav-tools-panel" id="minicart-panel"></div>
+       <div class="nav-cart-status" role="status" aria-live="polite"></div>
      </div>
    `);
 
@@ -256,6 +260,11 @@ export default async function decorate(block) {
   const minicartPanel = navTools.querySelector('.minicart-panel');
 
   const cartButton = navTools.querySelector('.nav-cart-button');
+
+  // Kept mounted at all times so the item count change is reliably
+  // announced instead of being missed, since the visual badge is a
+  // `data-count` attribute rendered via CSS and isn't announced on its own.
+  const cartStatus = navTools.querySelector('.nav-cart-status');
 
   if (excludeMiniCartFromPaths.includes(window.location.pathname)) {
     cartButton.style.display = 'none';
@@ -328,26 +337,57 @@ export default async function decorate(block) {
     }
 
     togglePanel(minicartPanel, state);
+    cartButton.setAttribute(
+      'aria-expanded',
+      minicartPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
   }
 
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
   // Cart Item Counter
-  events.on('cart/data', (data) => {
-    // preload mini cart fragment if user has a cart
-    if (data) loadMiniCartFragment();
+  let previousCartQuantity;
 
-    if (data?.totalQuantity) {
-      cartButton.setAttribute('data-count', data.totalQuantity);
+  events.on('cart/data', (data) => {
+    const totalQuantity = data?.totalQuantity ?? 0;
+
+    if (totalQuantity) {
+      cartButton.setAttribute('data-count', totalQuantity);
     } else {
       cartButton.removeAttribute('data-count');
     }
+
+    cartButton.setAttribute(
+      'aria-label',
+      totalQuantity === 1
+        ? (labels.Global?.CartWithItem?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} item`)
+        : (labels.Global?.CartWithItems?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} items`),
+    );
+
+    // Skip the announcement for the initial value on page load so screen
+    // reader users aren't told about the cart contents before they've
+    // interacted with it; only announce actual changes.
+    if (previousCartQuantity !== undefined && previousCartQuantity !== totalQuantity) {
+      if (totalQuantity) {
+        cartStatus.textContent = totalQuantity === 1
+          ? (labels.Global?.CartUpdatedWithItem?.replace('{count}', totalQuantity)
+            ?? `Cart updated, ${totalQuantity} item in cart`)
+          : (labels.Global?.CartUpdatedWithItems?.replace('{count}', totalQuantity)
+            ?? `Cart updated, ${totalQuantity} items in cart`);
+      } else {
+        cartStatus.textContent = labels.Global?.CartUpdatedEmpty ?? 'Cart updated, cart is empty';
+      }
+    }
+
+    previousCartQuantity = totalQuantity;
   }, { eager: true });
 
   /** Search */
   const searchFragment = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-search-button">Search</button>
+    <button type="button" class="nav-search-button">${labels.Global?.Search ?? 'Search'}</button>
     <div class="nav-search-input nav-search-panel nav-tools-panel">
       <form id="search-bar-form"></form>
       <div class="search-bar-result" style="display: none;"></div>
@@ -521,7 +561,7 @@ export default async function decorate(block) {
   // hamburger for mobile
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
-  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
+  hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="${labels.Global?.OpenNavigation ?? 'Open navigation'}">
       <span class="nav-hamburger-icon"></span>
     </button>`;
   hamburger.addEventListener('click', () => {

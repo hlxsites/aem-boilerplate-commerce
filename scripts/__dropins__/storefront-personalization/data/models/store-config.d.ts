@@ -20,4 +20,3 @@ export interface StoreConfigModel {
     shareAppliedCartRule: boolean;
     customerAccessTokenLifetime: number;
 }
-//# sourceMappingURL=store-config.d.ts.map

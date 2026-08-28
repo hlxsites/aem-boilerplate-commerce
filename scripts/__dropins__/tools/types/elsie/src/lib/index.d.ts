@@ -25,4 +25,4 @@ export * from './deviceUtils';
 export * from './get-path-value';
 export * from './get-cookie';
 export * from './get-price-formatter';
-//# sourceMappingURL=index.d.ts.map
+export * from './format-calendar-date';

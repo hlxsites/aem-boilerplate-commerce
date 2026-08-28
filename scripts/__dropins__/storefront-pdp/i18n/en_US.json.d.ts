@@ -67,6 +67,9 @@ declare const _default: {
       },
       "ChooseOption": {
         "label": "Choose an option"
+      },
+      "BundleOptionQuantity": {
+        "label": "{option} quantity"
       }
     },
     "DownloadableOptions": {
