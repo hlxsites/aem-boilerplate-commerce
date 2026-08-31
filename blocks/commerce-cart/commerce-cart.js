@@ -39,6 +39,8 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import {
   fetchPlaceholders, rootLink, getProductLink, CS_FETCH_GRAPHQL,
 } from '../../scripts/commerce.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+import { renderWishlistItemActions } from '../../scripts/wishlist-item-actions.js';
 
 // Point the PDP API at the Catalog Service so the SFL section can hydrate
 // full product data (price, stock) for its items.
@@ -257,6 +259,9 @@ export default async function decorate(block) {
       routeProdDetailPage: (product) => getProductLink(product.urlKey, product.sku),
       getProductData: pdpApi.getProductData,
       getRefinedProduct: pdpApi.getRefinedProduct,
+      slots: {
+        actions: renderWishlistItemActions(!!getUserTokenCookie()),
+      },
     })($sfl);
   }
 
