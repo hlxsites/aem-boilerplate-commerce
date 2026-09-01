@@ -41,34 +41,37 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # TEMP-ISOLATION: group-a and group-b are commented out so that only
-          # group-c (verifyPurchaseOrders) runs alongside group-address-book, to
-          # test whether the B2B failures come from parallel jobs contending on a
-          # shared backend. NOT FOR MERGE — restore from ___ONLY_EXAMPLES.
-          # - group: group-a
-          # specs:
-          # - src/tests/b2b/verifyCompanyCredit.spec.js
-          # - src/tests/b2b/verifyCompanyProfile.spec.js
-          # - src/tests/b2b/verifyCompanyRegistration.spec.js
-          # - src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js
-          # - src/tests/b2b/verifyCompanyStructure.spec.js
-          # - src/tests/b2b/verifyCompanySwitcher.spec.js
-          # - src/tests/b2b/verifyCompanyUsers.spec.js
-          # - src/tests/b2b/verifyCompanyHierarchy.spec.js
-          # - group: group-b
-          # specs:
-          # - src/tests/b2b/runB2CTests.spec.js
-          # - src/tests/b2b/verifyB2BGridOrdering.spec.js
-          # - src/tests/b2b/verifyB2BQuickOrder.spec.js
-          # - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
-          # - src/tests/b2b/verifyB2BRequisitionLists.spec.js
-          # - src/tests/b2b/verifyB2BRequisitionListSharing.spec.js
-          - group: group-c
+          - group: group-a
             specs:
-              - src/tests/b2b/verifyPurchaseOrders.spec.js
-          - group: group-address-book
+              - src/tests/b2b/verifyCompanyCredit.spec.js
+              - src/tests/b2b/verifyCompanyProfile.spec.js
+              - src/tests/b2b/verifyCompanyRegistration.spec.js
+              - src/tests/b2b/verifyCompanyRolesAndPermissions.spec.js
+              - src/tests/b2b/verifyCompanyStructure.spec.js
+              - src/tests/b2b/verifyCompanySwitcher.spec.js
+              - src/tests/b2b/verifyCompanyUsers.spec.js
+              - src/tests/b2b/verifyCompanyHierarchy.spec.js
+          - group: group-b
             specs:
-              - src/tests/b2b/verifyB2BAddressBook.spec.js
+              - src/tests/b2b/runB2CTests.spec.js
+              - src/tests/b2b/verifyB2BGridOrdering.spec.js
+              - src/tests/b2b/verifyB2BQuickOrder.spec.js
+              - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
+              - src/tests/b2b/verifyB2BRequisitionLists.spec.js
+              - src/tests/b2b/verifyB2BRequisitionListSharing.spec.js
+          # TEMP-ISOLATION: group-c and group-address-book are commented out for
+          # this round. The previous round ran those two alone: group-c failed on
+          # its own (PO indexing timeout) and group-address-book failed on a
+          # confirmed backend defect — so neither was caused by parallel jobs.
+          # Now group-a and group-b run alone to see whether they still fail
+          # without the other two alongside them.
+          # NOT FOR MERGE — restore from commit 69ac70d9.
+          # - group: group-c
+          #   specs:
+          #     - src/tests/b2b/verifyPurchaseOrders.spec.js
+          # - group: group-address-book
+          #   specs:
+          #     - src/tests/b2b/verifyB2BAddressBook.spec.js
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js
