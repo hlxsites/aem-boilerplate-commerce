@@ -237,12 +237,26 @@ export default async function decorate(block) {
     renderGiftOptions($giftOptions),
   ]);
 
+  const EXPRESS_PAYMENT_METHODS = [
+    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
+    paymentsApi.PaymentMethodCode.APPLE_PAY,
+    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
+  ];
+
+  const isExpressPaymentMethod = (method) => (
+    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  );
+
   async function initializeCheckout(data) {
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
       removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
+    }
+    if (!isExpressPaymentMethod(data.selectedPaymentMethod) && !isPlaceOrderRendered($placeOrder)) {
+      // Express payment methods replace the place order button; restore it for non-express methods
+      await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }
   }
 
@@ -314,25 +328,9 @@ export default async function decorate(block) {
     window.location.reload();
   }
 
-  const EXPRESS_PAYMENT_METHODS = [
-    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
-    paymentsApi.PaymentMethodCode.APPLE_PAY,
-    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
-  ];
-
-  const isExpressPaymentMethod = (method) => (
-    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
-  );
-
   function handleCheckoutValues(payload) {
-    const { isBillToShipping, selectedPaymentMethod } = payload;
+    const { isBillToShipping } = payload;
     $billingForm.style.display = isBillToShipping ? 'none' : 'block';
-
-    if (!isExpressPaymentMethod(selectedPaymentMethod)
-        && !isPlaceOrderRendered($placeOrder)) {
-      // Express payment methods replace the place order button; restore it for non-express methods
-      renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
-    }
   }
 
   async function handleOrderPlaced(orderData) {
