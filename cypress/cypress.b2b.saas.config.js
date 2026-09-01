@@ -37,13 +37,15 @@ module.exports = defineConfig({
     // Address Book (B2B) URLs
     // NOTE: `companyProfile` is a confirmed existing route (see verifyCompanyProfile.spec.js).
     // `login`/`account` are reused as-is. There is no confirmed dedicated route for the
-    // company address book page yet — `actions.openCompanyAddressBook()` navigates via
-    // `companyProfile` and clicks a nav link/tab by text, which must be calibrated against
-    // the live app on first run (see plan "known unknowns").
     addressBookUrls: {
       login: '/customer/login',
       account: '/customer/account',
       companyProfile: '/customer/company',
+      // Both the standard "Addresses" and the B2B "Company Addresses" nav items
+      // point here; which dataset the page shows follows the customer's
+      // permissions, so the suite navigates straight to it instead of relying on
+      // a nav item that is not authored in every content source.
+      addresses: '/customer/address',
     },
   },
 });

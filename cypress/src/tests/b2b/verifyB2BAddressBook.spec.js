@@ -624,15 +624,17 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // them, this prints the real tree on the first CI run.
   const logRoleTree = () => {
     openDefaultUserRoleTree();
+    // Not scoped to direct children: the tree renders its items nested a few
+    // levels below the container, so a '> ul > li' scope matches nothing.
     cy.get('.edit-role-and-permission__tree-container')
-      .find('> ul > li.acm-tree__item')
+      .find('li.acm-tree__item')
       .then(($items) => {
         const summary = [...$items].map((el) => {
           const label = el.querySelector('.edit-role-and-permission__tree-label')?.textContent.trim();
           const checked = el.querySelector('input[type="checkbox"]')?.checked;
           return `${label}=${checked}`;
         });
-        cy.logToTerminal(`🌳 Default User role — top-level branches: ${summary.join(' | ')}`);
+        cy.logToTerminal(`🌳 Default User role — tree: ${summary.join(' | ')}`);
       });
   };
 
@@ -646,7 +648,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     openDefaultUserRoleTree();
 
     cy.get('.edit-role-and-permission__tree-container').then(($tree) => {
-      const match = candidateLabels.find((label) => [...$tree.find('> ul > li.acm-tree__item .edit-role-and-permission__tree-label')]
+      const match = candidateLabels.find((label) => [...$tree.find('.edit-role-and-permission__tree-label')]
         .some((el) => el.textContent.trim() === label));
 
       if (!match) {

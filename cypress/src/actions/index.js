@@ -942,10 +942,14 @@ export const onVariantsUpdated = (callback) => {
  * customer sees regardless of company role, opening the wrong (B2C) form.
  */
 export const openCompanyAddressBook = (urls) => {
-  cy.visit(urls.companyProfile);
+  // Navigates by URL rather than by clicking a "Company Addresses" nav item.
+  // That item is authored content and is absent from some content sources
+  // (e.g. boilerplate-b2b-accs), so clicking it made the whole suite depend on
+  // which site the run happens to be pointed at. Both nav items lead here
+  // anyway, and the page renders whichever address dataset the customer's
+  // permissions allow.
+  cy.visit(urls.addresses);
   cy.wait(3000);
-  cy.contains('Company Addresses').should('be.visible').click({ force: true });
-  cy.wait(2000);
 };
 
 /**

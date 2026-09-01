@@ -37,6 +37,11 @@ module.exports = defineConfig({
       login: '/customer/login',
       account: '/customer/account',
       companyProfile: '/customer/company',
+      // Both the standard "Addresses" and the B2B "Company Addresses" nav items
+      // point here; which dataset the page shows follows the customer's
+      // permissions, so the suite navigates straight to it instead of relying on
+      // a nav item that is not authored in every content source.
+      addresses: '/customer/address',
     },
   },
 });
