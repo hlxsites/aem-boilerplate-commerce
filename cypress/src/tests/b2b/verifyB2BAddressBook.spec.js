@@ -194,7 +194,7 @@ const ensureAddressBookEnabled = () => {
   cy.logToTerminal('✅ Address Book confirmed enabled');
 };
 
-describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas'] }, () => {
+describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('addressBookUrls');
 
   beforeEach(() => {
@@ -545,7 +545,7 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas'] }, () => {
 // The suite does its own cleanup, so its title stays in
 // src/support/deleteCustomer.js's skipDeleteTests list to keep the global
 // afterEach from deleting the user between tests.
-describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSaas'] }, () => {
+describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('addressBookUrls');
 
   const loginAs = (email, password) => {
