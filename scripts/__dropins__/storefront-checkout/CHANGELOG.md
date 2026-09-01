@@ -1,5 +1,11 @@
 # @dropins/storefront-checkout
 
+## 3.4.0-alpha-20260901085957
+
+### Minor Changes
+
+- d747298: Add support for selecting company address book addresses at checkout via `company_address_id`
+
 ## 3.3.1
 
 ### Patch Changes

@@ -16,6 +16,7 @@
  *******************************************************************/
 import { SlotProps } from '@dropins/tools/lib';
 import { CustomerAddressesModel } from '../data/models';
+import { CompanyAddressPermissions } from '../hooks/useCompanyAddressPermissions';
 interface AddressFormActionsContext {
     handleUpdateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;
     handleCreateAddress?: (event: Event, valid: boolean) => Promise<void | null | undefined>;
@@ -41,6 +42,8 @@ export interface AddressFormProps {
     billingCheckBoxValue?: boolean;
     showShippingCheckBox?: boolean;
     showBillingCheckBox?: boolean;
+    hasDefaultShippingAddress?: boolean;
+    hasDefaultBillingAddress?: boolean;
     isOpen?: boolean;
     fieldIdPrefix?: string;
     onSubmit?: (event: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
@@ -53,6 +56,9 @@ export interface AddressFormProps {
     onError?: (error: string) => void;
     handleRenderForm?: () => void;
     onChange?: (values: Record<string, FormDataEntryValue>, inputValue: Record<string, string>, event: Event) => void;
+    isB2BFlow?: boolean;
+    enforceB2BPermissions?: boolean;
+    permissions?: CompanyAddressPermissions;
 }
 export interface AddressFormWrapperProps extends AddressFormProps {
 }

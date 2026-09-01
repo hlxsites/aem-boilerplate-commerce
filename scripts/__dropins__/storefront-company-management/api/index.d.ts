@@ -42,6 +42,7 @@ export * from './isCompanyAdmin';
 export * from './isCompanyUser';
 export * from './isCompanyUserEmailAvailable';
 export * from './updateCompany';
+export * from './updateCompanyConfig';
 export * from './updateCompanyStructure';
 export * from './updateCompanyTeam';
 export * from './updateCompanyUser';
