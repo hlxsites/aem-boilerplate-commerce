@@ -1247,6 +1247,23 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.url().should('include', '/checkout');
     cy.waitForLoadingSkeletonToDisappear();
 
+    // ORDER MATTERS, and not for cosmetic reasons. A one-time address is not a
+    // saved address, so the cart stores it without an id and the block
+    // recomputes defaultSelectAddressId as 0 (containers.js). Any later cart
+    // update re-runs the selection effect, which cannot match id 0 against the
+    // address book and falls back to the default company address — silently
+    // replacing what was just typed. Selecting billing is such an update, so it
+    // has to happen BEFORE the one-time shipping address is entered.
+    cy.logToTerminal('🧾 Selecting the saved company billing address first');
+    cy.get('input[type="radio"][name="selectedBillingAddress"]')
+      .should('have.length.greaterThan', 0)
+      .first()
+      .then(($input) => {
+        cy.get(`label[for="${$input.attr('id')}"]`).click();
+      });
+    cy.wait(3000);
+    cy.get('input[type="radio"][name="selectedBillingAddress"]').first().should('be.checked');
+
     // The entry point only exists because the company allows custom addresses —
     // asserting it is the actual subject of this test.
     cy.logToTerminal('📮 Choosing "Use a different address" for shipping');
@@ -1269,16 +1286,6 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.get(selectors.checkoutShippingBlock)
       .find(selectors.checkoutUseDifferentShippingRadio)
       .should('be.checked');
-
-    cy.logToTerminal('🧾 Selecting the saved company billing address');
-    cy.get('input[type="radio"][name="selectedBillingAddress"]')
-      .should('have.length.greaterThan', 0)
-      .first()
-      .then(($input) => {
-        cy.get(`label[for="${$input.attr('id')}"]`).click();
-      });
-    cy.wait(3000);
-    cy.get('input[type="radio"][name="selectedBillingAddress"]').first().should('be.checked');
 
     cy.logToTerminal('✅ Accepting terms and placing the order');
     actions.checkTermsAndConditions();
