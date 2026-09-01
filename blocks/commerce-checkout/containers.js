@@ -626,8 +626,6 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
       inputsDefaultValueSet,
       minifiedView: false,
       onAddressData: (values) => {
-        // eslint-disable-next-line no-console
-        console.log('🚚 [DEBUG][onAddressData][shipping]', values);
         const canSetShippingAddressOnCart = !isFirstRenderShipping || !hasCartShippingAddress;
         if (canSetShippingAddressOnCart) setShippingAddressOnCart(values);
         if (!hasCartShippingAddress) estimateShippingCostOnCart(values);
@@ -698,8 +696,6 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       inputsDefaultValueSet,
       minifiedView: false,
       onAddressData: (values) => {
-        // eslint-disable-next-line no-console
-        console.log('💳 [DEBUG][onAddressData][billing]', values);
         const canSetBillingAddressOnCart = !isFirstRenderBilling || !hasCartBillingAddress;
         if (canSetBillingAddressOnCart) setBillingAddressOnCart(values);
         if (isFirstRenderBilling) isFirstRenderBilling = false;

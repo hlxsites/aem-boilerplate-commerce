@@ -162,11 +162,6 @@ export default async function decorate(block) {
       { name: PURCHASE_ORDER_FORM_NAME },
       { name: TERMS_AND_CONDITIONS_FORM_NAME },
     ]);
-    // eslint-disable-next-line no-console
-    console.log('✅🛒 [DEBUG][handleValidation] result:', isValid, {
-      shippingFormRefCurrent: shippingFormRef.current,
-      billingFormRefCurrent: billingFormRef.current,
-    });
     return isValid;
   };
 
@@ -214,16 +209,11 @@ export default async function decorate(block) {
   // (and the getCompanyAddressBook import above) once this ships for real — for now it's
   // wrapped in obvious debug logs so it's easy to find and rip out.
   if (isB2BEnabled) {
-    // eslint-disable-next-line no-console
-    console.log('🚧 [DEBUG][placeOrderGate] B2B checkout — disabling Place Order until company address book is checked');
     placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: true }));
 
     (async () => {
       try {
         const companyAddressBook = await getCompanyAddressBook();
-        // eslint-disable-next-line no-console
-        console.log('🚧 [DEBUG][placeOrderGate] getCompanyAddressBook() result:', companyAddressBook);
-
         const addressBookEnabled = Boolean(companyAddressBook?.addressBookEnabled);
         const items = companyAddressBook?.addresses?.items ?? [];
         const hasShippingAddress = items.some((item) => item.addressType === 'SHIPPING');
@@ -233,18 +223,6 @@ export default async function decorate(block) {
         // fall back to the normal (enabled) Place Order behavior.
         const shouldDisablePlaceOrder = addressBookEnabled
           && (!hasShippingAddress || !hasBillingAddress);
-
-        // eslint-disable-next-line no-console
-        console.log(
-          '🚧 [DEBUG][placeOrderGate] addressBookEnabled:',
-          addressBookEnabled,
-          '| hasShippingAddress:',
-          hasShippingAddress,
-          '| hasBillingAddress:',
-          hasBillingAddress,
-          '| => Place Order disabled:',
-          shouldDisablePlaceOrder,
-        );
 
         placeOrderContainer.setProps((prevProps) => ({
           ...prevProps,
