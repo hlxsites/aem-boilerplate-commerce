@@ -1264,6 +1264,33 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(3000);
     cy.get('input[type="radio"][name="selectedBillingAddress"]').first().should('be.checked');
 
+    // Records every GraphQL call from here on. Asserting the radio stays checked
+    // only proves the UI selection held — it says nothing about what reached the
+    // cart, and the order kept coming back with the saved company address
+    // regardless. This captures the operation names, whether the typed street
+    // ever left the browser, and any errors sent back, which is the only way to
+    // tell "the mutation was never sent" apart from "the backend refused it".
+    // Collected into plain arrays: cy.* cannot be called inside an intercept.
+    const sentOps = [];
+    const oneTimeStreetSent = [];
+    const gqlErrors = [];
+    cy.intercept('POST', '**/graphql', (req) => {
+      const body = JSON.stringify(req.body ?? {});
+      const opName = req.body?.operationName
+        || (body.match(/(?:mutation|query)\s+(\w+)/) || [])[1]
+        || 'anonymous';
+      sentOps.push(opName);
+      if (body.includes(oneTime.street)) {
+        oneTimeStreetSent.push(opName);
+      }
+      req.continue((res) => {
+        const errors = res.body?.errors;
+        if (errors?.length) {
+          errors.forEach((e) => gqlErrors.push(`${opName}: ${e.message}`));
+        }
+      });
+    });
+
     // The entry point only exists because the company allows custom addresses —
     // asserting it is the actual subject of this test.
     cy.logToTerminal('📮 Choosing "Use a different address" for shipping');
@@ -1287,10 +1314,32 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .find(selectors.checkoutUseDifferentShippingRadio)
       .should('be.checked');
 
+    // Report what actually went over the wire BEFORE placing the order, so the
+    // diagnosis survives even if a later assertion fails the test.
+    cy.then(() => {
+      cy.logToTerminal(`📡 GraphQL operations so far: ${[...new Set(sentOps)].join(', ') || '(none)'}`);
+      cy.logToTerminal(
+        oneTimeStreetSent.length
+          ? `📡 One-time street "${oneTime.street}" was sent in: ${[...new Set(oneTimeStreetSent)].join(', ')}`
+          : `🔴 One-time street "${oneTime.street}" NEVER left the browser — the address was not applied to the cart`,
+      );
+      if (gqlErrors.length) {
+        cy.logToTerminal(`🔴 GraphQL errors: ${JSON.stringify([...new Set(gqlErrors)])}`);
+      } else {
+        cy.logToTerminal('🔵 No GraphQL errors before order placement');
+      }
+    });
+
     cy.logToTerminal('✅ Accepting terms and placing the order');
     actions.checkTermsAndConditions();
     actions.placeOrder();
     cy.wait(15000);
+
+    cy.then(() => {
+      if (gqlErrors.length) {
+        cy.logToTerminal(`🔴 GraphQL errors after placement: ${JSON.stringify([...new Set(gqlErrors)])}`);
+      }
+    });
 
     actions.verifyPOConfirmation();
 
