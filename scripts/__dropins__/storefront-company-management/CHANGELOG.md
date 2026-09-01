@@ -1,6 +1,6 @@
 # @dropins/storefront-company-management
 
-## 1.5.0-alpha-20260901090406
+## 1.5.0-alpha-20260901112515
 
 ### Minor Changes
 
