@@ -391,6 +391,23 @@ export const variantsGridAddToCartButton =
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
 
+// Checkout — one-time ("Use a different address") shipping entry. Only rendered
+// when the company allows a custom shipping address; the radio carrying
+// value="0" is the entry point, the saved company addresses use their own ids.
+export const checkoutShippingBlock = '.checkout__shipping-form';
+export const checkoutUseDifferentShippingRadio =
+  'input[type="radio"][name="selectedShippingAddress"][value="0"]';
+export const checkoutShippingFormFirstName = '#shipping_firstname';
+export const checkoutShippingFormLastName = '#shipping_lastname';
+export const checkoutShippingFormStreet = '#shipping_street';
+export const checkoutShippingFormStreet2 = '#shipping_street_multiline_2';
+export const checkoutShippingFormCountry = '#shipping_country_code';
+export const checkoutShippingFormRegion = '#shipping_region';
+export const checkoutShippingFormCity = '#shipping_city';
+export const checkoutShippingFormPostcode = '#shipping_postcode';
+export const checkoutShippingFormTelephone = '#shipping_telephone';
+export const checkoutShippingFormVatId = '#shipping_vat_id';
+
 // Purchase order confirmation + order details (B2B checkout places a PO)
 export const poConfirmationLink = '.purchase-orders-confirmation-content__link';
 export const orderShippingAddress =

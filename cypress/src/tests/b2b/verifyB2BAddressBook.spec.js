@@ -132,6 +132,39 @@ const regularUserCreds = () => Cypress.env('testUsers').regular;
 // Previously the suite inherited the enabled state from a long-lived company,
 // so nothing ever had to establish it. Idempotent, and deliberately without a
 // login step: the caller is responsible for already being signed in as admin.
+// "Allow Custom Company Address" is what unlocks one-time address entry at
+// checkout — the drop-in keeps address selection locked while it is off, which
+// is why every other scenario only ever sees saved company addresses. Admin
+// only, idempotent, and it assumes the caller is already signed in as admin.
+const ensureCustomShippingAllowed = () => {
+  const urls = Cypress.env('addressBookUrls');
+
+  cy.visit(urls.companyProfile);
+  cy.wait(2000);
+  cy.waitForLoadingSkeletonToDisappear();
+
+  cy.get('.account-company-profile-card__content', { timeout: 20000 }).then(($card) => {
+    if ($card.text().includes('Allow Custom Company Address: Enabled')) {
+      cy.logToTerminal('✅ Custom shipping address already allowed');
+      return;
+    }
+
+    cy.logToTerminal('🔧 Allowing a custom shipping address at checkout');
+    cy.contains('button', 'Edit').click();
+    cy.wait(1000);
+    cy.get(selectors.companyProfileCustomShippingEnabledCheckbox).then(($cb) => {
+      if (!$cb.prop('checked')) {
+        cy.wrap($cb).click({ force: true });
+      }
+    });
+    cy.contains('button', 'Save Changes').click();
+    cy.wait(2000);
+  });
+
+  cy.contains('Allow Custom Company Address: Enabled', { timeout: 20000 }).should('be.visible');
+  cy.logToTerminal('✅ Custom shipping address confirmed allowed');
+};
+
 const ensureAddressBookEnabled = () => {
   const urls = Cypress.env('addressBookUrls');
 
@@ -1138,6 +1171,139 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       cy.logToTerminal(`✅ RU7: purchase order ${Cypress.env('addressBookPoNumber')} placed with both company addresses`);
     });
 
+    logout();
+  });
+
+  // Fills the one-time shipping form rendered by "Use a different address".
+  // Targeted by id rather than by input name: the checkout page also renders a
+  // billing address form whose inputs carry the same names, so name selectors
+  // would match two elements. Ids come from the block's fieldIdPrefix.
+  const fillCheckoutShippingForm = (address) => {
+    cy.get(selectors.checkoutShippingFormFirstName).clear().type(address.firstName);
+    cy.get(selectors.checkoutShippingFormLastName).clear().type(address.lastName);
+    cy.get(selectors.checkoutShippingFormStreet).clear().type(address.street);
+    cy.get(selectors.checkoutShippingFormStreet2).clear().type(address.streetMultiline_2);
+    cy.get(selectors.checkoutShippingFormCountry).select(address.countryCode);
+
+    // Picking a country reloads the region list asynchronously and can replace
+    // the field node mid-command — same swap the company address form has.
+    cy.wait(1500);
+    cy.get('body').then(($body) => {
+      if ($body.find(`select${selectors.checkoutShippingFormRegion}`).length) {
+        cy.get(selectors.checkoutShippingFormRegion).select(address.region);
+      } else {
+        cy.get(selectors.checkoutShippingFormRegion).clear().type(address.region);
+      }
+    });
+
+    cy.get(selectors.checkoutShippingFormCity).clear().type(address.city);
+    cy.get(selectors.checkoutShippingFormPostcode).clear().type(address.postcode);
+    cy.get(selectors.checkoutShippingFormTelephone).clear().type(address.telephone);
+    cy.get(selectors.checkoutShippingFormVatId).clear().type(address.vatId);
+  };
+
+  it('RU8: with custom addresses allowed, the user checks out on a one-time shipping address', () => {
+    const oneTime = addressBookAddresses.oneTimeShipping;
+
+    cy.logToTerminal('⚙️ Admin allows a custom shipping address at checkout');
+    loginAsAdminAndSwitch();
+    ensureAddressBookEnabled();
+    ensureCustomShippingAllowed();
+    logout();
+
+    loginAsRegularUserAndSwitch();
+
+    // Billing still has to come from the address book, so seed both types —
+    // this keeps the test independent of what RU7 left behind.
+    cy.logToTerminal('🧹 Starting from a clean address book');
+    actions.openCompanyAddressBook(urls);
+    removeAllCompanyAddresses();
+
+    cy.logToTerminal('📝 Creating the SHIPPING and BILLING company addresses');
+    createCompanyAddress(addressBookAddresses.shipping, selectors.addressBookTypeShippingCheckbox);
+    createCompanyAddress(addressBookAddresses.billing, selectors.addressBookTypeBillingCheckbox);
+
+    cy.logToTerminal('🛒 Adding a simple product to the cart');
+    cy.visit('/products/youth-tee/adb150');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get('.minicart-wrapper').click();
+    cy.get('.minicart-panel[data-loaded="true"]', { timeout: 20000 }).should('exist');
+    cy.get('.minicart-panel').should('not.be.empty');
+
+    cy.logToTerminal('💳 Proceeding to checkout');
+    cy.visit('/checkout');
+    cy.url().should('include', '/checkout');
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // The entry point only exists because the company allows custom addresses —
+    // asserting it is the actual subject of this test.
+    cy.logToTerminal('📮 Choosing "Use a different address" for shipping');
+    cy.get(selectors.checkoutShippingBlock, { timeout: 30000 })
+      .find(selectors.checkoutUseDifferentShippingRadio)
+      .should('exist')
+      .then(($input) => {
+        cy.get(`label[for="${$input.attr('id')}"]`).click();
+      });
+    cy.wait(2000);
+
+    cy.logToTerminal('✍️ Filling the one-time shipping address');
+    cy.get(selectors.checkoutShippingFormFirstName, { timeout: 20000 }).should('be.visible');
+    fillCheckoutShippingForm(oneTime);
+    cy.wait(3000);
+
+    cy.logToTerminal('🧾 Selecting the saved company billing address');
+    cy.get('input[type="radio"][name="selectedBillingAddress"]')
+      .should('have.length.greaterThan', 0)
+      .first()
+      .then(($input) => {
+        cy.get(`label[for="${$input.attr('id')}"]`).click();
+      });
+    cy.wait(3000);
+    cy.get('input[type="radio"][name="selectedBillingAddress"]').first().should('be.checked');
+
+    cy.logToTerminal('✅ Accepting terms and placing the order');
+    actions.checkTermsAndConditions();
+    actions.placeOrder();
+    cy.wait(15000);
+
+    actions.verifyPOConfirmation();
+
+    // The confirmation link must carry a poRef — that reference is what makes
+    // the order openable, and a missing one has silently broken this flow before.
+    cy.get(selectors.poConfirmationLink, { timeout: 60000 })
+      .should('be.visible')
+      .should('have.attr', 'href')
+      .and('include', 'poRef=');
+
+    cy.get(selectors.poConfirmationLink)
+      .invoke('text')
+      .then((text) => {
+        cy.logToTerminal(`🧾 Purchase order placed: ${text.trim()}`);
+      });
+
+    cy.logToTerminal('📄 Opening the purchase order');
+    cy.get(selectors.poConfirmationLink).click();
+    cy.url().should('include', 'poRef');
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // The point of the scenario: the order must carry the address typed at
+    // checkout, not the saved company shipping address it was offered instead.
+    cy.logToTerminal('🔍 Verifying the order shipped to the one-time address');
+    cy.get(selectors.orderShippingAddress, { timeout: 30000 })
+      .should('contain.text', oneTime.lastName)
+      .and('contain.text', oneTime.street)
+      .and('contain.text', oneTime.telephone)
+      .and('not.contain.text', addressBookAddresses.shipping.street);
+
+    cy.get(selectors.orderBillingAddress)
+      .should('contain.text', addressBookAddresses.billing.lastName)
+      .and('contain.text', addressBookAddresses.billing.street);
+
+    cy.logToTerminal('✅ RU8: order placed on a one-time shipping address');
     logout();
   });
 

@@ -178,6 +178,20 @@ export const addressBookAddresses = {
     vatId: 'VAT-AB-BILL',
     defaultShipping: false,
   },
+  // Deliberately unlike every company address above, so the order details can
+  // prove the one-time address entered at checkout is what actually shipped.
+  oneTimeShipping: {
+    firstName: 'OneTime',
+    lastName: 'CheckoutAddress',
+    street: '77 Temporary Way',
+    streetMultiline_2: 'Suite 7',
+    countryCode: 'US',
+    region: 'Texas',
+    city: 'Austin',
+    telephone: '5125550777',
+    postcode: '78758',
+    vatId: 'VAT-ONE-TIME',
+  },
   edited: {
     firstName: 'Company',
     lastName: 'Shipping Updated',
