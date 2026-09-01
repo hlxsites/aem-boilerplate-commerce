@@ -123,6 +123,44 @@ const testCompanyName = () => Cypress.env('testCompany').name;
 const adminCreds = () => Cypress.env('testAdmin');
 const regularUserCreds = () => Cypress.env('testUsers').regular;
 
+// The company address book starts disabled on a freshly created company, and
+// only the company admin can switch it on. Both the admin CRUD tests and the
+// permission matrix need it on — and, crucially, the "Company Addresses"
+// branch only appears in the role permission tree once it is enabled, so this
+// has to run BEFORE any permission is granted.
+//
+// Previously the suite inherited the enabled state from a long-lived company,
+// so nothing ever had to establish it. Idempotent, and deliberately without a
+// login step: the caller is responsible for already being signed in as admin.
+const ensureAddressBookEnabled = () => {
+  const urls = Cypress.env('addressBookUrls');
+
+  cy.visit(urls.companyProfile);
+  cy.wait(2000);
+  cy.waitForLoadingSkeletonToDisappear();
+
+  cy.get('.account-company-profile-card__content', { timeout: 20000 }).then(($card) => {
+    if ($card.text().includes('Enable Company Address Book: Enabled')) {
+      cy.logToTerminal('✅ Address Book already enabled');
+      return;
+    }
+
+    cy.logToTerminal('🔧 Address Book is off — enabling it');
+    cy.contains('button', 'Edit').click();
+    cy.wait(1000);
+    cy.get(selectors.companyProfileAddressBookEnabledCheckbox).then(($cb) => {
+      if (!$cb.prop('checked')) {
+        cy.wrap($cb).click({ force: true });
+      }
+    });
+    cy.contains('button', 'Save Changes').click();
+    cy.wait(2000);
+  });
+
+  cy.contains('Enable Company Address Book: Enabled', { timeout: 20000 }).should('be.visible');
+  cy.logToTerminal('✅ Address Book confirmed enabled');
+};
+
 describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas'] }, () => {
   const urls = Cypress.env('addressBookUrls');
 
@@ -274,6 +312,10 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas'] }, () => {
   });
 
   it('Test 5: admin can create, edit and set default on a company address', () => {
+    // Does not rely on Test 4 having enabled it — the admin is already signed
+    // in from beforeEach, so this only costs one page visit when it is already on.
+    ensureAddressBookEnabled();
+
     actions.openCompanyAddressBook(urls);
     // Same one-shot-snapshot pitfall as Test 2 — wait for the loading
     // indicator to actually disappear before the first check, and again on
@@ -756,6 +798,11 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // make RU1 (which needs full rights) fail for the wrong reason.
   it('RU0: Admin restores full Company Addresses permissions (scenario baseline)', () => {
     loginAsAdminAndSwitch();
+
+    // Must come first: the "Company Addresses" branch only exists in the role
+    // permission tree while the address book is enabled, so granting rights
+    // before this would silently find nothing to click.
+    ensureAddressBookEnabled();
 
     // The company is created fresh per run, so its Default User role holds
     // Magento's defaults rather than the hand-tuned permissions the previous
