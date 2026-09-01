@@ -22,25 +22,34 @@ function sourceRowState(source, labels) {
   return { state: 'available', text: t.InStock ?? 'In stock' };
 }
 
-function SourceRow({ source, labels }) {
+function SourceRow({ source, pickup, labels }) {
   const { state, text } = sourceRowState(source, labels);
   const t = labels?.Custom?.SaleableQty ?? {};
-  // sourceAvailability returns only source_code, so label it from a placeholder, else the code.
-  const name = t.Source?.[source.source_code] ?? source.source_code;
+  // sourceAvailability has only source_code, so label it: placeholder, pickup name, else code.
+  const name = t.Source?.[source.source_code] ?? pickup?.name ?? source.source_code;
+  // The fulfillment icon carries ship-vs-pickup; its title makes that accessible.
+  const fulfillTitle = pickup
+    ? (t.PickupLocation ?? 'Pickup location')
+    : (t.ShipsFrom ?? 'Ships from');
   return h('li', { className: 'pdp-avail__row', 'data-state': state }, [
     h(Icon, {
-      source: 'Delivery', size: '16', className: 'pdp-avail__fulfill', 'aria-hidden': 'true',
+      source: pickup ? 'Business' : 'Delivery',
+      size: '16',
+      className: 'pdp-avail__fulfill',
+      title: fulfillTitle,
     }),
     h('span', { className: 'pdp-avail__name' }, name),
     h('span', { className: 'pdp-avail__qty' }, text),
   ]);
 }
 
-function SourceList({ sources, labels }) {
+function SourceList({ sources, pickupByCode, labels }) {
   const t = labels?.Custom?.SaleableQty ?? {};
   return h('div', { className: 'pdp-avail' }, [
     h('p', { className: 'pdp-avail__title' }, t.ByLocation ?? 'Availability by location'),
-    h('ul', { className: 'pdp-avail__list' }, sources.map((s) => h(SourceRow, { key: s.source_code, source: s, labels }))),
+    h('ul', { className: 'pdp-avail__list' }, sources.map((s) => h(SourceRow, {
+      key: s.source_code, source: s, pickup: pickupByCode?.get(s.source_code), labels,
+    }))),
   ]);
 }
 
@@ -91,7 +100,9 @@ export async function renderStockIndicator($el, model, isCurrent = () => true) {
 }
 
 // Render the per-source list, or hide it when empty.
-export async function renderSourceList($el, { sources, labels, isCurrent = () => true }) {
+export async function renderSourceList($el, {
+  sources, pickupByCode, labels, isCurrent = () => true,
+}) {
   if (!$el) return;
   if (!sources?.length) {
     $el.removeAttribute('data-loading');
@@ -99,7 +110,7 @@ export async function renderSourceList($el, { sources, labels, isCurrent = () =>
     return;
   }
   try {
-    await mount($el, SourceList, { sources, labels }, isCurrent);
+    await mount($el, SourceList, { sources, pickupByCode, labels }, isCurrent);
     if (isCurrent()) {
       $el.removeAttribute('data-loading');
       $el.hidden = false;

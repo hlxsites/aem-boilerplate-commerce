@@ -101,6 +101,21 @@ const SOURCE_AVAILABILITY_QUERY = `
   }
 `;
 
+// WORKAROUND: sourceAvailability exposes no source name or pickup flag yet, so we join the core
+// pickupLocations query on source_code == pickup_location_code to label pickup sources.
+// TODO: when SourceAvailability exposes `name` and `is_pickup_location_active`, drop this second
+// query and read those fields directly.
+const PICKUP_LOCATIONS_QUERY = `
+  query GET_PICKUP_LOCATIONS($sku: String!) {
+    pickupLocations(productsInfo: [{ sku: $sku }], pageSize: 100) {
+      items {
+        pickup_location_code
+        name
+      }
+    }
+  }
+`;
+
 // Stock line from a SKU's sources: out of stock / only N left (all exact) / in stock.
 function badgeFromSources(sources, labels) {
   const inStock = sources.filter((s) => s.is_in_stock);
@@ -124,6 +139,12 @@ async function renderAvailability($badge, $list, sku, labels, isCurrent = () => 
   }
   $badge.setAttribute('data-loading', ''); $badge.hidden = false;
   $list.setAttribute('data-loading', ''); $list.hidden = false;
+
+  // Pickup runs in parallel but never gates the stock line; it only enriches the source list.
+  const pickupReq = CORE_FETCH_GRAPHQL.fetchGraphQl(PICKUP_LOCATIONS_QUERY, {
+    method: 'GET',
+    variables: { sku },
+  }).catch(() => null);
 
   let res;
   try {
@@ -150,7 +171,15 @@ async function renderAvailability($badge, $list, sku, labels, isCurrent = () => 
     return;
   }
   renderStockIndicator($badge, badgeFromSources(sources, labels), isCurrent);
-  renderSourceList($list, { sources, labels, isCurrent });
+
+  // Await pickup only to enrich the list; the stock line is already on screen.
+  const pickupRes = await pickupReq;
+  if (!isCurrent()) return;
+  const items = pickupRes?.data?.pickupLocations?.items ?? [];
+  const pickupByCode = new Map(items.map((i) => [i.pickup_location_code, i]));
+  renderSourceList($list, {
+    sources, pickupByCode, labels, isCurrent,
+  });
 }
 
 // Per-variant overview, behind a trigger that opens the matrix in a modal. Configurables only.
