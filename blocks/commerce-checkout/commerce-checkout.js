@@ -201,7 +201,7 @@ export default async function decorate(block) {
     shippingFormSkeleton,
     _billToShipping,
     _shippingMethods,
-    paymentMethods,
+    _paymentMethods,
     billingFormSkeleton,
     _orderSummary,
     _cartSummary,
@@ -345,27 +345,10 @@ export default async function decorate(block) {
     await renderCheckoutSuccess(block, { orderData });
   }
 
-  function handlePaymentServicesInitialized({ availablePaymentMethods }) {
-    availablePaymentMethods.forEach((code) => {
-      paymentMethods.setProps((prev) => ({
-        slots: {
-          Methods: {
-            ...prev.slots.Methods,
-            [code]: {
-              ...prev.slots.Methods[code],
-              enabled: !!prev.slots.Methods[code].render,
-            },
-          },
-        },
-      }));
-    });
-  }
-
   events.on('authenticated', handleAuthenticated);
   events.on('checkout/initialized', handleCheckoutUpdated, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
-  events.on('payment-services/initialized/checkout', handlePaymentServicesInitialized, { eager: true });
   events.on('order/placed', handleOrderPlaced);
   events.on('cart/initialized', redirectToCartIfEmpty, { eager: true });
   events.on('cart/data', redirectToCartIfEmpty);
