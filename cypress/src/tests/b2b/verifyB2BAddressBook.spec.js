@@ -1179,27 +1179,35 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // billing address form whose inputs carry the same names, so name selectors
   // would match two elements. Ids come from the block's fieldIdPrefix.
   const fillCheckoutShippingForm = (address) => {
-    cy.get(selectors.checkoutShippingFormFirstName).clear().type(address.firstName);
-    cy.get(selectors.checkoutShippingFormLastName).clear().type(address.lastName);
-    cy.get(selectors.checkoutShippingFormStreet).clear().type(address.street);
-    cy.get(selectors.checkoutShippingFormStreet2).clear().type(address.streetMultiline_2);
-    cy.get(selectors.checkoutShippingFormCountry).select(address.countryCode);
+    // Every field is blurred after typing. The form commits on both input and
+    // blur, and a real person blurs each field by moving to the next one —
+    // cy.type() on its own never does, which left the last edit uncommitted and
+    // the cart still holding the default company address it was loaded with.
+    const typeAndBlur = (selector, value) => {
+      cy.get(selector).clear().type(value).blur();
+    };
+
+    typeAndBlur(selectors.checkoutShippingFormFirstName, address.firstName);
+    typeAndBlur(selectors.checkoutShippingFormLastName, address.lastName);
+    typeAndBlur(selectors.checkoutShippingFormStreet, address.street);
+    typeAndBlur(selectors.checkoutShippingFormStreet2, address.streetMultiline_2);
+    cy.get(selectors.checkoutShippingFormCountry).select(address.countryCode).blur();
 
     // Picking a country reloads the region list asynchronously and can replace
     // the field node mid-command — same swap the company address form has.
     cy.wait(1500);
     cy.get('body').then(($body) => {
       if ($body.find(`select${selectors.checkoutShippingFormRegion}`).length) {
-        cy.get(selectors.checkoutShippingFormRegion).select(address.region);
+        cy.get(selectors.checkoutShippingFormRegion).select(address.region).blur();
       } else {
-        cy.get(selectors.checkoutShippingFormRegion).clear().type(address.region);
+        typeAndBlur(selectors.checkoutShippingFormRegion, address.region);
       }
     });
 
-    cy.get(selectors.checkoutShippingFormCity).clear().type(address.city);
-    cy.get(selectors.checkoutShippingFormPostcode).clear().type(address.postcode);
-    cy.get(selectors.checkoutShippingFormTelephone).clear().type(address.telephone);
-    cy.get(selectors.checkoutShippingFormVatId).clear().type(address.vatId);
+    typeAndBlur(selectors.checkoutShippingFormCity, address.city);
+    typeAndBlur(selectors.checkoutShippingFormPostcode, address.postcode);
+    typeAndBlur(selectors.checkoutShippingFormTelephone, address.telephone);
+    typeAndBlur(selectors.checkoutShippingFormVatId, address.vatId);
   };
 
   it('RU8: with custom addresses allowed, the user checks out on a one-time shipping address', () => {
@@ -1254,6 +1262,13 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.get(selectors.checkoutShippingFormFirstName, { timeout: 20000 }).should('be.visible');
     fillCheckoutShippingForm(oneTime);
     cy.wait(3000);
+
+    // Fail here rather than three steps later on the placed order: if the
+    // one-time entry lost its selection, everything below silently proceeds on
+    // the default company address instead.
+    cy.get(selectors.checkoutShippingBlock)
+      .find(selectors.checkoutUseDifferentShippingRadio)
+      .should('be.checked');
 
     cy.logToTerminal('🧾 Selecting the saved company billing address');
     cy.get('input[type="radio"][name="selectedBillingAddress"]')
