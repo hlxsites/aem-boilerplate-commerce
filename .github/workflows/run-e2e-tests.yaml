@@ -2,11 +2,10 @@ name: Cypress E2E B2C PaaS Tests
 on: push
 jobs:
   cypress-paas-groups:
-    # TEMPORARY: disabled to isolate the new B2B Address Book test in CI.
-    # Not meant to be merged this way — see local (untracked)
-    # TODO_DISABLED_TESTS.md for the revert checklist (restore the line below).
-    # if: github.repository == 'hlxsites/aem-boilerplate-commerce'
-    if: false
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commmerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     strategy:
       # Run all shards even if one fails, so a single flaky shard doesn't hide
@@ -77,9 +76,7 @@ jobs:
     steps:
       - name: Check shards result
         run: |
-          # TEMPORARY: also accept "skipped" while cypress-paas-groups has
-          # if:false above — see local TODO_DISABLED_TESTS.md to revert.
-          if [ "${{ needs.cypress-paas-groups.result }}" != "success" ] && [ "${{ needs.cypress-paas-groups.result }}" != "skipped" ]; then
+          if [ "${{ needs.cypress-paas-groups.result }}" != "success" ]; then
             echo "One or more test shards failed: ${{ needs.cypress-paas-groups.result }}"
             exit 1
           fi
