@@ -844,7 +844,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     // long-lived company had. Print the tree once, then make sure ordering is
     // permitted — RU7 ends by placing a purchase order as this very user.
     logRoleTree();
-    enableTopLevelBranch(['Sales', 'Allow Checkout', 'Place Order']);
+    // Confirmed by logRoleTree against a real company: the branch is called
+    // "Sales" and already carries "Allow Checkout", so this is normally a no-op
+    // and stays only as a guard for companies whose role has it switched off.
+    enableTopLevelBranch(['Sales']);
 
     setChildPermissions([
       { label: 'Add', checked: true },
@@ -1282,6 +1285,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       sentOps.push(opName);
       if (body.includes(oneTime.street)) {
         oneTimeStreetSent.push(opName);
+        // Alias only the call carrying the typed street, so the test can wait
+        // on that exact request instead of on a fixed timer.
+        req.alias = 'oneTimeShippingAddress';
       }
       req.continue((res) => {
         const errors = res.body?.errors;
@@ -1305,7 +1311,13 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.logToTerminal('✍️ Filling the one-time shipping address');
     cy.get(selectors.checkoutShippingFormFirstName, { timeout: 20000 }).should('be.visible');
     fillCheckoutShippingForm(oneTime);
-    cy.wait(3000);
+
+    // Synchronise on the address actually reaching the backend rather than on a
+    // fixed pause. The form commits through a debounced call, so a timer only
+    // ever encodes a guess about how slow the environment is that day — and if
+    // the call never happens, this fails here with an obvious cause instead of
+    // three steps later on the placed order.
+    cy.wait('@oneTimeShippingAddress', { timeout: 30000 });
 
     // Fail here rather than three steps later on the placed order: if the
     // one-time entry lost its selection, everything below silently proceeds on
