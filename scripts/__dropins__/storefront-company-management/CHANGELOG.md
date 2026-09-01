@@ -1,5 +1,17 @@
 # @dropins/storefront-company-management
 
+## 1.5.0-alpha-20260901090406
+
+### Minor Changes
+
+- cd135f8: Added customer-facing company address book configuration on the Company Profile page. Company Administrators can now view and toggle "Enable Company Address Book" and "Allow Custom Company Address" via a new `updateCompanyConfig` mutation, matching the equivalent admin-panel settings. The current configuration state is also shown as static company information when the page is in read-only mode. Existing Company Profile functionality and permissions are unchanged.
+
+### Patch Changes
+
+- b383f29: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.3.0-alpha-20260818101543` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+
 ## 1.4.1
 
 ### Patch Changes
