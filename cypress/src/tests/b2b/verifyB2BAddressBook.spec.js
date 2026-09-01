@@ -56,12 +56,7 @@
  *     are the first real verification of that "alpha" ACL.
  */
 
-import {
-  createUserAssignCompanyAndRole,
-  manageCompanyRole,
-  deleteCompanyRoles,
-  unassignRoles,
-} from '../../support/b2bPOAPICalls';
+import { createCompanyUser, cleanupTestCompany } from '../../support/b2bCompanyAPICalls';
 import {
   addressBookLabels,
   addressBookUsers,
@@ -88,514 +83,55 @@ Cypress.on('uncaught:exception', (err) => {
   return true;
 });
 
-describe('B2B Address Book', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
-  const urls = Cypress.env('addressBookUrls');
+// Exactly two accounts exist for this suite, both created via REST and both
+// disposable: the company admin that comes with the company, and one regular
+// user on the company's built-in "Default User" role. The permission matrix is
+// driven by editing that role in the UI rather than by creating extra roles or
+// users — POST /V1/company/role rejects every role carrying a
+// Magento_CompanyAddressStorefrontCompatibility::* resource_id.
+//
+// The company is created with purchase orders enabled, so the final scenario
+// can place a real purchase order using the company addresses.
+const REGULAR_USER_PASSWORD = 'Test123!';
 
-  before(() => {
-    cy.logToTerminal('🚀 B2B Address Book test suite started');
-    // TEMPORARY: no REST user/company creation for now — see the real-admin
-    // describe block at the bottom of this file for what's actually active.
-    // cy.setupCompanyWithAdmin();
+before(() => {
+  cy.logToTerminal('🚀 B2B Address Book — creating company, admin and one regular user');
+  cy.setupCompanyWithAdmin({ extensionAttributes: { is_purchase_order_enabled: 1 } });
+
+  cy.then({ timeout: 45000 }, async () => {
+    const company = Cypress.env('testCompany');
+    const email = `addressbook.user.${Date.now()}@example.com`;
+
+    const user = await createCompanyUser({
+      email,
+      firstname: 'AddressBook',
+      lastname: 'RegularUser',
+      password: REGULAR_USER_PASSWORD,
+    }, company.id);
+
+    Cypress.env('testUsers', {
+      regular: { email, password: REGULAR_USER_PASSWORD, id: user.id },
+    });
+    cy.logToTerminal(`✅ Regular user created: ${email} (ID: ${user.id})`);
   });
 
-  beforeEach(() => {
-    cy.logToTerminal('🧹 B2B Address Book test suite cleanup');
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    // Also clear cookies for the ACO backend domain to avoid stale session conflicts
-    if (Cypress.env('API_ENDPOINT')) {
-      try {
-        const acoDomain = new URL(Cypress.env('API_ENDPOINT')).hostname;
-        cy.clearCookies({ domain: acoDomain });
-      } catch (e) { /* ignore */ }
-    }
-    cy.intercept('**/graphql').as('defaultGraphQL');
-  });
-
-  // Test 1: Create the permission-matrix roles and users (pure REST, no
-  // login/UI at all — mirrors verifyPurchaseOrders.spec.js Test 1 exactly,
-  // so the admin's company-attributes linkage has the same natural indexing
-  // buffer (role creation waits + user creation waits) before the FIRST
-  // login/UI interaction happens in Test 2, instead of touching the company
-  // profile UI immediately after company creation.
-  it.skip(
-    'Setup - Create roles and users',
-    () => {
-      cy.logToTerminal(
-        '========= ⚙️ Test 1: Setup - Create roles and users =========',
-      );
-
-      const companyId = Cypress.env('testCompany')?.id;
-      cy.logToTerminal(`📋 Using company ID: ${companyId}`);
-
-      // Build the 7-role permission matrix, mirroring PO Test 1's pattern.
-      const addressBookUsersConfig = [
-        { user: { ...addressBookUsers.viewer, companyId }, role: { ...addressBookRolesConfig.viewOnly, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.creator, companyId }, role: { ...addressBookRolesConfig.create, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.creatorWithDefault, companyId }, role: { ...addressBookRolesConfig.createWithDefault, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.editor, companyId }, role: { ...addressBookRolesConfig.edit, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.deleter, companyId }, role: { ...addressBookRolesConfig.delete, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.full, companyId }, role: { ...addressBookRolesConfig.full, company_id: companyId }, roleId: null },
-        { user: { ...addressBookUsers.noAccess, companyId }, role: { ...addressBookRolesConfig.noAccess, company_id: companyId }, roleId: null },
-      ];
-
-      cy.logToTerminal('⚙️ Creating address book roles');
-      const createdRoleIds = [];
-      addressBookUsersConfig
-        .reduce((chain, element, index) => chain.then(() => {
-          cy.logToTerminal(`Creating role: ${element.role.role_name}...`);
-          cy.wait(1500);
-
-          return manageCompanyRole(element.role).then((result) => {
-            // manageCompanyRole swallows failures into {success:false, error}
-            // internally — check that explicitly instead of trusting result.role
-            // to exist, otherwise a failed role creation silently logs as "✅".
-            if (!result?.success || !result?.role?.id) {
-              cy.logToTerminal(`❌ Role creation FAILED: ${element.role.role_name} | ${result?.error || 'unknown error'}`);
-              addressBookUsersConfig[index].roleId = null;
-              return;
-            }
-            addressBookUsersConfig[index].roleId = result.role.id;
-            createdRoleIds.push(result.role.id);
-            cy.logToTerminal(`✅ Role created: ${element.role.role_name} | ID: ${result.role.id}`);
-          });
-        }), cy.wrap(null))
-        .then(() => {
-          Cypress.env('addressBookTestRoleIds', createdRoleIds);
-          Cypress.env('addressBookUsersConfig', addressBookUsersConfig);
-          cy.logToTerminal(`📝 Stored ${createdRoleIds.length} role IDs for cleanup`);
-
-          const failedRoles = addressBookUsersConfig.filter((c) => !c.roleId);
-          if (failedRoles.length) {
-            throw new Error(`${failedRoles.length} role(s) failed to create: ${failedRoles.map((c) => c.role.role_name).join(', ')}`);
-          }
-
-          cy.logToTerminal('⏳ Waiting for roles to be indexed in the system...');
-          cy.wait(5000);
-        });
-
-      cy.logToTerminal('⚙️ Creating test users & assigning roles');
-      addressBookUsersConfig
-        .reduce((chain, element) => chain.then(() => {
-          cy.wait(5000);
-          return cy.wrap(null).then(() => {
-            cy.logToTerminal(`Creating user: ${element.user.email} with role ID: ${element.roleId}...`);
-            return createUserAssignCompanyAndRole(element.user, element.roleId).then((result) => {
-              if (!result?.success) {
-                cy.logToTerminal(`❌ User creation/role assignment FAILED: ${element.user.email} | ${result?.error || 'unknown error'}`);
-                return;
-              }
-              cy.logToTerminal('✅ User created');
-            });
-          });
-        }), cy.wrap(null))
-        .then(() => {
-          cy.logToTerminal('⏳ Waiting for users and permissions to be fully applied...');
-          cy.wait(5000);
-          cy.logToTerminal('✅ Test 1: Setup completed successfully');
-        });
-    },
-  );
-
-  // Test 2: First real login/UI interaction — enable the Address Book
-  // settings on the Edit Company Profile form. Runs after Test 1's REST
-  // setup, which already gives the admin's company-attributes linkage time
-  // to index (same structural gap PO relies on between its Test 1 and Test 2).
-  it.skip(
-    'Company Admin - enable Address Book settings',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 2: Enable Address Book settings =========');
-
-      cy.logToTerminal('🔐 Login as company admin');
-      actions.login(Cypress.env('testAdmin'), urls);
-
-      // Force the Address Book setting to a known OFF state first, so the
-      // "hidden while disabled" check below doesn't depend on an unconfirmed
-      // default value for a newly-created company.
-      cy.logToTerminal('🔧 Ensuring Address Book setting starts disabled');
-      actions.toggleCompanyAddressBookSettings(urls, { addressBookEnabled: false });
-
-      cy.logToTerminal('🔍 Verifying Address Book is not offered while disabled');
-      // Soft check — convert to a hard `.should('not.exist')` once the real
-      // nav-link selector/text is confirmed against the live app.
-      cy.get('body').then(($body) => {
-        if (/address\s*book/i.test($body.text())) {
-          cy.logToTerminal('⚠️ "Address Book" text found while disabled — verify gating/selector');
-        } else {
-          cy.logToTerminal('✅ Address Book not offered while disabled, as expected');
-        }
-      });
-
-      cy.logToTerminal('🔧 Enabling Address Book + custom shipping address setting');
-      actions.toggleCompanyAddressBookSettings(urls, {
-        addressBookEnabled: true,
-        customShippingAddressEnabled: true,
-      });
-
-      cy.logToTerminal('🔄 Reloading to verify settings persisted');
-      cy.visit(urls.companyProfile);
-      cy.wait(2000);
-      cy.contains('button', 'Edit').click();
-      cy.get(selectors.companyProfileAddressBookEnabledCheckbox).should('be.checked');
-      cy.get(selectors.companyProfileCustomShippingEnabledCheckbox).should('be.checked');
-      cy.contains('button', 'Cancel').click();
-
-      cy.logToTerminal('🚪 Logging out Company Admin');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 2: Address Book settings enabled');
-    },
-  );
-
-  // Test 3: Company Admin bypass - full CRUD lifecycle
-  it.skip(
-    'Company Admin - complete address CRUD lifecycle (bypass permissions)',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 3: Company Admin CRUD lifecycle =========');
-
-      cy.logToTerminal('🔐 Login as company admin');
-      actions.login(Cypress.env('testAdmin'), urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.logToTerminal('📝 Creating shipping address');
-      cy.contains(addressBookLabels.createNew).click();
-      cy.get(selectors.addressBookFormTitle).should('contain.text', addressBookLabels.addAddress);
-      actions.fillCompanyAddressFields(addressBookAddresses.shipping);
-      cy.get(selectors.addressBookTypeShippingRadio).check({ force: true });
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.shipping.lastName).should('be.visible');
-
-      cy.logToTerminal('📝 Creating billing address');
-      cy.contains(addressBookLabels.createNew).click();
-      actions.fillCompanyAddressFields(addressBookAddresses.billing);
-      cy.get(selectors.addressBookTypeBillingRadio).check({ force: true });
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.billing.lastName).should('be.visible');
-
-      cy.logToTerminal('✏️ Editing shipping address');
-      cy.get(selectors.addressBookCard)
-        .contains(addressBookAddresses.shipping.lastName)
-        .closest(selectors.addressBookCard)
-        .within(() => {
-          cy.contains(addressBookLabels.edit).click();
-        });
-      actions.fillCompanyAddressFields(addressBookAddresses.edited);
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.edited.street).should('be.visible');
-
-      cy.logToTerminal('⭐ Marking billing address as default');
-      cy.get(selectors.addressBookCard)
-        .contains(addressBookAddresses.billing.lastName)
-        .closest(selectors.addressBookCard)
-        .within(() => {
-          cy.contains(addressBookLabels.edit).click();
-        });
-      cy.get(selectors.addressBookDefaultBillingCheckbox).check({ force: true });
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-
-      cy.logToTerminal('🔀 Verifying the default address sorts first in the list');
-      cy.get(selectors.addressBookCard).first().should('contain.text', addressBookAddresses.billing.lastName);
-
-      cy.logToTerminal('🗑️ Deleting the (edited) shipping address');
-      actions.deleteCompanyAddressCard(addressBookAddresses.edited.street, addressBookLabels);
-      cy.contains(addressBookAddresses.edited.street).should('not.exist');
-
-      cy.logToTerminal('🚪 Logging out Company Admin');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 3: Company Admin CRUD lifecycle verified');
-    },
-  );
-
-  // Test 4: View-only permission
-  it.skip(
-    'Viewer role - can see addresses but has no create, edit, remove or default actions',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 4: Viewer role =========');
-
-      cy.logToTerminal('🔐 Login as Viewer');
-      actions.login(addressBookUsers.viewer, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.contains(addressBookAddresses.billing.lastName).should('be.visible');
-      cy.contains(addressBookLabels.createNew).should('not.exist');
-      cy.contains(addressBookLabels.edit).should('not.exist');
-      cy.contains(addressBookLabels.remove).should('not.exist');
-
-      cy.logToTerminal('🚪 Logging out Viewer');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 4: Viewer role verified (view-only)');
-    },
-  );
-
-  // Test 5: Create permission (no default)
-  it.skip(
-    'Creator role - can add addresses but cannot edit, remove or set default',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 5: Creator role =========');
-
-      cy.logToTerminal('🔐 Login as Creator');
-      actions.login(addressBookUsers.creator, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.contains(addressBookLabels.edit).should('not.exist');
-      cy.contains(addressBookLabels.remove).should('not.exist');
-
-      cy.logToTerminal('📝 Creating an address without default permission');
-      cy.contains(addressBookLabels.createNew).should('be.visible').click();
-      actions.fillCompanyAddressFields(addressBookAddresses.shipping);
-      cy.get(selectors.addressBookTypeShippingRadio).check({ force: true });
-
-      cy.logToTerminal('🔍 Verifying default checkbox is present but disabled');
-      cy.get(selectors.addressBookDefaultShippingCheckbox).should('be.disabled');
-
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.shipping.lastName).should('be.visible');
-
-      cy.logToTerminal('🚪 Logging out Creator');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 5: Creator role verified (create-only, no default)');
-    },
-  );
-
-  // Test 6: Create + set-default permission
-  it.skip(
-    'Creator-with-default role - can add addresses and set them as default',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 6: Creator-with-default role =========');
-
-      cy.logToTerminal('🔐 Login as Creator-with-default');
-      actions.login(addressBookUsers.creatorWithDefault, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.logToTerminal('📝 Creating an address and marking it default');
-      cy.contains(addressBookLabels.createNew).should('be.visible').click();
-      actions.fillCompanyAddressFields(addressBookAddresses.billing);
-      cy.get(selectors.addressBookTypeBillingRadio).check({ force: true });
-
-      cy.logToTerminal('🔍 Verifying default checkbox is present and enabled');
-      cy.get(selectors.addressBookDefaultBillingCheckbox).should('not.be.disabled').check({ force: true });
-
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-
-      cy.logToTerminal('🔀 Verifying the newly created default address sorts first');
-      cy.get(selectors.addressBookCard).first().should('contain.text', addressBookAddresses.billing.lastName);
-
-      cy.logToTerminal('🚪 Logging out Creator-with-default');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 6: Creator-with-default role verified');
-    },
-  );
-
-  // Test 7: Edit permission
-  it.skip(
-    'Editor role - can modify existing addresses but cannot create, remove or set default',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 7: Editor role =========');
-
-      cy.logToTerminal('🔐 Login as Editor');
-      actions.login(addressBookUsers.editor, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.contains(addressBookLabels.createNew).should('not.exist');
-      cy.contains(addressBookLabels.remove).should('not.exist');
-
-      cy.logToTerminal('✏️ Editing an existing address');
-      cy.get(selectors.addressBookCard)
-        .contains(addressBookAddresses.shipping.lastName)
-        .closest(selectors.addressBookCard)
-        .within(() => {
-          cy.contains(addressBookLabels.edit).should('be.visible').click();
-        });
-      actions.fillCompanyAddressFields(addressBookAddresses.edited);
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.edited.street).should('be.visible');
-
-      cy.logToTerminal('🚪 Logging out Editor');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 7: Editor role verified (edit-only)');
-    },
-  );
-
-  // Test 8: Delete permission
-  it.skip(
-    'Deleter role - can remove addresses but cannot create, edit or set default',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 8: Deleter role =========');
-
-      cy.logToTerminal('🔐 Login as Deleter');
-      actions.login(addressBookUsers.deleter, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.contains(addressBookLabels.createNew).should('not.exist');
-      cy.contains(addressBookLabels.edit).should('not.exist');
-
-      cy.logToTerminal('🗑️ Removing the address edited in Test 7');
-      actions.deleteCompanyAddressCard(addressBookAddresses.edited.street, addressBookLabels);
-      cy.contains(addressBookAddresses.edited.street).should('not.exist');
-
-      cy.logToTerminal('🚪 Logging out Deleter');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 8: Deleter role verified (delete-only)');
-    },
-  );
-
-  // Test 9: Full permission
-  it.skip(
-    'Full-permission role - has create, edit, remove and default actions available',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 9: Full-permission role =========');
-
-      cy.logToTerminal('🔐 Login as Full-permission user');
-      actions.login(addressBookUsers.full, urls);
-      actions.openCompanyAddressBook(urls);
-
-      cy.logToTerminal('📝 Creating an address with full permissions');
-      cy.contains(addressBookLabels.createNew).should('be.visible').click();
-      actions.fillCompanyAddressFields(addressBookAddresses.shipping);
-      cy.get(selectors.addressBookTypeShippingRadio).check({ force: true });
-      cy.get(selectors.addressBookDefaultShippingCheckbox).should('not.be.disabled').check({ force: true });
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-      cy.contains(addressBookAddresses.shipping.lastName).should('be.visible');
-
-      cy.logToTerminal('✏️ Editing it');
-      cy.get(selectors.addressBookCard)
-        .contains(addressBookAddresses.shipping.lastName)
-        .closest(selectors.addressBookCard)
-        .within(() => {
-          cy.contains(addressBookLabels.edit).should('be.visible').click();
-        });
-      actions.fillCompanyAddressFields(addressBookAddresses.edited);
-      cy.contains(addressBookLabels.save).click();
-      cy.wait(3000);
-
-      cy.logToTerminal('🗑️ Removing it');
-      actions.deleteCompanyAddressCard(addressBookAddresses.edited.street, addressBookLabels);
-      cy.contains(addressBookAddresses.edited.street).should('not.exist');
-
-      cy.logToTerminal('🚪 Logging out Full-permission user');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 9: Full-permission role verified');
-    },
-  );
-
-  // Test 10: No address-book permission at all
-  it.skip(
-    'No-access role - cannot access the company address book at all',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 10: No-access role =========');
-
-      cy.logToTerminal('🔐 Login as No-access user');
-      actions.login(addressBookUsers.noAccess, urls);
-
-      cy.visit(urls.companyProfile);
-      cy.wait(3000);
-
-      cy.logToTerminal('🔍 Verifying the address book is not offered / shows no-permission state');
-      cy.get('body').then(($body) => {
-        if (/address\s*book/i.test($body.text())) {
-          cy.contains(/address\s*book/i).click({ force: true });
-          cy.contains(addressBookLabels.noPermissionCreate).should('be.visible');
-          cy.contains(addressBookLabels.createNew).should('not.exist');
-        } else {
-          cy.logToTerminal('✅ Address Book link not offered for no-access role, as expected');
-        }
-      });
-
-      cy.logToTerminal('🚪 Logging out No-access user');
-      cy.visit('/');
-      cy.wait(3000);
-      actions.logout(addressBookLabels);
-      cy.logToTerminal('✅ Test 10: No-access role verified');
-    },
-  );
-
-  // Test 11: Cleanup
-  it.skip(
-    'Cleanup - Delete address book users and roles',
-    () => {
-      cy.logToTerminal('========= ⚙️ Test 11: Cleanup =========');
-
-      const addressBookUsersConfig = Cypress.env('addressBookUsersConfig') || [];
-
-      cy.logToTerminal('🗑️ Deleting address book test users');
-      addressBookUsersConfig
-        .reduce((chain, element) => chain.then(() => {
-          actions.login(element.user, urls);
-          cy.visit('/');
-          cy.wait(3000);
-          cy.deleteCustomer();
-        }), cy.wrap(null));
-
-      cy.logToTerminal('🔐 Login as company admin to clean up roles');
-      cy.then(() => {
-        actions.login(Cypress.env('testAdmin'), urls);
-        cy.wait(3000);
-
-        const roleNamesToDelete = addressBookUsersConfig
-          .map((config) => config.role?.role_name)
-          .filter(Boolean);
-        const userEmailsToUnassign = addressBookUsersConfig.map((config) => config.user.email);
-        const cleanupCompanyId = Cypress.env('testCompany')?.id;
-
-        cy.wrap(unassignRoles(userEmailsToUnassign, cleanupCompanyId), { timeout: 60000 }).then(() => {
-          if (!roleNamesToDelete.length) {
-            cy.logToTerminal('⚠️ No role names found. Skipping deleting address book roles.');
-            return;
-          }
-
-          cy.wrap(deleteCompanyRoles(roleNamesToDelete), { timeout: 60000 }).then(() => {
-            cy.logToTerminal('✅ All address book test roles deleted successfully');
-          });
-        });
-      });
-
-      cy.wait(1000);
-      cy.logToTerminal('✅ B2B Address Book test suite completed');
-    },
-  );
+  cy.wait(3000);
 });
 
-// TEMPORARY: real-admin scenario (TEMP). Uses the pre-existing, already
-// Company-Administrator real account instead of any REST-created user —
-// REST role creation is blocked (backend returns 500 for every role that
-// includes a Magento_CompanyAddressStorefrontCompatibility::* resource_id,
-// confirmed via the honest failure-reporting fix in Test 1 above). This
-// account bypasses ACL checks entirely, so it can still prove the whole
-// feature surface works end-to-end. IMPORTANT: this real account must never
-// be deleted by the global afterEach in src/support/deleteCustomer.js — its
-// title is added to that file's skipDeleteTests exclusion list.
-describe('B2B Address Book - Real Admin Scenario (TEMP)', () => {
+// Read lazily: `before` has not run yet when a describe body is evaluated.
+const testCompanyName = () => Cypress.env('testCompany').name;
+const adminCreds = () => Cypress.env('testAdmin');
+const regularUserCreds = () => Cypress.env('testUsers').regular;
+
+describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas'] }, () => {
   const urls = Cypress.env('addressBookUrls');
-  const companyName = 'Atwix QA - PO Disabled';
 
   beforeEach(() => {
     cy.clearCookies();
     cy.clearLocalStorage();
 
-    cy.logToTerminal('🔐 Login as company admin (real account)');
+    const { email, password } = adminCreds();
+    cy.logToTerminal(`🔐 Login as company admin (${email})`);
     // Same retry-if-not-redirected logic as actions.login() — this platform
     // sometimes doesn't redirect to /customer/account right after submit,
     // written inline here instead of calling the shared action.
@@ -604,9 +140,9 @@ describe('B2B Address Book - Real Admin Scenario (TEMP)', () => {
       cy.clearLocalStorage();
       cy.visit(urls.login);
       cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
-        cy.get('input[name="email"]').type('k.fandeliuk@atwix.com');
+        cy.get('input[name="email"]').type(email);
         cy.wait(1500);
-        cy.get('input[name="password"]').type('qweQWE1!');
+        cy.get('input[name="password"]').type(password, { log: false });
         cy.wait(1500);
         cy.get('button[type="submit"]').click();
         cy.wait(8000);
@@ -627,11 +163,15 @@ describe('B2B Address Book - Real Admin Scenario (TEMP)', () => {
     cy.url().should('include', urls.account);
     cy.wait(3000);
 
-    cy.logToTerminal(`🏢 Switching to "${companyName}" company`);
+    // The company is created fresh per run, so this admin belongs to exactly
+    // one company and the switcher does not render. The assertion below is the
+    // real guard — everything after it mutates persistent company data.
     cy.visit(urls.companyProfile);
     cy.wait(2000);
-    cy.get('select[aria-label="Select company"]').select(companyName);
-    cy.wait(3000);
+    cy.waitForLoadingSkeletonToDisappear();
+    cy.get('.account-company-profile-card__content', { timeout: 20000 })
+      .should('contain.text', testCompanyName());
+    cy.logToTerminal(`🏢 Active company: ${testCompanyName()}`);
   });
 
   it('Test 1: Address Book toggles start disabled (forced off if not)', () => {
@@ -921,17 +461,17 @@ describe('B2B Address Book - Real Admin Scenario (TEMP)', () => {
   });
 });
 
-// TEMPORARY: granular permission scenario using a second real, pre-existing
-// user (l66ku@emalupe.com) who holds the "Default User" role on the same
-// "Atwix QA - PO Disabled" company. Alternates admin (toggles individual
-// Company Addresses child permissions via the roles tree) and this regular
-// user (verifies what is/isn't possible at each permission level) — no REST
-// user creation, matching the same constraint as the describe above.
-// IMPORTANT: this real account must never be deleted — its title is added
-// to src/support/deleteCustomer.js's skipDeleteTests exclusion list.
-describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
+// Granular permission scenario driven by the single regular user created in
+// the root `before`, who holds the company's built-in "Default User" role.
+// Alternates admin (toggles individual Company Addresses child permissions via
+// the roles tree) and that user (verifies what is/isn't possible at each
+// permission level). Permissions move through the UI rather than REST because
+// POST /V1/company/role rejects the address-book resource ids.
+// The suite does its own cleanup, so its title stays in
+// src/support/deleteCustomer.js's skipDeleteTests list to keep the global
+// afterEach from deleting the user between tests.
+describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSaas'] }, () => {
   const urls = Cypress.env('addressBookUrls');
-  const companyName = 'Atwix QA - PO Disabled';
 
   const loginAs = (email, password) => {
     const submitLogin = () => {
@@ -941,7 +481,7 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
       cy.get('main .auth-sign-in-form', { timeout: 15000 }).within(() => {
         cy.get('input[name="email"]').type(email);
         cy.wait(1500);
-        cy.get('input[name="password"]').type(password);
+        cy.get('input[name="password"]').type(password, { log: false });
         cy.wait(1500);
         cy.get('button[type="submit"]').click();
         cy.wait(8000);
@@ -980,7 +520,7 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
     // nothing to switch between, so its absence is legitimate there.
     cy.get('body').then(($body) => {
       if ($body.find('select[aria-label="Select company"]').length) {
-        cy.get('select[aria-label="Select company"]').select(companyName);
+        cy.get('select[aria-label="Select company"]').select(testCompanyName());
         cy.wait(3000);
       } else {
         cy.logToTerminal('ℹ️ No company switcher found — account has only one company');
@@ -994,19 +534,21 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
     // cy.contains() also matches the <option> inside the switcher <select>,
     // and options are 0x0 so they can never satisfy should('be.visible').
     cy.get('.account-company-profile-card__content', { timeout: 15000 })
-      .should('contain.text', companyName);
-    cy.logToTerminal(`🏢 Confirmed active company: ${companyName}`);
+      .should('contain.text', testCompanyName());
+    cy.logToTerminal(`🏢 Confirmed active company: ${testCompanyName()}`);
   };
 
   const loginAsAdminAndSwitch = () => {
-    cy.logToTerminal('🔐 Login as company admin (real account)');
-    loginAs('k.fandeliuk@atwix.com', 'qweQWE1!');
+    const admin = adminCreds();
+    cy.logToTerminal(`🔐 Login as company admin (${admin.email})`);
+    loginAs(admin.email, admin.password);
     switchToTestCompany();
   };
 
   const loginAsRegularUserAndSwitch = () => {
-    cy.logToTerminal('🔐 Login as regular user (real account)');
-    loginAs('l66ku@emalupe.com', 'qweQWE1!');
+    const user = regularUserCreds();
+    cy.logToTerminal(`🔐 Login as regular user (${user.email})`);
+    loginAs(user.email, user.password);
     switchToTestCompany();
   };
 
@@ -1017,6 +559,78 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
   // every child at once (all on / all off), while clicking a CHILD affects
   // only that child and leaves the parent alone. So partial permission sets
   // are set purely by clicking children — never touch the parent here.
+  // Opens the Default User role editor with the whole permission tree expanded.
+  // Shared by the two helpers below; setChildPermissions does the same inline
+  // and is deliberately left untouched, since its tests already pass.
+  const openDefaultUserRoleTree = () => {
+    cy.visit('/customer/company/roles');
+    cy.wait(2000);
+    cy.contains('Default User').closest('tr').within(() => {
+      cy.contains('Edit').click();
+    });
+    cy.wait(1000);
+    cy.get('.edit-role-and-permission__tree-container').should('be.visible');
+    cy.contains('button', 'Expand All').click();
+    cy.wait(1000);
+  };
+
+  // Logs every top-level branch of the role tree with its checkbox state.
+  // Until now this suite only ever ran against a long-lived company whose
+  // "Default User" role had been configured by hand. A company created per run
+  // carries Magento's defaults instead, so the exact branch labels — and
+  // whether ordering is permitted at all — are unknown. Rather than guessing
+  // them, this prints the real tree on the first CI run.
+  const logRoleTree = () => {
+    openDefaultUserRoleTree();
+    cy.get('.edit-role-and-permission__tree-container')
+      .find('> ul > li.acm-tree__item')
+      .then(($items) => {
+        const summary = [...$items].map((el) => {
+          const label = el.querySelector('.edit-role-and-permission__tree-label')?.textContent.trim();
+          const checked = el.querySelector('input[type="checkbox"]')?.checked;
+          return `${label}=${checked}`;
+        });
+        cy.logToTerminal(`🌳 Default User role — top-level branches: ${summary.join(' | ')}`);
+      });
+  };
+
+  // Turns a whole top-level branch on by clicking its parent checkbox, which
+  // toggles every child at once. Accepts several candidate labels because the
+  // branch that carries Magento_Sales::place_order is named differently across
+  // versions; the first one present wins, and a miss is logged rather than
+  // failing the test — RU7 will surface it far more clearly if ordering really
+  // is missing.
+  const enableTopLevelBranch = (candidateLabels) => {
+    openDefaultUserRoleTree();
+
+    cy.get('.edit-role-and-permission__tree-container').then(($tree) => {
+      const match = candidateLabels.find((label) => [...$tree.find('> ul > li.acm-tree__item .edit-role-and-permission__tree-label')]
+        .some((el) => el.textContent.trim() === label));
+
+      if (!match) {
+        cy.logToTerminal(`⚠️ None of these branches found in the role tree: ${candidateLabels.join(', ')}`);
+        return;
+      }
+
+      cy.contains('.edit-role-and-permission__tree-label', match)
+        .closest('li.acm-tree__item')
+        .children('.edit-role-and-permission__tree-node')
+        .find('input[type="checkbox"]')
+        .then(($cb) => {
+          if ($cb.prop('checked')) {
+            cy.logToTerminal(`✅ Branch "${match}" already enabled`);
+          } else {
+            cy.logToTerminal(`🔧 Enabling branch "${match}" (parent click enables all its children)`);
+            cy.wrap($cb).click({ force: true });
+            cy.wait(500);
+          }
+        });
+    });
+
+    cy.contains('button', 'Save Role').click();
+    cy.wait(2000);
+  };
+
   const setChildPermissions = (changes) => {
     cy.visit('/customer/company/roles');
     cy.wait(2000);
@@ -1142,6 +756,14 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
   // make RU1 (which needs full rights) fail for the wrong reason.
   it('RU0: Admin restores full Company Addresses permissions (scenario baseline)', () => {
     loginAsAdminAndSwitch();
+
+    // The company is created fresh per run, so its Default User role holds
+    // Magento's defaults rather than the hand-tuned permissions the previous
+    // long-lived company had. Print the tree once, then make sure ordering is
+    // permitted — RU7 ends by placing a purchase order as this very user.
+    logRoleTree();
+    enableTopLevelBranch(['Sales', 'Allow Checkout', 'Place Order']);
+
     setChildPermissions([
       { label: 'Add', checked: true },
       { label: 'Edit', checked: true },
@@ -1468,5 +1090,17 @@ describe('B2B Address Book - Regular User Permission Scenario (TEMP)', () => {
     });
 
     logout();
+  });
+
+  // Runs as a test rather than an `after` hook so its result is visible in the
+  // report — the same pattern verifyPurchaseOrders.spec.js uses. Its title is
+  // in deleteCustomer.js's skipDeleteTests list so the global afterEach does
+  // not race this teardown.
+  it('Cleanup - Delete address book users and roles', () => {
+    cy.logToTerminal('🧹 Removing the company, its admin and the regular user');
+    cy.then({ timeout: 60000 }, async () => {
+      const results = await cleanupTestCompany();
+      cy.logToTerminal(`🧹 Cleanup result: ${JSON.stringify(results)}`);
+    });
   });
 });
