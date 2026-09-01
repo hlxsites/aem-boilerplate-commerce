@@ -128,11 +128,11 @@
   white-space: nowrap;
 }
 
+/* Aggregate stock line: icon + text, no filled pill. */
 .product-details__saleable-qty {
   margin: var(--spacing-xsmall) 0 var(--spacing-small);
 }
 
-/* Stock indicator: icon + text, no filled pill. */
 .pdp-stock {
   display: inline-flex;
   align-items: center;
@@ -145,7 +145,7 @@
 .pdp-stock--low { color: var(--color-warning-800); }
 .pdp-stock--out-of-stock { color: var(--color-alert-800); }
 
-/* Per-source list: an icon-led list, one row per fulfillment location. */
+/* Per-source availability list, one row per source. */
 .product-details__source-availability {
   margin: 0 0 var(--spacing-medium);
 }
@@ -193,6 +193,16 @@
 .pdp-avail__row[data-state="available"] .pdp-avail__qty { color: var(--color-positive-800); }
 .pdp-avail__row[data-state="out-of-stock"] .pdp-avail__qty { color: var(--color-neutral-500); }
 
+/* Reserve space (invisibly) while availability loads, so the result lands without a shift. */
+.product-details__saleable-qty[data-loading] {
+  min-height: 1.25rem;
+}
+
+.product-details__source-availability[data-loading] {
+  min-height: 4.5rem;
+}
+
+/* Per-variant matrix table (shown in a modal). */
 .product-details__matrix {
   width: 100%;
   margin: var(--spacing-small) 0 var(--spacing-medium);
@@ -223,17 +233,12 @@
   color: var(--color-neutral-500);
 }
 
-/* Per-variant list (1 or 3+ axes) renders on the design-system Table. */
 .product-details__matrix__availability {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-xxsmall);
 }
-
-.product-details__matrix__qty[data-state="in-stock"] { color: var(--color-positive-800); }
-.product-details__matrix__qty[data-state="low"] { color: var(--color-warning-800); }
-.product-details__matrix__qty[data-state="out-of-stock"] { color: var(--color-alert-800); }
 
 .product-details__matrix__sources {
   margin: 0;
@@ -271,15 +276,6 @@
 
 .product-details__matrix__cell[data-state="out-of-stock"] .product-details__matrix__qty {
   color: var(--color-alert-800);
-}
-
-/* Reserve space (invisibly) while availability loads, so the result lands without a shift. */
-.product-details__saleable-qty[data-loading] {
-  min-height: 1.25rem;
-}
-
-.product-details__source-availability[data-loading] {
-  min-height: 4.5rem;
 }
 
 /* Matrix trigger: a secondary action that opens the grid in a modal (no inline space). */

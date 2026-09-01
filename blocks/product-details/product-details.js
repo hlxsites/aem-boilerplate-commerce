@@ -86,8 +86,8 @@ function formatNumericAttributeValue(value) {
   return new Intl.NumberFormat(document.documentElement.lang).format(Number(trimmed));
 }
 
-// The PDP dropin reads Catalog Service, which has no stock, so query per-source qty here.
-// available_qty is null above the store display threshold; the query is off until enabled.
+// sourceAvailability is a core-endpoint query (Catalog Service has no stock). available_qty is null
+// above the store display threshold; the query is off until enabled for the store.
 const SOURCE_AVAILABILITY_QUERY = `
   query GET_SOURCE_AVAILABILITY($skus: [String!]!) {
     sourceAvailability(skus: $skus) {
@@ -101,101 +101,62 @@ const SOURCE_AVAILABILITY_QUERY = `
   }
 `;
 
-// Pickup locations for the SKU, joined to sources by pickup_location_code == source_code.
-// Best-effort: if in-store pickup is off the query errors and the join is skipped.
-const PICKUP_LOCATIONS_QUERY = `
-  query GET_PICKUP_LOCATIONS($sku: String!) {
-    pickupLocations(productsInfo: [{ sku: $sku }], pageSize: 100) {
-      items {
-        pickup_location_code
-        name
-      }
-    }
-  }
-`;
-
-function hideSaleableQty($badge, $list) {
-  renderStockIndicator($badge, null);
-  renderSourceList($list, { sources: [] });
-}
-
-async function updateSaleableQty(els, sku, labels, isCurrent = () => true) {
-  const $badge = els?.badge ?? null;
-  const $list = els?.list ?? null;
-  if (!$badge && !$list) return;
-  if (!sku) {
-    hideSaleableQty($badge, $list);
-    return;
-  }
-  // Reserve space with a skeleton while the lookup runs, so the result lands without a shift.
-  if ($badge) { $badge.setAttribute('data-loading', ''); $badge.hidden = false; }
-  if ($list) { $list.setAttribute('data-loading', ''); $list.hidden = false; }
-
-  // Fire both together, but the stock line only needs availability, so pickup never gates it.
-  const availReq = CORE_FETCH_GRAPHQL.fetchGraphQl(SOURCE_AVAILABILITY_QUERY, {
-    method: 'GET',
-    variables: { skus: [sku] },
-  });
-  const pickupReq = CORE_FETCH_GRAPHQL.fetchGraphQl(PICKUP_LOCATIONS_QUERY, {
-    method: 'GET',
-    variables: { sku },
-  }).catch(() => null);
-
-  let availRes;
-  try {
-    availRes = await availReq;
-  } catch (error) {
-    console.debug('saleable-qty: sourceAvailability fetch failed', error);
-    if (isCurrent()) hideSaleableQty($badge, $list);
-    return;
-  }
-  if (!isCurrent()) return; // a newer variant was selected while this request was in flight
-  // Query off for the store, a backend without it, or no source data: hide (don't assert OOS).
-  const sources = availRes?.errors?.length
-    ? []
-    : (availRes?.data?.sourceAvailability?.find((s) => s.sku === sku)?.sources ?? []);
-  if (sources.length === 0) {
-    hideSaleableQty($badge, $list);
-    return;
-  }
-
+// Stock line from a SKU's sources: out of stock / only N left (all exact) / in stock.
+function badgeFromSources(sources, labels) {
   const inStock = sources.filter((s) => s.is_in_stock);
-  const fmt = (n) => new Intl.NumberFormat(document.documentElement.lang).format(n);
   const t = labels?.Custom?.SaleableQty ?? {};
-
-  // Aggregate stock line: out of stock / only N left (all sources exact) / in stock.
-  let state;
-  let text;
-  if (inStock.length === 0) {
-    state = 'out-of-stock';
-    text = t.OutOfStock ?? 'Out of stock';
-  } else if (inStock.every((s) => s.available_qty != null)) {
-    state = 'low';
+  if (inStock.length === 0) return { state: 'out-of-stock', text: t.OutOfStock ?? 'Out of stock' };
+  if (inStock.every((s) => s.available_qty != null)) {
     const total = inStock.reduce((sum, s) => sum + Number(s.available_qty), 0);
-    text = (t.OnlyXLeft ?? 'Only {qty} left').replace('{qty}', fmt(total));
-  } else {
-    state = 'in-stock';
-    text = t.InStock ?? 'In stock';
+    const qty = new Intl.NumberFormat(document.documentElement.lang).format(total);
+    return { state: 'low', text: (t.OnlyXLeft ?? 'Only {qty} left').replace('{qty}', qty) };
   }
-  renderStockIndicator($badge, { state, text }, isCurrent);
-
-  // Pickup only enriches the source list, so await it separately.
-  const pickupRes = await pickupReq;
-  if (!isCurrent()) return;
-  const items = pickupRes?.data?.pickupLocations?.items ?? [];
-  const pickupByCode = new Map(items.map((i) => [i.pickup_location_code, i]));
-  renderSourceList($list, {
-    sources, pickupByCode, labels, isCurrent,
-  });
+  return { state: 'in-stock', text: t.InStock ?? 'In stock' };
 }
 
-// Variant availability overview for configurable products, behind a trigger. The fetch
-// (options + variants + per-variant availability) runs only when the shopper opens the
-// modal, so a PDP that is never expanded pays nothing. Simple products get no trigger.
+// Query per-source stock for one concrete SKU (a simple product or a selected variant) and render
+// the "only N left" line + per-source list. A configurable uses the matrix, not this.
+async function renderAvailability($badge, $list, sku, labels, isCurrent = () => true) {
+  if (!sku) {
+    renderStockIndicator($badge, null);
+    renderSourceList($list, { sources: [] });
+    return;
+  }
+  $badge.setAttribute('data-loading', ''); $badge.hidden = false;
+  $list.setAttribute('data-loading', ''); $list.hidden = false;
+
+  let res;
+  try {
+    res = await CORE_FETCH_GRAPHQL.fetchGraphQl(SOURCE_AVAILABILITY_QUERY, {
+      method: 'GET',
+      variables: { skus: [sku] },
+    });
+  } catch (error) {
+    console.debug('sourceAvailability fetch failed', error);
+    if (isCurrent()) {
+      renderStockIndicator($badge, null);
+      renderSourceList($list, { sources: [] });
+    }
+    return;
+  }
+  if (!isCurrent()) return; // a newer selection landed while this request was in flight
+  // Off for the store, a backend without it, or no data: hide rather than assert out of stock.
+  const sources = res?.errors?.length
+    ? []
+    : (res?.data?.sourceAvailability?.find((s) => s.sku === sku)?.sources ?? []);
+  if (sources.length === 0) {
+    renderStockIndicator($badge, null);
+    renderSourceList($list, { sources: [] });
+    return;
+  }
+  renderStockIndicator($badge, badgeFromSources(sources, labels), isCurrent);
+  renderSourceList($list, { sources, labels, isCurrent });
+}
+
+// Per-variant overview, behind a trigger that opens the matrix in a modal. Configurables only.
 function setupVariantMatrix($el, product, labels) {
   if (!$el) return;
   const sku = product?.sku;
-  // Only configurables carry options; simple products have none, so show no trigger.
   if (!sku || (product?.options?.length ?? 0) === 0) {
     $el.hidden = true;
     $el.replaceChildren();
@@ -310,40 +271,34 @@ export default async function decorate(block) {
 
   block.replaceChildren(fragment);
 
-  // Secondary lookups against Catalog + core. Start immediately (no LCP-blocking work here);
-  // eager:true replays the current pdp/data, request tokens drop out-of-order responses, and
-  // a skeleton reserves space so the async result lands without a layout shift.
-  let saleableQtySku;
-  let saleableQtyReq = 0;
-  events.on('pdp/data', (data) => {
-    const nextSku = data?.variantSku ?? data?.sku;
-    // Product not found (no sku): invalidate any in-flight lookup and hide.
-    if (!nextSku) {
-      saleableQtyReq += 1;
-      saleableQtySku = undefined;
-      renderStockIndicator($saleableQty, null);
-      renderSourceList($sourceAvailability, { sources: [] });
-      return;
-    }
-    if (nextSku === saleableQtySku) return;
-    saleableQtySku = nextSku;
-    saleableQtyReq += 1;
-    const reqId = saleableQtyReq;
-    updateSaleableQty(
-      { badge: $saleableQty, list: $sourceAvailability },
-      nextSku,
-      labels,
-      () => reqId === saleableQtyReq,
-    );
-  }, { eager: true });
+  // The "only N left" line + per-source list are per-SKU: shown for a simple product or a selected
+  // variant. A configurable with nothing chosen shows neither; the matrix is the all-options view.
+  // eager:true replays pdp/data; a token drops out-of-order responses.
+  let availSku;
+  let availReq = 0;
 
-  // Variant overview trigger, set up from the parent (configurable) sku. That sku is
-  // constant across variant selections, so rebuild only when it actually changes.
+  function refreshAvailability(sku) {
+    if (sku === availSku) return;
+    availSku = sku;
+    const token = availReq + 1;
+    availReq = token;
+    renderAvailability($saleableQty, $sourceAvailability, sku, labels, () => token === availReq);
+  }
+
+  const skuFor = (data) => data?.variantSku
+    || ((data?.options?.length ?? 0) > 0 ? undefined : data?.sku);
+
+  events.on('pdp/data', (data) => refreshAvailability(skuFor(data)), { eager: true });
+  // Runtime option changes emit pdp/values (not pdp/data), so re-query for the selected variant.
+  events.on('pdp/values', () => {
+    refreshAvailability(pdpApi.getProductConfigurationValues?.()?.variantSku);
+  });
+
+  // Per-variant matrix trigger, keyed on the parent sku so it rebuilds only when that changes.
   let matrixSku;
   events.on('pdp/data', (data) => {
-    const parentSku = data?.sku;
-    if (parentSku === matrixSku) return;
-    matrixSku = parentSku;
+    if (data?.sku === matrixSku) return;
+    matrixSku = data?.sku;
     setupVariantMatrix($variantMatrix, data, labels);
   }, { eager: true });
 
