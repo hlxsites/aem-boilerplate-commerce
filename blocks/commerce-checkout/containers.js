@@ -339,6 +339,18 @@ export const renderShippingMethods = async (container) => renderContainer(
 );
 
 /**
+ * Resolves with the payment method codes Payment Services has confirmed are available
+ * for checkout, waiting for its initialization event if it hasn't fired yet.
+ * @returns {Promise<string[]>}
+ */
+const getAvailablePaymentServicesMethods = () => new Promise((resolve) => {
+  const subscription = events.on('payment-services/initialized/checkout', ({ availablePaymentMethods }) => {
+    subscription?.off();
+    resolve(availablePaymentMethods);
+  }, { eager: true });
+});
+
+/**
  * Renders payment methods with credit card integration - original regular checkout functionality
  * @param {HTMLElement} paymentMethodsContainer - DOM element to render payment methods in
  * @param {HTMLElement} placeOrderButtonContainer - DOM element express payment buttons mount into,
@@ -352,110 +364,114 @@ export const renderPaymentMethods = async (
   validateCheckoutForms,
 ) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
-  async () => CheckoutProvider.render(PaymentMethods, {
-    slots: {
-      Methods: {
-        [PaymentMethodCode.CREDIT_CARD]: {
-          render: (ctx) => {
-            const $creditCard = document.createElement('div');
+  async () => {
+    const availablePaymentServicesMethods = await getAvailablePaymentServicesMethods();
 
-            PaymentServices.render(CreditCard)($creditCard);
+    return CheckoutProvider.render(PaymentMethods, {
+      slots: {
+        Methods: {
+          [PaymentMethodCode.CREDIT_CARD]: {
+            render: (ctx) => {
+              const $creditCard = document.createElement('div');
 
-            ctx.replaceHTML($creditCard);
+              PaymentServices.render(CreditCard)($creditCard);
+
+              ctx.replaceHTML($creditCard);
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.CREDIT_CARD),
           },
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.PAYPAL_BUTTONS]: {
-          render: (ctx) => {
-            mountPlaceOrderSlot((el) => PaymentServices.render(PayPalButtons, {
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => {
-                orderApi.placeOrder(cartId);
-              },
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
-
-            ctx.replaceHTML(createExpressPaymentNotice('PayPal'));
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
           },
-          enabled: false,
-        },
-        [PaymentMethodCode.APPLE_PAY]: {
-          render: (ctx) => {
-            const checkoutData = events.lastPayload('checkout/updated')
-              || events.lastPayload('checkout/initialized')
-              || null;
+          [PaymentMethodCode.PAYPAL_BUTTONS]: {
+            render: (ctx) => {
+              mountPlaceOrderSlot((el) => PaymentServices.render(PayPalButtons, {
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => {
+                  orderApi.placeOrder(cartId);
+                },
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
 
-            if (checkoutData === null) {
-              console.error('Cannot render apple pay button without checkout data.');
-              unmountPlaceOrderSlot();
-              ctx.replaceHTML(document.createElement('div'));
-              return;
-            }
-
-            mountPlaceOrderSlot((el) => PaymentServices.render(ApplePay, {
-              location: PaymentLocation.CHECKOUT,
-              getCartId: () => ctx.cartId,
-              isVirtualCart: checkoutData.isVirtual,
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
-
-            ctx.replaceHTML(createExpressPaymentNotice('Apple Pay'));
+              ctx.replaceHTML(createExpressPaymentNotice('PayPal'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.PAYPAL_BUTTONS),
           },
-          enabled: false,
-        },
-        [PaymentMethodCode.APM]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.GOOGLE_PAY]: {
-          render: (ctx) => {
-            mountPlaceOrderSlot((el) => PaymentServices.render(GooglePay, {
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
+          [PaymentMethodCode.APPLE_PAY]: {
+            render: (ctx) => {
+              const checkoutData = events.lastPayload('checkout/updated')
+                || events.lastPayload('checkout/initialized')
+                || null;
 
-            ctx.replaceHTML(createExpressPaymentNotice('Google Pay'));
+              if (checkoutData === null) {
+                console.error('Cannot render apple pay button without checkout data.');
+                unmountPlaceOrderSlot();
+                ctx.replaceHTML(document.createElement('div'));
+                return;
+              }
+
+              mountPlaceOrderSlot((el) => PaymentServices.render(ApplePay, {
+                location: PaymentLocation.CHECKOUT,
+                getCartId: () => ctx.cartId,
+                isVirtualCart: checkoutData.isVirtual,
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
+
+              ctx.replaceHTML(createExpressPaymentNotice('Apple Pay'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.APPLE_PAY),
           },
-          enabled: false,
-        },
-        [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
+          [PaymentMethodCode.APM]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.GOOGLE_PAY]: {
+            render: (ctx) => {
+              mountPlaceOrderSlot((el) => PaymentServices.render(GooglePay, {
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
+
+              ctx.replaceHTML(createExpressPaymentNotice('Google Pay'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.GOOGLE_PAY),
+          },
+          [PaymentMethodCode.VAULT]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
         },
       },
-    },
-  })(paymentMethodsContainer),
+    })(paymentMethodsContainer);
+  },
 );
 
 /**
