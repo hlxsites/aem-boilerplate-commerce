@@ -1,6 +1,6 @@
 # @dropins/storefront-wishlist
 
-## 3.5.0-alpha-20260827092943
+## 3.5.0-alpha-20260831234618
 
 ### Minor Changes
 
@@ -8,20 +8,10 @@
   named wishlists for a logged-in customer. Authenticated only; guests are a
   no-op. The default wishlist and guest behavior are unchanged (additive,
   backwards compatible).
-- 3bf76f4: Add an optional `wishlistId` parameter to `addProductsToWishlist` so
+- 2afeee7: Add an optional `wishlistId` parameter to `addProductsToWishlist` so
   products can be added to a specific wishlist instead of the default. Omitting
   it keeps the existing behavior; guests continue to use their single local list
   (additive, backwards compatible).
-- d11a921: Add guest persistence for keyed wishlists (e.g. Save for Later). A
-  guest `wishlistId` now maps to its own local-storage list:
-  `addProductsToWishlist`/`removeProductsFromWishlist` write to that keyed store
-  without emitting on the active list or touching the heart-icon cache, and
-  `getWishlistById` reads from it. Adds an opt-in per-list expiry via the new
-  `guestWishlistTtl` config (`{ 'save-for-later': 14 }` = 14-day TTL); lists
-  without a configured TTL, including the default guest wishlist, never expire.
-  `mergeWishlists` now accepts an optional `listKey` so a keyed guest list can
-  be merged into a specific server list on login (deduped by sku + options); the
-  default (no `listKey`) behavior is unchanged.
 - 64e63d3: Add multi-list rendering via event scoping: the `Wishlist` container
   accepts a `scope` prop so several instances can coexist on one page, each
   reacting only to its own list's `wishlist/data` and `wishlist/alert` events
@@ -30,6 +20,17 @@
   `removeProductsFromWishlist` accepts an optional `wishlistId` for a targeted
   removal, and the wishlist `name` is now exposed. Pair `wishlistId` (which list
   to load/mutate) with `scope` (event isolation) to render a specific list.
+- ce60491: Add an optional `slots.actions` render slot to
+  `Wishlist`/`WishlistItem`/`ProductItem`, letting the host replace the main
+  action button (e.g. Move to Cart / Notify Me based on stock status and
+  merchant-specific attributes) instead of the drop-in's fixed default. The
+  Remove icon always stays in its default position next to the product title.
+  The slot receives `{ item, onMoveToCart, onRemove }` as context. When omitted,
+  rendering is unchanged (Move to Cart/Customize button + Remove icon), so this
+  is fully backwards compatible.
+- 4820249: Add an optional `showStockStatus` prop to `ProductItem` that displays
+  an "In stock" / "Out of stock" label driven by `item.product.inStock`. Off by
+  default, so existing consumers render unchanged.
 
 ### Patch Changes
 

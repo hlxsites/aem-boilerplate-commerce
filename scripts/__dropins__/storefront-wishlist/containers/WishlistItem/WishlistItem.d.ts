@@ -15,7 +15,8 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { ProductItemActionsContext } from '../../components';
 import { Item, Product } from '../../data/models';
 import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
 import { JSX } from 'preact';
@@ -35,5 +36,8 @@ export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     imageNode?: (props: {
         defaultImageProps: ImageNodeRenderProps;
     }) => JSX.Element;
+    slots?: {
+        actions?: SlotProps<ProductItemActionsContext>;
+    };
 }
 export declare const WishlistItem: Container<WishlistItemProps>;

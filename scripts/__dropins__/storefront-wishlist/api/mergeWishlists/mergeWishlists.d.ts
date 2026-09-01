@@ -15,4 +15,4 @@
  * from Adobe.
  *******************************************************************/
 import { Wishlist } from '../../data/models';
-export declare const mergeWishlists: (wishlist: Wishlist, listKey?: string) => Promise<Wishlist | null>;
+export declare const mergeWishlists: (wishlist: Wishlist) => Promise<Wishlist | null>;
