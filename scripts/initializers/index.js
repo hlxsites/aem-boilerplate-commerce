@@ -7,8 +7,10 @@ import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
+const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
+let catalogServiceCacheControlAdded = false;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -21,8 +23,78 @@ const setAuthHeaders = (state) => {
   }
 };
 
+const sha1Base64 = async (value) => {
+  const decoded = atob(value);
+  const bytes = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i += 1) {
+    bytes[i] = decoded.charCodeAt(i);
+  }
+  const digest = await crypto.subtle.digest('SHA-1', bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
 const setCustomerGroupHeader = (customerGroupId) => {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+
+  const { endpoint } = CS_FETCH_GRAPHQL.getConfig();
+  if (endpoint) {
+    const url = new URL(endpoint);
+    url.searchParams.set('customer-group', customerGroupId);
+    CS_FETCH_GRAPHQL.setEndpoint(url.toString());
+  }
+};
+
+const fetchCustomerGroupId = async () => {
+  try {
+    const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(`
+      query GET_CUSTOMER_GROUP {
+        customer {
+          group {
+            uid
+          }
+        }
+      }
+    `, { method: 'GET', cache: 'no-store' });
+
+    const groupUid = response?.data?.customer?.group?.uid;
+    return groupUid ? sha1Base64(groupUid) : DEFAULT_NLI_CUSTOMER_GROUP_ID;
+  } catch (error) {
+    console.debug('Unable to resolve customer group for Catalog Service:', error);
+    return DEFAULT_NLI_CUSTOMER_GROUP_ID;
+  }
+};
+
+const syncCatalogCustomerGroupHeader = async () => {
+  if (getConfigValue('adobe-commerce-optimizer')) {
+    return;
+  }
+
+  if (!getUserTokenCookie()) {
+    setCustomerGroupHeader(DEFAULT_NLI_CUSTOMER_GROUP_ID);
+    return;
+  }
+
+  setCustomerGroupHeader(await fetchCustomerGroupId());
+};
+
+const updateAuthContext = async (state) => {
+  setAuthHeaders(state);
+  await syncCatalogCustomerGroupHeader();
+  events.emit('commerce/customer-context', { authenticated: state });
+};
+
+const setupCatalogServiceCacheControl = () => {
+  if (catalogServiceCacheControlAdded) {
+    return;
+  }
+
+  CS_FETCH_GRAPHQL.addBeforeHook((request) => ({
+    ...request,
+    cache: 'no-store',
+  }));
+  catalogServiceCacheControlAdded = true;
 };
 
 const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
@@ -58,6 +130,7 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
+    setupCatalogServiceCacheControl();
     if (getConfigValue('adobe-commerce-optimizer')) {
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
@@ -77,8 +150,8 @@ export default async function initializeDropins() {
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
-    // Set auth headers on authenticated event
-    events.on('authenticated', setAuthHeaders, { eager: true });
+    // Set auth and Catalog Service customer context on authenticated event
+    events.on('authenticated', updateAuthContext, { eager: true });
 
     // Cache cart data in session storage
     events.on('cart/data', persistCartDataInSession, { eager: true });
@@ -86,7 +159,7 @@ export default async function initializeDropins() {
     // on page load, check if user is authenticated
     const token = getUserTokenCookie();
     // set auth headers
-    setAuthHeaders(!!token);
+    await updateAuthContext(!!token);
 
     // Event Bus Logger
     events.enableLogger(true);
@@ -99,6 +172,7 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+    await syncCatalogCustomerGroupHeader();
 
     await import('./personalization.js');
 
