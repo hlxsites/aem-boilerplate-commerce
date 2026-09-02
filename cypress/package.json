@@ -12,10 +12,10 @@
     "check:shards": "node scripts/check-shard-coverage.js",
     "cypress:aco:open": "cypress open --browser chrome --config-file cypress.aco.config.js",
     "cypress:aco:run": "cypress run --config-file cypress.aco.config.js --env grepTags=-@skipAco,grepFilterSpecs=false,grepOmitFiltered=false",
-    "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js",
-    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas",
+    "cypress:b2b:saas:open": "cypress open --browser chrome --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas+-@skipB2BSaas,grepFilterSpecs=false,grepOmitFiltered=false",
+    "cypress:b2b:saas:run": "cypress run --config-file cypress.b2b.saas.config.js --env grepTags=@B2BSaas+-@skipB2BSaas,grepFilterSpecs=false,grepOmitFiltered=false",
     "cypress:b2b:aco:open": "cypress open --browser chrome --config-file cypress.b2b.aco.config.js",
-    "cypress:b2b:aco:run": "cypress run --config-file cypress.b2b.aco.config.js --env grepTags=-@skipAco",
+    "cypress:b2b:aco:run": "cypress run --config-file cypress.b2b.aco.config.js --env grepTags=-@skipAco,grepFilterSpecs=false,grepOmitFiltered=false",
     "lint": "eslint src/"
   },
   "author": "Adobe Commerce",
