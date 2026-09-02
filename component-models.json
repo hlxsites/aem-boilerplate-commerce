@@ -357,6 +357,11 @@
         "component": "boolean",
         "name": "minified-view",
         "label": "Minified View"
+      },
+      {
+        "component": "boolean",
+        "name": "search",
+        "label": "Enable Order Search"
       }
     ]
   },
