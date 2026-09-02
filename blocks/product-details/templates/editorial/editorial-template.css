@@ -1,0 +1,14 @@
+.pdp-editorial-header-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.pdp-editorial-header-row .product-details__header {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.pdp-editorial-header-row .product-details__buttons__add-to-wishlist {
+  flex: 0 0 auto;
+}
