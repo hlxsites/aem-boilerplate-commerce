@@ -265,6 +265,10 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
+    // Hidden for every B2B customer, which is wider than the condition guarding
+    // the isBillToShipping default in scripts/initializers/checkout.js — that one
+    // only kicks in when the company address book is on. Deliberate: B2B picks
+    // billing from its own address list, so the checkbox has nothing to do here.
     renderBillToShippingAddress($billToShipping, !isB2BEnabled),
 
     renderShippingMethods($delivery),

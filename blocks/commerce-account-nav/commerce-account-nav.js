@@ -1,5 +1,6 @@
 import { provider as UI, Icon } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { COMPANY_ADDRESS_PERMISSIONS } from '@dropins/storefront-account/api.js';
 
 import '../../scripts/initializers/auth.js';
 import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
@@ -42,6 +43,30 @@ export default async function decorate(block) {
    * run against a still-empty nav, and would let two overlapping firings of
    * `auth/permissions` race, with the slower one winning.
    */
+  const COMPANY_ADDRESS_ACL = new Set(Object.values(COMPANY_ADDRESS_PERMISSIONS));
+
+  const readPermission = ($item) => $item
+    .querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
+
+  const readHref = ($item) => $item
+    .querySelector(`:scope > div:nth-child(${rows.label})`)?.children[0]?.querySelector('a')?.href;
+
+  /**
+   * Pages that an authored row guards with a company address ACL. Once the
+   * address book is on, any OTHER row pointing at the same page is the personal
+   * address entry it replaces, and gets dropped below.
+   *
+   * Derived from the content rather than from a hardcoded path or label so it
+   * survives translation and re-routing — and, unlike the synthetic permission
+   * key, it does not depend on anyone editing the authored table.
+   */
+  const companyAddressHrefs = new Set(
+    $items
+      .filter(($item) => COMPANY_ADDRESS_ACL.has(readPermission($item)))
+      .map(readHref)
+      .filter(Boolean),
+  );
+
   const addressBookEnabled = await isCompanyAddressBookEnabled();
 
   /** Get permissions */
@@ -53,6 +78,19 @@ export default async function decorate(block) {
     const resolvedPermissions = {
       ...permissions,
       [COMPANY_ADDRESS_BOOK_DISABLED]: !addressBookEnabled,
+      /**
+       * The company address ACLs come from the customer's role and arrive
+       * whether or not the company actually uses an address book, so on their
+       * own they would show "Company Addresses" to a company that has the
+       * feature switched off. Forcing them to false while it is off mirrors
+       * what storefront-auth does with `Magento_PurchaseOrder::*` when
+       * purchase orders are disabled, and hides the item for admins too.
+       */
+      ...(addressBookEnabled
+        ? {}
+        : Object.fromEntries(
+          Object.values(COMPANY_ADDRESS_PERMISSIONS).map((id) => [id, false]),
+        )),
     };
 
     /** Clear nav */
@@ -68,6 +106,15 @@ export default async function decorate(block) {
        * which should hide the item even for admins.
        */
       const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
+
+      // Superseded by a company address row pointing at the same page.
+      if (
+        addressBookEnabled
+        && !COMPANY_ADDRESS_ACL.has(permission)
+        && companyAddressHrefs.has(readHref($item))
+      ) {
+        return;
+      }
 
       // Skip if permission is explicitly disabled (false)
       if (resolvedPermissions[permission] === false) {

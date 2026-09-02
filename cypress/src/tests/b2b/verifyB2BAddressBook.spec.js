@@ -123,19 +123,11 @@ const testCompanyName = () => Cypress.env('testCompany').name;
 const adminCreds = () => Cypress.env('testAdmin');
 const regularUserCreds = () => Cypress.env('testUsers').regular;
 
-// The company address book starts disabled on a freshly created company, and
-// only the company admin can switch it on. Both the admin CRUD tests and the
-// permission matrix need it on — and, crucially, the "Company Addresses"
-// branch only appears in the role permission tree once it is enabled, so this
-// has to run BEFORE any permission is granted.
-//
-// Previously the suite inherited the enabled state from a long-lived company,
-// so nothing ever had to establish it. Idempotent, and deliberately without a
-// login step: the caller is responsible for already being signed in as admin.
-// "Allow Custom Company Address" is what unlocks one-time address entry at
-// checkout — the drop-in keeps address selection locked while it is off, which
-// is why every other scenario only ever sees saved company addresses. Admin
-// only, idempotent, and it assumes the caller is already signed in as admin.
+// Admin-only, idempotent, and assumes the caller is already signed in as admin.
+// Must run BEFORE any permission is granted: the "Company Addresses" branch
+// only appears in the role permission tree once the address book is enabled.
+// Unlocks one-time address entry at checkout; while it is off the drop-in keeps
+// address selection locked. Admin-only and idempotent, like the helper above.
 const ensureCustomShippingAllowed = () => {
   const urls = Cypress.env('addressBookUrls');
 
@@ -203,9 +195,7 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
 
     const { email, password } = adminCreds();
     cy.logToTerminal(`🔐 Login as company admin (${email})`);
-    // Same retry-if-not-redirected logic as actions.login() — this platform
-    // sometimes doesn't redirect to /customer/account right after submit,
-    // written inline here instead of calling the shared action.
+    // This platform sometimes doesn't redirect to /customer/account after submit.
     const submitLogin = () => {
       cy.clearCookies();
       cy.clearLocalStorage();
@@ -234,9 +224,8 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     cy.url().should('include', urls.account);
     cy.wait(3000);
 
-    // The company is created fresh per run, so this admin belongs to exactly
-    // one company and the switcher does not render. The assertion below is the
-    // real guard — everything after it mutates persistent company data.
+    // Fresh company per run means one company and no switcher. The assertion is
+    // the real guard — everything after it mutates persistent company data.
     cy.visit(urls.companyProfile);
     cy.wait(2000);
     cy.waitForLoadingSkeletonToDisappear();
@@ -345,14 +334,11 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
   });
 
   it('Test 5: admin can create, edit and set default on a company address', () => {
-    // Does not rely on Test 4 having enabled it — the admin is already signed
-    // in from beforeEach, so this only costs one page visit when it is already on.
+    // Does not rely on Test 4 having enabled it.
     ensureAddressBookEnabled();
 
     actions.openCompanyAddressBook(urls);
-    // Same one-shot-snapshot pitfall as Test 2 — wait for the loading
-    // indicator to actually disappear before the first check, and again on
-    // every iteration, instead of trusting a fixed wait.
+    // Same one-shot-snapshot pitfall as Test 2.
     cy.waitForLoadingSkeletonToDisappear();
 
     cy.logToTerminal('🧹 Cleaning up any existing company addresses first (real, persistent company)');
@@ -458,16 +444,10 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     cy.logToTerminal('✅ Test 5: both billing and shipping company addresses created, edited and defaulted');
   });
 
-  // Test 6: grant the "Company Addresses" permission (Add/Edit/Delete/Set
-  // Default Address) on the Default User role via the real roles-tree UI —
-  // sidesteps the broken REST role-creation path entirely (POST /V1/company/role
-  // 500s on Magento_CompanyAddressStorefrontCompatibility::* resource_ids, see
-  // Test 1 in the describe above). Editing an EXISTING role through the UI
-  // form is a different code path and may not hit the same backend limitation.
-  // Selector pattern (tree-node/tree-label + click the checkbox's parent)
-  // mirrors the already-working verifyCompanyRolesAndPermissions.spec.js —
-  // real checkbox `name` attributes are random per-render (tree-checkbox-XXXXX),
-  // so nodes must be found by their visible label text instead.
+  // Granted through the roles-tree UI, not REST: POST /V1/company/role 500s on
+  // Magento_CompanyAddressStorefrontCompatibility::* resource_ids.
+  // Nodes are found by visible label text — checkbox `name` attributes are
+  // regenerated per render (tree-checkbox-XXXXX) and cannot be selected on.
   it('Test 6: grant Company Addresses permission on Default User role via roles tree', () => {
     cy.visit('/customer/company/roles');
     cy.wait(2000);
@@ -481,11 +461,8 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     cy.get('.edit-role-and-permission__tree-container').should('be.visible');
 
     cy.logToTerminal('☑️ Checking "Company Addresses" node');
-    // Click the native input directly with force:true — same proven pattern
-    // as the Address Book settings checkboxes (toggleCompanyAddressBookSettings).
-    // Clicking the checkbox's parent label (an earlier attempt) did not
-    // actually toggle it. Idempotent — this is a real, persistent role, so a
-    // prior run may have already left this checked; only click if needed.
+    // Click the native input with force:true; clicking its parent label does not
+    // toggle it. Idempotent — a prior run may have left this checked.
     cy.contains('.edit-role-and-permission__tree-label', 'Company Addresses')
       .closest('.edit-role-and-permission__tree-node')
       .find('input[type="checkbox"]')
@@ -503,11 +480,9 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
       .should('be.checked');
 
     cy.logToTerminal('🔍 Verifying the 4 child permissions auto-checked');
-    // Scope to the "Company Addresses" <li> tree item specifically — an
-    // unscoped page-wide `cy.contains('.edit-role-and-permission__tree-label', 'Add')`
-    // can match an unrelated node's child with the same generic label
-    // (Add/Edit/Delete are common across many permission categories).
-    // Also expand the node first — collapsed children may not render in the DOM.
+    // Scoped to the "Company Addresses" <li>: Add/Edit/Delete are generic labels
+    // shared by many permission categories. Expand first — collapsed children
+    // are not in the DOM.
     cy.contains('.edit-role-and-permission__tree-label', 'Company Addresses')
       .closest('li.acm-tree__item')
       .as('companyAddressesNode');
@@ -634,9 +609,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // every child at once (all on / all off), while clicking a CHILD affects
   // only that child and leaves the parent alone. So partial permission sets
   // are set purely by clicking children — never touch the parent here.
-  // Opens the Default User role editor with the whole permission tree expanded.
-  // Shared by the two helpers below; setChildPermissions does the same inline
-  // and is deliberately left untouched, since its tests already pass.
+  // Opens the Default User role editor with the permission tree expanded.
   const openDefaultUserRoleTree = () => {
     cy.visit('/customer/company/roles');
     cy.wait(2000);
@@ -649,12 +622,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(1000);
   };
 
-  // Logs every top-level branch of the role tree with its checkbox state.
-  // Until now this suite only ever ran against a long-lived company whose
-  // "Default User" role had been configured by hand. A company created per run
-  // carries Magento's defaults instead, so the exact branch labels — and
-  // whether ordering is permitted at all — are unknown. Rather than guessing
-  // them, this prints the real tree on the first CI run.
+  // Prints the role tree with checkbox states. Diagnostic: the per-run company
+  // carries Magento's defaults, so this is how branch labels get confirmed
+  // rather than guessed.
   const logRoleTree = () => {
     openDefaultUserRoleTree();
     // Not scoped to direct children: the tree renders its items nested a few
@@ -672,11 +642,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   };
 
   // Turns a whole top-level branch on by clicking its parent checkbox, which
-  // toggles every child at once. Accepts several candidate labels because the
-  // branch that carries Magento_Sales::place_order is named differently across
-  // versions; the first one present wins, and a miss is logged rather than
-  // failing the test — RU7 will surface it far more clearly if ordering really
-  // is missing.
+  // toggles every child at once. Takes candidate labels because the branch
+  // carrying Magento_Sales::place_order may be named differently across
+  // versions; a miss is logged rather than failed — RU7 surfaces missing
+  // ordering rights far more clearly.
   const enableTopLevelBranch = (candidateLabels) => {
     openDefaultUserRoleTree();
 
@@ -717,8 +686,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(1000);
     cy.get('.edit-role-and-permission__tree-container').should('be.visible');
 
-    // Expand the whole tree in one go, same as verifyCompanyRolesAndPermissions.spec.js
-    // does — simpler and more reliable than clicking individual "+" expanders.
+    // Expand everything at once instead of clicking individual "+" expanders.
     cy.contains('button', 'Expand All').click();
     cy.wait(1000);
 
@@ -726,8 +694,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .closest('li.acm-tree__item')
       .as('companyAddressesNode');
 
-    // Always log actual current checkbox state before touching anything —
-    // makes it far easier to see what's really going on instead of assuming.
+    // Log the real checkbox state before touching anything.
     cy.get('@companyAddressesNode').then(($node) => {
       const parentChecked = $node.children('.edit-role-and-permission__tree-node').find('input[type="checkbox"]').prop('checked');
       const childStates = ['Add', 'Edit', 'Delete', 'Set Default Address'].map((label) => {
@@ -761,8 +728,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       cy.wait(500);
     });
 
-    // Recheck state one more time right before saving — confirms the clicks
-    // above actually landed, instead of assuming they did.
+    // Confirm the clicks landed before saving.
     cy.get('@companyAddressesNode').then(($node) => {
       const parentChecked = $node.children('.edit-role-and-permission__tree-node').find('input[type="checkbox"]').prop('checked');
       const childStates = ['Add', 'Edit', 'Delete', 'Set Default Address'].map((label) => {
@@ -839,14 +805,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     // before this would silently find nothing to click.
     ensureAddressBookEnabled();
 
-    // The company is created fresh per run, so its Default User role holds
-    // Magento's defaults rather than the hand-tuned permissions the previous
-    // long-lived company had. Print the tree once, then make sure ordering is
-    // permitted — RU7 ends by placing a purchase order as this very user.
+    // Ordering must be permitted — RU7 places a purchase order as this user.
     logRoleTree();
-    // Confirmed by logRoleTree against a real company: the branch is called
-    // "Sales" and already carries "Allow Checkout", so this is normally a no-op
-    // and stays only as a guard for companies whose role has it switched off.
+    // Confirmed via logRoleTree: the branch is "Sales" and already carries
+    // "Allow Checkout", so this is normally a no-op and stays as a guard.
     enableTopLevelBranch(['Sales']);
 
     setChildPermissions([
@@ -1034,13 +996,11 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // End-to-end purchase as the regular company user, then verify the order
   // appears in order history.
   //
-  // IMPORTANT (corrects an earlier assumption): B2B checkout does NOT render
-  // the B2C "type a new address" form. It renders a SAVED COMPANY ADDRESS
-  // selection view — with no addresses in the book it shows the "No saved
-  // addresses" empty state and there is nothing to fill in. So this test
-  // creates a SHIPPING and a BILLING company address first, then checks out.
-  // Payment is left on the default Check / Money order radio (no Payment
-  // Services iframes to flake on).
+  // With "Allow Custom Company Address" off, checkout only offers saved company
+  // addresses — an empty book shows "No saved addresses" and there is nothing to
+  // fill in, so this test seeds a SHIPPING and a BILLING address first. RU8
+  // covers the opposite case, where the setting is on and a one-time address can
+  // be typed. Payment stays on Check / Money order: no Payment Services iframes.
   it('RU7: Regular user creates addresses, buys a product and finds the order in order history', () => {
     loginAsRegularUserAndSwitch();
 
