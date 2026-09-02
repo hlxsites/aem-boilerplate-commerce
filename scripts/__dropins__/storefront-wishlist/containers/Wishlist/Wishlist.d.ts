@@ -21,6 +21,8 @@ import { ImageProps } from '../../../node_modules/@dropins/tools/src/components'
 export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
     routeEmptyWishlistCTA?: () => string;
     routeToWishlist?: string;
+    wishlistId?: string;
+    scope?: string;
     moveProdToCart: (products: {
         sku: string;
         quantity: number;

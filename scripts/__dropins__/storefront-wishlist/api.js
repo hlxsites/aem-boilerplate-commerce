@@ -1,6 +1,6 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{events as a}from"@dropins/tools/event-bus.js";import{FetchGraphQL as K}from"@dropins/tools/fetch-graphql.js";import{Initializer as Z}from"@dropins/tools/lib.js";const M=9,R=1;function V(t){const e=document.cookie.split(";");for(const s of e)if(s.trim().startsWith(`${t}=`))return s.trim().substring(t.length+1);return null}const L={wishlistId:null,authenticated:!1,isLoading:!0},H=()=>L.storeCode&&L.storeCode!=="default"?`DROPIN__WISHLIST__WISHLIST-ID__${L.storeCode}`:"DROPIN__WISHLIST__WISHLIST-ID",r=new Proxy(L,{set(t,e,s){if(t[e]=s,e==="wishlistId"){const i=H();if(s===r.wishlistId)return!0;if(s===null)return document.cookie=`${i}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`,!0;const n=new Date;n.setDate(n.getDate()+30),document.cookie=`${i}=${s}; expires=${n.toUTCString()}; path=/`}return Reflect.set(t,e,s)},get(t,e){return e==="wishlistId"?V(H()):t[e]}});function m(t,e){var n;if(t.product.sku!==e.sku)return!1;const s=((n=t.selectedOptions)==null?void 0:n.map(o=>o.uid).filter(o=>!!o).sort())||[],i=(e.optionUIDs||[]).filter(o=>!!o).sort();return JSON.stringify(s)===JSON.stringify(i)}const j="DROPIN__WISHLIST__WISHLIST__DATA",X="DROPIN__WISHLIST__ALL_ITEMS__DATA",q=t=>r.storeCode&&r.storeCode!=="default"?`${t}__${r.storeCode}`:t,P=(t=!1)=>r.authenticated&&!t?sessionStorage:localStorage,N=()=>q(j);function tt(t){const e=P(),s=N();if(t)try{e.setItem(s,JSON.stringify(t))}catch(i){B(i)?console.error("Storage quota exceeded:",i):console.error("Error saving wishlist:",i)}else e.removeItem(s)}const B=t=>t instanceof DOMException&&t.name==="QuotaExceededError";function w(t=!1){const e=P(t),s=N();try{const i=e.getItem(s);return i?JSON.parse(i):{id:"",items:[]}}catch(i){return console.error("Error retrieving wishlist:",i),{id:"",items:[]}}}function et(){localStorage.removeItem(N())}function yt(t,e=[]){var c;const s=P(),i=N(),n=s.getItem(i),o=n?JSON.parse(n):{items:[]};return(c=o==null?void 0:o.items)==null?void 0:c.find(_=>m(_,{sku:t,optionUIDs:e}))}const C=()=>q(X);let D=0;function k(){return D}function $(){try{const t=P().getItem(C());return t?JSON.parse(t):[]}catch{return[]}}function G(t){try{P().setItem(C(),JSON.stringify(t))}catch(e){B(e)&&console.error("Storage quota exceeded (all-items):",e)}}function b(t){D++,G(t)}function Lt(){return $()}function st(){D++;const t=C();sessionStorage.removeItem(t),localStorage.removeItem(t)}function U(t){D++,G([...$(),...t])}function O(t){D++;const e=$();G(e.filter(s=>!t.some(i=>{var n;return m(s,{sku:i.product.sku,optionUIDs:(n=i.selectedOptions)==null?void 0:n.map(o=>o.uid)})})))}function Mt(t,e){return $().find(s=>m(s,{sku:t,optionUIDs:e}))}const v=new Z({init:async t=>{const e={isGuestWishlistEnabled:!1,...t};v.config.setConfig(e),r.storeCode=t.storeCode||void 0,r.pageSize=t.pageSize,x({pageSize:t.pageSize}).catch(console.error)},listeners:()=>[a.on("wishlist/data",t=>{tt(t)},{eager:!0}),a.on("authenticated",async t=>{var e;if(r.authenticated&&!t&&a.emit("wishlist/reset",void 0),t&&!r.authenticated){r.authenticated=t;const s=await x({pageSize:(e=v.config.getConfig())==null?void 0:e.pageSize}).catch(console.error);s&&Ot(s)}},{eager:!0}),a.on("wishlist/reset",()=>{st(),wt().catch(console.error),a.emit("wishlist/data",null)})]}),Nt=v.config,{setEndpoint:$t,setFetchGraphQlHeader:Ut,removeFetchGraphQlHeader:vt,setFetchGraphQlHeaders:Rt,fetchGraphQl:f,getConfig:Ct}=new K().getMethods();function it(t){return t?{wishlistIsEnabled:t.storeConfig.magento_wishlist_general_is_enabled,wishlistMultipleListIsEnabled:t.storeConfig.enable_multiple_wishlists,wishlistMaxNumber:t.storeConfig.maximum_number_of_wishlists}:null}function A(t,e){return t?{id:t.id,updated_at:t.updated_at,sharing_code:t.sharing_code,items_count:t.items_count,items:rt(t,e??[]),page_info:nt(t)}:null}function nt(t){var s;const e=(s=t==null?void 0:t.items_v2)==null?void 0:s.page_info;if(e)return{currentPage:e.current_page,pageSize:e.page_size,totalPages:e.total_pages}}function rt(t,e){var s,i;return(i=(s=t==null?void 0:t.items_v2)==null?void 0:s.items)!=null&&i.length?t.items_v2.items.map(n=>{const o=ot(n);return{id:n.id,quantity:n.quantity,description:n.description,added_at:n.added_at,enteredOptions:e,selectedOptions:o,product:{sku:n.product.sku}}}):[]}function ot(t){return t.__typename==="ConfigurableWishlistItem"?t.configurable_options?t.configurable_options.map(e=>({uid:e.configurable_product_option_value_uid})):[]:t.__typename==="BundleWishlistItem"?(t.bundle_options??[]).flatMap(s=>s.values??[]).map(s=>({uid:s.uid})):[]}const E=t=>{const e=t.map(s=>s.message).join(" ");throw Error(e)},lt=`
+import{events as d}from"@dropins/tools/event-bus.js";import{FetchGraphQL as tt}from"@dropins/tools/fetch-graphql.js";import{Initializer as et}from"@dropins/tools/lib.js";const v=9,U=1;function st(t){const e=document.cookie.split(";");for(const s of e)if(s.trim().startsWith(`${t}=`))return s.trim().substring(t.length+1);return null}const R={wishlistId:null,authenticated:!1,isLoading:!0},q=()=>R.storeCode&&R.storeCode!=="default"?`DROPIN__WISHLIST__WISHLIST-ID__${R.storeCode}`:"DROPIN__WISHLIST__WISHLIST-ID",n=new Proxy(R,{set(t,e,s){if(t[e]=s,e==="wishlistId"){const i=q();if(s===n.wishlistId)return!0;if(s===null)return document.cookie=`${i}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`,!0;const r=new Date;r.setDate(r.getDate()+30),document.cookie=`${i}=${s}; expires=${r.toUTCString()}; path=/`}return Reflect.set(t,e,s)},get(t,e){return e==="wishlistId"?st(q()):t[e]}});function w(t,e){var r;if(t.product.sku!==e.sku)return!1;const s=((r=t.selectedOptions)==null?void 0:r.map(o=>o.uid).filter(o=>!!o).sort())||[],i=(e.optionUIDs||[]).filter(o=>!!o).sort();return JSON.stringify(s)===JSON.stringify(i)}const it="DROPIN__WISHLIST__WISHLIST__DATA",rt="DROPIN__WISHLIST__ALL_ITEMS__DATA",K=t=>n.storeCode&&n.storeCode!=="default"?`${t}__${n.storeCode}`:t,L=(t=!1)=>n.authenticated&&!t?sessionStorage:localStorage,C=()=>K(it);function nt(t){const e=L(),s=C();if(t)try{e.setItem(s,JSON.stringify(t))}catch(i){V(i)?console.error("Storage quota exceeded:",i):console.error("Error saving wishlist:",i)}else e.removeItem(s)}const V=t=>t instanceof DOMException&&t.name==="QuotaExceededError";function D(t=!1){const e=L(t),s=C();try{const i=e.getItem(s);return i?JSON.parse(i):{id:"",items:[]}}catch(i){return console.error("Error retrieving wishlist:",i),{id:"",items:[]}}}function ot(){localStorage.removeItem(C())}function Mt(t,e=[]){var l;const s=L(),i=C(),r=s.getItem(i),o=r?JSON.parse(r):{items:[]};return(l=o==null?void 0:o.items)==null?void 0:l.find(h=>w(h,{sku:t,optionUIDs:e}))}const F=()=>K(rt);let M=0;function B(){return M}function b(){try{const t=L().getItem(F());return t?JSON.parse(t):[]}catch{return[]}}function k(t){try{L().setItem(F(),JSON.stringify(t))}catch(e){V(e)&&console.error("Storage quota exceeded (all-items):",e)}}function x(t){M++,k(t)}function Nt(){return b()}function lt(){M++;const t=F();sessionStorage.removeItem(t),localStorage.removeItem(t)}function G(t){M++,k([...b(),...t])}function $(t){M++;const e=b();k(e.filter(s=>!t.some(i=>{var r;return w(s,{sku:i.product.sku,optionUIDs:(r=i.selectedOptions)==null?void 0:r.map(o=>o.uid)})})))}function Rt(t,e){return b().find(s=>w(s,{sku:t,optionUIDs:e}))}const H=new et({init:async t=>{const e={isGuestWishlistEnabled:!1,...t};H.config.setConfig(e),n.storeCode=t.storeCode||void 0,n.pageSize=t.pageSize,J({pageSize:t.pageSize}).catch(console.error)},listeners:()=>[d.on("wishlist/data",t=>{nt(t)},{eager:!0}),d.on("authenticated",async t=>{var e;if(n.authenticated&&!t&&d.emit("wishlist/reset",void 0),t&&!n.authenticated){n.authenticated=t;const s=await J({pageSize:(e=H.config.getConfig())==null?void 0:e.pageSize}).catch(console.error);s&&yt(s)}},{eager:!0}),d.on("wishlist/reset",()=>{lt(),Ot().catch(console.error),d.emit("wishlist/data",null)})]}),Ut=H.config,{setEndpoint:Ct,setFetchGraphQlHeader:bt,removeFetchGraphQlHeader:zt,setFetchGraphQlHeaders:Gt,fetchGraphQl:g,getConfig:Ht}=new tt().getMethods();function ct(t){return t?{wishlistIsEnabled:t.storeConfig.magento_wishlist_general_is_enabled,wishlistMultipleListIsEnabled:t.storeConfig.enable_multiple_wishlists,wishlistMaxNumber:t.storeConfig.maximum_number_of_wishlists}:null}function P(t,e){return t?{id:t.id,name:t.name,updated_at:t.updated_at,sharing_code:t.sharing_code,items_count:t.items_count,items:at(t,e??[]),page_info:ut(t)}:null}function ut(t){var s;const e=(s=t==null?void 0:t.items_v2)==null?void 0:s.page_info;if(e)return{currentPage:e.current_page,pageSize:e.page_size,totalPages:e.total_pages}}function at(t,e){var s,i;return(i=(s=t==null?void 0:t.items_v2)==null?void 0:s.items)!=null&&i.length?t.items_v2.items.map(r=>{const o=It(r);return{id:r.id,quantity:r.quantity,description:r.description,added_at:r.added_at,enteredOptions:e,selectedOptions:o,product:{sku:r.product.sku}}}):[]}function It(t){return t.__typename==="ConfigurableWishlistItem"?t.configurable_options?t.configurable_options.map(e=>({uid:e.configurable_product_option_value_uid})):[]:t.__typename==="BundleWishlistItem"?(t.bundle_options??[]).flatMap(s=>s.values??[]).map(s=>({uid:s.uid})):[]}const f=t=>{const e=t.map(s=>s.message).join(" ");throw Error(e)},_t=`
 query STORE_CONFIG_QUERY {
   storeConfig {
     magento_wishlist_general_is_enabled
@@ -8,7 +8,7 @@ query STORE_CONFIG_QUERY {
     maximum_number_of_wishlists
   }
 }
-`,ct=async()=>f(lt,{method:"GET",cache:"force-cache"}).then(({errors:t,data:e})=>t?E(t):it(e)),ut=`
+`,dt=async()=>g(_t,{method:"GET",cache:"force-cache"}).then(({errors:t,data:e})=>t?f(t):ct(e)),ht=`
   fragment CUSTOMIZABLE_OPTIONS_FRAGMENT on SelectedCustomizableOption {
     type
     customizable_option_uid
@@ -24,7 +24,7 @@ query STORE_CONFIG_QUERY {
       }
     }
   }
-`,at=`
+`,mt=`
   ... on ConfigurableWishlistItem {
     configurable_options {
       option_label
@@ -36,7 +36,7 @@ query STORE_CONFIG_QUERY {
       canonical_url
     }
   }
-`,It=`
+`,gt=`
   ... on DownloadableWishlistItem {
     added_at
     description
@@ -48,7 +48,7 @@ query STORE_CONFIG_QUERY {
     }
     quantity
   }
-`,_t=`
+`,pt=`
   ... on GiftCardWishlistItem {
     added_at
     description
@@ -68,7 +68,7 @@ query STORE_CONFIG_QUERY {
       sender_name
     }
   }
-`,dt=`
+`,ft=`
   ... on BundleWishlistItem {
     bundle_options {
       label
@@ -81,7 +81,7 @@ query STORE_CONFIG_QUERY {
       }
     }
   }
-`,Q=`
+`,Z=`
 fragment WISHLIST_ITEM_FRAGMENT on WishlistItemInterface {
     __typename
     id
@@ -91,19 +91,20 @@ fragment WISHLIST_ITEM_FRAGMENT on WishlistItemInterface {
     product {
       sku
     }
-    ${at}
-    ${It}
-    ${_t}
-    ${dt}
+    ${mt}
+    ${gt}
+    ${pt}
+    ${ft}
     customizable_options {
       ...CUSTOMIZABLE_OPTIONS_FRAGMENT
     }
   }
   
-  ${ut}
+  ${ht}
 `,z=`
 fragment WISHLIST_FRAGMENT on Wishlist {
     id
+    name
     updated_at
     sharing_code
     items_count
@@ -119,8 +120,8 @@ fragment WISHLIST_FRAGMENT on Wishlist {
     }
   }
 
-${Q}
-`,Y=`
+${Z}
+`,j=`
   query GET_WISHLIST_BY_ID_QUERY(
     $wishlistId: ID!,
     $pageSize: Int = 9,
@@ -129,6 +130,7 @@ ${Q}
     customer {
       wishlist_v2(id: $wishlistId) {
         id
+        name
         updated_at
         sharing_code
         items_count
@@ -146,8 +148,8 @@ ${Q}
     }
   }
 
-${Q}
-`,ht=async(t,e=M,s=R)=>{if(!r.authenticated)return w();if(!t)throw Error("Wishlist ID is not set");return f(Y,{variables:{wishlistId:t,pageSize:e,currentPage:s}}).then(({errors:i,data:n})=>{var c;if(i)return E(i);if(!((c=n==null?void 0:n.customer)!=null&&c.wishlist_v2))return null;const o=A(n.customer.wishlist_v2);return a.emit("wishlist/data",o),o})},mt=`
+${Z}
+`,St=async(t,e=v,s=U,i={})=>{const{scope:r}=i;if(!n.authenticated)return D();if(!t)throw Error("Wishlist ID is not set");return g(j,{variables:{wishlistId:t,pageSize:e,currentPage:s}}).then(({errors:o,data:l})=>{var a;if(o)return f(o);if(!((a=l==null?void 0:l.customer)!=null&&a.wishlist_v2))return null;const h=P(l.customer.wishlist_v2);return d.emit("wishlist/data",h,{scope:r}),h})},Tt=`
   query GET_WISHLISTS_QUERY($pageSize: Int = 9, $currentPage: Int = 1) {
     customer {
       wishlists {
@@ -157,7 +159,23 @@ ${Q}
   }
 
   ${z}
-`,gt=async(t=M,e=R)=>r.authenticated?f(mt,{variables:{pageSize:t,currentPage:e}}).then(({errors:s,data:i})=>{var n;return s?E(s):(n=i==null?void 0:i.customer)!=null&&n.wishlists?i.customer.wishlists.map(o=>A(o)):null}):w(),pt=`
+`,wt=async(t=v,e=U)=>n.authenticated?g(Tt,{variables:{pageSize:t,currentPage:e}}).then(({errors:s,data:i})=>{var r;return s?f(s):(r=i==null?void 0:i.customer)!=null&&r.wishlists?i.customer.wishlists.map(o=>P(o)):null}):D(),Wt=`
+  mutation CREATE_WISHLIST_MUTATION(
+    $name: String!,
+    $visibility: WishlistVisibilityEnum!,
+    $pageSize: Int = 9,
+    $currentPage: Int = 1,
+  ) {
+    createWishlist(
+      input: { name: $name, visibility: $visibility }
+    ) {
+      wishlist {
+        ...WISHLIST_FRAGMENT
+      }
+    }
+  }
+${z}
+`,Ft=async(t,e="PRIVATE")=>{var l;if(!n.authenticated)return null;if(!(t!=null&&t.trim()))throw Error("Wishlist name is required");const s={name:t,visibility:e,pageSize:n.pageSize??v,currentPage:n.currentPage??U},{errors:i,data:r}=await g(Wt,{variables:s});if(i)return f(i);const o=(l=r==null?void 0:r.createWishlist)==null?void 0:l.wishlist;return o?P(o):null},Q=`
   mutation ADD_PRODUCTS_TO_WISHLIST_MUTATION(
       $wishlistId: ID!, 
       $wishlistItems: [WishlistItemInput!]!,
@@ -178,7 +196,7 @@ ${Q}
     }
   }
 ${z}
-`;async function J(t,e,s){var l;const i=((l=e.page_info)==null?void 0:l.totalPages)??1,n=e.items??[];if(i<=1)return;const o=k(),c=Array.from({length:i-1},(g,I)=>I+2),_=await Promise.all(c.map(g=>f(Y,{variables:{wishlistId:t,pageSize:s,currentPage:g}}).then(({data:I})=>{var h;if(!((h=I==null?void 0:I.customer)!=null&&h.wishlist_v2))return[];const d=A(I.customer.wishlist_v2);return(d==null?void 0:d.items)??[]}).catch(()=>[])));if(k()!==o)return;const u=[...n,..._.flat()];b(u),a.emit("wishlist/allItems",u)}const ft=async t=>{var n,o,c,_,u;if(!t)return null;const e=w(),s={id:(e==null?void 0:e.id)??"",updated_at:"",sharing_code:"",items_count:0,items:(e==null?void 0:e.items)??[]};for(const l of t){if((n=s.items)==null?void 0:n.some(d=>m(d,{sku:l.sku,optionUIDs:l.optionsUIDs})))continue;const I=l.optionsUIDs?(o=l.optionsUIDs)==null?void 0:o.map(d=>({uid:d})):[];s.items=[...s.items,{id:crypto.randomUUID(),quantity:l.quantity,selectedOptions:I,enteredOptions:l.enteredOptions??[],product:{sku:l.sku}}]}const i=s.items.slice(((e==null?void 0:e.items)??[]).length);if(s.items_count=(c=s.items)==null?void 0:c.length,U(i),a.emit("wishlist/data",s),r.authenticated){if(!r.wishlistId)throw O(i),a.emit("wishlist/data",e),Error("Wishlist ID is not set");const l={wishlistId:r.wishlistId,wishlistItems:t.map(({sku:S,quantity:T,optionsUIDs:p,enteredOptions:W})=>({sku:S,quantity:T,selected_options:p,entered_options:W})),pageSize:r.pageSize,currentPage:r.currentPage??1},{errors:g,data:I}=await f(pt,{variables:l}),d=[...((_=I==null?void 0:I.addProductsToWishlist)==null?void 0:_.user_errors)??[],...g??[]];if(d.length>0)return O(i),a.emit("wishlist/data",e),E(d);const h=A(I.addProductsToWishlist.wishlist,((u=t[0])==null?void 0:u.enteredOptions)??[]),F=(h==null?void 0:h.items)??[],y=i.filter(S=>F.some(T=>{var p;return m(T,{sku:S.product.sku,optionUIDs:(p=S.selectedOptions)==null?void 0:p.map(W=>W.uid)})}));y.length>0&&(O(y),U(F.filter(S=>y.some(T=>{var p;return m(S,{sku:T.product.sku,optionUIDs:(p=T.selectedOptions)==null?void 0:p.map(W=>W.uid)})})))),a.emit("wishlist/data",h),y.length<i.length&&h&&J(r.wishlistId,h,r.pageSize??M).catch(console.error)}return null},St=`
+`;async function X(t,e,s){var u;const i=((u=e.page_info)==null?void 0:u.totalPages)??1,r=e.items??[];if(i<=1)return;const o=B(),l=Array.from({length:i-1},(_,I)=>I+2),h=await Promise.all(l.map(_=>g(j,{variables:{wishlistId:t,pageSize:s,currentPage:_}}).then(({data:I})=>{var W;if(!((W=I==null?void 0:I.customer)!=null&&W.wishlist_v2))return[];const c=P(I.customer.wishlist_v2);return(c==null?void 0:c.items)??[]}).catch(()=>[])));if(B()!==o)return;const a=[...r,...h.flat()];x(a),d.emit("wishlist/allItems",a)}const Et=async(t,e)=>{var o,l,h,a,u,_,I;if(!t)return null;if(n.authenticated&&e){const c={wishlistId:e,wishlistItems:t.map(({sku:S,quantity:N,optionsUIDs:O,enteredOptions:T})=>({sku:S,quantity:N,selected_options:O,entered_options:T})),pageSize:n.pageSize,currentPage:n.currentPage??1},{errors:W,data:m}=await g(Q,{variables:c}),p=[...((o=m==null?void 0:m.addProductsToWishlist)==null?void 0:o.user_errors)??[],...W??[]];return p.length>0?f(p):P(m.addProductsToWishlist.wishlist,((l=t[0])==null?void 0:l.enteredOptions)??[])}const s=D(),i={id:(s==null?void 0:s.id)??"",updated_at:"",sharing_code:"",items_count:0,items:(s==null?void 0:s.items)??[]};for(const c of t){if((h=i.items)==null?void 0:h.some(p=>w(p,{sku:c.sku,optionUIDs:c.optionsUIDs})))continue;const m=c.optionsUIDs?(a=c.optionsUIDs)==null?void 0:a.map(p=>({uid:p})):[];i.items=[...i.items,{id:crypto.randomUUID(),quantity:c.quantity,selectedOptions:m,enteredOptions:c.enteredOptions??[],product:{sku:c.sku}}]}const r=i.items.slice(((s==null?void 0:s.items)??[]).length);if(i.items_count=(u=i.items)==null?void 0:u.length,G(r),d.emit("wishlist/data",i),n.authenticated){if(!n.wishlistId)throw $(r),d.emit("wishlist/data",s),Error("Wishlist ID is not set");const c={wishlistId:n.wishlistId,wishlistItems:t.map(({sku:T,quantity:A,optionsUIDs:E,enteredOptions:y})=>({sku:T,quantity:A,selected_options:E,entered_options:y})),pageSize:n.pageSize,currentPage:n.currentPage??1},{errors:W,data:m}=await g(Q,{variables:c}),p=[...((_=m==null?void 0:m.addProductsToWishlist)==null?void 0:_.user_errors)??[],...W??[]];if(p.length>0)return $(r),d.emit("wishlist/data",s),f(p);const S=P(m.addProductsToWishlist.wishlist,((I=t[0])==null?void 0:I.enteredOptions)??[]),N=(S==null?void 0:S.items)??[],O=r.filter(T=>N.some(A=>{var E;return w(A,{sku:T.product.sku,optionUIDs:(E=T.selectedOptions)==null?void 0:E.map(y=>y.uid)})}));O.length>0&&($(O),G(N.filter(T=>O.some(A=>{var E;return w(T,{sku:A.product.sku,optionUIDs:(E=A.selectedOptions)==null?void 0:E.map(y=>y.uid)})})))),d.emit("wishlist/data",S),O.length<r.length&&S&&X(n.wishlistId,S,n.pageSize??v).catch(console.error)}return null},Y=`
   mutation REMOVE_PRODUCTS_FROM_WISHLIST_MUTATION(
       $wishlistId: ID!, 
       $wishlistItemsIds: [ID!]!,
@@ -193,7 +211,7 @@ ${z}
       }
     }
   }
-`,Gt=async t=>{var i,n,o;const e=w(),s={...e,items:(i=e.items)==null?void 0:i.filter(c=>!t.some(_=>{var u;return m(c,{sku:_.product.sku,optionUIDs:(u=_.selectedOptions)==null?void 0:u.map(l=>l.uid)})}))};if(r.authenticated){if(!r.wishlistId)throw Error("Wishlist ID is not set");O(t);const c=t.map(g=>g.id),{errors:_,data:u}=await f(St,{variables:{wishlistId:r.wishlistId,wishlistItemsIds:c}}),l=[...((n=u==null?void 0:u.removeProductsFromWishlist)==null?void 0:n.user_errors)??[],..._??[]];return l.length>0?(U(t),a.emit("wishlist/data",e),E(l)):(await ht(r.wishlistId,r.pageSize,r.currentPage),null)}return O(t),s.items_count=(o=s.items)==null?void 0:o.length,a.emit("wishlist/data",s),null},Tt=`
+`,kt=async(t,e)=>{var r,o,l,h;if(n.authenticated&&e){const a=t.map(c=>c.id),{errors:u,data:_}=await g(Y,{variables:{wishlistId:e,wishlistItemsIds:a}}),I=[...((r=_==null?void 0:_.removeProductsFromWishlist)==null?void 0:r.user_errors)??[],...u??[]];return I.length>0?f(I):null}const s=D(),i={...s,items:(o=s.items)==null?void 0:o.filter(a=>!t.some(u=>{var _;return w(a,{sku:u.product.sku,optionUIDs:(_=u.selectedOptions)==null?void 0:_.map(I=>I.uid)})}))};if(n.authenticated){if(!n.wishlistId)throw Error("Wishlist ID is not set");$(t);const a=t.map(c=>c.id),{errors:u,data:_}=await g(Y,{variables:{wishlistId:n.wishlistId,wishlistItemsIds:a}}),I=[...((l=_==null?void 0:_.removeProductsFromWishlist)==null?void 0:l.user_errors)??[],...u??[]];return I.length>0?(G(t),d.emit("wishlist/data",s),f(I)):(await St(n.wishlistId,n.pageSize,n.currentPage),null)}return $(t),i.items_count=(h=i.items)==null?void 0:h.length,d.emit("wishlist/data",i),null},Pt=`
   mutation UPDATE_PRODUCTS_IN_WISHLIST_MUTATION(
       $wishlistId: ID!, 
       $wishlistItems: [WishlistItemUpdateInput!]!,
@@ -215,5 +233,5 @@ ${z}
   }
   
    ${z} 
-`,bt=async t=>{const e=r.wishlistId;if(!e)throw Error("Wishlist ID is not set");return f(Tt,{variables:{wishlistId:e,pageSize:r.pageSize,currentPage:r.currentPage,wishlistItems:t.map(({wishlistItemId:s,quantity:i,description:n,selectedOptions:o,enteredOptions:c})=>({wishlistItemId:s,quantity:i,description:n,selected_options:o,entered_options:c}))}}).then(({errors:s,data:i})=>{var o;const n=[...((o=i==null?void 0:i.updateProductsInWishlist)==null?void 0:o.user_errors)??[],...s??[]];return n.length>0?E(n):A(i.updateProductsInWishlist.wishlist)})},wt=()=>(r.wishlistId=null,r.authenticated=!1,Promise.resolve(null)),x=async(t={})=>{if(r.initializing)return null;r.initializing=!0,r.config||(r.config=await ct());const e=r.authenticated?await Et(t):await Wt();return a.emit("wishlist/initialized",e),a.emit("wishlist/data",e),r.initializing=!1,e};async function Et(t={}){const{pageSize:e=M,currentPage:s=R}=t,i=await gt(e,s),n=i?i[0]:null;return n?(r.wishlistId=n.id,b(n.items??[]),J(n.id,n,e).catch(console.error),n):null}async function Wt(){try{const t=w();return t!=null&&t.items&&b(t.items),t}catch(t){throw console.error(t),t}}const Ot=async t=>{var n;if(!t)return null;const e=w(!0),s=[];if((n=e==null?void 0:e.items)==null||n.forEach(o=>{var u;const c=((u=o.selectedOptions)==null?void 0:u.map(l=>l.uid))||[];if(!t.items.some(l=>m(l,{sku:o.product.sku,optionUIDs:c}))){const l={sku:o.product.sku,quantity:1,optionsUIDs:c,enteredOptions:o.enteredOptions||void 0};s.push(l)}}),s.length===0)return null;const i=await ft(s);return et(),i};export{R as DEFAULT_CURRENT_PAGE,M as DEFAULT_PAGE_SIZE,ft as addProductsToWishlist,U as addToPersistedAllWishlistItems,st as clearPersistedAllWishlistItems,et as clearPersistedLocalStorage,Nt as config,f as fetchGraphQl,Mt as findInPersistedAllWishlistItems,k as getAllItemsCacheVersion,Ct as getConfig,Et as getDefaultWishlist,Wt as getGuestWishlist,Lt as getPersistedAllWishlistItems,w as getPersistedWishlistData,ct as getStoreConfig,ht as getWishlistById,yt as getWishlistItemFromStorage,gt as getWishlists,v as initialize,x as initializeWishlist,Ot as mergeWishlists,vt as removeFetchGraphQlHeader,O as removeFromPersistedAllWishlistItems,Gt as removeProductsFromWishlist,wt as resetWishlist,r as s,$t as setEndpoint,Ut as setFetchGraphQlHeader,Rt as setFetchGraphQlHeaders,b as setPersistedAllWishlistItems,tt as setPersistedWishlistData,bt as updateProductsInWishlist};
+`,xt=async t=>{const e=n.wishlistId;if(!e)throw Error("Wishlist ID is not set");return g(Pt,{variables:{wishlistId:e,pageSize:n.pageSize,currentPage:n.currentPage,wishlistItems:t.map(({wishlistItemId:s,quantity:i,description:r,selectedOptions:o,enteredOptions:l})=>({wishlistItemId:s,quantity:i,description:r,selected_options:o,entered_options:l}))}}).then(({errors:s,data:i})=>{var o;const r=[...((o=i==null?void 0:i.updateProductsInWishlist)==null?void 0:o.user_errors)??[],...s??[]];return r.length>0?f(r):P(i.updateProductsInWishlist.wishlist)})},Ot=()=>(n.wishlistId=null,n.authenticated=!1,Promise.resolve(null)),J=async(t={})=>{if(n.initializing)return null;n.initializing=!0,n.config||(n.config=await dt());const e=n.authenticated?await At(t):await Dt();return d.emit("wishlist/initialized",e),d.emit("wishlist/data",e),n.initializing=!1,e};async function At(t={}){const{pageSize:e=v,currentPage:s=U}=t,i=await wt(e,s),r=i?i[0]:null;return r?(n.wishlistId=r.id,x(r.items??[]),X(r.id,r,e).catch(console.error),r):null}async function Dt(){try{const t=D();return t!=null&&t.items&&x(t.items),t}catch(t){throw console.error(t),t}}const yt=async t=>{var r;if(!t)return null;const e=D(!0),s=[];if((r=e==null?void 0:e.items)==null||r.forEach(o=>{var a;const l=((a=o.selectedOptions)==null?void 0:a.map(u=>u.uid))||[];if(!t.items.some(u=>w(u,{sku:o.product.sku,optionUIDs:l}))){const u={sku:o.product.sku,quantity:1,optionsUIDs:l,enteredOptions:o.enteredOptions||void 0};s.push(u)}}),s.length===0)return null;const i=await Et(s);return ot(),i};export{U as DEFAULT_CURRENT_PAGE,v as DEFAULT_PAGE_SIZE,Et as addProductsToWishlist,G as addToPersistedAllWishlistItems,lt as clearPersistedAllWishlistItems,ot as clearPersistedLocalStorage,Ut as config,Ft as createWishlist,g as fetchGraphQl,Rt as findInPersistedAllWishlistItems,B as getAllItemsCacheVersion,Ht as getConfig,At as getDefaultWishlist,Dt as getGuestWishlist,Nt as getPersistedAllWishlistItems,D as getPersistedWishlistData,dt as getStoreConfig,St as getWishlistById,Mt as getWishlistItemFromStorage,wt as getWishlists,H as initialize,J as initializeWishlist,yt as mergeWishlists,zt as removeFetchGraphQlHeader,$ as removeFromPersistedAllWishlistItems,kt as removeProductsFromWishlist,Ot as resetWishlist,n as s,Ct as setEndpoint,bt as setFetchGraphQlHeader,Gt as setFetchGraphQlHeaders,x as setPersistedAllWishlistItems,nt as setPersistedWishlistData,xt as updateProductsInWishlist};
 //# sourceMappingURL=api.js.map

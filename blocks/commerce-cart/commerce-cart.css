@@ -79,3 +79,31 @@
     flex-basis: auto;
   }
 }
+
+/*
+ * The Save for Later section reuses the wishlist container, which renders its
+ * own alert. Wishlist alerts are already shown in .cart__notification, so hide
+ * the duplicate one inside the SFL section.
+ */
+.cart__save-for-later .wishlist-wishlist__alert,
+.cart__save-for-later .wishlist-wishlist__alert-region,
+.cart__save-for-later .dropin-in-line-alert {
+  display: none !important;
+}
+
+/*
+ * Relabel the SFL section: the wishlist container renders its own "Wishlist"
+ * heading from shared (global) i18n, which we can't override per instance.
+ * Hide it here and show the storefront-owned "Save for later" title instead,
+ * scoped to the cart so the /wishlist page heading is unaffected.
+ */
+.cart__save-for-later .wishlist-wishlist__heading {
+  display: none;
+}
+
+/* Match the drop-in heading typography (as used by the cart/wishlist titles). */
+.cart__save-for-later-title {
+  margin: 32px 0 16px;
+  font: var(--type-headline-1-font);
+  letter-spacing: var(--type-headline-1-letter-spacing);
+}
