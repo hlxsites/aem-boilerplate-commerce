@@ -54,3 +54,7 @@ No events are emitted by this block. -->
 - **Image Rendering Errors**: If product images fail to load, the image slots handle fallback behavior
 - **Container Errors**: If the OrdersList container fails to render, the block content remains empty
 - **Fallback Behavior**: Always falls back to full view mode if configuration is invalid
+
+### Known Issues
+
+- Anonymous PSI/Lighthouse runs against this route measure the pre-redirect empty shell (LCP = footer legal text), not the real experience; authenticated users see LCP ~1.5-2.7s. Pre-existing, not tied to any single feature change — see PR #1402/#1422 discussion.
