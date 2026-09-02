@@ -58,6 +58,10 @@ No localStorage keys are used by this block. -->
 5. **Checkout Flow**: Users can proceed to checkout via configured checkout URL
 6. **Empty Cart Handling**: When cart is empty, shows start shopping CTA and hides order summary
 
+### Pay By Link demo
+
+On localhost or the `pbl-standalone` EDS preview hosts, `?pblDemo=true` shows a temporary **Create payment link** form in the order-summary column. It calls `createPaymentLink` for the active cart and navigates to the authored `/drafts/aries/pay` flow on the same EDS branch. This control is for local/product validation only and must be removed before integration.
+
 ### Error Handling
 
 - **Mini-PDP Errors**: If mini-PDP modal fails to open, shows error notification with dismiss option

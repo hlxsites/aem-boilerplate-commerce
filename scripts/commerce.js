@@ -12,7 +12,6 @@ import {
   getMetadata,
   readBlockConfig,
 } from './aem.js';
-import initializeDropins from './initializers/index.js';
 
 /**
  * Sanitizes the given string by:
@@ -63,6 +62,13 @@ export const PRODUCT_TEMPLATE_PATHS = [
 // PATHS
 export const SUPPORT_PATH = '/support';
 export const PRIVACY_POLICY_PATH = '/privacy-policy';
+export const PAY_BY_LINK_PATH = '/pay';
+export const PAY_BY_LINK_DRAFT_PATH = '/drafts/aries/pay';
+
+export const isPayByLinkPage = () => [
+  PAY_BY_LINK_PATH,
+  PAY_BY_LINK_DRAFT_PATH,
+].includes(window.location.pathname);
 
 // GUEST PATHS
 export const ORDER_STATUS_PATH = '/order-status';
@@ -332,6 +338,12 @@ export async function initializeCommerce() {
   CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
+  if (isPayByLinkPage()) {
+    const { default: initializePayByLinkPage } = await import('./initializers/pay-by-link-page.js');
+    return initializePayByLinkPage();
+  }
+
+  const { default: initializeDropins } = await import('./initializers/index.js');
   return initializeDropins();
 }
 

@@ -26,6 +26,26 @@
   margin-top: var(--spacing-medium);
 }
 
+.cart__payment-link-demo {
+  display: grid;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--color-neutral-300);
+}
+
+.cart__payment-link-demo h3,
+.cart__payment-link-demo-status {
+  margin: 0;
+}
+
+.cart__payment-link-demo input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.5rem;
+  padding-inline: var(--spacing-small);
+}
+
 .dropin-cart-item__footer {
   margin-top: var(--spacing-xsmall);
   gap: var(--spacing-xsmall);

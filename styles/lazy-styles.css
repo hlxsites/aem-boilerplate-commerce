@@ -1,1 +1,23 @@
+body:has(.commerce-pay-by-link) > header {
+	border-bottom: 1px solid var(--color-neutral-300);
+}
+
+body.pay-by-link-page main > .section > div {
+	max-width: 1264px;
+}
+
+.pay-by-link-header {
+	display: flex;
+	justify-content: center;
+	max-width: 75rem;
+	margin-inline: auto;
+	padding: var(--spacing-small) var(--spacing-medium);
+}
+
+.pay-by-link-header a {
+	color: var(--color-neutral-900);
+	font: var(--type-headline-2-strong-font);
+	text-decoration: none;
+}
+
 /* add global styles that can be loaded post LCP here */
