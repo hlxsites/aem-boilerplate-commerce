@@ -43,6 +43,7 @@ No events are emitted by this block. -->
 - **Populated Cart**: When cart has items, shows mini cart with product list and actions
 - **Configurable Products**: When configurable products are present and editing is enabled, shows edit buttons
 - **Undo Mode**: When undo is enabled, prevents mini cart from closing during remove operations
+- **Promotions**: Cart items show applicable discount/promotion rule labels beneath their details
 
 ### User Interaction Flows
 

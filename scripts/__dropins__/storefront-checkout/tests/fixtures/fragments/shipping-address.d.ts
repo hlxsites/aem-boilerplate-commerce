@@ -37,7 +37,7 @@ export declare const shippingAddressFixture: {
     custom_attributes: never[];
     available_shipping_methods: ({
         amount: {
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
             value: number;
         };
         available: boolean;
@@ -48,16 +48,16 @@ export declare const shippingAddressFixture: {
         method_title: string;
         price_excl_tax: {
             value: number;
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
         };
         price_incl_tax: {
             value: number;
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
         };
         original_amount?: undefined;
     } | {
         amount: {
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
             value: number;
         };
         available: boolean;
@@ -68,15 +68,15 @@ export declare const shippingAddressFixture: {
         method_title: string;
         original_amount: {
             value: number;
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
         };
         price_excl_tax: {
             value: number;
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
         };
         price_incl_tax: {
             value: number;
-            currency: import('../../../__generated__/types').CurrencyEnum;
+            currency: import("../../../__generated__/types").CurrencyEnum;
         };
     })[];
     selected_shipping_method: null;
@@ -85,4 +85,3 @@ export declare const shippingAddressFixture: {
     middlename: string;
     fax: string;
 };
-//# sourceMappingURL=shipping-address.d.ts.map

@@ -30,4 +30,3 @@ export * from './transform-region';
 export * from './transform-shipping-estimate';
 export * from './transform-shipping-methods';
 export * from './transform-store-config';
-//# sourceMappingURL=index.d.ts.map

@@ -669,6 +669,32 @@ export function isProductTemplate() {
   });
 }
 
+/**
+ * Renders promotion/discount rule labels for a cart item, keeping them in sync
+ * as the item's data changes. Used by the cart, mini-cart, and checkout
+ * order-summary line items, which all share the same dropin cart-item context.
+ * @param {Object} ctx - The dropin cart-item Footer slot context
+ * @returns {HTMLElement} The promotions wrapper element
+ */
+export function renderCartItemPromotions(ctx) {
+  const promotionsWrapper = document.createElement('div');
+  promotionsWrapper.className = 'cart-item-promotions';
+
+  ctx.onChange((next) => {
+    promotionsWrapper.innerHTML = '';
+    next.item?.discount?.label?.forEach((label) => {
+      const promoDiv = document.createElement('div');
+      promoDiv.className = 'cart-item-promotion-label';
+      promoDiv.textContent = label;
+      promotionsWrapper.appendChild(promoDiv);
+    });
+  });
+
+  ctx.appendChild(promotionsWrapper);
+
+  return promotionsWrapper;
+}
+
 export function getProductLink(urlKey, sku) {
   if (!urlKey) {
     console.warn('getProductLink: urlKey is missing or empty', { urlKey, sku });
@@ -733,7 +759,10 @@ function trackHistory() {
   if (storeIdentifier) {
     window.adobeDataLayer.push((dl) => {
       dl.addEventListener('adobeDataLayer:change', (event) => {
-        if (!event.productContext || !event.productContext.sku) {
+        // Speculation Rules prerendering pushes productContext once immediately and
+        // again on activation. Ignore the prerender-only push so hovering a link
+        // doesn't record a view that never actually happened.
+        if (document.prerendering || !event.productContext || !event.productContext.sku) {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;

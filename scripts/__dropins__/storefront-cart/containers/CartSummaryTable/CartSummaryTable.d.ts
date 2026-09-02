@@ -1,9 +1,24 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { CartModel } from '../../data/models/cart-model';
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
+import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
 import { VNode } from 'preact';
-
 export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivElement> {
     /** Initial data for the cart */
     initialData?: CartModel | null;
@@ -98,28 +113,28 @@ export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivEl
  */
 export declare const CartSummaryTable: Container<CartSummaryTableContainerProps, CartModel | null>;
 export declare const createUndoHandler: (recentlyRemovedItems: {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
     loading: boolean;
     error?: string;
 }[], setRecentlyRemovedItems: (updater: (prev: {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
     loading: boolean;
     error?: string;
 }[]) => {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
     loading: boolean;
     error?: string;
 }[]) => void) => (uid: string) => Promise<void>;
 export declare const createDismissHandler: (setRecentlyRemovedItems: (updater: (prev: {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
     loading: boolean;
     error?: string;
 }[]) => {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
     loading: boolean;
     error?: string;
@@ -150,8 +165,7 @@ export declare const createUndoCallback: (handleUndo: (uid: string) => void, ite
  */
 export declare const createDismissCallback: (handleDismiss: (uid: string) => void, itemUid: string) => () => void;
 export declare const createUndoBanner: (removed: {
-    item: CartModel['items'][number];
+    item: CartModel["items"][number];
     index: number;
-    error?: string | undefined;
-}, item: CartModel['items'][number], isUndoBeingRemoved: boolean, dictionary: any, handleUndo: (uid: string) => void, handleDismiss: (uid: string) => void, slots?: CartSummaryTableContainerProps['slots']) => VNode;
-//# sourceMappingURL=CartSummaryTable.d.ts.map
+    error?: string;
+}, item: CartModel["items"][number], isUndoBeingRemoved: boolean, dictionary: any, handleUndo: (uid: string) => void, handleDismiss: (uid: string) => void, slots?: CartSummaryTableContainerProps["slots"]) => VNode;

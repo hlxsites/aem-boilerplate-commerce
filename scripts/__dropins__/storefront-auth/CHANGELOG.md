@@ -1,5 +1,64 @@
 # @dropins/storefront-auth
 
+## 4.0.1
+
+### Patch Changes
+
+- 0a4341a: Bump SDK stable versions
+- 857e7aa: Fix visual heading text not marked as heading across sign in, sign up, reset password and update password forms
+- 5b8e0df: Fix incorrect and missing `autocomplete` attributes on form fields.
+
+  The email field on sign in, sign in popover, forgot password, and create account previously used `autocomplete="username"`, which does not tell browsers and password managers the field expects an email address. It now uses `autocomplete="email"`.
+
+  The first name and last name fields on create account were missing an `autocomplete` attribute entirely; they now use `given-name` and `family-name` respectively.
+
+  The password and confirm password fields on the sign up form used incorrect/invalid `autocomplete` values (`current-password` and `confirmPassword`, the latter not a valid HTML5 token). Both now use `new-password`, the correct value for a field that sets a new password.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 57f64d7: Fix VALIDATE_TOKEN query incompatibility with ACCS.
+
+  The token validation query previously included `customer { group { uid } }`, a field not available in ACCS backends, causing a schema error during drop-in initialization.
+
+  The query is now split into two variants:
+
+  - A minimal ACCS-compatible query used by default
+  - A query that includes `group { uid }` for Adobe Commerce Optimizer (ACO) price book resolution, used only when `adobeCommerceOptimizer: true` is set in the init config
+
+  No changes are required for existing implementations. Merchants not using ACO are unaffected. Merchants using ACO continue to receive the `auth/group-uid` event as before.
+
+## 4.0.1-beta.1
+
+### Patch Changes
+
+- 0a4341a: Bump SDK stable versions
+
+## 4.0.1-beta.0
+
+### Patch Changes
+
+- 857e7aa: Fix visual heading text not marked as heading across sign in, sign up, reset password and update password forms
+- 5b8e0df: Fix incorrect and missing `autocomplete` attributes on form fields.
+
+  The email field on sign in, sign in popover, forgot password, and create account previously used `autocomplete="username"`, which does not tell browsers and password managers the field expects an email address. It now uses `autocomplete="email"`.
+
+  The first name and last name fields on create account were missing an `autocomplete` attribute entirely; they now use `given-name` and `family-name` respectively.
+
+  The password and confirm password fields on the sign up form used incorrect/invalid `autocomplete` values (`current-password` and `confirmPassword`, the latter not a valid HTML5 token). Both now use `new-password`, the correct value for a field that sets a new password.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 57f64d7: Fix VALIDATE_TOKEN query incompatibility with ACCS.
+
+  The token validation query previously included `customer { group { uid } }`, a field not available in ACCS backends, causing a schema error during drop-in initialization.
+
+  The query is now split into two variants:
+
+  - A minimal ACCS-compatible query used by default
+  - A query that includes `group { uid }` for Adobe Commerce Optimizer (ACO) price book resolution, used only when `adobeCommerceOptimizer: true` is set in the init config
+
+  No changes are required for existing implementations. Merchants not using ACO are unaffected. Merchants using ACO continue to receive the `auth/group-uid` event as before.
+
 ## 4.0.0
 
 ### Major Changes
