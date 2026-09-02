@@ -43,6 +43,7 @@ No localStorage keys are used by this block. -->
 - **Server Errors**: When server errors occur, shows error state and hides checkout forms
 - **Out of Stock**: When items are out of stock, shows out of stock message with cart update options
 - **Order Confirmation**: After successful order placement, transitions to order confirmation view
+- **Promotions**: Order summary line items show applicable discount/promotion rule labels beneath their details
 
 ### User Interaction Flows
 

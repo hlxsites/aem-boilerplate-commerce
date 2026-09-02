@@ -17,7 +17,12 @@ import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-m
 import '../../scripts/initializers/cart.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
-import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  rootLink,
+  getProductLink,
+  renderCartItemPromotions,
+} from '../../scripts/commerce.js';
 
 export default async function decorate(block) {
   const {
@@ -208,6 +213,10 @@ export default async function decorate(block) {
           editLinkContainer.appendChild(editLink);
           ctx.appendChild(editLinkContainer);
         }
+      },
+
+      Footer: (ctx) => {
+        renderCartItemPromotions(ctx);
       },
     },
   })(block);
