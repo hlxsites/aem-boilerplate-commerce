@@ -2,10 +2,6 @@ name: Cypress E2E B2B ACO Tests
 on: push
 jobs:
   cypress-b2b-aco-groups:
-    # TEMP-ISOLATION: disabled while narrowing down which B2B failures come from
-    # parallel jobs on a shared backend. NOT FOR MERGE — restore from
-    # ___ONLY_EXAMPLES.
-    if: false
     uses: ./.github/workflows/_b2b-e2e-base.yaml
     with:
       config-file: cypress.b2b.aco.config.js
@@ -28,8 +24,7 @@ jobs:
     steps:
       - name: Check matrix result
         run: |
-          # TEMP-ISOLATION: also accept "skipped" while the job above is if:false.
-          if [ "${{ needs.cypress-b2b-aco-groups.result }}" != "success" ] && [ "${{ needs.cypress-b2b-aco-groups.result }}" != "skipped" ]; then
+          if [ "${{ needs.cypress-b2b-aco-groups.result }}" != "success" ]; then
             echo "One or more test groups failed: ${{ needs.cypress-b2b-aco-groups.result }}"
             exit 1
           fi

@@ -2,14 +2,10 @@ name: Cypress E2E ACO Tests
 on: push
 jobs:
   cypress-aco-groups:
-    # TEMP-ISOLATION: disabled while narrowing down which B2B failures come from
-    # parallel jobs on a shared backend. NOT FOR MERGE — restore from
-    # ___ONLY_EXAMPLES.
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commerce's
     # demo backend.
-    # if: github.repository == 'hlxsites/aem-boilerplate-commerce'
-    if: false
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     strategy:
       # Run all shards even if one fails, so a single flaky shard doesn't hide
@@ -72,8 +68,7 @@ jobs:
     steps:
       - name: Check shards result
         run: |
-          # TEMP-ISOLATION: also accept "skipped" while the job above is if:false.
-          if [ "${{ needs.cypress-aco-groups.result }}" != "success" ] && [ "${{ needs.cypress-aco-groups.result }}" != "skipped" ]; then
+          if [ "${{ needs.cypress-aco-groups.result }}" != "success" ]; then
             echo "One or more test shards failed: ${{ needs.cypress-aco-groups.result }}"
             exit 1
           fi
