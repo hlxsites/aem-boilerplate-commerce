@@ -17,8 +17,9 @@ show_menu() {
     echo -e "${GREEN}1)${NC} PaaS Configuration (localhost + cypress:open)"
     echo -e "${GREEN}2)${NC} SaaS Configuration (localhost + cypress:saas:open)"
     echo -e "${GREEN}3)${NC} ACO Configuration (localhost + cypress:aco:open)"
-    echo -e "${GREEN}4)${NC} B2B SaaS Configuration (localhost + cypress:b2b:saas:open)"
-    echo -e "${RED}5)${NC} Exit"
+    echo -e "${GREEN}4)${NC} B2B SaaS Sandbox Configuration (localhost + cypress:b2b:saas:open)"
+    echo -e "${GREEN}5)${NC} B2B SaaS Production Configuration (localhost + cypress:b2b:saas:open)"
+    echo -e "${RED}6)${NC} Exit"
     echo ""
 }
 
@@ -92,7 +93,7 @@ run_configuration() {
             echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
             ;;
         4)
-            echo -e "${YELLOW}Starting AEM localhost with B2B SaaS configuration...${NC}"
+            echo -e "${YELLOW}Starting AEM localhost with B2B SaaS Sandbox configuration...${NC}"
             echo -e "${BLUE}URL: https://main--boilerplate-b2b-accs--adobe-commerce.aem.live${NC}"
             
             # Start AEM localhost server in background
@@ -105,7 +106,7 @@ run_configuration() {
             
             # Return to cypress directory and run cypress
             cd "$ROOT_DIR/cypress"
-            echo -e "${YELLOW}Opening Cypress with B2B SaaS configuration...${NC}"
+            echo -e "${YELLOW}Opening Cypress with B2B SaaS Sandbox configuration...${NC}"
             npm run cypress:b2b:saas:open
             
             # After Cypress closes, remind user about the background server
@@ -114,6 +115,28 @@ run_configuration() {
             echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
             ;;
         5)
+            echo -e "${YELLOW}Starting AEM localhost with B2B SaaS Production configuration...${NC}"
+            echo -e "${BLUE}URL: https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live${NC}"
+
+            # Start AEM localhost server in background
+            cd "$ROOT_DIR" && npx aem up --url https://main--boilerplate-b2b-accs-prod--adobe-commerce.aem.live &
+            AEM_PID=$!
+
+            echo -e "${GREEN}AEM localhost server started (PID: $AEM_PID)${NC}"
+            echo -e "${YELLOW}Waiting a moment for server to initialize...${NC}"
+            sleep 3
+
+            # Return to cypress directory and run cypress
+            cd "$ROOT_DIR/cypress"
+            echo -e "${YELLOW}Opening Cypress with B2B SaaS Production configuration...${NC}"
+            npm run cypress:b2b:saas:open
+
+            # After Cypress closes, remind user about the background server
+            echo ""
+            echo -e "${BLUE}Note: AEM localhost server (PID: $AEM_PID) is still running in the background.${NC}"
+            echo -e "${BLUE}To stop it, run: kill $AEM_PID${NC}"
+            ;;
+        6)
             echo -e "${YELLOW}Exiting...${NC}"
             exit 0
             ;;
