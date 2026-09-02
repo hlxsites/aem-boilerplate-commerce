@@ -190,6 +190,22 @@
     letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
+.cart-item-promotions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+}
+
+.cart-item-promotions:empty {
+    display: none;
+}
+
+.cart-item-promotion-label {
+    font: var(--type-details-caption-1-font);
+    letter-spacing: var(--type-details-caption-1-letter-spacing);
+    color: var(--color-positive-800);
+}
+
 .checkout__block
 .cart-cart-summary-list
 .cart-cart-summary-list__footer-divider {
