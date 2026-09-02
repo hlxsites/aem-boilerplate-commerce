@@ -25,6 +25,7 @@ type State = {
     storeCode?: string;
     pageSize?: number;
     currentPage?: number;
+    guestWishlistTtl?: Record<string, number>;
 };
 export declare const state: State;
 export {};

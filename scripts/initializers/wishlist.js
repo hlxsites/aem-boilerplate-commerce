@@ -22,5 +22,8 @@ await initializeDropin(async () => {
     langDefinitions,
     isGuestWishlistEnabled: true,
     storeCode: headers.Store,
+    // Guest "Save for Later" list expires 14 days after the last save; other
+    // guest lists (including the default wishlist) never expire.
+    guestWishlistTtl: { 'save-for-later': 14 },
   });
 })();
