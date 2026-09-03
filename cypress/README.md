@@ -1,12 +1,13 @@
 # Pre Setup for B2B specific
-1. Created server to server auth project 
+1. Created server to server auth project
    Note, these credentials are needed only for Admin Rest API interactions and not for Storefront graphql
- 
-   Reference: https://developer.adobe.com/commerce/webapi/rest/authentication/ 
+
+   Reference: https://developer.adobe.com/commerce/webapi/rest/authentication/
 
 2. Set cypress local env variable, these can be found in vault pre-fixed with LOCAL
    ```bash
    export CYPRESS_API_ENDPOINT=#######
+   export CYPRESS_API_ENDPOINT_PROD=#######
    export CYPRESS_IMS_CLIENT_ID=#######
    export CYPRESS_IMS_ORG_ID=#######
    export CYPRESS_IMS_CLIENT_SECRET=#######
@@ -17,7 +18,7 @@
 
 1. Clone the repo and change directory to `cypress`
 2. Run `npm install`
-3. Run `bash run-cypress.sh` 
+3. Run `bash run-cypress.sh`
 4. Select which setup you need to run - SaaS, PaaS, B2B , as per your testing needs.
 5. To run all tests use `npm run cypress:run` For This command local server needs to be running at <http://127.0.0.1:3000/>.
 
@@ -62,6 +63,8 @@ All commands use a base config, defined in `cypress.base.config.js` and extend i
 For various reasons, certain tests fail against certain environments. Eventually these issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.
 
 - `{ tags: '@skipSaas' }` skips the test when run with `cypress:saas:run`
+- `{ tags: '@skipSaasProd' }` skips the test when run with `cypress:saas-prod:run` in a Production environment
+- `{ tags: '@skipSaasNoProd' }` skips the test when run with `cypress:saas:run` in a non-Production environment
 - `{ tags: '@skipPaas' }` skips the test when run with `cypress:run`
 - `{ tags: '@skipAco' }` skips the test when run with `cypress:aco:run` or `cypress:b2b:aco:run`
 
@@ -75,11 +78,9 @@ For various reasons, certain tests fail against certain environments. Eventually
 | `search-product-click.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-request-sent.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
 | `search-results-view.spec` | SaaS | Epic <https://jira.corp.adobe.com/browse/COMOPT-81> |
-| `verifyAemAssets.spec` | SaaS, PaaS, ACO | AEM Assets not configured on ACO |
-| `verifyRecsDisplay.spec` | SaaS, PaaS, ACO | Recommendations not configured on ACO |
-| `verifyAuthUserCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
-| `verifyGuestUserCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
-| `verifyGuestUserVirtualCheckout.spec` | SaaSProd | Payment Services not configured on ACCS Prod |
+| `verifyAuthUserCheckout.spec` | SaaSProd | Requires Payment Services specific configuration; Payment Services not configured on ACCS Prod |
+| `verifyGuestUserCheckout.spec` | SaaSProd | Requires Payment Services specific configuration; Payment Services not configured on ACCS Prod |
+| `verifyGuestUserVirtualCheckout.spec` | SaaSProd | Requires Payment Services specific configuration; Payment Services not configured on ACCS Prod |
 
 ## Metadata/SKUs in Tests
 
