@@ -45,10 +45,29 @@ await initializeDropin(async () => {
  *
  * @returns {Promise<boolean>} True only when the backend reports it enabled.
  */
+/**
+ * In-flight/settled result for the current page. The account page renders both
+ * the nav and the addresses block, and each needs this answer — without the
+ * memo that is two blocking round trips before either can paint, which measurably
+ * slowed the account pages down.
+ *
+ * Deliberately per page load: an EDS navigation is a full reload, so this resets
+ * on its own and cannot serve a stale answer after a company switch or a logout.
+ * See the TODO above for the cross-page cache, which needs real invalidation.
+ */
+let addressBookEnabledPromise = null;
+
 export const isCompanyAddressBookEnabled = async () => {
   if (getConfigValue('commerce-b2b-enabled') !== true) return false;
   if (!checkIsAuthenticated()) return false;
 
-  const { addressBookEnabled } = await getCompanyAddressBookConfig();
-  return addressBookEnabled === true;
+  if (!addressBookEnabledPromise) {
+    // Store the promise, not the resolved value: concurrent callers on the same
+    // page then share one request instead of racing two.
+    addressBookEnabledPromise = getCompanyAddressBookConfig()
+      .then(({ addressBookEnabled }) => addressBookEnabled === true)
+      .catch(() => false);
+  }
+
+  return addressBookEnabledPromise;
 };
