@@ -391,6 +391,15 @@ export const variantsGridAddToCartButton =
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
 
+// Account navigation items, used to assert an entry is absent for a customer
+// who may not see it.
+export const accountNavItemTitle = '.commerce-account-nav__item__title';
+
+// Addresses page heading. The block swaps it between "Addresses" and
+// "Company Addresses" depending on whether the customer can see the company
+// address book, so it doubles as a check of which dataset is on screen.
+export const addressesPageTitle = '.account-addresses .dropin-header-container__title';
+
 // Checkout — one-time ("Use a different address") shipping entry. Only rendered
 // when the company allows a custom shipping address; the radio carrying
 // value="0" is the entry point, the saved company addresses use their own ids.

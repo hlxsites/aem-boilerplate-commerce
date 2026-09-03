@@ -10,6 +10,10 @@ const NO_ACCESS_ROLE_NAME = `AB No Access ${random}`;
 const USER_PASSWORD = 'Test123!';
 
 export const addressBookLabels = {
+  // Page heading: the block swaps between these two depending on whether the
+  // customer can see the company address book.
+  addressesTitle: 'Addresses',
+  companyAddressesTitle: 'Company Addresses',
   createNew: 'Create new',
   edit: 'Edit',
   remove: 'Remove',

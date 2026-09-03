@@ -263,6 +263,22 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     cy.logToTerminal('✅ Test 1: both toggles confirmed disabled');
   });
 
+  it('Test 1a: page title reads "Addresses" while the Address Book is off', () => {
+    // Runs as the company admin on purpose. The admin holds every company
+    // address ACL, so if the title were derived from permissions alone it would
+    // read "Company Addresses" here even though the page is listing personal
+    // addresses. Only the company setting can tell the two datasets apart.
+    cy.visit(urls.addresses);
+    cy.wait(2000);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    cy.get(selectors.addressesPageTitle, { timeout: 30000 })
+      .should('be.visible')
+      .and('have.text', addressBookLabels.addressesTitle);
+
+    cy.logToTerminal('✅ Test 1a: heading confirms the personal address list is in use');
+  });
+
   it('Test 2: clean up existing personal addresses, verify list is empty', () => {
     cy.visit(urls.account);
     cy.wait(2000);
@@ -677,6 +693,29 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(2000);
   };
 
+  // Clicking the PARENT checkbox flips every child at once, which is the only
+  // way to revoke view access — the children alone cannot express "no access".
+  const setCompanyAddressesBranch = (checked) => {
+    openDefaultUserRoleTree();
+
+    cy.contains('.edit-role-and-permission__tree-label', 'Company Addresses')
+      .closest('li.acm-tree__item')
+      .children('.edit-role-and-permission__tree-node')
+      .find('input[type="checkbox"]')
+      .then(($cb) => {
+        if ($cb.prop('checked') === checked) {
+          cy.logToTerminal(`✅ Company Addresses branch already ${checked}`);
+        } else {
+          cy.logToTerminal(`🔧 Setting the whole Company Addresses branch to ${checked}`);
+          cy.wrap($cb).click({ force: true });
+          cy.wait(500);
+        }
+      });
+
+    cy.contains('button', 'Save Role').click();
+    cy.wait(2000);
+  };
+
   const setChildPermissions = (changes) => {
     cy.visit('/customer/company/roles');
     cy.wait(2000);
@@ -819,6 +858,22 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     ]);
     logout();
     cy.logToTerminal('✅ RU0: baseline full permissions restored');
+  });
+
+  it('RU1a: page title reads "Company Addresses" for a user with company access', () => {
+    // The block picks the heading from the customer's permissions, so for a
+    // regular user it is a direct readout of whether the company address book
+    // is the dataset on screen — no admin bypass muddying it.
+    loginAsRegularUserAndSwitch();
+    actions.openCompanyAddressBook(urls);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    cy.get(selectors.addressesPageTitle, { timeout: 30000 })
+      .should('be.visible')
+      .and('have.text', addressBookLabels.companyAddressesTitle);
+
+    cy.logToTerminal('✅ RU1a: heading confirms the company address book is in use');
+    logout();
   });
 
   it('RU1: Full rights — user clears the book, then creates, edits, sets default and deletes', () => {
@@ -1354,6 +1409,41 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // report — the same pattern verifyPurchaseOrders.spec.js uses. Its title is
   // in deleteCustomer.js's skipDeleteTests list so the global afterEach does
   // not race this teardown.
+  it('RU9: without view access the account nav offers no address entry at all', () => {
+    cy.logToTerminal('⚙️ Admin revokes the whole Company Addresses branch');
+    loginAsAdminAndSwitch();
+    setCompanyAddressesBranch(false);
+    logout();
+
+    loginAsRegularUserAndSwitch();
+    cy.visit(urls.account);
+    cy.wait(2000);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // Assert the nav actually rendered before asserting anything is missing —
+    // otherwise an empty page would satisfy the checks below for the wrong reason.
+    cy.contains(selectors.accountNavItemTitle, 'Orders', { timeout: 30000 })
+      .should('be.visible');
+
+    // Neither entry may appear: the company one because the customer cannot view
+    // company addresses, the personal one because the address book supersedes it.
+    cy.contains(selectors.accountNavItemTitle, addressBookLabels.companyAddressesTitle)
+      .should('not.exist');
+    cy.contains(selectors.accountNavItemTitle, addressBookLabels.addressesTitle)
+      .should('not.exist');
+
+    // The nav is only half the story — the page must not be reachable by URL
+    // either, which is the obvious way around a hidden menu entry.
+    cy.logToTerminal('🚧 Confirming the addresses page is not reachable directly');
+    cy.visit(urls.addresses);
+    cy.url({ timeout: 30000 }).should('not.include', urls.addresses);
+    cy.url().should('include', urls.account);
+
+    cy.logToTerminal('✅ RU9: no address entry in the nav, and the page redirects away');
+    // Permissions are deliberately left revoked — the company is deleted next.
+    logout();
+  });
+
   it('Cleanup - Delete address book users and roles', () => {
     cy.logToTerminal('🧹 Removing the company, its admin and the regular user');
     cy.then({ timeout: 60000 }, async () => {
