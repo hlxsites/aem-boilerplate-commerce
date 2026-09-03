@@ -115,17 +115,6 @@ before(() => {
     cy.logToTerminal(`✅ Regular user created: ${email} (ID: ${user.id})`);
   });
 
-  // Printed up front so the accounts are usable even when a later test fails.
-  cy.then(() => {
-    const admin = Cypress.env('testAdmin');
-    const regular = Cypress.env('testUsers').regular;
-    cy.logToTerminal('🔑 ──────── test accounts ────────');
-    cy.logToTerminal(`🔑 company : ${Cypress.env('testCompany').name}`);
-    cy.logToTerminal(`🔑 admin   : ${admin.email} / ${admin.password}`);
-    cy.logToTerminal(`🔑 user    : ${regular.email} / ${regular.password}`);
-    cy.logToTerminal('🔑 ────────────────────────────────');
-  });
-
   cy.wait(3000);
 });
 
@@ -1366,19 +1355,6 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // in deleteCustomer.js's skipDeleteTests list so the global afterEach does
   // not race this teardown.
   it('Cleanup - Delete address book users and roles', () => {
-    // `--env keepTestData=true` leaves the company and both accounts on the
-    // backend so the scenario can be walked through by hand afterwards. Off by
-    // default: CI must not accumulate companies run after run.
-    if (Cypress.env('keepTestData')) {
-      const admin = Cypress.env('testAdmin');
-      const regular = Cypress.env('testUsers').regular;
-      cy.logToTerminal('🔑 keepTestData=true — company and accounts kept for manual testing');
-      cy.logToTerminal(`🔑 company : ${Cypress.env('testCompany').name}`);
-      cy.logToTerminal(`🔑 admin   : ${admin.email} / ${admin.password}`);
-      cy.logToTerminal(`🔑 user    : ${regular.email} / ${regular.password}`);
-      return;
-    }
-
     cy.logToTerminal('🧹 Removing the company, its admin and the regular user');
     cy.then({ timeout: 60000 }, async () => {
       const results = await cleanupTestCompany();
