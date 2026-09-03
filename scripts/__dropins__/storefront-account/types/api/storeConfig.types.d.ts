@@ -22,7 +22,6 @@ export interface StoreConfigProps {
     shopping_assistance_enabled?: boolean;
     shopping_assistance_checkbox_title?: string;
     shopping_assistance_checkbox_tooltip?: string;
-    b2b_enabled?: boolean;
 }
 export interface GetStoreConfigResponse {
     data: {

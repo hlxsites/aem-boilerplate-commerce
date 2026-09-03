@@ -15,9 +15,11 @@
  * from Adobe.
  *******************************************************************/
 /**
- * Hook to determine customer type (B2B vs B2C)
+ * Hook to determine customer type (B2B vs B2C).
+ * Pass `enabled: false` to skip the company-context request entirely
+ * (e.g. when the host page already knows B2B is off for this storefront).
  */
-export declare const useCustomerType: () => {
+export declare const useCustomerType: (enabled?: boolean) => {
     isB2BCustomer: boolean;
     loading: boolean;
 };

@@ -27,6 +27,8 @@ export interface CompanyAddressPermissions {
     loading: boolean;
 }
 /**
- * Hook to fetch company address management permissions
+ * Hook to fetch company address management permissions.
+ * Pass `enabled: false` to skip the role-permissions request entirely
+ * (e.g. when the host page already knows B2B is off for this storefront).
  */
-export declare const useCompanyAddressPermissions: () => CompanyAddressPermissions;
+export declare const useCompanyAddressPermissions: (enabled?: boolean) => CompanyAddressPermissions;

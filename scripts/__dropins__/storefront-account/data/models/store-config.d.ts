@@ -22,5 +22,4 @@ export interface StoreConfigModel {
     shoppingAssistanceEnabled: boolean;
     shoppingAssistanceCheckboxTitle: string;
     shoppingAssistanceCheckboxTooltip: string;
-    b2bEnabled: boolean;
 }
