@@ -7,6 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { ReCaptchaResponse, PropsFormTypes, ReCaptchaModel } from './types/recaptcha.types';
+import { RECAPTCHA_FORMS } from './configs';
 export declare const recaptchaFetchApi: {
     setEndpoint: (endpoint: string) => void;
     setFetchGraphQlHeader: (key: string, value: string | null) => void;
@@ -34,20 +35,29 @@ export declare class RecaptchaModule {
     _normalizeFormConfigResponse(response: any, formTypes: string[]): ReCaptchaResponse | undefined;
     _updateBadgePosition(badgeId: string, config: ReCaptchaModel): Promise<void | null>;
     _addRecaptchaScript(): Promise<void>;
-    _fetchStoreConfig(): Promise<ReCaptchaResponse | undefined>;
+    _fetchStoreConfig(options?: {
+        b2bEnabled?: boolean;
+    }): Promise<ReCaptchaResponse | undefined>;
     _loadConfig(): Promise<ReCaptchaModel | null>;
     setEndpoint(url: string): void;
-    setConfig(configList: PropsFormTypes[]): Promise<void>;
+    setConfig(configList: PropsFormTypes[], options?: {
+        b2bEnabled?: boolean;
+    }): Promise<void>;
     initReCaptcha(lazyLoadTimeout?: number): Promise<void>;
     verifyReCaptcha(): Promise<string | undefined>;
     enableLogger(logger: boolean): void;
     getMethods(): {
         enableLogger: (logger: boolean) => void;
         setEndpoint: (url: string) => void;
-        setConfig: (configList: PropsFormTypes[]) => Promise<void>;
+        setConfig: (configList: PropsFormTypes[], options?: {
+            b2bEnabled?: boolean;
+        }) => Promise<void>;
         initReCaptcha: (lazyLoadTimeout?: number) => Promise<void>;
         verifyReCaptcha: () => Promise<string | undefined>;
     };
 }
-declare const initReCaptcha: (lazyLoadTimeout?: number) => Promise<void>, verifyReCaptcha: () => Promise<string | undefined>, setEndpoint: (url: string) => void, setConfig: (configList: PropsFormTypes[]) => Promise<void>, enableLogger: (logger: boolean) => void;
+declare const initReCaptcha: (lazyLoadTimeout?: number) => Promise<void>, verifyReCaptcha: () => Promise<string | undefined>, setEndpoint: (url: string) => void, setConfig: (configList: PropsFormTypes[], options?: {
+    b2bEnabled?: boolean;
+}) => Promise<void>, enableLogger: (logger: boolean) => void;
 export { setEndpoint, setConfig, initReCaptcha, verifyReCaptcha, enableLogger };
+export { RECAPTCHA_FORMS };

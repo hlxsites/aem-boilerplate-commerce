@@ -7,9 +7,9 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
+import { ImgHTMLAttributes } from 'preact/compat';
 import { ResolveImageUrlOptions } from '../../lib';
-export interface ImageProps extends HTMLAttributes<HTMLDivElement> {
+export interface ImageProps extends ImgHTMLAttributes<HTMLImageElement> {
     params?: ResolveImageUrlOptions;
     src: string;
     sizes?: string;

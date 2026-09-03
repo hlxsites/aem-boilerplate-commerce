@@ -7,8 +7,8 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
-export interface InputFileProps extends Omit<HTMLAttributes<HTMLInputElement>, 'type' | 'icon'> {
+import { HTMLAttributes, InputHTMLAttributes } from 'preact/compat';
+export interface InputFileProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'icon'> {
     accept?: string;
     onChange?: (event: Event) => void;
     label?: string;
