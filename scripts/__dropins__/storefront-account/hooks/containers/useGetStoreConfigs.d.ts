@@ -26,4 +26,3 @@ export declare const useGetStoreConfigs: () => {
         shoppingAssistanceCheckboxTooltip: string;
     } | null;
 };
-//# sourceMappingURL=useGetStoreConfigs.d.ts.map

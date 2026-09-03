@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const GET_ADOBE_COMMERCE_OPTIMIZER_DATA = "\n  query GET_ADOBE_COMMERCE_OPTIMIZER_DATA {\n    commerceOptimizer {\n      priceBookId\n    }\n  }\n";
-//# sourceMappingURL=getAdobeCommerceOptimizerData.graphql.d.ts.map

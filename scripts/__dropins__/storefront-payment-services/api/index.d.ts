@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './initialize';
+export { submitCreditCard } from './submitCreditCard';
 export { PaymentMethodCode } from '../data/models/method';
 export { PaymentLocation } from '../data/models/location';
 //# sourceMappingURL=index.d.ts.map

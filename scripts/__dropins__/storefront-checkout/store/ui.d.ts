@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const isSetAddressRequestPending: import('@preact/signals-core').Signal<boolean>;
-//# sourceMappingURL=ui.d.ts.map
+export declare const isSetAddressRequestPending: import("@preact/signals-core").Signal<boolean>;
