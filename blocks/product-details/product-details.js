@@ -31,7 +31,12 @@ import {
   setJsonLd,
   fetchPlaceholders,
   getProductLink,
+  CORE_FETCH_GRAPHQL,
+  CS_FETCH_GRAPHQL,
 } from '../../scripts/commerce.js';
+import { fetchVariantMatrix, renderMatrix } from './variant-matrix.js';
+import { renderStockIndicator, renderSourceList } from './availability-ui.js';
+import createModal from '../modal/modal.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -81,6 +86,149 @@ function formatNumericAttributeValue(value) {
   return new Intl.NumberFormat(document.documentElement.lang).format(Number(trimmed));
 }
 
+// sourceAvailability is a core-endpoint query (Catalog Service has no stock). available_qty is null
+// above the store display threshold; the query is off until enabled for the store.
+const SOURCE_AVAILABILITY_QUERY = `
+  query GET_SOURCE_AVAILABILITY($skus: [String!]!) {
+    sourceAvailability(skus: $skus) {
+      sku
+      sources {
+        source_code
+        available_qty
+        is_in_stock
+      }
+    }
+  }
+`;
+
+// WORKAROUND: sourceAvailability exposes no source name or pickup flag yet, so we join the core
+// pickupLocations query on source_code == pickup_location_code to label pickup sources.
+// TODO: when SourceAvailability exposes `name` and `is_pickup_location_active`, drop this second
+// query and read those fields directly.
+const PICKUP_LOCATIONS_QUERY = `
+  query GET_PICKUP_LOCATIONS($sku: String!) {
+    pickupLocations(productsInfo: [{ sku: $sku }], pageSize: 100) {
+      items {
+        pickup_location_code
+        name
+      }
+    }
+  }
+`;
+
+// Stock line from a SKU's sources: out of stock / only N left (all exact) / in stock.
+function badgeFromSources(sources, labels) {
+  const inStock = sources.filter((s) => s.is_in_stock);
+  const t = labels?.Custom?.SaleableQty ?? {};
+  if (inStock.length === 0) return { state: 'out-of-stock', text: t.OutOfStock ?? 'Out of stock' };
+  if (inStock.every((s) => s.available_qty != null)) {
+    const total = inStock.reduce((sum, s) => sum + Number(s.available_qty), 0);
+    const qty = new Intl.NumberFormat(document.documentElement.lang).format(total);
+    return { state: 'low', text: (t.OnlyXLeft ?? 'Only {qty} left').replace('{qty}', qty) };
+  }
+  return { state: 'in-stock', text: t.InStock ?? 'In stock' };
+}
+
+// Query per-source stock for one concrete SKU (a simple product or a selected variant) and render
+// the "only N left" line + per-source list. A configurable uses the matrix, not this.
+async function renderAvailability($badge, $list, sku, labels, isCurrent = () => true) {
+  if (!sku) {
+    renderStockIndicator($badge, null);
+    renderSourceList($list, { sources: [] });
+    return;
+  }
+  $badge.setAttribute('data-loading', ''); $badge.hidden = false;
+  $list.setAttribute('data-loading', ''); $list.hidden = false;
+
+  // Pickup runs in parallel but never gates the stock line; it only enriches the source list.
+  const pickupReq = CORE_FETCH_GRAPHQL.fetchGraphQl(PICKUP_LOCATIONS_QUERY, {
+    method: 'GET',
+    variables: { sku },
+  }).catch(() => null);
+
+  let res;
+  try {
+    res = await CORE_FETCH_GRAPHQL.fetchGraphQl(SOURCE_AVAILABILITY_QUERY, {
+      method: 'GET',
+      variables: { skus: [sku] },
+    });
+  } catch (error) {
+    console.debug('sourceAvailability fetch failed', error);
+    if (isCurrent()) {
+      renderStockIndicator($badge, null);
+      renderSourceList($list, { sources: [] });
+    }
+    return;
+  }
+  if (!isCurrent()) return; // a newer selection landed while this request was in flight
+  // Off for the store, a backend without it, or no data: hide rather than assert out of stock.
+  const sources = res?.errors?.length
+    ? []
+    : (res?.data?.sourceAvailability?.find((s) => s.sku === sku)?.sources ?? []);
+  if (sources.length === 0) {
+    renderStockIndicator($badge, null);
+    renderSourceList($list, { sources: [] });
+    return;
+  }
+  renderStockIndicator($badge, badgeFromSources(sources, labels), isCurrent);
+
+  // Await pickup only to enrich the list; the stock line is already on screen.
+  const pickupRes = await pickupReq;
+  if (!isCurrent()) return;
+  const items = pickupRes?.data?.pickupLocations?.items ?? [];
+  const pickupByCode = new Map(items.map((i) => [i.pickup_location_code, i]));
+  renderSourceList($list, {
+    sources, pickupByCode, labels, isCurrent,
+  });
+}
+
+// Per-variant overview, behind a trigger that opens the matrix in a modal. Configurables only.
+function setupVariantMatrix($el, product, labels) {
+  if (!$el) return;
+  const sku = product?.sku;
+  if (!sku || (product?.options?.length ?? 0) === 0) {
+    $el.hidden = true;
+    $el.replaceChildren();
+    return;
+  }
+
+  const t = labels?.Custom?.SaleableQty ?? {};
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'product-details__matrix-trigger';
+  trigger.textContent = t.ViewMatrix ?? 'See availability for all options';
+
+  let model; // memoize a resolved fetch (including a definitive null) across re-opens
+  trigger.addEventListener('click', async () => {
+    const content = document.createElement('div');
+    content.className = 'product-details__matrix-modal';
+    content.textContent = t.Loading ?? 'Loading…';
+    const modal = await createModal([content]);
+    modal.showModal();
+
+    if (model === undefined) {
+      try {
+        model = await fetchVariantMatrix(sku, {
+          csFetch: CS_FETCH_GRAPHQL,
+          coreFetch: CORE_FETCH_GRAPHQL,
+        });
+      } catch (error) {
+        console.debug('variant-matrix: failed', error);
+        content.textContent = t.Unavailable ?? 'Variant availability is unavailable.';
+        return; // leave model unset so re-opening retries the fetch
+      }
+    }
+    if (model) {
+      content.textContent = '';
+      renderMatrix(content, model, labels);
+    } else {
+      content.textContent = t.Unavailable ?? 'Variant availability is unavailable.';
+    }
+  });
+  $el.replaceChildren(trigger);
+  $el.hidden = false;
+}
+
 export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
@@ -108,6 +256,7 @@ export default async function decorate(block) {
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
         <div class="product-details__price"></div>
+        <div class="product-details__saleable-qty" role="status" aria-live="polite" hidden></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__gift-card-options"></div>
@@ -120,6 +269,8 @@ export default async function decorate(block) {
           </div>
           <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
+        <div class="product-details__source-availability" hidden></div>
+        <div class="product-details__variant-matrix" hidden></div>
         <div class="product-details__description"></div>
         <div class="product-details__attributes"></div>
       </div>
@@ -130,6 +281,9 @@ export default async function decorate(block) {
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
   const $price = fragment.querySelector('.product-details__price');
+  const $saleableQty = fragment.querySelector('.product-details__saleable-qty');
+  const $sourceAvailability = fragment.querySelector('.product-details__source-availability');
+  const $variantMatrix = fragment.querySelector('.product-details__variant-matrix');
   const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
   const $shortDescription = fragment.querySelector('.product-details__short-description');
   const $options = fragment.querySelector('.product-details__options');
@@ -145,6 +299,37 @@ export default async function decorate(block) {
   const $attributes = fragment.querySelector('.product-details__attributes');
 
   block.replaceChildren(fragment);
+
+  // The "only N left" line + per-source list are per-SKU: shown for a simple product or a selected
+  // variant. A configurable with nothing chosen shows neither; the matrix is the all-options view.
+  // eager:true replays pdp/data; a token drops out-of-order responses.
+  let availSku;
+  let availReq = 0;
+
+  function refreshAvailability(sku) {
+    if (sku === availSku) return;
+    availSku = sku;
+    const token = availReq + 1;
+    availReq = token;
+    renderAvailability($saleableQty, $sourceAvailability, sku, labels, () => token === availReq);
+  }
+
+  const skuFor = (data) => data?.variantSku
+    || ((data?.options?.length ?? 0) > 0 ? undefined : data?.sku);
+
+  events.on('pdp/data', (data) => refreshAvailability(skuFor(data)), { eager: true });
+  // Runtime option changes emit pdp/values (not pdp/data), so re-query for the selected variant.
+  events.on('pdp/values', () => {
+    refreshAvailability(pdpApi.getProductConfigurationValues?.()?.variantSku);
+  });
+
+  // Per-variant matrix trigger, keyed on the parent sku so it rebuilds only when that changes.
+  let matrixSku;
+  events.on('pdp/data', (data) => {
+    if (data?.sku === matrixSku) return;
+    matrixSku = data?.sku;
+    setupVariantMatrix($variantMatrix, data, labels);
+  }, { eager: true });
 
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
@@ -248,8 +433,9 @@ export default async function decorate(block) {
       formatValue: formatNumericAttributeValue,
     })($attributes),
 
-    // Wishlist button - WishlistToggle Container
-    wishlistRender.render(WishlistToggle, {
+    // Skip if the product wasn't found; WishlistToggle reads product.topLevelSku
+    // and throws on a null product, which would sink the rest of this render.
+    product && wishlistRender.render(WishlistToggle, {
       product,
     })($wishlistToggleBtn),
   ]);
