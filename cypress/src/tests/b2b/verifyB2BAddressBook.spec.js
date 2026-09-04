@@ -1064,6 +1064,44 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // fill in, so this test seeds a SHIPPING and a BILLING address first. RU8
   // covers the opposite case, where the setting is on and a one-time address can
   // be typed. Payment stays on Check / Money order: no Payment Services iframes.
+  it('RU6a: with an empty address book the order cannot be placed', () => {
+    // The whole point of the gate: an address book with nothing in it leaves the
+    // customer no address to check out with, so the button must stay disabled
+    // rather than let the order through on whatever the cart happens to hold.
+    //
+    // No addresses are created here on purpose — an empty book is exactly the
+    // condition being tested, and RU6 already left it that way.
+    loginAsRegularUserAndSwitch();
+
+    cy.logToTerminal('🧹 Confirming the address book is empty before checking out');
+    actions.openCompanyAddressBook(urls);
+    removeAllCompanyAddresses();
+
+    cy.logToTerminal('🛒 Adding a product so checkout is reachable');
+    cy.visit('/products/youth-tee/adb150');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get('.minicart-wrapper').click();
+    cy.get('.minicart-panel[data-loaded="true"]', { timeout: 20000 }).should('exist');
+
+    cy.logToTerminal('💳 Proceeding to checkout');
+    cy.visit('/checkout');
+    cy.url().should('include', '/checkout');
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // Assert the button is actually on screen before asserting it is disabled —
+    // a missing button would satisfy a bare "not enabled" check for the wrong reason.
+    cy.get(selectors.placeOrderButton, { timeout: 30000 })
+      .should('be.visible')
+      .and('be.disabled');
+
+    cy.logToTerminal('✅ RU6a: order placement blocked while the address book is empty');
+    logout();
+  });
+
   it('RU7: Regular user creates addresses, buys a product and finds the order in order history', () => {
     loginAsRegularUserAndSwitch();
 
@@ -1417,6 +1455,115 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // report — the same pattern verifyPurchaseOrders.spec.js uses. Its title is
   // in deleteCustomer.js's skipDeleteTests list so the global afterEach does
   // not race this teardown.
+  it('RU8a: a billing-only book still allows checkout when one-time addresses are on', () => {
+    const oneTime = addressBookAddresses.oneTimeShipping;
+    // Regression: the gate used to require a saved shipping address even when the
+    // company allowed one-time ones, so a book holding only a billing address left
+    // the customer with a shipping form they could fill in and a button that never
+    // unlocked. Billing still has to come from the book — only shipping has the
+    // one-time escape hatch.
+    cy.logToTerminal('⚙️ Admin makes sure one-time addresses are allowed');
+    loginAsAdminAndSwitch();
+    ensureAddressBookEnabled();
+    ensureCustomShippingAllowed();
+    logout();
+
+    loginAsRegularUserAndSwitch();
+
+    cy.logToTerminal('🧹 Leaving the book with a BILLING address only');
+    actions.openCompanyAddressBook(urls);
+    removeAllCompanyAddresses();
+    createCompanyAddress(addressBookAddresses.billing, selectors.addressBookTypeBillingCheckbox);
+
+    cy.logToTerminal('🛒 Adding a product so checkout is reachable');
+    cy.visit('/products/youth-tee/adb150');
+    cy.get('.product-details__buttons__add-to-cart button')
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get('.minicart-wrapper').click();
+    cy.get('.minicart-panel[data-loaded="true"]', { timeout: 20000 }).should('exist');
+
+    // Alias the request that carries the typed street so the test waits on the
+    // address actually reaching the cart instead of on a fixed pause.
+    cy.intercept('POST', '**/graphql', (req) => {
+      if (JSON.stringify(req.body ?? {}).includes(oneTime.street)) {
+        req.alias = 'billingOnlyOneTimeAddress';
+      }
+    });
+
+    cy.logToTerminal('💳 Proceeding to checkout');
+    cy.visit('/checkout');
+    cy.url().should('include', '/checkout');
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // The one-time entry has to be on offer, and the button must not be gated on a
+    // saved shipping address that the customer is not required to have.
+    cy.get(selectors.checkoutShippingBlock, { timeout: 30000 })
+      .find(selectors.checkoutUseDifferentShippingRadio)
+      .should('exist');
+
+    cy.get(selectors.placeOrderButton, { timeout: 30000 })
+      .should('be.visible')
+      .and('not.be.disabled');
+
+    // Carry it through to a real order. An unlocked button only proves the gate
+    // let go — the backend still has to accept a cart whose shipping address was
+    // typed rather than picked, and it has refused exactly that before while the
+    // UI swallowed the error and placed the order on a different address.
+    cy.logToTerminal('📮 Choosing "Use a different address" for shipping');
+    cy.get(selectors.checkoutShippingBlock)
+      .find(selectors.checkoutUseDifferentShippingRadio)
+      .then(($input) => {
+        cy.get(`label[for="${$input.attr('id')}"]`).click();
+      });
+    cy.wait(2000);
+
+    cy.logToTerminal('✍️ Filling the one-time shipping address');
+    cy.get(selectors.checkoutShippingFormFirstName, { timeout: 20000 }).should('be.visible');
+    fillCheckoutShippingForm(oneTime);
+    cy.wait('@billingOnlyOneTimeAddress', { timeout: 30000 });
+
+    cy.logToTerminal('🧾 Selecting the only saved billing address');
+    cy.get('input[type="radio"][name="selectedBillingAddress"]')
+      .should('have.length.greaterThan', 0)
+      .first()
+      .then(($input) => {
+        cy.get(`label[for="${$input.attr('id')}"]`).click();
+      });
+    cy.wait(3000);
+
+    cy.logToTerminal('✅ Accepting terms and placing the order');
+    actions.checkTermsAndConditions();
+    actions.placeOrder();
+    cy.wait(15000);
+
+    actions.verifyPOConfirmation();
+    cy.get(selectors.poConfirmationLink, { timeout: 60000 })
+      .should('be.visible')
+      .should('have.attr', 'href')
+      .and('include', 'poRef=');
+
+    cy.logToTerminal('📄 Opening the purchase order');
+    cy.get(selectors.poConfirmationLink).click();
+    cy.url().should('include', 'poRef');
+    cy.waitForLoadingSkeletonToDisappear();
+
+    cy.logToTerminal('🔍 Verifying the order shipped to the one-time address');
+    cy.get(selectors.orderShippingAddress, { timeout: 30000 })
+      .should('contain.text', oneTime.lastName)
+      .and('contain.text', oneTime.street)
+      .and('contain.text', oneTime.telephone);
+
+    cy.get(selectors.orderBillingAddress)
+      .should('contain.text', addressBookAddresses.billing.lastName)
+      .and('contain.text', addressBookAddresses.billing.street);
+
+    cy.logToTerminal('✅ RU8a: order placed on a one-time address with a billing-only book');
+    logout();
+  });
+
   it('RU9: without view access the account nav offers no address entry at all', () => {
     cy.logToTerminal('⚙️ Admin revokes the whole Company Addresses branch');
     loginAsAdminAndSwitch();

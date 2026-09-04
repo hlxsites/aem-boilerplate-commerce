@@ -218,11 +218,21 @@ export default async function decorate(block) {
         const items = companyAddressBook?.addresses?.items ?? [];
         const hasShippingAddress = items.some((item) => item.addressType === 'SHIPPING');
         const hasBillingAddress = items.some((item) => item.addressType === 'BILLING');
+        const customShippingAllowed = Boolean(
+          companyAddressBook?.addressBookCustomShippingAddressEnabled,
+        );
 
+        // A missing shipping address only blocks checkout when the company also
+        // forbids one-time addresses. Allow them and the customer can type one at
+        // checkout, so requiring a saved one as well left the order unplaceable:
+        // the form was offered, filled in, and the button stayed disabled.
+        // Billing has no such escape hatch — it must come from the address book.
+        //
         // If the company doesn't use an address book at all, this gate doesn't apply —
         // fall back to the normal (enabled) Place Order behavior.
+        const shippingMissing = !hasShippingAddress && !customShippingAllowed;
         const shouldDisablePlaceOrder = addressBookEnabled
-          && (!hasShippingAddress || !hasBillingAddress);
+          && (shippingMissing || !hasBillingAddress);
 
         placeOrderContainer.setProps((prevProps) => ({
           ...prevProps,
