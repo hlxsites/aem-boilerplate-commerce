@@ -352,7 +352,20 @@ const getAvailablePaymentServicesMethods = () => new Promise((resolve) => {
 });
 
 /**
- * Renders payment methods with credit card integration - original regular checkout functionality
+ * Creates a short notice explaining that the given express payment method's button renders in
+ * the Place Order slot instead of inline in the Payment section.
+ * @param {string} label - Display label of the express payment method (e.g. "Apple Pay")
+ * @returns {HTMLElement} - The notice element
+ */
+const createExpressPaymentNotice = (label) => {
+  const $notice = document.createElement('p');
+  $notice.textContent = `Complete your purchase using the ${label} button below.`;
+  return $notice;
+};
+
+/**
+ * Renders payment method options, showing a credit card form inline, and PayPal, Apple Pay,
+ * and Google Pay as branded checkout buttons in the Place Order slot.
  * @param {HTMLElement} paymentMethodsContainer - DOM element to render payment methods in
  * @param {HTMLElement} placeOrderButtonContainer - DOM element express payment buttons mount into,
  *   in place of the standard Place Order button
@@ -380,9 +393,6 @@ export const renderPaymentMethods = async (
               ctx.replaceHTML($creditCard);
             },
             enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.CREDIT_CARD),
-          },
-          [PaymentMethodCode.FASTLANE]: {
-            enabled: false,
           },
           [PaymentMethodCode.PAYPAL_BUTTONS]: {
             render: (ctx) => {
@@ -474,18 +484,6 @@ export const renderPaymentMethods = async (
     })(paymentMethodsContainer);
   },
 );
-
-/**
- * Creates a short notice explaining that the given express payment method's button renders in
- * the Place Order slot instead of inline in the Payment section.
- * @param {string} label - Display label of the express payment method (e.g. "Apple Pay")
- * @returns {HTMLElement} - The notice element
- */
-const createExpressPaymentNotice = (label) => {
-  const $notice = document.createElement('p');
-  $notice.textContent = `Complete your purchase using the ${label} button below.`;
-  return $notice;
-};
 
 /**
  * Renders terms and conditions with agreement slots and manual consent mode
@@ -653,16 +651,15 @@ export const renderCartSummaryList = async (container) => renderContainer(
   },
 );
 
-// Serializes every mount/unmount of the Place Order slot's occupant (the standard "Place order"
-// button, or the currently-selected express payment method's own button) so a new occupant is
-// never rendered while the previous one is still being removed.
+// Serializes every mount/unmount of the Place Order slot's occupant, so a new occupant is
+// never rendered while the previous one is still being removed
 let placeOrderSlotQueue = Promise.resolve();
 let placeOrderSlotMount = null; // Promise<RenderAPI> | null
 
 /**
- * Mounts a new occupant into the Place Order slot, unmounting whatever was previously there.
- * @param {(container: HTMLElement) => Promise<Object>} mount - Starts the dropin render.
- * @param {HTMLElement} container - The Place Order slot element.
+ * Mounts a new occupant into the Place Order slot, unmounting the previous one, if there is any.
+ * @param {(container: HTMLElement) => Promise<void>} mount - Starts the dropin render.
+ * @param {HTMLElement} container - The Place Order slot container element.
  * @returns {Promise<void>}
  */
 const mountPlaceOrderSlot = (mount, container) => {
@@ -720,7 +717,9 @@ export const renderPlaceOrder = async (container, options = {}) => mountPlaceOrd
  * @param {HTMLElement} container - The Place Order slot element.
  * @returns {boolean}
  */
-export const isPlaceOrderRendered = (container) => !!container.querySelector('.checkout-place-order');
+export const isPlaceOrderRendered = (container) => (
+  !!container.querySelector('.checkout-place-order')
+);
 
 /**
  * Renders customer shipping addresses selector/form for authenticated users - original regular checkout functionality
