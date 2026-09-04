@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,17 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { StoreConfigModel } from '../data/models/store-config';
-type State = {
-    wishlistId: string | null;
-    initializing?: boolean;
-    isLoading?: boolean;
-    locale?: string;
-    config?: StoreConfigModel | null;
-    authenticated: boolean;
-    storeCode?: string;
-    pageSize?: number;
-    currentPage?: number;
-};
-export declare const state: State;
-export {};
+export interface IsSubscribedStockAlertResult {
+    isSubscribed: boolean;
+    message?: string;
+}
+export declare const isSubscribedStockAlert: (sku: string) => Promise<IsSubscribedStockAlertResult>;
+//# sourceMappingURL=isSubscribedStockAlert.d.ts.map

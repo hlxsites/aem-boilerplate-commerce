@@ -8,9 +8,11 @@ import Wishlist from '@dropins/storefront-wishlist/containers/Wishlist.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { CS_FETCH_GRAPHQL, rootLink, getProductLink } from '../../scripts/commerce.js';
 import { readBlockConfig } from '../../scripts/aem.js';
+import { renderWishlistItemActions } from '../../scripts/wishlist-item-actions.js';
 
 import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/cart.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Initialize
 
@@ -92,6 +94,7 @@ export default async function decorate(block) {
           },
         });
       },
+      actions: renderWishlistItemActions(!!getUserTokenCookie()),
     },
   })(block);
 }

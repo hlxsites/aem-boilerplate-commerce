@@ -16,6 +16,7 @@
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { ProductItemActionsContext } from '../../components/ProductItem';
 import { Item, Product } from '../../data/models';
 import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
 export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
@@ -35,6 +36,7 @@ export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
             defaultImageProps: ImageProps;
             item: Item;
         }>;
+        actions?: SlotProps<ProductItemActionsContext>;
     };
 }
 export declare const Wishlist: Container<WishlistProps>;

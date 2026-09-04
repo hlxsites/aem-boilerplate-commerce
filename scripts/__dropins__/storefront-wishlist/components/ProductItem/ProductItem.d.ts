@@ -16,8 +16,14 @@
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
 import { FunctionComponent, JSX } from 'preact';
+import { SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
 import { Item, Product } from '../../data/models';
+export interface ProductItemActionsContext {
+    item: Item;
+    onMoveToCart?: () => boolean;
+    onRemove?: () => boolean;
+}
 export interface ProductItemProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
     item?: Item;
@@ -27,5 +33,9 @@ export interface ProductItemProps extends HTMLAttributes<HTMLDivElement> {
     imageNode?: (props: {
         defaultImageProps: ImageNodeRenderProps;
     }) => JSX.Element;
+    slots?: {
+        actions?: SlotProps<ProductItemActionsContext>;
+    };
+    showStockStatus?: boolean;
 }
 export declare const ProductItem: FunctionComponent<ProductItemProps>;

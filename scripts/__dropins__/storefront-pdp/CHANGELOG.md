@@ -1,5 +1,21 @@
 # @dropins/storefront-pdp
 
+## 3.4.0-alpha-20260825065735
+
+### Minor Changes
+
+- 0932eee: Add `subscribeStockAlert(sku)` and `isSubscribedStockAlert(sku)` API functions, wrapping the ACCS `subscribeProductAlertStock` mutation and `isSubscribedProductAlertStock` query. Authenticated customers only. This delivers the back-in-stock "Notify Me" subscribe API.
+
+### Patch Changes
+
+- 7f8f874: Exclude custom-option UIDs from the `refineProduct`/variants request in `getRefinedProduct`. Catalog Service only resolves variants by configurable-attribute UIDs; sending a custom-option UID alongside them caused a "Missing variants" error, which made the PDP silently fall back to the parent product's data — including its image gallery — instead of the selected variant's. This only affects configurable products that also have a custom option selected; other product types are unaffected.
+
+## 3.3.1
+
+### Patch Changes
+
+- 1385284: Always render the top-level quantity `Incrementer` (`ProductQuantity` and the monolith quantity slot), including for bundle products. Per-option bundle quantities in `Swatches` write `bundleOptionQuantities`/`enteredOptions`, which describe bundle composition, not how many bundles to add to cart — hiding the top-level control left `values.quantity` fixed at its initial value with no way for shoppers to change it.
+
 ## 3.3.0
 
 ### Minor Changes

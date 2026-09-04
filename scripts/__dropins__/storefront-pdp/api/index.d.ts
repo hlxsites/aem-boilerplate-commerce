@@ -24,4 +24,6 @@ export * from './getProductConfigurationValues';
 export * from './setProductConfigurationValid';
 export * from './getFetchedProductData';
 export * from './isProductConfigurationValid';
+export * from './subscribeStockAlert';
+export * from './isSubscribedStockAlert';
 //# sourceMappingURL=index.d.ts.map
