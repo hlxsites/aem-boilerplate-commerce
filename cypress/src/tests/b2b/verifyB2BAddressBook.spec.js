@@ -1637,7 +1637,28 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.url({ timeout: 30000 }).should('not.include', urls.addresses);
     cy.url().should('include', urls.account);
 
-    cy.logToTerminal('✅ RU9: no address entry in the nav, and the page redirects away');
+    // The account page carries the same addresses block in its summary form, and
+    // the redirect above points at the account page — so an unguarded redirect
+    // there sends the page to itself and it reloads forever. That is invisible to
+    // a URL assertion, since the address never changes.
+    //
+    // A marker on `window` is the discriminator: it survives only while no
+    // navigation happens, and any reload wipes it.
+    cy.logToTerminal('🔁 Confirming the account page does not reload itself');
+    cy.visit(urls.account);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // Guard first: a page that never rendered would keep the marker just as well.
+    cy.contains(selectors.accountNavItemTitle, /^Orders$/, { timeout: 30000 })
+      .should('be.visible');
+
+    cy.window().then((win) => {
+      win.__addressBookReloadProbe = 'set';
+    });
+    cy.wait(5000);
+    cy.window().its('__addressBookReloadProbe').should('eq', 'set');
+
+    cy.logToTerminal('✅ RU9: nav hides both entries, the page redirects, and the account page is stable');
     // Permissions are deliberately left revoked — the company is deleted next.
     logout();
   });

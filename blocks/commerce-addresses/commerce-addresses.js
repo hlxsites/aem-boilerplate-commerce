@@ -47,15 +47,23 @@ export default async function decorate(block) {
     // Deliberately narrow: B2C and companies without an address book keep their
     // personal addresses, admins carry the permission implicitly, and guests
     // were already sent to login above.
+    const isMinifiedView = minifiedViewConfig === 'true';
+
     if (addressBookEnabled && !hasCompanyAddressBook) {
-      window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+      // This same block also renders as the summary on the account page, which
+      // is where the redirect points — sending that instance away would bounce
+      // the page off itself forever. There it simply renders nothing instead;
+      // only the dedicated addresses page navigates away.
+      if (!isMinifiedView) {
+        window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+      }
       return;
     }
 
     await accountRenderer.render(Addresses, {
       title: hasCompanyAddressBook ? 'Company Addresses' : 'Addresses',
       b2bEnabled: isB2BEnabled,
-      minifiedView: minifiedViewConfig === 'true',
+      minifiedView: isMinifiedView,
       withActionsInMinifiedView: false,
       withActionsInFullSizeView: true,
       routeAddressesPage: () => rootLink(CUSTOMER_ADDRESS_PATH),
