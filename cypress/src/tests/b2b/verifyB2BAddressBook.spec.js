@@ -1085,7 +1085,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   // fill in, so this test seeds a SHIPPING and a BILLING address first. RU8
   // covers the opposite case, where the setting is on and a one-time address can
   // be typed. Payment stays on Check / Money order: no Payment Services iframes.
-  it('RU6a: with an empty address book the order cannot be placed', () => {
+  it('RU6a: with an empty address book the order cannot be placed', function () {
+    // 🚧 TEMP DEBUG: one attempt only, so the pause below happens once.
+    this.retries(0);
+
     // The whole point of the gate: an address book with nothing in it leaves the
     // customer no address to check out with, so the button must stay disabled
     // rather than let the order through on whatever the cart happens to hold.
@@ -1133,6 +1136,15 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.waitForLoadingSkeletonToDisappear();
 
     cy.wait('@companyAddressBook', { timeout: 30000 });
+
+    // 🚧 TEMP DEBUG — remove once the gate has been inspected by hand.
+    // Placed right after the address book request resolves: that is the moment
+    // the gate has made its decision, so the button on screen is the real
+    // verdict rather than the synchronous "disabled until we know" state.
+    const debugUser = regularUserCreds();
+    cy.logToTerminal(`🚧 PAUSING 180s at the place-order gate — log in as ${debugUser.email} / ${debugUser.password}`);
+    cy.wait(180000);
+    cy.logToTerminal('🚧 Pause over — asserting the gate now');
 
     // Assert the button is actually on screen before asserting it is disabled —
     // a missing button would satisfy a bare "not enabled" check for the wrong reason.

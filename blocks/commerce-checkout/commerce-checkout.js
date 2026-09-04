@@ -204,10 +204,13 @@ export default async function decorate(block) {
     b2bIsPoEnabled,
   });
 
-  // 🚧 [DEBUG][placeOrderGate] Disable Place Order while we don't yet know whether the
-  // company address book has a shipping AND a billing address. Remove this whole block
-  // (and the getCompanyAddressBook import above) once this ships for real — for now it's
-  // wrapped in obvious debug logs so it's easy to find and rip out.
+  // Place Order stays disabled until the company address book has been read.
+  //
+  // The checkout drop-in cannot judge B2B addresses on its own: with the address
+  // book on, an order needs a billing address from the book, and a shipping one
+  // either from the book or typed in at checkout. Starting disabled is
+  // deliberate — that answer arrives asynchronously, and enabling first would
+  // briefly offer a button that submits an order the backend rejects.
   if (isB2BEnabled) {
     placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: true }));
 
@@ -239,8 +242,10 @@ export default async function decorate(block) {
           disabled: shouldDisablePlaceOrder,
         }));
       } catch (error) {
+        // Fail open. The gate only applies to companies that run an address
+        // book, so a failed lookup must not lock everyone else out of checkout.
         // eslint-disable-next-line no-console
-        console.error('🚧 [DEBUG][placeOrderGate] failed to load company address book — leaving Place Order enabled', error);
+        console.error('Checkout: could not read the company address book — leaving Place Order enabled', error);
         placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: false }));
       }
     })();
