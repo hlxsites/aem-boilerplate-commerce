@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { AddressesProps } from '../../types';
 export declare const Addresses: Container<AddressesProps>;

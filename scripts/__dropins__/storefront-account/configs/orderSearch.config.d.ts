@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-import { AddressFormProps } from '../../types';
-export declare const AddressForm: Container<AddressFormProps>;
+export declare const ORDER_SEARCH_MIN_LENGTH = 3;
+export declare const ORDER_SEARCH_MAX_LENGTH = 100;
