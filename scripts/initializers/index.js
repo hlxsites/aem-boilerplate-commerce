@@ -44,6 +44,8 @@ const setCustomerGroupHeader = (customerGroupId) => {
     url.searchParams.set('customer-group', customerGroupId);
     CS_FETCH_GRAPHQL.setEndpoint(url.toString());
   }
+
+  events.emit('commerce/customer-context', { customerGroupId });
 };
 
 const fetchCustomerGroupId = async () => {
@@ -59,30 +61,28 @@ const fetchCustomerGroupId = async () => {
     `, { method: 'GET', cache: 'no-store' });
 
     const groupUid = response?.data?.customer?.group?.uid;
-    return groupUid ? sha1Base64(groupUid) : DEFAULT_NLI_CUSTOMER_GROUP_ID;
+    const customerGroupId = groupUid ? await sha1Base64(groupUid) : DEFAULT_NLI_CUSTOMER_GROUP_ID;
+    setCustomerGroupHeader(customerGroupId);
   } catch (error) {
     console.debug('Unable to resolve customer group for Catalog Service:', error);
-    return DEFAULT_NLI_CUSTOMER_GROUP_ID;
+    setCustomerGroupHeader(DEFAULT_NLI_CUSTOMER_GROUP_ID);
   }
 };
 
-const syncCatalogCustomerGroupHeader = async () => {
-  if (getConfigValue('adobe-commerce-optimizer')) {
+const handleCustomerGroupUid = (customerGroupId) => {
+  if (getUserTokenCookie() && customerGroupId === DEFAULT_NLI_CUSTOMER_GROUP_ID) {
     return;
   }
 
-  if (!getUserTokenCookie()) {
-    setCustomerGroupHeader(DEFAULT_NLI_CUSTOMER_GROUP_ID);
-    return;
-  }
-
-  setCustomerGroupHeader(await fetchCustomerGroupId());
+  setCustomerGroupHeader(customerGroupId);
 };
 
 const updateAuthContext = async (state) => {
   setAuthHeaders(state);
-  await syncCatalogCustomerGroupHeader();
-  events.emit('commerce/customer-context', { authenticated: state });
+
+  if (!getConfigValue('adobe-commerce-optimizer') && state) {
+    await fetchCustomerGroupId();
+  }
 };
 
 const setupCatalogServiceCacheControl = () => {
@@ -103,6 +103,7 @@ const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
   } else {
     CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('AC-Price-Book-ID');
   }
+  events.emit('commerce/customer-context', adobeCommerceOptimizer);
 };
 
 const persistCartDataInSession = (data) => {
@@ -134,7 +135,7 @@ export default async function initializeDropins() {
     if (getConfigValue('adobe-commerce-optimizer')) {
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
-      events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
+      events.on('auth/group-uid', handleCustomerGroupUid, { eager: true });
     }
 
     // Clear cart state when switching between websites to avoid stale cart IDs
@@ -150,7 +151,7 @@ export default async function initializeDropins() {
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
-    // Set auth and Catalog Service customer context on authenticated event
+    // Set auth headers on authenticated event
     events.on('authenticated', updateAuthContext, { eager: true });
 
     // Cache cart data in session storage
@@ -172,7 +173,6 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
-    await syncCatalogCustomerGroupHeader();
 
     await import('./personalization.js');
 
