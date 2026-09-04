@@ -340,13 +340,21 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     cy.wait(2000);
     cy.contains('Enable Company Address Book: Enabled').should('be.visible');
 
-    cy.visit(urls.account);
+    // Straight to the URL rather than through the nav: with the address book now
+    // on, the standard "Addresses" entry is hidden, so cy.contains('Addresses')
+    // would land on "Company Addresses" instead and quietly test the wrong link.
+    cy.visit(urls.addresses);
     cy.wait(2000);
-    cy.contains('Addresses').should('not.be.disabled').click({ force: true });
-    cy.wait(2000);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // Same admin as Test 1a, one variable changed — the heading must have
+    // flipped purely because the company switched the address book on.
+    cy.get(selectors.addressesPageTitle, { timeout: 30000 })
+      .should('be.visible')
+      .and('have.text', addressBookLabels.companyAddressesTitle);
 
     cy.contains(addressBookAddresses.shipping.lastName).should('not.exist');
-    cy.logToTerminal('✅ Test 4: personal address no longer shown once Address Book is enabled — confirms separate dataset');
+    cy.logToTerminal('✅ Test 4: heading flipped to "Company Addresses" and the personal address is gone — confirms separate dataset');
   });
 
   it('Test 5: admin can create, edit and set default on a company address', () => {
