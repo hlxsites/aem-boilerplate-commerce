@@ -111,6 +111,13 @@ before(() => {
   cy.wait(3000);
 });
 
+// Exact titles of the account nav entries. Exact, because "Company Addresses"
+// contains "Addresses" — a substring match would report the personal entry as
+// present whenever the company one is.
+const navItemTitles = () => cy
+  .get(selectors.accountNavItemTitle, { timeout: 30000 })
+  .then(($els) => [...$els].map((el) => el.textContent.trim()));
+
 // Read lazily: `before` has not run yet when a describe body is evaluated.
 const testCompanyName = () => Cypress.env('testCompany').name;
 const adminCreds = () => Cypress.env('testAdmin');
@@ -269,7 +276,13 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
       .should('be.visible')
       .and('have.text', addressBookLabels.addressesTitle);
 
-    cy.logToTerminal('✅ Test 1a: heading confirms the personal address list is in use');
+    // The nav must agree with the heading. Asserting the personal entry is
+    // present matters as much as the company one being absent: without it the
+    // check would pass on a page that rendered no nav at all.
+    navItemTitles().should('include', addressBookLabels.addressesTitle);
+    navItemTitles().should('not.include', addressBookLabels.companyAddressesTitle);
+
+    cy.logToTerminal('✅ Test 1a: heading and nav both show the personal address list');
   });
 
   it('Test 2: clean up existing personal addresses, verify list is empty', () => {
@@ -873,7 +886,12 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .should('be.visible')
       .and('have.text', addressBookLabels.companyAddressesTitle);
 
-    cy.logToTerminal('✅ RU1a: heading confirms the company address book is in use');
+    // Mirror of Test 1a with the book on: the company entry is offered and the
+    // personal one it supersedes is gone.
+    navItemTitles().should('include', addressBookLabels.companyAddressesTitle);
+    navItemTitles().should('not.include', addressBookLabels.addressesTitle);
+
+    cy.logToTerminal('✅ RU1a: heading and nav both show the company address book');
     logout();
   });
 
@@ -1151,6 +1169,14 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
 
     cy.logToTerminal('🔍 Confirming the saved company addresses are offered at checkout');
     cy.contains('No saved addresses').should('not.exist');
+
+    // The mirror of RU8: with "Allow Custom Company Address" still off, checkout
+    // must offer no way to type an address, only the saved ones. Without this the
+    // suite would never notice the setting being ignored in the permissive
+    // direction — every other test only ever checks that the entry point appears.
+    cy.get(selectors.checkoutShippingBlock)
+      .find(selectors.checkoutUseDifferentShippingRadio)
+      .should('not.exist');
     cy.contains(addressBookAddresses.shipping.lastName, { timeout: 30000 }).should('be.visible');
 
     // Explicitly select a shipping and a billing address. Confirmed markup:
@@ -1605,6 +1631,45 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
 
     cy.logToTerminal('✅ RU9: no address entry in the nav, and the page redirects away');
     // Permissions are deliberately left revoked — the company is deleted next.
+    logout();
+  });
+
+  it('RU10: switching the address book back off brings the personal address back', () => {
+    // The suite has only ever moved the setting one way — Test 1 turned it off,
+    // Test 4 turned it on, and nothing turned it off again. So nobody has checked
+    // the personal addresses survived being hidden rather than being replaced.
+    // Test 3 created one and Test 4 watched it disappear; it should still be
+    // there, untouched, once the company address book steps aside.
+    loginAsAdminAndSwitch();
+
+    cy.logToTerminal('🔧 Turning the company Address Book back off');
+    cy.contains('button', 'Edit').click();
+    cy.wait(1000);
+    cy.get(selectors.companyProfileAddressBookEnabledCheckbox).then(($cb) => {
+      if ($cb.prop('checked')) {
+        cy.wrap($cb).click({ force: true });
+      }
+    });
+    cy.contains('button', 'Save Changes').click();
+    cy.wait(2000);
+    cy.contains('Enable Company Address Book: Disabled').should('be.visible');
+
+    cy.visit(urls.addresses);
+    cy.wait(2000);
+    cy.waitForLoadingSkeletonToDisappear();
+
+    // Heading, nav and data all have to swing back together.
+    cy.get(selectors.addressesPageTitle, { timeout: 30000 })
+      .should('be.visible')
+      .and('have.text', addressBookLabels.addressesTitle);
+
+    navItemTitles().should('include', addressBookLabels.addressesTitle);
+    navItemTitles().should('not.include', addressBookLabels.companyAddressesTitle);
+
+    cy.contains(addressBookAddresses.shipping.lastName, { timeout: 30000 })
+      .should('be.visible');
+
+    cy.logToTerminal('✅ RU10: the personal address created in Test 3 is back, intact');
     logout();
   });
 
