@@ -196,6 +196,22 @@
     letter-spacing: var(--type-body-2-strong-letter-spacing);
 }
 
+.cart-item-promotions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+}
+
+.cart-item-promotions:empty {
+    display: none;
+}
+
+.cart-item-promotion-label {
+    font: var(--type-details-caption-1-font);
+    letter-spacing: var(--type-details-caption-1-letter-spacing);
+    color: var(--color-positive-800);
+}
+
 .checkout__block
 .cart-cart-summary-list
 .cart-cart-summary-list__footer-divider {
@@ -254,6 +270,7 @@
         order: 2;
     }
 
+    /* Style place order slot so it applies to both the place order button and the payment buttons. */
     .checkout__place-order {
         order: 4;
         background-color: var(--color-neutral-200);

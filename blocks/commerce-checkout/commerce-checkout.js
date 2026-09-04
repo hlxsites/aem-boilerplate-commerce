@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 
 // Dropin Tools
-import { deepmerge } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
@@ -205,7 +204,7 @@ export default async function decorate(block) {
     shippingFormSkeleton,
     _billToShipping,
     _shippingMethods,
-    paymentMethods,
+    _paymentMethods,
     billingFormSkeleton,
     _orderSummary,
     _cartSummary,
@@ -241,12 +240,28 @@ export default async function decorate(block) {
     renderGiftOptions($giftOptions),
   ]);
 
+  const EXPRESS_PAYMENT_METHODS = [
+    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
+    paymentsApi.PaymentMethodCode.APPLE_PAY,
+    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
+  ];
+
+  const isExpressPaymentMethod = (method) => (
+    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  );
+
   async function initializeCheckout(data) {
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
       removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
+    }
+    // Express payment methods replace the place order button; restore it for non-express methods
+    if (data.selectedPaymentMethod?.code
+      && !isExpressPaymentMethod(data.selectedPaymentMethod)
+      && !isPlaceOrderRendered($placeOrder)) {
+      await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }
   }
 
@@ -318,16 +333,6 @@ export default async function decorate(block) {
     window.location.reload();
   }
 
-  const EXPRESS_PAYMENT_METHODS = [
-    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
-    paymentsApi.PaymentMethodCode.APPLE_PAY,
-    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
-  ];
-
-  const isExpressPaymentMethod = (method) => (
-    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
-  );
-
   function handleCheckoutValues(payload) {
     const { isBillToShipping, selectedPaymentMethod } = payload;
     const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
@@ -341,12 +346,6 @@ export default async function decorate(block) {
     }
 
     wasStoredPaymentMethodSelected = isStoredPaymentMethodSelected;
-
-    if (!isExpressPaymentMethod(selectedPaymentMethod)
-      && !isPlaceOrderRendered($placeOrder)) {
-      // Express payment methods replace the place order button; restore it for non-express methods
-      renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
-    }
   }
 
   async function handleOrderPlaced(orderData) {
@@ -361,26 +360,10 @@ export default async function decorate(block) {
     await renderCheckoutSuccess(block, { orderData });
   }
 
-  function handlePaymentServicesInitialized({ availablePaymentMethods }) {
-    const slotsUpdate = (prev) => ({
-      Methods: Object.fromEntries(availablePaymentMethods.map(
-        (code) => [code, {
-          enabled: !!prev.slots.Methods[code].render,
-        }],
-      )),
-    });
-
-    paymentMethods.setProps((prev) => ({
-      ...prev,
-      slots: deepmerge(prev.slots, slotsUpdate(prev)),
-    }));
-  }
-
   events.on('authenticated', handleAuthenticated);
   events.on('checkout/initialized', handleCheckoutUpdated, { eager: true });
   events.on('checkout/updated', handleCheckoutUpdated);
   events.on('checkout/values', handleCheckoutValues);
-  events.on('payment-services/initialized/checkout', handlePaymentServicesInitialized, { eager: true });
   events.on('order/placed', handleOrderPlaced);
   events.on('cart/initialized', redirectToCartIfEmpty, { eager: true });
   events.on('cart/data', redirectToCartIfEmpty);

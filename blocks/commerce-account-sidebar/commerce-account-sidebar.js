@@ -30,6 +30,7 @@ export default async function decorate(block) {
     );
     if (isItemActive) {
       menuItemEl.classList.add('commerce-account-sidebar-item-active');
+      menuItemEl.setAttribute('aria-current', 'page');
     }
 
     const iconEl = createMenuItemIcon(itemConfig.itemIcon);

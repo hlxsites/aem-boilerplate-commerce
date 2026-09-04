@@ -223,9 +223,10 @@ const renderAuthCombine = (navSections, toggleMenu) => {
 
     authCombineLink.classList.add('authCombineNavElement');
     const text = authCombineLink.textContent || '';
-    authCombineLink.innerHTML = `<a href="#">${text}</a>`;
+    authCombineLink.innerHTML = `<button type="button">${text}</button>`;
     authCombineLink.addEventListener('click', (event) => {
       event.preventDefault();
+      event.stopPropagation();
       onHeaderLinkClick(accountLi);
 
       function getPopupElements() {

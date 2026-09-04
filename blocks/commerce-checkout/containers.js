@@ -74,6 +74,7 @@ import {
   authPrivacyPolicyConsentSlot,
   fetchPlaceholders,
   rootLink,
+  renderCartItemPromotions,
 } from '../../scripts/commerce.js';
 
 // Constants
@@ -358,138 +359,16 @@ export const renderShippingMethods = async (container) => renderContainer(
 );
 
 /**
- * Renders payment methods with credit card integration - original regular checkout functionality
- * @param {HTMLElement} paymentMethodsContainer - DOM element to render payment methods in
- * @param {HTMLElement} placeOrderButtonContainer - DOM element express payment buttons mount into,
- *   in place of the standard Place Order button
- * @param {Function} validateCheckoutForms - Function that returns true if all Checkout forms are valid
- * @returns {Promise<Object>} - The rendered payment methods component
+ * Resolves with the payment method codes Payment Services has confirmed are available
+ * for checkout, waiting for its initialization event if it hasn't fired yet.
+ * @returns {Promise<string[]>}
  */
-export const renderPaymentMethods = async (
-  paymentMethodsContainer,
-  placeOrderButtonContainer,
-  validateCheckoutForms,
-) => renderContainer(
-  CONTAINERS.PAYMENT_METHODS,
-  async () => CheckoutProvider.render(PaymentMethods, {
-    slots: {
-      Methods: {
-        [PaymentMethodCode.CREDIT_CARD]: {
-          render: (ctx) => {
-            const $creditCard = document.createElement('div');
-
-            PaymentServices.render(CreditCard)($creditCard);
-
-            ctx.replaceHTML($creditCard);
-          },
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.PAYPAL_BUTTONS]: {
-          render: (ctx) => {
-            mountPlaceOrderSlot((el) => PaymentServices.render(PayPalButtons, {
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => {
-                orderApi.placeOrder(cartId);
-              },
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
-
-            ctx.replaceHTML(createExpressPaymentNotice('PayPal'));
-          },
-          enabled: false,
-        },
-        [PaymentMethodCode.APPLE_PAY]: {
-          render: (ctx) => {
-            const checkoutData = events.lastPayload('checkout/updated')
-              || events.lastPayload('checkout/initialized')
-              || null;
-
-            if (checkoutData === null) {
-              console.error('Cannot render apple pay button without checkout data.');
-              unmountPlaceOrderSlot();
-              ctx.replaceHTML(document.createElement('div'));
-              return;
-            }
-
-            mountPlaceOrderSlot((el) => PaymentServices.render(ApplePay, {
-              location: PaymentLocation.CHECKOUT,
-              getCartId: () => ctx.cartId,
-              isVirtualCart: checkoutData.isVirtual,
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
-
-            ctx.replaceHTML(createExpressPaymentNotice('Apple Pay'));
-          },
-          enabled: false,
-        },
-        [PaymentMethodCode.APM]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.GOOGLE_PAY]: {
-          render: (ctx) => {
-            mountPlaceOrderSlot((el) => PaymentServices.render(GooglePay, {
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })(el), placeOrderButtonContainer);
-
-            ctx.replaceHTML(createExpressPaymentNotice('Google Pay'));
-          },
-          enabled: false,
-        },
-        [PaymentMethodCode.VAULT]: {
-          enabled: false,
-        },
-        [PaymentMethodCode.FASTLANE]: {
-          enabled: false,
-        },
-      },
-      StoredMethods: {
-        [PaymentMethodCode.VAULT]: {
-          tokenCode: PaymentMethodCode.CREDIT_CARD,
-          render: (ctx) => {
-            const $storedOption = document.createElement('div');
-
-            PaymentServices.render(VaultedCreditCard, {
-              tokenDetails: ctx.details,
-            })($storedOption);
-
-            ctx.replaceHTML($storedOption);
-          },
-        },
-      },
-    },
-  })(paymentMethodsContainer),
-);
+const getAvailablePaymentServicesMethods = () => new Promise((resolve) => {
+  const subscription = events.on('payment-services/initialized/checkout', ({ availablePaymentMethods }) => {
+    subscription?.off();
+    resolve(availablePaymentMethods);
+  }, { eager: true });
+});
 
 /**
  * Creates a short notice explaining that the given express payment method's button renders in
@@ -502,6 +381,142 @@ const createExpressPaymentNotice = (label) => {
   $notice.textContent = `Complete your purchase using the ${label} button below.`;
   return $notice;
 };
+
+/**
+ * Renders payment method options, showing a credit card form inline, and PayPal, Apple Pay,
+ * and Google Pay as branded checkout buttons in the Place Order slot.
+ * @param {HTMLElement} paymentMethodsContainer - DOM element to render payment methods in
+ * @param {HTMLElement} placeOrderButtonContainer - DOM element express payment buttons mount into,
+ *   in place of the standard Place Order button
+ * @param {Function} validateCheckoutForms - Function that returns true if all Checkout forms are valid
+ * @returns {Promise<Object>} - The rendered payment methods component
+ */
+export const renderPaymentMethods = async (
+  paymentMethodsContainer,
+  placeOrderButtonContainer,
+  validateCheckoutForms,
+) => renderContainer(
+  CONTAINERS.PAYMENT_METHODS,
+  async () => {
+    const availablePaymentServicesMethods = await getAvailablePaymentServicesMethods();
+
+    return CheckoutProvider.render(PaymentMethods, {
+      slots: {
+        Methods: {
+          [PaymentMethodCode.CREDIT_CARD]: {
+            render: (ctx) => {
+              const $creditCard = document.createElement('div');
+
+              PaymentServices.render(CreditCard)($creditCard);
+
+              ctx.replaceHTML($creditCard);
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.CREDIT_CARD),
+          },
+          [PaymentMethodCode.PAYPAL_BUTTONS]: {
+            render: (ctx) => {
+              mountPlaceOrderSlot((el) => PaymentServices.render(PayPalButtons, {
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => {
+                  orderApi.placeOrder(cartId);
+                },
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
+
+              ctx.replaceHTML(createExpressPaymentNotice('PayPal'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.PAYPAL_BUTTONS),
+          },
+          [PaymentMethodCode.APPLE_PAY]: {
+            render: (ctx) => {
+              const checkoutData = events.lastPayload('checkout/updated')
+                || events.lastPayload('checkout/initialized')
+                || null;
+
+              if (checkoutData === null) {
+                console.error('Cannot render apple pay button without checkout data.');
+                unmountPlaceOrderSlot();
+                ctx.replaceHTML(document.createElement('div'));
+                return;
+              }
+
+              mountPlaceOrderSlot((el) => PaymentServices.render(ApplePay, {
+                location: PaymentLocation.CHECKOUT,
+                getCartId: () => ctx.cartId,
+                isVirtualCart: checkoutData.isVirtual,
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
+
+              ctx.replaceHTML(createExpressPaymentNotice('Apple Pay'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.APPLE_PAY),
+          },
+          [PaymentMethodCode.APM]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.GOOGLE_PAY]: {
+            render: (ctx) => {
+              mountPlaceOrderSlot((el) => PaymentServices.render(GooglePay, {
+                onButtonClick: (showPaymentSheet) => {
+                  if (validateCheckoutForms()) {
+                    showPaymentSheet();
+                  }
+                },
+                onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+                onError: (localizedError) => {
+                  events.emit('checkout/error', {
+                    message: localizedError.message,
+                  });
+                },
+              })(el), placeOrderButtonContainer);
+
+              ctx.replaceHTML(createExpressPaymentNotice('Google Pay'));
+            },
+            enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.GOOGLE_PAY),
+          },
+          [PaymentMethodCode.VAULT]: {
+            enabled: false,
+          },
+          [PaymentMethodCode.FASTLANE]: {
+            enabled: false,
+          },
+        },
+        StoredMethods: {
+          [PaymentMethodCode.VAULT]: {
+            tokenCode: PaymentMethodCode.CREDIT_CARD,
+            render: (ctx) => {
+              const $storedOption = document.createElement('div');
+
+              PaymentServices.render(VaultedCreditCard, {
+                tokenDetails: ctx.details,
+              })($storedOption);
+
+              ctx.replaceHTML($storedOption);
+            },
+          },
+        },
+      },
+    })(paymentMethodsContainer);
+  },
+);
 
 /**
  * Renders terms and conditions with agreement slots and manual consent mode
@@ -658,22 +673,26 @@ export const renderCartSummaryList = async (container) => renderContainer(
             },
           });
         },
-        Footer: renderCartGiftOptions,
+        Footer: (ctx) => {
+          // Promotion / discount rule labels
+          renderCartItemPromotions(ctx);
+          // Gift Options
+          renderCartGiftOptions(ctx);
+        },
       },
     })(container);
   },
 );
 
-// Serializes every mount/unmount of the Place Order slot's occupant (the standard "Place order"
-// button, or the currently-selected express payment method's own button) so a new occupant is
-// never rendered while the previous one is still being removed.
+// Serializes every mount/unmount of the Place Order slot's occupant, so a new occupant is
+// never rendered while the previous one is still being removed
 let placeOrderSlotQueue = Promise.resolve();
 let placeOrderSlotMount = null; // Promise<RenderAPI> | null
 
 /**
- * Mounts a new occupant into the Place Order slot, unmounting whatever was previously there.
- * @param {(container: HTMLElement) => Promise<Object>} mount - Starts the dropin render.
- * @param {HTMLElement} container - The Place Order slot element.
+ * Mounts a new occupant into the Place Order slot, unmounting the previous one, if there is any.
+ * @param {(container: HTMLElement) => Promise<void>} mount - Starts the dropin render.
+ * @param {HTMLElement} container - The Place Order slot container element.
  * @returns {Promise<void>}
  */
 const mountPlaceOrderSlot = (mount, container) => {
@@ -731,7 +750,9 @@ export const renderPlaceOrder = async (container, options = {}) => mountPlaceOrd
  * @param {HTMLElement} container - The Place Order slot element.
  * @returns {boolean}
  */
-export const isPlaceOrderRendered = (container) => !!container.querySelector('.checkout-place-order');
+export const isPlaceOrderRendered = (container) => (
+  !!container.querySelector('.checkout-place-order')
+);
 
 /**
  * Renders customer shipping addresses selector/form for authenticated users - original regular checkout functionality
