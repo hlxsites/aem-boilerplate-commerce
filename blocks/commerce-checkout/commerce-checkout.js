@@ -254,8 +254,10 @@ export default async function decorate(block) {
       removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
     }
-    if (!isExpressPaymentMethod(data.selectedPaymentMethod) && !isPlaceOrderRendered($placeOrder)) {
-      // Express payment methods replace the place order button; restore it for non-express methods
+    // Express payment methods replace the place order button; restore it for non-express methods
+    if (data.selectedPaymentMethod?.code
+      && !isExpressPaymentMethod(data.selectedPaymentMethod)
+      && !isPlaceOrderRendered($placeOrder)) {
       await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }
   }
