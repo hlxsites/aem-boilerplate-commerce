@@ -4,6 +4,7 @@ import { COMPANY_ADDRESS_PERMISSIONS } from '@dropins/storefront-account/api.js'
 
 import '../../scripts/initializers/auth.js';
 import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
+import { CUSTOMER_ADDRESS_PATH } from '../../scripts/commerce.js';
 
 /**
  * Synthetic permission key, not a backend ACL id.
@@ -67,6 +68,20 @@ export default async function decorate(block) {
       .filter(Boolean),
   );
 
+  /**
+   * Whether a row leads to the addresses page.
+   *
+   * Matched on the path rather than on the authored permission because the
+   * boilerplate's default row guards that page with `all`, so nothing about the
+   * row itself says it is address-related. Compared with `endsWith` so a store
+   * root prefix ('/us/customer/address') matches too.
+   */
+  const pointsAtAddressesPage = ($item) => {
+    const href = readHref($item);
+    if (!href) return false;
+    return new URL(href).pathname.replace(/\/$/, '').endsWith(CUSTOMER_ADDRESS_PATH);
+  };
+
   const addressBookEnabled = await isCompanyAddressBookEnabled();
 
   /** Get permissions */
@@ -93,6 +108,20 @@ export default async function decorate(block) {
         )),
     };
 
+    /**
+     * Once the address book is on, the addresses page lists company addresses
+     * and needs the view ACL — without it the page redirects the customer away,
+     * so offering any route to it is misleading.
+     *
+     * A row the author guarded with a company ACL is already dropped by the
+     * permission rules below. This covers the boilerplate's default row, which
+     * is guarded by `all` and would otherwise survive them all.
+     */
+    const canViewCompanyAddresses = Boolean(
+      resolvedPermissions.admin
+      || resolvedPermissions[COMPANY_ADDRESS_PERMISSIONS.VIEW],
+    );
+
     /** Clear nav */
     $nav.innerHTML = '';
 
@@ -113,6 +142,11 @@ export default async function decorate(block) {
         && !COMPANY_ADDRESS_ACL.has(permission)
         && companyAddressHrefs.has(readHref($item))
       ) {
+        return;
+      }
+
+      // Leads to the company address book, which this customer may not view.
+      if (addressBookEnabled && !canViewCompanyAddresses && pointsAtAddressesPage($item)) {
         return;
       }
 

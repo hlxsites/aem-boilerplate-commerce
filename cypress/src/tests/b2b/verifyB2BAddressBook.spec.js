@@ -894,12 +894,14 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .should('be.visible')
       .and('have.text', addressBookLabels.companyAddressesTitle);
 
-    // Mirror of Test 1a with the book on: the company entry is offered and the
-    // personal one it supersedes is gone.
-    navItem(addressBookLabels.companyAddressesTitle).should('be.visible');
-    navItem(addressBookLabels.addressesTitle).should('not.exist');
-
-    cy.logToTerminal('✅ RU1a: heading and nav both show the company address book');
+    // Deliberately no nav assertion here. A "Company Addresses" entry only
+    // exists if an author added that row to /customer/nav, and the boilerplate
+    // content this suite runs against ships a single "Addresses" row guarded by
+    // `all` — so asserting on the label would test the content source, not the
+    // code. The heading above already proves the company dataset is on screen.
+    // RU9 covers the direction that does work without a content edit: the entry
+    // disappearing once view access is gone.
+    cy.logToTerminal('✅ RU1a: the heading shows the company address book');
     logout();
   });
 
