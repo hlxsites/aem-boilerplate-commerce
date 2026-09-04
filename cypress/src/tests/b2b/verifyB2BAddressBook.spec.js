@@ -57,14 +57,7 @@
  */
 
 import { createCompanyUser, cleanupTestCompany } from '../../support/b2bCompanyAPICalls';
-import {
-  addressBookLabels,
-  addressBookUsers,
-  addressBookRolesConfig,
-  addressBookAddresses,
-  customerShippingAddress,
-  customerBillingAddress,
-} from '../../fixtures';
+import { addressBookLabels, addressBookAddresses } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
@@ -1087,10 +1080,31 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.get('.minicart-wrapper').click();
     cy.get('.minicart-panel[data-loaded="true"]', { timeout: 20000 }).should('exist');
 
+    // The gate disables Place Order synchronously and only then asks the backend
+    // what the address book holds (commerce-checkout.js). Asserting straight away
+    // would therefore pass on the very first frame — before the gate has decided
+    // anything — and keep passing even if its logic broke or were deleted. Waiting
+    // for the address book request makes the assertion falsifiable.
+    //
+    // GET, not POST: the drop-in fetches this one with method 'GET', so the query
+    // travels in the URL. The name filter has to exclude the CONFIG query, whose
+    // name starts with the same string.
+    cy.intercept({ method: 'GET', url: '**/graphql*' }, (req) => {
+      const url = decodeURIComponent(req.url);
+      if (
+        url.includes('GET_COMPANY_ADDRESS_BOOK')
+        && !url.includes('GET_COMPANY_ADDRESS_BOOK_CONFIG')
+      ) {
+        req.alias = 'companyAddressBook';
+      }
+    });
+
     cy.logToTerminal('💳 Proceeding to checkout');
     cy.visit('/checkout');
     cy.url().should('include', '/checkout');
     cy.waitForLoadingSkeletonToDisappear();
+
+    cy.wait('@companyAddressBook', { timeout: 30000 });
 
     // Assert the button is actually on screen before asserting it is disabled —
     // a missing button would satisfy a bare "not enabled" check for the wrong reason.
@@ -1498,12 +1512,16 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.url().should('include', '/checkout');
     cy.waitForLoadingSkeletonToDisappear();
 
-    // The one-time entry has to be on offer, and the button must not be gated on a
-    // saved shipping address that the customer is not required to have.
-    cy.get(selectors.checkoutShippingBlock, { timeout: 30000 })
-      .find(selectors.checkoutUseDifferentShippingRadio)
-      .should('exist');
+    // No "Use a different address" radio here, and that is correct: checkout
+    // filters the shipping selector down to SHIPPING addresses only
+    // (filterB2BCheckoutAddressesByType), so a billing-only book leaves it empty.
+    // An empty list with one-time addresses allowed draws the form straight away —
+    // there is nothing to choose between — so the form itself is the entry point.
+    cy.get(selectors.checkoutShippingFormFirstName, { timeout: 30000 })
+      .should('be.visible');
 
+    // And the button must not be gated on a saved shipping address the customer
+    // is not required to have.
     cy.get(selectors.placeOrderButton, { timeout: 30000 })
       .should('be.visible')
       .and('not.be.disabled');
@@ -1512,16 +1530,7 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     // let go — the backend still has to accept a cart whose shipping address was
     // typed rather than picked, and it has refused exactly that before while the
     // UI swallowed the error and placed the order on a different address.
-    cy.logToTerminal('📮 Choosing "Use a different address" for shipping');
-    cy.get(selectors.checkoutShippingBlock)
-      .find(selectors.checkoutUseDifferentShippingRadio)
-      .then(($input) => {
-        cy.get(`label[for="${$input.attr('id')}"]`).click();
-      });
-    cy.wait(2000);
-
-    cy.logToTerminal('✍️ Filling the one-time shipping address');
-    cy.get(selectors.checkoutShippingFormFirstName, { timeout: 20000 }).should('be.visible');
+    cy.logToTerminal('✍️ Filling the one-time shipping address (form is already open)');
     fillCheckoutShippingForm(oneTime);
     cy.wait('@billingOnlyOneTimeAddress', { timeout: 30000 });
 
