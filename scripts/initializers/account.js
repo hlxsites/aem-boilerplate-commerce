@@ -25,45 +25,31 @@ await initializeDropin(async () => {
 })();
 
 /**
- * Whether the company address book is enabled for the active company.
+ * Memoized per page load. Several blocks on the account pages need this answer
+ * and would otherwise each fire their own blocking request. An EDS navigation
+ * is a full reload, so it cannot go stale across a company switch or a logout.
  *
- * Lives here rather than in a block so the call happens behind the top-level
- * await above, which guarantees setEndpoint() has already run.
- *
- * Fails closed to `false` (address book off) so that any error leaves the
- * standard Addresses affordances in place — a B2C customer or an older backend
- * must never end up with no address item at all.
- *
- * TODO: this costs one request per page that asks for it. There is no reusable
- * cached-fetch helper in this project — every cache is ad-hoc (see
- * getConfigFromSession in ../commerce.js, blocks/header/renderSellerAssistedBuyingBanner.js,
- * blocks/product-recommendations/product-recommendations.js) — so no cache is added
- * for now. If the extra request becomes a problem, cache it in sessionStorage under a
- * key that includes DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT (otherwise switching
- * company serves the previous company's answer) and clear it on logout next to the
- * SYNC_KEYS cleanup in ./index.js.
- *
- * @returns {Promise<boolean>} True only when the backend reports it enabled.
- */
-/**
- * In-flight/settled result for the current page. The account page renders both
- * the nav and the addresses block, and each needs this answer — without the
- * memo that is two blocking round trips before either can paint, which measurably
- * slowed the account pages down.
- *
- * Deliberately per page load: an EDS navigation is a full reload, so this resets
- * on its own and cannot serve a stale answer after a company switch or a logout.
- * See the TODO above for the cross-page cache, which needs real invalidation.
+ * TODO: caching across page loads would need a key that includes the active
+ * company, or a switch serves the previous company's answer.
  */
 let addressBookEnabledPromise = null;
 
+/**
+ * Whether the company address book is enabled for the active company.
+ *
+ * Lives here rather than in a block so the call happens behind the top-level
+ * await above, which guarantees setEndpoint() has already run. Fails closed to
+ * `false`, so an error leaves the standard Addresses affordances in place and a
+ * B2C customer never ends up with no address item at all.
+ *
+ * @returns {Promise<boolean>} True only when the backend reports it enabled.
+ */
 export const isCompanyAddressBookEnabled = async () => {
   if (getConfigValue('commerce-b2b-enabled') !== true) return false;
   if (!checkIsAuthenticated()) return false;
 
   if (!addressBookEnabledPromise) {
-    // Store the promise, not the resolved value: concurrent callers on the same
-    // page then share one request instead of racing two.
+    // The promise, not the resolved value: concurrent callers share one request.
     addressBookEnabledPromise = getCompanyAddressBookConfig()
       .then(({ addressBookEnabled }) => addressBookEnabled === true)
       .catch(() => false);

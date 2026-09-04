@@ -24,36 +24,27 @@ export default async function decorate(block) {
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
   } else {
-    // Company address book permission decides which title the container renders.
     const permissions = isB2BEnabled
       ? await getCustomerRolePermissions().catch(() => ({}))
       : {};
-    // The ACLs below are granted by the customer's role and arrive whether or
-    // not the company actually uses an address book, so permissions alone would
-    // title the page "Company Addresses" while it is listing personal ones.
-    // The company setting decides which dataset is on screen; the permissions
-    // decide whether this customer may see it at all.
+    // Both are needed: the company setting decides which dataset is on screen,
+    // the permissions decide whether this customer may see it at all. The ACLs
+    // arrive from the role whether or not the company uses an address book, so
+    // on their own they would title a personal list "Company Addresses".
     const addressBookEnabled = await isCompanyAddressBookEnabled();
     const hasCompanyAddressBook = Boolean(
       addressBookEnabled
       && (permissions.admin || permissions[COMPANY_ADDRESS_PERMISSIONS.VIEW]),
     );
 
-    // Once the company runs an address book, personal addresses are gone and the
-    // company ones need the view ACL — so a company user without it has nothing
-    // to do here. The nav already hides the entry; this covers the direct URL,
-    // which is the only way left to reach the page.
-    //
-    // Deliberately narrow: B2C and companies without an address book keep their
-    // personal addresses, admins carry the permission implicitly, and guests
-    // were already sent to login above.
     const isMinifiedView = minifiedViewConfig === 'true';
 
+    // A company user without the view ACL has nothing to do here. The nav
+    // already hides the entry; this covers the direct URL.
     if (addressBookEnabled && !hasCompanyAddressBook) {
-      // This same block also renders as the summary on the account page, which
-      // is where the redirect points — sending that instance away would bounce
-      // the page off itself forever. There it simply renders nothing instead;
-      // only the dedicated addresses page navigates away.
+      // The minified instance is the summary on the account page, which is where
+      // the redirect points — sending it away would bounce the page off itself
+      // forever, so there it just renders nothing.
       if (!isMinifiedView) {
         window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
       }

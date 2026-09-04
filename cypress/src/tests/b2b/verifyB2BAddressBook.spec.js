@@ -18,42 +18,13 @@
 /**
  * @fileoverview B2B Company Address Book E2E tests.
  *
- * Mirrors the verifyPurchaseOrders.spec.js pattern: REST-created company,
- * roles and users against a live backend, real UI login, real assertions —
- * NOT GraphQL mocking (see _____EXAMPLES_____/cypress for the mocked-GraphQL
- * component-test equivalent, used only as a source of scenario ideas).
+ * Follows the verifyPurchaseOrders.spec.js pattern: a REST-created company,
+ * admin and regular user against a live backend, driven through the real UI.
  *
- * Permission model verified against production code (NOT guessed):
- * scripts/__dropins__/storefront-account/api.js resolves company address
- * book access from these ACL resource IDs:
+ * Access resolves from these ACL resource IDs (storefront-account/api.js),
+ * which a Company Administrator bypasses entirely:
  *   Magento_CompanyAddressStorefrontCompatibility::company_address (view)
- *   Magento_CompanyAddressStorefrontCompatibility::add
- *   Magento_CompanyAddressStorefrontCompatibility::edit
- *   Magento_CompanyAddressStorefrontCompatibility::delete
- *   Magento_CompanyAddressStorefrontCompatibility::default
- * A Company Administrator role bypasses these checks entirely.
- *
- * EXPLICITLY OUT OF SCOPE for this pass (see plan): selecting a company
- * address as shipping/billing during checkout. That flow is gated behind a
- * temporary DEBUG block in blocks/commerce-checkout/commerce-checkout.js
- * (commit 3f0a0668, comment: "Remove this whole block ... once this ships
- * for real") and is not ready to test yet. This suite only verifies that the
- * "Allow custom shipping address at checkout" company setting exists and
- * persists — not checkout behavior driven by it.
- *
- * KNOWN UNKNOWNS requiring calibration against the live app on first run
- * (cannot be confirmed from static/minified source — see plan for detail):
- *   - Exact nav link text/route for the company address book page
- *     (actions.openCompanyAddressBook uses a best-effort /address/i match).
- *   - Exact input names for the two Address Book settings checkboxes on the
- *     Edit Company Profile form (fields.companyProfileAddressBookEnabledCheckbox
- *     / companyProfileCustomShippingEnabledCheckbox).
- *   - Exact data-testid/class names for the "no permission" message and the
- *     address-actions loading spinner.
- *   - Whether the live backend actually enforces the
- *     Magento_CompanyAddressStorefrontCompatibility::* ACL end-to-end when set
- *     via POST /V1/company/role — this suite's role/permission tests (4-10)
- *     are the first real verification of that "alpha" ACL.
+ *   ::add  ::edit  ::delete  ::default
  */
 
 import { createCompanyUser, cleanupTestCompany } from '../../support/b2bCompanyAPICalls';
@@ -61,14 +32,10 @@ import { addressBookLabels, addressBookAddresses } from '../../fixtures';
 import * as selectors from '../../fields';
 import * as actions from '../../actions';
 
-// The storefront-personalization dropin fires an eager GraphQL fetch on page
-// load which intermittently receives an empty response body on this
-// environment, surfacing as an unhandled "Unexpected end of JSON input"
-// rejection from scripts/__dropins__/tools/fetch-graphql.js. It's unrelated to
-// anything this suite exercises, but Cypress fails the test on any uncaught
-// app exception. Matched narrowly (same approach as the existing
-// 'Tenant not found' handler in src/support/index.js) so real app errors
-// still fail the run.
+// storefront-personalization's eager fetch intermittently gets an empty body on
+// this environment, surfacing as an unhandled "Unexpected end of JSON input".
+// Unrelated to this suite, but Cypress fails on any uncaught app exception.
+// Matched narrowly so real errors still fail the run.
 Cypress.on('uncaught:exception', (err) => {
   if (err.message.includes('Unexpected end of JSON input')) {
     return false;
@@ -76,15 +43,10 @@ Cypress.on('uncaught:exception', (err) => {
   return true;
 });
 
-// Exactly two accounts exist for this suite, both created via REST and both
-// disposable: the company admin that comes with the company, and one regular
-// user on the company's built-in "Default User" role. The permission matrix is
-// driven by editing that role in the UI rather than by creating extra roles or
-// users — POST /V1/company/role rejects every role carrying a
-// Magento_CompanyAddressStorefrontCompatibility::* resource_id.
-//
-// The company is created with purchase orders enabled, so the final scenario
-// can place a real purchase order using the company addresses.
+// Two disposable REST-created accounts: the company admin, and one user on the
+// built-in "Default User" role. The permission matrix moves through the UI
+// because POST /V1/company/role rejects the address-book resource ids. Purchase
+// orders are on so the last scenarios can place a real order.
 const REGULAR_USER_PASSWORD = 'Test123!';
 
 before(() => {
@@ -111,15 +73,9 @@ before(() => {
   cy.wait(3000);
 });
 
-// One account nav entry, matched on its exact title.
-//
-// Anchored regex because "Company Addresses" contains "Addresses" — a substring
-// match would report the personal entry as present whenever the company one is.
-//
-// cy.contains rather than cy.get(...).then(...): .then() ends the retry chain and
-// snapshots the DOM once, which is wrong here — the nav paints asynchronously
-// while its block waits on the address book config, so a snapshot can catch it
-// half-rendered and miss an entry that is about to appear.
+// One nav entry, matched on its exact title. Anchored regex because "Company
+// Addresses" contains "Addresses". cy.contains rather than .then(), which would
+// end the retry chain and snapshot a nav that is still painting.
 const navItem = (title) => cy.contains(
   selectors.accountNavItemTitle,
   new RegExp(`^${title}$`),
@@ -549,15 +505,10 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
   });
 });
 
-// Granular permission scenario driven by the single regular user created in
-// the root `before`, who holds the company's built-in "Default User" role.
-// Alternates admin (toggles individual Company Addresses child permissions via
-// the roles tree) and that user (verifies what is/isn't possible at each
-// permission level). Permissions move through the UI rather than REST because
-// POST /V1/company/role rejects the address-book resource ids.
-// The suite does its own cleanup, so its title stays in
-// src/support/deleteCustomer.js's skipDeleteTests list to keep the global
-// afterEach from deleting the user between tests.
+// Alternates admin (toggling Company Addresses child permissions in the roles
+// tree) and the regular user (verifying what each level allows). The suite does
+// its own cleanup, so its title stays in deleteCustomer.js's skipDeleteTests to
+// keep the global afterEach from deleting the user between tests.
 describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   const urls = Cypress.env('addressBookUrls');
 
@@ -595,12 +546,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.visit(urls.companyProfile);
     cy.wait(2000);
     cy.waitForLoadingSkeletonToDisappear();
-    // Wait for the profile card to actually render BEFORE deciding whether a
-    // switcher exists. cy.get('body').then() is a one-shot, non-retrying
-    // snapshot: taken mid-load it wrongly concludes "no switcher", silently
-    // skips the switch, and leaves the admin operating on whatever company
-    // happened to be active — which previously caused a permission change to
-    // be written to the wrong company's Default User role.
+    // Wait for the card BEFORE deciding whether a switcher exists: the
+    // cy.get('body').then() below is a one-shot snapshot, and taken mid-load it
+    // concludes "no switcher" and leaves the admin on the wrong company.
     cy.get('.account-company-profile-card__wrapper', { timeout: 20000 }).should('exist');
 
     // The switcher only renders when the account has more than one company
@@ -615,12 +563,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       }
     });
 
-    // Hard gate: whether we switched or were already there, never proceed
-    // unless the active company really is the test company. Everything after
-    // this mutates real, persistent company data.
-    // Scoped to the rendered profile card on purpose — a page-wide
-    // cy.contains() also matches the <option> inside the switcher <select>,
-    // and options are 0x0 so they can never satisfy should('be.visible').
+    // Hard gate: everything after this mutates real, persistent company data.
+    // Scoped to the profile card because a page-wide cy.contains() also matches
+    // the switcher's <option>, which is 0x0 and never visible.
     cy.get('.account-company-profile-card__content', { timeout: 15000 })
       .should('contain.text', testCompanyName());
     cy.logToTerminal(`🏢 Confirmed active company: ${testCompanyName()}`);
@@ -640,13 +585,6 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     switchToTestCompany();
   };
 
-  // Sets one or more Company Addresses child permissions (Add/Edit/Delete/
-  // Set Default Address) on the Default User role in a single edit+save pass.
-  // Idempotent per child — only clicks if the current state differs.
-  // Tree behaviour, confirmed by observation: clicking the PARENT toggles
-  // every child at once (all on / all off), while clicking a CHILD affects
-  // only that child and leaves the parent alone. So partial permission sets
-  // are set purely by clicking children — never touch the parent here.
   // Opens the Default User role editor with the permission tree expanded.
   const openDefaultUserRoleTree = () => {
     cy.visit('/customer/company/roles');
@@ -738,6 +676,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(2000);
   };
 
+  // Sets Company Addresses child permissions in one edit+save pass, idempotent
+  // per child. Confirmed by observation: clicking the PARENT toggles every child
+  // at once, a CHILD affects only itself — so partial sets only ever click
+  // children.
   const setChildPermissions = (changes) => {
     cy.visit('/customer/company/roles');
     cy.wait(2000);
@@ -767,12 +709,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     });
 
     changes.forEach(({ label, checked }) => {
-      // Scoped to DIRECT children ('> ul > li', the pattern used by
-      // verifyCompanyRolesAndPermissions.spec.js) plus an exact-text filter.
-      // Both matter: the parent label "Company Addresses" contains the
-      // substring "Add", so an unscoped cy.contains('Add') selects the PARENT
-      // row — and clicking the parent toggles every child at once, silently
-      // wiping the whole permission set. Clicking a child affects only itself.
+      // Direct children plus an exact-text filter, and both matter: "Company
+      // Addresses" contains "Add", so an unscoped cy.contains('Add') hits the
+      // PARENT row and toggles every child at once.
       cy.get('@companyAddressesNode')
         .find('> ul > li .edit-role-and-permission__tree-label')
         .filter((i, el) => el.textContent.trim() === label)
@@ -894,13 +833,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .should('be.visible')
       .and('have.text', addressBookLabels.companyAddressesTitle);
 
-    // Deliberately no nav assertion here. A "Company Addresses" entry only
-    // exists if an author added that row to /customer/nav, and the boilerplate
-    // content this suite runs against ships a single "Addresses" row guarded by
-    // `all` — so asserting on the label would test the content source, not the
-    // code. The heading above already proves the company dataset is on screen.
-    // RU9 covers the direction that does work without a content edit: the entry
-    // disappearing once view access is gone.
+    // No nav assertion here on purpose: a "Company Addresses" entry only exists
+    // if an author added that row, and this content ships a single "Addresses"
+    // row guarded by `all` — asserting on the label would test the content, not
+    // the code. RU9 covers what works without a content edit.
     cy.logToTerminal('✅ RU1a: the heading shows the company address book');
     logout();
   });
@@ -1077,24 +1013,13 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
   });
 
 
-  // End-to-end purchase as the regular company user, then verify the order
-  // appears in order history.
-  //
-  // With "Allow Custom Company Address" off, checkout only offers saved company
-  // addresses — an empty book shows "No saved addresses" and there is nothing to
-  // fill in, so this test seeds a SHIPPING and a BILLING address first. RU8
-  // covers the opposite case, where the setting is on and a one-time address can
-  // be typed. Payment stays on Check / Money order: no Payment Services iframes.
-  it('RU6a: with an empty address book the order cannot be placed', function () {
-    // 🚧 TEMP DEBUG: one attempt only, so the pause below happens once.
-    this.retries(0);
-
-    // The whole point of the gate: an address book with nothing in it leaves the
-    // customer no address to check out with, so the button must stay disabled
-    // rather than let the order through on whatever the cart happens to hold.
-    //
-    // No addresses are created here on purpose — an empty book is exactly the
-    // condition being tested, and RU6 already left it that way.
+  // End-to-end purchase, then the order in history. With custom addresses off,
+  // checkout only offers saved ones, so a SHIPPING and a BILLING address are
+  // seeded first; RU8 covers the opposite. Check / Money order keeps Payment
+  // Services iframes out of it.
+  it('RU6a: with an empty address book the order cannot be placed', () => {
+    // An empty book leaves no address to check out with, so the button must stay
+    // disabled. Nothing is created here on purpose — RU6 already left it empty.
     loginAsRegularUserAndSwitch();
 
     cy.logToTerminal('🧹 Confirming the address book is empty before checking out');
@@ -1111,15 +1036,11 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.get('.minicart-wrapper').click();
     cy.get('.minicart-panel[data-loaded="true"]', { timeout: 20000 }).should('exist');
 
-    // The gate disables Place Order synchronously and only then asks the backend
-    // what the address book holds (commerce-checkout.js). Asserting straight away
-    // would therefore pass on the very first frame — before the gate has decided
-    // anything — and keep passing even if its logic broke or were deleted. Waiting
-    // for the address book request makes the assertion falsifiable.
-    //
-    // GET, not POST: the drop-in fetches this one with method 'GET', so the query
-    // travels in the URL. The name filter has to exclude the CONFIG query, whose
-    // name starts with the same string.
+    // The gate disables the button synchronously and only then asks the backend,
+    // so asserting straight away would pass on the first frame and keep passing
+    // even if the gate were deleted. Waiting for the request makes it falsifiable.
+    // GET, not POST — the query travels in the URL, and the filter has to exclude
+    // the CONFIG query, whose name starts with the same string.
     cy.intercept({ method: 'GET', url: '**/graphql*' }, (req) => {
       const url = decodeURIComponent(req.url);
       if (
@@ -1136,15 +1057,6 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.waitForLoadingSkeletonToDisappear();
 
     cy.wait('@companyAddressBook', { timeout: 30000 });
-
-    // 🚧 TEMP DEBUG — remove once the gate has been inspected by hand.
-    // Placed right after the address book request resolves: that is the moment
-    // the gate has made its decision, so the button on screen is the real
-    // verdict rather than the synchronous "disabled until we know" state.
-    const debugUser = regularUserCreds();
-    cy.logToTerminal(`🚧 PAUSING 180s at the place-order gate — log in as ${debugUser.email} / ${debugUser.password}`);
-    cy.wait(180000);
-    cy.logToTerminal('🚧 Pause over — asserting the gate now');
 
     // Assert the button is actually on screen before asserting it is disabled —
     // a missing button would satisfy a bare "not enabled" check for the wrong reason.
@@ -1201,13 +1113,9 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .should('not.exist');
     cy.contains(addressBookAddresses.shipping.lastName, { timeout: 30000 }).should('be.visible');
 
-    // Explicitly select a shipping and a billing address. Confirmed markup:
-    // each saved address renders a visually-hidden
-    // input[type=radio][name="selectedShippingAddress"|"selectedBillingAddress"]
-    // wrapped by a label containing the address card. None is preselected, and
-    // without a selection the cart has no address — placing the order then
-    // fails with "An unexpected error occurred while processing your order".
-    // force:true because the radio itself is hidden behind its label/card.
+    // Nothing is preselected, and without a selection the cart has no address at
+    // all. The radios are visually hidden behind their address card, hence
+    // force:true.
     cy.logToTerminal('📮 Selecting the saved shipping address');
     // Click the LABEL, which is what a real user clicks (it wraps the address
     // card); force-checking the hidden input can set the DOM property without
@@ -1373,13 +1281,11 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.url().should('include', '/checkout');
     cy.waitForLoadingSkeletonToDisappear();
 
-    // ORDER MATTERS, and not for cosmetic reasons. A one-time address is not a
-    // saved address, so the cart stores it without an id and the block
-    // recomputes defaultSelectAddressId as 0 (containers.js). Any later cart
-    // update re-runs the selection effect, which cannot match id 0 against the
-    // address book and falls back to the default company address — silently
-    // replacing what was just typed. Selecting billing is such an update, so it
-    // has to happen BEFORE the one-time shipping address is entered.
+    // ORDER MATTERS. A one-time address has no id, so the block recomputes
+    // defaultSelectAddressId as 0 (containers.js); any later cart update re-runs
+    // the selection effect, fails to match id 0 and falls back to the default
+    // company address, silently replacing what was typed. Selecting billing is
+    // such an update, so it must come first.
     cy.logToTerminal('🧾 Selecting the saved company billing address first');
     cy.get('input[type="radio"][name="selectedBillingAddress"]')
       .should('have.length.greaterThan', 0)
@@ -1390,13 +1296,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.wait(3000);
     cy.get('input[type="radio"][name="selectedBillingAddress"]').first().should('be.checked');
 
-    // Records every GraphQL call from here on. Asserting the radio stays checked
-    // only proves the UI selection held — it says nothing about what reached the
-    // cart, and the order kept coming back with the saved company address
-    // regardless. This captures the operation names, whether the typed street
-    // ever left the browser, and any errors sent back, which is the only way to
-    // tell "the mutation was never sent" apart from "the backend refused it".
-    // Collected into plain arrays: cy.* cannot be called inside an intercept.
+    // A checked radio only proves the UI selection held, not what reached the
+    // cart. Recording the operations, the typed street and any errors is the only
+    // way to tell "never sent" from "backend refused it". Plain arrays because
+    // cy.* cannot be called inside an intercept.
     const sentOps = [];
     const oneTimeStreetSent = [];
     const gqlErrors = [];
@@ -1651,13 +1554,10 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
     cy.url({ timeout: 30000 }).should('not.include', urls.addresses);
     cy.url().should('include', urls.account);
 
-    // The account page carries the same addresses block in its summary form, and
-    // the redirect above points at the account page — so an unguarded redirect
-    // there sends the page to itself and it reloads forever. That is invisible to
-    // a URL assertion, since the address never changes.
-    //
-    // A marker on `window` is the discriminator: it survives only while no
-    // navigation happens, and any reload wipes it.
+    // The account page carries the same block in summary form and is where the
+    // redirect points, so an unguarded redirect there loops forever — invisible
+    // to a URL assertion, since the address never changes. A marker on `window`
+    // is the discriminator: any reload wipes it.
     cy.logToTerminal('🔁 Confirming the account page does not reload itself');
     cy.visit(urls.account);
     cy.waitForLoadingSkeletonToDisappear();

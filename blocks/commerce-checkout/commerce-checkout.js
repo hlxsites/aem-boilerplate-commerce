@@ -205,12 +205,9 @@ export default async function decorate(block) {
   });
 
   // Place Order stays disabled until the company address book has been read.
-  //
-  // The checkout drop-in cannot judge B2B addresses on its own: with the address
-  // book on, an order needs a billing address from the book, and a shipping one
-  // either from the book or typed in at checkout. Starting disabled is
-  // deliberate — that answer arrives asynchronously, and enabling first would
-  // briefly offer a button that submits an order the backend rejects.
+  // The drop-in cannot judge B2B addresses on its own, and the answer arrives
+  // asynchronously — enabling first would briefly offer a button that submits an
+  // order the backend rejects.
   if (isB2BEnabled) {
     placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: true }));
 
@@ -226,13 +223,9 @@ export default async function decorate(block) {
         );
 
         // A missing shipping address only blocks checkout when the company also
-        // forbids one-time addresses. Allow them and the customer can type one at
-        // checkout, so requiring a saved one as well left the order unplaceable:
-        // the form was offered, filled in, and the button stayed disabled.
-        // Billing has no such escape hatch — it must come from the address book.
-        //
-        // If the company doesn't use an address book at all, this gate doesn't apply —
-        // fall back to the normal (enabled) Place Order behavior.
+        // forbids one-time addresses: allow them and the customer types one in.
+        // Billing has no such escape hatch. A company without an address book is
+        // not gated at all.
         const shippingMissing = !hasShippingAddress && !customShippingAllowed;
         const shouldDisablePlaceOrder = addressBookEnabled
           && (shippingMissing || !hasBillingAddress);
@@ -242,8 +235,7 @@ export default async function decorate(block) {
           disabled: shouldDisablePlaceOrder,
         }));
       } catch (error) {
-        // Fail open. The gate only applies to companies that run an address
-        // book, so a failed lookup must not lock everyone else out of checkout.
+        // Fail open: the gate only applies to companies that run an address book.
         // eslint-disable-next-line no-console
         console.error('Checkout: could not read the company address book — leaving Place Order enabled', error);
         placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: false }));
@@ -280,10 +272,9 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    // Hidden for every B2B customer, which is wider than the condition guarding
-    // the isBillToShipping default in scripts/initializers/checkout.js — that one
-    // only kicks in when the company address book is on. Deliberate: B2B picks
-    // billing from its own address list, so the checkbox has nothing to do here.
+    // Hidden for every B2B customer — wider than the isBillToShipping default in
+    // scripts/initializers/checkout.js on purpose: B2B picks billing from its own
+    // address list, so the checkbox has nothing to do here.
     renderBillToShippingAddress($billToShipping, !isB2BEnabled),
 
     renderShippingMethods($delivery),

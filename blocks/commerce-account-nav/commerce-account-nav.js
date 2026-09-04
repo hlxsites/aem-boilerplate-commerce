@@ -7,16 +7,10 @@ import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.
 import { CUSTOMER_ADDRESS_PATH } from '../../scripts/commerce.js';
 
 /**
- * Synthetic permission key, not a backend ACL id.
- *
- * The authored row for the standard "Addresses" item uses this in its
- * `permission` column so that the item disappears once the company address book
- * takes over, which the customer's own permissions cannot express. It relies on
- * the `permissions[key] === false` rule below, which is checked before the admin
- * bypass, so the item is hidden for company admins too.
- *
- * The same convention already exists in storefront-auth, which forces every
- * `Magento_PurchaseOrder::*` key to false when `purchase_orders_enabled` is off.
+ * Synthetic permission key, not a backend ACL id. An authored row can use it in
+ * its `permission` column to disappear once the company address book takes over,
+ * which the customer's own permissions cannot express. Hidden for admins too,
+ * because `=== false` is checked before the admin bypass.
  */
 const COMPANY_ADDRESS_BOOK_DISABLED = 'company_address_book_disabled';
 
@@ -38,12 +32,6 @@ export default async function decorate(block) {
     permission: Math.max(0, keys.indexOf('permission') + 1),
   };
 
-  /**
-   * Resolved before the subscription below is registered, so the handler stays
-   * synchronous. Awaiting inside the handler would let `block.replaceWith($nav)`
-   * run against a still-empty nav, and would let two overlapping firings of
-   * `auth/permissions` race, with the slower one winning.
-   */
   const COMPANY_ADDRESS_ACL = new Set(Object.values(COMPANY_ADDRESS_PERMISSIONS));
 
   const readPermission = ($item) => $item
@@ -53,13 +41,9 @@ export default async function decorate(block) {
     .querySelector(`:scope > div:nth-child(${rows.label})`)?.children[0]?.querySelector('a')?.href;
 
   /**
-   * Pages that an authored row guards with a company address ACL. Once the
-   * address book is on, any OTHER row pointing at the same page is the personal
-   * address entry it replaces, and gets dropped below.
-   *
-   * Derived from the content rather than from a hardcoded path or label so it
-   * survives translation and re-routing — and, unlike the synthetic permission
-   * key, it does not depend on anyone editing the authored table.
+   * Pages an authored row guards with a company address ACL. Once the address
+   * book is on, any OTHER row pointing at the same page is the personal entry it
+   * replaces. Read from the content so it survives translation and re-routing.
    */
   const companyAddressHrefs = new Set(
     $items
@@ -69,12 +53,9 @@ export default async function decorate(block) {
   );
 
   /**
-   * Whether a row leads to the addresses page.
-   *
-   * Matched on the path rather than on the authored permission because the
-   * boilerplate's default row guards that page with `all`, so nothing about the
-   * row itself says it is address-related. Compared with `endsWith` so a store
-   * root prefix ('/us/customer/address') matches too.
+   * Matched on the path, not the permission: the boilerplate's default row
+   * guards the addresses page with `all`, so the row itself says nothing about
+   * being address-related. `endsWith` so a store root prefix matches too.
    */
   const pointsAtAddressesPage = ($item) => {
     const href = readHref($item);
@@ -82,25 +63,21 @@ export default async function decorate(block) {
     return new URL(href).pathname.replace(/\/$/, '').endsWith(CUSTOMER_ADDRESS_PATH);
   };
 
+  // Awaited before subscribing so the handler stays synchronous: awaiting inside
+  // it would let `block.replaceWith($nav)` run against a still-empty nav, and let
+  // two firings of `auth/permissions` race with the slower one winning.
   const addressBookEnabled = await isCompanyAddressBookEnabled();
 
   /** Get permissions */
   events.on('auth/permissions', (permissions) => {
-    /**
-     * Copy, never mutate: the event bus replays the auth drop-in's own cached
-     * object by reference, so writing to it would leak into every other consumer.
-     */
+    // Copy, never mutate: the event bus replays the drop-in's own cached object
+    // by reference, so writing to it would leak into every other consumer.
     const resolvedPermissions = {
       ...permissions,
       [COMPANY_ADDRESS_BOOK_DISABLED]: !addressBookEnabled,
-      /**
-       * The company address ACLs come from the customer's role and arrive
-       * whether or not the company actually uses an address book, so on their
-       * own they would show "Company Addresses" to a company that has the
-       * feature switched off. Forcing them to false while it is off mirrors
-       * what storefront-auth does with `Magento_PurchaseOrder::*` when
-       * purchase orders are disabled, and hides the item for admins too.
-       */
+      // The company address ACLs come from the role and arrive whether or not
+      // the company uses an address book, so on their own they would show the
+      // company entry to a company that has the feature off.
       ...(addressBookEnabled
         ? {}
         : Object.fromEntries(
@@ -108,15 +85,10 @@ export default async function decorate(block) {
         )),
     };
 
-    /**
-     * Once the address book is on, the addresses page lists company addresses
-     * and needs the view ACL — without it the page redirects the customer away,
-     * so offering any route to it is misleading.
-     *
-     * A row the author guarded with a company ACL is already dropped by the
-     * permission rules below. This covers the boilerplate's default row, which
-     * is guarded by `all` and would otherwise survive them all.
-     */
+    // With the book on, that page needs the view ACL — without it the page
+    // redirects the customer away, so offering a route to it is misleading.
+    // Rows an author guarded with a company ACL are already dropped below; this
+    // covers the default row, guarded by `all`, which survives every other rule.
     const canViewCompanyAddresses = Boolean(
       resolvedPermissions.admin
       || resolvedPermissions[COMPANY_ADDRESS_PERMISSIONS.VIEW],
@@ -127,13 +99,8 @@ export default async function decorate(block) {
 
     /** Create items */
     $items.forEach(($item) => {
-      /**
-       * Permissions
-       * Skip rendering if the user lacks permission for this item.
-       * Default permission is 'all'.
-       * Note: permissions can be explicitly set to false (disabled feature),
-       * which should hide the item even for admins.
-       */
+      /** Permissions. Default is 'all'; an explicit false hides the item even
+       * for admins. */
       const permission = $item.querySelector(`:scope > div:nth-child(${rows.permission})`)?.textContent?.trim() || 'all';
 
       // Superseded by a company address row pointing at the same page.
