@@ -111,12 +111,20 @@ before(() => {
   cy.wait(3000);
 });
 
-// Exact titles of the account nav entries. Exact, because "Company Addresses"
-// contains "Addresses" — a substring match would report the personal entry as
-// present whenever the company one is.
-const navItemTitles = () => cy
-  .get(selectors.accountNavItemTitle, { timeout: 30000 })
-  .then(($els) => [...$els].map((el) => el.textContent.trim()));
+// One account nav entry, matched on its exact title.
+//
+// Anchored regex because "Company Addresses" contains "Addresses" — a substring
+// match would report the personal entry as present whenever the company one is.
+//
+// cy.contains rather than cy.get(...).then(...): .then() ends the retry chain and
+// snapshots the DOM once, which is wrong here — the nav paints asynchronously
+// while its block waits on the address book config, so a snapshot can catch it
+// half-rendered and miss an entry that is about to appear.
+const navItem = (title) => cy.contains(
+  selectors.accountNavItemTitle,
+  new RegExp(`^${title}$`),
+  { timeout: 30000 },
+);
 
 // Read lazily: `before` has not run yet when a describe body is evaluated.
 const testCompanyName = () => Cypress.env('testCompany').name;
@@ -279,8 +287,8 @@ describe('B2B Address Book - Admin Scenario', { tags: ['@B2BSaas', '@B2BAco'] },
     // The nav must agree with the heading. Asserting the personal entry is
     // present matters as much as the company one being absent: without it the
     // check would pass on a page that rendered no nav at all.
-    navItemTitles().should('include', addressBookLabels.addressesTitle);
-    navItemTitles().should('not.include', addressBookLabels.companyAddressesTitle);
+    navItem(addressBookLabels.addressesTitle).should('be.visible');
+    navItem(addressBookLabels.companyAddressesTitle).should('not.exist');
 
     cy.logToTerminal('✅ Test 1a: heading and nav both show the personal address list');
   });
@@ -888,8 +896,8 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
 
     // Mirror of Test 1a with the book on: the company entry is offered and the
     // personal one it supersedes is gone.
-    navItemTitles().should('include', addressBookLabels.companyAddressesTitle);
-    navItemTitles().should('not.include', addressBookLabels.addressesTitle);
+    navItem(addressBookLabels.companyAddressesTitle).should('be.visible');
+    navItem(addressBookLabels.addressesTitle).should('not.exist');
 
     cy.logToTerminal('✅ RU1a: heading and nav both show the company address book');
     logout();
@@ -1663,8 +1671,8 @@ describe('B2B Address Book - Regular User Permission Scenario', { tags: ['@B2BSa
       .should('be.visible')
       .and('have.text', addressBookLabels.addressesTitle);
 
-    navItemTitles().should('include', addressBookLabels.addressesTitle);
-    navItemTitles().should('not.include', addressBookLabels.companyAddressesTitle);
+    navItem(addressBookLabels.addressesTitle).should('be.visible');
+    navItem(addressBookLabels.companyAddressesTitle).should('not.exist');
 
     cy.contains(addressBookAddresses.shipping.lastName, { timeout: 30000 })
       .should('be.visible');
