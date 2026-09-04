@@ -4,6 +4,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
 import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
+import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
@@ -49,23 +50,18 @@ const setCustomerGroupHeader = (customerGroupId) => {
 };
 
 const fetchCustomerGroupId = async () => {
-  try {
-    const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(`
-      query GET_CUSTOMER_GROUP {
-        customer {
-          group {
-            uid
-          }
-        }
-      }
-    `, { method: 'GET', cache: 'no-store' });
+  const token = getUserTokenCookie();
+  if (!token) {
+    return;
+  }
 
-    const groupUid = response?.data?.customer?.group?.uid;
-    const customerGroupId = groupUid ? await sha1Base64(groupUid) : DEFAULT_NLI_CUSTOMER_GROUP_ID;
-    setCustomerGroupHeader(customerGroupId);
+  try {
+    const customer = await getCustomerData(token);
+    if (customer?.groupUid) {
+      setCustomerGroupHeader(await sha1Base64(customer.groupUid));
+    }
   } catch (error) {
     console.debug('Unable to resolve customer group for Catalog Service:', error);
-    setCustomerGroupHeader(DEFAULT_NLI_CUSTOMER_GROUP_ID);
   }
 };
 
