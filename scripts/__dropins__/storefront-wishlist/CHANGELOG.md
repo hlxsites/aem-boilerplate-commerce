@@ -1,6 +1,6 @@
 # @dropins/storefront-wishlist
 
-## 3.5.0-alpha-20260901213815
+## 3.5.0-alpha-20260907084948
 
 ### Minor Changes
 
@@ -12,6 +12,16 @@
   products can be added to a specific wishlist instead of the default. Omitting
   it keeps the existing behavior; guests continue to use their single local list
   (additive, backwards compatible).
+- d11a921: Add guest persistence for keyed wishlists (e.g. Save for Later). A
+  guest `wishlistId` now maps to its own local-storage list:
+  `addProductsToWishlist`/`removeProductsFromWishlist` write to that keyed store
+  without emitting on the active list or touching the heart-icon cache, and
+  `getWishlistById` reads from it. Adds an opt-in per-list expiry via the new
+  `guestWishlistTtl` config (`{ 'save-for-later': 14 }` = 14-day TTL); lists
+  without a configured TTL, including the default guest wishlist, never expire.
+  `mergeWishlists` now accepts an optional `listKey` so a keyed guest list can
+  be merged into a specific server list on login (deduped by sku + options); the
+  default (no `listKey`) behavior is unchanged.
 - 64e63d3: Add multi-list rendering via event scoping: the `Wishlist` container
   accepts a `scope` prop so several instances can coexist on one page, each
   reacting only to its own list's `wishlist/data` and `wishlist/alert` events
