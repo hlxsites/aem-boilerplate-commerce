@@ -33,6 +33,17 @@ const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
   }
 };
 
+// Storefronts backed only by a catalog-service endpoint (no full Commerce SaaS
+// instance and no provisioned Adobe Commerce Optimizer tenant) can price products
+// from a single, statically configured AC-Price-Book-ID header (config.json ->
+// headers.cs). Enable this mode explicitly instead of relying on the
+// Magento-Customer-Group or Adobe Commerce Optimizer tenant lookup, both of which
+// prevent that static price book from resolving prices.
+export const isStaticPriceBookEnabled = () => {
+  const value = getConfigValue('commerce-static-price-book-enabled');
+  return value === true || value === 'true';
+};
+
 const persistCartDataInSession = (data) => {
   if (data?.id) {
     sessionStorage.setItem('DROPINS_CART_ID', data.id);
@@ -58,7 +69,12 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
-    if (getConfigValue('adobe-commerce-optimizer')) {
+    if (isStaticPriceBookEnabled()) {
+      // Keep the statically configured AC-Price-Book-ID header as-is: don't set
+      // Magento-Customer-Group (breaks static price book resolution) and don't
+      // look up an Adobe Commerce Optimizer tenant (unsupported on
+      // catalog-service-only endpoints).
+    } else if (getConfigValue('adobe-commerce-optimizer')) {
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
       events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
