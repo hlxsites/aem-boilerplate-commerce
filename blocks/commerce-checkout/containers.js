@@ -44,6 +44,7 @@ import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.j
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
 import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
+import VaultedCreditCard from '@dropins/storefront-payment-services/containers/VaultedCreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Order Dropin
@@ -473,11 +474,22 @@ export const renderPaymentMethods = async (
             },
             enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.GOOGLE_PAY),
           },
-          [PaymentMethodCode.VAULT]: {
-            enabled: false,
-          },
           [PaymentMethodCode.FASTLANE]: {
             enabled: false,
+          },
+        },
+        StoredMethods: {
+          [PaymentMethodCode.VAULT]: {
+            tokenCode: PaymentMethodCode.CREDIT_CARD,
+            render: (ctx) => {
+              const $storedOption = document.createElement('div');
+
+              PaymentServices.render(VaultedCreditCard, {
+                tokenDetails: ctx.details,
+              })($storedOption);
+
+              ctx.replaceHTML($storedOption);
+            },
           },
         },
       },

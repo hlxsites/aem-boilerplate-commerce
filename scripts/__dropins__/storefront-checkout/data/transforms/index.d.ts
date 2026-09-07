@@ -30,3 +30,4 @@ export * from './transform-region';
 export * from './transform-shipping-estimate';
 export * from './transform-shipping-methods';
 export * from './transform-store-config';
+export * from './transform-stored-payment-methods';

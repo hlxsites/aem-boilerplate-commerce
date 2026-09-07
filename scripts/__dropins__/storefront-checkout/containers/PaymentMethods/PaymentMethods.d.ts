@@ -34,6 +34,21 @@ export interface PaymentMethodConfig {
 export interface PaymentMethodHandlers {
     [code: string]: PaymentMethodConfig;
 }
+interface StoredMethodRenderContext {
+    cartId: string;
+    details?: string;
+    publicHash?: string;
+    selected: boolean;
+    replaceHTML: (domElement: HTMLElement) => void;
+}
+export interface StoredPaymentMethodConfig {
+    enabled?: boolean;
+    render?: SlotProps<StoredMethodRenderContext>;
+    tokenCode?: string;
+}
+export interface StoredPaymentMethodHandlers {
+    [vaultCode: string]: StoredPaymentMethodConfig;
+}
 interface CartSyncError {
     method: PaymentMethod;
     error: Error;
@@ -41,6 +56,7 @@ interface CartSyncError {
 export interface PaymentMethodsProps extends HTMLAttributes<HTMLDivElement>, TitleProps {
     slots?: {
         Methods?: PaymentMethodHandlers;
+        StoredMethods?: StoredPaymentMethodHandlers;
     } & TitleProps['slots'];
     UIComponentType?: UIComponentType;
     active?: boolean;

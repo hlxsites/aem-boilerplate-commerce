@@ -173,7 +173,8 @@ export default async function decorate(block) {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
-      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
+      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD
+        || code === paymentsApi.PaymentMethodCode.VAULT) {
         const success = await trySubmitPaymentServicesCreditCard();
         if (!success) {
           return;
@@ -331,8 +332,11 @@ export default async function decorate(block) {
   }
 
   function handleCheckoutValues(payload) {
-    const { isBillToShipping } = payload;
-    $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    const { isBillToShipping, selectedPaymentMethod } = payload;
+    const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
+
+    $billToShipping.style.display = isStoredPaymentMethodSelected ? 'none' : 'block';
+    $billingForm.style.display = (isBillToShipping || isStoredPaymentMethodSelected) ? 'none' : 'block';
   }
 
   async function handleOrderPlaced(orderData) {
