@@ -332,8 +332,11 @@ export default async function decorate(block) {
   }
 
   function handleCheckoutValues(payload) {
-    const { isBillToShipping } = payload;
-    $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    const { isBillToShipping, selectedPaymentMethod } = payload;
+    const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
+
+    $billToShipping.style.display = isStoredPaymentMethodSelected ? 'none' : 'block';
+    $billingForm.style.display = (isBillToShipping || isStoredPaymentMethodSelected) ? 'none' : 'block';
   }
 
   async function handleOrderPlaced(orderData) {
