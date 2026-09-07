@@ -18,4 +18,5 @@ export * from './CreditCard/CreditCard';
 export * from './ApplePay/ApplePay';
 export * from './GooglePay/GooglePay';
 export * from './PayPalButtons/PayPalButtons';
+export * from './VaultedCreditCard/VaultedCreditCard';
 //# sourceMappingURL=index.d.ts.map
