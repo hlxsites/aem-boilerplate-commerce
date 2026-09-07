@@ -370,6 +370,9 @@ export const renderPaymentMethods = async (container) => renderContainer(
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
         },
+        ["checkmo"]: {
+          enabled: false,
+        },
       },
     },
   })(container),
