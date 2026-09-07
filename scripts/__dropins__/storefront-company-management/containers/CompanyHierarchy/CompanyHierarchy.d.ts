@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 import { CompanyHierarchyProps } from '../../types';
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 export declare const CompanyHierarchy: Container<CompanyHierarchyProps>;

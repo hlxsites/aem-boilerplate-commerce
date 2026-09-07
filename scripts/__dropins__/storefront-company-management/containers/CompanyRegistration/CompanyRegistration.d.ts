@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { CompanyFormSlots } from '../../types/form.types';
 import { Company } from '../../data/models/company';
 export interface CompanyRegistrationProps {
