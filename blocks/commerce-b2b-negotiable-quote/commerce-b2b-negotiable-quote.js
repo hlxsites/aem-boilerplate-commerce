@@ -243,16 +243,24 @@ export default async function decorate(block) {
             if (!quoteData.canSendForReview) return;
 
             if (quoteData.canSendForReview) {
-              // The quote stores a copy of the address rather than a reference, so
-              // the container's own report can only be recognised by comparing the
-              // address itself.
+              // The quote stores a copy of the address, so its `uid` matches
+              // nothing in the address book. `companyAddressId` and
+              // `customerAddressUid` say which saved address the copy came from.
               const savedAddress = quoteData.shippingAddresses?.[0];
-              const isSameAsSaved = (address) => Boolean(
-                savedAddress
-                && address?.postcode === savedAddress.postcode
-                && address?.city === savedAddress.city
-                && String(address?.street ?? '') === String(savedAddress.street ?? ''),
-              );
+              const savedAddressRef = savedAddress?.companyAddressId
+                ?? savedAddress?.customerAddressUid;
+              const refOf = (address) => address?.companyAddressId ?? address?.uid;
+              const isSameAsSaved = (address) => {
+                if (savedAddressRef) return refOf(address) === savedAddressRef;
+                // A drop-in build without those references leaves comparing the
+                // address itself as the only way to recognise the saved one.
+                return Boolean(
+                  savedAddress
+                  && address?.postcode === savedAddress.postcode
+                  && address?.city === savedAddress.city
+                  && String(address?.street ?? '') === String(savedAddress.street ?? ''),
+                );
+              };
 
               accountRenderer.render(Addresses, {
                 b2bEnabled: isB2BEnabled,
@@ -261,7 +269,9 @@ export default async function decorate(block) {
                 selectable: true,
                 className: 'negotiable-quote__shipping-information-addresses',
                 selectShipping: true,
-                defaultSelectAddressId: 0,
+                // Point the list at the address the quote holds. `0` says there
+                // is nothing to restore, and asks for the new-address form.
+                defaultSelectAddressId: savedAddressRef ?? 0,
                 onAddressData: (params) => {
                   const { data, isDataValid: isValid } = params;
                   // A company address arrives as `companyAddressId`, because the

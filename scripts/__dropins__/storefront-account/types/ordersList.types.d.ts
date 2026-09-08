@@ -14,10 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { HTMLAttributes } from 'preact/compat';
 import { OrderDetails, OrderItem, ShipmentsTracingModel } from '../data/models';
-import { ImageProps } from '@dropins/tools/components';
+import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
 import { InLineAlertProps } from './notification.types';
 export interface OrdersListActionContext {
     orderHistoryListItem: OrderDetails;

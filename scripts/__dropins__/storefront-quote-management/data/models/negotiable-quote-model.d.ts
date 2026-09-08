@@ -8,9 +8,19 @@
  *******************************************************************/
 export interface ShippingAddress {
     /**
-     * The unique string identifier of the address
+     * The unique string identifier of the address. This identifies the quote's
+     * own copy of the address, not the address it was copied from.
      */
     uid?: string;
+    /**
+     * The address in the customer's address book this one was copied from, when
+     * there is one.
+     */
+    customerAddressUid?: string;
+    /**
+     * The company address book entry this one was copied from, when there is one.
+     */
+    companyAddressId?: string;
     firstname: string;
     lastname: string;
     company?: string;
