@@ -581,8 +581,13 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
 
     const cartShippingAddress = getCartAddress(data, 'shipping');
 
+    // A company address reaches the cart without a numeric id, because it is set
+    // by company_address_id rather than as a customer address. Falling back to 0
+    // there would tell the container no address is selected and open the
+    // new-address form, so an unidentifiable address is left undefined and the
+    // container preselects the default instead.
     const shippingAddressId = cartShippingAddress
-      ? cartShippingAddress?.id ?? 0
+      ? cartShippingAddress?.id ?? cartShippingAddress?.customerAddressUid
       : undefined;
 
     const shippingAddressCache = sessionStorage.getItem(SHIPPING_ADDRESS_DATA_KEY);
@@ -657,8 +662,13 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
 
     const cartBillingAddress = getCartAddress(data, 'billing');
 
+    // A company address reaches the cart without a numeric id, because it is set
+    // by company_address_id rather than as a customer address. Falling back to 0
+    // there would tell the container no address is selected and open the
+    // new-address form, so an unidentifiable address is left undefined and the
+    // container preselects the default instead.
     const billingAddressId = cartBillingAddress
-      ? cartBillingAddress?.id ?? 0
+      ? cartBillingAddress?.id ?? cartBillingAddress?.customerAddressUid
       : undefined;
 
     const billingAddressCache = sessionStorage.getItem(BILLING_ADDRESS_DATA_KEY);

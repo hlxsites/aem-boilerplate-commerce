@@ -160,9 +160,24 @@ export default async function decorate(block) {
             size: 'large',
           })(progressSpinner);
 
+          // The container reports a selection as soon as it renders, before the
+          // customer touches anything, and that report is whatever it preselected
+          // rather than what the template holds. Writing it back would replace the
+          // saved address on every page load. A real click always raises a change
+          // event on the radio first, so this listener tells the two apart.
+          let customerPickedAddress = false;
+          shippingInformation.addEventListener('change', (event) => {
+            if (event.target?.name === 'selectedShippingAddress') {
+              customerPickedAddress = true;
+            }
+          }, true);
+
           ctx.onChange((next) => {
             // Remove existing content from the shipping information container
             shippingInformation.innerHTML = '';
+            // Every re-render brings a fresh automatic report, so the flag has to
+            // start over with it.
+            customerPickedAddress = false;
 
             const { templateData } = next;
 
@@ -171,6 +186,17 @@ export default async function decorate(block) {
             if (!templateData.canSendForReview) return;
 
             if (templateData.canSendForReview) {
+              // The template stores a copy of the address rather than a reference, so
+              // the container's own report can only be recognised by comparing the
+              // address itself.
+              const savedAddress = templateData.shippingAddresses?.[0];
+              const isSameAsSaved = (address) => Boolean(
+                savedAddress
+                && address?.postcode === savedAddress.postcode
+                && address?.city === savedAddress.city
+                && String(address?.street ?? '') === String(savedAddress.street ?? ''),
+              );
+
               accountRenderer.render(Addresses, {
                 b2bEnabled: isB2BEnabled,
                 minifiedView: false,
@@ -183,18 +209,29 @@ export default async function decorate(block) {
                 showBillingCheckBox: false,
                 onAddressData: (params) => {
                   const { data, isDataValid: isValid } = params;
-                  const addressUid = data?.uid;
+                  // A company address arrives as `companyAddressId`, because the
+                  // container moves the identifier there for the B2B flow and
+                  // leaves `uid` empty. A personal address arrives as `uid`. Once
+                  // the company address book is on, the backend accepts only the
+                  // company reference and rejects a customer address outright.
+                  const companyAddressId = data?.companyAddressId;
+                  const customerAddressUid = data?.uid;
+                  const addressRef = companyAddressId
+                    ? { companyAddressId }
+                    : { customerAddressUid };
+
                   if (!isValid) return;
-                  if (!addressUid) return;
+                  if (!companyAddressId && !customerAddressUid) return;
+                  if (!customerPickedAddress) return;
+                  // Nothing to write when the choice is what the template already holds.
+                  if (isSameAsSaved(data)) return;
 
                   progressSpinner.removeAttribute('hidden');
                   shippingInformation.setAttribute('hidden', true);
 
                   addQuoteTemplateShippingAddress({
                     templateId: quoteTemplateId,
-                    shippingAddress: {
-                      customerAddressUid: addressUid,
-                    },
+                    shippingAddress: addressRef,
                   }).finally(() => {
                     progressSpinner.setAttribute('hidden', true);
                     shippingInformation.removeAttribute('hidden');
