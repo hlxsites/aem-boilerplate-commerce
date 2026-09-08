@@ -40,8 +40,12 @@ export default async function decorate(block) {
     const index = await fetchIndex('enrichment/enrichment');
     const matchingFragments = index.data
       .filter((fragment) => Object.keys(filters).every((filterKey) => {
-        const values = JSON.parse(fragment[filterKey]);
-        return values.includes(filters[filterKey]);
+        const values = fragment[filterKey];
+        // An untagged position means "no restriction", so it matches any requested position.
+        if (filterKey === 'positions' && values.length === 0) return true;
+        // Comma-separated metadata values (e.g. "apparel, bags") aren't trimmed by the
+        // query index, so compare loosely rather than requiring an exact string match.
+        return values.some((value) => value.trim() === filters[filterKey]);
       }))
       .map((fragment) => fragment.path);
 
