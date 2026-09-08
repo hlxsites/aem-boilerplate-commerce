@@ -704,7 +704,8 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       selectable: true,
       selectBilling: true,
       showBillingCheckBox: false,
-      showSaveCheckBox: false,
+      // The drop-in hides this itself for a company running the address book.
+      showSaveCheckBox: true,
       showShippingCheckBox: false,
       hideActionFormButtons: true,
       title: placeholders?.Checkout?.Addresses?.billingAddressTitle,

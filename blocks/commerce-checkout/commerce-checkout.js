@@ -64,7 +64,7 @@ import {
 import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/commerce.js';
 
 // Initializers
-import '../../scripts/initializers/account.js';
+import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
@@ -84,6 +84,9 @@ function redirectToCartIfEmpty(cartData) {
 
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  // Memoized per page load and already resolved by the checkout initializer, so
+  // this awaits nothing in practice.
+  const isAddressBookEnabled = isB2BEnabled && (await isCompanyAddressBookEnabled());
   const permissions = events.lastPayload('auth/permissions');
 
   let b2bPoApi = null;
@@ -272,10 +275,10 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    // Hidden for every B2B customer — wider than the isBillToShipping default in
-    // scripts/initializers/checkout.js on purpose: B2B picks billing from its own
-    // address list, so the checkbox has nothing to do here.
-    renderBillToShippingAddress($billToShipping, !isB2BEnabled),
+    // Hidden only for a company running the address book, which picks billing
+    // from its own address list. B2C customers and companies without the address
+    // book keep the checkbox.
+    renderBillToShippingAddress($billToShipping, !isAddressBookEnabled),
 
     renderShippingMethods($delivery),
 
