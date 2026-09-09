@@ -1,5 +1,7 @@
 name: Cypress E2E ACO Tests
-on: push
+# TEMP(address-book): was "on: push" — muted while the address-book login failure is being
+# TEMP(address-book): diagnosed, so only the B2B SaaS address-book group runs. Restore before merging.
+on: workflow_dispatch
 jobs:
   cypress-aco-groups:
     # If you want this job to run on your fork, remove the below "if" line.
