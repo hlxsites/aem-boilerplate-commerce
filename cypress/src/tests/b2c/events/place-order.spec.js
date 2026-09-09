@@ -1,8 +1,4 @@
 import {
-import { withConsent } from "../../../support/consent";
-
-withConsent();
-
   checkTermsAndConditions,
   placeOrder,
   setGuestEmail,
@@ -10,6 +6,9 @@ withConsent();
 } from "../../../actions";
 import { expectsEventWithContext } from "../../../assertions";
 import { customerShippingAddress, products } from "../../../fixtures";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
 
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/place-order.md
