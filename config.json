@@ -7,18 +7,23 @@
       "adobe-commerce-optimizer": true,
       "commerce-companies-enabled": true,
       "commerce-b2b-enabled": true,
+      "commerce-assets-enabled": false,
       "headers": {
+        "all": {
+          "Store": "default"
+        },
         "cs": {
           "content-type": "application/json",
           "AC-View-Id": "2a37823a-4b91-456a-b06c-fb6355163525",
-          "AC-Environment-Id": "A3vbMrxygX5kizbBTVYbfU"
+          "AC-Environment-Id": "A3vbMrxygX5kizbBTVYbfU",
+          "AC-Source-Locale": "default"
         }
       },
       "analytics": {
         "view-id": "2a37823a-4b91-456a-b06c-fb6355163525",
         "environment": "Testing",
         "base-currency-code": "USD",
-        "locale": "en-US",
+        "locale": "default",
         "store-url": "https://slowhorses-regression-test--aem-boilerplate-commerce--hlxsites.aem.live/",
         "environment-id": "A3vbMrxygX5kizbBTVYbfU"
       }
