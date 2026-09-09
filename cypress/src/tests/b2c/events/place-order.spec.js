@@ -1,4 +1,8 @@
 import {
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
   checkTermsAndConditions,
   placeOrder,
   setGuestEmail,

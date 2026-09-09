@@ -1,3 +1,7 @@
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/search-product-click.md
  *
