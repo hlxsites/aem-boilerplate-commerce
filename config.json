@@ -24,7 +24,7 @@
         "environment": "Testing",
         "base-currency-code": "USD",
         "locale": "default",
-        "store-url": "https://slowhorses-regression-test--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-url": "https://slow-horses-regression-test--aem-boilerplate-commerce--hlxsites.aem.live/",
         "environment-id": "A3vbMrxygX5kizbBTVYbfU"
       }
     }
