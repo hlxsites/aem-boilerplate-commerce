@@ -173,10 +173,11 @@ export default async function initializeDropins() {
 
     events.on('aem/lcp', async () => {
       // Recaptcha
+      const isB2BEnabled = getConfigValue('commerce-b2b-enabled') === true;
       await import('@dropins/tools/recaptcha.js').then((recaptcha) => {
         recaptcha.setEndpoint(CORE_FETCH_GRAPHQL);
         recaptcha.enableLogger(true);
-        return recaptcha.setConfig();
+        return recaptcha.setConfig([], { b2bEnabled: isB2BEnabled });
       });
     }, { eager: true });
   };

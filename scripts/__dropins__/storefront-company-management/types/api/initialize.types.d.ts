@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Lang } from '@dropins/tools/i18n';
+import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
 export interface CompanyDropinConfig {
     langDefinitions?: Lang;
     models?: Record<string, any>;

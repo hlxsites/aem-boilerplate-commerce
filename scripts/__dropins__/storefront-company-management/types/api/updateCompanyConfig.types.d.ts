@@ -14,9 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export interface updateCompanyResponse {
+export interface updateCompanyConfigResponse {
     data: {
-        updateCompany: {
+        updateCompanyConfig: {
             company: {
                 id: string;
                 name: string;
@@ -54,23 +54,7 @@ export interface updateCompanyResponse {
         message: string;
     }[];
 }
-export type UpdateCompanyDto = Partial<{
-    name: string;
-    email: string;
-    legalName: string;
-    vatTaxId: string;
-    resellerId: string;
-    legalAddress: {
-        street: string[] | string;
-        street2?: string;
-        city: string;
-        region?: {
-            region: string;
-            regionCode: string;
-        } | string;
-        regionCode?: string;
-        countryCode: string;
-        postcode: string;
-        telephone?: string;
-    };
+export type UpdateCompanyConfigDto = Partial<{
+    addressBookEnabled: boolean;
+    customShippingAddressEnabled: boolean;
 }>;

@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,15 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-export interface RolesAndPermissionsProps {
-    /** Additional CSS classes to apply to the container for custom styling */
-    className?: string;
-    /**
-     * When true, displays the header section with title.
-     * Set to false when embedding within a layout that provides its own header.
-     * @default false
-     */
-    withHeader?: boolean;
-}
-export declare const RolesAndPermissions: Container<RolesAndPermissionsProps>;
+export declare const setReCaptchaToken: () => Promise<void>;
