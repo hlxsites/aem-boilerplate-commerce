@@ -7,7 +7,6 @@
       "adobe-commerce-optimizer": true,
       "commerce-companies-enabled": true,
       "commerce-b2b-enabled": true,
-      "commerce-assets-enabled": false,
       "headers": {
         "cs": {
           "content-type": "application/json",
