@@ -14,15 +14,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-export interface RolesAndPermissionsProps {
-    /** Additional CSS classes to apply to the container for custom styling */
-    className?: string;
-    /**
-     * When true, displays the header section with title.
-     * Set to false when embedding within a layout that provides its own header.
-     * @default false
-     */
-    withHeader?: boolean;
+import { FunctionComponent } from 'preact';
+export type CompanyAddressBookField = 'addressBookEnabled' | 'customShippingAddressEnabled';
+interface CompanyAddressBookFieldsProps {
+    loading?: boolean;
+    value: {
+        addressBookEnabled: boolean;
+        customShippingAddressEnabled: boolean;
+    };
+    onChange: (field: CompanyAddressBookField, value: boolean) => void;
 }
-export declare const RolesAndPermissions: Container<RolesAndPermissionsProps>;
+export declare const CompanyAddressBookFields: FunctionComponent<CompanyAddressBookFieldsProps>;
+export default CompanyAddressBookFields;

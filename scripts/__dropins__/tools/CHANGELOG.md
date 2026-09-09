@@ -1,5 +1,13 @@
 # @adobe-commerce/elsie
 
+## 2.0.2-alpha-20260818101543
+
+### Patch Changes
+
+- 383aafe: reCAPTCHA form types are now configurable via feature flag. COMPANY_CREATE is no
+  longer in the default form-type map. B2B storefronts pass `{ b2bEnabled: true }`
+  to `setConfig()` to include it in the configuration query.
+
 ## 2.0.1
 
 ### Patch Changes
@@ -19,6 +27,7 @@
   ## What changed
 
   ### TypeScript 4.7 → 6.0
+
   - `tsconfig-base.json` updated with correct TS 6 defaults. Two new-default opt-outs are deferred as tech debt: `exactOptionalPropertyTypes` and `verbatimModuleSyntax`.
   - `moduleResolution` changed from `"nodenext"` to `"bundler"` across all packages — the correct pairing for `module: "esnext"` in a Vite monorepo. Only `packages/elsie` keeps `"NodeNext"` (paired with `module: "NodeNext"` for its dual CJS/ESM output).
   - `baseUrl` removed from all tsconfigs (deprecated in TS 6; `paths` resolves relative to the tsconfig file directly).
@@ -28,6 +37,7 @@
   - `noUncheckedIndexedAccess` enabled — violations were few enough to fix in source.
 
   ### ESLint 8 → 9 (flat config)
+
   - `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin` (v5) removed; replaced by the unified `typescript-eslint` v8 package.
   - `eslint-config-preact` bumped to `^2.0.0` (ESLint 9 support).
   - `eslint-config-prettier` bumped to `^10.0.0`.
@@ -148,6 +158,7 @@
   ## What changed
 
   ### TypeScript 4.7 → 6.0
+
   - `tsconfig-base.json` updated with correct TS 6 defaults. Two new-default opt-outs are deferred as tech debt: `exactOptionalPropertyTypes` and `verbatimModuleSyntax`.
   - `moduleResolution` changed from `"nodenext"` to `"bundler"` across all packages — the correct pairing for `module: "esnext"` in a Vite monorepo. Only `packages/elsie` keeps `"NodeNext"` (paired with `module: "NodeNext"` for its dual CJS/ESM output).
   - `baseUrl` removed from all tsconfigs (deprecated in TS 6; `paths` resolves relative to the tsconfig file directly).
@@ -157,6 +168,7 @@
   - `noUncheckedIndexedAccess` enabled — violations were few enough to fix in source.
 
   ### ESLint 8 → 9 (flat config)
+
   - `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin` (v5) removed; replaced by the unified `typescript-eslint` v8 package.
   - `eslint-config-preact` bumped to `^2.0.0` (ESLint 9 support).
   - `eslint-config-prettier` bumped to `^10.0.0`.

@@ -1,5 +1,27 @@
 # @dropins/storefront-company-management
 
+## 1.5.0-beta.0
+
+### Minor Changes
+
+- cd135f8: Added customer-facing company address book configuration on the
+  Company Profile page. Company Administrators can now view and toggle "Enable
+  Company Address Book" and "Allow Custom Company Address" via a new
+  `updateCompanyConfig` mutation, matching the equivalent admin-panel settings.
+  The current configuration state is also shown as static company information
+  when the page is in read-only mode. Existing Company Profile functionality and
+  permissions are unchanged.
+
+### Patch Changes
+
+- b383f29: Fix company registration reCAPTCHA integration.
+
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA
+  initialization via `@adobe-commerce/recaptcha@1.3.0-alpha-20260818101543`
+  (includes `COMPANY_CREATE` in the default form map), and updates test
+  setup/import boundaries to avoid unintended recaptcha module side effects in
+  unrelated test suites.
+
 ## 1.4.1
 
 ### Patch Changes
@@ -10,14 +32,23 @@
 
 ### Minor Changes
 
-- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying
+  parent-child relationships and drag-and-drop support for structure management.
+  Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning
+  (assignChildCompany), and unassigning (unassignChildCompany) child companies.
+  Integrated permission checks with visual distinction between root and child
+  companies, expand/collapse node support, and loading/error state handling.
 
 ### Patch Changes
 
 - 36eab4d: Bump SDK stable versions
 - a76b2c6: Fix company registration reCAPTCHA integration.
 
-  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA
+  initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655`
+  (includes `COMPANY_CREATE` in the default form map), and updates test
+  setup/import boundaries to avoid unintended recaptcha module side effects in
+  unrelated test suites.
 
 ## 1.4.0-beta.1
 
@@ -29,20 +60,37 @@
 
 ### Minor Changes
 
-- b5b7bbf: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+- b5b7bbf: Implemented company hierarchy functionality with tree view displaying
+  parent-child relationships and drag-and-drop support for structure management.
+  Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning
+  (assignChildCompany), and unassigning (unassignChildCompany) child companies.
+  Integrated permission checks with visual distinction between root and child
+  companies, expand/collapse node support, and loading/error state handling.
 
 ### Patch Changes
 
 - a76b2c6: Fix company registration reCAPTCHA integration.
 
-  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655` (includes `COMPANY_CREATE` in the default form map), and updates test setup/import boundaries to avoid unintended recaptcha module side effects in unrelated test suites.
+  Adds `X-ReCaptcha` on `createCompany`, wires company form reCAPTCHA
+  initialization via `@adobe-commerce/recaptcha@1.2.0-alpha-20260527145655`
+  (includes `COMPANY_CREATE` in the default form map), and updates test
+  setup/import boundaries to avoid unintended recaptcha module side effects in
+  unrelated test suites.
 
 ## 1.3.0
 
 ### Minor Changes
 
-- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
-- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+- 812978b: Implemented company hierarchy functionality with tree view displaying
+  parent-child relationships and drag-and-drop support for structure management.
+  Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning
+  (assignChildCompany), and unassigning (unassignChildCompany) child companies.
+  Integrated permission checks with visual distinction between root and child
+  companies, expand/collapse node support, and loading/error state handling.
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This
+  package targets browser environments exclusively and does not depend on a
+  specific Node.js runtime version. The package is now built and distributed
+  using Node.js 22 LTS.
 
 ### Patch Changes
 
@@ -65,28 +113,41 @@
 
 ### Minor Changes
 
-- 812978b: Implemented company hierarchy functionality with tree view displaying parent-child relationships and drag-and-drop support for structure management. Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning (assignChildCompany), and unassigning (unassignChildCompany) child companies. Integrated permission checks with visual distinction between root and child companies, expand/collapse node support, and loading/error state handling.
+- 812978b: Implemented company hierarchy functionality with tree view displaying
+  parent-child relationships and drag-and-drop support for structure management.
+  Added GraphQL APIs for retrieving hierarchy (getCompanyHierarchy), assigning
+  (assignChildCompany), and unassigning (unassignChildCompany) child companies.
+  Integrated permission checks with visual distinction between root and child
+  companies, expand/collapse node support, and loading/error state handling.
 
 ## 1.3.0-beta.0
 
 ### Minor Changes
 
-- 4f14206: Removed the `engines.node` constraint from `package.json`. This package targets browser environments exclusively and does not depend on a specific Node.js runtime version. The package is now built and distributed using Node.js 22 LTS.
+- 4f14206: Removed the `engines.node` constraint from `package.json`. This
+  package targets browser environments exclusively and does not depend on a
+  specific Node.js runtime version. The package is now built and distributed
+  using Node.js 22 LTS.
 
 ## 1.2.0
 
 ### Minor Changes
 
-- f1a97ea: fix: Adapted the initializer to be used as the same way than the other drop-ins
+- f1a97ea: fix: Adapted the initializer to be used as the same way than the
+  other drop-ins
 
 ### Patch Changes
 
 - a158c8b: fix: merge user-provided langDefinitions in Provider
 
-  The Provider now imports `config` and uses `deepmerge` to merge user-provided `langDefinitions` with the drop-in's bundled defaults before passing them to `UIProvider`. This enables label/placeholder overrides via the initializer API.
+  The Provider now imports `config` and uses `deepmerge` to merge user-provided
+  `langDefinitions` with the drop-in's bundled defaults before passing them to
+  `UIProvider`. This enables label/placeholder overrides via the initializer
+  API.
 
 - 8fa4950: Bump `@adobe-commerce/elsie` from 1.7.0 to 1.8.0
-- d04bbf6: Add Changesets-based release automation with branch-aware workflows (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
+- d04bbf6: Add Changesets-based release automation with branch-aware workflows
+  (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
 
 ## 1.2.0-beta.1
 
@@ -98,12 +159,17 @@
 
 ### Minor Changes
 
-- f1a97ea: fix: Adapted the initializer to be used as the same way than the other drop-ins
+- f1a97ea: fix: Adapted the initializer to be used as the same way than the
+  other drop-ins
 
 ### Patch Changes
 
 - a158c8b: fix: merge user-provided langDefinitions in Provider
 
-  The Provider now imports `config` and uses `deepmerge` to merge user-provided `langDefinitions` with the drop-in's bundled defaults before passing them to `UIProvider`. This enables label/placeholder overrides via the initializer API.
+  The Provider now imports `config` and uses `deepmerge` to merge user-provided
+  `langDefinitions` with the drop-in's bundled defaults before passing them to
+  `UIProvider`. This enables label/placeholder overrides via the initializer
+  API.
 
-- d04bbf6: Add Changesets-based release automation with branch-aware workflows (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
+- d04bbf6: Add Changesets-based release automation with branch-aware workflows
+  (alpha/beta/stable), PR changeset validation, and contributor helper scripts.
