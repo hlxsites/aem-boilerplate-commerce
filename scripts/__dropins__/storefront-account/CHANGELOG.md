@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 4.2.0-alpha-20260908171116
+## 4.2.0-alpha-20260909122443
 
 ### Minor Changes
 
@@ -79,6 +79,16 @@
 
 - 73ee059: Fix broken border-radius selector for "Use a different address"
   button
+- 3682976: fix(Addresses): stop preselecting an address when the caller has none
+  and selection is locked to company addresses. `defaultSelectAddressId: 0`
+  means the caller holds no address; without the lock it opens the new-address
+  form, but with the lock that branch was skipped entirely and the first card in
+  the list was highlighted instead. A negotiable quote with no shipping address
+  therefore rendered a selected address it did not hold, and the caller refused
+  to write it back, so the choice silently did nothing until the customer
+  clicked the card themselves. A locked selection now leaves the list unselected
+  and reports the selection as invalid, the same way it already did when the
+  list is empty.
 - 0fbbf64: Adds AGENTS.MD File used for guidance for AI coding agents
 - 8b9c741: fix(Addresses): restore opening the new-address form when
   `defaultSelectAddressId` is `0`. The company address book work replaced that
