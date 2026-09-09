@@ -65,7 +65,7 @@ it.skip("is sent on place order button click", { tags: "@skipSaas" }, () => {
   }).then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "place-order",
           [

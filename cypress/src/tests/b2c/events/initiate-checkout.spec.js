@@ -13,7 +13,7 @@ it("is sent on mini cart Checkout button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         const pageContextIndex = adobeDataLayer.findIndex(
           (event) => !!event?.pageContext,
         );
@@ -68,7 +68,7 @@ it("is sent on cart page Checkout button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         const pageContextIndex = adobeDataLayer.findIndex(
           (event) => !!event?.pageContext,
         );

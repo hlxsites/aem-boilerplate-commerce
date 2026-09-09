@@ -23,7 +23,7 @@ it("is sent on add to cart button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "add-to-cart",
           [

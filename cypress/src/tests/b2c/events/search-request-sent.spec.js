@@ -15,7 +15,7 @@ it("is sent on search bar view/render", { tags: "@skipSaas" }, () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "search-request-sent",
           ["pageContext", "storefrontInstanceContext", "searchInputContext"],
@@ -33,7 +33,7 @@ it(
     cy.waitForResource("commerce-events-collector.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
-        .then((adobeDataLayer) => {
+        .should((adobeDataLayer) => {
           expectsEventWithContext(
             "search-request-sent",
             ["pageContext", "storefrontInstanceContext", "searchInputContext"],

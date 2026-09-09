@@ -26,7 +26,7 @@ it("is sent on view cart button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "shopping-cart-view",
           ["pageContext", "storefrontInstanceContext", "shoppingCartContext"],

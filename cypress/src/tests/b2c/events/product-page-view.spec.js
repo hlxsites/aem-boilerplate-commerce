@@ -14,7 +14,7 @@ it("is sent on product page view/render", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "product-page-view",
           [

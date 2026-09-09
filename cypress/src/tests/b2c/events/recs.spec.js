@@ -25,7 +25,7 @@ it(
     cy.waitForResource("commerce-events-collector.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
-        .then((adobeDataLayer) => {
+        .should((adobeDataLayer) => {
           expectsEventWithContext(
             "recs-api-request-sent",
             ["pageContext", "storefrontInstanceContext"],
