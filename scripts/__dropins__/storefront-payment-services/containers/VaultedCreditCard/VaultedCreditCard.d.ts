@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,11 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PaymentMethod, ShippingMethod } from '.';
-export interface ValuesModel {
-    email: string;
-    isBillToShipping: boolean | undefined;
-    selectedPaymentMethod: PaymentMethod | null;
-    selectedPaymentMethodCode: string | null;
-    selectedShippingMethod: ShippingMethod | null;
+export interface VaultedCreditCardProps {
+    /** Vault token details. */
+    tokenDetails: string;
 }
+export declare const VaultedCreditCard: ({ tokenDetails }: VaultedCreditCardProps) => import("preact").JSX.Element;
+//# sourceMappingURL=VaultedCreditCard.d.ts.map

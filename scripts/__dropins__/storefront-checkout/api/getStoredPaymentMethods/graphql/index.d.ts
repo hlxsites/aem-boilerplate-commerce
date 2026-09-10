@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2024 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,11 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PaymentMethod, ShippingMethod } from '.';
-export interface ValuesModel {
-    email: string;
-    isBillToShipping: boolean | undefined;
-    selectedPaymentMethod: PaymentMethod | null;
-    selectedPaymentMethodCode: string | null;
-    selectedShippingMethod: ShippingMethod | null;
-}
+export * from './getStoredPaymentMethods.graphql';

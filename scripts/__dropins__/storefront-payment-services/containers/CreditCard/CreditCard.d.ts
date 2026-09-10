@@ -1,8 +1,8 @@
-import { CreditCardFormHandle } from '../../lib/creditCardForm';
+import { CreditCardFormHandle } from '../../lib/creditCard';
 import { RefObject } from 'preact/compat';
 import { default as LocalizedError } from '../../lib/localizedError';
 
-export type { CreditCardFormHandle } from '../../lib/creditCardForm';
+export type { CreditCardFormHandle } from '../../lib/creditCard';
 export declare enum CardTypes {
     Visa = "visa",
     MasterCard = "mastercard",

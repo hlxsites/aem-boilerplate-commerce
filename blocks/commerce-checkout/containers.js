@@ -45,6 +45,7 @@ import CreditCard from '@dropins/storefront-payment-services/containers/CreditCa
 import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+import VaultedCreditCard from '@dropins/storefront-payment-services/containers/VaultedCreditCard.js';
 
 // Order Dropin
 import * as orderApi from '@dropins/storefront-order/api.js';
@@ -383,6 +384,20 @@ export const renderPaymentMethods = async (
 
     return CheckoutProvider.render(PaymentMethods, {
       slots: {
+        StoredMethods: {
+          [PaymentMethodCode.VAULT]: {
+            tokenCode: PaymentMethodCode.CREDIT_CARD,
+            render: (ctx) => {
+              const $storedOption = document.createElement('div');
+
+              PaymentServices.render(VaultedCreditCard, {
+                tokenDetails: ctx.details,
+              })($storedOption);
+
+              ctx.replaceHTML($storedOption);
+            },
+          },
+        },
         Methods: {
           [PaymentMethodCode.CREDIT_CARD]: {
             render: (ctx) => {
@@ -472,9 +487,6 @@ export const renderPaymentMethods = async (
               ctx.replaceHTML(createExpressPaymentNotice('Google Pay'));
             },
             enabled: availablePaymentServicesMethods.includes(PaymentMethodCode.GOOGLE_PAY),
-          },
-          [PaymentMethodCode.VAULT]: {
-            enabled: false,
           },
           [PaymentMethodCode.FASTLANE]: {
             enabled: false,

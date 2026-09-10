@@ -1,5 +1,6 @@
 import { PaymentServicesError } from './error';
 import { RefObject } from 'preact/compat';
+import { CardType } from '@adobe-commerce/payment-services-sdk/payment';
 
 /** Global ref to the currently rendered credit card form. */
 export declare const activeCreditCardForm: RefObject<CreditCardFormHandle>;
@@ -27,4 +28,23 @@ export declare class InvalidCreditCardFormError extends PaymentServicesError {
 export declare class CreditCardFormNotRendered extends PaymentServicesError {
     constructor();
 }
-//# sourceMappingURL=creditCardForm.d.ts.map
+/**
+ * Card brand enum.
+ *
+ * Values replicate `code` fields of {@link import("@adobe-commerce/payment-services-sdk/payment").CardType}.
+ */
+export declare enum CardBrand {
+    AMEX = "amex",
+    DINERS = "diners",
+    DISCOVER = "discover",
+    ELO = "elo",
+    HIPER = "hiper",
+    JCB = "jcb",
+    MAESTRO = "maestro",
+    MASTERCARD = "mastercard",
+    VISA = "visa"
+}
+export declare namespace CardBrand {
+    const fromPaymentServicesSdkCardType: ({ code }: CardType) => CardBrand | undefined;
+}
+//# sourceMappingURL=creditCard.d.ts.map

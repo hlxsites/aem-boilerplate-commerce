@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,11 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PaymentMethod, ShippingMethod } from '.';
-export interface ValuesModel {
-    email: string;
-    isBillToShipping: boolean | undefined;
-    selectedPaymentMethod: PaymentMethod | null;
-    selectedPaymentMethodCode: string | null;
-    selectedShippingMethod: ShippingMethod | null;
-}
+export * from './VaultedCreditCardDetails';
+export { VaultedCreditCardDetails as default } from './VaultedCreditCardDetails';
+//# sourceMappingURL=index.d.ts.map

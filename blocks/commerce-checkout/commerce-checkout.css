@@ -305,3 +305,9 @@
         margin-top: 0;
     }
 }
+
+/* No billing section divisor needed when payment methods shown inside separate box */
+.checkout__payment-methods:has(.checkout-payment-methods__stored-methods) {
+    padding-bottom: 0;
+    border-bottom: none;
+}
