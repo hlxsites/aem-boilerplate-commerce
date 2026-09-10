@@ -107,6 +107,8 @@ export const authPrivacyPolicyConsentSlot = {
     link.href = PRIVACY_POLICY_PATH;
     link.target = '_blank';
     link.textContent = 'Privacy Policy';
+    link.style.textDecoration = 'underline';
+    link.style.textUnderlineOffset = '6px';
 
     wrapper.append(
       'By creating an account, you acknowledge that you have read and agree to our ',
