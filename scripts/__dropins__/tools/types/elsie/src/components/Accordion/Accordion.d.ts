@@ -9,10 +9,9 @@
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { IconNode } from '..';
-export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon' | 'title'> {
+export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon'> {
     defaultOpen?: boolean;
     actionIconPosition?: 'left' | 'right';
-    title: string | VNode<HTMLAttributes<HTMLSpanElement>>;
     ariaLabelTitle: string;
     iconOpen?: IconNode;
     iconClose?: IconNode;
@@ -23,7 +22,7 @@ export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElemen
     onStateChange?: (open: boolean) => void;
 }
 export declare const AccordionSection: FunctionComponent<AccordionSectionProps>;
-export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon' | 'title'> {
+export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon'> {
     actionIconPosition?: 'left' | 'right';
     iconOpen?: IconNode;
     iconClose?: IconNode;

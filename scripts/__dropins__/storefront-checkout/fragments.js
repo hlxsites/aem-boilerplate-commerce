@@ -151,6 +151,7 @@ const n=`
     is_virtual
     email
     total_quantity
+    has_available_free_gifts
     billing_address {
       ...BILLING_CART_ADDRESS_FRAGMENT
     }

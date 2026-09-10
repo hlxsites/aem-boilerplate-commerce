@@ -50,4 +50,3 @@ export * from './ProductItemCard';
 export * from './InputFile';
 export * from './Table';
 export * from './MultiSelect';
-export * from './LiveRegion';

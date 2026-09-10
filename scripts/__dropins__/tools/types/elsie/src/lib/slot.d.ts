@@ -52,8 +52,6 @@ interface SlotPropsComponent<T> extends Omit<HTMLAttributes<HTMLElement>, 'slot'
     slotTag?: keyof HTMLElementTagNameMap;
     contentTag?: keyof HTMLElementTagNameMap;
     children?: ComponentChildren;
-    href?: string;
-    target?: string;
 }
 export declare function Slot<T>({ name, lazy, context, slot, children, render, slotTag, contentTag, ...props }: Readonly<SlotPropsComponent<T>>): VNode<{
     ref: RefObject<HTMLElement>;

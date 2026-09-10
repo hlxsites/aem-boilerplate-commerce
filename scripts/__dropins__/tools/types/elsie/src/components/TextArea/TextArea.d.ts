@@ -7,12 +7,11 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { TextareaHTMLAttributes } from 'preact/compat';
-export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+import { HTMLAttributes } from 'preact/compat';
+export interface TextAreaProps extends HTMLAttributes<HTMLTextAreaElement> {
     id?: string;
     name?: string;
     disabled?: boolean;
     errorMessage?: string;
-    label?: string;
 }
 export declare const TextArea: FunctionComponent<TextAreaProps>;

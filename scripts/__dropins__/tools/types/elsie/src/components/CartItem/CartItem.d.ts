@@ -10,7 +10,6 @@ import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 export interface CartItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'loading'> {
     ariaLabel?: string;
-    name?: string;
     image?: VNode;
     title?: VNode;
     price?: VNode;

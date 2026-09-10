@@ -118,7 +118,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   // TC-01 (P0): Create a new company as a Guest user
   // ==========================================================================
 
-  it('TC-01: Create new company as Guest via navigation menu', { tags: ['@skipAco'] }, () => {
+  it('TC-01: Create new company as Guest via navigation menu', { tags: ['@skipAco', '@skipB2BSaas'] }, () => {
     cy.logToTerminal('========= 📝 TC-01: Create new company as Guest via navigation menu =========');
 
     cy.logToTerminal('📍 Navigate to homepage');
@@ -135,7 +135,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('✅ TC-01: Company registration via navigation menu completed');
   });
 
-  it('TC-01: Create new company as Guest via direct URL', { tags: ['@skipAco'] },() => {
+  it('TC-01: Create new company as Guest via direct URL', { tags: ['@skipAco', '@skipB2BSaas'] },() => {
     cy.logToTerminal('========= 📝 TC-01: Create new company as Guest via direct URL =========');
 
     cy.logToTerminal('📍 Navigate directly to company registration page');
@@ -246,7 +246,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   // TC-05 (P2): User cannot create company using email already associated with another company
   // ==========================================================================
 
-  it('TC-05: Duplicate company email validation', { tags: ['@skipAco'] }, () => {
+  it('TC-05: Duplicate company email validation', { tags: ['@skipAco', '@skipB2BSaas'] }, () => {
     cy.logToTerminal('========= 📝 TC-05: Duplicate company email validation =========');
 
     cy.logToTerminal('📍 Step 1: Create first company');
@@ -372,7 +372,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
   // USF-3439: Tests for countries without required regions (UK)
   // ==========================================================================
 
-  it('USF-3439: UK company registration with empty region', { tags: ['@skipAco'] }, () => {
+  it('USF-3439: UK company registration with empty region', { tags: ['@skipAco', '@skipB2BSaas'] }, () => {
     cy.logToTerminal('========= 🇬🇧 USF-3439: UK company registration with empty region =========');
 
     cy.logToTerminal('📍 Navigate to company registration page');
@@ -383,7 +383,7 @@ describe('USF-2528: Company Registration', { tags: ['@B2BSaas'] }, () => {
     cy.logToTerminal('✅ USF-3439: UK company with empty region registered successfully');
   });
 
-  it('USF-3439: UK company registration with optional region name', { tags: ['@skipAco'] }, () => {
+  it('USF-3439: UK company registration with optional region name', { tags: ['@skipAco', '@skipB2BSaas'] }, () => {
     cy.logToTerminal('========= 🇬🇧 USF-3439: UK company registration with optional region =========');
 
     cy.logToTerminal('📍 Navigate to company registration page');

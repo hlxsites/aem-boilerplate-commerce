@@ -13,6 +13,5 @@ export interface ActionButtonProps extends Omit<HTMLAttributes<HTMLButtonElement
     icon?: VNode<HTMLAttributes<SVGSVGElement>>;
     active?: boolean;
     disabled?: boolean;
-    value?: string;
 }
 export declare const ActionButton: FunctionComponent<ActionButtonProps>;

@@ -7,10 +7,9 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { InputHTMLAttributes } from 'preact/compat';
-export interface IncrementerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+import { HTMLAttributes } from 'preact/compat';
+export interface IncrementerProps extends Omit<HTMLAttributes<HTMLInputElement>, 'size'> {
     name?: string;
-    label?: string;
     size?: 'medium' | 'large';
     onValue?: (value: any) => void;
     onUpdateError?: (error: Error) => void;
