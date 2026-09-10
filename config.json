@@ -1,0 +1,32 @@
+
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://master-7rqtwti-hgaxdx6zggdbi.us-4.magentosite.cloud/graphql",
+      "commerce-endpoint": "https://na1.api.commerce.adobe.com/A3vbMrxygX5kizbBTVYbfU/graphql",
+      "adobe-commerce-optimizer": true,
+      "commerce-companies-enabled": true,
+      "commerce-b2b-enabled": true,
+      "commerce-assets-enabled": false,
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "content-type": "application/json",
+          "AC-View-Id": "2a37823a-4b91-456a-b06c-fb6355163525",
+          "AC-Environment-Id": "A3vbMrxygX5kizbBTVYbfU",
+          "AC-Source-Locale": "default"
+        }
+      },
+      "analytics": {
+        "view-id": "2a37823a-4b91-456a-b06c-fb6355163525",
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "locale": "default",
+        "store-url": "https://slow-horses-regression-test--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "A3vbMrxygX5kizbBTVYbfU"
+      }
+    }
+  }
+}

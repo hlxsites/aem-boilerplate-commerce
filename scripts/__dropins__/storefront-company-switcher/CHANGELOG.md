@@ -1,5 +1,11 @@
 # @dropins/storefront-company-switcher
 
+## 1.3.0-alpha-20260902140953
+
+### Minor Changes
+
+- 6127763: Wire Adobe Commerce catalog-view context into the company-switcher dropin. On initialize and company switch, the dropin fetches the company-scoped catalog view and stamps `AC-View-Id` and `AC-Catalog-View-Access-Token` onto shared GraphQL requests, resetting to the configured default view on clear/logout.
+
 ## 1.2.1
 
 ### Patch Changes

@@ -1,5 +1,5 @@
 import { TreeItem } from '../components/Tree/Tree';
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 export interface HierarchyActionsContext {
     expandAll: () => void;
     collapseAll: () => void;
