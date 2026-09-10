@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './deletePaymentToken';
-//# sourceMappingURL=index.d.ts.map

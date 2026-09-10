@@ -1,5 +1,36 @@
 # @dropins/storefront-order
 
+## 4.0.1
+
+### Patch Changes
+
+- 1df0e9c: Fix incorrect and missing `autocomplete` attributes on the order search form (WCAG 1.3.5).
+
+  The email field on the guest order search form used an invalid `autocomplete` value (`username`), and the last name field had no `autocomplete` attribute at all. They now use the correct `email` and `family-name` values respectively.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 405a09d: Fix visual heading text not marked as heading across order status, order details, shipping, returns and product list sections
+- aea506c: Bump SDK stable versions
+
+## 4.0.1-beta.1
+
+### Patch Changes
+
+- aea506c: Bump SDK stable versions
+
+## 4.0.1-beta.0
+
+### Patch Changes
+
+- 1df0e9c: Fix incorrect and missing `autocomplete` attributes on the order search form (WCAG 1.3.5).
+
+  The email field on the guest order search form used an invalid `autocomplete` value (`username`), and the last name field had no `autocomplete` attribute at all. They now use the correct `email` and `family-name` values respectively.
+
+  This helps browsers and assistive technology correctly identify the purpose of each field, making autofill and form-filling easier for everyone, including people using screen readers or who have difficulty typing.
+
+- 405a09d: Fix visual heading text not marked as heading across order status, order details, shipping, returns and product list sections
+
 ## 4.0.0
 
 ### Major Changes

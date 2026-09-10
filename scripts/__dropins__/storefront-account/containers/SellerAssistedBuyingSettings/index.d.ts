@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './SellerAssistedBuyingSettings';
 export { SellerAssistedBuyingSettings as default } from './SellerAssistedBuyingSettings';
-//# sourceMappingURL=index.d.ts.map

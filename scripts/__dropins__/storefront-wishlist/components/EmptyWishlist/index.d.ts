@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './EmptyWishlist';
 export { EmptyWishlist as default } from './EmptyWishlist';
-//# sourceMappingURL=index.d.ts.map

@@ -16,4 +16,3 @@
  *******************************************************************/
 export declare function createFragment(html: string): DocumentFragment;
 export declare function createScopedSelector(fragment: DocumentFragment): (selector: string) => HTMLElement | null;
-//# sourceMappingURL=fragments.d.ts.map

@@ -1,8 +1,15 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { Lang } from '../i18n';
 import { ComponentChildren, RefObject, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
-
 type MutateElement = (elem: HTMLElement) => void;
 interface State {
     get: (key: string) => void;
@@ -52,4 +59,3 @@ export declare function Slot<T>({ name, lazy, context, slot, children, render, s
     [key: string]: any;
 }>;
 export {};
-//# sourceMappingURL=slot.d.ts.map

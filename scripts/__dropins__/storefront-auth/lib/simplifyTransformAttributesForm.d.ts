@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const simplifyTransformAttributesForm: (defaultSignUpFields: any) => import('../data/models').AttributesFormModel[];
-//# sourceMappingURL=simplifyTransformAttributesForm.d.ts.map
+export declare const simplifyTransformAttributesForm: (defaultSignUpFields: any) => import("../data/models").AttributesFormModel[];

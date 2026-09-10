@@ -1,1 +1,1 @@
-export * from './types/event-bus/src/index'
+export * from './types/event-bus/src/index';

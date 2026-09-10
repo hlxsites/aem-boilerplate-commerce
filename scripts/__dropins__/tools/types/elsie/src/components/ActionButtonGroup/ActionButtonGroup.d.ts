@@ -1,7 +1,14 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
+import { ActionButtonProps } from '../ActionButton';
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { ActionButtonProps } from '../ActionButton';
-
 export interface ActionButtonGroupOption {
     value: string | null;
     text: string;
@@ -17,4 +24,3 @@ export interface ActionButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
     handleSelect?(value: string): void;
 }
 export declare const ActionButtonGroup: FunctionComponent<ActionButtonGroupProps>;
-//# sourceMappingURL=ActionButtonGroup.d.ts.map

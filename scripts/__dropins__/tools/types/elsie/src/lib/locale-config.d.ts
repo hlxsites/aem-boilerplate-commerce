@@ -7,4 +7,3 @@
  * accompanying it.
  *******************************************************************/
 export declare const setGlobalLocale: (value: typeof this._locale) => void, getGlobalLocale: () => string | undefined;
-//# sourceMappingURL=locale-config.d.ts.map

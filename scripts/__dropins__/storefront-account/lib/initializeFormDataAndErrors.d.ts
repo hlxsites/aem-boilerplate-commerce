@@ -23,4 +23,3 @@ declare const _default: (fieldsConfig: Array<{
     errorList: Record<string, string>;
 };
 export default _default;
-//# sourceMappingURL=initializeFormDataAndErrors.d.ts.map

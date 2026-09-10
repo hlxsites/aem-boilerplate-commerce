@@ -44,4 +44,3 @@
  * // Output: "Invalid Date"
  */
 export declare const formatDateToLocale: (date: string, locale?: string, options?: Intl.DateTimeFormatOptions) => string;
-//# sourceMappingURL=formatDateToLocale.d.ts.map

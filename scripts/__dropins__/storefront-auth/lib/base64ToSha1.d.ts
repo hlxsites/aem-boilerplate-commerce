@@ -20,4 +20,3 @@
  * @returns A promise that resolves to the SHA1 hash as a hexadecimal string, or empty string if input is undefined/null/empty or if conversion fails
  */
 export declare const base64ToSha1: (base64String?: string | null) => Promise<string>;
-//# sourceMappingURL=base64ToSha1.d.ts.map

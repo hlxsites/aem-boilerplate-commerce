@@ -139,6 +139,28 @@
     width: 100%;
 }
 
+.mini-pdp__update-button-wrapper {
+    position: relative;
+}
+
+.mini-pdp__update-button-wrapper--busy .mini-pdp__update-button {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.mini-pdp__update-spinner-icon {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% - (var(--size) / 2));
+    margin: 0 auto;
+    z-index: 1;
+}
+
+.mini-pdp__update-button button.dropin-button.dropin-button--primary--disabled {
+    color: var(--color-neutral-800);
+}
+
 @media (min-width: 768px) {
     #mini-pdp-modal .mini-pdp__wrapper {
         grid-template-columns: repeat(var(--grid-2-columns), 1fr);

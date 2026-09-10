@@ -1,5 +1,19 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { MoneyProps, TaxTypes } from '../../../types';
-
 export declare const GiftWrapping: ({ salesGiftWrapping, giftWrappingPrice, giftWrappingPriceInclTax, giftWrappingTitle, giftWrappingExclTaxText, giftWrappingInclTaxText, }: {
     salesGiftWrapping?: TaxTypes;
     giftWrappingPrice: MoneyProps;
@@ -8,4 +22,3 @@ export declare const GiftWrapping: ({ salesGiftWrapping, giftWrappingPrice, gift
     giftWrappingExclTaxText: string;
     giftWrappingInclTaxText: string;
 }) => import("preact").JSX.Element | null;
-//# sourceMappingURL=GiftWrapping.d.ts.map

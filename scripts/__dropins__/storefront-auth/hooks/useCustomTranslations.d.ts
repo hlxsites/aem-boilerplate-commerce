@@ -21,4 +21,3 @@
  * @returns A complete set of translations, including dynamically updated values for null error keys.
  */
 export declare const useCustomTranslations: (defaultKeys: Record<string, string>) => Record<string, string>;
-//# sourceMappingURL=useCustomTranslations.d.ts.map

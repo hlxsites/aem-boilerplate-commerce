@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const authenticateCustomer: (authenticated?: boolean) => Promise<void>;
-//# sourceMappingURL=authenticateCustomer.d.ts.map

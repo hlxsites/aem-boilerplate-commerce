@@ -68,12 +68,16 @@ export interface Option {
     multiple: boolean;
     items: OptionValue[];
 }
-interface OptionValue {
+export interface OptionValue {
     id: string;
     label: string;
     inStock: boolean;
     value: string;
     selected: boolean;
+    /** Default quantity from Catalog Service for bundle option values. */
+    quantity?: number;
+    /** When true, shoppers may change this bundle option value quantity. */
+    canEditQuantity?: boolean;
     product?: any;
 }
 interface Attribute {

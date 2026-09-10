@@ -1,6 +1,24 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { Wishlist } from '../../data/models';
-
-export declare const initializeWishlist: () => Promise<Wishlist | null>;
-export declare function getDefaultWishlist(): Promise<Wishlist | null>;
-export declare function getGuestWishlist(): Promise<{} | Wishlist>;
-//# sourceMappingURL=initializeWishlist.d.ts.map
+export interface InitializeWishlistOptions {
+    pageSize?: number;
+    currentPage?: number;
+}
+export declare const initializeWishlist: (options?: InitializeWishlistOptions) => Promise<Wishlist | null>;
+export declare function getDefaultWishlist(options?: InitializeWishlistOptions): Promise<any>;
+export declare function getGuestWishlist(): Promise<any>;

@@ -31,4 +31,3 @@ export interface OrderCancellationReason {
     description: string;
 }
 export {};
-//# sourceMappingURL=store-config.d.ts.map

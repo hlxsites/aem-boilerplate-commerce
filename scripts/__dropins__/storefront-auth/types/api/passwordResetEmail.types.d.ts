@@ -22,4 +22,3 @@ export interface PasswordResetEmailResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=passwordResetEmail.types.d.ts.map

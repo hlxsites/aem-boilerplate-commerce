@@ -16,4 +16,3 @@
  *******************************************************************/
 export declare function createMetaTag(property: string, content: string, type: string): void;
 export declare function setMetaTags(dropin: string): void;
-//# sourceMappingURL=meta.d.ts.map

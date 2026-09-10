@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const DELETE_PAYMENT_TOKEN = "\n  mutation deletePaymentToken($public_hash: String!) {\n    deletePaymentToken(public_hash: $public_hash) {\n      result\n    }\n  }\n";
-//# sourceMappingURL=deletePaymentToken.graphql.d.ts.map

@@ -19,4 +19,3 @@ export * from './Wishlist';
 export * from './ProductItem';
 export * from './ImageCarousel';
 export * from './Login';
-//# sourceMappingURL=index.d.ts.map

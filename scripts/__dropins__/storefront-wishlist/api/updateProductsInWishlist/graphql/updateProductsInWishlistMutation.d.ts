@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const UPDATE_PRODUCTS_IN_WISHLIST_MUTATION: string;
-//# sourceMappingURL=updateProductsInWishlistMutation.d.ts.map

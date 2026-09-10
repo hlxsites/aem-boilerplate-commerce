@@ -1,5 +1,31 @@
 # @dropins/storefront-personalization
 
+## 3.2.1
+
+### Patch Changes
+
+- 8162a33: Migrate to elsie v2
+- 4328633: Bump SDK beta versions
+- 87e2136: Bump SDK stable versions
+
+## 3.2.1-beta.2
+
+### Patch Changes
+
+- 87e2136: Bump SDK stable versions
+
+## 3.2.1-beta.1
+
+### Patch Changes
+
+- 8162a33: Migrate to elsie v2
+
+## 3.2.1-beta.0
+
+### Patch Changes
+
+- 4328633: Bump SDK beta versions
+
 ## 3.2.0
 
 ### Minor Changes

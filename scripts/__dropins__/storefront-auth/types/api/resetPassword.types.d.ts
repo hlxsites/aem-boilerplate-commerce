@@ -22,4 +22,3 @@ export interface ResetPasswordResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=resetPassword.types.d.ts.map

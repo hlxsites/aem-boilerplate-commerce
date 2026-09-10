@@ -29,4 +29,3 @@ export interface RegionsFormResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=getRegions.types.d.ts.map

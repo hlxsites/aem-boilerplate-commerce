@@ -30,4 +30,3 @@ export interface confirmEmailProps {
     customerEmail: string;
     customerConfirmationKey: string;
 }
-//# sourceMappingURL=confirmEmail.types.d.ts.map

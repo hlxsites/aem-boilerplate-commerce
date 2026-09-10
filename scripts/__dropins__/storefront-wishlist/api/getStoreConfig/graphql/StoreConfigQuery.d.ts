@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const STORE_CONFIG_QUERY = "\nquery STORE_CONFIG_QUERY {\n  storeConfig {\n    magento_wishlist_general_is_enabled\n    enable_multiple_wishlists\n    maximum_number_of_wishlists\n  }\n}\n";
-//# sourceMappingURL=StoreConfigQuery.d.ts.map

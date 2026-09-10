@@ -1,6 +1,13 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-
 export interface PriceRangeProps extends Omit<HTMLAttributes<HTMLDivElement>, 'size'> {
     locale?: string;
     currency?: string;
@@ -14,4 +21,3 @@ export interface PriceRangeProps extends Omit<HTMLAttributes<HTMLDivElement>, 's
     sale?: boolean;
 }
 export declare const PriceRange: FunctionComponent<PriceRangeProps>;
-//# sourceMappingURL=PriceRange.d.ts.map

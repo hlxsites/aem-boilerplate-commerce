@@ -1,6 +1,13 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-
 type PickerValue = string | null;
 export interface PickerOption {
     value: PickerValue;
@@ -20,9 +27,9 @@ export interface PickerProps extends Omit<HTMLAttributes<HTMLSelectElement>, 'va
     options?: PickerOption[];
     defaultOption?: PickerOption;
     disabled?: boolean;
+    disableWhenSingle?: boolean;
     error?: boolean;
     handleSelect?: (event: Event) => void;
 }
 export declare const Picker: FunctionComponent<PickerProps>;
 export {};
-//# sourceMappingURL=Picker.d.ts.map

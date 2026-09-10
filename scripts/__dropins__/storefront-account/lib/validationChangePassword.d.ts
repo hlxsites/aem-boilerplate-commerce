@@ -30,4 +30,3 @@ export declare const validationChangePassword: ({ currentPassword, newPassword, 
     errors: PasswordErrors;
 };
 export {};
-//# sourceMappingURL=validationChangePassword.d.ts.map

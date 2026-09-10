@@ -14,6 +14,7 @@ fragment PRODUCT_OPTION_FRAGMENT on ProductViewOption {
       ... on ProductViewOptionValueProduct {
         title
         quantity
+        canEditQuantity
         isDefault
         __typename
         product {

@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const CREATE_CUSTOMER = "\n  mutation CREATE_CUSTOMER($input: CustomerInput!) {\n    createCustomer(input: $input) {\n      customer {\n        ...CUSTOMER_INFORMATION_FRAGMENT\n      }\n    }\n  }\n  \n  fragment CUSTOMER_INFORMATION_FRAGMENT on Customer {\n    __typename\n    firstname\n    lastname\n    email\n    allow_remote_shopping_assistance\n    group {\n      uid\n    }\n  }\n\n";
-//# sourceMappingURL=createCustomer.graphql.d.ts.map

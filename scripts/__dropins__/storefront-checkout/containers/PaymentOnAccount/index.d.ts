@@ -8,4 +8,3 @@
  *******************************************************************/
 export * from './PaymentOnAccount';
 export { PaymentOnAccount as default } from './PaymentOnAccount';
-//# sourceMappingURL=index.d.ts.map

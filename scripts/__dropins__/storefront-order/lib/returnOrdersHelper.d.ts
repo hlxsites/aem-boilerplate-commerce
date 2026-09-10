@@ -48,4 +48,3 @@ export declare const formatReturnStatus: (str: string) => ReturnStatusValue | ""
 export declare const processFormElement: (formsRef: any) => any[];
 export declare const sortItemsByCondition: (order: any) => any[];
 export {};
-//# sourceMappingURL=returnOrdersHelper.d.ts.map

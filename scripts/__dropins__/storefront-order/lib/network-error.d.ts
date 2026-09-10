@@ -18,4 +18,3 @@
  * a generic way.
  */
 export declare const handleNetworkError: (error: Error) => never;
-//# sourceMappingURL=network-error.d.ts.map

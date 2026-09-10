@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getRegions';
-//# sourceMappingURL=index.d.ts.map

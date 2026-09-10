@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getWishlists';
-//# sourceMappingURL=index.d.ts.map

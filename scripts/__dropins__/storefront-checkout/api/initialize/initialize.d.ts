@@ -1,8 +1,23 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { Cart as CartModel, Customer as CustomerModel, ShippingMethod } from '../../data/models';
 import { Filter, Selector } from '../../types/utils';
-import { definition } from '@dropins/tools/types/elsie/src/i18n';
-import { Initializer, Model } from '@dropins/tools/types/elsie/src/lib';
-
+import { definition } from '../../../node_modules/@dropins/tools/src/i18n';
+import { Initializer, Model } from '../../../node_modules/@dropins/tools/src/lib';
 export type ConfigProps = {
     defaults?: {
         isBillToShipping?: boolean;
@@ -29,5 +44,4 @@ export type ConfigProps = {
     };
 };
 export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import('@dropins/tools/types/elsie/src/lib').Config<ConfigProps>;
-//# sourceMappingURL=initialize.d.ts.map
+export declare const config: import("../../../node_modules/@dropins/tools/src/lib").Config<ConfigProps>;

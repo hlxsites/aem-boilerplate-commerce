@@ -41,4 +41,3 @@ export type FormatDateToLocaleOptions = Intl.DateTimeFormatOptions | typeof FORM
  * // => "29. August 2023"
  */
 export declare const formatDateToLocale: (date: string, locale?: string, options?: FormatDateToLocaleOptions) => string;
-//# sourceMappingURL=formatDateToLocale.d.ts.map

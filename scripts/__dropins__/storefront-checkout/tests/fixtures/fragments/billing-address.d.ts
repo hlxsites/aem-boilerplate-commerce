@@ -57,4 +57,3 @@ export declare const ukBillingAddressFixture: {
     middlename: string;
     fax: string;
 };
-//# sourceMappingURL=billing-address.d.ts.map

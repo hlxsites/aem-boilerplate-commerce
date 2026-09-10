@@ -20,4 +20,3 @@ export * from './set-guest-email';
 export * from './set-payment-method';
 export * from './set-shipping-address';
 export * from './set-shipping-methods';
-//# sourceMappingURL=index.d.ts.map

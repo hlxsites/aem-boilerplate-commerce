@@ -1,7 +1,22 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { CustomerAddressesModel } from '../data/models';
 import { FieldsProps } from './form.types';
-import { SlotProps } from '@dropins/tools/types/elsie/src/src/lib';
-
+import { SlotProps } from '@dropins/tools/src/lib';
 export interface DefaultCheckBox extends Omit<FieldsProps, 'options'> {
 }
 export interface AddressCardContext {
@@ -20,6 +35,7 @@ export interface AddressesProps {
         [key: string]: SlotProps;
     };
     title?: string;
+    headerLevel?: 1 | 2 | 3 | 4 | 5 | 6;
     addressFormTitle?: string;
     defaultSelectAddressId?: number | string;
     showFormLoader?: boolean;
@@ -90,4 +106,3 @@ export interface AddressModalProps {
     onRemoveAddress: () => void;
     closeModal: () => void;
 }
-//# sourceMappingURL=addresses.types.d.ts.map

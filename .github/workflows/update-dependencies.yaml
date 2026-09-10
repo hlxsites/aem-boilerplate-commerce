@@ -40,7 +40,9 @@ jobs:
 
       - name: Install and regenerate dropin assets
         if: steps.update.outputs.has_changes == 'true'
-        run: npm install
+        run: |
+          npm install
+          npm run install:dropins
 
       - name: Build PR body
         if: steps.update.outputs.has_changes == 'true'

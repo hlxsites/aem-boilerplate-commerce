@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './transform-store-config';
 export * from './transform-wishlist';
-//# sourceMappingURL=index.d.ts.map

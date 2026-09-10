@@ -23,4 +23,3 @@ export declare const addYearsToList: (startYear: number) => {
     value: string;
     text: string;
 }[];
-//# sourceMappingURL=getDateRange.d.ts.map

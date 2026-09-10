@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const estimateShippingMethodsMutation: string;
-//# sourceMappingURL=estimateShippingMethods.graphql.d.ts.map
+export declare const estimateShippingMethodsMutation = "\n  mutation estimateShippingMethods(\n    $cartId: String!\n    $address: EstimateAddressInput!\n  ) {\n    estimateShippingMethods(input: { cart_id: $cartId, address: $address }) {\n      ...ESTIMATE_SHIPPING_METHOD_FRAGMENT\n    }\n  }\n\n  \n  fragment ESTIMATE_SHIPPING_METHOD_FRAGMENT on AvailableShippingMethod {\n    amount {\n      currency\n      value\n    }\n    available\n    carrier_code\n    carrier_title\n    error_message\n    method_code\n    method_title\n    price_excl_tax {\n      value\n      currency\n    }\n    price_incl_tax {\n      value\n      currency\n    }\n  }\n\n";

@@ -12,4 +12,3 @@ export declare class Config<T> {
     getConfig(): T;
     setConfig(newConfig: T): void;
 }
-//# sourceMappingURL=config.d.ts.map

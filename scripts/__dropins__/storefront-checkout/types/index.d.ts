@@ -19,4 +19,3 @@ export type { TitleProps, UIComponentType } from './components';
 export * from './guards';
 export type { CartModel, FormRef, Item, NegotiableQuoteModel, PermissionsModel, RenderAPI, } from './storefront';
 export type { Filter, Selector } from './utils';
-//# sourceMappingURL=index.d.ts.map

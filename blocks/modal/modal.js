@@ -12,21 +12,19 @@ export default async function createModal(contentNodes) {
   dialogContent.append(...contentNodes);
   dialog.append(dialogContent);
 
+  const closeModal = (reason = '') => {
+    dialog.close(reason);
+    dialog.querySelectorAll('[data-dropin-container]').forEach(Render.unmount);
+  };
+
   const closeButton = document.createElement('button');
   closeButton.classList.add('close-button');
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.setAttribute('data-dismiss', 'modal');
   closeButton.type = 'button';
   closeButton.innerHTML = '<span class="icon icon-close"></span>';
-  closeButton.addEventListener('click', () => dialog.close());
+  closeButton.addEventListener('click', () => closeModal('button'));
   dialog.append(closeButton);
-
-  const closeModal = () => {
-    // close the dialog
-    dialog.close();
-    // unmount any dropin containers rendered in the modal
-    dialog.querySelectorAll('[data-dropin-container]').forEach(Render.unmount);
-  };
 
   // close dialog on clicks outside the dialog. https://stackoverflow.com/a/70593278/79461
   dialog.addEventListener('click', (event) => {
@@ -39,7 +37,7 @@ export default async function createModal(contentNodes) {
       || event.clientY < dialogDimensions.top
       || event.clientY > dialogDimensions.bottom
     ) {
-      closeModal();
+      closeModal('backdrop');
     }
   });
 
@@ -48,6 +46,7 @@ export default async function createModal(contentNodes) {
 
   dialog.addEventListener('close', () => {
     document.body.classList.remove('modal-open');
+    block.dispatchEvent(new CustomEvent('close', { detail: { reason: dialog.returnValue } }));
     block.remove();
   });
 

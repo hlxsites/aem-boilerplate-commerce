@@ -19,4 +19,3 @@ export type Region = {
     id?: number;
     name: string;
 };
-//# sourceMappingURL=region.d.ts.map

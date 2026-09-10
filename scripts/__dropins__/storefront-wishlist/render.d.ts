@@ -1,1 +1,1 @@
-export * from './render/index'
+export * from './render/index';

@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const REMOVE_PRODUCTS_FROM_WISHLIST_MUTATION = "\n  mutation REMOVE_PRODUCTS_FROM_WISHLIST_MUTATION(\n      $wishlistId: ID!, \n      $wishlistItemsIds: [ID!]!,\n    ) {\n    removeProductsFromWishlist(\n      wishlistId: $wishlistId\n      wishlistItemsIds: $wishlistItemsIds\n    ) {\n      user_errors {\n        code\n        message\n      }\n    }\n  }\n";
-//# sourceMappingURL=removeProductsFromWishlistMutation.d.ts.map

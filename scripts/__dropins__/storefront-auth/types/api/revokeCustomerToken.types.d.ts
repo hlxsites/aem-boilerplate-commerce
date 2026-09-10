@@ -22,4 +22,3 @@ export interface RevokeCustomerTokenResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=revokeCustomerToken.types.d.ts.map

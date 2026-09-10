@@ -1,5 +1,4 @@
-import { ImageProps } from '../../components';
-
+import { type ImageProps } from '../../components';
 declare const AEM_ASSETS_FORMATS: readonly ["gif", "jpg", "jpeg", "png", "webp"];
 declare const AEM_ASSETS_ALLOWED_ROTATIONS: readonly [90, 180, 270];
 declare const AEM_ASSETS_ALLOWED_FLIPS: readonly ["h", "v", "hv"];
@@ -88,4 +87,3 @@ export declare function tryGenerateAemAssetsOptimizedUrl(assetUrl: string, alias
 export declare function makeAemAssetsImageSlot(config: AemAssetsImageSlotConfig): (ctx: RenderContext) => void;
 export declare function tryRenderAemAssetsImage(ctx: RenderContext, config: AemAssetsImageSlotConfig): void;
 export {};
-//# sourceMappingURL=assets.d.ts.map

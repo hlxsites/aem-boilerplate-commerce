@@ -23,4 +23,3 @@ export { GUEST_ORDER_FRAGMENT } from './graphql/GuestOrderFragment.graphql';
 export { CUSTOMER_ORDER_FRAGMENT } from './graphql/CustomerOrderFragment.graphql';
 export { PLACE_ORDER_FRAGMENT } from './graphql/PlaceOrderFragment.graphql';
 export { PLACE_NEGOTIABLE_QUOTE_ORDER_FRAGMENT } from './graphql/PlaceNegotiableQuoteOrderFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map

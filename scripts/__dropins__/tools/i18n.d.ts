@@ -1,1 +1,1 @@
-export * from './types/elsie/src/lib/i18n'
+export * from 'preact-i18n';

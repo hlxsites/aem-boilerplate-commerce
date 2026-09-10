@@ -36,4 +36,3 @@ export interface ErrorClassifier {
     matches: (error: unknown) => boolean;
 }
 export declare const classifiers: ErrorClassifier[];
-//# sourceMappingURL=classifiers.d.ts.map

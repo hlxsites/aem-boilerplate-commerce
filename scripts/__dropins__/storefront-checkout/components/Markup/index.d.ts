@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './Markup';
-//# sourceMappingURL=index.d.ts.map

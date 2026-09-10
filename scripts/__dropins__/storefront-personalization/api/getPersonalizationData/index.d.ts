@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getPersonalizationData';
-//# sourceMappingURL=index.d.ts.map

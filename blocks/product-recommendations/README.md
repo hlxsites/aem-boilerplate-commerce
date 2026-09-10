@@ -20,8 +20,8 @@ No URL parameters directly affect this block's behavior. -->
 
 ### Local Storage
 
-- `{storeViewCode}:productViewHistory` - Stores user's product view history for recommendation context
-- `{storeViewCode}:purchaseHistory` - Stores user's purchase history for recommendation context
+- `{storeViewCode|catalogViewId}:productViewHistory` - Stores user's product view history for recommendation context
+- `{storeViewCode|catalogViewId}:purchaseHistory` - Stores user's purchase history for recommendation context
 
 ### Events
 

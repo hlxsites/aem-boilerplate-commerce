@@ -17,5 +17,3 @@
 export * from './useEstimatedTotals';
 export * from './useEstimatedShipping';
 export * from './useGiftOptions';
-export * from './useFocusTrap';
-//# sourceMappingURL=index.d.ts.map

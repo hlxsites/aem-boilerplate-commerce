@@ -21,4 +21,3 @@ export * from './forms';
 export * from './fragments';
 export * from './meta';
 export * from './transformers';
-//# sourceMappingURL=index.d.ts.map

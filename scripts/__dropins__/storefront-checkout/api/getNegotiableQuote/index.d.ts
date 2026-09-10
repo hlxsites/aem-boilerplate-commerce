@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getNegotiableQuote';
-//# sourceMappingURL=index.d.ts.map

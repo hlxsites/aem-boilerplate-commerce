@@ -14,4 +14,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './render';
-//# sourceMappingURL=index.d.ts.map

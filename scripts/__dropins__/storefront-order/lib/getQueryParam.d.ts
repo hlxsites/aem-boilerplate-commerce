@@ -14,4 +14,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const getQueryParam: (param: string, href?: string) => string;
-//# sourceMappingURL=getQueryParam.d.ts.map

@@ -24,4 +24,3 @@ export interface DeletePaymentTokenResponse {
         message: string;
     }[];
 }
-//# sourceMappingURL=deletePaymentToken.types.d.ts.map

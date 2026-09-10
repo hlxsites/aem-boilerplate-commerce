@@ -23,4 +23,3 @@ export type Country = {
         name: string;
     }[];
 };
-//# sourceMappingURL=country.d.ts.map

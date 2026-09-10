@@ -16,4 +16,3 @@
  *******************************************************************/
 export * from './setPaymentMethodOnCart.graphql';
 export * from './setPaymentMethodOnQuote.graphql';
-//# sourceMappingURL=index.d.ts.map

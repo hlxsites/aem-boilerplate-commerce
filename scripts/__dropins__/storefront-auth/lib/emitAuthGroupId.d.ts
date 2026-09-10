@@ -30,4 +30,3 @@ export declare const DEFAULT_NLI_CUSTOMER_GROUP_ID = "b6589fc6ab0dc82cf12099d1c2
  * @param groupUid - The base64 encoded group UID, or undefined/null for default
  */
 export declare const emitAuthGroupIdEvent: (groupUid?: string | null) => Promise<void>;
-//# sourceMappingURL=emitAuthGroupId.d.ts.map

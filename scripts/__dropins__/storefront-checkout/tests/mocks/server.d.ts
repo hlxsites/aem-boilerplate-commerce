@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const server: import('msw/node').SetupServerApi;
-//# sourceMappingURL=server.d.ts.map
+export declare const server: import("msw/node").SetupServerApi;

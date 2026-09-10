@@ -1,13 +1,27 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { AttributesFormModel, OrderItemModel } from '../../data/models';
 import { StepsTypes, UseCreateReturn } from '../../types';
 import { RefObject } from 'preact';
-
 export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAlert, orderData, }: UseCreateReturn) => {
     order: {
         giftReceiptIncluded?: boolean | undefined;
         printedCardIncluded?: boolean | undefined;
         giftWrappingOrder?: {
-            price: import('../../types').MoneyProps;
+            price: import("../../types").MoneyProps;
             uid: string;
         } | undefined;
         placeholderImage?: string;
@@ -24,10 +38,10 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
         carrier?: string;
         orderDate?: string | undefined;
         adminAssistedOrder?: boolean;
-        comments?: import('../../types').OrderCommentItem[] | undefined;
-        returns?: import('../../data/models').OrdersReturnPropsModel[] | undefined;
+        comments?: import("../../types").OrderCommentItem[] | undefined;
+        returns?: import("../../data/models").OrdersReturnPropsModel[] | undefined;
         discounts?: {
-            amount: import('../../types').MoneyProps;
+            amount: import("../../types").MoneyProps;
             label: string;
         }[] | undefined;
         coupons?: {
@@ -42,39 +56,39 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
             amount: number;
             currency: string;
         };
-        shipments?: import('../../data/models').ShipmentsModel[] | undefined;
+        shipments?: import("../../data/models").ShipmentsModel[] | undefined;
         items?: OrderItemModel[] | undefined;
-        totalGiftCard?: import('../../types').MoneyProps | undefined;
-        grandTotal?: import('../../types').MoneyProps | undefined;
-        grandTotalExclTax?: import('../../types').MoneyProps | undefined;
-        totalShipping?: import('../../types').MoneyProps;
-        subtotalExclTax?: import('../../types').MoneyProps | undefined;
-        subtotalInclTax?: import('../../types').MoneyProps | undefined;
-        totalTax?: import('../../types').MoneyProps | undefined;
-        shippingAddress?: import('../../data/models').OrderAddressModel | undefined;
+        totalGiftCard?: import("../../types").MoneyProps | undefined;
+        grandTotal?: import("../../types").MoneyProps | undefined;
+        grandTotalExclTax?: import("../../types").MoneyProps | undefined;
+        totalShipping?: import("../../types").MoneyProps;
+        subtotalExclTax?: import("../../types").MoneyProps | undefined;
+        subtotalInclTax?: import("../../types").MoneyProps | undefined;
+        totalTax?: import("../../types").MoneyProps | undefined;
+        shippingAddress?: import("../../data/models").OrderAddressModel | undefined;
         totalGiftOptions?: {
-            giftWrappingForItems: import('../../types').MoneyProps;
-            giftWrappingForItemsInclTax: import('../../types').MoneyProps;
-            giftWrappingForOrder: import('../../types').MoneyProps;
-            giftWrappingForOrderInclTax: import('../../types').MoneyProps;
-            printedCard: import('../../types').MoneyProps;
-            printedCardInclTax: import('../../types').MoneyProps;
+            giftWrappingForItems: import("../../types").MoneyProps;
+            giftWrappingForItemsInclTax: import("../../types").MoneyProps;
+            giftWrappingForOrder: import("../../types").MoneyProps;
+            giftWrappingForOrderInclTax: import("../../types").MoneyProps;
+            printedCard: import("../../types").MoneyProps;
+            printedCardInclTax: import("../../types").MoneyProps;
         } | undefined;
-        billingAddress?: import('../../data/models').OrderAddressModel | undefined;
-        availableActions?: import('../../types').AvailableActionsProps[] | undefined;
+        billingAddress?: import("../../data/models").OrderAddressModel | undefined;
+        availableActions?: import("../../types").AvailableActionsProps[] | undefined;
         taxes?: {
-            amount: import('../../types').MoneyProps;
+            amount: import("../../types").MoneyProps;
             rate: number;
             title: string;
         }[] | undefined;
         appliedGiftCards?: {
             code: string;
-            appliedBalance: import('../../types').MoneyProps;
+            appliedBalance: import("../../types").MoneyProps;
         }[] | undefined;
     };
     steps: StepsTypes;
     loading: boolean;
-    formsRef: import('preact/hooks').MutableRef<RefObject<HTMLFormElement>[]>;
+    formsRef: import("preact/hooks").MutableRef<RefObject<HTMLFormElement>[]>;
     attributesList: [] | AttributesFormModel[];
     selectedProductList: [] | OrderItemModel[];
     itemsEligibleForReturn: OrderItemModel[];
@@ -83,4 +97,3 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
     handleChangeStep: (value: StepsTypes) => void;
     onSubmit: (_: SubmitEvent, isValid: boolean) => Promise<void | null | undefined>;
 };
-//# sourceMappingURL=useCreateReturn.d.ts.map

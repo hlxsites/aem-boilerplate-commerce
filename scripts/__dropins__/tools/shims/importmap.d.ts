@@ -1,1 +1,1 @@
-export * from '../types/elsie/src/shims/importmap.js'
+export * from '../types/elsie/src/shims/importmap.js';

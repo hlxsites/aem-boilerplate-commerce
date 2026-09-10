@@ -23,4 +23,3 @@ declare const COOKIE_NAMES: {
 declare const LOCALHOST: string[];
 declare const COOKIE_LIFETIME = 3600;
 export { COOKIE_NAMES, COOKIE_LIFETIME, LOCALHOST };
-//# sourceMappingURL=cookieConfigs.d.ts.map
