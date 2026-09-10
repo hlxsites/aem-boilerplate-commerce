@@ -4,6 +4,7 @@
       "commerce-core-endpoint": "https://www.aemshop.net/graphql",
       "commerce-endpoint": "https://www.aemshop.net/cs-graphql",
       "commerce-assets-enabled": true,
+      "commerce-free-gifts-enabled": true,
       "headers": {
         "all": {
           "Store": "default"

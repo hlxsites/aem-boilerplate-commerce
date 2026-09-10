@@ -201,7 +201,12 @@ export default async function decorate(block) {
     navSections
       .querySelectorAll(':scope .default-content-wrapper > ul > li')
       .forEach((navSection) => {
-        if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
+        if (navSection.querySelector('ul')) {
+          navSection.classList.add('nav-drop');
+          navSection.setAttribute('role', 'button');
+          navSection.setAttribute('aria-haspopup', 'true');
+          navSection.setAttribute('aria-expanded', 'false');
+        }
         setupSubmenu(navSection);
         navSection.addEventListener('click', (event) => {
           if (event.target.tagName === 'A') return;
@@ -357,6 +362,15 @@ export default async function decorate(block) {
       cartButton.removeAttribute('data-count');
     }
 
+    cartButton.setAttribute(
+      'aria-label',
+      totalQuantity === 1
+        ? (labels.Global?.CartWithItem?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} item`)
+        : (labels.Global?.CartWithItems?.replace('{count}', totalQuantity)
+          ?? `Cart with ${totalQuantity} items`),
+    );
+
     // Skip the announcement for the initial value on page load so screen
     // reader users aren't told about the cart contents before they've
     // interacted with it; only announce actual changes.
@@ -378,8 +392,8 @@ export default async function decorate(block) {
   /** Search */
   const searchFragment = document.createRange().createContextualFragment(`
   <div class="search-wrapper nav-tools-wrapper">
-    <button type="button" class="nav-search-button">${labels.Global?.Search ?? 'Search'}</button>
-    <div class="nav-search-input nav-search-panel nav-tools-panel">
+    <button type="button" class="nav-search-button" aria-haspopup="dialog" aria-expanded="false" aria-controls="search-panel">${labels.Global?.Search ?? 'Search'}</button>
+    <div class="nav-search-input nav-search-panel nav-tools-panel" id="search-panel">
       <form id="search-bar-form"></form>
       <div class="search-bar-result" style="display: none;"></div>
     </div>
@@ -493,6 +507,10 @@ export default async function decorate(block) {
     }
 
     togglePanel(searchPanel, state);
+    searchButton.setAttribute(
+      'aria-expanded',
+      searchPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false',
+    );
     if (state) searchForm?.querySelector('input')?.focus();
   }
 

@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { AttributesFormModel } from '../data/models';
 import { InLineAlertProps } from './notification.types';
 import { KeysSortOrderProps } from './addresses.types';

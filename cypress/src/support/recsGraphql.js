@@ -38,6 +38,20 @@ export function assertUrlExcludesCurrentProduct(url) {
 }
 
 /**
+ * currentSku is a separate top-level GraphQL variable from currentProduct: it is
+ * always sent (on every environment), whereas currentProduct is only included
+ * when a price is resolved (ACO). This asserts the block's anchor SKU
+ * (context.currentSku in product-recommendations.js) matches what was sent.
+ */
+export function assertUrlIncludesCurrentSku(url, sku) {
+  const decoded = decodeGraphqlUrl(url);
+  expect(decoded, 'GraphQL URL includes currentSku').to.include('currentSku');
+  if (sku) {
+    expect(decoded, `GraphQL URL currentSku matches ${sku}`).to.match(new RegExp(`"currentSku":"${sku}"`));
+  }
+}
+
+/**
  * When block pins currentsku without currentprice on ACO, price must not be sent
  * even if PDP productContext has pricing (COMOPT-2042 / #1272 guard).
  */

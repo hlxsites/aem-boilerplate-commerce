@@ -219,4 +219,13 @@ export default async function decorate(block) {
     applySearchStateToUrl(url, payload.request);
     window.history.pushState({}, '', url.toString());
   }, { eager: false });
+
+  events.on('commerce/customer-context', () => {
+    const previousSearch = events.lastPayload('search/result')?.request;
+    if (previousSearch) {
+      search(previousSearch).catch((e) => {
+        console.error('Error refreshing products after customer context changed', e);
+      });
+    }
+  });
 }
