@@ -14,9 +14,18 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import type { CompanyAddressType } from '../../types/api/companyAddress.types';
 export interface CustomerAddressesModel {
+    addressType?: CompanyAddressType;
+    addressTypeShipping?: boolean;
+    addressTypeBilling?: boolean;
+    isDefault?: boolean;
     firstName?: string;
+    middleName?: string;
     lastName?: string;
+    nickname?: string;
+    prefix?: string;
+    suffix?: string;
     city?: string;
     company?: string;
     countryCode?: string;
@@ -26,6 +35,7 @@ export interface CustomerAddressesModel {
         regionId: string | number;
     };
     telephone?: string;
+    fax?: string;
     id?: string;
     vatId?: string;
     postcode?: string;

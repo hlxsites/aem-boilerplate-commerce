@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/lib';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { NegotiableQuoteModel, CartItemModel } from '../../data/models/negotiable-quote-model';
 export interface ItemsQuotedProps extends HTMLAttributes<HTMLDivElement> {
     quoteData?: NegotiableQuoteModel;

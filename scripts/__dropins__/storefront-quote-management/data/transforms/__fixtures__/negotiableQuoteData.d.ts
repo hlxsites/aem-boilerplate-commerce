@@ -623,6 +623,8 @@ export declare const mockQuoteData: {
     };
     shipping_addresses: {
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;

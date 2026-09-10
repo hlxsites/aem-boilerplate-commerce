@@ -19,4 +19,5 @@ export declare const CardLoader: ({ testId, withCard, }: {
     withCard?: boolean;
 }) => import("preact").JSX.Element;
 export declare const AddressFormLoader: () => import("preact").JSX.Element;
+export declare const AddressActionsLoader: () => import("preact").JSX.Element;
 export declare const PickerLoader: (props: any) => import("preact").JSX.Element;
