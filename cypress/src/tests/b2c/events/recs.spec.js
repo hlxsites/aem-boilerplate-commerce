@@ -1,4 +1,8 @@
 import { expectsEventWithContext } from "../../../assertions";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/recs-request-sent.md
  *   required contexts: page, storefront
@@ -21,7 +25,7 @@ it(
     cy.waitForResource("commerce-events-collector.js").then(() => {
       cy.window()
         .its("adobeDataLayer")
-        .then((adobeDataLayer) => {
+        .should((adobeDataLayer) => {
           expectsEventWithContext(
             "recs-api-request-sent",
             ["pageContext", "storefrontInstanceContext"],

@@ -6,6 +6,9 @@ import {
 } from "../../../actions";
 import { expectsEventWithContext } from "../../../assertions";
 import { customerShippingAddress, products } from "../../../fixtures";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
 
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/place-order.md
@@ -62,7 +65,7 @@ it.skip("is sent on place order button click", { tags: "@skipSaas" }, () => {
   }).then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "place-order",
           [

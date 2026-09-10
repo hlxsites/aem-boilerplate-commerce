@@ -1,3 +1,5 @@
+// add functionality that requires user consent here (analytics, martech, etc.)
+
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
 import { getConsent } from './commerce.js';
@@ -35,7 +37,10 @@ async function initAnalytics() {
         {
           eventForwardingContext: {
             commerce: true,
-            aep: !!(analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id']),
+            aep: !!(
+              analyticsConfig['aep-ims-org-id']
+              && analyticsConfig['aep-datastream-id']
+            ),
           },
         },
         {
@@ -61,7 +66,9 @@ async function initAnalytics() {
 }
 
 if (document.prerendering) {
-  document.addEventListener('prerenderingchange', initAnalytics, { once: true });
+  document.addEventListener('prerenderingchange', initAnalytics, {
+    once: true,
+  });
 } else {
   initAnalytics();
 }

@@ -1,4 +1,8 @@
 import { products } from "../../../fixtures";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/initiate-checkout.md
  *
@@ -9,7 +13,7 @@ it("is sent on mini cart Checkout button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         const pageContextIndex = adobeDataLayer.findIndex(
           (event) => !!event?.pageContext,
         );
@@ -64,7 +68,7 @@ it("is sent on cart page Checkout button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         const pageContextIndex = adobeDataLayer.findIndex(
           (event) => !!event?.pageContext,
         );

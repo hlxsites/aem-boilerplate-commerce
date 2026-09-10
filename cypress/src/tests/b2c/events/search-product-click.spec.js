@@ -1,3 +1,7 @@
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/search-product-click.md
  *
@@ -8,7 +12,7 @@ it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         const pageContextIndex = adobeDataLayer.findIndex(
           (event) => !!event?.pageContext,
         );

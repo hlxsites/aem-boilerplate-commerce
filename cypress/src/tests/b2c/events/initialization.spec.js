@@ -1,5 +1,8 @@
 import { expectsEventWithContext } from "../../../assertions";
 import { products } from "../../../fixtures";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
 
 const baselineContexts = (adobeDataLayer) => {
   expectsEventWithContext(

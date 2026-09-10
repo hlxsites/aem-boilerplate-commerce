@@ -10,6 +10,7 @@ import './waitForWishlistPage';
 import '@percy/cypress';
 import './percyTakeSnapshot';
 import './waitForLoadingSkeletonToDisappear'
+import './consent'
 
 import registerCypressGrep from '@cypress/grep'
 registerCypressGrep();

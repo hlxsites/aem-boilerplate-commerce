@@ -1,5 +1,9 @@
 import { products } from "../../../fixtures";
 import { expectsEventWithContext } from "../../../assertions";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/shopping-cart-view.md
  *
@@ -22,7 +26,7 @@ it("is sent on view cart button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "shopping-cart-view",
           ["pageContext", "storefrontInstanceContext", "shoppingCartContext"],

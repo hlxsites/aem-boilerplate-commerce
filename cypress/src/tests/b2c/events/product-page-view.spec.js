@@ -1,5 +1,9 @@
 import { expectsEventWithContext } from "../../../assertions";
 import { products } from "../../../fixtures";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/product-page-view.md
  *
@@ -10,7 +14,7 @@ it("is sent on product page view/render", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "product-page-view",
           [

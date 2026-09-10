@@ -60,12 +60,23 @@ if (window.trustedTypes && window.trustedTypes.createPolicy) {
     createHTML: (input, type, sink) => {
       let processedInput = input;
       if (/srcdoc\s*=/i.test(processedInput)) {
-        const doc = new DOMParser().parseFromString(innerTT.createHTML(processedInput), 'text/html');
-        doc.querySelectorAll('iframe[srcdoc]').forEach((el) => el.removeAttribute('srcdoc'));
+        const doc = new DOMParser().parseFromString(
+          innerTT.createHTML(processedInput),
+          'text/html',
+        );
+        doc
+          .querySelectorAll('iframe[srcdoc]')
+          .forEach((el) => el.removeAttribute('srcdoc'));
         processedInput = doc.body.innerHTML;
       }
-      if (sink.includes('createContextualFragment') || sink.includes('Document write')) {
-        const doc = new DOMParser().parseFromString(innerTT.createHTML(processedInput), 'text/html');
+      if (
+        sink.includes('createContextualFragment')
+        || sink.includes('Document write')
+      ) {
+        const doc = new DOMParser().parseFromString(
+          innerTT.createHTML(processedInput),
+          'text/html',
+        );
         doc.querySelectorAll('script').forEach((el) => el.remove());
         processedInput = doc.body.innerHTML;
       }
@@ -119,7 +130,9 @@ function buildWidgetAutoBlocks(main) {
 function buildAutoBlocks(main) {
   try {
     // auto load `*/fragments/*` references
-    const fragments = [...main.querySelectorAll('a[href*="/fragments/"]')].filter((f) => !f.closest('.fragment'));
+    const fragments = [
+      ...main.querySelectorAll('a[href*="/fragments/"]'),
+    ].filter((f) => !f.closest('.fragment'));
     if (fragments.length > 0) {
       // eslint-disable-next-line import/no-cycle
       import('../blocks/fragment/fragment.js').then(({ loadFragment }) => {
@@ -157,7 +170,9 @@ function decorateButtons(main) {
     // skip URL display links
     try {
       if (new URL(a.href).href === new URL(text, window.location).href) return;
-    } catch { /* continue */ }
+    } catch {
+      /* continue */
+    }
 
     // require authored formatting for buttonization
     const strong = a.closest('strong');
@@ -166,7 +181,8 @@ function decorateButtons(main) {
 
     p.className = 'button-wrapper';
     a.className = 'button';
-    if (strong && em) { // high-impact call-to-action
+    if (strong && em) {
+      // high-impact call-to-action
       a.classList.add('accent');
       const outer = strong.contains(em) ? strong : em;
       outer.replaceWith(a);
@@ -231,7 +247,7 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  loadHeader(doc.querySelector('body > header'));
 
   const main = doc.querySelector('main');
   await loadSections(main);
@@ -240,7 +256,7 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadFooter(doc.querySelector('footer'));
+  loadFooter(doc.querySelector('body > footer'));
 
   loadCommerceLazy();
 
@@ -253,7 +269,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  import('./consent-check.js');
   // load anything that can be postponed to the latest here
 }
 
@@ -266,7 +282,9 @@ async function loadPage() {
 // UE Editor support before page load
 if (IS_UE) {
   // eslint-disable-next-line import/no-unresolved
-  await import(`${window.hlx.codeBasePath}/scripts/ue.js`).then(({ default: ue }) => ue());
+  await import(`${window.hlx.codeBasePath}/scripts/ue.js`).then(
+    ({ default: ue }) => ue(),
+  );
 }
 
 loadPage();
@@ -274,5 +292,7 @@ loadPage();
 (async function loadDa() {
   if (!IS_DA) return;
   // eslint-disable-next-line import/no-unresolved
-  import('https://da.live/scripts/dapreview.js').then(({ default: daPreview }) => daPreview(loadPage));
+  import('https://da.live/scripts/dapreview.js').then(
+    ({ default: daPreview }) => daPreview(loadPage),
+  );
 }());

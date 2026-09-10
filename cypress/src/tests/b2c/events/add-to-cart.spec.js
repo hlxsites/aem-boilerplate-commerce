@@ -1,5 +1,9 @@
 import { products } from "../../../fixtures";
 import { expectsEventWithContext } from "../../../assertions";
+import { withConsent } from "../../../support/consent";
+
+withConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/add-to-cart.md
  *
@@ -19,7 +23,7 @@ it("is sent on add to cart button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "add-to-cart",
           [
