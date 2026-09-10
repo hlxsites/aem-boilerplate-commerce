@@ -255,7 +255,9 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
+  const productName = product?.name || product?.sku;
   const addToCart = await UI.render(Button, {
+    'aria-label': `${labels.Global?.AddProductToCart} ${productName}`,
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
