@@ -1,6 +1,41 @@
 # @dropins/storefront-account
 
-## 4.2.0-alpha-20260909122443
+## 4.2.0-beta.1
+
+### Patch Changes
+
+- ec86d13: fix(AddressForm): restore independent default shipping and billing
+  checkboxes outside the company address book. The single-default rule
+  introduced with the company address book was applied to the shared form hook
+  and to the B2C create-mode defaults, so a personal address could no longer be
+  both the default shipping and the default billing address, and only one
+  checkbox was preselected on create. The company address book keeps its single
+  address type selection unchanged.
+- ec86d13: fix(AddressForm): place the save checkbox at the end of the form with
+  CSS instead of a computed grid row. The previous effect read the form's
+  `grid-template-rows` and pinned `.account-address-form--saveAddressBook` to
+  `rows - 1`, which only matched the field set it was written against; a store
+  with an extra address attribute such as VAT pushed that attribute below the
+  checkbox. The checkbox now spans both columns on its own row, so the field
+  order follows the address attributes returned by the backend.
+- ec86d13: fix(Addresses): stop preselecting an address when the caller has none
+  and selection is locked to company addresses. `defaultSelectAddressId: 0`
+  means the caller holds no address; without the lock it opens the new-address
+  form, but with the lock that branch was skipped entirely and the first card in
+  the list was highlighted instead. A negotiable quote with no shipping address
+  therefore rendered a selected address it did not hold, and the caller refused
+  to write it back, so the choice silently did nothing until the customer
+  clicked the card themselves. A locked selection now leaves the list unselected
+  and reports the selection as invalid, the same way it already did when the
+  list is empty.
+- ec86d13: fix(Addresses): restore opening the new-address form when
+  `defaultSelectAddressId` is `0`. The company address book work replaced that
+  behaviour with preselecting the first address in the list, which claims a
+  selection the caller never made — a negotiable quote, for example, stores its
+  shipping address as a copy with no id to match, so every page load highlighted
+  an address the quote does not hold.
+
+## 4.2.0-beta.0
 
 ### Minor Changes
 
@@ -53,20 +88,6 @@
   - Add `scroll-margin` to address form inputs and pickers (2.4.11)
 
 - e89fc34: Add an accessible clear button to customer order search.
-- 7a90a41: fix(AddressForm): restore independent default shipping and billing
-  checkboxes outside the company address book. The single-default rule
-  introduced with the company address book was applied to the shared form hook
-  and to the B2C create-mode defaults, so a personal address could no longer be
-  both the default shipping and the default billing address, and only one
-  checkbox was preselected on create. The company address book keeps its single
-  address type selection unchanged.
-- 8b9c741: fix(AddressForm): place the save checkbox at the end of the form with
-  CSS instead of a computed grid row. The previous effect read the form's
-  `grid-template-rows` and pinned `.account-address-form--saveAddressBook` to
-  `rows - 1`, which only matched the field set it was written against; a store
-  with an extra address attribute such as VAT pushed that attribute below the
-  checkbox. The checkbox now spans both columns on its own row, so the field
-  order follows the address attributes returned by the backend.
 - 42a521f: fix(AddressesWrapper, OrdersListWrapper): announce loading states to
   screen readers via a persistent live region instead of a skeleton loader that
   mounts and unmounts with the content (WCAG 4.1.3)
@@ -79,23 +100,7 @@
 
 - 73ee059: Fix broken border-radius selector for "Use a different address"
   button
-- 3682976: fix(Addresses): stop preselecting an address when the caller has none
-  and selection is locked to company addresses. `defaultSelectAddressId: 0`
-  means the caller holds no address; without the lock it opens the new-address
-  form, but with the lock that branch was skipped entirely and the first card in
-  the list was highlighted instead. A negotiable quote with no shipping address
-  therefore rendered a selected address it did not hold, and the caller refused
-  to write it back, so the choice silently did nothing until the customer
-  clicked the card themselves. A locked selection now leaves the list unselected
-  and reports the selection as invalid, the same way it already did when the
-  list is empty.
 - 0fbbf64: Adds AGENTS.MD File used for guidance for AI coding agents
-- 8b9c741: fix(Addresses): restore opening the new-address form when
-  `defaultSelectAddressId` is `0`. The company address book work replaced that
-  behaviour with preselecting the first address in the list, which claims a
-  selection the caller never made — a negotiable quote, for example, stores its
-  shipping address as a copy with no id to match, so every page load highlighted
-  an address the quote does not hold.
 
 ## 4.1.0
 

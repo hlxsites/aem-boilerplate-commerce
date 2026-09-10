@@ -7,8 +7,8 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { ImageProps } from '@dropins/tools/components';
-import { Container, SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { CartItemModel as NegotiableQuoteItemModel } from '../../data/models';
 export interface QuoteSummaryListProps extends HTMLAttributes<HTMLDivElement> {
     hideHeading?: boolean;
