@@ -34,6 +34,7 @@ import {
 
 // Container functions
 import {
+  isPlaceOrderRendered,
   renderAddressForm,
   renderBillingAddressFormSkeleton,
   renderBillToShippingAddress,
@@ -149,6 +150,12 @@ export default async function decorate(block) {
       await paymentsApi.submitCreditCard();
       return true;
     } catch (error) {
+      if (error.localized) {
+        events.emit('checkout/error', {
+          message: error.message,
+        });
+        return false;
+      }
       switch (error.code) {
         case 'payment-services/credit-card-form-not-rendered':
           console.error('Credit card form not rendered.');
@@ -217,7 +224,7 @@ export default async function decorate(block) {
 
     renderShippingMethods($delivery),
 
-    renderPaymentMethods($paymentMethods),
+    renderPaymentMethods($paymentMethods, $placeOrder, handleValidation),
 
     renderBillingAddressFormSkeleton($billingForm),
 
@@ -230,12 +237,28 @@ export default async function decorate(block) {
     renderGiftOptions($giftOptions),
   ]);
 
+  const EXPRESS_PAYMENT_METHODS = [
+    paymentsApi.PaymentMethodCode.PAYPAL_BUTTONS,
+    paymentsApi.PaymentMethodCode.APPLE_PAY,
+    paymentsApi.PaymentMethodCode.GOOGLE_PAY,
+  ];
+
+  const isExpressPaymentMethod = (method) => (
+    method && EXPRESS_PAYMENT_METHODS.includes(method.code)
+  );
+
   async function initializeCheckout(data) {
     await initReCaptcha(0);
     if (data.isGuest) await displayGuestAddressForms(data);
     else {
       removeOverlaySpinner(loaderRef, $loader, $loaderStatus);
       await displayCustomerAddressForms(data);
+    }
+    // Express payment methods replace the place order button; restore it for non-express methods
+    if (data.selectedPaymentMethod?.code
+      && !isExpressPaymentMethod(data.selectedPaymentMethod)
+      && !isPlaceOrderRendered($placeOrder)) {
+      await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder });
     }
   }
 
