@@ -27,12 +27,6 @@ export interface NegotiableQuoteAddressInput {
 export interface NegotiableQuoteTemplateShippingAddressInput {
     address?: NegotiableQuoteAddressInput;
     customerAddressUid?: string;
-    /**
-     * The ID of an address from the company address book. Required instead of
-     * customerAddressUid once the company address book is enabled, because the
-     * backend then rejects both a customer address and a new address payload.
-     */
-    companyAddressId?: number | string;
     customerNotes?: string;
 }
 export interface AddQuoteTemplateShippingAddressParams {

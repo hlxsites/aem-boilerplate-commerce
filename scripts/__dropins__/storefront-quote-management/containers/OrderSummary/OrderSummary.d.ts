@@ -8,7 +8,7 @@
  *******************************************************************/
 import { OrderSummaryLineItem } from '../../components';
 import { NegotiableQuoteModel } from '../../data/models';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 export interface OrderSummaryProps extends HTMLAttributes<HTMLDivElement> {
     showTotalSaved?: boolean;

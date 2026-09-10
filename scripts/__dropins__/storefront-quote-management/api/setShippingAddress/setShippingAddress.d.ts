@@ -50,15 +50,9 @@ export interface AddressInput {
 export interface SetShippingAddressInput {
     /** The unique ID of the negotiable quote */
     quoteUid: string;
-    /** The ID of a saved customer address. Provide exactly one of addressId, companyAddressId or addressData. */
-    addressId?: number | string;
-    /**
-     * The ID of an address from the company address book. Required instead of
-     * addressId once the company address book is enabled, because the backend
-     * then rejects both a customer address and a new address payload.
-     */
-    companyAddressId?: number | string;
-    /** New address data. Provide exactly one of addressId, companyAddressId or addressData. */
+    /** The ID of a saved customer address (use this OR addressData, not both) */
+    addressId?: number;
+    /** New address data (use this OR addressId, not both) */
     addressData?: AddressInput;
 }
 /**

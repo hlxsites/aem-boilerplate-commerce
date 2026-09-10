@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { requestNegotiableQuote } from '../../api';
 import { AttachedFile } from '../../components';
 export type RequestNegotiableQuoteHandlers = {

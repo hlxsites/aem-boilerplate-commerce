@@ -30,7 +30,6 @@ interface ProcessFieldsProps {
     isRequiredPostCode: boolean;
     disableField: boolean;
     addressId?: string | number;
-    keepDefaultCheckBoxesOnEdit?: boolean;
 }
-declare const _default: ({ fields, addressId, countryOptions, disableField, regionOptions, isRequiredRegion, isRequiredPostCode, keepDefaultCheckBoxesOnEdit, }: ProcessFieldsProps) => Field[];
+declare const _default: ({ fields, addressId, countryOptions, disableField, regionOptions, isRequiredRegion, isRequiredPostCode, }: ProcessFieldsProps) => Field[];
 export default _default;
