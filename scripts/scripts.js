@@ -18,7 +18,6 @@ import {
   decorateLinks,
   loadErrorPage,
   decorateSections,
-  IS_UE,
   IS_DA,
 } from './commerce.js';
 
@@ -261,12 +260,6 @@ async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
-}
-
-// UE Editor support before page load
-if (IS_UE) {
-  // eslint-disable-next-line import/no-unresolved
-  await import(`${window.hlx.codeBasePath}/scripts/ue.js`).then(({ default: ue }) => ue());
 }
 
 loadPage();
