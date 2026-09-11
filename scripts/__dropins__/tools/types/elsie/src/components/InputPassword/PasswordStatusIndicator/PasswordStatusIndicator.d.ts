@@ -19,6 +19,7 @@ export interface PasswordStatusIndicatorProps {
     uniqueSymbolsStatus?: statusTypes;
     minLength?: number;
     requiredCharacterClasses?: number;
+    id?: string;
 }
 export declare const PasswordStatusIndicator: FunctionComponent<PasswordStatusIndicatorProps & HTMLAttributes<HTMLDivElement>>;
 export {};

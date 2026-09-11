@@ -31,6 +31,43 @@ const e=`
     telephone
     vat_id
   }
+`,a=`
+  fragment COMPANY_ADDRESS_FRAGMENT on CompanyAddress {
+    id
+    company_id
+    address_type
+    is_default
+    company
+    city
+    country_code
+    street
+    telephone
+    postcode
+    firstname
+    lastname
+    middlename
+    nickname
+    prefix
+    suffix
+    fax
+    vat_id
+    region_id
+    region {
+      region
+      region_code
+      region_id
+    }
+    custom_attributes {
+      ... on AttributeValue {
+        code
+        value
+      }
+    }
+    extension_attributes {
+      attribute_code
+      value
+    }
+  }
 `,r=`
   fragment ORDER_SUMMARY_FRAGMENT on OrderTotal {
     grand_total {
@@ -77,7 +114,7 @@ const e=`
       label
     }
   }
-`,a=`
+`,n=`
   fragment CUSTOMER_ORDER_FRAGMENT on CustomerOrder {
     admin_assisted_order
     token
@@ -118,5 +155,5 @@ const e=`
       }
     }
   }
-`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as CUSTOMER_ORDER_FRAGMENT,r as ORDER_SUMMARY_FRAGMENT};
+`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as COMPANY_ADDRESS_FRAGMENT,n as CUSTOMER_ORDER_FRAGMENT,r as ORDER_SUMMARY_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

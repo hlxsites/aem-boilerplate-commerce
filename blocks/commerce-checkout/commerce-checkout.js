@@ -8,6 +8,9 @@ import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 // Order Dropin Modules
 import * as orderApi from '@dropins/storefront-order/api.js';
 
+// Account Dropin Modules
+import { getCompanyAddressBook } from '@dropins/storefront-account/api.js';
+
 // Checkout Dropin Libraries
 import {
   createScopedSelector,
@@ -61,7 +64,7 @@ import {
 import { rootLink, CUSTOMER_PO_DETAILS_PATH, ORDER_DETAILS_PATH } from '../../scripts/commerce.js';
 
 // Initializers
-import '../../scripts/initializers/account.js';
+import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
 import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
@@ -81,6 +84,9 @@ function redirectToCartIfEmpty(cartData) {
 
 export default async function decorate(block) {
   const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+  // Memoized per page load and already resolved by the checkout initializer, so
+  // this awaits nothing in practice.
+  const isAddressBookEnabled = isB2BEnabled && (await isCompanyAddressBookEnabled());
   const permissions = events.lastPayload('auth/permissions');
 
   let b2bPoApi = null;
@@ -151,13 +157,16 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  const handleValidation = () => validateForms([
-    { name: LOGIN_FORM_NAME },
-    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
-    { name: BILLING_FORM_NAME, ref: billingFormRef },
-    { name: PURCHASE_ORDER_FORM_NAME },
-    { name: TERMS_AND_CONDITIONS_FORM_NAME },
-  ]);
+  const handleValidation = () => {
+    const isValid = validateForms([
+      { name: LOGIN_FORM_NAME },
+      { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
+      { name: BILLING_FORM_NAME, ref: billingFormRef },
+      { name: PURCHASE_ORDER_FORM_NAME },
+      { name: TERMS_AND_CONDITIONS_FORM_NAME },
+    ]);
+    return isValid;
+  };
 
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
@@ -192,7 +201,50 @@ export default async function decorate(block) {
   };
 
   // First, render the place order component
-  await renderPlaceOrder($placeOrder, { handleValidation, handlePlaceOrder, b2bIsPoEnabled });
+  const placeOrderContainer = await renderPlaceOrder($placeOrder, {
+    handleValidation,
+    handlePlaceOrder,
+    b2bIsPoEnabled,
+  });
+
+  // Place Order stays disabled until the company address book has been read.
+  // The drop-in cannot judge B2B addresses on its own, and the answer arrives
+  // asynchronously — enabling first would briefly offer a button that submits an
+  // order the backend rejects.
+  if (isB2BEnabled) {
+    placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: true }));
+
+    (async () => {
+      try {
+        const companyAddressBook = await getCompanyAddressBook();
+        const addressBookEnabled = Boolean(companyAddressBook?.addressBookEnabled);
+        const items = companyAddressBook?.addresses?.items ?? [];
+        const hasShippingAddress = items.some((item) => item.addressType === 'SHIPPING');
+        const hasBillingAddress = items.some((item) => item.addressType === 'BILLING');
+        const customShippingAllowed = Boolean(
+          companyAddressBook?.addressBookCustomShippingAddressEnabled,
+        );
+
+        // A missing shipping address only blocks checkout when the company also
+        // forbids one-time addresses: allow them and the customer types one in.
+        // Billing has no such escape hatch. A company without an address book is
+        // not gated at all.
+        const shippingMissing = !hasShippingAddress && !customShippingAllowed;
+        const shouldDisablePlaceOrder = addressBookEnabled
+          && (shippingMissing || !hasBillingAddress);
+
+        placeOrderContainer.setProps((prevProps) => ({
+          ...prevProps,
+          disabled: shouldDisablePlaceOrder,
+        }));
+      } catch (error) {
+        // Fail open: the gate only applies to companies that run an address book.
+        // eslint-disable-next-line no-console
+        console.error('Checkout: could not read the company address book — leaving Place Order enabled', error);
+        placeOrderContainer.setProps((prevProps) => ({ ...prevProps, disabled: false }));
+      }
+    })();
+  }
 
   // Render the remaining containers
   const [
@@ -223,7 +275,10 @@ export default async function decorate(block) {
 
     renderShippingAddressFormSkeleton($shippingForm),
 
-    renderBillToShippingAddress($billToShipping),
+    // Hidden only for a company running the address book, which picks billing
+    // from its own address list. B2C customers and companies without the address
+    // book keep the checkbox.
+    renderBillToShippingAddress($billToShipping, !isAddressBookEnabled),
 
     renderShippingMethods($delivery),
 

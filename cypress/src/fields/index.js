@@ -156,10 +156,12 @@ export const fieldUserStreet = 'input[name="street"]';
 export const fieldUserStreet2 = 'input[name="streetMultiline_2"]';
 export const fieldUserSelectCountry = 'select[name="countryCode"]';
 export const fieldUserTextRegion = 'input[name="region"]';
+export const fieldUserSelectRegion = 'select[name="region"]';
 export const fieldUserCity = 'input[name="city"]';
 export const fieldUserPhone = 'input[name="telephone"]';
 export const fieldUserPostCode = 'input[name="postcode"]';
 export const fieldUserVatId = 'input[name="vatId"]';
+export const fieldUserNickname = 'input[name="nickname"]';
 export const authFormUserCheckBoxShipping = 'input[name="defaultShipping"]';
 export const authFormUserCheckBoxBilling = 'input[name="defaultBilling"]';
 
@@ -388,3 +390,76 @@ export const variantsGridAddToCartButton =
   ".product-details__variants-grid-actions button";
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
+
+// Account navigation items, used to assert an entry is absent for a customer
+// who may not see it.
+export const accountNavItemTitle = '.commerce-account-nav__item__title';
+
+// Addresses page heading. The block swaps it between "Addresses" and
+// "Company Addresses" depending on whether the customer can see the company
+// address book, so it doubles as a check of which dataset is on screen.
+export const addressesPageTitle = '.account-addresses .dropin-header-container__title';
+
+// Checkout — one-time ("Use a different address") shipping entry. Only rendered
+// when the company allows a custom shipping address; the radio carrying
+// value="0" is the entry point, the saved company addresses use their own ids.
+export const checkoutShippingBlock = '.checkout__shipping-form';
+export const checkoutUseDifferentShippingRadio =
+  'input[type="radio"][name="selectedShippingAddress"][value="0"]';
+export const checkoutShippingFormFirstName = '#shipping_firstname';
+export const checkoutShippingFormLastName = '#shipping_lastname';
+export const checkoutShippingFormStreet = '#shipping_street';
+export const checkoutShippingFormStreet2 = '#shipping_street_multiline_2';
+export const checkoutShippingFormCountry = '#shipping_country_code';
+export const checkoutShippingFormRegion = '#shipping_region';
+export const checkoutShippingFormCity = '#shipping_city';
+export const checkoutShippingFormPostcode = '#shipping_postcode';
+export const checkoutShippingFormTelephone = '#shipping_telephone';
+export const checkoutShippingFormVatId = '#shipping_vat_id';
+
+// Purchase order confirmation + order details (B2B checkout places a PO)
+export const poConfirmationLink = '.purchase-orders-confirmation-content__link';
+export const orderShippingAddress =
+  '.order-customer-details-content__container-shipping_address';
+export const orderBillingAddress =
+  '.order-customer-details-content__container-billing_address';
+
+// Address Book (B2B) selectors
+// The address card/modal/form classes below are shared with the B2C personal
+// address dropin components (AddressCard/AddressModal/AddressForm — same
+// bundle per scripts/__dropins__/storefront-account) and are confirmed real
+// selectors via verifyUserAccount.spec.js. Everything marked "TBD" below is a
+// best-effort guess derived from the minified dropin bundle and MUST be
+// confirmed against the live rendered DOM on first run — the component ships
+// pre-minified so it cannot be verified from source alone.
+export const addressBookFormTitle = '[data-testid="addressesFormTitle"]';
+export const addressBookCard = '.account-address-card';
+export const addressBookCardDescription = '.account-address-card__description';
+export const addressBookModalButtons = '.account-address-modal__buttons';
+// TBD: confirm against live DOM
+export const addressBookNoPermissionMessage = '[data-testid="noPermissionMessage"]';
+// TBD: confirm against live DOM
+export const addressBookActionsLoader = '[data-testid="addressActionsLoaderWrapper"]';
+// Confirmed against _____EXAMPLES_____/cypress/src/tests/e2eTests/B2BAddressList.spec.js
+// (same suite that correctly predicted the addressBookEnabled/customShippingAddressEnabled
+// checkbox names before we confirmed those against the live DOM) — real names
+// are camelCase, and there is ONE isDefault checkbox (not split shipping/billing
+// ones), whose visible label text switches based on the addressType checkboxes.
+export const addressBookIsDefaultCheckbox = 'input[name="isDefault"]';
+export const addressBookTypeShippingCheckbox = 'input[name="addressTypeShipping"]';
+export const addressBookTypeBillingCheckbox = 'input[name="addressTypeBilling"]';
+// Legacy guesses (snake_case) — wrong, kept only so the still-skipped older
+// tests referencing them don't throw ReferenceErrors. Do not use for new code.
+export const addressBookDefaultShippingCheckbox = 'input[name="default_shipping"]';
+export const addressBookDefaultBillingCheckbox = 'input[name="default_billing"]';
+export const addressBookTypeShippingRadio = 'input[name="address_type_shipping"]';
+export const addressBookTypeBillingRadio = 'input[name="address_type_billing"]';
+
+// Edit Company Profile — Address Book settings.
+// TBD: input names are inferred from the UpdateCompanyConfigDto field names
+// (addressBookEnabled/customShippingAddressEnabled) — confirm against the
+// live rendered Edit Company Profile form on first run.
+export const companyProfileAddressBookEnabledCheckbox =
+  'input[name="addressBookEnabled"]';
+export const companyProfileCustomShippingEnabledCheckbox =
+  'input[name="customShippingAddressEnabled"]';

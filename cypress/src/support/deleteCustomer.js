@@ -58,6 +58,8 @@ afterEach(() => {
     'Verify B2B Requisition List Sharing feature',
     'Seller Assisted Buying',
     'USF-2563: Company Credit (Optimized Journey)',
+    'B2B Address Book',
+    'Cleanup - Delete address book users and roles',
   ];
 
   const shouldSkip = skipDeleteTests.some(

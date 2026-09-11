@@ -929,3 +929,127 @@ export const onVariantsUpdated = (callback) => {
     }
   });
 };
+
+// ==========================================================================
+// Company Address Book (B2B) Actions
+// ==========================================================================
+
+/**
+ * Navigates to the My Company page and opens the company address book.
+ * Confirmed nav link text is "Company Addresses" (see the account sidebar
+ * screenshot from Test 6) — NOT a generic /address/i match, which can
+ * instead match the personal "Addresses" sidebar item that every logged-in
+ * customer sees regardless of company role, opening the wrong (B2C) form.
+ */
+export const openCompanyAddressBook = (urls) => {
+  // Navigates by URL rather than by clicking a "Company Addresses" nav item.
+  // That item is authored content and is absent from some content sources
+  // (e.g. boilerplate-b2b-accs), so clicking it made the whole suite depend on
+  // which site the run happens to be pointed at. Both nav items lead here
+  // anyway, and the page renders whichever address dataset the customer's
+  // permissions allow.
+  cy.visit(urls.addresses);
+  cy.wait(3000);
+};
+
+/**
+ * Opens the Edit Company Profile form and toggles the Address Book settings
+ * checkboxes (addressBookEnabled / customShippingAddressEnabled), then saves.
+ * Pass `undefined` for a flag to leave its current state untouched.
+ */
+export const toggleCompanyAddressBookSettings = (
+  urls,
+  { addressBookEnabled, customShippingAddressEnabled } = {},
+) => {
+  cy.visit(urls.companyProfile);
+  cy.wait(2000);
+  cy.contains('button', 'Edit').should('be.visible').click();
+  cy.wait(1000);
+
+  if (addressBookEnabled !== undefined) {
+    cy.get(fields.companyProfileAddressBookEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== addressBookEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  if (customShippingAddressEnabled !== undefined) {
+    cy.get(fields.companyProfileCustomShippingEnabledCheckbox).then(($checkbox) => {
+      if ($checkbox.prop('checked') !== customShippingAddressEnabled) {
+        cy.wrap($checkbox).click({ force: true });
+      }
+    });
+  }
+
+  cy.contains('button', 'Save').should('be.visible').click();
+  cy.wait(2000);
+};
+
+/**
+ * Fills the common address fields shared by the B2C and B2B address forms
+ * (same AddressForm dropin component). Unlike `createAddress`, this does NOT
+ * touch the B2C-only `defaultShipping` checkbox — the B2B form uses different
+ * field names (`default_shipping`/`default_billing`/`address_type_*`, see
+ * fields.addressBookDefaultShippingCheckbox etc.), handled separately by the
+ * caller so the correct real fields are exercised.
+ */
+export const fillCompanyAddressFields = (address) => {
+  cy.get(fields.fieldUserFirstName).clear().type(address.firstName);
+  cy.get(fields.fieldUserLastName).clear().type(address.lastName);
+  cy.get(fields.fieldUserStreet).clear().type(address.street);
+  cy.get(fields.fieldUserStreet2).clear().type(address.streetMultiline_2);
+  cy.get(fields.fieldUserSelectCountry).select(address.countryCode);
+
+  // Selecting a country with a predefined region list (e.g. US) triggers an
+  // async GET_REGIONS reload that swaps the region field from <input> to
+  // <select> shortly after — interacting with it too soon fails with
+  // "the page updated while this command was executing" because the node
+  // gets replaced mid-command. Wait for it to settle, then use whichever
+  // element is actually present (mirrors the select-vs-swatch detection
+  // already used by the `selectProductOption` custom command).
+  cy.wait(1500);
+  cy.get('body').then(($body) => {
+    if ($body.find(fields.fieldUserSelectRegion).length) {
+      cy.get(fields.fieldUserSelectRegion).select(address.region);
+    } else {
+      cy.get(fields.fieldUserTextRegion).clear().type(address.region);
+    }
+  });
+
+  cy.get(fields.fieldUserCity).clear().type(address.city);
+  cy.get(fields.fieldUserPhone).clear().type(address.telephone);
+  cy.get(fields.fieldUserPostCode).clear().type(address.postcode);
+  cy.get(fields.fieldUserVatId).clear().type(address.vatId);
+
+  // Nickname only exists on the B2B company address form, not the personal
+  // (B2C) address form — check the field is actually present before typing,
+  // not just that the fixture happens to have a nickname value, since the
+  // same fixtures get reused for personal-address creation too (Address
+  // Book disabled) where this input doesn't render at all.
+  if (address.nickname) {
+    cy.get('body').then(($body) => {
+      if ($body.find(fields.fieldUserNickname).length) {
+        cy.get(fields.fieldUserNickname).clear().type(address.nickname);
+      }
+    });
+  }
+};
+
+/**
+ * Removes a company address card identified by text contained within it
+ * (e.g. a street or lastname fragment), confirming the removal modal.
+ */
+export const deleteCompanyAddressCard = (identifyingText, labels) => {
+  cy.get(fields.addressBookCard)
+    .contains(identifyingText)
+    .closest(fields.addressBookCard)
+    .within(() => {
+      cy.contains(labels.remove).click();
+    });
+  cy.contains(labels.removeConfirm).should('be.visible');
+  cy.get(fields.addressBookModalButtons)
+    .contains(labels.remove)
+    .click();
+  cy.wait(2000);
+};

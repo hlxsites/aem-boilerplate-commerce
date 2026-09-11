@@ -1,5 +1,11 @@
 # @dropins/storefront-company-management
 
+## 1.5.0-beta.1
+
+### Patch Changes
+
+- a18a471: Bumped preact library version to 10.29.7
+
 ## 1.5.0-beta.0
 
 ### Minor Changes

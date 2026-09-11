@@ -31,5 +31,17 @@ module.exports = defineConfig({
       purchaseOrders: '/customer/purchase-orders',
       approvalRules: '/customer/approval-rules',
     },
+    // Address Book (B2B) URLs — see cypress.b2b.saas.config.js for notes on
+    // the unconfirmed dedicated address-book route.
+    addressBookUrls: {
+      login: '/customer/login',
+      account: '/customer/account',
+      companyProfile: '/customer/company',
+      // Both the standard "Addresses" and the B2B "Company Addresses" nav items
+      // point here; which dataset the page shows follows the customer's
+      // permissions, so the suite navigates straight to it instead of relying on
+      // a nav item that is not authored in every content source.
+      addresses: '/customer/address',
+    },
   },
 });

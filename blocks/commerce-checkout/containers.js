@@ -50,6 +50,7 @@ import {
 } from '@dropins/tools/components.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { debounce } from '@dropins/tools/lib.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Checkout Dropin Libs
@@ -303,14 +304,16 @@ export const renderBillingAddressFormSkeleton = async (container) => renderConta
 /**
  * Renders checkbox to set billing address same as shipping address - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render the checkbox in
+ * @param {boolean} active - whether the checkbox should be active/visible (disabled for B2B checkout)
  * @returns {Promise<Object>} - The rendered bill to shipping address component
  */
-export const renderBillToShippingAddress = async (container) => renderContainer(
+export const renderBillToShippingAddress = async (container, active = true) => renderContainer(
   CONTAINERS.BILL_TO_SHIPPING_ADDRESS,
   async () => {
     const setBillingAddressOnCart = setAddressOnCart({ type: 'billing' });
 
     return CheckoutProvider.render(BillToShippingAddress, {
+      active,
       onChange: (checked) => {
         const billingFormValues = events.lastPayload('checkout/addresses/billing');
 
@@ -573,12 +576,18 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
 export const renderCustomerShippingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_SHIPPING_ADDRESSES,
   async () => {
+    const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
     const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
     const cartShippingAddress = getCartAddress(data, 'shipping');
 
+    // A company address reaches the cart without a numeric id, because it is set
+    // by company_address_id rather than as a customer address. Falling back to 0
+    // there would tell the container no address is selected and open the
+    // new-address form, so an unidentifiable address is left undefined and the
+    // container preselects the default instead.
     const shippingAddressId = cartShippingAddress
-      ? cartShippingAddress?.id ?? 0
+      ? cartShippingAddress?.id ?? cartShippingAddress?.customerAddressUid
       : undefined;
 
     const shippingAddressCache = sessionStorage.getItem(SHIPPING_ADDRESS_DATA_KEY);
@@ -612,7 +621,9 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
     }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
     return AccountProvider.render(Addresses, {
+      hideActionFormButtons: true,
       addressFormTitle: placeholders?.Checkout?.Addresses?.shippingAddressTitle,
+      b2bEnabled: isB2BEnabled,
       defaultSelectAddressId: shippingAddressId,
       fieldIdPrefix: 'shipping',
       formName: SHIPPING_FORM_NAME,
@@ -646,12 +657,18 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
 export const renderCustomerBillingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_BILLING_ADDRESSES,
   async () => {
+    const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
     const placeholders = await fetchPlaceholders('placeholders/checkout.json');
 
     const cartBillingAddress = getCartAddress(data, 'billing');
 
+    // A company address reaches the cart without a numeric id, because it is set
+    // by company_address_id rather than as a customer address. Falling back to 0
+    // there would tell the container no address is selected and open the
+    // new-address form, so an unidentifiable address is left undefined and the
+    // container preselects the default instead.
     const billingAddressId = cartBillingAddress
-      ? cartBillingAddress?.id ?? 0
+      ? cartBillingAddress?.id ?? cartBillingAddress?.customerAddressUid
       : undefined;
 
     const billingAddressCache = sessionStorage.getItem(BILLING_ADDRESS_DATA_KEY);
@@ -682,6 +699,7 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
 
     return AccountProvider.render(Addresses, {
       addressFormTitle: placeholders?.Checkout?.Addresses?.billToNewAddress,
+      b2bEnabled: isB2BEnabled,
       defaultSelectAddressId: billingAddressId,
       formName: BILLING_FORM_NAME,
       forwardFormRef: formRef,
@@ -696,8 +714,10 @@ export const renderCustomerBillingAddresses = async (container, formRef, data) =
       selectable: true,
       selectBilling: true,
       showBillingCheckBox: false,
+      // The drop-in hides this itself for a company running the address book.
       showSaveCheckBox: true,
       showShippingCheckBox: false,
+      hideActionFormButtons: true,
       title: placeholders?.Checkout?.Addresses?.billingAddressTitle,
     })(container);
   },

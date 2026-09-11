@@ -16,7 +16,7 @@
  *******************************************************************/
 import { OrderDetails } from '../../data/models';
 import { UseOrdersListProps } from '../../types';
-export declare const useOrdersList: ({ ordersInMinifiedView, minifiedView, pageSize, selectedDate, selectedPage, handleSetFirstOrderDate, }: UseOrdersListProps) => {
+export declare const useOrdersList: ({ ordersInMinifiedView, minifiedView, pageSize, selectedDate, selectedPage, searchText, handleSetFirstOrderDate, handleSetInLineAlert, }: UseOrdersListProps) => {
     loading: boolean;
     orderHistoryListItems: OrderDetails[];
     pageInfo: {
@@ -25,4 +25,5 @@ export declare const useOrdersList: ({ ordersInMinifiedView, minifiedView, pageS
         pageSize: number;
     };
     placeholderImage: string;
+    refetchOrders: () => void;
 };
