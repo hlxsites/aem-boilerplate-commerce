@@ -1,5 +1,5 @@
 import { readBlockConfig } from '../../scripts/aem.js';
-import { getProductSku, fetchIndex, IS_UE } from '../../scripts/commerce.js';
+import { getProductSku, fetchIndex } from '../../scripts/commerce.js';
 import { loadFragment } from '../fragment/fragment.js';
 
 export default async function decorate(block) {
@@ -68,7 +68,6 @@ export default async function decorate(block) {
   } catch (error) {
     console.error(error);
   } finally {
-    // don't remove wrapper in UE because then it will not be authorable
-    if (!IS_UE) block.closest('.enrichment-wrapper')?.remove();
+    block.closest('.enrichment-wrapper')?.remove();
   }
 }

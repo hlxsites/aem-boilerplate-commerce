@@ -49,7 +49,6 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
  */
 
 // Environment checks
-export const IS_UE = window.location.hostname.includes('ue.da.live');
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
 
 /**
@@ -708,7 +707,7 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
-  if (isProductTemplate() && (IS_UE || IS_DA)) {
+  if (isProductTemplate() && IS_DA) {
     return getDefaultSkuFromBlock();
   }
 
