@@ -31,7 +31,7 @@ export default async function decorate(block) {
 
   const fragment = document.createRange().createContextualFragment(`
     <div class="search__wrapper">
-      <div class="search__result-info"></div>
+      <div class="search__result-info" role="status" aria-live="polite"></div>
       <div class="search__view-facets"></div>
       <div class="search__facets"></div>
       <div class="search__product-sort"></div>
@@ -219,4 +219,13 @@ export default async function decorate(block) {
     applySearchStateToUrl(url, payload.request);
     window.history.pushState({}, '', url.toString());
   }, { eager: false });
+
+  events.on('commerce/customer-context', () => {
+    const previousSearch = events.lastPayload('search/result')?.request;
+    if (previousSearch) {
+      search(previousSearch).catch((e) => {
+        console.error('Error refreshing products after customer context changed', e);
+      });
+    }
+  });
 }

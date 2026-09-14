@@ -365,12 +365,18 @@ export default async function decorate(block) {
   }
 
   function handleProductChanges({ productContext }) {
+    const incomingSku = productContext?.sku;
+    // Ignore productContext pushes for a different SKU once currentSku is set
+    // (e.g. the cart dropin's own add-to-cart tracking push for another product).
+    if (context.currentSku !== undefined && incomingSku !== context.currentSku) {
+      return;
+    }
     const pricing = productContext?.pricing;
     const price = pricing
       ? (pricing.specialPrice ?? pricing.regularPrice)
       : undefined;
     updateContext({
-      currentSku: productContext?.sku,
+      currentSku: incomingSku,
       currentProductPrice: price,
     });
   }
