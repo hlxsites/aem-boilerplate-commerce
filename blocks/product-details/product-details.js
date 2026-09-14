@@ -59,7 +59,7 @@ function formatNumericAttributeValue(value) {
 export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
-  const product = eventProduct?.sku ? eventProduct : null;
+  let product = eventProduct?.sku ? eventProduct : null;
 
   const labels = await fetchPlaceholders();
 
@@ -319,6 +319,7 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/data', (data) => {
+    product = data?.sku ? data : product;
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
@@ -386,6 +387,21 @@ export default async function decorate(block) {
     },
     { eager: true },
   );
+
+  events.on('commerce/customer-context', async () => {
+    if (!product?.sku) {
+      return;
+    }
+
+    const values = pdpApi.getProductConfigurationValues();
+    const refreshedProduct = await pdpApi.fetchProductData(product.sku, {
+      optionsUIDs: values?.optionsUIDs,
+    });
+
+    if (refreshedProduct) {
+      events.emit('pdp/data', refreshedProduct);
+    }
+  });
 
   return Promise.resolve();
 }
