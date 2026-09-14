@@ -138,6 +138,22 @@ export function checkTermsAndConditions() {
   cy.get(fields.termsAndConditionsCheckbox).should('be.checked');
 }
 
+// Types into a gift-options field that may re-mount after a checkbox toggle.
+// Cypress .type() does not retry, so a re-mount can drop the first keystroke.
+// This re-queries the (possibly re-mounted) input and retypes if the value
+// didn't fully land, making the fill deterministic.
+const typeGiftOptionField = (selector, value) => {
+  cy.get(selector).should('be.visible').click().clear().type(value, { delay: 50 });
+  cy.get(selector)
+    .invoke('val')
+    .then((val) => {
+      if (val !== value) {
+        cy.get(selector).clear().type(value, { delay: 50 });
+      }
+    });
+  cy.get(selector).should('have.value', value).blur();
+};
+
 export const fillGiftOptiosForm = (className, type = 'order') => {
   if (type === 'product') {
     cy.get(className).contains('Gift options').should('be.visible').click();
@@ -159,27 +175,21 @@ export const fillGiftOptiosForm = (className, type = 'order') => {
     })
     .should('be.checked');
 
-  // Toggling the checkboxes above re-renders the form; the recipient input
-  // re-mounts and may drop the first keystroke. .click() triggers focus after
-  // the re-render; .clear() makes the Cypress retry chain safe (removes any
-  // partial value from a previous attempt before retyping).
-  cy.get(`${className} ${fields.giftOptionRecipientName}`)
-    .should('be.visible')
-    .click()
-    .clear()
-    .type('giftOptionRecipientName')
-    .should('have.value', 'giftOptionRecipientName')
-    .blur();
-  cy.get(`${className} ${fields.giftOptionSenderName}`)
-    .should('be.visible')
-    .type('giftOptionSenderName')
-    .should('have.value', 'giftOptionSenderName')
-    .blur();
-  cy.get(`${className} ${fields.giftOptionMessage}`)
-    .should('be.visible')
-    .type('giftOptionMessage')
-    .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
+  // Toggling the checkboxes above re-mounts the recipient input, which can drop
+  // the first keystroke. typeGiftOptionField re-queries and retypes if the value
+  // didn't fully land, keeping the fill deterministic.
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionRecipientName}`,
+    'giftOptionRecipientName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionSenderName}`,
+    'giftOptionSenderName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionMessage}`,
+    'giftOptionMessage',
+  );
 
   cy.get(className).contains('Customize').should('be.visible').click();
   // Wait for the wrap-design modal to render before selecting an image and
@@ -199,21 +209,18 @@ export const fillGiftOptiosMessageForm = (className, type = 'order') => {
     cy.get(className).contains('Gift options').should('be.visible').click();
   }
 
-  cy.get(`${className} ${fields.giftOptionRecipientName}`)
-    .should('be.visible')
-    .type('giftOptionRecipientName')
-    .should('have.value', 'giftOptionRecipientName')
-    .blur();
-  cy.get(`${className} ${fields.giftOptionSenderName}`)
-    .should('be.visible')
-    .type('giftOptionSenderName')
-    .should('have.value', 'giftOptionSenderName')
-    .blur();
-  cy.get(`${className} ${fields.giftOptionMessage}`)
-    .should('be.visible')
-    .type('giftOptionMessage')
-    .should('have.value', 'giftOptionMessage')
-    .blur(); // Added .blur() here
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionRecipientName}`,
+    'giftOptionRecipientName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionSenderName}`,
+    'giftOptionSenderName',
+  );
+  typeGiftOptionField(
+    `${className} ${fields.giftOptionMessage}`,
+    'giftOptionMessage',
+  );
 };
 
 export const fillGiftOptiosFormEmpty = (className) => {
