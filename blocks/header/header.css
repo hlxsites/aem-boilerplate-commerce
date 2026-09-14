@@ -346,6 +346,14 @@ header nav .nav-tools-wrapper>button {
   width: 40px;
 }
 
+header nav .nav-sections .authCombineNavElement button {
+  all: unset;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
 header nav .nav-tools button.nav-cart-button {
   background-image: url('../../icons/cart.svg');
   background-repeat: no-repeat;
@@ -438,6 +446,11 @@ header .nav-search-panel .search-bar-result .dropin-product-item-card__content .
 
 header .nav-search-panel .search-bar-result .product-discovery-product-list__footer button {
   width: 100%;
+}
+
+header nav .nav-sections .authCombineNavElement button:focus-visible {
+  outline: 2px solid var(--color-brand-700);
+  outline-offset: 2px;
 }
 
 /* Mini Cart  */

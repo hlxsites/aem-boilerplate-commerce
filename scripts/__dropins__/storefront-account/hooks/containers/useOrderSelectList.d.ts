@@ -14,14 +14,17 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const useOrderSelectList: () => {
+import type { OrdersListSearchScope } from '../../types';
+export declare const useOrderSelectList: (searchScope?: OrdersListSearchScope) => {
     selectableDateList: {
         value: string;
         text: string | undefined;
     }[];
     selectedDate: string;
     selectedPage: number;
+    searchText: string;
     handleSelectDate: (event: Event) => void;
+    handleSearch: (value: string) => void;
     setSelectedPage: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<number>>;
     handleSetFirstOrderDate: (date: string) => void;
 };
