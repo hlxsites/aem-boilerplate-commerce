@@ -26,12 +26,7 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import {
-  rootLink,
-  setJsonLd,
-  fetchPlaceholders,
-  getProductLink,
-} from '../../scripts/commerce.js';
+import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -416,100 +411,12 @@ export default async function decorate(block) {
   events.on('aem/lcp', () => {
     const isPrerendered = isProductPrerendered();
     if (product && !isPrerendered) {
-      setJsonLdProduct(product);
       setMetaTags(product);
       document.title = product.name;
     }
   }, { eager: true });
 
   return Promise.resolve();
-}
-
-async function setJsonLdProduct(product) {
-  const {
-    name,
-    inStock,
-    description,
-    sku,
-    urlKey,
-    price,
-    priceRange,
-    images,
-    attributes,
-  } = product;
-  const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes?.find((attr) => attr.name === 'brand');
-
-  // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
-
-  const ldJson = {
-    '@context': 'http://schema.org',
-    '@type': 'Product',
-    name,
-    description,
-    image: images[0]?.url,
-    offers: [],
-    productID: sku,
-    brand: {
-      '@type': 'Brand',
-      name: brand?.value,
-    },
-    url: new URL(getProductLink(urlKey, sku), window.location),
-    sku,
-    '@id': new URL(getProductLink(urlKey, sku), window.location),
-  };
-
-  if (variants.length > 1) {
-    ldJson.offers.push(...variants
-      // A variant can come back without a resolved product (e.g. an
-      // unavailable option combination); skip those so JSON-LD generation
-      // doesn't throw on null property access.
-      .filter((variant) => variant.product)
-      .map((variant) => ({
-        '@type': 'Offer',
-        name: variant.product.name,
-        image: variant.product.images?.[0]?.url,
-        price: variant.product.price?.final?.amount?.value,
-        priceCurrency: variant.product.price?.final?.amount?.currency,
-        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-        sku: variant.product.sku,
-      })));
-  } else {
-    ldJson.offers.push({
-      '@type': 'Offer',
-      price: amount?.value,
-      priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-    });
-  }
-
-  setJsonLd(ldJson, 'product');
 }
 
 function createMetaTag(property, content, type) {
