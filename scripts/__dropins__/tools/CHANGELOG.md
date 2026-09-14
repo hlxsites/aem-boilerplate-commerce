@@ -36,6 +36,12 @@
 - a920177: fix(Incrementer): prevent quantity input flicker during in-progress
   typing, and prevent double onValue call when debounce fires before blur
 
+## 2.0.1
+
+### Patch Changes
+
+- 7df4102: Revert reCAPTCHA support for B2B company registration (createCompany)
+
 ## 2.0.0
 
 ### Major Changes
