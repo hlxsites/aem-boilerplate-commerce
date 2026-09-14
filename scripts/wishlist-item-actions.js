@@ -1,10 +1,64 @@
 import { h } from '@dropins/tools/preact.js';
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
-import * as pdpApi from '@dropins/storefront-pdp/api.js';
-import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from './commerce.js';
+import { CORE_FETCH_GRAPHQL } from './commerce.js';
 
-// TODO(ACCS-1630): replace with the real storeConfig `catalog/productalert/allow_stock` flag.
-const NOTIFY_ME_ENABLED = true;
+// Back-in-stock (Notify Me) alerts are gated on the store config
+// catalog/productalert/allow_stock, exposed as storeConfig.product_alert_allow_stock
+// on Commerce Core. Fetch it once and reuse the result across item renders.
+const STORE_CONFIG_ALERT_QUERY = `
+  query {
+    storeConfig {
+      product_alert_allow_stock
+    }
+  }
+`;
+
+// subscribeProductAlertStock is an authenticated Commerce Core mutation. There
+// is no PDP drop-in wrapper for it (PDP is a Catalog Service drop-in), so the
+// storefront calls it directly through its Commerce Core fetch, which carries
+// the customer token.
+const SUBSCRIBE_PRODUCT_ALERT_STOCK = `
+  mutation SubscribeProductAlertStock($input: ProductAlertStockInput!) {
+    subscribeProductAlertStock(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+// Reflects an existing subscription so the button can render its
+// already-subscribed state on load instead of resetting to "Notify me".
+const IS_SUBSCRIBED_PRODUCT_ALERT_STOCK = `
+  query IsSubscribedProductAlertStock($input: ProductAlertStockInput!) {
+    isSubscribedProductAlertStock(input: $input) {
+      isSubscribed
+    }
+  }
+`;
+
+async function isAlreadySubscribed(sku) {
+  try {
+    const { data } = await CORE_FETCH_GRAPHQL.fetchGraphQl(
+      IS_SUBSCRIBED_PRODUCT_ALERT_STOCK,
+      { method: 'GET', variables: { input: { sku } } },
+    );
+    return Boolean(data?.isSubscribedProductAlertStock?.isSubscribed);
+  } catch (error) {
+    // On failure, fall back to the actionable state so the shopper can retry.
+    return false;
+  }
+}
+
+let notifyMeEnabledPromise;
+function isNotifyMeEnabled() {
+  if (!notifyMeEnabledPromise) {
+    notifyMeEnabledPromise = CORE_FETCH_GRAPHQL
+      .fetchGraphQl(STORE_CONFIG_ALERT_QUERY)
+      .then(({ data }) => Boolean(data?.storeConfig?.product_alert_allow_stock))
+      .catch(() => false);
+  }
+  return notifyMeEnabledPromise;
+}
 
 const DISCONTINUED_ATTRIBUTE_ID = 'discontinued_product';
 
@@ -21,6 +75,7 @@ export function renderWishlistItemActions(isLoggedIn) {
     const { item, onMoveToCart } = ctx;
     const discontinued = isDiscontinued(item.product);
     const inStock = item.product?.inStock;
+    const notifyMeEnabled = await isNotifyMeEnabled();
 
     const root = document.createElement('div');
     root.className = 'wishlist-item-actions';
@@ -35,24 +90,31 @@ export function renderWishlistItemActions(isLoggedIn) {
           style: { width: '100%' },
           onClick: () => onMoveToCart?.(),
         })(root);
-      } else if (NOTIFY_ME_ENABLED && isLoggedIn) {
+      } else if (notifyMeEnabled && isLoggedIn) {
+        const alreadySubscribed = await isAlreadySubscribed(item.product.sku);
         const notifyButton = await UI.render(Button, {
-          children: 'Notify me',
+          children: alreadySubscribed ? 'Already subscribed' : 'Notify me',
           size: 'medium',
           type: 'submit',
           style: { width: '100%' },
+          disabled: alreadySubscribed,
           onClick: async () => {
-            // subscribeStockAlert is an authenticated Commerce Core mutation,
-            // but the PDP api is pinned to Catalog Service (for product
-            // hydration), whose headers lack the customer Authorization token.
-            // Route this one call through Core (which carries the token), then
-            // restore CS for hydration.
-            pdpApi.setEndpoint(CORE_FETCH_GRAPHQL);
             try {
-              const result = await pdpApi.subscribeStockAlert(item.product.sku);
+              const { data, errors } = await CORE_FETCH_GRAPHQL.fetchGraphQl(
+                SUBSCRIBE_PRODUCT_ALERT_STOCK,
+                { variables: { input: { sku: item.product.sku } } },
+              );
+              const result = data?.subscribeProductAlertStock;
+              if (errors?.length || !result?.success) {
+                throw new Error(
+                  result?.message
+                    || errors?.[0]?.message
+                    || 'Unable to subscribe to stock alert.',
+                );
+              }
               notifyButton.setProps((prev) => ({
                 ...prev,
-                children: result?.message || 'You will be notified',
+                children: result.message || 'You will be notified',
                 disabled: true,
               }));
             } catch (error) {
@@ -62,8 +124,6 @@ export function renderWishlistItemActions(isLoggedIn) {
                 ...prev,
                 children: 'Something went wrong, try again',
               }));
-            } finally {
-              pdpApi.setEndpoint(CS_FETCH_GRAPHQL);
             }
           },
         })(root);
