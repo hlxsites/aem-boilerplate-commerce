@@ -28,8 +28,6 @@ No localStorage keys are used by this block. -->
 - `events.on('pdp/values', callback)` - Listens for product option value changes to update wishlist context
 - `events.on('wishlist/alert', callback)` - Listens for wishlist action alerts to show notifications
 - `events.on('cart/data', callback)` - Listens for cart data changes to determine update mode
-- `events.on('aem/lcp', callback)` - Listens for AEM LCP event to set meta tags and page title (skipped when product JSON-LD is already prerendered in the HTML)
-
 <!-- #### Event Emitters
 
 No events are emitted by this block. -->
@@ -51,7 +49,7 @@ No events are emitted by this block. -->
 3. **Add to Cart**: Users can add products to cart or update existing cart items
 4. **Wishlist Management**: Users can add/remove products from wishlist
 5. **Image Gallery**: Users can view product images in desktop thumbnail or mobile carousel format
-6. **SEO Optimization**: Sets meta tags and page title for search engines; JSON-LD structured data is expected to be prerendered in the HTML for reliable SEO indexing
+6. **SEO Optimization**: Meta tags, page title, and JSON-LD structured data are expected to be set by a prerendering solution; the block does not write any SEO metadata at runtime
 
 ### Error Handling
 
