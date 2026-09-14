@@ -107,3 +107,15 @@
   font: var(--type-headline-1-font);
   letter-spacing: var(--type-headline-1-letter-spacing);
 }
+
+/*
+ * Discontinued items render a short notice in the action slot instead of a
+ * button. Reset the default paragraph margins so it aligns with the action row
+ * (rather than dropping well below it), and render it as muted body text.
+ */
+.cart__save-for-later .wishlist-item-actions__discontinued {
+  margin: 0;
+  color: var(--color-neutral-700, #6e6e6e);
+  font: var(--type-body-2-default-font, inherit);
+  letter-spacing: var(--type-body-2-default-letter-spacing, normal);
+}

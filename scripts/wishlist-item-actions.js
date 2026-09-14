@@ -128,6 +128,11 @@ export function renderWishlistItemActions(isLoggedIn) {
           },
         })(root);
       }
+    } else {
+      const message = document.createElement('p');
+      message.className = 'wishlist-item-actions__discontinued';
+      message.textContent = 'Product has been discontinued and is not available for purchase.';
+      root.appendChild(message);
     }
 
     ctx.replaceWith(root);
