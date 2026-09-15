@@ -334,7 +334,9 @@ export async function initializeCommerce() {
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
   // Auto Decorate Product Bus' PDP
-  if (isProductBusPDP()) autoDecoratePDP();
+  if (!!getMetadata('sku') && !document.querySelector('main > div > .product-details')) {
+    autoDecoratePDP();
+  }
 
   return initializeDropins();
 }
@@ -884,6 +886,10 @@ function autolinkModals(element) {
   });
 }
 
+export function isProductBusPDP() {
+  return getMetadata('product-bus') === 'true';
+}
+
 /**
  * Parses the page's Product JSON-LD script tag, if present.
  * @returns {object|null} The parsed JSON-LD object, or null if absent/invalid
@@ -906,19 +912,6 @@ export function getProductJsonLd() {
 }
 
 /**
- * Determines whether the current PDP is backed by an externally-hosted
- * Product Bus feed rather than the Catalog Service. The product pipeline
- * unconditionally renders a `sku` page metadata field for Product Bus pages
- * (see helix-product-pipeline's render-head.js); Catalog Service-backed PDPs
- * don't set this. `type` isn't reliable here — some Product Bus
- * implementations omit it even for configurable products.
- * @returns {boolean} True if the current page is a Product Bus PDP
- */
-export function isProductBusPDP() {
-  return !!getMetadata('sku') && !document.querySelector('main > div > .product-details');
-}
-
-/**
  * Auto-builds a `product-details` block for Product Bus PDPs, which have no
  * authored blocks of their own. Runs before `decorateBlocks` assigns the
  * generic `.block` marker class, so authored content is detected via the
@@ -927,6 +920,11 @@ export function isProductBusPDP() {
  * are left alone.
  */
 function autoDecoratePDP() {
+  // set metadata
+  const meta = document.createElement('meta');
+  meta.name = 'product-bus';
+  meta.content = 'true';
+  document.head.appendChild(meta);  
   // create a PDP block with the SKU
   const pdpBlock = buildBlock('product-details', { elems: [] });
   const pdpSection = document.createElement('div');
