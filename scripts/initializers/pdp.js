@@ -14,40 +14,11 @@ import {
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
-import { getMetadata } from '../aem.js';
 
 export const IMAGES_SIZES = {
   width: 960,
   height: 1191,
 };
-
-/**
- * Extracts the main product image URL from JSON-LD or meta tags
- * @returns {string|null} The image URL or null if not found
- */
-function extractMainImageUrl() {
-  // Cache DOM query to avoid repeated lookups
-  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
-
-  if (!jsonLdScript?.textContent) {
-    return getMetadata('og:image') || getMetadata('image');
-  }
-
-  try {
-    const jsonLd = JSON.parse(jsonLdScript.textContent);
-
-    // Verify this is product structured data before extracting image
-    if (jsonLd?.['@type'] === 'Product' && jsonLd?.image) {
-      debugger
-      return jsonLd.image;
-    }
-
-    return getMetadata('og:image') || getMetadata('image');
-  } catch (error) {
-    console.debug('Failed to parse JSON-LD:', error);
-    return getMetadata('og:image') || getMetadata('image');
-  }
-}
 
 /**
  * Builds the raw ComplexProductView `options` (one per configurable
@@ -136,15 +107,6 @@ function preloadPDPAssets() {
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
   preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
-
-  // Extract and preload main product image
-  const imageUrl = extractMainImageUrl();
-
-  if (imageUrl) {
-    preloadFile(imageUrl, 'image');
-  } else {
-    console.warn('Unable to infer main image from JSON-LD or meta tags');
-  }
 }
 
 await initializeDropin(async () => {
@@ -223,7 +185,7 @@ await initializeDropin(async () => {
     // `type` page metadata isn't a reliable signal here — some Product Bus
     // implementations omit it even for configurable products. Any offer
     // carrying `options` means there's more than one purchasable combination.
-    const isComplex = offers.some((offer) => Array.isArray(offer?.options) && offer.options.length > 0);
+    const isComplex = offers.some((offer) => offer.options.length > 0);
 
     // Get the Catalog Service enrichment data (attributes, option labels/types)
     const enrichment = await getProductBusEnrichment();
