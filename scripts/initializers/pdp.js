@@ -8,7 +8,9 @@ import {
   fetchPlaceholders,
   getOptionsUIDsFromUrl,
   getProductSku,
+  getProductJsonLd,
   IS_UE,
+  hasJSONLDProductData,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
@@ -51,8 +53,46 @@ await initializeDropin(async () => {
     return loadErrorPage();
   }
 
+  async function getProducDataFromJSONLD() {
+    const jsonLd = getProductJsonLd();
+    const offers = Array.isArray(jsonLd?.offers) ? jsonLd.offers : [];
+    const offer = offers[0];
+    const priceValue = Number(offer?.price ?? 0);
+
+    return {
+      __typename: 'SimpleProductView',
+      sku: jsonLd?.sku,
+      name: jsonLd?.name,
+      description: jsonLd?.description,
+      url: jsonLd?.url,
+      images: Array.isArray(jsonLd?.image)
+        ? jsonLd.image.map((url) => ({ url, label: null, roles: [] }))
+        : [jsonLd?.image].filter(Boolean).map((url) => ({ url, label: null, roles: [] })),
+      attributes: [],
+      inStock: offer?.availability === 'https://schema.org/InStock',
+      price: {
+        roles: ['visible'],
+        regular: {
+          amount: {
+            value: priceValue,
+            currency: offer?.priceCurrency,
+          },
+        },
+        final: {
+          amount: {
+            value: priceValue,
+            currency: offer?.priceCurrency,
+          },
+        },
+      },
+      options: null,
+    };
+  }
+
   const [product, labels] = await Promise.all([
-    fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
+    hasJSONLDProductData()
+      ? getProducDataFromJSONLD()
+      : fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
     fetchPlaceholders('placeholders/pdp.json'),
   ]);
 

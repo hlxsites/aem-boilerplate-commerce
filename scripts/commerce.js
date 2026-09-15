@@ -9,6 +9,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
+  buildBlock,
   getMetadata,
   readBlockConfig,
 } from './aem.js';
@@ -331,6 +332,11 @@ export async function initializeCommerce() {
   // Set Fetch GraphQL (Catalog Service)
   CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
+
+  // Auto Decorate PDP if the page has no blocks, but has a SKU in metadata
+  if (!!getMetadata('sku') && !document.querySelector('main > div > .product-details')) {
+    autoDecoratePDP();
+  }
 
   return initializeDropins();
 }
@@ -878,6 +884,47 @@ function autolinkModals(element) {
       openModal(origin.href);
     }
   });
+}
+
+export function hasJSONLDProductData() {
+  return getProductJsonLd() !== null;
+}
+
+/**
+ * Parses the page's Product JSON-LD script tag, if present.
+ * @returns {object|null} The parsed JSON-LD object, or null if absent/invalid
+ */
+export function getProductJsonLd() {
+  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
+
+  if (!jsonLdScript?.textContent) {
+    return null;
+  }
+
+  try {
+    const jsonLd = JSON.parse(jsonLdScript.textContent);
+    // Verify this is product structured data before returning it
+    return jsonLd?.['@type'] === 'Product' ? jsonLd : null;
+  } catch (error) {
+    console.debug('Failed to parse JSON-LD:', error);
+    return null;
+  }
+}
+
+/**
+ * Auto-builds a `product-details` block for Product Bus PDPs, which have no
+ * authored blocks of their own. Runs before `decorateBlocks` assigns the
+ * generic `.block` marker class, so authored content is detected via the
+ * block-name class instead, which the source markup already carries.
+ * Non-Product-Bus pages (including authored, Catalog Service-backed PDPs)
+ * are left alone.
+ */
+function autoDecoratePDP() {
+  // create a PDP block with the SKU
+  const pdpBlock = buildBlock('product-details', { elems: [] });
+  const pdpSection = document.createElement('div');
+  pdpSection.append(pdpBlock);
+  document.querySelector('main').replaceChildren(pdpSection);
 }
 
 /**
