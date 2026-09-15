@@ -53,8 +53,6 @@ await initializeDropin(async () => {
     return loadErrorPage();
   }
 
-  // Product Bus?
-
   async function getProducDataFromJSONLD() {
     const jsonLd = getProductJsonLd();
     const offers = Array.isArray(jsonLd?.offers) ? jsonLd.offers : [];
