@@ -26,7 +26,8 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
+import { rootLink, fetchPlaceholders, isProductBusPDP } from '../../scripts/commerce.js';
+import { createOptimizedPicture } from '../../scripts/aem.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -57,6 +58,7 @@ function formatNumericAttributeValue(value) {
 }
 
 export default async function decorate(block) {
+  const isProductBus = isProductBusPDP();
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   let product = eventProduct?.sku ? eventProduct : null;
@@ -121,22 +123,54 @@ export default async function decorate(block) {
 
   block.replaceChildren(fragment);
 
+  const buildProductBusPicture = (ctx, wrapper = null) => {
+    const src = ctx.defaultImageProps?.src || ctx.data?.url || '';
+    if (!src) {
+      return;
+    }
+
+    const picture = createOptimizedPicture(
+      src,
+      ctx.defaultImageProps?.alt || ctx.data?.label || '',
+      false,
+      [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
+    );
+
+    const root = wrapper || document.createElement('span');
+    root.appendChild(picture);
+    ctx.replaceWith(root);
+  };
+
   const gallerySlots = {
     CarouselThumbnail: (ctx) => {
-      if (ctx.mediaType === 'image') {
-        tryRenderAemAssetsImage(ctx, {
-          ...imageSlotConfig(ctx),
-          wrapper: document.createElement('span'),
-        });
+      if (ctx.mediaType !== 'image') {
+        return;
       }
+
+      if (isProductBus) {
+        buildProductBusPicture(ctx, document.createElement('span'));
+        return;
+      }
+
+      tryRenderAemAssetsImage(ctx, {
+        ...imageSlotConfig(ctx),
+        wrapper: document.createElement('span'),
+      });
     },
 
     CarouselMainImage: (ctx) => {
-      if (ctx.mediaType === 'image') {
-        tryRenderAemAssetsImage(ctx, {
-          ...imageSlotConfig(ctx),
-        });
+      if (ctx.mediaType !== 'image') {
+        return;
       }
+
+      if (isProductBus) {
+        buildProductBusPicture(ctx);
+        return;
+      }
+
+      tryRenderAemAssetsImage(ctx, {
+        ...imageSlotConfig(ctx),
+      });
     },
   };
 
@@ -165,9 +199,7 @@ export default async function decorate(block) {
       gap: 'small',
       loop: false,
       videos: true, // Display videos if available
-      imageParams: {
-        ...IMAGES_SIZES,
-      },
+      imageParams: isProductBus ? undefined : { ...IMAGES_SIZES },
 
       slots: gallerySlots,
     })($galleryMobile),
@@ -180,9 +212,7 @@ export default async function decorate(block) {
       gap: 'small',
       loop: false,
       videos: true, // Display videos if available
-      imageParams: {
-        ...IMAGES_SIZES,
-      },
+      imageParams: isProductBus ? undefined : { ...IMAGES_SIZES },
 
       slots: gallerySlots,
     })($gallery),
