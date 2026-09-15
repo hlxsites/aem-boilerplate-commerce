@@ -1,5 +1,11 @@
 # @dropins/storefront-pdp
 
+## 3.3.1
+
+### Patch Changes
+
+- 1385284: Always render the top-level quantity `Incrementer` (`ProductQuantity` and the monolith quantity slot), including for bundle products. Per-option bundle quantities in `Swatches` write `bundleOptionQuantities`/`enteredOptions`, which describe bundle composition, not how many bundles to add to cart — hiding the top-level control left `values.quantity` fixed at its initial value with no way for shoppers to change it.
+
 ## 3.3.0
 
 ### Minor Changes

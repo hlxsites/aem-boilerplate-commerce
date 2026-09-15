@@ -18,8 +18,12 @@
         {
           "component": "text",
           "name": "recId",
-          "label": "Rec ID",
-          "required": true
+          "label": "Rec ID"
+        },
+        {
+          "component": "text",
+          "name": "referenceKey",
+          "label": "Reference Key"
         },
         {
           "component": "text",

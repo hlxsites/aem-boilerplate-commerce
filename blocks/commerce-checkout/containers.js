@@ -67,6 +67,7 @@ import {
   authPrivacyPolicyConsentSlot,
   fetchPlaceholders,
   rootLink,
+  renderCartItemPromotions,
 } from '../../scripts/commerce.js';
 
 // Constants
@@ -529,7 +530,12 @@ export const renderCartSummaryList = async (container) => renderContainer(
             },
           });
         },
-        Footer: renderCartGiftOptions,
+        Footer: (ctx) => {
+          // Promotion / discount rule labels
+          renderCartItemPromotions(ctx);
+          // Gift Options
+          renderCartGiftOptions(ctx);
+        },
       },
     })(container);
   },
