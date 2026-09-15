@@ -10,7 +10,7 @@ import {
   getProductSku,
   getProductJsonLd,
   IS_UE,
-  isProductBusPDP,
+  hasJSONLDProductData,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
@@ -55,7 +55,7 @@ await initializeDropin(async () => {
 
   // Product Bus?
 
-  async function getProductBusData() {
+  async function getProducDataFromJSONLD() {
     const jsonLd = getProductJsonLd();
     const offers = Array.isArray(jsonLd?.offers) ? jsonLd.offers : [];
     const offer = offers[0];
@@ -69,7 +69,7 @@ await initializeDropin(async () => {
       url: jsonLd?.url,
       images: Array.isArray(jsonLd?.image)
         ? jsonLd.image.map((url) => ({ url, label: null, roles: [] }))
-        : [],
+        : [jsonLd?.image].filter(Boolean).map((url) => ({ url, label: null, roles: [] })),
       attributes: [],
       inStock: offer?.availability === 'https://schema.org/InStock',
       price: {
@@ -92,8 +92,8 @@ await initializeDropin(async () => {
   }
 
   const [product, labels] = await Promise.all([
-    isProductBusPDP()
-      ? getProductBusData()
+    hasJSONLDProductData()
+      ? getProducDataFromJSONLD()
       : fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
     fetchPlaceholders('placeholders/pdp.json'),
   ]);

@@ -333,7 +333,7 @@ export async function initializeCommerce() {
   CS_FETCH_GRAPHQL.setEndpoint(await commerceEndpointWithQueryParams());
   CS_FETCH_GRAPHQL.setFetchGraphQlHeaders((prev) => ({ ...prev, ...getHeaders('cs') }));
 
-  // Auto Decorate Product Bus' PDP
+  // Auto Decorate PDP if the page has no blocks, but has a SKU in metadata
   if (!!getMetadata('sku') && !document.querySelector('main > div > .product-details')) {
     autoDecoratePDP();
   }
@@ -886,8 +886,8 @@ function autolinkModals(element) {
   });
 }
 
-export function isProductBusPDP() {
-  return getMetadata('product-bus') === 'true';
+export function hasJSONLDProductData() {
+  return getProductJsonLd() !== null;
 }
 
 /**
@@ -920,11 +920,6 @@ export function getProductJsonLd() {
  * are left alone.
  */
 function autoDecoratePDP() {
-  // set metadata
-  const meta = document.createElement('meta');
-  meta.name = 'product-bus';
-  meta.content = 'true';
-  document.head.appendChild(meta);  
   // create a PDP block with the SKU
   const pdpBlock = buildBlock('product-details', { elems: [] });
   const pdpSection = document.createElement('div');

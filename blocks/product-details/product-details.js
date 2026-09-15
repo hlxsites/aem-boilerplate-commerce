@@ -26,7 +26,7 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import { rootLink, fetchPlaceholders, isProductBusPDP } from '../../scripts/commerce.js';
+import { rootLink, fetchPlaceholders, hasJSONLDProductData } from '../../scripts/commerce.js';
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 // Initializers
@@ -58,7 +58,7 @@ function formatNumericAttributeValue(value) {
 }
 
 export default async function decorate(block) {
-  const isProductBus = isProductBusPDP();
+  const hasJSONLD = hasJSONLDProductData();
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   let product = eventProduct?.sku ? eventProduct : null;
@@ -123,7 +123,7 @@ export default async function decorate(block) {
 
   block.replaceChildren(fragment);
 
-  const buildProductBusPicture = (ctx, wrapper = null) => {
+  const buildPictureFromJSONLD = (ctx, wrapper = null) => {
     const src = ctx.defaultImageProps?.src || ctx.data?.url || '';
     if (!src) {
       return;
@@ -147,8 +147,8 @@ export default async function decorate(block) {
         return;
       }
 
-      if (isProductBus) {
-        buildProductBusPicture(ctx, document.createElement('span'));
+      if (hasJSONLD) {
+        buildPictureFromJSONLD(ctx, document.createElement('span'));
         return;
       }
 
@@ -163,8 +163,8 @@ export default async function decorate(block) {
         return;
       }
 
-      if (isProductBus) {
-        buildProductBusPicture(ctx);
+      if (hasJSONLD) {
+        buildPictureFromJSONLD(ctx);
         return;
       }
 
@@ -199,7 +199,7 @@ export default async function decorate(block) {
       gap: 'small',
       loop: false,
       videos: true, // Display videos if available
-      imageParams: isProductBus ? undefined : { ...IMAGES_SIZES },
+      imageParams: hasJSONLD ? undefined : { ...IMAGES_SIZES },
 
       slots: gallerySlots,
     })($galleryMobile),
@@ -212,7 +212,7 @@ export default async function decorate(block) {
       gap: 'small',
       loop: false,
       videos: true, // Display videos if available
-      imageParams: isProductBus ? undefined : { ...IMAGES_SIZES },
+      imageParams: hasJSONLD ? undefined : { ...IMAGES_SIZES },
 
       slots: gallerySlots,
     })($gallery),
