@@ -51,16 +51,17 @@ function extractMainImageUrl() {
  */
 function preloadPDPAssets() {
   // Preload PDP Dropins assets
-  preloadFile('/scripts/__dropins__/storefront-pdp/api.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/render.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductHeader.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductPrice.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductShortDescription.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductOptions.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductQuantity.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductDescription.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductAttributes.js', 'script');
-  preloadFile('/scripts/__dropins__/storefront-pdp/containers/ProductGallery.js', 'script');
+  const cdnBase = 'https://cdn.jsdelivr.net/npm/@dropins/storefront-pdp@3.3.0/';
+  preloadFile(`${cdnBase}api.js`, 'script');
+  preloadFile(`${cdnBase}render.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductHeader.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductPrice.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductShortDescription.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductOptions.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductQuantity.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductDescription.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductAttributes.js`, 'script');
+  preloadFile(`${cdnBase}containers/ProductGallery.js`, 'script');
 
   // Extract and preload main product image
   const imageUrl = extractMainImageUrl();
