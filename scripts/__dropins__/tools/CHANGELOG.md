@@ -1,5 +1,33 @@
 # @adobe-commerce/elsie
 
+## 2.1.0-beta.8
+
+### Patch Changes
+
+- 238981b: Pin Preact to 10.22.1, the latest version verified against the
+  affected consumer checkout flow without the AEM Asset Slot `insertBefore`
+  crash. Also restore `@preact/signals` 1.3.0, the compatible Signals release
+  used with this Preact version. Preact 10.23.0 introduced child-diffing changes
+  that expose the existing detached render-root and raw DOM graft behavior.
+
+## 2.1.0-beta.7
+
+### Patch Changes
+
+- fea748d: Pin Preact to 10.27.0, the latest version verified not to throw with
+  the existing detached render-root mechanism. Preact 10.27.1 and newer
+  reproduce intermittent `insertBefore` crashes in AEM Asset image Slots.
+
+## 2.1.0-beta.6
+
+### Patch Changes
+
+- 406a36d: Restore the existing Slot implementation and temporarily downgrade
+  Preact from 10.29 to 10.28.4, the latest pre-10.29 release, to avoid
+  intermittent `insertBefore` crashes in AEM Asset image Slots while the
+  underlying DOM graft and render-root ownership changes are developed and
+  validated separately.
+
 ## 2.1.0-beta.5
 
 ### Patch Changes
