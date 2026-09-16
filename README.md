@@ -19,6 +19,20 @@ Use the [Site Creator Tool](https://da.live/app/adobe-commerce/storefront-tools/
 
 Alternatively, you can follow our [Guide](https://experienceleague.adobe.com/developer/commerce/storefront/get-started/) for a more detailed walkthrough.
 
+## Installation
+
+Run `npm install` to install dependencies.
+
+This repo's `.npmrc` sets `ignore-scripts=true`, which disables npm lifecycle scripts (`preinstall`/`install`/`postinstall`) for every package. This is a defense against npm supply-chain attacks that hide malicious code inside those scripts. One consequence is that `npm install` alone will **not** copy the drop-in assets into `scripts/__dropins__` or apply the GraphQL overrides defined in `build.mjs`.
+
+After every `npm install` — initial setup, or any time a `@dropins/*` or `@adobe/*` dependency changes — run:
+
+```bash
+npm run install:dropins
+```
+
+This copies the built assets from `node_modules/@dropins` and the relevant `@adobe/*` packages into `scripts/__dropins__`, and applies the GraphQL fragment/operation overrides in `build.mjs`. Edge Delivery Services serves the copied files directly, so this step must complete before `npm start` will reflect the correct drop-in behavior.
+
 ## Staying Up to Date
 
 Once you fork or clone this repo, the code is yours — you are not subscribed to updates.
@@ -31,7 +45,7 @@ If you have already forked or cloned this repo, a new suite release is not an up
 
 ### Updating your drop-in dependencies
 
-The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure the `postinstall` script runs so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
+The only things you need to actively track after forking are your **npm dependencies** — specifically the `@dropins/*` and `@adobe/*` packages (including `@adobe/magento-storefront-event-collector` and `@adobe/magento-storefront-events-sdk`) listed in your `package.json`. Before applying any update, check the release notes for breaking changes and ensure you run `npm run install:dropins` so that the dependencies in your `scripts/__dropins__` directory are updated to the latest build.
 
 These packages follow semantic versioning. Minor and patch releases are non-breaking by contract, so routine updates should be safe to apply.
 
@@ -45,23 +59,39 @@ To install a specific version:
 
 ```bash
 npm install @dropins/storefront-cart@2.0.0  # updates the package in node_modules/
-npm run postinstall                         # copies scripts from node_modules into scripts/__dropins__/
+npm run install:dropins                     # copies scripts from node_modules into scripts/__dropins__/
 ```
 
 To update a drop-in to its latest stable release:
 
 ```bash
 npm install @dropins/storefront-cart@latest
-npm run postinstall
+npm run install:dropins
 ```
 
-Always run `postinstall` after any drop-in update — it copies the built assets from `node_modules` into `scripts/__dropins__`, which is what Edge Delivery Services serves. Note that `npm` does not run `postinstall` automatically when you install a specific package, so this step must always be done manually.
+Always run `npm run install:dropins` after any drop-in update — it copies the built assets from `node_modules` into `scripts/__dropins__`, which is what Edge Delivery Services serves. Since this repo disables npm lifecycle scripts (see [Installation](#installation)), this step is never run automatically and must always be done manually.
 
 ### Automated dependency PRs
 
-This repo includes a GitHub Actions workflow that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
+This repo includes a GitHub Actions workflow (`.github/workflows/update-dependencies.yaml`) that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
 
-You can also trigger the workflow manually from the **Actions** tab in GitHub.
+#### Enabling it on your fork/clone
+
+Whether this works out of the box depends on your organization's (or personal account's) default policy for the **"Allow GitHub Actions to create and approve pull requests"** setting — some orgs disable it by default for new repositories. If it's off, the workflow will run "successfully" (it updates `package.json` locally) but silently fail to open the PR, with no obvious error in the run logs. If your fork doesn't get a PR after the workflow runs, check and enable this setting:
+
+1. In your fork/clone, go to **Settings → Actions → General**.
+2. Scroll to **Workflow permissions**.
+3. Ensure **Read and write permissions** is selected.
+4. Check **Allow GitHub Actions to create and approve pull requests**.
+5. Click **Save**.
+
+Then verify it works by triggering it manually: go to the **Actions** tab, select **Update Dependencies** in the sidebar, and click **Run workflow**. Confirm a pull request is opened once the run completes (if there are no updates available, no PR will be created — bump a version range in `package.json` to force a test run if needed).
+
+If your GitHub organization disallows the "Allow GitHub Actions to create and approve pull requests" setting at the org level and won't allow individual repos to override it, use a personal access token (PAT) or GitHub App token instead of the default `GITHUB_TOKEN`, which bypasses that restriction:
+
+1. Create a fine-grained PAT (or a GitHub App installation token) with **Contents: Read and write** and **Pull requests: Read and write** permissions scoped to your repo.
+2. Store it as a repository secret (e.g. `DEPENDENCY_UPDATE_PAT`) under **Settings → Secrets and variables → Actions**.
+3. Update the `token:` input on the `peter-evans/create-pull-request` step in `update-dependencies.yaml` to reference that secret instead of `${{ secrets.GITHUB_TOKEN }}`.
 
 ### Pulling boilerplate code changes into your fork (optional)
 

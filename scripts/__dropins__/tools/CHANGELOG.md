@@ -1,5 +1,6 @@
 # @adobe-commerce/elsie
 
+<<<<<<< HEAD
 ## 2.1.0-beta.2
 
 ### Patch Changes
@@ -93,6 +94,28 @@
 
 - 089ba5c: fix(a11y): prevent dummy update when keyboard focus moves to
   Incrementer buttons and add aria-valuetext for VoiceOver
+=======
+## 2.1.0-alpha-20260730152635
+
+### Minor Changes
+
+- d9ac070: feat(a11y): add LiveRegion component and Button loading state for
+  WCAG 4.1.3
+
+  - New `LiveRegion` component: a visually-hidden, always-mounted
+    `role="status"` span for announcing status changes to screen readers without
+    focus movement. Accepts `message` (string toggled between empty and the
+    label) and `politeness` ("polite" | "assertive"). Use this alongside
+    `Skeleton` and `ProgressSpinner` instead of relying on those components' own
+    `role="status"` which fires unreliably when they are conditionally mounted.
+  - `Button` now accepts `loading?: boolean` (sets `aria-busy` on the button
+    element) and `loadingLabel?: string` (renders a sibling `LiveRegion` outside
+    the button element — live regions must not be nested inside interactive
+    elements).
+
+### Patch Changes
+
+>>>>>>> 6c65641a7ae144e73bca95136eec963787cdac85
 - d59c153: Fix `Modal` accessibility: while the modal is open, sibling content
   in `document.body` is now hidden from assistive technology with
   `aria-hidden="true"`, preventing screen reader users from navigating outside
@@ -106,6 +129,7 @@
   The container now carries `role="status"` and `aria-live="polite"` so
   assistive technology announces requirement changes as they happen (WCAG
   4.1.3).
+<<<<<<< HEAD
 - 85e5b20: fix(a11y): keep RadioButton's focusable input anchored to its visible
   label when the page scrolls, preventing focus from appearing obscured or
   off-screen (WCAG 2.4.11)
@@ -113,6 +137,8 @@
   COMPANY_CREATE is no longer in the default form-type map. B2B storefronts pass
   `{ b2bEnabled: true }` to `setConfig()` to include it in the configuration
   query.
+=======
+>>>>>>> 6c65641a7ae144e73bca95136eec963787cdac85
 - a920177: fix(Incrementer): prevent quantity input flicker during in-progress
   typing, and prevent double onValue call when debounce fires before blur
 

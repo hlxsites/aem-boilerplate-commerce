@@ -1,5 +1,6 @@
 # @dropins/storefront-account
 
+<<<<<<< HEAD
 ## 4.2.0-beta.1
 
 ### Patch Changes
@@ -101,6 +102,22 @@
 - 73ee059: Fix broken border-radius selector for "Use a different address"
   button
 - 0fbbf64: Adds AGENTS.MD File used for guidance for AI coding agents
+=======
+## 4.2.0-alpha-20260813101821
+
+### Minor Changes
+
+- d58ebf7: Add configurable order history search by order number, product name,
+  or SKU.
+
+### Patch Changes
+
+- 42a521f: fix(AddressesWrapper, OrdersListWrapper): announce loading states to
+  screen readers via a persistent live region instead of a skeleton loader that
+  mounts and unmounts with the content (WCAG 4.1.3)
+- 73ee059: Fix broken border-radius selector for "Use a different address"
+  button
+>>>>>>> 6c65641a7ae144e73bca95136eec963787cdac85
 
 ## 4.1.0
 
