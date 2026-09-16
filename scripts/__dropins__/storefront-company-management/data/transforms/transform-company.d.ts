@@ -16,9 +16,8 @@
  *******************************************************************/
 import { getCompanyResponse } from '../../types/api/getCompany.types';
 import { updateCompanyResponse } from '../../types/api/updateCompany.types';
-import { updateCompanyConfigResponse } from '../../types/api/updateCompanyConfig.types';
 import { CompanyModel, CompanyRegistrationModel } from '../models/company';
-export declare const transformCompany: (response: getCompanyResponse | updateCompanyResponse | updateCompanyConfigResponse) => CompanyModel;
+export declare const transformCompany: (response: getCompanyResponse | updateCompanyResponse) => CompanyModel;
 /**
  * Transform createCompany GraphQL response to Company model
  */

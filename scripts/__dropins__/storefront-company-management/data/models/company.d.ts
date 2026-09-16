@@ -47,8 +47,6 @@ export interface Company {
         code: string;
         title: string;
     }[];
-    addressBookEnabled?: boolean;
-    customShippingAddressEnabled?: boolean;
 }
 export interface CompanyModel extends Company {
     canEditAccount: boolean;

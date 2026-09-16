@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,15 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FunctionComponent } from 'preact';
-export type CompanyAddressBookField = 'addressBookEnabled' | 'customShippingAddressEnabled';
-interface CompanyAddressBookFieldsProps {
-    loading?: boolean;
-    value: {
-        addressBookEnabled: boolean;
-        customShippingAddressEnabled: boolean;
-    };
-    onChange: (field: CompanyAddressBookField, value: boolean) => void;
-}
-export declare const CompanyAddressBookFields: FunctionComponent<CompanyAddressBookFieldsProps>;
-export default CompanyAddressBookFields;
+export * from './setCatalogViewHeaders';
