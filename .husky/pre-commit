@@ -1,2 +1,1 @@
-node .husky/check-block-readme.js
-node .husky/pre-commit.mjs
+node .husky/check-block-readme.js && node .husky/pre-commit.mjs && node .husky/check-lockfile.js

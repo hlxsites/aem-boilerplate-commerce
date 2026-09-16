@@ -388,3 +388,8 @@ export const variantsGridAddToCartButton =
   ".product-details__variants-grid-actions button";
 export const productDetailsAddToCartButton =
   ".product-details__buttons__add-to-cart button";
+
+
+// Cart line item promotion / discount rule labels (cart, mini-cart, checkout)
+export const cartItemPromotions = '.cart-item-promotions';
+export const cartItemPromotionLabel = '.cart-item-promotion-label';
