@@ -854,6 +854,44 @@ export function checkIsAuthenticated() {
   return !!getCookie('auth_dropin_user_token') ?? false;
 }
 
+// Guest-capable routes (order/return details, create-return) are excluded so
+// their guest-token flows still work.
+export const AUTH_GATED_PATHS = [
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_ORDERS_PATH,
+  CUSTOMER_RETURNS_PATH,
+  CUSTOMER_ADDRESS_PATH,
+];
+
+/**
+ * Login URL for a logged-out visitor if `pathname` is an auth-gated account route,
+ * else null. Works before commerce init (no getRootPath) and handles localized
+ * stores (/fr/customer/orders -> /fr/customer/login). Splitting on `/` and `\` then
+ * rejoining keeps the result same-origin (no protocol-relative off-origin redirect).
+ * @param {string} [pathname]
+ * @returns {string|null}
+ */
+export function authGatedLoginRedirect(pathname = window.location.pathname) {
+  const segs = pathname.split(/[/\\]/).filter(Boolean);
+  const ci = segs.indexOf('customer');
+  const leaf = ci === -1 ? undefined : segs[ci + 1];
+  if (!leaf || !AUTH_GATED_PATHS.includes(`${CUSTOMER_PATH}/${leaf}`)) return null;
+  const localePrefix = ci > 0 ? `/${segs.slice(0, ci).join('/')}` : '';
+  return `${localePrefix}${CUSTOMER_LOGIN_PATH}`;
+}
+
+/**
+ * Block guard: redirect a logged-out visitor to login, returning true so the caller
+ * stops. No-op in UE/DA authoring (no auth cookie) so authors can edit the page.
+ * @returns {boolean}
+ */
+export function redirectIfUnauthenticated() {
+  if (IS_UE || IS_DA) return false;
+  if (checkIsAuthenticated()) return false;
+  window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
+  return true;
+}
+
 /**
  * Check if consent was given for a specific topic.
  * @param {*} topic Topic identifier

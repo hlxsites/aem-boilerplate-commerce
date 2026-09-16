@@ -20,6 +20,8 @@ import {
   decorateSections,
   IS_UE,
   IS_DA,
+  checkIsAuthenticated,
+  authGatedLoginRedirect,
 } from './commerce.js';
 
 /*
@@ -258,6 +260,15 @@ function loadDelayed() {
 }
 
 async function loadPage() {
+  // Redirect logged-out shoppers off account routes before render so they don't
+  // paint an account shell; block guards are the fallback. Skip UE/DA authoring.
+  if (!IS_UE && !IS_DA && !checkIsAuthenticated()) {
+    const loginUrl = authGatedLoginRedirect();
+    if (loginUrl) {
+      window.location.href = loginUrl;
+      return;
+    }
+  }
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
