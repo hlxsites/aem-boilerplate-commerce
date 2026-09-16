@@ -1,6 +1,64 @@
 # @adobe-commerce/elsie
 
-<<<<<<< HEAD
+## 2.1.0-beta.5
+
+### Patch Changes
+
+- 4cc7219: Fix a memory leak in `Slot`'s VNode cache (added to fix repeated
+  `insertBefore` crashes from replay churn): entries were never pruned, so a
+  `slot` callback that keeps calling `replaceWith`/`appendChild`/`prependChild`
+  with newly constructed elements over time (rather than mutating one element in
+  place) would pin every historical element in memory for the Slot's whole
+  lifetime. Entries are now evicted via the grafted element's `ref` callback
+  firing with `null`, which Preact does precisely when that VNode is detached
+  (superseded by a different element, or the Slot unmounting).
+
+  See `docs/slot-dom-graft-race.md` for the full trace, including a
+  pre-existing, unrelated gap this surfaced: calling `replaceWith` a second time
+  with a different element doesn't remove the first one.
+
+- ba3bbe7: Fix a recurring `insertBefore` crash in `Slot` when content grafted
+  via `replaceWith`/`appendChild`/`prependChild` is re-applied on unrelated
+  re-renders. `Slot` replays its registered methods on every render pass (by
+  design, so `onRender`/`onChange` can react to fresh state), but the grafted
+  content's wrapper VNode was rebuilt from scratch on every replay, handing
+  Preact a brand new `ref` closure for a DOM node that was already grafted. That
+  churn corrupted Preact's internal DOM bookkeeping for the grafted subtree over
+  repeated re-renders, especially in components with ongoing state changes. The
+  wrapper VNode is now cached per element, so repeated replays reuse the same
+  VNode instance and Preact's diff bails out instead of re-touching the subtree.
+
+  See `docs/slot-dom-graft-race.md` for the full trace, including why an earlier
+  attempt at this fix (making `replaceWith` a no-op after its first run) was
+  wrong.
+
+## 2.1.0-beta.4
+
+### Patch Changes
+
+- 8fc53e5: Fix `Slot` silently dropping
+  `replaceWith`/`appendChild`/`prependChild`/
+  `appendSibling`/`prependSibling`/`remove` calls made from a `slot` callback
+  that doesn't `return`/`await` its own async work (e.g. a non-`async` callback
+  that calls an `async` helper as a bare statement). Previously, nothing was
+  left to trigger the render that would have picked up the queued method once
+  the slot's normal init-triggered render pass had already completed. `Slot` now
+  detects that case and flushes the pending update itself. Existing callers that
+  already `return`/`await` their `slot` callback are unaffected.
+
+  See `docs/slot-dom-graft-race.md` for the full trace.
+
+## 2.1.0-beta.3
+
+### Patch Changes
+
+- 3bfb136: Fix an intermittent `insertBefore` crash in AEM Assets image slots
+  (`tryRenderAemAssetsImage`/`makeAemAssetsImageSlot`) that surfaced after the
+  preact 10.29 bump. The image render into its container was never awaited
+  before handing the container to `Slot`'s `replaceWith`, so it could be grafted
+  into the DOM before it had any content. See `docs/slot-dom-graft-race.md` for
+  the full trace.
+
 ## 2.1.0-beta.2
 
 ### Patch Changes
@@ -94,28 +152,6 @@
 
 - 089ba5c: fix(a11y): prevent dummy update when keyboard focus moves to
   Incrementer buttons and add aria-valuetext for VoiceOver
-=======
-## 2.1.0-alpha-20260730152635
-
-### Minor Changes
-
-- d9ac070: feat(a11y): add LiveRegion component and Button loading state for
-  WCAG 4.1.3
-
-  - New `LiveRegion` component: a visually-hidden, always-mounted
-    `role="status"` span for announcing status changes to screen readers without
-    focus movement. Accepts `message` (string toggled between empty and the
-    label) and `politeness` ("polite" | "assertive"). Use this alongside
-    `Skeleton` and `ProgressSpinner` instead of relying on those components' own
-    `role="status"` which fires unreliably when they are conditionally mounted.
-  - `Button` now accepts `loading?: boolean` (sets `aria-busy` on the button
-    element) and `loadingLabel?: string` (renders a sibling `LiveRegion` outside
-    the button element — live regions must not be nested inside interactive
-    elements).
-
-### Patch Changes
-
->>>>>>> 6c65641a7ae144e73bca95136eec963787cdac85
 - d59c153: Fix `Modal` accessibility: while the modal is open, sibling content
   in `document.body` is now hidden from assistive technology with
   `aria-hidden="true"`, preventing screen reader users from navigating outside
@@ -129,7 +165,6 @@
   The container now carries `role="status"` and `aria-live="polite"` so
   assistive technology announces requirement changes as they happen (WCAG
   4.1.3).
-<<<<<<< HEAD
 - 85e5b20: fix(a11y): keep RadioButton's focusable input anchored to its visible
   label when the page scrolls, preventing focus from appearing obscured or
   off-screen (WCAG 2.4.11)
@@ -137,8 +172,6 @@
   COMPANY_CREATE is no longer in the default form-type map. B2B storefronts pass
   `{ b2bEnabled: true }` to `setConfig()` to include it in the configuration
   query.
-=======
->>>>>>> 6c65641a7ae144e73bca95136eec963787cdac85
 - a920177: fix(Incrementer): prevent quantity input flicker during in-progress
   typing, and prevent double onValue call when debounce fires before blur
 

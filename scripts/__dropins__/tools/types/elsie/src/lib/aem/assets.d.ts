@@ -84,6 +84,6 @@ export declare function generateAemAssetsOptimizedUrl(assetUrl: string, alias: s
  */
 export declare function tryGenerateAemAssetsOptimizedUrl(assetUrl: string, alias: string, params?: Partial<AemAssetsParams>): string;
 /** Creates a slot that renders an AEM Assets image. */
-export declare function makeAemAssetsImageSlot(config: AemAssetsImageSlotConfig): (ctx: RenderContext) => void;
-export declare function tryRenderAemAssetsImage(ctx: RenderContext, config: AemAssetsImageSlotConfig): void;
+export declare function makeAemAssetsImageSlot(config: AemAssetsImageSlotConfig): (ctx: RenderContext) => Promise<void>;
+export declare function tryRenderAemAssetsImage(ctx: RenderContext, config: AemAssetsImageSlotConfig): Promise<void>;
 export {};
