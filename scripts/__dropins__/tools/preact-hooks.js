@@ -1,4 +1,18 @@
-/*! Copyright 2026 Adobe
-All Rights Reserved. */
-import{q as a,x as u,j as t,h as r,m as o,g as f,n as d,_ as c,T as l,y as m,A as n,d as x}from"./chunks/preact-vendor.js";export{a as useCallback,u as useContext,t as useDebugValue,r as useEffect,o as useErrorBoundary,f as useId,d as useImperativeHandle,c as useLayoutEffect,l as useMemo,m as useReducer,n as useRef,x as useState};
-//# sourceMappingURL=preact-hooks.js.map
+/*! TEMPORARY TEST OVERRIDE: re-exports from a vendored Preact build (see
+scripts/vendor/preact/) instead of the version bundled with @dropins/tools,
+for testing purposes only. Revert to the original @dropins/tools build to
+restore the pinned version. */
+export {
+  useCallback,
+  useContext,
+  useDebugValue,
+  useEffect,
+  useErrorBoundary,
+  useId,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'preact/hooks';
