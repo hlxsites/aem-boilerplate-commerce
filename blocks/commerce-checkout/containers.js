@@ -68,6 +68,7 @@ import {
   authPrivacyPolicyConsentSlot,
   fetchPlaceholders,
   rootLink,
+  renderCartItemPromotions,
 } from '../../scripts/commerce.js';
 
 // Constants
@@ -338,10 +339,9 @@ export const renderShippingMethods = async (container) => renderContainer(
 /**
  * Renders payment methods with credit card integration - original regular checkout functionality
  * @param {HTMLElement} container - DOM element to render payment methods in
- * @param {Object} creditCardFormRef - React-style ref for credit card form
  * @returns {Promise<Object>} - The rendered payment methods component
  */
-export const renderPaymentMethods = async (container, creditCardFormRef) => renderContainer(
+export const renderPaymentMethods = async (container) => renderContainer(
   CONTAINERS.PAYMENT_METHODS,
   async () => CheckoutProvider.render(PaymentMethods, {
     slots: {
@@ -350,10 +350,7 @@ export const renderPaymentMethods = async (container, creditCardFormRef) => rend
           render: (ctx) => {
             const $creditCard = document.createElement('div');
 
-            PaymentServices.render(CreditCard, {
-              getCartId: () => ctx.cartId,
-              creditCardFormRef,
-            })($creditCard);
+            PaymentServices.render(CreditCard)($creditCard);
 
             ctx.replaceHTML($creditCard);
           },
@@ -536,7 +533,12 @@ export const renderCartSummaryList = async (container) => renderContainer(
             },
           });
         },
-        Footer: renderCartGiftOptions,
+        Footer: (ctx) => {
+          // Promotion / discount rule labels
+          renderCartItemPromotions(ctx);
+          // Gift Options
+          renderCartGiftOptions(ctx);
+        },
       },
     })(container);
   },
