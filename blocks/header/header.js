@@ -6,8 +6,6 @@ import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
 
-import renderAuthCombine from './renderAuthCombine.js';
-import { renderAuthDropdown } from './renderAuthDropdown.js';
 import renderSellerAssistedBuyingBanner from './renderSellerAssistedBuyingBanner.js';
 
 // media query match that indicates mobile/tablet width
@@ -584,9 +582,8 @@ export default async function decorate(block) {
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
 
-  renderAuthCombine(
-    navSections,
-    () => !isDesktop.matches && toggleMenu(nav, navSections, false),
-  );
-  renderAuthDropdown(navTools);
+  // Auth — remove this import to disable sign-in in the header
+  import('./renderAuth.js').then(({ default: renderAuth }) => {
+    renderAuth(nav, () => !isDesktop.matches && toggleMenu(nav, navSections, false));
+  });
 }
