@@ -8,6 +8,8 @@ import {
   fetchPlaceholders,
   getOptionsUIDsFromUrl,
   getProductSku,
+  IS_DA,
+  IS_EW,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
@@ -45,7 +47,7 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  if (!sku) {
+  if (!sku && !IS_DA && !IS_EW) {
     return loadErrorPage();
   }
 

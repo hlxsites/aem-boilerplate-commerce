@@ -50,6 +50,7 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 
 // Environment checks
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
+export const IS_EW = new URL(window.location.href).searchParams.get('quick-edit') === 'on';
 
 /**
  * Product template paths - pages that are templates and should use
@@ -707,7 +708,7 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
-  if (isProductTemplate() && IS_DA) {
+  if (isProductTemplate() && (IS_DA || IS_EW)) {
     return getDefaultSkuFromBlock();
   }
 
