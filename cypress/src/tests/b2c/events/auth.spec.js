@@ -47,12 +47,16 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
 
   // 4. Logs out / deletes customer and checks that shopperContext is set to guest
   cy.reload();
+  cy.waitForResource("renderAuth.js");
   cy.get(".nav-dropdown-button").contains("Hi, John").click();
   cy.get(
     "#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(2) > button",
   ).click();
-  cy.get(".auth-sign-in-form__button--submit");
-  cy.wait(1000); // TODO: find better way to wait for auth acdl push to have occurred after logout click.
+  // After logout the page reloads; wait for renderAuth.js to confirm the header
+  // has re-initialized and the user is now a guest.
+  cy.waitForResource("renderAuth.js");
+  cy.get(".nav-dropdown-button").should("not.contain", "Hi,");
+  cy.wait(1000);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
