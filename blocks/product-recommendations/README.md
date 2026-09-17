@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Product Recommendations block provides personalized product recommendations using the @dropins/storefront-recommendations ProductList container. It handles recommendation loading with intersection observer, context tracking, and dynamic reloading based on user behavior and page changes.
+The Product Recommendations block provides personalized product recommendations using the @dropins/storefront-recommendations ProductList container. It handles recommendation loading with intersection observer, context tracking, and dynamic reloading based on user behavior and page changes. At least one of `recid` or `referenceKey` must be configured to identify the recommendation unit to render; if both are set, `referenceKey` takes precedence.
 
 ## Integration
 
@@ -10,7 +10,8 @@ The Product Recommendations block provides personalized product recommendations 
 
 | Configuration Key | Type | Default | Description | Required | Side Effects |
 |-------------------|------|---------|-------------|----------|--------------|
-| `recid` | string | — | Recommendation unit ID to render. | **Yes** | Identifies which recommendation unit to fetch |
+| `recid` | string | — | Recommendation unit ID to render. One of `recid` or `referenceKey` must be set. | No | Identifies which recommendation unit to fetch; ignored if `referenceKey` is also set |
+| `referenceKey` | string | — | Label identifying the recommendation unit, passed to the dropin as `label`. One of `recid` or `referenceKey` must be set. | No | Takes precedence over `recid` when both are set |
 | `currentsku` | string | undefined | Current product SKU. Only set this on pages where ACDL `productContext` is not populated. For cross-sell and upsell recommendation types (`viewed-viewed`, `viewed-bought`, `bought-bought`, `more-like-this`, `visual`) this value (from config or ACDL) is required for the unit to return results. | No | Takes precedence over ACDL-derived SKU; if set without `currentprice`, no price is passed to the service |
 | `currentprice` | number | undefined | Current product price as an anchor for dynamic/relative price filter operators. **May only be set together with `currentsku`.** Only needed for SKU-related recommendation types with dynamic or relative price filters when ACDL product context is unavailable. The value should match the effective price shown to the shopper (`specialPrice ?? regularPrice`). | No | Takes precedence over ACDL-derived price; has no effect if `currentsku` is not also set |
 

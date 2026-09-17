@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,9 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './initialize';
-export * from './fetch-graphql';
-export * from './publishRecsItemAddToCartClick';
-export * from './getRecommendationsByUnitIds';
 export * from './getRecommendationsByUnits';
 //# sourceMappingURL=index.d.ts.map
