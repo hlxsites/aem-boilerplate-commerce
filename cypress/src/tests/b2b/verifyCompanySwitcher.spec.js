@@ -330,32 +330,19 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     cy.logToTerminal('--- STEP 6: TC-40 - Verify Company Structure shows Company B tree ---');
 
     cy.visit('/customer/company/structure');
-    cy.wait(3000);
 
     cy.contains('Company Structure', { timeout: 10000 }).should('be.visible');
 
-    // Retry logic for structure tree (USF-3516 caching) - increased retries
-    const checkForCompanyBStructure = (retriesLeft = 12) => {
-      cy.get('body').then(($body) => {
-        const bodyText = $body.text();
-        // Check for Company B admin name
-        if (bodyText.includes('CompanyB') || bodyText.includes('Shared User')) {
-          cy.logToTerminal('✅ Company Structure shows Company B tree');
-          cy.contains(/CompanyB|Shared User/, { timeout: 5000 }).should('be.visible');
-        } else if (retriesLeft > 0) {
-          cy.logToTerminal(`⏳ Company B structure not yet visible, retrying (${12 - retriesLeft + 1}/12)...`);
-          cy.wait(12000); // Increased wait time to 12 seconds
-          cy.reload();
-          cy.wait(3000);
-          checkForCompanyBStructure(retriesLeft - 1);
-        } else {
-          cy.logToTerminal(`❌ Body content: ${bodyText.substring(0, 200)}`);
-          throw new Error('Company B structure not found after 12 retries (USF-3516 cache issue)');
-        }
-      });
-    };
-
-    checkForCompanyBStructure();
+    // cy.contains polls the DOM on its own until the assertion passes or the
+    // timeout elapses, so it naturally survives the tree's async data load.
+    // A manual retry loop built on cy.get('body').then(...) was used here
+    // previously, but .then() callbacks run once against a single snapshot
+    // of the DOM and are never re-queried by Cypress - combined with
+    // cy.reload() replacing document.body outright, that snapshot could end
+    // up referencing a stale/detached node whose text never updates,
+    // regardless of how many times the page was reloaded.
+    cy.contains(/CompanyB|Shared User/, { timeout: 10000 }).should('be.visible');
+    cy.logToTerminal('✅ Company Structure shows Company B tree');
 
     // ========== TC-41: Verify Roles page respects company context ==========
     cy.logToTerminal('--- STEP 7: TC-41 - Verify Roles page shows Company B roles ---');
