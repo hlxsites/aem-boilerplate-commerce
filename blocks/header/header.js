@@ -1,10 +1,17 @@
 // Drop-in Tools
 import { events } from '@dropins/tools/event-bus.js';
+import { getCookie } from '@dropins/tools/lib.js';
 
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { fetchPlaceholders, getProductLink, rootLink } from '../../scripts/commerce.js';
+import {
+  fetchPlaceholders,
+  getProductLink,
+  rootLink,
+  CUSTOMER_ACCOUNT_PATH,
+  CUSTOMER_LOGIN_PATH,
+} from '../../scripts/commerce.js';
 
 import renderSellerAssistedBuyingBanner from './renderSellerAssistedBuyingBanner.js';
 
@@ -521,6 +528,114 @@ export default async function decorate(block) {
     }
   });
 
+  /** Auth Dropdown */
+  const authFrag = document.createRange().createContextualFragment(`
+    <div class="dropdown-wrapper nav-tools-wrapper">
+      <button type="button" class="nav-dropdown-button"
+        aria-haspopup="dialog" aria-expanded="false" aria-controls="login-modal">
+      </button>
+      <div class="nav-auth-menu-panel nav-tools-panel">
+        <div id="auth-dropin-container"></div>
+        <ul class="authenticated-user-menu" style="display: none;">
+          <li><a href="${rootLink(CUSTOMER_ACCOUNT_PATH)}">My Account</a></li>
+          <li><button type="button">Logout</button></li>
+        </ul>
+      </div>
+    </div>`);
+
+  navTools.append(authFrag);
+
+  const authPanel = navTools.querySelector('.nav-auth-menu-panel');
+  const authButton = navTools.querySelector('.nav-dropdown-button');
+  const authDropinContainer = navTools.querySelector('#auth-dropin-container');
+  const authMenuList = navTools.querySelector('.authenticated-user-menu');
+  const authLogoutButton = navTools.querySelector('.authenticated-user-menu > li > button');
+
+  // Reflect auth state and react to future changes (login/logout without a page reload).
+  events.on('authenticated', (isAuthenticated) => {
+    if (isAuthenticated) {
+      authMenuList.style.display = 'block';
+      authDropinContainer.style.display = 'none';
+      authButton.textContent = `Hi, ${getCookie('auth_dropin_firstname')}`;
+    } else {
+      authMenuList.style.display = 'none';
+      authDropinContainer.style.display = 'block';
+      authButton.innerHTML = `
+        <svg width="25" height="25" viewBox="0 0 24 24" aria-label="My Account">
+          <g fill="none" stroke="#000000" stroke-width="1.5">
+            <circle cx="12" cy="6" r="4"></circle>
+            <path d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5Z"></path>
+          </g>
+        </svg>`;
+    }
+  }, { eager: true });
+
+  // Prevent panel clicks from bubbling to the document close-handler.
+  authPanel.addEventListener('click', (e) => e.stopPropagation());
+
+  // Lazy-load the SignIn dropin once, only when needed (unauthenticated users opening the panel).
+  async function loadAuthPanel() {
+    await withLoadingState(authPanel, authButton, async () => {
+      if (!events.lastPayload('authenticated')) {
+        const { initSignIn } = await import('./renderAuth.js');
+        initSignIn(authDropinContainer);
+      }
+    });
+  }
+
+  async function toggleAuthPanel(state) {
+    if (state) await loadAuthPanel();
+    togglePanel(authPanel, state);
+    authButton.setAttribute('aria-expanded', authPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false');
+    if (state) authPanel.focus();
+  }
+
+  authButton.addEventListener('click', () => toggleAuthPanel(!authPanel.classList.contains('nav-tools-panel--show')));
+
+  authLogoutButton.addEventListener('click', async () => {
+    const { revokeCustomerToken } = await import('@dropins/storefront-auth/api.js');
+    await revokeCustomerToken();
+    const logoutRedirects = {
+      '/checkout': rootLink('/cart'),
+      '/customer': rootLink(CUSTOMER_LOGIN_PATH),
+      '/order-details': rootLink('/'),
+    };
+    const redirected = Object.entries(logoutRedirects).some(([path, dest]) => {
+      if (window.location.pathname.includes(path)) {
+        window.location.href = dest;
+        return true;
+      }
+      return false;
+    });
+    if (!redirected) window.location.reload();
+  });
+
+  // Mobile nav — convert the Account link to open the auth modal lazily.
+  if (navSections) {
+    const accountLi = Array.from(
+      navSections.querySelectorAll('.default-content-wrapper > ul > li'),
+    ).find((li) => li.textContent.includes('Account'));
+    if (accountLi) {
+      const subItems = accountLi.querySelectorAll('ul > li');
+      const authLink = subItems[subItems.length - 1];
+      if (authLink) {
+        authLink.classList.add('authCombineNavElement');
+        authLink.innerHTML = `<button type="button">${authLink.textContent}</button>`;
+        authLink.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (events.lastPayload('authenticated')) {
+            window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
+            return;
+          }
+          const { openAuthModal } = await import('./renderAuth.js');
+          openAuthModal(accountLi);
+          if (!isDesktop.matches) toggleMenu(nav, navSections, false);
+        });
+      }
+    }
+  }
+
   // Close panels when clicking outside
   document.addEventListener('click', (e) => {
     // Check if undo is enabled for mini cart
@@ -544,6 +659,10 @@ export default async function decorate(block) {
 
     if (!searchPanel.contains(e.target) && !searchButton.contains(e.target)) {
       toggleSearch(false);
+    }
+
+    if (!authPanel.contains(e.target) && !authButton.contains(e.target)) {
+      toggleAuthPanel(false);
     }
   });
 
@@ -581,9 +700,4 @@ export default async function decorate(block) {
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
   isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
-
-  // Auth — remove this import to disable sign-in in the header
-  import('./renderAuth.js').then(({ default: renderAuth }) => {
-    renderAuth(nav, () => !isDesktop.matches && toggleMenu(nav, navSections, false));
-  });
 }
