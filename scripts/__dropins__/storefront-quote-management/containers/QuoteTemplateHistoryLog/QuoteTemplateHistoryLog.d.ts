@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { NegotiableQuoteTemplateModel } from '../../data/models/negotiable-quote-template-model';
 export interface QuoteTemplateHistoryLogProps extends HTMLAttributes<HTMLDivElement> {
     templateData?: NegotiableQuoteTemplateModel;

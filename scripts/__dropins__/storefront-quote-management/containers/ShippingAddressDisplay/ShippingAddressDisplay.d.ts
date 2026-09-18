@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { ShippingAddress } from '../../data/models/negotiable-quote-model';
 export interface ShippingAddressDisplayProps extends Omit<HTMLAttributes<HTMLDivElement>, 'loading'> {
     shippingAddress?: ShippingAddress;

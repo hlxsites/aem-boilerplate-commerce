@@ -72,6 +72,9 @@ jobs:
           - group: group-c
             specs:
               - src/tests/b2b/verifyPurchaseOrders.spec.js
+          - group: group-address-book
+            specs:
+              - src/tests/b2b/verifyB2BAddressBook.spec.js
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node.js

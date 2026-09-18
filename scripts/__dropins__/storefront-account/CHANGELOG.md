@@ -1,19 +1,106 @@
 # @dropins/storefront-account
 
-## 4.2.0-alpha-20260813101821
-
-### Minor Changes
-
-- d58ebf7: Add configurable order history search by order number, product name,
-  or SKU.
+## 4.2.0-beta.1
 
 ### Patch Changes
 
+- ec86d13: fix(AddressForm): restore independent default shipping and billing
+  checkboxes outside the company address book. The single-default rule
+  introduced with the company address book was applied to the shared form hook
+  and to the B2C create-mode defaults, so a personal address could no longer be
+  both the default shipping and the default billing address, and only one
+  checkbox was preselected on create. The company address book keeps its single
+  address type selection unchanged.
+- ec86d13: fix(AddressForm): place the save checkbox at the end of the form with
+  CSS instead of a computed grid row. The previous effect read the form's
+  `grid-template-rows` and pinned `.account-address-form--saveAddressBook` to
+  `rows - 1`, which only matched the field set it was written against; a store
+  with an extra address attribute such as VAT pushed that attribute below the
+  checkbox. The checkbox now spans both columns on its own row, so the field
+  order follows the address attributes returned by the backend.
+- ec86d13: fix(Addresses): stop preselecting an address when the caller has none
+  and selection is locked to company addresses. `defaultSelectAddressId: 0`
+  means the caller holds no address; without the lock it opens the new-address
+  form, but with the lock that branch was skipped entirely and the first card in
+  the list was highlighted instead. A negotiable quote with no shipping address
+  therefore rendered a selected address it did not hold, and the caller refused
+  to write it back, so the choice silently did nothing until the customer
+  clicked the card themselves. A locked selection now leaves the list unselected
+  and reports the selection as invalid, the same way it already did when the
+  list is empty.
+- ec86d13: fix(Addresses): restore opening the new-address form when
+  `defaultSelectAddressId` is `0`. The company address book work replaced that
+  behaviour with preselecting the first address in the list, which claims a
+  selection the caller never made — a negotiable quote, for example, stores its
+  shipping address as a copy with no id to match, so every page load highlighted
+  an address the quote does not hold.
+
+## 4.2.0-beta.0
+
+### Minor Changes
+
+- 81b291b: Add configurable order history search by order number, product name,
+  or SKU.
+- 21ac4d5: Add `getCompanyAddressBookConfig` for reading the company address
+  book configuration without requesting address data, and export the company
+  address book permission constants as `COMPANY_ADDRESS_PERMISSIONS`
+- 21ac4d5: The Addresses and AddressForm containers now support company address
+  books. When B2B is enabled, the customer belongs to a company, and the
+  company's address book is enabled, both containers switch from the personal
+  customer address flow to company address operations. B2C behavior is
+  unchanged, and any failure to resolve company context or company endpoints
+  falls back to the personal address flow.
+
+  - Full company address CRUD from the account address book: list, create, edit,
+    delete, and set default.
+  - Role-based permission gating. The customer's company role ACL is resolved
+    into six capabilities (access address book, view, create, edit, delete, set
+    default) and enforced throughout the UI: no view access hides the list,
+    missing create/edit rights replace the form with a no-permission notice, and
+    unavailable card actions and modal confirmations are hidden or disabled.
+  - B2B address semantics. A company address is either shipping or billing and
+    carries a single "default" flag, rather than B2C's separate default shipping
+    and billing flags. The form exposes mutually exclusive B2B checkboxes,
+    freezes the address type when editing, and blocks setting one address as
+    default for both types.
+  - New contextMode prop (addressBook or checkout) separates the two usages. In
+    checkout, permissions are not enforced, addresses are filtered to the
+    requested type, and selecting "new address" is locked when the company
+    disallows custom shipping addresses.
+  - Address nicknames are now supported in the form, data transforms, and
+    address cards — for B2C addresses as well.
+  - New API methods: getCompanyAddressBook, createCompanyAddress,
+    updateCompanyAddress, deleteCompanyAddress, setDefaultCompanyAddress,
+    getCustomerCompanyContext, and getCustomerRolePermissions.
+  - New i18n keys under Account.AddressForm for the B2B checkbox labels and the
+    permission/default-address notifications.
+
+  No breaking changes. All new container props are optional, and containers
+  behave exactly as before when B2B is not enabled.
+
+### Patch Changes
+
+- c92a274: Accessibility fixes (WCAG 2.2):
+
+  - Add descriptive `aria-label` to Edit and Change password buttons (2.4.6)
+  - Add `scroll-margin` to password fields and toggle buttons (2.4.11)
+  - Add `scroll-margin` to View address list button (2.4.11)
+  - Add `scroll-margin` to address form inputs and pickers (2.4.11)
+
+- e89fc34: Add an accessible clear button to customer order search.
 - 42a521f: fix(AddressesWrapper, OrdersListWrapper): announce loading states to
   screen readers via a persistent live region instead of a skeleton loader that
   mounts and unmounts with the content (WCAG 4.1.3)
+- 672e128: Accessibility fixes for Customer Orders list:
+
+  - Fix date picker announcing `orderDatePicker` instead of visible label (WCAG
+    2.5.3)
+  - Fix order action link obscured on keyboard navigation (WCAG 2.4.11)
+  - Use semantic `<ul>/<li>` for ordered product details (WCAG 1.3.1)
+
 - 73ee059: Fix broken border-radius selector for "Use a different address"
   button
+- 0fbbf64: Adds AGENTS.MD File used for guidance for AI coding agents
 
 ## 4.1.0
 

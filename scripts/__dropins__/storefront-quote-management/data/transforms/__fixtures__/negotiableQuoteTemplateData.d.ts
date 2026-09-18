@@ -404,8 +404,10 @@ export declare const mockQuoteTemplateData: {
             value: number;
         };
     };
-    shipping_addresses: {
+    shipping_addresses: ({
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -422,7 +424,27 @@ export declare const mockQuoteTemplateData: {
             label: string;
         };
         telephone: string;
-    }[];
+    } | {
+        uid: string;
+        customer_address_uid: null;
+        company_address_id: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    })[];
     reference_document_links: ({
         link_id: string;
         document_name: string;
@@ -846,8 +868,10 @@ export declare const mockSubmittedQuoteTemplateData: {
             value: number;
         };
     };
-    shipping_addresses: {
+    shipping_addresses: ({
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -864,7 +888,27 @@ export declare const mockSubmittedQuoteTemplateData: {
             label: string;
         };
         telephone: string;
-    }[];
+    } | {
+        uid: string;
+        customer_address_uid: null;
+        company_address_id: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    })[];
     reference_document_links: ({
         link_id: string;
         document_name: string;
@@ -1275,8 +1319,10 @@ export declare const mockInReviewQuoteTemplateData: {
             value: number;
         };
     };
-    shipping_addresses: {
+    shipping_addresses: ({
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -1293,7 +1339,27 @@ export declare const mockInReviewQuoteTemplateData: {
             label: string;
         };
         telephone: string;
-    }[];
+    } | {
+        uid: string;
+        customer_address_uid: null;
+        company_address_id: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    })[];
     reference_document_links: ({
         link_id: string;
         document_name: string;
@@ -1704,8 +1770,10 @@ export declare const mockClosedQuoteTemplateData: {
             value: number;
         };
     };
-    shipping_addresses: {
+    shipping_addresses: ({
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -1722,7 +1790,27 @@ export declare const mockClosedQuoteTemplateData: {
             label: string;
         };
         telephone: string;
-    }[];
+    } | {
+        uid: string;
+        customer_address_uid: null;
+        company_address_id: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    })[];
     reference_document_links: ({
         link_id: string;
         document_name: string;
@@ -2133,8 +2221,10 @@ export declare const mockInactiveQuoteTemplateData: {
             value: number;
         };
     };
-    shipping_addresses: {
+    shipping_addresses: ({
         uid: string;
+        customer_address_uid: string;
+        company_address_id: null;
         firstname: string;
         lastname: string;
         company: string;
@@ -2151,7 +2241,27 @@ export declare const mockInactiveQuoteTemplateData: {
             label: string;
         };
         telephone: string;
-    }[];
+    } | {
+        uid: string;
+        customer_address_uid: null;
+        company_address_id: string;
+        firstname: string;
+        lastname: string;
+        company: string;
+        street: string[];
+        city: string;
+        region: {
+            code: string;
+            label: string;
+            region_id: number;
+        };
+        postcode: string;
+        country: {
+            code: string;
+            label: string;
+        };
+        telephone: string;
+    })[];
     reference_document_links: ({
         link_id: string;
         document_name: string;

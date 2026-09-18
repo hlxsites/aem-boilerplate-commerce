@@ -8,9 +8,19 @@
  *******************************************************************/
 export interface ShippingAddress {
     /**
-     * The unique string identifier of the address
+     * The unique string identifier of the address. This identifies the quote's
+     * own copy of the address, not the address it was copied from.
      */
     uid?: string;
+    /**
+     * The address in the customer's address book this one was copied from, when
+     * there is one.
+     */
+    customerAddressUid?: string | null;
+    /**
+     * The company address book entry this one was copied from, when there is one.
+     */
+    companyAddressId?: string | null;
     firstname: string;
     lastname: string;
     company?: string;
@@ -18,7 +28,11 @@ export interface ShippingAddress {
     city: string;
     region?: {
         code: string;
-        label: string;
+        /**
+         * Empty for a region the backend holds without a display name, which is how
+         * a company address arrives. The transform passes it through untouched.
+         */
+        label: string | null;
         regionId: number;
     };
     postcode: string;
