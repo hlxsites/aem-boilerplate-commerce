@@ -14,9 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { getFormValues } from '@dropins/tools/lib.js';
+import { debounce, getFormValues } from '@dropins/tools/lib.js';
 import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
@@ -26,10 +27,8 @@ import {
   provider as UI,
 } from '@dropins/tools/components.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
-import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 
 // Containers
-import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
 import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuote.js';
 import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
 
@@ -42,7 +41,7 @@ import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 // Initialize
 import '../../scripts/initializers/quote-management.js';
 import '../../scripts/initializers/company.js';
-import '../../scripts/initializers/account.js';
+import { createShippingAddressChangeHandler } from '../../scripts/negotiable-quote-address.js';
 
 // Commerce
 import {
@@ -52,6 +51,8 @@ import {
   fetchPlaceholders,
   ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
+
+const ADDRESS_INPUT_DEBOUNCE_TIME = 500;
 
 /**
  * Check if the user has the necessary permissions to access the block
@@ -109,6 +110,8 @@ async function getCurrentUserEmail() {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
   if (!checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
     return;
@@ -214,106 +217,124 @@ export default async function decorate(block) {
             size: 'large',
           })(progressSpinner);
 
-          ctx.onChange((next) => {
-            // Remove existing content from the shipping information container
-            shippingInformation.innerHTML = '';
+          const showAddressError = (error) => {
+            addressErrorContainer.removeAttribute('hidden');
+            UI.render(InLineAlert, {
+              type: 'error',
+              description: `${error}`,
+            })(addressErrorContainer);
+          };
 
-            const { quoteData } = next;
+          // Checkout never creates an address for a typed one: the values stream
+          // into the operation as the customer types, and the address lives only
+          // on that operation. The quote does the same. Creating one instead left
+          // a customer address the backend then refused as a source, once the
+          // company address book was on.
+          const writeTypedAddress = debounce((data) => {
+            setShippingAddress({
+              quoteUid: quoteId,
+              addressData: {
+                firstname: data?.firstName,
+                lastname: data?.lastName,
+                company: data?.company,
+                street: data?.street,
+                city: data?.city,
+                region: data?.region?.regionCode,
+                regionId: data?.region?.regionId,
+                postcode: data?.postcode,
+                countryCode: data?.countryCode,
+                telephone: data?.telephone,
+                // The schema defaults this to true, so leaving it out saves the
+                // address to the customer's book. A custom address on a quote is
+                // meant to live on the quote and nowhere else.
+                saveInAddressBook: false,
+                // `vatId` is not part of the address input, so it travels in the
+                // pass-through the transform spreads into the payload.
+                additionalInput: { vat_id: data?.vatId },
+              },
+            }).catch(showAddressError);
+          }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
-            if (!quoteData) return;
+          ctx.onChange(createShippingAddressChangeHandler({
+            isB2BEnabled,
+            shippingInformation,
+            progressSpinner,
+            showAddressError,
+            writeTypedAddress,
+            className: 'negotiable-quote__shipping-information-addresses',
+            getData: (next) => next.quoteData,
+            buildAddressRef: (companyAddressId, customerAddressUid) => (
+              companyAddressId
+                ? { companyAddressId }
+                : { addressId: customerAddressUid }
+            ),
+            writeSelectedAddress: (addressRef) => setShippingAddress({
+              quoteUid: quoteId,
+              ...addressRef,
+            }),
+            onSubmit: (event, formValid) => {
+              if (!formValid) return;
 
-            if (!quoteData.canSendForReview) return;
+              const formValues = getFormValues(event.target);
 
-            if (quoteData.canSendForReview) {
-              accountRenderer.render(Addresses, {
-                minifiedView: false,
-                withActionsInMinifiedView: false,
-                selectable: true,
-                className: 'negotiable-quote__shipping-information-addresses',
-                selectShipping: true,
-                defaultSelectAddressId: 0,
-                onAddressData: (params) => {
-                  const { data, isDataValid: isValid } = params;
-                  const addressUid = data?.uid;
-                  if (!isValid) return;
-                  if (!addressUid) return;
+              const [regionCode, regionId] = formValues.region?.split(',') || [];
+              const regionIdNumber = parseInt(regionId, 10);
 
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
+              // iterate through the object entries and combine the values of keys that have
+              // a prefix of 'street' into an array
+              const streetInputValues = Object.entries(formValues)
+                .filter(([key]) => key.startsWith('street'))
+                .map(([_, value]) => value);
 
-                  setShippingAddress({
+              const createCustomerAddressInput = {
+                city: formValues.city,
+                company: formValues.company,
+                countryCode: formValues.countryCode,
+                defaultBilling: !!formValues.defaultBilling || false,
+                defaultShipping: !!formValues.defaultShipping || false,
+                fax: formValues.fax,
+                firstname: formValues.firstName,
+                lastname: formValues.lastName,
+                middlename: formValues.middlename,
+                postcode: formValues.postcode,
+                prefix: formValues.prefix,
+                region: regionCode ? {
+                  regionCode,
+                  regionId: regionIdNumber,
+                } : undefined,
+                street: streetInputValues,
+                suffix: formValues.suffix,
+                telephone: formValues.telephone,
+                vatId: formValues.vatId,
+              };
+
+              progressSpinner.removeAttribute('hidden');
+              shippingInformation.setAttribute('hidden', true);
+
+              createCustomerAddress(createCustomerAddressInput)
+                .then((result) => {
+                  const addressUid = typeof result === 'string' ? result : result?.uid;
+                  if (!addressUid) {
+                    throw new Error('Address uid not returned from createCustomerAddress.');
+                  }
+                  return setShippingAddress({
                     quoteUid: quoteId,
                     addressId: addressUid,
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
                   });
-                },
-                onSubmit: (event, formValid) => {
-                  if (!formValid) return;
-
-                  const formValues = getFormValues(event.target);
-
-                  const [regionCode, regionId] = formValues.region?.split(',') || [];
-                  const regionIdNumber = parseInt(regionId, 10);
-
-                  // iterate through the object entries and combine the values of keys that have
-                  // a prefix of 'street' into an array
-                  const streetInputValues = Object.entries(formValues)
-                    .filter(([key]) => key.startsWith('street'))
-                    .map(([_, value]) => value);
-
-                  const createCustomerAddressInput = {
-                    city: formValues.city,
-                    company: formValues.company,
-                    countryCode: formValues.countryCode,
-                    defaultBilling: !!formValues.defaultBilling || false,
-                    defaultShipping: !!formValues.defaultShipping || false,
-                    fax: formValues.fax,
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    middlename: formValues.middlename,
-                    postcode: formValues.postcode,
-                    prefix: formValues.prefix,
-                    region: regionCode ? {
-                      regionCode,
-                      regionId: regionIdNumber,
-                    } : undefined,
-                    street: streetInputValues,
-                    suffix: formValues.suffix,
-                    telephone: formValues.telephone,
-                    vatId: formValues.vatId,
-                  };
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-
-                  createCustomerAddress(createCustomerAddressInput)
-                    .then((result) => {
-                      const addressUid = typeof result === 'string' ? result : result?.uid;
-                      if (!addressUid) {
-                        throw new Error('Address uid not returned from createCustomerAddress.');
-                      }
-                      return setShippingAddress({
-                        quoteUid: quoteId,
-                        addressId: addressUid,
-                      });
-                    })
-                    .catch((error) => {
-                      addressErrorContainer.removeAttribute('hidden');
-                      UI.render(InLineAlert, {
-                        type: 'error',
-                        description: `${error}`,
-                      })(addressErrorContainer);
-                    })
-                    .finally(() => {
-                      progressSpinner.setAttribute('hidden', true);
-                      shippingInformation.removeAttribute('hidden');
-                    });
-                },
-              })(shippingInformation);
-            }
-          });
+                })
+                .catch((error) => {
+                  addressErrorContainer.removeAttribute('hidden');
+                  UI.render(InLineAlert, {
+                    type: 'error',
+                    description: `${error}`,
+                  })(addressErrorContainer);
+                })
+                .finally(() => {
+                  progressSpinner.setAttribute('hidden', true);
+                  shippingInformation.removeAttribute('hidden');
+                });
+            },
+          }));
         },
       },
     })(block);

@@ -1,9 +1,8 @@
-export {};
 /********************************************************************
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,4 +14,6 @@ export {};
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-//# sourceMappingURL=index.d.ts.map
+export * from './FreeGiftSelection';
+export * from './FreeGiftSelectionLoader';
+export { FreeGiftSelection as default } from './FreeGiftSelection';

@@ -55,6 +55,10 @@ export interface getCompanyResponse {
                 code: string;
                 title: string;
             }[];
+            config?: {
+                address_book_enabled: boolean;
+                address_book_custom_shipping_address_enabled: boolean;
+            };
         };
         customer?: {
             role?: {

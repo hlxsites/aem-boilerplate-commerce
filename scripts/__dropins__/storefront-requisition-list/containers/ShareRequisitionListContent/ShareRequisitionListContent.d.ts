@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { ShareRequisitionListByEmailError } from '../../api/shareRequisitionListByEmail';
 export interface ShareRequisitionListContentProps {
     requisitionListUid: string;
