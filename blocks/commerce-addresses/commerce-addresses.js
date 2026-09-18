@@ -9,6 +9,7 @@ import {
   CUSTOMER_ADDRESS_PATH,
   CUSTOMER_LOGIN_PATH,
   checkIsAuthenticated,
+  fetchPlaceholders,
   rootLink,
 } from '../../scripts/commerce.js';
 
@@ -51,8 +52,20 @@ export default async function decorate(block) {
       return;
     }
 
+    // The drop-in already ships a localized default title for the personal
+    // list ("Addresses"), so it is only overridden for the company case,
+    // which the drop-in has no wording for on its own. `companyContainerTitle`
+    // sits next to the drop-in's own `containerTitle` key, nested per view size
+    // the same way every other Addresses string in placeholders/account.json is.
+    const viewKey = isMinifiedView ? 'minifiedView' : 'fullSizeView';
+    const placeholders = hasCompanyAddressBook
+      ? await fetchPlaceholders('placeholders/account.json')
+      : undefined;
+
     await accountRenderer.render(Addresses, {
-      title: hasCompanyAddressBook ? 'Company Addresses' : 'Addresses',
+      title: hasCompanyAddressBook
+        ? placeholders?.Account?.[viewKey]?.Addresses?.companyContainerTitle
+        : undefined,
       b2bEnabled: isB2BEnabled,
       minifiedView: isMinifiedView,
       withActionsInMinifiedView: false,

@@ -27,27 +27,21 @@ import {
   provider as UI,
 } from '@dropins/tools/components.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
-import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 
 // Containers
-import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
 import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuote.js';
 import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
 
 // API
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
-import {
-  createCustomerAddress,
-  getCompanyAddressBook,
-  getCustomerAddress,
-} from '@dropins/storefront-account/api.js';
+import { createCustomerAddress } from '@dropins/storefront-account/api.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Initialize
 import '../../scripts/initializers/quote-management.js';
 import '../../scripts/initializers/company.js';
-import { isCompanyAddressBookEnabled } from '../../scripts/initializers/account.js';
+import { createShippingAddressChangeHandler } from '../../scripts/negotiable-quote-address.js';
 
 // Commerce
 import {
@@ -59,47 +53,6 @@ import {
 } from '../../scripts/commerce.js';
 
 const ADDRESS_INPUT_DEBOUNCE_TIME = 500;
-
-const isShippingSelectable = (address) => {
-  if (address?.addressType === 'SHIPPING') return true;
-  if (address?.addressType === 'BILLING') return false;
-
-  // Untyped entries are read through their defaults, the same way the container
-  // reads them: one default and not the other decides which kind it is.
-  return Boolean(address?.defaultShipping) && !address?.defaultBilling;
-};
-
-// The addresses the container will offer: the company address book when it is
-// enabled, the customer's own otherwise. The quote needs the list itself, not
-// just a preselection — the container reports only what it picked, and falls
-// back to the first entry whether or not it is a default or the address the
-// quote actually holds.
-const readSelectableAddresses = async (b2bEnabled) => {
-  try {
-    const useCompanyAddresses = Boolean(b2bEnabled)
-      && (await isCompanyAddressBookEnabled());
-
-    if (!useCompanyAddresses) {
-      const customerAddresses = await getCustomerAddress();
-
-      return customerAddresses;
-    }
-
-    const items = (await getCompanyAddressBook())?.addresses?.items;
-
-    // The address book returns billing entries too, and the container drops them
-    // for a shipping selection. Matching that here keeps this list to what is
-    // actually on offer.
-    return items?.filter(isShippingSelectable);
-  } catch {
-    // An unreachable address book must not block the quote. With no list
-    // nothing is preselected, which is the safe outcome either way.
-    return undefined;
-  }
-};
-
-const matchesAddressRef = (address, ref) => address?.uid === ref
-  || String(address?.id ?? '') === String(ref);
 
 /**
  * Check if the user has the necessary permissions to access the block
@@ -302,200 +255,86 @@ export default async function decorate(block) {
             }).catch(showAddressError);
           }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
-          // The container reports a selection as soon as it renders, before the
-          // customer touches anything, and that report is whatever it preselected
-          // rather than what the quote holds. Writing it back would replace the
-          // saved address on every page load. A real click always raises a change
-          // event on the radio first, so this listener tells the two apart.
-          let customerPickedAddress = false;
-          shippingInformation.addEventListener('change', (event) => {
-            if (event.target?.name === 'selectedShippingAddress') {
-              customerPickedAddress = true;
-            }
-          }, true);
+          ctx.onChange(createShippingAddressChangeHandler({
+            isB2BEnabled,
+            shippingInformation,
+            progressSpinner,
+            showAddressError,
+            writeTypedAddress,
+            className: 'negotiable-quote__shipping-information-addresses',
+            getData: (next) => next.quoteData,
+            buildAddressRef: (companyAddressId, customerAddressUid) => (
+              companyAddressId
+                ? { companyAddressId }
+                : { addressId: customerAddressUid }
+            ),
+            writeSelectedAddress: (addressRef) => setShippingAddress({
+              quoteUid: quoteId,
+              ...addressRef,
+            }),
+            onSubmit: (event, formValid) => {
+              if (!formValid) return;
 
-          ctx.onChange(async (next) => {
-            // Writing the typed address brings the quote straight back through
-            // here, and rebuilding would take the form apart under the customer's
-            // hands — focus, text and all. The list can wait until they leave it;
-            // the address shown above this container updates either way.
-            if (shippingInformation.contains(document.activeElement)) return;
+              const formValues = getFormValues(event.target);
 
-            // Remove existing content from the shipping information container
-            shippingInformation.innerHTML = '';
-            // Every re-render brings a fresh automatic report, so the flag has to
-            // start over with it.
-            customerPickedAddress = false;
+              const [regionCode, regionId] = formValues.region?.split(',') || [];
+              const regionIdNumber = parseInt(regionId, 10);
 
-            const { quoteData } = next;
+              // iterate through the object entries and combine the values of keys that have
+              // a prefix of 'street' into an array
+              const streetInputValues = Object.entries(formValues)
+                .filter(([key]) => key.startsWith('street'))
+                .map(([_, value]) => value);
 
-            if (!quoteData) return;
-
-            if (!quoteData.canSendForReview) return;
-
-            if (quoteData.canSendForReview) {
-              // The quote stores a copy of the address, so its `uid` matches
-              // nothing in the address book. `companyAddressId` and
-              // `customerAddressUid` say which saved address the copy came from.
-              const savedAddress = quoteData.shippingAddresses?.[0];
-              const savedAddressRef = savedAddress?.companyAddressId
-                ?? savedAddress?.customerAddressUid;
-              const addressBookEnabled = Boolean(isB2BEnabled)
-                && (await isCompanyAddressBookEnabled());
-              const addresses = await readSelectableAddresses(isB2BEnabled);
-              // Enabling the company address book leaves a personal address the
-              // quote still holds absent from the list. Restoring it then means
-              // asking for an entry that is not there, and the container answers
-              // with the first one, which the quote does not hold.
-              const restoreRef = addresses?.some(
-                (address) => matchesAddressRef(address, savedAddressRef),
-              ) ? savedAddressRef : undefined;
-              // A default is an opening choice, so it applies only while the
-              // quote holds no address at all.
-              const defaultAddress = savedAddress
-                ? undefined
-                : addresses?.find((address) => address?.defaultShipping);
-              const defaultAddressRef = defaultAddress?.id ?? defaultAddress?.uid;
-              const refOf = (address) => address?.companyAddressId ?? address?.uid;
-              const isSameAsSaved = (address) => {
-                if (savedAddressRef) return refOf(address) === savedAddressRef;
-                // A drop-in build without those references leaves comparing the
-                // address itself as the only way to recognise the saved one.
-                return Boolean(
-                  savedAddress
-                  && address?.postcode === savedAddress.postcode
-                  && address?.city === savedAddress.city
-                  && String(address?.street ?? '') === String(savedAddress.street ?? ''),
-                );
+              const createCustomerAddressInput = {
+                city: formValues.city,
+                company: formValues.company,
+                countryCode: formValues.countryCode,
+                defaultBilling: !!formValues.defaultBilling || false,
+                defaultShipping: !!formValues.defaultShipping || false,
+                fax: formValues.fax,
+                firstname: formValues.firstName,
+                lastname: formValues.lastName,
+                middlename: formValues.middlename,
+                postcode: formValues.postcode,
+                prefix: formValues.prefix,
+                region: regionCode ? {
+                  regionCode,
+                  regionId: regionIdNumber,
+                } : undefined,
+                street: streetInputValues,
+                suffix: formValues.suffix,
+                telephone: formValues.telephone,
+                vatId: formValues.vatId,
               };
 
-              accountRenderer.render(Addresses, {
-                b2bEnabled: isB2BEnabled,
-                minifiedView: false,
-                withActionsInMinifiedView: false,
-                selectable: true,
-                className: 'negotiable-quote__shipping-information-addresses',
-                selectShipping: true,
-                // Only with the company address book on: there the typed address
-                // is sent as it is written, so a Save button has nothing to do.
-                // Without it the form keeps its buttons and its submit handler.
-                hideActionFormButtons: addressBookEnabled,
-                // The address the quote holds while it is still selectable, else
-                // the customer's default. `0` says there is neither: nothing is
-                // selected and the new-address form is offered instead.
-                defaultSelectAddressId: restoreRef ?? defaultAddressRef ?? 0,
-                onAddressData: (params) => {
-                  const { data, isDataValid: isValid } = params;
-                  // A company address arrives as `companyAddressId`, because the
-                  // container moves the identifier there for the B2B flow and
-                  // leaves `uid` empty. A personal address arrives as `uid`. Once
-                  // the company address book is on, the backend accepts only the
-                  // company reference and rejects a customer address outright.
-                  const companyAddressId = data?.companyAddressId;
-                  const customerAddressUid = data?.uid;
+              progressSpinner.removeAttribute('hidden');
+              shippingInformation.setAttribute('hidden', true);
 
-                  if (!isValid) return;
-                  // Nothing to write when the choice is what the quote already holds.
-                  if (isSameAsSaved(data)) return;
-
-                  // Neither reference means this is the new-address form being typed
-                  // into. With the company address book on there is no Save button,
-                  // so the values stream out the way checkout sends them, and the
-                  // form stays on screen — no spinner here. Without the book the
-                  // form still has its buttons, and onSubmit does the writing.
-                  if (!companyAddressId && !customerAddressUid) {
-                    if (addressBookEnabled) writeTypedAddress(data);
-
-                    return;
+              createCustomerAddress(createCustomerAddressInput)
+                .then((result) => {
+                  const addressUid = typeof result === 'string' ? result : result?.uid;
+                  if (!addressUid) {
+                    throw new Error('Address uid not returned from createCustomerAddress.');
                   }
-
-                  // Past this point the report is a card from the list. The
-                  // container reports one as soon as it renders, so only a report
-                  // the customer actually caused may replace an address the quote
-                  // already holds. Typing is not covered by this: it raises no
-                  // change event on the radio, and it is deliberate anyway.
-                  if (!customerPickedAddress && savedAddress) return;
-
-                  const addressRef = companyAddressId
-                    ? { companyAddressId }
-                    : { addressId: customerAddressUid };
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-
-                  setShippingAddress({
+                  return setShippingAddress({
                     quoteUid: quoteId,
-                    ...addressRef,
-                  }).catch(showAddressError).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
+                    addressId: addressUid,
                   });
-                },
-                onSubmit: (event, formValid) => {
-                  if (!formValid) return;
-
-                  const formValues = getFormValues(event.target);
-
-                  const [regionCode, regionId] = formValues.region?.split(',') || [];
-                  const regionIdNumber = parseInt(regionId, 10);
-
-                  // iterate through the object entries and combine the values of keys that have
-                  // a prefix of 'street' into an array
-                  const streetInputValues = Object.entries(formValues)
-                    .filter(([key]) => key.startsWith('street'))
-                    .map(([_, value]) => value);
-
-                  const createCustomerAddressInput = {
-                    city: formValues.city,
-                    company: formValues.company,
-                    countryCode: formValues.countryCode,
-                    defaultBilling: !!formValues.defaultBilling || false,
-                    defaultShipping: !!formValues.defaultShipping || false,
-                    fax: formValues.fax,
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    middlename: formValues.middlename,
-                    postcode: formValues.postcode,
-                    prefix: formValues.prefix,
-                    region: regionCode ? {
-                      regionCode,
-                      regionId: regionIdNumber,
-                    } : undefined,
-                    street: streetInputValues,
-                    suffix: formValues.suffix,
-                    telephone: formValues.telephone,
-                    vatId: formValues.vatId,
-                  };
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-
-                  createCustomerAddress(createCustomerAddressInput)
-                    .then((result) => {
-                      const addressUid = typeof result === 'string' ? result : result?.uid;
-                      if (!addressUid) {
-                        throw new Error('Address uid not returned from createCustomerAddress.');
-                      }
-                      return setShippingAddress({
-                        quoteUid: quoteId,
-                        addressId: addressUid,
-                      });
-                    })
-                    .catch((error) => {
-                      addressErrorContainer.removeAttribute('hidden');
-                      UI.render(InLineAlert, {
-                        type: 'error',
-                        description: `${error}`,
-                      })(addressErrorContainer);
-                    })
-                    .finally(() => {
-                      progressSpinner.setAttribute('hidden', true);
-                      shippingInformation.removeAttribute('hidden');
-                    });
-                },
-              })(shippingInformation);
-            }
-          });
+                })
+                .catch((error) => {
+                  addressErrorContainer.removeAttribute('hidden');
+                  UI.render(InLineAlert, {
+                    type: 'error',
+                    description: `${error}`,
+                  })(addressErrorContainer);
+                })
+                .finally(() => {
+                  progressSpinner.setAttribute('hidden', true);
+                  shippingInformation.removeAttribute('hidden');
+                });
+            },
+          }));
         },
       },
     })(block);
