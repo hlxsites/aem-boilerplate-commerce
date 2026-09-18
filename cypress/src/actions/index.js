@@ -94,19 +94,19 @@ export const signUpUser = (sign_up, isValid = true) => {
   cy.contains('Create account').should('be.visible');
   if (sign_up.email) {
     cy.get(fields.authFormUserEmail)
-      .eq(1)
+      .eq(0)
       .clear({ force: true })
       .type(username);
   }
   cy.get(fields.authFormUserFirstName).clear().type(sign_up.firstName);
   cy.get(fields.authFormUserLastName).clear().type(sign_up.lastName);
-  cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.password);
+  cy.get(fields.authFormUserPassword).eq(0).clear().type(sign_up.password);
 
   if (isValid) {
-    cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.password);
+    cy.get(fields.authFormUserPassword).eq(0).clear().type(sign_up.password);
   } else {
     cy.get(fields.authFormUserPassword)
-      .eq(1)
+      .eq(0)
       .clear()
       .type(sign_up.shortPassword);
   }
