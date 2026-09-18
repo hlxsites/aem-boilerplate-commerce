@@ -120,10 +120,11 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       .and("not.be.disabled")
       .click();
     cy.get(".minicart-wrapper").click();
-    // Wait for the cart dropin to finish rendering items — data-loaded only
-    // signals that the fragment HTML was appended, not that the dropin has
-    // fetched and rendered cart line items.
-    cy.get('.cart-mini-cart .dropin-cart-item__sku', { timeout: 30000 }).should('exist');
+    // Wait for ADB150 specifically — the dropin may initially render the
+    // previous cart state (CYPRESS456) while the add-to-cart mutation is
+    // still in-flight. This gate ensures the mutation completed and the
+    // dropin re-rendered with the updated cart.
+    cy.get('.cart-mini-cart').contains('.dropin-cart-item__sku', 'ADB150', { timeout: 30000 });
     assertCartSummaryProduct(
       "Youth tee",
       "ADB150",
