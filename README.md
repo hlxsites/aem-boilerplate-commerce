@@ -73,9 +73,25 @@ Always run `npm run install:dropins` after any drop-in update — it copies the 
 
 ### Automated dependency PRs
 
-This repo includes a GitHub Actions workflow that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
+This repo includes a GitHub Actions workflow (`.github/workflows/update-dependencies.yaml`) that runs every Monday and opens a pull request when newer stable versions of `@adobe/*` or `@dropins/*` packages are available within the ranges declared in your `package.json` ([semver](https://semver.org/)). The PR includes updated `package.json`, `package-lock.json`, and regenerated dropin assets under `scripts/__dropins__/`. Pre-release packages are held without changes and surfaced in the workflow output. This works similarly to Dependabot or Renovate; once you fork the repo, the workflow runs in your fork so you can review and merge updates at your own pace.
 
-You can also trigger the workflow manually from the **Actions** tab in GitHub.
+#### Enabling it on your fork/clone
+
+Whether this works out of the box depends on your organization's (or personal account's) default policy for the **"Allow GitHub Actions to create and approve pull requests"** setting — some orgs disable it by default for new repositories. If it's off, the workflow will run "successfully" (it updates `package.json` locally) but silently fail to open the PR, with no obvious error in the run logs. If your fork doesn't get a PR after the workflow runs, check and enable this setting:
+
+1. In your fork/clone, go to **Settings → Actions → General**.
+2. Scroll to **Workflow permissions**.
+3. Ensure **Read and write permissions** is selected.
+4. Check **Allow GitHub Actions to create and approve pull requests**.
+5. Click **Save**.
+
+Then verify it works by triggering it manually: go to the **Actions** tab, select **Update Dependencies** in the sidebar, and click **Run workflow**. Confirm a pull request is opened once the run completes (if there are no updates available, no PR will be created — bump a version range in `package.json` to force a test run if needed).
+
+If your GitHub organization disallows the "Allow GitHub Actions to create and approve pull requests" setting at the org level and won't allow individual repos to override it, use a personal access token (PAT) or GitHub App token instead of the default `GITHUB_TOKEN`, which bypasses that restriction:
+
+1. Create a fine-grained PAT (or a GitHub App installation token) with **Contents: Read and write** and **Pull requests: Read and write** permissions scoped to your repo.
+2. Store it as a repository secret (e.g. `DEPENDENCY_UPDATE_PAT`) under **Settings → Secrets and variables → Actions**.
+3. Update the `token:` input on the `peter-evans/create-pull-request` step in `update-dependencies.yaml` to reference that secret instead of `${{ secrets.GITHUB_TOKEN }}`.
 
 ### Pulling boilerplate code changes into your fork (optional)
 
