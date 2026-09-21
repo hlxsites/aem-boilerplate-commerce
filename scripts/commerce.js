@@ -52,14 +52,6 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
 export const IS_EW = new URL(window.location.href).searchParams.get('quick-edit') === 'on';
 
-/**
- * Product template paths - pages that are templates and should use
- * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
- */
-export const PRODUCT_TEMPLATE_PATHS = [
-  'products/default',
-];
-
 // PATHS
 export const SUPPORT_PATH = '/support';
 export const PRIVACY_POLICY_PATH = '/privacy-policy';
@@ -639,30 +631,11 @@ function getSkuFromUrl() {
 function getDefaultSkuFromBlock() {
   const productDetailsBlock = document.querySelector('.product-details.block');
   if (!productDetailsBlock) {
-    console.warn('No product-details block found');
     return null;
   }
 
   const config = readBlockConfig(productDetailsBlock);
-  if (!config.defaultsku) {
-    console.warn('No defaultSku found in product-details block');
-    return null;
-  }
-  return config.defaultsku;
-}
-
-/**
- * Checks if the current page is a product template page.
- * @returns {boolean} True if the current page matches a product template path
- */
-export function isProductTemplate() {
-  const root = getRootPath();
-  const { pathname } = window.location;
-
-  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
-    const fullPath = root ? `${root}${templatePath}` : templatePath;
-    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
-  });
+  return config.defaultsku || null;
 }
 
 /**
@@ -704,14 +677,14 @@ export function getProductLink(urlKey, sku) {
 }
 
 /**
- * Gets the product SKU from metadata or URL fallback.
- * @returns {string|null} The SKU from metadata or URL, or null if not found
+ * Gets the current page's product sku, preferring the default SKU from the
+ * product-details block in authoring environments.
+ * @returns {string|null} The SKU from metadata, url, or block config
  */
 export function getProductSku() {
-  if (isProductTemplate() && (IS_DA || IS_EW)) {
-    return getDefaultSkuFromBlock();
+  if (IS_DA || IS_EW) {
+    return getDefaultSkuFromBlock() || getMetadata('sku') || getSkuFromUrl();
   }
-
   return getMetadata('sku') || getSkuFromUrl();
 }
 
