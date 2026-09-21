@@ -658,7 +658,7 @@ declare const configurableWithPriceTiers: {
     __typename: string;
     uid: string;
     quantity: number;
-    is_available: boolean;
+    is_salable: boolean;
     product: {
         sku: string;
         name: string;
@@ -749,7 +749,7 @@ declare const configurableWithoutPriceTiers: {
     __typename: string;
     uid: string;
     quantity: number;
-    is_available: boolean;
+    is_salable: boolean;
     product: {
         sku: string;
         name: string;
@@ -964,7 +964,7 @@ declare const downloadbleWithMultipleLinks: {
 };
 declare const simpleLowInventory: {
     __typename: string;
-    is_available: boolean;
+    is_salable: boolean;
     customizable_options: never[];
     product: {
         only_x_left_in_stock: number;
@@ -1032,7 +1032,7 @@ declare const simpleLowInventory: {
     };
 };
 declare const complexInsufficientQuantity: {
-    is_available: boolean;
+    is_salable: boolean;
     not_available_message: string;
     product: {
         only_x_left_in_stock: number;
@@ -1106,7 +1106,7 @@ declare const complexInsufficientQuantity: {
     };
 };
 declare const complexInsufficientQuantityGeneralMessage: {
-    is_available: boolean;
+    is_salable: boolean;
     not_available_message: string;
     product: {
         only_x_left_in_stock: number;
