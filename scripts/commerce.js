@@ -877,30 +877,17 @@ export function decorateSections(main) {
 }
 
 /**
- * Ensures a product-details block is present on any page with a SKU.
- * On product bus pages (first section has no authored blocks), strips generated
- * content (h1, price, images) and variant sections first.
+ * Injects a product-details block as first child of main.
  * @param {Element} main The main element
  */
 export function buildPDPBlock(main) {
-  if (!getProductSku()) return;
-
-  const firstSection = main.querySelector(':scope > div:first-child');
-  const isProductBus = firstSection && !firstSection.querySelector(':scope > div[class]');
-  if (isProductBus) {
-    firstSection.remove();
-    // product bus variant sections have data-sku before decorateMain runs
-    main.querySelectorAll(':scope > div[data-sku]').forEach((div) => div.remove());
-  }
-  if (!main.querySelector('.product-details')) {
-    const block = buildBlock('product-details', { elems: [] });
-    const targetSection = main.querySelector(':scope > div:first-child');
-    if (targetSection) {
-      targetSection.prepend(block);
-    } else {
-      const section = document.createElement('div');
-      section.append(block);
-      main.prepend(section);
-    }
+  const block = buildBlock('product-details', { elems: [] });
+  const targetSection = main.querySelector(':scope > div:first-child');
+  if (targetSection) {
+    targetSection.prepend(block);
+  } else {
+    const section = document.createElement('div');
+    section.append(block);
+    main.prepend(section);
   }
 }
