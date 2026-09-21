@@ -51,7 +51,7 @@ function extractMainImageUrl() {
  */
 function preloadPDPAssets() {
   // Preload PDP Dropins assets
-  const cdnBase = 'https://3655614-commercedropinscdn-stage.adobeio-static.net/';
+  const cdnBase = 'https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-pdp/';
   preloadFile(`${cdnBase}api.js`, 'script');
   preloadFile(`${cdnBase}render.js`, 'script');
   preloadFile(`${cdnBase}containers/ProductHeader.js`, 'script');
