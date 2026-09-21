@@ -127,7 +127,7 @@ export default async function decorate(block) {
 
   // Configuration
   const {
-    currentsku, currentprice, recid, referenceKey: label,
+    currentsku, currentprice, recid, referencekey: label,
   } = readBlockConfig(block);
 
   // Layout
