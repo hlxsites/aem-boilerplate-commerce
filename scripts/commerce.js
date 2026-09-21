@@ -9,6 +9,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
+  buildBlock,
   getMetadata,
   readBlockConfig,
 } from './aem.js';
@@ -615,16 +616,6 @@ export async function commerceEndpointWithQueryParams() {
 }
 
 /**
- * Extracts the SKU from the current URL path.
- * @returns {string|null} The SKU extracted from the URL, or null if not found
- */
-function getSkuFromUrl() {
-  const path = window.location.pathname;
-  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
-  return result?.[1];
-}
-
-/**
  * Extracts the defaultSku property from the product-details block element.
  * @returns {string|null} The defaultSku value from the block, or null if not found
  */
@@ -683,9 +674,9 @@ export function getProductLink(urlKey, sku) {
  */
 export function getProductSku() {
   if (IS_DA || IS_EW) {
-    return getDefaultSkuFromBlock() || getMetadata('sku') || getSkuFromUrl();
+    return getDefaultSkuFromBlock() || getMetadata('sku');
   }
-  return getMetadata('sku') || getSkuFromUrl();
+  return getMetadata('sku');
 }
 
 /**
@@ -883,4 +874,33 @@ export function decorateSections(main) {
     section.dataset.sectionStatus = 'initialized';
     section.style.display = 'none';
   });
+}
+
+/**
+ * Ensures a product-details block is present on any page with a SKU.
+ * On product bus pages (first section has no authored blocks), strips generated
+ * content (h1, price, images) and variant sections first.
+ * @param {Element} main The main element
+ */
+export function buildPDPBlock(main) {
+  if (!getProductSku()) return;
+
+  const firstSection = main.querySelector(':scope > div:first-child');
+  const isProductBus = firstSection && !firstSection.querySelector(':scope > div[class]');
+  if (isProductBus) {
+    firstSection.remove();
+    // product bus variant sections have data-sku before decorateMain runs
+    main.querySelectorAll(':scope > div[data-sku]').forEach((div) => div.remove());
+  }
+  if (!main.querySelector('.product-details')) {
+    const block = buildBlock('product-details', { elems: [] });
+    const targetSection = main.querySelector(':scope > div:first-child');
+    if (targetSection) {
+      targetSection.prepend(block);
+    } else {
+      const section = document.createElement('div');
+      section.append(block);
+      main.prepend(section);
+    }
+  }
 }
