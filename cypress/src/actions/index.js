@@ -77,15 +77,12 @@ export const createAccount = () => {
 };
 
 export const signInUser = (username, password) => {
-  cy.get('[name="signIn_form"]').should('be.visible');
-  cy.get('[name="email"]').eq(0).should('be.visible').clear().type(username);
-  cy.get('[name="password"]').eq(0).should('be.visible').clear().type(password);
-  cy.get('[name="password"]').eq(0).should('have.value', password);
-  // Cypress click is too quick, need to waiit for password to be actully typed and set
-  cy.wait(1000);
-  cy.get('.auth-sign-in-form__form__buttons button')
-    .eq(3)
-    .click({ force: true });
+  cy.get('main .auth-sign-in-form', { timeout: 15000 }).should('be.visible').within(() => {
+    cy.get('[name="email"]').should('be.visible').clear().type(username);
+    cy.get('[name="password"]').should('be.visible').clear().type(password);
+    cy.get('[name="password"]').should('have.value', password);
+    cy.get('button[type="submit"]').click();
+  });
 };
 
 export const signUpUser = (sign_up, isValid = true) => {

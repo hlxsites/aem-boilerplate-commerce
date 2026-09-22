@@ -225,7 +225,7 @@ describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas", "@skipAco"] },
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(0).clear().type(envConfig.user.password);
 
     cy.get('.auth-sign-in-form__button--submit').first().should('be.visible').click({ force: true });
     cy.wait(6000);
@@ -258,7 +258,7 @@ describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas", "@skipAco"] },
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(0).clear().type(envConfig.user.password);
 
     cy.get('.auth-sign-in-form__button--submit').first().should('be.visible').click({ force: true });
     cy.wait(6000);

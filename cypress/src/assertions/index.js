@@ -175,7 +175,7 @@ export const assertAuthUser = (sign_up) => {
   cy.url().should("include", "/customer/account");
   cy.contains(sign_up.firstName).should("be.visible");
   cy.contains(sign_up.lastName).should("be.visible");
-  cy.contains(sign_up.email).should("be.visible");
+  cy.contains(sign_up.email, { timeout: 15000 }).should("be.visible");
 };
 
 // imports and re-exports the functions from ./adobeDataLayer.js
@@ -453,7 +453,7 @@ export const assertSignInSuccess = (firstname, lastname, username) => {
   cy.url().should("include", "/customer/account");
   cy.contains(firstname).should("be.visible");
   cy.contains(lastname).should("be.visible");
-  cy.contains(username).should("be.visible");
+  cy.contains(username, { timeout: 15000 }).should("be.visible");
 };
 // Company Registration Assertions
 export const assertCompanyRegistrationForm = () => {

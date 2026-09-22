@@ -235,7 +235,7 @@ describe("Seller Assisted Buying", () => {
 
     cy.log("Step 1: Navigating to registration page");
     cy.visit("/customer/create");
-    cy.contains("Create account").should("be.visible");
+    cy.contains("Create account", { timeout: 15000 }).should("be.visible");
 
     cy.fixture("userInfo").then(({ sign_up }) => {
       const random = Cypress._.random(0, 10000000);
