@@ -494,12 +494,49 @@ export default async function decorate(block) {
     }, 5000);
   }
 
+  // The SFL section reuses the wishlist container, but WishlistAlert's copy is
+  // wishlist-specific ("removed from your wishlist" + a "View wishlist" link).
+  // Render a Save for Later toast instead so the wording matches the section.
+  function showSflToast({ action, item }) {
+    const productName = item?.product?.name ?? '';
+    const messages = {
+      move: {
+        heading: 'Moved to cart',
+        description: `${productName} has been moved to your cart`,
+        source: 'Cart',
+      },
+      remove: {
+        heading: 'Removed',
+        description: `${productName} has been removed from Save for later`,
+        source: 'Trash',
+      },
+    };
+    const message = messages[action];
+    if (!message) return;
+
+    UI.render(InLineAlert, {
+      heading: message.heading,
+      description: message.description,
+      type: 'success',
+      variant: 'primary',
+      icon: h(Icon, { source: message.source }),
+      'aria-live': 'polite',
+      onDismiss: () => {
+        $notification.innerHTML = '';
+      },
+    })($notification);
+
+    setTimeout(() => {
+      $notification.innerHTML = '';
+    }, 5000);
+  }
+
   // Main wishlist (heart toggle on cart items) emits unscoped alerts.
   events.on('wishlist/alert', showWishlistToast);
 
   // The SFL section emits on its own scope. Toast here; the count updates via
   // the scoped wishlist/data event the reload triggers.
-  events.on('wishlist/alert', showWishlistToast, { scope: SFL_SCOPE });
+  events.on('wishlist/alert', showSflToast, { scope: SFL_SCOPE });
 
   return Promise.resolve();
 }
