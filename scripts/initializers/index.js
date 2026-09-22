@@ -241,10 +241,12 @@ export default async function initializeDropins() {
       }
     }, { eager: true });
 
-    // Initialize Company Switcher
-    const authenticated = events.lastPayload('authenticated');
-
-    if (authenticated && getConfigValue('commerce-companies-enabled') === true) {
+    // Initialize Company Switcher.
+    // Import whenever companies are enabled — not gated on the current
+    // 'authenticated' payload, which auth.js may not have emitted yet. The
+    // switcher registers its own eager 'authenticated' handler, so it reacts
+    // correctly whether auth has resolved already or resolves later.
+    if (getConfigValue('commerce-companies-enabled') === true) {
       await import('./company-switcher.js');
     }
 
