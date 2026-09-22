@@ -78,10 +78,13 @@ export const createAccount = () => {
 
 export const signInUser = (username, password) => {
   cy.get('main .auth-sign-in-form', { timeout: 15000 }).should('be.visible').within(() => {
-    cy.get('[name="email"]').should('be.visible').clear().type(username);
-    cy.get('[name="password"]').should('be.visible').clear().type(password);
+    cy.get('[name="email"]').should('be.visible').clear().type(username, { delay: 50 });
+    cy.get('[name="password"]').should('be.visible').clear().type(password, { delay: 50 });
     cy.get('[name="password"]').should('have.value', password);
-    cy.get('button[type="submit"]').click();
+    cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click({ force: true });
   });
 };
 
