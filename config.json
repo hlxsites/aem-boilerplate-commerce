@@ -14,13 +14,13 @@
         },
         "cs": {
           "content-type": "application/json",
-          "AC-View-Id": "2a37823a-4b91-456a-b06c-fb6355163525",
+          "AC-View-Id": "c82e8237-d254-44c7-bd04-b22661001794",
           "AC-Environment-Id": "A3vbMrxygX5kizbBTVYbfU",
           "AC-Source-Locale": "default"
         }
       },
       "analytics": {
-        "view-id": "2a37823a-4b91-456a-b06c-fb6355163525",
+        "view-id": "c82e8237-d254-44c7-bd04-b22661001794",
         "environment": "Testing",
         "base-currency-code": "USD",
         "locale": "default",
