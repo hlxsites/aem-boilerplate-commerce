@@ -225,10 +225,9 @@ describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas", "@skipAco"] },
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(0).clear().type(envConfig.user.password);
 
-    cy.wait(2000);
-    cy.get('.auth-sign-in-form__button--submit').eq(1).click( { force: true } );
+    cy.get('.auth-sign-in-form__button--submit').first().should('be.visible').click({ force: true });
     cy.wait(6000);
 
     visitWithEagerImages("/customer/account");
@@ -259,10 +258,9 @@ describe('AEM Assets enabled', { tags: ["@skipSaas", "@skipPaas", "@skipAco"] },
 
     cy.visit("/customer/login");
     cy.get('input[name="email"]').clear().type(envConfig.user.email);
-    cy.get('input[name="password"]').eq(1).clear().type(envConfig.user.password);
+    cy.get('input[name="password"]').eq(0).clear().type(envConfig.user.password);
 
-    cy.wait(2000);
-    cy.get('.auth-sign-in-form__button--submit').eq(1).click({ force: true });
+    cy.get('.auth-sign-in-form__button--submit').first().should('be.visible').click({ force: true });
     cy.wait(6000);
 
     const expectedOptions = {

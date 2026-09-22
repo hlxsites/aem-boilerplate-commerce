@@ -77,15 +77,15 @@ export const createAccount = () => {
 };
 
 export const signInUser = (username, password) => {
-  cy.get('[name="signIn_form"]').should('be.visible');
-  cy.get('[name="email"]').eq(1).should('be.visible').clear().type(username);
-  cy.get('[name="password"]').eq(1).should('be.visible').clear().type(password);
-  cy.get('[name="password"]').eq(1).should('have.value', password);
-  // Cypress click is too quick, need to waiit for password to be actully typed and set
-  cy.wait(1000);
-  cy.get('.auth-sign-in-form__form__buttons button')
-    .eq(3)
-    .click({ force: true });
+  cy.get('main .auth-sign-in-form', { timeout: 15000 }).should('be.visible').within(() => {
+    cy.get('[name="email"]').should('be.visible').clear().type(username, { delay: 50 });
+    cy.get('[name="password"]').should('be.visible').clear().type(password, { delay: 50 });
+    cy.get('[name="password"]').should('have.value', password);
+    cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click({ force: true });
+  });
 };
 
 export const signUpUser = (sign_up, isValid = true) => {
@@ -94,19 +94,19 @@ export const signUpUser = (sign_up, isValid = true) => {
   cy.contains('Create account').should('be.visible');
   if (sign_up.email) {
     cy.get(fields.authFormUserEmail)
-      .eq(1)
+      .eq(0)
       .clear({ force: true })
       .type(username);
   }
   cy.get(fields.authFormUserFirstName).clear().type(sign_up.firstName);
   cy.get(fields.authFormUserLastName).clear().type(sign_up.lastName);
-  cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.password);
+  cy.get(fields.authFormUserPassword).eq(0).clear().type(sign_up.password);
 
   if (isValid) {
-    cy.get(fields.authFormUserPassword).eq(1).clear().type(sign_up.password);
+    cy.get(fields.authFormUserPassword).eq(0).clear().type(sign_up.password);
   } else {
     cy.get(fields.authFormUserPassword)
-      .eq(1)
+      .eq(0)
       .clear()
       .type(sign_up.shortPassword);
   }
