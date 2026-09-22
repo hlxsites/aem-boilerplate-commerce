@@ -616,6 +616,16 @@ export async function commerceEndpointWithQueryParams() {
 }
 
 /**
+ * Extracts the SKU from the current URL path.
+ * @returns {string|null} The SKU extracted from the URL, or null if not found
+ */
+function getSkuFromUrl() {
+  const path = window.location.pathname;
+  const result = path.match(/\/products\/[\w|-]+\/([\w|-]+)$/);
+  return result?.[1];
+}
+
+/**
  * Extracts the defaultSku property from the product-details block element.
  * @returns {string|null} The defaultSku value from the block, or null if not found
  */
@@ -676,7 +686,7 @@ export function getProductSku() {
   if (IS_DA || IS_EW) {
     return getDefaultSkuFromBlock() || getMetadata('sku');
   }
-  return getMetadata('sku');
+  return getMetadata('sku') || getSkuFromUrl();
 }
 
 /**
