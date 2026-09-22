@@ -578,13 +578,20 @@ export default async function decorate(block) {
     await withLoadingState(authPanel, authButton, async () => {
       if (!events.lastPayload('authenticated')) {
         const { initSignIn } = await import('./renderAuth.js');
-        initSignIn(authDropinContainer);
+        await initSignIn(authDropinContainer);
       }
     });
   }
 
+  let authPanelRequestId = 0;
+
   async function toggleAuthPanel(state) {
+    authPanelRequestId += 1;
+    const requestId = authPanelRequestId;
     if (state) await loadAuthPanel();
+    // A newer request (e.g. a click-outside close) landed while we were awaiting the
+    // lazy auth module load — don't clobber it by re-asserting our now-stale state.
+    if (requestId !== authPanelRequestId) return;
     togglePanel(authPanel, state);
     authButton.setAttribute('aria-expanded', authPanel.classList.contains('nav-tools-panel--show') ? 'true' : 'false');
     if (state) authPanel.focus();
