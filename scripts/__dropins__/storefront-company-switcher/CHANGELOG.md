@@ -1,5 +1,7 @@
 # @dropins/storefront-company-switcher
 
+## 1.3.0
+
 ## 1.3.0-beta.0
 
 ### Minor Changes
