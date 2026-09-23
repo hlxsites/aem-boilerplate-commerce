@@ -14,11 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { getFormValues } from '@dropins/tools/lib.js';
+import { debounce, getFormValues } from '@dropins/tools/lib.js';
 import { companyEnabled, getCompany } from '@dropins/storefront-company-management/api.js';
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
-import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { events } from '@dropins/tools/event-bus.js';
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { h } from '@dropins/tools/preact.js';
 import {
   InLineAlert,
@@ -28,7 +28,6 @@ import {
 } from '@dropins/tools/components.js';
 
 // Containers
-import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
 import { QuoteTemplatesListTable } from '@dropins/storefront-quote-management/containers/QuoteTemplatesListTable.js';
 import { ManageNegotiableQuoteTemplate } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuoteTemplate.js';
 
@@ -38,7 +37,7 @@ import { addQuoteTemplateShippingAddress } from '@dropins/storefront-quote-manag
 // Initialize
 import '../../scripts/initializers/company.js';
 import '../../scripts/initializers/quote-management.js';
-import '../../scripts/initializers/account.js';
+import { createShippingAddressChangeHandler } from '../../scripts/negotiable-quote-address.js';
 
 // Commerce
 import {
@@ -48,6 +47,8 @@ import {
   rootLink,
   ACCEPTED_FILE_TYPES,
 } from '../../scripts/commerce.js';
+
+const ADDRESS_INPUT_DEBOUNCE_TIME = 500;
 
 /**
  * Check if the user has the necessary permissions to access the block
@@ -88,6 +89,8 @@ const checkPermissions = async () => {
  * @param {HTMLElement} block - The block to decorate
  */
 export default async function decorate(block) {
+  const isB2BEnabled = getConfigValue('commerce-b2b-enabled');
+
   // Check if user has permissions to access the block
   const permissionCheck = await checkPermissions();
 
@@ -157,103 +160,121 @@ export default async function decorate(block) {
             size: 'large',
           })(progressSpinner);
 
-          ctx.onChange((next) => {
-            // Remove existing content from the shipping information container
-            shippingInformation.innerHTML = '';
+          const showAddressError = (error) => {
+            addressErrorContainer.removeAttribute('hidden');
+            UI.render(InLineAlert, {
+              type: 'error',
+              description: `${error}`,
+            })(addressErrorContainer);
+          };
 
-            const { templateData } = next;
-
-            if (!templateData) return;
-
-            if (!templateData.canSendForReview) return;
-
-            if (templateData.canSendForReview) {
-              accountRenderer.render(Addresses, {
-                minifiedView: false,
-                withActionsInMinifiedView: false,
-                selectable: true,
-                className: 'negotiable-quote-template__shipping-information-addresses',
-                selectShipping: true,
-                defaultSelectAddressId: 0,
-                showShippingCheckBox: false,
-                showBillingCheckBox: false,
-                onAddressData: (params) => {
-                  const { data, isDataValid: isValid } = params;
-                  const addressUid = data?.uid;
-                  if (!isValid) return;
-                  if (!addressUid) return;
-
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
-
-                  addQuoteTemplateShippingAddress({
-                    templateId: quoteTemplateId,
-                    shippingAddress: {
-                      customerAddressUid: addressUid,
-                    },
-                  }).finally(() => {
-                    progressSpinner.setAttribute('hidden', true);
-                    shippingInformation.removeAttribute('hidden');
-                  });
+          // Checkout never creates an address for a typed one: the values stream
+          // into the operation as the customer types, and the address lives only
+          // on that operation. The template does the same, and the quote beside it.
+          const writeTypedAddress = debounce((data) => {
+            addQuoteTemplateShippingAddress({
+              templateId: quoteTemplateId,
+              shippingAddress: {
+                address: {
+                  firstname: data?.firstName,
+                  lastname: data?.lastName,
+                  middlename: data?.middleName,
+                  company: data?.company,
+                  street: data?.street,
+                  city: data?.city,
+                  region: data?.region?.regionCode,
+                  regionId: data?.region?.regionId,
+                  postcode: data?.postcode,
+                  countryCode: data?.countryCode,
+                  telephone: data?.telephone,
+                  fax: data?.fax,
+                  prefix: data?.prefix,
+                  suffix: data?.suffix,
+                  vatId: data?.vatId,
+                  // The schema defaults this to true, so leaving it out saves
+                  // the address to the customer's book. A custom address on a
+                  // template is meant to live on the template and nowhere else.
+                  saveInAddressBook: false,
                 },
-                onSubmit: (event, formValid) => {
-                  if (!formValid) return;
+              },
+            }).catch(showAddressError);
+          }, ADDRESS_INPUT_DEBOUNCE_TIME);
 
-                  const formValues = getFormValues(event.target);
+          ctx.onChange(createShippingAddressChangeHandler({
+            isB2BEnabled,
+            shippingInformation,
+            progressSpinner,
+            showAddressError,
+            writeTypedAddress,
+            className: 'negotiable-quote-template__shipping-information-addresses',
+            extraAddressesProps: {
+              showShippingCheckBox: false,
+              showBillingCheckBox: false,
+            },
+            getData: (next) => next.templateData,
+            buildAddressRef: (companyAddressId, customerAddressUid) => (
+              companyAddressId ? { companyAddressId } : { customerAddressUid }
+            ),
+            writeSelectedAddress: (addressRef) => addQuoteTemplateShippingAddress({
+              templateId: quoteTemplateId,
+              shippingAddress: addressRef,
+            }),
+            onSubmit: (event, formValid) => {
+              if (!formValid) return;
 
-                  const [regionCode, _regionId] = formValues.region?.split(',') || [];
+              const formValues = getFormValues(event.target);
 
-                  // iterate through the object entries and combine the values of keys that have
-                  // a prefix of 'street' into an array
-                  const streetInputValues = Object.entries(formValues)
-                    .filter(([key]) => key.startsWith('street'))
-                    .map(([_, value]) => value);
+              const [regionCode, _regionId] = formValues.region?.split(',') || [];
 
-                  const addressInput = {
-                    firstname: formValues.firstName,
-                    lastname: formValues.lastName,
-                    company: formValues.company,
-                    street: streetInputValues,
-                    city: formValues.city,
-                    region: regionCode,
-                    postcode: formValues.postcode,
-                    countryCode: formValues.countryCode,
-                    telephone: formValues.telephone,
-                  };
+              // iterate through the object entries and combine the values of keys that have
+              // a prefix of 'street' into an array
+              const streetInputValues = Object.entries(formValues)
+                .filter(([key]) => key.startsWith('street'))
+                .map(([_, value]) => value);
 
-                  // These values are not part of the standard address input
-                  const additionalAddressInput = {
-                    vat_id: formValues.vatId,
-                  };
+              const addressInput = {
+                firstname: formValues.firstName,
+                lastname: formValues.lastName,
+                company: formValues.company,
+                street: streetInputValues,
+                city: formValues.city,
+                region: regionCode,
+                postcode: formValues.postcode,
+                countryCode: formValues.countryCode,
+                telephone: formValues.telephone,
+              };
 
-                  progressSpinner.removeAttribute('hidden');
-                  shippingInformation.setAttribute('hidden', true);
+              // These values are not part of the standard address input
+              const additionalAddressInput = {
+                vat_id: formValues.vatId,
+              };
 
-                  addQuoteTemplateShippingAddress({
-                    templateId: quoteTemplateId,
-                    shippingAddress: {
-                      address: {
-                        ...addressInput,
-                        additionalInput: additionalAddressInput,
-                      },
-                      customerNotes: formValues.customerNotes,
-                    },
-                  })
-                    .catch((error) => {
-                      addressErrorContainer.removeAttribute('hidden');
-                      UI.render(InLineAlert, {
-                        type: 'error',
-                        description: `${error}`,
-                      })(addressErrorContainer);
-                    })
-                    .finally(() => {
-                      progressSpinner.setAttribute('hidden', true);
-                      shippingInformation.removeAttribute('hidden');
-                    });
+              progressSpinner.removeAttribute('hidden');
+              shippingInformation.setAttribute('hidden', true);
+
+              addQuoteTemplateShippingAddress({
+                templateId: quoteTemplateId,
+                shippingAddress: {
+                  address: {
+                    ...addressInput,
+                    additionalInput: additionalAddressInput,
+                  },
+                  customerNotes: formValues.customerNotes,
                 },
-              })(shippingInformation);
-            }
-          });
+              })
+                .catch((error) => {
+                  addressErrorContainer.removeAttribute('hidden');
+                  UI.render(InLineAlert, {
+                    type: 'error',
+                    description: `${error}`,
+                  })(addressErrorContainer);
+                })
+                .finally(() => {
+                  progressSpinner.setAttribute('hidden', true);
+                  shippingInformation.removeAttribute('hidden');
+                });
+            },
+          }));
         },
       },
     })(block);

@@ -6,8 +6,8 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { ImageProps } from '@dropins/tools/components';
-import { SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { CartItemModel as NegotiableQuoteItemModel, StoreConfigModel } from '../data/models';
 import { SwitchableAttributes } from '../containers/QuoteSummaryList/QuoteSummaryList';
 export interface ItemFormatterOptions {

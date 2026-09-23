@@ -23,5 +23,6 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     subtotalExcludingTaxes?: VNode;
     preCheckoutSection?: VNode;
     ctas?: VNode;
+    liveRegion?: VNode;
 }
 export declare const MiniCart: FunctionComponent<MiniCartProps>;

@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 import { ApprovalRuleDetailsProps } from '../../types/containers';
-import { Container } from '@dropins/tools/lib';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 export declare const ApprovalRuleDetails: Container<ApprovalRuleDetailsProps>;

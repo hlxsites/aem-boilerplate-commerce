@@ -14,6 +14,35 @@ if (fs.existsSync(dropinsDir)) {
 // Create scripts/__dropins__ directory if not exists
 fs.mkdirSync(dropinsDir, { recursive: true });
 
+// Verify installed @dropins/* versions match package-lock.json before vendoring.
+// A mismatch means node_modules is stale and copying would ship wrong code.
+const packageLock = JSON.parse(fs.readFileSync('./package-lock.json', 'utf8'));
+const versionMismatches = [];
+
+fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((entry) => {
+  const pkgName = `@dropins/${entry.name}`;
+  if (!entry.isDirectory() || !dependencies[pkgName]) return;
+
+  const installedPkgPath = path.join('node_modules', '@dropins', entry.name, 'package.json');
+  if (!fs.existsSync(installedPkgPath)) return;
+
+  const installedVersion = JSON.parse(fs.readFileSync(installedPkgPath, 'utf8')).version;
+  const lockEntry = packageLock.packages[`node_modules/${pkgName}`];
+  if (lockEntry && lockEntry.version && installedVersion !== lockEntry.version) {
+    versionMismatches.push({ pkgName, installedVersion, expected: lockEntry.version });
+  }
+});
+
+if (versionMismatches.length > 0) {
+  console.error('\n🚨 Drop-in version mismatch detected!\n');
+  console.error('The following packages in node_modules do not match package-lock.json:');
+  versionMismatches.forEach(({ pkgName, installedVersion, expected }) => {
+    console.error(`  ${pkgName}: installed ${installedVersion}, expected ${expected}`);
+  });
+  console.error('\nRun "rm -rf node_modules && npm install" to fix this.\n');
+  process.exit(1);
+}
+
 // Copy specified files from node_modules/@dropins to scripts/__dropins__
 fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
   // Skip if package is not in package.json dependencies / skip devDependencies
@@ -49,10 +78,10 @@ function checkPackageLockForArtifactory() {
         return;
       }
       try {
-        const packageLock = JSON.parse(data);
+        const lockData = JSON.parse(data);
         let found = false;
-        Object.keys(packageLock.packages).forEach((packageName) => {
-          const packageInfo = packageLock.packages[packageName];
+        Object.keys(lockData.packages).forEach((packageName) => {
+          const packageInfo = lockData.packages[packageName];
           if (packageInfo.resolved && packageInfo.resolved.includes('artifactory')) {
             console.warn(`Warning: artifactory found in resolved property for package ${packageName}`);
             found = true;
