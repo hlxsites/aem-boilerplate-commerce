@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { StoreConfigModel } from '../../data/models';
+import { StoreConfigModel } from '../../data/models/index.d.ts';
 export interface GetStoreConfigOptions {
     /**
      * Cache mode for the request. Defaults to `force-cache`, which suits UI

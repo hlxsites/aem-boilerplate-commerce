@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ResetPasswordModel } from '../../data/models';
+import { ResetPasswordModel } from '../../data/models/index.d.ts';
 export declare const resetPassword: (email: string, resetPasswordToken: string, newPassword: string) => Promise<ResetPasswordModel>;

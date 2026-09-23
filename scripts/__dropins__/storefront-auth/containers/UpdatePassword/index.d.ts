@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './UpdatePassword';
-export { UpdatePassword as default } from './UpdatePassword';
+export * from './UpdatePassword.d.ts';
+export { UpdatePassword as default } from './UpdatePassword.d.ts';

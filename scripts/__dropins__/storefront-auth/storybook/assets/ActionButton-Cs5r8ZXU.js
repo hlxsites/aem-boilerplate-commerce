@@ -1,0 +1,2 @@
+import{a as t}from"./iframe-S6tzT0R4.js";import{c as s}from"./classes-DJBjVfEy.js";import{V as e}from"./vcomponent-CPGLK6kD.js";const b=({icon:n,className:r,children:o,active:i=!1,disabled:a=!1,...p})=>t("button",{role:"button",disabled:a,...p,className:s(["dropin-action-button",["dropin-action-button--active",i],["dropin-action-button--disabled",a],r]),children:[n&&t(e,{node:n,className:s(["dropin-action-button-icon"])}),o&&(typeof o=="string"?t("span",{children:o}):o)]});export{b as A};
+//# sourceMappingURL=ActionButton-Cs5r8ZXU.js.map

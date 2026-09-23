@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './ResetPassword';
-export { ResetPassword as default } from './ResetPassword';
+export * from './ResetPassword.d.ts';
+export { ResetPassword as default } from './ResetPassword.d.ts';

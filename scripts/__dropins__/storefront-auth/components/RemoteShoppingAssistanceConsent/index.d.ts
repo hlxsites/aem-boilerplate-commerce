@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './RemoteShoppingAssistanceConsent';
-export { RemoteShoppingAssistanceConsent as default } from './RemoteShoppingAssistanceConsent';
+export * from './RemoteShoppingAssistanceConsent.d.ts';
+export { RemoteShoppingAssistanceConsent as default } from './RemoteShoppingAssistanceConsent.d.ts';

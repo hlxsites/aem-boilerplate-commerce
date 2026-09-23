@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './SuccessNotificationForm';
-export { SuccessNotificationForm as default } from './SuccessNotificationForm';
+export * from './SuccessNotificationForm.d.ts';
+export { SuccessNotificationForm as default } from './SuccessNotificationForm.d.ts';

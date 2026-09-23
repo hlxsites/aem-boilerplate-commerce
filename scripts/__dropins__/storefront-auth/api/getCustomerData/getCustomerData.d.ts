@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CustomerModel } from '../../data/models';
+import { CustomerModel } from '../../data/models/index.d.ts';
 export declare const getCustomerData: (user_token: string) => Promise<CustomerModel>;

@@ -1,0 +1,18 @@
+{
+  "Auth": {
+    "SuccessNotification":{
+      "createUser":{
+        "headingText":"Welcome {userName}",
+        "messageText":"Your account has been successfully created.",
+        "primaryButtonText":"Continue shopping create user",
+        "secondaryButtonText":"Logout"
+      },
+      "loginUser":{
+        "headingText":"Welcome {userName}",
+        "messageText":"Your account has been successfully created.",
+        "primaryButtonText":"Continue shopping login user",
+        "secondaryButtonText":"Logout"
+      }
+    }
+  }
+}

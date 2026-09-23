@@ -1,0 +1,5 @@
+import{u as s,a as e,M as i,U as l,k as r}from"./iframe-S6tzT0R4.js";import{T as c,B as p,D as u,g as x}from"./getTokenData-C4Vcj5Fa.js";import"./preload-helper-C1FmrZbK.js";const m={xxsmall:{value:"4px"},xsmall:{value:"8px"},small:{value:"16px"},medium:{value:"24px"},big:{value:"32px"},xbig:{value:"40px"},xxbig:{value:"48px"},large:{value:"64px"},xlarge:{value:"72px"},xxlarge:{value:"96px"},huge:{value:"120px"},xhuge:{value:"144px"},xxhuge:{value:"192px"}},g={spacing:m},o=x(g),h=o.map(a=>a.name);function t(a){const n={h1:"h1",p:"p",...s(),...a.components};return e(r,{children:[e(i,{title:"Design/Spacing"}),`
+`,e(l,{children:[e(n.h1,{id:"spacing",children:"Spacing"}),e(n.p,{children:`Use an incremental system to create harmonious arrangements with consistent
+visual balance and predictable rhythm to make the user interface easier for
+users to scan and identify relevant groups.`}),e(c,{tokenData:o}),e(p,{children:e(u,{property:"width",tokens:h})})]})]})}function f(a={}){const{wrapper:n}={...s(),...a.components};return n?e(n,{...a,children:e(t,{...a})}):t(a)}export{f as default,o as tokenData,h as tokenNames};
+//# sourceMappingURL=spacing-BTp3TyNY.js.map
