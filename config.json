@@ -1,0 +1,29 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://master-7rqtwti-hgaxdx6zggdbi.us-4.magentosite.cloud/graphql",
+      "commerce-endpoint": "https://na1.api.commerce.adobe.com/A3vbMrxygX5kizbBTVYbfU/graphql",
+      "adobe-commerce-optimizer": true,
+      "commerce-companies-enabled": true,
+      "commerce-b2b-enabled": true,
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "ac-view-id": "c82e8237-d254-44c7-bd04-b22661001794",
+        }
+      },
+      "analytics": {
+        "environment-id": "A3vbMrxygX5kizbBTVYbfU",
+        "environment": "Testing",
+        "store-url": "https://slow-horses-regression-b2b--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "base-currency-code": "USD",
+        "store-view-currency-code": "USD",
+        "view-id": "c82e8237-d254-44c7-bd04-b22661001794",
+        "locale": "en-US"
+      }
+    }
+  }
+}
+
