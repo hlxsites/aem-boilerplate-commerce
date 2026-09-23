@@ -12,6 +12,7 @@ const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c'
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
 let catalogServiceCacheControlAdded = false;
+let currentCustomerGroupId;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -37,6 +38,10 @@ const sha1Base64 = async (value) => {
 };
 
 const setCustomerGroupHeader = (customerGroupId) => {
+  if (customerGroupId === currentCustomerGroupId) {
+    return;
+  }
+
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
 
   const { endpoint } = CS_FETCH_GRAPHQL.getConfig();
@@ -46,6 +51,7 @@ const setCustomerGroupHeader = (customerGroupId) => {
     CS_FETCH_GRAPHQL.setEndpoint(url.toString());
   }
 
+  currentCustomerGroupId = customerGroupId;
   events.emit('commerce/customer-context', { customerGroupId });
 };
 
@@ -147,16 +153,13 @@ export default async function initializeDropins() {
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
-    // Set auth headers on authenticated event
-    events.on('authenticated', updateAuthContext, { eager: true });
-
     // Cache cart data in session storage
     events.on('cart/data', persistCartDataInSession, { eager: true });
 
     // on page load, check if user is authenticated
     const token = getUserTokenCookie();
     // set auth headers
-    await updateAuthContext(!!token);
+    setAuthHeaders(!!token);
 
     // Event Bus Logger
     events.enableLogger(true);
@@ -169,6 +172,14 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+
+    // Auth must be initialized before getCustomerData uses its endpoint and config.
+    // Await the initial pricing context here: event listeners are not awaited by
+    // the event bus, and PDP/PLP loading must not race the customer group lookup.
+    await updateAuthContext(!!getUserTokenCookie());
+
+    // Handle subsequent sign-in/sign-out changes after startup context is ready.
+    events.on('authenticated', updateAuthContext);
 
     await import('./personalization.js');
 
