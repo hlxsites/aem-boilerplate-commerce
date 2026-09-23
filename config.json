@@ -16,8 +16,8 @@
       },
       "analytics": {
         "environment-id": "A3vbMrxygX5kizbBTVYbfU",
-        "environment": "Testing",
-        "store-url": "https://slow-horses-regression-b2b--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment": "Production",
+        "store-url": "https://comopt-2579-cv-race-qa--aem-boilerplate-commerce--hlxsites.aem.page/",
         "base-currency-code": "USD",
         "store-view-currency-code": "USD",
         "view-id": "c82e8237-d254-44c7-bd04-b22661001794",
