@@ -1,0 +1,82 @@
+/* ── Fixed bar ──────────────────────────────────────────────────────────────── */
+
+.product-compare-bar__container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-medium);
+    padding: var(--spacing-small) var(--spacing-medium);
+    background: var(--background-color);
+    border-top: var(--shape-border-width-2) solid var(--color-neutral-300);
+    box-shadow: 0 -4px 16px rgb(0 0 0 / 8%);
+}
+
+.product-compare-bar__container[hidden] {
+    display: none;
+}
+
+/* ── Product cards ──────────────────────────────────────────────────────────── */
+
+.product-compare-bar__products {
+    display: flex;
+    flex: 1;
+    gap: var(--spacing-small);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.product-compare-bar__products::-webkit-scrollbar {
+    display: none;
+}
+
+.product-compare-bar__product {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xsmall);
+    padding: var(--spacing-xsmall);
+    border: var(--shape-border-width-1) solid var(--color-neutral-300);
+    border-radius: var(--shape-border-radius-m);
+    flex-shrink: 0;
+}
+
+.product-compare-bar__product img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.product-compare-bar__product-name {
+    font: var(--type-body-2-font);
+    letter-spacing: var(--type-body-2-letter-spacing);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+}
+
+/* ── Actions ────────────────────────────────────────────────────────────────── */
+
+.product-compare-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-small);
+    flex-shrink: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (min-width: 600px) {
+    .product-compare-bar__product-name {
+        max-width: 160px;
+    }
+}
+
+@media (min-width: 900px) {
+    .product-compare-bar__product-name {
+        max-width: 200px;
+    }
+}
