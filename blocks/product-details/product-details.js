@@ -86,6 +86,9 @@ export default async function decorate(block) {
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
 
+  // Tracks the latest product data (e.g. isGrouped) as 'pdp/data' updates.
+  let currentProductData = product;
+
   const labels = await fetchPlaceholders();
 
   // Read itemUid from URL
@@ -306,7 +309,22 @@ export default async function decorate(block) {
           const { addProductsToCart } = await import(
             '@dropins/storefront-cart/api.js'
           );
-          await addProductsToCart([{ ...values }]);
+
+          // Grouped products have no parent-level add-to-cart path: the parent SKU
+          // isn't purchasable, so each associated product must be added as its own
+          // cart line item using its own sku/quantity instead.
+          if (currentProductData?.isGrouped) {
+            if (values.groupedCartItems?.length) {
+              await addProductsToCart(
+                values.groupedCartItems.map(({ sku, quantity }) => ({
+                  sku,
+                  quantity,
+                })),
+              );
+            }
+          } else {
+            await addProductsToCart([{ ...values }]);
+          }
         }
 
         // reset any previous alerts if successful
@@ -344,6 +362,7 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/data', (data) => {
+    currentProductData = data;
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
