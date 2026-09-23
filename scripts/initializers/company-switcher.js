@@ -5,14 +5,12 @@ import {
   getCatalogViewContext,
   getCatalogViewHeaderManager,
 } from '@dropins/storefront-company-switcher/api.js';
-import { getHeaders } from '@dropins/tools/lib/aem/configs.js';
+import { getConfigValue, getHeaders } from '@dropins/tools/lib/aem/configs.js';
 import { initializeDropin, getUserTokenCookie } from './index.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from '../commerce.js';
 
-// Hold Catalog Service requests until the gated catalog view headers are applied,
-// then refresh the request's headers before it sends — FetchGraphQL snapshots headers
-// before beforeHooks run, so delaying alone wouldn't update a request built before the
-// headers were set. B2B-only: loaded only when companies are enabled.
+// Hold Catalog Service requests until the catalog view headers are applied, and re-apply
+// them per request — FetchGraphQL snapshots headers before beforeHooks run.
 let resolveCatalogViewReady;
 const catalogViewReady = new Promise((resolve) => { resolveCatalogViewReady = resolve; });
 CS_FETCH_GRAPHQL.addBeforeHook(async (request) => {
@@ -34,22 +32,19 @@ await initializeDropin(async () => {
       (key) => key.toLowerCase() === catalogViewIdKey,
     ) || catalogViewIdKey;
 
-    // Initialize company switcher; points the catalog view header manager at CS_FETCH_GRAPHQL.
-    // Catalog Service is intentionally excluded from groupGraphQlModules: the ACO price book
-    // (AC-Price-Book-ID) already carries the customer group, so a Magento-Customer-Group header
-    // would double-resolve the group and drop the group price back to regular.
+    // In ACO mode AC-Price-Book-ID already encodes the customer group, so also sending
+    // Magento-Customer-Group double-resolves it and drops the group price to regular.
+    const acoMode = getConfigValue('adobe-commerce-optimizer') === true;
     await initializers.mountImmediately(initialize, {
       fetchGraphQlModules: [CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL],
-      groupGraphQlModules: [],
+      groupGraphQlModules: acoMode ? [] : [CS_FETCH_GRAPHQL],
       catalogViewGraphQlModules: [CS_FETCH_GRAPHQL],
       catalogViewHeader: catalogViewKey,
       catalogViewDefault: csHeaders[catalogViewKey],
     });
 
-    // Apply the context before releasing the barrier. Skip guests (dropin keeps the
-    // default view). Guard on a non-null context so a transient fetch failure doesn't
-    // strip an authenticated buyer to the public view, and re-check after the await in
-    // case the switcher's own handler applied headers during the round-trip.
+    // Apply the context before releasing the barrier; skip guests, and guard on a non-null
+    // context so a transient failure doesn't strip an authed buyer to the public view.
     const headerManager = getCatalogViewHeaderManager();
     if (getUserTokenCookie() && !headerManager.isCatalogViewHeaderSet()) {
       const context = await getCatalogViewContext();
