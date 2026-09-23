@@ -1,0 +1,2 @@
+import{A as e,e as u,a as c}from"./iframe-S6tzT0R4.js";const a=({children:n})=>{const r=e(null),t=e(null);return u(()=>(r.current||(r.current=document.createElement("div"),r.current.setAttribute("data-portal-root",""),document.body.appendChild(r.current)),t.current&&r.current&&r.current.appendChild(t.current),()=>{r.current&&(r.current.remove(),r.current=null)}),[]),c("div",{ref:t,className:"dropin-design",children:n})};export{a as P};
+//# sourceMappingURL=Portal-DhogCNME.js.map

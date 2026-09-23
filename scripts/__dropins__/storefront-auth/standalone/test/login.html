@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>HTML Example</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <script
+      async
+      src="https://ga.jspm.io/npm:es-module-shims@1.7.2/dist/es-module-shims.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@dropins/tools/": "https://www.unpkg.com/@dropins/tools@0.42.0/",
+          "@dropins/auth/": "../../"
+        }
+      }
+    </script>
+    <!-- Adobe Client Data Layer -->
+    <script
+      src="https://www.unpkg.com/@adobe-commerce/adobe-client-data-layer@2.0.2/dist/adobe-client-data-layer.min.js"
+      async
+      defer
+    ></script>
+    <style>
+      /* Base Design System Tokens */
+      /* .dropin-design { } */
+
+      #login-success-indicator {
+        display: none;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: #4caf50;
+        color: white;
+        border-radius: 4px;
+        font-family: sans-serif;
+        font-size: 14px;
+        z-index: 10000;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      #login-success-indicator.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Success indicator for E2E tests -->
+    <div id="login-success-indicator" data-testid="login-success">
+      <strong>Welcome firstname</strong><br />
+      You successfully logged-in.
+    </div>
+
+    <script type="module">
+      import { htmlExampleConfig } from '../shared.js';
+
+      import { initializers } from '@dropins/tools/initializer.js';
+      import { Button } from '@dropins/tools/components.js';
+
+      import { render as provider } from '@dropins/auth/render.js';
+      import SignIn from '@dropins/auth/containers/SignIn.js';
+      import SuccessNotification from '@dropins/auth/containers/SuccessNotification.js';
+
+      import * as recaptcha from '@dropins/tools/recaptcha.js';
+
+      import * as mesh from '@dropins/tools/fetch-graphql.js';
+      import * as authApi from '@dropins/auth/api.js';
+
+      const fr_FR = await fetch('../i18n/fr_FR.json').then((res) => res.json());
+      const en_US = {
+        Auth: {
+          SuccessNotification: {
+            headingText: 'Welcome {userName}!',
+            messageText: 'You successfully logged-in.',
+            primaryButtonText: 'Home page',
+            secondaryButtonText: 'Logout',
+          },
+        },
+      };
+
+      mesh.setEndpoint(htmlExampleConfig.getMeshEndpoint());
+      recaptcha.setConfig();
+
+      initializers.register(authApi.initialize, {
+        langDefinitions: { fr_FR, en_US },
+      });
+      initializers.mount();
+
+      await provider.render(SignIn, {
+        renderSignUpLink: true,
+        routeSignUp: () => 'registration.html',
+        routeForgotPassword: () => 'reset-password.html',
+        onSuccessCallback: (data) => {
+          // Show success indicator for E2E tests
+          const indicator = document.getElementById('login-success-indicator');
+          if (indicator) {
+            // Update with actual user name if available
+            if (data?.userName) {
+              indicator.innerHTML = `<strong>Welcome ${data.userName}</strong><br>You successfully logged-in.`;
+            }
+            indicator.classList.add('visible');
+          }
+        },
+        slots: {
+          SuccessNotification: (ctx) => {
+            const userName = ctx?.isSuccessful?.userName || '';
+
+            const elem = document.createElement('div');
+
+            provider.render(SuccessNotification, {
+              labels: {
+                headingText:
+                  ctx.dictionary.Auth.SuccessNotification.headingText.replace(
+                    '{userName}',
+                    userName
+                  ),
+              },
+              slots: {
+                SuccessNotificationActions: (ctx) => {
+                  const primaryBtn = document.createElement('div');
+
+                  provider.render(Button, {
+                    children:
+                      ctx.dictionary.Auth.SuccessNotification.primaryButtonText,
+
+                    onClick: () => {
+                      window.location.href = '/';
+                    },
+                  })(primaryBtn);
+
+                  ctx.appendChild(primaryBtn);
+
+                  const secondaryButton = document.createElement('div');
+                  secondaryButton.style.display = 'flex';
+                  secondaryButton.style.justifyContent = 'center';
+                  secondaryButton.style.marginTop = 'var(--spacing-xsmall)';
+
+                  provider.render(Button, {
+                    children:
+                      ctx.dictionary.Auth.SuccessNotification
+                        .secondaryButtonText,
+                    variant: 'tertiary',
+                    onClick: async () => {
+                      await authApi.revokeCustomerToken();
+                      window.location.href = '/';
+                    },
+                  })(secondaryButton);
+
+                  ctx.appendChild(secondaryButton);
+                },
+              },
+            })(elem);
+
+            ctx.appendChild(elem);
+          },
+        },
+      })(document.getElementById('SignIn'));
+    </script>
+
+    <div id="app">
+      <h1 id="title">💻</h1>
+
+      <div
+        class="containers"
+        style="max-width: 1200px; width: 100%; box-sizing: border-box"
+      >
+        <h3>SignIn Container</h3>
+        <div id="SignIn" class="container"></div>
+      </div>
+    </div>
+
+    <link rel="stylesheet" href="../styles.css" />
+  </body>
+</html>

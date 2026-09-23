@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { getStoreConfigResponse } from '../../types';
+import { getStoreConfigResponse } from '../../types/index.d.ts';
 import { StoreConfigModel } from '../models';
 export declare const transformStoreConfig: (response: getStoreConfigResponse) => StoreConfigModel;

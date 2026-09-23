@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Form';
-export { Form as default } from './Form';
+export * from './Form.d.ts';
+export { Form as default } from './Form.d.ts';

@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 import { activeComponentType } from './authCombine.types';
 import { InLineAlertInterface } from './notification.types';
 type DefaultSlotContext = {

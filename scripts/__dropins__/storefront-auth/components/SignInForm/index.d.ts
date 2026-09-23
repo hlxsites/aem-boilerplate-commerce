@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './SignInForm';
-export { SignInForm as default } from './SignInForm';
+export * from './SignInForm.d.ts';
+export { SignInForm as default } from './SignInForm.d.ts';

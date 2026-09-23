@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { inputsDefaultValueSetProps } from '../../types';
+import { inputsDefaultValueSetProps } from '../../types/index.d.ts';
 interface UseGetAttributesFormProps {
     fieldsConfigForApiVersion1: {}[];
     apiVersion2: boolean;
@@ -29,7 +29,7 @@ export declare const useGetAttributesForm: ({ inputsDefaultValueSet, fieldsConfi
         defaultValue?: string | boolean | number;
         entityType?: string;
         className?: string;
-        fieldType?: import("../../data/models").FieldEnumList;
+        fieldType?: import("../../data/models/index.d.ts").FieldEnumList;
         multilineCount: number;
         required?: boolean;
         unique?: boolean;
