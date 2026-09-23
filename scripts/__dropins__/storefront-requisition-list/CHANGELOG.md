@@ -1,5 +1,11 @@
 # @dropins/storefront-requisition-list
 
+## 1.5.1
+
+### Patch Changes
+
+- d681e53: Bumped SDK Elsie beta version. Bumped preact library version.
+
 ## 1.5.1-beta.0
 
 ### Patch Changes

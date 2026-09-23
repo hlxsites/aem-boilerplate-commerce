@@ -1,5 +1,11 @@
 # @dropins/storefront-personalization
 
+## 3.2.2
+
+### Patch Changes
+
+- 05b1b2c: Bump SDK beta version
+
 ## 3.2.2-beta.0
 
 ### Patch Changes
