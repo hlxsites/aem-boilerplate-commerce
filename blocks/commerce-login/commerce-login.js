@@ -17,6 +17,7 @@ export default async function decorate(block) {
     await authRenderer.render(SignIn, {
       routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
       routeRedirectOnSignIn: () => rootLink(CUSTOMER_ACCOUNT_PATH),
+      apiErrorMessageOverride: 'Custom error: Unable to sign in. Please contact support.',
     })(block);
   }
 }
