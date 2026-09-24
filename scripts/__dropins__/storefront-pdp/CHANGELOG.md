@@ -1,5 +1,17 @@
 # @dropins/storefront-pdp
 
+## 3.3.2
+
+### Patch Changes
+
+- 7f8f874: Exclude custom-option UIDs from the `refineProduct`/variants request in `getRefinedProduct`. Catalog Service only resolves variants by configurable-attribute UIDs; sending a custom-option UID alongside them caused a "Missing variants" error, which made the PDP silently fall back to the parent product's data — including its image gallery — instead of the selected variant's. This only affects configurable products that also have a custom option selected; other product types are unaffected.
+
+## 3.3.2-beta.0
+
+### Patch Changes
+
+- 7f8f874: Exclude custom-option UIDs from the `refineProduct`/variants request in `getRefinedProduct`. Catalog Service only resolves variants by configurable-attribute UIDs; sending a custom-option UID alongside them caused a "Missing variants" error, which made the PDP silently fall back to the parent product's data — including its image gallery — instead of the selected variant's. This only affects configurable products that also have a custom option selected; other product types are unaffected.
+
 ## 3.3.1
 
 ### Patch Changes

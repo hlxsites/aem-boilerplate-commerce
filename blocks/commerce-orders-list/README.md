@@ -11,6 +11,7 @@ The Commerce Orders List block renders a list of customer orders using the @drop
 | Configuration Key | Type | Default | Description | Required | Side Effects |
 |-------------------|------|---------|-------------|----------|--------------|
 | `minified-view` | string | `'false'` | Controls whether orders are displayed in minified or full view mode | No | Changes the visual layout and available actions |
+| `search` | string | `'true'` | Shows the order search box. Set to `'false'` to hide it | No | Adds a search control that filters by order number, product name, or SKU |
 
 <!-- ### URL Parameters
 
@@ -38,6 +39,7 @@ No events are emitted by this block. -->
 - **Unauthenticated Users**: When user is not authenticated, redirects to login page
 - **Minified View**: When `minified-view` is 'true', displays orders in a compact format
 - **Full View**: When `minified-view` is 'false', displays orders in full format with all details
+- **Order Search**: When `search` is 'true' (default), a search box filters orders by order number, product name, or SKU. This block searches all orders, so the date filter does not limit search results. The drop-in enforces a minimum of 3 and a maximum of 100 characters
 
 ### User Interaction Flows
 

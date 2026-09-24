@@ -23,6 +23,7 @@ import {
   assertAuthUser,
   assertOrderImageDisplay,
   assertOrderCommentsVisible,
+  assertEachCartLineHasPromotionLabelsRegion,
 } from "../../assertions";
 import {
   customerShippingAddress,
@@ -96,7 +97,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       assertAuthUser(sign_up);
     });
     cy.get(".minicart-wrapper").click();
-    cy.get('.minicart-panel[data-loaded="true"]').should('exist');
+    cy.get('.cart-mini-cart .dropin-cart-item__sku', { timeout: 30000 }).should('exist');
     assertCartSummaryProduct(
       'Configurable product',
       'CYPRESS456',
@@ -119,10 +120,11 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       .and("not.be.disabled")
       .click();
     cy.get(".minicart-wrapper").click();
-    // Panel re-fetches/re-renders cart contents on open; wait for the
-    // loaded flag like the first add-to-cart above, otherwise the
-    // assertion below can run against the stale (pre-add) cart state.
-    cy.get('.minicart-panel[data-loaded="true"]').should('exist');
+    // Wait for ADB150 specifically — the dropin may initially render the
+    // previous cart state (CYPRESS456) while the add-to-cart mutation is
+    // still in-flight. This gate ensures the mutation completed and the
+    // dropin re-rendered with the updated cart.
+    cy.get('.cart-mini-cart').contains('.dropin-cart-item__sku', 'ADB150', { timeout: 30000 });
     assertCartSummaryProduct(
       "Youth tee",
       "ADB150",
@@ -149,6 +151,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       '/products/cypress-configurable-product-latest/cypress456'
     )('.cart-mini-cart');
     assertProductImage(Cypress.env('productImageName'))('.cart-mini-cart');
+    assertEachCartLineHasPromotionLabelsRegion('.cart-mini-cart');
     cy.visit('/cart');
     assertCartSummaryProduct(
       "Youth tee",
@@ -179,6 +182,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       '/products/cypress-configurable-product-latest/cypress456'
     )('.commerce-cart-wrapper');
     assertProductImage(Cypress.env('productImageNameConfigurable'))('.commerce-cart-wrapper');
+    assertEachCartLineHasPromotionLabelsRegion('.commerce-cart-wrapper');
     cy.contains('Estimated Shipping').should('be.visible');
     cy.percyTakeSnapshot('Cart page');
     cy.get('.dropin-button.dropin-button--medium.dropin-button--primary')
@@ -201,6 +205,7 @@ describe("Verify auth user can place order", { tags: "@skipSaasProd" }, () => {
       '$60.00',
       '1'
     );
+    assertEachCartLineHasPromotionLabelsRegion('.cart-cart-summary-list');
     setGuestShippingAddress(customerShippingAddress, true);
     uncheckBillToShippingAddress();
     setGuestBillingAddress(customerBillingAddress, true);
