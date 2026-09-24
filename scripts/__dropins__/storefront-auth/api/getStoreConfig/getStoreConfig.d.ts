@@ -15,4 +15,15 @@
  * from Adobe.
  *******************************************************************/
 import { StoreConfigModel } from '../../data/models';
-export declare const getStoreConfig: () => Promise<StoreConfigModel>;
+export interface GetStoreConfigOptions {
+    /**
+     * Cache mode for the request. Defaults to `force-cache`, which suits UI
+     * configuration.
+     *
+     * Callers that need the response to describe the *current* website must pass
+     * `no-store`: the endpoint URL is identical across websites, so a cached
+     * response can belong to a different one.
+     */
+    cache?: RequestCache;
+}
+export declare const getStoreConfig: ({ cache, }?: GetStoreConfigOptions) => Promise<StoreConfigModel>;
