@@ -122,7 +122,22 @@ function updateImportMapCdnVersions() {
   });
 
   const newImportMapJson = JSON.stringify(importMap, null, 4).replace(/\n/g, '\n    ');
-  const newHeadHtml = headHtml.replace(importMapMatch[0], `${importMapMatch[1]}${newImportMapJson}${importMapMatch[3]}`);
+  let newHeadHtml = headHtml.replace(importMapMatch[0], `${importMapMatch[1]}${newImportMapJson}${importMapMatch[3]}`);
+
+  // head.html may also hardcode <link rel="modulepreload"> hints straight to
+  // a dropin's local vendored path (e.g. to warm up an eagerly-used file).
+  // Since only fragments.js is vendored locally now, any such hint pointing
+  // at a CDN-hosted dropin's file other than fragments.js is dead -- rewrite
+  // it to the real (versioned) CDN URL instead of leaving it 404ing.
+  newHeadHtml = newHeadHtml.replace(
+    /<link rel="modulepreload" href="\/scripts\/__dropins__\/(storefront-[^/]+)\/((?!fragments\.js)[^"]+)" \/>/g,
+    (match, dropinName, filePath) => {
+      const version = installedVersions[`@dropins/${dropinName}`];
+      if (!version) return match;
+      return `<link rel="modulepreload" href="${CDN_BASE}/${dropinName}/${version}/${filePath}" />`;
+    },
+  );
+
   fs.writeFileSync(headHtmlPath, newHeadHtml);
 }
 
