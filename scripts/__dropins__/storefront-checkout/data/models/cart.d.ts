@@ -29,6 +29,7 @@ export interface Cart {
     isEmpty: boolean;
     isGuest: boolean;
     isVirtual: boolean;
+    hasAvailableFreeGifts: boolean;
     selectedPaymentMethod?: PaymentMethod;
     shippingAddresses: CartShippingAddress[];
 }

@@ -19,6 +19,11 @@ declare const COOKIE_NAMES: {
     auth_dropin_firstname: string;
     auth_dropin_lastname: string;
     auth_dropin_admin_session: string;
+    /**
+     * Website the current token was issued for. Written together with the token
+     * and sharing its attributes, so it cannot outlive the token it describes.
+     */
+    auth_dropin_website_code: string;
 };
 declare const LOCALHOST: string[];
 declare const COOKIE_LIFETIME = 3600;

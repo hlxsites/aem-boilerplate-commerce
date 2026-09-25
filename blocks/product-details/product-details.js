@@ -26,37 +26,12 @@ import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
 
 // Libs
-import {
-  rootLink,
-  setJsonLd,
-  fetchPlaceholders,
-  getProductLink,
-} from '../../scripts/commerce.js';
+import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
-
-/**
- * Checks if the page has prerendered product JSON-LD data
- * @returns {boolean} True if product JSON-LD exists and contains @type=Product
- */
-function isProductPrerendered() {
-  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
-
-  if (!jsonLdScript?.textContent) {
-    return false;
-  }
-
-  try {
-    const jsonLd = JSON.parse(jsonLdScript.textContent);
-    return jsonLd?.['@type'] === 'Product';
-  } catch (error) {
-    console.debug('Failed to parse JSON-LD:', error);
-    return false;
-  }
-}
 
 // Function to update the Add to Cart button text
 function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
@@ -84,7 +59,7 @@ function formatNumericAttributeValue(value) {
 export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
-  const product = eventProduct?.sku ? eventProduct : null;
+  let product = eventProduct?.sku ? eventProduct : null;
 
   const labels = await fetchPlaceholders();
 
@@ -346,6 +321,7 @@ export default async function decorate(block) {
 
   // Lifecycle Events
   events.on('pdp/data', (data) => {
+    product = data?.sku ? data : product;
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
@@ -414,150 +390,22 @@ export default async function decorate(block) {
     { eager: true },
   );
 
-  // Set JSON-LD and Meta Tags
-  events.on('aem/lcp', () => {
-    const isPrerendered = isProductPrerendered();
-    if (product && !isPrerendered) {
-      setJsonLdProduct(product);
-      setMetaTags(product);
-      document.title = product.name;
-    }
-  }, { eager: true });
-
-  return Promise.resolve();
-}
-
-async function setJsonLdProduct(product) {
-  const {
-    name,
-    inStock,
-    description,
-    sku,
-    urlKey,
-    price,
-    priceRange,
-    images,
-    attributes,
-  } = product;
-  const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes?.find((attr) => attr.name === 'brand');
-
-  // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
-
-  const ldJson = {
-    '@context': 'http://schema.org',
-    '@type': 'Product',
-    name,
-    description,
-    image: images[0]?.url,
-    offers: [],
-    productID: sku,
-    brand: {
-      '@type': 'Brand',
-      name: brand?.value,
-    },
-    url: new URL(getProductLink(urlKey, sku), window.location),
-    sku,
-    '@id': new URL(getProductLink(urlKey, sku), window.location),
-  };
-
-  if (variants.length > 1) {
-    ldJson.offers.push(...variants
-      // A variant can come back without a resolved product (e.g. an
-      // unavailable option combination); skip those so JSON-LD generation
-      // doesn't throw on null property access.
-      .filter((variant) => variant.product)
-      .map((variant) => ({
-        '@type': 'Offer',
-        name: variant.product.name,
-        image: variant.product.images?.[0]?.url,
-        price: variant.product.price?.final?.amount?.value,
-        priceCurrency: variant.product.price?.final?.amount?.currency,
-        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-        sku: variant.product.sku,
-      })));
-  } else {
-    ldJson.offers.push({
-      '@type': 'Offer',
-      price: amount?.value,
-      priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-    });
-  }
-
-  setJsonLd(ldJson, 'product');
-}
-
-function createMetaTag(property, content, type) {
-  if (!property || !type) {
-    return;
-  }
-  let meta = document.head.querySelector(`meta[${type}="${property}"]`);
-  if (meta) {
-    if (!content) {
-      meta.remove();
+  events.on('commerce/customer-context', async () => {
+    if (!product?.sku) {
       return;
     }
-    meta.setAttribute(type, property);
-    meta.setAttribute('content', content);
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  meta = document.createElement('meta');
-  meta.setAttribute(type, property);
-  meta.setAttribute('content', content);
-  document.head.appendChild(meta);
-}
 
-function setMetaTags(product) {
-  if (!product?.sku) {
-    return;
-  }
+    const values = pdpApi.getProductConfigurationValues();
+    const refreshedProduct = await pdpApi.fetchProductData(product.sku, {
+      optionsUIDs: values?.optionsUIDs,
+    });
 
-  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
+    if (refreshedProduct) {
+      events.emit('pdp/data', refreshedProduct);
+    }
+  });
 
-  createMetaTag('title', product.metaTitle || product.name, 'name');
-  createMetaTag('description', product.metaDescription, 'name');
-  createMetaTag('keywords', product.metaKeyword, 'name');
-
-  createMetaTag('og:type', 'product', 'property');
-  createMetaTag('og:description', product.shortDescription, 'property');
-  createMetaTag('og:title', product.metaTitle || product.name, 'property');
-  createMetaTag('og:url', window.location.href, 'property');
-  const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
-  const metaImage = mainImage?.url || product?.images[0]?.url;
-  createMetaTag('og:image', metaImage, 'property');
-  createMetaTag('og:image:secure_url', metaImage, 'property');
-  createMetaTag('product:price:amount', price.value, 'property');
-  createMetaTag('product:price:currency', price.currency, 'property');
+  return Promise.resolve();
 }
 
 /**
