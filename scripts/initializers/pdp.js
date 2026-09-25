@@ -8,43 +8,16 @@ import {
   fetchPlaceholders,
   getOptionsUIDsFromUrl,
   getProductSku,
-  IS_UE,
+  IS_DA,
+  IS_EW,
   loadErrorPage,
   preloadFile,
 } from '../commerce.js';
-import { getMetadata } from '../aem.js';
 
 export const IMAGES_SIZES = {
   width: 960,
   height: 1191,
 };
-
-/**
- * Extracts the main product image URL from JSON-LD or meta tags
- * @returns {string|null} The image URL or null if not found
- */
-function extractMainImageUrl() {
-  // Cache DOM query to avoid repeated lookups
-  const jsonLdScript = document.querySelector('script[type="application/ld+json"]');
-
-  if (!jsonLdScript?.textContent) {
-    return getMetadata('og:image') || getMetadata('image');
-  }
-
-  try {
-    const jsonLd = JSON.parse(jsonLdScript.textContent);
-
-    // Verify this is product structured data before extracting image
-    if (jsonLd?.['@type'] === 'Product' && jsonLd?.image) {
-      return jsonLd.image;
-    }
-
-    return getMetadata('og:image') || getMetadata('image');
-  } catch (error) {
-    console.debug('Failed to parse JSON-LD:', error);
-    return getMetadata('og:image') || getMetadata('image');
-  }
-}
 
 /**
  * Preloads PDP Dropins assets for optimal performance
@@ -62,15 +35,6 @@ function preloadPDPAssets() {
   preloadFile(`${cdnBase}containers/ProductDescription.js`, 'script');
   preloadFile(`${cdnBase}containers/ProductAttributes.js`, 'script');
   preloadFile(`${cdnBase}containers/ProductGallery.js`, 'script');
-
-  // Extract and preload main product image
-  const imageUrl = extractMainImageUrl();
-
-  if (imageUrl) {
-    preloadFile(imageUrl, 'image');
-  } else {
-    console.warn('Unable to infer main image from JSON-LD or meta tags');
-  }
 }
 
 await initializeDropin(async () => {
@@ -84,8 +48,7 @@ await initializeDropin(async () => {
   const sku = getProductSku();
   const optionsUIDs = getOptionsUIDsFromUrl();
 
-  // If we cannot find a sku, and we are not in UE, there's a problem.
-  if (!sku && !IS_UE) {
+  if (!sku && !IS_DA && !IS_EW) {
     return loadErrorPage();
   }
 
