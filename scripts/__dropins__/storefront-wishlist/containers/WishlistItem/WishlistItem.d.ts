@@ -15,12 +15,15 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { ProductItemActionsContext } from '../../components';
 import { Item, Product } from '../../data/models';
 import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
 import { JSX } from 'preact';
 export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
+    wishlistId?: string;
+    scope?: string;
     getProductData?: (sku: string) => Promise<Product | null>;
     getRefinedProduct?: (sku: string, optionUIDs: string[], anchorOptions?: string[], raw?: boolean) => Promise<Product | null>;
     moveProdToCart: (products: {
@@ -33,5 +36,8 @@ export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     imageNode?: (props: {
         defaultImageProps: ImageNodeRenderProps;
     }) => JSX.Element;
+    slots?: {
+        actions?: SlotProps<ProductItemActionsContext>;
+    };
 }
 export declare const WishlistItem: Container<WishlistItemProps>;

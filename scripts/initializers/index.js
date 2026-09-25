@@ -4,11 +4,15 @@ import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
 import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
+import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
+const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
+let catalogServiceCacheControlAdded = false;
+let currentCustomerGroupId;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
@@ -21,8 +25,78 @@ const setAuthHeaders = (state) => {
   }
 };
 
+const sha1Base64 = async (value) => {
+  const decoded = atob(value);
+  const bytes = new Uint8Array(decoded.length);
+  for (let i = 0; i < decoded.length; i += 1) {
+    bytes[i] = decoded.charCodeAt(i);
+  }
+  const digest = await crypto.subtle.digest('SHA-1', bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
 const setCustomerGroupHeader = (customerGroupId) => {
+  if (customerGroupId === currentCustomerGroupId) {
+    return;
+  }
+
   CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Magento-Customer-Group', customerGroupId);
+
+  const { endpoint } = CS_FETCH_GRAPHQL.getConfig();
+  if (endpoint) {
+    const url = new URL(endpoint);
+    url.searchParams.set('customer-group', customerGroupId);
+    CS_FETCH_GRAPHQL.setEndpoint(url.toString());
+  }
+
+  currentCustomerGroupId = customerGroupId;
+  events.emit('commerce/customer-context', { customerGroupId });
+};
+
+const fetchCustomerGroupId = async () => {
+  const token = getUserTokenCookie();
+  if (!token) {
+    return;
+  }
+
+  try {
+    const customer = await getCustomerData(token);
+    if (customer?.groupUid) {
+      setCustomerGroupHeader(await sha1Base64(customer.groupUid));
+    }
+  } catch (error) {
+    console.debug('Unable to resolve customer group for Catalog Service:', error);
+  }
+};
+
+const handleCustomerGroupUid = (customerGroupId) => {
+  if (getUserTokenCookie() && customerGroupId === DEFAULT_NLI_CUSTOMER_GROUP_ID) {
+    return;
+  }
+
+  setCustomerGroupHeader(customerGroupId);
+};
+
+const updateAuthContext = async (state) => {
+  setAuthHeaders(state);
+
+  if (!getConfigValue('adobe-commerce-optimizer') && state) {
+    await fetchCustomerGroupId();
+  }
+};
+
+const setupCatalogServiceCacheControl = () => {
+  if (catalogServiceCacheControlAdded) {
+    return;
+  }
+
+  CS_FETCH_GRAPHQL.addBeforeHook((request) => ({
+    ...request,
+    cache: 'no-store',
+  }));
+  catalogServiceCacheControlAdded = true;
 };
 
 const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
@@ -31,6 +105,7 @@ const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
   } else {
     CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('AC-Price-Book-ID');
   }
+  events.emit('commerce/customer-context', adobeCommerceOptimizer);
 };
 
 const persistCartDataInSession = (data) => {
@@ -58,10 +133,11 @@ const setupAemAssetsImageParams = () => {
 export default async function initializeDropins() {
   const init = async () => {
     // Set Customer-Group-ID header
+    setupCatalogServiceCacheControl();
     if (getConfigValue('adobe-commerce-optimizer')) {
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
-      events.on('auth/group-uid', setCustomerGroupHeader, { eager: true });
+      events.on('auth/group-uid', handleCustomerGroupUid, { eager: true });
     }
 
     // Clear cart state when switching between websites to avoid stale cart IDs
@@ -76,9 +152,6 @@ export default async function initializeDropins() {
       localStorage.removeItem('DROPIN__CART__CART__AUTHENTICATED');
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
-
-    // Set auth headers on authenticated event
-    events.on('authenticated', setAuthHeaders, { eager: true });
 
     // Cache cart data in session storage
     events.on('cart/data', persistCartDataInSession, { eager: true });
@@ -99,6 +172,14 @@ export default async function initializeDropins() {
 
     // Initialize Global Drop-ins
     await import('./auth.js');
+
+    // Auth must be initialized before getCustomerData uses its endpoint and config.
+    // Await the initial pricing context here: event listeners are not awaited by
+    // the event bus, and PDP/PLP loading must not race the customer group lookup.
+    await updateAuthContext(!!getUserTokenCookie());
+
+    // Handle subsequent sign-in/sign-out changes after startup context is ready.
+    events.on('authenticated', updateAuthContext);
 
     await import('./personalization.js');
 
