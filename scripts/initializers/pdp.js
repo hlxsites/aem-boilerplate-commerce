@@ -24,7 +24,7 @@ export const IMAGES_SIZES = {
  */
 function preloadPDPAssets() {
   // Preload PDP Dropins assets
-  const cdnBase = 'https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-pdp/';
+  const cdnBase = 'https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-pdp/3.3.2/';
   preloadFile(`${cdnBase}api.js`, 'script');
   preloadFile(`${cdnBase}render.js`, 'script');
   preloadFile(`${cdnBase}containers/ProductHeader.js`, 'script');
