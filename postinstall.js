@@ -3,6 +3,8 @@ const path = require('path');
 
 const { dependencies } = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
+const CDN_BASE = 'https://3655614-commercedropinscdn-stage.adobeio-static.net';
+
 // Define the dropins folder
 const dropinsDir = path.join('scripts', '__dropins__');
 
@@ -45,124 +47,158 @@ if (versionMismatches.length > 0) {
   process.exit(1);
 }
 
-// Every @dropins/* package is served from the App Builder CDN -- only a
-// dropin's (build.mjs-patched) fragments.js needs to live locally, since the
-// import map redirects that one file back here. Packages without a
-// fragments.js (e.g. @dropins/tools) need nothing vendored locally at all.
-fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
-  const pkgName = `@dropins/${file.name}`;
-
-  // Skip if package is not in package.json dependencies / skip devDependencies
-  if (!dependencies[pkgName]) {
-    return;
+// Not every installed version is guaranteed to have been published to the
+// CDN (e.g. an alpha cut for local testing only) -- check before assuming it,
+// so that case falls back to vendoring the dropin fully instead of 404ing.
+async function checkCdnHasVersion(dropinName, version) {
+  try {
+    const res = await fetch(`${CDN_BASE}/${dropinName}/${version}/LICENSE.md`, { method: 'HEAD' });
+    // App Builder's CloudFront-backed hosting returns 200 with a generic
+    // text/html error page for unmatched paths, not a real 404 -- a real
+    // LICENSE.md is served as text/markdown, so check that too.
+    return res.ok && (res.headers.get('content-type') ?? '').includes('text/markdown');
+  } catch {
+    return false;
   }
+}
 
-  // Skip if is not folder
-  if (!file.isDirectory()) {
-    return;
-  }
-
-  const srcDir = path.join('node_modules', '@dropins', file.name);
-  const fragmentsSrc = path.join(srcDir, 'fragments.js');
-  if (!fs.existsSync(fragmentsSrc)) {
-    return;
-  }
-
-  const destDir = path.join(dropinsDir, file.name);
-  fs.mkdirSync(destDir, { recursive: true });
-  fs.copyFileSync(fragmentsSrc, path.join(destDir, 'fragments.js'));
-  const fragmentsMapSrc = `${fragmentsSrc}.map`;
-  if (fs.existsSync(fragmentsMapSrc)) {
-    fs.copyFileSync(fragmentsMapSrc, path.join(destDir, 'fragments.js.map'));
-  }
-});
-
-// Keep head.html's import map in sync with the versions just installed --
-// each CDN-hosted dropin's URL includes its version, so a version bump only
-// requires `npm install`, not a manual head.html edit.
-function updateImportMapCdnVersions() {
-  const CDN_BASE = 'https://3655614-commercedropinscdn-stage.adobeio-static.net';
+async function main() {
   const headHtmlPath = path.join(__dirname, 'head.html');
   const headHtml = fs.readFileSync(headHtmlPath, 'utf8');
 
   const importMapMatch = headHtml.match(/(<script nonce="aem" type="importmap">\s*)([\s\S]*?)(\s*<\/script>)/);
   if (!importMapMatch) {
-    console.warn('⚠️  Could not find the import map in head.html -- skipping CDN version sync.');
+    console.warn('⚠️  Could not find the import map in head.html -- skipping CDN sync.');
     return;
   }
-
   const importMap = JSON.parse(importMapMatch[2]);
 
-  Object.entries(installedVersions).forEach(([pkgName, version]) => {
+  // Every installed dropin is a CDN candidate. Deriving this from head.html's
+  // *current* URL would be self-defeating: once a version falls back to
+  // local (because the CDN didn't have it yet), the next run would read that
+  // local path back and never try the CDN again.
+  const cdnHosted = Object.keys(installedVersions).filter((pkgName) => importMap.imports[`${pkgName}/`]);
+
+  const useCdn = {};
+  await Promise.all(cdnHosted.map(async (pkgName) => {
+    const dropinName = pkgName.replace('@dropins/', '');
+    useCdn[pkgName] = await checkCdnHasVersion(dropinName, installedVersions[pkgName]);
+    if (!useCdn[pkgName]) {
+      console.warn(`⚠️  ${pkgName}@${installedVersions[pkgName]} not found on the CDN -- vendoring it locally instead.`);
+    }
+  }));
+
+  // Vendor each dropin: only fragments.js if the CDN has this version,
+  // otherwise the full package (the pre-CDN behavior) as a fallback.
+  fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
+    const pkgName = `@dropins/${file.name}`;
+    if (!dependencies[pkgName] || !file.isDirectory()) return;
+
+    const srcDir = path.join('node_modules', '@dropins', file.name);
+    const destDir = path.join(dropinsDir, file.name);
+
+    if (cdnHosted.includes(pkgName) && useCdn[pkgName]) {
+      const fragmentsSrc = path.join(srcDir, 'fragments.js');
+      if (!fs.existsSync(fragmentsSrc)) return;
+      fs.mkdirSync(destDir, { recursive: true });
+      fs.copyFileSync(fragmentsSrc, path.join(destDir, 'fragments.js'));
+      const fragmentsMapSrc = `${fragmentsSrc}.map`;
+      if (fs.existsSync(fragmentsMapSrc)) {
+        fs.copyFileSync(fragmentsMapSrc, path.join(destDir, 'fragments.js.map'));
+      }
+      return;
+    }
+
+    // Not CDN-hosted, or the CDN doesn't have this version -- vendor in full.
+    fs.cpSync(srcDir, destDir, {
+      recursive: true,
+      filter: (src) => (!src.endsWith('package.json')),
+    });
+  });
+
+  // Keep head.html's import map (and version) in sync with what was just
+  // installed -- CDN-hosted if the CDN has this version, local otherwise.
+  cdnHosted.forEach((pkgName) => {
     const dropinName = pkgName.replace('@dropins/', '');
     const mapKey = `${pkgName}/`;
     const oldBase = importMap.imports[mapKey];
-    if (!oldBase) return; // not (yet) served from the CDN in this import map
-
-    const newBase = `${CDN_BASE}/${dropinName}/${version}/`;
-    importMap.imports[mapKey] = newBase;
-
     const oldFragmentsKey = `${oldBase}fragments.js`;
-    const localFragmentsPath = `/scripts/__dropins__/${dropinName}/fragments.js`;
-    if (importMap.imports[oldFragmentsKey]) {
+    const localBase = `/scripts/__dropins__/${dropinName}/`;
+
+    if (useCdn[pkgName]) {
+      const newBase = `${CDN_BASE}/${dropinName}/${installedVersions[pkgName]}/`;
+      importMap.imports[mapKey] = newBase;
+      if (importMap.imports[oldFragmentsKey] || oldBase !== newBase) {
+        delete importMap.imports[oldFragmentsKey];
+        importMap.imports[`${newBase}fragments.js`] = `${localBase}fragments.js`;
+      }
+    } else {
+      importMap.imports[mapKey] = localBase;
       delete importMap.imports[oldFragmentsKey];
-      importMap.imports[`${newBase}fragments.js`] = localFragmentsPath;
     }
   });
 
   const newImportMapJson = JSON.stringify(importMap, null, 4).replace(/\n/g, '\n    ');
   let newHeadHtml = headHtml.replace(importMapMatch[0], `${importMapMatch[1]}${newImportMapJson}${importMapMatch[3]}`);
 
-  // head.html may also hardcode <link rel="modulepreload"> hints straight to
-  // a dropin's local vendored path (e.g. to warm up an eagerly-used file).
-  // Since only fragments.js is vendored locally now, any such hint pointing
-  // at a CDN-hosted dropin's file other than fragments.js is dead -- rewrite
-  // it to the real (versioned) CDN URL instead of leaving it 404ing.
-  newHeadHtml = newHeadHtml.replace(
-    /<link rel="modulepreload" href="\/scripts\/__dropins__\/(storefront-[^/]+|tools)\/((?!fragments\.js)[^"]+)" \/>/g,
-    (match, dropinName, filePath) => {
-      const version = installedVersions[`@dropins/${dropinName}`];
+  // head.html may also hardcode <link rel="modulepreload"> hints or a plain
+  // import() straight to a dropin's path (e.g. the import-map polyfill shim,
+  // which has to stay a literal URL since it runs before any import map can
+  // apply). Keep those in sync with the same CDN-vs-local decision above.
+  // Matched separately (CDN vs. local) rather than with one combined regex --
+  // a single pattern can't unambiguously tell a CDN version segment apart
+  // from a real nested local path segment (e.g. tools/lib/aem/configs.js).
+  const rewriteHardcodedRef = (html, cdnPattern, localPattern, buildReplacement) => html
+    .replace(cdnPattern, (match, dropinName, filePath) => {
+      const pkgName = `@dropins/${dropinName}`;
+      const version = installedVersions[pkgName];
       if (!version) return match;
-      return `<link rel="modulepreload" href="${CDN_BASE}/${dropinName}/${version}/${filePath}" />`;
-    },
+      const base = useCdn[pkgName] ? `${CDN_BASE}/${dropinName}/${version}/` : `/scripts/__dropins__/${dropinName}/`;
+      return buildReplacement(base, filePath);
+    })
+    .replace(localPattern, (match, dropinName, filePath) => {
+      const pkgName = `@dropins/${dropinName}`;
+      const version = installedVersions[pkgName];
+      if (!version) return match;
+      const base = useCdn[pkgName] ? `${CDN_BASE}/${dropinName}/${version}/` : `/scripts/__dropins__/${dropinName}/`;
+      return buildReplacement(base, filePath);
+    });
+
+  newHeadHtml = rewriteHardcodedRef(
+    newHeadHtml,
+    /<link rel="modulepreload" href="https:\/\/[^/]+\/(storefront-[^/]+|tools)\/[^/]+\/((?!fragments\.js)[^"]+)" \/>/g,
+    /<link rel="modulepreload" href="\/scripts\/__dropins__\/(storefront-[^/]+|tools)\/((?!fragments\.js)[^"]+)" \/>/g,
+    (base, filePath) => `<link rel="modulepreload" href="${base}${filePath}" />`,
   );
 
-  // Same idea for the plain import() of the import-map polyfill shim: it runs
-  // before any import map can apply, so it has to stay a literal URL -- point
-  // it at the CDN directly instead of a local path that no longer exists.
-  newHeadHtml = newHeadHtml.replace(
+  newHeadHtml = rewriteHardcodedRef(
+    newHeadHtml,
+    /import\('https:\/\/[^/]+\/(storefront-[^/]+|tools)\/[^/]+\/((?!fragments\.js)[^']+)'\)/g,
     /import\('\/scripts\/__dropins__\/(storefront-[^/]+|tools)\/((?!fragments\.js)[^']+)'\)/g,
-    (match, dropinName, filePath) => {
-      const version = installedVersions[`@dropins/${dropinName}`];
-      if (!version) return match;
-      return `import('${CDN_BASE}/${dropinName}/${version}/${filePath}')`;
-    },
+    (base, filePath) => `import('${base}${filePath}')`,
   );
 
   fs.writeFileSync(headHtmlPath, newHeadHtml);
-}
 
-updateImportMapCdnVersions();
-
-// pdp.js preloads PDP assets from a hardcoded CDN URL (see head.html's import
-// map comment above) -- keep its version in sync too, otherwise the preload
-// and the real import target different versions and the preload is wasted.
-function updatePdpPreloadCdnVersion() {
-  const pdpVersion = installedVersions['@dropins/storefront-pdp'];
-  if (!pdpVersion) return;
-
-  const pdpJsPath = path.join(__dirname, 'scripts', 'initializers', 'pdp.js');
-  const pdpJs = fs.readFileSync(pdpJsPath, 'utf8');
-  const newPdpJs = pdpJs.replace(
-    /const cdnBase = '(https:\/\/3655614-commercedropinscdn-stage\.adobeio-static\.net\/storefront-pdp\/)[^/]+\/';/,
-    `const cdnBase = '$1${pdpVersion}/';`,
-  );
-  if (newPdpJs !== pdpJs) {
-    fs.writeFileSync(pdpJsPath, newPdpJs);
+  // pdp.js preloads PDP assets from a hardcoded base URL -- keep it in sync
+  // too, otherwise the preload and the real import target different places
+  // (or different versions) and the preload is wasted.
+  const pdpPkgName = '@dropins/storefront-pdp';
+  if (installedVersions[pdpPkgName]) {
+    const pdpBase = useCdn[pdpPkgName]
+      ? `${CDN_BASE}/storefront-pdp/${installedVersions[pdpPkgName]}/`
+      : '/scripts/__dropins__/storefront-pdp/';
+    const pdpJsPath = path.join(__dirname, 'scripts', 'initializers', 'pdp.js');
+    const pdpJs = fs.readFileSync(pdpJsPath, 'utf8');
+    const newPdpJs = pdpJs.replace(
+      /const cdnBase = '(?:https:\/\/[^/]+\/storefront-pdp\/[^/]+\/|\/scripts\/__dropins__\/storefront-pdp\/)';/,
+      `const cdnBase = '${pdpBase}';`,
+    );
+    if (newPdpJs !== pdpJs) {
+      fs.writeFileSync(pdpJsPath, newPdpJs);
+    }
   }
 }
-
-updatePdpPreloadCdnVersion();
 
 // Other files to copy
 [
@@ -208,7 +244,8 @@ function checkSourceMaps() {
 
 checkSourceMaps();
 
-checkPackageLockForArtifactory()
+main()
+  .then(() => checkPackageLockForArtifactory())
   .then((found) => {
     if (!found) {
       console.info('✅ Drop-ins installed successfully!', '\n');
