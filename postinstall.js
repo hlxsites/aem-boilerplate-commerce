@@ -45,10 +45,10 @@ if (versionMismatches.length > 0) {
   process.exit(1);
 }
 
-// `@dropins/tools` is always served locally (never moved to the CDN), so it's
-// vendored in full. Every other dropin is served from the App Builder CDN --
-// only its (build.mjs-patched) fragments.js needs to live locally, since the
-// import map redirects that one file back here.
+// Every @dropins/* package is served from the App Builder CDN -- only a
+// dropin's (build.mjs-patched) fragments.js needs to live locally, since the
+// import map redirects that one file back here. Packages without a
+// fragments.js (e.g. @dropins/tools) need nothing vendored locally at all.
 fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) => {
   const pkgName = `@dropins/${file.name}`;
 
@@ -63,15 +63,6 @@ fs.readdirSync('node_modules/@dropins', { withFileTypes: true }).forEach((file) 
   }
 
   const srcDir = path.join('node_modules', '@dropins', file.name);
-
-  if (pkgName === '@dropins/tools') {
-    fs.cpSync(srcDir, path.join(dropinsDir, file.name), {
-      recursive: true,
-      filter: (src) => (!src.endsWith('package.json')),
-    });
-    return;
-  }
-
   const fragmentsSrc = path.join(srcDir, 'fragments.js');
   if (!fs.existsSync(fragmentsSrc)) {
     return;
@@ -103,8 +94,6 @@ function updateImportMapCdnVersions() {
   const importMap = JSON.parse(importMapMatch[2]);
 
   Object.entries(installedVersions).forEach(([pkgName, version]) => {
-    if (pkgName === '@dropins/tools') return;
-
     const dropinName = pkgName.replace('@dropins/', '');
     const mapKey = `${pkgName}/`;
     const oldBase = importMap.imports[mapKey];
@@ -130,11 +119,23 @@ function updateImportMapCdnVersions() {
   // at a CDN-hosted dropin's file other than fragments.js is dead -- rewrite
   // it to the real (versioned) CDN URL instead of leaving it 404ing.
   newHeadHtml = newHeadHtml.replace(
-    /<link rel="modulepreload" href="\/scripts\/__dropins__\/(storefront-[^/]+)\/((?!fragments\.js)[^"]+)" \/>/g,
+    /<link rel="modulepreload" href="\/scripts\/__dropins__\/(storefront-[^/]+|tools)\/((?!fragments\.js)[^"]+)" \/>/g,
     (match, dropinName, filePath) => {
       const version = installedVersions[`@dropins/${dropinName}`];
       if (!version) return match;
       return `<link rel="modulepreload" href="${CDN_BASE}/${dropinName}/${version}/${filePath}" />`;
+    },
+  );
+
+  // Same idea for the plain import() of the import-map polyfill shim: it runs
+  // before any import map can apply, so it has to stay a literal URL -- point
+  // it at the CDN directly instead of a local path that no longer exists.
+  newHeadHtml = newHeadHtml.replace(
+    /import\('\/scripts\/__dropins__\/(storefront-[^/]+|tools)\/((?!fragments\.js)[^']+)'\)/g,
+    (match, dropinName, filePath) => {
+      const version = installedVersions[`@dropins/${dropinName}`];
+      if (!version) return match;
+      return `import('${CDN_BASE}/${dropinName}/${version}/${filePath}')`;
     },
   );
 

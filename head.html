@@ -28,7 +28,7 @@
             "@dropins/storefront-wishlist/": "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-wishlist/3.5.0/",
             "@dropins/storefront-personalization/": "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-personalization/3.2.2/",
             "@dropins/storefront-product-discovery/": "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-product-discovery/3.1.2/",
-            "@dropins/tools/": "/scripts/__dropins__/tools/",
+            "@dropins/tools/": "https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/",
             "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-account/4.2.0/fragments.js": "/scripts/__dropins__/storefront-account/fragments.js",
             "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-auth/4.1.0/fragments.js": "/scripts/__dropins__/storefront-auth/fragments.js",
             "https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-cart/3.4.0/fragments.js": "/scripts/__dropins__/storefront-cart/fragments.js",
@@ -45,7 +45,7 @@
 
 <script nonce="aem" type="module">
     if (!(HTMLScriptElement.supports?.('importmap'))) {
-        import('/scripts/__dropins__/tools/shims/importmap.js');
+        import('https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/shims/importmap.js');
     }
 </script>
 
@@ -53,15 +53,15 @@
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <script nonce="aem" src="/scripts/commerce.js" type="module"></script>
 
-<link rel="modulepreload" href="/scripts/__dropins__/tools/lib/aem/configs.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/lib/aem/configs.js" />
 <link rel="modulepreload" href="/scripts/initializers/index.js" />
 <link rel="modulepreload" href="/scripts/initializers/auth.js" />
 <link rel="modulepreload" href="/scripts/initializers/personalization.js" />
 <link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/storefront-auth/4.1.0/api.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/event-bus.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/fetch-graphql.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/initializer.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact-compat.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/preact-hooks.js" />
-<link rel="modulepreload" href="/scripts/__dropins__/tools/components.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/event-bus.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/fetch-graphql.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/initializer.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/preact.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/preact-compat.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/preact-hooks.js" />
+<link rel="modulepreload" href="https://3655614-commercedropinscdn-stage.adobeio-static.net/tools/2.1.0/components.js" />
