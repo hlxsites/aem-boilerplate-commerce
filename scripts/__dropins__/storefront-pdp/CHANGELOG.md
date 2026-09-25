@@ -1,0 +1,112 @@
+# @dropins/storefront-pdp
+
+## 3.3.1
+
+### Patch Changes
+
+- 1385284: Always render the top-level quantity `Incrementer` (`ProductQuantity` and the monolith quantity slot), including for bundle products. Per-option bundle quantities in `Swatches` write `bundleOptionQuantities`/`enteredOptions`, which describe bundle composition, not how many bundles to add to cart — hiding the top-level control left `values.quantity` fixed at its initial value with no way for shoppers to change it.
+
+## 3.3.0
+
+### Minor Changes
+
+- 3a3bfc1: Respect per-option `canEditQuantity` for bundle option quantities on the PDP.
+
+  - **Transform:** Read `canEditQuantity` from `ProductViewOptionValueProduct` values (now included in the GraphQL fragment) and expose it on each bundle option value in the model.
+  - **Swatches:** Render a quantity `Incrementer` for selected bundle option values; enabled when `canEditQuantity` is true, disabled when false or unset. Hide `ProductQuantity` (and the monolith quantity slot) when `isBundle` so shoppers do not see two quantity controls.
+  - **Configuration:** Sync `bundleOptionQuantities` and `enteredOptions` on bundle init and when selections change; keep both shapes aligned in `setProductConfigurationValues`.
+
+### Patch Changes
+
+- a6f404d: Fix accessibility issue where the product name and "Details" section title were rendered as plain `<div>` text instead of headings, so screen reader users could not navigate to them by heading (WCAG 1.3.1 - Info and Relationships).
+- 2413664: Make the ProductGallery main image keyboard-operable when it opens the image preview overlay (WCAG 2.1.1 Keyboard, Level A).
+
+  - **ProductGallery:** In the non-`zoom` (overlay) path, expose the clickable main image as a control with `role="button"`, `tabindex="0"`, and an `onKeyDown` handler so it can be activated with Enter and Space, not just clicked. The interactive attributes are only applied to the displayed layer; the `aria-hidden` crossfade layer stays non-interactive and unfocusable.
+  - **Tests:** Add coverage asserting the main image is focusable, exposed as a button, and opens the preview overlay via Enter and Space.
+
+## 3.3.0-beta.1
+
+### Minor Changes
+
+- 3a3bfc1: Respect per-option `canEditQuantity` for bundle option quantities on the PDP.
+
+  - **Transform:** Read `canEditQuantity` from `ProductViewOptionValueProduct` values (now included in the GraphQL fragment) and expose it on each bundle option value in the model.
+  - **Swatches:** Render a quantity `Incrementer` for selected bundle option values; enabled when `canEditQuantity` is true, disabled when false or unset. Hide `ProductQuantity` (and the monolith quantity slot) when `isBundle` so shoppers do not see two quantity controls.
+  - **Configuration:** Sync `bundleOptionQuantities` and `enteredOptions` on bundle init and when selections change; keep both shapes aligned in `setProductConfigurationValues`.
+
+### Patch Changes
+
+- a6f404d: Fix accessibility issue where the product name and "Details" section title were rendered as plain `<div>` text instead of headings, so screen reader users could not navigate to them by heading (WCAG 1.3.1 - Info and Relationships).
+- 2413664: Make the ProductGallery main image keyboard-operable when it opens the image preview overlay (WCAG 2.1.1 Keyboard, Level A).
+
+  - **ProductGallery:** In the non-`zoom` (overlay) path, expose the clickable main image as a control with `role="button"`, `tabindex="0"`, and an `onKeyDown` handler so it can be activated with Enter and Space, not just clicked. The interactive attributes are only applied to the displayed layer; the `aria-hidden` crossfade layer stays non-interactive and unfocusable.
+  - **Tests:** Add coverage asserting the main image is focusable, exposed as a button, and opens the preview overlay via Enter and Space.
+
+## 3.2.0
+
+### Minor Changes
+
+- 763e5f9: Use the correct control when multi is true vs false so bundle options work without storefront customization.
+
+  - **multi === false:** Keep the existing single-select dropdown (`Picker`) for dropdown-type options; swatches unchanged for text/image/color.
+  - **multi === true:** Render Elsie `Checkbox` per option value (no radio or multi-select dropdown OOTB).
+  - **Swatches:** Selection state is either `{ label, value }` (single) or `{ label, values[] }` (multi); validation and labels updated accordingly.
+  - **Data / API:** `selectionMapToOptionUIDs` flattens selections and, when given `data.options`, orders UIDs by option groups; bundle completion uses “every required group has ≥1 child UID,” not `uids.length === option count`.
+  - **Containers:** `ProductOptions`, `ProductDetails`, and `initialize` use the shared helpers for payloads, validity, and placeholder filtering.
+  - **`getOptionUIDs` (bundles):** Prefer client `optionUIDs` when present; support multiple defaults when `multi` is true.
+  - **Tests:** Checkbox coverage for `multiple`, lib unit tests, and `ProductDetails` expectation aligned with stable UID order.
+
+- 5c5be95: Add jest-preset-preact to devDependencies to fix test execution under Yarn Berry
+- f59e497: Bump @adobe-commerce/elsie to 1.9.0-beta.0 and upgrade CI workflows to storefront-workflows v6 (Node 24)
+
+### Patch Changes
+
+- a48fbe2: Bump @adobe-commerce/elsie from ~1.5.0 to ~1.8.1 to reduce HTTP request count via SDK bundle optimizations
+- 1889117: Bump StorefrontSDK dependencies to their stable releases: `@adobe-commerce/elsie` to ~1.9.0, `@adobe-commerce/event-bus` to ~1.1.0, `@adobe-commerce/fetch-graphql` to ~1.3.0, `@adobe-commerce/recaptcha` to ~1.2.0, and `@adobe-commerce/storefront-design` to ~1.1.0. The elsie 1.9.0 build tooling reduces the drop-in's HTTP request count via SDK bundle optimizations.
+- ceaba76: Bump @adobe-commerce/elsie to 1.9.0-beta.1, which lowers the minimum Node.js requirement back to 22 LTS. Relax `engines.node` to `>=22` and align `.nvmrc` to 22.12.0.
+- b58d460: Bump @adobe-commerce/elsie to 1.9.0-beta.3, which includes the SDK fix for generating `api.js` and `fragments.js` during the build process.
+- dc086a9: Resolve axios and flatted CVEs via yarn resolutions
+
+## 3.2.0-beta.4
+
+### Patch Changes
+
+- 1889117: Bump StorefrontSDK dependencies to their stable releases: `@adobe-commerce/elsie` to ~1.9.0, `@adobe-commerce/event-bus` to ~1.1.0, `@adobe-commerce/fetch-graphql` to ~1.3.0, `@adobe-commerce/recaptcha` to ~1.2.0, and `@adobe-commerce/storefront-design` to ~1.1.0. The elsie 1.9.0 build tooling reduces the drop-in's HTTP request count via SDK bundle optimizations.
+
+## 3.2.0-beta.3
+
+### Patch Changes
+
+- b58d460: Bump @adobe-commerce/elsie to 1.9.0-beta.3, which includes the SDK fix for generating `api.js` and `fragments.js` during the build process.
+
+## 3.2.0-beta.2
+
+### Patch Changes
+
+- ceaba76: Bump @adobe-commerce/elsie to 1.9.0-beta.1, which lowers the minimum Node.js requirement back to 22 LTS. Relax `engines.node` to `>=22` and align `.nvmrc` to 22.12.0.
+
+## 3.2.0-beta.1
+
+### Minor Changes
+
+- 763e5f9: Use the correct control when multi is true vs false so bundle options work without storefront customization.
+
+  - **multi === false:** Keep the existing single-select dropdown (`Picker`) for dropdown-type options; swatches unchanged for text/image/color.
+  - **multi === true:** Render Elsie `Checkbox` per option value (no radio or multi-select dropdown OOTB).
+  - **Swatches:** Selection state is either `{ label, value }` (single) or `{ label, values[] }` (multi); validation and labels updated accordingly.
+  - **Data / API:** `selectionMapToOptionUIDs` flattens selections and, when given `data.options`, orders UIDs by option groups; bundle completion uses “every required group has ≥1 child UID,” not `uids.length === option count`.
+  - **Containers:** `ProductOptions`, `ProductDetails`, and `initialize` use the shared helpers for payloads, validity, and placeholder filtering.
+  - **`getOptionUIDs` (bundles):** Prefer client `optionUIDs` when present; support multiple defaults when `multi` is true.
+  - **Tests:** Checkbox coverage for `multiple`, lib unit tests, and `ProductDetails` expectation aligned with stable UID order.
+
+- f59e497: Bump @adobe-commerce/elsie to 1.9.0-beta.0 and upgrade CI workflows to storefront-workflows v6 (Node 24)
+
+## 3.1.0
+
+### Minor Changes
+
+- 5c5be95: Add jest-preset-preact to devDependencies to fix test execution under Yarn Berry
+
+### Patch Changes
+
+- dc086a9: Resolve axios and flatted CVEs via yarn resolutions
