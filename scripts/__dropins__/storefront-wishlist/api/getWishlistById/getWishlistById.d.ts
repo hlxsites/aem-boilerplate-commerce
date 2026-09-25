@@ -15,4 +15,6 @@
  * from Adobe.
  *******************************************************************/
 import { Wishlist } from '../../data/models';
-export declare const getWishlistById: (wishlistId: string, pageSize?: number, currentPage?: number) => Promise<void | Wishlist | null>;
+export declare const getWishlistById: (wishlistId: string, pageSize?: number, currentPage?: number, options?: {
+    scope?: string;
+}) => Promise<void | Wishlist | null>;

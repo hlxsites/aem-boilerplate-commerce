@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { InLineAlertProps } from '@dropins/tools/components';
+import { InLineAlertProps } from '../../../node_modules/@dropins/tools/src/components';
 export type PURCHASE_ORDER_STATUS = 'PENDING' | 'APPROVAL_REQUIRED' | 'APPROVED' | 'ORDER_IN_PROGRESS' | 'ORDER_PLACED' | 'ORDER_FAILED' | 'REJECTED' | 'CANCELED' | 'APPROVED_PENDING_PAYMENT';
 export type PURCHASE_ORDER_ACTION = 'REJECT' | 'CANCEL' | 'APPROVE' | 'PLACE_ORDER';
 export interface UsePurchaseOrderStatusReturn {

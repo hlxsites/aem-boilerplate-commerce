@@ -1,5 +1,7 @@
 # @dropins/storefront-account
 
+## 4.2.0
+
 ## 4.2.0-beta.1
 
 ### Patch Changes

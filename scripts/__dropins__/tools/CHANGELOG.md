@@ -1,5 +1,124 @@
 # @adobe-commerce/elsie
 
+## 2.1.0
+
+### Minor Changes
+
+- e8f81dd: **Incrementer**: Add optional `label` prop that renders a visible
+  `<label>` element associated with the input field via `htmlFor`/`id`. This
+  addresses WCAG 3.3.2 (Labels or Instructions) which requires form fields to
+  have visible labels.
+- d9ac070: feat(a11y): add LiveRegion component and Button loading state for
+  WCAG 4.1.3
+
+  - New `LiveRegion` component: a visually-hidden, always-mounted
+    `role="status"` span for announcing status changes to screen readers without
+    focus movement. Accepts `message` (string toggled between empty and the
+    label) and `politeness` ("polite" | "assertive"). Use this alongside
+    `Skeleton` and `ProgressSpinner` instead of relying on those components' own
+    `role="status"` which fires unreliably when they are conditionally mounted.
+  - `Button` now accepts `loading?: boolean` (sets `aria-busy` on the button
+    element) and `loadingLabel?: string` (renders a sibling `LiveRegion` outside
+    the button element — live regions must not be nested inside interactive
+    elements).
+
+- 4cecbe2: Bump `preact` from `~10.22.1` to `~10.29.7` and `@preact/signals`
+  from `1.3.0` to `^2.3.1`, matching the preact version most external consumers
+  already have installed.
+
+  Preact 10.29 narrowed its generic `HTMLAttributes<Target>` typings: `value`,
+  `checked`, `alt`, `width`, `height`, `loading`, `srcSet`, `required`, and
+  `name` moved out into per-element interfaces instead of being available on
+  every element generically. This restores the type declarations for the
+  components that were affected (`Input`, `TextArea`, `Checkbox`, `Image`,
+  `Incrementer`, `Button`, `ActionButton`, `Picker`, `InputFile`, `Accordion`,
+  `CartItem`, `Slot`) — no runtime or prop-API changes, just typings that would
+  otherwise break consumers' own TypeScript builds.
+
+- cadd9f3: feat(lib): add `sanitizeHtml` and `createSanitizedHtml` helpers
+  (backed by DOMPurify) for safely rendering untrusted HTML via
+  `dangerouslySetInnerHTML`. By default only basic inline formatting tags are
+  allowed (`DEFAULT_ALLOWED_TAGS`); callers can extend or replace the
+  allow-list.
+
+### Patch Changes
+
+- af12113: Accessibility color contrast fixes (WCAG 1.4.11, 1.4.3):
+
+  - **ProgressSpinner**: Use `--color-neutral-600` for inactive border (3.94:1
+    vs previous 1.46:1)
+  - **Button disabled states**: Use `--color-neutral-700` for text in all
+    variants (4.21:1 on neutral-300, 5.74:1 on white vs previous 1.36:1/1.91:1)
+
+- 9a3dabd: Fix multiple accessibility issues in the `InputPassword` and `Field`
+  components:
+
+  - The input `aria-label` now uses the consumer-provided `floatingLabel` or
+    `placeholder` instead of a hardcoded "Password" translation, so the
+    accessible name matches the visible label (WCAG 2.5.3 Label in Name).
+  - The show/hide toggle button `aria-label` now includes the field label (e.g.
+    "Click to show password: New Password") so each instance is uniquely
+    identifiable by screen readers (WCAG 2.4.6 Headings and Labels).
+  - The `PasswordStatusIndicator` now receives a unique `id` via `useId()` and
+    the input `aria-describedby` references it, programmatically associating
+    password requirement messages with their field (WCAG 3.3.1 Error
+    Identification).
+  - The `Field` component no longer overrides the child's `aria-describedby`
+    with `undefined` when no error is present, preserving any existing
+    association.
+
+- fe6e31d: Fix the `elsie concurrently` builder passing `killOthers` to the
+  `concurrently` package, which was renamed to `killOthersOn` in
+  `concurrently@10`. Since `concurrently` doesn't validate unknown options, the
+  mismatch silently no-opped `-k`/`--kill-others`, leaving sibling processes
+  (e.g. the `http-server` serving `storybook-static`) running after another
+  process in the group exited — hanging commands like `test-storybook-ci` until
+  an external timeout killed them.
+- 1256599: Cap the `eslint-plugin-cypress` peer dependency range at `<7.0.0`.
+  The unbounded `>=3.0.0` range let npm's resolver consider
+  `eslint-plugin-cypress@7`, which peer-requires `eslint@>=10` and conflicts
+  with elsie's own `eslint@^9.39.5` dependency — even though
+  `eslint-plugin-cypress` remains an optional peer. Versions up to `6.4.4` still
+  support `eslint@>=9`, so the range now stays within what's actually
+  compatible.
+- 089ba5c: fix(a11y): prevent dummy update when keyboard focus moves to
+  Incrementer buttons and add aria-valuetext for VoiceOver
+- d59c153: Fix `Modal` accessibility: while the modal is open, sibling content
+  in `document.body` is now hidden from assistive technology with
+  `aria-hidden="true"`, preventing screen reader users from navigating outside
+  the modal with arrow keys. The attribute is removed automatically when the
+  modal closes. Other portal roots (e.g. nested modals or toasts) and elements
+  that already declare `aria-hidden` are left untouched.
+- c9674f9: fix(a11y): add aria-current="page" to active pagination button and
+  fix active indicator contrast (WCAG 1.4.11, 4.1.2)
+- 6957e90: Fix `PasswordStatusIndicator` requirement status changes (e.g. the
+  length or character-class error icon) not being announced by screen readers.
+  The container now carries `role="status"` and `aria-live="polite"` so
+  assistive technology announces requirement changes as they happen (WCAG
+  4.1.3).
+- 238981b: Pin Preact to 10.22.1, the latest version verified against the
+  affected consumer checkout flow without the AEM Asset Slot `insertBefore`
+  crash. Also restore `@preact/signals` 1.3.0, the compatible Signals release
+  used with this Preact version. Preact 10.23.0 introduced child-diffing changes
+  that expose the existing detached render-root and raw DOM graft behavior.
+- 406a36d: Restore the existing Slot implementation and temporarily downgrade
+  Preact from 10.29 to 10.28.4, the latest pre-10.29 release, to avoid
+  intermittent `insertBefore` crashes in AEM Asset image Slots while the
+  underlying DOM graft and render-root ownership changes are developed and
+  validated separately.
+- fea748d: Pin Preact to 10.27.0, the latest version verified not to throw with
+  the existing detached render-root mechanism. Preact 10.27.1 and newer
+  reproduce intermittent `insertBefore` crashes in AEM Asset image Slots.
+- 85e5b20: fix(a11y): keep RadioButton's focusable input anchored to its visible
+  label when the page scrolls, preventing focus from appearing obscured or
+  off-screen (WCAG 2.4.11)
+- 896c6c9: reCAPTCHA form types are now configurable via feature flag.
+  COMPANY_CREATE is no longer in the default form-type map. B2B storefronts pass
+  `{ b2bEnabled: true }` to `setConfig()` to include it in the configuration
+  query.
+- a920177: fix(Incrementer): prevent quantity input flicker during in-progress
+  typing, and prevent double onValue call when debounce fires before blur
+
 ## 2.1.0-beta.8
 
 ### Patch Changes
