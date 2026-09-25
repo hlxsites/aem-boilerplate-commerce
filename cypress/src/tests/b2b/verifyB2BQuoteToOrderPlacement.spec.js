@@ -173,17 +173,13 @@ describe("Verify B2B Quote feature", { tags: "@skipAco" }, () => {
         cy.logToTerminal('========= Step 7: View Quote Details =========');
         cy.wait(3000);
 
-        // Scope to main to avoid sidebar links (e.g. "View company credit history")
-        // matching before the quote table's View button/link.
-        cy.get('main').then(($main) => {
-            if ($main.find('button:contains("View")').length > 0) {
-                cy.get('main').contains('button', 'View').first().click();
-            } else if ($main.find('a:contains("View")').length > 0) {
-                cy.get('main').contains('a', 'View').first().click();
-            } else {
-                cy.contains(quoteName).click();
-            }
-        });
+        // The quotes list renders a per-row "View" button that navigates to
+        // ?quoteid=<uid> (see blocks/commerce-b2b-negotiable-quote.js). Click it
+        // with a retrying command scoped to main (avoids sidebar links) so it
+        // resolves once the async list finishes rendering — a one-shot
+        // $main.find() races the render and falls back to clicking the
+        // (non-navigating) quote name, leaving the test on the list page.
+        cy.get('main').contains('button', 'View').click();
         cy.wait(8000);
         cy.logToTerminal('✅ Viewing quote details');
 
