@@ -81,6 +81,7 @@ export const signInUser = (username, password) => {
     cy.get('[name="email"]').should('be.visible').clear().type(username, { delay: 50 });
     cy.get('[name="password"]').should('be.visible').clear().type(password, { delay: 50 });
     cy.get('[name="password"]').should('have.value', password);
+    cy.wait(1000);
     cy.get('button.auth-sign-in-form__button--submit[type="submit"]')
       .should('be.visible')
       .and('not.be.disabled')
