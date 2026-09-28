@@ -1,5 +1,7 @@
 # @dropins/storefront-checkout
 
+## 3.4.0
+
 ## 3.4.0-beta.0
 
 ### Minor Changes

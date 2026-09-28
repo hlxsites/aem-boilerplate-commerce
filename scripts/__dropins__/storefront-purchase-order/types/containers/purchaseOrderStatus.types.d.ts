@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { PURCHASE_ORDER_ACTION } from '../hooks';
 export type PurchaseOrderStatusSlotContext = {
     loading: boolean;
