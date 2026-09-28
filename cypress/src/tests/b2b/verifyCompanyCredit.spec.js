@@ -428,22 +428,24 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       // Verify "Refunded" record in credit history with retry logic (due to USF-3516 caching)
       cy.logToTerminal('📊 Verifying Refunded record in credit history...');
       const maxRefundRetries = 5;
-      let refundAttempt = 0;
 
-      const checkForRefund = () => {
-        refundAttempt++;
-        cy.logToTerminal(`🔍 Attempt ${refundAttempt}/${maxRefundRetries}: Checking for Refunded record...`);
-
+      const checkForRefund = (attempt = 1) => {
+        cy.logToTerminal(`🔍 Attempt ${attempt}/${maxRefundRetries}: Checking for Refunded record...`);
         cy.visit('/customer/company/credit');
-        cy.wait(3000);
 
-        cy.get('body').then(($body) => {
-          if ($body.text().match(/refund/i)) {
+        // Purchase record is known to exist, so it signals the grid has rendered
+        cy.get('.commerce-company-credit', { timeout: 15000 })
+          .should('be.visible')
+          .contains(/purchas|order/i, { timeout: 15000 })
+          .should('be.visible');
+
+        cy.get('.commerce-company-credit').then(($credit) => {
+          if (/refund/i.test($credit.text())) {
             cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified (via RefundCommand)');
-          } else if (refundAttempt < maxRefundRetries) {
-            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${refundAttempt}/${maxRefundRetries})`);
-            cy.wait(5000); // Wait longer between retries
-            checkForRefund();
+          } else if (attempt < maxRefundRetries) {
+            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${attempt}/${maxRefundRetries})`);
+            cy.wait(3000);
+            checkForRefund(attempt + 1);
           } else {
             cy.logToTerminal('❌ Refunded record not found after max retries');
             throw new Error('Refunded record not found in credit history after credit memo creation');
