@@ -61,6 +61,8 @@ import {
 } from '@dropins/storefront-checkout/lib/utils.js';
 
 import { showModal, swatchImageSlot } from './utils.js';
+import { ADYEN_PAYMENT_CODE } from '../adyen-payment/session.js';
+import renderAdyenGateway from '../adyen-payment/slot.js';
 
 // External dependencies
 import {
@@ -334,7 +336,7 @@ export const renderShippingMethods = async (container) => renderContainer(
 );
 
 /**
- * Renders payment methods with credit card integration - original regular checkout functionality
+ * Renders payment methods with the Payment Services credit card and the Adyen OOPE Drop-in
  * @param {HTMLElement} container - DOM element to render payment methods in
  * @returns {Promise<Object>} - The rendered payment methods component
  */
@@ -369,6 +371,9 @@ export const renderPaymentMethods = async (container) => renderContainer(
         },
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
+        },
+        [ADYEN_PAYMENT_CODE]: {
+          render: renderAdyenGateway,
         },
       },
     },

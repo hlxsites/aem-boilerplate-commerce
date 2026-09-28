@@ -12,10 +12,23 @@ overrideGQLOperations([
     skipFragments: ['DOWNLOADABLE_ORDER_ITEMS_FRAGMENT'],
     operations: [],
   },
-  // {
-  //   npm: '@dropins/storefront-checkout',
-  //   operations: [],
-  // },
+  // The Adyen slot reads its App Builder URL and client key from the OOPE config.
+  {
+    npm: '@dropins/storefront-checkout',
+    operations: [
+      `
+      fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {
+        oope_payment_method_config {
+          backend_integration_url
+          custom_config {
+            key
+            value
+          }
+        }
+      }
+      `,
+    ],
+  },
   // {
   //   npm: '@dropins/storefront-pdp',
   //   operations: [
