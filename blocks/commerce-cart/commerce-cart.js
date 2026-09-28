@@ -3,7 +3,6 @@ import { render as provider } from '@dropins/storefront-cart/render.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 import { h } from '@dropins/tools/preact.js';
 import {
-  InLineAlert,
   Icon,
   Button,
   provider as UI,
@@ -23,10 +22,6 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
-
-// Modal and Mini PDP
-import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-mini-pdp.js';
-import createModal from '../modal/modal.js';
 
 // Initializers
 import '../../scripts/initializers/cart.js';
@@ -58,10 +53,6 @@ export default async function decorate(block) {
   const placeholders = await fetchPlaceholders();
 
   const _cart = Cart.getCartDataFromCache();
-
-  // Modal state
-  let currentModal = null;
-  let currentNotification = null;
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -100,80 +91,26 @@ export default async function decorate(block) {
   }
 
   // Handle Edit Button Click
-  async function handleEditButtonClick(cartItem) {
-    try {
-      // Create mini PDP content
-      const miniPDPContent = await createMiniPDP(
-        cartItem,
-        async (_updateData) => {
-          // Show success message when mini-PDP updates item
-          const productName = cartItem.name
-            || cartItem.product?.name
-            || placeholders?.Global?.CartUpdatedProductName;
-          const message = placeholders?.Global?.CartUpdatedProductMessage?.replace(
-            '{product}',
-            productName,
-          );
+  // Redirects to the PDP in "update mode" (itemUid + optionsUIDs query params)
+  // instead of opening the mini-PDP modal, so the same flow also works when
+  // the cart page itself is not rendered by the storefront-cart dropin.
+  const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
 
-          // Clear any existing notifications
-          currentNotification?.remove();
+  function handleEditButtonClick(cartItem) {
+    const optionsUIDs = cartItem.selectedOptionsUIDs
+      ? Object.values(cartItem.selectedOptionsUIDs).filter(Boolean)
+      : [];
 
-          currentNotification = await UI.render(InLineAlert, {
-            heading: message,
-            type: 'success',
-            variant: 'primary',
-            icon: h(Icon, { source: 'CheckWithCircle' }),
-            'aria-live': 'assertive',
-            role: 'alert',
-            onDismiss: () => {
-              currentNotification?.remove();
-            },
-          })($notification);
-
-          // Auto-dismiss after 5 seconds
-          setTimeout(() => {
-            currentNotification?.remove();
-          }, 5000);
-        },
-        () => {
-          if (currentModal) {
-            currentModal.removeModal();
-            currentModal = null;
-          }
-        },
-      );
-
-      // Create and show modal
-      currentModal = await createModal([miniPDPContent]);
-
-      if (currentModal.block) {
-        currentModal.block.setAttribute('id', 'mini-pdp-modal');
-      }
-
-      currentModal.showModal();
-    } catch (error) {
-      console.error('Error opening mini PDP modal:', error);
-
-      // Clear any existing notifications
-      currentNotification?.remove();
-
-      // Show error notification
-      currentNotification = await UI.render(InLineAlert, {
-        heading: placeholders?.Global?.ProductLoadError,
-        type: 'error',
-        variant: 'primary',
-        icon: h(Icon, { source: 'AlertWithCircle' }),
-        'aria-live': 'assertive',
-        role: 'alert',
-        onDismiss: () => {
-          currentNotification?.remove();
-        },
-      })($notification);
+    const editUrl = new URL(createProductLink(cartItem), window.location.origin);
+    editUrl.searchParams.set('itemUid', cartItem.uid);
+    if (optionsUIDs.length) {
+      editUrl.searchParams.set('optionsUIDs', optionsUIDs.join(','));
     }
+
+    window.location.href = editUrl.toString();
   }
 
   // Render Containers
-  const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
   await Promise.all([
     // Cart List
     provider.render(CartSummaryList, {
