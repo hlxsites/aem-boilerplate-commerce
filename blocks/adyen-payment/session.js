@@ -87,7 +87,7 @@ const PAYMENT_TIMEOUT_MS = 10 * 60 * 1000;
 
 /**
  * Raised by the Drop-in bridge. `code` is one of `invalid`, `refused`, `error`,
- * `cancelled`, `timeout`, `pending` or `not-ready`.
+ * `cancelled`, `changed`, `timeout`, `pending`, `waiting` or `not-ready`.
  */
 export class AdyenPaymentError extends Error {
   constructor(code, message) {
@@ -103,9 +103,6 @@ let $messageEl = null;
 // Result of an authorised payment whose order has not been placed yet. Reused if
 // placeOrder fails, because the session is finished and cannot be submitted again.
 let completedPayment = null;
-
-/** Returns true if the Adyen Drop-in is currently mounted. */
-export function isDropinMounted() { return !!dropinInstance; }
 
 let paymentResolve = null;
 let paymentReject = null;
@@ -129,52 +126,59 @@ export function showAdyenMessage(text) {
   $messageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function clearAdyenMessage() {
+/** Hide the payment message. */
+export function clearAdyenMessage() {
   if (!$messageEl) return;
   $messageEl.textContent = '';
   $messageEl.hidden = true;
 }
 
 /**
- * Store the mounted Drop-in instance so handlePlaceOrder can call submit().
- * Unmounts any previously stored instance first.
+ * Set the element for decline and error messages. Called when the slot wrapper
+ * is created, before any Drop-in exists.
  *
- * @param {object} instance - Mounted Adyen Drop-in
- * @param {HTMLElement} [$message] - Element for decline and error messages
+ * @param {HTMLElement} $message
  */
-export function setDropinInstance(instance, $message = null) {
-  if (dropinInstance && dropinInstance !== instance) {
+export function attachAdyenMessage($message) {
+  $messageEl = $message;
+}
+
+/** Unmount the current Drop-in, for example before a new session replaces it. */
+export function unmountDropin() {
+  if (dropinInstance) {
     try { dropinInstance.unmount(); } catch { /* ignore */ }
   }
-  dropinInstance = instance;
-  $messageEl = $message;
+  dropinInstance = null;
   completedPayment = null;
 }
 
-/** Clear the instance when the payment method is deselected. */
+/**
+ * Store the mounted Drop-in instance so handlePlaceOrder can call submit().
+ *
+ * @param {object} instance - Mounted Adyen Drop-in
+ */
+export function setDropinInstance(instance) {
+  if (dropinInstance !== instance) unmountDropin();
+  dropinInstance = instance;
+}
+
+/** Unmount the Drop-in and reject any pending payment when the payment method is deselected. */
 export function clearDropinInstance() {
   if (paymentReject) {
     paymentReject(new AdyenPaymentError('cancelled', 'Payment method deselected'));
     clearPaymentCallbacks();
   }
-  dropinInstance = null;
+  unmountDropin();
   $messageEl = null;
-  completedPayment = null;
 }
 
-/**
- * Show the Drop-in field errors when the card details are incomplete or invalid.
- * Returns true when no Drop-in is mounted, so other payment methods are unaffected.
- *
- * @param {{ scrollIntoView?: boolean }} [options]
- * @returns {boolean}
- */
-export function validateAdyenPayment({ scrollIntoView = true } = {}) {
-  if (!dropinInstance || completedPayment || dropinInstance.isValid) return true;
+// Show the Drop-in field errors when the card details are incomplete or invalid.
+function validateAdyenPayment() {
+  if (dropinInstance.isValid) return true;
 
   if (dropinInstance.activePaymentMethod) {
     dropinInstance.showValidation();
-    if (scrollIntoView) $messageEl?.parentElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $messageEl?.parentElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else {
     showAdyenMessage('Choose a payment option.');
   }
@@ -183,18 +187,25 @@ export function validateAdyenPayment({ scrollIntoView = true } = {}) {
 
 /**
  * Programmatically submit the Drop-in and await payment completion.
- * Rejects with an AdyenPaymentError when the details are invalid, the payment
- * is refused or fails, or onPaymentCompleted never fires within PAYMENT_TIMEOUT_MS.
+ * Rejects with an AdyenPaymentError when the form is not ready, the details are
+ * invalid, the payment is refused or fails, or onPaymentCompleted never fires
+ * within PAYMENT_TIMEOUT_MS.
  *
  * @returns {Promise<{ sessionId, resultCode, sessionData, sessionResult }>}
  */
 export function submitAdyenPayment() {
   if (completedPayment) return Promise.resolve(completedPayment);
-  if (!dropinInstance) {
-    return Promise.reject(new AdyenPaymentError('not-ready', 'The payment form has not loaded yet. Wait a moment and place the order again, or refresh the page.'));
-  }
   if (paymentResolve) {
     return Promise.reject(new AdyenPaymentError('pending', 'A payment is already in progress.'));
+  }
+  if (!dropinInstance) {
+    // The slot is waiting for a shipping method or creating the session.
+    if ($messageEl?.isConnected) {
+      const message = 'The payment form is not ready yet. Place the order again once the card fields appear.';
+      showAdyenMessage(message);
+      return Promise.reject(new AdyenPaymentError('waiting', message));
+    }
+    return Promise.reject(new AdyenPaymentError('not-ready', 'The payment form has not loaded yet. Wait a moment and place the order again, or refresh the page.'));
   }
   if (!validateAdyenPayment()) {
     return Promise.reject(new AdyenPaymentError('invalid', 'Check your payment details.'));

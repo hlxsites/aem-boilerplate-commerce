@@ -24,7 +24,6 @@ import {
   ADYEN_PAYMENT_CODE,
   AdyenPaymentError,
   submitAdyenPayment,
-  validateAdyenPayment,
 } from '../adyen-payment/session.js';
 
 // Block Utilities
@@ -144,18 +143,13 @@ export default async function decorate(block) {
 
   block.appendChild(checkoutFragment);
 
-  const handleValidation = () => {
-    const formsValid = validateForms([
-      { name: LOGIN_FORM_NAME },
-      { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
-      { name: BILLING_FORM_NAME, ref: billingFormRef },
-      { name: PURCHASE_ORDER_FORM_NAME },
-      { name: TERMS_AND_CONDITIONS_FORM_NAME },
-    ]);
-    // Only scroll to the Drop-in when the forms are fine, so it doesn't fight validateForms.
-    const paymentValid = validateAdyenPayment({ scrollIntoView: formsValid });
-    return formsValid && paymentValid;
-  };
+  const handleValidation = () => validateForms([
+    { name: LOGIN_FORM_NAME },
+    { name: SHIPPING_FORM_NAME, ref: shippingFormRef },
+    { name: BILLING_FORM_NAME, ref: billingFormRef },
+    { name: PURCHASE_ORDER_FORM_NAME },
+    { name: TERMS_AND_CONDITIONS_FORM_NAME },
+  ]);
 
   const trySubmitPaymentServicesCreditCard = async () => {
     try {
@@ -180,7 +174,7 @@ export default async function decorate(block) {
       return await submitAdyenPayment();
     } catch (error) {
       if (!(error instanceof AdyenPaymentError)) throw error;
-      // Declines and card errors are already shown next to the Drop-in.
+      // Card errors, declines and the waiting state are already shown next to the Drop-in.
       if (error.code !== 'not-ready') return null;
       // PlaceOrder shows the message only for errors named PlaceOrderError.
       const placeOrderError = new Error(error.message);
