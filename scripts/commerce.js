@@ -684,7 +684,7 @@ export function getProductLink(urlKey, sku) {
  */
 export function getProductSku() {
   if (IS_DA || IS_EW) {
-    return getDefaultSkuFromBlock() || getMetadata('sku');
+    return getMetadata('sku') || getDefaultSkuFromBlock();
   }
   return getMetadata('sku') || getSkuFromUrl();
 }
@@ -887,7 +887,7 @@ export function decorateSections(main) {
 }
 
 /**
- * Injects a product-details block as first child of main.
+ * Injects a product-details block into the first child of main.
  * @param {Element} main The main element
  */
 export function buildPDPBlock(main) {
