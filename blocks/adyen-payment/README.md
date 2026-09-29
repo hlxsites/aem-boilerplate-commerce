@@ -75,7 +75,11 @@ None. Results flow through the `submitAdyenPayment()` / `resolveAdyenPayment()` 
 
 ### Drop-in Coordination
 
-`submitAdyenPayment()` returns a Promise that resolves when `onPaymentCompleted` fires or rejects after a 10-minute timeout (matching typical Adyen session expiry). `handlePlaceOrder` in `commerce-checkout.js` awaits this promise before calling `setPaymentMethod` and `placeOrder`.
+`handleValidation` in `commerce-checkout.js` calls `validateAdyenPayment()` along with the checkout forms. When the card details are incomplete or invalid, the Drop-in shows its field errors and the order is not submitted, so no spinner appears.
+
+`submitAdyenPayment()` returns a Promise that resolves when `onPaymentCompleted` fires. `handlePlaceOrder` awaits it before showing the overlay spinner, because a 3DS challenge renders inside the Drop-in and the overlay would cover it. When the challenge opens, `onActionHandled` scrolls the Drop-in into view. After Adyen completes, `handlePlaceOrder` calls `setPaymentMethod` and `placeOrder` under the overlay.
+
+The completed result is kept until the Drop-in is replaced. If `setPaymentMethod` or `placeOrder` fails, the next Place Order click reuses it instead of submitting the finished session again. A second click while a payment is in progress is ignored.
 
 ### Cleanup
 
@@ -83,8 +87,13 @@ When the customer selects a different payment method, the `checkout/updated` lis
 
 ## Error Handling
 
-- **Missing OOPE config** — slot throws immediately with a descriptive error if `backend_integration_url` is absent
-- **SDK load failure** — `loadAdyenWebSDK` rejects; slot catches and renders `checkout__adyen-error` message
-- **Session creation failure** — same catch block; error is surfaced in the slot and re-thrown
-- **Payment timeout** — `submitAdyenPayment()` rejects after 10 minutes with a user-friendly message
-- **Payment failed / error** — `onPaymentFailed` / `onError` call `rejectAdyenPayment()`, which rejects the place-order flow
+Failures are rejected as an `AdyenPaymentError` with a `code`.
+
+- `invalid`: card details failed validation. The Drop-in shows the field errors.
+- `refused`, `cancelled` or `error`: `onPaymentFailed` or `onError` puts the Drop-in back to `ready` and shows a message above it (`.checkout__adyen-message`), so the shopper can retry with the same session.
+- `timeout`: no result within 10 minutes (typical Adyen session expiry). The message asks the shopper to refresh.
+- `not-ready`: Place Order was clicked before the Drop-in mounted. This is rethrown as a `PlaceOrderError`, so the checkout `ServerError` container shows its message instead of the generic text.
+
+Load failures (missing `backend_integration_url`, SDK or session creation errors) replace the slot with a `checkout__adyen-error` message.
+
+If `placeOrder` fails after Adyen has authorised the payment and the shopper then switches to another payment method, the authorisation stays open in Adyen until it expires or the App Builder app cancels it.

@@ -16,6 +16,12 @@ import {
   isPaymentPending,
 } from './session.js';
 
+const FAILED_MESSAGES = {
+  Refused: 'Your payment was declined. Check your card details or use a different card.',
+  Cancelled: 'The payment was cancelled. You can try again.',
+};
+const DEFAULT_FAILED_MESSAGE = 'The payment could not be processed. Try again or use a different card.';
+
 // True while the async IIFE is running. Prevents a second IIFE from starting
 // when checkout/updated re-invokes render() during SDK / session setup.
 let isRenderingAdyen = false;
@@ -23,7 +29,7 @@ let isRenderingAdyen = false;
 // Updated on every render call so the single IIFE always uses the freshest ctx.
 let activeCtx = null;
 
-// DOM element the Adyen Drop-in was mounted into. Passed back to ctx.replaceHTML
+// Wrapper holding the payment message and the Adyen Drop-in. Passed back to ctx.replaceHTML
 // on every subsequent render() call so Preact keeps the slot instead of clearing it
 // when render() would otherwise return void.
 let activeDropinEl = null;
@@ -79,7 +85,8 @@ export default function renderAdyenGateway(ctx) {
   const clientKey = cfg.client_key;
   const env = (cfg.environment || 'TEST').toLowerCase();
 
-  // Uses activeCtx so the error always lands in the slot the dropin expects.
+  // Load failures only, before the Drop-in exists. Uses activeCtx so the error
+  // lands in the slot the dropin expects.
   const showError = (message) => {
     const $error = document.createElement('div');
     $error.className = 'checkout__adyen-error';
@@ -132,6 +139,12 @@ export default function renderAdyenGateway(ctx) {
             actions.reject();
           }
         },
+        onActionHandled: ({ componentType }) => {
+          // Place Order sits below the Drop-in, so the 3DS challenge can open off screen.
+          if (componentType === '3DS2Challenge') {
+            activeDropinEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        },
         onPaymentCompleted: (result) => {
           resolveAdyenPayment({
             sessionId: session.id,
@@ -140,15 +153,27 @@ export default function renderAdyenGateway(ctx) {
             sessionResult: result.sessionResult ?? '',
           });
         },
-        onPaymentFailed: (result) => {
-          console.error('[Adyen] onPaymentFailed:', result.resultCode, result);
-          rejectAdyenPayment(`Payment ${result.resultCode}`);
-          showError(`Payment declined (${result.resultCode}). Please try a different card.`);
+        // The session allows another attempt, so put the Drop-in back to ready
+        // instead of leaving it on Adyen's error screen.
+        onPaymentFailed: (result, component) => {
+          console.error('[Adyen] onPaymentFailed:', result?.resultCode, result);
+          component?.setStatus('ready');
+          // A failed /payments call fires onError first and then this without a resultCode.
+          if (!result?.resultCode) return;
+          rejectAdyenPayment(
+            result.resultCode === 'Cancelled' ? 'cancelled' : 'refused',
+            FAILED_MESSAGES[result.resultCode] ?? DEFAULT_FAILED_MESSAGE,
+          );
         },
-        onError: (error) => {
+        onError: (error, component) => {
+          if (error?.name === 'CANCEL') {
+            component?.setStatus('ready');
+            rejectAdyenPayment('cancelled');
+            return;
+          }
           console.error('[Adyen] onError:', error);
-          rejectAdyenPayment(error.message);
-          showError('Payment could not be processed. Please refresh and try again.');
+          component?.setStatus('ready');
+          rejectAdyenPayment('error', DEFAULT_FAILED_MESSAGE);
         },
       });
     } catch (err) {
@@ -173,15 +198,22 @@ export default function renderAdyenGateway(ctx) {
     // Replace skeleton with the dropin container and mount synchronously.
     // No await between these operations — the Drop-in claims $dropin before
     // any Preact reconciliation can run.
+    const $wrapper = document.createElement('div');
+    $wrapper.className = 'checkout__adyen';
+    const $message = document.createElement('p');
+    $message.className = 'checkout__adyen-message';
+    $message.setAttribute('role', 'alert');
+    $message.hidden = true;
     const $dropin = document.createElement('div');
+    $wrapper.append($message, $dropin);
     $slotParent.innerHTML = '';
-    $slotParent.appendChild($dropin);
+    $slotParent.appendChild($wrapper);
     const dropin = new DropinComponent(checkout, { showPayButton: false }).mount($dropin);
 
-    // Store the dropin element so render() can re-pass it to ctx.replaceHTML on
+    // Store the wrapper so render() can re-pass it to ctx.replaceHTML on
     // subsequent checkout/updated calls, keeping the slot alive.
-    activeDropinEl = $dropin;
-    setDropinInstance(dropin);
+    activeDropinEl = $wrapper;
+    setDropinInstance(dropin, $message);
 
     // Clean up when the customer switches to a different payment method.
     const unsubscribe = events.on('checkout/updated', (data) => {
