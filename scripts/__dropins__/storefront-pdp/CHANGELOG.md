@@ -1,5 +1,16 @@
 # @dropins/storefront-pdp
 
+## 3.4.0-alpha-20260929204541
+
+### Minor Changes
+
+- 4b7a9aa: Add a typed data model for the `ac_customizable_options` product attribute (Magento Customizable Options: priced selectable choices and shopper-input fields). Adds `getCustomizableOptionsAttribute()` in `useProductData` for typed, JSON-string-or-object-safe access, coercing string `price` fields to numbers, and exports `isCustomOptionUID` from `getRefinedProduct` for reuse.
+- fb0879b: Render priced selectable customizable options (drop_down/radio/checkbox/multiple) from the `ac_customizable_options` product attribute. Adds a `CustomizableOptions` component and `ProductCustomizableOptions` container, and wires an equivalent `renderCustomizableOptions()` into the deprecated `ProductDetails`/`Product` components. Selecting a value toggles its `custom-option/<optionId>/<valueId>` UID in `values.optionsUIDs`; required options are shown with a "Required" label. Products with no `ac_customizable_options` attribute render nothing extra. Required-option enforcement/Add-to-Cart gating and a live price-delta preview are out of scope for this change and tracked separately.
+
+### Patch Changes
+
+- b489882: Fix accessibility issues in the product image preview modal: keyboard focus is now trapped inside the dialog while open and restored to the trigger on close, and the carousel slide indicators now expose their selected state to assistive technology and meet minimum color contrast requirements.
+
 ## 3.3.2
 
 ### Patch Changes

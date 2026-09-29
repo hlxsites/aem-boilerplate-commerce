@@ -80,6 +80,11 @@ declare const _default: {
         "label": "View sample for {label}"
       }
     },
+    "CustomizableOptions": {
+      "Required": {
+        "label": "Required"
+      }
+    },
     "Carousel": {
       "label": "Carousel",
       "Next": {

@@ -1,4 +1,4 @@
-import { ProductModel } from '../data/models';
+import { ProductModel, CustomizableOptionsAttributeValue } from '../data/models';
 import { ValuesModel } from '../data/models/values-model';
 
 export interface UseProductDataOptions {
@@ -28,4 +28,11 @@ export interface AttributeResult<T = any> {
  * If JSON parsing fails, returns the attribute with the raw value or a default empty structure.
  */
 export declare function getAttributesById<T = any>(data: ProductModel | null, attributeId: string): AttributeResult<T>[];
+/**
+ * Typed accessor for the `ac_customizable_options` product attribute.
+ * Returns `undefined` when the product has no such attribute, or when its
+ * value is malformed (for example, an invalid JSON string that
+ * `getAttributesById` fell back to returning raw).
+ */
+export declare function getCustomizableOptionsAttribute(data: ProductModel | null): CustomizableOptionsAttributeValue | undefined;
 //# sourceMappingURL=useProductData.d.ts.map
