@@ -24,6 +24,7 @@ import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescri
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
+import ProductCustomizableOptions from '@dropins/storefront-pdp/containers/ProductCustomizableOptions.js';
 
 // Libs
 import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
@@ -86,6 +87,7 @@ export default async function decorate(block) {
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__gift-card-options"></div>
+        <div class="product-details__customizable-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
@@ -110,6 +112,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
+  const $customizableOptions = fragment.querySelector('.product-details__customizable-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   // Kept mounted at all times so the "Adding to Cart" status is reliably
@@ -153,6 +156,7 @@ export default async function decorate(block) {
     _options,
     _quantity,
     _giftCardOptions,
+    _customizableOptions,
     _description,
     _attributes,
     wishlistToggleBtn,
@@ -214,6 +218,9 @@ export default async function decorate(block) {
 
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
+
+    // Configuration  Customizable Options
+    pdpRendered.render(ProductCustomizableOptions, {})($customizableOptions),
 
     // Description
     pdpRendered.render(ProductDescription, {})($description),
