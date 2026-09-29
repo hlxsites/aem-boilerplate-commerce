@@ -16,14 +16,14 @@ No URL parameters are directly read by the header block.
 
 ### Local Storage
 
-No localStorage keys are used directly by this block. Authentication and cart state are managed through cookies and the event bus.
+No localStorage keys are used directly by this block. Authentication and cart state are managed through the event bus (`authenticated` event) and cookies (firstname cookie for display name).
 
 ### Events
 
 #### Event Listeners
 
 - `events.on('cart/data', callback)` - Updates cart item counter and preloads mini cart fragment when cart data changes (eager loading enabled)
-- `events.on('authenticated', callback)` - Handled in `renderAuthCombine.js` and `renderAuthDropdown.js` for authentication state changes
+- `events.on('authenticated', callback, { eager: true })` - Updates auth button state (icon vs "Hi, Name") immediately if auth state is already known, or when it resolves. Handled directly in `header.js`
 
 #### Event Emitters
 
@@ -82,16 +82,18 @@ The header creates three main sections from the nav fragment:
 6. **Panel Close**: Click outside or Escape key closes search panel
 
 #### Authentication
-1. **Sign In Flow**: 
-   - Unauthenticated users see sign-in form in dropdown
-   - Modal option available via `renderAuthCombine` for mobile
+1. **Sign In Flow**:
+   - Auth button DOM and initial state are set up in `header.js` at decoration time — no extra request
+   - `renderAuth.js` is fetched lazily only on first panel open (unauthenticated users) or mobile Account link click
+   - Desktop: SignIn dropin renders inside the panel on first open
+   - Mobile: full AuthCombine modal (sign in / sign up / reset password) opens on Account link click
    - On successful login, page automatically reloads to ensure all components reflect the authenticated state
 2. **Sign Out Flow**:
    - Authenticated users see account menu with logout button
    - Logout revokes token asynchronously, then either redirects to a specific page or reloads the current page
    - Special redirects on logout: checkout → cart, customer pages → login, order details → home
    - All other pages simply reload to reflect the logged-out state
-3. **User Display**: Dropdown shows "Hi, {firstname}" for authenticated users
+3. **User Display**: Button reflects auth state via `events.on('authenticated', ..., { eager: true })` — shows "Hi, {firstname}" when authenticated, SVG icon otherwise. Authenticated users opening the panel incur no additional network request
 
 #### Seller Assisted Buying Banner
 1. **Display Conditions**: Banner appears when user is authenticated and `auth_dropin_admin_session` cookie is present
@@ -124,9 +126,8 @@ The header creates three main sections from the nav fragment:
 
 ## Files
 
-- `header.js` - Main block logic, navigation setup, and tool integrations
+- `header.js` - Main block logic, navigation setup, and tool integrations including auth button and panel skeleton
 - `header.css` - Styles for navigation, panels, and responsive layouts
-- `renderAuthCombine.js` - Authentication modal for mobile with sign in/sign up/reset password forms
-- `renderAuthDropdown.js` - Authentication dropdown for desktop with sign in form and user menu
+- `renderAuth.js` - Lazy auth module: exports `initSignIn` (desktop SignIn dropin) and `openAuthModal` (mobile AuthCombine modal). Only fetched on first user interaction with the auth button
 - `renderSellerAssistedBuyingBanner.js` - Banner component for seller assisted buying sessions with session management
 
