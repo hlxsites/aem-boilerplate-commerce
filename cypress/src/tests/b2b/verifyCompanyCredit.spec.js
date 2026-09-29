@@ -67,6 +67,9 @@ import {
 } from '../../actions';
 import { customerShippingAddress } from '../../fixtures';
 
+// Company Credit grid can lag behind REST API writes, so these queries need a longer timeout.
+const EXTENDED_TIMEOUT = { timeout: 15000 };
+
 describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco'] }, () => {
   before(() => {
     cy.logToTerminal('💳 Company Credit test suite started (OPTIMIZED)');
@@ -155,11 +158,11 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       cy.wait(3000);
 
       cy.logToTerminal('✅ Verify balance value $5.00 is displayed');
-      cy.contains('5.00', { timeout: 15000 })
+      cy.contains('5.00', EXTENDED_TIMEOUT)
         .should('be.visible');
 
       cy.logToTerminal('✅ Verify "Reimbursed" record in history grid');
-      cy.contains(/reimburs/i, { timeout: 15000 })
+      cy.contains(/reimburs/i, EXTENDED_TIMEOUT)
         .should('be.visible');
 
       cy.logToTerminal('✅ TC-47 CASE_3: Reimbursement record verified');
@@ -186,11 +189,11 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       cy.wait(3000);
 
       cy.logToTerminal('✅ Verify credit limit $100.00 is displayed');
-      cy.contains('100', { timeout: 15000 })
+      cy.contains('100', EXTENDED_TIMEOUT)
         .should('be.visible');
 
       cy.logToTerminal('✅ Verify "Allocated" record in history grid');
-      cy.contains(/allocat/i, { timeout: 15000 })
+      cy.contains(/allocat/i, EXTENDED_TIMEOUT)
         .should('be.visible');
 
       cy.logToTerminal('✅ TC-47 CASE_4: Allocation record verified');
@@ -301,7 +304,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       cy.get('body').then(($body) => {
         const bodyText = $body.text();
         if (bodyText.includes('Payment on Account')) {
-          cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
+          cy.contains('Payment on Account', EXTENDED_TIMEOUT).click({ force: true });
           cy.wait(2000);
         } else {
           cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
@@ -319,7 +322,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
 
       // Place order
       cy.logToTerminal('✅ Placing order');
-      cy.contains('button', /place.*order/i, { timeout: 15000 })
+      cy.contains('button', /place.*order/i, EXTENDED_TIMEOUT)
         .should('be.visible')
         .should('not.be.disabled')
         .click();
@@ -379,10 +382,10 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
 
       // Verify "Purchased" record appears - scoped to block to avoid matching nav links
       // Uses /purchas|order/i in case the dropin renders the record type as "Order" vs "Purchased"
-      cy.get('.commerce-company-credit', { timeout: 15000 })
+      cy.get('.commerce-company-credit', EXTENDED_TIMEOUT)
         .should('be.visible')
         .within(() => {
-          cy.contains(/purchas|order/i, { timeout: 15000 }).should('be.visible');
+          cy.contains(/purchas|order/i, EXTENDED_TIMEOUT).should('be.visible');
         });
       cy.logToTerminal('✅ TC-47 CASE_1: Purchase record verified in credit history');
 
@@ -428,22 +431,24 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       // Verify "Refunded" record in credit history with retry logic (due to USF-3516 caching)
       cy.logToTerminal('📊 Verifying Refunded record in credit history...');
       const maxRefundRetries = 5;
-      let refundAttempt = 0;
 
-      const checkForRefund = () => {
-        refundAttempt++;
-        cy.logToTerminal(`🔍 Attempt ${refundAttempt}/${maxRefundRetries}: Checking for Refunded record...`);
-
+      const checkForRefund = (attempt = 1) => {
+        cy.logToTerminal(`🔍 Attempt ${attempt}/${maxRefundRetries}: Checking for Refunded record...`);
         cy.visit('/customer/company/credit');
-        cy.wait(3000);
 
-        cy.get('body').then(($body) => {
-          if ($body.text().match(/refund/i)) {
+        // Purchase record is known to exist, so it signals the grid has rendered
+        cy.get('.commerce-company-credit', EXTENDED_TIMEOUT)
+          .should('be.visible')
+          .contains(/purchas|order/i, EXTENDED_TIMEOUT)
+          .should('be.visible');
+
+        cy.get('.commerce-company-credit').then(($credit) => {
+          if (/refund/i.test($credit.text())) {
             cy.logToTerminal('✅ TC-47 CASE_5: Refunded record verified (via RefundCommand)');
-          } else if (refundAttempt < maxRefundRetries) {
-            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${refundAttempt}/${maxRefundRetries})`);
-            cy.wait(5000); // Wait longer between retries
-            checkForRefund();
+          } else if (attempt < maxRefundRetries) {
+            cy.logToTerminal(`⚠️ Refunded record not found yet, retrying... (${attempt}/${maxRefundRetries})`);
+            cy.wait(3000);
+            checkForRefund(attempt + 1);
           } else {
             cy.logToTerminal('❌ Refunded record not found after max retries');
             throw new Error('Refunded record not found in credit history after credit memo creation');
@@ -500,7 +505,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
       cy.get('body').then(($body) => {
         const bodyText = $body.text();
         if (bodyText.includes('Payment on Account')) {
-          cy.contains('Payment on Account', { timeout: 15000 }).click({ force: true });
+          cy.contains('Payment on Account', EXTENDED_TIMEOUT).click({ force: true });
           cy.wait(2000);
         } else {
           cy.logToTerminal('⚠️ Payment on Account not found, using default payment method');
@@ -518,7 +523,7 @@ describe('USF-2563: Company Credit (Optimized Journey)', { tags: ['@B2BSaas', '@
 
       // Place second order (EXACT SAME FLOW AS FIRST ORDER)
       cy.logToTerminal('✅ Placing second order');
-      cy.contains('button', /place.*order/i, { timeout: 15000 })
+      cy.contains('button', /place.*order/i, EXTENDED_TIMEOUT)
         .should('be.visible')
         .should('not.be.disabled')
         .click();
