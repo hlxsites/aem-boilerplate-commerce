@@ -11,6 +11,8 @@ import {
   buildBlock,
 } from './aem.js';
 import {
+  buildPDPBlock,
+  getProductSku,
   loadCommerceEager,
   loadCommerceLazy,
   initializeCommerce,
@@ -135,6 +137,12 @@ function buildAutoBlocks(main) {
       });
     }
     buildWidgetAutoBlocks(main);
+    // auto-block PDP
+    const metaSku = getProductSku();
+    const pdpBlock = document.querySelector('.product-details');
+    if (metaSku && !pdpBlock) {
+      buildPDPBlock(main);
+    }
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }
