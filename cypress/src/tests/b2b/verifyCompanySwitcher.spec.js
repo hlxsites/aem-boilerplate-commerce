@@ -58,6 +58,8 @@ import {
   assignCustomerToCompany,
   cleanupTestCompany,
 } from '../../support/b2bCompanyAPICalls';
+import installCatalogViewRaceProbe from '../../support/catalogViewRaceProbe.js';
+import { createCatalogViewContextFixture } from '../../fixtures/catalogViewContext.js';
 import { baseCompanyData, fullAdminPermissions } from '../../fixtures/companyManagementData';
 
 /**
@@ -100,6 +102,12 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     });
   });
 
+  it('Guest PDP keeps the public catalog context without a company lookup', () => {
+    cy.visit('/');
+    const catalogViewRaceProbe = installCatalogViewRaceProbe();
+    catalogViewRaceProbe.expectGuestCatalogRequest(Cypress.env('poUrls').product);
+  });
+
   /**
    * ==========================================================================
    * JOURNEY: Complete Company Context Switching
@@ -111,6 +119,9 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
    */
   it('JOURNEY: Company context persists across company management pages with role-based permissions', { defaultCommandTimeout: 30000 }, () => {
     cy.logToTerminal('========= 🚀 JOURNEY: Complete Company Context Switching =========');
+    let catalogViewRaceProbe;
+    let companyBCatalogContext;
+    let companyBCatalogProductPath;
 
     // ========== SETUP: Create 2 companies + shared user (ONCE) ==========
     cy.logToTerminal('🏢 Setting up two companies with shared user (admin in A, regular in B)...');
@@ -219,6 +230,21 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
         cy.get('button[type="submit"]').click();
       });
       cy.wait(8000);
+
+      const companyACatalogContext = createCatalogViewContextFixture(
+        'a',
+        Cypress.env('companyAId'),
+      );
+      companyBCatalogContext = createCatalogViewContextFixture(
+        'b',
+        Cypress.env('companyBId'),
+      );
+      catalogViewRaceProbe = installCatalogViewRaceProbe();
+      catalogViewRaceProbe.expectProtectedCatalogRequest(
+        companyACatalogContext,
+        Cypress.env('poUrls').product,
+      );
+      companyBCatalogProductPath = Cypress.env('poUrls').cheapProduct;
     });
 
     // ========== TC-41: Verify admin controls in Company A ==========
@@ -266,6 +292,13 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
       cy.wait(2000);
 
       cy.logToTerminal('✅ Switched to Company B');
+    });
+
+    cy.then(() => {
+      catalogViewRaceProbe.expectProtectedCatalogRequest(
+        companyBCatalogContext,
+        companyBCatalogProductPath,
+      );
     });
 
     // ========== TC-40: Verify My Company page updates ==========
@@ -394,9 +427,14 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     // ========== TC-42: Shopping Cart context switching ==========
     cy.logToTerminal('--- STEP 9: TC-42 - Verify Shopping Cart is company-specific ---');
 
+    const companyAProductPath = Cypress.env('poUrls').product;
+    const companyBProductPath = Cypress.env('poUrls').cheapProduct;
+    const companyAProductIdentifier = companyAProductPath.split('/').filter(Boolean).pop();
+    const companyBProductIdentifier = companyBProductPath.split('/').filter(Boolean).pop();
+
     // Add product to cart for Company A
     cy.logToTerminal('🛒 Adding product to cart for Company A...');
-    cy.visit('/products/pride-at-adobe-t-shirt/ADB169');
+    cy.visit(companyAProductPath);
     cy.wait(3000);
 
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
@@ -409,8 +447,9 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     cy.wait(3000);
 
     cy.get('body').then(($body) => {
-      if ($body.find('.cart-item').length > 0 || $body.text().includes('ADB169') || $body.text().includes('Pride at Adobe')) {
-        cy.logToTerminal('✅ Company A: Cart has product (ADB169)');
+      if ($body.find('.cart-item').length > 0
+        || $body.text().toLowerCase().includes(companyAProductIdentifier.toLowerCase())) {
+        cy.logToTerminal(`✅ Company A: Cart has product (${companyAProductIdentifier})`);
       } else {
         cy.logToTerminal('⚠️ Company A: Cart might be empty or product display differs');
       }
@@ -439,7 +478,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
                                    $body.text().includes('no items') ||
                                    $body.find('.cart-item').length === 0;
 
-      if (hasEmptyCartMessage || !$body.text().includes('ADB169')) {
+      if (hasEmptyCartMessage
+        || !$body.text().toLowerCase().includes(companyAProductIdentifier.toLowerCase())) {
         cy.logToTerminal('✅ TC-42: Company B cart is empty (cart is company-specific)');
       } else {
         cy.logToTerminal('⚠️ TC-42: Company B cart might have items (unexpected)');
@@ -448,7 +488,7 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
 
     // Add different product to Company B cart
     cy.logToTerminal('🛒 Adding different product to Company B cart...');
-    cy.visit('/products/youth-tee/ADB150');
+    cy.visit(companyBProductPath);
     cy.wait(3000);
 
     cy.get('.product-details__buttons__add-to-cart button', { timeout: 10000 })
@@ -461,8 +501,8 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     cy.wait(3000);
 
     cy.get('body').then(($body) => {
-      if ($body.text().includes('ADB150') || $body.text().includes('Youth Tee')) {
-        cy.logToTerminal('✅ Company B: Cart has product (ADB150)');
+      if ($body.text().toLowerCase().includes(companyBProductIdentifier.toLowerCase())) {
+        cy.logToTerminal(`✅ Company B: Cart has product (${companyBProductIdentifier})`);
       } else {
         cy.logToTerminal('⚠️ Company B: Cart might be empty or product display differs');
       }
@@ -487,8 +527,9 @@ describe('Company Switcher (Optimized Journey)', { tags: ['@B2BSaas', '@B2BAco']
     cy.wait(3000);
 
     cy.get('body').then(($body) => {
-      const hasOriginalProduct = $body.text().includes('ADB169') || $body.text().includes('Pride at Adobe');
-      const hasCompanyBProduct = $body.text().includes('ADB150') || $body.text().includes('Youth Tee');
+      const cartText = $body.text().toLowerCase();
+      const hasOriginalProduct = cartText.includes(companyAProductIdentifier.toLowerCase());
+      const hasCompanyBProduct = cartText.includes(companyBProductIdentifier.toLowerCase());
 
       if (hasOriginalProduct && !hasCompanyBProduct) {
         cy.logToTerminal('✅ TC-42: Company A cart preserved original product, cart context is company-specific');
