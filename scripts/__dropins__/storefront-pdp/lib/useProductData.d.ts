@@ -35,4 +35,5 @@ export declare function getAttributesById<T = any>(data: ProductModel | null, at
  * `getAttributesById` fell back to returning raw).
  */
 export declare function getCustomizableOptionsAttribute(data: ProductModel | null): CustomizableOptionsAttributeValue | undefined;
+export declare function preserveCustomizableOptionUIDs(data: ProductModel | null, prevUIDs: string[] | undefined, nextUIDs: string[] | undefined): string[] | undefined;
 //# sourceMappingURL=useProductData.d.ts.map
