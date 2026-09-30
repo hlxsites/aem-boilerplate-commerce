@@ -12,6 +12,7 @@ import {
   RETURN_DETAILS_PATH,
   CUSTOMER_CREATE_RETURN_PATH,
   CREATE_RETURN_PATH,
+  CUSTOMER_LOGIN_PATH,
   CUSTOMER_ORDERS_PATH,
   ORDER_STATUS_PATH,
   CUSTOMER_PATH,
@@ -53,7 +54,7 @@ await initializeDropin(async () => {
     SALES_ORDER_VIEW_PATH,
   ];
 
-  if (pathsRequiringRedirects.includes(pathname)) {
+  if (pathsRequiringRedirects.includes(pathname) || pathname.endsWith(ORDER_DETAILS_PATH)) {
     await handleUserOrdersRedirects(
       pathname,
       isAccountPage,
@@ -84,6 +85,8 @@ async function handleUserOrdersRedirects(
   orderNumber,
 ) {
   let targetPath = null;
+  const isOrderDetailsPath = pathname.endsWith(ORDER_DETAILS_PATH);
+  const isDraftOrderDetailsPath = pathname.includes('/drafts/') && isOrderDetailsPath;
 
   events.on('order/error', () => {
     if (checkIsAuthenticated()) {
@@ -98,6 +101,8 @@ async function handleUserOrdersRedirects(
   if (checkIsAuthenticated()) {
     if (!orderRef) {
       targetPath = CUSTOMER_ORDERS_PATH;
+    } else if (isDraftOrderDetailsPath) {
+      targetPath = null;
     } else if (isAccountPage) {
       targetPath = isTokenProvided
         ? `${ORDER_DETAILS_PATH}?orderRef=${orderRef}`
@@ -107,6 +112,9 @@ async function handleUserOrdersRedirects(
         ? null
         : `${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderRef}`;
     }
+  } else if (isOrderDetailsPath && orderRef && !isTokenProvided) {
+    const returnUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    targetPath = `${CUSTOMER_LOGIN_PATH}?redirectUrl=${encodeURIComponent(returnUrl)}`;
   } else {
     targetPath = !orderRef ? ORDER_STATUS_PATH : null;
   }

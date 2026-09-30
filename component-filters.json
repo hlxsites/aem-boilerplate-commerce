@@ -31,6 +31,7 @@
       "commerce-order-cost-summary",
       "commerce-order-header",
       "commerce-order-product-list",
+      "commerce-order-invoices",
       "commerce-order-returns",
       "commerce-order-status",
       "commerce-return-header",
