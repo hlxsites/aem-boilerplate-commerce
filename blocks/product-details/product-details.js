@@ -33,8 +33,8 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
-// Function to update the Add to Cart button text
-function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
+// Function to update the Add to Cart button text and its accessible name
+function updateAddToCartButtonText(addToCartInstance, inCart, labels, productName) {
   const buttonText = inCart
     ? labels.Global?.UpdateProductInCart
     : labels.Global?.AddProductToCart;
@@ -42,6 +42,7 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
     addToCartInstance.setProps((prev) => ({
       ...prev,
       children: buttonText,
+      'aria-label': `${buttonText} ${productName}`,
     }));
   }
 }
@@ -230,9 +231,9 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
-  const productName = product?.name || product?.sku;
+  const getProductName = () => product?.name || product?.sku;
   const addToCart = await UI.render(Button, {
-    'aria-label': `${labels.Global?.AddProductToCart} ${productName}`,
+    'aria-label': `${labels.Global?.AddProductToCart} ${getProductName()}`,
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
@@ -308,7 +309,7 @@ export default async function decorate(block) {
         });
       } finally {
         // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
+        updateAddToCartButtonText(addToCart, isUpdateMode, labels, getProductName());
         // Re-enable button, unless the current variant is out of stock
         addToCart.setProps((prev) => ({
           ...prev,
@@ -324,6 +325,7 @@ export default async function decorate(block) {
     product = data?.sku ? data : product;
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    updateAddToCartButtonText(addToCart, isUpdateMode, labels, getProductName());
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
@@ -385,7 +387,7 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
+      updateAddToCartButtonText(addToCart, itemIsInCart, labels, getProductName());
     },
     { eager: true },
   );
