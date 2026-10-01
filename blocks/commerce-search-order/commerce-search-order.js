@@ -1,4 +1,4 @@
-import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
+import { SignIn } from '@dropins/storefront-auth/containers.js';
 import { OrderSearch } from '@dropins/storefront-order/containers/OrderSearch.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
