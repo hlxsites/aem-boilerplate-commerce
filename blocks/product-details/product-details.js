@@ -30,6 +30,7 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
@@ -134,7 +135,8 @@ export default async function decorate(block) {
           <div class="product-details__buttons">
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
-            <div class="product-details__buttons__payment-services-apple-pay"></div>
+            <div class="product-details__buttons__payment-services product-details__buttons__payment-services-apple-pay"></div>
+            <div class="product-details__buttons__payment-services product-details__buttons__payment-services-google-pay"></div>
           </div>
           <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
@@ -155,6 +157,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
+  const $googlePay = fragment.querySelector('.product-details__buttons__payment-services-google-pay');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   // Kept mounted at all times so the "Adding to Cart" status is reliably
   // announced instead of relying on the button's text/disabled state
@@ -201,6 +204,7 @@ export default async function decorate(block) {
     _attributes,
     wishlistToggleBtn,
     applePayButton,
+    googlePayButton,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -303,6 +307,23 @@ export default async function decorate(block) {
       },
       hidden: true,
     })($applePay),
+
+    PaymentServices.render(GooglePay, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: async (localizedError) => {
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: localizedError.name,
+          description: localizedError.message,
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          type: 'error',
+          onDismiss: () => inlineAlert.remove(),
+        })($alert);
+      },
+      hidden: true,
+    })($googlePay),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -495,6 +516,9 @@ export default async function decorate(block) {
   events.on('payment-services/initialized/product-detail', ({ availablePaymentMethods }) => {
     if (availablePaymentMethods.includes(PaymentMethodCode.APPLE_PAY)) {
       applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
+    }
+    if (availablePaymentMethods.includes(PaymentMethodCode.GOOGLE_PAY)) {
+      googlePayButton.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
 
