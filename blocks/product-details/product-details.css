@@ -69,6 +69,7 @@
 
 .product-details__buttons > .product-details__buttons__payment-services > * {
   grid-column: 1 / -1;
+  line-height: 0;
 }
 
 .product-details__attributes {
