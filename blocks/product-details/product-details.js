@@ -420,12 +420,14 @@ export default async function decorate(block) {
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    googlePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity and stock status
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
+    googlePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
   }, { eager: true });
 
   // Handle option changes
