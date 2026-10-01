@@ -11,10 +11,6 @@ export interface PdpDataModel {
      * The sku of the specific variant currently selected on the PDP.
      */
     variantSku?: string;
-    /**
-     * Indicates the product type of the product. Values can be "simple" or "complex".
-     */
-    productType: 'simple' | 'complex';
 }
 /**
  * Interface subset to recreate the pdp/values event payload.
