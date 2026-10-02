@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Invoice Details",
+    "id": "commerce-invoice-details",
+    "model": "commerce-invoice-details",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}

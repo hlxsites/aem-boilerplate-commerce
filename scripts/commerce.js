@@ -60,6 +60,7 @@ export const PRIVACY_POLICY_PATH = '/privacy-policy';
 // GUEST PATHS
 export const ORDER_STATUS_PATH = '/order-status';
 export const ORDER_DETAILS_PATH = '/order-details';
+export const INVOICE_DETAILS_PATH = '/invoice-details';
 export const RETURN_DETAILS_PATH = '/return-details';
 export const CREATE_RETURN_PATH = '/create-return';
 export const SALES_GUEST_VIEW_PATH = '/sales/guest/view/';
