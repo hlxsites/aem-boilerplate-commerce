@@ -69,8 +69,11 @@ export default async function decorate(block) {
   const urlParams = new URLSearchParams(window.location.search);
   const itemUidFromUrl = urlParams.get('itemUid');
 
-  // State to track if we are in update mode
-  let isUpdateMode = false;
+  // State to track if we are in update mode.
+  // Initialized optimistically from the URL so the "Update Cart" CTA renders
+  // immediately (no Add to Cart -> Update in Cart flash while cart/data loads).
+  // The cart/data listener below corrects this if the uid turns out to be stale.
+  let isUpdateMode = Boolean(itemUidFromUrl);
 
   // State to track if the current product/variant is out of stock
   let isOutOfStock = false;
@@ -240,8 +243,12 @@ export default async function decorate(block) {
   // Configuration – Button - Add to Cart
   const getProductName = () => product?.name || product?.sku;
   const addToCart = await UI.render(Button, {
-    'aria-label': `${labels.Global?.AddProductToCart} ${getProductName()}`,
-    children: labels.Global?.AddProductToCart,
+    children: isUpdateMode
+      ? labels.Global?.UpdateProductInCart
+      : labels.Global?.AddProductToCart,
+    'aria-label': `${isUpdateMode
+      ? labels.Global?.UpdateProductInCart
+      : labels.Global?.AddProductToCart} ${getProductName()}`,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
       const buttonActionText = isUpdateMode
