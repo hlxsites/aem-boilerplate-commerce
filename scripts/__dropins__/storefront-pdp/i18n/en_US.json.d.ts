@@ -83,6 +83,9 @@ declare const _default: {
     "CustomizableOptions": {
       "Required": {
         "label": "Required"
+      },
+      "FileUnsupported": {
+        "label": "File upload is not supported."
       }
     },
     "Carousel": {
