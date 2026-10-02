@@ -296,3 +296,44 @@
         margin-top: 0;
     }
 }
+
+.checkout__adyen-skeleton,
+.checkout__adyen-loading {
+    height: 220px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    animation: adyen-pulse 1.5s ease-in-out infinite;
+}
+
+.checkout__adyen-error {
+    padding: 16px;
+    color: var(--color-alert-red, #c00);
+    font-size: 0.875rem;
+}
+
+.checkout__adyen-note {
+    margin: 0;
+    color: var(--color-neutral-700);
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+}
+
+.checkout__adyen-message {
+    margin: 0 0 var(--spacing-small);
+    padding: var(--spacing-small);
+    border: 1px solid var(--color-alert-500);
+    border-radius: var(--shape-border-radius-1);
+    color: var(--color-alert-800);
+    background: var(--color-alert-200);
+    font: var(--type-body-2-default-font);
+    letter-spacing: var(--type-body-2-default-letter-spacing);
+}
+
+.checkout__adyen-message[hidden] {
+    display: none;
+}
+
+@keyframes adyen-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
