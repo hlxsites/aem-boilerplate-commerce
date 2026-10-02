@@ -14,7 +14,7 @@
  * from Adobe.
  */
 export type SelectableRenderType = 'drop_down' | 'radio' | 'checkbox' | 'multiple';
-export type ShopperInputRenderType = 'field' | 'area' | 'date' | 'date_time' | 'time';
+export type ShopperInputRenderType = 'field' | 'area' | 'date' | 'date_time' | 'time' | 'file';
 export interface SelectableOptionValue {
     id: string;
     label: string;

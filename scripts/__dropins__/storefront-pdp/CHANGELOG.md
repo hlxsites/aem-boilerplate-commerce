@@ -1,11 +1,12 @@
 # @dropins/storefront-pdp
 
-## 3.4.0-alpha-20260930185924
+## 3.4.0-alpha-20261002121707
 
 ### Minor Changes
 
 - 4b7a9aa: Add a typed data model for the `ac_customizable_options` product attribute (Magento Customizable Options: priced selectable choices and shopper-input fields). Adds `getCustomizableOptionsAttribute()` in `useProductData` for typed, JSON-string-or-object-safe access, coercing string `price` fields to numbers, and exports `isCustomOptionUID` from `getRefinedProduct` for reuse.
-- fb0879b: Render priced selectable customizable options (drop_down/radio/checkbox/multiple) from the `ac_customizable_options` product attribute. Adds a `CustomizableOptions` component and `ProductCustomizableOptions` container, and wires an equivalent `renderCustomizableOptions()` into the deprecated `ProductDetails`/`Product` components. Selecting a value toggles its `custom-option/<optionId>/<valueId>` UID in `values.optionsUIDs`; required options are shown with a "Required" label. Products with no `ac_customizable_options` attribute render nothing extra. Required-option enforcement/Add-to-Cart gating and a live price-delta preview are out of scope for this change and tracked separately.
+- bd4f3a7: Render priced selectable customizable options (drop_down/radio/checkbox/multiple) from the `ac_customizable_options` product attribute. Adds a `CustomizableOptions` component and `ProductCustomizableOptions` container, and wires an equivalent `renderCustomizableOptions()` into the deprecated `ProductDetails`/`Product` components. Selecting a value toggles its `custom-option/<optionId>/<valueId>` UID in `values.optionsUIDs`; required options are shown with a "Required" label. Products with no `ac_customizable_options` attribute render nothing extra. Required-option enforcement/Add-to-Cart gating and a live price-delta preview are out of scope for this change and tracked separately.
+- 2e43db7: Support text, multiline text, date, local date-time, and time customizable options in both PDP rendering paths. Preserve entered option UIDs and values alongside selectable options and bundle quantities, and display a disabled placeholder for file options.
 
 ### Patch Changes
 
