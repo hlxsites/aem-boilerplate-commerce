@@ -1,3 +1,4 @@
+// add functionality that requires user consent here (analytics, martech, etc.)
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
 import { getConsent } from './commerce.js';
@@ -65,5 +66,3 @@ if (document.prerendering) {
 } else {
   initAnalytics();
 }
-
-// add delayed functionality here
