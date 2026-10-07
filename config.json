@@ -1,0 +1,37 @@
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/MJLUoAxryi8Zm7ZR1feDxw/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/MJLUoAxryi8Zm7ZR1feDxw/graphql",
+      "adobe-commerce-optimizer": false,
+      "headers": {
+        "cs": {
+          "Magento-Environment-Id": "MJLUoAxryi8Zm7ZR1feDxw",
+          "Magento-Website-Code": "base",
+          "Magento-Store-Code": "main_website_store",
+          "Magento-Store-View-Code": "default",
+          "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb",
+          "X-Api-Key": "storefront-catalog-apollo",
+          "content-type": "application/json"
+        }
+      },
+      "analytics": {
+        
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "store-view-code": "default",
+        "store-view-name": "default",
+        "store-url": "https://dsaccstrolls--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "environment-id": "MJLUoAxryi8Zm7ZR1feDxw",
+        "store-id": 1,
+        "store-name": "e2e trolls ds org",
+        "store-view-id": 1,
+        "website-id": 1,
+        "website-name": "Main Website",
+        "website-code": "base",
+        "store-code": "main_website_store"
+
+      }
+    }
+  }
+}
