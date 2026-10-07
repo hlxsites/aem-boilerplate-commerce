@@ -60,7 +60,7 @@ No localStorage keys are used by this block. -->
 
 ### Pay By Link demo
 
-On localhost or the `pbl-standalone` EDS preview hosts, `?pblDemo=true` shows a temporary **Create payment link** form in the order-summary column. It calls `createPaymentLink` for the active cart and navigates to the authored `/drafts/aries/pay` flow on the same EDS branch. This control is for local/product validation only and must be removed before integration.
+The Pay by link card is available to guests and signed-in shoppers on every host, without a query parameter. It appears in the order-summary column when the cart contains items. The card includes a labeled recipient email field and a full-width Create payment link button. The email field can be left blank when an email is already associated with the cart. It calls `createPaymentLink` for the active cart and navigates to the authored `/drafts/aries/pay` flow on the same EDS branch. The form disables its controls while creating the link and displays inline errors so the user can retry. This is a PoC entry point, not a production link-creation workflow.
 
 ### Error Handling
 

@@ -1,8 +1,8 @@
 {
   "public": {
     "default": {
-      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/2o26hwKuPKPB9r9ym2LY52/graphql",
-      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/2o26hwKuPKPB9r9ym2LY52/graphql",
+      "commerce-core-endpoint": "https://na1-sandbox.api.commerce.adobe.com/KcDQwuVVEcCb6is7pNwYR3/graphql",
+      "commerce-endpoint": "https://na1-sandbox.api.commerce.adobe.com/KcDQwuVVEcCb6is7pNwYR3/graphql",
       "commerce-assets-enabled": false,
       "headers": {
         "all": {
@@ -17,7 +17,7 @@
       "analytics": {
         "base-currency-code": "USD",
         "environment": "Testing",
-        "environment-id": "2o26hwKuPKPB9r9ym2LY52",
+        "environment-id": "KcDQwuVVEcCb6is7pNwYR3",
         "store-code": "main_website_store",
         "store-id": 1,
         "store-name": "Main Website Store",

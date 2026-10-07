@@ -49,17 +49,6 @@ const CREATE_PAYMENT_LINK_MUTATION = `
   }
 `;
 
-const PBL_DEMO_HOSTS = new Set([
-  'pbl-standalone--aem-boilerplate-commerce--hlxsites.aem.live',
-  'pbl-standalone--aem-boilerplate-commerce--hlxsites.aem.page',
-]);
-
-const isPaymentLinkDemoEnabled = () => {
-  const { hostname, searchParams } = new URL(window.location.href);
-  return searchParams.get('pblDemo') === 'true'
-    && (hostname === 'localhost' || PBL_DEMO_HOSTS.has(hostname));
-};
-
 export default async function decorate(block) {
   // Configuration
   const {
@@ -110,58 +99,91 @@ export default async function decorate(block) {
   block.innerHTML = '';
   block.appendChild(fragment);
 
-  if (isPaymentLinkDemoEnabled()) {
-    const paymentLinkForm = document.createElement('form');
-    const heading = document.createElement('h3');
-    const email = document.createElement('input');
-    const button = document.createElement('button');
-    const status = document.createElement('p');
+  const paymentLinkForm = document.createElement('form');
+  const paymentLinkId = `cart-payment-link-${document.querySelectorAll('.cart__payment-link-demo').length}`;
+  paymentLinkForm.className = 'cart__payment-link-demo';
+  paymentLinkForm.setAttribute('aria-labelledby', `${paymentLinkId}-heading`);
+  paymentLinkForm.innerHTML = `
+    <div class="cart__payment-link-demo-header">
+      <span class="cart__payment-link-demo-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/>
+          <path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>
+        </svg>
+      </span>
+      <div>
+        <h2 id="${paymentLinkId}-heading">Pay by link</h2>
+      </div>
+      <span class="cart__payment-link-demo-badge">Demo</span>
+    </div>
+    <p class="cart__payment-link-demo-description">
+      Create a payment link for this cart and open checkout.
+    </p>
+    <label class="cart__payment-link-demo-field">
+      <span class="cart__payment-link-demo-label">
+        Recipient email
+        <span class="cart__payment-link-demo-optional">Optional</span>
+      </span>
+      <input type="email" name="recipientEmail" autocomplete="email"
+        placeholder="name@example.com" aria-describedby="${paymentLinkId}-hint">
+    </label>
+    <p class="cart__payment-link-demo-hint" id="${paymentLinkId}-hint">
+      Leave blank to use the email address already associated with this cart.
+    </p>
+    <button type="submit" class="button primary cart__payment-link-demo-submit">
+      <span class="cart__payment-link-demo-spinner" aria-hidden="true"></span>
+      <span class="cart__payment-link-demo-button-label">Create payment link</span>
+    </button>
+    <p class="cart__payment-link-demo-status" role="status" aria-live="polite"></p>
+  `;
+  $rightColumn.append(paymentLinkForm);
 
-    paymentLinkForm.className = 'cart__payment-link-demo';
-    heading.textContent = 'Pay by Link demo';
-    email.type = 'email';
-    email.name = 'recipientEmail';
-    email.placeholder = 'Recipient email (optional)';
-    email.setAttribute('aria-label', 'Recipient email');
-    button.type = 'submit';
-    button.className = 'button secondary';
-    button.textContent = 'Create payment link';
-    status.className = 'cart__payment-link-demo-status';
-    status.setAttribute('aria-live', 'polite');
-    paymentLinkForm.append(heading, email, button, status);
-    $rightColumn.append(paymentLinkForm);
+  const email = paymentLinkForm.querySelector('input');
+  const button = paymentLinkForm.querySelector('button');
+  const buttonLabel = paymentLinkForm.querySelector('.cart__payment-link-demo-button-label');
+  const status = paymentLinkForm.querySelector('.cart__payment-link-demo-status');
 
-    paymentLinkForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      if (!currentCart?.id) {
-        status.textContent = 'No active cart is available.';
-        return;
+  paymentLinkForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (button.disabled) return;
+    if (!currentCart?.id) {
+      status.dataset.state = 'error';
+      status.textContent = 'No active cart is available.';
+      return;
+    }
+
+    button.disabled = true;
+    email.disabled = true;
+    buttonLabel.textContent = 'Creating link...';
+    paymentLinkForm.setAttribute('aria-busy', 'true');
+    status.dataset.state = 'loading';
+    status.textContent = 'Preparing your payment checkout...';
+    try {
+      const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(CREATE_PAYMENT_LINK_MUTATION, {
+        method: 'POST',
+        variables: {
+          cartId: currentCart.id,
+          recipientEmail: email.value.trim() || null,
+        },
+      });
+      const { token } = response.data?.createPaymentLink || {};
+      if (response.errors?.length || !token) {
+        throw new Error(response.errors?.[0]?.message || 'Payment link could not be created.');
       }
 
-      button.disabled = true;
-      status.textContent = 'Creating payment link...';
-      try {
-        const response = await CORE_FETCH_GRAPHQL.fetchGraphQl(CREATE_PAYMENT_LINK_MUTATION, {
-          method: 'POST',
-          variables: {
-            cartId: currentCart.id,
-            recipientEmail: email.value || null,
-          },
-        });
-        const { token } = response.data?.createPaymentLink || {};
-        if (response.errors?.length || !token) {
-          throw new Error(response.errors?.[0]?.message || 'Payment link could not be created.');
-        }
-
-        window.location.href = rootLink(
-          `${PAY_BY_LINK_DRAFT_PATH}?token=${encodeURIComponent(token)}`,
-        );
-      } catch (error) {
-        status.textContent = error.message;
-        button.disabled = false;
-      }
-    });
-  }
+      window.location.href = rootLink(
+        `${PAY_BY_LINK_DRAFT_PATH}?token=${encodeURIComponent(token)}`,
+      );
+    } catch (error) {
+      paymentLinkForm.setAttribute('aria-busy', 'false');
+      status.dataset.state = 'error';
+      status.textContent = error.message;
+      button.disabled = false;
+      email.disabled = false;
+      buttonLabel.textContent = 'Create payment link';
+    }
+  });
 
   // Wishlist variables
   const routeToWishlist = rootLink('/wishlist');
