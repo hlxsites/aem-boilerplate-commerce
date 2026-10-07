@@ -1,7 +1,7 @@
 /**
  * ADOBE CONFIDENTIAL
  * __________________
- * Copyright 2023 Adobe
+ * Copyright 2026 Adobe
  * All Rights Reserved.
  * __________________
  * NOTICE: All information contained herein is, and remains
@@ -13,7 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './product-model';
-export * from './values-model';
-export * from './customizable-options-model';
+export * from './ProductCustomizableOptions';
+export { ProductCustomizableOptions as default } from './ProductCustomizableOptions';
 //# sourceMappingURL=index.d.ts.map

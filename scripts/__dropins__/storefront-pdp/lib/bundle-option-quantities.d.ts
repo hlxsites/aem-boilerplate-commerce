@@ -13,4 +13,11 @@ export declare function bundleOptionQuantitiesFromEnteredOptions(enteredOptions:
     uid: string;
     value: string;
 }> | undefined): BundleOptionQuantities;
+export declare function mergeBundleEnteredOptions(enteredOptions: Array<{
+    uid: string;
+    value: string;
+}> | undefined, previous: BundleOptionQuantities | undefined, next: BundleOptionQuantities): Array<{
+    uid: string;
+    value: string;
+}>;
 //# sourceMappingURL=bundle-option-quantities.d.ts.map
