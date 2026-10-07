@@ -1,5 +1,74 @@
 # @dropins/storefront-auth
 
+## 4.2.0-alpha-20261007130328
+
+### Minor Changes
+
+- 7db8c65: Bump `@dropins/build-tools` to `1.2.2-alpha-20261001144731`.
+
+  Update `examples/html-host` to import from the new consolidated
+  `containers.js` entry instead of deep per-container paths:
+
+  ```diff
+  - import SignIn from '@dropins/storefront-auth/containers/SignIn.js';
+  - import { SuccessNotification } from '@dropins/storefront-auth/containers/SuccessNotification.js';
+  + import { SignIn, SuccessNotification } from '@dropins/storefront-auth/containers.js';
+  ```
+
+  Non-breaking — `containers.js` is built as a fully separate pass alongside the
+  existing per-container files, so deep imports keep working unchanged.
+
+### Patch Changes
+
+- d86d865: Fix Sign In, Sign Up, Forgot Password, and Update Password forms
+  getting stuck permanently in their loading state (spinner never stops, fields
+  stay disabled, no error shown) when the underlying API request fails at the
+  network level (offline, DNS/timeout, CORS, blocked).
+
+  `handleNetworkError` intentionally re-throws after emitting an `auth/error`
+  event, but `submitLogInUser`, `onSubmitSignUp`, `submitResetPassword`, and
+  `submitUpdatePassword` awaited their API calls with no `try/catch/finally`, so
+  the loading state was never reset when the awaited promise rejected. All four
+  now wrap their async logic in `try/catch/finally` and surface a generic error
+  message instead of hanging.
+
+- 506d56e: Migrate the repo's dev toolchain to `@adobe-commerce/elsie@3.x`,
+  following the SDK's `elsie-migration` skill playbook. This touches build,
+  lint, and test configuration only; the published package's runtime behavior is
+  unchanged.
+
+  - Bump `@adobe-commerce/elsie` to v3 and `preact` to `~10.29.7`; add
+    `@preact/signals` as a direct dependency (elsie's runtime now requires it as
+    a peer).
+  - Update `config/` → `configs/` paths across `tsconfig.json`, the `prettier`
+    field, ESLint, Jest, and Storybook.
+  - Replace the removed ESLint `createConfig()` factory with the new layered
+    `defineConfig(...)` API, and restore Cypress globals (`cy`, `Cypress`)
+    directly via `eslint-plugin-cypress`.
+  - Switch Jest's `environment` option to `preset: 'preact'` and explicitly pass
+    the `@/auth/*` path alias, since it is no longer auto-derived.
+  - Update every test file to import `describe`/`it`/`test`/`expect`/lifecycle
+    hooks/`jest` explicitly from `@adobe-commerce/elsie/tests/preact` instead of
+    relying on ambient Jest globals or the removed
+    `@adobe-commerce/elsie/lib/tests` entry point.
+  - Replace `(fn as jest.Mock)` casts with `jest.mocked(fn)` where Jest 30's
+    stricter mock typing required it.
+  - Migrate the v1-era `.elsie.cjs` config file to `elsie.config.mjs`.
+  - Update `.storybook/main.js` to use the shared `createConfig()` factory and
+    route scripts through `elsie storybook [mode]`.
+  - Replace 2 direct `preact-i18n` imports with `@adobe-commerce/elsie/i18n` to
+    satisfy the (already-active) import restriction.
+  - Switch the package manager from npm to pnpm (`pnpm-workspace.yaml`,
+    `pnpm-lock.yaml`, `minimumReleaseAge`/`allowBuilds` hardening), including
+    the nested `cypress/` sub-project, which gets its own pnpm workspace root.
+  - Bump the shared `storefront-workflows` reusable CI workflows from `v6` to
+    `v7` across all 9 workflow files (`v7`'s `setup-environment` is pnpm-only).
+    `v7`'s lint-and-unit-tests workflow also enforces `format:check`, so the
+    whole repo was reformatted with `elsie format` to pass it (purely cosmetic
+    changes — quote style, trailing commas, line wrapping) and a pre-existing
+    malformed closing tag in `examples/html-host/test/update-password.html` was
+    fixed (it broke Prettier's HTML parser).
+
 ## 4.1.0
 
 ## 4.1.0-beta.0
