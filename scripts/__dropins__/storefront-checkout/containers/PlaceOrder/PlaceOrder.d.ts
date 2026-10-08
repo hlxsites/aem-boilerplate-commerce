@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 export interface ContentSlotContext {
     code: string;

@@ -16,7 +16,7 @@
  *******************************************************************/
 import { ShippingMethod } from '../../data/models';
 import { UIComponentType } from '../../types';
-import { SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { ShippingMethodItemContext } from '../../containers/ShippingMethods';

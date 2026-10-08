@@ -17,7 +17,7 @@
 import { Cart as CartModel, Customer as CustomerModel, ShippingMethod } from '../../data/models';
 import { Filter, Selector } from '../../types/utils';
 import { definition } from '../../../node_modules/@dropins/tools/src/i18n';
-import { Initializer, Model } from '../../../node_modules/@dropins/tools/src/lib';
+import { Initializer, Model } from '@dropins/tools/lib';
 export type ConfigProps = {
     defaults?: {
         isBillToShipping?: boolean;
@@ -44,4 +44,4 @@ export type ConfigProps = {
     };
 };
 export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import("../../../node_modules/@dropins/tools/src/lib").Config<ConfigProps>;
+export declare const config: import("@dropins/tools/lib").Config<ConfigProps>;
