@@ -1,6 +1,6 @@
 # @dropins/storefront-checkout
 
-## 3.5.0-alpha-20261008090639
+## 3.5.0-alpha-20261008150605
 
 ### Minor Changes
 
@@ -52,8 +52,8 @@
 
 ### Patch Changes
 
-- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261007160511` and
-  `@dropins/build-tools` to `1.2.2-alpha-20261007160511`.
+- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261008135308` and
+  `@dropins/build-tools` to `1.2.2-alpha-20261008135308`.
 
   The consolidated `containers.js` build pass (see
   `consolidate-container-entries` in `@adobe-commerce/elsie`) now builds
@@ -69,6 +69,24 @@
   - import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
   + import { PaymentMethods } from '@dropins/storefront-checkout/containers.js';
   ```
+
+  Also disable shipping method options while a cart update is in flight when
+  `UIComponentType` is `ToggleButton`. `ShippingMethods` already passed
+  `disabled={busy}` to the `RadioButton` variant, but the `ToggleButton` variant
+  never forwarded it. The busy wrapper only applies `opacity: 0.4` and
+  `pointer-events: none`, and `pointer-events` does not block the keyboard — so
+  while a request was pending a keyboard user could still tab into a toggle
+  button and change the shipping method, while a mouse user could not.
+  `disabled` now lives in the shared props both variants spread, so they behave
+  the same.
+
+  This also removes a latent flake in the Storybook accessibility suite. WCAG
+  exempts inactive components from the contrast minimum, and axe honors that
+  exemption via `disabled`. Without it, the dimmed toggle button text was
+  reported as a `color-contrast` violation whenever axe happened to run before
+  the mock response landed. Because the busy state is now correctly exempt, the
+  `color-contrast` rule no longer has to be switched off for the `Busy` story,
+  and a `BusyWithToggleButton` story covers the previously untested combination.
 
 ## 3.4.0
 
