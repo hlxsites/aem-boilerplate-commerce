@@ -16,4 +16,3 @@
 export declare const setProductConfigurationValid: (callback: (prev: boolean) => boolean, options?: {
     scope?: string;
 }) => void;
-//# sourceMappingURL=setProductConfigurationValid.d.ts.map

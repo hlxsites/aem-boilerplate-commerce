@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './EmptyWishlist';
-export { EmptyWishlist as default } from './EmptyWishlist';
+export * from './EmptyWishlist.js';
+export { EmptyWishlist as default } from './EmptyWishlist.js';

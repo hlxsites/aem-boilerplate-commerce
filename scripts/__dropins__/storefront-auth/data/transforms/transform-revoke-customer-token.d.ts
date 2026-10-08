@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { RevokeCustomerTokenResponse } from '../../types/api/revokeCustomerToken.types';
+import { RevokeCustomerTokenResponse } from '../../types/api/revokeCustomerToken.types.d.ts';
 import { RevokeCustomerTokenModel } from '../models';
 export declare const transformRevokeCustomerToken: (response: RevokeCustomerTokenResponse) => RevokeCustomerTokenModel;

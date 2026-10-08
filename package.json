@@ -40,17 +40,17 @@
     "@adobe/magento-storefront-event-collector": "1.18.0",
     "@adobe/magento-storefront-events-sdk": "1.18.0",
     "@dropins/storefront-account": "4.2.0",
-    "@dropins/storefront-auth": "4.1.0",
-    "@dropins/storefront-cart": "3.4.0",
+    "@dropins/storefront-auth": "4.1.1-alpha-20261008111018",
+    "@dropins/storefront-cart": "3.4.1-alpha-20261008111017",
     "@dropins/storefront-checkout": "3.4.0",
     "@dropins/storefront-order": "4.1.0",
     "@dropins/storefront-payment-services": "4.2.1",
-    "@dropins/storefront-pdp": "3.4.0-alpha-20261002121707",
-    "@dropins/storefront-personalization": "3.2.2",
+    "@dropins/storefront-pdp": "3.4.0-alpha-20261008113355",
+    "@dropins/storefront-personalization": "3.2.3-alpha-20261008144421",
     "@dropins/storefront-product-discovery": "3.1.2",
-    "@dropins/storefront-recommendations": "4.1.0-alpha1",
-    "@dropins/storefront-wishlist": "3.5.0",
-    "@dropins/tools": "2.1.0"
+    "@dropins/storefront-recommendations": "4.1.0-alpha-20261008134500",
+    "@dropins/storefront-wishlist": "3.5.0-alpha-20261008122628",
+    "@dropins/tools": "3.0.0-alpha-20261007104527"
   },
   "overrides": {
     "@adobe/alloy": {

@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent, JSX, VNode } from 'preact';
-import { ImageNodeRenderProps } from '../../../../node_modules/@dropins/tools/src/components';
+import { ImageNodeRenderProps } from '@dropins/tools/components';
 import { GiftWrappingConfigProps, GiftOptionsViewProps } from '../../../types';
 interface GiftOptionModalProps {
     giftWrappingConfig: GiftWrappingConfigProps[];

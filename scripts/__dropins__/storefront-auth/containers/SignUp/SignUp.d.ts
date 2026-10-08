@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-import { SignUpProps } from '../../types';
+import { Container } from '@dropins/tools/lib';
+import { SignUpProps } from '../../types/index.d.ts';
 export declare const SignUp: Container<SignUpProps>;

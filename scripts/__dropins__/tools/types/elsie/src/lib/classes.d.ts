@@ -6,7 +6,11 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { JSXInternal } from 'preact/src/jsx';
-type ClassName = string | JSXInternal.SignalLike<string | undefined>;
+interface SignalLike<T> {
+    value: T;
+    peek(): T;
+    subscribe(fn: (value: T) => void): () => void;
+}
+type ClassName = string | SignalLike<string | undefined>;
 export declare const classes: (classes: Array<ClassName | [ClassName, boolean] | undefined>) => string;
 export {};

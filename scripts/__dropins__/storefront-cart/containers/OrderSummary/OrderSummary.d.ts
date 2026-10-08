@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartModel } from '../../data/models';
 import { OrderSummaryLineItem } from '../../components';
 interface CheckoutRouteContext {

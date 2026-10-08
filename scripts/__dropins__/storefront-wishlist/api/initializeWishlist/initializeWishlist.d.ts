@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Wishlist } from '../../data/models';
+import { Wishlist } from '../../data/models/index.js';
 export interface InitializeWishlistOptions {
     pageSize?: number;
     currentPage?: number;

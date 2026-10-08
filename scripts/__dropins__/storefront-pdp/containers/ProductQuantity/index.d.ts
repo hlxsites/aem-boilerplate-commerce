@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './ProductQuantity';
-export { ProductQuantity as default } from './ProductQuantity';
-//# sourceMappingURL=index.d.ts.map
+export * from './ProductQuantity.js';
+export { ProductQuantity as default } from './ProductQuantity.js';
