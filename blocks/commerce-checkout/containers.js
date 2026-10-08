@@ -7,16 +7,18 @@
 
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
-import EstimateShipping from '@dropins/storefront-checkout/containers/EstimateShipping.js';
-import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
-import MergedCartBanner from '@dropins/storefront-checkout/containers/MergedCartBanner.js';
-import OutOfStock from '@dropins/storefront-checkout/containers/OutOfStock.js';
-import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
-import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
-import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
-import ShippingMethods from '@dropins/storefront-checkout/containers/ShippingMethods.js';
-import TermsAndConditions from '@dropins/storefront-checkout/containers/TermsAndConditions.js';
+import {
+  BillToShippingAddress,
+  EstimateShipping,
+  LoginForm,
+  MergedCartBanner,
+  OutOfStock,
+  PaymentMethods,
+  PlaceOrder,
+  ServerError,
+  ShippingMethods,
+  TermsAndConditions,
+} from '@dropins/storefront-checkout/containers.js';
 import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
 
 // Auth Dropin
