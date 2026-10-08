@@ -27,7 +27,7 @@
   "devDependencies": {
     "@adobe/aem-cli": "16.17.1",
     "@babel/eslint-parser": "7.29.7",
-    "@dropins/build-tools": "1.2.2-alpha-20261006095108",
+    "@dropins/build-tools": "1.2.2-alpha-20261008135308",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",
