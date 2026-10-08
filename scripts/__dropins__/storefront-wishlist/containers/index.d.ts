@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './WishlistItem';
-export * from './Wishlist';
-export * from './WishlistToggle';
-export * from './WishlistAlert';
+export * from './WishlistItem.js';
+export * from './Wishlist.js';
+export * from './WishlistToggle.js';
+export * from './WishlistAlert.js';

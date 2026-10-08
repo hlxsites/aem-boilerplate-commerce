@@ -14,13 +14,13 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './EmailConfirmationForm';
-export * from './UpdatePasswordForm';
-export * from './SuccessNotificationForm';
-export * from './SignUpForm';
-export * from './SignInForm';
-export * from './ResetPasswordForm';
-export * from './SkeletonLoader';
-export * from './Form';
-export * from './Button';
-export * from './RemoteShoppingAssistanceConsent';
+export * from './EmailConfirmationForm/index.d.ts';
+export * from './UpdatePasswordForm/index.d.ts';
+export * from './SuccessNotificationForm/index.d.ts';
+export * from './SignUpForm/index.d.ts';
+export * from './SignInForm/index.d.ts';
+export * from './ResetPasswordForm/index.d.ts';
+export * from './SkeletonLoader/index.d.ts';
+export * from './Form/index.d.ts';
+export * from './Button/index.d.ts';
+export * from './RemoteShoppingAssistanceConsent/index.d.ts';

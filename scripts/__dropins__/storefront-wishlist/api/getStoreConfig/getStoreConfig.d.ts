@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { StoreConfigModel } from '../../data/models';
+import { StoreConfigModel } from '../../data/models/index.js';
 export declare const getStoreConfig: () => Promise<StoreConfigModel | null>;

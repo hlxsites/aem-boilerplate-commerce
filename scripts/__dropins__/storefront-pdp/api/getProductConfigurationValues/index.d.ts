@@ -13,5 +13,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './getProductConfigurationValues';
-//# sourceMappingURL=index.d.ts.map
+export * from './getProductConfigurationValues.js';

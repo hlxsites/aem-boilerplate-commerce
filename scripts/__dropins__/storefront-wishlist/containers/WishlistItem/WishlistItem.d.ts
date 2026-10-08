@@ -15,10 +15,10 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
-import { ProductItemActionsContext } from '../../components';
-import { Item, Product } from '../../data/models';
-import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
+import { Container, SlotProps } from '@dropins/tools/lib';
+import { ProductItemActionsContext } from '../../components/index.js';
+import { Item, Product } from '../../data/models/index.js';
+import { ImageNodeRenderProps } from '@dropins/tools/components';
 import { JSX } from 'preact';
 export interface WishlistItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;

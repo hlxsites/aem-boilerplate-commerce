@@ -1,5 +1,403 @@
 # @adobe-commerce/elsie
 
+## 3.0.0-alpha-20261007104527
+
+### Major Changes
+
+- 3313516: feat(elsie)!: restructure the toolchain (Elsie 3) — breaking
+
+  The CLI, shared configs, and test-kit have been reorganized.
+  `@dropins/tools`'s runtime bundle (components, build tools, and the re-exposed
+  `event-bus` / `fetch-graphql`) is unaffected — these changes only impact repos
+  that consume `@adobe-commerce/elsie` as their **development toolchain** (the
+  drop-in package repos).
+
+  Migration checklist for consuming repos:
+
+  1. **Config source.** Elsie no longer reads `.elsie.cjs` / `.elsie.js`. Move
+     your configuration into the `"elsie"` key of `package.json`.
+
+  2. **`elsie types` removed.** Replace any `"type-check": "elsie types"` script
+     with a direct `tsc --noEmit` (or your project's equivalent). Note the old
+     command now no longer exists — audit scripts that relied on it, since a
+     stale reference will fail rather than silently pass.
+
+  3. **`config/` → `configs/` (plural) relocation.** Update references:
+     - tsconfig `extends`: `@adobe-commerce/elsie/config/tsconfig-base.json` →
+       `@adobe-commerce/elsie/configs/tsconfig/base.json` (and
+       `tsconfig-preact.json` → `configs/tsconfig/preact.json`).
+     - Prettier: `@adobe-commerce/elsie/config/prettier.json` →
+       `@adobe-commerce/elsie/configs/prettier.js`.
+     - Jest / ESLint / Vite: `config/jest.mjs`, `config/eslint.mjs`,
+       `config/vite.mjs` → `configs/jest.js`, `configs/eslint.js`,
+       `configs/vite.js`.
+
+  4. **Test-kit import path.** `@adobe-commerce/elsie/lib/tests` →
+     `@adobe-commerce/elsie/tests` (and `@adobe-commerce/elsie/tests/dom` for
+     component tests). See the test-kit changeset for the full ambient-globals
+     migration.
+
+  5. **Shared tsconfig dropped ambient Jest types.** Repos extending the base
+     tsconfig should import the jest API from `@adobe-commerce/elsie/tests`
+     (backed by `@jest/globals`) and drop `@types/jest` / `types: ["jest"]`.
+
+  6. **ESLint config factory replaced.** The `createConfig` /`browser`/`node`
+     exports of `@adobe-commerce/elsie/configs/eslint.js` are gone. Compose your
+     flat config from the building blocks instead:
+
+     ```js
+     import {
+       defineConfig,
+       globals,
+       typescript,
+       tests,
+       preact,
+       storybook,
+     } from '@adobe-commerce/elsie/configs/eslint.js';
+
+     // was: createConfig({ runtime: 'browser' })
+     export default defineConfig(globals('browser'), typescript(), tests());
+     ```
+
+     `defineConfig(...layers)` keeps the shared base first and prettier last;
+     `globals(env, files)` scopes environment globals; presets and
+     `runtime: 'agnostic'` (omit `globals`) map over directly. One config can
+     now scope different folders to different runtimes via each layer's `files`.
+
+  7. **Jest config factory renamed.** `@adobe-commerce/elsie/configs/jest.js`
+     now exports `defineConfig` (was `createConfig`), matching the ESLint entry.
+     Update your `jest.config.js` imports accordingly; the options are
+     unchanged.
+
+  8. **`restrictions` moved under the ESLint presets, its own export subpath
+     dropped.** `@adobe-commerce/elsie/configs/eslint/restrictions.js` no longer
+     exists; `restrictions` is now exported from
+     `@adobe-commerce/elsie/configs/eslint.js` like the other presets:
+
+     ```js
+     import {
+       defineConfig,
+       typescript,
+       restrictions,
+     } from '@adobe-commerce/elsie/configs/eslint.js';
+
+     // was: import { restrictions } from '@adobe-commerce/elsie/configs/eslint/restrictions.js';
+     export default defineConfig(typescript(), restrictions());
+     ```
+
+### Minor Changes
+
+- 3313516: feat(elsie): add `clean` and `format` builders
+
+  - New `elsie clean [paths...]` command (wraps rimraf, defaults to `dist`).
+  - New `elsie format [paths...]` command (wraps Prettier; `--check` verifies
+    instead of writing; defaults to the current directory).
+
+  As a result, `@dropins/build-tools` drops its `rimraf` and `vite`
+  devDependencies, and `@adobe-commerce/storefront-design` drops `rimraf`; both
+  now use `elsie clean` for their cleanup step.
+
+- b58cb76: Provide a shared Storybook main-config factory with the Preact/Vite
+  framework and common addons resolved from Elsie. Resolve Storybook preview
+  imports from Elsie's dependency tree so isolated consumers can run
+  `elsie storybook` and `elsie storybook build` without installing the Storybook
+  CLI themselves.
+- 3313516: feat(elsie): extend `elsie storybook` with `build` and `test` modes
+
+  `elsie storybook` only ever ran `storybook dev`; building and testing
+  Storybook still meant calling `storybook build` and `test-storybook` bare,
+  which resolve their binaries via the shell's inherited `PATH` — the same class
+  of bug the CLI's `resolveBin()`-based dispatch (`lint`/`test`/
+  `changeset`/`types`) was fixed to avoid.
+
+  `elsie storybook [mode]` now accepts `dev` (default, unchanged), `build`
+  (`elsie storybook build`), and `test` (`elsie storybook test`, resolving
+  `@storybook/test-runner`'s `test-storybook` bin). All other arguments keep
+  flowing through untouched, so existing invocations are unaffected.
+
+  `packages/elsie`'s own `build:storybook`, `build:storybook:ci`,
+  `test:storybook`, and `test:storybook:ci` scripts now go through this instead
+  of calling `storybook build` / `test-storybook` directly.
+
+- 3313516: feat(elsie): explicit jest imports via an
+  `@adobe-commerce/elsie/tests` test-kit
+
+  Tests now import their jest API explicitly instead of relying on ambient
+  `@types/jest` globals, following Jest's recommendation for version-matched
+  types (`@jest/globals` ships with jest, `@types/jest` is third-party and can
+  drift):
+
+  The test-kit is split into three tiers, each a superset of the previous, so a
+  test imports exactly the machinery it needs:
+
+  - `@adobe-commerce/elsie/tests` — the base tier. Re-exports the jest API
+    surface (`jest`/`describe`/`it`/`test`/`expect` + lifecycle hooks) from
+    `@jest/globals` plus the `mockResolvedFn`/`mockRejectedFn` helpers. Pulls in
+    no DOM code, so it is safe to import from any package's jest config.
+  - `@adobe-commerce/elsie/tests/dom` — the "pure DOM" tier. Adds jest-dom
+    assertion matchers (registered against jsdom) for tests that assert on the
+    DOM but render no components.
+  - `@adobe-commerce/elsie/tests/preact` — the "DOM + preact" tier. Adds
+    `@testing-library/preact` and `userEvent` on top of `/tests/dom`, for
+    component tests (requires a jest config that resolves packages to their
+    node/CJS builds, e.g. via `testEnvironmentOptions.customExportConditions`).
+
+  The jest `defineConfig` factory mirrors these tiers with a `preset` option
+  (replacing the previous `environment: 'node' | 'jsdom'`):
+
+  - `preset: 'node'` (default) — a node environment, no DOM.
+  - `preset: 'dom'` — a jsdom environment with browser-API shims, without the
+    preact/compat module aliasing or asset mocks, so packages that only touch
+    the DOM no longer pull in preact machinery.
+  - `preset: 'preact'` — everything `dom` sets up plus the preact/compat
+    aliasing and css/svg asset mocks needed to render preact components.
+
+  Other notes:
+
+  - `@jest/globals` and `@testing-library/user-event` are now elsie
+    dependencies; the DOM tier includes jest-dom's matcher type augmentation.
+  - `@types/jest` is no longer required and `types: ["jest"]` has been dropped
+    from the shared tsconfig. Import `jest` from the test-kit in files that use
+    its runtime API or mock types. The shared Jest config rewrites named `jest`
+    imports before Babel's mock hoisting and resolves Elsie's Jest dependency.
+
+  Consumers migrating: replace ambient jest globals with imports from
+  `@adobe-commerce/elsie/tests` (`/tests/dom` for DOM-only tests,
+  `/tests/preact` for component tests), pick the matching `defineConfig`
+  `preset`, and drop `@types/jest`.
+
+- 3313516: fix(elsie): declare the toolchain as real dependencies so it works
+  outside this monorepo
+
+  `elsie`'s CLI
+  (`lint`/`test`/`build`/`serve`/`format`/`clean`/`changeset`/`gql`) and its
+  shared configs (`configs/jest.js`, `configs/eslint.js`, `configs/vite.js`, and
+  the `@adobe-commerce/elsie/tests`(`/dom`) test-kit) required packages that
+  were classified as `devDependencies` — `eslint`, `jest` and its environments,
+  `babel-jest` and the Babel presets it needs, `vite` and its plugins,
+  `prettier`, `rimraf`, `@changesets/cli`, `@jest/globals`,
+  `@testing-library/preact`/`user-event`, and others. `devDependencies` are
+  never installed for anyone who depends on `@adobe-commerce/elsie` normally, so
+  none of this was actually present for an external consumer's install,
+  regardless of package manager or `node_modules` layout — the CLI and shared
+  configs only ever worked inside this monorepo (where every workspace package's
+  `devDependencies` are installed at the root), contradicting the "batteries
+  included, no separate install needed" toolchain this SDK is meant to provide.
+
+  The packages `tooling/` actually requires at runtime are now real
+  `dependencies` — including `graphql-codegen-typescript-mock-data`, which the
+  `elsie gql mocks` command loads as a codegen plugin and which is not reachable
+  through `@graphql-codegen/cli`'s own dependency subtree. Packages elsie only
+  uses to build its own `dist` bundle (the sibling SDK workspace packages,
+  `@types/node`, `@chromatic-com/storybook`, etc.) remain `devDependencies`.
+  `typescript` is a `peerDependency` instead — see
+  `docs/toolchain-peer-dependencies.md`.
+
+  Verified end-to-end: packed the tarball, installed it into a scratch pnpm
+  project with the default (isolated, non-hoisted) `nodeLinker` and zero other
+  dependencies, and confirmed `elsie test`/`elsie format` run successfully
+  against it — no `nodeLinker: hoisted` workaround needed.
+
+- 3313516: feat(elsie): make `typescript` a peer dependency; remove the `types`
+  command
+
+  `typescript` is now an optional `peerDependency` of `@adobe-commerce/elsie`
+  instead of a bundled `dependency`. The `dts` Vite plugin (used by
+  `elsie build` for `.d.ts` generation) resolves `typescript` from the building
+  package's own install rather than elsie's, so declaration output reflects the
+  exact compiler version that package's `tsconfig.json`, source, and IDE
+  actually use. A package with no `typescript` devDependency of its own gets a
+  clear error instead of a silently mismatched build. See
+  `docs/toolchain-peer-dependencies.md` for the full rationale.
+
+  The `elsie types` command (`tsc --noEmit` plus TS6 tsconfig validation) is
+  removed — with `typescript` no longer bundled, elsie has no reason to own a
+  type-checking command. A package that wants one defines its own script (e.g.
+  `"types": "tsc --noEmit"`), using its own installed `typescript`.
+
+  `build-tools`, `event-bus`, `fetch-graphql`, and `recaptcha` each gain a
+  `typescript` devDependency of their own (pinned via `pnpm-workspace.yaml`'s
+  `catalog.typescript`) so `.d.ts` generation and any future type-checking
+  script keep working now that elsie no longer bundles it.
+
+### Patch Changes
+
+- e06c05f: fix(a11y): Checkbox now derives its internal label/description ids
+  from the unique `id` prop when provided, instead of the (often shared) `name`
+  prop, so two checkboxes with the same `name` no longer produce duplicate DOM
+  ids that cause screen readers to announce the wrong checkbox's label (WCAG
+  4.1.2)
+- 3313516: fix(elsie): stop importing preact's private `preact/src/jsx` in
+  `classes`
+
+  `src/lib/classes.ts` imported `JSXInternal` from `preact/src/jsx`, a path
+  preact does not expose through its package `exports`. Under modern module
+  resolution this fails to resolve, and the specifier leaked into the published
+  `@dropins/tools` declarations, breaking standalone TypeScript consumers. The
+  small structural signal type is now defined locally instead.
+
+- 59b2754: Fix dropin declaration imports that resolve through `node_modules` so
+  they reference the published `@dropins/tools/lib` and
+  `@dropins/tools/components` entry points instead of relative filesystem paths.
+- 00d0d9b: fix(elsie): scope TypeScript ESLint parser and rules to JS/TS files
+
+  Composing `typescript()` and `mdx()` now parses Markdown and MDX correctly in
+  either order. Existing TypeScript-only core-rule overrides retain their
+  narrower file scope.
+
+- 3313516: fix(elsie): publish a deterministic package via a `files` allowlist
+
+  The package relied on a `.npmignore` denylist that missed `storybook-static`
+  (and referenced a stale `vite.config.mjs`), so a pack after a Storybook build
+  shipped ~24 MB unpacked and its contents depended on which local build
+  commands had run. It now uses a `package.json` `files` allowlist (`tooling`,
+  `src`, and docs, minus tests/snapshots/coverage), producing a stable ~1.5 MB
+  package.
+
+- daf8d7f: fix(elsie): recognize JSX component imports in MDX linting
+
+  The MDX ESLint preset now counts JSX component tags as usages of their
+  imports, while still reporting genuinely unused imports.
+
+- 69f5386: Fix Storybook Vite dependency-optimization warnings for pnpm
+  consumers by resolving the React DOM shim to its installed file and removing a
+  prebundle entry for unpublished static assets.
+- 6c5b573: Remove the ambient Jest declaration from the shared tsconfigs. All
+  three test tiers export runtime `jest` and its type namespace for explicit
+  imports such as `import { jest } from '@adobe-commerce/elsie/tests'` and
+  `jest.Mock<() => Promise<null>>`.
+
+  The shared Jest config rewrites named Jest imports before mock hoisting and
+  resolves `@jest/globals` from Elsie's own dependencies, including with pnpm's
+  isolated linker. Consumers must import `jest` wherever they use its runtime
+  API or mock types; no consumer-installed Jest dependency is required. Use
+  jest-dom's bundled DOM matcher types instead of Elsie's redundant local
+  augmentation.
+
+  Centralize provider-backed component rendering in `/tests/preact`. Its
+  `render` loads the consumer's `src/i18n/en_US.json`, supplies `UIProvider` and
+  the `.dropin-design` wrapper, and supports language/definition overrides.
+  Export the original Testing Library render as `renderPreact`. The legacy
+  `/lib/tests` entry point now re-exports this tier so tests can migrate to a
+  single public import.
+
+- 3313516: fix(elsie): make downgraded import restrictions work for wildcard
+  patterns
+
+  `restrictions()`'s `severityOverrides` built the warning's
+  `no-restricted-syntax` selector from an exact `source.value=` match, so
+  downgrading a wildcard pattern (e.g. `@adobe-commerce/elsie/src/*`) matched
+  nothing. Wildcard groups now emit a regex selector. All downgraded patterns
+  are also emitted in a single `no-restricted-syntax` rule, so downgrading more
+  than one no longer drops all but the last (flat config replaces, rather than
+  merges, repeated rule entries).
+
+- 3313516: fix(elsie): fix `transformIgnorePatterns` for pnpm's isolated-linker
+  virtual store
+
+  The shared Jest config factory (`@adobe-commerce/elsie/configs/jest.js`)
+  allow-lists elsie and the other `@adobe-commerce/*` packages for
+  transformation since they ship untranspiled TS/TSX source. The allow-list
+  regex only matched the outer `node_modules/` segment, so under pnpm's default
+  (isolated) linker — where a real dependency is nested one level deeper at
+  `node_modules/.pnpm/<scope>+<name>@<version>/node_modules/<scope>/<name>/…` —
+  the pattern no longer matched and those packages silently stopped being
+  transformed, failing every consumer test suite with
+  `SyntaxError: Cannot use import statement outside a module`.
+
+  `transformIgnorePatterns` now includes a second pattern anchored on `.pnpm/`
+  so both the flat/hoisted layout (Yarn, npm, `nodeLinker: hoisted`) and pnpm's
+  isolated virtual store are handled correctly. Consumers on pnpm's default
+  linker no longer need a hand-rolled `transformIgnorePatterns` override or
+  `nodeLinker: hoisted` to work around this.
+
+- 3313516: fix(elsie): stop `MultiSelect`'s screen-reader announcements from
+  looping infinitely while the dropdown is open
+
+  `preact-i18n`'s `useText()` returns a brand-new translations object on every
+  render. Two of `MultiSelect`'s `useEffect`s depended on that whole object and
+  each called `announce()` with a different message, so while the dropdown was
+  open they kept re-triggering each other — one effect's announcement change
+  caused a re-render that fired the other effect, which changed the announcement
+  back, forever, synchronously. This produced an unbounded render loop that
+  could exhaust the JS heap (observed as Jest OOM crashes in
+  `MultiSelect.test.tsx`).
+
+  Both effects now depend on the specific translation strings they use instead
+  of the whole object, and `useAccessibilityAnnouncements` clears its pending
+  timeout before scheduling a new one (and on unmount) instead of leaving it
+  dangling.
+
+- 3313516: fix(elsie): only announce `MultiSelect`'s open message on the open
+  transition
+
+  The effect that announces "Dropdown expanded. N options available" depended on
+  the selection and filtered-result counts, so it re-fired on every select and
+  search keystroke while the dropdown was open — overwriting the specific
+  selection and search-result announcements with the generic open message. It
+  now runs only on the closed-to-open transition.
+
+- 641d4f5: fix(a11y): Picker's accessible name now prefers the human-readable
+  floating label or placeholder over the raw `name` attribute, so screen readers
+  announce the same text sighted users see instead of an internal field
+  identifier (WCAG 2.5.3)
+- 3313516: chore: migrate build tooling from Yarn to pnpm
+
+  The monorepo now uses pnpm instead of Yarn v1. As part of this, elsie's CLI
+  (`lint`/`test`/`storybook`/`changeset`/`types`) no longer shells out to bare
+  command names — each tool is resolved and spawned directly, fixing a latent
+  path-with-spaces bug and command-injection surface.
+
+  `tooling/` (the CLI, and the shared
+  eslint/jest/prettier/vite/storybook/tsconfig configs) is now correctly
+  included when `@adobe-commerce/elsie` is published — an oversight from merging
+  the tooling package back into elsie meant `.npmignore` excluded it, which
+  would have shipped a package whose own `bin` and `exports` pointed at files
+  that didn't exist in the tarball. This is unrelated to (and does not affect)
+  the separate `@dropins/tools` bundle published from `dist/`.
+
+- cd72618: Fix an intermittent `insertBefore` `NotFoundError` crash caused by
+  `Portal` manually grafting its rendered DOM node into `document.body` (via a
+  raw `appendChild` in a `useLayoutEffect`) instead of using Preact's own portal
+  primitive.
+
+  That manual graft moved a Preact-owned DOM node out from under its logical
+  parent without informing the reconciler, so the parent's internal DOM
+  bookkeeping became stale. Any later update that needed to remove or reposition
+  the portalled node relative to a sibling — for example `Modal` closing while a
+  sibling in the same parent re-renders, as happens in `storefront-cart`'s
+  `GiftOptions` when clicking "Apply" (closing the gift-wrap modal while the
+  accordion swaps from its editable form to the read-only summary) — could throw
+  `Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`
+
+  `Portal` now renders its children with `createPortal` (from `preact/compat`)
+  into the same lazily-created, `document.body`-appended root element, so
+  Preact's reconciler tracks the split between logical parent and DOM container
+  itself instead of relying on an untracked DOM move. Timing is unchanged (the
+  root is still created during render and attached during `useLayoutEffect`), so
+  no consumer-visible behavior changes and no `Slot` or image-swatch code needed
+  to change.
+
+- 3313516: chore: upgrade vite-tsconfig-paths 4.3.2 → 6.1.1
+
+  6.x resolves `${configDir}`-expanded `include` entries correctly, so the
+  per-package relative `include` overrides that worked around the 4.x limitation
+  are no longer needed. Removed the redundant `["src", "tests"]` overrides (and
+  their duplicated comments) from `build-tools`, `event-bus`, `fetch-graphql`,
+  and `recaptcha`, which now inherit the base tsconfig's `${configDir}` include.
+  `elsie` keeps its `["src"]` include (it deliberately excludes its jest `tests`
+  dir); its comment was updated to reflect the real reason rather than the
+  obsolete workaround.
+
+  Also removed the default `@/*` → `${configDir}/src/*` mapping from the base
+  tsconfig. Because tsconfig `paths` is replaced wholesale (never merged) when a
+  config redeclares it, a base-level default is a footgun: any package that
+  needs an extra alias silently loses `@/*`. It is now opt-in — a package that
+  wants it declares its own `paths`. No base-extending package in the repo
+  relied on it (event-bus already uses relative imports). Preact packages are
+  unaffected: the preact config still declares its own `@/*` alongside the
+  react→preact aliases.
+
 ## 2.1.0
 
 ### Minor Changes

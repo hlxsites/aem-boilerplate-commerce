@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './WishlistToggle';
-export { WishlistToggle as default } from './WishlistToggle';
+export * from './WishlistToggle.js';
+export { WishlistToggle as default } from './WishlistToggle.js';

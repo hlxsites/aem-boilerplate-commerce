@@ -16,7 +16,7 @@
  *******************************************************************/
 import { StateUpdater, Dispatch } from 'preact/hooks';
 import { FunctionComponent, JSX, VNode } from 'preact';
-import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
+import { ImageNodeRenderProps } from '@dropins/tools/components';
 import { GiftWrappingConfigProps, GiftOptionsViewProps, GiftFormDataType, GiftOptionsReadOnlyViewProps, ProductGiftOptionsConfig } from '../../types';
 import { CartModel, Item } from '../../data/models';
 export interface GiftOptionsProps {

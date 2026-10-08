@@ -1,1 +1,1 @@
-export * from 'preact/compat';
+export * from './types/elsie/src/preact-compat-bundle';

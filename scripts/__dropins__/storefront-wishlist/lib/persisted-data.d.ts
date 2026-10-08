@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Wishlist, Item } from '../data/models';
+import { Wishlist, Item } from '../data/models/index.js';
 export declare function setPersistedWishlistData(data: Wishlist | null, listKey?: string): void;
 export declare function getPersistedWishlistData(guest?: boolean, listKey?: string): Wishlist | {};
 export declare function clearPersistedLocalStorage(listKey?: string): void;

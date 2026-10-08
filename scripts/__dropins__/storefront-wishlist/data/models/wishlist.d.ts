@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SelectedCustomizableOption } from './selected-customizable-option';
+import { SelectedCustomizableOption } from './selected-customizable-option.js';
 export interface PageInfo {
     currentPage: number;
     pageSize: number;

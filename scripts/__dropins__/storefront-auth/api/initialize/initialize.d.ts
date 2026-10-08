@@ -14,9 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Initializer, Model, Config } from '../../../node_modules/@dropins/tools/src/lib';
-import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
-import { CustomerModel } from '../../data/models';
+import { Initializer, Model, Config } from '@dropins/tools/lib';
+import { Lang } from '@dropins/tools/i18n';
+import { CustomerModel } from '../../data/models/index.d.ts';
 type ConfigProps = {
     langDefinitions?: Lang;
     authHeaderConfig: {

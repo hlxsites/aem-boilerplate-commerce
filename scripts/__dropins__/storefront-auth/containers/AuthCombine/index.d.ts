@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './AuthCombine';
-export { AuthCombine as default } from './AuthCombine';
+export * from './AuthCombine.d.ts';
+export { AuthCombine as default } from './AuthCombine.d.ts';
