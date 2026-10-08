@@ -1,6 +1,6 @@
 # @dropins/storefront-checkout
 
-## 3.5.0-alpha-20261008150605
+## 3.5.0-alpha-20261008155210
 
 ### Minor Changes
 
@@ -52,15 +52,15 @@
 
 ### Patch Changes
 
-- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261008135308` and
-  `@dropins/build-tools` to `1.2.2-alpha-20261008135308`.
+- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261008154140` and
+  `@dropins/build-tools` to `1.2.2-alpha-20261008154140`.
 
   The consolidated `containers.js` build pass (see
   `consolidate-container-entries` in `@adobe-commerce/elsie`) now builds
-  `api.js`/`fragments.js` as real entries alongside the per-container pass, so
-  every container — whether imported from `containers/<Name>.js` or from the
-  consolidated `containers.js` — resolves the same sibling `api.js` module
-  instead of each pass bundling its own copy.
+  `api.js`, `fragments.js`, and `components.js` as real entries alongside the
+  per-container pass, so every container — whether imported from
+  `containers/<Name>.js` or from the consolidated `containers.js` — resolves the
+  same sibling modules instead of each pass bundling its own copy.
 
   `examples/html-host` now imports storefront-checkout containers from the
   consolidated `containers.js` entry instead of deep per-container paths:
