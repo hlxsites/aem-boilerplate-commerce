@@ -590,5 +590,3 @@ export default async function decorate(block) {
   );
   renderAuthDropdown(navTools);
 }
-
-
