@@ -1,6 +1,6 @@
 # @dropins/storefront-pdp
 
-## 3.4.0-alpha-20261009090133
+## 3.4.0-alpha-20261009094509
 
 ### Minor Changes
 
@@ -48,6 +48,27 @@
   disabled placeholder for file options.
 
 ### Patch Changes
+
+- 6279b98: Fix a potential circular-import regression from the consolidated
+  `containers.js` build pass (see `consolidate-container-entries` in
+  `@adobe-commerce/elsie` and `3.4.0-alpha-20261009090133`'s changeset).
+
+  `src/components/Product/Product.tsx` — part of the `components.js` bundle —
+  imported the `CarouselConfig` type from the `@/pdp/containers` barrel instead
+  of from its defining module (`@/pdp/containers/ProductDetails`). The
+  consolidated build now bundles the whole `containers.js` barrel together, and
+  that barrel itself imports `components.js` as a sibling module, so importing
+  back from `components.js` into `containers.js` created a
+  `components.js -> containers.js -> components.js` cycle — the same class of
+  bug fixed in `storefront-checkout`'s `PaymentMethods/handlers.tsx`
+  (`ReferenceError: Cannot access '...' before initialization` breaking the
+  entire consolidated module at import time).
+
+  `Product.tsx` now imports `CarouselConfig` directly from
+  `@/pdp/containers/ProductDetails` as an explicit `import type`, matching how
+  every other sibling container import already works and ensuring the import is
+  erased at compile time regardless of the bundler's cross-file analysis, since
+  `CarouselConfig` is only ever used as a type here.
 
 - b489882: Fix accessibility issues in the product image preview modal: keyboard
   focus is now trapped inside the dialog while open and restored to the trigger
