@@ -1,6 +1,6 @@
 # @dropins/storefront-checkout
 
-## 3.5.0-alpha-20261009071806
+## 3.5.0-alpha-20261009084924
 
 ### Minor Changes
 
@@ -52,8 +52,8 @@
 
 ### Patch Changes
 
-- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261008154140` and
-  `@dropins/build-tools` to `1.2.2-alpha-20261008154140`.
+- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261009083558` and
+  `@dropins/build-tools` to `1.2.2-alpha-20261009083558`.
 
   The consolidated `containers.js` build pass (see
   `consolidate-container-entries` in `@adobe-commerce/elsie`) now builds

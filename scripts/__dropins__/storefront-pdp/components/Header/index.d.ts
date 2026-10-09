@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './Header';
-export { Header as default } from './Header';
-//# sourceMappingURL=index.d.ts.map
+export * from './Header.js';
+export { Header as default } from './Header.js';

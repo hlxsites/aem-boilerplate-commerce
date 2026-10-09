@@ -1,11 +1,11 @@
 # @dropins/storefront-auth
 
-## 4.2.0-alpha-20261008155108
+## 4.2.0-alpha-20261009084849
 
 ### Minor Changes
 
-- 7db8c65: Bump `@dropins/build-tools` to `1.2.2-alpha-20261008154140` and
-  `@adobe-commerce/elsie` to `3.0.0-alpha-20261008154140`.
+- 7db8c65: Bump `@dropins/build-tools` to `1.2.2-alpha-20261009083558` and
+  `@adobe-commerce/elsie` to `3.0.0-alpha-20261009083558`.
 
   Update `examples/html-host` to import from the new consolidated
   `containers.js` entry instead of deep per-container paths:
