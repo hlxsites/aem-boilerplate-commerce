@@ -1,5 +1,65 @@
 # @dropins/storefront-requisition-list
 
+## 2.0.0-alpha-20261009082441
+
+### Major Changes
+
+- 960083f: feat: add public requisition list sharing
+
+  Requisition lists can now be marked public, generating a shareable link that
+  does not require sign-in, gated by store config.
+
+  - Adds `requisition_list_public_sharing_enabled`,
+    `requisition_list_public_share_link_validity_days`,
+    `requisition_list_public_share_max_recipients` and
+    `requisition_list_public_share_storefront_path` to `getStoreConfig`, with a
+    backward-compatible fallback for backends that don't yet expose these
+    fields. Legacy `"0"`/`"1"` string scalars are normalized to plain
+    booleans/numbers.
+  - `createRequisitionList` and `updateRequisitionList` accept an `isPublic`
+    argument to create or update a list's public sharing status.
+  - Adds a "Make Public" / "Make Private" toggle to the requisition list
+    detail-view header, shown only when
+    `requisition_list_public_sharing_enabled` is enabled.
+  - Adds a read-only "Public" status tag to the requisition list grid rows and
+    the detail-view header when a list is public.
+  - Adds a "Make this requisition list public" checkbox to `RequisitionListForm`
+    when creating or renaming a list, under the same config flag.
+  - Toggle controls expose `aria-pressed` for accessibility.
+
+### Minor Changes
+
+- 0654436: feat: share public requisition lists via email and let recipients add
+  items to cart
+
+  - Public lists can be shared with arbitrary email addresses or a reusable
+    public link, independently of company-only sharing.
+  - Adds `getPublicRequisitionList`, `getPublicRequisitionListToken`,
+    `sharePublicRequisitionList`, and `addPublicRequisitionListItemsToCart`
+    APIs.
+  - `SharedRequisitionList` accepts `isPublic`, `getCartId`, and `onCartUpdated`
+    for guest/customer public previews with item selection, pagination, and
+    add-to-cart actions. Public recipients cannot import the list.
+  - `ShareRequisitionListContent` switches to a free-text email field and the
+    owner's public token when sharing a public list.
+  - The public email field validates each address and enforces the configured
+    max-recipients limit as soon as it's exceeded, rather than waiting for all
+    addresses to be well-formed first.
+  - Submitting a share (public or private) now shows an inline spinner in place
+    of the email field/Submit button instead of a full-modal overlay, keeping
+    the already-generated share link visible and consistent between both flows.
+
+- b4893bb: feat: link product name/image to the PDP on the public share preview
+
+  - `GET_PUBLIC_REQUISITION_LIST_QUERY` now fetches `url_key` for each item's
+    product.
+  - `SharedRequisitionList` accepts a new optional `routeProduct` prop
+    (`(urlKey: string, sku: string) => string`) used to build the PDP link. The
+    `sku` passed is the resolved variant sku (same one shown in the SKU column),
+    not the parent sku, so configurable items link to the correct variant.
+    Product name/image render as a link when both `routeProduct` and the item's
+    `urlKey` are available, and fall back to plain text/image otherwise.
+
 ## 1.5.1
 
 ### Patch Changes
