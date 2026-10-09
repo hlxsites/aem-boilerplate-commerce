@@ -13,7 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './ProductOptions';
-export { ProductOptions as default } from './ProductOptions';
-export type { ProductOptionsTransformer } from './ProductOptions';
-//# sourceMappingURL=index.d.ts.map
+export * from './ProductOptions.js';
+export { ProductOptions as default } from './ProductOptions.js';
+export type { ProductOptionsTransformer } from './ProductOptions.js';

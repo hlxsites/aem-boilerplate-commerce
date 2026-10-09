@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AdditionalActionsAlertProps, useSignInFormProps } from '../../types';
+import { AdditionalActionsAlertProps, useSignInFormProps } from '../../types/index.d.ts';
 export declare const useSignInForm: ({ emailConfirmationStatusMessage, translations, initialEmailValue, routeSignUp, routeForgotPassword, routeRedirectOnSignIn, onErrorCallback, setActiveComponent, onSuccessCallback, onSignUpLinkClick, handleSetInLineAlertProps, routeRedirectOnEmailConfirmationClose, apiErrorMessageOverride, }: useSignInFormProps) => {
     additionalActionsAlert: AdditionalActionsAlertProps;
     userEmail: string;

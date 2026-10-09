@@ -15,4 +15,3 @@
  */
 export * from './ProductGiftCardOptions';
 export { ProductGiftCardOptions as default } from './ProductGiftCardOptions';
-//# sourceMappingURL=index.d.ts.map

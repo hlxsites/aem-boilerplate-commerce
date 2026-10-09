@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Render } from '../../node_modules/@dropins/tools/src/lib';
+import { Render } from '@dropins/tools/lib';
 import { Provider } from './Provider';
 export { Provider };
 export declare const render: Render;

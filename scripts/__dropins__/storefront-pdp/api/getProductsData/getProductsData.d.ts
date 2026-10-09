@@ -1,5 +1,19 @@
-import { ProductModel } from '../../data/models';
-
+/**
+ * ADOBE CONFIDENTIAL
+ * __________________
+ * Copyright 2023 Adobe
+ * All Rights Reserved.
+ * __________________
+ * NOTICE: All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ */
+import { ProductModel } from '../../data/models/index.js';
 export interface ProductDataItem {
     sku: string;
     optionsUIDs?: string[];
@@ -27,4 +41,3 @@ export interface ProductDataItem {
  * const rawProducts = await getProductsData([{ sku: 'SKU001' }], true);
  */
 export declare const getProductsData: (items: ProductDataItem[], raw?: boolean) => Promise<ProductModel[] | null>;
-//# sourceMappingURL=getProductsData.d.ts.map

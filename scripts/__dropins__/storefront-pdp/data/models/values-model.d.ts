@@ -28,4 +28,3 @@ export interface ValuesModel {
         value: string;
     }>;
 }
-//# sourceMappingURL=values-model.d.ts.map

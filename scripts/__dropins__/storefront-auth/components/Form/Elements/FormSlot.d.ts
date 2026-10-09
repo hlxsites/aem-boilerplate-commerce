@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FormSlotProps } from '../../../types';
+import { FormSlotProps } from '../../../types/index.d.ts';
 export declare const FormSlot: ({ slots, item, handleOnChange, handleOnBlur, handleOnFocus, errorConfig, errors, }: FormSlotProps) => import("preact").JSX.Element;
