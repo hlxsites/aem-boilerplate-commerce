@@ -249,6 +249,17 @@ export const requisitionListSharingPreviewValue = '.shared-requisition-list__pre
 export const requisitionListSharingItemsTable = '[data-testid="shared-list-items-table"]';
 export const requisitionListSharingImportButton = '[data-testid="import-shared-list-btn"]';
 
+// Requisition List Public Sharing
+export const requisitionListFormIsPublicCheckbox = '[data-testid="requisition-list-form-is-public"]';
+export const requisitionListViewTogglePublicButton = '[data-testid="toggle-public-list-btn"]';
+export const requisitionListPublicStatusTag = '[data-testid="public-status-tag"]';
+export const requisitionListPublicShareEmails = '[data-testid="public-share-emails"]';
+export const requisitionListShareSubmitButton = '[data-testid="share-submit-btn"]';
+export const requisitionListSharingAddToCartButton = '[data-testid="add-public-list-to-cart-btn"]';
+export const requisitionListSharingAddSelectedToCartButton = '[data-testid="add-selected-public-items-to-cart-btn"]';
+export const requisitionListSharingProductLink = '.shared-requisition-list__product a';
+
+
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 
 // Navigation Fields

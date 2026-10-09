@@ -156,6 +156,12 @@ interface Sample {
     title?: string;
 }
 interface Item {
+    name?: string;
+    image?: {
+        url: string;
+        label: string;
+    };
+    urlKey?: string;
     uid: string;
     sku: string;
     product?: Product;

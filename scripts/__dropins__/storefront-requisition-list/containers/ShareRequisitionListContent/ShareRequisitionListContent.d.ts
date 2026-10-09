@@ -18,6 +18,7 @@ import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 import { ShareRequisitionListByEmailError } from '../../api/shareRequisitionListByEmail';
 export interface ShareRequisitionListContentProps {
     requisitionListUid: string;
+    isPublic?: boolean;
     isSubmitting: boolean;
     onSubmit: (customerUids: string[]) => Promise<Array<ShareRequisitionListByEmailError> | null>;
     currentCustomerEmail?: string;

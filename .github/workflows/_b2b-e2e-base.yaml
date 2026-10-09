@@ -69,6 +69,7 @@ jobs:
               - src/tests/b2b/verifyB2BQuoteToOrderPlacement.spec.js
               - src/tests/b2b/verifyB2BRequisitionLists.spec.js
               - src/tests/b2b/verifyB2BRequisitionListSharing.spec.js
+              - src/tests/b2b/verifyB2BRequisitionListPublicShare.spec.js
           - group: group-c
             specs:
               - src/tests/b2b/verifyPurchaseOrders.spec.js
