@@ -1,6 +1,6 @@
 # @dropins/storefront-checkout
 
-## 3.5.0-alpha-20261008155210
+## 3.5.0-alpha-20261009071806
 
 ### Minor Changes
 
@@ -87,6 +87,18 @@
   the mock response landed. Because the busy state is now correctly exempt, the
   `color-contrast` rule no longer has to be switched off for the `Busy` story,
   and a `BusyWithToggleButton` story covers the previously untested combination.
+
+  Fix a `ReferenceError: Cannot access '...' before initialization` that broke
+  the entire consolidated `containers.js` module at import time.
+  `PaymentMethods/handlers.tsx` imported `PaymentOnAccount` and `PurchaseOrder`
+  from the containers barrel (`@/checkout/containers`) instead of from their own
+  modules. In the per-container build this is harmless — each container is its
+  own bundle — but the consolidated build bundles the whole barrel together, and
+  `handlers.tsx`'s own top-level `HANDLERS_CONFIG` object (which references both
+  components) ended up placed before their declarations in evaluation order,
+  throwing on every page load. `handlers.tsx` now imports both containers
+  directly from their own modules, matching how every other sibling container
+  import already worked.
 
 ## 3.4.0
 
