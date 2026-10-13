@@ -31,6 +31,7 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
+import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
@@ -137,6 +138,7 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-wishlist"></div>
             <div class="product-details__buttons__payment-services product-details__buttons__payment-services-apple-pay"></div>
             <div class="product-details__buttons__payment-services product-details__buttons__payment-services-google-pay"></div>
+            <div class="product-details__buttons__payment-services product-details__buttons__payment-services-paypal"></div>
           </div>
           <div class="product-details__add-to-cart-status" role="status" aria-live="polite"></div>
         </div>
@@ -158,6 +160,7 @@ export default async function decorate(block) {
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
   const $googlePay = fragment.querySelector('.product-details__buttons__payment-services-google-pay');
+  const $payPal = fragment.querySelector('.product-details__buttons__payment-services-paypal');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   // Kept mounted at all times so the "Adding to Cart" status is reliably
   // announced instead of relying on the button's text/disabled state
@@ -205,6 +208,7 @@ export default async function decorate(block) {
     wishlistToggleBtn,
     applePayButton,
     googlePayButton,
+    payPalButtons,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -324,6 +328,23 @@ export default async function decorate(block) {
       },
       hidden: true,
     })($googlePay),
+
+    PaymentServices.render(PayPalButtons, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: async (localizedError) => {
+        inlineAlert = await UI.render(InLineAlert, {
+          heading: localizedError.name,
+          description: localizedError.message,
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          type: 'error',
+          onDismiss: () => inlineAlert.remove(),
+        })($alert);
+      },
+      hidden: true,
+    })($payPal),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -421,6 +442,7 @@ export default async function decorate(block) {
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
     googlePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    payPalButtons.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
@@ -428,6 +450,7 @@ export default async function decorate(block) {
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
     googlePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
+    payPalButtons.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
   }, { eager: true });
 
   // Handle option changes
@@ -514,13 +537,16 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  // Show Apple Pay button if available
+  // Show express payment buttons if available
   events.on('payment-services/initialized/product-detail', ({ availablePaymentMethods }) => {
     if (availablePaymentMethods.includes(PaymentMethodCode.APPLE_PAY)) {
       applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
     }
     if (availablePaymentMethods.includes(PaymentMethodCode.GOOGLE_PAY)) {
       googlePayButton.setProps((prev) => ({ ...prev, hidden: false }));
+    }
+    if (availablePaymentMethods.includes(PaymentMethodCode.PAYPAL_BUTTONS)) {
+      payPalButtons.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
 

@@ -1,6 +1,11 @@
 import { default as LocalizedError } from '../../lib/localizedError';
+import { PaymentLocation } from '../../api';
 
 export interface PayPalButtonsProps {
+    /**
+     * Location where the PayPal buttons are to be rendered.
+     */
+    location: PaymentLocation;
     /**
      * Called when a PayPal button is clicked. This callback receives a 'showPaymentSheet'
      * function that must be called to begin the PayPal session and show the payment sheet.
@@ -37,5 +42,5 @@ export interface PayPalButtonsProps {
      */
     disabled?: boolean;
 }
-export declare const PayPalButtons: ({ onButtonClick, onSuccess, onError, hidden, disabled, }: PayPalButtonsProps) => import("preact/compat").JSX.Element;
+export declare const PayPalButtons: ({ location, onButtonClick, onSuccess, onError, hidden, disabled, }: PayPalButtonsProps) => import("preact/compat").JSX.Element;
 //# sourceMappingURL=PayPalButtons.d.ts.map
