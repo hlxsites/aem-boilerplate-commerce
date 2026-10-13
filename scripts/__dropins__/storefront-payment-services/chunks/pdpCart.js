@@ -1,0 +1,4 @@
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+import{events as i}from"@dropins/tools/event-bus.js";import{PaymentLocation as u,M as o,a as c}from"../api.js";async function s(){var n;const t=(n=i.lastPayload("cart/data"))==null?void 0:n.id;if(!t)throw new o(["cartId"]);return t}function w(t,n,r){return t!==u.PRODUCT_DETAIL?s:()=>{const a=e(n);return r==null||r(a),a}}async function e(t){const n=i.lastPayload("pdp/data"),r=i.lastPayload("pdp/values");if(!n||!(r!=null&&r.sku)||!(r!=null&&r.quantity)||r.quantity<=0)throw new c;const{cartId:a}=await t._Utils.addProductsToNewCart(f(n,r));return a}function f(t,n){return t.isBundle?[d(n)]:t.variantSku?[k(t.variantSku,n)]:[y(n)]}function y(t){return{sku:t.sku,quantity:t.quantity}}function k(t,n){return{sku:t,parent_sku:n.sku,quantity:n.quantity}}function d(t){return{sku:t.sku,quantity:t.quantity,selected_options:t.optionsUIDs,entered_options:t.enteredOptions}}export{w as r};
+//# sourceMappingURL=pdpCart.js.map

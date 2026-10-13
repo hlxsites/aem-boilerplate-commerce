@@ -23,12 +23,14 @@ No localStorage keys are used by this block. -->
 
 #### Event Listeners
 
-- `events.on('pdp/data', callback)` - Listens for product/variant data changes to track stock status (`inStock`) and gate the add to cart button when out of stock
-- `events.on('pdp/valid', callback)` - Listens for product configuration validity changes to enable/disable add to cart button
+- `events.on('pdp/data', callback)` - Listens for product/variant data changes to track stock status (`inStock`) and gate add to cart and express payment buttons when out of stock
+- `events.on('pdp/valid', callback)` - Listens for product configuration validity changes to enable/disable add to cart and express payment buttons
 - `events.on('pdp/values', callback)` - Listens for product option value changes to update wishlist context
 - `events.on('wishlist/alert', callback)` - Listens for wishlist action alerts to show notifications
 - `events.on('cart/data', callback)` - Listens for cart data changes to determine update mode
 - `events.on('aem/lcp', callback)` - Listens for AEM LCP event to set JSON-LD and meta tags
+- `events.on('payment-services/initialized/product-detail', callback)` - Shows available Apple Pay, Google Pay, and PayPal buttons
+- `events.on('order/placed', callback)` - Displays checkout success and updates the URL after an express payment order
 
 <!-- #### Event Emitters
 
@@ -52,6 +54,12 @@ No events are emitted by this block. -->
 4. **Wishlist Management**: Users can add/remove products from wishlist
 5. **Image Gallery**: Users can view product images in desktop thumbnail or mobile carousel format
 6. **SEO Optimization**: Sets JSON-LD structured data and meta tags for search engines
+
+### Express Payments
+
+Apple Pay, Google Pay, and PayPal buttons render in the full-width payment area below the cart and wishlist buttons. Each remains hidden until Payment Services reports it available for `PaymentLocation.PRODUCT_DETAIL`, and is disabled for out-of-stock products or invalid configurations.
+
+Google Pay and PayPal use the Payment Services drop-in's PDP shadow-cart flow, which reads `pdp/data` and `pdp/values` without modifying the shopper's existing cart. In Payment Services `5.0.0-beta4`, simple products use SKU and quantity, configurable products use variant SKU, parent SKU, and quantity, and bundles also forward selected and entered options. Non-bundle entered options, including gift-card fields, are not forwarded by this flow. On success, the block calls `orderApi.placeOrder(cartId)` and displays checkout success. Payment errors appear as dismissible, localized alerts.
 
 ### Error Handling
 

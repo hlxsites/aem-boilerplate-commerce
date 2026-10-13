@@ -398,6 +398,7 @@ export const renderPaymentMethods = async (
           [PaymentMethodCode.PAYPAL_BUTTONS]: {
             render: (ctx) => {
               mountPlaceOrderSlot((el) => PaymentServices.render(PayPalButtons, {
+                location: PaymentLocation.CHECKOUT,
                 onButtonClick: (showPaymentSheet) => {
                   if (validateCheckoutForms()) {
                     showPaymentSheet();
