@@ -27,6 +27,7 @@ No localStorage keys are used by this block. -->
 - `events.on('checkout/initialized', callback)` - Handles checkout initialization with eager loading
 - `events.on('checkout/updated', callback)` - Handles checkout data updates
 - `events.on('checkout/values', callback)` - Handles checkout form value changes
+- `events.on('payment-services/initialized/checkout', callback)` - Determines available payment methods with eager loading
 - `events.on('order/placed', callback)` - Handles successful order placement
 
 #### Event Emitters
