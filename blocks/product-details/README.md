@@ -29,6 +29,7 @@ No localStorage keys are used by this block. -->
 - `events.on('wishlist/alert', callback)` - Listens for wishlist action alerts to show notifications
 - `events.on('cart/data', callback)` - Listens for cart data changes to determine update mode
 - `events.on('aem/lcp', callback)` - Listens for AEM LCP event to set JSON-LD and meta tags
+- `events.on('payment-services/initialized/product-detail', callback)` - Shows available express payment buttons with eager loading
 
 <!-- #### Event Emitters
 
