@@ -260,7 +260,7 @@ export default async function decorate(block) {
       getProductData: pdpApi.getProductData,
       getRefinedProduct: pdpApi.getRefinedProduct,
       slots: {
-        actions: renderWishlistItemActions(!!getUserTokenCookie()),
+        actions: renderWishlistItemActions(!!getUserTokenCookie(), { showStockStatus: true }),
       },
     })($sfl);
   }

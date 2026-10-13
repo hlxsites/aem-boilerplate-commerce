@@ -108,6 +108,58 @@
   letter-spacing: var(--type-headline-1-letter-spacing);
 }
 
+.cart__save-for-later .wishlist-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.cart__save-for-later .wishlist-item-actions > :empty {
+  display: none;
+}
+
+/*
+ * Stock status badge: compact pill using the theme's status color tokens. The
+ * status color goes on the background tint and dot; the text stays neutral so
+ * it meets contrast requirements at caption size.
+ */
+.cart__save-for-later .wishlist-item-actions__status {
+  --status-color: var(--color-neutral-600);
+
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--shape-border-radius-3);
+  font: var(--type-details-caption-1-font);
+  letter-spacing: var(--type-details-caption-1-letter-spacing);
+  font-weight: 600;
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-800);
+}
+
+.cart__save-for-later .wishlist-item-actions__status::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--status-color);
+}
+
+.cart__save-for-later .wishlist-item-actions__status--in-stock {
+  --status-color: var(--color-positive-800);
+
+  background-color: var(--color-positive-200);
+}
+
+.cart__save-for-later .wishlist-item-actions__status--out-of-stock {
+  --status-color: var(--color-warning-800);
+
+  background-color: var(--color-warning-200);
+}
+
 /*
  * Discontinued items render a short notice in the action slot instead of a
  * button. Reset the default paragraph margins so it aligns with the action row
