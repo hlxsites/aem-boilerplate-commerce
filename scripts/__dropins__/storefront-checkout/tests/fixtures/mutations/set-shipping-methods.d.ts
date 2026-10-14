@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SetShippingMethodsMutation } from '../../../__generated__/types';
-export declare const setShippingMethodsFixture: SetShippingMethodsMutation;
+import { SetShippingMethodsOnCartMutation } from '../../../__generated__/types';
+export declare const setShippingMethodsFixture: SetShippingMethodsOnCartMutation;

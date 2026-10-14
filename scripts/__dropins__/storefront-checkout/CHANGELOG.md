@@ -1,5 +1,105 @@
 # @dropins/storefront-checkout
 
+## 3.5.0-alpha-20261009133043
+
+### Minor Changes
+
+- 10831b4: Migrate the package manager from Yarn to pnpm (including the nested
+  `cypress/` sub-project), as part of bumping `@adobe-commerce/elsie` to
+  `3.0.0-alpha-20261005095410`.
+
+  - Add `pnpm-workspace.yaml` (root and `cypress/`) with `minimumReleaseAge` and
+    `allowBuilds` settings; remove `yarn.lock`/`.yarnrc` in favor of
+    `pnpm-lock.yaml`.
+  - Bump every `adobe-commerce/storefront-workflows` reusable workflow reference
+    from `@v6` to `@v7` across `.github/workflows/*.yaml` — v7 is the version
+    that understands this repo's `pnpm-lock.yaml` for CI dependency
+    installation.
+  - Route `test:ci` through `elsie test` instead of the raw `jest` binary, since
+    pnpm's isolated linker doesn't hoist elsie's transitive jest binary the way
+    a local install does.
+  - Move the dropin config from `.elsie.cjs` to `elsie.config.js`.
+  - Update shared config imports from `@adobe-commerce/elsie/config/*`
+    (singular) to `@adobe-commerce/elsie/configs/*` (plural): ESLint, Jest,
+    Prettier, Vite, and tsconfig.
+  - Rewrite `eslint.config.js` to compose layers via `defineConfig(...)` instead
+    of the removed `createConfig()` factory.
+  - Rewrite `jest.config.js` to use `defineConfig({ preset: 'preact' })` instead
+    of the removed `environment` option, merging elsie's own
+    `moduleNameMapper`/`setupFiles` instead of overwriting them.
+  - Rewrite `.storybook/main.js` to use the shared `createConfig()` Storybook
+    factory.
+  - Update test files to import `jest`/`describe`/`it`/`expect`/lifecycle hooks
+    explicitly from `@adobe-commerce/elsie/tests`(`/dom`|`/preact`) instead of
+    relying on removed ambient Jest globals.
+  - Replace `@adobe-commerce/elsie/lib/signals` (removed in v3) with
+    `@preact/signals` directly.
+  - Bump `preact` to `~10.29.7`, add `@preact/signals`,
+    `@testing-library/preact`, `vite`, and `vite-tsconfig-paths` as direct
+    dependencies now that elsie v3 treats them as peer dependencies instead of
+    bundling them.
+  - Add `@storybook/preact-vite` as a direct devDependency, since story files
+    import `Meta`/`StoryObj` types from it directly.
+  - Add `playwright` as a direct devDependency, pinned to the version elsie
+    itself depends on, so the Storybook CI job's Playwright install step
+    resolves a `node_modules/.bin/playwright` deterministically instead of
+    relying on `npx`/`pnpm exec` bin-resolution behavior.
+  - Add `axe-playwright` as a direct devDependency, matching elsie's own
+    version, since `.storybook/test-runner.ts` imports it directly and pnpm's
+    isolated linker doesn't expose it otherwise.
+  - Apply the Prettier formatting elsie v3's shared config requires (no logic
+    changes).
+
+### Patch Changes
+
+- c93fb13: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261009083558` and
+  `@dropins/build-tools` to `1.2.2-alpha-20261009083558`.
+
+  The consolidated `containers.js` build pass (see
+  `consolidate-container-entries` in `@adobe-commerce/elsie`) now builds
+  `api.js`, `fragments.js`, and `components.js` as real entries alongside the
+  per-container pass, so every container — whether imported from
+  `containers/<Name>.js` or from the consolidated `containers.js` — resolves the
+  same sibling modules instead of each pass bundling its own copy.
+
+  `examples/html-host` now imports storefront-checkout containers from the
+  consolidated `containers.js` entry instead of deep per-container paths:
+
+  ```diff
+  - import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
+  + import { PaymentMethods } from '@dropins/storefront-checkout/containers.js';
+  ```
+
+  Also disable shipping method options while a cart update is in flight when
+  `UIComponentType` is `ToggleButton`. `ShippingMethods` already passed
+  `disabled={busy}` to the `RadioButton` variant, but the `ToggleButton` variant
+  never forwarded it. The busy wrapper only applies `opacity: 0.4` and
+  `pointer-events: none`, and `pointer-events` does not block the keyboard — so
+  while a request was pending a keyboard user could still tab into a toggle
+  button and change the shipping method, while a mouse user could not.
+  `disabled` now lives in the shared props both variants spread, so they behave
+  the same.
+
+  This also removes a latent flake in the Storybook accessibility suite. WCAG
+  exempts inactive components from the contrast minimum, and axe honors that
+  exemption via `disabled`. Without it, the dimmed toggle button text was
+  reported as a `color-contrast` violation whenever axe happened to run before
+  the mock response landed. Because the busy state is now correctly exempt, the
+  `color-contrast` rule no longer has to be switched off for the `Busy` story,
+  and a `BusyWithToggleButton` story covers the previously untested combination.
+
+  Fix a `ReferenceError: Cannot access '...' before initialization` that broke
+  the entire consolidated `containers.js` module at import time.
+  `PaymentMethods/handlers.tsx` imported `PaymentOnAccount` and `PurchaseOrder`
+  from the containers barrel (`@/checkout/containers`) instead of from their own
+  modules. In the per-container build this is harmless — each container is its
+  own bundle — but the consolidated build bundles the whole barrel together, and
+  `handlers.tsx`'s own top-level `HANDLERS_CONFIG` object (which references both
+  components) ended up placed before their declarations in evaluation order,
+  throwing on every page load. `handlers.tsx` now imports both containers
+  directly from their own modules, matching how every other sibling container
+  import already worked.
+
 ## 3.4.0
 
 ## 3.4.0-beta.0

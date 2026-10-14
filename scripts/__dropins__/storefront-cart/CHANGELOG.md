@@ -1,5 +1,31 @@
 # @dropins/storefront-cart
 
+## 3.4.1-alpha-20261014124408
+
+### Patch Changes
+
+- 48f6871: Accessibility fix for GiftOptions:
+
+  - Keep keyboard focus on the "Gift wrap this item" checkbox after toggling it,
+    instead of letting it fall through to the page body while the cart update is
+    applied (WCAG 2.4.3)
+
+- 41024ba: Bump `@adobe-commerce/elsie` to `3.0.0-alpha-20261009083558` and
+- f12792c: Upgrade `@adobe-commerce/elsie` to `3.0.0-alpha-20260928110639` and
+  migrate the repository from Yarn to pnpm 11.23.0. Update ESLint and Jest to
+  Elsie's v3 config factories and move Elsie project settings into
+  `package.json`. The pnpm migration adds a seven-day dependency release-age
+  gate and explicit build-script permissions; it also removes
+  `nodeLinker: hoisted`, since Elsie's CLI now resolves its tools from its own
+  dependency tree and works with pnpm's default isolated linker. Adopt Elsie's
+  Storybook `createConfig` factory, which now provides the framework and addon
+  configuration, and remove the Storybook framework and addons from direct
+  development dependencies.
+- 668f6a6: Fix discount code and gift card error messages not being
+  automatically announced by screen readers when they appear (WCAG 4.1.3 Status
+  Messages). Added `role="status"` and `aria-live="polite"` to both error
+  messages, matching the pattern already used for gift options field errors.
+
 ## 3.4.0
 
 ## 3.4.0-beta.0
@@ -23,13 +49,11 @@
   - Data model & transform — Mapped it to backorderMessage on cart items (only
     when non-empty after trim). Tuned stock-related flags so backorder lines
     aren’t misclassified:
-
   * hasOutOfStockItems / hasFullyOutOfStockItems — Ignore lines with a backorder
     notice; don’t treat OUT_OF_STOCK + is_salable: true as a cart-wide problem.
   * insufficientQuantity / outOfStock — Don’t set these when a backorder notice
     is present, so IN_STOCK + is_salable: false + backorder_message no longer
     drives the “limited stock” banner or blocks the backorder text.
-
   - UI — CartSummaryList and useCartItems (getWarningMessage / table) show the
     decoded backorder text in the warning row (with sensible ordering vs. errors
     and low stock).

@@ -13,17 +13,16 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './Carousel';
-export * from './Product';
-export * from './GalleryGrid';
-export * from './PriceRange';
-export * from './Overlay';
-export * from './Swatches';
-export * from './Zoom';
-export * from './Header';
-export * from './Price';
-export * from './PriceTiers';
-export * from './GiftCardOptions';
-export * from './DownloadableOptions';
-export * from './CustomizableOptions';
-//# sourceMappingURL=index.d.ts.map
+export * from './Carousel/index.js';
+export * from './Product/index.js';
+export * from './GalleryGrid/index.js';
+export * from './PriceRange/index.js';
+export * from './Overlay/index.js';
+export * from './Swatches/index.js';
+export * from './Zoom/index.js';
+export * from './Header/index.js';
+export * from './Price/index.js';
+export * from './PriceTiers/index.js';
+export * from './GiftCardOptions/index.js';
+export * from './DownloadableOptions/index.js';
+export * from './CustomizableOptions/index.js';

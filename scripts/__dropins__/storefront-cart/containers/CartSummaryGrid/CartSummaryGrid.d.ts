@@ -16,8 +16,8 @@
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
 import { CartModel } from '../../data/models';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
-import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
+import { Container, SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '@dropins/tools/components';
 export interface CartSummaryGridProps extends HTMLAttributes<HTMLDivElement> {
     routeProduct?: (item: CartModel['items'][0]) => string;
     routeEmptyCartCTA?: () => string;

@@ -13,16 +13,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './ProductDetails';
-export * from './ProductPrice';
-export * from './ProductOptions';
-export * from './ProductQuantity';
-export * from './ProductShortDescription';
-export * from './ProductDescription';
-export * from './ProductAttributes';
-export * from './ProductGiftCardOptions';
-export * from './ProductDownloadableOptions';
-export * from './ProductCustomizableOptions';
-export * from './ProductGallery';
-export * from './ProductHeader';
-//# sourceMappingURL=index.d.ts.map
+export * from './ProductDetails.js';
+export * from './ProductPrice.js';
+export * from './ProductOptions.js';
+export * from './ProductQuantity.js';
+export * from './ProductShortDescription.js';
+export * from './ProductDescription.js';
+export * from './ProductAttributes.js';
+export * from './ProductGiftCardOptions.js';
+export * from './ProductDownloadableOptions.js';
+export * from './ProductCustomizableOptions.js';
+export * from './ProductGallery.js';
+export * from './ProductHeader.js';
