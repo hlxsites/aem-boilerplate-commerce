@@ -29,3 +29,19 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+main .cards {
+  --grocery-green-light: #66a86a;
+  --grocery-green-dark: #1b5e20;
+}
+
+main .cards > ul > li {
+  border-color: var(--grocery-green-light);
+  border-radius: 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+main .cards .cards-card-body strong {
+  color: var(--grocery-green-dark);
+}
