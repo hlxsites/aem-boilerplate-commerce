@@ -903,3 +903,62 @@ body:has(.seller-assisted-buying-banner) {
     display: inline-block;
   }
 }
+
+body header {
+  --grocery-green: #2e7d32;
+  --grocery-cream: #fff8e7;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+body header nav .nav-brand a {
+  color: var(--grocery-green);
+}
+
+body header nav .nav-brand img {
+  display: block;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+body header nav .nav-sections ul>li a:any-link {
+  color: inherit;
+}
+
+@media (min-width: 900px) {
+  body header nav .nav-brand img {
+    width: auto;
+    height: 38px;
+  }
+
+  body header nav .nav-sections .default-content-wrapper>ul>li,
+  body header nav .nav-sections .nav-drop {
+    border-radius: var(--shape-border-radius-2);
+    padding: var(--spacing-xsmall) var(--spacing-small);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  body header nav .nav-sections .default-content-wrapper>ul>li ul {
+    color: var(--color-neutral-800);
+  }
+
+  body header nav .nav-sections .default-content-wrapper>ul>li[aria-expanded='true'] .submenu-wrapper {
+    border-bottom: 1px solid var(--color-neutral-300);
+    box-shadow: 0 12px 20px -12px rgb(0 0 0 / 20%);
+  }
+
+  body header nav .nav-sections .default-content-wrapper>ul>li:hover,
+  body header nav .nav-sections .nav-drop[aria-expanded='true'] {
+    background-color: var(--grocery-cream);
+    color: var(--grocery-green);
+  }
+
+  body header nav .nav-sections .authCombineNavElement button {
+    font: var(--type-body-2-strong-font);
+    letter-spacing: var(--type-body-2-strong-letter-spacing);
+  }
+
+  body header nav .nav-sections .default-content-wrapper>ul>li ul>li a:hover,
+  body header nav .nav-sections .authCombineNavElement button:hover {
+    color: var(--grocery-green);
+    text-decoration: none;
+  }
+}
