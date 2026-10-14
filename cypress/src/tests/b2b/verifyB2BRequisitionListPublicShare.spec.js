@@ -322,5 +322,37 @@ describe(
         .should('exist')
         .and('not.have.attr', 'aria-disabled', 'true');
     });
+
+    // -----------------------------------------------------------------------
+    // 10. When public sharing is disabled via store config, none of the
+    //     "Make Public" controls are shown (owner-side feature gating)
+    // -----------------------------------------------------------------------
+    it('Public sharing controls are hidden when the feature is disabled', () => {
+      cy.loginAsCompanyAdmin();
+      cy.url().should('include', '/customer/account');
+
+      // Force requisition_list_public_sharing_enabled off for this test only,
+      // leaving every other field from the real response untouched.
+      cy.intercept('POST', '**/graphql', (req) => {
+        if (req.body.query?.includes('requisition_list_public_sharing_enabled')) {
+          req.continue((res) => {
+            if (res.body?.data?.storeConfig) {
+              res.body.data.storeConfig.requisition_list_public_sharing_enabled = false;
+            }
+          });
+        }
+      });
+
+      cy.visit('/customer/requisition-lists');
+      cy.contains('Add new Requisition List').click();
+      cy.get(fields.requisitionListFormIsPublicCheckbox).should('not.exist');
+      cy.get(fields.requisitionListFormName).type('Cypress Public Disabled List');
+      cy.contains('Save').click();
+
+      cy.contains('Cypress Public Disabled List').click();
+      cy.url().should('include', 'requisitionListUid=');
+      cy.get(fields.requisitionListViewTogglePublicButton).should('not.exist');
+      cy.get(fields.requisitionListPublicStatusTag).should('not.exist');
+    });
   },
 );
