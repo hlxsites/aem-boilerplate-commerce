@@ -22,7 +22,7 @@ import { createFragment, createScopedSelector } from '@dropins/storefront-checko
 
 // Cart (for gift options within order confirmation)
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import { GiftOptions } from '@dropins/storefront-cart/containers.js';
 
 // Auth (for sign-up modal in header)
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';

@@ -33,11 +33,14 @@ import { render as AccountProvider } from '@dropins/storefront-account/render.js
 
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
-import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
-import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
-import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import {
+  CartSummaryList,
+  Coupons,
+  GiftCards,
+  GiftOptions,
+  OrderSummary,
+} from '@dropins/storefront-cart/containers.js';
+
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin
