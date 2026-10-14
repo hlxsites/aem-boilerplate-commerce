@@ -172,17 +172,16 @@ describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco']
 
       // Navigate to search page to find configurable products
       cy.visit("/search?q=configurable");
-      cy.wait(2000);
 
       // Click requisition list on first configurable product in search results
-      cy.get(fields.requisitionListSelector).first().click();
+      cy.get(fields.requisitionListSelector).first().should("be.visible").click();
 
       // Should redirect to PDP
       cy.url().should("include", "/products/");
-      cy.wait(2000);
 
       // Should show validation message on PDP from the redirection
-      cy.get(fields.productDetailsAlert)
+      // (longer timeout to allow the PDP/dropin to finish mounting after redirect)
+      cy.get(fields.productDetailsAlert, { timeout: 10000 })
         .should("be.visible")
         .contains(
           "Please select product options before adding it to a requisition list"
@@ -201,7 +200,6 @@ describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco']
         if ($body.find('.product-details__options select').length > 0) {
           cy.get('.product-details__options select').each(($select) => {
             cy.wrap($select).select(1);
-            cy.wait(500);
 
             cy.get(fields.productDetailsAlert).should("not.be.visible");
 
@@ -216,7 +214,6 @@ describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco']
           });
         } else {
           cy.selectProductOption('color', 'red');
-          cy.wait(500);
 
           cy.get(fields.productDetailsAlert).should("not.be.visible");
 
