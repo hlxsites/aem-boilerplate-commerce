@@ -35,3 +35,37 @@
     padding: 40px 32px;
   }
 }
+
+main .hero {
+  display: flex;
+  align-items: flex-end;
+  max-width: 1136px;
+  min-height: 320px;
+  margin: var(--spacing-medium) var(--spacing-small) 0;
+  padding: 24px;
+  border-radius: 20px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+main .hero > div,
+main .hero > div > div {
+  width: 100%;
+}
+
+main .hero h1 {
+  display: inline-block;
+  max-width: 600px;
+  margin: 0;
+  padding: 16px 24px;
+  border-radius: 20px 0;
+  background: rgb(15 56 18 / 75%);
+}
+
+@media (min-width: 900px) {
+  main .hero {
+    min-height: 420px;
+    margin: var(--spacing-big) auto 0;
+    padding: 32px;
+  }
+}
