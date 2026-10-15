@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Item } from '../data/models/wishlist';
+import { Item } from '../data/models/wishlist.js';
 interface ProductLike {
     sku: string;
     optionUIDs?: string[];

@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '.';
-export { ProductItem } from './ProductItem';
+export * from './index.js';
+export { ProductItem } from './ProductItem.js';

@@ -1,6 +1,22 @@
-import { default as LocalizedError } from '../../lib/localizedError';
-import { PaymentLocation } from '../../api';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import LocalizedError from '../../lib/localizedError.js';
+import { PaymentLocation } from '../../api.js';
+import { CartItem } from '../../lib/cartItem.js';
 export interface ApplePayProps {
     /**
      * Location where the Apple Pay button is to be rendered.
@@ -54,18 +70,3 @@ export interface ApplePayProps {
     disabled?: boolean;
 }
 export declare const ApplePay: ({ location, getCartId, createCart, onButtonClick, onSuccess, onError, hidden, disabled, }: ApplePayProps) => import("preact/compat").JSX.Element;
-/**
- * See https://developer.adobe.com/commerce/webapi/graphql-api/index.html#definition-CartItemInput.
- */
-interface CartItem {
-    sku: string;
-    quantity: number;
-    parentSku?: string;
-    selectedOptions?: (string | number)[];
-    enteredOptions?: {
-        uid: string | number;
-        value: string;
-    }[];
-}
-export {};
-//# sourceMappingURL=ApplePay.d.ts.map

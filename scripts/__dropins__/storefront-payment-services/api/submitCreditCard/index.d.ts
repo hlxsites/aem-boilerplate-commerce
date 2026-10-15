@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './submitCreditCard';
-//# sourceMappingURL=index.d.ts.map

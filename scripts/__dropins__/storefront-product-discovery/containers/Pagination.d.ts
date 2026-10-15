@@ -1,3 +1,1 @@
-export * from './Pagination/index'
-import _default from './Pagination/index'
-export default _default
+export * from './Pagination/index';

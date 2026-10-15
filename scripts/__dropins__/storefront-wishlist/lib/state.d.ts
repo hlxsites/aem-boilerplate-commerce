@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { StoreConfigModel } from '../data/models/store-config';
+import { StoreConfigModel } from '../data/models/store-config.js';
 type State = {
     wishlistId: string | null;
     initializing?: boolean;

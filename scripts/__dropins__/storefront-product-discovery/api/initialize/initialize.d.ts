@@ -1,16 +1,10 @@
-import { Initializer, Model } from '@dropins/tools/types/elsie/src/lib';
-import { Lang } from '@dropins/tools/types/elsie/src/i18n';
-import { Product } from '../../data/models/product';
-import { ProductSearchResult } from '../../data/models';
-
-type ConfigProps = {
-    langDefinitions?: Lang;
-    models?: {
-        Product?: Model<Product>;
-        ProductSearchResult?: Model<ProductSearchResult>;
-    };
-};
-export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import('@dropins/tools/types/elsie/src/lib').Config<ConfigProps>;
-export {};
-//# sourceMappingURL=initialize.d.ts.map
+/********************************************************************
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
+export declare const initialize: any;
+export declare const config: any;

@@ -1,5 +1,11 @@
 # @dropins/storefront-order
 
+## 4.1.1-alpha-20261015084946
+
+### Patch Changes
+
+- 6855b81: Rebuild Order with the consolidated Tools runtime for alpha testing.
+
 ## 4.1.0
 
 ## 4.1.0-beta.0

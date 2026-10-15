@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Product } from '../../models/product';
+import { Product } from '../../models/product.js';
 declare const simpleProduct: Product;
 declare const configurableProduct: Product;
 declare const configuredProduct: Product;

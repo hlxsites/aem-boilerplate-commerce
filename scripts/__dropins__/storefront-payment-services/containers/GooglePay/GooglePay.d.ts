@@ -1,6 +1,26 @@
-import { default as LocalizedError } from '../../lib/localizedError';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2026 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import LocalizedError from '../../lib/localizedError.js';
+import { PaymentLocation } from '../../api.js';
 export interface GooglePayProps {
+    /**
+     * Location where the Google Pay button is to be rendered.
+     */
+    location: PaymentLocation;
     /**
      * Called when the user clicks the Google Pay button. This callback receives a 'showPaymentSheet'
      * function as its only argument that must be called to begin the Google Pay checkout and show the
@@ -35,5 +55,4 @@ export interface GooglePayProps {
      */
     disabled?: boolean;
 }
-export declare const GooglePay: ({ onButtonClick, onSuccess, onError, hidden, disabled, }: GooglePayProps) => import("preact/compat").JSX.Element;
-//# sourceMappingURL=GooglePay.d.ts.map
+export declare const GooglePay: ({ location, onButtonClick, onSuccess, onError, hidden, disabled, }: GooglePayProps) => import("preact/compat").JSX.Element;

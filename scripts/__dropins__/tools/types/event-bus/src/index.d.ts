@@ -6,7 +6,7 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { Events } from './events-catalog';
+import type { Events } from './events-catalog';
 export * from './events-catalog';
 /**
  * The `events` class provides static methods for event handling.

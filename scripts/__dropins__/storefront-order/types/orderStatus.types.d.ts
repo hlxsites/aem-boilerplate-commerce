@@ -14,7 +14,7 @@
  * from Adobe.
  *******************************************************************/
 import { OrderDataModel, OrdersReturnPropsModel } from '../data/models';
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 import { UserInputErrorProps } from '.';
 export declare enum StatusEnumProps {
     PENDING = "pending",

@@ -11,4 +11,3 @@ export declare enum PaymentMethodCode {
     SMART_BUTTONS = "payment_services_paypal_smart_buttons",
     VAULT = "payment_services_paypal_vault"
 }
-//# sourceMappingURL=method.d.ts.map

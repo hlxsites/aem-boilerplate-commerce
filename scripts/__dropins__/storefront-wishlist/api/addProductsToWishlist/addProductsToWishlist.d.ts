@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Wishlist } from '../../data/models/wishlist';
+import { Wishlist } from '../../data/models/wishlist.js';
 export declare const addProductsToWishlist: (items: [{
     sku: string;
     quantity: number;

@@ -16,7 +16,7 @@
  *******************************************************************/
 import { FunctionComponent, JSX } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { Image, ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
+import { Image, ImageNodeRenderProps } from '@dropins/tools/components';
 export interface ImageCarouselProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
     children?: any;

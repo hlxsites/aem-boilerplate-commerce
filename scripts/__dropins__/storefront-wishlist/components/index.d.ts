@@ -14,8 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './EmptyWishlist';
-export * from './Wishlist';
-export * from './ProductItem';
-export * from './ImageCarousel';
-export * from './Login';
+export * from './EmptyWishlist/index.js';
+export * from './Wishlist/index.js';
+export * from './ProductItem/index.js';
+export * from './ImageCarousel/index.js';
+export * from './Login/index.js';

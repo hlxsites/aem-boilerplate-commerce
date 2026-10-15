@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Item, Wishlist } from '../../data/models/wishlist';
+import { Item, Wishlist } from '../../data/models/wishlist.js';
 export declare const removeProductsFromWishlist: (items: Array<Item>, wishlistId?: string, options?: {
     scope?: string;
 }) => Promise<Wishlist | null>;

@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '.';
-export { ImageCarousel } from './ImageCarousel';
+export * from './index.js';
+export { ImageCarousel } from './ImageCarousel.js';

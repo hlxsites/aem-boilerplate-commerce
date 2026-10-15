@@ -1,5 +1,4 @@
-import { Price } from './price';
-
+import { Price } from './price.js';
 /**
  * Interface subset to recreate card/data event payload.
  *  https://experienceleague.adobe.com/developer/commerce/storefront/dropins/cart/events/#cartdata-emits-and-listens
@@ -23,4 +22,3 @@ export interface CartModel {
         includingDiscountOnly: Price;
     };
 }
-//# sourceMappingURL=cart.d.ts.map

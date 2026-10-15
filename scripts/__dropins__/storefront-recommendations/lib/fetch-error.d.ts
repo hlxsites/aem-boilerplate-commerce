@@ -19,8 +19,7 @@
  * @param errors Array of GraphQL errors
  * @returns null if the error is handled, otherwise throws an error
  */
-export declare const handleFetchError: (errors: {
-    [key: string]: any;
+export declare const handleFetchError: (errors: Array<{
     message: string;
-}[]) => never;
-//# sourceMappingURL=fetch-error.d.ts.map
+    [key: string]: any;
+}>) => never;

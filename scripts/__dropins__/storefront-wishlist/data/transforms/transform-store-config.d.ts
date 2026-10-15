@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { StoreConfigModel } from '../models';
+import { StoreConfigModel } from '../models/index.js';
 export declare function transformStoreConfig(data: any): StoreConfigModel | null;

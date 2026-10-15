@@ -1,5 +1,15 @@
 # @dropins/storefront-cart
 
+## 3.4.1-alpha-20261008111017
+
+### Patch Changes
+
+- 48f6871: Accessibility fix for GiftOptions:
+
+  - Keep keyboard focus on the "Gift wrap this item" checkbox after toggling it, instead of letting it fall through to the page body while the cart update is applied (WCAG 2.4.3)
+
+- 668f6a6: Fix discount code and gift card error messages not being automatically announced by screen readers when they appear (WCAG 4.1.3 Status Messages). Added `role="status"` and `aria-live="polite"` to both error messages, matching the pattern already used for gift options field errors.
+
 ## 3.4.0
 
 ## 3.4.0-beta.0

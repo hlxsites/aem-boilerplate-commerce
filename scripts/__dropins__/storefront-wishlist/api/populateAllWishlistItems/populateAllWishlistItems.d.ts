@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Wishlist } from '../../data/models/wishlist';
+import { Wishlist } from '../../data/models/wishlist.js';
 /**
  * Fetches ALL wishlist items across all pages and stores them in the
  * in-memory all-items store. Called non-blocking after initialization

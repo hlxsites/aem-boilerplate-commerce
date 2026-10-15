@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CheckoutPaymentMethods';
-export { CheckoutPaymentMethods as default } from './CheckoutPaymentMethods';
-//# sourceMappingURL=index.d.ts.map
+export * from './CheckoutPaymentMethods.js';
+export { CheckoutPaymentMethods as default } from './CheckoutPaymentMethods.js';

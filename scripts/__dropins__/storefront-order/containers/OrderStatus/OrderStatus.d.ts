@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { OrderStatusProps } from '../../types';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 export declare const OrderStatus: Container<OrderStatusProps>;

@@ -14,8 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CreditCard/CreditCard';
-export * from './ApplePay/ApplePay';
-export * from './GooglePay/GooglePay';
-export * from './PayPalButtons/PayPalButtons';
-//# sourceMappingURL=index.d.ts.map
+export * from './CreditCard/CreditCard.js';
+export * from './ApplePay/ApplePay.js';
+export * from './GooglePay/GooglePay.js';
+export * from './PayPalButtons/PayPalButtons.js';
+export * from './VaultedCreditCard/VaultedCreditCard.js';

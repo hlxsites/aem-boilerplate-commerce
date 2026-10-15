@@ -25,4 +25,3 @@
  *  @param key key of text to translate
  */
 export declare function translate(key: string): string;
-//# sourceMappingURL=i18n.d.ts.map

@@ -15,8 +15,8 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-import { Product } from '../../data/models';
+import { Container } from '@dropins/tools/lib';
+import { Product } from '../../data/models/index.js';
 import { VNode } from 'preact';
 export interface WishlistToggleProps extends HTMLAttributes<HTMLDivElement> {
     product: Product;

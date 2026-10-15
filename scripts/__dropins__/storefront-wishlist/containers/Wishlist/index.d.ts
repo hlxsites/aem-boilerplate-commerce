@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Wishlist';
-export { Wishlist as default } from './Wishlist';
+export * from './Wishlist.js';
+export { Wishlist as default } from './Wishlist.js';

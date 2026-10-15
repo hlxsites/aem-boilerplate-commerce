@@ -19,13 +19,17 @@
  *
  * @example
  *   // To add new error codes from different modules
- *   declare module "@/lib/error" {
+ *   declare module "./error.js" {
  *     interface PaymentServicesErrorCode {
  *       "payment-services/some-new-error-code": void
  *     }
  */
 export interface PaymentServicesErrorCode {
-    "payment-services/unknown-error": void;
+    'payment-services/unknown-error': void;
+    'payment-services/unsupported-payment-method': void;
+    'payment-services/dropin-not-initialized': void;
+    'payment-services/missing-cart-data': void;
+    'payment-services/missing-pdp-data': void;
 }
 export type PaymentServicesErrorOptions = ErrorOptions & {
     code?: keyof PaymentServicesErrorCode;
@@ -42,5 +46,16 @@ export declare class PaymentServicesError extends Error {
     constructor(message: string, options: PaymentServicesErrorOptions);
     static from(unknownError: unknown): PaymentServicesError;
 }
+export declare class DropinNotInitializedError extends PaymentServicesError {
+    constructor();
+}
+export declare class PaymentMethodNotSupportedError extends PaymentServicesError {
+    constructor(unsupportedPaymentMethodCode: string);
+}
+export declare class MissingCartDataError extends PaymentServicesError {
+    constructor(missingFields: string[]);
+}
+export declare class MissingPdpDataError extends PaymentServicesError {
+    constructor();
+}
 export declare function asError(unknownError: unknown): Error;
-//# sourceMappingURL=error.d.ts.map
