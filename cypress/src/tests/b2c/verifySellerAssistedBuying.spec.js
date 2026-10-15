@@ -249,7 +249,7 @@ describe("Seller Assisted Buying", () => {
         request.on("response", (response) => {
           const data = response.body?.data;
           const cart = data?.addProductsToCart?.cart ?? data?.customerCart
-            ?? data?.createGuestCart?.cart ?? data?.mergeCarts;
+            ?? data?.cart ?? data?.createGuestCart?.cart ?? data?.mergeCarts;
           Object.assign(entry, {
             responseReceived: true,
             status: response.statusCode,
