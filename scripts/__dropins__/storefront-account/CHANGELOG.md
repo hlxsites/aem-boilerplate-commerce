@@ -1,5 +1,20 @@
 # @dropins/storefront-account
 
+## 4.2.1-alpha-20261015081544
+
+### Patch Changes
+
+- 3e02bc3: Fix the saved-address selection radio buttons not being announced
+  with the section they belong to (e.g. "Shipping address" vs "Billing
+  address"). Added `role="radiogroup"` and `aria-labelledby` to the container,
+  reusing the existing hidden label.
+- b046a64: Migrate development and Cypress tooling to pnpm 11.28.1 and upgrade
+  Elsie to v3 with updated shared configs and test APIs. Upgrade shared
+  storefront workflows to v7 for pnpm-only CI and formatting checks. Configure a
+  native pre-commit hook to format and re-stage staged files without additional
+  hook dependencies. Use Elsie's shared Storybook APIs and Cypress ESLint preset
+  from the latest v3 alpha.
+
 ## 4.2.0
 
 ## 4.2.0-beta.1
