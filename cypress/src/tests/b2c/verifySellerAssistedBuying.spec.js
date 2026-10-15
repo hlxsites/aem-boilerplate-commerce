@@ -129,7 +129,7 @@ describe("Seller Assisted Buying", () => {
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
-    cy.log("🔐 Attempting admin OTP login");
+    cy.log(`🔐 Attempting OTP login with email: ${email}, OTP: ${otp}`);
 
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
@@ -146,9 +146,9 @@ describe("Seller Assisted Buying", () => {
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
-          .type(otp, { delay: 100, log: false });
+          .type(otp, { delay: 100 });
 
-        cy.get(fields.authFormUserPassword).should('not.have.value', '');
+        cy.get(fields.authFormUserPassword).should('have.value', otp);
 
         // Wait for React form state to stabilize after typing
         cy.wait(2000);
@@ -173,7 +173,7 @@ describe("Seller Assisted Buying", () => {
           // If password was cleared, refill the form
           if (!passValue || passValue.length === 0) {
             cy.get(`main .auth-sign-in-form ${fields.authFormUserEmail}`).clear().type(email, { delay: 50 });
-            cy.get(`main .auth-sign-in-form ${fields.authFormUserPassword}`).clear().type(otp, { delay: 50, log: false });
+            cy.get(`main .auth-sign-in-form ${fields.authFormUserPassword}`).clear().type(otp, { delay: 50 });
             cy.wait(2000);
           }
         });
