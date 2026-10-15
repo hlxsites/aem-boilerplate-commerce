@@ -383,23 +383,6 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
               return;
             }
 
-            PaymentServices.render(ApplePay, {
-              location: PaymentLocation.CHECKOUT,
-              getCartId: () => ctx.cartId,
-              isVirtualCart: checkoutData.isVirtual,
-              onButtonClick: (showPaymentSheet) => {
-                if (validateCheckoutForms()) {
-                  showPaymentSheet();
-                }
-              },
-              onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-              onError: (localizedError) => {
-                events.emit('checkout/error', {
-                  message: localizedError.message,
-                });
-              },
-            })($applePay);
-
             ctx.replaceHTML($applePay);
           },
           enabled: false,
@@ -410,7 +393,6 @@ export const renderPaymentMethods = async (container, creditCardFormRef, validat
         [PaymentMethodCode.GOOGLE_PAY]: {
           render: (ctx) => {
             const $googlePay = document.createElement('div');
-
             PaymentServices.render(GooglePay, {
               onButtonClick: (showPaymentSheet) => {
                 if (validateCheckoutForms()) {

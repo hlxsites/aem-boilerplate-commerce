@@ -26,6 +26,14 @@
   margin-top: var(--spacing-medium);
 }
 
+.cart__payment-services-apple-pay {
+  margin-top: var(--spacing-medium);
+}
+
+.cart__payment-services-apple-pay:empty {
+  display: none;
+}
+
 .dropin-cart-item__footer {
   margin-top: var(--spacing-xsmall);
   gap: var(--spacing-xsmall);

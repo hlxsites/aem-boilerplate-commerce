@@ -332,6 +332,10 @@ export default async function decorate(block) {
 
   cartButton.addEventListener('click', () => toggleMiniCart(!minicartPanel.classList.contains('nav-tools-panel--show')));
 
+  // Close the mini cart when an order is placed (e.g. mini-cart Apple Pay checkout),
+  // so the checkout success view rendered into <main> isn't hidden behind the panel.
+  events.on('order/placed', () => toggleMiniCart(false));
+
   // Cart Item Counter
   events.on('cart/data', (data) => {
     // preload mini cart fragment if user has a cart

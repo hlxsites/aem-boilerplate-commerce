@@ -16,3 +16,23 @@
 .commerce-mini-cart__update-message--visible {
     display: block;
 }
+
+.commerce-mini-cart__message-wrapper--error {
+    background-color: var(--color-alert-200);
+}
+
+.commerce-mini-cart .cart-mini-cart__preCheckoutSection {
+    margin-top: var(--spacing-small);
+}
+
+.commerce-mini-cart__apple-pay-error {
+    margin-bottom: var(--spacing-small);
+}
+
+.commerce-mini-cart .cart-mini-cart__preCheckoutSection + .cart-mini-cart__footer__ctas {
+    padding-top: var(--spacing-xsmall);
+}
+
+.commerce-mini-cart apple-pay-button {
+    --apple-pay-button-border-radius: var(--shape-border-radius-3);
+}

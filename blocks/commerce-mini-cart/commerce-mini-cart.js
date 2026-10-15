@@ -10,14 +10,31 @@ import {
 } from '@dropins/tools/components.js';
 import { h } from '@dropins/tools/preact.js';
 
+// Payment Services Dropin
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+
+// Order Dropin
+import * as orderApi from '@dropins/storefront-order/api.js';
+
 import createModal from '../modal/modal.js';
 import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-mini-pdp.js';
 
+// Block-level
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+
 // Initializers
 import '../../scripts/initializers/cart.js';
+import '../../scripts/initializers/order.js';
+import '../../scripts/initializers/payment-services.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+
+// Checkout success block import and CSS preload
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   const {
@@ -39,6 +56,7 @@ export default async function decorate(block) {
   // Modal state
   let currentModal = null;
   let currentCartNotification = null;
+  let currentApplePayError = null;
 
   // Create a container for the update message
   const updateMessage = document.createElement('div');
@@ -49,18 +67,19 @@ export default async function decorate(block) {
   shadowWrapper.className = 'commerce-mini-cart__message-wrapper';
   shadowWrapper.appendChild(updateMessage);
 
-  const showMessage = (message) => {
+  const showMessage = (message, { type = 'success', duration = 3000 } = {}) => {
     updateMessage.textContent = message;
+    shadowWrapper.classList.toggle('commerce-mini-cart__message-wrapper--error', type === 'error');
     updateMessage.classList.add('commerce-mini-cart__update-message--visible');
     shadowWrapper.classList.add('commerce-mini-cart__message-wrapper--visible');
-    setTimeout(() => {
-      updateMessage.classList.remove(
-        'commerce-mini-cart__update-message--visible',
-      );
-      shadowWrapper.classList.remove(
-        'commerce-mini-cart__message-wrapper--visible',
-      );
-    }, 3000);
+    // setTimeout(() => {
+    //   updateMessage.classList.remove(
+    //     'commerce-mini-cart__update-message--visible',
+    //   );
+    //   shadowWrapper.classList.remove(
+    //     'commerce-mini-cart__message-wrapper--visible',
+    //   );
+    // }, duration);
   };
 
   // Handle Edit Button Click
@@ -128,6 +147,7 @@ export default async function decorate(block) {
       // Show error message using mini-cart's message system
       showMessage(
         placeholders?.Global?.ProductLoadError,
+        { type: 'error', duration: 6000 },
       );
     }
   }
@@ -167,8 +187,37 @@ export default async function decorate(block) {
     routeCheckout: checkoutURL ? () => rootLink(checkoutURL) : undefined,
     routeProduct: createProductLink,
     undo: undo === 'true',
-
     slots: {
+      PreCheckoutSection: (ctx) => {
+        const $applePay = document.createElement('div');
+        const $applePayError = document.createElement('div');
+        $applePayError.className = 'commerce-mini-cart__apple-pay-error';
+
+        // No MINI_CART value exists in PaymentLocation; reuse CHECKOUT.
+        PaymentServices.render(ApplePay, {
+          location: 'MINICART',
+          getCartId: () => events.lastPayload('cart/data')?.id,
+          isVirtualCart: events.lastPayload('cart/data')?.isVirtual,
+          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+          onError: async (localizedError) => {
+            currentApplePayError?.remove();
+
+            currentApplePayError = await UI.render(InLineAlert, {
+              heading: localizedError.name,
+              description: localizedError.message,
+              icon: h(Icon, { source: 'OrderError' }),
+              type: 'error',
+              variant: 'secondary',
+              'aria-live': 'assertive',
+              role: 'alert',
+              onDismiss: () => currentApplePayError?.remove(),
+            })($applePayError);
+          },
+        })($applePay);
+
+        ctx.appendSibling($applePay);
+        ctx.appendSibling($applePayError);
+      },
       Thumbnail: (ctx) => {
         const { item, defaultImageProps } = ctx;
         const anchorWrapper = document.createElement('a');
@@ -216,5 +265,30 @@ export default async function decorate(block) {
     block.appendChild(shadowWrapper);
   }
 
+  // Handle order placed event
+  events.on('order/placed', (orderData) => handleOrderPlaced(orderData));
+
   return block;
+}
+
+/**
+ * Handle order placed event. Unlike PDP/checkout, the mini-cart block is only a
+ * small flyout, not the page's content area, so the success view is rendered into
+ * <main> (the page content root on every template) instead of the mini-cart block.
+ * @param {Object} orderData - The order data
+ */
+async function handleOrderPlaced(orderData) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  const url = token
+    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
+    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+
+  window.history.pushState({}, '', url);
+
+  await renderCheckoutSuccess(document.querySelector('main'), { orderData });
 }

@@ -21,6 +21,11 @@ import { WishlistToggle } from '@dropins/storefront-wishlist/containers/Wishlist
 import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
+// Payment Services Dropin
+import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
+import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
+
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 
@@ -31,6 +36,7 @@ import createModal from '../modal/modal.js';
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/payment-services.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
@@ -67,6 +73,7 @@ export default async function decorate(block) {
       </div>
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
+        <div class="cart__payment-services-apple-pay"></div>
         <div class="cart__gift-options"></div>
       </div>
     </div>
@@ -78,6 +85,7 @@ export default async function decorate(block) {
   const $notification = fragment.querySelector('.cart__notification');
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
+  const $applePay = fragment.querySelector('.cart__payment-services-apple-pay');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
   const $rightColumn = fragment.querySelector('.cart__right-column');
@@ -278,6 +286,14 @@ export default async function decorate(block) {
         },
       },
     })($summary),
+
+    // Apple Pay (test)
+    PaymentServices.render(ApplePay, {
+      location: PaymentLocation.CHECKOUT,
+      getCartId: async () => events.lastPayload('cart/data')?.id,
+      onSuccess: ({ cartId }) => console.info('Apple Pay success', cartId),
+      onError: (localizedError) => console.error('Apple Pay error', localizedError),
+    })($applePay),
 
     provider.render(GiftOptions, {
       view: 'order',

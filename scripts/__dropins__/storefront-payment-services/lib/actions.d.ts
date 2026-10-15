@@ -6,6 +6,7 @@ import { PaymentServicesSDK } from '@adobe-commerce/payment-services-sdk';
 export declare function initializationSucceeded(paymentsSDK: {
     checkout: PaymentServicesSDK;
     productDetail: PaymentServicesSDK;
+    minicart: PaymentServicesSDK;
 }): void;
 /**
  * Finalize Payment Services drop-in initialization with "error" status.

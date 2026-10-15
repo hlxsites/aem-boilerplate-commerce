@@ -7,6 +7,7 @@ import { PaymentServicesSDK } from '@adobe-commerce/payment-services-sdk';
 export declare const paymentsSDK: import('@preact/signals-core').ReadonlySignal<{
     checkout?: PaymentServicesSDK | undefined;
     productDetail?: PaymentServicesSDK | undefined;
+    minicart?: PaymentServicesSDK | undefined;
 }>;
 /**
  * Payment Services drop-in status signal.
