@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Initializer, Model } from '../../../node_modules/@dropins/tools/src/lib';
+import { Initializer, Model } from '@dropins/tools/lib';
 import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
 import { CustomerOrdersReturnModel, OrderDataModel, RequestReturnModel } from '../../data/models';
 export type ConfigProps = {
@@ -29,4 +29,4 @@ export type ConfigProps = {
     routeOrdersList?: () => string;
 };
 export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import("../../../node_modules/@dropins/tools/src/lib").Config<ConfigProps>;
+export declare const config: import("@dropins/tools/lib").Config<ConfigProps>;
