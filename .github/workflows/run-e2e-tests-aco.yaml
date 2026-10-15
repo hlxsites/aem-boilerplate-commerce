@@ -1,11 +1,13 @@
 name: Cypress E2E ACO Tests
-on: push
+on:
+  push:
+  workflow_dispatch:
 jobs:
   cypress-aco-groups:
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commerce's
     # demo backend.
-    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce' && github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     strategy:
       # Run all shards even if one fails, so a single flaky shard doesn't hide
@@ -57,12 +59,44 @@ jobs:
           path: cypress/screenshots
           if-no-files-found: ignore
 
+  assisted-cart-diagnostics:
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install adobe aem cli dependencies
+        run: npm install -g @adobe/aem-cli
+      - name: Start ACO server
+        run: aem up --url https://main--boilerplate-aco--adobe-commerce.aem.live/ &
+      - name: Diagnose assisted cart without creating orders
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: cypress
+          wait-on: 'http://localhost:3000'
+          command: npm run cypress:aco:run -- --spec src/tests/b2c/verifySellerAssistedBuying.spec.js --config retries=0
+        env:
+          CYPRESS_diagnoseAssistedCart: 'true'
+          CYPRESS_API_ENDPOINT: ${{ secrets.CYPRESS_API_ENDPOINT_ACO }}
+          CYPRESS_COMMERCE_ADMIN_USERNAME: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME_ACO }}
+          CYPRESS_COMMERCE_ADMIN_PASSWORD: ${{ secrets.CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: assisted-cart-diagnostics
+          path: |
+            cypress/diagnostics
+            cypress/screenshots
+          if-no-files-found: warn
+
   # Aggregation gate: a single, stable status check for branch protection.
   # Requiring the per-shard "cypress-aco-groups (...)" checks is brittle because
   # their names embed the spec list, so every shard change needs a manual
   # branch-protection edit. Require this job instead.
   cypress-aco-run:
-    if: always()
+    if: always() && github.event_name != 'workflow_dispatch'
     needs: cypress-aco-groups
     runs-on: ubuntu-latest
     steps:

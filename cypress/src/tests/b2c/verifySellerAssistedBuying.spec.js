@@ -26,8 +26,19 @@ import {
 
 describe("Seller Assisted Buying", () => {
   let testUserEmail;
+  const diagnosticMode = [true, "true"].includes(Cypress.env("diagnoseAssistedCart"));
+  const diagnosticRequests = [];
+  const cartAliases = new Map();
+  let diagnosticPhase = "setup";
+
+  const cartAlias = (cartId) => {
+    if (!cartId) return null;
+    if (!cartAliases.has(cartId)) cartAliases.set(cartId, `cart-${cartAliases.size + 1}`);
+    return cartAliases.get(cartId);
+  };
 
   const completeCheckoutAndPlaceOrder = (phaseLabel) => {
+    if (diagnosticMode) throw new Error("Order creation is disabled in assisted-cart diagnostics.");
     cy.log(`💳 ${phaseLabel}: Navigating to checkout`);
     cy.get(".minicart-wrapper").click();
     cy.get('.minicart-panel[data-loaded="true"]').should("exist");
@@ -129,7 +140,7 @@ describe("Seller Assisted Buying", () => {
   };
 
   const signInAsAdminWithOtp = (email, otp) => {
-    cy.log(`🔐 Attempting OTP login with email: ${email}, OTP: ${otp}`);
+    cy.log("🔐 Attempting admin OTP login");
 
     cy.get("main .auth-sign-in-form", { timeout: 30000 })
       .should("be.visible")
@@ -146,9 +157,9 @@ describe("Seller Assisted Buying", () => {
           .should("be.visible")
           .should("not.be.disabled")
           .clear({ force: true })
-          .type(otp, { delay: 100 });
+          .type(otp, { delay: 100, log: false });
 
-        cy.get(fields.authFormUserPassword).should('have.value', otp);
+        cy.get(fields.authFormUserPassword).should('not.have.value', '');
 
         // Wait for React form state to stabilize after typing
         cy.wait(2000);
@@ -173,7 +184,7 @@ describe("Seller Assisted Buying", () => {
           // If password was cleared, refill the form
           if (!passValue || passValue.length === 0) {
             cy.get(`main .auth-sign-in-form ${fields.authFormUserEmail}`).clear().type(email, { delay: 50 });
-            cy.get(`main .auth-sign-in-form ${fields.authFormUserPassword}`).clear().type(otp, { delay: 50 });
+            cy.get(`main .auth-sign-in-form ${fields.authFormUserPassword}`).clear().type(otp, { delay: 50, log: false });
             cy.wait(2000);
           }
         });
@@ -205,6 +216,60 @@ describe("Seller Assisted Buying", () => {
     cy.clearCookies();
     cy.clearLocalStorage();
 
+    if (diagnosticMode) {
+      diagnosticRequests.length = 0;
+      cartAliases.clear();
+      diagnosticPhase = "setup";
+      cy.intercept("POST", "**/graphql*", (request) => {
+        const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body;
+        const query = body?.query ?? "";
+        const operations = [
+          "generateCustomerToken", "customerCart", "createGuestCart", "createEmptyCart",
+          "mergeCarts", "addProductsToCart", "placeOrder",
+        ].filter((operation) => new RegExp(`\\b${operation}\\b`).test(query));
+        if (!operations.length) return;
+
+        const entry = {
+          sequence: diagnosticRequests.length + 1,
+          phase: diagnosticPhase,
+          operations,
+          authorizationPresent: Boolean(request.headers.authorization),
+          requestCart: cartAlias(body?.variables?.cartId ?? body?.variables?.cart_id),
+          responseReceived: false,
+        };
+        diagnosticRequests.push(entry);
+
+        if (operations.includes("placeOrder")) {
+          entry.blocked = true;
+          request.reply({ statusCode: 409, body: { errors: [{ message: "Order creation blocked by diagnostics" }] } });
+          return;
+        }
+        if (operations.includes("addProductsToCart")) request.alias = "assistedAddToCart";
+
+        request.on("response", (response) => {
+          const data = response.body?.data;
+          const cart = data?.addProductsToCart?.cart ?? data?.customerCart
+            ?? data?.createGuestCart?.cart ?? data?.mergeCarts;
+          Object.assign(entry, {
+            responseReceived: true,
+            status: response.statusCode,
+            dataPresent: data != null,
+            dataFields: Object.keys(data ?? {}),
+            nullFields: Object.entries(data ?? {}).filter(([, value]) => value === null).map(([name]) => name),
+            responseCart: cartAlias(cart?.id ?? data?.createEmptyCart),
+            cartPresent: cart != null,
+            quantity: cart?.total_quantity ?? null,
+            skus: (cart?.items ?? cart?.itemsV2?.items ?? []).map((item) => item?.product?.sku).filter(Boolean),
+            errors: (response.body?.errors ?? []).map((error) => ({
+              category: error.extensions?.category ?? null,
+              code: error.extensions?.code ?? null,
+            })),
+            userErrorCodes: (data?.addProductsToCart?.user_errors ?? []).map((error) => error.code),
+          });
+        });
+      });
+    }
+
     // Handle uncaught exceptions
     cy.on("uncaught:exception", (err) => {
       if (
@@ -216,6 +281,15 @@ describe("Seller Assisted Buying", () => {
       }
       return true;
     });
+  });
+
+  afterEach(function () {
+    if (diagnosticMode) {
+      cy.writeFile("diagnostics/seller-assisted-cart.json", {
+        state: this.currentTest.state,
+        requests: diagnosticRequests,
+      }, { log: false });
+    }
   });
 
   after(() => {
@@ -329,10 +403,12 @@ describe("Seller Assisted Buying", () => {
         expect(otpResponse.otp, "OTP code should be present").to.be.a("string");
 
         cy.log("Step 17: Signing in as admin with OTP password");
+        if (diagnosticMode) cy.then(() => { diagnosticPhase = "otp-login"; });
         signInAsAdminWithOtp(testUserEmail, otpResponse.otp);
         cy.url().should("include", "/customer/account");
 
         cy.log("Step 17.5: Admin adding product for customer");
+        if (diagnosticMode) cy.then(() => { diagnosticPhase = "admin-pdp"; });
         cy.visit("/products/youth-tee/adb150");
         cy.reload();
         cy.wait(2000);
@@ -341,13 +417,21 @@ describe("Seller Assisted Buying", () => {
           .click();
         cy.wait(2000);
 
+        if (diagnosticMode) {
+          cy.wait("@assistedAddToCart", { timeout: 30000 });
+          cy.get(".minicart-wrapper").click();
+          cy.get('.minicart-panel[data-loaded="true"]').should("exist");
+          cy.get(".cart-mini-cart").contains(".dropin-cart-item__sku", "ADB150", { timeout: 30000 });
+          return;
+        }
+
         cy.log("Step 18: Completing purchase as admin");
         completeCheckoutAndPlaceOrder("Admin session order");
       });
     });
   });
 
-  it("Verify shopping assistance order appears in activity table", () => {
+  (diagnosticMode ? it.skip : it)("Verify shopping assistance order appears in activity table", () => {
     cy.log("========= Verify Shopping Assistance Order =========");
     expect(testUserEmail, "testUserEmail should be set").to.exist;
 
