@@ -1,0 +1,15 @@
+{
+  "definitions": [{
+    "title": "Commerce Order Invoices",
+    "id": "commerce-order-invoices",
+    "model": "commerce-order-invoices",
+    "plugins": {
+      "da": {
+        "rows": 1,
+        "columns": 2
+      }
+    }
+  }],
+  "models": [],
+  "filters": []
+}
