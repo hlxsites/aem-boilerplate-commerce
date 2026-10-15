@@ -44,7 +44,7 @@
     "@dropins/storefront-cart": "3.4.1-alpha-20261008111017",
     "@dropins/storefront-checkout": "3.5.0-alpha-20261014142104",
     "@dropins/storefront-order": "4.1.1-alpha-20261015084946",
-    "@dropins/storefront-payment-services": "4.2.1",
+    "@dropins/storefront-payment-services": "4.2.2-alpha-20261015095936",
     "@dropins/storefront-pdp": "3.4.0-alpha-20261008113355",
     "@dropins/storefront-personalization": "3.2.3-alpha-20261008144421",
     "@dropins/storefront-product-discovery": "3.1.2",

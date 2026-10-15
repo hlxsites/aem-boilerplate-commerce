@@ -1,10 +1,15 @@
-import { Price } from './price';
-
+import { Price } from './price.js';
 /** Interface subset to recreate checkout/updated event payload.
  * https://experienceleague.adobe.com/developer/commerce/storefront/dropins/checkout/events/#checkoutupdated-emits-and-listens
  */
 export interface CheckoutData {
-    billingAddress: {
+    /** Active cart id. */
+    id?: string;
+    /** Payment method currently selected by the shopper, if any. */
+    selectedPaymentMethod?: {
+        code: string;
+    };
+    billingAddress?: {
         firstName: string;
         lastName: string;
         street: string[];
@@ -31,4 +36,3 @@ export interface CheckoutData {
         };
     }[];
 }
-//# sourceMappingURL=checkout.d.ts.map

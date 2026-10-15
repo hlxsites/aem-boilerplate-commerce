@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CreditCardForm';
-export { CreditCardForm as default } from './CreditCardForm';
-//# sourceMappingURL=index.d.ts.map
+export * from './CreditCardForm.js';
+export { CreditCardForm as default } from './CreditCardForm.js';

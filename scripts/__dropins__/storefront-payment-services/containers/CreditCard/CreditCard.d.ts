@@ -1,8 +1,23 @@
-import { CreditCardFormHandle } from '../../lib/creditCardForm';
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import { CreditCardFormHandle } from '../../lib/creditCard.js';
 import { RefObject } from 'preact/compat';
-import { default as LocalizedError } from '../../lib/localizedError';
-
-export type { CreditCardFormHandle } from '../../lib/creditCardForm';
+import LocalizedError from '../../lib/localizedError.js';
+export type { CreditCardFormHandle } from '../../lib/creditCard.js';
 export declare enum CardTypes {
     Visa = "visa",
     MasterCard = "mastercard",
@@ -55,4 +70,3 @@ export interface CreditCardProps {
  * warning is logged.
  */
 export declare const CreditCard: ({ getCartId, creditCardFormRef, onSuccess, onError, ...props }: CreditCardProps) => import("preact/compat").JSX.Element;
-//# sourceMappingURL=CreditCard.d.ts.map

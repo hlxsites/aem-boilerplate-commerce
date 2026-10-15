@@ -1,5 +1,20 @@
-import { PaymentServicesError, PaymentServicesErrorOptions } from './error';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import { PaymentServicesError, PaymentServicesErrorOptions } from "./error.js";
 /**
  * Represents a user-friendly, localized error intended for UI display.
  *
@@ -26,4 +41,3 @@ declare class LocalizedError extends PaymentServicesError {
 export declare function fromPaymentsSDKError(category: ErrorCategory, error: Error): LocalizedError;
 export type ErrorCategory = 'CreditCard' | 'ApplePay' | 'GooglePay' | 'PayPalButtons';
 export default LocalizedError;
-//# sourceMappingURL=localizedError.d.ts.map

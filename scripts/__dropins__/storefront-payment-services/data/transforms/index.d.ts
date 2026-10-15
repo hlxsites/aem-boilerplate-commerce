@@ -15,4 +15,3 @@ export {};
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-//# sourceMappingURL=index.d.ts.map
