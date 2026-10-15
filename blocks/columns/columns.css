@@ -60,6 +60,15 @@ main .columns > div > .columns-img-col img {
   object-fit: cover;
 }
 
+main .columns p:has(+ ul) {
+  margin-bottom: 8px;
+}
+
+main .columns ul {
+  margin-top: 0;
+  padding-left: 24px;
+}
+
 main .columns a:not(.button):any-link,
 main .columns a:not(.button):any-link:hover {
   color: var(--grocery-white);
