@@ -7,7 +7,12 @@ jobs:
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commmerce's
     # demo backend.
-    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
+    if: >-
+      github.repository == 'hlxsites/aem-boilerplate-commerce' &&
+      (
+        github.event.action != 'edited' ||
+        github.event.changes.base.ref.from != null
+      )
     runs-on: ubuntu-latest
     env:
       IS_PROD_RELEASE: ${{ github.base_ref == 'main' }}
@@ -26,7 +31,7 @@ jobs:
           # Shard 1 — Auth & account flows
           # Add here if: spec tests sign-in/sign-out, account management pages,
           # authenticated-user wishlist, or event SDK initialization.
-          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js,src/tests/b2c/events/consent.spec.js"
           # Shard 2 — Guest checkout flows
           # Add here if: spec tests guest checkout (including virtual products),
           # guest wishlist, or event SDK calls fired during cart/checkout/order flows.
@@ -87,7 +92,13 @@ jobs:
   # their names embed the spec list, so every shard change needs a manual
   # branch-protection edit. Require this job instead.
   cypress-saas-run:
-    if: always()
+    if: >-
+      always() &&
+      github.repository == 'hlxsites/aem-boilerplate-commerce' &&
+      (
+        github.event.action != 'edited' ||
+        github.event.changes.base.ref.from != null
+      )
     needs: cypress-saas-groups
     runs-on: ubuntu-latest
     steps:

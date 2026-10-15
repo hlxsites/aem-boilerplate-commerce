@@ -19,7 +19,7 @@ jobs:
       matrix:
         spec:
           # Shard 1 — Auth & account flows
-          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js,src/tests/b2c/events/consent.spec.js"
           # Shard 2 — Guest checkout flows
           - "src/tests/b2c/verifyGuestUserCheckout.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckout.spec.js,src/tests/b2c/verifyGuestUserWishlistFeature.spec.js,src/tests/b2c/events/add-to-cart.spec.js,src/tests/b2c/events/initiate-checkout.spec.js,src/tests/b2c/events/place-order.spec.js,src/tests/b2c/events/shopping-cart-view.spec.js"
           # Shard 3 — Cart features + SAB (verifySellerAssistedBuying last so cart is warm)

@@ -41,13 +41,13 @@ function waitForProductContextSku(sku) {
 describe('Verify recs-related client storage hydration', { tags: '@skipPaas' }, () => {
   it('records viewed PDPs in productViewHistory keyed by store view code / ac-view-id', () => {
     PRODUCT_VIEW_HISTORY_PRODUCTS.forEach(({ sku, path }) => {
-      cy.visit(path);
+      cy.visit(path, { qs: { consent: 'accept' } });
       waitForProductContextSku(sku);
     });
 
     // Simulate closing the last PDP tab and reopening the storefront home
     // page in the same browser session — localStorage persists across visits.
-    cy.visit('/');
+    cy.visit('/', { qs: { consent: 'accept' } });
 
     cy.window().should((win) => {
       const storeIdentifier = getStoreViewIdentifier(win);
@@ -67,7 +67,7 @@ describe('Verify recs-related client storage hydration', { tags: '@skipPaas' }, 
 
   it('never resolves an undefined productViewHistory key', () => {
     const { sku, path } = PRODUCT_VIEW_HISTORY_PRODUCTS[0];
-    cy.visit(path);
+    cy.visit(path, { qs: { consent: 'accept' } });
     waitForProductContextSku(sku);
 
     cy.window().should((win) => {

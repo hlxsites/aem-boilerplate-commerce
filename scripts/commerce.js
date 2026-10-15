@@ -13,6 +13,10 @@ import {
   readBlockConfig,
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
+import { getConsent, CONSENT_TOPICS } from './consent.js';
+import { initializeAnalyticsEvents } from './analytics-events.js';
+
+export { getConsent };
 
 /**
  * Sanitizes the given string by:
@@ -309,6 +313,11 @@ export function decorateLinks(main) {
 export async function loadCommerceLazy() {
   // Initialize modal functionality
   autolinkModals(document);
+
+  // Register before loading ACDL so its pre-existing queue is not captured as
+  // consented analytics activity.
+  initializeAnalyticsEvents(() => getConsent(CONSENT_TOPICS.COLLECTION)
+    && !document.prerendering);
 
   // Initialize Adobe Client Data Layer
   await import('./acdl/adobe-client-data-layer.min.js');
@@ -746,19 +755,22 @@ export function getStoreIdentifier() {
  * Tracks user browsing and purchase history for recommendations.
  * Stores product view history and purchase history in localStorage.
  */
+let historyTrackingInitialized = false;
+
 function trackHistory() {
-  if (!getConsent('commerce-recommendations')) {
+  if (historyTrackingInitialized) {
     return;
   }
-  // Store product view history in session storage
   const storeIdentifier = getStoreIdentifier();
   if (storeIdentifier) {
+    historyTrackingInitialized = true;
     window.adobeDataLayer.push((dl) => {
-      dl.addEventListener('adobeDataLayer:change', (event) => {
+      const recordProductView = (event) => {
         // Speculation Rules prerendering pushes productContext once immediately and
         // again on activation. Ignore the prerender-only push so hovering a link
         // doesn't record a view that never actually happened.
-        if (document.prerendering || !event.productContext || !event.productContext.sku) {
+        if (!getConsent(CONSENT_TOPICS.RECOMMENDATIONS)
+          || document.prerendering || !event.productContext || !event.productContext.sku) {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;
@@ -766,8 +778,14 @@ function trackHistory() {
         viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
         viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
         window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
-      }, { path: 'productContext' });
+      };
+      dl.addEventListener('adobeDataLayer:change', recordProductView, {
+        path: 'productContext', scope: 'future',
+      });
       dl.addEventListener('place-order', () => {
+        if (!getConsent(CONSENT_TOPICS.RECOMMENDATIONS) || document.prerendering) {
+          return;
+        }
         const shoppingCartContext = dl.getState('shoppingCartContext');
         if (!shoppingCartContext) {
           return;
@@ -777,7 +795,18 @@ function trackHistory() {
         const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
         purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
         window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
+      }, { scope: 'future' });
+      let historyConsented = getConsent(CONSENT_TOPICS.RECOMMENDATIONS);
+      const recordCurrentProduct = () => recordProductView({
+        productContext: dl.getState('productContext'),
       });
+      window.addEventListener('consent.update', () => {
+        const consented = getConsent(CONSENT_TOPICS.RECOMMENDATIONS);
+        if (consented && !historyConsented) recordCurrentProduct();
+        historyConsented = consented;
+      });
+      document.addEventListener('prerenderingchange', recordCurrentProduct, { once: true });
+      if (historyConsented) recordCurrentProduct();
     });
   }
 }
@@ -852,16 +881,6 @@ export async function loadErrorPage(code = 404) {
  */
 export function checkIsAuthenticated() {
   return !!getCookie('auth_dropin_user_token') ?? false;
-}
-
-/**
- * Check if consent was given for a specific topic.
- * @param {*} topic Topic identifier
- * @returns {boolean} True if consent was given
- */
-export function getConsent(_topic) {
-  console.warn('getConsent not implemented');
-  return true;
 }
 
 /**

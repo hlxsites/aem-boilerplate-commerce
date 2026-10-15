@@ -111,3 +111,28 @@ curl -X POST https://admin.hlx.page/live/adobe-commerce/boilerplate-accs/main/me
 curl -X POST https://admin.hlx.page/live/adobe-commerce/boilerplate-aco/main/metadata.json --cookie "auth_token=YOUR_AUTH_COOKIE"
 curl -X POST https://admin.hlx.page/live/adobe-commerce/boilerplate-paas/main/metadata.json --cookie "auth_token=YOUR_AUTH_COOKIE"
 ```
+
+## Consent verification
+
+With the local AEM server running, from `cypress/` run:
+
+```sh
+npx cypress run --config-file cypress.base.config.js --spec src/tests/b2c/events/consent.spec.js --config retries=0
+```
+
+The focused browser suite checks absent/declined consent, late acceptance,
+revocation, retained storage, duplicate imports and absence of new Commerce
+collector requests after revocation, including timer advancement and unload.
+The positive initialization suite verifies contexts on home, PDP, cart and checkout.
+Analytics event specs use `consentTestSupport` to apply `?consent=accept` before
+each document load and wait for `consent.update` before interacting, including
+full navigations and reloads. This override works because Cypress runs the local
+storefront on a loopback host; it is ignored on AEM preview/live and merchant
+domains. The dedicated
+`consent.spec.js` intentionally does not use that helper because it verifies
+default denial, explicit decline, acceptance and revocation. Specs skipped for
+all configured environments remain skipped.
+
+The focused verification does not validate a real AEP datastream. The complete
+existing e2e suite has not been run. For unit-test coverage and mocked boundaries,
+see [Consent unit tests](../test/README.md).

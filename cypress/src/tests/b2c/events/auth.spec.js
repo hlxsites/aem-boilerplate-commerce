@@ -1,9 +1,12 @@
 import { signUpUser } from "../../../actions";
 import { assertAuthUser, expectsEventWithContext } from "../../../assertions";
+import { enableAnalyticsConsent, visitWithAnalyticsConsent, waitForAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
 
 it("has shopperId as logged-in when authenticated, and guest when not", () => {
   // 1. checks that shopperContext is guest on first non-authenticated page load
-  cy.visit("/");
+  visitWithAnalyticsConsent("/");
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
@@ -16,7 +19,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
   });
 
   // 2. creates customer and checks that shopperContext is set to logged-in
-  cy.visit("/customer/create");
+  visitWithAnalyticsConsent("/customer/create");
   cy.fixture("userInfo").then(({ sign_up }) => {
     signUpUser(sign_up);
     assertAuthUser(sign_up);
@@ -33,7 +36,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
   });
 
   // 3. Loads a new page and checks that shopperContext is still set to logged-in
-  cy.visit("/");
+  visitWithAnalyticsConsent("/");
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
@@ -47,6 +50,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
 
   // 4. Logs out / deletes customer and checks that shopperContext is set to guest
   cy.reload();
+  waitForAnalyticsConsent();
   cy.get(".nav-dropdown-button").contains("Hi, John").click();
   cy.get(
     "#nav > div.section.nav-tools > div.dropdown-wrapper.nav-tools-wrapper > div > ul > li:nth-child(2) > button",
@@ -65,7 +69,7 @@ it("has shopperId as logged-in when authenticated, and guest when not", () => {
   });
 
   // 5. Loads a new page and checks that shopperContext is still set to guest
-  cy.visit("/");
+  visitWithAnalyticsConsent("/");
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
