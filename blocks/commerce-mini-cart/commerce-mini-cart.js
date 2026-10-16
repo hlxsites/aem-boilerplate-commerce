@@ -3,6 +3,7 @@ import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {
+  AlertBanner,
   InLineAlert,
   Icon,
   provider as UI,
@@ -66,6 +67,10 @@ export default async function decorate(block) {
   const shadowWrapper = document.createElement('div');
   shadowWrapper.className = 'commerce-mini-cart__message-wrapper';
   shadowWrapper.appendChild(updateMessage);
+
+  // Create a container for Apple Pay errors
+  const $applePayError = document.createElement('div');
+  $applePayError.className = 'commerce-mini-cart__apple-pay-error';
 
   const showMessage = (message, { type = 'success', duration = 3000 } = {}) => {
     updateMessage.textContent = message;
@@ -190,8 +195,6 @@ export default async function decorate(block) {
     slots: {
       PreCheckoutSection: (ctx) => {
         const $applePay = document.createElement('div');
-        const $applePayError = document.createElement('div');
-        $applePayError.className = 'commerce-mini-cart__apple-pay-error';
 
         // No MINI_CART value exists in PaymentLocation; reuse CHECKOUT.
         PaymentServices.render(ApplePay, {
@@ -202,12 +205,10 @@ export default async function decorate(block) {
           onError: async (localizedError) => {
             currentApplePayError?.remove();
 
-            currentApplePayError = await UI.render(InLineAlert, {
-              heading: localizedError.name,
-              description: localizedError.message,
+            currentApplePayError = await UI.render(AlertBanner, {
+              variant: 'warning',
               icon: h(Icon, { source: 'OrderError' }),
-              type: 'error',
-              variant: 'secondary',
+              message: h('span', null, localizedError.message),
               'aria-live': 'assertive',
               role: 'alert',
               onDismiss: () => currentApplePayError?.remove(),
@@ -216,7 +217,6 @@ export default async function decorate(block) {
         })($applePay);
 
         ctx.appendSibling($applePay);
-        ctx.appendSibling($applePayError);
       },
       Thumbnail: (ctx) => {
         const { item, defaultImageProps } = ctx;
@@ -260,8 +260,10 @@ export default async function decorate(block) {
   const productsContainer = block.querySelector('.cart-mini-cart__products');
   if (productsContainer) {
     productsContainer.insertBefore(shadowWrapper, productsContainer.firstChild);
+    productsContainer.insertBefore($applePayError, productsContainer.firstChild);
   } else {
     console.info('Products container not found, appending message to block');
+    block.appendChild($applePayError);
     block.appendChild(shadowWrapper);
   }
 
