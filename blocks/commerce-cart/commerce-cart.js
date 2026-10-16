@@ -26,6 +26,9 @@ import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
+// Order Dropin
+import * as orderApi from '@dropins/storefront-order/api.js';
+
 // API
 import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 
@@ -33,13 +36,22 @@ import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-mini-pdp.js';
 import createModal from '../modal/modal.js';
 
+// Block-level
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
 
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
+
+// Checkout success block import and CSS preload
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
 
 export default async function decorate(block) {
   // Configuration
@@ -165,7 +177,7 @@ export default async function decorate(block) {
         heading: placeholders?.Global?.ProductLoadError,
         type: 'error',
         variant: 'primary',
-        icon: h(Icon, { source: 'AlertWithCircle' }),
+        icon: h(Icon, { source: 'WarningWithCircle' }),
         'aria-live': 'assertive',
         role: 'alert',
         onDismiss: () => {
@@ -289,10 +301,30 @@ export default async function decorate(block) {
 
     // Apple Pay (test)
     PaymentServices.render(ApplePay, {
-      location: PaymentLocation.CHECKOUT,
+      location: PaymentLocation.CART,
       getCartId: async () => events.lastPayload('cart/data')?.id,
-      onSuccess: ({ cartId }) => console.info('Apple Pay success', cartId),
-      onError: (localizedError) => console.error('Apple Pay error', localizedError),
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
+        showOrderConfirmation(orderData, block).catch(console.error);
+      }),
+      onError: (localizedError) => {
+        currentNotification?.remove();
+
+        UI.render(InLineAlert, {
+          heading: localizedError.name,
+          description: localizedError.message,
+          type: 'error',
+          variant: 'primary',
+          icon: h(Icon, { source: 'OrderError' }),
+          'aria-live': 'assertive',
+          role: 'alert',
+          onDismiss: () => currentNotification?.remove(),
+        })($notification)
+          .then((notification) => {
+            currentNotification = notification;
+            $notification.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          })
+          .catch(console.error);
+      },
     })($applePay),
 
     provider.render(GiftOptions, {
@@ -341,6 +373,29 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
+}
+
+/**
+ * Renders the order confirmation in place of the cart after an order placed from the cart page.
+ * @param {Object} orderData - The order data
+ * @param {HTMLElement} block - The cart block
+ */
+async function showOrderConfirmation(orderData, block) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  const url = token
+    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
+    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
+
+  window.history.pushState({}, '', url);
+
+  await renderCheckoutSuccess(block, { orderData });
+
+  window.scrollTo({ top: 0 });
 }
 
 function swatchImageSlot(ctx) {

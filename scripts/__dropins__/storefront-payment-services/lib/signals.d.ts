@@ -8,6 +8,7 @@ export declare const paymentsSDK: import('@preact/signals-core').ReadonlySignal<
     checkout?: PaymentServicesSDK | undefined;
     productDetail?: PaymentServicesSDK | undefined;
     minicart?: PaymentServicesSDK | undefined;
+    cart?: PaymentServicesSDK | undefined;
 }>;
 /**
  * Payment Services drop-in status signal.

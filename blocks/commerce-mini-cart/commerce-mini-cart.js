@@ -57,7 +57,7 @@ export default async function decorate(block) {
   // Modal state
   let currentModal = null;
   let currentCartNotification = null;
-  let currentApplePayError = null;
+  let currentPaymentErrorMessage = null;
 
   // Create a container for the update message
   const updateMessage = document.createElement('div');
@@ -201,18 +201,25 @@ export default async function decorate(block) {
           location: 'MINICART',
           getCartId: () => events.lastPayload('cart/data')?.id,
           isVirtualCart: events.lastPayload('cart/data')?.isVirtual,
-          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-          onError: async (localizedError) => {
-            currentApplePayError?.remove();
+          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
+            handleOrderPlaced(orderData).catch(console.error);
+          }),
+          onError: (_localizedError) => {
+            currentPaymentErrorMessage?.remove();
 
-            currentApplePayError = await UI.render(AlertBanner, {
+            UI.render(AlertBanner, {
               variant: 'warning',
               icon: h(Icon, { source: 'OrderError' }),
-              message: h('span', null, localizedError.message),
+              // TODO: Update default error messages in drop-in, then use 'localizedError.message'.
+              message: h('span', null, 'An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
               'aria-live': 'assertive',
               role: 'alert',
-              onDismiss: () => currentApplePayError?.remove(),
-            })($applePayError);
+              onDismiss: () => currentPaymentErrorMessage?.remove(),
+            })($applePayError)
+              .then((banner) => {
+                currentPaymentErrorMessage = banner;
+              })
+              .catch(console.error);
           },
         })($applePay);
 
@@ -267,14 +274,11 @@ export default async function decorate(block) {
     block.appendChild(shadowWrapper);
   }
 
-  // Handle order placed event
-  events.on('order/placed', (orderData) => handleOrderPlaced(orderData));
-
   return block;
 }
 
 /**
- * Handle order placed event. Unlike PDP/checkout, the mini-cart block is only a
+ * Handle an order placed from the mini-cart. Unlike PDP/checkout, the mini-cart block is only a
  * small flyout, not the page's content area, so the success view is rendered into
  * <main> (the page content root on every template) instead of the mini-cart block.
  * @param {Object} orderData - The order data
@@ -293,4 +297,6 @@ async function handleOrderPlaced(orderData) {
   window.history.pushState({}, '', url);
 
   await renderCheckoutSuccess(document.querySelector('main'), { orderData });
+
+  window.scrollTo({ top: 0 });
 }
