@@ -1,5 +1,5 @@
 import { SignIn } from '@dropins/storefront-auth/containers.js';
-import { OrderSearch } from '@dropins/storefront-order/containers/OrderSearch.js';
+import { OrderSearch } from '@dropins/storefront-order/containers.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 import { events } from '@dropins/tools/event-bus.js';

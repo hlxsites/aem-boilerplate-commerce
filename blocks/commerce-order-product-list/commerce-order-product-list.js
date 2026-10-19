@@ -1,5 +1,5 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
-import { OrderProductList } from '@dropins/storefront-order/containers/OrderProductList.js';
+import { OrderProductList } from '@dropins/storefront-order/containers.js';
 import { GiftOptions } from '@dropins/storefront-cart/containers.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
