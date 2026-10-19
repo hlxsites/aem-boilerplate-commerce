@@ -1,5 +1,5 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
-import ReturnsList from '@dropins/storefront-order/containers.js';
+import { ReturnsList } from '@dropins/storefront-order/containers.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
