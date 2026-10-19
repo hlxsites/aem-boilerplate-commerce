@@ -1,5 +1,34 @@
 # @dropins/storefront-order
 
+## 4.1.1-alpha-20261019133627
+
+### Patch Changes
+
+- fd9ddca: Prevent the local and standalone example hosts from repeatedly
+  reloading when Auth announces an unauthenticated guest during initialization.
+  Reload only when an authenticated session becomes unauthenticated, preserving
+  logout behavior.
+
+  Set an explicit Cypress TypeScript root directory so Cypress 13 can load its
+  configuration with TypeScript 6 without a TS5011 startup error.
+
+- fd9ddca: Use Elsie's shared HTML sanitizer for order comments and remove the
+  direct DOMPurify dependency, retaining the existing comment-formatting
+  allowlist.
+- fd9ddca: Migrate development tooling to pnpm and pin
+  `@adobe-commerce/elsie@3.0.0-alpha-20261014093743`, updating build, lint,
+  TypeScript, unit-test, and Storybook integrations for elsie v3.
+
+  Remove the unused Husky and lint-staged dependencies; no commit hooks were
+  configured, so no replacement hook setup is needed.
+
+  Remove unused direct `glob`, `lighthouse`, and `undici` dependencies,
+  including the unused `glob` entry in the independent Cypress project.
+
+  Upgrade shared CI workflows to `storefront-workflows@v7`, which runs
+  Changesets through Elsie, and remove the redundant direct `@changesets/cli`
+  dependency.
+
 ## 4.1.0
 
 ## 4.1.0-beta.0

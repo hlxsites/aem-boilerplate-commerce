@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CreateReturn';
-export { CreateReturn as default } from './CreateReturn';
+export * from './CreateReturn.js';
+export { CreateReturn as default } from './CreateReturn.js';
