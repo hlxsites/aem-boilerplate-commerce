@@ -15,22 +15,25 @@ declare const _default: {
           "message": "An unexpected error occurred. Please try again or contact support."
         }
       },
+      "saveCard": {
+        "label": "Save this card for future purchases"
+      },
       "formFields": {
         "cvv": {
           "invalidError": "Enter valid cvv.",
-          "label": "",
+          "label": "CVV",
           "missingError": "This field is required.",
           "placeholder": "CVV*"
         },
         "expirationDate": {
           "invalidError": "Enter valid expiration date.",
-          "label": "",
+          "label": "Expiration date",
           "missingError": "This field is required.",
           "placeholder": "MM/YY*"
         },
         "number": {
           "invalidError": "Enter valid card number.",
-          "label": "",
+          "label": "Card number",
           "missingError": "This field is required.",
           "placeholder": "Card Number*"
         }
@@ -42,6 +45,28 @@ declare const _default: {
           "name": "Google Pay error",
           "message": "An unexpected error occurred. Please try again or contact support."
         }
+      }
+    },
+    "PayPalButtons": {
+      "errors": {
+        "default": {
+          "name": "PayPal error",
+          "message": "An unexpected error occurred. Please try again or contact support."
+        }
+      }
+    },
+    "VaultedCreditCard": {
+      "cardTypeLabel": {
+        "credit": "Credit card",
+        "debit": "Debit card",
+        "fsa": "FSA Debit card",
+        "prepaid": "Prepaid card",
+        "store": "Store card"
+      }
+    },
+    "CardIcon": {
+      "generic": {
+        "title": "Card"
       }
     },
     "messages": {
