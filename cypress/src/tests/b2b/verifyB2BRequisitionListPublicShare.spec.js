@@ -2,9 +2,10 @@ import * as fields from "../../fields";
 import { products } from "../../fixtures";
 import { createStandaloneCustomer } from "../../support/b2bCompanyAPICalls";
 
-// Matches the `requisition_list_public_share_storefront_path` store config
-// default; update if the target environment configures a different path.
-const PUBLIC_SHARING_PATH = '/customer/requisition-list-public-share';
+// Must match the `requisition_list_public_share_storefront_path` store config
+// value; override with CYPRESS_requisitionListPublicSharePath if it differs.
+const PUBLIC_SHARING_PATH = Cypress.env('requisitionListPublicSharePath')
+  || '/customer/requisition-list-public-share';
 
 describe(
   "Verify B2B Requisition List Public Sharing feature",
