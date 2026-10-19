@@ -1,6 +1,6 @@
 # @dropins/storefront-pdp
 
-## 3.4.0-alpha-20261009133059
+## 3.4.0-alpha-20261019081732
 
 ### Minor Changes
 

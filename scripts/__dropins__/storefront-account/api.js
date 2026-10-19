@@ -61,7 +61,10 @@ import{events as lt}from"@dropins/tools/event-bus.js";import{Initializer as _t,m
   }
   ${V}
 `,K=t=>{if(Array.isArray(t))return t.reduce((n,r)=>(n.push(...K(r)),n),[]);if(typeof t=="string"){const n=t.trim();return n?[n]:[]}return[]},st=(t,n)=>{const r=t,o=[...K(r.street),...K(r.streetMultiline_2)],e=t.region?{region:t.region.region||"",region_code:t.region.regionCode||"",region_id:typeof t.region.regionId=="string"?Number(t.region.regionId):t.region.regionId}:void 0,a=t.addressTypeShipping&&!t.addressTypeBilling?"SHIPPING":t.addressTypeBilling&&!t.addressTypeShipping?"BILLING":void 0,c=t.addressType||a||(t.defaultBilling&&!t.defaultShipping?"BILLING":"SHIPPING"),i=typeof t.isDefault=="boolean"||typeof t.defaultShipping=="boolean"||typeof t.defaultBilling=="boolean"?typeof t.isDefault=="boolean"?t.isDefault:!!(t.defaultShipping||t.defaultBilling):n!=null&&n.preserveIsDefaultWhenUnset?void 0:!1;return{company:t.company||"",address_type:c,...typeof i=="boolean"?{is_default:i}:{},city:t.city||"",country_code:t.countryCode||"",region:e,street:o,telephone:t.telephone||"",postcode:t.postcode||"",firstname:t.firstName||"",middlename:t.middleName||"",lastname:t.lastName||"",nickname:t.nickname||"",prefix:t.prefix||"",suffix:t.suffix||"",fax:t.fax||"",vat_id:t.vatId||""}},Wr=async t=>{const n=st(t);return await d(Zt,{method:"POST",variables:{input:n}}).then(r=>{var o,e;return(o=r.errors)!=null&&o.length?g(r.errors):H((e=r==null?void 0:r.data)==null?void 0:e.createCompanyAddress)}).catch(f)},tr=`
-  mutation UPDATE_COMPANY_ADDRESS($id: ID!, $input: CompanyAddressUpdateInput!) {
+  mutation UPDATE_COMPANY_ADDRESS(
+    $id: ID!
+    $input: CompanyAddressUpdateInput!
+  ) {
     updateCompanyAddress(id: $id, input: $input) {
       ...COMPANY_ADDRESS_FRAGMENT
     }
@@ -243,10 +246,7 @@ import{events as lt}from"@dropins/tools/event-bus.js";import{Initializer as _t,m
 `,un=async()=>await d(Rr,{method:"GET",cache:"no-cache"}).then(t=>{var n;return(n=t.errors)!=null&&n.length?g(t.errors):It(t)}).catch(f),Or=`
   query GET_ADMIN_ASSISTANCE_ACTIONS($currentPage: Int, $pageSize: Int) {
     customer {
-      admin_assistance_actions(
-        pageSize: $pageSize
-        currentPage: $currentPage
-      ) {
+      admin_assistance_actions(pageSize: $pageSize, currentPage: $currentPage) {
         total_count
         items {
           action
@@ -372,5 +372,5 @@ import{events as lt}from"@dropins/tools/event-bus.js";import{Initializer as _t,m
       }
     }
   }
-`,An=async t=>await d(vr,{method:"POST",variables:{input:I(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(n=>{var r,o,e,a;return(r=n.errors)!=null&&r.length?g(n.errors):((a=(e=(o=n==null?void 0:n.data)==null?void 0:o.updateCustomerV2)==null?void 0:e.customer)==null?void 0:a.email)||""}).catch(f);export{Y as COMPANY_ADDRESS_PERMISSIONS,et as O,St as a,W as b,I as c,M as config,Wr as createCompanyAddress,Kr as createCustomerAddress,ot as d,jr as deleteCompanyAddress,dn as deletePaymentToken,d as fetchGraphQl,nn as g,sn as getAdminAssistanceActions,Hr as getAttributesForm,Xr as getCompanyAddressBook,Zr as getCompanyAddressBookConfig,zr as getConfig,en as getCountries,un as getCustomer,tn as getCustomerAddress,rn as getCustomerCompanyContext,_n as getCustomerPaymentTokens,on as getCustomerRolePermissions,fn as getOrderHistoryList,an as getRegions,mn as getStoreConfig,it as initialize,ln as removeCustomerAddress,qr as removeFetchGraphQlHeader,Qr as setDefaultCompanyAddress,Br as setEndpoint,Lr as setFetchGraphQlHeader,Yr as setFetchGraphQlHeaders,Vr as t,Jr as updateCompanyAddress,An as updateCustomer,cn as updateCustomerAddress,hn as updateCustomerEmail,gn as updateCustomerPassword};
+`,An=async t=>await d(vr,{method:"POST",variables:{input:I(t,"snakeCase",{firstName:"firstname",lastName:"lastname",middleName:"middlename",dob:"date_of_birth",custom_attributesV2:"custom_attributes"})}}).then(n=>{var r,o,e,a;return(r=n.errors)!=null&&r.length?g(n.errors):((a=(e=(o=n==null?void 0:n.data)==null?void 0:o.updateCustomerV2)==null?void 0:e.customer)==null?void 0:a.email)||""}).catch(f);export{Y as COMPANY_ADDRESS_PERMISSIONS,et as ORDER_SEARCH_MAX_LENGTH,ot as ORDER_SEARCH_MIN_LENGTH,M as config,I as convertKeysCase,W as convertToCamelCase,St as convertToSnakeCase,Wr as createCompanyAddress,Kr as createCustomerAddress,jr as deleteCompanyAddress,dn as deletePaymentToken,d as fetchGraphQl,sn as getAdminAssistanceActions,Hr as getAttributesForm,Xr as getCompanyAddressBook,Zr as getCompanyAddressBookConfig,zr as getConfig,en as getCountries,un as getCustomer,tn as getCustomerAddress,rn as getCustomerCompanyContext,_n as getCustomerPaymentTokens,on as getCustomerRolePermissions,nn as getDefaultCompanyAddressPermissions,fn as getOrderHistoryList,an as getRegions,mn as getStoreConfig,it as initialize,ln as removeCustomerAddress,qr as removeFetchGraphQlHeader,Qr as setDefaultCompanyAddress,Br as setEndpoint,Lr as setFetchGraphQlHeader,Yr as setFetchGraphQlHeaders,Vr as transformAccount,Jr as updateCompanyAddress,An as updateCustomer,cn as updateCustomerAddress,hn as updateCustomerEmail,gn as updateCustomerPassword};
 //# sourceMappingURL=api.js.map

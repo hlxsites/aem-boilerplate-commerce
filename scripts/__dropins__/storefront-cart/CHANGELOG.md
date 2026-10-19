@@ -1,6 +1,6 @@
 # @dropins/storefront-cart
 
-## 3.4.1-alpha-20261014124408
+## 3.4.1-alpha-20261019081808
 
 ### Patch Changes
 
