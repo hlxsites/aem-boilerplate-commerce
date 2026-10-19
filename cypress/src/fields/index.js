@@ -259,7 +259,6 @@ export const requisitionListSharingAddToCartButton = '[data-testid="add-public-l
 export const requisitionListSharingAddSelectedToCartButton = '[data-testid="add-selected-public-items-to-cart-btn"]';
 export const requisitionListSharingProductLink = '.shared-requisition-list__product a';
 
-
 export const COMPANY_CREATE_PATH = "/customer/company/create";
 
 // Navigation Fields
