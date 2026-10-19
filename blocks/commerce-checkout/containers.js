@@ -27,8 +27,10 @@ import { AuthCombine } from '@dropins/storefront-auth/containers.js';
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Account Dropin
-import Addresses from '@dropins/storefront-account/containers/Addresses.js';
-import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
+import {
+  Addresses,
+  AddressForm,
+} from '@dropins/storefront-account/containers.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
 // Cart Dropin
