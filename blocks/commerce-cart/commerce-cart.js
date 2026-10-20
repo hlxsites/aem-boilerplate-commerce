@@ -20,8 +20,10 @@ import {
 } from '@dropins/storefront-cart/containers.js';
 
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
-import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+import {
+  WishlistToggle,
+  WishlistAlert,
+} from '@dropins/storefront-wishlist/containers.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API

@@ -15,7 +15,7 @@ import { render as provider } from '@dropins/storefront-recommendations/render.j
 import { publishRecsItemAddToCartClick } from '@dropins/storefront-recommendations/api.js';
 
 // Wishlist Dropin
-import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { WishlistToggle } from '@dropins/storefront-wishlist/containers.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
 // Block-level
