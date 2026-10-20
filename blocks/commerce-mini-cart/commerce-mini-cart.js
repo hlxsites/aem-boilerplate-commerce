@@ -22,9 +22,6 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 import createModal from '../modal/modal.js';
 import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-mini-pdp.js';
 
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/order.js';
@@ -34,7 +31,7 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
 
 // Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { showOrderConfirmation, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
@@ -199,9 +196,9 @@ export default async function decorate(block) {
         const $payPal = document.createElement('div');
         $payPal.className = 'commerce-mini-cart__paypal';
 
-        const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
-          handleOrderPlaced(orderData).catch(console.error);
-        });
+        const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
+          .then(showOrderConfirmation)
+          .catch(console.error);
 
         // TODO: Update default error messages in drop-in, then use 'localizedError.message'.
         const showPaymentError = (message) => {
@@ -288,28 +285,4 @@ export default async function decorate(block) {
   }
 
   return block;
-}
-
-/**
- * Handle an order placed from the mini-cart. Unlike PDP/checkout, the mini-cart block is only a
- * small flyout, not the page's content area, so the success view is rendered into
- * <main> (the page content root on every template) instead of the mini-cart block.
- * @param {Object} orderData - The order data
- */
-async function handleOrderPlaced(orderData) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(document.querySelector('main'), { orderData });
-
-  window.scrollTo({ top: 0 });
 }

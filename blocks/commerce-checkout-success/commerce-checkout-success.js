@@ -41,7 +41,13 @@ import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
-import { loadCSS } from '../../scripts/aem.js';
+import { buildOrderDetailsUrl } from '../commerce-checkout/utils.js';
+import {
+  buildBlock,
+  decorateBlock,
+  decorateSections,
+  loadCSS,
+} from '../../scripts/aem.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -276,6 +282,31 @@ export function preloadCheckoutSuccess() {
 
 export async function renderCheckoutSuccess(container, { orderData } = {}) {
   return renderCheckoutSuccessContent(container, { orderData });
+}
+
+/**
+ * Replaces the page content with the order confirmation, e.g., after an order placed with a
+ * payment button outside of the checkout page (PDP, cart, mini-cart). The confirmation is
+ * rendered as a commerce-checkout-success block in its own section, so it gets the same layout
+ * as an authored block.
+ * @param {Object} orderData - The order data
+ */
+export async function showOrderConfirmation(orderData) {
+  window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
+
+  const main = document.querySelector('main');
+  const block = buildBlock('commerce-checkout-success', '');
+  const section = document.createElement('div');
+  section.append(block);
+  main.replaceChildren(section);
+  decorateSections(main);
+  decorateBlock(block);
+  section.style.display = '';
+  section.dataset.sectionStatus = 'loaded';
+  block.dataset.blockStatus = 'loaded';
+
+  await preloadCheckoutSuccess();
+  await renderCheckoutSuccess(block, { orderData });
 }
 
 export default async function decorate(block) {

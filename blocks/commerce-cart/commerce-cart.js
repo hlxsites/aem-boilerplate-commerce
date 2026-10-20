@@ -37,9 +37,6 @@ import { publishShoppingCartViewEvent } from '@dropins/storefront-cart/api.js';
 import createMiniPDP from '../../scripts/components/commerce-mini-pdp/commerce-mini-pdp.js';
 import createModal from '../modal/modal.js';
 
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 // Initializers
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
@@ -50,7 +47,7 @@ import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, rootLink, getProductLink } from '../../scripts/commerce.js';
 
 // Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { showOrderConfirmation, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
@@ -191,9 +188,9 @@ export default async function decorate(block) {
   }
 
   // Payment Services (Apple Pay, PayPal)
-  const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
-    showOrderConfirmation(orderData, block).catch(console.error);
-  });
+  const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
+    .then(showOrderConfirmation)
+    .catch(console.error);
 
   const onPaymentError = (localizedError) => {
     currentNotification?.remove();
@@ -388,29 +385,6 @@ export default async function decorate(block) {
 
 function isCartEmpty(cart) {
   return cart ? cart.totalQuantity < 1 : true;
-}
-
-/**
- * Renders the order confirmation in place of the cart after an order placed from the cart page.
- * @param {Object} orderData - The order data
- * @param {HTMLElement} block - The cart block
- */
-async function showOrderConfirmation(orderData, block) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(block, { orderData });
-
-  window.scrollTo({ top: 0 });
 }
 
 function swatchImageSlot(ctx) {
