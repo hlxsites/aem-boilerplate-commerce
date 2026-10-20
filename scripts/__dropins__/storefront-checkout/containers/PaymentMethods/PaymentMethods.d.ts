@@ -16,7 +16,7 @@
  *******************************************************************/
 import { AdditionalData, PaymentMethod } from '../../data/models/payment-method';
 import { TitleProps, UIComponentType } from '../../types';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 interface RenderContext {
     additionalData?: AdditionalData;

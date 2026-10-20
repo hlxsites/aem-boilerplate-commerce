@@ -6,6 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { PlaceNegotiableQuoteOrderResponse } from '../../types';
+import { PlaceNegotiableQuoteOrderResponse } from '../../types/index.js';
 import { OrderDataModel } from '../models';
 export declare const transformPlaceNegotiableQuoteOrder: (response: PlaceNegotiableQuoteOrderResponse) => OrderDataModel | null;

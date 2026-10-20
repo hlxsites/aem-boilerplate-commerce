@@ -13,11 +13,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export { GiftWrapping } from './GiftWrapping';
-export { PrintedCard } from './PrintedCard';
-export { Subtotal } from './Subtotal';
-export { Shipping } from './Shipping';
-export { Discounts } from './Discounts';
-export { Total } from './Total';
-export { Tax } from './Tax';
-export { GiftCards } from './GiftCards';
+export { GiftWrapping } from './GiftWrapping.js';
+export { PrintedCard } from './PrintedCard.js';
+export { Subtotal } from './Subtotal.js';
+export { Shipping } from './Shipping.js';
+export { Discounts } from './Discounts.js';
+export { Total } from './Total.js';
+export { Tax } from './Tax.js';
+export { GiftCards } from './GiftCards.js';

@@ -12,7 +12,7 @@ import {
 export async function initSignIn(container) {
   const [{ render }, { SignIn }] = await Promise.all([
     import('@dropins/storefront-auth/render.js'),
-    import('@dropins/storefront-auth/containers/SignIn.js'),
+    import('@dropins/storefront-auth/containers.js'),
   ]);
   render.render(SignIn, {
     onSuccessCallback: () => window.location.reload(),
@@ -87,14 +87,12 @@ export async function openAuthModal(triggerElement) {
 
   const [
     { render: authRenderer },
-    { AuthCombine },
-    { SuccessNotification },
+    { AuthCombine, SuccessNotification },
     authApi,
     { Button, provider: UI },
   ] = await Promise.all([
     import('@dropins/storefront-auth/render.js'),
-    import('@dropins/storefront-auth/containers/AuthCombine.js'),
-    import('@dropins/storefront-auth/containers/SuccessNotification.js'),
+    import('@dropins/storefront-auth/containers.js'),
     import('@dropins/storefront-auth/api.js'),
     import('@dropins/tools/components.js'),
   ]);

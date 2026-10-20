@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { MoneyProps, TaxTypes } from '../../../types';
+import { MoneyProps, TaxTypes } from '../../../types/index.js';
 export declare const GiftWrapping: ({ salesGiftWrapping, giftWrappingPrice, giftWrappingPriceInclTax, giftWrappingTitle, giftWrappingExclTaxText, giftWrappingInclTaxText, }: {
     salesGiftWrapping?: TaxTypes;
     giftWrappingPrice: MoneyProps;

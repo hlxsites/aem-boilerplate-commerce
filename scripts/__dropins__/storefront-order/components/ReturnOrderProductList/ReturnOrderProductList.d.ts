@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { ReturnOrderProductListProps } from '../../types/createReturn.types';
+import { ReturnOrderProductListProps } from '../../types/createReturn.types.js';
 export declare const ReturnOrderProductList: FunctionComponent<ReturnOrderProductListProps>;

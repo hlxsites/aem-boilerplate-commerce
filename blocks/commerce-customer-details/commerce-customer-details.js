@@ -1,5 +1,5 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
-import { CustomerDetails } from '@dropins/storefront-order/containers/CustomerDetails.js';
+import { CustomerDetails } from '@dropins/storefront-order/containers.js';
 
 // Initialize
 import '../../scripts/initializers/order.js';

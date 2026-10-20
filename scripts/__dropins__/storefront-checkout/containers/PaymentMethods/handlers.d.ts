@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PaymentMethodConfig } from '..';
+import type { PaymentMethodConfig } from './PaymentMethods';
 export declare enum HandlerCode {
     PaymentOnAccount = "companycredit",
     PurchaseOrder = "purchaseorder"

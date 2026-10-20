@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './ProductDownloadableOptions';
-export { ProductDownloadableOptions as default } from './ProductDownloadableOptions';
-//# sourceMappingURL=index.d.ts.map
+export * from './ProductDownloadableOptions.js';
+export { ProductDownloadableOptions as default } from './ProductDownloadableOptions.js';

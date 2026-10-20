@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models';
-import { StatusEnumProps, UseOrderStatusProps } from '../../types';
+import { OrderDataModel } from '../../data/models/index.js';
+import { StatusEnumProps, UseOrderStatusProps } from '../../types/index.js';
 export declare const useOrderStatus: ({ orderData }: UseOrderStatusProps) => {
     orderStatus: StatusEnumProps;
     order: OrderDataModel | undefined;

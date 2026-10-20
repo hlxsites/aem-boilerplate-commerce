@@ -7,35 +7,42 @@
 
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
-import EstimateShipping from '@dropins/storefront-checkout/containers/EstimateShipping.js';
-import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
-import MergedCartBanner from '@dropins/storefront-checkout/containers/MergedCartBanner.js';
-import OutOfStock from '@dropins/storefront-checkout/containers/OutOfStock.js';
-import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
-import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
-import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
-import ShippingMethods from '@dropins/storefront-checkout/containers/ShippingMethods.js';
-import TermsAndConditions from '@dropins/storefront-checkout/containers/TermsAndConditions.js';
+import {
+  BillToShippingAddress,
+  EstimateShipping,
+  LoginForm,
+  MergedCartBanner,
+  OutOfStock,
+  PaymentMethods,
+  PlaceOrder,
+  ServerError,
+  ShippingMethods,
+  TermsAndConditions,
+} from '@dropins/storefront-checkout/containers.js';
 import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
 
 // Auth Dropin
 import * as authApi from '@dropins/storefront-auth/api.js';
-import AuthCombine from '@dropins/storefront-auth/containers/AuthCombine.js';
+import { AuthCombine } from '@dropins/storefront-auth/containers.js';
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
 
 // Account Dropin
-import Addresses from '@dropins/storefront-account/containers/Addresses.js';
-import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
+import {
+  Addresses,
+  AddressForm,
+} from '@dropins/storefront-account/containers.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
 // Cart Dropin
 import * as cartApi from '@dropins/storefront-cart/api.js';
-import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
-import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
-import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
-import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
+import {
+  CartSummaryList,
+  Coupons,
+  GiftCards,
+  GiftOptions,
+  OrderSummary,
+} from '@dropins/storefront-cart/containers.js';
+
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 // Payment Services Dropin

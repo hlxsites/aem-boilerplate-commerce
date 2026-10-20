@@ -331,12 +331,12 @@ import{events as g}from"@dropins/tools/event-bus.js";import{verifyReCaptcha as N
   }
   ${z}
 `,ie=async(n,t)=>p(xt,{variables:{orderId:n,confirmationKey:t}}).then(async({errors:e,data:i})=>{var r,l,_,a;const u=[...(r=i==null?void 0:i.confirmCancelOrder)!=null&&r.errorV2?[(l=i==null?void 0:i.confirmCancelOrder)==null?void 0:l.errorV2]:[],...e??[]];let c=null;return(_=i==null?void 0:i.confirmCancelOrder)!=null&&_.order&&(c=m((a=i==null?void 0:i.confirmCancelOrder)==null?void 0:a.order),g.emit("order/data",c)),u.length>0?f(u):c}),$t=`
-  mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
+  mutation setPaymentMethodAndPlaceOrder(
+    $cartId: String!
+    $paymentMethod: PaymentMethodInput!
+  ) {
     setPaymentMethodOnCart(
-      input: {
-        cart_id: $cartId
-        payment_method: $paymentMethod
-      }
+      input: { cart_id: $cartId, payment_method: $paymentMethod }
     ) {
       cart {
         selected_payment_method {
@@ -359,5 +359,5 @@ import{events as g}from"@dropins/tools/event-bus.js";import{verifyReCaptcha as N
   }
 
   ${Mn}
-`,ce=async n=>{if(!n)throw new Error("No quote UID found");return await mn(),p(wt,{method:"POST",variables:{quoteUid:n}}).then(t=>{var i,u,c,r,l;(i=t.errors)!=null&&i.length&&f(t.errors),(r=(c=(u=t.data)==null?void 0:u.placeNegotiableQuoteOrderV2)==null?void 0:c.errors)!=null&&r.length&&Y((l=t.data.placeNegotiableQuoteOrderV2)==null?void 0:l.errors);const e=it(t);return e&&(g.emit("order/placed",e),I(n,e)),e}).catch(y)};export{pn as c,Bt as cancelOrder,U as config,ie as confirmCancelOrder,ee as confirmGuestReturn,p as fetchGraphQl,Yt as getAttributesForm,jt as getAttributesList,Wt as getConfig,Kt as getCustomer,Xt as getCustomerOrdersReturn,Zt as getGuestOrder,pt as getOrderDetailsById,Dt as getStoreConfig,gt as guestOrderByToken,Z as initialize,ce as placeNegotiableQuoteOrder,Jt as placeOrder,ht as r,Ht as removeFetchGraphQlHeader,It as reorderItems,dt as requestGuestOrderCancel,te as requestGuestReturn,ne as requestReturn,zt as setEndpoint,rt as setFetchGraphQlHeader,Vt as setFetchGraphQlHeaders,ue as setPaymentMethodAndPlaceOrder,Qt as t};
+`,ce=async n=>{if(!n)throw new Error("No quote UID found");return await mn(),p(wt,{method:"POST",variables:{quoteUid:n}}).then(t=>{var i,u,c,r,l;(i=t.errors)!=null&&i.length&&f(t.errors),(r=(c=(u=t.data)==null?void 0:u.placeNegotiableQuoteOrderV2)==null?void 0:c.errors)!=null&&r.length&&Y((l=t.data.placeNegotiableQuoteOrderV2)==null?void 0:l.errors);const e=it(t);return e&&(g.emit("order/placed",e),I(n,e)),e}).catch(y)};export{Bt as cancelOrder,U as config,ie as confirmCancelOrder,ee as confirmGuestReturn,pn as convertToCamelCase,p as fetchGraphQl,Yt as getAttributesForm,jt as getAttributesList,Wt as getConfig,Kt as getCustomer,Xt as getCustomerOrdersReturn,Zt as getGuestOrder,pt as getOrderDetailsById,Dt as getStoreConfig,gt as guestOrderByToken,Z as initialize,ce as placeNegotiableQuoteOrder,Jt as placeOrder,ht as redirectTo,Ht as removeFetchGraphQlHeader,It as reorderItems,dt as requestGuestOrderCancel,te as requestGuestReturn,ne as requestReturn,zt as setEndpoint,rt as setFetchGraphQlHeader,Vt as setFetchGraphQlHeaders,ue as setPaymentMethodAndPlaceOrder,Qt as transformCustomerAddressInput};
 //# sourceMappingURL=api.js.map
