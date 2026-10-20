@@ -26,11 +26,13 @@
   margin-top: var(--spacing-medium);
 }
 
-.cart__payment-services-apple-pay {
+.cart__payment-services-apple-pay,
+.cart__payment-services-paypal {
   margin-top: var(--spacing-medium);
 }
 
-.cart__payment-services-apple-pay:empty {
+.cart__payment-services-apple-pay:empty,
+.cart__payment-services-paypal:empty {
   display: none;
 }
 

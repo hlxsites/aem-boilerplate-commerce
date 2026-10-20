@@ -13,6 +13,7 @@ import { h } from '@dropins/tools/preact.js';
 
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Order Dropin
@@ -195,35 +196,47 @@ export default async function decorate(block) {
     slots: {
       PreCheckoutSection: (ctx) => {
         const $applePay = document.createElement('div');
+        const $payPal = document.createElement('div');
+        $payPal.className = 'commerce-mini-cart__paypal';
 
-        // No MINI_CART value exists in PaymentLocation; reuse CHECKOUT.
+        const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
+          handleOrderPlaced(orderData).catch(console.error);
+        });
+
+        // TODO: Update default error messages in drop-in, then use 'localizedError.message'.
+        const showPaymentError = (message) => {
+          currentPaymentErrorMessage?.remove();
+
+          UI.render(AlertBanner, {
+            variant: 'warning',
+            icon: h(Icon, { source: 'OrderError' }),
+            message: h('span', null, message),
+            'aria-live': 'assertive',
+            role: 'alert',
+            onDismiss: () => currentPaymentErrorMessage?.remove(),
+          })($applePayError)
+            .then((banner) => {
+              currentPaymentErrorMessage = banner;
+            })
+            .catch(console.error);
+        };
+
         PaymentServices.render(ApplePay, {
           location: 'MINICART',
           getCartId: () => events.lastPayload('cart/data')?.id,
           isVirtualCart: events.lastPayload('cart/data')?.isVirtual,
-          onSuccess: ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
-            handleOrderPlaced(orderData).catch(console.error);
-          }),
-          onError: (_localizedError) => {
-            currentPaymentErrorMessage?.remove();
-
-            UI.render(AlertBanner, {
-              variant: 'warning',
-              icon: h(Icon, { source: 'OrderError' }),
-              // TODO: Update default error messages in drop-in, then use 'localizedError.message'.
-              message: h('span', null, 'An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
-              'aria-live': 'assertive',
-              role: 'alert',
-              onDismiss: () => currentPaymentErrorMessage?.remove(),
-            })($applePayError)
-              .then((banner) => {
-                currentPaymentErrorMessage = banner;
-              })
-              .catch(console.error);
-          },
+          onSuccess: onPaymentSuccess,
+          onError: () => showPaymentError('An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
         })($applePay);
 
+        PaymentServices.render(PayPalButtons, {
+          location: 'MINICART',
+          onSuccess: onPaymentSuccess,
+          onError: () => showPaymentError('An unexpected error occurred during checkout with PayPal. Please try another payment method or contact support.'),
+        })($payPal);
+
         ctx.appendSibling($applePay);
+        ctx.appendSibling($payPal);
       },
       Thumbnail: (ctx) => {
         const { item, defaultImageProps } = ctx;

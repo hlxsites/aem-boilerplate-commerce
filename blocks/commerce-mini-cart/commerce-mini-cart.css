@@ -37,6 +37,10 @@
     padding-top: var(--spacing-xsmall);
 }
 
+.commerce-mini-cart__paypal:not(:empty) {
+    margin-top: var(--spacing-xsmall);
+}
+
 .commerce-mini-cart apple-pay-button {
     --apple-pay-button-border-radius: var(--shape-border-radius-3);
 }

@@ -67,6 +67,10 @@
   display: contents;
 }
 
+.product-details__buttons .payment-services_paypal-buttons-container {
+  grid-column: 1 / -1;
+}
+
 .product-details__attributes {
   margin-top: var(--spacing-xsmall);
 }

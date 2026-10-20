@@ -30,6 +30,7 @@ import * as orderApi from '@dropins/storefront-order/api.js';
 
 // Payment Services Dropin
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
@@ -135,6 +136,7 @@ export default async function decorate(block) {
             <div class="product-details__buttons__add-to-cart"></div>
             <div class="product-details__buttons__add-to-wishlist"></div>
             <div class="product-details__buttons__payment-services-apple-pay"></div>
+            <div class="product-details__buttons__payment-services-paypal"></div>
           </div>
         </div>
         <div class="product-details__description"></div>
@@ -154,6 +156,7 @@ export default async function decorate(block) {
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $applePay = fragment.querySelector('.product-details__buttons__payment-services-apple-pay');
+  const $payPal = fragment.querySelector('.product-details__buttons__payment-services-paypal');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   const $description = fragment.querySelector('.product-details__description');
   const $attributes = fragment.querySelector('.product-details__attributes');
@@ -183,6 +186,25 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
 
+  // Payment Services (Apple Pay, PayPal)
+  const onPaymentError = (localizedError) => {
+    inlineAlert?.remove();
+
+    UI.render(InLineAlert, {
+      heading: localizedError.name,
+      description: localizedError.message,
+      icon: h(Icon, { source: 'OrderError' }),
+      'aria-live': 'assertive',
+      role: 'alert',
+      type: 'error',
+      onDismiss: () => inlineAlert?.remove(),
+    })($alert)
+      .then((alert) => {
+        inlineAlert = alert;
+      })
+      .catch(console.error);
+  };
+
   const [
     _galleryMobile,
     _gallery,
@@ -196,6 +218,7 @@ export default async function decorate(block) {
     _attributes,
     wishlistToggleBtn,
     applePayButton,
+    payPalButtons,
   ] = await Promise.all([
     // Gallery (Mobile)
     pdpRendered.render(ProductGallery, {
@@ -285,19 +308,17 @@ export default async function decorate(block) {
         },
       },
       onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
-      onError: async (localizedError) => {
-        inlineAlert = await UI.render(InLineAlert, {
-          heading: localizedError.name,
-          description: localizedError.message,
-          icon: h(Icon, { source: 'OrderError' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          type: 'error',
-          onDismiss: () => inlineAlert.remove(),
-        })($alert);
-      },
+      onError: onPaymentError,
       hidden: true,
     })($applePay),
+
+    // PayPal: the drop-in builds the PDP cart from the 'pdp/data' and 'pdp/values' events
+    PaymentServices.render(PayPalButtons, {
+      location: PaymentLocation.PRODUCT_DETAIL,
+      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onError: onPaymentError,
+      hidden: true,
+    })($payPal),
   ]);
 
   // Configuration – Button - Add to Cart
@@ -391,12 +412,14 @@ export default async function decorate(block) {
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    payPalButtons.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
     // update add to cart button disabled state based on product selection validity and stock status
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
     applePayButton.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
+    payPalButtons.setProps((prev) => ({ ...prev, disabled: isOutOfStock || !valid }));
   }, { eager: true });
 
   // Handle option changes
@@ -468,10 +491,13 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  // Show Apple Pay button if available
+  // Show Apple Pay and PayPal buttons if available
   events.on('payment-services/initialized/product-detail', ({ availablePaymentMethods }) => {
     if (availablePaymentMethods.includes(PaymentMethodCode.APPLE_PAY)) {
       applePayButton.setProps((prev) => ({ ...prev, hidden: false }));
+    }
+    if (availablePaymentMethods.includes(PaymentMethodCode.PAYPAL_BUTTONS)) {
+      payPalButtons.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
 

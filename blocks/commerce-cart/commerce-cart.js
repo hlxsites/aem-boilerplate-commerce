@@ -24,6 +24,7 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 // Payment Services Dropin
 import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Order Dropin
@@ -86,6 +87,7 @@ export default async function decorate(block) {
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
         <div class="cart__payment-services-apple-pay"></div>
+        <div class="cart__payment-services-paypal"></div>
         <div class="cart__gift-options"></div>
       </div>
     </div>
@@ -98,6 +100,7 @@ export default async function decorate(block) {
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
   const $applePay = fragment.querySelector('.cart__payment-services-apple-pay');
+  const $payPal = fragment.querySelector('.cart__payment-services-paypal');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
   const $rightColumn = fragment.querySelector('.cart__right-column');
@@ -186,6 +189,31 @@ export default async function decorate(block) {
       })($notification);
     }
   }
+
+  // Payment Services (Apple Pay, PayPal)
+  const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
+    showOrderConfirmation(orderData, block).catch(console.error);
+  });
+
+  const onPaymentError = (localizedError) => {
+    currentNotification?.remove();
+
+    UI.render(InLineAlert, {
+      heading: localizedError.name,
+      description: localizedError.message,
+      type: 'error',
+      variant: 'primary',
+      icon: h(Icon, { source: 'OrderError' }),
+      'aria-live': 'assertive',
+      role: 'alert',
+      onDismiss: () => currentNotification?.remove(),
+    })($notification)
+      .then((notification) => {
+        currentNotification = notification;
+        $notification.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(console.error);
+  };
 
   // Render Containers
   const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);
@@ -303,29 +331,16 @@ export default async function decorate(block) {
     PaymentServices.render(ApplePay, {
       location: PaymentLocation.CART,
       getCartId: async () => events.lastPayload('cart/data')?.id,
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId).then((orderData) => {
-        showOrderConfirmation(orderData, block).catch(console.error);
-      }),
-      onError: (localizedError) => {
-        currentNotification?.remove();
-
-        UI.render(InLineAlert, {
-          heading: localizedError.name,
-          description: localizedError.message,
-          type: 'error',
-          variant: 'primary',
-          icon: h(Icon, { source: 'OrderError' }),
-          'aria-live': 'assertive',
-          role: 'alert',
-          onDismiss: () => currentNotification?.remove(),
-        })($notification)
-          .then((notification) => {
-            currentNotification = notification;
-            $notification.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          })
-          .catch(console.error);
-      },
+      onSuccess: onPaymentSuccess,
+      onError: onPaymentError,
     })($applePay),
+
+    // PayPal (test)
+    PaymentServices.render(PayPalButtons, {
+      location: PaymentLocation.CART,
+      onSuccess: onPaymentSuccess,
+      onError: onPaymentError,
+    })($payPal),
 
     provider.render(GiftOptions, {
       view: 'order',
