@@ -7,6 +7,7 @@ import { initReCaptcha } from '@dropins/tools/recaptcha.js';
 
 // Order Dropin Modules
 import * as orderApi from '@dropins/storefront-order/api.js';
+import * as checkoutApi from '@dropins/storefront-checkout/api.js';
 
 // Checkout Dropin Libraries
 import {
@@ -18,6 +19,12 @@ import {
 
 // Payment Services Dropin
 import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
+
+import {
+  ADYEN_PAYMENT_CODE,
+  AdyenPaymentError,
+  submitAdyenPayment,
+} from '../adyen-payment/session.js';
 
 // Block Utilities
 import {
@@ -162,7 +169,28 @@ export default async function decorate(block) {
     }
   };
 
+  const trySubmitAdyenPayment = async () => {
+    try {
+      return await submitAdyenPayment();
+    } catch (error) {
+      if (!(error instanceof AdyenPaymentError)) throw error;
+      // Card errors, declines and the waiting state are already shown next to the Drop-in.
+      if (error.code !== 'not-ready') return null;
+      // PlaceOrder shows the message only for errors named PlaceOrderError.
+      const placeOrderError = new Error(error.message);
+      placeOrderError.name = 'PlaceOrderError';
+      throw placeOrderError;
+    }
+  };
+
   const handlePlaceOrder = async ({ cartId, code }) => {
+    // Adyen can show a 3DS challenge inside the Drop-in, which the overlay would cover.
+    let adyenResult = null;
+    if (code === ADYEN_PAYMENT_CODE) {
+      adyenResult = await trySubmitAdyenPayment();
+      if (!adyenResult) return;
+    }
+
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
       // Payment Services credit card
@@ -171,6 +199,16 @@ export default async function decorate(block) {
         if (!success) {
           return;
         }
+      } else if (adyenResult) {
+        await checkoutApi.setPaymentMethod({
+          code: ADYEN_PAYMENT_CODE,
+          additional_data: [
+            { key: 'sessionId', value: adyenResult.sessionId },
+            { key: 'resultCode', value: adyenResult.resultCode },
+            { key: 'sessionData', value: adyenResult.sessionData },
+            { key: 'sessionResult', value: adyenResult.sessionResult },
+          ],
+        });
       }
       await orderApi.placeOrder(cartId);
     } catch (error) {

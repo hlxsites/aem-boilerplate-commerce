@@ -1,6 +1,4 @@
-/*! Copyright 2026 Adobe
-All Rights Reserved. */
-const n=`
+const n = `
   fragment ESTIMATE_SHIPPING_METHOD_FRAGMENT on AvailableShippingMethod {
     amount {
       currency
@@ -21,7 +19,7 @@ const n=`
       currency
     }
   }
-`,e=`
+`, e = `
   fragment AVAILABLE_SHIPPING_METHOD_FRAGMENT on AvailableShippingMethod {
     amount {
       currency
@@ -41,7 +39,7 @@ const n=`
       currency
     }
   }
-`,_=`
+`, _ = `
   fragment SELECTED_SHIPPING_METHOD_FRAGMENT on SelectedShippingMethod {
     amount {
       currency
@@ -60,7 +58,7 @@ const n=`
       currency
     }
   }
-`,E=`
+`, E = `
   fragment BILLING_CART_ADDRESS_FRAGMENT on BillingCartAddress {
     city
     company
@@ -92,7 +90,7 @@ const n=`
     uid
     vat_id
   }
-`,i=`
+`, i = `
   fragment SHIPPING_CART_ADDRESS_FRAGMENT on ShippingCartAddress {
     available_shipping_methods {
       ...AVAILABLE_SHIPPING_METHOD_FRAGMENT
@@ -134,18 +132,23 @@ const n=`
 
   ${e}
   ${_}
-`,t=`
-  fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {
-    code
-    title
+`, t = (`fragment AVAILABLE_PAYMENT_METHOD_FRAGMENT on AvailablePaymentMethod {
+  code
+  title
+  oope_payment_method_config {
+    backend_integration_url
+    custom_config {
+      key
+      value
+    }
   }
-`,a=`
+}`), a = `
   fragment SELECTED_PAYMENT_METHOD_FRAGMENT on SelectedPaymentMethod {
     code
     title
     purchase_order_number
   }
-`,A=`
+`, A = `
   fragment CHECKOUT_DATA_FRAGMENT on Cart {
     id
     is_virtual
@@ -170,13 +173,13 @@ const n=`
   ${i}
   ${t}
   ${a}
-`,l=`
+`, l = `
   fragment CUSTOMER_FRAGMENT on Customer {
     firstname
     lastname
     email
   }
-`,o=`
+`, o = `
   fragment NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT on NegotiableQuoteBillingAddress {
     city
     company
@@ -208,7 +211,7 @@ const n=`
     uid
     vat_id
   }
-`,r=`
+`, r = `
   fragment NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT on NegotiableQuoteShippingAddress {
     available_shipping_methods {
       ...AVAILABLE_SHIPPING_METHOD_FRAGMENT
@@ -249,7 +252,7 @@ const n=`
 
   ${e}
   ${_}
-`,T=`
+`, T = `
   fragment NEGOTIABLE_QUOTE_FRAGMENT on NegotiableQuote {
     available_payment_methods {
       ...AVAILABLE_PAYMENT_METHOD_FRAGMENT
@@ -275,5 +278,18 @@ const n=`
   ${r}
   ${t}
   ${a}
-`;export{t as AVAILABLE_PAYMENT_METHOD_FRAGMENT,e as AVAILABLE_SHIPPING_METHOD_FRAGMENT,E as BILLING_CART_ADDRESS_FRAGMENT,A as CHECKOUT_DATA_FRAGMENT,l as CUSTOMER_FRAGMENT,n as ESTIMATE_SHIPPING_METHOD_FRAGMENT,o as NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT,T as NEGOTIABLE_QUOTE_FRAGMENT,r as NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT,a as SELECTED_PAYMENT_METHOD_FRAGMENT,_ as SELECTED_SHIPPING_METHOD_FRAGMENT,i as SHIPPING_CART_ADDRESS_FRAGMENT};
-//# sourceMappingURL=fragments.js.map
+`;
+export {
+t as AVAILABLE_PAYMENT_METHOD_FRAGMENT,
+e as AVAILABLE_SHIPPING_METHOD_FRAGMENT,
+E as BILLING_CART_ADDRESS_FRAGMENT,
+A as CHECKOUT_DATA_FRAGMENT,
+l as CUSTOMER_FRAGMENT,
+n as ESTIMATE_SHIPPING_METHOD_FRAGMENT,
+o as NEGOTIABLE_QUOTE_BILLING_ADDRESS_FRAGMENT,
+T as NEGOTIABLE_QUOTE_FRAGMENT,
+r as NEGOTIABLE_QUOTE_SHIPPING_ADDRESS_FRAGMENT,
+a as SELECTED_PAYMENT_METHOD_FRAGMENT,
+_ as SELECTED_SHIPPING_METHOD_FRAGMENT,
+i as SHIPPING_CART_ADDRESS_FRAGMENT
+};
