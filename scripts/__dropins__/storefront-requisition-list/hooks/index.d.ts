@@ -21,3 +21,4 @@ export * from './useRequisitionListGrid';
 export * from './useRequisitionListSelectedItems';
 export * from './useRequisitionListEnabled';
 export * from './useRequisitionListTransfer';
+export * from './useTogglePublicRequisitionList';

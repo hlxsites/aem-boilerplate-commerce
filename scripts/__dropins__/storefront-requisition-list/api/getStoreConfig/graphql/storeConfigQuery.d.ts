@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const STORE_CONFIG_QUERY = "\nquery STORE_CONFIG_QUERY {\n  storeConfig {\n    is_requisition_list_active\n    company_enabled\n    requisition_list_sharing_enabled\n    requisition_list_share_max_recipients\n    requisition_list_share_storefront_path\n    configurable_thumbnail_source\n  }\n}\n";
+export declare const STORE_CONFIG_QUERY = "\nquery STORE_CONFIG_QUERY {\n  storeConfig {\n    is_requisition_list_active\n    company_enabled\n    requisition_list_sharing_enabled\n    requisition_list_share_max_recipients\n    requisition_list_share_storefront_path\n    configurable_thumbnail_source\n    requisition_list_public_sharing_enabled\n    requisition_list_public_share_link_validity_days\n    requisition_list_public_share_max_recipients\n    requisition_list_public_share_storefront_path\n  }\n}\n";
