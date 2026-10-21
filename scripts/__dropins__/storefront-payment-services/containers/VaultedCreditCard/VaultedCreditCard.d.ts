@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,6 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-declare const _default: "SvgrURL";
-export default _default;
-export declare const ReactComponent = "div";
+export interface VaultedCreditCardProps {
+    /** Vault token details. */
+    tokenDetails: string;
+}
+export declare const VaultedCreditCard: ({ tokenDetails }: VaultedCreditCardProps) => import("preact").JSX.Element;
+//# sourceMappingURL=VaultedCreditCard.d.ts.map

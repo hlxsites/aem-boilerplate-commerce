@@ -41,6 +41,7 @@ import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 // Payment Services Dropin
 import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import CreditCard from '@dropins/storefront-payment-services/containers/CreditCard.js';
+import VaultedCreditCard from '@dropins/storefront-payment-services/containers/VaultedCreditCard.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
 // Tools
@@ -324,6 +325,25 @@ export const renderBillToShippingAddress = async (container) => renderContainer(
 );
 
 /**
+ * Resyncs the cart's billing address to what checkout currently shows. Needed when
+ * switching from a saved card back to a new payment method, since the saved card can
+ * overwrite the cart's billing address server-side while it is selected.
+ * @param {boolean} isBillToShipping - Whether the "bill to shipping" checkbox is checked
+ * @returns {void}
+ */
+export const resyncBillingAddress = (isBillToShipping) => {
+  if (isBillToShipping) {
+    checkoutApi.setBillingAddress({ sameAsShipping: true });
+    return;
+  }
+
+  const billingFormValues = events.lastPayload('checkout/addresses/billing');
+  if (billingFormValues) {
+    setAddressOnCart({ type: 'billing' })(billingFormValues);
+  }
+};
+
+/**
  * Renders available shipping methods with selection interface
  * @param {HTMLElement} container - DOM element to render shipping methods in
  * @returns {Promise<Object>} - The rendered shipping methods component
@@ -369,6 +389,20 @@ export const renderPaymentMethods = async (container) => renderContainer(
         },
         [PaymentMethodCode.FASTLANE]: {
           enabled: false,
+        },
+      },
+      StoredMethods: {
+        [PaymentMethodCode.VAULT]: {
+          tokenCode: PaymentMethodCode.CREDIT_CARD,
+          render: (ctx) => {
+            const $vaultedCard = document.createElement('div');
+
+            PaymentServices.render(VaultedCreditCard, {
+              tokenDetails: ctx.details,
+            })($vaultedCard);
+
+            ctx.replaceHTML($vaultedCard);
+          },
         },
       },
     },
