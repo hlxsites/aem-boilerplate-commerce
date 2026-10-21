@@ -2,9 +2,11 @@
 
 ## Overview
 
-The Commerce B2B Requisition List Sharing block handles incoming requisition list share links. It uses the `SharedRequisitionList` container from `@dropins/storefront-requisition-list` to auto-import a shared list into the authenticated buyer's account and redirect them to the list detail page.
+The Commerce B2B Requisition List Sharing block handles incoming **private** (company-only) requisition list share links. It uses the `SharedRequisitionList` container from `@dropins/storefront-requisition-list` to auto-import a shared list into the authenticated buyer's account and redirect them to the list detail page.
 
 If the buyer is not signed in, the block renders the sign-in form inline. After authentication the page reloads with the share token preserved, and the import completes automatically.
+
+> For public share links (guest/outside-company recipients, read-only preview with add-to-cart), see the sibling [`commerce-b2b-requisition-list-public-share`](../commerce-b2b-requisition-list-public-share/README.md) block.
 
 ## Integration
 

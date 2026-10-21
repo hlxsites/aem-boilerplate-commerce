@@ -19,6 +19,8 @@ import { HTMLAttributes } from 'preact/compat';
 export interface RequisitionListHeaderProps extends HTMLAttributes<HTMLDivElement> {
     name: string;
     description?: string;
+    showPublicTag?: boolean;
+    publicTagLabel?: string;
     backLink?: {
         url: string;
         label: string;
@@ -28,9 +30,13 @@ export interface RequisitionListHeaderProps extends HTMLAttributes<HTMLDivElemen
         onRename?: () => void;
         onDelete?: () => void;
         onShare?: () => void;
+        onTogglePublic?: () => void;
         renameLabel?: string;
         deleteLabel?: string;
         shareLabel?: string;
+        makePublicLabel?: string;
+        makePrivateLabel?: string;
+        isPublic?: boolean;
         shareDisabled?: boolean;
         shareDisabledReason?: string;
     };

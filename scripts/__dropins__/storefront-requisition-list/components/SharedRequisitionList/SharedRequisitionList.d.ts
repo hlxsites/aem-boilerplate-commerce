@@ -16,12 +16,19 @@
  *******************************************************************/
 import { FunctionComponent } from 'preact';
 import { SharedRequisitionListResult } from '../../api/getSharedRequisitionList';
-export type SharedRequisitionListStatus = 'preview_loading' | 'preview_loaded' | 'preview_error' | 'importing' | 'import_success' | 'import_error';
+export type SharedRequisitionListStatus = 'preview_loading' | 'preview_loaded' | 'preview_error' | 'importing' | 'import_success' | 'import_error' | 'cart_adding' | 'cart_success' | 'cart_error';
 export interface SharedRequisitionListProps {
     status: SharedRequisitionListStatus;
     previewData: SharedRequisitionListResult | null;
     errorMessage: string;
     onImport: () => void;
+    isPublic?: boolean;
+    onAddToCart?: (itemUids?: string[]) => void;
+    selectedItemUids?: string[];
+    onSelectedItemsChange?: (itemUids: string[]) => void;
+    onPageChange?: (page: number) => void;
+    canAddToCart?: boolean;
+    routeProduct?: (urlKey: string, sku: string) => string;
     translations: {
         loading: string;
         previewTitle: string;
@@ -35,6 +42,15 @@ export interface SharedRequisitionListProps {
         skuHeader: string;
         qtyHeader: string;
         optionsHeader: string;
+        addToCart?: string;
+        addSelectedToCart?: string;
+        addingToCart?: string;
+        cartSuccess?: string;
+        cartError: string;
+        selectItem?: string;
+        previousPage?: string;
+        nextPage?: string;
+        productHeader?: string;
     };
 }
 export declare const SharedRequisitionList: FunctionComponent<SharedRequisitionListProps>;
